@@ -717,9 +717,11 @@ dc.baseMixin = function (_chart) {
         if (filters.length === 0) {
             dimension.filter(null);
         } else {
-          console.log(filters);
-          dimension.filterDisjunct(filters);
-
+            console.log(filters);
+            dimension.filterDisjunct(filters);
+          }
+          /*
+           * REMOVED * 
 
             dimension.filterFunction(function (d) {
                 for (var i = 0; i < filters.length; i++) {
@@ -727,18 +729,20 @@ dc.baseMixin = function (_chart) {
                     console.log("the filter is: " + filter);
                     if (filter.isFiltered && filter.isFiltered(d)) { // for range + two-dimensional filters
                         return true;
-                    } else if (filter <= d && filter >= d) // for exact filters {
+                    } else if (filter <= d && filter >= d) { // for exact filters
                         return true;
                     }
                 }
                 return false;
             });
         }
+        */
         return filters;
     };
 
     var _data = function (group) {
         return group.all();
+        //return group.top(10);
     };
 
     /**
@@ -886,7 +890,11 @@ dc.baseMixin = function (_chart) {
     };
 
     _chart._computeOrderedGroups = function (data) {
+      console.log(data);
         var dataCopy = data.slice(0);
+        console.log(_ordering);
+        /*
+         * REMOVED *
 
         if (dataCopy.length <= 1) {
             return dataCopy;
@@ -897,6 +905,8 @@ dc.baseMixin = function (_chart) {
         }
 
         return _orderSort(dataCopy, 0, dataCopy.length);
+        */
+        return dataCopy;
     };
 
     /**
