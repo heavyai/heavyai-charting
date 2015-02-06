@@ -717,7 +717,6 @@ dc.baseMixin = function (_chart) {
         if (filters.length === 0) {
             dimension.filter(null);
         } else {
-            console.log(filters);
             dimension.filterDisjunct(filters);
           }
           /*
@@ -890,9 +889,7 @@ dc.baseMixin = function (_chart) {
     };
 
     _chart._computeOrderedGroups = function (data) {
-      console.log(data);
         var dataCopy = data.slice(0);
-        console.log(_ordering);
         /*
          * REMOVED *
 
