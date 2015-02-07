@@ -69,6 +69,7 @@ dc.chartRegistry = function () {
         if (!_chartMap[group]) {
             _chartMap[group] = [];
         }
+        console.log("Group: " + group);
 
         return group;
     }
@@ -2744,6 +2745,7 @@ dc.coordinateGridMixin = function (_chart) {
 
     **/
     _chart.round = function (_) {
+      console.log("set rounding");
         if (!arguments.length) {
             return _round;
         }
@@ -3527,7 +3529,9 @@ dc.bubbleMixin = function (_chart) {
     _chart.renderLabel(true);
 
     _chart.data(function (group) {
-        return group.top(Infinity);
+        return group.all();
+        /** REMOVED **/
+        //return group.top(Infinity);
     });
 
     var _r = d3.scale.linear().domain([0, 100]);
