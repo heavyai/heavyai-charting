@@ -3529,9 +3529,8 @@ dc.bubbleMixin = function (_chart) {
     _chart.renderLabel(true);
 
     _chart.data(function (group) {
-        return group.all();
-        /** REMOVED **/
-        //return group.top(Infinity);
+        //return group.all();
+        return group.top(Infinity);
     });
 
     var _r = d3.scale.linear().domain([0, 100]);
