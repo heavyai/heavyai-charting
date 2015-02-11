@@ -741,7 +741,7 @@ dc.baseMixin = function (_chart) {
     };
 
     var _data = function (group) {
-        
+        console.log("fetching"); 
         return group.all();
         //return group.top(10);
     };
