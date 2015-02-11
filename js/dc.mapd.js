@@ -1424,6 +1424,7 @@ dc.baseMixin = function (_chart) {
     };
 
     _chart.highlightSelected = function (e) {
+        console.log("highlight selected");
         d3.select(e).classed(dc.constants.SELECTED_CLASS, true);
         d3.select(e).classed(dc.constants.DESELECTED_CLASS, false);
     };
