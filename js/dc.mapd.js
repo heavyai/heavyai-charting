@@ -1978,6 +1978,7 @@ dc.coordinateGridMixin = function (_chart) {
     _chart._mandatoryAttributes().push('x');
 
     function zoomHandler () {
+      
         _refocused = true;
         if (_zoomOutRestrict) {
             _chart.x().domain(constrainRange(_chart.x().domain(), _xOriginalDomain));
