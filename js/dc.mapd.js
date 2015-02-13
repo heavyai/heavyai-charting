@@ -69,7 +69,6 @@ dc.chartRegistry = function () {
         if (!_chartMap[group]) {
             _chartMap[group] = [];
         }
-        console.log("Group: " + group);
 
         return group;
     }
@@ -741,7 +740,6 @@ dc.baseMixin = function (_chart) {
     };
 
     var _data = function (group) {
-        console.log("fetching"); 
         return group.all();
         //return group.top(10);
     };
@@ -1424,7 +1422,6 @@ dc.baseMixin = function (_chart) {
     };
 
     _chart.highlightSelected = function (e) {
-        console.log("highlight selected");
         d3.select(e).classed(dc.constants.SELECTED_CLASS, true);
         d3.select(e).classed(dc.constants.DESELECTED_CLASS, false);
     };
@@ -2748,7 +2745,6 @@ dc.coordinateGridMixin = function (_chart) {
 
     **/
     _chart.round = function (_) {
-      console.log("set rounding");
         if (!arguments.length) {
             return _round;
         }
