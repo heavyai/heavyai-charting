@@ -2798,7 +2798,6 @@ dc.coordinateGridMixin = function (_chart) {
     }
 
     _chart.renderBrush = function (g) {
-        console.log("rendering brush");
         if (_brushOn) {
             _brush.on('brush', _chart._brushing);
             _brush.on('brushstart', _chart._disableMouseZoom);
@@ -2865,7 +2864,6 @@ dc.coordinateGridMixin = function (_chart) {
         if (_brushOn) {
             if (_chart.filter() && (_chart.brush().empty() || _chart._redrawBrushFlag)) {
 
-                console.log("REDRAW");
                 _chart._redrawBrushFlag = false;
                 _chart.brush().extent(_chart.filter());
             }
@@ -2978,10 +2976,8 @@ dc.coordinateGridMixin = function (_chart) {
             _chart.renderYAxis(_chart.g());
         }
         if (render) {
-            console.log("render");
             _chart.renderBrush(_chart.g());
         } else {
-            console.log("redraw");
             _chart.redrawBrush(_chart.g());
         }
     }
@@ -3388,7 +3384,6 @@ dc.stackMixin = function (_chart) {
             } else {
                 _chart.hideStack(d.name);
             }
-            //_chart.redraw();
             _chart.renderGroup();
         }
     };
@@ -3428,7 +3423,6 @@ dc.capMixin = function (_chart) {
     };
 
     _chart.cappedKeyAccessor = function (d, i) {
-      console.log("capped key accessor");
         if (d.others) {
             return d.key;
         }
@@ -3789,7 +3783,6 @@ dc.pieChart = function (parent, chartGroup) {
     _chart.redoSelect = highlightFilter; 
 
     _chart._doRender = function () {
-      console.log("render");
         _chart.resetSvg();
 
         _g = _chart.svg()
@@ -3805,7 +3798,6 @@ dc.pieChart = function (parent, chartGroup) {
         // set radius on basis of chart dimension if missing
         //_radius = _radius ? _radius : d3.min([_chart.width(), _chart.height()]) / 2;
         _radius = d3.min([_chart.width(), _chart.height()]) / 2;
-        console.log("radius: " + _radius);
 
         var arc = buildArcs();
 
@@ -3957,9 +3949,7 @@ dc.pieChart = function (parent, chartGroup) {
     }
 
     function highlightFilter() {
-        console.log("pie: hightlighting filter");
         if (_chart.hasFilter()) {
-              console.log("pie: has filter");
             _chart.selectAll('g.' + _sliceCssClass).each(function (d) {
                 if (isSelectedSlice(d)) {
                     _chart.highlightSelected(this);
