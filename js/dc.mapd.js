@@ -662,6 +662,7 @@ dc.baseMixin = function (_chart) {
     var _anchor;
     var _root;
     var _svg;
+    var _redrawBrushFlag = false;
 
     var _minWidth = 200;
     var _defaultWidth = function (element) {
@@ -2797,6 +2798,7 @@ dc.coordinateGridMixin = function (_chart) {
     }
 
     _chart.renderBrush = function (g) {
+        console.log("rendering brush");
         if (_brushOn) {
             _brush.on('brush', _chart._brushing);
             _brush.on('brushstart', _chart._disableMouseZoom);
@@ -2861,7 +2863,10 @@ dc.coordinateGridMixin = function (_chart) {
 
     _chart.redrawBrush = function (g) {
         if (_brushOn) {
-            if (_chart.filter() && _chart.brush().empty()) {
+            if (_chart.filter() && (_chart.brush().empty() || _chart._redrawBrushFlag)) {
+
+                console.log("REDRAW");
+                _chart._redrawBrushFlag = false;
                 _chart.brush().extent(_chart.filter());
             }
 
@@ -2930,6 +2935,8 @@ dc.coordinateGridMixin = function (_chart) {
     _chart._preprocessData = function () {};
 
     _chart._doRender = function () {
+
+        _chart._redrawBrushFlag = true;
         _chart.resetSvg();
 
         _chart._preprocessData();
@@ -2970,7 +2977,6 @@ dc.coordinateGridMixin = function (_chart) {
         if (_chart.elasticY() || render) {
             _chart.renderYAxis(_chart.g());
         }
-        console.log("redraw brush");
         if (render) {
             console.log("render");
             _chart.renderBrush(_chart.g());
