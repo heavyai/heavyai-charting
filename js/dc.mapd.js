@@ -460,7 +460,10 @@ dc.utils.uniqueId = function () {
 };
 
 dc.utils.nameToId = function (name) {
-    return name.toLowerCase().replace(/[\s]/g, '_').replace(/[\.']/g, '');
+    if (parseFloat(name))
+      return name;
+    else
+      return name.toLowerCase().replace(/[\s]/g, '_').replace(/[\.']/g, '');
 };
 
 dc.utils.appendOrSelect = function (parent, selector, tag) {
