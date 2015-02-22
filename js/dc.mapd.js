@@ -1938,6 +1938,7 @@ dc.colorMixin = function (_chart) {
 
     **/
     _chart.getColor = function (d, i) {
+        //console.log("get color");
         return _colors(_colorAccessor.call(this, d, i));
     };
 
@@ -6394,6 +6395,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
     };
 
     function plotData(layerIndex) {
+        //console.log("Plot data!");
         var data = generateLayeredData();
 
         if (isDataLayer(layerIndex)) {
@@ -6406,6 +6408,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
     }
 
     function generateLayeredData() {
+        //console.log("gen layered data"); 
         var data = {};
         var groupAll = _chart.data();
         for (var i = 0; i < groupAll.length; ++i) {
@@ -6477,7 +6480,11 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
             });
 
         dc.transition(paths, _chart.transitionDuration()).attr('fill', function (d, i) {
-            return _chart.getColor(data[geoJson(layerIndex).keyAccessor(d)], i);
+          return _chart.getColor(data[geoJson(layerIndex).keyAccessor(d)], i);
+          //debugger;
+          //var color = _chart.getColor(data[geoJson(layerIndex).keyAccessor(d)], i);
+          //console.log(color);
+          //return color;
         });
     }
 
