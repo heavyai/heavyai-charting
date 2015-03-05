@@ -3534,7 +3534,10 @@ dc.bubbleMixin = function (_chart) {
 
     _chart.data(function (group) {
         //return group.all();
-        return group.top(Infinity);
+        var data = group.top(Infinity);
+        console.log(data);
+        return data;
+        //return group.top(Infinity);
     });
 
     var _r = d3.scale.linear().domain([0, 100]);
@@ -3590,6 +3593,8 @@ dc.bubbleMixin = function (_chart) {
     _chart.bubbleR = function (d) {
         var value = _chart.radiusValueAccessor()(d);
         var r = _chart.r()(value);
+        console.log("val: " + value);
+        console.log("r: " + r);
         if (isNaN(r) || value <= 0) {
             r = 0;
         }
@@ -5623,14 +5628,17 @@ dc.bubbleChart = function (parent, chartGroup) {
     };
 
     _chart.plotData = function () {
+        //console.log("plot data");
         if (_elasticRadius) {
+            //console.log("elastic");
             _chart.r().domain([_chart.rMin(), _chart.rMax()]);
         }
-
+        //console.log([_chart.MIN_RADIUS, _chart.xAxisLength() * _chart.maxBubbleRelativeSize()]);
         _chart.r().range([_chart.MIN_RADIUS, _chart.xAxisLength() * _chart.maxBubbleRelativeSize()]);
 
         var bubbleG = _chart.chartBodyG().selectAll('g.' + _chart.BUBBLE_NODE_CLASS)
             .data(_chart.data(), function (d) { return d.key; });
+
 
         renderNodes(bubbleG);
 
