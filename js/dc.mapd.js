@@ -3535,7 +3535,6 @@ dc.bubbleMixin = function (_chart) {
     _chart.data(function (group) {
         //return group.all();
         var data = group.top(Infinity);
-        console.log(data);
         return data;
         //return group.top(Infinity);
     });
@@ -3593,8 +3592,6 @@ dc.bubbleMixin = function (_chart) {
     _chart.bubbleR = function (d) {
         var value = _chart.radiusValueAccessor()(d);
         var r = _chart.r()(value);
-        console.log("val: " + value);
-        console.log("r: " + r);
         if (isNaN(r) || value <= 0) {
             r = 0;
         }
@@ -5639,7 +5636,6 @@ dc.bubbleChart = function (parent, chartGroup) {
         var bubbleG = _chart.chartBodyG().selectAll('g.' + _chart.BUBBLE_NODE_CLASS)
             .data(_chart.data(), function (d) { return d.key; });
 
-
         renderNodes(bubbleG);
 
         updateNodes(bubbleG);
@@ -5678,7 +5674,7 @@ dc.bubbleChart = function (parent, chartGroup) {
     function updateNodes(bubbleG) {
         dc.transition(bubbleG, _chart.transitionDuration())
             .attr('transform', bubbleLocator)
-            .selectAll('circle.' + _chart.BUBBLE_CLASS)
+            .select('circle.' + _chart.BUBBLE_CLASS)
             .attr('fill', _chart.getColor)
             .attr('r', function (d) {
                 return _chart.bubbleR(d);
