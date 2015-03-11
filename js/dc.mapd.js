@@ -1779,7 +1779,7 @@ Charts.
 
 **/
 dc.marginMixin = function (_chart) {
-    var _margin = {top: 10, right: 50, bottom: 30, left: 30};
+    var _margin = {top: 10, right: 50, bottom: 40, left: 60};
 
     /**
     #### .margins([margins])
