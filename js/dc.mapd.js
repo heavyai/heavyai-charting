@@ -2799,12 +2799,12 @@ dc.coordinateGridMixin = function (_chart) {
         return _chart._xAxisY() - _chart.margins().top;
     }
 
+
     _chart.renderBrush = function (g) {
         if (_brushOn) {
             _brush.on('brush', _chart._brushing);
             _brush.on('brushstart', _chart._disableMouseZoom);
             _brush.on('brushend', configureMouseZoom);
-
             var gBrush = g.append('g')
                 .attr('class', 'brush')
                 .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')')
