@@ -51,7 +51,7 @@ var dc = {
         NODE_INDEX_NAME: '__index__',
         GROUP_INDEX_NAME: '__group_index__',
         DEFAULT_CHART_GROUP: '__default_chart_group__',
-        EVENT_DELAY: 40,
+        EVENT_DELAY: 0,
         NEGLIGIBLE_NUMBER: 1e-10
     },
     _renderlet: null
@@ -695,7 +695,8 @@ dc.baseMixin = function (_chart) {
     };
     var _renderTitle = true;
 
-    var _transitionDuration = 750;
+    //var _transitionDuration = 750;
+    var _transitionDuration = 10;
 
     var _filterPrinter = dc.printers.filters;
 
@@ -6671,7 +6672,8 @@ dc.bubbleOverlay = function (root, chartGroup) {
     var _g;
     var _points = [];
 
-    _chart.transitionDuration(750);
+    //_chart.transitionDuration(750);
+    _chart.transitionDuration(0);
 
     _chart.radiusValueAccessor(function (d) {
         return d.value;
