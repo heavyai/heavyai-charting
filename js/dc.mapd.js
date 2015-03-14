@@ -721,7 +721,7 @@ dc.baseMixin = function (_chart) {
         if (filters.length === 0) {
             dimension.filter(null);
         } else {
-            dimension.filterDisjunct(filters);
+            dimension.filterDisjunct(filters, _chart.rangeFocused());
           }
           /*
            * REMOVED * 
@@ -1359,6 +1359,9 @@ dc.baseMixin = function (_chart) {
     };
 
     function applyFilters() {
+        //console.log("apply filters")
+        //console.log("height: " + _chart.height());
+        //console.log("range focused: " + _chart.rangeFocused());
         if (_chart.dimension() && _chart.dimension().filter) {
             var fs = _filterHandler(_chart.dimension(), _filters);
             _filters = fs ? fs : _filters;
@@ -1366,6 +1369,7 @@ dc.baseMixin = function (_chart) {
     }
 
     _chart.replaceFilter = function (_) {
+        //console.log("replace filter")
         _filters = [];
         _chart.filter(_);
     };
@@ -2039,6 +2043,7 @@ dc.coordinateGridMixin = function (_chart) {
     var _renderVerticalGridLine = false;
 
     var _refocused = false;
+    var _rangeFocused = false;
     var _unitCount;
 
     var _zoomScale = [1, Infinity];
@@ -3031,6 +3036,8 @@ dc.coordinateGridMixin = function (_chart) {
 
     **/
     _chart.focus = function (range) {
+        //console.log("focus");
+        //console.log(range);
         if (hasRangeSelected(range)) {
             _chart.x().domain(range);
         } else {
@@ -3038,11 +3045,19 @@ dc.coordinateGridMixin = function (_chart) {
         }
 
         _zoom.x(_chart.x());
+        //console.log("before zoom handler");
         zoomHandler();
     };
 
     _chart.refocused = function () {
         return _refocused;
+    };
+
+    _chart.rangeFocused = function (_) {
+        if (!arguments.length) {
+            return _rangeFocused;
+        }
+        _rangeFocused = _;
     };
 
     _chart.focusChart = function (c) {
@@ -3051,6 +3066,7 @@ dc.coordinateGridMixin = function (_chart) {
         }
         _focusChart = c;
         _chart.on('filtered', function (chart) {
+            _focusChart.rangeFocused(true);
             if (!chart.filter()) {
                 dc.events.trigger(function () {
                     _focusChart.x().domain(_focusChart.xOriginalDomain());
@@ -3060,6 +3076,7 @@ dc.coordinateGridMixin = function (_chart) {
                     _focusChart.focus(chart.filter());
                 });
             }
+            _focusChart.rangeFocused(false);
         });
         return _chart;
     };
