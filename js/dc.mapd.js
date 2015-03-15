@@ -167,7 +167,6 @@ Re-render all charts belong to the given chart group. If the chart group is not 
 charts that belong to the default chart group will be re-rendered.
 **/
 dc.renderAll = function (group) {
-    console.log("render all");
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
         charts[i].render();
@@ -186,7 +185,6 @@ when redrawing dc tries to update the graphic incrementally, using transitions, 
 from scratch.
 **/
 dc.redrawAll = function (group) {
-    console.log("redraw all");
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
         charts[i].redraw();
@@ -918,7 +916,6 @@ dc.baseMixin = function (_chart) {
 
     **/
     _chart.filterAll = function () {
-      console.log("filter all");
         return _chart.filter(null);
     };
 
@@ -1366,15 +1363,11 @@ dc.baseMixin = function (_chart) {
         //console.log("apply filters")
         //console.log("height: " + _chart.height());
         //console.log("range focused: " + _chart.rangeFocused());
-        console.log("Filter before");
-        console.log(_filters);
 
         if (_chart.dimension() && _chart.dimension().filter) {
             var fs = _filterHandler(_chart.dimension(), _filters);
             _filters = fs ? fs : _filters;
         }
-        console.log("Filter after");
-        console.log(_filters);
     }
 
     _chart.replaceFilter = function (_) {
