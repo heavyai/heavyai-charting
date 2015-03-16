@@ -722,7 +722,12 @@ dc.baseMixin = function (_chart) {
         if (filters.length === 0) {
             dimension.filter(null);
         } else {
-            dimension.filterDisjunct(filters, _chart.rangeFocused());
+            if (_chart.hasOwnProperty('rangeFocused')) {
+              dimension.filterDisjunct(filters, _chart.rangeFocused());
+            }
+            else {
+              dimension.filterDisjunct(filters);
+            }
           }
           /*
            * REMOVED * 
