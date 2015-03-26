@@ -141,6 +141,7 @@ Clear all filters on all charts within the given chart group. If the chart group
 only charts that belong to the default chart group will be reset.
 **/
 dc.filterAll = function (group) {
+    console.log("filter all");
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
         charts[i].filterAll();
@@ -717,7 +718,7 @@ dc.baseMixin = function (_chart) {
 
     var _filters = [];
     var _filterHandler = function (dimension, filters) {
-        dimension.filter(null);
+        //dimension.filter(null);
 
         if (filters.length === 0) {
             dimension.filter(null);
@@ -921,6 +922,7 @@ dc.baseMixin = function (_chart) {
 
     **/
     _chart.filterAll = function () {
+        console.log("filtering");
         return _chart.filter(null);
     };
 
@@ -6352,6 +6354,19 @@ dc.seriesChart = function (parent, chartGroup) {
 
     return _chart;
 };
+
+/*
+dc.pointMapChart = function(parent, ChartGroup) {
+  var _chart = dc.baseMixin({});
+
+  _chart.doRender = function() {
+
+  }
+}
+*/
+
+
+
 
 /**
 ## Geo Choropleth Chart
