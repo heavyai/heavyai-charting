@@ -721,6 +721,7 @@ dc.baseMixin = function (_chart) {
 
         if (filters.length === 0) {
             dimension.filter(null);
+            $(dimension).trigger("filter-clear"); // this is hacky - we need to get dimension.filter to use dimension as this 
         } else {
             if (_chart.hasOwnProperty('rangeFocused')) {
               dimension.filterDisjunct(filters, _chart.rangeFocused());
@@ -921,6 +922,7 @@ dc.baseMixin = function (_chart) {
 
     **/
     _chart.filterAll = function () {
+        console.log("from dc filter all");
         return _chart.filter(null);
     };
 
