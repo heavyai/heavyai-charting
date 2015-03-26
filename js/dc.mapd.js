@@ -141,7 +141,6 @@ Clear all filters on all charts within the given chart group. If the chart group
 only charts that belong to the default chart group will be reset.
 **/
 dc.filterAll = function (group) {
-    console.log("filter all");
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
         charts[i].filterAll();
@@ -922,7 +921,6 @@ dc.baseMixin = function (_chart) {
 
     **/
     _chart.filterAll = function () {
-        console.log("filtering");
         return _chart.filter(null);
     };
 
