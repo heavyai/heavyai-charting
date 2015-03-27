@@ -716,11 +716,11 @@ dc.baseMixin = function (_chart) {
     var _legend;
 
     var _filters = [];
+    var _softFilterClear = false;
     var _filterHandler = function (dimension, filters) {
         //dimension.filter(null);
-
         if (filters.length === 0) {
-            dimension.filter(null);
+            dimension.filterAll(_softFilterClear);
             $(dimension).trigger("filter-clear"); // this is hacky - we need to get dimension.filter to use dimension as this 
         } else {
             if (_chart.hasOwnProperty('rangeFocused')) {
@@ -922,8 +922,13 @@ dc.baseMixin = function (_chart) {
 
     **/
     _chart.filterAll = function (softFilterClear) {
-        console.log("from dc filter all");
-        console.log(softFilterClear);
+
+        if (softFilterClear != undefined && softFilterClear == true) {
+          _softFilterClear = true;
+        }
+        else {
+          _softFilterClear = false; 
+        }
         return _chart.filter(null);
     };
 
