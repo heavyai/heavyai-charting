@@ -921,8 +921,9 @@ dc.baseMixin = function (_chart) {
     Clear all filters associated with this chart.
 
     **/
-    _chart.filterAll = function () {
+    _chart.filterAll = function (softFilterClear) {
         console.log("from dc filter all");
+        console.log(softFilterClear);
         return _chart.filter(null);
     };
 
