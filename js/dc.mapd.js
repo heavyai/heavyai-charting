@@ -6458,6 +6458,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         var data = {};
         var groupAll = _chart.data();
         for (var i = 0; i < groupAll.length; ++i) {
+            console.log(_chart.valueAccessor()(groupAll[i]));
             data[_chart.keyAccessor()(groupAll[i])] = _chart.valueAccessor()(groupAll[i]);
         }
         return data;
