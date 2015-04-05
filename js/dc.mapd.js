@@ -1932,6 +1932,7 @@ dc.colorMixin = function (_chart) {
 
     **/
     _chart.colorDomain = function (_) {
+        console.log("color domain");
         if (!arguments.length) {
             return _colors.domain();
         }
@@ -1946,6 +1947,7 @@ dc.colorMixin = function (_chart) {
 
     **/
     _chart.calculateColorDomain = function () {
+        console.log("calculated");
         var newDomain = [d3.min(_chart.data(), _chart.colorAccessor()),
                          d3.max(_chart.data(), _chart.colorAccessor())];
         _colors.domain(newDomain);
@@ -1958,6 +1960,13 @@ dc.colorMixin = function (_chart) {
 
     **/
     _chart.getColor = function (d, i) {
+        //console.log(i);
+        //console.log(d);
+        //var a = _colorAccessor.call(this, d, i);
+        //console.log(a);
+        //var b = _colors(a);
+        //console.log(b);
+        //return b;
         return _colors(_colorAccessor.call(this, d, i));
     };
 
@@ -6458,7 +6467,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         var data = {};
         var groupAll = _chart.data();
         for (var i = 0; i < groupAll.length; ++i) {
-            console.log(_chart.valueAccessor()(groupAll[i]));
+            //console.log(_chart.valueAccessor()(groupAll[i]));
             data[_chart.keyAccessor()(groupAll[i])] = _chart.valueAccessor()(groupAll[i]);
         }
         return data;
