@@ -1932,7 +1932,6 @@ dc.colorMixin = function (_chart) {
 
     **/
     _chart.colorDomain = function (_) {
-        console.log("color domain");
         if (!arguments.length) {
             return _colors.domain();
         }
