@@ -719,6 +719,10 @@ dc.baseMixin = function (_chart) {
     var _softFilterClear = false;
     var _filterHandler = function (dimension, filters) {
         //dimension.filter(null);
+        if (dimension.type == 'crossfilter') { // bail out if we are at crossfilter level - i.e. for data count
+          return filters;
+        }
+
         if (filters.length === 0) {
             dimension.filterAll(_softFilterClear);
             $(dimension).trigger("filter-clear"); // this is hacky - we need to get dimension.filter to use dimension as this 
