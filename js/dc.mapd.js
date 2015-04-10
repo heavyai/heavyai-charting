@@ -4011,17 +4011,17 @@ dc.pieChart = function (parent, chartGroup) {
         slices.exit().remove();
     }
 
-    function accentSlice(sliceLabel) {
+    function accentSlice(label) {
       _chart.selectAll('g.' + _sliceCssClass).each(function (d) {
-        if (_chart.cappedKeyAccessor(d.data) == sliceLabel) {
+        if (_chart.cappedKeyAccessor(d.data) == label) {
           _chart.accentSelected(this);
         }
       });
     }
 
-    function unAccentSlice(sliceLabel) {
+    function unAccentSlice(label) {
       _chart.selectAll('g.' + _sliceCssClass).each(function (d) {
-        if (_chart.cappedKeyAccessor(d.data) == sliceLabel) {
+        if (_chart.cappedKeyAccessor(d.data) == label) {
           _chart.unAccentSelected(this);
         }
       });
@@ -6954,6 +6954,8 @@ dc.rowChart = function (parent, chartGroup) {
     var _rowData;
 
     _chart.rowsCap = _chart.cap;
+    _chart.accent = accentRow;
+    _chart.unAccent = unAccentRow;
 
     function calculateAxisScale() {
         if (!_x || _elasticX) {
@@ -7286,6 +7288,22 @@ dc.rowChart = function (parent, chartGroup) {
         _titleLabelOffsetX = o;
         return _chart;
     };
+
+    function accentRow(label) {
+      _chart.selectAll('g.' + _rowCssClass).each(function (d) {
+        if (_chart.cappedKeyAccessor(d) == label) {
+          _chart.accentSelected(this);
+        }
+      });
+    }
+
+    function unAccentRow(label) {
+      _chart.selectAll('g.' + _rowCssClass).each(function (d) {
+        if (_chart.cappedKeyAccessor(d) == label) {
+          _chart.unAccentSelected(this);
+        }
+      });
+    }
 
     function isSelectedRow (d) {
         return _chart.hasFilter(_chart.cappedKeyAccessor(d));
