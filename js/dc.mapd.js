@@ -6474,6 +6474,9 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         return d || 0;
     });
 
+    _chart.accent = accentPoly;
+    _chart.unAccent = unAccentPoly;
+
     var _geoPath = d3.geo.path();
     var _projectionFlag;
 
@@ -6556,13 +6559,24 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
     function layerSelector(layerIndex) {
         return 'g.layer' + layerIndex + ' g.' + geoJson(layerIndex).name;
     }
-    /*  
-    function accentPoly(label) {
-      var layerNameClass = geoJson(layerIndex).name;
 
-      _chart.selectAll('g.' + layerNameClass).each(function (d) {
-        if (getKey(la
-        */
+    function accentPoly(label) {
+      var layerNameClass = geoJson(0).name; // hack for now as we only allow one layer currently
+    _chart.selectAll('g.' + layerNameClass).each(function (d) {
+        if (getKey(0,d) == label) {
+          _chart.accentSelected(this);
+        }
+      });
+    }
+
+    function unAccentPoly(label) {
+      var layerNameClass = geoJson(0).name; // hack for now as we only allow one layer currently
+    _chart.selectAll('g.' + layerNameClass).each(function (d) {
+        if (getKey(0,d) == label) {
+          _chart.unAccentSelected(this);
+        }
+      });
+    }
 
     function isSelected(layerIndex, d) {
         return _chart.hasFilter() && _chart.hasFilter(getKey(layerIndex, d));

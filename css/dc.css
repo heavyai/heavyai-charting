@@ -262,10 +262,10 @@ art {
     pointer-events: none;
 }
 
-.dc-chart path.accented {
+.dc-chart .accented path {
+    fill-opacity: .8;
     stroke-width: 3;
-    fill-opacity: 1;
-    stroke-opacity: 1;
+    stroke: rgb(188,71,71) !important;
 }
 
 .dc-chart .highlight {
