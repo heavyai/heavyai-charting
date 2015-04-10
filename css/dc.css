@@ -67,6 +67,10 @@ art {
     stroke: rgb(188,71,71);
 }
 
+.dc-chart thead {
+    position: absolute;
+    top: 32px;
+}
 
 
 
