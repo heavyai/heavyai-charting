@@ -3585,6 +3585,8 @@ dc.bubbleMixin = function (_chart) {
     _chart.BUBBLE_CLASS = 'bubble';
     _chart.MIN_RADIUS = 10;
 
+    _chart.accent = accentBubble;
+    _chart.unAccent = unAccentBubble;
     _chart = dc.colorMixin(_chart);
 
     _chart.renderLabel(true);
@@ -3766,6 +3768,22 @@ dc.bubbleMixin = function (_chart) {
             _chart.redrawGroup();
         });
     };
+
+    function accentBubble(label) {
+      _chart.selectAll('g.' + _chart.BUBBLE_NODE_CLASS).each(function (d) {
+        if (d.key == label) { 
+          _chart.accentSelected(this);
+        }
+      });
+    }
+
+    function unAccentBubble(label) {
+      _chart.selectAll('g.' + _chart.BUBBLE_NODE_CLASS).each(function (d) {
+        if (d.key == label) { 
+          _chart.unAccentSelected(this);
+        }
+      });
+    }
 
     return _chart;
 };
