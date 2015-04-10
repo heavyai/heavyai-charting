@@ -51,8 +51,9 @@ art {
 
 .dc-chart .pie-slice.accented {
     fill-opacity: .8;
-    stroke-width: 2;
-    stroke: rgb(188,71,71);
+    stroke-width: 4;
+    stroke: white;
+    //stroke: rgb(188,71,71);
 }
 
 .dc-chart .selected path {
@@ -226,8 +227,9 @@ art {
 
 .dc-chart g.row.accented rect {
     fill-opacity: 0.6;
-    stroke-width: 2;
-    stroke: rgb(188,71,71);
+    stroke-width: 4;
+    //stroke: rgb(188,71,71);
+    stroke: white;
 }
 
 .dc-chart g.row text {

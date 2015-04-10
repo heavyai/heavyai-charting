@@ -6538,6 +6538,13 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
     function layerSelector(layerIndex) {
         return 'g.layer' + layerIndex + ' g.' + geoJson(layerIndex).name;
     }
+    /*  
+    function accentPoly(label) {
+      var layerNameClass = geoJson(layerIndex).name;
+
+      _chart.selectAll('g.' + layerNameClass).each(function (d) {
+        if (getKey(la
+        */
 
     function isSelected(layerIndex, d) {
         return _chart.hasFilter() && _chart.hasFilter(getKey(layerIndex, d));
