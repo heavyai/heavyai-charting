@@ -4845,7 +4845,7 @@ dc.lineChart = function (parent, chartGroup) {
       var position = (value.getTime() - chartDomain[0].getTime()) / (chartDomain[1].getTime() - chartDomain[0].getTime());
       var chartWidth = _chart.width() - _chart.margins().left - _chart.margins().right;
       var xPixel = Math.floor(chartWidth * position) + _chart.margins().left;
-      //var xPixel = Math.floor(chartWidth * position);
+      var xPixel = Math.floor(chartWidth * position);
       console.log(position);
       console.log("X: " + xPixel);
       this.svg()
@@ -5281,7 +5281,10 @@ dc.dataTable = function (parent, chartGroup) {
 
         if (!bAllFunctions) {
             _chart.selectAll('th').remove();
-            var headcols = _chart.root().selectAll('th')
+            _chart.selectAll('thead').remove();
+            var header = _chart.root().append('thead');
+
+            var headcols = header.selectAll('th')
                 .data(_columns);
 
             var headGroup = headcols
