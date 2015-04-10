@@ -773,7 +773,8 @@ dc.baseMixin = function (_chart) {
         return _chart;
     };
 
-    _chart.highlight = function () {}; //no-op
+    _chart.accent = function () {}; //no-op
+    _chart.unAccent = function () {}; //no-op
 
     /**
     #### .height([value])
@@ -3842,6 +3843,7 @@ dc.pieChart = function (parent, chartGroup) {
     _chart.transitionDuration(350);
     _chart.redoSelect = highlightFilter; 
     _chart.accent = accentSlice; 
+    _chart.unAccent = unAccentSlice; 
 
     _chart._doRender = function () {
         _chart.resetSvg();
@@ -4013,6 +4015,14 @@ dc.pieChart = function (parent, chartGroup) {
       _chart.selectAll('g.' + _sliceCssClass).each(function (d) {
         if (_chart.cappedKeyAccessor(d.data) == sliceLabel) {
           _chart.accentSelected(this);
+        }
+      });
+    }
+
+    function unAccentSlice(sliceLabel) {
+      _chart.selectAll('g.' + _sliceCssClass).each(function (d) {
+        if (_chart.cappedKeyAccessor(d.data) == sliceLabel) {
+          _chart.unAccentSelected(this);
         }
       });
     }

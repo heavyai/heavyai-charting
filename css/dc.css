@@ -50,8 +50,9 @@ art {
 }
 
 .dc-chart .pie-slice.accented {
+    fill-opacity: .8;
     stroke-width: 2;
-    stroke: red;
+    stroke: rgb(188,71,71);
 }
 
 .dc-chart .selected path {
