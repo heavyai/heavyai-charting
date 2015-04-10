@@ -7,6 +7,11 @@ art {
     cursor: pointer;
 }
 
+.dc-chart rect.bar.accented {  
+    fill: rgb(188,71,71);
+
+}
+
 .dc-chart rect.bar:hover {
     fill-opacity: .5;
 }

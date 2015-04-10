@@ -4312,6 +4312,7 @@ dc.barChart = function (parent, chartGroup) {
     var _gap = DEFAULT_GAP_BETWEEN_BARS;
     var _centerBar = false;
     var _alwaysUseRounding = false;
+    var _numBars;
 
     var _barWidth;
 
@@ -4357,8 +4358,10 @@ dc.barChart = function (parent, chartGroup) {
     }
 
     function renderBars(layer, layerIndex, d) {
+        _numBars = d.values.length;
         var bars = layer.selectAll('rect.bar')
             .data(d.values, dc.pluck('x'));
+
 
         var enter = bars.enter()
             .append('rect')
@@ -4470,11 +4473,23 @@ dc.barChart = function (parent, chartGroup) {
     };
 
     function accentBar (value) {
-      console.log(value);
-    };
+      var chartDomain = _chart.x().domain();
+      var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
+
+      //console.log(value);
+      //console.log(barNum);
+      _chart.accentSelected($("rect.bar", this.chart).get(barNum));
+
+      //$($("rect.bar", this.chart).get(barNum)).addClass("accented");
+    }
 
     function unAccentBar (value) {
-      console.log(value);
+      var chartDomain = _chart.x().domain();
+      var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
+
+      //console.log(value);
+      //console.log(barNum);
+      _chart.unAccentSelected($("rect.bar", this.chart).get(barNum));
     };
 
     function onClick(d) {
