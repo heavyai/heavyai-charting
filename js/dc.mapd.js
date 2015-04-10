@@ -4315,6 +4315,9 @@ dc.barChart = function (parent, chartGroup) {
 
     var _barWidth;
 
+    _chart.accent = accentBar;
+    _chart.unAccent = unAccentBar;
+
     dc.override(_chart, 'rescale', function () {
         _chart._rescale();
         _barWidth = undefined;
@@ -4466,9 +4469,17 @@ dc.barChart = function (parent, chartGroup) {
         return _chart;
     };
 
+    function accentBar (value) {
+      console.log(value);
+    };
+
+    function unAccentBar (value) {
+      console.log(value);
+    };
+
     function onClick(d) {
         _chart.onClick(d.data);
-    }
+    };
 
     /**
     #### .barPadding([padding])
