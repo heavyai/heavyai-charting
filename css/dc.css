@@ -31,6 +31,7 @@ art {
     fill: #ccc;
 }
 
+
 .dc-chart .empty-chart .pie-slice path {
     fill: #FFEEEE;
     cursor: default;
@@ -60,6 +61,14 @@ art {
     //stroke: white;
     stroke: rgb(188,71,71);
 }
+
+.dc-chart line.accented {
+    stroke-width: 2;
+    stroke: rgb(188,71,71);
+}
+
+
+
 
 .dc-chart .selected path {
     stroke-width: 3;
