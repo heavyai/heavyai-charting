@@ -4845,9 +4845,7 @@ dc.lineChart = function (parent, chartGroup) {
       var position = (value.getTime() - chartDomain[0].getTime()) / (chartDomain[1].getTime() - chartDomain[0].getTime());
       var chartWidth = _chart.width() - _chart.margins().left - _chart.margins().right;
       var xPixel = Math.floor(chartWidth * position) + _chart.margins().left;
-      var xPixel = Math.floor(chartWidth * position);
-      console.log(position);
-      console.log("X: " + xPixel);
+      //var xPixel = Math.floor(chartWidth * position);
       this.svg()
         .append("line")
         .attr("class","accented")
