@@ -2384,6 +2384,7 @@ dc.coordinateGridMixin = function (_chart) {
     };
 
     function prepareXAxis(g) {
+       console.log("preparing x axis"); 
         if (!_chart.isOrdinal()) {
             if (_chart.elasticX()) {
                 _x.domain([_chart.xAxisMin(), _chart.xAxisMax()]);
