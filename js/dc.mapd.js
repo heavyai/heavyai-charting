@@ -5223,13 +5223,22 @@ dc.dataTable = function (parent, chartGroup) {
     };
 
     _chart._doColumnValueFormat = function (v, d) {
-        return ((typeof v === 'function') ?
-                v(d) :                          // v as function
-                ((typeof v === 'string') ?
-                 d[v] :                         // v is field name string
-                 v.format(d)                        // v is Object, use fn (element 2)
-                )
-               );
+
+      if (typeof v === 'string') {
+        if (Object.prototype.toString.call(d[v]) === '[object Date]') {
+          return moment.utc(d[v]).format('ddd, MMM D YYYY, h:mm:ss a');
+          //return d[v].toUTCString().slice(0, -4);
+        }
+        else {
+          return d[v];
+        }
+      }
+      else if (typeof v === 'function') {
+        return v(d);
+      }
+      else { // object - use fn (element 2)
+        return v.format(d); 
+      }
     };
 
     _chart._doColumnHeaderFormat = function (d) {
@@ -5341,7 +5350,14 @@ dc.dataTable = function (parent, chartGroup) {
         var rows = groups.order()
             .selectAll('tr.' + ROW_CSS_CLASS)
             .data(function (d) {
-                return d.values;
+              /*
+              var dataRows = d.values;
+              var numRows = dataRows.length;
+              for (var r = 0; r < numRows; r++) {
+                console.log(rows[r]);
+              }
+              */
+              return d.values;
             });
 
         var rowEnter = rows.enter()
