@@ -5227,6 +5227,13 @@ dc.dataTable = function (parent, chartGroup) {
 
       if (typeof v === 'string') {
         if (Object.prototype.toString.call(d[v]) === '[object Date]') {
+          // below we check to see if time falls evenly on a date - if so don't
+          // ouput hours minutes and seconds
+          // Might be better to do this by the type of the variable
+          var epoch = d[v].getTime() * 0.001; 
+          if (epoch % 86400 == 0) { 
+            return moment.utc(d[v]).format('ddd, MMM D YYYY');
+          }
           return moment.utc(d[v]).format('ddd, MMM D YYYY, h:mm:ss a');
           //return d[v].toUTCString().slice(0, -4);
         }
