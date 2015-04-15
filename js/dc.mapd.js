@@ -2384,7 +2384,6 @@ dc.coordinateGridMixin = function (_chart) {
     };
 
     function prepareXAxis(g) {
-       console.log("preparing x axis"); 
         if (!_chart.isOrdinal()) {
             if (_chart.elasticX()) {
                 _x.domain([_chart.xAxisMin(), _chart.xAxisMax()]);
@@ -3077,8 +3076,6 @@ dc.coordinateGridMixin = function (_chart) {
 
     **/
     _chart.focus = function (range) {
-        //console.log("focus");
-        //console.log(range);
         if (hasRangeSelected(range)) {
             _chart.x().domain(range);
         } else {
@@ -3086,7 +3083,6 @@ dc.coordinateGridMixin = function (_chart) {
         }
 
         _zoom.x(_chart.x());
-        //console.log("before zoom handler");
         zoomHandler();
     };
 
@@ -4477,8 +4473,6 @@ dc.barChart = function (parent, chartGroup) {
       var chartDomain = _chart.x().domain();
       var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
 
-      //console.log(value);
-      //console.log(barNum);
       _chart.accentSelected($("rect.bar", this.chart).get(barNum));
 
       //$($("rect.bar", this.chart).get(barNum)).addClass("accented");
@@ -4488,8 +4482,6 @@ dc.barChart = function (parent, chartGroup) {
       var chartDomain = _chart.x().domain();
       var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
 
-      //console.log(value);
-      //console.log(barNum);
       _chart.unAccentSelected($("rect.bar", this.chart).get(barNum));
     };
 
@@ -4858,7 +4850,6 @@ dc.lineChart = function (parent, chartGroup) {
 
     function unAccentLine (value) {
       $("line.accented", this.chart).remove();
-      //console.log(value);
     }
 
 
@@ -5795,7 +5786,6 @@ dc.bubbleChart = function (parent, chartGroup) {
     };
 
     _chart.plotData = function () {
-        //console.log("plot data");
         if (_elasticRadius) {
             //console.log("elastic");
             _chart.r().domain([_chart.rMin(), _chart.rMax()]);
