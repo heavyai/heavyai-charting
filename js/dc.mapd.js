@@ -5215,6 +5215,8 @@ dc.dataTable = function (parent, chartGroup) {
     };
 
     _chart._doColumnValueFormat = function (v, d) {
+      console.log(v);
+      console.log(d[v]);
 
       if (typeof v === 'string') {
         if (Object.prototype.toString.call(d[v]) === '[object Date]') {
@@ -5356,6 +5358,8 @@ dc.dataTable = function (parent, chartGroup) {
                 console.log(rows[r]);
               }
               */
+              //debugger;
+              console.log(d.values);
               return d.values;
             });
 
@@ -5367,7 +5371,9 @@ dc.dataTable = function (parent, chartGroup) {
             rowEnter.append('td')
                 .attr('class', COLUMN_CSS_CLASS + ' _' + i)
                 .html(function (d) {
-                    return _chart._doColumnValueFormat(v, d);
+                    //return _chart._doColumnValueFormat(v, d);
+                    var aliasedColumn = "col" + i;
+                    return _chart._doColumnValueFormat(aliasedColumn, d);
                 });
         });
 
