@@ -5201,10 +5201,44 @@ dc.dataTable = function (parent, chartGroup) {
 
     var _size = 25;
     var _columns = [];
+    var _filteredColumns = {};
     var _sortBy = function (d) {
         return d;
     };
     var _order = d3.ascending;
+
+    _chart.addFilteredColumn = function(columnName) {
+      _filteredColumns[columnName] = null;
+    }
+
+    _chart.removeFilteredColumn = function(columnName) {
+      delete _filteredColumns[columnName];
+    }
+
+    _chart.clearFilteredColumns = function() {
+      _filteredColumns = {};
+    }
+
+    _chart.getFilteredColumns = function() {
+      return _filteredColumns;
+    }
+
+    _chart.addFilterIcons = function(headGroup) {
+      for (var c = 0; c < _columns.length; c++) {
+        if (_columns[c] in _filteredColumns) {
+         $("th", headGroup).eq(c).append('<img class="column-filter-clear" id="table-column-filter-clear_' + c + '" src="img/clear_filters_dark_grey24.png" width="12" height="12"/>');
+         $("#table-column-filter-clear_" + c).click(function () {
+           console.log(this);
+           var columnId = $(this).attr('id').split('_')[1];
+           //debugger;
+           console.log(columnId);
+
+           _chart.removeFilteredColumn(_columns[columnId]);
+           _chart.redraw();
+          });
+        }
+      }
+    }
 
     _chart._doRender = function () {
         _chart.selectAll('tbody').remove();
@@ -5293,6 +5327,8 @@ dc.dataTable = function (parent, chartGroup) {
             var headcols = header.selectAll('th')
                 .data(_columns);
 
+            //for (var f = 0; f < 
+
             var headGroup = headcols
                 .enter()
                 .append('th');
@@ -5304,6 +5340,8 @@ dc.dataTable = function (parent, chartGroup) {
 
                     });
         }
+
+
 
         var groups = _chart.root().selectAll('tbody')
             .data(nestEntries(), function (d) {
@@ -5325,6 +5363,7 @@ dc.dataTable = function (parent, chartGroup) {
                 });
 
         groups.exit().remove();
+        _chart.addFilterIcons(headGroup);
 
         return rowGroup;
     }
@@ -5357,7 +5396,6 @@ dc.dataTable = function (parent, chartGroup) {
               }
               */
               //debugger;
-              console.log(d.values);
               return d.values;
             });
 
