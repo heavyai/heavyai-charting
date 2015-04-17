@@ -5226,15 +5226,16 @@ dc.dataTable = function (parent, chartGroup) {
     _chart.addFilterIcons = function(headGroup) {
       for (var c = 0; c < _columns.length; c++) {
         if (_columns[c] in _filteredColumns) {
-         $("th", headGroup).eq(c).append('<img class="column-filter-clear" id="table-column-filter-clear_' + c + '" src="img/clear_filters_dark_grey24.png" width="12" height="12"/>');
+
+         $("th", headGroup).eq(c).addClass('column-filtered').append('<img class="column-filter-clear" id="table-column-filter-clear_' + c + '" src="img/clear_filters_dark_grey24.png" width="12" height="12"/>');
          $("#table-column-filter-clear_" + c).click(function () {
            console.log(this);
            var columnId = $(this).attr('id').split('_')[1];
            //debugger;
            console.log(columnId);
-
            _chart.removeFilteredColumn(_columns[columnId]);
-           _chart.redraw();
+           $(_chart).trigger("column-filter-clear", [columnId]);
+           //_chart.redraw();
           });
         }
       }
