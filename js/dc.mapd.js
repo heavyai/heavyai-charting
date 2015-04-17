@@ -5215,8 +5215,6 @@ dc.dataTable = function (parent, chartGroup) {
     };
 
     _chart._doColumnValueFormat = function (v, d) {
-      console.log(v);
-      console.log(d[v]);
 
       if (typeof v === 'string') {
         if (Object.prototype.toString.call(d[v]) === '[object Date]') {
@@ -5373,6 +5371,7 @@ dc.dataTable = function (parent, chartGroup) {
                 .html(function (d) {
                     //return _chart._doColumnValueFormat(v, d);
                     var aliasedColumn = "col" + i;
+                    //return "<span>" + _chart._doColumnValueFormat(aliasedColumn, d) + "</span>";
                     return _chart._doColumnValueFormat(aliasedColumn, d);
                 });
         });
