@@ -5393,10 +5393,10 @@ dc.dataTable = function (parent, chartGroup) {
               var dataRows = d.values;
               var numRows = dataRows.length;
               for (var r = 0; r < numRows; r++) {
-                console.log(rows[r]);
+                console.log(dataRows[r]);
               }
-              */
               //debugger;
+              */
               return d.values;
             });
 
