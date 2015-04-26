@@ -3632,9 +3632,8 @@ dc.bubbleMixin = function (_chart) {
 
     _chart.data(function (group) {
         //return group.all();
-        var data = group.top(Infinity);
-        return data;
-        //return group.top(Infinity);
+        //var data = group.top(Infinity);
+        return group.top(_chart.cap() != undefined ? _chart.cap() : Infinity);
     });
 
     var _r = d3.scale.linear().domain([0, 100]);
@@ -6931,7 +6930,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
     var BUBBLE_NODE_CLASS = 'node';
     var BUBBLE_CLASS = 'bubble';
 
-    var _chart = dc.bubbleMixin(dc.baseMixin({}));
+    var _chart = dc.bubbleMixin(dc.capMixin(dc.baseMixin({})));
     var _g;
     var _points = [];
 
@@ -6975,8 +6974,17 @@ dc.bubbleOverlay = function (root, chartGroup) {
         return _g;
     }
 
+    function mapDataToPoints(data) {
+      var keys = data.length;
+      for (var key in data) {
+        _points.push({name: key, x: 107, y: 304}); 
+      }
+
+    }
+
     function initializeBubbles() {
         var data = mapData();
+        mapDataToPoints(data);
 
         _points.forEach(function (point) {
             var nodeG = getNodeG(point, data);
@@ -7004,6 +7012,8 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
     function mapData() {
         var data = {};
+        //debugger;
+        var d = _chart.data();
         _chart.data().forEach(function (datum) {
             data[_chart.keyAccessor()(datum)] = datum;
         });
@@ -7020,7 +7030,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
                 .attr('class', bubbleNodeClass)
                 .attr('transform', 'translate(' + point.x + ',' + point.y + ')');
         }
-
         nodeG.datum(data[point.name]);
 
         return nodeG;
@@ -7036,6 +7045,9 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
     function updateBubbles() {
         var data = mapData();
+        _points = [];
+        mapDataToPoints(data);
+
 
         _points.forEach(function (point) {
             var nodeG = getNodeG(point, data);
@@ -7044,6 +7056,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
             dc.transition(circle, _chart.transitionDuration())
                 .attr('r', function (d) {
+                    console.log(_chart.bubbleR(d));
                     return _chart.bubbleR(d);
                 })
                 .attr('fill', _chart.getColor);
