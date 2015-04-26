@@ -6933,6 +6933,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
     var _chart = dc.bubbleMixin(dc.capMixin(dc.baseMixin({})));
     var _g;
     var _points = [];
+    
 
     //_chart.transitionDuration(750);
     _chart.transitionDuration(0);
@@ -6942,6 +6943,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
     });
 
     _chart.bounds = null;
+    _chart.savedData = {};
 
     /**
     #### .point(name, x, y) - **mandatory**
@@ -6999,8 +7001,8 @@ dc.bubbleOverlay = function (root, chartGroup) {
       var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
       var numPoints = _points.length;
       for (var p = 0; p < numPoints; p++) {
-        _points[p].xPixel = (pixels[p].xCoord - _chart.bounds[0][0])*xPixelScale ;
-        _points[p].yPixel = _chart.height() - (pixels[p].yCoord - _chart.bounds[0][1])*yPixelScale ;
+        _points[p].x = (_points[p].xCoord - _chart.bounds[0][0])*xPixelScale ;
+        _points[p].y = _chart.height() - (_points[p].yCoord - _chart.bounds[0][1])*yPixelScale ;
       }
       updateBubbles();
     }
@@ -7036,11 +7038,11 @@ dc.bubbleOverlay = function (root, chartGroup) {
     }
 
     function mapData() {
-        var data = {};
+        _chart.savedData = {};
         _chart.data().forEach(function (datum) {
-            data[_chart.keyAccessor()(datum)] = datum;
+            _chart.savedData[_chart.keyAccessor()(datum)] = datum;
         });
-        return data;
+        return _chart.savedData;
     }
 
     function getNodeG(point, data) {
@@ -7053,6 +7055,10 @@ dc.bubbleOverlay = function (root, chartGroup) {
                 .attr('class', bubbleNodeClass)
                 .attr('transform', 'translate(' + point.x + ',' + point.y + ')');
         }
+        else {
+          nodeG.attr('transform', 'translate(' + point.x + ',' + point.y + ')');
+        }
+
         nodeG.datum(data[point.name]);
 
         return nodeG;
@@ -7073,7 +7079,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
         //var data = mapData();
         //_points = [];
         //mapDataToPoints(data);
-
+        var data = _chart.savedData;
 
         _points.forEach(function (point) {
             var nodeG = getNodeG(point, data);
@@ -7082,7 +7088,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
             dc.transition(circle, _chart.transitionDuration())
                 .attr('r', function (d) {
-                    console.log(_chart.bubbleR(d));
                     return _chart.bubbleR(d);
                 })
                 .attr('fill', _chart.getColor);
