@@ -6941,6 +6941,8 @@ dc.bubbleOverlay = function (root, chartGroup) {
         return d.value;
     });
 
+    _chart.bounds = null;
+
     /**
     #### .point(name, x, y) - **mandatory**
     Set up a data point on the overlay. The name of a data point should match a specific 'key' among
@@ -6955,6 +6957,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
     };
 
     _chart._doRender = function () {
+        console.log("render");
         _g = initOverlayG();
 
         _chart.r().range([_chart.MIN_RADIUS, _chart.width() * _chart.maxBubbleRelativeSize()]);
@@ -6975,15 +6978,37 @@ dc.bubbleOverlay = function (root, chartGroup) {
     }
 
     function mapDataToPoints(data) {
-      var keys = data.length;
-      for (var key in data) {
-        _points.push({name: key, x: 107, y: 304}); 
-      }
+      if (_chart.bounds == null)
+        return;
+      var xPixelScale = 1.0/(_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
+      var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
 
+      for (var key in data) {
+        var xPixel = (data[key].lon - _chart.bounds[0][0])*xPixelScale ;
+        var yPixel = _chart.height() - (data[key].lat - _chart.bounds[0][1])*yPixelScale ;
+        //console.log("x: " + xPixel + " y: " + yPixel);
+        _points.push({name: key, x: xPixel, y: yPixel, xCoord: data[key].lon, yCoord: data[key].lat}); 
+      }
+    }
+
+    _chart.remapPoints = function() {
+      if (_chart.bounds == null)
+        return;
+
+      var xPixelScale = 1.0/(_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
+      var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
+      var numPoints = _points.length;
+      for (var p = 0; p < numPoints; p++) {
+        _points[p].xPixel = (pixels[p].xCoord - _chart.bounds[0][0])*xPixelScale ;
+        _points[p].yPixel = _chart.height() - (pixels[p].yCoord - _chart.bounds[0][1])*yPixelScale ;
+      }
+      updateBubbles();
     }
 
     function initializeBubbles() {
+        _g.selectAll('g').remove();
         var data = mapData();
+        _points = [];
         mapDataToPoints(data);
 
         _points.forEach(function (point) {
@@ -7012,8 +7037,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
     function mapData() {
         var data = {};
-        //debugger;
-        var d = _chart.data();
         _chart.data().forEach(function (datum) {
             data[_chart.keyAccessor()(datum)] = datum;
         });
@@ -7036,7 +7059,9 @@ dc.bubbleOverlay = function (root, chartGroup) {
     }
 
     _chart._doRedraw = function () {
-        updateBubbles();
+        console.log("redraw");
+        //updateBubbles();
+        initializeBubbles();
 
         _chart.fadeDeselectedArea();
 
@@ -7044,9 +7069,10 @@ dc.bubbleOverlay = function (root, chartGroup) {
     };
 
     function updateBubbles() {
-        var data = mapData();
-        _points = [];
-        mapDataToPoints(data);
+        //_g.selectAll('g').remove();
+        //var data = mapData();
+        //_points = [];
+        //mapDataToPoints(data);
 
 
         _points.forEach(function (point) {
