@@ -6958,6 +6958,26 @@ dc.bubbleOverlay = function (root, chartGroup) {
         return _chart;
     };
 
+    function conv4326To900913 (coord) {
+      var transCoord = [0.0,0.0];
+      transCoord[0] = coord[0] * 111319.49077777777778; 
+      transCoord[1] = Math.log(Math.tan((90.0 + coord[1]) * 0.00872664625997)) * 6378136.99911215736947;
+      return transCoord;
+    }
+
+    _chart.setBounds = function(bounds) {
+      //need to convert to 900913 from 4326
+      _chart.bounds = [[0.0,0.0],[0.0,0.0]];
+      _chart.bounds[0] = conv4326To900913(bounds[0]);
+      _chart.bounds[1] = conv4326To900913(bounds[1]);
+      
+      //$(bounds).each(function() {
+        //this = conv4326To900913(this);
+        //this[0] *= 111319.49077777777778;
+        //this[1] = Math.log(Math.tan((90.0 + this[1]) * 0.00872664625997)) * 6378136.99911215736947;
+      //});
+    }
+
     _chart._doRender = function () {
         console.log("render");
         _g = initOverlayG();
@@ -6986,10 +7006,11 @@ dc.bubbleOverlay = function (root, chartGroup) {
       var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
 
       for (var key in data) {
-        var xPixel = (data[key].lon - _chart.bounds[0][0])*xPixelScale ;
-        var yPixel = _chart.height() - (data[key].lat - _chart.bounds[0][1])*yPixelScale ;
+        var coordTrans = conv4326To900913([data[key].lon,data[key].lat]);
+        var xPixel = (coordTrans[0] - _chart.bounds[0][0])*xPixelScale ;
+        var yPixel = _chart.height() - (coordTrans[1] - _chart.bounds[0][1])*yPixelScale ;
         //console.log("x: " + xPixel + " y: " + yPixel);
-        _points.push({name: key, x: xPixel, y: yPixel, xCoord: data[key].lon, yCoord: data[key].lat}); 
+        _points.push({name: key, x: xPixel, y: yPixel, xCoord: coordTrans[0], yCoord: coordTrans[1]}); 
       }
     }
 
