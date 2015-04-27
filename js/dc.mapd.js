@@ -5846,7 +5846,7 @@ var bubbleChart2 = dc.bubbleChart('#chart-container2', 'chartGroupA');
 
 **/
 dc.bubbleChart = function (parent, chartGroup) {
-    var _chart = dc.bubbleMixin(dc.coordinateGridMixin({}));
+    var _chart = dc.bubbleMixin(dc.capMixin(dc.coordinateGridMixin({})));
 
     var _elasticRadius = false;
 
@@ -6930,9 +6930,12 @@ dc.bubbleOverlay = function (root, chartGroup) {
     var BUBBLE_NODE_CLASS = 'node';
     var BUBBLE_CLASS = 'bubble';
 
+
     var _chart = dc.bubbleMixin(dc.capMixin(dc.baseMixin({})));
     var _g;
     var _points = [];
+
+    _chart.MIN_RADIUS = 1;
     
 
     //_chart.transitionDuration(750);
