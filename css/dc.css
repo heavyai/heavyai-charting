@@ -8,7 +8,8 @@ art {
 }
 
 .dc-chart rect.bar.accented {  
-    fill: rgb(188,71,71);
+    fill: #E637A8;
+    //fill: rgb(188,71,71);
 
 }
 
@@ -59,12 +60,14 @@ art {
     fill-opacity: .8;
     stroke-width: 3;
     //stroke: white;
-    stroke: rgb(188,71,71);
+    stroke: #E637A8;
+    //stroke: rgb(188,71,71);
 }
 
 .dc-chart line.accented {
     stroke-width: 2;
-    stroke: rgb(188,71,71);
+    stroke: #E637A8;
+    //stroke: rgb(188,71,71);
 }
 
 .dc-chart thead {
@@ -161,7 +164,8 @@ art {
 .dc-chart .accented circle {
     fill-opacity: .8;
     stroke-width: 3;
-    stroke: rgb(188,71,71);
+    stroke: #E637A8;
+    //stroke: rgb(188,71,71);
 }
 
 .dc-chart .selected circle {
@@ -252,7 +256,8 @@ art {
 .dc-chart g.row.accented rect {
     fill-opacity: 0.6;
     stroke-width: 3;
-    stroke: rgb(188,71,71);
+    stroke: #E637A8;
+    //stroke: rgb(188,71,71);
     //stroke: white;
 }
 
@@ -283,7 +288,8 @@ art {
 .dc-chart .accented path {
     fill-opacity: .8;
     stroke-width: 3;
-    stroke: rgb(188,71,71) !important;
+    stroke: #E637A8 !important;
+    //stroke: rgb(188,71,71) !important;
 }
 
 .dc-chart .highlight {
