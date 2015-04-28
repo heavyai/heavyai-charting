@@ -7120,7 +7120,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
     }
 
     _chart._doRedraw = function () {
-        console.log("redraw");
         //updateBubbles();
         initializeBubbles();
 
