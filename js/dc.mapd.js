@@ -715,6 +715,7 @@ dc.baseMixin = function (_chart) {
         'renderlet');
 
     var _legend;
+    _chart._colorLegend = null;
 
     var _filters = [];
     var _softFilterClear = false;
@@ -1152,8 +1153,14 @@ dc.baseMixin = function (_chart) {
         if (_legend) {
             _legend.render();
         }
+        if (_chart._colorLegend) {
+          _chart._colorLegend.render();
+        }
+
 
         _chart._activateRenderlets('postRender');
+
+
 
         return result;
     };
@@ -1192,6 +1199,9 @@ dc.baseMixin = function (_chart) {
 
         if (_legend) {
             _legend.render();
+        }
+        if (_chart._colorLegend) {
+          _chart._colorLegend.render();
         }
 
         _chart._activateRenderlets('postRedraw');
