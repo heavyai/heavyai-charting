@@ -6934,9 +6934,10 @@ dc.bubbleOverlay = function (root, chartGroup) {
     var _chart = dc.bubbleMixin(dc.capMixin(dc.baseMixin({})));
     var _g;
     var _points = [];
+    var _colorCountUpdateCallback = null;
 
     _chart.MIN_RADIUS = 1;
-    
+    _chart.colorCountDictionary = {};
 
     //_chart.transitionDuration(750);
     _chart.transitionDuration(0);
@@ -6947,6 +6948,14 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
     _chart.bounds = null;
     _chart.savedData = {};
+    _chart.onColorCountUpdate = function(f) {
+      if (!arguments.length) {
+          return _colorCountUpdateCallback;
+      }
+      _colorCountUpdateCallback = f;
+      return _chart;
+    }
+
 
     /**
     #### .point(name, x, y) - **mandatory**
@@ -7062,10 +7071,22 @@ dc.bubbleOverlay = function (root, chartGroup) {
     }
 
     function mapData() {
+        _chart.colorCountDictionary = {};
         _chart.savedData = {};
         _chart.data().forEach(function (datum) {
+            if (datum.color in _chart.colorCountDictionary) {
+              _chart.colorCountDictionary[datum.color]++;
+            }
+            else {
+              _chart.colorCountDictionary[datum.color] = 1;
+            }
             _chart.savedData[_chart.keyAccessor()(datum)] = datum;
+            
         });
+        if (_colorCountUpdateCallback != null) {
+          _colorCountUpdateCallback(_chart.colorCountDictionary);
+        }
+
         return _chart.savedData;
     }
 
@@ -7094,7 +7115,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
         initializeBubbles();
 
         _chart.fadeDeselectedArea();
-
         return _chart;
     };
 
