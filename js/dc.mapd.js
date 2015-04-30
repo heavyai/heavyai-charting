@@ -872,6 +872,15 @@ dc.baseMixin = function (_chart) {
         return _chart;
     };
 
+    _chart.dataAsync = function(d) {
+        if (!arguments.length) {
+            return _data.call(_chart, _group);
+        }
+        _data = d3.functor(d);
+        _chart.expireCache();
+        return _chart;
+    };
+
     /**
     #### .group([value, [name]]) - **mandatory**
     Set or get the group attribute of a chart. In dc a group is a [crossfilter
@@ -3545,6 +3554,8 @@ dc.capMixin = function (_chart) {
     };
 
     _chart.data(function (group) {
+        console.log("data func");
+        console.log(group);
         if (_cap === Infinity) {
             return _chart._computeOrderedGroups(group.all());
         } else {
