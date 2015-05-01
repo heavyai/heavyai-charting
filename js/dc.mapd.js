@@ -42,6 +42,7 @@ that are chainable d3 objects.)
 /*jshint -W079*/
 var dc = {
     version: '2.1.0-dev',
+    async: false,
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -871,7 +872,7 @@ dc.baseMixin = function (_chart) {
         _chart.expireCache();
         return _chart;
     };
-
+    /*
     _chart.dataAsync = function(d) {
         if (!arguments.length) {
             return _data.call(_chart, _group);
@@ -880,6 +881,7 @@ dc.baseMixin = function (_chart) {
         _chart.expireCache();
         return _chart;
     };
+    */
 
     /**
     #### .group([value, [name]]) - **mandatory**
@@ -3552,21 +3554,41 @@ dc.capMixin = function (_chart) {
         }
         return _chart.valueAccessor()(d, i);
     };
-
-    _chart.data(function (group) {
-        console.log("data func");
-        console.log(group);
-        if (_cap === Infinity) {
-            return _chart._computeOrderedGroups(group.all());
-        } else {
-            var topRows = group.top(_cap); // ordered by crossfilter group order (default value)
-            topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
-            if (_othersGrouper) {
-                return _othersGrouper(topRows);
-            }
-            return topRows;
+    if (!dc.async) {
+      _chart.data(function (group) {
+          if (_cap === Infinity) {
+              return _chart._computeOrderedGroups(group.all());
+          } else {
+              var topRows = group.top(_cap); // ordered by crossfilter group order (default value)
+              topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
+              if (_othersGrouper) {
+                  return _othersGrouper(topRows);
+              }
+              return topRows;
+          }
+      });
+    }
+    else {
+      _chart.data(function(group, callbacks) {
+          console.log("async");
+          if (_cap === Infinity) {
+            callbacks.push(_chart.computeOrderedGroups.bind(this));
+            //group.allAsync(callbacks);
+            return;
+          }
+          else {
+            callbacks.push(capCallback.bind(this));
+          }
+        });
+          
+      _chart.capCallback = function(data, callbacks) {
+        var topRows = _chart._computeOrderedGroups(dataa); 
+        if (_othersGrouper) {
+          return _othersGrouper(topRows);
         }
-    });
+        return topRows;
+      }
+    }
 
     /**
     #### .cap([count])
@@ -4374,6 +4396,7 @@ dc.barChart = function (parent, chartGroup) {
     var _numBars;
 
     var _barWidth;
+    var _parent = parent;
 
     _chart.accent = accentBar;
     _chart.unAccent = unAccentBar;
@@ -4532,10 +4555,12 @@ dc.barChart = function (parent, chartGroup) {
     };
 
     function accentBar (value) {
+      console.log("accent value: " + value);
       var chartDomain = _chart.x().domain();
       var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
-
-      _chart.accentSelected($("rect.bar", this.chart).get(barNum));
+      console.log("bar num: " + barNum) 
+      console.log(_chart);
+      _chart.accentSelected($("rect.bar", _parent).get(barNum));
 
       //$($("rect.bar", this.chart).get(barNum)).addClass("accented");
     }
@@ -4544,7 +4569,7 @@ dc.barChart = function (parent, chartGroup) {
       var chartDomain = _chart.x().domain();
       var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
 
-      _chart.unAccentSelected($("rect.bar", this.chart).get(barNum));
+      _chart.unAccentSelected($("rect.bar", _parent).get(barNum));
     };
 
     function onClick(d) {
@@ -9146,3 +9171,4 @@ return dc;}
     }
 }
 )();
+
