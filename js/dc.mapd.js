@@ -4555,14 +4555,9 @@ dc.barChart = function (parent, chartGroup) {
     };
 
     function accentBar (value) {
-      console.log("accent value: " + value);
       var chartDomain = _chart.x().domain();
       var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
-      console.log("bar num: " + barNum) 
-      console.log(_chart);
       _chart.accentSelected($("rect.bar", _parent).get(barNum));
-
-      //$($("rect.bar", this.chart).get(barNum)).addClass("accented");
     }
 
     function unAccentBar (value) {
