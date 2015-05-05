@@ -1902,6 +1902,7 @@ dc.colorMixin = function (_chart) {
     ```
     **/
     _chart.colors = function (_) {
+      console.log("regular colors");
         if (!arguments.length) {
             return _colors;
         }
@@ -1928,6 +1929,7 @@ dc.colorMixin = function (_chart) {
 
     **/
     _chart.linearColors = function (r) {
+      console.log("linear");
         return _chart.colors(d3.scale.linear()
                              .range(r)
                              .interpolate(d3.interpolateHcl));
