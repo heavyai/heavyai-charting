@@ -1902,7 +1902,6 @@ dc.colorMixin = function (_chart) {
     ```
     **/
     _chart.colors = function (_) {
-      console.log("regular colors");
         if (!arguments.length) {
             return _colors;
         }
@@ -7026,17 +7025,10 @@ dc.bubbleOverlay = function (root, chartGroup) {
       _chart.bounds[0] = conv4326To900913(bounds[0]);
       _chart.bounds[1] = conv4326To900913(bounds[1]);
       
-      //$(bounds).each(function() {
-        //this = conv4326To900913(this);
-        //this[0] *= 111319.49077777777778;
-        //this[1] = Math.log(Math.tan((90.0 + this[1]) * 0.00872664625997)) * 6378136.99911215736947;
-      //});
     }
 
     _chart._doRender = function () {
-        console.log("render");
         _g = initOverlayG();
-
         _chart.r().range([_chart.MIN_RADIUS, _chart.width() * _chart.maxBubbleRelativeSize()]);
 
         initializeBubbles();
@@ -7064,7 +7056,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
         var coordTrans = conv4326To900913([data[key].lon,data[key].lat]);
         var xPixel = (coordTrans[0] - _chart.bounds[0][0])*xPixelScale ;
         var yPixel = _chart.height() - (coordTrans[1] - _chart.bounds[0][1])*yPixelScale ;
-        //console.log("x: " + xPixel + " y: " + yPixel);
         _points.push({name: key, x: xPixel, y: yPixel, xCoord: coordTrans[0], yCoord: coordTrans[1]}); 
       }
     }
@@ -7161,10 +7152,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
     };
 
     function updateBubbles() {
-        //_g.selectAll('g').remove();
-        //var data = mapData();
-        //_points = [];
-        //mapDataToPoints(data);
         var data = _chart.savedData;
 
         _points.forEach(function (point) {
