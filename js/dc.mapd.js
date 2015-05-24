@@ -5347,7 +5347,15 @@ dc.dataTable = function (parent, chartGroup) {
           //return d[v].toUTCString().slice(0, -4);
         }
         else {
-          return d[v];
+          /*
+          var startlinkIndex = d[v].indexOf('http');
+          console.log(startLinkIndex);
+          if (linkIndex != -1) {
+            var endLinkIndex = 
+          */
+          //var text =$('<p>' + d[v] +'</p>').linkify().text();
+          //console.log(text);
+          return $('<p>' + d[v] +'</p>').linkify().html();
         }
       }
       else if (typeof v === 'function') {
