@@ -5347,7 +5347,15 @@ dc.dataTable = function (parent, chartGroup) {
           //return d[v].toUTCString().slice(0, -4);
         }
         else {
-          return d[v];
+          /*
+          var startlinkIndex = d[v].indexOf('http');
+          console.log(startLinkIndex);
+          if (linkIndex != -1) {
+            var endLinkIndex = 
+          */
+          //var text =$('<p>' + d[v] +'</p>').linkify().text();
+          //console.log(text);
+          return $('<p>' + d[v] +'</p>').linkify().html();
         }
       }
       else if (typeof v === 'function') {
@@ -5482,6 +5490,8 @@ dc.dataTable = function (parent, chartGroup) {
               */
               return d.values;
             });
+        
+        //var startTime = new Date();
 
         var rowEnter = rows.enter()
             .append('tr')
@@ -5499,6 +5509,11 @@ dc.dataTable = function (parent, chartGroup) {
         });
 
         rows.exit().remove();
+        /*
+        var endTime1 = new Date();
+        var elapsed1 = endTime1 - startTime;
+        console.log("Elapsed Table: " + elapsed1 + " ms");
+        */
 
         return rows;
     }
@@ -6977,9 +6992,18 @@ dc.bubbleOverlay = function (root, chartGroup) {
     var _g;
     var _points = [];
     var _colorCountUpdateCallback = null;
+    var _clickCallbackFunc = null;
 
     _chart.MIN_RADIUS = 1;
     _chart.colorCountDictionary = {};
+
+    _chart.clickCallback = function(_) {
+      if (!arguments.length) {
+        return _clickCallbackFunc;
+      }
+      _clickCallbackFunc = _;
+      return _chart;
+    }
 
     //_chart.transitionDuration(750);
     _chart.transitionDuration(0);
@@ -6996,6 +7020,22 @@ dc.bubbleOverlay = function (root, chartGroup) {
       }
       _colorCountUpdateCallback = f;
       return _chart;
+    }
+
+    _chart.onClick = function(d) {
+      if (_clickCallbackFunc != null) {
+        _clickCallbackFunc(d);
+      }
+
+      //var tooltip = new mapboxgl.Popup({
+      //      closeOnClick: true
+      //    })
+      //  .setLatLng([d.lat, d.lon])
+      //      .setHTML('<h1>Hello World!</h1>')
+      //        .addTo(map);
+
+
+      //console.log(e);
     }
 
 
@@ -7063,7 +7103,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
     _chart.remapPoints = function() {
       if (_chart.bounds == null)
         return;
-
       var xPixelScale = 1.0/(_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
       var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
       var numPoints = _points.length;
@@ -7077,8 +7116,15 @@ dc.bubbleOverlay = function (root, chartGroup) {
     function initializeBubbles() {
         _g.selectAll('g').remove();
         var data = mapData();
+        //var startTime = new Date();
         _points = [];
         mapDataToPoints(data);
+        /*
+        var endTime1 = new Date();
+        var elapsed1 = endTime1 - startTime;
+        console.log("Elapsed MapData to Points: " + elapsed1 + " ms");
+        */
+
 
         _points.forEach(function (point) {
             var nodeG = getNodeG(point, data);
@@ -7098,10 +7144,15 @@ dc.bubbleOverlay = function (root, chartGroup) {
                     return _chart.bubbleR(d);
                 });
 
-            _chart._doRenderLabel(nodeG);
+            //_chart._doRenderLabel(nodeG);
 
-            _chart._doRenderTitles(nodeG);
+            //_chart._doRenderTitles(nodeG);
         });
+        /*
+        var endTime2 = new Date();
+        var elapsed2 = endTime2 - startTime;
+        console.log("Elapsed total:  " + elapsed2 + " ms");
+        */
     }
 
     function mapData() {
