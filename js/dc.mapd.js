@@ -6985,9 +6985,18 @@ dc.bubbleOverlay = function (root, chartGroup) {
     var _g;
     var _points = [];
     var _colorCountUpdateCallback = null;
+    var _clickCallbackFunc = null;
 
     _chart.MIN_RADIUS = 1;
     _chart.colorCountDictionary = {};
+
+    _chart.clickCallback = function(_) {
+      if (!arguments.length) {
+        return _clickCallbackFunc;
+      }
+      _clickCallbackFunc = _;
+      return _chart;
+    }
 
     //_chart.transitionDuration(750);
     _chart.transitionDuration(0);
@@ -7004,6 +7013,22 @@ dc.bubbleOverlay = function (root, chartGroup) {
       }
       _colorCountUpdateCallback = f;
       return _chart;
+    }
+
+    _chart.onClick = function(d) {
+      if (_clickCallbackFunc != null) {
+        _clickCallbackFunc(d);
+      }
+
+      //var tooltip = new mapboxgl.Popup({
+      //      closeOnClick: true
+      //    })
+      //  .setLatLng([d.lat, d.lon])
+      //      .setHTML('<h1>Hello World!</h1>')
+      //        .addTo(map);
+
+
+      //console.log(e);
     }
 
 
