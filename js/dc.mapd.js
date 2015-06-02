@@ -6984,6 +6984,7 @@ chart.svg(d3.select('#chart svg'));
 **/
 dc.bubbleOverlay = function (root, chartGroup) {
     var BUBBLE_OVERLAY_CLASS = 'bubble-overlay';
+    var BUBBLE_POPUP_CLASS = 'bubble-popup';
     var BUBBLE_NODE_CLASS = 'node';
     var BUBBLE_CLASS = 'bubble';
 
@@ -7022,7 +7023,30 @@ dc.bubbleOverlay = function (root, chartGroup) {
       return _chart;
     }
 
+    /*
+    _chart.projectPoint = function (coords) {
+      if (_chart.bounds == null)
+        return;
+      var xPixelScale = 1.0/(_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
+      var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
+      var mapCoords = conv4326To900913([d.lon,d.lat]);
+      var pixelPos = {x: (mapCoords[0] - _chart.bounds[0][0])*xPixelScale , y:_chart.height() - (mapCoords[1] - _chart.bounds[0][1])*yPixelScale}; 
+    }
+    */
+
     _chart.onClick = function(d) {
+      if (_chart.bounds == null)
+        return;
+      var xPixelScale = 1.0/(_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
+      var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
+      var mapCoords = conv4326To900913([d.lon,d.lat]);
+      var pixelPos = {x: (mapCoords[0] - _chart.bounds[0][0])*xPixelScale , y:_chart.height() - (mapCoords[1] - _chart.bounds[0][1])*yPixelScale}; 
+      
+      //var xPixel = (mapCoords[0] - _chart.bounds[0][0])*xPixelScale ;
+      //var yPixel = _chart.height() - (mapCoords[1] - _chart.bounds[0][1])*yPixelScale ;
+      //console.log(xPixel + "," + yPixel);
+      //var rect = _chart.svg().append('rect').attr('class',BUBBLE_POPUP_CLASS).attr('transform','translate(' + xPixel + ',' + yPixel + ')');
+
       if (_clickCallbackFunc != null) {
         _clickCallbackFunc(d);
       }
@@ -7146,7 +7170,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
             //_chart._doRenderLabel(nodeG);
 
-            //_chart._doRenderTitles(nodeG);
+            _chart._doRenderTitles(nodeG);
         });
         /*
         var endTime2 = new Date();
