@@ -7170,7 +7170,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
             //_chart._doRenderLabel(nodeG);
 
-            _chart._doRenderTitles(nodeG);
+            //_chart._doRenderTitles(nodeG);
         });
         /*
         var endTime2 = new Date();
