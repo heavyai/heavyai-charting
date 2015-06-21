@@ -4496,14 +4496,13 @@ dc.barChart = function (parent, chartGroup) {
 
     function calculateBarWidth() {
         //if (_barWidth === undefined) {
-            console.log("undefined");
             if (_chart._numberOfBars === null) {
                 var numberOfBars = _chart.xUnitCount();
+
             }
             else {
                 var numberOfBars = _chart._numberOfBars;
             }
-
 
             // please can't we always use rangeBands for bar charts?
             if (_chart.isOrdinal() && _gap === undefined) {
