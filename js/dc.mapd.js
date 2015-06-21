@@ -4401,6 +4401,7 @@ dc.barChart = function (parent, chartGroup) {
 
     _chart.accent = accentBar;
     _chart.unAccent = unAccentBar;
+    _chart._numberOfBars = null;
 
     dc.override(_chart, 'rescale', function () {
         _chart._rescale();
@@ -4494,8 +4495,15 @@ dc.barChart = function (parent, chartGroup) {
     }
 
     function calculateBarWidth() {
-        if (_barWidth === undefined) {
-            var numberOfBars = _chart.xUnitCount();
+        //if (_barWidth === undefined) {
+            console.log("undefined");
+            if (_chart._numberOfBars === null) {
+                var numberOfBars = _chart.xUnitCount();
+            }
+            else {
+                var numberOfBars = _chart._numberOfBars;
+            }
+
 
             // please can't we always use rangeBands for bar charts?
             if (_chart.isOrdinal() && _gap === undefined) {
@@ -4509,7 +4517,7 @@ dc.barChart = function (parent, chartGroup) {
             if (_barWidth === Infinity || isNaN(_barWidth) || _barWidth < MIN_BAR_WIDTH) {
                 _barWidth = MIN_BAR_WIDTH;
             }
-        }
+        //}
     }
 
     _chart.fadeDeselectedArea = function () {
