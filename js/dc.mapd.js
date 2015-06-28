@@ -7702,6 +7702,81 @@ dc.rowChart = function (parent, chartGroup) {
     return _chart.anchor(parent, chartGroup);
 };
 
+dc.cloudChart = function(parent, chartGroup) {
+    var _g;
+    var _chart = dc.capMixin(dc.marginMixin(dc.colorMixin(dc.baseMixin({}))));
+    var _cloudData;
+    var _cloudLayout;
+    var _r;
+
+    function drawChart() {
+        _cloudData = _chart.data();
+        calculateSizeScale();
+        _cloudLayout = d3.layout.cloud()
+            .size([_chart.width(),_chart.height()])
+            .words(_cloudData.map(function(d) {
+                return {key: d.key, value: d.value, text: d.key, size: _r(_chart.valueAccessor()(d))};
+                }))
+            //.rotate(function() { return ~~(Math.random() * 2) * 90; })
+            .font("Impact")
+            .fontSize(function(d) { return d.size; })
+            .on("end", cloudDraw);
+        _cloudLayout.start();
+
+
+    }
+
+    function calculateSizeScale() {
+        var extent = d3.extent(_cloudData, _chart.cappedValueAccessor);
+        
+        _r = d3.scale.log().domain(extent)
+                .range([10,Math.max(14,Math.min(_chart.effectiveWidth(),_chart.effectiveHeight())/10)]);
+    }
+
+    function cloudDraw(words) {
+
+        _g.attr("transform", "translate(" + _cloudLayout.size()[0] / 2 + "," + _cloudLayout.size()[1] / 2 + ")")
+        .selectAll("text")
+            .data(words)
+        .enter().append("text")
+          //.style("font-size", function(d) { return _r(_chart.valueAccessor()(d)) + "px"; })
+          .style("font-size", function(d) { return d.size + "px"; })
+          .style("font-family", "Impact")
+          .style("fill", _chart.getColor)// function(d, i) { return fill(i); })
+          .attr("text-anchor", "middle")
+          .attr("transform", function(d) {
+            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+          })
+          .text(function(d) { return d.key; });
+    }
+
+    _chart._doRender = function () {
+        _chart.resetSvg();
+        _g = _chart.svg()
+            .append('g')
+            .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
+
+        drawChart();
+
+        return _chart;
+    };
+
+    _chart._doRedraw = function () {
+        _chart._doRender();
+        /*
+        _chart.resetSvg();
+        _g = _chart.svg()
+            .append('g')
+            .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
+        drawChart();
+        return _chart;
+        */
+    };
+
+    return _chart.anchor(parent, chartGroup);
+
+};
+
 /**
 ## Legend
 Legend is a attachable widget that can be added to other dc charts to render horizontal legend
