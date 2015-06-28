@@ -32,6 +32,10 @@ art {
     fill: #ccc;
 }
 
+.dc-chart text.deselected {
+    fill: #ccc !important; // why do we need to override?
+}
+
 
 .dc-chart .empty-chart .pie-slice path {
     fill: #FFEEEE;

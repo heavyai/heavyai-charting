@@ -7708,6 +7708,12 @@ dc.cloudChart = function(parent, chartGroup) {
     var _cloudData;
     var _cloudLayout;
     var _r;
+    var _tags; // store output of _cloudLayout 
+    var _noRelayout = false; // flag to set on click so rerender doesn't relayout elements
+
+    _chart.setNoRelayout = function(val) {
+        _noRelayout = val;
+    }
 
     function drawChart() {
         _cloudData = _chart.data();
@@ -7733,21 +7739,39 @@ dc.cloudChart = function(parent, chartGroup) {
                 .range([10,Math.max(14,Math.min(_chart.effectiveWidth(),_chart.effectiveHeight())/10)]);
     }
 
-    function cloudDraw(words) {
-        var words = _g.attr("transform", "translate(" + _cloudLayout.size()[0] / 2 + "," + _cloudLayout.size()[1] / 2 + ")")
+    function cloudDraw(newTags) {
+        _tags = newTags;
+        var tagElems = _g.attr("transform", "translate(" + _cloudLayout.size()[0] / 2 + "," + _cloudLayout.size()[1] / 2 + ")")
         .selectAll("text")
-            .data(words);
-        words.enter().append("text");
-        words.exit().remove();
-        words.style("font-size", function(d) { return d.size + "px"; })
+            .data(_tags);
+        tagElems.enter().append("text");
+        tagElems.exit().remove();
+        tagElems.style("font-size", function(d) { return d.size + "px"; })
           .style("font-family", "Impact")
           .style("fill", _chart.getColor)// function(d, i) { return fill(i); })
           .attr("text-anchor", "middle")
           .attr("transform", function(d) {
             return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
           })
-          .text(function(d) { return d.key; });
+          .text(function(d) { return d.key; })
+          .on('click',onClick)
+          .classed('deselected', function (d) {
+              return (_chart.hasFilter()) ? !isSelectedTag(d) : false;
+          })
+          .classed('selected', function (d) {
+              return (_chart.hasFilter()) ? isSelectedTag(d) : false;
+          });
     }
+
+    function onClick(d) {
+        _noRelayout = true;
+        _chart.onClick(d);
+    }
+
+    function isSelectedTag (d) {
+        return _chart.hasFilter(_chart.cappedKeyAccessor(d));
+    }
+
 
     _chart._doRender = function () {
         _chart.resetSvg();
@@ -7755,13 +7779,23 @@ dc.cloudChart = function(parent, chartGroup) {
             .append('g')
             .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
 
-        drawChart();
+        if (_noRelayout) {
+            cloudDraw(_tags); // skip layout so tags remain in place
+            _noRelayout = false;
+        }
+        else
+            drawChart();
 
         return _chart;
     };
 
     _chart._doRedraw = function () {
-        drawChart();
+        if (_noRelayout) {
+            cloudDraw(_tags);
+            _noRelayout = false;
+        }
+        else
+            drawChart();
         return _chart;
     };
 
