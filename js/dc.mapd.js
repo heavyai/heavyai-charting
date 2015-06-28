@@ -7729,7 +7729,6 @@ dc.cloudChart = function(parent, chartGroup) {
             .on("end", cloudDraw);
         _cloudLayout.start();
 
-
     }
 
     function calculateSizeScale() {
@@ -7761,6 +7760,8 @@ dc.cloudChart = function(parent, chartGroup) {
           .classed('selected', function (d) {
               return (_chart.hasFilter()) ? isSelectedTag(d) : false;
           });
+
+          createTitles(tagElems);
     }
 
     function onClick(d) {
@@ -7768,9 +7769,22 @@ dc.cloudChart = function(parent, chartGroup) {
         _chart.onClick(d);
     }
 
+    function createTitles(tags) {
+        if (_chart.renderTitle()) {
+            tags.selectAll('title').remove();
+            tags.append('title').text(_chart.title());
+        }
+    }
+
     function isSelectedTag (d) {
         return _chart.hasFilter(_chart.cappedKeyAccessor(d));
     }
+
+    _chart.title(function (d) {
+        return _chart.cappedKeyAccessor(d) + ': ' + _chart.cappedValueAccessor(d);
+    });
+
+    _chart.label(_chart.cappedKeyAccessor);
 
 
     _chart._doRender = function () {
