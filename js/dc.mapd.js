@@ -7734,13 +7734,12 @@ dc.cloudChart = function(parent, chartGroup) {
     }
 
     function cloudDraw(words) {
-
-        _g.attr("transform", "translate(" + _cloudLayout.size()[0] / 2 + "," + _cloudLayout.size()[1] / 2 + ")")
+        var words = _g.attr("transform", "translate(" + _cloudLayout.size()[0] / 2 + "," + _cloudLayout.size()[1] / 2 + ")")
         .selectAll("text")
-            .data(words)
-        .enter().append("text")
-          //.style("font-size", function(d) { return _r(_chart.valueAccessor()(d)) + "px"; })
-          .style("font-size", function(d) { return d.size + "px"; })
+            .data(words);
+        words.enter().append("text");
+        words.exit().remove();
+        words.style("font-size", function(d) { return d.size + "px"; })
           .style("font-family", "Impact")
           .style("fill", _chart.getColor)// function(d, i) { return fill(i); })
           .attr("text-anchor", "middle")
@@ -7762,15 +7761,8 @@ dc.cloudChart = function(parent, chartGroup) {
     };
 
     _chart._doRedraw = function () {
-        _chart._doRender();
-        /*
-        _chart.resetSvg();
-        _g = _chart.svg()
-            .append('g')
-            .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
         drawChart();
         return _chart;
-        */
     };
 
     return _chart.anchor(parent, chartGroup);
