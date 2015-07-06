@@ -82,7 +82,7 @@ art {
 
 
 .dc-chart .selected path {
-    stroke-width: 3;
+    stroke-width: 1;
     stroke: #ccc;
     fill-opacity: 1;
 }
@@ -173,7 +173,7 @@ art {
 }
 
 .dc-chart .selected circle {
-    stroke-width: 3;
+    stroke-width: 1;
     stroke: #ccc;
     fill-opacity: 1;
 }
