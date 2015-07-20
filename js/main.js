@@ -1,17 +1,29 @@
-
 function Chart(crossFilter) { 
   var _crossFilter = crossFilter;
   var _dimension = null;
   var _group = null;
 
-  function init() {
-    _dimension = _crossFilter.dimension("carrier_name"); 
-    _group = _dimension.group().reduceCount();
+  function createChart() {
+    // Returns all columns names in some form of dropdown table.
+    var allColumns = _crossFilter.getColumns();
+    // Only put "Type === STR" into the dropdown table.
 
-    debugger;
+    // Pass in the column name into the _crossFilter.dimension parenthesis. "actualelapsedtime"
+    var _dimension = _crossFilter.dimension("actualelapsedtime");  
     
+    // This is the returned group info.  You will use the method .top to return the top 10 results
+    // some kind of chart.
+  
+    // This will return a key and value pair -- and your job is to visualize 
+    // the data on the screen
+    var _group = _dimension.group().reduceCount();
+
+
+    // Bonus points if you can remove the chart.
   }
-  init();
+
+  createChart();
+
 }
 
 
@@ -20,6 +32,5 @@ function init() {
   var crossFilter = crossfilter(con,"flights","flights");
   var chart = new Chart(crossFilter);
 }
-
 
 $(document).ready(init);
