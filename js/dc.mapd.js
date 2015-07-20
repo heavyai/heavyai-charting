@@ -5321,7 +5321,6 @@ dc.dataTable = function (parent, chartGroup) {
          $("#table-column-filter-clear_" + c).click(function () {
            console.log(this);
            var columnId = $(this).attr('id').split('_')[1];
-           //debugger;
            console.log(columnId);
            _chart.removeFilteredColumn(_columns[columnId]);
            $(_chart).trigger("column-filter-clear", [columnId]);
