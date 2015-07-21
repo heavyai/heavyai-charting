@@ -171,7 +171,9 @@ charts that belong to the default chart group will be re-rendered.
 dc.renderAll = function (group) {
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-        charts[i].render();
+        console.log(i);
+        charts[i].renderAsync();
+        //charts[i].render();
     }
 
     if (dc._renderlet !== null) {
@@ -189,7 +191,8 @@ from scratch.
 dc.redrawAll = function (group) {
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-        charts[i].redraw();
+        //charts[i].redraw();
+        charts[i].redrawAsync();
     }
 
     if (dc._renderlet !== null) {
@@ -760,6 +763,15 @@ dc.baseMixin = function (_chart) {
     var _data = function (group) {
         return group.all();
     };
+    console.log("befre data async set");
+
+    var _dataAsync = function(group,callbacks) {
+        console.log("async");
+        console.log(group);
+        //debugger;
+        group.allAsync(callbacks);
+    }
+
 
     /**
     #### .width([value])
@@ -864,7 +876,9 @@ dc.baseMixin = function (_chart) {
         });
     ```
     **/
+
     _chart.data = function (d) {
+        console.log("chart data");
         if (!arguments.length) {
             return _data.call(_chart, _group);
         }
@@ -872,6 +886,23 @@ dc.baseMixin = function (_chart) {
         _chart.expireCache();
         return _chart;
     };
+
+    _chart.dataAsync = function (callback) {
+        console.log("data async");
+        console.log(_dataAsync);
+        return _dataAsync.call(_chart, _group, callback);
+    }
+
+    _chart.setDataAsync = function(d) {
+        console.log("set data async");
+        _dataAsync = d;
+        console.log(_dataAsync);
+        return _chart;
+    }
+
+
+
+
     /*
     _chart.dataAsync = function(d) {
         if (!arguments.length) {
@@ -1144,6 +1175,11 @@ dc.baseMixin = function (_chart) {
         }
     }
 
+    _chart.renderAsync = function() {
+        console.log("before calling render async");
+        _chart.dataAsync([_chart.render]);
+    }
+
     /**
     #### .render()
     Invoking this method will force the chart to re-render everything from scratch. Generally it
@@ -1203,6 +1239,13 @@ dc.baseMixin = function (_chart) {
     data is loaded in the background using `crossfilter.add()`).
 
     **/
+    _chart.redrawAsync = function() {
+        console.log("before calling redraw");
+        _chart.dataAsync([_chart.redraw]);
+    }
+
+
+
     _chart.redraw = function () {
         _listeners.preRedraw(_chart);
 
@@ -3555,7 +3598,18 @@ dc.capMixin = function (_chart) {
         }
         return _chart.valueAccessor()(d, i);
     };
+
+    _chart.setDataAsync(function(group, callbacks) {
+      if (_cap === Infinity) {
+          group.allAsync(callbacks);
+      }
+      else {
+          group.topAsync(_cap,callbacks)
+      }
+    });
+
     if (!dc.async) {
+
       _chart.data(function (group) {
           if (_cap === Infinity) {
               return _chart._computeOrderedGroups(group.all());
@@ -3673,6 +3727,16 @@ dc.bubbleMixin = function (_chart) {
     _chart = dc.colorMixin(_chart);
 
     _chart.renderLabel(true);
+
+    _chart.setDataAsync(function(group,callbacks) {
+        if (_chart.cap() != undefined) {
+            group.topAsync(_chart.cap(),callbacks);
+        }
+        else {
+            group.allAsync(callbacks);
+        }
+    });
+
 
     _chart.data(function (group) {
         //return group.all();
@@ -5231,6 +5295,10 @@ dc.dataCount = function (parent, chartGroup) {
         _formatNumber = s;
         return _chart;
     };
+
+    _chart.setDataAsync(function(group,callbacks) {
+        group.valueAsync(callbacks);
+    });
 
     _chart._doRender = function () {
         var tot = _chart.dimension().size(),
@@ -8373,6 +8441,12 @@ dc.numberDisplay = function (parent, chartGroup) {
     _chart.value = function () {
         return _chart.data();
     };
+
+    _chart.setDataAsync(function(group,callback) {
+        console.log("value async");
+        group.value ? group.valueAsync([callback]) : group.topAsync(1,[callback]);
+    });
+
 
     _chart.data(function (group) {
         var valObj = group.value ? group.value() : group.top(1)[0];
