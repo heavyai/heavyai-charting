@@ -3574,7 +3574,7 @@ dc.capMixin = function (_chart) {
           console.log("async");
           if (_cap === Infinity) {
             callbacks.push(_chart.computeOrderedGroups.bind(this));
-            //group.allAsync(callbacks);
+            group.allAsync(callbacks);
             return;
           }
           else {
@@ -3583,7 +3583,7 @@ dc.capMixin = function (_chart) {
         });
           
       _chart.capCallback = function(data, callbacks) {
-        var topRows = _chart._computeOrderedGroups(dataa); 
+        var topRows = _chart._computeOrderedGroups(data); 
         if (_othersGrouper) {
           return _othersGrouper(topRows);
         }
@@ -5321,7 +5321,6 @@ dc.dataTable = function (parent, chartGroup) {
          $("#table-column-filter-clear_" + c).click(function () {
            console.log(this);
            var columnId = $(this).attr('id').split('_')[1];
-           //debugger;
            console.log(columnId);
            _chart.removeFilteredColumn(_columns[columnId]);
            $(_chart).trigger("column-filter-clear", [columnId]);
