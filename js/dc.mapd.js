@@ -171,7 +171,6 @@ charts that belong to the default chart group will be re-rendered.
 dc.renderAll = function (group) {
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-        console.log(i);
         charts[i].renderAsync();
         //charts[i].render();
     }
@@ -721,6 +720,31 @@ dc.baseMixin = function (_chart) {
     var _legend;
     _chart._colorLegend = null;
 
+    var _topQueryCallback = null;
+    var queryId = 0;
+    var _registerQuery = function(callback) {
+        var stackEmpty = _topQueryCallback == null;
+        // need to check if max query?
+        _topQueryCallback = callback;
+        if (stackEmpty)
+            _topQueryCallback.func(); 
+    }
+
+    var _popQueryStack = function(id) {
+        if (_topQueryCallback != null && id == _topQueryCallback.id) 
+            _topQueryCallback = null;
+        else 
+            _topQueryCallback.func(); 
+    }
+
+    var _startNextQuery = function() {
+        _topQueryCallback.func();
+        //var callback = _firstQueryCallback;
+        //callback();
+    }
+
+
+
     var _filters = [];
     var _softFilterClear = false;
     var _filterHandler = function (dimension, filters) {
@@ -763,12 +787,8 @@ dc.baseMixin = function (_chart) {
     var _data = function (group) {
         return group.all();
     };
-    console.log("befre data async set");
 
     var _dataAsync = function(group,callbacks) {
-        console.log("async");
-        console.log(group);
-        //debugger;
         group.allAsync(callbacks);
     }
 
@@ -878,7 +898,6 @@ dc.baseMixin = function (_chart) {
     **/
 
     _chart.data = function (d) {
-        console.log("chart data");
         if (!arguments.length) {
             return _data.call(_chart, _group);
         }
@@ -888,15 +907,17 @@ dc.baseMixin = function (_chart) {
     };
 
     _chart.dataAsync = function (callback) {
-        console.log("data async");
-        console.log(_dataAsync);
+        //console.log("data async");
+        //console.log(_dataAsync);
+        //var groupCopy = jQuery.extend(true,{},_group);
+        //var id = queryId++;
+        //var dataAsyncBoundFunc = $.proxy(_dataAsync, _chart, groupCopy, id, callback);
+        //_registerQuery({id: id, func: dataAsyncBoundFunc});
         return _dataAsync.call(_chart, _group, callback);
     }
 
     _chart.setDataAsync = function(d) {
-        console.log("set data async");
         _dataAsync = d;
-        console.log(_dataAsync);
         return _chart;
     }
 
@@ -1176,8 +1197,13 @@ dc.baseMixin = function (_chart) {
     }
 
     _chart.renderAsync = function() {
-        console.log("before calling render async");
-        _chart.dataAsync([_chart.render]);
+        //var groupCopy = jQuery.extend(true,{},_group);
+        var id = queryId++;
+        var renderCallback = $.proxy(_chart.render,this,id);
+        var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[renderCallback]);
+        _registerQuery({id: id, func: dataAsyncFunc});
+
+        //_chart.dataAsync([_chart.render]);
     }
 
     /**
@@ -1188,7 +1214,8 @@ dc.baseMixin = function (_chart) {
     behaviour.
 
     **/
-    _chart.render = function () {
+    _chart.render = function (id) {
+
         _listeners.preRender(_chart);
 
         if (_mandatoryAttributes) {
@@ -1206,8 +1233,12 @@ dc.baseMixin = function (_chart) {
 
 
         _chart._activateRenderlets('postRender');
+        
+        if (id !== undefined) {
+            _popQueryStack(id);
+        }
 
-
+        
 
         return result;
     };
@@ -1240,13 +1271,17 @@ dc.baseMixin = function (_chart) {
 
     **/
     _chart.redrawAsync = function() {
-        console.log("before calling redraw");
-        _chart.dataAsync([_chart.redraw]);
+        var id = queryId++;
+        var redrawCallback = $.proxy(_chart.redraw,this,id);
+        var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[redrawCallback]);
+        _registerQuery({id: id, func: dataAsyncFunc});
+        //console.log("before calling redraw");
+        //_chart.dataAsync([_chart.redraw]);
     }
 
 
 
-    _chart.redraw = function () {
+    _chart.redraw = function (id) {
         _listeners.preRedraw(_chart);
 
         var result = _chart._doRedraw();
@@ -1259,7 +1294,9 @@ dc.baseMixin = function (_chart) {
         }
 
         _chart._activateRenderlets('postRedraw');
-
+        if (id !== undefined) {
+            _popQueryStack(id);
+        }
         return result;
     };
 
@@ -1971,7 +2008,6 @@ dc.colorMixin = function (_chart) {
 
     **/
     _chart.linearColors = function (r) {
-      console.log("linear");
         return _chart.colors(d3.scale.linear()
                              .range(r)
                              .interpolate(d3.interpolateHcl));
@@ -2027,7 +2063,6 @@ dc.colorMixin = function (_chart) {
 
     **/
     _chart.calculateColorDomain = function () {
-        console.log("calculated");
         var newDomain = [d3.min(_chart.data(), _chart.colorAccessor()),
                          d3.max(_chart.data(), _chart.colorAccessor())];
         _colors.domain(newDomain);
@@ -5387,9 +5422,7 @@ dc.dataTable = function (parent, chartGroup) {
 
          $("th", headGroup).eq(c).addClass('column-filtered').append('<img class="column-filter-clear" id="table-column-filter-clear_' + c + '" src="img/clear_filters_dark_grey24.png" width="12" height="12"/>');
          $("#table-column-filter-clear_" + c).click(function () {
-           console.log(this);
            var columnId = $(this).attr('id').split('_')[1];
-           console.log(columnId);
            _chart.removeFilteredColumn(_columns[columnId]);
            $(_chart).trigger("column-filter-clear", [columnId]);
            //_chart.redraw();
@@ -8442,9 +8475,8 @@ dc.numberDisplay = function (parent, chartGroup) {
         return _chart.data();
     };
 
-    _chart.setDataAsync(function(group,callback) {
-        console.log("value async");
-        group.value ? group.valueAsync([callback]) : group.topAsync(1,[callback]);
+    _chart.setDataAsync(function(group,callbacks) {
+        group.value ? group.valueAsync(callbacks) : group.topAsync(1,callbacks);
     });
 
 
