@@ -3662,7 +3662,7 @@ This Mixin provides reusable functionalities for any chart that needs to visuali
 **/
 dc.bubbleMixin = function (_chart) {
     var _maxBubbleRelativeSize = 0.3;
-    var _minRadiusWithLabel = 10;
+    var _minRadiusWithLabel = 2;
 
     _chart.BUBBLE_NODE_CLASS = 'node';
     _chart.BUBBLE_CLASS = 'bubble';
