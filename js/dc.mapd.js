@@ -665,6 +665,7 @@ dc.baseMixin = function (_chart) {
 
     var _dimension;
     var _group;
+    _chart.dataCache = null;
 
     var _anchor;
     var _root;
@@ -785,6 +786,8 @@ dc.baseMixin = function (_chart) {
     };
 
     var _data = function (group) {
+        if (_chart.dataCache != null)
+            return _chart.dataCache;
         return group.all();
     };
 
@@ -909,7 +912,7 @@ dc.baseMixin = function (_chart) {
     _chart.dataAsync = function (callback) {
         //console.log("data async");
         //console.log(_dataAsync);
-        //var groupCopy = jQuery.extend(true,{},_group);
+        //_groupCopy = jQuery.extend(true,{},_group);
         //var id = queryId++;
         //var dataAsyncBoundFunc = $.proxy(_dataAsync, _chart, groupCopy, id, callback);
         //_registerQuery({id: id, func: dataAsyncBoundFunc});
@@ -1199,6 +1202,7 @@ dc.baseMixin = function (_chart) {
     _chart.renderAsync = function() {
         //var groupCopy = jQuery.extend(true,{},_group);
         var id = queryId++;
+        console.log("Render async: " + _chart.chartID() + "-" + id);
         var renderCallback = $.proxy(_chart.render,this,id);
         var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[renderCallback]);
         _registerQuery({id: id, func: dataAsyncFunc});
@@ -1214,7 +1218,8 @@ dc.baseMixin = function (_chart) {
     behaviour.
 
     **/
-    _chart.render = function (id) {
+    _chart.render = function (id,data) {
+        _chart.dataCache = data !== undefined ? data : null;
 
         _listeners.preRender(_chart);
 
@@ -1235,6 +1240,7 @@ dc.baseMixin = function (_chart) {
         _chart._activateRenderlets('postRender');
         
         if (id !== undefined) {
+            console.log("Render finish: " + _chart.chartID() + "-" + id);
             _popQueryStack(id);
         }
 
@@ -1271,7 +1277,9 @@ dc.baseMixin = function (_chart) {
 
     **/
     _chart.redrawAsync = function() {
+        //var groupCopy = jQuery.extend(true,{},_group);
         var id = queryId++;
+        console.log("Redraw async: " + _chart.chartID() + "-" + id);
         var redrawCallback = $.proxy(_chart.redraw,this,id);
         var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[redrawCallback]);
         _registerQuery({id: id, func: dataAsyncFunc});
@@ -1281,7 +1289,8 @@ dc.baseMixin = function (_chart) {
 
 
 
-    _chart.redraw = function (id) {
+    _chart.redraw = function (id, data) {
+        _chart.dataCache = data !== undefined ? data : null;
         _listeners.preRedraw(_chart);
 
         var result = _chart._doRedraw();
@@ -1295,6 +1304,7 @@ dc.baseMixin = function (_chart) {
 
         _chart._activateRenderlets('postRedraw');
         if (id !== undefined) {
+            console.log("Redraw finish: " + _chart.chartID() + "-" + id);
             _popQueryStack(id);
         }
         return result;
@@ -3649,7 +3659,11 @@ dc.capMixin = function (_chart) {
           if (_cap === Infinity) {
               return _chart._computeOrderedGroups(group.all());
           } else {
-              var topRows = group.top(_cap); // ordered by crossfilter group order (default value)
+            var topRows = null
+            if (_chart.dataCache != null)
+                topRows = _chart.dataCache;
+            else
+              topRows = group.top(_cap); // ordered by crossfilter group order (default value)
               topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
               if (_othersGrouper) {
                   return _othersGrouper(topRows);
@@ -5337,7 +5351,12 @@ dc.dataCount = function (parent, chartGroup) {
 
     _chart._doRender = function () {
         var tot = _chart.dimension().size(),
+            val = null;
+        if (_chart.dataCache != null)
+            val = _chart.dataCache;
+        else
             val = _chart.group().value();
+
         var all = _formatNumber(tot);
         var selected = _formatNumber(val);
 
