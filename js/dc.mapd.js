@@ -1232,8 +1232,10 @@ dc.baseMixin = function (_chart) {
         var id = queryId++;
         console.log("Render async: " + _chart.chartID() + "-" + id);
         var renderCallback = $.proxy(_chart.render,this,id,queryGroupId,queryCount);
-        var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[renderCallback]);
-        _registerQuery({id: id, func: dataAsyncFunc});
+        _chart.dataAsync([renderCallback]);
+        //var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[renderCallback]);
+
+        //_registerQuery({id: id, func: dataAsyncFunc});
 
         //_chart.dataAsync([_chart.render]);
     }
@@ -1265,11 +1267,12 @@ dc.baseMixin = function (_chart) {
         }
 
         _chart._activateRenderlets('postRender');
-        
+        /* 
         if (id !== undefined) {
             console.log("Render finish: " + _chart.chartID() + "-" + id);
             _popQueryStack(id);
         }
+        */
 
         if (queryGroupId !== undefined) {
             if (++dc._renderCount == queryCount) {
@@ -1316,8 +1319,9 @@ dc.baseMixin = function (_chart) {
         var id = queryId++;
         //console.log("Redraw async: " + _chart.chartID() + "-" + id);
         var redrawCallback = $.proxy(_chart.redraw,this,id,queryGroupId,queryCount);
-        var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[redrawCallback]);
-        _registerQuery({id: id, func: dataAsyncFunc});
+        _chart.dataAsync([redrawCallback]);
+        //var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[redrawCallback]);
+        //_registerQuery({id: id, func: dataAsyncFunc});
         //console.log("before calling redraw");
         //_chart.dataAsync([_chart.redraw]);
     }
@@ -1326,6 +1330,9 @@ dc.baseMixin = function (_chart) {
 
     _chart.redraw = function (id,queryGroupId,queryCount, data) {
         _chart.dataCache = data !== undefined ? data : null;
+        //if (_chart.dataCache == null) {
+        //    console.log("NULL");
+        //}
         _listeners.preRedraw(_chart);
 
         var result = _chart._doRedraw();
@@ -1338,14 +1345,18 @@ dc.baseMixin = function (_chart) {
         }
 
         _chart._activateRenderlets('postRedraw');
+        /*
         if (id !== undefined) {
             //console.log("Redraw finish: " + _chart.chartID() + "-" + id);
             _popQueryStack(id);
         }
+        */
 
 
 
         if (queryGroupId !== undefined) {
+            //var tempCount = dc._redrawCount + 1;
+            //console.log (tempCount +  " of " + queryCount);
             if (++dc._redrawCount == queryCount) {
                 dc._redrawCount = 0;
                 var stackEmpty = dc._redrawIdStack == null || dc._redrawIdStack == queryGroupId;
@@ -3370,7 +3381,10 @@ dc.stackMixin = function (_chart) {
     function prepareValues (layer, layerIdx) {
         var valAccessor = layer.accessor || _chart.valueAccessor();
         layer.name = String(layer.name || layerIdx);
-        layer.values = layer.group.all().map(function (d, i) {
+        // WARNING: probably destroys stack functionality: find workaround
+        var preValues = _chart.dataCache != null ? _chart.dataCache : layer.group.all();
+        //layer.values = layer.group.all().map(function (d, i) {
+        layer.values = preValues.map(function (d,i) {
             return {
                 x: _chart.keyAccessor()(d, i),
                 y: layer.hidden ? null : valAccessor(d, i),
@@ -3604,6 +3618,7 @@ dc.stackMixin = function (_chart) {
     }
 
     _chart.data(function () {
+        
         var layers = _stack.filter(visability);
         return layers.length ? _chart.stackLayout()(layers) : [];
     });
@@ -3705,6 +3720,9 @@ dc.capMixin = function (_chart) {
 
       _chart.data(function (group) {
           if (_cap === Infinity) {
+            if (_chart.dataCache != null)
+              return _chart._computeOrderedGroups(_chart.dataCache);
+            else
               return _chart._computeOrderedGroups(group.all());
           } else {
             var topRows = null
@@ -3712,7 +3730,7 @@ dc.capMixin = function (_chart) {
                 topRows = _chart.dataCache;
             else
               topRows = group.top(_cap); // ordered by crossfilter group order (default value)
-              topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
+             topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
               if (_othersGrouper) {
                   return _othersGrouper(topRows);
               }
@@ -3838,7 +3856,12 @@ dc.bubbleMixin = function (_chart) {
     _chart.data(function (group) {
         //return group.all();
         //var data = group.top(Infinity);
-        return group.top(_chart.cap() != undefined ? _chart.cap() : Infinity);
+        if (_chart.dataCache != null) {
+            return _chart.dataCache;
+        }
+        else {
+            return group.top(_chart.cap() != undefined ? _chart.cap() : Infinity);
+        }
     });
 
     var _r = d3.scale.linear().domain([0, 100]);
@@ -4583,7 +4606,6 @@ dc.barChart = function (parent, chartGroup) {
             .data(_chart.data());
 
         calculateBarWidth();
-
         layers
             .enter()
             .append('g')
@@ -5398,7 +5420,8 @@ dc.dataCount = function (parent, chartGroup) {
     });
 
     _chart._doRender = function () {
-        var tot = _chart.dimension().size(),
+        //var tot = _chart.dimension().size(),
+        var tot = 100000000,
             val = null;
         if (_chart.dataCache != null)
             val = _chart.dataCache;
