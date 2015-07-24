@@ -185,6 +185,7 @@ charts that belong to the default chart group will be re-rendered.
 **/
 dc.renderAll = function (group) {
     var queryGroupId = dc._renderId++;
+    console.log("renderall " + queryGroupId);
     var stackEmpty = (dc._renderIdStack === null);
     dc._renderIdStack = queryGroupId;  
     if (!stackEmpty)
@@ -210,6 +211,7 @@ from scratch.
 
 dc.redrawAll = function (group) {
     var queryGroupId = dc._redrawId++;
+    console.log("redraw " + queryGroupId);
     //console.log("Query group id: " + queryGroupId);
     var stackEmpty = (dc._redrawIdStack === null);
     dc._redrawIdStack = queryGroupId;  
@@ -820,6 +822,7 @@ dc.baseMixin = function (_chart) {
     };
 
     var _dataAsync = function(group,callbacks) {
+        console.log(_chart.chartID() + " base async");
         group.allAsync(callbacks);
     }
 
@@ -1275,6 +1278,12 @@ dc.baseMixin = function (_chart) {
         */
 
         if (queryGroupId !== undefined) {
+            //var tempCount = dc._renderCount + 1;
+            //console.log(tempCount + " of " + queryCount);
+            console.log("render return: " + _chart.chartID());
+            console.log(data);
+
+
             if (++dc._renderCount == queryCount) {
                 dc._renderCount = 0;
                 var stackEmpty = dc._renderIdStack == null || dc._renderIdStack == queryGroupId;
@@ -4602,6 +4611,7 @@ dc.barChart = function (parent, chartGroup) {
     });
 
     _chart.plotData = function () {
+        console.log(_chart.dataAsync);
         var layers = _chart.chartBodyG().selectAll('g.stack')
             .data(_chart.data());
 
@@ -5489,6 +5499,11 @@ dc.dataTable = function (parent, chartGroup) {
         return d;
     };
     var _order = d3.ascending;
+
+    _chart.setDataAsync(function(group,callbacks) {
+        console.log("set data async");
+        _chart.dimension().topAsync(_size,callbacks);
+    });
 
     _chart.addFilteredColumn = function(columnName) {
       _filteredColumns[columnName] = null;
