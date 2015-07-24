@@ -5420,8 +5420,8 @@ dc.dataCount = function (parent, chartGroup) {
     });
 
     _chart._doRender = function () {
-        //var tot = _chart.dimension().size(),
-        var tot = 100000000,
+        // tot ok to call size b/c will hit cache every time
+        var tot = _chart.dimension().size(),
             val = null;
         if (_chart.dataCache != null)
             val = _chart.dataCache;
