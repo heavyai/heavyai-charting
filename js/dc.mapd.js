@@ -211,7 +211,7 @@ from scratch.
 
 dc.redrawAll = function (group) {
     var queryGroupId = dc._redrawId++;
-    console.log("redraw " + queryGroupId);
+    //console.log("redraw " + queryGroupId);
     //console.log("Query group id: " + queryGroupId);
     var stackEmpty = (dc._redrawIdStack === null);
     dc._redrawIdStack = queryGroupId;  
@@ -730,8 +730,7 @@ dc.baseMixin = function (_chart) {
     };
     var _renderTitle = true;
 
-    //var _transitionDuration = 750;
-    var _transitionDuration = 10;
+    var _transitionDuration = 750;
 
     var _filterPrinter = dc.printers.filters;
 
@@ -822,7 +821,7 @@ dc.baseMixin = function (_chart) {
     };
 
     var _dataAsync = function(group,callbacks) {
-        console.log(_chart.chartID() + " base async");
+        //console.log(_chart.chartID() + " base async");
         group.allAsync(callbacks);
     }
 
@@ -941,7 +940,6 @@ dc.baseMixin = function (_chart) {
     };
 
     _chart.dataAsync = function (callback) {
-        //console.log("data async");
         //console.log(_dataAsync);
         //_groupCopy = jQuery.extend(true,{},_group);
         //var id = queryId++;
@@ -1280,8 +1278,8 @@ dc.baseMixin = function (_chart) {
         if (queryGroupId !== undefined) {
             //var tempCount = dc._renderCount + 1;
             //console.log(tempCount + " of " + queryCount);
-            console.log("render return: " + _chart.chartID());
-            console.log(data);
+            //console.log("render return: " + _chart.chartID());
+            //console.log(data);
 
 
             if (++dc._renderCount == queryCount) {
@@ -2181,7 +2179,6 @@ dc.colorMixin = function (_chart) {
 dc.mapMixin = function (_chart) {
 
     function zoomHandler() {
-      console.log("zoom");
       _chart._invokeZoomedListener();
     }
 
@@ -3749,7 +3746,6 @@ dc.capMixin = function (_chart) {
     }
     else {
       _chart.data(function(group, callbacks) {
-          console.log("async");
           if (_cap === Infinity) {
             callbacks.push(_chart.computeOrderedGroups.bind(this));
             group.allAsync(callbacks);
@@ -4611,7 +4607,6 @@ dc.barChart = function (parent, chartGroup) {
     });
 
     _chart.plotData = function () {
-        console.log(_chart.dataAsync);
         var layers = _chart.chartBodyG().selectAll('g.stack')
             .data(_chart.data());
 
@@ -5501,8 +5496,12 @@ dc.dataTable = function (parent, chartGroup) {
     var _order = d3.ascending;
 
     _chart.setDataAsync(function(group,callbacks) {
-        console.log("set data async");
-        _chart.dimension().topAsync(_size,callbacks);
+        if (_order === d3.ascending) {
+            _chart.dimension().bottomAsync(_size,callbacks);
+        }
+        else {
+            _chart.dimension().topAsync(_size,callbacks);
+        }
     });
 
     _chart.addFilteredColumn = function(columnName) {
@@ -5674,10 +5673,15 @@ dc.dataTable = function (parent, chartGroup) {
 
     function nestEntries() {
         var entries;
-        if (_order === d3.ascending) {
-            entries = _chart.dimension().bottom(_size);
-        } else {
-            entries = _chart.dimension().top(_size);
+        if (_chart.dataCache != null) {
+            entries = _chart.dataCache;
+        }
+        else {
+            if (_order === d3.ascending) {
+                entries = _chart.dimension().bottom(_size);
+            } else {
+                entries = _chart.dimension().top(_size);
+            }
         }
 
         return d3.nest()
