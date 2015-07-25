@@ -173,10 +173,6 @@ dc.refocusAll = function (group) {
     }
 };
 
-/*
-dc.registerRenderAll = function(callback) {
-}
-*/
 
 /**
 #### dc.renderAll([chartGroup])
@@ -185,7 +181,7 @@ charts that belong to the default chart group will be re-rendered.
 **/
 dc.renderAll = function (group) {
     var queryGroupId = dc._renderId++;
-    console.log("renderall " + queryGroupId);
+    //console.log("renderall " + queryGroupId);
     var stackEmpty = (dc._renderIdStack === null);
     dc._renderIdStack = queryGroupId;  
     if (!stackEmpty)
@@ -1231,7 +1227,7 @@ dc.baseMixin = function (_chart) {
     _chart.renderAsync = function(queryGroupId,queryCount) {
         //var groupCopy = jQuery.extend(true,{},_group);
         var id = queryId++;
-        console.log("Render async: " + _chart.chartID() + "-" + id);
+        //console.log("Render async: " + _chart.chartID() + "-" + id);
         var renderCallback = $.proxy(_chart.render,this,id,queryGroupId,queryCount);
         _chart.dataAsync([renderCallback]);
         //var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[renderCallback]);
@@ -1276,12 +1272,12 @@ dc.baseMixin = function (_chart) {
         */
 
         if (queryGroupId !== undefined) {
-            //var tempCount = dc._renderCount + 1;
-            //console.log(tempCount + " of " + queryCount);
-            //console.log("render return: " + _chart.chartID());
-            //console.log(data);
-
-
+            /*
+            var tempCount = dc._renderCount + 1;
+            console.log(tempCount + " of " + queryCount);
+            console.log("render return: " + _chart.chartID());
+            console.log(data);
+            */
             if (++dc._renderCount == queryCount) {
                 dc._renderCount = 0;
                 var stackEmpty = dc._renderIdStack == null || dc._renderIdStack == queryGroupId;
@@ -1362,6 +1358,15 @@ dc.baseMixin = function (_chart) {
 
 
         if (queryGroupId !== undefined) {
+            /*
+            var tempCount = dc._redrawCount + 1;
+            console.log(tempCount + " of " + queryCount);
+            console.log("redraw return: " + _chart.chartID());
+            console.log(data);
+            */
+
+
+
             //var tempCount = dc._redrawCount + 1;
             //console.log (tempCount +  " of " + queryCount);
             if (++dc._redrawCount == queryCount) {
@@ -4596,7 +4601,7 @@ dc.barChart = function (parent, chartGroup) {
         _chart._rescale();
         _barWidth = undefined;
     });
-
+    /*
     dc.override(_chart, 'render', function () {
         if (_chart.round() && _centerBar && !_alwaysUseRounding) {
             dc.logger.warn('By default, brush rounding is disabled if bars are centered. ' +
@@ -4605,6 +4610,7 @@ dc.barChart = function (parent, chartGroup) {
 
         _chart._render();
     });
+    */
 
     _chart.plotData = function () {
         var layers = _chart.chartBodyG().selectAll('g.stack')
