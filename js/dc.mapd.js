@@ -66,7 +66,8 @@ var dc = {
     _renderCount: 0,
     _redrawCount: 0,
     _renderIdStack: null,
-    _redrawIdStack: null 
+    _redrawIdStack: null,
+    _globalTransitionDuration: null
 };
 
 dc.chartRegistry = function () {
@@ -1203,7 +1204,7 @@ dc.baseMixin = function (_chart) {
     **/
     _chart.transitionDuration = function (d) {
         if (!arguments.length) {
-            return _transitionDuration;
+            return dc._globalTransitionDuration != null ? dc._globalTransitionDuration : _transitionDuration;
         }
         _transitionDuration = d;
         return _chart;
@@ -1280,6 +1281,7 @@ dc.baseMixin = function (_chart) {
             */
             if (++dc._renderCount == queryCount) {
                 dc._renderCount = 0;
+                dc._globalTransitionDuration = null; // reset to null if was brush
                 var stackEmpty = dc._renderIdStack == null || dc._renderIdStack == queryGroupId;
                 dc._renderIdStack = null;
                 if (!stackEmpty)
@@ -1371,6 +1373,7 @@ dc.baseMixin = function (_chart) {
             //console.log (tempCount +  " of " + queryCount);
             if (++dc._redrawCount == queryCount) {
                 dc._redrawCount = 0;
+                dc._globalTransitionDuration = null; // reset to null if was brush
                 var stackEmpty = dc._redrawIdStack == null || dc._redrawIdStack == queryGroupId;
                 dc._redrawIdStack = null;
                 if (!stackEmpty)
@@ -3123,6 +3126,7 @@ dc.coordinateGridMixin = function (_chart) {
             var rangedFilter = dc.filters.RangedFilter(extent[0], extent[1]);
 
             dc.events.trigger(function () {
+                dc._globalTransitionDuration = 10;
                 _chart.replaceFilter(rangedFilter);
                 _chart.redrawGroup();
             }, dc.constants.EVENT_DELAY);
