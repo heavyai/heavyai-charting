@@ -58,6 +58,7 @@ var dc = {
         EVENT_DELAY: 0,
         NEGLIGIBLE_NUMBER: 1e-10
     },
+    _refreshDisabled: false,
     _renderlet: null,
     _renderFlag: false,
     _redrawFlag: false,
@@ -67,7 +68,8 @@ var dc = {
     _redrawCount: 0,
     _renderIdStack: null,
     _redrawIdStack: null,
-    _globalTransitionDuration: null
+    _globalTransitionDuration: null,
+    _redrawCallback: null
 };
 
 dc.chartRegistry = function () {
@@ -144,6 +146,14 @@ dc.deregisterAllCharts = function (group) {
     dc.chartRegistry.clear(group);
 };
 
+dc.disableRefresh = function() {
+    dc._refreshDisabled = true;
+}
+
+dc.enableRefresh = function() {
+    dc._refreshDisabled = false;
+}
+
 /**
 ## Utilities
 **/
@@ -181,8 +191,9 @@ Re-render all charts belong to the given chart group. If the chart group is not 
 charts that belong to the default chart group will be re-rendered.
 **/
 dc.renderAll = function (group) {
+    if (dc._refreshDisabled)
+        return;
     var queryGroupId = dc._renderId++;
-    //console.log("renderall " + queryGroupId);
     var stackEmpty = (dc._renderIdStack === null);
     dc._renderIdStack = queryGroupId;  
     if (!stackEmpty)
@@ -206,18 +217,22 @@ when redrawing dc tries to update the graphic incrementally, using transitions, 
 from scratch.
 **/
 
-dc.redrawAll = function (group) {
+dc.redrawAll = function (group, callback) {
+    if (dc._refreshDisabled)
+        return;
     var queryGroupId = dc._redrawId++;
-    //console.log("redraw " + queryGroupId);
-    //console.log("Query group id: " + queryGroupId);
-    var stackEmpty = (dc._redrawIdStack === null);
-    dc._redrawIdStack = queryGroupId;  
-    //console.log("Stack empty: " + stackEmpty);
-    if (!stackEmpty)
+    var stackEmpty = false;
+    if (callback !== undefined) {
+        dc._redrawCallback = callback;
+    }
+    else {
+        var stackEmpty = (dc._redrawIdStack === null);
+        dc._redrawIdStack = queryGroupId;  
+    }
+    if (!stackEmpty && callback === undefined)
         return;
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-        //charts[i].redraw();
         charts[i].redrawAsync(queryGroupId,charts.length);
     }
 
@@ -727,7 +742,7 @@ dc.baseMixin = function (_chart) {
     };
     var _renderTitle = true;
 
-    var _transitionDuration = 750;
+    var _transitionDuration = 500;
 
     var _filterPrinter = dc.printers.filters;
 
@@ -1226,6 +1241,8 @@ dc.baseMixin = function (_chart) {
     }
 
     _chart.renderAsync = function(queryGroupId,queryCount) {
+        if (dc._refreshDisabled)
+            return;
         //var groupCopy = jQuery.extend(true,{},_group);
         var id = queryId++;
         //console.log("Render async: " + _chart.chartID() + "-" + id);
@@ -1247,6 +1264,8 @@ dc.baseMixin = function (_chart) {
 
     **/
     _chart.render = function (id,queryGroupId,queryCount,data) {
+        if (dc._refreshDisabled)
+            return;
         _chart.dataCache = data !== undefined ? data : null;
 
         _listeners.preRender(_chart);
@@ -1320,6 +1339,8 @@ dc.baseMixin = function (_chart) {
 
     **/
     _chart.redrawAsync = function(queryGroupId,queryCount) {
+        if (dc._refreshDisabled)
+            return;
         //var groupCopy = jQuery.extend(true,{},_group);
         var id = queryId++;
         //console.log("Redraw async: " + _chart.chartID() + "-" + id);
@@ -1334,6 +1355,8 @@ dc.baseMixin = function (_chart) {
 
 
     _chart.redraw = function (id,queryGroupId,queryCount, data) {
+        if (dc._refreshDisabled)
+            return;
         _chart.dataCache = data !== undefined ? data : null;
         //if (_chart.dataCache == null) {
         //    console.log("NULL");
@@ -1364,20 +1387,22 @@ dc.baseMixin = function (_chart) {
             var tempCount = dc._redrawCount + 1;
             console.log(tempCount + " of " + queryCount);
             console.log("redraw return: " + _chart.chartID());
-            console.log(data);
             */
 
-
-
-            //var tempCount = dc._redrawCount + 1;
-            //console.log (tempCount +  " of " + queryCount);
             if (++dc._redrawCount == queryCount) {
                 dc._redrawCount = 0;
                 dc._globalTransitionDuration = null; // reset to null if was brush
                 var stackEmpty = dc._redrawIdStack == null || dc._redrawIdStack == queryGroupId;
                 dc._redrawIdStack = null;
-                if (!stackEmpty)
+                // look at logic here
+                if (dc._redrawCallback != null) {
+                    var callbackCopy = dc._redrawCallback;
+                    dc._redrawCallback = null;
+                    callbackCopy();
+                }
+                else if (!stackEmpty) {
                     dc.redrawAll();
+                }
             }
         }
 
@@ -3302,6 +3327,7 @@ dc.coordinateGridMixin = function (_chart) {
 
     **/
     _chart.focus = function (range) {
+        console.log("focus");
         if (hasRangeSelected(range)) {
             _chart.x().domain(range);
         } else {
@@ -6133,8 +6159,6 @@ dc.bubbleChart = function (parent, chartGroup) {
 
     var _elasticRadius = false;
 
-    _chart.transitionDuration(750);
-
     var bubbleLocator = function (d) {
         return 'translate(' + (bubbleX(d)) + ',' + (bubbleY(d)) + ')';
     };
@@ -6324,6 +6348,8 @@ dc.compositeChart = function (parent, chartGroup) {
     });
 
     _chart._brushing = function () {
+        console.log("brushing");
+
         var extent = _chart.extendBrush();
         var brushIsEmpty = _chart.brushIsEmpty(extent);
 
