@@ -3327,7 +3327,6 @@ dc.coordinateGridMixin = function (_chart) {
 
     **/
     _chart.focus = function (range) {
-        console.log("focus");
         if (hasRangeSelected(range)) {
             _chart.x().domain(range);
         } else {
