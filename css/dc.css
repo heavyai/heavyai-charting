@@ -75,7 +75,7 @@ art {
 }
 
 .dc-chart thead {
-    position: absolute;
+    position: relative;
     top: 38px;
 }
 
@@ -206,6 +206,16 @@ art {
 }
 
 .dc-data-table {
+}
+
+.dc-table-column:hover{
+    -webkit-transition: all 0.2s;
+     transition: all 0.2s;
+}
+
+.dc-table-column:hover{
+    color:black;
+    font-weight:bold;
 }
 
 .dc-chart g.state {
