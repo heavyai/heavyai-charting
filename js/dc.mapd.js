@@ -2191,6 +2191,7 @@ dc.colorMixin = function (_chart) {
         //var b = _colors(a);
         //console.log(b);
         //return b;
+        //console.log(d);
         return _colors(_colorAccessor.call(this, d, i));
     };
 
@@ -7274,16 +7275,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
       return _chart;
     }
 
-    /*
-    _chart.projectPoint = function (coords) {
-      if (_chart.bounds == null)
-        return;
-      var xPixelScale = 1.0/(_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
-      var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
-      var mapCoords = conv4326To900913([d.lon,d.lat]);
-      var pixelPos = {x: (mapCoords[0] - _chart.bounds[0][0])*xPixelScale , y:_chart.height() - (mapCoords[1] - _chart.bounds[0][1])*yPixelScale}; 
-    }
-    */
 
     _chart.onClick = function(d) {
       if (_chart.bounds == null)
@@ -7293,24 +7284,10 @@ dc.bubbleOverlay = function (root, chartGroup) {
       var mapCoords = conv4326To900913([d.x,d.y]);
       var pixelPos = {x: (mapCoords[0] - _chart.bounds[0][0])*xPixelScale , y:_chart.height() - (mapCoords[1] - _chart.bounds[0][1])*yPixelScale}; 
       
-      //var xPixel = (mapCoords[0] - _chart.bounds[0][0])*xPixelScale ;
-      //var yPixel = _chart.height() - (mapCoords[1] - _chart.bounds[0][1])*yPixelScale ;
-      //console.log(xPixel + "," + yPixel);
-      //var rect = _chart.svg().append('rect').attr('class',BUBBLE_POPUP_CLASS).attr('transform','translate(' + xPixel + ',' + yPixel + ')');
 
       if (_clickCallbackFunc != null) {
         _clickCallbackFunc(d);
       }
-
-      //var tooltip = new mapboxgl.Popup({
-      //      closeOnClick: true
-      //    })
-      //  .setLatLng([d.lat, d.lon])
-      //      .setHTML('<h1>Hello World!</h1>')
-      //        .addTo(map);
-
-
-      //console.log(e);
     }
 
 
@@ -7344,9 +7321,9 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
     _chart._doRender = function () {
         _g = initOverlayG();
+        _g.selectAll('g').remove();
         _chart.r().range([_chart.MIN_RADIUS, _chart.width() * _chart.maxBubbleRelativeSize()]);
 
-        //initializeBubbles();
         _chart.plotData();
 
         _chart.fadeDeselectedArea();
@@ -7394,11 +7371,10 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
 
     _chart.plotData = function() {
-        mapData();
+        getData();
+        //var startTime = new Date();
         mapDataToPoints(_chart.savedData);
-
-        //var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_points);
-        var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData);
+        var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData, function(d) {return d.key;});
 
         bubbleG.enter().append('g')
             .attr('class', function (d) {return (BUBBLE_NODE_CLASS + ' ' + dc.utils.nameToId(d.key)) })
@@ -7408,62 +7384,18 @@ dc.bubbleOverlay = function (root, chartGroup) {
                 return 3;
             })
             .attr('fill', _chart.getColor)
+            .on('click', _chart.onClick);
 
         bubbleG
-            .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
-            .attr('r', function(d) {
-                return 3;
-            })
-            .attr('fill', _chart.getColor);
+            .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')});
 
         bubbleG.exit().remove();
+        //var stopTime = new Date();
+        //var diff = stopTime - startTime;
     }
 
 
-
-    function initializeBubbles() {
-        _g.selectAll('g').remove();
-        var data = mapData();
-        //var startTime = new Date();
-        _points = [];
-        mapDataToPoints(data);
-        /*
-        var endTime1 = new Date();
-        var elapsed1 = endTime1 - startTime;
-        console.log("Elapsed MapData to Points: " + elapsed1 + " ms");
-        */
-
-
-        _points.forEach(function (point) {
-            var nodeG = getNodeG(point, data);
-
-            var circle = nodeG.select('circle.' + BUBBLE_CLASS);
-
-            if (circle.empty()) {
-                circle = nodeG.append('circle')
-                    .attr('class', BUBBLE_CLASS)
-                    .attr('r', 0)
-                    .attr('fill', _chart.getColor)
-                    .on('click', _chart.onClick);
-            }
-
-            dc.transition(circle, _chart.transitionDuration())
-                .attr('r', function (d) {
-                    return _chart.bubbleR(d);
-                });
-
-            //_chart._doRenderLabel(nodeG);
-
-            //_chart._doRenderTitles(nodeG);
-        });
-        /*
-        var endTime2 = new Date();
-        var elapsed2 = endTime2 - startTime;
-        console.log("Elapsed total:  " + elapsed2 + " ms");
-        */
-    }
-
-    function mapData() {
+    function getData() {
         _chart.colorCountDictionary = {};
         _chart.savedData = _chart.data();
         _chart.savedData.forEach(function(datum) {
@@ -7475,18 +7407,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
             }
             datum.key = _chart.keyAccessor()(datum);
         });
-        /*
-        _chart.data().forEach(function (datum) {
-            if (datum.color in _chart.colorCountDictionary) {
-              _chart.colorCountDictionary[datum.color]++;
-            }
-            else {
-              _chart.colorCountDictionary[datum.color] = 1;
-            }
-            _chart.savedData[_chart.keyAccessor()(datum)] = datum;
-            
-        });
-        */
         if (_colorCountUpdateCallback != null) {
           _colorCountUpdateCallback(_chart.colorCountDictionary);
         }
@@ -7494,31 +7414,9 @@ dc.bubbleOverlay = function (root, chartGroup) {
         return _chart.savedData;
     }
 
-    function getNodeG(point, data) {
-        var bubbleNodeClass = BUBBLE_NODE_CLASS + ' ' + dc.utils.nameToId(point.name);
-
-        var nodeG = _g.select('g.' + dc.utils.nameToId(point.name));
-
-        if (nodeG.empty()) {
-            nodeG = _g.append('g')
-                .attr('class', bubbleNodeClass)
-                .attr('transform', 'translate(' + point.x + ',' + point.y + ')');
-        }
-        else {
-          nodeG.attr('transform', 'translate(' + point.x + ',' + point.y + ')');
-        }
-
-        nodeG.datum(data[point.name]);
-
-        return nodeG;
-    }
 
     _chart._doRedraw = function () {
-        //updateBubbles();
-        //initializeBubbles();
         _chart.plotData();
-
-
         _chart.fadeDeselectedArea();
         return _chart;
     };
@@ -7526,32 +7424,12 @@ dc.bubbleOverlay = function (root, chartGroup) {
     function updateBubbles() {
         if (!_g)
               return;
-        var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData);
+        var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData, function(d) {return d.key});
         bubbleG
             .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
+
     }
 
-
-        /*
-        var data = _chart.savedData;
-
-        _points.forEach(function (point) {
-            var nodeG = getNodeG(point, data);
-
-            var circle = nodeG.select('circle.' + BUBBLE_CLASS);
-
-            dc.transition(circle, _chart.transitionDuration())
-                .attr('r', function (d) {
-                    return _chart.bubbleR(d);
-                })
-                .attr('fill', _chart.getColor);
-
-            _chart.doUpdateLabels(nodeG);
-
-            _chart.doUpdateTitles(nodeG);
-        });
-    }
-    */
 
     _chart.debug = function (flag) {
         if (flag) {
