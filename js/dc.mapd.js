@@ -7247,7 +7247,11 @@ dc.bubbleOverlay = function (root, chartGroup) {
     var _colorCountUpdateCallback = null;
     var _clickCallbackFunc = null;
 
-    _chart.MIN_RADIUS = 1;
+    _chart.MIN_RADIUS = 2;
+    _chart.MAX_RADIUS = 10;
+
+    _chart.scaleRadius = false;
+
     _chart.colorCountDictionary = {};
 
     _chart.clickCallback = function(_) {
@@ -7264,6 +7268,8 @@ dc.bubbleOverlay = function (root, chartGroup) {
     _chart.radiusValueAccessor(function (d) {
         return d.value;
     });
+
+    _chart.r(d3.scale.sqrt());
 
     _chart.bounds = null;
     _chart.savedData = [];
@@ -7322,7 +7328,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
     _chart._doRender = function () {
         _g = initOverlayG();
         _g.selectAll('g').remove();
-        _chart.r().range([_chart.MIN_RADIUS, _chart.width() * _chart.maxBubbleRelativeSize()]);
 
         _chart.plotData();
 
@@ -7374,6 +7379,12 @@ dc.bubbleOverlay = function (root, chartGroup) {
         getData();
         //var startTime = new Date();
         mapDataToPoints(_chart.savedData);
+        if (_chart.scaleRadius) {
+            _chart.r().domain([_chart.rMin(), _chart.rMax()]);
+
+            _chart.r().range([_chart.MIN_RADIUS, _chart.MAX_RADIUS]);
+        }
+        console.log(_chart.r());
         var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData, function(d) {return d.key;});
 
         bubbleG.enter().append('g')
@@ -7381,7 +7392,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
             .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
             .append('circle').attr('class', _chart.BUBBLE_CLASS)
             .attr('r', function(d) {
-                return 3;
+                return _chart.scaleRadius ? _chart.bubbleR(d) : _chart.radiusValueAccessor()(d);
             })
             .attr('fill', _chart.getColor)
             .on('click', _chart.onClick);
