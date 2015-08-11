@@ -7265,7 +7265,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
     });
 
     _chart.bounds = null;
-    _chart.savedData = {};
+    _chart.savedData = [];
     _chart.onColorCountUpdate = function(f) {
       if (!arguments.length) {
           return _colorCountUpdateCallback;
@@ -7290,7 +7290,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
         return;
       var xPixelScale = 1.0/(_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
       var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
-      var mapCoords = conv4326To900913([d.lon,d.lat]);
+      var mapCoords = conv4326To900913([d.x,d.y]);
       var pixelPos = {x: (mapCoords[0] - _chart.bounds[0][0])*xPixelScale , y:_chart.height() - (mapCoords[1] - _chart.bounds[0][1])*yPixelScale}; 
       
       //var xPixel = (mapCoords[0] - _chart.bounds[0][0])*xPixelScale ;
@@ -7346,7 +7346,8 @@ dc.bubbleOverlay = function (root, chartGroup) {
         _g = initOverlayG();
         _chart.r().range([_chart.MIN_RADIUS, _chart.width() * _chart.maxBubbleRelativeSize()]);
 
-        initializeBubbles();
+        //initializeBubbles();
+        _chart.plotData();
 
         _chart.fadeDeselectedArea();
 
@@ -7366,12 +7367,15 @@ dc.bubbleOverlay = function (root, chartGroup) {
         return;
       var xPixelScale = 1.0/(_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
       var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
-
-      for (var key in data) {
-        var coordTrans = conv4326To900913([data[key].lon,data[key].lat]);
+      var numPoints = data.length;
+      for (var i = 0; i < numPoints; i++) {
+        var coordTrans = conv4326To900913([data[i].x,data[i].y]);
         var xPixel = (coordTrans[0] - _chart.bounds[0][0])*xPixelScale ;
         var yPixel = _chart.height() - (coordTrans[1] - _chart.bounds[0][1])*yPixelScale ;
-        _points.push({name: key, x: xPixel, y: yPixel, xCoord: coordTrans[0], yCoord: coordTrans[1]}); 
+        data[i].xPixel = xPixel;
+        data[i].yPixel = yPixel;
+        data[i].xCoord = coordTrans[0];
+        data[i].yCoord = coordTrans[1];
       }
     }
 
@@ -7380,13 +7384,42 @@ dc.bubbleOverlay = function (root, chartGroup) {
         return;
       var xPixelScale = 1.0/(_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
       var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
-      var numPoints = _points.length;
+      var numPoints = _chart.savedData.length;
       for (var p = 0; p < numPoints; p++) {
-        _points[p].x = (_points[p].xCoord - _chart.bounds[0][0])*xPixelScale ;
-        _points[p].y = _chart.height() - (_points[p].yCoord - _chart.bounds[0][1])*yPixelScale ;
+        _chart.savedData[p].xPixel = (_chart.savedData[p].xCoord - _chart.bounds[0][0])*xPixelScale ;
+        _chart.savedData[p].yPixel = _chart.height() - (_chart.savedData[p].yCoord - _chart.bounds[0][1])*yPixelScale ;
       }
       updateBubbles();
     }
+
+
+    _chart.plotData = function() {
+        mapData();
+        mapDataToPoints(_chart.savedData);
+
+        //var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_points);
+        var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData);
+
+        bubbleG.enter().append('g')
+            .attr('class', function (d) {return (BUBBLE_NODE_CLASS + ' ' + dc.utils.nameToId(d.key)) })
+            .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
+            .append('circle').attr('class', _chart.BUBBLE_CLASS)
+            .attr('r', function(d) {
+                return 3;
+            })
+            .attr('fill', _chart.getColor)
+
+        bubbleG
+            .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
+            .attr('r', function(d) {
+                return 3;
+            })
+            .attr('fill', _chart.getColor);
+
+        bubbleG.exit().remove();
+    }
+
+
 
     function initializeBubbles() {
         _g.selectAll('g').remove();
@@ -7432,7 +7465,17 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
     function mapData() {
         _chart.colorCountDictionary = {};
-        _chart.savedData = {};
+        _chart.savedData = _chart.data();
+        _chart.savedData.forEach(function(datum) {
+            if (datum.color in _chart.colorCountDictionary) {
+              _chart.colorCountDictionary[datum.color]++;
+            }
+            else {
+              _chart.colorCountDictionary[datum.color] = 1;
+            }
+            datum.key = _chart.keyAccessor()(datum);
+        });
+        /*
         _chart.data().forEach(function (datum) {
             if (datum.color in _chart.colorCountDictionary) {
               _chart.colorCountDictionary[datum.color]++;
@@ -7443,6 +7486,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
             _chart.savedData[_chart.keyAccessor()(datum)] = datum;
             
         });
+        */
         if (_colorCountUpdateCallback != null) {
           _colorCountUpdateCallback(_chart.colorCountDictionary);
         }
@@ -7471,13 +7515,24 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
     _chart._doRedraw = function () {
         //updateBubbles();
-        initializeBubbles();
+        //initializeBubbles();
+        _chart.plotData();
+
 
         _chart.fadeDeselectedArea();
         return _chart;
     };
 
     function updateBubbles() {
+        if (!_g)
+              return;
+        var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData);
+        bubbleG
+            .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
+    }
+
+
+        /*
         var data = _chart.savedData;
 
         _points.forEach(function (point) {
@@ -7496,6 +7551,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
             _chart.doUpdateTitles(nodeG);
         });
     }
+    */
 
     _chart.debug = function (flag) {
         if (flag) {
