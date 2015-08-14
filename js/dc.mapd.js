@@ -7613,7 +7613,7 @@ dc.rowChart = function (parent, chartGroup) {
             axisG = _g.append('g').attr('class', 'axis')
                 .attr('transform', 'translate(0, ' + _chart.effectiveHeight() + ')');
         }
-
+        
         dc.transition(axisG, _chart.transitionDuration())
             .call(_xAxis);
     }
