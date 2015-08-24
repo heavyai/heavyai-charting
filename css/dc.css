@@ -216,6 +216,7 @@ art {
 .dc-table-column:hover{
     color:black;
     font-weight:bold;
+    cursor: pointer;
 }
 
 .dc-chart g.state {
