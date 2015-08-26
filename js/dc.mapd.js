@@ -7384,32 +7384,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
             _chart.r().range([_chart.MIN_RADIUS, _chart.MAX_RADIUS]);
         }
-        //console.log(_chart.r());
-        /*
-        var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData);
-
-        bubbleG.enter().append('g')
-            //.attr('class', function (d) {return (BUBBLE_NODE_CLASS + ' ' + dc.utils.nameToId(d.key)) })
-            .attr('class', function (d) {return (BUBBLE_NODE_CLASS) })
-            .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
-            .append('circle').attr('class', _chart.BUBBLE_CLASS)
-            .attr('r', function(d) {
-                return _chart.scaleRadius ? _chart.bubbleR(d) : _chart.radiusValueAccessor()(d);
-            })
-            .attr('fill', _chart.getColor)
-            .on('click', _chart.onClick);
-
-        bubbleG
-            .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
-            .attr('r', function(d) {
-                //console.log(d.size);
-                //console.log(_chart.bubbleR(d));
-                return _chart.scaleRadius ? _chart.bubbleR(d) : _chart.radiusValueAccessor()(d);
-            })
-            .attr('fill', _chart.getColor);
-
-        bubbleG.exit().remove();
-        */
         var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData, function(d) {return d.key;});
 
         bubbleG.enter().append('g')
@@ -7433,7 +7407,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
         bubbleG.exit().remove();
         var stopTime = new Date();
         var diff = stopTime - startTime;
-        console.log(diff);
+        //console.log(diff);
     }
 
 
