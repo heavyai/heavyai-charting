@@ -800,10 +800,10 @@ dc.baseMixin = function (_chart) {
             $(dimension).trigger("filter-clear"); // this is hacky - we need to get dimension.filter to use dimension as this 
         } else {
             if (_chart.hasOwnProperty('rangeFocused')) {
-              dimension.filterDisjunct(filters, _chart.rangeFocused());
+              dimension.filterMulti(filters, _chart.rangeFocused());
             }
             else {
-              dimension.filterDisjunct(filters);
+              dimension.filterMulti(filters);
             }
           }
           /*
