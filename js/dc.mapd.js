@@ -800,10 +800,10 @@ dc.baseMixin = function (_chart) {
             $(dimension).trigger("filter-clear"); // this is hacky - we need to get dimension.filter to use dimension as this 
         } else {
             if (_chart.hasOwnProperty('rangeFocused')) {
-              dimension.filterDisjunct(filters, _chart.rangeFocused());
+              dimension.filterMulti(filters, _chart.rangeFocused());
             }
             else {
-              dimension.filterDisjunct(filters);
+              dimension.filterMulti(filters);
             }
           }
           /*
@@ -3753,12 +3753,11 @@ dc.capMixin = function (_chart) {
           group.allAsync(callbacks);
       }
       else {
-          group.topAsync(_cap,callbacks)
+          group.topAsync(_cap, undefined, callbacks)
       }
     });
 
     if (!dc.async) {
-
       _chart.data(function (group) {
           if (_cap === Infinity) {
             if (_chart.dataCache != null)
@@ -3885,7 +3884,7 @@ dc.bubbleMixin = function (_chart) {
 
     _chart.setDataAsync(function(group,callbacks) {
         if (_chart.cap() != undefined) {
-            group.topAsync(_chart.cap(),callbacks);
+            group.topAsync(_chart.cap(), undefined, callbacks);
         }
         else {
             group.allAsync(callbacks);
@@ -5533,10 +5532,10 @@ dc.dataTable = function (parent, chartGroup) {
 
     _chart.setDataAsync(function(group,callbacks) {
         if (_order === d3.ascending) {
-            _chart.dimension().bottomAsync(_size,callbacks);
+            _chart.dimension().bottomAsync(_size, undefined,callbacks);
         }
         else {
-            _chart.dimension().topAsync(_size,callbacks);
+            _chart.dimension().topAsync(_size, undefined,callbacks);
         }
     });
 
@@ -8582,7 +8581,7 @@ dc.numberDisplay = function (parent, chartGroup) {
     };
 
     _chart.setDataAsync(function(group,callbacks) {
-        group.value ? group.valueAsync(callbacks) : group.topAsync(1,callbacks);
+        group.value ? group.valueAsync(callbacks) : group.topAsync(1, undefined, callbacks);
     });
 
 
