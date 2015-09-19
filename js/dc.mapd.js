@@ -5737,7 +5737,6 @@ dc.dataTable = function (parent, chartGroup) {
               for (var r = 0; r < numRows; r++) {
                 console.log(dataRows[r]);
               }
-              //debugger;
               */
               return d.values;
             });
@@ -8731,7 +8730,7 @@ dc.heatMap = function (parent, chartGroup) {
     var _xAxisOnClick = function (d) { filterAxis(0, d); };
     var _yAxisOnClick = function (d) { filterAxis(1, d); };
     var _boxOnClick = function (d) {
-        var filter = d.key;
+        var filter = [d.key0,d.key1];
         dc.events.trigger(function () {
             _chart.filter(filter);
             _chart.redrawGroup();
@@ -8740,19 +8739,20 @@ dc.heatMap = function (parent, chartGroup) {
 
     function filterAxis(axis, value) {
         var cellsOnAxis = _chart.selectAll('.box-group').filter(function (d) {
-            return d.key[axis] === value;
+            var keyName = "key" + axis;
+            return d[keyName] === value;
         });
         var unfilteredCellsOnAxis = cellsOnAxis.filter(function (d) {
-            return !_chart.hasFilter(d.key);
+            return !_chart.hasFilter([d.key0, d.key1]);
         });
         dc.events.trigger(function () {
             if (unfilteredCellsOnAxis.empty()) {
                 cellsOnAxis.each(function (d) {
-                    _chart.filter(d.key);
+                    _chart.filter([d.key0, d.key1]);
                 });
             } else {
                 unfilteredCellsOnAxis.each(function (d) {
-                    _chart.filter(d.key);
+                    _chart.filter([d.key0, d.key1]);
                 });
             }
             _chart.redrawGroup();
@@ -8763,7 +8763,6 @@ dc.heatMap = function (parent, chartGroup) {
         if (!arguments.length) {
             return _chart._filter();
         }
-
         return _chart._filter(dc.filters.TwoDimensionalFilter(filter));
     });
 
@@ -8973,7 +8972,7 @@ dc.heatMap = function (parent, chartGroup) {
     };
 
     _chart.isSelectedNode = function (d) {
-        return _chart.hasFilter(d.key);
+        return _chart.hasFilter([d.key0, d.key1]);
     };
 
     return _chart.anchor(parent, chartGroup);
