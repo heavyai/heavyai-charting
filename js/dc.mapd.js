@@ -8817,10 +8817,14 @@ dc.heatMap = function (parent, chartGroup) {
             .attr('class', 'heatmap')
             .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
 
-        return _chart._doRedraw();
+        return _chart._doRedraw2();
     };
 
     _chart._doRedraw = function () {
+        _chart._doRender();
+    }
+
+    _chart._doRedraw2 = function () {
         var rows = _chart.rows(),
             cols = _chart.cols(),
             rowCount = rows.domain().length,
