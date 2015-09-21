@@ -8817,14 +8817,10 @@ dc.heatMap = function (parent, chartGroup) {
             .attr('class', 'heatmap')
             .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
 
-        return _chart._doRedraw2();
+        return _chart._doRedraw();
     };
 
     _chart._doRedraw = function () {
-        _chart._doRender();
-    }
-
-    _chart._doRedraw2 = function () {
         var rows = _chart.rows(),
             cols = _chart.cols(),
             rowCount = rows.domain().length,
@@ -8838,6 +8834,7 @@ dc.heatMap = function (parent, chartGroup) {
         var boxes = _chartBody.selectAll('g.box-group').data(_chart.data(), function (d, i) {
             return _chart.keyAccessor()(d, i) + '\0' + _chart.valueAccessor()(d, i);
         });
+
         var gEnter = boxes.enter().append('g')
             .attr('class', 'box-group');
 
@@ -8851,7 +8848,7 @@ dc.heatMap = function (parent, chartGroup) {
                 .text(_chart.title());
         }
 
-        dc.transition(boxes.selectAll('rect'), _chart.transitionDuration())
+        dc.transition(boxes.select('rect'), _chart.transitionDuration())
             .attr('x', function (d, i) { return cols(_chart.keyAccessor()(d, i)); })
             .attr('y', function (d, i) { return rows(_chart.valueAccessor()(d, i)); })
             .attr('rx', _xBorderRadius)
@@ -8964,7 +8961,7 @@ dc.heatMap = function (parent, chartGroup) {
     };
 
     /**
-     #### .xBorderRadius([value])
+     #### .yBorderRadius([value])
      Gets or sets the Y border radius.  Set to 0 to get full rectangles.  Default: 6.75
      */
     _chart.yBorderRadius = function (d) {
