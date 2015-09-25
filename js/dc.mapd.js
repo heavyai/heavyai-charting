@@ -106,6 +106,9 @@ dc.chartRegistry = function () {
         },
 
         deregister: function (chart, group) {
+            if (chart.hasOwnProperty('sampling')) {
+                chart.sampling(false); // to deincrement dc sampling counter
+            }
             group = initializeChartGroup(group);
             for (var i = 0; i < _chartMap[group].length; i++) {
                 if (_chartMap[group][i].anchorName() === chart.anchorName()) {
@@ -5513,6 +5516,8 @@ dc.dataTable = function (parent, chartGroup) {
     });
 
     _chart.sampling = function(setting) { // setting should be true or false
+        if (!arguments.length) 
+            return _sampling;
         if (setting && !_sampling) // if wasn't sampling
             dc._sampledCount++;
         else if (!setting && _sampling)
@@ -7252,6 +7257,9 @@ dc.bubbleOverlay = function (root, chartGroup) {
     }
 
     _chart.sampling = function(setting) { // setting should be true or false
+        if (!arguments.length) 
+            return _sampling;
+
         if (setting && !_sampling) // if wasn't sampling
             dc._sampledCount++;
         else if (!setting && _sampling)
