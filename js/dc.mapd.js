@@ -58,6 +58,7 @@ var dc = {
         EVENT_DELAY: 0,
         NEGLIGIBLE_NUMBER: 1e-10
     },
+    _lastFilteredSize: null,
     _refreshDisabled: false,
     _renderlet: null,
     _renderFlag: false,
@@ -800,10 +801,10 @@ dc.baseMixin = function (_chart) {
             $(dimension).trigger("filter-clear"); // this is hacky - we need to get dimension.filter to use dimension as this 
         } else {
             if (_chart.hasOwnProperty('rangeFocused')) {
-              dimension.filterDisjunct(filters, _chart.rangeFocused());
+              dimension.filterMulti(filters, _chart.rangeFocused());
             }
             else {
-              dimension.filterDisjunct(filters);
+              dimension.filterMulti(filters);
             }
           }
           /*
@@ -3753,12 +3754,11 @@ dc.capMixin = function (_chart) {
           group.allAsync(callbacks);
       }
       else {
-          group.topAsync(_cap,callbacks)
+          group.topAsync(_cap, undefined, callbacks)
       }
     });
 
     if (!dc.async) {
-
       _chart.data(function (group) {
           if (_cap === Infinity) {
             if (_chart.dataCache != null)
@@ -3885,7 +3885,7 @@ dc.bubbleMixin = function (_chart) {
 
     _chart.setDataAsync(function(group,callbacks) {
         if (_chart.cap() != undefined) {
-            group.topAsync(_chart.cap(),callbacks);
+            group.topAsync(_chart.cap(), undefined, callbacks);
         }
         else {
             group.allAsync(callbacks);
@@ -5461,13 +5461,15 @@ dc.dataCount = function (parent, chartGroup) {
     });
 
     _chart._doRender = function () {
-        // tot ok to call size b/c will hit cache every time
+        // ok to call size b/c will hit cache every time
         var tot = _chart.dimension().size(),
             val = null;
         if (_chart.dataCache != null)
             val = _chart.dataCache;
         else
             val = _chart.group().value();
+        dc._lastFilteredSize = val; 
+        console.log(dc._lastFilteredSize);
 
         var all = _formatNumber(tot);
         var selected = _formatNumber(val);
@@ -5533,10 +5535,10 @@ dc.dataTable = function (parent, chartGroup) {
 
     _chart.setDataAsync(function(group,callbacks) {
         if (_order === d3.ascending) {
-            _chart.dimension().bottomAsync(_size,callbacks);
+            _chart.dimension().bottomAsync(_size, undefined,callbacks);
         }
         else {
-            _chart.dimension().topAsync(_size,callbacks);
+            _chart.dimension().topAsync(_size, undefined,callbacks);
         }
     });
 
@@ -5738,7 +5740,6 @@ dc.dataTable = function (parent, chartGroup) {
               for (var r = 0; r < numRows; r++) {
                 console.log(dataRows[r]);
               }
-              //debugger;
               */
               return d.values;
             });
@@ -8582,7 +8583,7 @@ dc.numberDisplay = function (parent, chartGroup) {
     };
 
     _chart.setDataAsync(function(group,callbacks) {
-        group.value ? group.valueAsync(callbacks) : group.topAsync(1,callbacks);
+        group.value ? group.valueAsync(callbacks) : group.topAsync(1, undefined, callbacks);
     });
 
 
@@ -8732,7 +8733,7 @@ dc.heatMap = function (parent, chartGroup) {
     var _xAxisOnClick = function (d) { filterAxis(0, d); };
     var _yAxisOnClick = function (d) { filterAxis(1, d); };
     var _boxOnClick = function (d) {
-        var filter = d.key;
+        var filter = [d.key0,d.key1];
         dc.events.trigger(function () {
             _chart.filter(filter);
             _chart.redrawGroup();
@@ -8741,19 +8742,20 @@ dc.heatMap = function (parent, chartGroup) {
 
     function filterAxis(axis, value) {
         var cellsOnAxis = _chart.selectAll('.box-group').filter(function (d) {
-            return d.key[axis] === value;
+            var keyName = "key" + axis;
+            return d[keyName] === value;
         });
         var unfilteredCellsOnAxis = cellsOnAxis.filter(function (d) {
-            return !_chart.hasFilter(d.key);
+            return !_chart.hasFilter([d.key0, d.key1]);
         });
         dc.events.trigger(function () {
             if (unfilteredCellsOnAxis.empty()) {
                 cellsOnAxis.each(function (d) {
-                    _chart.filter(d.key);
+                    _chart.filter([d.key0, d.key1]);
                 });
             } else {
                 unfilteredCellsOnAxis.each(function (d) {
-                    _chart.filter(d.key);
+                    _chart.filter([d.key0, d.key1]);
                 });
             }
             _chart.redrawGroup();
@@ -8764,7 +8766,6 @@ dc.heatMap = function (parent, chartGroup) {
         if (!arguments.length) {
             return _chart._filter();
         }
-
         return _chart._filter(dc.filters.TwoDimensionalFilter(filter));
     });
 
@@ -8836,6 +8837,7 @@ dc.heatMap = function (parent, chartGroup) {
         var boxes = _chartBody.selectAll('g.box-group').data(_chart.data(), function (d, i) {
             return _chart.keyAccessor()(d, i) + '\0' + _chart.valueAccessor()(d, i);
         });
+
         var gEnter = boxes.enter().append('g')
             .attr('class', 'box-group');
 
@@ -8849,7 +8851,7 @@ dc.heatMap = function (parent, chartGroup) {
                 .text(_chart.title());
         }
 
-        dc.transition(boxes.selectAll('rect'), _chart.transitionDuration())
+        dc.transition(boxes.select('rect'), _chart.transitionDuration())
             .attr('x', function (d, i) { return cols(_chart.keyAccessor()(d, i)); })
             .attr('y', function (d, i) { return rows(_chart.valueAccessor()(d, i)); })
             .attr('rx', _xBorderRadius)
@@ -8962,7 +8964,7 @@ dc.heatMap = function (parent, chartGroup) {
     };
 
     /**
-     #### .xBorderRadius([value])
+     #### .yBorderRadius([value])
      Gets or sets the Y border radius.  Set to 0 to get full rectangles.  Default: 6.75
      */
     _chart.yBorderRadius = function (d) {
@@ -8974,7 +8976,7 @@ dc.heatMap = function (parent, chartGroup) {
     };
 
     _chart.isSelectedNode = function (d) {
-        return _chart.hasFilter(d.key);
+        return _chart.hasFilter([d.key0, d.key1]);
     };
 
     return _chart.anchor(parent, chartGroup);
