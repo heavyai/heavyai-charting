@@ -5469,7 +5469,6 @@ dc.dataCount = function (parent, chartGroup) {
         else
             val = _chart.group().value();
         dc._lastFilteredSize = val; 
-        console.log(dc._lastFilteredSize);
 
         var all = _formatNumber(tot);
         var selected = _formatNumber(val);
@@ -5532,6 +5531,7 @@ dc.dataTable = function (parent, chartGroup) {
         return d;
     };
     var _order = d3.ascending;
+    var _sampling = false;
 
     _chart.setDataAsync(function(group,callbacks) {
         if (_order === d3.ascending) {
@@ -5541,6 +5541,13 @@ dc.dataTable = function (parent, chartGroup) {
             _chart.dimension().topAsync(_size, undefined,callbacks);
         }
     });
+
+    _chart.sampling = function(setting) { // setting should be true or false
+        _sampling = setting;
+        if (_sampling == false)
+            _chart.dimension().samplingRatio(null); // unset sampling
+        return _chart;
+    }
 
     _chart.addFilteredColumn = function(columnName) {
       _filteredColumns[columnName] = null;
@@ -5574,6 +5581,15 @@ dc.dataTable = function (parent, chartGroup) {
     }
 
     _chart._doRender = function () {
+        if (_sampling) {
+            console.log(dc._lastFilteredSize);
+            if (dc._lastFilteredSize == null)
+                _chart.dimension().samplingRatio(null);
+            else {
+                _chart.dimension().samplingRatio(Math.min(_size/dc._lastFilteredSize, 1.0))
+            }
+        }
+
         _chart.selectAll('tbody').remove();
 
         renderRows(renderGroups());
@@ -7247,6 +7263,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
     var _points = [];
     var _colorCountUpdateCallback = null;
     var _clickCallbackFunc = null;
+    var _sampling = false;
 
     _chart.MIN_RADIUS = 2;
     _chart.MAX_RADIUS = 10;
@@ -7280,6 +7297,13 @@ dc.bubbleOverlay = function (root, chartGroup) {
       }
       _colorCountUpdateCallback = f;
       return _chart;
+    }
+
+    _chart.sampling = function(setting) { // setting should be true or false
+        _sampling = setting;
+        if (_sampling == false)
+            _chart.dimension().samplingRatio(null); // unset sampling
+        return _chart;
     }
 
 
@@ -7326,7 +7350,23 @@ dc.bubbleOverlay = function (root, chartGroup) {
       
     }
 
+    function setSample() {
+        if (_sampling) {
+            console.log(dc._lastFilteredSize);
+            if (dc._lastFilteredSize == null)
+                _chart.dimension().samplingRatio(null);
+            else {
+                console.log(_chart.cap()/dc._lastFilteredSize);
+
+                _chart.dimension().samplingRatio(Math.min(_chart.cap()/dc._lastFilteredSize, 1.0))
+            }
+        }
+    }
+
+    
+
     _chart._doRender = function () {
+        setSample();
         _g = initOverlayG();
         _g.selectAll('g').remove();
 
@@ -7433,6 +7473,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
 
 
     _chart._doRedraw = function () {
+        setSample();
         _chart.plotData();
         _chart.fadeDeselectedArea();
         return _chart;
