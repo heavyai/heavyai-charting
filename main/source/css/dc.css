@@ -33,7 +33,7 @@ art {
 }
 
 .dc-chart text.deselected {
-    fill: #ccc !important; // why do we need to override?
+    fill: #ccc !important; /*why do we need to override?*/
 }
 
 

@@ -58,6 +58,8 @@ var dc = {
         EVENT_DELAY: 0,
         NEGLIGIBLE_NUMBER: 1e-10
     },
+    _lastFilteredSize: null,
+    _sampledCount: 0,
     _refreshDisabled: false,
     _renderlet: null,
     _renderFlag: false,
@@ -104,6 +106,9 @@ dc.chartRegistry = function () {
         },
 
         deregister: function (chart, group) {
+            if (chart.hasOwnProperty('sampling')) {
+                chart.sampling(false); // to deincrement dc sampling counter
+            }
             group = initializeChartGroup(group);
             for (var i = 0; i < _chartMap[group].length; i++) {
                 if (_chartMap[group][i].anchorName() === chart.anchorName()) {
@@ -200,8 +205,15 @@ dc.renderAll = function (group) {
         return;
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-        charts[i].renderAsync(queryGroupId,charts.length);
-        //charts[i].render();
+        if (dc._sampldeCount > 0) {
+            if (charts[i].isCountChart())
+                charts[i].render();
+            else
+                charts[i].render(queryGroupId,charts.length - 1);
+        }
+        else
+            charts[i].renderAsync(queryGroupId,charts.length);
+
     }
 
     if (dc._renderlet !== null) {
@@ -233,7 +245,16 @@ dc.redrawAll = function (group, callback) {
         return;
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-        charts[i].redrawAsync(queryGroupId,charts.length);
+        if (dc._sampledCount > 0) {
+            if (charts[i].isCountChart()) {
+                charts[i].redraw();
+            }
+            else {
+                charts[i].redrawAsync(queryGroupId,charts.length - 1);
+            }
+        }
+        else
+            charts[i].redrawAsync(queryGroupId,charts.length);
     }
 
     if (dc._renderlet !== null) {
@@ -785,6 +806,8 @@ dc.baseMixin = function (_chart) {
         //callback();
     }
 
+    _chart.isCountChart = function() {return false;} // override for count chart
+
 
 
     var _filters = [];
@@ -800,10 +823,10 @@ dc.baseMixin = function (_chart) {
             $(dimension).trigger("filter-clear"); // this is hacky - we need to get dimension.filter to use dimension as this 
         } else {
             if (_chart.hasOwnProperty('rangeFocused')) {
-              dimension.filterDisjunct(filters, _chart.rangeFocused());
+              dimension.filterMulti(filters, _chart.rangeFocused());
             }
             else {
-              dimension.filterDisjunct(filters);
+              dimension.filterMulti(filters);
             }
           }
           /*
@@ -833,7 +856,6 @@ dc.baseMixin = function (_chart) {
     };
 
     var _dataAsync = function(group,callbacks) {
-        //console.log(_chart.chartID() + " base async");
         group.allAsync(callbacks);
     }
 
@@ -952,11 +974,6 @@ dc.baseMixin = function (_chart) {
     };
 
     _chart.dataAsync = function (callback) {
-        //console.log(_dataAsync);
-        //_groupCopy = jQuery.extend(true,{},_group);
-        //var id = queryId++;
-        //var dataAsyncBoundFunc = $.proxy(_dataAsync, _chart, groupCopy, id, callback);
-        //_registerQuery({id: id, func: dataAsyncBoundFunc});
         return _dataAsync.call(_chart, _group, callback);
     }
 
@@ -1243,16 +1260,12 @@ dc.baseMixin = function (_chart) {
     _chart.renderAsync = function(queryGroupId,queryCount) {
         if (dc._refreshDisabled)
             return;
-        //var groupCopy = jQuery.extend(true,{},_group);
+        if (_chart.hasOwnProperty('setSample')) {
+            _chart.setSample();
+        }
         var id = queryId++;
-        //console.log("Render async: " + _chart.chartID() + "-" + id);
         var renderCallback = $.proxy(_chart.render,this,id,queryGroupId,queryCount);
         _chart.dataAsync([renderCallback]);
-        //var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[renderCallback]);
-
-        //_registerQuery({id: id, func: dataAsyncFunc});
-
-        //_chart.dataAsync([_chart.render]);
     }
 
     /**
@@ -1284,20 +1297,8 @@ dc.baseMixin = function (_chart) {
         }
 
         _chart._activateRenderlets('postRender');
-        /* 
-        if (id !== undefined) {
-            console.log("Render finish: " + _chart.chartID() + "-" + id);
-            _popQueryStack(id);
-        }
-        */
 
         if (queryGroupId !== undefined) {
-            /*
-            var tempCount = dc._renderCount + 1;
-            console.log(tempCount + " of " + queryCount);
-            console.log("render return: " + _chart.chartID());
-            console.log(data);
-            */
             if (++dc._renderCount == queryCount) {
                 dc._renderCount = 0;
                 dc._globalTransitionDuration = null; // reset to null if was brush
@@ -1341,15 +1342,13 @@ dc.baseMixin = function (_chart) {
     _chart.redrawAsync = function(queryGroupId,queryCount) {
         if (dc._refreshDisabled)
             return;
-        //var groupCopy = jQuery.extend(true,{},_group);
+
+        if (_chart.hasOwnProperty('setSample')) {
+            _chart.setSample();
+        }
         var id = queryId++;
-        //console.log("Redraw async: " + _chart.chartID() + "-" + id);
         var redrawCallback = $.proxy(_chart.redraw,this,id,queryGroupId,queryCount);
         _chart.dataAsync([redrawCallback]);
-        //var dataAsyncFunc = $.proxy(_chart.dataAsync,this,[redrawCallback]);
-        //_registerQuery({id: id, func: dataAsyncFunc});
-        //console.log("before calling redraw");
-        //_chart.dataAsync([_chart.redraw]);
     }
 
 
@@ -1358,9 +1357,6 @@ dc.baseMixin = function (_chart) {
         if (dc._refreshDisabled)
             return;
         _chart.dataCache = data !== undefined ? data : null;
-        //if (_chart.dataCache == null) {
-        //    console.log("NULL");
-        //}
         _listeners.preRedraw(_chart);
 
         var result = _chart._doRedraw();
@@ -1373,21 +1369,8 @@ dc.baseMixin = function (_chart) {
         }
 
         _chart._activateRenderlets('postRedraw');
-        /*
-        if (id !== undefined) {
-            //console.log("Redraw finish: " + _chart.chartID() + "-" + id);
-            _popQueryStack(id);
-        }
-        */
-
-
 
         if (queryGroupId !== undefined) {
-            /*
-            var tempCount = dc._redrawCount + 1;
-            console.log(tempCount + " of " + queryCount);
-            console.log("redraw return: " + _chart.chartID());
-            */
 
             if (++dc._redrawCount == queryCount) {
                 dc._redrawCount = 0;
@@ -1591,9 +1574,6 @@ dc.baseMixin = function (_chart) {
     };
 
     function applyFilters() {
-        //console.log("apply filters")
-        //console.log("height: " + _chart.height());
-        //console.log("range focused: " + _chart.rangeFocused());
 
         if (_chart.dimension() && _chart.dimension().filter) {
             var fs = _filterHandler(_chart.dimension(), _filters);
@@ -1602,7 +1582,6 @@ dc.baseMixin = function (_chart) {
     }
 
     _chart.replaceFilter = function (_) {
-        //console.log("replace filter")
         _filters = [];
         _chart.filter(_);
     };
@@ -2184,14 +2163,6 @@ dc.colorMixin = function (_chart) {
 
     **/
     _chart.getColor = function (d, i) {
-        //console.log(i);
-        //console.log(d);
-        //var a = _colorAccessor.call(this, d, i);
-        //console.log(a);
-        //var b = _colors(a);
-        //console.log(b);
-        //return b;
-        //console.log(d);
         return _colors(_colorAccessor.call(this, d, i));
     };
 
@@ -3734,6 +3705,7 @@ dc.capMixin = function (_chart) {
         return topRows;
     };
 
+
     _chart.cappedKeyAccessor = function (d, i) {
         if (d.others) {
             return d.key;
@@ -3753,12 +3725,11 @@ dc.capMixin = function (_chart) {
           group.allAsync(callbacks);
       }
       else {
-          group.topAsync(_cap,callbacks)
+          group.topAsync(_cap, undefined, callbacks)
       }
     });
 
     if (!dc.async) {
-
       _chart.data(function (group) {
           if (_cap === Infinity) {
             if (_chart.dataCache != null)
@@ -3885,7 +3856,7 @@ dc.bubbleMixin = function (_chart) {
 
     _chart.setDataAsync(function(group,callbacks) {
         if (_chart.cap() != undefined) {
-            group.topAsync(_chart.cap(),callbacks);
+            group.topAsync(_chart.cap(), undefined, callbacks);
         }
         else {
             group.allAsync(callbacks);
@@ -5412,6 +5383,8 @@ dc.dataCount = function (parent, chartGroup) {
     var _chart = dc.baseMixin({});
     var _html = {some:'', all:''};
 
+    _chart.isCountChart = function() {return true;} // override for count chart
+
     /**
      #### html([object])
      Gets or sets an optional object specifying HTML templates to use depending how many items are
@@ -5461,13 +5434,14 @@ dc.dataCount = function (parent, chartGroup) {
     });
 
     _chart._doRender = function () {
-        // tot ok to call size b/c will hit cache every time
+        // ok to call size b/c will hit cache every time
         var tot = _chart.dimension().size(),
             val = null;
         if (_chart.dataCache != null)
             val = _chart.dataCache;
         else
             val = _chart.group().value();
+        dc._lastFilteredSize = val; 
 
         var all = _formatNumber(tot);
         var selected = _formatNumber(val);
@@ -5530,15 +5504,29 @@ dc.dataTable = function (parent, chartGroup) {
         return d;
     };
     var _order = d3.ascending;
+    var _sampling = false;
 
     _chart.setDataAsync(function(group,callbacks) {
         if (_order === d3.ascending) {
-            _chart.dimension().bottomAsync(_size,callbacks);
+            _chart.dimension().bottomAsync(_size, undefined,callbacks);
         }
         else {
-            _chart.dimension().topAsync(_size,callbacks);
+            _chart.dimension().topAsync(_size, undefined,callbacks);
         }
     });
+
+    _chart.sampling = function(setting) { // setting should be true or false
+        if (!arguments.length) 
+            return _sampling;
+        if (setting && !_sampling) // if wasn't sampling
+            dc._sampledCount++;
+        else if (!setting && _sampling)
+            dc._sampledCount--;
+        _sampling = setting;
+        if (_sampling == false)
+            _chart.dimension().samplingRatio(null); // unset sampling
+        return _chart;
+    }
 
     _chart.addFilteredColumn = function(columnName) {
       _filteredColumns[columnName] = null;
@@ -5571,7 +5559,18 @@ dc.dataTable = function (parent, chartGroup) {
       }
     }
 
+    _chart.setSample = function () {
+        if (_sampling) {
+            if (dc._lastFilteredSize == null)
+                _chart.dimension().samplingRatio(null);
+            else {
+                _chart.dimension().samplingRatio(Math.min(_size/dc._lastFilteredSize, 1.0))
+            }
+        }
+    }
+
     _chart._doRender = function () {
+
         _chart.selectAll('tbody').remove();
 
         renderRows(renderGroups());
@@ -5594,14 +5593,6 @@ dc.dataTable = function (parent, chartGroup) {
           //return d[v].toUTCString().slice(0, -4);
         }
         else {
-          /*
-          var startlinkIndex = d[v].indexOf('http');
-          console.log(startLinkIndex);
-          if (linkIndex != -1) {
-            var endLinkIndex = 
-          */
-          //var text =$('<p>' + d[v] +'</p>').linkify().text();
-          //console.log(text);
           return $('<p>' + d[v] +'</p>').linkify().html();
         }
       }
@@ -5732,14 +5723,6 @@ dc.dataTable = function (parent, chartGroup) {
         var rows = groups.order()
             .selectAll('tr.' + ROW_CSS_CLASS)
             .data(function (d) {
-              /*
-              var dataRows = d.values;
-              var numRows = dataRows.length;
-              for (var r = 0; r < numRows; r++) {
-                console.log(dataRows[r]);
-              }
-              //debugger;
-              */
               return d.values;
             });
         
@@ -5761,11 +5744,6 @@ dc.dataTable = function (parent, chartGroup) {
         });
 
         rows.exit().remove();
-        /*
-        var endTime1 = new Date();
-        var elapsed1 = endTime1 - startTime;
-        console.log("Elapsed Table: " + elapsed1 + " ms");
-        */
 
         return rows;
     }
@@ -6179,10 +6157,8 @@ dc.bubbleChart = function (parent, chartGroup) {
 
     _chart.plotData = function () {
         if (_elasticRadius) {
-            //console.log("elastic");
             _chart.r().domain([_chart.rMin(), _chart.rMax()]);
         }
-        //console.log([_chart.MIN_RADIUS, _chart.xAxisLength() * _chart.maxBubbleRelativeSize()]);
         _chart.r().range([_chart.MIN_RADIUS, _chart.xAxisLength() * _chart.maxBubbleRelativeSize()]);
 
         var bubbleG = _chart.chartBodyG().selectAll('g.' + _chart.BUBBLE_NODE_CLASS)
@@ -6348,7 +6324,6 @@ dc.compositeChart = function (parent, chartGroup) {
     });
 
     _chart._brushing = function () {
-        console.log("brushing");
 
         var extent = _chart.extendBrush();
         var brushIsEmpty = _chart.brushIsEmpty(extent);
@@ -6982,7 +6957,6 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         var data = {};
         var groupAll = _chart.data();
         for (var i = 0; i < groupAll.length; ++i) {
-            //console.log(_chart.valueAccessor()(groupAll[i]));
             data[_chart.keyAccessor()(groupAll[i])] = _chart.valueAccessor()(groupAll[i]);
         }
         return data;
@@ -7246,6 +7220,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
     var _points = [];
     var _colorCountUpdateCallback = null;
     var _clickCallbackFunc = null;
+    var _sampling = false;
 
     _chart.MIN_RADIUS = 2;
     _chart.MAX_RADIUS = 10;
@@ -7281,6 +7256,29 @@ dc.bubbleOverlay = function (root, chartGroup) {
       return _chart;
     }
 
+    _chart.sampling = function(setting) { // setting should be true or false
+        if (!arguments.length) 
+            return _sampling;
+
+        if (setting && !_sampling) // if wasn't sampling
+            dc._sampledCount++;
+        else if (!setting && _sampling)
+            dc._sampledCount--;
+        _sampling = setting;
+        if (_sampling == false)
+            _chart.dimension().samplingRatio(null); // unset sampling
+        return _chart;
+    }
+
+    _chart.setSample = function() {
+        if (_sampling) {
+            if (dc._lastFilteredSize == null)
+                _chart.dimension().samplingRatio(null);
+            else {
+                _chart.dimension().samplingRatio(Math.min(_chart.cap()/dc._lastFilteredSize, 1.0))
+            }
+        }
+    }
 
     _chart.onClick = function(d) {
       if (_chart.bounds == null)
@@ -7324,6 +7322,9 @@ dc.bubbleOverlay = function (root, chartGroup) {
       _chart.bounds[1] = conv4326To900913(bounds[1]);
       
     }
+
+
+    
 
     _chart._doRender = function () {
         _g = initOverlayG();
@@ -7399,15 +7400,12 @@ dc.bubbleOverlay = function (root, chartGroup) {
         bubbleG
             .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
             .attr('r', function(d) {
-                //console.log(d.size);
-                //console.log(_chart.bubbleR(d));
                 return _chart.scaleRadius ? _chart.bubbleR(d) : _chart.radiusValueAccessor()(d);
             });
 
         bubbleG.exit().remove();
         var stopTime = new Date();
         var diff = stopTime - startTime;
-        //console.log(diff);
     }
 
 
@@ -7440,17 +7438,6 @@ dc.bubbleOverlay = function (root, chartGroup) {
     function updateBubbles() {
         if (!_g)
               return;
-        /*
-        var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData);
-        bubbleG
-            .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
-            .attr('r', function(d) {
-                //console.log(d.size);
-                //console.log(_chart.bubbleR(d));
-                return _chart.scaleRadius ? _chart.bubbleR(d) : _chart.radiusValueAccessor()(d);
-            })
-            .attr('fill', _chart.getColor);
-        */
 
         var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData, function(d) {return d.key});
         bubbleG
@@ -8582,7 +8569,7 @@ dc.numberDisplay = function (parent, chartGroup) {
     };
 
     _chart.setDataAsync(function(group,callbacks) {
-        group.value ? group.valueAsync(callbacks) : group.topAsync(1,callbacks);
+        group.value ? group.valueAsync(callbacks) : group.topAsync(1, undefined, callbacks);
     });
 
 
@@ -8732,7 +8719,7 @@ dc.heatMap = function (parent, chartGroup) {
     var _xAxisOnClick = function (d) { filterAxis(0, d); };
     var _yAxisOnClick = function (d) { filterAxis(1, d); };
     var _boxOnClick = function (d) {
-        var filter = d.key;
+        var filter = [d.key0,d.key1];
         dc.events.trigger(function () {
             _chart.filter(filter);
             _chart.redrawGroup();
@@ -8741,19 +8728,20 @@ dc.heatMap = function (parent, chartGroup) {
 
     function filterAxis(axis, value) {
         var cellsOnAxis = _chart.selectAll('.box-group').filter(function (d) {
-            return d.key[axis] === value;
+            var keyName = "key" + axis;
+            return d[keyName] === value;
         });
         var unfilteredCellsOnAxis = cellsOnAxis.filter(function (d) {
-            return !_chart.hasFilter(d.key);
+            return !_chart.hasFilter([d.key0, d.key1]);
         });
         dc.events.trigger(function () {
             if (unfilteredCellsOnAxis.empty()) {
                 cellsOnAxis.each(function (d) {
-                    _chart.filter(d.key);
+                    _chart.filter([d.key0, d.key1]);
                 });
             } else {
                 unfilteredCellsOnAxis.each(function (d) {
-                    _chart.filter(d.key);
+                    _chart.filter([d.key0, d.key1]);
                 });
             }
             _chart.redrawGroup();
@@ -8764,7 +8752,6 @@ dc.heatMap = function (parent, chartGroup) {
         if (!arguments.length) {
             return _chart._filter();
         }
-
         return _chart._filter(dc.filters.TwoDimensionalFilter(filter));
     });
 
@@ -8836,6 +8823,7 @@ dc.heatMap = function (parent, chartGroup) {
         var boxes = _chartBody.selectAll('g.box-group').data(_chart.data(), function (d, i) {
             return _chart.keyAccessor()(d, i) + '\0' + _chart.valueAccessor()(d, i);
         });
+
         var gEnter = boxes.enter().append('g')
             .attr('class', 'box-group');
 
@@ -8849,7 +8837,7 @@ dc.heatMap = function (parent, chartGroup) {
                 .text(_chart.title());
         }
 
-        dc.transition(boxes.selectAll('rect'), _chart.transitionDuration())
+        dc.transition(boxes.select('rect'), _chart.transitionDuration())
             .attr('x', function (d, i) { return cols(_chart.keyAccessor()(d, i)); })
             .attr('y', function (d, i) { return rows(_chart.valueAccessor()(d, i)); })
             .attr('rx', _xBorderRadius)
@@ -8962,7 +8950,7 @@ dc.heatMap = function (parent, chartGroup) {
     };
 
     /**
-     #### .xBorderRadius([value])
+     #### .yBorderRadius([value])
      Gets or sets the Y border radius.  Set to 0 to get full rectangles.  Default: 6.75
      */
     _chart.yBorderRadius = function (d) {
@@ -8974,7 +8962,7 @@ dc.heatMap = function (parent, chartGroup) {
     };
 
     _chart.isSelectedNode = function (d) {
-        return _chart.hasFilter(d.key);
+        return _chart.hasFilter([d.key0, d.key1]);
     };
 
     return _chart.anchor(parent, chartGroup);
