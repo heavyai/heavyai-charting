@@ -748,11 +748,11 @@ dc.baseMixin = function (_chart) {
     };
     var _height = _defaultHeight;
 
-    var _keyAccessor = dc.pluck('key');
+    var _keyAccessor = dc.pluck('key0');
     var _valueAccessor = dc.pluck('value');
-    var _label = dc.pluck('key');
+    var _label = dc.pluck('key0');
 
-    var _ordering = dc.pluck('key');
+    var _ordering = dc.pluck('key0');
     var _orderSort;
 
     var _renderLabel = false;
@@ -4034,7 +4034,7 @@ dc.bubbleMixin = function (_chart) {
     };
 
     _chart.isSelectedNode = function (d) {
-        return _chart.hasFilter(d.key);
+        return _chart.hasFilter(d.key0);
     };
 
     _chart.onClick = function (d) {
@@ -6161,7 +6161,7 @@ dc.bubbleChart = function (parent, chartGroup) {
         _chart.r().range([_chart.MIN_RADIUS, _chart.xAxisLength() * _chart.maxBubbleRelativeSize()]);
 
         var bubbleG = _chart.chartBodyG().selectAll('g.' + _chart.BUBBLE_NODE_CLASS)
-            .data(_chart.data(), function (d) { return d.key; });
+            .data(_chart.data(), function (d) { return d.key0; });
 
         renderNodes(bubbleG);
 
