@@ -812,7 +812,6 @@ dc.baseMixin = function (_chart) {
     var _filters = [];
     var _softFilterClear = false;
     var _filterHandler = function (dimension, filters) {
-        //dimension.filter(null);
         if (dimension.type == 'crossfilter') { // bail out if we are at crossfilter level - i.e. for data count
           return filters;
         }
@@ -4038,7 +4037,7 @@ dc.bubbleMixin = function (_chart) {
     };
 
     _chart.onClick = function (d) {
-        var filter = d.key;
+        var filter = d.key0;
         dc.events.trigger(function () {
             _chart.filter(filter);
             _chart.redrawGroup();
