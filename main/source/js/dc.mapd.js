@@ -2186,36 +2186,63 @@ dc.colorMixin = function (_chart) {
 
 dc.mapMixin = function (_chart) {
 
-    function zoomHandler() {
-      _chart._invokeZoomedListener();
+    var _map = null;
+    var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
+    var _lastWidth = null;
+    var _lastHeight = null;
+    //var _mapId = "widget" + _chart.chartID();
+    var _mapId = "widget0";
+    var _map = null;
+    var _mapInitted = false;
+
+    function onMapMove() {
+        console.log("on map move");
     }
 
-    var _zoom = d3.behavior.zoom().on('zoom', zoomHandler);
-    var _mouseZoomable = true;
-    var _hasBeenMouseZoomable = true;
-
-    function configureMouseZoom () {
-        if (_mouseZoomable) {
-            _chart._enableMouseZoom();
-        }
-        else if (_hasBeenMouseZoomable) {
-            _chart._disableMouseZoom();
-        }
+    function initMap() {
+        console.log('init map');
+        mapboxgl.accessToken = _mapboxAccessToken; 
+        _map = new mapboxgl.Map({
+          container: _mapId, // container id
+          style: 'map_styles/light-v7.json',
+          interactive: true,
+          center: [0, 0], // starting position
+          zoom: 4 // starting zoom
+        });
+        _map.on('moveend', onMapMove);
+        _mapInitted = true;
     }
 
-    _chart._enableMouseZoom = function () {
-        _hasBeenMouseZoomable = true;
-        _zoom.x(_chart.x())
-            .scaleExtent(_zoomScale)
-            .size([_chart.width(), _chart.height()])
-            .duration(_chart.transitionDuration());
-        _chart.root().call(_zoom);
-    };
+    _chart.on('preRender', function(chart) {
+        console.log("prerender");
+        var width = chart.width(); 
+        var height = chart.height(); 
+        if (!_mapInitted)
+            initMap();
+        if (width !== _lastWidth || height !== _lastHeight) {
+            $("#" + _mapId + " canvas").width(width).height(height);
+            _lastWidth = width;
+            _lastHeight = height;
+            _map.resize();
+        }
+    });
 
-    configureMouseZoom();
-
+    initMap();
     return _chart;
-};
+}
+
+dc.rasterMapChart = function(parent, chartGroup) {
+    var _chart = dc.mapMixin(dc.baseMixin({}));
+    _chart.doRender = function() {
+        console.log("render");
+    }
+    _chart.doRedraw = function() {
+        console.log("redraw");
+    }
+    return _chart.anchor(parent, chartGroup);
+}
+
+
 
 dc.mapChart = function(parent, chartGroup) {
   //var _chart = dc.mapMixin(dc.baseMixin({}));
