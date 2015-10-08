@@ -8897,7 +8897,7 @@ dc.heatMap = function (parent, chartGroup) {
 
         var gCols = _chartBody.selectAll('g.cols');
         if (gCols.empty()) {
-            gCols = _chartBody.append('g').attr('class', 'cols axis x');
+            gCols = _chartBody.append('g').attr('class', 'cols axis');
         }
         var gColsText = gCols.selectAll('text').data(cols.domain());
         gColsText.enter().append('text')
@@ -8913,7 +8913,7 @@ dc.heatMap = function (parent, chartGroup) {
         gColsText.exit().remove();
         var gRows = _chartBody.selectAll('g.rows');
         if (gRows.empty()) {
-            gRows = _chartBody.append('g').attr('class', 'rows axis y');
+            gRows = _chartBody.append('g').attr('class', 'rows axis');
         }
         var gRowsText = gRows.selectAll('text').data(rows.domain());
         gRowsText.enter().append('text')
