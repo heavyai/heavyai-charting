@@ -7604,7 +7604,7 @@ dc.rowChart = function (parent, chartGroup) {
 
         xLabel
             .attr('x', (_chart.effectiveWidth()/2))
-            .attr('y', _chart.margins().bottom - 10)
+            .attr('y', _chart.margins().bottom - 6)
             .style('text-anchor', 'middle');
         
         dc.transition(axisG, _chart.transitionDuration())
@@ -8718,6 +8718,7 @@ dc.heatMap = function (parent, chartGroup) {
 
     var _yLabel;
     var _xLabel;
+    var _numFormat = d3.format(".2s");
 
     var _chart = dc.colorMixin(dc.marginMixin(dc.baseMixin({})));
 
@@ -8725,10 +8726,10 @@ dc.heatMap = function (parent, chartGroup) {
     _chart.title(_chart.colorAccessor());
 
     var _colsLabel = function (d) {
-        return isNaN(d) ? d : d3.round(d, 2);
+        return isNaN(d) ? d : _numFormat(d);
     };
     var _rowsLabel = function (d) {
-        return isNaN(d) ? d : d3.round(d, 2);
+        return isNaN(d) ? d : _numFormat(d);
      };
 
    /**
@@ -8908,16 +8909,44 @@ dc.heatMap = function (parent, chartGroup) {
         }
         var gColsText = gCols.selectAll('text').data(cols.domain());
 
+        var maxDomainCharLength = function() {
+            var maxChar = 0;
+            cols.domain().forEach(function(d){
+                maxChar = d.toString().length > maxChar ? d.toString().length : maxChar;
+            });
+            return maxChar;
+        }
+
+        var isRotateLabels = maxDomainCharLength() * 8 > boxWidth ? true : false;
+
         gColsText.enter().append('text')
               .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-              .style('text-anchor', 'middle')
               .attr('y', _chart.effectiveHeight())
-              .attr('dy', 12)
               .on('click', _chart.xAxisOnClick())
-              .text(_chart.colsLabel());
+              .text(_chart.colsLabel())
+              .style('text-anchor', function(d){
+                    return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
+              })
+              .attr('dy', (isRotateLabels ? 3 : 12))
+              .attr('dx', function(d){
+                    return isRotateLabels ? (isNaN(d) ? 2: -4): 0;
+              })
+              .attr('transform', function(d){
+                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ _chart.effectiveHeight() +')' : null;
+               });
         dc.transition(gColsText, _chart.transitionDuration())
                .text(_chart.colsLabel())
-               .attr('x', function (d) { return cols(d) + boxWidth / 2; });
+               .attr('x', function (d) { return cols(d) + boxWidth / 2; })
+               .style('text-anchor', function(d){
+                    return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
+               })
+               .attr('dy', (isRotateLabels ? 3 : 12))
+               .attr('dx', function(d){
+                    return isRotateLabels ? (isNaN(d) ? 2: -4): 0;
+               })
+               .attr('transform', function(d){
+                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ _chart.effectiveHeight() +')' : null;
+               });
         gColsText.exit().remove();
         var gRows = _chartBody.selectAll('g.rows');
         if (gRows.empty()) {
@@ -9037,7 +9066,7 @@ dc.heatMap = function (parent, chartGroup) {
         
         xLabel
             .attr('x', (_chart.effectiveWidth()/2))
-            .attr('y', (_chart.effectiveHeight() + _chart.margins().bottom - 12))
+            .attr('y', (_chart.effectiveHeight() + _chart.margins().bottom - 6))
             .style('text-anchor', 'middle');
     };
 
