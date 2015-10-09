@@ -252,8 +252,9 @@ dc.redrawAll = function (group, callback) {
                 charts[i].redrawAsync(queryGroupId,charts.length - 1);
             }
         }
-        else
+        else {
             charts[i].redrawAsync(queryGroupId,charts.length);
+        }
     }
 
     if (dc._renderlet !== null) {
@@ -1267,6 +1268,7 @@ dc.baseMixin = function (_chart) {
             _chart.setSample();
         }
         var id = queryId++;
+        console.log(id);
         var renderCallback = $.proxy(_chart.render,this,id,queryGroupId,queryCount);
         _chart.dataAsync([renderCallback]);
     }
@@ -1372,7 +1374,6 @@ dc.baseMixin = function (_chart) {
         }
 
         _chart._activateRenderlets('postRedraw');
-
         if (queryGroupId !== undefined) {
 
             if (++dc._redrawCount == queryCount) {
@@ -2213,12 +2214,10 @@ dc.mapMixin = function (_chart) {
 
 
     function onMapMove() {
-        console.log("on map move");
         if (_xDim !== null && _yDim != null) {
             var bounds = _map.getBounds();
-            console.log(bounds._sw.lng);
-            console.log(bounds._ne.lng);
-
+            //console.log(bounds._sw.lng);
+            //console.log(bounds._ne.lng);
             _xDim.filter([bounds._sw.lng,bounds._ne.lng]);
             _yDim.filter([bounds._sw.lat,bounds._ne.lat]);
             dc.redrawAll();
@@ -2260,12 +2259,23 @@ dc.mapMixin = function (_chart) {
 
 dc.rasterMapChart = function(parent, chartGroup) {
     var _chart = dc.mapMixin(dc.baseMixin({}));
+
+    _chart.setDataAsync(function(group,callbacks) {
+        callbacks.pop()();
+    });
+
+    _chart.data(function (group) {
+        return;
+    });
+
+    /*
     _chart.doRender = function() {
         console.log("render");
     }
     _chart.doRedraw = function() {
         console.log("redraw");
     }
+    */
     return _chart.anchor(parent, chartGroup);
 }
 
