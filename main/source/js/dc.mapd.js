@@ -2194,9 +2194,35 @@ dc.mapMixin = function (_chart) {
     var _mapId = "widget0";
     var _map = null;
     var _mapInitted = false;
+    var _xDim = null;
+    var _yDim = null;
+
+    _chart.xDim = function(xDim) {
+        if (!arguments.length) 
+            return _xDim;
+        _xDim = xDim;
+        return _chart;
+    }
+
+    _chart.yDim = function(yDim) {
+        if (!arguments.length) 
+            return _yDim;
+        _yDim = yDim;
+        return _chart;
+    }
+
 
     function onMapMove() {
         console.log("on map move");
+        if (_xDim !== null && _yDim != null) {
+            var bounds = _map.getBounds();
+            console.log(bounds._sw.lng);
+            console.log(bounds._ne.lng);
+
+            _xDim.filter([bounds._sw.lng,bounds._ne.lng]);
+            _yDim.filter([bounds._sw.lat,bounds._ne.lat]);
+            dc.redrawAll();
+        }
     }
 
     function initMap() {
@@ -2209,7 +2235,7 @@ dc.mapMixin = function (_chart) {
           center: [0, 0], // starting position
           zoom: 4 // starting zoom
         });
-        _map.on('moveend', onMapMove);
+        _map.on('move', onMapMove);
         _mapInitted = true;
     }
 
@@ -2224,6 +2250,7 @@ dc.mapMixin = function (_chart) {
             _lastWidth = width;
             _lastHeight = height;
             _map.resize();
+            onMapMove(); //to reset filter
         }
     });
 
@@ -7358,11 +7385,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
       _chart.bounds = [[0.0,0.0],[0.0,0.0]];
       _chart.bounds[0] = conv4326To900913(bounds[0]);
       _chart.bounds[1] = conv4326To900913(bounds[1]);
-      
     }
-
-
-    
 
     _chart._doRender = function () {
         _g = initOverlayG();
