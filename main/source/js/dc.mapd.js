@@ -8719,7 +8719,7 @@ dc.heatMap = function (parent, chartGroup) {
     var _yLabel;
     var _xLabel;
 
-    var _chart = dc.coordinateGridMixin({}); 
+    var _chart = dc.colorMixin(dc.marginMixin(dc.baseMixin({})));
 
     _chart._mandatoryAttributes(['group']);
     _chart.title(_chart.colorAccessor());
@@ -8859,7 +8859,6 @@ dc.heatMap = function (parent, chartGroup) {
             .append('g')
             .attr('class', 'heatmap')
             .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
-        _chart.g(_chartBody);
 
         return _chart._doRedraw();
     };
