@@ -1,1 +1,1 @@
-../../../js/dc.mapd.js
+../../../main/source/js/dc.mapd.js

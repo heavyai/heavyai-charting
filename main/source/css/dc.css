@@ -9,8 +9,6 @@ art {
 
 .dc-chart rect.bar.accented {  
     fill: #E637A8;
-    //fill: rgb(188,71,71);
-
 }
 
 .dc-chart rect.bar:hover {
@@ -33,7 +31,7 @@ art {
 }
 
 .dc-chart text.deselected {
-    fill: #ccc !important; // why do we need to override?
+    fill: #ccc !important; /*why do we need to override?*/
 }
 
 
