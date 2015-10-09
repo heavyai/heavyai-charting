@@ -7517,8 +7517,8 @@ dc.rowChart = function (parent, chartGroup) {
     var _dyOffset = '0.35em';  // this helps center labels https://github.com/mbostock/d3/wiki/SVG-Shapes#svg_text
     var _titleLabelOffsetX = 2;
 
-    var _xLabel;
-    var _yLabel;
+    var _xAxisLabel;
+    var _yAxisLabel;
 
     var _gap = 5;
 
@@ -7541,10 +7541,18 @@ dc.rowChart = function (parent, chartGroup) {
     _chart.accent = accentRow;
     _chart.unAccent = unAccentRow;
 
-    _chart.setLabels = function (xLabel, yLabel) {
-        _xLabel = xLabel;
-        _yLabel = yLabel;
+    _chart.setYAxisLabel = function (yAxisLabel) {
+        _yAxisLabel = yAxisLabel;
     }
+
+    _chart.xAxisLabel = function (_, padding) {
+        if (!arguments.length) {
+            return _xAxisLabel;
+        }
+        _xAxisLabel = _;
+
+        return _chart;
+    };
 
     function calculateAxisScale() {
         if (!_x || _elasticX) {
@@ -7575,7 +7583,7 @@ dc.rowChart = function (parent, chartGroup) {
             yLabel = axisG.append('text')
             .attr('class', 'y-axis-label')
             .style('font-size', '14px')
-            .text(_yLabel);
+            .text(_yAxisLabel);
         }
 
         yLabel
@@ -7591,7 +7599,7 @@ dc.rowChart = function (parent, chartGroup) {
             xLabel = axisG.append('text')
             .attr('class', 'x-axis-label')
             .style('font-size', '14px')
-            .text(_xLabel);
+            .text(_chart.xAxisLabel());
         }
 
         xLabel
@@ -8901,29 +8909,16 @@ dc.heatMap = function (parent, chartGroup) {
         }
         var gColsText = gCols.selectAll('text').data(cols.domain());
 
-/*
-        var isRotate = function(elm) {
-            var w = d3.select(elm).node().getBoundingClientRect().width;
-            return w > boxWidth;
-        }
-        */
-
         gColsText.enter().append('text')
-              .style('transform', function(d){ 
-                return 'translate('+(cols(d) + boxWidth / 2)+'px,'+_chart.effectiveHeight()+'px)';
-              })
+              .attr('x', function (d) { return cols(d) + boxWidth / 2; })
               .style('text-anchor', 'middle')
+              .attr('y', _chart.effectiveHeight())
               .attr('dy', 12)
               .on('click', _chart.xAxisOnClick())
               .text(_chart.colsLabel());
         dc.transition(gColsText, _chart.transitionDuration())
                .text(_chart.colsLabel())
-               .style('transform', function(d){
-                    return 'translate('+(cols(d) + boxWidth / 2)+'px,'+_chart.effectiveHeight()+'px)';
-                })
-               .style('text-anchor', 'end')
-               .attr('x', 20)
-               .attr('dy', 2);
+               .attr('x', function (d) { return cols(d) + boxWidth / 2; });
         gColsText.exit().remove();
         var gRows = _chartBody.selectAll('g.rows');
         if (gRows.empty()) {
@@ -9017,12 +9012,10 @@ dc.heatMap = function (parent, chartGroup) {
 
     _chart.renderAxisLabels = function () {
    
-        var yLabel = _chartBody.select('.axis.rows')
-            .selectAll('text.y-axis-label');
+        var yLabel = _chartBody.selectAll('text.y-axis-label');
 
         if (yLabel.empty()) {
-            yLabel = _chartBody.select('.axis.rows')
-            .append('text')
+            yLabel = _chartBody.append('text')
             .attr('class', 'y-axis-label')
             .style('font-size', '14px')
             .text(_yLabel);
@@ -9034,12 +9027,10 @@ dc.heatMap = function (parent, chartGroup) {
             .style('transform', 'rotate(-90deg)')
             .style('text-anchor', 'middle');
 
-        var xLabel = _chartBody.select('.axis.cols')
-            .selectAll('text.x-axis-label');
+        var xLabel = _chartBody.selectAll('text.x-axis-label');
         
         if (xLabel.empty()) {
-            xLabel = _chartBody.select('.axis.cols')
-            .append('text')
+            xLabel = _chartBody.append('text')
             .attr('class', 'x-axis-label')
             .style('font-size', '14px')
             .text(_xLabel);
