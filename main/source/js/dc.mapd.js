@@ -8711,17 +8711,17 @@ dc.heatMap = function (parent, chartGroup) {
     var _yLabel;
     var _xLabel;
 
-    var _chart = dc.coordinateGridMixin({});
+    var _chart = dc.coordinateGridMixin({}); 
 
     _chart._mandatoryAttributes(['group']);
     _chart.title(_chart.colorAccessor());
 
     var _colsLabel = function (d) {
-        return d;
+        return isNaN(d) ? d : d3.round(d, 2);
     };
     var _rowsLabel = function (d) {
-        return d;
-    };
+        return isNaN(d) ? d : d3.round(d, 2);
+     };
 
    /**
     #### .colsLabel([labelFunction])
@@ -8900,16 +8900,30 @@ dc.heatMap = function (parent, chartGroup) {
             gCols = _chartBody.append('g').attr('class', 'cols axis');
         }
         var gColsText = gCols.selectAll('text').data(cols.domain());
+
+/*
+        var isRotate = function(elm) {
+            var w = d3.select(elm).node().getBoundingClientRect().width;
+            return w > boxWidth;
+        }
+        */
+
         gColsText.enter().append('text')
-              .attr('x', function (d) { return cols(d) + boxWidth / 2; })
+              .style('transform', function(d){ 
+                return 'translate('+(cols(d) + boxWidth / 2)+'px,'+_chart.effectiveHeight()+'px)';
+              })
               .style('text-anchor', 'middle')
-              .attr('y', _chart.effectiveHeight())
               .attr('dy', 12)
               .on('click', _chart.xAxisOnClick())
               .text(_chart.colsLabel());
         dc.transition(gColsText, _chart.transitionDuration())
                .text(_chart.colsLabel())
-               .attr('x', function (d) { return cols(d) + boxWidth / 2; });
+               .style('transform', function(d){
+                    return 'translate('+(cols(d) + boxWidth / 2)+'px,'+_chart.effectiveHeight()+'px)';
+                })
+               .style('text-anchor', 'end')
+               .attr('x', 20)
+               .attr('dy', 2);
         gColsText.exit().remove();
         var gRows = _chartBody.selectAll('g.rows');
         if (gRows.empty()) {
