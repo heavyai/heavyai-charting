@@ -5613,12 +5613,11 @@ dc.dataTable = function (parent, chartGroup) {
         return (typeof d === 'function') ?
                 _chart._doColumnHeaderFnToString(d) :
                 ((typeof d === 'string') ?
-                 _chart._doColumnHeaderCapitalize(d) : String(d.label));
+                 _chart._covertToAlias(d) : String(d.label));
     };
 
-    _chart._doColumnHeaderCapitalize = function (s) {
-        // capitalize
-        return s.charAt(0).toUpperCase() + s.slice(1);
+    _chart._covertToAlias = function (s) {
+        return aliases[s];
     };
 
     _chart._doColumnHeaderFnToString = function (f) {
@@ -7587,7 +7586,7 @@ dc.rowChart = function (parent, chartGroup) {
             yLabel = axisG.append('text')
             .attr('class', 'y-axis-label')
             .style('font-size', '14px')
-            .text(_yAxisLabel);
+            .text(aliases[_yAxisLabel]);
         }
 
         yLabel
