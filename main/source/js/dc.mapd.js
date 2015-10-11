@@ -2197,6 +2197,10 @@ dc.mapMixin = function (_chart) {
     var _mapInitted = false;
     var _xDim = null;
     var _yDim = null;
+    var _lastMapMoveType = 'movened';
+    var _lastMapUpdateTime = 0;
+    var _mapUpdateInterval = 100; //default
+
 
     _chart.xDim = function(xDim) {
         if (!arguments.length) 
@@ -2212,12 +2216,27 @@ dc.mapMixin = function (_chart) {
         return _chart;
     }
 
+    _chart.mapUpdateInterval = function (mapUpdateInterval) {
+        if (!arguments.length)
+            return _mapUpdateInterval;
+        _mapUpdateInterval = mapUpdateInterval;
+        return _chart;
+    }
 
-    function onMapMove() {
+    function onMapMove(e) {
         if (_xDim !== null && _yDim != null) {
+            if (e !== undefined && e.type == 'movend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
+                return;
+            if (e !== undefined)
+                _lastMapMoveType = e.type;
+            var curTime = (new Date).getTime();
             var bounds = _map.getBounds();
-            //console.log(bounds._sw.lng);
-            //console.log(bounds._ne.lng);
+            if (e !== undefined && e.type == 'move') {
+                if (curTime - _lastMapUpdateTime < _mapUpdateInterval) {
+                    return; // for now - could add method here
+                }
+            }
+            _lastMapUpdateTime = curTime;
             _xDim.filter([bounds._sw.lng,bounds._ne.lng]);
             _yDim.filter([bounds._sw.lat,bounds._ne.lat]);
             dc.redrawAll();
@@ -2235,6 +2254,7 @@ dc.mapMixin = function (_chart) {
           zoom: 4 // starting zoom
         });
         _map.on('move', onMapMove);
+        _map.on('moveend', onMapMove);
         _mapInitted = true;
     }
 
@@ -2257,8 +2277,24 @@ dc.mapMixin = function (_chart) {
     return _chart;
 }
 
-dc.rasterMapChart = function(parent, chartGroup) {
-    var _chart = dc.mapMixin(dc.baseMixin({}));
+dc.rasterMixin = function(_chart) {
+    //var _chart = dc.mapMixin(dc.baseMixin({}));
+    var _vegaSpec = {};
+
+     _chart._resetVegaSpec = function() {
+      _vegaSpec.width = _chart.width();
+      _vegaSpec.height = _chart.height();
+      _vegaSpec.data = [];
+      _vegaSpec.scales = [];
+      _vegaSpec.marks = [];
+    }
+
+    _chart.vegaSpec = function(_) {
+      if (!arguments.length)
+        return _vegaSpec;
+      _vegaSpec = _;
+      return _chart;
+    }
 
     _chart.setDataAsync(function(group,callbacks) {
         callbacks.pop()();
@@ -2268,14 +2304,21 @@ dc.rasterMapChart = function(parent, chartGroup) {
         return;
     });
 
-    /*
-    _chart.doRender = function() {
-        console.log("render");
+    return _chart;
+}
+
+dc.pointRasterMapChart = function(parent, chartGroup) {
+    var _chart = dc.rasterMixin(dc.mapMixin(dc.baseMixin({})));
+
+    _chart._doRender = function() {
+      console.log("render");
+      _chart._resetVegaSpec();
     }
-    _chart.doRedraw = function() {
-        console.log("redraw");
+
+    _chart._doRedraw = function() {
+      console.log("redraw");
     }
-    */
+
     return _chart.anchor(parent, chartGroup);
 }
 
@@ -3798,47 +3841,25 @@ dc.capMixin = function (_chart) {
       }
     });
 
-    if (!dc.async) {
-      _chart.data(function (group) {
-          if (_cap === Infinity) {
-            if (_chart.dataCache != null)
-              return _chart._computeOrderedGroups(_chart.dataCache);
-            else
-              return _chart._computeOrderedGroups(group.all());
-          } else {
-            var topRows = null
-            if (_chart.dataCache != null)
-                topRows = _chart.dataCache;
-            else
-              topRows = group.top(_cap); // ordered by crossfilter group order (default value)
-             topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
-              if (_othersGrouper) {
-                  return _othersGrouper(topRows);
-              }
-              return topRows;
-          }
-      });
-    }
-    else {
-      _chart.data(function(group, callbacks) {
-          if (_cap === Infinity) {
-            callbacks.push(_chart.computeOrderedGroups.bind(this));
-            group.allAsync(callbacks);
-            return;
-          }
-          else {
-            callbacks.push(capCallback.bind(this));
-          }
-        });
-          
-      _chart.capCallback = function(data, callbacks) {
-        var topRows = _chart._computeOrderedGroups(data); 
-        if (_othersGrouper) {
-          return _othersGrouper(topRows);
+    _chart.data(function (group) {
+        if (_cap === Infinity) {
+          if (_chart.dataCache != null)
+            return _chart._computeOrderedGroups(_chart.dataCache);
+          else
+            return _chart._computeOrderedGroups(group.all());
+        } else {
+          var topRows = null
+          if (_chart.dataCache != null)
+              topRows = _chart.dataCache;
+          else
+            topRows = group.top(_cap); // ordered by crossfilter group order (default value)
+           topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
+            if (_othersGrouper) {
+                return _othersGrouper(topRows);
+            }
+            return topRows;
         }
-        return topRows;
-      }
-    }
+    });
 
     /**
     #### .cap([count])
