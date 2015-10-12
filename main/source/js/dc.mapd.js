@@ -7060,8 +7060,8 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         if (_chart.renderTitle()) {
             regionG.selectAll('title').text(function (d) {
                 var key = getKey(layerIndex, d);
-                var value = data[key];
-                return _chart.title()({key: key, value: value});
+                var value = Number(data[key]).toFixed(2);
+                return _chart.title()({key0: key, value: value});
             });
         }
     }
