@@ -8864,6 +8864,8 @@ dc.heatMap = function (parent, chartGroup) {
     _chart._doRender = function () {
         _chart.resetSvg();
 
+        _chart.margins().bottom = _chart.margins().bottom + 4;
+
         _chartBody = _chart.svg()
             .append('g')
             .attr('class', 'heatmap')
