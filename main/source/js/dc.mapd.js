@@ -967,6 +967,7 @@ dc.baseMixin = function (_chart) {
             return _data.call(_chart, _group);
         }
         _data = d3.functor(d);
+
         _chart.expireCache();
         return _chart;
     };
@@ -8733,10 +8734,10 @@ dc.heatMap = function (parent, chartGroup) {
     _chart.title(_chart.colorAccessor());
 
     var _colsLabel = function (d) {
-        return isNaN(d) ? d : _numFormat(d);
+        return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
     };
     var _rowsLabel = function (d) {
-        return isNaN(d) ? d : _numFormat(d);
+        return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
      };
 
    /**
