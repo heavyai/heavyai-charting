@@ -377,3 +377,7 @@ art {
     pointer-events: all;
     cursor: pointer;
 }
+
+.heat-box {
+    cursor: pointer;
+}
