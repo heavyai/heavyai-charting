@@ -967,6 +967,7 @@ dc.baseMixin = function (_chart) {
             return _data.call(_chart, _group);
         }
         _data = d3.functor(d);
+
         _chart.expireCache();
         return _chart;
     };
@@ -7060,8 +7061,8 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         if (_chart.renderTitle()) {
             regionG.selectAll('title').text(function (d) {
                 var key = getKey(layerIndex, d);
-                var value = data[key];
-                return _chart.title()({key: key, value: value});
+                var value = Number(data[key]).toFixed(2);
+                return _chart.title()({key0: key, value: value});
             });
         }
     }
@@ -8733,10 +8734,10 @@ dc.heatMap = function (parent, chartGroup) {
     _chart.title(_chart.colorAccessor());
 
     var _colsLabel = function (d) {
-        return isNaN(d) ? d : _numFormat(d);
+        return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
     };
     var _rowsLabel = function (d) {
-        return isNaN(d) ? d : _numFormat(d);
+        return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
      };
 
    /**
@@ -8862,6 +8863,8 @@ dc.heatMap = function (parent, chartGroup) {
 
     _chart._doRender = function () {
         _chart.resetSvg();
+
+        _chart.margins().bottom = _chart.margins().bottom + 4;
 
         _chartBody = _chart.svg()
             .append('g')
