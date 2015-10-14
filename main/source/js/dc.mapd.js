@@ -5051,7 +5051,8 @@ dc.lineChart = function (parent, chartGroup) {
     };
 
     function colors(d, i) {
-        return _chart.getColor.call(d, d.values, i);
+        //return _chart.getColor.call(d, d.values, i);
+        return "#007bd7";
     }
 
     function drawLine(layersEnter, layers) {
@@ -5067,6 +5068,7 @@ dc.lineChart = function (parent, chartGroup) {
         if (_defined) {
             line.defined(_defined);
         }
+
 
         var path = layersEnter.append('path')
             .attr('class', 'line')
@@ -7061,8 +7063,8 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         if (_chart.renderTitle()) {
             regionG.selectAll('title').text(function (d) {
                 var key = getKey(layerIndex, d);
-                var value = data[key];
-                return _chart.title()({key: key, value: value});
+                var value = Number(data[key]).toFixed(2);
+                return _chart.title()({key0: key, value: value});
             });
         }
     }
