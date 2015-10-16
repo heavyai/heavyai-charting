@@ -377,3 +377,11 @@ art {
     pointer-events: all;
     cursor: pointer;
 }
+
+.dc-chart .heat-box {
+    cursor: pointer;
+}
+
+.dc-chart .heat-box:hover{
+    fill-opacity:0.8;
+}
