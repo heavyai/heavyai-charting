@@ -4614,6 +4614,9 @@ dc.barChart = function (parent, chartGroup) {
     });
     */
 
+    _chart.getColor = function () {
+        return "#22A7F0";
+    }
     _chart.plotData = function () {
         var layers = _chart.chartBodyG().selectAll('g.stack')
             .data(_chart.data());
