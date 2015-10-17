@@ -259,6 +259,10 @@ dc.redrawAll = function (group, callback) {
     if (dc._renderlet !== null) {
         dc._renderlet(group);
     }
+
+    // Will be found in mapd.js
+    $('body').trigger('updateFilterCounter');
+
 };
 
 /**
@@ -5055,7 +5059,7 @@ dc.lineChart = function (parent, chartGroup) {
 
     function colors(d, i) {
         //return _chart.getColor.call(d, d.values, i);
-        return "#007bd7";
+        return "#22A7F0";
     }
 
     function drawLine(layersEnter, layers) {
@@ -5456,7 +5460,7 @@ dc.dataCount = function (parent, chartGroup) {
             _chart.root().html(_html.some.replace('%total-count', all).replace('%filter-count', selected));
         } else {
             _chart.selectAll('.total-count').text(all);
-            _chart.selectAll('.filter-count').text(selected);
+            _chart.selectAll('.filter-count').classed('dark-text', (all !== selected)).text(selected);
         }
         return _chart;
     };
