@@ -259,6 +259,10 @@ dc.redrawAll = function (group, callback) {
     if (dc._renderlet !== null) {
         dc._renderlet(group);
     }
+
+    // Will be found in mapd.js
+    $('body').trigger('updateFilterCounter');
+
 };
 
 /**
@@ -967,6 +971,7 @@ dc.baseMixin = function (_chart) {
             return _data.call(_chart, _group);
         }
         _data = d3.functor(d);
+
         _chart.expireCache();
         return _chart;
     };
@@ -4613,6 +4618,9 @@ dc.barChart = function (parent, chartGroup) {
     });
     */
 
+    _chart.getColor = function () {
+        return "#22A7F0";
+    }
     _chart.plotData = function () {
         var layers = _chart.chartBodyG().selectAll('g.stack')
             .data(_chart.data());
@@ -5050,7 +5058,8 @@ dc.lineChart = function (parent, chartGroup) {
     };
 
     function colors(d, i) {
-        return _chart.getColor.call(d, d.values, i);
+        //return _chart.getColor.call(d, d.values, i);
+        return "#22A7F0";
     }
 
     function drawLine(layersEnter, layers) {
@@ -5066,6 +5075,7 @@ dc.lineChart = function (parent, chartGroup) {
         if (_defined) {
             line.defined(_defined);
         }
+
 
         var path = layersEnter.append('path')
             .attr('class', 'line')
@@ -5450,7 +5460,7 @@ dc.dataCount = function (parent, chartGroup) {
             _chart.root().html(_html.some.replace('%total-count', all).replace('%filter-count', selected));
         } else {
             _chart.selectAll('.total-count').text(all);
-            _chart.selectAll('.filter-count').text(selected);
+            _chart.selectAll('.filter-count').classed('dark-text', (all !== selected)).text(selected);
         }
         return _chart;
     };
@@ -7060,8 +7070,8 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         if (_chart.renderTitle()) {
             regionG.selectAll('title').text(function (d) {
                 var key = getKey(layerIndex, d);
-                var value = data[key];
-                return _chart.title()({key: key, value: value});
+                var value = Number(data[key]).toFixed(2);
+                return _chart.title()({key0: key, value: value});
             });
         }
     }
@@ -7585,7 +7595,6 @@ dc.rowChart = function (parent, chartGroup) {
         if (yLabel.empty()) {
             yLabel = axisG.append('text')
             .attr('class', 'y-axis-label')
-            .style('font-size', '14px')
             .text(aliases[_yAxisLabel]);
         }
 
@@ -7601,7 +7610,6 @@ dc.rowChart = function (parent, chartGroup) {
         if (xLabel.empty()) {
             xLabel = axisG.append('text')
             .attr('class', 'x-axis-label')
-            .style('font-size', '14px')
             .text(_chart.xAxisLabel());
         }
 
@@ -8733,10 +8741,10 @@ dc.heatMap = function (parent, chartGroup) {
     _chart.title(_chart.colorAccessor());
 
     var _colsLabel = function (d) {
-        return isNaN(d) ? d : _numFormat(d);
+        return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
     };
     var _rowsLabel = function (d) {
-        return isNaN(d) ? d : _numFormat(d);
+        return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
      };
 
    /**
@@ -8863,10 +8871,15 @@ dc.heatMap = function (parent, chartGroup) {
     _chart._doRender = function () {
         _chart.resetSvg();
 
+        _chart.margins().bottom = _chart.margins().bottom;
+
         _chartBody = _chart.svg()
             .append('g')
             .attr('class', 'heatmap')
             .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
+
+        _chartBody.append('g')
+            .attr('class', 'box-wrapper');
 
         return _chart._doRedraw();
     };
@@ -8882,7 +8895,7 @@ dc.heatMap = function (parent, chartGroup) {
         cols.rangeRoundBands([0, _chart.effectiveWidth()]);
         rows.rangeRoundBands([_chart.effectiveHeight(), 0]);
 
-        var boxes = _chartBody.selectAll('g.box-group').data(_chart.data(), function (d, i) {
+        var boxes = _chartBody.select('.box-wrapper').selectAll('g.box-group').data(_chart.data(), function (d, i) {
             return _chart.keyAccessor()(d, i) + '\0' + _chart.valueAccessor()(d, i);
         });
 
@@ -9052,7 +9065,6 @@ dc.heatMap = function (parent, chartGroup) {
         if (yLabel.empty()) {
             yLabel = _chartBody.append('text')
             .attr('class', 'y-axis-label')
-            .style('font-size', '14px')
             .text(_yLabel);
         }
 
@@ -9067,7 +9079,6 @@ dc.heatMap = function (parent, chartGroup) {
         if (xLabel.empty()) {
             xLabel = _chartBody.append('text')
             .attr('class', 'x-axis-label')
-            .style('font-size', '14px')
             .text(_xLabel);
         }
         
