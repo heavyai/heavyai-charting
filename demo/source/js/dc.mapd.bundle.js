@@ -1,1 +1,0 @@
-../../../main/public/js/dc.mapd.bundle.js

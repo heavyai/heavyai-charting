@@ -1,1 +1,0 @@
-../../../main/source/js/dc.mapd.js
