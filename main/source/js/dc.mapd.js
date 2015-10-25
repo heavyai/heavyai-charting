@@ -2279,20 +2279,39 @@ dc.mapMixin = function (_chart) {
 
 dc.rasterMixin = function(_chart) {
     //var _chart = dc.mapMixin(dc.baseMixin({}));
-    var _vegaSpec = {};
+    _chart._vegaSpec = {};
 
      _chart._resetVegaSpec = function() {
-      _vegaSpec.width = _chart.width();
-      _vegaSpec.height = _chart.height();
-      _vegaSpec.data = [];
-      _vegaSpec.scales = [];
-      _vegaSpec.marks = [];
+      _chart._vegaSpec.width = _chart.width();
+      _chart._vegaSpec.height = _chart.height();
+      _chart._vegaSpec.data = [];
+      _chart._vegaSpec.scales = [];
+      _chart._vegaSpec.marks = [];
+    }
+
+    /* _determineScaleType because there is no way to determine the scale type
+     * in d3 except for looking to see what member methods exist for it
+     */
+
+    _chart._determineScaleType = function(scale) {
+        var scaleType = null;
+        if (scale.rangeBand !== undefined)
+            return "ordinal";
+        if (scale.exponent !== undefined) 
+            return "power";
+        if (scale.base !== undefined) 
+            return "log";
+        if (scale.quantiles !== undefined)
+            return "quantiles";
+        if (scale.interpolate !== undefined)
+            return "linear";
+        return "quantize";
     }
 
     _chart.vegaSpec = function(_) {
       if (!arguments.length)
-        return _vegaSpec;
-      _vegaSpec = _;
+        return _chart._vegaSpec;
+      _chart._vegaSpec = _;
       return _chart;
     }
 
@@ -2307,16 +2326,110 @@ dc.rasterMixin = function(_chart) {
     return _chart;
 }
 
-dc.pointRasterMapChart = function(parent, chartGroup) {
-    var _chart = dc.rasterMixin(dc.mapMixin(dc.baseMixin({})));
+dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
+    var _chart = null;
+
+    var _useMap = useMap !== undefined ? useMap : false;
+
+    if (_useMap) 
+        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.baseMixin({}))));
+    else
+        _chart = dc.rasterMixin(dc.colorMixin(dc.baseMixin({})));
+
+    var _x = null; 
+    var _y = null; 
+    var _r = null; 
+
+    /**
+     #### .x([scale])
+     Gets or sets the x scale. The x scale can be any d3
+     [quantitive scale](https://github.com/mbostock/d3/wiki/Quantitative-Scales)
+     **/
+    _chart.x = function (x) {
+        if (!arguments.length) {
+            return _x;
+        }
+        _x = x;
+        return _chart;
+    };
+
+    /**
+    #### .y([yScale])
+    Get or set the y scale. The y scale is typically automatically determined by the chart implementation.
+
+    **/
+    _chart.y = function (_) {
+        if (!arguments.length) {
+            return _y;
+        }
+        _y = _;
+        return _chart;
+    };
+
+    _chart.r = function (_) {
+        if (!arguments.length) {
+            return _r;
+        }
+        _r = _;
+        return _chart;
+    };
+
+    function genVegaSpec() {
+        // scales
+        _chart._vegaSpec.scales = [];
+        if (_x === null || _y === null)
+            throw ("Bubble raster chart missing mandatory scale");
+
+        var xScaleType = _chart._determineScaleType(_x);
+        _chart._vegaSpec.scales.push({name: "x", type: xScaleType, domain: _x.domain(), range: "width"})  
+
+        var yScaleType = _chart._determineScaleType(_y);
+        _chart._vegaSpec.scales.push({name: "y", type: yScaleType, domain: _y.domain(),range: "height"})  
+        if (_r !== null) {
+            var rScaleType = _chart._determineScaleType(_r);
+            _chart._vegaSpec.scales.push({name: "size", type: rScaleType, domain: _r.domain(), range: _r.range()});
+        }
+
+        if (_chart.colors() !== null) {
+            var colorScale = _chart.colors();
+            var colorScaleType = _chart._determineScaleType(colorScale);
+            _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colorScale.domain(), range: colorScale.range()})  
+        }
+        
+        //_chart._vegaSpec.scales.push({name: "color", type: "ordinal", domain: [1,2,3], range: ["red", "blue", "green"]})  
+        _chart._vegaSpec.marks = [];
+        var markObj = {};
+        markObj.type = "points";
+        markObj.from = {data: "table"};
+        markObj.properties = {};
+        markObj.properties.x = {scale: "x", field: "x"}; 
+        markObj.properties.y = {scale: "y", field: "y"}; 
+        markObj.properties.fillColor = {scale: "color", field: "party"}; 
+        markObj.properties.size = {scale: "size", field: "val"}; 
+
+        _chart._vegaSpec.marks.push(markObj);
+    }
+        
+
 
     _chart._doRender = function() {
       console.log("render");
       _chart._resetVegaSpec();
+      genVegaSpec();
+      console.log(_chart._vegaSpec);
+      debugger;
+      var data = _chart.data();
+      console.log(data);
+
     }
 
     _chart._doRedraw = function() {
       console.log("redraw");
+      _chart._resetVegaSpec();
+      genVegaSpec();
+      console.log(_chart._vegaSpec);
+      var data = _chart.data();
+      console.log(data);
     }
 
     return _chart.anchor(parent, chartGroup);
