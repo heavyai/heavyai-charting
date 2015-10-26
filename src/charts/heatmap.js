@@ -29,7 +29,11 @@ dc.heatMap = function (parent, chartGroup) {
 
     var _colsLabel = function (d) {
 
+        debugger;
 /* OVERRIDE -----------------------------------------------------------------*/
+        if(_xLabel.toLowerCase().indexOf('year')){
+            return d;
+        }
         return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
 /* --------------------------------------------------------------------------*/
 
@@ -37,6 +41,9 @@ dc.heatMap = function (parent, chartGroup) {
     var _rowsLabel = function (d) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
+        if(_yLabel.toLowerCase().indexOf('year')){
+            return d;
+        }
         return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
 /* --------------------------------------------------------------------------*/
 
