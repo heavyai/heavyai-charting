@@ -74,42 +74,27 @@ dc.heatMap = function (parent, chartGroup) {
 /* --------------------------------------------------------------------------*/
 
 /* OVERRIDE -----------------------------------------------------------------*/
-    var _xAxisOnClick = function (d) { filterAxis(0, d); };
-    var _yAxisOnClick = function (d) { filterAxis(1, d); };
-    
-    // HUMAN FRIENDLY TIME AND DATE LABELS IN PROGRESS
-    //
-    // _xAxisOnClick = function (d) {                                                     
-    //     var dayOfWeek = INTERVAL_LABELS.DAY_OF_WEEK.indexOf(d);                        
-    //     var month = INTERVAL_LABELS.MONTH.indexOf(d);                                  
-    //     var hourOfDay = INTERVAL_LABELS.HOUR_OF_DAY.indexOf(d);                        
-    //                                                                                    
-    //     if(dayOfWeek > -1){                                                            
-    //         filterAxis(0, dayOfWeek);                                                  
-    //     }else if(month > -1){                                                          
-    //         filterAxis(0, month+1);                                                    
-    //     }else if(hourOfDay > -1){                                                      
-    //         filterAxis(0, hourOfDay);                                                  
-    //     }else{                                                                         
-    //         filterAxis(0, d);                                                          
-    //     }                                                                              
-    // };                                                                                 
-    //                                                                                    
-    // var _yAxisOnClick = function (d) {                                                 
-    //     var dayOfWeek = INTERVAL_LABELS.DAY_OF_WEEK.indexOf(d);                        
-    //     var month = INTERVAL_LABELS.MONTH.indexOf(d);                                  
-    //     var hourOfDay = INTERVAL_LABELS.HOUR_OF_DAY.indexOf(d);                        
-    //                                                                                    
-    //     if(dayOfWeek > -1){                                                            
-    //         filterAxis(1, dayOfWeek+1);                                                
-    //     }else if(month > -1){                                                          
-    //         filterAxis(1, month+1);                                                    
-    //     }else if(hourOfDay > -1){                                                      
-    //         filterAxis(1, hourOfDay);                                                  
-    //     }else{                                                                         
-    //         filterAxis(1, d);                                                          
-    //    }                                                                               
-    // };    
+    var _xAxisOnClick = function (d) {                                                     
+        var dayOfWeek = INTERVAL_LABELS.DAY_OF_WEEK.indexOf(d);                        
+        var month = INTERVAL_LABELS.MONTH.indexOf(d);                                  
+        var hourOfDay = INTERVAL_LABELS.HOUR_OF_DAY.indexOf(d);                        
+
+        if(dayOfWeek > -1) filterAxis(0, dayOfWeek);
+        else if(month > -1) filterAxis(0, month);
+        else if(hourOfDay > -1) filterAxis(0, hourOfDay);
+        else filterAxis(0, d);
+    };                                                                                 
+
+    var _yAxisOnClick = function (d) {                                                 
+        var dayOfWeek = INTERVAL_LABELS.DAY_OF_WEEK.indexOf(d);                        
+        var month = INTERVAL_LABELS.MONTH.indexOf(d);                                  
+        var hourOfDay = INTERVAL_LABELS.HOUR_OF_DAY.indexOf(d);                        
+
+        if(dayOfWeek > -1) filterAxis(1, dayOfWeek);                                                
+        else if(month > -1) filterAxis(1, month);                                                    
+        else if(hourOfDay > -1) filterAxis(1, hourOfDay);                                                  
+        else filterAxis(1, d);                                                          
+    };    
 /* --------------------------------------------------------------------------*/
 
     var _boxOnClick = function (d) {
@@ -446,6 +431,7 @@ dc.heatMap = function (parent, chartGroup) {
             .attr('y', (_chart.effectiveHeight() + _chart.margins().bottom - 6))
             .style('text-anchor', 'middle');
     };
+
 /* --------------------------------------------------------------------------*/
 
     _chart.yBorderRadius = function (yBorderRadius) {
