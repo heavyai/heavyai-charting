@@ -29,7 +29,6 @@ dc.heatMap = function (parent, chartGroup) {
 
     var _colsLabel = function (d) {
 
-        debugger;
 /* OVERRIDE -----------------------------------------------------------------*/
         if(_xLabel.toLowerCase().indexOf('year')){
             return d;
