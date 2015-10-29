@@ -2284,7 +2284,11 @@ dc.rasterMixin = function(_chart) {
      _chart._resetVegaSpec = function() {
       _chart._vegaSpec.width = _chart.width();
       _chart._vegaSpec.height = _chart.height();
-      _chart._vegaSpec.data = [];
+      _chart._vegaSpec.data = [
+        {
+            "name": "table"
+        }
+      ];
       _chart._vegaSpec.scales = [];
       _chart._vegaSpec.marks = [];
     }
@@ -2314,14 +2318,13 @@ dc.rasterMixin = function(_chart) {
       _chart._vegaSpec = _;
       return _chart;
     }
+    //_chart.setDataAsync(function(group,callbacks) {
+    //    callbacks.pop()();
+    //});
 
-    _chart.setDataAsync(function(group,callbacks) {
-        callbacks.pop()();
-    });
-
-    _chart.data(function (group) {
-        return;
-    });
+    //_chart.data(function (group) {
+    //    return;
+    //});
 
     return _chart;
 }
@@ -2332,13 +2335,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _useMap = useMap !== undefined ? useMap : false;
 
     if (_useMap) 
-        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.baseMixin({}))));
+        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({})))));
     else
-        _chart = dc.rasterMixin(dc.colorMixin(dc.baseMixin({})));
+        _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
 
     var _x = null; 
     var _y = null; 
-    var _r = null; 
+    var _r = 5; // default radius 5
+    _chart.colors("#22A7F0"); // set constant as picton blue as default
 
     /**
      #### .x([scale])
@@ -2374,26 +2378,47 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         return _chart;
     };
 
+    //_chart.data(function (group) {
+    //    var data = null;
+    //    if (_cap === Infinity) {
+    //        data = group.all();
+    //    }
+    //    else {
+    //        var data = group.top(_cap);
+    //    }
+    //    console.log(data);
+    //});
+
     function genVegaSpec() {
         // scales
         _chart._vegaSpec.scales = [];
-        if (_x === null || _y === null)
-            throw ("Bubble raster chart missing mandatory scale");
+        if (_x === null || _y === null || _r === null)
+            return;
+            //throw ("Bubble raster chart missing mandatory scale");
 
         var xScaleType = _chart._determineScaleType(_x);
         _chart._vegaSpec.scales.push({name: "x", type: xScaleType, domain: _x.domain(), range: "width"})  
 
         var yScaleType = _chart._determineScaleType(_y);
         _chart._vegaSpec.scales.push({name: "y", type: yScaleType, domain: _y.domain(),range: "height"})  
-        if (_r !== null) {
+        var rIsConstant = false;
+        if (typeof _r === '[object Function]') {
             var rScaleType = _chart._determineScaleType(_r);
             _chart._vegaSpec.scales.push({name: "size", type: rScaleType, domain: _r.domain(), range: _r.range()});
         }
-
-        if (_chart.colors() !== null) {
-            var colorScale = _chart.colors();
-            var colorScaleType = _chart._determineScaleType(colorScale);
-            _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colorScale.domain(), range: colorScale.range()})  
+        else {
+            rIsConstant = true;
+        }
+        var colorIsConstant = false;
+            
+        var colors = _chart.colors();
+        if (colors !== null) {
+            if (typeof colors === '[object Function]') {
+                var colorScaleType = _chart._determineScaleType(colors);
+                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range()})  
+            }
+            else 
+                colorIsConstant = true;
         }
         
         //_chart._vegaSpec.scales.push({name: "color", type: "ordinal", domain: [1,2,3], range: ["red", "blue", "green"]})  
@@ -2402,29 +2427,52 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         markObj.type = "points";
         markObj.from = {data: "table"};
         markObj.properties = {};
+        //markObj.properties.x = {scale: "x", field: _chart.xDim().value()[0]}; 
         markObj.properties.x = {scale: "x", field: "x"}; 
+        //markObj.properties.y = {scale: "y", field: _chart.yDim().value()[0]}; 
         markObj.properties.y = {scale: "y", field: "y"}; 
-        markObj.properties.fillColor = {scale: "color", field: "party"}; 
-        markObj.properties.size = {scale: "size", field: "val"}; 
+        if (colorIsConstant) 
+            markObj.properties.fillColor = {value: _chart.colors()()}; 
+        else
+            markObj.properties.fillColor = {scale: "color", field: "party"}; 
+
+        if (rIsConstant) 
+            markObj.properties.size = {value: _r}; 
+        else
+            markObj.properties.size = {scale: "size", field: "val"}; 
 
         _chart._vegaSpec.marks.push(markObj);
     }
-        
 
+    function updateXAndYScales () {
+        if (_chart.xDim() !== null && _chart.yDim() !== null) {
+            if (_x === null)
+                _x = d3.scale.linear();
+            var xRange = _chart.xDim().getFilter(); 
+            if (xRange !== null)
+                _x.domain(xRange[0]); // First element of range because range filter can theoretically support multiple ranges
+            if (_y === null)
+                _y = d3.scale.linear();
+            var yRange = _chart.yDim().getFilter(); 
+            if (yRange !== null)
+                _y.domain(yRange[0]); // First element of range because range filter can theoretically support multiple ranges
+
+        }
+    }
 
     _chart._doRender = function() {
       console.log("render");
+      updateXAndYScales();
       _chart._resetVegaSpec();
       genVegaSpec();
       console.log(_chart._vegaSpec);
-      debugger;
       var data = _chart.data();
       console.log(data);
-
     }
 
     _chart._doRedraw = function() {
       console.log("redraw");
+      updateXAndYScales();
       _chart._resetVegaSpec();
       genVegaSpec();
       console.log(_chart._vegaSpec);
@@ -4058,7 +4106,7 @@ dc.bubbleMixin = function (_chart) {
     _chart.renderLabel(true);
 
     _chart.setDataAsync(function(group,callbacks) {
-        if (_chart.cap() != undefined) {
+        if (_chart.cap() !== undefined) {
             group.topAsync(_chart.cap(), undefined, callbacks);
         }
         else {
