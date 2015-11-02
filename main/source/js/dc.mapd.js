@@ -2223,6 +2223,13 @@ dc.mapMixin = function (_chart) {
         return _chart;
     }
 
+    function conv4326To900913 (coord) {
+      var transCoord = [0.0,0.0];
+      transCoord[0] = coord[0] * 111319.49077777777778; 
+      transCoord[1] = Math.log(Math.tan((90.0 + coord[1]) * 0.00872664625997)) * 6378136.99911215736947;
+      return transCoord;
+    }
+
     function onMapMove(e) {
         if (_xDim !== null && _yDim != null) {
             if (e !== undefined && e.type == 'movend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
@@ -2237,8 +2244,11 @@ dc.mapMixin = function (_chart) {
                 }
             }
             _lastMapUpdateTime = curTime;
-            _xDim.filter([bounds._sw.lng,bounds._ne.lng]);
-            _yDim.filter([bounds._sw.lat,bounds._ne.lat]);
+            var minCoord = conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+            var maxCoord = conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+
+            _xDim.filter([minCoord[0],maxCoord[0]]);
+            _yDim.filter([minCoord[1],maxCoord[1]]);
             dc.redrawAll();
         }
     }
