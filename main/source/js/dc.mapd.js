@@ -2193,7 +2193,11 @@ dc.mapMixin = function (_chart) {
     //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
     var id = _chart.chartID() - 2;
     var _mapId = "widget" + id; // TODO: make less brittle (hardwired now to having two charts before point map
+<<<<<<< HEAD
     _chart._map = null;
+=======
+    var _map = null;
+>>>>>>> Async and sync render calls working - have data displayed in image - need to fix z-order over basemap - needs to support mercrator projection
     var _mapInitted = false;
     var _xDim = null;
     var _yDim = null;
@@ -2412,7 +2416,10 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         else {
             return group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> Async and sync render calls working - have data displayed in image - need to fix z-order over basemap - needs to support mercrator projection
     });
 
     function genVegaSpec() {
@@ -2491,7 +2498,10 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
       if (_imageOverlay === null) {
         var widgetId = _chart.chartID() - 2;
         _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+<<<<<<< HEAD
         //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
+=======
+>>>>>>> Async and sync render calls working - have data displayed in image - need to fix z-order over basemap - needs to support mercrator projection
       }
       $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
     }
@@ -2501,7 +2511,10 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
       if (_imageOverlay === null) {
         var widgetId = _chart.chartID() - 2;
         _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+<<<<<<< HEAD
         //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
+=======
+>>>>>>> Async and sync render calls working - have data displayed in image - need to fix z-order over basemap - needs to support mercrator projection
       }
       $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
     }
