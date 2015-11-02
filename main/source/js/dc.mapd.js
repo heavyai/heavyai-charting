@@ -2412,6 +2412,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         else {
             return group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
         }
+
     });
 
     function genVegaSpec() {
