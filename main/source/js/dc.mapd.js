@@ -1268,7 +1268,6 @@ dc.baseMixin = function (_chart) {
             _chart.setSample();
         }
         var id = queryId++;
-        console.log(id);
         var renderCallback = $.proxy(_chart.render,this,id,queryGroupId,queryCount);
         _chart.dataAsync([renderCallback]);
     }
@@ -2191,15 +2190,14 @@ dc.mapMixin = function (_chart) {
     var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
     var _lastWidth = null;
     var _lastHeight = null;
-    //var _mapId = "widget" + _chart.chartID();
-    debugger;
     //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
-    var _mapId = "widget0";
+    var id = _chart.chartID() - 2;
+    var _mapId = "widget" + id; // TODO: make less brittle (hardwired now to having two charts before point map
     var _map = null;
     var _mapInitted = false;
     var _xDim = null;
     var _yDim = null;
-    var _lastMapMoveType = 'movened';
+    var _lastMapMoveType = 'moveend';
     var _lastMapUpdateTime = 0;
     var _mapUpdateInterval = 100; //default
 
@@ -2246,7 +2244,6 @@ dc.mapMixin = function (_chart) {
     }
 
     function initMap() {
-        console.log('init map');
         mapboxgl.accessToken = _mapboxAccessToken; 
         _map = new mapboxgl.Map({
           container: _mapId, // container id
@@ -2261,7 +2258,6 @@ dc.mapMixin = function (_chart) {
     }
 
     _chart.on('preRender', function(chart) {
-        console.log("prerender");
         var width = chart.width(); 
         var height = chart.height(); 
         if (!_mapInitted)
@@ -2274,13 +2270,12 @@ dc.mapMixin = function (_chart) {
             onMapMove(); //to reset filter
         }
     });
-
     initMap();
+
     return _chart;
 }
 
 dc.rasterMixin = function(_chart) {
-    //var _chart = dc.mapMixin(dc.baseMixin({}));
     _chart._vegaSpec = {};
 
      _chart._resetVegaSpec = function() {
@@ -2327,7 +2322,6 @@ dc.rasterMixin = function(_chart) {
     //_chart.data(function (group) {
     //    return;
     //});
-
     return _chart;
 }
 
@@ -2340,6 +2334,8 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({})))));
     else
         _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
+
+    var _imageOverlay = null;
 
     var _x = null; 
     var _y = null; 
@@ -2380,15 +2376,32 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         return _chart;
     };
 
-    _chart.data(function (group) {
-        var data = null;
+    _chart.setDataAsync(function(group, callbacks) {
+        updateXAndYScales();
+        _chart._resetVegaSpec();
+        genVegaSpec();
         if (_chart.cap() === Infinity) {
-            data = group.all(JSON.stringify(_chart._vegaSpec));
+          group.allAsync(callbacks);
         }
         else {
-            var data = group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
+            group.topAsync(_chart.cap(),undefined, JSON.stringify(_chart._vegaSpec), callbacks);
         }
-        return data;
+    });
+        
+    _chart.data(function (group) {
+        
+        if (_chart.dataCache !== null)
+            return _chart.dataCache;
+        updateXAndYScales();
+        _chart._resetVegaSpec();
+        genVegaSpec();
+
+        if (_chart.cap() === Infinity) {
+            return group.all(JSON.stringify(_chart._vegaSpec));
+        }
+        else {
+            return group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
+        }
     });
 
     function genVegaSpec() {
@@ -2463,23 +2476,21 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     }
 
     _chart._doRender = function() {
-      console.log("render");
-      updateXAndYScales();
-      _chart._resetVegaSpec();
-      genVegaSpec();
-      console.log(_chart._vegaSpec);
       var data = _chart.data();
-      console.log(data);
+      if (_imageOverlay === null) {
+        var widgetId = _chart.chartID() - 2;
+        _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+      }
+      $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
     }
 
     _chart._doRedraw = function() {
-      console.log("redraw");
-      updateXAndYScales();
-      _chart._resetVegaSpec();
-      genVegaSpec();
-      console.log(_chart._vegaSpec);
       var data = _chart.data();
-      console.log(data);
+      if (_imageOverlay === null) {
+        var widgetId = _chart.chartID() - 2;
+        _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+      }
+      $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
     }
 
     return _chart.anchor(parent, chartGroup);
