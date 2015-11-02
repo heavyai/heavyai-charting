@@ -2193,7 +2193,7 @@ dc.mapMixin = function (_chart) {
     //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
     var id = _chart.chartID() - 2;
     var _mapId = "widget" + id; // TODO: make less brittle (hardwired now to having two charts before point map
-    var _map = null;
+    _chart._map = null;
     var _mapInitted = false;
     var _xDim = null;
     var _yDim = null;
@@ -2237,7 +2237,7 @@ dc.mapMixin = function (_chart) {
             if (e !== undefined)
                 _lastMapMoveType = e.type;
             var curTime = (new Date).getTime();
-            var bounds = _map.getBounds();
+            var bounds = _chart._map.getBounds();
             if (e !== undefined && e.type == 'move') {
                 if (curTime - _lastMapUpdateTime < _mapUpdateInterval) {
                     return; // for now - could add method here
@@ -2255,15 +2255,15 @@ dc.mapMixin = function (_chart) {
 
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken; 
-        _map = new mapboxgl.Map({
+        _chart._map = new mapboxgl.Map({
           container: _mapId, // container id
           style: 'map_styles/light-v7.json',
           interactive: true,
           center: [0, 0], // starting position
           zoom: 4 // starting zoom
         });
-        _map.on('move', onMapMove);
-        _map.on('moveend', onMapMove);
+        _chart._map.on('move', onMapMove);
+        _chart._map.on('moveend', onMapMove);
         _mapInitted = true;
     }
 
@@ -2276,7 +2276,7 @@ dc.mapMixin = function (_chart) {
             $("#" + _mapId + " canvas").width(width).height(height);
             _lastWidth = width;
             _lastHeight = height;
-            _map.resize();
+            _chart._map.resize();
             onMapMove(); //to reset filter
         }
     });
@@ -2459,12 +2459,12 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         if (colorIsConstant) 
             markObj.properties.fillColor = {value: _chart.colors()()}; 
         else
-            markObj.properties.fillColor = {scale: "color", field: "party"}; 
+            markObj.properties.fillColor = {scale: "color", field: "color"}; 
 
         if (rIsConstant) 
             markObj.properties.size = {value: _r}; 
         else
-            markObj.properties.size = {scale: "size", field: "val"}; 
+            markObj.properties.size = {scale: "size", field: "size"}; 
 
         _chart._vegaSpec.marks.push(markObj);
     }
@@ -2490,6 +2490,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
       if (_imageOverlay === null) {
         var widgetId = _chart.chartID() - 2;
         _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+        //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
       }
       $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
     }
@@ -2499,6 +2500,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
       if (_imageOverlay === null) {
         var widgetId = _chart.chartID() - 2;
         _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+        //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
       }
       $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
     }
