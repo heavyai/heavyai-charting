@@ -2192,6 +2192,8 @@ dc.mapMixin = function (_chart) {
     var _lastWidth = null;
     var _lastHeight = null;
     //var _mapId = "widget" + _chart.chartID();
+    debugger;
+    //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
     var _mapId = "widget0";
     var _map = null;
     var _mapInitted = false;
@@ -2341,7 +2343,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
     var _x = null; 
     var _y = null; 
-    var _r = 5; // default radius 5
+    var _r = 3; // default radius 5
     _chart.colors("#22A7F0"); // set constant as picton blue as default
 
     /**
@@ -2378,16 +2380,16 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         return _chart;
     };
 
-    //_chart.data(function (group) {
-    //    var data = null;
-    //    if (_cap === Infinity) {
-    //        data = group.all();
-    //    }
-    //    else {
-    //        var data = group.top(_cap);
-    //    }
-    //    console.log(data);
-    //});
+    _chart.data(function (group) {
+        var data = null;
+        if (_chart.cap() === Infinity) {
+            data = group.all(JSON.stringify(_chart._vegaSpec));
+        }
+        else {
+            var data = group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
+        }
+        return data;
+    });
 
     function genVegaSpec() {
         // scales
@@ -3998,7 +4000,7 @@ dc.capMixin = function (_chart) {
           group.allAsync(callbacks);
       }
       else {
-          group.topAsync(_cap, undefined, callbacks)
+          group.topAsync(_cap, undefined, undefined, callbacks)
       }
     });
 
@@ -4107,7 +4109,7 @@ dc.bubbleMixin = function (_chart) {
 
     _chart.setDataAsync(function(group,callbacks) {
         if (_chart.cap() !== undefined) {
-            group.topAsync(_chart.cap(), undefined, callbacks);
+            group.topAsync(_chart.cap(), undefined, undefined, callbacks);
         }
         else {
             group.allAsync(callbacks);
@@ -5765,7 +5767,7 @@ dc.dataTable = function (parent, chartGroup) {
             _chart.dimension().bottomAsync(_size, undefined,callbacks);
         }
         else {
-            _chart.dimension().topAsync(_size, undefined,callbacks);
+            _chart.dimension().topAsync(_size, undefined, undefined, callbacks);
         }
     });
 
