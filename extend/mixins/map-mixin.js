@@ -67,7 +67,6 @@ dc.mapMixin = function (_chart) {
                 }
             }
             _lastMapUpdateTime = curTime;
-
             _xDim.filter([minCoord[0],maxCoord[0]]);
             _yDim.filter([minCoord[1],maxCoord[1]]);
             dc.redrawAll();
