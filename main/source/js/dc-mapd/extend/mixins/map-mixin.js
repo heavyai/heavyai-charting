@@ -56,14 +56,17 @@ dc.mapMixin = function (_chart) {
                 _lastMapMoveType = e.type;
             var curTime = (new Date).getTime();
             var bounds = _chart._map.getBounds();
+            var minCoord = conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+            var maxCoord = conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
             if (e !== undefined && e.type == 'move') {
                 if (curTime - _lastMapUpdateTime < _mapUpdateInterval) {
-                    return; // for now - could add method here
+                    if (_chart.resizeImage !== undefined) {
+                        //_chart.resizeImage(minCoord, maxCoord);
+                    }
+                    return; 
                 }
             }
             _lastMapUpdateTime = curTime;
-            var minCoord = conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
-            var maxCoord = conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
 
             _xDim.filter([minCoord[0],maxCoord[0]]);
             _yDim.filter([minCoord[1],maxCoord[1]]);
