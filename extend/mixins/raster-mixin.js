@@ -10,7 +10,8 @@ dc.rasterMixin = function(_chart) {
       _chart._vegaSpec.height = _chart.height();
       _chart._vegaSpec.data = [
         {
-            "name": "table"
+            "name": "table",
+            "sql": "select x, y from tweets;"
         }
       ];
       _chart._vegaSpec.scales = [];
