@@ -90,9 +90,20 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             //throw ("Bubble raster chart missing mandatory scale");
 
         var xScaleType = _chart._determineScaleType(_x);
+        /*
+        var xDomain = _x.domain();
+        xDomain[0] = xDomain[0].toFixed(10)/1;
+        xDomain[1] = xDomain[1].toFixed(10)/1;
+        console.log(xDomain);
+        */
         _chart._vegaSpec.scales.push({name: "x", type: xScaleType, domain: _x.domain(), range: "width"})
 
         var yScaleType = _chart._determineScaleType(_y);
+        /*
+        var yDomain = _y.domain();
+        yDomain[0] = yDomain[0].toFixed(10)/1;
+        yDomain[1] = yDomain[1].toFixed(10)/1;
+        */
         _chart._vegaSpec.scales.push({name: "y", type: yScaleType, domain: _y.domain(),range: "height"})
         var rIsConstant = false;
         if (typeof _r === '[object Function]') {
@@ -135,22 +146,41 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             markObj.properties.size = {scale: "size", field: "size"};
 
         _chart._vegaSpec.marks.push(markObj);
+        console.log(_chart._vegaSpec);
     }
 
     function updateXAndYScales () {
         if (_chart.xDim() !== null && _chart.yDim() !== null) {
-            if (_x === null)
+            if (_x === null) {
                 _x = d3.scale.linear();
+                _x.domain([0.001,0.999]);
+            }
             var xRange = _chart.xDim().getFilter();
             if (xRange !== null)
                 _x.domain(xRange[0]); // First element of range because range filter can theoretically support multiple ranges
-            if (_y === null)
+            if (_y === null) {
                 _y = d3.scale.linear();
+                _y.domain([0.001,0.999]);
+            }
             var yRange = _chart.yDim().getFilter();
             if (yRange !== null)
                 _y.domain(yRange[0]); // First element of range because range filter can theoretically support multiple ranges
 
         }
+    }
+
+    _chart.resizeImage = function (minCoord, maxCoord) {
+        //console.log(minCoord);
+        //console.log(maxCoord);
+        var xFilter = _chart.xDim().getFilter()[0];
+        var yFilter = _chart.yDim().getFilter()[0];
+        var oldMinCoord = [xFilter[0], yFilter[0]];
+        var oldMaxCoord = [xFilter[1], yFilter[1]];
+        var xZoom = (oldMaxCoord[0] - oldMinCoord[0]) / (maxCoord[0] - minCoord[0])
+        var yZoom = (oldMaxCoord[1] - oldMinCoord[1]) / (maxCoord[1] - minCoord[1])
+        console.log(xZoom + ", " + yZoom);
+        $(".raster-overlay").css("transform", "scale(" + xZoom + "," + yZoom + ")");
+
     }
 
     _chart._doRender = function() {

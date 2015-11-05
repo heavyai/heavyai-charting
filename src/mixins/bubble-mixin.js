@@ -25,7 +25,7 @@ dc.bubbleMixin = function (_chart) {
 /* OVERRIDE EXTEND---------------------------------------------------------- */
     _chart.setDataAsync(function(group,callbacks) {
         if (_chart.cap() != undefined) {
-            group.topAsync(_chart.cap(), undefined, callbacks);
+            group.topAsync(_chart.cap(), undefined, undefined, callbacks);
         }
         else {
             group.allAsync(callbacks);
