@@ -9,8 +9,6 @@ dc.rasterMixin = function(_chart) {
       _chart._vegaSpec.width = _chart.width();
       _chart._vegaSpec.height = _chart.height();
 
-      console.log(_chart._vegaSpec.width, " ", _chart._vegaSpec.height )
-
       _chart._vegaSpec.data = [
         {
             "name": "table",
