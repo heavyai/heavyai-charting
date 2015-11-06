@@ -108,7 +108,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         var rIsConstant = false;
         if (typeof _r === 'function') {
             var rScaleType = _chart._determineScaleType(_r);
-            _chart._vegaSpec.scales.push({name: "size", type: rScaleType, domain: _r.domain(), range: _r.range()});
+            _chart._vegaSpec.scales.push({name: "size", type: rScaleType, domain: _r.domain(), range: _r.range(), clamp: true});
         }
         else {
             rIsConstant = true;
