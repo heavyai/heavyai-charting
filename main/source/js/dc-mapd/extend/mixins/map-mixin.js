@@ -77,7 +77,7 @@ dc.mapMixin = function (_chart) {
         mapboxgl.accessToken = _mapboxAccessToken;
         _chart._map = new mapboxgl.Map({
           container: _mapId, // container id
-          style: 'mapbox://styles/mapbox/basic-v8',
+          style: 'mapbox://styles/mapbox/dark-v8',
           interactive: true,
           center: [0, 0], // starting position
           zoom: 4 // starting zoom
