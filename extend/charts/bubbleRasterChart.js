@@ -17,7 +17,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
     var _x = null;
     var _y = null;
-    var _r = 3; // default radius 5
+    var _r = 1; // default radius 5
     _chart.colors("#22A7F0"); // set constant as picton blue as default
 
     /**
@@ -106,7 +106,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         */
         _chart._vegaSpec.scales.push({name: "y", type: yScaleType, domain: _y.domain(),range: "height"})
         var rIsConstant = false;
-        if (typeof _r === '[object Function]') {
+        if (typeof _r === 'function') {
             var rScaleType = _chart._determineScaleType(_r);
             _chart._vegaSpec.scales.push({name: "size", type: rScaleType, domain: _r.domain(), range: _r.range()});
         }
@@ -200,6 +200,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
         //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
       }
+        //_chart._map.style.sources["overlay"] = {"type": "image", "url": "data:image/png;base64," + data, "coordinates": [ [-180.0,90.0], [180.0, 90.0], [180.0, -90.0], [-180.0, -90.0] ]};
       $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
     }
 
