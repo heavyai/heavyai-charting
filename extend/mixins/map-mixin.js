@@ -79,7 +79,7 @@ dc.mapMixin = function (_chart) {
           container: _mapId, // container id
           style: 'mapbox://styles/mapbox/dark-v8',
           interactive: true,
-          center: [0, 0], // starting position
+          center: [-74.50, 40], // starting position
           zoom: 4 // starting zoom
         });
         _chart._map.on('move', onMapMove);
