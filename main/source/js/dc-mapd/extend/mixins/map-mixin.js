@@ -82,12 +82,28 @@ dc.mapMixin = function (_chart) {
           center: [0, 0], // starting position
           zoom: 4 // starting zoom
         });
+
+
+
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
+        _chart._map.on('mousehover', function(e) {
+            var height = $(e.target._container).height()
+            var y = Math.round(height - e.point.y)
+            var tpixel = new TPixel({x:e.point.x, y:y});
+            con.getRowsForPixels([tpixel], true, function(){
+                debugger;
+            });
+
+        })
         _mapInitted = true;
     }
 
     _chart.on('preRender', function(chart) {
+        
+
+        $('.mapboxgl-ctrl-bottom-right').remove();
+
         var width = chart.width();
         var height = chart.height();
         if (!_mapInitted)
