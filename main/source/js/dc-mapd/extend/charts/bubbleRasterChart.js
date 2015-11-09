@@ -156,7 +156,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             markObj.properties.size = {scale: "size", field: "size"};
 
         _chart._vegaSpec.marks.push(markObj);
-        console.log(_chart._vegaSpec);
+        // console.log(_chart._vegaSpec);
     }
 
     function updateXAndYScales () {
