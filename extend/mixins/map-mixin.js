@@ -89,20 +89,26 @@ dc.mapMixin = function (_chart) {
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
         _chart._map.on('click', function(e) {
-            _mouseClickCoords = {x: e.originalEvent.x + 'px', y: e.originalEvent.y + 'px'};
+            _mouseClickCoords = {x: e.originalEvent.x, y: e.originalEvent.y};
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y)
             var tpixel = new TPixel({x:e.point.x, y:y});
             con.getRowsForPixels([tpixel], ['tweet_text'], function(result){
                 if(result[0].row_set.columns.length){
                     var context={
-                      "x": _mouseClickCoords.x,
-                      "y": _mouseClickCoords.y,
+                      "x": _mouseClickCoords.x + 'px',
+                      "y": _mouseClickCoords.y + 'px',
                       "data": result[0].row_set.columns[0].data.str_col[0]
                     };
 
                     var theCompiledHtml = MyApp.templates.pointMapPopup(context);
                     $('body').append(theCompiledHtml)
+                    $('.popup-hide-div').on('mouseout', function(){
+                      
+                      $(this).parent().addClass('popup-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
+                             $(this).remove(); 
+                          });
+                    })
 
                 }
             });
