@@ -15,7 +15,7 @@ dc.mapMixin = function (_chart) {
     var _mapInitted = false;
     var _xDim = null;
     var _yDim = null;
-    var _lastMapMoveType = 'moveend';
+    var _lastMapMoveType = null;
     var _lastMapUpdateTime = 0;
     var _mapUpdateInterval = 100; //default
     var _mouseClickCoords = {};
@@ -51,7 +51,7 @@ dc.mapMixin = function (_chart) {
 
     function onMapMove(e) {
         if (_xDim !== null && _yDim != null) {
-            if (e !== undefined && e.type == 'movend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
+            if (e !== undefined && e.type == 'moveend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
                 return;
             if (e !== undefined)
                 _lastMapMoveType = e.type;
@@ -93,12 +93,12 @@ dc.mapMixin = function (_chart) {
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y)
             var tpixel = new TPixel({x:e.point.x, y:y});
-            con.getRowsForPixels([tpixel], ['tweet_text'], function(result){
-                if(result[0].row_set.columns.length){
+            con.getRowsForPixels([tpixel], ['tweet_text'], [function(result){
+                if(result[0].row_set.length){
                     var context={
                       "x": _mouseClickCoords.x + 'px',
                       "y": _mouseClickCoords.y + 'px',
-                      "data": result[0].row_set.columns[0].data.str_col[0]
+                      "data": result[0].row_set[0].tweet_text
                     };
 
                     var theCompiledHtml = MyApp.templates.pointMapPopup(context);
@@ -111,7 +111,7 @@ dc.mapMixin = function (_chart) {
                     })
 
                 }
-            });
+            }]);
 
         })
         _mapInitted = true;
