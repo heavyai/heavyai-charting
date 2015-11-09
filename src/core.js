@@ -163,6 +163,7 @@ dc.renderAll = function (group) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
         if (dc._sampledCount > 0) {
+          console.log(dc._sampledCount);
 
             // relies on count chart being first -- bad
             if (charts[i].isCountChart())
