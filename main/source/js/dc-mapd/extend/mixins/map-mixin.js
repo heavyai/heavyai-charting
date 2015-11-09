@@ -19,6 +19,7 @@ dc.mapMixin = function (_chart) {
     var _lastMapUpdateTime = 0;
     var _mapUpdateInterval = 100; //default
     var _mouseClickCoords = {};
+    var _chartVariables = [];
 
 
     _chart.xDim = function(xDim) {
@@ -94,25 +95,28 @@ dc.mapMixin = function (_chart) {
             var y = Math.round(height - e.point.y)
             var tpixel = new TPixel({x:e.point.x, y:y});
             con.getRowsForPixels([tpixel], ['tweet_text'], [function(result){
-                if(result[0].row_set.length){
-                    var context={
-                      "x": _mouseClickCoords.x + 'px',
-                      "y": _mouseClickCoords.y + 'px',
-                      "data": result[0].row_set[0].tweet_text
-                    };
+              if(result[0].row_set.length){
+                var context={
+                  "x": _mouseClickCoords.x + 'px',
+                  "y": _mouseClickCoords.y + 'px',
+                  "data": result[0].row_set[0].tweet_text
+                };
 
-                    var theCompiledHtml = MyApp.templates.pointMapPopup(context);
-                    $('body').append(theCompiledHtml)
-                    $('.popup-hide-div').on('mouseout', function(){
-                      
-                      $(this).parent().addClass('popup-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
-                             $(this).remove(); 
-                          });
-                    })
-
-                }
+                var theCompiledHtml = MyApp.templates.pointMapPopup(context);
+                $('body').append(theCompiledHtml)
+              }
             }]);
 
+        })
+
+        _chart._map.on('mousemove', function(e){
+          if($('.popup-hide-div').length){
+            if (!$('.popup-data').is(':hover')) {    
+              $('.popup-hide-div').parent().addClass('popup-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
+                   $(this).remove(); 
+                });
+              }
+            }
         })
         _mapInitted = true;
     }
