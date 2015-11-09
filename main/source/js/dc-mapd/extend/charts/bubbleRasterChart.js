@@ -15,8 +15,10 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
     var _imageOverlay = null;
 
+    var _activeLayer = 0;
     var _x = null;
     var _y = null;
+    var _oldRenderBounds = null;
     var _r = 1; // default radius 5
     _chart.colors("#22A7F0"); // set constant as picton blue as default
 
@@ -56,6 +58,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
     _chart.setDataAsync(function(group, callbacks) {
         updateXAndYScales();
+
+        var bounds = _chart._map.getBounds();
+
+        _oldRenderBounds = [_.values(bounds.getNorthWest()),
+          _.values(bounds.getNorthEast()),
+          _.values(bounds.getSouthEast()),
+          _.values(bounds.getSouthWest())]
+
         _chart._resetVegaSpec();
         genVegaSpec();
         if (_chart.cap() === Infinity) {
@@ -146,7 +156,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             markObj.properties.size = {scale: "size", field: "size"};
 
         _chart._vegaSpec.marks.push(markObj);
-        console.log(_chart._vegaSpec);
+        // console.log(_chart._vegaSpec);
     }
 
     function updateXAndYScales () {
@@ -169,6 +179,49 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         }
     }
 
+    function removeOverlay(overlay){
+      var map = _chart._map;
+
+      map.removeLayer(overlay);
+      map.removeSource(overlay);
+    }
+
+    function addOverlay(data){
+        var map = _chart._map;
+        
+        var toBeRemovedOverlay = "overlay" + _activeLayer
+        
+        // if(_activeLayer){
+        //   _activeLayer = 0
+        // } else {
+        //   _activeLayer = 1;
+        // }
+
+        _activeLayer++;
+
+
+        var toBeAddedOverlay = "overlay" + _activeLayer
+        
+        map.addSource(toBeAddedOverlay,{
+            "type": "image",
+            "url": 'data:image/png;base64,' + data,
+            "coordinates": _oldRenderBounds
+        })
+
+        map.addLayer({
+            "id": toBeAddedOverlay,
+            "source": toBeAddedOverlay,
+            "type": "raster",
+            "paint": {"raster-opacity": 0.85}
+        })
+
+        setTimeout(function(){
+          if(map.getSource(toBeRemovedOverlay)){
+              removeOverlay(toBeRemovedOverlay);
+          }
+        }, 40)
+    }
+
     _chart.resizeImage = function (minCoord, maxCoord) {
         //console.log(minCoord);
         //console.log(maxCoord);
@@ -184,24 +237,26 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     }
 
     _chart._doRender = function() {
+
       var data = _chart.data();
-      if (_imageOverlay === null) {
-        var widgetId = _chart.chartID() - 2;
-        _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
-        //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
-      }
-      $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
+        // _imageOverlay = true;
+        // return;
+        // _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+        // _imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
+      // $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
+      addOverlay(data)
+
     }
 
     _chart._doRedraw = function() {
+  
       var data = _chart.data();
-      if (_imageOverlay === null) {
-        var widgetId = _chart.chartID() - 2;
-        _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
-        //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
-      }
+        // return;
+        // _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+        // _imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
         //_chart._map.style.sources["overlay"] = {"type": "image", "url": "data:image/png;base64," + data, "coordinates": [ [-180.0,90.0], [180.0, 90.0], [180.0, -90.0], [-180.0, -90.0] ]};
-      $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
+      // $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
+      addOverlay(data)
     }
 
     return _chart.anchor(parent, chartGroup);
