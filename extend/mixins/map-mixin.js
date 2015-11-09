@@ -105,8 +105,9 @@ dc.mapMixin = function (_chart) {
         _chart._map.on('click', function(e) {
             _mouseClickCoords = {x: e.originalEvent.x, y: e.originalEvent.y};
             var height = $(e.target._container).height()
-            var y = Math.round(height - e.point.y)
-            var tpixel = new TPixel({x:e.point.x, y:y});
+            var y = Math.round(height - e.point.y);
+            var x = Math.round(e.point.x);
+            var tpixel = new TPixel({x:x, y:y});
             con.getRowsForPixels([tpixel], ['tweet_text'], [function(result){
               if(result[0].row_set.length){
                 var context={
