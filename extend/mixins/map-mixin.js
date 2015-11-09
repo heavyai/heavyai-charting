@@ -18,6 +18,7 @@ dc.mapMixin = function (_chart) {
     var _lastMapMoveType = 'moveend';
     var _lastMapUpdateTime = 0;
     var _mapUpdateInterval = 100; //default
+    var _mouseClickCoords = {};
 
 
     _chart.xDim = function(xDim) {
@@ -87,12 +88,23 @@ dc.mapMixin = function (_chart) {
 
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
-        _chart._map.on('mousehover', function(e) {
+        _chart._map.on('click', function(e) {
+            _mouseClickCoords = {x: e.originalEvent.x + 'px', y: e.originalEvent.y + 'px'};
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y)
             var tpixel = new TPixel({x:e.point.x, y:y});
-            con.getRowsForPixels([tpixel], true, function(){
-                debugger;
+            con.getRowsForPixels([tpixel], ['tweet_text'], function(result){
+                if(result[0].row_set.columns.length){
+                    var context={
+                      "x": _mouseClickCoords.x,
+                      "y": _mouseClickCoords.y,
+                      "data": result[0].row_set.columns[0].data.str_col[0]
+                    };
+
+                    var theCompiledHtml = MyApp.templates.pointMapPopup(context);
+                    $('body').append(theCompiledHtml)
+
+                }
             });
 
         })
