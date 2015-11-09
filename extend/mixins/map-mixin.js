@@ -98,7 +98,7 @@ dc.mapMixin = function (_chart) {
           zoom: 4 // starting zoom
         });
 
-
+        initGeocoder();
 
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
@@ -132,11 +132,32 @@ dc.mapMixin = function (_chart) {
             }
         })
         _mapInitted = true;
+
+    }
+
+    function initGeocoder() {
+      _chart.geocoder = new Geocoder();
+      _chart.geocoder.init(_chart._map);
+      _chart.geocoderInput = $('<input class="geocoder-input" type="text" placeholder="Zoom to"></input>')
+        .appendTo($('#' + _mapId  + '-body'));
+      _chart.geocoderInput.css({
+          top: '5px',
+          right: '5px'
+        });
+
+      _chart.geocoderInput.dblclick(function() {
+        return false;
+      });
+
+      _chart.geocoderInput.keyup(function(e) {
+        if(e.keyCode === 13) {
+          _chart.geocoder.geocode(_chart.geocoderInput.val());
+        }
+      });
     }
 
     _chart.on('preRender', function(chart) {
         
-
         $('.mapboxgl-ctrl-bottom-right').remove();
 
         var width = chart.width();
