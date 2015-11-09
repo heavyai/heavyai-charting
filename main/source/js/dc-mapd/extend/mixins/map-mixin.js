@@ -11,6 +11,19 @@ dc.mapMixin = function (_chart) {
     //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
     var id = _chart.chartID() - 2;
     var _mapId = "widget" + id; // TODO: make less brittle (hardwired now to having two charts before point map
+
+    // get the widget's div and it's sections
+    var $widgetDiv   = $('#' + _mapId);
+    var $panelHeader = $($widgetDiv.children()[0]);
+    var $panelBody   = $($widgetDiv.children()[1]);
+
+    // calculate the height of the map
+    var height = $widgetDiv.height() - $panelHeader.height();
+
+    // set the id and height of the panel body
+    $panelBody.attr('id', _mapId + '-body');
+    $panelBody.height(height);
+
     _chart._map = null;
     var _mapInitted = false;
     var _xDim = null;
@@ -78,10 +91,10 @@ dc.mapMixin = function (_chart) {
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
         _chart._map = new mapboxgl.Map({
-          container: _mapId, // container id
+          container: _mapId + '-body', // container id
           style: 'mapbox://styles/mapbox/dark-v8',
           interactive: true,
-          center: [0, 0], // starting position
+          center: [-74.50, 40], // starting position
           zoom: 4 // starting zoom
         });
 
@@ -92,8 +105,9 @@ dc.mapMixin = function (_chart) {
         _chart._map.on('click', function(e) {
             _mouseClickCoords = {x: e.originalEvent.x, y: e.originalEvent.y};
             var height = $(e.target._container).height()
-            var y = Math.round(height - e.point.y)
-            var tpixel = new TPixel({x:e.point.x, y:y});
+            var y = Math.round(height - e.point.y);
+            var x = Math.round(e.point.x);
+            var tpixel = new TPixel({x:x, y:y});
             con.getRowsForPixels([tpixel], ['tweet_text'], [function(result){
               if(result[0].row_set.length){
                 var context={
