@@ -11,13 +11,28 @@ dc.mapMixin = function (_chart) {
     //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
     var id = _chart.chartID() - 2;
     var _mapId = "widget" + id; // TODO: make less brittle (hardwired now to having two charts before point map
+
+    // get the widget's div and it's sections
+    var $widgetDiv   = $('#' + _mapId);
+    var $panelHeader = $($widgetDiv.children()[0]);
+    var $panelBody   = $($widgetDiv.children()[1]);
+
+    // calculate the height of the map
+    var height = $widgetDiv.height() - $panelHeader.height();
+
+    // set the id and height of the panel body
+    $panelBody.attr('id', _mapId + '-body');
+    $panelBody.height(height);
+
     _chart._map = null;
     var _mapInitted = false;
     var _xDim = null;
     var _yDim = null;
-    var _lastMapMoveType = 'moveend';
+    var _lastMapMoveType = null;
     var _lastMapUpdateTime = 0;
     var _mapUpdateInterval = 100; //default
+    var _mouseClickCoords = {};
+    var _chartVariables = [];
 
 
     _chart.xDim = function(xDim) {
@@ -50,7 +65,7 @@ dc.mapMixin = function (_chart) {
 
     function onMapMove(e) {
         if (_xDim !== null && _yDim != null) {
-            if (e !== undefined && e.type == 'movend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
+            if (e !== undefined && e.type == 'moveend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
                 return;
             if (e !== undefined)
                 _lastMapMoveType = e.type;
@@ -76,18 +91,75 @@ dc.mapMixin = function (_chart) {
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
         _chart._map = new mapboxgl.Map({
-          container: _mapId, // container id
+          container: _mapId + '-body', // container id
           style: 'mapbox://styles/mapbox/dark-v8',
           interactive: true,
-          center: [0, 0], // starting position
+          center: [-74.50, 40], // starting position
           zoom: 4 // starting zoom
         });
+
+        initGeocoder();
+
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
+        _chart._map.on('click', function(e) {
+            _mouseClickCoords = {x: e.originalEvent.x, y: e.originalEvent.y};
+            var height = $(e.target._container).height()
+            var y = Math.round(height - e.point.y)
+            var tpixel = new TPixel({x:e.point.x, y:y});
+            con.getRowsForPixels([tpixel], ['tweet_text'], [function(result){
+              if(result[0].row_set.length){
+                var context={
+                  "x": _mouseClickCoords.x + 'px',
+                  "y": _mouseClickCoords.y + 'px',
+                  "data": result[0].row_set[0].tweet_text
+                };
+
+                var theCompiledHtml = MyApp.templates.pointMapPopup(context);
+                $('body').append(theCompiledHtml)
+              }
+            }]);
+
+        })
+
+        _chart._map.on('mousemove', function(e){
+          if($('.popup-hide-div').length){
+            if (!$('.popup-data').is(':hover')) {    
+              $('.popup-hide-div').parent().addClass('popup-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
+                   $(this).remove(); 
+                });
+              }
+            }
+        })
         _mapInitted = true;
+
+    }
+
+    function initGeocoder() {
+      _chart.geocoder = new Geocoder();
+      _chart.geocoder.init(_chart._map);
+      _chart.geocoderInput = $('<input class="geocoder-input" type="text" placeholder="Zoom to"></input>')
+        .appendTo($('#' + _mapId  + '-body'));
+      _chart.geocoderInput.css({
+          top: '5px',
+          right: '5px'
+        });
+
+      _chart.geocoderInput.dblclick(function() {
+        return false;
+      });
+
+      _chart.geocoderInput.keyup(function(e) {
+        if(e.keyCode === 13) {
+          _chart.geocoder.geocode(_chart.geocoderInput.val());
+        }
+      });
     }
 
     _chart.on('preRender', function(chart) {
+        
+        $('.mapboxgl-ctrl-bottom-right').remove();
+
         var width = chart.width();
         var height = chart.height();
         if (!_mapInitted)
