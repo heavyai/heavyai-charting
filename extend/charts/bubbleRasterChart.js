@@ -3,15 +3,17 @@
  * ***************************************************************************/
 
 
-dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
+dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     var _chart = null;
 
     var _useMap = useMap !== undefined ? useMap : false;
 
-    if (_useMap)
-        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({})))));
-    else
+    if (_useMap){
+        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), chartId));
+    }
+    else{
         _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
+    }
 
     var _imageOverlay = null;
 

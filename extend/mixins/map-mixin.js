@@ -2,14 +2,15 @@
  * EXTEND: dc.mapMixin                                                        *
  * ***************************************************************************/
 
-dc.mapMixin = function (_chart) {
+dc.mapMixin = function (_chart, chartId) {
 
     var _map = null;
     var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
     var _lastWidth = null;
     var _lastHeight = null;
     //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
-    var id = _chart.chartID() - 2;
+
+    var id = chartId;
     var _mapId = "widget" + id; // TODO: make less brittle (hardwired now to having two charts before point map
 
     // get the widget's div and it's sections
