@@ -71,6 +71,11 @@ dc.mapMixin = function (_chart) {
       return transCoord;
     }
 
+    function onLoad(e){
+      dc.enableRefresh();
+      _chart.render();
+      $('body').trigger('loadGrid');
+    }
     function onMapMove(e) {
         if (_xDim !== null && _yDim != null) {
             if (e !== undefined && e.type == 'moveend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
@@ -108,6 +113,7 @@ dc.mapMixin = function (_chart) {
 
         initGeocoder();
 
+        _chart._map.on('load', onLoad);
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
         _chart._map.on('click', function(e) {
@@ -184,7 +190,6 @@ dc.mapMixin = function (_chart) {
             }
         })
         _mapInitted = true;
-
     }
 
     function initGeocoder() {
