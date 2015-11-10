@@ -106,11 +106,26 @@ dc.mapMixin = function (_chart) {
           zoom: 4 // starting zoom
         });
 
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
         initGeocoder();
 
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
-        _chart._map.on('click', function(e) {
+         function showPopUp(e) {
             // _mouseClickCoords = {x: e.originalEvent.x, y: e.originalEvent.y};
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y);
@@ -122,16 +137,13 @@ dc.mapMixin = function (_chart) {
             // _yDimVariable = $('#select2-yCoordPicker' + widgetId + '-container').text()
 
 
-            var columns = chartWidgets[widgetId].chartObject.projectArray;
+
+            var columns = chartWidgets[widgetId].chartObject.projectArray.slice();
+
             if(!columns.length){
-              swal({title: "Warning",
-                text: "Please add a column to see pop-up overlay",
-                type: "warning",
-                confirmButtonText: "Okay"
-              });
               return;
             }
-            
+
             columns.push(_xDimName);
             columns.push(_yDimName);
             
@@ -169,19 +181,25 @@ dc.mapMixin = function (_chart) {
               }
             }]);
 
-        })
+        }
+
+        var debouncePopUp = debounce(function(e){
+            showPopUp(e)
+        }, 250)
 
         _chart._map.on('mousemove', function(e){
+          
+          debouncePopUp(e);
+
           if($('.popup-hide-div').length){
-            if (!$('.popup-data').is(':hover')) {    
-              $('.popup-container').addClass('popup-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
-                   $(this).remove();
-                });
-              $('.point-highlight-add').addClass('point-highlight-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
-                   $(this).parent().remove();
-                });
-              }
-            }
+
+            $('.popup-container').addClass('popup-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
+               $(this).remove();
+              });
+            $('.point-highlight-add').addClass('point-highlight-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
+               $(this).parent().remove();
+            });
+          }
         })
         _mapInitted = true;
 
