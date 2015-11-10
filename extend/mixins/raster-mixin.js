@@ -28,7 +28,6 @@ dc.rasterMixin = function(_chart) {
         if (!arguments.length)
             return _sampling;
     
-        debugger;
         if (setting && !_sampling) // if wasn't sampling
             dc._sampledCount++;
         else if (!setting && _sampling)

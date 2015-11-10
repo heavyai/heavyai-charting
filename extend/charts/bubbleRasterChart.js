@@ -20,6 +20,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _y = null;
     var _oldRenderBounds = null;
     var _r = 1; // default radius 5
+    var _dynamicR = null;
     _chart.colors("#22A7F0"); // set constant as picton blue as default
 
     /**
@@ -53,6 +54,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             return _r;
         }
         _r = _;
+        return _chart;
+    };
+
+    _chart.dynamicR = function(_) {
+        if (!arguments.length) {
+            return _dynamicR;
+        }
+        _dynamicR = _;
         return _chart;
     };
 
@@ -122,6 +131,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         }
         else {
             rIsConstant = true;
+
         }
         var colorIsConstant = false;
 
@@ -150,8 +160,16 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         else
             markObj.properties.fillColor = {scale: "color", field: "color"};
 
-        if (rIsConstant)
-            markObj.properties.size = {value: _r};
+        if (rIsConstant) {
+            var r = _r;
+            if (_dynamicR !== null && _chart.sampling() && dc._lastFilteredSize !== null) {
+                //@todo don't tie this to sampling - meaning having a dynamicR will
+                //also require count to be computed first by dc
+                r = Math.round(_dynamicR(Math.min(dc._lastFilteredSize, _chart.cap() !== Infinity ? _chart.cap() : dc._lastFilteredSize )))
+            }
+
+            markObj.properties.size = {value: r};
+        }
         else
             markObj.properties.size = {scale: "size", field: "size"};
 
