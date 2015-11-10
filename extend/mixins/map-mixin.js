@@ -175,6 +175,10 @@ dc.mapMixin = function (_chart) {
             showPopUp(e)
         }, 250)
 
+        _chart._map.on('zoom click', function(e){
+          debouncePopUp(e);          
+        })
+
         _chart._map.on('mousemove', function(e){
           
           debouncePopUp(e);
