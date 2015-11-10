@@ -163,7 +163,6 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             markObj.properties.size = {scale: "size", field: "size"};
 
         _chart._vegaSpec.marks.push(markObj);
-        console.log(_chart._vegaSpec);
     }
 
     function updateXAndYScales () {
@@ -230,15 +229,12 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     }
 
     _chart.resizeImage = function (minCoord, maxCoord) {
-        //console.log(minCoord);
-        //console.log(maxCoord);
         var xFilter = _chart.xDim().getFilter()[0];
         var yFilter = _chart.yDim().getFilter()[0];
         var oldMinCoord = [xFilter[0], yFilter[0]];
         var oldMaxCoord = [xFilter[1], yFilter[1]];
         var xZoom = (oldMaxCoord[0] - oldMinCoord[0]) / (maxCoord[0] - minCoord[0])
         var yZoom = (oldMaxCoord[1] - oldMinCoord[1]) / (maxCoord[1] - minCoord[1])
-        console.log(xZoom + ", " + yZoom);
         $(".raster-overlay").css("transform", "scale(" + xZoom + "," + yZoom + ")");
 
     }
