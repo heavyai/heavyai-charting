@@ -105,14 +105,26 @@ dc.mapMixin = function (_chart) {
         _chart._map.on('click', function(e) {
             _mouseClickCoords = {x: e.originalEvent.x, y: e.originalEvent.y};
             var height = $(e.target._container).height()
-            var y = Math.round(height - e.point.y)
-            var tpixel = new TPixel({x:e.point.x, y:y});
-            con.getRowsForPixels([tpixel], ['tweet_text'], [function(result){
+            var y = Math.round(height - e.point.y);
+            var x = Math.round(e.point.x);
+            var tpixel = new TPixel({x:x, y:y});
+            var widgetId = Number(_mapId.match(/\d+/g))
+            var columns = chartWidgets[widgetId].chartObject.projectArray;
+            if(!columns.length){
+              swal({title: "Warning",
+                text: "Please add a column to see pop-up overlay",
+                type: "warning",
+                confirmButtonText: "Okay"
+              });
+              return;
+            }
+            con.getRowsForPixels([tpixel], columns, [function(result){
               if(result[0].row_set.length){
+
                 var context={
                   "x": _mouseClickCoords.x + 'px',
                   "y": _mouseClickCoords.y + 'px',
-                  "data": result[0].row_set[0].tweet_text
+                  "data": result[0].row_set[0]
                 };
 
                 var theCompiledHtml = MyApp.templates.pointMapPopup(context);
