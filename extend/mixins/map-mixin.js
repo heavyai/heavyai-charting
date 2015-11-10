@@ -33,8 +33,6 @@ dc.mapMixin = function (_chart) {
     var _lastMapMoveType = null;
     var _lastMapUpdateTime = 0;
     var _mapUpdateInterval = 100; //default
-    var _mouseClickCoords = {};
-    var _chartVariables = [];
 
 
     _chart.xDim = function(xDim) {
@@ -111,38 +109,19 @@ dc.mapMixin = function (_chart) {
           zoom: 4 // starting zoom
         });
 
-    function debounce(func, wait, immediate) {
-        var timeout;
-        return function() {
-            var context = this, args = arguments;
-            var later = function() {
-                timeout = null;
-                if (!immediate) func.apply(context, args);
-            };
-            var callNow = immediate && !timeout;
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-            if (callNow) func.apply(context, args);
-        };
-    };
 
         initGeocoder();
 
         _chart._map.on('load', onLoad);
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
+         
          function showPopUp(e) {
-            // _mouseClickCoords = {x: e.originalEvent.x, y: e.originalEvent.y};
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y);
             var x = Math.round(e.point.x);
             var tpixel = new TPixel({x:x, y:y});
             var widgetId = Number(_mapId.match(/\d+/g))
-
-            // _xDimVariable = $('#select2-xCoordPicker' + widgetId + '-container').text()
-            // _yDimVariable = $('#select2-yCoordPicker' + widgetId + '-container').text()
-
-
 
             var columns = chartWidgets[widgetId].chartObject.projectArray.slice();
 
@@ -156,6 +135,7 @@ dc.mapMixin = function (_chart) {
             con.getRowsForPixels([tpixel], _chart.tableName(), columns, [function(result){
 
               if(result[0].row_set.length){
+                if(!$('.popup-highlight').length){
 
                 _chart.x().range([0, _chart.width() -1])
                 _chart.y().range([0, _chart.height() -1])
@@ -174,7 +154,7 @@ dc.mapMixin = function (_chart) {
                   var result = "<div>";
                   _.each(obj, function(value, key){
                     if(key !== _yDimName && key !== _xDimName){
-                        result += '<div><span><strong>' + key + '</strong>:' + value +'</span></div>'
+                        result += '<div class="popup-text-wrapper"><span><strong>' + key + '</strong>: ' + value +'</span></div>'
                     }
                   })
 
@@ -184,12 +164,14 @@ dc.mapMixin = function (_chart) {
 
                 var theCompiledHtml = MyApp.templates.pointMapPopup(context);
                 $('#' + _mapId).find('.mapboxgl-map').append(theCompiledHtml)
+                
+                }
               }
             }]);
 
         }
 
-        var debouncePopUp = debounce(function(e){
+        var debouncePopUp = _.debounce(function(e){
             showPopUp(e)
         }, 250)
 
