@@ -108,12 +108,19 @@ dc.mapMixin = function (_chart) {
             var y = Math.round(height - e.point.y);
             var x = Math.round(e.point.x);
             var tpixel = new TPixel({x:x, y:y});
-            con.getRowsForPixels([tpixel], ['tweet_text'], [function(result){
+            var widgetId = Number(_mapId.match(/\d+/g))
+            var columns = chartWidgets[widgetId].chartObject.projectArray;
+            if(!columns.length){
+              alert('you must add a column');
+              return;
+            }
+            con.getRowsForPixels([tpixel], columns, [function(result){
               if(result[0].row_set.length){
+
                 var context={
                   "x": _mouseClickCoords.x + 'px',
                   "y": _mouseClickCoords.y + 'px',
-                  "data": result[0].row_set[0].tweet_text
+                  "data": result[0].row_set[0]
                 };
 
                 var theCompiledHtml = MyApp.templates.pointMapPopup(context);
