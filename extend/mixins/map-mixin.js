@@ -135,7 +135,7 @@ dc.mapMixin = function (_chart) {
             columns.push(_xDimName);
             columns.push(_yDimName);
             
-            con.getRowsForPixels([tpixel], columns, [function(result){
+            con.getRowsForPixels([tpixel], _chart.tableName(), columns, [function(result){
 
               if(result[0].row_set.length){
 

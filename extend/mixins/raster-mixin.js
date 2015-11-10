@@ -5,6 +5,7 @@
 dc.rasterMixin = function(_chart) {
     _chart._vegaSpec = {};
     var _sampling = false;
+    var _tableName = null;
 
      _chart._resetVegaSpec = function() {
      _chart._vegaSpec.width = _chart.width();
@@ -18,6 +19,13 @@ dc.rasterMixin = function(_chart) {
      ];
      _chart._vegaSpec.scales = [];
      _chart._vegaSpec.marks = [];
+    }
+
+    _chart.tableName = function(tableName) {
+        if (!arguments.length)
+            return _tableName;
+        _tableName = tableName;
+        return _chart;
     }
 
     /* _determineScaleType because there is no way to determine the scale type
