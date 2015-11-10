@@ -28,6 +28,8 @@ dc.mapMixin = function (_chart) {
     var _mapInitted = false;
     var _xDim = null;
     var _yDim = null;
+    var _xDimName = null;
+    var _yDimName = null;    
     var _lastMapMoveType = null;
     var _lastMapUpdateTime = 0;
     var _mapUpdateInterval = 100; //default
@@ -39,6 +41,9 @@ dc.mapMixin = function (_chart) {
         if (!arguments.length)
             return _xDim;
         _xDim = xDim;
+        if(_xDim){
+          _xDimName = _xDim.value()[0];
+        }
         return _chart;
     }
 
@@ -46,6 +51,9 @@ dc.mapMixin = function (_chart) {
         if (!arguments.length)
             return _yDim;
         _yDim = yDim;
+        if(_yDim){
+          _yDimName = _yDim.value()[0];
+        }
         return _chart;
     }
 
@@ -103,12 +111,17 @@ dc.mapMixin = function (_chart) {
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
         _chart._map.on('click', function(e) {
-            _mouseClickCoords = {x: e.originalEvent.x, y: e.originalEvent.y};
+            // _mouseClickCoords = {x: e.originalEvent.x, y: e.originalEvent.y};
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y);
             var x = Math.round(e.point.x);
             var tpixel = new TPixel({x:x, y:y});
             var widgetId = Number(_mapId.match(/\d+/g))
+
+            // _xDimVariable = $('#select2-xCoordPicker' + widgetId + '-container').text()
+            // _yDimVariable = $('#select2-yCoordPicker' + widgetId + '-container').text()
+
+
             var columns = chartWidgets[widgetId].chartObject.projectArray;
             if(!columns.length){
               swal({title: "Warning",
@@ -118,17 +131,41 @@ dc.mapMixin = function (_chart) {
               });
               return;
             }
+            
+            columns.push(_xDimName);
+            columns.push(_yDimName);
+            
             con.getRowsForPixels([tpixel], columns, [function(result){
+
               if(result[0].row_set.length){
 
+                _chart.x().range([0, _chart.width() -1])
+                _chart.y().range([0, _chart.height() -1])
+
+                var height = $('#' + _mapId).find('.mapboxgl-map').height()
+
                 var context={
-                  "x": _mouseClickCoords.x + 'px',
-                  "y": _mouseClickCoords.y + 'px',
-                  "data": result[0].row_set[0]
+                  googX: (_chart.x()(result[0].row_set[0][_xDimName]) - 14) + 'px',
+                  googY: (height - _chart.y()(result[0].row_set[0][_yDimName]) - 14) + 'px',
+                  data: result[0].row_set[0],
+                  clickX: result[0].pixel.x + 'px',
+                  clickY: (height - result[0].pixel.y) + 'px',
                 };
 
+                Handlebars.registerHelper("formatPopupText", function(obj) {
+                  var result = "<div>";
+                  _.each(obj, function(value, key){
+                    if(key !== _yDimName && key !== _xDimName){
+                        result += '<div><span><strong>' + key + '</strong>:' + value +'</span></div>'
+                    }
+                  })
+
+                result += "</div>"
+                return result;
+                });
+
                 var theCompiledHtml = MyApp.templates.pointMapPopup(context);
-                $('body').append(theCompiledHtml)
+                $('#' + _mapId).find('.mapboxgl-map').append(theCompiledHtml)
               }
             }]);
 
@@ -137,8 +174,11 @@ dc.mapMixin = function (_chart) {
         _chart._map.on('mousemove', function(e){
           if($('.popup-hide-div').length){
             if (!$('.popup-data').is(':hover')) {    
-              $('.popup-hide-div').parent().addClass('popup-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
-                   $(this).remove(); 
+              $('.popup-container').addClass('popup-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
+                   $(this).remove();
+                });
+              $('.point-highlight-add').addClass('point-highlight-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
+                   $(this).parent().remove();
                 });
               }
             }
