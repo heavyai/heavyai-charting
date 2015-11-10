@@ -109,20 +109,9 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             //throw ("Bubble raster chart missing mandatory scale");
 
         var xScaleType = _chart._determineScaleType(_x);
-        /*
-        var xDomain = _x.domain();
-        xDomain[0] = xDomain[0].toFixed(10)/1;
-        xDomain[1] = xDomain[1].toFixed(10)/1;
-        console.log(xDomain);
-        */
         _chart._vegaSpec.scales.push({name: "x", type: xScaleType, domain: _x.domain(), range: "width"})
 
         var yScaleType = _chart._determineScaleType(_y);
-        /*
-        var yDomain = _y.domain();
-        yDomain[0] = yDomain[0].toFixed(10)/1;
-        yDomain[1] = yDomain[1].toFixed(10)/1;
-        */
         _chart._vegaSpec.scales.push({name: "y", type: yScaleType, domain: _y.domain(),range: "height"})
         var rIsConstant = false;
         if (typeof _r === 'function') {
@@ -137,9 +126,9 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
         var colors = _chart.colors();
         if (colors !== null) {
-            if (typeof colors === '[object Function]') {
+            if (colors.domain !== undefined) {
                 var colorScaleType = _chart._determineScaleType(colors);
-                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range()})
+                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range(), default: "#22A7F0"})
             }
             else
                 colorIsConstant = true;
@@ -174,7 +163,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             markObj.properties.size = {scale: "size", field: "size"};
 
         _chart._vegaSpec.marks.push(markObj);
-        // console.log(_chart._vegaSpec);
+        console.log(_chart._vegaSpec);
     }
 
     function updateXAndYScales () {

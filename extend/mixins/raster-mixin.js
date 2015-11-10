@@ -40,7 +40,6 @@ dc.rasterMixin = function(_chart) {
 
     _chart.setSample = function() {
         if (_sampling) {
-            console.log(dc._lastFilteredSize);
             if (dc._lastFilteredSize == null)
                 _chart.dimension().samplingRatio(null);
             else {
