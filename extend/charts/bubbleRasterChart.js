@@ -237,7 +237,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
           if(map.getSource(toBeRemovedOverlay)){
               removeOverlay(toBeRemovedOverlay);
           }
-        }, 40)
+        }, 25)
     }
 
     _chart.resizeImage = function (minCoord, maxCoord) {
