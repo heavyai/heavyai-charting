@@ -111,7 +111,11 @@ dc.mapMixin = function (_chart) {
             var widgetId = Number(_mapId.match(/\d+/g))
             var columns = chartWidgets[widgetId].chartObject.projectArray;
             if(!columns.length){
-              alert('you must add a column');
+              swal({title: "Warning",
+                text: "Please add a column to see pop-up overlay",
+                type: "warning",
+                confirmButtonText: "Okay"
+              });
               return;
             }
             con.getRowsForPixels([tpixel], columns, [function(result){
