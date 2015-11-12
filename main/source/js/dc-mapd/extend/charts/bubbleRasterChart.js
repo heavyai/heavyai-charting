@@ -3,21 +3,26 @@
  * ***************************************************************************/
 
 
-dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
+dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     var _chart = null;
 
     var _useMap = useMap !== undefined ? useMap : false;
 
-    if (_useMap)
-        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({})))));
-    else
+    if (_useMap){
+        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), chartId));
+    }
+    else{
         _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
+    }
 
     var _imageOverlay = null;
 
+    var _activeLayer = 0;
     var _x = null;
     var _y = null;
+    var _oldRenderBounds = null;
     var _r = 1; // default radius 5
+    var _dynamicR = null;
     _chart.colors("#22A7F0"); // set constant as picton blue as default
 
     /**
@@ -54,8 +59,24 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         return _chart;
     };
 
+    _chart.dynamicR = function(_) {
+        if (!arguments.length) {
+            return _dynamicR;
+        }
+        _dynamicR = _;
+        return _chart;
+    };
+
     _chart.setDataAsync(function(group, callbacks) {
         updateXAndYScales();
+
+        var bounds = _chart._map.getBounds();
+
+        _oldRenderBounds = [_.values(bounds.getNorthWest()),
+          _.values(bounds.getNorthEast()),
+          _.values(bounds.getSouthEast()),
+          _.values(bounds.getSouthWest())]
+
         _chart._resetVegaSpec();
         genVegaSpec();
         if (_chart.cap() === Infinity) {
@@ -90,20 +111,9 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             //throw ("Bubble raster chart missing mandatory scale");
 
         var xScaleType = _chart._determineScaleType(_x);
-        /*
-        var xDomain = _x.domain();
-        xDomain[0] = xDomain[0].toFixed(10)/1;
-        xDomain[1] = xDomain[1].toFixed(10)/1;
-        console.log(xDomain);
-        */
         _chart._vegaSpec.scales.push({name: "x", type: xScaleType, domain: _x.domain(), range: "width"})
 
         var yScaleType = _chart._determineScaleType(_y);
-        /*
-        var yDomain = _y.domain();
-        yDomain[0] = yDomain[0].toFixed(10)/1;
-        yDomain[1] = yDomain[1].toFixed(10)/1;
-        */
         _chart._vegaSpec.scales.push({name: "y", type: yScaleType, domain: _y.domain(),range: "height"})
         var rIsConstant = false;
         if (typeof _r === 'function') {
@@ -112,14 +122,15 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         }
         else {
             rIsConstant = true;
+
         }
         var colorIsConstant = false;
 
         var colors = _chart.colors();
         if (colors !== null) {
-            if (typeof colors === '[object Function]') {
+            if (colors.domain !== undefined) {
                 var colorScaleType = _chart._determineScaleType(colors);
-                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range()})
+                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range(), default: "#22A7F0"})
             }
             else
                 colorIsConstant = true;
@@ -140,13 +151,20 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         else
             markObj.properties.fillColor = {scale: "color", field: "color"};
 
-        if (rIsConstant)
-            markObj.properties.size = {value: _r};
+        if (rIsConstant) {
+            var r = _r;
+            if (_dynamicR !== null && _chart.sampling() && dc._lastFilteredSize !== null) {
+                //@todo don't tie this to sampling - meaning having a dynamicR will
+                //also require count to be computed first by dc
+                r = Math.round(_dynamicR(Math.min(dc._lastFilteredSize, _chart.cap() !== Infinity ? _chart.cap() : dc._lastFilteredSize )))
+            }
+
+            markObj.properties.size = {value: r};
+        }
         else
             markObj.properties.size = {scale: "size", field: "size"};
 
         _chart._vegaSpec.marks.push(markObj);
-        console.log(_chart._vegaSpec);
     }
 
     function updateXAndYScales () {
@@ -169,39 +187,81 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         }
     }
 
+    function removeOverlay(overlay){
+      var map = _chart._map;
+
+      map.removeLayer(overlay);
+      map.removeSource(overlay);
+    }
+
+    function addOverlay(data){
+        var map = _chart._map;
+        
+        var toBeRemovedOverlay = "overlay" + _activeLayer
+        
+        // if(_activeLayer){
+        //   _activeLayer = 0
+        // } else {
+        //   _activeLayer = 1;
+        // }
+
+        _activeLayer++;
+
+
+        var toBeAddedOverlay = "overlay" + _activeLayer
+        
+        map.addSource(toBeAddedOverlay,{
+            "type": "image",
+            "url": 'data:image/png;base64,' + data,
+            "coordinates": _oldRenderBounds
+        })
+
+        map.addLayer({
+            "id": toBeAddedOverlay,
+            "source": toBeAddedOverlay,
+            "type": "raster",
+            "paint": {"raster-opacity": 0.85}
+        })
+
+        setTimeout(function(){
+          if(map.getSource(toBeRemovedOverlay)){
+              removeOverlay(toBeRemovedOverlay);
+          }
+        }, 25)
+    }
+
     _chart.resizeImage = function (minCoord, maxCoord) {
-        //console.log(minCoord);
-        //console.log(maxCoord);
         var xFilter = _chart.xDim().getFilter()[0];
         var yFilter = _chart.yDim().getFilter()[0];
         var oldMinCoord = [xFilter[0], yFilter[0]];
         var oldMaxCoord = [xFilter[1], yFilter[1]];
         var xZoom = (oldMaxCoord[0] - oldMinCoord[0]) / (maxCoord[0] - minCoord[0])
         var yZoom = (oldMaxCoord[1] - oldMinCoord[1]) / (maxCoord[1] - minCoord[1])
-        console.log(xZoom + ", " + yZoom);
         $(".raster-overlay").css("transform", "scale(" + xZoom + "," + yZoom + ")");
 
     }
 
     _chart._doRender = function() {
+
       var data = _chart.data();
-      if (_imageOverlay === null) {
-        var widgetId = _chart.chartID() - 2;
-        _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
-        //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
-      }
-      $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
+        // _imageOverlay = true;
+        // return;
+        // _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+        // _imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
+      // $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
+      addOverlay(data.image)
+
     }
 
     _chart._doRedraw = function() {
+  
       var data = _chart.data();
-      if (_imageOverlay === null) {
-        var widgetId = _chart.chartID() - 2;
-        _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
-        //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
-      }
+        // return;
+        // _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+        // _imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
         //_chart._map.style.sources["overlay"] = {"type": "image", "url": "data:image/png;base64," + data, "coordinates": [ [-180.0,90.0], [180.0, 90.0], [180.0, -90.0], [-180.0, -90.0] ]};
-      $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
+      // $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
+      addOverlay(data.image)
     }
 
     return _chart.anchor(parent, chartGroup);
