@@ -249,7 +249,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
         // _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
         // _imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
       // $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
-      addOverlay(data)
+      addOverlay(data.image)
 
     }
 
@@ -261,7 +261,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
         // _imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
         //_chart._map.style.sources["overlay"] = {"type": "image", "url": "data:image/png;base64," + data, "coordinates": [ [-180.0,90.0], [180.0, 90.0], [180.0, -90.0], [-180.0, -90.0] ]};
       // $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
-      addOverlay(data)
+      addOverlay(data.image)
     }
 
     return _chart.anchor(parent, chartGroup);
