@@ -79,6 +79,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
 
         _chart._resetVegaSpec();
         genVegaSpec();
+
         var nonce = null;
         if (_chart.cap() === Infinity) {
           nonce = group.allAsync(callbacks);
@@ -93,18 +94,29 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
 
     _chart.data(function (group) {
 
-        if (_chart.dataCache !== null)
+        if (_chart.dataCache !== null) {
+            console.log("in cache");
             return _chart.dataCache;
+        }
+        var bounds = _chart._map.getBounds();
+        var renderBounds = [_.values(bounds.getNorthWest()),
+          _.values(bounds.getNorthEast()),
+          _.values(bounds.getSouthEast()),
+          _.values(bounds.getSouthWest())]
         updateXAndYScales();
         _chart._resetVegaSpec();
         genVegaSpec();
 
+        var result = null;
         if (_chart.cap() === Infinity) {
-            return group.all(JSON.stringify(_chart._vegaSpec));
+            result = group.all(JSON.stringify(_chart._vegaSpec));
         }
         else {
-            return group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
+            result = group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
         }
+        console.log(result);
+        _renderBoundsMap[result.nonce] = renderBounds;
+        return result; 
     });
 
     function genVegaSpec() {
@@ -202,21 +214,24 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
         var map = _chart._map;
         //console.log("out nonce: " + nonce);
         //debugger;
-        if (_renderBoundsMap[nonce] === undefined)
-            return;
-        
+        var bounds = _renderBoundsMap[nonce];
+        if (bounds === undefined)
+           return;
+        //delete _renderBoundsMap[nonce];
         var toBeRemovedOverlay = "overlay" + _activeLayer
         _activeLayer = nonce;
 
         var toBeAddedOverlay = "overlay" + _activeLayer
+        if (toBeRemovedOverlay === toBeAddedOverlay)
+            return;
         
         map.addSource(toBeAddedOverlay,{
+            "id": toBeAddedOverlay,
             "type": "image",
             "url": 'data:image/png;base64,' + data,
-            "coordinates": _renderBoundsMap[nonce]
+            "coordinates": bounds 
         })
-        delete _renderBoundsMap[nonce];
-
+        //delete _renderBoundsMap[nonce];
         map.addLayer({
             "id": toBeAddedOverlay,
             "source": toBeAddedOverlay,
