@@ -33,6 +33,7 @@ dc.mapMixin = function (_chart, chartId) {
     var _yDimName = null;    
     var _lastMapMoveType = null;
     var _lastMapUpdateTime = 0;
+    var _isFirstMoveEvent = true;
     var _mapUpdateInterval = 100; //default
 
 
@@ -76,22 +77,27 @@ dc.mapMixin = function (_chart, chartId) {
       $('body').trigger('loadGrid');
     }
     function onMapMove(e) {
+        if (e === undefined)
+            return;
         if (_xDim !== null && _yDim != null) {
-            if (e !== undefined && e.type == 'moveend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
+            if (e.type == 'moveend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
                 return;
-            if (e !== undefined)
-                _lastMapMoveType = e.type;
+            _lastMapMoveType = e.type;
             var curTime = (new Date).getTime();
             var bounds = _chart._map.getBounds();
             var minCoord = conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
             var maxCoord = conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
-            if (e !== undefined && e.type == 'move') {
+            if (e.type === 'move') {
+                if (_isFirstMoveEvent) {
+                    _lastMapUpdateTime = curTime;
+                    _isFirstMoveEvent = false;
+                }
                 if (curTime - _lastMapUpdateTime < _mapUpdateInterval) {
-                    if (_chart.resizeImage !== undefined) {
-                        //_chart.resizeImage(minCoord, maxCoord);
-                    }
                     return; 
                 }
+            }
+            else if (e.type === 'moveend') {
+                _isFirstMoveEvent = true;
             }
             _lastMapUpdateTime = curTime;
             _xDim.filter([minCoord[0],maxCoord[0]]);

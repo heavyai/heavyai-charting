@@ -20,7 +20,8 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     var _activeLayer = 0;
     var _x = null;
     var _y = null;
-    var _oldRenderBounds = null;
+    //var _oldRenderBounds = null;
+    var _renderBoundsMap = {};
     var _r = 1; // default radius 5
     var _dynamicR = null;
     _chart.colors("#22A7F0"); // set constant as picton blue as default
@@ -71,20 +72,23 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
         updateXAndYScales();
 
         var bounds = _chart._map.getBounds();
-
-        _oldRenderBounds = [_.values(bounds.getNorthWest()),
+        var renderBounds = [_.values(bounds.getNorthWest()),
           _.values(bounds.getNorthEast()),
           _.values(bounds.getSouthEast()),
           _.values(bounds.getSouthWest())]
 
         _chart._resetVegaSpec();
         genVegaSpec();
+        var nonce = null;
         if (_chart.cap() === Infinity) {
-          group.allAsync(callbacks);
+          nonce = group.allAsync(callbacks);
         }
         else {
-            group.topAsync(_chart.cap(),undefined, JSON.stringify(_chart._vegaSpec), callbacks);
+          nonce = group.topAsync(_chart.cap(),undefined, JSON.stringify(_chart._vegaSpec), callbacks);
         }
+        //console.log("in nonce: " + nonce);
+        _renderBoundsMap[nonce] = renderBounds;
+        
     });
 
     _chart.data(function (group) {
@@ -194,27 +198,24 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
       map.removeSource(overlay);
     }
 
-    function addOverlay(data){
+    function addOverlay(data, nonce){
         var map = _chart._map;
+        //console.log("out nonce: " + nonce);
+        //debugger;
+        if (_renderBoundsMap[nonce] === undefined)
+            return;
         
         var toBeRemovedOverlay = "overlay" + _activeLayer
-        
-        // if(_activeLayer){
-        //   _activeLayer = 0
-        // } else {
-        //   _activeLayer = 1;
-        // }
-
-        _activeLayer++;
-
+        _activeLayer = nonce;
 
         var toBeAddedOverlay = "overlay" + _activeLayer
         
         map.addSource(toBeAddedOverlay,{
             "type": "image",
             "url": 'data:image/png;base64,' + data,
-            "coordinates": _oldRenderBounds
+            "coordinates": _renderBoundsMap[nonce]
         })
+        delete _renderBoundsMap[nonce];
 
         map.addLayer({
             "id": toBeAddedOverlay,
@@ -222,12 +223,25 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
             "type": "raster",
             "paint": {"raster-opacity": 0.85}
         })
-
         setTimeout(function(){
           if(map.getSource(toBeRemovedOverlay)){
               removeOverlay(toBeRemovedOverlay);
           }
-        }, 25)
+          //if(map.getSource(toBeRemovedOverlay)){
+
+          //    map.batch(function (batch) {
+          //        batch.setPaintProperty(toBeRemovedOverlay, 'raster-opacity', 0);
+          //        batch.setPaintProperty(toBeAddedOverlay, 'raster-opacity', 0.85);
+          //      });
+          //    removeOverlay(toBeRemovedOverlay);
+          //}
+          //else {
+          //    map.batch(function (batch) {
+          //        batch.setPaintProperty(toBeAddedOverlay, 'raster-opacity', 0.85);
+          //    });
+          //}
+        }, 40)
+
     }
 
     _chart.resizeImage = function (minCoord, maxCoord) {
@@ -244,24 +258,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     _chart._doRender = function() {
 
       var data = _chart.data();
-        // _imageOverlay = true;
-        // return;
-        // _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
-        // _imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
-      // $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
-      addOverlay(data.image)
+      addOverlay(data.image, data.nonce)
 
     }
 
     _chart._doRedraw = function() {
   
       var data = _chart.data();
-        // return;
-        // _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
-        // _imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
-        //_chart._map.style.sources["overlay"] = {"type": "image", "url": "data:image/png;base64," + data, "coordinates": [ [-180.0,90.0], [180.0, 90.0], [180.0, -90.0], [-180.0, -90.0] ]};
-      // $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
-      addOverlay(data.image)
+      addOverlay(data.image, data.nonce)
     }
 
     return _chart.anchor(parent, chartGroup);
