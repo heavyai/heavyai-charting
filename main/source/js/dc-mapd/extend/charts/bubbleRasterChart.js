@@ -95,7 +95,6 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     _chart.data(function (group) {
 
         if (_chart.dataCache !== null) {
-            console.log("in cache");
             return _chart.dataCache;
         }
         var bounds = _chart._map.getBounds();
@@ -114,7 +113,6 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
         else {
             result = group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
         }
-        console.log(result);
         _renderBoundsMap[result.nonce] = renderBounds;
         return result; 
     });
