@@ -115,6 +115,7 @@ dc.mapMixin = function (_chart, chartId) {
           center: [-74.50, 40], // starting position
           zoom: 4 // starting zoom
         });
+        _chart._map.dragRotate.disable();
 
 
         initGeocoder();
