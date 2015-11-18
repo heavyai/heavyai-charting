@@ -1,0 +1,106 @@
+@import 'variables';
+
+.panel-default {
+    overflow: visible;    
+}
+
+.dc-chart {
+    position: relative;
+    font-family: "Roboto";
+
+    .pie-slice {
+        path {  
+            stroke: white;
+            stroke-width: 1px;
+
+        }
+
+        &.stroke-thick {
+            path {
+                stroke-width: 2px;
+            }
+        }
+    }
+
+    .pie-label {
+        fill: $charcoal;
+        pointer-events: none;
+        text {
+            text-anchor: middle;
+        }
+
+        .value-dim {
+            font-weight: bold;
+        }
+    }
+
+    .pie-wrapper {
+
+    }
+
+    g.deselected path {
+        fill: $gray3;
+
+        &:hover {
+            fill: $gray2;
+        }
+    }
+}
+
+.chart-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+
+    &.js-showPopup {
+        opacity: 1;
+        pointer-events: default;
+
+        .chart-popup-box {
+            opacity: 1;
+            top: -24px;
+        }
+    }
+
+    .chart-popup-box {
+        min-height: 32px;
+        min-width: 120px;
+        background: white;
+        position: absolute;
+        left: 0;
+        border: 1px solid $gray2;
+        border-radius: 4px;
+        transform: translate(0, -100%);
+        opacity: 0;
+        top: 0;
+        transition: top .35s, opacity .25s;
+        display: flex;
+
+        &.align-right {
+            transform: translate(-100%, -100%);
+        }
+    }
+
+    .popup-legend {
+        width: 12px;
+        height: 12px;
+        float: left;
+        margin: 8px;
+        flex-shrink: 0;
+    }
+
+    .popup-value {
+        font-size: 13px;
+        line-height: 1.2;
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 6px 8px 4px 0;
+    }
+
+    .popup-value-dim {
+        font-weight: bold;
+    }
+}
+
