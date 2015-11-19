@@ -169,17 +169,34 @@ dc.pieChart = function (parent, chartGroup) {
 /* OVERRIDE ---------------------------------------------------------------- */
         var showLabel = true;
 
-        labelsEnter.selectAll('text')
-            .text(function (d) {
+        labelsEnter
+            .style('font-size', function(d){
                 var data = d.data;
-                if ((sliceHasNoData(data) || sliceTooSmall(d)) && !isSelectedSlice(d) || !showLabel) {
-                    showLabel = false;
-                    return '';
+                var label = d3.select(this);
+
+                if ( showLabel && !sliceHasNoData(data)) {
+                    
+                    var availableLabelWidth = getAvailableLabelWidth(d);
+                    var charPixelWidth = 8;
+
+                    label.select('.value-dim')
+                        .html(function(){
+                            var dimText = truncateLabel(_chart.label()(d.data), availableLabelWidth, charPixelWidth);
+
+                            if (dimText === '') {
+                                showLabel = false;
+                            }
+                            return dimText;
+                        });
+
+                    if (showLabel && _chart.measureLabelsOn()) {
+                        label.select('.value-measure')
+                            .html(truncateLabel(_chart.measureValue(d.data), availableLabelWidth, charPixelWidth));
+                    }
                 }
 
-                return d3.select(this).classed('value-dim') ? _chart.label()(d.data) : _chart.measureValue(d.data);
-            })
-            .style('font-size', (pieIsBig() ? '16px' : '12px'));          
+                return pieIsBig() ? '16px' : '12px';
+            });          
 /* ------------------------------------------------------------------------- */
     }
 
@@ -383,10 +400,13 @@ dc.pieChart = function (parent, chartGroup) {
         return d3.layout.pie().sort(null).value(_chart.cappedValueAccessor);
     }
 
-    function sliceTooSmall (d) {
-        var angle = (d.endAngle - d.startAngle);
 /* OVERRIDE ---------------------------------------------------------------- */
-        var minHeight = angle * (_radius / 2);
+    function getAvailableLabelWidth (d) {
+        var angle = (d.endAngle - d.startAngle);
+
+        if (isNaN(angle) || angle * (_radius / 2) < (_chart.measureLabelsOn() ? 28 : 20)) {
+            return 0;
+        }
 
         var arc = buildArcs();
         var centroid = labelCentroid(d, arc);
@@ -397,11 +417,28 @@ dc.pieChart = function (parent, chartGroup) {
         var tan = Math.tan(Math.abs(refAngle - useAngle));
         var opposite = tan * adjacent;
         var labelWidth = (refAngle >= d.startAngle && refAngle < d.endAngle ? Math.abs(centroid[0]) + opposite : Math.abs(centroid[0]) - opposite) * 2;
-        var numChar = Math.max((_chart.label()(d.data)+'').length, _chart.measureLabelsOn() ? (_chart.measureValue(d.data)+'').length : 0);
+        var maxLabelWidth = _radius - _chart.innerRadius();
 
-        return isNaN(angle) || angle < 0.2 || minHeight < 28 || !(angle > Math.PI) && numChar * 6 > Math.min(labelWidth, _radius - _chart.innerRadius());
+        return labelWidth > maxLabelWidth || labelWidth < 0 ? maxLabelWidth : labelWidth;
+    }
 
+    function truncateLabel(data, availableLabelWidth, charPixelWidth) {
+        var labelText = data + '';
+        var textWidth = labelText.length * charPixelWidth;
+       
+        if (textWidth > availableLabelWidth) {
+            var trimIndex = labelText.length - Math.ceil((textWidth - availableLabelWidth) / charPixelWidth);
+            labelText = trimIndex > 2 ? labelText.slice(0, trimIndex) + '&#8230;' : '';
+        } 
+
+        return labelText;                
+    }
+ 
 /* ------------------------------------------------------------------------- */
+
+    function sliceTooSmall(d) {
+        var angle = (d.endAngle - d.startAngle);
+        return isNaN(angle) || angle < _minAngleForLabel;
     }
 
     function sliceHasNoData (d) {
