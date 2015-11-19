@@ -167,10 +167,13 @@ dc.pieChart = function (parent, chartGroup) {
             });
 
 /* OVERRIDE ---------------------------------------------------------------- */
+        var showLabel = true;
+
         labelsEnter.selectAll('text')
             .text(function (d) {
                 var data = d.data;
-                if ((sliceHasNoData(data) || sliceTooSmall(d)) && !isSelectedSlice(d)) {
+                if ((sliceHasNoData(data) || sliceTooSmall(d)) && !isSelectedSlice(d) || !showLabel) {
+                    showLabel = false;
                     return '';
                 }
 
@@ -396,7 +399,7 @@ dc.pieChart = function (parent, chartGroup) {
         var labelWidth = (refAngle >= d.startAngle && refAngle < d.endAngle ? Math.abs(centroid[0]) + opposite : Math.abs(centroid[0]) - opposite) * 2;
         var numChar = Math.max((_chart.label()(d.data)+'').length, _chart.measureLabelsOn() ? (_chart.measureValue(d.data)+'').length : 0);
 
-        return isNaN(angle) || angle < 0.2 || minHeight < 28 || !(angle > Math.PI) && numChar * 8 > Math.min(labelWidth, _radius - _chart.innerRadius());
+        return isNaN(angle) || angle < 0.2 || minHeight < 28 || !(angle > Math.PI) && numChar * 6 > Math.min(labelWidth, _radius - _chart.innerRadius());
 
 /* ------------------------------------------------------------------------- */
     }
