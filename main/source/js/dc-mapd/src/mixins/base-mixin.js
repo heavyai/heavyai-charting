@@ -17,6 +17,7 @@ dc.baseMixin = function (_chart) {
     var _isChild;
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    var _popup;
     var _redrawBrushFlag = false;
 /* ------------------------------------------------------------------------- */
 
@@ -39,6 +40,7 @@ dc.baseMixin = function (_chart) {
     var _keyAccessor = dc.pluck('key0');
     var _label = dc.pluck('key0');
     var _ordering = dc.pluck('key0');
+    var _measureLabelsOn = false;
 /* ------------------------------------------------------------------------- */
 
     var _valueAccessor = dc.pluck('value');
@@ -186,6 +188,7 @@ dc.baseMixin = function (_chart) {
         if (!arguments.length) {
             return _height(_root.node());
         }
+
         _height = d3.functor(height || _defaultHeight);
         return _chart;
     };
@@ -381,6 +384,35 @@ dc.baseMixin = function (_chart) {
         return _svg;
     }
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.popup = function (popupElement) {
+        if (!arguments.length) {
+            return _popup;
+        }
+        _popup = popupElement;
+        return _chart;
+    };
+
+    _chart.generatePopup = function () {
+        _chart.select('.chart-popup').remove();
+
+        _popup = _chart.root().append('div').attr('class', 'chart-popup');
+
+        _popup.append('div').attr('class', 'chart-popup-box');
+
+        return _popup;
+    }
+
+    _chart.measureLabelsOn = function (val) {
+        if (!arguments.length) {
+            return _measureLabelsOn;
+        }
+        _measureLabelsOn = val;
+        return _chart;
+    };
+/* ------------------------------------------------------------------------- */
+
+
     _chart.filterPrinter = function (filterPrinterFunction) {
         if (!arguments.length) {
             return _filterPrinter;
@@ -480,6 +512,8 @@ dc.baseMixin = function (_chart) {
         if (_chart._colorLegend) {
           _chart._colorLegend.render();
         }
+
+        _chart.generatePopup();
 /* ------------------------------------------------------------------------- */
 
         _chart._activateRenderlets('postRender');
