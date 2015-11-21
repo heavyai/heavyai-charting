@@ -4,6 +4,10 @@
     overflow: visible;    
 }
 
+#data-count {
+    height: auto !important;
+}
+
 .dc-chart {
     position: relative;
     font-family: "Roboto";
@@ -28,14 +32,16 @@
         text {
             text-anchor: middle;
         }
-
-        .value-dim {
-            font-weight: bold;
-        }
     }
 
-    .pie-wrapper {
+    .value-dim {
+        font-weight: bold;
+    }
 
+    .row {
+        text{
+            fill: $charcoal !important;
+        }
     }
 
     g.deselected path {
@@ -45,7 +51,47 @@
             fill: $gray2;
         }
     }
+
+    div.x-axis-label, div.y-axis-label {
+        position: absolute;
+        font-size: 12px !important;
+        color: $gray4;
+        font-weight: bold;
+    }
+
+    div.y-axis-label {
+        transform-origin: 0 0;
+        transform: translateY(-100%) rotate(90deg);
+        left: 24px;
+    }
+
+    div.x-axis-label {
+        transform: translateX(-50%);
+        bottom: 4px;
+    }
+
+    .external-axis {
+        position: absolute;
+        width: 100%;
+        height: 48px;
+        bottom: 0;
+
+        .axis {
+
+            path, line {
+                stroke: $gray3 !important;
+            }
+
+            text {
+                fill: $gray4 !important;
+            }
+        }
+    }
+
+    .svg-wrapper {
+    }
 }
+
 
 .chart-popup {
     position: absolute;

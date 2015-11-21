@@ -366,7 +366,9 @@ dc.baseMixin = function (_chart) {
     };
 
     _chart.resetSvg = function () {
-        _chart.select('svg').remove();
+/* OVERRIDE ---------------------------------------------------------------- */
+        _chart.select('.svg-wrapper').remove();
+/* ------------------------------------------------------------------------- */
         return generateSvg();
     };
 
@@ -379,12 +381,21 @@ dc.baseMixin = function (_chart) {
     }
 
     function generateSvg () {
-        _svg = _chart.root().append('svg');
+/* OVERRIDE ---------------------------------------------------------------- */
+        _svg = _chart.root().append('div').attr('class', 'svg-wrapper').append('svg');
+/* ------------------------------------------------------------------------- */
         sizeSvg();
         return _svg;
     }
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    function sizeRoot () {
+        if (_root) {
+            _root
+                .style('height', _chart.height()+'px');
+        }
+    }
+
     _chart.popup = function (popupElement) {
         if (!arguments.length) {
             return _popup;
@@ -494,6 +505,8 @@ dc.baseMixin = function (_chart) {
         if (dc._refreshDisabled)
             return;
         _chart.dataCache = data !== undefined ? data : null;
+
+        sizeRoot();
 /* ------------------------------------------------------------------------- */
 
         _listeners.preRender(_chart);
@@ -573,7 +586,6 @@ dc.baseMixin = function (_chart) {
             return;
         _chart.dataCache = data !== undefined ? data : null;
 /* ------------------------------------------------------------------------- */
-
         sizeSvg();
         _listeners.preRedraw(_chart);
 
