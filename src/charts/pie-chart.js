@@ -425,9 +425,9 @@ dc.pieChart = function (parent, chartGroup) {
     function truncateLabel(data, availableLabelWidth, charPixelWidth) {
         var labelText = data + '';
         var textWidth = labelText.length * charPixelWidth;
-       
-        if (textWidth > availableLabelWidth) {
-            var trimIndex = labelText.length - Math.ceil((textWidth - availableLabelWidth) / charPixelWidth);
+        var trimIndex = labelText.length - Math.ceil((textWidth - availableLabelWidth) / charPixelWidth);
+
+        if (textWidth > availableLabelWidth && labelText.length - trimIndex > 2) {
             labelText = trimIndex > 2 ? labelText.slice(0, trimIndex) + '&#8230;' : '';
         } 
 
