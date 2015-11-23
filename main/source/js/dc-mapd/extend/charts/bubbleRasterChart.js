@@ -150,15 +150,12 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
                 colorIsConstant = true;
         }
 
-        //_chart._vegaSpec.scales.push({name: "color", type: "ordinal", domain: [1,2,3], range: ["red", "blue", "green"]})
         _chart._vegaSpec.marks = [];
         var markObj = {};
         markObj.type = "points";
         markObj.from = {data: "table"};
         markObj.properties = {};
-        //markObj.properties.x = {scale: "x", field: _chart.xDim().value()[0]};
         markObj.properties.x = {scale: "x", field: "x"};
-        //markObj.properties.y = {scale: "y", field: _chart.yDim().value()[0]};
         markObj.properties.y = {scale: "y", field: "y"};
         if (colorIsConstant)
             markObj.properties.fillColor = {value: _chart.colors()()};
@@ -254,17 +251,6 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
           //    });
           //}
         }, 40)
-
-    }
-
-    _chart.resizeImage = function (minCoord, maxCoord) {
-        var xFilter = _chart.xDim().getFilter()[0];
-        var yFilter = _chart.yDim().getFilter()[0];
-        var oldMinCoord = [xFilter[0], yFilter[0]];
-        var oldMaxCoord = [xFilter[1], yFilter[1]];
-        var xZoom = (oldMaxCoord[0] - oldMinCoord[0]) / (maxCoord[0] - minCoord[0])
-        var yZoom = (oldMaxCoord[1] - oldMinCoord[1]) / (maxCoord[1] - minCoord[1])
-        $(".raster-overlay").css("transform", "scale(" + xZoom + "," + yZoom + ")");
 
     }
 
