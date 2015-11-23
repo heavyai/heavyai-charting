@@ -16,6 +16,7 @@ dc.rowChart = function (parent, chartGroup) {
     var _yAxisLabel;
     var _autoScroll = false;
     var _minBarHeight= 16;
+    var _isBigBar = false;
 /* --------------------------------------------------------------------------*/
 
     var _gap = 4;
@@ -211,12 +212,20 @@ dc.rowChart = function (parent, chartGroup) {
         var n = _rowData.length;
 
         var height;
+
         if (!_fixedBarHeight) {
             height = (_chart.effectiveHeight() - (n + 1) * _gap) / n;
         } else {
             height = _fixedBarHeight;
         }
 /* OVERRIDE -----------------------------------------------------------------*/
+        
+        _isBigBar = _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32);
+
+        if (_isBigBar) {
+            height = (_chart.effectiveHeight() - (n + 1) * (_gap * 2)) / n;
+        } 
+
         if (_chart.autoScroll() && height < _minBarHeight) {
             height = _minBarHeight;
             _chart.root().select('.svg-wrapper')
@@ -224,7 +233,7 @@ dc.rowChart = function (parent, chartGroup) {
                 .style('overflow-y', 'auto')
                 .style('overflow-x', 'hidden');
             _chart.svg()
-                .attr('height', n * (height + _gap) + 6);
+                .attr('height', n * (height + (_isBigBar ? _gap * 2 : _gap)) + 6);
         }
 /* --------------------------------------------------------------------------*/
         // vertically align label in center unless they override the value via property setter
@@ -233,7 +242,7 @@ dc.rowChart = function (parent, chartGroup) {
         }
 
         var rect = rows.attr('transform', function (d, i) {
-                return 'translate(0,' + ((i + 1) * _gap + i * height) + ')';
+                return 'translate(0,' + ((i + 1) * (_isBigBar ? _gap * 2 : _gap) + i * height) + ')';
             }).select('rect')
             .attr('height', height)
             .attr('fill', _chart.getColor)
@@ -285,7 +294,7 @@ dc.rowChart = function (parent, chartGroup) {
     function updateLabels (rows) {
 /* OVERRIDE -----------------------------------------------------------------*/
         rows.selectAll('text')
-            .style('font-size', isBigFont() ? '14px': '12px');
+            .style('font-size', _isBigBar ? '14px': '12px');
 /* --------------------------------------------------------------------------*/
 
         if (_chart.renderLabel()) {
@@ -372,10 +381,6 @@ dc.rowChart = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
     function isStackLabel() {
         return _chart.measureLabelsOn() && _labelOffsetY > 16;
-    }
-
-    function isBigFont() {
-        return  _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32);
     }
 /* --------------------------------------------------------------------------*/
 
