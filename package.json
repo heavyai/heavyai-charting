@@ -3,7 +3,7 @@
   "version": "2.0.0-beta.22",
   "license": "Apache-2.0",
   "copyright": "2014",
-  "description": "A multi-dimensional charting library built to work natively with crossfilter and rendered using d3.js ",
+  "description": "A multi-dimensional charting library built to work natively with crossfilter and rendered using d3.js.",
   "keywords": [
     "visualization",
     "svg",
@@ -14,15 +14,15 @@
     "crossfilter",
     "d3"
   ],
-  "homepage": "http://dc-js.github.io/dc.js/",
-  "bugs": "https://github.com/dc-js/dc.js/issues",
+  "homepage": "http://mapd.com",
+  "bugs": "https://github.com/map-d/mapdc.js/issues",
   "author": {
-    "name": "Nick Zhu",
-    "url": "http://nzhu.blogspot.ca/"
+    "name": "MapD Technologies",
+    "url": "http://mapd.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dc-js/dc.js.git"
+    "url": "https://github.com/map-d/mapdc.js.git"
   },
   "dependencies": {
     "crossfilter": "1.x",
@@ -60,7 +60,7 @@
   "scripts": {
     "test": "grunt test"
   },
-  "npmName": "dc",
+  "npmName": "mapdc",
   "npmFileMap": [
     {
       "basePath": "/",
