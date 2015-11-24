@@ -84,6 +84,11 @@ dc.coordinateGridMixin = function (_chart) {
     var _renderVerticalGridLine = false;
 
     var _refocused = false, _resizing = false;
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _rangeFocused = false;
+/* ------------------------------------------------------------------------- */
+
     var _unitCount;
 
     var _zoomScale = [1, Infinity];
@@ -506,7 +511,12 @@ dc.coordinateGridMixin = function (_chart) {
                 .attr('class', X_AXIS_LABEL_CLASS)
                 .attr('transform', 'translate(' + (_chart.margins().left + _chart.xAxisLength() / 2) + ',' +
                       (_chart.height() - _xAxisLabelPadding) + ')')
-                .attr('text-anchor', 'middle');
+                .attr('text-anchor', 'middle')
+
+/* OVERRIDE -----------------------------------------------------------------*/
+                .text(_chart.xAxisLabel());
+/* --------------------------------------------------------------------------*/
+
         }
         if (_chart.xAxisLabel() && axisXLab.text() !== _chart.xAxisLabel()) {
             axisXLab.text(_chart.xAxisLabel());
@@ -1038,6 +1048,11 @@ dc.coordinateGridMixin = function (_chart) {
             var rangedFilter = dc.filters.RangedFilter(extent[0], extent[1]);
 
             dc.events.trigger(function () {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+                dc._globalTransitionDuration = 10;
+/* ------------------------------------------------------------------------- */
+
                 _chart.replaceFilter(rangedFilter);
                 _chart.redrawGroup();
             }, dc.constants.EVENT_DELAY);
@@ -1046,7 +1061,12 @@ dc.coordinateGridMixin = function (_chart) {
 
     _chart.redrawBrush = function (g, doTransition) {
         if (_brushOn) {
-            if (_chart.filter() && _chart.brush().empty()) {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+            if (_chart.filter() && (_chart.brush().empty() || _chart._redrawBrushFlag)) {
+                _chart._redrawBrushFlag = false;
+/* ------------------------------------------------------------------------- */
+
                 _chart.brush().extent(_chart.filter());
             }
 
@@ -1119,6 +1139,11 @@ dc.coordinateGridMixin = function (_chart) {
     _chart._preprocessData = function () {};
 
     _chart._doRender = function () {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        _chart._redrawBrushFlag = true;
+/* ------------------------------------------------------------------------- */
+
         _chart.resetSvg();
 
         _chart._preprocessData();
@@ -1230,12 +1255,26 @@ dc.coordinateGridMixin = function (_chart) {
         return _refocused;
     };
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.rangeFocused = function (_) {
+        if (!arguments.length) {
+            return _rangeFocused;
+        }
+        _rangeFocused = _;
+    };
+/* ------------------------------------------------------------------------- */
+
     _chart.focusChart = function (c) {
         if (!arguments.length) {
             return _focusChart;
         }
         _focusChart = c;
         _chart.on('filtered', function (chart) {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+            _focusChart.rangeFocused(true);
+/* ------------------------------------------------------------------------- */
+
             if (!chart.filter()) {
                 dc.events.trigger(function () {
                     _focusChart.x().domain(_focusChart.xOriginalDomain());
@@ -1245,6 +1284,11 @@ dc.coordinateGridMixin = function (_chart) {
                     _focusChart.focus(chart.filter());
                 });
             }
+
+/* OVERRIDE ---------------------------------------------------------------- */
+            _focusChart.rangeFocused(false);
+/* ------------------------------------------------------------------------- */
+
         });
         return _chart;
     };
