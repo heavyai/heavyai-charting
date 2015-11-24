@@ -34,7 +34,11 @@ dc.capMixin = function (_chart) {
 
     _chart.cappedKeyAccessor = function (d, i) {
         if (d.others) {
-            return d.key;
+
+/* OVERRIDE ---------------------------------------------------------------- */
+            return d.key0;
+/* ------------------------------------------------------------------------- */
+
         }
         return _chart.keyAccessor()(d, i);
     };
@@ -46,18 +50,58 @@ dc.capMixin = function (_chart) {
         return _chart.valueAccessor()(d, i);
     };
 
-    _chart.data(function (group) {
-        if (_cap === Infinity) {
-            return _chart._computeOrderedGroups(group.all());
-        } else {
-            var topRows = group.top(_cap); // ordered by crossfilter group order (default value)
-            topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
-            if (_othersGrouper) {
-                return _othersGrouper(topRows);
-            }
-            return topRows;
-        }
+/* OVERRIDE EXTEND --------------------------------------------------------- */
+    _chart.setDataAsync(function(group, callbacks) {
+      if (_cap === Infinity) {
+          group.allAsync(callbacks);
+      }
+      else {
+          group.topAsync(_cap, undefined, undefined, callbacks)
+      }
     });
+
+    if (!dc.async) {
+      _chart.data(function (group) {
+          if (_cap === Infinity) {
+            if (_chart.dataCache != null)
+              return _chart._computeOrderedGroups(_chart.dataCache);
+            else
+              return _chart._computeOrderedGroups(group.all());
+          } else {
+            var topRows = null
+            if (_chart.dataCache != null)
+                topRows = _chart.dataCache;
+            else
+              topRows = group.top(_cap); // ordered by crossfilter group order (default value)
+             topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
+              if (_othersGrouper) {
+                  return _othersGrouper(topRows);
+              }
+              return topRows;
+          }
+      });
+    }
+    else {
+      _chart.data(function(group, callbacks) {
+          if (_cap === Infinity) {
+            callbacks.push(_chart.computeOrderedGroups.bind(this));
+            group.allAsync(callbacks);
+            return;
+          }
+          else {
+            callbacks.push(capCallback.bind(this));
+          }
+        });
+
+      _chart.capCallback = function(data, callbacks) {
+        var topRows = _chart._computeOrderedGroups(data);
+        if (_othersGrouper) {
+          return _othersGrouper(topRows);
+        }
+        return topRows;
+      }
+    }
+/* ------------------------------------------------------------------------- */
 
     /**
      * Get or set the count of elements to that will be included in the cap.
