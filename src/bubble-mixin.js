@@ -9,18 +9,43 @@
  */
 dc.bubbleMixin = function (_chart) {
     var _maxBubbleRelativeSize = 0.3;
-    var _minRadiusWithLabel = 10;
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _minRadiusWithLabel = 2;
+/* ------------------------------------------------------------------------- */
 
     _chart.BUBBLE_NODE_CLASS = 'node';
     _chart.BUBBLE_CLASS = 'bubble';
     _chart.MIN_RADIUS = 10;
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.accent = accentBubble;
+    _chart.unAccent = unAccentBubble;
+/* ------------------------------------------------------------------------- */
+
     _chart = dc.colorMixin(_chart);
 
     _chart.renderLabel(true);
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.setDataAsync(function(group, callbacks) {
+        if (_chart.cap() !== undefined) {
+            group.topAsync(_chart.cap(), undefined, undefined, callbacks);
+        } else {
+            group.allAsync(callbacks);
+        }
+    });
+/* ------------------------------------------------------------------------- */
+
     _chart.data(function (group) {
-        return group.top(Infinity);
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (_chart.dataCache !== null) {
+            return _chart.dataCache;
+        }
+        else {
+            return group.top(_chart.cap() !== undefined ? _chart.cap() : Infinity);
+        }
+/* ------------------------------------------------------------------------- */
     });
 
     var _r = d3.scale.linear().domain([0, 100]);
@@ -229,16 +254,42 @@ dc.bubbleMixin = function (_chart) {
     };
 
     _chart.isSelectedNode = function (d) {
-        return _chart.hasFilter(d.key);
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        return _chart.hasFilter(d.key0);
+/* --------------------------------------------------------------------------*/
+
     };
 
     _chart.onClick = function (d) {
-        var filter = d.key;
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        var filter = d.key0;
+/* --------------------------------------------------------------------------*/
+
         dc.events.trigger(function () {
             _chart.filter(filter);
             _chart.redrawGroup();
         });
     };
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    function accentBubble(label) {
+      _chart.selectAll('g.' + _chart.BUBBLE_NODE_CLASS).each(function (d) {
+        if (d.key0 === label) {
+          _chart.accentSelected(this);
+        }
+      });
+    }
+
+    function unAccentBubble(label) {
+      _chart.selectAll('g.' + _chart.BUBBLE_NODE_CLASS).each(function (d) {
+        if (d.key0 === label) {
+          _chart.unAccentSelected(this);
+        }
+      });
+    }
+/* --------------------------------------------------------------------------*/
 
     return _chart;
 };
