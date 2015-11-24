@@ -25,6 +25,17 @@ dc.heatMap = function (parent, chartGroup) {
 
     var _cols;
     var _rows;
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    var _colOrdering = d3.ascending;
+    var _rowOrdering = d3.ascending;
+    var _colScale = d3.scale.ordinal();
+    var _rowScale = d3.scale.ordinal();
+    var _yLabel;
+    var _xLabel;
+    var _numFormat = d3.format(".2s");
+/* --------------------------------------------------------------------------*/
+
     var _xBorderRadius = DEFAULT_BORDER_RADIUS;
     var _yBorderRadius = DEFAULT_BORDER_RADIUS;
 
@@ -33,10 +44,24 @@ dc.heatMap = function (parent, chartGroup) {
     _chart.title(_chart.colorAccessor());
 
     var _colsLabel = function (d) {
-        return d;
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        if(_xLabel.toLowerCase().indexOf('year')){
+            return d;
+        }
+        return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
+/* --------------------------------------------------------------------------*/
+
     };
     var _rowsLabel = function (d) {
-        return d;
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        if(_yLabel.toLowerCase().indexOf('year')){
+            return d;
+        }
+        return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
+/* --------------------------------------------------------------------------*/
+
     };
 
     /**
@@ -81,10 +106,40 @@ dc.heatMap = function (parent, chartGroup) {
         return _chart;
     };
 
-    var _xAxisOnClick = function (d) { filterAxis(0, d); };
-    var _yAxisOnClick = function (d) { filterAxis(1, d); };
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
+    _chart.setLabels = function (xLabel, yLabel) {
+        _xLabel = xLabel;
+        _yLabel = yLabel;
+    }
+    var _xAxisOnClick = function (d) {
+        var dayOfWeek = INTERVAL_LABELS.DAY_OF_WEEK.indexOf(d);
+        var month = INTERVAL_LABELS.MONTH.indexOf(d);
+        var hourOfDay = INTERVAL_LABELS.HOUR_OF_DAY.indexOf(d);
+
+        if(dayOfWeek > -1) filterAxis(0, dayOfWeek);
+        else if(month > -1) filterAxis(0, month);
+        else if(hourOfDay > -1) filterAxis(0, hourOfDay);
+        else filterAxis(0, d);
+    };
+
+    var _yAxisOnClick = function (d) {
+        var dayOfWeek = INTERVAL_LABELS.DAY_OF_WEEK.indexOf(d);
+        var month = INTERVAL_LABELS.MONTH.indexOf(d);
+        var hourOfDay = INTERVAL_LABELS.HOUR_OF_DAY.indexOf(d);
+
+        if(dayOfWeek > -1) filterAxis(1, dayOfWeek);
+        else if(month > -1) filterAxis(1, month);
+        else if(hourOfDay > -1) filterAxis(1, hourOfDay);
+        else filterAxis(1, d);
+    };    
+/* --------------------------------------------------------------------------*/
+
     var _boxOnClick = function (d) {
-        var filter = d.key;
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        var filter = [d.key0, d.key1];
+/* --------------------------------------------------------------------------*/
+
         dc.events.trigger(function () {
             _chart.filter(filter);
             _chart.redrawGroup();
@@ -93,19 +148,36 @@ dc.heatMap = function (parent, chartGroup) {
 
     function filterAxis (axis, value) {
         var cellsOnAxis = _chart.selectAll('.box-group').filter(function (d) {
-            return d.key[axis] === value;
+
+/* OVERRIDE -----------------------------------------------------------------*/
+            var keyName = "key" + axis;
+            return d[keyName] === value;
+/* --------------------------------------------------------------------------*/
+
         });
         var unfilteredCellsOnAxis = cellsOnAxis.filter(function (d) {
-            return !_chart.hasFilter(d.key);
+
+/* OVERRIDE -----------------------------------------------------------------*/
+            return !_chart.hasFilter([d.key0, d.key1]);
+/* --------------------------------------------------------------------------*/
+
         });
         dc.events.trigger(function () {
             if (unfilteredCellsOnAxis.empty()) {
                 cellsOnAxis.each(function (d) {
-                    _chart.filter(d.key);
+
+/* OVERRIDE -----------------------------------------------------------------*/
+                    _chart.filter([d.key0, d.key1]);
+/* --------------------------------------------------------------------------*/
+
                 });
             } else {
                 unfilteredCellsOnAxis.each(function (d) {
-                    _chart.filter(d.key);
+
+/* OVERRIDE -----------------------------------------------------------------*/
+                    _chart.filter([d.key0, d.key1]);
+/* --------------------------------------------------------------------------*/
+
                 });
             }
             _chart.redrawGroup();
@@ -148,6 +220,16 @@ dc.heatMap = function (parent, chartGroup) {
         return d3.scale.ordinal().domain(rowValues.filter(uniq));
     };
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.rowOrdering = function (_) {
+        if (!arguments.length) {
+            return _rowOrdering;
+        }
+        _rowOrdering = _;
+        return _chart;
+    };
+/* --------------------------------------------------------------------------*/
+
     /**
      * Gets or sets the keys used to create the columns of the heatmap, as an array. By default, all
      * the values will be fetched from the data using the key accessor, and they will be sorted in
@@ -172,31 +254,70 @@ dc.heatMap = function (parent, chartGroup) {
         return d3.scale.ordinal().domain(colValues.filter(uniq));
     };
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.colOrdering = function (_) {
+        if (!arguments.length) {
+            return _colOrdering;
+        }
+        _colOrdering = _;
+        return _chart;
+    };
+/* --------------------------------------------------------------------------*/
+
     _chart._doRender = function () {
         _chart.resetSvg();
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        _chart.margins().bottom = _chart.margins().bottom;
+/* --------------------------------------------------------------------------*/
 
         _chartBody = _chart.svg()
             .append('g')
             .attr('class', 'heatmap')
             .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
 
+/* OVERRIDE -----------------------------------------------------------------*/
+        _chartBody.append('g')
+            .attr('class', 'box-wrapper');
+/* --------------------------------------------------------------------------*/
+
         return _chart._doRedraw();
     };
 
     _chart._doRedraw = function () {
-        var rows = _chart.rows(),
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        var data = _chart.data(),
             cols = _chart.cols(),
-            rowCount = rows.domain().length,
+            rows = _chart.rows() || data.map(_chart.valueAccessor()),
+            cols = _chart.cols() || data.map(_chart.keyAccessor());
+        if (_rowOrdering) {
+            rows = rows.sort(_rowOrdering);
+        }
+        if (_colOrdering) {
+            cols = cols.sort(_colOrdering);
+        }
+        rows = _rowScale.domain(rows);
+        cols = _colScale.domain(cols);
+
+        var rowCount = rows.domain().length,
             colCount = cols.domain().length,
+/* --------------------------------------------------------------------------*/
+
             boxWidth = Math.floor(_chart.effectiveWidth() / colCount),
             boxHeight = Math.floor(_chart.effectiveHeight() / rowCount);
 
         cols.rangeRoundBands([0, _chart.effectiveWidth()]);
         rows.rangeRoundBands([_chart.effectiveHeight(), 0]);
 
-        var boxes = _chartBody.selectAll('g.box-group').data(_chart.data(), function (d, i) {
+/* OVERRIDE -----------------------------------------------------------------*/
+        var boxes = _chartBody.select('.box-wrapper')
+          .selectAll('g.box-group')
+          .data(_chart.data(), function (d, i) {
             return _chart.keyAccessor()(d, i) + '\0' + _chart.valueAccessor()(d, i);
-        });
+           });
+/* --------------------------------------------------------------------------*/
+
         var gEnter = boxes.enter().append('g')
             .attr('class', 'box-group');
 
@@ -205,12 +326,17 @@ dc.heatMap = function (parent, chartGroup) {
             .attr('fill', 'white')
             .on('click', _chart.boxOnClick());
 
+/* OVERRIDE -----------------------------------------------------------------*/
         if (_chart.renderTitle()) {
-            gEnter.append('title');
-            boxes.selectAll('title').text(_chart.title());
+            gEnter.append('title')
+                .text(_chart.title());
         }
+/* --------------------------------------------------------------------------*/
 
-        dc.transition(boxes.selectAll('rect'), _chart.transitionDuration())
+/* OVERRIDE -----------------------------------------------------------------*/
+        dc.transition(boxes.select('rect'), _chart.transitionDuration())
+/* --------------------------------------------------------------------------*/
+
             .attr('x', function (d, i) { return cols(_chart.keyAccessor()(d, i)); })
             .attr('y', function (d, i) { return rows(_chart.valueAccessor()(d, i)); })
             .attr('rx', _xBorderRadius)
@@ -225,18 +351,56 @@ dc.heatMap = function (parent, chartGroup) {
         if (gCols.empty()) {
             gCols = _chartBody.append('g').attr('class', 'cols axis');
         }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        var maxDomainCharLength = function() {
+            var maxChar = 0;
+            cols.domain().forEach(function(d){
+                maxChar = d.toString().length > maxChar ? d.toString().length : maxChar;
+            });
+            return maxChar;
+        }
+        var isRotateLabels = maxDomainCharLength() * 8 > boxWidth ? true : false;
+/* --------------------------------------------------------------------------*/
+
         var gColsText = gCols.selectAll('text').data(cols.domain());
         gColsText.enter().append('text')
               .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-              .style('text-anchor', 'middle')
               .attr('y', _chart.effectiveHeight())
-              .attr('dy', 12)
               .on('click', _chart.xAxisOnClick())
-              .text(_chart.colsLabel());
+              .text(_chart.colsLabel())
+              
+/* OVERRIDE -----------------------------------------------------------------*/
+              .style('text-anchor', function(d){
+                    return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
+              })
+              .attr('dy', (isRotateLabels ? 3 : 12))
+              .attr('dx', function(d){
+                    return isRotateLabels ? (isNaN(d) ? 2: -4): 0;
+              })
+              .attr('transform', function(d){
+                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ _chart.effectiveHeight() +')' : null;
+               });
+/* --------------------------------------------------------------------------*/
+
         dc.transition(gColsText, _chart.transitionDuration())
                .text(_chart.colsLabel())
                .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-               .attr('y', _chart.effectiveHeight());
+               .attr('y', _chart.effectiveHeight())
+
+/* OVERRIDE -----------------------------------------------------------------*/
+               .style('text-anchor', function(d){
+                    return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
+               })
+               .attr('dy', (isRotateLabels ? 3 : 12))
+               .attr('dx', function(d){
+                    return isRotateLabels ? (isNaN(d) ? 2: -4): 0;
+               })
+               .attr('transform', function(d){
+                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ _chart.effectiveHeight() +')' : null;
+               });
+/* --------------------------------------------------------------------------*/
+
         gColsText.exit().remove();
         var gRows = _chartBody.selectAll('g.rows');
         if (gRows.empty()) {
@@ -268,6 +432,11 @@ dc.heatMap = function (parent, chartGroup) {
                 _chart.resetHighlight(this);
             });
         }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        _chart.renderAxisLabels();
+/* --------------------------------------------------------------------------*/
+
         return _chart;
     };
 
@@ -353,6 +522,39 @@ dc.heatMap = function (parent, chartGroup) {
         return _chart;
     };
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.renderAxisLabels = function () {
+
+        var yLabel = _chartBody.selectAll('text.y-axis-label');
+
+        if (yLabel.empty()) {
+            yLabel = _chartBody.append('text')
+            .attr('class', 'y-axis-label')
+            .text(_yLabel);
+        }
+
+        yLabel
+            .attr('x', -(_chart.effectiveHeight()/2))
+            .attr('y', -(_chart.margins().left - 12))
+            .style('transform', 'rotate(-90deg)')
+            .style('text-anchor', 'middle');
+
+        var xLabel = _chartBody.selectAll('text.x-axis-label');
+
+        if (xLabel.empty()) {
+            xLabel = _chartBody.append('text')
+            .attr('class', 'x-axis-label')
+            .text(_xLabel);
+        }
+
+        xLabel
+            .attr('x', (_chart.effectiveWidth()/2))
+            .attr('y', (_chart.effectiveHeight() + _chart.margins().bottom - 6))
+            .style('text-anchor', 'middle');
+    };
+
+/* --------------------------------------------------------------------------*/
+
     /**
      * Gets or sets the Y border radius.  Set to 0 to get full rectangles.
      * @name yBorderRadius
@@ -371,7 +573,11 @@ dc.heatMap = function (parent, chartGroup) {
     };
 
     _chart.isSelectedNode = function (d) {
-        return _chart.hasFilter(d.key);
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        return _chart.hasFilter([d.key0, d.key1]);
+/* --------------------------------------------------------------------------*/
+
     };
 
     return _chart.anchor(parent, chartGroup);
