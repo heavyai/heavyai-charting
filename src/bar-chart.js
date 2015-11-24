@@ -35,6 +35,15 @@ dc.barChart = function (parent, chartGroup) {
     var _centerBar = false;
     var _alwaysUseRounding = false;
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _numBars;
+    var _parent = parent;
+
+    _chart.accent = accentBar;
+    _chart.unAccent = unAccentBar;
+    _chart._numberOfBars = null;
+/* ------------------------------------------------------------------------- */
+
     var _barWidth;
 
     dc.override(_chart, 'rescale', function () {
@@ -43,14 +52,16 @@ dc.barChart = function (parent, chartGroup) {
         return _chart;
     });
 
-    dc.override(_chart, 'render', function () {
-        if (_chart.round() && _centerBar && !_alwaysUseRounding) {
-            dc.logger.warn('By default, brush rounding is disabled if bars are centered. ' +
-                         'See dc.js bar chart API documentation for details.');
-        }
-
-        return _chart._render();
-    });
+/* OVERRIDE ---------------------------------------------------------------- */
+    // dc.override(_chart, 'render', function () {
+    //     if (_chart.round() && _centerBar && !_alwaysUseRounding) {
+    //         dc.logger.warn('By default, brush rounding is disabled if bars are centered. ' +
+    //                      'See dc.js bar chart API documentation for details.');
+    //     }
+    //
+    //     return _chart._render();
+    // });
+/* ------------------------------------------------------------------------- */
 
     _chart.label(function (d) {
         return dc.utils.printSingleValue(d.y0 + d.y);
@@ -126,6 +137,10 @@ dc.barChart = function (parent, chartGroup) {
     }
 
     function renderBars (layer, layerIndex, d) {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        _numBars = d.values.length;
+/* ------------------------------------------------------------------------- */
         var bars = layer.selectAll('rect.bar')
             .data(d.values, dc.pluck('x'));
 
@@ -177,8 +192,15 @@ dc.barChart = function (parent, chartGroup) {
     }
 
     function calculateBarWidth () {
-        if (_barWidth === undefined) {
-            var numberOfBars = _chart.xUnitCount();
+/* OVERRIDE -----------------------------------------------------------------*/
+   //   if (_barWidth === undefined) {
+            if (_chart._numberOfBars === null) {
+                var numberOfBars = _chart.xUnitCount();
+            }
+            else {
+                var numberOfBars = _chart._numberOfBars;
+            }
+/* --------------------------------------------------------------------------*/
 
             // please can't we always use rangeBands for bar charts?
             if (_chart.isOrdinal() && _gap === undefined) {
@@ -192,7 +214,10 @@ dc.barChart = function (parent, chartGroup) {
             if (_barWidth === Infinity || isNaN(_barWidth) || _barWidth < MIN_BAR_WIDTH) {
                 _barWidth = MIN_BAR_WIDTH;
             }
-        }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+   //   }
+/* --------------------------------------------------------------------------*/
     }
 
     _chart.fadeDeselectedArea = function () {
@@ -241,6 +266,21 @@ dc.barChart = function (parent, chartGroup) {
         _centerBar = centerBar;
         return _chart;
     };
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    function accentBar (value) {
+      var chartDomain = _chart.x().domain();
+      var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
+      _chart.accentSelected($("rect.bar", _parent).get(barNum));
+    }
+
+    function unAccentBar (value) {
+      var chartDomain = _chart.x().domain();
+      var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
+
+      _chart.unAccentSelected($("rect.bar", _parent).get(barNum));
+    };
+/* --------------------------------------------------------------------------*/
 
     dc.override(_chart, 'onClick', function (d) {
         _chart._onClick(d.data);
