@@ -37,6 +37,78 @@ dc.dataTable = function (parent, chartGroup) {
     var _endSlice;
     var _showGroups = true;
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _filteredColumns = {};
+    var _sampling = false;
+
+    _chart.setDataAsync(function(group, callbacks) {
+        if (_order === d3.ascending) {
+            _chart.dimension().bottomAsync(_size, undefined,callbacks);
+        }
+        else {
+            _chart.dimension().topAsync(_size, undefined,callbacks);
+        }
+    });
+
+    _chart.sampling = function(setting) { // setting should be true or false
+        if (!arguments.length) 
+            return _sampling;
+        if (setting && !_sampling) // if wasn't sampling
+            dc._sampledCount++;
+        else if (!setting && _sampling)
+            dc._sampledCount--;
+        _sampling = setting;
+        if (_sampling == false)
+            _chart.dimension().samplingRatio(null); // unset sampling
+        return _chart;
+    };
+
+    _chart.addFilteredColumn = function(columnName) {
+      _filteredColumns[columnName] = null;
+    };
+
+    _chart.removeFilteredColumn = function(columnName) {
+      delete _filteredColumns[columnName];
+    };
+
+    _chart.clearFilteredColumns = function() {
+      _filteredColumns = {};
+    };
+
+    _chart.getFilteredColumns = function() {
+      return _filteredColumns;
+    };
+
+    _chart.addFilterIcons = function(headGroup) {
+      for (var c = 0; c < _columns.length; c++) {
+        if (_columns[c] in _filteredColumns) {
+
+         $("th", headGroup)
+           .eq(c)
+           .addClass('column-filtered')
+           .append('<div class="column-filter-clear" id="table-column-filter-clear_' + c + '" title="Clear filter" style="cursor:pointer"><i class="fa fa-filter"></i><i class="fa fa-times clear-times-icon" style="margin-left:-3px"></i></div>');
+
+         $("#table-column-filter-clear_" + c).click(function () {
+           var columnId = $(this).attr('id').split('_')[1];
+           _chart.removeFilteredColumn(_columns[columnId]);
+           $(_chart).trigger("column-filter-clear", [columnId]);
+           //_chart.redraw();
+          });
+        }
+      }
+    };
+
+    _chart.setSample = function () {
+        if (_sampling) {
+            if (dc._lastFilteredSize == null)
+                _chart.dimension().samplingRatio(null);
+            else {
+                _chart.dimension().samplingRatio(Math.min(_size/dc._lastFilteredSize, 1.0))
+            }
+        }
+    };
+/* ------------------------------------------------------------------------- */
+
     _chart._doRender = function () {
         _chart.selectAll('tbody').remove();
 
@@ -46,13 +118,29 @@ dc.dataTable = function (parent, chartGroup) {
     };
 
     _chart._doColumnValueFormat = function (v, d) {
-        return ((typeof v === 'function') ?
-                v(d) :                          // v as function
-                ((typeof v === 'string') ?
-                 d[v] :                         // v is field name string
-                 v.format(d)                        // v is Object, use fn (element 2)
-                )
-               );
+
+/* OVERRIDE ---------------------------------------------------------------- */
+      if (typeof v === 'string') {
+        if (Object.prototype.toString.call(d[v]) === '[object Date]') {
+          // below we check to see if time falls evenly on a date - if so don't
+          // ouput hours minutes and seconds
+          // Might be better to do this by the type of the variable
+          var epoch = d[v].getTime() * 0.001;
+          if (epoch % 86400 == 0) {
+            return moment.utc(d[v]).format('ddd, MMM D YYYY');
+          }
+          return moment.utc(d[v]).format('ddd, MMM D YYYY, h:mm:ss a');
+          //return d[v].toUTCString().slice(0, -4);
+        } else {
+          return $('<p>' + d[v] +'</p>').linkify().html();
+        }
+      } else if (typeof v === 'function') {
+        return v(d);
+      } else { // object - use fn (element 2)
+        return v.format(d);
+      }
+/* ------------------------------------------------------------------------- */
+
     };
 
     _chart._doColumnHeaderFormat = function (d) {
@@ -62,8 +150,18 @@ dc.dataTable = function (parent, chartGroup) {
         return (typeof d === 'function') ?
                 _chart._doColumnHeaderFnToString(d) :
                 ((typeof d === 'string') ?
-                 _chart._doColumnHeaderCapitalize(d) : String(d.label));
+
+/* OVERRIDE ---------------------------------------------------------------- */
+                 _chart._covertToAlias(d) : String(d.label));
+/* ------------------------------------------------------------------------- */
+
     };
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart._covertToAlias = function (s) {
+        return aliases[s];
+    };
+/* ------------------------------------------------------------------------- */
 
     _chart._doColumnHeaderCapitalize = function (s) {
         // capitalize
@@ -102,6 +200,12 @@ dc.dataTable = function (parent, chartGroup) {
 
         if (!bAllFunctions) {
             _chart.selectAll('th').remove();
+
+/* OVERRIDE ---------------------------------------------------------------- */
+            _chart.selectAll('thead').remove();
+            var header = _chart.root().append('thead');
+/* ------------------------------------------------------------------------- */
+
             var headcols = _chart.root().selectAll('th')
                 .data(_columns);
 
@@ -140,16 +244,27 @@ dc.dataTable = function (parent, chartGroup) {
 
         groups.exit().remove();
 
+/* OVERRIDE ---------------------------------------------------------------- */
+        _chart.addFilterIcons(headGroup);
+/* ------------------------------------------------------------------------- */
+
         return rowGroup;
     }
 
     function nestEntries () {
         var entries;
-        if (_order === d3.ascending) {
-            entries = _chart.dimension().bottom(_size);
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (_chart.dataCache != null) {
+            entries = _chart.dataCache;
         } else {
-            entries = _chart.dimension().top(_size);
+            if (_order === d3.ascending) {
+                entries = _chart.dimension().bottom(_size);
+            } else {
+                entries = _chart.dimension().top(_size);
+            }
         }
+/* ------------------------------------------------------------------------- */
 
         return d3.nest()
             .key(_chart.group())
@@ -166,6 +281,10 @@ dc.dataTable = function (parent, chartGroup) {
                 return d.values;
             });
 
+/* OVERRIDE ---------------------------------------------------------------- */
+        //var startTime = new Date();
+/* ------------------------------------------------------------------------- */
+
         var rowEnter = rows.enter()
             .append('tr')
             .attr('class', ROW_CSS_CLASS);
@@ -174,7 +293,14 @@ dc.dataTable = function (parent, chartGroup) {
             rowEnter.append('td')
                 .attr('class', COLUMN_CSS_CLASS + ' _' + i)
                 .html(function (d) {
-                    return _chart._doColumnValueFormat(v, d);
+
+/* OVERRIDE ---------------------------------------------------------------- */
+                    //return _chart._doColumnValueFormat(v, d);
+                    var aliasedColumn = "col" + i;
+                    //return "<span>" + _chart._doColumnValueFormat(aliasedColumn, d) + "</span>";
+                    return _chart._doColumnValueFormat(aliasedColumn, d);
+/* ------------------------------------------------------------------------- */
+
                 });
         });
 
