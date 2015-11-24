@@ -14,10 +14,18 @@ dc.baseMixin = function (_chart) {
     var _dimension;
     var _group;
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.dataCache = null;
+/* ------------------------------------------------------------------------- */
+
     var _anchor;
     var _root;
     var _svg;
     var _isChild;
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _redrawBrushFlag = false;
+/* ------------------------------------------------------------------------- */
 
     var _minWidth = 200;
     var _defaultWidth = function (element) {
@@ -33,11 +41,14 @@ dc.baseMixin = function (_chart) {
     };
     var _height = _defaultHeight;
 
-    var _keyAccessor = dc.pluck('key');
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _redrawBrushFlag = false;
+    var _keyAccessor = dc.pluck('key0');
+    var _label = dc.pluck('key0');
+    var _ordering = dc.pluck('key0');
+/* ------------------------------------------------------------------------- */
+    
     var _valueAccessor = dc.pluck('value');
-    var _label = dc.pluck('key');
-
-    var _ordering = dc.pluck('key');
     var _orderSort;
 
     var _renderLabel = false;
@@ -46,9 +57,11 @@ dc.baseMixin = function (_chart) {
         return _chart.keyAccessor()(d) + ': ' + _chart.valueAccessor()(d);
     };
     var _renderTitle = true;
-    var _controlsUseVisibility = false;
 
-    var _transitionDuration = 750;
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _transitionDuration = 500;
+    var _controlsUseVisibility = true;
+/* ------------------------------------------------------------------------- */
 
     var _filterPrinter = dc.printers.filters;
 
@@ -69,35 +82,86 @@ dc.baseMixin = function (_chart) {
     var _legend;
     var _commitHandler;
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart._colorLegend = null;
+
+    var _topQueryCallback = null;
+    var queryId = 0;
+    var _registerQuery = function(callback) {
+        var stackEmpty = _topQueryCallback == null;
+        // need to check if max query?
+        _topQueryCallback = callback;
+        if (stackEmpty)
+            _topQueryCallback.func(); 
+    }
+
+    var _popQueryStack = function(id) {
+        if (_topQueryCallback != null && id == _topQueryCallback.id) 
+            _topQueryCallback = null;
+        else 
+            _topQueryCallback.func(); 
+    }
+
+    var _startNextQuery = function() {
+        _topQueryCallback.func();
+        //var callback = _firstQueryCallback;
+        //callback();
+    }
+    
+    // override for count chart
+    _chart.isCountChart = function() { return false; } 
+/* ------------------------------------------------------------------------- */
+
     var _filters = [];
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _softFilterClear = false;
+/* ------------------------------------------------------------------------- */
+
     var _filterHandler = function (dimension, filters) {
-        if (filters.length === 0) {
-            dimension.filter(null);
-        } else if (filters.length === 1 && !filters[0].isFiltered) {
-            // single value and not a function-based filter
-            dimension.filterExact(filters[0]);
-        } else if (filters.length === 1 && filters[0].filterType === 'RangedFilter') {
-            // single range-based filter
-            dimension.filterRange(filters[0]);
-        } else {
-            dimension.filterFunction(function (d) {
-                for (var i = 0; i < filters.length; i++) {
-                    var filter = filters[i];
-                    if (filter.isFiltered && filter.isFiltered(d)) {
-                        return true;
-                    } else if (filter <= d && filter >= d) {
-                        return true;
-                    }
-                }
-                return false;
-            });
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        // bail out if we are at crossfilter level - i.e. for data count
+        if (dimension.type === 'crossfilter') { 
+          return filters;
         }
+/* ------------------------------------------------------------------------- */
+
+        if (filters.length === 0) {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+            dimension.filterAll(_softFilterClear);
+
+             // this is hacky -
+             // we need to get dimension.filter to use dimension as this 
+            $(dimension).trigger("filter-clear");
+        } else {
+            if (_chart.hasOwnProperty('rangeFocused')) {
+              dimension.filterMulti(filters, _chart.rangeFocused());
+            }
+            else {
+              dimension.filterMulti(filters);
+            }
+        }
+/* ------------------------------------------------------------------------- */
         return filters;
     };
 
     var _data = function (group) {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (_chart.dataCache !== null)
+            return _chart.dataCache;
+/* ------------------------------------------------------------------------- */
+
         return group.all();
     };
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _dataAsync = function(group,callbacks) {
+        group.allAsync(callbacks);
+    };
+/* ------------------------------------------------------------------------- */
 
     /**
      * Set or get the height attribute of a chart. The height is applied to the SVGElement generated by
@@ -160,6 +224,11 @@ dc.baseMixin = function (_chart) {
         _width = d3.functor(width || _defaultWidth);
         return _chart;
     };
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.accent = function(){}; //no-op
+    _chart.unAccent = function(){}; //no-op
+/* ------------------------------------------------------------------------- */
 
     /**
      * Set or get the minimum width attribute of a chart. This only has effect when used with the default
@@ -254,6 +323,17 @@ dc.baseMixin = function (_chart) {
         return _chart;
     };
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.dataAsync = function (callback) {
+        return _dataAsync.call(_chart, _group, callback);
+    }
+
+    _chart.setDataAsync = function(d) {
+        _dataAsync = d;
+        return _chart;
+    }
+/* ------------------------------------------------------------------------- */
+
     /**
      * **mandatory**
      *
@@ -316,15 +396,18 @@ dc.baseMixin = function (_chart) {
     _chart._computeOrderedGroups = function (data) {
         var dataCopy = data.slice(0);
 
-        if (dataCopy.length <= 1) {
-            return dataCopy;
-        }
-
-        if (!_orderSort) {
-            _orderSort = crossfilter.quicksort.by(_ordering);
-        }
-
-        return _orderSort(dataCopy, 0, dataCopy.length);
+/* OVERRIDE ---------------------------------------------------------------- */
+        // if (dataCopy.length <= 1) {
+        //     return dataCopy;
+        // }
+        //
+        // if (!_orderSort) {
+        //     _orderSort = crossfilter.quicksort.by(_ordering);
+        // }
+        //
+        // return _orderSort(dataCopy, 0, dataCopy.length);
+/* ------------------------------------------------------------------------- */
+        return dataCopy;
     };
 
     /**
@@ -336,9 +419,18 @@ dc.baseMixin = function (_chart) {
      * @instance
      * @return {dc.baseMixin}
      */
-    _chart.filterAll = function () {
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.filterAll = function (softFilterClear) {
+
+        if (softFilterClear) {
+          _softFilterClear = true;
+        } else {
+          _softFilterClear = false; 
+        }
+
         return _chart.filter(null);
     };
+/* ------------------------------------------------------------------------- */
 
     /**
      * Execute d3 single selection in the chart's scope using the given selector and return the d3
@@ -592,7 +684,11 @@ dc.baseMixin = function (_chart) {
      */
     _chart.transitionDuration = function (duration) {
         if (!arguments.length) {
-            return _transitionDuration;
+
+/* OVERRIDE ---------------------------------------------------------------- */
+            return dc._globalTransitionDuration != null ? dc._globalTransitionDuration : _transitionDuration;
+/* ------------------------------------------------------------------------- */
+
         }
         _transitionDuration = duration;
         return _chart;
@@ -613,6 +709,19 @@ dc.baseMixin = function (_chart) {
         }
     }
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.renderAsync = function(queryGroupId, queryCount) {
+        if (dc._refreshDisabled)
+            return;
+        if (_chart.hasOwnProperty('setSample')) {
+            _chart.setSample();
+        }
+        var id = queryId++;
+        var renderCallback = $.proxy(_chart.render,this,id,queryGroupId,queryCount);
+        _chart.dataAsync([renderCallback]);
+    };
+/* ------------------------------------------------------------------------- */
+
     /**
      * Invoking this method will force the chart to re-render everything from scratch. Generally it
      * should only be used to render the chart for the first time on the page or if you want to make
@@ -623,7 +732,14 @@ dc.baseMixin = function (_chart) {
      * @instance
      * @return {dc.baseMixin}
      */
-    _chart.render = function () {
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.render = function (id, queryGroupId, queryCount, data) {
+
+        if (dc._refreshDisabled)
+            return;
+        _chart.dataCache = data !== undefined ? data : null;
+/* ------------------------------------------------------------------------- */
+
         _listeners.preRender(_chart);
 
         if (_mandatoryAttributes) {
@@ -636,7 +752,26 @@ dc.baseMixin = function (_chart) {
             _legend.render();
         }
 
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (_chart._colorLegend) {
+          _chart._colorLegend.render();
+        }
+/* ------------------------------------------------------------------------- */
+
         _chart._activateRenderlets('postRender');
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (queryGroupId !== undefined) {
+            if (++dc._renderCount == queryCount) {
+                dc._renderCount = 0;
+                dc._globalTransitionDuration = null; // reset to null if was brush
+                var stackEmpty = dc._renderIdStack == null || dc._renderIdStack == queryGroupId;
+                dc._renderIdStack = null;
+                if (!stackEmpty)
+                    dc.renderAll();
+            }
+        }
+/* ------------------------------------------------------------------------- */
 
         return result;
     };
@@ -659,6 +794,20 @@ dc.baseMixin = function (_chart) {
         }
     };
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.redrawAsync = function(queryGroupId, queryCount) {
+        if (dc._refreshDisabled)
+            return;
+
+        if (_chart.hasOwnProperty('setSample')) {
+            _chart.setSample();
+        }
+        var id = queryId++;
+        var redrawCallback = $.proxy(_chart.redraw,this,id,queryGroupId,queryCount);
+        _chart.dataAsync([redrawCallback]);
+    };
+/* ------------------------------------------------------------------------- */
+
     /**
      * Calling redraw will cause the chart to re-render data changes incrementally. If there is no
      * change in the underlying data dimension then calling this method will have no effect on the
@@ -672,7 +821,14 @@ dc.baseMixin = function (_chart) {
      * @instance
      * @return {dc.baseMixin}
      */
-    _chart.redraw = function () {
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.redraw = function (id, queryGroupId, queryCount, data) {
+
+        if (dc._refreshDisabled)
+            return;
+        _chart.dataCache = data !== undefined ? data : null;
+/* ------------------------------------------------------------------------- */
+
         sizeSvg();
         _listeners.preRedraw(_chart);
 
@@ -682,7 +838,34 @@ dc.baseMixin = function (_chart) {
             _legend.render();
         }
 
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (_chart._colorLegend) {
+          _chart._colorLegend.render();
+        }
+/* ------------------------------------------------------------------------- */
+
         _chart._activateRenderlets('postRedraw');
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (queryGroupId !== undefined) {
+
+            if (++dc._redrawCount == queryCount) {
+                dc._redrawCount = 0;
+                dc._globalTransitionDuration = null; // reset to null if was brush
+                var stackEmpty = dc._redrawIdStack == null || dc._redrawIdStack == queryGroupId;
+                dc._redrawIdStack = null;
+                // look at logic here
+                if (dc._redrawCallback != null) {
+                    var callbackCopy = dc._redrawCallback;
+                    dc._redrawCallback = null;
+                    callbackCopy();
+                }
+                else if (!stackEmpty) {
+                    dc.redrawAll();
+                }
+            }
+        }
+/* ------------------------------------------------------------------------- */
 
         return result;
     };
@@ -1025,6 +1208,16 @@ dc.baseMixin = function (_chart) {
     _chart.filters = function () {
         return _filters;
     };
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.accentSelected = function(e) {
+        d3.select(e).classed(dc.constants.ACCENT_CLASS, true);
+    }
+
+    _chart.unAccentSelected = function(e) {
+        d3.select(e).classed(dc.constants.ACCENT_CLASS, false);
+    }
+/* ------------------------------------------------------------------------- */
 
     _chart.highlightSelected = function (e) {
         d3.select(e).classed(dc.constants.SELECTED_CLASS, true);
