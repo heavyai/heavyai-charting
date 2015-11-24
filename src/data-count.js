@@ -30,6 +30,10 @@ dc.dataCount = function (parent, chartGroup) {
     var _chart = dc.baseMixin({});
     var _html = {some: '', all: ''};
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.isCountChart = function() { return true; } // override for count chart
+/* ------------------------------------------------------------------------- */
+
     /**
      * Gets or sets an optional object specifying HTML templates to use depending how many items are
      * selected. The text `%total-count` will replaced with the total number of records, and the text
@@ -81,9 +85,27 @@ dc.dataCount = function (parent, chartGroup) {
         return _chart;
     };
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.setDataAsync(function(group,callbacks) {
+        group.valueAsync(callbacks);
+    });
+/* ------------------------------------------------------------------------- */
+
     _chart._doRender = function () {
-        var tot = _chart.dimension().size(),
-            val = _chart.group().value();
+        // ok to call size b/c will hit cache every time
+        var tot = _chart.dimension().size();
+        
+/* OVERRIDE ---------------------------------------------------------------- */
+        var val = null;
+        if (_chart.dataCache != null)
+            val = _chart.dataCache;
+        else{
+             val = _chart.group().value();
+        }
+
+        dc._lastFilteredSize = val;
+/* ------------------------------------------------------------------------- */
+
         var all = _formatNumber(tot);
         var selected = _formatNumber(val);
 
@@ -93,7 +115,13 @@ dc.dataCount = function (parent, chartGroup) {
             _chart.root().html(_html.some.replace('%total-count', all).replace('%filter-count', selected));
         } else {
             _chart.selectAll('.total-count').text(all);
-            _chart.selectAll('.filter-count').text(selected);
+
+/* OVERRIDE ---------------------------------------------------------------- */
+            _chart.selectAll('.filter-count')
+              .classed('dark-text', (all !== selected))
+              .text(selected);
+/* ------------------------------------------------------------------------- */
+
         }
         return _chart;
     };
