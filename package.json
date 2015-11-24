@@ -1,5 +1,5 @@
 {
-  "name": "mapdc",
+  "name": "@mapd/mapdc",
   "version": "2.0.0-beta.22",
   "license": "Apache-2.0",
   "copyright": "2014",
@@ -20,7 +20,6 @@
     "name": "MapD Technologies",
     "url": "http://mapd.com"
   },
-  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/map-d/mapdc.js.git"
