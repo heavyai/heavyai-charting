@@ -25,7 +25,10 @@
  * @return {dc.bubbleChart}
  */
 dc.bubbleChart = function (parent, chartGroup) {
-    var _chart = dc.bubbleMixin(dc.coordinateGridMixin({}));
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    var _chart = dc.bubbleMixin(dc.capMixin(dc.coordinateGridMixin({})));
+/* --------------------------------------------------------------------------*/
 
     var _elasticRadius = false;
     var _sortBubbleSize = false;
@@ -86,7 +89,11 @@ dc.bubbleChart = function (parent, chartGroup) {
             data.sort(function (a, b) { return d3.descending(radiusAccessor(a), radiusAccessor(b)); });
         }
         var bubbleG = _chart.chartBodyG().selectAll('g.' + _chart.BUBBLE_NODE_CLASS)
-                .data(data, function (d) { return d.key; });
+
+/* OVERRIDE -----------------------------------------------------------------*/
+            .data(_chart.data(), function (d) { return d.key0; });
+/* --------------------------------------------------------------------------*/
+
         if (_sortBubbleSize) {
             // Call order here to update dom order based on sort
             bubbleG.order();
@@ -130,7 +137,11 @@ dc.bubbleChart = function (parent, chartGroup) {
     function updateNodes (bubbleG) {
         dc.transition(bubbleG, _chart.transitionDuration())
             .attr('transform', bubbleLocator)
-            .selectAll('circle.' + _chart.BUBBLE_CLASS)
+
+/* OVERRIDE -----------------------------------------------------------------*/
+            .select('circle.' + _chart.BUBBLE_CLASS)
+/* --------------------------------------------------------------------------*/
+
             .attr('fill', _chart.getColor)
             .attr('r', function (d) {
                 return _chart.bubbleR(d);
