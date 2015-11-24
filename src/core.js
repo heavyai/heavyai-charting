@@ -27,9 +27,31 @@ var dc = {
         NODE_INDEX_NAME: '__index__',
         GROUP_INDEX_NAME: '__group_index__',
         DEFAULT_CHART_GROUP: '__default_chart_group__',
-        EVENT_DELAY: 40,
-        NEGLIGIBLE_NUMBER: 1e-10
+        NEGLIGIBLE_NUMBER: 1e-10,
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        ACCENT_CLASS: 'accented',
+        EVENT_DELAY: 0
+/* --------------------------------------------------------------------------*/
     },
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    async: false,
+    _lastFilteredSize: null,
+    _sampledCount: 0,
+    _refreshDisabled: false,
+    _renderFlag: false,
+    _redrawFlag: false,
+    _renderId: 0,
+    _redrawId: 0,
+    _renderCount: 0,
+    _redrawCount: 0,
+    _renderIdStack: null,
+    _redrawIdStack: null,
+    _globalTransitionDuration: null,
+    _redrawCallback: null,
+/* --------------------------------------------------------------------------*/
+
     _renderlet: null
 };
 /*jshint +W079*/
@@ -66,6 +88,13 @@ dc.chartRegistry = (function () {
         },
 
         deregister: function (chart, group) {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+            if (chart.hasOwnProperty('sampling')) {
+              chart.sampling(false); // to deincrement dc sampling counter
+            }
+/* ------------------------------------------------------------------------- */
+
             group = initializeChartGroup(group);
             for (var i = 0; i < _chartMap[group].length; i++) {
                 if (_chartMap[group][i].anchorName() === chart.anchorName()) {
@@ -106,6 +135,16 @@ dc.deregisterAllCharts = function (group) {
     dc.chartRegistry.clear(group);
 };
 
+/* OVERRIDE ---------------------------------------------------------------- */
+dc.disableRefresh = function (){
+  dc._refreshDisabled = true;
+};
+
+dc.enableRefresh = function (){
+  dc._refreshDisabled = false;
+}
+/* ------------------------------------------------------------------------- */
+
 /**
  * Clear all filters on all charts within the given chart group. If the chart group is not given then
  * only charts that belong to the default chart group will be reset.
@@ -144,9 +183,32 @@ dc.refocusAll = function (group) {
  * @param {String} [group]
  */
 dc.renderAll = function (group) {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    if (dc._refreshDisabled)
+        return;
+    var queryGroupId = dc._renderId++;
+    var stackEmpty = (dc._renderIdStack === null);
+    dc._renderIdStack = queryGroupId;
+    if (!stackEmpty)
+        return;
+/* ------------------------------------------------------------------------- */
+
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-        charts[i].render();
+      
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (dc._sampledCount > 0) {
+
+            // relies on count chart being first -- bad
+            if (charts[i].isCountChart())
+                charts[i].render();
+            else
+                charts[i].renderAsync(queryGroupId,charts.length - 1);
+        }
+        else
+            charts[i].renderAsync(queryGroupId,charts.length);
+/* ------------------------------------------------------------------------- */
     }
 
     if (dc._renderlet !== null) {
@@ -163,15 +225,51 @@ dc.renderAll = function (group) {
  * @name redrawAll
  * @param {String} [group]
  */
-dc.redrawAll = function (group) {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+dc.redrawAll = function (group, callback) {
+
+    if (dc._refreshDisabled)
+        return;
+    var queryGroupId = dc._redrawId++;
+    var stackEmpty = false;
+    if (callback !== undefined) {
+        dc._redrawCallback = callback;
+    }
+    else {
+        var stackEmpty = (dc._redrawIdStack === null);
+        dc._redrawIdStack = queryGroupId;
+    }
+    if (!stackEmpty && callback === undefined)
+        return;
+/* ------------------------------------------------------------------------- */
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-        charts[i].redraw();
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (dc._sampledCount > 0) {
+            if (charts[i].isCountChart()) {
+                charts[i].redraw();
+            }
+            else {
+                charts[i].redrawAsync(queryGroupId,charts.length - 1);
+            }
+        }
+        else
+            charts[i].redrawAsync(queryGroupId,charts.length);
+/* ------------------------------------------------------------------------- */
+
     }
 
     if (dc._renderlet !== null) {
         dc._renderlet(group);
     }
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    // Will be found in mapd.js
+    $('body').trigger('updateFilterCounter');
+/* ------------------------------------------------------------------------- */
+
 };
 
 /**
