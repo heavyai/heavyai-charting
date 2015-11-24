@@ -28,6 +28,11 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         return d || 0;
     });
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.accent = accentPoly;
+    _chart.unAccent = unAccentPoly;
+/* --------------------------------------------------------------------------*/
+
     var _geoPath = d3.geo.path();
     var _projectionFlag;
 
@@ -110,6 +115,26 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         return 'g.layer' + layerIndex + ' g.' + geoJson(layerIndex).name;
     }
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    function accentPoly(label) {
+      var layerNameClass = geoJson(0).name; // hack for now as we only allow one layer currently
+    _chart.selectAll('g.' + layerNameClass).each(function (d) {
+        if (getKey(0,d) == label) {
+          _chart.accentSelected(this);
+        }
+      });
+    }
+
+    function unAccentPoly(label) {
+      var layerNameClass = geoJson(0).name; // hack for now as we only allow one layer currently
+    _chart.selectAll('g.' + layerNameClass).each(function (d) {
+        if (getKey(0,d) == label) {
+          _chart.unAccentSelected(this);
+        }
+      });
+    }
+/* --------------------------------------------------------------------------*/
+
     function isSelected (layerIndex, d) {
         return _chart.hasFilter() && _chart.hasFilter(getKey(layerIndex, d));
     }
@@ -157,8 +182,12 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         if (_chart.renderTitle()) {
             regionG.selectAll('title').text(function (d) {
                 var key = getKey(layerIndex, d);
-                var value = data[key];
-                return _chart.title()({key: key, value: value});
+
+/* OVERRIDE -----------------------------------------------------------------*/
+                var value = Number(data[key]).toFixed(2);
+                return _chart.title()({key0: key, value: value});
+/* --------------------------------------------------------------------------*/
+
             });
         }
     }
