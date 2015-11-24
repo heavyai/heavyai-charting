@@ -20,6 +20,7 @@
     "name": "MapD Technologies",
     "url": "http://mapd.com"
   },
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/map-d/mapdc.js.git"
