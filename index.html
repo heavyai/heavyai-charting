@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="css/dc.css" />
+    <style>
+      .title {
+          font-weight: bold;
+          text-align:center;
+      }
+ 
+    </style>
   </head>
   <body>
 
@@ -19,24 +26,22 @@
 
     <div class="main-container">
 
-      <div class="col-md-6">
-        <div> Number of Flights by State (Bar Chart) </div>
+      <div class="col-xs-6">
+        <div class="title"> Total Number of Flights by State </div>
         <div class="chart1-example"></div>
       </div>
       
-      <div class="col-md-6">
-        <div> Scatter Plot </div>
+      <div class="col-xs-6">
+        <div class="title"> Carrier Departure Delay by Arrival Delay <small>(Minutes)</small> </div>
         <div class="chart2-example"></div>
       </div>
 
-      <div class="col-md-12">
-        <div> (Time Chart) </div>
+      <div class="col-xs-12">
+        <div class="title"> Total Number of Flights over 20 Years </div>
         <div class="chart3-example"></div>
       </div>
-
     </div>
 
-    
     <script src="js/jquery.min.js"></script>
     <script src="js/thrift.js"></script>
     <script src="js/mapd.thrift.js"></script>

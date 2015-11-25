@@ -1,91 +1,99 @@
 /*
- * This is MapD boilerplate showing examples on how to make 2 charts.
+ * This is MapD boilerplate showing examples on how to make 3 charts.
  */
 
 function CreateCharts(crossFilter) { 
 
-  /*
-   * crossFilter is an object with a number of methods on it.
-   * One of those methods is .getColumns
-   */
+  var colorScheme = ["#22A7F0", "#3ad6cd", "#d4e666"]
+
+  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
+
+/*
+ * crossFilter is an object with a number of methods on it.
+ * One of those methods is .getColumns
+ */
 
     var allColumns = crossFilter.getColumns();
  
-  /*
-   *  This will grab all columns from the table    
-   *  Once you have the column name you want to pass into crossfilter
-   *  create a new dimension variable like this:
-   */
+/*
+ *  This will grab all columns from the table    
+ *  Once you have the column name you want to pass into crossfilter
+ *  create a new dimension variable like this:
+ */
 
 /*------------------------CHART 1 EXAMPLE------------------------------*/
 
 
-    var dimensionChart1 = crossFilter.dimension("dest_state");
-   
-    // This will return a key and value pair -- and your job is to visualize 
-    // the data on the screen
-    var groupChart1 = dimensionChart1.group().reduceCount();
+/* 
+ * use crossFilter Methods here:
+ * https://github.com/square/crossfilter/wiki/API-Reference#dimension
+ * https://github.com/square/crossfilter/wiki/API-Reference#group-map-reduce
+ * https://github.com/square/crossfilter/wiki/API-Reference#group_reduceCount
+ */
 
+    var rowChartDimension = crossFilter.dimension("dest_state");   
+    var rowChartGroup = rowChartDimension.group().reduceCount();
 
-    // Chart1-example
-    var dcChart1 =  dc.rowChart('.chart1-example')
-                      .width(500)
-                      .height(500)
+/*
+ *  Simple Bar Chart Example:
+ *  use DC api here:
+ *  https://github.com/dc-js/dc.js/blob/master/web/docs/api-latest.md
+ */
+
+    var dcBarChart =  dc.rowChart('.chart1-example')
+                      .height(h/1.5)
+                      .width(w/2)
                       .elasticX(true)
-                      .cap(12)
+                      .cap(20)
                       .othersGrouper(false)
-                      .dimension(dimensionChart1)
-                      .group(groupChart1)
+                      .dimension(rowChartDimension)
+                      .group(rowChartGroup)
+                      .ordinalColors(colorScheme);
 
 
 /*--------------------------CHART 2 EXAMPLE------------------------------*/
 
-    var dimensionChart2 = crossFilter.dimension("dest_city");
+/*
+ *  Bubble Chart Example:
+ *
+ *  MapD created a reduceMulti in order to handle multiple measures. 
+ *  it takes 3 arguments:
+ *  'expression' which is the measure
+ *  'agg_mode' which is the calculation to perform.
+ *  'name' is how to reference the data
+ */
 
+    var reduceMultiExpression1 = [{
+      expression: "arrdelay", 
+      agg_mode:"avg", 
+      name: "x"
+    },
+    {
+      expression: "depdelay", 
+      agg_mode:"avg", 
+      name: "y"
+    },
+    {
+      expression: "count", 
+      agg_mode:"count", 
+      name: "size"
+    }]
 
-    // AGG_MODE should be either "sum", "avg", "min", "max"
-      
-    var boundsChart2 = crossFilter.groupAll().reduceMulti([
-      {"expression": "arrdelay", agg_mode:"avg", name: "x"},
-      {"expression": "depdelay", agg_mode:"avg", name: "y"},
-      {"expression": "depdelay", agg_mode:"avg", name: "size"}])
+    var scatterPlotDimension = crossFilter.dimension("carrier_name");
 
-    var groupChart2 = dimensionChart2
-                      .group()
-                      .reduceMulti([{"expression": "arrdelay", agg_mode:"avg", name: "x"},
-                                    {"expression": "depdelay", agg_mode:"avg", name: "y"},
-                                    {"expression": "count", agg_mode:"count", name: "size"}])
+    var scatterPlotGroup = scatterPlotDimension
+                        .group()
+                        .reduceMulti(reduceMultiExpression1)
 
-
-
-    // var groupChart2 = dimensionChart2.group().reduceCount();
-
-
-    // timeGroup = timeDim.group().reduceCount().setBinParams({numBins: 400, binBounds: [timeBounds.min,timeBounds.max]}).setBoundByFilter(true);
-    
-    // timeChart = dc.tweetLineChart(timeDiv.get(0))
-    //   .width(timeWidth)
-    //   .height(timeHeight)
-    //   .elasticY(true)
-    //   .renderHorizontalGridLines(false)
-    //   .brushOn(true)
-    //   .dimension(timeDim)
-    //   .group(timeGroup);
-
-    // timeChart
-    //   .x(d3.time.scale.utc().domain([timeBounds.min,timeBounds.max]))
-    //   .yAxis().ticks(5);
-    // timeChart
-    //   .xAxis().orient('top');
-
-    var dcChart2 =  dc.bubbleChart('.chart2-example')
-                      .width(500)
-                      .height(500)
+     dcScatterPlot =  dc.bubbleChart('.chart2-example')
+                      .height(h/1.5)
+                      .width(w/2)
                       .renderHorizontalGridLines(true)
                       .renderVerticalGridLines(true)
-                      .cap(50)
-                      .dimension(dimensionChart2)
-                      .group(groupChart2)
+                      .cap(30)
+                      .dimension(scatterPlotDimension)
+                      .group(scatterPlotGroup)
                       .keyAccessor(function (d) {
                           return d.x;
                       })
@@ -97,10 +105,10 @@ function CreateCharts(crossFilter) {
                       })
                       .maxBubbleRelativeSize(0.05)
                       .transitionDuration(500)
-                      .elasticX(true)
-                      .elasticY(true)
-                      .xAxisPadding('15%')
-                      .yAxisPadding('15%');
+                      .xAxisLabel('Arrival Delay')
+                      .yAxisLabel('Departure Delay')
+                      .ordinalColors(colorScheme)
+                      
 
                       var setScales = function(chart, type){
                         chart.on(type, function(chart) {
@@ -110,45 +118,100 @@ function CreateCharts(crossFilter) {
                         });
                       }
 
-                      setScales(dcChart2, "preRender");
-                      setScales(dcChart2, "preRedraw");
+                      setScales(dcScatterPlot, "preRender");
+                      setScales(dcScatterPlot, "preRedraw");
 
 /*--------------------------CHART 3 EXAMPLE------------------------------*/
 
+  /*
+   *  Time Chart Example:
+   */
 
+    var reduceMultiExpression2 = 
+    [{
+      expression: "arr_timestamp", 
+      agg_mode:"min", 
+      name: "min"
+    },
+    {
+      expression: "arr_timestamp", 
+      agg_mode:"max", 
+      name: "max"}
+    ]
 
-    var timeWidth = 500;
-    var timeHeight = 80;
-
-    timeBounds = crossFilter
-                .groupAll()
-                .reduceMulti([{"expression": "arrdelay", agg_mode:"avg", name: "avg"}])
-                              .values(true);
+    var timeChartBounds = crossFilter
+                          .groupAll()
+                          .reduceMulti(reduceMultiExpression2)
+                          .values(true);
+                            
+    var timeChartDimension = crossFilter.dimension("arr_timestamp");
     
-    timeDim = crossFilter.dimension("dep_timestamp");
-    debugger;
-    timeGroup = timeDim.group()
+    var timeChartGroup = timeChartDimension.group() 
                 .reduceCount()
-                .setBinParams({numBins: 400, binBounds: [timeBounds.avg]})
-                .setBoundByFilter(true);
-    
-    var dcChart3 = dc.lineChart('.chart3-example')
-      .width(timeWidth)
-      .height(timeHeight)
+                .setBinParams({
+                   numBins: 400, 
+                   binBounds: [timeChartBounds.min,timeChartBounds.max]
+                  }).setBoundByFilter(true);
+
+    var dcTimeChart = dc.lineChart('.chart3-example')
+      .width(w)
+      .height(h/2.5)
       .elasticY(true)
       .renderHorizontalGridLines(false)
       .brushOn(true)
-      .dimension(timeDim)
-      .group(timeGroup);
+      .dimension(timeChartDimension)
+      .group(timeChartGroup);
 
-
-    dcChart3
-      .x(d3.time.scale.utc().domain([timeBounds.avg]))
+    dcTimeChart
+      .x(d3.time.scale.utc().domain([timeChartBounds.min,timeChartBounds.max]))
       .yAxis().ticks(5);
 
+    dcTimeChart
+      .xAxis().orient('top');
+
     dc.renderAll()
+    
+/*--------------------------RESIZE EVENT------------------------------*/
+  
+    window.addEventListener("resize", debounce(reSizeAll, 100));
+
+    function reSizeAll(){
+      var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
+
+      dcBarChart
+        .height(h/1.5)
+        .width(w/2)
+
+      dcScatterPlot
+        .height(h/1.5)
+        .width(w/2)
+
+      dcTimeChart
+        .width(w)
+        .height(h/2.5)
+
+      dc.renderAll();
+    }
 
 }
+
+
+
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+    var context = this, args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+};
 
 
 function init() {
@@ -182,4 +245,5 @@ function init() {
   var chart = new CreateCharts(crossFilter);
 }
 
-$(document).ready(init);
+document.addEventListener('DOMContentLoaded', init, false);
+
