@@ -128,9 +128,14 @@ dc.utils.uniqueId = function () {
     return ++_idCounter;
 };
 
-dc.utils.nameToId = function (name) {
-    return name.toLowerCase().replace(/[\s]/g, '_').replace(/[\.']/g, '');
+/* OVERRIDE ---------------------------------------------------------------- */
+dc.utils.nameToId = function (name){
+    if (parseFloat(name))
+      return name;
+    else
+      return name.toLowerCase().replace(/[\s]/g, '_').replace(/[\.']/g, '');
 };
+/* ------------------------------------------------------------------------- */
 
 dc.utils.appendOrSelect = function (parent, selector, tag) {
     tag = tag || selector;
