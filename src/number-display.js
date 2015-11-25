@@ -77,6 +77,12 @@ dc.numberDisplay = function (parent, chartGroup) {
         return _chart.data();
     };
 
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
+    _chart.setDataAsync(function(group,callbacks) {
+        group.value ? group.valueAsync(callbacks) : group.topAsync(1, undefined, callbacks);
+    });
+/* --------------------------------------------------------------------------*/
+
     _chart.data(function (group) {
         var valObj = group.value ? group.value() : group.top(1)[0];
         return _chart.valueAccessor()(valObj);
