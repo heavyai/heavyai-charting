@@ -3,14 +3,48 @@
   <head>
     <title>MapD</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/dc.css" />
   </head>
   <body>
-    <script src="lib/jquery.min.js"></script>
-    <script src="lib/thrift.js"></script>
+
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header" style="margin-top:10px">
+            <img alt="Brand" src="images/favicon.png" height="30" width="30">
+            <span>MapD Demo</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="main-container">
+
+      <div class="col-md-6">
+        <div> Number of Flights by State (Bar Chart) </div>
+        <div class="chart1-example"></div>
+      </div>
+      
+      <div class="col-md-6">
+        <div> Scatter Plot </div>
+        <div class="chart2-example"></div>
+      </div>
+
+      <div class="col-md-12">
+        <div> (Time Chart) </div>
+        <div class="chart3-example"></div>
+      </div>
+
+    </div>
+
+    
+    <script src="js/jquery.min.js"></script>
+    <script src="js/thrift.js"></script>
     <script src="js/mapd.thrift.js"></script>
     <script src="js/mapd_types.js"></script>
     <script src="js/mapdcon.js"></script>
     <script src="js/crossfilter.mapd.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/d3.js"></script>
+    <script src="js/dc.mapd.bundle.js"></script>
+    <script src="js/demo.js"></script>
   </body>
 </html>
