@@ -11,7 +11,12 @@ dc.stackMixin = function (_chart) {
     function prepareValues (layer, layerIdx) {
         var valAccessor = layer.accessor || _chart.valueAccessor();
         layer.name = String(layer.name || layerIdx);
-        layer.values = layer.group.all().map(function (d, i) {
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        // WARNING: probably destroys stack functionality: find workaround
+        var preValues = _chart.dataCache != null ? _chart.dataCache : layer.group.all();
+        //layer.values = layer.group.all().map(function (d, i) {
+        layer.values = preValues.map(function (d,i) {
             return {
                 x: _chart.keyAccessor()(d, i),
                 y: layer.hidden ? null : valAccessor(d, i),
@@ -20,6 +25,7 @@ dc.stackMixin = function (_chart) {
                 hidden: layer.hidden
             };
         });
+/* ------------------------------------------------------------------------- */
 
         layer.values = layer.values.filter(domainFilter());
         return layer.values;
