@@ -8,7 +8,10 @@
  * @return {dc.marginMixin}
  */
 dc.marginMixin = function (_chart) {
-    var _margin = {top: 10, right: 50, bottom: 30, left: 30};
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _margin = { top: 10, right: 50, bottom: 40, left: 60 };
+/* ------------------------------------------------------------------------- */
 
     /**
      * Get or set the margins for a particular coordinate grid chart instance. The margins is stored as
