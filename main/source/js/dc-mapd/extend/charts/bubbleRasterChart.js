@@ -117,6 +117,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
         return result; 
     });
 
+
     function genVegaSpec() {
         // scales
         _chart._vegaSpec.scales = [];
