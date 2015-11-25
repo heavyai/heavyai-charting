@@ -66,6 +66,12 @@ dc.pieChart = function (parent, chartGroup) {
 
     _chart.transitionDuration(350);
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.redoSelect = highlightFilter;
+    _chart.accent = accentSlice;
+    _chart.unAccent = unAccentSlice;
+/* ------------------------------------------------------------------------- */
+
     _chart._doRender = function () {
         _chart.resetSvg();
 
@@ -79,8 +85,12 @@ dc.pieChart = function (parent, chartGroup) {
     };
 
     function drawChart () {
+      
+/* OVERRIDE ---------------------------------------------------------------- */
         // set radius on basis of chart dimension if missing
+        //_radius = d3.min([_chart.width(), _chart.height()]) / 2;
         _radius = _givenRadius ? _givenRadius : d3.min([_chart.width(), _chart.height()]) / 2;
+/* ------------------------------------------------------------------------- */
 
         var arc = buildArcs();
 
@@ -270,6 +280,24 @@ dc.pieChart = function (parent, chartGroup) {
     function removeElements (slices) {
         slices.exit().remove();
     }
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    function accentSlice(label) {
+      _chart.selectAll('g.' + _sliceCssClass).each(function (d) {
+        if (_chart.cappedKeyAccessor(d.data) == label) {
+          _chart.accentSelected(this);
+        }
+      });
+    }
+
+    function unAccentSlice(label) {
+      _chart.selectAll('g.' + _sliceCssClass).each(function (d) {
+        if (_chart.cappedKeyAccessor(d.data) == label) {
+          _chart.unAccentSelected(this);
+        }
+      });
+    }
+/* ------------------------------------------------------------------------- */
 
     function highlightFilter () {
         if (_chart.hasFilter()) {
@@ -533,7 +561,16 @@ dc.pieChart = function (parent, chartGroup) {
 
     _chart.legendables = function () {
         return _chart.data().map(function (d, i) {
-            var legendable = {name: d.key, data: d.value, others: d.others, chart: _chart};
+
+/* OVERRIDE -----------------------------------------------------------------*/
+            var legendable = {
+              name: d.key0,
+              data: d.value,
+              others: d.others,
+              chart:_chart
+            };
+/* --------------------------------------------------------------------------*/
+
             legendable.color = _chart.getColor(d, i);
             return legendable;
         });
