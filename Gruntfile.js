@@ -27,7 +27,7 @@ module.exports = function (grunt) {
             },
             js: {
                 src: '<%= conf.jsFiles %>',
-                dest: '<%= conf.pkg.name %>.js'
+                dest: '<%= conf.pkg.npmName %>.js'
             }
         },
         uglify: {
@@ -38,8 +38,8 @@ module.exports = function (grunt) {
                     sourceMap: true,
                     banner: '<%= conf.banner %>'
                 },
-                src: '<%= conf.pkg.name %>.js',
-                dest: '<%= conf.pkg.name %>.min.js'
+                src: '<%= conf.pkg.npmName %>.js',
+                dest: '<%= conf.pkg.npmName %>.min.js'
             }
         },
         cssmin: {
@@ -49,7 +49,7 @@ module.exports = function (grunt) {
             },
             main: {
                 files: {
-                    '<%= conf.pkg.name %>.min.css': ['<%= conf.pkg.name %>.css']
+                    '<%= conf.pkg.npmName %>.min.css': ['<%= conf.pkg.npmName %>.css']
                 }
             }
         },
@@ -100,11 +100,11 @@ module.exports = function (grunt) {
                 tasks: ['test']
             },
             reload: {
-                files: ['<%= conf.pkg.name %>.js',
-                    '<%= conf.pkg.name %>css',
-                    '<%= conf.web %>/js/<%= conf.pkg.name %>.js',
-                    '<%= conf.web %>/css/<%= conf.pkg.name %>.css',
-                    '<%= conf.pkg.name %>.min.js'],
+                files: ['<%= conf.pkg.npmName %>.js',
+                    '<%= conf.pkg.npmName %>css',
+                    '<%= conf.web %>/js/<%= conf.pkg.npmName %>.js',
+                    '<%= conf.web %>/css/<%= conf.pkg.npmName %>.css',
+                    '<%= conf.pkg.npmName %>.min.js'],
                 options: {
                     livereload: true
                 }
@@ -136,7 +136,7 @@ module.exports = function (grunt) {
                     '<%= conf.web %>/js/d3.js',
                     '<%= conf.web %>/js/crossfilter.js',
                     '<%= conf.web %>/js/colorbrewer.js',
-                    '<%= conf.pkg.name %>.js'
+                    '<%= conf.pkg.npmName %>.js'
                 ]
             },
             coverage: {
@@ -198,7 +198,7 @@ module.exports = function (grunt) {
                             platform: 'WIN8'
                         }
                     ],
-                    testname: '<%= conf.pkg.name %>.js'
+                    testname: '<%= conf.pkg.npmName %>.js'
                 }
             }
         },
@@ -227,17 +227,17 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         flatten: true,
-                        src: ['<%= conf.pkg.name %>.css', '<%= conf.pkg.name %>.min.css'],
+                        src: ['<%= conf.pkg.npmName %>.css', '<%= conf.pkg.npmName %>.min.css'],
                         dest: '<%= conf.web %>/css/'
                     },
                     {
                         expand: true,
                         flatten: true,
                         src: [
-                            '<%= conf.pkg.name %>.js',
-                            '<%= conf.pkg.name %>.js.map',
-                            '<%= conf.pkg.name %>.min.js',
-                            '<%= conf.pkg.name %>.min.js.map',
+                            '<%= conf.pkg.npmName %>.js',
+                            '<%= conf.pkg.npmName %>.js.map',
+                            '<%= conf.pkg.npmName %>.min.js',
+                            '<%= conf.pkg.npmName %>.min.js.map',
                             'node_modules/d3/d3.js',
                             'node_modules/crossfilter/crossfilter.js',
                             'test/env-data.js'
@@ -298,37 +298,9 @@ module.exports = function (grunt) {
             },
             src: ['**']
         },
-        shell: {
-            merge: {
-                command: function (pr) {
-                    return [
-                        'git fetch origin',
-                        'git checkout master',
-                        'git reset --hard origin/master',
-                        'git fetch origin',
-                        'git merge --no-ff origin/pr/' + pr + ' -m \'Merge pull request #' + pr + '\''
-                    ].join('&&');
-                },
-                options: {
-                    stdout: true,
-                    failOnError: true
-                }
-            },
-            amend: {
-                command: 'git commit -a --amend --no-edit',
-                options: {
-                    stdout: true,
-                    failOnError: true
-                }
-            },
-            hooks: {
-                command: 'cp -n scripts/pre-commit.sh .git/hooks/pre-commit' +
-                    ' || echo \'Cowardly refusing to overwrite your existing git pre-commit hook.\''
-            }
-        },
         browserify: {
             dev: {
-                src: '<%= conf.pkg.name %>.js',
+                src: '<%= conf.pkg.npmName %>.js',
                 dest: 'bundle.js',
                 options: {
                     browserifyOptions: {
@@ -372,7 +344,7 @@ module.exports = function (grunt) {
     grunt.registerTask('ci', ['test', 'jasmine:specs:build', 'connect:server', 'saucelabs-jasmine']);
     grunt.registerTask('ci-pull', ['test', 'jasmine:specs:build', 'connect:server']);
     grunt.registerTask('lint', ['jshint', 'jscs']);
-    grunt.registerTask('default', ['build', 'shell:hooks']);
+    grunt.registerTask('default', ['build']);
     grunt.registerTask('jsdoc', ['build', 'jsdoc2md', 'watch:jsdoc2md']);
 };
 
@@ -387,6 +359,10 @@ module.exports.jsFiles = [
     'src/base-mixin.js',
     'src/margin-mixin.js',
     'src/color-mixin.js',
+    'src/map-mixin.js', // MapD specific
+    'src/raster-mixin.js', // MapD specific
+    'src/bubble-raster-chart.js', // MapD specific
+    'src/map-chart.js', // MapD specific
     'src/coordinate-grid-mixin.js',
     'src/stack-mixin.js',
     'src/cap-mixin.js',
@@ -403,6 +379,7 @@ module.exports.jsFiles = [
     'src/geo-choropleth-chart.js',
     'src/bubble-overlay.js',
     'src/row-chart.js',
+    'src/cloud-chart.js', // MapD specific
     'src/legend.js',
     'src/scatter-plot.js',
     'src/number-display.js',
