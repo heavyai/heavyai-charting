@@ -1,8 +1,3 @@
-/******************************************************************************
- * EXTEND: dc.bubbleRasterChart                                               *
- * ***************************************************************************/
-
-
 dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     var _chart = null;
 
@@ -269,7 +264,3 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 }
-
-/******************************************************************************
- * EXTEND END: dc.bubbleRasterChart                                           *
- * ***************************************************************************/
