@@ -31,6 +31,11 @@ dc.rowChart = function (parent, chartGroup) {
     var _dyOffset = '0.35em';  // this helps center labels https://github.com/mbostock/d3/wiki/SVG-Shapes#svg_text
     var _titleLabelOffsetX = 2;
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    var _xAxisLabel;
+    var _yAxisLabel;
+/* --------------------------------------------------------------------------*/
+
     var _gap = 5;
 
     var _fixedBarHeight = false;
@@ -50,6 +55,24 @@ dc.rowChart = function (parent, chartGroup) {
 
     _chart.rowsCap = _chart.cap;
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.accent = accentRow;
+    _chart.unAccent = unAccentRow;
+
+    _chart.setYAxisLabel = function (yAxisLabel) {
+        _yAxisLabel = yAxisLabel;
+    }
+
+    _chart.xAxisLabel = function (_, padding) {
+        if (!arguments.length) {
+            return _xAxisLabel;
+        }
+        _xAxisLabel = _;
+
+        return _chart;
+    };
+/* --------------------------------------------------------------------------*/
+
     function calculateAxisScale () {
         if (!_x || _elasticX) {
             var extent = d3.extent(_rowData, _chart.cappedValueAccessor);
@@ -68,9 +91,43 @@ dc.rowChart = function (parent, chartGroup) {
         calculateAxisScale();
 
         if (axisG.empty()) {
-            axisG = _g.append('g').attr('class', 'axis');
+
+/* OVERRIDE -----------------------------------------------------------------*/
+            axisG = _g.append('g').attr('class', 'axis')
+                .attr('transform', 'translate(0, ' + _chart.effectiveHeight() + ')');
+/* --------------------------------------------------------------------------*/
+
         }
-        axisG.attr('transform', 'translate(0, ' + _chart.effectiveHeight() + ')');
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        var yLabel = axisG.selectAll('text.y-axis-label');
+
+        if (yLabel.empty()) {
+            yLabel = axisG.append('text')
+            .attr('class', 'y-axis-label')
+            .text(aliases[_yAxisLabel]);
+        }
+
+        yLabel
+            .attr('x', (_chart.effectiveHeight()/2))
+            .attr('y', -(_chart.margins().left - 12))
+            .style('transform', 'rotate(-90deg)')
+            .style('text-anchor', 'middle');
+
+
+        var xLabel = axisG.selectAll('text.x-axis-label');
+
+        if (xLabel.empty()) {
+            xLabel = axisG.append('text')
+            .attr('class', 'x-axis-label')
+            .text(_chart.xAxisLabel());
+        }
+
+        xLabel
+            .attr('x', (_chart.effectiveWidth()/2))
+            .attr('y', _chart.margins().bottom - 6)
+            .style('text-anchor', 'middle');
+/* --------------------------------------------------------------------------*/
 
         dc.transition(axisG, _chart.transitionDuration())
             .call(_xAxis);
@@ -415,6 +472,24 @@ dc.rowChart = function (parent, chartGroup) {
         _titleLabelOffsetX = titleLabelOffsetX;
         return _chart;
     };
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    function accentRow(label) {
+      _chart.selectAll('g.' + _rowCssClass).each(function (d) {
+        if (_chart.cappedKeyAccessor(d) == label) {
+          _chart.accentSelected(this);
+        }
+      });
+    }
+
+    function unAccentRow(label) {
+      _chart.selectAll('g.' + _rowCssClass).each(function (d) {
+        if (_chart.cappedKeyAccessor(d) == label) {
+          _chart.unAccentSelected(this);
+        }
+      });
+    }
+/* --------------------------------------------------------------------------*/
 
     function isSelectedRow (d) {
         return _chart.hasFilter(_chart.cappedKeyAccessor(d));
