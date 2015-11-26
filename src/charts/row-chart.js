@@ -5,8 +5,8 @@ dc.rowChart = function (parent, chartGroup) {
 
     var _g;
 
-    var _labelOffsetX = 10;
-    var _labelOffsetY = 15;
+    var _labelOffsetX = 8;
+    var _labelOffsetY = 16;
     var _hasLabelOffsetY = false;
     var _dyOffset = '0.35em';  // this helps center labels https://github.com/mbostock/d3/wiki/SVG-Shapes#svg_text
     var _titleLabelOffsetX = 2;
@@ -14,9 +14,12 @@ dc.rowChart = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
     var _xAxisLabel;
     var _yAxisLabel;
+    var _autoScroll = false;
+    var _minBarHeight= 16;
+    var _isBigBar = false;
 /* --------------------------------------------------------------------------*/
 
-    var _gap = 5;
+    var _gap = 4;
 
     var _fixedBarHeight = false;
     var _rowCssClass = 'row';
@@ -66,48 +69,55 @@ dc.rowChart = function (parent, chartGroup) {
     }
 
     function drawAxis () {
-        var axisG = _g.select('g.axis');
+/* OVERRIDE -----------------------------------------------------------------*/
+
+        var root = _chart.root();
+
+        var axisG = root.select('g.axis');
 
         calculateAxisScale();
 
         if (axisG.empty()) {
 
-/* OVERRIDE -----------------------------------------------------------------*/
-            axisG = _g.append('g').attr('class', 'axis')
-                .attr('transform', 'translate(0, ' + _chart.effectiveHeight() + ')');
-/* --------------------------------------------------------------------------*/
+            if (_chart.autoScroll()) {
 
+                axisG = root.append('div').attr('class', 'external-axis')
+                    .append('svg').attr('height', 32)
+                    .append('g').attr('class', 'axis')
+                    .attr('transform', 'translate(' + _chart.margins().left + ', 0)');
+
+            } else {
+                axisG = _g.append('g').attr('class', 'axis')
+                    .attr('transform', 'translate(0, ' + _chart.effectiveHeight() + ')');       
+            }
         }
 
+        if (_chart.autoScroll()) {
+            root.select('.external-axis svg').attr('width', _chart.width());
+        }
 
-/* OVERRIDE -----------------------------------------------------------------*/
-        var yLabel = axisG.selectAll('text.y-axis-label');
+        var yLabel = root.selectAll('.y-axis-label');
 
         if (yLabel.empty()) {
-            yLabel = axisG.append('text')
+            yLabel = root.append('div')
             .attr('class', 'y-axis-label')
             .text(aliases[_yAxisLabel]);
         }
 
         yLabel
-            .attr('x', (_chart.effectiveHeight()/2))
-            .attr('y', -(_chart.margins().left - 12))
-            .style('transform', 'rotate(-90deg)')
-            .style('text-anchor', 'middle');
+            .style('top', (_chart.effectiveHeight() / 2 + _chart.margins().top) +'px');
 
 
-        var xLabel = axisG.selectAll('text.x-axis-label');
+        var xLabel = root.selectAll('.x-axis-label');
 
         if (xLabel.empty()) {
-            xLabel = axisG.append('text')
+            xLabel = root.append('div')
             .attr('class', 'x-axis-label')
             .text(_chart.xAxisLabel());
         }
 
         xLabel
-            .attr('x', (_chart.effectiveWidth()/2))
-            .attr('y', _chart.margins().bottom - 6)
-            .style('text-anchor', 'middle');
+            .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px');
 /* --------------------------------------------------------------------------*/
 
         dc.transition(axisG, _chart.transitionDuration())
@@ -131,6 +141,12 @@ dc.rowChart = function (parent, chartGroup) {
     });
 
     _chart.label(_chart.cappedKeyAccessor);
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.measureValue = function (d) {
+        return _chart.cappedValueAccessor(d);
+    };
+/* ------------------------------------------------------------------------- */
 
     _chart.x = function (scale) {
         if (!arguments.length) {
@@ -196,19 +212,37 @@ dc.rowChart = function (parent, chartGroup) {
         var n = _rowData.length;
 
         var height;
+
         if (!_fixedBarHeight) {
             height = (_chart.effectiveHeight() - (n + 1) * _gap) / n;
         } else {
             height = _fixedBarHeight;
         }
+/* OVERRIDE -----------------------------------------------------------------*/
+        
+        _isBigBar = _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32);
 
+        if (_isBigBar) {
+            height = (_chart.effectiveHeight() - (n + 1) * (_gap * 2)) / n;
+        } 
+
+        if (_chart.autoScroll() && height < _minBarHeight) {
+            height = _minBarHeight;
+            _chart.root().select('.svg-wrapper')
+                .style('height', _chart.height() - 48 + 'px')
+                .style('overflow-y', 'auto')
+                .style('overflow-x', 'hidden');
+            _chart.svg()
+                .attr('height', n * (height + (_isBigBar ? _gap * 2 : _gap)) + 6);
+        }
+/* --------------------------------------------------------------------------*/
         // vertically align label in center unless they override the value via property setter
         if (!_hasLabelOffsetY) {
             _labelOffsetY = height / 2;
         }
 
         var rect = rows.attr('transform', function (d, i) {
-                return 'translate(0,' + ((i + 1) * _gap + i * height) + ')';
+                return 'translate(0,' + ((i + 1) * (_isBigBar ? _gap * 2 : _gap) + i * height) + ')';
             }).select('rect')
             .attr('height', height)
             .attr('fill', _chart.getColor)
@@ -242,6 +276,14 @@ dc.rowChart = function (parent, chartGroup) {
             rowEnter.append('text')
                 .on('click', onClick);
         }
+/* OVERRIDE -----------------------------------------------------------------*/
+        if (_chart.measureLabelsOn()) {
+            rowEnter.append('text')
+                .attr('class', 'value-measure')
+                .on('click', onClick);
+        }
+/* --------------------------------------------------------------------------*/
+
         if (_chart.renderTitleLabel()) {
             rowEnter.append('text')
                 .attr('class', _titleRowCssClass)
@@ -250,21 +292,63 @@ dc.rowChart = function (parent, chartGroup) {
     }
 
     function updateLabels (rows) {
+/* OVERRIDE -----------------------------------------------------------------*/
+        rows.selectAll('text')
+            .style('font-size', _isBigBar ? '14px': '12px');
+/* --------------------------------------------------------------------------*/
+
         if (_chart.renderLabel()) {
             var lab = rows.select('text')
                 .attr('x', _labelOffsetX)
                 .attr('y', _labelOffsetY)
-                .attr('dy', _dyOffset)
+/* OVERRIDE -----------------------------------------------------------------*/
+                .attr('dy', isStackLabel() ?  '-0.25em' : _dyOffset)
+/* --------------------------------------------------------------------------*/
                 .on('click', onClick)
                 .attr('class', function (d, i) {
                     return _rowCssClass + ' _' + i;
                 })
+/* OVERRIDE -----------------------------------------------------------------*/
+                .classed('value-dim', true)
+/* --------------------------------------------------------------------------*/
                 .text(function (d) {
                     return _chart.label()(d);
                 });
             dc.transition(lab, _chart.transitionDuration())
                 .attr('transform', translateX);
         }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        if (_chart.measureLabelsOn()) {
+            var measureLab = rows.select('.value-measure')
+                .attr('y', _labelOffsetY)
+                .attr('dy', isStackLabel() ?  '1.1em' : _dyOffset)
+                .on('click', onClick)
+                .attr('text-anchor', isStackLabel() ? 'start':'end')
+                .text(function(d){
+                    return _chart.measureValue(d);
+                })
+                .attr('x', function (d, i) {
+                    if (isStackLabel()) {
+                        return _labelOffsetX + 1;
+                    }
+                    
+                    var thisLabel = d3.select(this);
+
+                    var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
+                    var measureWidth = thisLabel.node().getBBox().width;
+                    var dimWidth = d3.select('text.value-dim._' + i).node().getBBox().width;
+                    var minIdealWidth = measureWidth + dimWidth + 16;
+
+                    thisLabel.attr('text-anchor', isStackLabel() || width < minIdealWidth ? 'start' : 'end');
+
+                    return width > minIdealWidth ? width - 4 : dimWidth + 12;
+                });
+            dc.transition(measureLab, _chart.transitionDuration())
+                .attr('transform', translateX);
+        }
+/* --------------------------------------------------------------------------*/
+
         if (_chart.renderTitleLabel()) {
             var titlelab = rows.select('.' + _titleRowCssClass)
                     .attr('x', _chart.effectiveWidth() - _titleLabelOffsetX)
@@ -293,6 +377,12 @@ dc.rowChart = function (parent, chartGroup) {
     function onClick (d) {
         _chart.onClick(d);
     }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    function isStackLabel() {
+        return _chart.measureLabelsOn() && _labelOffsetY > 16;
+    }
+/* --------------------------------------------------------------------------*/
 
     function translateX (d) {
         var x = _x(_chart.cappedValueAccessor(d)),
@@ -333,7 +423,15 @@ dc.rowChart = function (parent, chartGroup) {
         _elasticX = elasticX;
         return _chart;
     };
-
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.autoScroll = function (autoScroll) {
+        if (!arguments.length) {
+            return _autoScroll;
+        }
+        _autoScroll = autoScroll;
+        return _chart;
+    };
+/* --------------------------------------------------------------------------*/
     _chart.labelOffsetX = function (labelOffsetX) {
         if (!arguments.length) {
             return _labelOffsetX;
