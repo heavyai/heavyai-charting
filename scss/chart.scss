@@ -205,7 +205,7 @@
                     display: none;
                 }
                 .legend-input {
-                    display: inline;
+                    display: inline-block;
                 }
             }
         }
@@ -238,18 +238,24 @@
     }
 
     .legend-input {
-        height: 16px;
-        width: 32px;
-        border: 1px solid $gray3;
-        pointer-events: auto;
-        text-align: center;
         display: none;
+        pointer-events: auto;
+        
+        input {
+            height: 16px;
+            width: 32px;
+            border: 1px solid $gray3;
+            text-align: center;
 
-        &:focus {
-            height: 24px;
-            width: 48px;
-            font-size: 12px;
+            &:focus {
+                height: 24px;
+                width: 48px;
+                font-size: 12px;
+                margin: 0 12px 12px 12px;
+            }
+
         }
+       
     }
 
     .legend-title {
