@@ -18,21 +18,32 @@ function CreateCharts(crossFilter) {
  
 /*
  *  This will grab all columns from the table    
+ *
+ *  A basic operation is getting the filtered count and total count
+ *  of crossFilter.  This performs that operation.  It is built into DC.
+ * 
+ *-------------------BASIC COUNT ON CROSSFILTER---------------------------*/
+
+      var countDim = crossFilter;
+      var countGroup = crossFilter.groupAll();
+      dc.dataCount(".data-count")
+        .dimension(countDim)
+        .group(countGroup);
+
+/*------------------------CHART 1 EXAMPLE------------------------------*/
+
+/*
  *  Once you have the column name you want to pass into crossfilter
  *  create a new dimension variable like this:
  */
 
-/*------------------------CHART 1 EXAMPLE------------------------------*/
-
-
+    var rowChartDimension = crossFilter.dimension("dest_state");   
 /* 
  * use crossFilter Methods here:
  * https://github.com/square/crossfilter/wiki/API-Reference#dimension
  * https://github.com/square/crossfilter/wiki/API-Reference#group-map-reduce
  * https://github.com/square/crossfilter/wiki/API-Reference#group_reduceCount
  */
-
-    var rowChartDimension = crossFilter.dimension("dest_state");   
     var rowChartGroup = rowChartDimension.group().reduceCount();
 
 /*
@@ -91,7 +102,7 @@ function CreateCharts(crossFilter) {
                       .width(w/2)
                       .renderHorizontalGridLines(true)
                       .renderVerticalGridLines(true)
-                      .cap(30)
+                      .cap(15)
                       .dimension(scatterPlotDimension)
                       .group(scatterPlotGroup)
                       .keyAccessor(function (d) {
@@ -103,12 +114,20 @@ function CreateCharts(crossFilter) {
                       .radiusValueAccessor(function (d) {
                           return d.size;
                       })
-                      .maxBubbleRelativeSize(0.05)
+                      .colorAccessor(function(d) {
+                          return d.key0;
+                      })
+                      .maxBubbleRelativeSize(0.04)
                       .transitionDuration(500)
-                      .xAxisLabel('Arrival Delay')
                       .yAxisLabel('Departure Delay')
-                      .ordinalColors(colorScheme)
+                      .xAxisLabel('Arrival Delay')
+                      .elasticX(true)
+                      .elasticY(true)
+                      .xAxisPadding('15%')
+                      .yAxisPadding('15%')
+                      .ordinalColors(colorScheme);
                       
+                      debugger;
 
                       var setScales = function(chart, type){
                         chart.on(type, function(chart) {
@@ -170,7 +189,9 @@ function CreateCharts(crossFilter) {
       .xAxis().orient('top');
 
     dc.renderAll()
-    
+
+
+
 /*--------------------------RESIZE EVENT------------------------------*/
   
     window.addEventListener("resize", debounce(reSizeAll, 100));

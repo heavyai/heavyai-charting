@@ -7,8 +7,19 @@
     <link rel="stylesheet" type="text/css" href="css/dc.css" />
     <style>
       .title {
-          font-weight: bold;
-          text-align:center;
+        font-weight: bold;
+        text-align:center;
+      }
+      .mapd{
+        position: relative;
+        top: 2px;
+      }
+      .data-count{
+        padding-right:20px;
+      }
+      .filter-count{
+        font-weight: bold;
+        color:  #45B1E8;
       }
  
     </style>
@@ -19,13 +30,18 @@
       <div class="container-fluid">
         <div class="navbar-header" style="margin-top:10px">
             <img alt="Brand" src="images/favicon.png" height="30" width="30">
-            <span>MapD Demo</span>
+            <span class="mapd">MapD Demo</span>
+        </div>
+        <div class="navbar-text navbar-right">
+        <div class="data-count">
+          <span class="total"><span><span class="filter-count"></span></span>
+          <span>of <span class="total-count"></span> flights</span>
+        </div>
         </div>
       </div>
     </nav>
 
     <div class="main-container">
-
       <div class="col-xs-6">
         <div class="title"> Total Number of Flights by State </div>
         <div class="chart1-example"></div>
