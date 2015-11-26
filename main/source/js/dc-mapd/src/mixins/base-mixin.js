@@ -19,6 +19,11 @@ dc.baseMixin = function (_chart) {
 /* OVERRIDE ---------------------------------------------------------------- */
     var _popup;
     var _redrawBrushFlag = false;
+    var _isTargeting = false;
+    var _colorByExpr = null;
+    var _legendLock = null;
+    var _legendUnlock = null;
+    var _legendInputChange = null;
 /* ------------------------------------------------------------------------- */
 
     var _minWidth = 200;
@@ -421,6 +426,22 @@ dc.baseMixin = function (_chart) {
         _measureLabelsOn = val;
         return _chart;
     };
+
+    _chart.isTargeting = function (isTargeting) {
+        if (!arguments.length) {
+            return _isTargeting;
+        }
+        _isTargeting = isTargeting;
+        return _chart;
+    };
+
+    _chart.colorByExpr = function (colorByExpr) {
+        if (!arguments.length) {
+            return _colorByExpr;
+        }
+        _colorByExpr = colorByExpr;
+        return _chart;
+    };
 /* ------------------------------------------------------------------------- */
 
 
@@ -814,6 +835,62 @@ dc.baseMixin = function (_chart) {
         // do nothing in base, should be overridden by sub-function
         return [];
     };
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.legendablesContinuous = function () {
+
+        var legends = [];
+        var colorDomain = _chart.colors().domain();
+        var colorDomainSize = colorDomain[1] - colorDomain[0];
+        var colorRange = _chart.colors().range();
+        var numColors = colorRange.length;
+        var commafy = d3.format(',');
+
+        for (var c = 0; c < numColors; c++) {
+          var startRange = (c/numColors)*colorDomainSize + colorDomain[0];   
+
+            if (_isTargeting) {
+                startRange = '%' + (parseFloat(startRange) * 100.0).toFixed(2); 
+            }
+            else if (_colorByExpr === 'count(*)') {
+                startRange = parseInt(startRange);
+            } 
+            else {
+                startRange = parseFloat(startRange).toFixed(2); 
+                startRange = (startRange >= 1000 ? Math.round(startRange) : startRange);
+            }
+
+            legends.push({color: colorRange[c], value: isNaN(startRange) ? startRange : commafy(startRange) });
+        }
+
+        return legends;
+    }
+
+    _chart.legendLock = function(_) {
+      if (!arguments.length) {
+        return _legendLock;
+      }
+      _legendLock = _;
+      return _chart;
+    }
+
+    _chart.legendUnlock = function(_) {
+      if (!arguments.length) {
+        return _legendUnlock;
+      }
+      _legendUnlock = _;
+      return _chart;
+    }
+
+    _chart.legendInputChange = function(_) {
+      if (!arguments.length) {
+        return _legendInputChange;
+      }
+      _legendInputChange = _;
+      return _chart;
+    }
+
+/* ------------------------------------------------------------------------- */
 
     _chart.legendHighlight = function () {
         // do nothing in base, should be overridden by sub-function

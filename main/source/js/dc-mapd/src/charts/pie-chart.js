@@ -417,7 +417,7 @@ dc.pieChart = function (parent, chartGroup) {
         var tan = Math.tan(Math.abs(refAngle - useAngle));
         var opposite = tan * adjacent;
         var labelWidth = (refAngle >= d.startAngle && refAngle < d.endAngle ? Math.abs(centroid[0]) + opposite : Math.abs(centroid[0]) - opposite) * 2;
-        var maxLabelWidth = _radius - _chart.innerRadius();
+        var maxLabelWidth = _radius - _chart.innerRadius() - 24;
 
         return labelWidth > maxLabelWidth || labelWidth < 0 ? maxLabelWidth : labelWidth;
     }
