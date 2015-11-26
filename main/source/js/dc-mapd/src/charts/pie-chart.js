@@ -177,7 +177,7 @@ dc.pieChart = function (parent, chartGroup) {
                 if ( showLabel && !sliceHasNoData(data)) {
                     
                     var availableLabelWidth = getAvailableLabelWidth(d);
-                    var charPixelWidth = 8;
+                    var charPixelWidth = pieIsBig() ? 10 : 8;
 
                     label.select('.value-dim')
                         .html(function(){
