@@ -70,8 +70,9 @@ dc.legendContinuous = function () {
             .text(function(d) { return d ? d.value : 0;})
 
         legendGroup.selectAll('.legend-item:first-child .legend-label, .legend-item:last-child .legend-label')
-            .append('input')
+            .append('div')
             .attr('class', 'legend-input')
+            .append('input')
             .attr('value', function(d){ return d ? d.value : 0;})
             .on('focus', function(){ this.select();})
             .on('change', onChange);
@@ -179,8 +180,8 @@ dc.legendContinuous = function () {
     }
 
     function onChange () {
-        var startVal = _wrapper.select('.legend-item:first-child .legend-label input')[0][0].value;
-        var endVal = _wrapper.select('.legend-item:last-child .legend-label input')[0][0].value;
+        var startVal = _wrapper.select('.legend-item:first-child .legend-input input')[0][0].value;
+        var endVal = _wrapper.select('.legend-item:last-child .legend-input input')[0][0].value;
 
         _parent.legendInputChange()([startVal,endVal], _parent.colors().range().length);
     
