@@ -1,0 +1,157 @@
+@import 'variables';
+
+.mapboxgl-canvas-container {
+    position: absolute;
+    top: 0;
+}
+
+.panel-default {
+    overflow: visible;    
+}
+
+#data-count {
+    height: auto !important;
+}
+
+.dc-chart {
+    position: relative;
+    font-family: "Roboto";
+
+    .pie-slice {
+        path {  
+            stroke: white;
+            stroke-width: 1px;
+
+        }
+
+        &.stroke-thick {
+            path {
+                stroke-width: 2px;
+            }
+        }
+    }
+
+    .pie-label {
+        fill: $charcoal;
+        pointer-events: none;
+        text {
+            text-anchor: middle;
+        }
+    }
+
+    .value-dim {
+        font-weight: bold;
+    }
+
+    .row {
+        text{
+            fill: $charcoal !important;
+        }
+    }
+
+    g.deselected path {
+        fill: $gray3;
+
+        &:hover {
+            fill: $gray2;
+        }
+    }
+
+    div.x-axis-label, div.y-axis-label {
+        position: absolute;
+        font-size: 13px !important;
+        color: $gray4;
+        font-weight: bold;
+    }
+
+    div.y-axis-label {
+        transform-origin: 0 0;
+        transform: translateY(-100%) rotate(90deg);
+        left: 24px;
+    }
+
+    div.x-axis-label {
+        transform: translateX(-50%);
+        bottom: 4px;
+    }
+
+    .external-axis {
+        position: absolute;
+        width: 100%;
+        height: 48px;
+        bottom: 0;
+
+        .axis {
+
+            path, line {
+                stroke: $gray3 !important;
+            }
+
+            text {
+                fill: $gray4 !important;
+            }
+        }
+    }
+
+    .svg-wrapper {
+    }
+}
+
+
+.chart-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+
+    &.js-showPopup {
+        opacity: 1;
+        pointer-events: default;
+
+        .chart-popup-box {
+            opacity: 1;
+            top: -24px;
+        }
+    }
+
+    .chart-popup-box {
+        min-height: 32px;
+        min-width: 120px;
+        background: white;
+        position: absolute;
+        left: 0;
+        border: 1px solid $gray2;
+        border-radius: 4px;
+        transform: translate(0, -100%);
+        opacity: 0;
+        top: 0;
+        transition: top .35s, opacity .25s;
+        display: flex;
+
+        &.align-right {
+            transform: translate(-100%, -100%);
+        }
+    }
+
+    .popup-legend {
+        width: 12px;
+        height: 12px;
+        float: left;
+        margin: 8px;
+        flex-shrink: 0;
+    }
+
+    .popup-value {
+        font-size: 13px;
+        line-height: 1.2;
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 6px 8px 4px 0;
+    }
+
+    .popup-value-dim {
+        font-weight: bold;
+    }
+}
+
