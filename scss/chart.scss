@@ -1,5 +1,10 @@
 @import 'variables';
 
+.mapboxgl-canvas-container {
+    position: absolute;
+    top: 0;
+}
+
 .panel-default {
     overflow: visible;    
 }
