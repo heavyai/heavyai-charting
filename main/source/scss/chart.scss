@@ -17,6 +17,15 @@
     position: relative;
     font-family: "Roboto";
 
+    .geocoder-input{
+        top: 5px;
+    }
+
+    .mapboxgl-canvas-container {
+        position: relative;
+        top: auto;
+    }
+
     .pie-slice {
         path {  
             stroke: white;
