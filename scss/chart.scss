@@ -13,6 +13,10 @@
     height: auto !important;
 }
 
+.anim-button-play, .anim-button-stop {
+    z-index: 2;
+}
+
 .dc-chart {
     position: relative;
     font-family: "Roboto";
