@@ -85,29 +85,7 @@ module.exports = function (grunt) {
         watch: {
             jsdoc2md: {
                 files: ['<%= conf.src %>/**/*.js'],
-                tasks: ['build', 'jsdoc2md']
-            },
-            scripts: {
-                files: ['<%= conf.src %>/**/*.js', '<%= conf.web %>/stock.js'],
-                tasks: ['docs']
-            },
-            jasmineRunner: {
-                files: ['<%= conf.spec %>/**/*.js'],
-                tasks: ['jasmine:specs:build']
-            },
-            tests: {
-                files: ['<%= conf.src %>/**/*.js', '<%= conf.spec %>/**/*.js'],
-                tasks: ['test']
-            },
-            reload: {
-                files: ['<%= conf.pkg.npmName %>.js',
-                    '<%= conf.pkg.npmName %>css',
-                    '<%= conf.web %>/js/<%= conf.pkg.npmName %>.js',
-                    '<%= conf.web %>/css/<%= conf.pkg.npmName %>.css',
-                    '<%= conf.pkg.npmName %>.min.js'],
-                options: {
-                    livereload: true
-                }
+                tasks: ['concat', 'uglify']
             }
         },
         connect: {
