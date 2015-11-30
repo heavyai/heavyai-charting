@@ -127,8 +127,6 @@ function CreateCharts(crossFilter) {
                       .yAxisPadding('15%')
                       .ordinalColors(colorScheme);
                       
-                      debugger;
-
                       var setScales = function(chart, type){
                         chart.on(type, function(chart) {
                           chart.x(d3.scale.linear().domain(d3.extent(chart.data(), chart.keyAccessor())));
