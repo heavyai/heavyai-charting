@@ -13,6 +13,7 @@
       disconnect: disconnect,
       query: query,
       queryAsync: queryAsync,
+      render: render,
       getSessionId: function() {return sessionId;},
       getHost: function() {return host},
       getPort: function() {return port},
@@ -34,6 +35,7 @@
       importTableStatus: importTableStatus,
       createLink: createLink,
       getLinkView: getLinkView,
+      getRowsForPixels: getRowsForPixels,
     }
 
     var host = null;
@@ -46,6 +48,7 @@
     var client = null;
     var sessionId = null;
     var datumEnum = {};
+    var nonce = 0;
 
     function setPlatform(newPlatform) {
       //dummy function for now
@@ -160,7 +163,7 @@
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.get_frontend_views(sessionId, viewName, viewState, imageHash);
+          var result = client.get_frontend_views(sessionId, viewName, viewState, imageHash);
         }
       }
     }
@@ -194,6 +197,7 @@
     }
 
     function detectColumnTypes(fileName, copyParams, callback) {
+      var result = null;
       copyParams.delimiter = copyParams.delimiter || "";
       try {
         result = client.detect_column_types(sessionId, fileName, copyParams, callback);
@@ -208,17 +212,33 @@
       return result;
     }
 
-
-    function queryAsync(query, columnarResults, eliminateNullRows, callbacks) {
-      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
+    function render(query, renderSpec) {
+      var result = null;
       try {
-        client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,eliminateNullRows,callbacks));
+        result = client.render(sessionId, query, renderSpec, {}, {});
+
+      }
+      catch (err) {
+        console.log(err);
+      }
+    }
+
+    function queryAsync(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {
+      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
+      var curNonce = (nonce++).toString();
+      try {
+        if (renderSpec !== undefined) {
+          client.render(sessionId, query + ";", renderSpec, {}, {}, curNonce, processResults.bind(this, true, eliminateNullRows, callbacks));
+        }
+        else {
+          client.sql_execute(sessionId,query + ";", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, callbacks));
+        }
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,callbacks));
+          client.sql_execute(sessionId,query + ";", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, callbacks));
         }
         else if (err.name == "TMapDException") {
           swal({title: "Error!",
@@ -237,19 +257,26 @@
           throw(err);
         }
       }
+      return curNonce;
     }
 
-    function query(query,columnarResults,eliminateNullRows) {
+    function query(query,columnarResults,eliminateNullRows, renderSpec) {
       columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
       var result = null;
+      var curNonce = (nonce++).toString();
       try {
-        result = client.sql_execute(sessionId,query + ";",columnarResults);
+        if (renderSpec !== undefined) {
+          result = client.render(sessionId, query + ";", renderSpec, {}, {}, curNonce);
+        }
+        else {
+          result = client.sql_execute(sessionId,query + ";",columnarResults, curNonce);
+        }
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.sql_execute(sessionId,query + ";",columnarResults);
+          result = client.sql_execute(sessionId,query + ";",columnarResults, curNonce);
         }
         else if (err.name == "TMapDException") {
           swal({title: "Error!",
@@ -267,7 +294,10 @@
           throw(err);
         }
       }
-      return processResults(eliminateNullRows, undefined, result); // undefined is callbacks slot
+
+      if (renderSpec !== undefined)
+        return result;
+      return processResults(false, eliminateNullRows, undefined, result); // undefined is callbacks slot
     }
 
     function processColumnarResults(data,eliminateNullRows) {
@@ -471,21 +501,32 @@
       return formattedResult;
     }
 
-    function processResults(eliminateNullRows,callbacks, result) {
+    function processResults(isImage, eliminateNullRows,callbacks, result) {
+
       var hasCallback = typeof callbacks !== 'undefined';
-      result = result.row_set;
-      var formattedResult = null;
-      if (result.is_columnar) {
-        formattedResult = processColumnarResults(result,eliminateNullRows);
+      if (isImage) {
+        if (hasCallback) {
+          callbacks.pop()(result,callbacks);
+        }
+        else {
+          return result;
+        }
       }
       else {
-        formattedResult = processRowResults(result,eliminateNullRows);
-      }
-      if (hasCallback) {
-        callbacks.pop()(formattedResult.results,callbacks);
-      }
-      else {
-        return formattedResult.results;
+        result = result.row_set;
+        var formattedResult = null;
+        if (result.is_columnar) {
+          formattedResult = processColumnarResults(result,eliminateNullRows);
+        }
+        else {
+          formattedResult = processRowResults(result,eliminateNullRows);
+        }
+        if (hasCallback) {
+          callbacks.pop()(formattedResult.results,callbacks);
+        }
+        else {
+          return formattedResult.results;
+        }
       }
     }
 
@@ -590,6 +631,42 @@
       }
       return import_status;
     }
+
+    function getRowsForPixels(pixels, table_name, col_names, callbacks) {
+      var widget_id = 1;  // INT
+      var column_format = true; //BOOL
+      callbacks = callbacks || null;
+      var curNonce = (nonce++).toString();
+      try {
+        if (!callbacks) 
+            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;
+        client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, processPixelResults.bind(this, callbacks));
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          if (!callbacks) 
+            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;
+          client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, processPixelResults.bind(this, callbacks));
+        }
+      }
+      return curNonce;
+    }
+
+    function processPixelResults(callbacks, results) {
+      var results = results.pixel_rows;
+      var numPixels = results.length;
+      var resultsMap = {};
+      for (var p = 0; p < numPixels; p++) {
+        results[p].row_set = processResults(false, false, undefined, results[p]);
+      }
+      if (!callbacks) 
+        return results;
+      callbacks.pop()(results,callbacks);
+    }
+
+
 
     invertDatumTypes();
     return mapdcon;

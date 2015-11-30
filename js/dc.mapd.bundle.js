@@ -982,7 +982,9 @@ dc.baseMixin = function (_chart) {
     };
 
     _chart.resetSvg = function () {
-        _chart.select('svg').remove();
+/* OVERRIDE ---------------------------------------------------------------- */
+        _chart.select('.svg-wrapper').remove();
+/* ------------------------------------------------------------------------- */
         return generateSvg();
     };
 
@@ -995,12 +997,21 @@ dc.baseMixin = function (_chart) {
     }
 
     function generateSvg () {
-        _svg = _chart.root().append('svg');
+/* OVERRIDE ---------------------------------------------------------------- */
+        _svg = _chart.root().append('div').attr('class', 'svg-wrapper').append('svg');
+/* ------------------------------------------------------------------------- */
         sizeSvg();
         return _svg;
     }
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    function sizeRoot () {
+        if (_root) {
+            _root
+                .style('height', _chart.height()+'px');
+        }
+    }
+
     _chart.popup = function (popupElement) {
         if (!arguments.length) {
             return _popup;
@@ -1110,6 +1121,8 @@ dc.baseMixin = function (_chart) {
         if (dc._refreshDisabled)
             return;
         _chart.dataCache = data !== undefined ? data : null;
+
+        sizeRoot();
 /* ------------------------------------------------------------------------- */
 
         _listeners.preRender(_chart);
@@ -1189,7 +1202,6 @@ dc.baseMixin = function (_chart) {
             return;
         _chart.dataCache = data !== undefined ? data : null;
 /* ------------------------------------------------------------------------- */
-
         sizeSvg();
         _listeners.preRedraw(_chart);
 
@@ -1669,43 +1681,639 @@ dc.colorMixin = function (_chart) {
 /******************************************************************************
  * EXTEND: dc.mapMixin                                                        *
  * ***************************************************************************/
- 
-dc.mapMixin = function (_chart) {
 
-    function zoomHandler() {
-      _chart._invokeZoomedListener();
+dc.mapMixin = function (_chart, chartId) {
+
+    var _map = null;
+    var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
+    var _lastWidth = null;
+    var _lastHeight = null;
+    //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
+
+    var id = chartId;
+    var _mapId = "widget" + id; // TODO: make less brittle (hardwired now to having two charts before point map
+
+    // get the widget's div and it's sections
+    var $widgetDiv   = $('#' + _mapId);
+    var $panelHeader = $($widgetDiv.children()[0]);
+    var $panelBody   = $($widgetDiv.children()[1]);
+
+    // calculate the height of the map
+    var height = $widgetDiv.height() - $panelHeader.height();
+
+    // set the id and height of the panel body
+    $panelBody.attr('id', _mapId + '-body');
+    $panelBody.height(height);
+
+    _chart._map = null;
+    var _mapInitted = false;
+    var _xDim = null;
+    var _yDim = null;
+    var _xDimName = null;
+    var _yDimName = null;    
+    var _lastMapMoveType = null;
+    var _lastMapUpdateTime = 0;
+    var _isFirstMoveEvent = true;
+    var _mapUpdateInterval = 100; //default
+
+
+    _chart.xDim = function(xDim) {
+        if (!arguments.length)
+            return _xDim;
+        _xDim = xDim;
+        if(_xDim){
+          _xDimName = _xDim.value()[0];
+        }
+        return _chart;
     }
 
-    var _zoom = d3.behavior.zoom().on('zoom', zoomHandler);
-    var _mouseZoomable = true;
-    var _hasBeenMouseZoomable = true;
-
-    function configureMouseZoom () {
-        if (_mouseZoomable) {
-            _chart._enableMouseZoom();
+    _chart.yDim = function(yDim) {
+        if (!arguments.length)
+            return _yDim;
+        _yDim = yDim;
+        if(_yDim){
+          _yDimName = _yDim.value()[0];
         }
-        else if (_hasBeenMouseZoomable) {
-            _chart._disableMouseZoom();
+        return _chart;
+    }
+
+    _chart.mapUpdateInterval = function (mapUpdateInterval) {
+        if (!arguments.length)
+            return _mapUpdateInterval;
+        _mapUpdateInterval = mapUpdateInterval;
+        return _chart;
+    }
+
+    function conv4326To900913 (coord) {
+      var transCoord = [0.0,0.0];
+      transCoord[0] = coord[0] * 111319.49077777777778;
+      transCoord[1] = Math.log(Math.tan((90.0 + coord[1]) * 0.00872664625997)) * 6378136.99911215736947;
+      return transCoord;
+    }
+
+    function onLoad(e){
+      dc.enableRefresh();
+      _chart.render();
+      $('body').trigger('loadGrid');
+    }
+    function onMapMove(e) {
+        if (e === undefined)
+            return;
+        if (_xDim !== null && _yDim != null) {
+            if (e.type == 'moveend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
+                return;
+            _lastMapMoveType = e.type;
+            var curTime = (new Date).getTime();
+            var bounds = _chart._map.getBounds();
+            var minCoord = conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+            var maxCoord = conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+            if (e.type === 'move') {
+                if (_isFirstMoveEvent) {
+                    _lastMapUpdateTime = curTime;
+                    _isFirstMoveEvent = false;
+                }
+                if (curTime - _lastMapUpdateTime < _mapUpdateInterval) {
+                    return; 
+                }
+            }
+            else if (e.type === 'moveend') {
+                _isFirstMoveEvent = true;
+            }
+            _lastMapUpdateTime = curTime;
+            _xDim.filter([minCoord[0],maxCoord[0]]);
+            _yDim.filter([minCoord[1],maxCoord[1]]);
+            dc.redrawAll();
         }
     }
 
-    _chart._enableMouseZoom = function () {
-        _hasBeenMouseZoomable = true;
-        _zoom.x(_chart.x())
-            .scaleExtent(_zoomScale)
-            .size([_chart.width(), _chart.height()])
-            .duration(_chart.transitionDuration());
-        _chart.root().call(_zoom);
-    };
+    function initMap() {
+        mapboxgl.accessToken = _mapboxAccessToken;
+        _chart._map = new mapboxgl.Map({
+          container: _mapId + '-body', // container id
+          style: 'mapbox://styles/mapbox/light-v8',
+          interactive: true,
+          center: [-74.50, 40], // starting position
+          zoom: 4 // starting zoom
+        });
+        _chart._map.dragRotate.disable();
 
-    configureMouseZoom();
+
+        initGeocoder();
+
+        _chart._map.on('load', onLoad);
+        _chart._map.on('move', onMapMove);
+        _chart._map.on('moveend', onMapMove);
+         
+         function showPopUp(e) {
+            var height = $(e.target._container).height()
+            var y = Math.round(height - e.point.y);
+            var x = Math.round(e.point.x);
+            var tpixel = new TPixel({x:x, y:y});
+            var widgetId = Number(_mapId.match(/\d+/g))
+
+            var columns = chartWidgets[widgetId].chartObject.projectArray.slice();
+
+            if(!columns.length){
+              return;
+            }
+
+            columns.push(_xDimName);
+            columns.push(_yDimName);
+            
+            con.getRowsForPixels([tpixel], _chart.tableName(), columns, [function(result){
+
+              if(result[0].row_set.length){
+                if(!$('.popup-highlight').length){
+
+                _chart.x().range([0, _chart.width() -1])
+                _chart.y().range([0, _chart.height() -1])
+
+                var height = $('#' + _mapId).find('.mapboxgl-map').height()
+
+                var context={
+                  googX: (_chart.x()(result[0].row_set[0][_xDimName]) - 14) + 'px',
+                  googY: (height - _chart.y()(result[0].row_set[0][_yDimName]) - 14) + 'px',
+                  data: result[0].row_set[0],
+                  clickX: result[0].pixel.x + 'px',
+                  clickY: (height - result[0].pixel.y) + 'px',
+                };
+
+                Handlebars.registerHelper("formatPopupText", function(obj) {
+                  var result = "<div>";
+                  _.each(obj, function(value, key){
+                    if(key !== _yDimName && key !== _xDimName){
+                        result += '<div class="popup-text-wrapper"><span><strong>' + key + '</strong>: ' + value +'</span></div>'
+                    }
+                  })
+
+                result += "</div>"
+                return result;
+                });
+
+                var theCompiledHtml = MyApp.templates.pointMapPopup(context);
+                $('#' + _mapId).find('.mapboxgl-map').append(theCompiledHtml)
+                
+                }
+              }
+            }]);
+
+        }
+
+        var debouncePopUp = _.debounce(function(e){
+            showPopUp(e)
+        }, 250)
+
+        _chart._map.on('zoom click', function(e){
+          debouncePopUp(e);          
+        })
+
+        _chart._map.on('mousemove', function(e){
+          
+          debouncePopUp(e);
+
+          if($('.popup-hide-div').length){
+
+            $('.popup-container').addClass('popup-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
+               $(this).remove();
+              });
+            $('.point-highlight-add').addClass('point-highlight-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
+               $(this).parent().remove();
+            });
+          }
+        })
+        _mapInitted = true;
+    }
+
+    function initGeocoder() {
+      _chart.geocoder = new Geocoder();
+      _chart.geocoder.init(_chart._map);
+      _chart.geocoderInput = $('<input class="geocoder-input" type="text" placeholder="Zoom to"></input>')
+        .appendTo($('#' + _mapId  + '-body'));
+      _chart.geocoderInput.css({
+          top: '5px',
+          right: '5px'
+        });
+
+      _chart.geocoderInput.dblclick(function() {
+        return false;
+      });
+
+      _chart.geocoderInput.keyup(function(e) {
+        if(e.keyCode === 13) {
+          _chart.geocoder.geocode(_chart.geocoderInput.val());
+        }
+      });
+    }
+
+    _chart.on('preRender', function(chart) {
+        
+        $('.mapboxgl-ctrl-bottom-right').remove();
+
+        var width = chart.width();
+        var height = chart.height();
+        if (!_mapInitted)
+            initMap();
+        if (width !== _lastWidth || height !== _lastHeight) {
+            $("#" + _mapId + " canvas").width(width).height(height);
+            _lastWidth = width;
+            _lastHeight = height;
+            _chart._map.resize();
+            onMapMove(); //to reset filter
+        }
+    });
+    initMap();
 
     return _chart;
-};
+}
 
 /******************************************************************************
  * END EXTEND: dc.mapMixin                                                    *
  * ***************************************************************************/
+
+/******************************************************************************
+ * EXTEND: dc.rasterMixin                                                     *
+ * ***************************************************************************/
+
+dc.rasterMixin = function(_chart) {
+    _chart._vegaSpec = {};
+    var _sampling = false;
+    var _tableName = null;
+
+     _chart._resetVegaSpec = function() {
+     _chart._vegaSpec.width = _chart.width();
+     _chart._vegaSpec.height = _chart.height();
+
+     _chart._vegaSpec.data = [
+       {
+           "name": "table",
+           "sql": "select x, y from tweets;"
+       }
+     ];
+     _chart._vegaSpec.scales = [];
+     _chart._vegaSpec.marks = [];
+    }
+
+    _chart.tableName = function(tableName) {
+        if (!arguments.length)
+            return _tableName;
+        _tableName = tableName;
+        return _chart;
+    }
+
+    /* _determineScaleType because there is no way to determine the scale type
+     * in d3 except for looking to see what member methods exist for it
+     */
+
+    _chart.sampling = function(setting) { // setting should be true or false
+        if (!arguments.length)
+            return _sampling;
+    
+        if (setting && !_sampling) // if wasn't sampling
+            dc._sampledCount++;
+        else if (!setting && _sampling)
+            dc._sampledCount--;
+        _sampling = setting;
+        if (_sampling == false)
+            _chart.dimension().samplingRatio(null); // unset sampling
+        return _chart;
+    }
+
+    _chart.setSample = function() {
+        if (_sampling) {
+            if (dc._lastFilteredSize == null)
+                _chart.dimension().samplingRatio(null);
+            else {
+                _chart.dimension().samplingRatio(Math.min(_chart.cap()/dc._lastFilteredSize, 1.0))
+            }
+        }
+    }
+    _chart._determineScaleType = function(scale) {
+        var scaleType = null;
+        if (scale.rangeBand !== undefined)
+            return "ordinal";
+        if (scale.exponent !== undefined)
+            return "power";
+        if (scale.base !== undefined)
+            return "log";
+        if (scale.quantiles !== undefined)
+            return "quantiles";
+        if (scale.interpolate !== undefined)
+            return "linear";
+        return "quantize";
+    }
+
+    _chart.vegaSpec = function(_) {
+      if (!arguments.length)
+        return _chart._vegaSpec;
+      _chart._vegaSpec = _;
+      return _chart;
+    }
+    //_chart.setDataAsync(function(group,callbacks) {
+    //    callbacks.pop()();
+    //});
+
+    //_chart.data(function (group) {
+    //    return;
+    //});
+    return _chart;
+}
+
+/******************************************************************************
+ * END EXTEND: dc.rasterMixin                                                 *
+ * ***************************************************************************/
+
+/******************************************************************************
+ * EXTEND: dc.bubbleRasterChart                                               *
+ * ***************************************************************************/
+
+
+dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
+    var _chart = null;
+
+    var _useMap = useMap !== undefined ? useMap : false;
+
+    if (_useMap){
+        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), chartId));
+    }
+    else{
+        _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
+    }
+
+    var _imageOverlay = null;
+
+    var _activeLayer = 0;
+    var _x = null;
+    var _y = null;
+    //var _oldRenderBounds = null;
+    var _renderBoundsMap = {};
+    var _r = 1; // default radius 5
+    var _dynamicR = null;
+    _chart.colors("#22A7F0"); // set constant as picton blue as default
+
+    /**
+     #### .x([scale])
+     Gets or sets the x scale. The x scale can be any d3
+     [quantitive scale](https://github.com/mbostock/d3/wiki/Quantitative-Scales)
+     **/
+    _chart.x = function (x) {
+        if (!arguments.length) {
+            return _x;
+        }
+        _x = x;
+        return _chart;
+    };
+
+    /**
+    #### .y([yScale])
+    Get or set the y scale. The y scale is typically automatically determined by the chart implementation.
+
+    **/
+    _chart.y = function (_) {
+        if (!arguments.length) {
+            return _y;
+        }
+        _y = _;
+        return _chart;
+    };
+
+    _chart.r = function (_) {
+        if (!arguments.length) {
+            return _r;
+        }
+        _r = _;
+        return _chart;
+    };
+
+    _chart.dynamicR = function(_) {
+        if (!arguments.length) {
+            return _dynamicR;
+        }
+        _dynamicR = _;
+        return _chart;
+    };
+
+    _chart.setDataAsync(function(group, callbacks) {
+        updateXAndYScales();
+
+        var bounds = _chart._map.getBounds();
+        var renderBounds = [_.values(bounds.getNorthWest()),
+          _.values(bounds.getNorthEast()),
+          _.values(bounds.getSouthEast()),
+          _.values(bounds.getSouthWest())]
+
+        _chart._resetVegaSpec();
+        genVegaSpec();
+
+        var nonce = null;
+        if (_chart.cap() === Infinity) {
+          nonce = group.allAsync(callbacks);
+        }
+        else {
+          nonce = group.topAsync(_chart.cap(),undefined, JSON.stringify(_chart._vegaSpec), callbacks);
+        }
+        //console.log("in nonce: " + nonce);
+        _renderBoundsMap[nonce] = renderBounds;
+        
+    });
+
+    _chart.data(function (group) {
+
+        if (_chart.dataCache !== null) {
+            return _chart.dataCache;
+        }
+        var bounds = _chart._map.getBounds();
+        var renderBounds = [_.values(bounds.getNorthWest()),
+          _.values(bounds.getNorthEast()),
+          _.values(bounds.getSouthEast()),
+          _.values(bounds.getSouthWest())]
+        updateXAndYScales();
+        _chart._resetVegaSpec();
+        genVegaSpec();
+
+        var result = null;
+        if (_chart.cap() === Infinity) {
+            result = group.all(JSON.stringify(_chart._vegaSpec));
+        }
+        else {
+            result = group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
+        }
+        _renderBoundsMap[result.nonce] = renderBounds;
+        return result; 
+    });
+
+
+    function genVegaSpec() {
+        // scales
+        _chart._vegaSpec.scales = [];
+        if (_x === null || _y === null || _r === null)
+            return;
+            //throw ("Bubble raster chart missing mandatory scale");
+
+        var xScaleType = _chart._determineScaleType(_x);
+        _chart._vegaSpec.scales.push({name: "x", type: xScaleType, domain: _x.domain(), range: "width"})
+
+        var yScaleType = _chart._determineScaleType(_y);
+        _chart._vegaSpec.scales.push({name: "y", type: yScaleType, domain: _y.domain(),range: "height"})
+        var rIsConstant = false;
+        if (typeof _r === 'function') {
+            var rScaleType = _chart._determineScaleType(_r);
+            _chart._vegaSpec.scales.push({name: "size", type: rScaleType, domain: _r.domain(), range: _r.range(), clamp: true});
+        }
+        else {
+            rIsConstant = true;
+
+        }
+        var colorIsConstant = false;
+
+        var colors = _chart.colors();
+        if (colors !== null) {
+            if (colors.domain !== undefined) {
+                var colorScaleType = _chart._determineScaleType(colors);
+                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range(), default: "#22A7F0"})
+            }
+            else
+                colorIsConstant = true;
+        }
+
+        _chart._vegaSpec.marks = [];
+        var markObj = {};
+        markObj.type = "points";
+        markObj.from = {data: "table"};
+        markObj.properties = {};
+        markObj.properties.x = {scale: "x", field: "x"};
+        markObj.properties.y = {scale: "y", field: "y"};
+        if (colorIsConstant)
+            markObj.properties.fillColor = {value: _chart.colors()()};
+        else
+            markObj.properties.fillColor = {scale: "color", field: "color"};
+
+        if (rIsConstant) {
+            var r = _r;
+            if (_dynamicR !== null && _chart.sampling() && dc._lastFilteredSize !== null) {
+                //@todo don't tie this to sampling - meaning having a dynamicR will
+                //also require count to be computed first by dc
+                r = Math.round(_dynamicR(Math.min(dc._lastFilteredSize, _chart.cap() !== Infinity ? _chart.cap() : dc._lastFilteredSize )))
+            }
+
+            markObj.properties.size = {value: r};
+        }
+        else
+            markObj.properties.size = {scale: "size", field: "size"};
+
+        _chart._vegaSpec.marks.push(markObj);
+    }
+
+    function updateXAndYScales () {
+        if (_chart.xDim() !== null && _chart.yDim() !== null) {
+            if (_x === null) {
+                _x = d3.scale.linear();
+                _x.domain([0.001,0.999]);
+            }
+            var xRange = _chart.xDim().getFilter();
+            if (xRange !== null)
+                _x.domain(xRange[0]); // First element of range because range filter can theoretically support multiple ranges
+            if (_y === null) {
+                _y = d3.scale.linear();
+                _y.domain([0.001,0.999]);
+            }
+            var yRange = _chart.yDim().getFilter();
+            if (yRange !== null)
+                _y.domain(yRange[0]); // First element of range because range filter can theoretically support multiple ranges
+
+        }
+    }
+
+    function removeOverlay(overlay){
+      var map = _chart._map;
+
+      map.removeLayer(overlay);
+      map.removeSource(overlay);
+    }
+
+    function addOverlay(data, nonce){
+        var map = _chart._map;
+        //console.log("out nonce: " + nonce);
+        //debugger;
+        var bounds = _renderBoundsMap[nonce];
+        if (bounds === undefined)
+           return;
+        //delete _renderBoundsMap[nonce];
+        var toBeRemovedOverlay = "overlay" + _activeLayer
+        _activeLayer = nonce;
+
+        var toBeAddedOverlay = "overlay" + _activeLayer
+        if (toBeRemovedOverlay === toBeAddedOverlay)
+            return;
+        
+        map.addSource(toBeAddedOverlay,{
+            "id": toBeAddedOverlay,
+            "type": "image",
+            "url": 'data:image/png;base64,' + data,
+            "coordinates": bounds 
+        })
+        //delete _renderBoundsMap[nonce];
+        map.addLayer({
+            "id": toBeAddedOverlay,
+            "source": toBeAddedOverlay,
+            "type": "raster",
+            "paint": {"raster-opacity": 0.85}
+        })
+        setTimeout(function(){
+          if(map.getSource(toBeRemovedOverlay)){
+              removeOverlay(toBeRemovedOverlay);
+          }
+          //if(map.getSource(toBeRemovedOverlay)){
+
+          //    map.batch(function (batch) {
+          //        batch.setPaintProperty(toBeRemovedOverlay, 'raster-opacity', 0);
+          //        batch.setPaintProperty(toBeAddedOverlay, 'raster-opacity', 0.85);
+          //      });
+          //    removeOverlay(toBeRemovedOverlay);
+          //}
+          //else {
+          //    map.batch(function (batch) {
+          //        batch.setPaintProperty(toBeAddedOverlay, 'raster-opacity', 0.85);
+          //    });
+          //}
+        }, 40)
+
+    }
+
+    _chart._doRender = function() {
+
+      var data = _chart.data();
+      addOverlay(data.image, data.nonce)
+
+    }
+
+    _chart._doRedraw = function() {
+  
+      var data = _chart.data();
+      addOverlay(data.image, data.nonce)
+    }
+
+    return _chart.anchor(parent, chartGroup);
+}
+
+/******************************************************************************
+ * EXTEND END: dc.bubbleRasterChart                                           *
+ * ***************************************************************************/
+
+/******************************************************************************
+ * EXTEND: dc.mapChart                                                        *
+ * ***************************************************************************/
+
+dc.mapChart = function(parent, chartGroup) {
+  //var _chart = dc.mapMixin(dc.baseMixin({}));
+  var _chart = dc.coordinateGridMixin({});
+
+  return _chart.anchor(parent, chartGroup);
+}
+
+/******************************************************************************
+ * END EXTEND: dc.mapChart                                                    *
+ * ***************************************************************************/
+
 
 /******************************************************************************
  * OVERRIDE: dc.coordinateGridMixin                                           *
@@ -2965,7 +3573,7 @@ dc.capMixin = function (_chart) {
           group.allAsync(callbacks);
       }
       else {
-          group.topAsync(_cap, undefined, callbacks)
+          group.topAsync(_cap, undefined, undefined, callbacks)
       }
     });
 
@@ -3077,7 +3685,7 @@ dc.bubbleMixin = function (_chart) {
 /* OVERRIDE EXTEND---------------------------------------------------------- */
     _chart.setDataAsync(function(group,callbacks) {
         if (_chart.cap() != undefined) {
-            group.topAsync(_chart.cap(), undefined, callbacks);
+            group.topAsync(_chart.cap(), undefined, undefined, callbacks);
         }
         else {
             group.allAsync(callbacks);
@@ -3455,17 +4063,34 @@ dc.pieChart = function (parent, chartGroup) {
 /* OVERRIDE ---------------------------------------------------------------- */
         var showLabel = true;
 
-        labelsEnter.selectAll('text')
-            .text(function (d) {
+        labelsEnter
+            .style('font-size', function(d){
                 var data = d.data;
-                if ((sliceHasNoData(data) || sliceTooSmall(d)) && !isSelectedSlice(d) || !showLabel) {
-                    showLabel = false;
-                    return '';
+                var label = d3.select(this);
+
+                if ( showLabel && !sliceHasNoData(data)) {
+                    
+                    var availableLabelWidth = getAvailableLabelWidth(d);
+                    var charPixelWidth = 8;
+
+                    label.select('.value-dim')
+                        .html(function(){
+                            var dimText = truncateLabel(_chart.label()(d.data), availableLabelWidth, charPixelWidth);
+
+                            if (dimText === '') {
+                                showLabel = false;
+                            }
+                            return dimText;
+                        });
+
+                    if (showLabel && _chart.measureLabelsOn()) {
+                        label.select('.value-measure')
+                            .html(truncateLabel(_chart.measureValue(d.data), availableLabelWidth, charPixelWidth));
+                    }
                 }
 
-                return d3.select(this).classed('value-dim') ? _chart.label()(d.data) : _chart.measureValue(d.data);
-            })
-            .style('font-size', (pieIsBig() ? '16px' : '12px'));          
+                return pieIsBig() ? '16px' : '12px';
+            });          
 /* ------------------------------------------------------------------------- */
     }
 
@@ -3669,10 +4294,13 @@ dc.pieChart = function (parent, chartGroup) {
         return d3.layout.pie().sort(null).value(_chart.cappedValueAccessor);
     }
 
-    function sliceTooSmall (d) {
-        var angle = (d.endAngle - d.startAngle);
 /* OVERRIDE ---------------------------------------------------------------- */
-        var minHeight = angle * (_radius / 2);
+    function getAvailableLabelWidth (d) {
+        var angle = (d.endAngle - d.startAngle);
+
+        if (isNaN(angle) || angle * (_radius / 2) < (_chart.measureLabelsOn() ? 28 : 20)) {
+            return 0;
+        }
 
         var arc = buildArcs();
         var centroid = labelCentroid(d, arc);
@@ -3683,11 +4311,28 @@ dc.pieChart = function (parent, chartGroup) {
         var tan = Math.tan(Math.abs(refAngle - useAngle));
         var opposite = tan * adjacent;
         var labelWidth = (refAngle >= d.startAngle && refAngle < d.endAngle ? Math.abs(centroid[0]) + opposite : Math.abs(centroid[0]) - opposite) * 2;
-        var numChar = Math.max((_chart.label()(d.data)+'').length, _chart.measureLabelsOn() ? (_chart.measureValue(d.data)+'').length : 0);
+        var maxLabelWidth = _radius - _chart.innerRadius();
 
-        return isNaN(angle) || angle < 0.2 || minHeight < 28 || !(angle > Math.PI) && numChar * 6 > Math.min(labelWidth, _radius - _chart.innerRadius());
+        return labelWidth > maxLabelWidth || labelWidth < 0 ? maxLabelWidth : labelWidth;
+    }
 
+    function truncateLabel(data, availableLabelWidth, charPixelWidth) {
+        var labelText = data + '';
+        var textWidth = labelText.length * charPixelWidth;
+        var trimIndex = labelText.length - Math.ceil((textWidth - availableLabelWidth) / charPixelWidth);
+
+        if (textWidth > availableLabelWidth && labelText.length - trimIndex > 2) {
+            labelText = trimIndex > 2 ? labelText.slice(0, trimIndex) + '&#8230;' : '';
+        } 
+
+        return labelText;                
+    }
+ 
 /* ------------------------------------------------------------------------- */
+
+    function sliceTooSmall(d) {
+        var angle = (d.endAngle - d.startAngle);
+        return isNaN(angle) || angle < _minAngleForLabel;
     }
 
     function sliceHasNoData (d) {
@@ -6116,6 +6761,8 @@ dc.bubbleOverlay = function (parent, chartGroup) {
 
             _chart.r().range([_chart.MIN_RADIUS, _chart.MAX_RADIUS]);
         }
+        if (!_g)
+            initOverlayG();
         var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData, function(d) {return d.key;});
 
         bubbleG.enter().append('g')
@@ -6230,8 +6877,8 @@ dc.rowChart = function (parent, chartGroup) {
 
     var _g;
 
-    var _labelOffsetX = 10;
-    var _labelOffsetY = 15;
+    var _labelOffsetX = 8;
+    var _labelOffsetY = 16;
     var _hasLabelOffsetY = false;
     var _dyOffset = '0.35em';  // this helps center labels https://github.com/mbostock/d3/wiki/SVG-Shapes#svg_text
     var _titleLabelOffsetX = 2;
@@ -6239,9 +6886,12 @@ dc.rowChart = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
     var _xAxisLabel;
     var _yAxisLabel;
+    var _autoScroll = false;
+    var _minBarHeight= 16;
+    var _isBigBar = false;
 /* --------------------------------------------------------------------------*/
 
-    var _gap = 5;
+    var _gap = 4;
 
     var _fixedBarHeight = false;
     var _rowCssClass = 'row';
@@ -6291,48 +6941,55 @@ dc.rowChart = function (parent, chartGroup) {
     }
 
     function drawAxis () {
-        var axisG = _g.select('g.axis');
+/* OVERRIDE -----------------------------------------------------------------*/
+
+        var root = _chart.root();
+
+        var axisG = root.select('g.axis');
 
         calculateAxisScale();
 
         if (axisG.empty()) {
 
-/* OVERRIDE -----------------------------------------------------------------*/
-            axisG = _g.append('g').attr('class', 'axis')
-                .attr('transform', 'translate(0, ' + _chart.effectiveHeight() + ')');
-/* --------------------------------------------------------------------------*/
+            if (_chart.autoScroll()) {
 
+                axisG = root.append('div').attr('class', 'external-axis')
+                    .append('svg').attr('height', 32)
+                    .append('g').attr('class', 'axis')
+                    .attr('transform', 'translate(' + _chart.margins().left + ', 0)');
+
+            } else {
+                axisG = _g.append('g').attr('class', 'axis')
+                    .attr('transform', 'translate(0, ' + _chart.effectiveHeight() + ')');       
+            }
         }
 
+        if (_chart.autoScroll()) {
+            root.select('.external-axis svg').attr('width', _chart.width());
+        }
 
-/* OVERRIDE -----------------------------------------------------------------*/
-        var yLabel = axisG.selectAll('text.y-axis-label');
+        var yLabel = root.selectAll('.y-axis-label');
 
         if (yLabel.empty()) {
-            yLabel = axisG.append('text')
+            yLabel = root.append('div')
             .attr('class', 'y-axis-label')
             .text(_yAxisLabel);
         }
 
         yLabel
-            .attr('x', (_chart.effectiveHeight()/2))
-            .attr('y', -(_chart.margins().left - 12))
-            .style('transform', 'rotate(-90deg)')
-            .style('text-anchor', 'middle');
+            .style('top', (_chart.effectiveHeight() / 2 + _chart.margins().top) +'px');
 
 
-        var xLabel = axisG.selectAll('text.x-axis-label');
+        var xLabel = root.selectAll('.x-axis-label');
 
         if (xLabel.empty()) {
-            xLabel = axisG.append('text')
+            xLabel = root.append('div')
             .attr('class', 'x-axis-label')
             .text(_chart.xAxisLabel());
         }
 
         xLabel
-            .attr('x', (_chart.effectiveWidth()/2))
-            .attr('y', _chart.margins().bottom - 6)
-            .style('text-anchor', 'middle');
+            .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px');
 /* --------------------------------------------------------------------------*/
 
         dc.transition(axisG, _chart.transitionDuration())
@@ -6356,6 +7013,12 @@ dc.rowChart = function (parent, chartGroup) {
     });
 
     _chart.label(_chart.cappedKeyAccessor);
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.measureValue = function (d) {
+        return _chart.cappedValueAccessor(d);
+    };
+/* ------------------------------------------------------------------------- */
 
     _chart.x = function (scale) {
         if (!arguments.length) {
@@ -6421,19 +7084,37 @@ dc.rowChart = function (parent, chartGroup) {
         var n = _rowData.length;
 
         var height;
+
         if (!_fixedBarHeight) {
             height = (_chart.effectiveHeight() - (n + 1) * _gap) / n;
         } else {
             height = _fixedBarHeight;
         }
+/* OVERRIDE -----------------------------------------------------------------*/
+        
+        _isBigBar = _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32);
 
+        if (_isBigBar) {
+            height = (_chart.effectiveHeight() - (n + 1) * (_gap * 2)) / n;
+        } 
+
+        if (_chart.autoScroll() && height < _minBarHeight) {
+            height = _minBarHeight;
+            _chart.root().select('.svg-wrapper')
+                .style('height', _chart.height() - 48 + 'px')
+                .style('overflow-y', 'auto')
+                .style('overflow-x', 'hidden');
+            _chart.svg()
+                .attr('height', n * (height + (_isBigBar ? _gap * 2 : _gap)) + 6);
+        }
+/* --------------------------------------------------------------------------*/
         // vertically align label in center unless they override the value via property setter
         if (!_hasLabelOffsetY) {
             _labelOffsetY = height / 2;
         }
 
         var rect = rows.attr('transform', function (d, i) {
-                return 'translate(0,' + ((i + 1) * _gap + i * height) + ')';
+                return 'translate(0,' + ((i + 1) * (_isBigBar ? _gap * 2 : _gap) + i * height) + ')';
             }).select('rect')
             .attr('height', height)
             .attr('fill', _chart.getColor)
@@ -6467,6 +7148,14 @@ dc.rowChart = function (parent, chartGroup) {
             rowEnter.append('text')
                 .on('click', onClick);
         }
+/* OVERRIDE -----------------------------------------------------------------*/
+        if (_chart.measureLabelsOn()) {
+            rowEnter.append('text')
+                .attr('class', 'value-measure')
+                .on('click', onClick);
+        }
+/* --------------------------------------------------------------------------*/
+
         if (_chart.renderTitleLabel()) {
             rowEnter.append('text')
                 .attr('class', _titleRowCssClass)
@@ -6475,21 +7164,63 @@ dc.rowChart = function (parent, chartGroup) {
     }
 
     function updateLabels (rows) {
+/* OVERRIDE -----------------------------------------------------------------*/
+        rows.selectAll('text')
+            .style('font-size', _isBigBar ? '14px': '12px');
+/* --------------------------------------------------------------------------*/
+
         if (_chart.renderLabel()) {
             var lab = rows.select('text')
                 .attr('x', _labelOffsetX)
                 .attr('y', _labelOffsetY)
-                .attr('dy', _dyOffset)
+/* OVERRIDE -----------------------------------------------------------------*/
+                .attr('dy', isStackLabel() ?  '-0.25em' : _dyOffset)
+/* --------------------------------------------------------------------------*/
                 .on('click', onClick)
                 .attr('class', function (d, i) {
                     return _rowCssClass + ' _' + i;
                 })
+/* OVERRIDE -----------------------------------------------------------------*/
+                .classed('value-dim', true)
+/* --------------------------------------------------------------------------*/
                 .text(function (d) {
                     return _chart.label()(d);
                 });
             dc.transition(lab, _chart.transitionDuration())
                 .attr('transform', translateX);
         }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        if (_chart.measureLabelsOn()) {
+            var measureLab = rows.select('.value-measure')
+                .attr('y', _labelOffsetY)
+                .attr('dy', isStackLabel() ?  '1.1em' : _dyOffset)
+                .on('click', onClick)
+                .attr('text-anchor', isStackLabel() ? 'start':'end')
+                .text(function(d){
+                    return _chart.measureValue(d);
+                })
+                .attr('x', function (d, i) {
+                    if (isStackLabel()) {
+                        return _labelOffsetX + 1;
+                    }
+                    
+                    var thisLabel = d3.select(this);
+
+                    var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
+                    var measureWidth = thisLabel.node().getBBox().width;
+                    var dimWidth = d3.select('text.value-dim._' + i).node().getBBox().width;
+                    var minIdealWidth = measureWidth + dimWidth + 16;
+
+                    thisLabel.attr('text-anchor', isStackLabel() || width < minIdealWidth ? 'start' : 'end');
+
+                    return width > minIdealWidth ? width - 4 : dimWidth + 12;
+                });
+            dc.transition(measureLab, _chart.transitionDuration())
+                .attr('transform', translateX);
+        }
+/* --------------------------------------------------------------------------*/
+
         if (_chart.renderTitleLabel()) {
             var titlelab = rows.select('.' + _titleRowCssClass)
                     .attr('x', _chart.effectiveWidth() - _titleLabelOffsetX)
@@ -6518,6 +7249,12 @@ dc.rowChart = function (parent, chartGroup) {
     function onClick (d) {
         _chart.onClick(d);
     }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    function isStackLabel() {
+        return _chart.measureLabelsOn() && _labelOffsetY > 16;
+    }
+/* --------------------------------------------------------------------------*/
 
     function translateX (d) {
         var x = _x(_chart.cappedValueAccessor(d)),
@@ -6558,7 +7295,15 @@ dc.rowChart = function (parent, chartGroup) {
         _elasticX = elasticX;
         return _chart;
     };
-
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.autoScroll = function (autoScroll) {
+        if (!arguments.length) {
+            return _autoScroll;
+        }
+        _autoScroll = autoScroll;
+        return _chart;
+    };
+/* --------------------------------------------------------------------------*/
     _chart.labelOffsetX = function (labelOffsetX) {
         if (!arguments.length) {
             return _labelOffsetX;
