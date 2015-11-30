@@ -229,7 +229,7 @@ dc.rowChart = function (parent, chartGroup) {
         if (_chart.autoScroll() && height < _minBarHeight) {
             height = _minBarHeight;
             _chart.root().select('.svg-wrapper')
-                .style('height', _chart.height() - 48 + 'px')
+                .style('height', _chart.height() - 52 + 'px')
                 .style('overflow-y', 'auto')
                 .style('overflow-x', 'hidden');
             _chart.svg()
