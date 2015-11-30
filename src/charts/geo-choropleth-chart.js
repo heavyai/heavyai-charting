@@ -22,7 +22,8 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         _chart.resetSvg();
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
             var states = _chart.svg().append('g')
-                .attr('class', 'layer' + layerIndex);
+                .attr('class', 'layer' + layerIndex)
+                .attr('transform', 'translate(0, -16)');
 
             var regionG = states.selectAll('g.' + geoJson(layerIndex).name)
                 .data(geoJson(layerIndex).data)

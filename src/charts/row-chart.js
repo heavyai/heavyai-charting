@@ -214,7 +214,7 @@ dc.rowChart = function (parent, chartGroup) {
         var height;
 
         if (!_fixedBarHeight) {
-            height = (_chart.effectiveHeight() - (n + 1) * _gap) / n;
+            height = ((_chart.effectiveHeight() - _gap) - (n + 1) * _gap) / n;
         } else {
             height = _fixedBarHeight;
         }
@@ -223,7 +223,7 @@ dc.rowChart = function (parent, chartGroup) {
         _isBigBar = _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32);
 
         if (_isBigBar) {
-            height = (_chart.effectiveHeight() - (n + 1) * (_gap * 2)) / n;
+            height = ((_chart.effectiveHeight() - (_gap * 2)) - (n + 1) * (_gap * 2)) / n;
         } 
 
         if (_chart.autoScroll() && height < _minBarHeight) {
@@ -233,7 +233,7 @@ dc.rowChart = function (parent, chartGroup) {
                 .style('overflow-y', 'auto')
                 .style('overflow-x', 'hidden');
             _chart.svg()
-                .attr('height', n * (height + (_isBigBar ? _gap * 2 : _gap)) + 6);
+                .attr('height', n * (height + (_isBigBar ? _gap * 2 : _gap)));
         }
 /* --------------------------------------------------------------------------*/
         // vertically align label in center unless they override the value via property setter
