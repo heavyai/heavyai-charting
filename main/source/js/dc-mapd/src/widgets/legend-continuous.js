@@ -42,6 +42,7 @@ dc.legendContinuous = function () {
 
         var title = _wrapper.append('div')
             .attr('class', 'legend-title')
+            .append('span')
             .text(_parent.colorByExpr());
 
         var legendGroup = _wrapper.append('div')

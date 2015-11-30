@@ -90,6 +90,8 @@ dc.baseMixin = function (_chart) {
     var _legend;
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    var _legendContinuous;
+    
     _chart._colorLegend = null;
 
     var _topQueryCallback = null;
@@ -990,6 +992,18 @@ dc.baseMixin = function (_chart) {
         _legend.parent(_chart);
         return _chart;
     };
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.legendContinuous = function (legendContinuous) {
+        if (!arguments.length) {
+            return _legendContinuous;
+        }
+        _legendContinuous = legendContinuous;
+        _legendContinuous.parent(_chart);
+        return _chart;
+    };
+
+/* --------------------------------------------------------------------------*/
 
     _chart.chartID = function () {
         return _chart.__dcFlag__;

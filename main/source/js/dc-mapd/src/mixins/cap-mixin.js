@@ -45,7 +45,7 @@ dc.capMixin = function (_chart) {
           group.allAsync(callbacks);
       }
       else {
-          group.topAsync(_cap, undefined, callbacks)
+          group.topAsync(_cap, undefined, undefined, callbacks)
       }
     });
 
