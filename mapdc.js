@@ -1,5 +1,5 @@
 /*!
- *  dc 2.0.0-beta.22
+ *  dc 0.0.4
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 2.0.0-beta.22
+ * @version 0.0.4
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '2.0.0-beta.22',
+    version: '0.0.4',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -871,6 +871,7 @@ dc.baseMixin = function (_chart) {
     var _isChild;
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    var _popup;
     var _redrawBrushFlag = false;
 /* ------------------------------------------------------------------------- */
 
@@ -893,8 +894,9 @@ dc.baseMixin = function (_chart) {
     var _keyAccessor = dc.pluck('key0');
     var _label = dc.pluck('key0');
     var _ordering = dc.pluck('key0');
+    var _measureLabelsOn = false;
 /* ------------------------------------------------------------------------- */
-    
+
     var _valueAccessor = dc.pluck('value');
     var _orderSort;
 
@@ -904,10 +906,10 @@ dc.baseMixin = function (_chart) {
         return _chart.keyAccessor()(d) + ': ' + _chart.valueAccessor()(d);
     };
     var _renderTitle = true;
+    var _controlsUseVisibility = true;
 
 /* OVERRIDE ---------------------------------------------------------------- */
     var _transitionDuration = 500;
-    var _controlsUseVisibility = true;
 /* ------------------------------------------------------------------------- */
 
     var _filterPrinter = dc.printers.filters;
@@ -969,7 +971,7 @@ dc.baseMixin = function (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
         // bail out if we are at crossfilter level - i.e. for data count
-        if (dimension.type === 'crossfilter') { 
+        if (dimension.type == 'crossfilter') {
           return filters;
         }
 /* ------------------------------------------------------------------------- */
@@ -997,7 +999,7 @@ dc.baseMixin = function (_chart) {
     var _data = function (group) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
-        if (_chart.dataCache !== null)
+        if (_chart.dataCache != null)
             return _chart.dataCache;
 /* ------------------------------------------------------------------------- */
 
@@ -1043,6 +1045,7 @@ dc.baseMixin = function (_chart) {
         if (!arguments.length) {
             return _height(_root.node());
         }
+
         _height = d3.functor(height || _defaultHeight);
         return _chart;
     };
@@ -1269,7 +1272,7 @@ dc.baseMixin = function (_chart) {
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.filterAll = function (softFilterClear) {
 
-        if (softFilterClear) {
+        if (softFilterClear != undefined && softFilterClear == true) {
           _softFilterClear = true;
         } else {
           _softFilterClear = false; 
@@ -1423,7 +1426,11 @@ dc.baseMixin = function (_chart) {
      * @return {SVGElement}
      */
     _chart.resetSvg = function () {
-        _chart.select('svg').remove();
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        _chart.select('.svg-wrapper').remove();
+/* ------------------------------------------------------------------------- */
+
         return generateSvg();
     };
 
@@ -1436,10 +1443,53 @@ dc.baseMixin = function (_chart) {
     }
 
     function generateSvg () {
-        _svg = _chart.root().append('svg');
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        _svg = _chart
+          .root()
+          .append('div')
+          .attr('class', 'svg-wrapper')
+          .append('svg');
+/* ------------------------------------------------------------------------- */
+
         sizeSvg();
         return _svg;
     }
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    function sizeRoot () {
+        if (_root) {
+            _root
+                .style('height', _chart.height()+'px');
+        }
+    }
+
+    _chart.popup = function (popupElement) {
+        if (!arguments.length) {
+            return _popup;
+        }
+        _popup = popupElement;
+        return _chart;
+    };
+
+    _chart.generatePopup = function () {
+        _chart.select('.chart-popup').remove();
+
+        _popup = _chart.root().append('div').attr('class', 'chart-popup');
+
+        _popup.append('div').attr('class', 'chart-popup-box');
+
+        return _popup;
+    }
+
+    _chart.measureLabelsOn = function (val) {
+        if (!arguments.length) {
+            return _measureLabelsOn;
+        }
+        _measureLabelsOn = val;
+        return _chart;
+    };
+/* ------------------------------------------------------------------------- */
 
     /**
      * Set or get the filter printer function. The filter printer function is used to generate human
@@ -1585,6 +1635,8 @@ dc.baseMixin = function (_chart) {
         if (dc._refreshDisabled)
             return;
         _chart.dataCache = data !== undefined ? data : null;
+
+        sizeRoot();
 /* ------------------------------------------------------------------------- */
 
         _listeners.preRender(_chart);
@@ -1603,6 +1655,8 @@ dc.baseMixin = function (_chart) {
         if (_chart._colorLegend) {
           _chart._colorLegend.render();
         }
+
+        _chart.generatePopup();
 /* ------------------------------------------------------------------------- */
 
         _chart._activateRenderlets('postRender');
@@ -9553,8 +9607,8 @@ dc.rowChart = function (parent, chartGroup) {
 
     var _g;
 
-    var _labelOffsetX = 10;
-    var _labelOffsetY = 15;
+    var _labelOffsetX = 8;
+    var _labelOffsetY = 16;
     var _hasLabelOffsetY = false;
     var _dyOffset = '0.35em';  // this helps center labels https://github.com/mbostock/d3/wiki/SVG-Shapes#svg_text
     var _titleLabelOffsetX = 2;
@@ -9562,9 +9616,12 @@ dc.rowChart = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
     var _xAxisLabel;
     var _yAxisLabel;
+    var _autoScroll = false;
+    var _minBarHeight= 16;
+    var _isBigBar = false;
 /* --------------------------------------------------------------------------*/
 
-    var _gap = 5;
+    var _gap = 4;
 
     var _fixedBarHeight = false;
     var _rowCssClass = 'row';
@@ -9614,47 +9671,55 @@ dc.rowChart = function (parent, chartGroup) {
     }
 
     function drawAxis () {
-        var axisG = _g.select('g.axis');
+/* OVERRIDE -----------------------------------------------------------------*/
+
+        var root = _chart.root();
+
+        var axisG = root.select('g.axis');
 
         calculateAxisScale();
 
         if (axisG.empty()) {
 
-/* OVERRIDE -----------------------------------------------------------------*/
-            axisG = _g.append('g').attr('class', 'axis')
-                .attr('transform', 'translate(0, ' + _chart.effectiveHeight() + ')');
-/* --------------------------------------------------------------------------*/
+            if (_chart.autoScroll()) {
 
+                axisG = root.append('div').attr('class', 'external-axis')
+                    .append('svg').attr('height', 32)
+                    .append('g').attr('class', 'axis')
+                    .attr('transform', 'translate(' + _chart.margins().left + ', 0)');
+
+            } else {
+                axisG = _g.append('g').attr('class', 'axis')
+                    .attr('transform', 'translate(0, ' + _chart.effectiveHeight() + ')');
+            }
         }
 
-/* OVERRIDE -----------------------------------------------------------------*/
-        var yLabel = axisG.selectAll('text.y-axis-label');
+        if (_chart.autoScroll()) {
+            root.select('.external-axis svg').attr('width', _chart.width());
+        }
+
+        var yLabel = root.selectAll('.y-axis-label');
 
         if (yLabel.empty()) {
-            yLabel = axisG.append('text')
+            yLabel = root.append('div')
             .attr('class', 'y-axis-label')
             .text(aliases[_yAxisLabel]);
         }
 
         yLabel
-            .attr('x', (_chart.effectiveHeight()/2))
-            .attr('y', -(_chart.margins().left - 12))
-            .style('transform', 'rotate(-90deg)')
-            .style('text-anchor', 'middle');
+            .style('top', (_chart.effectiveHeight() / 2 + _chart.margins().top) +'px');
 
 
-        var xLabel = axisG.selectAll('text.x-axis-label');
+        var xLabel = root.selectAll('.x-axis-label');
 
         if (xLabel.empty()) {
-            xLabel = axisG.append('text')
+            xLabel = root.append('div')
             .attr('class', 'x-axis-label')
             .text(_chart.xAxisLabel());
         }
 
         xLabel
-            .attr('x', (_chart.effectiveWidth()/2))
-            .attr('y', _chart.margins().bottom - 6)
-            .style('text-anchor', 'middle');
+            .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px');
 /* --------------------------------------------------------------------------*/
 
         dc.transition(axisG, _chart.transitionDuration())
@@ -9754,11 +9819,30 @@ dc.rowChart = function (parent, chartGroup) {
         var n = _rowData.length;
 
         var height;
+
         if (!_fixedBarHeight) {
             height = (_chart.effectiveHeight() - (n + 1) * _gap) / n;
         } else {
             height = _fixedBarHeight;
         }
+/* OVERRIDE -----------------------------------------------------------------*/
+
+        _isBigBar = _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32);
+
+        if (_isBigBar) {
+            height = (_chart.effectiveHeight() - (n + 1) * (_gap * 2)) / n;
+        }
+
+        if (_chart.autoScroll() && height < _minBarHeight) {
+            height = _minBarHeight;
+            _chart.root().select('.svg-wrapper')
+                .style('height', _chart.height() - 48 + 'px')
+                .style('overflow-y', 'auto')
+                .style('overflow-x', 'hidden');
+            _chart.svg()
+                .attr('height', n * (height + (_isBigBar ? _gap * 2 : _gap)) + 6);
+        }
+/* --------------------------------------------------------------------------*/
 
         // vertically align label in center unless they override the value via property setter
         if (!_hasLabelOffsetY) {
@@ -9766,7 +9850,7 @@ dc.rowChart = function (parent, chartGroup) {
         }
 
         var rect = rows.attr('transform', function (d, i) {
-                return 'translate(0,' + ((i + 1) * _gap + i * height) + ')';
+                return 'translate(0,' + ((i + 1) * (_isBigBar ? _gap * 2 : _gap) + i * height) + ')';
             }).select('rect')
             .attr('height', height)
             .attr('fill', _chart.getColor)
@@ -9800,6 +9884,15 @@ dc.rowChart = function (parent, chartGroup) {
             rowEnter.append('text')
                 .on('click', onClick);
         }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        if (_chart.measureLabelsOn()) {
+            rowEnter.append('text')
+                .attr('class', 'value-measure')
+                .on('click', onClick);
+        }
+/* --------------------------------------------------------------------------*/
+
         if (_chart.renderTitleLabel()) {
             rowEnter.append('text')
                 .attr('class', _titleRowCssClass)
@@ -9808,21 +9901,65 @@ dc.rowChart = function (parent, chartGroup) {
     }
 
     function updateLabels (rows) {
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        rows.selectAll('text')
+            .style('font-size', _isBigBar ? '14px': '12px');
+/* --------------------------------------------------------------------------*/
+
         if (_chart.renderLabel()) {
             var lab = rows.select('text')
                 .attr('x', _labelOffsetX)
                 .attr('y', _labelOffsetY)
                 .attr('dy', _dyOffset)
+/* OVERRIDE -----------------------------------------------------------------*/
+                .attr('dy', isStackLabel() ?  '-0.25em' : _dyOffset)
+/* --------------------------------------------------------------------------*/
                 .on('click', onClick)
                 .attr('class', function (d, i) {
                     return _rowCssClass + ' _' + i;
                 })
+/* OVERRIDE -----------------------------------------------------------------*/
+                .classed('value-dim', true)
+/* --------------------------------------------------------------------------*/
                 .text(function (d) {
                     return _chart.label()(d);
                 });
             dc.transition(lab, _chart.transitionDuration())
                 .attr('transform', translateX);
         }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        if (_chart.measureLabelsOn()) {
+            var measureLab = rows.select('.value-measure')
+                .attr('y', _labelOffsetY)
+                .attr('dy', isStackLabel() ?  '1.1em' : _dyOffset)
+                .on('click', onClick)
+                .attr('text-anchor', isStackLabel() ? 'start':'end')
+                .text(function(d){
+                    return _chart.measureValue(d);
+                })
+                .attr('x', function (d, i) {
+                    if (isStackLabel()) {
+                        return _labelOffsetX + 1;
+                    }
+
+                    var thisLabel = d3.select(this);
+
+                    var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
+                    var measureWidth = thisLabel.node().getBBox().width;
+                    var dimWidth = d3.select('text.value-dim._' + i).node().getBBox().width;
+                    var minIdealWidth = measureWidth + dimWidth + 16;
+
+                    thisLabel.attr('text-anchor', isStackLabel() || width < minIdealWidth ? 'start' : 'end');
+
+                    return width > minIdealWidth ? width - 4 : dimWidth + 12;
+                });
+            dc.transition(measureLab, _chart.transitionDuration())
+                .attr('transform', translateX);
+        }
+/* --------------------------------------------------------------------------*/
+
         if (_chart.renderTitleLabel()) {
             var titlelab = rows.select('.' + _titleRowCssClass)
                     .attr('x', _chart.effectiveWidth() - _titleLabelOffsetX)
@@ -9860,6 +9997,12 @@ dc.rowChart = function (parent, chartGroup) {
     function onClick (d) {
         _chart.onClick(d);
     }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    function isStackLabel() {
+        return _chart.measureLabelsOn() && _labelOffsetY > 16;
+    }
+/* --------------------------------------------------------------------------*/
 
     function translateX (d) {
         var x = _x(_chart.cappedValueAccessor(d)),
@@ -9949,6 +10092,16 @@ dc.rowChart = function (parent, chartGroup) {
         return _chart;
     };
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.autoScroll = function (autoScroll) {
+        if (!arguments.length) {
+            return _autoScroll;
+        }
+        _autoScroll = autoScroll;
+        return _chart;
+    };
+
+/* --------------------------------------------------------------------------*/
     /**
      * Get or set the x offset (horizontal space to the top left corner of a row) for labels on a particular row chart.
      * @name labelOffsetX
