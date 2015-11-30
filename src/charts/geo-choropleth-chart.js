@@ -51,7 +51,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 
             renderPaths(regionG, layerIndex, data);
 
-            renderTitle(regionG, layerIndex, data);
+            //renderTitle(regionG, layerIndex, data);
         }
     }
 
@@ -142,6 +142,11 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
                 }
                 return 'none';
             })
+/* OVERRIDE ---------------------------------------------------------------- */
+            .on('mouseenter', function(d, i){showPopup(d, i, data);})
+            .on('mousemove', positionPopup)
+            .on('mouseleave', hidePopup)
+/* ------------------------------------------------------------------------- */
             .on('click', function (d) {
                 return _chart.onClick(d, layerIndex);
             });
@@ -223,6 +228,48 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 
         return _chart;
     };
+/* OVERRIDE ---------------------------------------------------------------- */
+    function showPopup(d, i, data) {
+        var popup = _chart.popup();
+
+        var popupBox = popup.select('.chart-popup-box').html('');
+
+        popupBox.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', _chart.getColor(data[geoJson(0).keyAccessor(d)], i));
+
+        popupBox.append('div')
+            .attr('class', 'popup-value')
+            .html(function(){
+                var key = getKey(0, d);
+                var value = Number(data[key]).toFixed(2);
+                return '<div class="popup-value-dim">'+ key +'</div><div class="popup-value-measure">'+ value +'</div>';
+            });
+
+        popup.classed('js-showPopup', true);
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup() {
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(this);
+        var x = coordinates[0];
+        var y = coordinates[1];
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-right', function(){
+                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width();
+            });
+    }
+/* ------------------------------------------------------------------------- */
 
     return _chart.anchor(parent, chartGroup);
 };
