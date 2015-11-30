@@ -213,12 +213,12 @@ dc.rowChart = function (parent, chartGroup) {
 
         var height;
 
+/* OVERRIDE -----------------------------------------------------------------*/
         if (!_fixedBarHeight) {
             height = ((_chart.effectiveHeight() - _gap) - (n + 1) * _gap) / n;
         } else {
             height = _fixedBarHeight;
         }
-/* OVERRIDE -----------------------------------------------------------------*/
         
         _isBigBar = _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32);
 
@@ -233,7 +233,7 @@ dc.rowChart = function (parent, chartGroup) {
                 .style('overflow-y', 'auto')
                 .style('overflow-x', 'hidden');
             _chart.svg()
-                .attr('height', n * (height + (_isBigBar ? _gap * 2 : _gap)));
+                .attr('height', n * (height + (_isBigBar ? _gap * 2 : _gap)) + 8);
         }
 /* --------------------------------------------------------------------------*/
         // vertically align label in center unless they override the value via property setter
