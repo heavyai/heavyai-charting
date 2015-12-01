@@ -1,5 +1,5 @@
 /*!
- *  dc 0.0.4
+ *  dc 0.0.7
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.0.4
+ * @version 0.0.7
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.0.4',
+    version: '0.0.7',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -5583,7 +5583,7 @@ dc.bubbleMixin = function (_chart) {
  * @return {dc.pieChart}
  */
 dc.pieChart = function (parent, chartGroup) {
-    var DEFAULT_MIN_ANGLE_FOR_LABEL = 0.5;
+    var DEFAULT_MIN_ANGLE_FOR_LABEL = 0.4;
 
     var _sliceCssClass = 'pie-slice';
     var _emptyCssClass = 'empty-chart';
@@ -5602,6 +5602,13 @@ dc.pieChart = function (parent, chartGroup) {
     var _drawPaths = false;
     var _chart = dc.capMixin(dc.colorMixin(dc.baseMixin({})));
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    var _pieStyle; // "pie" or "donut"
+    var _pieSizeThreshold = 480;
+    _chart.redoSelect = highlightFilter;
+    _chart.accent = accentSlice;
+    _chart.unAccent = unAccentSlice;
+/* ------------------------------------------------------------------------- */
     _chart.colorAccessor(_chart.cappedKeyAccessor);
 
     _chart.title(function (d) {
@@ -5626,6 +5633,10 @@ dc.pieChart = function (parent, chartGroup) {
     _chart.transitionDuration(350);
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    _chart.measureValue = function (d) {
+        return _chart.cappedValueAccessor(d);
+    };
+
     _chart.redoSelect = highlightFilter;
     _chart.accent = accentSlice;
     _chart.unAccent = unAccentSlice;
@@ -5636,6 +5647,7 @@ dc.pieChart = function (parent, chartGroup) {
 
         _g = _chart.svg()
             .append('g')
+            .attr('class', 'pie-wrapper')
             .attr('transform', 'translate(' + _chart.cx() + ',' + _chart.cy() + ')');
 
         drawChart();
@@ -5688,8 +5700,7 @@ dc.pieChart = function (parent, chartGroup) {
 
         createSlicePath(slicesEnter, arc);
 
-        createTitles(slicesEnter);
-
+        
         createLabels(pieData, arc);
     }
 
@@ -5699,7 +5710,10 @@ dc.pieChart = function (parent, chartGroup) {
             .append('g')
             .attr('class', function (d, i) {
                 return _sliceCssClass + ' _' + i;
-            });
+            })
+/* OVERRIDE ---------------------------------------------------------------- */
+            .classed('stroke-thick', pieIsBig);
+/* ------------------------------------------------------------------------- */
         return slicesEnter;
     }
 
@@ -5707,6 +5721,11 @@ dc.pieChart = function (parent, chartGroup) {
         var slicePath = slicesEnter.append('path')
             .attr('fill', fill)
             .on('click', onClick)
+/* OVERRIDE ---------------------------------------------------------------- */
+            .on('mouseenter', showPopup)
+            .on('mousemove', positionPopup)
+            .on('mouseleave', hidePopup)
+/* ------------------------------------------------------------------------- */
             .attr('d', function (d, i) {
                 return safeArc(d, i, arc);
             });
@@ -5728,35 +5747,78 @@ dc.pieChart = function (parent, chartGroup) {
         dc.transition(labelsEnter, _chart.transitionDuration())
             .attr('transform', function (d) {
                 return labelPosition(d, arc);
-            })
-            .attr('text-anchor', 'middle')
-            .text(function (d) {
-                var data = d.data;
-                if ((sliceHasNoData(data) || sliceTooSmall(d)) && !isSelectedSlice(d)) {
-                    return '';
-                }
-                return _chart.label()(d.data);
             });
+
+/* OVERRIDE ---------------------------------------------------------------- */
+        var showLabel = true;
+
+        labelsEnter
+            .style('font-size', function(d){
+                var data = d.data;
+                var label = d3.select(this);
+
+                if ( showLabel && !sliceHasNoData(data)) {
+                    
+                    var availableLabelWidth = getAvailableLabelWidth(d);
+                    var charPixelWidth = pieIsBig() ? 10 : 8;
+
+                    label.select('.value-dim')
+                        .html(function(){
+                            var dimText = truncateLabel(_chart.label()(d.data), availableLabelWidth, charPixelWidth);
+
+                            if (dimText === '') {
+                                showLabel = false;
+                            }
+                            return dimText;
+                        });
+
+                    if (showLabel && _chart.measureLabelsOn()) {
+                        label.select('.value-measure')
+                            .html(truncateLabel(_chart.measureValue(d.data), availableLabelWidth, charPixelWidth));
+                    }
+                }
+
+                return pieIsBig() ? '16px' : '12px';
+            });          
+/* ------------------------------------------------------------------------- */
     }
 
     function createLabels (pieData, arc) {
         if (_chart.renderLabel()) {
-            var labels = _g.selectAll('text.' + _sliceCssClass)
+            var labels = _g.selectAll('g.pie-label')
                 .data(pieData);
 
             labels.exit().remove();
 
             var labelsEnter = labels
                 .enter()
-                .append('text')
+/* OVERRIDE ---------------------------------------------------------------- */
+                .append('g')
                 .attr('class', function (d, i) {
-                    var classes = _sliceCssClass + ' _' + i;
+                    var classes = 'pie-label _' + i;
                     if (_externalLabelRadius) {
                         classes += ' external';
                     }
                     return classes;
                 })
+                .attr('transform', function (d) {
+                    return labelPosition(d, arc);
+                })
+/* ------------------------------------------------------------------------- */
                 .on('click', onClick);
+/* OVERRIDE ---------------------------------------------------------------- */
+            labelsEnter
+                .append('text')
+                .attr('class', 'value-dim')
+                .attr('dy', (_chart.measureLabelsOn() ? '0': '.4em'));
+
+        if (_chart.measureLabelsOn()) {
+            labelsEnter
+                .append('text')
+                .attr('class', 'value-measure')
+                .attr('dy', '1.2em');
+        }
+/* ------------------------------------------------------------------------- */
             positionLabels(labelsEnter, arc);
             if (_externalLabelRadius && _drawPaths) {
                 updateLabelPaths(pieData, arc);
@@ -5816,7 +5878,9 @@ dc.pieChart = function (parent, chartGroup) {
 
     function updateLabels (pieData, arc) {
         if (_chart.renderLabel()) {
-            var labels = _g.selectAll('text.' + _sliceCssClass)
+/* OVERRIDE ---------------------------------------------------------------- */
+            var labels = _g.selectAll('g.pie-label')
+/* ------------------------------------------------------------------------- */
                 .data(pieData);
             positionLabels(labels, arc);
             if (_externalLabelRadius && _drawPaths) {
@@ -5904,11 +5968,24 @@ dc.pieChart = function (parent, chartGroup) {
      */
     _chart.innerRadius = function (innerRadius) {
         if (!arguments.length) {
-            return _innerRadius;
+/* OVERRIDE ---------------------------------------------------------------- */
+            return _pieStyle ? ( _pieStyle === 'donut' ? (Math.min(_chart.width(), _chart.height()) - _externalRadiusPadding) / 5 : 0): _innerRadius;
+/* ------------------------------------------------------------------------- */
         }
         _innerRadius = innerRadius;
         return _chart;
     };
+/* OVERRIDE ---------------------------------------------------------------- */
+     _chart.pieStyle = function (pieStyle) {
+
+        if (!arguments.length) {
+            return _pieStyle;
+        }
+        
+        _pieStyle = pieStyle;
+        return _chart;
+    };
+/* ------------------------------------------------------------------------- */
 
     /**
      * Get or set the outer radius. If the radius is not set, it will be half of the minimum of the
@@ -5963,9 +6040,9 @@ dc.pieChart = function (parent, chartGroup) {
     };
 
     function buildArcs () {
-        return d3.svg.arc()
-            .outerRadius(_radius - _externalRadiusPadding)
-            .innerRadius(_innerRadius);
+/* OVERRIDE ---------------------------------------------------------------- */
+        return d3.svg.arc().outerRadius(_radius - _externalRadiusPadding).innerRadius(_chart.innerRadius());
+/* ------------------------------------------------------------------------- */
     }
 
     function isSelectedSlice (d) {
@@ -5999,6 +6076,42 @@ dc.pieChart = function (parent, chartGroup) {
         return d3.layout.pie().sort(null).value(_chart.cappedValueAccessor);
     }
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    function getAvailableLabelWidth (d) {
+        var angle = (d.endAngle - d.startAngle);
+
+        if (isNaN(angle) || angle * (_radius / 2) < (_chart.measureLabelsOn() ? 28 : 20)) {
+            return 0;
+        }
+
+        var arc = buildArcs();
+        var centroid = labelCentroid(d, arc);
+        var adjacent = Math.abs(centroid[1]);
+        var useAngle = centroid[0] * centroid[1] < 0 ? d.startAngle : d.endAngle; 
+        var refAngle = centroid[1] >= 0 ? Math.PI : (centroid[0] < 0 ? Math.PI * 2 : 0);
+
+        var tan = Math.tan(Math.abs(refAngle - useAngle));
+        var opposite = tan * adjacent;
+        var labelWidth = (refAngle >= d.startAngle && refAngle < d.endAngle ? Math.abs(centroid[0]) + opposite : Math.abs(centroid[0]) - opposite) * 2;
+        var maxLabelWidth = _radius - _chart.innerRadius() - 24;
+
+        return labelWidth > maxLabelWidth || labelWidth < 0 ? maxLabelWidth : labelWidth;
+    }
+
+    function truncateLabel(data, availableLabelWidth, charPixelWidth) {
+        var labelText = data + '';
+        var textWidth = labelText.length * charPixelWidth;
+        var trimIndex = labelText.length - Math.ceil((textWidth - availableLabelWidth) / charPixelWidth);
+
+        if (textWidth > availableLabelWidth && labelText.length - trimIndex > 2) {
+            labelText = trimIndex > 2 ? labelText.slice(0, trimIndex) + '&#8230;' : '';
+        } 
+
+        return labelText;                
+    }
+ 
+/* ------------------------------------------------------------------------- */
+
     function sliceTooSmall (d) {
         var angle = (d.endAngle - d.startAngle);
         return isNaN(angle) || angle < _minAngleForLabel;
@@ -6009,7 +6122,9 @@ dc.pieChart = function (parent, chartGroup) {
     }
 
     function tweenPie (b) {
-        b.innerRadius = _innerRadius;
+/* OVERRIDE ---------------------------------------------------------------- */
+        b.innerRadius = _chart.innerRadius();
+/* ------------------------------------------------------------------------- */
         var current = this._current;
         if (isOffCanvas(current)) {
             current = {startAngle: 0, endAngle: 0};
@@ -6034,6 +6149,50 @@ dc.pieChart = function (parent, chartGroup) {
             _chart.onClick(d.data, i);
         }
     }
+/* OVERRIDE ---------------------------------------------------------------- */
+    function showPopup(d, i) {
+        var popup = _chart.popup();
+
+        var popupBox = popup.select('.chart-popup-box').html('');
+
+        popupBox.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', fill(d,i));
+
+        popupBox.append('div')
+            .attr('class', 'popup-value')
+            .html(function(){
+                return '<div class="popup-value-dim">'+ _chart.label()(d.data) +'</div><div class="popup-value-measure">'+ _chart.measureValue(d.data) +'</div>';
+            });
+
+        popup.classed('js-showPopup', true);
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup() {
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(this);
+        var x = coordinates[0] + _chart.width() / 2;
+        var y = coordinates[1] + _chart.height() / 2;
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-right', function(){
+                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width();
+            });
+    }
+
+    function pieIsBig () {
+        return _pieSizeThreshold < Math.min(_chart.width(), _chart.height());
+    }
+/* ------------------------------------------------------------------------- */
 
     function safeArc (d, i, arc) {
         var path = arc(d, i);
@@ -6109,7 +6268,9 @@ dc.pieChart = function (parent, chartGroup) {
                 .innerRadius(_radius - _externalRadiusPadding + _externalLabelRadius)
                 .centroid(d);
         } else {
-            centroid = arc.centroid(d);
+/* OVERRIDE -----------------------------------------------------------------*/
+        centroid = labelCentroid(d, arc);
+/* --------------------------------------------------------------------------*/
         }
         if (isNaN(centroid[0]) || isNaN(centroid[1])) {
             return 'translate(0,0)';
@@ -6118,6 +6279,24 @@ dc.pieChart = function (parent, chartGroup) {
         }
     }
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    function labelCentroid (d, arc) {
+        var centroid;
+        if (_externalLabelRadius) {
+            centroid = d3.svg.arc()
+                .outerRadius(_radius - _externalRadiusPadding + _externalLabelRadius)
+                .innerRadius(_radius - _externalRadiusPadding + _externalLabelRadius)
+                .centroid(d);
+        } else {
+            centroid = _innerRadius === 0  && _pieStyle != 'donut' ? d3.svg.arc()
+                .outerRadius(_radius - _externalRadiusPadding)
+                .innerRadius(_radius / 5)
+                .centroid(d) : arc.centroid(d);
+        }
+
+        return centroid;
+    }
+/* --------------------------------------------------------------------------*/
     _chart.legendables = function () {
         return _chart.data().map(function (d, i) {
 
