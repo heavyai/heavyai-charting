@@ -242,7 +242,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
             .attr('class', 'popup-value')
             .html(function(){
                 var key = getKey(0, d);
-                var value = Number(data[key]).toFixed(2);
+                var value = isNaN(data[key]) ?  'N/A' : Number(data[key]).toFixed(2);
                 return '<div class="popup-value-dim">'+ key +'</div><div class="popup-value-measure">'+ value +'</div>';
             });
 

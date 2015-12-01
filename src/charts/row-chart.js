@@ -223,7 +223,7 @@ dc.rowChart = function (parent, chartGroup) {
         _isBigBar = _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32);
 
         if (_isBigBar) {
-            height = ((_chart.effectiveHeight() - (_gap * 2)) - (n + 1) * (_gap * 2)) / n;
+            height = ((_chart.effectiveHeight() - _gap) - (n + 1) * _gap) / n;
         } 
 
         if (_chart.autoScroll() && height < _minBarHeight) {
@@ -233,7 +233,7 @@ dc.rowChart = function (parent, chartGroup) {
                 .style('overflow-y', 'auto')
                 .style('overflow-x', 'hidden');
             _chart.svg()
-                .attr('height', n * (height + (_isBigBar ? _gap * 2 : _gap)) + 8);
+                .attr('height', n * (height + _gap) + 8);
         }
 /* --------------------------------------------------------------------------*/
         // vertically align label in center unless they override the value via property setter
@@ -242,7 +242,7 @@ dc.rowChart = function (parent, chartGroup) {
         }
 
         var rect = rows.attr('transform', function (d, i) {
-                return 'translate(0,' + ((i + 1) * (_isBigBar ? _gap * 2 : _gap) + i * height) + ')';
+                return 'translate(0,' + ((i + 1) * _gap + i * height) + ')';
             }).select('rect')
             .attr('height', height)
             .attr('fill', _chart.getColor)
@@ -320,13 +320,16 @@ dc.rowChart = function (parent, chartGroup) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
         if (_chart.measureLabelsOn()) {
+            var commafy = d3.format(',');
+
             var measureLab = rows.select('.value-measure')
                 .attr('y', _labelOffsetY)
                 .attr('dy', isStackLabel() ?  '1.1em' : _dyOffset)
                 .on('click', onClick)
                 .attr('text-anchor', isStackLabel() ? 'start':'end')
                 .text(function(d){
-                    return _chart.measureValue(d);
+
+                    return commafy(_chart.measureValue(d));
                 })
                 .attr('x', function (d, i) {
                     if (isStackLabel()) {

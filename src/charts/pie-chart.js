@@ -190,8 +190,9 @@ dc.pieChart = function (parent, chartGroup) {
                         });
 
                     if (showLabel && _chart.measureLabelsOn()) {
+                        var commafy = d3.format(',');
                         label.select('.value-measure')
-                            .html(truncateLabel(_chart.measureValue(d.data), availableLabelWidth, charPixelWidth));
+                            .html(truncateLabel(commafy(_chart.measureValue(d.data)), availableLabelWidth, charPixelWidth));
                     }
                 }
 
