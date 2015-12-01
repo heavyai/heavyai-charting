@@ -29,6 +29,10 @@
     position: relative;
     font-family: "Roboto";
 
+    .axis text {
+        font-family: "Roboto";
+    }
+
     .geocoder-input{
         top: 5px;
     }
@@ -36,6 +40,20 @@
     .mapboxgl-canvas-container {
         position: relative;
         top: auto;
+    }
+
+    .heat-box {
+        stroke: white;
+    }
+
+    .heatmap {
+        .axis {
+            fill: $gray4;
+        }
+
+        .box-group.deselected rect {
+            stroke: white;
+        }
     }
 
     .pie-slice {
