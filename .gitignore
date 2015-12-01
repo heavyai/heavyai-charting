@@ -36,3 +36,9 @@ spec/index-browserify.html
 # font noise from some doc tool
 web/docs/public
 
+# generated mapdc.js files
+mapdc.js
+mapdc.js.map
+mapdc.min.css
+mapdc.min.js
+mapdc.min.js.map
