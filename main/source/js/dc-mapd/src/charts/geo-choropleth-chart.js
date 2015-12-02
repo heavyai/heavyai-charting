@@ -89,6 +89,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
                 }
                 return baseClasses;
             });
+
         return regionG;
     }
 
@@ -138,9 +139,10 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
             .attr('fill', function () {
                 var currentFill = d3.select(this).attr('fill');
                 if (currentFill) {
+                    console.log(currentFill);
                     return currentFill;
                 }
-                return 'none';
+                return '#e2e2e2';
             })
 /* OVERRIDE ---------------------------------------------------------------- */
             .on('mouseenter', function(d, i){showPopup(d, i, data);})
@@ -152,7 +154,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
             });
 
         dc.transition(paths, _chart.transitionDuration()).attr('fill', function (d, i) {
-            return _chart.getColor(data[geoJson(layerIndex).keyAccessor(d)], i);
+            return _chart.getColor(data[geoJson(layerIndex).keyAccessor(d)], i) || '#e2e2e2';
         });
     }
 
