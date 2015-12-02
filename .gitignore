@@ -42,3 +42,6 @@ mapdc.js.map
 mapdc.min.css
 mapdc.min.js
 mapdc.min.js.map
+
+# npm publish scripts
+version_checker.js
