@@ -17,7 +17,13 @@ dc.baseMixin = function (_chart) {
     var _isChild;
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    var _popup;
     var _redrawBrushFlag = false;
+    var _isTargeting = false;
+    var _colorByExpr = null;
+    var _legendLock = null;
+    var _legendUnlock = null;
+    var _legendInputChange = null;
 /* ------------------------------------------------------------------------- */
 
     var _minWidth = 200;
@@ -39,6 +45,7 @@ dc.baseMixin = function (_chart) {
     var _keyAccessor = dc.pluck('key0');
     var _label = dc.pluck('key0');
     var _ordering = dc.pluck('key0');
+    var _measureLabelsOn = false;
 /* ------------------------------------------------------------------------- */
 
     var _valueAccessor = dc.pluck('value');
@@ -83,6 +90,8 @@ dc.baseMixin = function (_chart) {
     var _legend;
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    var _legendContinuous;
+    
     _chart._colorLegend = null;
 
     var _topQueryCallback = null;
@@ -186,6 +195,7 @@ dc.baseMixin = function (_chart) {
         if (!arguments.length) {
             return _height(_root.node());
         }
+
         _height = d3.functor(height || _defaultHeight);
         return _chart;
     };
@@ -363,7 +373,9 @@ dc.baseMixin = function (_chart) {
     };
 
     _chart.resetSvg = function () {
-        _chart.select('svg').remove();
+/* OVERRIDE ---------------------------------------------------------------- */
+        _chart.select('.svg-wrapper').remove();
+/* ------------------------------------------------------------------------- */
         return generateSvg();
     };
 
@@ -376,10 +388,64 @@ dc.baseMixin = function (_chart) {
     }
 
     function generateSvg () {
-        _svg = _chart.root().append('svg');
+/* OVERRIDE ---------------------------------------------------------------- */
+        _svg = _chart.root().append('div').attr('class', 'svg-wrapper').append('svg');
+/* ------------------------------------------------------------------------- */
         sizeSvg();
         return _svg;
     }
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    function sizeRoot () {
+        if (_root) {
+            _root
+                .style('height', _chart.height()+'px');
+        }
+    }
+
+    _chart.popup = function (popupElement) {
+        if (!arguments.length) {
+            return _popup;
+        }
+        _popup = popupElement;
+        return _chart;
+    };
+
+    _chart.generatePopup = function () {
+        _chart.select('.chart-popup').remove();
+
+        _popup = _chart.root().append('div').attr('class', 'chart-popup');
+
+        _popup.append('div').attr('class', 'chart-popup-box');
+
+        return _popup;
+    }
+
+    _chart.measureLabelsOn = function (val) {
+        if (!arguments.length) {
+            return _measureLabelsOn;
+        }
+        _measureLabelsOn = val;
+        return _chart;
+    };
+
+    _chart.isTargeting = function (isTargeting) {
+        if (!arguments.length) {
+            return _isTargeting;
+        }
+        _isTargeting = isTargeting;
+        return _chart;
+    };
+
+    _chart.colorByExpr = function (colorByExpr) {
+        if (!arguments.length) {
+            return _colorByExpr;
+        }
+        _colorByExpr = colorByExpr;
+        return _chart;
+    };
+/* ------------------------------------------------------------------------- */
+
 
     _chart.filterPrinter = function (filterPrinterFunction) {
         if (!arguments.length) {
@@ -462,6 +528,8 @@ dc.baseMixin = function (_chart) {
         if (dc._refreshDisabled)
             return;
         _chart.dataCache = data !== undefined ? data : null;
+
+        sizeRoot();
 /* ------------------------------------------------------------------------- */
 
         _listeners.preRender(_chart);
@@ -480,6 +548,8 @@ dc.baseMixin = function (_chart) {
         if (_chart._colorLegend) {
           _chart._colorLegend.render();
         }
+
+        _chart.generatePopup();
 /* ------------------------------------------------------------------------- */
 
         _chart._activateRenderlets('postRender');
@@ -539,7 +609,6 @@ dc.baseMixin = function (_chart) {
             return;
         _chart.dataCache = data !== undefined ? data : null;
 /* ------------------------------------------------------------------------- */
-
         sizeSvg();
         _listeners.preRedraw(_chart);
 
@@ -769,6 +838,62 @@ dc.baseMixin = function (_chart) {
         return [];
     };
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.legendablesContinuous = function () {
+
+        var legends = [];
+        var colorDomain = _chart.colors().domain();
+        var colorDomainSize = colorDomain[1] - colorDomain[0];
+        var colorRange = _chart.colors().range();
+        var numColors = colorRange.length;
+        var commafy = d3.format(',');
+
+        for (var c = 0; c < numColors; c++) {
+          var startRange = (c/numColors)*colorDomainSize + colorDomain[0];   
+
+            if (_isTargeting) {
+                startRange = '%' + (parseFloat(startRange) * 100.0).toFixed(2); 
+            }
+            else if (_colorByExpr === 'count(*)') {
+                startRange = parseInt(startRange);
+            } 
+            else {
+                startRange = parseFloat(startRange).toFixed(2); 
+                startRange = (startRange >= 1000 ? Math.round(startRange) : startRange);
+            }
+
+            legends.push({color: colorRange[c], value: isNaN(startRange) ? startRange : commafy(startRange) });
+        }
+
+        return legends;
+    }
+
+    _chart.legendLock = function(_) {
+      if (!arguments.length) {
+        return _legendLock;
+      }
+      _legendLock = _;
+      return _chart;
+    }
+
+    _chart.legendUnlock = function(_) {
+      if (!arguments.length) {
+        return _legendUnlock;
+      }
+      _legendUnlock = _;
+      return _chart;
+    }
+
+    _chart.legendInputChange = function(_) {
+      if (!arguments.length) {
+        return _legendInputChange;
+      }
+      _legendInputChange = _;
+      return _chart;
+    }
+
+/* ------------------------------------------------------------------------- */
+
     _chart.legendHighlight = function () {
         // do nothing in base, should be overridden by sub-function
     };
@@ -867,6 +992,18 @@ dc.baseMixin = function (_chart) {
         _legend.parent(_chart);
         return _chart;
     };
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.legendContinuous = function (legendContinuous) {
+        if (!arguments.length) {
+            return _legendContinuous;
+        }
+        _legendContinuous = legendContinuous;
+        _legendContinuous.parent(_chart);
+        return _chart;
+    };
+
+/* --------------------------------------------------------------------------*/
 
     _chart.chartID = function () {
         return _chart.__dcFlag__;
