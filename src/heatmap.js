@@ -212,12 +212,12 @@ dc.heatMap = function (parent, chartGroup) {
             _rows = rows;
             return _chart;
         }
-        if (_rows) {
+        // if (_rows) {
             return _rows;
-        }
-        var rowValues = _chart.data().map(_chart.valueAccessor());
-        rowValues.sort(d3.ascending);
-        return d3.scale.ordinal().domain(rowValues.filter(uniq));
+        // }
+        // var rowValues = _chart.data().map(_chart.valueAccessor());
+        // rowValues.sort(d3.ascending);
+        // return d3.scale.ordinal().domain(rowValues.filter(uniq));
     };
 
 /* OVERRIDE -----------------------------------------------------------------*/
@@ -246,12 +246,12 @@ dc.heatMap = function (parent, chartGroup) {
             _cols = cols;
             return _chart;
         }
-        if (_cols) {
+        // if (_cols) {
             return _cols;
-        }
-        var colValues = _chart.data().map(_chart.keyAccessor());
-        colValues.sort(d3.ascending);
-        return d3.scale.ordinal().domain(colValues.filter(uniq));
+        // }
+        // var colValues = _chart.data().map(_chart.keyAccessor());
+        // colValues.sort(d3.ascending);
+        // return d3.scale.ordinal().domain(colValues.filter(uniq));
     };
 
 /* OVERRIDE -----------------------------------------------------------------*/
