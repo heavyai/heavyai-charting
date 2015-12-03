@@ -59,7 +59,7 @@
   },
   "scripts": {
     "test": "grunt test",
-    "bump": "npm version"
+    "bump": "npm --no-git-tag-version version"
   },
   "npmName": "mapdc",
   "npmFileMap": [
