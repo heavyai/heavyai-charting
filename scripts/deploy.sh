@@ -9,7 +9,7 @@ else
 
   # bump the version
   # TODO: set major, minor, or patch some how
-  npm --no-git-tag-version version --patch
+  npm --no-git-tag-version version -- patch
 
   # add and commit the new version
   git commit -a -m "`sh package_version.sh`"
