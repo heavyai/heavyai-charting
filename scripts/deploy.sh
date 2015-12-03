@@ -24,11 +24,13 @@ cd ..
 npm --no-git-tag-version version patch
 
 # Add and commit the new version
-git commit -a -m "`sh ./scripts/package_version.sh`"
+cd scripts
+git commit -a -m "`sh package_version.sh`"
 
 # push the new version to github
 git push origin temp:master
 
 # publish the module to npm
+cd ..
 npm publish
 
