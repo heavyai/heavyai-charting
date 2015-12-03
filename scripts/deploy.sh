@@ -22,6 +22,9 @@ git checkout -b temp
 # TODO: set major, minor, or patch some how
 npm --no-git-tag-version version patch
 
+# Add and commit the new version
+git commit -a -m "`sh package_version.sh`"
+
 # push the new version to github
 git push origin temp:master
 
