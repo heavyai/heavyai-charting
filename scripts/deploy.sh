@@ -20,6 +20,7 @@ git checkout -b temp
 
 # bump the version
 # TODO: set major, minor, or patch some how
+cd ..
 npm --no-git-tag-version version patch
 
 # Add and commit the new version
