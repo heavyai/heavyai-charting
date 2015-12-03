@@ -13,9 +13,6 @@ else
   # checkout a new temp branch
   git checkout -b temp
 
-  # back out to be adjacent to the package.json file
-  cd ..
-
   # bump the version
   # TODO: set major, minor, or patch some how
   npm --no-git-tag-version version patch
