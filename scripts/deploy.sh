@@ -7,9 +7,13 @@ if [[ `git log -1 | grep "Jenkins MapD"` ]]; then
 
 else
 
-  # checkout a new branch
+  # remove the previous temp branch
+  git branch -d temp
+
+  # checkout a new temp branch
   git checkout -b temp
 
+  # back out to be adjacent to the package.json file
   cd ..
 
   # bump the version
@@ -18,9 +22,6 @@ else
 
   # push the new version to github
   git push origin temp:master
-
-  # remove the temp branch
-  git branch -d temp
 
 fi
 
