@@ -256,16 +256,16 @@ function CreateCharts(crossFilter) {
  *  using standard d3 functions - telling dc.mapd.js to do this before each
  *  render and redraw */
 
-                      var setScales = function(chart, type){
-                        chart.on(type, function(chart) {
-                          chart.x(d3.scale.linear().domain(d3.extent(chart.data(), chart.keyAccessor())));
-                          chart.y(d3.scale.linear().domain(d3.extent(chart.data(), chart.valueAccessor())));
-                          chart.r(d3.scale.linear().domain(d3.extent(chart.data(), chart.radiusValueAccessor())));
-                        });
-                      }
+    var setScales = function(chart, type){
+      chart.on(type, function(chart) {
+        chart.x(d3.scale.linear().domain(d3.extent(chart.data(), chart.keyAccessor())));
+        chart.y(d3.scale.linear().domain(d3.extent(chart.data(), chart.valueAccessor())));
+        chart.r(d3.scale.linear().domain(d3.extent(chart.data(), chart.radiusValueAccessor())));
+      });
+    }
 
-                      setScales(dcScatterPlot, "preRender");
-                      setScales(dcScatterPlot, "preRedraw");
+    setScales(dcScatterPlot, "preRender");
+    setScales(dcScatterPlot, "preRedraw");
 
 /*---------------------TIME CHART (CHART 3) EXAMPLE------------------------------*/
 
