@@ -7,14 +7,20 @@ if [[ `git log -1 | grep "Jenkins MapD"` ]]; then
 
 else
 
+  # checkout a new branch
+  git checkout -b temp
+
+  cd ..
+
   # bump the version
   # TODO: set major, minor, or patch some how
-  npm --no-git-tag-version version -- patch
+  npm --no-git-tag-version version patch
 
-  # add and commit the new version
-  git commit -a -m "`sh package_version.sh`"
+  # push the new version to github
+  git push origin temp:master
 
-  git push origin master
+  # remove the temp branch
+  git branch -d temp
 
 fi
 
