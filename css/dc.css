@@ -2,6 +2,10 @@ art {
     float: left;
 }
 
+.data-count{
+    height: auto !important;
+}
+
 .dc-chart rect.bar {
     stroke: none;
     cursor: pointer;
