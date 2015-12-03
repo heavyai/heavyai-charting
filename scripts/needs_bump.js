@@ -1,5 +1,5 @@
 var exec = require('child_process').exec;
-var pkgVersion = require('./package.json').version;
+var pkgVersion = require('../package.json').version;
 
 exec('npm view @mapd/mapdc version', (error, stdout, stderr) => {
   var packageVersion = _formatVersion(pkgVersion);
