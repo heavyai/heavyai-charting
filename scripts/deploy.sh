@@ -23,5 +23,8 @@ else
   # push the new version to github
   git push origin temp:master
 
+  # publish the module to npm
+  npm publish
+
 fi
 
