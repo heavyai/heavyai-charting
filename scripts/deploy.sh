@@ -23,7 +23,7 @@ git checkout -b temp
 npm --no-git-tag-version version patch
 
 # Add and commit the new version
-git commit -a -m "`sh package_version.sh`"
+git commit -a -m "`sh ./scripts/package_version.sh`"
 
 # push the new version to github
 git push origin temp:master
