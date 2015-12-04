@@ -25,6 +25,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     var _r = 1; // default radius 5
     var _dynamicR = null;
     _chart.colors("#22A7F0"); // set constant as picton blue as default
+    var _hasBeenRendered = false;
 
     /**
      #### .x([scale])
@@ -259,11 +260,13 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
 
       var data = _chart.data();
       addOverlay(data.image, data.nonce)
+      _hasBeenRendered = true;
 
     }
 
     _chart._doRedraw = function() {
-  
+      if (!_hasBeenRendered)
+          return _chart._doRender();
       var data = _chart.data();
       addOverlay(data.image, data.nonce)
     }
