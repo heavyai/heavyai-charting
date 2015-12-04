@@ -5,7 +5,7 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 
 ### Installation:
 
-To install and build mapdc, clone down the repo and run the following commands:
+Clone down the repo and run the following commands:
 
 1. `npm install` - to get the dependencies.
 2. `npm install -g grunt-cli` - to get the Grunt build tool.
