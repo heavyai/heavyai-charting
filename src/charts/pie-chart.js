@@ -388,7 +388,7 @@ dc.pieChart = function (parent, chartGroup) {
     }
 
     _chart._doRedraw = function () {
-/* --------------------------------------------------------------------------*/
+/* OVERRIDE ---------------------------------------------------------------- */
         if (!_hasBeenRendered) // guard to prevent a redraw before a render
             return _chart._doRender();
 /* ------------------------------------------------------------------------- */

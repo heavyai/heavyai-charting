@@ -112,7 +112,7 @@ dc.cloudChart = function(parent, chartGroup) {
 
     _chart._doRedraw = function () {
         if (!_hasBeenRendered)
-                return _chart._doRender();
+            return _chart._doRender();
         if (_noRelayout) {
             cloudDraw(_tags);
             _noRelayout = false;
