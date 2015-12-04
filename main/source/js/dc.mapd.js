@@ -252,8 +252,9 @@ dc.redrawAll = function (group, callback) {
                 charts[i].redrawAsync(queryGroupId,charts.length - 1);
             }
         }
-        else
+        else {
             charts[i].redrawAsync(queryGroupId,charts.length);
+        }
     }
 
     if (dc._renderlet !== null) {
@@ -1372,7 +1373,6 @@ dc.baseMixin = function (_chart) {
         }
 
         _chart._activateRenderlets('postRedraw');
-
         if (queryGroupId !== undefined) {
 
             if (++dc._redrawCount == queryCount) {
@@ -2186,36 +2186,343 @@ dc.colorMixin = function (_chart) {
 
 dc.mapMixin = function (_chart) {
 
-    function zoomHandler() {
-      _chart._invokeZoomedListener();
+    var _map = null;
+    var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
+    var _lastWidth = null;
+    var _lastHeight = null;
+    //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
+    var id = _chart.chartID() - 2;
+    var _mapId = "widget" + id; // TODO: make less brittle (hardwired now to having two charts before point map
+<<<<<<< HEAD
+    _chart._map = null;
+=======
+    var _map = null;
+>>>>>>> Async and sync render calls working - have data displayed in image - need to fix z-order over basemap - needs to support mercrator projection
+    var _mapInitted = false;
+    var _xDim = null;
+    var _yDim = null;
+    var _lastMapMoveType = 'moveend';
+    var _lastMapUpdateTime = 0;
+    var _mapUpdateInterval = 100; //default
+
+
+    _chart.xDim = function(xDim) {
+        if (!arguments.length) 
+            return _xDim;
+        _xDim = xDim;
+        return _chart;
     }
 
-    var _zoom = d3.behavior.zoom().on('zoom', zoomHandler);
-    var _mouseZoomable = true;
-    var _hasBeenMouseZoomable = true;
+    _chart.yDim = function(yDim) {
+        if (!arguments.length) 
+            return _yDim;
+        _yDim = yDim;
+        return _chart;
+    }
 
-    function configureMouseZoom () {
-        if (_mouseZoomable) {
-            _chart._enableMouseZoom();
-        }
-        else if (_hasBeenMouseZoomable) {
-            _chart._disableMouseZoom();
+    _chart.mapUpdateInterval = function (mapUpdateInterval) {
+        if (!arguments.length)
+            return _mapUpdateInterval;
+        _mapUpdateInterval = mapUpdateInterval;
+        return _chart;
+    }
+
+    function conv4326To900913 (coord) {
+      var transCoord = [0.0,0.0];
+      transCoord[0] = coord[0] * 111319.49077777777778; 
+      transCoord[1] = Math.log(Math.tan((90.0 + coord[1]) * 0.00872664625997)) * 6378136.99911215736947;
+      return transCoord;
+    }
+
+    function onMapMove(e) {
+        if (_xDim !== null && _yDim != null) {
+            if (e !== undefined && e.type == 'movend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
+                return;
+            if (e !== undefined)
+                _lastMapMoveType = e.type;
+            var curTime = (new Date).getTime();
+            var bounds = _chart._map.getBounds();
+            if (e !== undefined && e.type == 'move') {
+                if (curTime - _lastMapUpdateTime < _mapUpdateInterval) {
+                    return; // for now - could add method here
+                }
+            }
+            _lastMapUpdateTime = curTime;
+            var minCoord = conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+            var maxCoord = conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+
+            _xDim.filter([minCoord[0],maxCoord[0]]);
+            _yDim.filter([minCoord[1],maxCoord[1]]);
+            dc.redrawAll();
         }
     }
 
-    _chart._enableMouseZoom = function () {
-        _hasBeenMouseZoomable = true;
-        _zoom.x(_chart.x())
-            .scaleExtent(_zoomScale)
-            .size([_chart.width(), _chart.height()])
-            .duration(_chart.transitionDuration());
-        _chart.root().call(_zoom);
-    };
+    function initMap() {
+        mapboxgl.accessToken = _mapboxAccessToken; 
+        _chart._map = new mapboxgl.Map({
+          container: _mapId, // container id
+          style: 'map_styles/light-v7.json',
+          interactive: true,
+          center: [0, 0], // starting position
+          zoom: 4 // starting zoom
+        });
+        _chart._map.on('move', onMapMove);
+        _chart._map.on('moveend', onMapMove);
+        _mapInitted = true;
+    }
 
-    configureMouseZoom();
+    _chart.on('preRender', function(chart) {
+        var width = chart.width(); 
+        var height = chart.height(); 
+        if (!_mapInitted)
+            initMap();
+        if (width !== _lastWidth || height !== _lastHeight) {
+            $("#" + _mapId + " canvas").width(width).height(height);
+            _lastWidth = width;
+            _lastHeight = height;
+            _chart._map.resize();
+            onMapMove(); //to reset filter
+        }
+    });
+    initMap();
 
     return _chart;
-};
+}
+
+dc.rasterMixin = function(_chart) {
+    _chart._vegaSpec = {};
+
+     _chart._resetVegaSpec = function() {
+      _chart._vegaSpec.width = _chart.width();
+      _chart._vegaSpec.height = _chart.height();
+      _chart._vegaSpec.data = [
+        {
+            "name": "table"
+        }
+      ];
+      _chart._vegaSpec.scales = [];
+      _chart._vegaSpec.marks = [];
+    }
+
+    /* _determineScaleType because there is no way to determine the scale type
+     * in d3 except for looking to see what member methods exist for it
+     */
+
+    _chart._determineScaleType = function(scale) {
+        var scaleType = null;
+        if (scale.rangeBand !== undefined)
+            return "ordinal";
+        if (scale.exponent !== undefined) 
+            return "power";
+        if (scale.base !== undefined) 
+            return "log";
+        if (scale.quantiles !== undefined)
+            return "quantiles";
+        if (scale.interpolate !== undefined)
+            return "linear";
+        return "quantize";
+    }
+
+    _chart.vegaSpec = function(_) {
+      if (!arguments.length)
+        return _chart._vegaSpec;
+      _chart._vegaSpec = _;
+      return _chart;
+    }
+    //_chart.setDataAsync(function(group,callbacks) {
+    //    callbacks.pop()();
+    //});
+
+    //_chart.data(function (group) {
+    //    return;
+    //});
+    return _chart;
+}
+
+dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
+    var _chart = null;
+
+    var _useMap = useMap !== undefined ? useMap : false;
+
+    if (_useMap) 
+        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({})))));
+    else
+        _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
+
+    var _imageOverlay = null;
+
+    var _x = null; 
+    var _y = null; 
+    var _r = 3; // default radius 5
+    _chart.colors("#22A7F0"); // set constant as picton blue as default
+
+    /**
+     #### .x([scale])
+     Gets or sets the x scale. The x scale can be any d3
+     [quantitive scale](https://github.com/mbostock/d3/wiki/Quantitative-Scales)
+     **/
+    _chart.x = function (x) {
+        if (!arguments.length) {
+            return _x;
+        }
+        _x = x;
+        return _chart;
+    };
+
+    /**
+    #### .y([yScale])
+    Get or set the y scale. The y scale is typically automatically determined by the chart implementation.
+
+    **/
+    _chart.y = function (_) {
+        if (!arguments.length) {
+            return _y;
+        }
+        _y = _;
+        return _chart;
+    };
+
+    _chart.r = function (_) {
+        if (!arguments.length) {
+            return _r;
+        }
+        _r = _;
+        return _chart;
+    };
+
+    _chart.setDataAsync(function(group, callbacks) {
+        updateXAndYScales();
+        _chart._resetVegaSpec();
+        genVegaSpec();
+        if (_chart.cap() === Infinity) {
+          group.allAsync(callbacks);
+        }
+        else {
+            group.topAsync(_chart.cap(),undefined, JSON.stringify(_chart._vegaSpec), callbacks);
+        }
+    });
+        
+    _chart.data(function (group) {
+        
+        if (_chart.dataCache !== null)
+            return _chart.dataCache;
+        updateXAndYScales();
+        _chart._resetVegaSpec();
+        genVegaSpec();
+
+        if (_chart.cap() === Infinity) {
+            return group.all(JSON.stringify(_chart._vegaSpec));
+        }
+        else {
+            return group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
+        }
+<<<<<<< HEAD
+
+=======
+>>>>>>> Async and sync render calls working - have data displayed in image - need to fix z-order over basemap - needs to support mercrator projection
+    });
+
+    function genVegaSpec() {
+        // scales
+        _chart._vegaSpec.scales = [];
+        if (_x === null || _y === null || _r === null)
+            return;
+            //throw ("Bubble raster chart missing mandatory scale");
+
+        var xScaleType = _chart._determineScaleType(_x);
+        _chart._vegaSpec.scales.push({name: "x", type: xScaleType, domain: _x.domain(), range: "width"})  
+
+        var yScaleType = _chart._determineScaleType(_y);
+        _chart._vegaSpec.scales.push({name: "y", type: yScaleType, domain: _y.domain(),range: "height"})  
+        var rIsConstant = false;
+        if (typeof _r === '[object Function]') {
+            var rScaleType = _chart._determineScaleType(_r);
+            _chart._vegaSpec.scales.push({name: "size", type: rScaleType, domain: _r.domain(), range: _r.range()});
+        }
+        else {
+            rIsConstant = true;
+        }
+        var colorIsConstant = false;
+            
+        var colors = _chart.colors();
+        if (colors !== null) {
+            if (typeof colors === '[object Function]') {
+                var colorScaleType = _chart._determineScaleType(colors);
+                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range()})  
+            }
+            else 
+                colorIsConstant = true;
+        }
+        
+        //_chart._vegaSpec.scales.push({name: "color", type: "ordinal", domain: [1,2,3], range: ["red", "blue", "green"]})  
+        _chart._vegaSpec.marks = [];
+        var markObj = {};
+        markObj.type = "points";
+        markObj.from = {data: "table"};
+        markObj.properties = {};
+        //markObj.properties.x = {scale: "x", field: _chart.xDim().value()[0]}; 
+        markObj.properties.x = {scale: "x", field: "x"}; 
+        //markObj.properties.y = {scale: "y", field: _chart.yDim().value()[0]}; 
+        markObj.properties.y = {scale: "y", field: "y"}; 
+        if (colorIsConstant) 
+            markObj.properties.fillColor = {value: _chart.colors()()}; 
+        else
+            markObj.properties.fillColor = {scale: "color", field: "color"}; 
+
+        if (rIsConstant) 
+            markObj.properties.size = {value: _r}; 
+        else
+            markObj.properties.size = {scale: "size", field: "size"}; 
+
+        _chart._vegaSpec.marks.push(markObj);
+    }
+
+    function updateXAndYScales () {
+        if (_chart.xDim() !== null && _chart.yDim() !== null) {
+            if (_x === null)
+                _x = d3.scale.linear();
+            var xRange = _chart.xDim().getFilter(); 
+            if (xRange !== null)
+                _x.domain(xRange[0]); // First element of range because range filter can theoretically support multiple ranges
+            if (_y === null)
+                _y = d3.scale.linear();
+            var yRange = _chart.yDim().getFilter(); 
+            if (yRange !== null)
+                _y.domain(yRange[0]); // First element of range because range filter can theoretically support multiple ranges
+
+        }
+    }
+
+    _chart._doRender = function() {
+      var data = _chart.data();
+      if (_imageOverlay === null) {
+        var widgetId = _chart.chartID() - 2;
+        _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+<<<<<<< HEAD
+        //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
+=======
+>>>>>>> Async and sync render calls working - have data displayed in image - need to fix z-order over basemap - needs to support mercrator projection
+      }
+      $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
+    }
+
+    _chart._doRedraw = function() {
+      var data = _chart.data();
+      if (_imageOverlay === null) {
+        var widgetId = _chart.chartID() - 2;
+        _imageOverlay = $('<img class="raster-overlay" />').appendTo("#widget" + widgetId);
+<<<<<<< HEAD
+        //_imageOverlay = $('<img class="raster-overlay" />').appendTo(_chart._map.getCanvasContainer());
+=======
+>>>>>>> Async and sync render calls working - have data displayed in image - need to fix z-order over basemap - needs to support mercrator projection
+      }
+      $(_imageOverlay).attr('src', 'data:image/png;base64,' + data);
+    }
+
+    return _chart.anchor(parent, chartGroup);
+}
+
+
 
 dc.mapChart = function(parent, chartGroup) {
   //var _chart = dc.mapMixin(dc.baseMixin({}));
@@ -3730,51 +4037,29 @@ dc.capMixin = function (_chart) {
           group.allAsync(callbacks);
       }
       else {
-          group.topAsync(_cap, undefined, callbacks)
+          group.topAsync(_cap, undefined, undefined, callbacks)
       }
     });
 
-    if (!dc.async) {
-      _chart.data(function (group) {
-          if (_cap === Infinity) {
-            if (_chart.dataCache != null)
-              return _chart._computeOrderedGroups(_chart.dataCache);
-            else
-              return _chart._computeOrderedGroups(group.all());
-          } else {
-            var topRows = null
-            if (_chart.dataCache != null)
-                topRows = _chart.dataCache;
-            else
-              topRows = group.top(_cap); // ordered by crossfilter group order (default value)
-             topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
-              if (_othersGrouper) {
-                  return _othersGrouper(topRows);
-              }
-              return topRows;
-          }
-      });
-    }
-    else {
-      _chart.data(function(group, callbacks) {
-          if (_cap === Infinity) {
-            callbacks.push(_chart.computeOrderedGroups.bind(this));
-            group.allAsync(callbacks);
-            return;
-          }
-          else {
-            callbacks.push(capCallback.bind(this));
-          }
-        });
-          
-      _chart.capCallback = function(data, callbacks) {
-        var topRows = _chart._computeOrderedGroups(data); 
-        if (_othersGrouper) {
-          return _othersGrouper(topRows);
+    _chart.data(function (group) {
+        if (_cap === Infinity) {
+          if (_chart.dataCache != null)
+            return _chart._computeOrderedGroups(_chart.dataCache);
+          else
+            return _chart._computeOrderedGroups(group.all());
+        } else {
+          var topRows = null
+          if (_chart.dataCache != null)
+              topRows = _chart.dataCache;
+          else
+            topRows = group.top(_cap); // ordered by crossfilter group order (default value)
+           topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
+            if (_othersGrouper) {
+                return _othersGrouper(topRows);
+            }
+            return topRows;
         }
-        return topRows;
-      }
-    }
+    });
 
     /**
     #### .cap([count])
@@ -3860,8 +4145,8 @@ dc.bubbleMixin = function (_chart) {
     _chart.renderLabel(true);
 
     _chart.setDataAsync(function(group,callbacks) {
-        if (_chart.cap() != undefined) {
-            group.topAsync(_chart.cap(), undefined, callbacks);
+        if (_chart.cap() !== undefined) {
+            group.topAsync(_chart.cap(), undefined, undefined, callbacks);
         }
         else {
             group.allAsync(callbacks);
@@ -5519,7 +5804,7 @@ dc.dataTable = function (parent, chartGroup) {
             _chart.dimension().bottomAsync(_size, undefined,callbacks);
         }
         else {
-            _chart.dimension().topAsync(_size, undefined,callbacks);
+            _chart.dimension().topAsync(_size, undefined, undefined, callbacks);
         }
     });
 
@@ -7331,11 +7616,7 @@ dc.bubbleOverlay = function (root, chartGroup) {
       _chart.bounds = [[0.0,0.0],[0.0,0.0]];
       _chart.bounds[0] = conv4326To900913(bounds[0]);
       _chart.bounds[1] = conv4326To900913(bounds[1]);
-      
     }
-
-
-    
 
     _chart._doRender = function () {
         _g = initOverlayG();
@@ -8629,7 +8910,7 @@ dc.numberDisplay = function (parent, chartGroup) {
     };
 
     _chart.setDataAsync(function(group,callbacks) {
-        group.value ? group.valueAsync(callbacks) : group.topAsync(1, undefined, callbacks);
+        group.value ? group.valueAsync(callbacks) : group.topAsync(1, undefined, undefined, callbacks);
     });
 
 

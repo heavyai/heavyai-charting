@@ -4,7 +4,7 @@
 dc.marginMixin = function (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
-    var _margin = { top: 10, right: 50, bottom: 40, left: 60 };
+    var _margin = { top: 10, right: 50, bottom: 48, left: 60 };
 /* ------------------------------------------------------------------------- */
 
     _chart.margins = function (margins) {

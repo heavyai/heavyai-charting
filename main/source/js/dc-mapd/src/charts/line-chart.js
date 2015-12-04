@@ -94,7 +94,9 @@ dc.lineChart = function (parent, chartGroup) {
     };
 
     function colors (d, i) {
-        return _chart.getColor.call(d, d.values, i);
+/* OVERRIDE ---------------------------------------------------------------- */
+        return "#22A7F0";
+/* ------------------------------------------------------------------------- */
     }
 
     function drawLine (layersEnter, layers) {
