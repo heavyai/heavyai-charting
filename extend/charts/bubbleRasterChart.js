@@ -26,6 +26,8 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     var _dynamicR = null;
     _chart.colors("#22A7F0"); // set constant as picton blue as default
     var _hasBeenRendered = false;
+    var counter = 0;
+
 
     /**
      #### .x([scale])
@@ -235,6 +237,27 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
             "type": "raster",
             "paint": {"raster-opacity": 0.85}
         })
+        map.on('layer.add', function() {
+          console.log(toBeRemovedOverlay);
+          if(map.getSource(toBeRemovedOverlay)){
+              removeOverlay(toBeRemovedOverlay);
+          }
+        });
+        /*
+        if (counter == 0) {
+            console.log('setting up event');
+            map.on('layer.add', function() {
+              console.log(toBeRemovedOverlay);
+              if(map.getSource(toBeRemovedOverlay)){
+                  removeOverlay(toBeRemovedOverlay);
+              }
+            });
+            counter++;
+        }
+        */
+
+
+        /*
         setTimeout(function(){
           if(map.getSource(toBeRemovedOverlay)){
               removeOverlay(toBeRemovedOverlay);
@@ -253,6 +276,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
           //    });
           //}
         }, 40)
+        */
 
     }
 
