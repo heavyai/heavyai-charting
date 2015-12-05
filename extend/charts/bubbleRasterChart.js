@@ -27,6 +27,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     _chart.colors("#22A7F0"); // set constant as picton blue as default
     var _hasBeenRendered = false;
     var counter = 0;
+    /*
+    _chart._map.on('layer.add', function() {
+      console.log(toBeRemovedOverlay);
+      if(_chart._map.getSource(toBeRemovedOverlay)){
+          removeOverlay(toBeRemovedOverlay);
+      }
+    });
+    */
 
 
     /**
@@ -223,60 +231,31 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
         var toBeAddedOverlay = "overlay" + _activeLayer
         if (toBeRemovedOverlay === toBeAddedOverlay)
             return;
-        
-        map.addSource(toBeAddedOverlay,{
-            "id": toBeAddedOverlay,
-            "type": "image",
-            "url": 'data:image/png;base64,' + data,
-            "coordinates": bounds 
-        })
-        //delete _renderBoundsMap[nonce];
-        map.addLayer({
-            "id": toBeAddedOverlay,
-            "source": toBeAddedOverlay,
-            "type": "raster",
-            "paint": {"raster-opacity": 0.85}
-        })
-        map.on('layer.add', function() {
-          console.log(toBeRemovedOverlay);
-          if(map.getSource(toBeRemovedOverlay)){
-              removeOverlay(toBeRemovedOverlay);
-          }
-        });
-        /*
-        if (counter == 0) {
-            console.log('setting up event');
-            map.on('layer.add', function() {
-              console.log(toBeRemovedOverlay);
+        try { 
+            map.addSource(toBeAddedOverlay,{
+                "id": toBeAddedOverlay,
+                "type": "image",
+                "url": 'data:image/png;base64,' + data,
+                "coordinates": bounds 
+            })
+            //delete _renderBoundsMap[nonce];
+
+            map.addLayer({
+                "id": toBeAddedOverlay,
+                "source": toBeAddedOverlay,
+                "type": "raster",
+                "paint": {"raster-opacity": 0.85}
+            })
+
+            setTimeout(function(){
               if(map.getSource(toBeRemovedOverlay)){
                   removeOverlay(toBeRemovedOverlay);
               }
-            });
-            counter++;
+            }, 100)
         }
-        */
-
-
-        /*
-        setTimeout(function(){
-          if(map.getSource(toBeRemovedOverlay)){
-              removeOverlay(toBeRemovedOverlay);
-          }
-          //if(map.getSource(toBeRemovedOverlay)){
-
-          //    map.batch(function (batch) {
-          //        batch.setPaintProperty(toBeRemovedOverlay, 'raster-opacity', 0);
-          //        batch.setPaintProperty(toBeAddedOverlay, 'raster-opacity', 0.85);
-          //      });
-          //    removeOverlay(toBeRemovedOverlay);
-          //}
-          //else {
-          //    map.batch(function (batch) {
-          //        batch.setPaintProperty(toBeAddedOverlay, 'raster-opacity', 0.85);
-          //    });
-          //}
-        }, 40)
-        */
+        catch(err) {
+            console.log(err);
+        }
 
     }
 

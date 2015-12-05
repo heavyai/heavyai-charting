@@ -92,7 +92,7 @@ dc.mapMixin = function (_chart, chartId) {
                     _lastMapUpdateTime = curTime;
                     _isFirstMoveEvent = false;
                 }
-                if (curTime - _lastMapUpdateTime < _mapUpdateInterval) {
+                if (_mapUpdateInterval === Infinity || (curTime - _lastMapUpdateTime < _mapUpdateInterval)) {
                     return; 
                 }
             }
@@ -102,6 +102,7 @@ dc.mapMixin = function (_chart, chartId) {
             _lastMapUpdateTime = curTime;
             _xDim.filter([minCoord[0],maxCoord[0]]);
             _yDim.filter([minCoord[1],maxCoord[1]]);
+            console.log('redraw all');
             dc.redrawAll();
         }
     }
