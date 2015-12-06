@@ -102,7 +102,6 @@ dc.mapMixin = function (_chart, chartId) {
             _lastMapUpdateTime = curTime;
             _xDim.filter([minCoord[0],maxCoord[0]]);
             _yDim.filter([minCoord[1],maxCoord[1]]);
-            console.log('redraw all');
             dc.redrawAll();
         }
     }
@@ -138,7 +137,6 @@ dc.mapMixin = function (_chart, chartId) {
                     }
                 }
             }
-            console.log(tPixels);
             var widgetId = Number(_mapId.match(/\d+/g))
 
             var columns = chartWidgets[widgetId].chartObject.projectArray.slice();
@@ -151,7 +149,6 @@ dc.mapMixin = function (_chart, chartId) {
             columns.push(_yDimName);
             
             con.getRowsForPixels(tPixels, _chart.tableName(), columns, [function(result){
-              console.log(result);
               var closestResult = null;
               var closestSqrDistance = Infinity;
               for (var r = 0; r < result.length; r++) {
@@ -163,7 +160,6 @@ dc.mapMixin = function (_chart, chartId) {
                   }
                 }
               }
-              console.log(closestResult);
               if (closestResult === null)
                 return;
               if(!$('.popup-highlight').length){
