@@ -1,0 +1,450 @@
+@import 'variables';
+
+.lock-measure {
+    left: 100%;
+    top: 0;
+    transform: translate(-20px, -52px);
+}
+.color-legend-restore {
+    display: none !important;
+}
+.mapboxgl-canvas-container {
+    position: absolute;
+    top: 0;
+}
+
+.panel-default {
+    overflow: visible;    
+}
+
+.data-count, #data-count {
+    height: auto !important;
+}
+
+.anim-button-play, .anim-button-stop {
+    z-index: 2;
+    opacity: 1 !important;
+    border: 1px solid $gray2;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    bottom: 98px;
+
+    .fa {
+        font-size: 13px !important;
+        position: relative;
+        top: -1px;
+    }
+}
+
+.anim-button-play {
+    bottom: 126px;
+}
+
+.dc-chart {
+    position: relative;
+    font-family: "Roboto";
+
+    &:hover {
+        .brush {
+            .resize {
+                path {
+                    opacity: .5;
+                }
+            }
+        }
+
+        .range-display { 
+            input {
+                border: 1px solid $gray3;
+            }
+        }
+    }
+
+    .range-display {
+        position: absolute;
+        right: 0;
+        top: 4px;
+        font-size: 11px;
+        color: $gray5;
+        z-index: 5;
+
+        span {
+            margin: 0 2px;
+        }
+
+        input {
+            display: inline-block;
+            border: 1px solid transparent;
+            text-align: center;
+
+            &.range-day {
+                width: 70px;
+                font-weight: bold;
+            }
+
+            &.range-time {
+                width: 48px;
+            }
+        }
+    }
+
+    .axis {
+        
+        fill: $gray4;
+        
+        text {
+            font-family: "Roboto";
+        }
+        path, line {
+            stroke: $gray3 !important;
+        }
+    }
+
+    .brush {
+        .resize {
+            path {
+
+                stroke: $gray5;
+                fill: $gray5;
+                opacity: 0;
+                transition: opacity .25s;
+
+            }
+
+            &:hover {
+                path {
+                    opacity: 1;
+                }
+            }
+        }
+
+        rect.extent {
+            fill: $blue-main;
+            fill-opacity: .2;
+        }
+    }
+
+    .geocoder-input{
+        top: 5px;
+    }
+
+    .mapboxgl-canvas-container {
+        position: relative;
+        top: auto;
+    }
+
+    .heat-box {
+        stroke: white;
+    }
+
+    .heatmap {
+
+        .box-group.deselected rect {
+            stroke: white;
+        }
+    }
+
+    .pie-slice {
+        path {  
+            stroke: white;
+            stroke-width: 1px;
+
+        }
+
+        &.stroke-thick {
+            path {
+                stroke-width: 2px;
+            }
+        }
+    }
+
+    .pie-label {
+        fill: $charcoal;
+        pointer-events: none;
+        text {
+            text-anchor: middle;
+        }
+    }
+
+    .value-dim {
+        font-weight: bold;
+    }
+
+    .row {
+        text{
+            fill: $charcoal !important;
+        }
+    }
+
+    g.deselected path {
+        fill: $gray3;
+
+        &:hover {
+            fill: $gray2;
+        }
+    }
+
+    div.x-axis-label, div.y-axis-label {
+        position: absolute;
+        font-size: 13px !important;
+        color: $gray4;
+        font-weight: bold;
+    }
+
+    div.y-axis-label {
+        transform-origin: 50% 0;
+        transform:translateX(-50%) rotate(270deg) ;
+        left: 4px;
+    }
+
+
+    div.x-axis-label {
+        transform: translateX(-50%);
+        bottom: 4px;
+    }
+
+    .external-axis {
+        position: absolute;
+        width: 100%;
+        height: 52px;
+        bottom: 0;
+
+        .axis {
+
+            path, line {
+                stroke: $gray3 !important;
+            }
+
+            text {
+                fill: $gray4 !important;
+            }
+        }
+    }
+
+    .svg-wrapper {
+    }
+}
+
+
+.chart-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+
+    &.js-showPopup {
+        opacity: 1;
+        pointer-events: default;
+
+        .chart-popup-box {
+            opacity: 1;
+            top: -24px;
+        }
+    }
+
+    .chart-popup-box {
+        min-height: 32px;
+        min-width: 120px;
+        background: white;
+        position: absolute;
+        left: 0;
+        border: 1px solid $gray2;
+        border-radius: 4px;
+        transform: translate(0, -100%);
+        opacity: 0;
+        top: 0;
+        transition: top .35s, opacity .25s;
+        display: flex;
+
+        &.align-right {
+            transform: translate(-100%, -100%);
+        }
+    }
+
+    .popup-legend {
+        width: 12px;
+        height: 12px;
+        float: left;
+        margin: 8px;
+        flex-shrink: 0;
+    }
+
+    .popup-value {
+        font-size: 13px;
+        line-height: 1.2;
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 6px 8px 4px 0;
+    }
+
+    .popup-value-dim {
+        font-weight: bold;
+    }
+}
+
+.legend-cont {
+    position: absolute;
+    z-index: 2;
+    min-height: 32px;
+    bottom: 0px;
+    left: 16px;
+    padding-right: 24px;
+
+    &:hover {
+        .legend-lock, .legend-title {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
+
+    .legend-lock, .legend-title {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .25s;
+    }   
+
+    .legend-group {
+
+        &:hover {
+            .legend-label {
+                display: none;
+            }
+
+            .legend-item:not(:hover) .legend-swatch {
+                opacity: .4;
+            }
+        }
+    }
+
+    .legend-item {
+        float: left;
+        position: relative;
+        height: 32px;
+
+        &:not(:first-child):not(:last-child) {
+            .legend-label {
+                display: none;
+            }
+        }
+
+        &:hover {
+            .legend-label {
+                display: block !important;
+            }
+        }
+
+        &:first-child, &:last-child {
+            &:hover .legend-label {
+                span {
+                    display: none;
+                }
+                .legend-input {
+                    display: inline-block;
+                }
+            }
+        }
+        
+    }
+
+
+    .legend-label {
+        position: absolute;
+        width: 64px;
+        text-align: center;
+        transform: translateX(-50%);
+        left: 6px;
+        color: $gray5;
+        font-size: 10px;
+        pointer-events: none;
+        padding-top: 2px;
+
+
+        &:hover {
+            z-index: 2;
+        }
+
+    }
+    .legend-swatch {
+        height: 12px;
+        width: 12px;
+        background: red;
+        border: 1px solid white;
+    }
+
+    .legend-input {
+        display: none;
+        pointer-events: auto;
+        
+        input {
+            height: 16px;
+            width: 32px;
+            border: 1px solid $gray3;
+            text-align: center;
+
+            &:focus {
+                height: 24px;
+                width: 48px;
+                font-size: 12px;
+                margin: 0 12px 12px 12px;
+            }
+
+        }
+       
+    }
+
+    .legend-title {
+        font-size: 12px;
+        color: $gray4;
+        font-weight: bold;
+        text-align: center;
+        position: absolute;
+        top: -16px;
+        width: 100%;
+        padding-right: 24px;
+
+        span {
+            background: white;
+            padding: 2px 4px;
+        }
+    }
+
+
+    .legend-lock {
+        width: 24px;
+        height: 24px;
+        padding: 4px;
+        position: absolute;
+        right: 0;
+        bottom: 14px;
+
+        &:hover {
+            cursor: pointer;
+            .svg-icon {
+                fill: $blue-main;
+            }
+        }
+
+        .icon-lock {
+            display: none;
+        }
+
+        &.js-isLocked {
+            opacity: 1;
+
+            .icon-lock {
+                display: block;
+            }
+            .icon-unlock {
+                display: none;
+            }
+        }
+    }
+}
+
+.svg-icon {
+    fill: $gray4;
+}
+
