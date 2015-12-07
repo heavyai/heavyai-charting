@@ -25,7 +25,6 @@ npm --no-git-tag-version version $SEM_VAR
 
 # Build the library
 npm install
-npm install -g grunt-cli
 grunt build
 
 # Add and commit the new version
