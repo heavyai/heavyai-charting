@@ -9,6 +9,10 @@ dc.coordinateGridMixin = function (_chart) {
     var X_AXIS_LABEL_CLASS = 'x-axis-label';
     var DEFAULT_AXIS_LABEL_PADDING = 12;
 
+    /* OVERRIDE EXTEND ----------------------------------------------------------*/
+    var _hasBeenRendered = false;
+    /* --------------------------------------------------------------------------*/
+
     _chart = dc.colorMixin(dc.marginMixin(dc.baseMixin(_chart)));
 
     _chart.colors(d3.scale.category10());
@@ -287,7 +291,7 @@ dc.coordinateGridMixin = function (_chart) {
         var timeInputFormat = d3.time.format.utc("%H:%M");
         var currentInput = d3.select(this);
 
-        var extent = _chart.brush().extent() || [_chart.xAxisMin(), _chart.xAxisMax()];
+        var extent = _chart.filter() || [_chart.xAxisMin(), _chart.xAxisMax()];
         var index = currentInput.attr('class').indexOf('start') >= 0 ? 0 : 1;
 
         currentInput
@@ -314,7 +318,7 @@ dc.coordinateGridMixin = function (_chart) {
 
         var extentChart = _chart.rangeChart() ? _chart.rangeChart() : _chart;
 
-        var extent = extentChart.brush().extent() || [extentChart.xAxisMin(), extentChart.xAxisMax()];
+        var extent = extentChart.filter() || [extentChart.xAxisMin(), extentChart.xAxisMax()];
 
         extent[index] = utc < extentChart.xAxisMin() ? extentChart.xAxisMin() : (utc > extentChart.xAxisMax() ? extentChart.xAxisMax() : utc );
         
@@ -950,11 +954,17 @@ dc.coordinateGridMixin = function (_chart) {
         drawChart(true);
 
         configureMouseZoom();
-
+/* OVERRIDE ---------------------------------------------------------------- */
+        _hasBeenRendered = true; 
+/* ------------------------------------------------------------------------- */
         return _chart;
     };
 
     _chart._doRedraw = function () {
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (!_hasBeenRendered) // guard to prevent a redraw before a render
+            return _chart._doRender();
+/* ------------------------------------------------------------------------- */
         _chart._preprocessData();
 
         drawChart(false);

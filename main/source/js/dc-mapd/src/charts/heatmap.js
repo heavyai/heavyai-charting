@@ -21,6 +21,7 @@ dc.heatMap = function (parent, chartGroup) {
     var _yLabel;
     var _xLabel;
     var _numFormat = d3.format(".2s");
+    var _hasBeenRendered = false;
 /* --------------------------------------------------------------------------*/
 
     var _chart = dc.colorMixin(dc.marginMixin(dc.baseMixin({})));
@@ -198,12 +199,17 @@ dc.heatMap = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
         _chartBody.append('g')
             .attr('class', 'box-wrapper');
+        _hasBeenRendered = true;
 /* --------------------------------------------------------------------------*/
-
         return _chart._doRedraw();
     };
 
     _chart._doRedraw = function () {
+/* OVERRIDE -----------------------------------------------------------------*/
+        if (!_hasBeenRendered)
+            return _chart._doRender();
+/* --------------------------------------------------------------------------*/
+
         var data = _chart.data(),
             cols = _chart.cols(),
             rows = _chart.rows() || data.map(_chart.valueAccessor()),

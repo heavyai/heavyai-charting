@@ -23,6 +23,7 @@ dc.pieChart = function (parent, chartGroup) {
 /* OVERRIDE ---------------------------------------------------------------- */
     var _pieStyle; // "pie" or "donut"
     var _pieSizeThreshold = 480;
+    var _hasBeenRendered = false;
     _chart.redoSelect = highlightFilter;
     _chart.accent = accentSlice;
     _chart.unAccent = unAccentSlice;
@@ -60,7 +61,9 @@ dc.pieChart = function (parent, chartGroup) {
             .attr('transform', 'translate(' + _chart.cx() + ',' + _chart.cy() + ')');
 
         drawChart();
-
+/* OVERRIDE -----------------------------------------------------------------*/
+        _hasBeenRendered = true;
+/* --------------------------------------------------------------------------*/
         return _chart;
     };
 
@@ -385,6 +388,10 @@ dc.pieChart = function (parent, chartGroup) {
     }
 
     _chart._doRedraw = function () {
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (!_hasBeenRendered) // guard to prevent a redraw before a render
+            return _chart._doRender();
+/* ------------------------------------------------------------------------- */
         drawChart();
         return _chart;
     };

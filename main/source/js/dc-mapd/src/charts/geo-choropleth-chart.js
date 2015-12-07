@@ -11,12 +11,15 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
     _chart.accent = accentPoly;
     _chart.unAccent = unAccentPoly;
+
+    var _hasBeenRendered = false;
 /* --------------------------------------------------------------------------*/
 
     var _geoPath = d3.geo.path();
     var _projectionFlag;
 
     var _geoJsons = [];
+
 
     _chart._doRender = function () {
         _chart.resetSvg();
@@ -41,6 +44,10 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
             plotData(layerIndex);
         }
         _projectionFlag = false;
+/* OVERRIDE -----------------------------------------------------------------*/
+        _hasBeenRendered = true;
+/* --------------------------------------------------------------------------*/
+        
     };
 
     function plotData (layerIndex) {
@@ -181,6 +188,10 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
     }
 
     _chart._doRedraw = function () {
+/* OVERRIDE -----------------------------------------------------------------*/
+        if (!_hasBeenRendered)
+            return _chart._doRender();
+/* --------------------------------------------------------------------------*/
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
             plotData(layerIndex);
             if (_projectionFlag) {
