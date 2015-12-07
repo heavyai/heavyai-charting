@@ -18,9 +18,15 @@ _"What is hard is figuring out a good workflow for developing both an npm module
 
 **If you have not cloned down the mapdc.js repo, do that first.**
 
-Imagine you are working on the `mapd2-frontend/main` project and also need to make changes to mapdc. In this case, run the following commands:
+Example: 
+
+You are working on the mapd2-frontend project and also need to make changes to mapdc. In this case, run the following commands:
 
 1. `npm link` - inside the mapdc/ repo directory.
 2. `npm link @mapd/mapdc` - inside the mapd2-frontend/main/ directory.
 
-Now when `mapd2-frontend/main` needs to reference `./node_modules/@mapd/mapdc`, it will look inside the mapdc/ repo instead.
+This overrides the `node_modules` directory and tells your project to use the mapdc/ repo instead.
+
+### Updating projects that require mapdc after changes are made
+
+Run `npm install @mapd/mapdc@latest --save` from within your project to update to the latest version.
