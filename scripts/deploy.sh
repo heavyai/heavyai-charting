@@ -19,13 +19,13 @@ git branch -d temp
 git checkout -b temp
 
 # bump the version
-# TODO: set major, minor, or patch some how
+SEM_VAR=`bash get_latest_semvar_tag.sh | awk 'NR==0; END{print}'`
 cd ..
-npm --no-git-tag-version version patch
+npm --no-git-tag-version version $SEM_VAR
 
 # Add and commit the new version
 cd scripts
-git commit -a -m "`sh package_version.sh`"
+git commit -a -m "`bash package_version.sh`"
 
 # push the new version to github
 git push origin temp:master
