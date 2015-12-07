@@ -291,7 +291,7 @@ dc.coordinateGridMixin = function (_chart) {
         var timeInputFormat = d3.time.format.utc("%H:%M");
         var currentInput = d3.select(this);
 
-        var extent = _chart.brush().extent() || [_chart.xAxisMin(), _chart.xAxisMax()];
+        var extent = _chart.filter() || [_chart.xAxisMin(), _chart.xAxisMax()];
         var index = currentInput.attr('class').indexOf('start') >= 0 ? 0 : 1;
 
         currentInput
@@ -318,7 +318,7 @@ dc.coordinateGridMixin = function (_chart) {
 
         var extentChart = _chart.rangeChart() ? _chart.rangeChart() : _chart;
 
-        var extent = extentChart.brush().extent() || [extentChart.xAxisMin(), extentChart.xAxisMax()];
+        var extent = extentChart.filter() || [extentChart.xAxisMin(), extentChart.xAxisMax()];
 
         extent[index] = utc < extentChart.xAxisMin() ? extentChart.xAxisMin() : (utc > extentChart.xAxisMax() ? extentChart.xAxisMax() : utc );
         
