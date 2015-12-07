@@ -260,7 +260,7 @@ dc.coordinateGridMixin = function (_chart) {
         var dateFormat = d3.time.format.utc("%b %d, %Y");
         var timeFormat = d3.time.format.utc("%I:%M%p");
 
-        var extent = _chart.brush().extent() || [_chart.xAxisMin(), _chart.xAxisMax()];
+        var extent = _chart.filter() || [_chart.xAxisMin(), _chart.xAxisMax()];
         
         var rangeDisplay = _chart.root().selectAll('.range-display');
 
@@ -836,6 +836,17 @@ dc.coordinateGridMixin = function (_chart) {
                 _chart.filter(null);
                 _chart.redrawGroup();
             }, dc.constants.EVENT_DELAY);
+
+/* OVERRIDE ---------------------------------------------------------------- */
+            if (_chart.rangeInput()) {
+                _chart.updateRangeInput();
+            }
+
+            if (_chart.focusChart()) {
+                _chart.focusChart().filter(null);
+                _chart.focusChart().redraw();
+            }
+/* ------------------------------------------------------------------------- */
         } else {
             var rangedFilter = dc.filters.RangedFilter(extent[0], extent[1]);
 
