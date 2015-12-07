@@ -306,7 +306,7 @@ dc.coordinateGridMixin = function (_chart) {
             return;
         }
 
-        var date = new Date(currentValue);
+        var date = new Date(newValue);
       
         var utc = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
