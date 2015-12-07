@@ -74,6 +74,10 @@ dc.lineChart = function (parent, chartGroup) {
         drawArea(layersEnter, layers);
 
         drawDots(chartBody, layers);
+
+        if (_chart.rangeInput()) {
+            _chart.updateRangeInput();
+        }
     };
 
     /**
@@ -187,7 +191,9 @@ dc.lineChart = function (parent, chartGroup) {
     };
 
     function colors (d, i) {
-        return _chart.getColor.call(d, d.values, i);
+/* OVERRIDE ---------------------------------------------------------------- */
+        return "#22A7F0";
+/* ------------------------------------------------------------------------- */
     }
 
     function drawLine (layersEnter, layers) {
