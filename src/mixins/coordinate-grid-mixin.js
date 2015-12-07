@@ -78,6 +78,7 @@ dc.coordinateGridMixin = function (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     var _rangeFocused = false;
+    var _rangeInput = false;
 /* ------------------------------------------------------------------------- */
 
     var _unitCount;
@@ -253,6 +254,87 @@ dc.coordinateGridMixin = function (_chart) {
         return groups.map(_chart.keyAccessor());
     };
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.updateRangeInput = function () {
+
+        var dateFormat = d3.time.format.utc("%b %d, %Y");
+        var timeFormat = d3.time.format.utc("%I:%M%p");
+
+        var extent = _chart.brush().extent() || [_chart.xAxisMin(), _chart.xAxisMax()];
+        
+        var rangeDisplay = _chart.root().selectAll('.range-display');
+
+        rangeDisplay.select('.range-start-day')
+            .property('value', dateFormat(extent[0]))
+            .attr('value', dateFormat(extent[0]));
+
+        rangeDisplay.select('.range-start-time')
+            .text(timeFormat(extent[0]));
+
+        rangeDisplay.select('.range-end-day')
+            .property('value', dateFormat(extent[1]))
+            .attr('value', dateFormat(extent[1]));
+
+        rangeDisplay.select('.range-end-time')
+            .text(timeFormat(extent[1]));
+    }
+
+    function rangeInputOnFocus() {
+        
+        this.select();
+
+        var dateInputFormat = d3.time.format.utc("%m-%d-%Y");
+        var timeInputFormat = d3.time.format.utc("%H:%M");
+        var currentInput = d3.select(this);
+
+        var extent = _chart.brush().extent() || [_chart.xAxisMin(), _chart.xAxisMax()];
+        var index = currentInput.attr('class').indexOf('start') >= 0 ? 0 : 1;
+
+        currentInput
+            .property('value', currentInput.classed('range-day') ? dateInputFormat(extent[index]): timeInputFormat(extent[index]));
+    }
+
+    function rangeInputChange() {
+
+        var currentInput = d3.select(this);
+        var currentValue = currentInput.attr('value');
+        var newValue = currentInput.property('value');
+
+        if (isNaN(Date.parse(currentValue))) {
+            currentInput.property('value', currentValue);
+            this.blur();
+            return;
+        }
+
+        var date = new Date(currentValue);
+      
+        var utc = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+        var index = currentInput.attr('class').indexOf('start') >= 0 ? 0 : 1;
+
+        var extentChart = _chart.rangeChart() ? _chart.rangeChart() : _chart;
+
+        var extent = extentChart.brush().extent() || [extentChart.xAxisMin(), extentChart.xAxisMax()];
+
+        extent[index] = utc < extentChart.xAxisMin() ? extentChart.xAxisMin() : (utc > extentChart.xAxisMax() ? extentChart.xAxisMax() : utc );
+        
+        extent.sort(function(a, b){return a-b});
+
+        var domFilter = dc.filters.RangedFilter(extent[0], extent[1]);
+
+        extentChart.replaceFilter(domFilter);
+        extentChart.rescale();
+        extentChart.redraw();
+
+        if (_chart.rangeChart()) {
+             _chart.focus(domFilter);
+        }
+
+        this.blur();
+    }
+/* ------------------------------------------------------------------------ */
+
+
 /* TODO ---------------------------------------------------------------------*/
 // This was either removed or did not exist when dc.mapd.js was written.
     function compareDomains (d1, d2) {
@@ -301,31 +383,65 @@ dc.coordinateGridMixin = function (_chart) {
                 .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart._xAxisY() + ')');
         }
 
-        var axisXLab = g.selectAll('text.' + X_AXIS_LABEL_CLASS);
-        if (axisXLab.empty() && _chart.xAxisLabel()) {
-            axisXLab = g.append('text')
-                .attr('class', X_AXIS_LABEL_CLASS)
-                .attr('transform', 'translate(' + (_chart.margins().left + _chart.xAxisLength() / 2) + ',' +
-                      (_chart.height() - _xAxisLabelPadding) + ')')
-                .attr('text-anchor', 'middle')
-
 /* OVERRIDE -----------------------------------------------------------------*/
-                .text(_chart.xAxisLabel());
+        var root = _chart.root();
+
+        if (_chart.xAxisMin() instanceof Date && _chart.effectiveWidth() < 480) {
+            _chart.xAxis().ticks(Math.floor(_chart.effectiveWidth()/48));
+        }
+
+        if (_chart.rangeInput()) {
+            
+            var rangeDisplay = root.selectAll('.range-display');
+
+            if (rangeDisplay.empty()) {
+                rangeDisplay = root.append('div')
+                    .attr('class', 'range-display')
+                    .style('right', _chart.margins().right + 'px');
+
+                rangeDisplay.append('input')
+                    .attr('class', 'range-start-day range-day')
+                    .on('focus', rangeInputOnFocus)
+                    .on('change', rangeInputChange);
+
+                rangeDisplay.append('span')
+                    .attr('class', 'range-start-time range-time');
+
+                rangeDisplay.append('span')
+                    .html(' &mdash; ');
+
+                rangeDisplay.append('input')
+                    .attr('class', 'range-end-day range-day')
+                    .on('focus', rangeInputOnFocus)
+                    .on('change', rangeInputChange);
+
+                rangeDisplay.append('span')
+                    .attr('class', 'range-end-time range-time');
+
+                _chart.updateRangeInput();
+            }
+
+        }
+        
+        var xLabel = root.selectAll('.x-axis-label');
+
+        if (xLabel.empty()) {
+            xLabel = root.append('div')
+            .attr('class', 'x-axis-label')
+            .text(_chart.xAxisLabel());
+        }
+
+        xLabel
+            .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px');
+
 /* --------------------------------------------------------------------------*/
 
-        }
-        if (_chart.xAxisLabel() && axisXLab.text() !== _chart.xAxisLabel()) {
-            axisXLab.text(_chart.xAxisLabel());
-        }
 
 /* TODO ---------------------------------------------------------------------*/
 // This was either removed or did not exist when dc.mapd.js was written.
         dc.transition(axisXG, _chart.transitionDuration())
             .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart._xAxisY() + ')')
             .call(_xAxis);
-        dc.transition(axisXLab, _chart.transitionDuration())
-            .attr('transform', 'translate(' + (_chart.margins().left + _chart.xAxisLength() / 2) + ',' +
-                  (_chart.height() - _xAxisLabelPadding) + ')');
 /* --------------------------------------------------------------------------*/
 
     };
@@ -397,6 +513,7 @@ dc.coordinateGridMixin = function (_chart) {
         _xAxisLabelPadding = (padding === undefined) ? DEFAULT_AXIS_LABEL_PADDING : padding;
         _chart.margins().bottom += _xAxisLabelPadding;
         return _chart;
+
     };
 
     _chart._prepareYAxis = function (g) {
@@ -420,25 +537,28 @@ dc.coordinateGridMixin = function (_chart) {
     };
 
     _chart.renderYAxisLabel = function (axisClass, text, rotation, labelXPosition) {
-        labelXPosition = labelXPosition || _yAxisLabelPadding;
+/* OVERRIDE -----------------------------------------------------------------*/
+        var root = _chart.root();
 
-        var axisYLab = _chart.g().selectAll('text.' + Y_AXIS_LABEL_CLASS + '.' + axisClass + '-label');
-        var labelYPosition = (_chart.margins().top + _chart.yAxisHeight() / 2);
-        if (axisYLab.empty() && text) {
-            axisYLab = _chart.g().append('text')
-                .attr('transform', 'translate(' + labelXPosition + ',' + labelYPosition + '),rotate(' + rotation + ')')
-                .attr('class', Y_AXIS_LABEL_CLASS + ' ' + axisClass + '-label')
-                .attr('text-anchor', 'middle')
+        var yLabel = root.selectAll('.y-axis-label');
+
+        if (yLabel.empty()) {
+            yLabel = root.append('div')
+            .attr('class', 'y-axis-label');
+        }
+
+        if (text !== '') {
+            var yOffset = (_chart.rangeChart() ? _chart.rangeChart().height() - _chart.rangeChart().margins().bottom + _chart.margins().bottom : 0);
+            
+            yLabel
+                .style('top', ((_chart.effectiveHeight() + yOffset) / 2 + _chart.margins().top) +'px')
                 .text(text);
-        }
-        if (text && axisYLab.text() !== text) {
-            axisYLab.text(text);
-        }
-        dc.transition(axisYLab, _chart.transitionDuration())
-            .attr('transform', 'translate(' + labelXPosition + ',' + labelYPosition + '),rotate(' + rotation + ')');
+        } 
+/* --------------------------------------------------------------------------*/
     };
 
     _chart.renderYAxisAt = function (axisClass, axis, position) {
+
         var axisYG = _chart.g().selectAll('g.' + axisClass);
         if (axisYG.empty()) {
             axisYG = _chart.g().append('g')
@@ -904,6 +1024,15 @@ dc.coordinateGridMixin = function (_chart) {
             return _rangeFocused;
         }
         _rangeFocused = _;
+    };
+
+    _chart.rangeInput = function (_) {
+        if (!arguments.length) {
+            return _rangeInput;
+        }
+        _rangeInput = _;
+
+        return _chart;
     };
 /* ------------------------------------------------------------------------- */
 
