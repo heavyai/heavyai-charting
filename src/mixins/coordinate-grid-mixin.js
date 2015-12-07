@@ -300,7 +300,7 @@ dc.coordinateGridMixin = function (_chart) {
         var currentValue = currentInput.attr('value');
         var newValue = currentInput.property('value');
 
-        if (isNaN(Date.parse(currentValue))) {
+        if (isNaN(Date.parse(newValue))) {
             currentInput.property('value', currentValue);
             this.blur();
             return;
@@ -319,6 +319,10 @@ dc.coordinateGridMixin = function (_chart) {
         extent[index] = utc < extentChart.xAxisMin() ? extentChart.xAxisMin() : (utc > extentChart.xAxisMax() ? extentChart.xAxisMax() : utc );
         
         extent.sort(function(a, b){return a-b});
+
+        if (extent[0].getTime() === extent[1].getTime()) {
+            extent[1] = new Date(extent[1].getTime() + 60 * 60 * 24 * 1000);
+        }
 
         var domFilter = dc.filters.RangedFilter(extent[0], extent[1]);
 
