@@ -28,18 +28,43 @@
     width: 24px;
     height: 24px;
     cursor: pointer;
-    bottom: 98px;
+    bottom: 124px;
+    background: white;
+
+    &:hover {
+        background: white !important;
+    }
 
     .fa {
         font-size: 13px !important;
+        color: $gray4 !important;
         position: relative;
         top: -1px;
     }
 }
 
 .anim-button-play {
-    bottom: 126px;
+    bottom: 152px;
+
+    &:hover .fa {
+        color: $green-bright !important;
+    }  
+
+    &.pause-button:hover .fa {
+        color: $orange-bright !important;;
+      
+    } 
 }
+
+
+
+.anim-button-stop {
+    &:hover .fa {
+        color: $red-bright !important;;
+    }
+    
+}
+
 
 .dc-chart {
     position: relative;
