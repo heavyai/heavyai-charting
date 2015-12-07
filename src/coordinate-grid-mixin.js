@@ -18,6 +18,10 @@ dc.coordinateGridMixin = function (_chart) {
     var X_AXIS_LABEL_CLASS = 'x-axis-label';
     var DEFAULT_AXIS_LABEL_PADDING = 12;
 
+    /* OVERRIDE EXTEND ----------------------------------------------------------*/
+    var _hasBeenRendered = false;
+    /* --------------------------------------------------------------------------*/
+
     _chart = dc.colorMixin(dc.marginMixin(dc.baseMixin(_chart)));
 
     _chart.colors(d3.scale.category10());
@@ -1155,10 +1159,17 @@ dc.coordinateGridMixin = function (_chart) {
 
         configureMouseZoom();
 
+/* OVERRIDE ---------------------------------------------------------------- */
+        _hasBeenRendered = true;
+/* ------------------------------------------------------------------------- */
         return _chart;
     };
 
     _chart._doRedraw = function () {
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (!_hasBeenRendered) // guard to prevent a redraw before a render
+            return _chart._doRender();
+/* ------------------------------------------------------------------------- */
         _chart._preprocessData();
 
         drawChart(false);

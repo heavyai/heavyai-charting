@@ -10,6 +10,7 @@ dc.cloudChart = function(parent, chartGroup) {
     var _r;
     var _tags; // store output of _cloudLayout 
     var _noRelayout = false; // flag to set on click so rerender doesn't relayout elements
+    var _hasBeenRendered = false;
 
     _chart.setNoRelayout = function(val) {
         _noRelayout = val;
@@ -103,11 +104,14 @@ dc.cloudChart = function(parent, chartGroup) {
         }
         else
             drawChart();
+        var _hasBeenRendered = true;
 
         return _chart;
     };
 
     _chart._doRedraw = function () {
+        if (!_hasBeenRendered)
+            return _chart._doRender();
         if (_noRelayout) {
             cloudDraw(_tags);
             _noRelayout = false;

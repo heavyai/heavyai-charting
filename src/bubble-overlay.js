@@ -233,6 +233,8 @@ dc.bubbleOverlay = function (parent, chartGroup) {
 
             _chart.r().range([_chart.MIN_RADIUS, _chart.MAX_RADIUS]);
         }
+        if (!_g)
+            initOverlayG();
         var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData, function(d) {return d.key;});
 
         bubbleG.enter().append('g')

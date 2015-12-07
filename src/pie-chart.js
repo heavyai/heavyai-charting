@@ -46,10 +46,12 @@ dc.pieChart = function (parent, chartGroup) {
 /* OVERRIDE ---------------------------------------------------------------- */
     var _pieStyle; // "pie" or "donut"
     var _pieSizeThreshold = 480;
+    var _hasBeenRendered = false;
     _chart.redoSelect = highlightFilter;
     _chart.accent = accentSlice;
     _chart.unAccent = unAccentSlice;
 /* ------------------------------------------------------------------------- */
+
     _chart.colorAccessor(_chart.cappedKeyAccessor);
 
     _chart.title(function (d) {
@@ -93,11 +95,14 @@ dc.pieChart = function (parent, chartGroup) {
 
         drawChart();
 
+/* OVERRIDE -----------------------------------------------------------------*/
+        _hasBeenRendered = true;
+/* --------------------------------------------------------------------------*/
         return _chart;
     };
 
     function drawChart () {
-      
+
 /* OVERRIDE ---------------------------------------------------------------- */
         // set radius on basis of chart dimension if missing
         //_radius = d3.min([_chart.width(), _chart.height()]) / 2;
@@ -141,7 +146,6 @@ dc.pieChart = function (parent, chartGroup) {
 
         createSlicePath(slicesEnter, arc);
 
-        
         createLabels(pieData, arc);
     }
 
@@ -214,8 +218,9 @@ dc.pieChart = function (parent, chartGroup) {
                         });
 
                     if (showLabel && _chart.measureLabelsOn()) {
+                        var commafy = d3.format(',');
                         label.select('.value-measure')
-                            .html(truncateLabel(_chart.measureValue(d.data), availableLabelWidth, charPixelWidth));
+                            .html(truncateLabel(commafy(_chart.measureValue(d.data)), availableLabelWidth, charPixelWidth));
                     }
                 }
 
@@ -247,6 +252,7 @@ dc.pieChart = function (parent, chartGroup) {
                 })
 /* ------------------------------------------------------------------------- */
                 .on('click', onClick);
+
 /* OVERRIDE ---------------------------------------------------------------- */
             labelsEnter
                 .append('text')
@@ -260,6 +266,7 @@ dc.pieChart = function (parent, chartGroup) {
                 .attr('dy', '1.2em');
         }
 /* ------------------------------------------------------------------------- */
+
             positionLabels(labelsEnter, arc);
             if (_externalLabelRadius && _drawPaths) {
                 updateLabelPaths(pieData, arc);
@@ -491,6 +498,10 @@ dc.pieChart = function (parent, chartGroup) {
     }
 
     _chart._doRedraw = function () {
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (!_hasBeenRendered) // guard to prevent a redraw before a render
+            return _chart._doRender();
+/* ------------------------------------------------------------------------- */
         drawChart();
         return _chart;
     };

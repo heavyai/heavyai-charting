@@ -359,6 +359,7 @@ module.exports.jsFiles = [
     'src/row-chart.js',
     'src/cloud-chart.js', // MapD specific
     'src/legend.js',
+    'src/legend-continuous.js', // MapD specific
     'src/scatter-plot.js',
     'src/number-display.js',
     'src/heatmap.js',

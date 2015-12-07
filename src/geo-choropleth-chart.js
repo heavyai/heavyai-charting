@@ -31,6 +31,8 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
     _chart.accent = accentPoly;
     _chart.unAccent = unAccentPoly;
+
+    var _hasBeenRendered = false;
 /* --------------------------------------------------------------------------*/
 
     var _geoPath = d3.geo.path();
@@ -42,7 +44,8 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         _chart.resetSvg();
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
             var states = _chart.svg().append('g')
-                .attr('class', 'layer' + layerIndex);
+                .attr('class', 'layer' + layerIndex)
+                .attr('transform', 'translate(0, -16)');
 
             var regionG = states.selectAll('g.' + geoJson(layerIndex).name)
                 .data(geoJson(layerIndex).data)
@@ -60,6 +63,11 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
             plotData(layerIndex);
         }
         _projectionFlag = false;
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        _hasBeenRendered = true;
+/* --------------------------------------------------------------------------*/
+
     };
 
     function plotData (layerIndex) {
@@ -70,7 +78,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 
             renderPaths(regionG, layerIndex, data);
 
-            renderTitle(regionG, layerIndex, data);
+            //renderTitle(regionG, layerIndex, data);
         }
     }
 
@@ -159,14 +167,19 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
                 if (currentFill) {
                     return currentFill;
                 }
-                return 'none';
+                return '#e2e2e2';
             })
+/* OVERRIDE ---------------------------------------------------------------- */
+            .on('mouseenter', function(d, i){showPopup(d, i, data);})
+            .on('mousemove', positionPopup)
+            .on('mouseleave', hidePopup)
+/* ------------------------------------------------------------------------- */
             .on('click', function (d) {
                 return _chart.onClick(d, layerIndex);
             });
 
         dc.transition(paths, _chart.transitionDuration()).attr('fill', function (d, i) {
-            return _chart.getColor(data[geoJson(layerIndex).keyAccessor(d)], i);
+            return _chart.getColor(data[geoJson(layerIndex).keyAccessor(d)], i) || '#e2e2e2';
         });
     }
 
@@ -193,6 +206,12 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
     }
 
     _chart._doRedraw = function () {
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        if (!_hasBeenRendered)
+            return _chart._doRender();
+/* --------------------------------------------------------------------------*/
+
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
             plotData(layerIndex);
             if (_projectionFlag) {
@@ -303,6 +322,48 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 
         return _chart;
     };
+/* OVERRIDE ---------------------------------------------------------------- */
+    function showPopup(d, i, data) {
+        var popup = _chart.popup();
+
+        var popupBox = popup.select('.chart-popup-box').html('');
+
+        popupBox.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', _chart.getColor(data[geoJson(0).keyAccessor(d)], i));
+
+        popupBox.append('div')
+            .attr('class', 'popup-value')
+            .html(function(){
+                var key = getKey(0, d);
+                var value = isNaN(data[key]) ?  'N/A' : Number(data[key]).toFixed(2);
+                return '<div class="popup-value-dim">'+ key +'</div><div class="popup-value-measure">'+ value +'</div>';
+            });
+
+        popup.classed('js-showPopup', true);
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup() {
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(this);
+        var x = coordinates[0];
+        var y = coordinates[1];
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-right', function(){
+                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width();
+            });
+    }
+/* ------------------------------------------------------------------------- */
 
     return _chart.anchor(parent, chartGroup);
 };

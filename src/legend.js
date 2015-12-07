@@ -23,8 +23,7 @@ dc.legend = function () {
         _horizontal = false,
         _legendWidth = 560,
         _itemWidth = 70,
-        _autoItemWidth = false,
-        _legendText = dc.pluck('name');
+        _autoItemWidth = false;
 
     var _g;
 
@@ -82,7 +81,7 @@ dc.legend = function () {
         }
 
         itemEnter.append('text')
-                .text(_legendText)
+                .text(dc.pluck('name'))
                 .attr('x', _itemHeight + LABEL_GAP)
                 .attr('y', function () {
                     return _itemHeight / 2 + (this.clientHeight ? this.clientHeight : 13) / 2 - 2;

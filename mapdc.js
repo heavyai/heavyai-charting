@@ -873,6 +873,11 @@ dc.baseMixin = function (_chart) {
 /* OVERRIDE ---------------------------------------------------------------- */
     var _popup;
     var _redrawBrushFlag = false;
+    var _isTargeting = false;
+    var _colorByExpr = null;
+    var _legendLock = null;
+    var _legendUnlock = null;
+    var _legendInputChange = null;
 /* ------------------------------------------------------------------------- */
 
     var _minWidth = 200;
@@ -932,6 +937,8 @@ dc.baseMixin = function (_chart) {
     var _commitHandler;
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    var _legendContinuous;
+
     _chart._colorLegend = null;
 
     var _topQueryCallback = null;
@@ -1487,6 +1494,22 @@ dc.baseMixin = function (_chart) {
             return _measureLabelsOn;
         }
         _measureLabelsOn = val;
+        return _chart;
+    };
+
+    _chart.isTargeting = function (isTargeting) {
+        if (!arguments.length) {
+            return _isTargeting;
+        }
+        _isTargeting = isTargeting;
+        return _chart;
+    };
+
+    _chart.colorByExpr = function (colorByExpr) {
+        if (!arguments.length) {
+            return _colorByExpr;
+        }
+        _colorByExpr = colorByExpr;
         return _chart;
     };
 /* ------------------------------------------------------------------------- */
@@ -2215,6 +2238,62 @@ dc.baseMixin = function (_chart) {
         return [];
     };
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.legendablesContinuous = function () {
+
+        var legends = [];
+        var colorDomain = _chart.colors().domain();
+        var colorDomainSize = colorDomain[1] - colorDomain[0];
+        var colorRange = _chart.colors().range();
+        var numColors = colorRange.length;
+        var commafy = d3.format(',');
+
+        for (var c = 0; c < numColors; c++) {
+          var startRange = (c/numColors)*colorDomainSize + colorDomain[0];
+
+            if (_isTargeting) {
+                startRange = '%' + (parseFloat(startRange) * 100.0).toFixed(2); 
+            }
+            else if (_colorByExpr === 'count(*)') {
+                startRange = parseInt(startRange);
+            }
+            else {
+                startRange = parseFloat(startRange).toFixed(2);
+                startRange = (startRange >= 1000 ? Math.round(startRange) : startRange);
+            }
+
+            legends.push({color: colorRange[c], value: isNaN(startRange) ? startRange : commafy(startRange) });
+        }
+
+        return legends;
+    }
+
+    _chart.legendLock = function(_) {
+      if (!arguments.length) {
+        return _legendLock;
+      }
+      _legendLock = _;
+      return _chart;
+    }
+
+    _chart.legendUnlock = function(_) {
+      if (!arguments.length) {
+        return _legendUnlock;
+      }
+      _legendUnlock = _;
+      return _chart;
+    }
+
+    _chart.legendInputChange = function(_) {
+      if (!arguments.length) {
+        return _legendInputChange;
+      }
+      _legendInputChange = _;
+      return _chart;
+    }
+
+/* ------------------------------------------------------------------------- */
+
     _chart.legendHighlight = function () {
         // do nothing in base, should be overridden by sub-function
     };
@@ -2468,6 +2547,17 @@ dc.baseMixin = function (_chart) {
         return _chart;
     };
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.legendContinuous = function (legendContinuous) {
+        if (!arguments.length) {
+            return _legendContinuous;
+        }
+        _legendContinuous = legendContinuous;
+        _legendContinuous.parent(_chart);
+        return _chart;
+    };
+/* --------------------------------------------------------------------------*/
+
     /**
      * Returns the internal numeric ID of the chart.
      * @name chartID
@@ -2568,7 +2658,7 @@ dc.baseMixin = function (_chart) {
 dc.marginMixin = function (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
-    var _margin = { top: 10, right: 50, bottom: 40, left: 60 };
+    var _margin = { top: 10, right: 50, bottom: 48, left: 60 };
 /* ------------------------------------------------------------------------- */
 
     /**
@@ -2871,7 +2961,7 @@ dc.mapMixin = function (_chart, chartId) {
                     _lastMapUpdateTime = curTime;
                     _isFirstMoveEvent = false;
                 }
-                if (curTime - _lastMapUpdateTime < _mapUpdateInterval) {
+                if (_mapUpdateInterval === Infinity || (curTime - _lastMapUpdateTime < _mapUpdateInterval)) {
                     return; 
                 }
             }
@@ -2903,11 +2993,19 @@ dc.mapMixin = function (_chart, chartId) {
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
          
-         function showPopUp(e) {
+         function showPopUp(e, pixelRadius) {
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y);
             var x = Math.round(e.point.x);
-            var tpixel = new TPixel({x:x, y:y});
+            var tPixels = [];
+            var pixelRadiusSquared = pixelRadius * pixelRadius;
+            for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) { 
+                for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) { 
+                    if (xOffset*xOffset + yOffset*yOffset <= pixelRadiusSquared) {
+                        tPixels.push(new TPixel({x:x+xOffset, y:y+yOffset}));
+                    }
+                }
+            }
             var widgetId = Number(_mapId.match(/\d+/g))
 
             var columns = chartWidgets[widgetId].chartObject.projectArray.slice();
@@ -2919,10 +3017,21 @@ dc.mapMixin = function (_chart, chartId) {
             columns.push(_xDimName);
             columns.push(_yDimName);
             
-            con.getRowsForPixels([tpixel], _chart.tableName(), columns, [function(result){
-
-              if(result[0].row_set.length){
-                if(!$('.popup-highlight').length){
+            con.getRowsForPixels(tPixels, _chart.tableName(), columns, [function(result){
+              var closestResult = null;
+              var closestSqrDistance = Infinity;
+              for (var r = 0; r < result.length; r++) {
+                if(result[r].row_set.length){
+                  var sqrDist = (x-result[r].pixel.x)*(x-result[r].pixel.x) + (y-result[r].pixel.y)*(y-result[r].pixel.y);
+                  if (sqrDist < closestSqrDistance) {
+                      closestResult = r;
+                      closestSqrDistance = sqrDist;
+                  }
+                }
+              }
+              if (closestResult === null)
+                return;
+              if(!$('.popup-highlight').length){
 
                 _chart.x().range([0, _chart.width() -1])
                 _chart.y().range([0, _chart.height() -1])
@@ -2930,11 +3039,11 @@ dc.mapMixin = function (_chart, chartId) {
                 var height = $('#' + _mapId).find('.mapboxgl-map').height()
 
                 var context={
-                  googX: (_chart.x()(result[0].row_set[0][_xDimName]) - 14) + 'px',
-                  googY: (height - _chart.y()(result[0].row_set[0][_yDimName]) - 14) + 'px',
-                  data: result[0].row_set[0],
-                  clickX: result[0].pixel.x + 'px',
-                  clickY: (height - result[0].pixel.y) + 'px',
+                  googX: (_chart.x()(result[closestResult].row_set[0][_xDimName]) - 14) + 'px',
+                  googY: (height - _chart.y()(result[closestResult].row_set[0][_yDimName]) - 14) + 'px',
+                  data: result[closestResult].row_set[0],
+                  clickX: result[closestResult].pixel.x + 'px',
+                  clickY: (height - result[closestResult].pixel.y) + 'px',
                 };
 
                 Handlebars.registerHelper("formatPopupText", function(obj) {
@@ -2952,14 +3061,13 @@ dc.mapMixin = function (_chart, chartId) {
                 var theCompiledHtml = MyApp.templates.pointMapPopup(context);
                 $('#' + _mapId).find('.mapboxgl-map').append(theCompiledHtml)
                 
-                }
               }
             }]);
 
         }
 
         var debouncePopUp = _.debounce(function(e){
-            showPopUp(e)
+            showPopUp(e, _chart.popupSearchRadius())
         }, 250)
 
         _chart._map.on('zoom click', function(e){
@@ -3037,19 +3145,26 @@ dc.rasterMixin = function(_chart) {
     _chart._vegaSpec = {};
     var _sampling = false;
     var _tableName = null;
+    var _popupSearchRadius = 0;
 
-     _chart._resetVegaSpec = function() {
-     _chart._vegaSpec.width = _chart.width();
-     _chart._vegaSpec.height = _chart.height();
+    _chart.popupSearchRadius = function (popupSearchRadius) {
+        if (!arguments.length)
+            return _popupSearchRadius;
+        _popupSearchRadius = popupSearchRadius;
+        return _chart;
+    }
+    _chart._resetVegaSpec = function() {
+        _chart._vegaSpec.width = _chart.width();
+        _chart._vegaSpec.height = _chart.height();
 
-     _chart._vegaSpec.data = [
-       {
-           "name": "table",
-           "sql": "select x, y from tweets;"
-       }
-     ];
-     _chart._vegaSpec.scales = [];
-     _chart._vegaSpec.marks = [];
+        _chart._vegaSpec.data = [
+          {
+              "name": "table",
+              "sql": "select x, y from tweets;"
+          }
+        ];
+        _chart._vegaSpec.scales = [];
+        _chart._vegaSpec.marks = [];
     }
 
     _chart.tableName = function(tableName) {
@@ -3143,6 +3258,17 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     var _r = 1; // default radius 5
     var _dynamicR = null;
     _chart.colors("#22A7F0"); // set constant as picton blue as default
+    var _hasBeenRendered = false;
+    var counter = 0;
+    /*
+    _chart._map.on('layer.add', function() {
+      console.log(toBeRemovedOverlay);
+      if(_chart._map.getSource(toBeRemovedOverlay)){
+          removeOverlay(toBeRemovedOverlay);
+      }
+    });
+    */
+   
 
     /**
      #### .x([scale])
@@ -3337,38 +3463,31 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
         var toBeAddedOverlay = "overlay" + _activeLayer
         if (toBeRemovedOverlay === toBeAddedOverlay)
             return;
-        
-        map.addSource(toBeAddedOverlay,{
-            "id": toBeAddedOverlay,
-            "type": "image",
-            "url": 'data:image/png;base64,' + data,
-            "coordinates": bounds 
-        })
-        //delete _renderBoundsMap[nonce];
-        map.addLayer({
-            "id": toBeAddedOverlay,
-            "source": toBeAddedOverlay,
-            "type": "raster",
-            "paint": {"raster-opacity": 0.85}
-        })
-        setTimeout(function(){
-          if(map.getSource(toBeRemovedOverlay)){
-              removeOverlay(toBeRemovedOverlay);
-          }
-          //if(map.getSource(toBeRemovedOverlay)){
+        try { 
+            map.addSource(toBeAddedOverlay,{
+                "id": toBeAddedOverlay,
+                "type": "image",
+                "url": 'data:image/png;base64,' + data,
+                "coordinates": bounds 
+            })
+            //delete _renderBoundsMap[nonce];
 
-          //    map.batch(function (batch) {
-          //        batch.setPaintProperty(toBeRemovedOverlay, 'raster-opacity', 0);
-          //        batch.setPaintProperty(toBeAddedOverlay, 'raster-opacity', 0.85);
-          //      });
-          //    removeOverlay(toBeRemovedOverlay);
-          //}
-          //else {
-          //    map.batch(function (batch) {
-          //        batch.setPaintProperty(toBeAddedOverlay, 'raster-opacity', 0.85);
-          //    });
-          //}
-        }, 40)
+            map.addLayer({
+                "id": toBeAddedOverlay,
+                "source": toBeAddedOverlay,
+                "type": "raster",
+                "paint": {"raster-opacity": 0.85}
+            })
+
+            setTimeout(function(){
+              if(map.getSource(toBeRemovedOverlay)){
+                  removeOverlay(toBeRemovedOverlay);
+              }
+            }, 100)
+        }
+        catch(err) {
+            console.log(err);
+        }
 
     }
 
@@ -3380,7 +3499,9 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     }
 
     _chart._doRedraw = function() {
-  
+      if (!_hasBeenRendered)
+          return _chart._doRender();
+
       var data = _chart.data();
       addOverlay(data.image, data.nonce)
     }
@@ -3423,6 +3544,10 @@ dc.coordinateGridMixin = function (_chart) {
     var Y_AXIS_LABEL_CLASS = 'y-axis-label';
     var X_AXIS_LABEL_CLASS = 'x-axis-label';
     var DEFAULT_AXIS_LABEL_PADDING = 12;
+
+    /* OVERRIDE EXTEND ----------------------------------------------------------*/
+    var _hasBeenRendered = false;
+    /* --------------------------------------------------------------------------*/
 
     _chart = dc.colorMixin(dc.marginMixin(dc.baseMixin(_chart)));
 
@@ -4561,10 +4686,17 @@ dc.coordinateGridMixin = function (_chart) {
 
         configureMouseZoom();
 
+/* OVERRIDE ---------------------------------------------------------------- */
+        _hasBeenRendered = true;
+/* ------------------------------------------------------------------------- */
         return _chart;
     };
 
     _chart._doRedraw = function () {
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (!_hasBeenRendered) // guard to prevent a redraw before a render
+            return _chart._doRender();
+/* ------------------------------------------------------------------------- */
         _chart._preprocessData();
 
         drawChart(false);
@@ -5605,10 +5737,12 @@ dc.pieChart = function (parent, chartGroup) {
 /* OVERRIDE ---------------------------------------------------------------- */
     var _pieStyle; // "pie" or "donut"
     var _pieSizeThreshold = 480;
+    var _hasBeenRendered = false;
     _chart.redoSelect = highlightFilter;
     _chart.accent = accentSlice;
     _chart.unAccent = unAccentSlice;
 /* ------------------------------------------------------------------------- */
+
     _chart.colorAccessor(_chart.cappedKeyAccessor);
 
     _chart.title(function (d) {
@@ -5652,11 +5786,14 @@ dc.pieChart = function (parent, chartGroup) {
 
         drawChart();
 
+/* OVERRIDE -----------------------------------------------------------------*/
+        _hasBeenRendered = true;
+/* --------------------------------------------------------------------------*/
         return _chart;
     };
 
     function drawChart () {
-      
+
 /* OVERRIDE ---------------------------------------------------------------- */
         // set radius on basis of chart dimension if missing
         //_radius = d3.min([_chart.width(), _chart.height()]) / 2;
@@ -5700,7 +5837,6 @@ dc.pieChart = function (parent, chartGroup) {
 
         createSlicePath(slicesEnter, arc);
 
-        
         createLabels(pieData, arc);
     }
 
@@ -5773,8 +5909,9 @@ dc.pieChart = function (parent, chartGroup) {
                         });
 
                     if (showLabel && _chart.measureLabelsOn()) {
+                        var commafy = d3.format(',');
                         label.select('.value-measure')
-                            .html(truncateLabel(_chart.measureValue(d.data), availableLabelWidth, charPixelWidth));
+                            .html(truncateLabel(commafy(_chart.measureValue(d.data)), availableLabelWidth, charPixelWidth));
                     }
                 }
 
@@ -5806,6 +5943,7 @@ dc.pieChart = function (parent, chartGroup) {
                 })
 /* ------------------------------------------------------------------------- */
                 .on('click', onClick);
+
 /* OVERRIDE ---------------------------------------------------------------- */
             labelsEnter
                 .append('text')
@@ -5819,6 +5957,7 @@ dc.pieChart = function (parent, chartGroup) {
                 .attr('dy', '1.2em');
         }
 /* ------------------------------------------------------------------------- */
+
             positionLabels(labelsEnter, arc);
             if (_externalLabelRadius && _drawPaths) {
                 updateLabelPaths(pieData, arc);
@@ -6050,6 +6189,10 @@ dc.pieChart = function (parent, chartGroup) {
     }
 
     _chart._doRedraw = function () {
+/* OVERRIDE ---------------------------------------------------------------- */
+        if (!_hasBeenRendered) // guard to prevent a redraw before a render
+            return _chart._doRender();
+/* ------------------------------------------------------------------------- */
         drawChart();
         return _chart;
     };
@@ -9094,6 +9237,8 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
     _chart.accent = accentPoly;
     _chart.unAccent = unAccentPoly;
+
+    var _hasBeenRendered = false;
 /* --------------------------------------------------------------------------*/
 
     var _geoPath = d3.geo.path();
@@ -9105,7 +9250,8 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         _chart.resetSvg();
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
             var states = _chart.svg().append('g')
-                .attr('class', 'layer' + layerIndex);
+                .attr('class', 'layer' + layerIndex)
+                .attr('transform', 'translate(0, -16)');
 
             var regionG = states.selectAll('g.' + geoJson(layerIndex).name)
                 .data(geoJson(layerIndex).data)
@@ -9123,6 +9269,11 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
             plotData(layerIndex);
         }
         _projectionFlag = false;
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        _hasBeenRendered = true;
+/* --------------------------------------------------------------------------*/
+
     };
 
     function plotData (layerIndex) {
@@ -9133,7 +9284,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 
             renderPaths(regionG, layerIndex, data);
 
-            renderTitle(regionG, layerIndex, data);
+            //renderTitle(regionG, layerIndex, data);
         }
     }
 
@@ -9222,14 +9373,19 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
                 if (currentFill) {
                     return currentFill;
                 }
-                return 'none';
+                return '#e2e2e2';
             })
+/* OVERRIDE ---------------------------------------------------------------- */
+            .on('mouseenter', function(d, i){showPopup(d, i, data);})
+            .on('mousemove', positionPopup)
+            .on('mouseleave', hidePopup)
+/* ------------------------------------------------------------------------- */
             .on('click', function (d) {
                 return _chart.onClick(d, layerIndex);
             });
 
         dc.transition(paths, _chart.transitionDuration()).attr('fill', function (d, i) {
-            return _chart.getColor(data[geoJson(layerIndex).keyAccessor(d)], i);
+            return _chart.getColor(data[geoJson(layerIndex).keyAccessor(d)], i) || '#e2e2e2';
         });
     }
 
@@ -9256,6 +9412,12 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
     }
 
     _chart._doRedraw = function () {
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        if (!_hasBeenRendered)
+            return _chart._doRender();
+/* --------------------------------------------------------------------------*/
+
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
             plotData(layerIndex);
             if (_projectionFlag) {
@@ -9366,6 +9528,48 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 
         return _chart;
     };
+/* OVERRIDE ---------------------------------------------------------------- */
+    function showPopup(d, i, data) {
+        var popup = _chart.popup();
+
+        var popupBox = popup.select('.chart-popup-box').html('');
+
+        popupBox.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', _chart.getColor(data[geoJson(0).keyAccessor(d)], i));
+
+        popupBox.append('div')
+            .attr('class', 'popup-value')
+            .html(function(){
+                var key = getKey(0, d);
+                var value = isNaN(data[key]) ?  'N/A' : Number(data[key]).toFixed(2);
+                return '<div class="popup-value-dim">'+ key +'</div><div class="popup-value-measure">'+ value +'</div>';
+            });
+
+        popup.classed('js-showPopup', true);
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup() {
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(this);
+        var x = coordinates[0];
+        var y = coordinates[1];
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-right', function(){
+                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width();
+            });
+    }
+/* ------------------------------------------------------------------------- */
 
     return _chart.anchor(parent, chartGroup);
 };
@@ -9605,6 +9809,8 @@ dc.bubbleOverlay = function (parent, chartGroup) {
 
             _chart.r().range([_chart.MIN_RADIUS, _chart.MAX_RADIUS]);
         }
+        if (!_g)
+            initOverlayG();
         var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData, function(d) {return d.key;});
 
         bubbleG.enter().append('g')
@@ -9923,6 +10129,12 @@ dc.rowChart = function (parent, chartGroup) {
 
     _chart.label(_chart.cappedKeyAccessor);
 
+/* OVERRIDE ---------------------------------------------------------------- */
+    _chart.measureValue = function (d) {
+        return _chart.cappedValueAccessor(d);
+    };
+/* ------------------------------------------------------------------------- */
+
     /**
      * Gets or sets the x scale. The x scale can be any d3
      * {@link https://github.com/mbostock/d3/wiki/Quantitative-Scales quantitive scale}
@@ -10000,26 +10212,27 @@ dc.rowChart = function (parent, chartGroup) {
         var height;
 
         if (!_fixedBarHeight) {
-            height = (_chart.effectiveHeight() - (n + 1) * _gap) / n;
+            height = ((_chart.effectiveHeight() - _gap) - (n + 1) * _gap) / n;
         } else {
             height = _fixedBarHeight;
         }
+
 /* OVERRIDE -----------------------------------------------------------------*/
 
         _isBigBar = _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32);
 
         if (_isBigBar) {
-            height = (_chart.effectiveHeight() - (n + 1) * (_gap * 2)) / n;
+            height = ((_chart.effectiveHeight() - _gap) - (n + 1) * _gap) / n;
         }
 
         if (_chart.autoScroll() && height < _minBarHeight) {
             height = _minBarHeight;
             _chart.root().select('.svg-wrapper')
-                .style('height', _chart.height() - 48 + 'px')
+                .style('height', _chart.height() - 52 + 'px')
                 .style('overflow-y', 'auto')
                 .style('overflow-x', 'hidden');
             _chart.svg()
-                .attr('height', n * (height + (_isBigBar ? _gap * 2 : _gap)) + 6);
+                .attr('height', n * (height + _gap) + 8);
         }
 /* --------------------------------------------------------------------------*/
 
@@ -10029,7 +10242,7 @@ dc.rowChart = function (parent, chartGroup) {
         }
 
         var rect = rows.attr('transform', function (d, i) {
-                return 'translate(0,' + ((i + 1) * (_isBigBar ? _gap * 2 : _gap) + i * height) + ')';
+                return 'translate(0,' + ((i + 1) * _gap + i * height) + ')';
             }).select('rect')
             .attr('height', height)
             .attr('fill', _chart.getColor)
@@ -10110,13 +10323,15 @@ dc.rowChart = function (parent, chartGroup) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
         if (_chart.measureLabelsOn()) {
+            var commafy = d3.format(',');
+
             var measureLab = rows.select('.value-measure')
                 .attr('y', _labelOffsetY)
                 .attr('dy', isStackLabel() ?  '1.1em' : _dyOffset)
                 .on('click', onClick)
                 .attr('text-anchor', isStackLabel() ? 'start':'end')
                 .text(function(d){
-                    return _chart.measureValue(d);
+                    return commafy(_chart.measureValue(d));
                 })
                 .attr('x', function (d, i) {
                     if (isStackLabel()) {
@@ -10370,6 +10585,7 @@ dc.cloudChart = function(parent, chartGroup) {
     var _r;
     var _tags; // store output of _cloudLayout 
     var _noRelayout = false; // flag to set on click so rerender doesn't relayout elements
+    var _hasBeenRendered = false;
 
     _chart.setNoRelayout = function(val) {
         _noRelayout = val;
@@ -10463,11 +10679,14 @@ dc.cloudChart = function(parent, chartGroup) {
         }
         else
             drawChart();
+        var _hasBeenRendered = true;
 
         return _chart;
     };
 
     _chart._doRedraw = function () {
+        if (!_hasBeenRendered)
+            return _chart._doRender();
         if (_noRelayout) {
             cloudDraw(_tags);
             _noRelayout = false;
@@ -10510,8 +10729,7 @@ dc.legend = function () {
         _horizontal = false,
         _legendWidth = 560,
         _itemWidth = 70,
-        _autoItemWidth = false,
-        _legendText = dc.pluck('name');
+        _autoItemWidth = false;
 
     var _g;
 
@@ -10569,7 +10787,7 @@ dc.legend = function () {
         }
 
         itemEnter.append('text')
-                .text(_legendText)
+                .text(dc.pluck('name'))
                 .attr('x', _itemHeight + LABEL_GAP)
                 .attr('y', function () {
                     return _itemHeight / 2 + (this.clientHeight ? this.clientHeight : 13) / 2 - 2;
@@ -10762,6 +10980,200 @@ dc.legend = function () {
 
     return _legend;
 };
+
+dc.legendContinuous = function () {
+    var LABEL_GAP = 2;
+    var _legend = {},
+        _parent,
+        _x = 0,
+        _y = 0,
+        _itemHeight = 12,
+        _gap = 5,
+        _horizontal = false,
+        _legendWidth = 560,
+        _itemWidth = 70,
+        _autoItemWidth = false;
+
+    var _g;
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    var _wrapper;
+    var _lock;
+    var _lockable = true;
+    var _isLocked = false;
+/* --------------------------------------------------------------------------*/
+
+    _legend.parent = function (p) {
+        if (!arguments.length) {
+            return _parent;
+        }
+        _parent = p;
+        return _legend;
+    };
+
+    _legend.render = function () {
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        _parent.root().select('.legend-cont').remove();
+
+        _wrapper = _parent.root().append('div')
+            .attr('class', 'legend-cont')
+            .style('display', _parent.colorByExpr() === null ? 'none': 'block');
+
+        var title = _wrapper.append('div')
+            .attr('class', 'legend-title')
+            .append('span')
+            .text(_parent.colorByExpr());
+
+        var legendGroup = _wrapper.append('div')
+            .attr('class', 'legend-group');
+
+        if (_lockable) {
+            generateLock();
+        }
+
+        var legendables = _parent.legendablesContinuous();
+
+        var itemEnter = legendGroup.selectAll('.legend-item')
+            .data(legendables)
+            .enter()
+            .append('div')
+            .attr('class', 'legend-item');
+
+        itemEnter.append('div')
+            .attr('class', 'legend-swatch')
+            .style('background-color', function (d) {return d ? d.color : '#e2e2e2';});
+
+        itemEnter.append('div')
+            .attr('class', 'legend-label')
+            .append('span')
+            .text(function(d) { return d ? d.value : 0;})
+
+        legendGroup.selectAll('.legend-item:first-child .legend-label, .legend-item:last-child .legend-label')
+            .append('div')
+            .attr('class', 'legend-input')
+            .append('input')
+            .attr('value', function(d){ return d ? d.value : 0;})
+            .on('focus', function(){ this.select();})
+            .on('change', onChange);
+
+    };
+
+    function legendItemHeight () {
+        return _gap + _itemHeight;
+    }
+
+    _legend.x = function (x) {
+        if (!arguments.length) {
+            return _x;
+        }
+        _x = x;
+        return _legend;
+    };
+
+    _legend.y = function (y) {
+        if (!arguments.length) {
+            return _y;
+        }
+        _y = y;
+        return _legend;
+    };
+
+    _legend.gap = function (gap) {
+        if (!arguments.length) {
+            return _gap;
+        }
+        _gap = gap;
+        return _legend;
+    };
+
+    _legend.itemHeight = function (itemHeight) {
+        if (!arguments.length) {
+            return _itemHeight;
+        }
+        _itemHeight = itemHeight;
+        return _legend;
+    };
+
+    _legend.horizontal = function (horizontal) {
+        if (!arguments.length) {
+            return _horizontal;
+        }
+        _horizontal = horizontal;
+        return _legend;
+    };
+
+    _legend.legendWidth = function (legendWidth) {
+        if (!arguments.length) {
+            return _legendWidth;
+        }
+        _legendWidth = legendWidth;
+        return _legend;
+    };
+
+    _legend.itemWidth = function (itemWidth) {
+        if (!arguments.length) {
+            return _itemWidth;
+        }
+        _itemWidth = itemWidth;
+        return _legend;
+    };
+
+    _legend.autoItemWidth = function (autoItemWidth) {
+        if (!arguments.length) {
+            return _autoItemWidth;
+        }
+        _autoItemWidth = autoItemWidth;
+        return _legend;
+    };
+/* OVERRIDE -----------------------------------------------------------------*/
+    function generateLock () {
+        _lock = _wrapper.append('div').attr('class', 'legend-lock')
+            .classed('js-isLocked', _isLocked)
+            .on('click', toggleLock);
+
+        _lock.append('svg')
+            .attr('class', 'svg-icon')
+            .classed('icon-lock', true)
+            .attr('viewBox', '0 0 48 48')
+            .append('use')
+            .attr('xlink:href', '#icon-lock');
+        _lock.append('svg')
+            .attr('class', 'svg-icon')
+            .classed('icon-unlock', true)
+            .attr('viewBox', '0 0 48 48')
+            .append('use')
+            .attr('xlink:href', '#icon-unlock');
+        return _lock;
+    }
+
+    function toggleLock() {
+        _isLocked = _isLocked ? false : true;
+        _lock.classed('js-isLocked', _isLocked);
+
+        if (_isLocked) {
+            _parent.legendLock()();
+        } else {
+            _parent.legendUnlock()(true);
+        }
+
+    }
+
+    function onChange () {
+        var startVal = _wrapper.select('.legend-item:first-child .legend-input input')[0][0].value;
+        var endVal = _wrapper.select('.legend-item:last-child .legend-input input')[0][0].value;
+
+        _parent.legendInputChange()([startVal,endVal], _parent.colors().range().length);
+
+        _isLocked = true;
+        _lock.classed('js-isLocked', _isLocked);
+    }
+
+/* --------------------------------------------------------------------------*/
+
+    return _legend;
+};
+
 
 /**
  * A scatter plot chart
@@ -11217,15 +11629,19 @@ dc.heatMap = function (parent, chartGroup) {
 
     var _cols;
     var _rows;
-
-/* OVERRIDE -----------------------------------------------------------------*/
     var _colOrdering = d3.ascending;
     var _rowOrdering = d3.ascending;
     var _colScale = d3.scale.ordinal();
     var _rowScale = d3.scale.ordinal();
+
+    var _xBorderRadius = DEFAULT_BORDER_RADIUS;
+    var _yBorderRadius = DEFAULT_BORDER_RADIUS;
+
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     var _yLabel;
     var _xLabel;
     var _numFormat = d3.format(".2s");
+    var _hasBeenRendered = false;
 /* --------------------------------------------------------------------------*/
 
     var _xBorderRadius = DEFAULT_BORDER_RADIUS;
@@ -11460,7 +11876,7 @@ dc.heatMap = function (parent, chartGroup) {
         _chart.resetSvg();
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        _chart.margins().bottom = _chart.margins().bottom;
+        _chart.margins({top: 8, right: 16, bottom: 56, left: 48});
 /* --------------------------------------------------------------------------*/
 
         _chartBody = _chart.svg()
@@ -11471,6 +11887,7 @@ dc.heatMap = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
         _chartBody.append('g')
             .attr('class', 'box-wrapper');
+        _hasBeenRendered = true;
 /* --------------------------------------------------------------------------*/
 
         return _chart._doRedraw();
@@ -11479,6 +11896,8 @@ dc.heatMap = function (parent, chartGroup) {
     _chart._doRedraw = function () {
 
 /* OVERRIDE -----------------------------------------------------------------*/
+        if (!_hasBeenRendered)
+            return _chart._doRender();
         var data = _chart.data(),
             cols = _chart.cols(),
             rows = _chart.rows() || data.map(_chart.valueAccessor()),
@@ -11717,32 +12136,29 @@ dc.heatMap = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
     _chart.renderAxisLabels = function () {
 
-        var yLabel = _chartBody.selectAll('text.y-axis-label');
+        var root = _chart.root();
+
+        var yLabel = root.selectAll('.y-axis-label');
 
         if (yLabel.empty()) {
-            yLabel = _chartBody.append('text')
+            yLabel = root.append('div')
             .attr('class', 'y-axis-label')
             .text(_yLabel);
         }
 
         yLabel
-            .attr('x', -(_chart.effectiveHeight()/2))
-            .attr('y', -(_chart.margins().left - 12))
-            .style('transform', 'rotate(-90deg)')
-            .style('text-anchor', 'middle');
+            .style('top', (_chart.effectiveHeight() / 2 + _chart.margins().top) +'px');
 
-        var xLabel = _chartBody.selectAll('text.x-axis-label');
+        var xLabel = root.selectAll('.x-axis-label');
 
         if (xLabel.empty()) {
-            xLabel = _chartBody.append('text')
+            xLabel = root.append('div')
             .attr('class', 'x-axis-label')
             .text(_xLabel);
         }
 
         xLabel
-            .attr('x', (_chart.effectiveWidth()/2))
-            .attr('y', (_chart.effectiveHeight() + _chart.margins().bottom - 6))
-            .style('text-anchor', 'middle');
+            .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px');
     };
 
 /* --------------------------------------------------------------------------*/

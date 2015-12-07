@@ -25,15 +25,19 @@ dc.heatMap = function (parent, chartGroup) {
 
     var _cols;
     var _rows;
-
-/* OVERRIDE -----------------------------------------------------------------*/
     var _colOrdering = d3.ascending;
     var _rowOrdering = d3.ascending;
     var _colScale = d3.scale.ordinal();
     var _rowScale = d3.scale.ordinal();
+
+    var _xBorderRadius = DEFAULT_BORDER_RADIUS;
+    var _yBorderRadius = DEFAULT_BORDER_RADIUS;
+
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     var _yLabel;
     var _xLabel;
     var _numFormat = d3.format(".2s");
+    var _hasBeenRendered = false;
 /* --------------------------------------------------------------------------*/
 
     var _xBorderRadius = DEFAULT_BORDER_RADIUS;
@@ -268,7 +272,7 @@ dc.heatMap = function (parent, chartGroup) {
         _chart.resetSvg();
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        _chart.margins().bottom = _chart.margins().bottom;
+        _chart.margins({top: 8, right: 16, bottom: 56, left: 48});
 /* --------------------------------------------------------------------------*/
 
         _chartBody = _chart.svg()
@@ -279,6 +283,7 @@ dc.heatMap = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
         _chartBody.append('g')
             .attr('class', 'box-wrapper');
+        _hasBeenRendered = true;
 /* --------------------------------------------------------------------------*/
 
         return _chart._doRedraw();
@@ -287,6 +292,8 @@ dc.heatMap = function (parent, chartGroup) {
     _chart._doRedraw = function () {
 
 /* OVERRIDE -----------------------------------------------------------------*/
+        if (!_hasBeenRendered)
+            return _chart._doRender();
         var data = _chart.data(),
             cols = _chart.cols(),
             rows = _chart.rows() || data.map(_chart.valueAccessor()),
@@ -525,32 +532,29 @@ dc.heatMap = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
     _chart.renderAxisLabels = function () {
 
-        var yLabel = _chartBody.selectAll('text.y-axis-label');
+        var root = _chart.root();
+
+        var yLabel = root.selectAll('.y-axis-label');
 
         if (yLabel.empty()) {
-            yLabel = _chartBody.append('text')
+            yLabel = root.append('div')
             .attr('class', 'y-axis-label')
             .text(_yLabel);
         }
 
         yLabel
-            .attr('x', -(_chart.effectiveHeight()/2))
-            .attr('y', -(_chart.margins().left - 12))
-            .style('transform', 'rotate(-90deg)')
-            .style('text-anchor', 'middle');
+            .style('top', (_chart.effectiveHeight() / 2 + _chart.margins().top) +'px');
 
-        var xLabel = _chartBody.selectAll('text.x-axis-label');
+        var xLabel = root.selectAll('.x-axis-label');
 
         if (xLabel.empty()) {
-            xLabel = _chartBody.append('text')
+            xLabel = root.append('div')
             .attr('class', 'x-axis-label')
             .text(_xLabel);
         }
 
         xLabel
-            .attr('x', (_chart.effectiveWidth()/2))
-            .attr('y', (_chart.effectiveHeight() + _chart.margins().bottom - 6))
-            .style('text-anchor', 'middle');
+            .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px');
     };
 
 /* --------------------------------------------------------------------------*/
