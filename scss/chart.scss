@@ -3,7 +3,7 @@
 .lock-measure {
     left: 100%;
     top: 0;
-    transform: translate(-20px, -48px);
+    transform: translate(-20px, -52px);
 }
 .color-legend-restore {
     display: none !important;
@@ -23,14 +23,106 @@
 
 .anim-button-play, .anim-button-stop {
     z-index: 2;
+    opacity: 1 !important;
+    border: 1px solid $gray2;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    bottom: 98px;
+
+    .fa {
+        font-size: 13px !important;
+        position: relative;
+        top: -1px;
+    }
+}
+
+.anim-button-play {
+    bottom: 126px;
 }
 
 .dc-chart {
     position: relative;
     font-family: "Roboto";
 
-    .axis text {
-        font-family: "Roboto";
+    &:hover {
+        .brush {
+            .resize {
+                path {
+                    opacity: .5;
+                }
+            }
+        }
+
+        .range-display { 
+            input {
+                border: 1px solid $gray3;
+            }
+        }
+    }
+
+    .range-display {
+        position: absolute;
+        right: 0;
+        top: 4px;
+        font-size: 11px;
+        color: $gray5;
+        z-index: 5;
+
+        span {
+            margin: 0 2px;
+        }
+
+        input {
+            display: inline-block;
+            border: 1px solid transparent;
+            text-align: center;
+
+            &.range-day {
+                width: 70px;
+                font-weight: bold;
+            }
+
+            &.range-time {
+                width: 48px;
+            }
+        }
+    }
+
+    .axis {
+        
+        fill: $gray4;
+        
+        text {
+            font-family: "Roboto";
+        }
+        path, line {
+            stroke: $gray3 !important;
+        }
+    }
+
+    .brush {
+        .resize {
+            path {
+
+                stroke: $gray5;
+                fill: $gray5;
+                opacity: 0;
+                transition: opacity .25s;
+
+            }
+
+            &:hover {
+                path {
+                    opacity: 1;
+                }
+            }
+        }
+
+        rect.extent {
+            fill: $blue-main;
+            fill-opacity: .2;
+        }
     }
 
     .geocoder-input{
@@ -47,9 +139,6 @@
     }
 
     .heatmap {
-        .axis {
-            fill: $gray4;
-        }
 
         .box-group.deselected rect {
             stroke: white;
@@ -104,10 +193,11 @@
     }
 
     div.y-axis-label {
-        transform-origin: 0 0;
-        transform: translateY(-100%) rotate(90deg);
-        left: 24px;
+        transform-origin: 50% 0;
+        transform:translateX(-50%) rotate(270deg) ;
+        left: 4px;
     }
+
 
     div.x-axis-label {
         transform: translateX(-50%);
