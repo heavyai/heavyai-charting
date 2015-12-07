@@ -15,6 +15,72 @@ dc.bubbleChart = function (parent, chartGroup) {
         return 'translate(' + (bubbleX(d)) + ',' + (bubbleY(d)) + ')';
     };
 
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.hideOverlappedLabels = function (){
+        var labels = _chart.svg().selectAll('.node text');
+
+        var labelHeight = 12;
+        var letterWidth = 6;
+
+        labels.each(function(d){
+            //console.log(bubbleX(d), bubbleY(d), (_chart.bubbleR(d)+'').length);
+            var a = this;
+            var aX = bubbleX(d);
+            var aY = bubbleY(d);
+            var aR = _chart.bubbleR(d);
+            var aKey = d.key0;
+            var aXmin = aX - (aR+'').length * letterWidth;
+            var aXmax = aX + (aR+'').length * letterWidth;
+
+            d3.select(a).append('rect')
+                .attr('width', (aKey+'').length * letterWidth)
+                .attr('height', 12)
+                .attr('x', ((aKey+'').length * -letterWidth)/2)
+                .attr('y', -6)
+                .style('opacity', '.5');
+
+
+
+            console.log(d.key0);
+
+            labels.each(function(d){
+
+                var b = this;
+
+                //if (d3.select(b).style('opacity') !== '0') {
+
+                    var bX = bubbleX(d);
+                    var bY = bubbleY(d);
+                    var bR = _chart.bubbleR(d);
+
+                    //if (a === b || Math.abs(aY - bY) > labelHeight ) { return;}
+
+                    
+
+                    var bXmin = bX - (bR+'').length * letterWidth;
+                    var bXmax = bX + (bR+'').length * letterWidth;
+
+
+                    //var isOverlapped = aXmax >= bXmin && aXmax <= bXmax;
+
+
+                    //d3.select(a).style('opacity', isOverlapped ? '0' : '1');
+
+
+
+
+                //}
+
+
+            });
+
+            
+        });
+    }
+
+
+/* --------------------------------------------------------------------------*/
+
     _chart.elasticRadius = function (elasticRadius) {
         if (!arguments.length) {
             return _elasticRadius;
@@ -68,6 +134,7 @@ dc.bubbleChart = function (parent, chartGroup) {
         _chart._doRenderLabel(bubbleGEnter);
 
         _chart._doRenderTitles(bubbleGEnter);
+
     }
 
     function updateNodes (bubbleG) {
@@ -88,6 +155,7 @@ dc.bubbleChart = function (parent, chartGroup) {
 
         _chart.doUpdateLabels(bubbleG);
         _chart.doUpdateTitles(bubbleG);
+        _chart.hideOverlappedLabels();
     }
 
     function removeNodes (bubbleG) {
