@@ -6,20 +6,29 @@ dc.rasterMixin = function(_chart) {
     _chart._vegaSpec = {};
     var _sampling = false;
     var _tableName = null;
+    var _popupSearchRadius = 0;
 
-     _chart._resetVegaSpec = function() {
-     _chart._vegaSpec.width = _chart.width();
-     _chart._vegaSpec.height = _chart.height();
-
-     _chart._vegaSpec.data = [
-       {
-           "name": "table",
-           "sql": "select x, y from tweets;"
-       }
-     ];
-     _chart._vegaSpec.scales = [];
-     _chart._vegaSpec.marks = [];
+    _chart.popupSearchRadius = function (popupSearchRadius) {
+        if (!arguments.length)
+            return _popupSearchRadius;
+        _popupSearchRadius = popupSearchRadius;
+        return _chart;
     }
+    _chart._resetVegaSpec = function() {
+        _chart._vegaSpec.width = _chart.width();
+        _chart._vegaSpec.height = _chart.height();
+
+        _chart._vegaSpec.data = [
+          {
+              "name": "table",
+              "sql": "select x, y from tweets;"
+          }
+        ];
+        _chart._vegaSpec.scales = [];
+        _chart._vegaSpec.marks = [];
+    }
+
+
 
     _chart.tableName = function(tableName) {
         if (!arguments.length)
