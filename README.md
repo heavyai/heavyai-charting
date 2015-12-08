@@ -12,6 +12,18 @@ Clone down the repo and run the following commands:
 3. `grunt build` - to build the mapdc.js files.
 4. `grunt watch` - to automatically rebuild the mapdc.js files after each save.
 
+### Pull Requests:
+
+Attach the appropriate semvar tag below to one of the commit messages in your pull request. This allows Jenkins to publish to npm automatically.
+
+Semvar Tag | Description
+--- | ---
+`[major]` | major breaking changes
+`[minor]` | new features
+`[patch]` | Bugfixes, documentation
+
+Jenkins will not let you merge a pull request that contains a missing or multiple semvar tags. **One per Pull Request!**
+
 ### Developing mapdc and another project at the same time:
 
 _"What is hard is figuring out a good workflow for developing both an npm module and a project that depends on it at the same time." - http://justjs.com/posts/npm-link-developing-your-own-npm-modules-without-tears_
