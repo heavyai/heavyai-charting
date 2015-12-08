@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.4
+ *  dc 0.1.5
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.4
+ * @version 0.1.5
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.4',
+    version: '0.1.5',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -2974,15 +2974,21 @@ dc.mapMixin = function (_chart, chartDivId) {
         _chart._map.on('load', onLoad);
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
-         
+
+        $('#' + chartDivId).on('mousewheel', '.popup-hide-div, .popup-container',
+          function(){
+            $('.popup-container').remove()
+            $('.point-highlight-add').parent().remove()
+          })
+
          function showPopUp(e, pixelRadius) {
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y);
             var x = Math.round(e.point.x);
             var tPixels = [];
             var pixelRadiusSquared = pixelRadius * pixelRadius;
-            for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) { 
-                for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) { 
+            for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) {
+                for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) {
                     if (xOffset*xOffset + yOffset*yOffset <= pixelRadiusSquared) {
                         tPixels.push(new TPixel({x:x+xOffset, y:y+yOffset}));
                     }
