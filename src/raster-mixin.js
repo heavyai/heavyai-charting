@@ -1,11 +1,9 @@
-/******************************************************************************
- * EXTEND: dc.rasterMixin                                                     *
- * ***************************************************************************/
 
 dc.rasterMixin = function(_chart) {
     _chart._vegaSpec = {};
     var _sampling = false;
     var _tableName = null;
+    var _popupColumns = [];
     var _popupSearchRadius = 0;
 
     _chart.popupSearchRadius = function (popupSearchRadius) {
@@ -28,6 +26,13 @@ dc.rasterMixin = function(_chart) {
         _chart._vegaSpec.marks = [];
     }
 
+    _chart.popupColumns = function(popupColumns) {
+        if (!arguments.length)
+            return _popupColumns;
+        _popupColumns = popupColumns;
+        return _chart;
+    }
+
     _chart.tableName = function(tableName) {
         if (!arguments.length)
             return _tableName;
@@ -42,7 +47,7 @@ dc.rasterMixin = function(_chart) {
     _chart.sampling = function(setting) { // setting should be true or false
         if (!arguments.length)
             return _sampling;
-    
+
         if (setting && !_sampling) // if wasn't sampling
             dc._sampledCount++;
         else if (!setting && _sampling)
@@ -93,6 +98,3 @@ dc.rasterMixin = function(_chart) {
     return _chart;
 }
 
-/******************************************************************************
- * END EXTEND: dc.rasterMixin                                                 *
- * ***************************************************************************/
