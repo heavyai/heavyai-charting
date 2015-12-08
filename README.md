@@ -28,14 +28,10 @@ Jenkins will not let you merge a pull request that contains a missing or multipl
 
 _"What is hard is figuring out a good workflow for developing both an npm module and a project that depends on it at the same time." - http://justjs.com/posts/npm-link-developing-your-own-npm-modules-without-tears_
 
-**If you have not cloned down the mapdc.js repo, do that first.**
-
-Example: 
-
-You are working on the mapd2-frontend project and also need to make changes to mapdc. In this case, run the following commands:
+**If you have not cloned down the mapdc.js repo, do that first.** Then run the following commands:
 
 1. `npm link` - inside the mapdc/ repo directory.
-2. `npm link @mapd/mapdc` - inside the mapd2-frontend/main/ directory.
+2. `npm link @mapd/mapdc` - inside the project directory (same level as the `node_modules/` directory).
 
 This overrides the `node_modules` directory and tells your project to use the mapdc/ repo instead.
 
