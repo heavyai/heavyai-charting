@@ -86,6 +86,39 @@
         }
     }
 
+    .node {
+        font-size: 11px;
+        font-weight: bold;
+
+        &:hover {
+            circle {
+                fill-opacity: .8;
+            }
+        }
+
+        &.hide-label {
+            
+            text {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            &.selected {
+                text {
+                    opacity: 1;
+                }
+            }
+        }
+
+        &.selected {
+            circle {
+                stroke: none !important;
+            }
+            
+        }
+    }
+
+
     .range-display {
         position: absolute;
         right: 0;
