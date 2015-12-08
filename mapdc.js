@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.3
+ *  dc 0.1.4
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.3
+ * @version 0.1.4
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.3',
+    version: '0.1.4',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -2867,32 +2867,14 @@ dc.colorMixin = function (_chart) {
     return _chart;
 };
 
-/******************************************************************************
- * EXTEND: dc.mapMixin                                                        *
- * ***************************************************************************/
 
-dc.mapMixin = function (_chart, chartId) {
+dc.mapMixin = function (_chart, chartDivId) {
 
     var _map = null;
     var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
     var _lastWidth = null;
     var _lastHeight = null;
-    //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
-
-    var id = chartId;
-    var _mapId = "widget" + id; // TODO: make less brittle (hardwired now to having two charts before point map
-
-    // get the widget's div and it's sections
-    var $widgetDiv   = $('#' + _mapId);
-    var $panelHeader = $($widgetDiv.children()[0]);
-    var $panelBody   = $($widgetDiv.children()[1]);
-
-    // calculate the height of the map
-    var height = $widgetDiv.height() - $panelHeader.height();
-
-    // set the id and height of the panel body
-    $panelBody.attr('id', _mapId + '-body');
-    $panelBody.height(height);
+    var _mapId = chartDivId;
 
     _chart._map = null;
     var _mapInitted = false;
@@ -2978,7 +2960,7 @@ dc.mapMixin = function (_chart, chartId) {
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
         _chart._map = new mapboxgl.Map({
-          container: _mapId + '-body', // container id
+          container: _mapId, // container id
           style: 'mapbox://styles/mapbox/light-v8',
           interactive: true,
           center: [-74.50, 40], // starting position
@@ -3006,9 +2988,8 @@ dc.mapMixin = function (_chart, chartId) {
                     }
                 }
             }
-            var widgetId = Number(_mapId.match(/\d+/g))
 
-            var columns = chartWidgets[widgetId].chartObject.projectArray.slice();
+            var columns = _chart.popupColumns().slice();
 
             if(!columns.length){
               return;
@@ -3016,7 +2997,7 @@ dc.mapMixin = function (_chart, chartId) {
 
             columns.push(_xDimName);
             columns.push(_yDimName);
-            
+
             con.getRowsForPixels(tPixels, _chart.tableName(), columns, [function(result){
               var closestResult = null;
               var closestSqrDistance = Infinity;
@@ -3036,7 +3017,7 @@ dc.mapMixin = function (_chart, chartId) {
                 _chart.x().range([0, _chart.width() -1])
                 _chart.y().range([0, _chart.height() -1])
 
-                var height = $('#' + _mapId).find('.mapboxgl-map').height()
+                var height = $('#' + _mapId).height()
 
                 var context={
                   googX: (_chart.x()(result[closestResult].row_set[0][_xDimName]) - 14) + 'px',
@@ -3059,8 +3040,8 @@ dc.mapMixin = function (_chart, chartId) {
                 });
 
                 var theCompiledHtml = MyApp.templates.pointMapPopup(context);
-                $('#' + _mapId).find('.mapboxgl-map').append(theCompiledHtml)
-                
+                $('#' + _mapId).append(theCompiledHtml)
+
               }
             }]);
 
@@ -3071,11 +3052,11 @@ dc.mapMixin = function (_chart, chartId) {
         }, 250)
 
         _chart._map.on('zoom click', function(e){
-          debouncePopUp(e);          
+          debouncePopUp(e);
         })
 
         _chart._map.on('mousemove', function(e){
-          
+
           debouncePopUp(e);
 
           if($('.popup-hide-div').length){
@@ -3095,7 +3076,7 @@ dc.mapMixin = function (_chart, chartId) {
       _chart.geocoder = new Geocoder();
       _chart.geocoder.init(_chart._map);
       _chart.geocoderInput = $('<input class="geocoder-input" type="text" placeholder="Zoom to"></input>')
-        .appendTo($('#' + _mapId  + '-body'));
+        .appendTo($('#' + _mapId));
       _chart.geocoderInput.css({
           top: '5px',
           right: '5px'
@@ -3113,7 +3094,7 @@ dc.mapMixin = function (_chart, chartId) {
     }
 
     _chart.on('preRender', function(chart) {
-        
+
         $('.mapboxgl-ctrl-bottom-right').remove();
 
         var width = chart.width();
@@ -3133,18 +3114,13 @@ dc.mapMixin = function (_chart, chartId) {
     return _chart;
 }
 
-/******************************************************************************
- * END EXTEND: dc.mapMixin                                                    *
- * ***************************************************************************/
 
-/******************************************************************************
- * EXTEND: dc.rasterMixin                                                     *
- * ***************************************************************************/
 
 dc.rasterMixin = function(_chart) {
     _chart._vegaSpec = {};
     var _sampling = false;
     var _tableName = null;
+    var _popupColumns = [];
     var _popupSearchRadius = 0;
 
     _chart.popupSearchRadius = function (popupSearchRadius) {
@@ -3167,6 +3143,13 @@ dc.rasterMixin = function(_chart) {
         _chart._vegaSpec.marks = [];
     }
 
+    _chart.popupColumns = function(popupColumns) {
+        if (!arguments.length)
+            return _popupColumns;
+        _popupColumns = popupColumns;
+        return _chart;
+    }
+
     _chart.tableName = function(tableName) {
         if (!arguments.length)
             return _tableName;
@@ -3181,7 +3164,7 @@ dc.rasterMixin = function(_chart) {
     _chart.sampling = function(setting) { // setting should be true or false
         if (!arguments.length)
             return _sampling;
-    
+
         if (setting && !_sampling) // if wasn't sampling
             dc._sampledCount++;
         else if (!setting && _sampling)
@@ -3232,17 +3215,16 @@ dc.rasterMixin = function(_chart) {
     return _chart;
 }
 
-/******************************************************************************
- * END EXTEND: dc.rasterMixin                                                 *
- * ***************************************************************************/
 
-dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
+dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _chart = null;
 
     var _useMap = useMap !== undefined ? useMap : false;
 
+    var parentDivId = parent.attributes.id.value;
+
     if (_useMap){
-        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), chartId));
+        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), parentDivId));
     }
     else{
         _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
@@ -3268,7 +3250,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
       }
     });
     */
-   
+
 
     /**
      #### .x([scale])
@@ -3358,7 +3340,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
             result = group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
         }
         _renderBoundsMap[result.nonce] = renderBounds;
-        return result; 
+        return result;
     });
 
     function genVegaSpec() {
@@ -3495,6 +3477,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
 
       var data = _chart.data();
       addOverlay(data.image, data.nonce)
+      _hasBeenRendered = true;
 
     }
 
