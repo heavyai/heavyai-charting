@@ -2,28 +2,13 @@
  * EXTEND: dc.mapMixin                                                        *
  * ***************************************************************************/
 
-dc.mapMixin = function (_chart, chartId) {
+dc.mapMixin = function (_chart, chartDivId) {
 
     var _map = null;
     var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
     var _lastWidth = null;
     var _lastHeight = null;
-    //var _mapId = "widget" + parseInt($(_chart.anchor()).attr("id").match(/(\d+)$/)[0], 10);
-
-    var id = chartId;
-    var _mapId = "widget" + id; // TODO: make less brittle (hardwired now to having two charts before point map
-
-    // get the widget's div and it's sections
-    var $widgetDiv   = $('#' + _mapId);
-    var $panelHeader = $($widgetDiv.children()[0]);
-    var $panelBody   = $($widgetDiv.children()[1]);
-
-    // calculate the height of the map
-    var height = $widgetDiv.height() - $panelHeader.height();
-
-    // set the id and height of the panel body
-    $panelBody.attr('id', _mapId + '-body');
-    $panelBody.height(height);
+    var _mapId = chartDivId;
 
     _chart._map = null;
     var _mapInitted = false;
@@ -109,7 +94,7 @@ dc.mapMixin = function (_chart, chartId) {
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
         _chart._map = new mapboxgl.Map({
-          container: _mapId + '-body', // container id
+          container: _mapId, // container id
           style: 'mapbox://styles/mapbox/light-v8',
           interactive: true,
           center: [-74.50, 40], // starting position
@@ -123,6 +108,12 @@ dc.mapMixin = function (_chart, chartId) {
         _chart._map.on('load', onLoad);
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
+
+        $('#' + chartDivId).on('mousewheel', '.popup-hide-div, .popup-container', 
+          function(){
+            $('.popup-container').remove()
+            $('.point-highlight-add').parent().remove()
+          })
          
          function showPopUp(e, pixelRadius) {
             var height = $(e.target._container).height()
@@ -137,9 +128,8 @@ dc.mapMixin = function (_chart, chartId) {
                     }
                 }
             }
-            var widgetId = Number(_mapId.match(/\d+/g))
 
-            var columns = chartWidgets[widgetId].chartObject.projectArray.slice();
+            var columns = _chart.popupColumns().slice();
 
             if(!columns.length){
               return;
@@ -147,7 +137,8 @@ dc.mapMixin = function (_chart, chartId) {
 
             columns.push(_xDimName);
             columns.push(_yDimName);
-            
+
+
             con.getRowsForPixels(tPixels, _chart.tableName(), columns, [function(result){
               var closestResult = null;
               var closestSqrDistance = Infinity;
@@ -167,7 +158,7 @@ dc.mapMixin = function (_chart, chartId) {
                 _chart.x().range([0, _chart.width() -1])
                 _chart.y().range([0, _chart.height() -1])
 
-                var height = $('#' + _mapId).find('.mapboxgl-map').height()
+                var height = $('#' + _mapId).height()
 
                 var context={
                   googX: (_chart.x()(result[closestResult].row_set[0][_xDimName]) - 14) + 'px',
@@ -190,8 +181,8 @@ dc.mapMixin = function (_chart, chartId) {
                 });
 
                 var theCompiledHtml = MyApp.templates.pointMapPopup(context);
-                $('#' + _mapId).find('.mapboxgl-map').append(theCompiledHtml)
-                
+                $('#' + _mapId).append(theCompiledHtml)
+
               }
             }]);
 
@@ -226,7 +217,7 @@ dc.mapMixin = function (_chart, chartId) {
       _chart.geocoder = new Geocoder();
       _chart.geocoder.init(_chart._map);
       _chart.geocoderInput = $('<input class="geocoder-input" type="text" placeholder="Zoom to"></input>')
-        .appendTo($('#' + _mapId  + '-body'));
+        .appendTo($('#' + _mapId));
       _chart.geocoderInput.css({
           top: '5px',
           right: '5px'
