@@ -105,15 +105,21 @@ dc.mapMixin = function (_chart, chartDivId) {
         _chart._map.on('load', onLoad);
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
-         
+
+        $('#' + chartDivId).on('mousewheel', '.popup-hide-div, .popup-container',
+          function(){
+            $('.popup-container').remove()
+            $('.point-highlight-add').parent().remove()
+          })
+
          function showPopUp(e, pixelRadius) {
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y);
             var x = Math.round(e.point.x);
             var tPixels = [];
             var pixelRadiusSquared = pixelRadius * pixelRadius;
-            for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) { 
-                for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) { 
+            for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) {
+                for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) {
                     if (xOffset*xOffset + yOffset*yOffset <= pixelRadiusSquared) {
                         tPixels.push(new TPixel({x:x+xOffset, y:y+yOffset}));
                     }
