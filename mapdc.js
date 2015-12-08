@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.6
+ *  dc 0.1.7
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.6
+ * @version 0.1.7
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.6',
+    version: '0.1.7',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -2881,12 +2881,12 @@ dc.mapMixin = function (_chart, chartDivId) {
     var _xDim = null;
     var _yDim = null;
     var _xDimName = null;
-    var _yDimName = null;    
+    var _yDimName = null;
     var _lastMapMoveType = null;
     var _lastMapUpdateTime = 0;
     var _isFirstMoveEvent = true;
     var _mapUpdateInterval = 100; //default
-
+    var _mapStyle = 'mapbox://styles/mapbox/light-v8';
 
     _chart.xDim = function(xDim) {
         if (!arguments.length)
@@ -2944,7 +2944,7 @@ dc.mapMixin = function (_chart, chartDivId) {
                     _isFirstMoveEvent = false;
                 }
                 if (_mapUpdateInterval === Infinity || (curTime - _lastMapUpdateTime < _mapUpdateInterval)) {
-                    return; 
+                    return;
                 }
             }
             else if (e.type === 'moveend') {
@@ -2957,11 +2957,20 @@ dc.mapMixin = function (_chart, chartDivId) {
         }
     }
 
+    _chart.mapStyle = function(style) {
+        if (!arguments.length)
+            return _mapStyle;
+        _mapStyle = style;
+        if (!!_chart._map)
+            _chart._map.setStyle(_mapStyle);
+        return _chart;
+    }
+
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
         _chart._map = new mapboxgl.Map({
           container: _mapId, // container id
-          style: 'mapbox://styles/mapbox/light-v8',
+          style: _mapStyle,
           interactive: true,
           center: [-74.50, 40], // starting position
           zoom: 4 // starting zoom
