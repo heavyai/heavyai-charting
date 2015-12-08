@@ -149,7 +149,7 @@ dc.bubbleMixin = function (_chart) {
                 .attr('pointer-events', labelPointerEvent)
                 .text(labelFunction);
             dc.transition(label, _chart.transitionDuration())
-                .attr('opacity', labelOpacity);
+                .attr('opacity', 1);
         }
     };
 
@@ -159,7 +159,8 @@ dc.bubbleMixin = function (_chart) {
                 .attr('pointer-events', labelPointerEvent)
                 .text(labelFunction);
             dc.transition(labels, _chart.transitionDuration())
-                .attr('opacity', labelOpacity);
+                .attr('opacity', 1);
+
         }
     };
 
@@ -175,6 +176,8 @@ dc.bubbleMixin = function (_chart) {
                 g.append('title').text(titleFunction);
             }
         }
+
+        _chart.hideOverlappedLabels();
     };
 
     _chart.doUpdateTitles = function (g) {

@@ -40,65 +40,102 @@ dc.bubbleChart = function (parent, chartGroup) {
     };
 
 /* OVERRIDE -----------------------------------------------------------------*/
+
     _chart.hideOverlappedLabels = function (){
-        var labels = _chart.svg().selectAll('.node text');
+        var labels = _chart.svg().selectAll('.node');
 
-        var labelHeight = 12;
-        var letterWidth = 6;
+        var labelHeight = 10;
+        var letterWidth = 5;
 
-        labels.each(function(d){
-            //console.log(bubbleX(d), bubbleY(d), (_chart.bubbleR(d)+'').length);
-            var a = this;
-            var aX = bubbleX(d);
-            var aY = bubbleY(d);
-            var aR = _chart.bubbleR(d);
-            var aKey = d.key0;
-            var aXmin = aX - (aR+'').length * letterWidth;
-            var aXmax = aX + (aR+'').length * letterWidth;
+        labels
+            .classed('hide-label', false)
+            .each(function(d, i){
 
-            d3.select(a).append('rect')
-                .attr('width', (aKey+'').length * letterWidth)
-                .attr('height', 12)
-                .attr('x', ((aKey+'').length * -letterWidth)/2)
-                .attr('y', -6)
-                .style('opacity', '.5');
+                var a = this;
+                var aX = bubbleX(d);
+                var aY = bubbleY(d);
+                var aR = _chart.bubbleR(d);
+                var aKey = d.key0;
 
+                var overlapList = d.overlapList = [];
 
+                labels.each(function(d, j){
 
-            console.log(d.key0);
-
-            labels.each(function(d){
-
-                var b = this;
-
-                //if (d3.select(b).style('opacity') !== '0') {
+                    var b = this;
 
                     var bX = bubbleX(d);
                     var bY = bubbleY(d);
                     var bR = _chart.bubbleR(d);
+                    var bKey = d.key0;
 
-                    //if (a === b || Math.abs(aY - bY) > labelHeight ) { return;}
+                    if (a === b || Math.abs(aY - bY) > labelHeight ) { return;}
 
-                    var bXmin = bX - (bR+'').length * letterWidth;
-                    var bXmax = bX + (bR+'').length * letterWidth;
-
-
-                    //var isOverlapped = aXmax >= bXmin && aXmax <= bXmax;
+                    var aXmin = aX - (aKey+'').length * letterWidth/2;
+                    var aXmax = aX + (aKey+'').length * letterWidth/2;
 
 
-                    //d3.select(a).style('opacity', isOverlapped ? '0' : '1');
+                    var bXmin = bX - (bKey+'').length * letterWidth/2;
+                    var bXmax = bX + (bKey+'').length * letterWidth/2;
 
+                    var isOverlapped = aXmin >= bXmin && aXmin <= bXmax || aXmax >= bXmin && aXmax <= bXmax || aXmin <= bXmin && aXmax >= bXmax;
 
-
-
-                //}
-
-
+                    if (isOverlapped && i > j) {
+                        overlapList.push(b);
+                    }
+                });
             });
 
+        labels[0].reverse();
+
+        labels.each(function(d) {
+            if (d.overlapList.length === 0 || d3.select(this).classed('hide-label')) {
+                return;
+            }
+            for (var i = 0; i < d.overlapList.length ; i++) {
+                d3.select(d.overlapList[i]).classed('hide-label', true);
+            }
         });
+
     }
 
+    function showPopup(d, i) {
+        var popup = _chart.popup();
+
+        var popupBox = popup.select('.chart-popup-box').html('');
+
+        popupBox.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', fill(d,i));
+
+        popupBox.append('div')
+            .attr('class', 'popup-value')
+            .html(function(){
+                return '<div class="popup-value-dim">'+ 'test' +'</div><div class="popup-value-measure">'+ 'measure' +'</div>';
+            });
+
+        popup.classed('js-showPopup', true);
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup() {
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(this);
+        var x = coordinates[0] + _chart.width() / 2;
+        var y = coordinates[1] + _chart.height() / 2;
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-right', function(){
+                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width();
+            });
+    }
 
 /* --------------------------------------------------------------------------*/
 
@@ -169,6 +206,8 @@ dc.bubbleChart = function (parent, chartGroup) {
         removeNodes(bubbleG);
 
         _chart.fadeDeselectedArea();
+
+        console.log('plot');
     };
 
     function renderNodes (bubbleG) {
@@ -181,8 +220,14 @@ dc.bubbleChart = function (parent, chartGroup) {
                 return _chart.BUBBLE_CLASS + ' _' + i;
             })
             .on('click', _chart.onClick)
+/* OVERRIDE -----------------------------------------------------------------*/
+            .on('mouseenter', showPopup)
+            .on('mouseleave', hidePopup)
+/* --------------------------------------------------------------------------*/
             .attr('fill', _chart.getColor)
             .attr('r', 0);
+
+
         dc.transition(bubbleG, _chart.transitionDuration())
             .selectAll('circle.' + _chart.BUBBLE_CLASS)
             .attr('r', function (d) {
@@ -195,7 +240,6 @@ dc.bubbleChart = function (parent, chartGroup) {
         _chart._doRenderLabel(bubbleGEnter);
 
         _chart._doRenderTitles(bubbleGEnter);
-
     }
 
     function updateNodes (bubbleG) {
@@ -216,7 +260,8 @@ dc.bubbleChart = function (parent, chartGroup) {
 
         _chart.doUpdateLabels(bubbleG);
         _chart.doUpdateTitles(bubbleG);
-        _chart.hideOverlappedLabels();
+
+        
     }
 
     function removeNodes (bubbleG) {
