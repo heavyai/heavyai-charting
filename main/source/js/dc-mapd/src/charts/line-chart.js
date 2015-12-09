@@ -51,6 +51,10 @@ dc.lineChart = function (parent, chartGroup) {
         drawArea(layersEnter, layers);
 
         drawDots(chartBody, layers);
+
+        if (_chart.rangeInput()) {
+            _chart.updateRangeInput();
+        }
     };
 
     _chart.interpolate = function (interpolate) {
