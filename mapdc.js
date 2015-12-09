@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.7
+ *  dc 0.1.8
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.7
+ * @version 0.1.8
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.7',
+    version: '0.1.8',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -2888,6 +2888,30 @@ dc.mapMixin = function (_chart, chartDivId) {
     var _mapUpdateInterval = 100; //default
     var _mapStyle = 'mapbox://styles/mapbox/light-v8';
 
+    var _popupFunction = function(result, height){
+      var context={
+        googX: (_chart.x()(result.row_set[0][_xDimName]) - 14) + 'px',
+        googY: (height - _chart.y()(result.row_set[0][_yDimName]) - 14) + 'px',
+        data: result.row_set[0],
+        clickX: result.pixel.x + 'px',
+        clickY: (height - result.pixel.y) + 'px',
+      };
+
+      Handlebars.registerHelper("formatPopupText", function(obj) {
+        var result = "<div>";
+        _.each(obj, function(value, key){
+          if(key !== _yDimName && key !== _xDimName){
+              result += '<div class="popup-text-wrapper"><span><strong>' + key + '</strong>: ' + value +'</span></div>'
+          }
+        })
+
+      result += "</div>"
+      return result;
+      });
+
+      return MyApp.templates.pointMapPopup(context);
+    }
+
     _chart.xDim = function(xDim) {
         if (!arguments.length)
             return _xDim;
@@ -2905,6 +2929,13 @@ dc.mapMixin = function (_chart, chartDivId) {
         if(_yDim){
           _yDimName = _yDim.value()[0];
         }
+        return _chart;
+    }
+
+    _chart.popupFunction = function(popupFunction) {
+        if (!arguments.length)
+            return _popupFunction;
+        _popupFunction = popupFunction;
         return _chart;
     }
 
@@ -2927,6 +2958,7 @@ dc.mapMixin = function (_chart, chartDivId) {
       _chart.render();
       $('body').trigger('loadGrid');
     }
+
     function onMapMove(e) {
         if (e === undefined)
             return;
@@ -3029,33 +3061,14 @@ dc.mapMixin = function (_chart, chartDivId) {
                 return;
               if(!$('.popup-highlight').length){
 
-                _chart.x().range([0, _chart.width() -1])
-                _chart.y().range([0, _chart.height() -1])
+                _chart.x().range([0, _chart.width() -1]);
+                _chart.y().range([0, _chart.height() -1]);
 
-                var height = $('#' + _mapId).height()
+                var height = $('#' + _mapId).height();
 
-                var context={
-                  googX: (_chart.x()(result[closestResult].row_set[0][_xDimName]) - 14) + 'px',
-                  googY: (height - _chart.y()(result[closestResult].row_set[0][_yDimName]) - 14) + 'px',
-                  data: result[closestResult].row_set[0],
-                  clickX: result[closestResult].pixel.x + 'px',
-                  clickY: (height - result[closestResult].pixel.y) + 'px',
-                };
+                var theCompiledHtml = _popupFunction(result[closestResult], height, _chart, _xDimName, _yDimName);
 
-                Handlebars.registerHelper("formatPopupText", function(obj) {
-                  var result = "<div>";
-                  _.each(obj, function(value, key){
-                    if(key !== _yDimName && key !== _xDimName){
-                        result += '<div class="popup-text-wrapper"><span><strong>' + key + '</strong>: ' + value +'</span></div>'
-                    }
-                  })
-
-                result += "</div>"
-                return result;
-                });
-
-                var theCompiledHtml = MyApp.templates.pointMapPopup(context);
-                $('#' + _mapId).append(theCompiledHtml)
+                $('#' + _mapId).append(theCompiledHtml);
 
               }
             }]);
@@ -3350,6 +3363,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     });
 
     function genVegaSpec() {
+
         // scales
         _chart._vegaSpec.scales = [];
         if (_x === null || _y === null || _r === null)
