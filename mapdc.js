@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.9
+ *  dc 0.1.10
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.9
+ * @version 0.1.10
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.9',
+    version: '0.1.10',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -12912,47 +12912,7 @@ dc.d3 = d3;
 dc.crossfilter = crossfilter;
 
 return dc;}
-    if(typeof define === "function" && define.amd) {
-        // define(["d3", "crossfilter"], _dc);
-
-/* OVERRIDE -----------------------------------------------------------------*/
-        var _d3 = require('d3');
-        var _crossfilter = require('./crossfilter.mapd.js');
-        // When using npm + browserify, 'crossfilter' is a function,
-        // since package.json specifies index.js as main function, and it
-        // does special handling. When using bower + browserify,
-        // there's no main in bower.json (in fact, there's no bower.json),
-        // so we need to fix it.
-/* --------------------------------------------------------------------------*/
-
-        if (typeof _crossfilter !== "function") {
-            _crossfilter = _crossfilter.crossfilter;
-        }
-
-/* OVERRIDE -----------------------------------------------------------------*/
-        module.exports = _dc(_d3, _crossfilter);
-/* --------------------------------------------------------------------------*/
-
-    } else if(typeof module === "object" && module.exports) {
-        var _d3 = require('d3');
-        // var _crossfilter = require('crossfilter');
-
-/* OVERRIDE -----------------------------------------------------------------*/
-        var _crossfilter = require('./crossfilter.mapd.js');
-/* --------------------------------------------------------------------------*/
-
-        // When using npm + browserify, 'crossfilter' is a function,
-        // since package.json specifies index.js as main function, and it
-        // does special handling. When using bower + browserify,
-        // there's no main in bower.json (in fact, there's no bower.json),
-        // so we need to fix it.
-        if (typeof _crossfilter !== "function") {
-            _crossfilter = _crossfilter.crossfilter;
-        }
-        module.exports = _dc(_d3, _crossfilter);
-    } else {
-        this.dc = _dc(d3, crossfilter);
-    }
+  this.dc = _dc(d3, crossfilter);
 }
 )();
 
