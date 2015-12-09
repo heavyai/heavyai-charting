@@ -3,13 +3,15 @@
  * ***************************************************************************/
 
 
-dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
+dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _chart = null;
 
     var _useMap = useMap !== undefined ? useMap : false;
 
+    var parentDivId = parent.attributes.id.value;
+
     if (_useMap){
-        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), chartId));
+        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), parentDivId));
     }
     else{
         _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
@@ -25,6 +27,8 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     var _r = 1; // default radius 5
     var _dynamicR = null;
     _chart.colors("#22A7F0"); // set constant as picton blue as default
+    var _hasBeenRendered = false;
+    var counter = 0;
 
     /**
      #### .x([scale])
@@ -89,7 +93,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
         }
         //console.log("in nonce: " + nonce);
         _renderBoundsMap[nonce] = renderBounds;
-        
+
     });
 
     _chart.data(function (group) {
@@ -114,10 +118,12 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
             result = group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
         }
         _renderBoundsMap[result.nonce] = renderBounds;
-        return result; 
+        return result;
     });
 
+
     function genVegaSpec() {
+
         // scales
         _chart._vegaSpec.scales = [];
         if (_x === null || _y === null || _r === null)
@@ -205,67 +211,60 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
       map.removeSource(overlay);
     }
 
-    function addOverlay(data, nonce){
+    function setOverlay(data, nonce){
         var map = _chart._map;
-        //console.log("out nonce: " + nonce);
-        //debugger;
         var bounds = _renderBoundsMap[nonce];
         if (bounds === undefined)
            return;
-        //delete _renderBoundsMap[nonce];
-        var toBeRemovedOverlay = "overlay" + _activeLayer
-        _activeLayer = nonce;
 
-        var toBeAddedOverlay = "overlay" + _activeLayer
-        if (toBeRemovedOverlay === toBeAddedOverlay)
-            return;
-        
-        map.addSource(toBeAddedOverlay,{
-            "id": toBeAddedOverlay,
-            "type": "image",
-            "url": 'data:image/png;base64,' + data,
-            "coordinates": bounds 
-        })
-        //delete _renderBoundsMap[nonce];
-        map.addLayer({
-            "id": toBeAddedOverlay,
-            "source": toBeAddedOverlay,
-            "type": "raster",
-            "paint": {"raster-opacity": 0.85}
-        })
-        setTimeout(function(){
-          if(map.getSource(toBeRemovedOverlay)){
-              removeOverlay(toBeRemovedOverlay);
-          }
-          //if(map.getSource(toBeRemovedOverlay)){
+        try {
+            if (!_activeLayer) {
+                _activeLayer = nonce;
 
-          //    map.batch(function (batch) {
-          //        batch.setPaintProperty(toBeRemovedOverlay, 'raster-opacity', 0);
-          //        batch.setPaintProperty(toBeAddedOverlay, 'raster-opacity', 0.85);
-          //      });
-          //    removeOverlay(toBeRemovedOverlay);
-          //}
-          //else {
-          //    map.batch(function (batch) {
-          //        batch.setPaintProperty(toBeAddedOverlay, 'raster-opacity', 0.85);
-          //    });
-          //}
-        }, 40)
+                var toBeAddedOverlay = "overlay" + _activeLayer;
 
+                map.addSource(toBeAddedOverlay,{
+                    "id": toBeAddedOverlay,
+                    "type": "image",
+                    "url": 'data:image/png;base64,' + data,
+                    "coordinates": bounds
+                });
+                //delete _renderBoundsMap[nonce];
+
+                map.addLayer({
+                    "id": toBeAddedOverlay,
+                    "source": toBeAddedOverlay,
+                    "type": "raster",
+                    "paint": {"raster-opacity": 0.85}
+                });
+            } else {
+                var overlayName = "overlay" + _activeLayer;
+                var imageSrc = map.getSource(overlayName);
+                imageSrc.updateImage({
+                    "url": 'data:image/png;base64,' + data,
+                    "coordinates": bounds
+                });
+            }
+        }
+        catch(err) {
+            console.log(err);
+        }
     }
 
     _chart._doRender = function() {
 
       var data = _chart.data();
-      addOverlay(data.image, data.nonce)
+      setOverlay(data.image, data.nonce);
+      _hasBeenRendered = true;
 
-    }
+    };
 
     _chart._doRedraw = function() {
-  
+      if (!_hasBeenRendered)
+          return _chart._doRender();
       var data = _chart.data();
-      addOverlay(data.image, data.nonce)
-    }
+      setOverlay(data.image, data.nonce);
+    };
 
     return _chart.anchor(parent, chartGroup);
 }
