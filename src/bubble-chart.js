@@ -98,14 +98,14 @@ dc.bubbleChart = function (parent, chartGroup) {
 
     }
 
-    function showPopup(d, i) {
+    _chart.showPopup = function(d, i) {
         var popup = _chart.popup();
 
         var popupBox = popup.select('.chart-popup-box').html('');
 
         popupBox.append('div')
             .attr('class', 'popup-legend')
-            .style('background-color', fill(d,i));
+            .style('background-color', _chart.getColor(d, i));
 
         popupBox.append('div')
             .attr('class', 'popup-value')
@@ -114,17 +114,19 @@ dc.bubbleChart = function (parent, chartGroup) {
             });
 
         popup.classed('js-showPopup', true);
+
+        positionPopup(d, this);
     }
 
-    function hidePopup() {
+    _chart.hidePopup = function() {
         _chart.popup().classed('js-showPopup', false);
     }
 
-    function positionPopup() {
+    function positionPopup(d, e) {
         var coordinates = [0, 0];
-        coordinates = d3.mouse(this);
-        var x = coordinates[0] + _chart.width() / 2;
-        var y = coordinates[1] + _chart.height() / 2;
+        coordinates = d3.mouse(e);
+        var x = coordinates[0] + bubbleX(d);
+        var y = coordinates[1] + bubbleY(d);
 
         var popup =_chart.popup()
             .attr('style', function(){
@@ -207,7 +209,6 @@ dc.bubbleChart = function (parent, chartGroup) {
 
         _chart.fadeDeselectedArea();
 
-        console.log('plot');
     };
 
     function renderNodes (bubbleG) {
@@ -216,14 +217,14 @@ dc.bubbleChart = function (parent, chartGroup) {
         bubbleGEnter
             .attr('class', _chart.BUBBLE_NODE_CLASS)
             .attr('transform', bubbleLocator)
+/* OVERRIDE -----------------------------------------------------------------*/
+            .on('mouseenter', _chart.showPopup)
+            .on('mouseleave', _chart.hidePopup)
+/* --------------------------------------------------------------------------*/
             .append('circle').attr('class', function (d, i) {
                 return _chart.BUBBLE_CLASS + ' _' + i;
             })
             .on('click', _chart.onClick)
-/* OVERRIDE -----------------------------------------------------------------*/
-            .on('mouseenter', showPopup)
-            .on('mouseleave', hidePopup)
-/* --------------------------------------------------------------------------*/
             .attr('fill', _chart.getColor)
             .attr('r', 0);
 
