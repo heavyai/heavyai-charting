@@ -25,7 +25,6 @@
     "url": "https://github.com/map-d/mapdc.js.git"
   },
   "dependencies": {
-    "crossfilter": "1.x",
     "d3": "3.x"
   },
   "devDependencies": {
