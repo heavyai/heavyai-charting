@@ -123,6 +123,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
 
     function genVegaSpec() {
+
         // scales
         _chart._vegaSpec.scales = [];
         if (_x === null || _y === null || _r === null)
