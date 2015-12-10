@@ -289,18 +289,53 @@
     position: absolute;
     top: 0;
     left: 0;
-    opacity: 0;
+    //opacity: 0;
     pointer-events: none;
     z-index: 10;
 
     &.js-showPopup {
         opacity: 1;
-        pointer-events: default;
+        pointer-events: auto;
 
         .chart-popup-box {
             opacity: 1;
             top: -24px;
         }
+    }
+
+    .popup-header {
+        display: flex;
+        border-bottom: 1px solid $gray2;
+        color: $gray4;
+        flex-grow: 1;
+        margin: 0 4px;
+        font-size: 11px;
+
+        div:first-child {
+            font-weight: bold;
+            flex-grow: 1;
+            
+
+        }
+
+        div {
+            padding: 0 4px;
+        }
+    }
+
+    .popup-table {
+        white-space: nowrap;
+        font-size: 13px;
+
+        td {
+            padding: 4px;
+        }
+    }
+
+    .table-legend {
+        height: 12px;
+        width: 12px;
+        background: red;
     }
 
     .chart-popup-box {
@@ -319,6 +354,10 @@
 
         &.align-right {
             transform: translate(-100%, -100%);
+        }
+
+        &.table-list {
+            flex-direction: column;
         }
     }
 
