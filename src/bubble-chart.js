@@ -101,8 +101,34 @@ dc.bubbleChart = function (parent, chartGroup) {
     _chart.showPopup = function(d, i) {
         var popup = _chart.popup();
 
-        var popupBox = popup.select('.chart-popup-box').html('');
+        var popupBox = popup.select('.chart-popup-box').html('')
+            .classed('table-list', true);
 
+        var popupHeader = popupBox.append('div')
+            .attr('class', 'popup-header');
+
+        popupHeader.append('div')
+            .text('Name');
+        popupHeader.append('div')
+            .text('X');
+        popupHeader.append('div')
+            .text('Y');
+        popupHeader.append('div')
+            .text('Z');
+
+        var popupTableWrap = popupBox.append('div')
+            .attr('class', 'popup-table-wrap');
+
+        var popupTable = popupTableWrap.append('table')
+            .attr('class', 'popup-table');
+
+        popupTable.append('tr')
+            .html('<td><div class="table-legend"></div></td><td>Name of Airline</td><td>345</td><td>123</td><td>123</td>');
+        popupTable.append('tr')
+            .html('<td><div class="table-legend"></div></td><td>Name of Airline</td><td>345</td><td>123</td><td>123</td>');
+        popupTable.append('tr')
+            .html('<td><div class="table-legend"></div></td><td>Name of Airline</td><td>345</td><td>123</td><td>123</td>');
+/*
         popupBox.append('div')
             .attr('class', 'popup-legend')
             .style('background-color', _chart.getColor(d, i));
@@ -112,6 +138,7 @@ dc.bubbleChart = function (parent, chartGroup) {
             .html(function(){
                 return '<div class="popup-value-dim">'+ 'test' +'</div><div class="popup-value-measure">'+ 'measure' +'</div>';
             });
+*/
 
         popup.classed('js-showPopup', true);
 
@@ -119,7 +146,7 @@ dc.bubbleChart = function (parent, chartGroup) {
     }
 
     _chart.hidePopup = function() {
-        _chart.popup().classed('js-showPopup', false);
+        //_chart.popup().classed('js-showPopup', false);
     }
 
     function positionPopup(d, e) {
