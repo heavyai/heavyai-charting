@@ -135,8 +135,8 @@ dc.mapMixin = function (_chart, chartDivId) {
           container: _mapId, // container id
           style: _mapStyle,
           interactive: true,
-          center: [-74.50, 40], // starting position
-          zoom: 4 // starting zoom
+          center: [0, 50], // starting position
+          zoom: 1, // starting zoom
         });
         _chart._map.dragRotate.disable();
 
