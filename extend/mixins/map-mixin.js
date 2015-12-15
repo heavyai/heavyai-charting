@@ -131,14 +131,18 @@ dc.mapMixin = function (_chart, chartDivId) {
         return _chart;
     }
 
+    var arr = [[180, -85], [-180, 85]];
+    var llb = mapboxgl.LngLatBounds.convert(arr);
+
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
         _chart._map = new mapboxgl.Map({
           container: _mapId, // container id
           style: _mapStyle,
           interactive: true,
-          center: [0, 50], // starting position
+          center: [0, 30], // starting position
           zoom: 1, // starting zoom
+          maxBounds: llb
         });
         _chart._map.dragRotate.disable();
 
