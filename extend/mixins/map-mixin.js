@@ -66,6 +66,13 @@ dc.mapMixin = function (_chart, chartDivId) {
         return _chart;
     }
 
+    _chart.enableGeocoder = function(enableGeocoder) {
+        if(enableGeocoder){
+          initGeocoder();
+        }
+        return _chart;
+    }
+
     _chart.popupFunction = function(popupFunction) {
         if (!arguments.length)
             return _popupFunction;
@@ -146,9 +153,6 @@ dc.mapMixin = function (_chart, chartDivId) {
         });
         _chart._map.dragRotate.disable();
 
-
-        initGeocoder();
-
         _chart._map.on('load', onLoad);
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
@@ -204,9 +208,7 @@ dc.mapMixin = function (_chart, chartDivId) {
                 var height = $('#' + _mapId).height()
 
                 var theCompiledHtml = _popupFunction(result[closestResult], height, _chart, _xDimName, _yDimName);
-               
                 $('#' + _mapId).append(theCompiledHtml)
-
               }
             }]);
 
