@@ -3,13 +3,15 @@
  * ***************************************************************************/
 
 
-dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
+dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _chart = null;
 
     var _useMap = useMap !== undefined ? useMap : false;
 
+    var parentDivId = parent.attributes.id.value;
+
     if (_useMap){
-        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), chartId));
+        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), parentDivId));
     }
     else{
         _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
@@ -24,20 +26,12 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
     var _renderBoundsMap = {};
     var _r = 1; // default radius 5
     var _dynamicR = null;
-    _chart.colors("#22A7F0"); // set constant as picton blue as default
     var _hasBeenRendered = false;
     var counter = 0;
-    /*
-    _chart._map.on('layer.add', function() {
-      console.log(toBeRemovedOverlay);
-      if(_chart._map.getSource(toBeRemovedOverlay)){
-          removeOverlay(toBeRemovedOverlay);
-      }
-    });
-    */
-
-
-    /**
+    var is_safari = navigator.userAgent.indexOf("Safari") > -1;
+ 
+    _chart.colors("#22A7F0"); // set constant as picton blue as default
+     /**
      #### .x([scale])
      Gets or sets the x scale. The x scale can be any d3
      [quantitive scale](https://github.com/mbostock/d3/wiki/Quantitative-Scales)
@@ -100,7 +94,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
         }
         //console.log("in nonce: " + nonce);
         _renderBoundsMap[nonce] = renderBounds;
-        
+
     });
 
     _chart.data(function (group) {
@@ -125,11 +119,12 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
             result = group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
         }
         _renderBoundsMap[result.nonce] = renderBounds;
-        return result; 
+        return result;
     });
 
 
     function genVegaSpec() {
+
         // scales
         _chart._vegaSpec.scales = [];
         if (_x === null || _y === null || _r === null)
@@ -217,62 +212,99 @@ dc.bubbleRasterChart = function(parent, useMap, chartId, chartGroup) {
       map.removeSource(overlay);
     }
 
-    function addOverlay(data, nonce){
+    function b64toBlob(b64Data, contentType, sliceSize) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        var byteCharacters = atob(b64Data);
+        var byteArrays = [];
+
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        var blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+    }
+
+    function setOverlay(data, nonce){
         var map = _chart._map;
-        //console.log("out nonce: " + nonce);
-        //debugger;
         var bounds = _renderBoundsMap[nonce];
         if (bounds === undefined)
            return;
-        //delete _renderBoundsMap[nonce];
-        var toBeRemovedOverlay = "overlay" + _activeLayer
-        _activeLayer = nonce;
 
-        var toBeAddedOverlay = "overlay" + _activeLayer
-        if (toBeRemovedOverlay === toBeAddedOverlay)
-            return;
-        try { 
-            map.addSource(toBeAddedOverlay,{
-                "id": toBeAddedOverlay,
-                "type": "image",
-                "url": 'data:image/png;base64,' + data,
-                "coordinates": bounds 
-            })
-            //delete _renderBoundsMap[nonce];
+        try {
+            if (!_activeLayer) {
+                _activeLayer = nonce;
 
-            map.addLayer({
-                "id": toBeAddedOverlay,
-                "source": toBeAddedOverlay,
-                "type": "raster",
-                "paint": {"raster-opacity": 0.85}
-            })
+                var toBeAddedOverlay = "overlay" + _activeLayer;
 
-            setTimeout(function(){
-              if(map.getSource(toBeRemovedOverlay)){
-                  removeOverlay(toBeRemovedOverlay);
-              }
-            }, 100)
+                if(is_safari){    
+                    var blob = b64toBlob(data, 'image/png');
+                    var blobUrl = URL.createObjectURL(blob);
+                } else {
+                    var blobUrl = 'data:image/png;base64,' + data;
+                }
+
+                map.addSource(toBeAddedOverlay,{
+                    "id": toBeAddedOverlay,
+                    "type": "image",
+                    "url": blobUrl,
+                    "coordinates": bounds
+                });
+                //delete _renderBoundsMap[nonce];
+
+                map.addLayer({
+                    "id": toBeAddedOverlay,
+                    "source": toBeAddedOverlay,
+                    "type": "raster",
+                    "paint": {"raster-opacity": 0.85}
+                });
+            } else {
+
+                if(is_safari){     
+                    var blob = b64toBlob(data, 'image/png');
+                    var blobUrl = URL.createObjectURL(blob);
+                } else {
+                    var blobUrl = 'data:image/png;base64,' + data;
+                }
+
+                var overlayName = "overlay" + _activeLayer;
+                var imageSrc = map.getSource(overlayName);
+                imageSrc.updateImage({
+                    "url": blobUrl,
+                    "coordinates": bounds
+                });
+            }
         }
         catch(err) {
             console.log(err);
         }
-
     }
 
     _chart._doRender = function() {
 
       var data = _chart.data();
-      addOverlay(data.image, data.nonce)
+      setOverlay(data.image, data.nonce);
       _hasBeenRendered = true;
 
-    }
+    };
 
     _chart._doRedraw = function() {
       if (!_hasBeenRendered)
           return _chart._doRender();
       var data = _chart.data();
-      addOverlay(data.image, data.nonce)
-    }
+      setOverlay(data.image, data.nonce);
+    };
 
     return _chart.anchor(parent, chartGroup);
 }
