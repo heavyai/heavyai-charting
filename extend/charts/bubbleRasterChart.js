@@ -26,11 +26,12 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _renderBoundsMap = {};
     var _r = 1; // default radius 5
     var _dynamicR = null;
-    _chart.colors("#22A7F0"); // set constant as picton blue as default
     var _hasBeenRendered = false;
     var counter = 0;
-
-    /**
+    var is_safari = navigator.userAgent.indexOf("Safari") > -1;
+ 
+    _chart.colors("#22A7F0"); // set constant as picton blue as default
+     /**
      #### .x([scale])
      Gets or sets the x scale. The x scale can be any d3
      [quantitive scale](https://github.com/mbostock/d3/wiki/Quantitative-Scales)
@@ -211,6 +212,30 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
       map.removeSource(overlay);
     }
 
+    function b64toBlob(b64Data, contentType, sliceSize) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        var byteCharacters = atob(b64Data);
+        var byteArrays = [];
+
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        var blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+    }
+
     function setOverlay(data, nonce){
         var map = _chart._map;
         var bounds = _renderBoundsMap[nonce];
@@ -223,10 +248,17 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
                 var toBeAddedOverlay = "overlay" + _activeLayer;
 
+                if(is_safari){    
+                    var blob = b64toBlob(data, 'image/png');
+                    var blobUrl = URL.createObjectURL(blob);
+                } else {
+                    var blobUrl = 'data:image/png;base64,' + data;
+                }
+
                 map.addSource(toBeAddedOverlay,{
                     "id": toBeAddedOverlay,
                     "type": "image",
-                    "url": 'data:image/png;base64,' + data,
+                    "url": blobUrl,
                     "coordinates": bounds
                 });
                 //delete _renderBoundsMap[nonce];
@@ -238,10 +270,18 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
                     "paint": {"raster-opacity": 0.85}
                 });
             } else {
+
+                if(is_safari){     
+                    var blob = b64toBlob(data, 'image/png');
+                    var blobUrl = URL.createObjectURL(blob);
+                } else {
+                    var blobUrl = 'data:image/png;base64,' + data;
+                }
+
                 var overlayName = "overlay" + _activeLayer;
                 var imageSrc = map.getSource(overlayName);
                 imageSrc.updateImage({
-                    "url": 'data:image/png;base64,' + data,
+                    "url": blobUrl,
                     "coordinates": bounds
                 });
             }
