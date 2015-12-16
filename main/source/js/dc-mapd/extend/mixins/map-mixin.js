@@ -152,6 +152,7 @@ dc.mapMixin = function (_chart, chartDivId) {
           maxBounds: llb
         });
         _chart._map.dragRotate.disable();
+        _chart._map.touchZoomRotate.disableRotation();
 
         _chart._map.on('load', onLoad);
         _chart._map.on('move', onMapMove);
