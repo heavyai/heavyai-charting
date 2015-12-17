@@ -22,7 +22,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _activeLayer = 0;
     var _x = null;
     var _y = null;
-    //var _oldRenderBounds = null;
+    var _defaultColor = "#22A7F0";
     var _renderBoundsMap = {};
     var _r = 1; // default radius 5
     var _dynamicR = null;
@@ -72,6 +72,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         _dynamicR = _;
         return _chart;
     };
+
+    _chart.defaultColor = function(_) {
+        if (!arguments.length) {
+            return _defaultColor;
+        }
+        _defaultColor = _;
+        return _chart;
+    }
 
     _chart.setDataAsync(function(group, callbacks) {
         updateXAndYScales();
@@ -151,7 +159,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         if (colors !== null) {
             if (colors.domain !== undefined) {
                 var colorScaleType = _chart._determineScaleType(colors);
-                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range(), default: "#22A7F0"})
+                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range(), default: _defaultColor})
             }
             else
                 colorIsConstant = true;

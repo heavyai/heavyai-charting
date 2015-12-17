@@ -25,6 +25,9 @@ dc.rasterMixin = function(_chart) {
               "sql": "select x, y from tweets;"
           }
         ];
+        if (!!_tableName)
+            _chart._vegaSpec.data[0].dbTableName = _tableName;
+
         _chart._vegaSpec.scales = [];
         _chart._vegaSpec.marks = [];
     }
