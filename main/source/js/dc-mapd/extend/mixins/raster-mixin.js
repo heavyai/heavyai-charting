@@ -6,6 +6,7 @@ dc.rasterMixin = function(_chart) {
     _chart._vegaSpec = {};
     var _sampling = false;
     var _tableName = null;
+    var _popupColumns = [];
     var _popupSearchRadius = 0;
 
     _chart.popupSearchRadius = function (popupSearchRadius) {
@@ -15,8 +16,8 @@ dc.rasterMixin = function(_chart) {
         return _chart;
     }
     _chart._resetVegaSpec = function() {
-        _chart._vegaSpec.width = _chart.width();
-        _chart._vegaSpec.height = _chart.height();
+        _chart._vegaSpec.width = Math.round(_chart.width());
+        _chart._vegaSpec.height = Math.round(_chart.height());
 
         _chart._vegaSpec.data = [
           {
@@ -24,11 +25,19 @@ dc.rasterMixin = function(_chart) {
               "sql": "select x, y from tweets;"
           }
         ];
+        if (!!_tableName)
+            _chart._vegaSpec.data[0].dbTableName = _tableName;
+
         _chart._vegaSpec.scales = [];
         _chart._vegaSpec.marks = [];
     }
 
-
+    _chart.popupColumns = function(popupColumns) {
+        if (!arguments.length)
+            return _popupColumns;
+        _popupColumns = popupColumns;
+        return _chart;
+    }
 
     _chart.tableName = function(tableName) {
         if (!arguments.length)
