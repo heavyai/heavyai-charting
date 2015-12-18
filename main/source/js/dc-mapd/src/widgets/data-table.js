@@ -23,13 +23,13 @@ dc.dataTable = function (parent, chartGroup) {
     var _sampling = false;
 /* ------------------------------------------------------------------------- */
 
-/* OVERRIDE EXTEND --------------------------------------------------------- */
+/* OVERRIDE EXTEND --------------------------------------------------------- */ 
     _chart.setDataAsync(function(group,callbacks) {
         if (_order === d3.ascending) {
-            _chart.dimension().bottomAsync(_size, undefined,callbacks);
+            _chart.dimension().bottomAsync(_size, undefined, undefined, callbacks);
         }
         else {
-            _chart.dimension().topAsync(_size, undefined,callbacks);
+            _chart.dimension().topAsync(_size, undefined, undefined, callbacks);
         }
     });
 
