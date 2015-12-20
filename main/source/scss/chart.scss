@@ -90,6 +90,10 @@
         font-size: 11px;
         font-weight: bold;
 
+        text {
+            pointer-events: none;
+        }
+
         &:hover {
             circle {
                 fill-opacity: .8;
@@ -289,13 +293,13 @@
     position: absolute;
     top: 0;
     left: 0;
-    //opacity: 0;
+    opacity: 0;
     pointer-events: none;
-    z-index: 10;
+    z-index: 1003;
 
     &.js-showPopup {
         opacity: 1;
-        pointer-events: auto;
+        //pointer-events: auto;
 
         .chart-popup-box {
             opacity: 1;
@@ -303,39 +307,57 @@
         }
     }
 
-    .popup-header {
-        display: flex;
+    th {
         border-bottom: 1px solid $gray2;
         color: $gray4;
-        flex-grow: 1;
-        margin: 0 4px;
         font-size: 11px;
-
-        div:first-child {
-            font-weight: bold;
-            flex-grow: 1;
-            
-
-        }
-
-        div {
-            padding: 0 4px;
-        }
     }
 
     .popup-table {
-        white-space: nowrap;
+        margin: 0 8px;
         font-size: 13px;
+        white-space: nowrap;
 
-        td {
+        td, th {
             padding: 4px;
+            text-align: center;
+
+            &:first-child {
+                text-align: left;
+                font-weight: bold;
+            }
+        }
+
+        th {
+            position: relative;
+
+            .ellipse-text {
+                max-width: 64px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+
+        .table-dim {
+            
+            display: flex;
+        }
+
+        .table-dim-val {
+            min-width: 80px;
+            max-width: 160px;
+            font-weight: bold;
+            line-height: 1.2;
+            white-space: normal;
         }
     }
 
     .table-legend {
         height: 12px;
         width: 12px;
-        background: red;
+        margin-right: 6px;
+        flex-shrink: 0;
+        align-self: center;
     }
 
     .chart-popup-box {
@@ -354,6 +376,10 @@
 
         &.align-right {
             transform: translate(-100%, -100%);
+        }
+
+        &.align-center {
+            transform: translate(-50%, -100%);
         }
 
         &.table-list {

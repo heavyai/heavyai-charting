@@ -5,8 +5,9 @@ dc.bubbleChart = function (parent, chartGroup) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
     var _chart = dc.bubbleMixin(dc.capMixin(dc.coordinateGridMixin({})));
+    var _popupHeader = [];
 /* --------------------------------------------------------------------------*/
-
+    
     var _elasticRadius = false;
 
     _chart.transitionDuration(750);
@@ -16,6 +17,13 @@ dc.bubbleChart = function (parent, chartGroup) {
     };
 
 /* OVERRIDE -----------------------------------------------------------------*/
+    _chart.setPopupHeader = function (_) {
+        if (!arguments.length) {
+            return _popupHeader;
+        }
+        _popupHeader = _;
+        return _chart;
+    };
 
     _chart.hideOverlappedLabels = function (){
         var labels = _chart.svg().selectAll('.node');
@@ -76,21 +84,10 @@ dc.bubbleChart = function (parent, chartGroup) {
 
     _chart.showPopup = function(d, i) {
         var popup = _chart.popup();
+        var formatNum = d3.format(".2s");
 
         var popupBox = popup.select('.chart-popup-box').html('')
             .classed('table-list', true);
-
-        var popupHeader = popupBox.append('div')
-            .attr('class', 'popup-header');
-
-        popupHeader.append('div')
-            .text('Name');
-        popupHeader.append('div')
-            .text('X');
-        popupHeader.append('div')
-            .text('Y');
-        popupHeader.append('div')
-            .text('Z');
 
         var popupTableWrap = popupBox.append('div')
             .attr('class', 'popup-table-wrap');
@@ -99,22 +96,17 @@ dc.bubbleChart = function (parent, chartGroup) {
             .attr('class', 'popup-table');
 
         popupTable.append('tr')
-            .html('<td><div class="table-legend"></div></td><td>Name of Airline</td><td>345</td><td>123</td><td>123</td>');
-        popupTable.append('tr')
-            .html('<td><div class="table-legend"></div></td><td>Name of Airline</td><td>345</td><td>123</td><td>123</td>');
-        popupTable.append('tr')
-            .html('<td><div class="table-legend"></div></td><td>Name of Airline</td><td>345</td><td>123</td><td>123</td>');
-/*
-        popupBox.append('div')
-            .attr('class', 'popup-legend')
-            .style('background-color', _chart.getColor(d, i));
-
-        popupBox.append('div')
-            .attr('class', 'popup-value')
             .html(function(){
-                return '<div class="popup-value-dim">'+ 'test' +'</div><div class="popup-value-measure">'+ 'measure' +'</div>';
-            });
-*/
+                var str = '';
+                for (var i = 0; i< _popupHeader.length; i++) {
+                    str += '<th><div class="ellipse-text">'+_popupHeader[i]+'</div></th>';
+                }
+                return str;
+            })
+        
+        popupTable.append('tr')
+            .html('<td><div class="table-dim"><div class="table-legend" style="background:'+_chart.getColor(d)+'"></div><div class="table-dim-val">'+d.key0+'</div></div></td><td>'+formatNum(d.x)+'</td><td>'+formatNum(d.y)+'</td><td>'+formatNum(d.size)+'</td>');
+
 
         popup.classed('js-showPopup', true);
 
@@ -122,24 +114,25 @@ dc.bubbleChart = function (parent, chartGroup) {
     }
 
     _chart.hidePopup = function() {
-        //_chart.popup().classed('js-showPopup', false);
+        _chart.popup().classed('js-showPopup', false);
     }
 
     function positionPopup(d, e) {
-        var coordinates = [0, 0];
-        coordinates = d3.mouse(e);
-        var x = coordinates[0] + bubbleX(d);
-        var y = coordinates[1] + bubbleY(d);
+
+        var x = bubbleX(d) + _chart.margins().left;
+        var y = bubbleY(d) + _chart.margins().top;
+
 
         var popup =_chart.popup()
             .attr('style', function(){
-                return 'transform:translate('+x+'px,'+y+'px)';
+                var popupWidth = d3.select(this).select('.chart-popup-box').node().getBoundingClientRect().width/2;
+                var offsetX = x - popupWidth < 0 ? popupWidth - x - 16 : (x + popupWidth > _chart.width() ? _chart.width() - (x + popupWidth) + 16 : 0);
+                return 'transform:translate('+(x + offsetX) +'px,'+y+'px)';
             });
 
         popup.select('.chart-popup-box')
-            .classed('align-right', function(){
-                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width();
-            });
+            .classed('align-center', true);
+
     }
 
 /* --------------------------------------------------------------------------*/
@@ -203,7 +196,7 @@ dc.bubbleChart = function (parent, chartGroup) {
 
         _chart._doRenderLabel(bubbleGEnter);
 
-        _chart._doRenderTitles(bubbleGEnter);
+        //_chart._doRenderTitles(bubbleGEnter);
     }
 
     function updateNodes (bubbleG) {

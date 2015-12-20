@@ -115,6 +115,9 @@ dc.bubbleMixin = function (_chart) {
                 .text(labelFunction);
             dc.transition(label, _chart.transitionDuration())
                 .attr('opacity', 1);
+
+
+            _chart.hideOverlappedLabels();
         }
     };
 
@@ -141,7 +144,6 @@ dc.bubbleMixin = function (_chart) {
             }
         }
 
-        _chart.hideOverlappedLabels();
     };
 
     _chart.doUpdateTitles = function (g) {
