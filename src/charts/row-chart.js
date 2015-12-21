@@ -328,8 +328,7 @@ dc.rowChart = function (parent, chartGroup) {
                 .on('click', onClick)
                 .attr('text-anchor', isStackLabel() ? 'start':'end')
                 .text(function(d){
-                    return '27,333';
-                    //return commafy(_chart.measureValue(d));
+                    return commafy(_chart.measureValue(d));
                 })
                 .attr('x', function (d, i) {
                     if (isStackLabel()) {
