@@ -43,10 +43,10 @@ dc.dataTable = function (parent, chartGroup) {
 
     _chart.setDataAsync(function(group, callbacks) {
         if (_order === d3.ascending) {
-            _chart.dimension().bottomAsync(_size, undefined,callbacks);
+            _chart.dimension().bottomAsync(_size, undefined, undefined, callbacks);
         }
         else {
-            _chart.dimension().topAsync(_size, undefined,callbacks);
+            _chart.dimension().topAsync(_size, undefined, undefined, callbacks);
         }
     });
 
@@ -510,3 +510,6 @@ dc.dataTable = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/******************************************************************************
+ * END OVERRIDE: dc.dataTable                                                 *
+ * ***************************************************************************/
