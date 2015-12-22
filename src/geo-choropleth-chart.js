@@ -123,7 +123,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         return 'g.layer' + layerIndex + ' g.' + geoJson(layerIndex).name;
     }
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     function accentPoly(label) {
       var layerNameClass = geoJson(0).name; // hack for now as we only allow one layer currently
     _chart.selectAll('g.' + layerNameClass).each(function (d) {
@@ -367,3 +367,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.geoChoroplethChart                                        *
+ * ***************************************************************************/
+
