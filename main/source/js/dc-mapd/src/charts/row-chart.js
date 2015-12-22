@@ -328,6 +328,7 @@ dc.rowChart = function (parent, chartGroup) {
                 .on('click', onClick)
                 .attr('text-anchor', isStackLabel() ? 'start':'end')
                 .text(function(d){
+
                     return commafy(_chart.measureValue(d));
                 })
                 .attr('x', function (d, i) {
@@ -336,16 +337,15 @@ dc.rowChart = function (parent, chartGroup) {
                     }
                     
                     var thisLabel = d3.select(this);
+
                     var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
-   
                     var measureWidth = thisLabel.node().getBBox().width;
-                    var dimWidth = _chart.svg().select('text.value-dim._' + i).node().getBBox().width;
-                    
+                    var dimWidth = d3.select('text.value-dim._' + i).node().getBBox().width;
                     var minIdealWidth = measureWidth + dimWidth + 16;
 
                     thisLabel.attr('text-anchor', isStackLabel() || width < minIdealWidth ? 'start' : 'end');
 
-                    return width > minIdealWidth ? width - 4 : dimWidth + 20;
+                    return width > minIdealWidth ? width - 4 : dimWidth + 16;
                 });
             dc.transition(measureLab, _chart.transitionDuration())
                 .attr('transform', translateX);
