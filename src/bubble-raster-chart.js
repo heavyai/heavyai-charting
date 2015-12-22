@@ -1,3 +1,8 @@
+/******************************************************************************
+ * EXTEND: dc.bubbleRasterChart                                               *
+ * ***************************************************************************/
+
+
 dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _chart = null;
 
@@ -17,15 +22,16 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _activeLayer = 0;
     var _x = null;
     var _y = null;
-    //var _oldRenderBounds = null;
+    var _defaultColor = "#22A7F0";
     var _renderBoundsMap = {};
     var _r = 1; // default radius 5
     var _dynamicR = null;
-    _chart.colors("#22A7F0"); // set constant as picton blue as default
     var _hasBeenRendered = false;
     var counter = 0;
-
-    /**
+    var is_safari = navigator.userAgent.indexOf("Safari") > -1;
+ 
+    _chart.colors("#22A7F0"); // set constant as picton blue as default
+     /**
      #### .x([scale])
      Gets or sets the x scale. The x scale can be any d3
      [quantitive scale](https://github.com/mbostock/d3/wiki/Quantitative-Scales)
@@ -66,6 +72,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         _dynamicR = _;
         return _chart;
     };
+
+    _chart.defaultColor = function(_) {
+        if (!arguments.length) {
+            return _defaultColor;
+        }
+        _defaultColor = _;
+        return _chart;
+    }
 
     _chart.setDataAsync(function(group, callbacks) {
         updateXAndYScales();
@@ -116,6 +130,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         return result;
     });
 
+
     function genVegaSpec() {
 
         // scales
@@ -144,7 +159,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         if (colors !== null) {
             if (colors.domain !== undefined) {
                 var colorScaleType = _chart._determineScaleType(colors);
-                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range(), default: "#22A7F0"})
+                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range(), default: _defaultColor})
             }
             else
                 colorIsConstant = true;
@@ -205,6 +220,30 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
       map.removeSource(overlay);
     }
 
+    function b64toBlob(b64Data, contentType, sliceSize) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        var byteCharacters = atob(b64Data);
+        var byteArrays = [];
+
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        var blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+    }
+
     function setOverlay(data, nonce){
         var map = _chart._map;
         var bounds = _renderBoundsMap[nonce];
@@ -217,10 +256,17 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
                 var toBeAddedOverlay = "overlay" + _activeLayer;
 
+                if(is_safari){    
+                    var blob = b64toBlob(data, 'image/png');
+                    var blobUrl = URL.createObjectURL(blob);
+                } else {
+                    var blobUrl = 'data:image/png;base64,' + data;
+                }
+
                 map.addSource(toBeAddedOverlay,{
                     "id": toBeAddedOverlay,
                     "type": "image",
-                    "url": 'data:image/png;base64,' + data,
+                    "url": blobUrl,
                     "coordinates": bounds
                 });
                 //delete _renderBoundsMap[nonce];
@@ -232,10 +278,18 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
                     "paint": {"raster-opacity": 0.85}
                 });
             } else {
+
+                if(is_safari){     
+                    var blob = b64toBlob(data, 'image/png');
+                    var blobUrl = URL.createObjectURL(blob);
+                } else {
+                    var blobUrl = 'data:image/png;base64,' + data;
+                }
+
                 var overlayName = "overlay" + _activeLayer;
                 var imageSrc = map.getSource(overlayName);
                 imageSrc.updateImage({
-                    "url": 'data:image/png;base64,' + data,
+                    "url": blobUrl,
                     "coordinates": bounds
                 });
             }
@@ -256,10 +310,13 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     _chart._doRedraw = function() {
       if (!_hasBeenRendered)
           return _chart._doRender();
-
       var data = _chart.data();
       setOverlay(data.image, data.nonce);
     };
 
     return _chart.anchor(parent, chartGroup);
 }
+
+/******************************************************************************
+ * EXTEND END: dc.bubbleRasterChart                                           *
+ * ***************************************************************************/
