@@ -1,3 +1,6 @@
+/******************************************************************************
+ * EXTEND: dc.mapMixin                                                        *
+ * ***************************************************************************/
 
 dc.mapMixin = function (_chart, chartDivId) {
 
@@ -63,6 +66,13 @@ dc.mapMixin = function (_chart, chartDivId) {
         return _chart;
     }
 
+    _chart.enableGeocoder = function(enableGeocoder) {
+        if(enableGeocoder){
+          initGeocoder();
+        }
+        return _chart;
+    }
+
     _chart.popupFunction = function(popupFunction) {
         if (!arguments.length)
             return _popupFunction;
@@ -89,7 +99,6 @@ dc.mapMixin = function (_chart, chartDivId) {
       _chart.render();
       $('body').trigger('loadGrid');
     }
-
     function onMapMove(e) {
         if (e === undefined)
             return;
@@ -107,7 +116,7 @@ dc.mapMixin = function (_chart, chartDivId) {
                     _isFirstMoveEvent = false;
                 }
                 if (_mapUpdateInterval === Infinity || (curTime - _lastMapUpdateTime < _mapUpdateInterval)) {
-                    return;
+                    return; 
                 }
             }
             else if (e.type === 'moveend') {
@@ -124,10 +133,13 @@ dc.mapMixin = function (_chart, chartDivId) {
         if (!arguments.length)
             return _mapStyle;
         _mapStyle = style;
-        if (!!_chart._map)
+        if (!!_chart._map) 
             _chart._map.setStyle(_mapStyle);
         return _chart;
     }
+
+    var arr = [[180, -85], [-180, 85]];
+    var llb = mapboxgl.LngLatBounds.convert(arr);
 
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
@@ -135,32 +147,31 @@ dc.mapMixin = function (_chart, chartDivId) {
           container: _mapId, // container id
           style: _mapStyle,
           interactive: true,
-          center: [0, 50], // starting position
+          center: [0, 30], // starting position
           zoom: 1, // starting zoom
+          maxBounds: llb
         });
         _chart._map.dragRotate.disable();
-
-
-        initGeocoder();
+        _chart._map.touchZoomRotate.disableRotation();
 
         _chart._map.on('load', onLoad);
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
 
-        $('#' + chartDivId).on('mousewheel', '.popup-hide-div, .popup-container',
+        $('#' + chartDivId).on('mousewheel', '.popup-hide-div, .popup-container', 
           function(){
             $('.popup-container').remove()
             $('.point-highlight-add').parent().remove()
           })
-
+         
          function showPopUp(e, pixelRadius) {
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y);
             var x = Math.round(e.point.x);
             var tPixels = [];
             var pixelRadiusSquared = pixelRadius * pixelRadius;
-            for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) {
-                for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) {
+            for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) { 
+                for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) { 
                     if (xOffset*xOffset + yOffset*yOffset <= pixelRadiusSquared) {
                         tPixels.push(new TPixel({x:x+xOffset, y:y+yOffset}));
                     }
@@ -192,15 +203,13 @@ dc.mapMixin = function (_chart, chartDivId) {
                 return;
               if(!$('.popup-highlight').length){
 
-                _chart.x().range([0, _chart.width() -1]);
-                _chart.y().range([0, _chart.height() -1]);
+                _chart.x().range([0, _chart.width() -1])
+                _chart.y().range([0, _chart.height() -1])
 
-                var height = $('#' + _mapId).height();
+                var height = $('#' + _mapId).height()
 
                 var theCompiledHtml = _popupFunction(result[closestResult], height, _chart, _xDimName, _yDimName);
-
-                $('#' + _mapId).append(theCompiledHtml);
-
+                $('#' + _mapId).append(theCompiledHtml)
               }
             }]);
 
@@ -211,11 +220,10 @@ dc.mapMixin = function (_chart, chartDivId) {
         }, 250)
 
         _chart._map.on('zoom click', function(e){
-          debouncePopUp(e);
+          debouncePopUp(e);          
         })
 
         _chart._map.on('mousemove', function(e){
-
           debouncePopUp(e);
 
           if($('.popup-hide-div').length){
@@ -253,7 +261,7 @@ dc.mapMixin = function (_chart, chartDivId) {
     }
 
     _chart.on('preRender', function(chart) {
-
+        
         $('.mapboxgl-ctrl-bottom-right').remove();
 
         var width = chart.width();
@@ -273,3 +281,6 @@ dc.mapMixin = function (_chart, chartDivId) {
     return _chart;
 }
 
+/******************************************************************************
+ * END EXTEND: dc.mapMixin                                                    *
+ * ***************************************************************************/
