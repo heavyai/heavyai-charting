@@ -12,6 +12,7 @@ dc.cloudChart = function(parent, chartGroup) {
     var _noRelayout = false; // flag to set on click so rerender doesn't relayout elements
     var _hasBeenRendered = false;
 
+
     _chart.setNoRelayout = function(val) {
         _noRelayout = val;
     }
