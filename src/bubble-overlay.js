@@ -54,7 +54,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
     var _g;
     var _points = [];
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     var _colorCountUpdateCallback = null;
     var _clickCallbackFunc = null;
     var _sampling = false;
@@ -77,12 +77,11 @@ dc.bubbleOverlay = function (parent, chartGroup) {
     _chart.transitionDuration(0);
 /* --------------------------------------------------------------------------*/
 
-
     _chart.radiusValueAccessor(function (d) {
         return d.value;
     });
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     _chart.r(d3.scale.sqrt());
 
     _chart.bounds = null;
@@ -154,7 +153,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
         return _chart;
     };
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     function conv4326To900913 (coord) {
       var transCoord = [0.0,0.0];
       transCoord[0] = coord[0] * 111319.49077777777778;
@@ -192,7 +191,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
         return _g;
     }
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     function mapDataToPoints(data) {
       if (_chart.bounds == null)
         return;
@@ -221,7 +220,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
         _chart.savedData[p].yPixel = _chart.height() - (_chart.savedData[p].yCoord - _chart.bounds[0][1])*yPixelScale ;
       }
       updateBubbles();
-    };
+    }
 
 
     _chart.plotData = function() {
@@ -256,7 +255,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
         bubbleG.exit().remove();
         var stopTime = new Date();
         var diff = stopTime - startTime;
-    };
+    }
 
     function getData() {
         _chart.colorCountDictionary = {};
@@ -388,3 +387,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
 
     return _chart;
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.bubbleOverlay                                             *
+ * ***************************************************************************/
+
