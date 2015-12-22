@@ -185,3 +185,6 @@ dc.bubbleChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/******************************************************************************
+ * END OVERRIDE: dc.bubbleChart                                               *
+ * ***************************************************************************/
