@@ -749,6 +749,7 @@ dc.pieChart = function (parent, chartGroup) {
         return centroid;
     }
 /* --------------------------------------------------------------------------*/
+
     _chart.legendables = function () {
         return _chart.data().map(function (d, i) {
 
@@ -788,3 +789,7 @@ dc.pieChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.pieChart                                                  *
+ * ***************************************************************************/
+
