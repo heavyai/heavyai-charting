@@ -1,3 +1,6 @@
+/* ****************************************************************************
+ * OVERRIDE: dc.heatMap                                                       *
+ * ***************************************************************************/
 /**
  * A heat map is matrix that represents the values of two dimensions of data using colors.
  * @name heatMap
@@ -50,9 +53,6 @@ dc.heatMap = function (parent, chartGroup) {
     var _colsLabel = function (d) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        if(_xLabel.toLowerCase().indexOf('year')){
-            return d;
-        }
         return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
 /* --------------------------------------------------------------------------*/
 
@@ -60,12 +60,8 @@ dc.heatMap = function (parent, chartGroup) {
     var _rowsLabel = function (d) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        if(_yLabel.toLowerCase().indexOf('year')){
-            return d;
-        }
         return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
 /* --------------------------------------------------------------------------*/
-
     };
 
     /**
@@ -216,15 +212,9 @@ dc.heatMap = function (parent, chartGroup) {
             _rows = rows;
             return _chart;
         }
-        // if (_rows) {
             return _rows;
-        // }
-        // var rowValues = _chart.data().map(_chart.valueAccessor());
-        // rowValues.sort(d3.ascending);
-        // return d3.scale.ordinal().domain(rowValues.filter(uniq));
     };
 
-/* OVERRIDE -----------------------------------------------------------------*/
     _chart.rowOrdering = function (_) {
         if (!arguments.length) {
             return _rowOrdering;
@@ -232,7 +222,6 @@ dc.heatMap = function (parent, chartGroup) {
         _rowOrdering = _;
         return _chart;
     };
-/* --------------------------------------------------------------------------*/
 
     /**
      * Gets or sets the keys used to create the columns of the heatmap, as an array. By default, all
@@ -250,15 +239,9 @@ dc.heatMap = function (parent, chartGroup) {
             _cols = cols;
             return _chart;
         }
-        // if (_cols) {
-            return _cols;
-        // }
-        // var colValues = _chart.data().map(_chart.keyAccessor());
-        // colValues.sort(d3.ascending);
-        // return d3.scale.ordinal().domain(colValues.filter(uniq));
+        return _chart;
     };
 
-/* OVERRIDE -----------------------------------------------------------------*/
     _chart.colOrdering = function (_) {
         if (!arguments.length) {
             return _colOrdering;
@@ -266,7 +249,6 @@ dc.heatMap = function (parent, chartGroup) {
         _colOrdering = _;
         return _chart;
     };
-/* --------------------------------------------------------------------------*/
 
     _chart._doRender = function () {
         _chart.resetSvg();
@@ -285,15 +267,15 @@ dc.heatMap = function (parent, chartGroup) {
             .attr('class', 'box-wrapper');
         _hasBeenRendered = true;
 /* --------------------------------------------------------------------------*/
-
         return _chart._doRedraw();
     };
 
     _chart._doRedraw = function () {
-
 /* OVERRIDE -----------------------------------------------------------------*/
         if (!_hasBeenRendered)
             return _chart._doRender();
+/* --------------------------------------------------------------------------*/
+
         var data = _chart.data(),
             cols = _chart.cols(),
             rows = _chart.rows() || data.map(_chart.valueAccessor()),
@@ -309,8 +291,6 @@ dc.heatMap = function (parent, chartGroup) {
 
         var rowCount = rows.domain().length,
             colCount = cols.domain().length,
-/* --------------------------------------------------------------------------*/
-
             boxWidth = Math.floor(_chart.effectiveWidth() / colCount),
             boxHeight = Math.floor(_chart.effectiveHeight() / rowCount);
 
@@ -376,7 +356,7 @@ dc.heatMap = function (parent, chartGroup) {
               .attr('y', _chart.effectiveHeight())
               .on('click', _chart.xAxisOnClick())
               .text(_chart.colsLabel())
-              
+
 /* OVERRIDE -----------------------------------------------------------------*/
               .style('text-anchor', function(d){
                     return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
@@ -586,3 +566,7 @@ dc.heatMap = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.heatMap                                                   *
+ * ***************************************************************************/
+
