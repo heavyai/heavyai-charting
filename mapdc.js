@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.14
+ *  dc 0.1.15
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.14
+ * @version 0.1.15
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.14',
+    version: '0.1.15',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -2645,6 +2645,10 @@ dc.baseMixin = function (_chart) {
 
     return _chart;
 };
+/******************************************************************************
+ * END OVERRIDE: dc.baseMixin                                                 *
+ * ***************************************************************************/
+
 
 /**
  * Margin is a mixin that provides margin utility functions for both the Row Chart and Coordinate Grid
@@ -2867,6 +2871,9 @@ dc.colorMixin = function (_chart) {
     return _chart;
 };
 
+/******************************************************************************
+ * EXTEND: dc.mapMixin                                                        *
+ * ***************************************************************************/
 
 dc.mapMixin = function (_chart, chartDivId) {
 
@@ -2932,6 +2939,13 @@ dc.mapMixin = function (_chart, chartDivId) {
         return _chart;
     }
 
+    _chart.enableGeocoder = function(enableGeocoder) {
+        if(enableGeocoder){
+          initGeocoder();
+        }
+        return _chart;
+    }
+
     _chart.popupFunction = function(popupFunction) {
         if (!arguments.length)
             return _popupFunction;
@@ -2958,7 +2972,6 @@ dc.mapMixin = function (_chart, chartDivId) {
       _chart.render();
       $('body').trigger('loadGrid');
     }
-
     function onMapMove(e) {
         if (e === undefined)
             return;
@@ -2976,7 +2989,7 @@ dc.mapMixin = function (_chart, chartDivId) {
                     _isFirstMoveEvent = false;
                 }
                 if (_mapUpdateInterval === Infinity || (curTime - _lastMapUpdateTime < _mapUpdateInterval)) {
-                    return;
+                    return; 
                 }
             }
             else if (e.type === 'moveend') {
@@ -2993,10 +3006,13 @@ dc.mapMixin = function (_chart, chartDivId) {
         if (!arguments.length)
             return _mapStyle;
         _mapStyle = style;
-        if (!!_chart._map)
+        if (!!_chart._map) 
             _chart._map.setStyle(_mapStyle);
         return _chart;
     }
+
+    var arr = [[180, -85], [-180, 85]];
+    var llb = mapboxgl.LngLatBounds.convert(arr);
 
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
@@ -3004,32 +3020,31 @@ dc.mapMixin = function (_chart, chartDivId) {
           container: _mapId, // container id
           style: _mapStyle,
           interactive: true,
-          center: [0, 50], // starting position
+          center: [0, 30], // starting position
           zoom: 1, // starting zoom
+          maxBounds: llb
         });
         _chart._map.dragRotate.disable();
-
-
-        initGeocoder();
+        _chart._map.touchZoomRotate.disableRotation();
 
         _chart._map.on('load', onLoad);
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove);
 
-        $('#' + chartDivId).on('mousewheel', '.popup-hide-div, .popup-container',
+        $('#' + chartDivId).on('mousewheel', '.popup-hide-div, .popup-container', 
           function(){
             $('.popup-container').remove()
             $('.point-highlight-add').parent().remove()
           })
-
+         
          function showPopUp(e, pixelRadius) {
             var height = $(e.target._container).height()
             var y = Math.round(height - e.point.y);
             var x = Math.round(e.point.x);
             var tPixels = [];
             var pixelRadiusSquared = pixelRadius * pixelRadius;
-            for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) {
-                for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) {
+            for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) { 
+                for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) { 
                     if (xOffset*xOffset + yOffset*yOffset <= pixelRadiusSquared) {
                         tPixels.push(new TPixel({x:x+xOffset, y:y+yOffset}));
                     }
@@ -3061,15 +3076,13 @@ dc.mapMixin = function (_chart, chartDivId) {
                 return;
               if(!$('.popup-highlight').length){
 
-                _chart.x().range([0, _chart.width() -1]);
-                _chart.y().range([0, _chart.height() -1]);
+                _chart.x().range([0, _chart.width() -1])
+                _chart.y().range([0, _chart.height() -1])
 
-                var height = $('#' + _mapId).height();
+                var height = $('#' + _mapId).height()
 
                 var theCompiledHtml = _popupFunction(result[closestResult], height, _chart, _xDimName, _yDimName);
-
-                $('#' + _mapId).append(theCompiledHtml);
-
+                $('#' + _mapId).append(theCompiledHtml)
               }
             }]);
 
@@ -3080,11 +3093,10 @@ dc.mapMixin = function (_chart, chartDivId) {
         }, 250)
 
         _chart._map.on('zoom click', function(e){
-          debouncePopUp(e);
+          debouncePopUp(e);          
         })
 
         _chart._map.on('mousemove', function(e){
-
           debouncePopUp(e);
 
           if($('.popup-hide-div').length){
@@ -3122,7 +3134,7 @@ dc.mapMixin = function (_chart, chartDivId) {
     }
 
     _chart.on('preRender', function(chart) {
-
+        
         $('.mapboxgl-ctrl-bottom-right').remove();
 
         var width = chart.width();
@@ -3142,7 +3154,13 @@ dc.mapMixin = function (_chart, chartDivId) {
     return _chart;
 }
 
+/******************************************************************************
+ * END EXTEND: dc.mapMixin                                                    *
+ * ***************************************************************************/
 
+/******************************************************************************
+ * EXTEND: dc.rasterMixin                                                     *
+ * ***************************************************************************/
 
 dc.rasterMixin = function(_chart) {
     _chart._vegaSpec = {};
@@ -3158,8 +3176,8 @@ dc.rasterMixin = function(_chart) {
         return _chart;
     }
     _chart._resetVegaSpec = function() {
-        _chart._vegaSpec.width = _chart.width();
-        _chart._vegaSpec.height = _chart.height();
+        _chart._vegaSpec.width = Math.round(_chart.width());
+        _chart._vegaSpec.height = Math.round(_chart.height());
 
         _chart._vegaSpec.data = [
           {
@@ -3167,6 +3185,9 @@ dc.rasterMixin = function(_chart) {
               "sql": "select x, y from tweets;"
           }
         ];
+        if (!!_tableName)
+            _chart._vegaSpec.data[0].dbTableName = _tableName;
+
         _chart._vegaSpec.scales = [];
         _chart._vegaSpec.marks = [];
     }
@@ -3192,7 +3213,7 @@ dc.rasterMixin = function(_chart) {
     _chart.sampling = function(setting) { // setting should be true or false
         if (!arguments.length)
             return _sampling;
-
+    
         if (setting && !_sampling) // if wasn't sampling
             dc._sampledCount++;
         else if (!setting && _sampling)
@@ -3243,6 +3264,14 @@ dc.rasterMixin = function(_chart) {
     return _chart;
 }
 
+/******************************************************************************
+ * END EXTEND: dc.rasterMixin                                                 *
+ * ***************************************************************************/
+
+/******************************************************************************
+ * EXTEND: dc.bubbleRasterChart                                               *
+ * ***************************************************************************/
+
 
 dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _chart = null;
@@ -3263,15 +3292,16 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _activeLayer = 0;
     var _x = null;
     var _y = null;
-    //var _oldRenderBounds = null;
+    var _defaultColor = "#22A7F0";
     var _renderBoundsMap = {};
     var _r = 1; // default radius 5
     var _dynamicR = null;
-    _chart.colors("#22A7F0"); // set constant as picton blue as default
     var _hasBeenRendered = false;
     var counter = 0;
-
-    /**
+    var is_safari = navigator.userAgent.indexOf("Safari") > -1;
+ 
+    _chart.colors("#22A7F0"); // set constant as picton blue as default
+     /**
      #### .x([scale])
      Gets or sets the x scale. The x scale can be any d3
      [quantitive scale](https://github.com/mbostock/d3/wiki/Quantitative-Scales)
@@ -3312,6 +3342,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         _dynamicR = _;
         return _chart;
     };
+
+    _chart.defaultColor = function(_) {
+        if (!arguments.length) {
+            return _defaultColor;
+        }
+        _defaultColor = _;
+        return _chart;
+    }
 
     _chart.setDataAsync(function(group, callbacks) {
         updateXAndYScales();
@@ -3362,6 +3400,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         return result;
     });
 
+
     function genVegaSpec() {
 
         // scales
@@ -3390,7 +3429,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         if (colors !== null) {
             if (colors.domain !== undefined) {
                 var colorScaleType = _chart._determineScaleType(colors);
-                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range(), default: "#22A7F0"})
+                _chart._vegaSpec.scales.push({name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range(), default: _defaultColor})
             }
             else
                 colorIsConstant = true;
@@ -3451,6 +3490,30 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
       map.removeSource(overlay);
     }
 
+    function b64toBlob(b64Data, contentType, sliceSize) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        var byteCharacters = atob(b64Data);
+        var byteArrays = [];
+
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        var blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+    }
+
     function setOverlay(data, nonce){
         var map = _chart._map;
         var bounds = _renderBoundsMap[nonce];
@@ -3463,10 +3526,17 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
                 var toBeAddedOverlay = "overlay" + _activeLayer;
 
+                if(is_safari){    
+                    var blob = b64toBlob(data, 'image/png');
+                    var blobUrl = URL.createObjectURL(blob);
+                } else {
+                    var blobUrl = 'data:image/png;base64,' + data;
+                }
+
                 map.addSource(toBeAddedOverlay,{
                     "id": toBeAddedOverlay,
                     "type": "image",
-                    "url": 'data:image/png;base64,' + data,
+                    "url": blobUrl,
                     "coordinates": bounds
                 });
                 //delete _renderBoundsMap[nonce];
@@ -3478,10 +3548,18 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
                     "paint": {"raster-opacity": 0.85}
                 });
             } else {
+
+                if(is_safari){     
+                    var blob = b64toBlob(data, 'image/png');
+                    var blobUrl = URL.createObjectURL(blob);
+                } else {
+                    var blobUrl = 'data:image/png;base64,' + data;
+                }
+
                 var overlayName = "overlay" + _activeLayer;
                 var imageSrc = map.getSource(overlayName);
                 imageSrc.updateImage({
-                    "url": 'data:image/png;base64,' + data,
+                    "url": blobUrl,
                     "coordinates": bounds
                 });
             }
@@ -3502,13 +3580,16 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     _chart._doRedraw = function() {
       if (!_hasBeenRendered)
           return _chart._doRender();
-
       var data = _chart.data();
       setOverlay(data.image, data.nonce);
     };
 
     return _chart.anchor(parent, chartGroup);
 }
+
+/******************************************************************************
+ * EXTEND END: dc.bubbleRasterChart                                           *
+ * ***************************************************************************/
 
 /******************************************************************************
  * EXTEND: dc.mapChart                                                        *
@@ -5014,6 +5095,10 @@ dc.coordinateGridMixin = function (_chart) {
 
     return _chart;
 };
+/******************************************************************************
+ * END OVERRIDE: dc.coordinateGridMixin                                       *
+ * ***************************************************************************/
+
 
 /**
  * Stack Mixin is an mixin that provides cross-chart support of stackability using d3.layout.stack.
@@ -6581,6 +6666,7 @@ dc.pieChart = function (parent, chartGroup) {
         return centroid;
     }
 /* --------------------------------------------------------------------------*/
+
     _chart.legendables = function () {
         return _chart.data().map(function (d, i) {
 
@@ -6620,6 +6706,10 @@ dc.pieChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.pieChart                                                  *
+ * ***************************************************************************/
+
 
 /**
  * Concrete bar chart/histogram implementation.
@@ -6672,7 +6762,11 @@ dc.barChart = function (parent, chartGroup) {
     dc.override(_chart, 'rescale', function () {
         _chart._rescale();
         _barWidth = undefined;
+
+/* TODO: ------------------------------------------------------------------- */
+// This was either deleted or did not exist when dc.mapd.js was written. 
         return _chart;
+/* ------------------------------------------------------------------------- */
     });
 
 /* OVERRIDE ---------------------------------------------------------------- */
@@ -6764,6 +6858,7 @@ dc.barChart = function (parent, chartGroup) {
 /* OVERRIDE ---------------------------------------------------------------- */
         _numBars = d.values.length;
 /* ------------------------------------------------------------------------- */
+
         var bars = layer.selectAll('rect.bar')
             .data(d.values, dc.pluck('x'));
 
@@ -6815,6 +6910,7 @@ dc.barChart = function (parent, chartGroup) {
     }
 
     function calculateBarWidth () {
+
 /* OVERRIDE -----------------------------------------------------------------*/
    //   if (_barWidth === undefined) {
             if (_chart._numberOfBars === null) {
@@ -6890,7 +6986,7 @@ dc.barChart = function (parent, chartGroup) {
         return _chart;
     };
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     function accentBar (value) {
       var chartDomain = _chart.x().domain();
       var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
@@ -6903,7 +6999,7 @@ dc.barChart = function (parent, chartGroup) {
 
       _chart.unAccentSelected($("rect.bar", _parent).get(barNum));
     };
-/* --------------------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
 
     dc.override(_chart, 'onClick', function (d) {
         _chart._onClick(d.data);
@@ -7035,6 +7131,10 @@ dc.barChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.barChart                                                  *
+ * ***************************************************************************/
+
 
 /**
  * Concrete line/area chart implementation.
@@ -7542,6 +7642,10 @@ dc.lineChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.lineChart                                                 *
+ * ***************************************************************************/
+
 
 /**
  * The data count widget is a simple widget designed to display the number of records selected by the
@@ -7723,10 +7827,10 @@ dc.dataTable = function (parent, chartGroup) {
 
     _chart.setDataAsync(function(group, callbacks) {
         if (_order === d3.ascending) {
-            _chart.dimension().bottomAsync(_size, undefined,callbacks);
+            _chart.dimension().bottomAsync(_size, undefined, undefined, callbacks);
         }
         else {
-            _chart.dimension().topAsync(_size, undefined,callbacks);
+            _chart.dimension().topAsync(_size, undefined, undefined, callbacks);
         }
     });
 
@@ -8190,6 +8294,9 @@ dc.dataTable = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/******************************************************************************
+ * END OVERRIDE: dc.dataTable                                                 *
+ * ***************************************************************************/
 
 /**
  * Data grid is a simple widget designed to list the filtered records, providing
@@ -8622,6 +8729,9 @@ dc.bubbleChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/******************************************************************************
+ * END OVERRIDE: dc.bubbleChart                                               *
+ * ***************************************************************************/
 
 /**
  * Composite charts are a special kind of chart that render multiple charts on the same Coordinate
@@ -9157,6 +9267,9 @@ dc.compositeChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/******************************************************************************
+ * END OVERRIDE: dc.compositeChart                                            *
+ * ***************************************************************************/
 
 /**
  * A series chart is a chart that shows multiple series of data overlaid on one chart, where the
@@ -9476,7 +9589,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         return 'g.layer' + layerIndex + ' g.' + geoJson(layerIndex).name;
     }
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     function accentPoly(label) {
       var layerNameClass = geoJson(0).name; // hack for now as we only allow one layer currently
     _chart.selectAll('g.' + layerNameClass).each(function (d) {
@@ -9720,6 +9833,10 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.geoChoroplethChart                                        *
+ * ***************************************************************************/
+
 
 /**
  * The bubble overlay chart is quite different from the typical bubble chart. With the bubble overlay
@@ -9777,7 +9894,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
     var _g;
     var _points = [];
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     var _colorCountUpdateCallback = null;
     var _clickCallbackFunc = null;
     var _sampling = false;
@@ -9800,12 +9917,11 @@ dc.bubbleOverlay = function (parent, chartGroup) {
     _chart.transitionDuration(0);
 /* --------------------------------------------------------------------------*/
 
-
     _chart.radiusValueAccessor(function (d) {
         return d.value;
     });
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     _chart.r(d3.scale.sqrt());
 
     _chart.bounds = null;
@@ -9877,7 +9993,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
         return _chart;
     };
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     function conv4326To900913 (coord) {
       var transCoord = [0.0,0.0];
       transCoord[0] = coord[0] * 111319.49077777777778;
@@ -9915,7 +10031,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
         return _g;
     }
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     function mapDataToPoints(data) {
       if (_chart.bounds == null)
         return;
@@ -9944,7 +10060,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
         _chart.savedData[p].yPixel = _chart.height() - (_chart.savedData[p].yCoord - _chart.bounds[0][1])*yPixelScale ;
       }
       updateBubbles();
-    };
+    }
 
 
     _chart.plotData = function() {
@@ -9979,7 +10095,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
         bubbleG.exit().remove();
         var stopTime = new Date();
         var diff = stopTime - startTime;
-    };
+    }
 
     function getData() {
         _chart.colorCountDictionary = {};
@@ -10111,6 +10227,10 @@ dc.bubbleOverlay = function (parent, chartGroup) {
 
     return _chart;
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.bubbleOverlay                                             *
+ * ***************************************************************************/
+
 
 /**
  * Concrete row chart implementation.
@@ -10489,7 +10609,7 @@ dc.rowChart = function (parent, chartGroup) {
 
                     var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
                     var measureWidth = thisLabel.node().getBBox().width;
-                    var dimWidth = d3.select('text.value-dim._' + i).node().getBBox().width;
+                    var dimWidth = _chart.svg().select('text.value-dim._' + i).node().getBBox().width;
                     var minIdealWidth = measureWidth + dimWidth + 16;
 
                     thisLabel.attr('text-anchor', isStackLabel() || width < minIdealWidth ? 'start' : 'end');
@@ -10719,6 +10839,9 @@ dc.rowChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/* ****************************************************************************
+ * OVERRIDE: dc.rowChart                                                      *
+ * ***************************************************************************/
 
 /* ****************************************************************************
  * EXTEND: dc.cloudChart                                                      *
@@ -10733,6 +10856,7 @@ dc.cloudChart = function(parent, chartGroup) {
     var _tags; // store output of _cloudLayout 
     var _noRelayout = false; // flag to set on click so rerender doesn't relayout elements
     var _hasBeenRendered = false;
+
 
     _chart.setNoRelayout = function(val) {
         _noRelayout = val;
@@ -11749,6 +11873,9 @@ dc.numberDisplay = function (parent, chartGroup) {
     return _chart.anchor(parent, chartGroup);
 };
 
+/* ****************************************************************************
+ * OVERRIDE: dc.heatMap                                                       *
+ * ***************************************************************************/
 /**
  * A heat map is matrix that represents the values of two dimensions of data using colors.
  * @name heatMap
@@ -11801,9 +11928,6 @@ dc.heatMap = function (parent, chartGroup) {
     var _colsLabel = function (d) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        if(_xLabel.toLowerCase().indexOf('year')){
-            return d;
-        }
         return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
 /* --------------------------------------------------------------------------*/
 
@@ -11811,12 +11935,8 @@ dc.heatMap = function (parent, chartGroup) {
     var _rowsLabel = function (d) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        if(_yLabel.toLowerCase().indexOf('year')){
-            return d;
-        }
         return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
 /* --------------------------------------------------------------------------*/
-
     };
 
     /**
@@ -11967,15 +12087,9 @@ dc.heatMap = function (parent, chartGroup) {
             _rows = rows;
             return _chart;
         }
-        // if (_rows) {
             return _rows;
-        // }
-        // var rowValues = _chart.data().map(_chart.valueAccessor());
-        // rowValues.sort(d3.ascending);
-        // return d3.scale.ordinal().domain(rowValues.filter(uniq));
     };
 
-/* OVERRIDE -----------------------------------------------------------------*/
     _chart.rowOrdering = function (_) {
         if (!arguments.length) {
             return _rowOrdering;
@@ -11983,7 +12097,6 @@ dc.heatMap = function (parent, chartGroup) {
         _rowOrdering = _;
         return _chart;
     };
-/* --------------------------------------------------------------------------*/
 
     /**
      * Gets or sets the keys used to create the columns of the heatmap, as an array. By default, all
@@ -12001,15 +12114,9 @@ dc.heatMap = function (parent, chartGroup) {
             _cols = cols;
             return _chart;
         }
-        // if (_cols) {
-            return _cols;
-        // }
-        // var colValues = _chart.data().map(_chart.keyAccessor());
-        // colValues.sort(d3.ascending);
-        // return d3.scale.ordinal().domain(colValues.filter(uniq));
+        return _chart;
     };
 
-/* OVERRIDE -----------------------------------------------------------------*/
     _chart.colOrdering = function (_) {
         if (!arguments.length) {
             return _colOrdering;
@@ -12017,7 +12124,6 @@ dc.heatMap = function (parent, chartGroup) {
         _colOrdering = _;
         return _chart;
     };
-/* --------------------------------------------------------------------------*/
 
     _chart._doRender = function () {
         _chart.resetSvg();
@@ -12036,15 +12142,15 @@ dc.heatMap = function (parent, chartGroup) {
             .attr('class', 'box-wrapper');
         _hasBeenRendered = true;
 /* --------------------------------------------------------------------------*/
-
         return _chart._doRedraw();
     };
 
     _chart._doRedraw = function () {
-
 /* OVERRIDE -----------------------------------------------------------------*/
         if (!_hasBeenRendered)
             return _chart._doRender();
+/* --------------------------------------------------------------------------*/
+
         var data = _chart.data(),
             cols = _chart.cols(),
             rows = _chart.rows() || data.map(_chart.valueAccessor()),
@@ -12060,8 +12166,6 @@ dc.heatMap = function (parent, chartGroup) {
 
         var rowCount = rows.domain().length,
             colCount = cols.domain().length,
-/* --------------------------------------------------------------------------*/
-
             boxWidth = Math.floor(_chart.effectiveWidth() / colCount),
             boxHeight = Math.floor(_chart.effectiveHeight() / rowCount);
 
@@ -12127,7 +12231,7 @@ dc.heatMap = function (parent, chartGroup) {
               .attr('y', _chart.effectiveHeight())
               .on('click', _chart.xAxisOnClick())
               .text(_chart.colsLabel())
-              
+
 /* OVERRIDE -----------------------------------------------------------------*/
               .style('text-anchor', function(d){
                     return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
@@ -12337,6 +12441,10 @@ dc.heatMap = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.heatMap                                                   *
+ * ***************************************************************************/
+
 
 // https://github.com/d3/d3-plugins/blob/master/box/box.js
 (function () {
@@ -12912,7 +13020,45 @@ dc.d3 = d3;
 dc.crossfilter = crossfilter;
 
 return dc;}
-  this.dc = _dc(d3, crossfilter);
+    if(typeof define === "function" && define.amd) {
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        var _d3 = require('d3');
+        var _crossfilter = require('./crossfilter.mapd.js');
+        // When using npm + browserify, 'crossfilter' is a function,
+        // since package.json specifies index.js as main function, and it
+        // does special handling. When using bower + browserify,
+        // there's no main in bower.json (in fact, there's no bower.json),
+        // so we need to fix it.
+/* --------------------------------------------------------------------------*/
+
+        if (typeof _crossfilter !== "function") {
+            _crossfilter = _crossfilter.crossfilter;
+        }
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        module.exports = _dc(_d3, _crossfilter);
+/* --------------------------------------------------------------------------*/
+
+    } else if(typeof module === "object" && module.exports) {
+        var _d3 = require('d3');
+
+/* OVERRIDE -----------------------------------------------------------------*/
+        var _crossfilter = require('./crossfilter.mapd.js');
+/* --------------------------------------------------------------------------*/
+
+        // When using npm + browserify, 'crossfilter' is a function,
+        // since package.json specifies index.js as main function, and it
+        // does special handling. When using bower + browserify,
+        // there's no main in bower.json (in fact, there's no bower.json),
+        // so we need to fix it.
+        if (typeof _crossfilter !== "function") {
+            _crossfilter = _crossfilter.crossfilter;
+        }
+        module.exports = _dc(_d3, _crossfilter);
+    } else {
+        this.dc = _dc(d3, crossfilter);
+    }
 }
 )();
 
