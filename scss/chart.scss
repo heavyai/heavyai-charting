@@ -1,5 +1,6 @@
 @import 'variables';
 
+
 .lock-measure {
     left: 100%;
     top: 0;
@@ -299,11 +300,22 @@
 
     &.js-showPopup {
         opacity: 1;
-        //pointer-events: auto;
 
         .chart-popup-box {
             opacity: 1;
             top: -24px;
+        }
+    }
+
+    &.popup-scrollable {
+        
+        &.js-showPopup {
+            pointer-events: auto;
+        }
+        .chart-popup-box {
+            max-height: 160px;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
     }
 
@@ -317,6 +329,8 @@
         margin: 0 8px;
         font-size: 13px;
         white-space: nowrap;
+
+        
 
         td, th {
             padding: 4px;
@@ -335,6 +349,23 @@
                 max-width: 64px;
                 text-overflow: ellipsis;
                 overflow: hidden;
+                position: relative;
+            }
+
+            .full-text {
+                position: absolute;
+                background: white;
+                top: 0;
+                opacity: 0;
+                transition: none;
+
+                &:hover {
+                    &.scroll-text {
+                        opacity: 1;
+                        transition: transform 1s linear;
+                    }
+                }
+                
             }
         }
 
@@ -570,4 +601,5 @@
 .svg-icon {
     fill: $gray4;
 }
+
 
