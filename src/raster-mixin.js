@@ -1,3 +1,6 @@
+/******************************************************************************
+ * EXTEND: dc.rasterMixin                                                     *
+ * ***************************************************************************/
 
 dc.rasterMixin = function(_chart) {
     _chart._vegaSpec = {};
@@ -13,8 +16,8 @@ dc.rasterMixin = function(_chart) {
         return _chart;
     }
     _chart._resetVegaSpec = function() {
-        _chart._vegaSpec.width = _chart.width();
-        _chart._vegaSpec.height = _chart.height();
+        _chart._vegaSpec.width = Math.round(_chart.width());
+        _chart._vegaSpec.height = Math.round(_chart.height());
 
         _chart._vegaSpec.data = [
           {
@@ -22,6 +25,9 @@ dc.rasterMixin = function(_chart) {
               "sql": "select x, y from tweets;"
           }
         ];
+        if (!!_tableName)
+            _chart._vegaSpec.data[0].dbTableName = _tableName;
+
         _chart._vegaSpec.scales = [];
         _chart._vegaSpec.marks = [];
     }
@@ -47,7 +53,7 @@ dc.rasterMixin = function(_chart) {
     _chart.sampling = function(setting) { // setting should be true or false
         if (!arguments.length)
             return _sampling;
-
+    
         if (setting && !_sampling) // if wasn't sampling
             dc._sampledCount++;
         else if (!setting && _sampling)
@@ -98,3 +104,6 @@ dc.rasterMixin = function(_chart) {
     return _chart;
 }
 
+/******************************************************************************
+ * END EXTEND: dc.rasterMixin                                                 *
+ * ***************************************************************************/
