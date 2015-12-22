@@ -49,7 +49,11 @@ dc.barChart = function (parent, chartGroup) {
     dc.override(_chart, 'rescale', function () {
         _chart._rescale();
         _barWidth = undefined;
+
+/* TODO: ------------------------------------------------------------------- */
+// This was either deleted or did not exist when dc.mapd.js was written. 
         return _chart;
+/* ------------------------------------------------------------------------- */
     });
 
 /* OVERRIDE ---------------------------------------------------------------- */
@@ -141,6 +145,7 @@ dc.barChart = function (parent, chartGroup) {
 /* OVERRIDE ---------------------------------------------------------------- */
         _numBars = d.values.length;
 /* ------------------------------------------------------------------------- */
+
         var bars = layer.selectAll('rect.bar')
             .data(d.values, dc.pluck('x'));
 
@@ -192,6 +197,7 @@ dc.barChart = function (parent, chartGroup) {
     }
 
     function calculateBarWidth () {
+
 /* OVERRIDE -----------------------------------------------------------------*/
    //   if (_barWidth === undefined) {
             if (_chart._numberOfBars === null) {
@@ -267,7 +273,7 @@ dc.barChart = function (parent, chartGroup) {
         return _chart;
     };
 
-/* OVERRIDE -----------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
     function accentBar (value) {
       var chartDomain = _chart.x().domain();
       var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
@@ -280,7 +286,7 @@ dc.barChart = function (parent, chartGroup) {
 
       _chart.unAccentSelected($("rect.bar", _parent).get(barNum));
     };
-/* --------------------------------------------------------------------------*/
+/* OVERRIDE EXTEND ----------------------------------------------------------*/
 
     dc.override(_chart, 'onClick', function (d) {
         _chart._onClick(d.data);
@@ -412,3 +418,7 @@ dc.barChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/* ****************************************************************************
+ * END OVERRIDE: dc.barChart                                                  *
+ * ***************************************************************************/
+
