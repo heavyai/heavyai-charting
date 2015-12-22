@@ -532,3 +532,6 @@ dc.compositeChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
+/******************************************************************************
+ * END OVERRIDE: dc.compositeChart                                            *
+ * ***************************************************************************/
