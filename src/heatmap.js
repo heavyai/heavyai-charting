@@ -239,7 +239,7 @@ dc.heatMap = function (parent, chartGroup) {
             _cols = cols;
             return _chart;
         }
-        return _chart;
+        return _cols;
     };
 
     _chart.colOrdering = function (_) {
