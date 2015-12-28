@@ -345,7 +345,7 @@ dc.rowChart = function (parent, chartGroup) {
 
                     thisLabel.attr('text-anchor', isStackLabel() || width < minIdealWidth ? 'start' : 'end');
 
-                    return width > minIdealWidth ? width - 4 : dimWidth + 12;
+                    return width > minIdealWidth ? width - 4 : dimWidth + 16;
                 });
             dc.transition(measureLab, _chart.transitionDuration())
                 .attr('transform', translateX);

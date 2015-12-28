@@ -1,5 +1,6 @@
 @import 'variables';
 
+
 .lock-measure {
     left: 100%;
     top: 0;
@@ -85,6 +86,43 @@
             }
         }
     }
+
+    .node {
+        font-size: 11px;
+        font-weight: bold;
+
+        text {
+            pointer-events: none;
+        }
+
+        &:hover {
+            circle {
+                fill-opacity: .8;
+            }
+        }
+
+        &.hide-label {
+            
+            text {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            &.selected {
+                text {
+                    opacity: 1;
+                }
+            }
+        }
+
+        &.selected {
+            circle {
+                stroke: none !important;
+            }
+            
+        }
+    }
+
 
     .range-display {
         position: absolute;
@@ -258,16 +296,99 @@
     left: 0;
     opacity: 0;
     pointer-events: none;
-    z-index: 10;
+    z-index: 1003;
 
     &.js-showPopup {
         opacity: 1;
-        pointer-events: default;
 
         .chart-popup-box {
             opacity: 1;
             top: -24px;
         }
+    }
+
+    &.popup-scrollable {
+        
+        &.js-showPopup {
+            pointer-events: auto;
+        }
+        .chart-popup-box {
+            max-height: 160px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    }
+
+    th {
+        border-bottom: 1px solid $gray2;
+        color: $gray4;
+        font-size: 11px;
+    }
+
+    .popup-table {
+        margin: 0 8px;
+        font-size: 13px;
+        white-space: nowrap;
+
+        
+
+        td, th {
+            padding: 4px;
+            text-align: center;
+
+            &:first-child {
+                text-align: left;
+                font-weight: bold;
+            }
+        }
+
+        th {
+            position: relative;
+
+            .ellipse-text {
+                max-width: 64px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .full-text {
+                position: absolute;
+                background: white;
+                top: 0;
+                opacity: 0;
+                transition: none;
+
+                &:hover {
+                    &.scroll-text {
+                        opacity: 1;
+                        transition: transform 1s linear;
+                    }
+                }
+                
+            }
+        }
+
+        .table-dim {
+            
+            display: flex;
+        }
+
+        .table-dim-val {
+            min-width: 80px;
+            max-width: 160px;
+            font-weight: bold;
+            line-height: 1.2;
+            white-space: normal;
+        }
+    }
+
+    .table-legend {
+        height: 12px;
+        width: 12px;
+        margin-right: 6px;
+        flex-shrink: 0;
+        align-self: center;
     }
 
     .chart-popup-box {
@@ -286,6 +407,14 @@
 
         &.align-right {
             transform: translate(-100%, -100%);
+        }
+
+        &.align-center {
+            transform: translate(-50%, -100%);
+        }
+
+        &.table-list {
+            flex-direction: column;
         }
     }
 
@@ -472,4 +601,5 @@
 .svg-icon {
     fill: $gray4;
 }
+
 

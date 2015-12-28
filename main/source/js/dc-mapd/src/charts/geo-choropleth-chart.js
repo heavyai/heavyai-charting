@@ -146,7 +146,6 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
             .attr('fill', function () {
                 var currentFill = d3.select(this).attr('fill');
                 if (currentFill) {
-                    console.log(currentFill);
                     return currentFill;
                 }
                 return '#e2e2e2';
