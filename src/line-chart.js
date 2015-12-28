@@ -191,8 +191,10 @@ dc.lineChart = function (parent, chartGroup) {
     };
 
     function colors (d, i) {
+        return _chart.getColor.call(d, d.values, i);
+        
 /* OVERRIDE ---------------------------------------------------------------- */
-        return "#22A7F0";
+        //return "#22A7F0";
 /* ------------------------------------------------------------------------- */
     }
 
@@ -202,7 +204,11 @@ dc.lineChart = function (parent, chartGroup) {
                 return _chart.x()(d.x);
             })
             .y(function (d) {
-                return _chart.y()(d.y + d.y0);
+                if (_renderArea)
+                    return _chart.y()(d.y + d.y0);
+                else
+                    return _chart.y()(d.y);
+
             })
             .interpolate(_interpolate)
             .tension(_tension);
