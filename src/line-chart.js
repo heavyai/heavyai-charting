@@ -204,10 +204,12 @@ dc.lineChart = function (parent, chartGroup) {
                 return _chart.x()(d.x);
             })
             .y(function (d) {
+/* OVERRIDE ---------------------------------------------------------------- */
                 if (_renderArea)
                     return _chart.y()(d.y + d.y0);
                 else
                     return _chart.y()(d.y);
+/* ------------------------------------------------------------------------- */
 
             })
             .interpolate(_interpolate)
