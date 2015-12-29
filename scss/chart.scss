@@ -110,7 +110,7 @@
 
             &.selected {
                 text {
-                    opacity: 1;
+                    opacity: .9;
                 }
             }
         }
@@ -304,6 +304,10 @@
         .chart-popup-box {
             opacity: 1;
             top: -24px;
+
+            &.popdown {
+                top: 24px;
+            }
         }
     }
 
@@ -323,6 +327,7 @@
         border-bottom: 1px solid $gray2;
         color: $gray4;
         font-size: 11px;
+        background: white;
     }
 
     .popup-table {
@@ -330,6 +335,19 @@
         font-size: 13px;
         white-space: nowrap;
 
+        tr {
+            &:hover {
+                background: $gray1;
+            }
+
+            &.deselected {
+                opacity: .5;
+
+                .table-legend {
+                    background: $gray3 !important;
+                }
+            }
+        }
         
 
         td, th {
@@ -340,6 +358,10 @@
                 text-align: left;
                 font-weight: bold;
             }
+        }
+
+        td {
+            cursor: pointer;
         }
 
         th {
@@ -415,6 +437,10 @@
 
         &.table-list {
             flex-direction: column;
+        }
+
+        &.popdown {
+            transform: translate(-50%, 0);
         }
     }
 
