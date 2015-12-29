@@ -11,6 +11,7 @@ dc.stackMixin = function (_chart) {
     function prepareValues (layer, layerIdx) {
         var valAccessor = layer.accessor || _chart.valueAccessor();
         layer.name = String(layer.name || layerIdx);
+        layer.idx = layerIdx;
 
 /* OVERRIDE ---------------------------------------------------------------- */
         // WARNING: probably destroys stack functionality: find workaround
@@ -20,6 +21,7 @@ dc.stackMixin = function (_chart) {
             return {
                 x: _chart.keyAccessor()(d, i),
                 y: layer.hidden ? null : valAccessor(d, i),
+                idx: layerIdx,
                 data: d,
                 layer: layer.name,
                 hidden: layer.hidden
@@ -38,6 +40,7 @@ dc.stackMixin = function (_chart) {
     var _titles = {};
 
     var _hidableStacks = false;
+    var _colorByLayerId = false;
 
     function domainFilter () {
         if (!_chart.x()) {
@@ -295,8 +298,21 @@ dc.stackMixin = function (_chart) {
         return ordered.map(_chart.keyAccessor());
     };
 
+    _chart.colorByLayerId = function(_) {
+        if (!arguments.length)
+            return _colorByLayerId;
+        _colorByLayerId = _;
+        return _chart;
+    };
+
     _chart.colorAccessor(function (d) {
-        var layer = this.layer || this.name || d.name || d.layer;
+/* OVERRIDE ---------------------------------------------------------------- */
+        var layer = null;
+        if (_colorByLayerId)
+            layer = this.idx;
+        else
+            layer = this.layer || this.name || d.name || d.layer;
+/* ------------------------------------------------------------------------- */
         return layer;
     });
 
@@ -323,7 +339,6 @@ dc.stackMixin = function (_chart) {
             } else {
                 _chart.hideStack(d.name);
             }
-            //_chart.redraw();
             _chart.renderGroup();
         }
     };
