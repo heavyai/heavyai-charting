@@ -276,6 +276,8 @@ dc.bubbleMixin = function (_chart) {
             _chart.filter(filter);
             _chart.redrawGroup();
         });
+
+        _chart.updatePopup(d);
     };
 
 /* OVERRIDE -----------------------------------------------------------------*/

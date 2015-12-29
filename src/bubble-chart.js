@@ -58,7 +58,9 @@ dc.bubbleChart = function (parent, chartGroup) {
         var letterWidth = 5;
 
         nodes
-            .classed('hide-label', false)
+            .classed('hide-label', function(d){
+                return _chart.bubbleR(d) < _chart.minRadiusWithLabel();
+            })
             .each(function(d, i){
 
                 var a = this;
@@ -80,8 +82,7 @@ dc.bubbleChart = function (parent, chartGroup) {
                     var bR = d.radius = _chart.bubbleR(d);
                     var bKey = d.key0;
 
-                    if (a === b || Math.abs(aY - bY) > labelHeight ) { return;}
-
+                    if (a === b || Math.abs(aY - bY) > labelHeight || bR < _chart.minRadiusWithLabel()) { return;}
                     var aXmin = aX - (aKey+'').length * letterWidth/2;
                     var aXmax = aX + (aKey+'').length * letterWidth/2;
 
@@ -144,8 +145,7 @@ dc.bubbleChart = function (parent, chartGroup) {
         var popup = _chart.popup();
 
         var popupBox = popup.select('.chart-popup-box').html('')
-            .classed('table-list', true)
-            .style('max-height', Math.min(popup.node().getBoundingClientRect().top - 32, 160));
+            .classed('table-list', true);
 
         var popupTableWrap = popupBox.append('div')
             .attr('class', 'popup-table-wrap')
@@ -207,21 +207,43 @@ dc.bubbleChart = function (parent, chartGroup) {
                     .classed('scroll-text', false)
                     .style('transform', 'translateX(0)');
             });
-        
-        popupTable.append('tr')
-            .html(renderPopupRow(d));
 
-        for (var i = 0; i < d.nodeOverlapList.length; i++) {
-            popupTable.append('tr')
-                .html(renderPopupRow(d.nodeOverlapList[i]));
-        }
+        var dataRows = [d];
+        dataRows = dataRows.concat(d.nodeOverlapList);
+
+        var rowItems = popupTable.selectAll('.popup-row-item')
+            .data(dataRows)
+            .enter()
+            .append('tr')
+            .html(function(d) {  return renderPopupRow(d); })
+            .on('click', function(d){ 
+                _chart.onClick(d);
+            })
+            .attr('class', 'popup-row-item');
+
+        _chart.updatePopup();
 
         popup.classed('js-showPopup popup-scrollable', true);
 
-        d3.select('#charts-container')
-            .style('z-index', 1005);
-
         positionPopup(d, this);
+    }
+
+    _chart.updatePopup = function (){
+        
+        if (_chart.hasFilter()) {
+            _chart.popup().selectAll('.popup-row-item')
+            .each(function(d){
+
+                d3.select(this)
+                    .classed('deselected', !_chart.isSelectedNode(d))
+                    .classed('selected', _chart.isSelectedNode(d));
+            })
+        } else {
+            _chart.popup().selectAll('.popup-row-item')
+                .classed('deselected', false)
+                .classed('selected', false);
+        }
+        
     }
 
     function renderPopupRow(d) {
@@ -237,7 +259,6 @@ dc.bubbleChart = function (parent, chartGroup) {
         return str;
     }
 
-
     _chart.hidePopup = function() {
         _chart.popup().classed('js-showPopup', false);
         d3.select('#charts-container')
@@ -249,7 +270,6 @@ dc.bubbleChart = function (parent, chartGroup) {
         var x = bubbleX(d) + _chart.margins().left;
         var y = bubbleY(d) + _chart.margins().top;
 
-
         var popup =_chart.popup()
             .attr('style', function(){
                 var popupWidth = d3.select(this).select('.chart-popup-box').node().getBoundingClientRect().width/2;
@@ -258,8 +278,10 @@ dc.bubbleChart = function (parent, chartGroup) {
             });
 
         popup.select('.chart-popup-box')
-            .classed('align-center', true);
-
+            .classed('align-center', true)
+            .classed('popdown', function(){
+                return popup.node().getBoundingClientRect().top - 76 < d3.select(this).node().getBoundingClientRect().height ? true : false;
+            })
     }
 
 /* --------------------------------------------------------------------------*/
