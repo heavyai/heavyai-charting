@@ -637,12 +637,12 @@ dc.coordinateGridMixin = function (_chart) {
 
         if (xLabel.empty()) {
             xLabel = root.append('div')
-            .attr('class', 'x-axis-label')
-            .text(_chart.xAxisLabel());
+            .attr('class', 'x-axis-label');
         }
 
         xLabel
-            .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px');
+            .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px')
+            .text(_chart.xAxisLabel());
 
 
         dc.transition(axisXG, _chart.transitionDuration())
