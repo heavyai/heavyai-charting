@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.17
+ *  dc 0.1.18
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.17
+ * @version 0.1.18
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.17',
+    version: '0.1.18',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -4246,12 +4246,12 @@ dc.coordinateGridMixin = function (_chart) {
 
         if (xLabel.empty()) {
             xLabel = root.append('div')
-            .attr('class', 'x-axis-label')
-            .text(_chart.xAxisLabel());
+            .attr('class', 'x-axis-label');
         }
 
         xLabel
-            .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px');
+            .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px')
+            .text(_chart.xAxisLabel());
 
 
         dc.transition(axisXG, _chart.transitionDuration())
@@ -5113,6 +5113,7 @@ dc.stackMixin = function (_chart) {
     function prepareValues (layer, layerIdx) {
         var valAccessor = layer.accessor || _chart.valueAccessor();
         layer.name = String(layer.name || layerIdx);
+        layer.idx = layerIdx;
 
 /* OVERRIDE ---------------------------------------------------------------- */
         // WARNING: probably destroys stack functionality: find workaround
@@ -5122,6 +5123,7 @@ dc.stackMixin = function (_chart) {
             return {
                 x: _chart.keyAccessor()(d, i),
                 y: layer.hidden ? null : valAccessor(d, i),
+                idx: layerIdx,
                 data: d,
                 layer: layer.name,
                 hidden: layer.hidden
@@ -5140,6 +5142,7 @@ dc.stackMixin = function (_chart) {
     var _titles = {};
 
     var _hidableStacks = false;
+    var _colorByLayerId = false;
 
     function domainFilter () {
         if (!_chart.x()) {
@@ -5281,8 +5284,13 @@ dc.stackMixin = function (_chart) {
 
     _chart.yAxisMin = function () {
         var min = d3.min(flattenStack(), function (p) {
-            return (p.y + p.y0 < p.y0) ? (p.y + p.y0) : p.y0;
+/* OVERRIDE ---------------------------------------------------------------- */
+            if (_chart.renderArea())
+                return (p.y + p.y0 < p.y0) ? (p.y + p.y0) : p.y0;
+            else
+                return p.y;
         });
+/* ------------------------------------------------------------------------- */
 
         return dc.utils.subtract(min, _chart.yAxisPadding());
 
@@ -5290,7 +5298,12 @@ dc.stackMixin = function (_chart) {
 
     _chart.yAxisMax = function () {
         var max = d3.max(flattenStack(), function (p) {
-            return p.y + p.y0;
+/* OVERRIDE ---------------------------------------------------------------- */
+            if (_chart.renderArea())
+                return p.y + p.y0;
+            else
+                return p.y;
+/* ------------------------------------------------------------------------- */
         });
 
         return dc.utils.add(max, _chart.yAxisPadding());
@@ -5387,8 +5400,21 @@ dc.stackMixin = function (_chart) {
         return ordered.map(_chart.keyAccessor());
     };
 
+    _chart.colorByLayerId = function(_) {
+        if (!arguments.length)
+            return _colorByLayerId;
+        _colorByLayerId = _;
+        return _chart;
+    };
+
     _chart.colorAccessor(function (d) {
-        var layer = this.layer || this.name || d.name || d.layer;
+/* OVERRIDE ---------------------------------------------------------------- */
+        var layer = null;
+        if (_colorByLayerId)
+            layer = this.idx;
+        else
+            layer = this.layer || this.name || d.name || d.layer;
+/* ------------------------------------------------------------------------- */
         return layer;
     });
 
@@ -5415,7 +5441,6 @@ dc.stackMixin = function (_chart) {
             } else {
                 _chart.hideStack(d.name);
             }
-            //_chart.redraw();
             _chart.renderGroup();
         }
     };
@@ -5770,7 +5795,10 @@ dc.bubbleMixin = function (_chart) {
                 .attr('pointer-events', labelPointerEvent)
                 .text(labelFunction);
             dc.transition(label, _chart.transitionDuration())
-                .attr('opacity', labelOpacity);
+                .attr('opacity', 1);
+
+
+            _chart.hideOverlappedLabels();
         }
     };
 
@@ -5780,7 +5808,8 @@ dc.bubbleMixin = function (_chart) {
                 .attr('pointer-events', labelPointerEvent)
                 .text(labelFunction);
             dc.transition(labels, _chart.transitionDuration())
-                .attr('opacity', labelOpacity);
+                .attr('opacity', 1);
+
         }
     };
 
@@ -5796,6 +5825,7 @@ dc.bubbleMixin = function (_chart) {
                 g.append('title').text(titleFunction);
             }
         }
+
     };
 
     _chart.doUpdateTitles = function (g) {
@@ -5892,6 +5922,8 @@ dc.bubbleMixin = function (_chart) {
             _chart.filter(filter);
             _chart.redrawGroup();
         });
+
+        _chart.updatePopup(d);
     };
 
 /* OVERRIDE -----------------------------------------------------------------*/
@@ -7329,8 +7361,10 @@ dc.lineChart = function (parent, chartGroup) {
     };
 
     function colors (d, i) {
+        return _chart.getColor.call(d, d.values, i);
+        
 /* OVERRIDE ---------------------------------------------------------------- */
-        return "#22A7F0";
+        //return "#22A7F0";
 /* ------------------------------------------------------------------------- */
     }
 
@@ -7340,7 +7374,13 @@ dc.lineChart = function (parent, chartGroup) {
                 return _chart.x()(d.x);
             })
             .y(function (d) {
-                return _chart.y()(d.y + d.y0);
+/* OVERRIDE ---------------------------------------------------------------- */
+                if (_renderArea)
+                    return _chart.y()(d.y + d.y0);
+                else
+                    return _chart.y()(d.y);
+/* ------------------------------------------------------------------------- */
+
             })
             .interpolate(_interpolate)
             .tension(_tension);
@@ -8572,8 +8612,11 @@ dc.bubbleChart = function (parent, chartGroup) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
     var _chart = dc.bubbleMixin(dc.capMixin(dc.coordinateGridMixin({})));
+    var _popupHeader = [];
+    var _popupTimerShow = null;
+    var _popupTimerHide = null;
 /* --------------------------------------------------------------------------*/
-
+    
     var _elasticRadius = false;
     var _sortBubbleSize = false;
 
@@ -8582,6 +8625,250 @@ dc.bubbleChart = function (parent, chartGroup) {
     var bubbleLocator = function (d) {
         return 'translate(' + (bubbleX(d)) + ',' + (bubbleY(d)) + ')';
     };
+
+/* OVERRIDE -----------------------------------------------------------------*/
+    _chart.setPopupHeader = function (_) {
+        if (!arguments.length) {
+            return _popupHeader;
+        }
+        _popupHeader = _;
+        return _chart;
+    };
+
+    _chart.hideOverlappedLabels = function (){
+        var nodes = _chart.svg().selectAll('.node');
+
+        var labelHeight = 10;
+        var letterWidth = 5;
+
+        nodes
+            .classed('hide-label', function(d){
+                return _chart.bubbleR(d) < _chart.minRadiusWithLabel();
+            })
+            .each(function(d, i){
+
+                var a = this;
+                var aX = d.xPixel = bubbleX(d);
+                var aY = d.yPixel = bubbleY(d);
+                var aR = d.radius = _chart.bubbleR(d);
+                var aKey = d.key0;
+
+                var labelOverlapList = d.labelOverlapList = [];
+                var nodeOverlapList = d.nodeOverlapList = [];
+                var d1 = d;
+
+                nodes.each(function(d, j){
+
+                    var b = this;
+
+                    var bX = d.xPixel = bubbleX(d);
+                    var bY = d.yPixel = bubbleY(d);
+                    var bR = d.radius = _chart.bubbleR(d);
+                    var bKey = d.key0;
+
+                    if (a === b || Math.abs(aY - bY) > labelHeight || bR < _chart.minRadiusWithLabel()) { return;}
+                    var aXmin = aX - (aKey+'').length * letterWidth/2;
+                    var aXmax = aX + (aKey+'').length * letterWidth/2;
+
+
+                    var bXmin = bX - (bKey+'').length * letterWidth/2;
+                    var bXmax = bX + (bKey+'').length * letterWidth/2;
+
+                    var isLabelOverlapped = aXmin >= bXmin && aXmin <= bXmax || aXmax >= bXmin && aXmax <= bXmax || aXmin <= bXmin && aXmax >= bXmax;
+
+                    if (isLabelOverlapped && i > j) {
+                        labelOverlapList.push(b);
+                    }
+
+                    if (isNodeOverlapped(d1, d)) {
+                        nodeOverlapList.push(d);
+                    }
+                });
+            });
+
+        nodes[0].reverse();
+
+        nodes.each(function(d) {
+            if (d.labelOverlapList.length === 0 || d3.select(this).classed('hide-label')) {
+                return;
+            }
+            for (var i = 0; i < d.labelOverlapList.length ; i++) {
+                d3.select(d.labelOverlapList[i]).classed('hide-label', true);
+            }
+        });
+
+    }
+
+    function isNodeOverlapped(d1,d2) {
+        var dist = Math.sqrt( (d1.xPixel-d2.xPixel)*(d1.xPixel-d2.xPixel) + (d1.yPixel-d2.yPixel)*(d1.yPixel-d2.yPixel));
+        return d1.radius + 8 >= dist;
+    }
+
+    function showPopupTimer (d, i) {
+        clearTimeout(_popupTimerHide);
+
+        if (_chart.popup().classed('js-showPopup')) {
+            clearTimeout(_popupTimerShow);
+            _popupTimerShow = setTimeout(function(){ _chart.showPopup(d, i)}, 500);
+
+        } else {
+            _chart.showPopup(d, i);
+        }
+    }
+
+    function hidePopupTimer () {
+        if (_chart.popup().classed('js-showPopup')) {
+            clearTimeout(_popupTimerHide);
+            _popupTimerHide = setTimeout(function(){ _chart.hidePopup()}, 500);
+
+        } 
+    }
+
+    _chart.showPopup = function(d, i) {
+
+        var popup = _chart.popup();
+
+        var popupBox = popup.select('.chart-popup-box').html('')
+            .classed('table-list', true);
+
+        var popupTableWrap = popupBox.append('div')
+            .attr('class', 'popup-table-wrap')
+            .on('mouseenter', function(){ 
+                clearTimeout(_popupTimerShow); 
+                clearTimeout(_popupTimerHide);
+            })
+            .on('mouseleave', hidePopupTimer);
+
+        var popupTable = popupTableWrap.append('table')
+            .attr('class', 'popup-table');
+            
+
+        var popupTableHeader = popupTable.append('tr');
+
+        var headerItems = popupTableHeader.selectAll('th')
+            .data(_popupHeader)
+            .enter()
+            .append('th');
+
+        headerItems.append('div')
+            .attr('class', 'ellipse-text')
+            .text(function(d){ return d.label; })
+            .append('div')
+            .attr('class', 'full-text')
+            .text(function(d){ return d.label; })
+            .on('mouseenter', function(){
+                d3.select(this)
+                    .style('transform', function(){
+                    var elm = d3.select(this);
+                    var textWidth = elm.node().getBoundingClientRect().width;
+                    
+                    if (textWidth < 64) {
+                        elm.classed('scroll-text', false)
+                        return 'none';
+                    }
+                    var dist = textWidth - 64;
+
+                    elm.style('transition-duration', (dist * .05 + 's'))
+                        .classed('scroll-text', true)
+                        .on('webkitTransitionEnd', function(){
+
+                            setTimeout(function() {
+                                elm.classed('scroll-text', false)
+                                .style('transform', 'translateX(0)');
+                            }, 500);
+                            
+
+                            setTimeout(function(){
+                                elm.style('transform', 'translateX('+ -dist +'px)')
+                                    .classed('scroll-text', true)}, 1000);
+                        });
+
+                    return 'translateX('+ -dist +'px)';
+                });
+            })
+            .on('mouseleave', function(){
+                d3.select(this)
+                    .classed('scroll-text', false)
+                    .style('transform', 'translateX(0)');
+            });
+
+        var dataRows = [d];
+        dataRows = dataRows.concat(d.nodeOverlapList);
+
+        var rowItems = popupTable.selectAll('.popup-row-item')
+            .data(dataRows)
+            .enter()
+            .append('tr')
+            .html(function(d) {  return renderPopupRow(d); })
+            .on('click', function(d){ 
+                _chart.onClick(d);
+            })
+            .attr('class', 'popup-row-item');
+
+        _chart.updatePopup();
+
+        popup.classed('js-showPopup popup-scrollable', true);
+
+        positionPopup(d, this);
+    }
+
+    _chart.updatePopup = function (){
+        
+        if (_chart.hasFilter()) {
+            _chart.popup().selectAll('.popup-row-item')
+            .each(function(d){
+
+                d3.select(this)
+                    .classed('deselected', !_chart.isSelectedNode(d))
+                    .classed('selected', _chart.isSelectedNode(d));
+            })
+        } else {
+            _chart.popup().selectAll('.popup-row-item')
+                .classed('deselected', false)
+                .classed('selected', false);
+        }
+        
+    }
+
+    function renderPopupRow(d) {
+
+        var formatNum = d3.format(".2s");
+        var str = '<td><div class="table-dim"><div class="table-legend" style="background:'+_chart.getColor(d)+'"></div><div class="table-dim-val">'+d.key0+'</div></div></td>';
+                
+        for (var i = 1; i< _popupHeader.length; i++) {
+            if (_popupHeader[i].alias) {
+                str += '<td>'+formatNum(d[_popupHeader[i].alias])+'</td>';
+            } 
+        }
+        return str;
+    }
+
+    _chart.hidePopup = function() {
+        _chart.popup().classed('js-showPopup', false);
+        d3.select('#charts-container')
+            .style('z-index', 'auto');
+    }
+
+    function positionPopup(d, e) {
+
+        var x = bubbleX(d) + _chart.margins().left;
+        var y = bubbleY(d) + _chart.margins().top;
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                var popupWidth = d3.select(this).select('.chart-popup-box').node().getBoundingClientRect().width/2;
+                var offsetX = x - popupWidth < 0 ? popupWidth - x - 16 : (x + popupWidth > _chart.width() ? _chart.width() - (x + popupWidth) + 16 : 0);
+                return 'transform:translate('+(x + offsetX) +'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-center', true)
+            .classed('popdown', function(){
+                return popup.node().getBoundingClientRect().top - 76 < d3.select(this).node().getBoundingClientRect().height ? true : false;
+            })
+    }
+
+/* --------------------------------------------------------------------------*/
 
     /**
      * Turn on or off the elastic bubble radius feature, or return the value of the flag. If this
@@ -8650,6 +8937,7 @@ dc.bubbleChart = function (parent, chartGroup) {
         removeNodes(bubbleG);
 
         _chart.fadeDeselectedArea();
+
     };
 
     function renderNodes (bubbleG) {
@@ -8658,12 +8946,18 @@ dc.bubbleChart = function (parent, chartGroup) {
         bubbleGEnter
             .attr('class', _chart.BUBBLE_NODE_CLASS)
             .attr('transform', bubbleLocator)
+/* OVERRIDE -----------------------------------------------------------------*/
+            .on('mouseenter', showPopupTimer)
+            .on('mouseleave', hidePopupTimer)
+/* --------------------------------------------------------------------------*/
             .append('circle').attr('class', function (d, i) {
                 return _chart.BUBBLE_CLASS + ' _' + i;
             })
             .on('click', _chart.onClick)
             .attr('fill', _chart.getColor)
             .attr('r', 0);
+
+
         dc.transition(bubbleG, _chart.transitionDuration())
             .selectAll('circle.' + _chart.BUBBLE_CLASS)
             .attr('r', function (d) {
@@ -8675,7 +8969,7 @@ dc.bubbleChart = function (parent, chartGroup) {
 
         _chart._doRenderLabel(bubbleGEnter);
 
-        _chart._doRenderTitles(bubbleGEnter);
+        //_chart._doRenderTitles(bubbleGEnter);
     }
 
     function updateNodes (bubbleG) {
@@ -8696,6 +8990,8 @@ dc.bubbleChart = function (parent, chartGroup) {
 
         _chart.doUpdateLabels(bubbleG);
         _chart.doUpdateTitles(bubbleG);
+
+        
     }
 
     function removeNodes (bubbleG) {
@@ -10598,6 +10894,7 @@ dc.rowChart = function (parent, chartGroup) {
                 .on('click', onClick)
                 .attr('text-anchor', isStackLabel() ? 'start':'end')
                 .text(function(d){
+
                     return commafy(_chart.measureValue(d));
                 })
                 .attr('x', function (d, i) {
@@ -10609,12 +10906,12 @@ dc.rowChart = function (parent, chartGroup) {
 
                     var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
                     var measureWidth = thisLabel.node().getBBox().width;
-                    var dimWidth = _chart.svg().select('text.value-dim._' + i).node().getBBox().width;
+                    var dimWidth = d3.select('text.value-dim._' + i).node().getBBox().width;
                     var minIdealWidth = measureWidth + dimWidth + 16;
 
                     thisLabel.attr('text-anchor', isStackLabel() || width < minIdealWidth ? 'start' : 'end');
 
-                    return width > minIdealWidth ? width - 4 : dimWidth + 12;
+                    return width > minIdealWidth ? width - 4 : dimWidth + 16;
                 });
             dc.transition(measureLab, _chart.transitionDuration())
                 .attr('transform', translateX);
