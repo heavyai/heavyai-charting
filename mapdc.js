@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.20
+ *  dc 0.1.21
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.20
+ * @version 0.1.21
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.20',
+    version: '0.1.21',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -2242,6 +2242,8 @@ dc.baseMixin = function (_chart) {
     _chart.legendablesContinuous = function () {
 
         var legends = [];
+        if (!_chart.colors().domain)
+            return;
         var colorDomain = _chart.colors().domain();
         var colorDomainSize = colorDomain[1] - colorDomain[0];
         var colorRange = _chart.colors().range();
@@ -11605,8 +11607,10 @@ dc.legendContinuous = function () {
     };
 
     _legend.render = function () {
-
 /* OVERRIDE -----------------------------------------------------------------*/
+        if (!legendables)
+            return;
+
         _parent.root().select('.legend-cont').remove();
 
         _wrapper = _parent.root().append('div')
