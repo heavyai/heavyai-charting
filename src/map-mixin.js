@@ -142,16 +142,20 @@ dc.mapMixin = function (_chart, chartDivId) {
     }
 
     _chart.center = function (_) {
-        if (!arguments.length)
+        if (!arguments.length) {
+            _center = _chart._map.getCenter();
             return _center;
+        }
         _center = _;
         if (_mapInitted)
             _chart._map.setCenter(_center);
     }
 
     _chart.zoom = function(_) {
-        if (!arguments.length)
+        if (!arguments.length) {
+            _zoom = _chart._map.getZoom();
             return _zoom;
+        }
         _zoom = _;
         if (_mapInitted)
             _chart._map.setZoom(_zoom);
