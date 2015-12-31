@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.19
+ *  dc 0.1.20
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.19
+ * @version 0.1.20
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.19',
+    version: '0.1.20',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -3015,16 +3015,20 @@ dc.mapMixin = function (_chart, chartDivId) {
     }
 
     _chart.center = function (_) {
-        if (!arguments.length)
+        if (!arguments.length) {
+            _center = _chart._map.getCenter();
             return _center;
+        }
         _center = _;
         if (_mapInitted)
             _chart._map.setCenter(_center);
     }
 
     _chart.zoom = function(_) {
-        if (!arguments.length)
+        if (!arguments.length) {
+            _zoom = _chart._map.getZoom();
             return _zoom;
+        }
         _zoom = _;
         if (_mapInitted)
             _chart._map.setZoom(_zoom);
