@@ -29,8 +29,10 @@ dc.legendContinuous = function () {
     };
 
     _legend.render = function () {
-
 /* OVERRIDE -----------------------------------------------------------------*/
+        if (!legendables)
+            return;
+
         _parent.root().select('.legend-cont').remove();
 
         _wrapper = _parent.root().append('div')

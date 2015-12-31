@@ -1395,6 +1395,8 @@ dc.baseMixin = function (_chart) {
     _chart.legendablesContinuous = function () {
 
         var legends = [];
+        if (!_chart.colors().domain)
+            return;
         var colorDomain = _chart.colors().domain();
         var colorDomainSize = colorDomain[1] - colorDomain[0];
         var colorRange = _chart.colors().range();
