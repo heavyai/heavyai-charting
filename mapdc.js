@@ -2894,6 +2894,9 @@ dc.mapMixin = function (_chart, chartDivId) {
     var _isFirstMoveEvent = true;
     var _mapUpdateInterval = 100; //default
     var _mapStyle = 'mapbox://styles/mapbox/light-v8';
+    var _center = [0,30];
+    var _zoom = 1;
+
 
     var _popupFunction = function(result, height){
       var context={
@@ -3011,8 +3014,26 @@ dc.mapMixin = function (_chart, chartDivId) {
         return _chart;
     }
 
+    _chart.center = function (_) {
+        if (!arguments.length)
+            return _center;
+        _center = _;
+        if (_mapInitted)
+            _chart._map.setCenter(_center);
+    }
+
+    _chart.zoom = function(_) {
+        if (!arguments.length)
+            return _zoom;
+        _zoom = _;
+        if (_mapInitted)
+            _chart._map.setZoom(_zoom);
+    }
+
     var arr = [[180, -85], [-180, 85]];
     var llb = mapboxgl.LngLatBounds.convert(arr);
+
+
 
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
@@ -3020,8 +3041,8 @@ dc.mapMixin = function (_chart, chartDivId) {
           container: _mapId, // container id
           style: _mapStyle,
           interactive: true,
-          center: [0, 30], // starting position
-          zoom: 1, // starting zoom
+          center: _center, // starting position
+          zoom: _zoom, // starting zoom
           maxBounds: llb
         });
         _chart._map.dragRotate.disable();
