@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.21
+ *  dc 0.1.22
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.21
+ * @version 0.1.22
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.21',
+    version: '0.1.22',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -10933,7 +10933,7 @@ dc.rowChart = function (parent, chartGroup) {
 
                     var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
                     var measureWidth = thisLabel.node().getBBox().width;
-                    var dimWidth = d3.select('text.value-dim._' + i).node().getBBox().width;
+                    var dimWidth = _chart.svg().select('text.value-dim._' + i).node().getBBox().width;
                     var minIdealWidth = measureWidth + dimWidth + 16;
 
                     thisLabel.attr('text-anchor', isStackLabel() || width < minIdealWidth ? 'start' : 'end');
