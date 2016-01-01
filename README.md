@@ -9,7 +9,11 @@ Clone down the repo and run the following commands:
 
 ```bash
 # make it so that you can't commit the generated files.
-echo -e ".gitignore\nmapdc.js\nmapdc.min.js\nmapdc.js.map\nmapdc.min.js.map" >> .gitignore 
+git update-index --assume-unchanged mapdc.js
+git update-index --assume-unchanged mapdc.min.js
+git update-index --assume-unchanged mapdc.js.map
+git update-index --assume-unchanged mapdc.min.js.map
+
 npm install # to get the dependencies.
 npm install -g grunt-cli # to get the Grunt build tool.
 grunt build # to build the mapdc.js files.
