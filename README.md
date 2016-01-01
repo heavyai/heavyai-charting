@@ -7,11 +7,14 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 
 Clone down the repo and run the following commands:
 
-1. `npm install` - to get the dependencies.
-2. `npm install -g grunt-cli` - to get the Grunt build tool.
-3. `grunt build` - to build the mapdc.js files.
-4. `grunt watch` - to automatically rebuild the mapdc.js files after each save.
-
+```bash
+# make it so that you can't commit the generated files.
+echo -e ".gitignore\nmapdc.js\nmapdc.min.js\nmapdc.js.map\nmapdc.min.js.map" >> .gitignore 
+npm install # to get the dependencies.
+npm install -g grunt-cli # to get the Grunt build tool.
+grunt build # to build the mapdc.js files.
+grunt watch # to automatically rebuild the mapdc.js files after each save.
+```
 ### Pull Requests:
 
 Attach the appropriate semvar tag below to one of the commit messages in your pull request. This allows Jenkins to publish to npm automatically.
@@ -31,7 +34,7 @@ _"What is hard is figuring out a good workflow for developing both an npm module
 **If you have not cloned down the mapdc.js repo, do that first.** Then run the following commands:
 
 1. `npm link` - inside the mapdc/ repo directory.
-2. `npm link @mapd/mapdc` - inside the project directory (same level as the `node_modules/` directory).
+2. `npm link @mapd/mapdc` - inside the project directory (same level as `package.json` directory).
 
 This overrides the `node_modules` directory and tells your project to use the mapdc/ repo instead.
 
