@@ -174,7 +174,8 @@ dc.mapMixin = function (_chart, chartDivId) {
           interactive: true,
           center: _center, // starting position
           zoom: _zoom, // starting zoom
-          maxBounds: llb
+          maxBounds: llb,
+          preserveDrawingBuffer: true
         });
         _chart._map.dragRotate.disable();
         _chart._map.touchZoomRotate.disableRotation();
