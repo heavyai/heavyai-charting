@@ -25,8 +25,8 @@ while read commit; do
                 break
         fi
 
-
 done < <( git log --pretty="%H|%s" --skip=1 )
 
-#print the variable
+# print the variable
 echo $SEM_VAR_TAG
+
