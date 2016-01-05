@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.27
+ *  dc 0.1.28
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.27
+ * @version 0.1.28
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.27',
+    version: '0.1.28',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -5311,7 +5311,7 @@ dc.stackMixin = function (_chart) {
     _chart.yAxisMin = function () {
         var min = d3.min(flattenStack(), function (p) {
 /* OVERRIDE ---------------------------------------------------------------- */
-            if (_chart.renderArea())
+            if (_chart.renderArea === undefined || _chart.renderArea())
                 return (p.y + p.y0 < p.y0) ? (p.y + p.y0) : p.y0;
             else
                 return p.y;
@@ -5325,7 +5325,7 @@ dc.stackMixin = function (_chart) {
     _chart.yAxisMax = function () {
         var max = d3.max(flattenStack(), function (p) {
 /* OVERRIDE ---------------------------------------------------------------- */
-            if (_chart.renderArea())
+            if (_chart.renderArea === undefined || _chart.renderArea())
                 return p.y + p.y0;
             else
                 return p.y;
