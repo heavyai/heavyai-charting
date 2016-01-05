@@ -21,7 +21,7 @@ grunt watch # to automatically rebuild the mapdc.js files after each save.
 ```
 ### Pull Requests:
 
-Attach the appropriate semvar tag below to one of the commit messages in your pull request. This allows Jenkins to publish to npm automatically.
+Attach the appropriate semvar tag below to the **title of your pull request**. This allows Jenkins to publish to npm automatically.
 
 Semvar Tag | Description
 --- | ---
@@ -29,7 +29,7 @@ Semvar Tag | Description
 `[minor]` | new features
 `[patch]` | Bugfixes, documentation
 
-Jenkins will not let you merge a pull request that contains a missing or multiple semvar tags. **One per Pull Request!**
+Jenkins will not let you merge a pull request that contains a missing or multiple semvar tags.
 
 ### Developing mapdc and another project at the same time:
 
