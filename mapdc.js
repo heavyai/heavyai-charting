@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.26
+ *  dc 0.1.27
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.26
+ * @version 0.1.27
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.26',
+    version: '0.1.27',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -2242,8 +2242,6 @@ dc.baseMixin = function (_chart) {
     _chart.legendablesContinuous = function () {
 
         var legends = [];
-        if (!_chart.colors().domain)
-            return;
         var colorDomain = _chart.colors().domain();
         var colorDomainSize = colorDomain[1] - colorDomain[0];
         var colorRange = _chart.colors().range();
@@ -8664,11 +8662,14 @@ dc.bubbleChart = function (parent, chartGroup) {
     };
 
     _chart.hideOverlappedLabels = function (){
+
         var nodes = _chart.svg().selectAll('.node');
 
         var labelHeight = 10;
         var letterWidth = 5;
 
+        nodes[0].reverse();
+        
         nodes
             .classed('hide-label', function(d){
                 return _chart.bubbleR(d) < _chart.minRadiusWithLabel();
@@ -8676,55 +8677,40 @@ dc.bubbleChart = function (parent, chartGroup) {
             .each(function(d, i){
 
                 var a = this;
-                var aX = d.xPixel = bubbleX(d);
-                var aY = d.yPixel = bubbleY(d);
-                var aR = d.radius = _chart.bubbleR(d);
+                var aR = i > 0 ? d.radius : _chart.bubbleR(d);
+                var aX = i > 0 ? d.xPixel : bubbleX(d);
+                var aY = i > 0 ? d.yPixel : bubbleY(d);
                 var aKey = d.key0;
 
-                var labelOverlapList = d.labelOverlapList = [];
-                var nodeOverlapList = d.nodeOverlapList = [];
-                var d1 = d;
+                if (d3.select(a).classed('hide-label')) { return; }
 
-                nodes.each(function(d, j){
-
-                    var b = this;
+                for(var j = i + 1; j < nodes[0].length; j++) {
+                    
+                    var b = d3.select(nodes[0][j]);
+                    var d = b.datum();
 
                     var bX = d.xPixel = bubbleX(d);
                     var bY = d.yPixel = bubbleY(d);
                     var bR = d.radius = _chart.bubbleR(d);
                     var bKey = d.key0;
 
-                    if (a === b || Math.abs(aY - bY) > labelHeight || bR < _chart.minRadiusWithLabel()) { return;}
+                    if (Math.abs(aY - bY) > labelHeight || bR < _chart.minRadiusWithLabel() || b.classed('hide-label')) { 
+                        continue;
+                    }
+
                     var aXmin = aX - (aKey+'').length * letterWidth/2;
                     var aXmax = aX + (aKey+'').length * letterWidth/2;
-
 
                     var bXmin = bX - (bKey+'').length * letterWidth/2;
                     var bXmax = bX + (bKey+'').length * letterWidth/2;
 
                     var isLabelOverlapped = aXmin >= bXmin && aXmin <= bXmax || aXmax >= bXmin && aXmax <= bXmax || aXmin <= bXmin && aXmax >= bXmax;
 
-                    if (isLabelOverlapped && i > j) {
-                        labelOverlapList.push(b);
+                    if (isLabelOverlapped) {
+                        b.classed('hide-label', true);
                     }
-
-                    if (isNodeOverlapped(d1, d)) {
-                        nodeOverlapList.push(d);
-                    }
-                });
+                }
             });
-
-        nodes[0].reverse();
-
-        nodes.each(function(d) {
-            if (d.labelOverlapList.length === 0 || d3.select(this).classed('hide-label')) {
-                return;
-            }
-            for (var i = 0; i < d.labelOverlapList.length ; i++) {
-                d3.select(d.labelOverlapList[i]).classed('hide-label', true);
-            }
-        });
-
     }
 
     function isNodeOverlapped(d1,d2) {
@@ -8821,7 +8807,22 @@ dc.bubbleChart = function (parent, chartGroup) {
             });
 
         var dataRows = [d];
-        dataRows = dataRows.concat(d.nodeOverlapList);
+        var nodes = _chart.svg().selectAll('.node');
+        var foundCurrentNode = false;
+
+        nodes[0].reverse();
+
+        nodes.each(function(node, i){
+
+            if (d === node) { 
+                foundCurrentNode = true; 
+                return;
+            }
+
+            if (foundCurrentNode && isNodeOverlapped(d, node)) {
+                dataRows.push(node);
+            }
+        });
 
         var rowItems = popupTable.selectAll('.popup-row-item')
             .data(dataRows)
@@ -8969,6 +8970,7 @@ dc.bubbleChart = function (parent, chartGroup) {
     };
 
     function renderNodes (bubbleG) {
+        
         var bubbleGEnter = bubbleG.enter().append('g');
 
         bubbleGEnter
@@ -11609,9 +11611,6 @@ dc.legendContinuous = function () {
 
     _legend.render = function () {
 /* OVERRIDE -----------------------------------------------------------------*/
-        if (!legendables)
-            return;
-
         _parent.root().select('.legend-cont').remove();
 
         _wrapper = _parent.root().append('div')
