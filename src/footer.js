@@ -18,7 +18,7 @@ return dc;}
 
 /* OVERRIDE -----------------------------------------------------------------*/
         var _d3 = require('d3');
-        var _crossfilter = require('./crossfilter.mapd.js');
+        var _crossfilter = require('@mapd/mapd-crossfilter');
         // When using npm + browserify, 'crossfilter' is a function,
         // since package.json specifies index.js as main function, and it
         // does special handling. When using bower + browserify,
@@ -38,7 +38,7 @@ return dc;}
         var _d3 = require('d3');
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        var _crossfilter = require('./crossfilter.mapd.js');
+        var _crossfilter = require('@mapd/mapd-crossfilter');
 /* --------------------------------------------------------------------------*/
 
         // When using npm + browserify, 'crossfilter' is a function,
