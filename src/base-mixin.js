@@ -823,7 +823,7 @@ dc.baseMixin = function (_chart) {
 
         var result = _chart._doRender();
 
-        if (_legend) {
+        if (_legend && _chart.colors().domain) {
             _legend.render();
         }
 
@@ -911,7 +911,7 @@ dc.baseMixin = function (_chart) {
 
         var result = _chart._doRedraw();
 
-        if (_legend) {
+        if (_legend && _chart.colors().domain) {
             _legend.render();
         }
 
