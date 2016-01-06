@@ -350,6 +350,7 @@ module.exports.jsFiles = [
     'src/line-chart.js',
     'src/data-count.js',
     'src/data-table.js',
+    'src/mapd-table.js',
     'src/data-grid.js',
     'src/bubble-chart.js',
     'src/composite-chart.js',
