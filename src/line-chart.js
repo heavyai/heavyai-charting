@@ -292,6 +292,123 @@ dc.lineChart = function (parent, chartGroup) {
         return (!d || d.indexOf('NaN') >= 0) ? 'M0,0' : d;
     }
 
+    function hoverOverBrush() {
+
+        var g = _chart.g()
+            .on("mouseout", function() { hideBrushDots(); })
+            .on("mousemove", function() {
+                
+                if (_chart.isBrushing()) {
+                    hidePopup();
+                } else {
+                    showBrushDots(g, this); 
+                }
+
+            });
+    }
+
+    function hideBrushDots(){
+        _chart.g().selectAll('.dot').style('fill-opacity', 0);
+        hidePopup();
+    }
+
+    function showBrushDots(g, e) {
+
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(e);
+        var x = coordinates[0];
+        var y = coordinates[1];
+
+        var popupRows = [];
+        
+        var toolTips = g.selectAll('.dc-tooltip')
+            .each(function(){
+                var hoverDot = null;
+                d3.select(this).selectAll('.dot')
+                    .style('fill-opacity', 0)
+                    .each(function(d, i){
+                        var elm = d3.select(this);
+                        if (x - _chart.margins().left < elm.attr('cx')) {
+                            return;
+                        }
+
+                        hoverDot = { elm: elm, datum: d, i: i};
+                    });
+
+                if (hoverDot) {
+                    hoverDot.elm.style('fill-opacity', 1);
+                    popupRows.push(hoverDot);
+                }
+            });
+
+            console.log();
+
+        if (popupRows.length > 0) {
+            showPopup(popupRows, x, y);
+        } else {
+            hidePopup();
+        }
+
+    }
+
+    function showPopup(arr, x, y) {
+        var dateFormat = d3.time.format.utc("%b %d, %Y");
+        var popup = _chart.popup();
+
+        var popupBox = popup.select('.chart-popup-box').html('')
+            .classed('popup-list', true);
+
+        popupBox.append('div')
+            .attr('class', 'popup-header') 
+            .text(dateFormat(arr[0].datum.x));
+
+        var popupItems = popupBox.selectAll('.popup-item')
+            .data(arr)
+            .enter()
+            .append('div')
+            .attr('class', 'popup-item');
+
+        popupItems.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', function(d){ 
+                return colors(d.datum,d.i);
+            });
+
+        popupItems.append('div')
+            .attr('class', 'popup-item-value')
+            .text(function(d){
+                return d.datum.y;
+            });
+/*
+        popupBox.append('div')
+            .attr('class', 'popup-value')
+            .html(function(){
+                return '<div class="popup-value-dim">'+ _chart.label()(d.data) +'</div><div class="popup-value-measure">'+ _chart.measureValue(d.data) +'</div>';
+            });
+*/
+
+        positionPopup(x, y);
+        popup.classed('js-showPopup', true);
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup(x, y) {
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-left-center', true)
+            .classed('align-right-center', function(){
+                return x + (d3.select(this).node().getBoundingClientRect().width + 32) > _chart.width();
+            });
+    }
+
     function drawDots (chartBody, layers) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
@@ -345,11 +462,15 @@ dc.lineChart = function (parent, chartGroup) {
                     .attr('cy', function (d) {
                         return dc.utils.safeNumber(_chart.y()(d.y + d.y0));
                     })
-                    .attr('fill', _chart.getColor)
+                    .attr('fill', colors)
                     .call(renderTitle, d);
 
                 dots.exit().remove();
             });
+    
+            if (_chart.brushOn() && !_chart.focusChart()) {
+                hoverOverBrush();
+            }
 
 /* OVERRIDE ---------------------------------------------------------------- */
         // }

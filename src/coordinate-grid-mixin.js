@@ -82,6 +82,7 @@ dc.coordinateGridMixin = function (_chart) {
 
     var _brush = d3.svg.brush();
     var _brushOn = true;
+    var _isBrushing = false;
     var _round;
 
     var _renderHorizontalGridLine = false;
@@ -1108,6 +1109,14 @@ dc.coordinateGridMixin = function (_chart) {
         return _chart;
     };
 
+    _chart.isBrushing = function (_) {
+        if (!arguments.length) {
+            return _isBrushing;
+        }
+        _isBrushing = _;
+        return _chart;
+    };
+
     function brushHeight () {
         return _chart._xAxisY() - _chart.margins().top;
     }
@@ -1115,8 +1124,14 @@ dc.coordinateGridMixin = function (_chart) {
     _chart.renderBrush = function (g) {
         if (_brushOn) {
             _brush.on('brush', _chart._brushing);
-            _brush.on('brushstart', _chart._disableMouseZoom);
-            _brush.on('brushend', configureMouseZoom);
+            _brush.on('brushstart', function(){ 
+                _isBrushing = true;
+                _chart._disableMouseZoom()
+             });
+            _brush.on('brushend', function(){
+                _isBrushing = false;
+                configureMouseZoom();
+            });
 
             var gBrush = g.append('g')
                 .attr('class', 'brush')
