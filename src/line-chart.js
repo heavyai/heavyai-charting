@@ -318,30 +318,42 @@ dc.lineChart = function (parent, chartGroup) {
         coordinates = d3.mouse(e);
         var x = coordinates[0];
         var y = coordinates[1];
+        var xAdjusted = x - _chart.margins().left;
 
         var popupRows = [];
         
         var toolTips = g.selectAll('.dc-tooltip')
             .each(function(){
+
+                var lastDot = null;
                 var hoverDot = null;
-                d3.select(this).selectAll('.dot')
-                    .style('fill-opacity', 0)
-                    .each(function(d, i){
-                        var elm = d3.select(this);
-                        if (x - _chart.margins().left < elm.attr('cx')) {
-                            return;
-                        }
 
-                        hoverDot = { elm: elm, datum: d, i: i};
-                    });
+                var dots = d3.select(this).selectAll('.dot')
+                    .style('fill-opacity', 0);
 
-                if (hoverDot) {
+                dots[0].sort(function(a, b){
+                    return d3.select(a).attr('cx') - d3.select(b).attr('cx');
+                });
+
+                dots[0].some(function(obj, i) {
+
+                    var elm = d3.select(obj);
+
+                    if (xAdjusted < elm.attr('cx')) {
+                        hoverDot = { elm: elm, datum: elm.datum(), i: i};
+                        return true;
+                    }
+
+                    lastDot = { elm: elm, datum: elm.datum(), i: i};
+                });
+
+                hoverDot = lastDot && hoverDot ? ( Math.abs(lastDot.elm.attr('cx') - xAdjusted) < Math.abs(hoverDot.elm.attr('cx') - xAdjusted) ?  lastDot : hoverDot): hoverDot;
+
+                if (hoverDot && Math.abs(hoverDot.elm.attr('cx') - xAdjusted) < 32) {
                     hoverDot.elm.style('fill-opacity', 1);
                     popupRows.push(hoverDot);
                 }
             });
-
-            console.log();
 
         if (popupRows.length > 0) {
             showPopup(popupRows, x, y);
@@ -352,6 +364,7 @@ dc.lineChart = function (parent, chartGroup) {
     }
 
     function showPopup(arr, x, y) {
+        
         var dateFormat = d3.time.format.utc("%b %d, %Y");
         var popup = _chart.popup();
 
@@ -363,7 +376,7 @@ dc.lineChart = function (parent, chartGroup) {
             .text(dateFormat(arr[0].datum.x));
 
         var popupItems = popupBox.selectAll('.popup-item')
-            .data(arr)
+            .data(arr.sort(function(a, b){ return (b.datum.y + b.datum.y0) - (a.datum.y + a.datum.y0); }))
             .enter()
             .append('div')
             .attr('class', 'popup-item');
@@ -377,15 +390,8 @@ dc.lineChart = function (parent, chartGroup) {
         popupItems.append('div')
             .attr('class', 'popup-item-value')
             .text(function(d){
-                return d.datum.y;
+                return d.datum.y + d.datum.y0;
             });
-/*
-        popupBox.append('div')
-            .attr('class', 'popup-value')
-            .html(function(){
-                return '<div class="popup-value-dim">'+ _chart.label()(d.data) +'</div><div class="popup-value-measure">'+ _chart.measureValue(d.data) +'</div>';
-            });
-*/
 
         positionPopup(x, y);
         popup.classed('js-showPopup', true);
