@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.30
+ *  dc 0.1.31
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.30
+ * @version 0.1.31
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.30',
+    version: '0.1.31',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -3717,6 +3717,7 @@ dc.coordinateGridMixin = function (_chart) {
 
     var _brush = d3.svg.brush();
     var _brushOn = true;
+    var _isBrushing = false;
     var _round;
 
     var _renderHorizontalGridLine = false;
@@ -4743,6 +4744,14 @@ dc.coordinateGridMixin = function (_chart) {
         return _chart;
     };
 
+    _chart.isBrushing = function (_) {
+        if (!arguments.length) {
+            return _isBrushing;
+        }
+        _isBrushing = _;
+        return _chart;
+    };
+
     function brushHeight () {
         return _chart._xAxisY() - _chart.margins().top;
     }
@@ -4750,8 +4759,14 @@ dc.coordinateGridMixin = function (_chart) {
     _chart.renderBrush = function (g) {
         if (_brushOn) {
             _brush.on('brush', _chart._brushing);
-            _brush.on('brushstart', _chart._disableMouseZoom);
-            _brush.on('brushend', configureMouseZoom);
+            _brush.on('brushstart', function(){ 
+                _isBrushing = true;
+                _chart._disableMouseZoom()
+             });
+            _brush.on('brushend', function(){
+                _isBrushing = false;
+                configureMouseZoom();
+            });
 
             var gBrush = g.append('g')
                 .attr('class', 'brush')
@@ -7488,6 +7503,129 @@ dc.lineChart = function (parent, chartGroup) {
         return (!d || d.indexOf('NaN') >= 0) ? 'M0,0' : d;
     }
 
+    function hoverOverBrush() {
+
+        var g = _chart.g()
+            .on("mouseout", function() { hideBrushDots(); })
+            .on("mousemove", function() {
+                
+                if (_chart.isBrushing()) {
+                    hidePopup();
+                } else {
+                    showBrushDots(g, this); 
+                }
+
+            });
+    }
+
+    function hideBrushDots(){
+        _chart.g().selectAll('.dot').style('fill-opacity', 0);
+        hidePopup();
+    }
+
+    function showBrushDots(g, e) {
+
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(e);
+        var x = coordinates[0];
+        var y = coordinates[1];
+        var xAdjusted = x - _chart.margins().left;
+
+        var popupRows = [];
+        
+        var toolTips = g.selectAll('.dc-tooltip')
+            .each(function(){
+
+                var lastDot = null;
+                var hoverDot = null;
+
+                var dots = d3.select(this).selectAll('.dot')
+                    .style('fill-opacity', 0);
+
+                dots[0].sort(function(a, b){
+                    return d3.select(a).attr('cx') - d3.select(b).attr('cx');
+                });
+
+                dots[0].some(function(obj, i) {
+
+                    var elm = d3.select(obj);
+
+                    if (xAdjusted < elm.attr('cx')) {
+                        hoverDot = { elm: elm, datum: elm.datum(), i: i};
+                        return true;
+                    }
+
+                    lastDot = { elm: elm, datum: elm.datum(), i: i};
+                });
+
+                hoverDot = lastDot && hoverDot ? ( Math.abs(lastDot.elm.attr('cx') - xAdjusted) < Math.abs(hoverDot.elm.attr('cx') - xAdjusted) ?  lastDot : hoverDot): hoverDot;
+
+                if (hoverDot && Math.abs(hoverDot.elm.attr('cx') - xAdjusted) < 32) {
+                    hoverDot.elm.style('fill-opacity', 1);
+                    popupRows.push(hoverDot);
+                }
+            });
+
+        if (popupRows.length > 0) {
+            showPopup(popupRows, x, y);
+        } else {
+            hidePopup();
+        }
+
+    }
+
+    function showPopup(arr, x, y) {
+        
+        var dateFormat = d3.time.format.utc("%b %d, %Y");
+        var popup = _chart.popup();
+
+        var popupBox = popup.select('.chart-popup-box').html('')
+            .classed('popup-list', true);
+
+        popupBox.append('div')
+            .attr('class', 'popup-header') 
+            .text(dateFormat(arr[0].datum.x));
+
+        var popupItems = popupBox.selectAll('.popup-item')
+            .data(arr.sort(function(a, b){ return (b.datum.y + b.datum.y0) - (a.datum.y + a.datum.y0); }))
+            .enter()
+            .append('div')
+            .attr('class', 'popup-item');
+
+        popupItems.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', function(d){ 
+                return colors(d.datum,d.i);
+            });
+
+        popupItems.append('div')
+            .attr('class', 'popup-item-value')
+            .text(function(d){
+                return d.datum.y + d.datum.y0;
+            });
+
+        positionPopup(x, y);
+        popup.classed('js-showPopup', true);
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup(x, y) {
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-left-center', true)
+            .classed('align-right-center', function(){
+                return x + (d3.select(this).node().getBoundingClientRect().width + 32) > _chart.width();
+            });
+    }
+
     function drawDots (chartBody, layers) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
@@ -7541,11 +7679,15 @@ dc.lineChart = function (parent, chartGroup) {
                     .attr('cy', function (d) {
                         return dc.utils.safeNumber(_chart.y()(d.y + d.y0));
                     })
-                    .attr('fill', _chart.getColor)
+                    .attr('fill', colors)
                     .call(renderTitle, d);
 
                 dots.exit().remove();
             });
+    
+            if (_chart.brushOn() && !_chart.focusChart()) {
+                hoverOverBrush();
+            }
 
 /* OVERRIDE ---------------------------------------------------------------- */
         // }
