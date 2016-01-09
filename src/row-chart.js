@@ -119,9 +119,10 @@ dc.rowChart = function (parent, chartGroup) {
         var yLabel = root.selectAll('.y-axis-label');
 
         if (yLabel.empty()) {
+
             yLabel = root.append('div')
             .attr('class', 'y-axis-label')
-            .text(aliases[_yAxisLabel]);
+            .text(typeof aliases !== 'undefined' ? aliases[_yAxisLabel] : _yAxisLabel);
         }
 
         yLabel
