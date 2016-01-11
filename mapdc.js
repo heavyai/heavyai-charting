@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.31
+ *  dc 0.1.32
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.31
+ * @version 0.1.32
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.31',
+    version: '0.1.32',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -7575,8 +7575,9 @@ dc.lineChart = function (parent, chartGroup) {
     }
 
     function showPopup(arr, x, y) {
-        
+
         var dateFormat = d3.time.format.utc("%b %d, %Y");
+        var commafy = d3.format(',');
         var popup = _chart.popup();
 
         var popupBox = popup.select('.chart-popup-box').html('')
@@ -7587,7 +7588,9 @@ dc.lineChart = function (parent, chartGroup) {
             .text(dateFormat(arr[0].datum.x));
 
         var popupItems = popupBox.selectAll('.popup-item')
-            .data(arr.sort(function(a, b){ return (b.datum.y + b.datum.y0) - (a.datum.y + a.datum.y0); }))
+            .data(arr.sort(function(a, b){
+              return _renderArea ? (b.datum.y + b.datum.y0) - (a.datum.y + a.datum.y0) : b.datum.y - a.datum.y;
+            }))
             .enter()
             .append('div')
             .attr('class', 'popup-item');
@@ -7601,7 +7604,7 @@ dc.lineChart = function (parent, chartGroup) {
         popupItems.append('div')
             .attr('class', 'popup-item-value')
             .text(function(d){
-                return d.datum.y + d.datum.y0;
+                return commafy(parseFloat((_renderArea ? d.datum.y + d.datum.y0 : d.datum.y).toFixed(2)));
             });
 
         positionPopup(x, y);
@@ -7677,7 +7680,12 @@ dc.lineChart = function (parent, chartGroup) {
                         return dc.utils.safeNumber(_chart.x()(d.x));
                     })
                     .attr('cy', function (d) {
-                        return dc.utils.safeNumber(_chart.y()(d.y + d.y0));
+/* OVERRIDE ---------------------------------------------------------------- */
+                        if (_renderArea)
+                            return dc.utils.safeNumber(_chart.y()(d.y + d.y0));
+                        else
+                            return dc.utils.safeNumber(_chart.y()(d.y));
+/* ------------------------------------------------------------------------- */
                     })
                     .attr('fill', colors)
                     .call(renderTitle, d);
