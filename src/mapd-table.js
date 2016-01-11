@@ -27,6 +27,7 @@ dc.mapdTable = function (parent, chartGroup) {
     var HEAD_CSS_CLASS = 'dc-table-head';
 
     var _chart = dc.baseMixin({});
+    var _table = null;
 
     var _size = 25;
     var _columns = [];
@@ -39,6 +40,15 @@ dc.mapdTable = function (parent, chartGroup) {
     var _showGroups = true;
 
 /* OVERRIDE ---------------------------------------------------------------- */
+
+    _chart.table = function (_) {
+        if (!arguments.length) {
+            return _table;
+        }
+        _table = _;
+        return _chart;
+    };
+
     var _filteredColumns = {};
     var _sampling = false;
 
@@ -111,15 +121,70 @@ dc.mapdTable = function (parent, chartGroup) {
 /* ------------------------------------------------------------------------- */
 
     _chart._doRender = function () {
+ 
+        if (!_table) {
+            _table = _chart.root().append('div')
+                .attr('class',  'md-table-wrapper')
+                .append('table');
+        }
 
-        //this.baseChart.chartDiv.html("<div id='table-wrapper" + this.baseChart.widgetId + "' class='table-wrapper'><table id='" + id + "' class='table table-hover dc-data-table'></table></div>");
-        
-        _chart.selectAll('tbody').remove();
+        var entries;
 
-        renderRows(renderGroups());
+        if (_chart.dataCache != null) {
+            entries = _chart.dataCache;
+        } else {
+            if (_order === d3.ascending) {
+                entries = _chart.dimension().bottom(_size);
+            } else {
+                entries = _chart.dimension().top(_size);
+            }
+        }
+
+        renderTable();
+        //renderRows(renderGroups());
 
         return _chart;
     };
+
+    function sortData() {
+
+    }
+
+
+    function renderTable() {
+
+        var data = _chart.dimension().top(_size);
+
+        var keys = [];
+        for (var key in data[0]) {      
+            if (data[0].hasOwnProperty(key)) keys.push(key);
+        }
+
+        var table = _chart.table().html('');
+
+        var tableHeader = table.append('tr').selectAll('th')
+            .data(keys)
+            .enter();
+
+        tableHeader.append('th')
+            .text(function(d){
+                return d;
+            })
+
+        var tableRows = table.selectAll('.table-row')
+            .data(data)
+            .enter();
+
+        var rowItem = tableRows.append('tr');
+
+        keys.forEach(function(key){
+            rowItem.append('td')
+                .text(function(d){
+                    return d[key];
+                });
+        })
+
+    }
 
     _chart._doColumnValueFormat = function (v, d) {
 
