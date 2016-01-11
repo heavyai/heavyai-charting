@@ -460,8 +460,7 @@
 
         &.popup-list {
             flex-direction: column;
-            padding: 0 8px;
-            min-width: 200px;
+            padding: 0 8px 2px 8px;
         }
 
         &.popdown {
@@ -496,6 +495,7 @@
         white-space: nowrap;
         font-weight: bold;
         padding: 4px;
+        margin-bottom: 2px;
     }
 
     .popup-item {
@@ -506,6 +506,7 @@
             flex-shrink: 0;
             flex-grow: 0;
             padding: 0;
+            margin: 6px 8px;
         }
     }
 
