@@ -159,7 +159,7 @@ dc.dataTable = function (parent, chartGroup) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart._covertToAlias = function (s) {
-        return aliases[s];
+       return typeof aliases !== 'undefined' ? aliases[s] : s;
     };
 /* ------------------------------------------------------------------------- */
 
