@@ -242,10 +242,12 @@ dc.mapdTable = function (parent, chartGroup) {
 
       var val = value;
       var dateFormat = d3.time.format.utc("%Y-%m-%d");
+      var timeFormat = d3.time.format.utc("%Y-%m-%d %H:%M:%S");
 
       if (Object.prototype.toString.call(val) === '[object Date]') {
 
         val = "DATE '" + dateFormat(val) + "'";
+
       }
       else if (type === 'string') {
         if (val !== null) {
