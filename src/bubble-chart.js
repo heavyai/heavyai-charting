@@ -165,12 +165,13 @@ dc.bubbleChart = function (parent, chartGroup) {
                     .style('transform', function(){
                     var elm = d3.select(this);
                     var textWidth = elm.node().getBoundingClientRect().width;
+                    var boxWidth = elm.node().parentNode.getBoundingClientRect().width;
                     
-                    if (textWidth < 64) {
+                    if (textWidth < boxWidth) {
                         elm.classed('scroll-text', false)
                         return 'none';
                     }
-                    var dist = textWidth - 64;
+                    var dist = textWidth - boxWidth;
 
                     elm.style('transition-duration', (dist * .05 + 's'))
                         .classed('scroll-text', true)
@@ -285,6 +286,9 @@ dc.bubbleChart = function (parent, chartGroup) {
             .classed('popdown', function(){
                 return popup.node().getBoundingClientRect().top - 76 < d3.select(this).node().getBoundingClientRect().height ? true : false;
             })
+            .style('overflow-y', function(){
+                return popup.select('.popup-table').node().getBoundingClientRect().height > 160 ? 'scroll' : 'hidden';
+            });
     }
 
 /* --------------------------------------------------------------------------*/
