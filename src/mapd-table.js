@@ -86,7 +86,13 @@ dc.mapdTable = function (parent, chartGroup) {
             _tableWrapper = _chart.root().append('div')
                 .attr('class',  'md-table-wrapper');
 
-            _tableWrapper.append('table');
+            _tableWrapper.append('div')
+                .attr('class', 'md-header-spacer');
+
+            _tableWrapper.append('div')
+                .attr('class', 'md-table-scroll')
+                .append('table');
+
             _tableWrapper.append('div')
                 .attr('class',  'md-table-header')
         }
@@ -131,8 +137,8 @@ dc.mapdTable = function (parent, chartGroup) {
                 })
                 .attr('data-index', i)
                 .on('click', function(d) {
+                    
                     var index = parseInt(d3.select(this).attr('data-index'))
-                    //_chart.onClickCell()(_columns[index],d[key], typeof d[key]); 
                     onClickCell(_columns[index],d[key], typeof d[key]); 
 
                 })
@@ -141,7 +147,20 @@ dc.mapdTable = function (parent, chartGroup) {
                 });
         });
 
-        var dockedHeader = _chart.tableWrapper().select('.md-table-header').html('');
+        var dockedHeader = _chart.tableWrapper().select('.md-table-header').html('')
+            .append('div')
+            .attr('class', 'docked-table-header')
+            .style('left', function(){
+               return '-' + _tableWrapper.select('.md-table-scroll').node().scrollLeft + 'px';
+            });;
+
+
+        _chart.tableWrapper().select('.md-table-scroll')
+            .on('scroll', function(){
+                dockedHeader.style('left', function(){
+                   return '-' + _tableWrapper.select('.md-table-scroll').node().scrollLeft + 'px';
+                });
+            });
 
         table.selectAll('th')
             .each(function(d, i){
@@ -173,9 +192,11 @@ dc.mapdTable = function (parent, chartGroup) {
                             .classed(_sortColumn ? _sortColumn.order : '',  true);
 
                     })
-                    .style('width', d3.select(this).node().getBoundingClientRect().width + 'px')
-                    .text(_columns[i]);
+                    .style('width', d3.select(this).node().getBoundingClientRect().width + 'px');
 
+
+                var textSpan = sortLabel.append('span')
+                    .text(_columns[i]);
 
                 var sortButton = sortLabel.append('div')
                     .attr('class', 'sort-btn');
@@ -205,6 +226,7 @@ dc.mapdTable = function (parent, chartGroup) {
                         _chart.removeFilteredColumn(_columns[index]);
                         clearColFilter(index); 
                     })
+                    .style('left', textSpan.node().getBoundingClientRect().width + 20 + 'px')
                     .append('svg')
                     .attr('class', 'svg-icon')
                     .classed('icon-unfilter', true)
@@ -219,13 +241,15 @@ dc.mapdTable = function (parent, chartGroup) {
     function onClickCell(name, value, type) {
 
       var val = value;
+      var dateFormat = d3.time.format.utc("%Y-%m-%d");
 
-      if (type === 'date') {
-        val = "DATE '" + moment(val).format('YYYY-MM-DD') + "'";
+      if (Object.prototype.toString.call(val) === '[object Date]') {
+
+        val = "DATE '" + dateFormat(val) + "'";
       }
       else if (type === 'string') {
         if (val !== null) {
-          val = "'" + quoteString(val) + "'";
+          val = "'" + val.replace(/'/g, "''") + "'";
         }
       }
 
@@ -234,7 +258,7 @@ dc.mapdTable = function (parent, chartGroup) {
       _tableFilter.filter(computeTableFilter(_columnFilterMap));
 
       dc.redrawAll();
-  
+
     }
 
     function clearColFilter(columnId) {
