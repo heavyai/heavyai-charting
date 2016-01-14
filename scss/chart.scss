@@ -322,8 +322,6 @@
         }
         .chart-popup-box {
             max-height: 160px;
-            overflow-y: auto;
-            overflow-x: hidden;
         }
     }
 
@@ -378,6 +376,14 @@
                 text-overflow: ellipsis;
                 overflow: hidden;
                 position: relative;
+
+
+            }
+
+            &:first-child {
+                .ellipse-text {
+                    max-width: 160px;
+                }
             }
 
             .full-text {
