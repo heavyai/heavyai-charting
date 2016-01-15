@@ -7,8 +7,6 @@ dc.mapdTable = function (parent, chartGroup) {
     var _offset = 0;
     var _debounce = false;
     var _columns = [];
-    var _order = d3.ascending;
-
 
     var _filteredColumns = {};
     var _columnFilterMap = {};
@@ -51,7 +49,6 @@ dc.mapdTable = function (parent, chartGroup) {
     var addRowsCallback = function(data){
         _chart.dataCache = _chart.dataCache.concat(data)
         _chart._doRedraw();
-
         _debounce = false;
     }
 
@@ -60,35 +57,33 @@ dc.mapdTable = function (parent, chartGroup) {
         _offset += _size;
         _chart.dimension().topAsync(_size, _offset, undefined, [addRowsCallback]);
         _debounce = true;
+
     }
 
     _chart.data(function() {
 
         if (!_chart.dataCache) {
 
-            _offset = 0;
-
-            if (_order == d3.ascending) {
-                _chart.dataCache = _chart.dimension().bottom(_size, _offset);
-            }
-            else {
-                _chart.dataCache = _chart.dimension().top(_size, _offset);
-            }
-
+            _chart.dataCache = _sortColumn ? (_sortColumn.order === 'desc' ? _chart.dimension().order(_sortColumn.col).top(_size + _offset, 0) : _chart.dimension().order(_sortColumn.col).bottom(_size + _offset, 0)) : _chart.dimension().order(null).top(_size + _offset, 0);
         }
 
-         return _chart.dataCache;
-      });
+        return _chart.dataCache;
+    });
 
     _chart.setDataAsync(function(group,callbacks) {
         
         _offset = 0;
 
-        if (_order === d3.ascending) {
-          _chart.dimension().bottomAsync(_size, _offset, undefined, callbacks);
-        }
-        else {
-          _chart.dimension().topAsync(_size, _offset, undefined, callbacks);
+        if (_sortColumn) {
+
+            if (_sortColumn.order === 'desc') {
+                _chart.dimension().order(_sortColumn.col).topAsync(_size, _offset, undefined, callbacks);
+            } else {
+                _chart.dimension().order(_sortColumn.col).bottomAsync(_size, _offset, undefined, callbacks);
+            }
+
+        } else {
+            _chart.dimension().order(null).topAsync(_size, _offset, undefined, callbacks);
         }
 
         _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
@@ -136,6 +131,8 @@ dc.mapdTable = function (parent, chartGroup) {
                 .attr('class',  'md-table-header')
         }
 
+        _debounce = false;
+
         renderTable();
 
         return _chart;
@@ -147,7 +144,7 @@ dc.mapdTable = function (parent, chartGroup) {
         var data = _chart.data();
 
         var table = _chart.tableWrapper().select('table').html('');
-        
+
         if (data.length === 0) {
             return;
         }
@@ -203,7 +200,6 @@ dc.mapdTable = function (parent, chartGroup) {
 
                 dockedHeader.style('left',  '-' + d3.select(this).node().scrollLeft + 'px');
 
-
                 var scrollHeight = d3.select(this).node().scrollTop + d3.select(this).node().getBoundingClientRect().height;
 
                 if (!_debounce && table.node().scrollHeight <=  scrollHeight + scrollHeight/5) {
@@ -214,7 +210,6 @@ dc.mapdTable = function (parent, chartGroup) {
 
         table.selectAll('th')
             .each(function(d, i){
-
                 var headerItem = dockedHeader.append('div')
                     .attr('class','table-header-item')
                     .classed('isFiltered', function(){
@@ -224,22 +219,20 @@ dc.mapdTable = function (parent, chartGroup) {
                 var sortLabel = headerItem.append('div')
                     .attr('class', 'table-sort')
                     .classed('active', _sortColumn ? _sortColumn.index === i : false)
+                    .classed(_sortColumn ? _sortColumn.order : '',  true)
                     .on('click', function(){
                         _tableWrapper.selectAll('.table-sort')
                             .classed('active asc desc', false);
 
                         if (_sortColumn && _sortColumn.index === i) {
 
-                            _sortColumn =  _sortColumn.order === 'desc' ? {index: i , order: 'asc'} : null;
+                            _sortColumn =  _sortColumn.order === 'desc' ? {index: i, col: d,  order: 'asc'} : null;
 
                         } else {
-                            _sortColumn =  {index: i, order: 'desc'};
+                            _sortColumn =  {index: i, col: d, order: 'desc'};
                         }
 
-                        var elm = d3.select(this);
-                        
-                        elm.classed('active', _sortColumn ? true: false)
-                            .classed(_sortColumn ? _sortColumn.order : '',  true);
+                        dc.redrawAll();
 
                     })
                     .style('width', d3.select(this).node().getBoundingClientRect().width + 'px');
@@ -287,6 +280,8 @@ dc.mapdTable = function (parent, chartGroup) {
             });
 
     }
+
+ 
 
     function onClickCell(name, value, type, index) {
 
