@@ -4,6 +4,8 @@ dc.mapdTable = function (parent, chartGroup) {
     var _tableWrapper = null;
 
     var _size = 25;
+    var _offset = 0;
+    var _debounce = false;
     var _columns = [];
     var _order = d3.ascending;
 
@@ -46,14 +48,51 @@ dc.mapdTable = function (parent, chartGroup) {
         return _chart;
     };
 
+    var addRowsCallback = function(data){
+        _chart.dataCache = _chart.dataCache.concat(data)
+        _chart._doRedraw();
 
-    _chart.setDataAsync(function(group, callbacks) {
+        _debounce = false;
+    }
+
+    _chart.addRows = function(){
+
+        _offset += _size;
+        _chart.dimension().topAsync(_size, _offset, undefined, [addRowsCallback]);
+        _debounce = true;
+    }
+
+    _chart.data(function() {
+
+        if (!_chart.dataCache) {
+
+            _offset = 0;
+
+            if (_order == d3.ascending) {
+                _chart.dataCache = _chart.dimension().bottom(_size, _offset);
+            }
+            else {
+                _chart.dataCache = _chart.dimension().top(_size, _offset);
+            }
+
+        }
+
+         return _chart.dataCache;
+      });
+
+    _chart.setDataAsync(function(group,callbacks) {
+        
+        _offset = 0;
+
         if (_order === d3.ascending) {
-            _chart.dimension().bottomAsync(_size, undefined, undefined, callbacks);
+          _chart.dimension().bottomAsync(_size, _offset, undefined, callbacks);
         }
         else {
-            _chart.dimension().topAsync(_size, undefined, undefined, callbacks);
+          _chart.dimension().topAsync(_size, _offset, undefined, callbacks);
         }
+
+        _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
+
     });
 
     _chart.addFilteredColumn = function(columnName) {
@@ -105,14 +144,18 @@ dc.mapdTable = function (parent, chartGroup) {
 
     function renderTable() {
 
-        var data = _chart.dimension().top(_size);
+        var data = _chart.data();
+
+        var table = _chart.tableWrapper().select('table').html('');
+        
+        if (data.length === 0) {
+            return;
+        }
 
         var keys = [];
         for (var key in data[0]) {      
             if (data[0].hasOwnProperty(key) && key.indexOf('col') >= 0) keys.push(key);
         }
-
-        var table = _chart.tableWrapper().select('table').html('');
 
         var tableHeader = table.append('tr').selectAll('th')
             .data(keys)
@@ -139,7 +182,7 @@ dc.mapdTable = function (parent, chartGroup) {
                 .on('click', function(d) {
                     
                     var index = parseInt(d3.select(this).attr('data-index'))
-                    onClickCell(_columns[index],d[key], typeof d[key]); 
+                    onClickCell(_columns[index],d[key], typeof d[key], index); 
 
                 })
                 .classed('filtered', function(){
@@ -157,9 +200,16 @@ dc.mapdTable = function (parent, chartGroup) {
 
         _chart.tableWrapper().select('.md-table-scroll')
             .on('scroll', function(){
-                dockedHeader.style('left', function(){
-                   return '-' + _tableWrapper.select('.md-table-scroll').node().scrollLeft + 'px';
-                });
+
+                dockedHeader.style('left',  '-' + d3.select(this).node().scrollLeft + 'px');
+
+
+                var scrollHeight = d3.select(this).node().scrollTop + d3.select(this).node().getBoundingClientRect().height;
+
+                if (!_debounce && table.node().scrollHeight <=  scrollHeight + scrollHeight/5) {
+                    _chart.addRows();
+                }
+
             });
 
         table.selectAll('th')
@@ -238,7 +288,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
     }
 
-    function onClickCell(name, value, type) {
+    function onClickCell(name, value, type, index) {
 
       var val = value;
       var dateFormat = d3.time.format.utc("%Y-%m-%d");
@@ -257,6 +307,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
       _chart.addFilteredColumn(name);
       _columnFilterMap[name] = val;
+
       _tableFilter.filter(computeTableFilter(_columnFilterMap));
 
       dc.redrawAll();
