@@ -55,7 +55,7 @@ dc.baseMixin = function (_chart) {
     var _measureLabelsOn = false;
 /* ------------------------------------------------------------------------- */
 
-    var _valueAccessor = dc.pluck('value');
+    var _valueAccessor = dc.pluck('val');
     var _orderSort;
 
     var _renderLabel = false;
