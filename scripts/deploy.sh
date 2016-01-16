@@ -13,7 +13,7 @@ if [[ `git log -1 | grep "Jenkins MapD"` ]]; then
 fi
 
 # remove the previous temp branch
-git branch -d temp
+git branch -d temp || true
 
 # checkout a new temp branch
 git checkout -b temp
