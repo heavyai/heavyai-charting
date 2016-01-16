@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.33
+ *  dc 0.1.34
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.33
+ * @version 0.1.34
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.33',
+    version: '0.1.34',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -902,7 +902,7 @@ dc.baseMixin = function (_chart) {
     var _measureLabelsOn = false;
 /* ------------------------------------------------------------------------- */
 
-    var _valueAccessor = dc.pluck('value');
+    var _valueAccessor = dc.pluck('val');
     var _orderSort;
 
     var _renderLabel = false;
@@ -8925,12 +8925,13 @@ dc.bubbleChart = function (parent, chartGroup) {
                     .style('transform', function(){
                     var elm = d3.select(this);
                     var textWidth = elm.node().getBoundingClientRect().width;
+                    var boxWidth = elm.node().parentNode.getBoundingClientRect().width;
                     
-                    if (textWidth < 64) {
+                    if (textWidth < boxWidth) {
                         elm.classed('scroll-text', false)
                         return 'none';
                     }
-                    var dist = textWidth - 64;
+                    var dist = textWidth - boxWidth;
 
                     elm.style('transition-duration', (dist * .05 + 's'))
                         .classed('scroll-text', true)
@@ -9045,6 +9046,9 @@ dc.bubbleChart = function (parent, chartGroup) {
             .classed('popdown', function(){
                 return popup.node().getBoundingClientRect().top - 76 < d3.select(this).node().getBoundingClientRect().height ? true : false;
             })
+            .style('overflow-y', function(){
+                return popup.select('.popup-table').node().getBoundingClientRect().height > 160 ? 'scroll' : 'hidden';
+            });
     }
 
 /* --------------------------------------------------------------------------*/
