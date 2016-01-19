@@ -37,6 +37,12 @@ var dc = {
 
 /* OVERRIDE -----------------------------------------------------------------*/
     async: false,
+    logging: function(_) {
+      if (!arguments.length)
+        return dc._logging;
+      dc._logging = _
+    },
+    _logging: false,
     _lastFilteredSize: null,
     _sampledCount: 0,
     _refreshDisabled: false,
@@ -50,6 +56,8 @@ var dc = {
     _redrawIdStack: null,
     _globalTransitionDuration: null,
     _redrawCallback: null,
+    _startRenderTime: null,
+    _startRedrawTime: null,
 /* --------------------------------------------------------------------------*/
 
     _renderlet: null
@@ -192,6 +200,7 @@ dc.renderAll = function (group) {
     dc._renderIdStack = queryGroupId;
     if (!stackEmpty)
         return;
+    dc._startRenderTime = new Date();
 /* ------------------------------------------------------------------------- */
 
     var charts = dc.chartRegistry.list(group);
@@ -242,6 +251,7 @@ dc.redrawAll = function (group, callback) {
     }
     if (!stackEmpty && callback === undefined)
         return;
+    dc._startRedrawTime = new Date();
 /* ------------------------------------------------------------------------- */
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {

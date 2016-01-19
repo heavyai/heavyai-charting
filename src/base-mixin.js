@@ -840,6 +840,11 @@ dc.baseMixin = function (_chart) {
 /* OVERRIDE ---------------------------------------------------------------- */
         if (queryGroupId !== undefined) {
             if (++dc._renderCount == queryCount) {
+                if (dc._logging) {
+                    var endTime = new Date();
+                    var elapsed = endTime - dc._startRenderTime;
+                    console.log("Render elapsed: " + elapsed + " ms");
+                }
                 dc._renderCount = 0;
                 dc._globalTransitionDuration = null; // reset to null if was brush
                 var stackEmpty = dc._renderIdStack == null || dc._renderIdStack == queryGroupId;
@@ -927,6 +932,11 @@ dc.baseMixin = function (_chart) {
         if (queryGroupId !== undefined) {
 
             if (++dc._redrawCount == queryCount) {
+                if (dc._logging) {
+                    var endTime = new Date();
+                    var elapsed = endTime - dc._startRedrawTime;
+                    console.log("Redraw elapsed: " + elapsed + " ms");
+                }
                 dc._redrawCount = 0;
                 dc._globalTransitionDuration = null; // reset to null if was brush
                 var stackEmpty = dc._redrawIdStack == null || dc._redrawIdStack == queryGroupId;
