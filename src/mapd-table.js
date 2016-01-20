@@ -281,6 +281,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
     }
 
+
  
 
     function onClickCell(name, value, type, index) {
