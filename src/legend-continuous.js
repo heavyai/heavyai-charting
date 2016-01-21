@@ -65,12 +65,30 @@ dc.legendContinuous = function () {
             .append('span')
             .text(function(d) { return d ? d.value : 0;})
 
-        legendGroup.selectAll('.legend-item:first-child .legend-label, .legend-item:last-child .legend-label')
+        legendGroup.selectAll('.legend-item:first-child , .legend-item:last-child')
+            .on('mouseenter', function() {
+                var item = d3.select(this);
+                var w = item.select('span').node().getBoundingClientRect().width + 8;
+                item.select('.legend-input input').style('width', w + 'px');
+            })
+            .selectAll('.legend-label')
             .append('div')
             .attr('class', 'legend-input')
             .append('input')
             .attr('value', function(d){ return d ? d.value : 0;})
-            .on('focus', function(){ this.select();})
+            .on('focus', function(){
+                this.select();
+
+                var item =  d3.select(this.parentNode.parentNode);
+                item.classed('active', true);
+
+                var w = item.select('span').node().getBoundingClientRect().width + 8;
+                item.select('.legend-input input').style('width', w + 'px');
+
+            })
+            .on('blur', function(){
+                d3.select(this.parentNode.parentNode).classed('active', false);
+            })
             .on('change', onChange);
 
     };
