@@ -584,30 +584,44 @@
         }
 
         &:first-child, &:last-child {
-            &:hover .legend-label {
+
+            .legend-label {
+                pointer-events: auto;
+
+                &.active {
+                     span {
+                        font-size: 12px;
+                    }
+                }
+            }
+
+            &:hover .legend-label, .legend-label.active {
                 span {
-                    display: none;
+                    opacity: 0;
+                    pointer-events: none;
+                    position: absolute;
                 }
                 .legend-input {
+                    position:relative;
                     display: inline-block;
+                    margin: 0 16px 0 16px;
                 }
             }
         }
+
+
         
     }
 
 
     .legend-label {
         position: absolute;
-        width: 64px;
         text-align: center;
         transform: translateX(-50%);
         left: 6px;
         color: $gray5;
         font-size: 10px;
-        pointer-events: none;
         padding-top: 2px;
-
 
         &:hover {
             z-index: 2;
@@ -628,14 +642,17 @@
         input {
             height: 16px;
             width: 32px;
+            min-width: 32px;
             border: 1px solid $gray3;
             text-align: center;
+            float: left;
+            overflow: visible;
 
             &:focus {
                 height: 24px;
                 width: 48px;
+                min-width: 48px;
                 font-size: 12px;
-                margin: 0 12px 12px 12px;
             }
 
         }
