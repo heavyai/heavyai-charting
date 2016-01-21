@@ -293,8 +293,11 @@ dc.rowChart = function (parent, chartGroup) {
                 return Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
             })
             .attr('transform', translateX);
-
-        createTitles(rows);
+        
+        if (!_chart.measureLabelsOn()) {
+            createTitles(rows);
+        }
+        
         updateLabels(rows);
     }
 

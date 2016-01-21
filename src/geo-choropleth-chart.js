@@ -351,7 +351,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         var coordinates = [0, 0];
         coordinates = d3.mouse(this);
         var x = coordinates[0];
-        var y = coordinates[1];
+        var y = coordinates[1] - 16;
 
         var popup =_chart.popup()
             .attr('style', function(){

@@ -311,14 +311,12 @@ dc.heatMap = function (parent, chartGroup) {
         gEnter.append('rect')
             .attr('class', 'heat-box')
             .attr('fill', 'white')
+/* OVERRIDE ---------------------------------------------------------------- */
+            .on('mouseenter', showPopup)
+            .on('mousemove', positionPopup)
+            .on('mouseleave', hidePopup)
+/* ------------------------------------------------------------------------- */
             .on('click', _chart.boxOnClick());
-
-/* OVERRIDE -----------------------------------------------------------------*/
-        if (_chart.renderTitle()) {
-            gEnter.append('title')
-                .text(_chart.title());
-        }
-/* --------------------------------------------------------------------------*/
 
 /* OVERRIDE -----------------------------------------------------------------*/
         dc.transition(boxes.select('rect'), _chart.transitionDuration())
@@ -563,6 +561,51 @@ dc.heatMap = function (parent, chartGroup) {
 /* --------------------------------------------------------------------------*/
 
     };
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    function showPopup(d, i) {
+
+        var commafy = d3.format(',');
+  
+        var popup = _chart.popup();
+
+        var popupBox = popup.select('.chart-popup-box').html('');
+
+        popupBox.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', _chart.getColor(d, i));
+
+        popupBox.append('div')
+            .attr('class', 'popup-value')
+            .html(function(){
+                return '<div class="popup-value-measure">'+ commafy(parseFloat(d.color.toFixed(2))) +'</div>';
+            });
+
+        popup.classed('js-showPopup', true);
+        
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup() {
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(this);
+        var x = coordinates[0] + _chart.margins().left;
+        var y = coordinates[1] + _chart.margins().top;
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-right', function(){
+                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width();
+            });
+    }
+/* ------------------------------------------------------------------------- */
 
     return _chart.anchor(parent, chartGroup);
 };

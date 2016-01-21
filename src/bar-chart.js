@@ -26,7 +26,7 @@
  */
 dc.barChart = function (parent, chartGroup) {
     var MIN_BAR_WIDTH = 1;
-    var DEFAULT_GAP_BETWEEN_BARS = 2;
+    var DEFAULT_GAP_BETWEEN_BARS = 4;
     var LABEL_PADDING = 3;
 
     var _chart = dc.stackMixin(dc.coordinateGridMixin({}));
@@ -94,7 +94,133 @@ dc.barChart = function (parent, chartGroup) {
                 renderLabels(layer, i, d);
             }
         });
+
+        if (_chart.brushOn()) {
+            hoverOverBrush();
+        }
     };
+
+    function hoverOverBrush() {
+
+        var g = _chart.g()
+            .on("mouseout", function() { 
+                dehighlightBars(); 
+            })
+            .on("mousemove", function() {
+                if (_chart.isBrushing()) {
+                    hidePopup();
+                } else {
+                    highlightBars(g, this); 
+                }
+
+            });
+    }
+
+    function highlightBars(g, e) {
+
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(e);
+        var x = coordinates[0];
+        var y = coordinates[1];
+        var xAdjusted = x - _chart.margins().left;
+        var yAdjusted = y - _chart.margins().top;
+
+        var popupRows = [];
+        
+        var toolTips = g.selectAll('.stack')
+            .each(function(){
+
+                var hoverBar = null;
+
+                var bars = d3.select(this).selectAll('.bar')
+                    .style('fill-opacity', 1);
+
+                bars[0].sort(function(a, b){
+                    return d3.select(a).attr('x') - d3.select(b).attr('x');
+                });
+
+                bars[0].some(function(obj, i) {
+
+                    var elm = d3.select(obj);
+
+                    if (xAdjusted < elm.attr('x')) {
+                        return true;
+                    }
+
+                    hoverBar = { elm: elm, datum: elm.datum(), i: i};
+                });
+
+                if (hoverBar && Math.abs(hoverBar.elm.attr('x') - xAdjusted) < _barWidth && yAdjusted > hoverBar.elm.attr('y') - 32) {
+                    hoverBar.elm.style('fill-opacity', .8);
+                    popupRows.push(hoverBar);
+                }
+                
+            });
+
+        if (popupRows.length > 0) {
+            showPopup(popupRows, x, y);
+        } else {
+            hidePopup();
+        }        
+    }
+
+    function dehighlightBars(){
+        _chart.g().selectAll('.bar').style('fill-opacity', 1);
+        hidePopup();
+    }
+
+    function showPopup(arr, x, y) {
+
+        var commafy = d3.format(',');
+        var popup = _chart.popup().classed('hide-delay', true);
+
+        var popupBox = popup.select('.chart-popup-box').html('')
+            .classed('popup-list', true);
+
+        popupBox.append('div')
+            .attr('class', 'popup-header') 
+            .text(_chart.xAxisLabel() + ' ' + arr[0].datum.x);
+
+
+        var popupItems = popupBox.selectAll('.popup-item')
+            .data(arr)
+            .enter()
+            .append('div')
+            .attr('class', 'popup-item');
+
+        popupItems.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', function(d) { 
+                return _chart.getColor(d.datum,d.i);
+            });
+
+        popupItems.append('div')
+            .attr('class', 'popup-item-value')
+            .text(function(d){
+                return commafy(parseFloat((d.datum.y + d.datum.y0).toFixed(2)));
+            });
+
+        positionPopup(x, y);
+        popup.classed('js-showPopup', true);
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup(x, y) {
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-left-center', true)
+            .classed('align-right-center', function(){
+                return x + (d3.select(this).node().getBoundingClientRect().width + 32) > _chart.width();
+            });
+    }
 
     function barHeight (d) {
         return dc.utils.safeNumber(Math.abs(_chart.y()(d.y + d.y0) - _chart.y()(d.y0)));
