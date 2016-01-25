@@ -59,6 +59,7 @@ dc.coordinateGridMixin = function (_chart) {
         _refocused = !rangesEqual(domain, _xOriginalDomain);
     }
 
+
     var _parent;
     var _g;
     var _chartBodyG;
@@ -580,7 +581,20 @@ dc.coordinateGridMixin = function (_chart) {
             _x.range([0, _chart.xAxisLength()]);
         }
 
-        _xAxis = _xAxis.scale(_chart.x());
+        var customTimeFormat = d3.time.format.utc.multi([
+          [".%L", function(d) { return d.getUTCMilliseconds(); }],
+          [":%S", function(d) { return d.getUTCSeconds(); }],
+          ["%I:%M", function(d) { return d.getUTCMinutes(); }],
+          ["%I %p", function(d) { return d.getUTCHours(); }],
+          ["%a %d", function(d) { return d.getUTCDay() && d.getUTCDate() != 1; }],
+          ["%b %d", function(d) { return d.getUTCDate() != 1; }],
+          ["%b", function(d) { return d.getUTCMonth(); }],
+          ["%Y", function() { return true; }]
+        ]);
+
+        _xAxis = _xAxis.scale(_chart.x()).tickFormat(customTimeFormat);
+
+        _xAxis.ticks( _chart.effectiveWidth()/_xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth()/64) : 10)
 
         renderVerticalGridLines(g);
     }
@@ -596,10 +610,6 @@ dc.coordinateGridMixin = function (_chart) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
         var root = _chart.root();
-
-        if (_chart.xAxisMin() instanceof Date && _chart.effectiveWidth() < 480) {
-            _chart.xAxis().ticks(Math.floor(_chart.effectiveWidth()/48));
-        }
 
         if (_chart.rangeInput()) {
 
@@ -743,6 +753,8 @@ dc.coordinateGridMixin = function (_chart) {
 
         _y.range([_chart.yAxisHeight(), 0]);
         _yAxis = _yAxis.scale(_y);
+
+        _yAxis.ticks(_chart.effectiveHeight()/_yAxis.scale().ticks().length < 16 ?  Math.ceil(_chart.effectiveHeight()/16) : 10);
 
         if (_useRightYAxis) {
             _yAxis.orient('right');
