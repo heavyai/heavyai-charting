@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.35
+ *  dc 0.1.36
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.35
+ * @version 0.1.36
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.35',
+    version: '0.1.36',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -3714,6 +3714,7 @@ dc.coordinateGridMixin = function (_chart) {
         _refocused = !rangesEqual(domain, _xOriginalDomain);
     }
 
+
     var _parent;
     var _g;
     var _chartBodyG;
@@ -4235,7 +4236,20 @@ dc.coordinateGridMixin = function (_chart) {
             _x.range([0, _chart.xAxisLength()]);
         }
 
-        _xAxis = _xAxis.scale(_chart.x());
+        var customTimeFormat = d3.time.format.utc.multi([
+          [".%L", function(d) { return d.getUTCMilliseconds(); }],
+          [":%S", function(d) { return d.getUTCSeconds(); }],
+          ["%I:%M", function(d) { return d.getUTCMinutes(); }],
+          ["%I %p", function(d) { return d.getUTCHours(); }],
+          ["%a %d", function(d) { return d.getUTCDay() && d.getUTCDate() != 1; }],
+          ["%b %d", function(d) { return d.getUTCDate() != 1; }],
+          ["%b", function(d) { return d.getUTCMonth(); }],
+          ["%Y", function() { return true; }]
+        ]);
+
+        _xAxis = _xAxis.scale(_chart.x()).tickFormat(customTimeFormat);
+
+        _xAxis.ticks( _chart.effectiveWidth()/_xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth()/64) : 10)
 
         renderVerticalGridLines(g);
     }
@@ -4251,10 +4265,6 @@ dc.coordinateGridMixin = function (_chart) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
         var root = _chart.root();
-
-        if (_chart.xAxisMin() instanceof Date && _chart.effectiveWidth() < 480) {
-            _chart.xAxis().ticks(Math.floor(_chart.effectiveWidth()/48));
-        }
 
         if (_chart.rangeInput()) {
 
@@ -4398,6 +4408,8 @@ dc.coordinateGridMixin = function (_chart) {
 
         _y.range([_chart.yAxisHeight(), 0]);
         _yAxis = _yAxis.scale(_y);
+
+        _yAxis.ticks(_chart.effectiveHeight()/_yAxis.scale().ticks().length < 16 ?  Math.ceil(_chart.effectiveHeight()/16) : 10);
 
         if (_useRightYAxis) {
             _yAxis.orient('right');
@@ -6832,7 +6844,7 @@ dc.pieChart = function (parent, chartGroup) {
  */
 dc.barChart = function (parent, chartGroup) {
     var MIN_BAR_WIDTH = 1;
-    var DEFAULT_GAP_BETWEEN_BARS = 2;
+    var DEFAULT_GAP_BETWEEN_BARS = 4;
     var LABEL_PADDING = 3;
 
     var _chart = dc.stackMixin(dc.coordinateGridMixin({}));
@@ -6900,7 +6912,133 @@ dc.barChart = function (parent, chartGroup) {
                 renderLabels(layer, i, d);
             }
         });
+
+        if (_chart.brushOn()) {
+            hoverOverBrush();
+        }
     };
+
+    function hoverOverBrush() {
+
+        var g = _chart.g()
+            .on("mouseout", function() { 
+                dehighlightBars(); 
+            })
+            .on("mousemove", function() {
+                if (_chart.isBrushing()) {
+                    hidePopup();
+                } else {
+                    highlightBars(g, this); 
+                }
+
+            });
+    }
+
+    function highlightBars(g, e) {
+
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(e);
+        var x = coordinates[0];
+        var y = coordinates[1];
+        var xAdjusted = x - _chart.margins().left;
+        var yAdjusted = y - _chart.margins().top;
+
+        var popupRows = [];
+        
+        var toolTips = g.selectAll('.stack')
+            .each(function(){
+
+                var hoverBar = null;
+
+                var bars = d3.select(this).selectAll('.bar')
+                    .style('fill-opacity', 1);
+
+                bars[0].sort(function(a, b){
+                    return d3.select(a).attr('x') - d3.select(b).attr('x');
+                });
+
+                bars[0].some(function(obj, i) {
+
+                    var elm = d3.select(obj);
+
+                    if (xAdjusted < elm.attr('x')) {
+                        return true;
+                    }
+
+                    hoverBar = { elm: elm, datum: elm.datum(), i: i};
+                });
+
+                if (hoverBar && Math.abs(hoverBar.elm.attr('x') - xAdjusted) < _barWidth && yAdjusted > hoverBar.elm.attr('y') - 32) {
+                    hoverBar.elm.style('fill-opacity', .8);
+                    popupRows.push(hoverBar);
+                }
+                
+            });
+
+        if (popupRows.length > 0) {
+            showPopup(popupRows, x, y);
+        } else {
+            hidePopup();
+        }        
+    }
+
+    function dehighlightBars(){
+        _chart.g().selectAll('.bar').style('fill-opacity', 1);
+        hidePopup();
+    }
+
+    function showPopup(arr, x, y) {
+
+        var commafy = d3.format(',');
+        var popup = _chart.popup().classed('hide-delay', true);
+
+        var popupBox = popup.select('.chart-popup-box').html('')
+            .classed('popup-list', true);
+
+        popupBox.append('div')
+            .attr('class', 'popup-header') 
+            .text(_chart.xAxisLabel() + ' ' + arr[0].datum.x);
+
+
+        var popupItems = popupBox.selectAll('.popup-item')
+            .data(arr)
+            .enter()
+            .append('div')
+            .attr('class', 'popup-item');
+
+        popupItems.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', function(d) { 
+                return _chart.getColor(d.datum,d.i);
+            });
+
+        popupItems.append('div')
+            .attr('class', 'popup-item-value')
+            .text(function(d){
+                return commafy(parseFloat((d.datum.y + d.datum.y0).toFixed(2)));
+            });
+
+        positionPopup(x, y);
+        popup.classed('js-showPopup', true);
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup(x, y) {
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-left-center', true)
+            .classed('align-right-center', function(){
+                return x + (d3.select(this).node().getBoundingClientRect().width + 32) > _chart.width();
+            });
+    }
 
     function barHeight (d) {
         return dc.utils.safeNumber(Math.abs(_chart.y()(d.y + d.y0) - _chart.y()(d.y0)));
@@ -10694,7 +10832,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
         var coordinates = [0, 0];
         coordinates = d3.mouse(this);
         var x = coordinates[0];
-        var y = coordinates[1];
+        var y = coordinates[1] - 16;
 
         var popup =_chart.popup()
             .attr('style', function(){
@@ -11404,8 +11542,11 @@ dc.rowChart = function (parent, chartGroup) {
                 return Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
             })
             .attr('transform', translateX);
-
-        createTitles(rows);
+        
+        if (!_chart.measureLabelsOn()) {
+            createTitles(rows);
+        }
+        
         updateLabels(rows);
     }
 
@@ -12198,12 +12339,30 @@ dc.legendContinuous = function () {
             .append('span')
             .text(function(d) { return d ? d.value : 0;})
 
-        legendGroup.selectAll('.legend-item:first-child .legend-label, .legend-item:last-child .legend-label')
+        legendGroup.selectAll('.legend-item:first-child , .legend-item:last-child')
+            .on('mouseenter', function() {
+                var item = d3.select(this);
+                var w = item.select('span').node().getBoundingClientRect().width + 8;
+                item.select('.legend-input input').style('width', w + 'px');
+            })
+            .selectAll('.legend-label')
             .append('div')
             .attr('class', 'legend-input')
             .append('input')
             .attr('value', function(d){ return d ? d.value : 0;})
-            .on('focus', function(){ this.select();})
+            .on('focus', function(){
+                this.select();
+
+                var item =  d3.select(this.parentNode.parentNode);
+                item.classed('active', true);
+
+                var w = item.select('span').node().getBoundingClientRect().width + 8;
+                item.select('.legend-input input').style('width', w + 'px');
+
+            })
+            .on('blur', function(){
+                d3.select(this.parentNode.parentNode).classed('active', false);
+            })
             .on('change', onChange);
 
     };
@@ -13064,14 +13223,12 @@ dc.heatMap = function (parent, chartGroup) {
         gEnter.append('rect')
             .attr('class', 'heat-box')
             .attr('fill', 'white')
+/* OVERRIDE ---------------------------------------------------------------- */
+            .on('mouseenter', showPopup)
+            .on('mousemove', positionPopup)
+            .on('mouseleave', hidePopup)
+/* ------------------------------------------------------------------------- */
             .on('click', _chart.boxOnClick());
-
-/* OVERRIDE -----------------------------------------------------------------*/
-        if (_chart.renderTitle()) {
-            gEnter.append('title')
-                .text(_chart.title());
-        }
-/* --------------------------------------------------------------------------*/
 
 /* OVERRIDE -----------------------------------------------------------------*/
         dc.transition(boxes.select('rect'), _chart.transitionDuration())
@@ -13316,6 +13473,51 @@ dc.heatMap = function (parent, chartGroup) {
 /* --------------------------------------------------------------------------*/
 
     };
+
+/* OVERRIDE ---------------------------------------------------------------- */
+    function showPopup(d, i) {
+
+        var commafy = d3.format(',');
+  
+        var popup = _chart.popup();
+
+        var popupBox = popup.select('.chart-popup-box').html('');
+
+        popupBox.append('div')
+            .attr('class', 'popup-legend')
+            .style('background-color', _chart.getColor(d, i));
+
+        popupBox.append('div')
+            .attr('class', 'popup-value')
+            .html(function(){
+                return '<div class="popup-value-measure">'+ commafy(parseFloat(d.color.toFixed(2))) +'</div>';
+            });
+
+        popup.classed('js-showPopup', true);
+        
+    }
+
+    function hidePopup() {
+        _chart.popup().classed('js-showPopup', false);
+    }
+
+    function positionPopup() {
+        var coordinates = [0, 0];
+        coordinates = d3.mouse(this);
+        var x = coordinates[0] + _chart.margins().left;
+        var y = coordinates[1] + _chart.margins().top;
+
+        var popup =_chart.popup()
+            .attr('style', function(){
+                return 'transform:translate('+x+'px,'+y+'px)';
+            });
+
+        popup.select('.chart-popup-box')
+            .classed('align-right', function(){
+                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width();
+            });
+    }
+/* ------------------------------------------------------------------------- */
 
     return _chart.anchor(parent, chartGroup);
 };
