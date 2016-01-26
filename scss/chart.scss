@@ -298,12 +298,23 @@
     pointer-events: none;
     z-index: 1003;
 
+    &.hide-delay {
+        transition: opacity 0;
+        transition-delay: .1s;
+
+        .chart-popup-box {
+            transition-delay: 1s;
+        }
+    }
+
     &.js-showPopup {
         opacity: 1;
+        transition: none;
 
         .chart-popup-box {
             opacity: 1;
             top: -24px;
+            transition-delay: 0s;
 
             &.popdown {
                 top: 24px;
@@ -487,7 +498,7 @@
         line-height: 1.2;
         white-space: nowrap;
         flex-shrink: 0;
-        padding: 6px 8px 4px 0;
+        padding: 7px 8px 4px 0;
     }
 
     .popup-value-dim {
