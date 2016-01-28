@@ -78,12 +78,14 @@ dc.mapMixin = function (_chart, chartDivId) {
     }
 
     function onLoad(e){
-      dc.enableRefresh();
-      _chart.render();
 
       if (_chart.initGeocoder()) {
         _chart.initGeocoder()();
       }
+      
+      dc.enableRefresh();
+      _chart.render();
+
       //$('body').trigger('loadGrid');
     }
 
