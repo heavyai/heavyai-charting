@@ -23,31 +23,11 @@ dc.mapMixin = function (_chart, chartDivId) {
     var _mapStyle = 'mapbox://styles/mapbox/light-v8';
     var _center = [0,30];
     var _zoom = 1;
+    var _popupFunction = null;
+    var _initGeocoder = null;
 
-
-    var _popupFunction = function(result, height){
-      var context={
-        googX: (_chart.x()(result.row_set[0][_xDimName]) - 14) + 'px',
-        googY: (height - _chart.y()(result.row_set[0][_yDimName]) - 14) + 'px',
-        data: result.row_set[0],
-        clickX: result.pixel.x + 'px',
-        clickY: (height - result.pixel.y) + 'px',
-      };
-
-      Handlebars.registerHelper("formatPopupText", function(obj) {
-        var result = "<div>";
-        _.each(obj, function(value, key){
-          if(key !== _yDimName && key !== _xDimName){
-              result += '<div class="popup-text-wrapper"><span><strong>' + key + '</strong>: ' + value +'</span></div>'
-          }
-        })
-
-      result += "</div>"
-      return result;
-      });
-
-      return MyApp.templates.pointMapPopup(context);
-    }
+    var _arr = [[180, -85], [-180, 85]];
+    var _llb = mapboxgl.LngLatBounds.convert(_arr);
 
     _chart.xDim = function(xDim) {
         if (!arguments.length)
@@ -69,10 +49,10 @@ dc.mapMixin = function (_chart, chartDivId) {
         return _chart;
     }
 
-    _chart.enableGeocoder = function(enableGeocoder) {
-        if(enableGeocoder){
-          initGeocoder();
-        }
+    _chart.initGeocoder = function(initGeocoder) {
+        if (!arguments.length)
+            return _initGeocoder;
+        _initGeocoder = initGeocoder;
         return _chart;
     }
 
@@ -100,8 +80,13 @@ dc.mapMixin = function (_chart, chartDivId) {
     function onLoad(e){
       dc.enableRefresh();
       _chart.render();
-      $('body').trigger('loadGrid');
+
+      if (_chart.initGeocoder()) {
+        _chart.initGeocoder()();
+      }
+      //$('body').trigger('loadGrid');
     }
+
     function onMapMove(e) {
         if (e === undefined)
             return;
@@ -161,10 +146,6 @@ dc.mapMixin = function (_chart, chartDivId) {
             _chart._map.setZoom(_zoom);
     }
 
-    var arr = [[180, -85], [-180, 85]];
-    var llb = mapboxgl.LngLatBounds.convert(arr);
-
-
 
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
@@ -174,7 +155,7 @@ dc.mapMixin = function (_chart, chartDivId) {
           interactive: true,
           center: _center, // starting position
           zoom: _zoom, // starting zoom
-          maxBounds: llb,
+          maxBounds: _llb,
           preserveDrawingBuffer: true
         });
         _chart._map.dragRotate.disable();
@@ -182,68 +163,11 @@ dc.mapMixin = function (_chart, chartDivId) {
 
         _chart._map.on('load', onLoad);
         _chart._map.on('move', onMapMove);
-        _chart._map.on('moveend', onMapMove);
+        _chart._map.on('moveend', onMapMove); 
 
-        $('#' + chartDivId).on('mousewheel', '.popup-hide-div, .popup-container', 
-          function(){
-            $('.popup-container').remove()
-            $('.point-highlight-add').parent().remove()
-          })
-         
-         function showPopUp(e, pixelRadius) {
-            var height = $(e.target._container).height()
-            var y = Math.round(height - e.point.y);
-            var x = Math.round(e.point.x);
-            var tPixels = [];
-            var pixelRadiusSquared = pixelRadius * pixelRadius;
-            for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) { 
-                for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) { 
-                    if (xOffset*xOffset + yOffset*yOffset <= pixelRadiusSquared) {
-                        tPixels.push(new TPixel({x:x+xOffset, y:y+yOffset}));
-                    }
-                }
-            }
-
-            var columns = _chart.popupColumns().slice();
-
-            if(!columns.length){
-              return;
-            }
-
-            columns.push(_xDimName);
-            columns.push(_yDimName);
-
-            con.getRowsForPixels(tPixels, _chart.tableName(), columns, [function(result){
-              var closestResult = null;
-              var closestSqrDistance = Infinity;
-              for (var r = 0; r < result.length; r++) {
-                if(result[r].row_set.length){
-                  var sqrDist = (x-result[r].pixel.x)*(x-result[r].pixel.x) + (y-result[r].pixel.y)*(y-result[r].pixel.y);
-                  if (sqrDist < closestSqrDistance) {
-                      closestResult = r;
-                      closestSqrDistance = sqrDist;
-                  }
-                }
-              }
-              if (closestResult === null)
-                return;
-              if(!$('.popup-highlight').length){
-
-                _chart.x().range([0, _chart.width() -1])
-                _chart.y().range([0, _chart.height() -1])
-
-                var height = $('#' + _mapId).height()
-
-                var theCompiledHtml = _popupFunction(result[closestResult], height, _chart, _xDimName, _yDimName);
-                $('#' + _mapId).append(theCompiledHtml)
-              }
-            }]);
-
-        }
-
-        var debouncePopUp = _.debounce(function(e){
-            showPopUp(e, _chart.popupSearchRadius())
-        }, 250)
+        var debouncePopUp = debounce(function(e){
+            showPopup(e, _chart.popupSearchRadius())
+        }, 250);
 
         _chart._map.on('zoom click', function(e){
           debouncePopUp(e);          
@@ -251,57 +175,174 @@ dc.mapMixin = function (_chart, chartDivId) {
 
         _chart._map.on('mousemove', function(e){
           debouncePopUp(e);
-
-          if($('.popup-hide-div').length){
-
-            $('.popup-container').addClass('popup-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
-               $(this).remove();
-              });
-            $('.point-highlight-add').addClass('point-highlight-remove').bind('oanimationend animationend webkitAnimationEnd', function() { 
-               $(this).parent().remove();
-            });
-          }
+          hidePopup();
         })
+
         _mapInitted = true;
     }
 
-    function initGeocoder() {
-      _chart.geocoder = new Geocoder();
-      _chart.geocoder.init(_chart._map);
-      _chart.geocoderInput = $('<input class="geocoder-input" type="text" placeholder="Zoom to"></input>')
-        .appendTo($('#' + _mapId));
-      _chart.geocoderInput.css({
-          top: '5px',
-          right: '5px'
-        });
+    function showPopup(e, pixelRadius) {
+        var height = _chart.height();
+        var y = Math.round(height - e.point.y);
+        var x = Math.round(e.point.x);
+        var tPixels = [];
 
-      _chart.geocoderInput.dblclick(function() {
-        return false;
-      });
+        var pixelRadiusSquared = pixelRadius * pixelRadius;
 
-      _chart.geocoderInput.keyup(function(e) {
-        if(e.keyCode === 13) {
-          _chart.geocoder.geocode(_chart.geocoderInput.val());
+        for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) { 
+            for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) { 
+                if (xOffset*xOffset + yOffset*yOffset <= pixelRadiusSquared) {
+                    tPixels.push(new TPixel({x:x+xOffset, y:y+yOffset}));
+                }
+            }
         }
-      });
+
+        var columns = _chart.popupColumns().slice();
+
+        if(!columns.length){
+          return;
+        }
+
+        columns.push(_xDimName);
+        columns.push(_yDimName);
+
+        con.getRowsForPixels(tPixels, _chart.tableName(), columns, [function(result){
+          var closestResult = null;
+          var closestSqrDistance = Infinity;
+          for (var r = 0; r < result.length; r++) {
+            if(result[r].row_set.length){
+              var sqrDist = (x-result[r].pixel.x)*(x-result[r].pixel.x) + (y-result[r].pixel.y)*(y-result[r].pixel.y);
+              if (sqrDist < closestSqrDistance) {
+                  closestResult = r;
+                  closestSqrDistance = sqrDist;
+              }
+            }
+          }
+          if (closestResult === null)
+            return;
+
+          if(_chart.select('.map-popup').empty()){
+
+            _chart.x().range([0, _chart.width() -1]);
+            _chart.y().range([0, _chart.height() -1]);
+
+            var nearestPoint = result[closestResult];
+
+            var xPixel = _chart.x()(nearestPoint.row_set[0][_xDimName] + 1);
+            var yPixel = (height - _chart.y()(nearestPoint.row_set[0][_yDimName]) - 1);
+            var data = nearestPoint.row_set[0];
+
+            var mapPopup = _chart.root().append('div')
+              .attr('class', 'map-popup');
+
+            mapPopup.append('div')
+              .attr('class', 'map-point-wrap')
+              .append('div')
+              .attr('class', 'map-point')
+              .style({left: xPixel + 'px', top: yPixel + 'px'})
+              .append('div')
+              .attr('class', 'map-point-gfx')
+              .style('background', function(){
+                return _chart.getColor(data);
+              });
+
+            var offsetBridge = 0;
+
+            mapPopup.append('div')
+              .attr('class', 'map-popup-wrap')
+              .style({left: xPixel + 'px', top: yPixel + 'px'})
+              .append('div')
+              .attr('class', 'map-popup-box')
+              .html(_chart.popupFunction() ? _popupFunction(data) : renderPopupHTML(data))
+              .style('left', function(){
+                var boxWidth = d3.select(this).node().getBoundingClientRect().width;
+                var overflow = _chart.width() - (xPixel + boxWidth/2) < 0  ? _chart.width() - (xPixel + boxWidth/2) - 6 : (xPixel - boxWidth/2 < 0 ? -(xPixel - boxWidth/2 ) + 6 : 0); 
+                offsetBridge = boxWidth/2 - overflow;
+                return overflow + 'px';
+              })
+              .classed('pop-down', function(){
+                var boxHeight = d3.select(this).node().getBoundingClientRect().height;
+                return yPixel - (boxHeight + 12) < 8 ;
+              })
+              .append('div')
+              .attr('class', 'map-popup-bridge')
+              .style('left', function(){
+                return offsetBridge + 'px';
+              });
+
+            _chart.root().on('mousewheel', hidePopup);
+
+          } 
+
+        }]);
+
+    }
+
+    function hidePopup() {
+
+        if (!_chart.select('.map-popup').empty()) {
+            _chart.select('.map-popup-wrap')
+              .classed('removePopup', true)
+              .on('animationend', function(){
+                _chart.select('.map-popup').remove();
+              });
+
+            _chart.select('.map-point')
+              .classed('removePoint', true);
+        }
+    }
+
+    function renderPopupHTML(data) {
+
+      var html = '';
+      for (var key in data) {
+        if(key !== _yDimName && key !== _xDimName){
+              html += '<div class="map-popup-item"><span class="popup-item-key">' + key + ':</span><span class="popup-item-val"> ' + data[key] +'</span></div>'
+        }
+      }
+      return html;
+    } 
+
+    function debounce(func, wait, immediate) {
+      
+      var timeout;
+      
+      return function() {
+        var context = this, args = arguments;
+        var later = function() {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
+
     }
 
     _chart.on('preRender', function(chart) {
         
-        $('.mapboxgl-ctrl-bottom-right').remove();
+        _chart.root().select('.mapboxgl-ctrl-bottom-right').remove();
 
         var width = chart.width();
         var height = chart.height();
-        if (!_mapInitted)
-            initMap();
+        if (!_mapInitted) {
+          initMap();
+        }
+
         if (width !== _lastWidth || height !== _lastHeight) {
-            $("#" + _mapId + " canvas").width(width).height(height);
+            _chart.root().select("#" + _mapId + " canvas")
+              .attr('width', width)
+              .attr('height',height);
+
             _lastWidth = width;
             _lastHeight = height;
             _chart._map.resize();
             onMapMove(); //to reset filter
         }
     });
+
     initMap();
 
     return _chart;
