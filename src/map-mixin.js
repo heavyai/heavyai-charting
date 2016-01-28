@@ -86,7 +86,7 @@ dc.mapMixin = function (_chart, chartDivId) {
       dc.enableRefresh();
       _chart.render();
 
-      $('body').trigger('loadGrid');
+      //$('body').trigger('loadGrid');
     }
 
     function onMapMove(e) {
@@ -237,7 +237,7 @@ dc.mapMixin = function (_chart, chartDivId) {
 
             var mapPopup = _chart.root().append('div')
               .attr('class', 'map-popup');
-
+   
             mapPopup.append('div')
               .attr('class', 'map-point-wrap')
               .append('div')
@@ -246,7 +246,21 @@ dc.mapMixin = function (_chart, chartDivId) {
               .append('div')
               .attr('class', 'map-point-gfx')
               .style('background', function(){
-                return _chart.getColor(data);
+                var matchIndex = null;
+                for(var key in data) {
+
+                    _chart.colors().domain().forEach(function(d, i){ 
+
+                      if (d === data[key] ) {
+                        matchIndex = i;
+                      }
+
+                    });
+                }
+
+                return matchIndex ? _chart.colors().range()[matchIndex] : '#27aeef';
+
+                //return _chart.getColor(data);
               });
 
             var offsetBridge = 0;
