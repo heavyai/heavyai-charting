@@ -82,11 +82,11 @@ dc.mapMixin = function (_chart, chartDivId) {
       if (_chart.initGeocoder()) {
         _chart.initGeocoder()();
       }
-      
+
       dc.enableRefresh();
       _chart.render();
 
-      //$('body').trigger('loadGrid');
+      $('body').trigger('loadGrid');
     }
 
     function onMapMove(e) {
@@ -184,6 +184,7 @@ dc.mapMixin = function (_chart, chartDivId) {
     }
 
     function showPopup(e, pixelRadius) {
+
         var height = _chart.height();
         var y = Math.round(height - e.point.y);
         var x = Math.round(e.point.x);
