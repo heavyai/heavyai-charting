@@ -25,6 +25,7 @@ dc.mapMixin = function (_chart, chartDivId) {
     var _zoom = 1;
     var _popupFunction = null;
     var _initGeocoder = null;
+    var _colorBy = null;
 
     var _arr = [[180, -85], [-180, 85]];
     var _llb = mapboxgl.LngLatBounds.convert(_arr);
@@ -53,6 +54,13 @@ dc.mapMixin = function (_chart, chartDivId) {
         if (!arguments.length)
             return _initGeocoder;
         _initGeocoder = initGeocoder;
+        return _chart;
+    }
+
+    _chart.colorBy = function(_) {
+        if (!arguments.length)
+            return _colorBy;
+        _colorBy = _;
         return _chart;
     }
 
@@ -231,8 +239,8 @@ dc.mapMixin = function (_chart, chartDivId) {
 
             var nearestPoint = result[closestResult];
 
-            var xPixel = _chart.x()(nearestPoint.row_set[0][_xDimName] + 1);
-            var yPixel = (height - _chart.y()(nearestPoint.row_set[0][_yDimName]) - 1);
+            var xPixel = _chart.x()(nearestPoint.row_set[0][_xDimName]);
+            var yPixel = (height - _chart.y()(nearestPoint.row_set[0][_yDimName]));
             var data = nearestPoint.row_set[0];
 
             var mapPopup = _chart.root().append('div')
@@ -246,18 +254,41 @@ dc.mapMixin = function (_chart, chartDivId) {
               .append('div')
               .attr('class', 'map-point-gfx')
               .style('background', function(){
+               
                 var matchIndex = null;
-                for(var key in data) {
 
-                    _chart.colors().domain().forEach(function(d, i){ 
+                if (_colorBy && _chart.colors()) {
 
-                      if (d === data[key] ) {
+                  _chart.colors().domain().forEach(function(d, i){ 
+                      console.log(d , data[_colorBy]);
+
+                      if (d === data[_colorBy] ) {
                         matchIndex = i;
                       }
 
                     });
+                  
                 }
 
+                /*
+
+                if (_chart.colors() && typeof _chart.colors().domain()[0] === 'string') {
+
+                  for(var key in data) {
+
+                      _chart.colors().domain().forEach(function(d, i){ 
+
+                        if (d === data[key] ) {
+
+                          matchIndex = i;
+                        }
+
+                      });
+                  }
+
+
+                }*/
+                
                 return matchIndex ? _chart.colors().range()[matchIndex] : '#27aeef';
 
                 //return _chart.getColor(data);
