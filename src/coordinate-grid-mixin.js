@@ -580,6 +580,7 @@ dc.coordinateGridMixin = function (_chart) {
         } else {
             _x.range([0, _chart.xAxisLength()]);
         }
+        
 
         var customTimeFormat = d3.time.format.utc.multi([
           [".%L", function(d) { return d.getUTCMilliseconds(); }],
@@ -592,7 +593,7 @@ dc.coordinateGridMixin = function (_chart) {
           ["%Y", function() { return true; }]
         ]);
 
-        _xAxis = _xAxis.scale(_chart.x()).tickFormat(customTimeFormat);
+        _xAxis = _xAxis.scale(_chart.x()).tickFormat( _chart.x().domain()[0] instanceof Date ? customTimeFormat : null);
 
         _xAxis.ticks( _chart.effectiveWidth()/_xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth()/64) : 10)
 
