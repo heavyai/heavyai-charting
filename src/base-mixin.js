@@ -821,7 +821,12 @@ dc.baseMixin = function (_chart) {
             _mandatoryAttributes.forEach(checkForMandatoryAttributes);
         }
 
-        var result = _chart._doRender();
+        try { 
+            var result = _chart._doRender();
+        }
+        catch (err) {
+            console.error(err);
+        }
 
         if (_legend && _chart.colors().domain) {
             _legend.render();
@@ -914,7 +919,12 @@ dc.baseMixin = function (_chart) {
         sizeSvg();
         _listeners.preRedraw(_chart);
 
-        var result = _chart._doRedraw();
+        try { 
+            var result = _chart._doRedraw();
+        }
+        catch (err) {
+            console.error(err);
+        }
 
         if (_legend && _chart.colors().domain) {
             _legend.render();
