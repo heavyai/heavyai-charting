@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.36
+ *  dc 0.1.37
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.36
+ * @version 0.1.37
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.36',
+    version: '0.1.37',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -1678,7 +1678,12 @@ dc.baseMixin = function (_chart) {
             _mandatoryAttributes.forEach(checkForMandatoryAttributes);
         }
 
-        var result = _chart._doRender();
+        try { 
+            var result = _chart._doRender();
+        }
+        catch (err) {
+            console.error(err);
+        }
 
         if (_legend && _chart.colors().domain) {
             _legend.render();
@@ -1771,7 +1776,12 @@ dc.baseMixin = function (_chart) {
         sizeSvg();
         _listeners.preRedraw(_chart);
 
-        var result = _chart._doRedraw();
+        try { 
+            var result = _chart._doRedraw();
+        }
+        catch (err) {
+            console.error(err);
+        }
 
         if (_legend && _chart.colors().domain) {
             _legend.render();
