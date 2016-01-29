@@ -1,5 +1,5 @@
 /*!
- *  dc 0.1.37
+ *  dc 0.1.38
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.1.37
+ * @version 0.1.38
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.1.37',
+    version: '0.1.38',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -4245,6 +4245,7 @@ dc.coordinateGridMixin = function (_chart) {
         } else {
             _x.range([0, _chart.xAxisLength()]);
         }
+        
 
         var customTimeFormat = d3.time.format.utc.multi([
           [".%L", function(d) { return d.getUTCMilliseconds(); }],
@@ -4257,7 +4258,7 @@ dc.coordinateGridMixin = function (_chart) {
           ["%Y", function() { return true; }]
         ]);
 
-        _xAxis = _xAxis.scale(_chart.x()).tickFormat(customTimeFormat);
+        _xAxis = _xAxis.scale(_chart.x()).tickFormat( _chart.x().domain()[0] instanceof Date ? customTimeFormat : null);
 
         _xAxis.ticks( _chart.effectiveWidth()/_xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth()/64) : 10)
 
