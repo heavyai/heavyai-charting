@@ -254,40 +254,20 @@ dc.mapMixin = function (_chart, chartDivId) {
               .append('div')
               .attr('class', 'map-point-gfx')
               .style('background', function(){
-               
+
                 var matchIndex = null;
 
-                if (_colorBy && _chart.colors()) {
+                if (_colorBy) {
 
-                  _chart.colors().domain().forEach(function(d, i){ 
-                      console.log(d , data[_colorBy]);
+                    _chart.colors().domain().forEach(function(d, i){ 
 
                       if (d === data[_colorBy] ) {
+
                         matchIndex = i;
                       }
 
                     });
-                  
                 }
-
-                /*
-
-                if (_chart.colors() && typeof _chart.colors().domain()[0] === 'string') {
-
-                  for(var key in data) {
-
-                      _chart.colors().domain().forEach(function(d, i){ 
-
-                        if (d === data[key] ) {
-
-                          matchIndex = i;
-                        }
-
-                      });
-                  }
-
-
-                }*/
                 
                 return matchIndex ? _chart.colors().range()[matchIndex] : '#27aeef';
 
