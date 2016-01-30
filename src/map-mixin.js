@@ -262,7 +262,6 @@ dc.mapMixin = function (_chart, chartDivId) {
                     _chart.colors().domain().forEach(function(d, i){ 
 
                       if (d === data[_colorBy] ) {
-
                         matchIndex = i;
                       }
 
@@ -271,7 +270,6 @@ dc.mapMixin = function (_chart, chartDivId) {
                 
                 return matchIndex ? _chart.colors().range()[matchIndex] : '#27aeef';
 
-                //return _chart.getColor(data);
               });
 
             var offsetBridge = 0;
