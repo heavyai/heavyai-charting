@@ -129,7 +129,8 @@ dc.bubbleChart = function (parent, chartGroup) {
             .style('height', (_chart.bubbleR(d) + 24)+'px');
 
         var popupTableWrap = popupBox.append('div')
-            .attr('class', 'popup-table-wrap');
+            .attr('class', 'popup-table-wrap')
+            .on('mouseleave', _chart.hidePopup);
 
         var popupTable = popupTableWrap.append('table')
             .attr('class', 'popup-table');
@@ -391,14 +392,10 @@ dc.bubbleChart = function (parent, chartGroup) {
             .attr('transform', bubbleLocator)
 /* OVERRIDE -----------------------------------------------------------------*/
             .on('mouseover', function(d, i){
-                console.log(JSON.stringify(_isHoverNode) , " : ", JSON.stringify(d));
                 if (JSON.stringify(_isHoverNode) !== JSON.stringify(d) ) {
                     debouncePopUp(d, i);
                     _chart.hidePopup();
-                    console.log('do')
-                } else {
-                    console.log('dont')
-                }
+                } 
             })
 /* --------------------------------------------------------------------------*/
             .append('circle').attr('class', function (d, i) {
