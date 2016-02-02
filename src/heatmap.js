@@ -569,16 +569,27 @@ dc.heatMap = function (parent, chartGroup) {
   
         var popup = _chart.popup();
 
-        var popupBox = popup.select('.chart-popup-box').html('');
+        var popupBox = popup.select('.chart-popup-box').html('')
+            .classed('popup-list', true);
 
         popupBox.append('div')
+            .attr('class', 'popup-header') 
+            .text(function(){
+              return _colsLabel(_chart.keyAccessor()(d, i)) + ' x ' + _colsLabel(_chart.valueAccessor()(d, i));
+            });
+
+        var popupItem = popupBox.append('div')
+          .attr('class', 'popup-item');
+
+
+        popupItem.append('div')
             .attr('class', 'popup-legend')
             .style('background-color', _chart.getColor(d, i));
 
-        popupBox.append('div')
-            .attr('class', 'popup-value')
+        popupItem.append('div')
+            .attr('class', 'popup-item-value')
             .html(function(){
-                return '<div class="popup-value-measure">'+ commafy(parseFloat(d.color.toFixed(2))) +'</div>';
+                return commafy(parseFloat(d.color.toFixed(2)));
             });
 
         popup.classed('js-showPopup', true);

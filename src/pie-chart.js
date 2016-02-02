@@ -198,34 +198,50 @@ dc.pieChart = function (parent, chartGroup) {
         var showLabel = true;
 
         labelsEnter
-            .style('font-size', function(d){
-                var data = d.data;
-                var label = d3.select(this);
+            .style('font-size', (pieIsBig() ? '14px' : '12px'));
 
-                if ( showLabel && !sliceHasNoData(data)) {
-                    
-                    var availableLabelWidth = getAvailableLabelWidth(d);
-                    var charPixelWidth = pieIsBig() ? 10 : 8;
+        labelsEnter.select('.value-dim')
+            .text(function(d){
+                return _chart.label()(d.data);
+            })
+            .html(function(d){
 
-                    label.select('.value-dim')
-                        .html(function(){
-                            var dimText = truncateLabel(_chart.label()(d.data), availableLabelWidth, charPixelWidth);
+                var availableLabelWidth = getAvailableLabelWidth(d);
+                var width = d3.select(this).node().getBoundingClientRect().width;
 
-                            if (dimText === '') {
-                                showLabel = false;
-                            }
-                            return dimText;
-                        });
+                var displayText = width > availableLabelWidth ? truncateLabel(_chart.label()(d.data), width, availableLabelWidth) : _chart.label()(d.data);
 
-                    if (showLabel && _chart.measureLabelsOn()) {
-                        var commafy = d3.format(',');
-                        label.select('.value-measure')
-                            .html(truncateLabel(commafy(_chart.measureValue(d.data)), availableLabelWidth, charPixelWidth));
-                    }
+                if (displayText === '') { 
+                    showLabel = false; 
                 }
 
-                return pieIsBig() ? '16px' : '12px';
-            });          
+                d3.select(this.parentNode)
+                    .classed('hide-label', !showLabel);
+
+                return showLabel ? displayText : '';
+            });
+
+        var commafy = d3.format(',');
+
+        if (_chart.measureLabelsOn()) {
+
+            labelsEnter.select('.value-measure')
+                .text(function(d){
+                    return commafy(_chart.measureValue(d.data));
+                })
+                .html(function(d){
+
+                    if (d3.select(this.parentNode).classed('hide-label')) {
+                        return '';
+                    }
+
+                    var availableLabelWidth = getAvailableLabelWidth(d);
+                    var width = d3.select(this).node().getBoundingClientRect().width;
+
+                    return  width > availableLabelWidth ? truncateLabel(commafy(_chart.measureValue(d.data)), width, availableLabelWidth) : commafy(_chart.measureValue(d.data));
+                    
+                });
+        }    
 /* ------------------------------------------------------------------------- */
     }
 
@@ -550,16 +566,21 @@ dc.pieChart = function (parent, chartGroup) {
         return labelWidth > maxLabelWidth || labelWidth < 0 ? maxLabelWidth : labelWidth;
     }
 
-    function truncateLabel(data, availableLabelWidth, charPixelWidth) {
-        var labelText = data + '';
-        var textWidth = labelText.length * charPixelWidth;
-        var trimIndex = labelText.length - Math.ceil((textWidth - availableLabelWidth) / charPixelWidth);
+    function truncateLabel(data, width, availableLabelWidth) {
 
-        if (textWidth > availableLabelWidth && labelText.length - trimIndex > 2) {
-            labelText = trimIndex > 2 ? labelText.slice(0, trimIndex) + '&#8230;' : '';
+        var labelText = data + '';
+
+        if (labelText.length < 4) {
+            return '';
+        }
+
+        var trimIndex = labelText.length - Math.ceil((width - availableLabelWidth) / (width/labelText.length) * 1.25);
+       
+        if (labelText.length - trimIndex > 2) {
+            labelText = trimIndex > 2  ? labelText.slice(0, trimIndex) + '&#8230;' : '';
         } 
 
-        return labelText;                
+        return labelText;
     }
  
 /* ------------------------------------------------------------------------- */
@@ -611,10 +632,12 @@ dc.pieChart = function (parent, chartGroup) {
             .attr('class', 'popup-legend')
             .style('background-color', fill(d,i));
 
+        var commafy = d3.format(',');
+
         popupBox.append('div')
             .attr('class', 'popup-value')
             .html(function(){
-                return '<div class="popup-value-dim">'+ _chart.label()(d.data) +'</div><div class="popup-value-measure">'+ _chart.measureValue(d.data) +'</div>';
+                return '<div class="popup-value-dim">'+ _chart.label()(d.data) +'</div><div class="popup-value-measure">'+ commafy(parseFloat(_chart.measureValue(d.data).toFixed(2))) +'</div>';
             });
 
         popup.classed('js-showPopup', true);
