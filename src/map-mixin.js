@@ -26,6 +26,7 @@ dc.mapMixin = function (_chart, chartDivId) {
     var _popupFunction = null;
     var _initGeocoder = null;
     var _colorBy = null;
+    var _mouseLeave = false;
 
     var _arr = [[180, -85], [-180, 85]];
     var _llb = mapboxgl.LngLatBounds.convert(_arr);
@@ -93,6 +94,10 @@ dc.mapMixin = function (_chart, chartDivId) {
 
       dc.enableRefresh();
       _chart.render();
+
+      _chart.root()
+          .on('mouseleave', function(){ _mouseLeave = true; })
+          .on('mouseenter', function(){ _mouseLeave = false; });
 
       //$('body').trigger('loadGrid');
     }
@@ -193,6 +198,9 @@ dc.mapMixin = function (_chart, chartDivId) {
 
     function showPopup(e, pixelRadius) {
 
+        if (_mouseLeave) {
+          return;
+        }
         var height = _chart.height();
         var y = Math.round(height - e.point.y);
         var x = Math.round(e.point.x);
