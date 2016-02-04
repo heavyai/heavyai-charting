@@ -366,6 +366,7 @@ dc.lineChart = function (parent, chartGroup) {
     function showPopup(arr, x, y) {
 
         var dateFormat = d3.time.format.utc("%b %d, %Y");
+        var dateTimeFormat = d3.time.format.utc("%b %d, %Y · %I:%M%p");
         var commafy = d3.format(',');
         var popup = _chart.popup();
 
@@ -374,7 +375,10 @@ dc.lineChart = function (parent, chartGroup) {
 
         popupBox.append('div')
             .attr('class', 'popup-header') 
-            .text(dateFormat(arr[0].datum.x));
+            .text(function(){
+                var diffDays = Math.round(Math.abs((_chart.xAxisMin().getTime() - _chart.xAxisMax().getTime())/(24*60*60*1000)));
+                return diffDays > 14 ? dateFormat(arr[0].datum.x) : dateTimeFormat(arr[0].datum.x);
+            });
 
         var popupItems = popupBox.selectAll('.popup-item')
             .data(arr.sort(function(a, b){
