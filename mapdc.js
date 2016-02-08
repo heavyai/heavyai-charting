@@ -1,5 +1,5 @@
 /*!
- *  dc 0.2.0
+ *  dc 0.3.0
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.2.0
+ * @version 0.3.0
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.2.0',
+    version: '0.3.0',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -6298,34 +6298,50 @@ dc.pieChart = function (parent, chartGroup) {
         var showLabel = true;
 
         labelsEnter
-            .style('font-size', function(d){
-                var data = d.data;
-                var label = d3.select(this);
+            .style('font-size', (pieIsBig() ? '14px' : '12px'));
 
-                if ( showLabel && !sliceHasNoData(data)) {
-                    
-                    var availableLabelWidth = getAvailableLabelWidth(d);
-                    var charPixelWidth = pieIsBig() ? 10 : 8;
+        labelsEnter.select('.value-dim')
+            .text(function(d){
+                return _chart.label()(d.data);
+            })
+            .html(function(d){
 
-                    label.select('.value-dim')
-                        .html(function(){
-                            var dimText = truncateLabel(_chart.label()(d.data), availableLabelWidth, charPixelWidth);
+                var availableLabelWidth = getAvailableLabelWidth(d);
+                var width = d3.select(this).node().getBoundingClientRect().width;
 
-                            if (dimText === '') {
-                                showLabel = false;
-                            }
-                            return dimText;
-                        });
+                var displayText = width > availableLabelWidth ? truncateLabel(_chart.label()(d.data), width, availableLabelWidth) : _chart.label()(d.data);
 
-                    if (showLabel && _chart.measureLabelsOn()) {
-                        var commafy = d3.format(',');
-                        label.select('.value-measure')
-                            .html(truncateLabel(commafy(_chart.measureValue(d.data)), availableLabelWidth, charPixelWidth));
-                    }
+                if (displayText === '') { 
+                    showLabel = false; 
                 }
 
-                return pieIsBig() ? '16px' : '12px';
-            });          
+                d3.select(this.parentNode)
+                    .classed('hide-label', !showLabel);
+
+                return showLabel ? displayText : '';
+            });
+
+        var commafy = d3.format(',');
+
+        if (_chart.measureLabelsOn()) {
+
+            labelsEnter.select('.value-measure')
+                .text(function(d){
+                    return commafy(_chart.measureValue(d.data));
+                })
+                .html(function(d){
+
+                    if (d3.select(this.parentNode).classed('hide-label')) {
+                        return '';
+                    }
+
+                    var availableLabelWidth = getAvailableLabelWidth(d);
+                    var width = d3.select(this).node().getBoundingClientRect().width;
+
+                    return  width > availableLabelWidth ? truncateLabel(commafy(_chart.measureValue(d.data)), width, availableLabelWidth) : commafy(_chart.measureValue(d.data));
+                    
+                });
+        }    
 /* ------------------------------------------------------------------------- */
     }
 
@@ -6650,16 +6666,21 @@ dc.pieChart = function (parent, chartGroup) {
         return labelWidth > maxLabelWidth || labelWidth < 0 ? maxLabelWidth : labelWidth;
     }
 
-    function truncateLabel(data, availableLabelWidth, charPixelWidth) {
-        var labelText = data + '';
-        var textWidth = labelText.length * charPixelWidth;
-        var trimIndex = labelText.length - Math.ceil((textWidth - availableLabelWidth) / charPixelWidth);
+    function truncateLabel(data, width, availableLabelWidth) {
 
-        if (textWidth > availableLabelWidth && labelText.length - trimIndex > 2) {
-            labelText = trimIndex > 2 ? labelText.slice(0, trimIndex) + '&#8230;' : '';
+        var labelText = data + '';
+
+        if (labelText.length < 4) {
+            return '';
+        }
+
+        var trimIndex = labelText.length - Math.ceil((width - availableLabelWidth) / (width/labelText.length) * 1.25);
+       
+        if (labelText.length - trimIndex > 2) {
+            labelText = trimIndex > 2  ? labelText.slice(0, trimIndex) + '&#8230;' : '';
         } 
 
-        return labelText;                
+        return labelText;
     }
  
 /* ------------------------------------------------------------------------- */
@@ -6711,10 +6732,12 @@ dc.pieChart = function (parent, chartGroup) {
             .attr('class', 'popup-legend')
             .style('background-color', fill(d,i));
 
+        var commafy = d3.format(',');
+
         popupBox.append('div')
             .attr('class', 'popup-value')
             .html(function(){
-                return '<div class="popup-value-dim">'+ _chart.label()(d.data) +'</div><div class="popup-value-measure">'+ _chart.measureValue(d.data) +'</div>';
+                return '<div class="popup-value-dim">'+ _chart.label()(d.data) +'</div><div class="popup-value-measure">'+ commafy(parseFloat(_chart.measureValue(d.data).toFixed(2))) +'</div>';
             });
 
         popup.classed('js-showPopup', true);
@@ -7813,6 +7836,7 @@ dc.lineChart = function (parent, chartGroup) {
     function showPopup(arr, x, y) {
 
         var dateFormat = d3.time.format.utc("%b %d, %Y");
+        var dateTimeFormat = d3.time.format.utc("%b %d, %Y · %I:%M%p");
         var commafy = d3.format(',');
         var popup = _chart.popup();
 
@@ -7821,7 +7845,10 @@ dc.lineChart = function (parent, chartGroup) {
 
         popupBox.append('div')
             .attr('class', 'popup-header') 
-            .text(dateFormat(arr[0].datum.x));
+            .text(function(){
+                var diffDays = Math.round(Math.abs((_chart.xAxisMin().getTime() - _chart.xAxisMax().getTime())/(24*60*60*1000)));
+                return diffDays > 14 ? dateFormat(arr[0].datum.x) : dateTimeFormat(arr[0].datum.x);
+            });
 
         var popupItems = popupBox.selectAll('.popup-item')
             .data(arr.sort(function(a, b){
@@ -9402,8 +9429,7 @@ dc.bubbleChart = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
     var _chart = dc.bubbleMixin(dc.capMixin(dc.coordinateGridMixin({})));
     var _popupHeader = [];
-    var _popupTimerShow = null;
-    var _popupTimerHide = null;
+    var _isHoverNode = null;
 /* --------------------------------------------------------------------------*/
     
     var _elasticRadius = false;
@@ -9481,40 +9507,30 @@ dc.bubbleChart = function (parent, chartGroup) {
         return d1.radius + 8 >= dist;
     }
 
-    function showPopupTimer (d, i) {
-        clearTimeout(_popupTimerHide);
-
-        if (_chart.popup().classed('js-showPopup')) {
-            clearTimeout(_popupTimerShow);
-            _popupTimerShow = setTimeout(function(){ _chart.showPopup(d, i)}, 500);
-
-        } else {
-            _chart.showPopup(d, i);
-        }
-    }
-
-    function hidePopupTimer () {
-        if (_chart.popup().classed('js-showPopup')) {
-            clearTimeout(_popupTimerHide);
-            _popupTimerHide = setTimeout(function(){ _chart.hidePopup()}, 500);
-
-        } 
-    }
 
     _chart.showPopup = function(d, i) {
 
+        if (_chart.svg().select('.mouse-out-detect').empty()) {
+            _chart.svg().insert('rect', ":first-child")
+                .attr('class', 'mouse-out-detect')
+                .attr({width: _chart.width(), height: _chart.height()})
+                .on('mousemove', _chart.hidePopup);
+        }
+
+        _isHoverNode = d;
+
         var popup = _chart.popup();
 
-        var popupBox = popup.select('.chart-popup-box').html('')
-            .classed('table-list', true);
+        var popupBox = popup.select('.chart-popup-box').html('');
+
+        popupBox.append('div')
+            .attr('class','popup-bridge')
+            .style('width', (_chart.bubbleR(d) * 2)+'px')
+            .style('height', (_chart.bubbleR(d) + 24)+'px');
 
         var popupTableWrap = popupBox.append('div')
             .attr('class', 'popup-table-wrap')
-            .on('mouseenter', function(){ 
-                clearTimeout(_popupTimerShow); 
-                clearTimeout(_popupTimerHide);
-            })
-            .on('mouseleave', hidePopupTimer);
+            .on('mouseleave', _chart.hidePopup);
 
         var popupTable = popupTableWrap.append('table')
             .attr('class', 'popup-table');
@@ -9640,6 +9656,8 @@ dc.bubbleChart = function (parent, chartGroup) {
         _chart.popup().classed('js-showPopup', false);
         d3.select('#charts-container')
             .style('z-index', 'auto');
+
+        _isHoverNode = null;
     }
 
     function positionPopup(d, e) {
@@ -9651,6 +9669,11 @@ dc.bubbleChart = function (parent, chartGroup) {
             .attr('style', function(){
                 var popupWidth = d3.select(this).select('.chart-popup-box').node().getBoundingClientRect().width/2;
                 var offsetX = x - popupWidth < 0 ? popupWidth - x - 16 : (x + popupWidth > _chart.width() ? _chart.width() - (x + popupWidth) + 16 : 0);
+                
+                d3.select(this).select('.popup-bridge')
+                    .style('left', function(){
+                        return offsetX !== 0 ? popupWidth - offsetX + 'px' : '50%';
+                    });
                 return 'transform:translate('+(x + offsetX) +'px,'+y+'px)';
             });
 
@@ -9659,9 +9682,29 @@ dc.bubbleChart = function (parent, chartGroup) {
             .classed('popdown', function(){
                 return popup.node().getBoundingClientRect().top - 76 < d3.select(this).node().getBoundingClientRect().height ? true : false;
             })
-            .style('overflow-y', function(){
+            .select('.popup-table-wrap').style('overflow-y', function(){
                 return popup.select('.popup-table').node().getBoundingClientRect().height > 160 ? 'scroll' : 'hidden';
             });
+
+
+    }
+
+    function debounce(func, wait, immediate) {
+      
+      var timeout;
+      
+      return function() {
+        var context = this, args = arguments;
+        var later = function() {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
+
     }
 
 /* --------------------------------------------------------------------------*/
@@ -9740,12 +9783,20 @@ dc.bubbleChart = function (parent, chartGroup) {
         
         var bubbleGEnter = bubbleG.enter().append('g');
 
+        var debouncePopUp = debounce(function(d, i){
+            _chart.showPopup(d, i);
+        }, 250);
+
         bubbleGEnter
             .attr('class', _chart.BUBBLE_NODE_CLASS)
             .attr('transform', bubbleLocator)
 /* OVERRIDE -----------------------------------------------------------------*/
-            .on('mouseenter', showPopupTimer)
-            .on('mouseleave', hidePopupTimer)
+            .on('mouseover', function(d, i){
+                if (JSON.stringify(_isHoverNode) !== JSON.stringify(d) ) {
+                    debouncePopUp(d, i);
+                    _chart.hidePopup();
+                } 
+            })
 /* --------------------------------------------------------------------------*/
             .append('circle').attr('class', function (d, i) {
                 return _chart.BUBBLE_CLASS + ' _' + i;
@@ -13559,16 +13610,27 @@ dc.heatMap = function (parent, chartGroup) {
   
         var popup = _chart.popup();
 
-        var popupBox = popup.select('.chart-popup-box').html('');
+        var popupBox = popup.select('.chart-popup-box').html('')
+            .classed('popup-list', true);
 
         popupBox.append('div')
+            .attr('class', 'popup-header') 
+            .text(function(){
+              return _colsLabel(_chart.keyAccessor()(d, i)) + ' x ' + _colsLabel(_chart.valueAccessor()(d, i));
+            });
+
+        var popupItem = popupBox.append('div')
+          .attr('class', 'popup-item');
+
+
+        popupItem.append('div')
             .attr('class', 'popup-legend')
             .style('background-color', _chart.getColor(d, i));
 
-        popupBox.append('div')
-            .attr('class', 'popup-value')
+        popupItem.append('div')
+            .attr('class', 'popup-item-value')
             .html(function(){
-                return '<div class="popup-value-measure">'+ commafy(parseFloat(d.color.toFixed(2))) +'</div>';
+                return commafy(parseFloat(d.color.toFixed(2)));
             });
 
         popup.classed('js-showPopup', true);
