@@ -94,6 +94,18 @@ dc.coordinateGridMixin = function (_chart) {
 /* OVERRIDE ---------------------------------------------------------------- */
     var _rangeFocused = false;
     var _rangeInput = false;
+    var _binInput = false;
+    var _binInputOptions = [{val:'auto', label:'auto', numSeconds:null}, 
+                            {val:'year',  label:'1y',numSeconds: 31536000}, 
+                            {val: 'quarter', label: '1q', numSeconds: 10368000},
+                            {val:'month', label:'1mo', numSeconds: 2592000}, 
+                            {val:'week', label:'1w', numSeconds: 604800}, 
+                            {val:'day', label:'1d', numSeconds: 86400}, 
+                            {val:'hour', label:'1h', numSeconds: 3600}, 
+                            {val:'minute', label:'1m', numSeconds: 60}, 
+                            {val:'second', label:'1s', numSeconds: 1}];
+
+    var _binInputVal = 'auto';
 /* ------------------------------------------------------------------------- */
 
     var _unitCount;
@@ -468,6 +480,23 @@ dc.coordinateGridMixin = function (_chart) {
     };
 
 /* OVERRIDE ---------------------------------------------------------------- */
+
+    function changeBinVal(val) {
+        _binInputVal = val;
+
+        var currentStack = _chart.stack().slice();
+
+        for (var i = 0; i < currentStack.length; i++) {
+
+            if (i === 0) {
+                _chart.group(currentStack[i].group.binByTimeUnit(_binInputVal), currentStack[i].name);
+            } else {
+                _chart.stack(currentStack[i].group.binByTimeUnit(_binInputVal), currentStack[i].name, currentStack[i].accessor);
+            }
+        }
+
+        _chart.render();
+    }
     _chart.updateRangeInput = function () {
 
         var dateFormat = d3.time.format.utc("%b %d, %Y");
@@ -595,7 +624,8 @@ dc.coordinateGridMixin = function (_chart) {
 
         _xAxis = _xAxis.scale(_chart.x()).tickFormat( _chart.x().domain()[0] instanceof Date ? customTimeFormat : null);
 
-        _xAxis.ticks( _chart.effectiveWidth()/_xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth()/64) : 10)
+        _xAxis.ticks( _chart.effectiveWidth()/_xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth()/64) : 10);
+
 
         renderVerticalGridLines(g);
     }
@@ -645,6 +675,7 @@ dc.coordinateGridMixin = function (_chart) {
 
         }
 
+
         var xLabel = root.selectAll('.x-axis-label');
 
         if (xLabel.empty()) {
@@ -660,6 +691,49 @@ dc.coordinateGridMixin = function (_chart) {
         dc.transition(axisXG, _chart.transitionDuration())
             .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart._xAxisY() + ')')
             .call(_xAxis);
+
+        if (_chart.binInput()) {
+
+            var binRow = root.selectAll('.bin-row');
+
+            if (binRow.empty()) {
+                binRow = root.append('div')
+                    .attr('class', 'bin-row')
+                    .style('left', _chart.margins().left + 'px');
+
+            }
+            
+            binRow.html('')
+                .append('span')
+                .text('BIN:');
+
+            var binRowItems = binRow.selectAll('.bin-row-item')
+                .data(_binInputOptions)
+                .enter();
+
+            var rangeInSeconds = Math.abs((_chart.x().domain()[0].getTime() - _chart.x().domain()[1].getTime())/1000);
+
+            binRowItems.append('div')
+                .attr('class', 'bin-row-item')
+                .classed('inactive', function(d){
+                    if (d.numSeconds && rangeInSeconds / d.numSeconds > 1000 || d.numSeconds && rangeInSeconds / d.numSeconds < 2) {
+                        if (_binInputVal === d.val) {
+                            changeBinVal('auto');
+                        }
+
+                        return true;
+                    }
+                    return false;
+                })
+                .classed('active', function(d){
+                    return d.val === _binInputVal;
+                })
+                .text(function(d){
+                    return d.label;
+                })
+                .on('click', function(d){ changeBinVal(d.val); });
+
+        }
 /* --------------------------------------------------------------------------*/
 
     };
@@ -1438,6 +1512,16 @@ dc.coordinateGridMixin = function (_chart) {
             return _rangeInput;
         }
         _rangeInput = _;
+
+        return _chart;
+    };
+
+    _chart.binInput = function (_) {
+
+        if (!arguments.length) {
+            return _binInput;
+        }
+        _binInput = _;
 
         return _chart;
     };
