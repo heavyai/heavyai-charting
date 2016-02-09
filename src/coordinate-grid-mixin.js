@@ -484,11 +484,6 @@ dc.coordinateGridMixin = function (_chart) {
     function changeBinVal(val) {
         _binInputVal = val;
 
-        _chart.brush().on('brushend', function(){ 
-            debugger;
-            console.log('test')}
-        );
-
         var currentStack = _chart.stack().slice();
 
         for (var i = 0; i < currentStack.length; i++) {
@@ -1300,10 +1295,6 @@ dc.coordinateGridMixin = function (_chart) {
             }, dc.constants.EVENT_DELAY);
         }
 
-
-        if (_binInput && _binInputVal !== 'auto') {
-            brushSnap();
-        }
     };
 
     _chart.redrawBrush = function (g, doTransition) {
