@@ -1,5 +1,5 @@
 /*!
- *  dc 0.6.1
+ *  dc 0.6.2
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.6.1
+ * @version 0.6.2
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.6.1',
+    version: '0.6.2',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -4456,7 +4456,7 @@ dc.coordinateGridMixin = function (_chart) {
             binRowItems.append('div')
                 .attr('class', 'bin-row-item')
                 .classed('inactive', function(d){
-                    if (d.numSeconds && rangeInSeconds / d.numSeconds > 1000 || d.numSeconds && rangeInSeconds / d.numSeconds < 2) {
+                    if (d.numSeconds && rangeInSeconds / d.numSeconds > 1500 || d.numSeconds && rangeInSeconds / d.numSeconds < 2) {
                         if (_binInputVal === d.val) {
                             changeBinVal('auto');
                         }
@@ -5034,6 +5034,7 @@ dc.coordinateGridMixin = function (_chart) {
                 _chart.redrawGroup();
             }, dc.constants.EVENT_DELAY);
         }
+
     };
 
     _chart.redrawBrush = function (g, doTransition) {
@@ -5264,6 +5265,10 @@ dc.coordinateGridMixin = function (_chart) {
         _binInput = _;
 
         return _chart;
+    };
+
+    _chart.getBinInputVal = function () {
+        return _binInputOptions.filter(function(d){ return d.val === _binInputVal; });
     };
 /* ------------------------------------------------------------------------- */
 
@@ -7939,7 +7944,7 @@ dc.lineChart = function (parent, chartGroup) {
             .attr('class', 'popup-header') 
             .text(function(){
                 var diffDays = Math.round(Math.abs((_chart.xAxisMin().getTime() - _chart.xAxisMax().getTime())/(24*60*60*1000)));
-                return diffDays > 14 ? dateFormat(arr[0].datum.x) : dateTimeFormat(arr[0].datum.x);
+                return _chart.getBinInputVal()[0].val ==='auto' && diffDays > 14 || _chart.getBinInputVal()[0].numSeconds > 3600 ? dateFormat(arr[0].datum.x) : dateTimeFormat(arr[0].datum.x);
             });
 
         var popupItems = popupBox.selectAll('.popup-item')
