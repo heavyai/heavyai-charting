@@ -1,5 +1,5 @@
 /*!
- *  dc 0.4.0
+ *  dc 0.5.0
  *  http://dc-js.github.io/dc.js/
  *  Copyright 2012-2015 Nick Zhu & the dc.js Developers
  *  https://github.com/dc-js/dc.js/blob/master/AUTHORS
@@ -29,7 +29,7 @@
  * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
  * return values that are chainable d3 objects.
  * @namespace dc
- * @version 0.4.0
+ * @version 0.5.0
  * @example
  * // Example chaining
  * chart.width(300)
@@ -38,7 +38,7 @@
  */
 /*jshint -W079*/
 var dc = {
-    version: '0.4.0',
+    version: '0.5.0',
     constants: {
         CHART_CLASS: 'dc-chart',
         DEBUG_GROUP_CLASS: 'debug',
@@ -2929,6 +2929,7 @@ dc.mapMixin = function (_chart, chartDivId) {
     var _popupFunction = null;
     var _initGeocoder = null;
     var _colorBy = null;
+    var _mouseLeave = false;
 
     var _arr = [[180, -85], [-180, 85]];
     var _llb = mapboxgl.LngLatBounds.convert(_arr);
@@ -2996,6 +2997,10 @@ dc.mapMixin = function (_chart, chartDivId) {
 
       dc.enableRefresh();
       _chart.render();
+
+      _chart.root()
+          .on('mouseleave', function(){ _mouseLeave = true; })
+          .on('mouseenter', function(){ _mouseLeave = false; });
 
       //$('body').trigger('loadGrid');
     }
@@ -3096,6 +3101,9 @@ dc.mapMixin = function (_chart, chartDivId) {
 
     function showPopup(e, pixelRadius) {
 
+        if (_mouseLeave) {
+          return;
+        }
         var height = _chart.height();
         var y = Math.round(height - e.point.y);
         var x = Math.round(e.point.x);
