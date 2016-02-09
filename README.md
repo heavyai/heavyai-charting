@@ -8,40 +8,40 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 Clone down the repo and run the following commands:
 
 ```bash
-# make it so that you can't commit the generated files.
-git update-index --assume-unchanged mapdc.js
-git update-index --assume-unchanged mapdc.min.js
-git update-index --assume-unchanged mapdc.js.map
-git update-index --assume-unchanged mapdc.min.js.map
-
-npm install # to get the dependencies.
-npm install -g grunt-cli # to get the Grunt build tool.
-grunt build # to build the mapdc.js files.
-grunt watch # to automatically rebuild the mapdc.js files after each save.
+git clone https://github.com/map-d/mapdc.js.git
+cd mapdc.js/
+npm install
+bash scripts/install.sh
 ```
-### Pull Requests:
 
-Attach the appropriate semvar tag below to the **title of your pull request**. This allows Jenkins to publish to npm automatically.
+## Grunt Tasks:
+
+Local Command | Description
+--- | ---
+`node_modules/grunt-cli/bin/grunt` | Builds the library
+`node_modules/grunt-cli/bin/grunt watch` | Automatically rebuilds mapdc after each file save
+
+You can install grunt globally on your machine by running `npm install -g grunt-cli`, otherwise use the local commands.
+
+Global Command | Description
+--- | ---
+`grunt` | Builds the library
+`grunt watch` | Automatically rebuilds mapdc after each file save
+
+## Pull Requests:
+
+Attach the appropriate semvar label below to the **title of your pull request**. This allows Jenkins to publish to npm automatically.
 
 Semvar Tag | Description
 --- | ---
-`[major]` | major breaking changes
-`[minor]` | new features
+`[major]` | Breaking changes, api changes, moving files
+`[minor]` | New features (additive only!)
 `[patch]` | Bugfixes, documentation
 
-Jenkins will not let you merge a pull request that contains a missing or multiple semvar tags.
+Jenkins will not let you merge a pull request that contains a missing or multiple semvar label.
 
-### Developing mapdc and another project at the same time:
+**Forgot to add a semvar label?**
 
-_"What is hard is figuring out a good workflow for developing both an npm module and a project that depends on it at the same time." - http://justjs.com/posts/npm-link-developing-your-own-npm-modules-without-tears_
-
-**If you have not cloned down the mapdc.js repo, do that first.** Then run the following commands:
-
-1. `npm link` - inside the mapdc/ repo directory.
-2. `npm link @mapd/mapdc` - inside the project directory (same level as `package.json` directory).
-
-This overrides the `node_modules` directory and tells your project to use the mapdc/ repo instead.
-
-### Updating projects that require mapdc after changes are made
-
-Run `npm install @mapd/mapdc@latest --save` from within your project to update to the latest version.
+1. Update the PR Title
+2. Close the PR
+3. Re-open it to force Jenkins to retest the new title.
