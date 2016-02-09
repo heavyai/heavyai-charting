@@ -60,7 +60,8 @@
   },
   "scripts": {
     "test": "grunt test ",
-    "postinstall": "bash ./node_modules/@mapd/npm-deploy-scripts/postinstall.sh"
+    "copyscripts": "bash node_modules/@mapd/npm-deploy-scripts/copyscripts.sh",
+    "deploy": "bash scripts/deploy.sh"
   },
   "npmName": "mapdc",
   "npmFileMap": [
