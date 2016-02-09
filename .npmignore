@@ -43,9 +43,3 @@ scripts/check_pr_title_for_semver_label.sh
 scripts/deploy.sh
 scripts/get_semver_label_from_log.sh
 scripts/get_version_number_from_package.sh
-
-# generated files
-mapdc.js
-mapdc.min.js
-mapdc.js.map
-mapdc.min.js.map
