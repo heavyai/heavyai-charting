@@ -51,16 +51,15 @@ dc.heatMap = function (parent, chartGroup) {
     _chart.title(_chart.colorAccessor());
 
     var _colsLabel = function (d) {
-
 /* OVERRIDE -----------------------------------------------------------------*/
-        return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
+        return isNaN(d) ? d : ((d+'').length > 4 && _numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(d.toFixed(2)));
 /* --------------------------------------------------------------------------*/
 
     };
     var _rowsLabel = function (d) {
-
 /* OVERRIDE -----------------------------------------------------------------*/
-        return isNaN(d) ? d : (_numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(_numFormat(d)));
+        return isNaN(d) ? d : ((d+'').length > 4 && _numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(d.toFixed(2)));
+
 /* --------------------------------------------------------------------------*/
     };
 

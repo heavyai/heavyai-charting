@@ -119,13 +119,12 @@ dc.rowChart = function (parent, chartGroup) {
         var yLabel = root.selectAll('.y-axis-label');
 
         if (yLabel.empty()) {
-
             yLabel = root.append('div')
-            .attr('class', 'y-axis-label')
-            .text(typeof aliases !== 'undefined' ? aliases[_yAxisLabel] : _yAxisLabel);
+            .attr('class', 'y-axis-label');
         }
 
         yLabel
+            .text(typeof aliases !== 'undefined' ? aliases[_yAxisLabel] : _yAxisLabel)
             .style('top', (_chart.effectiveHeight() / 2 + _chart.margins().top) +'px');
 
 
@@ -133,11 +132,11 @@ dc.rowChart = function (parent, chartGroup) {
 
         if (xLabel.empty()) {
             xLabel = root.append('div')
-            .attr('class', 'x-axis-label')
-            .text(_chart.xAxisLabel());
+            .attr('class', 'x-axis-label');
         }
 
         xLabel
+            .text(_chart.xAxisLabel())
             .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px');
 /* --------------------------------------------------------------------------*/
 
