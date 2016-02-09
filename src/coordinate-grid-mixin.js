@@ -484,6 +484,11 @@ dc.coordinateGridMixin = function (_chart) {
     function changeBinVal(val) {
         _binInputVal = val;
 
+        _chart.brush().on('brushend', function(){ 
+            debugger;
+            console.log('test')}
+        );
+
         var currentStack = _chart.stack().slice();
 
         for (var i = 0; i < currentStack.length; i++) {
@@ -716,7 +721,7 @@ dc.coordinateGridMixin = function (_chart) {
             binRowItems.append('div')
                 .attr('class', 'bin-row-item')
                 .classed('inactive', function(d){
-                    if (d.numSeconds && rangeInSeconds / d.numSeconds > 1000 || d.numSeconds && rangeInSeconds / d.numSeconds < 2) {
+                    if (d.numSeconds && rangeInSeconds / d.numSeconds > 1500 || d.numSeconds && rangeInSeconds / d.numSeconds < 2) {
                         if (_binInputVal === d.val) {
                             changeBinVal('auto');
                         }
@@ -1294,6 +1299,11 @@ dc.coordinateGridMixin = function (_chart) {
                 _chart.redrawGroup();
             }, dc.constants.EVENT_DELAY);
         }
+
+
+        if (_binInput && _binInputVal !== 'auto') {
+            brushSnap();
+        }
     };
 
     _chart.redrawBrush = function (g, doTransition) {
@@ -1524,6 +1534,10 @@ dc.coordinateGridMixin = function (_chart) {
         _binInput = _;
 
         return _chart;
+    };
+
+    _chart.getBinInputVal = function () {
+        return _binInputOptions.filter(function(d){ return d.val === _binInputVal; });
     };
 /* ------------------------------------------------------------------------- */
 
