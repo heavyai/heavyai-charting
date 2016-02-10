@@ -130,7 +130,9 @@ dc.bubbleChart = function (parent, chartGroup) {
             .style('border-radius', '0 0 '+_chart.bubbleR(d)+'px '+_chart.bubbleR(d)+'px')
             .on('click', function(){ 
                 _chart.onClick(d);
-            });
+            })
+            .append('div')
+            .attr('class', 'bridge-hitbox');
 
         var popupTableWrap = popupBox.append('div')
             .attr('class', 'popup-table-wrap')
@@ -258,8 +260,11 @@ dc.bubbleChart = function (parent, chartGroup) {
 
     _chart.hidePopup = function() {
         _chart.popup().classed('js-showPopup', false);
+        
         d3.select('#charts-container')
             .style('z-index', 'auto');
+        d3.selectAll('.node-hover')
+            .classed('node-hover', false);
 
         _isHoverNode = null;
     }
@@ -387,7 +392,8 @@ dc.bubbleChart = function (parent, chartGroup) {
         
         var bubbleGEnter = bubbleG.enter().append('g');
 
-        var debouncePopUp = debounce(function(d, i){
+        var debouncePopUp = debounce(function(d, i, elm){
+            d3.select(elm).classed('node-hover', true);
             _chart.showPopup(d, i);
         }, 250);
 
@@ -397,7 +403,7 @@ dc.bubbleChart = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
             .on('mouseover', function(d, i){
                 if (JSON.stringify(_isHoverNode) !== JSON.stringify(d) ) {
-                    debouncePopUp(d, i);
+                    debouncePopUp(d, i, this);
                     _chart.hidePopup();
                 } 
             })
