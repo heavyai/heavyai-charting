@@ -95,7 +95,7 @@
             pointer-events: none;
         }
 
-        &:hover {
+        &:hover, &.node-hover {
             circle {
                 fill-opacity: .8;
             }
@@ -121,6 +121,8 @@
             }
             
         }
+
+
     }
 
     .mouse-out-detect {
@@ -533,6 +535,14 @@
         transform: translate(-50%, 0);
     }
 
+    .bridge-hitbox {
+        cursor: pointer;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding-bottom: 100%;
+        border-radius: 50%;
+    }
 
 
 
@@ -681,11 +691,17 @@
                 bottom: 100%;
                 top: auto;
             }
+
+            .bridge-hitbox {
+                top: 0;
+                bottom: auto;
+            }
         }
     }
 
     .popup-table-wrap {
         flex-direction: column;
+        position: relative;
     }
 
     .popup-legend {
