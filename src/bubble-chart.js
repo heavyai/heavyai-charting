@@ -126,7 +126,11 @@ dc.bubbleChart = function (parent, chartGroup) {
         popupBox.append('div')
             .attr('class','popup-bridge')
             .style('width', (_chart.bubbleR(d) * 2)+'px')
-            .style('height', (_chart.bubbleR(d) + 24)+'px');
+            .style('height', (_chart.bubbleR(d) + 24)+'px')
+            .style('border-radius', '0 0 '+_chart.bubbleR(d)+'px '+_chart.bubbleR(d)+'px')
+            .on('click', function(){ 
+                _chart.onClick(d);
+            });
 
         var popupTableWrap = popupBox.append('div')
             .attr('class', 'popup-table-wrap')
