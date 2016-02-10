@@ -503,6 +503,7 @@ dc.coordinateGridMixin = function (_chart) {
         var timeFormat = d3.time.format.utc("%I:%M%p");
 
         var extent = _chart.filter() || [_chart.xAxisMin(), _chart.xAxisMax()];
+        var diffDays = Math.round(Math.abs((extent[0].getTime() - extent[1].getTime())/(24*60*60*1000)));
         
         var rangeDisplay = _chart.root().selectAll('.range-display');
 
@@ -511,14 +512,18 @@ dc.coordinateGridMixin = function (_chart) {
             .attr('value', dateFormat(extent[0]));
 
         rangeDisplay.select('.range-start-time')
-            .text(timeFormat(extent[0]));
+            .classed('disable', diffDays > 14 ? true : false)
+            .property('value', timeFormat(extent[0]))
+            .attr('value', timeFormat(extent[0]));
 
         rangeDisplay.select('.range-end-day')
             .property('value', dateFormat(extent[1]))
             .attr('value', dateFormat(extent[1]));
 
         rangeDisplay.select('.range-end-time')
-            .text(timeFormat(extent[1]));
+            .classed('disable', diffDays > 14 ? true : false)
+            .property('value', timeFormat(extent[1]))
+            .attr('value', timeFormat(extent[1]));
     }
 
     function rangeInputOnFocus() {
@@ -526,7 +531,7 @@ dc.coordinateGridMixin = function (_chart) {
         this.select();
 
         var dateInputFormat = d3.time.format.utc("%m-%d-%Y");
-        var timeInputFormat = d3.time.format.utc("%H:%M");
+        var timeInputFormat = d3.time.format.utc("%I:%M%p");
         var currentInput = d3.select(this);
 
         var extent = _chart.filter() || [_chart.xAxisMin(), _chart.xAxisMax()];
@@ -542,23 +547,29 @@ dc.coordinateGridMixin = function (_chart) {
         var currentValue = currentInput.attr('value');
         var newValue = currentInput.property('value');
 
-        if (isNaN(Date.parse(newValue))) {
+        var currentExtent = _chart.filter() || [_chart.xAxisMin(), _chart.xAxisMax()];
+        
+        var diffDays = Math.round(Math.abs((currentExtent[0].getTime() - currentExtent[1].getTime())/(24*60*60*1000)));
+
+        var inputFormat = diffDays > 14 ? d3.time.format.utc('%m-%d-%Y') : (currentInput.attr('class').indexOf('day') >= 0 ? d3.time.format.utc('%m-%d-%Y %I:%M%p') : d3.time.format.utc('%b %d, %Y %I:%M%p'));
+
+        var inputStr = diffDays > 14 ?  newValue : d3.select(this.parentNode).selectAll('.range-day').property('value') + ' ' + d3.select(this.parentNode).selectAll('.range-time').property('value');
+
+        var date = inputFormat.parse(inputStr);
+
+        if (!date) {
             currentInput.property('value', currentValue);
             this.blur();
             return;
         }
 
-        var date = new Date(newValue);
-      
-        var utc = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+        var extentChart = _chart.rangeChart() ? _chart.rangeChart() : _chart;
+        
+        var extent = extentChart.filter() || [extentChart.xAxisMin(), extentChart.xAxisMax()];
 
         var index = currentInput.attr('class').indexOf('start') >= 0 ? 0 : 1;
 
-        var extentChart = _chart.rangeChart() ? _chart.rangeChart() : _chart;
-
-        var extent = extentChart.filter() || [extentChart.xAxisMin(), extentChart.xAxisMax()];
-
-        extent[index] = utc < extentChart.xAxisMin() ? extentChart.xAxisMin() : (utc > extentChart.xAxisMax() ? extentChart.xAxisMax() : utc );
+        extent[index] = date < extentChart.xAxisMin() ? extentChart.xAxisMin() : (date > extentChart.xAxisMax() ? extentChart.xAxisMax() : date);
         
         extent.sort(function(a, b){return a-b});
 
@@ -651,24 +662,33 @@ dc.coordinateGridMixin = function (_chart) {
                     .attr('class', 'range-display')
                     .style('right', _chart.margins().right + 'px');
 
-                rangeDisplay.append('input')
-                    .attr('class', 'range-start-day range-day')
-                    .on('focus', rangeInputOnFocus)
-                    .on('change', rangeInputChange);
 
-                rangeDisplay.append('span')
-                    .attr('class', 'range-start-time range-time');
+                var group1 = rangeDisplay.append('div');
 
                 rangeDisplay.append('span')
                     .html(' &mdash; ');
 
-                rangeDisplay.append('input')
+                var group2 = rangeDisplay.append('div');
+
+                group1.append('input')
+                    .attr('class', 'range-start-day range-day')
+                    .on('focus', rangeInputOnFocus)
+                    .on('change', rangeInputChange);
+
+                group1.append('input')
+                    .attr('class', 'range-start-time range-time')
+                    .on('focus', rangeInputOnFocus)
+                    .on('change', rangeInputChange);
+
+                group2.append('input')
                     .attr('class', 'range-end-day range-day')
                     .on('focus', rangeInputOnFocus)
                     .on('change', rangeInputChange);
 
-                rangeDisplay.append('span')
-                    .attr('class', 'range-end-time range-time');
+                group2.append('input')
+                    .attr('class', 'range-end-time range-time')
+                    .on('focus', rangeInputOnFocus)
+                    .on('change', rangeInputChange);
 
                 _chart.updateRangeInput();
             }
