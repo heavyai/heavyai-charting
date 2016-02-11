@@ -1,0 +1,80 @@
+{
+  "name": "@mapd/mapdc",
+  "version": "0.6.4",
+  "license": "Apache-2.0",
+  "copyright": "2014",
+  "description": "A multi-dimensional charting library built to work natively with crossfilter and rendered using d3.js.",
+  "keywords": [
+    "visualization",
+    "svg",
+    "animation",
+    "canvas",
+    "chart",
+    "dimensional",
+    "crossfilter",
+    "d3"
+  ],
+  "homepage": "http://mapd.com",
+  "bugs": "https://github.com/map-d/mapdc.js/issues",
+  "author": {
+    "name": "MapD Technologies",
+    "url": "http://mapd.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/map-d/mapdc.js.git"
+  },
+  "dependencies": {
+    "@mapd/mapd-crossfilter": "^0.1.17",
+    "d3": "3.x"
+  },
+  "devDependencies": {
+    "@mapd/npm-deploy-scripts": "^1.2.2",
+    "emu": "~0.0.2",
+    "grunt": "~0.4.5",
+    "grunt-browserify": "~4.0.0",
+    "grunt-cli": "~0.1.13",
+    "grunt-contrib-concat": "~0.5.0",
+    "grunt-contrib-connect": "~0.11.2",
+    "grunt-contrib-copy": "~0.8.0",
+    "grunt-contrib-cssmin": "^0.14.0",
+    "grunt-contrib-jasmine": "~0.9.1",
+    "grunt-contrib-jshint": "~0.11.0",
+    "grunt-contrib-uglify": "~0.9.1",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-docco2": "~0.2.0",
+    "grunt-fileindex": "^0.1.0",
+    "grunt-gh-pages": "~0.10.0",
+    "grunt-jscs": "~2.1.0",
+    "grunt-jsdoc-to-markdown": "~1.1.1",
+    "grunt-lib-phantomjs": "~0.7.1",
+    "grunt-markdown": "~0.7.0",
+    "grunt-saucelabs": "~8.6.1",
+    "grunt-shell": "~1.1.1",
+    "grunt-template-jasmine-istanbul": "~0.3.2",
+    "jsdifflib": "~1.1.0",
+    "load-grunt-tasks": "~3.2.0",
+    "marked": "~0.3.3",
+    "time-grunt": "~1.2.1",
+    "uglify-js": "2.4.x"
+  },
+  "scripts": {
+    "test": "grunt test ",
+    "copyscripts": "bash node_modules/@mapd/npm-deploy-scripts/copyscripts.sh",
+    "deploy": "bash scripts/deploy.sh"
+  },
+  "npmName": "mapdc",
+  "npmFileMap": [
+    {
+      "basePath": "/",
+      "files": [
+        "dc.css",
+        "dc.min.css",
+        "dc.min.js",
+        "dc.min.js.map",
+        "dc.js",
+        "dc.js.map"
+      ]
+    }
+  ]
+}
