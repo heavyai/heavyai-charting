@@ -7,7 +7,7 @@ art {
     cursor: pointer;
 }
 
-.dc-chart rect.bar.accented {  
+.dc-chart rect.bar.accented {
     fill: #E637A8;
 }
 
@@ -33,8 +33,6 @@ art {
 .dc-chart text.deselected {
     fill: #ccc !important; /*why do we need to override?*/
 }
-
-
 .dc-chart .empty-chart .pie-slice path {
     fill: #FFEEEE;
     cursor: default;
@@ -158,7 +156,7 @@ art {
     fill-opacity: .8;
 }
 /*
-.dc-chart .outlined { 
+.dc-chart .outlined {
     fill-opacity: .8;
 }
 */
