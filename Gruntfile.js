@@ -9,6 +9,7 @@ module.exports = function (grunt) {
 
     var config = {
         src: 'src',
+        scss: 'scss',
         spec: 'spec',
         web: 'web',
         pkg: require('./package.json'),
@@ -18,7 +19,6 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         conf: config,
-
         concat: {
             options: {
                 process: true,
@@ -86,6 +86,10 @@ module.exports = function (grunt) {
             jsdoc2md: {
                 files: ['<%= conf.src %>/**/*.js'],
                 tasks: ['concat', 'uglify']
+            },
+            sass: {
+              files: ['<%= conf.scss %>/**/*.scss'],
+              tasks: ['sass']
             }
         },
         connect: {
@@ -286,6 +290,11 @@ module.exports = function (grunt) {
                     }
                 }
             }
+        },
+        exec: {
+            compile_sass: {
+              cmd: './node_modules/node-sass/bin/node-sass scss/chart.scss chart.css'
+            }
         }
     });
 
@@ -311,8 +320,10 @@ module.exports = function (grunt) {
         grunt.task.run('watch');
     });
 
+
     // task aliases
-    grunt.registerTask('build', ['concat', 'uglify', 'cssmin']);
+    grunt.registerTask('sass', ['exec:compile_sass']);
+    grunt.registerTask('build', ['concat', 'uglify', 'cssmin', 'sass']);
     grunt.registerTask('docs', ['build', 'copy', 'jsdoc2md', 'docco', 'fileindex']);
     grunt.registerTask('web', ['docs', 'gh-pages']);
     grunt.registerTask('server', ['docs', 'fileindex', 'jasmine:specs:build', 'connect:server', 'watch:jasmine-docs']);
