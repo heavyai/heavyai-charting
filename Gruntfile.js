@@ -49,7 +49,8 @@ module.exports = function (grunt) {
             },
             main: {
                 files: {
-                    '<%= conf.pkg.npmName %>.min.css': ['<%= conf.pkg.npmName %>.css']
+                    '<%= conf.pkg.npmName %>.min.css': ['<%= conf.pkg.npmName %>.css'],
+                    'chart.min.css': ['chart.css']
                 }
             }
         },
@@ -323,7 +324,7 @@ module.exports = function (grunt) {
 
     // task aliases
     grunt.registerTask('sass', ['exec:compile_sass']);
-    grunt.registerTask('build', ['concat', 'uglify', 'cssmin', 'sass']);
+    grunt.registerTask('build', ['concat', 'uglify', 'sass', 'cssmin']);
     grunt.registerTask('docs', ['build', 'copy', 'jsdoc2md', 'docco', 'fileindex']);
     grunt.registerTask('web', ['docs', 'gh-pages']);
     grunt.registerTask('server', ['docs', 'fileindex', 'jasmine:specs:build', 'connect:server', 'watch:jasmine-docs']);
