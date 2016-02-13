@@ -1,0 +1,20 @@
+{
+  "name": "mapdc-example",
+  "version": "1.0.0",
+  "description": "Boilerplate code for mapd frontend functionality",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mapd/mapd-con": "^1.2.0",
+    "@mapd/mapd-crossfilter": "^0.1.18",
+    "@mapd/mapd-mapbox-gl-js": "^0.1.1",
+    "@mapd/mapdc": "^0.7.0",
+    "d3": "^3.5.14",
+    "jquery": "^2.2.0",
+    "lodash": "^4.3.0"
+  }
+}
