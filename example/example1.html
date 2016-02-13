@@ -77,7 +77,7 @@
    *   https://dc-js.github.io/dc.js/docs/stock.html.
    */
 
-  function CreateCharts(crossFilter) { 
+  function createCharts(crossFilter) {
 
     var colorScheme = ["#22A7F0", "#3ad6cd", "#d4e666"]
 
@@ -496,20 +496,19 @@
       .setPort("9090")
       .setDbName("mapd")
       .connect();
-    
+
     /*
      *  This instaniates a new crossfilter.
      *  Pass in mapdcon as the first argument to crossfilter, then the
      *  table name, then a label for the data (unused in this example).
      *
      *  to see all availables --  con.getTables()
-     */  
+     */
     var crossFilter = crossfilter(con,"flights","flights");
-    
+
     /*
      *  Pass instance of crossfilter into our CreateCharts.
-     */  
-
+     */
     var chart = new CreateCharts(crossFilter);
   }
 
