@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MapD</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="node_modules/@mapd/mapdc/mapdc.min.css" />
+    <link rel="stylesheet" type="text/css" href="node_modules/@mapd/mapdc/chart.min.css" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <style>
+      .title {
+        font-weight: bold;
+        text-align:center;
+      }
+      .mapd{
+        position: relative;
+        top: 2px;
+      }
+      .data-count{
+        padding-right:20px;
+      }
+      .filter-count{
+        font-weight: bold;
+        color:  #45B1E8;
+      }
+    </style>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header" style="margin-top:10px">
+            <img alt="Brand" src="images/favicon.png" height="30" width="30">
+            <span class="mapd">MapD Demo</span>
+        </div>
+        <div class="navbar-text navbar-right">
+        <div class="data-count">
+          <span class="total"><span><span class="filter-count"></span></span>
+          <span>of <span class="total-count"></span> flights</span>
+        </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="main-container">
+      <div class="col-xs-12">
+        <div class="title">Point Map with Backend Rendering</div>
+        <div id="chart1-example"></div>
+      </div>
+
+      <div class="col-xs-12">
+        <div class="title"># of Tweets per 5 Minutes</div>
+        <div class="chart2-example"></div>
+      </div>
+    </div>
+
+    <script src="node_modules/lodash/lodash.js"></script>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/d3/d3.min.js"></script>
+    <script src="node_modules/@mapd/mapd-con/dist/thrift.js"></script>
+    <script src="node_modules/@mapd/mapd-con/dist/mapd.thrift.js"></script>
+    <script src="node_modules/@mapd/mapd-con/dist/mapd_types.js"></script>
+    <script src="node_modules/@mapd/mapd-con/dist/MapdCon.js"></script>
+    <script src="node_modules/@mapd/mapd-crossfilter/mapd-crossfilter.js"></script>
+    <script src="node_modules/@mapd/mapdc/mapdc.js"></script>
+    <script src="node_modules/@mapd/mapd-mapbox-gl-js/dist/mapbox-gl.js"></script>
+    <script src="node_modules/@mapd/mapd-mapbox-gl-js/dist/mapboxgl-overrides.js"></script>
+
+    <script>
+  /*
+   * This is example code that shows how to make 3 cross-filtered charts with the
+   * mapdc.js API. This example is not meant to be a replacement for dc.js
+   * documentation.  For the dc.js API docs, see here
+   * - https://github.com/dc-js/dc.js/blob/master/web/docs/api-latest.md.
+   *   For an annotated example of using dc.js - see here:
+   *   https://dc-js.github.io/dc.js/docs/stock.html.
+   */
+
+  function createCharts(crossFilter) {
+
+    var colorScheme = ["#22A7F0", "#3ad6cd", "#d4e666"]
+
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50;
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+
+  /*---------------------BASIC COUNT ON CROSSFILTER--------------------------*/
+
+    /*
+     *  A basic operation is getting the filtered count and total count
+     *  of crossFilter. This performs that operation. It is built into DC.
+     *  Note that for the count we use crossFilter itself as the dimension.
+     */
+    var countGroup = crossFilter.groupAll();
+    var dataCount = dc.dataCount(".data-count")
+      .dimension(crossFilter)
+      .group(countGroup);
+
+  /*----------------BACKEND RENDERED POINT MAP EXAMPLE-----------------------*/ 
+
+   /*
+    *
+    * TODO
+    *
+    */
+
+    var parent = document.getElementById("chart1-example");
+    var pointMap = dc.bubbleRasterChart(parent, true)
+      .width(w)
+      .height(h)
+      .dimension(crossFilter)
+      .group(crossFilter.groupAll())
+      .tableName("tweets")
+      .mapUpdateInterval(750)
+      .popupSearchRadius(2)
+      .cap(500000)
+      .sampling(true)
+      .r(1)
+      .dynamicR(d3.scale.sqrt().domain([20000,0]).range([1.0,7.0]).clamp(true))
+      .colors("#22A7F0")
+      .othersGrouper(false)
+      .xDim(null)
+      .yDim(null);
+
+  /*---------------------TIME CHART EXAMPLE----------------------------------*/
+
+  /*
+   *  First we want to determine the extent (min,max) of the time variable so we
+   *  can set the bounds on the time chart appropriately.
+   *
+   *  If you know the bounds a priori you can do this manually but here we will
+   *  do it dymaically via a query sent to the backend through the crossfilter
+   *  api.
+   *
+   *  We create a reduceMulti expression that will get the min and max of the
+   *  variable dep_timestamp.
+   *
+   */
+
+      var timeChartMeasures = [
+      {
+        expression: "tweet_time",
+        agg_mode:"min",
+        name: "min"
+      },
+      {
+        expression: "tweet_time",
+        agg_mode:"max",
+        name: "max"}
+      ]
+
+      /* Note than when we are doing aggregations over the entire dataset we use
+       * the crossfilter object itself as the dimension with the groupAll method
+       *
+       * values(true) gets the values for our groupAll measure (here min and max
+       * of dep_timestamp) - true means to ignore currently set filters - i.e.
+       * get a global min and max
+       */
+
+      var timeChartBounds = crossFilter
+        .groupAll()
+        .reduce(timeChartMeasures)
+        .values(true);
+
+      var timeChartDimension = crossFilter.dimension("tweet_time");
+
+      /* We would like to bin or histogram the time values.  We do this by
+       * invoking setBinParams on the group.  Here we are asking for 400 equal
+       * sized bins from the min to the max of the time range
+       */
+
+      var timeChartGroup = timeChartDimension
+        .group()
+        .reduceCount('*')
+        .setBinParams({
+           numBins: 288, // 288 * 5 = number of minutes in a day
+           binBounds: [timeChartBounds.min, timeChartBounds.max]
+          });
+
+    /*  We create the time chart as a line chart
+     *  with the following parameters:
+     *
+     *  Width and height - as above
+     *
+     *  elasticY(true) - cause the y-axis to scale as filters are changed
+     *
+     *  renderHorizontalGridLines(true) - add grid lines to the chart
+     *
+     *  brushOn(true) - Request a filter brush to be added to the chart - this
+     *  will allow users to drag a filter window along the time chart and filter
+     *  the rest of the data accordingly
+     *
+     */
+
+      var dcTimeChart = dc.lineChart('.chart2-example')
+        .width(w)
+        .height(h/2.5)
+        .elasticY(true)
+        .renderHorizontalGridLines(true)
+        .brushOn(true)
+        .xAxisLabel('Time of Day')
+        .yAxisLabel('Number of Tweets')
+        .dimension(timeChartDimension)
+        .group(timeChartGroup);
+
+      /* Set the x and y axis formatting with standard d3 functions */
+
+      dcTimeChart
+        .x(d3.time.scale.utc().domain([timeChartBounds.min, timeChartBounds.max]))
+        .yAxis().ticks(5);
+
+      dcTimeChart
+        .xAxis().orient('top');
+
+      /* Calling dc.renderAll() will render all of the charts we set up.  Any
+       * filters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
+       */
+
+      dc.renderAll()
+
+
+
+  /*--------------------------RESIZE EVENT------------------------------*/
+
+      /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+
+      window.addEventListener("resize", debounce(reSizeAll, 100));
+
+      function reSizeAll(){
+        var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+        var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
+
+        dcBarChart
+          .height(h/1.5)
+          .width(w/2)
+
+        dcScatterPlot
+          .height(h/1.5)
+          .width(w/2)
+
+        dcTimeChart
+          .width(w)
+          .height(h/2.5)
+
+        dc.renderAll();
+      }
+
+  }
+
+  function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+    };
+  };
+
+  function init() {
+
+    // A MapdCon instance is used for performing raw queries on a MapD GPU database.
+    var con = new MapdCon()
+      .protocol("http")
+      .host("kali.mapd.com")
+      .port("9092")
+      .dbName("mapd")
+      .user("mapd")
+      .password("HyperInteractive");
+
+    // Establish a connection
+    con.connect();
+
+    // Get a table from the database
+    var tables = con.getTables();
+    var tableName = tables[0].name;
+    var label = "tweets";
+
+    // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
+    var crossFilter = crossfilter(con, tableName, label);
+
+    //  Pass instance of crossfilter into our CreateCharts.
+    createCharts(crossFilter);
+  }
+
+  document.addEventListener('DOMContentLoaded', init, false);
+
+    </script>
+
+  </body>
+</html>
