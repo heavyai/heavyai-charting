@@ -190,7 +190,7 @@ dc.rasterMixin = function(_chart) {
 
             var xPixel = _chart.x()(nearestPoint.row_set[0][_chart._xDimName]);
                       // || _chart.x()(nearestPoint.row_set[0][_chart._xDimName.split('.')[1]]);
-            var yPixel = (height - _chart.y()(nearestPoint.row_set[0][_chart.yDimName]));
+            var yPixel = (height - _chart.y()(nearestPoint.row_set[0][_chart._yDimName]));
                       // || (height - _chart.y()(nearestPoint.row_set[0][_chart.yDimName.split('.')[1]]));
             var data = nearestPoint.row_set[0];
 
