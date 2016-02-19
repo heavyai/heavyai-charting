@@ -10,12 +10,12 @@ dc.mapMixin = function (_chart, chartDivId) {
     var _lastHeight = null;
     var _mapId = chartDivId;
 
+    _chart._xDimName = null;
+    _chart._yDimName = null;
     _chart._map = null;
     var _mapInitted = false;
     var _xDim = null;
     var _yDim = null;
-    var _xDimName = null;
-    var _yDimName = null;
     var _lastMapMoveType = null;
     var _lastMapUpdateTime = 0;
     var _isFirstMoveEvent = true;
@@ -36,7 +36,7 @@ dc.mapMixin = function (_chart, chartDivId) {
             return _xDim;
         _xDim = xDim;
         if(_xDim){
-          _xDimName = _xDim.value()[0];
+          _chart._xDimName = _xDim.value()[0];
         }
         return _chart;
     }
@@ -46,7 +46,7 @@ dc.mapMixin = function (_chart, chartDivId) {
             return _yDim;
         _yDim = yDim;
         if(_yDim){
-          _yDimName = _yDim.value()[0];
+          _chart._yDimName = _yDim.value()[0];
         }
         return _chart;
     }
@@ -94,10 +94,6 @@ dc.mapMixin = function (_chart, chartDivId) {
 
       dc.enableRefresh();
       _chart.render();
-
-      _chart.root()
-          .on('mouseleave', function(){ _mouseLeave = true; })
-          .on('mouseenter', function(){ _mouseLeave = false; });
 
       //$('body').trigger('loadGrid');
     }
@@ -180,179 +176,7 @@ dc.mapMixin = function (_chart, chartDivId) {
         _chart._map.on('move', onMapMove);
         _chart._map.on('moveend', onMapMove); 
 
-        var debouncePopUp = debounce(function(e){
-            showPopup(e, _chart.popupSearchRadius())
-        }, 250);
-
-        _chart._map.on('zoom click', function(e){
-          debouncePopUp(e);          
-        })
-
-        _chart._map.on('mousemove', function(e){
-          debouncePopUp(e);
-          hidePopup();
-        })
-
         _mapInitted = true;
-    }
-
-    function showPopup(e, pixelRadius) {
-
-        if (_mouseLeave) {
-          return;
-        }
-        var height = _chart.height();
-        var y = Math.round(height - e.point.y);
-        var x = Math.round(e.point.x);
-        var tPixels = [];
-
-        var pixelRadiusSquared = pixelRadius * pixelRadius;
-
-        for (var xOffset = -pixelRadius; xOffset <= pixelRadius; xOffset++) { 
-            for (var yOffset = -pixelRadius; yOffset <= pixelRadius; yOffset++) { 
-                if (xOffset*xOffset + yOffset*yOffset <= pixelRadiusSquared) {
-                    tPixels.push(new TPixel({x:x+xOffset, y:y+yOffset}));
-                }
-            }
-        }
-
-        var columns = _chart.popupColumns().slice();
-
-        if(!columns.length){
-          return;
-        }
-
-        columns.push(_xDimName);
-        columns.push(_yDimName);
-
-        con.getRowsForPixels(tPixels, _chart.tableName(), columns, [function(result){
-          var closestResult = null;
-          var closestSqrDistance = Infinity;
-          for (var r = 0; r < result.length; r++) {
-            if(result[r].row_set.length){
-              var sqrDist = (x-result[r].pixel.x)*(x-result[r].pixel.x) + (y-result[r].pixel.y)*(y-result[r].pixel.y);
-              if (sqrDist < closestSqrDistance) {
-                  closestResult = r;
-                  closestSqrDistance = sqrDist;
-              }
-            }
-          }
-          if (closestResult === null)
-            return;
-
-          if(_chart.select('.map-popup').empty()){
-
-            _chart.x().range([0, _chart.width() -1]);
-            _chart.y().range([0, _chart.height() -1]);
-
-            var nearestPoint = result[closestResult];
-
-            var xPixel = _chart.x()(nearestPoint.row_set[0][_xDimName]);
-            var yPixel = (height - _chart.y()(nearestPoint.row_set[0][_yDimName]));
-            var data = nearestPoint.row_set[0];
-
-            var mapPopup = _chart.root().append('div')
-              .attr('class', 'map-popup');
-   
-            mapPopup.append('div')
-              .attr('class', 'map-point-wrap')
-              .append('div')
-              .attr('class', 'map-point')
-              .style({left: xPixel + 'px', top: yPixel + 'px'})
-              .append('div')
-              .attr('class', 'map-point-gfx')
-              .style('background', function(){
-
-                var matchIndex = null;
-
-                if (_colorBy) {
-
-                    _chart.colors().domain().forEach(function(d, i){ 
-
-                      if (d === data[_colorBy] ) {
-                        matchIndex = i;
-                      }
-
-                    });
-                }
-                
-                return matchIndex ? _chart.colors().range()[matchIndex] : '#27aeef';
-
-              });
-
-            var offsetBridge = 0;
-
-            mapPopup.append('div')
-              .attr('class', 'map-popup-wrap')
-              .style({left: xPixel + 'px', top: yPixel + 'px'})
-              .append('div')
-              .attr('class', 'map-popup-box')
-              .html(_chart.popupFunction() ? _popupFunction(data) : renderPopupHTML(data))
-              .style('left', function(){
-                var boxWidth = d3.select(this).node().getBoundingClientRect().width;
-                var overflow = _chart.width() - (xPixel + boxWidth/2) < 0  ? _chart.width() - (xPixel + boxWidth/2) - 6 : (xPixel - boxWidth/2 < 0 ? -(xPixel - boxWidth/2 ) + 6 : 0); 
-                offsetBridge = boxWidth/2 - overflow;
-                return overflow + 'px';
-              })
-              .classed('pop-down', function(){
-                var boxHeight = d3.select(this).node().getBoundingClientRect().height;
-                return yPixel - (boxHeight + 12) < 8 ;
-              })
-              .append('div')
-              .attr('class', 'map-popup-bridge')
-              .style('left', function(){
-                return offsetBridge + 'px';
-              });
-
-            _chart.root().on('mousewheel', hidePopup);
-
-          } 
-
-        }]);
-
-    }
-
-    function hidePopup() {
-
-        if (!_chart.select('.map-popup').empty()) {
-            _chart.select('.map-popup-wrap')
-              .classed('removePopup', true)
-              .on('animationend', function(){
-                _chart.select('.map-popup').remove();
-              });
-
-            _chart.select('.map-point')
-              .classed('removePoint', true);
-        }
-    }
-
-    function renderPopupHTML(data) {
-
-      var html = '';
-      for (var key in data) {
-        if(key !== _yDimName && key !== _xDimName){
-              html += '<div class="map-popup-item"><span class="popup-item-key">' + key + ':</span><span class="popup-item-val"> ' + data[key] +'</span></div>'
-        }
-      }
-      return html;
-    } 
-
-    function debounce(func, wait, immediate) {
-      
-      var timeout;
-      
-      return function() {
-        var context = this, args = arguments;
-        var later = function() {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
-
     }
 
     _chart.on('preRender', function(chart) {
