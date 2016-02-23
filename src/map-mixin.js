@@ -65,13 +65,6 @@ dc.mapMixin = function (_chart, chartDivId) {
         return _chart;
     }
 
-    _chart.popupFunction = function(popupFunction) {
-        if (!arguments.length)
-            return _popupFunction;
-        _popupFunction = popupFunction;
-        return _chart;
-    }
-
     _chart.mapUpdateInterval = function (mapUpdateInterval) {
         if (!arguments.length)
             return _mapUpdateInterval;
