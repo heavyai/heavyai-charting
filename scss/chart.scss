@@ -132,7 +132,7 @@
     .bin-row {
         position: absolute;
         left: 0;
-        top: 4px;
+        top: 5px;
         z-index: 5;
         display: flex;
         font-size: 11px;
@@ -168,7 +168,8 @@
         top: 4px;
         font-size: 11px;
         color: $gray5;
-        z-index: 5;
+        z-index: 6;
+        display: flex;
 
         span {
             margin: 0 2px;
@@ -186,6 +187,12 @@
 
             &.range-time {
                 width: 48px;
+                border-left: 0;
+                &.disable {
+                    border-color: transparent;
+                    pointer-events: none;
+                    display: none;
+                }
             }
         }
     }
