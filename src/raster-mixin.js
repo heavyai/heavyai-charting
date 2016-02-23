@@ -7,6 +7,7 @@ dc.rasterMixin = function(_chart) {
     var _sampling = false;
     var _tableName = null;
     var _popupColumns = [];
+    var _popupColumnsMapped = {};
     var _popupSearchRadius = 0;
     var _popupFunction = null;
     var _colorBy = null;
@@ -35,10 +36,24 @@ dc.rasterMixin = function(_chart) {
         _chart._vegaSpec.marks = [];
     }
 
+    _chart.popupFunction = function(popupFunction) {
+        if (!arguments.length)
+            return _popupFunction;
+        _popupFunction = popupFunction;
+        return _chart;
+    }
+
     _chart.popupColumns = function(popupColumns) {
         if (!arguments.length)
             return _popupColumns;
         _popupColumns = popupColumns;
+        return _chart;
+    }
+
+    _chart.popupColumnsMapped = function(popupColumnsMapped) {
+        if (!arguments.length)
+            return _popupColumnsMapped;
+        _popupColumnsMapped = popupColumnsMapped;
         return _chart;
     }
 
@@ -163,8 +178,8 @@ dc.rasterMixin = function(_chart) {
           return;
         }
 
-        columns.push(_chart._xDimName);
-        columns.push(_chart._yDimName);
+        columns.push(_chart._xDimName + " as xPoint");
+        columns.push(_chart._yDimName + " as yPoint");
 
         con.getRowsForPixels(tPixels, _chart.tableName(), columns, [function(result){
           var closestResult = null;
@@ -188,10 +203,18 @@ dc.rasterMixin = function(_chart) {
 
             var nearestPoint = result[closestResult];
 
-            var xPixel = _chart.x()(nearestPoint.row_set[0][_chart._xDimName]);
-                      // || _chart.x()(nearestPoint.row_set[0][_chart._xDimName.split('.')[1]]);
-            var yPixel = (height - _chart.y()(nearestPoint.row_set[0][_chart._yDimName]));
-                      // || (height - _chart.y()(nearestPoint.row_set[0][_chart.yDimName.split('.')[1]]));
+            if (!_.isEmpty(_popupColumnsMapped)){
+                Object.keys(nearestPoint.row_set[0]).forEach(function(key) {
+                  if (_popupColumnsMapped[key]) {
+                      var newkey = _popupColumnsMapped[key];
+                      nearestPoint.row_set[0][newkey] = nearestPoint.row_set[0][key];
+                      delete nearestPoint.row_set[0][key];
+                  }
+                });
+            }
+
+            var xPixel = _chart.x()(nearestPoint.row_set[0]['xPoint']);
+            var yPixel = (height - _chart.y()(nearestPoint.row_set[0]['yPoint']));
             var data = nearestPoint.row_set[0];
 
 
@@ -269,7 +292,7 @@ dc.rasterMixin = function(_chart) {
 
       var html = '';
       for (var key in data) {
-        if(key !== _chart.yDimName && key !== _chart._xDimName){
+        if(key !== 'xPoint' && key !== 'yPoint'){
               html += '<div class="map-popup-item"><span class="popup-item-key">' + key + ':</span><span class="popup-item-val"> ' + data[key] +'</span></div>'
         }
       }
