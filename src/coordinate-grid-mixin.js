@@ -49,7 +49,7 @@ dc.coordinateGridMixin = function (_chart) {
                 _rangeChart.redraw();
             });
         }
-
+        
         _chart._invokeZoomedListener();
 
         dc.events.trigger(function () {
@@ -57,6 +57,26 @@ dc.coordinateGridMixin = function (_chart) {
         }, dc.constants.EVENT_DELAY);
 
         _refocused = !rangesEqual(domain, _xOriginalDomain);
+    
+        if (_binSnap) {
+            
+            _binSnap = false;
+
+            var extent = domain;
+
+            extent[0] = extent[0] < _chart.xAxisMin() ? _chart.xAxisMin() : extent[0];
+            extent[1] = extent[1] > _chart.xAxisMax() ? _chart.xAxisMax() : extent[1];
+
+            _resizing = false;
+
+            var rangedFilter = dc.filters.RangedFilter(extent[0], extent[1]);
+
+            dc.events.trigger(function () {
+                _chart.replaceFilter(rangedFilter);
+                _chart.redrawGroup();
+            }, dc.constants.EVENT_DELAY);
+        }
+        
     }
 
 
@@ -106,6 +126,7 @@ dc.coordinateGridMixin = function (_chart) {
                             {val:'second', label:'1s', numSeconds: 1}];
 
     var _binInputVal = 'auto';
+    var _binSnap = false;
 /* ------------------------------------------------------------------------- */
 
     var _unitCount;
@@ -496,23 +517,24 @@ dc.coordinateGridMixin = function (_chart) {
         }
 
         _chart.render();
+
+        binBrush();
     }
     _chart.updateRangeInput = function () {
-
         var dateFormat = d3.time.format.utc("%b %d, %Y");
         var timeFormat = d3.time.format.utc("%I:%M%p");
 
-        var extent = _chart.filter() || [_chart.xAxisMin(), _chart.xAxisMax()];
-        var diffDays = Math.round(Math.abs((extent[0].getTime() - extent[1].getTime())/(24*60*60*1000)));
-        
+        var extent = _chart.filter() || _chart.x().domain();
+    
         var rangeDisplay = _chart.root().selectAll('.range-display');
+        var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
 
         rangeDisplay.select('.range-start-day')
             .property('value', dateFormat(extent[0]))
             .attr('value', dateFormat(extent[0]));
 
         rangeDisplay.select('.range-start-time')
-            .classed('disable', diffDays > 14 ? true : false)
+            .classed('disable', binNumSecs > 3600 ? true : false)
             .property('value', timeFormat(extent[0]))
             .attr('value', timeFormat(extent[0]));
 
@@ -521,7 +543,7 @@ dc.coordinateGridMixin = function (_chart) {
             .attr('value', dateFormat(extent[1]));
 
         rangeDisplay.select('.range-end-time')
-            .classed('disable', diffDays > 14 ? true : false)
+            .classed('disable', binNumSecs > 3600 ? true : false)
             .property('value', timeFormat(extent[1]))
             .attr('value', timeFormat(extent[1]));
     }
@@ -534,7 +556,7 @@ dc.coordinateGridMixin = function (_chart) {
         var timeInputFormat = d3.time.format.utc("%I:%M%p");
         var currentInput = d3.select(this);
 
-        var extent = _chart.filter() || [_chart.xAxisMin(), _chart.xAxisMax()];
+        var extent = _chart.filter() || _chart.x().domain();
         var index = currentInput.attr('class').indexOf('start') >= 0 ? 0 : 1;
 
         currentInput
@@ -547,13 +569,13 @@ dc.coordinateGridMixin = function (_chart) {
         var currentValue = currentInput.attr('value');
         var newValue = currentInput.property('value');
 
-        var currentExtent = _chart.filter() || [_chart.xAxisMin(), _chart.xAxisMax()];
+        var currentExtent = _chart.filter() || _chart.x().domain();
         
-        var diffDays = Math.round(Math.abs((currentExtent[0].getTime() - currentExtent[1].getTime())/(24*60*60*1000)));
+        var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
 
-        var inputFormat = diffDays > 14 ? d3.time.format.utc('%m-%d-%Y') : (currentInput.attr('class').indexOf('day') >= 0 ? d3.time.format.utc('%m-%d-%Y %I:%M%p') : d3.time.format.utc('%b %d, %Y %I:%M%p'));
+        var inputFormat = binNumSecs > 3600 ? d3.time.format.utc('%m-%d-%Y') : (currentInput.attr('class').indexOf('day') >= 0 ? d3.time.format.utc('%m-%d-%Y %I:%M%p') : d3.time.format.utc('%b %d, %Y %I:%M%p'));
 
-        var inputStr = diffDays > 14 ?  newValue : d3.select(this.parentNode).selectAll('.range-day').property('value') + ' ' + d3.select(this.parentNode).selectAll('.range-time').property('value');
+        var inputStr = binNumSecs > 3600 ?  newValue : d3.select(this.parentNode).selectAll('.range-day').property('value') + ' ' + d3.select(this.parentNode).selectAll('.range-time').property('value');
 
         var date = inputFormat.parse(inputStr);
 
@@ -565,16 +587,26 @@ dc.coordinateGridMixin = function (_chart) {
 
         var extentChart = _chart.rangeChart() ? _chart.rangeChart() : _chart;
         
-        var extent = extentChart.filter() || [extentChart.xAxisMin(), extentChart.xAxisMax()];
+        var extent = extentChart.filter() || extentChart.x().domain();
 
         var index = currentInput.attr('class').indexOf('start') >= 0 ? 0 : 1;
 
+        var other = index === 0 ? 1 : 0;
+
         extent[index] = date < extentChart.xAxisMin() ? extentChart.xAxisMin() : (date > extentChart.xAxisMax() ? extentChart.xAxisMax() : date);
         
+        if (binNumSecs > 3600) {
+            extent[other] = d3.time.day.utc.round(extent[other]);
+        }
+
         extent.sort(function(a, b){return a-b});
 
         if (extent[0].getTime() === extent[1].getTime()) {
-            extent[1] = new Date(extent[1].getTime() + 60 * 60 * 24 * 1000);
+            extent[1] = new Date(extent[1].getTime() + (binNumSecs * 1000));
+        }
+
+        if (_binInput) {
+            extent[1] = new Date(extent[1].getTime() + 1000);
         }
 
         var domFilter = dc.filters.RangedFilter(extent[0], extent[1]);
@@ -584,7 +616,8 @@ dc.coordinateGridMixin = function (_chart) {
         extentChart.redraw();
 
         if (_chart.rangeChart()) {
-             _chart.focus(domFilter);
+            _binSnap = _binInput;
+            _chart.focus(domFilter);
         }
 
         this.blur();
@@ -654,7 +687,6 @@ dc.coordinateGridMixin = function (_chart) {
         var root = _chart.root();
 
         if (_chart.rangeInput()) {
-
             var rangeDisplay = root.selectAll('.range-display');
 
             if (rangeDisplay.empty()) {
@@ -1230,6 +1262,19 @@ dc.coordinateGridMixin = function (_chart) {
 
     _chart.renderBrush = function (g) {
         if (_brushOn) {
+
+            var gBrush = g.append('g')
+                .attr('class', 'brush')
+                .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')')
+                .call(_brush.x(_chart.x()));
+
+            gBrush.select('rect.extent')
+                .attr('clip-path', 'url(#' + getClipPathId() + ')');
+
+            _chart.setBrushY(gBrush, false);
+            _chart.setHandlePaths(gBrush);
+
+
             _brush.on('brush', _chart._brushing);
             _brush.on('brushstart', function(){ 
                 _isBrushing = true;
@@ -1238,20 +1283,95 @@ dc.coordinateGridMixin = function (_chart) {
             _brush.on('brushend', function(){
                 _isBrushing = false;
                 configureMouseZoom();
-            });
+                if (_binInput) {
+                    _chart.brushSnap(gBrush);
+                }
 
-            var gBrush = g.append('g')
-                .attr('class', 'brush')
-                .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')')
-                .call(_brush.x(_chart.x()));
-            _chart.setBrushY(gBrush, false);
-            _chart.setHandlePaths(gBrush);
+                if (_focusChart && _focusChart.binInput()) {
+                    _focusChart.brushSnap(gBrush);
+                }
+            });
 
             if (_chart.hasFilter()) {
                 _chart.redrawBrush(g, false);
             }
         }
     };
+
+    _chart.brushSnap = function (gBrush) {
+
+        if (!d3.event.sourceEvent) return; // only transition after input
+        binBrush();
+    }
+
+    function roundQuarter(date) {
+        var subHalf = d3.time.month.offset(date, -2);
+        var addHalf = d3.time.month.offset(date, 2);
+        return d3.time.month.utc.round(d3.time.months(subHalf, addHalf, 3)[0]);
+    }
+
+    function ceilQuarter(date) {
+        var subHalf = d3.time.month.offset(date, 0);
+        var addHalf = d3.time.month.offset(date, 3);
+        return d3.time.month.utc.round(d3.time.months(subHalf, addHalf, 3)[0]);
+    }
+
+    function floorQuarter(date) {
+        var subHalf = d3.time.month.offset(date, -3);
+        var addHalf = d3.time.month.offset(date, 0);
+        return d3.time.month.utc.round(d3.time.months(subHalf, addHalf, 3)[0]);
+    }
+
+
+    function binBrush() {
+        
+        var extent0 = _chart.extendBrush();
+
+        if (extent0[0].getTime() === extent0[1].getTime()){
+            return;
+        }
+
+        if (extent0[0] <= _chart.xAxisMin() && extent0[1] <= _chart.xAxisMin() || extent0[0] >= _chart.xAxisMax() && extent0[1] >= _chart.xAxisMax()) {
+            dc.events.trigger(function () {
+                _chart.replaceFilter(null);
+                _chart.redrawGroup();
+            }, dc.constants.EVENT_DELAY);
+            return;
+        }
+
+        var timeRange = _chart.group().actualTimeBin();
+        var roundBin = timeRange === 'quarter' ? roundQuarter : d3.time[timeRange].utc.round;
+        var extent1 = extent0.map(roundBin);
+
+        // if empty when rounded, use floor & ceil instead
+        if (extent1[0] >= extent1[1]) {
+            extent1[0] = timeRange === 'quarter' ? floorQuarter(extent0[0]) : d3.time[timeRange].utc.floor(extent0[0]);
+            extent1[1] = timeRange === 'quarter' ? ceilQuarter(extent0[1]) : d3.time[timeRange].utc.ceil(extent0[1]);
+        }
+
+        extent1[0] = extent1[0] < _chart.xAxisMin() ? _chart.xAxisMin() : extent1[0];
+        extent1[1] = extent1[1] > _chart.xAxisMax() ? _chart.xAxisMax() : extent1[1];
+
+        if (extent1[0].getTime() === _chart.xAxisMax().getTime()) {
+            var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
+            extent1[0] = new Date(extent1[0].getTime() - (binNumSecs * 1000));
+            extent1[0] = timeRange === 'quarter' ? roundQuarter(extent1[0]) : d3.time[timeRange].utc.round(extent1[0]);
+        }
+
+        if (extent1[1].getTime() === _chart.xAxisMin().getTime()) {
+            var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
+            extent1[1] = new Date(extent1[1].getTime() + (binNumSecs * 1000));
+            extent1[1] = timeRange === 'quarter' ? roundQuarter(extent1[1]) : d3.time[timeRange].utc.round(extent1[1]);
+        }
+
+        var rangedFilter = dc.filters.RangedFilter(extent1[0], extent1[1]);
+
+        dc.events.trigger(function () {
+            _resizing = false;
+            _chart.replaceFilter(rangedFilter);
+            _chart.redrawGroup();
+        }, dc.constants.EVENT_DELAY);
+    }
 
     _chart.setHandlePaths = function (gBrush) {
         gBrush.selectAll('.resize').append('path').attr('d', _chart.resizeHandlePath);
@@ -1287,20 +1407,14 @@ dc.coordinateGridMixin = function (_chart) {
 
         if (_chart.brushIsEmpty(extent)) {
             dc.events.trigger(function () {
+                if (_chart.focusChart()) {
+                    _chart.focusChart().filter(null);
+                }
                 _chart.filter(null);
                 _chart.redrawGroup();
             }, dc.constants.EVENT_DELAY);
 
-/* OVERRIDE ---------------------------------------------------------------- */
-            if (_chart.rangeInput()) {
-                _chart.updateRangeInput();
-            }
 
-            if (_chart.focusChart()) {
-                _chart.focusChart().filter(null);
-                _chart.focusChart().redraw();
-            }
-/* ------------------------------------------------------------------------- */
         } else {
             var rangedFilter = dc.filters.RangedFilter(extent[0], extent[1]);
 
@@ -1319,7 +1433,6 @@ dc.coordinateGridMixin = function (_chart) {
 
     _chart.redrawBrush = function (g, doTransition) {
         if (_brushOn) {
-
 /* OVERRIDE ---------------------------------------------------------------- */
             if (_chart.filter() && (_chart.brush().empty() || _chart._redrawBrushFlag)) {
                 _chart._redrawBrushFlag = false;
@@ -1333,6 +1446,11 @@ dc.coordinateGridMixin = function (_chart) {
             gBrush.call(_chart.brush()
                       .x(_chart.x())
                       .extent(_chart.brush().extent()));
+
+        }
+
+        if (_chart.rangeInput()) {
+            _chart.updateRangeInput();
         }
 
         _chart.fadeDeselectedArea();
@@ -1457,6 +1575,7 @@ dc.coordinateGridMixin = function (_chart) {
         }
         _chart.fadeDeselectedArea();
         _resizing = false;
+
     }
 
     function configureMouseZoom () {
@@ -1513,6 +1632,7 @@ dc.coordinateGridMixin = function (_chart) {
         }
 
         _zoom.x(_chart.x());
+        
         zoomHandler();
     };
 

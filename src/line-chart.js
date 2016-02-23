@@ -75,9 +75,6 @@ dc.lineChart = function (parent, chartGroup) {
 
         drawDots(chartBody, layers);
 
-        if (_chart.rangeInput()) {
-            _chart.updateRangeInput();
-        }
     };
 
     /**
