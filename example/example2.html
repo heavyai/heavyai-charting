@@ -12,14 +12,14 @@
         font-weight: bold;
         text-align:center;
       }
-      .mapd{
+      .mapd {
         position: relative;
         top: 2px;
       }
-      .data-count{
+      .data-count {
         padding-right:20px;
       }
-      .filter-count{
+      .filter-count {
         font-weight: bold;
         color:  #45B1E8;
       }
@@ -78,8 +78,6 @@
 
   function createCharts(crossFilter) {
 
-    var colorScheme = ["#22A7F0", "#3ad6cd", "#d4e666"]
-
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50;
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
 
@@ -102,24 +100,41 @@
     * TODO
     *
     */
-
+    var langDomain = ['en', 'pt', 'es', 'in', 'und', 'ja', 'tr', 'fr', 'tl', 'ru', 'ar', 'th', 'it', 'nl', 'sv', 'ht', 'de', 'et', 'pl', 'sl', 'ko', 'fi', 'lv', 'sk', 'uk', 'da', 'zh', 'ro', 'no', 'cy', 'iw', 'hu', 'bg', 'lt', 'bs', 'vi', 'el', 'is', 'hi', 'hr', 'fa', 'ur', 'ne', 'ta',  'sr', 'bn', 'si', 'ml', 'hy', 'lo', 'iu', 'ka', 'ps', 'te', 'pa', 'am', 'kn', 'chr', 'my', 'gu', 'ckb', 'km', 'ug', 'sd', 'bo', 'dv'];
+    var langOriginColors = ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b", "#bdcf32", "#ef9b20", "#4db6ac", "#edbf33", "#7c4dff"]
+    var langColors = [];
+    var pointMapDim = crossFilter.dimension(null).projectOn(["goog_x as x", "goog_y as y", "lang as color"]);
+    var xDim = crossFilter.dimension("goog_x");
+    var yDim = crossFilter.dimension("goog_y");
     var parent = document.getElementById("chart1-example");
-    var pointMap = dc.bubbleRasterChart(parent, true)
+    mapLangColors(40);
+
+    var pointMapChart = dc.bubbleRasterChart(parent, true)
+      .height(h/1.5)
       .width(w)
-      .height(h)
-      .dimension(crossFilter)
-      .group(crossFilter.groupAll())
+      .dimension(pointMapDim)
+      .group(pointMapDim)
       .tableName("tweets")
       .mapUpdateInterval(750)
       .popupSearchRadius(2)
-      .cap(500000)
+      .cap(1500000)
       .sampling(true)
       .r(1)
       .dynamicR(d3.scale.sqrt().domain([20000,0]).range([1.0,7.0]).clamp(true))
-      .colors("#22A7F0")
       .othersGrouper(false)
-      .xDim(null)
-      .yDim(null);
+      .xDim(xDim)
+      .yDim(yDim)
+      .colorBy('lang')
+      .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin'])
+      .colors(d3.scale.ordinal().domain(langDomain).range(langColors))
+      .defaultColor("#80DEEA");
+
+    function mapLangColors(n) {
+      langDomain = langDomain.slice(0, n);
+      for (var i = 0; i < langDomain.length; i++) {
+        langColors.push(langOriginColors[i%langOriginColors.length]);
+      }
+    }
 
   /*---------------------TIME CHART EXAMPLE----------------------------------*/
 
@@ -228,22 +243,11 @@
       function reSizeAll(){
         var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
         var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
-
-        dcBarChart
-          .height(h/1.5)
-          .width(w/2)
-
-        dcScatterPlot
-          .height(h/1.5)
-          .width(w/2)
-
         dcTimeChart
           .width(w)
           .height(h/2.5)
-
         dc.renderAll();
       }
-
   }
 
   function debounce(func, wait, immediate) {
@@ -263,18 +267,6 @@
 
   function init() {
 
-    // A MapdCon instance is used for performing raw queries on a MapD GPU database.
-    var con = new MapdCon()
-      .protocol("http")
-      .host("kali.mapd.com")
-      .port("9092")
-      .dbName("mapd")
-      .user("mapd")
-      .password("HyperInteractive");
-
-    // Establish a connection
-    con.connect();
-
     // Get a table from the database
     var tables = con.getTables();
     var tableName = tables[0].name;
@@ -287,7 +279,19 @@
     createCharts(crossFilter);
   }
 
-  document.addEventListener('DOMContentLoaded', init, false);
+    document.addEventListener('DOMContentLoaded', init, false);
+
+    // A MapdCon instance is used for performing raw queries on a MapD GPU database.
+    var con = new MapdCon()
+      .protocol("http")
+      .host("kali.mapd.com")
+      .port("9092")
+      .dbName("mapd")
+      .user("mapd")
+      .password("HyperInteractive");
+
+      // Establish a connection
+      con.connect();
 
     </script>
 
