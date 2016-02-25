@@ -4,7 +4,9 @@
     <title>MapD</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/dc.css" />
+    <link rel="stylesheet" type="text/css" href="node_modules/@mapd/mapdc/mapdc.min.css" />
+    <link rel="stylesheet" type="text/css" href="node_modules/@mapd/mapdc/chart.min.css" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <style>
       .title {
         font-weight: bold;
@@ -58,14 +60,17 @@
       </div>
     </div>
 
-    <script src="js/jquery.min.js"></script>
-    <script src="js/thrift.js"></script>
-    <script src="js/mapd.thrift.js"></script>
-    <script src="js/mapd_types.js"></script>
-    <script src="js/mapdcon.js"></script>
-    <script src="js/crossfilter.mapd.js"></script>
-    <script src="js/d3.js"></script>
-    <script src="js/dc.mapd.bundle.js"></script>
+    <script src="node_modules/lodash/lodash.js"></script>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/d3/d3.min.js"></script>
+    <script src="node_modules/@mapd/mapd-con/dist/thrift.js"></script>
+    <script src="node_modules/@mapd/mapd-con/dist/mapd.thrift.js"></script>
+    <script src="node_modules/@mapd/mapd-con/dist/mapd_types.js"></script>
+    <script src="node_modules/@mapd/mapd-con/dist/MapdCon.js"></script>
+    <script src="node_modules/@mapd/mapd-crossfilter/mapd-crossfilter.js"></script>
+    <script src="node_modules/@mapd/mapdc/mapdc.js"></script>
+    <script src="node_modules/@mapd/mapd-mapbox-gl-js/dist/mapbox-gl.js"></script>
+    <script src="node_modules/@mapd/mapd-mapbox-gl-js/dist/mapboxgl-overrides.js"></script>
   
     <script>
   /*
@@ -209,20 +214,26 @@
    */
 
       var reduceMultiExpression1 = [{
-        expression: "depdelay", 
-        agg_mode:"avg", 
+        expression: "depdelay",
+        agg_mode:"avg",
         name: "x"
       },
       {
-        expression: "arrdelay", 
-        agg_mode:"avg", 
+        expression: "arrdelay",
+        agg_mode:"avg",
         name: "y"
       },
       {
-        expression: "count", 
-        agg_mode:"count", 
+        expression: "*",
+        agg_mode:"count",
         name: "size"
-      }]
+      }];
+
+      var popupHeader = [
+        { type: "dimension", label: 'carrier_name' },
+        { type: "measure", label: 'depdelay', alias: 'x' },
+        { type: "measure", label: 'arrdelay', alias: 'y' },
+      ];
 
   /*
    * Note the order("size") setter here. By default the bubble chart uses the
@@ -231,23 +242,23 @@
    * size in descending order.  Since we probably do not want to sort
    * primarility by departure delay, we override the sort and sort by size
    * instead, which corresponds to the count measure - i.e. we take the
-   * n most popular airlines 
+   * n most popular airlines
    */
-      
+
       var scatterPlotGroup = scatterPlotDimension
                           .group()
-                          .reduceMulti(reduceMultiExpression1)
+                          .reduce(reduceMultiExpression1)
                           .order("size")
 
   /*  We create the bubble chart with the following parameters:
    *
    *  Width and height - as above
    *
-   *  renderHorizontalGridLines(true) 
+   *  renderHorizontalGridLines(true)
    *
    *  renderVerticalGridLines(true) - create grid under points
    *
-   *  cap(15) - only show top 15 airlines 
+   *  cap(15) - only show top 15 airlines
    *
    *  othersGrouper(false) - do not have a bubble for airlines not in top 15
    *
@@ -259,7 +270,7 @@
    *
    *  valueAccessor - specify variable in result set associated with value (y-axis in bubble chart)
    *
-   *  radiusValueAccessor - specify variable in result set associated with radius of the bubbles 
+   *  radiusValueAccessor - specify variable in result set associated with radius of the bubbles
    *
    *  colorAccessor - specify variable in result set associated with color of the
    *  bubbles.  Here we are not coloring by a measure but instead by the groups
@@ -287,6 +298,7 @@
    *  ordinalColors(colorScheme) - we want to color the bars by dimension, i.e. dest_state,
    *  using the color ramp defined above (an array of rgb or hex values)
    */
+
        dcScatterPlot =  dc.bubbleChart('.chart2-example')
                         .width(w/2)
                         .height(h/1.5)
@@ -310,6 +322,7 @@
                         .transitionDuration(500)
                         .xAxisLabel('Departure Delay')
                         .yAxisLabel('Arrival Delay')
+                        .setPopupHeader(popupHeader)
                         .elasticX(true)
                         .elasticY(true)
                         .xAxisPadding('15%')
@@ -317,7 +330,7 @@
                         .ordinalColors(colorScheme)
                         .dimension(scatterPlotDimension)
                         .group(scatterPlotGroup);
-                        
+
   /*  We create the bubble chart with the following parameters:
    *  dc.mapd.js allows functions to be applied at specific points in the chart's
    *  lifecycle.  Here we want to re-adjust our chart's x,y and r (radius) scales
@@ -490,11 +503,13 @@
 
     /* Before doing anything we must set up a mapd connection, specifying
      * username, password, host, port, and database name */
-    var con = mapdcon()
-      .setUserAndPassword('mapd', 'HyperInteractive')
-      .setHost("demo.mapd.com") 
-      .setPort("9090")
-      .setDbName("mapd")
+    var con = new MapdCon()
+      .protocol("http")
+      .host("kali.mapd.com")
+      .port("9092")
+      .dbName("mapd")
+      .user("mapd")
+      .password("HyperInteractive")
       .connect();
 
     /*
@@ -504,12 +519,12 @@
      *
      *  to see all availables --  con.getTables()
      */
-    var crossFilter = crossfilter(con,"flights","flights");
+    var crossFilter = crossfilter(con, "flights", "flights");
 
     /*
-     *  Pass instance of crossfilter into our CreateCharts.
+     *  Pass instance of crossfilter into our reateCharts.
      */
-    var chart = new CreateCharts(crossFilter);
+    createCharts(crossFilter);
   }
 
   document.addEventListener('DOMContentLoaded', init, false);
