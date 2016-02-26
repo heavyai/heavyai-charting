@@ -300,10 +300,8 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     }
 
     _chart._doRender = function() {
-
       var data = _chart.data();
-
-      if (!_.isEmpty(data)) {
+      if (!_.isEmpty(data) && _chart._map.loaded()) {
           setOverlay(data.image, data.nonce);
           _hasBeenRendered = true;
       }
