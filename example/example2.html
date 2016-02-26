@@ -243,9 +243,16 @@
       function reSizeAll(){
         var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
         var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
+        pointMapChart._map.resize();
+        pointMapChart.isNodeAnimate = false;
+        pointMapChart
+          .width(w)
+          .height(h/1.5)
+          .render();
         dcTimeChart
           .width(w)
           .height(h/2.5)
+
         dc.renderAll();
       }
   }
