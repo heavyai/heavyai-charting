@@ -336,6 +336,186 @@
         }
     }
 
+    .md-table-wrapper {
+        padding: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        table {
+            width: 100%;
+            margin-top: -27px;
+            margin-bottom: 8px;
+        }
+
+
+        td {
+            border-bottom: 1px solid $gray1;
+            font-size: 13px;
+            padding: 4px 6px;
+
+            &:hover {
+                color: $blue-main;
+                cursor: pointer;
+            }
+
+            &.filtered {
+                color: $blue-main;
+                pointer-events: none;
+            }
+        }
+
+        th {
+            border-bottom: 1px solid $gray2;
+            color: $gray5;
+            font-size: 13px;
+            padding: 4px 24px 4px 20px;
+        }
+    }
+
+    .md-header-spacer {
+        width: 100%;
+        height: 27px;
+        flex-shrink: 0;
+    }
+
+    .md-table-scroll {
+        overflow: auto;
+        padding: 0 12px;
+        width: 100%;
+        flex-grow: 1;
+    }
+
+    .md-table-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 0 12px;
+        overflow: hidden;
+    }
+
+    .docked-table-header {
+        display: flex;
+        position: relative;
+    }
+
+    .table-header-item {
+        position: relative;
+
+        &.isFiltered {
+            .unfilter-btn {
+                display: block;
+            }
+        }
+
+        .unfilter-btn {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 4px;
+            display: none;
+            cursor: pointer;
+
+            .svg-icon {
+                fill: $blue-main;
+            }
+
+            &:hover {
+                .svg-icon {
+                    fill: #ff0000;
+                }
+            }
+        }
+    }
+
+    .table-sort {
+        border-bottom: 1px solid $gray2;
+        color: $gray5;
+        font-size: 13px;
+        padding: 4px 24px 4px 20px;
+        font-weight: bold;
+        background: white;
+        position: relative;
+        user-select: none;
+
+        &:hover {
+            color: $blue-main;
+            cursor: pointer;
+
+            .sort-btn {
+                .svg-icon {
+                    fill: $blue-main;
+                }
+            }
+            
+        }
+
+        &.active {
+            color: $blue-main;
+
+            &:after {
+                content: '';
+                position: absolute;
+                width:  100%;
+                height: 3px;
+                bottom: -1px;
+                background: $blue-main;
+                left: 0;
+            }
+
+            .sort-btn {
+                .svg-icon {
+                    fill: $blue-main;
+                }
+            }
+
+            .svg-icon {
+                &.icon-sort-arrow {
+
+                    display: block;
+                }
+
+                &.icon-sort {
+                    display: none;
+                }
+
+            }
+
+            &.asc {
+                .icon-sort-arrow {
+                    transform: rotate(0);
+                }
+            }
+
+        }
+
+
+        .sort-btn {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            left: 0;
+            top: 1px;
+            padding: 4px;
+
+        }
+
+        
+        .svg-icon {
+            width: 100%;
+            height: 100%;
+
+            &.icon-sort-arrow {
+                display:none;
+                transform: rotate(180deg);
+            }
+
+        }
+    }
+
     &.mapboxgl-map {
         overflow: visible;
     }
