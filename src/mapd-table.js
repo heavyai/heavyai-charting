@@ -85,8 +85,9 @@ dc.mapdTable = function (parent, chartGroup) {
         } else {
             _chart.dimension().order(null).topAsync(_size, _offset, undefined, callbacks);
         }
-
-        _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
+        if (_tableWrapper) {
+            _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
+        }
 
     });
 
@@ -113,9 +114,8 @@ dc.mapdTable = function (parent, chartGroup) {
         _tableFilter.filter();
     }
 
-
     _chart._doRender = function () {
- 
+        
         if (!_tableWrapper) {
             _tableWrapper = _chart.root().append('div')
                 .attr('class',  'md-table-wrapper');
@@ -149,18 +149,18 @@ dc.mapdTable = function (parent, chartGroup) {
             return;
         }
 
-        var keys = [];
-        for (var key in data[0]) {      
-            if (data[0].hasOwnProperty(key) && key.indexOf('col') >= 0) keys.push(key);
-        }
+
+        var keys = _chart.dimension().getProjectOn();
+        
 
         var tableHeader = table.append('tr').selectAll('th')
             .data(keys)
             .enter();
 
         tableHeader.append('th')
-            .text(function(d, i){
-                return _columns[i];
+            .text(function(d){
+                
+                return d.split(' as')[0];
             })
 
         var tableRows = table.selectAll('.table-row')
@@ -239,7 +239,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
 
                 var textSpan = sortLabel.append('span')
-                    .text(_columns[i]);
+                    .text(d.split(' as')[0]);
 
                 var sortButton = sortLabel.append('div')
                     .attr('class', 'sort-btn');
@@ -309,6 +309,7 @@ dc.mapdTable = function (parent, chartGroup) {
       dc.redrawAll();
 
     }
+
 
     function clearColFilter(columnId) {
       

@@ -1,5 +1,9 @@
 @import 'variables';
 
+body {
+    font-family: "Roboto", Sans-Serif;
+}
+
 .lock-measure {
     left: 100%;
     top: 0;
@@ -68,7 +72,7 @@
 
 .dc-chart {
     position: relative;
-    font-family: "Roboto";
+    font-family: "Roboto", Sans-Serif;
 
     &:hover {
         .brush {
