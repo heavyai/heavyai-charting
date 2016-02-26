@@ -14,6 +14,17 @@ npm install
 bash scripts/install.sh
 ```
 
+## Running the example:
+
+```bash
+cd example/
+npm install # install the example's dependencies
+cd ../
+npm start # start the example server from the top level directory
+```
+
+When the browser opens, click the **example** directory to view the examples.
+
 ## Grunt Tasks:
 
 Local Command | Description
@@ -30,7 +41,7 @@ Global Command | Description
 
 ## Pull Requests:
 
-Attach the appropriate semvar label below to the **title of your pull request**. This allows Jenkins to publish to npm automatically.
+Attach the appropriate semver label below to the **title of your pull request**. This allows Jenkins to publish to npm automatically.
 
 Semvar Tag | Description
 --- | ---
@@ -38,9 +49,9 @@ Semvar Tag | Description
 `[minor]` | New features (additive only!)
 `[patch]` | Bugfixes, documentation
 
-Jenkins will not let you merge a pull request that contains a missing or multiple semvar label.
+Jenkins will not let you merge a pull request that contains a missing or multiple semver label.
 
-**Forgot to add a semvar label?**
+**Forgot to add a semver label?**
 
 1. Update the PR Title
 2. Close the PR
