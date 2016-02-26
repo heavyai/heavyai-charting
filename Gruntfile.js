@@ -49,7 +49,7 @@ module.exports = function (grunt) {
             },
             main: {
                 files: {
-                    '<%= conf.pkg.npmName %>.min.css': ['<%= conf.pkg.npmName %>.css'],
+                    'mapdc.min.css': ['mapdc.css'],
                     'chart.min.css': ['chart.css']
                 }
             }
