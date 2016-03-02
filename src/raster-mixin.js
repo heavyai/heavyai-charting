@@ -3,6 +3,8 @@
  * ***************************************************************************/
 
 dc.rasterMixin = function(_chart) {
+    var _con = window.hasOwnProperty('con') ? con : null;
+
     _chart._vegaSpec = {};
     var _sampling = false;
     var _tableName = null;
@@ -34,6 +36,13 @@ dc.rasterMixin = function(_chart) {
 
         _chart._vegaSpec.scales = [];
         _chart._vegaSpec.marks = [];
+    }
+
+    _chart.con = function(_) {
+      if(!arguments.length)
+          return _con;
+      _con = _;
+      return _chart;
     }
 
     _chart.popupFunction = function(popupFunction) {
@@ -153,6 +162,14 @@ dc.rasterMixin = function(_chart) {
     })
 
     function showPopup(e, pixelRadius) {
+       /*
+        * HOTFIX:
+        * Pass an instance of MapdCon as a third argument if you don't have a global
+        * MapdCon named 'con'.
+        */
+        if (!_con) {
+          throw new Error('Missing a MapdCon instance for showing the popup.');
+        }
 
         if (_mouseLeave) {
           return;
@@ -181,7 +198,7 @@ dc.rasterMixin = function(_chart) {
         columns.push(_chart._xDimName + " as xPoint");
         columns.push(_chart._yDimName + " as yPoint");
 
-        con.getRowsForPixels(tPixels, _chart.tableName(), columns, [function(result){
+        _con.getRowsForPixels(tPixels, _chart.tableName(), columns, [function(result){
           var closestResult = null;
           var closestSqrDistance = Infinity;
           for (var r = 0; r < result.length; r++) {

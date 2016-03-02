@@ -76,7 +76,7 @@
    *   https://dc-js.github.io/dc.js/docs/stock.html.
    */
 
-  function createCharts(crossFilter) {
+  function createCharts(crossFilter, con) {
 
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50;
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
@@ -110,6 +110,7 @@
     mapLangColors(40);
 
     var pointMapChart = dc.bubbleRasterChart(parent, true)
+      .con(con)
       .height(h/1.5)
       .width(w)
       .dimension(pointMapDim)
@@ -274,20 +275,6 @@
 
   function init() {
 
-    // Get a table from the database
-    var tables = con.getTables();
-    var tableName = tables[0].name;
-    var label = "tweets";
-
-    // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
-    var crossFilter = crossfilter(con, tableName, label);
-
-    //  Pass instance of crossfilter into our CreateCharts.
-    createCharts(crossFilter);
-  }
-
-    document.addEventListener('DOMContentLoaded', init, false);
-
     // A MapdCon instance is used for performing raw queries on a MapD GPU database.
     var con = new MapdCon()
       .protocol("http")
@@ -299,6 +286,21 @@
 
       // Establish a connection
       con.connect();
+
+    // Get a table from the database
+    var tables = con.getTables();
+    var tableName = tables[0].name;
+    var label = "tweets";
+
+    // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
+    var crossFilter = crossfilter(con, tableName, label);
+
+    //  Pass instance of crossfilter into our CreateCharts.
+    createCharts(crossFilter, con);
+  }
+
+    document.addEventListener('DOMContentLoaded', init, false);
+
 
     </script>
 
