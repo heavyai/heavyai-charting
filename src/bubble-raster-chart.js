@@ -29,7 +29,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _hasBeenRendered = false;
     var counter = 0;
     var is_safari = navigator.userAgent.indexOf("Safari") > -1;
- 
+
     _chart.colors("#22A7F0"); // set constant as picton blue as default
      /**
      #### .x([scale])
@@ -301,7 +301,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
     _chart._doRender = function() {
       var data = _chart.data();
-      if (!_.isEmpty(data) && _chart._map.loaded()) {
+      if (!_.isEmpty(data) && _chart._map._loaded) {
           setOverlay(data.image, data.nonce);
           _hasBeenRendered = true;
       }
