@@ -145,17 +145,17 @@
 
 
       var reduceMultiExpression1 = [{
-        expression: "popestimate2014",
+        expression: "depdelay",
         agg_mode:"avg",
         name: "col1"
       },
       {
-        expression: "pcnt_popest18plus",
+        expression: "arrdelay",
         agg_mode:"avg",
         name: "col2"
       }];
 
-      var tableChartDimension = crossFilter.dimension(["state_name"]); //.projectOn(["carrier_name as col0", "depdelay as col1", "arrdelay as col2"]); 
+      var tableChartDimension = crossFilter.dimension(["carrier_name", "origin"]); //.projectOn(["carrier_name as col0", "depdelay as col1", "arrdelay as col2"]); 
 
       var tableChartGroup = tableChartDimension.group().reduce(reduceMultiExpression1);
 
@@ -202,7 +202,7 @@
      *
      *  to see all availables --  con.getTables()
      */
-    var crossFilter = crossfilter(con, "state_pops");
+    var crossFilter = crossfilter(con, "flights");
 
     /*
      *  Pass instance of crossfilter into our reateCharts.

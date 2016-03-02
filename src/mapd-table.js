@@ -47,11 +47,10 @@ dc.mapdTable = function (parent, chartGroup) {
 
         _offset += _size;
 
-        if (_sortColumn && _sortColumn.order === 'asc') {
-            _dimOrGroup.bottomAsync(_size, _offset, undefined, [addRowsCallback]);
-        } else {
+        if (_sortColumn && _sortColumn.order === 'desc') {
             _dimOrGroup.topAsync(_size, _offset, undefined, [addRowsCallback]);
-            
+        } else {
+            _dimOrGroup.bottomAsync(_size, _offset, undefined, [addRowsCallback]); 
         }
         _debounce = true;
 
@@ -64,7 +63,7 @@ dc.mapdTable = function (parent, chartGroup) {
     _chart.setDataAsync(function(group,callbacks) {
 
         _offset = 0;
-        
+
         _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
 
         if (_sortColumn && _sortColumn.order === 'desc') {
