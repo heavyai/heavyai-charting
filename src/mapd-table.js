@@ -64,7 +64,7 @@ dc.mapdTable = function (parent, chartGroup) {
     _chart.setDataAsync(function(group,callbacks) {
 
         _offset = 0;
-        console.log('async');
+        
         _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
 
         if (_sortColumn && _sortColumn.order === 'desc') {
