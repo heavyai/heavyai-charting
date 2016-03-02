@@ -365,6 +365,9 @@ body {
 
             &.filtered {
                 color: $blue-main;
+            }
+
+            &.disabled {
                 pointer-events: none;
             }
         }
@@ -374,6 +377,8 @@ body {
             color: $gray5;
             font-size: 13px;
             padding: 4px 24px 4px 20px;
+            white-space: nowrap;
+
         }
     }
 

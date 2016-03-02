@@ -6,21 +6,12 @@ dc.mapdTable = function (parent, chartGroup) {
     var _size = 25;
     var _offset = 0;
     var _debounce = false;
-    var _columns = [];
 
     var _filteredColumns = {};
     var _columnFilterMap = {};
     var _tableFilter = null;
-
     var _sortColumn = null;
-
-    _chart.columnFilterMap = function (_) {
-        if (!arguments.length) {
-            return _columnFilterMap;
-        }
-        _columnFilterMap = _;
-        return _chart;
-    };
+    var _dimOrGroup = null;
 
     _chart.tableFilter = function (_) {
         if (!arguments.length) {
@@ -55,36 +46,33 @@ dc.mapdTable = function (parent, chartGroup) {
     _chart.addRows = function(){
 
         _offset += _size;
-        _chart.dimension().topAsync(_size, _offset, undefined, [addRowsCallback]);
+
+        if (_sortColumn && _sortColumn.order === 'asc') {
+            _dimOrGroup.bottomAsync(_size, _offset, undefined, [addRowsCallback]);
+        } else {
+            _dimOrGroup.topAsync(_size, _offset, undefined, [addRowsCallback]);
+            
+        }
         _debounce = true;
 
     }
 
     _chart.data(function() {
-
-        if (!_chart.dataCache) {
-
-            _chart.dataCache = _sortColumn ? (_sortColumn.order === 'desc' ? _chart.dimension().order(_sortColumn.col).top(_size + _offset, 0) : _chart.dimension().order(_sortColumn.col).bottom(_size + _offset, 0)) : _chart.dimension().order(null).top(_size + _offset, 0);
-        }
-
         return _chart.dataCache;
     });
 
     _chart.setDataAsync(function(group,callbacks) {
-        
+
         _offset = 0;
+        console.log('async');
+        _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
 
-        if (_sortColumn) {
-
-            if (_sortColumn.order === 'desc') {
-                _chart.dimension().order(_sortColumn.col).topAsync(_size, _offset, undefined, callbacks);
-            } else {
-                _chart.dimension().order(_sortColumn.col).bottomAsync(_size, _offset, undefined, callbacks);
-            }
-
+        if (_sortColumn && _sortColumn.order === 'desc') {
+            _dimOrGroup.order(_sortColumn.col.name).topAsync(_size, _offset, undefined, callbacks);
         } else {
-            _chart.dimension().order(null).topAsync(_size, _offset, undefined, callbacks);
+             _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : (_chart.dimension().value().length > 0 ? 'key0' : null)).bottomAsync(_size, _offset, undefined, callbacks);
         }
+
         if (_tableWrapper) {
             _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
         }
@@ -108,7 +96,6 @@ dc.mapdTable = function (parent, chartGroup) {
     };
 
     _chart.clearTableFilter = function () {
-
         _columnFilterMap = {};
         _chart.clearFilteredColumns();
         _tableFilter.filter();
@@ -149,41 +136,53 @@ dc.mapdTable = function (parent, chartGroup) {
             return;
         }
 
+        var cols = [];
 
-        var keys = _chart.dimension().getProjectOn();
+        if (_chart.dimension().value().length > 0) {
+            _chart.dimension().value().forEach(function(d, i){
+                cols.push({expression: d, name: 'key'+i });
+            });
+            _chart.group().reduce().forEach(function(d){
+                if (d.expression) {
+                    cols.push({expression: d.expression, name: d.name, agg_mode: d.agg_mode });
+                }
+            });
+
+        } else {
+            cols = _chart.dimension().getProjectOn().map(function(d){
+                var splitStr = d.split(' as ');
+                return {expression: splitStr[0], name: splitStr[1]};
+            });
+        }
+         
         
-
         var tableHeader = table.append('tr').selectAll('th')
-            .data(keys)
+            .data(cols)
             .enter();
 
         tableHeader.append('th')
-            .text(function(d){
-                
-                return d.split(' as')[0];
-            })
+            .text(function(d){ return (d.agg_mode ? d.agg_mode.toUpperCase() : '') + ' ' + d.expression });
 
         var tableRows = table.selectAll('.table-row')
             .data(data)
             .enter();
 
-
         var rowItem = tableRows.append('tr');
 
-        keys.forEach(function(key, i){
+        cols.forEach(function(col, i){
+
             rowItem.append('td')
                 .text(function(d){
-                    return d[key];
+                    return d[col.name];
                 })
-                .attr('data-index', i)
-                .on('click', function(d) {
-                    
-                    var index = parseInt(d3.select(this).attr('data-index'))
-                    onClickCell(_columns[index],d[key], typeof d[key], index); 
-
-                })
-                .classed('filtered', function(){
-                    return _columns[i] in _filteredColumns;
+                .classed('filtered', col.expression in _filteredColumns)
+                .classed('disabled', !!col.agg_mode || _chart.dimension().value().length === 1)
+                .on('click', function(d){
+                    if (col.expression in _filteredColumns) {
+                        clearColFilter(col.expression); 
+                    } else {
+                        filterCol(col.expression, d[col.name]);
+                    }
                 });
         });
 
@@ -213,7 +212,7 @@ dc.mapdTable = function (parent, chartGroup) {
                 var headerItem = dockedHeader.append('div')
                     .attr('class','table-header-item')
                     .classed('isFiltered', function(){
-                        return _columns[i] in _filteredColumns;
+                        return d.expression in _filteredColumns;
                     });
 
                 var sortLabel = headerItem.append('div')
@@ -239,7 +238,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
 
                 var textSpan = sortLabel.append('span')
-                    .text(d.split(' as')[0]);
+                    .text((d.agg_mode ? d.agg_mode.toUpperCase() : '') + ' ' + d.expression);
 
                 var sortButton = sortLabel.append('div')
                     .attr('class', 'sort-btn');
@@ -259,15 +258,11 @@ dc.mapdTable = function (parent, chartGroup) {
                     .append('use')
                     .attr('xlink:href', '#icon-arrow1');
 
-
                 var unfilterButton = headerItem.append('div')
                     .attr('class', 'unfilter-btn')
-                    .attr('data-index', i)
+                    .attr('data-expr', d.expression)
                     .on('click', function(){
-                        var index = parseInt(d3.select(this).attr('data-index'))
-
-                        _chart.removeFilteredColumn(_columns[index]);
-                        clearColFilter(index); 
+                        clearColFilter(d3.select(this).attr('data-expr')); 
                     })
                     .style('left', textSpan.node().getBoundingClientRect().width + 20 + 'px')
                     .append('svg')
@@ -276,49 +271,35 @@ dc.mapdTable = function (parent, chartGroup) {
                     .attr('viewBox', '0 0 48 48')
                     .append('use')
                     .attr('xlink:href', '#icon-unfilter');
-
             });
 
     }
 
+    function filterCol(expr, val) {
 
- 
-
-    function onClickCell(name, value, type, index) {
-
-      var val = value;
       var dateFormat = d3.time.format.utc("%Y-%m-%d");
       var timeFormat = d3.time.format.utc("%Y-%m-%d %H:%M:%S");
 
       if (Object.prototype.toString.call(val) === '[object Date]') {
-
         val = "DATE '" + dateFormat(val) + "'";
-
       }
-      else if (type === 'string') {
-        if (val !== null) {
+      else if (val && typeof val === 'string') {
           val = "'" + val.replace(/'/g, "''") + "'";
-        }
       }
 
-      _chart.addFilteredColumn(name);
-      _columnFilterMap[name] = val;
-
+      _chart.addFilteredColumn(expr);
+      _columnFilterMap[expr] = val;
       _tableFilter.filter(computeTableFilter(_columnFilterMap));
 
       dc.redrawAll();
-
     }
 
 
-    function clearColFilter(columnId) {
-      
-      var expr = _columns[columnId];
+    function clearColFilter(expr) {
       delete _columnFilterMap[expr];
+      _chart.removeFilteredColumn(expr);
       _tableFilter.filter(computeTableFilter(_columnFilterMap));
-
       dc.redrawAll();
-
     }
 
     function computeTableFilter (columnFilterMap) { // should use class variables?
@@ -356,15 +337,6 @@ dc.mapdTable = function (parent, chartGroup) {
         return _chart;
     };
 
-  
-    _chart.columns = function (columns) {
-        if (!arguments.length) {
-            return _columns;
-        }
-        _columns = columns;
-        return _chart;
-    };
-
     _chart.order = function (order) {
         if (!arguments.length) {
             return _order;
@@ -372,7 +344,6 @@ dc.mapdTable = function (parent, chartGroup) {
         _order = order;
         return _chart;
     };
-
 
     return _chart.anchor(parent, chartGroup);
 };
