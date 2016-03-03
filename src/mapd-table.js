@@ -57,6 +57,9 @@ dc.mapdTable = function (parent, chartGroup) {
     }
 
     _chart.data(function() {
+        if (!_chart.dataCache) {
+            _chart.dataCache = _sortColumn ? (_sortColumn.order === 'desc' ? _chart.dimension().order(_sortColumn.col).top(_size + _offset, 0) : _chart.dimension().order(_sortColumn.col).bottom(_size + _offset, 0)) : _chart.dimension().order(null).top(_size + _offset, 0);
+         }
         return _chart.dataCache;
     });
 
