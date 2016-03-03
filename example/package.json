@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "@mapd/mapd-con": "^1.2.0",
-    "@mapd/mapd-crossfilter": "^0.1.18",
     "@mapd/mapd-mapbox-gl-js": "^0.1.1",
     "d3": "^3.5.14",
     "jquery": "^2.2.0",
