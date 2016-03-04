@@ -293,7 +293,7 @@
     var label = "tweets";
 
     // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
-    var crossFilter = crossfilter(con, tableName, label);
+    var crossFilter = crossfilter(con, tableName);
 
     //  Pass instance of crossfilter into our CreateCharts.
     createCharts(crossFilter, con);
