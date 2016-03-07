@@ -13,6 +13,10 @@ dc.mapdTable = function (parent, chartGroup) {
     var _sortColumn = null;
     var _dimOrGroup = null;
 
+    _chart.resetTable = function(){
+        _chart.select('.md-table-wrapper').remove();
+    }
+
     _chart.tableFilter = function (_) {
         if (!arguments.length) {
             return _tableFilter;
@@ -45,6 +49,8 @@ dc.mapdTable = function (parent, chartGroup) {
 
     _chart.addRows = function(){
 
+        _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
+
         _offset += _size;
 
         if (_sortColumn && _sortColumn.order === 'desc') {
@@ -58,7 +64,13 @@ dc.mapdTable = function (parent, chartGroup) {
 
     _chart.data(function() {
         if (!_chart.dataCache) {
-            _chart.dataCache = _sortColumn ? (_sortColumn.order === 'desc' ? _chart.dimension().order(_sortColumn.col).top(_size + _offset, 0) : _chart.dimension().order(_sortColumn.col).bottom(_size + _offset, 0)) : _chart.dimension().order(null).top(_size + _offset, 0);
+            _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
+
+            _chart.dataCache = _sortColumn ? 
+                (_sortColumn.order === 'desc' ? 
+                    _dimOrGroup.order(_sortColumn.col).top(_size + _offset, 0) : 
+                    _dimOrGroup.order(_sortColumn.col).bottom(_size + _offset, 0)) :
+                _dimOrGroup.order(null).top(_size + _offset, 0);
          }
         return _chart.dataCache;
     });
@@ -104,10 +116,11 @@ dc.mapdTable = function (parent, chartGroup) {
     }
 
     _chart._doRender = function () {
-        
+
         if (!_tableWrapper) {
+            _chart.resetTable();
             _tableWrapper = _chart.root().append('div')
-                .attr('class',  'md-table-wrapper');
+                .attr('class', 'md-table-wrapper');
 
             _tableWrapper.append('div')
                 .attr('class', 'md-header-spacer');
@@ -117,7 +130,7 @@ dc.mapdTable = function (parent, chartGroup) {
                 .append('table');
 
             _tableWrapper.append('div')
-                .attr('class',  'md-table-header')
+                .attr('class', 'md-table-header')
         }
 
         _debounce = false;
@@ -193,7 +206,7 @@ dc.mapdTable = function (parent, chartGroup) {
             .attr('class', 'docked-table-header')
             .style('left', function(){
                return '-' + _tableWrapper.select('.md-table-scroll').node().scrollLeft + 'px';
-            });;
+            });
 
 
         _chart.tableWrapper().select('.md-table-scroll')
@@ -325,7 +338,6 @@ dc.mapdTable = function (parent, chartGroup) {
         }
         return filter;
     }
-
 
     _chart._doRedraw = function () {
         return _chart._doRender();
