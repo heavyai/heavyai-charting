@@ -76,7 +76,7 @@
    *   https://dc-js.github.io/dc.js/docs/stock.html.
    */
 
-  function createCharts(crossFilter, con) {
+  function createCharts(crossFilter, con, tableName) {
 
     var w = document.documentElement.clientWidth - 30;
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
@@ -116,7 +116,7 @@
       .width(w)
       .dimension(pointMapDim)
       .group(pointMapDim)
-      .tableName("tweets")
+      .tableName(tableName)
       .mapUpdateInterval(750)
       .popupSearchRadius(2)
       .cap(1500000)
@@ -292,13 +292,13 @@
       con.connect();
 
     // Get a table from the database
-    var tableName = 'tweets';
+    var tableName = 'tweets_nov_feb';
 
     // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
     var crossFilter = crossfilter(con, tableName);
 
     //  Pass instance of crossfilter into our CreateCharts.
-    createCharts(crossFilter, con);
+    createCharts(crossFilter, con, tableName);
   }
 
     document.addEventListener('DOMContentLoaded', init, false);
