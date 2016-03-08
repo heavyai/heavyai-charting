@@ -78,8 +78,9 @@
 
   function createCharts(crossFilter, con) {
 
-    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50;
+    var w = document.documentElement.clientWidth - 30;
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+
 
   /*---------------------BASIC COUNT ON CROSSFILTER--------------------------*/
 
@@ -136,6 +137,7 @@
         langColors.push(langOriginColors[i%langOriginColors.length]);
       }
     }
+
 
   /*---------------------TIME CHART EXAMPLE----------------------------------*/
 
@@ -239,11 +241,13 @@
 
       /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
 
-      window.addEventListener("resize", debounce(reSizeAll, 100));
+      window.addEventListener("resize", debounce(reSizeAll, 500));
 
       function reSizeAll(){
-        var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
-        var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
+
+        var w = document.documentElement.clientWidth - 30;
+        var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+
         pointMapChart._map.resize();
         pointMapChart.isNodeAnimate = false;
         pointMapChart
@@ -288,9 +292,7 @@
       con.connect();
 
     // Get a table from the database
-    var tables = con.getTables();
-    var tableName = tables[0].name;
-    var label = "tweets";
+    var tableName = 'tweets';
 
     // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
     var crossFilter = crossfilter(con, tableName);
