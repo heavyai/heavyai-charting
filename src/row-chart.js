@@ -164,7 +164,8 @@ dc.rowChart = function (parent, chartGroup) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.measureValue = function (d) {
-        return _chart.cappedValueAccessor(d);
+        var commafy = d3.format(',');
+        return commafy(parseFloat(_chart.cappedValueAccessor(d).toFixed(3)));
     };
 /* ------------------------------------------------------------------------- */
 
@@ -359,7 +360,6 @@ dc.rowChart = function (parent, chartGroup) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
         if (_chart.measureLabelsOn()) {
-            var commafy = d3.format(',');
 
             var measureLab = rows.select('.value-measure')
                 .attr('y', _labelOffsetY)
@@ -368,7 +368,7 @@ dc.rowChart = function (parent, chartGroup) {
                 .attr('text-anchor', isStackLabel() ? 'start':'end')
                 .text(function(d){
 
-                    return commafy(_chart.measureValue(d));
+                    return _chart.measureValue(d);
                 })
                 .attr('x', function (d, i) {
                     if (isStackLabel()) {

@@ -77,7 +77,8 @@ dc.pieChart = function (parent, chartGroup) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.measureValue = function (d) {
-        return _chart.cappedValueAccessor(d);
+        var commafy = d3.format(',');
+        return commafy(parseFloat(_chart.cappedValueAccessor(d).toFixed(3)));
     };
 
     _chart.redoSelect = highlightFilter;
@@ -221,13 +222,11 @@ dc.pieChart = function (parent, chartGroup) {
                 return showLabel ? displayText : '';
             });
 
-        var commafy = d3.format(',');
-
         if (_chart.measureLabelsOn()) {
 
             labelsEnter.select('.value-measure')
                 .text(function(d){
-                    return commafy(_chart.measureValue(d.data));
+                    return _chart.measureValue(d.data);
                 })
                 .html(function(d){
 
@@ -238,7 +237,7 @@ dc.pieChart = function (parent, chartGroup) {
                     var availableLabelWidth = getAvailableLabelWidth(d);
                     var width = d3.select(this).node().getBoundingClientRect().width;
 
-                    return  width > availableLabelWidth ? truncateLabel(commafy(_chart.measureValue(d.data)), width, availableLabelWidth) : commafy(_chart.measureValue(d.data));
+                    return  width > availableLabelWidth ? truncateLabel(_chart.measureValue(d.data), width, availableLabelWidth) : _chart.measureValue(d.data);
                     
                 });
         }    
@@ -632,12 +631,10 @@ dc.pieChart = function (parent, chartGroup) {
             .attr('class', 'popup-legend')
             .style('background-color', fill(d,i));
 
-        var commafy = d3.format(',');
-
         popupBox.append('div')
             .attr('class', 'popup-value')
             .html(function(){
-                return '<div class="popup-value-dim">'+ _chart.label()(d.data) +'</div><div class="popup-value-measure">'+ commafy(parseFloat(_chart.measureValue(d.data).toFixed(2))) +'</div>';
+                return '<div class="popup-value-dim">'+ _chart.label()(d.data) +'</div><div class="popup-value-measure">'+ _chart.measureValue(d.data) +'</div>';
             });
 
         popup.classed('js-showPopup', true);
