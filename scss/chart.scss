@@ -125,6 +125,10 @@ body {
             
         }
 
+        &.deselected text {
+            display: block !important;
+        }
+
 
     }
 
