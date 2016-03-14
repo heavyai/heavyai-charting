@@ -16,6 +16,11 @@
         position: relative;
         top: 2px;
       }
+      .search{
+        display: inline-block;
+        margin-top: 12px;
+        margin-left: 50px;
+      }
       .data-count {
         padding-right:20px;
       }
@@ -33,10 +38,13 @@
             <img alt="Brand" src="images/favicon.png" height="30" width="30">
             <span class="mapd">MapD Demo</span>
         </div>
+        <div class='search'> Filter Term(s): <small> use a comma between terms to search multiple values </small>
+          <input class='search-bar'>
+        </div>
         <div class="navbar-text navbar-right">
         <div class="data-count">
           <span class="total"><span><span class="filter-count"></span></span>
-          <span>of <span class="total-count"></span> flights</span>
+          <span>of <span class="total-count"></span> tweets</span>
         </div>
         </div>
       </div>
@@ -102,13 +110,31 @@
     *
     */
     var langDomain = ['en', 'pt', 'es', 'in', 'und', 'ja', 'tr', 'fr', 'tl', 'ru', 'ar', 'th', 'it', 'nl', 'sv', 'ht', 'de', 'et', 'pl', 'sl', 'ko', 'fi', 'lv', 'sk', 'uk', 'da', 'zh', 'ro', 'no', 'cy', 'iw', 'hu', 'bg', 'lt', 'bs', 'vi', 'el', 'is', 'hi', 'hr', 'fa', 'ur', 'ne', 'ta',  'sr', 'bn', 'si', 'ml', 'hy', 'lo', 'iu', 'ka', 'ps', 'te', 'pa', 'am', 'kn', 'chr', 'my', 'gu', 'ckb', 'km', 'ug', 'sd', 'bo', 'dv'];
+
+
     var langOriginColors = ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b", "#bdcf32", "#ef9b20", "#4db6ac", "#edbf33", "#7c4dff"]
     var langColors = [];
-    var pointMapDim = crossFilter.dimension(null).projectOn(["goog_x as x", "goog_y as y", "lang as color"]);
+    var pointMapDim = crossFilter.dimension(null).projectOn(["goog_x as x", "goog_y as y", "lang as color", "followers as size"]);
     var xDim = crossFilter.dimension("goog_x");
     var yDim = crossFilter.dimension("goog_y");
     var parent = document.getElementById("chart1-example");
     mapLangColors(40);
+
+
+    /* Point Map Radius Size:
+     * in order to calculate the radius size.  We use d3 scale and pass in a
+     * domain and range.
+
+     To learn more about d3 scales, please read this:
+     https://github.com/d3/d3-scale
+
+     We then pass this scale into the r function within bubbleRasterChart
+    */
+     var rScale = d3.scale.linear()
+                          .domain([0,5000])
+                          .range([2,12]);
+   
+
 
     var pointMapChart = dc.bubbleRasterChart(parent, true)
       .con(con)
@@ -119,17 +145,24 @@
       .tableName(tableName)
       .mapUpdateInterval(750)
       .popupSearchRadius(2)
-      .cap(1500000)
+      .cap(500000)
       .sampling(true)
-      .r(1)
       .dynamicR(d3.scale.sqrt().domain([20000,0]).range([1.0,7.0]).clamp(true))
       .othersGrouper(false)
       .xDim(xDim)
       .yDim(yDim)
       .colorBy('lang')
-      .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin'])
+      .r(rScale)
+      .defaultColor("#80DEEA")
       .colors(d3.scale.ordinal().domain(langDomain).range(langColors))
-      .defaultColor("#80DEEA");
+      .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
+      .mapStyle('json/dark-v8.json');
+
+      /* Find additional mapbox styles here:
+       * 
+       * https://github.com/mapbox/mapbox-gl-styles/tree/master/styles
+       */
+
 
     function mapLangColors(n) {
       langDomain = langDomain.slice(0, n);
@@ -229,8 +262,54 @@
       dcTimeChart
         .xAxis().orient('top');
 
+
+  /*---------------------SET UP FILTER ----------------------------------*/
+
+      /*  We create the filter
+       *  with the following parameters:
+       *
+       *  Dimension: What column you would like to search.
+       *
+       *  OPTIONAL: setDrillDownFilter: Boolean
+       *  if set to true, your search will "AND" for all values, instead of
+       *  the default "OR" for all values.
+       *  
+       *  eg. If searching "Keyboard Cat":
+       *  This will only only return results where the tweet contains:
+       *  "Keyboard" AND "Cat"
+       *
+       */
+      var searchFilterTweets = crossFilter.dimension("tweet_tokens")
+                                          .setDrillDownFilter(true);
+
+      function createMultiFilterArray(search) {
+
+        // Empty Search
+        if (search == "") {
+          return undefined;
+        }
+
+        return search.split(',').map(function(searchValue) {
+          return searchValue.trim();
+        });
+      }
+
+      $('.search-bar').keypress(function(e){
+        if (e.keyCode === 13) {
+          var mutipleFilterArray = createMultiFilterArray(e.target.value);
+          if (mutipleFilterArray) {
+            searchFilterTweets.filterMulti(mutipleFilterArray);
+          } else {
+            // Clears all filters
+            searchFilterTweets.filter();
+          }
+          // You must call redrawAll after applying custom filters.
+          dc.redrawAll();
+        }
+      })
+
       /* Calling dc.renderAll() will render all of the charts we set up.  Any
-       * filters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
+         crossFilters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
        */
 
       dc.renderAll()
