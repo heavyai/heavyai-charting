@@ -1,6 +1,6 @@
 {
   "name": "@mapd/mapdc",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "license": "Apache-2.0",
   "copyright": "2014",
   "description": "A multi-dimensional charting library built to work natively with crossfilter and rendered using d3.js.",
