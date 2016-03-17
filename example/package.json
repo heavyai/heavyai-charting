@@ -4,6 +4,7 @@
   "description": "Boilerplate code for mapd frontend functionality",
   "main": "index.js",
   "scripts": {
+    "build": "bash scripts/copy-libs.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

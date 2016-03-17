@@ -38,11 +38,11 @@ spec/index-browserify.html
 # font noise from some doc tool
 web/docs/public
 
-# jenkins deploy scripts
-scripts/check_pr_title_for_semver_label.sh
-scripts/deploy.sh
-scripts/get_semver_label_from_log.sh
-scripts/get_version_number_from_package.sh
+
+# example libs
+example/js
+example/css/mapdc.min.css
+example/css/chart.min.css
 
 # generated files
 mapdc.js

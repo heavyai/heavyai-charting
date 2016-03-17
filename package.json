@@ -29,7 +29,6 @@
     "d3": "3.x"
   },
   "devDependencies": {
-    "@mapd/npm-deploy-scripts": "^1.2.2",
     "emu": "~0.0.2",
     "grunt": "~0.4.5",
     "grunt-browserify": "~4.0.0",
@@ -62,10 +61,11 @@
     "uglify-js": "2.4.x"
   },
   "scripts": {
-    "test": "grunt test ",
-    "copyscripts": "bash node_modules/@mapd/npm-deploy-scripts/copyscripts.sh",
-    "deploy": "bash scripts/deploy.sh",
-    "start": "bash scripts/install.sh  && ./node_modules/http-server/bin/http-server -p 8081 -o"
+    "build":"bash scripts/install.sh",
+    "jenkins:bump-and-publish": "bash scripts/bump-and-publish.sh",
+    "jenkins:copy-scripts": "bash node_modules/@mapd/npm-deploy-scripts/packages/copy-scripts.sh",
+    "start": "npm run build && ./node_modules/http-server/bin/http-server -p 8081 -o",
+    "test": "grunt test "
   },
   "npmName": "mapdc",
   "npmFileMap": [
