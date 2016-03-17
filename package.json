@@ -1,6 +1,6 @@
 {
   "name": "@mapd/mapdc",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "license": "Apache-2.0",
   "copyright": "2014",
   "description": "A multi-dimensional charting library built to work natively with crossfilter and rendered using d3.js.",
@@ -61,7 +61,7 @@
     "uglify-js": "2.4.x"
   },
   "scripts": {
-    "build":"bash scripts/install.sh",
+    "build": "bash scripts/install.sh",
     "jenkins:bump-and-publish": "bash scripts/bump-and-publish.sh",
     "jenkins:copy-scripts": "bash node_modules/@mapd/npm-deploy-scripts/packages/copy-scripts.sh",
     "start": "npm run build && ./node_modules/http-server/bin/http-server -p 8081 -o",
