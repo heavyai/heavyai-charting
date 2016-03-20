@@ -31,6 +31,10 @@ dc.mapMixin = function (_chart, chartDivId) {
     var _arr = [[180, -85], [-180, 85]];
     var _llb = mapboxgl.LngLatBounds.convert(_arr);
 
+    _chart.map = function() { // just a getter - don't let user set map
+        return _map;
+    }
+
     _chart.xDim = function(xDim) {
         if (!arguments.length)
             return _xDim;
