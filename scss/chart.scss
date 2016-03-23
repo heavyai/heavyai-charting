@@ -111,6 +111,10 @@ body {
                 pointer-events: none;
             }
 
+            &.deselected  text{
+                opacity: 0;
+            }
+
             &.selected {
                 text {
                     opacity: .9;
@@ -125,11 +129,13 @@ body {
             
         }
 
-        &.deselected text {
-            display: block !important;
+        &.deselected {
+
+            text {
+                display: block !important;
+                opacity: .5;
+            }
         }
-
-
     }
 
     .mouse-out-detect {
@@ -473,7 +479,7 @@ body {
                 content: '';
                 position: absolute;
                 width:  100%;
-                height: 3px;
+                height: 2px;
                 bottom: -1px;
                 background: $blue-main;
                 left: 0;

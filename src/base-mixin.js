@@ -48,11 +48,37 @@ dc.baseMixin = function (_chart) {
     var _height = _defaultHeight;
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    var _multipleKeysAccessor = function(d){ 
+        if ( _chart.dimension().value().length === 1) {
+            return d['key0'];
+        }
+        var keysStr = '';
+        var i = 1;
+        for (var key in d) {
+            if (d.hasOwnProperty(key) && key.indexOf('key') > -1) {
+                keysStr += (i > 1 ? ' / ' : '') + d[key];
+            }
+            i++;
+        }
+        return keysStr;
+    };
+
+    _chart.multipleKeysAccessor = function (_) {
+        if (!arguments.length) {
+            return _multipleKeysAccessor;
+        }
+        _multipleKeysAccessor = _;
+        return _chart;
+    };
+
+
     var _redrawBrushFlag = false;
-    var _keyAccessor = dc.pluck('key0');
-    var _label = dc.pluck('key0');
+    var _keyAccessor = _multipleKeysAccessor;
+    var _label = _multipleKeysAccessor;
     var _ordering = dc.pluck('key0');
     var _measureLabelsOn = false;
+
+    
 /* ------------------------------------------------------------------------- */
 
     var _valueAccessor = dc.pluck('val');
@@ -588,7 +614,7 @@ dc.baseMixin = function (_chart) {
     _chart.resetSvg = function () {
 
 /* OVERRIDE ---------------------------------------------------------------- */
-        _chart.select('.svg-wrapper').remove();
+        _chart.root().html('');
 /* ------------------------------------------------------------------------- */
 
         return generateSvg();
