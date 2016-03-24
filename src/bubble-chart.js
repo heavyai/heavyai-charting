@@ -222,7 +222,9 @@ dc.bubbleChart = function (parent, chartGroup) {
 
         _chart.updatePopup();
 
-        popup.classed('js-showPopup popup-scrollable', true);
+        popup.classed('js-showPopup popup-scrollable delay-pointer', true);
+
+        setTimeout(function(){ popup.classed('delay-pointer', false)}, 250);
 
         positionPopup(d, this);
     }
@@ -275,7 +277,7 @@ dc.bubbleChart = function (parent, chartGroup) {
         var y = bubbleY(d) + _chart.margins().top;
 
         var popup =_chart.popup()
-            .attr('style', function(){
+            .style('transform', function(){
                 var popupWidth = d3.select(this).select('.chart-popup-box').node().getBoundingClientRect().width/2;
                 var offsetX = x - popupWidth < 0 ? popupWidth - x - 16 : (x + popupWidth > _chart.width() ? _chart.width() - (x + popupWidth) + 16 : 0);
                 
@@ -283,7 +285,7 @@ dc.bubbleChart = function (parent, chartGroup) {
                     .style('left', function(){
                         return offsetX !== 0 ? popupWidth - offsetX + 'px' : '50%';
                     });
-                return 'transform:translate('+(x + offsetX) +'px,'+y+'px)';
+                return 'translate('+(x + offsetX) +'px,'+y+'px)';
             });
 
         popup.select('.chart-popup-box')
