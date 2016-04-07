@@ -1,6 +1,6 @@
 {
   "name": "@mapd/mapdc",
-  "version": "0.12.3",
+  "version": "0.14.0",
   "license": "Apache-2.0",
   "copyright": "2014",
   "description": "A multi-dimensional charting library built to work natively with crossfilter and rendered using d3.js.",
@@ -47,7 +47,6 @@
     "grunt-gh-pages": "~0.10.0",
     "grunt-jscs": "~2.1.0",
     "grunt-jsdoc-to-markdown": "~1.1.1",
-    "grunt-lib-phantomjs": "~0.7.1",
     "grunt-markdown": "~0.7.0",
     "grunt-saucelabs": "~8.6.1",
     "grunt-shell": "~1.1.1",

@@ -12,7 +12,6 @@ dc.mapMixin = function (_chart, chartDivId) {
 
     _chart._xDimName = null;
     _chart._yDimName = null;
-    _chart._map = null;
     var _mapInitted = false;
     var _xDim = null;
     var _yDim = null;
@@ -83,8 +82,13 @@ dc.mapMixin = function (_chart, chartDivId) {
       return transCoord;
     }
 
-    function onLoad(e){
+    function onStyleLoad(e) {
+       console.log("style load");
+      _chart.render();
+    }
 
+    function onLoad(e){
+       console.log("load");
       if (_chart.initGeocoder()) {
         _chart.initGeocoder()();
       }
@@ -103,7 +107,7 @@ dc.mapMixin = function (_chart, chartDivId) {
                 return;
             _lastMapMoveType = e.type;
             var curTime = (new Date).getTime();
-            var bounds = _chart._map.getBounds();
+            var bounds = _map.getBounds();
             var minCoord = conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
             var maxCoord = conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
             if (e.type === 'move') {
@@ -129,35 +133,39 @@ dc.mapMixin = function (_chart, chartDivId) {
         if (!arguments.length)
             return _mapStyle;
         _mapStyle = style;
-        if (!!_chart._map) 
-            _chart._map.setStyle(_mapStyle);
+        if (!!_map) {
+            _map.setStyle(_mapStyle);
+            _chart.resetLayer();
+            //_chart.render();
+        }
+
         return _chart;
     }
 
     _chart.center = function (_) {
         if (!arguments.length) {
-            _center = _chart._map.getCenter();
+            _center = _map.getCenter();
             return _center;
         }
         _center = _;
         if (_mapInitted)
-            _chart._map.setCenter(_center);
+            _map.setCenter(_center);
     }
 
     _chart.zoom = function(_) {
         if (!arguments.length) {
-            _zoom = _chart._map.getZoom();
+            _zoom = _map.getZoom();
             return _zoom;
         }
         _zoom = _;
         if (_mapInitted)
-            _chart._map.setZoom(_zoom);
+            _map.setZoom(_zoom);
     }
 
 
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;
-        _chart._map = new mapboxgl.Map({
+        _map = new mapboxgl.Map({
           container: _mapId, // container id
           style: _mapStyle,
           interactive: true,
@@ -166,12 +174,14 @@ dc.mapMixin = function (_chart, chartDivId) {
           maxBounds: _llb,
           preserveDrawingBuffer: true
         });
-        _chart._map.dragRotate.disable();
-        _chart._map.touchZoomRotate.disableRotation();
+        _map.dragRotate.disable();
+        _map.touchZoomRotate.disableRotation();
 
-        _chart._map.on('load', onLoad);
-        _chart._map.on('move', onMapMove);
-        _chart._map.on('moveend', onMapMove); 
+        _map.on('load', onLoad);
+        //_map.style.on('load', onStyleLoad);
+        _map.on('style.load', onStyleLoad);
+        _map.on('move', onMapMove);
+        _map.on('moveend', onMapMove); 
 
         _mapInitted = true;
     }
@@ -193,7 +203,7 @@ dc.mapMixin = function (_chart, chartDivId) {
 
             _lastWidth = width;
             _lastHeight = height;
-            _chart._map.resize();
+            _map.resize();
             onMapMove(); //to reset filter
         }
     });

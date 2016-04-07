@@ -19,7 +19,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
     var _imageOverlay = null;
 
-    var _activeLayer = 0;
+    var _activeLayer = null;
     var _x = null;
     var _y = null;
     var _defaultColor = "#22A7F0";
@@ -80,11 +80,16 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         _defaultColor = _;
         return _chart;
     }
+    _chart.resetLayer = function() {
+        console.log("reset layer");
+        _renderBoundsMap = {}; 
+        _activeLayer = null;
+    }
 
     _chart.setDataAsync(function(group, callbacks) {
         updateXAndYScales();
 
-        var bounds = _chart._map.getBounds();
+        var bounds = _chart.map().getBounds();
         var renderBounds = [_.values(bounds.getNorthWest()),
           _.values(bounds.getNorthEast()),
           _.values(bounds.getSouthEast()),
@@ -110,7 +115,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         if (_chart.dataCache !== null) {
             return _chart.dataCache;
         }
-        var bounds = _chart._map.getBounds();
+        var bounds = _chart.map().getBounds();
         var renderBounds = [_.values(bounds.getNorthWest()),
           _.values(bounds.getNorthEast()),
           _.values(bounds.getSouthEast()),
@@ -214,7 +219,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     }
 
     function removeOverlay(overlay){
-      var map = _chart._map;
+      var map = _chart.map();
 
       map.removeLayer(overlay);
       map.removeSource(overlay);
@@ -245,14 +250,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     }
 
     function setOverlay(data, nonce){
-        var map = _chart._map;
+        var map = _chart.map();
         var bounds = _renderBoundsMap[nonce];
         if (bounds === undefined)
            return;
 
         try {
             if (!_activeLayer) {
-                _activeLayer = nonce;
+                _activeLayer = "_points";
 
                 var toBeAddedOverlay = "overlay" + _activeLayer;
 
@@ -301,7 +306,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
     _chart._doRender = function() {
       var data = _chart.data();
-      if (!_.isEmpty(data) && _chart._map._loaded) {
+      if (!_.isEmpty(data) && _chart.map()._loaded) {
           setOverlay(data.image, data.nonce);
           _hasBeenRendered = true;
       }

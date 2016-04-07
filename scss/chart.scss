@@ -864,7 +864,7 @@ body {
         left: 0;
         border: 1px solid $gray2;
         border-radius: 4px;
-        transform: POI(0, -100%);
+        transform: translate(0, -100%);
         opacity: 0;
         top: 0;
         transition: top .35s, opacity .25s;

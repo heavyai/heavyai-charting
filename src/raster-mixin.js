@@ -147,16 +147,16 @@ dc.rasterMixin = function(_chart) {
         showPopup(e, _chart.popupSearchRadius())
     }, 250);
 
-    d3.select(_chart._map._canvasContainer.parentNode)
+    d3.select(_chart.map()._canvasContainer.parentNode)
         .on('mouseleave', function(){ _mouseLeave = true; })
         .on('mouseenter', function(){ _mouseLeave = false; });
 
 
-    _chart._map.on('zoom click', function(e){
+    _chart.map().on('zoom click', function(e){
       debouncePopUp(e);
     })
 
-    _chart._map.on('mousemove', function(e){
+    _chart.map().on('mousemove', function(e){
       debouncePopUp(e);
       hidePopup();
     })
