@@ -26,6 +26,9 @@ dc.mapMixin = function (_chart, chartDivId) {
     var _initGeocoder = null;
     var _colorBy = null;
     var _mouseLeave = false;
+    _chart._minCoord = null;
+    _chart._maxCoord = null;
+    _chart._reProjMapbox = true;
 
     var _arr = [[180, -85], [-180, 85]];
     var _llb = mapboxgl.LngLatBounds.convert(_arr);
@@ -75,7 +78,7 @@ dc.mapMixin = function (_chart, chartDivId) {
         return _chart;
     }
 
-    function conv4326To900913 (coord) {
+    _chart.conv4326To900913 = function (coord) {
       var transCoord = [0.0,0.0];
       transCoord[0] = coord[0] * 111319.49077777777778;
       transCoord[1] = Math.log(Math.tan((90.0 + coord[1]) * 0.00872664625997)) * 6378136.99911215736947;
@@ -83,12 +86,10 @@ dc.mapMixin = function (_chart, chartDivId) {
     }
 
     function onStyleLoad(e) {
-       console.log("style load");
       _chart.render();
     }
 
     function onLoad(e){
-       console.log("load");
       if (_chart.initGeocoder()) {
         _chart.initGeocoder()();
       }
@@ -100,16 +101,20 @@ dc.mapMixin = function (_chart, chartDivId) {
     }
 
     function onMapMove(e) {
+
         if (e === undefined)
             return;
-        if (_xDim !== null && _yDim != null) {
+        //if (_xDim !== null && _yDim != null) {
             if (e.type == 'moveend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
                 return;
             _lastMapMoveType = e.type;
             var curTime = (new Date).getTime();
             var bounds = _map.getBounds();
-            var minCoord = conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
-            var maxCoord = conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+            _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+            _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+            //var bounds = _map.getBounds();
+            //var minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+            //var maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
             if (e.type === 'move') {
                 if (_isFirstMoveEvent) {
                     _lastMapUpdateTime = curTime;
@@ -123,10 +128,16 @@ dc.mapMixin = function (_chart, chartDivId) {
                 _isFirstMoveEvent = true;
             }
             _lastMapUpdateTime = curTime;
-            _xDim.filter([minCoord[0],maxCoord[0]]);
-            _yDim.filter([minCoord[1],maxCoord[1]]);
-            dc.redrawAll();
-        }
+            if (_xDim !== null && _yDim != null) {
+                _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
+                _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
+                dc.redrawAll();
+            }
+            else {
+                _chart._projectionFlag = true;
+                _chart.redraw();
+            }
+        //}
     }
 
     _chart.mapStyle = function(style) {
@@ -135,7 +146,8 @@ dc.mapMixin = function (_chart, chartDivId) {
         _mapStyle = style;
         if (!!_map) {
             _map.setStyle(_mapStyle);
-            _chart.resetLayer();
+            if (typeof _chart.resetLayer !== "undefined")
+               _chart.resetLayer();
             //_chart.render();
         }
 
@@ -162,6 +174,32 @@ dc.mapMixin = function (_chart, chartDivId) {
             _map.setZoom(_zoom);
     }
 
+    _chart.resetSvg = function () {
+        if (_chart.svg())
+            _chart.svg().remove();
+        var mapContainer = d3.select(_chart.map().getCanvasContainer());
+        var svg = mapContainer.append('svg').attr('class', 'poly-svg');
+        svg
+            .attr('width', _chart.width())
+            .attr('height', _chart.height());
+        //var svg = $('<svg class="map-svg"></svg>').appendTo(mapContainer);
+        _chart.svg(svg);
+    }
+
+    _chart.mapProject = function(input) {
+        // keep both methods before now until we can establish performance
+        // profiles of each - seem about equally fast at first glance
+        if (_chart._reProjMapbox == false) {
+            var xDiff = (this._maxCoord[0] - this._minCoord[0]);
+            var yDiff = (this._maxCoord[1] - this._minCoord[1]);
+            var projectedPoint = this.conv4326To900913(input);
+            return [(projectedPoint[0] - this._minCoord[0]) / xDiff * this.width(), (1.0 - ((projectedPoint[1] - this._minCoord[1]) / yDiff)) * (this.height())];
+        }
+        else {
+            var projectedPoint = this.map().project(input);
+            return [projectedPoint.x, projectedPoint.y];
+        }
+   }
 
     function initMap() {
         mapboxgl.accessToken = _mapboxAccessToken;

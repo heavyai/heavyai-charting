@@ -21,8 +21,16 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.geoChoroplethChart}
  */
-dc.geoChoroplethChart = function (parent, chartGroup) {
-    var _chart = dc.colorMixin(dc.baseMixin({}));
+dc.geoChoroplethChart = function (parent, useMap, chartGroup) {
+    var _useMap = useMap !== undefined ? useMap : false;
+    var parentDivId = parent.attributes.id.value;
+    var _chart = null;
+    if (_useMap) {
+        _chart = dc.mapMixin(dc.colorMixin(dc.baseMixin({})),parentDivId);
+    }
+    else {
+        _chart = dc.colorMixin(dc.baseMixin({}));
+    }
 
     _chart.colorAccessor(function (d) {
         return d || 0;
@@ -36,16 +44,60 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 /* --------------------------------------------------------------------------*/
 
     var _geoPath = d3.geo.path();
-    var _projectionFlag;
+    if (_useMap) {
+        _geoPath.projection(_chart.mapProject.bind(_chart));
+    }
+
+    _chart._projectionFlag;
 
     var _geoJsons = [];
 
+    function findGeomMinMax (layerIndex) {
+        var data = geoJson(layerIndex).data;
+        var dataLength = data.length;
+        var xMin = 9999999999999;
+        var xMax = -9999999999999;
+        var yMin = 9999999999999;
+        var yMax = -9999999999999;
+
+        for (var d = 0; d < dataLength; d++) {
+            var geom = data[d].geometry.coordinates;
+            var numGeoms = geom.length; 
+            for (var g = 0; g < numGeoms; g++) {
+                var coords = geom[g];
+                var numCoords = coords.length;
+                for (var c = 0; c < numCoords; c++) {
+                    var coord = coords[c];
+                    if (coord[0] < xMin)
+                        xMin = coord[0];
+                    if (coord[0] > xMax)
+                        xMax = coord[0];
+                    if (coord[1] < yMin) 
+                        yMin = coord[1];
+                    if (coord[1] > yMax)
+                        yMax = coord[1];
+                }
+            }
+        }
+        return [[xMin,yMin],[xMax,yMax]];
+    }
+
+        
+
     _chart._doRender = function () {
-        _chart.resetSvg();
+        if (!_hasBeenRendered && _useMap) {
+            if (_geoJsons.length > 0) {
+                // just use first layer for now
+                //
+                var bounds = geoJson(0).bounds;
+                _chart.map().fitBounds(bounds, {animate: false});
+            }
+        }
+        _chart.resetSvg(); // will use map mixin reset svg if we inherit map mixin
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
             var states = _chart.svg().append('g')
-                .attr('class', 'layer' + layerIndex)
-                .attr('transform', 'translate(0, -16)');
+                .attr('class', 'layer' + layerIndex);
+                //.attr('transform', 'translate(0, -16)');
 
             var regionG = states.selectAll('g.' + geoJson(layerIndex).name)
                 .data(geoJson(layerIndex).data)
@@ -62,7 +114,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 
             plotData(layerIndex);
         }
-        _projectionFlag = false;
+        _chart._projectionFlag = false;
 
 /* OVERRIDE -----------------------------------------------------------------*/
         _hasBeenRendered = true;
@@ -207,18 +259,25 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
 
     _chart._doRedraw = function () {
 
+
 /* OVERRIDE -----------------------------------------------------------------*/
         if (!_hasBeenRendered)
             return _chart._doRender();
 /* --------------------------------------------------------------------------*/
 
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
+
+            //console.time("plot");
             plotData(layerIndex);
-            if (_projectionFlag) {
+            //console.timeEnd("plot");
+            if (_chart._projectionFlag) {
+                //console.time("reprojection");
+
                 _chart.svg().selectAll('g.' + geoJson(layerIndex).name + ' path').attr('d', _geoPath);
+                //console.timeEnd("reprojection");
             }
         }
-        _projectionFlag = false;
+        _chart._projectionFlag = false;
     };
 
     /**
@@ -237,7 +296,7 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
      * // insert a layer for rendering US states
      * chart.overlayGeoJson(statesJson.features, 'state', function(d) {
      *      return d.properties.name;
-     * });
+     * })
      * @param {geoJson} json - a geojson feed
      * @param {String} name - name of the layer
      * @param {Function} keyAccessor - accessor function used to extract 'key' from the GeoJson data. The key extracted by
@@ -253,6 +312,8 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
             }
         }
         _geoJsons.push({name: name, data: json, keyAccessor: keyAccessor});
+        _geoJsons[_geoJsons.length - 1].bounds = findGeomMinMax(_geoJsons.length - 1);
+
         return _chart;
     };
 
@@ -268,8 +329,10 @@ dc.geoChoroplethChart = function (parent, chartGroup) {
      * @return {dc.geoChoroplethChart}
      */
     _chart.projection = function (projection) {
-        _geoPath.projection(projection);
-        _projectionFlag = true;
+        if (!_useMap) {
+            _geoPath.projection(projection);
+            _chart._projectionFlag = true;
+        }
         return _chart;
     };
 

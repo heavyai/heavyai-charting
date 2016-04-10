@@ -617,7 +617,7 @@ dc.baseMixin = function (_chart) {
         _chart.root().html('');
 /* ------------------------------------------------------------------------- */
 
-        return generateSvg();
+        return _chart.generateSvg();
     };
 
     function sizeSvg () {
@@ -628,7 +628,7 @@ dc.baseMixin = function (_chart) {
         }
     }
 
-    function generateSvg () {
+    _chart.generateSvg = function() {
 
 /* OVERRIDE ---------------------------------------------------------------- */
         _svg = _chart
