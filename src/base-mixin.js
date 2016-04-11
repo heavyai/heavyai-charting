@@ -646,7 +646,8 @@ dc.baseMixin = function (_chart) {
     function sizeRoot () {
         if (_root) {
             _root
-                .style('height', _chart.height()+'px');
+                .style('height', _chart.height()+'px')
+                .style('width', _chart.width()+'px');
         }
     }
 
