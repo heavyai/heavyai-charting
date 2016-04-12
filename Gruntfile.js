@@ -361,7 +361,7 @@ module.exports.jsFiles = [
     'src/bar-chart.js',
     'src/line-chart.js',
     'src/data-count.js',
-    'src/count-chart.js',
+    'src/number-chart.js',
     'src/data-table.js',
     'src/mapd-table.js',
     'src/data-grid.js',

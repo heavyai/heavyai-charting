@@ -1,5 +1,5 @@
-dc.countChart = function (parent, chartGroup) {
-    var _formatNumber = d3.format(',d');
+dc.numberChart = function (parent, chartGroup) {
+    var _formatNumber = d3.format(",.2f");
     var _chart = dc.baseMixin({});
     var _colors = '#22a7f0';
     var _fontSize = null;
@@ -45,10 +45,10 @@ dc.countChart = function (parent, chartGroup) {
 
         var wrapper = _chart.root().html('')
             .append('div')
-            .attr('class', 'count-chart-wrapper');
+            .attr('class', 'number-chart-wrapper');
 
         wrapper.append('span')
-            .attr('class', 'count-chart-number')
+            .attr('class', 'number-chart-number')
             .style('color', _chart.getColor)
             .style('font-size', function(d){
                 return Math.max(Math.floor(_chart.height()/5), 32) + 'px';
