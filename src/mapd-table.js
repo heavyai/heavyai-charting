@@ -65,11 +65,10 @@ dc.mapdTable = function (parent, chartGroup) {
     _chart.data(function() {
         if (!_chart.dataCache) {
             _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
-
             _chart.dataCache = _sortColumn ? 
                 (_sortColumn.order === 'desc' ? 
-                    _dimOrGroup.order(_sortColumn.col).top(_size + _offset, 0) : 
-                    _dimOrGroup.order(_sortColumn.col).bottom(_size + _offset, 0)) :
+                    _dimOrGroup.order(_sortColumn.col.name).top(_size + _offset, 0) : 
+                    _dimOrGroup.order(_sortColumn.col.name).bottom(_size + _offset, 0)) :
                 _dimOrGroup.order(null).top(_size + _offset, 0);
          }
         return _chart.dataCache;
