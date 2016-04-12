@@ -25,7 +25,9 @@
     "url": "https://github.com/map-d/mapdc.js.git"
   },
   "dependencies": {
-    "d3": "3.x"
+    "d3": "3.x",
+    "jquery": "2.2.0",
+    "lodash": "4.3.0"
   },
   "devDependencies": {
     "emu": "~0.0.2",
@@ -60,9 +62,10 @@
   },
   "scripts": {
     "build": "bash scripts/build.sh",
+    "build:example": "npm run build && bash scripts/copy-example-libs.sh",
     "jenkins:bump-and-publish": "bash scripts/bump-and-publish.sh",
     "jenkins:copy-scripts": "bash node_modules/@mapd/npm-deploy-scripts/packages/copy-scripts.sh",
-    "start": "npm run build && ./node_modules/http-server/bin/http-server -p 8081 -o",
+    "start": "npm run build:example && ./node_modules/http-server/bin/http-server -p 8081 -o",
     "test": "grunt test "
   },
   "npmName": "mapdc",
