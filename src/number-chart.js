@@ -1,8 +1,9 @@
-dc.countChart = function (parent, chartGroup) {
-    var _formatNumber = d3.format(',d');
+dc.numberChart = function (parent, chartGroup) {
+    var _formatNumber = d3.format(",");
     var _chart = dc.baseMixin({});
     var _colors = '#22a7f0';
     var _fontSize = null;
+    var _chartWidth = null;
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.isCountChart = function() { return true; } // override for count chart
@@ -41,19 +42,19 @@ dc.countChart = function (parent, chartGroup) {
             val = _chart.group().value();
         }
 
-        var selected = _formatNumber(val);
-
+        var selected = _formatNumber(parseFloat(val.toFixed(2)));
+        
         var wrapper = _chart.root().html('')
             .append('div')
-            .attr('class', 'count-chart-wrapper');
+            .attr('class', 'number-chart-wrapper');
 
         wrapper.append('span')
-            .attr('class', 'count-chart-number')
+            .attr('class', 'number-chart-number')
             .style('color', _chart.getColor)
             .style('font-size', function(d){
                 return Math.max(Math.floor(_chart.height()/5), 32) + 'px';
             })
-            .text(selected)
+            .text(selected === '-0' ? 0 : selected)
             .style('font-size', function(d){
                 var width = d3.select(this).node().getBoundingClientRect().width;
                 var calcFontSize = parseInt(d3.select(this).node().style.fontSize.replace(/\D/g,''));
@@ -62,8 +63,10 @@ dc.countChart = function (parent, chartGroup) {
                     calcFontSize = Math.max(calcFontSize * ((_chart.width() - 64)/width), 32);
                 }
 
-                _fontSize = !_fontSize ? calcFontSize : Math.min(_fontSize, calcFontSize); 
+                _fontSize = !_fontSize || _chartWidth < _chart.width() ? calcFontSize : Math.min(_fontSize, calcFontSize); 
 
+                _chartWidth = _chart.width();
+                
                 return  _fontSize + 'px';
             });
 
