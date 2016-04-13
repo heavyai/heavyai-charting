@@ -253,12 +253,12 @@
       {
         expression: "tweet_time",
         agg_mode:"min",
-        name: "min"
+        name: "minimum"
       },
       {
         expression: "tweet_time",
         agg_mode:"max",
-        name: "max"}
+        name: "maximum"}
       ]
 
       /* Note than when we are doing aggregations over the entire dataset we use
@@ -286,7 +286,7 @@
         .reduceCount('*')
         .setBinParams({
            numBins: 288, // 288 * 5 = number of minutes in a day
-           binBounds: [timeChartBounds.min, timeChartBounds.max]
+           binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
           });
 
     /*  We create the time chart as a line chart
@@ -318,7 +318,7 @@
       /* Set the x and y axis formatting with standard d3 functions */
 
       dcTimeChart
-        .x(d3.time.scale.utc().domain([timeChartBounds.min, timeChartBounds.max]))
+        .x(d3.time.scale.utc().domain([timeChartBounds.minimum, timeChartBounds.maximum]))
         .yAxis().ticks(5);
 
       dcTimeChart

@@ -367,14 +367,14 @@
 
       var reduceMultiExpression2 = 
       [{
-        expression: "dep_timestamp", 
-        agg_mode:"min", 
-        name: "min"
+        expression: "dep_timestamp",
+        agg_mode:"min",
+        name: "minimum"
       },
       {
-        expression: "dep_timestamp", 
-        agg_mode:"max", 
-        name: "max"}
+        expression: "dep_timestamp",
+        agg_mode:"max",
+        name: "maximum"}
       ]
 
       /* Note than when we are doing aggregations over the entire dataset we use
@@ -400,8 +400,8 @@
       var timeChartGroup = timeChartDimension.group() 
                   .reduceCount()
                   .setBinParams({
-                     numBins: 400, 
-                     binBounds: [timeChartBounds.min,timeChartBounds.max]
+                     numBins: 400,
+                     binBounds: [timeChartBounds.minimum,timeChartBounds.maximum]
                     });
 
     /*  We create the time chart as a line chart
@@ -433,7 +433,7 @@
       /* Set the x and y axis formatting with standard d3 functions */
 
       dcTimeChart
-        .x(d3.time.scale.utc().domain([timeChartBounds.min,timeChartBounds.max]))
+        .x(d3.time.scale.utc().domain([timeChartBounds.minimum,timeChartBounds.maximum]))
         .yAxis().ticks(5);
 
       dcTimeChart
