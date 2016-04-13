@@ -54,7 +54,7 @@ dc.numberChart = function (parent, chartGroup) {
             .style('font-size', function(d){
                 return Math.max(Math.floor(_chart.height()/5), 32) + 'px';
             })
-            .text(selected)
+            .text(selected === '-0' ? 0 : selected)
             .style('font-size', function(d){
                 var width = d3.select(this).node().getBoundingClientRect().width;
                 var calcFontSize = parseInt(d3.select(this).node().style.fontSize.replace(/\D/g,''));
