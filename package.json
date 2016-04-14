@@ -63,8 +63,6 @@
   "scripts": {
     "build": "bash scripts/build.sh",
     "build:example": "npm run build && bash scripts/copy-example-libs.sh",
-    "jenkins:bump-and-publish": "bash scripts/bump-and-publish.sh",
-    "jenkins:copy-scripts": "bash node_modules/@mapd/npm-deploy-scripts/packages/copy-scripts.sh",
     "start": "npm run build:example && ./node_modules/http-server/bin/http-server -p 8081 -o",
     "test": "grunt test "
   },
