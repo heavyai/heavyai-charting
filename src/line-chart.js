@@ -312,7 +312,7 @@ dc.lineChart = function (parent, chartGroup) {
     function showBrushDots(g, e) {
 
         var coordinates = [0, 0];
-        coordinates = d3.mouse(e);
+        coordinates = _chart.popupCoordinates(d3.mouse(e));
         var x = coordinates[0];
         var y = coordinates[1];
         var xAdjusted = x - _chart.margins().left;
