@@ -672,12 +672,12 @@ dc.baseMixin = function (_chart) {
     _chart.popupCoordinates = function (coords) {
         var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
-        if (!isFirefox) {
+        if (!isFirefox || d3.selectAll('.react-grid-item.cssTransforms').empty()) {
             return coords;
         }
 
         var rootRect = _chart.root().node().getBoundingClientRect();
-        return !d3.selectAll('.react-grid-item.cssTransforms').empty() ? [coords[0] - rootRect.x, coords[1] - rootRect.y - window.pageYOffset + 100] : coords;
+        return [coords[0] - rootRect.x, coords[1] - rootRect.y - window.pageYOffset + 100];
     };
 
     _chart.measureLabelsOn = function (val) {
