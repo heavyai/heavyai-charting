@@ -158,7 +158,7 @@
     }
 
     // hover effect with popup
-    const debouncedPopup = _.debounce(displayPopupWithData, 250)
+    var debouncedPopup = _.debounce(displayPopupWithData, 250)
     pointMapChart.map().on('mousewheel', pointMapChart.hidePopup);
     pointMapChart.map().on('mousemove', pointMapChart.hidePopup)
     pointMapChart.map().on('mousemove', debouncedPopup)
