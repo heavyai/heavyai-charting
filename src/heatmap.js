@@ -601,7 +601,7 @@ dc.heatMap = function (parent, chartGroup) {
 
     function positionPopup() {
         var coordinates = [0, 0];
-        coordinates = d3.mouse(this);
+        coordinates = _chart.popupCoordinates(d3.mouse(this));
         var x = coordinates[0] + _chart.margins().left;
         var y = coordinates[1] + _chart.margins().top;
 

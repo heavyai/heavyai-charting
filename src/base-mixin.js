@@ -669,6 +669,17 @@ dc.baseMixin = function (_chart) {
         return _popup;
     }
 
+    _chart.popupCoordinates = function (coords) {
+        var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
+        if (!isFirefox || d3.selectAll('.react-grid-item.cssTransforms').empty()) {
+            return coords;
+        }
+
+        var rootRect = _chart.root().node().getBoundingClientRect();
+        return [coords[0] - rootRect.x, coords[1] - rootRect.y - window.pageYOffset + 100];
+    };
+
     _chart.measureLabelsOn = function (val) {
         if (!arguments.length) {
             return _measureLabelsOn;
