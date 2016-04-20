@@ -113,13 +113,13 @@ dc.rasterMixin = function(_chart) {
     }
 
     _chart.getClosestResult = function getClosestResult (point, callback) {
-        const points = nearestPoints(point, _chart.height(), _chart.popupSearchRadius())
-        const tableName = _chart.tableName()
-        const columns = getColumnsWithPoints()
+        var points = nearestPoints(point, _chart.height(), _chart.popupSearchRadius())
+        var tableName = _chart.tableName()
+        var columns = getColumnsWithPoints()
         // TODO best to fail, skip cb, or call cb wo args?
         if (!points.length || !tableName || !columns.length ) { return; }
         return _con.getRowsForPixels(points, tableName, columns, [function(results){
-            const closestResult = getClosestRow(point.x, point.y, results)
+            var closestResult = getClosestRow(point.x, point.y, results)
             return callback(closestResult)
         }])
     }
@@ -127,7 +127,7 @@ dc.rasterMixin = function(_chart) {
     _chart.displayPopup = function displayPopup (result) {
       if(_mouseLeave || !result || !result.row_set || !result.row_set.length){ return }
       var data = result.row_set[0];
-      const mappedData = mapDataViaColumns(data, _popupColumnsMapped)
+      var mappedData = mapDataViaColumns(data, _popupColumnsMapped)
       if( Object.keys(mappedData).length === 2 ) { return } // xPoint && yPoint
       var offsetBridge = 0;
       _chart.x().range([0, _chart.width() - 1]);
@@ -183,10 +183,10 @@ dc.rasterMixin = function(_chart) {
     return _chart;
 
     function nearestPoints (point, height, r) {
-        const y = Math.round(height - point.y);
-        const x = Math.round(point.x);
-        const points = [];
-        const rSquared = r * r;
+        var y = Math.round(height - point.y);
+        var x = Math.round(point.x);
+        var points = [];
+        var rSquared = r * r;
         for (var xOffset = -r; xOffset <= r; xOffset++) {
             for (var yOffset = -r; yOffset <= r; yOffset++) {
                 if (xOffset*xOffset + yOffset*yOffset <= rSquared) {
@@ -201,11 +201,11 @@ dc.rasterMixin = function(_chart) {
         var closestResult = null;
         var closestSqrDistance = Infinity;
         for (var i = 0; i < results.length; i++) {
-            const result = results[i]
+            var result = results[i]
             if (result.row_set.length){
-                const xDistance = (x - result.pixel.x)
-                const yDistance = (y - result.pixel.y)
-                const sqrDist = xDistance * xDistance + yDistance * yDistance
+                var xDistance = (x - result.pixel.x)
+                var yDistance = (y - result.pixel.y)
+                var sqrDist = xDistance * xDistance + yDistance * yDistance
                 if (sqrDist < closestSqrDistance) {
                     closestResult = result;
                     closestSqrDistance = sqrDist;
@@ -216,7 +216,7 @@ dc.rasterMixin = function(_chart) {
     }
 
     function getColumnsWithPoints () {
-        const columns = _chart.popupColumns().slice();
+        var columns = _chart.popupColumns().slice();
         columns.push(_chart._xDimName + " as xPoint");
         columns.push(_chart._yDimName + " as yPoint");
         return columns
@@ -233,8 +233,8 @@ dc.rasterMixin = function(_chart) {
     }
 
     function colorPopupBackground (data) {
-      const MAPD_BLUE = '#27aeef'
-      const _colorBy = _chart.colorBy()
+      var MAPD_BLUE = '#27aeef'
+      var _colorBy = _chart.colorBy()
       if (_colorBy) {
         var matchIndex = null;
         _chart.colors().domain().forEach(function(d, i){
@@ -247,9 +247,9 @@ dc.rasterMixin = function(_chart) {
     }
 
     function mapDataViaColumns (data, _popupColumnsMapped) {
-      const newData = {}
+      var newData = {}
       for (var key in data) {
-        const newKey = _popupColumnsMapped[key] || key
+        var newKey = _popupColumnsMapped[key] || key
         newData[newKey] = data[key]
       }
       return newData
