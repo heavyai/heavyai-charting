@@ -113,14 +113,13 @@ dc.rasterMixin = function(_chart) {
     }
 
     _chart.getClosestResult = function getClosestResult (point, callback) {
-        var points = nearestPoints(point, _chart.height(), _chart.popupSearchRadius())
+        var pixel = new TPixel({x: Math.round(point.x), y: Math.round(_chart.height() - point.y)})
         var tableName = _chart.tableName()
         var columns = getColumnsWithPoints()
         // TODO best to fail, skip cb, or call cb wo args?
-        if (!points.length || !tableName || !columns.length ) { return; }
-        return _con.getRowsForPixels(points, tableName, columns, [function(results){
-            var closestResult = getClosestRow(point.x, point.y, results)
-            return callback(closestResult)
+        if (!point || !tableName || !columns.length ) { return; }
+        return _con.getRowForPixel(pixel, tableName, columns, [function(results){
+            return callback(results[0])
         }])
     }
 
@@ -181,39 +180,6 @@ dc.rasterMixin = function(_chart) {
     _chart._vegaSpec = {};
 
     return _chart;
-
-    function nearestPoints (point, height, r) {
-        var y = Math.round(height - point.y);
-        var x = Math.round(point.x);
-        var points = [];
-        var rSquared = r * r;
-        for (var xOffset = -r; xOffset <= r; xOffset++) {
-            for (var yOffset = -r; yOffset <= r; yOffset++) {
-                if (xOffset*xOffset + yOffset*yOffset <= rSquared) {
-                    points.push(new TPixel({x:x+xOffset, y:y+yOffset}));
-                }
-            }
-        }
-        return points
-    }
-
-    function getClosestRow (x, y, results) {
-        var closestResult = null;
-        var closestSqrDistance = Infinity;
-        for (var i = 0; i < results.length; i++) {
-            var result = results[i]
-            if (result.row_set.length){
-                var xDistance = (x - result.pixel.x)
-                var yDistance = (y - result.pixel.y)
-                var sqrDist = xDistance * xDistance + yDistance * yDistance
-                if (sqrDist < closestSqrDistance) {
-                    closestResult = result;
-                    closestSqrDistance = sqrDist;
-                }
-            }
-        }
-        return closestResult
-    }
 
     function getColumnsWithPoints () {
         var columns = _chart.popupColumns().slice();
