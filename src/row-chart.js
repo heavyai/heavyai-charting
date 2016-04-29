@@ -115,7 +115,11 @@ dc.rowChart = function (parent, chartGroup) {
                     .append('g').attr('class', 'axis')
                     .attr('transform', 'translate(' + _chart.margins().left + ', 0)');
 
-                _chart.root().select('.svg-wrapper').on('scroll', function(){ _scrollTop = d3.select(this).node().scrollTop;});
+                var saveScrollTop  = debounce(function(){
+                    _scrollTop = d3.select(this).node().scrollTop;
+                }, 250);
+
+                _chart.root().select('.svg-wrapper').on('scroll', saveScrollTop);
 
             } else {
                 axisG = _g.append('g').attr('class', 'axis')
@@ -621,6 +625,24 @@ dc.rowChart = function (parent, chartGroup) {
 
     function isSelectedRow (d) {
         return _chart.hasFilter(_chart.cappedKeyAccessor(d));
+    }
+
+    function debounce(func, wait, immediate) {
+      
+      var timeout;
+      
+      return function() {
+        var context = this, args = arguments;
+        var later = function() {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
+
     }
 
     return _chart.anchor(parent, chartGroup);
