@@ -94,7 +94,9 @@ dc.dataCount = function (parent, chartGroup) {
     _chart._doRender = function () {
         // ok to call size b/c will hit cache every time
         var tot = _chart.dimension().size();
-        
+        _chart.root()
+            .style('width', 'auto')
+            .style('height', 'auto');
 /* OVERRIDE ---------------------------------------------------------------- */
         var val = null;
         if (_chart.dataCache != null)
