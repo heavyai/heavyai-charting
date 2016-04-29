@@ -37,6 +37,7 @@ dc.rowChart = function (parent, chartGroup) {
     var _autoScroll = false;
     var _minBarHeight= 16;
     var _isBigBar = false;
+    var _scrollTop = 0;
 /* --------------------------------------------------------------------------*/
 
     var _gap = 4;
@@ -74,6 +75,15 @@ dc.rowChart = function (parent, chartGroup) {
 
         return _chart;
     };
+
+    _chart.scrollTop = function (_) {
+        if (!arguments.length) {
+            return _scrollTop;
+        }
+        _scrollTop = _;
+
+        return _chart;
+    };
 /* --------------------------------------------------------------------------*/
 
     function calculateAxisScale () {
@@ -90,7 +100,7 @@ dc.rowChart = function (parent, chartGroup) {
 
     function drawAxis () {
 /* OVERRIDE -----------------------------------------------------------------*/
-
+        
         var root = _chart.root();
 
         var axisG = root.select('g.axis');
@@ -98,7 +108,6 @@ dc.rowChart = function (parent, chartGroup) {
         calculateAxisScale();
 
         if (axisG.empty()) {
-
             if (_chart.autoScroll()) {
 
                 axisG = root.append('div').attr('class', 'external-axis')
@@ -106,10 +115,13 @@ dc.rowChart = function (parent, chartGroup) {
                     .append('g').attr('class', 'axis')
                     .attr('transform', 'translate(' + _chart.margins().left + ', 0)');
 
+                _chart.root().select('.svg-wrapper').on('scroll', function(){ _scrollTop = d3.select(this).node().scrollTop;});
+
             } else {
                 axisG = _g.append('g').attr('class', 'axis')
                     .attr('transform', 'translate(0, ' + _chart.effectiveHeight() + ')');
             }
+
         }
 
         if (_chart.autoScroll()) {
@@ -153,6 +165,10 @@ dc.rowChart = function (parent, chartGroup) {
 
         drawChart();
 
+        if (_chart.autoScroll()) {
+            _chart.root().select('.svg-wrapper').node().scrollTop = _scrollTop;
+        }
+
         return _chart;
     };
 
@@ -165,7 +181,7 @@ dc.rowChart = function (parent, chartGroup) {
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.measureValue = function (d) {
         var commafy = d3.format(',');
-        return commafy(parseFloat(_chart.cappedValueAccessor(d).toFixed(3)));
+        return commafy(parseFloat(_chart.cappedValueAccessor(d).toFixed(2)));
     };
 /* ------------------------------------------------------------------------- */
 
