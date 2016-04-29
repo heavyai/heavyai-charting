@@ -97,6 +97,7 @@ dc.dataCount = function (parent, chartGroup) {
         _chart.root()
             .style('width', 'auto')
             .style('height', 'auto');
+            
 /* OVERRIDE ---------------------------------------------------------------- */
         var val = null;
         if (_chart.dataCache != null)
