@@ -165,10 +165,6 @@ dc.rowChart = function (parent, chartGroup) {
 
         drawChart();
 
-        if (_chart.autoScroll()) {
-            _chart.root().select('.svg-wrapper').node().scrollTop = _scrollTop;
-        }
-
         return _chart;
     };
 
@@ -232,6 +228,10 @@ dc.rowChart = function (parent, chartGroup) {
         createElements(rows);
         removeElements(rows);
         updateElements(rows);
+
+        if (_chart.autoScroll()) {
+            _chart.root().select('.svg-wrapper').node().scrollTop = _scrollTop;
+        }
     }
 
     function createElements (rows) {
