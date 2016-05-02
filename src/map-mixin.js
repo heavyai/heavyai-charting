@@ -94,7 +94,7 @@ dc.mapMixin = function (_chart, chartDivId) {
         _chart.initGeocoder()();
         var attributions = document.createElement('div');
           attributions.className = 'mapboxgl-attribution';
-          attributions.innerHTML = '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+          attributions.innerHTML = '<span>©</span> <a href="https://www.mapbox.com/about/maps/">Mapbox</a> <span>©</span> <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
         _chart.root()[0][0].appendChild(attributions);
       }
 

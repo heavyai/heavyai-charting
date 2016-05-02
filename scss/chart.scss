@@ -59,7 +59,11 @@ body {
   word-spacing: 4px;
 }
 
-.mapboxgl-attribution a:link, a:visited { color: $gray4; }
+.mapboxgl-attribution span {
+  margin-right: -5px;
+}
+
+.mapboxgl-attribution a:link, a:visited { color: $gray4; padding-right: 7px; }
 .mapboxgl-attribution a:hover { text-decoration: none; }
  
 .anim-button-play {
