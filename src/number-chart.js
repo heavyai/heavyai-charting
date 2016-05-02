@@ -5,10 +5,6 @@ dc.numberChart = function (parent, chartGroup) {
     var _fontSize = null;
     var _chartWidth = null;
 
-/* OVERRIDE ---------------------------------------------------------------- */
-    _chart.isCountChart = function() { return true; } // override for count chart
-/* ------------------------------------------------------------------------- */
-
     _chart.formatNumber = function (formatter) {
         if (!arguments.length) {
             return _formatNumber;
