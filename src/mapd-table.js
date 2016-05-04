@@ -56,7 +56,7 @@ dc.mapdTable = function (parent, chartGroup) {
         if (_sortColumn && _sortColumn.order === 'desc') {
             _dimOrGroup.topAsync(_size, _offset, undefined, [addRowsCallback]);
         } else {
-            _dimOrGroup.bottomAsync(_size, _offset, undefined, [addRowsCallback]); 
+            _dimOrGroup.bottomAsync(_size, _offset, undefined, [addRowsCallback]);
         }
         _debounce = true;
 
@@ -65,9 +65,9 @@ dc.mapdTable = function (parent, chartGroup) {
     _chart.data(function() {
         if (!_chart.dataCache) {
             _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
-            _chart.dataCache = _sortColumn ? 
-                (_sortColumn.order === 'desc' ? 
-                    _dimOrGroup.order(_sortColumn.col.name).top(_size + _offset, 0) : 
+            _chart.dataCache = _sortColumn ?
+                (_sortColumn.order === 'desc' ?
+                    _dimOrGroup.order(_sortColumn.col.name).top(_size + _offset, 0) :
                     _dimOrGroup.order(_sortColumn.col.name).bottom(_size + _offset, 0)) :
                 _dimOrGroup.order(null).top(_size + _offset, 0);
          }
@@ -168,8 +168,8 @@ dc.mapdTable = function (parent, chartGroup) {
                 return {expression: splitStr[0], name: splitStr[1]};
             });
         }
-         
-        
+
+
         var tableHeader = table.append('tr').selectAll('th')
             .data(cols)
             .enter();
@@ -193,7 +193,7 @@ dc.mapdTable = function (parent, chartGroup) {
                 .classed('disabled', !!col.agg_mode || _chart.dimension().value().length === 1)
                 .on('click', function(d){
                     if (col.expression in _filteredColumns) {
-                        clearColFilter(col.expression); 
+                        clearColFilter(col.expression);
                     } else {
                         filterCol(col.expression, d[col.name]);
                     }
@@ -245,6 +245,16 @@ dc.mapdTable = function (parent, chartGroup) {
                             _sortColumn =  {index: i, col: d, order: 'desc'};
                         }
 
+                        var sortEvent = new Event('sort', {
+                          bubbles: true,
+                          cancelable: true
+                        });
+
+                        sortEvent.sortColumn = _sortColumn;
+
+                        var headerDOMNode = headerItem[0][0];
+                        headerDOMNode.dispatchEvent(sortEvent);
+
                         dc.redrawAll();
 
                     })
@@ -276,7 +286,7 @@ dc.mapdTable = function (parent, chartGroup) {
                     .attr('class', 'unfilter-btn')
                     .attr('data-expr', d.expression)
                     .on('click', function(){
-                        clearColFilter(d3.select(this).attr('data-expr')); 
+                        clearColFilter(d3.select(this).attr('data-expr'));
                     })
                     .style('left', textSpan.node().getBoundingClientRect().width + 20 + 'px')
                     .append('svg')
