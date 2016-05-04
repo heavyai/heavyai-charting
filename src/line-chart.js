@@ -373,8 +373,12 @@ dc.lineChart = function (parent, chartGroup) {
         popupBox.append('div')
             .attr('class', 'popup-header') 
             .text(function(){
-                var diffDays = Math.round(Math.abs((_chart.xAxisMin().getTime() - _chart.xAxisMax().getTime())/(24*60*60*1000)));
-                return _chart.getBinInputVal()[0].val ==='auto' && diffDays > 14 || _chart.getBinInputVal()[0].numSeconds > 3600 ? dateFormat(arr[0].datum.x) : dateTimeFormat(arr[0].datum.x);
+                if (arr[0].datum.x instanceof Date) {
+                  var diffDays = Math.round(Math.abs((_chart.xAxisMin().getTime() - _chart.xAxisMax().getTime())/(24*60*60*1000)));
+                  return _chart.getBinInputVal()[0].val ==='auto' && diffDays > 14 || _chart.getBinInputVal()[0].numSeconds > 3600 ? dateFormat(arr[0].datum.x) : dateTimeFormat(arr[0].datum.x);
+                } else {
+                  return arr[0].datum.x;
+                }
             });
 
         var popupItems = popupBox.selectAll('.popup-item')
