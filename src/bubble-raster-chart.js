@@ -82,7 +82,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     }
     _chart.resetLayer = function() {
         console.log("reset layer");
-        _renderBoundsMap = {}; 
+        _renderBoundsMap = {};
         _activeLayer = null;
     }
 
@@ -249,58 +249,51 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         return blob;
     }
 
+    function detectBrowser () { // from SO: http://bit.ly/1Wd156O
+        var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+        var isFirefox = typeof InstallTrigger !== 'undefined';
+        var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+        var isIE = /*@cc_on!@*/false || !!document.documentMode;
+        var isEdge = !isIE && !!window.StyleMedia;
+        var isChrome = !!window.chrome && !!window.chrome.webstore;
+        return {isOpera: isOpera, isFirefox: isFirefox, isSafari: isSafari, isIE: isIE, isEdge: isEdge, isChrome: isChrome}
+    }
+
     function setOverlay(data, nonce){
         var map = _chart.map();
         var bounds = _renderBoundsMap[nonce];
-        if (bounds === undefined)
-           return;
+        if (bounds === undefined) { return; }
 
-        try {
-            if (!_activeLayer) {
-                _activeLayer = "_points";
-
-                var toBeAddedOverlay = "overlay" + _activeLayer;
-
-                if(is_safari){    
-                    var blob = b64toBlob(data, 'image/png');
-                    var blobUrl = URL.createObjectURL(blob);
-                } else {
-                    var blobUrl = 'data:image/png;base64,' + data;
-                }
-
-                map.addSource(toBeAddedOverlay,{
-                    "id": toBeAddedOverlay,
-                    "type": "image",
-                    "url": blobUrl,
-                    "coordinates": bounds
-                });
-                //delete _renderBoundsMap[nonce];
-
-                map.addLayer({
-                    "id": toBeAddedOverlay,
-                    "source": toBeAddedOverlay,
-                    "type": "raster",
-                    "paint": {"raster-opacity": 0.85}
-                });
-            } else {
-
-                if(is_safari){     
-                    var blob = b64toBlob(data, 'image/png');
-                    var blobUrl = URL.createObjectURL(blob);
-                } else {
-                    var blobUrl = 'data:image/png;base64,' + data;
-                }
-
-                var overlayName = "overlay" + _activeLayer;
-                var imageSrc = map.getSource(overlayName);
-                imageSrc.updateImage({
-                    "url": blobUrl,
-                    "coordinates": bounds
-                });
-            }
+        var browser = detectBrowser()
+        if(browser.isSafari || browser.isIE || browser.isEdge){
+            var blob = b64toBlob(data, 'image/png');
+            var blobUrl = URL.createObjectURL(blob);
+        } else {
+            var blobUrl = 'data:image/png;base64,' + data;
         }
-        catch(err) {
-            console.log(err);
+
+        if (!_activeLayer) {
+            _activeLayer = "_points";
+            var toBeAddedOverlay = "overlay" + _activeLayer;
+            map.addSource(toBeAddedOverlay,{
+                "id": toBeAddedOverlay,
+                "type": "image",
+                "url": blobUrl,
+                "coordinates": bounds
+            });
+            map.addLayer({
+                "id": toBeAddedOverlay,
+                "source": toBeAddedOverlay,
+                "type": "raster",
+                "paint": {"raster-opacity": 0.85}
+            });
+        } else {
+            var overlayName = "overlay" + _activeLayer;
+            var imageSrc = map.getSource(overlayName);
+            imageSrc.updateImage({
+                "url": blobUrl,
+                "coordinates": bounds
+            });
         }
     }
 
