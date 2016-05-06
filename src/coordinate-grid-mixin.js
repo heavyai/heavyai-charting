@@ -116,6 +116,8 @@ dc.coordinateGridMixin = function (_chart) {
     var _rangeInput = false;
     var _binInput = false;
     var _binInputOptions = [{val:'auto', label:'auto', numSeconds:null}, 
+                            {val:'century',  label:'10y',numSeconds: 3153600000}, 
+                            {val:'decade',  label:'10y',numSeconds: 315360000}, 
                             {val:'year',  label:'1y',numSeconds: 31536000}, 
                             {val: 'quarter', label: '1q', numSeconds: 10368000},
                             {val:'month', label:'1mo', numSeconds: 2592000}, 
@@ -527,7 +529,8 @@ dc.coordinateGridMixin = function (_chart) {
         var extent = _chart.filter() || _chart.x().domain();
     
         var rangeDisplay = _chart.root().selectAll('.range-display');
-        var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
+        
+        var binNumSecs = _binInputOptions.filter(function(d){return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
 
         rangeDisplay.select('.range-start-day')
             .property('value', dateFormat(extent[0]))
@@ -764,7 +767,7 @@ dc.coordinateGridMixin = function (_chart) {
                 .enter();
 
             var rangeInSeconds = Math.abs((_chart.x().domain()[0].getTime() - _chart.x().domain()[1].getTime())/1000);
-
+            
             binRowItems.append('div')
                 .attr('class', 'bin-row-item')
                 .classed('inactive', function(d){
@@ -1304,22 +1307,37 @@ dc.coordinateGridMixin = function (_chart) {
         binBrush();
     }
 
-    function roundQuarter(date) {
-        var subHalf = d3.time.month.offset(date, -2);
-        var addHalf = d3.time.month.offset(date, 2);
-        return d3.time.month.utc.round(d3.time.months(subHalf, addHalf, 3)[0]);
-    }
+    function roundTimeBin(date, timeInterval, operation) {
 
-    function ceilQuarter(date) {
-        var subHalf = d3.time.month.offset(date, 0);
-        var addHalf = d3.time.month.offset(date, 3);
-        return d3.time.month.utc.round(d3.time.months(subHalf, addHalf, 3)[0]);
-    }
+        if (!timeInterval) {
+            return date;
+        }
 
-    function floorQuarter(date) {
-        var subHalf = d3.time.month.offset(date, -3);
-        var addHalf = d3.time.month.offset(date, 0);
-        return d3.time.month.utc.round(d3.time.months(subHalf, addHalf, 3)[0]);
+        if (d3.time[timeInterval]) {
+            return d3.time[timeInterval].utc[operation](date);
+        }
+
+        var unit = timeInterval === 'quarter' ? 'month' : 'year';
+        var ranges = [];
+        switch (timeInterval) {
+            case 'quarter':
+                ranges = [-2, 2, 3];
+                break;
+            case 'decade':
+                ranges = [-5, 5, 10];
+                break;
+            case 'century':
+                ranges = [-50, 50, 100];
+                break;
+        }
+
+        var startRange = operation === 'round' ? ranges[0] : (operation === 'ceil' ? 0 : -ranges[2]);
+        var endRange = operation === 'round' ? ranges[1] : (operation === 'ceil' ? ranges[2] : 0);
+
+        var subHalf = d3.time[unit].offset(date, startRange);
+        var addHalf = d3.time[unit].offset(date, endRange);
+
+        return d3.time[unit].utc.round(d3.time[unit + 's'](subHalf, addHalf, ranges[2])[0]);
     }
 
 
@@ -1339,14 +1357,15 @@ dc.coordinateGridMixin = function (_chart) {
             return;
         }
 
-        var timeRange = _chart.group().actualTimeBin();
-        var roundBin = timeRange === 'quarter' ? roundQuarter : d3.time[timeRange].utc.round;
-        var extent1 = extent0.map(roundBin);
+        var timeInterval = _chart.group().actualTimeBin();
+        
+        var extent1 = extent0.map(function(date) { return roundTimeBin(date, timeInterval, 'round')});
 
         // if empty when rounded, use floor & ceil instead
         if (extent1[0] >= extent1[1]) {
-            extent1[0] = timeRange === 'quarter' ? floorQuarter(extent0[0]) : d3.time[timeRange].utc.floor(extent0[0]);
-            extent1[1] = timeRange === 'quarter' ? ceilQuarter(extent0[1]) : d3.time[timeRange].utc.ceil(extent0[1]);
+            extent1[0] = roundTimeBin(extent0[0], timeInterval, 'floor'); 
+            extent1[1] = roundTimeBin(extent0[1], timeInterval, 'ceil'); 
+
         }
 
         extent1[0] = extent1[0] < _chart.xAxisMin() ? _chart.xAxisMin() : extent1[0];
@@ -1355,13 +1374,13 @@ dc.coordinateGridMixin = function (_chart) {
         if (extent1[0].getTime() === _chart.xAxisMax().getTime()) {
             var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
             extent1[0] = new Date(extent1[0].getTime() - (binNumSecs * 1000));
-            extent1[0] = timeRange === 'quarter' ? roundQuarter(extent1[0]) : d3.time[timeRange].utc.round(extent1[0]);
+            extent1[0] = roundTimeBin(extent1[0], timeInterval, 'round'); 
         }
 
         if (extent1[1].getTime() === _chart.xAxisMin().getTime()) {
             var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
             extent1[1] = new Date(extent1[1].getTime() + (binNumSecs * 1000));
-            extent1[1] = timeRange === 'quarter' ? roundQuarter(extent1[1]) : d3.time[timeRange].utc.round(extent1[1]);
+            extent1[1] = roundTimeBin(extent1[1], timeInterval, 'round'); 
         }
 
         var rangedFilter = dc.filters.RangedFilter(extent1[0], extent1[1]);
@@ -1515,7 +1534,6 @@ dc.coordinateGridMixin = function (_chart) {
     _chart._preprocessData = function () {};
 
     _chart._doRender = function () {
-
 /* OVERRIDE ---------------------------------------------------------------- */
         _chart._redrawBrushFlag = true;
 /* ------------------------------------------------------------------------- */

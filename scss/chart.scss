@@ -109,6 +109,11 @@ body {
         }
     }
 
+    .stack-list path.line {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
     .number-chart-wrapper {
         position: relative;
         top: 50%;
@@ -200,6 +205,7 @@ body {
         &.inactive {
             pointer-events: none;
             color: $gray2;
+            display: none;
         }
 
         &.active {
