@@ -2,7 +2,6 @@
  * EXTEND: dc.bubbleRasterChart                                               *
  * ***************************************************************************/
 
-
 dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _chart = null;
 
@@ -28,8 +27,16 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var _dynamicR = null;
     var _hasBeenRendered = false;
     var counter = 0;
-    var is_safari = navigator.userAgent.indexOf("Safari") > -1;
-
+    var browser = detectBrowser()
+    function detectBrowser () { // from SO: http://bit.ly/1Wd156O
+      var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+      var isFirefox = typeof InstallTrigger !== 'undefined';
+      var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+      var isIE = /*@cc_on!@*/false || !!document.documentMode;
+      var isEdge = !isIE && !!window.StyleMedia;
+      var isChrome = !!window.chrome && !!window.chrome.webstore;
+      return {isOpera: isOpera, isFirefox: isFirefox, isSafari: isSafari, isIE: isIE, isEdge: isEdge, isChrome: isChrome}
+    }
     _chart.colors("#22A7F0"); // set constant as picton blue as default
      /**
      #### .x([scale])
@@ -249,22 +256,11 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         return blob;
     }
 
-    function detectBrowser () { // from SO: http://bit.ly/1Wd156O
-        var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-        var isFirefox = typeof InstallTrigger !== 'undefined';
-        var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-        var isIE = /*@cc_on!@*/false || !!document.documentMode;
-        var isEdge = !isIE && !!window.StyleMedia;
-        var isChrome = !!window.chrome && !!window.chrome.webstore;
-        return {isOpera: isOpera, isFirefox: isFirefox, isSafari: isSafari, isIE: isIE, isEdge: isEdge, isChrome: isChrome}
-    }
-
     function setOverlay(data, nonce){
         var map = _chart.map();
         var bounds = _renderBoundsMap[nonce];
         if (bounds === undefined) { return; }
 
-        var browser = detectBrowser()
         if(browser.isSafari || browser.isIE || browser.isEdge){
             var blob = b64toBlob(data, 'image/png');
             var blobUrl = URL.createObjectURL(blob);
