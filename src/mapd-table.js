@@ -14,7 +14,7 @@ dc.mapdTable = function (parent, chartGroup) {
     var _dimOrGroup = null;
 
     _chart.resetTable = function(){
-        _chart.select('.md-table-wrapper').remove();
+        _chart.root().html('');
     }
 
     _chart.tableFilter = function (_) {
