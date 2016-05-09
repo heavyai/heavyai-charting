@@ -505,6 +505,7 @@ dc.coordinateGridMixin = function (_chart) {
 /* OVERRIDE ---------------------------------------------------------------- */
 
     function changeBinVal(val) {
+        
         _binInputVal = val;
 
         var currentStack = _chart.stack().slice();
