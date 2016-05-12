@@ -15,6 +15,7 @@
 dc.capMixin = function (_chart) {
 
     var _cap = Infinity;
+    var _ordering = 'desc';
 
     var _othersLabel = 'Others';
 
@@ -51,6 +52,14 @@ dc.capMixin = function (_chart) {
     };
 
 /* OVERRIDE EXTEND --------------------------------------------------------- */
+    _chart.ordering = function (_) {
+        if (!_) {
+            return _ordering;
+        }
+        _ordering = _;
+        return _chart;
+    }
+
     _chart.setDataAsync(function(group, callbacks) {
       if (_cap === Infinity) {
           group.allAsync(callbacks);
@@ -63,21 +72,35 @@ dc.capMixin = function (_chart) {
     if (!dc.async) {
       _chart.data(function (group) {
           if (_cap === Infinity) {
-            if (_chart.dataCache != null)
+            if (_chart.dataCache != null) {
               return _chart._computeOrderedGroups(_chart.dataCache);
-            else
+            }
+            
+            else {
               return _chart._computeOrderedGroups(group.all());
-          } else {
-            var topRows = null
-            if (_chart.dataCache != null)
-                topRows = _chart.dataCache;
-            else
-              topRows = group.top(_cap); // ordered by crossfilter group order (default value)
-             topRows = _chart._computeOrderedGroups(topRows); // re-order using ordering (default key)
-              if (_othersGrouper) {
-                  return _othersGrouper(topRows);
-              }
-              return topRows;
+            }
+          } 
+
+          else {
+            var rows = null
+            if (_chart.dataCache != null) {
+                rows = _chart.dataCache;
+            }
+            
+            else if (_ordering === 'desc') {
+              rows = group.top(_cap); // ordered by crossfilter group order (default value)
+            }
+
+            else if (_ordering === 'asc') {
+              rows = group.bottom(_cap); // ordered by crossfilter group order (default value)
+            }
+
+            rows = _chart._computeOrderedGroups(rows); // re-order using ordering (default key)
+            
+            if (_othersGrouper) {
+                return _othersGrouper(rows);
+            }
+            return rows;
           }
       });
     }
@@ -94,11 +117,11 @@ dc.capMixin = function (_chart) {
         });
 
       _chart.capCallback = function(data, callbacks) {
-        var topRows = _chart._computeOrderedGroups(data);
+        var rows = _chart._computeOrderedGroups(data);
         if (_othersGrouper) {
-          return _othersGrouper(topRows);
+          return _othersGrouper(rows);
         }
-        return topRows;
+        return rows;
       }
     }
 /* ------------------------------------------------------------------------- */
