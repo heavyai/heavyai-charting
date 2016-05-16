@@ -2,7 +2,7 @@
  * EXTEND: dc.bubbleRasterChart                                               *
  * ***************************************************************************/
 
-dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
+dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
     var _chart = null;
 
     var _useMap = useMap !== undefined ? useMap : false;
@@ -10,7 +10,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
     var parentDivId = parent.attributes.id.value;
 
     if (_useMap){
-        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), parentDivId));
+        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), parentDivId, _mapboxgl));
     }
     else{
         _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
@@ -97,10 +97,10 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
         updateXAndYScales();
 
         var bounds = _chart.map().getBounds();
-        var renderBounds = [_.values(bounds.getNorthWest()),
-          _.values(bounds.getNorthEast()),
-          _.values(bounds.getSouthEast()),
-          _.values(bounds.getSouthWest())]
+        var renderBounds = [valuesOb(bounds.getNorthWest()),
+          valuesOb(bounds.getNorthEast()),
+          valuesOb(bounds.getSouthEast()),
+          valuesOb(bounds.getSouthWest())]
 
         _chart._resetVegaSpec();
         genVegaSpec();
@@ -123,10 +123,10 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             return _chart.dataCache;
         }
         var bounds = _chart.map().getBounds();
-        var renderBounds = [_.values(bounds.getNorthWest()),
-          _.values(bounds.getNorthEast()),
-          _.values(bounds.getSouthEast()),
-          _.values(bounds.getSouthWest())]
+        var renderBounds = [valuesOb(bounds.getNorthWest()),
+          valuesOb(bounds.getNorthEast()),
+          valuesOb(bounds.getSouthEast()),
+          valuesOb(bounds.getSouthWest())]
         updateXAndYScales();
         _chart._resetVegaSpec();
         genVegaSpec();
@@ -272,30 +272,30 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
             _activeLayer = "_points";
             var toBeAddedOverlay = "overlay" + _activeLayer;
             map.addSource(toBeAddedOverlay,{
-                "id": toBeAddedOverlay,
-                "type": "image",
-                "url": blobUrl,
-                "coordinates": bounds
+                id: toBeAddedOverlay,
+                type: "image",
+                url: blobUrl,
+                coordinates: bounds
             });
             map.addLayer({
-                "id": toBeAddedOverlay,
-                "source": toBeAddedOverlay,
-                "type": "raster",
-                "paint": {"raster-opacity": 0.85}
+                id: toBeAddedOverlay,
+                source: toBeAddedOverlay,
+                type: "raster",
+                paint: {"raster-opacity": 0.85}
             });
         } else {
             var overlayName = "overlay" + _activeLayer;
             var imageSrc = map.getSource(overlayName);
             imageSrc.updateImage({
-                "url": blobUrl,
-                "coordinates": bounds
+                url: blobUrl,
+                coordinates: bounds
             });
         }
     }
 
     _chart._doRender = function() {
       var data = _chart.data();
-      if (!_.isEmpty(data) && _chart.map()._loaded) {
+      if (Object.keys(data).length && _chart.map()._loaded) {
           setOverlay(data.image, data.nonce);
           _hasBeenRendered = true;
       }
@@ -311,6 +311,8 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 }
+
+function valuesOb (obj) { return Object.keys(obj).map(function (key) { return obj[key]; }) }
 
 /******************************************************************************
  * EXTEND END: dc.bubbleRasterChart                                           *

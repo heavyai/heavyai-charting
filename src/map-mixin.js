@@ -2,8 +2,8 @@
  * EXTEND: dc.mapMixin                                                        *
  * ***************************************************************************/
 
-dc.mapMixin = function (_chart, chartDivId) {
-
+dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
+    var _mapboxgl = typeof mapboxgl === 'undefined' ? _mapboxgl : mapboxgl
     var _map = null;
     var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
     var _lastWidth = null;
@@ -31,7 +31,7 @@ dc.mapMixin = function (_chart, chartDivId) {
     _chart._reProjMapbox = true;
 
     var _arr = [[180, -85], [-180, 85]];
-    var _llb = mapboxgl.LngLatBounds.convert(_arr);
+    var _llb = _mapboxgl.LngLatBounds.convert(_arr);
 
     _chart.map = function() { // just a getter - don't let user set map
         return _map;
@@ -125,7 +125,7 @@ dc.mapMixin = function (_chart, chartDivId) {
                     _isFirstMoveEvent = false;
                 }
                 if (_mapUpdateInterval === Infinity || (curTime - _lastMapUpdateTime < _mapUpdateInterval)) {
-                    return; 
+                    return;
                 }
             }
             else if (e.type === 'moveend') {
@@ -206,8 +206,8 @@ dc.mapMixin = function (_chart, chartDivId) {
    }
 
     function initMap() {
-        mapboxgl.accessToken = _mapboxAccessToken;
-        _map = new mapboxgl.Map({
+        _mapboxgl.accessToken = _mapboxAccessToken;
+        _map = new _mapboxgl.Map({
           container: _mapId, // container id
           style: _mapStyle,
           interactive: true,
@@ -223,13 +223,13 @@ dc.mapMixin = function (_chart, chartDivId) {
         //_map.style.on('load', onStyleLoad);
         _map.on('style.load', onStyleLoad);
         _map.on('move', onMapMove);
-        _map.on('moveend', onMapMove); 
+        _map.on('moveend', onMapMove);
 
         _mapInitted = true;
     }
 
     _chart.on('preRender', function(chart) {
-        
+
         _chart.root().select('.mapboxgl-ctrl-bottom-right').remove();
 
         var width = chart.width();
