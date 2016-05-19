@@ -1016,7 +1016,6 @@ body {
     .legend-lock, .legend-title {
         opacity: 0;
         pointer-events: none;
-        transition: opacity .25s;
     }   
 
     .legend-group {
@@ -1113,6 +1112,7 @@ body {
             text-align: center;
             float: left;
             overflow: visible;
+            outline: none;
 
             &:focus {
                 height: 24px;
@@ -1122,7 +1122,6 @@ body {
             }
 
         }
-       
     }
 
     .legend-title {

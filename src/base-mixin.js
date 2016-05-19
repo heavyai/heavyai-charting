@@ -1757,7 +1757,11 @@ dc.baseMixin = function (_chart) {
             return _legend;
         }
         _legend = legend;
-        _legend.parent(_chart);
+
+        if (_legend) {
+            _legend.parent(_chart);
+        }
+        
         return _chart;
     };
 
