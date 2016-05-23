@@ -21,6 +21,27 @@
  * @return {dc.heatMap}
  */
 dc.heatMap = function (parent, chartGroup) {
+    var INTERVAL_LABELS = {
+
+      // ISO DOW starts at 1, set null at 0 index
+      DAY_OF_WEEK: [
+        null, 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'
+      ],
+
+      // Months start at 1, set null at 0 index
+      MONTH: [
+        null, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ],
+
+      HOUR_OF_DAY: [
+        '12AM', '1AM', '2AM', '3AM', '4AM', '5AM',
+        '6AM', '7AM', '8AM', '9AM', '10AM', '11AM',
+        '12PM', '1PM', '2PM', '3PM', '4PM', '5PM',
+        '6PM', '7PM', '8PM', '9PM', '10PM', '11PM'
+      ]
+
+    };
 
     var DEFAULT_BORDER_RADIUS = 6.75;
 
@@ -130,7 +151,7 @@ dc.heatMap = function (parent, chartGroup) {
         else if(month > -1) filterAxis(1, month);
         else if(hourOfDay > -1) filterAxis(1, hourOfDay);
         else filterAxis(1, d);
-    };    
+    };
 /* --------------------------------------------------------------------------*/
 
     var _boxOnClick = function (d) {
