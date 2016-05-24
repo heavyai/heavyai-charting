@@ -212,14 +212,10 @@ dc.pieChart = function (parent, chartGroup) {
 
                 var displayText = width > availableLabelWidth ? truncateLabel(_chart.label()(d.data), width, availableLabelWidth) : _chart.label()(d.data);
 
-                if (displayText === '') { 
-                    showLabel = false; 
-                }
-
                 d3.select(this.parentNode)
-                    .classed('hide-label', !showLabel);
+                    .classed('hide-label', displayText === '');
 
-                return showLabel ? displayText : '';
+                return displayText;
             });
 
         if (_chart.measureLabelsOn()) {
