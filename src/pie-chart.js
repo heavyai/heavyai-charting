@@ -196,7 +196,6 @@ dc.pieChart = function (parent, chartGroup) {
             });
 
 /* OVERRIDE ---------------------------------------------------------------- */
-        var showLabel = true;
 
         labelsEnter
             .style('font-size', (pieIsBig() ? '14px' : '12px'));
@@ -206,10 +205,8 @@ dc.pieChart = function (parent, chartGroup) {
                 return _chart.label()(d.data);
             })
             .html(function(d){
-
                 var availableLabelWidth = getAvailableLabelWidth(d);
                 var width = d3.select(this).node().getBoundingClientRect().width;
-
                 var displayText = width > availableLabelWidth ? truncateLabel(_chart.label()(d.data), width, availableLabelWidth) : _chart.label()(d.data);
 
                 d3.select(this.parentNode)
@@ -219,22 +216,17 @@ dc.pieChart = function (parent, chartGroup) {
             });
 
         if (_chart.measureLabelsOn()) {
-
             labelsEnter.select('.value-measure')
                 .text(function(d){
                     return _chart.measureValue(d.data);
                 })
                 .html(function(d){
-
-                    if (d3.select(this.parentNode).classed('hide-label')) {
-                        return '';
-                    }
+                    if (d3.select(this.parentNode).classed('hide-label')) { return '';}
 
                     var availableLabelWidth = getAvailableLabelWidth(d);
                     var width = d3.select(this).node().getBoundingClientRect().width;
 
                     return  width > availableLabelWidth ? truncateLabel(_chart.measureValue(d.data), width, availableLabelWidth) : _chart.measureValue(d.data);
-                    
                 });
         }    
 /* ------------------------------------------------------------------------- */
