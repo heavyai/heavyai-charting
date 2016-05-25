@@ -72,12 +72,18 @@ dc.heatMap = function (parent, chartGroup) {
     _chart.title(_chart.colorAccessor());
 
     var _colsLabel = function (d) {
+        if (d instanceof Date) {
+          return d.toString();
+        }
 /* OVERRIDE -----------------------------------------------------------------*/
         return isNaN(d) ? d : ((d+'').length > 4 && _numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(d.toFixed(2)));
 /* --------------------------------------------------------------------------*/
 
     };
     var _rowsLabel = function (d) {
+        if (d instanceof Date) {
+          return d.toString();
+        }
 /* OVERRIDE -----------------------------------------------------------------*/
         return isNaN(d) ? d : ((d+'').length > 4 && _numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(d.toFixed(2)));
 
