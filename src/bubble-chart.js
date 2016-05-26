@@ -221,8 +221,8 @@ dc.bubbleChart = function (parent, chartGroup) {
             .attr('class', 'popup-row-item');
 
         _chart.updatePopup();
-
-        popup.classed('js-showPopup popup-scrollable delay-pointer', true);
+        
+        popup.classed('js-showPopup popup-scrollable delay-pointer scatter-plot-popup', true);
 
         setTimeout(function(){ popup.classed('delay-pointer', false)}, 250);
 
