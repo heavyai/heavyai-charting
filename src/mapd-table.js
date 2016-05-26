@@ -4,8 +4,8 @@ dc.mapdTable = function (parent, chartGroup) {
     var _tableWrapper = null;
 
     var _size = 25;
-    var _offset = 0;
-    var _debounce = false;
+    var _scrollTop = 0;
+    var _pauseAutoLoad = false;
 
     var _filteredColumns = {};
     var _columnFilterMap = {};
@@ -42,55 +42,58 @@ dc.mapdTable = function (parent, chartGroup) {
     };
 
     var addRowsCallback = function(data){
-        _chart.dataCache = _chart.dataCache.concat(data)
-        _chart._doRedraw();
-        _debounce = false;
+        if (data.length > 0) {
+            _pauseAutoLoad = false;
+            _chart.dataCache = _chart.dataCache.concat(data);
+            _chart._doRedraw();
+        }
     }
 
     _chart.addRows = function(){
+        _pauseAutoLoad = true;
+        
+        var offset = _chart.data() && _chart.data().length ? _chart.data().length : 0;
 
-        _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
-
-        _offset += _size;
-
-        if (_sortColumn && _sortColumn.order === 'desc') {
-            _dimOrGroup.topAsync(_size, _offset, undefined, [addRowsCallback]);
-        } else {
-            _dimOrGroup.bottomAsync(_size, _offset, undefined, [addRowsCallback]);
-        }
-        _debounce = true;
-
+        getData(offset, [addRowsCallback], true);
     }
-
-    _chart.data(function() {
-        if (!_chart.dataCache) {
-            _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
-            _chart.dataCache = _sortColumn ?
-                (_sortColumn.order === 'desc' ?
-                    _dimOrGroup.order(_sortColumn.col.name).top(_size + _offset, 0) :
-                    _dimOrGroup.order(_sortColumn.col.name).bottom(_size + _offset, 0)) :
-                _dimOrGroup.order(null).top(_size + _offset, 0);
-         }
-        return _chart.dataCache;
-    });
 
     _chart.setDataAsync(function(group,callbacks) {
 
-        _offset = 0;
-
-        _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
-
-        if (_sortColumn && _sortColumn.order === 'desc') {
-            _dimOrGroup.order(_sortColumn.col.name).topAsync(_size, _offset, undefined, callbacks);
-        } else {
-             _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : (_chart.dimension().value().length > 0 ? 'key0' : null)).bottomAsync(_size, _offset, undefined, callbacks);
-        }
+        _pauseAutoLoad = false;
 
         if (_tableWrapper) {
             _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
         }
 
+        getData(0, callbacks, true);
     });
+
+    _chart.data(function() {
+        if (!_chart.dataCache) {
+            _pauseAutoLoad = false;
+
+            if (_tableWrapper) {
+                _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
+            }
+
+            _chart.dataCache = getData();
+         }
+        return _chart.dataCache;
+    });
+
+    function getData(offset, callbacks) {
+        _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
+
+        _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null);
+
+        var sortFuncName = _sortColumn && _sortColumn.order === 'asc' ? 'bottomAsync' : 'topAsync';
+
+        if (!arguments.length) {
+            return _dimOrGroup[sortFuncName.replace('Async', '')](_size, 0);
+        } else {
+            _dimOrGroup[sortFuncName](_size, offset, undefined, callbacks);
+        }
+    }
 
     _chart.addFilteredColumn = function(columnName) {
       _filteredColumns[columnName] = null;
@@ -112,7 +115,7 @@ dc.mapdTable = function (parent, chartGroup) {
         _columnFilterMap = {};
         _chart.clearFilteredColumns();
         _tableFilter.filter();
-    }
+    };
 
     _chart._doRender = function () {
 
@@ -132,13 +135,22 @@ dc.mapdTable = function (parent, chartGroup) {
                 .attr('class', 'md-table-header')
         }
 
-        _debounce = false;
-
         renderTable();
+
+        if (!_pauseAutoLoad) {
+            shouldLoadMore();
+        }
 
         return _chart;
     };
 
+    function shouldLoadMore() {
+        var scrollDivNode = _tableWrapper.select('.md-table-scroll').node();
+        
+        if (_tableWrapper.select('table').node().scrollHeight <= scrollDivNode.scrollTop + scrollDivNode.getBoundingClientRect().height + 18) {
+            _chart.addRows();
+        }
+    }
 
     function renderTable() {
 
@@ -168,7 +180,6 @@ dc.mapdTable = function (parent, chartGroup) {
                 return {expression: splitStr[0], name: splitStr[1]};
             });
         }
-
 
         var tableHeader = table.append('tr').selectAll('th')
             .data(cols)
@@ -207,18 +218,21 @@ dc.mapdTable = function (parent, chartGroup) {
                return '-' + _tableWrapper.select('.md-table-scroll').node().scrollLeft + 'px';
             });
 
-
         _chart.tableWrapper().select('.md-table-scroll')
             .on('scroll', function(){
-
                 dockedHeader.style('left',  '-' + d3.select(this).node().scrollLeft + 'px');
 
-                var scrollHeight = d3.select(this).node().scrollTop + d3.select(this).node().getBoundingClientRect().height;
+                var tableScrollElm = d3.select(this).node();
 
-                if (!_debounce && table.node().scrollHeight <=  scrollHeight + scrollHeight/5) {
-                    _chart.addRows();
+                if (!_pauseAutoLoad) {
+                    var scrollHeight = tableScrollElm.scrollTop + tableScrollElm.getBoundingClientRect().height;
+
+                    if (tableScrollElm.scrollTop > _scrollTop && table.node().scrollHeight <= scrollHeight + scrollHeight/5) {   
+                        _chart.addRows();
+                    }
                 }
-
+            
+                _scrollTop = tableScrollElm.scrollTop;
             });
 
         table.selectAll('th')
