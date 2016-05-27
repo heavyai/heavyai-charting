@@ -221,8 +221,8 @@ dc.bubbleChart = function (parent, chartGroup) {
             .attr('class', 'popup-row-item');
 
         _chart.updatePopup();
-
-        popup.classed('js-showPopup popup-scrollable delay-pointer', true);
+        
+        popup.classed('js-showPopup popup-scrollable delay-pointer scatter-plot-popup', true);
 
         setTimeout(function(){ popup.classed('delay-pointer', false)}, 250);
 
@@ -297,24 +297,6 @@ dc.bubbleChart = function (parent, chartGroup) {
                 return popup.select('.popup-table').node().getBoundingClientRect().height > 160 ? 'scroll' : 'hidden';
             });
 
-
-    }
-
-    function debounce(func, wait, immediate) {
-      
-      var timeout;
-      
-      return function() {
-        var context = this, args = arguments;
-        var later = function() {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
 
     }
 
@@ -394,7 +376,7 @@ dc.bubbleChart = function (parent, chartGroup) {
         
         var bubbleGEnter = bubbleG.enter().append('g');
 
-        var debouncePopUp = debounce(function(d, i, elm){
+        var debouncePopUp = _chart.debounce(function(d, i, elm){
             d3.select(elm).classed('node-hover', true);
             _chart.showPopup(d, i);
         }, 250);
