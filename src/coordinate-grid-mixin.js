@@ -531,7 +531,7 @@ dc.coordinateGridMixin = function (_chart) {
     
         var rangeDisplay = _chart.root().selectAll('.range-display');
         
-        var binNumSecs = _binInputOptions.filter(function(d){return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
+        var binNumSecs = _binInputOptions.filter(function(d){return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
 
         rangeDisplay.select('.range-start-day')
             .property('value', dateFormat(extent[0]))
@@ -575,7 +575,7 @@ dc.coordinateGridMixin = function (_chart) {
 
         var currentExtent = _chart.filter() || _chart.x().domain();
         
-        var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
+        var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
 
         var inputFormat = binNumSecs > 3600 ? d3.time.format.utc('%m-%d-%Y') : (currentInput.attr('class').indexOf('day') >= 0 ? d3.time.format.utc('%m-%d-%Y %I:%M%p') : d3.time.format.utc('%b %d, %Y %I:%M%p'));
 
@@ -1358,7 +1358,7 @@ dc.coordinateGridMixin = function (_chart) {
             return;
         }
 
-        var timeInterval = _chart.group().actualTimeBin();
+        var timeInterval = _chart.group().actualTimeBin(0);
         
         var extent1 = extent0.map(function(date) { return roundTimeBin(date, timeInterval, 'round')});
 
@@ -1373,13 +1373,13 @@ dc.coordinateGridMixin = function (_chart) {
         extent1[1] = extent1[1] > _chart.xAxisMax() ? _chart.xAxisMax() : extent1[1];
 
         if (extent1[0].getTime() === _chart.xAxisMax().getTime()) {
-            var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
+            var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
             extent1[0] = new Date(extent1[0].getTime() - (binNumSecs * 1000));
             extent1[0] = roundTimeBin(extent1[0], timeInterval, 'round'); 
         }
 
         if (extent1[1].getTime() === _chart.xAxisMin().getTime()) {
-            var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin() === d.val})[0].numSeconds;
+            var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
             extent1[1] = new Date(extent1[1].getTime() + (binNumSecs * 1000));
             extent1[1] = roundTimeBin(extent1[1], timeInterval, 'round'); 
         }
