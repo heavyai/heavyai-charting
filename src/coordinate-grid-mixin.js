@@ -512,10 +512,17 @@ dc.coordinateGridMixin = function (_chart) {
 
         for (var i = 0; i < currentStack.length; i++) {
 
+            var binParams = currentStack[i].group.binParams().map(function (binParam, idx) {
+                if (idx === i) {
+                    binParam.timeBin = _binInputVal;
+                }
+                return binParam;
+            });
+
             if (i === 0) {
-                _chart.group(currentStack[i].group.binByTimeUnit(_binInputVal), currentStack[i].name);
+                _chart.group(currentStack[i].group.binParams(binParams), currentStack[i].name);
             } else {
-                _chart.stack(currentStack[i].group.binByTimeUnit(_binInputVal), currentStack[i].name, currentStack[i].accessor);
+                _chart.stack(currentStack[i].group.binParams(binParams), currentStack[i].name, currentStack[i].accessor);
             }
         }
 
