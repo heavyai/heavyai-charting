@@ -273,7 +273,7 @@ function genVegaSpec(vegaSpec, cap, colors, determineScaleType, sampling, x, y, 
       colorIsConstant = true;
     }
   }
-  var markFillColor = colorIsConstant ? {value: colors()()} : {scale: "color", field: "color"}
+  var markFillColor = colorIsConstant ? {value: colors()} : {scale: "color", field: "color"}
 
   var rIsConstant = false;
   if (typeof r === 'function') {
