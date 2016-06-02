@@ -237,15 +237,9 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
           setOverlay(data.image, data.nonce);
           _hasBeenRendered = true;
       }
-
     };
 
-    _chart._doRedraw = function() {
-      if (!_hasBeenRendered)
-          return _chart._doRender();
-      var data = _chart.data();
-      setOverlay(data.image, data.nonce);
-    };
+    _chart._doRedraw = _chart._doRender;
 
     return _chart.anchor(parent, chartGroup);
 }
