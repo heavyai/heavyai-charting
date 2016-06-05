@@ -148,6 +148,14 @@ dc.baseMixin = function (_chart) {
 /* ------------------------------------------------------------------------- */
 
     var _filters = [];
+    var _areFiltersInverse = false;
+    _chart.filtersInverse = function() {
+        return _areFiltersInverse;
+    }
+
+    var _filterCount = 0;
+
+
 
 /* OVERRIDE ---------------------------------------------------------------- */
     var _softFilterClear = false;
@@ -172,10 +180,10 @@ dc.baseMixin = function (_chart) {
             $(dimension).trigger("filter-clear");
         } else {
             if (_chart.hasOwnProperty('rangeFocused')) {
-              dimension.filterMulti(filters, _chart.rangeFocused());
+              dimension.filterMulti(filters, _chart.rangeFocused(), undefined, _areFiltersInverse);
             }
             else {
-              dimension.filterMulti(filters);
+              dimension.filterMulti(filters, undefined, undefined, _areFiltersInverse);
             }
         }
 /* ------------------------------------------------------------------------- */
@@ -1301,9 +1309,18 @@ dc.baseMixin = function (_chart) {
      * @param {*} [filter]
      * @return {dc.baseMixin}
      */
-    _chart.filter = function (filter) {
+    _chart.filter = function (filter, isFilterInverse) {
         if (!arguments.length) {
             return _filters.length > 0 ? _filters[0] : null;
+        } 
+        isFilterInverse = typeof(isFilterInverse) === 'undefined' ? false : isFilterInverse; 
+        // next three lines are just helper for testing now
+        if (Math.floor(++_filterCount / 5) % 2 == 1)
+            isFilterInverse = true;
+        console.log(isFilterInverse);
+        if (isFilterInverse !== _areFiltersInverse) {
+            _filters = _resetFilterHandler(_filters);
+            _areFiltersInverse = isFilterInverse;
         }
         if (filter instanceof Array && filter[0] instanceof Array && !filter.isFiltered) {
             filter[0].forEach(function (d) {
@@ -1381,9 +1398,10 @@ dc.baseMixin = function (_chart) {
      * @param {*} datum
      */
     _chart.onClick = function (datum) {
+        console.log(datum);
         var filter = _chart.keyAccessor()(datum);
         dc.events.trigger(function () {
-            _chart.filter(filter);
+            _chart.filter(filter, false);
             _chart.redrawGroup();
         });
     };

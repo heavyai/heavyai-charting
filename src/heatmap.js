@@ -582,8 +582,9 @@ dc.heatMap = function (parent, chartGroup) {
 
     _chart.isSelectedNode = function (d) {
 
+
 /* OVERRIDE -----------------------------------------------------------------*/
-        return _chart.hasFilter([d.key0, d.key1]);
+        return  ((_chart.hasFilter([d.key0, d.key1]) && !_chart.filtersInverse()) || (!_chart.hasFilter([d.key0, d.key1]) && _chart.filtersInverse()));
 /* --------------------------------------------------------------------------*/
 
     };

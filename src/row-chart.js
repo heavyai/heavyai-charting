@@ -624,7 +624,7 @@ dc.rowChart = function (parent, chartGroup) {
 /* --------------------------------------------------------------------------*/
 
     function isSelectedRow (d) {
-        return _chart.hasFilter(_chart.cappedKeyAccessor(d));
+        return  ((_chart.hasFilter(_chart.cappedKeyAccessor(d)) && !_chart.filtersInverse()) || (!_chart.hasFilter(_chart.cappedKeyAccessor(d)) && _chart.filtersInverse()));
     }
 
     return _chart.anchor(parent, chartGroup);

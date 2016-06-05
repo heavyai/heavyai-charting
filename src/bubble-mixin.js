@@ -261,7 +261,7 @@ dc.bubbleMixin = function (_chart) {
     _chart.isSelectedNode = function (d) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        return _chart.hasFilter(d.key0);
+        return  ((_chart.hasFilter(d.key0) && !_chart.filtersInverse()) || (!_chart.hasFilter(d.key0) && _chart.filtersInverse()));
 /* --------------------------------------------------------------------------*/
 
     };
