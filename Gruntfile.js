@@ -371,6 +371,7 @@ module.exports.jsFiles = [
     'src/geo-choropleth-chart.js',
     'src/bubble-overlay.js',
     'src/row-chart.js',
+    'src/count-widget.js', // MapD specific
     'src/cloud-chart.js', // MapD specific
     'src/legend.js',
     'src/legend-continuous.js', // MapD specific
