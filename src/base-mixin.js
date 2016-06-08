@@ -48,7 +48,7 @@ dc.baseMixin = function (_chart) {
     var _height = _defaultHeight;
 
 /* OVERRIDE ---------------------------------------------------------------- */
-    var _multipleKeysAccessor = function(d){ 
+    var _multipleKeysAccessor = function(d){
         if ( _chart.dimension().value().length === 1) {
             return d['key0'];
         }
@@ -78,7 +78,7 @@ dc.baseMixin = function (_chart) {
     var _ordering = dc.pluck('key0');
     var _measureLabelsOn = false;
 
-    
+
 /* ------------------------------------------------------------------------- */
 
     var _valueAccessor = dc.pluck('val');
@@ -127,14 +127,14 @@ dc.baseMixin = function (_chart) {
         // need to check if max query?
         _topQueryCallback = callback;
         if (stackEmpty)
-            _topQueryCallback.func(); 
+            _topQueryCallback.func();
     }
 
     var _popQueryStack = function(id) {
-        if (_topQueryCallback != null && id == _topQueryCallback.id) 
+        if (_topQueryCallback != null && id == _topQueryCallback.id)
             _topQueryCallback = null;
-        else 
-            _topQueryCallback.func(); 
+        else
+            _topQueryCallback.func();
     }
 
     var _startNextQuery = function() {
@@ -142,9 +142,9 @@ dc.baseMixin = function (_chart) {
         //var callback = _firstQueryCallback;
         //callback();
     }
-    
+
     // override for count chart
-    _chart.isCountChart = function() { return false; } 
+    _chart.isCountChart = function() { return false; }
 /* ------------------------------------------------------------------------- */
 
     var _filters = [];
@@ -176,7 +176,7 @@ dc.baseMixin = function (_chart) {
             dimension.filterAll(_softFilterClear);
 
              // this is hacky -
-             // we need to get dimension.filter to use dimension as this 
+             // we need to get dimension.filter to use dimension as this
             $(dimension).trigger("filter-clear");
         } else {
             if (_chart.hasOwnProperty('rangeFocused')) {
@@ -472,7 +472,7 @@ dc.baseMixin = function (_chart) {
         if (softFilterClear != undefined && softFilterClear == true) {
           _softFilterClear = true;
         } else {
-          _softFilterClear = false; 
+          _softFilterClear = false;
         }
 
         return _chart.filter(null);
@@ -870,7 +870,7 @@ dc.baseMixin = function (_chart) {
             _mandatoryAttributes.forEach(checkForMandatoryAttributes);
         }
 
-        try { 
+        try {
             var result = _chart._doRender();
         }
         catch (err) {
@@ -968,7 +968,7 @@ dc.baseMixin = function (_chart) {
         sizeSvg();
         _listeners.preRedraw(_chart);
 
-        try { 
+        try {
             var result = _chart._doRedraw();
         }
         catch (err) {
@@ -1312,12 +1312,8 @@ dc.baseMixin = function (_chart) {
     _chart.filter = function (filter, isFilterInverse) {
         if (!arguments.length) {
             return _filters.length > 0 ? _filters[0] : null;
-        } 
-        isFilterInverse = typeof(isFilterInverse) === 'undefined' ? false : isFilterInverse; 
-        // next three lines are just helper for testing now
-        if (Math.floor(++_filterCount / 5) % 2 == 1)
-            isFilterInverse = true;
-        console.log(isFilterInverse);
+        }
+        isFilterInverse = typeof(isFilterInverse) === 'undefined' ? false : isFilterInverse;
         if (isFilterInverse !== _areFiltersInverse) {
             _filters = _resetFilterHandler(_filters);
             _areFiltersInverse = isFilterInverse;
@@ -1398,10 +1394,10 @@ dc.baseMixin = function (_chart) {
      * @param {*} datum
      */
     _chart.onClick = function (datum) {
-        console.log(datum);
+        var isInverseFilter = d3.event.metaKey || d3.event.ctrlKey
         var filter = _chart.keyAccessor()(datum);
         dc.events.trigger(function () {
-            _chart.filter(filter, false);
+            _chart.filter(filter, isInverseFilter);
             _chart.redrawGroup();
         });
     };
@@ -1484,7 +1480,7 @@ dc.baseMixin = function (_chart) {
           var startRange = (c/numColors)*colorDomainSize + colorDomain[0];
 
             if (_isTargeting) {
-                startRange = '%' + (parseFloat(startRange) * 100.0).toFixed(2); 
+                startRange = '%' + (parseFloat(startRange) * 100.0).toFixed(2);
             }
             else if (_colorByExpr === 'count(*)') {
                 startRange = parseInt(startRange);
@@ -1779,7 +1775,7 @@ dc.baseMixin = function (_chart) {
         if (_legend) {
             _legend.parent(_chart);
         }
-        
+
         return _chart;
     };
 
@@ -1881,7 +1877,7 @@ dc.baseMixin = function (_chart) {
 
     _chart.debounce = function (func, wait, immediate) {
       var timeout;
-      
+
       return function() {
         var context = this, args = arguments;
         var later = function() {
@@ -1900,4 +1896,3 @@ dc.baseMixin = function (_chart) {
 /******************************************************************************
  * END OVERRIDE: dc.baseMixin                                                 *
  * ***************************************************************************/
-

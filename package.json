@@ -65,7 +65,8 @@
     "build:example": "npm run build && bash scripts/copy-example-libs.sh",
     "start": "npm run build:example && ./node_modules/http-server/bin/http-server -p 8081 -o",
     "test": "grunt test",
-    "clean": "bash scripts/clean.sh"
+    "clean": "bash scripts/clean.sh",
+    "watch": "grunt watch"
   },
   "npmName": "mapdc",
   "npmFileMap": [
