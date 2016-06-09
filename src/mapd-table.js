@@ -13,6 +13,25 @@ dc.mapdTable = function (parent, chartGroup) {
     var _sortColumn = null;
     var _dimOrGroup = null;
 
+    var _table_events = ['sort']
+    var _listeners = d3.dispatch.apply(d3, _table_events)
+    var _on = _chart.on.bind(_chart)
+
+    _chart.on = function (event, listener) {
+        if (_table_events.indexOf(event) === -1) {
+            _on(event, listener)
+        } else {
+            _listeners.on(event, listener);
+        }
+        return _chart;
+    };
+
+    _chart._invokeSortListener = function (f) {
+        if (f !== undefined) {
+            _listeners.sort(_chart, f);
+        }
+    };
+
     _chart.resetTable = function(){
         _chart.root().html('');
     }
@@ -51,9 +70,9 @@ dc.mapdTable = function (parent, chartGroup) {
 
     _chart.addRows = function(){
         _pauseAutoLoad = true;
-        
+
         var offset = _chart.data() && _chart.data().length ? _chart.data().length : 0;
-      
+
         getData(offset, [addRowsCallback], true);
     }
 
@@ -75,7 +94,7 @@ dc.mapdTable = function (parent, chartGroup) {
             if (_tableWrapper) {
                 _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
             }
-            
+
             _chart.dataCache = getData();
          }
         return _chart.dataCache;
@@ -227,11 +246,11 @@ dc.mapdTable = function (parent, chartGroup) {
                 if (!_pauseAutoLoad) {
                     var scrollHeight = tableScrollElm.scrollTop + tableScrollElm.getBoundingClientRect().height;
 
-                    if (tableScrollElm.scrollTop > _scrollTop && table.node().scrollHeight <= scrollHeight + scrollHeight/5) {   
+                    if (tableScrollElm.scrollTop > _scrollTop && table.node().scrollHeight <= scrollHeight + scrollHeight/5) {
                         _chart.addRows();
                     }
                 }
-            
+
                 _scrollTop = tableScrollElm.scrollTop;
             });
 
@@ -252,25 +271,13 @@ dc.mapdTable = function (parent, chartGroup) {
                             .classed('active asc desc', false);
 
                         if (_sortColumn && _sortColumn.index === i) {
-
                             _sortColumn =  _sortColumn.order === 'desc' ? {index: i, col: d,  order: 'asc'} : null;
-
                         } else {
                             _sortColumn =  {index: i, col: d, order: 'desc'};
                         }
 
-                        var sortEvent = new Event('sort', {
-                          bubbles: true,
-                          cancelable: true
-                        });
-
-                        sortEvent.sortColumn = _sortColumn;
-
-                        var headerDOMNode = headerItem[0][0];
-                        headerDOMNode.dispatchEvent(sortEvent);
-
+                        _chart._invokeSortListener(_sortColumn)
                         dc.redrawAll();
-
                     })
                     .style('width', d3.select(this).node().getBoundingClientRect().width + 'px');
 
