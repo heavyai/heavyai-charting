@@ -1084,9 +1084,9 @@ dc.baseMixin = function (_chart) {
         return _chart;
     };
 
-    _chart._invokeFilteredListener = function (f) {
+    _chart._invokeFilteredListener = function (f, i) {
         if (f !== undefined) {
-            _listeners.filtered(_chart, f);
+            _listeners.filtered(_chart, f, i);
         }
     };
 
@@ -1336,7 +1336,7 @@ dc.baseMixin = function (_chart) {
             }
         }
         applyFilters();
-        _chart._invokeFilteredListener(filter);
+        _chart._invokeFilteredListener(filter, isFilterInverse);
 
         if (_root !== null && _chart.hasFilter()) {
             _chart.turnOnControls();
