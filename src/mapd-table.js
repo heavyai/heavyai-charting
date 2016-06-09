@@ -53,7 +53,7 @@ dc.mapdTable = function (parent, chartGroup) {
         _pauseAutoLoad = true;
         
         var offset = _chart.data() && _chart.data().length ? _chart.data().length : 0;
-        console.log('addrows')
+      
         getData(offset, [addRowsCallback], true);
     }
 
@@ -64,7 +64,7 @@ dc.mapdTable = function (parent, chartGroup) {
         if (_tableWrapper) {
             _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
         }
-        console.log('async')
+
         getData(0, callbacks, true);
     });
 
@@ -75,7 +75,7 @@ dc.mapdTable = function (parent, chartGroup) {
             if (_tableWrapper) {
                 _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
             }
-            console.log('Sync')
+            
             _chart.dataCache = getData();
          }
         return _chart.dataCache;
