@@ -100,7 +100,7 @@ dc.rowChart = function (parent, chartGroup) {
 
     function drawAxis () {
 /* OVERRIDE -----------------------------------------------------------------*/
-        
+
         var root = _chart.root();
 
         var axisG = root.select('g.axis');
@@ -313,11 +313,11 @@ dc.rowChart = function (parent, chartGroup) {
                 return Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
             })
             .attr('transform', translateX);
-        
+
         if (!_chart.measureLabelsOn()) {
             createTitles(rows);
         }
-        
+
         updateLabels(rows);
     }
 
@@ -624,7 +624,7 @@ dc.rowChart = function (parent, chartGroup) {
 /* --------------------------------------------------------------------------*/
 
     function isSelectedRow (d) {
-        return  ((_chart.hasFilter(_chart.cappedKeyAccessor(d)) && !_chart.filtersInverse()) || (!_chart.hasFilter(_chart.cappedKeyAccessor(d)) && _chart.filtersInverse()));
+        return  _chart.hasFilter(_chart.cappedKeyAccessor(d)) ^ _chart.filtersInverse();
     }
 
     return _chart.anchor(parent, chartGroup);

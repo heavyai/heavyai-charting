@@ -584,7 +584,7 @@ dc.heatMap = function (parent, chartGroup) {
 
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        return  ((_chart.hasFilter([d.key0, d.key1]) && !_chart.filtersInverse()) || (!_chart.hasFilter([d.key0, d.key1]) && _chart.filtersInverse()));
+        return  _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse();
 /* --------------------------------------------------------------------------*/
 
     };
@@ -593,14 +593,14 @@ dc.heatMap = function (parent, chartGroup) {
     function showPopup(d, i) {
 
         var commafy = d3.format(',');
-  
+
         var popup = _chart.popup();
 
         var popupBox = popup.select('.chart-popup-box').html('')
             .classed('popup-list', true);
 
         popupBox.append('div')
-            .attr('class', 'popup-header') 
+            .attr('class', 'popup-header')
             .text(function(){
               return _colsLabel(_chart.keyAccessor()(d, i)) + ' x ' + _colsLabel(_chart.valueAccessor()(d, i));
             });
@@ -620,7 +620,7 @@ dc.heatMap = function (parent, chartGroup) {
             });
 
         popup.classed('js-showPopup', true);
-        
+
     }
 
     function hidePopup() {
@@ -650,4 +650,3 @@ dc.heatMap = function (parent, chartGroup) {
 /* ****************************************************************************
  * END OVERRIDE: dc.heatMap                                                   *
  * ***************************************************************************/
-

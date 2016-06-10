@@ -27,7 +27,7 @@ dc.mapdTable = function (parent, chartGroup) {
     };
 
     _chart._invokeSortListener = function (f) {
-        if (f !== undefined) {
+        if (f !== "undefined") {
             _listeners.sort(_chart, f);
         }
     };

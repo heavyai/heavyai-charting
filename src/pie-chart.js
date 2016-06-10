@@ -228,7 +228,7 @@ dc.pieChart = function (parent, chartGroup) {
 
                     return  width > availableLabelWidth ? truncateLabel(_chart.measureValue(d.data), width, availableLabelWidth) : _chart.measureValue(d.data);
                 });
-        }    
+        }
 /* ------------------------------------------------------------------------- */
     }
 
@@ -432,7 +432,7 @@ dc.pieChart = function (parent, chartGroup) {
         if (!arguments.length) {
             return _pieStyle;
         }
-        
+
         _pieStyle = pieStyle;
         return _chart;
     };
@@ -497,7 +497,7 @@ dc.pieChart = function (parent, chartGroup) {
     }
 
     function isSelectedSlice (d) {
-        return  ((_chart.hasFilter(_chart.cappedKeyAccessor(d.data)) && !_chart.filtersInverse()) || (!_chart.hasFilter(_chart.cappedKeyAccessor(d.data)) && _chart.filtersInverse()));
+        return  _chart.hasFilter(_chart.cappedKeyAccessor(d.data) ^ _chart.filtersInverse());
     }
 
     _chart._doRedraw = function () {
@@ -542,7 +542,7 @@ dc.pieChart = function (parent, chartGroup) {
         var arc = buildArcs();
         var centroid = labelCentroid(d, arc);
         var adjacent = Math.abs(centroid[1]);
-        var useAngle = centroid[0] * centroid[1] < 0 ? d.startAngle : d.endAngle; 
+        var useAngle = centroid[0] * centroid[1] < 0 ? d.startAngle : d.endAngle;
         var refAngle = centroid[1] >= 0 ? Math.PI : (centroid[0] < 0 ? Math.PI * 2 : 0);
 
         var tan = Math.tan(Math.abs(refAngle - useAngle));
@@ -562,14 +562,14 @@ dc.pieChart = function (parent, chartGroup) {
         }
 
         var trimIndex = labelText.length - Math.ceil((width - availableLabelWidth) / (width/labelText.length) * 1.25);
-       
+
         if (labelText.length - trimIndex > 2) {
             labelText = trimIndex > 2  ? labelText.slice(0, trimIndex) + '&#8230;' : '';
-        } 
+        }
 
         return labelText;
     }
- 
+
 /* ------------------------------------------------------------------------- */
 
     function sliceTooSmall (d) {
@@ -800,4 +800,3 @@ dc.pieChart = function (parent, chartGroup) {
 /* ****************************************************************************
  * END OVERRIDE: dc.pieChart                                                  *
  * ***************************************************************************/
-

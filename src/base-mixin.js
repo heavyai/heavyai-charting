@@ -180,10 +180,10 @@ dc.baseMixin = function (_chart) {
             $(dimension).trigger("filter-clear");
         } else {
             if (_chart.hasOwnProperty('rangeFocused')) {
-              dimension.filterMulti(filters, _chart.rangeFocused(), undefined, _areFiltersInverse);
+              dimension.filterMulti(filters, _chart.rangeFocused(), _areFiltersInverse);
             }
             else {
-              dimension.filterMulti(filters, undefined, undefined, _areFiltersInverse);
+              dimension.filterMulti(filters, undefined, _areFiltersInverse);
             }
         }
 /* ------------------------------------------------------------------------- */
@@ -1313,7 +1313,7 @@ dc.baseMixin = function (_chart) {
         if (!arguments.length) {
             return _filters.length > 0 ? _filters[0] : null;
         }
-        isFilterInverse = typeof(isFilterInverse) === 'undefined' ? false : isFilterInverse;
+        isFilterInverse = typeof isFilterInverse === 'undefined' ? false : isFilterInverse;
         if (isFilterInverse !== _areFiltersInverse) {
             _filters = _resetFilterHandler(_filters);
             _areFiltersInverse = isFilterInverse;
