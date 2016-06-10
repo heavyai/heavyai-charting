@@ -497,7 +497,7 @@ dc.pieChart = function (parent, chartGroup) {
     }
 
     function isSelectedSlice (d) {
-        return  _chart.hasFilter(_chart.cappedKeyAccessor(d.data) ^ _chart.filtersInverse());
+        return _chart.hasFilter(_chart.cappedKeyAccessor(d.data)) ^ _chart.filtersInverse();
     }
 
     _chart._doRedraw = function () {

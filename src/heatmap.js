@@ -584,7 +584,7 @@ dc.heatMap = function (parent, chartGroup) {
 
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        return  _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse();
+        return _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse();
 /* --------------------------------------------------------------------------*/
 
     };
