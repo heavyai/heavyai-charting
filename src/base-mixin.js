@@ -846,20 +846,21 @@ dc.baseMixin = function (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.renderAsync = function(queryGroupId, queryCount, callback) {
-        if (dc._refreshDisabled)
-            return;
+        if (dc._refreshDisabled) {
+          return;
+        }
         if (_chart.hasOwnProperty('setSample')) {
             _chart.setSample();
         }
         var id = queryId++;
 
+        callback = callback || function () { return; }
         var renderChart = _chart.render.bind(this)
-
         var renderCallback = function(data) {
           return renderChart(id, queryGroupId, queryCount, data, callback)
         }
 
-        _chart.dataAsync([renderCallback]);
+        _chart.dataAsync([renderCallback, callback]);
     };
 /* ------------------------------------------------------------------------- */
 
