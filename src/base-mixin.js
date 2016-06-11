@@ -845,14 +845,20 @@ dc.baseMixin = function (_chart) {
     }
 
 /* OVERRIDE ---------------------------------------------------------------- */
-    _chart.renderAsync = function(queryGroupId, queryCount) {
+    _chart.renderAsync = function(queryGroupId, queryCount, callback) {
         if (dc._refreshDisabled)
             return;
         if (_chart.hasOwnProperty('setSample')) {
             _chart.setSample();
         }
         var id = queryId++;
-        var renderCallback = $.proxy(_chart.render,this,id,queryGroupId,queryCount);
+
+        var renderChart = _chart.render.bind(this)
+
+        var renderCallback = function(data) {
+          return renderChart(id, queryGroupId, queryCount, data, callback)
+        }
+
         _chart.dataAsync([renderCallback]);
     };
 /* ------------------------------------------------------------------------- */
@@ -868,10 +874,10 @@ dc.baseMixin = function (_chart) {
      * @return {dc.baseMixin}
      */
 /* OVERRIDE ---------------------------------------------------------------- */
-    _chart.render = function (id, queryGroupId, queryCount, data) {
-
-        if (dc._refreshDisabled)
+    _chart.render = function (id, queryGroupId, queryCount, data, callback) {
+        if (dc._refreshDisabled) {
             return;
+        }
         _chart.dataCache = data !== undefined ? data : null;
 
         sizeRoot();
@@ -885,8 +891,12 @@ dc.baseMixin = function (_chart) {
 
         try {
             var result = _chart._doRender();
-        }
-        catch (err) {
+        } catch (err) {
+            if (callback) {
+              callback(err)
+            } else {
+              throw err
+            }
             console.error(err);
         }
 
@@ -898,12 +908,10 @@ dc.baseMixin = function (_chart) {
         if (_chart._colorLegend) {
           _chart._colorLegend.render();
         }
-
         _chart.generatePopup();
 /* ------------------------------------------------------------------------- */
 
         _chart._activateRenderlets('postRender');
-
 /* OVERRIDE ---------------------------------------------------------------- */
         if (queryGroupId !== undefined) {
             if (++dc._renderCount == queryCount) {
@@ -916,12 +924,26 @@ dc.baseMixin = function (_chart) {
                 dc._globalTransitionDuration = null; // reset to null if was brush
                 var stackEmpty = dc._renderIdStack == null || dc._renderIdStack == queryGroupId;
                 dc._renderIdStack = null;
-                if (!stackEmpty)
+                if (!stackEmpty) {
+                  try {
                     dc.renderAll();
+                  } catch (err) {
+                    if (callback) {
+                      callback(err)
+                    } else {
+                      throw err
+                    }
+                    console.error(err);
+                  }
+                }
+
             }
         }
-/* ------------------------------------------------------------------------- */
 
+        if (callback) {
+          callback(null, result)
+        }
+/* ------------------------------------------------------------------------- */
         return result;
     };
 
