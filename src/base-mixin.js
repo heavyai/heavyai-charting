@@ -846,21 +846,23 @@ dc.baseMixin = function (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.renderAsync = function(queryGroupId, queryCount, callback) {
+        callback = callback || function () { return; }
+
         if (dc._refreshDisabled) {
-          return;
+            return;
         }
+
         if (_chart.hasOwnProperty('setSample')) {
             _chart.setSample();
         }
         var id = queryId++;
 
-        callback = callback || function () { return; }
         var renderChart = _chart.render.bind(this)
         var renderCallback = function(data) {
           return renderChart(id, queryGroupId, queryCount, data, callback)
         }
 
-        _chart.dataAsync([renderCallback, callback]);
+        _chart.dataAsync([renderCallback]);
     };
 /* ------------------------------------------------------------------------- */
 
@@ -876,6 +878,8 @@ dc.baseMixin = function (_chart) {
      */
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.render = function (id, queryGroupId, queryCount, data, callback) {
+        var result;
+
         if (dc._refreshDisabled) {
             return;
         }
@@ -891,7 +895,11 @@ dc.baseMixin = function (_chart) {
         }
 
         try {
-            var result = _chart._doRender();
+            if (data instanceof Error) {
+              throw data
+            } else {
+              result = _chart._doRender();
+            }
         } catch (err) {
             if (callback) {
               callback(err)
@@ -899,6 +907,7 @@ dc.baseMixin = function (_chart) {
               throw err
             }
             console.error(err);
+            return
         }
 
         if (_legend && _chart.colors().domain) {
