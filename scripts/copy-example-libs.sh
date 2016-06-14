@@ -6,9 +6,9 @@ cp mapdc.min.css example/css/
 cp chart.min.css example/css/
 cp mapdc.js example/js/
 cp ../mapd-crossfilter/mapd-crossfilter.js example/js/
-cp ../mapd-con/dist/thrift.js example/js/
-cp ../mapd-con/dist/mapd.thrift.js example/js/
-cp ../mapd-con/dist/mapd_types.js example/js/
+cp ../mapd-con/thrift/browser/thrift.js example/js/
+cp ../mapd-con/thrift/browser/mapd.thrift.js example/js/
+cp ../mapd-con/thrift/browser/mapd_types.js example/js/
 cp ../mapd-con/dist/MapdCon.js example/js/
 cp ../mapd-mapbox-gl-js/dist/mapbox-gl.js example/js/
 cp ../mapd-mapbox-gl-js/dist/mapboxgl-overrides.js example/js/
