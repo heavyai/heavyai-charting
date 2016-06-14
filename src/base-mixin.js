@@ -48,7 +48,21 @@ dc.baseMixin = function (_chart) {
     var _height = _defaultHeight;
 
 /* OVERRIDE ---------------------------------------------------------------- */
-    var _multipleKeysAccessor = function(d){
+    var _multipleKeysAccessor = function(d) {
+        var filteredKeys = [];
+        var keyCount = 0;
+        for (var key in d) {
+            if (d.hasOwnProperty(key) && key.indexOf('key') > -1) {
+                filteredKeys.push(d[key]);
+            }
+        }
+        if (filteredKeys.length === 1)
+            filteredKeys = filteredKeys[0];
+        return filteredKeys;
+    }
+
+
+    _chart.multipleKeysLabelAccessor = function(d){
         if ( _chart.dimension().value().length === 1) {
             return d['key0'];
         }
@@ -74,7 +88,7 @@ dc.baseMixin = function (_chart) {
 
     var _redrawBrushFlag = false;
     var _keyAccessor = _multipleKeysAccessor;
-    var _label = _multipleKeysAccessor;
+    var _label = _chart.multipleKeysLabelAccessor;
     var _ordering = dc.pluck('key0');
     var _measureLabelsOn = false;
 
