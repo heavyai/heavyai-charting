@@ -48,6 +48,8 @@ dc.baseMixin = function (_chart) {
     var _height = _defaultHeight;
 
 /* OVERRIDE ---------------------------------------------------------------- */
+    var createAsyncChartAction = dc.utils.createAsyncChartActionCreator(_chart)
+
     var _multipleKeysAccessor = function(d) {
         var filteredKeys = [];
         for (var key in d) {
@@ -845,25 +847,15 @@ dc.baseMixin = function (_chart) {
     }
 
 /* OVERRIDE ---------------------------------------------------------------- */
-    _chart.renderAsync = function(queryGroupId, queryCount, callback) {
-        callback = callback || function () { return; }
+    _chart.renderAsyncWithQueryGroup = function (queryGroupId, queryCount, callback) {
+      var asyncRender = createAsyncChartAction(_chart.render)
+      var id = queryId++
+      asyncRender(id, queryGroupId, queryCount, callback)
+    }
 
-        if (dc._refreshDisabled) {
-            return;
-        }
-
-        if (_chart.hasOwnProperty('setSample')) {
-            _chart.setSample();
-        }
-        var id = queryId++;
-
-        var renderChart = _chart.render.bind(this)
-        var renderCallback = function(data) {
-          return renderChart(id, queryGroupId, queryCount, data, callback)
-        }
-
-        _chart.dataAsync([renderCallback]);
-    };
+    _chart.renderAsync = function (callback) {
+      _chart.renderAsyncWithQueryGroup(undefined, undefined, callback)
+    }
 /* ------------------------------------------------------------------------- */
 
     /**
@@ -878,8 +870,6 @@ dc.baseMixin = function (_chart) {
      */
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.render = function (id, queryGroupId, queryCount, data, callback) {
-        var result;
-
         if (dc._refreshDisabled) {
             return;
         }
@@ -893,20 +883,10 @@ dc.baseMixin = function (_chart) {
         if (_mandatoryAttributes) {
             _mandatoryAttributes.forEach(checkForMandatoryAttributes);
         }
+        var doChartRender = dc.utils.createChartAction(_chart._doRender.bind(this))
+        var result = doChartRender(data, callback)
 
-        try {
-            if (data instanceof Error) {
-              throw data
-            } else {
-              result = _chart._doRender();
-            }
-        } catch (err) {
-            if (callback) {
-              callback(err)
-            } else {
-              throw err
-            }
-            console.error(err);
+        if (!result) {
             return
         }
 
@@ -935,23 +915,14 @@ dc.baseMixin = function (_chart) {
                 var stackEmpty = dc._renderIdStack == null || dc._renderIdStack == queryGroupId;
                 dc._renderIdStack = null;
                 if (!stackEmpty) {
-                  try {
-                    dc.renderAll();
-                  } catch (err) {
-                    if (callback) {
-                      callback(err)
-                    } else {
-                      throw err
-                    }
-                    console.error(err);
-                  }
+                    var doRenderAll = dc.utils.createChartAction(dc.renderAll)
+                    doRenderAll()
                 }
-
             }
         }
 
         if (callback) {
-          callback(null, result)
+            callback(null, result)
         }
 /* ------------------------------------------------------------------------- */
         return result;
@@ -976,17 +947,15 @@ dc.baseMixin = function (_chart) {
     };
 
 /* OVERRIDE ---------------------------------------------------------------- */
-    _chart.redrawAsync = function(queryGroupId, queryCount) {
-        if (dc._refreshDisabled)
-            return;
-
-        if (_chart.hasOwnProperty('setSample')) {
-            _chart.setSample();
-        }
+    _chart.redrawAsyncWithQueryGroup = function (queryGroupId, queryCount, callback) {
+        var asyncRedraw = createAsyncChartAction(_chart.redraw);
         var id = queryId++;
-        var redrawCallback = $.proxy(_chart.redraw,this,id,queryGroupId,queryCount);
-        _chart.dataAsync([redrawCallback]);
-    };
+        asyncRedraw(id, queryGroupId, queryCount, callback);
+    }
+
+    _chart.redrawAsync = function (callback) {
+        _chart.redrawAsyncWithQueryGroup(undefined, undefined, callback)
+    }
 /* ------------------------------------------------------------------------- */
 
     /**
@@ -1003,7 +972,7 @@ dc.baseMixin = function (_chart) {
      * @return {dc.baseMixin}
      */
 /* OVERRIDE ---------------------------------------------------------------- */
-    _chart.redraw = function (id, queryGroupId, queryCount, data) {
+    _chart.redraw = function (id, queryGroupId, queryCount, data, callback) {
 
         if (dc._refreshDisabled)
             return;
@@ -1013,11 +982,12 @@ dc.baseMixin = function (_chart) {
         sizeSvg();
         _listeners.preRedraw(_chart);
 
-        try {
-            var result = _chart._doRedraw();
-        }
-        catch (err) {
-            console.error(err);
+
+        var doChartRedraw = dc.utils.createChartAction(_chart._doRedraw)
+        var result = doChartRedraw(data, callback)
+
+        if (!result) {
+          return
         }
 
         if (_legend && _chart.colors().domain) {
@@ -1045,19 +1015,16 @@ dc.baseMixin = function (_chart) {
                 dc._globalTransitionDuration = null; // reset to null if was brush
                 var stackEmpty = dc._redrawIdStack == null || dc._redrawIdStack == queryGroupId;
                 dc._redrawIdStack = null;
-                // look at logic here
-                if (dc._redrawCallback != null) {
-                    var callbackCopy = dc._redrawCallback;
-                    dc._redrawCallback = null;
-                    callbackCopy();
-                }
-                else if (!stackEmpty) {
-                    dc.redrawAll();
+                if (!stackEmpty) {
+                    var doRedrawAll = dc.utils.createChartAction(dc.redrawAll)
+                    doRedrawAll()
                 }
             }
         }
 /* ------------------------------------------------------------------------- */
-
+        if (callback) {
+            callback(null, result)
+        }
         return result;
     };
 

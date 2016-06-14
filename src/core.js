@@ -55,7 +55,6 @@ var dc = {
     _renderIdStack: null,
     _redrawIdStack: null,
     _globalTransitionDuration: null,
-    _redrawCallback: null,
     _startRenderTime: null,
     _startRedrawTime: null,
 /* --------------------------------------------------------------------------*/
@@ -205,7 +204,7 @@ dc.renderAll = function (group) {
 
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-      
+
 /* OVERRIDE ---------------------------------------------------------------- */
         if (dc._sampledCount > 0) {
 
@@ -213,10 +212,10 @@ dc.renderAll = function (group) {
             if (charts[i].isCountChart())
                 charts[i].render();
             else
-                charts[i].renderAsync(queryGroupId,charts.length - 1);
+                charts[i].renderAsyncWithQueryGroup(queryGroupId,charts.length - 1);
         }
         else
-            charts[i].renderAsync(queryGroupId,charts.length);
+            charts[i].renderAsyncWithQueryGroup(queryGroupId,charts.length);
 /* ------------------------------------------------------------------------- */
     }
 
@@ -242,15 +241,13 @@ dc.redrawAll = function (group, callback) {
         return;
     var queryGroupId = dc._redrawId++;
     var stackEmpty = false;
-    if (callback !== undefined) {
-        dc._redrawCallback = callback;
-    }
-    else {
+    if (callback === undefined) {
         var stackEmpty = (dc._redrawIdStack === null);
         dc._redrawIdStack = queryGroupId;
     }
-    if (!stackEmpty && callback === undefined)
+    if (!stackEmpty && callback === undefined) {
         return;
+    }
     dc._startRedrawTime = new Date();
 /* ------------------------------------------------------------------------- */
     var charts = dc.chartRegistry.list(group);
@@ -262,11 +259,11 @@ dc.redrawAll = function (group, callback) {
                 charts[i].redraw();
             }
             else {
-                charts[i].redrawAsync(queryGroupId,charts.length - 1);
+                charts[i].redrawAsyncWithQueryGroup(queryGroupId, charts.length - 1);
             }
         }
         else
-            charts[i].redrawAsync(queryGroupId,charts.length);
+            charts[i].redrawAsyncWithQueryGroup(queryGroupId, charts.length);
 /* ------------------------------------------------------------------------- */
 
     }
