@@ -854,7 +854,7 @@ dc.baseMixin = function (_chart) {
     }
 
     _chart.renderAsync = function (callback) {
-      _chart.renderAsyncWithQueryGroup(undefined, undefined, callback)
+        _chart.renderAsyncWithQueryGroup(undefined, undefined, callback)
     }
 /* ------------------------------------------------------------------------- */
 

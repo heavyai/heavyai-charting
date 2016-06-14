@@ -189,39 +189,43 @@ dc.refocusAll = function (group) {
  * @name renderAll
  * @param {String} [group]
  */
-dc.renderAll = function (group) {
-
-/* OVERRIDE ---------------------------------------------------------------- */
-    if (dc._refreshDisabled)
+dc.renderAll = function (group, callback) {
+    if (dc._refreshDisabled) {
         return;
+    }
+    var renderAsyncError = null;
     var queryGroupId = dc._renderId++;
     var stackEmpty = (dc._renderIdStack === null);
     dc._renderIdStack = queryGroupId;
-    if (!stackEmpty)
+    if (!stackEmpty) {
         return;
+    }
+
     dc._startRenderTime = new Date();
-/* ------------------------------------------------------------------------- */
+
+    var renderAllCallback = callback || function () { return; }
+
+    var renderAsyncCallback = function (error) {
+        if (error) renderAsyncError = error
+    }
 
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-
-/* OVERRIDE ---------------------------------------------------------------- */
         if (dc._sampledCount > 0) {
-
-            // relies on count chart being first -- bad
-            if (charts[i].isCountChart())
-                charts[i].render();
-            else
-                charts[i].renderAsyncWithQueryGroup(queryGroupId,charts.length - 1);
+            if (charts[i].isCountChart()) {
+                charts[i].renderAsync(renderAsyncCallback);
+            } else {
+                charts[i].renderAsyncWithQueryGroup(queryGroupId, charts.length - 1, renderAsyncCallback);
+            }
+        } else {
+            charts[i].renderAsyncWithQueryGroup(queryGroupId, charts.length, renderAsyncCallback);
         }
-        else
-            charts[i].renderAsyncWithQueryGroup(queryGroupId,charts.length);
-/* ------------------------------------------------------------------------- */
     }
-
     if (dc._renderlet !== null) {
         dc._renderlet(group);
     }
+
+    renderAllCallback(renderAsyncError, charts)
 };
 
 /**
@@ -236,9 +240,10 @@ dc.renderAll = function (group) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
 dc.redrawAll = function (group, callback) {
-
-    if (dc._refreshDisabled)
+    if (dc._refreshDisabled) {
         return;
+    }
+    var redrawAsyncError = null;
     var queryGroupId = dc._redrawId++;
     var stackEmpty = false;
     if (callback === undefined) {
@@ -249,34 +254,31 @@ dc.redrawAll = function (group, callback) {
         return;
     }
     dc._startRedrawTime = new Date();
-/* ------------------------------------------------------------------------- */
+
+    var redrawAllCallback = callback || function () { return; }
+
+    var redrawAsyncCallback = function (error) {
+        if (error) redrawAsyncError = error
+    }
+
     var charts = dc.chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
-
-/* OVERRIDE ---------------------------------------------------------------- */
         if (dc._sampledCount > 0) {
             if (charts[i].isCountChart()) {
-                charts[i].redraw();
+                charts[i].redrawAsyncWithQueryGroup(redrawAsyncCallback);
+            } else {
+                charts[i].redrawAsyncWithQueryGroup(queryGroupId, charts.length - 1, redrawAsyncCallback);
             }
-            else {
-                charts[i].redrawAsyncWithQueryGroup(queryGroupId, charts.length - 1);
-            }
+        } else {
+            charts[i].redrawAsyncWithQueryGroup(queryGroupId, charts.length, redrawAsyncCallback);
         }
-        else
-            charts[i].redrawAsyncWithQueryGroup(queryGroupId, charts.length);
-/* ------------------------------------------------------------------------- */
-
     }
 
     if (dc._renderlet !== null) {
         dc._renderlet(group);
     }
 
-/* OVERRIDE ---------------------------------------------------------------- */
-    // Will be found in mapd.js
-    $('body').trigger('updateFilterCounter');
-/* ------------------------------------------------------------------------- */
-
+    redrawAllCallback(redrawAsyncError, charts)
 };
 
 /**
