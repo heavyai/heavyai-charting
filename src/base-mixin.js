@@ -62,7 +62,6 @@ dc.baseMixin = function (_chart) {
         return filteredKeys;
     }
 
-
     _chart.multipleKeysLabelAccessor = function(d){
         if ( _chart.dimension().value().length === 1) {
             return d['key0'];
