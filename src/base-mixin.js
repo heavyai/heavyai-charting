@@ -50,7 +50,6 @@ dc.baseMixin = function (_chart) {
 /* OVERRIDE ---------------------------------------------------------------- */
     var _multipleKeysAccessor = function(d) {
         var filteredKeys = [];
-        var keyCount = 0;
         for (var key in d) {
             if (d.hasOwnProperty(key) && key.indexOf('key') > -1) {
                 filteredKeys.push(d[key]);
