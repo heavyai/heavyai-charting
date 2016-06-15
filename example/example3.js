@@ -42,11 +42,9 @@ function createPolyMap(crossFilter, con, tableName, dc) {
 
     .polyJoin({table: "zipcodes", keysColumn: "ZCTA5CE10"})
     // .polyJoin({table: "states", keysColumn: "STATE_ABBR"})
-
-    // Range must be list of hex colors.
-    // .colors(d3.scale.linear().domain(domainMinMax).range(["#000000", "#FFFFFF"]))
     .colors(d3.scale.linear().domain(colorDomain).range(colorRange))
-    // .colors(d3.scale.linear().domain([12196, 32586]).range(["#000000", "#55acee"]))
+    .borderColor("gray")
+    .borderWidth(0.5)
 
     dc.renderAll()
 
