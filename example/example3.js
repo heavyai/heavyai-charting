@@ -1,9 +1,9 @@
-var tableName = 'contributions';
-// var tableName = 'tweets_nov_feb';
-
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
+  var tableName = 'contributions';
+  // var tableName = 'tweets_nov_feb';
+
   var con = new MapdCon().protocol("http").host("kali.mapd.com").port("9092").dbName("mapd").user("mapd").password("HyperInteractive").connect();
   var crossFilter = crossfilter(con, tableName);
   createPolyMap(crossFilter, con, tableName, dc);
@@ -22,8 +22,10 @@ function createPolyMap(crossFilter, con, tableName, dc) {
   // or the domain [min, max] can be set directly
   // (in which case nesting chart creation inside this callback is unnecessary).
   getDomainBounds(grp, function(domainBounds){
-    var domainMinMax = [Math.round(domainBounds.min), Math.round(domainBounds.max)]
-    console.log('domainMinMax', domainMinMax)
+    // Can set colorDomain directly or use domainFromBoundsAndRange to generate a .
+    var colorRange = ["#115f9a","#1984c5","#22a7f0","#48b5c4","#76c68f","#a6d75b","#c9e52f","#d0ee11","#d0f400"]
+    var colorDomain = domainFromBoundsAndRange(0, 2600, colorRange)
+    // var colorDomain = domainFromBoundsAndRange(domainBounds.min, domainBounds.max, colorRange)
 
     var polyMap = dc
     .polyRasterChart(parent, true)
@@ -36,15 +38,15 @@ function createPolyMap(crossFilter, con, tableName, dc) {
     .mapUpdateInterval(750) // ms
     .othersGrouper(false)
     .opacity(0.90)
-    .mapStyle('json/dark-v8.json')
+    .mapStyle('mapbox://styles/mapbox/light-v8')
 
     .polyJoin({table: "zipcodes", keysColumn: "ZCTA5CE10"})
     // .polyJoin({table: "states", keysColumn: "STATE_ABBR"})
 
-    // optional range must be pair of hex colors.
-    // .colors(d3.scale.linear().domain(domainMinMax).range(["#000000", "#FFFFFF"])) // using dynamic domain bounds
-    .colors(d3.scale.linear().domain([1, 2600]).range(["#000000", "#FFFFFF"])) // using specific domain bounds
-    // .colors(d3.scale.linear().domain([12196, 32586]).range(["#000000", "#55acee"])) // tweets by state, colored Twitter blue.
+    // Range must be list of hex colors.
+    // .colors(d3.scale.linear().domain(domainMinMax).range(["#000000", "#FFFFFF"]))
+    .colors(d3.scale.linear().domain(colorDomain).range(colorRange))
+    // .colors(d3.scale.linear().domain([12196, 32586]).range(["#000000", "#55acee"]))
 
     dc.renderAll()
 
@@ -58,6 +60,10 @@ function getDomainBounds (group, callback) {
 
 function extractResult (result) {
   return result[0].val
+}
+
+function domainFromBoundsAndRange (min, max, range) {
+  return _.range(0, range.length).map((_, i) => min + Math.round(i * max / (range.length - 1)))
 }
 
 function width () {
