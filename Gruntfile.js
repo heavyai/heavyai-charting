@@ -352,6 +352,7 @@ module.exports.jsFiles = [
     'src/map-mixin.js', // MapD specific
     'src/raster-mixin.js', // MapD specific
     'src/bubble-raster-chart.js', // MapD specific
+    'src/poly-raster-chart.js', // MapD specific
     'src/map-chart.js', // MapD specific
     'src/coordinate-grid-mixin.js',
     'src/stack-mixin.js',
