@@ -43,8 +43,13 @@ function createPolyMap(crossFilter, con, tableName, dc) {
     .polyJoin({table: "zipcodes", keysColumn: "ZCTA5CE10"})
     // .polyJoin({table: "states", keysColumn: "STATE_ABBR"})
     .colors(d3.scale.linear().domain(colorDomain).range(colorRange))
-    .borderColor("gray")
-    .borderWidth(0.5)
+    .borderColor("white")
+    polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
+
+    // Keeps the border widths reasonable regardless of zoom level.
+    polyMap.map().on('zoom', function() {
+      polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
+    })
 
     dc.renderAll()
 
@@ -62,6 +67,12 @@ function extractResult (result) {
 
 function domainFromBoundsAndRange (min, max, range) {
   return _.range(0, range.length).map((_, i) => min + Math.round(i * max / (range.length - 1)))
+}
+
+function zoomToBorderWidth (zoomLevel) {
+  var MIN_ZOOM = 0.8626373575587937
+  var ZOOM_BORDER_DIVISOR = 20
+  return zoomLevel / ZOOM_BORDER_DIVISOR - MIN_ZOOM / ZOOM_BORDER_DIVISOR
 }
 
 function width () {

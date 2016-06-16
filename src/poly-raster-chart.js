@@ -71,7 +71,7 @@ function genPolyVegaSpec(vegaSpec, mapBoundsMerc, color, polyJoin, stroke) {
       x: {scale: "x", field: "x"},
       y: {scale: "y", field: "y"},
       fillColor: {scale: "color", field: "val"}
-    }, stroke ? stroke : {})
+    }, stroke.strokeColor && stroke.strokeWidth ? stroke : {})
   }];
   vegaSpec.data = [{
     "name": "table",
