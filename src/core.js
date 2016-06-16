@@ -203,7 +203,8 @@ dc.renderAll = function (group, callback) {
 
     dc._startRenderTime = new Date();
 
-    var renderAllCallback = callback || function () { return; }
+    var noop = function () { return; }
+    var renderAllCallback = callback || noop
 
     var renderAsyncCallback = function (error) {
         if (error) renderAsyncError = error
