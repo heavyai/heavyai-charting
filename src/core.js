@@ -246,16 +246,17 @@ dc.redrawAll = function (group, callback) {
     var redrawAsyncError = null;
     var queryGroupId = dc._redrawId++;
     var stackEmpty = false;
-    if (callback === undefined) {
+    if (typeof callback === 'undefined') {
         var stackEmpty = (dc._redrawIdStack === null);
         dc._redrawIdStack = queryGroupId;
     }
-    if (!stackEmpty && callback === undefined) {
+    if (!stackEmpty && typeof callback === 'undefined') {
         return;
     }
     dc._startRedrawTime = new Date();
 
-    var redrawAllCallback = callback || function () { return; }
+    var noop = function () { return; }
+    var redrawAllCallback = callback || noop
 
     var redrawAsyncCallback = function (error) {
         if (error) redrawAsyncError = error
