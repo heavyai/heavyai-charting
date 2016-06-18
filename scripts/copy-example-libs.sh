@@ -5,7 +5,7 @@ cp node_modules/d3/d3.min.js example/js
 cp mapdc.min.css example/css/
 cp chart.min.css example/css/
 cp mapdc.js example/js/
-cp ../mapd-crossfilter/mapd-crossfilter.js example/js/
+cp ../mapd-crossfilter/dist/mapd-crossfilter.js example/js/
 cp ../mapd-con/thrift/browser/thrift.js example/js/
 cp ../mapd-con/thrift/browser/mapd.thrift.js example/js/
 cp ../mapd-con/thrift/browser/mapd_types.js example/js/

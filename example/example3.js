@@ -5,7 +5,7 @@ function init() {
   // var tableName = 'tweets_nov_feb';
 
   var con = new MapdCon().protocol("http").host("kali.mapd.com").port("9092").dbName("mapd").user("mapd").password("HyperInteractive").connect();
-  var crossFilter = crossfilter(con, tableName);
+  var crossFilter = crossfilter.crossfilter(con, tableName);
   createPolyMap(crossFilter, con, tableName, dc);
 }
 
