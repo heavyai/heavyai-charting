@@ -23,7 +23,7 @@
         font-weight: bold;
         color:  #45B1E8;
       }
- 
+
     </style>
   </head>
   <body>
@@ -48,7 +48,7 @@
         <div class="title"> Total Number of Flights by State </div>
         <div class="chart1-example"></div>
       </div>
-      
+
       <div class="col-xs-6">
         <div class="title"> Carrier Departure Delay by Arrival Delay <small>(Minutes)</small> </div>
         <div class="chart2-example"></div>
@@ -91,7 +91,7 @@
 
   /*
    * crossFilter is an object that handles cross-filtered the different
-   * dimensions and measures that compose a dashboard's charts. 
+   * dimensions and measures that compose a dashboard's charts.
    * It has a number of methods on it.
    */
 
@@ -101,7 +101,7 @@
    */
 
       var allColumns = crossFilter.getColumns();
-   
+
 
    /*-------------------BASIC COUNT ON CROSSFILTER---------------------------*/
 
@@ -133,10 +133,10 @@
    *  require string expressions. (i.e "extract(year from dep_timestamp))"
    */
 
-      var rowChartDimension = crossFilter.dimension("dest_state");   
-  /* 
+      var rowChartDimension = crossFilter.dimension("dest_state");
+  /*
    * To group by a variable, we call group() on the function and then specify
-   * a "reducer".  Here we want to get the count for each state, so we use the 
+   * a "reducer".  Here we want to get the count for each state, so we use the
    * crossfilter reduceCount() method.
    *
    * More crossfilter Methods here:
@@ -193,7 +193,7 @@
   /*
    *  Bubble Chart Example:
    *  Here we will create a bubble chart (scatter plot with sized circles).
-   *  We want to make a circle for each airline carrier - i.e. group by 
+   *  We want to make a circle for each airline carrier - i.e. group by
    *  carrier ("carrier_name" in the dataset), with the x coordinate
    *  corresponding to average departure delay ("depdelay"), the y coordinate
    *  corresponding to average arrival delay ("arrdelay"), and the size of the
@@ -205,7 +205,7 @@
       var scatterPlotDimension = crossFilter.dimension("carrier_name");
 
   /*
-   *  MapD created a reduceMulti function in order to handle multiple measures. 
+   *  MapD created a reduceMulti function in order to handle multiple measures.
    *  It takes an array of objects, each corresponding to a measure.
    *  Each measure object requires 3 arguments:
    *  'expression' which is the measure
@@ -366,7 +366,7 @@
    *
    */
 
-      var reduceMultiExpression2 = 
+      var reduceMultiExpression2 =
       [{
         expression: "dep_timestamp",
         agg_mode:"min",
@@ -390,7 +390,7 @@
                             .groupAll()
                             .reduceMulti(reduceMultiExpression2)
                             .values(true);
-                              
+
       var timeChartDimension = crossFilter.dimension("dep_timestamp");
 
       /* We would like to bin or histogram the time values.  We do this by
@@ -398,7 +398,7 @@
        * sized bins from the min to the max of the time range
        */
 
-      var timeChartGroup = timeChartDimension.group() 
+      var timeChartGroup = timeChartDimension.group()
                   .reduceCount()
                   .setBinParams({
                      numBins: 400,
@@ -451,7 +451,7 @@
   /*--------------------------RESIZE EVENT------------------------------*/
 
       /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
-    
+
       window.addEventListener("resize", debounce(reSizeAll, 100));
 
       function reSizeAll(){
@@ -497,7 +497,7 @@
 
     /*
      * mapdcon is a monad.
-     * 
+     *
      * It provides a MapD specific API to Thrift.  Thrift is used to connect to our
      * database backend.
      */
@@ -520,7 +520,7 @@
      *
      *  to see all availables --  con.getTables()
      */
-    var crossFilter = crossfilter(con, "flights");
+    var crossFilter = crossfilter.crossfilter(con, "flights");
 
     /*
      *  Pass instance of crossfilter into our reateCharts.

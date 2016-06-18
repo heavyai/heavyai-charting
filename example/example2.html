@@ -427,7 +427,7 @@
     // Get a table from the database
     var tableName = 'tweets_nov_feb';
     // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
-    var crossFilter = crossfilter(con, tableName);
+    var crossFilter = crossfilter.crossfilter(con, tableName);
     // Pass instance of crossfilter into our CreateCharts.
     createCharts(crossFilter, con, tableName);
   }
