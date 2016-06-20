@@ -3,7 +3,7 @@ dc.mapdTable = function (parent, chartGroup) {
     var _chart = dc.baseMixin({});
     var _tableWrapper = null;
 
-    var _size = 25;
+    var _size = 50;
     var _offset = 0;
     var _scrollTop = 0;
     var _pauseAutoLoad = false;
@@ -96,7 +96,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
             if (_tableWrapper) {
                 _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
-            }
+            }use
 
             _offset = 0;
 
@@ -225,7 +225,7 @@ dc.mapdTable = function (parent, chartGroup) {
                     return d[col.name];
                 })
                 .classed('filtered', col.expression in _filteredColumns)
-                .classed('disabled', !!col.agg_mode || _chart.dimension().value().length === 1)
+                .classed('disabled', _chart.dimension().value().length > 0)
                 .on('click', function(d){
                     if (col.expression in _filteredColumns) {
                         clearColFilter(col.expression);
