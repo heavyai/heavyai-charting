@@ -4,6 +4,7 @@ dc.mapdTable = function (parent, chartGroup) {
     var _tableWrapper = null;
 
     var _size = 25;
+    var _offset = 0;
     var _scrollTop = 0;
     var _pauseAutoLoad = false;
 
@@ -71,9 +72,9 @@ dc.mapdTable = function (parent, chartGroup) {
     _chart.addRows = function(){
         _pauseAutoLoad = true;
 
-        var offset = _chart.data() && _chart.data().length ? _chart.data().length : 0;
+        _offset += _size;
 
-        getData(offset, [addRowsCallback], true);
+        getData(_offset, [addRowsCallback], true);
     }
 
     _chart.setDataAsync(function(group,callbacks) {
@@ -84,7 +85,9 @@ dc.mapdTable = function (parent, chartGroup) {
             _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
         }
 
-        getData(0, callbacks, true);
+        _offset = 0;
+
+        getData(_offset, callbacks, true);
     });
 
     _chart.data(function() {
@@ -94,6 +97,8 @@ dc.mapdTable = function (parent, chartGroup) {
             if (_tableWrapper) {
                 _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
             }
+
+            _offset = 0;
 
             _chart.dataCache = getData();
          }
