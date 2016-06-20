@@ -485,6 +485,8 @@ body {
                     fill: #ff0000;
                 }
             }
+
+
         }
     }
 
@@ -570,6 +572,18 @@ body {
                 transform: rotate(180deg);
             }
 
+        }
+
+        &.disabled {
+            pointer-events: none;
+            padding-left: 8px;
+            .sort-btn {
+                display: none;
+            }
+
+            .unfilter-btn {
+                transform: translateX(-12px)
+            }
         }
     }
 
