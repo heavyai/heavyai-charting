@@ -30,7 +30,6 @@ dc.numberChart = function (parent, chartGroup) {
     });
 
     _chart._doRender = function () {
-        
         var val = null;
         if (_chart.dataCache != null)
             val = _chart.dataCache;
