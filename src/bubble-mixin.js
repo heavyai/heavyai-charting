@@ -268,15 +268,11 @@ dc.bubbleMixin = function (_chart) {
 
     _chart.onClick = function (d) {
 
+        console.log('click')
 /* OVERRIDE -----------------------------------------------------------------*/
         var filter = d.key0;
 /* --------------------------------------------------------------------------*/
-
-        dc.events.trigger(function () {
-            _chart.filter(filter);
-            _chart.redrawGroup();
-        });
-
+        _chart.handleFilterClick(d3.event, filter)
         _chart.updatePopup(d);
     };
 
