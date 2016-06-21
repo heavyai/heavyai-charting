@@ -165,11 +165,7 @@ dc.heatMap = function (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
         var filter = [d.key0, d.key1];
 /* --------------------------------------------------------------------------*/
-
-        dc.events.trigger(function () {
-            _chart.filter(filter);
-            _chart.redrawGroup();
-        });
+        _chart.handleFilterClick(d3.event, filter)
     };
 
     function filterAxis (axis, value) {
@@ -210,12 +206,12 @@ dc.heatMap = function (parent, chartGroup) {
         });
     }
 
-    dc.override(_chart, 'filter', function (filter) {
+    dc.override(_chart, 'filter', function (filter, isInverseFilter) {
         if (!arguments.length) {
             return _chart._filter();
         }
 
-        return _chart._filter(dc.filters.TwoDimensionalFilter(filter));
+        return _chart._filter(dc.filters.TwoDimensionalFilter(filter), isInverseFilter);
     });
 
     function uniq (d, i, a) {

@@ -1109,6 +1109,7 @@ dc.baseMixin = function (_chart) {
         if (filter === null || typeof(filter) === 'undefined') {
             return filters.length > 0;
         }
+
         return filters.some(function (f) {
             return filter <= f && filter >= f;
         });
