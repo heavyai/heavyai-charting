@@ -98,7 +98,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
             if (_tableWrapper) {
                 _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
-            }use
+            }
 
             _offset = 0;
 
