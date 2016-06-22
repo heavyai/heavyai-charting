@@ -3,7 +3,8 @@ dc.mapdTable = function (parent, chartGroup) {
     var _chart = dc.baseMixin({});
     var _tableWrapper = null;
 
-    var _size = 25;
+    var _size = 50;
+    var _offset = 0;
     var _scrollTop = 0;
     var _pauseAutoLoad = false;
 
@@ -12,6 +13,8 @@ dc.mapdTable = function (parent, chartGroup) {
     var _tableFilter = null;
     var _sortColumn = null;
     var _dimOrGroup = null;
+    var _isGroupedData = false;
+    var _allowUngroupedSort = false;
 
     var _table_events = ['sort']
     var _listeners = d3.dispatch.apply(d3, _table_events)
@@ -71,9 +74,9 @@ dc.mapdTable = function (parent, chartGroup) {
     _chart.addRows = function(){
         _pauseAutoLoad = true;
 
-        var offset = _chart.data() && _chart.data().length ? _chart.data().length : 0;
+        _offset += _size;
 
-        getData(offset, [addRowsCallback], true);
+        getData(_offset, [addRowsCallback], true);
     }
 
     _chart.setDataAsync(function(group,callbacks) {
@@ -84,7 +87,9 @@ dc.mapdTable = function (parent, chartGroup) {
             _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
         }
 
-        getData(0, callbacks, true);
+        _offset = 0;
+
+        getData(_offset, callbacks, true);
     });
 
     _chart.data(function() {
@@ -93,7 +98,9 @@ dc.mapdTable = function (parent, chartGroup) {
 
             if (_tableWrapper) {
                 _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
-            }
+            }use
+
+            _offset = 0;
 
             _chart.dataCache = getData();
          }
@@ -101,8 +108,10 @@ dc.mapdTable = function (parent, chartGroup) {
     });
 
     function getData(offset, callbacks) {
-        _dimOrGroup = _chart.dimension().value().length > 0 ? _chart.group() : _chart.dimension();
-
+        _isGroupedData = _chart.dimension().value()[0];
+        
+        _dimOrGroup =  _isGroupedData ? _chart.group() : _chart.dimension();
+        
         _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null);
 
         var sortFuncName = _sortColumn && _sortColumn.order === 'asc' ? 'bottomAsync' : 'topAsync';
@@ -183,7 +192,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
         var cols = [];
 
-        if (_chart.dimension().value().length > 0) {
+        if (_isGroupedData) {
             _chart.dimension().value().forEach(function(d, i){
                 cols.push({expression: d, name: 'key'+i });
             });
@@ -220,7 +229,7 @@ dc.mapdTable = function (parent, chartGroup) {
                     return d[col.name];
                 })
                 .classed('filtered', col.expression in _filteredColumns)
-                .classed('disabled', !!col.agg_mode || _chart.dimension().value().length === 1)
+                .classed('disabled', _isGroupedData && !!col.agg_mode)
                 .on('click', function(d){
                     if (col.expression in _filteredColumns) {
                         clearColFilter(col.expression);
@@ -264,6 +273,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
                 var sortLabel = headerItem.append('div')
                     .attr('class', 'table-sort')
+                    .classed('disabled', !_isGroupedData)
                     .classed('active', _sortColumn ? _sortColumn.index === i : false)
                     .classed(_sortColumn ? _sortColumn.order : '',  true)
                     .on('click', function(){
@@ -309,7 +319,7 @@ dc.mapdTable = function (parent, chartGroup) {
                     .on('click', function(){
                         clearColFilter(d3.select(this).attr('data-expr'));
                     })
-                    .style('left', textSpan.node().getBoundingClientRect().width + 20 + 'px')
+                    .style('left', textSpan.node().getBoundingClientRect().width + (_isGroupedData ? 20 : 8) + 'px')
                     .append('svg')
                     .attr('class', 'svg-icon')
                     .classed('icon-unfilter', true)
