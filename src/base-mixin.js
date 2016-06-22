@@ -48,8 +48,6 @@ dc.baseMixin = function (_chart) {
     var _height = _defaultHeight;
 
 /* OVERRIDE ---------------------------------------------------------------- */
-    var createAsyncChartAction = dc.utils.createAsyncChartActionCreator(_chart)
-
     var _multipleKeysAccessor = function(d) {
         var filteredKeys = [];
         for (var key in d) {
@@ -845,17 +843,38 @@ dc.baseMixin = function (_chart) {
         }
     }
 
-/* OVERRIDE ---------------------------------------------------------------- */
-    _chart.renderAsyncWithQueryGroup = function (queryGroupId, queryCount, callback) {
-      var asyncRender = createAsyncChartAction(_chart.render)
-      var id = queryId++
-      asyncRender(id, queryGroupId, queryCount, callback)
-    }
+    /**
+     * Async wrapper of render. Callback is invoked after render.
+     * @name renderAsyncWithQueryGroup
+     * @memberof dc.baseMixin
+     * @instance
+     * @param {Number} [queryGroupId]
+     * @param {Number} [queryCount]
+     * @param {Function} [callback]
+     */
+    _chart.renderAsyncWithQueryGroup = function(queryGroupId, queryCount, callback) {
+        if (dc._refreshDisabled) return;
+        if (_chart.hasOwnProperty('setSample')) {
+            _chart.setSample();
+        }
+        var id = queryId++;
+        var renderCallback = function(data) {
+            _chart.render(id, queryGroupId, queryCount, data, callback);
+        }
+        _chart.dataAsync([renderCallback]);
+    };
 
-    _chart.renderAsync = function (callback) {
+    /**
+     * Invokes renderAsyncWithQueryGroup and passes it the callback argument.
+     * Leaves queryGroupId and queryCount arguments as null.
+     * @name renderAsync
+     * @memberof dc.baseMixin
+     * @instance
+     * @param {Function} [callback]
+     */
+    _chart.renderAsync = function(callback) {
         _chart.renderAsyncWithQueryGroup(undefined, undefined, callback)
-    }
-/* ------------------------------------------------------------------------- */
+    };
 
     /**
      * Invoking this method will force the chart to re-render everything from scratch. Generally it
@@ -865,43 +884,46 @@ dc.baseMixin = function (_chart) {
      * @name render
      * @memberof dc.baseMixin
      * @instance
+     * @param {Number} [id]
+     * @param {Number} [queryGroupId]
+     * @param {Number} [queryCount]
+     * @param {Function} [callback]
+     * @param {Any} [data]
      * @return {dc.baseMixin}
      */
-/* OVERRIDE ---------------------------------------------------------------- */
     _chart.render = function (id, queryGroupId, queryCount, data, callback) {
-        if (dc._refreshDisabled) {
-            return;
-        }
+        if (dc._refreshDisabled) return;
         _chart.dataCache = data !== undefined ? data : null;
 
         sizeRoot();
-/* ------------------------------------------------------------------------- */
 
         _listeners.preRender(_chart);
 
         if (_mandatoryAttributes) {
             _mandatoryAttributes.forEach(checkForMandatoryAttributes);
         }
-        var doChartRender = dc.utils.createChartAction(_chart._doRender.bind(this))
-        var result = doChartRender(data, callback)
 
-        if (!result) {
-            return
+        var renderError;
+        try {
+            var result = _chart._doRender();
+        }
+        catch (err) {
+            renderError = err;
+            console.error(err);
         }
 
         if (_legend && _chart.colors().domain) {
             _legend.render();
         }
 
-/* OVERRIDE ---------------------------------------------------------------- */
         if (_chart._colorLegend) {
-          _chart._colorLegend.render();
+            _chart._colorLegend.render();
         }
+
         _chart.generatePopup();
-/* ------------------------------------------------------------------------- */
 
         _chart._activateRenderlets('postRender');
-/* OVERRIDE ---------------------------------------------------------------- */
+
         if (queryGroupId !== undefined) {
             if (++dc._renderCount == queryCount) {
                 if (dc._logging) {
@@ -914,16 +936,12 @@ dc.baseMixin = function (_chart) {
                 var stackEmpty = dc._renderIdStack == null || dc._renderIdStack == queryGroupId;
                 dc._renderIdStack = null;
                 if (!stackEmpty) {
-                    var doRenderAll = dc.utils.createChartAction(dc.renderAll)
-                    doRenderAll()
+                   dc.renderAll(null, callback);
                 }
             }
         }
 
-        if (callback) {
-            callback(null, result)
-        }
-/* ------------------------------------------------------------------------- */
+        callback && callback(renderError, result)
         return result;
     };
 
@@ -945,17 +963,39 @@ dc.baseMixin = function (_chart) {
         }
     };
 
-/* OVERRIDE ---------------------------------------------------------------- */
+    /**
+     * Async wrapper of redraw. Callback is invoked after redraw.
+     * @name redrawAsyncWithQueryGroup
+     * @memberof dc.baseMixin
+     * @instance
+     * @param {Number} [queryGroupId]
+     * @param {Number} [queryCount]
+     * @param {Function} [callback]
+     */
     _chart.redrawAsyncWithQueryGroup = function (queryGroupId, queryCount, callback) {
-        var asyncRedraw = createAsyncChartAction(_chart.redraw);
-        var id = queryId++;
-        asyncRedraw(id, queryGroupId, queryCount, callback);
-    }
+        if (dc._refreshDisabled) return;
 
+        if (_chart.hasOwnProperty('setSample')) {
+            _chart.setSample();
+        }
+        var id = queryId++;
+        var redrawCallback = function(data) {
+            _chart.redraw(id, queryGroupId, queryCount, data, callback);
+        }
+        _chart.dataAsync([redrawCallback]);
+    };
+
+    /**
+     * Invokes redrawAsyncWithQueryGroup and passes it the callback argument.
+     * Leaves queryGroupId and queryCount arguments as null.
+     * @name redrawAsync
+     * @memberof dc.baseMixin
+     * @instance
+     * @param {Function} [callback]
+     */
     _chart.redrawAsync = function (callback) {
         _chart.redrawAsyncWithQueryGroup(undefined, undefined, callback)
-    }
-/* ------------------------------------------------------------------------- */
+    };
 
     /**
      * Calling redraw will cause the chart to re-render data changes incrementally. If there is no
@@ -968,42 +1008,40 @@ dc.baseMixin = function (_chart) {
      * @name redraw
      * @memberof dc.baseMixin
      * @instance
+     * @param {Number} [id]
+     * @param {Number} [queryGroupId]
+     * @param {Number} [queryCount]
+     * @param {Function} [callback]
+     * @param {Any} [data]
      * @return {dc.baseMixin}
      */
-/* OVERRIDE ---------------------------------------------------------------- */
     _chart.redraw = function (id, queryGroupId, queryCount, data, callback) {
-
-        if (dc._refreshDisabled)
-            return;
+        if (dc._refreshDisabled) return;
         _chart.dataCache = data !== undefined ? data : null;
-/* ------------------------------------------------------------------------- */
 
         sizeSvg();
         _listeners.preRedraw(_chart);
 
-
-        var doChartRedraw = dc.utils.createChartAction(_chart._doRedraw)
-        var result = doChartRedraw(data, callback)
-
-        if (!result) {
-          return
+        var redrawError;
+        try {
+            var result = _chart._doRedraw();
+        }
+        catch (err) {
+            redrawError = err;
+            console.error(err);
         }
 
         if (_legend && _chart.colors().domain) {
             _legend.render();
         }
 
-/* OVERRIDE ---------------------------------------------------------------- */
         if (_chart._colorLegend) {
-          _chart._colorLegend.render();
+            _chart._colorLegend.render();
         }
-/* ------------------------------------------------------------------------- */
 
         _chart._activateRenderlets('postRedraw');
 
-/* OVERRIDE ---------------------------------------------------------------- */
         if (queryGroupId !== undefined) {
-
             if (++dc._redrawCount == queryCount) {
                 if (dc._logging) {
                     var endTime = new Date();
@@ -1014,18 +1052,21 @@ dc.baseMixin = function (_chart) {
                 dc._globalTransitionDuration = null; // reset to null if was brush
                 var stackEmpty = dc._redrawIdStack == null || dc._redrawIdStack == queryGroupId;
                 dc._redrawIdStack = null;
-                if (!stackEmpty) {
-                    var doRedrawAll = dc.utils.createChartAction(dc.redrawAll)
-                    doRedrawAll()
+
+                if (callback) {
+                    callback(redrawError, result);
+                    return result
+                } else if (!stackEmpty) {
+                    dc.redrawAll(null, callback);
                 }
             }
         }
-/* ------------------------------------------------------------------------- */
-        if (callback) {
-            callback(null, result)
-        }
+
+        callback && callback(redrawError, result);
         return result;
     };
+
+
 
     /**
      * Gets/sets the commit handler. If the chart has a commit handler, the handler will be called when
@@ -1057,17 +1098,18 @@ dc.baseMixin = function (_chart) {
      * @instance
      * @return {dc.baseMixin}
      */
-    _chart.redrawGroup = function () {
+    _chart.redrawGroup = function (callback) {
         if (_commitHandler) {
             _commitHandler(false, function (error, result) {
                 if (error) {
                     console.log(error);
+                    callback && callback(error)
                 } else {
-                    dc.redrawAll(_chart.chartGroup());
+                    dc.redrawAll(_chart.chartGroup(), callback);
                 }
             });
         } else {
-            dc.redrawAll(_chart.chartGroup());
+            dc.redrawAll(_chart.chartGroup(), callback);
         }
         return _chart;
     };
@@ -1080,17 +1122,18 @@ dc.baseMixin = function (_chart) {
      * @instance
      * @return {dc.baseMixin}
      */
-    _chart.renderGroup = function () {
+    _chart.renderGroup = function (callback) {
         if (_commitHandler) {
             _commitHandler(false, function (error, result) {
                 if (error) {
                     console.log(error);
+                    callback && callback(error)
                 } else {
-                    dc.renderAll(_chart.chartGroup());
+                    dc.renderAll(_chart.chartGroup(), callback);
                 }
             });
         } else {
-            dc.renderAll(_chart.chartGroup());
+            dc.renderAll(_chart.chartGroup(), callback);
         }
         return _chart;
     };

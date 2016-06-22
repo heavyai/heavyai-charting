@@ -193,41 +193,38 @@ dc.renderAll = function (group, callback) {
     if (dc._refreshDisabled) {
         return;
     }
-    var renderAsyncError = null;
+
     var queryGroupId = dc._renderId++;
-    var stackEmpty = (dc._renderIdStack === null);
+    var stackEmpty = dc._renderIdStack === null;
     dc._renderIdStack = queryGroupId;
+
     if (!stackEmpty) {
         return;
     }
 
     dc._startRenderTime = new Date();
 
-    var noop = function () { return; }
-    var renderAllCallback = callback || noop
-
-    var renderAsyncCallback = function (error) {
-        if (error) renderAsyncError = error
-    }
-
     var charts = dc.chartRegistry.list(group);
-    for (var i = 0; i < charts.length; ++i) {
+    charts.forEach(function (chart) {
         if (dc._sampledCount > 0) {
-            if (charts[i].isCountChart()) {
-                charts[i].renderAsync(renderAsyncCallback);
-            } else {
-                charts[i].renderAsyncWithQueryGroup(queryGroupId, charts.length - 1, renderAsyncCallback);
-            }
+            chart.renderAsyncWithQueryGroup(queryGroupId, charts.length - 1, callback);
         } else {
-            charts[i].renderAsyncWithQueryGroup(queryGroupId, charts.length, renderAsyncCallback);
+            chart.renderAsyncWithQueryGroup(queryGroupId, charts.length, callback);
         }
-    }
+    })
+
     if (dc._renderlet !== null) {
         dc._renderlet(group);
     }
-
-    renderAllCallback(renderAsyncError, charts)
 };
+
+/**
+ * Alias of renderAll
+ * @memberof dc
+ * @name renderAllAsync
+ * @param {String} [group]
+ */
+dc.renderAllAsync = dc.renderAll
 
 /**
  * Redraw all charts belong to the given chart group. If the chart group is not given then only charts
@@ -238,50 +235,46 @@ dc.renderAll = function (group, callback) {
  * @name redrawAll
  * @param {String} [group]
  */
-
-/* OVERRIDE ---------------------------------------------------------------- */
 dc.redrawAll = function (group, callback) {
     if (dc._refreshDisabled) {
         return;
     }
-    var redrawAsyncError = null;
+
     var queryGroupId = dc._redrawId++;
     var stackEmpty = false;
-    if (typeof callback === 'undefined') {
-        var stackEmpty = (dc._redrawIdStack === null);
+
+    if (!callback) {
+        var stackEmpty = dc._redrawIdStack === null;
         dc._redrawIdStack = queryGroupId;
     }
-    if (!stackEmpty && typeof callback === 'undefined') {
+
+    if (!stackEmpty && !callback) {
         return;
     }
+
     dc._startRedrawTime = new Date();
 
-    var noop = function () { return; }
-    var redrawAllCallback = callback || noop
-
-    var redrawAsyncCallback = function (error) {
-        if (error) redrawAsyncError = error
-    }
-
     var charts = dc.chartRegistry.list(group);
-    for (var i = 0; i < charts.length; ++i) {
+    charts.forEach(function (chart) {
         if (dc._sampledCount > 0) {
-            if (charts[i].isCountChart()) {
-                charts[i].redrawAsyncWithQueryGroup(redrawAsyncCallback);
-            } else {
-                charts[i].redrawAsyncWithQueryGroup(queryGroupId, charts.length - 1, redrawAsyncCallback);
-            }
+            chart.redrawAsyncWithQueryGroup(queryGroupId, charts.length - 1, callback);
         } else {
-            charts[i].redrawAsyncWithQueryGroup(queryGroupId, charts.length, redrawAsyncCallback);
+            chart.redrawAsyncWithQueryGroup(queryGroupId, charts.length, callback);
         }
-    }
+    })
 
     if (dc._renderlet !== null) {
         dc._renderlet(group);
     }
-
-    redrawAllCallback(redrawAsyncError, charts)
 };
+
+/**
+ * Alias of redrawAll
+ * @memberof dc
+ * @name redrawAllAsync
+ * @param {String} [group]
+ */
+dc.redrawAllAsync = dc.redrawAll
 
 /**
  * If this boolean is set truthy, all transitions will be disabled, and changes to the charts will happen

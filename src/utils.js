@@ -147,39 +147,3 @@ dc.utils.appendOrSelect = function (parent, selector, tag) {
 };
 
 dc.utils.safeNumber = function (n) { return dc.utils.isNumber(+n) ? +n : 0;};
-
-dc.utils.createChartAction = function (action) {
-    return function performChartAction (data, callback) {
-        try {
-            if (data instanceof Error) {
-              throw data
-            } else {
-              return action();
-            }
-        } catch (err) {
-            if (callback) {
-                callback(err)
-            } else {
-                throw err
-            }
-        }
-    }
-}
-
-dc.utils.createAsyncChartActionCreator = function (chart) {
-  return function createAsyncAction (action) {
-      return function performAsyncAction (id, queryGroupId, queryCount, callback) {
-          callback = callback || function () { return; }
-          if (dc._refreshDisabled) {
-              return;
-          }
-          if (chart.hasOwnProperty('setSample')) {
-              chart.setSample();
-          }
-          var actionCallback = function(data) {
-              return action(id, queryGroupId, queryCount, data, callback)
-          }
-          chart.dataAsync([actionCallback]);
-      }
-    }
-}
