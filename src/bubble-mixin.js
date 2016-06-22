@@ -259,7 +259,6 @@ dc.bubbleMixin = function (_chart) {
     };
 
     _chart.isSelectedNode = function (d) {
-
 /* OVERRIDE -----------------------------------------------------------------*/
         return _chart.hasFilter(d.key0) ^ _chart.filtersInverse();
 /* --------------------------------------------------------------------------*/
@@ -271,12 +270,7 @@ dc.bubbleMixin = function (_chart) {
 /* OVERRIDE -----------------------------------------------------------------*/
         var filter = d.key0;
 /* --------------------------------------------------------------------------*/
-
-        dc.events.trigger(function () {
-            _chart.filter(filter);
-            _chart.redrawGroup();
-        });
-
+        _chart.handleFilterClick(d3.event, filter)
         _chart.updatePopup(d);
     };
 
