@@ -69,61 +69,40 @@ dc.capMixin = function (_chart) {
       }
     });
 
-    if (!dc.async) {
-      _chart.data(function (group) {
-          if (_cap === Infinity) {
-            if (_chart.dataCache != null) {
-              return _chart._computeOrderedGroups(_chart.dataCache);
-            }
-            
-            else {
-              return _chart._computeOrderedGroups(group.all());
-            }
-          } 
+    _chart.data(function (group) {
+        if (_cap === Infinity) {
+          if (_chart.dataCache != null) {
+            return _chart._computeOrderedGroups(_chart.dataCache);
+          }
 
           else {
-            var rows = null
-            if (_chart.dataCache != null) {
-                rows = _chart.dataCache;
-            }
-            
-            else if (_ordering === 'desc') {
-              rows = group.top(_cap); // ordered by crossfilter group order (default value)
-            }
-
-            else if (_ordering === 'asc') {
-              rows = group.bottom(_cap); // ordered by crossfilter group order (default value)
-            }
-
-            rows = _chart._computeOrderedGroups(rows); // re-order using ordering (default key)
-            
-            if (_othersGrouper) {
-                return _othersGrouper(rows);
-            }
-            return rows;
+            return _chart._computeOrderedGroups(group.all());
           }
-      });
-    }
-    else {
-      _chart.data(function(group, callbacks) {
-          if (_cap === Infinity) {
-            callbacks.push(_chart.computeOrderedGroups.bind(this));
-            group.allAsync(callbacks);
-            return;
-          }
-          else {
-            callbacks.push(capCallback.bind(this));
-          }
-        });
-
-      _chart.capCallback = function(data, callbacks) {
-        var rows = _chart._computeOrderedGroups(data);
-        if (_othersGrouper) {
-          return _othersGrouper(rows);
         }
-        return rows;
-      }
-    }
+
+        else {
+          var rows = null
+          if (_chart.dataCache != null) {
+              rows = _chart.dataCache;
+          }
+
+          else if (_ordering === 'desc') {
+            rows = group.top(_cap); // ordered by crossfilter group order (default value)
+          }
+
+          else if (_ordering === 'asc') {
+            rows = group.bottom(_cap); // ordered by crossfilter group order (default value)
+          }
+
+          rows = _chart._computeOrderedGroups(rows); // re-order using ordering (default key)
+
+          if (_othersGrouper) {
+              return _othersGrouper(rows);
+          }
+          return rows;
+        }
+    });
+
 /* ------------------------------------------------------------------------- */
 
     /**
