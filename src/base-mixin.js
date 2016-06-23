@@ -873,7 +873,7 @@ dc.baseMixin = function (_chart) {
      * @param {Function} [callback]
      */
     _chart.renderAsync = function(callback) {
-        _chart.renderAsyncWithQueryGroup(undefined, undefined, callback)
+        _chart.renderAsyncWithQueryGroup(null, null, callback)
     };
 
     /**
@@ -893,7 +893,7 @@ dc.baseMixin = function (_chart) {
      */
     _chart.render = function (id, queryGroupId, queryCount, data, callback) {
         if (dc._refreshDisabled) return;
-        _chart.dataCache = data !== undefined ? data : null;
+        _chart.dataCache = typeof data !== 'undefined' && data !== null ? data : null
 
         sizeRoot();
 
@@ -924,7 +924,7 @@ dc.baseMixin = function (_chart) {
 
         _chart._activateRenderlets('postRender');
 
-        if (queryGroupId !== undefined) {
+        if (typeof queryGroupId !== 'undefined' && queryGroupId !== null) {
             if (++dc._renderCount == queryCount) {
                 if (dc._logging) {
                     var endTime = new Date();
@@ -994,7 +994,7 @@ dc.baseMixin = function (_chart) {
      * @param {Function} [callback]
      */
     _chart.redrawAsync = function (callback) {
-        _chart.redrawAsyncWithQueryGroup(undefined, undefined, callback)
+        _chart.redrawAsyncWithQueryGroup(null, null, callback)
     };
 
     /**
@@ -1017,7 +1017,7 @@ dc.baseMixin = function (_chart) {
      */
     _chart.redraw = function (id, queryGroupId, queryCount, data, callback) {
         if (dc._refreshDisabled) return;
-        _chart.dataCache = data !== undefined ? data : null;
+        _chart.dataCache = typeof data !== 'undefined' && data !== null ? data : null
 
         sizeSvg();
         _listeners.preRedraw(_chart);
@@ -1041,7 +1041,7 @@ dc.baseMixin = function (_chart) {
 
         _chart._activateRenderlets('postRedraw');
 
-        if (queryGroupId !== undefined) {
+        if (typeof queryGroupId !== 'undefined' && queryGroupId !== null) {
             if (++dc._redrawCount == queryCount) {
                 if (dc._logging) {
                     var endTime = new Date();
