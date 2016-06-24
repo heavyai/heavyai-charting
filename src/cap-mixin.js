@@ -52,54 +52,52 @@ dc.capMixin = function (_chart) {
     };
 
 /* OVERRIDE EXTEND --------------------------------------------------------- */
-    _chart.ordering = function (_) {
-        if (!_) {
+    _chart.ordering = function (order) {
+        _chart.expireCache()
+        if (!order) {
             return _ordering;
         }
-        _ordering = _;
+        _ordering = order;
         return _chart;
     }
 
     _chart.setDataAsync(function(group, callbacks) {
-      if (_cap === Infinity) {
-          group.allAsync(callbacks);
-      }
-      else {
-          group.topAsync(_cap, undefined, undefined, callbacks)
-      }
+        if (_cap === Infinity) {
+            group.allAsync(callbacks);
+        } else if (_ordering === 'desc') {
+            group.topAsync(_cap, undefined, undefined, callbacks)
+        } else {
+            group.bottomAsync(_cap, undefined, undefined, callbacks)
+        }
     });
+
+    _chart.expireCache = function () {
+        _chart.dataCache = null;
+    };
 
     _chart.data(function (group) {
         if (_cap === Infinity) {
-          if (_chart.dataCache != null) {
-            return _chart._computeOrderedGroups(_chart.dataCache);
-          }
+            if (_chart.dataCache != null) {
+                return _chart._computeOrderedGroups(_chart.dataCache);
+            } else {
+                return _chart._computeOrderedGroups(group.all());
+            }
+        } else {
+            var rows = null
+            if (_chart.dataCache != null) {
+                rows = _chart.dataCache;
+            } else if (_ordering === 'desc') {
+                rows = group.top(_cap); // ordered by crossfilter group order (default value)
+            } else if (_ordering === 'asc') {
+                rows = group.bottom(_cap); // ordered by crossfilter group order (default value)
+            }
 
-          else {
-            return _chart._computeOrderedGroups(group.all());
-          }
-        }
+            rows = _chart._computeOrderedGroups(rows); // re-order using ordering (default key)
 
-        else {
-          var rows = null
-          if (_chart.dataCache != null) {
-              rows = _chart.dataCache;
-          }
-
-          else if (_ordering === 'desc') {
-            rows = group.top(_cap); // ordered by crossfilter group order (default value)
-          }
-
-          else if (_ordering === 'asc') {
-            rows = group.bottom(_cap); // ordered by crossfilter group order (default value)
-          }
-
-          rows = _chart._computeOrderedGroups(rows); // re-order using ordering (default key)
-
-          if (_othersGrouper) {
-              return _othersGrouper(rows);
-          }
-          return rows;
+            if (_othersGrouper) {
+                return _othersGrouper(rows);
+            }
+            return rows;
         }
     });
 
