@@ -62,12 +62,32 @@ dc.capMixin = function (_chart) {
     }
 
     _chart.setDataAsync(function(group, callback) {
+        console.log('call', group, callback)
+        function resultCallback (error, result) {
+            var rows = _chart._computeOrderedGroups(result)
+            if (_othersGrouper) {
+              callback(_othersGrouper(rows))
+            } else {
+              callback(rows)
+            }
+        }
+
         if (_cap === Infinity) {
-            group.allAsync(callback);
-        } else if (_ordering === 'desc') {
-            group.topAsync(_cap, undefined, undefined, callback)
+            if (_chart.dataCache != null) {
+                callback(_chart._computeOrderedGroups(_chart.dataCache));
+            } else {
+                group.allAsync(function (result) {
+                    callback(_chart._computeOrderedGroups(result));
+                })
+            }
         } else {
-            group.bottomAsync(_cap, undefined, undefined, callback)
+            if (_chart.dataCache != null) {
+                  resultCallback(_chart.dataCache)
+              } else if (_ordering === 'desc') {
+                  group.topAsync(_cap, undefined, undefined, resultCallback); // ordered by crossfilter group order (default value)
+              } else if (_ordering === 'asc') {
+                  group.bottomAsync(_cap, undefined, undefined, resultCallback); // ordered by crossfilter group order (default value)
+              }
         }
     });
 
@@ -76,6 +96,7 @@ dc.capMixin = function (_chart) {
     };
 
     _chart.data(function (group) {
+        console.warn('Warning: Deprecated sync method cap-mixin .data(). Please use async version')
         if (_cap === Infinity) {
             if (_chart.dataCache != null) {
                 return _chart._computeOrderedGroups(_chart.dataCache);

@@ -381,11 +381,13 @@ dc.baseMixin = function (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.dataAsync = function (callback) {
-        return _dataAsync.call(_chart, _group, callback);
+        console.log('callback', _dataAsync)
+        _dataAsync.call(_chart, _group, callback);
     }
 
-    _chart.setDataAsync = function(d) {
-        _dataAsync = d;
+    _chart.setDataAsync = function(callback) {
+        _dataAsync = callback;
+        _chart.expireCache();
         return _chart;
     }
 /* ------------------------------------------------------------------------- */
