@@ -61,13 +61,13 @@ dc.capMixin = function (_chart) {
         return _chart;
     }
 
-    _chart.setDataAsync(function(group, callbacks) {
+    _chart.setDataAsync(function(group, callback) {
         if (_cap === Infinity) {
-            group.allAsync(callbacks);
+            group.allAsync(callback);
         } else if (_ordering === 'desc') {
-            group.topAsync(_cap, undefined, undefined, callbacks)
+            group.topAsync(_cap, undefined, undefined, callback)
         } else {
-            group.bottomAsync(_cap, undefined, undefined, callbacks)
+            group.bottomAsync(_cap, undefined, undefined, callback)
         }
     });
 

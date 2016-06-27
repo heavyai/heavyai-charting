@@ -213,8 +213,8 @@ dc.baseMixin = function (_chart) {
     };
 
 /* OVERRIDE ---------------------------------------------------------------- */
-    var _dataAsync = function(group,callbacks) {
-        group.allAsync(callbacks);
+    var _dataAsync = function(group, callback) {
+        group.allAsync(callback);
     };
 /* ------------------------------------------------------------------------- */
 
@@ -859,9 +859,10 @@ dc.baseMixin = function (_chart) {
         }
         var id = queryId++;
         var renderCallback = function(data) {
+            console.log('data', data)
             _chart.render(id, queryGroupId, queryCount, data, callback);
         }
-        _chart.dataAsync([renderCallback]);
+        _chart.dataAsync(renderCallback);
     };
 
     /**
@@ -982,7 +983,7 @@ dc.baseMixin = function (_chart) {
         var redrawCallback = function(data) {
             _chart.redraw(id, queryGroupId, queryCount, data, callback);
         }
-        _chart.dataAsync([redrawCallback]);
+        _chart.dataAsync(redrawCallback);
     };
 
     /**
