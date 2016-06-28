@@ -160,14 +160,14 @@ dc.rowChart = function (parent, chartGroup) {
             .call(_xAxis);
     }
 
-    _chart._doRender = function () {
+    _chart._doRender = function (data) {
         _chart.resetSvg();
 
         _g = _chart.svg()
             .append('g')
             .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
 
-        drawChart();
+        drawChart(data);
 
         return _chart;
     };
@@ -220,8 +220,8 @@ dc.rowChart = function (parent, chartGroup) {
             });
     }
 
-    function drawChart () {
-        _rowData = _chart.data();
+    function drawChart (data) {
+        _rowData = data ? data : _chart.data();
 
         drawAxis();
         drawGridLines();
@@ -462,8 +462,8 @@ dc.rowChart = function (parent, chartGroup) {
         return 'translate(' + s + ',0)';
     }
 
-    _chart._doRedraw = function () {
-        drawChart();
+    _chart._doRedraw = function (data) {
+        drawChart(data);
         return _chart;
     };
 

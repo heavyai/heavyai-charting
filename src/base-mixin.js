@@ -908,7 +908,7 @@ dc.baseMixin = function (_chart) {
 
         var renderError;
         try {
-            var result = _chart._doRender();
+            var result = _chart._doRender(data);
         }
         catch (err) {
             renderError = err;
@@ -1027,7 +1027,7 @@ dc.baseMixin = function (_chart) {
 
         var redrawError;
         try {
-            var result = _chart._doRedraw();
+            var result = _chart._doRedraw(data);
         }
         catch (err) {
             redrawError = err;
