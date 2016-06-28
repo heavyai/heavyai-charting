@@ -1,4 +1,4 @@
-dc.legendCont = function () {
+dc.legendCont = function (data) {
     var LABEL_GAP = 2;
     var _legend = {},
         _parent,
@@ -115,10 +115,10 @@ dc.legendCont = function () {
         
         if (!_isLocked) {
             _parent.on("preRender.color", function(chart) {
-                chart.colorDomain(d3.extent(chart.data(), chart.colorAccessor()));
+                chart.colorDomain(d3.extent(data ? data : chart.data(), chart.colorAccessor()));
             });
             _parent.on("preRedraw.color", function(chart) {
-                chart.colorDomain(d3.extent(chart.data(), chart.colorAccessor()));
+                chart.colorDomain(d3.extent(data ? data : chart.data(), chart.colorAccessor()));
             });
         } else {
             _parent.on("preRender.color", null);
@@ -130,6 +130,7 @@ dc.legendCont = function () {
         _isLocked = !_isLocked;
 
         if (!_isLocked) {
+            // must use .dataAsync
             _parent.colorDomain(d3.extent(_parent.data(), _parent.colorAccessor()));  
         }
         _parent.redraw();

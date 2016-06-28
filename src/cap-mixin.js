@@ -82,7 +82,7 @@ dc.capMixin = function (_chart) {
             }
         } else {
             if (_chart.dataCache != null) {
-                  resultCallback(_chart.dataCache)
+                  resultCallback(null, _chart.dataCache)
               } else if (_ordering === 'desc') {
                   group.topAsync(_cap, undefined, undefined, resultCallback); // ordered by crossfilter group order (default value)
               } else if (_ordering === 'asc') {
@@ -97,6 +97,7 @@ dc.capMixin = function (_chart) {
 
     _chart.data(function (group) {
         console.warn('Warning: Deprecated sync method cap-mixin .data(). Please use async version')
+        console.log(_chart.dataCache)
         if (_cap === Infinity) {
             if (_chart.dataCache != null) {
                 return _chart._computeOrderedGroups(_chart.dataCache);
