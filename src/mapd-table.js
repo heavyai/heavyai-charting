@@ -76,38 +76,23 @@ dc.mapdTable = function (parent, chartGroup) {
 
         _offset += _size;
 
-        getData(_offset, [addRowsCallback], true);
+        getData("async", _size, _offset, [addRowsCallback]);
     }
 
     _chart.setDataAsync(function(group,callbacks) {
-
-        _pauseAutoLoad = false;
-
-        if (_tableWrapper) {
-            _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
-        }
-
-        _offset = 0;
-
-        getData(_offset, callbacks, true);
+        var size = resetTableStateReturnSize();
+        getData("async", size, _offset, callbacks);
     });
 
     _chart.data(function() {
         if (!_chart.dataCache) {
-            _pauseAutoLoad = false;
-
-            if (_tableWrapper) {
-                _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
-            }
-
-            _offset = 0;
-
-            _chart.dataCache = getData();
+            var size = resetTableStateReturnSize();
+            _chart.dataCache = getData("sync", size, 0, null);
          }
         return _chart.dataCache;
     });
 
-    function getData(offset, callbacks) {
+    function getData(method, size, offset, callbacks) {
         _isGroupedData = _chart.dimension().value()[0];
         
         _dimOrGroup =  _isGroupedData ? _chart.group() : _chart.dimension();
@@ -116,11 +101,29 @@ dc.mapdTable = function (parent, chartGroup) {
 
         var sortFuncName = _sortColumn && _sortColumn.order === 'asc' ? 'bottomAsync' : 'topAsync';
 
-        if (!arguments.length) {
-            return _dimOrGroup[sortFuncName.replace('Async', '')](_size, 0);
+        if (method === 'sync') {
+            return _dimOrGroup[sortFuncName.replace('Async', '')](size, 0);
         } else {
-            _dimOrGroup[sortFuncName](_size, offset, undefined, callbacks);
+            _dimOrGroup[sortFuncName](size, offset, undefined, callbacks);
         }
+    }
+
+
+    function resetTableStateReturnSize() {
+        _pauseAutoLoad = false;
+
+        if (!_isGroupedData && _tableWrapper) {
+            _tableWrapper.select('.md-table-scroll').node().scrollTop = 0;
+        }
+        var size = _size;
+
+        if (_isGroupedData) {
+            size += _offset;
+        }
+
+        _offset = 0;
+
+        return size;
     }
 
     _chart.addFilteredColumn = function(columnName) {
@@ -164,6 +167,11 @@ dc.mapdTable = function (parent, chartGroup) {
         }
 
         renderTable();
+
+        if (_isGroupedData) {
+            console.log(_scrollTop)
+            _tableWrapper.select('.md-table-scroll').node().scrollTop = _scrollTop;
+        }
 
         if (!_pauseAutoLoad) {
             shouldLoadMore();
