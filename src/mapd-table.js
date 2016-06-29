@@ -169,7 +169,6 @@ dc.mapdTable = function (parent, chartGroup) {
         renderTable();
 
         if (_isGroupedData) {
-            console.log(_scrollTop)
             _tableWrapper.select('.md-table-scroll').node().scrollTop = _scrollTop;
         }
 
