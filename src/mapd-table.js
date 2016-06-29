@@ -81,7 +81,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
     _chart.setDataAsync(function(group,callbacks) {
         var size = resetTableStateReturnSize();
-        getData("async", size, _offset, callbacks);
+        getData("async", size, 0, callbacks);
     });
 
     _chart.data(function() {
@@ -119,9 +119,9 @@ dc.mapdTable = function (parent, chartGroup) {
 
         if (_isGroupedData) {
             size += _offset;
+        } else {
+            _offset = 0;
         }
-
-        _offset = 0;
 
         return size;
     }
