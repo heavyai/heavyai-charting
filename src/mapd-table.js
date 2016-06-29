@@ -220,18 +220,37 @@ dc.mapdTable = function (parent, chartGroup) {
             .data(data)
             .enter();
 
-        var rowItem = tableRows.append('tr');
+        var rowItem = tableRows.append('tr')
+            .attr("class", function(d){
+                var tableRowCls = "table-row ";
+                if (_isGroupedData) {
+                    tableRowCls += "grouped-data ";
+
+                    if (_chart.hasFilter()) {
+                        var keyArray = []
+                        for (var key in d) {
+                            if (d.hasOwnProperty(key) && key.includes('key')) {
+                               keyArray.push(d[key])
+                            }
+                        }
+
+                        tableRowCls += _chart.hasFilter(keyArray) ? 'selected' : 'deselected'
+                    }
+                }
+                return tableRowCls;
+            });
 
         cols.forEach(function(col, i){
-
             rowItem.append('td')
                 .text(function(d){
                     return d[col.name];
                 })
                 .classed('filtered', col.expression in _filteredColumns)
-                .classed('disabled', _isGroupedData && !!col.agg_mode)
                 .on('click', function(d){
-                    if (col.expression in _filteredColumns) {
+                    if (_isGroupedData) {
+                        _chart.onClick(d);
+                    } 
+                    else if (col.expression in _filteredColumns) {
                         clearColFilter(col.expression);
                     } else {
                         filterCol(col.expression, d[col.name]);

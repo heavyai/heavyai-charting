@@ -407,8 +407,8 @@ body {
             padding: 4px 6px;
 
             &:hover {
-                color: $blue-main;
-                cursor: pointer;
+                color: $blue-main !important;
+                cursor: pointer !important;
             }
 
             &.filtered {
@@ -427,6 +427,22 @@ body {
             padding: 4px 24px 4px 20px;
             white-space: nowrap;
 
+        }
+
+        tr {
+
+            &.deselected {
+                background: $gray1;
+                td {
+                    color: $gray4;
+                }
+            }
+
+            &.grouped-data:hover {
+                td {
+                    color: $blue-main;
+                }
+            }
         }
     }
 
