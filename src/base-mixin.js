@@ -381,7 +381,6 @@ dc.baseMixin = function (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.dataAsync = function (callback) {
-        console.log('callback', _dataAsync)
         _dataAsync.call(_chart, _group, callback);
     }
 
@@ -860,9 +859,12 @@ dc.baseMixin = function (_chart) {
             _chart.setSample();
         }
         var id = queryId++;
-        var renderCallback = function(data) {
-            console.log('data', data)
-            _chart.render(id, queryGroupId, queryCount, data, callback);
+        var renderCallback = function(error, data) {
+            if (error) {
+                callback(error)
+            } else {
+                _chart.render(id, queryGroupId, queryCount, data, callback);
+            }
         }
         _chart.dataAsync(renderCallback);
     };
@@ -982,8 +984,12 @@ dc.baseMixin = function (_chart) {
             _chart.setSample();
         }
         var id = queryId++;
-        var redrawCallback = function(data) {
-            _chart.redraw(id, queryGroupId, queryCount, data, callback);
+        var redrawCallback = function(error, data) {
+            if (error) {
+                callback(error)
+            } else {
+                _chart.redraw(id, queryGroupId, queryCount, data, callback);
+            }
         }
         _chart.dataAsync(redrawCallback);
     };

@@ -62,22 +62,29 @@ dc.capMixin = function (_chart) {
     }
 
     _chart.setDataAsync(function(group, callback) {
-        console.log('call', group, callback)
         function resultCallback (error, result) {
+            if (error) {
+                callback(error)
+                return
+            }
             var rows = _chart._computeOrderedGroups(result)
             if (_othersGrouper) {
-              callback(_othersGrouper(rows))
+              callback(null, _othersGrouper(rows))
             } else {
-              callback(rows)
+              callback(null, rows)
             }
         }
 
         if (_cap === Infinity) {
             if (_chart.dataCache != null) {
-                callback(_chart._computeOrderedGroups(_chart.dataCache));
+                callback(null, _chart._computeOrderedGroups(_chart.dataCache));
             } else {
-                group.allAsync(function (result) {
-                    callback(_chart._computeOrderedGroups(result));
+                group.allAsync(function (error, result) {
+                    if (error) {
+                        callback(error)
+                        return
+                    }
+                    callback(null, _chart._computeOrderedGroups(result));
                 })
             }
         } else {
