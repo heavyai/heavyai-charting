@@ -186,10 +186,6 @@ dc.baseMixin = function (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
             dimension.filterAll(_softFilterClear);
-
-             // this is hacky -
-             // we need to get dimension.filter to use dimension as this
-            $(dimension).trigger("filter-clear");
         } else {
             if (_chart.hasOwnProperty('rangeFocused')) {
               dimension.filterMulti(filters, _chart.rangeFocused(), _areFiltersInverse);

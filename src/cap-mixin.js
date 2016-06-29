@@ -104,7 +104,6 @@ dc.capMixin = function (_chart) {
 
     _chart.data(function (group) {
         console.warn('Warning: Deprecated sync method cap-mixin .data(). Please use async version')
-        console.log(_chart.dataCache)
         if (_cap === Infinity) {
             if (_chart.dataCache != null) {
                 return _chart._computeOrderedGroups(_chart.dataCache);
@@ -146,6 +145,7 @@ dc.capMixin = function (_chart) {
             return _cap;
         }
         _cap = count;
+        _chart.expireCache()
         return _chart;
     };
 

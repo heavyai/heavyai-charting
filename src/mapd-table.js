@@ -63,7 +63,7 @@ dc.mapdTable = function (parent, chartGroup) {
         return _chart;
     };
 
-    var addRowsCallback = function(data){
+    var addRowsCallback = function(err, data){
         if (data.length > 0) {
             _pauseAutoLoad = false;
             _chart.dataCache = _chart.dataCache.concat(data);
@@ -79,9 +79,9 @@ dc.mapdTable = function (parent, chartGroup) {
         getData("async", _size, _offset, [addRowsCallback]);
     }
 
-    _chart.setDataAsync(function(group,callbacks) {
+    _chart.setDataAsync(function(group, callback) {
         var size = resetTableStateReturnSize();
-        getData("async", size, 0, callbacks);
+        getData("async", size, 0, callback);
     });
 
     _chart.data(function() {
@@ -92,7 +92,7 @@ dc.mapdTable = function (parent, chartGroup) {
         return _chart.dataCache;
     });
 
-    function getData(method, size, offset, callbacks) {
+    function getData(method, size, offset, callback) {
         _isGroupedData = _chart.dimension().value()[0];
         
         _dimOrGroup =  _isGroupedData ? _chart.group() : _chart.dimension();
@@ -104,7 +104,7 @@ dc.mapdTable = function (parent, chartGroup) {
         if (method === 'sync') {
             return _dimOrGroup[sortFuncName.replace('Async', '')](size, 0);
         } else {
-            _dimOrGroup[sortFuncName](size, offset, undefined, callbacks);
+            _dimOrGroup[sortFuncName](size, offset, undefined, callback);
         }
     }
 

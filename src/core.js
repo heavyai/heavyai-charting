@@ -206,6 +206,7 @@ dc.renderAll = function (group, callback) {
 
     var charts = dc.chartRegistry.list(group);
     charts.forEach(function (chart) {
+        chart.expireCache()
         if (dc._sampledCount > 0) {
             chart.renderAsyncWithQueryGroup(queryGroupId, charts.length - 1, callback);
         } else {
@@ -255,7 +256,9 @@ dc.redrawAll = function (group, callback) {
     dc._startRedrawTime = new Date();
 
     var charts = dc.chartRegistry.list(group);
+
     charts.forEach(function (chart) {
+        chart.expireCache()
         if (dc._sampledCount > 0) {
             chart.redrawAsyncWithQueryGroup(queryGroupId, charts.length - 1, callback);
         } else {

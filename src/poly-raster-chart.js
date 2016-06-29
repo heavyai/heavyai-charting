@@ -21,8 +21,7 @@ dc.polyRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
     layer.isActive = false;
   }
 
-  chart.setDataAsync(function(group, callbacks) {
-    callbacks = Array.isArray(callbacks) ? callbacks : [callbacks]
+  chart.setDataAsync(function(group, callback) {
     var bounds = chart.map().getBounds();
     var renderBounds = [
       valuesOb(bounds.getNorthWest()),
@@ -38,12 +37,12 @@ dc.polyRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
       chart.polyJoin(),
       {strokeColor: chart.borderColor(), strokeWidth: chart.borderWidth()}
     );
-    var nonce = group.topAsync(chart.cap(), 0, JSON.stringify(chart._vegaSpec), callbacks);
+    var nonce = group.topAsync(chart.cap(), 0, JSON.stringify(chart._vegaSpec), callback);
     renderBoundsMap[nonce] = renderBounds;
   });
 
   chart._doRenderAsync = function () {
-    chart.dataAsync(function (data) {
+    chart.dataAsync(function (error, data) {
       if (Object.keys(data).length && chart.map()._loaded) {
         setOverlay(data.image, renderBoundsMap[data.nonce], chart.map(), layer, chart.opacity());
       }

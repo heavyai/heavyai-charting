@@ -76,10 +76,10 @@ document.addEventListener("DOMContentLoaded", function init() {
 
   function getDomainBounds (group, callback) {
     var queriesFinished = {min: null, max: null}
-    group.bottom(1, 0, null, [maybeFinished("min")])
-    group.top(1, 0, null, [maybeFinished("max")])
+    group.bottom(1, 0, null, maybeFinished("min"))
+    group.top(1, 0, null, maybeFinished("max"))
     function maybeFinished(key) {
-      return function (result) {
+      return function (error, result) {
         queriesFinished[key] = extractResult(result)
         if(_.every(queriesFinished, function (val) { return val !== null })){
           callback(queriesFinished)
