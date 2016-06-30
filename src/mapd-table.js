@@ -122,7 +122,6 @@ dc.mapdTable = function (parent, chartGroup) {
         } else {
             _offset = 0;
         }
-        console.log(size)
         return size;
     }
 
