@@ -942,7 +942,7 @@ dc.baseMixin = function (_chart) {
             }
         }
 
-        callback && callback(renderError, result)
+        callback && callback(renderError, result || _chart)
         return result;
     };
 
@@ -1059,7 +1059,7 @@ dc.baseMixin = function (_chart) {
                 dc._redrawIdStack = null;
 
                 if (callback) {
-                    callback(redrawError, result);
+                    callback(redrawError, result || _chart);
                     return result
                 } else if (!stackEmpty) {
                     dc.redrawAll(null, callback);
@@ -1067,7 +1067,7 @@ dc.baseMixin = function (_chart) {
             }
         }
 
-        callback && callback(redrawError, result);
+        callback && callback(redrawError, result || _chart);
         return result;
     };
 

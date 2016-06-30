@@ -190,6 +190,9 @@ dc.refocusAll = function (group) {
  * @param {String} [group]
  */
 dc.renderAll = function (group, callback) {
+    if (!callback) {
+        console.warn('WARNING: No callback provided to an async function. Errors will be unhandled.')
+    }
     if (dc._refreshDisabled) {
         return;
     }
@@ -245,6 +248,7 @@ dc.redrawAll = function (group, callback) {
     var stackEmpty = false;
 
     if (!callback) {
+        console.warn('WARNING: No callback provided to an async function. Errors will be unhandled.')
         var stackEmpty = dc._redrawIdStack === null;
         dc._redrawIdStack = queryGroupId;
     }
@@ -277,7 +281,51 @@ dc.redrawAll = function (group, callback) {
  * @name redrawAllAsync
  * @param {String} [group]
  */
-dc.redrawAllAsync = dc.redrawAll
+dc.redrawAllAsync = function (group) {
+    if (dc._refreshDisabled) {
+        return;
+    }
+
+    var queryGroupId = dc._redrawId++;
+    var stackEmpty = false;
+
+    dc._startRedrawTime = new Date();
+
+    var charts = dc.chartRegistry.list(group);
+
+    var redrawPromises = charts.map(function (chart) {
+        chart.expireCache()
+        if (dc._sampledCount > 0) {
+            return new Promise(function(resolve, reject) {
+                chart.redrawAsyncWithQueryGroup(queryGroupId, charts.length - 1, function(error, result) {
+                    if (error) {
+                        reject(error)
+                    } else {
+                        resolve(result)
+                    }
+                });
+            })
+
+        } else {
+            return new Promise(function(resolve, reject) {
+                chart.redrawAsyncWithQueryGroup(queryGroupId, charts.length , function(error, result) {
+                    if (error) {
+                        reject(error)
+                    } else {
+                        resolve(result)
+                    }
+                });
+            })
+        }
+    })
+
+
+     if (dc._renderlet !== null) {
+        dc._renderlet(group);
+    }
+
+    return Promise.all(redrawPromises)
+}
 
 /**
  * If this boolean is set truthy, all transitions will be disabled, and changes to the charts will happen

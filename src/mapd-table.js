@@ -76,7 +76,7 @@ dc.mapdTable = function (parent, chartGroup) {
 
         _offset += _size;
 
-        getData("async", _size, _offset, [addRowsCallback]);
+        getData("async", _size, _offset, addRowsCallback);
     }
 
     _chart.setDataAsync(function(group, callback) {
@@ -94,9 +94,9 @@ dc.mapdTable = function (parent, chartGroup) {
 
     function getData(method, size, offset, callback) {
         _isGroupedData = _chart.dimension().value()[0];
-        
+
         _dimOrGroup =  _isGroupedData ? _chart.group() : _chart.dimension();
-        
+
         _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null);
 
         var sortFuncName = _sortColumn && _sortColumn.order === 'asc' ? 'bottomAsync' : 'topAsync';
@@ -254,7 +254,7 @@ dc.mapdTable = function (parent, chartGroup) {
                 .on('click', function(d){
                     if (_isGroupedData) {
                         _chart.onClick(d);
-                    } 
+                    }
                     else if (col.expression in _filteredColumns) {
                         clearColFilter(col.expression);
                     } else {
