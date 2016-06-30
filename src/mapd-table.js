@@ -118,7 +118,7 @@ dc.mapdTable = function (parent, chartGroup) {
         var size = _size;
 
         if (_isGroupedData) {
-            size += _offset;
+            size = _offset;
         } else {
             _offset = 0;
         }
