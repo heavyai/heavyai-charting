@@ -240,8 +240,7 @@ dc.mapdTable = function (parent, chartGroup) {
                                keyArray.push(d[key])
                             }
                         }
-
-                        tableRowCls += _chart.hasFilter(keyArray) ? 'selected' : 'deselected'
+                        tableRowCls += !_chart.hasFilter(keyArray) ^ _chart.filtersInverse()  ? 'deselected' : 'selected'
                     }
                 }
                 return tableRowCls;
