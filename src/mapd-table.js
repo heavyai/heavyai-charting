@@ -118,11 +118,11 @@ dc.mapdTable = function (parent, chartGroup) {
         var size = _size;
 
         if (_isGroupedData) {
-            size = _offset;
+            size = _offset !==0 ? _offset : size;
         } else {
             _offset = 0;
         }
-
+        console.log(size)
         return size;
     }
 
