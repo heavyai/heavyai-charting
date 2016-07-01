@@ -21,12 +21,12 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.geoChoroplethChart}
  */
-dc.geoChoroplethChart = function (parent, useMap, chartGroup) {
+dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
     var _useMap = useMap !== undefined ? useMap : false;
     var parentDivId = parent.attributes.id.value;
     var _chart = null;
     if (_useMap) {
-        _chart = dc.mapMixin(dc.colorMixin(dc.baseMixin({})),parentDivId);
+        _chart = dc.mapMixin(dc.colorMixin(dc.baseMixin({})),parentDivId, mapbox);
     }
     else {
         _chart = dc.colorMixin(dc.baseMixin({}));
