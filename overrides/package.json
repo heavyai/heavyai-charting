@@ -1,0 +1,27 @@
+{
+  "name": "overrides",
+  "version": "1.0.0",
+  "description": "",
+  "main": "async-mixin.js",
+  "scripts": {
+    "lint": "eslint $(find src -name \"*.js\")",
+    "test": "istanbul cover _mocha -- ./test --compilers js:babel-register ---require ./test/setup",
+    "build": "babel src --out-dir build",
+    "build:watch": "npm run build -- --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-core": "^6.10.4",
+    "babel-eslint": "^6.1.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "chai": "^3.5.0",
+    "chai-spies": "^0.7.1",
+    "eslint": "^3.0.1",
+    "istanbul": "1.0.0-alpha.2",
+    "jsdom": "^9.4.1",
+    "mocha": "^2.5.3"
+  }
+}

@@ -1,5 +1,6 @@
-dc.mapdTable = function (parent, chartGroup) {
-
+var dc = require("../../mapdc")
+import d3 from "d3"
+export default function mapdTable (parent, chartGroup) {
     var _chart = dc.baseMixin({});
     var _tableWrapper = null;
 
