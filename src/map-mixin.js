@@ -99,7 +99,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
       }
 
       dc.enableRefresh();
-      _chart.render();
+      _chart.renderAsync();
 
       //$('body').trigger('loadGrid');
     }
