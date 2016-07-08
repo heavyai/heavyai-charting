@@ -520,12 +520,10 @@
      *
      *  to see all availables --  con.getTables()
      */
-    var crossFilter = crossfilter.crossfilter(con, "flights");
-
+     crossfilter.crossfilter(con, "flights").then(createCharts)
     /*
      *  Pass instance of crossfilter into our reateCharts.
      */
-    createCharts(crossFilter);
   }
 
   document.addEventListener('DOMContentLoaded', init, false);

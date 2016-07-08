@@ -24,9 +24,11 @@ document.addEventListener("DOMContentLoaded", function init() {
     numTimeBins: 423
   }
   var con = new MapdCon().protocol("http").host("kali.mapd.com").port("9092").dbName("mapd").user("mapd").password("HyperInteractive").connect()
-  var crossFilter = crossfilter.crossfilter(con, config.table)
-  createPolyMap(crossFilter, con, dc, config)
-  createTimeChart(crossFilter, dc, config)
+  crossfilter.crossfilter(con, config.table).then(function(cf) {
+    createPolyMap(cf, con, dc, config)
+    createTimeChart(cf, dc, config)
+  })
+
 
   function createPolyMap(crossFilter, con, dc, config) {
     var parent = document.getElementById("polymap")
