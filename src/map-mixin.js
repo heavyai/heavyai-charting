@@ -139,7 +139,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             }
             else {
                 _chart._projectionFlag = true;
-                _chart.redraw();
+                _chart.redrawAsync();
             }
         //}
     }

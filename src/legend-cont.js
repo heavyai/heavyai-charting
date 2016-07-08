@@ -148,7 +148,7 @@ dc.legendCont = function (data) {
             _isLocked = true;
             _parent.colorDomain([startVal, endVal])
                 .on("preRedraw.color", null)
-                .redraw();
+                .redrawAsync();
         } else {
             d3.select(this).property('value', currVal);
         }

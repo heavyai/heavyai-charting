@@ -84,7 +84,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 
         
 
-    _chart._doRender = function () {
+    _chart._doRender = function (d) {
         if (!_hasBeenRendered && _useMap) {
             if (_geoJsons.length > 0) {
                 // just use first layer for now
@@ -112,7 +112,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 
             regionG.append('title');
 
-            plotData(layerIndex);
+            plotData(layerIndex, d);
         }
         _chart._projectionFlag = false;
 
@@ -122,8 +122,8 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 
     };
 
-    function plotData (layerIndex) {
-        var data = generateLayeredData();
+    function plotData (layerIndex, d) {
+        var data = generateLayeredData(d);
 
         if (isDataLayer(layerIndex)) {
             var regionG = renderRegionG(layerIndex);
@@ -134,9 +134,9 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
         }
     }
 
-    function generateLayeredData () {
+    function generateLayeredData (d) {
         var data = {};
-        var groupAll = _chart.data();
+        var groupAll = d;
         for (var i = 0; i < groupAll.length; ++i) {
             data[_chart.keyAccessor()(groupAll[i])] = _chart.valueAccessor()(groupAll[i]);
         }
@@ -257,7 +257,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
         }
     }
 
-    _chart._doRedraw = function () {
+    _chart._doRedraw = function (data) {
 
 
 /* OVERRIDE -----------------------------------------------------------------*/
@@ -268,7 +268,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
 
             //console.time("plot");
-            plotData(layerIndex);
+            plotData(layerIndex, data);
             //console.timeEnd("plot");
             if (_chart._projectionFlag) {
                 //console.time("reprojection");
