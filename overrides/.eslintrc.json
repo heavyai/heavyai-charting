@@ -25,7 +25,7 @@
     "dot-notation": 2, // easier to read.
     "eol-last": 2, // aids in file concatination; github complains without this.
     "eqeqeq": 2, // avoids unexpected type coercion.
-    "func-names": 1, // having named functions makes following stack traces much easier.
+    "func-names": 0, // having named functions makes following stack traces much easier.
     "func-style": [0, "declaration"], // differentiates funcs from consts; hoisting allows more readable code ordering.
     // "generator-star": 0, // removed.
     "generator-star-spacing": [2, {"before": false, "after": true}], // standard on MDN docs.
@@ -57,7 +57,7 @@
     "no-alert": 2, // alerts are annoying.
     "no-array-constructor": 2, // can do surprising things; better to use [].
     // "no-arrow-condition": 0, // removed.
-    "no-bitwise": 2, // these are usually typos; can be difficult to reason about.
+    "no-bitwise": 0, // these are usually typos; can be difficult to reason about.
     "no-caller": 2, // deprecated.
     "no-case-declarations": 0, // can lead to unexpected behavior.
     "no-catch-shadow": 2, // causes a bug in IE8.
@@ -193,9 +193,9 @@
     "prefer-arrow-callback": 2, // increases readability and consistency.
     "prefer-const": 2, // better to be explicit about what is expected to change.
     // "prefer-reflect": 2, // old versions are deprecated. #TODO enable this rule.
-    "prefer-rest-params": 2, // easier to read than slicing args. #ES6only
-    "prefer-spread": 2, // avoids unneecessary call and apply.
-    "prefer-template": 2, // string concatenation is slow and error-prone. #ES6only
+    "prefer-rest-params": 0, // easier to read than slicing args. #ES6only
+    "prefer-spread": 0, // avoids unneecessary call and apply.
+    "prefer-template": 0,
     "quote-props": [2, "as-needed"], // improves consistency and readability.
     "quotes": [2, "double"], // improves consistency; more common to have to quote single quotes than double so double is default.
     "radix": 2, // should be explicit about what kind of int is being parsed.

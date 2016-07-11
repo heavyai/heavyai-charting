@@ -83,5 +83,20 @@ export default function asyncMixin (_chart) {
     })
   }
 
+  _chart.redrawGroup = function (callback) {
+    if (_chart.commitHandler()) {
+      _chart.commitHandler()(false, function (error, result) {
+        if (error) {
+          callback && callback(error)
+        } else {
+          dc.redrawAllAsync(_chart.chartGroup())
+        }
+      })
+    } else {
+      dc.redrawAllAsync(_chart.chartGroup())
+    }
+    return _chart
+  }
+
   return _chart
 }
