@@ -2,11 +2,22 @@ var dc = require("../../mapdc")
 
 export function redrawAllAsync (group) {
   if (dc._refreshDisabled) {
-    return
+    return Promise.resolve()
   }
 
   var queryGroupId = dc._redrawId++
   var stackEmpty = false
+
+  var queryGroupId = dc._redrawId++;
+  var stackEmpty = false;
+
+  var stackEmpty = dc._redrawIdStack === null;
+  dc._redrawIdStack = queryGroupId;
+
+  if (!stackEmpty) {
+      return Promise.resolve()
+  }
+
 
   dc._startRedrawTime = new Date()
 
@@ -30,7 +41,7 @@ export function redrawAllAsync (group) {
 
 export function renderAllAsync (group) {
   if (dc._refreshDisabled) {
-    return
+    return Promise.resolve()
   }
 
   var queryGroupId = dc._renderId++
@@ -38,7 +49,7 @@ export function renderAllAsync (group) {
   dc._renderIdStack = queryGroupId
 
   if (!stackEmpty) {
-    return
+    return Promise.resolve()
   }
 
   dc._startRenderTime = new Date()

@@ -8,9 +8,9 @@ describe("Core Overrides", () => {
     before(() => {
       dc._refreshDisabled = false
     })
-    it("should return if dc refresh is disabled", () => {
+    it("should return a promise", () => {
       dc._refreshDisabled = true
-      expect(redrawAllAsync()).to.equal(undefined)
+      expect(redrawAllAsync() instanceof Promise).to.equal(true)
     })
   })
 })
