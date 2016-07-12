@@ -46,17 +46,7 @@ var dc = {
     _lastFilteredSize: null,
     _sampledCount: 0,
     _refreshDisabled: false,
-    _renderFlag: false,
-    _redrawFlag: false,
-    _renderId: 0,
-    _redrawId: 0,
-    _renderCount: 0,
-    _redrawCount: 0,
-    _renderIdStack: null,
-    _redrawIdStack: null,
     _globalTransitionDuration: null,
-    _startRenderTime: null,
-    _startRedrawTime: null,
 /* --------------------------------------------------------------------------*/
 
     _renderlet: null
@@ -223,14 +213,6 @@ dc.renderAll = function (group, callback) {
 };
 
 /**
- * Alias of renderAll
- * @memberof dc
- * @name renderAllAsync
- * @param {String} [group]
- */
-dc.renderAllAsync = dc.renderAll
-
-/**
  * Redraw all charts belong to the given chart group. If the chart group is not given then only charts
  * that belong to the default chart group will be re-drawn. Redraw is different from re-render since
  * when redrawing dc tries to update the graphic incrementally, using transitions, instead of starting
@@ -275,57 +257,6 @@ dc.redrawAll = function (group, callback) {
     }
 };
 
-/**
- * Alias of redrawAll
- * @memberof dc
- * @name redrawAllAsync
- * @param {String} [group]
- */
-dc.redrawAllAsync = function (group) {
-    if (dc._refreshDisabled) {
-        return;
-    }
-
-    var queryGroupId = dc._redrawId++;
-    var stackEmpty = false;
-
-    dc._startRedrawTime = new Date();
-
-    var charts = dc.chartRegistry.list(group);
-
-    var redrawPromises = charts.map(function (chart) {
-        chart.expireCache()
-        if (dc._sampledCount > 0) {
-            return new Promise(function(resolve, reject) {
-                chart.redrawAsyncWithQueryGroup(queryGroupId, charts.length - 1, function(error, result) {
-                    if (error) {
-                        reject(error)
-                    } else {
-                        resolve(result)
-                    }
-                });
-            })
-
-        } else {
-            return new Promise(function(resolve, reject) {
-                chart.redrawAsyncWithQueryGroup(queryGroupId, charts.length , function(error, result) {
-                    if (error) {
-                        reject(error)
-                    } else {
-                        resolve(result)
-                    }
-                });
-            })
-        }
-    })
-
-
-     if (dc._renderlet !== null) {
-        dc._renderlet(group);
-    }
-
-    return Promise.all(redrawPromises)
-}
 
 /**
  * If this boolean is set truthy, all transitions will be disabled, and changes to the charts will happen

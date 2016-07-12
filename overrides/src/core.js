@@ -1,23 +1,31 @@
 var dc = require("../../mapdc")
 
+export default function asyncCoreMixin (dc) {
+  dc._renderFlag = false
+  dc._redrawFlag = false
+  dc._renderId = 0
+  dc._redrawId = 0
+  dc._renderCount = 0
+  dc._redrawCount = 0
+  dc._renderIdStack = null
+  dc._redrawIdStack = null
+  dc._startRenderTime = null
+  dc._startRedrawTime = null
+  return dc
+}
+
 export function redrawAllAsync (group) {
   if (dc._refreshDisabled) {
     return Promise.resolve()
   }
 
-  var queryGroupId = dc._redrawId++
-  var stackEmpty = false
-
   var queryGroupId = dc._redrawId++;
-  var stackEmpty = false;
-
   var stackEmpty = dc._redrawIdStack === null;
   dc._redrawIdStack = queryGroupId;
 
   if (!stackEmpty) {
-      return Promise.resolve()
+    return Promise.resolve()
   }
-
 
   dc._startRedrawTime = new Date()
 

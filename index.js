@@ -3,7 +3,9 @@
 var d3 = require("d3");
 var crossfilter = require("../mapd-crossfilter");
 var dc = require("./mapdc");
+var asyncCoreMixin = require("./overrides/build/core").default
 
+dc = asyncCoreMixin(dc)
 dc.mapdTable = require("./overrides/build/mapd-table").default
 dc.asyncMixin = require("./overrides/build/async-mixin").default
 dc.redrawAllAsync = require("./overrides/build/core").redrawAllAsync
