@@ -70,7 +70,7 @@ export default function mapdTable (parent, chartGroup) {
     if (data.length > 0) {
       _pauseAutoLoad = false
       _chart.dataCache = (_chart.dataCache || []).concat(data)
-      _chart._doRedraw()
+      _chart._doRedraw(_chart.dataCache)
     }
   }
 
@@ -136,7 +136,6 @@ export default function mapdTable (parent, chartGroup) {
   }
 
   _chart._doRender = function (data) {
-
     if (!_tableWrapper) {
       _chart.resetTable()
       _tableWrapper = _chart.root().append("div")
