@@ -174,7 +174,7 @@ export default function mapdTable (parent, chartGroup) {
     }
   }
 
-  function renderTable (data) {
+  function renderTable (data = []) {
     const table = _chart.tableWrapper().select("table").html("")
 
     if (data.length === 0) {
