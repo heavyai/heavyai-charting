@@ -82,17 +82,12 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
         return [[xMin,yMin],[xMax,yMax]];
     }
 
-        
+    _chart.fitBounds = function () {
+        var bounds = geoJson(0).bounds;
+        _chart.map().fitBounds(bounds, {animate: false});
+    }
 
     _chart._doRender = function (d) {
-        if (!_hasBeenRendered && _useMap) {
-            if (_geoJsons.length > 0) {
-                // just use first layer for now
-                //
-                var bounds = geoJson(0).bounds;
-                _chart.map().fitBounds(bounds, {animate: false});
-            }
-        }
         _chart.resetSvg(); // will use map mixin reset svg if we inherit map mixin
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
             var states = _chart.svg().append('g')
