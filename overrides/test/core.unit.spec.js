@@ -64,21 +64,46 @@ describe("Core Overrides", () => {
       })
     })
     describe('when redraw stack is empty', () => {
-      beforeEach(() => {
-
-      })
-      afterEach(() => {
-
-      })
       describe('when dc.sampleCount is greater than 0', () => {
-
+        it('should call redrawAsync for every chart with the dc._redrawId and the number of charts minus one', () => {
+          const queryGroupId = dc._redrawId
+          dc._sampledCount = 1
+          redrawAllAsync()
+          charts.forEach((chart) => {
+            expect(chart.redrawAsync).to.have.been.called.with(queryGroupId, charts.length - 1)
+          })
+        })
       })
       describe('when dc.sampleCount is not greater then 0', () => {
-
+        it('should call redrawAsync for every chart with the dc._redrawId and the number of charts', () => {
+          const queryGroupId = dc._redrawId
+          dc._sampledCount = 0
+          redrawAllAsync()
+          charts.forEach((chart) => {
+            expect(chart.redrawAsync).to.have.been.called.with(queryGroupId, charts.length)
+          })
+        })
       })
-      it('should return a Promise that resolves when all promises have been resolved', () => {
 
-
+      let counter = 0
+      const resolveAsync = () => new Promise((resolve) => {
+        counter++
+        setTimeout(() => resolve(), 1)
+      })
+      it('should return a Promise that resolves when all promises have been resolved', function (done) {
+        charts.forEach((chart) => {
+          chart.redrawAsync = chai.spy(() => resolveAsync())
+        })
+        return redrawAllAsync().then(() => {
+          expect(counter).to.equal(charts.length)
+          done()
+        })
+      })
+      it('should call expireCache for each chart', () => {
+        redrawAllAsync()
+        charts.forEach((chart) => {
+          expect(chart.expireCache).to.have.been.called()
+        })
       })
     })
   })
