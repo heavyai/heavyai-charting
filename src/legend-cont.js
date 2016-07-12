@@ -1,4 +1,4 @@
-dc.legendCont = function (data) {
+dc.legendCont = function () {
     var LABEL_GAP = 2;
     var _legend = {},
         _parent,
@@ -81,7 +81,7 @@ dc.legendCont = function (data) {
             .attr('class', 'legend-input')
             .append('input')
             .attr('value', function(d){ return d ? d.value : 0;})
-            .on('click', function(){  
+            .on('click', function(){
                 this.select();
                 var item =  d3.select(this.parentNode.parentNode);
                 item.classed('active', true);
@@ -95,7 +95,7 @@ dc.legendCont = function (data) {
             .on('change', onChange);
     };
 
-    function initLock () {    
+    function initLock () {
         _lock = _wrapper.append('div').attr('class', 'legend-lock')
             .classed('js-isLocked', _isLocked)
             .on('click', toggleLock);
@@ -112,12 +112,12 @@ dc.legendCont = function (data) {
             .attr('viewBox', '0 0 48 48')
             .append('use')
             .attr('xlink:href', '#icon-unlock');
-        
+
         if (!_isLocked) {
-            _parent.on("preRender.color", function(chart) {
+            _parent.on("preRender.color", function(chart, data) {
                 chart.colorDomain(d3.extent(data ? data : chart.data(), chart.colorAccessor()));
             });
-            _parent.on("preRedraw.color", function(chart) {
+            _parent.on("preRedraw.color", function(chart, data) {
                 chart.colorDomain(d3.extent(data ? data : chart.data(), chart.colorAccessor()));
             });
         } else {
@@ -131,7 +131,7 @@ dc.legendCont = function (data) {
 
         if (!_isLocked) {
             // must use .dataAsync
-            _parent.colorDomain(d3.extent(_parent.data(), _parent.colorAccessor()));  
+            _parent.colorDomain(d3.extent(_parent.data(), _parent.colorAccessor()));
         }
         _parent.redraw();
     }
@@ -156,4 +156,3 @@ dc.legendCont = function (data) {
 
     return _legend;
 };
-

@@ -898,7 +898,7 @@ dc.baseMixin = function (_chart) {
 
         sizeRoot();
 
-        _listeners.preRender(_chart);
+        _listeners.preRender(_chart, data);
 
         if (_mandatoryAttributes) {
             _mandatoryAttributes.forEach(checkForMandatoryAttributes);
@@ -923,7 +923,7 @@ dc.baseMixin = function (_chart) {
 
         _chart.generatePopup();
 
-        _chart._activateRenderlets('postRender');
+        _chart._activateRenderlets('postRender', data);
 
         if (typeof queryGroupId !== 'undefined' && queryGroupId !== null) {
             if (++dc._renderCount == queryCount) {
@@ -946,20 +946,20 @@ dc.baseMixin = function (_chart) {
         return result;
     };
 
-    _chart._activateRenderlets = function (event) {
-        _listeners.pretransition(_chart);
+    _chart._activateRenderlets = function (event, data) {
+        _listeners.pretransition(_chart, data);
         if (_chart.transitionDuration() > 0 && _svg) {
             _svg.transition().duration(_chart.transitionDuration())
                 .each('end', function () {
-                    _listeners.renderlet(_chart);
+                    _listeners.renderlet(_chart, data);
                     if (event) {
-                        _listeners[event](_chart);
+                        _listeners[event](_chart, data);
                     }
                 });
         } else {
-            _listeners.renderlet(_chart);
+            _listeners.renderlet(_chart, data);
             if (event) {
-                _listeners[event](_chart);
+                _listeners[event](_chart, data);
             }
         }
     };
@@ -1025,7 +1025,7 @@ dc.baseMixin = function (_chart) {
         _chart.dataCache = typeof data !== 'undefined' && data !== null ? data : null
 
         sizeSvg();
-        _listeners.preRedraw(_chart);
+        _listeners.preRedraw(_chart, data);
 
         var redrawError;
         try {
@@ -1044,7 +1044,7 @@ dc.baseMixin = function (_chart) {
             _chart._colorLegend.render();
         }
 
-        _chart._activateRenderlets('postRedraw');
+        _chart._activateRenderlets('postRedraw', data);
 
         if (typeof queryGroupId !== 'undefined' && queryGroupId !== null) {
             if (++dc._redrawCount == queryCount) {
