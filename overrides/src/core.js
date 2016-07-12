@@ -34,7 +34,7 @@ export function redrawAllAsync (group) {
   var redrawPromises = charts.map(function (chart) {
     chart.expireCache()
     if (dc._sampledCount > 0) {
-      return chart.redrawAsync(queryGroupId, charts.length)
+      return chart.redrawAsync(queryGroupId, charts.length - 1)
     } else {
       return chart.redrawAsync(queryGroupId, charts.length)
     }
