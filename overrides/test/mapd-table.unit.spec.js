@@ -125,8 +125,8 @@ describe("MapD Table", () => {
         it('should set dataCache to the dataCache concat with data', () => {
           expect(tableChart.dataCache).to.deep.equal(data)
         })
-        it('should call .doRedraw()', () => {
-          expect(tableChart._doRedraw).to.have.been.called()
+        it('should call .doRedraw() with the dataCache', () => {
+          expect(tableChart._doRedraw).to.have.been.called.with(tableChart.dataCache)
         })
       })
     })
