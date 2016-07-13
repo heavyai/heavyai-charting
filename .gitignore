@@ -52,3 +52,5 @@ mapdc.min.js.map
 mapdc.min.css
 chart.css
 chart.min.css
+
+dist/

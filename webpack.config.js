@@ -7,7 +7,7 @@ module.exports = {
     "mapdc": "./example.entry.js"
   },
   output: {
-    path: __dirname + "/example/js",
+    path: __dirname + "/dist",
     filename: "[name].js",
     libraryTarget: "umd",
     library: "mapdc"
