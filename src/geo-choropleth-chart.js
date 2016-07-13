@@ -83,8 +83,10 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
     }
 
     _chart.fitBounds = function () {
-        var bounds = geoJson(0).bounds;
-        _chart.map().fitBounds(bounds, {animate: false});
+        if (geoJson(0)) {
+            var bounds = geoJson(0).bounds;
+            _chart.map().fitBounds(bounds, {animate: false});
+        }
     }
 
     _chart._doRender = function (d) {
