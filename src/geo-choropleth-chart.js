@@ -89,6 +89,11 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
         }
     }
 
+    _chart.destroyChart = function () {
+        this.map().remove()
+        this.legend().removeLegend()
+    }
+
     _chart._doRender = function (d) {
         _chart.resetSvg(); // will use map mixin reset svg if we inherit map mixin
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {

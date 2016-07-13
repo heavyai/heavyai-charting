@@ -1811,6 +1811,20 @@ dc.baseMixin = function (_chart) {
     };
 
     /**
+     * MAPDC-extension function
+     * Destroy all leftover parts of the chart.
+     * @name destroyChart
+     * @memberof dc.baseMixin
+     * @instance
+     * @return {dc.baseMixin}
+     */
+    _chart.destroyChart = function () {
+        // do nothing in base, should be overridden by sub-function
+        return _chart;
+    };
+
+
+    /**
      * Attach a dc.legend widget to this chart. The legend widget will automatically draw legend labels
      * based on the color setting and names associated with each group.
      * @name legend
