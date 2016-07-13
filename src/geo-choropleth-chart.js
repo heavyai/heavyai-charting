@@ -91,7 +91,9 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 
     _chart.destroyChart = function () {
         this.map().remove()
-        this.legend().removeLegend()
+        if (this.legend()) {
+            this.legend().removeLegend()
+        }
     }
 
     _chart._doRender = function (d) {
