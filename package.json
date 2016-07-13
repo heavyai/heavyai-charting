@@ -30,7 +30,13 @@
     "lodash": "4.3.0"
   },
   "devDependencies": {
+    "babel-core": "^6.10.4",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-preset-stage-1": "^6.5.0",
     "emu": "~0.0.2",
+    "expose-loader": "^0.7.1",
     "grunt": "~0.4.5",
     "grunt-browserify": "~4.0.0",
     "grunt-cli": "~0.1.13",
@@ -58,19 +64,21 @@
     "marked": "~0.3.3",
     "node-sass": "^3.4.2",
     "time-grunt": "~1.2.1",
-    "uglify-js": "2.4.x"
+    "uglify-js": "2.4.x",
+    "webpack": "^1.13.1"
   },
   "scripts": {
     "postinstall": "cd ./overrides && npm install",
     "build": "npm run build:overrides && bash scripts/build.sh",
     "build:overrides": "cd ./overrides && npm run build",
-    "build:example": "npm run build && bash scripts/copy-example-libs.sh",
+    "build:example": "npm run build && bash scripts/copy-example-libs.sh && npm run webpack",
     "start": "npm run build:example && ./node_modules/http-server/bin/http-server -p 8081 -o",
     "test": "grunt test",
     "clean": "bash scripts/clean.sh",
     "watch": "npm run watch:overrides & grunt watch",
     "watch:overrides": "cd ./overrides && npm run build:watch",
-    "lint": "grunt lint"
+    "lint": "grunt lint",
+    "webpack": "webpack"
   },
   "npmName": "mapdc",
   "npmFileMap": [
