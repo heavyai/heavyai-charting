@@ -26,7 +26,13 @@ module.exports = {
       {
         test: /\.js?$/,
         exclude: /node_modules/,
-        loader: "babel"
+        include: [
+          path.resolve(__dirname, 'overrides'),
+          path.resolve(__dirname, 'index.js'),
+          path.resolve(__dirname, 'mapdc.js'),
+          path.resolve(__dirname, 'example.entry.js')
+        ],
+        loader: "babel-loader"
       }
     ]
   },
