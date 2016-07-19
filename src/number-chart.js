@@ -25,20 +25,17 @@ dc.numberChart = function (parent, chartGroup) {
         return typeof _colors === 'string' ? _colors : _colors[0];
     }
 
-    _chart.setDataAsync(function(group,callbacks) {
-        group.valueAsync(callbacks);
+    _chart.setDataAsync(function(group, callbacks) {
+        return group.valueAsync().then(function(data) {
+            callbacks(null, data)
+        }).catch(function(error) {
+            callbacks(error)
+        });
     });
 
-    _chart._doRender = function () {
-        var val = null;
-        if (_chart.dataCache != null)
-            val = _chart.dataCache;
-        else{
-            val = _chart.group().value();
-        }
-
+    _chart._doRender = function (val) {
         var selected = _formatNumber(parseFloat(val.toFixed(2)));
-        
+
         var wrapper = _chart.root().html('')
             .append('div')
             .attr('class', 'number-chart-wrapper');
@@ -58,18 +55,18 @@ dc.numberChart = function (parent, chartGroup) {
                     calcFontSize = Math.max(calcFontSize * ((_chart.width() - 64)/width), 32);
                 }
 
-                _fontSize = !_fontSize || _chartWidth < _chart.width() ? calcFontSize : Math.min(_fontSize, calcFontSize); 
+                _fontSize = !_fontSize || _chartWidth < _chart.width() ? calcFontSize : Math.min(_fontSize, calcFontSize);
 
                 _chartWidth = _chart.width();
-                
+
                 return  _fontSize + 'px';
             });
 
         return _chart;
     };
 
-    _chart._doRedraw = function () {
-        return _chart._doRender();
+    _chart._doRedraw = function (val) {
+        return _chart._doRender(val);
     };
 
     return _chart.anchor(parent, chartGroup);

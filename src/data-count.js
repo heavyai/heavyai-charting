@@ -86,8 +86,12 @@ dc.dataCount = function (parent, chartGroup) {
     };
 
 /* OVERRIDE ---------------------------------------------------------------- */
-    _chart.setDataAsync(function(group,callbacks) {
-        group.valueAsync(callbacks);
+    _chart.setDataAsync(function(group, callbacks) {
+        return group.valueAsync().then(function(data) {
+            callbacks(null, data)
+        }).catch(function(error) {
+            callbacks(error)
+        });
     });
 /* ------------------------------------------------------------------------- */
 
@@ -97,7 +101,7 @@ dc.dataCount = function (parent, chartGroup) {
         _chart.root()
             .style('width', 'auto')
             .style('height', 'auto');
-            
+
 /* OVERRIDE ---------------------------------------------------------------- */
         var val = null;
         if (_chart.dataCache != null)
