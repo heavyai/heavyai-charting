@@ -1,4 +1,4 @@
-var dc = require("../../mapdc")
+var dc = require("../../index")
 
 export default function asyncMixin (_chart) {
   _chart.dataCache = null
@@ -9,7 +9,7 @@ export default function asyncMixin (_chart) {
   }
 
   _chart.dataAsync = function (callback) {
-    _dataAsync.call(_chart, _chart.group(), callback)
+    return _dataAsync.call(_chart, _chart.group(), callback)
   }
 
   _chart.setDataAsync = function (callback) {
