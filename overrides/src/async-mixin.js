@@ -1,4 +1,4 @@
-var dc = require("../../index")
+var dc = require("../../mapdc")
 
 export default function asyncMixin (_chart) {
   _chart.dataCache = null
