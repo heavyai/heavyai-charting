@@ -11,6 +11,30 @@ export default function asyncCoreMixin (dc) {
   dc._redrawIdStack = null
   dc._startRenderTime = null
   dc._startRedrawTime = null
+
+  dc.incrementRedrawStack = function () {
+    var queryGroupId = dc._redrawId++;
+    dc._redrawIdStack = queryGroupId;
+    return queryGroupId
+  }
+
+  dc.resetRedrawStack = function () {
+    dc._redrawCount = 0
+    dc._redrawIdStack = null
+  }
+
+  dc.isRedrawStackEmpty = function (queryGroupId) {
+    if (queryGroupId) {
+      return dc._redrawIdStack === null || dc._redrawIdStack == queryGroupId
+    } else {
+      return dc._redrawIdStack === null
+    }
+  }
+
+  dc.isEqualToRedrawCount = function(queryCount) {
+    return ++dc._redrawCount == queryCount
+  }
+
   return dc
 }
 
@@ -19,9 +43,8 @@ export function redrawAllAsync (group) {
     return Promise.resolve()
   }
 
-  var queryGroupId = dc._redrawId++
-  var stackEmpty = dc._redrawIdStack === null
-  dc._redrawIdStack = queryGroupId
+  var stackEmpty = dc.isRedrawStackEmpty();
+  var queryGroupId = dc.incrementRedrawStack()
 
   if (!stackEmpty) {
     return Promise.resolve()

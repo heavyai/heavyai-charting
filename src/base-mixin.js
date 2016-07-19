@@ -1028,10 +1028,8 @@ dc.baseMixin = function (_chart) {
                     var elapsed = endTime - dc._startRedrawTime;
                     console.log("Redraw elapsed: " + elapsed + " ms");
                 }
-                dc._redrawCount = 0;
-                dc._globalTransitionDuration = null; // reset to null if was brush
-                var stackEmpty = dc._redrawIdStack == null || dc._redrawIdStack == queryGroupId;
-                dc._redrawIdStack = null;
+                var stackEmpty = dc.isRedrawStackEmpty(queryGroupId);
+                dc.resetRedrawStack();
 
                 if (callback) {
                     callback(redrawError, result || _chart);

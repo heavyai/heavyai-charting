@@ -74,6 +74,7 @@ export default function asyncMixin (_chart) {
 
       var dataCallback = function (error, data) {
         if (error) {
+          dc.resetRedrawStack()
           reject(error)
         } else {
           _chart.redraw(id, queryGroupId, queryCount, data, redrawCallback)
