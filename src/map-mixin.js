@@ -26,6 +26,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     var _initGeocoder = null;
     var _colorBy = null;
     var _mouseLeave = false;
+    var _useLonLat = false;
     _chart._minCoord = null;
     _chart._maxCoord = null;
     _chart._reProjMapbox = true;
@@ -33,6 +34,11 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     var _arr = [[180, -85], [-180, 85]];
     var _llb = _mapboxgl.LngLatBounds.convert(_arr);
 
+    _chart.useLonLat = function(useLonLat) {
+       if (!arguments.length) 
+          return _useLonLat;
+       _useLonLat = useLonLat; 
+    }
     _chart.map = function() { // just a getter - don't let user set map
         return _map;
     }
@@ -46,6 +52,8 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         }
         return _chart;
     }
+
+
 
     _chart.yDim = function(yDim) {
         if (!arguments.length)
@@ -78,11 +86,16 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         return _chart;
     }
 
-    _chart.conv4326To900913 = function (coord) {
-      var transCoord = [0.0,0.0];
-      transCoord[0] = coord[0] * 111319.49077777777778;
-      transCoord[1] = Math.log(Math.tan((90.0 + coord[1]) * 0.00872664625997)) * 6378136.99911215736947;
-      return transCoord;
+   _chart.conv4326To900913X = function (x) {
+      return x *111319.490778;
+   }
+
+   _chart.conv4326To900913Y = function (y) {
+      return 6378136.99911 * Math.log(Math.tan(.00872664626 * y + .785398163397));
+   }
+
+   _chart.conv4326To900913 = function (coord) {
+      return [_chart.conv4326To900913X(coord[0]), _chart.conv4326To900913Y(coord[1])];
     }
 
     function onStyleLoad(e) {
@@ -114,8 +127,14 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             _lastMapMoveType = e.type;
             var curTime = (new Date).getTime();
             var bounds = _map.getBounds();
-            _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
-            _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+            if (!_useLonLat) {
+               _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+               _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+            }
+            else {
+               _chart._minCoord = [bounds._sw.lng, bounds._sw.lat];
+               _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
+            }
             //var bounds = _map.getBounds();
             //var minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
             //var maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
