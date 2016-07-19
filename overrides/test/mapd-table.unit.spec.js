@@ -1,7 +1,7 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
 import mapdTable from "../src/mapd-table"
-import dc from "../../mapdc"
+import dc from "../../index"
 
 chai.use(spies)
 

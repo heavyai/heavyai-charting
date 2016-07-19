@@ -103,25 +103,13 @@ dc.capMixin = function (_chart) {
     };
 
     _chart.data(function (group) {
-        console.warn('Warning: Deprecated sync method cap-mixin .data(). Please use async version')
+        if(!_chart.dataCache) {
+          console.warn('Empty dataCache. Please fetch new data')
+        }
         if (_cap === Infinity) {
-            if (_chart.dataCache != null) {
-                return _chart._computeOrderedGroups(_chart.dataCache);
-            } else {
-                return _chart._computeOrderedGroups(group.all());
-            }
+            return _chart._computeOrderedGroups(_chart.dataCache);
         } else {
-            var rows = null
-            if (_chart.dataCache != null) {
-                rows = _chart.dataCache;
-            } else if (_ordering === 'desc') {
-                rows = group.top(_cap); // ordered by crossfilter group order (default value)
-            } else if (_ordering === 'asc') {
-                rows = group.bottom(_cap); // ordered by crossfilter group order (default value)
-            }
-
-            rows = _chart._computeOrderedGroups(rows); // re-order using ordering (default key)
-
+            var rows = _chart.dataCache
             if (_othersGrouper) {
                 return _othersGrouper(rows);
             }

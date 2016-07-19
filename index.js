@@ -8,6 +8,7 @@ var asyncCoreMixin = require("./overrides/build/core").default
 
 dc = asyncCoreMixin(dc)
 dc.mapdTable = require("./overrides/build/mapd-table").default
+dc.countWidget = require("./overrides/build/count-widget").default
 dc.asyncMixin = require("./overrides/build/async-mixin").default
 dc.redrawAllAsync = require("./overrides/build/core").redrawAllAsync
 dc.renderAllAsync = require("./overrides/build/core").renderAllAsync

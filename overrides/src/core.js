@@ -19,9 +19,9 @@ export function redrawAllAsync (group) {
     return Promise.resolve()
   }
 
-  var queryGroupId = dc._redrawId++;
-  var stackEmpty = dc._redrawIdStack === null;
-  dc._redrawIdStack = queryGroupId;
+  var queryGroupId = dc._redrawId++
+  var stackEmpty = dc._redrawIdStack === null
+  dc._redrawIdStack = queryGroupId
 
   if (!stackEmpty) {
     return Promise.resolve()
