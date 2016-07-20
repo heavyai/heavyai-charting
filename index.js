@@ -10,8 +10,6 @@ dc = asyncCoreMixin(dc)
 dc.mapdTable = require("./overrides/build/mapd-table").default
 dc.countWidget = require("./overrides/build/count-widget").default
 dc.asyncMixin = require("./overrides/build/async-mixin").default
-dc.redrawAllAsync = require("./overrides/build/core").redrawAllAsync
-dc.renderAllAsync = require("./overrides/build/core").renderAllAsync
 
 dc.override(dc, "baseMixin", function(_chart) {
   return dc.asyncMixin(dc._baseMixin(_chart))

@@ -1,7 +1,7 @@
 
 import chai, {expect} from "chai"
 import spies from "chai-spies"
-import coreMixin, {redrawAllAsync} from "../src/core"
+import coreMixin from "../src/core"
 
 chai.use(spies)
 
@@ -29,6 +29,55 @@ function setUpChartSpies() {
 }
 
 describe("Core Overrides", () => {
+  describe("redrawStack", () => {
+    it('should be initialized correctly', () => {
+      expect(dc._redrawId).to.equal(0)
+      expect(dc._redrawCount).to.equal(0)
+      expect(dc._redrawIdStack).to.equal(null)
+    })
+    describe('incrementRedrawStack', () => {
+      let queryGroupId
+      let redrawIdBeforeIncrement
+      before(() => {
+        redrawIdBeforeIncrement = dc._redrawId
+        queryGroupId = dc.incrementRedrawStack()
+      })
+      it('should return the queryGroupId which is equal to the redrawId', () => {
+        expect(queryGroupId).to.equal(redrawIdBeforeIncrement)
+      })
+      it('should increment the redrawId', () => {
+        expect(dc._redrawId).to.equal(redrawIdBeforeIncrement + 1)
+      })
+      it('should set the _redrawIdStack to the queryGroupId', () => {
+        expect(dc._redrawIdStack).to.equal(queryGroupId)
+      })
+    })
+    describe("resetRedrawStack", () => {
+      it('should reset the _redrawCount and the _redrawIdStack', () => {
+        dc._redrawCount = 5
+        dc._redrawIdStack = 5
+        dc.resetRedrawStack()
+        expect(dc._redrawCount).to.equal(0)
+        expect(dc._redrawIdStack).to.equal(null)
+      })
+    })
+    describe("isRedrawStackEmpty", () => {
+      it('should return whether or no the _redrawIdStack is null or equal to the queryGroupId', () => {
+        expect(dc.isRedrawStackEmpty()).to.equal(true)
+        dc.incrementRedrawStack()
+        dc.incrementRedrawStack()
+        expect(dc.isRedrawStackEmpty()).to.equal(false)
+        expect(dc.isRedrawStackEmpty(2)).to.equal(true)
+      })
+    })
+    describe("isEqualToRedrawCount", () => {
+      it('should return whether or not the queryCount is equal to the redrawCount', () => {
+        const initialCount = dc._redrawCount
+        expect(dc.isEqualToRedrawCount(initialCount + 1)).to.equal(true)
+        expect(dc._redrawCount).to.equal(initialCount + 1)
+      })
+    })
+  })
   describe("redrawAllAsync", () => {
     beforeEach(() => {
       resetDCState()
@@ -37,7 +86,7 @@ describe("Core Overrides", () => {
     describe('when dc._refreshDisabled is true', () => {
       it("should bail out and return a Promise", () => {
         dc._refreshDisabled = true
-        expect(redrawAllAsync() instanceof Promise).to.equal(true)
+        expect(dc.redrawAllAsync() instanceof Promise).to.equal(true)
         charts.forEach((chart) => {
           expect(chart.redrawAsync).to.have.not.been.called()
         })
@@ -45,7 +94,7 @@ describe("Core Overrides", () => {
     })
     describe('debouncing behavior', () => {
       beforeEach(() => {
-        redrawAllAsync()
+        dc.redrawAllAsync()
       })
       it('should increment dc._redrawId', () => {
         expect(dc._redrawId).to.equal(INITIAL_COUNT + 1)
@@ -55,7 +104,7 @@ describe("Core Overrides", () => {
       }))
       describe('when dc._redrawIdStack is null', () => {
         it('should bail out and return a Promise', () => {
-          const output = redrawAllAsync()
+          const output = dc.redrawAllAsync()
           expect(output instanceof Promise).to.equal(true)
           charts.forEach((chart) => {
             expect(chart.redrawAsync).to.have.been.called.exactly(1)
@@ -68,7 +117,7 @@ describe("Core Overrides", () => {
         it('should call redrawAsync for every chart with the dc._redrawId and the number of charts minus one', () => {
           const queryGroupId = dc._redrawId
           dc._sampledCount = 1
-          redrawAllAsync()
+          dc.redrawAllAsync()
           charts.forEach((chart) => {
             expect(chart.redrawAsync).to.have.been.called.with(queryGroupId, charts.length - 1)
           })
@@ -78,7 +127,7 @@ describe("Core Overrides", () => {
         it('should call redrawAsync for every chart with the dc._redrawId and the number of charts', () => {
           const queryGroupId = dc._redrawId
           dc._sampledCount = 0
-          redrawAllAsync()
+          dc.redrawAllAsync()
           charts.forEach((chart) => {
             expect(chart.redrawAsync).to.have.been.called.with(queryGroupId, charts.length)
           })
@@ -94,13 +143,13 @@ describe("Core Overrides", () => {
         charts.forEach((chart) => {
           chart.redrawAsync = chai.spy(() => resolveAsync())
         })
-        return redrawAllAsync().then(() => {
+        return dc.redrawAllAsync().then(() => {
           expect(counter).to.equal(charts.length)
           done()
         })
       })
       it('should call expireCache for each chart', () => {
-        redrawAllAsync()
+        dc.redrawAllAsync()
         charts.forEach((chart) => {
           expect(chart.expireCache).to.have.been.called()
         })

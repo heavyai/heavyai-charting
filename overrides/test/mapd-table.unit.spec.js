@@ -1,7 +1,7 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
 import mapdTable from "../src/mapd-table"
-import dc from "../../index"
+import dc from "../../index.js"
 
 chai.use(spies)
 
@@ -9,7 +9,7 @@ describe("MapD Table", () => {
   let tableChart
   before(() => {
     const node = window.document.createElement("DIV")
-    tableChart = mapdTable(node)
+    tableChart = dc.mapdTable(node)
   })
   it("should return a chart that has all the properties of a base mixin chart", () => {
     const baseProperties = Object.keys(dc.baseMixin({}))
