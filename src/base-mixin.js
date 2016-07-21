@@ -47,50 +47,11 @@ dc.baseMixin = function (_chart) {
     };
     var _height = _defaultHeight;
 
+    var _keyAccessor = dc.pluck('key');
+    var _label = dc.pluck('key');
+
 /* OVERRIDE ---------------------------------------------------------------- */
-    var _multipleKeysAccessor = function(d) {
-        var filteredKeys = [];
-        for (var key in d) {
-            if (d.hasOwnProperty(key) && key.indexOf('key') > -1) {
-                filteredKeys.push(d[key]);
-            }
-        }
-        if (filteredKeys.length === 1)
-            filteredKeys = filteredKeys[0];
-        return filteredKeys;
-    }
-
-    _chart.multipleKeysLabelAccessor = function(d){
-        if ( _chart.dimension().value().length === 1) {
-            return d['key0'];
-        }
-        var keysStr = '';
-        var i = 1;
-        for (var key in d) {
-            if (d.hasOwnProperty(key) && key.indexOf('key') > -1) {
-                keysStr += (i > 1 ? ' / ' : '') + d[key];
-            }
-            i++;
-        }
-        return keysStr;
-    };
-
-    _chart.multipleKeysAccessor = function (_) {
-        if (!arguments.length) {
-            return _multipleKeysAccessor;
-        }
-        _multipleKeysAccessor = _;
-        return _chart;
-    };
-
-
-    var _redrawBrushFlag = false;
-    var _keyAccessor = _multipleKeysAccessor;
-    var _label = _chart.multipleKeysLabelAccessor;
-    var _ordering = dc.pluck('key0');
     var _measureLabelsOn = false;
-
-
 /* ------------------------------------------------------------------------- */
 
     var _valueAccessor = dc.pluck('val');
@@ -879,14 +840,7 @@ dc.baseMixin = function (_chart) {
             _mandatoryAttributes.forEach(checkForMandatoryAttributes);
         }
 
-        var renderError;
-        try {
-            var result = _chart._doRender(data);
-        }
-        catch (err) {
-            renderError = err;
-            console.error(err);
-        }
+        var result = _chart._doRender(data);
 
         if (_legend && _chart.colors().domain) {
             _legend.render();
@@ -917,7 +871,7 @@ dc.baseMixin = function (_chart) {
             }
         }
 
-        callback && callback(renderError, result || _chart)
+        callback && callback(null, result || _chart)
         return result;
     };
 
@@ -1002,14 +956,7 @@ dc.baseMixin = function (_chart) {
         sizeSvg();
         _listeners.preRedraw(_chart, data);
 
-        var redrawError;
-        try {
-            var result = _chart._doRedraw(data);
-        }
-        catch (err) {
-            redrawError = err;
-            console.error(err);
-        }
+        var result = _chart._doRedraw(data);
 
         if (_legend && _chart.colors().domain) {
             _legend.render();
@@ -1032,7 +979,7 @@ dc.baseMixin = function (_chart) {
                 dc.resetRedrawStack();
 
                 if (callback) {
-                    callback(redrawError, result || _chart);
+                    callback(null, result || _chart);
                     return result
                 } else if (!stackEmpty) {
                     dc.redrawAll(null, callback);
@@ -1040,7 +987,7 @@ dc.baseMixin = function (_chart) {
             }
         }
 
-        callback && callback(redrawError, result || _chart);
+        callback && callback(null, result || _chart);
         return result;
     };
 

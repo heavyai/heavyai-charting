@@ -51,7 +51,7 @@ dc.barChart = function (parent, chartGroup) {
         _barWidth = undefined;
 
 /* TODO: ------------------------------------------------------------------- */
-// This was either deleted or did not exist when dc.mapd.js was written. 
+// This was either deleted or did not exist when dc.mapd.js was written.
         return _chart;
 /* ------------------------------------------------------------------------- */
     });
@@ -89,7 +89,6 @@ dc.barChart = function (parent, chartGroup) {
             var layer = d3.select(this);
 
             renderBars(layer, i, d);
-
             if (_chart.renderLabel() && last === i) {
                 renderLabels(layer, i, d);
             }
@@ -103,14 +102,14 @@ dc.barChart = function (parent, chartGroup) {
     function hoverOverBrush() {
 
         var g = _chart.g()
-            .on("mouseout", function() { 
-                dehighlightBars(); 
+            .on("mouseout", function() {
+                dehighlightBars();
             })
             .on("mousemove", function() {
                 if (_chart.isBrushing()) {
                     hidePopup();
                 } else {
-                    highlightBars(g, this); 
+                    highlightBars(g, this);
                 }
 
             });
@@ -126,7 +125,7 @@ dc.barChart = function (parent, chartGroup) {
         var yAdjusted = y - _chart.margins().top;
 
         var popupRows = [];
-        
+
         var toolTips = g.selectAll('.stack')
             .each(function(){
 
@@ -154,14 +153,14 @@ dc.barChart = function (parent, chartGroup) {
                     hoverBar.elm.style('fill-opacity', .8);
                     popupRows.push(hoverBar);
                 }
-                
+
             });
 
         if (popupRows.length > 0) {
             showPopup(popupRows, x, y);
         } else {
             hidePopup();
-        }        
+        }
     }
 
     function dehighlightBars(){
@@ -178,7 +177,7 @@ dc.barChart = function (parent, chartGroup) {
             .classed('popup-list', true);
 
         popupBox.append('div')
-            .attr('class', 'popup-header') 
+            .attr('class', 'popup-header')
             .text(_chart.xAxisLabel() + ' ' + arr[0].datum.x);
 
 
@@ -190,7 +189,7 @@ dc.barChart = function (parent, chartGroup) {
 
         popupItems.append('div')
             .attr('class', 'popup-legend')
-            .style('background-color', function(d) { 
+            .style('background-color', function(d) {
                 return _chart.getColor(d.datum,d.i);
             });
 
@@ -547,4 +546,3 @@ dc.barChart = function (parent, chartGroup) {
 /* ****************************************************************************
  * END OVERRIDE: dc.barChart                                                  *
  * ***************************************************************************/
-

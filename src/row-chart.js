@@ -176,8 +176,6 @@ dc.rowChart = function (parent, chartGroup) {
         return _chart.cappedKeyAccessor(d) + ': ' + _chart.cappedValueAccessor(d);
     });
 
-    _chart.label(_chart.multipleKeysLabelAccessor);
-
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.measureValue = function (d) {
         var commafy = d3.format(',');
