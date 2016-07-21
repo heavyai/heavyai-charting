@@ -104,9 +104,9 @@
     var langDomain = ['en', 'pt', 'es', 'in', 'und', 'ja', 'tr', 'fr', 'tl', 'ru', 'ar', 'th', 'it', 'nl', 'sv', 'ht', 'de', 'et', 'pl', 'sl', 'ko', 'fi', 'lv', 'sk', 'uk', 'da', 'zh', 'ro', 'no', 'cy', 'iw', 'hu', 'bg', 'lt', 'bs', 'vi', 'el', 'is', 'hi', 'hr', 'fa', 'ur', 'ne', 'ta',  'sr', 'bn', 'si', 'ml', 'hy', 'lo', 'iu', 'ka', 'ps', 'te', 'pa', 'am', 'kn', 'chr', 'my', 'gu', 'ckb', 'km', 'ug', 'sd', 'bo', 'dv'];
     var langOriginColors = ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b", "#bdcf32", "#ef9b20", "#4db6ac", "#edbf33", "#7c4dff"]
     var langColors = [];
-    var pointMapDim = crossFilter.dimension(null).projectOn(["goog_x as x", "goog_y as y", "lang as color", "followers as size"]);
-    var xDim = crossFilter.dimension("goog_x");
-    var yDim = crossFilter.dimension("goog_y");
+    var pointMapDim = crossFilter.dimension(null).projectOn(["conv_4326_900913_x(lon) as x", "conv_4326_900913_y(lat) as y", "lang as color", "followers as size"]);
+    var xDim = crossFilter.dimension("lon");
+    var yDim = crossFilter.dimension("lat");
     var parent = document.getElementById("chart1-example");
     mapLangColors(40);
     /* Point Map Radius Size:

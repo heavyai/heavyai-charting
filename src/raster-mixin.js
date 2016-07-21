@@ -183,8 +183,8 @@ dc.rasterMixin = function(_chart) {
 
     function getColumnsWithPoints () {
         var columns = _chart.popupColumns().slice();
-        columns.push(_chart._xDimName + " as xPoint");
-        columns.push(_chart._yDimName + " as yPoint");
+        columns.push("conv_4326_900913_x(" + _chart._xDimName + ") as xPoint");
+        columns.push("conv_4326_900913_y(" + _chart._yDimName + ") as yPoint");
         return columns
     }
 
