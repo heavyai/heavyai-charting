@@ -66,9 +66,9 @@ export function renderAllAsync (group) {
   var renderPromises = charts.map(function (chart) {
     chart.expireCache()
     if (dc._sampledCount > 0) {
-      return chart.renderAsync(queryGroupId, charts.length - 1, callback)
+      return chart.renderAsync(queryGroupId, charts.length - 1)
     } else {
-      return chart.renderAsync(queryGroupId, charts.length, callback)
+      return chart.renderAsync(queryGroupId, charts.length)
     }
   })
 

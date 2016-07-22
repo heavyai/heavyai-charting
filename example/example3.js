@@ -42,11 +42,11 @@ document.addEventListener("DOMContentLoaded", function init() {
     // Can use getDomainBounds to dynamically find min and max of values that will be colored,
     // or the domain [min, max] can be set directly
     // (in which case nesting chart creation inside this callback is unnecessary).
-    getDomainBounds(grp, function(domainBounds){
+    getDomainBounds(config.valueColumn, dim.groupAll(), function(domainBounds){
       // Can set colorDomain directly or use domainFromBoundsAndRange to generate a .
       var colorRange = ["#115f9a","#1984c5","#22a7f0","#48b5c4","#76c68f","#a6d75b","#c9e52f","#d0ee11","#d0f400"]
       var colorDomain = domainFromBoundsAndRange(config.domainBoundMin, config.domainBoundMax, colorRange)
-      // var colorDomain = domainFromBoundsAndRange(domainBounds.min, domainBounds.max, colorRange)
+      // var colorDomain = domainFromBoundsAndRange(domainBounds.minimum, domainBounds.maximum, colorRange)
 
       var polyMap = dc
       .polyRasterChart(parent, true)
@@ -70,28 +70,17 @@ document.addEventListener("DOMContentLoaded", function init() {
         polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
       })
 
-      dc.renderAll()
+      dc.renderAllAsync()
 
       window.addEventListener("resize", _.debounce(function(){ resizeChart(polyMap, 1.5) }, 500))
     })
   }
 
-  function getDomainBounds (group, callback) {
-    var queriesFinished = {min: null, max: null}
-    group.bottom(1, 0, null, maybeFinished("min"))
-    group.top(1, 0, null, maybeFinished("max"))
-    function maybeFinished(key) {
-      return function (error, result) {
-        queriesFinished[key] = extractResult(result)
-        if(_.every(queriesFinished, function (val) { return val !== null })){
-          callback(queriesFinished)
-        }
-      }
-    }
-  }
-
-  function extractResult (result) {
-    return result[0].val
+  function getDomainBounds (column, groupAll, callback) {
+    groupAll.reduce([
+      {expression: column, agg_mode: "min", name: "minimum"},
+      {expression: column, agg_mode: "max", name: "maximum"}
+    ]).valuesAsync(true).then(callback)
   }
 
   function domainFromBoundsAndRange (min, max, range) {
@@ -105,44 +94,36 @@ document.addEventListener("DOMContentLoaded", function init() {
   }
 
   function createTimeChart(crossFilter, dc, config) {
-    var timeChartMeasures = [
-      {expression: config.timeColumn, agg_mode: "min", name: "minimum"},
-      {expression: config.timeColumn, agg_mode: "max", name: "maximum"}
-    ]
+    getDomainBounds(config.timeColumn, crossFilter.groupAll(), function(timeChartBounds){
+      var timeChartDimension = crossFilter.dimension(config.timeColumn)
 
-    var timeChartBounds = crossFilter // TODO sync use getDomainBounds instead.
-    .groupAll()
-    .reduce(timeChartMeasures)
-    .values(true)
+      var timeChartGroup = timeChartDimension
+      .group()
+      .reduceCount("*")
+      .setBinParams({
+        numBins: config.numTimeBins,
+        binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
+      })
 
-    var timeChartDimension = crossFilter.dimension(config.timeColumn)
+      var timeChart = dc.lineChart("#timechart")
+      .width(width())
+      .height(height()/2.5)
+      .elasticY(true)
+      .renderHorizontalGridLines(true)
+      .brushOn(true)
+      .xAxisLabel("Time")
+      .yAxisLabel(config.timeLabel)
+      .dimension(timeChartDimension)
+      .group(timeChartGroup)
 
-    var timeChartGroup = timeChartDimension
-    .group()
-    .reduceCount("*")
-    .setBinParams({
-      numBins: config.numTimeBins,
-      binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
+      timeChart.x(d3.time.scale.utc().domain([timeChartBounds.minimum, timeChartBounds.maximum]))
+      timeChart.yAxis().ticks(5)
+      timeChart.xAxis().orient("top")
+
+      dc.renderAllAsync()
+
+      window.addEventListener("resize", _.debounce(function () { resizeChart(timeChart, 2.5) }, 500))
     })
-
-    var timeChart = dc.lineChart("#timechart")
-    .width(width())
-    .height(height()/2.5)
-    .elasticY(true)
-    .renderHorizontalGridLines(true)
-    .brushOn(true)
-    .xAxisLabel("Time")
-    .yAxisLabel(config.timeLabel)
-    .dimension(timeChartDimension)
-    .group(timeChartGroup)
-
-    timeChart.x(d3.time.scale.utc().domain([timeChartBounds.minimum, timeChartBounds.maximum]))
-    timeChart.yAxis().ticks(5)
-    timeChart.xAxis().orient("top")
-
-    dc.renderAll()
-
-    window.addEventListener("resize", _.debounce(function () { resizeChart(timeChart, 2.5) }, 500))
   }
 
   function width () {
@@ -161,7 +142,9 @@ document.addEventListener("DOMContentLoaded", function init() {
     chart
     .width(width())
     .height(height()/heightDivisor)
-    .render()
-    dc.renderAll()
+    .renderAsync()
+    dc.renderAllAsync()
   }
+
+  function noop () {}
 })
