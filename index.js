@@ -41,5 +41,4 @@ dc.override(dc, "barChart", function(parent, chartGroup) {
     .renderLabel(false)
 })
 
-
 module.exports = dc
