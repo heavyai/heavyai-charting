@@ -153,7 +153,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
             if (xRange !== null) {
                 xRange =  xRange[0]; // First element of range because range filter can theoretically support multiple ranges
                 if (_chart.useLonLat())
-                  _x.domain([_chart.conv4326To900913X(xRange[0]), _chart.conv4326To900913X(xRange[1])]); 
+                  _x.domain([_chart.conv4326To900913X(xRange[0]), _chart.conv4326To900913X(xRange[1])]);
                 else
                   _x.domain(xRange);
             }
@@ -165,7 +165,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
             if (yRange !== null) {
                 yRange =  yRange[0]; // First element of range because range filter can theoretically support multiple ranges
                 if (_chart.useLonLat())
-                  _y.domain([_chart.conv4326To900913Y(yRange[0]), _chart.conv4326To900913Y(yRange[1])]); 
+                  _y.domain([_chart.conv4326To900913Y(yRange[0]), _chart.conv4326To900913Y(yRange[1])]);
                 else
                   _y.domain(yRange);
             }
@@ -256,56 +256,42 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
 function valuesOb (obj) { return Object.keys(obj).map(function (key) { return obj[key]; }) }
 
 function genVegaSpec(vegaSpec, cap, colors, determineScaleType, sampling, x, y, r, dynamicR, lastFilteredSize, defaultColor) {
-  if (x === null || y === null || r === null) {
-    return console.warn("Bubble raster chart missing mandatory scale")
+  if (!x || !y || !r || !colors) {
+    console.warn("Bubble raster chart missing mandatory scale", {x: x, y: y, r: r, colors: colors})
   }
 
-  var xScaleType = determineScaleType(x);
-  var yScaleType = determineScaleType(y);
-  var xScale = {name: "x", type: xScaleType, domain: x.domain(), range: "width"}
-  var yScale = {name: "y", type: yScaleType, domain: y.domain(), range: "height"}
-  vegaSpec.scales = [xScale, yScale];
-
-  var colorIsConstant = false;
-  if (colors !== null) {
-    if (colors.domain !== undefined) {
-      var colorScaleType = determineScaleType(colors);
-      var colorScale = {name: "color", type: colorScaleType, domain: colors.domain(), range: colors.range(), default: defaultColor}
-      vegaSpec.scales.push(colorScale)
-    } else {
-      colorIsConstant = true;
-    }
-  }
-  var markFillColor = colorIsConstant ? {value: colors()} : {scale: "color", field: "color"}
-
-  var rIsConstant = false;
-  if (typeof r === 'function') {
-    var rScaleType = determineScaleType(r);
-    var sizeScale = {name: "size", type: rScaleType, domain: r.domain(), range: r.range(), clamp: true};
-    vegaSpec.scales.push(sizeScale)
-  } else {
-    rIsConstant = true;
-  }
-
-  var rValue
-  if (rIsConstant && dynamicR !== null && sampling() && lastFilteredSize !== null) { // @TODO don't tie this to sampling - meaning having a dynamicR will also require count to be computed first by dc
-    var rangeCap = cap !== Infinity ? cap : lastFilteredSize
-    rValue = Math.round(dynamicR(Math.min(lastFilteredSize, rangeCap)))
-  } else {
-    rValue = r
-  }
-  var markSize = rIsConstant ? {value: rValue} : {scale: "size", field: "size"}
+  vegaSpec.scales = [
+    {name: "x", type: determineScaleType(x), domain: x.domain(), range: "width"},
+    {name: "y", type: determineScaleType(y), domain: y.domain(), range: "height"}
+  ]
 
   vegaSpec.marks = [{
     type: "points",
     from: {data: "table"},
     properties: {
       x: {scale: "x", field: "x"},
-      y: {scale: "y", field: "y"},
-      fillColor: markFillColor,
-      size: markSize
+      y: {scale: "y", field: "y"}
     }
   }];
+
+  if (colors.domain) {
+    vegaSpec.scales.push({name: "color", type: determineScaleType(colors), domain: colors.domain(), range: colors.range(), default: defaultColor})
+    vegaSpec.marks[0].properties.fillColor = {scale: "color", field: "color"}
+  } else {
+    vegaSpec.marks[0].properties.fillColor = {value: colors()}
+  }
+
+  if (typeof r === 'function') {
+    vegaSpec.scales.push({name: "size", type: determineScaleType(r), domain: r.domain(), range: r.range(), clamp: true})
+    vegaSpec.marks[0].properties.size = {scale: "size", field: "size"}
+  } else if (dynamicR !== null && sampling() && lastFilteredSize !== null) { // @TODO don't tie this to sampling - meaning having a dynamicR will also require count to be computed first by dc
+    var rangeCap = cap !== Infinity ? cap : lastFilteredSize
+    vegaSpec.marks[0].properties.size = {value: Math.round(dynamicR(Math.min(lastFilteredSize, rangeCap)))}
+  } else {
+    vegaSpec.marks[0].properties.size = {value: r}
+  }
+
+  return vegaSpec
 }
 
 /******************************************************************************

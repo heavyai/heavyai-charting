@@ -115,10 +115,10 @@ dc.legendCont = function () {
 
         if (!_isLocked) {
             _parent.on("preRender.color", function(chart, data) {
-                chart.colorDomain(d3.extent(data ? data : chart.data(), chart.colorAccessor()));
+                !data.image && chart.colorDomain(d3.extent(data ? data : chart.data(), chart.colorAccessor()));
             });
             _parent.on("preRedraw.color", function(chart, data) {
-                chart.colorDomain(d3.extent(data ? data : chart.data(), chart.colorAccessor()));
+                !data.image && chart.colorDomain(d3.extent(data ? data : chart.data(), chart.colorAccessor()));
             });
         } else {
             _parent.on("preRender.color", null);

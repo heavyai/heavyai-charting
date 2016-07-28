@@ -207,4 +207,3 @@ dc.legendContinuous = function () {
 
     return _legend;
 };
-
