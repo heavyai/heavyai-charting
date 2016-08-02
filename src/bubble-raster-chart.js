@@ -87,6 +87,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
         _defaultColor = _;
         return _chart;
     }
+
     _chart.resetLayer = function() {
         console.log("reset layer");
         _renderBoundsMap = {};
@@ -102,8 +103,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
           valuesOb(bounds.getSouthEast()),
           valuesOb(bounds.getSouthWest())]
 
-        _chart._resetVegaSpec();
-        genVegaSpec(_chart._vegaSpec, _chart.cap(), _chart.colors(), _chart._determineScaleType, _chart.sampling, _x, _y, _r, _dynamicR, dc._lastFilteredSize, _defaultColor);
+        _chart._vegaSpec = genVegaSpec(_chart, dc._lastFilteredSize);
 
         var nonce = null;
         if (_chart.cap() === Infinity) {
@@ -112,9 +112,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
         else {
           nonce = group.topAsync(_chart.cap(),undefined, JSON.stringify(_chart._vegaSpec), callbacks);
         }
-        //console.log("in nonce: " + nonce);
         _renderBoundsMap[nonce] = renderBounds;
-
     });
 
     _chart.data(function (group) {
@@ -128,8 +126,8 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
           valuesOb(bounds.getSouthEast()),
           valuesOb(bounds.getSouthWest())]
         updateXAndYScales();
-        _chart._resetVegaSpec();
-        genVegaSpec(_chart._vegaSpec, _chart.cap(), _chart.colors(), _chart._determineScaleType, _chart.sampling, _x, _y, _r, _dynamicR, dc._lastFilteredSize, _defaultColor);
+
+        _chart._vegaSpec = genVegaSpec(_chart, dc._lastFilteredSize);
 
         var result = null;
         if (_chart.cap() === Infinity) {
@@ -141,7 +139,6 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
         _renderBoundsMap[result.nonce] = renderBounds;
         return result;
     });
-
 
     function updateXAndYScales () {
         if (_chart.xDim() !== null && _chart.yDim() !== null) {
@@ -255,40 +252,45 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
 
 function valuesOb (obj) { return Object.keys(obj).map(function (key) { return obj[key]; }) }
 
-function genVegaSpec(vegaSpec, cap, colors, determineScaleType, sampling, x, y, r, dynamicR, lastFilteredSize, defaultColor) {
-  if (!x || !y || !r || !colors) {
-    console.warn("Bubble raster chart missing mandatory scale", {x: x, y: y, r: r, colors: colors})
+function genVegaSpec(chart, lastFilteredSize) {
+  const vegaSpec = {
+    data: [{
+        name: "table",
+        sql: "select x, y from tweets;" // placeholder, the actual sql will be put in that slot w the vega-first interface -cRoot 8/2/16
+    }],
+    height: Math.round(chart.height()),
+    marks: [{
+      type: "points",
+      from: {data: "table"},
+      properties: {
+        x: {scale: "x", field: "x"},
+        y: {scale: "y", field: "y"}
+      }
+    }],
+    scales: [
+      {name: "x", type: chart._determineScaleType(chart.x()), domain: chart.x().domain(), range: "width"},
+      {name: "y", type: chart._determineScaleType(chart.y()), domain: chart.y().domain(), range: "height"}
+    ],
+    width: Math.round(chart.width())
   }
 
-  vegaSpec.scales = [
-    {name: "x", type: determineScaleType(x), domain: x.domain(), range: "width"},
-    {name: "y", type: determineScaleType(y), domain: y.domain(), range: "height"}
-  ]
+  if (chart.tableName()) { vegaSpec.data[0].dbTableName = chart.tableName() }
 
-  vegaSpec.marks = [{
-    type: "points",
-    from: {data: "table"},
-    properties: {
-      x: {scale: "x", field: "x"},
-      y: {scale: "y", field: "y"}
-    }
-  }];
-
-  if (colors.domain) {
-    vegaSpec.scales.push({name: "color", type: determineScaleType(colors), domain: colors.domain(), range: colors.range(), default: defaultColor})
+  if (chart.colors().domain) {
+    vegaSpec.scales.push({name: "color", type: chart._determineScaleType(chart.colors()), domain: chart.colors().domain(), range: chart.colors().range(), default: chart.defaultColor()})
     vegaSpec.marks[0].properties.fillColor = {scale: "color", field: "color"}
   } else {
-    vegaSpec.marks[0].properties.fillColor = {value: colors()}
+    vegaSpec.marks[0].properties.fillColor = {value: chart.colors()()}
   }
 
-  if (typeof r === 'function') {
-    vegaSpec.scales.push({name: "size", type: determineScaleType(r), domain: r.domain(), range: r.range(), clamp: true})
+  if (typeof chart.r() === 'function') {
+    vegaSpec.scales.push({name: "size", type: chart._determineScaleType(chart.r()), domain: chart.r().domain(), range: chart.r().range(), clamp: true})
     vegaSpec.marks[0].properties.size = {scale: "size", field: "size"}
-  } else if (dynamicR !== null && sampling() && lastFilteredSize !== null) { // @TODO don't tie this to sampling - meaning having a dynamicR will also require count to be computed first by dc
-    var rangeCap = cap !== Infinity ? cap : lastFilteredSize
-    vegaSpec.marks[0].properties.size = {value: Math.round(dynamicR(Math.min(lastFilteredSize, rangeCap)))}
+  } else if (chart.dynamicR() !== null && chart.sampling() && lastFilteredSize !== null) { // @TODO don't tie this to sampling - meaning having a dynamicR will also require count to be computed first by dc
+    var rangeCap = chart.cap() !== Infinity ? chart.cap() : lastFilteredSize
+    vegaSpec.marks[0].properties.size = {value: Math.round(chart.dynamicR()(Math.min(lastFilteredSize, rangeCap)))}
   } else {
-    vegaSpec.marks[0].properties.size = {value: r}
+    vegaSpec.marks[0].properties.size = {value: chart.r()}
   }
 
   return vegaSpec
