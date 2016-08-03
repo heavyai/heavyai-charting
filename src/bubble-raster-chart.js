@@ -11,13 +11,11 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
 
     if (_useMap){
         _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), parentDivId, _mapboxgl));
-    }
-    else{
+    } else {
         _chart = dc.rasterMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))));
     }
 
     var _imageOverlay = null;
-
     var _activeLayer = null;
     var _x = null;
     var _y = null;
@@ -27,6 +25,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
     var _dynamicR = null;
     var _hasBeenRendered = false;
     var counter = 0;
+
     var browser = detectBrowser()
     function detectBrowser () { // from SO: http://bit.ly/1Wd156O
       var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
@@ -37,12 +36,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
       var isChrome = !!window.chrome && !!window.chrome.webstore;
       return {isOpera: isOpera, isFirefox: isFirefox, isSafari: isSafari, isIE: isIE, isEdge: isEdge, isChrome: isChrome}
     }
-    _chart.colors("#22A7F0"); // set constant as picton blue as default
-     /**
-     #### .x([scale])
-     Gets or sets the x scale. The x scale can be any d3
-     [quantitive scale](https://github.com/mbostock/d3/wiki/Quantitative-Scales)
-     **/
+
     _chart.x = function (x) {
         if (!arguments.length) {
             return _x;
@@ -51,11 +45,6 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
         return _chart;
     };
 
-    /**
-    #### .y([yScale])
-    Get or set the y scale. The y scale is typically automatically determined by the chart implementation.
-
-    **/
     _chart.y = function (_) {
         if (!arguments.length) {
             return _y;
@@ -93,6 +82,17 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
         _renderBoundsMap = {};
         _activeLayer = null;
     }
+
+    _chart.destroyChart = function () {
+        this.xDim().dispose()
+        this.yDim().dispose()
+        this.map().remove()
+        if (this.legend()) {
+            this.legend().removeLegend()
+        }
+    }
+
+    _chart.colors("#22A7F0"); // set constant as picton blue as default
 
     _chart.setDataAsync(function(group, callbacks) {
         updateXAndYScales();
