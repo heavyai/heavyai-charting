@@ -209,8 +209,6 @@ dc.pieChart = function (parent, chartGroup) {
 
                 var displayText = width > availableLabelWidth ? truncateLabel(_chart.label()(d.data), width, availableLabelWidth) : _chart.label()(d.data);
                 
-                console.log("width", width, "availableLabelWidth", availableLabelWidth, "displayText", displayText)
-
                 d3.select(this.parentNode)
                     .classed('hide-label', displayText === '');
 
