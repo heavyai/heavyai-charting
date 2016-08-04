@@ -1,6 +1,7 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
 import dc from "../../index"
+import d3 from "d3"
 
 chai.use(spies)
 
@@ -29,6 +30,30 @@ describe("MapD Heatmap Chart", () => {
       const valueAccessor = heat.valueAccessor()
       const key1 = "American Airlines"
       expect(valueAccessor({ key1 })).to.equal(key1)
+    })
+  })
+  describe("label functions", () => {
+    let rowsLabel
+    let colsLabel
+    before(() => {
+      rowsLabel = heat.rowsLabel()
+      colsLabel = heat.colsLabel()
+    })
+    it("should return stringified Date", () => {
+      const date = new Date()
+      expect(rowsLabel(date)).to.equal(date.toString())
+      expect(colsLabel(date)).to.equal(date.toString())
+    })
+    it("should return itself if not number", () => {
+      const data = "STRING"
+      expect(rowsLabel(data)).to.equal(data)
+      expect(colsLabel(data)).to.equal(data)
+    })
+    it('should format numbers', () => {
+      expect(rowsLabel(10000)).to.equal("10k")
+      expect(rowsLabel(1)).to.equal(1)
+      expect(colsLabel(10000)).to.equal("10k")
+      expect(colsLabel(1)).to.equal(1)
     })
   })
 })

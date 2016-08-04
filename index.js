@@ -16,6 +16,7 @@ dc.multipleKeysLabelMixin = require("./overrides/build/multiple-key-label-mixin"
 var multipleKeysAccessorForStack = require("./overrides/build/multiple-key-accessors").multipleKeysAccessorForStack
 var multipleKeysAccessorForCap = require("./overrides/build/multiple-key-accessors").multipleKeysAccessorForCap
 var heatMapKeyAccessor = require("./overrides/build/heatmap").heatMapKeyAccessor
+var heatMapLabel = require("./overrides/build/heatmap").heatMapLabel
 
 dc.override(dc, "baseMixin", function(_chart) {
   var baseChart = dc.multipleKeysLabelMixin(dc.asyncMixin(dc._baseMixin(_chart)))
@@ -34,6 +35,8 @@ dc.override(dc, "heatMap", function(parent, chartGroup) {
     .keyAccessor(heatMapKeyAccessor)
     .valueAccessor(d => d.key1)
     .colorAccessor(d => d.value)
+    .rowsLabel(heatMapLabel)
+    .colsLabel(heatMapLabel)
 })
 
 dc.override(dc, "barChart", function(parent, chartGroup) {

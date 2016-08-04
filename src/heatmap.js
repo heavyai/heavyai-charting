@@ -60,7 +60,6 @@ dc.heatMap = function (parent, chartGroup) {
 /* OVERRIDE EXTEND ----------------------------------------------------------*/
     var _yLabel;
     var _xLabel;
-    var _numFormat = d3.format(".2s");
     var _hasBeenRendered = false;
 /* --------------------------------------------------------------------------*/
 
@@ -72,22 +71,10 @@ dc.heatMap = function (parent, chartGroup) {
     _chart.title(_chart.colorAccessor());
 
     var _colsLabel = function (d) {
-        if (d instanceof Date) {
-          return d.toString();
-        }
-/* OVERRIDE -----------------------------------------------------------------*/
-        return isNaN(d) ? d : ((d+'').length > 4 && _numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(d.toFixed(2)));
-/* --------------------------------------------------------------------------*/
-
+        return d;
     };
     var _rowsLabel = function (d) {
-        if (d instanceof Date) {
-          return d.toString();
-        }
-/* OVERRIDE -----------------------------------------------------------------*/
-        return isNaN(d) ? d : ((d+'').length > 4 && _numFormat(d).match(/[a-z]/i) ? _numFormat(d) : parseFloat(d.toFixed(2)));
-
-/* --------------------------------------------------------------------------*/
+        return d;
     };
 
     /**
