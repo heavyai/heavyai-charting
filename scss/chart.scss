@@ -929,6 +929,10 @@ body {
         align-self: center;
     }
 
+    .chart-popup-content {
+        display: flex;
+    }
+
     .chart-popup-box {
         min-height: 32px;
         min-width: 120px;
@@ -941,7 +945,6 @@ body {
         opacity: 0;
         top: 0;
         transition: top .35s, opacity .25s;
-        display: flex;
 
         &.align-left-center {
             left: 32px;

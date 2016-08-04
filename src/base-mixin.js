@@ -620,7 +620,11 @@ dc.baseMixin = function (_chart) {
 
         _popup = _chart.root().append('div').attr('class', 'chart-popup');
 
-        _popup.append('div').attr('class', 'chart-popup-box');
+        _popup
+            .append('div')
+            .attr('class', 'chart-popup-box')
+            .append('div')
+            .attr('class', 'chart-popup-content')
 
         return _popup;
     }

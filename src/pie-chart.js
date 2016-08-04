@@ -615,7 +615,7 @@ dc.pieChart = function (parent, chartGroup) {
     function showPopup(d, i) {
         var popup = _chart.popup();
 
-        var popupBox = popup.select('.chart-popup-box').html('');
+        var popupBox = popup.select('.chart-popup-content').html('');
 
         popupBox.append('div')
             .attr('class', 'popup-legend')

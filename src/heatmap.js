@@ -578,7 +578,7 @@ dc.heatMap = function (parent, chartGroup) {
 
         var popup = _chart.popup();
 
-        var popupBox = popup.select('.chart-popup-box').html('')
+        var popupBox = popup.select('.chart-popup-content').html('')
             .classed('popup-list', true);
 
         popupBox.append('div')
