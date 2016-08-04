@@ -75,6 +75,7 @@ dc.heatMap = function (parent, chartGroup) {
     };
     var _rowsLabel = function (d) {
         return d;
+        
     };
 
     /**
