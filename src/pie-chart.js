@@ -203,7 +203,7 @@ dc.pieChart = function (parent, chartGroup) {
             .text(function(d){
                 return _chart.label()(d.data);
             })
-            .html(function(d){
+            .text(function(d){
                 var availableLabelWidth = getAvailableLabelWidth(d);
                 var width = d3.select(this).node().getBoundingClientRect().width;
 
