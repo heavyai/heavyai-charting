@@ -222,7 +222,7 @@ dc.pieChart = function (parent, chartGroup) {
                 .text(function(d){
                     return _chart.measureValue(d.data);
                 })
-                .html(function(d){
+                .text(function(d){
                     if (d3.select(this.parentNode).classed('hide-label')) { return '';}
 
                     var availableLabelWidth = getAvailableLabelWidth(d);
@@ -566,7 +566,7 @@ dc.pieChart = function (parent, chartGroup) {
         var trimIndex = labelText.length - Math.ceil((width - availableLabelWidth) / (width/labelText.length) * 1.25);
 
         if (labelText.length - trimIndex > 2) {
-            labelText = trimIndex > 2  ? labelText.slice(0, trimIndex) + '&#8230;' : '';
+            labelText = trimIndex > 2  ? labelText.slice(0, trimIndex) + '…' : '';
         }
 
         return labelText;
