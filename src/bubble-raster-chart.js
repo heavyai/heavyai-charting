@@ -253,7 +253,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
 function valuesOb (obj) { return Object.keys(obj).map(function (key) { return obj[key]; }) }
 
 function genVegaSpec(chart, lastFilteredSize) {
-  const vegaSpec = {
+  var vegaSpec = {
     data: [{
         name: "table",
         sql: "select x, y from tweets;" // placeholder, the actual sql will be put in that slot w the vega-first interface -cRoot 8/2/16
