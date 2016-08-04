@@ -77,8 +77,7 @@ dc.pieChart = function (parent, chartGroup) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.measureValue = function (d) {
-        var commafy = d3.format(',');
-        return commafy(parseFloat(_chart.cappedValueAccessor(d).toFixed(3)));
+        return _chart.formatValue(_chart.cappedValueAccessor(d));
     };
 
     _chart.redoSelect = highlightFilter;

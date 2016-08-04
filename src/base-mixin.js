@@ -628,12 +628,12 @@ dc.baseMixin = function (_chart) {
     _chart.popupCoordinates = function (coords) {
         var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
-        if (!isFirefox || d3.selectAll('.react-grid-item.cssTransforms').empty()) {
+        if (!isFirefox || d3.selectAll('.react-grid-item.cssTransforms').empty() || !d3.selectAll('.react-grid-layout.chart-edit-mode').empty()) {
             return coords;
         }
 
         var rootRect = _chart.root().node().getBoundingClientRect();
-        return [coords[0] - rootRect.x, coords[1] - rootRect.y - window.pageYOffset + 100];
+        return [coords[0] - rootRect.x, coords[1] - rootRect.y - window.pageYOffset + 148];
     };
 
     _chart.measureLabelsOn = function (val) {
@@ -1899,6 +1899,20 @@ dc.baseMixin = function (_chart) {
             _chart.filter(filter, isInverseFilter);
             _chart.redrawGroup();
         });
+    }
+
+    _chart.formatValue = function (value) {
+        if (value instanceof Date) {
+            var dateTimeFormat = d3.time.format.utc("%b %d, %Y · %I:%M%p");
+            return dateTimeFormat(value);
+        }
+
+        if (isNaN(value)) {
+            return value;
+        }
+
+        var commafy = d3.format(',');
+        return commafy(parseFloat(value.toFixed(2)));
     }
 
     return _chart;

@@ -575,8 +575,6 @@ dc.heatMap = function (parent, chartGroup) {
 /* OVERRIDE ---------------------------------------------------------------- */
     function showPopup(d, i) {
 
-        var commafy = d3.format(',');
-
         var popup = _chart.popup();
 
         var popupBox = popup.select('.chart-popup-box').html('')
@@ -599,7 +597,7 @@ dc.heatMap = function (parent, chartGroup) {
         popupItem.append('div')
             .attr('class', 'popup-item-value')
             .html(function(){
-                return commafy(parseFloat(d.color.toFixed(2)));
+                return _chart.formatValue(d.color);
             });
 
         popup.classed('js-showPopup', true);

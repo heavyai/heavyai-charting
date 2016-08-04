@@ -178,8 +178,7 @@ dc.rowChart = function (parent, chartGroup) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.measureValue = function (d) {
-        var commafy = d3.format(',');
-        return commafy(parseFloat(_chart.cappedValueAccessor(d).toFixed(2)));
+        return _chart.formatValue(_chart.cappedValueAccessor(d));
     };
 /* ------------------------------------------------------------------------- */
 
@@ -277,14 +276,14 @@ dc.rowChart = function (parent, chartGroup) {
             height = ((_chart.effectiveHeight() - _gap) - (n + 1) * _gap) / n;
         }
 
-        if (_chart.autoScroll() && height < _minBarHeight) {
-            height = _minBarHeight;
+        if (_chart.autoScroll()) {
+            height = height < _minBarHeight ? _minBarHeight : height;
             _chart.root().select('.svg-wrapper')
                 .style('height', _chart.height() - 52 + 'px')
                 .style('overflow-y', 'auto')
                 .style('overflow-x', 'hidden');
             _chart.svg()
-                .attr('height', n * (height + _gap) + 8);
+                .attr('height', (height === _minBarHeight ? n * (height + _gap) + 8 : _chart.height() - 56));
         }
 /* --------------------------------------------------------------------------*/
 

@@ -1,5 +1,4 @@
 dc.numberChart = function (parent, chartGroup) {
-    var _formatNumber = d3.format(",");
     var _chart = dc.baseMixin({});
     var _colors = '#22a7f0';
     var _fontSize = null;
@@ -34,7 +33,7 @@ dc.numberChart = function (parent, chartGroup) {
     });
 
     _chart._doRender = function (val) {
-        var selected = _formatNumber(parseFloat(val.toFixed(2)));
+        var selected = _chart.formatValue(val);
 
         var wrapper = _chart.root().html('')
             .append('div')

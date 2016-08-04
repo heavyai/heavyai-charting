@@ -224,6 +224,8 @@ dc.bubbleChart = function (parent, chartGroup) {
         
         popup.classed('js-showPopup popup-scrollable delay-pointer scatter-plot-popup', true);
 
+        _chart.root().node().parentNode.parentNode.style.zIndex = 1;
+
         setTimeout(function(){ popup.classed('delay-pointer', false)}, 250);
 
         positionPopup(d, this);
@@ -249,12 +251,11 @@ dc.bubbleChart = function (parent, chartGroup) {
 
     function renderPopupRow(d) {
 
-        var formatNum = d3.format(".2s");
         var str = '<td><div class="table-dim"><div class="table-legend" style="background:'+_chart.getColor(d)+'"></div><div class="table-dim-val">'+_chart.label()(d)+'</div></div></td>';
                 
         for (var i = 1; i< _popupHeader.length; i++) {
             if (_popupHeader[i].alias) {
-                str += '<td>'+formatNum(d[_popupHeader[i].alias])+'</td>';
+                str += '<td>'+ _chart.formatValue(d[_popupHeader[i].alias]) +'</td>';
             } 
         }
         return str;
@@ -263,8 +264,8 @@ dc.bubbleChart = function (parent, chartGroup) {
     _chart.hidePopup = function() {
         _chart.popup().classed('js-showPopup', false);
         
-        d3.select('#charts-container')
-            .style('z-index', 'auto');
+        _chart.root().node().parentNode.parentNode.style.zIndex = 'auto';
+
         d3.selectAll('.node-hover')
             .classed('node-hover', false);
 

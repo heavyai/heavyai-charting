@@ -118,7 +118,7 @@ dc.barChart = function (parent, chartGroup) {
     function highlightBars(g, e) {
 
         var coordinates = [0, 0];
-        coordinates = d3.mouse(e);
+        coordinates = _chart.popupCoordinates(d3.mouse(e));
         var x = coordinates[0];
         var y = coordinates[1];
         var xAdjusted = x - _chart.margins().left;
@@ -169,16 +169,24 @@ dc.barChart = function (parent, chartGroup) {
     }
 
     function showPopup(arr, x, y) {
-
-        var commafy = d3.format(',');
+        
+        var dateFormat = d3.time.format.utc("%b %d, %Y");
+        var dateTimeFormat = d3.time.format.utc("%b %d, %Y · %I:%M%p");
         var popup = _chart.popup().classed('hide-delay', true);
 
         var popupBox = popup.select('.chart-popup-box').html('')
             .classed('popup-list', true);
 
         popupBox.append('div')
-            .attr('class', 'popup-header')
-            .text(_chart.xAxisLabel() + ' ' + arr[0].datum.x);
+            .attr('class', 'popup-header') 
+            .text(function(){
+                if (arr[0].datum.x instanceof Date) {
+                  var diffDays = Math.round(Math.abs((_chart.xAxisMin().getTime() - _chart.xAxisMax().getTime())/(24*60*60*1000)));
+                  return _chart.getBinInputVal()[0].val ==='auto' && diffDays > 14 || _chart.getBinInputVal()[0].numSeconds > 3600 ? dateFormat(arr[0].datum.x) : dateTimeFormat(arr[0].datum.x);
+                } else {
+                  return _chart.xAxisLabel() + ' ' + _chart.formatValue(arr[0].datum.x);
+                }
+            });
 
 
         var popupItems = popupBox.selectAll('.popup-item')
@@ -196,7 +204,7 @@ dc.barChart = function (parent, chartGroup) {
         popupItems.append('div')
             .attr('class', 'popup-item-value')
             .text(function(d){
-                return commafy(parseFloat((d.datum.y + d.datum.y0).toFixed(2)));
+                return _chart.formatValue(d.datum.y + d.datum.y0);
             });
 
         positionPopup(x, y);
