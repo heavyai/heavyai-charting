@@ -4,12 +4,14 @@ var d3 = require("d3");
 var crossfilter = require("../mapd-crossfilter");
 
 var dc = require("./mapdc");
-var asyncCoreMixin = require("./overrides/build/core").default
+var asyncCoreMixin = require("./overrides/build/dc-async-mixin").default
+var utilsMixin = require("./overrides/build/dc-utils-mixin").default
 
-dc = asyncCoreMixin(dc)
+dc = utilsMixin(asyncCoreMixin(dc))
 dc.mapdTable = require("./overrides/build/mapd-table").default
 dc.countWidget = require("./overrides/build/count-widget").default
 dc.asyncMixin = require("./overrides/build/async-mixin").default
+dc.labelMixin = require("./overrides/build/label-mixin").default
 
 dc.multipleKeysLabelMixin = require("./overrides/build/multiple-key-label-mixin").default
 
@@ -19,7 +21,7 @@ var heatMapKeyAccessor = require("./overrides/build/heatmap").heatMapKeyAccessor
 var heatMapLabel = require("./overrides/build/heatmap").heatMapLabel
 
 dc.override(dc, "baseMixin", function(_chart) {
-  var baseChart = dc.multipleKeysLabelMixin(dc.asyncMixin(dc._baseMixin(_chart)))
+  var baseChart = dc.labelMixin(dc.multipleKeysLabelMixin(dc.asyncMixin(dc._baseMixin(_chart))))
   baseChart.keyAccessor(multipleKeysAccessorForCap)
   return baseChart
 })
@@ -42,6 +44,10 @@ dc.override(dc, "heatMap", function(parent, chartGroup) {
 dc.override(dc, "barChart", function(parent, chartGroup) {
   return dc._barChart(parent, chartGroup)
     .renderLabel(false)
+})
+
+dc.override(dc, "pieChart", function(parent, chartGroup) {
+  return dc.multipleKeysLabelMixin(dc._pieChart(parent, chartGroup))
 })
 
 module.exports = dc

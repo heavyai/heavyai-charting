@@ -598,7 +598,7 @@ dc.heatMap = function (parent, chartGroup) {
         popupItem.append('div')
             .attr('class', 'popup-item-value')
             .html(function(){
-                return _chart.formatValue(d.color);
+                return dc.utils.formatValue(d.color);
             });
 
         popup.classed('js-showPopup', true);

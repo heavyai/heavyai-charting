@@ -50,10 +50,6 @@ dc.baseMixin = function (_chart) {
     var _keyAccessor = dc.pluck('key');
     var _label = dc.pluck('key');
 
-/* OVERRIDE ---------------------------------------------------------------- */
-    var _measureLabelsOn = false;
-/* ------------------------------------------------------------------------- */
-
     var _valueAccessor = dc.pluck('val');
     var _orderSort;
 
@@ -638,14 +634,6 @@ dc.baseMixin = function (_chart) {
 
         var rootRect = _chart.root().node().getBoundingClientRect();
         return [coords[0] - rootRect.x, coords[1] - rootRect.y - window.pageYOffset + 148];
-    };
-
-    _chart.measureLabelsOn = function (val) {
-        if (!arguments.length) {
-            return _measureLabelsOn;
-        }
-        _measureLabelsOn = val;
-        return _chart;
     };
 
     _chart.isTargeting = function (isTargeting) {
@@ -1904,20 +1892,6 @@ dc.baseMixin = function (_chart) {
             _chart.filter(filter, isInverseFilter);
             _chart.redrawGroup();
         });
-    }
-
-    _chart.formatValue = function (value) {
-        if (value instanceof Date) {
-            var dateTimeFormat = d3.time.format.utc("%b %d, %Y · %I:%M%p");
-            return dateTimeFormat(value);
-        }
-
-        if (isNaN(value)) {
-            return value;
-        }
-
-        var commafy = d3.format(',');
-        return commafy(parseFloat(value.toFixed(2)));
     }
 
     return _chart;

@@ -3,6 +3,8 @@ import d3 from "d3"
 
 const INITIAL_SIZE = 50
 
+import {formatResultKey} from "./formatting-helpers"
+
 export default function mapdTable (parent, chartGroup) {
   const _chart = dc.baseMixin({})
   let _tableWrapper = null
@@ -80,14 +82,12 @@ export default function mapdTable (parent, chartGroup) {
     _chart.getData(_size, _offset, _chart.addRowsCallback)
   }
 
-  _chart.setDataAsync(function (group, callback) {
+  _chart.setDataAsync((group, callback) => {
     const size = _chart.resetTableStateReturnSize()
     _chart.getData(size, 0, callback)
   })
 
-  _chart.data(function () {
-    return _chart.dataCache
-  })
+  _chart.data(() => _chart.dataCache)
 
   _chart.getData = function (size, offset, callback) {
     _isGroupedData = _chart.dimension().value()[0]
@@ -231,9 +231,7 @@ export default function mapdTable (parent, chartGroup) {
 
     cols.forEach(function (col, i) {
       rowItem.append("td")
-                .text(function (d) {
-                  return d[col.name]
-                })
+                .text(d => formatResultKey(d[col.name]))
                 .classed("filtered", col.expression in _filteredColumns)
                 .on("click", function (d) {
                   if (_isGroupedData) {

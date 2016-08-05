@@ -184,7 +184,7 @@ dc.barChart = function (parent, chartGroup) {
                   var diffDays = Math.round(Math.abs((_chart.xAxisMin().getTime() - _chart.xAxisMax().getTime())/(24*60*60*1000)));
                   return _chart.getBinInputVal()[0].val ==='auto' && diffDays > 14 || _chart.getBinInputVal()[0].numSeconds > 3600 ? dateFormat(arr[0].datum.x) : dateTimeFormat(arr[0].datum.x);
                 } else {
-                  return _chart.xAxisLabel() + ' ' + _chart.formatValue(arr[0].datum.x);
+                  return _chart.xAxisLabel() + ' ' + dc.utils.formatValue(arr[0].datum.x);
                 }
             });
 
@@ -204,7 +204,7 @@ dc.barChart = function (parent, chartGroup) {
         popupItems.append('div')
             .attr('class', 'popup-item-value')
             .text(function(d){
-                return _chart.formatValue(d.datum.y + d.datum.y0);
+                return dc.utils.formatValue(d.datum.y + d.datum.y0);
             });
 
         positionPopup(x, y);

@@ -77,7 +77,7 @@ dc.pieChart = function (parent, chartGroup) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.measureValue = function (d) {
-        return _chart.formatValue(_chart.cappedValueAccessor(d));
+        return dc.utils.formatValue(_chart.cappedValueAccessor(d));
     };
 
     _chart.redoSelect = highlightFilter;
@@ -208,7 +208,7 @@ dc.pieChart = function (parent, chartGroup) {
                 var width = d3.select(this).node().getBoundingClientRect().width;
 
                 var displayText = width > availableLabelWidth ? truncateLabel(_chart.label()(d.data), width, availableLabelWidth) : _chart.label()(d.data);
-                
+
                 d3.select(this.parentNode)
                     .classed('hide-label', displayText === '');
 

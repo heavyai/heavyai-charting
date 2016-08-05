@@ -131,4 +131,29 @@ describe("MapD Table", () => {
       })
     })
   })
+
+  describe("doRender", () => {
+    before(() => {
+      tableChart.dimension = () => ({
+        value: () => ['blah', 'key0']
+      })
+      tableChart.group = () => ({
+        order: () => {},
+        topAsync: () => {},
+        reduce: () => [{
+          expression: "test",
+          name: "key0"
+        }]
+      })
+      tableChart.getData(50, 0, () => {})
+    })
+    describe("rows", () => {
+      xit("should round decimals to the 100th place", () => {
+        const key0 = [222.55, 500]
+        const data = [{key0, val: 0}]
+        tableChart._doRender(data)
+        expect(tableChart.root().select('td').text()).to.equal(key0.map(a => a.toFixed(2)).join(' - '))
+      })
+    })
+  })
 })

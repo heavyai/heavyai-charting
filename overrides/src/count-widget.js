@@ -44,8 +44,8 @@ export default function countWidget (parent, chartGroup) {
     })
   }
 
-  _chart.setDataAsync((group, callbacks) => {
-    return _chart.getTotalRecordsAsync()
+  _chart.setDataAsync((group, callbacks) => (
+    _chart.getTotalRecordsAsync()
           .then(group.valueAsync)
           .then((value) => {
             callbacks(null, value)
@@ -53,7 +53,7 @@ export default function countWidget (parent, chartGroup) {
           .catch((error) => {
             callbacks(error)
           })
-  })
+  ))
 
   _chart._doRender = function (val) {
     const all = _formatNumber(_chart.tot())

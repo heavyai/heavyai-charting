@@ -255,7 +255,7 @@ dc.bubbleChart = function (parent, chartGroup) {
                 
         for (var i = 1; i< _popupHeader.length; i++) {
             if (_popupHeader[i].alias) {
-                str += '<td>'+ _chart.formatValue(d[_popupHeader[i].alias]) +'</td>';
+                str += '<td>'+ dc.utils.formatValue(d[_popupHeader[i].alias]) +'</td>';
             } 
         }
         return str;

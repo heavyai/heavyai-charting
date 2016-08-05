@@ -178,7 +178,7 @@ dc.rowChart = function (parent, chartGroup) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.measureValue = function (d) {
-        return _chart.formatValue(_chart.cappedValueAccessor(d));
+        return dc.utils.formatValue(_chart.cappedValueAccessor(d));
     };
 /* ------------------------------------------------------------------------- */
 

@@ -1,11 +1,11 @@
 
 import chai, {expect} from "chai"
 import spies from "chai-spies"
-import coreMixin from "../src/core"
+import asyncMixin from "../src/dc-async-mixin"
 
 chai.use(spies)
 
-const dc = coreMixin(require("../../mapdc"))
+const dc = asyncMixin(require("../../mapdc"))
 const INITIAL_COUNT = 0
 const charts = [{}, {}]
 
