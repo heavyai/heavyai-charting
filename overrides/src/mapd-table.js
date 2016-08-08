@@ -3,7 +3,19 @@ import d3 from "d3"
 
 const INITIAL_SIZE = 50
 
-import {formatResultKey} from "./formatting-helpers"
+function maybeFormatNumber (val) {
+  return typeof val === "number" ? parseFloat(val.toFixed(2)) : val
+}
+
+export function formatResultKey (data) {
+  if (Array.isArray(data)) {
+    return data
+      .map(val => typeof val === 'object' ? val.alias : val)
+      .map(maybeFormatNumber).join("  \u2013  ")
+  } else {
+    return maybeFormatNumber(data)
+  }
+}
 
 export default function mapdTable (parent, chartGroup) {
   const _chart = dc.baseMixin({})
@@ -337,7 +349,6 @@ export default function mapdTable (parent, chartGroup) {
   }
 
   function filterCol (expr, val) {
-
     const dateFormat = d3.time.format.utc("%Y-%m-%d")
     const timeFormat = d3.time.format.utc("%Y-%m-%d %H:%M:%S")
 

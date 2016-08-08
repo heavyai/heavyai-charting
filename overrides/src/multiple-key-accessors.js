@@ -1,5 +1,15 @@
+import {isArrayOfObjects} from "./formatting-helpers"
+
 const INDEX_NONE = -1
 const identity = a => a
+
+function normalize (data) {
+  if (isArrayOfObjects(data)) {
+    return data.map(d => d.value)
+  } else {
+    return data
+  }
+}
 
 function getMinOfRange (d) {
   if (Array.isArray(d)) {
@@ -14,7 +24,7 @@ function createAccessor (transform = identity) {
     let filteredKeys = []
     for (const key in d) {
       if (d.hasOwnProperty(key) && key.indexOf("key") > INDEX_NONE) {
-        filteredKeys.push(transform(d[key]))
+        filteredKeys.push(transform(normalize(d[key])))
       }
     }
     if (filteredKeys.length === 1) {

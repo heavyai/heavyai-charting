@@ -1,5 +1,7 @@
 // Import DC and dependencies
 
+import {addFilterHandler, hasFilterHandler} from "./overrides/build/filter-mixin"
+
 var d3 = require("d3");
 var crossfilter = require("../mapd-crossfilter");
 
@@ -23,6 +25,8 @@ var heatMapLabel = require("./overrides/build/heatmap").heatMapLabel
 dc.override(dc, "baseMixin", function(_chart) {
   var baseChart = dc.labelMixin(dc.multipleKeysLabelMixin(dc.asyncMixin(dc._baseMixin(_chart))))
   baseChart.keyAccessor(multipleKeysAccessorForCap)
+  baseChart.addFilterHandler(addFilterHandler)
+  baseChart.hasFilterHandler(hasFilterHandler)
   return baseChart
 })
 
