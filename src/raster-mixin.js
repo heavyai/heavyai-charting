@@ -118,51 +118,54 @@ dc.rasterMixin = function(_chart) {
         var columns = getColumnsWithPoints()
         // TODO best to fail, skip cb, or call cb wo args?
         if (!point || !tableName || !columns.length ) { return; }
-        return _con.getRowForPixel(pixel, tableName, columns, [function(results){
+        return _chart.con().getRowForPixel(pixel, tableName, columns, [function(results){
             return callback(results[0])
         }])
     }
 
     _chart.displayPopup = function displayPopup (result) {
       if(_mouseLeave || !result || !result.row_set || !result.row_set.length){ return }
-      var data = result.row_set[0];
-      var mappedData = mapDataViaColumns(data, _popupColumnsMapped)
-      if( Object.keys(mappedData).length === 2 ) { return } // xPoint && yPoint
-      var offsetBridge = 0;
-      _chart.x().range([0, _chart.width() - 1]);
-      _chart.y().range([0, _chart.height() - 1]);
-      var xPixel = _chart.x()(data.xPoint);
-      var yPixel = (_chart.height() - _chart.y()(data.yPoint));
-      var mapPopup = _chart.root().append('div').attr('class', 'map-popup');
-      mapPopup.append('div')
-      .attr('class', 'map-point-wrap')
-      .append('div')
-      .attr('class', 'map-point')
-      .style({left: xPixel + 'px', top: yPixel + 'px'})
-      .append('div')
-      .attr('class', 'map-point-gfx')
-      .style('background', colorPopupBackground(data));
-      mapPopup.append('div')
-      .attr('class', 'map-popup-wrap')
-      .style({left: xPixel + 'px', top: yPixel + 'px'})
-      .append('div')
-      .attr('class', 'map-popup-box')
-      .html(_chart.popupFunction() ? _popupFunction(mappedData) : renderPopupHTML(mappedData))
-      .style('left', function(){
-        var boxWidth = d3.select(this).node().getBoundingClientRect().width;
-        var overflow = _chart.width() - (xPixel + boxWidth/2) < 0  ? _chart.width() - (xPixel + boxWidth/2) - 6 : (xPixel - boxWidth/2 < 0 ? -(xPixel - boxWidth/2 ) + 6 : 0);
-        offsetBridge = boxWidth/2 - overflow;
-        return overflow + 'px';
-      })
-      .classed('pop-down', function(){
-        var boxHeight = d3.select(this).node().getBoundingClientRect().height;
-        return yPixel - (boxHeight + 12) < 8 ;
-      })
-      .append('div')
-      .attr('class', 'map-popup-bridge')
-      .style('left', function(){
-        return offsetBridge + 'px';
-      });
+      if(_chart.select('.map-popup').empty()){ // show only one popup at a time.
+        var data = result.row_set[0];
+        var mappedData = mapDataViaColumns(data, _popupColumnsMapped)
+        if( Object.keys(mappedData).length === 2 ) { return } // xPoint && yPoint
+        var offsetBridge = 0;
+        _chart.x().range([0, _chart.width() - 1]);
+        _chart.y().range([0, _chart.height() - 1]);
+        var xPixel = _chart.x()(data.xPoint);
+        var yPixel = (_chart.height() - _chart.y()(data.yPoint));
+        var mapPopup = _chart.root().append('div').attr('class', 'map-popup');
+        mapPopup.on("wheel", function () { _chart.select('.map-popup').remove() })
+        mapPopup.append('div')
+        .attr('class', 'map-point-wrap')
+        .append('div')
+        .attr('class', 'map-point')
+        .style({left: xPixel + 'px', top: yPixel + 'px'})
+        .append('div')
+        .attr('class', 'map-point-gfx')
+        .style('background', colorPopupBackground(data))
+        mapPopup.append('div')
+        .attr('class', 'map-popup-wrap')
+        .style({left: xPixel + 'px', top: yPixel + 'px'})
+        .append('div')
+        .attr('class', 'map-popup-box')
+        .html(_chart.popupFunction() ? _popupFunction(mappedData) : renderPopupHTML(mappedData))
+        .style('left', function(){
+          var boxWidth = d3.select(this).node().getBoundingClientRect().width;
+          var overflow = _chart.width() - (xPixel + boxWidth/2) < 0  ? _chart.width() - (xPixel + boxWidth/2) - 6 : (xPixel - boxWidth/2 < 0 ? -(xPixel - boxWidth/2 ) + 6 : 0);
+          offsetBridge = boxWidth/2 - overflow;
+          return overflow + 'px';
+        })
+        .classed('pop-down', function(){
+          var boxHeight = d3.select(this).node().getBoundingClientRect().height;
+          return yPixel - (boxHeight + 12) < 8 ;
+        })
+        .append('div')
+        .attr('class', 'map-popup-bridge')
+        .style('left', function(){
+          return offsetBridge + 'px';
+        });
+      }
     }
 
     _chart.hidePopup = function hidePopup() {

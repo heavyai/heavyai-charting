@@ -671,6 +671,7 @@ body {
         border-radius: 4px;
         border: 1px solid $gray3;
         position: relative;
+        word-wrap: break-word;
         transform: translate(-50%, -100%);
         top: -12px;
         pointer-events: auto;
