@@ -133,11 +133,13 @@ describe("MapD Table", () => {
   })
 
   describe("doRender", () => {
+    let table
     before(() => {
-      tableChart.dimension = () => ({
+      table = dc.mapdTable(window.document.createElement("DIV"))
+      table.dimension = () => ({
         value: () => ['blah', 'key0']
       })
-      tableChart.group = () => ({
+      table.group = () => ({
         order: () => {},
         topAsync: () => {},
         reduce: () => [{
@@ -145,14 +147,14 @@ describe("MapD Table", () => {
           name: "key0"
         }]
       })
-      tableChart.getData(50, 0, () => {})
+      table.getData(50, 0, () => {})
     })
     describe("rows", () => {
-      xit("should round decimals to the 100th place", () => {
+      it("should round decimals to the 100th place", () => {
         const key0 = [222.55, 500]
         const data = [{key0, val: 0}]
-        tableChart._doRender(data)
-        expect(tableChart.root().select('td').text()).to.equal(key0.map(a => a.toFixed(2)).join(' - '))
+        table._doRender(data)
+        expect(table.root().select('td').text()).to.equal('222.55  \u2013  500')
       })
     })
   })

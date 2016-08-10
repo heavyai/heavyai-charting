@@ -1,10 +1,10 @@
-var dc = require("../../mapdc")
+const dc = require("../../mapdc")
 
 export default function asyncMixin (_chart) {
   _chart.dataCache = null
   _chart.queryId = 0
 
-  var _dataAsync = function (group, callback) {
+  let _dataAsync = function (group, callback) {
     group.allAsync(callback)
   }
 
@@ -33,10 +33,10 @@ export default function asyncMixin (_chart) {
     if (_chart.hasOwnProperty("setSample")) {
       _chart.setSample()
     }
-    var id = _chart.queryId++
+    const id = _chart.queryId++
 
     return new Promise(function (resolve, reject) {
-      var renderCallback = function (error, data) {
+      const renderCallback = function (error, data) {
         if (error) {
           reject(error)
         } else {
@@ -44,7 +44,7 @@ export default function asyncMixin (_chart) {
         }
       }
 
-      var dataCallback = function (error, data) {
+      const dataCallback = function (error, data) {
         if (error) {
           reject(error)
         } else {
@@ -61,10 +61,10 @@ export default function asyncMixin (_chart) {
     if (_chart.hasOwnProperty("setSample")) {
       _chart.setSample()
     }
-    var id = _chart.queryId++
+    const id = _chart.queryId++
 
     return new Promise(function (resolve, reject) {
-      var redrawCallback = function (error, data) {
+      const redrawCallback = function (error, data) {
         if (error) {
           reject(error)
         } else {
@@ -72,7 +72,7 @@ export default function asyncMixin (_chart) {
         }
       }
 
-      var dataCallback = function (error, data) {
+      const dataCallback = function (error, data) {
         if (error) {
           dc.resetRedrawStack()
           reject(error)

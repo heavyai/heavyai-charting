@@ -14,10 +14,6 @@ dc.baseMixin = function (_chart) {
     var _dimension;
     var _group;
 
-/* OVERRIDE ---------------------------------------------------------------- */
-    _chart.dataCache = null;
-/* ------------------------------------------------------------------------- */
-
     var _anchor;
     var _root;
     var _svg;
@@ -117,42 +113,12 @@ dc.baseMixin = function (_chart) {
 /* ------------------------------------------------------------------------- */
 
     var _filters = [];
-    var _areFiltersInverse = false;
-    _chart.filtersInverse = function() {
-        return _areFiltersInverse;
-    }
-
-    var _filterCount = 0;
-
-
-
-/* OVERRIDE ---------------------------------------------------------------- */
-    var _softFilterClear = false;
-/* ------------------------------------------------------------------------- */
 
     var _filterHandler = function (dimension, filters) {
 
-/* OVERRIDE ---------------------------------------------------------------- */
-        // bail out if we are at crossfilter level - i.e. for data count
-        if (dimension.type == 'crossfilter') {
-          return filters;
-        }
-/* ------------------------------------------------------------------------- */
-
         if (filters.length === 0) {
-
-/* OVERRIDE ---------------------------------------------------------------- */
-            dimension.filterAll(_softFilterClear);
-        } else {
-            if (_chart.hasOwnProperty('rangeFocused')) {
-              dimension.filterMulti(filters, _chart.rangeFocused(), _areFiltersInverse);
-            }
-            else {
-              dimension.filterMulti(filters, undefined, _areFiltersInverse);
-            }
+            return filters;
         }
-/* ------------------------------------------------------------------------- */
-        return filters;
     };
 
     var _data = function (group) {
@@ -397,28 +363,6 @@ dc.baseMixin = function (_chart) {
 /* ------------------------------------------------------------------------- */
         return dataCopy;
     };
-
-    /**
-     * Clear all filters associated with this chart
-     *
-     * The same can be achieved by calling {@link #dc.baseMixin+filter chart.filter(null)}.
-     * @name filterAll
-     * @memberof dc.baseMixin
-     * @instance
-     * @return {dc.baseMixin}
-     */
-/* OVERRIDE ---------------------------------------------------------------- */
-    _chart.filterAll = function (softFilterClear) {
-
-        if (softFilterClear != undefined && softFilterClear == true) {
-          _softFilterClear = true;
-        } else {
-          _softFilterClear = false;
-        }
-
-        return _chart.filter(null);
-    };
-/* ------------------------------------------------------------------------- */
 
     /**
      * Execute d3 single selection in the chart's scope using the given selector and return the d3
@@ -1287,9 +1231,9 @@ dc.baseMixin = function (_chart) {
             return _filters.length > 0 ? _filters[0] : null;
         }
         isFilterInverse = typeof isFilterInverse === 'undefined' ? false : isFilterInverse;
-        if (isFilterInverse !== _areFiltersInverse) {
+        if (isFilterInverse !== _chart.filtersInverse()) {
             _filters = _resetFilterHandler(_filters);
-            _areFiltersInverse = isFilterInverse;
+            _chart.filtersInverse(isFilterInverse);
         }
         if (filter instanceof Array && filter[0] instanceof Array && !filter.isFiltered) {
             filter[0].forEach(function (d) {

@@ -2,6 +2,10 @@ const dc = require("../../mapdc")
 import d3 from "d3"
 
 const INITIAL_SIZE = 50
+const GROUP_DATA_WIDTH = 20
+const NON_GROUP_DATA_WIDTH = 8
+const NON_INDEX = -1
+const ADDITIONAL_HEIGHT = 18
 
 function maybeFormatNumber (val) {
   return typeof val === "number" ? parseFloat(val.toFixed(2)) : val
@@ -10,7 +14,7 @@ function maybeFormatNumber (val) {
 export function formatResultKey (data) {
   if (Array.isArray(data)) {
     return data
-      .map(val => typeof val === 'object' ? val.alias : val)
+      .map(val => typeof val === "object" ? val.alias : val)
       .map(maybeFormatNumber).join("  \u2013  ")
   } else {
     return maybeFormatNumber(data)
@@ -38,7 +42,7 @@ export default function mapdTable (parent, chartGroup) {
   const _on = _chart.on.bind(_chart)
 
   _chart.on = function (event, listener) {
-    if (_table_events.indexOf(event) === -1) {
+    if (_table_events.indexOf(event) === NON_INDEX) {
       _on(event, listener)
     } else {
       _listeners.on(event, listener)
@@ -180,7 +184,7 @@ export default function mapdTable (parent, chartGroup) {
   function shouldLoadMore () {
     const scrollDivNode = _tableWrapper.select(".md-table-scroll").node()
     const tableNode = _tableWrapper.select("table").node()
-    if (tableNode.scrollHeight > 0 && tableNode.scrollHeight <= scrollDivNode.scrollTop + scrollDivNode.getBoundingClientRect().height + 18) {
+    if (tableNode.scrollHeight > 0 && tableNode.scrollHeight <= scrollDivNode.scrollTop + scrollDivNode.getBoundingClientRect().height + ADDITIONAL_HEIGHT) {
       _chart.addRows()
     }
   }
@@ -216,14 +220,14 @@ export default function mapdTable (parent, chartGroup) {
             .enter()
 
     tableHeader.append("th")
-            .text(function (d) { return (d.agg_mode ? d.agg_mode.toUpperCase() : "") + " " + d.expression })
+            .text(d => (d.agg_mode ? d.agg_mode.toUpperCase() : "") + " " + d.expression)
 
     const tableRows = table.selectAll(".table-row")
             .data(data)
             .enter()
 
     const rowItem = tableRows.append("tr")
-            .attr("class", function (d) {
+            .attr("class", (d) => {
               let tableRowCls = "table-row "
               if (_isGroupedData) {
                 tableRowCls += "grouped-data "
@@ -241,20 +245,19 @@ export default function mapdTable (parent, chartGroup) {
               return tableRowCls
             })
 
-    cols.forEach(function (col, i) {
+    cols.forEach(col => {
       rowItem.append("td")
-                .text(d => formatResultKey(d[col.name]))
-                .classed("filtered", col.expression in _filteredColumns)
-                .on("click", function (d) {
-                  if (_isGroupedData) {
-                    _chart.onClick(d)
-                  }
-                  else if (col.expression in _filteredColumns) {
-                    clearColFilter(col.expression)
-                  } else {
-                    filterCol(col.expression, d[col.name])
-                  }
-                })
+        .text(d => formatResultKey(d[col.name]))
+        .classed("filtered", col.expression in _filteredColumns)
+        .on("click", function (d) {
+          if (_isGroupedData) {
+            _chart.onClick(d)
+          } else if (col.expression in _filteredColumns) {
+            clearColFilter(col.expression)
+          } else {
+            filterCol(col.expression, d[col.name])
+          }
+        })
     })
 
     const dockedHeader = _chart.tableWrapper().select(".md-table-header").html("")
@@ -285,16 +288,14 @@ export default function mapdTable (parent, chartGroup) {
             .each(function (d, i) {
               const headerItem = dockedHeader.append("div")
                     .attr("class", "table-header-item")
-                    .classed("isFiltered", function () {
-                      return d.expression in _filteredColumns
-                    })
+                    .classed("isFiltered", () => d.expression in _filteredColumns)
 
               const sortLabel = headerItem.append("div")
                     .attr("class", "table-sort")
                     .classed("disabled", !_isGroupedData)
                     .classed("active", _sortColumn ? _sortColumn.index === i : false)
                     .classed(_sortColumn ? _sortColumn.order : "", true)
-                    .on("click", function () {
+                    .on("click", () => {
                       _tableWrapper.selectAll(".table-sort")
                             .classed("active asc desc", false)
 
@@ -331,13 +332,13 @@ export default function mapdTable (parent, chartGroup) {
                     .append("use")
                     .attr("xlink:href", "#icon-arrow1")
 
-              const unfilterButton = headerItem.append("div")
+              headerItem.append("div")
                     .attr("class", "unfilter-btn")
                     .attr("data-expr", d.expression)
-                    .on("click", function () {
+                    .on("click", () => {
                       clearColFilter(d3.select(this).attr("data-expr"))
                     })
-                    .style("left", textSpan.node().getBoundingClientRect().width + (_isGroupedData ? 20 : 8) + "px")
+                    .style("left", textSpan.node().getBoundingClientRect().width + (_isGroupedData ? GROUP_DATA_WIDTH : NON_GROUP_DATA_WIDTH) + "px")
                     .append("svg")
                     .attr("class", "svg-icon")
                     .classed("icon-unfilter", true)
@@ -350,12 +351,10 @@ export default function mapdTable (parent, chartGroup) {
 
   function filterCol (expr, val) {
     const dateFormat = d3.time.format.utc("%Y-%m-%d")
-    const timeFormat = d3.time.format.utc("%Y-%m-%d %H:%M:%S")
 
     if (Object.prototype.toString.call(val) === "[object Date]") {
       val = "DATE '" + dateFormat(val) + "'"
-    }
-    else if (val && typeof val === "string") {
+    } else if (val && typeof val === "string") {
       val = "'" + val.replace(/'/g, "''") + "'"
     }
 
@@ -381,15 +380,13 @@ export default function mapdTable (parent, chartGroup) {
     for (const expr in columnFilterMap) {
       if (columnFilterMap[expr] === "null") { // null gets translated to "null" by this point
         subFilterExpression = expr + " IS null"
-      }
-      else {
+      } else {
         subFilterExpression = expr + " = " + columnFilterMap[expr]
       }
 
-      if (filter == "") {
+      if (filter === "") {
         filter += subFilterExpression
-      }
-      else {
+      } else {
         filter += " AND " + subFilterExpression
       }
     }
