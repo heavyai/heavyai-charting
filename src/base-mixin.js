@@ -979,6 +979,7 @@ dc.baseMixin = function (_chart) {
                     var elapsed = endTime - dc._startRedrawTime;
                     console.log("Redraw elapsed: " + elapsed + " ms");
                 }
+                dc._globalTransitionDuration = null; // reset to null if was brush
                 var stackEmpty = dc.isRedrawStackEmpty(queryGroupId);
                 dc.resetRedrawStack();
 
