@@ -79,7 +79,17 @@ dc.numberDisplay = function (parent, chartGroup) {
 
 /* OVERRIDE EXTEND ----------------------------------------------------------*/
     _chart.setDataAsync(function(group,callbacks) {
-        group.value ? group.valueAsync(callbacks) : group.topAsync(1, undefined, callbacks);
+        if (group.value) {
+          return group.valueAsync(callbacks)
+        } else {
+          return group.topAsync(1)
+            .then(function(result) {
+              callbacks(null, result)
+            })
+            .catch(function(error) {
+              callbacks(error)
+            })
+        }
     });
 /* --------------------------------------------------------------------------*/
 

@@ -43,15 +43,21 @@ dc.dataTable = function (parent, chartGroup) {
 
     _chart.setDataAsync(function(group, callbacks) {
         if (_order === d3.ascending) {
-            _chart.dimension().bottomAsync(_size, undefined, undefined, callbacks);
+            return _chart.dimension().bottomAsync(_size, undefined, undefined, callbacks);
         }
         else {
-            _chart.dimension().topAsync(_size, undefined, undefined, callbacks);
+            return _chart.dimension().topAsync(_size)
+                .then(function(result) {
+                    callbacks(null, result)
+                })
+                .catch(function(error) {
+                    callbacks(error)
+                })
         }
     });
 
     _chart.sampling = function(setting) { // setting should be true or false
-        if (!arguments.length) 
+        if (!arguments.length)
             return _sampling;
         if (setting && !_sampling) // if wasn't sampling
             dc._sampledCount++;

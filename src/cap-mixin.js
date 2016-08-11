@@ -91,7 +91,13 @@ dc.capMixin = function (_chart) {
             if (_chart.dataCache != null) {
                   resultCallback(null, _chart.dataCache)
               } else if (_ordering === 'desc') {
-                  group.topAsync(_cap, undefined, undefined, resultCallback); // ordered by crossfilter group order (default value)
+                  return group.topAsync(_cap)
+                    .then(function(result) {
+                      resultCallback(null, result)
+                    })
+                    .catch(function(error) {
+                      resultCallback(error)
+                    });
               } else if (_ordering === 'asc') {
                   group.bottomAsync(_cap, undefined, undefined, resultCallback); // ordered by crossfilter group order (default value)
               }

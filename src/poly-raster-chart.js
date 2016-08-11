@@ -37,7 +37,7 @@ dc.polyRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
       chart.polyJoin(),
       {strokeColor: chart.borderColor(), strokeWidth: chart.borderWidth()}
     );
-    var nonce = group.topAsync(chart.cap(), 0, JSON.stringify(chart._vegaSpec), callback);
+    var nonce = group.top(chart.cap(), 0, JSON.stringify(chart._vegaSpec), callback);
     renderBoundsMap[nonce] = renderBounds;
   });
 
