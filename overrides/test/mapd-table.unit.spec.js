@@ -26,11 +26,11 @@ describe("MapD Table", () => {
     const callback = () => {}
     beforeEach(() => {
       dimension.order = chai.spy()
-      dimension.topAsync = chai.spy()
+      dimension.topAsync = chai.spy(() => Promise.resolve())
       dimension.bottomAsync = chai.spy()
       dimension.value = chai.spy(() => dimValue)
       group.order = chai.spy()
-      group.topAsync = chai.spy()
+      group.topAsync = chai.spy(() => Promise.resolve())
       group.bottomAsync = chai.spy()
       tableChart.group = chai.spy(() => group)
       tableChart.dimension = chai.spy(() => dimension)
@@ -45,21 +45,21 @@ describe("MapD Table", () => {
     it('should use dimension when grouped data is false', () => {
       dimValue = [false]
       tableChart.getData(size, offset, callback)
-      expect(dimension.topAsync).to.have.been.called.with(size, offset, callback)
+      expect(dimension.topAsync).to.have.been.called.with(size, offset)
     })
     it('should invoke .bottomAsync() when _sortColumn exists and its order is "asc"', () => {
       tableChart.sortColumn({ order: "asc", col: {name: ""} })
       tableChart.getData(size, offset, callback)
-      expect(dimension.bottomAsync).to.have.been.called.with(size, offset, callback)
+      expect(dimension.bottomAsync).to.have.been.called.with(size, offset)
     })
     it('should invoke .topAsync() when _sortColumn exists and its order is not "asc"', () => {
       tableChart.sortColumn({ order: "desc", col: {name: ""} })
       tableChart.getData(size, offset, callback)
-      expect(dimension.topAsync).to.have.been.called.with(size, offset, callback)
+      expect(dimension.topAsync).to.have.been.called.with(size, offset)
     })
     it('should invoke .topAsync() when _sortColumn does not exist', () => {
       tableChart.getData(size, offset, callback)
-      expect(dimension.topAsync).to.have.been.called.with(size, offset, callback)
+      expect(dimension.topAsync).to.have.been.called.with(size, offset)
     })
     it('should invoke .order() with null when there is no sortColumn', () => {
       tableChart.getData(size, offset, callback)
@@ -141,7 +141,7 @@ describe("MapD Table", () => {
       })
       table.group = () => ({
         order: () => {},
-        topAsync: () => {},
+        topAsync: () => Promise.resolve(),
         reduce: () => [{
           expression: "test",
           name: "key0"

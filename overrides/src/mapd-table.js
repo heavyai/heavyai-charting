@@ -110,7 +110,14 @@ export default function mapdTable (parent, chartGroup) {
     _dimOrGroup = _isGroupedData ? _chart.group() : _chart.dimension()
     _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null)
     const sortFuncName = _sortColumn && _sortColumn.order === "asc" ? "bottomAsync" : "topAsync"
-    _dimOrGroup[sortFuncName](size, offset, undefined, callback)
+
+    if (sortFuncName === "topAsync") {
+      return _dimOrGroup[sortFuncName](size, offset)
+        .then(result => callback(null, result))
+        .catch(error => callback(error))
+    } else {
+      return _dimOrGroup[sortFuncName](size, offset, undefined, callback)
+    }
   }
 
   _chart.resetTableStateReturnSize = function () {
