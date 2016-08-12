@@ -21,7 +21,7 @@ describe("MapD Heatmap Chart", () => {
   describe("keyAccessor", () => {
     it('should return the first element of the key0 prop of data', () => {
       const keyAccessor = heat.keyAccessor()
-      const key0 = [1,10]
+      const key0 = [1, 10]
       expect(keyAccessor({ key0 })).to.equal(key0[0])
     })
   })

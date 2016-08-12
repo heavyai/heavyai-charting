@@ -1,6 +1,8 @@
 // Import DC and dependencies
 
 import filterMixin from "./overrides/build/filter-mixin"
+import {heatMapKeyAccessor, heatMapLabel, heatMapValueAccesor} from "./overrides/build/heatmap"
+import {normalizeFiltersArray} from "./overrides/build/formatting-helpers"
 
 var d3 = require("d3");
 var crossfilter = require("../mapd-crossfilter");
@@ -19,8 +21,6 @@ dc.multipleKeysLabelMixin = require("./overrides/build/multiple-key-label-mixin"
 
 var multipleKeysAccessorForStack = require("./overrides/build/multiple-key-accessors").multipleKeysAccessorForStack
 var multipleKeysAccessorForCap = require("./overrides/build/multiple-key-accessors").multipleKeysAccessorForCap
-var heatMapKeyAccessor = require("./overrides/build/heatmap").heatMapKeyAccessor
-var heatMapLabel = require("./overrides/build/heatmap").heatMapLabel
 
 dc.override(dc, "baseMixin", function(_chart) {
   var baseChart = filterMixin(dc.labelMixin(dc.multipleKeysLabelMixin(dc.asyncMixin(dc._baseMixin(_chart)))))
@@ -37,7 +37,7 @@ dc.override(dc, "stackMixin", function(_chart) {
 dc.override(dc, "heatMap", function(parent, chartGroup) {
   return dc._heatMap(parent, chartGroup)
     .keyAccessor(heatMapKeyAccessor)
-    .valueAccessor(d => d.key1)
+    .valueAccessor(heatMapValueAccesor)
     .colorAccessor(d => d.value)
     .rowsLabel(heatMapLabel)
     .colsLabel(heatMapLabel)
@@ -50,6 +50,11 @@ dc.override(dc, "barChart", function(parent, chartGroup) {
 
 dc.override(dc, "pieChart", function(parent, chartGroup) {
   return dc.multipleKeysLabelMixin(dc._pieChart(parent, chartGroup))
+})
+
+dc.override(dc.filters, "TwoDimensionalFilter", function(filter) {
+  filter = filter || [] // filter can be null
+  return dc.filters._TwoDimensionalFilter(normalizeFiltersArray(filter))
 })
 
 module.exports = dc

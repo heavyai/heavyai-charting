@@ -39,3 +39,13 @@ export function formatNumber (d) {
   const isLargeNumber = isLong && formattedHasAlpha
   return isLargeNumber ? numFormat(d) : parseFloat(d.toFixed(2))
 }
+
+export function normalizeFiltersArray (filters) {
+  return filters.map(f => {
+    if (isArrayOfObjects(f)) {
+      return normalizeArray(f)
+    } else {
+      return f
+    }
+  })
+}
