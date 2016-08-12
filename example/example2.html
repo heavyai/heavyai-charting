@@ -415,24 +415,24 @@
 
   function init() {
     // A MapdCon instance is used for performing raw queries on a MapD GPU database.
-    var con = new MapdCon()
+    new MapdCon()
       .protocol("http")
       .host("kali.mapd.com")
       .port("9092")
       .dbName("mapd")
       .user("mapd")
-      .password("HyperInteractive");
-      // Establish a connection
-      con.connect();
-    // Get a table from the database
-    var tableName = 'tweets_nov_feb';
-    // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
-    var crossFilter = crossfilter.crossfilter(con, tableName)
-      .then(function(cf) {
-        createCharts(cf, con, tableName)
-      })
-    // Pass instance of crossfilter into our CreateCharts.
-    ;
+      .password("HyperInteractive")
+      .connect(function(error, con) {
+        // Get a table from the database
+        var tableName = 'tweets_nov_feb';
+        // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
+        var crossFilter = crossfilter.crossfilter(con, tableName)
+          .then(function(cf) {
+            createCharts(cf, con, tableName)
+          })
+        // Pass instance of crossfilter into our CreateCharts.
+        ;
+      });
   }
 
     document.addEventListener('DOMContentLoaded', init, false);

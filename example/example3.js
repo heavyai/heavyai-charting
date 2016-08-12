@@ -23,11 +23,19 @@ document.addEventListener("DOMContentLoaded", function init() {
     domainBoundMax: 2600,
     numTimeBins: 423
   }
-  var con = new MapdCon().protocol("http").host("kali.mapd.com").port("9092").dbName("mapd").user("mapd").password("HyperInteractive").connect()
-  crossfilter.crossfilter(con, config.table).then(function(cf) {
-    createPolyMap(cf, con, dc, config)
-    createTimeChart(cf, dc, config)
-  })
+  new MapdCon()
+    .protocol("http")
+    .host("kali.mapd.com")
+    .port("9092")
+    .dbName("mapd")
+    .user("mapd")
+    .password("HyperInteractive")
+    .connect(function(error, con) {
+      crossfilter.crossfilter(con, config.table).then(function(cf) {
+        createPolyMap(cf, con, dc, config)
+        createTimeChart(cf, dc, config)
+      })
+    })
 
 
   function createPolyMap(crossFilter, con, dc, config) {
