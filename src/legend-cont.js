@@ -149,6 +149,7 @@ dc.legendCont = function () {
             _parent.colorDomain([startVal, endVal])
                 .on("preRedraw.color", null)
                 .redrawAsync();
+            _parent.anchor().dispatchEvent(new CustomEvent("legendChange", {detail: [startVal, endVal]}))
         } else {
             d3.select(this).property('value', currVal);
         }
