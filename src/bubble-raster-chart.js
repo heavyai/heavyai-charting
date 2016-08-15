@@ -110,7 +110,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
           nonce = group.allAsync(callbacks);
         }
         else {
-          nonce = group.topAsync(_chart.cap(),undefined, JSON.stringify(_chart._vegaSpec), callbacks);
+          nonce = group.top(_chart.cap(),undefined, JSON.stringify(_chart._vegaSpec), callbacks);
         }
         _renderBoundsMap[nonce] = renderBounds;
     });
