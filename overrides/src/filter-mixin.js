@@ -48,6 +48,11 @@ export default function filterMixin (_chart) {
     return _filters
   }
 
+  _chart.replaceFilter = function (_) {
+    _filters = []
+    _chart.filter(_)
+  }
+
   _chart.softFilterClear = function (val) {
     if (!arguments.length) {
       return softFilterClear
