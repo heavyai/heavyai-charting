@@ -6,7 +6,7 @@ const numFormat = d3.format(".2s")
 const dateFormat = d3.time.format.utc("%b %d, %Y · %I:%M%p")
 const commafy = d3.format(",")
 
-export const isPlainObject = value => typeof value === "object" && !(value instanceof Date)
+export const isPlainObject = value => !Array.isArray(value) && typeof value === "object" && !(value instanceof Date)
 export const hasAllObjects = collection => collection.reduce((accum, value) => isPlainObject(value) && accum, true)
 export const isArrayOfObjects = value => Array.isArray(value) && hasAllObjects(value)
 export const normalizeArray = collection => isArrayOfObjects(collection) ? collection.map(data => data.value) : collection

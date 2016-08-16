@@ -13,6 +13,14 @@ export function heatMapValueAccesor ({key1}) {
 }
 
 export function heatMapLabel (d) {
+  if (Array.isArray(d)) {
+    return d.map(formatForLabel).join("  \u2013  ")
+  } else {
+    return formatForLabel(d)
+  }
+}
+
+export function formatForLabel (d) {
   if (d instanceof Date) {
     return d.toString()
   } else if (typeof d === "number") {
