@@ -1,6 +1,6 @@
 import {isArrayOfObjects, normalizeArray} from "./formatting-helpers"
 
-const noop = () => {}
+const noop = () => {} // eslint-disable-line no-empty-function
 
 export function addFilterHandler (filters, filter) {
   if (isArrayOfObjects(filter)) {
@@ -129,7 +129,7 @@ export default function filterMixin (_chart) {
           _chart.addFilterHandler()(_filters, d)
         }
       })
-    } else if (filter === null) {
+    } else if (filter === null || Array.isArray(filter) && filter.length === 0) {
       _filters = _chart.resetFilterHandler()(_filters)
     } else if (_chart.hasFilter(filter)) {
       _chart.removeFilterHandler()(_filters, filter)

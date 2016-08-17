@@ -39,6 +39,10 @@ describe("MapD Heatmap Chart", () => {
       rowsLabel = heat.rowsLabel()
       colsLabel = heat.colsLabel()
     })
+    it("should properly format array data", () => {
+      expect(rowsLabel([10000, 20000])).to.equal("10k  \u2013  20k")
+      expect(colsLabel([10000, 20000])).to.equal("10k  \u2013  20k")
+    })
     it("should return stringified Date", () => {
       const date = new Date()
       expect(rowsLabel(date)).to.equal(date.toString())

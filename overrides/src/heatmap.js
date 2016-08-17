@@ -1,4 +1,4 @@
-import {isArrayOfObjects, formatNumber, normalizeArray} from "./formatting-helpers"
+import {formatNumber, isArrayOfObjects, normalizeArray} from "./formatting-helpers"
 
 export function heatMapKeyAccessor ({key0}) {
   if (Array.isArray(key0)) {
