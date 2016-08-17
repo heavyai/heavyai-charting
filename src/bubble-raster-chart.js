@@ -20,6 +20,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
     var _x = null;
     var _y = null;
     var _defaultColor = "#22A7F0";
+    var _nullColor = "#cacaca" // almost background grey
     var _renderBoundsMap = {};
     var _r = 1; // default radius 5
     var _dynamicR = null;
@@ -74,6 +75,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
             return _defaultColor;
         }
         _defaultColor = _;
+        return _chart;
+    }
+
+    _chart.nullColor = function(_) {
+        if (!arguments.length) {
+            return _nullColor;
+        }
+        _nullColor = _;
         return _chart;
     }
 
@@ -278,7 +287,7 @@ function genVegaSpec(chart, lastFilteredSize) {
   if (chart.tableName()) { vegaSpec.data[0].dbTableName = chart.tableName() }
 
   if (chart.colors().domain) {
-    vegaSpec.scales.push({name: "color", type: chart._determineScaleType(chart.colors()), domain: chart.colors().domain(), range: chart.colors().range(), default: chart.defaultColor()})
+    vegaSpec.scales.push({name: "color", type: chart._determineScaleType(chart.colors()), domain: chart.colors().domain(), range: chart.colors().range(), default: chart.defaultColor(), nullValue: chart.nullColor()})
     vegaSpec.marks[0].properties.fillColor = {scale: "color", field: "color"}
   } else {
     vegaSpec.marks[0].properties.fillColor = {value: chart.colors()()}
