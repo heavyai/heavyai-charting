@@ -903,7 +903,6 @@ dc.baseMixin = function (_chart) {
         }
 
         _chart._activateRenderlets('postRedraw', data);
-
         if (typeof queryGroupId !== 'undefined' && queryGroupId !== null) {
             if (++dc._redrawCount == queryCount) {
                 if (dc._logging) {
@@ -919,7 +918,13 @@ dc.baseMixin = function (_chart) {
                     callback(null, result || _chart);
                     return result
                 } else if (!stackEmpty) {
-                    dc.redrawAll(null, callback);
+                    dc.redrawAllAsync(null)
+                      .then(function(result) {
+                        callback(null, result)
+                      })
+                      .catch(function(error) {
+                        callback(error)
+                      });
                 }
             }
         }

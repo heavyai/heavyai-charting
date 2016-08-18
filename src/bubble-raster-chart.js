@@ -149,10 +149,11 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
             var xRange = _chart.xDim().getFilter();
             if (xRange !== null) {
                 xRange =  xRange[0]; // First element of range because range filter can theoretically support multiple ranges
-                if (_chart.useLonLat())
+                if (_chart.useLonLat()) {
                   _x.domain([_chart.conv4326To900913X(xRange[0]), _chart.conv4326To900913X(xRange[1])]);
-                else
+                } else {
                   _x.domain(xRange);
+                }
             }
             if (_y === null) {
                 _y = d3.scale.linear();
