@@ -42,11 +42,7 @@ export default function asyncCoreMixin (dc) {
 
     const redrawPromises = charts.map((chart) => {
       chart.expireCache()
-      if (dc._sampledCount > 0) {
-        return chart.redrawAsync()
-      } else {
-        return chart.redrawAsync()
-      }
+      return chart.redrawAsync()
     })
 
     if (dc._renderlet !== null) {
