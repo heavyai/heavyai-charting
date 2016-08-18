@@ -36,9 +36,33 @@ export default function asyncCoreMixin (dc) {
       return Promise.resolve()
     }
 
+    dc._startRedrawTime = new Date()
+
+    const charts = dc.chartRegistry.list(group)
+
+    const redrawPromises = charts.map((chart) => {
+      chart.expireCache()
+      if (dc._sampledCount > 0) {
+        return chart.redrawAsync()
+      } else {
+        return chart.redrawAsync()
+      }
+    })
+
+    if (dc._renderlet !== null) {
+      dc._renderlet(group)
+    }
+
+    return Promise.all(redrawPromises)
+  }
+
+  dc.redrawAllAsyncWithDebounce = function (group) {
+    if (dc._refreshDisabled) {
+      return Promise.resolve()
+    }
+
     const stackEmpty = dc.isRedrawStackEmpty()
     const queryGroupId = dc.incrementRedrawStack()
-
     if (!stackEmpty) {
       return Promise.resolve()
     }

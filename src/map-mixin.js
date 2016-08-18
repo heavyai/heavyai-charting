@@ -154,7 +154,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             if (_xDim !== null && _yDim != null) {
                 _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
                 _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
-                dc.redrawAllAsync()
+                dc.redrawAllAsyncWithDebounce()
                   .catch(function(error) {
                     console.log("on move event redrawall error:", error)
                   });
