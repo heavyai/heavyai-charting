@@ -4,6 +4,8 @@ import filterMixin from "./overrides/build/filter-mixin"
 import {heatMapKeyAccessor, heatMapLabel, heatMapValueAccesor} from "./overrides/build/heatmap"
 import {normalizeFiltersArray} from "./overrides/build/formatting-helpers"
 
+import legendMixin from "./overrides/build/dc-legend-mixin"
+
 var d3 = require("d3");
 var crossfilter = require("../mapd-crossfilter");
 
@@ -59,6 +61,10 @@ dc.override(dc, "lineChart", function(parent, chartGroup) {
 dc.override(dc.filters, "TwoDimensionalFilter", function(filter) {
   filter = filter || [] // filter can be null
   return dc.filters._TwoDimensionalFilter(normalizeFiltersArray(filter))
+})
+
+dc.override(dc, "legend", function() {
+  return legendMixin(dc._legend())
 })
 
 module.exports = dc

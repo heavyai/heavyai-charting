@@ -1223,4 +1223,106 @@ body {
     position: absolute;
 }
 
+.dc-legend {
+    position: absolute;
+    z-index: 1;
+    background: rgba(white, .9);
+    bottom: 8px;
+    left: 8px;
+    max-width: 160px;
+    border: 1px solid $gray2;
+    border-radius: 2px;
+    font-size: 11px;
+
+    &:hover {
+        background: white;
+
+        .toggle-btn {
+            opacity: 1;
+        }
+    }
+
+    .dc-legend-header {
+        border-bottom: 1px solid $gray2;
+        color: $gray4;
+        font-weight: bold;
+        margin: 4px 4px 0 4px;
+        position: relative;
+        padding-right: 20px;
+        padding-bottom: 2px;
+    }
+
+    .toggle-btn {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: -1px;
+        right: 0;
+        cursor: pointer;
+        transform: scale(.75);
+        transition: opacity .25s;
+        opacity: 0;
+
+        &:after, &:before {
+            content: '';
+            width: 2px;
+            height: 16px;
+            background: $gray4;
+            top: 50%;
+            left: 50%;
+            position: absolute;
+        }
+
+        &:after {
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        &:before {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        &:hover {
+            &:after, &:before {
+                background: $blue-main;
+            }
+        }
+    }
+
+    .dc-legend-body {
+        max-height: 120px;
+        overflow-y: auto;
+        padding: 0 4px 4px 4px;
+    }
+
+    .legend-item-color {
+        width: 8px;
+        height: 8px;
+        flex-shrink: 0;
+    }
+
+    .legend-item-text {
+        flex-grow: 1;
+        padding: 4px;
+        line-height: 1;
+    }
+
+    .dc-legend-item {
+        display: flex;
+        align-items: center;
+        cursor: default;
+    }
+
+    &.collapsed {
+        .dc-legend-header {
+            border: 0;
+            padding: 4px 8px 4px 8px;
+            margin: 0;
+
+            &:hover {
+                cursor: pointer;
+                color: $blue-main;
+            }
+        }
+    }
+}
 
