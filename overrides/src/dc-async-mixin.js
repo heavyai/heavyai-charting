@@ -53,6 +53,7 @@ export default function asyncCoreMixin (dc) {
   }
 
   dc.redrawAllAsyncWithDebounce = function (group) {
+    console.log('deounce')
     if (dc._refreshDisabled) {
       return Promise.resolve()
     }

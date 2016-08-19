@@ -6,11 +6,11 @@ export default function debounceFilterRedrawMixin (dc) {
           if (error) {
             callback && callback(error)
           } else {
-            dc.redrawAllAsyncWithDebounce(_chart.chartGroup())
+            dc.redrawAll(_chart.chartGroup())
           }
         })
       } else {
-        dc.redrawAllAsyncWithDebounce(_chart.chartGroup())
+        dc.redrawAll(_chart.chartGroup())
       }
       return _chart
     }
