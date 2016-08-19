@@ -28,4 +28,31 @@ describe("MapD Base Mixin", () => {
       expect(base.renderLabel()).to.equal(true)
     })
   })
+  describe('redraw', () => {
+    const redrawAllAsync = dc.redrawAllAsync
+    beforeEach(() => {
+      dc._redrawCount = 0
+      dc.redrawAllAsync = chai.spy(() => Promise.resolve())
+    })
+    after(() => {
+      dc.redrawAllAsync = redrawAllAsync
+      dc.resetRedrawStack()
+    })
+    describe("when invoked with queryGroupId and queryCount", () => {
+      describe("when redrawStack is empty at the end", () => {
+        it("should call redrawAllAsync", () => {
+          dc._redrawIdStack = 2
+          base.redraw(0, 0, 1, {})
+          expect(dc.redrawAllAsync).to.have.been.called()
+        })
+      })
+      describe("when redrawStack is not empty at the end", () => {
+        it("should not call redrawAllAsync", () => {
+          dc._redrawIdStack = 0
+          base.redraw(0, 0, 1, {})
+          expect(dc.redrawAllAsync).to.have.not.been.called()
+        })
+      })
+    })
+  })
 })

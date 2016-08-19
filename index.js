@@ -3,7 +3,6 @@
 import filterMixin from "./overrides/build/filter-mixin"
 import {heatMapKeyAccessor, heatMapLabel, heatMapValueAccesor} from "./overrides/build/heatmap"
 import {normalizeFiltersArray} from "./overrides/build/formatting-helpers"
-import debounceFilterRedrawMixin from "./overrides/build/debounce-filter-redraw-mixin"
 
 var d3 = require("d3");
 var crossfilter = require("../mapd-crossfilter");
@@ -36,7 +35,7 @@ dc.override(dc, "stackMixin", function(_chart) {
 })
 
 dc.override(dc, "heatMap", function(parent, chartGroup) {
-  return debounceFilterRedrawMixin(dc)(dc._heatMap(parent, chartGroup))
+  return dc._heatMap(parent, chartGroup)
     .keyAccessor(heatMapKeyAccessor)
     .valueAccessor(heatMapValueAccesor)
     .colorAccessor(d => d.value)
@@ -54,7 +53,7 @@ dc.override(dc, "pieChart", function(parent, chartGroup) {
 })
 
 dc.override(dc, "lineChart", function(parent, chartGroup) {
-  return debounceFilterRedrawMixin(dc)(dc._lineChart(parent, chartGroup))
+  return dc._lineChart(parent, chartGroup)
 })
 
 dc.override(dc.filters, "TwoDimensionalFilter", function(filter) {

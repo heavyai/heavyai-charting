@@ -911,21 +911,19 @@ dc.baseMixin = function (_chart) {
                     console.log("Redraw elapsed: " + elapsed + " ms");
                 }
                 dc._globalTransitionDuration = null; // reset to null if was brush
+
                 var stackEmpty = dc.isRedrawStackEmpty(queryGroupId);
                 dc.resetRedrawStack();
-
-                if (callback) {
-                    callback(null, result || _chart);
-                    return result
-                } else if (!stackEmpty) {
-                    dc.redrawAllAsync(null)
-                      .then(function(result) {
-                        callback(null, result)
-                      })
-                      .catch(function(error) {
-                        callback(error)
-                      });
+                if (!stackEmpty) {
+                  return dc.redrawAllAsync(null)
+                    .then(function(result) {
+                      callback(null, result)
+                    })
+                    .catch(function(error) {
+                      callback(error)
+                    });
                 }
+
             }
         }
 

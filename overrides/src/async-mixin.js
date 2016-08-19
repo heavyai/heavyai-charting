@@ -18,24 +18,26 @@ export default function asyncMixin (_chart) {
     return _chart
   }
 
-  _chart.data(function (group) {
-    if (_chart.dataCache != null) {
+  _chart.data(group => {
+    if (_chart.dataCache !== null) { // eslint-disable-line no-negated-condition
       return _chart.dataCache
     } else {
-      console.log("Warning: Deprecate sync method .data()")
+      console.log("Warning: Deprecate sync method .data()") // eslint-disable-line no-console
       return group.all()
     }
   })
 
   _chart.renderAsync = function (queryGroupId, queryCount) {
-    if (dc._refreshDisabled) return
+    if (dc._refreshDisabled) {
+      return Promise.resolve()
+    }
 
     if (_chart.hasOwnProperty("setSample")) {
       _chart.setSample()
     }
     const id = _chart.queryId++
 
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       const renderCallback = function (error, data) {
         if (error) {
           reject(error)
@@ -52,19 +54,21 @@ export default function asyncMixin (_chart) {
           _chart.render(id, queryGroupId, queryCount, data, renderCallback)
         }
       }
-      _chart.dataAsync(dataCallback)
+      return _chart.dataAsync(dataCallback)
     })
   }
 
   _chart.redrawAsync = function (queryGroupId, queryCount) {
-    if (dc._refreshDisabled) return
+    if (dc._refreshDisabled) {
+      return Promise.resolve()
+    }
 
     if (_chart.hasOwnProperty("setSample")) {
       _chart.setSample()
     }
     const id = _chart.queryId++
 
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       const redrawCallback = function (error, data) {
         if (error) {
           reject(error)
@@ -85,17 +89,25 @@ export default function asyncMixin (_chart) {
     })
   }
 
-  _chart.redrawGroup = function (callback) {
+  _chart.redrawGroup = function () {
+    function logRedrawGroupError (e) {
+      if (dc._logging) {
+        console.log("Redraw Group Error", e) // eslint-disable-line no-console
+      }
+    }
+
     if (_chart.commitHandler()) {
-      _chart.commitHandler()(false, function (error, result) {
+      _chart.commitHandler()(false, error => {
         if (error) {
-          callback && callback(error)
+          logRedrawGroupError(error)
         } else {
           dc.redrawAllAsync(_chart.chartGroup())
+            .catch(e => logRedrawGroupError(e))
         }
       })
     } else {
       dc.redrawAllAsync(_chart.chartGroup())
+        .catch(e => logRedrawGroupError(e))
     }
     return _chart
   }

@@ -20,7 +20,7 @@ export default function asyncCoreMixin (dc) {
   }
 
   dc.isRedrawStackEmpty = function (queryGroupId) {
-    if (queryGroupId) {
+    if (typeof queryGroupId === "number") {
       return dc._redrawIdStack === null || dc._redrawIdStack === queryGroupId
     } else {
       return dc._redrawIdStack === null
@@ -32,28 +32,6 @@ export default function asyncCoreMixin (dc) {
   }
 
   dc.redrawAllAsync = function (group) {
-    if (dc._refreshDisabled) {
-      return Promise.resolve()
-    }
-
-    dc._startRedrawTime = new Date()
-
-    const charts = dc.chartRegistry.list(group)
-
-    const redrawPromises = charts.map((chart) => {
-      chart.expireCache()
-      return chart.redrawAsync()
-    })
-
-    if (dc._renderlet !== null) {
-      dc._renderlet(group)
-    }
-
-    return Promise.all(redrawPromises)
-  }
-
-  dc.redrawAllAsyncWithDebounce = function (group) {
-    console.log('deounce')
     if (dc._refreshDisabled) {
       return Promise.resolve()
     }
