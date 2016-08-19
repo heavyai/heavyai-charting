@@ -46,6 +46,7 @@ export default function asyncMixin (_chart) {
 
       const dataCallback = function (error, data) {
         if (error) {
+          dc._renderIdStack = null
           reject(error)
         } else {
           _chart.render(id, queryGroupId, queryCount, data, renderCallback)

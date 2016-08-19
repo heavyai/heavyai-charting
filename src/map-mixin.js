@@ -35,9 +35,9 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     var _llb = _mapboxgl.LngLatBounds.convert(_arr);
 
     _chart.useLonLat = function(useLonLat) {
-       if (!arguments.length) 
+       if (!arguments.length)
           return _useLonLat;
-       _useLonLat = useLonLat; 
+       _useLonLat = useLonLat;
     }
     _chart.map = function() { // just a getter - don't let user set map
         return _map;
@@ -154,7 +154,10 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             if (_xDim !== null && _yDim != null) {
                 _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
                 _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
-                dc.redrawAll();
+                dc.redrawAllAsyncWithDebounce()
+                  .catch(function(error) {
+                    console.log("on move event redrawall error:", error)
+                  });
             }
             else {
                 _chart._projectionFlag = true;
