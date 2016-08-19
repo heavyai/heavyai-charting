@@ -504,26 +504,26 @@
 
     /* Before doing anything we must set up a mapd connection, specifying
      * username, password, host, port, and database name */
-    var con = new MapdCon()
+    new MapdCon()
       .protocol("http")
       .host("kali.mapd.com")
       .port("9092")
       .dbName("mapd")
       .user("mapd")
       .password("HyperInteractive")
-      .connect();
-
-    /*
-     *  This instaniates a new crossfilter.
-     *  Pass in mapdcon as the first argument to crossfilter, then the
-     *  table name, then a label for the data (unused in this example).
-     *
-     *  to see all availables --  con.getTables()
-     */
-     crossfilter.crossfilter(con, "flights").then(createCharts)
-    /*
-     *  Pass instance of crossfilter into our reateCharts.
-     */
+      .connect(function(error, con) {
+        /*
+         *  This instaniates a new crossfilter.
+         *  Pass in mapdcon as the first argument to crossfilter, then the
+         *  table name, then a label for the data (unused in this example).
+         *
+         *  to see all availables --  con.getTables()
+         */
+         crossfilter.crossfilter(con, "flights").then(createCharts)
+        /*
+         *  Pass instance of crossfilter into our reateCharts.
+         */
+      });
   }
 
   document.addEventListener('DOMContentLoaded', init, false);
