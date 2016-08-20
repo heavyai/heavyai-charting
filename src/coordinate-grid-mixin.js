@@ -526,7 +526,7 @@ dc.coordinateGridMixin = function (_chart) {
             }
         }
 
-        _chart.render();
+        _chart.renderAsync();
 
         binBrush();
     }

@@ -279,114 +279,113 @@
        * get a global min and max
        */
 
-      var timeChartBounds = crossFilter
+      crossFilter
         .groupAll()
         .reduce(timeChartMeasures)
-        .values(true);
+        .valuesAsync(true).then(function(timeChartBounds) {
 
-      var timeChartDimension = crossFilter.dimension("tweet_time");
+          var timeChartDimension = crossFilter.dimension("tweet_time");
 
-      /* We would like to bin or histogram the time values.  We do this by
-       * invoking setBinParams on the group.  Here we are asking for 400 equal
-       * sized bins from the min to the max of the time range
-       */
+          /* We would like to bin or histogram the time values.  We do this by
+           * invoking setBinParams on the group.  Here we are asking for 400 equal
+           * sized bins from the min to the max of the time range
+           */
 
-      var timeChartGroup = timeChartDimension
-        .group()
-        .reduceCount('*')
-        .setBinParams({
-           numBins: 288, // 288 * 5 = number of minutes in a day
-           binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
-          });
+          var timeChartGroup = timeChartDimension
+            .group()
+            .reduceCount('*')
+            .setBinParams({
+               numBins: 288, // 288 * 5 = number of minutes in a day
+               binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
+              });
 
-    /*  We create the time chart as a line chart
-     *  with the following parameters:
-     *
-     *  Width and height - as above
-     *
-     *  elasticY(true) - cause the y-axis to scale as filters are changed
-     *
-     *  renderHorizontalGridLines(true) - add grid lines to the chart
-     *
-     *  brushOn(true) - Request a filter brush to be added to the chart - this
-     *  will allow users to drag a filter window along the time chart and filter
-     *  the rest of the data accordingly
-     *
-     */
+        /*  We create the time chart as a line chart
+         *  with the following parameters:
+         *
+         *  Width and height - as above
+         *
+         *  elasticY(true) - cause the y-axis to scale as filters are changed
+         *
+         *  renderHorizontalGridLines(true) - add grid lines to the chart
+         *
+         *  brushOn(true) - Request a filter brush to be added to the chart - this
+         *  will allow users to drag a filter window along the time chart and filter
+         *  the rest of the data accordingly
+         *
+         */
 
-      var dcTimeChart = dc.lineChart('.chart2-example')
-        .width(w)
-        .height(h/2.5)
-        .elasticY(true)
-        .renderHorizontalGridLines(true)
-        .brushOn(true)
-        .xAxisLabel('Time of Day')
-        .yAxisLabel('Number of Tweets')
-        .dimension(timeChartDimension)
-        .group(timeChartGroup);
+          var dcTimeChart = dc.lineChart('.chart2-example')
+            .width(w)
+            .height(h/2.5)
+            .elasticY(true)
+            .renderHorizontalGridLines(true)
+            .brushOn(true)
+            .xAxisLabel('Time of Day')
+            .yAxisLabel('Number of Tweets')
+            .dimension(timeChartDimension)
+            .group(timeChartGroup);
 
-      /* Set the x and y axis formatting with standard d3 functions */
+          /* Set the x and y axis formatting with standard d3 functions */
 
-      dcTimeChart
-        .x(d3.time.scale.utc().domain([timeChartBounds.minimum, timeChartBounds.maximum]))
-        .yAxis().ticks(5);
+          dcTimeChart
+            .x(d3.time.scale.utc().domain([timeChartBounds.minimum, timeChartBounds.maximum]))
+            .yAxis().ticks(5);
 
-      dcTimeChart
-        .xAxis().orient('top');
+          dcTimeChart
+            .xAxis().orient('top');
 
 
-  /*---------------------SET UP FILTER ----------------------------------*/
+      /*---------------------SET UP FILTER ----------------------------------*/
 
-      /*  We create the filter
-       *  with the following parameters:
-       *
-       *  Dimension: What column you would like to search.
-       *
-       *  OPTIONAL: setDrillDownFilter: Boolean
-       *  if set to true, your search will "AND" for all values, instead of
-       *  the default "OR" for all values.
-       *
-       *  eg. If searching "Keyboard Cat":
-       *  This will only only return results where the tweet contains:
-       *  "Keyboard" AND "Cat"
-       *
-       */
-      var searchFilterTweets = crossFilter.dimension("tweet_tokens")
-                                          .setDrillDownFilter(true);
+          /*  We create the filter
+           *  with the following parameters:
+           *
+           *  Dimension: What column you would like to search.
+           *
+           *  OPTIONAL: setDrillDownFilter: Boolean
+           *  if set to true, your search will "AND" for all values, instead of
+           *  the default "OR" for all values.
+           *
+           *  eg. If searching "Keyboard Cat":
+           *  This will only only return results where the tweet contains:
+           *  "Keyboard" AND "Cat"
+           *
+           */
+          var searchFilterTweets = crossFilter.dimension("tweet_tokens")
+                                              .setDrillDownFilter(true);
 
-      function createMultiFilterArray(search) {
+          function createMultiFilterArray(search) {
 
-        // Empty Search
-        if (search == "") {
-          return undefined;
-        }
+            // Empty Search
+            if (search == "") {
+              return undefined;
+            }
 
-        return search.split(',').map(function(searchValue) {
-          return searchValue.trim();
-        });
-      }
-
-      $('.search-bar').keypress(function(e){
-        if (e.keyCode === 13) {
-          var mutipleFilterArray = createMultiFilterArray(e.target.value);
-          if (mutipleFilterArray) {
-            searchFilterTweets.filterMulti(mutipleFilterArray);
-          } else {
-            // Clears all filters
-            searchFilterTweets.filter();
+            return search.split(',').map(function(searchValue) {
+              return searchValue.trim();
+            });
           }
-          // You must call redrawAll after applying custom filters.
-          dc.redrawAll();
-        }
-      })
 
-      /* Calling dc.renderAll() will render all of the charts we set up.  Any
-         crossFilters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
-       */
+          $('.search-bar').keypress(function(e){
+            if (e.keyCode === 13) {
+              var mutipleFilterArray = createMultiFilterArray(e.target.value);
+              if (mutipleFilterArray) {
+                searchFilterTweets.filterMulti(mutipleFilterArray);
+              } else {
+                // Clears all filters
+                searchFilterTweets.filter();
+              }
+              // You must call redrawAll after applying custom filters.
+              dc.redrawAllAsync();
+            }
+          })
 
-      dc.renderAll()
+          /* Calling dc.renderAll() will render all of the charts we set up.  Any
+             crossFilters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
+           */
 
-
+          dc.renderAllAsync()
+        });
 
   /*--------------------------RESIZE EVENT------------------------------*/
 

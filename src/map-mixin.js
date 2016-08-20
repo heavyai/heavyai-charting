@@ -99,7 +99,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     }
 
     function onStyleLoad(e) {
-      _chart.render();
+      _chart.renderAsync();
     }
 
     function onLoad(e){

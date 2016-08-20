@@ -111,11 +111,6 @@
    *  Note that for the count we use crossFilter itself as the dimension.
   */
 
-        var countDim = crossFilter;
-        var countGroup = crossFilter.groupAll();
-        dc.dataCount(".data-count")
-          .dimension(countDim)
-          .group(countGroup);
 
   /*------------------------CHART 1 EXAMPLE------------------------------*/
 
@@ -381,100 +376,97 @@
       /* Note than when we are doing aggregations over the entire dataset we use
        * the crossfilter object itself as the dimension with the groupAll method
        *
-       * values(true) gets the values for our groupAll measure (here min and max
+       * valuesAsync(true) gets the values for our groupAll measure (here min and max
        * of dep_timestamp) - true means to ignore currently set filters - i.e.
        * get a global min and max
        */
 
-      var timeChartBounds = crossFilter
-                            .groupAll()
-                            .reduceMulti(reduceMultiExpression2)
-                            .values(true);
+      crossFilter
+        .groupAll()
+        .reduceMulti(reduceMultiExpression2)
+        .valuesAsync(true).then(function(timeChartBounds) {
 
-      var timeChartDimension = crossFilter.dimension("dep_timestamp");
+          var timeChartDimension = crossFilter.dimension("dep_timestamp");
 
-      /* We would like to bin or histogram the time values.  We do this by
-       * invoking setBinParams on the group.  Here we are asking for 400 equal
-       * sized bins from the min to the max of the time range
-       */
+          /* We would like to bin or histogram the time values.  We do this by
+           * invoking setBinParams on the group.  Here we are asking for 400 equal
+           * sized bins from the min to the max of the time range
+           */
 
-      var timeChartGroup = timeChartDimension.group()
-                  .reduceCount()
-                  .setBinParams({
-                     numBins: 400,
-                     binBounds: [timeChartBounds.minimum,timeChartBounds.maximum]
-                    });
+          var timeChartGroup = timeChartDimension.group()
+                      .reduceCount()
+                      .setBinParams({
+                         numBins: 400,
+                         binBounds: [timeChartBounds.minimum,timeChartBounds.maximum]
+                        });
 
-    /*  We create the time chart as a line chart
-     *  with the following parameters:
-     *
-     *  Width and height - as above
-     *
-     *  elasticY(true) - cause the y-axis to scale as filters are changed
-     *
-     *  renderHorizontalGridLines(true) - add grid lines to the chart
-     *
-     *  brushOn(true) - Request a filter brush to be added to the chart - this
-     *  will allow users to drag a filter window along the time chart and filter
-     *  the rest of the data accordingly
-     *
-     */
+          /*  We create the time chart as a line chart
+           *  with the following parameters:
+           *
+           *  Width and height - as above
+           *
+           *  elasticY(true) - cause the y-axis to scale as filters are changed
+           *
+           *  renderHorizontalGridLines(true) - add grid lines to the chart
+           *
+           *  brushOn(true) - Request a filter brush to be added to the chart - this
+           *  will allow users to drag a filter window along the time chart and filter
+           *  the rest of the data accordingly
+           *
+           */
 
-      var dcTimeChart = dc.lineChart('.chart3-example')
-        .width(w)
-        .height(h/2.5)
-        .elasticY(true)
-        .renderHorizontalGridLines(true)
-        .brushOn(true)
-        .xAxisLabel('Departure Time')
-        .yAxisLabel('# Flights')
-        .dimension(timeChartDimension)
-        .group(timeChartGroup);
+          var dcTimeChart = dc.lineChart('.chart3-example')
+            .width(w)
+            .height(h/2.5)
+            .elasticY(true)
+            .renderHorizontalGridLines(true)
+            .brushOn(true)
+            .xAxisLabel('Departure Time')
+            .yAxisLabel('# Flights')
+            .dimension(timeChartDimension)
+            .group(timeChartGroup);
 
-      /* Set the x and y axis formatting with standard d3 functions */
+          /* Set the x and y axis formatting with standard d3 functions */
 
-      dcTimeChart
-        .x(d3.time.scale.utc().domain([timeChartBounds.minimum,timeChartBounds.maximum]))
-        .yAxis().ticks(5);
+          dcTimeChart
+            .x(d3.time.scale.utc().domain([timeChartBounds.minimum,timeChartBounds.maximum]))
+            .yAxis().ticks(5);
 
-      dcTimeChart
-        .xAxis().orient('top');
+          dcTimeChart
+            .xAxis().orient('top');
 
-      /* Calling dc.renderAll() will render all of the charts we set up.  Any
-       * filters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
-       */
+          /* Calling dc.renderAllAsync() will render all of the charts we set up.  Any
+           * filters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
+           */
 
-      dc.renderAll()
+          dc.renderAllAsync()
 
+          /*--------------------------RESIZE EVENT------------------------------*/
 
+          /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
 
-  /*--------------------------RESIZE EVENT------------------------------*/
+          window.addEventListener("resize", debounce(reSizeAll, 100));
 
-      /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+          function reSizeAll(){
+            var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
 
-      window.addEventListener("resize", debounce(reSizeAll, 100));
+            dcBarChart
+              .height(h/1.5)
+              .width(w/2)
 
-      function reSizeAll(){
-        var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
-        var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
+            dcScatterPlot
+              .height(h/1.5)
+              .width(w/2)
 
-        dcBarChart
-          .height(h/1.5)
-          .width(w/2)
+            dcTimeChart
+              .width(w)
+              .height(h/2.5)
 
-        dcScatterPlot
-          .height(h/1.5)
-          .width(w/2)
-
-        dcTimeChart
-          .width(w)
-          .height(h/2.5)
-
-        dc.renderAll();
-      }
-
+            dc.renderAllAsync();
+          }
+      });
   }
-
 
 
   function debounce(func, wait, immediate) {
