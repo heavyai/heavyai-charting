@@ -1233,6 +1233,7 @@ body {
     border: 1px solid $gray2;
     border-radius: 2px;
     font-size: 11px;
+    min-width: 100px;
 
     &:hover {
         background: white;
@@ -1313,6 +1314,7 @@ body {
     }
 
     &.collapsed {
+        min-width: 0;
         .dc-legend-header {
             border: 0;
             padding: 4px 8px 4px 8px;
@@ -1323,6 +1325,13 @@ body {
                 color: $blue-main;
             }
         }
+    }
+}
+
+.chart-type-row {
+    .dc-legend {
+        left: auto;
+        right: 16px !important;
     }
 }
 

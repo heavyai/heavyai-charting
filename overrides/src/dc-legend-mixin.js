@@ -3,6 +3,7 @@ export default function legendMixin (legend) {
   legend._expanded = true
   legend._heightRatio = 3
   legend._title = "Legends"
+  legend._key = "key0"
 
   legend.render = function () {
     legend.parent().root().select(".dc-legend").remove()
@@ -13,7 +14,7 @@ export default function legendMixin (legend) {
 
     const header = wrapper.append("div")
       .attr("class", "dc-legend-header")
-      .text(legend._expanded ? legend._title : "See Legends")
+      .text(legend._expanded ? legend._title : "Legends")
       .on("click", () => {
         legend._expanded = !legend._expanded
         legend.render()
@@ -56,10 +57,10 @@ export default function legendMixin (legend) {
   }
 
   legend.legendables = function () {
-    return legend.parent().data().map((d, i) => {
+    return uniqueKeys(legend.parent().data(), legend._key).map((d, i) => {
       const legendable = {
-        name: d.key0,
-        data: d.value,
+        name: d[legend._key],
+        data: d.val,
         others: d.others,
         chart: legend.parent()
       }
@@ -72,6 +73,17 @@ export default function legendMixin (legend) {
   legend.setTitle = function (title) {
     legend._title = title
     return legend
+  }
+
+  legend.setKey = function (key) {
+    legend._key = key
+    return legend
+  }
+
+  function uniqueKeys (myArr, key) {
+    return myArr.filter((obj, pos, arr) => (
+      arr.map(mapObj => mapObj[key]).indexOf(obj[key]) === pos
+    ))
   }
 
   return legend
