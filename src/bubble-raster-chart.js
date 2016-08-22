@@ -286,11 +286,11 @@ function genVegaSpec(chart, lastFilteredSize) {
 
   if (chart.tableName()) { vegaSpec.data[0].dbTableName = chart.tableName() }
 
-  if (chart.colors().domain) {
+  if (chart.colors().domain && chart.colors().domain().length && chart.colors().range().length) {
     vegaSpec.scales.push({name: "color", type: chart._determineScaleType(chart.colors()), domain: chart.colors().domain(), range: chart.colors().range(), default: chart.defaultColor(), nullValue: chart.nullColor()})
     vegaSpec.marks[0].properties.fillColor = {scale: "color", field: "color"}
   } else {
-    vegaSpec.marks[0].properties.fillColor = {value: chart.colors()()}
+    vegaSpec.marks[0].properties.fillColor = {value: chart.colors()() || chart.defaultColor()}
   }
 
   if (typeof chart.r() === 'function') {
