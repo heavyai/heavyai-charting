@@ -62,7 +62,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 
         for (var d = 0; d < dataLength; d++) {
             var geom = data[d].geometry.coordinates;
-            var numGeoms = geom.length; 
+            var numGeoms = geom.length;
             for (var g = 0; g < numGeoms; g++) {
                 var coords = geom[g];
                 var numCoords = coords.length;
@@ -72,7 +72,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
                         xMin = coord[0];
                     if (coord[0] > xMax)
                         xMax = coord[0];
-                    if (coord[1] < yMin) 
+                    if (coord[1] < yMin)
                         yMin = coord[1];
                     if (coord[1] > yMax)
                         yMax = coord[1];
@@ -200,11 +200,11 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 /* --------------------------------------------------------------------------*/
 
     function isSelected (layerIndex, d) {
-        return _chart.hasFilter() && _chart.hasFilter(getKey(layerIndex, d));
+        return _chart.hasFilter() && _chart.hasFilter(getKey(layerIndex, d)) ^ _chart.filtersInverse();
     }
 
     function isDeselected (layerIndex, d) {
-        return _chart.hasFilter() && !_chart.hasFilter(getKey(layerIndex, d));
+        return _chart.hasFilter() && !isSelected(layerIndex, d)
     }
 
     function getKey (layerIndex, d) {
@@ -241,10 +241,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 
     _chart.onClick = function (d, layerIndex) {
         var selectedRegion = geoJson(layerIndex).keyAccessor(d);
-        dc.events.trigger(function () {
-            _chart.filter(selectedRegion);
-            _chart.redrawGroup();
-        });
+        _chart.handleFilterClick(d3.event, selectedRegion)
     };
 
     function renderTitle (regionG, layerIndex, data) {
@@ -270,15 +267,9 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 /* --------------------------------------------------------------------------*/
 
         for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
-
-            //console.time("plot");
             plotData(layerIndex, data);
-            //console.timeEnd("plot");
             if (_chart._projectionFlag) {
-                //console.time("reprojection");
-
                 _chart.svg().selectAll('g.' + geoJson(layerIndex).name + ' path').attr('d', _geoPath);
-                //console.timeEnd("reprojection");
             }
         }
         _chart._projectionFlag = false;
@@ -437,4 +428,3 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 /* ****************************************************************************
  * END OVERRIDE: dc.geoChoroplethChart                                        *
  * ***************************************************************************/
-

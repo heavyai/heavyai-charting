@@ -1821,26 +1821,6 @@ dc.baseMixin = function (_chart) {
       };
     }
 
-    /**
-     * Filters chart on click. Determines if filter is inverse and passes
-     * that information to _chart.filter. Calls _chart.redrawGroup at the end.
-     * @name handleFilterClick
-     * @memberof dc.baseMixin
-     * @instance
-     * @example
-     * chart.handleFilterClick(d3.event, filter);
-     * @param {d3.event} event
-     * @param {dc filter} filter
-     * @return {dc.baseMixin}
-     */
-    _chart.handleFilterClick = function (event, filter) {
-        var isInverseFilter = event.metaKey || event.ctrlKey
-        dc.events.trigger(function () {
-            _chart.filter(filter, isInverseFilter);
-            _chart.redrawGroup();
-        });
-    }
-
     return _chart;
 };
 /******************************************************************************
