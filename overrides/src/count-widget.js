@@ -48,6 +48,7 @@ export default function countWidget (parent, chartGroup) {
     _chart.getTotalRecordsAsync()
           .then(group.valueAsync)
           .then((value) => {
+            dc._lastFilteredSize = value
             callbacks(null, value)
           })
           .catch((error) => {

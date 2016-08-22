@@ -33,7 +33,7 @@ describe("Count Widget", () => {
     })
   })
   describe("setDataAsync", () => {
-    it("should getTotalRecordsAsync then valueAsync", function (done) {
+    it("should getTotalRecordsAsync, then valueAsync, then set dc._lastFilteredSize", function (done) {
       const value = 100
       let callback
       let spy = chai.spy()
@@ -43,6 +43,8 @@ describe("Count Widget", () => {
       })
       return widget.dataAsync(spy).then(() => {
         expect(spy).to.have.been.called.with(null, value)
+        expect(dc._lastFilteredSize).to.equal(value)
+        dc._lastFilteredSize = null
         done()
       })
     })
