@@ -121,6 +121,7 @@ export default function filterMixin (_chart) {
       _filters = _chart.resetFilterHandler()(_filters)
       _chart.filtersInverse(isFilterInverse)
     }
+
     if (filter instanceof Array && filter[0] instanceof Array && !filter.isFiltered) {
       filter[0].forEach(d => {
         if (_chart.hasFilter(d)) {
