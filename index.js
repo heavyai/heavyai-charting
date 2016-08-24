@@ -1,7 +1,8 @@
 // Import DC and dependencies
-
+import createSamplingMixin from "./overrides/build/sampling-mixin"
 import filterMixin from "./overrides/build/filter-mixin"
 import {heatMapKeyAccessor, heatMapLabel, heatMapValueAccesor} from "./overrides/build/heatmap"
+import mapdTable from "./overrides/build/mapd-table"
 import {normalizeFiltersArray} from "./overrides/build/formatting-helpers"
 
 import legendMixin from "./overrides/build/dc-legend-mixin"
@@ -14,7 +15,6 @@ var asyncCoreMixin = require("./overrides/build/dc-async-mixin").default
 var utilsMixin = require("./overrides/build/dc-utils-mixin").default
 
 dc = utilsMixin(asyncCoreMixin(dc))
-dc.mapdTable = require("./overrides/build/mapd-table").default
 dc.countWidget = require("./overrides/build/count-widget").default
 dc.asyncMixin = require("./overrides/build/async-mixin").default
 dc.labelMixin = require("./overrides/build/label-mixin").default
@@ -23,6 +23,12 @@ dc.multipleKeysLabelMixin = require("./overrides/build/multiple-key-label-mixin"
 
 var multipleKeysAccessorForStack = require("./overrides/build/multiple-key-accessors").multipleKeysAccessorForStack
 var multipleKeysAccessorForCap = require("./overrides/build/multiple-key-accessors").multipleKeysAccessorForCap
+
+const samplingMixin = createSamplingMixin(dc)
+
+dc.mapdTable = function(_chart) {
+  return samplingMixin(mapdTable(_chart))
+}
 
 dc.override(dc, "baseMixin", function(_chart) {
   var baseChart = filterMixin(dc.labelMixin(dc.multipleKeysLabelMixin(dc.asyncMixin(dc._baseMixin(_chart)))))
