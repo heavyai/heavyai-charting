@@ -355,7 +355,7 @@ dc.bubbleChart = function (parent, chartGroup) {
         var bubbleG = _chart.chartBodyG().selectAll('g.' + _chart.BUBBLE_NODE_CLASS)
 
 /* OVERRIDE -----------------------------------------------------------------*/
-            .data(_chart.data());
+            .data(data);
 /* --------------------------------------------------------------------------*/
 
         if (_sortBubbleSize) {
