@@ -83,8 +83,6 @@ dc.baseMixin = function (_chart) {
 /* OVERRIDE ---------------------------------------------------------------- */
     var _legendContinuous;
 
-    _chart._colorLegend = null;
-
     var _topQueryCallback = null;
     var queryId = 0;
     var _registerQuery = function(callback) {
@@ -776,15 +774,11 @@ dc.baseMixin = function (_chart) {
             _mandatoryAttributes.forEach(checkForMandatoryAttributes);
         }
 
-        var result = _chart._doRender(data);
-
         if (_legend && _chart.colors().domain) {
             _legend.render();
         }
 
-        if (_chart._colorLegend) {
-            _chart._colorLegend.render();
-        }
+        var result = _chart._doRender(data);
 
         _chart.generatePopup();
 
@@ -890,17 +884,16 @@ dc.baseMixin = function (_chart) {
         _chart.dataCache = typeof data !== 'undefined' && data !== null ? data : null
 
         sizeSvg();
-        _listeners.preRedraw(_chart, data);
 
-        var result = _chart._doRedraw(data);
+
+        _listeners.preRedraw(_chart, data);
 
         if (_legend && _chart.colors().domain) {
             _legend.render();
         }
 
-        if (_chart._colorLegend) {
-            _chart._colorLegend.render();
-        }
+        var result = _chart._doRedraw(data);
+
 
         _chart._activateRenderlets('postRedraw', data);
         if (typeof queryGroupId !== 'undefined' && queryGroupId !== null) {
@@ -1383,34 +1376,7 @@ dc.baseMixin = function (_chart) {
     };
 
 /* OVERRIDE -----------------------------------------------------------------*/
-    _chart.legendablesContinuous = function () {
 
-        var legends = [];
-        var colorDomain = _chart.colors().domain();
-        var colorDomainSize = colorDomain[1] - colorDomain[0];
-        var colorRange = _chart.colors().range();
-        var numColors = colorRange.length;
-        var commafy = d3.format(',');
-
-        for (var c = 0; c < numColors; c++) {
-          var startRange = (c/numColors)*colorDomainSize + colorDomain[0];
-
-            if (_isTargeting) {
-                startRange = '%' + (parseFloat(startRange) * 100.0).toFixed(2);
-            }
-            else if (_colorByExpr === 'count(*)') {
-                startRange = parseInt(startRange);
-            }
-            else {
-                startRange = parseFloat(startRange).toFixed(2);
-                startRange = (startRange >= 1000 ? Math.round(startRange) : startRange);
-            }
-
-            legends.push({color: colorRange[c], value: isNaN(startRange) ? startRange : commafy(startRange) });
-        }
-
-        return legends;
-    }
 
     _chart.legendLock = function(_) {
       if (!arguments.length) {

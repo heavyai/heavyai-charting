@@ -2,6 +2,8 @@
 import createSamplingMixin from "./overrides/build/sampling-mixin"
 import filterMixin from "./overrides/build/filter-mixin"
 import {heatMapKeyAccessor, heatMapLabel, heatMapValueAccesor} from "./overrides/build/heatmap"
+import legendCont from "./overrides/build/dc-legend-cont"
+import chartLegendMixin from "./overrides/build/legend-mixin"
 import mapdTable from "./overrides/build/mapd-table"
 import {normalizeFiltersArray} from "./overrides/build/formatting-helpers"
 
@@ -31,7 +33,7 @@ dc.mapdTable = function(_chart) {
 }
 
 dc.override(dc, "baseMixin", function(_chart) {
-  var baseChart = filterMixin(dc.labelMixin(dc.multipleKeysLabelMixin(dc.asyncMixin(dc._baseMixin(_chart)))))
+  var baseChart = chartLegendMixin(filterMixin(dc.labelMixin(dc.multipleKeysLabelMixin(dc.asyncMixin(dc._baseMixin(_chart))))))
   baseChart.keyAccessor(multipleKeysAccessorForCap)
   return baseChart
 })
@@ -72,5 +74,7 @@ dc.override(dc.filters, "TwoDimensionalFilter", function(filter) {
 dc.override(dc, "legend", function() {
   return legendMixin(dc._legend())
 })
+
+dc.legendCont = legendCont
 
 module.exports = dc
