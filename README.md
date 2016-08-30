@@ -3,56 +3,119 @@ mapdc.js
 
 Dimensional charting built to work natively with crossfilter rendered using d3.js.
 
-### Installation:
+## Running the Examples
 
-Clone down the repo and run the following commands:
+##### Step 1 Build Dependencies
+```bash
+# ./mapd-crossfilter
+npm run build
+
+# ./mapd-con
+npm run build
+
+# ./mapdc
+npm run build
+```
+##### Step 2 Run Start Script
 
 ```bash
-git clone https://github.com/map-d/mapdc.js.git
-cd mapdc.js/
-npm install
-bash scripts/install.sh
+# ./mapdc
+npm run start 
 ```
 
-## Running the example:
+## Organization
 
-```bash
-cd example/
-npm install # install the example's dependencies
-cd ../
-npm start # start the example server from the top level directory
+The repo is separated into two parts. The root file is `mapdc/index.js`
+
+#### Part 1: `mapdc/src`
+
+The original DC source and our overwrites make up the files in this folder. 
+
+There are a few things to keep in mind in this folder:
+* The files in here are concated together by `grunt tasks`, so one cannot use `require`.
+* The `dc` and `d3` objects are considered globals.
+* Our overwrites to DC are flagged with comments, but not all of them are flagged
+* The code is written in ES5
+
+#### Part 2: `mapdc/overrides`
+
+This folder only contains our overrides and mixins to DC.
+
+Our goal is to eventually move all our additions to the DC library to this folder from `mapdc/src`
+
+When working in this folder, note that:
+* The code is written in ES6/7
+* The `dc` and `d3` objects are imports, not globals
+
+## Development Guidelines
+
+### Use Mixins and Overrides
+
+When making new additions to DC, do not directly modify the files in `mapdc/src`. Instead, one should use the overrides and mixin patterns found in `mapdc/overrides`. 
+
+Straying from this guideline will prevent us from upgrading the DC library. In addition, any new code you add to `mapdc/src` will not be linted or tested.
+
+### Use Asynchronous Methods
+
+Asynchronous methods must be used. Synchronous methods are depreacted and cause a bad user experience.
+
+For instance, use the asynchronous versions of the `render` and `redraw` methods:
+
+```js
+// bad
+chart.render()
+chart.redraw()
+
+// good
+chart.renderAsync()
+chart.redrawAsync()
 ```
 
-When the browser opens, click the **example** directory to view the examples.
+Since our version of DC must make asynchronous requests to get data, use the `dataAsync()` method for this request and only use `data()` as the cached result of `dataAsync()`
 
-## Grunt Tasks:
+```js
+// bad
+chart.data((group) => {
+  return group.top()
+})
 
-Local Command | Description
+// good
+chart.dataAsync((group, callback) => {
+  group.topAsync()
+    .then(result => {
+      chart.dataCache = result
+      callback(null, result)
+    })
+    .catch(e => callback(e))
+})
+
+chart.data(() => chart.dataCache)
+```
+
+### Testing
+
+Please write unit tests for all your `mapdc/overrides` code. The test files are located in `overrides/test`. 
+
+### Linting
+
+Please lint all your code in `mapdc/overrides`. The lint config file can be found in `overrides/.eslintrc.json` and closely mirrors the rules in `projects/dashboard-v2`
+
+
+### Scripts
+
+In the `mapdc/overrides` folder
+
+Command | Description
 --- | ---
-`node_modules/grunt-cli/bin/grunt` | Builds the library
-`node_modules/grunt-cli/bin/grunt watch` | Automatically rebuilds mapdc after each file save
+`npm run test` | Runs unit tests and provides coverage info
+`npm run lint` | Lints files
 
-You can install grunt globally on your machine by running `npm install -g grunt-cli`, otherwise use the local commands.
+In the `mapdc` folder
 
-Global Command | Description
+Command | Description
 --- | ---
-`grunt` | Builds the library
-`grunt watch` | Automatically rebuilds mapdc after each file save
+`npm run start` | Copies files for examples and then serves the example
+`npm run build` | Build DC for dashboard-v2
+`npm run watch` | Watches for changes in `./overrides` and `./src`
 
-## Pull Requests:
 
-Attach the appropriate semver label below to the **title of your pull request**. This allows Jenkins to publish to npm automatically.
-
-Semvar Tag | Description
---- | ---
-`[major]` | Breaking changes, api changes, moving files
-`[minor]` | New features (additive only!)
-`[patch]` | Bugfixes, documentation
-
-Jenkins will not let you merge a pull request that contains a missing or multiple semver label.
-
-**Forgot to add a semver label?**
-
-1. Update the PR Title
-2. Close the PR
-3. Re-open it to force Jenkins to retest the new title.
