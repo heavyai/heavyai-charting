@@ -39,7 +39,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
           return _useLonLat;
        _useLonLat = useLonLat;
     }
-    _chart.map = function() { // just a getter - don't let user set map
+    _chart.map = function() {
         return _map;
     }
 
@@ -113,57 +113,48 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
 
       dc.enableRefresh();
       _chart.renderAsync();
-
-      //$('body').trigger('loadGrid');
     }
 
     function onMapMove(e) {
+        if (e.type == 'moveend' && _lastMapMoveType == 'moveend') {
+          return;
+        }
+        _lastMapMoveType = e.type;
+        var curTime = (new Date).getTime();
+        var bounds = _map.getBounds();
+        if (!_useLonLat) {
+           _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+           _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+        } else {
+           _chart._minCoord = [bounds._sw.lng, bounds._sw.lat];
+           _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
+        }
 
-        if (e === undefined)
-            return;
-        //if (_xDim !== null && _yDim != null) {
-            if (e.type == 'moveend' && _lastMapMoveType == 'moveend')  //workaround issue where mapbox gl intercepts click events headed for other widgets (in particular, table) and fires moveend events.  If we see two moveend events in a row, we know this event is spurious
+        if (e.type === 'move') {
+            if (_isFirstMoveEvent) {
+                _lastMapUpdateTime = curTime;
+                _isFirstMoveEvent = false;
+            }
+            if (_mapUpdateInterval === Infinity || (curTime - _lastMapUpdateTime < _mapUpdateInterval)) {
                 return;
-            _lastMapMoveType = e.type;
-            var curTime = (new Date).getTime();
-            var bounds = _map.getBounds();
-            if (!_useLonLat) {
-               _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
-               _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
             }
-            else {
-               _chart._minCoord = [bounds._sw.lng, bounds._sw.lat];
-               _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
-            }
-            //var bounds = _map.getBounds();
-            //var minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
-            //var maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
-            if (e.type === 'move') {
-                if (_isFirstMoveEvent) {
-                    _lastMapUpdateTime = curTime;
-                    _isFirstMoveEvent = false;
-                }
-                if (_mapUpdateInterval === Infinity || (curTime - _lastMapUpdateTime < _mapUpdateInterval)) {
-                    return;
-                }
-            }
-            else if (e.type === 'moveend') {
-                _isFirstMoveEvent = true;
-            }
-            _lastMapUpdateTime = curTime;
-            if (_xDim !== null && _yDim != null) {
-                _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
-                _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
-                dc.redrawAllAsync()
-                  .catch(function(error) {
-                    console.log("on move event redrawall error:", error)
-                  });
-            }
-            else {
-                _chart._projectionFlag = true;
-                _chart.redrawAsync();
-            }
-        //}
+        }
+        else if (e.type === 'moveend') {
+            _isFirstMoveEvent = true;
+        }
+        _lastMapUpdateTime = curTime;
+        if (_xDim !== null && _yDim !== null) {
+            _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
+            _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
+            dc.redrawAllAsync()
+              .catch(function(error) {
+                console.log("on move event redrawall error:", error)
+              });
+        }
+        else {
+            _chart._projectionFlag = true;
+            _chart.redrawAsync();
+        }
     }
 
     _chart.mapStyle = function(style) {
@@ -174,7 +165,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             _map.setStyle(_mapStyle);
             if (typeof _chart.resetLayer !== "undefined")
                _chart.resetLayer();
-            //_chart.render();
         }
 
         return _chart;
@@ -242,7 +232,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         _map.touchZoomRotate.disableRotation();
 
         _map.on('load', onLoad);
-        //_map.style.on('load', onStyleLoad);
         _map.on('style.load', onStyleLoad);
         _map.on('move', onMapMove);
         _map.on('moveend', onMapMove);
@@ -251,7 +240,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     }
 
     _chart.on('preRender', function(chart) {
-
         _chart.root().select('.mapboxgl-ctrl-bottom-right').remove();
 
         var width = chart.width();
@@ -268,7 +256,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             _lastWidth = width;
             _lastHeight = height;
             _map.resize();
-            onMapMove(); //to reset filter
         }
     });
 
