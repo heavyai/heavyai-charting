@@ -384,7 +384,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
     function showPopup(d, i, data) {
         var popup = _chart.popup();
 
-        var popupBox = popup.select('.chart-popup-box').html('');
+        var popupBox = popup.select('.chart-popup-content').html('');
 
         popupBox.append('div')
             .attr('class', 'popup-legend')
