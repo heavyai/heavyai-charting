@@ -57,17 +57,12 @@ export default function legendMixin (legend) {
   }
 
   legend.legendables = function () {
-    return uniqueKeys(legend.parent().data(), legend._key).map((d, i) => {
-      const legendable = {
-        name: d[legend._key],
-        data: d.val,
-        others: d.others,
-        chart: legend.parent()
-      }
-
-      legendable.color = legend.parent().getColor(d, i)
-      return legendable
-    })
+    const colors = legend.parent().colors()
+    return zip2(colors.domain(), colors.range()).map(data => ({
+      name: data[0],
+      color: data[1],
+      chart: legend.parent()
+    }))
   }
 
   legend.setTitle = function (title) {
@@ -80,10 +75,8 @@ export default function legendMixin (legend) {
     return legend
   }
 
-  function uniqueKeys (myArr, key) {
-    return myArr.filter((obj, pos, arr) => (
-      arr.map(mapObj => mapObj[key]).indexOf(obj[key]) === pos
-    ))
+  function zip2 (list1, list2) {
+    return (list1.length < list2.length ? list1 : list2).map((_, i) => [list1[i], list2[i]])
   }
 
   return legend
