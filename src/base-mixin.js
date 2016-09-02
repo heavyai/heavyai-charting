@@ -791,12 +791,16 @@ dc.baseMixin = function (_chart) {
                     var elapsed = endTime - dc._startRenderTime;
                     console.log("Render elapsed: " + elapsed + " ms");
                 }
-                dc._renderCount = 0;
-                dc._globalTransitionDuration = null; // reset to null if was brush
-                var stackEmpty = dc._renderIdStack == null || dc._renderIdStack == queryGroupId;
-                dc._renderIdStack = null;
+                var stackEmpty = dc.isRenderStackEmpty(queryGroupId);
+                dc.resetRenderStack();
                 if (!stackEmpty) {
-                   dc.renderAll(null, callback);
+                  return dc.renderAllAsync(null)
+                    .then(function(result) {
+                      callback(null, result)
+                    })
+                    .catch(function(error) {
+                      callback(error)
+                    });
                 }
             }
         }
@@ -885,7 +889,6 @@ dc.baseMixin = function (_chart) {
 
         sizeSvg();
 
-
         _listeners.preRedraw(_chart, data);
 
         if (_legend && _chart.colors().domain) {
@@ -893,7 +896,6 @@ dc.baseMixin = function (_chart) {
         }
 
         var result = _chart._doRedraw(data);
-
 
         _chart._activateRenderlets('postRedraw', data);
         if (typeof queryGroupId !== 'undefined' && queryGroupId !== null) {
@@ -916,7 +918,6 @@ dc.baseMixin = function (_chart) {
                       callback(error)
                     });
                 }
-
             }
         }
 

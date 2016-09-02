@@ -1,30 +1,31 @@
 // Import DC and dependencies
-import createSamplingMixin from "./overrides/build/sampling-mixin"
-import filterMixin from "./overrides/build/filter-mixin"
-import {heatMapKeyAccessor, heatMapLabel, heatMapValueAccesor} from "./overrides/build/heatmap"
-import legendCont from "./overrides/build/dc-legend-cont"
-import chartLegendMixin from "./overrides/build/legend-mixin"
-import mapdTable from "./overrides/build/mapd-table"
-import {normalizeFiltersArray} from "./overrides/build/formatting-helpers"
+import createSamplingMixin from "./overrides/src/sampling-mixin"
+import filterMixin from "./overrides/src/filter-mixin"
+import groupAllMixin from "./overrides/src/dc-group-all-mixin"
+import {heatMapKeyAccessor, heatMapLabel, heatMapValueAccesor} from "./overrides/src/heatmap"
+import legendCont from "./overrides/src/dc-legend-cont"
+import chartLegendMixin from "./overrides/src/legend-mixin"
+import mapdTable from "./overrides/src/mapd-table"
+import {normalizeFiltersArray} from "./overrides/src/formatting-helpers"
 
-import legendMixin from "./overrides/build/dc-legend-mixin"
+import legendMixin from "./overrides/src/dc-legend-mixin"
 
 var d3 = require("d3");
 var crossfilter = require("../mapd-crossfilter");
 
 var dc = require("./mapdc");
-var asyncCoreMixin = require("./overrides/build/dc-async-mixin").default
-var utilsMixin = require("./overrides/build/dc-utils-mixin").default
+var asyncCoreMixin = require("./overrides/src/dc-async-mixin").default
+var utilsMixin = require("./overrides/src/dc-utils-mixin").default
 
-dc = utilsMixin(asyncCoreMixin(dc))
-dc.countWidget = require("./overrides/build/count-widget").default
-dc.asyncMixin = require("./overrides/build/async-mixin").default
-dc.labelMixin = require("./overrides/build/label-mixin").default
+dc = groupAllMixin(utilsMixin(asyncCoreMixin(dc)))
+dc.countWidget = require("./overrides/src/count-widget").default
+dc.asyncMixin = require("./overrides/src/async-mixin").default
+dc.labelMixin = require("./overrides/src/label-mixin").default
 
-dc.multipleKeysLabelMixin = require("./overrides/build/multiple-key-label-mixin").default
+dc.multipleKeysLabelMixin = require("./overrides/src/multiple-key-label-mixin").default
 
-var multipleKeysAccessorForStack = require("./overrides/build/multiple-key-accessors").multipleKeysAccessorForStack
-var multipleKeysAccessorForCap = require("./overrides/build/multiple-key-accessors").multipleKeysAccessorForCap
+var multipleKeysAccessorForStack = require("./overrides/src/multiple-key-accessors").multipleKeysAccessorForStack
+var multipleKeysAccessorForCap = require("./overrides/src/multiple-key-accessors").multipleKeysAccessorForCap
 
 const samplingMixin = createSamplingMixin(dc)
 

@@ -31,6 +31,29 @@ export default function asyncCoreMixin (dc) {
     return ++dc._redrawCount === queryCount
   }
 
+  dc.incrementRenderStack = function () {
+    const queryGroupId = dc._renderId++
+    dc._renderIdStack = queryGroupId
+    return queryGroupId
+  }
+
+  dc.resetRenderStack = function () {
+    dc._renderCount = 0
+    dc._renderIdStack = null
+  }
+
+  dc.isRenderStackEmpty = function (queryGroupId) {
+    if (typeof queryGroupId === "number") {
+      return dc._renderIdStack === null || dc._renderIdStack === queryGroupId
+    } else {
+      return dc._renderIdStack === null
+    }
+  }
+
+  dc.isEqualToRenderCount = function (queryCount) {
+    return ++dc._renderCount === queryCount
+  }
+
   dc.redrawAllAsync = function (group) {
     if (dc._refreshDisabled) {
       return Promise.resolve()
@@ -45,21 +68,21 @@ export default function asyncCoreMixin (dc) {
     dc._startRedrawTime = new Date()
 
     const charts = dc.chartRegistry.list(group)
-
-    const redrawPromises = charts.map((chart) => {
+    const redrawPromises = charts.map((chart, index) => {
       chart.expireCache()
-      if (dc._sampledCount > 0) {
-        return chart.redrawAsync(queryGroupId, charts.length - 1)
-      } else {
-        return chart.redrawAsync(queryGroupId, charts.length)
-      }
+      return chart.redrawAsync(queryGroupId, charts.length)
     })
 
     if (dc._renderlet !== null) {
       dc._renderlet(group)
     }
 
-    return Promise.all(redrawPromises)
+    if (dc.groupAll()) {
+      return dc.getLastFilteredSizeAsync()
+        .then(() => Promise.all(redrawPromises))
+    } else {
+      return Promise.all(redrawPromises)
+    }
   }
 
   dc.renderAllAsync = function (group) {
@@ -67,31 +90,31 @@ export default function asyncCoreMixin (dc) {
       return Promise.resolve()
     }
 
-    const queryGroupId = dc._renderId++
-    const stackEmpty = dc._renderIdStack === null
-    dc._renderIdStack = queryGroupId
-
+    const stackEmpty = dc.isRenderStackEmpty()
+    const queryGroupId = dc.incrementRenderStack()
     if (!stackEmpty) {
       return Promise.resolve()
     }
+
 
     dc._startRenderTime = new Date()
 
     const charts = dc.chartRegistry.list(group)
     const renderPromises = charts.map((chart) => {
       chart.expireCache()
-      if (dc._sampledCount > 0) {
-        return chart.renderAsync(queryGroupId, charts.length - 1)
-      } else {
-        return chart.renderAsync(queryGroupId, charts.length)
-      }
+      return chart.renderAsync(queryGroupId, charts.length)
     })
 
     if (dc._renderlet !== null) {
       dc._renderlet(group)
     }
 
-    return Promise.all(renderPromises)
+    if (dc.groupAll()) {
+      return dc.getLastFilteredSizeAsync()
+        .then(() => Promise.all(renderPromises))
+    } else {
+      return Promise.all(renderPromises)
+    }
   }
 
   return dc

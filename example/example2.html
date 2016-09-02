@@ -385,31 +385,31 @@
            */
 
           dc.renderAllAsync()
+
+          /*--------------------------RESIZE EVENT------------------------------*/
+
+          /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+
+          window.addEventListener("resize", _.debounce(reSizeAll, 500));
+
+          function reSizeAll(){
+
+            var w = document.documentElement.clientWidth - 30;
+            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+
+            pointMapChart.map().resize();
+            pointMapChart.isNodeAnimate = false;
+            pointMapChart
+              .width(w)
+              .height(h/1.5)
+              .render();
+            dcTimeChart
+              .width(w)
+              .height(h/2.5)
+
+            dc.renderAll();
+          }
         });
-
-  /*--------------------------RESIZE EVENT------------------------------*/
-
-      /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
-
-      window.addEventListener("resize", _.debounce(reSizeAll, 500));
-
-      function reSizeAll(){
-
-        var w = document.documentElement.clientWidth - 30;
-        var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
-
-        pointMapChart.map().resize();
-        pointMapChart.isNodeAnimate = false;
-        pointMapChart
-          .width(w)
-          .height(h/1.5)
-          .render();
-        dcTimeChart
-          .width(w)
-          .height(h/2.5)
-
-        dc.renderAll();
-      }
   }
 
   function init() {

@@ -33,7 +33,7 @@ describe("Count Widget", () => {
     })
   })
   describe("setDataAsync", () => {
-    it("should getTotalRecordsAsync, then valueAsync, then set dc._lastFilteredSize", function (done) {
+    xit("should getTotalRecordsAsync, then valueAsync, then set dc._lastFilteredSize", function (done) {
       const value = 100
       let callback
       let spy = chai.spy()
@@ -48,7 +48,7 @@ describe("Count Widget", () => {
         done()
       })
     })
-    it("should handle failure case", function(done) {
+    xit("should handle failure case", function(done) {
       const error = 'ERROR'
       let callback
       let spy = chai.spy()

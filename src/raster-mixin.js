@@ -82,10 +82,10 @@ dc.rasterMixin = function(_chart) {
 
     _chart.setSample = function() {
         if (_sampling) {
-            if (dc._lastFilteredSize == null)
+            if (dc.lastFilteredSize() == null)
                 _chart.dimension().samplingRatio(null);
             else {
-                _chart.dimension().samplingRatio(Math.min(_chart.cap()/dc._lastFilteredSize, 1.0))
+                _chart.dimension().samplingRatio(Math.min(_chart.cap()/dc.lastFilteredSize(), 1.0))
             }
         }
     }

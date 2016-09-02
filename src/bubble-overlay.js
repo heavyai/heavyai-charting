@@ -110,10 +110,10 @@ dc.bubbleOverlay = function (parent, chartGroup) {
 
     _chart.setSample = function() {
         if (_sampling) {
-            if (dc._lastFilteredSize == null)
+            if (dc.lastFilteredSize() == null)
                 _chart.dimension().samplingRatio(null);
             else {
-                _chart.dimension().samplingRatio(Math.min(_chart.cap()/dc._lastFilteredSize, 1.0))
+                _chart.dimension().samplingRatio(Math.min(_chart.cap()/dc.lastFilteredSize(), 1.0))
             }
         }
     }
@@ -124,7 +124,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
       var xPixelScale = 1.0/(_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
       var yPixelScale = 1.0/(_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
       var mapCoords = conv4326To900913([d.x,d.y]);
-      var pixelPos = {x: (mapCoords[0] - _chart.bounds[0][0])*xPixelScale , y:_chart.height() - (mapCoords[1] - _chart.bounds[0][1])*yPixelScale}; 
+      var pixelPos = {x: (mapCoords[0] - _chart.bounds[0][0])*xPixelScale , y:_chart.height() - (mapCoords[1] - _chart.bounds[0][1])*yPixelScale};
 
 
       if (_clickCallbackFunc != null) {
@@ -390,4 +390,3 @@ dc.bubbleOverlay = function (parent, chartGroup) {
 /* ****************************************************************************
  * END OVERRIDE: dc.bubbleOverlay                                             *
  * ***************************************************************************/
-

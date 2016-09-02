@@ -69,14 +69,12 @@
   },
   "scripts": {
     "postinstall": "cd ./overrides && npm install",
-    "build": "npm run build:overrides && bash scripts/build.sh",
-    "build:overrides": "cd ./overrides && npm run build",
+    "build": "bash scripts/build.sh",
     "build:example": "npm run build && npm run webpack && bash scripts/copy-example-libs.sh",
     "start": "npm run build:example && ./node_modules/http-server/bin/http-server -p 8081 -o",
     "test": "grunt test",
     "clean": "bash scripts/clean.sh",
-    "watch": "npm run watch:overrides & grunt watch",
-    "watch:overrides": "cd ./overrides && npm run build:watch",
+    "watch": "grunt watch",
     "lint": "grunt lint",
     "webpack": "webpack"
   },

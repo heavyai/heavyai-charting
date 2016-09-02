@@ -34,6 +34,14 @@ dc.dataCount = function (parent, chartGroup) {
     _chart.isCountChart = function() { return true; } // override for count chart
 /* ------------------------------------------------------------------------- */
 
+    dc.override(_chart, "group", function (group, name) {
+      if (!arguments.length) {
+        return _chart._group()
+      }
+
+      dc.groupAll(group)
+      return _chart._group(group, name)
+    })
     /**
      * Gets or sets an optional object specifying HTML templates to use depending how many items are
      * selected. The text `%total-count` will replaced with the total number of records, and the text

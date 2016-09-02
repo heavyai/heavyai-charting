@@ -5,9 +5,7 @@
   "main": "async-mixin.js",
   "scripts": {
     "lint": "eslint $(find src -name \"*.js\")",
-    "test": "istanbul cover _mocha -- ./test --compilers js:babel-register ---require ./test/setup",
-    "build": "babel src --out-dir build",
-    "build:watch": "npm run build -- --watch"
+    "test": "istanbul cover _mocha -- ./test --compilers js:babel-register ---require ./test/setup"
   },
   "author": "",
   "license": "ISC",

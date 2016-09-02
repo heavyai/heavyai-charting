@@ -112,7 +112,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
           valuesOb(bounds.getSouthEast()),
           valuesOb(bounds.getSouthWest())]
 
-        _chart._vegaSpec = genVegaSpec(_chart, dc._lastFilteredSize);
+        _chart._vegaSpec = genVegaSpec(_chart, dc.lastFilteredSize());
 
         var nonce = null;
         if (_chart.cap() === Infinity) {
@@ -136,7 +136,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
           valuesOb(bounds.getSouthWest())]
         updateXAndYScales();
 
-        _chart._vegaSpec = genVegaSpec(_chart, dc._lastFilteredSize);
+        _chart._vegaSpec = genVegaSpec(_chart, dc.lastFilteredSize());
 
         var result = null;
         if (_chart.cap() === Infinity) {

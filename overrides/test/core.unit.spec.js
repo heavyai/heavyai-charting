@@ -112,25 +112,35 @@ describe("Core Overrides", () => {
         })
       })
     })
-    describe('when redraw stack is empty', () => {
-      describe('when dc.sampleCount is greater than 0', () => {
-        it('should call redrawAsync for every chart with the dc._redrawId and the number of charts minus one', () => {
-          const queryGroupId = dc._redrawId
-          dc._sampledCount = 1
-          dc.redrawAllAsync()
-          charts.forEach((chart) => {
-            expect(chart.redrawAsync).to.have.been.called.with(queryGroupId, charts.length - 1)
-          })
+    describe('when dc.groupAll() is true', () => {
+      before(() => {
+        dc.groupAll = () => true
+        dc.getLastFilteredSizeAsync = chai.spy(() => Promise.resolve())
+      })
+
+      after(() => {
+        dc.groupAll = () => false
+      })
+
+      it('should call dc.getLastFilteredSizeAsync', () => {
+        const queryGroupId = dc._redrawId
+        dc._sampledCount = 0
+        dc.redrawAllAsync()
+
+        expect(dc.getLastFilteredSizeAsync).to.have.been.called()
+
+        charts.forEach((chart) => {
+          expect(chart.redrawAsync).to.have.been.called.with(queryGroupId, charts.length)
         })
       })
-      describe('when dc.sampleCount is not greater then 0', () => {
-        it('should call redrawAsync for every chart with the dc._redrawId and the number of charts', () => {
-          const queryGroupId = dc._redrawId
-          dc._sampledCount = 0
-          dc.redrawAllAsync()
-          charts.forEach((chart) => {
-            expect(chart.redrawAsync).to.have.been.called.with(queryGroupId, charts.length)
-          })
+    })
+    describe('when redraw stack is empty', () => {
+      it('should call redrawAsync for every chart with the dc._redrawId and the number of charts', () => {
+        const queryGroupId = dc._redrawId
+        dc._sampledCount = 0
+        dc.redrawAllAsync()
+        charts.forEach((chart) => {
+          expect(chart.redrawAsync).to.have.been.called.with(queryGroupId, charts.length)
         })
       })
 
@@ -150,6 +160,94 @@ describe("Core Overrides", () => {
       })
       it('should call expireCache for each chart', () => {
         dc.redrawAllAsync()
+        charts.forEach((chart) => {
+          expect(chart.expireCache).to.have.been.called()
+        })
+      })
+    })
+  })
+  describe("renderAllAsync", () => {
+    beforeEach(() => {
+      resetDCState()
+      setUpChartSpies()
+    })
+    describe('when dc._refreshDisabled is true', () => {
+      it("should bail out and return a Promise", () => {
+        dc._refreshDisabled = true
+        expect(dc.renderAllAsync() instanceof Promise).to.equal(true)
+        charts.forEach((chart) => {
+          expect(chart.renderAsync).to.have.not.been.called()
+        })
+      })
+    })
+    describe('debouncing behavior', () => {
+      beforeEach(() => {
+        dc.renderAllAsync()
+      })
+      it('should increment dc._renderId', () => {
+        expect(dc._renderId).to.equal(INITIAL_COUNT + 1)
+      })
+      it('should set the queryGroupId to dc._renderId before incrementing it and assign it to dc._renderIdStack', (() => {
+        expect(dc._renderIdStack).to.equal(INITIAL_COUNT)
+      }))
+      describe('when dc._renderIdStack is null', () => {
+        it('should bail out and return a Promise', () => {
+          const output = dc.renderAllAsync()
+          expect(output instanceof Promise).to.equal(true)
+          charts.forEach((chart) => {
+            expect(chart.renderAsync).to.have.been.called.exactly(1)
+          })
+        })
+      })
+    })
+    describe('when dc.groupAll() is true', () => {
+      before(() => {
+        dc.groupAll = () => true
+        dc.getLastFilteredSizeAsync = chai.spy(() => Promise.resolve())
+      })
+
+      after(() => {
+        dc.groupAll = () => false
+      })
+
+      it('should call dc.getLastFilteredSizeAsync', () => {
+        const queryGroupId = dc._renderId
+        dc._sampledCount = 0
+        dc.renderAllAsync()
+
+        expect(dc.getLastFilteredSizeAsync).to.have.been.called()
+
+        charts.forEach((chart) => {
+          expect(chart.renderAsync).to.have.been.called.with(queryGroupId, charts.length)
+        })
+      })
+    })
+    describe('when render stack is empty', () => {
+      it('should call renderAsync for every chart with the dc._renderId and the number of charts', () => {
+        const queryGroupId = dc._renderId
+        dc._sampledCount = 0
+        dc.renderAllAsync()
+        charts.forEach((chart) => {
+          expect(chart.renderAsync).to.have.been.called.with(queryGroupId, charts.length)
+        })
+      })
+
+      let counter = 0
+      const resolveAsync = () => new Promise((resolve) => {
+        counter++
+        setTimeout(() => resolve(), 1)
+      })
+      it('should return a Promise that resolves when all promises have been resolved', function (done) {
+        charts.forEach((chart) => {
+          chart.renderAsync = chai.spy(() => resolveAsync())
+        })
+        return dc.renderAllAsync().then(() => {
+          expect(counter).to.equal(charts.length)
+          done()
+        })
+      })
+      it('should call expireCache for each chart', () => {
+        dc.renderAllAsync()
         charts.forEach((chart) => {
           expect(chart.expireCache).to.have.been.called()
         })

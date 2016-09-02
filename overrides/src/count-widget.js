@@ -7,6 +7,15 @@ export default function countWidget (parent, chartGroup) {
   let _countLabel = "rows"
   let _tot = null
 
+  dc.override(_chart, "group", function (group, name) {
+    if (!arguments.length) {
+      return _chart._group()
+    }
+
+    dc.groupAll(group)
+    return _chart._group(group, name)
+  })
+
   _chart.isCountChart = function () { return true } // override for count chart
 
   _chart.formatNumber = function (formatter) {
@@ -46,9 +55,14 @@ export default function countWidget (parent, chartGroup) {
 
   _chart.setDataAsync((group, callbacks) => (
     _chart.getTotalRecordsAsync()
-          .then(group.valueAsync)
+          .then(() => {
+            if (dc.lastFilteredSize()) {
+              return Promise.resolve(dc.lastFilteredSize())
+            } else {
+              group.valueAsync
+            }
+          })
           .then((value) => {
-            dc._lastFilteredSize = value
             callbacks(null, value)
           })
           .catch((error) => {
