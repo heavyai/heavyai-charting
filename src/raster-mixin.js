@@ -8,13 +8,10 @@ dc.rasterMixin = function(_chart) {
     var _tableName = null;
     var _popupColumns = [];
     var _popupColumnsMapped = {};
-    var _popupSearchRadius = 0;
+    var _popupSearchRadius = 2;
     var _popupFunction = null;
     var _colorBy = null;
     var _mouseLeave = false // used by displayPopup to maybe return early
-    d3.select(_chart.map()._canvasContainer.parentNode)
-    .on('mouseleave', function(){ _mouseLeave = true; })
-    .on('mouseenter', function(){ _mouseLeave = false; });
 
     _chart.popupSearchRadius = function (popupSearchRadius) {
         if (!arguments.length){ return _popupSearchRadius; }
@@ -113,14 +110,16 @@ dc.rasterMixin = function(_chart) {
     }
 
     _chart.getClosestResult = function getClosestResult (point, callback) {
-        var pixel = new TPixel({x: Math.round(point.x), y: Math.round(_chart.height() - point.y)})
+        var height = (typeof _chart.effectiveHeight === 'function' ? _chart.effectiveHeight() : _chart.height());
+        var pixelRatio = _chart._getPixelRatio() || 1;
+        var pixel = new TPixel({x: Math.round(point.x * pixelRatio), y: Math.round((height - point.y) * pixelRatio)})
         var tableName = _chart.tableName()
         var columns = getColumnsWithPoints()
         // TODO best to fail, skip cb, or call cb wo args?
         if (!point || !tableName || !columns.length ) { return; }
         return _chart.con().getRowForPixel(pixel, tableName, columns, [function(results){
             return callback(results[0])
-        }])
+        }], _popupSearchRadius * pixelRatio)
     }
 
     _chart.displayPopup = function displayPopup (result) {
@@ -130,10 +129,27 @@ dc.rasterMixin = function(_chart) {
         var mappedData = mapDataViaColumns(data, _popupColumnsMapped)
         if( Object.keys(mappedData).length === 2 ) { return } // xPoint && yPoint
         var offsetBridge = 0;
-        _chart.x().range([0, _chart.width() - 1]);
-        _chart.y().range([0, _chart.height() - 1]);
-        var xPixel = _chart.x()(data.xPoint);
-        var yPixel = (_chart.height() - _chart.y()(data.yPoint));
+
+        var width = (typeof _chart.effectiveWidth === 'function' ? _chart.effectiveWidth() : _chart.width());
+        var height = (typeof _chart.effectiveHeight === 'function' ? _chart.effectiveHeight() : _chart.height());
+        var margins = (typeof _chart.margins === 'function' ? _chart.margins() : {left: 0, right: 0, top: 0, bottom: 0});
+
+        var xscale = _chart.x();
+        var yscale = _chart.y();
+
+        var origXRange = xscale.range();
+        var origYRange = yscale.range();
+
+        xscale.range([0, width]);
+        yscale.range([0, height]);
+
+        var xPixel = xscale(data.xPoint) + margins.left;
+        var yPixel = (height - yscale(data.yPoint)) + margins.top;
+
+        // restore the original ranges so we don't screw anything else up
+        xscale.range(origXRange);
+        yscale.range(origYRange);
+
         var mapPopup = _chart.root().append('div').attr('class', 'map-popup');
         mapPopup.on("wheel", function () { _chart.select('.map-popup').remove() })
         mapPopup.append('div')
@@ -186,8 +202,15 @@ dc.rasterMixin = function(_chart) {
 
     function getColumnsWithPoints () {
         var columns = _chart.popupColumns().slice();
-        columns.push("conv_4326_900913_x(" + _chart._xDimName + ") as xPoint");
-        columns.push("conv_4326_900913_y(" + _chart._yDimName + ") as yPoint");
+
+        if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
+            columns.push("conv_4326_900913_x(" + _chart._xDimName + ") as xPoint");
+            columns.push("conv_4326_900913_y(" + _chart._yDimName + ") as yPoint");
+        } else {
+            columns.push(_chart._xDimName + ' as xPoint');
+            columns.push(_chart._yDimName + ' as yPoint');
+        }
+
         return columns
     }
 
