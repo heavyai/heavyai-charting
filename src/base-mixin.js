@@ -332,17 +332,17 @@ dc.baseMixin = function (_chart) {
      * @return {Function}
      * @return {dc.baseMixin}
      */
-/* OVERRIDE ---------------------------------------------------------------- */
-    // _chart.ordering = function (orderFunction) {
-    //     if (!arguments.length) {
-    //         return _ordering;
-    //     }
-    //     _ordering = orderFunction;
-    //     _orderSort = crossfilter.quicksort.by(_ordering);
-    //     _chart.expireCache();
-    //     return _chart;
-    // };
-/* ------------------------------------------------------------------------- */
+
+    _chart.ordering = function (orderFunction) {
+        if (!arguments.length) {
+            return _ordering;
+        }
+        _ordering = orderFunction;
+        _orderSort = crossfilter.quicksort.by(_ordering);
+        _chart.expireCache();
+        return _chart;
+    };
+
 
 
     _chart._computeOrderedGroups = function (data) {

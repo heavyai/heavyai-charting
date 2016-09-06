@@ -37,6 +37,7 @@ dc.mapdTable = function(_chart) {
 dc.override(dc, "baseMixin", function(_chart) {
   var baseChart = chartLegendMixin(filterMixin(dc.labelMixin(dc.multipleKeysLabelMixin(dc.asyncMixin(dc._baseMixin(_chart))))))
   baseChart.keyAccessor(multipleKeysAccessorForCap)
+  baseChart.ordering = () => {}
   return baseChart
 })
 
