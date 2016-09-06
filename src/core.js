@@ -85,13 +85,6 @@ dc.chartRegistry = (function () {
         },
 
         deregister: function (chart, group) {
-
-/* OVERRIDE ---------------------------------------------------------------- */
-            if (chart.hasOwnProperty('sampling')) {
-              chart.sampling(false); // to deincrement dc sampling counter
-            }
-/* ------------------------------------------------------------------------- */
-
             group = initializeChartGroup(group);
             for (var i = 0; i < _chartMap[group].length; i++) {
                 if (_chartMap[group][i].anchorName() === chart.anchorName()) {
@@ -119,6 +112,12 @@ dc.chartRegistry = (function () {
 dc.registerChart = function (chart, group) {
     dc.chartRegistry.register(chart, group);
 };
+
+dc.getChart = function (dcFlag) {
+    return dc.chartRegistry.list().reduce(function(accum, chrt) {
+        return chrt.__dcFlag__ === dcFlag ? chrt : accum
+    }, null)
+}
 
 dc.deregisterChart = function (chart, group) {
     dc.chartRegistry.deregister(chart, group);

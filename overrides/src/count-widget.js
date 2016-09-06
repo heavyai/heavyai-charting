@@ -59,7 +59,7 @@ export default function countWidget (parent, chartGroup) {
             if (dc.lastFilteredSize()) {
               return Promise.resolve(dc.lastFilteredSize())
             } else {
-              group.valueAsync
+              return group.valueAsync()
             }
           })
           .then((value) => {

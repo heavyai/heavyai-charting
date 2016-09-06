@@ -7,6 +7,7 @@ import legendCont from "./overrides/src/dc-legend-cont"
 import chartLegendMixin from "./overrides/src/legend-mixin"
 import mapdTable from "./overrides/src/mapd-table"
 import {normalizeFiltersArray} from "./overrides/src/formatting-helpers"
+import resetDCStateMixin from "./overrides/src/reset-dc-state-mixin"
 
 import legendMixin from "./overrides/src/dc-legend-mixin"
 
@@ -17,7 +18,7 @@ var dc = require("./mapdc");
 var asyncCoreMixin = require("./overrides/src/dc-async-mixin").default
 var utilsMixin = require("./overrides/src/dc-utils-mixin").default
 
-dc = groupAllMixin(utilsMixin(asyncCoreMixin(dc)))
+dc = resetDCStateMixin(groupAllMixin(utilsMixin(asyncCoreMixin(dc))))
 dc.countWidget = require("./overrides/src/count-widget").default
 dc.asyncMixin = require("./overrides/src/async-mixin").default
 dc.labelMixin = require("./overrides/src/label-mixin").default

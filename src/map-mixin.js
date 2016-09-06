@@ -148,6 +148,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
             dc.redrawAllAsync()
               .catch(function(error) {
+                dc.resetRedrawStack()
                 console.log("on move event redrawall error:", error)
               });
         }
@@ -215,6 +216,10 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             var projectedPoint = this.map().project(input);
             return [projectedPoint.x, projectedPoint.y];
         }
+   }
+   _chart.listenForMapMove = function () {
+       _map.on('move', onMapMove);
+       _map.on('moveend', onMapMove);
    }
 
     function initMap() {

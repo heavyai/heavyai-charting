@@ -93,6 +93,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     _chart.destroyChart = function () {
+        this.sampling(false)
         this.xDim().dispose()
         this.yDim().dispose()
         this.map().remove()

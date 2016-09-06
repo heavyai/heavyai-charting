@@ -125,12 +125,11 @@ describe("Core Overrides", () => {
       it('should call dc.getLastFilteredSizeAsync', () => {
         const queryGroupId = dc._redrawId
         dc._sampledCount = 0
-        dc.redrawAllAsync()
-
-        expect(dc.getLastFilteredSizeAsync).to.have.been.called()
-
-        charts.forEach((chart) => {
-          expect(chart.redrawAsync).to.have.been.called.with(queryGroupId, charts.length)
+        return dc.redrawAllAsync().then(() => {
+          expect(dc.getLastFilteredSizeAsync).to.have.been.called()
+          charts.forEach((chart) => {
+            expect(chart.redrawAsync).to.have.been.called.with(queryGroupId, charts.length)
+          })
         })
       })
     })
@@ -213,13 +212,13 @@ describe("Core Overrides", () => {
       it('should call dc.getLastFilteredSizeAsync', () => {
         const queryGroupId = dc._renderId
         dc._sampledCount = 0
-        dc.renderAllAsync()
-
-        expect(dc.getLastFilteredSizeAsync).to.have.been.called()
-
-        charts.forEach((chart) => {
-          expect(chart.renderAsync).to.have.been.called.with(queryGroupId, charts.length)
+        return dc.renderAllAsync().then(() => {
+          expect(dc.getLastFilteredSizeAsync).to.have.been.called()
+          charts.forEach((chart) => {
+            expect(chart.renderAsync).to.have.been.called.with(queryGroupId, charts.length)
+          })
         })
+
       })
     })
     describe('when render stack is empty', () => {

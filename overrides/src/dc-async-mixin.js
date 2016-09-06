@@ -68,7 +68,7 @@ export default function asyncCoreMixin (dc) {
     dc._startRedrawTime = new Date()
 
     const charts = dc.chartRegistry.list(group)
-    const redrawPromises = charts.map((chart, index) => {
+    const createRedrawPromises = () => charts.map(chart => {
       chart.expireCache()
       return chart.redrawAsync(queryGroupId, charts.length)
     })
@@ -79,9 +79,9 @@ export default function asyncCoreMixin (dc) {
 
     if (dc.groupAll()) {
       return dc.getLastFilteredSizeAsync()
-        .then(() => Promise.all(redrawPromises))
+        .then(() => Promise.all(createRedrawPromises()))
     } else {
-      return Promise.all(redrawPromises)
+      return Promise.all(createRedrawPromises())
     }
   }
 
@@ -100,7 +100,7 @@ export default function asyncCoreMixin (dc) {
     dc._startRenderTime = new Date()
 
     const charts = dc.chartRegistry.list(group)
-    const renderPromises = charts.map((chart) => {
+    const createRenderPromises = () => charts.map(chart => {
       chart.expireCache()
       return chart.renderAsync(queryGroupId, charts.length)
     })
@@ -111,9 +111,9 @@ export default function asyncCoreMixin (dc) {
 
     if (dc.groupAll()) {
       return dc.getLastFilteredSizeAsync()
-        .then(() => Promise.all(renderPromises))
+        .then(() => Promise.all(createRenderPromises()))
     } else {
-      return Promise.all(renderPromises)
+      return Promise.all(createRenderPromises())
     }
   }
 

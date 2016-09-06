@@ -33,7 +33,15 @@ describe("Count Widget", () => {
     })
   })
   describe("setDataAsync", () => {
-    xit("should getTotalRecordsAsync, then valueAsync, then set dc._lastFilteredSize", function (done) {
+    let oldLasFilteredSize
+    before(() => {
+      oldLasFilteredSize = dc.lastFilteredSize
+      dc.lastFilteredSize = () => false
+    })
+    after(() => {
+      dc.lastFilteredSize = oldLasFilteredSize
+    })
+    it("should getTotalRecordsAsync and then valueAsync", function (done) {
       const value = 100
       let callback
       let spy = chai.spy()
@@ -43,12 +51,10 @@ describe("Count Widget", () => {
       })
       return widget.dataAsync(spy).then(() => {
         expect(spy).to.have.been.called.with(null, value)
-        expect(dc._lastFilteredSize).to.equal(value)
-        dc._lastFilteredSize = null
         done()
       })
     })
-    xit("should handle failure case", function(done) {
+    it("should handle failure case", function(done) {
       const error = 'ERROR'
       let callback
       let spy = chai.spy()
@@ -58,6 +64,16 @@ describe("Count Widget", () => {
       })
       return widget.dataAsync(spy).then(() => {
         expect(spy).to.have.been.called.with(error)
+        done()
+      })
+    })
+    it('should use dc.lastFilteredSize() if it exists', function (done) {
+      const value = 100
+      const callback = chai.spy()
+      dc.lastFilteredSize = () => value
+      widget.tot(100)
+      return widget.dataAsync(callback).then(() => {
+        expect(callback).to.have.been.called.with(null, value)
         done()
       })
     })

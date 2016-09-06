@@ -420,5 +420,9 @@ export default function mapdTable (parent, chartGroup) {
     return _offset
   }
 
+  _chart.destroyChart = function () {
+    _chart.sampling(false)
+  }
+
   return _chart.anchor(parent, chartGroup)
 }
