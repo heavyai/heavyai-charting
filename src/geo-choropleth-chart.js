@@ -236,13 +236,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 
         dc.transition(paths, _chart.transitionDuration()).attr('fill', function (d, i) {
             var dataColor = data[geoJson(layerIndex).keyAccessor(d)]
-            if (dataColor) {
-              var range = _chart.colors().range()
-              var color = range[Math.floor(range.length / 2)]
-              return _chart.getColor(dataColor, i) || color
-            } else {
-              return '#e2e2e2'
-            }
+            return _chart.getColor(dataColor, i)
         });
     }
 

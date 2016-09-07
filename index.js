@@ -1,6 +1,7 @@
 // Import DC and dependencies
 import createSamplingMixin from "./overrides/src/sampling-mixin"
 import filterMixin from "./overrides/src/filter-mixin"
+import colorMixin from "./overrides/src/color-mixin"
 import groupAllMixin from "./overrides/src/dc-group-all-mixin"
 import {heatMapKeyAccessor, heatMapLabel, heatMapValueAccesor} from "./overrides/src/heatmap"
 import legendCont from "./overrides/src/dc-legend-cont"
@@ -45,6 +46,10 @@ dc.override(dc, "stackMixin", function(_chart) {
   var stackChart = dc._stackMixin(_chart)
   stackChart.keyAccessor(multipleKeysAccessorForStack)
   return stackChart
+})
+
+dc.override(dc, "colorMixin", function(_chart) {
+  return colorMixin(dc._colorMixin(_chart))
 })
 
 dc.override(dc, "heatMap", function(parent, chartGroup) {
