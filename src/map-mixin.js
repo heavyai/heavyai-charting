@@ -217,10 +217,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             return [projectedPoint.x, projectedPoint.y];
         }
    }
-   _chart.listenForMapMove = function () {
-       _map.on('move', onMapMove);
-       _map.on('moveend', onMapMove);
-   }
 
     function initMap() {
         _mapboxgl.accessToken = _mapboxAccessToken;
