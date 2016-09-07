@@ -110,6 +110,11 @@
    *  Note that for the count we use crossFilter itself as the dimension.
   */
 
+  var countGroup = crossFilter.groupAll();
+  var dataCount = dc.dataCount(".data-count")
+    .dimension(crossFilter)
+    .group(countGroup);
+
 
   /*------------------------CHART 1 EXAMPLE------------------------------*/
 
