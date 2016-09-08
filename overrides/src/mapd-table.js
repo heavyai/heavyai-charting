@@ -342,7 +342,7 @@ export default function mapdTable (parent, chartGroup) {
               headerItem.append("div")
                     .attr("class", "unfilter-btn")
                     .attr("data-expr", d.expression)
-                    .on("click", () => {
+                    .on("click", function () {
                       clearColFilter(d3.select(this).attr("data-expr"))
                     })
                     .style("left", textSpan.node().getBoundingClientRect().width + (_isGroupedData ? GROUP_DATA_WIDTH : NON_GROUP_DATA_WIDTH) + "px")
