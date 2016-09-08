@@ -5,7 +5,10 @@
   "main": "async-mixin.js",
   "scripts": {
     "lint": "eslint $(find src -name \"*.js\")",
-    "test": "istanbul cover _mocha -- ./test --compilers js:babel-register ---require ./test/setup"
+    "shjs": "node --harmony_destructuring ../../../node_modules/.bin/shjs",
+    "test": "mocha ./test --compilers js:babel-register --require ./test/setup",
+    "test:cover": "istanbul cover _mocha -- ./test --compilers js:babel-register --require ./test/setup",
+    "test:check-cover": "npm run shjs ../../../scripts/check-coverage.js"
   },
   "author": "",
   "license": "ISC",
