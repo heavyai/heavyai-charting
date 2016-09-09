@@ -80,8 +80,15 @@ export default function asyncCoreMixin (dc) {
     if (dc.groupAll()) {
       return dc.getLastFilteredSizeAsync()
         .then(() => Promise.all(createRedrawPromises()))
+        .catch(err => {
+          dc.resetRedrawStack()
+          throw err
+        })
     } else {
-      return Promise.all(createRedrawPromises())
+      return Promise.all(createRedrawPromises()).catch(err => {
+        dc.resetRedrawStack()
+        throw err
+      })
     }
   }
 

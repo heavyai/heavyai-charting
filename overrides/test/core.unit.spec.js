@@ -133,6 +133,25 @@ describe("Core Overrides", () => {
         })
       })
     })
+    describe('when redrawAllAsync fails', () => {
+      before(() => {
+        dc.groupAll = () => true
+      })
+
+      after(() => {
+        dc.groupAll = () => false
+      })
+
+      it('should reset redrawIdStack to null if rejects promise', () => {
+        dc.getLastFilteredSizeAsync = chai.spy(() => {
+          dc._redrawIdStack = 2
+          return Promise.reject('failed to redraw')
+        })
+        return dc.redrawAllAsync().catch(() => {
+          expect(dc._redrawIdStack).to.equal(null)
+        })
+      })
+    })
     describe('when redraw stack is empty', () => {
       it('should call redrawAsync for every chart with the dc._redrawId and the number of charts', () => {
         const queryGroupId = dc._redrawId
