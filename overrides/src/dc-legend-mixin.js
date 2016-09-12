@@ -2,7 +2,7 @@ export default function legendMixin (legend) {
   legend._scrollPos = 0
   legend._expanded = true
   legend._heightRatio = 3
-  legend._title = "Legends"
+  legend._title = "Legend"
   legend._key = "key0"
 
   legend.render = function () {
@@ -14,7 +14,7 @@ export default function legendMixin (legend) {
 
     const header = wrapper.append("div")
       .attr("class", "dc-legend-header")
-      .text(legend._expanded ? legend._title : "Legends")
+      .text(legend._expanded ? legend._title : "Legend")
       .on("click", () => {
         legend._expanded = !legend._expanded
         legend.render()

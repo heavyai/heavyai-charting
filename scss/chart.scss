@@ -932,6 +932,11 @@ body {
 
     .chart-popup-content {
         display: flex;
+
+        &.popup-list {
+            flex-direction: column;
+            padding: 0 8px 2px 8px;
+        }
     }
 
     .chart-popup-box {
@@ -964,11 +969,6 @@ body {
 
         &.align-center {
             transform: translate(-50%, -100%);
-        }
-
-        &.popup-list {
-            flex-direction: column;
-            padding: 0 8px 2px 8px;
         }
 
         &.popdown {
@@ -1241,6 +1241,12 @@ body {
         .toggle-btn {
             opacity: 1;
         }
+
+        .dc-legend-body {
+            &::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, .4);
+            }
+        }
     }
 
     .dc-legend-header {
@@ -1254,37 +1260,48 @@ body {
     }
 
     .toggle-btn {
-        width: 16px;
-        height: 16px;
+        width: 24px;
+        height: 24px;
         position: absolute;
-        top: -1px;
-        right: 0;
+        top: -6px;
+        right: -6px;
         cursor: pointer;
-        transform: scale(.75);
+        transform: scale(.4);
         transition: opacity .25s;
         opacity: 0;
 
         &:after, &:before {
             content: '';
-            width: 2px;
-            height: 16px;
-            background: $gray4;
-            top: 50%;
-            left: 50%;
             position: absolute;
         }
 
         &:after {
             transform: translate(-50%, -50%) rotate(45deg);
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 24px;
+            background: $gray4;
         }
 
         &:before {
-            transform: translate(-50%, -50%) rotate(-45deg);
+            width: 16px;
+            height: 16px;
+            bottom: 0;
+            left: 0;
+            border: 8px solid transparent;
+            border-left-color: $gray4;
+            border-bottom-color: $gray4;
         }
 
         &:hover {
-            &:after, &:before {
+            &:after {
                 background: $blue-main;
+            } 
+
+            &:before { 
+                border-left-color: $blue-main;
+                border-bottom-color: $blue-main;
             }
         }
     }
@@ -1293,6 +1310,29 @@ body {
         max-height: 120px;
         overflow-y: auto;
         padding: 0 4px 4px 4px;
+
+        &::-webkit-scrollbar {
+            -webkit-appearance: none;
+        }
+
+        &::-webkit-scrollbar:vertical {
+            width: 10px;
+        }
+
+        &::-webkit-scrollbar:horizontal {
+            height: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 8px;
+            border: 2px solid white; /* should match background, can't be transparent */
+            background-color: rgba(0, 0, 0, .2);
+            transition: background .25s;
+        }
+
+        &::-webkit-scrollbar-track {
+            border-radius: 8px; 
+        } 
     }
 
     .legend-item-color {
@@ -1311,6 +1351,7 @@ body {
         display: flex;
         align-items: center;
         cursor: default;
+        min-height: 16px;
     }
 
     &.collapsed {
@@ -1332,6 +1373,18 @@ body {
     .dc-legend {
         left: auto;
         right: 16px !important;
+
+        .toggle-btn { 
+            right: -4px;
+            &:after {
+                transform: translate(-50%, -50%) rotate(-45deg);
+            }
+            &:before {
+                transform: scaleX(-1);
+                left: auto;
+                right: 0;   
+            }   
+        }
     }
 }
 

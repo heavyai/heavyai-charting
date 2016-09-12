@@ -774,11 +774,11 @@ dc.baseMixin = function (_chart) {
             _mandatoryAttributes.forEach(checkForMandatoryAttributes);
         }
 
+        var result = _chart._doRender(data);
+
         if (_legend && _chart.colors().domain) {
             _legend.render();
         }
-
-        var result = _chart._doRender(data);
 
         _chart.generatePopup();
 
@@ -891,11 +891,11 @@ dc.baseMixin = function (_chart) {
 
         _listeners.preRedraw(_chart, data);
 
+        var result = _chart._doRedraw(data);
+
         if (_legend && _chart.colors().domain) {
             _legend.render();
         }
-
-        var result = _chart._doRedraw(data);
 
         _chart._activateRenderlets('postRedraw', data);
         if (typeof queryGroupId !== 'undefined' && queryGroupId !== null) {
