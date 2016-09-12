@@ -8,8 +8,10 @@ export default function colorMixin (chart) {
     if (typeof data === "undefined") {
       return GREY
     }
+
     const range = chart.colors().range()
     const middleColor = range[Math.floor(range.length / 2)]
+
     return chart._getColor(data, index) || middleColor
   })
 

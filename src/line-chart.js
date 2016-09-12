@@ -188,8 +188,8 @@ dc.lineChart = function (parent, chartGroup) {
     };
 
     function colors (d, i) {
-        return _chart.getColor.call(d, d.values, i);
-        
+        return _chart.getColor(d, i);
+
 /* OVERRIDE ---------------------------------------------------------------- */
         //return "#22A7F0";
 /* ------------------------------------------------------------------------- */
@@ -294,11 +294,11 @@ dc.lineChart = function (parent, chartGroup) {
         var g = _chart.g()
             .on("mouseout", function() { hideBrushDots(); })
             .on("mousemove", function() {
-                
+
                 if (_chart.isBrushing()) {
                     hidePopup();
                 } else {
-                    showBrushDots(g, this); 
+                    showBrushDots(g, this);
                 }
 
             });
@@ -318,7 +318,7 @@ dc.lineChart = function (parent, chartGroup) {
         var xAdjusted = x - _chart.margins().left;
 
         var popupRows = [];
-        
+
         var toolTips = g.selectAll('.dc-tooltip')
             .each(function(){
 
@@ -370,7 +370,7 @@ dc.lineChart = function (parent, chartGroup) {
             .classed('popup-list', true);
 
         popupBox.append('div')
-            .attr('class', 'popup-header') 
+            .attr('class', 'popup-header')
             .text(function(){
                 if (arr[0].datum.x instanceof Date) {
                   var diffDays = Math.round(Math.abs((_chart.xAxisMin().getTime() - _chart.xAxisMax().getTime())/(24*60*60*1000)));
@@ -390,8 +390,8 @@ dc.lineChart = function (parent, chartGroup) {
 
         popupItems.append('div')
             .attr('class', 'popup-legend')
-            .style('background-color', function(d){ 
-                return colors(d.datum,d.i);
+            .style('background-color', function(d){
+                return colors(d.datum, d.i);
             });
 
         popupItems.append('div')
@@ -485,7 +485,7 @@ dc.lineChart = function (parent, chartGroup) {
 
                 dots.exit().remove();
             });
-    
+
             if (_chart.brushOn() && !_chart.focusChart()) {
                 hoverOverBrush();
             }
@@ -654,4 +654,3 @@ dc.lineChart = function (parent, chartGroup) {
 /* ****************************************************************************
  * END OVERRIDE: dc.lineChart                                                 *
  * ***************************************************************************/
-
