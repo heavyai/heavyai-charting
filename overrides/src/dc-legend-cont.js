@@ -10,7 +10,6 @@ function unLockedPreRedrawRenderHandler (chart, data = chart.data()) {
 
 export default function legendCont () {
   const _legend = {}
-  const _isContinuous = true
   let _parent = null
   let _legendTitle = ""
   let _chartType = ""
@@ -24,10 +23,6 @@ export default function legendCont () {
     }
     _parent = p
     return _legend
-  }
-
-  _legend.isContinuous = function () {
-    return _isContinuous
   }
 
   _legend.legendTitle = function (_) {
