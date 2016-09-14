@@ -115,19 +115,6 @@ dc.coordinateGridMixin = function (_chart) {
     var _rangeFocused = false;
     var _rangeInput = false;
     var _binInput = false;
-    var _binInputOptions = [{val:'auto', label:'auto', numSeconds:null},
-                            {val:'century',  label:'10y',numSeconds: 3153600000},
-                            {val:'decade',  label:'10y',numSeconds: 315360000},
-                            {val:'year',  label:'1y',numSeconds: 31536000},
-                            {val: 'quarter', label: '1q', numSeconds: 10368000},
-                            {val:'month', label:'1mo', numSeconds: 2592000},
-                            {val:'week', label:'1w', numSeconds: 604800},
-                            {val:'day', label:'1d', numSeconds: 86400},
-                            {val:'hour', label:'1h', numSeconds: 3600},
-                            {val:'minute', label:'1m', numSeconds: 60},
-                            {val:'second', label:'1s', numSeconds: 1}];
-
-    var _binInputVal = 'auto';
     var _binSnap = false;
 /* ------------------------------------------------------------------------- */
 
@@ -504,32 +491,8 @@ dc.coordinateGridMixin = function (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
 
-    function changeBinVal(val) {
+    _chart.binVal = _chart.changeBinVal
 
-        _binInputVal = val;
-
-        var currentStack = _chart.stack().slice();
-
-        for (var i = 0; i < currentStack.length; i++) {
-
-            var binParams = currentStack[i].group.binParams().map(function (binParam, idx) {
-                if (idx === i) {
-                    binParam.timeBin = _binInputVal;
-                }
-                return binParam;
-            });
-
-            if (i === 0) {
-                _chart.group(currentStack[i].group.binParams(binParams), currentStack[i].name);
-            } else {
-                _chart.stack(currentStack[i].group.binParams(binParams), currentStack[i].name, currentStack[i].accessor);
-            }
-        }
-
-        _chart.renderAsync();
-
-        binBrush();
-    }
     _chart.updateRangeInput = function () {
         var dateFormat = d3.time.format.utc("%b %d, %Y");
         var timeFormat = d3.time.format.utc("%I:%M%p");
@@ -538,7 +501,7 @@ dc.coordinateGridMixin = function (_chart) {
 
         var rangeDisplay = _chart.root().selectAll('.range-display');
 
-        var binNumSecs = _binInputOptions.filter(function(d){return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
+        var binNumSecs = _chart.binInputOptions().filter(function(d){return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
 
         rangeDisplay.select('.range-start-day')
             .property('value', dateFormat(extent[0]))
@@ -582,7 +545,7 @@ dc.coordinateGridMixin = function (_chart) {
 
         var currentExtent = _chart.filter() || _chart.x().domain();
 
-        var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
+        var binNumSecs = _chart.binInputOptions().filter(function(d){ return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
 
         var inputFormat = binNumSecs > 3600 ? d3.time.format.utc('%m-%d-%Y') : (currentInput.attr('class').indexOf('day') >= 0 ? d3.time.format.utc('%m-%d-%Y %I:%M%p') : d3.time.format.utc('%b %d, %Y %I:%M%p'));
 
@@ -771,7 +734,7 @@ dc.coordinateGridMixin = function (_chart) {
                 .text('BIN:');
 
             var binRowItems = binRow.selectAll('.bin-row-item')
-                .data(_binInputOptions)
+                .data(_chart.binInputOptions())
                 .enter();
 
             var rangeInSeconds = Math.abs((_chart.x().domain()[0].getTime() - _chart.x().domain()[1].getTime())/1000);
@@ -780,8 +743,8 @@ dc.coordinateGridMixin = function (_chart) {
                 .attr('class', 'bin-row-item')
                 .classed('inactive', function(d){
                     if (d.numSeconds && rangeInSeconds / d.numSeconds > 1500 || d.numSeconds && rangeInSeconds / d.numSeconds < 2) {
-                        if (_binInputVal === d.val) {
-                            changeBinVal('auto');
+                        if (_chart.timeBinInputVal() === d.val) {
+                            _chart.changeBinVal('auto');
                         }
 
                         return true;
@@ -789,12 +752,12 @@ dc.coordinateGridMixin = function (_chart) {
                     return false;
                 })
                 .classed('active', function(d){
-                    return d.val === _binInputVal;
+                    return d.val === _chart.timeBinInputVal();
                 })
                 .text(function(d){
                     return d.label;
                 })
-                .on('click', function(d){ changeBinVal(d.val); });
+                .on('click', function(d){ _chart.changeBinVal(d.val); });
 
         }
 /* --------------------------------------------------------------------------*/
@@ -1312,92 +1275,11 @@ dc.coordinateGridMixin = function (_chart) {
     _chart.brushSnap = function (gBrush) {
 
         if (!d3.event.sourceEvent) return; // only transition after input
-        binBrush();
+        _chart.binBrush();
     }
 
-    function roundTimeBin(date, timeInterval, operation) {
-
-        if (!timeInterval) {
-            return date;
-        }
-
-        if (d3.time[timeInterval]) {
-            return d3.time[timeInterval].utc[operation](date);
-        }
-
-        var unit = timeInterval === 'quarter' ? 'month' : 'year';
-        var ranges = [];
-        switch (timeInterval) {
-            case 'quarter':
-                ranges = [-2, 2, 3];
-                break;
-            case 'decade':
-                ranges = [-5, 5, 10];
-                break;
-            case 'century':
-                ranges = [-50, 50, 100];
-                break;
-        }
-
-        var startRange = operation === 'round' ? ranges[0] : (operation === 'ceil' ? 0 : -ranges[2]);
-        var endRange = operation === 'round' ? ranges[1] : (operation === 'ceil' ? ranges[2] : 0);
-
-        var subHalf = d3.time[unit].offset(date, startRange);
-        var addHalf = d3.time[unit].offset(date, endRange);
-
-        return d3.time[unit].utc.round(d3.time[unit + 's'](subHalf, addHalf, ranges[2])[0]);
-    }
-
-
-    function binBrush() {
-
-        var extent0 = _chart.extendBrush();
-
-        if (extent0[0].getTime() === extent0[1].getTime()){
-            return;
-        }
-
-        if (extent0[0] <= _chart.xAxisMin() && extent0[1] <= _chart.xAxisMin() || extent0[0] >= _chart.xAxisMax() && extent0[1] >= _chart.xAxisMax()) {
-            dc.events.trigger(function () {
-                _chart.replaceFilter(null);
-                _chart.redrawGroup();
-            }, dc.constants.EVENT_DELAY);
-            return;
-        }
-
-        var timeInterval = _chart.group().actualTimeBin(0);
-
-        var extent1 = extent0.map(function(date) { return roundTimeBin(date, timeInterval, 'round')});
-
-        // if empty when rounded, use floor & ceil instead
-        if (extent1[0] >= extent1[1]) {
-            extent1[0] = roundTimeBin(extent0[0], timeInterval, 'floor');
-            extent1[1] = roundTimeBin(extent0[1], timeInterval, 'ceil');
-
-        }
-
-        extent1[0] = extent1[0] < _chart.xAxisMin() ? _chart.xAxisMin() : extent1[0];
-        extent1[1] = extent1[1] > _chart.xAxisMax() ? _chart.xAxisMax() : extent1[1];
-
-        if (extent1[0].getTime() === _chart.xAxisMax().getTime()) {
-            var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
-            extent1[0] = new Date(extent1[0].getTime() - (binNumSecs * 1000));
-            extent1[0] = roundTimeBin(extent1[0], timeInterval, 'round');
-        }
-
-        if (extent1[1].getTime() === _chart.xAxisMin().getTime()) {
-            var binNumSecs = _binInputOptions.filter(function(d){ return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
-            extent1[1] = new Date(extent1[1].getTime() + (binNumSecs * 1000));
-            extent1[1] = roundTimeBin(extent1[1], timeInterval, 'round');
-        }
-
-        var rangedFilter = dc.filters.RangedFilter(extent1[0], extent1[1]);
-
-        dc.events.trigger(function () {
-            _resizing = false;
-            _chart.replaceFilter(rangedFilter);
-            _chart.redrawGroup();
-        }, dc.constants.EVENT_DELAY);
+    _chart.triggerReplaceFilter = function (shouldSetSizingFalse) {
+              _resizing = false;
     }
 
     _chart.setHandlePaths = function (gBrush) {
@@ -1694,7 +1576,7 @@ dc.coordinateGridMixin = function (_chart) {
     };
 
     _chart.getBinInputVal = function () {
-        return _binInputOptions.filter(function(d){ return d.val === _binInputVal; });
+        return _chart.binInputOptions().filter(function(d){ return d.val === _chart.timeBinInputVal(); });
     };
 /* ------------------------------------------------------------------------- */
 

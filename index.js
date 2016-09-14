@@ -1,4 +1,5 @@
 // Import DC and dependencies
+import binningMixin from "./overrides/src/binning-mixin"
 import createSamplingMixin from "./overrides/src/sampling-mixin"
 import filterMixin from "./overrides/src/filter-mixin"
 import colorMixin from "./overrides/src/color-mixin"
@@ -46,6 +47,10 @@ dc.override(dc, "stackMixin", function(_chart) {
   var stackChart = dc._stackMixin(_chart)
   stackChart.keyAccessor(multipleKeysAccessorForStack)
   return stackChart
+})
+
+dc.override(dc, "coordinateGridMixin", function(_chart) {
+  return binningMixin(dc._coordinateGridMixin(_chart))
 })
 
 dc.override(dc, "colorMixin", function(_chart) {
