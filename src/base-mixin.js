@@ -575,7 +575,9 @@ dc.baseMixin = function (_chart) {
         }
 
         var rootRect = _chart.root().node().getBoundingClientRect();
-        return [coords[0] - rootRect.x, coords[1] - rootRect.y - window.pageYOffset + 148];
+        var gridTop = d3.select('.react-grid-layout').node().getBoundingClientRect().top
+
+        return [coords[0] - rootRect.x, coords[1] - Math.abs(gridTop - rootRect.y) + 40];
     };
 
     _chart.isTargeting = function (isTargeting) {
