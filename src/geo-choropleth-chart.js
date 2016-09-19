@@ -408,7 +408,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 
     function positionPopup() {
         var coordinates = [0, 0];
-        coordinates = d3.mouse(this);
+        coordinates = _chart.popupCoordinates(d3.mouse(this));
         var x = coordinates[0];
         var y = coordinates[1] - 16;
 
