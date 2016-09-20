@@ -133,7 +133,7 @@ export default function legendCont () {
             // must use .dataAsync
       _parent.colorDomain(d3.extent(_parent.data(), _parent.colorAccessor()))
     }
-    _parent.redraw()
+    _parent.redrawAsync()
   }
 
   function onChange () {
