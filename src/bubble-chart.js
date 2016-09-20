@@ -94,7 +94,7 @@ dc.bubbleChart = function (parent, chartGroup) {
                     var bXmax = bX + (bKey+'').length * letterWidth/2;
 
                     var isLabelOverlapped = aXmin >= bXmin && aXmin <= bXmax || aXmax >= bXmin && aXmax <= bXmax || aXmin <= bXmin && aXmax >= bXmax;
-                    
+
                     if (isLabelOverlapped) {
                         b.classed('hide-label', true);
                     }
