@@ -403,7 +403,8 @@
         },
         "path-exists": {
           "version": "1.0.0",
-          "from": "path-exists@>=1.0.0 <2.0.0"
+          "from": "path-exists@1.0.0",
+          "resolved": "https://registry.npmjs.org/path-exists/-/path-exists-1.0.0.tgz"
         },
         "repeating": {
           "version": "1.1.3",
@@ -412,7 +413,8 @@
         },
         "source-map": {
           "version": "0.5.6",
-          "from": "source-map@>=0.5.0 <0.6.0"
+          "from": "source-map@0.5.6",
+          "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.5.6.tgz"
         },
         "strip-ansi": {
           "version": "3.0.1",
@@ -805,11 +807,13 @@
       "dependencies": {
         "babel-core": {
           "version": "6.10.4",
-          "from": "babel-core@>=6.9.0 <7.0.0"
+          "from": "babel-core@6.10.4",
+          "resolved": "https://registry.npmjs.org/babel-core/-/babel-core-6.10.4.tgz"
         },
         "babylon": {
           "version": "6.8.4",
-          "from": "babylon@>=6.7.0 <7.0.0"
+          "from": "babylon@6.8.4",
+          "resolved": "https://registry.npmjs.org/babylon/-/babylon-6.8.4.tgz"
         },
         "core-js": {
           "version": "2.4.0",
@@ -818,23 +822,28 @@
         },
         "minimatch": {
           "version": "3.0.2",
-          "from": "minimatch@>=3.0.2 <4.0.0"
+          "from": "minimatch@3.0.2",
+          "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.0.2.tgz"
         },
         "minimist": {
           "version": "0.0.8",
-          "from": "minimist@0.0.8"
+          "from": "minimist@0.0.8",
+          "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.0.8.tgz"
         },
         "mkdirp": {
           "version": "0.5.1",
-          "from": "mkdirp@>=0.5.1 <0.6.0"
+          "from": "mkdirp@0.5.1",
+          "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz"
         },
         "path-exists": {
           "version": "1.0.0",
-          "from": "path-exists@>=1.0.0 <2.0.0"
+          "from": "path-exists@1.0.0",
+          "resolved": "https://registry.npmjs.org/path-exists/-/path-exists-1.0.0.tgz"
         },
         "source-map": {
           "version": "0.5.6",
-          "from": "source-map@>=0.5.0 <0.6.0"
+          "from": "source-map@0.5.6",
+          "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.5.6.tgz"
         }
       }
     },
@@ -1424,11 +1433,6 @@
       "from": "d@>=0.1.1 <0.2.0",
       "resolved": "https://registry.npmjs.org/d/-/d-0.1.1.tgz"
     },
-    "d3": {
-      "version": "3.5.17",
-      "from": "d3@>=3.0.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/d3/-/d3-3.5.17.tgz"
-    },
     "dashdash": {
       "version": "1.14.0",
       "from": "dashdash@>=1.12.0 <2.0.0",
@@ -1515,7 +1519,8 @@
         },
         "esprima-fb": {
           "version": "15001.1001.0-dev-harmony-fb",
-          "from": "esprima-fb@>=15001.1001.0-dev-harmony-fb <15001.1002.0"
+          "from": "esprima-fb@15001.1001.0-dev-harmony-fb",
+          "resolved": "https://registry.npmjs.org/esprima-fb/-/esprima-fb-15001.1001.0-dev-harmony-fb.tgz"
         },
         "window-size": {
           "version": "0.1.4",
@@ -3740,11 +3745,6 @@
       "from": "jodid25519@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/jodid25519/-/jodid25519-1.0.2.tgz"
     },
-    "jquery": {
-      "version": "2.2.0",
-      "from": "jquery@2.2.0",
-      "resolved": "https://registry.npmjs.org/jquery/-/jquery-2.2.0.tgz"
-    },
     "js-tokens": {
       "version": "1.0.1",
       "from": "js-tokens@1.0.1",
@@ -3812,7 +3812,8 @@
         },
         "lodash": {
           "version": "3.10.1",
-          "from": "lodash@>=3.10.0 <4.0.0"
+          "from": "lodash@3.10.1",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
         },
         "minimatch": {
           "version": "2.0.10",
@@ -3825,7 +3826,8 @@
         },
         "repeating": {
           "version": "1.1.3",
-          "from": "repeating@>=1.1.2 <2.0.0"
+          "from": "repeating@1.1.3",
+          "resolved": "https://registry.npmjs.org/repeating/-/repeating-1.1.3.tgz"
         },
         "source-map": {
           "version": "0.5.6",
@@ -6531,7 +6533,8 @@
         },
         "graceful-fs": {
           "version": "4.1.4",
-          "from": "graceful-fs@>=4.1.2 <5.0.0"
+          "from": "graceful-fs@4.1.4",
+          "resolved": "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.1.4.tgz"
         }
       }
     },

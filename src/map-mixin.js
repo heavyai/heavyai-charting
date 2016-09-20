@@ -199,7 +199,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         svg
             .attr('width', _chart.width())
             .attr('height', _chart.height());
-        //var svg = $('<svg class="map-svg"></svg>').appendTo(mapContainer);
         _chart.svg(svg);
     }
 

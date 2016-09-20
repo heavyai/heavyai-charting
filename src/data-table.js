@@ -2,13 +2,20 @@
  * The data table is a simple widget designed to list crossfilter focused data set (rows being
  * filtered) in a good old tabular fashion.
  *
- * Note: Unlike other charts, the data table (and data grid chart) use the group attribute as a keying function
- * for {@link https://github.com/mbostock/d3/wiki/Arrays#-nest nesting} the data together in groups.
- * Do not pass in a crossfilter group as this will not work.
+ * Note: Unlike other charts, the data table (and data grid chart) use the group attribute as a
+ * keying function for {@link https://github.com/mbostock/d3/wiki/Arrays#-nest nesting} the data
+ * together in groups.  Do not pass in a crossfilter group as this will not work.
+ *
+ * Another interesting feature of the data table is that you can pass a crossfilter group to the `dimension`, as
+ * long as you specify the {@link dc.dataTable#order order} as `d3.descending`, since the data
+ * table will use `dimension.top()` to fetch the data in that case, and the method is equally
+ * supported on the crossfilter group as the crossfilter dimension.
  *
  * Examples:
  * - {@link http://dc-js.github.com/dc.js/ Nasdaq 100 Index}
- * @name dataTable
+ * - {@link http://dc-js.github.io/dc.js/examples/table-on-aggregated-data.html dataTable on a crossfilter group}
+ * ({@link https://github.com/dc-js/dc.js/blob/develop/web/examples/table-on-aggregated-data.html source})
+ * @class dataTable
  * @memberof dc
  * @mixes dc.baseMixin
  * @param {String|node|d3.selection} parent - Any valid
@@ -37,84 +44,6 @@ dc.dataTable = function (parent, chartGroup) {
     var _endSlice;
     var _showGroups = true;
 
-/* OVERRIDE ---------------------------------------------------------------- */
-    var _filteredColumns = {};
-    var _sampling = false;
-
-    _chart.setDataAsync(function(group, callbacks) {
-        if (_order === d3.ascending) {
-            return _chart.dimension().bottomAsync(_size, undefined, undefined, callbacks);
-        }
-        else {
-            return _chart.dimension().topAsync(_size)
-                .then(function(result) {
-                    callbacks(null, result)
-                })
-                .catch(function(error) {
-                    callbacks(error)
-                })
-        }
-    });
-
-    _chart.sampling = function(setting) { // setting should be true or false
-        if (!arguments.length)
-            return _sampling;
-        if (setting && !_sampling) // if wasn't sampling
-            dc._sampledCount++;
-        else if (!setting && _sampling)
-            dc._sampledCount--;
-        _sampling = setting;
-        if (_sampling == false)
-            _chart.dimension().samplingRatio(null); // unset sampling
-        return _chart;
-    };
-
-    _chart.addFilteredColumn = function(columnName) {
-      _filteredColumns[columnName] = null;
-    };
-
-    _chart.removeFilteredColumn = function(columnName) {
-      delete _filteredColumns[columnName];
-    };
-
-    _chart.clearFilteredColumns = function() {
-      _filteredColumns = {};
-    };
-
-    _chart.getFilteredColumns = function() {
-      return _filteredColumns;
-    };
-
-    _chart.addFilterIcons = function(headGroup) {
-      for (var c = 0; c < _columns.length; c++) {
-        if (_columns[c] in _filteredColumns) {
-
-         $("th", headGroup)
-           .eq(c)
-           .addClass('column-filtered')
-           .append('<div class="column-filter-clear" id="table-column-filter-clear_' + c + '" title="Clear filter" style="cursor:pointer"><i class="fa fa-filter"></i><i class="fa fa-times clear-times-icon" style="margin-left:-3px"></i></div>');
-
-         $("#table-column-filter-clear_" + c).click(function () {
-           var columnId = $(this).attr('id').split('_')[1];
-           _chart.removeFilteredColumn(_columns[columnId]);
-           $(_chart).trigger("column-filter-clear", [columnId]);
-           //_chart.redraw();
-          });
-        }
-      }
-    };
-
-    _chart.setSample = function () {
-        if (_sampling) {
-            if (dc._lastFilteredSize == null)
-                _chart.dimension().samplingRatio(null);
-            else {
-                _chart.dimension().samplingRatio(Math.min(_size/dc._lastFilteredSize, 1.0))
-            }
-        }
-    };
-/* ------------------------------------------------------------------------- */
-
     _chart._doRender = function () {
         _chart.selectAll('tbody').remove();
 
@@ -124,50 +53,24 @@ dc.dataTable = function (parent, chartGroup) {
     };
 
     _chart._doColumnValueFormat = function (v, d) {
-
-/* OVERRIDE ---------------------------------------------------------------- */
-      if (typeof v === 'string') {
-        if (Object.prototype.toString.call(d[v]) === '[object Date]') {
-          // below we check to see if time falls evenly on a date - if so don't
-          // ouput hours minutes and seconds
-          // Might be better to do this by the type of the variable
-          var epoch = d[v].getTime() * 0.001;
-          if (epoch % 86400 == 0) {
-            return moment.utc(d[v]).format('ddd, MMM D YYYY');
-          }
-          return moment.utc(d[v]).format('ddd, MMM D YYYY, h:mm:ss a');
-          //return d[v].toUTCString().slice(0, -4);
-        } else {
-          return $('<p>' + d[v] +'</p>').linkify().html();
-        }
-      } else if (typeof v === 'function') {
-        return v(d);
-      } else { // object - use fn (element 2)
-        return v.format(d);
-      }
-/* ------------------------------------------------------------------------- */
-
+        return ((typeof v === 'function') ?
+                v(d) :                          // v as function
+                ((typeof v === 'string') ?
+                 d[v] :                         // v is field name string
+                 v.format(d)                        // v is Object, use fn (element 2)
+                )
+               );
     };
 
     _chart._doColumnHeaderFormat = function (d) {
         // if 'function', convert to string representation
         // show a string capitalized
-        // if an object then display it's label string as-is.
+        // if an object then display its label string as-is.
         return (typeof d === 'function') ?
                 _chart._doColumnHeaderFnToString(d) :
                 ((typeof d === 'string') ?
-
-/* OVERRIDE ---------------------------------------------------------------- */
-                 _chart._covertToAlias(d) : String(d.label));
-/* ------------------------------------------------------------------------- */
-
+                 _chart._doColumnHeaderCapitalize(d) : String(d.label));
     };
-
-/* OVERRIDE ---------------------------------------------------------------- */
-    _chart._covertToAlias = function (s) {
-       return typeof aliases !== 'undefined' ? aliases[s] : s;
-    };
-/* ------------------------------------------------------------------------- */
 
     _chart._doColumnHeaderCapitalize = function (s) {
         // capitalize
@@ -205,21 +108,23 @@ dc.dataTable = function (parent, chartGroup) {
         });
 
         if (!bAllFunctions) {
-            _chart.selectAll('th').remove();
+            // ensure one thead
+            var thead = _chart.selectAll('thead').data([0]);
+            thead.enter().append('thead');
+            thead.exit().remove();
 
-/* OVERRIDE ---------------------------------------------------------------- */
-            _chart.selectAll('thead').remove();
-            var header = _chart.root().append('thead');
-/* ------------------------------------------------------------------------- */
+            // with one tr
+            var headrow = thead.selectAll('tr').data([0]);
+            headrow.enter().append('tr');
+            headrow.exit().remove();
 
-            var headcols = _chart.root().selectAll('th')
+            // with a th for each column
+            var headcols = headrow.selectAll('th')
                 .data(_columns);
+            headcols.enter().append('th');
+            headcols.exit().remove();
 
-            var headGroup = headcols
-                .enter()
-                .append('th');
-
-            headGroup
+            headcols
                 .attr('class', HEAD_CSS_CLASS)
                     .html(function (d) {
                         return (_chart._doColumnHeaderFormat(d));
@@ -250,27 +155,16 @@ dc.dataTable = function (parent, chartGroup) {
 
         groups.exit().remove();
 
-/* OVERRIDE ---------------------------------------------------------------- */
-        _chart.addFilterIcons(headGroup);
-/* ------------------------------------------------------------------------- */
-
         return rowGroup;
     }
 
     function nestEntries () {
         var entries;
-
-/* OVERRIDE ---------------------------------------------------------------- */
-        if (_chart.dataCache != null) {
-            entries = _chart.dataCache;
+        if (_order === d3.ascending) {
+            entries = _chart.dimension().bottom(_size);
         } else {
-            if (_order === d3.ascending) {
-                entries = _chart.dimension().bottom(_size);
-            } else {
-                entries = _chart.dimension().top(_size);
-            }
+            entries = _chart.dimension().top(_size);
         }
-/* ------------------------------------------------------------------------- */
 
         return d3.nest()
             .key(_chart.group())
@@ -287,10 +181,6 @@ dc.dataTable = function (parent, chartGroup) {
                 return d.values;
             });
 
-/* OVERRIDE ---------------------------------------------------------------- */
-        //var startTime = new Date();
-/* ------------------------------------------------------------------------- */
-
         var rowEnter = rows.enter()
             .append('tr')
             .attr('class', ROW_CSS_CLASS);
@@ -299,14 +189,7 @@ dc.dataTable = function (parent, chartGroup) {
             rowEnter.append('td')
                 .attr('class', COLUMN_CSS_CLASS + ' _' + i)
                 .html(function (d) {
-
-/* OVERRIDE ---------------------------------------------------------------- */
-                    //return _chart._doColumnValueFormat(v, d);
-                    var aliasedColumn = "col" + i;
-                    //return "<span>" + _chart._doColumnValueFormat(aliasedColumn, d) + "</span>";
-                    return _chart._doColumnValueFormat(aliasedColumn, d);
-/* ------------------------------------------------------------------------- */
-
+                    return _chart._doColumnValueFormat(v, d);
                 });
         });
 
@@ -321,7 +204,7 @@ dc.dataTable = function (parent, chartGroup) {
 
     /**
      * Get or set the table size which determines the number of rows displayed by the widget.
-     * @name size
+     * @method size
      * @memberof dc.dataTable
      * @instance
      * @param {Number} [size=25]
@@ -344,7 +227,7 @@ dc.dataTable = function (parent, chartGroup) {
 
      * See the {@link http://dc-js.github.io/dc.js/examples/table-pagination.html table pagination example}
      * to see how to implement the pagination user interface using `beginSlice` and `endSlice`.
-     * @name beginSlice
+     * @method beginSlice
      * @memberof dc.dataTable
      * @instance
      * @param {Number} [beginSlice=0]
@@ -361,8 +244,8 @@ dc.dataTable = function (parent, chartGroup) {
 
     /**
      * Get or set the index of the end slice which determines which entries get displayed by the
-     * widget. Useful when implementing pagination. See {@link #dc.dataTable+beginSlice `beginSlice`} for more information.
-     * @name endSlice
+     * widget. Useful when implementing pagination. See {@link dc.dataTable#beginSlice `beginSlice`} for more information.
+     * @method endSlice
      * @memberof dc.dataTable
      * @instance
      * @param {Number|undefined} [endSlice=undefined]
@@ -378,64 +261,81 @@ dc.dataTable = function (parent, chartGroup) {
     };
 
     /**
-     * Get or set column functions. The data table widget now supports several methods of specifying
-     * the columns to display.  The original method, first shown below, uses an array of functions to
-     * generate dynamic columns. Column functions are simple javascript functions with only one input
-     * argument `d` which represents a row in the data set. The return value of these functions will be
-     * used directly to generate table content for each cell. However, this method requires the .html
-     * table entry to have a fixed set of column headers.
+     * Get or set column functions. The data table widget supports several methods of specifying the
+     * columns to display.
      *
-     * The second example shows you can simply list the data (d) content directly without
-     * specifying it as a function, except where necessary (ie, computed columns).  Note
-     * the data element accessor name is capitalized when displayed in the table. You can
-     * also mix in functions as desired or necessary, but you must use the
-     * `Object = [Label, Fn]` method as shown below.
-     * You may wish to override the following two functions, which are internally used to
-     * translate the column information or function into a displayed header. The first one
-     * is used on the simple "string" column specifier, the second is used to transform the
-     * String(fn) into something displayable. For the Stock example, the function for Change
-     * becomes a header of `d.close - d.open`.
+     * The original method uses an array of functions to generate dynamic columns. Column functions
+     * are simple javascript functions with only one input argument `d` which represents a row in
+     * the data set. The return value of these functions will be used to generate the content for
+     * each cell. However, this method requires the HTML for the table to have a fixed set of column
+     * headers.
      *
-     * `_chart._doColumnHeaderCapitalize` `_chart._doColumnHeaderFnToString`
-     * You may use your own Object definition, however you must then override
-     * `_chart._doColumnHeaderFormat`, `_chart._doColumnValueFormat`
-     * Be aware that fields without numberFormat specification will be displayed just as
-     * they are stored in the data, unformatted.
-     *
-     * The third example, where all fields are specified using the Object = [Label, Fn] method.
-     * @name columns
-     * @memberof dc.dataTable
-     * @instance
-     * @example
-     * chart.columns([
+     * <pre><code>chart.columns([
      *     function(d) { return d.date; },
      *     function(d) { return d.open; },
      *     function(d) { return d.close; },
      *     function(d) { return numberFormat(d.close - d.open); },
      *     function(d) { return d.volume; }
      * ]);
-     * @example
-     * chart.columns([
+     * </code></pre>
+     *
+     * In the second method, you can list the columns to read from the data without specifying it as
+     * a function, except where necessary (ie, computed columns).  Note the data element name is
+     * capitalized when displayed in the table header. You can also mix in functions as necessary,
+     * using the third `{label, format}` form, as shown below.
+     *
+     * <pre><code>chart.columns([
      *     "date",    // d["date"], ie, a field accessor; capitalized automatically
      *     "open",    // ...
      *     "close",   // ...
-     *     ["Change", // Specify an Object = [Label, Fn]
-     *         function (d) { return numberFormat(d.close - d.open); }],
+     *     {
+     *         label: "Change",
+     *         format: function (d) {
+     *             return numberFormat(d.close - d.open);
+     *         }
+     *     },
      *     "volume"   // d["volume"], ie, a field accessor; capitalized automatically
      * ]);
-     * @example
-     * chart.columns([
-     *     ["Date",   // Specify an Object = [Label, Fn]
-     *         function (d) { return d.date; }],
-     *     ["Open",
-     *         function (d) { return numberFormat(d.open); }],
-     *     ["Close",
-     *         function (d) { return numberFormat(d.close); }],
-     *     ["Change",
-     *         function (d) { return numberFormat(d.close - d.open); }],
-     *     ["Volume",
-     *         function (d) { return d.volume; }]
+     * </code></pre>
+     *
+     * In the third example, we specify all fields using the `{label, format}` method:
+     * <pre><code>chart.columns([
+     *     {
+     *         label: "Date",
+     *         format: function (d) { return d.date; }
+     *     },
+     *     {
+     *         label: "Open",
+     *         format: function (d) { return numberFormat(d.open); }
+     *     },
+     *     {
+     *         label: "Close",
+     *         format: function (d) { return numberFormat(d.close); }
+     *     },
+     *     {
+     *         label: "Change",
+     *         format: function (d) { return numberFormat(d.close - d.open); }
+     *     },
+     *     {
+     *         label: "Volume",
+     *         format: function (d) { return d.volume; }
+     *     }
      * ]);
+     * </code></pre>
+     *
+     * You may wish to override the dataTable functions `_doColumnHeaderCapitalize` and
+     * `_doColumnHeaderFnToString`, which are used internally to translate the column information or
+     * function into a displayed header. The first one is used on the "string" column specifier; the
+     * second is used to transform a stringified function into something displayable. For the Stock
+     * example, the function for Change becomes the table header **d.close - d.open**.
+     *
+     * Finally, you can even specify a completely different form of column definition. To do this,
+     * override `_chart._doColumnHeaderFormat` and `_chart._doColumnValueFormat` Be aware that
+     * fields without numberFormat specification will be displayed just as they are stored in the
+     * data, unformatted.
+     * @method columns
+     * @memberof dc.dataTable
+     * @instance
      * @param {Array<Function>} [columns=[]]
      * @return {Array<Function>}}
      * @return {dc.dataTable}
@@ -451,7 +351,7 @@ dc.dataTable = function (parent, chartGroup) {
     /**
      * Get or set sort-by function. This function works as a value accessor at row level and returns a
      * particular field to be sorted by. Default value: identity function
-     * @name sortBy
+     * @method sortBy
      * @memberof dc.dataTable
      * @instance
      * @example
@@ -471,8 +371,9 @@ dc.dataTable = function (parent, chartGroup) {
     };
 
     /**
-     * Get or set sort order.
-     * @name order
+     * Get or set sort order. If the order is `d3.ascending`, the data table will use
+     * `dimension().bottom()` to fetch the data; otherwise it will use `dimension().top()`
+     * @method order
      * @memberof dc.dataTable
      * @instance
      * @see {@link https://github.com/mbostock/d3/wiki/Arrays#d3_ascending d3.ascending}
@@ -495,7 +396,7 @@ dc.dataTable = function (parent, chartGroup) {
      * Get or set if group rows will be shown.
      *
      * The .group() getter-setter must be provided in either case.
-     * @name showGroups
+     * @method showGroups
      * @memberof dc.dataTable
      * @instance
      * @example
@@ -516,6 +417,3 @@ dc.dataTable = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
-/******************************************************************************
- * END OVERRIDE: dc.dataTable                                                 *
- * ***************************************************************************/

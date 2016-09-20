@@ -1,7 +1,6 @@
 mkdir -p example/js/
 cp node_modules/lodash/lodash.js example/js
-cp node_modules/jquery/dist/jquery.min.js example/js
-cp node_modules/d3/d3.min.js example/js
+cp ../../node_modules/d3/d3.min.js example/js
 cp mapdc.min.css example/css/
 cp chart.min.css example/css/
 cp dist/mapdc.js example/js/

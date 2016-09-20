@@ -44,11 +44,6 @@ dc.lineChart = function (parent, chartGroup) {
     var _dashStyle;
     var _xyTipsOn = true;
 
-/* OVERRIDE ---------------------------------------------------------------- */
-    _chart.accent = accentLine;
-    _chart.unAccent = unAccentLine;
-/* ------------------------------------------------------------------------- */
-
     _chart.transitionDuration(500);
     _chart._rangeBandPadding(1);
 
@@ -263,27 +258,6 @@ dc.lineChart = function (parent, chartGroup) {
                 });
         }
     }
-
-/* OVERRIDE EXTEND --------------------------------------------------------- */
-    function accentLine (value) {
-      var chartDomain = _chart.x().domain();
-      var position = (value.getTime() - chartDomain[0].getTime()) / (chartDomain[1].getTime() - chartDomain[0].getTime());
-      var chartWidth = _chart.width() - _chart.margins().left - _chart.margins().right;
-      var xPixel = Math.floor(chartWidth * position) + _chart.margins().left;
-      //var xPixel = Math.floor(chartWidth * position);
-      this.svg()
-        .append("line")
-        .attr("class","accented")
-        .attr("x1", xPixel)
-        .attr("y1", 0 + _chart.margins().top)
-        .attr("x2", xPixel)
-        .attr("y2", _chart.height() - _chart.margins().bottom)
-    }
-
-    function unAccentLine (value) {
-      $("line.accented", this.chart).remove();
-    }
-/* ------------------------------------------------------------------------- */
 
     function safeD (d) {
         return (!d || d.indexOf('NaN') >= 0) ? 'M0,0' : d;

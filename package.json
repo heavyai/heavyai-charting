@@ -25,8 +25,6 @@
     "url": "https://github.com/map-d/mapdc.js.git"
   },
   "dependencies": {
-    "d3": "3.x",
-    "jquery": "2.2.0",
     "lodash": "4.3.0"
   },
   "devDependencies": {
