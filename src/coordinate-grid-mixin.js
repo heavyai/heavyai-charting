@@ -537,9 +537,9 @@ dc.coordinateGridMixin = function (_chart) {
             .property('value', currentInput.classed('range-day') ? dateInputFormat(extent[index]): timeInputFormat(extent[index]));
     }
 
-    function rangeInputChange() {
-
-        var currentInput = d3.select(this);
+    function rangeInputChange(input) {
+        var thisInput = this || input;
+        var currentInput = d3.select(thisInput);
         var currentValue = currentInput.attr('value');
         var newValue = currentInput.property('value');
 
@@ -549,13 +549,13 @@ dc.coordinateGridMixin = function (_chart) {
 
         var inputFormat = binNumSecs > 3600 ? d3.time.format.utc('%m-%d-%Y') : (currentInput.attr('class').indexOf('day') >= 0 ? d3.time.format.utc('%m-%d-%Y %I:%M%p') : d3.time.format.utc('%b %d, %Y %I:%M%p'));
 
-        var inputStr = binNumSecs > 3600 ?  newValue : d3.select(this.parentNode).selectAll('.range-day').property('value') + ' ' + d3.select(this.parentNode).selectAll('.range-time').property('value');
+        var inputStr = binNumSecs > 3600 ?  newValue : d3.select(thisInput.parentNode).selectAll('.range-day').property('value') + ' ' + d3.select(thisInput.parentNode).selectAll('.range-time').property('value');
 
         var date = inputFormat.parse(inputStr);
 
         if (!date) {
             currentInput.property('value', currentValue);
-            this.blur();
+            thisInput.blur();
             return;
         }
 
@@ -594,7 +594,7 @@ dc.coordinateGridMixin = function (_chart) {
             _chart.focus(domFilter);
         }
 
-        this.blur();
+        thisInput.blur();
     }
 /* ------------------------------------------------------------------------ */
     function compareDomains (d1, d2) {
@@ -648,6 +648,17 @@ dc.coordinateGridMixin = function (_chart) {
         renderVerticalGridLines(g);
     }
 
+    function bindRangeInputEvents (input) {
+        d3.select(input)
+            .on('focus', rangeInputOnFocus)
+            .on('blur', rangeInputChange)
+            .on('keydown', function() {
+                if (d3.event.keyCode === 13) {
+                    rangeInputChange(this);
+                }
+            });
+    }
+
     _chart.renderXAxis = function (g) {
         var axisXG = g.selectAll('g.x');
 
@@ -678,29 +689,23 @@ dc.coordinateGridMixin = function (_chart) {
 
                 group1.append('input')
                     .attr('class', 'range-start-day range-day')
-                    .on('focus', rangeInputOnFocus)
-                    .on('change', rangeInputChange);
 
                 group1.append('input')
                     .attr('class', 'range-start-time range-time')
-                    .on('focus', rangeInputOnFocus)
-                    .on('change', rangeInputChange);
 
                 group2.append('input')
                     .attr('class', 'range-end-day range-day')
-                    .on('focus', rangeInputOnFocus)
-                    .on('change', rangeInputChange);
 
                 group2.append('input')
                     .attr('class', 'range-end-time range-time')
-                    .on('focus', rangeInputOnFocus)
-                    .on('change', rangeInputChange);
+
+                rangeDisplay.selectAll('input')
+                    .each(function() { bindRangeInputEvents(this)})
 
                 _chart.updateRangeInput();
             }
 
         }
-
 
         var xLabel = root.selectAll('.x-axis-label');
 
