@@ -227,7 +227,6 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
             _activeLayer = "_points";
             var toBeAddedOverlay = "overlay" + _activeLayer;
             map.addSource(toBeAddedOverlay,{
-                id: toBeAddedOverlay,
                 type: "image",
                 url: blobUrl,
                 coordinates: bounds

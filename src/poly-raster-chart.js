@@ -95,7 +95,6 @@ function setOverlay(data, bounds, map, layer, opacity){
   } else {
     layer.isActive = true
     map.addSource(layer.name, {
-      id: layer.name,
       type: "image",
       url: blobUrl,
       coordinates: bounds
