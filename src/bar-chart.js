@@ -39,8 +39,6 @@ dc.barChart = function (parent, chartGroup) {
     var _numBars;
     var _parent = parent;
 
-    _chart.accent = accentBar;
-    _chart.unAccent = unAccentBar;
     _chart._numberOfBars = null;
 /* ------------------------------------------------------------------------- */
 
@@ -169,7 +167,7 @@ dc.barChart = function (parent, chartGroup) {
     }
 
     function showPopup(arr, x, y) {
-        
+
         var dateFormat = d3.time.format.utc("%b %d, %Y");
         var dateTimeFormat = d3.time.format.utc("%b %d, %Y · %I:%M%p");
         var popup = _chart.popup().classed('hide-delay', true);
@@ -178,7 +176,7 @@ dc.barChart = function (parent, chartGroup) {
             .classed('popup-list', true);
 
         popupBox.append('div')
-            .attr('class', 'popup-header') 
+            .attr('class', 'popup-header')
             .text(function(){
                 if (arr[0].datum.x instanceof Date) {
                   var diffDays = Math.round(Math.abs((_chart.xAxisMin().getTime() - _chart.xAxisMax().getTime())/(24*60*60*1000)));
@@ -405,21 +403,6 @@ dc.barChart = function (parent, chartGroup) {
         _centerBar = centerBar;
         return _chart;
     };
-
-/* OVERRIDE EXTEND ----------------------------------------------------------*/
-    function accentBar (value) {
-      var chartDomain = _chart.x().domain();
-      var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
-      _chart.accentSelected($("rect.bar", _parent).get(barNum));
-    }
-
-    function unAccentBar (value) {
-      var chartDomain = _chart.x().domain();
-      var barNum = Math.floor((value - chartDomain[0]) / (chartDomain[1] - chartDomain[0]) * _numBars);
-
-      _chart.unAccentSelected($("rect.bar", _parent).get(barNum));
-    };
-/* OVERRIDE EXTEND ----------------------------------------------------------*/
 
     dc.override(_chart, 'onClick', function (d) {
         _chart._onClick(d.data);
