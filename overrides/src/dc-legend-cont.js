@@ -15,13 +15,30 @@ export default function legendCont () {
   let _chartType = ""
   let _wrapper = null
   let _lock = null
+  let _minMax = null
   let _isLocked = false
+
+  _legend.isLocked = function (_) {
+    if (!arguments.length) {
+      return _isLocked
+    }
+    _isLocked = _
+    return _legend
+  }
 
   _legend.parent = function (p) {
     if (!arguments.length) {
       return _parent
     }
     _parent = p
+    return _legend
+  }
+
+  _legend.minMax = function (_) {
+    if (!arguments.length) {
+      return _minMax
+    }
+    _minMax = _
     return _legend
   }
 
@@ -44,6 +61,7 @@ export default function legendCont () {
   _legend.removeLegend = function () {
     _parent.root().select(".legend-cont").remove()
     _parent.legend(null)
+    _parent.anchor().dispatchEvent(new CustomEvent("clearCustomContLegend"))
   }
 
   _legend.render = function () {
@@ -129,9 +147,12 @@ export default function legendCont () {
   function toggleLock () {
     _isLocked = !_isLocked
 
-    if (!_isLocked) {
-            // must use .dataAsync
-      _parent.colorDomain(d3.extent(_parent.data(), _parent.colorAccessor()))
+    if (_isLocked) {
+      _parent.anchor().dispatchEvent(new CustomEvent("setCustomContLegend", {detail: _parent.colors().domain()}))
+    } else {
+      const minMax = _chartType === "pointmap" ? _minMax : d3.extent(_parent.data(), _parent.colorAccessor())
+      _parent.colorDomain(minMax)
+      _parent.anchor().dispatchEvent(new CustomEvent("clearCustomContLegend"))
     }
     _parent.redrawAsync()
   }
@@ -141,15 +162,18 @@ export default function legendCont () {
       return parseFloat(val.replace(/,/g, ""))
     }
     const currVal = d3.select(this).attr("value")
-    const startVal = parseVal(_wrapper.select(".legend-item:first-child .legend-input input").node().value)
-    const endVal = parseVal(_wrapper.select(".legend-item:last-child .legend-input input").node().value)
+    const inputBox1 = parseVal(_wrapper.select(".legend-item:first-child .legend-input input").node().value)
+    const inputBox2 = parseVal(_wrapper.select(".legend-item:last-child .legend-input input").node().value)
+
+    const startVal = isFinite(inputBox1) ? inputBox1 : _parent.colorDomain()[0]
+    const endVal = isFinite(inputBox2) ? inputBox2 : _parent.colorDomain()[1]
 
     if (!isNaN(startVal) && !isNaN(endVal)) {
       _isLocked = true
       _parent.colorDomain([startVal, endVal])
                 .on("preRedraw.color", null)
                 .redrawAsync()
-      _parent.anchor().dispatchEvent(new CustomEvent("legendChange", {detail: [startVal, endVal]}))
+      _parent.anchor().dispatchEvent(new CustomEvent("setCustomContLegend", {detail: [startVal, endVal]}))
     } else {
       d3.select(this).property("value", currVal)
     }
