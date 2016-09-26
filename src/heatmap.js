@@ -313,8 +313,8 @@ dc.heatMap = function (parent, chartGroup) {
 
 
         _chart.svg()
-            .attr('width', (boxWidth === _minBoxSize ? boxWidth * colCount + 56 : _chart.width()))
-            .attr('height', (boxHeight === _minBoxSize ? boxHeight * rowCount + 56 : _chart.height()));
+            .attr('width', (boxWidth === _minBoxSize ? boxWidth * colCount + 64 : _chart.width()))
+            .attr('height', (boxHeight === _minBoxSize ? boxHeight * rowCount + 64 : _chart.height()));
 
         _chart.root()
             .classed('heatmap-scroll', true)
