@@ -61,6 +61,7 @@ dc.heatMap = function (parent, chartGroup) {
     var _yLabel;
     var _xLabel;
     var _hasBeenRendered = false;
+    var _minBoxSize= 16;
 /* --------------------------------------------------------------------------*/
 
     var _xBorderRadius = DEFAULT_BORDER_RADIUS;
@@ -304,8 +305,25 @@ dc.heatMap = function (parent, chartGroup) {
             boxWidth = Math.floor(_chart.effectiveWidth() / colCount),
             boxHeight = Math.floor(_chart.effectiveHeight() / rowCount);
 
-        cols.rangeRoundBands([0, _chart.effectiveWidth()]);
-        rows.rangeRoundBands([_chart.effectiveHeight(), 0]);
+        boxWidth = boxWidth < _minBoxSize ? _minBoxSize : boxWidth;
+        boxHeight = boxHeight < _minBoxSize ? _minBoxSize : boxHeight;
+
+        cols.rangeRoundBands([0, boxWidth * colCount]);
+        rows.rangeRoundBands([boxHeight * rowCount, 0]);
+
+
+        _chart.svg()
+            .attr('width', (boxWidth === _minBoxSize ? boxWidth * colCount + 56 : _chart.width()))
+            .attr('height', (boxHeight === _minBoxSize ? boxHeight * rowCount + 56 : _chart.height()));
+
+        _chart.root()
+            .classed('heatmap-scroll', true)
+            .select('.svg-wrapper')
+            .style('height', _chart.height() + 'px')
+            .style('width', _chart.width() + 'px')
+            .style('overflow', 'auto')
+            .node().scrollTop = boxHeight * rowCount + 64;
+
 
 /* OVERRIDE -----------------------------------------------------------------*/
         var boxes = _chartBody.select('.box-wrapper')
@@ -361,11 +379,12 @@ dc.heatMap = function (parent, chartGroup) {
         var gColsText = gCols.selectAll('text').data(cols.domain());
         gColsText.enter().append('text')
               .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-              .attr('y', _chart.effectiveHeight())
+              .attr('y', function(d) { return boxHeight * rowCount})
               .on('click', _chart.xAxisOnClick())
               .text(_chart.colsLabel())
 
 /* OVERRIDE -----------------------------------------------------------------*/
+
               .style('text-anchor', function(d){
                     return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
               })
@@ -374,16 +393,18 @@ dc.heatMap = function (parent, chartGroup) {
                     return isRotateLabels ? (isNaN(d) ? 2: -4): 0;
               })
               .attr('transform', function(d){
-                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ _chart.effectiveHeight() +')' : null;
+                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ (boxHeight * rowCount) +')' : null;
                });
+
 /* --------------------------------------------------------------------------*/
 
         dc.transition(gColsText, _chart.transitionDuration())
                .text(_chart.colsLabel())
                .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-               .attr('y', _chart.effectiveHeight())
+               .attr('y', function(d) { return boxHeight * rowCount})
 
 /* OVERRIDE -----------------------------------------------------------------*/
+
                .style('text-anchor', function(d){
                     return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
                })
@@ -392,7 +413,7 @@ dc.heatMap = function (parent, chartGroup) {
                     return isRotateLabels ? (isNaN(d) ? 2: -4): 0;
                })
                .attr('transform', function(d){
-                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ _chart.effectiveHeight() +')' : null;
+                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ (boxHeight * rowCount) +')' : null;
                });
 /* --------------------------------------------------------------------------*/
 
@@ -612,8 +633,10 @@ dc.heatMap = function (parent, chartGroup) {
     function positionPopup() {
         var coordinates = [0, 0];
         coordinates = _chart.popupCoordinates(d3.mouse(this));
-        var x = coordinates[0] + _chart.margins().left;
-        var y = coordinates[1] + _chart.margins().top;
+
+        var scrollNode = _chart.root().select('.svg-wrapper').node();
+        var x = coordinates[0] + _chart.margins().left - scrollNode.scrollLeft;
+        var y = coordinates[1] + _chart.margins().top - scrollNode.scrollTop;
 
         var popup =_chart.popup()
             .attr('style', function(){

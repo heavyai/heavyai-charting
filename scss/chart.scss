@@ -356,6 +356,8 @@ body {
         font-size: 13px !important;
         color: $gray4;
         font-weight: bold;
+        z-index: 2;
+        pointer-events: none;
     }
 
     div.y-axis-label {
@@ -1386,6 +1388,29 @@ body {
                 right: 0;   
             }   
         }
+    }
+}
+
+.heatmap-scroll {
+    &:before, &:after {
+        position: absolute;
+        background: rgba(white, .9);
+        content: "";
+        pointer-events: none;
+    }
+
+    &:before {
+        top: 0;
+        left: 0;
+        width: 20px;
+        height: 100%;
+    }
+
+    &:after {
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 32px;
     }
 }
 
