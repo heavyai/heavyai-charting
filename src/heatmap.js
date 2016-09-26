@@ -62,6 +62,7 @@ dc.heatMap = function (parent, chartGroup) {
     var _xLabel;
     var _hasBeenRendered = false;
     var _minBoxSize= 16;
+    var _scrollPos = {top: null, left: null};
 /* --------------------------------------------------------------------------*/
 
     var _xBorderRadius = DEFAULT_BORDER_RADIUS;
@@ -316,14 +317,22 @@ dc.heatMap = function (parent, chartGroup) {
             .attr('width', (boxWidth === _minBoxSize ? boxWidth * colCount + 64 : _chart.width()))
             .attr('height', (boxHeight === _minBoxSize ? boxHeight * rowCount + 64 : _chart.height()));
 
-        _chart.root()
+        var scrollNode = _chart.root()
             .classed('heatmap-scroll', true)
             .select('.svg-wrapper')
             .style('height', _chart.height() + 'px')
             .style('width', _chart.width() + 'px')
             .style('overflow', 'auto')
-            .node().scrollTop = boxHeight * rowCount + 64;
+            .on('scroll', function(){
+              _scrollPos = {
+                top: d3.select(this).node().scrollTop,
+                left: d3.select(this).node().scrollLeft
+              }
+            })
+            .node();
 
+        scrollNode.scrollTop = _scrollPos.top || _scrollPos.top === 0 ? _scrollPos.top : boxHeight * rowCount + 64;
+        scrollNode.scrollLeft = _scrollPos.left ? _scrollPos.left : 0;
 
 /* OVERRIDE -----------------------------------------------------------------*/
         var boxes = _chartBody.select('.box-wrapper')
