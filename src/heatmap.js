@@ -63,6 +63,7 @@ dc.heatMap = function (parent, chartGroup) {
     var _hasBeenRendered = false;
     var _minBoxSize= 16;
     var _scrollPos = {top: null, left: null};
+    var _dockedAxes;
 /* --------------------------------------------------------------------------*/
 
     var _xBorderRadius = DEFAULT_BORDER_RADIUS;
@@ -278,6 +279,10 @@ dc.heatMap = function (parent, chartGroup) {
         _chartBody.append('g')
             .attr('class', 'box-wrapper');
         _hasBeenRendered = true;
+
+        _dockedAxes = _chart.root()
+          .append('div')
+          .attr('class', 'docked-axis-wrapper');
 /* --------------------------------------------------------------------------*/
         return _chart._doRedraw();
     };
@@ -303,8 +308,8 @@ dc.heatMap = function (parent, chartGroup) {
 
         var rowCount = rows.domain().length,
             colCount = cols.domain().length,
-            boxWidth = Math.floor(_chart.effectiveWidth() / colCount),
-            boxHeight = Math.floor(_chart.effectiveHeight() / rowCount);
+            boxWidth = _chart.effectiveWidth() / colCount,
+            boxHeight = _chart.effectiveHeight() / rowCount;
 
         boxWidth = boxWidth < _minBoxSize ? _minBoxSize : boxWidth;
         boxHeight = boxHeight < _minBoxSize ? _minBoxSize : boxHeight;
@@ -328,6 +333,10 @@ dc.heatMap = function (parent, chartGroup) {
                 top: d3.select(this).node().scrollTop,
                 left: d3.select(this).node().scrollLeft
               }
+              _chart.root().select('.docked-x-axis')
+                .style('left', -_scrollPos.left + 'px');
+              _chart.root().select('.docked-y-axis')
+                .style('top', -_scrollPos.top + 'px');
             })
             .node();
 
@@ -369,80 +378,46 @@ dc.heatMap = function (parent, chartGroup) {
 
         boxes.exit().remove();
 
-        var gCols = _chartBody.selectAll('g.cols');
-        if (gCols.empty()) {
-            gCols = _chartBody.append('g').attr('class', 'cols axis');
-        }
-
-/* OVERRIDE -----------------------------------------------------------------*/
         var maxDomainCharLength = function() {
             var maxChar = 0;
             cols.domain().forEach(function(d){
-                maxChar = d.toString().length > maxChar ? d.toString().length : maxChar;
+                maxChar = _colsLabel(d).toString().length > maxChar ? _colsLabel(d).toString().length : maxChar;
             });
             return maxChar;
         }
-        var isRotateLabels = maxDomainCharLength() * 8 > boxWidth ? true : false;
-/* --------------------------------------------------------------------------*/
+        var isRotateLabels = maxDomainCharLength() * 6 > boxWidth ? true : false;
 
-        var gColsText = gCols.selectAll('text').data(cols.domain());
-        gColsText.enter().append('text')
-              .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-              .attr('y', function(d) { return boxHeight * rowCount})
-              .on('click', _chart.xAxisOnClick())
-              .text(_chart.colsLabel())
+        var dockedXAxis = _dockedAxes.selectAll('.docked-x-axis');
 
-/* OVERRIDE -----------------------------------------------------------------*/
-
-              .style('text-anchor', function(d){
-                    return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
-              })
-              .attr('dy', (isRotateLabels ? 3 : 12))
-              .attr('dx', function(d){
-                    return isRotateLabels ? (isNaN(d) ? 2: -4): 0;
-              })
-              .attr('transform', function(d){
-                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ (boxHeight * rowCount) +')' : null;
-               });
-
-/* --------------------------------------------------------------------------*/
-
-        dc.transition(gColsText, _chart.transitionDuration())
-               .text(_chart.colsLabel())
-               .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-               .attr('y', function(d) { return boxHeight * rowCount})
-
-/* OVERRIDE -----------------------------------------------------------------*/
-
-               .style('text-anchor', function(d){
-                    return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
-               })
-               .attr('dy', (isRotateLabels ? 3 : 12))
-               .attr('dx', function(d){
-                    return isRotateLabels ? (isNaN(d) ? 2: -4): 0;
-               })
-               .attr('transform', function(d){
-                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ (boxHeight * rowCount) +')' : null;
-               });
-/* --------------------------------------------------------------------------*/
-
-        gColsText.exit().remove();
-        var gRows = _chartBody.selectAll('g.rows');
-        if (gRows.empty()) {
-            gRows = _chartBody.append('g').attr('class', 'rows axis');
+        if (dockedXAxis.empty()) {
+            dockedXAxis = _dockedAxes.append('div').attr('class', 'docked-x-axis');
         }
-        var gRowsText = gRows.selectAll('text').data(rows.domain());
-        gRowsText.enter().append('text')
-              .attr('dy', 6)
-              .style('text-anchor', 'end')
-              .attr('x', 0)
-              .attr('dx', -2)
-              .on('click', _chart.yAxisOnClick())
-              .text(_chart.rowsLabel());
-        dc.transition(gRowsText, _chart.transitionDuration())
-              .text(_chart.rowsLabel())
-              .attr('y', function (d) { return rows(d) + boxHeight / 2; });
-        gRowsText.exit().remove();
+
+        var colsText = dockedXAxis.html('').selectAll('div.text').data(cols.domain());
+        
+        colsText.enter()
+          .append('div')
+          .attr('class', function(d) {
+            return 'text ' + (isRotateLabels ? (isNaN(d) ? 'rotate-text' : 'rotate-num') : 'center');
+          })
+          .style('left', function (d) { return cols(d) + boxWidth / 2 + _chart.margins().left + 'px'; })
+          .on('click', _chart.xAxisOnClick())
+          .text(_chart.colsLabel());
+
+        var dockedYAxis = _dockedAxes.selectAll('.docked-y-axis');
+
+        if (dockedYAxis.empty()) {
+            dockedYAxis = _dockedAxes.append('div').attr('class', 'docked-y-axis');
+        }
+
+        var rowsText = dockedYAxis.html('').selectAll('div.text').data(rows.domain());
+        
+        rowsText.enter()
+          .append('div')
+          .attr('class', 'text')
+          .style('top', function (d) { return rows(d) + boxHeight / 2 + _chart.margins().top + 'px'; })
+          .on('click', _chart.yAxisOnClick())
+          .text(_chart.rowsLabel());
 
         if (_chart.hasFilter()) {
             _chart.selectAll('g.box-group').each(function (d) {
