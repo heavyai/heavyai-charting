@@ -22,8 +22,9 @@ function resetDCState () {
 
 function setUpChartSpies() {
   charts.forEach((chart) => {
-    chart.redrawAsync = chai.spy()
-    chart.renderAsync = chai.spy()
+    chart._invokeDataFetchListener = chai.spy()
+    chart.redrawAsync = chai.spy(() => Promise.resolve())
+    chart.renderAsync = chai.spy(() => Promise.resolve())
     chart.expireCache = chai.spy()
   })
 }

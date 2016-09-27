@@ -5,6 +5,7 @@ import dc from "../../index"
 chai.use(spies)
 
 const chartStub = {
+  on: () => {},
   data: () => {},
   label: () => {}
 }
@@ -52,6 +53,29 @@ describe("MapD Base Mixin", () => {
           base.redraw(0, 0, 1, {})
           expect(dc.redrawAllAsync).to.have.not.been.called()
         })
+      })
+    })
+  })
+
+  describe("data listenders", () => {
+    describe("on dataFetch", () => {
+      it('should emit dataFetch event on _invokeDataFetchListener', () => {
+        const chart = dc.asyncMixin(chartStub)
+        chart.on("dataFetch", (c) => {
+          expect(chart).to.equal(c)
+        })
+
+        chart._invokeDataFetchListener()
+      })
+    })
+    describe("on dataError", () => {
+      it('should emit dataError event on _invokeDataErrorListener', () => {
+        const chart = dc.asyncMixin(chartStub)
+        chart.on("dataError", (c) => {
+          expect(chart).to.equal(c)
+        })
+
+        chart._invokeDataErrorListener()
       })
     })
   })

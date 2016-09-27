@@ -1,11 +1,35 @@
-const dc = require("../../mapdc")
+import dc from "../../mapdc"
+import d3 from "d3"
+
+const NON_INDEX = -1
 
 export default function asyncMixin (_chart) {
+  const events = ["dataFetch", "dataError"]
+  const _listeners = d3.dispatch.apply(d3, events)
+  const _on = _chart.on.bind(_chart)
+
   _chart.dataCache = null
   _chart.queryId = 0
 
   let _dataAsync = function (group, callback) {
     group.allAsync(callback)
+  }
+
+  _chart.on = function (event, listener) {
+    if (events.indexOf(event) === NON_INDEX) {
+      _on(event, listener)
+    } else {
+      _listeners.on(event, listener)
+    }
+    return _chart
+  }
+
+  _chart._invokeDataFetchListener = function () {
+    _listeners.dataFetch(_chart)
+  }
+
+  _chart._invokeDataErrorListener = function () {
+    _listeners.dataError(_chart)
   }
 
   _chart.dataAsync = function (callback) {
