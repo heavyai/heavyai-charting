@@ -267,7 +267,7 @@ dc.heatMap = function (parent, chartGroup) {
         _chart.resetSvg();
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        _chart.margins({top: 8, right: 16, bottom: 56, left: 48});
+        _chart.margins({top: 8, right: 16, bottom: 0, left: 0});
 /* --------------------------------------------------------------------------*/
 
         _chartBody = _chart.svg()
@@ -319,15 +319,17 @@ dc.heatMap = function (parent, chartGroup) {
 
 
         _chart.svg()
-            .attr('width', (boxWidth === _minBoxSize ? boxWidth * colCount + 64 : _chart.width()))
-            .attr('height', (boxHeight === _minBoxSize ? boxHeight * rowCount + 64 : _chart.height()));
+            .attr('width', (boxWidth === _minBoxSize ? boxWidth * colCount + (boxWidth / 2) : _chart.width()))
+            .attr('height', (boxHeight === _minBoxSize ? boxHeight * rowCount + (boxHeight / 2) : _chart.height()));
 
         var scrollNode = _chart.root()
             .classed('heatmap-scroll', true)
             .select('.svg-wrapper')
-            .style('height', _chart.height() + 'px')
-            .style('width', _chart.width() + 'px')
+            .style('height', _chart.height() - 56 + 'px')
+            .style('width', _chart.width() - 48 + 'px')
+            .style('position', 'relative')
             .style('overflow', 'auto')
+            .style('left', '48px')
             .on('scroll', function(){
               _scrollPos = {
                 top: d3.select(this).node().scrollTop,
@@ -340,7 +342,7 @@ dc.heatMap = function (parent, chartGroup) {
             })
             .node();
 
-        scrollNode.scrollTop = _scrollPos.top || _scrollPos.top === 0 ? _scrollPos.top : boxHeight * rowCount + 64;
+        scrollNode.scrollTop = _scrollPos.top || _scrollPos.top === 0 ? _scrollPos.top : boxHeight * rowCount + (boxHeight / 2);
         scrollNode.scrollLeft = _scrollPos.left ? _scrollPos.left : 0;
 
 /* OVERRIDE -----------------------------------------------------------------*/
@@ -400,7 +402,7 @@ dc.heatMap = function (parent, chartGroup) {
           .attr('class', function(d) {
             return 'text ' + (isRotateLabels ? (isNaN(d) ? 'rotate-text' : 'rotate-num') : 'center');
           })
-          .style('left', function (d) { return cols(d) + boxWidth / 2 + _chart.margins().left + 'px'; })
+          .style('left', function (d) { return cols(d) + boxWidth / 2 + 48 + 'px'; })
           .on('click', _chart.xAxisOnClick())
           .text(_chart.colsLabel());
 
