@@ -215,7 +215,13 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
         return _geoJsons[index];
     }
 
+
     function renderPaths (regionG, layerIndex, data) {
+        var dragRegion = d3.behavior.drag()
+            .on('dragstart', function () {
+            d3.event.sourceEvent.preventDefault();
+        })
+
         var paths = regionG
             .select('path')
             .attr('fill', function () {
@@ -229,6 +235,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
             .on('mouseenter', function(d, i){showPopup(d, i, data);})
             .on('mousemove', positionPopup)
             .on('mouseleave', hidePopup)
+            .call(dragRegion)
 /* ------------------------------------------------------------------------- */
             .on('click', function (d) {
                 return _chart.onClick(d, layerIndex);
