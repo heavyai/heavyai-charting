@@ -1400,7 +1400,7 @@ body {
         left: 0;
         width: 48px;
         height: 56px;
-        background: linear-gradient(54deg, rgba(white, 1), rgba(white, 1), rgba(white, 1), rgba(white, 1), rgba(white, .8));
+        background: linear-gradient(54deg, white, white, rgba(white, .8));
         z-index: 1;
     }
 
@@ -1518,7 +1518,7 @@ body {
             width: 48px;
             height: calc(100% - 56px);
             z-index: 3;
-            background: linear-gradient(90deg, rgba(white, 1), rgba(white, 1), rgba(white, .8));
+            background: linear-gradient(90deg, white, white, white, rgba(white, .8));
         }
 
         &:after {
@@ -1526,7 +1526,7 @@ body {
             left: 48px;
             width: calc(100% - 48px);
             height: 56px;
-            background: linear-gradient(0deg, rgba(white, 1), rgba(white, 1), rgba(white, .8));
+            background: linear-gradient(0deg, white, white, white, rgba(white, .8));
         }
     }
 }
