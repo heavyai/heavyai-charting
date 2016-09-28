@@ -1403,6 +1403,13 @@ body {
         background: linear-gradient(54deg, rgba(white, 1), rgba(white, 1), rgba(white, 1), rgba(white, 1), rgba(white, .8));
         z-index: 1;
     }
+
+    .svg-wrapper {
+        position: relative;
+        overflow: auto;
+        left: 48px;
+    }
+
     .docked-x-axis {
         position: absolute;
         bottom: 0;
@@ -1414,16 +1421,50 @@ body {
             transform: translateX(-50%);
         }
 
-        .rotate-text {
+        .rotate-up {
             transform-origin: 0 0;
             transform: rotate(-90deg) translateY(-50%);
             color: $gray8;
             font-weight: bold;
+            font-size: 12px;
+            text-shadow: 0 0 4px rgba(white, 1);
+            pointer-events: none;
+
+            &:before {
+                content: "";
+                position: absolute;
+                width: 16px;
+                height: 100%;
+                pointer-events: auto;
+                left: -16px;
+            }
+
+            &:after {
+                border: 6px solid transparent;
+                border-left-color: $gray4;
+                position: absolute;
+                content: "";
+                left: -8px;
+                top: 4px;
+                opacity: 0;
+            }
+
+            &:hover {
+                &:after {
+                    opacity: 1;
+                }
+            }
+
+            &:active {
+                &:after {
+                    border-left-color: $blue-main;
+                }
+            }
         }
 
-        .rotate-num {
+        .rotate-down {
             transform-origin: 0 0;
-            transform: rotate(90deg) translateY(-50%);
+            transform: rotate(-90deg) translate(-100%, -50%);
         }
 
     }
@@ -1447,6 +1488,12 @@ body {
         color: $gray4;
         white-space: nowrap;
         padding: 4px;
+        pointer-events: auto;
+        cursor:  pointer;
+
+        &:active {
+            color: $blue-main;
+        }
     }
 
     .docked-axis-wrapper {
