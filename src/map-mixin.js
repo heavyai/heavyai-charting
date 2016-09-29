@@ -105,10 +105,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     function onLoad(e){
       if (_chart.initGeocoder()) {
         _chart.initGeocoder()();
-        var attributions = document.createElement('div');
-          attributions.className = 'mapboxgl-attribution';
-          attributions.innerHTML = '<span>©</span> <a href="https://www.mapbox.com/about/maps/">Mapbox</a> <span>©</span> <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
-        _chart.root()[0][0].appendChild(attributions);
       }
 
       dc.enableRefresh();
@@ -226,7 +222,8 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
           center: _center, // starting position
           zoom: _zoom, // starting zoom
           maxBounds: _llb,
-          preserveDrawingBuffer: true
+          preserveDrawingBuffer: true,
+          attributionControl: true
         });
         _map.dragRotate.disable();
         _map.touchZoomRotate.disableRotation();
@@ -240,7 +237,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     }
 
     _chart.on('preRender', function(chart) {
-        _chart.root().select('.mapboxgl-ctrl-bottom-right').remove();
 
         var width = chart.width();
         var height = chart.height();
