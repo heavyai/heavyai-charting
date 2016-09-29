@@ -164,6 +164,9 @@ export default function filterMixin (_chart) {
    * @return {dc.baseMixin}
    */
   _chart.handleFilterClick = function (event, filter) {
+    if (event.defaultPrevented) {
+      return;
+    }
     const isInverseFilter = event.metaKey || event.ctrlKey
     dc.events.trigger(() => {
       _chart.filter(filter, isInverseFilter)

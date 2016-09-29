@@ -48,4 +48,20 @@ describe("Filter Mixin", () => {
       })
     })
   })
+  describe("handleFilterClick function", () => {
+    it("should do nothing if default was prevented", () => {
+      const event = {
+        defaultPrevented: true
+      }
+      chart.handleFilterClick(event)
+      expect(chart.filter()).to.deep.equal(null)
+    })
+
+    it("should set filter", () => {
+      const event = {}
+      const filter = ["filter"]
+      chart.handleFilterClick(event, filter)
+      expect(chart.filter()).to.deep.equal(["filter"])
+    })
+  })
 })
