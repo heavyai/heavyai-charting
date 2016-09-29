@@ -47,24 +47,19 @@ body {
     }
 }
 
-.mapboxgl-attribution {
+.mapboxgl-ctrl-attrib {
   position: absolute;
-  right: 15px;
-  bottom: 0;
-  font-size: 10px;
-  color: $gray4;
-  padding: 2px 4px;
-  z-index: 101;
-  letter-spacing: 1px;
-  word-spacing: 4px;
+  right: 20px;
+  bottom: 4px;
+  font-size: 11px;
+  background: rgba(white, .4);
 }
 
-.mapboxgl-attribution span {
-  margin-right: -5px;
+.mapboxgl-ctrl-attrib a:link, a:visited { 
+    color: $gray5; 
+    padding: 0 4px;
 }
-
-.mapboxgl-attribution a:link, a:visited { color: $gray4; padding-right: 7px; }
-.mapboxgl-attribution a:hover { text-decoration: none; }
+.mapboxgl-ctrl-attrib a:hover { text-decoration: none; }
  
 .anim-button-play {
     bottom: 152px;
