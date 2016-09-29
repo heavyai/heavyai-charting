@@ -63,6 +63,8 @@ dc.heatMap = function (parent, chartGroup) {
     var _hasBeenRendered = false;
     var _minBoxSize= 16;
     var _scrollPos = {top: null, left: null};
+    var _dockedAxes;
+    var _dockedAxesSize = {left: 48, bottom: 56};
 /* --------------------------------------------------------------------------*/
 
     var _xBorderRadius = DEFAULT_BORDER_RADIUS;
@@ -266,7 +268,7 @@ dc.heatMap = function (parent, chartGroup) {
         _chart.resetSvg();
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        _chart.margins({top: 8, right: 16, bottom: 56, left: 48});
+        _chart.margins({top: 8, right: 16, bottom: 0, left: 0});
 /* --------------------------------------------------------------------------*/
 
         _chartBody = _chart.svg()
@@ -278,15 +280,18 @@ dc.heatMap = function (parent, chartGroup) {
         _chartBody.append('g')
             .attr('class', 'box-wrapper');
         _hasBeenRendered = true;
+
+        _dockedAxes = _chart.root()
+          .append('div')
+          .attr('class', 'docked-axis-wrapper');
 /* --------------------------------------------------------------------------*/
         return _chart._doRedraw();
     };
 
     _chart._doRedraw = function () {
-/* OVERRIDE -----------------------------------------------------------------*/
+
         if (!_hasBeenRendered)
             return _chart._doRender();
-/* --------------------------------------------------------------------------*/
 
         var data = _chart.data(),
             cols = _chart.cols(),
@@ -303,44 +308,45 @@ dc.heatMap = function (parent, chartGroup) {
 
         var rowCount = rows.domain().length,
             colCount = cols.domain().length,
-            boxWidth = Math.floor(_chart.effectiveWidth() / colCount),
-            boxHeight = Math.floor(_chart.effectiveHeight() / rowCount);
+            availWidth = _chart.width() - _dockedAxesSize.left,
+            availHeight = _chart.height() - _dockedAxesSize.bottom,
+            boxWidth = Math.max((availWidth - _chart.margins().right) / colCount, _minBoxSize),
+            boxHeight = Math.max((availHeight - _chart.margins().top) / rowCount, _minBoxSize),
+            svgWidth = boxWidth * colCount + _chart.margins().right,
+            svgHeight = boxHeight * rowCount + _chart.margins().top;
 
-        boxWidth = boxWidth < _minBoxSize ? _minBoxSize : boxWidth;
-        boxHeight = boxHeight < _minBoxSize ? _minBoxSize : boxHeight;
-
-        cols.rangeRoundBands([0, boxWidth * colCount]);
-        rows.rangeRoundBands([boxHeight * rowCount, 0]);
-
+        cols.rangeBands([0, boxWidth * colCount]);
+        rows.rangeBands([boxHeight * rowCount, 0]);
 
         _chart.svg()
-            .attr('width', (boxWidth === _minBoxSize ? boxWidth * colCount + 64 : _chart.width()))
-            .attr('height', (boxHeight === _minBoxSize ? boxHeight * rowCount + 64 : _chart.height()));
+            .attr('width', svgWidth)
+            .attr('height', svgHeight);
 
         var scrollNode = _chart.root()
             .classed('heatmap-scroll', true)
             .select('.svg-wrapper')
-            .style('height', _chart.height() + 'px')
-            .style('width', _chart.width() + 'px')
-            .style('overflow', 'auto')
+            .style('width', _chart.width() - _dockedAxesSize.left + 'px')
+            .style('height', _chart.height() - _dockedAxesSize.bottom + 'px')
             .on('scroll', function(){
               _scrollPos = {
                 top: d3.select(this).node().scrollTop,
                 left: d3.select(this).node().scrollLeft
               }
+              _chart.root().select('.docked-x-axis')
+                .style('left', -_scrollPos.left + 'px');
+              _chart.root().select('.docked-y-axis')
+                .style('top', -_scrollPos.top + 'px');
             })
             .node();
 
-        scrollNode.scrollTop = _scrollPos.top || _scrollPos.top === 0 ? _scrollPos.top : boxHeight * rowCount + 64;
         scrollNode.scrollLeft = _scrollPos.left ? _scrollPos.left : 0;
+        scrollNode.scrollTop = _scrollPos.top || _scrollPos.top === 0 ? _scrollPos.top : svgHeight;
 
-/* OVERRIDE -----------------------------------------------------------------*/
         var boxes = _chartBody.select('.box-wrapper')
           .selectAll('g.box-group')
           .data(_chart.data(), function (d, i) {
             return _chart.keyAccessor()(d, i) + '\0' + _chart.valueAccessor()(d, i);
            });
-/* --------------------------------------------------------------------------*/
 
         var gEnter = boxes.enter().append('g')
             .attr('class', 'box-group');
@@ -348,17 +354,12 @@ dc.heatMap = function (parent, chartGroup) {
         gEnter.append('rect')
             .attr('class', 'heat-box')
             .attr('fill', 'white')
-/* OVERRIDE ---------------------------------------------------------------- */
             .on('mouseenter', showPopup)
             .on('mousemove', positionPopup)
             .on('mouseleave', hidePopup)
-/* ------------------------------------------------------------------------- */
             .on('click', _chart.boxOnClick());
 
-/* OVERRIDE -----------------------------------------------------------------*/
         dc.transition(boxes.select('rect'), _chart.transitionDuration())
-/* --------------------------------------------------------------------------*/
-
             .attr('x', function (d, i) { return cols(_chart.keyAccessor()(d, i)); })
             .attr('y', function (d, i) { return rows(_chart.valueAccessor()(d, i)); })
             .attr('rx', _xBorderRadius)
@@ -369,80 +370,46 @@ dc.heatMap = function (parent, chartGroup) {
 
         boxes.exit().remove();
 
-        var gCols = _chartBody.selectAll('g.cols');
-        if (gCols.empty()) {
-            gCols = _chartBody.append('g').attr('class', 'cols axis');
+        var XAxis = _dockedAxes.selectAll('.docked-x-axis');
+
+        if (XAxis.empty()) {
+            XAxis = _dockedAxes.append('div').attr('class', 'docked-x-axis');
         }
 
-/* OVERRIDE -----------------------------------------------------------------*/
-        var maxDomainCharLength = function() {
-            var maxChar = 0;
-            cols.domain().forEach(function(d){
-                maxChar = d.toString().length > maxChar ? d.toString().length : maxChar;
-            });
-            return maxChar;
+        var colsText = XAxis.html('').selectAll('div.text').data(cols.domain());
+
+        var maxColChars = 0;
+
+        cols.domain().forEach(function(d){
+            maxColChars = Math.max(_colsLabel(d).toString().length, maxColChars);
+        });
+
+        var isRotateLabels = maxColChars * 6 > boxWidth;
+
+        colsText.enter()
+          .append('div')
+          .attr('class', function(d) {
+            return 'text ' + (isRotateLabels ? rotateLabel(d) : 'center');
+          })
+          .style('left', function (d) { return cols(d) + (boxWidth / 2) + _dockedAxesSize.left + 'px'; })
+          .on('click', _chart.xAxisOnClick())
+          .append('span')
+          .text(_chart.colsLabel());
+
+        var YAxis = _dockedAxes.selectAll('.docked-y-axis');
+
+        if (YAxis.empty()) {
+            YAxis = _dockedAxes.append('div').attr('class', 'docked-y-axis');
         }
-        var isRotateLabels = maxDomainCharLength() * 8 > boxWidth ? true : false;
-/* --------------------------------------------------------------------------*/
 
-        var gColsText = gCols.selectAll('text').data(cols.domain());
-        gColsText.enter().append('text')
-              .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-              .attr('y', function(d) { return boxHeight * rowCount})
-              .on('click', _chart.xAxisOnClick())
-              .text(_chart.colsLabel())
-
-/* OVERRIDE -----------------------------------------------------------------*/
-
-              .style('text-anchor', function(d){
-                    return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
-              })
-              .attr('dy', (isRotateLabels ? 3 : 12))
-              .attr('dx', function(d){
-                    return isRotateLabels ? (isNaN(d) ? 2: -4): 0;
-              })
-              .attr('transform', function(d){
-                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ (boxHeight * rowCount) +')' : null;
-               });
-
-/* --------------------------------------------------------------------------*/
-
-        dc.transition(gColsText, _chart.transitionDuration())
-               .text(_chart.colsLabel())
-               .attr('x', function (d) { return cols(d) + boxWidth / 2; })
-               .attr('y', function(d) { return boxHeight * rowCount})
-
-/* OVERRIDE -----------------------------------------------------------------*/
-
-               .style('text-anchor', function(d){
-                    return isRotateLabels ? (isNaN(d) ?'start' : 'end'): 'middle';
-               })
-               .attr('dy', (isRotateLabels ? 3 : 12))
-               .attr('dx', function(d){
-                    return isRotateLabels ? (isNaN(d) ? 2: -4): 0;
-               })
-               .attr('transform', function(d){
-                    return  isRotateLabels ? 'rotate(-90, '+ (cols(d) + boxWidth / 2) +', '+ (boxHeight * rowCount) +')' : null;
-               });
-/* --------------------------------------------------------------------------*/
-
-        gColsText.exit().remove();
-        var gRows = _chartBody.selectAll('g.rows');
-        if (gRows.empty()) {
-            gRows = _chartBody.append('g').attr('class', 'rows axis');
-        }
-        var gRowsText = gRows.selectAll('text').data(rows.domain());
-        gRowsText.enter().append('text')
-              .attr('dy', 6)
-              .style('text-anchor', 'end')
-              .attr('x', 0)
-              .attr('dx', -2)
-              .on('click', _chart.yAxisOnClick())
-              .text(_chart.rowsLabel());
-        dc.transition(gRowsText, _chart.transitionDuration())
-              .text(_chart.rowsLabel())
-              .attr('y', function (d) { return rows(d) + boxHeight / 2; });
-        gRowsText.exit().remove();
+        var rowsText = YAxis.html('').selectAll('div.text').data(rows.domain());
+        
+        rowsText.enter()
+          .append('div')
+          .attr('class', 'text')
+          .style('top', function (d) { return rows(d) + (boxHeight / 2) + _chart.margins().top + 'px'; })
+          .on('click', _chart.yAxisOnClick())
+          .text(_chart.rowsLabel());
 
         if (_chart.hasFilter()) {
             _chart.selectAll('g.box-group').each(function (d) {
@@ -458,12 +425,14 @@ dc.heatMap = function (parent, chartGroup) {
             });
         }
 
-/* OVERRIDE -----------------------------------------------------------------*/
         _chart.renderAxisLabels();
-/* --------------------------------------------------------------------------*/
 
         return _chart;
     };
+
+    function rotateLabel (d) {
+      return isNaN(d) &&  _colsLabel(d).toString().length > 5 ? 'rotate-up' : 'rotate-down';
+    }
 
     /**
      * Gets or sets the handler that fires when an individual cell is clicked in the heatmap.
@@ -644,7 +613,7 @@ dc.heatMap = function (parent, chartGroup) {
         coordinates = _chart.popupCoordinates(d3.mouse(this));
 
         var scrollNode = _chart.root().select('.svg-wrapper').node();
-        var x = coordinates[0] + _chart.margins().left - scrollNode.scrollLeft;
+        var x = coordinates[0] + _dockedAxesSize.left - scrollNode.scrollLeft;
         var y = coordinates[1] + _chart.margins().top - scrollNode.scrollTop;
 
         var popup =_chart.popup()

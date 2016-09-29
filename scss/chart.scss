@@ -1387,25 +1387,142 @@ body {
 }
 
 .heatmap-scroll {
-    &:before, &:after {
+    &:after {
         position: absolute;
-        background: rgba(white, .9);
         content: "";
         pointer-events: none;
-    }
-
-    &:before {
-        top: 0;
-        left: 0;
-        width: 20px;
-        height: 100%;
-    }
-
-    &:after {
         bottom: 0;
         left: 0;
+        width: 48px;
+        height: 56px;
+        background: linear-gradient(54deg, white, white, rgba(white, .8));
+        z-index: 1;
+    }
+
+    .svg-wrapper {
+        position: relative;
+        overflow: auto;
+        left: 48px;
+    }
+
+    .docked-x-axis {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 56px;
+        z-index: 2;
+
+        .center {
+            transform: translateX(-50%);
+        }
+
+        .rotate-up {
+            transform-origin: 0 0;
+            transform: rotate(-90deg) translateY(-50%);
+            color: $gray8;
+            font-weight: bold;
+            font-size: 12px;
+            text-shadow: 0 0 4px rgba(white, 1);
+            pointer-events: none;
+
+            &:before {
+                content: "";
+                position: absolute;
+                width: 16px;
+                height: 100%;
+                pointer-events: auto;
+                left: -16px;
+            }
+
+            &:after {
+                border: 6px solid transparent;
+                border-left-color: $gray4;
+                position: absolute;
+                content: "";
+                left: -8px;
+                top: 4px;
+                opacity: 0;
+            }
+
+            &:hover {
+                &:after {
+                    opacity: 1;
+                }
+            }
+
+            &:active {
+                &:after {
+                    border-left-color: $blue-main;
+                }
+            }
+        }
+
+        .rotate-down {
+            transform-origin: 0 0;
+            transform: rotate(-90deg) translate(-100%, -50%);
+        }
+
+    }
+
+    .docked-y-axis {
+        position: absolute;
+        top: 0;
+        left: 48px;
+        width: 48px;
+        z-index: 3;
+
+        .text {
+            transform: translate(-100%, -50%);
+        }
+    }
+
+    .text {
+        position: absolute;
+        line-height: 1;
+        font-size: 10px;
+        color: $gray4;
+        white-space: nowrap;
+        padding: 4px;
+        pointer-events: auto;
+        cursor:  pointer;
+
+        &:active {
+            color: $blue-main;
+        }
+    }
+
+    .docked-axis-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: 32px;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+
+        &:before, &:after {
+            position: absolute;
+            content: "";
+            pointer-events: none;
+        }
+
+        &:before {
+            top: 0;
+            left: 0;
+            width: 48px;
+            height: calc(100% - 56px);
+            z-index: 3;
+            background: linear-gradient(90deg, white, white, white, rgba(white, .8));
+        }
+
+        &:after {
+            bottom: 0;
+            left: 48px;
+            width: calc(100% - 48px);
+            height: 56px;
+            background: linear-gradient(0deg, white, white, white, rgba(white, .8));
+        }
     }
 }
 
