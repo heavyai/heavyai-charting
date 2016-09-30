@@ -107,6 +107,14 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         _chart.initGeocoder()();
       }
 
+      var mapboxlogo = document.createElement('a');
+        mapboxlogo.className = 'mapbox-maplogo';
+        mapboxlogo.href = 'http://mapbox.com/about/maps';
+        mapboxlogo.target = '_blank';
+        mapboxlogo.innerHTML = 'Mapbox';
+      debugger;
+      _chart.root()[0][0].appendChild(mapboxlogo);
+
       dc.enableRefresh();
       _chart.renderAsync();
     }
