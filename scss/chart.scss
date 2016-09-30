@@ -55,11 +55,11 @@ body {
   background: rgba(white, .4);
 }
 
-.mapboxgl-ctrl-attrib a:link, a:visited { 
+.mapboxgl-ctrl-attrib a, .mapboxgl-ctrl-attrib a:visited { 
     color: $gray5; 
     padding: 0 4px;
+    text-decoration: none;
 }
-.mapboxgl-ctrl-attrib a:hover { text-decoration: none; }
  
 .anim-button-play {
     bottom: 152px;
