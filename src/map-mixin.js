@@ -112,7 +112,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         mapboxlogo.href = 'http://mapbox.com/about/maps';
         mapboxlogo.target = '_blank';
         mapboxlogo.innerHTML = 'Mapbox';
-      debugger;
+
       _chart.root()[0][0].appendChild(mapboxlogo);
 
       dc.enableRefresh();
