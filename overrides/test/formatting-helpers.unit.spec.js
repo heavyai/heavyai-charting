@@ -57,6 +57,23 @@ describe("Formatting Helpers", () => {
       expect(Helpers.formatValue("TEST")).to.equal("TEST")
     })
   })
+  describe("maybeFormatInfinity", () => {
+    const valList = [
+      {val: 100},
+      {val: "-Infinity"},
+      {val: "Infinity"},
+    ]
+
+    it("should do nothing to numbers", () => {
+      expect(Helpers.maybeFormatInfinity(valList)[0]).to.deep.equal(valList[0])
+    })
+    it("should handle '-Infinity'", () => {
+      expect(Helpers.maybeFormatInfinity(valList)[1]).to.deep.equal({val: 0, label: "-Infinity"})
+    })
+    it("should handle Infinity", () => {
+      expect(Helpers.maybeFormatInfinity(valList)[2]).to.deep.equal({val: 0, label: "Infinity"})
+    })
+  })
   describe("formatResultKey", () => {
     it("should format results with object collections", () => {
       expect(Helpers.formatResultKey([{alias: 'July'}, {alias: 'August'}])).to.equal('July  \u2013  August')

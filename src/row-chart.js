@@ -218,7 +218,10 @@ dc.rowChart = function (parent, chartGroup) {
     }
 
     function drawChart (data) {
-        _rowData = data ? data : _chart.data();
+/* OVERRIDE -----------------------------------------------------------------*/
+        var rData = data ? data : _chart.data();
+        _rowData = dc.utils.maybeFormatInfinity(rData)
+/* --------------------------------------------------------------------------*/
 
         drawAxis();
         drawGridLines();
@@ -385,7 +388,11 @@ dc.rowChart = function (parent, chartGroup) {
                 .attr('text-anchor', isStackLabel() ? 'start':'end')
                 .text(function(d){
 
-                    return _chart.measureValue(d);
+                    if (d.label) {
+                        return d.label;
+                    } else {
+                        return _chart.measureValue(d);
+                    }
                 })
                 .attr('x', function (d, i) {
                     if (isStackLabel()) {
