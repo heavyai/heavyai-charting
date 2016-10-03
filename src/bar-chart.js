@@ -328,33 +328,29 @@ dc.barChart = function (parent, chartGroup) {
     }
 
     function calculateBarWidth () {
+/* OVERRIDE -----------------------------------------------------------------
+NOTE: This is hacky.  We either need to calculate the number of bars by looking at xMin and xMax and dividing the bin size.
 
-/* OVERRIDE -----------------------------------------------------------------*/
-   //   if (_barWidth === undefined) {
-            if (_chart._numberOfBars === null) {
-                var numberOfBars = _chart.xUnitCount();
-            }
-            else {
-                var numberOfBars = _chart._numberOfBars;
-            }
+OR 
+
+Fix the query to return 0s for null values.
+*/  
+
+        var ADD_TO_OVERALL_WIDTH_TO_PREVENT_OVERLAP_OF_BARS = 0.1
+        var lengthOfData = _chart.data()[0].values.length
+        var numberOfBars = lengthOfData + (lengthOfData * ADD_TO_OVERALL_WIDTH_TO_PREVENT_OVERLAP_OF_BARS) // Feel free to change.
 /* --------------------------------------------------------------------------*/
+        if (_chart.isOrdinal() && _gap === undefined) {
+            _barWidth = Math.floor(_chart.x().rangeBand());
+        } else if (_gap) {
+            _barWidth = Math.floor((_chart.xAxisLength() - (numberOfBars - 1) * _gap) / numberOfBars);
+        } else {
+            _barWidth = Math.floor(_chart.xAxisLength() / (1 + _chart.barPadding()) / numberOfBars);
+        }
 
-            // please can't we always use rangeBands for bar charts?
-            if (_chart.isOrdinal() && _gap === undefined) {
-                _barWidth = Math.floor(_chart.x().rangeBand());
-            } else if (_gap) {
-                _barWidth = Math.floor((_chart.xAxisLength() - (numberOfBars - 1) * _gap) / numberOfBars);
-            } else {
-                _barWidth = Math.floor(_chart.xAxisLength() / (1 + _chart.barPadding()) / numberOfBars);
-            }
-
-            if (_barWidth === Infinity || isNaN(_barWidth) || _barWidth < MIN_BAR_WIDTH) {
-                _barWidth = MIN_BAR_WIDTH;
-            }
-
-/* OVERRIDE -----------------------------------------------------------------*/
-   //   }
-/* --------------------------------------------------------------------------*/
+        if (_barWidth === Infinity || isNaN(_barWidth) || _barWidth < MIN_BAR_WIDTH) {
+            _barWidth = MIN_BAR_WIDTH;
+        }
     }
 
     _chart.fadeDeselectedArea = function () {
