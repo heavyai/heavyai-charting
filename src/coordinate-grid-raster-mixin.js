@@ -251,70 +251,72 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
 
         /*** Begin Zoom-related functions ***/
         function wheelZoom(doFullRender, delta, e) {
-            if (delta === 0) return;
+            if (!doFullRender && delta === 0) return;
 
-            var map = _chart.map();
+            if (delta !== 0) {
+                var map = _chart.map();
 
-            // Scale by sigmoid of scroll wheel delta.
-            var scale = 2 / (1 + Math.exp(-Math.abs(delta / 100)));
-            if (delta < 0 && scale !== 0) scale = 1 / scale;
+                // Scale by sigmoid of scroll wheel delta.
+                var scale = 2 / (1 + Math.exp(-Math.abs(delta / 100)));
+                if (delta < 0 && scale !== 0) scale = 1 / scale;
 
-            scale = 1 / scale;
+                scale = 1 / scale;
 
-            var xDim = _chart.xDim(), xRange = _chart.xRange(), xScale = _chart.x(),
-                yDim = _chart.yDim(), yRange = _chart.yRange(), yScale = _chart.y();
+                var xDim = _chart.xDim(), xRange = _chart.xRange(), xScale = _chart.x(),
+                    yDim = _chart.yDim(), yRange = _chart.yRange(), yScale = _chart.y();
 
-            if (xRange === null) {
-                xRange = [0,0];
+                if (xRange === null) {
+                    xRange = [0,0];
+                }
+
+                if (yRange === null) {
+                    yRange = [0,0];
+                }
+
+                var wheelData = _chart.unproject(startWheelPos);
+
+                var xDiff = scale*(xRange[1] - xRange[0]);
+                var yDiff = scale*(yRange[1] - yRange[0]);
+
+                // we want to keep wheelData where it is in pixel space,
+                // so we need to extrapolate from there to get the data bounds
+                // of the window
+
+                // NOTE: the following is currently only designed
+                // to work with linear scales.
+
+                // TODO(croot): come up with a generic extrapolation
+                // technique for any scale.
+
+                var width = _chart.effectiveWidth();
+                var height = _chart.effectiveHeight();
+
+                var xmin = wheelData.x - xDiff * (startWheelPos.x / width);
+                var xmax = xmin + xDiff;
+
+                var ymin = wheelData.y - yDiff * ((height - startWheelPos.y - 1) / height);
+                var ymax = ymin + yDiff;
+
+                var bounds = _chart._fitToMaxBounds([[xmin, ymin], [xmax, ymax]], true);
+                xmin = bounds[0][0];
+                ymin = bounds[0][1];
+                xmax = bounds[1][0];
+                ymax = bounds[1][1];
+
+                xDiff = (xmax - xmin);
+                yDiff = (ymax - ymin);
+
+                var xBoundsDiff = _currDataBounds[0][1] - _currDataBounds[0][0];
+                var yBoundsDiff = _currDataBounds[1][1] - _currDataBounds[1][0];
+                var xBoundsScale = xDiff / xBoundsDiff;
+                var yBoundsScale = yDiff / yBoundsDiff;
+
+                _scale = [xBoundsScale, yBoundsScale];
+                _offset = [(xmin - _currDataBounds[0][0]) / xBoundsDiff, (ymin - _currDataBounds[1][0]) / yBoundsDiff];
+
+                xDim.filter([xmin, xmax]);
+                yDim.filter([ymin, ymax]);
             }
-
-            if (yRange === null) {
-                yRange = [0,0];
-            }
-
-            var wheelData = _chart.unproject(startWheelPos);
-
-            var xDiff = scale*(xRange[1] - xRange[0]);
-            var yDiff = scale*(yRange[1] - yRange[0]);
-
-            // we want to keep wheelData where it is in pixel space,
-            // so we need to extrapolate from there to get the data bounds
-            // of the window
-
-            // NOTE: the following is currently only designed
-            // to work with linear scales.
-
-            // TODO(croot): come up with a generic extrapolation
-            // technique for any scale.
-
-            var width = _chart.effectiveWidth();
-            var height = _chart.effectiveHeight();
-
-            var xmin = wheelData.x - xDiff * (startWheelPos.x / width);
-            var xmax = xmin + xDiff;
-
-            var ymin = wheelData.y - yDiff * ((height - startWheelPos.y - 1) / height);
-            var ymax = ymin + yDiff;
-
-            var bounds = _chart._fitToMaxBounds([[xmin, ymin], [xmax, ymax]], true);
-            xmin = bounds[0][0];
-            ymin = bounds[0][1];
-            xmax = bounds[1][0];
-            ymax = bounds[1][1];
-
-            xDiff = (xmax - xmin);
-            yDiff = (ymax - ymin);
-
-            var xBoundsDiff = _currDataBounds[0][1] - _currDataBounds[0][0];
-            var yBoundsDiff = _currDataBounds[1][1] - _currDataBounds[1][0];
-            var xBoundsScale = xDiff / xBoundsDiff;
-            var yBoundsScale = yDiff / yBoundsDiff;
-
-            _scale = [xBoundsScale, yBoundsScale];
-            _offset = [(xmin - _currDataBounds[0][0]) / xBoundsDiff, (ymin - _currDataBounds[1][0]) / yBoundsDiff];
-
-            xDim.filter([xmin, xmax]);
-            yDim.filter([ymin, ymax]);
 
             // upon zoom, elasticity is turned off
             _chart.elasticX(false);
