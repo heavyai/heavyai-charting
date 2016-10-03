@@ -8,6 +8,9 @@ dc.polyRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
   var renderBoundsMap = {};
   var hasBeenRendered = false;
 
+  var _usePixelRatio = false;
+  var _pixelRatio = 1;
+
   chart.opacity = createGetterSetter(chart, 0.85)
 
   chart.borderColor = createGetterSetter(chart, "white")
@@ -15,6 +18,29 @@ dc.polyRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
   chart.borderWidth = createGetterSetter(chart, 0.5)
 
   chart.polyJoin = createGetterSetter(chart, {table: "states", keysColumn: "STATE_ABBR"}, polyJoinValidator)
+
+  // TODO(croot): pixel ratio should probably be configured on the backend
+  // rather than here to deal with scenarios where data is used directly
+  // in pixel-space.
+  chart.usePixelRatio = function(usePixelRatio) {
+      if (!arguments.length) {
+          return _usePixelRatio;
+      }
+
+      _usePixelRatio = !!usePixelRatio;
+      if (_usePixelRatio) {
+          _pixelRatio = window.devicePixelRatio || 1;
+      } else {
+          _pixelRatio = 1;
+      }
+
+      return chart;
+  }
+
+  chart._pixelRatio = function() {
+      return _pixelRatio;
+  }
+
 
   chart.resetLayer = function() {
     renderBoundsMap = {};
@@ -30,12 +56,13 @@ dc.polyRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
       valuesOb(bounds.getSouthWest())
     ]
     chart._resetVegaSpec();
+
     genPolyVegaSpec(
       chart._vegaSpec,
       renderBounds.map(chart.conv4326To900913),
       chart.colors(),
       chart.polyJoin(),
-      {strokeColor: chart.borderColor(), strokeWidth: chart.borderWidth()}
+      {strokeColor: chart.borderColor(), strokeWidth: chart.borderWidth() * _pixelRatio}
     );
     var nonce = group.top(chart.cap(), 0, JSON.stringify(chart._vegaSpec), callback);
     renderBoundsMap[nonce] = renderBounds;

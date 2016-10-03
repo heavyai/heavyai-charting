@@ -355,6 +355,7 @@ module.exports.jsFiles = [
     'src/poly-raster-chart.js', // MapD specific
     'src/map-chart.js', // MapD specific
     'src/coordinate-grid-mixin.js',
+    'src/coordinate-grid-raster-mixin.js',
     'src/stack-mixin.js',
     'src/cap-mixin.js',
     'src/bubble-mixin.js',
@@ -382,5 +383,6 @@ module.exports.jsFiles = [
     'src/heatmap.js',
     'src/d3.box.js',
     'src/box-plot.js',
+    'src/scatter-mixin.js',
     'src/footer.js'  // NOTE: keep this last
 ];

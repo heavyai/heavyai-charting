@@ -12,6 +12,8 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
 
     _chart._xDimName = null;
     _chart._yDimName = null;
+
+    var _activeLayer = null;
     var _mapInitted = false;
     var _xDim = null;
     var _yDim = null;
@@ -38,9 +40,29 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
        if (!arguments.length)
           return _useLonLat;
        _useLonLat = useLonLat;
+       return _chart;
     }
     _chart.map = function() {
         return _map;
+    }
+
+    _chart.getDataRenderBounds = function() {
+        var bounds = _map.getBounds();
+        var renderBounds = [valuesOb(bounds.getNorthWest()),
+                            valuesOb(bounds.getNorthEast()),
+                            valuesOb(bounds.getSouthEast()),
+                            valuesOb(bounds.getSouthWest())]
+
+        if (!_useLonLat) {
+            renderBounds = [
+                _chart.conv4326To900913(renderBounds[0]),
+                _chart.conv4326To900913(renderBounds[1]),
+                _chart.conv4326To900913(renderBounds[2]),
+                _chart.conv4326To900913(renderBounds[3])
+            ];
+        }
+
+        return renderBounds;
     }
 
     _chart.xDim = function(xDim) {
@@ -53,8 +75,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         return _chart;
     }
 
-
-
     _chart.yDim = function(yDim) {
         if (!arguments.length)
             return _yDim;
@@ -63,6 +83,14 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
           _chart._yDimName = _yDim.value()[0];
         }
         return _chart;
+    }
+
+    _chart.resetLayer = function() {
+        if (typeof _chart._resetRenderBounds === 'function') {
+            _chart._resetRenderBounds();
+        }
+
+        _activeLayer = null;
     }
 
     _chart.initGeocoder = function(initGeocoder) {
@@ -86,13 +114,25 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         return _chart;
     }
 
-   _chart.conv4326To900913X = function (x) {
-      return x *111319.490778;
-   }
+    _chart.conv900913To4326X = function (x) {
+       return x / 111319.490778;
+    }
 
-   _chart.conv4326To900913Y = function (y) {
-      return 6378136.99911 * Math.log(Math.tan(.00872664626 * y + .785398163397));
-   }
+    _chart.conv900913To4326Y = function (y) {
+        return 57.295779513 * (2 * Math.atan(Math.exp(y / 6378136.99911)) - 1.570796327);
+    }
+
+   _chart.conv900913To4326 = function (coord) {
+      return [_chart.conv900913To4326X(coord[0]), _chart.conv900913To4326Y(coord[1])];
+    }
+
+    _chart.conv4326To900913X = function (x) {
+       return x * 111319.490778;
+    }
+
+    _chart.conv4326To900913Y = function (y) {
+       return 6378136.99911 * Math.log(Math.tan(.00872664626 * y + .785398163397));
+    }
 
    _chart.conv4326To900913 = function (coord) {
       return [_chart.conv4326To900913X(coord[0]), _chart.conv4326To900913Y(coord[1])];
@@ -221,6 +261,64 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         }
    }
 
+    _chart._setOverlay = function(data, bounds, browser, redraw) {
+        var map = _chart.map();
+
+        var boundsToUse = bounds;
+        if (boundsToUse === undefined) {
+            return;
+        } else if (!_useLonLat) {
+            boundsToUse = [
+                _chart.conv900913To4326(bounds[0]),
+                _chart.conv900913To4326(bounds[1]),
+                _chart.conv900913To4326(bounds[2]),
+                _chart.conv900913To4326(bounds[3])
+            ];
+        }
+
+        if(browser.isSafari || browser.isIE || browser.isEdge){
+            var blob = dc.utils.b64toBlob(data, 'image/png');
+            var blobUrl = URL.createObjectURL(blob);
+        } else {
+            var blobUrl = 'data:image/png;base64,' + data;
+        }
+
+        if (!_activeLayer) {
+            _activeLayer = "_points";
+            var toBeAddedOverlay = "overlay" + _activeLayer;
+            map.addSource(toBeAddedOverlay,{
+                type: "image",
+                url: blobUrl,
+                coordinates: boundsToUse
+            });
+            map.addLayer({
+                id: toBeAddedOverlay,
+                source: toBeAddedOverlay,
+                type: "raster",
+                paint: {"raster-opacity": 0.85}
+            });
+        } else {
+            var overlayName = "overlay" + _activeLayer;
+            var imageSrc = map.getSource(overlayName);
+            imageSrc.updateImage({
+                url: blobUrl,
+                coordinates: boundsToUse
+            });
+        }
+    }
+
+    _chart._removeOverlay = function() {
+        var map = _chart.map();
+
+        var overlay = "overlay" + _activeLayer;
+        map.removeLayer(overlay);
+        map.removeSource(overlay);
+    }
+
+    _chart.isLoaded = function() {
+        return _map._loaded;
+    }
+
     function initMap() {
         _mapboxgl.accessToken = _mapboxAccessToken;
         _map = new _mapboxgl.Map({
@@ -243,6 +341,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
 
         _mapInitted = true;
     }
+
 
     _chart.on('preRender', function(chart) {
 
