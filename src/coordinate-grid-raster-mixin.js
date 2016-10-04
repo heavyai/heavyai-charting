@@ -394,14 +394,6 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
                 // This is a repeating event, but we don't know the type of event just yet.
                 // If the delta per time is small, we assume it's a fast trackpad; otherwise we switch into wheel mode.
                 wheelType = (Math.abs(timeDelta * value) < 200) ? 'trackpad' : 'wheel';
-
-                // Make sure our delayed event isn't fired again, because we accumulate
-                // the previous event (which was less than 40ms ago) into this event.
-                if (singularWheelTimeout) {
-                    clearTimeout(singularWheelTimeout);
-                    singularWheelTimeout = null;
-                    value += lastWheelVal;
-                }
             }
 
             // Slow down zoom if shift key is held for more precise zooming
@@ -409,6 +401,14 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
 
             // Only fire the callback if we actually know what type of scrolling device the user uses.
             if (wheelType) {
+                // Make sure our delayed event isn't fired again, because we accumulate
+                // the previous event (which was less than 40ms ago) into this event.
+                if (singularWheelTimeout) {
+                    clearTimeout(singularWheelTimeout);
+                    singularWheelTimeout = null;
+                    value += lastWheelVal;
+                }
+
                 lastWheelVal = value;
 
                 if (wheelTimeout) {
