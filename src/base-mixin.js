@@ -1069,11 +1069,17 @@ dc.baseMixin = function (_chart) {
 
     var _removeFilterHandler = function (filters, filter) {
         for (var i = 0; i < filters.length; i++) {
+            if (dc.utils.deepEquals(filters[i], filter)) {
+              filters.splice(i, 1);
+              break;
+            }
+
             if (filters[i] <= filter && filters[i] >= filter) {
                 filters.splice(i, 1);
                 break;
             }
         }
+
         return filters;
     };
 

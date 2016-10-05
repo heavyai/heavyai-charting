@@ -1,4 +1,4 @@
-import {isArrayOfObjects, normalizeArray} from "./formatting-helpers"
+import {isArrayOfObjects, normalizeArrayByValue} from "./formatting-helpers"
 import dc from "../../mapdc"
 
 const noop = () => {} // eslint-disable-line no-empty-function
@@ -16,7 +16,7 @@ export function hasFilterHandler (filters, filter) {
   if (filter === null || typeof filter === "undefined") {
     return filters.length > 0
   } else if (Array.isArray(filter)) {
-    filter = filter.map(normalizeArray)
+    filter = filter.map(normalizeArrayByValue)
     return filters.some(f => filter <= f && filter >= f)
   } else {
     return filters.some(f => filter <= f && filter >= f)
@@ -28,6 +28,7 @@ export function filterHandlerWithChartContext (_chart) {
     if (dimension.type === "crossfilter") {
       return filters
     }
+
     if (filters.length === 0) {
       dimension.filterAll(_chart.softFilterClear())
     } else if (_chart.hasOwnProperty("rangeFocused")) {
@@ -113,25 +114,23 @@ export default function filterMixin (_chart) {
     }
   }
 
-  _chart.filter = function (filter, isFilterInverse) {
+  _chart.filter = function (filter, isFilterInverse = false) {
     if (!arguments.length) {
       return _filters.length > 0 ? _filters[0] : null
     }
-    isFilterInverse = typeof isFilterInverse === "undefined" ? false : isFilterInverse
+
+    if (Array.isArray(filter)) {
+      filter = filter.map(filter => { // eslint-disable-line no-shadow, arrow-body-style
+        return Array.isArray(filter) && filter.length === 1 ? filter[0] : filter
+      })
+    }
+
     if (isFilterInverse !== _chart.filtersInverse()) {
       _filters = _chart.resetFilterHandler()(_filters)
       _chart.filtersInverse(isFilterInverse)
     }
 
-    if (filter instanceof Array && filter[0] instanceof Array && !filter.isFiltered) {
-      filter[0].forEach(d => {
-        if (_chart.hasFilter(d)) {
-          _chart.removeFilterHandler()(_filters, d)
-        } else {
-          _chart.addFilterHandler()(_filters, d)
-        }
-      })
-    } else if (filter === null || Array.isArray(filter) && filter.length === 0) {
+    if (filter === null || Array.isArray(filter) && filter.length === 0) {
       _filters = _chart.resetFilterHandler()(_filters)
     } else if (_chart.hasFilter(filter)) {
       _chart.removeFilterHandler()(_filters, filter)
@@ -165,7 +164,7 @@ export default function filterMixin (_chart) {
    */
   _chart.handleFilterClick = function (event, filter) {
     if (event.defaultPrevented) {
-      return;
+      return
     }
     const isInverseFilter = event.metaKey || event.ctrlKey
     dc.events.trigger(() => {

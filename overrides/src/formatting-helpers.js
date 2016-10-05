@@ -9,22 +9,34 @@ const commafy = d3.format(",")
 export const isPlainObject = value => !Array.isArray(value) && typeof value === "object" && !(value instanceof Date)
 export const hasAllObjects = collection => collection.reduce((accum, value) => isPlainObject(value) && accum, true)
 export const isArrayOfObjects = value => Array.isArray(value) && hasAllObjects(value)
-export const normalizeArray = collection => isArrayOfObjects(collection) ? collection.map(data => data.value) : collection
+export const normalizeArrayByValue = collection => isArrayOfObjects(collection) ? collection.map(data => data.value) : collection
+export const normalizeArrayByAlias = collection => isArrayOfObjects(collection) ? collection.map(data => data.alias) : collection
 
 export function maybeFormatNumber (val) {
   return typeof val === "number" ? formatNumber(val) : val
 }
 
+const maybeMapProp = prop => data => data.map(d => isArrayOfObjects(data) ? d[prop] : d)
+const maybeMapAlias = maybeMapProp("alias")
+const maybeMapValue = maybeMapProp("value")
+const allDateTypes = data => data.reduce((accum, d) => accum && d instanceof Date, true)
+
 export function formatResultKey (data) {
   if (Array.isArray(data)) {
-    return data.map(d => isArrayOfObjects(data) ? d.alias : d).map(maybeFormatNumber).join("  \u2013  ")
+    const normalized = maybeMapAlias(data).map(maybeFormatNumber)
+    const isDate = allDateTypes(maybeMapValue(data))
+    if (data[0].timeBin === "week" || !isDate) {
+      return normalized.join("  \u2013  ")
+    } else {
+      return normalized[0]
+    }
   } else {
     return maybeFormatNumber(data)
   }
 }
 
-export function maybeFormatInfinity(data) {
-  return data.map(function(d) {
+export function maybeFormatInfinity (data) {
+  return data.map(function (d) {
     if (d.val === "-Infinity" || d.val === "Infinity") {
       d.label = d.val
       d.val = 0
@@ -53,7 +65,7 @@ export function formatNumber (d) {
 export function normalizeFiltersArray (filters) {
   return filters.map(f => {
     if (isArrayOfObjects(f)) {
-      return normalizeArray(f)
+      return normalizeArrayByValue(f)
     } else {
       return f
     }

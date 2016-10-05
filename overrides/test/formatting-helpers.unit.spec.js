@@ -29,13 +29,22 @@ describe("Formatting Helpers", () => {
       expect(Helpers.isArrayOfObjects(1)).to.equal(false)
     })
   })
-  describe("normalizeArray", () => {
+  describe("normalizeArrayByValue", () => {
     it("should map value property of a collection object", () => {
-      expect(Helpers.normalizeArray([{value: 1}, {value: 2}])).to.deep.equal([1,2])
+      expect(Helpers.normalizeArrayByValue([{value: 1}, {value: 2}])).to.deep.equal([1,2])
     })
     it("should return the collection if it isn't a collection of objects", () => {
       const collection = [new Date(1), new Date(2)]
-      expect(Helpers.normalizeArray(collection)).to.deep.equal([new Date(1), new Date(2)])
+      expect(Helpers.normalizeArrayByValue(collection)).to.deep.equal([new Date(1), new Date(2)])
+    })
+  })
+  describe("normalizeArrayByAlias", () => {
+    it("should map value property of a collection object", () => {
+      expect(Helpers.normalizeArrayByAlias([{value: 1, alias: "Monday"}, {value: 2, alias: "Tuesday"}])).to.deep.equal(["Monday", "Tuesday"])
+    })
+    it("should return the collection if it isn't a collection of objects", () => {
+      const collection = [new Date(1), new Date(2)]
+      expect(Helpers.normalizeArrayByAlias(collection)).to.deep.equal([new Date(1), new Date(2)])
     })
   })
   describe("formatNumber", () => {
@@ -76,7 +85,14 @@ describe("Formatting Helpers", () => {
   })
   describe("formatResultKey", () => {
     it("should format results with object collections", () => {
-      expect(Helpers.formatResultKey([{alias: 'July'}, {alias: 'August'}])).to.equal('July  \u2013  August')
+      expect(Helpers.formatResultKey([
+        {alias: 'July', value: new Date("July"), timeBin: "week"},
+        {alias: 'August', value: new Date("August"), timeBin: "week"}
+      ])).to.equal('July  \u2013  August')
+      expect(Helpers.formatResultKey([
+        {alias: 'July', value: new Date("July"), timeBin: "month"},
+        {alias: 'August', value: new Date("August"), timeBin: "month"}
+      ])).to.equal('July')
     })
     it("should format results with non-object collections", () => {
       expect(Helpers.formatResultKey([10000, 20000])).to.equal('10k  \u2013  20k')

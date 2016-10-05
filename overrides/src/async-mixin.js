@@ -1,5 +1,5 @@
-import dc from "../../mapdc"
 import d3 from "d3"
+import dc from "../../mapdc"
 
 const NON_INDEX = -1
 
