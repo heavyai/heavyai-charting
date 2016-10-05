@@ -23,6 +23,16 @@ export function formatResultKey (data) {
   }
 }
 
+export function maybeFormatInfinity(data) {
+  return data.map(function(d) {
+    if (d.val === "-Infinity" || d.val === "Infinity") {
+      d.label = d.val
+      d.val = 0
+    }
+    return d
+  })
+}
+
 export function formatValue (value) {
   if (value instanceof Date) {
     return dateFormat(value)

@@ -115,7 +115,9 @@ dc.pieChart = function (parent, chartGroup) {
         var pieData;
         // if we have data...
         if (d3.sum(_chart.data(), _chart.valueAccessor())) {
-            pieData = pie(_chart.data());
+/* OVERRIDE ---------------------------------------------------------------- */
+            pieData = pie(dc.utils.maybeFormatInfinity(_chart.data()));
+/* --------------------------------------------------------------------------*/
             _g.classed(_emptyCssClass, false);
         } else {
             // otherwise we'd be getting NaNs, so override
