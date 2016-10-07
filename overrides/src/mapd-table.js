@@ -209,6 +209,10 @@ export default function mapdTable (parent, chartGroup) {
     }
   }
 
+  function getMeasureColHeaderLabel (d) {
+    return d.agg_mode ? d.agg_mode.toUpperCase() + " " + d.expression : d.expression
+  }
+
   function renderTable (data = []) {
     const table = _chart.tableWrapper().select("table").html("")
 
@@ -229,7 +233,7 @@ export default function mapdTable (parent, chartGroup) {
             expression: d.expression,
             name: d.name,
             agg_mode: d.agg_mode,
-            label: _colAliases ? _colAliases[_chart.dimension().value().length + i] : d.agg_mode.toUpperCase() + " " + d.expression})
+            label: _colAliases ? _colAliases[_chart.dimension().value().length + i] : getMeasureColHeaderLabel(d)})
         }
       })
 
