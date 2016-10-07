@@ -144,7 +144,8 @@ describe("MapD Table", () => {
         topAsync: () => Promise.resolve(),
         reduce: () => [{
           expression: "test",
-          name: "key0"
+          name: "col0",
+          agg_mode: "agg"
         }]
       })
       table.getData(50, 0, () => {})
@@ -155,6 +156,15 @@ describe("MapD Table", () => {
         const data = [{key0, val: 0}]
         table._doRender(data)
         expect(table.root().select('td').text()).to.equal('222.55  \u2013  500')
+      })
+      it("should generate correct column header", () => {
+        const data = [{key0: "abc", val: 0}]
+        const aliases = ["aliase_1", "aliase_2", "aliase_3"]
+        table._doRender(data)
+        expect(table.root().select('th:nth-child(3)').text()).to.equal('AGG test')
+        table.colAliases(aliases)
+        table._doRender(data)
+        expect(table.root().select('th:nth-child(3)').text()).to.equal('aliase_3')
       })
     })
   })
