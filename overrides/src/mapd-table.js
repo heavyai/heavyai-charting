@@ -6,6 +6,7 @@ const GROUP_DATA_WIDTH = 20
 const NON_GROUP_DATA_WIDTH = 8
 const NON_INDEX = -1
 const ADDITIONAL_HEIGHT = 18
+const SCROLL_DIVISOR = 5
 
 function maybeFormatNumber (val) {
   return typeof val === "number" ? parseFloat(val.toFixed(2)) : val
@@ -14,7 +15,7 @@ function maybeFormatNumber (val) {
 export function formatResultKey (data) {
   if (Array.isArray(data)) {
     return data
-      .map(val => typeof val === "object" ? val.alias : val)
+      .map(val => (typeof val === "object" ? val.alias : val))
       .map(maybeFormatNumber).join("  \u2013  ")
   } else {
     return maybeFormatNumber(data)
@@ -36,6 +37,7 @@ export default function mapdTable (parent, chartGroup) {
   let _sortColumn = null
   let _dimOrGroup = null
   let _isGroupedData = false
+  let _colAliases = null
 
   const _table_events = ["sort"]
   const _listeners = d3.dispatch.apply(d3, _table_events)
@@ -84,7 +86,18 @@ export default function mapdTable (parent, chartGroup) {
     return _chart
   }
 
-  _chart.addRowsCallback = function (err, data) {
+  _chart.colAliases = function (_) {
+    if (!arguments.length) {
+      return _colAliases
+    }
+    _colAliases = _
+    return _chart
+  }
+
+  _chart.addRowsCallback = function (error, data) {
+    if (error) {
+      return
+    }
     if (data.length > 0) {
       _pauseAutoLoad = false
       _chart.dataCache = (_chart.dataCache || []).concat(data)
@@ -94,7 +107,7 @@ export default function mapdTable (parent, chartGroup) {
 
   _chart.addRows = function () {
     _pauseAutoLoad = true
-    _offset += _size
+    _offset = _offset + _size
     _chart.getData(_size, _offset, _chart.addRowsCallback)
   }
 
@@ -116,7 +129,7 @@ export default function mapdTable (parent, chartGroup) {
         .then(result => callback(null, result))
         .catch(error => callback(error))
     } else {
-      return _dimOrGroup[sortFuncName](size, offset, undefined, callback)
+      return _dimOrGroup[sortFuncName](size, offset, null, callback)
     }
   }
 
@@ -129,7 +142,7 @@ export default function mapdTable (parent, chartGroup) {
     let size = _size
 
     if (_isGroupedData) {
-      size = _offset !== 0 ? _offset : size
+      size = _offset > 0 ? _offset : size
     } else {
       _offset = 0
     }
@@ -207,18 +220,23 @@ export default function mapdTable (parent, chartGroup) {
 
     if (_isGroupedData) {
       _chart.dimension().value().forEach((d, i) => {
-        cols.push({expression: d, name: "key" + i})
+        cols.push({expression: d, name: "key" + i, label: _colAliases ? _colAliases[i] : d})
+
       })
-      _chart.group().reduce().forEach(function (d) {
+      _chart.group().reduce().forEach((d, i) => {
         if (d.expression) {
-          cols.push({expression: d.expression, name: d.name, agg_mode: d.agg_mode})
+          cols.push({
+            expression: d.expression,
+            name: d.name,
+            agg_mode: d.agg_mode,
+            label: _colAliases ? _colAliases[_chart.dimension().value().length + i] : d.agg_mode.toUpperCase() + " " + d.expression})
         }
       })
 
     } else {
-      cols = _chart.dimension().getProjectOn().map((d) => {
+      cols = _chart.dimension().getProjectOn().map((d, i) => {
         const splitStr = d.split(" as ")
-        return {expression: splitStr[0], name: splitStr[1]}
+        return {expression: splitStr[0], name: splitStr[1], label: _colAliases ? _colAliases[i] : splitStr[0]}
       })
     }
 
@@ -227,7 +245,7 @@ export default function mapdTable (parent, chartGroup) {
             .enter()
 
     tableHeader.append("th")
-            .text(d => (d.agg_mode ? d.agg_mode.toUpperCase() : "") + " " + d.expression)
+            .text(d => (d.label))
 
     const tableRows = table.selectAll(".table-row")
             .data(data)
@@ -237,7 +255,7 @@ export default function mapdTable (parent, chartGroup) {
             .attr("class", (d) => {
               let tableRowCls = "table-row "
               if (_isGroupedData) {
-                tableRowCls += "grouped-data "
+                tableRowCls = tableRowCls + "grouped-data "
 
                 if (_chart.hasFilter()) {
                   const keyArray = []
@@ -246,7 +264,7 @@ export default function mapdTable (parent, chartGroup) {
                       keyArray.push(d[key])
                     }
                   }
-                  tableRowCls += !_chart.hasFilter(keyArray) ^ _chart.filtersInverse() ? "deselected" : "selected"
+                  tableRowCls = tableRowCls + (!_chart.hasFilter(keyArray) ^ _chart.filtersInverse() ? "deselected" : "selected")
                 }
               }
               return tableRowCls
@@ -256,7 +274,7 @@ export default function mapdTable (parent, chartGroup) {
       rowItem.append("td")
         .text(d => formatResultKey(d[col.name]))
         .classed("filtered", col.expression in _filteredColumns)
-        .on("click", function (d) {
+        .on("click", d => {
           if (_isGroupedData) {
             _chart.onClick(d)
           } else if (col.expression in _filteredColumns) {
@@ -270,9 +288,7 @@ export default function mapdTable (parent, chartGroup) {
     const dockedHeader = _chart.tableWrapper().select(".md-table-header").html("")
             .append("div")
             .attr("class", "docked-table-header")
-            .style("left", function () {
-              return "-" + _tableWrapper.select(".md-table-scroll").node().scrollLeft + "px"
-            })
+            .style("left", () => ("-" + _tableWrapper.select(".md-table-scroll").node().scrollLeft + "px"))
 
     _chart.tableWrapper().select(".md-table-scroll")
             .on("scroll", function () {
@@ -283,7 +299,7 @@ export default function mapdTable (parent, chartGroup) {
               if (!_pauseAutoLoad) {
                 const scrollHeight = tableScrollElm.scrollTop + tableScrollElm.getBoundingClientRect().height
 
-                if (tableScrollElm.scrollTop > _scrollTop && table.node().scrollHeight <= scrollHeight + scrollHeight / 5) {
+                if (tableScrollElm.scrollTop > _scrollTop && table.node().scrollHeight <= scrollHeight + scrollHeight / SCROLL_DIVISOR) {
                   _chart.addRows()
                 }
               }
@@ -319,7 +335,7 @@ export default function mapdTable (parent, chartGroup) {
 
 
               const textSpan = sortLabel.append("span")
-                    .text((d.agg_mode ? d.agg_mode.toUpperCase() : "") + " " + d.expression)
+                    .text(d.label)
 
               const sortButton = sortLabel.append("div")
                     .attr("class", "sort-btn")
@@ -392,9 +408,9 @@ export default function mapdTable (parent, chartGroup) {
       }
 
       if (filter === "") {
-        filter += subFilterExpression
+        filter = filter + subFilterExpression
       } else {
-        filter += " AND " + subFilterExpression
+        filter = filter + " AND " + subFilterExpression
       }
     }
     return filter
