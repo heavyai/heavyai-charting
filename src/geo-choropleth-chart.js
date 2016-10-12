@@ -217,10 +217,12 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 
 
     function renderPaths (regionG, layerIndex, data) {
+/* OVERRIDE ---------------------------------------------------------------- */
         var dragRegion = d3.behavior.drag()
             .on('dragstart', function () {
             d3.event.sourceEvent.preventDefault();
         })
+/* ------------------------------------------------------------------------- */
 
         var paths = regionG
             .select('path')

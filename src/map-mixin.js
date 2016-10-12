@@ -196,7 +196,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
                 console.log("on move event redrawall error:", error)
               });
         }
-        else {
+        else if (e.originalEvent) {
             _chart._projectionFlag = true;
             _chart.redrawAsync();
         }
