@@ -1,15 +1,19 @@
-import {formatNumber, isArrayOfObjects, normalizeArray} from "./formatting-helpers"
+import {formatNumber, isArrayOfObjects, normalizeArrayByAlias, normalizeArrayByValue} from "./formatting-helpers"
 
 export function heatMapKeyAccessor ({key0}) {
   if (Array.isArray(key0)) {
-    return isArrayOfObjects(key0) ? normalizeArray(key0)[0] : key0[0]
+    return isArrayOfObjects(key0) ? normalizeArrayByAlias(key0)[0] : key0[0]
   } else {
     return key0
   }
 }
 
 export function heatMapValueAccesor ({key1}) {
-  return isArrayOfObjects(key1) ? normalizeArray(key1) : key1
+  if (Array.isArray(key1)) {
+    return isArrayOfObjects(key1) ? normalizeArrayByValue(key1)[0] : key1[0]
+  } else {
+    return key1
+  }
 }
 
 export function heatMapLabel (d) {

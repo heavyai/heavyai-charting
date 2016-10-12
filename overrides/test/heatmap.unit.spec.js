@@ -31,6 +31,11 @@ describe("MapD Heatmap Chart", () => {
       const key1 = "American Airlines"
       expect(valueAccessor({ key1 })).to.equal(key1)
     })
+    it('should handle array case', () => {
+      const valueAccessor = heat.valueAccessor()
+      const key1 = [{value: "Monday"}]
+      expect(valueAccessor({ key1 })).to.deep.equal("Monday")
+    })
   })
   describe("label functions", () => {
     let rowsLabel

@@ -501,7 +501,7 @@ dc.coordinateGridMixin = function (_chart) {
 
         var rangeDisplay = _chart.root().selectAll('.range-display');
 
-        var binNumSecs = _chart.binInputOptions().filter(function(d){return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
+        var binNumSecs = _chart.binInputOptions().filter(function(d){return _chart.group().binParams()[0].timeBin === d.val})[0].numSeconds;
 
         rangeDisplay.select('.range-start-day')
             .property('value', dateFormat(extent[0]))
@@ -545,7 +545,7 @@ dc.coordinateGridMixin = function (_chart) {
 
         var currentExtent = _chart.filter() || _chart.x().domain();
 
-        var binNumSecs = _chart.binInputOptions().filter(function(d){ return _chart.group().actualTimeBin(0) === d.val})[0].numSeconds;
+        var binNumSecs = _chart.binInputOptions().filter(function(d){ return _chart.group().binParams()[0].timeBin === d.val})[0].numSeconds;
 
         var inputFormat = binNumSecs > 3600 ? d3.time.format.utc('%m-%d-%Y') : (currentInput.attr('class').indexOf('day') >= 0 ? d3.time.format.utc('%m-%d-%Y %I:%M%p') : d3.time.format.utc('%b %d, %Y %I:%M%p'));
 

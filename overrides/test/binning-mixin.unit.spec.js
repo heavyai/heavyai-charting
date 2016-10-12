@@ -84,7 +84,7 @@ describe("binningMixin", () => {
       chart.redrawGroup = chai.spy()
       chart.triggerReplaceFilter = chai.spy()
       chart.group = () => ({
-        actualTimeBin: () => "day"
+        binParams: () => [{timeBin: "day"}]
       })
     })
     after(() => {
@@ -158,7 +158,7 @@ describe("binningMixin", () => {
       chart.xAxisMax = () => new Date("Wed Dec 31 2008 16:00:00 GMT-0800 (PST)")
       chart.triggerReplaceFilter = () => {}
       chart.group = () => ({
-        actualTimeBin: () => "day"
+        binParams: () => [{timeBin: "day"}]
       })
     })
     it('should expose the bin event for listeners', () => {

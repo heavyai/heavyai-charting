@@ -1,6 +1,7 @@
 // Import DC and dependencies
 import binningMixin from "./overrides/src/binning-mixin"
 import createSamplingMixin from "./overrides/src/sampling-mixin"
+import {deepEquals} from "./overrides/src/utils"
 import filterMixin from "./overrides/src/filter-mixin"
 import colorMixin from "./overrides/src/color-mixin"
 import groupAllMixin from "./overrides/src/dc-group-all-mixin"
@@ -10,7 +11,6 @@ import chartLegendMixin from "./overrides/src/legend-mixin"
 import mapdTable from "./overrides/src/mapd-table"
 import {normalizeFiltersArray} from "./overrides/src/formatting-helpers"
 import resetDCStateMixin from "./overrides/src/reset-dc-state-mixin"
-
 import legendMixin from "./overrides/src/dc-legend-mixin"
 
 var d3 = require("d3");
@@ -89,5 +89,7 @@ dc.override(dc, "legend", function() {
 })
 
 dc.legendCont = legendCont
+
+dc.utils.deepEquals = deepEquals
 
 module.exports = dc
