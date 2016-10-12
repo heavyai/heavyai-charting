@@ -28,7 +28,6 @@ dc.stackMixin = function (_chart) {
             };
         });
 /* ------------------------------------------------------------------------- */
-
         layer.values = layer.values.filter(domainFilter());
         return layer.values;
     }
@@ -58,8 +57,7 @@ dc.stackMixin = function (_chart) {
             return function () { return true; };
         }
         return function (p) {
-            //return true;
-            return p.x >= xDomain[0] && p.x <= xDomain[xDomain.length - 1];
+            return true;
         };
     }
 

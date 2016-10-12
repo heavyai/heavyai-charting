@@ -42,7 +42,7 @@ describe("Filter Mixin", () => {
       })
       it("should reset _filters", () => {
         chart.filter(["test"])
-        expect(chart.filter()).to.deep.equal(["test"])
+        expect(chart.filter()).to.deep.equal("test")
         chart.filter([])
         expect(chart.filter()).to.deep.equal(null)
       })
@@ -61,7 +61,8 @@ describe("Filter Mixin", () => {
       const event = {}
       const filter = ["filter"]
       chart.handleFilterClick(event, filter)
-      expect(chart.filter()).to.deep.equal(["filter"])
+
+      expect(chart.filter()).to.deep.equal("filter")
     })
   })
 })

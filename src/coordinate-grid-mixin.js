@@ -628,22 +628,7 @@ dc.coordinateGridMixin = function (_chart) {
             _x.range([0, _chart.xAxisLength()]);
         }
 
-
-        var customTimeFormat = d3.time.format.utc.multi([
-          [".%L", function(d) { return d.getUTCMilliseconds(); }],
-          [":%S", function(d) { return d.getUTCSeconds(); }],
-          ["%I:%M", function(d) { return d.getUTCMinutes(); }],
-          ["%I %p", function(d) { return d.getUTCHours(); }],
-          ["%a %d", function(d) { return d.getUTCDay() && d.getUTCDate() != 1; }],
-          ["%b %d", function(d) { return d.getUTCDate() != 1; }],
-          ["%b", function(d) { return d.getUTCMonth(); }],
-          ["%Y", function() { return true; }]
-        ]);
-
-        _xAxis = _xAxis.scale(_chart.x()).tickFormat( _chart.x().domain()[0] instanceof Date ? customTimeFormat : null);
-
-        _xAxis.ticks( _chart.effectiveWidth()/_xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth()/64) : 10);
-
+        _chart.xAxis().ticks(_chart.getNumTicksForXAxis());
 
         renderVerticalGridLines(g);
     }

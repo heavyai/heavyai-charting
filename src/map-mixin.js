@@ -187,7 +187,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             _isFirstMoveEvent = true;
         }
         _lastMapUpdateTime = curTime;
-        if (_xDim !== null && _yDim !== null) {
+        if (_xDim !== null && _yDim !== null && e.originalEvent) {
             _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
             _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
             dc.redrawAllAsync()

@@ -1,7 +1,7 @@
 // Import DC and dependencies
+import {customTimeFormat, extractTickFormat,deepEquals} from "./overrides/src/utils"
 import binningMixin from "./overrides/src/binning-mixin"
 import createSamplingMixin from "./overrides/src/sampling-mixin"
-import {deepEquals} from "./overrides/src/utils"
 import filterMixin from "./overrides/src/filter-mixin"
 import colorMixin from "./overrides/src/color-mixin"
 import groupAllMixin from "./overrides/src/dc-group-all-mixin"
@@ -12,6 +12,7 @@ import mapdTable from "./overrides/src/mapd-table"
 import {normalizeFiltersArray} from "./overrides/src/formatting-helpers"
 import resetDCStateMixin from "./overrides/src/reset-dc-state-mixin"
 import legendMixin from "./overrides/src/dc-legend-mixin"
+import coordinateGridMixin from "./overrides/src/coordinate-grid-mixin"
 
 var d3 = require("d3");
 var crossfilter = require("../mapd-crossfilter");
@@ -50,7 +51,7 @@ dc.override(dc, "stackMixin", function(_chart) {
 })
 
 dc.override(dc, "coordinateGridMixin", function(_chart) {
-  return binningMixin(dc._coordinateGridMixin(_chart))
+  return coordinateGridMixin(binningMixin(dc._coordinateGridMixin(_chart)))
 })
 
 dc.override(dc, "colorMixin", function(_chart) {
@@ -91,5 +92,7 @@ dc.override(dc, "legend", function() {
 dc.legendCont = legendCont
 
 dc.utils.deepEquals = deepEquals
+dc.utils.customTimeFormat = customTimeFormat
+dc.utils.extractTickFormat = extractTickFormat
 
 module.exports = dc
