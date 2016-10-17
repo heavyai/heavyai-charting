@@ -122,17 +122,32 @@ export default function legendCont () {
             .classed("js-isLocked", _isLocked)
             .on("click", toggleLock)
 
-    _lock.append("svg")
+    const lockIcon = _lock.append("svg")
             .attr("class", "svg-icon")
             .classed("icon-lock", true)
             .attr("viewBox", "0 0 48 48")
+
+    lockIcon.append("g")
+            .style("stroke", "white")
+            .style("stroke-width", "6")
             .append("use")
             .attr("xlink:href", "#icon-lock")
-    _lock.append("svg")
+
+    lockIcon.append("use")
+            .attr("xlink:href", "#icon-lock")
+
+    const unLockIcon = _lock.append("svg")
             .attr("class", "svg-icon")
             .classed("icon-unlock", true)
             .attr("viewBox", "0 0 48 48")
+
+    unLockIcon.append("g")
+            .style("stroke", "white")
+            .style("stroke-width", "6")
             .append("use")
+            .attr("xlink:href", "#icon-unlock")
+
+    unLockIcon.append("use")
             .attr("xlink:href", "#icon-unlock")
 
     if (_isLocked) {
