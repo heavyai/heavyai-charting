@@ -44,7 +44,7 @@ export function formatNumber (d, abbr) {
 }
 
 export function formatArrayValue (data) {
-  if (typeof data[0] === "object") {
+  if (typeof data[0] === "object" && !(data[0] instanceof Date)) {
     return data[0].isExtract ? formatExtractValue(data[0].value, data[0].extractUnit) : formatTimeBinValue(data)
   } else {
     return data.map(d => formatDataValue(d)).join(" \u2013 ")

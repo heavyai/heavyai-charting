@@ -10,7 +10,8 @@ dc.stackMixin = function (_chart) {
 
     function prepareValues (layer, layerIdx) {
         var valAccessor = layer.accessor || _chart.valueAccessor();
-        layer.name = String(layer.name || layerIdx);
+        layer.name = String(layer.name || "series_" + (layerIdx + 1));
+        layer.layer = layer.name
         layer.idx = layerIdx;
 
 /* OVERRIDE ---------------------------------------------------------------- */
@@ -20,7 +21,7 @@ dc.stackMixin = function (_chart) {
         layer.values = preValues.map(function (d,i) {
             return {
                 x: _chart.keyAccessor()(d, i),
-                y: layer.hidden ? null : valAccessor(d, i),
+                y: layer.hidden ? null : valAccessor(d, i) || 0,
                 idx: layerIdx,
                 data: d,
                 layer: layer.name,

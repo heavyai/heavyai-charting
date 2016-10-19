@@ -134,7 +134,7 @@ export default function binningMixin (chart) {
 
     for (let i = 0; i < currentStack.length; i++) {
       const binParams = currentStack[i].group.binParams().map((binParam, idx) => {
-        if (idx === i) {
+        if (idx === i && binParam) {
           binParam.timeBin = chart.timeBinInputVal()
         }
         return binParam

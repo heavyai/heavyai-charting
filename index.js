@@ -13,6 +13,7 @@ import {normalizeFiltersArray} from "./overrides/src/formatting-helpers"
 import resetDCStateMixin from "./overrides/src/reset-dc-state-mixin"
 import legendMixin from "./overrides/src/dc-legend-mixin"
 import coordinateGridMixin from "./overrides/src/coordinate-grid-mixin"
+import multiSeriesMixin from "./overrides/src/multi-series-mixin"
 
 var d3 = require("d3");
 var crossfilter = require("../mapd-crossfilter");
@@ -77,7 +78,7 @@ dc.override(dc, "pieChart", function(parent, chartGroup) {
 })
 
 dc.override(dc, "lineChart", function(parent, chartGroup) {
-  return dc._lineChart(parent, chartGroup)
+  return multiSeriesMixin(dc._lineChart(parent, chartGroup))
 })
 
 dc.override(dc.filters, "TwoDimensionalFilter", function(filter) {
@@ -94,5 +95,11 @@ dc.legendCont = legendCont
 dc.utils.deepEquals = deepEquals
 dc.utils.customTimeFormat = customTimeFormat
 dc.utils.extractTickFormat = extractTickFormat
+
+dc.refreshCharts = () => {
+  dc.chartRegistry.list()
+    .filter(chart => chart.isMulti && chart.isMulti())
+    .forEach(chart => chart.series().selected(null))
+}
 
 module.exports = dc

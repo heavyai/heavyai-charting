@@ -1423,6 +1423,9 @@ dc.coordinateGridMixin = function (_chart) {
         _chart._preprocessData();
 
         _chart._generateG();
+
+        _chart.root().classed('coordinate-chart', true)
+        
         generateClipPath();
 
         drawChart(true);

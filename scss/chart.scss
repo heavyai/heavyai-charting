@@ -1031,8 +1031,24 @@ body {
         }
     }
 
+    .popup-item-key {
+        font-size: 12px;
+        font-weight: bold;
+        flex-grow: 1;
+        line-height: 1;
+        padding-right: 8px;
+        white-space: nowrap;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .popup-item-value {
         font-size: 13px;
+        flex-grow: 1;
+        &.text-align-right {
+            text-align: right;
+        }
     }
 }
 
@@ -1528,6 +1544,28 @@ body {
             width: calc(100% - 48px);
             height: 56px;
             background: linear-gradient(0deg, white, white, white, rgba(white, .8));
+        }
+    }
+
+}
+
+.coordinate-chart {
+    .dc-legend {
+        top: 32px !important;
+        bottom: auto !important;
+        left: 72px !important;
+
+        .toggle-btn { 
+            right: -6px;
+            top: -4px;
+            &:after {
+                transform: translate(-50%, -50%) rotate(-45deg);
+            }
+            &:before {
+                transform: scaleY(-1);
+                left: 0;
+                top: 0;   
+            }   
         }
     }
 }

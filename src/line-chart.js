@@ -183,11 +183,12 @@ dc.lineChart = function (parent, chartGroup) {
     };
 
     function colors (d, i) {
-        return _chart.getColor(d, i);
-
-/* OVERRIDE ---------------------------------------------------------------- */
-        //return "#22A7F0";
-/* ------------------------------------------------------------------------- */
+        if (d.name) {
+          d.layer = d.name
+          return _chart.getColor(d, i);
+        } else {
+          return _chart.getColor(d, i);
+        }
     }
 
     function drawLine (layersEnter, layers) {
@@ -358,8 +359,17 @@ dc.lineChart = function (parent, chartGroup) {
                 return colors(d.datum, d.i);
             });
 
+        if (_chart.series().keys()) {
+            popupItems.append('div')
+                .attr('class', 'popup-item-key')
+                .text(function(d){
+                    return _chart.series().keys()[d.datum.layer];
+                });
+        }
+
         popupItems.append('div')
             .attr('class', 'popup-item-value')
+            .classed('text-align-right', !!_chart.series().keys())
             .text(function(d){
                 return dc.utils.formatValue(_renderArea ? d.datum.y + d.datum.y0 : d.datum.y);
             });
