@@ -335,8 +335,6 @@ dc.lineChart = function (parent, chartGroup) {
     }
 
     function showPopup(arr, x, y) {
-        var dateFormat = d3.time.format.utc("%b %d, %Y");
-        var dateTimeFormat = d3.time.format.utc("%b %d, %Y · %I:%M%p");
         var popup = _chart.popup();
 
         var popupBox = popup.select('.chart-popup-content').html('')

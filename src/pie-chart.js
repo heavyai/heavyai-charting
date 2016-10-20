@@ -646,8 +646,11 @@ dc.pieChart = function (parent, chartGroup) {
             });
 
         popup.select('.chart-popup-box')
+            .classed('align-center', function(){
+                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width() && x - (d3.select(this).node().getBoundingClientRect().width / 2) >= 0;
+            })
             .classed('align-right', function(){
-                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width();
+                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width() && x - d3.select(this).node().getBoundingClientRect().width >= 0;
             });
     }
 

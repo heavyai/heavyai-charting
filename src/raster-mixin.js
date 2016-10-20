@@ -11,6 +11,7 @@ dc.rasterMixin = function(_chart) {
     var _popupSearchRadius = 2;
     var _popupFunction = null;
     var _colorBy = null;
+    var _showColorByInPopup = false;
     var _mouseLeave = false // used by displayPopup to maybe return early
 
     _chart.popupSearchRadius = function (popupSearchRadius) {
@@ -109,6 +110,12 @@ dc.rasterMixin = function(_chart) {
         return _chart;
     }
 
+    _chart.showColorByInPopup = function(_) {
+        if (!arguments.length) { return _showColorByInPopup; }
+        _showColorByInPopup = _;
+        return _chart;
+    }
+
     _chart.getClosestResult = function getClosestResult (point, callback) {
         var height = (typeof _chart.effectiveHeight === 'function' ? _chart.effectiveHeight() : _chart.height());
         var pixelRatio = _chart._getPixelRatio() || 1;
@@ -159,7 +166,7 @@ dc.rasterMixin = function(_chart) {
         .style({left: xPixel + 'px', top: yPixel + 'px'})
         .append('div')
         .attr('class', 'map-point-gfx')
-        .style('background', colorPopupBackground(data))
+        .style('background', colorPopupBackground(result.row_set[0]))
         mapPopup.append('div')
         .attr('class', 'map-popup-wrap')
         .style({left: xPixel + 'px', top: yPixel + 'px'})
@@ -202,6 +209,14 @@ dc.rasterMixin = function(_chart) {
 
     function getColumnsWithPoints () {
         var columns = _chart.popupColumns().slice();
+        if (_chart.colorBy()) {
+            if (columns.indexOf(_chart.colorBy()) === -1) {
+                columns.push(_chart.colorBy())
+                _chart.showColorByInPopup(false)
+            } else {
+                _chart.showColorByInPopup(true)
+            }
+        }
 
         if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
             columns.push("conv_4326_900913_x(" + _chart._xDimName + ") as xPoint");
@@ -217,25 +232,18 @@ dc.rasterMixin = function(_chart) {
     function renderPopupHTML(data) {
       var html = '';
       for (var key in data) {
-        if(key !== "xPoint" && key !== "yPoint"){
-          html += '<div class="map-popup-item"><span class="popup-item-key">' + key + ':</span><span class="popup-item-val"> ' + data[key] +'</span></div>'
+        if(key !== "xPoint" && key !== "yPoint" && (key !== _chart.colorBy() || _chart.showColorByInPopup())){
+          html += '<div class="map-popup-item"><span class="popup-item-key">' + key + ':</span><span class="popup-item-val"> ' + dc.utils.formatValue(data[key]) +'</span></div>'
         }
       }
       return html;
     }
 
     function colorPopupBackground (data) {
-      var MAPD_BLUE = '#27aeef'
-      var _colorBy = _chart.colorBy()
-      if (_colorBy) {
-        var matchIndex = null;
-        _chart.colors().domain().forEach(function(d, i){
-          if (d === data[_colorBy] ) {
-            matchIndex = i;
-          }
-        });
-      }
-      return matchIndex ? _chart.colors().range()[matchIndex] : MAPD_BLUE;
+        console.log(data, _chart.colorBy())
+        if (!_chart.colors().domain) { return _chart.defaultColor(); }
+        var matchIndex = _chart.colors().domain().indexOf(data[_chart.colorBy()])
+        return matchIndex !== -1 ? _chart.colors().range()[matchIndex] : _chart.defaultColor();
     }
 
     function mapDataViaColumns (data, _popupColumnsMapped) {

@@ -8,7 +8,8 @@
     "shjs": "node --harmony_destructuring ../../../node_modules/.bin/shjs",
     "test": "mocha ./test --compilers js:babel-register --require ./test/setup",
     "test:cover": "istanbul cover _mocha -- ./test --compilers js:babel-register --require ./test/setup",
-    "test:check-cover": "npm run shjs ../../../scripts/check-coverage.js"
+    "test:check-cover": "npm run shjs ../../../scripts/check-coverage.js",
+    "postinstall": "npm install moment"
   },
   "author": "",
   "license": "ISC",
@@ -27,5 +28,8 @@
   },
   "dependencies": {
     "deep-equal": "1.0.1"
+  },
+  "peerDependencies": {
+    "moment": "^2.0.0"
   }
 }

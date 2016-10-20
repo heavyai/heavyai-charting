@@ -1,31 +1,31 @@
 import d3 from "d3"
 
-const DAYS = [
+export const DAYS = [
   "Mon",
-  "Tues",
+  "Tue",
   "Wed",
-  "Thurs",
+  "Thu",
   "Fri",
   "Sat",
   "Sun"
 ]
 
-const MONTHS = [
+export const MONTHS = [
   "Jan",
   "Feb",
   "Mar",
   "Apr",
   "May",
-  "June",
-  "July",
+  "Jun",
+  "Jul",
   "Aug",
-  "Sept",
+  "Sep",
   "Oct",
   "Nov",
   "Dec"
 ]
 
-const QUARTERS = ["Q1", "Q2", "Q3", "Q4"]
+export const QUARTERS = ["Q1", "Q2", "Q3", "Q4"]
 
 export const deepEquals = require("deep-equal") // eslint-disable-line global-require
 

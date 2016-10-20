@@ -167,9 +167,6 @@ dc.barChart = function (parent, chartGroup) {
     }
 
     function showPopup(arr, x, y) {
-
-        var dateFormat = d3.time.format.utc("%b %d, %Y");
-        var dateTimeFormat = d3.time.format.utc("%b %d, %Y · %I:%M%p");
         var popup = _chart.popup().classed('hide-delay', true);
 
         var popupBox = popup.select('.chart-popup-content').html('')
@@ -177,15 +174,7 @@ dc.barChart = function (parent, chartGroup) {
 
         popupBox.append('div')
             .attr('class', 'popup-header')
-            .text(function(){
-                if (arr[0].datum.x instanceof Date) {
-                  var diffDays = Math.round(Math.abs((_chart.xAxisMin().getTime() - _chart.xAxisMax().getTime())/(24*60*60*1000)));
-                  return _chart.getBinInputVal()[0].val ==='auto' && diffDays > 14 || _chart.getBinInputVal()[0].numSeconds > 3600 ? dateFormat(arr[0].datum.x) : dateTimeFormat(arr[0].datum.x);
-                } else {
-                  return _chart.xAxisLabel() + ' ' + dc.utils.formatValue(arr[0].datum.x);
-                }
-            });
-
+            .text(_chart.popupTextAccessor(arr));
 
         var popupItems = popupBox.selectAll('.popup-item')
             .data(arr)

@@ -404,7 +404,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
             .attr('class', 'popup-value')
             .html(function(){
                 var key = getKey(0, d);
-                var value = isNaN(data[key]) ?  'N/A' : Number(data[key]).toFixed(2);
+                var value = isNaN(data[key]) ?  'N/A' : dc.utils.formatValue(data[key]);
                 return '<div class="popup-value-dim">'+ key +'</div><div class="popup-value-measure">'+ value +'</div>';
             });
 

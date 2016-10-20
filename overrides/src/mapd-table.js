@@ -1,5 +1,6 @@
 const dc = require("../../mapdc")
 import d3 from "d3"
+import {formatDataValue} from "./formatting-helpers.js"
 
 const INITIAL_SIZE = 50
 const GROUP_DATA_WIDTH = 20
@@ -7,20 +8,6 @@ const NON_GROUP_DATA_WIDTH = 8
 const NON_INDEX = -1
 const ADDITIONAL_HEIGHT = 18
 const SCROLL_DIVISOR = 5
-
-function maybeFormatNumber (val) {
-  return typeof val === "number" ? parseFloat(val.toFixed(2)) : val
-}
-
-export function formatResultKey (data) {
-  if (Array.isArray(data)) {
-    return data
-      .map(val => (typeof val === "object" ? val.alias : val))
-      .map(maybeFormatNumber).join("  \u2013  ")
-  } else {
-    return maybeFormatNumber(data)
-  }
-}
 
 export default function mapdTable (parent, chartGroup) {
   const _chart = dc.baseMixin({})
@@ -276,7 +263,7 @@ export default function mapdTable (parent, chartGroup) {
 
     cols.forEach(col => {
       rowItem.append("td")
-        .text(d => formatResultKey(d[col.name]))
+        .text(d => formatDataValue(d[col.name]))
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
           if (_isGroupedData) {

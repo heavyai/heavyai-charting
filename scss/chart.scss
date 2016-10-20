@@ -960,13 +960,12 @@ body {
             transform: translate(-100%, -50%);
         }
 
+        &.align-center {
+            transform: translate(-50%, -100%);
+        }
 
         &.align-right {
             transform: translate(-100%, -100%);
-        }
-
-        &.align-center {
-            transform: translate(-50%, -100%);
         }
 
         &.popdown {

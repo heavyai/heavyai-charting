@@ -5,9 +5,7 @@ const MAX_TICK_WIDTH = 64
 const DEFAULT_TIME_DIMENSION_INDEX = 0
 
 export default function coordinateGridMixin (_chart) {
-  _chart.popupTextAccessor = (arr) => () => (
-    _chart.xAxisLabel() + " " + dc.utils.formatValue(arr[0].datum.data.key0[0].alias)
-  )
+  _chart.popupTextAccessor = (arr) => () => (dc.utils.formatValue(arr[0].datum.data.key0))
 
   _chart.getNumTicksForXAxis = () => {
     const xDomain = _chart.x().domain()
