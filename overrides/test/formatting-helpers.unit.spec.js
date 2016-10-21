@@ -129,6 +129,11 @@ describe("Formatting Helpers", () => {
       {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "day"}
     ]
 
+    const minute = [
+      {value: new Date(Date.UTC(2010, 11, 12)), timeBin: "minute"},
+      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "minute"}
+    ]
+
     it("should format decade correctly", () => {
       expect(Helpers.formatTimeBinValue(decade, "decade")).to.equal("2001 \u2013 2010")
     })
@@ -152,12 +157,17 @@ describe("Formatting Helpers", () => {
     it("should format day correctly", () => {
       expect(Helpers.formatTimeBinValue(day, "day")).to.equal("Dec 12, 2010")
     })
+
+    it("should format minute correctly", () => {
+      expect(Helpers.formatTimeBinValue(minute, "minute")).to.equal("Dec 12, 2010  00:00")
+    })
   })
 
   describe("formatExtractValue", () => {
     const isodow = 3
     const month = 3
     const quarter = 3
+    const minute = 3
 
     it("should format isodow correctly", () => {
       expect(Helpers.formatExtractValue(isodow, "isodow")).to.equal("Wed")
@@ -169,6 +179,12 @@ describe("Formatting Helpers", () => {
 
     it("should format extracted quarter correctly", () => {
       expect(Helpers.formatExtractValue(quarter, "quarter")).to.equal("Q3")
+    })
+    it("should format extracted minute correctly", () => {
+      expect(Helpers.formatExtractValue(minute, "minute")).to.equal(4)
+    })
+    it("should format extracted time correctly", () => {
+      expect(Helpers.formatExtractValue(minute, "")).to.equal(3)
     })
   })
 
