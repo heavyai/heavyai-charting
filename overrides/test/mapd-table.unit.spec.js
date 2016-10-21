@@ -155,7 +155,7 @@ describe("MapD Table", () => {
         const key0 = [222.55, 500]
         const data = [{key0, val: 0}]
         table._doRender(data)
-        expect(table.root().select('td').text()).to.equal('222.55  \u2013  500')
+        expect(table.root().select('td').text()).to.equal('222.55 \u2013 500')
       })
       it("should generate correct column header", () => {
         const data = [{key0: "abc", val: 0}]

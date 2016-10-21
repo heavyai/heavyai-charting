@@ -47,7 +47,7 @@ export function formatArrayValue (data) {
   if (typeof data[0] === "object") {
     return data[0].isExtract ? formatExtractValue(data[0].value, data[0].extractUnit) : formatTimeBinValue(data)
   } else {
-    return data.map(formatDataValue).join(" \u2013 ")
+    return data.map(d => formatDataValue(d)).join(" \u2013 ")
   }
 }
 

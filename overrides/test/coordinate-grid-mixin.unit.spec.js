@@ -8,9 +8,9 @@ describe("coordinateGridMixin", () => {
 
   describe("popupTextAccessor", () => {
     it("should return the proper popup text", () => {
-      const alias = "July 2012"
-      const arr = [{datum: {data: {key0: [{alias}]}}}]
-      expect(chart.popupTextAccessor(arr)()).to.equal(label + ' ' + alias)
+      const value = new Date( Date.UTC(2016, 9, 21) )
+      const arr = [{datum: {data: {key0: [{value}]}}}]
+      expect(chart.popupTextAccessor(arr)()).to.equal("Oct 21, 2016  00:00:00")
     })
   })
 

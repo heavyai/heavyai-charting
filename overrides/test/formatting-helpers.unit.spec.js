@@ -48,22 +48,22 @@ describe("Formatting Helpers", () => {
     })
   })
   describe("formatNumber", () => {
-    it("should format large numbers", () => {
-      expect(Helpers.formatNumber(10000)).to.equal("10k")
+    it("should add commas to large numbers", () => {
+      expect(Helpers.formatNumber(10000)).to.equal("10,000")
     })
     it("should round decimenals", () => {
-      expect(Helpers.formatNumber(3.33333)).to.equal(3.33)
+      expect(Helpers.formatNumber(3.33333)).to.equal("3.33")
     })
   })
   describe("formatValue", () => {
     it("should format large numbers", () => {
-      expect(Helpers.formatValue(10000)).to.equal("10,000")
+      expect(Helpers.formatDataValue(10000)).to.equal("10,000")
     })
     it("should format dates", () => {
-      expect(Helpers.formatValue(new Date("1/1/2001"))).to.equal('Jan 01, 2001 · 08:00AM')
+      expect(Helpers.formatDataValue(new Date(Date.UTC(2001, 0, 1)))).to.equal('Jan 1, 2001  00:00:00')
     })
     it("should format strings", () => {
-      expect(Helpers.formatValue("TEST")).to.equal("TEST")
+      expect(Helpers.formatDataValue("TEST")).to.equal("TEST")
     })
   })
   describe("maybeFormatInfinity", () => {
@@ -83,22 +83,110 @@ describe("Formatting Helpers", () => {
       expect(Helpers.maybeFormatInfinity(valList)[2]).to.deep.equal({val: 0, label: "Infinity"})
     })
   })
-  describe("formatResultKey", () => {
+  describe("formatDataValue", () => {
     it("should format results with object collections", () => {
-      expect(Helpers.formatResultKey([
-        {alias: 'July', value: new Date("July"), timeBin: "week"},
-        {alias: 'August', value: new Date("August"), timeBin: "week"}
-      ])).to.equal('July  \u2013  August')
-      expect(Helpers.formatResultKey([
-        {alias: 'July', value: new Date("July"), timeBin: "month"},
-        {alias: 'August', value: new Date("August"), timeBin: "month"}
-      ])).to.equal('July')
+      expect(Helpers.formatDataValue([
+        {alias: 'July', value: 7, timeBin: "month", isExtract: true, extractUnit: "month"},
+        {alias: 'August', value: 8, timeBin: "month", isExtract: true, extractUnit: "month"}
+      ])).to.equal('Jul')
+      expect(Helpers.formatDataValue([
+        {alias: 'July', value: new Date(Date.UTC(2016, 10, 1)), timeBin: "month"},
+        {alias: 'August', value: new Date(Date.UTC(2016, 10, 1)), timeBin: "month"}
+      ])).to.equal('Nov 2016')
     })
     it("should format results with non-object collections", () => {
-      expect(Helpers.formatResultKey([10000, 20000])).to.equal('10k  \u2013  20k')
+      expect(Helpers.formatDataValue([10000, 20000])).to.equal('10,000 \u2013 20,000')
     })
     it("shoud format other formats", () => {
-      expect(Helpers.formatResultKey('ATL')).to.equal('ATL')
+      expect(Helpers.formatDataValue('ATL')).to.equal('ATL')
     })
+  })
+
+  describe("formatTimeBinValue", () => {
+    const decade = [
+      {value: new Date(Date.UTC(2001, 0, 1)), timeBin: "decade"},
+      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "decade"}
+    ]
+    const year = [
+      {value: new Date(Date.UTC(2001, 0, 1)), timeBin: "year"},
+      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "year"}
+    ]
+    const quarter = [
+      {value: new Date(Date.UTC(2001, 0, 1)), timeBin: "quarter"},
+      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "quarter"}
+    ]
+    const week = [
+      {value: new Date(Date.UTC(2001, 0, 1)), timeBin: "week"},
+      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "week"}
+    ]
+    const month = [
+      {value: new Date(Date.UTC(2010, 11, 1)), timeBin: "month"},
+      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "month"}
+    ]
+
+    const day = [
+      {value: new Date(Date.UTC(2010, 11, 12)), timeBin: "day"},
+      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "day"}
+    ]
+
+    it("should format decade correctly", () => {
+      expect(Helpers.formatTimeBinValue(decade, "decade")).to.equal("2001 \u2013 2010")
+    })
+
+    it("should format year correctly", () => {
+      expect(Helpers.formatTimeBinValue(year, "year")).to.equal("2001")
+    })
+
+    it("should format quarter correctly", () => {
+      expect(Helpers.formatTimeBinValue(quarter, "quarter")).to.equal("1Q 2001")
+    })
+
+    it("should format week correctly", () => {
+      expect(Helpers.formatTimeBinValue(week, "week")).to.equal("Jan 1 \u2013 Dec 31, 2010")
+    })
+
+    it("should format month correctly", () => {
+      expect(Helpers.formatTimeBinValue(month, "month")).to.equal("Dec 2010")
+    })
+
+    it("should format day correctly", () => {
+      expect(Helpers.formatTimeBinValue(day, "day")).to.equal("Dec 12, 2010")
+    })
+  })
+
+  describe("formatExtractValue", () => {
+    const isodow = 3
+    const month = 3
+    const quarter = 3
+
+    it("should format isodow correctly", () => {
+      expect(Helpers.formatExtractValue(isodow, "isodow")).to.equal("Wed")
+    })
+
+    it("should format extracted month correctly", () => {
+      expect(Helpers.formatExtractValue(month, "month")).to.equal("Mar")
+    })
+
+    it("should format extracted quarter correctly", () => {
+      expect(Helpers.formatExtractValue(quarter, "quarter")).to.equal("Q3")
+    })
+  })
+
+  describe("formatArrayValue", () => {
+    const month = [
+      {value: new Date(Date.UTC(2010, 11, 1)), timeBin: "month"},
+      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "month"}
+    ]
+
+    const data = [2.33333, 10.25343]
+
+    it("should format date array correctly", () => {
+      expect(Helpers.formatArrayValue(month)).to.equal("Dec 2010")
+    })
+
+    it("should format number array", () => {
+      expect(Helpers.formatArrayValue(data)).to.equal("2.33 – 10.25")
+    })
+
   })
 })
