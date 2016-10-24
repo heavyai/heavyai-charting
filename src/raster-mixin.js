@@ -123,7 +123,7 @@ dc.rasterMixin = function(_chart) {
         var tableName = _chart.tableName()
         var columns = getColumnsWithPoints()
         // TODO best to fail, skip cb, or call cb wo args?
-        if (!point || !tableName || !columns.length ) { return; }
+        if (!point || !tableName || !columns.length || columns.length === 3 && !_chart.showColorByInPopup()) { return; }
         return _chart.con().getRowForPixel(pixel, tableName, columns, [function(results){
             return callback(results[0])
         }], _popupSearchRadius * pixelRatio)
@@ -240,7 +240,6 @@ dc.rasterMixin = function(_chart) {
     }
 
     function colorPopupBackground (data) {
-        console.log(data, _chart.colorBy())
         if (!_chart.colors().domain) { return _chart.defaultColor(); }
         var matchIndex = _chart.colors().domain().indexOf(data[_chart.colorBy()])
         return matchIndex !== -1 ? _chart.colors().range()[matchIndex] : _chart.defaultColor();

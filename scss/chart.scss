@@ -632,6 +632,7 @@ body {
         transform: translate(-50%, -50%);
         border: 3px solid white;
         transition: border .25s;
+        box-shadow: 0 1px 4px 0 rgba(black, .4);
     }
 
     .map-popup, .map-point-wrap {
