@@ -5,7 +5,7 @@ import createSamplingMixin from "./overrides/src/sampling-mixin"
 import filterMixin from "./overrides/src/filter-mixin"
 import colorMixin from "./overrides/src/color-mixin"
 import groupAllMixin from "./overrides/src/dc-group-all-mixin"
-import {heatMapKeyAccessor, heatMapLabel, heatMapValueAccesor} from "./overrides/src/heatmap"
+import heatMapMixin from "./overrides/src/heatmap"
 import legendCont from "./overrides/src/dc-legend-cont"
 import chartLegendMixin from "./overrides/src/legend-mixin"
 import mapdTable from "./overrides/src/mapd-table"
@@ -60,12 +60,7 @@ dc.override(dc, "colorMixin", function(_chart) {
 })
 
 dc.override(dc, "heatMap", function(parent, chartGroup) {
-  return dc._heatMap(parent, chartGroup)
-    .keyAccessor(heatMapKeyAccessor)
-    .valueAccessor(heatMapValueAccesor)
-    .colorAccessor(d => d.value)
-    .rowsLabel(heatMapLabel)
-    .colsLabel(heatMapLabel)
+  return heatMapMixin(dc._heatMap(parent, chartGroup))
 })
 
 dc.override(dc, "barChart", function(parent, chartGroup) {

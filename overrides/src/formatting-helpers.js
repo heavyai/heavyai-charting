@@ -13,7 +13,6 @@ export const isPlainObject = value => !Array.isArray(value) && typeof value === 
 export const hasAllObjects = collection => collection.reduce((accum, value) => isPlainObject(value) && accum, true)
 export const isArrayOfObjects = value => Array.isArray(value) && hasAllObjects(value)
 export const normalizeArrayByValue = collection => isArrayOfObjects(collection) ? collection.map(data => data.value) : collection
-export const normalizeArrayByAlias = collection => isArrayOfObjects(collection) ? collection.map(data => data.alias) : collection
 
 export function formatDataValue (data, numAbbr) {
   if (typeof data === "number") {

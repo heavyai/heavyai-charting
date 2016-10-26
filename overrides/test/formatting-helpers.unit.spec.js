@@ -38,15 +38,6 @@ describe("Formatting Helpers", () => {
       expect(Helpers.normalizeArrayByValue(collection)).to.deep.equal([new Date(1), new Date(2)])
     })
   })
-  describe("normalizeArrayByAlias", () => {
-    it("should map value property of a collection object", () => {
-      expect(Helpers.normalizeArrayByAlias([{value: 1, alias: "Monday"}, {value: 2, alias: "Tuesday"}])).to.deep.equal(["Monday", "Tuesday"])
-    })
-    it("should return the collection if it isn't a collection of objects", () => {
-      const collection = [new Date(1), new Date(2)]
-      expect(Helpers.normalizeArrayByAlias(collection)).to.deep.equal([new Date(1), new Date(2)])
-    })
-  })
   describe("formatNumber", () => {
     it("should add commas to large numbers", () => {
       expect(Helpers.formatNumber(10000)).to.equal("10,000")

@@ -45,13 +45,13 @@ describe("MapD Heatmap Chart", () => {
       colsLabel = heat.colsLabel()
     })
     it("should properly format array data", () => {
-      expect(rowsLabel([10000, 20000])).to.equal("10,000  \u2013  20,000")
-      expect(colsLabel([10000, 20000])).to.equal("10,000  \u2013  20,000")
+      expect(rowsLabel([10000, 20000])).to.equal("10,000 \u2013 20,000")
+      expect(colsLabel([10000, 20000])).to.equal("10,000 \u2013 20,000")
     })
     it("should return stringified Date", () => {
-      const date = new Date()
-      expect(rowsLabel(date)).to.equal(date.toString())
-      expect(colsLabel(date)).to.equal(date.toString())
+      const date = new Date(Date.UTC(2001, 0, 1))
+      expect(rowsLabel(date)).to.equal("Jan 1, 2001  00:00:00")
+      expect(colsLabel(date)).to.equal("Jan 1, 2001  00:00:00")
     })
     it("should return itself if not number", () => {
       const data = "STRING"
