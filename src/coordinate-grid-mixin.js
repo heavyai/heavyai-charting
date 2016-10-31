@@ -587,7 +587,8 @@ dc.coordinateGridMixin = function (_chart) {
 
         extentChart.replaceFilter(domFilter);
         extentChart.rescale();
-        extentChart.redraw();
+        // debugger
+        extentChart.redrawAsync();
 
         if (_chart.rangeChart()) {
             _binSnap = _binInput;
@@ -1425,7 +1426,7 @@ dc.coordinateGridMixin = function (_chart) {
         _chart._generateG();
 
         _chart.root().classed('coordinate-chart', true)
-        
+
         generateClipPath();
 
         drawChart(true);

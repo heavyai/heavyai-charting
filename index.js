@@ -91,10 +91,4 @@ dc.utils.deepEquals = deepEquals
 dc.utils.customTimeFormat = customTimeFormat
 dc.utils.extractTickFormat = extractTickFormat
 
-dc.refreshCharts = () => {
-  dc.chartRegistry.list()
-    .filter(chart => chart.isMulti && chart.isMulti())
-    .forEach(chart => chart.series().selected(null))
-}
-
 module.exports = dc

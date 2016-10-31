@@ -134,9 +134,12 @@ export default function multiSeriesMixin (chart) {
     if (chart.isMulti()) {
       return chart.series().group().topAsync(LIMIT, OFFSET)
         .then((topValues) => {
+          const currentSelected = chart.series().selected()
+          const hasSelected = Boolean(currentSelected && currentSelected.length)
+
           chart.series()
             .values(topValues.map(result => result.key0))
-            .selected(chart.series().selected() || chart.series().values().slice(0, TOP))
+            .selected(hasSelected ? currentSelected : chart.series().values().slice(0, TOP))
 
           chart.group().dimension().set(setDimensionsWithColumns(columns, chart.series().selected()))
           chart.group().dimension().multiDim(false)
@@ -168,7 +171,7 @@ export default function multiSeriesMixin (chart) {
   function addValuesWithNoKeysToKeysMutation () {
     function valuesWithNoKeys () {
       const keys = chart.series().keys()
-      const selected = chart.series().selected()
+      const selected = chart.series().selected() || []
       const values = selected.slice()
       const indexes = Object.keys(keys).reduce((accum, key) => (
         accum.concat(selected.indexOf(keys[key]))
