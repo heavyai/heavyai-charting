@@ -37,7 +37,7 @@ export default function heatMapMixin (chart) {
   chart.rowsMap = new Map()
   chart._axisPadding = {left: 32, bottom: 32}
 
-  const getMaxChars = (domain, getLabel) => (domain.map(d => (getLabel(d) ? getLabel(d).toString().length : 0)).reduce((prev, curr) => (Math.max(prev, curr))))
+  const getMaxChars = (domain, getLabel) => (domain.map(d => (getLabel(d) ? getLabel(d).toString().length : 0)).reduce((prev, curr) => (Math.max(prev, curr)), null))
 
   chart.getAxisSizes = (colsDomain, rowsDomain) => ({
     left: Math.min(getMaxChars(rowsDomain, chart.rowsLabel()) * CHAR_WIDTH, MAX_LABEL_WIDTH) + chart._axisPadding.left,
