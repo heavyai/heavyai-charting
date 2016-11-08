@@ -12,7 +12,7 @@ export default function multipleKeysLabelMixin (_chart) {
     let i = 1
     for (const key in d) {
       if (d.hasOwnProperty(key) && key.indexOf("key") > INDEX_NONE) {
-        keysStr = keysStr + (i > 1 ? " & " : "") + formatDataValue(d[key])
+        keysStr = keysStr + (i > 1 ? " / " : "") + formatDataValue(d[key])
       }
       i++
     }
