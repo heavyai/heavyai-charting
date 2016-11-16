@@ -12,7 +12,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
 
     _chart._xDimName = null;
     _chart._yDimName = null;
-
+    var _hasRendered = false;
     var _activeLayer = null;
     var _mapInitted = false;
     var _xDim = null;
@@ -160,7 +160,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     }
 
     function onMapMove(e) {
-        if (e.type == 'moveend' && _lastMapMoveType == 'moveend') {
+        if ((e.type === 'moveend' && _lastMapMoveType === 'moveend') || !_hasRendered) {
           return;
         }
         _lastMapMoveType = e.type;
@@ -343,6 +343,10 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         _mapInitted = true;
     }
 
+
+    _chart.on('postRender', function() {
+      _hasRendered = true
+    })
 
     _chart.on('preRender', function(chart) {
 
