@@ -21,8 +21,9 @@ dc.rasterMixin = function(_chart) {
     }
 
     _chart._resetVegaSpec = function() {
-        _chart._vegaSpec.width = Math.round(_chart.width());
-        _chart._vegaSpec.height = Math.round(_chart.height());
+        var pixelRatio = this._getPixelRatio();
+        _chart._vegaSpec.width = Math.round(_chart.width() * pixelRatio);
+        _chart._vegaSpec.height = Math.round(_chart.height() * pixelRatio);
         _chart._vegaSpec.data = [{
             "name": "table",
             "sql": "select x, y from tweets;"
@@ -80,10 +81,12 @@ dc.rasterMixin = function(_chart) {
 
     _chart.setSample = function() {
         if (_sampling) {
-            if (dc.lastFilteredSize() == null)
+            var id = _chart.dimension().getCrossfilterId();
+            var filterSize = dc.lastFilteredSize(id);
+            if (filterSize == undefined)
                 _chart.dimension().samplingRatio(null);
             else {
-                _chart.dimension().samplingRatio(Math.min(_chart.cap()/dc.lastFilteredSize(), 1.0))
+                _chart.dimension().samplingRatio(Math.min(_chart.cap()/filterSize, 1.0))
             }
         }
     }

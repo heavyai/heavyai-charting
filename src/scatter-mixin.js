@@ -42,13 +42,53 @@ dc.scatterMixin = function (_chart, _mapboxgl) {
         return _map;
     }
 
-    _chart.getDataRenderBounds = function() {
-        if (!_xDim || !_yDim) {
-            throw new Error("An X & Y Dimension need to be defined for a backend-rendered scatterplot");
+    function addDimAndRange(dim, dims, ranges) {
+        if (dim) {
+            dims.push(dim);
+            var range = dim.getFilter();
+            if (range !== null) {
+                range.forEach(function(rangesArray) {
+                    ranges.push(rangesArray);
+                })
+            }
+        }
+    }
+
+    function initializeXYDimsAndRanges(chart) {
+        var xDims = [];
+        var yDims = [];
+        var xRanges = [];
+        var yRanges = [];
+
+        addDimAndRange(chart.xDim(), xDims, xRanges);
+        addDimAndRange(chart.yDim(), yDims, yRanges);
+
+        if (typeof chart.getLayers === "function") {
+            _chart.getLayers().forEach(function(layer) {
+                if (typeof layer.xDim === "function") {
+                    addDimAndRange(layer.xDim(), xDims, xRanges);
+                }
+
+                if (typeof layer.yDim === "function") {
+                    addDimAndRange(layer.yDim(), yDims, yRanges);
+                }
+            });
         }
 
-        var xRange = _xDim.getFilter();
-        if (xRange === null) {
+        return {
+            "xDims": xDims,
+            "yDims": yDims,
+            "xRanges": xRanges,
+            "yRanges": yRanges
+        };
+    }
+
+    _chart.getDataRenderBounds = function() {
+        var dimRangeData = initializeXYDimsAndRanges(_chart);
+        var xRanges = dimRangeData.xRanges;
+        var yRanges = dimRangeData.yRanges;
+
+        if (!xRanges.length) {
             // default to a 0-1 range
             _xRange = [0, 1];
 
@@ -56,7 +96,7 @@ dc.scatterMixin = function (_chart, _mapboxgl) {
             // If we do this, we should cache the x scale and only
             // do this if the scale or dimension has changed
         } else {
-            _xRange = xRange.reduce(function(prevVal, currVal) {
+            _xRange = xRanges.reduce(function(prevVal, currVal) {
                 return [Math.min(prevVal[0], currVal[0]), Math.max(prevVal[1], currVal[1])];
             }, [Number.MAX_VALUE, -Number.MAX_VALUE]);
 
@@ -68,8 +108,7 @@ dc.scatterMixin = function (_chart, _mapboxgl) {
         }
 
 
-        var yRange = _yDim.getFilter();
-        if (yRange === null) {
+        if (!yRanges.length) {
             // default to a 0-1 range
             _yRange = [0, 1];
 
@@ -77,7 +116,7 @@ dc.scatterMixin = function (_chart, _mapboxgl) {
             // If we do this, we should cache the y scale and only
             // do this if the scale or dimension has changed
         } else {
-            _yRange = yRange.reduce(function(prevVal, currVal) {
+            _yRange = yRanges.reduce(function(prevVal, currVal) {
                 return [Math.min(prevVal[0], currVal[0]), Math.max(prevVal[1], currVal[1])];
             }, [Number.MAX_VALUE, -Number.MAX_VALUE]);
 

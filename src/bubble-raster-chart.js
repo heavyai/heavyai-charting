@@ -130,7 +130,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
         var bounds = _chart.getDataRenderBounds();
         _chart._updateXAndYScales(bounds);
 
-        _chart._vegaSpec = genVegaSpec(_chart, dc.lastFilteredSize());
+        _chart._vegaSpec = genVegaSpec(_chart, dc.lastFilteredSize(group.getCrossfilterId()));
 
         var nonce = null;
         if (_chart.cap() === Infinity) {

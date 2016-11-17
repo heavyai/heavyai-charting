@@ -188,6 +188,22 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         }
         _lastMapUpdateTime = curTime;
 
+        var redrawall = false;
+        if (typeof _chart.getLayers === "function") {
+            _chart.getLayers().forEach(function(layer) {
+                if (typeof layer.xDim === "function" &&
+                    typeof layer.yDim === "function") {
+                    var xdim = layer.xDim();
+                    var ydim = layer.yDim();
+                    if (xdim !== null && ydim !== null) {
+                        redrawall = true;
+                        xdim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
+                        ydim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
+                    }
+                }
+            });
+        }
+
         if (_xDim !== null && _yDim !== null) {
             _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
             _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
@@ -196,8 +212,13 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
                 dc.resetRedrawStack()
                 console.log("on move event redrawall error:", error)
               });
-        }
-        else {
+        } else if (redrawall) {
+            dc.redrawAllAsync()
+              .catch(function(error) {
+                dc.resetRedrawStack()
+                console.log("on move event redrawall error:", error)
+              });
+        } else {
             _chart._projectionFlag = true;
             _chart.redrawAsync();
         }

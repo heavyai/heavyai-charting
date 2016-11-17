@@ -117,8 +117,6 @@ dc.dataCount = function (parent, chartGroup) {
         else{
              val = _chart.group().value();
         }
-
-        dc._lastFilteredSize = val;
 /* ------------------------------------------------------------------------- */
 
         var all = _formatNumber(tot);

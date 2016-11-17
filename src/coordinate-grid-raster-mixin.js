@@ -37,6 +37,33 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
     _chart = dc.colorMixin(dc.marginMixin(dc.baseMixin(_chart)));
     _chart._mandatoryAttributes().push('x', 'y');
 
+    function filterChartDimensions(chart, xrange, yrange) {
+        var xdim = chart.xDim();
+        var ydim = chart.yDim();
+
+        if (xdim) {
+            xdim.filter(xrange);
+        }
+
+        if (ydim) {
+            ydim.filter(yrange);
+        }
+
+        if (typeof _chart.getLayers === "function") {
+            _chart.getLayers().forEach(function(layer) {
+                if (typeof layer.xDim === "function" &&
+                    typeof layer.yDim === "function") {
+                    xdim = layer.xDim();
+                    ydim = layer.yDim();
+                    if (xdim !== null && ydim !== null) {
+                        xdim.filter(xrange);
+                        ydim.filter(yrange);
+                    }
+                }
+            });
+        }
+    }
+
     function bindEventHandlers(map, canvasContainer, enableInteractions) {
 
         var contextMenuEvent = null;
@@ -262,8 +289,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
 
                 scale = 1 / scale;
 
-                var xDim = _chart.xDim(), xRange = _chart.xRange(), xScale = _chart.x(),
-                    yDim = _chart.yDim(), yRange = _chart.yRange(), yScale = _chart.y();
+                var xRange = _chart.xRange(), yRange = _chart.yRange();
 
                 if (xRange === null) {
                     xRange = [0,0];
@@ -314,8 +340,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
                 _scale = [xBoundsScale, yBoundsScale];
                 _offset = [(xmin - _currDataBounds[0][0]) / xBoundsDiff, (ymin - _currDataBounds[1][0]) / yBoundsDiff];
 
-                xDim.filter([xmin, xmax]);
-                yDim.filter([ymin, ymax]);
+                filterChartDimensions(_chart, [xmin, xmax], [ymin, ymax]);
             }
 
             // upon zoom, elasticity is turned off
@@ -481,8 +506,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
             drainInertiaBuffer();
             dragInertia.push([Date.now(), pos]);
 
-            var xDim = _chart.xDim(), xRange = _chart.xRange(),
-                yDim = _chart.yDim(), yRange = _chart.yRange();
+            var xRange = _chart.xRange(), yRange = _chart.yRange();
 
             if (xRange === null) {
                 xRange = [0,0];
@@ -518,8 +542,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
             _offset[0] -= deltaX / xBoundsDiff;
             _offset[1] -= deltaY / yBoundsDiff;
 
-            xDim.filter([xmin, xmax]);
-            yDim.filter([ymin, ymax]);
+            filterChartDimensions(_chart, [xmin, xmax], [ymin, ymax]);
 
             // upon pan, elasticity is turned off
             _chart.elasticX(false);
@@ -578,7 +601,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
             var duration = speed / (inertiaDeceleration * inertiaLinearity),
                 offset = velocity.mult(-duration / 2);
 
-            dc.redrawAllAsync();
+            finish();
 
             // TODO(croot):
             // Do the animated ease-out of the pan like mapbox
@@ -721,8 +744,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
             if (p0.x === p1.x && p0.y === p1.y) {
                 fireEvent(map, 'boxzoomcancel', e);
             } else {
-                var xDim = _chart.xDim(), xRange = _chart.xRange(),
-                    yDim = _chart.yDim(), yRange = _chart.yRange();
+                var xRange = _chart.xRange(), yRange = _chart.yRange();
 
                 if (xRange === null) {
                     xRange = [0,0];
@@ -792,8 +814,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
                     _scale = [xBoundsScale, yBoundsScale];
                     _offset = [(xrange[0] - _currDataBounds[0][0]) / xBoundsDiff, (yrange[0] - _currDataBounds[1][0]) / yBoundsDiff];
 
-                    xDim.filter(xrange);
-                    yDim.filter(yrange);
+                    filterChartDimensions(_chart, xrange, yrange);
 
                     _chart._updateXAndYScales(_chart.getDataRenderBounds());
                     doChartRedraw();
@@ -805,8 +826,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
                     fireEvent(map, 'zoomend', e);
                     fireEvent(map, 'moveend', e);
 
-                    xDim.filter([xmin, xmax]);
-                    yDim.filter([ymin, ymax]);
+                    filterChartDimensions(_chart, [xmin, xmax], [ymin, ymax]);
 
                     // upon box zoom, elasticity is turned off
                     _chart.elasticX(false);
@@ -1290,6 +1310,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
      * function(start, end, xDomain) {
      *      // be aware using fixed units will disable the focus/zoom ability on the chart
      *      return 1000;
+     * };
      * @param {Function} [xUnits]
      * @return {Function}
      * @return {dc.coordinateGridRasterMixin}

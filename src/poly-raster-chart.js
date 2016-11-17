@@ -37,7 +37,7 @@ dc.polyRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
       return chart;
   }
 
-  chart._pixelRatio = function() {
+  chart._getPixelRatio = function() {
       return _pixelRatio;
   }
 

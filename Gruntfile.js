@@ -384,5 +384,9 @@ module.exports.jsFiles = [
     'src/d3.box.js',
     'src/box-plot.js',
     'src/scatter-mixin.js',
+    'src/raster-chart.js', // MapD specific
+    'src/raster-layer.js', // MapD specific
+    'src/raster-layer-point-mixin.js', // MapD specific
+    'src/raster-layer-poly-mixin.js', // MapD specific
     'src/footer.js'  // NOTE: keep this last
 ];

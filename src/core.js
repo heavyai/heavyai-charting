@@ -43,7 +43,6 @@ var dc = {
       dc._logging = _
     },
     _logging: false,
-    _lastFilteredSize: null,
     _sampledCount: 0,
     _refreshDisabled: false,
     _globalTransitionDuration: null,

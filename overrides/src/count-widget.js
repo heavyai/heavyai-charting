@@ -56,8 +56,10 @@ export default function countWidget (parent, chartGroup) {
   _chart.setDataAsync((group, callbacks) => (
     _chart.getTotalRecordsAsync()
           .then(() => {
-            if (dc.lastFilteredSize()) {
-              return Promise.resolve(dc.lastFilteredSize())
+            var id = group.getCrossfilterId()
+            var filterSize = dc.lastFilteredSize(id)
+            if (filterSize !== undefined) {
+              return Promise.resolve(filterSize)
             } else {
               return group.valueAsync()
             }

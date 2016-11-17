@@ -110,10 +110,12 @@ dc.bubbleOverlay = function (parent, chartGroup) {
 
     _chart.setSample = function() {
         if (_sampling) {
-            if (dc.lastFilteredSize() == null)
+            var id = _chart.dimension().getCrossfilterId();
+            var filterSize = dc.lastFilteredSize(id);
+            if (filterSize === undefined) {
                 _chart.dimension().samplingRatio(null);
-            else {
-                _chart.dimension().samplingRatio(Math.min(_chart.cap()/dc.lastFilteredSize(), 1.0))
+            } else {
+                _chart.dimension().samplingRatio(Math.min(_chart.cap()/filterSize, 1.0))
             }
         }
     }
