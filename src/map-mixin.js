@@ -358,15 +358,23 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
 
         _map.dragRotate.disable();
         _map.touchZoomRotate.disableRotation();
-
-        _map.on('load', onLoad);
-        _map.on('style.load', onStyleLoad);
-        _map.on('move', onMapMove);
-        _map.on('moveend', onMapMove);
-
+        _chart.addMapListeners()
         _mapInitted = true;
     }
 
+    _chart.addMapListeners = function () {
+      _map.on('load', onLoad);
+      _map.on('style.load', onStyleLoad);
+      _map.on('move', onMapMove);
+      _map.on('moveend', onMapMove);
+    }
+
+    _chart.removeMapListeners = function () {
+      _map.off('load', onLoad);
+      _map.off('style.load', onStyleLoad);
+      _map.off('move', onMapMove);
+      _map.off('moveend', onMapMove);
+    }
 
     _chart.on('postRender', function() {
       _hasRendered = true
