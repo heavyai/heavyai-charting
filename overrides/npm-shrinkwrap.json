@@ -801,6 +801,11 @@
         }
       }
     },
+    "earcut": {
+      "version": "2.1.1",
+      "from": "earcut@latest",
+      "resolved": "https://registry.npmjs.org/earcut/-/earcut-2.1.1.tgz"
+    },
     "ecc-jsbn": {
       "version": "0.1.1",
       "from": "ecc-jsbn@>=0.1.1 <0.2.0",
@@ -2710,6 +2715,11 @@
       "version": "1.2.1",
       "from": "spdx-license-ids@>=1.0.2 <2.0.0",
       "resolved": "https://registry.npmjs.org/spdx-license-ids/-/spdx-license-ids-1.2.1.tgz"
+    },
+    "sprintf": {
+      "version": "0.1.5",
+      "from": "sprintf@latest",
+      "resolved": "https://registry.npmjs.org/sprintf/-/sprintf-0.1.5.tgz"
     },
     "sprintf-js": {
       "version": "1.0.3",

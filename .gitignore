@@ -41,6 +41,7 @@ web/docs/public
 
 # example libs
 example/js
+example/css/mapbox-gl-draw.css
 example/css/mapdc.min.css
 example/css/chart.min.css
 

@@ -3,7 +3,7 @@
  * ***************************************************************************/
 
 dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
-    var _mapboxgl = typeof mapboxgl === 'undefined' ? _mapboxgl : mapboxgl
+    var _mapboxgl = typeof _mapboxgl === 'undefined' ? mapboxgl : _mapboxgl
     var _map = null;
     var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
     var _lastWidth = null;
@@ -34,6 +34,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     _chart._reProjMapbox = true;
 
     var _arr = [[180, -85], [-180, 85]];
+
     var _llb = _mapboxgl.LngLatBounds.convert(_arr);
 
     _chart.useLonLat = function(useLonLat) {
@@ -343,6 +344,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
 
     function initMap() {
         _mapboxgl.accessToken = _mapboxAccessToken;
+
         _map = new _mapboxgl.Map({
           container: _mapId, // container id
           style: _mapStyle,
@@ -353,6 +355,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
           preserveDrawingBuffer: true,
           attributionControl: true
         });
+
         _map.dragRotate.disable();
         _map.touchZoomRotate.disableRotation();
 

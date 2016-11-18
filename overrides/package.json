@@ -27,7 +27,8 @@
     "mocha": "^2.5.3"
   },
   "dependencies": {
-    "deep-equal": "1.0.1"
+    "deep-equal": "1.0.1",
+    "earcut": "^2.1.1"
   },
   "peerDependencies": {
     "moment": "^2.0.0"

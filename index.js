@@ -1,5 +1,6 @@
 // Import DC and dependencies
-import {customTimeFormat, extractTickFormat,deepEquals} from "./overrides/src/utils"
+import {customTimeFormat, extractTickFormat, deepEquals, convertGeojsonToSql} from "./overrides/src/utils"
+import applyMapDrawMixin from "./overrides/src/map-draw-mixin"
 import binningMixin from "./overrides/src/binning-mixin"
 import createSamplingMixin from "./overrides/src/sampling-mixin"
 import filterMixin from "./overrides/src/filter-mixin"
@@ -22,7 +23,7 @@ var dc = require("./mapdc");
 var asyncCoreMixin = require("./overrides/src/dc-async-mixin").default
 var utilsMixin = require("./overrides/src/dc-utils-mixin").default
 
-dc = resetDCStateMixin(groupAllMixin(utilsMixin(asyncCoreMixin(dc))))
+dc = applyMapDrawMixin(resetDCStateMixin(groupAllMixin(utilsMixin(asyncCoreMixin(dc)))))
 dc.countWidget = require("./overrides/src/count-widget").default
 dc.asyncMixin = require("./overrides/src/async-mixin").default
 dc.labelMixin = require("./overrides/src/label-mixin").default
@@ -90,5 +91,6 @@ dc.legendCont = legendCont
 dc.utils.deepEquals = deepEquals
 dc.utils.customTimeFormat = customTimeFormat
 dc.utils.extractTickFormat = extractTickFormat
+dc.utils.convertGeojsonToSql = convertGeojsonToSql
 
 module.exports = dc
