@@ -113,12 +113,6 @@ dc.rasterMixin = function(_chart) {
         return _chart;
     }
 
-    _chart.showColorByInPopup = function(_) {
-        if (!arguments.length) { return _showColorByInPopup; }
-        _showColorByInPopup = _;
-        return _chart;
-    }
-
     _chart.getClosestResult = function getClosestResult (point, callback) {
         var height = (typeof _chart.effectiveHeight === 'function' ? _chart.effectiveHeight() : _chart.height());
         var pixelRatio = _chart._getPixelRatio() || 1;
@@ -126,7 +120,7 @@ dc.rasterMixin = function(_chart) {
         var tableName = _chart.tableName()
         var columns = getColumnsWithPoints()
         // TODO best to fail, skip cb, or call cb wo args?
-        if (!point || !tableName || !columns.length || columns.length === 3 && !_chart.showColorByInPopup()) { return; }
+        if (!point || !tableName || !columns.length || columns.length === 3 && hideColorColumnInPopup()) { return; }
         return _chart.con().getRowForPixel(pixel, tableName, columns, [function(results){
             return callback(results[0])
         }], _popupSearchRadius * pixelRatio)
@@ -212,14 +206,6 @@ dc.rasterMixin = function(_chart) {
 
     function getColumnsWithPoints () {
         var columns = _chart.popupColumns().slice();
-        if (_chart.colorBy()) {
-            if (columns.indexOf(_chart.colorBy()) === -1) {
-                columns.push(_chart.colorBy())
-                _chart.showColorByInPopup(false)
-            } else {
-                _chart.showColorByInPopup(true)
-            }
-        }
 
         if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
             columns.push("conv_4326_900913_x(" + _chart._xDimName + ") as xPoint");
@@ -229,13 +215,17 @@ dc.rasterMixin = function(_chart) {
             columns.push(_chart._yDimName + ' as yPoint');
         }
 
+        if (_chart.colorBy() && columns.indexOf(_chart.colorBy()) === -1) {
+            columns.push(_chart.colorBy())
+        }
+
         return columns
     }
 
     function renderPopupHTML(data) {
       var html = '';
       for (var key in data) {
-        if(key !== "xPoint" && key !== "yPoint" && (key !== _chart.colorBy() || _chart.showColorByInPopup())){
+        if(key !== "xPoint" && key !== "yPoint" && !(key === _chart.colorBy() && hideColorColumnInPopup())){
           html += '<div class="map-popup-item"><span class="popup-item-key">' + key + ':</span><span class="popup-item-val"> ' + dc.utils.formatValue(data[key]) +'</span></div>'
         }
       }
@@ -255,6 +245,10 @@ dc.rasterMixin = function(_chart) {
         newData[newKey] = data[key]
       }
       return newData
+    }
+
+    function hideColorColumnInPopup () {
+        return _chart.colorBy() && _chart.popupColumns().indexOf(_chart.colorBy()) === -1
     }
 }
 
