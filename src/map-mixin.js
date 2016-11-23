@@ -161,7 +161,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     }
 
     function onMapMove(e) {
-        if ((e.type === 'moveend' && _lastMapMoveType === 'moveend') || !_hasRendered) {
+        if ((e.type === 'moveend' && _lastMapMoveType === 'moveend') || !_hasRendered || e.skipRedraw) {
           return;
         }
         _lastMapMoveType = e.type;
