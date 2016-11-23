@@ -31,7 +31,7 @@ dc.bubbleChart = function (parent, chartGroup) {
     var _popupHeader = [];
     var _isHoverNode = null;
 /* --------------------------------------------------------------------------*/
-    
+
     var _elasticRadius = false;
     var _sortBubbleSize = false;
 
@@ -58,7 +58,7 @@ dc.bubbleChart = function (parent, chartGroup) {
         var letterWidth = 5;
 
         nodes[0].reverse();
-        
+
         nodes
             .classed('hide-label', function(d){
                 return _chart.bubbleR(d) < _chart.minRadiusWithLabel();
@@ -74,7 +74,7 @@ dc.bubbleChart = function (parent, chartGroup) {
                 if (d3.select(a).classed('hide-label')) { return; }
 
                 for(var j = i + 1; j < nodes[0].length; j++) {
-                    
+
                     var b = d3.select(nodes[0][j]);
                     var d = b.datum();
 
@@ -83,7 +83,7 @@ dc.bubbleChart = function (parent, chartGroup) {
                     var bR = d.radius = _chart.bubbleR(d);
                     var bKey = d.key0;
 
-                    if (Math.abs(aY - bY) > labelHeight || bR < _chart.minRadiusWithLabel() || b.classed('hide-label')) { 
+                    if (Math.abs(aY - bY) > labelHeight || bR < _chart.minRadiusWithLabel() || b.classed('hide-label')) {
                         continue;
                     }
 
@@ -128,7 +128,7 @@ dc.bubbleChart = function (parent, chartGroup) {
             .style('width', (_chart.bubbleR(d) * 2)+'px')
             .style('height', (_chart.bubbleR(d) + 24)+'px')
             .style('border-radius', '0 0 '+_chart.bubbleR(d)+'px '+_chart.bubbleR(d)+'px')
-            .on('click', function(){ 
+            .on('click', function(){
                 _chart.onClick(d);
             })
             .append('div')
@@ -140,7 +140,7 @@ dc.bubbleChart = function (parent, chartGroup) {
 
         var popupTable = popupTableWrap.append('table')
             .attr('class', 'popup-table');
-            
+
 
         var popupTableHeader = popupTable.append('tr');
 
@@ -161,7 +161,7 @@ dc.bubbleChart = function (parent, chartGroup) {
                     var elm = d3.select(this);
                     var textWidth = elm.node().getBoundingClientRect().width;
                     var boxWidth = elm.node().parentNode.getBoundingClientRect().width;
-                    
+
                     if (textWidth < boxWidth) {
                         elm.classed('scroll-text', false)
                         return 'none';
@@ -176,7 +176,7 @@ dc.bubbleChart = function (parent, chartGroup) {
                                 elm.classed('scroll-text', false)
                                 .style('transform', 'translateX(0)');
                             }, 500);
-                            
+
 
                             setTimeout(function(){
                                 elm.style('transform', 'translateX('+ -dist +'px)')
@@ -200,8 +200,8 @@ dc.bubbleChart = function (parent, chartGroup) {
 
         nodes.each(function(node, i){
 
-            if (d === node) { 
-                foundCurrentNode = true; 
+            if (d === node) {
+                foundCurrentNode = true;
                 return;
             }
 
@@ -215,13 +215,13 @@ dc.bubbleChart = function (parent, chartGroup) {
             .enter()
             .append('tr')
             .html(function(d) {  return renderPopupRow(d); })
-            .on('click', function(d){ 
+            .on('click', function(d){
                 _chart.onClick(d);
             })
             .attr('class', 'popup-row-item');
 
         _chart.updatePopup();
-        
+
         popup.classed('js-showPopup popup-scrollable delay-pointer scatter-plot-popup', true);
 
         _chart.root().node().parentNode.parentNode.style.zIndex = 1;
@@ -232,7 +232,7 @@ dc.bubbleChart = function (parent, chartGroup) {
     }
 
     _chart.updatePopup = function (){
-        
+
         if (_chart.hasFilter()) {
             _chart.popup().selectAll('.popup-row-item')
             .each(function(d){
@@ -246,24 +246,24 @@ dc.bubbleChart = function (parent, chartGroup) {
                 .classed('deselected', false)
                 .classed('selected', false);
         }
-        
+
     }
 
     function renderPopupRow(d) {
 
         var str = '<td><div class="table-dim"><div class="table-legend" style="background:'+_chart.getColor(d)+'"></div><div class="table-dim-val">'+_chart.label()(d)+'</div></div></td>';
-                
+
         for (var i = 1; i< _popupHeader.length; i++) {
             if (_popupHeader[i].alias) {
                 str += '<td>'+ dc.utils.formatValue(d[_popupHeader[i].alias]) +'</td>';
-            } 
+            }
         }
         return str;
     }
 
     _chart.hidePopup = function() {
         _chart.popup().classed('js-showPopup', false);
-        
+
         _chart.root().node().parentNode.parentNode.style.zIndex = 'auto';
 
         d3.selectAll('.node-hover')
@@ -281,7 +281,7 @@ dc.bubbleChart = function (parent, chartGroup) {
             .style('transform', function(){
                 var popupWidth = d3.select(this).select('.chart-popup-box').node().getBoundingClientRect().width/2;
                 var offsetX = x - popupWidth < 0 ? popupWidth - x - 16 : (x + popupWidth > _chart.width() ? _chart.width() - (x + popupWidth) + 16 : 0);
-                
+
                 d3.select(this).select('.popup-bridge')
                     .style('left', function(){
                         return offsetX !== 0 ? popupWidth - offsetX + 'px' : '50%';
@@ -374,8 +374,19 @@ dc.bubbleChart = function (parent, chartGroup) {
     };
 
     function renderNodes (bubbleG) {
-        
-        var bubbleGEnter = bubbleG.enter().append('g');
+        var bubbleGEnter
+        if (bubbleG.empty()) {
+          bubbleGEnter = bubbleG.enter().append('g')
+          bubbleGEnter
+              .append('circle').attr('class', function (d, i) {
+                    return _chart.BUBBLE_CLASS + ' _' + i;
+                })
+              .on('click', _chart.onClick)
+              .attr('fill', _chart.getColor)
+              .attr('r', 0);
+        } else {
+            bubbleGEnter = bubbleG
+        }
 
         var debouncePopUp = _chart.debounce(function(d, i, elm){
             d3.select(elm).classed('node-hover', true);
@@ -390,16 +401,9 @@ dc.bubbleChart = function (parent, chartGroup) {
                 if (JSON.stringify(_isHoverNode) !== JSON.stringify(d) ) {
                     debouncePopUp(d, i, this);
                     _chart.hidePopup();
-                } 
+                }
             })
 /* --------------------------------------------------------------------------*/
-            .append('circle').attr('class', function (d, i) {
-                return _chart.BUBBLE_CLASS + ' _' + i;
-            })
-            .on('click', _chart.onClick)
-            .attr('fill', _chart.getColor)
-            .attr('r', 0);
-
 
         dc.transition(bubbleG, _chart.transitionDuration())
             .selectAll('circle.' + _chart.BUBBLE_CLASS)
@@ -411,8 +415,6 @@ dc.bubbleChart = function (parent, chartGroup) {
             });
 
         _chart._doRenderLabel(bubbleGEnter);
-
-        //_chart._doRenderTitles(bubbleGEnter);
     }
 
     function updateNodes (bubbleG) {
@@ -434,7 +436,7 @@ dc.bubbleChart = function (parent, chartGroup) {
         _chart.doUpdateLabels(bubbleG);
         _chart.doUpdateTitles(bubbleG);
 
-        
+
     }
 
     function removeNodes (bubbleG) {
