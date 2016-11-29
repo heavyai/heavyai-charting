@@ -1,6 +1,7 @@
 // Import DC and dependencies
 import {customTimeFormat, extractTickFormat, deepEquals, convertGeojsonToSql} from "./overrides/src/utils"
 import applyMapDrawMixin from "./overrides/src/map-draw-mixin"
+import barChartMixin from "./overrides/src/bar-chart-mixin"
 import binningMixin from "./overrides/src/binning-mixin"
 import createSamplingMixin from "./overrides/src/sampling-mixin"
 import filterMixin from "./overrides/src/filter-mixin"
@@ -71,7 +72,7 @@ dc.override(dc, "heatMap", function(parent, chartGroup) {
 })
 
 dc.override(dc, "barChart", function(parent, chartGroup) {
-  return dc._barChart(parent, chartGroup)
+  return barChartMixin(dc._barChart(parent, chartGroup))
     .renderLabel(false)
 })
 

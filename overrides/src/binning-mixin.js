@@ -3,7 +3,7 @@ import dc from "../../mapdc"
 
 const binInputOptions = [
   {val: "auto", label: "auto", numSeconds: null},
-  {val: "century", label: "10y", numSeconds: 3153600000},
+  {val: "century", label: "1c", numSeconds: 3153600000},
   {val: "decade", label: "10y", numSeconds: 315360000},
   {val: "year", label: "1y", numSeconds: 31536000},
   {val: "quarter", label: "1q", numSeconds: 10368000},
