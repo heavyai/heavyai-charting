@@ -141,7 +141,9 @@ export default function multiSeriesMixin (chart) {
             .values(topValues.map(result => result.key0))
             .selected(hasSelected ? currentSelected : chart.series().values().slice(0, TOP))
 
-          chart.group().dimension().set(setDimensionsWithColumns(columns, chart.series().selected()))
+          if (!chart._isRangeChart) {
+            chart.group().dimension().set(setDimensionsWithColumns(columns, chart.series().selected()))
+          }
           chart.group().dimension().multiDim(false)
 
           return chart.group().reduce(chart.group().reduce()).all(

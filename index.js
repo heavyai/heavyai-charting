@@ -7,10 +7,12 @@ import filterMixin from "./overrides/src/filter-mixin"
 import colorMixin from "./overrides/src/color-mixin"
 import groupAllMixin from "./overrides/src/dc-group-all-mixin"
 import heatMapMixin from "./overrides/src/heatmap"
+import {overrideCoordinate} from "./overrides/src/coordinate-grid-mixin"
 import legendCont from "./overrides/src/dc-legend-cont"
 import chartLegendMixin from "./overrides/src/legend-mixin"
 import mapdTable from "./overrides/src/mapd-table"
 import {normalizeFiltersArray} from "./overrides/src/formatting-helpers"
+import rangeMixin from "./overrides/src/range-mixin"
 import resetDCStateMixin from "./overrides/src/reset-dc-state-mixin"
 import legendMixin from "./overrides/src/dc-legend-mixin"
 import coordinateGridMixin from "./overrides/src/coordinate-grid-mixin"
@@ -43,6 +45,8 @@ dc.override(dc, "baseMixin", function(_chart) {
   var baseChart = chartLegendMixin(filterMixin(dc.labelMixin(dc.multipleKeysLabelMixin(dc.asyncMixin(dc._baseMixin(_chart))))))
   baseChart.keyAccessor(multipleKeysAccessorForCap)
   baseChart.ordering = () => {}
+  baseChart.rangeChartEnabled = () => false
+  baseChart.isTime = () => null
   return baseChart
 })
 
@@ -53,7 +57,9 @@ dc.override(dc, "stackMixin", function(_chart) {
 })
 
 dc.override(dc, "coordinateGridMixin", function(_chart) {
-  return coordinateGridMixin(binningMixin(dc._coordinateGridMixin(_chart)))
+  var coordinateGridChart = rangeMixin(binningMixin(dc._coordinateGridMixin(_chart)))
+  coordinateGridChart = overrideCoordinate(_chart)
+  return coordinateGridChart
 })
 
 dc.override(dc, "colorMixin", function(_chart) {

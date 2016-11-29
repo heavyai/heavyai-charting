@@ -86,19 +86,12 @@ export default function binningMixin (chart) {
       return
     }
 
-    if (extent0[0] <= chart.xAxisMin() && extent0[1] <= chart.xAxisMin() || extent0[0] >= chart.xAxisMax() && extent0[1] >= chart.xAxisMax()) {
-      dc.events.trigger(() => {
-        chart.replaceFilter(null)
-        chart.redrawGroup()
-      }, dc.constants.EVENT_DELAY)
-      return
-    }
-
     const timeInterval = chart.group().binParams()[0].timeBin
 
     const extent1 = extent0.map(date => roundTimeBin(date, timeInterval, "round"))
 
-      // if empty when rounded, use floor & ceil instead
+    /* istanbul ignore next */
+    // if empty when rounded, use floor & ceil instead
     if (extent1[0] >= extent1[1]) {
       extent1[0] = roundTimeBin(extent0[0], timeInterval, "floor")
       extent1[1] = roundTimeBin(extent0[1], timeInterval, "ceil")
@@ -107,12 +100,14 @@ export default function binningMixin (chart) {
     extent1[0] = extent1[0] < chart.xAxisMin() ? chart.xAxisMin() : extent1[0]
     extent1[1] = extent1[1] > chart.xAxisMax() ? chart.xAxisMax() : extent1[1]
 
+    /* istanbul ignore next */
     if (extent1[0].getTime() === chart.xAxisMax().getTime()) {
       const binNumSecs = chart.binInputOptions().filter(d => chart.group().binParams()[0].timeBin === d.val)[0].numSeconds
       extent1[0] = new Date(extent1[0].getTime() - (binNumSecs * 1000))
       extent1[0] = roundTimeBin(extent1[0], timeInterval, "round")
     }
 
+    /* istanbul ignore next */
     if (extent1[1].getTime() === chart.xAxisMin().getTime()) {
       const binNumSecs = chart.binInputOptions().filter(d => chart.group().binParams()[0].timeBin === d.val)[0].numSeconds
       extent1[1] = new Date(extent1[1].getTime() + (binNumSecs * 1000))
@@ -130,16 +125,19 @@ export default function binningMixin (chart) {
 
   chart.changeBinVal = (val) => {
     chart.timeBinInputVal(val)
-    const currentStack = chart.stack().slice()
 
+    const currentStack = chart.stack().slice()
+    /* istanbul ignore next */
     for (let i = 0; i < currentStack.length; i++) {
       const binParams = currentStack[i].group.binParams().map((binParam, idx) => {
         if (idx === i && binParam) {
-          binParam.timeBin = chart.timeBinInputVal()
+          binParam.auto = val === "auto"
+          binParam.timeBin = val
         }
         return binParam
       })
 
+      /* istanbul ignore next */
       if (i === 0) {
         chart.group(currentStack[i].group.binParams(binParams), currentStack[i].name)
       } else {
@@ -148,8 +146,9 @@ export default function binningMixin (chart) {
     }
 
     chart._invokeBinListener(val)
-    chart.renderAsync()
-    chart.binBrush()
+    return chart.renderAsync().then(() => {
+      chart.binBrush()
+    })
   }
 
   return chart

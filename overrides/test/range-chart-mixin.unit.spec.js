@@ -1,0 +1,90 @@
+import chai, {expect} from "chai"
+import spies from "chai-spies"
+import dc from "../../index.js"
+import rangeMixin, {DEFAULT_CHART_MARGINS, MAX_RANGE_HEIGHT_IN_PX,calcChartHeightWithMaxRangeChartHeight, calcMaxRangeChartHeight} from "../src/range-mixin"
+
+chai.use(spies)
+
+describe("Range Chart", () => {
+  let chart
+  let baseNode
+  let node
+  beforeEach(() => {
+    baseNode = window.document.createElement("DIV")
+    node = window.document.createElement("DIV")
+    baseNode.appendChild(node)
+    const base = dc.baseMixin(dc.marginMixin({}))
+    base.plotData = chai.spy()
+    base.width = chai.spy()
+    base.height = chai.spy()
+    base.xAxisLabel = chai.spy()
+    base.renderHorizontalGridLines = chai.spy()
+
+    chart = rangeMixin(base)
+    chart.xAxisMin = chai.spy()
+    chart.xAxisMax = chai.spy()
+    chart.colorAccessor = chai.spy()
+    chart.colors = chai.spy()
+    chart.isMulti = chai.spy()
+    chart.rangeChartDiv = window.document.createElement("DIV")
+    chart.rangeChart = () => chart
+    chart.anchor = () => node
+    chart.series = () => ({
+      selected: chai.spy()
+    })
+    chart.group = () => ({
+      binParams: () => [null],
+      reduceMulti: () => chart.group()
+    })
+    chart.dimension = () => ({
+      group: chart.group,
+      value: () => []
+    })
+  })
+
+  describe('Create Range Chart', () => {
+    it('rangeChart should not exist', () => {
+      chart.plotData()
+      expect(chart.rangeChartEnabled()).to.equal(false)
+      expect(node.childElementCount).to.equal(0)
+    })
+
+    it('rangeChart should be created and appended to DOM', () => {
+      expect(node.childElementCount).to.equal(0)
+      chart.rangeChartEnabled(true)
+      chart.plotData()
+      expect(node.childElementCount).to.equal(1)
+    })    
+
+    it('set up rangeChart with default margins', () => {
+      chart.rangeChartEnabled(true)
+      chart.plotData()
+      expect(chart.margins()).to.deep.equal(DEFAULT_CHART_MARGINS)
+    })
+  })
+
+  describe('Destroy Range Chart', () => {
+    it('rangeChart should be removed', () => {
+      chart.rangeChartEnabled(true)
+      chart.plotData()
+      expect(chart._rangeChartCreated).to.equal(true)
+      chart._tempRangeChart.destroyRangeChart(chart)
+      expect(chart._rangeChartCreated).to.equal(false)
+    })
+  })
+
+  describe('Calcuating correct chart heights', () => {
+    var smallChart = 500
+    var tallChart = 1200
+    it ('should calculate chart heights', () => {
+      expect(calcChartHeightWithMaxRangeChartHeight(smallChart)).to.equal(362.5)
+      expect(calcChartHeightWithMaxRangeChartHeight(tallChart)).to.equal(tallChart - MAX_RANGE_HEIGHT_IN_PX)
+
+    })
+    it ('should calculate range chart heights', () => {
+      expect(calcMaxRangeChartHeight(smallChart)).to.equal(137.5)
+      expect(calcMaxRangeChartHeight(tallChart)).to.equal(MAX_RANGE_HEIGHT_IN_PX)
+
+    })
+  })
+})

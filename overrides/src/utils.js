@@ -26,9 +26,12 @@ export const MONTHS = [
   "Dec"
 ]
 
+
 export const QUARTERS = ["Q1", "Q2", "Q3", "Q4"]
 
 export const deepEquals = require("deep-equal") // eslint-disable-line global-require
+
+export const deepClone = obj => JSON.parse(JSON.stringify(obj))
 
 /* istanbul ignore next */
 export const customTimeFormat = d3.time.format.utc.multi([

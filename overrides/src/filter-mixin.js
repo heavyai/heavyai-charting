@@ -32,9 +32,9 @@ export function filterHandlerWithChartContext (_chart) {
     if (filters.length === 0) {
       dimension.filterAll(_chart.softFilterClear())
     } else if (_chart.hasOwnProperty("rangeFocused")) {
-      dimension.filterMulti(filters, _chart.rangeFocused(), _chart.filtersInverse())
+      dimension.filterMulti(filters, _chart.rangeFocused(), _chart.filtersInverse(), _chart.group().binParams())
     } else {
-      dimension.filterMulti(filters, undefined, _chart.filtersInverse()) // eslint-disable-line no-undefined
+      dimension.filterMulti(filters, undefined, _chart.filtersInverse(), _chart.group().binParams()) // eslint-disable-line no-undefined
     }
     return filters
   }

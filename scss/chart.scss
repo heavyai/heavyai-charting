@@ -88,18 +88,12 @@ body {
     position: relative;
     font-family: "Roboto", Sans-Serif;
 
-    &:hover {
+    .svg-wrapper:hover {
         .brush {
             .resize {
                 path {
                     opacity: .5;
                 }
-            }
-        }
-
-        .range-display {
-            input {
-                border: 1px solid $gray3;
             }
         }
     }
@@ -203,6 +197,10 @@ body {
             display: none;
         }
 
+        &.underline {
+            border-bottom: $blue-main 1px solid;
+        }
+
         &.active {
             color: $blue-main;
             font-weight: bold;
@@ -226,6 +224,10 @@ body {
             display: inline-block;
             border: 1px solid transparent;
             text-align: center;
+
+            &.active {
+                border: 1px solid $gray3;
+            }
 
             &.range-day {
                 width: 70px;
@@ -1690,4 +1692,3 @@ body {
       background-position: 0 0 ;
       background-size: 65px 20px;
     }
-
