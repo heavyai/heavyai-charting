@@ -728,6 +728,54 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
             }
         }
 
+        function boxZoomPerFrameFunc(e, t, startminx, diffminx, startmaxx, diffmaxx, startminy, diffminy, startmaxy, diffmaxy) {
+            var xrange = [
+                startminx + t*diffminx,
+                startmaxx + t*diffmaxx
+            ];
+
+            var yrange = [
+                startminy + t*diffminy,
+                startmaxy + t*diffmaxy
+            ];
+
+
+            var xDiff = (xrange[1] - xrange[0]);
+            var yDiff = (yrange[1] - yrange[0]);
+
+            var xBoundsDiff = _currDataBounds[0][1] - _currDataBounds[0][0];
+            var yBoundsDiff = _currDataBounds[1][1] - _currDataBounds[1][0];
+            var xBoundsScale = xDiff / xBoundsDiff;
+            var yBoundsScale = yDiff / yBoundsDiff;
+
+            _scale = [xBoundsScale, yBoundsScale];
+            _offset = [(xrange[0] - _currDataBounds[0][0]) / xBoundsDiff, (yrange[0] - _currDataBounds[1][0]) / yBoundsDiff];
+
+            filterChartDimensions(_chart, xrange, yrange);
+
+            _chart._updateXAndYScales(_chart.getDataRenderBounds());
+            doChartRedraw();
+
+            fireEvent(map, 'move', e);
+        }
+
+        function boxZoomFinishFunc(e, map, xmin, xmax, ymin, ymax) {
+            fireEvent(map, 'zoomend', e);
+            fireEvent(map, 'moveend', e);
+
+            filterChartDimensions(_chart, [xmin, xmax], [ymin, ymax]);
+
+            // upon box zoom, elasticity is turned off
+            _chart.elasticX(false);
+            _chart.elasticY(false);
+
+            var bounds = [[xmin, ymax], [xmax, ymax], [xmax, ymin], [xmin, ymin]];
+
+            dc.redrawAllAsync();
+
+            boxZoomActive = false;
+            fireEvent(map, 'boxzoomend', e, {boxZoomBounds: bounds});
+        }
 
         function onBoxZoomMouseUp(e) {
             if (e.button !== 0) return;
@@ -744,16 +792,6 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
             if (p0.x === p1.x && p0.y === p1.y) {
                 fireEvent(map, 'boxzoomcancel', e);
             } else {
-                var xRange = _chart.xRange(), yRange = _chart.yRange();
-
-                if (xRange === null) {
-                    xRange = [0,0];
-                }
-
-                if (yRange === null) {
-                    yRange = [0,0];
-                }
-
                 var startPos = _chart.unproject(p0);
                 var endPos = _chart.unproject(p1);
 
@@ -769,83 +807,30 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
                 ymin = bounds[0][1];
                 ymax = bounds[1][1];
 
-                var center = new _mapboxgl.Point(xmin + 0.5*(xmax - xmin),
-                                                 ymin + 0.5*(ymax - ymin));
-
-
                 fireEvent(map, 'movestart', e);
                 fireEvent(map, 'zoomstart', e);
 
                 var startminx = _currDataBounds[0][0];
                 var startmaxx = _currDataBounds[0][1];
                 var endminx = xmin;
-                var endmaxx = xmax
+                var endmaxx = xmax;
 
                 var startminy = _currDataBounds[1][0];
                 var startmaxy = _currDataBounds[1][1];
                 var endminy = ymin;
-                var endmaxy = ymax
+                var endmaxy = ymax;
 
                 var diffminx = endminx - startminx;
                 var diffmaxx = endmaxx - startmaxx;
                 var diffminy = endminy - startminy;
                 var diffmaxy = endmaxy - startmaxy;
 
-                function boxZoomPerFrameFunc(t) {
-                    var xrange = [
-                        startminx + t*diffminx,
-                        startmaxx + t*diffmaxx
-                    ];
-
-                    var yrange = [
-                        startminy + t*diffminy,
-                        startmaxy + t*diffmaxy
-                    ];
-
-
-                    var xDiff = (xrange[1] - xrange[0]);
-                    var yDiff = (yrange[1] - yrange[0]);
-
-                    var xBoundsDiff = _currDataBounds[0][1] - _currDataBounds[0][0];
-                    var yBoundsDiff = _currDataBounds[1][1] - _currDataBounds[1][0];
-                    var xBoundsScale = xDiff / xBoundsDiff;
-                    var yBoundsScale = yDiff / yBoundsDiff;
-
-                    _scale = [xBoundsScale, yBoundsScale];
-                    _offset = [(xrange[0] - _currDataBounds[0][0]) / xBoundsDiff, (yrange[0] - _currDataBounds[1][0]) / yBoundsDiff];
-
-                    filterChartDimensions(_chart, xrange, yrange);
-
-                    _chart._updateXAndYScales(_chart.getDataRenderBounds());
-                    doChartRedraw();
-
-                    fireEvent(map, 'move', e);
-                }
-
-                function boxZoomFinishFunc() {
-                    fireEvent(map, 'zoomend', e);
-                    fireEvent(map, 'moveend', e);
-
-                    filterChartDimensions(_chart, [xmin, xmax], [ymin, ymax]);
-
-                    // upon box zoom, elasticity is turned off
-                    _chart.elasticX(false);
-                    _chart.elasticY(false);
-
-                    var bounds = [[xmin, ymax], [xmax, ymax], [xmax, ymin], [xmin, ymin]];
-
-                    dc.redrawAllAsync();
-
-                    boxZoomActive = false;
-                    fireEvent(map, 'boxzoomend', e, {boxZoomBounds: bounds});
-                }
-
                 var duration = 500;
                 boxZoomActive = true;
                 var abortFunc = _mapboxgl.util.browser.timed(function(t) {
-                    boxZoomPerFrameFunc(ease(t));
-                    if (t == 1) {
-                        boxZoomFinishFunc();
+                    boxZoomPerFrameFunc(e, ease(t), startminx, diffminx, startmaxx, diffmaxx, startminy, diffminy, startmaxy, diffmaxy);
+                    if (t === 1) {
+                        boxZoomFinishFunc(e, map, xmin, xmax, ymin, ymax);
                     }
                 }, duration);
             }
