@@ -1,6 +1,8 @@
 export default function createSamplingMixin (dc) {
   return function samplingMixin (_chart) {
     let _sampling = false
+
+    /* istanbul ignore next */
     _chart.sampling = function (setting) { // setting should be true or false
       if (!arguments.length) {
         return _sampling
