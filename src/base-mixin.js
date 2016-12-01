@@ -1658,7 +1658,6 @@ dc.baseMixin = function (_chart) {
         return _chart;
     };
 
-
     /**
      * Attach a dc.legend widget to this chart. The legend widget will automatically draw legend labels
      * based on the color setting and names associated with each group.

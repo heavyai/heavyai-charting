@@ -60,8 +60,8 @@ export default function legendCont () {
 
   _legend.removeLegend = function () {
     _parent.root().select(".legend-cont").remove()
+    _parent._invokeClearCustomContLegendListener()
     _parent.legend(null)
-    _parent.anchor().dispatchEvent(new CustomEvent("clearCustomContLegend"))
   }
 
   _legend.render = function () {
@@ -163,11 +163,11 @@ export default function legendCont () {
     _isLocked = !_isLocked
 
     if (_isLocked) {
-      _parent.anchor().dispatchEvent(new CustomEvent("setCustomContLegend", {detail: _parent.colors().domain()}))
+      _parent._invokeSetCustomContLegendListener({detail: _parent.colors().domain()})
     } else {
       const minMax = _chartType === "pointmap" ? _minMax : d3.extent(_parent.data(), _parent.colorAccessor())
       _parent.colorDomain(minMax)
-      _parent.anchor().dispatchEvent(new CustomEvent("clearCustomContLegend"))
+      _parent._invokeClearCustomContLegendListener()
     }
     _parent.redrawAsync()
   }
@@ -188,7 +188,7 @@ export default function legendCont () {
       _parent.colorDomain([startVal, endVal])
                 .on("preRedraw.color", null)
                 .redrawAsync()
-      _parent.anchor().dispatchEvent(new CustomEvent("setCustomContLegend", {detail: [startVal, endVal]}))
+      _parent._invokeSetCustomContLegendListener({detail: [startVal, endVal]})
     } else {
       d3.select(this).property("value", currVal)
     }
