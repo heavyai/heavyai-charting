@@ -233,9 +233,14 @@ dc.rasterMixin = function(_chart) {
     }
 
     function colorPopupBackground (data) {
-        if (!_chart.colors().domain) { return _chart.defaultColor(); }
-        var matchIndex = _chart.colors().domain().indexOf(data[_chart.colorBy()])
-        return matchIndex !== -1 ? _chart.colors().range()[matchIndex] : _chart.defaultColor();
+        if (!_chart.colors().domain || !_chart.colorBy()) { 
+            return _chart.defaultColor(); 
+        } else if (isNaN(_chart.colors().domain()[0])) {
+            var matchIndex = _chart.colors().domain().indexOf(data[_chart.colorBy()])
+            return matchIndex !== -1 ? _chart.colors().range()[matchIndex] : _chart.defaultColor();
+        } else {
+            return _chart.colors()(data[_chart.colorBy()])
+        }
     }
 
     function mapDataViaColumns (data, _popupColumnsMapped) {
