@@ -109,12 +109,15 @@
                           .mapStyle('json/dark-v8.json')
                           .popupSearchRadius(2)
                           .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
-    /*--------------------------LASSO TOOL DRAW CONTROL------------------------------*/
-    /* Here enable the lasso tool draw control and pass in a coordinate filter */
-                          .addDrawControl()
-                          .coordFilter(crossFilter.filter())
 
-    dc.renderAllAsync()
+    pointMapChart.init().then((chart) => {
+      /*--------------------------LASSO TOOL DRAW CONTROL------------------------------*/
+      /* Here enable the lasso tool draw control and pass in a coordinate filter */
+      pointMapChart
+        .addDrawControl()
+        .coordFilter(crossFilter.filter())
+      dc.renderAllAsync()
+    })
 
     /*--------------------------RESIZE EVENT------------------------------*/
     /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */

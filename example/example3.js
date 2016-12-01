@@ -71,16 +71,19 @@ document.addEventListener("DOMContentLoaded", function init() {
       .polyJoin({table: config.polyTable, keysColumn: config.polyJoinColumn})
       .colors(d3.scale.linear().domain(colorDomain).range(colorRange))
       .borderColor("white")
-      polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
 
-      // Keeps the border widths reasonable regardless of zoom level.
-      polyMap.map().on("zoom", function() {
+
+      polyMap.init().then(() => {
         polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
+        // Keeps the border widths reasonable regardless of zoom level.
+        polyMap.map().on("zoom", function() {
+          polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
+        })
+
+        dc.renderAllAsync()
+
+        window.addEventListener("resize", _.debounce(function(){ resizeChart(polyMap, 1.5) }, 500))
       })
-
-      dc.renderAllAsync()
-
-      window.addEventListener("resize", _.debounce(function(){ resizeChart(polyMap, 1.5) }, 500))
     })
   }
 

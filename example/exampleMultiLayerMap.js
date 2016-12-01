@@ -255,76 +255,79 @@ document.addEventListener("DOMContentLoaded", function init() {
                           // This radius helps to properly resolve hit-testing at boundaries
                           .popupSearchRadius(2)
 
-    // now render the pointmap
-    dc.renderAllAsync()
+    pointMapChart.init().then(() => {
+      // now render the pointmap
+      dc.renderAllAsync()
 
 
-    /*---------------SETUP HIT-TESTING-------------*/
-    // hover effect with popup
-    // Use a flag to determine if the map is in motion
-    // or not (pan/zoom/etc)
-    var mapmove = false;
+      /*---------------SETUP HIT-TESTING-------------*/
+      // hover effect with popup
+      // Use a flag to determine if the map is in motion
+      // or not (pan/zoom/etc)
+      var mapmove = false;
 
-    // debounce the popup - we only want to show the popup when the
-    // cursor is idle for a portion of a second.
-    var debouncedPopup = _.debounce(displayPopupWithData, 250)
-    pointMapChart.map().on('movestart', function() {
-      // map has started moving in some way, so cancel
-      // any debouncing, and hide any current popups.
-      mapmove = true;
-      debouncedPopup.cancel();
-      pointMapChart.hidePopup();
-    });
+      // debounce the popup - we only want to show the popup when the
+      // cursor is idle for a portion of a second.
+      var debouncedPopup = _.debounce(displayPopupWithData, 250)
+      pointMapChart.map().on('movestart', function() {
+        // map has started moving in some way, so cancel
+        // any debouncing, and hide any current popups.
+        mapmove = true;
+        debouncedPopup.cancel();
+        pointMapChart.hidePopup();
+      });
 
-    pointMapChart.map().on('moveend', function(event) {
-      // map has stopped moving, so start a debounce event.
-      // If the cursor is idle, a popup will show if the
-      // cursor is over a layer element.
-      mapmove = false;
-      debouncedPopup(event);
-      pointMapChart.hidePopup();
-    });
-
-    pointMapChart.map().on('mousemove', function(event) {
-      // mouse has started moving, so hide any existing
-      // popups. 'true' in the following call says to
-      // animate the hiding of the popup
-      pointMapChart.hidePopup(true);
-
-      // start a debound popup event if the map isn't
-      // in motion
-      if (!mapmove) {
+      pointMapChart.map().on('moveend', function(event) {
+        // map has stopped moving, so start a debounce event.
+        // If the cursor is idle, a popup will show if the
+        // cursor is over a layer element.
+        mapmove = false;
         debouncedPopup(event);
+        pointMapChart.hidePopup();
+      });
+
+      pointMapChart.map().on('mousemove', function(event) {
+        // mouse has started moving, so hide any existing
+        // popups. 'true' in the following call says to
+        // animate the hiding of the popup
+        pointMapChart.hidePopup(true);
+
+        // start a debound popup event if the map isn't
+        // in motion
+        if (!mapmove) {
+          debouncedPopup(event);
+        }
+      })
+
+      // callback function for when the mouse has been idle for a moment.
+      function displayPopupWithData (event) {
+        if (event.point) {
+          // check the pointmap for hit-testing. If a layer's element is found under
+          // the cursor, then display a popup of the resulting columns
+          pointMapChart.getClosestResult(event.point, function(closestPointResult) {
+            // 'true' indicates to animate the popup when starting to display
+            pointMapChart.displayPopup(closestPointResult, true)
+          });
+        }
+      }
+
+      /*--------------------------RESIZE EVENT------------------------------*/
+      /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+
+      window.addEventListener("resize", _.debounce(reSizeAll, 500));
+
+      function reSizeAll() {
+        var w = document.documentElement.clientWidth - 30;
+        var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+
+        pointMapChart
+          .width(w)
+          .height(h/1.5);
+
+        dc.renderAll();
       }
     })
 
-    // callback function for when the mouse has been idle for a moment.
-    function displayPopupWithData (event) {
-      if (event.point) {
-        // check the pointmap for hit-testing. If a layer's element is found under
-        // the cursor, then display a popup of the resulting columns
-        pointMapChart.getClosestResult(event.point, function(closestPointResult) {
-          // 'true' indicates to animate the popup when starting to display
-          pointMapChart.displayPopup(closestPointResult, true)
-        });
-      }
-    }
-
-    /*--------------------------RESIZE EVENT------------------------------*/
-    /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
-
-    window.addEventListener("resize", _.debounce(reSizeAll, 500));
-
-    function reSizeAll() {
-      var w = document.documentElement.clientWidth - 30;
-      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
-
-      pointMapChart
-        .width(w)
-        .height(h/1.5);
-
-      dc.renderAll();
-    }
 
   }
 

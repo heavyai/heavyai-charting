@@ -143,37 +143,6 @@
     .popupSearchRadius(2)
     .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
 
-    // custom click handler with just event data (no network calls)
-    pointMapChart.map().on('mouseup', logClick)
-    function logClick (result) {
-      console.log("clicked!", result)
-    }
-    // disable with pointMapChart.map().off('mouseup', logClick)
-
-    // custom click handler with event and nearest row data
-    pointMapChart.map().on('mouseup', logClickWithData)
-    function logClickWithData (event) {
-      pointMapChart.getClosestResult(event.point, function(result){
-        console.log(result && result.row_set[0])
-      })
-    }
-
-    // hover effect with popup
-    var debouncedPopup = _.debounce(displayPopupWithData, 250)
-    pointMapChart.map().on('mousewheel', pointMapChart.hidePopup);
-    pointMapChart.map().on('mousemove', pointMapChart.hidePopup)
-    pointMapChart.map().on('mousemove', debouncedPopup)
-    function displayPopupWithData (event) {
-      pointMapChart.getClosestResult(event.point, pointMapChart.displayPopup)
-    }
-
-    initGeocoder(pointMapChart);
-
-    /* Find additional mapbox styles here:
-     *
-     * https://github.com/mapbox/mapbox-gl-styles/tree/master/styles
-     */
-
     function mapLangColors(n) {
       langDomain = langDomain.slice(0, n);
       for (var i = 0; i < langDomain.length; i++) {
@@ -181,235 +150,268 @@
       }
     }
 
-    /*
-     * Callback used for JSONP request for Google's Geocoder
-     */
-    function mapApiLoaded() {
-      globalGeocoder = new google.maps.Geocoder();
-      geocoderObject.geocoder = globalGeocoder;
-    }
+    pointMapChart.init().then((chart) => {
+      // custom click handler with just event data (no network calls)
+      pointMapChart.map().on('mouseup', logClick)
+      function logClick (result) {
+        console.log("clicked!", result)
+      }
+      // disable with pointMapChart.map().off('mouseup', logClick)
 
-    /*
-     * Style and position your geocoder textbox here using standard jQuery
-     * Also, set any event listeners you'd like.
-     */
-    function initGeocoder (chart) {
-      this.geocoder = new Geocoder(chart);
-      this.geocoder.init(chart.map());
-      this.geocoderInput = $('<input class="geocoder-input" type="text" placeholder="Zoom to"></input>').appendTo($("#chart1-example"));
-      this.geocoderInput.css({ top: '5px', right: '5px', float: 'right', position: 'absolute'});
-
-      // set a key-up event handler for the enter key
-      this.geocoderInput.keyup(function(e) {
-        if(e.keyCode == 13) { this.geocoder.geocode(this.geocoderInput.val()); }
-      }.bind(this));
-    }
-
-    /*
-     * The Geocoder wrapper for Google Maps' geocoder.
-     * Has an ultra-small API that simply allows for geocoding a placeName.
-     */
-    function Geocoder(chart) {
-      this.geocoder = null;
-
-      this.geocode = function(placeName) {
-        this.geocoder.geocode({ 'address': placeName }, this._onResult);
+      // custom click handler with event and nearest row data
+      pointMapChart.map().on('mouseup', logClickWithData)
+      function logClickWithData (event) {
+        pointMapChart.getClosestResult(event.point, function(result){
+          console.log(result && result.row_set[0])
+        })
       }
 
-      this._onResult = function(data, status) {
-        if (status != google.maps.GeocoderStatus.OK) {
-          //throw "Geocoder error";
-          return null;
-        }
-        var viewport = data[0].geometry.viewport;
-        var sw = viewport.getSouthWest();
-        var ne = viewport.getNorthEast();
-
-        chart.map().fitBounds([ // api specifies lng/lat pairs
-          [sw.lng(), sw.lat()],
-          [ne.lng(), ne.lat()]
-        ], { animate: false }); // set animate to true if you want to pan-and-zoom to the location
-
+      // hover effect with popup
+      var debouncedPopup = _.debounce(displayPopupWithData, 250)
+      pointMapChart.map().on('mousewheel', pointMapChart.hidePopup);
+      pointMapChart.map().on('mousemove', pointMapChart.hidePopup)
+      pointMapChart.map().on('mousemove', debouncedPopup)
+      function displayPopupWithData (event) {
+        pointMapChart.getClosestResult(event.point, pointMapChart.displayPopup)
       }
 
-      this.init = function() {
-        if (globalGeocoder == null) { // have to give global callback for when the loaded google js is executed
-          geocoderObject = this;
-          $.getScript("https://maps.google.com/maps/api/js?sensor=false&async=2&callback=mapApiLoaded", function() {});
-        }
-        else {
-          this.geocoder = globalGeocoder;
-        }
-      }
-    };
+      initGeocoder(pointMapChart);
 
-
-  /*---------------------TIME CHART EXAMPLE----------------------------------*/
-
-  /*
-   *  First we want to determine the extent (min,max) of the time variable so we
-   *  can set the bounds on the time chart appropriately.
-   *
-   *  If you know the bounds a priori you can do this manually but here we will
-   *  do it dymaically via a query sent to the backend through the crossfilter
-   *  api.
-   *
-   *  We create a reduceMulti expression that will get the min and max of the
-   *  variable dep_timestamp.
-   *
-   */
-
-      var timeChartMeasures = [
-      {
-        expression: "tweet_time",
-        agg_mode:"min",
-        name: "minimum"
-      },
-      {
-        expression: "tweet_time",
-        agg_mode:"max",
-        name: "maximum"}
-      ]
-
-      /* Note than when we are doing aggregations over the entire dataset we use
-       * the crossfilter object itself as the dimension with the groupAll method
+      /* Find additional mapbox styles here:
        *
-       * values(true) gets the values for our groupAll measure (here min and max
-       * of dep_timestamp) - true means to ignore currently set filters - i.e.
-       * get a global min and max
+       * https://github.com/mapbox/mapbox-gl-styles/tree/master/styles
        */
 
-      crossFilter
-        .groupAll()
-        .reduce(timeChartMeasures)
-        .valuesAsync(true).then(function(timeChartBounds) {
+       /*
+        * Callback used for JSONP request for Google's Geocoder
+        */
+       function mapApiLoaded() {
+         globalGeocoder = new google.maps.Geocoder();
+         geocoderObject.geocoder = globalGeocoder;
+       }
 
-          var timeChartDimension = crossFilter.dimension("tweet_time");
+       /*
+        * Style and position your geocoder textbox here using standard jQuery
+        * Also, set any event listeners you'd like.
+        */
+       function initGeocoder (chart) {
+         this.geocoder = new Geocoder(chart);
+         this.geocoder.init(chart.map());
+         this.geocoderInput = $('<input class="geocoder-input" type="text" placeholder="Zoom to"></input>').appendTo($("#chart1-example"));
+         this.geocoderInput.css({ top: '5px', right: '5px', float: 'right', position: 'absolute'});
 
-          /* We would like to bin or histogram the time values.  We do this by
-           * invoking setBinParams on the group.  Here we are asking for 400 equal
-           * sized bins from the min to the max of the time range
-           */
+         // set a key-up event handler for the enter key
+         this.geocoderInput.keyup(function(e) {
+           if(e.keyCode == 13) { this.geocoder.geocode(this.geocoderInput.val()); }
+         }.bind(this));
+       }
 
-          var timeChartGroup = timeChartDimension
-            .group()
-            .reduceCount('*')
-            .setBinParams({
-               numBins: 288, // 288 * 5 = number of minutes in a day
-               binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
-              });
+       /*
+        * The Geocoder wrapper for Google Maps' geocoder.
+        * Has an ultra-small API that simply allows for geocoding a placeName.
+        */
+       function Geocoder(chart) {
+         this.geocoder = null;
 
-        /*  We create the time chart as a line chart
-         *  with the following parameters:
-         *
-         *  Width and height - as above
-         *
-         *  elasticY(true) - cause the y-axis to scale as filters are changed
-         *
-         *  renderHorizontalGridLines(true) - add grid lines to the chart
-         *
-         *  brushOn(true) - Request a filter brush to be added to the chart - this
-         *  will allow users to drag a filter window along the time chart and filter
-         *  the rest of the data accordingly
-         *
-         */
+         this.geocode = function(placeName) {
+           this.geocoder.geocode({ 'address': placeName }, this._onResult);
+         }
 
-          var dcTimeChart = dc.lineChart('.chart2-example')
-            .width(w)
-            .height(h/2.5)
-            .elasticY(true)
-            .renderHorizontalGridLines(true)
-            .brushOn(true)
-            .xAxisLabel('Time of Day')
-            .yAxisLabel('Number of Tweets')
-            .dimension(timeChartDimension)
-            .group(timeChartGroup);
+         this._onResult = function(data, status) {
+           if (status != google.maps.GeocoderStatus.OK) {
+             //throw "Geocoder error";
+             return null;
+           }
+           var viewport = data[0].geometry.viewport;
+           var sw = viewport.getSouthWest();
+           var ne = viewport.getNorthEast();
 
-          /* Set the x and y axis formatting with standard d3 functions */
+           chart.map().fitBounds([ // api specifies lng/lat pairs
+             [sw.lng(), sw.lat()],
+             [ne.lng(), ne.lat()]
+           ], { animate: false }); // set animate to true if you want to pan-and-zoom to the location
 
-          dcTimeChart
-            .x(d3.time.scale.utc().domain([timeChartBounds.minimum, timeChartBounds.maximum]))
-            .yAxis().ticks(5);
+         }
 
-          dcTimeChart
-            .xAxis().orient('top');
+         this.init = function() {
+           if (globalGeocoder == null) { // have to give global callback for when the loaded google js is executed
+             geocoderObject = this;
+             $.getScript("https://maps.google.com/maps/api/js?sensor=false&async=2&callback=mapApiLoaded", function() {});
+           }
+           else {
+             this.geocoder = globalGeocoder;
+           }
+         }
+       };
 
 
-      /*---------------------SET UP FILTER ----------------------------------*/
+     /*---------------------TIME CHART EXAMPLE----------------------------------*/
 
-          /*  We create the filter
-           *  with the following parameters:
-           *
-           *  Dimension: What column you would like to search.
-           *
-           *  OPTIONAL: setDrillDownFilter: Boolean
-           *  if set to true, your search will "AND" for all values, instead of
-           *  the default "OR" for all values.
-           *
-           *  eg. If searching "Keyboard Cat":
-           *  This will only only return results where the tweet contains:
-           *  "Keyboard" AND "Cat"
-           *
-           */
-          var searchFilterTweets = crossFilter.dimension("tweet_tokens")
-                                              .setDrillDownFilter(true);
+     /*
+      *  First we want to determine the extent (min,max) of the time variable so we
+      *  can set the bounds on the time chart appropriately.
+      *
+      *  If you know the bounds a priori you can do this manually but here we will
+      *  do it dymaically via a query sent to the backend through the crossfilter
+      *  api.
+      *
+      *  We create a reduceMulti expression that will get the min and max of the
+      *  variable dep_timestamp.
+      *
+      */
 
-          function createMultiFilterArray(search) {
+         var timeChartMeasures = [
+         {
+           expression: "tweet_time",
+           agg_mode:"min",
+           name: "minimum"
+         },
+         {
+           expression: "tweet_time",
+           agg_mode:"max",
+           name: "maximum"}
+         ]
 
-            // Empty Search
-            if (search == "") {
-              return undefined;
-            }
+         /* Note than when we are doing aggregations over the entire dataset we use
+          * the crossfilter object itself as the dimension with the groupAll method
+          *
+          * values(true) gets the values for our groupAll measure (here min and max
+          * of dep_timestamp) - true means to ignore currently set filters - i.e.
+          * get a global min and max
+          */
 
-            return search.split(',').map(function(searchValue) {
-              return searchValue.trim();
-            });
-          }
+         crossFilter
+           .groupAll()
+           .reduce(timeChartMeasures)
+           .valuesAsync(true).then(function(timeChartBounds) {
 
-          $('.search-bar').keypress(function(e){
-            if (e.keyCode === 13) {
-              var mutipleFilterArray = createMultiFilterArray(e.target.value);
-              if (mutipleFilterArray) {
-                searchFilterTweets.filterMulti(mutipleFilterArray);
-              } else {
-                // Clears all filters
-                searchFilterTweets.filter();
-              }
-              // You must call redrawAll after applying custom filters.
-              dc.redrawAllAsync();
-            }
-          })
+             var timeChartDimension = crossFilter.dimension("tweet_time");
 
-          /* Calling dc.renderAll() will render all of the charts we set up.  Any
-             crossFilters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
-           */
+             /* We would like to bin or histogram the time values.  We do this by
+              * invoking setBinParams on the group.  Here we are asking for 400 equal
+              * sized bins from the min to the max of the time range
+              */
 
-          dc.renderAllAsync()
+             var timeChartGroup = timeChartDimension
+               .group()
+               .reduceCount('*')
+               .setBinParams({
+                  numBins: 288, // 288 * 5 = number of minutes in a day
+                  binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
+                 });
 
-          /*--------------------------RESIZE EVENT------------------------------*/
+           /*  We create the time chart as a line chart
+            *  with the following parameters:
+            *
+            *  Width and height - as above
+            *
+            *  elasticY(true) - cause the y-axis to scale as filters are changed
+            *
+            *  renderHorizontalGridLines(true) - add grid lines to the chart
+            *
+            *  brushOn(true) - Request a filter brush to be added to the chart - this
+            *  will allow users to drag a filter window along the time chart and filter
+            *  the rest of the data accordingly
+            *
+            */
 
-          /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+             var dcTimeChart = dc.lineChart('.chart2-example')
+               .width(w)
+               .height(h/2.5)
+               .elasticY(true)
+               .renderHorizontalGridLines(true)
+               .brushOn(true)
+               .xAxisLabel('Time of Day')
+               .yAxisLabel('Number of Tweets')
+               .dimension(timeChartDimension)
+               .group(timeChartGroup);
 
-          window.addEventListener("resize", _.debounce(reSizeAll, 500));
+             /* Set the x and y axis formatting with standard d3 functions */
 
-          function reSizeAll(){
+             dcTimeChart
+               .x(d3.time.scale.utc().domain([timeChartBounds.minimum, timeChartBounds.maximum]))
+               .yAxis().ticks(5);
 
-            var w = document.documentElement.clientWidth - 30;
-            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+             dcTimeChart
+               .xAxis().orient('top');
 
-            pointMapChart.map().resize();
-            pointMapChart.isNodeAnimate = false;
-            pointMapChart
-              .width(w)
-              .height(h/1.5)
-              .render();
-            dcTimeChart
-              .width(w)
-              .height(h/2.5)
 
-            dc.renderAll();
-          }
-        });
+         /*---------------------SET UP FILTER ----------------------------------*/
+
+             /*  We create the filter
+              *  with the following parameters:
+              *
+              *  Dimension: What column you would like to search.
+              *
+              *  OPTIONAL: setDrillDownFilter: Boolean
+              *  if set to true, your search will "AND" for all values, instead of
+              *  the default "OR" for all values.
+              *
+              *  eg. If searching "Keyboard Cat":
+              *  This will only only return results where the tweet contains:
+              *  "Keyboard" AND "Cat"
+              *
+              */
+             var searchFilterTweets = crossFilter.dimension("tweet_tokens")
+                                                 .setDrillDownFilter(true);
+
+             function createMultiFilterArray(search) {
+
+               // Empty Search
+               if (search == "") {
+                 return undefined;
+               }
+
+               return search.split(',').map(function(searchValue) {
+                 return searchValue.trim();
+               });
+             }
+
+             $('.search-bar').keypress(function(e){
+               if (e.keyCode === 13) {
+                 var mutipleFilterArray = createMultiFilterArray(e.target.value);
+                 if (mutipleFilterArray) {
+                   searchFilterTweets.filterMulti(mutipleFilterArray);
+                 } else {
+                   // Clears all filters
+                   searchFilterTweets.filter();
+                 }
+                 // You must call redrawAll after applying custom filters.
+                 dc.redrawAllAsync();
+               }
+             })
+
+             /* Calling dc.renderAll() will render all of the charts we set up.  Any
+                crossFilters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
+              */
+
+             dc.renderAllAsync()
+
+             /*--------------------------RESIZE EVENT------------------------------*/
+
+             /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+
+             window.addEventListener("resize", _.debounce(reSizeAll, 500));
+
+             function reSizeAll(){
+
+               var w = document.documentElement.clientWidth - 30;
+               var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+
+               pointMapChart.map().resize();
+               pointMapChart.isNodeAnimate = false;
+               pointMapChart
+                 .width(w)
+                 .height(h/1.5)
+                 .render();
+               dcTimeChart
+                 .width(w)
+                 .height(h/2.5)
+
+               dc.renderAll();
+             }
+           });
+    })
   }
 
   function init() {

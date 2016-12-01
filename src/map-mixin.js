@@ -12,6 +12,8 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
 
     _chart._xDimName = null;
     _chart._yDimName = null;
+    var hasAppliedInitialBounds = false;
+    var initialBounds = null;
     var _hasRendered = false;
     var _activeLayer = null;
     var _mapInitted = false;
@@ -48,7 +50,8 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     }
 
     _chart.getDataRenderBounds = function() {
-        var bounds = _map.getBounds();
+        var bounds = hasAppliedInitialBounds || !initialBounds ?  _map.getBounds() : initialBounds;
+
         var renderBounds = [valuesOb(bounds.getNorthWest()),
                             valuesOb(bounds.getNorthEast()),
                             valuesOb(bounds.getSouthEast()),
@@ -62,7 +65,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
                 _chart.conv4326To900913(renderBounds[3])
             ];
         }
-
+        hasAppliedInitialBounds = true
         return renderBounds;
     }
 
@@ -139,10 +142,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
       return [_chart.conv4326To900913X(coord[0]), _chart.conv4326To900913Y(coord[1])];
     }
 
-    function onStyleLoad(e) {
-      _chart.renderAsync();
-    }
-
     function onLoad(e){
       if (_chart.initGeocoder()) {
         _chart.initGeocoder()();
@@ -155,18 +154,18 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         mapboxlogo.innerHTML = 'Mapbox';
 
       _chart.root()[0][0].appendChild(mapboxlogo);
-
-      dc.enableRefresh();
-      _chart.renderAsync();
     }
 
     function onMapMove(e) {
         if ((e.type === 'moveend' && _lastMapMoveType === 'moveend') || !_hasRendered || e.skipRedraw) {
           return;
         }
+
         _lastMapMoveType = e.type;
         var curTime = (new Date).getTime();
+
         var bounds = _map.getBounds();
+
         if (!_useLonLat) {
            _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
            _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
@@ -244,8 +243,10 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             return _center;
         }
         _center = _;
-        if (_mapInitted)
+        if (_mapInitted) {
             _map.setCenter(_center);
+        }
+        return _chart
     }
 
     _chart.zoom = function(_) {
@@ -254,8 +255,10 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             return _zoom;
         }
         _zoom = _;
-        if (_mapInitted)
+        if (_mapInitted) {
             _map.setZoom(_zoom);
+        }
+        return _chart
     }
 
     _chart.resetSvg = function () {
@@ -343,6 +346,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     }
 
     function initMap() {
+        if (_mapInitted) return
         _mapboxgl.accessToken = _mapboxAccessToken;
 
         _map = new _mapboxgl.Map({
@@ -363,25 +367,25 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     }
 
     _chart.addMapListeners = function () {
-      _map.on('load', onLoad);
-      _map.on('style.load', onStyleLoad);
-      _map.on('move', onMapMove);
-      _map.on('moveend', onMapMove);
+        _map.on('move', onMapMove);
+        _map.on('moveend', onMapMove);
     }
 
     _chart.removeMapListeners = function () {
-      _map.off('load', onLoad);
-      _map.off('style.load', onStyleLoad);
-      _map.off('move', onMapMove);
-      _map.off('moveend', onMapMove);
+        _map.off('move', onMapMove);
+        _map.off('moveend', onMapMove);
     }
 
-    _chart.on('postRender', function() {
-      _hasRendered = true
+    _chart.on('postRender', function () {
+        if (_hasRendered) return
+        _hasRendered = true
+        if (initialBounds && !boundsRoughlyEqual(initialBounds, _map.getBounds())) {
+            _chart.setFilterBounds(_map.getBounds())
+            dc.redrawAllAsync()
+        }
     })
 
     _chart.on('preRender', function(chart) {
-
         var width = chart.width();
         var height = chart.height();
         if (!_mapInitted) {
@@ -399,7 +403,67 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         }
     });
 
-    initMap();
+    _chart.initialBounds = function(bounds) {
+        if (!arguments.length) {
+            return initialBounds
+        }
+
+        var sw = new _mapboxgl.LngLat(bounds.lonMin, bounds.latMin)
+        var ne = new _mapboxgl.LngLat(bounds.lonMax, bounds.latMax)
+
+        initialBounds = new _mapboxgl.LngLatBounds(sw, ne)
+        _chart.setFilterBounds(initialBounds)
+
+        return _chart
+    }
+
+    _chart.init = function () {
+        if (_mapInitted) return;
+
+        var styleLoaded = false;
+        var loaded = false;
+
+        initMap();
+
+        return new Promise(function (resolve, reject) {
+            _map.on('load', function (e) {
+                onLoad(e);
+                loaded = true;
+                if (styleLoaded) {
+                    resolve(_chart);
+                }
+            })
+
+            _map.on('style.load', function () {
+                styleLoaded = true;
+                if (loaded) {
+                    resolve(_chart);
+                }
+            })
+        })
+    };
+
+    _chart.setFilterBounds = function (bounds) {
+        if (!_useLonLat) {
+           _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+           _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+        } else {
+           _chart._minCoord = [bounds._sw.lng, bounds._sw.lat];
+           _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
+        }
+
+        _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
+        _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
+    }
+
+    function boundsRoughlyEqual(a, b) {
+      return (
+        a.getSouthWest().lat === b.getSouthWest().lat ||
+        a.getSouthWest().lng === b.getSouthWest().lng ||
+        a.getNorthEast().lat === b.getNorthEast().lat ||
+        a.getNorthEast().lng === b.getNorthEast().lng
+      )
+    }
 
     return _chart;
 }
