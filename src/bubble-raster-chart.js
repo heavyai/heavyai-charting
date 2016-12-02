@@ -287,7 +287,7 @@ function genVegaSpec(chart, lastFilteredSize) {
     }
     vegaSpec.scales.push({name: "size", type: chart._determineScaleType(chart.r()), domain: chart.r().domain(), range: scaleRange, clamp: true})
     vegaSpec.marks[0].properties.size = {scale: "size", field: "size"}
-  } else if (chart.dynamicR() !== null && chart.sampling() && lastFilteredSize !== null) { // @TODO don't tie this to sampling - meaning having a dynamicR will also require count to be computed first by dc
+  } else if (chart.dynamicR() !== null && chart.sampling() && typeof lastFilteredSize !== "undefined" && lastFilteredSize !== null) { // @TODO don't tie this to sampling - meaning having a dynamicR will also require count to be computed first by dc
     var rangeCap = chart.cap() !== Infinity ? chart.cap() : lastFilteredSize
     var dynamicRScale = d3.scale.pow().exponent(.25).domain(chart.dynamicR().domain).range(chart.dynamicR().range).clamp(true)
     vegaSpec.marks[0].properties.size = {value: Math.round(dynamicRScale(Math.min(lastFilteredSize, rangeCap)) * pixelRatio)}
