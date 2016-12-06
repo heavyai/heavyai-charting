@@ -379,7 +379,8 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     _chart.on('postRender', function () {
         if (_hasRendered) return
         _hasRendered = true
-        if (initialBounds && !boundsRoughlyEqual(initialBounds, _map.getBounds())) {
+        var boundsChanged = initialBounds && !boundsRoughlyEqual(initialBounds, _map.getBounds())
+        if ((boundsChanged || !initialBounds) && _xDim && _yDim) {
             _chart.setFilterBounds(_map.getBounds())
             dc.redrawAllAsync()
         }
@@ -452,8 +453,8 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
            _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
         }
 
-        _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
-        _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
+          _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
+          _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
     }
 
     function boundsRoughlyEqual(a, b) {
