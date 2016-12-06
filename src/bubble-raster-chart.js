@@ -290,7 +290,8 @@ function genVegaSpec(chart, sqlstr, lastFilteredSize) {
     vegaSpec.marks[0].properties.size = {scale: "size", field: "size"}
   } else if (chart.dynamicR() !== null && chart.sampling() && typeof lastFilteredSize !== "undefined" && lastFilteredSize !== null) { // @TODO don't tie this to sampling - meaning having a dynamicR will also require count to be computed first by dc
     var rangeCap = chart.cap() !== Infinity ? chart.cap() : lastFilteredSize
-    var dynamicRScale = d3.scale.pow().exponent(.25).domain(chart.dynamicR().domain).range(chart.dynamicR().range).clamp(true)
+    var dynamicRange = Math.min(lastFilteredSize, rangeCap) < 1500000 ? chart.dynamicR().range : [1, 1];
+    var dynamicRScale = d3.scale.sqrt().domain(chart.dynamicR().domain).range(dynamicRange).clamp(true)
     vegaSpec.marks[0].properties.size = {value: Math.round(dynamicRScale(Math.min(lastFilteredSize, rangeCap)) * pixelRatio)}
   } else {
     var rval = chart.r() * pixelRatio;
