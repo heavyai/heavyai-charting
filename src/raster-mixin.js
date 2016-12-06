@@ -121,7 +121,10 @@ dc.rasterMixin = function(_chart) {
         var columns = getColumnsWithPoints()
         // TODO best to fail, skip cb, or call cb wo args?
         if (!point || !tableName || !columns.length || columns.length === 3 && hideColorColumnInPopup()) { return; }
-        return _chart.con().getRowForPixel(pixel, tableName, columns, [function(results){
+
+        // NOTE: hard-coding the widget id to 1 for now, also hardcoding table, which
+        // is the name of the data table in the genVegaSpec function in bubble-raster-chart.js
+        return _chart.con().getResultRowForPixel(1, pixel, {"table": columns}, [function(results){
             return callback(results[0])
         }], _popupSearchRadius * pixelRatio)
     }
@@ -233,8 +236,8 @@ dc.rasterMixin = function(_chart) {
     }
 
     function colorPopupBackground (data) {
-        if (!_chart.colors().domain || !_chart.colorBy()) { 
-            return _chart.defaultColor(); 
+        if (!_chart.colors().domain || !_chart.colorBy()) {
+            return _chart.defaultColor();
         } else if (isNaN(_chart.colors().domain()[0])) {
             var matchIndex = _chart.colors().domain().indexOf(data[_chart.colorBy()])
             return matchIndex !== -1 ? _chart.colors().range()[matchIndex] : _chart.defaultColor();

@@ -130,15 +130,15 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
         var bounds = _chart.getDataRenderBounds();
         _chart._updateXAndYScales(bounds);
 
-        _chart._vegaSpec = genVegaSpec(_chart, dc.lastFilteredSize(group.getCrossfilterId()));
+        var sql;
+        if (group.type === "dimension") {
+            sql = group.writeTopQuery(_chart.cap(), undefined, true);
+        } else {
+            sql = group.writeTopQuery(_chart.cap(), undefined, false, true);
+        }
 
-        var nonce = null;
-        if (_chart.cap() === Infinity) {
-          nonce = group.allAsync(callbacks);
-        }
-        else {
-          nonce = group.top(_chart.cap(),undefined, JSON.stringify(_chart._vegaSpec), callbacks);
-        }
+        _chart._vegaSpec = genVegaSpec(_chart, sql, dc.lastFilteredSize(group.getCrossfilterId()));
+        var nonce = _chart.con().renderVega(1, JSON.stringify(_chart._vegaSpec), {}, callbacks);
 
         _renderBoundsMap[nonce] = bounds;
     });
@@ -152,15 +152,16 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
         var bounds = _chart.getDataRenderBounds();
         _chart._updateXAndYScales(bounds);
 
-        _chart._vegaSpec = genVegaSpec(_chart, dc.lastFilteredSize());
+        var sql;
+        if (group.type === "dimension") {
+            sql = group.writeTopQuery(_chart.cap(), undefined, true);
+        } else {
+            sql = group.writeTopQuery(_chart.cap(), undefined, false, true);
+        }
 
-        var result = null;
-        if (_chart.cap() === Infinity) {
-            result = group.all(JSON.stringify(_chart._vegaSpec));
-        }
-        else {
-            result = group.top(_chart.cap(), undefined, JSON.stringify(_chart._vegaSpec));
-        }
+        _chart._vegaSpec = genVegaSpec(_chart, sql, dc.lastFilteredSize(group.getCrossfilterId()));
+
+        var result = _chart.con().renderVega(1, JSON.stringify(_chart._vegaSpec), {});
 
         _renderBoundsMap[result.nonce] = bounds;
         return result;
@@ -243,14 +244,14 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
 
 function valuesOb (obj) { return Object.keys(obj).map(function (key) { return obj[key]; }) }
 
-function genVegaSpec(chart, lastFilteredSize) {
+function genVegaSpec(chart, sqlstr, lastFilteredSize) {
   var pixelRatio = chart._getPixelRatio();
   var width = (typeof chart.effectiveWidth === 'function' ? chart.effectiveWidth() : chart.width()) * pixelRatio;
   var height = (typeof chart.effectiveHeight === 'function' ? chart.effectiveHeight() : chart.height()) * pixelRatio;
   var vegaSpec = {
     data: [{
         name: "table",
-        sql: "select x, y from tweets;" // placeholder, the actual sql will be put in that slot w the vega-first interface -cRoot 8/2/16
+        sql: sqlstr
     }],
     height: Math.round(height),
     marks: [{

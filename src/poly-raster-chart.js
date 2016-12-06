@@ -55,16 +55,24 @@ dc.polyRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
       valuesOb(bounds.getSouthEast()),
       valuesOb(bounds.getSouthWest())
     ]
+
+    var sql;
+    if (group.type === "dimension") {
+      sql = group.writeTopQuery(chart.cap(), 0, true);
+    } else {
+      sql = group.writeTopQuery(chart.cap(), 0, false, true);
+    }
     chart._resetVegaSpec();
 
     genPolyVegaSpec(
+      sql,
       chart._vegaSpec,
       renderBounds.map(chart.conv4326To900913),
       chart.colors(),
       chart.polyJoin(),
       {strokeColor: chart.borderColor(), strokeWidth: chart.borderWidth() * _pixelRatio}
     );
-    var nonce = group.top(chart.cap(), 0, JSON.stringify(chart._vegaSpec), callback);
+    var nonce = chart.con().renderVega(1, JSON.stringify(chart._vegaSpec), {}, callback);
     renderBoundsMap[nonce] = renderBounds;
   });
 
@@ -83,7 +91,7 @@ dc.polyRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
   return chart.anchor(parent, chartGroup);
 }
 
-function genPolyVegaSpec(vegaSpec, mapBoundsMerc, color, polyJoin, stroke) {
+function genPolyVegaSpec(sqlstr, vegaSpec, mapBoundsMerc, color, polyJoin, stroke) {
   var xDomain = [mapBoundsMerc[0][0], mapBoundsMerc[2][0]] // northwest x, southeast x
   var yDomain = [mapBoundsMerc[2][1], mapBoundsMerc[0][1]] // southeast y, northwest y
   var xScale = {name: "x", type: "linear", domain: xDomain, range: "width"}
@@ -102,7 +110,7 @@ function genPolyVegaSpec(vegaSpec, mapBoundsMerc, color, polyJoin, stroke) {
   vegaSpec.data = [{
     "name": "table",
     "format": "polys",
-    "sql": "",
+    "sql": sqlstr,
     "dbTableName": polyJoin.table,
     "polysKey": polyJoin.keysColumn,
     "shapeColGroup": "mapd"
