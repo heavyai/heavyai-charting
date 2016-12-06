@@ -147,6 +147,8 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         _chart.initGeocoder()();
       }
 
+      _map.addControl(new _mapboxgl.Attribution());
+
       var mapboxlogo = document.createElement('a');
         mapboxlogo.className = 'mapbox-maplogo';
         mapboxlogo.href = 'http://mapbox.com/about/maps';
@@ -349,6 +351,10 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         if (_mapInitted) return
         _mapboxgl.accessToken = _mapboxAccessToken;
 
+        _chart.root()
+            .style('width', _chart.width() + "px")
+            .style('height', _chart.height() + "px")
+
         _map = new _mapboxgl.Map({
           container: _mapId, // container id
           style: _mapStyle,
@@ -357,7 +363,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
           zoom: _zoom, // starting zoom
           maxBounds: _llb,
           preserveDrawingBuffer: true,
-          attributionControl: true
+          attributionControl: false
         });
 
         _map.dragRotate.disable();
@@ -389,14 +395,11 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     _chart.on('preRender', function(chart) {
         var width = chart.width();
         var height = chart.height();
-        if (!_mapInitted) {
-          initMap();
-        }
 
         if (width !== _lastWidth || height !== _lastHeight) {
             _chart.root().select("#" + _mapId + " canvas")
               .attr('width', width)
-              .attr('height',height);
+              .attr('height', height);
 
             _lastWidth = width;
             _lastHeight = height;
@@ -424,7 +427,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         var styleLoaded = false;
         var loaded = false;
 
-        initMap();
+        initMap()
 
         return new Promise(function (resolve, reject) {
             _map.on('load', function (e) {
