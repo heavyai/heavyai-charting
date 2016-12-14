@@ -199,7 +199,7 @@ export function overrideCoordinate (chart) {
     }
 
     if (text !== "") {
-      const yOffset = (chart.rangeChartEnabled() && chart._rangeChartCreated ? chart.rangeChart().height() - chart.rangeChart().margins().bottom + chart.margins().bottom : 0)
+      const yOffset = (chart.rangeChartEnabled() && chart._rangeChartCreated ? chart.rangeChart().height() - chart.rangeChart().margins().bottom + chart.margins().bottom : chart.margins().bottom)
 
       yLabel
           .style("top", ((chart.effectiveHeight() + yOffset) / 2 + chart.margins().top) + "px")

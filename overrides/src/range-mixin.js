@@ -2,11 +2,13 @@ import {deepClone, deepEquals} from "./utils"
 import d3 from "d3"
 import dc from "../../mapdc"
 
-const CHART_HEIGHT = 0.725
-const RANGE_CHART_HEIGHT = 0.275
+const CHART_HEIGHT = 0.75
+const RANGE_CHART_HEIGHT = 0.25
 export const MAX_RANGE_HEIGHT_IN_PX = 200
-export const DEFAULT_RANGE_MARGINS = {top: 12, right: 24, bottom: 24, left: 48}
-export const DEFAULT_CHART_MARGINS = {top: 24, right: 24, bottom: 20, left: 60}
+export const MIN_RANGE_HEIGHT_IN_PX = 72
+export const DEFAULT_RANGE_MARGINS = {top: 12, right: 24, bottom: 32, left: 48}
+export const DEFAULT_CHART_MARGINS_W_RANGE = {top: 24, right: 24, bottom: 20, left: 60}
+export const DEFAULT_CHART_MARGINS = {top: 24, right: 24, bottom: 52, left: 48}
 
 function overridePlotData (chart) {
   if (!chart._plotData) {
@@ -91,7 +93,7 @@ export function createRangeChart (chart) {
   const RangeChart = chart._tempRangeChart
   chart._height(calcChartHeightWithMaxRangeChartHeight(chart._height()))
   chart.xAxisLabel("")
-  chart.margins(Object.assign({}, DEFAULT_CHART_MARGINS))
+  chart.margins(Object.assign({}, DEFAULT_CHART_MARGINS_W_RANGE))
 
   const isChartDate = chart.isTime()
   RangeChart._isTime = isChartDate
@@ -163,7 +165,7 @@ export function createRangeChart (chart) {
     _chart.xAxisLabel(_RangeChart.xAxisLabel())
     _RangeChart.rangeChartDiv.remove()
     dc.deregisterChart(_RangeChart)
-    _chart.margins({top: 24, right: 24, bottom: 40, left: 48})
+    _chart.margins(DEFAULT_CHART_MARGINS)
     _chart.renderHorizontalGridLines(false)
     _chart._rangeChartCreated = false
     _chart.renderAsync()
@@ -219,14 +221,13 @@ export default function rangeMixin (chart) {
 }
 
 export function calcChartHeightWithMaxRangeChartHeight (height) {
-  const rangeHeight = height * RANGE_CHART_HEIGHT
-  const chartHeight = height * CHART_HEIGHT
-  return (rangeHeight > MAX_RANGE_HEIGHT_IN_PX) ? chartHeight + (rangeHeight - MAX_RANGE_HEIGHT_IN_PX) : chartHeight
+  const rangeHeight = calcMaxRangeChartHeight(height)
+  return height - rangeHeight
 }
 
 export function calcMaxRangeChartHeight (height) {
   const rangeHeight = height * RANGE_CHART_HEIGHT
-  return (rangeHeight > MAX_RANGE_HEIGHT_IN_PX) ? MAX_RANGE_HEIGHT_IN_PX : rangeHeight
+  return Math.max(Math.min(rangeHeight, MAX_RANGE_HEIGHT_IN_PX), MIN_RANGE_HEIGHT_IN_PX)
 }
 
 export function xAxisTickFormat ({extract, timeBin}, isChartDate) {
