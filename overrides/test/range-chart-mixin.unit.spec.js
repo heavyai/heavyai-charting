@@ -1,7 +1,7 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
 import dc from "../../index.js"
-import rangeMixin, {DEFAULT_CHART_MARGINS, MAX_RANGE_HEIGHT_IN_PX,calcChartHeightWithMaxRangeChartHeight, calcMaxRangeChartHeight} from "../src/range-mixin"
+import rangeMixin, {DEFAULT_CHART_MARGINS, DEFAULT_CHART_MARGINS_W_RANGE, MAX_RANGE_HEIGHT_IN_PX,calcChartHeightWithMaxRangeChartHeight, calcMaxRangeChartHeight} from "../src/range-mixin"
 
 chai.use(spies)
 
@@ -59,7 +59,7 @@ describe("Range Chart", () => {
     it('set up rangeChart with default margins', () => {
       chart.rangeChartEnabled(true)
       chart.plotData()
-      expect(chart.margins()).to.deep.equal(DEFAULT_CHART_MARGINS)
+      expect(chart.margins()).to.deep.equal(DEFAULT_CHART_MARGINS_W_RANGE)
     })
   })
 
@@ -77,12 +77,12 @@ describe("Range Chart", () => {
     var smallChart = 500
     var tallChart = 1200
     it ('should calculate chart heights', () => {
-      expect(calcChartHeightWithMaxRangeChartHeight(smallChart)).to.equal(362.5)
+      expect(calcChartHeightWithMaxRangeChartHeight(smallChart)).to.equal(375)
       expect(calcChartHeightWithMaxRangeChartHeight(tallChart)).to.equal(tallChart - MAX_RANGE_HEIGHT_IN_PX)
 
     })
     it ('should calculate range chart heights', () => {
-      expect(calcMaxRangeChartHeight(smallChart)).to.equal(137.5)
+      expect(calcMaxRangeChartHeight(smallChart)).to.equal(125)
       expect(calcMaxRangeChartHeight(tallChart)).to.equal(MAX_RANGE_HEIGHT_IN_PX)
 
     })
