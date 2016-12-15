@@ -2,7 +2,10 @@ module.exports = function (grunt) {
     'use strict';
 
     require('load-grunt-tasks')(grunt, {
-        pattern: ['grunt-*', '!grunt-lib-phantomjs', '!grunt-template-jasmine-istanbul']
+        pattern: ['grunt-*', '!grunt-lib-phantomjs', '!grunt-template-jasmine-istanbul'],
+        config: '../../package.json',
+        scope: 'devDependencies',
+        requireResolution: true
     });
     require('time-grunt')(grunt);
     var formatFileList = require('./grunt/format-file-list')(grunt);
@@ -294,7 +297,7 @@ module.exports = function (grunt) {
         },
         exec: {
             compile_sass: {
-              cmd: './node_modules/node-sass/bin/node-sass scss/chart.scss chart.css'
+              cmd: '../../node_modules/node-sass/bin/node-sass scss/chart.scss chart.css'
             }
         }
     });

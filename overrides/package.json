@@ -6,31 +6,12 @@
   "scripts": {
     "lint": "eslint $(find src -name \"*.js\")",
     "shjs": "node --harmony_destructuring ../../../node_modules/.bin/shjs",
-    "test": "mocha ./test --compilers js:babel-register --require ./test/setup",
-    "test:cover": "istanbul cover _mocha -- ./test --compilers js:babel-register --require ./test/setup",
-    "test:check-cover": "npm run shjs ../../../scripts/check-coverage.js",
-    "postinstall": "npm install moment"
+    "test": "../../../node_modules/.bin/mocha ./test --require ./test/config --require ./test/setup",
+    "test:cover": "../../../node_modules/.bin/istanbul cover ../../../node_modules/mocha/bin/_mocha -- ./test --require ./test/config --require ./test/setup",
+    "test:check-cover": "npm run shjs ../../../scripts/check-coverage.js"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "babel-cli": "^6.10.1",
-    "babel-core": "^6.10.4",
-    "babel-eslint": "^6.1.1",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "chai": "^3.5.0",
-    "chai-spies": "^0.7.1",
-    "eslint": "^3.0.1",
-    "istanbul": "1.0.0-alpha.2",
-    "jsdom": "^9.4.1",
-    "mocha": "^2.5.3"
-  },
   "dependencies": {
-    "deep-equal": "1.0.1",
-    "earcut": "^2.1.1"
-  },
-  "peerDependencies": {
-    "moment": "^2.0.0"
   }
 }

@@ -27,6 +27,7 @@ describe("Range Chart", () => {
     chart.colors = chai.spy()
     chart.isMulti = chai.spy()
     chart.rangeChartDiv = window.document.createElement("DIV")
+    chart.rangeChartDiv.remove = () => {chart.rangeChartDiv = null}
     chart.rangeChart = () => chart
     chart.anchor = () => node
     chart.series = () => ({
@@ -46,15 +47,14 @@ describe("Range Chart", () => {
     it('rangeChart should not exist', () => {
       chart.plotData()
       expect(chart.rangeChartEnabled()).to.equal(false)
-      expect(node.childElementCount).to.equal(0)
+      expect(node._childNodes.length).to.equal(0)
     })
 
     it('rangeChart should be created and appended to DOM', () => {
-      expect(node.childElementCount).to.equal(0)
       chart.rangeChartEnabled(true)
       chart.plotData()
-      expect(node.childElementCount).to.equal(1)
-    })    
+      expect(node._childNodes.length).to.equal(1)
+    })
 
     it('set up rangeChart with default margins', () => {
       chart.rangeChartEnabled(true)
