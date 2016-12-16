@@ -3,6 +3,11 @@
  * ***************************************************************************/
 
 dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
+    var SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
+    var LONMAX = 180 - SMALL_AMOUNT
+    var LONMIN = -180 + SMALL_AMOUNT
+    var LATMAX = 90 - SMALL_AMOUNT
+    var LATMIN = -90 + SMALL_AMOUNT
     var _mapboxgl = typeof _mapboxgl === 'undefined' ? mapboxgl : _mapboxgl
     var _map = null;
     var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
@@ -412,8 +417,13 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
             return initialBounds
         }
 
-        var sw = new _mapboxgl.LngLat(bounds.lonMin, bounds.latMin)
-        var ne = new _mapboxgl.LngLat(bounds.lonMax, bounds.latMax)
+        var latMaxSafe = bounds.latMax < LATMAX ? bounds.latMax : LATMAX
+        var latMinSafe = bounds.latMin > LATMIN ? bounds.latMin : LATMIN
+        var lonMaxSafe = bounds.lonMax < LONMAX ? bounds.lonMax : LONMAX
+        var lonMinSafe = bounds.lonMin > LONMIN ? bounds.lonMin : LONMIN
+
+        var sw = new _mapboxgl.LngLat(lonMinSafe, latMinSafe)
+        var ne = new _mapboxgl.LngLat(lonMaxSafe, latMaxSafe)
 
         initialBounds = new _mapboxgl.LngLatBounds(sw, ne)
         _chart.setFilterBounds(initialBounds)
