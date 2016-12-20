@@ -318,8 +318,18 @@ dc.barChart = function (parent, chartGroup) {
 
     function calculateBarWidth () {
 
+        var numberOfBars
         var binParams = _chart.group().binParams()[0];
-        var numberOfBars = binParams.timeBin ? _chart.getTimeBinSize(binParams) : binParams.numBins;
+
+        if (binParams) {
+            numberOfBars = binParams.timeBin ? _chart.getTimeBinSize(binParams) : binParams.numBins;
+        } else {
+            var allValues = _chart.data()[0].values.map(function(val) { return val.x })
+            var maxVal = Math.max.apply(null, allValues)
+            var minVal = Math.min.apply(null, allValues)
+
+            numberOfBars = maxVal - minVal
+        }
 
         if (_chart.isOrdinal() && _gap === undefined) {
             _barWidth = Math.floor(_chart.x().rangeBand());
