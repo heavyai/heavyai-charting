@@ -3,11 +3,14 @@
  * ***************************************************************************/
 
 dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
+    var DEFAULT_ZOOM_LEVEL = 15
+    var EASE_DURATION_MS = 1500
     var SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
     var LONMAX = 180 - SMALL_AMOUNT
     var LONMIN = -180 + SMALL_AMOUNT
     var LATMAX = 90 - SMALL_AMOUNT
     var LATMIN = -90 + SMALL_AMOUNT
+
     var _mapboxgl = typeof _mapboxgl === 'undefined' ? mapboxgl : _mapboxgl
     var _map = null;
     var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
@@ -32,7 +35,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     var _center = [0,30];
     var _zoom = 1;
     var _popupFunction = null;
-    var _initGeocoder = null;
     var _colorBy = null;
     var _mouseLeave = false;
     var _useLonLat = true;
@@ -43,6 +45,8 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     var _arr = [[180, -85], [-180, 85]];
 
     var _llb = _mapboxgl.LngLatBounds.convert(_arr);
+
+    var _geocoder = null
 
     _chart.useLonLat = function(useLonLat) {
        if (!arguments.length)
@@ -102,13 +106,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         _activeLayer = null;
     }
 
-    _chart.initGeocoder = function(initGeocoder) {
-        if (!arguments.length)
-            return _initGeocoder;
-        _initGeocoder = initGeocoder;
-        return _chart;
-    }
-
     _chart.colorBy = function(_) {
         if (!arguments.length)
             return _colorBy;
@@ -148,10 +145,6 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     }
 
     function onLoad(e){
-      if (_chart.initGeocoder()) {
-        _chart.initGeocoder()();
-      }
-
       _map.addControl(new _mapboxgl.Attribution());
 
       var mapboxlogo = document.createElement('a');
@@ -161,6 +154,10 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         mapboxlogo.innerHTML = 'Mapbox';
 
       _chart.root()[0][0].appendChild(mapboxlogo);
+
+      if (_geocoder) {
+          initGeocoder()
+      }
     }
 
     function onMapMove(e) {
@@ -477,6 +474,51 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         a.getNorthEast().lat === b.getNorthEast().lat ||
         a.getNorthEast().lng === b.getNorthEast().lng
       )
+    }
+
+    _chart.geocoder = function (geocoder) {
+        if (!arguments.length) {
+          return _geocoder
+        }
+        if (typeof geocoder.locate !== "function") {
+            throw new Error("Geocoder must have a location function")
+        }
+        _geocoder = geocoder
+        return _chart
+    }
+
+    function initGeocoder () {
+        _chart.root()
+            .append('input')
+            .attr('type', 'text')
+            .attr('placeholder', 'Zoom to')
+            .classed('geocoder-input', true)
+            .style('top', '5px')
+            .style('right', '5px')
+            .style('float', 'right')
+            .style('position', 'absolute')
+            .on('keydown', function () {
+                if (d3.event.key === "Enter" || d3.event.keyCode === 13) {
+                    _geocoder
+                        .locate(this.value)
+                        .then(zoomToLocation)
+                }
+            })
+    }
+
+    function zoomToLocation (data) {
+        if (data.bounds) {
+            var sw = data.bounds.sw
+            var ne = data.bounds.ne
+            _map.fitBounds([sw, ne], {
+                linear: true,
+                duration: EASE_DURATION_MS
+            });
+        } else {
+            var center = data.center
+            _map.setCenter(center);
+            _map.setZoom(DEFAULT_ZOOM_LEVEL)
+        }
     }
 
     return _chart;
