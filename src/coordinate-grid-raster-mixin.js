@@ -28,16 +28,40 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
     var X_AXIS_LABEL_CLASS = 'x-axis-label';
     var DEFAULT_AXIS_LABEL_PADDING = 12;
 
+    var _brush = d3.svg.brush();
     var _hasBeenRendered = false;
     var _scale = [1,1];
     var _offset = [0,0];
     var _currDataBounds = [[0,1],[0,1]];
     var _queryId = null;
+    var _filters = null;
+    var _initialFilters = null;
 
     _chart = dc.colorMixin(dc.marginMixin(dc.baseMixin(_chart)));
     _chart._mandatoryAttributes().push('x', 'y');
 
-    function filterChartDimensions(chart, xrange, yrange) {
+    _chart.filters = function () {
+        return _filters
+    }
+
+    _chart.filter = function (filters) {
+        if (typeof filters === "undefined" || filters === null) {
+            _initialFilters = _initialFilters || [[]]
+            filterChartDimensions(_chart, _initialFilters[0][0], _initialFilters[0][1], true)
+        } else if (Array.isArray(filters) && filters.length === 2) {
+            filterChartDimensions(_chart, filters[0], filters[1], false)
+        } else {
+            throw new Error ("Invalid filter applied. Filter must be an array with two elements")
+        }
+
+        return _chart
+    }
+
+    function filterChartDimensions(chart, xrange, yrange, shouldReset) {
+        if (!_initialFilters) {
+            _initialFilters = [[xrange, yrange]]
+        }
+
         var xdim = chart.xDim();
         var ydim = chart.yDim();
 
@@ -62,6 +86,9 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
                 }
             });
         }
+
+        _filters = shouldReset ? [] : [[xrange, yrange]]
+        _chart._invokeFilteredListener(_filters, false)
     }
 
     function bindEventHandlers(map, canvasContainer, enableInteractions) {
@@ -1217,7 +1244,6 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
             _chartBody = root.append('canvas')
                              .attr('class', 'webgl-canvas')
                              .style('position', 'absolute')
-                             .style('z-index', -1); // force the webgl canvas to draw behind the svg
 
             var containerNode = root.node();
             var chartNode = _chartBody.node();

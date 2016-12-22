@@ -1,7 +1,7 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
 import dcLegendCont from "../src/dc-legend-cont"
-// import dc from "../../index"
+import {d3, pieChart} from "../../index"
 
 chai.use(spies)
 
@@ -26,8 +26,11 @@ describe("dc legend cont", () => {
     })
     it('should set the parent to node', () => {
       const node = window.document.createElement("DIV")
-      legend.parent(node)
-      expect(legend.parent()).to.equal(node)
+      const parent = {
+        root: () => d3.select(node)
+      }
+      legend.parent(parent)
+      expect(legend.parent()).to.equal(parent)
     })
   })
 
@@ -38,6 +41,15 @@ describe("dc legend cont", () => {
     it('should set the legend minMax to value', () => {
       legend.minMax([1,1000])
       expect(legend.minMax()).to.deep.equal([1,1000])
+    })
+  })
+
+  describe('legend render', () => {
+    it('should render legend without error', () => {
+      const node = window.document.createElement("DIV")
+      const parent = pieChart(node)
+      legend.parent(parent)
+      legend.render()
     })
   })
 })

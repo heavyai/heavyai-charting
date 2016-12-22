@@ -138,7 +138,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
         }
 
         _chart._vegaSpec = genVegaSpec(_chart, sql, dc.lastFilteredSize(group.getCrossfilterId()));
-        var nonce = _chart.con().renderVega(1, JSON.stringify(_chart._vegaSpec), {}, callbacks);
+        var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks);
 
         _renderBoundsMap[nonce] = bounds;
     });
@@ -161,7 +161,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
 
         _chart._vegaSpec = genVegaSpec(_chart, sql, dc.lastFilteredSize(group.getCrossfilterId()));
 
-        var result = _chart.con().renderVega(1, JSON.stringify(_chart._vegaSpec), {});
+        var result = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {});
 
         _renderBoundsMap[result.nonce] = bounds;
         return result;

@@ -122,9 +122,7 @@ dc.rasterMixin = function(_chart) {
         // TODO best to fail, skip cb, or call cb wo args?
         if (!point || !tableName || !columns.length || columns.length === 3 && hideColorColumnInPopup()) { return; }
 
-        // NOTE: hard-coding the widget id to 1 for now, also hardcoding table, which
-        // is the name of the data table in the genVegaSpec function in bubble-raster-chart.js
-        return _chart.con().getResultRowForPixel(1, pixel, {"table": columns}, [function(results){
+        return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, {"table": columns}, [function(results){
             return callback(results[0])
         }], _popupSearchRadius * pixelRatio)
     }

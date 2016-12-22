@@ -162,7 +162,7 @@ dc.rasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
 
         _chart._vegaSpec = genLayeredVega(_chart);
 
-        var nonce = _chart.con().renderVega(1, JSON.stringify(_chart._vegaSpec), {}, callbacks);
+        var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks);
 
         _renderBoundsMap[nonce] = bounds;
     });
@@ -178,7 +178,7 @@ dc.rasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
 
         _chart._vegaSpec = genLayeredVega(_chart, group, dc.lastFilteredSize(group.getCrossfilterId()));
 
-        var result = _chart.con().renderVega(1, JSON.stringify(_chart._vegaSpec));
+        var result = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec));
 
         _renderBoundsMap[result.nonce] = bounds;
         return result;
@@ -331,8 +331,7 @@ dc.rasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
             return;
         }
 
-        // TODO(croot): add a true widget id, hard-coding to 1
-        return _chart.con().getResultRowForPixel(1, pixel, layerObj, [function(results){
+        return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, layerObj, [function(results){
             return callback(results[0])
         }], Math.ceil(_popupSearchRadius * pixelRatio))
     };
