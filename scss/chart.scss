@@ -198,12 +198,16 @@ body {
         }
 
         &.underline {
-            border-bottom: $blue-main 1px solid;
+            border-bottom: $blue-main 2px solid;
         }
 
         &.active {
             color: $blue-main;
             font-weight: bold;
+
+            &:not(:nth-child(2)) {
+                border-bottom: $blue-main 2px solid;
+            }
         }
     }
 
@@ -261,7 +265,6 @@ body {
     .brush {
         .resize {
             path {
-
                 stroke: $gray5;
                 fill: $gray5;
                 opacity: 0;
@@ -283,13 +286,15 @@ body {
     }
 
     .geocoder-input{
-        top: 5px;
-        font-size: 14px;
-        padding: 0 0 0 6px;
-        border: 1px solid $gray3;
-        height: 32px;
+        top: 8px !important;
+        right: 8px !important;
+        font-size: 13px;
+        padding: 0 0 0 8px;
+        border: 1px solid $gray2;
+        height: 28px;
         border-radius: 0;
         z-index: 10;
+        outline: none;
     }
 
     .mapboxgl-canvas-container {
@@ -1656,7 +1661,7 @@ body {
 
 }
 
-.coordinate-chart {
+.coordinate-chart, .chart-type-backendScatter  {
     .dc-legend {
         top: 32px !important;
         bottom: auto !important;

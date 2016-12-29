@@ -45,7 +45,7 @@ export default function legendMixin (legend) {
 
       itemEnter.append("div")
         .attr("class", "legend-item-text")
-        .text(d => (d.name))
+        .text(d => (d.name === "other" || (d.name === "Default" && legendables.length > 1) ? "Other" : d.name))
 
       body.node().scrollTop = legend._scrollPos
     }

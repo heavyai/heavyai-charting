@@ -38,6 +38,11 @@ function overridePlotData (chart) {
           RangeChart._hasRendered = false
         }
 
+        if (chart.showOther() !== RangeChart.showOther()) {
+          RangeChart.showOther(chart.showOther())
+          RangeChart._hasRendered = false
+        }
+
         if (calcMaxRangeChartHeight(parentHeight) !== RangeChart.height()) {
           RangeChart.height(calcMaxRangeChartHeight(parentHeight))
           RangeChart._hasRendered = false

@@ -363,7 +363,8 @@ dc.lineChart = function (parent, chartGroup) {
             popupItems.append('div')
                 .attr('class', 'popup-item-key')
                 .text(function(d){
-                    return _chart.series().keys()[d.datum.layer];
+                    var seriesLabel = _chart.series().keys()[d.datum.layer]
+                    return seriesLabel === "other" ? "Other" : seriesLabel;
                 });
         }
 
