@@ -989,11 +989,26 @@ dc.coordinateGridMixin = function (_chart) {
         if (_chart._isRangeChart && filter.length && !extract) {
             var FocusChart = _chart.focusChart()
             var currentBinParams = FocusChart.group().binParams()
-            if (currentBinParams[0] && !currentBinParams[0].timeBin) {
+            if (currentBinParams[0]) {
                 currentBinParams[0].binBounds = filter
                 FocusChart.group().binParams(currentBinParams)
             }
             _chart.brush().extent(filter);
+        }
+    }
+
+    function resetBinParamsForChart (_chart) {
+        if (_chart.group().binParams()[0]) {
+            var extract = _chart.group().binParams()[0].extract
+            var isRangeAndIsNotFiltered = _chart._isRangeChart && !_chart.filters().length && !extract
+
+            if (isRangeAndIsNotFiltered) {
+                var chartBinParams = _chart.focusChart().group().binParams().map(function(p) {
+                    return p
+                })
+                chartBinParams[0].binBounds = _chart.group().binParams()[0].binBounds
+                _chart.focusChart().group().binParams(chartBinParams)
+            }
         }
     }
 
@@ -1008,19 +1023,8 @@ dc.coordinateGridMixin = function (_chart) {
             updateBinParamsForChart(_chart, filter)
             _chart.brush().extent(filter);
         } else {
+            resetBinParamsForChart(_chart)
             _chart.brush().clear();
-            if (_chart.group().binParams()[0]) {
-                var extract = _chart.group().binParams()[0].extract
-                var isRangeAndIsNotFiltered = _chart._isRangeChart && !_chart.filters().length && !extract
-
-                if (isRangeAndIsNotFiltered) {
-                    var chartBinParams = _chart.focusChart().group().binParams().map(function(p) {
-                        return p
-                    })
-                    chartBinParams[0].binBounds = _chart.group().binParams()[0].binBounds
-                    _chart.focusChart().group().binParams(chartBinParams)
-                }
-            }
         }
 
         return _chart;
