@@ -168,7 +168,6 @@ export function createRangeChart (chart) {
     }
     _chart.group().binParams(_RangeChart.group().binParams())
     _chart.xAxisLabel(_RangeChart.xAxisLabel())
-    _RangeChart.rangeChartDiv.remove()
     dc.deregisterChart(_RangeChart)
     _chart.margins(DEFAULT_CHART_MARGINS)
     _chart.renderHorizontalGridLines(false)
