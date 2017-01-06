@@ -3,6 +3,7 @@ import dc from "../../mapdc"
 const DRAW_OPTIONS = {
   drawing: true,
   boxSelect: true,
+  keybindings: false,
   controls: {
     point: false,
     line_string: false,
@@ -127,6 +128,11 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
   let drawMode = false
 
   function drawEventHandler () {
+    applyFilter()
+    dc.redrawAllAsync()
+  }
+
+  function applyFilter () {
     const {features} = Draw.getAll()
     if (features.length) {
       const px = chart.xDim().value()[0]
@@ -137,7 +143,25 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
       coordFilter.filter()
     }
 
-    dc.redrawAllAsync()
+    chart._invokeFilteredListener(chart.filters(), false)
+  }
+
+  chart.filters = function () {
+    return Draw.getAll().features.map(feature => feature.geometry)
+  }
+
+  chart.filter = function (feature) {
+    if (!arguments.length) {
+      return Draw.getAll().features.map(feature => feature.geometry)[0]
+    }
+
+    if (feature === null) {
+      Draw.deleteAll()
+    } else {
+      Draw.add(feature)
+    }
+
+    applyFilter()
   }
 
   function changeDrawMode () {

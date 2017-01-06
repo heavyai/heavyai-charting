@@ -13,7 +13,10 @@ const map = {
 }
 
 function createChartWithDrawContext (Draw) {
-  return mapDrawMixin({map: () => map}, {
+  return mapDrawMixin({
+    _invokeFilteredListener: () => {},
+    map: () => map
+  }, {
     Draw: () => Draw
   })
 }
