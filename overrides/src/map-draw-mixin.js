@@ -146,11 +146,11 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
     chart._invokeFilteredListener(chart.filters(), false)
   }
 
-  chart.filters = function () {
+  function filters () {
     return Draw.getAll().features.map(feature => feature.geometry)
   }
 
-  chart.filter = function (feature) {
+  function filter (feature) {
     if (!arguments.length) {
       return Draw.getAll().features.map(feature => feature.geometry)[0]
     }
@@ -198,6 +198,9 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
     })
     chart.map().on("draw.modechange", changeDrawMode)
     chart.map().on("draw.selectionchange", changeDrawMode)
+
+    chart.filter = filter
+    chart.filters = filters
 
     return chart
   }
