@@ -107,21 +107,21 @@ const LATITUDE_INDEX = 1
 const longitudes = coordinates(LONGITUDE_INDEX)
 const latitudes = coordinates(LATITUDE_INDEX)
 
-function convertFeaturesToUnlikeklyStmt (features) {
+function convertFeaturesToUnlikeklyStmt (features, px, py) {
   const lons = longitudes(features)
   const lats = latitudes(features)
   const left = Math.max(...lons)
   const right = Math.min(...lons)
   const top = Math.min(...lats)
   const bottom = Math.max(...lats)
-  return `UNLIKELY( lon >= ${right} AND lon <= ${left} AND lat >= ${top} AND lat <= ${bottom})`
+  return `UNLIKELY( ${px} >= ${right} AND ${px} <= ${left} AND ${py} >= ${top} AND ${py} <= ${bottom})`
 }
 
-function convertFeatureToCircleStmt ({geometry: {radius, center}}) {
+function convertFeatureToCircleStmt ({geometry: {radius, center}}, px, py) {
   const lat2 = center[1]
   const lon2 = center[0]
   const meters = radius * 1000
-  return `DISTANCE_IN_METERS(${lon2}, ${lat2}, lon, lat) < ${meters}`
+  return `DISTANCE_IN_METERS(${lon2}, ${lat2}, ${px}, ${py}) < ${meters}`
 }
 
 export function convertGeojsonToSql (features, px, py) {
@@ -132,7 +132,7 @@ export function convertGeojsonToSql (features, px, py) {
 
   features.map((feature) => {
     if (feature.properties.circle) {
-      circleStmts.push(convertFeatureToCircleStmt(feature))
+      circleStmts.push(convertFeatureToCircleStmt(feature, px, py))
     } else {
       const data = earcut.flatten(feature.geometry.coordinates)
       const triangles = earcut(data.vertices, data.holes, data.dimensions)
@@ -155,9 +155,9 @@ export function convertGeojsonToSql (features, px, py) {
       }
     }).join(" OR (")
 
-    const unlikelyStmt = convertFeaturesToUnlikeklyStmt(features)
+    const unlikelyStmt = convertFeaturesToUnlikeklyStmt(features, px, py)
 
-    sql = sql + `(${unlikelyStmt}) AND ` + `(${px} IS NOT NULL AND ${py} IS NOT NULL AND (${triangleClause} OR (lat/2 = 0)))`
+    sql = sql + `(${unlikelyStmt}) AND ` + `(${px} IS NOT NULL AND ${py} IS NOT NULL AND (${triangleClause} OR (${py}/2 = 0)))`
   }
 
   if (circleStmts.length) {
