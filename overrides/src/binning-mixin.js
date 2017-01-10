@@ -79,10 +79,12 @@ export default function binningMixin (chart) {
     return chart
   }
 
-  chart.binBrush = () => {
-    const extent0 = chart.extendBrush()
+  chart.binBrush = (isRangeChart) => {
+    const rangeChartBrush = chart.rangeChart().extendBrush()
+    const extent0 = isRangeChart ? rangeChartBrush : chart.extendBrush()
+    const chartBounds = isRangeChart ? rangeChartBrush : chart.group().binParams()[0].binBounds
 
-    if (extent0[0].getTime() === extent0[1].getTime()) {
+    if (!extent0[0].getTime || extent0[0].getTime() === extent0[1].getTime()) {
       return
     }
 
@@ -90,15 +92,20 @@ export default function binningMixin (chart) {
 
     const extent1 = extent0.map(date => roundTimeBin(date, timeInterval, "round"))
 
+    if (extent1[0] < chartBounds[0]) {
+      extent1[0] = roundTimeBin(extent0[0], timeInterval, "ceil")
+    }
+
+    if (extent1[1] > chartBounds[1]) {
+      extent1[1] = roundTimeBin(extent0[1], timeInterval, "floor")
+    }
+
     /* istanbul ignore next */
     // if empty when rounded, use floor & ceil instead
     if (extent1[0] >= extent1[1]) {
       extent1[0] = roundTimeBin(extent0[0], timeInterval, "floor")
       extent1[1] = roundTimeBin(extent0[1], timeInterval, "ceil")
     }
-
-    extent1[0] = extent1[0] < chart.xAxisMin() ? chart.xAxisMin() : extent1[0]
-    extent1[1] = extent1[1] > chart.xAxisMax() ? chart.xAxisMax() : extent1[1]
 
     /* istanbul ignore next */
     if (!isNaN(chart.xAxisMax()) && extent1[0].getTime() === chart.xAxisMax().getTime()) {
@@ -117,9 +124,7 @@ export default function binningMixin (chart) {
     const rangedFilter = dc.filters.RangedFilter(extent1[0], extent1[1])
 
     dc.events.trigger(() => {
-      chart.triggerReplaceFilter()
       chart.replaceFilter(rangedFilter)
-      chart.redrawGroup()
     }, dc.constants.EVENT_DELAY)
   }
 

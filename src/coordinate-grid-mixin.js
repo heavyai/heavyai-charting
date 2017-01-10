@@ -41,41 +41,7 @@ dc.coordinateGridMixin = function (_chart) {
 
         _chart.replaceFilter(domFilter);
         _chart.rescale();
-        _chart.redrawAsync().then(function () {
-            if (_rangeChart && !rangesEqual(_chart.filter(), _rangeChart.filter())) {
-                dc.events.trigger(function () {
-                    _rangeChart.replaceFilter(domFilter);
-                    _rangeChart.redrawAsync();
-                });
-            }
-
-            _chart._invokeZoomedListener();
-
-            dc.events.trigger(function () {
-                _chart.redrawGroup();
-            }, dc.constants.EVENT_DELAY);
-
-            _refocused = !rangesEqual(domain, _xOriginalDomain);
-
-            if (_chart._binSnap) {
-
-                _chart._binSnap = false;
-
-                var extent = domain;
-
-                extent[0] = extent[0] < _chart.xAxisMin() ? _chart.xAxisMin() : extent[0];
-                extent[1] = extent[1] > _chart.xAxisMax() ? _chart.xAxisMax() : extent[1];
-
-                _resizing = false;
-
-                var rangedFilter = dc.filters.RangedFilter(extent[0], extent[1]);
-
-                dc.events.trigger(function () {
-                    _chart.replaceFilter(rangedFilter);
-                    _chart.redrawGroup();
-                }, dc.constants.EVENT_DELAY);
-            }
-        })
+        dc.redrawAllAsync();
     }
 
 
@@ -1073,24 +1039,14 @@ dc.coordinateGridMixin = function (_chart) {
              });
             _brush.on('brushend', function(){
                 _isBrushing = false;
+                var isRangeChart = _chart._isRangeChart
                 configureMouseZoom();
-                if (_chart._binInput) {
-                    _chart.brushSnap(gBrush);
-                }
-
-                if (_focusChart && _focusChart.binInput()) {
-                    _focusChart.brushSnap(gBrush);
+                if (!isRangeChart) {
+                    _chart.brushSnap(isRangeChart);
+                } else if (isRangeChart) {
+                    _chart.focusChart().brushSnap(isRangeChart);
                 }
                 dc.disableTransitions = false;
-                if (_chart.focusChart()) {
-                    _chart.focusChart().updateBinInput()
-                    if (_chart.focusChart().rangeInput()) {
-                        _chart.focusChart().updateRangeInput();
-                    }
-                }
-                if (_chart.rangeInput()) {
-                    _chart.updateRangeInput();
-                }
             });
 
             if (_chart.hasFilter()) {
@@ -1099,10 +1055,10 @@ dc.coordinateGridMixin = function (_chart) {
         }
     };
 
-    _chart.brushSnap = function (gBrush) {
+    _chart.brushSnap = function (isRangeChart) {
 
         if (!d3.event.sourceEvent) return; // only transition after input
-        _chart.binBrush();
+        _chart.binBrush(isRangeChart);
     }
 
     _chart.triggerReplaceFilter = function (shouldSetSizingFalse) {
@@ -1159,7 +1115,6 @@ dc.coordinateGridMixin = function (_chart) {
 /* OVERRIDE ---------------------------------------------------------------- */
                 dc._globalTransitionDuration = 10;
 /* ------------------------------------------------------------------------- */
-
                 _chart.replaceFilter(rangedFilter);
                 _chart.redrawGroup();
             }, dc.constants.EVENT_DELAY);

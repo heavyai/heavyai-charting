@@ -28,19 +28,6 @@ export function overrideCoordinate (chart) {
     }
   }
 
-  dc.override(chart, "filterAll", function (_softFilterClear) {
-    chart._filterAll(_softFilterClear)
-    if (chart.rangeChartEnabled()) {
-      const RangeChart = chart.rangeChart()
-      if (_softFilterClear) {
-        RangeChart.softFilterClear(true)
-      } else {
-        RangeChart.softFilterClear(false)
-      }
-      return RangeChart.filter(null)
-    }
-  })
-
   chart.destroyChart = function () {
     if (chart.rangeChartEnabled()) {
       chart.rangeChartEnabled(false)

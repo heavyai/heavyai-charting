@@ -82,9 +82,12 @@ describe("binningMixin", () => {
       chart.xAxisMax = () => {}
       chart.replaceFilter = chai.spy()
       chart.redrawGroup = chai.spy()
-      chart.triggerReplaceFilter = chai.spy()
+      chart.rangeChart = () => chart
       chart.group = () => ({
-        binParams: () => [{timeBin: "day"}]
+        binParams: () => [{timeBin: "day", binBounds: [
+          new Date("Wed Jul 26 1995 08:17:06 GMT-0700 (PDT)"),
+          new Date("Wed Jul 26 1995 08:17:06 GMT-0700 (PDT)")
+        ]}]
       })
     })
     after(() => {
@@ -116,7 +119,7 @@ describe("binningMixin", () => {
     })
 
     describe('regular when extendBrush is a regular range ', () => {
-      it('should call replaceFilter with a RangedFilter and invoke triggerReplaceFilter', () => {
+      it('should call replaceFilter with a RangedFilter', () => {
         chart.extendBrush = () => [
           new Date("Wed May 21 2008 01:59:19 GMT-0700 (PDT)"),
           new Date("Fri May 30 2008 13:26:35 GMT-0700 (PDT)")
@@ -124,10 +127,9 @@ describe("binningMixin", () => {
         chart.xAxisMin = () => new Date("Tue Jan 01 2008 16:00:00 GMT-0800 (PST)")
         chart.xAxisMax = () => new Date("Wed Dec 31 2008 16:00:00 GMT-0800 (PST)")
         chart.binBrush()
-        expect(chart.triggerReplaceFilter).to.have.been.called()
         expect(chart.replaceFilter).to.have.been.called.with(dc.filters.RangedFilter(
           new Date("Tue May 20 2008 17:00:00 GMT-0700 (PDT)"),
-          new Date("Fri May 30 2008 17:00:00 GMT-0700 (PDT)")
+          new Date("Fri May 29 2008 17:00:00 GMT-0700 (PDT)")
         ))
       })
     })
@@ -158,7 +160,6 @@ describe("binningMixin", () => {
       ]
       chart.xAxisMin = () => new Date("Tue Jan 01 2008 16:00:00 GMT-0800 (PST)")
       chart.xAxisMax = () => new Date("Wed Dec 31 2008 16:00:00 GMT-0800 (PST)")
-      chart.triggerReplaceFilter = () => {}
       chart.group = () => ({
         binParams: () => [{timeBin: "day"}]
       })
