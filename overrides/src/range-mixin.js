@@ -1,4 +1,4 @@
-import {deepClone, deepEquals} from "./utils"
+import {deepClone, deepEquals, xAxisTickFormat, xDomain, xScale} from "./utils"
 import d3 from "d3"
 import dc from "../../mapdc"
 
@@ -27,6 +27,12 @@ function overridePlotData (chart) {
         chart.anchor().appendChild(RangeChart.rangeChartDiv)
 
         const parentHeight = chart.anchor().parentNode.clientHeight
+
+        if (RangeChart.filter()) {
+          chart.elasticX(false)
+        } else {
+          chart.elasticX(true)
+        }
 
         if (RangeChart.colors() !== chart.colors()) {
           RangeChart.colors(chart.colors())
@@ -81,6 +87,7 @@ export function initializeRangeChart (chart) {
       .height(chart.height() * RANGE_CHART_HEIGHT)
       .colorByLayerId(true)
       .elasticY(true)
+      .elasticX(true)
       .margins(Object.assign({}, DEFAULT_RANGE_MARGINS))
       .valueAccessor(d => d.series_1)
       .xAxisLabel(chart.xAxisLabel())
@@ -158,6 +165,7 @@ export function createRangeChart (chart) {
 
   RangeChart.destroyRangeChart = function (_chart) {
     _chart._height(_chart.anchor().parentNode.clientHeight)
+    _chart.elasticX(true)
     const _RangeChart = _chart.rangeChart()
 
     if (_chart.filters().length) {
@@ -199,15 +207,6 @@ export default function rangeMixin (chart) {
     return chart
   }
 
-  chart.isTime = function (_) {
-    if (!arguments.length) {
-      return chart._isTime
-    }
-
-    chart._isTime = _
-    return chart
-  }
-
   dc.override(chart, "height", function (height) {
     if (!arguments.length) {
       return chart._height()
@@ -232,50 +231,4 @@ export function calcChartHeightWithMaxRangeChartHeight (height) {
 export function calcMaxRangeChartHeight (height) {
   const rangeHeight = height * RANGE_CHART_HEIGHT
   return Math.max(Math.min(rangeHeight, MAX_RANGE_HEIGHT_IN_PX), MIN_RANGE_HEIGHT_IN_PX)
-}
-
-export function xAxisTickFormat ({extract, timeBin}, isChartDate) {
-  if (extract) {
-    return dc.utils.extractTickFormat(timeBin)
-  } else if (isChartDate) {
-    return dc.utils.customTimeFormat
-  } else {
-    return d3.format(".2s")
-  }
-}
-
-export function xDomain (extract, currentLowValue, currentHighValue, timeBin) {
-  if (extract) {
-    switch (timeBin) {
-    case "year":
-      return [
-        currentLowValue.getFullYear(),
-        currentHighValue.getFullYear()
-      ]
-    case "quarter":
-      return [1, 4] // eslint-disable-line no-magic-numbers
-    case "isodow":
-      return [1, 7] // eslint-disable-line no-magic-numbers
-    case "month":
-      return [1, 12] // eslint-disable-line no-magic-numbers
-    case "day":
-      return [1, 31] // eslint-disable-line no-magic-numbers
-    case "hour":
-      return [0, 23] // eslint-disable-line no-magic-numbers
-    case "minute":
-      return [0, 59] // eslint-disable-line no-magic-numbers
-    default:
-      return [1, 7] // eslint-disable-line no-magic-numbers
-    }
-  } else {
-    return [currentLowValue, currentHighValue]
-  }
-}
-
-export function xScale (extract, isChartDate) {
-  if (extract || !isChartDate) {
-    return d3.scale.linear()
-  } else {
-    return d3.time.scale.utc()
-  }
 }

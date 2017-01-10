@@ -1,5 +1,6 @@
 import earcut from "earcut"
 import d3 from "d3"
+import dc from "../../mapdc"
 
 export const DAYS = [
   "Mon",
@@ -32,6 +33,17 @@ export const QUARTERS = ["Q1", "Q2", "Q3", "Q4"]
 export const deepEquals = require("deep-equal") // eslint-disable-line global-require
 
 export const deepClone = obj => JSON.parse(JSON.stringify(obj))
+
+export const TIME_UNITS = {
+  DATE: true,
+  TIMESTAMP: true,
+  date: true,
+  datetime: true,
+  timestamp: true,
+  "timestamp without timezone": true,
+  TIME: true
+}
+
 
 /* istanbul ignore next */
 export const customTimeFormat = d3.time.format.utc.multi([
@@ -157,4 +169,50 @@ export function convertGeojsonToSql (features, px, py) {
   }
 
   return sql
+}
+
+export function xDomain (extract, currentLowValue, currentHighValue, timeBin) {
+  if (extract) {
+    switch (timeBin) {
+    case "year":
+      return [
+        currentLowValue.getFullYear(),
+        currentHighValue.getFullYear()
+      ]
+    case "quarter":
+      return [1, 4] // eslint-disable-line no-magic-numbers
+    case "isodow":
+      return [1, 7] // eslint-disable-line no-magic-numbers
+    case "month":
+      return [1, 12] // eslint-disable-line no-magic-numbers
+    case "day":
+      return [1, 31] // eslint-disable-line no-magic-numbers
+    case "hour":
+      return [0, 23] // eslint-disable-line no-magic-numbers
+    case "minute":
+      return [0, 59] // eslint-disable-line no-magic-numbers
+    default:
+      return [1, 7] // eslint-disable-line no-magic-numbers
+    }
+  } else {
+    return [currentLowValue, currentHighValue]
+  }
+}
+
+export function xScale (extract, isChartDate) {
+  if (extract || !isChartDate) {
+    return d3.scale.linear()
+  } else {
+    return d3.time.scale.utc()
+  }
+}
+
+export function xAxisTickFormat ({extract, timeBin}, isChartDate) {
+  if (extract) {
+    return dc.utils.extractTickFormat(timeBin)
+  } else if (isChartDate) {
+    return customTimeFormat
+  } else {
+    return d3.format(".2s")
+  }
 }

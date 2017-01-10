@@ -1,4 +1,4 @@
-
+import {xAxisTickFormat, xDomain, xScale} from "./utils"
 import d3 from "d3"
 import dc from "../../mapdc"
 
@@ -74,6 +74,16 @@ export function overrideCoordinate (chart) {
 
     return chart
   }
+
+  chart.isTime = function (_) {
+    if (!arguments.length) {
+      return chart._isTime
+    }
+
+    chart._isTime = _
+    return chart
+  }
+
 
   /* istanbul ignore next */
   chart.getBinInputVal = function () {
@@ -330,6 +340,17 @@ export function overrideCoordinate (chart) {
     }
   }
 
+  const fixXAxis = (chart, data) => {
+    if (isNaN(chart.xAxisMax()) || isNaN(chart.xAxisMin())) {
+      chart.elasticX(false)
+    } else {
+      chart.elasticX(true)
+    }
+    if (chart.filter() && ((isNaN(chart.xAxisMin()) || isNaN(chart.xAxisMax())) || (chart.filter()[1] <= chart.xAxisMin() || chart.filter()[0] >= chart.xAxisMax()))) {
+      chart.filterAll()
+    }
+  }
+
   /* istanbul ignore next */
   function bindRangeInputEvents (input) {
     d3.select(input)
@@ -341,5 +362,8 @@ export function overrideCoordinate (chart) {
         }
       })
   }
+
+  chart.on("preRender.fixXAxis", fixXAxis)
+  chart.on("preRedraw.fixXAxis", fixXAxis)
   return chart
 }

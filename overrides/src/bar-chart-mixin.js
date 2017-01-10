@@ -11,7 +11,7 @@ export default function barChartMixin (chart) {
     if (binParams.extract && binParams.timeBin !== "year") {
       return getDateExtractBucket(binParams.timeBin)
     }
-    return Math.ceil((binParams.binBounds[1] - binParams.binBounds[0]) / getConservativeDateTruncBucket(binParams.timeBin))
+    return Math.ceil((chart.xAxisMax() - chart.xAxisMin()) / getConservativeDateTruncBucket(binParams.timeBin))
   }
   return chart
 }

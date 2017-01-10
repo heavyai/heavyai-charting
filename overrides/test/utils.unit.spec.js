@@ -1,5 +1,6 @@
 import {expect} from "chai"
 import dc from "../../index.js"
+import {xAxisTickFormat} from "../src/utils"
 
 describe("DC Utils", () => {
   describe("extractTickFormat", () => {
@@ -176,5 +177,18 @@ describe("DC Utils", () => {
       )
     })
 
+  })
+
+  describe("xAxisTickFormat", () => {
+    it("returns the correct format for extract", () => {
+      const f = xAxisTickFormat({extract: true, timeBin: "year"})
+      expect(f(1.5)).to.eq(2)
+    })
+
+    it("return the correct format function for chart that is time binned", () => {
+      const f = xAxisTickFormat({}, true)
+      expect(f(new Date("2016-11-30T08:00:00.000Z"))).to.eq("08 AM")
+
+    })
   })
 })

@@ -1,7 +1,7 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
 import dc from "../../index.js"
-import rangeMixin, {DEFAULT_CHART_MARGINS_W_RANGE, MAX_RANGE_HEIGHT_IN_PX,calcChartHeightWithMaxRangeChartHeight, calcMaxRangeChartHeight, xAxisTickFormat} from "../src/range-mixin"
+import rangeMixin, {DEFAULT_CHART_MARGINS_W_RANGE, MAX_RANGE_HEIGHT_IN_PX,calcChartHeightWithMaxRangeChartHeight, calcMaxRangeChartHeight} from "../src/range-mixin"
 
 chai.use(spies)
 
@@ -26,6 +26,7 @@ describe("Range Chart", () => {
     chart.colorAccessor = chai.spy()
     chart.colors = chai.spy()
     chart.isMulti = chai.spy()
+    chart.elasticX = chai.spy()
     chart.rangeChartDiv = window.document.createElement("DIV")
     chart.rangeChartDiv.remove = () => {chart.rangeChartDiv = null}
     chart.rangeChart = () => chart
@@ -57,6 +58,21 @@ describe("Range Chart", () => {
       expect(node._childNodes.length).to.equal(1)
     })
 
+    it("should turn on elasticX on rangeChart and chart", () => {
+      chart.rangeChartEnabled(true)
+      chart.plotData()
+      expect(chart._tempRangeChart.elasticX()).to.eq(true)
+      expect(chart.elasticX).to.have.been.called.with(true)
+    })
+
+    it("should turn off elasticX on chart if RangeChart is filtered", () => {
+      chart.rangeChartEnabled(true)
+      chart.rangeChart().filter([new Date(), new Date()])
+      chart.plotData()
+      expect(chart.elasticX).to.have.been.called.with(false)
+
+    })
+
     it('set up rangeChart with default margins', () => {
       chart.rangeChartEnabled(true)
       chart.plotData()
@@ -85,19 +101,6 @@ describe("Range Chart", () => {
     it ('should calculate range chart heights', () => {
       expect(calcMaxRangeChartHeight(smallChart)).to.equal(125)
       expect(calcMaxRangeChartHeight(tallChart)).to.equal(MAX_RANGE_HEIGHT_IN_PX)
-
-    })
-  })
-
-  describe("xAxisTickFormat", () => {
-    it("show return the currect format for extract", () => {
-      const f = xAxisTickFormat({extract: true, timeBin: "year"})
-      expect(f(1.5)).to.eq(2)
-    })
-
-    it("show return the currect format for isChartDate", () => {
-      const f = xAxisTickFormat({}, true)
-      expect(f(new Date("11/30/2016"))).to.eq("08 AM")
     })
   })
 })
