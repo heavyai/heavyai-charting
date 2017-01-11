@@ -27,6 +27,7 @@ describe("Range Chart", () => {
     chart.colors = chai.spy()
     chart.isMulti = chai.spy()
     chart.elasticX = chai.spy()
+    chart.renderArea = chai.spy()
     chart.rangeChartDiv = window.document.createElement("DIV")
     chart.rangeChartDiv.remove = () => {chart.rangeChartDiv = null}
     chart.rangeChart = () => chart

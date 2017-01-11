@@ -372,7 +372,7 @@ dc.lineChart = function (parent, chartGroup) {
             .attr('class', 'popup-item-value')
             .classed('text-align-right', !!_chart.series().keys())
             .text(function(d){
-                return dc.utils.formatValue(_renderArea ? d.datum.y + d.datum.y0 : d.datum.y);
+                return dc.utils.formatValue(d.datum.y);
             });
 
         positionPopup(x, y);

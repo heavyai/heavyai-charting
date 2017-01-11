@@ -59,6 +59,11 @@ function overridePlotData (chart) {
           RangeChart._hasRendered = false
         }
 
+        if (chart.renderArea() !== RangeChart.renderArea()) {
+          RangeChart.renderArea(chart.renderArea())
+          RangeChart._hasRendered = false
+        }
+
         if (!RangeChart._hasRendered) {
           RangeChart._hasRendered = true
           RangeChart.renderAsync()
@@ -132,6 +137,8 @@ export function createRangeChart (chart) {
   RangeChart.yAxis().tickFormat(d3.format(".2s"))
   RangeChart.colorAccessor(chart.colorAccessor())
   RangeChart.colors(chart.colors())
+  RangeChart.renderArea(chart.renderArea())
+
 
   if (chart.isMulti()) {
     RangeChart.series().group(chart.series().group())
