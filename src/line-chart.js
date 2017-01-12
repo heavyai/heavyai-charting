@@ -363,8 +363,7 @@ dc.lineChart = function (parent, chartGroup) {
             popupItems.append('div')
                 .attr('class', 'popup-item-key')
                 .text(function(d){
-                    var seriesLabel = _chart.series().keys()[d.datum.layer]
-                    return seriesLabel === "other" ? "Other" : seriesLabel;
+                    return _chart.colorDomain()[d.datum.idx];
                 });
         }
 
