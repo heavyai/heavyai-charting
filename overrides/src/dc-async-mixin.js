@@ -70,12 +70,7 @@ export default function asyncCoreMixin (dc) {
     const charts = dc.chartRegistry.list(group)
     const createRedrawPromises = () => charts.map(chart => {
       chart.expireCache()
-      chart._invokeDataFetchListener()
       return chart.redrawAsync(queryGroupId, charts.length)
-        .catch(e => {
-          chart._invokeDataErrorListener()
-          throw e
-        })
     })
 
     if (dc._renderlet !== null) {

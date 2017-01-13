@@ -103,12 +103,15 @@ export default function asyncMixin (_chart) {
 
       const dataCallback = function (error, data) {
         if (error) {
+          _chart._invokeDataErrorListener()
           dc.resetRedrawStack()
           reject(error)
         } else {
           _chart.redraw(id, queryGroupId, queryCount, data, redrawCallback)
         }
       }
+
+      _chart._invokeDataFetchListener()
       _chart.dataAsync(dataCallback)
     })
   }
