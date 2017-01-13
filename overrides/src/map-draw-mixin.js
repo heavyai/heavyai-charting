@@ -25,9 +25,9 @@ const DRAW_OPTIONS = {
         "line-join": "round"
       },
       paint: {
-        "line-color": "#ffa500",
-        "line-dasharray": [0.2, 2],
-        "line-width": 2
+        "line-color": "#ef9b20",
+        "line-dasharray": [0.5, 2],
+        "line-width": 3
       }
     },
     // polygon fill
@@ -36,8 +36,7 @@ const DRAW_OPTIONS = {
       type: "fill",
       filter: ["all", ["==", "$type", "Polygon"], ["==", "active", "true"]],
       paint: {
-        "fill-color": "#ffa500",
-        "fill-outline-color": "#ffa500",
+        "fill-color": "#ef9b20",
         "fill-opacity": 0.1
       }
     },
@@ -52,9 +51,9 @@ const DRAW_OPTIONS = {
         "line-join": "round"
       },
       paint: {
-        "line-color": "#ffa500",
-        "line-dasharray": [0.2, 2],
-        "line-width": 2
+        "line-color": "#ef9b20",
+        "line-dasharray": [0.5, 2],
+        "line-width": 3
       }
     },
     // vertex point halos
@@ -90,7 +89,8 @@ const DRAW_OPTIONS = {
       },
       paint: {
         "line-color": "#22a7f0",
-        "line-width": 3
+        "line-dasharray": [0.2, 2],
+        "line-width": 1.5
       }
     },
     // polygon fill
@@ -115,7 +115,7 @@ const DRAW_OPTIONS = {
       },
       paint: {
         "line-color": "#22a7f0",
-        "line-width": 3
+        "line-width": 1.5
       }
     }
   ]
