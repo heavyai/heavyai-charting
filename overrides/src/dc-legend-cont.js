@@ -18,6 +18,10 @@ export default function legendCont () {
   let _minMax = null
   let _isLocked = false
 
+  _legend.legendType = function () {
+    return "quantitative"
+  }
+
   _legend.isLocked = function (_) {
     if (!arguments.length) {
       return _isLocked

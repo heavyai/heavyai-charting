@@ -5,6 +5,10 @@ export default function legendMixin (legend) {
   legend._title = "Legend"
   legend._key = "key0"
 
+  legend.legendType = function () {
+    return "custom"
+  }
+
   legend.render = function () {
     legend.parent().root().select(".dc-legend").remove()
 
