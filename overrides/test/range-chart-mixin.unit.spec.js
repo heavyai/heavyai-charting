@@ -26,7 +26,6 @@ describe("Range Chart", () => {
     chart.colorAccessor = chai.spy()
     chart.colors = chai.spy()
     chart.isMulti = chai.spy()
-    chart.elasticX = chai.spy()
     chart.renderArea = chai.spy()
     chart.rangeChartDiv = window.document.createElement("DIV")
     chart.rangeChartDiv.remove = () => {chart.rangeChartDiv = null}
@@ -57,21 +56,6 @@ describe("Range Chart", () => {
       chart.rangeChartEnabled(true)
       chart.plotData()
       expect(node._childNodes.length).to.equal(1)
-    })
-
-    it("should turn on elasticX on rangeChart and chart", () => {
-      chart.rangeChartEnabled(true)
-      chart.plotData()
-      expect(chart._tempRangeChart.elasticX()).to.eq(true)
-      expect(chart.elasticX).to.have.been.called.with(true)
-    })
-
-    it("should turn off elasticX on chart if RangeChart is filtered", () => {
-      chart.rangeChartEnabled(true)
-      chart.rangeChart().filter([new Date(), new Date()])
-      chart.plotData()
-      expect(chart.elasticX).to.have.been.called.with(false)
-
     })
 
     it('set up rangeChart with default margins', () => {

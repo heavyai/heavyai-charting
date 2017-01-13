@@ -28,12 +28,6 @@ function overridePlotData (chart) {
 
         const parentHeight = chart.anchor().parentNode.clientHeight
 
-        if (RangeChart.filter()) {
-          chart.elasticX(false)
-        } else {
-          chart.elasticX(true)
-        }
-
         if (RangeChart.colors() !== chart.colors()) {
           RangeChart.colors(chart.colors())
           RangeChart._hasRendered = false
@@ -92,7 +86,6 @@ export function initializeRangeChart (chart) {
       .height(chart.height() * RANGE_CHART_HEIGHT)
       .colorByLayerId(true)
       .elasticY(true)
-      .elasticX(true)
       .margins(Object.assign({}, DEFAULT_RANGE_MARGINS))
       .valueAccessor(d => d.series_1)
       .xAxisLabel(chart.xAxisLabel())
@@ -172,7 +165,6 @@ export function createRangeChart (chart) {
 
   RangeChart.destroyRangeChart = function (_chart) {
     _chart._height(_chart.anchor().parentNode.clientHeight)
-    _chart.elasticX(true)
     const _RangeChart = _chart.rangeChart()
 
     if (_chart.filters().length) {
