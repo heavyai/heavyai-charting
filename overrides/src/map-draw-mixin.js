@@ -198,6 +198,7 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
     })
     chart.map().on("draw.modechange", changeDrawMode)
     chart.map().on("draw.selectionchange", changeDrawMode)
+    chart.map().boxZoom.enable()
 
     chart.filter = filter
     chart.filters = filters

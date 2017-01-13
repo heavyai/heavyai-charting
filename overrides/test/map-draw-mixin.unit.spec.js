@@ -9,7 +9,10 @@ const map = {
   on: (event, listener) => {
     listeners[event] = listener
   },
-  addControl: chai.spy()
+  addControl: chai.spy(),
+  boxZoom: {
+    enable: () => {}
+  }
 }
 
 function createChartWithDrawContext (Draw) {
