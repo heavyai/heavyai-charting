@@ -50,7 +50,7 @@ function processMultiSeriesResults (results) {
 }
 
 function selectWithCase (dimension, values) {
-  const set = values.map(val => `'${val}'`).join(",")
+  const set = values.map(val => `'${val.replace(/'/, "''")}'`).join(",")
   return `CASE when ${dimension} IN (${set}) then ${dimension} ELSE 'other' END`
 }
 
