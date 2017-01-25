@@ -48,6 +48,8 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
 
     var _geocoder = null
 
+    var _minMaxCache = {}
+
     _chart.useLonLat = function(useLonLat) {
        if (!arguments.length)
           return _useLonLat;
@@ -428,7 +430,71 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         return _chart
     }
 
-    _chart.init = function () {
+    function getMinMax (value) {
+      return _chart.crossfilter().groupAll().reduce([
+        {expression: value, agg_mode: "min", name: "minimum"},
+        {expression: value, agg_mode: "max", name: "maximum"}
+      ]).valuesAsync(true, true)
+        .then(function(bounds) {
+          return [
+            bounds["minimum"],
+            bounds["maximum"]
+          ]
+        })
+    }
+
+    function createRangeMinMaxPromises (promises, value) {
+        if (!_minMaxCache[value]) {
+            return promises.concat(
+                getMinMax(value).then(function (bounds) {
+                  _minMaxCache[value] = bounds
+                })
+            )
+        } else {
+            return promises
+        }
+    }
+
+    var _fitInitialBounds
+
+    _chart.fitInitialBounds = function (callback) {
+        if (!arguments.length) {
+            _fitInitialBounds()
+        }
+        _fitInitialBounds = callback
+        return _chart
+    }
+
+    function init (_bounds) {
+      if (!_bounds) return Promise.resolve()
+
+      var xValue = _xDim.value()[0]
+      var yValue = _yDim.value()[0]
+
+      if (Array.isArray(_bounds) && Array.isArray(_bounds[0]) && Array.isArray(_bounds[1])) {
+        _minMaxCache[xValue] = _bounds[0]
+        _minMaxCache[yValue] = _bounds[1]
+      }
+
+      return Promise.all(
+          [xValue, yValue].reduce(createRangeMinMaxPromises, [])
+      ).then(function () {
+          _chart.fitInitialBounds(function () {
+              if (!initialBounds) {
+                  var lonMin = _minMaxCache[xValue][0]
+                  var lonMax = _minMaxCache[xValue][1]
+                  var latMin = _minMaxCache[yValue][0]
+                  var latMax = _minMaxCache[yValue][1]
+                  var sw = new _mapboxgl.LngLat(lonMin > LONMIN ? lonMin : LONMIN, latMin > LATMIN ? latMin : LATMIN)
+                  var ne = new _mapboxgl.LngLat(lonMax < LONMAX ? lonMax : LONMAX, latMax < LATMAX ? latMax : LATMAX)
+                  var lonLatBounds = new _mapboxgl.LngLatBounds(sw, ne)
+                  _map.fitBounds(lonLatBounds, {linear: true, duration: 0})
+              }
+          })
+      })
+    }
+
+    _chart.init = function (bounds) {
         if (_mapInitted) return;
 
         var styleLoaded = false;
@@ -441,14 +507,18 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
                 onLoad(e);
                 loaded = true;
                 if (styleLoaded) {
-                    resolve(_chart);
+                    init(bounds).then(function() {
+                        resolve(_chart);
+                    })
                 }
             })
 
             _map.on('style.load', function () {
                 styleLoaded = true;
                 if (loaded) {
-                    resolve(_chart);
+                    init(bounds).then(function() {
+                        resolve(_chart);
+                    })
                 }
             })
         })

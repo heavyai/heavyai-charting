@@ -89,6 +89,8 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
 
         _filters = shouldReset ? [] : [[xrange, yrange]]
         _chart._invokeFilteredListener(_filters, false)
+        _chart.xRangeFilter(xrange)
+        _chart.yRangeFilter(yrange)
     }
 
     function bindEventHandlers(map, canvasContainer, enableInteractions) {

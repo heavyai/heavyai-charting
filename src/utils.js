@@ -171,3 +171,41 @@ dc.utils.b64toBlob = function(b64Data, contentType, sliceSize) {
     var blob = new Blob(byteArrays, {type: contentType});
     return blob;
 }
+
+dc.utils.isOrdinal = function (type) {
+    var BOOL_TYPES = {BOOL: true}
+
+    var TEXT_TYPES = {
+      varchar: true,
+      text: true,
+      STR: true
+    }
+
+    var TEXT_AND_BOOL_TYPES = Object.assign({}, TEXT_TYPES, BOOL_TYPES)
+
+    return type in TEXT_AND_BOOL_TYPES
+}
+
+dc.utils.isQuantitative = function (type) {
+    var NUMERICAL_INTEGER_TYPES = {
+      int2: true,
+      int4: true,
+      int8: true,
+      SMALLINT: true,
+      INT: true,
+      BIGINT: true
+    }
+
+    var NUMERICAL_REAL_TYPES = {
+      FLOAT: true,
+      DOUBLE: true,
+      DECIMAL: true
+    }
+
+    var NONCUSTOM_NUMERICAL_TYPES = Object.assign({},
+      NUMERICAL_INTEGER_TYPES,
+      NUMERICAL_REAL_TYPES
+    )
+
+    return type in NONCUSTOM_NUMERICAL_TYPES
+}

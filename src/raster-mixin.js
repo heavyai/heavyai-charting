@@ -11,8 +11,96 @@ dc.rasterMixin = function(_chart) {
     var _popupSearchRadius = 2;
     var _popupFunction = null;
     var _colorBy = null;
+    var _sizeBy = null;
     var _showColorByInPopup = false;
     var _mouseLeave = false // used by displayPopup to maybe return early
+    var _minMaxCache = {}
+    var _crossfilter = null;
+
+    var _data_events = ["preData"]
+    var _listeners = d3.dispatch.apply(d3, _data_events)
+    var _on = _chart.on.bind(_chart)
+
+    _chart.on = function (event, listener) {
+      if (_data_events.indexOf(event) === -1) {
+        _on(event, listener)
+      } else {
+        _listeners.on(event, listener)
+      }
+      return _chart
+    }
+
+    _chart._invokePreDataListener = function (f) {
+      if (f !== "undefined") {
+        _listeners.preData(_chart, f)
+      }
+    }
+
+    _chart.getMinMax = function (value) {
+      if (_minMaxCache[value]) {
+        return Promise.resolve(_minMaxCache[value])
+      }
+
+      return _chart.crossfilter().groupAll().reduce([
+        {expression: value, agg_mode: "min", name: "minimum"},
+        {expression: value, agg_mode: "max", name: "maximum"}
+      ]).valuesAsync(true)
+        .then(function(bounds) {
+          _minMaxCache[value] = [bounds["minimum"], bounds["maximum"]]
+          return _minMaxCache[value]
+        })
+    }
+
+    _chart.getTopValues = function (value) {
+      const NUM_TOP_VALUES = 10
+      const OFFSET = 0
+
+      if (_minMaxCache[value]) {
+          return Promise.resolve(_minMaxCache[value])
+      }
+
+      return _chart.crossfilter().dimension(value).order("val").group().reduceCount(value)
+          .topAsync(NUM_TOP_VALUES, OFFSET, null, true).then(function(results) {
+              return results.map(function(result) { return result.key0})
+          })
+    }
+
+
+    _chart.crossfilter = function(_) {
+        if(!arguments.length){ return _crossfilter; }
+        _crossfilter = _;
+        return _chart;
+    }
+
+    _chart.xRangeFilter = function (range) {
+        if (!_chart.xDim()) {
+            throw new Error("Must set xDim before invoking xRange")
+        }
+
+        var xValue = _chart.xDim().value()[0]
+
+        if (!arguments.length) {
+            return _minMaxCache[xValue]
+        }
+
+        _minMaxCache[xValue] = range
+        return _chart
+    }
+
+    _chart.yRangeFilter = function (range) {
+        if (!_chart.yDim()) {
+            throw new Error("Must set yDim before invoking yRange")
+        }
+
+        var yValue = _chart.yDim().value()[0]
+
+        if (!arguments.length) {
+            return _minMaxCache[yValue]
+        }
+
+        _minMaxCache[yValue] = range
+        return _chart
+    }
 
     _chart.popupSearchRadius = function (popupSearchRadius) {
         if (!arguments.length){ return _popupSearchRadius; }
@@ -110,6 +198,12 @@ dc.rasterMixin = function(_chart) {
     _chart.colorBy = function(_) {
         if (!arguments.length) { return _colorBy; }
         _colorBy = _;
+        return _chart;
+    }
+
+    _chart.sizeBy = function(_) {
+        if (!arguments.length) { return _sizeBy; }
+        _sizeBy = _;
         return _chart;
     }
 
@@ -216,8 +310,8 @@ dc.rasterMixin = function(_chart) {
             columns.push(_chart._yDimName + ' as yPoint');
         }
 
-        if (_chart.colorBy() && columns.indexOf(_chart.colorBy()) === -1) {
-            columns.push(_chart.colorBy())
+        if (_chart.colorBy() && columns.indexOf(_chart.colorBy().value) === -1) {
+            columns.push(_chart.colorBy().value)
         }
 
         return columns
@@ -226,7 +320,7 @@ dc.rasterMixin = function(_chart) {
     function renderPopupHTML(data) {
       var html = '';
       for (var key in data) {
-        if(key !== "xPoint" && key !== "yPoint" && !(key === _chart.colorBy() && hideColorColumnInPopup())){
+        if(key !== "xPoint" && key !== "yPoint" && !(key === _chart.colorBy().value && hideColorColumnInPopup())){
           html += '<div class="map-popup-item"><span class="popup-item-key">' + key + ':</span><span class="popup-item-val"> ' + dc.utils.formatValue(data[key]) +'</span></div>'
         }
       }
@@ -237,10 +331,10 @@ dc.rasterMixin = function(_chart) {
         if (!_chart.colors().domain || !_chart.colorBy()) {
             return _chart.defaultColor();
         } else if (isNaN(_chart.colors().domain()[0])) {
-            var matchIndex = _chart.colors().domain().indexOf(data[_chart.colorBy()])
+            var matchIndex = _chart.colors().domain().indexOf(data[_chart.colorBy().value])
             return matchIndex !== -1 ? _chart.colors().range()[matchIndex] : _chart.defaultColor();
         } else {
-            return _chart.colors()(data[_chart.colorBy()])
+            return _chart.colors()(data[_chart.colorBy().value])
         }
     }
 
@@ -254,7 +348,7 @@ dc.rasterMixin = function(_chart) {
     }
 
     function hideColorColumnInPopup () {
-        return _chart.colorBy() && _chart.popupColumns().indexOf(_chart.colorBy()) === -1
+        return _chart.colorBy() && _chart.popupColumns().indexOf(_chart.colorBy().value) === -1
     }
 }
 

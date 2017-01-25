@@ -126,21 +126,111 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
 
     _chart.colors("#22A7F0"); // set constant as picton blue as default
 
-    _chart.setDataAsync(function(group, callbacks) {
-        var bounds = _chart.getDataRenderBounds();
-        _chart._updateXAndYScales(bounds);
+    function getXYRange () {
+        if (_useMap) return Promise.resolve()
+        return Promise.all([
+            _chart.getMinMax(_chart.xDim().value()[0]),
+            _chart.getMinMax(_chart.yDim().value()[0])
+        ]).then(function (values) {
+            _chart.filter([values[0], values[1]])
+            return [values[0], values[1]]
+        })
+    }
 
-        var sql;
-        if (group.type === "dimension") {
-            sql = group.writeTopQuery(_chart.cap(), undefined, true);
+    function basicColorAccessor (d) {
+      return (d || d === 0) ? d.color || d.val || d : null
+    }
+
+    function customColorAccessor (d) {
+      return _chart.colorDomain().includes('' + d[key0]) ? d["key0"] : "Default"
+    }
+
+    function getMinMaxOrTopColors (color) {
+        if (dc.utils.isQuantitative(color.type)) {
+            return _chart.getMinMax(color.value)
+        } else if (dc.utils.isOrdinal(color.type)) {
+            return _chart.getTopValues(color.value)
         } else {
-            sql = group.writeTopQuery(_chart.cap(), undefined, false, true);
+            return Promise.resolve()
         }
+    }
 
-        _chart._vegaSpec = genVegaSpec(_chart, sql, dc.lastFilteredSize(group.getCrossfilterId()));
-        var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks);
+    function getColorData () {
+        if (_chart.colorBy() && !_chart.colorBy().domain) {
+            return getMinMaxOrTopColors(_chart.colorBy()).then(function(bounds) {
 
-        _renderBoundsMap[nonce] = bounds;
+                var scale = d3.scale.ordinal().domain(bounds).range(["#ea5545", "#bdcf32", "#b33dc6", "#ef9b20", "#87bc45", "#f46a9b", "#ace5c7", "#ede15b", "#836dc5", "#86d87f", "#27aeef"])
+                _chart.colors(scale).colorAccessor(customColorAccessor)
+
+                _chart.colorBy(Object.assign({}, _chart.colorBy(), {
+                    domain: bounds
+                }))
+
+                var legend = _chart
+                   .legend(dc.legend())
+                   .legend()
+                   .setKey("key0")
+
+
+                return bounds
+            })
+        } else {
+            return Promise.resolve()
+        }
+    }
+
+    function getSizeData () {
+        if (_chart.sizeBy() && !_chart.sizeBy().domain) {
+            return _chart.getMinMax(_chart.sizeBy().value).then(function(bounds) {
+                var DEFAULT_SIZE_RANGE = [3, 10]
+                _chart.sizeBy(Object.assign({}, _chart.sizeBy(), {
+                    domain: bounds
+                }))
+                _chart.r(d3.scale.linear().domain(bounds).range(DEFAULT_SIZE_RANGE))
+                return bounds
+            })
+        } else {
+            return Promise.resolve()
+        }
+    }
+
+    function preData () {
+      return Promise.all([
+          getXYRange(),
+          getColorData(),
+          getSizeData()
+      ]).then(function(values) {
+          if (typeof values[0] === "undefined" && typeof values[1] === "undefined" && typeof values[2] === "undefined") {
+            return
+          }
+
+          _chart._invokePreDataListener({
+              range: values[0],
+              color: values[1],
+              size: values[2]
+          })
+      })
+    }
+
+    _chart.setDataAsync(function(group, callbacks) {
+
+        return preData().then(function () {
+            var bounds = _chart.getDataRenderBounds();
+            _chart._updateXAndYScales(bounds);
+
+            var sql;
+            if (group.type === "dimension") {
+                sql = group.writeTopQuery(_chart.cap(), undefined, true);
+            } else {
+                sql = group.writeTopQuery(_chart.cap(), undefined, false, true);
+            }
+
+            _chart._vegaSpec = genVegaSpec(_chart, sql, dc.lastFilteredSize(group.getCrossfilterId()));
+            var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks);
+
+            _renderBoundsMap[nonce] = bounds;
+        })
+
     });
 
     _chart.data(function (group) {
