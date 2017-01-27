@@ -52,8 +52,8 @@ dc.rasterMixin = function(_chart) {
     }
 
     _chart.getTopValues = function (value) {
-      const NUM_TOP_VALUES = 10
-      const OFFSET = 0
+      var NUM_TOP_VALUES = 10
+      var OFFSET = 0
 
       if (_minMaxCache[value]) {
           return Promise.resolve(_minMaxCache[value])
