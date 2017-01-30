@@ -208,6 +208,9 @@ dc.rasterMixin = function(_chart) {
     }
 
     _chart.getClosestResult = function getClosestResult (point, callback) {
+        if (_chart.drawMode()) {
+            return;
+        }
         var height = (typeof _chart.effectiveHeight === 'function' ? _chart.effectiveHeight() : _chart.height());
         var pixelRatio = _chart._getPixelRatio() || 1;
         var pixel = new TPixel({x: Math.round(point.x * pixelRatio), y: Math.round((height - point.y) * pixelRatio)})
