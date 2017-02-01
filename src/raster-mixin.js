@@ -208,7 +208,7 @@ dc.rasterMixin = function(_chart) {
     }
 
     _chart.getClosestResult = function getClosestResult (point, callback) {
-        if (_chart.drawMode()) {
+        if (_chart.drawMode && _chart.drawMode()) {
             return;
         }
         var height = (typeof _chart.effectiveHeight === 'function' ? _chart.effectiveHeight() : _chart.height());

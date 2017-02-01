@@ -164,9 +164,15 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
     applyFilter()
   }
 
-  function changeDrawMode () {
-    const mode = Draw.getMode()
+  function changeDrawMode (a, b) {
     const {features} = Draw.getSelected()
+
+    if (features.length && Draw.getMode() === "direct_select") {
+      Draw.changeMode("simple_select", features[0].id)
+    }
+  
+    const mode = Draw.getMode()
+
     if (features.length || mode === "draw_polygon" || mode === "draw_circle") {
       chart.drawMode(true)
     } else {
@@ -187,9 +193,9 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
     if (drawControlAdded) {
       return chart
     }
-    Draw = _mapboxgl.Draw(DRAW_OPTIONS)
+    Draw = new MapboxDraw(DRAW_OPTIONS)
     drawControlAdded = true
-    chart.map().addControl(Draw)
+    chart.map().addControl(Draw, "top-left")
     chart.map().on("draw.create", drawEventHandler)
     chart.map().on("draw.update", drawEventHandler)
     chart.map().on("draw.delete", () => {

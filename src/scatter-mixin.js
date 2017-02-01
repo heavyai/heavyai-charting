@@ -33,7 +33,7 @@ dc.scatterMixin = function (_chart, _mapboxgl) {
     }
 
     // add event functionality to our dummy _map object
-    extend(_map, _mapboxgl.Evented);
+    extend(_map, _mapboxgl.Evented.prototype);
 
     _chart.map = function() { // just a getter - don't let user set map
                               // this is to appease bubbleRasterChart

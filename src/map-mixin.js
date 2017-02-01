@@ -42,7 +42,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     _chart._maxCoord = null;
     _chart._reProjMapbox = true;
 
-    var _arr = [[180, -85], [-180, 85]];
+    var _arr = [[-180, -85], [180, 85]];
 
     var _llb = _mapboxgl.LngLatBounds.convert(_arr);
 
@@ -147,7 +147,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
     }
 
     function onLoad(e){
-      _map.addControl(new _mapboxgl.Attribution());
+      _map.addControl(new _mapboxgl.AttributionControl());
 
       var mapboxlogo = document.createElement('a');
         mapboxlogo.className = 'mapbox-maplogo';
@@ -327,7 +327,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
                 id: toBeAddedOverlay,
                 source: toBeAddedOverlay,
                 type: "raster",
-                paint: {"raster-opacity": 0.85}
+                paint: {"raster-opacity": 0.85, "raster-fade-duration": 0}
             });
         } else {
             var overlayName = "overlay" + _activeLayer;
