@@ -107,6 +107,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
       pointMapChart = dc.bubbleRasterChart(parent, false)
                               .con(con)
+                              .crossfilter(crossFilter)
                               .height(h/1.5)
                               .width(w)
                               .dimension(scatterplotDim)
@@ -122,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function init() {
                               .r(rScale)
 
                               // set the color scale and defaults
-                              .colorBy('lang')
+                              .colorBy({type: 'STR', value: 'lang', domain: langDomain})
                               .defaultColor("#80DEEA")
                               .colors(d3.scale.ordinal().domain(langDomain).range(langColors))
 

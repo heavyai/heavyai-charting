@@ -30,12 +30,12 @@
     "postinstall": "cd ./overrides && npm install",
     "build": "bash scripts/build.sh",
     "build:example": "npm run build && npm run webpack && bash scripts/copy-example-libs.sh",
-    "start": "npm run build:example && ./node_modules/http-server/bin/http-server -p 8081 -o",
+    "start": "npm run build:example && node ../../node_modules/http-server/bin/http-server -p 8081 -o",
     "test": "grunt test",
     "clean": "bash scripts/clean.sh",
     "watch": "grunt watch",
     "lint": "grunt lint",
-    "webpack": "webpack"
+    "webpack": "node ../../node_modules/webpack/bin/webpack.js"
   },
   "npmName": "mapdc",
   "npmFileMap": [

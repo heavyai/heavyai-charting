@@ -135,7 +135,7 @@
     .othersGrouper(false)
     .xDim(xDim)
     .yDim(yDim)
-    .colorBy('lang')
+    .colorBy({type: 'STR', value: 'lang', domain: langDomain})
     .r(rScale)
     .defaultColor("#80DEEA")
     .colors(d3.scale.ordinal().domain(langDomain).range(langColors))
