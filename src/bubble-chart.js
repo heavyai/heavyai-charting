@@ -375,18 +375,14 @@ dc.bubbleChart = function (parent, chartGroup) {
 
     function renderNodes (bubbleG) {
         var bubbleGEnter
-        if (bubbleG.empty()) {
-          bubbleGEnter = bubbleG.enter().append('g')
-          bubbleGEnter
-              .append('circle').attr('class', function (d, i) {
-                    return _chart.BUBBLE_CLASS + ' _' + i;
-                })
-              .on('click', _chart.onClick)
-              .attr('fill', _chart.getColor)
-              .attr('r', 0);
-        } else {
-            bubbleGEnter = bubbleG
-        }
+        bubbleGEnter = bubbleG.enter().append('g')
+        bubbleGEnter
+            .append('circle').attr('class', function (d, i) {
+                  return _chart.BUBBLE_CLASS + ' _' + i;
+              })
+            .on('click', _chart.onClick)
+            .attr('fill', _chart.getColor)
+            .attr('r', 0);
 
         var debouncePopUp = _chart.debounce(function(d, i, elm){
             d3.select(elm).classed('node-hover', true);
