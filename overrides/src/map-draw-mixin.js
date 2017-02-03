@@ -147,12 +147,12 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
   }
 
   function filters () {
-    return Draw.getAll().features.map(feature => feature.geometry)
+    return Draw.getAll().features
   }
 
   function filter (feature) {
     if (!arguments.length) {
-      return Draw.getAll().features.map(feature => feature.geometry)[0]
+      return Draw.getAll().features
     }
 
     if (feature === null) {
@@ -170,7 +170,7 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
     if (features.length && Draw.getMode() === "direct_select") {
       Draw.changeMode("simple_select", features[0].id)
     }
-  
+
     const mode = Draw.getMode()
 
     if (features.length || mode === "draw_polygon" || mode === "draw_circle") {
