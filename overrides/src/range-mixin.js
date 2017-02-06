@@ -124,7 +124,7 @@ export function createRangeChart (chart) {
 
   const defaultExact = binParams[0] ? binParams[0].extract : null
   const defaultTimeBin = binParams[0] ? binParams[0].timeBin : null
-  const xDomainArr = [defaultExact, chart.xAxisMin(), chart.xAxisMax(), defaultTimeBin]
+  const xDomainArr = [defaultExact, binParams[0].binBounds[0], binParams[0].binBounds[1], defaultTimeBin]
   RangeChart.x(xScale(defaultExact, isChartDate).domain(xDomain(...xDomainArr)))
   RangeChart.xAxis().scale(RangeChart.x()).tickFormat(xAxisTickFormat(binParams[0] || {extract: false, timeBin: false}, isChartDate))
   RangeChart.yAxis().tickFormat(d3.format(".2s"))

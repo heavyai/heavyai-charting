@@ -121,7 +121,7 @@ const DRAW_OPTIONS = {
   ]
 }
 
-export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
+export function mapDrawMixin (chart, _mapboxgl = mapboxgl, _MapboxDraw = MapboxDraw) {
   let drawControlAdded = false
   let coordFilter = null
   let Draw = null
@@ -193,7 +193,7 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
     if (drawControlAdded) {
       return chart
     }
-    Draw = new MapboxDraw(DRAW_OPTIONS)
+    Draw = new _MapboxDraw(DRAW_OPTIONS)
     drawControlAdded = true
     chart.map().addControl(Draw, "top-left")
     chart.map().on("draw.create", drawEventHandler)

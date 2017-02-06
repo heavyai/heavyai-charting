@@ -35,7 +35,9 @@ describe("Range Chart", () => {
       selected: chai.spy()
     })
     chart.group = () => ({
-      binParams: () => [null],
+      binParams: () => [{
+        binBounds: [2, 300]
+      }],
       reduceMulti: () => chart.group()
     })
     chart.dimension = () => ({
