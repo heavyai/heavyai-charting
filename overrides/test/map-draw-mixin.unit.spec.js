@@ -133,4 +133,17 @@ describe("Map Draw Mixin", () => {
       expect(chart.drawMode()).to.equal(false)
     })
   })
+
+  describe('filtering', () => {
+    it('should have a filterAll method', () => {
+      const filter = chai.spy()
+      const chart = createChartWithDrawContext({
+        deleteAll: () => {},
+      })
+      chart.addDrawControl()
+      chart.coordFilter({filter})
+      chart.filterAll()
+      expect(filter).to.have.been.called()
+    })
+  })
 })

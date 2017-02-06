@@ -209,6 +209,12 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl) {
     chart.filter = filter
     chart.filters = filters
 
+    chart.filterAll = () => {
+      coordFilter.filter()
+      Draw.deleteAll()
+      return chart
+    }
+
     return chart
   }
 
