@@ -314,7 +314,6 @@ dc.heatMap = function (parent, chartGroup) {
         cols.rangeBands([0, boxWidth * colCount]);
         rows.rangeBands([boxHeight * rowCount, 0]);
 
-    
         _chart.svg()
             .attr('width', svgWidth)
             .attr('height', svgHeight);

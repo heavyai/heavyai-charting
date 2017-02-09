@@ -64,5 +64,9 @@ describe("MapD Heatmap Chart", () => {
       expect(colsLabel(10000)).to.equal("10,000")
       expect(colsLabel(1)).to.equal("1")
     })
+    it("should properly format extract data", () => {
+      expect(rowsLabel([{isExtract: true, value: 1, extractUnit: "month"}])).to.equal("Jan")
+      expect(rowsLabel([{isExtract: true, value: 1, extractUnit: "hour"}])).to.equal("1AM")
+    })
   })
 })

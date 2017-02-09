@@ -1,4 +1,4 @@
-import {DAYS, MONTHS, QUARTERS} from "./utils"
+import {DAYS, HOURS, MONTHS, QUARTERS} from "./utils"
 import d3 from "d3"
 import moment from "moment"
 
@@ -83,6 +83,7 @@ export function formatExtractValue (number, label) {
   case "quarter":
     return QUARTERS[number - 1]
   case "hour":
+    return HOURS[number]
   case "minute":
     return number + 1
   default:

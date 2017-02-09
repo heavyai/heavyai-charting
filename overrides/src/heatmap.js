@@ -1,7 +1,7 @@
 import {formatDataValue, isArrayOfObjects} from "./formatting-helpers"
 
 const MAX_LABEL_WIDTH = 72
-const CHAR_WIDTH = 6
+const CHAR_WIDTH = 5
 const MIN_AXIS_HEIGHT = 52
 
 export function heatMapKeyAccessor ({key0}) {
@@ -35,7 +35,7 @@ export function heatMapColsLabel (d) {
 export default function heatMapMixin (chart) {
   chart.colsMap = new Map()
   chart.rowsMap = new Map()
-  chart._axisPadding = {left: 32, bottom: 32}
+  chart._axisPadding = {left: 36, bottom: 42}
 
   const getMaxChars = (domain, getLabel) => (domain.map(d => (getLabel(d) ? getLabel(d).toString().length : 0)).reduce((prev, curr) => (Math.max(prev, curr)), null))
 
