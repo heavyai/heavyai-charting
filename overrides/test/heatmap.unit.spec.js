@@ -37,6 +37,20 @@ describe("MapD Heatmap Chart", () => {
       expect(valueAccessor({ key1 })).to.deep.equal("Monday")
     })
   })
+  describe("Y Axis ordering", () => {
+    it('should sort object and string values in descending order', () => {
+      let data = [{key1: "American Airlines"}]
+      expect(heat.shouldSortYAxisDescending(data)).to.equal(true)
+      data = [{key1: [{}, {}]}]
+      expect(heat.shouldSortYAxisDescending(data)).to.equal(true)
+    })
+    it('should sort numeric values in ascending order', () => {
+      let data = [{key1: 12}]
+      expect(heat.shouldSortYAxisDescending(data)).to.equal(false)
+      data = [{key1: [12, 16]}]
+      expect(heat.shouldSortYAxisDescending(data)).to.equal(false)
+    })
+  })
   describe("label functions", () => {
     let rowsLabel
     let colsLabel

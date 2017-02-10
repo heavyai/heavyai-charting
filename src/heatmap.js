@@ -62,7 +62,7 @@ dc.heatMap = function (parent, chartGroup) {
     var _xLabel;
     var _hasBeenRendered = false;
     var _minBoxSize= 16;
-    var _scrollPos = {top: null, left: null};
+    var _scrollPos = {top: null, left: 0};
     var _dockedAxes;
     var _dockedAxesSize = {left: 48, bottom: 56};
 /* --------------------------------------------------------------------------*/
@@ -292,6 +292,7 @@ dc.heatMap = function (parent, chartGroup) {
             rows = _chart.rows() || data.map(_chart.valueAccessor()),
             cols = _chart.cols() || data.map(_chart.keyAccessor());
         if (_rowOrdering) {
+            _rowOrdering = _chart.shouldSortYAxisDescending(data) ? d3.descending : d3.ascending;
             rows = rows.sort(_rowOrdering);
         }
         if (_colOrdering) {
@@ -336,8 +337,8 @@ dc.heatMap = function (parent, chartGroup) {
             })
             .node();
 
-        scrollNode.scrollLeft = _scrollPos.left ? _scrollPos.left : 0;
-        scrollNode.scrollTop = _scrollPos.top || _scrollPos.top === 0 ? _scrollPos.top : svgHeight;
+        scrollNode.scrollLeft = _scrollPos.left;
+        scrollNode.scrollTop = _scrollPos.top === null && _rowOrdering === d3.ascending ? svgHeight : _scrollPos.top || 0;
 
         var boxes = _chartBody.select('.box-wrapper')
           .selectAll('g.box-group')

@@ -32,6 +32,11 @@ export function heatMapColsLabel (d) {
   return formatDataValue(this.colsMap.get(d) || d)
 }
 
+export function isDescendingAppropriateData ({key1}) {
+  const value = Array.isArray(key1) ? key1[0] : key1
+  return typeof value !== "number"
+}
+
 export default function heatMapMixin (chart) {
   chart.colsMap = new Map()
   chart.rowsMap = new Map()
@@ -43,6 +48,10 @@ export default function heatMapMixin (chart) {
     left: Math.min(getMaxChars(rowsDomain, chart.rowsLabel()) * CHAR_WIDTH, MAX_LABEL_WIDTH) + chart._axisPadding.left,
     bottom: Math.max(Math.min(getMaxChars(colsDomain, chart.colsLabel()) * CHAR_WIDTH, MAX_LABEL_WIDTH) + chart._axisPadding.bottom, MIN_AXIS_HEIGHT)
   })
+
+  chart.shouldSortYAxisDescending = (data) => {
+    return data && data.length && isDescendingAppropriateData(data[0])
+  }
 
   chart.keyAccessor(heatMapKeyAccessor.bind(chart))
     .valueAccessor(heatMapValueAccesor.bind(chart))
