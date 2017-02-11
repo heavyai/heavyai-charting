@@ -51,7 +51,6 @@ export const TIME_UNITS = {
   TIME: true
 }
 
-
 /* istanbul ignore next */
 export const customTimeFormat = d3.time.format.utc.multi([
   [".%L", (d) => d.getUTCMilliseconds()],
@@ -102,27 +101,8 @@ function writePointInTriangleSqlTest (p0, p1, p2, px, py) {
   return `((${b1} = (${b2})) AND (${b2} = (${b3})))`
 }
 
-const coordinates = (index) => (features) => (
-  features
-    .map(feature => feature.geometry.coordinates[0].map(c => c[index]))
-    .reduce((accum, coords) => accum.concat(coords), [])
-)
-
 const LONGITUDE_INDEX = 0
 const LATITUDE_INDEX = 1
-
-const longitudes = coordinates(LONGITUDE_INDEX)
-const latitudes = coordinates(LATITUDE_INDEX)
-
-function convertFeaturesToUnlikeklyStmt (features, px, py) {
-  const lons = longitudes(features)
-  const lats = latitudes(features)
-  const left = Math.max(...lons)
-  const right = Math.min(...lons)
-  const top = Math.min(...lats)
-  const bottom = Math.max(...lats)
-  return `UNLIKELY( ${px} >= ${right} AND ${px} <= ${left} AND ${py} >= ${top} AND ${py} <= ${bottom})`
-}
 
 function convertFeatureToCircleStmt ({geometry: {radius, center}}, px, py) {
   const lat2 = center[1]
@@ -162,9 +142,7 @@ export function convertGeojsonToSql (features, px, py) {
       }
     }).join(" OR (")
 
-    const unlikelyStmt = convertFeaturesToUnlikeklyStmt(features, px, py)
-
-    sql = sql + `(${unlikelyStmt}) AND ` + `(${px} IS NOT NULL AND ${py} IS NOT NULL AND (${triangleClause} OR (${py}/2 = 0)))`
+    sql = sql + `(${px} IS NOT NULL AND ${py} IS NOT NULL AND (${triangleClause}))`
   }
 
   if (circleStmts.length) {
@@ -175,7 +153,7 @@ export function convertGeojsonToSql (features, px, py) {
     }
   }
 
-  return sql
+  return `(${sql})`
 }
 
 export function xDomain (extract, currentLowValue, currentHighValue, timeBin) {
