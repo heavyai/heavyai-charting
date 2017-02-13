@@ -1,3 +1,10 @@
+import {override, transition, units} from "./core"
+import baseMixin from "./base-mixin"
+import colorMixin from "./color-mixin"
+import d3 from "d3"
+import marginMixin from "./margin-mixin"
+import {redrawAllAsync} from "./core-async"
+
 function testProp(props, docStyle) {
     for (var i = 0; i < props.length; i++) {
         if (props[i] in docStyle) {
@@ -18,7 +25,7 @@ function testProp(props, docStyle) {
  * @param {Object} _chart
  * @return {dc.coordinateGridRasterMixin}
  */
-dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
+export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     var _mapboxgl = typeof mapboxgl === 'undefined' ? _mapboxgl : mapboxgl
 
     var GRID_LINE_CLASS = 'grid-line';
@@ -37,7 +44,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
     var _filters = null;
     var _initialFilters = null;
 
-    _chart = dc.colorMixin(dc.marginMixin(dc.baseMixin(_chart)));
+    _chart = colorMixin(marginMixin(baseMixin(_chart)));
     _chart._mandatoryAttributes().push('x', 'y');
 
     _chart.filters = function () {
@@ -377,7 +384,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
             _chart.elasticY(false);
 
             if (doFullRender) {
-                dc.redrawAllAsync();
+                redrawAllAsync();
             } else {
                 _chart._updateXAndYScales(_chart.getDataRenderBounds());
                 doChartRedraw();
@@ -598,7 +605,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
             drainInertiaBuffer();
 
             var finish = function() {
-                dc.redrawAllAsync();
+                redrawAllAsync();
                 fireEvent(map, 'moveend', e);
             };
 
@@ -800,7 +807,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
 
             var bounds = [[xmin, ymax], [xmax, ymax], [xmax, ymin], [xmin, ymin]];
 
-            dc.redrawAllAsync();
+            redrawAllAsync();
 
             boxZoomActive = false;
             fireEvent(map, 'boxzoomend', e, {boxZoomBounds: bounds});
@@ -933,7 +940,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
 
     var _xOriginalDomain;
     var _xAxis = d3.svg.axis().orient('bottom');
-    var _xUnits = dc.units.integers;
+    var _xUnits = units.integers;
     var _xAxisPadding = 0;
     var _xElasticity = false;
     var _xAxisLabel;
@@ -1301,7 +1308,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
      * d3.time.days, d3.time.months, and
      * d3.time.years](https://github.com/mbostock/d3/wiki/Time-Intervals#aliases) are all valid xUnits
      * function. dc.js also provides a few units function, see the {@link #utilities Utilities} section for
-     * a list of built-in units functions. The default xUnits function is dc.units.integers.
+     * a list of built-in units functions. The default xUnits function is units.integers.
      * @name xUnits
      * @memberof dc.coordinateGridRasterMixin
      * @instance
@@ -1445,7 +1452,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
     };
 
     /**
-     * Returns true if the chart is using ordinal xUnits ({@link #dc.units.ordinal dc.units.ordinal}, or false
+     * Returns true if the chart is using ordinal xUnits ({@link #units.ordinal units.ordinal}, or false
      * otherwise. Most charts behave differently with ordinal data and use the result of this method to
      * trigger the appropriate logic.
      * @name isOrdinal
@@ -1454,7 +1461,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
      * @return {Boolean}
      */
     _chart.isOrdinal = function () {
-        return _chart.xUnits() === dc.units.ordinal;
+        return _chart.xUnits() === units.ordinal;
     };
 
     _chart._useOuterPadding = function () {
@@ -1616,7 +1623,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
         if (transitionDuration === undefined) {
             transitionDuration = _chart.transitionDuration();
         }
-        dc.transition(axisXG, transitionDuration)
+        transition(axisXG, transitionDuration)
             .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart._xAxisY() + ')')
             .call(_xAxis);
     };
@@ -1654,11 +1661,11 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
                 transitionDuration = _chart.transitionDuration();
             }
 
-            dc.transition(linesGEnter, transitionDuration)
+            transition(linesGEnter, transitionDuration)
                 .attr('opacity', 1);
 
             // update
-            dc.transition(lines, transitionDuration)
+            transition(lines, transitionDuration)
                 .attr('x1', function (d) {
                     return x(d);
                 })
@@ -1752,7 +1759,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
             transitionDuration = _chart.transitionDuration();
         }
 
-        dc.transition(axisYG, transitionDuration)
+        transition(axisYG, transitionDuration)
             .attr('transform', 'translate(' + position + ',' + _chart.margins().top + ')')
             .call(axis);
     };
@@ -1797,11 +1804,11 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
                 transitionDuration = _chart.transitionDuration();
             }
 
-            dc.transition(linesGEnter, transitionDuration)
+            transition(linesGEnter, transitionDuration)
                 .attr('opacity', 1);
 
             // update
-            dc.transition(lines, transitionDuration)
+            transition(lines, transitionDuration)
                 .attr('x1', 1)
                 .attr('y1', function (d) {
                     return scale(d);
@@ -1966,7 +1973,7 @@ dc.coordinateGridRasterMixin = function (_chart, _mapboxgl, browser) {
         return _chart;
     };
 
-    dc.override(_chart, 'filter', function (filter, isInverseFilter) {
+    override(_chart, 'filter', function (filter, isInverseFilter) {
         if (!arguments.length) {
             return _chart._filter();
         }

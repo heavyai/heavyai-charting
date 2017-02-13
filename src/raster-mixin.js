@@ -1,8 +1,9 @@
-/******************************************************************************
- * EXTEND: dc.rasterMixin                                                     *
- * ***************************************************************************/
+import {decrementSampledCount, incrementSampledCount} from "./core"
+import {lastFilteredSize} from "./core-async"
+import {utils} from "./utils"
+import d3 from "d3"
 
-dc.rasterMixin = function(_chart) {
+export default function rasterMixin (_chart) {
     var _con = window.hasOwnProperty('con') ? con : null;
     var _sampling = false;
     var _tableName = null;
@@ -156,9 +157,9 @@ dc.rasterMixin = function(_chart) {
     _chart.sampling = function(isSetting) { // isSetting should be true or false
         if (!arguments.length) { return _sampling; }
         if (isSetting && !_sampling) {// if wasn't sampling
-            dc._sampledCount++;
+            incrementSampledCount();
         } else if (!isSetting && _sampling) {
-            dc._sampledCount--;
+            decrementSampledCount();
         }
         _sampling = isSetting;
         if (_sampling === false) {
@@ -170,7 +171,7 @@ dc.rasterMixin = function(_chart) {
     _chart.setSample = function() {
         if (_sampling) {
             var id = _chart.dimension().getCrossfilterId();
-            var filterSize = dc.lastFilteredSize(id);
+            var filterSize = lastFilteredSize(id);
             if (filterSize == undefined)
                 _chart.dimension().samplingRatio(null);
             else {
@@ -354,7 +355,3 @@ dc.rasterMixin = function(_chart) {
         return _chart.colorBy() && _chart.popupColumns().indexOf(_chart.colorBy().value) === -1
     }
 }
-
-/******************************************************************************
- * END EXTEND: dc.rasterMixin                                                 *
- * ***************************************************************************/

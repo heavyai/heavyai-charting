@@ -34,7 +34,7 @@ function validateMiterLimit(newMiterLimit, currMiterLimit) {
     }
 }
 
-dc.rasterLayerPolyMixin = function(_layer) {
+export default function rasterLayerPolyMixin (_layer) {
     createVegaAttrMixin(_layer, "lineJoin", vegaLineJoinOptions[0], vegaLineJoinOptions[0], false, {
         preDefault: validateLineJoin,
         preNull: validateLineJoin

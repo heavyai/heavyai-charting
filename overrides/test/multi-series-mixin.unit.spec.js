@@ -1,14 +1,14 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
-import MultiSeriesMixin from "../src/multi-series-mixin"
-import dc from "../../index"
+import MultiSeriesMixin from "../../src/multi-series-mixin"
+import baseMixin from "../../src/base-mixin"
 
 chai.use(spies)
 
 describe("MultiSeriesMixin", () => {
 
   describe('series method', () => {
-    const chart = MultiSeriesMixin(dc.baseMixin({}))
+    const chart = MultiSeriesMixin(baseMixin({}))
     const series = chart.series()
 
     it('should return the series API', () => {
@@ -34,7 +34,7 @@ describe("MultiSeriesMixin", () => {
   })
 
   describe('dimension method override', () => {
-    const base = dc.baseMixin({})
+    const base = baseMixin({})
     base.dimension = chai.spy()
 
     const dimension = { value: chai.spy(() => []) }
@@ -48,7 +48,7 @@ describe("MultiSeriesMixin", () => {
   })
 
   describe('isMulti method', () => {
-    const chart = MultiSeriesMixin(dc.baseMixin({}))
+    const chart = MultiSeriesMixin(baseMixin({}))
     it('should return true when the dimension value length is greater than the multi dimension index', () => {
       chart.dimension = () => ({ value: () => ['date', 'party']})
       expect(chart.isMulti()).to.equal(true)
@@ -58,7 +58,7 @@ describe("MultiSeriesMixin", () => {
   })
 
   describe('showOther method', () => {
-    const chart = MultiSeriesMixin(dc.baseMixin({}))
+    const chart = MultiSeriesMixin(baseMixin({}))
     it('should set and get the showOther flag', () => {
       expect(chart.showOther()).to.equal(false)
       chart.showOther(true)
@@ -68,7 +68,7 @@ describe("MultiSeriesMixin", () => {
 
   describe('dataAsync callback', () => {
     it('should call group.all when chart is not multi', function (done) {
-      const chart = MultiSeriesMixin(dc.baseMixin({}))
+      const chart = MultiSeriesMixin(baseMixin({}))
       const group = { all: chai.spy(cb => cb()) }
       chart.isMulti = () => false
       chart.group(group)
@@ -110,7 +110,7 @@ describe("MultiSeriesMixin", () => {
         dimension: () => dimension
       }
 
-      const chart = MultiSeriesMixin(dc.baseMixin({}))
+      const chart = MultiSeriesMixin(baseMixin({}))
 
       let processedResult
       before(function(done) {
@@ -305,7 +305,7 @@ describe("MultiSeriesMixin", () => {
   })
 
   describe("_doRedraw", () => {
-    const chart =  MultiSeriesMixin(dc.baseMixin({}))
+    const chart =  MultiSeriesMixin(baseMixin({}))
     const selected = ['D', 'R', 'L']
 
     function setup () {
@@ -342,7 +342,7 @@ describe("MultiSeriesMixin", () => {
 
     function setupPreRenderTest () {
       // stub render related methods
-      chart = MultiSeriesMixin(dc.baseMixin({}))
+      chart = MultiSeriesMixin(baseMixin({}))
       chart.stack = () => [{}]
       chart._doRender = () => {}
       chart.generatePopup = () => {}

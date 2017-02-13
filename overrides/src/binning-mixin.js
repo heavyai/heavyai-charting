@@ -1,5 +1,7 @@
 import d3 from "d3"
-import dc from "../../mapdc"
+import {events} from "../../src/events"
+import {filters} from "../../src/filters"
+import {constants} from "../../src/core"
 
 const binInputOptions = [
   {val: "auto", label: "auto", numSeconds: null},
@@ -121,11 +123,11 @@ export default function binningMixin (chart) {
       extent1[1] = roundTimeBin(extent1[1], timeInterval, "round")
     }
 
-    const rangedFilter = dc.filters.RangedFilter(extent1[0], extent1[1])
+    const rangedFilter = filters.RangedFilter(extent1[0], extent1[1])
 
-    dc.events.trigger(() => {
+    events.trigger(() => {
       chart.replaceFilter(rangedFilter)
-    }, dc.constants.EVENT_DELAY)
+    }, constants.EVENT_DELAY)
   }
 
   chart.changeBinVal = (val) => {

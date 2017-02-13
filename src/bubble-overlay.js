@@ -1,3 +1,10 @@
+import {constants, decrementSampledCount, incrementSampledCount, transition} from "./core"
+import {lastFilteredSize} from "./core-async"
+import baseMixin from "./base-mixin"
+import bubbleMixin from "./bubble-mixin"
+import capMixin from "./cap-mixin"
+import d3 from "d3"
+import {utils} from "./utils"
 /**
  * The bubble overlay chart is quite different from the typical bubble chart. With the bubble overlay
  * chart you can arbitrarily place bubbles on an existing svg or bitmap image, thus changing the
@@ -21,7 +28,7 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.bubbleOverlay}
  */
-dc.bubbleOverlay = function (parent, chartGroup) {
+export default function bubbleOverlay  (parent, chartGroup) {
     var BUBBLE_OVERLAY_CLASS = 'bubble-overlay';
 
 /* OVERRIDE -----------------------------------------------------------------*/
@@ -48,7 +55,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
      */
 
 /* OVERRIDE -----------------------------------------------------------------*/
-    var _chart = dc.bubbleMixin(dc.capMixin(dc.baseMixin({})));
+    var _chart = bubbleMixin(capMixin(baseMixin({})));
 /* --------------------------------------------------------------------------*/
 
     var _g;
@@ -99,9 +106,9 @@ dc.bubbleOverlay = function (parent, chartGroup) {
             return _sampling;
 
         if (setting && !_sampling) // if wasn't sampling
-            dc._sampledCount++;
+            incrementSampledCount()
         else if (!setting && _sampling)
-            dc._sampledCount--;
+            decrementSampledCount()
         _sampling = setting;
         if (_sampling == false)
             _chart.dimension().samplingRatio(null); // unset sampling
@@ -111,7 +118,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
     _chart.setSample = function() {
         if (_sampling) {
             var id = _chart.dimension().getCrossfilterId();
-            var filterSize = dc.lastFilteredSize(id);
+            var filterSize = lastFilteredSize(id);
             if (filterSize === undefined) {
                 _chart.dimension().samplingRatio(null);
             } else {
@@ -239,7 +246,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
         var bubbleG = _g.selectAll('g.'+ BUBBLE_NODE_CLASS).data(_chart.savedData, function(d) {return d.key;});
 
         bubbleG.enter().append('g')
-            .attr('class', function (d) {return (BUBBLE_NODE_CLASS + ' ' + dc.utils.nameToId(d.key)) })
+            .attr('class', function (d) {return (BUBBLE_NODE_CLASS + ' ' + utils.nameToId(d.key)) })
             .attr('transform', function (d) {return ('translate(' + d.xPixel + ',' + d.yPixel + ')')})
             .append('circle').attr('class', _chart.BUBBLE_CLASS)
             .attr('r', function(d) {
@@ -295,7 +302,7 @@ dc.bubbleOverlay = function (parent, chartGroup) {
                     .on('click', _chart.onClick);
             }
 
-            dc.transition(circle, _chart.transitionDuration())
+            transition(circle, _chart.transitionDuration())
                 .attr('r', function (d) {
                     return _chart.bubbleR(d);
                 });
@@ -315,9 +322,9 @@ dc.bubbleOverlay = function (parent, chartGroup) {
     }
 
     function getNodeG (point, data) {
-        var bubbleNodeClass = BUBBLE_NODE_CLASS + ' ' + dc.utils.nameToId(point.name);
+        var bubbleNodeClass = BUBBLE_NODE_CLASS + ' ' + utils.nameToId(point.name);
 
-        var nodeG = _g.select('g.' + dc.utils.nameToId(point.name));
+        var nodeG = _g.select('g.' + utils.nameToId(point.name));
 
         if (nodeG.empty()) {
             nodeG = _g.append('g')
@@ -357,12 +364,12 @@ dc.bubbleOverlay = function (parent, chartGroup) {
 
     _chart.debug = function (flag) {
         if (flag) {
-            var debugG = _chart.select('g.' + dc.constants.DEBUG_GROUP_CLASS);
+            var debugG = _chart.select('g.' + constants.DEBUG_GROUP_CLASS);
 
             if (debugG.empty()) {
                 debugG = _chart.svg()
                     .append('g')
-                    .attr('class', dc.constants.DEBUG_GROUP_CLASS);
+                    .attr('class', constants.DEBUG_GROUP_CLASS);
             }
 
             var debugText = debugG.append('text')

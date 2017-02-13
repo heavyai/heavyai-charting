@@ -1,6 +1,10 @@
+import capMixin from "./cap-mixin"
+import rasterLayerPointMixin from "./raster-layer-point-mixin"
+import rasterLayerPolyMixin from "./raster-layer-poly-mixin"
+
 var validLayerTypes = ["points", "polys"];
 
-dc.rasterLayer = function(layerType) {
+export default function rasterLayer (layerType) {
     var _layerType = layerType;
 
     var _dimension = null;
@@ -8,7 +12,7 @@ dc.rasterLayer = function(layerType) {
     var _groupName = null;
     var _mandatoryAttributes = ['dimension', 'group'];
 
-    var _layer = dc.capMixin({
+    var _layer = capMixin({
         setDataAsync: function(callback) {
           // noop.
           // This is to appease mixins that require an object initialized with a baseMixin
@@ -39,9 +43,9 @@ dc.rasterLayer = function(layerType) {
                                  // Always set to false for now, tho user can override.
 
     if (layerType == "points") {
-        _layer = dc.rasterLayerPointMixin(_layer);
+        _layer = rasterLayerPointMixin(_layer);
     } else if (layerType == "polys") {
-        _layer = dc.rasterLayerPolyMixin(_layer);
+        _layer = rasterLayerPolyMixin(_layer);
     } else {
         throw new Error("\"" + layerType + "\" is not a valid layer type. The valid layer types are: " + validLayerTypes.join(", "));
     }

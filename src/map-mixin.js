@@ -1,8 +1,11 @@
-/******************************************************************************
- * EXTEND: dc.mapMixin                                                        *
- * ***************************************************************************/
+import d3 from "d3"
+import {redrawAllAsync, resetRedrawStack} from "./core-async"
+import {utils} from "./utils"
+import {mapDrawMixin} from "./map-draw-mixin"
 
-dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
+function valuesOb (obj) { return Object.keys(obj).map(function (key) { return obj[key]; }) }
+
+export default function mapMixin (_chart, chartDivId, _mapboxgl) {
     var DEFAULT_ZOOM_LEVEL = 15
     var EASE_DURATION_MS = 1500
     var SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
@@ -213,15 +216,15 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         if (_xDim !== null && _yDim !== null) {
             _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
             _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
-            dc.redrawAllAsync()
+            redrawAllAsync()
               .catch(function(error) {
-                dc.resetRedrawStack()
+                resetRedrawStack()
                 console.log("on move event redrawall error:", error)
               });
         } else if (redrawall) {
-            dc.redrawAllAsync()
+            redrawAllAsync()
               .catch(function(error) {
-                dc.resetRedrawStack()
+                resetRedrawStack()
                 console.log("on move event redrawall error:", error)
               });
         } else {
@@ -309,7 +312,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         }
 
         if(browser.isSafari || browser.isIE || browser.isEdge){
-            var blob = dc.utils.b64toBlob(data, 'image/png');
+            var blob = utilss.b64toBlob(data, 'image/png');
             var blobUrl = URL.createObjectURL(blob);
         } else {
             var blobUrl = 'data:image/png;base64,' + data;
@@ -392,7 +395,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         var boundsChanged = initialBounds && !boundsRoughlyEqual(initialBounds, _map.getBounds())
         if ((boundsChanged || !initialBounds) && _xDim && _yDim) {
             _chart.setFilterBounds(_map.getBounds())
-            dc.redrawAllAsync()
+            redrawAllAsync()
         }
     })
 
@@ -591,9 +594,7 @@ dc.mapMixin = function (_chart, chartDivId, _mapboxgl) {
         }
     }
 
+    _chart = mapDrawMixin(_chart, _mapboxgl)
+
     return _chart;
 }
-
-/******************************************************************************
- * END EXTEND: dc.mapMixin                                                    *
- * ***************************************************************************/

@@ -1,3 +1,11 @@
+import baseMixin from "./base-mixin"
+import capMixin from "./cap-mixin"
+import colorMixin from "./color-mixin"
+import d3 from "d3"
+import {transition} from "./core"
+import multipleKeysLabelMixin from "../overrides/src/multiple-key-label-mixin"
+import {utils} from "./utils"
+
 /**
  * The pie chart implementation is usually used to visualize a small categorical distribution.  The pie
  * chart uses keyAccessor to determine the slices, and valueAccessor to calculate the size of each
@@ -23,7 +31,7 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.pieChart}
  */
-dc.pieChart = function (parent, chartGroup) {
+export default function pieChart (parent, chartGroup) {
     var DEFAULT_MIN_ANGLE_FOR_LABEL = 0.4;
 
     var _sliceCssClass = 'pie-slice';
@@ -41,7 +49,7 @@ dc.pieChart = function (parent, chartGroup) {
     var _minAngleForLabel = DEFAULT_MIN_ANGLE_FOR_LABEL;
     var _externalLabelRadius;
     var _drawPaths = false;
-    var _chart = dc.capMixin(dc.colorMixin(dc.baseMixin({})));
+    var _chart = capMixin(colorMixin(baseMixin({})));
 
 /* OVERRIDE ---------------------------------------------------------------- */
     var _pieStyle; // "pie" or "donut"
@@ -77,7 +85,7 @@ dc.pieChart = function (parent, chartGroup) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.measureValue = function (d) {
-        return dc.utils.formatValue(_chart.cappedValueAccessor(d));
+        return utils.formatValue(_chart.cappedValueAccessor(d));
     };
 
     _chart.redoSelect = highlightFilter;
@@ -115,9 +123,7 @@ dc.pieChart = function (parent, chartGroup) {
         var pieData;
         // if we have data...
         if (d3.sum(_chart.data(), _chart.valueAccessor())) {
-/* OVERRIDE ---------------------------------------------------------------- */
-            pieData = pie(dc.utils.maybeFormatInfinity(_chart.data()));
-/* --------------------------------------------------------------------------*/
+            pieData = pie(utils.maybeFormatInfinity(_chart.data()));
             _g.classed(_emptyCssClass, false);
         } else {
             // otherwise we'd be getting NaNs, so override
@@ -138,7 +144,7 @@ dc.pieChart = function (parent, chartGroup) {
 
             highlightFilter();
 
-            dc.transition(_g, _chart.transitionDuration())
+            transition(_g, _chart.transitionDuration())
                 .attr('transform', 'translate(' + _chart.cx() + ',' + _chart.cy() + ')');
         }
     }
@@ -177,7 +183,7 @@ dc.pieChart = function (parent, chartGroup) {
                 return safeArc(d, i, arc);
             });
 
-        dc.transition(slicePath, _chart.transitionDuration(), function (s) {
+        transition(slicePath, _chart.transitionDuration(), function (s) {
             s.attrTween('d', tweenPie);
         });
     }
@@ -191,7 +197,7 @@ dc.pieChart = function (parent, chartGroup) {
     }
 
     function positionLabels (labelsEnter, arc) {
-        dc.transition(labelsEnter, _chart.transitionDuration())
+        transition(labelsEnter, _chart.transitionDuration())
             .attr('transform', function (d) {
                 return labelPosition(d, arc);
             });
@@ -291,7 +297,7 @@ dc.pieChart = function (parent, chartGroup) {
                 });
 
         polyline.exit().remove();
-        dc.transition(polyline, _chart.transitionDuration())
+        transition(polyline, _chart.transitionDuration())
             .attrTween('points', function (d) {
                 this._current = this._current || d;
                 var interpolate = d3.interpolate(this._current, d);
@@ -323,7 +329,7 @@ dc.pieChart = function (parent, chartGroup) {
             .attr('d', function (d, i) {
                 return safeArc(d, i, arc);
             });
-        dc.transition(slicePaths, _chart.transitionDuration(),
+        transition(slicePaths, _chart.transitionDuration(),
             function (s) {
                 s.attrTween('d', tweenPie);
             }).attr('fill', fill);
@@ -799,6 +805,8 @@ dc.pieChart = function (parent, chartGroup) {
             }
         });
     }
+
+    _chart = multipleKeysLabelMixin(_chart)
 
     return _chart.anchor(parent, chartGroup);
 };

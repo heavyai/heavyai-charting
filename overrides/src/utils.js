@@ -1,6 +1,6 @@
 import earcut from "earcut"
 import d3 from "d3"
-import dc from "../../mapdc"
+import {utils} from "../../src/utils"
 
 export const DAYS = [
   "Mon",
@@ -194,7 +194,7 @@ export function xScale (extract, isChartDate) {
 
 export function xAxisTickFormat ({extract, timeBin}, isChartDate) {
   if (extract) {
-    return dc.utils.extractTickFormat(timeBin)
+    return utils.extractTickFormat(timeBin)
   } else if (isChartDate) {
     return customTimeFormat
   } else {

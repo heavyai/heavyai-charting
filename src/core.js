@@ -1,64 +1,84 @@
-/**
- * The entire dc.js library is scoped under the **dc** name space. It does not introduce
- * anything else into the global name space.
- *
- * Most `dc` functions are designed to allow function chaining, meaning they return the current chart
- * instance whenever it is appropriate.  The getter forms of functions do not participate in function
- * chaining because they necessarily return values that are not the chart.  Although some,
- * such as {@link #dc.baseMixin+svg .svg} and {@link #dc.coordinateGridMixin+xAxis .xAxis},
- * return values that are chainable d3 objects.
- * @namespace dc
- * @version <%= conf.pkg.version %>
- * @example
- * // Example chaining
- * chart.width(300)
- *      .height(300)
- *      .filter('sunday');
- */
-/*jshint -W079*/
-var dc = {
-    version: '<%= conf.pkg.version %>',
-    constants: {
-        CHART_CLASS: 'dc-chart',
-        DEBUG_GROUP_CLASS: 'debug',
-        STACK_CLASS: 'stack',
-        DESELECTED_CLASS: 'deselected',
-        SELECTED_CLASS: 'selected',
-        NODE_INDEX_NAME: '__index__',
-        GROUP_INDEX_NAME: '__group_index__',
-        DEFAULT_CHART_GROUP: '__default_chart_group__',
-        NEGLIGIBLE_NUMBER: 1e-10,
+import {utils} from "./utils"
 
-/* OVERRIDE -----------------------------------------------------------------*/
-        ACCENT_CLASS: 'accented',
-        EVENT_DELAY: 0
-/* --------------------------------------------------------------------------*/
-    },
+let _logging = false
+let _sampledCount = 0
+let _refreshDisabled = false
+let _globalTransitionDuration = null
+let _renderlet = null
+let _disableTransitions = false
 
-/* OVERRIDE -----------------------------------------------------------------*/
-    async: false,
-    logging: function(_) {
-      if (!arguments.length)
-        return dc._logging;
-      dc._logging = _
-    },
-    _logging: false,
-    _sampledCount: 0,
-    _refreshDisabled: false,
-    _globalTransitionDuration: null,
-/* --------------------------------------------------------------------------*/
+export const constants = {
+    CHART_CLASS: 'dc-chart',
+    DEBUG_GROUP_CLASS: 'debug',
+    STACK_CLASS: 'stack',
+    DESELECTED_CLASS: 'deselected',
+    SELECTED_CLASS: 'selected',
+    NODE_INDEX_NAME: '__index__',
+    GROUP_INDEX_NAME: '__group_index__',
+    DEFAULT_CHART_GROUP: '__default_chart_group__',
+    NEGLIGIBLE_NUMBER: 1e-10,
+    ACCENT_CLASS: 'accented',
+    EVENT_DELAY: 0
+}
 
-    _renderlet: null
+export function logging (_) {
+  if (!arguments.length) {
+    return _logging
+  }
+  _logging = _
+}
+
+export function sampledCount (_) {
+  if (!arguments.length) {
+    return _sampledCount
+  }
+  _sampledCount = _
+}
+
+export function incrementSampledCount () {
+  return _sampledCount++
+}
+
+export function decrementSampledCount () {
+  return _sampledCount--
+}
+
+export function refreshDisabled (_) {
+  if (!arguments.length) {
+    return _refreshDisabled
+  }
+  _refreshDisabled = _
+}
+
+export function disableRefresh (){
+  _refreshDisabled = true
 };
-/*jshint +W079*/
 
-dc.chartRegistry = (function () {
+export function enableRefresh () {
+  _refreshDisabled = false
+}
+
+export function globalTransitionDuration (_) {
+  if (!arguments.length) {
+    return _globalTransitionDuration
+  }
+  _globalTransitionDuration = _
+}
+
+export function disableTransitions (_) {
+  if (!arguments.length) {
+    return _disableTransitions
+  }
+  _disableTransitions = _
+}
+
+export const chartRegistry = (function () {
     // chartGroup:string => charts:array
     var _chartMap = {};
 
     function initializeChartGroup (group) {
         if (!group) {
-            group = dc.constants.DEFAULT_CHART_GROUP;
+            group = constants.DEFAULT_CHART_GROUP;
         }
 
         if (!_chartMap[group]) {
@@ -108,37 +128,27 @@ dc.chartRegistry = (function () {
     };
 })();
 
-dc.registerChart = function (chart, group) {
-    dc.chartRegistry.register(chart, group);
+export function registerChart (chart, group) {
+    chartRegistry.register(chart, group);
 };
 
-dc.getChart = function (dcFlag) {
-    return dc.chartRegistry.list().reduce(function(accum, chrt) {
+export function getChart (dcFlag) {
+    return chartRegistry.list().reduce(function(accum, chrt) {
         return chrt.__dcFlag__ === dcFlag ? chrt : accum
     }, null)
 }
 
-dc.deregisterChart = function (chart, group) {
-    dc.chartRegistry.deregister(chart, group);
+export function deregisterChart (chart, group) {
+    chartRegistry.deregister(chart, group);
 };
 
-dc.hasChart = function (chart) {
-    return dc.chartRegistry.has(chart);
+export function hasChart (chart) {
+    return chartRegistry.has(chart);
 };
 
-dc.deregisterAllCharts = function (group) {
-    dc.chartRegistry.clear(group);
+export function deregisterAllCharts (group) {
+    chartRegistry.clear(group);
 };
-
-/* OVERRIDE ---------------------------------------------------------------- */
-dc.disableRefresh = function (){
-  dc._refreshDisabled = true;
-};
-
-dc.enableRefresh = function (){
-  dc._refreshDisabled = false;
-}
-/* ------------------------------------------------------------------------- */
 
 /**
  * Clear all filters on all charts within the given chart group. If the chart group is not given then
@@ -147,8 +157,8 @@ dc.enableRefresh = function (){
  * @name filterAll
  * @param {String} [group]
  */
-dc.filterAll = function (group) {
-    var charts = dc.chartRegistry.list(group);
+ export function filterAll (group) {
+    var charts = chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
         charts[i].filterAll();
     }
@@ -161,8 +171,8 @@ dc.filterAll = function (group) {
  * @name refocusAll
  * @param {String} [group]
  */
-dc.refocusAll = function (group) {
-    var charts = dc.chartRegistry.list(group);
+ export function refocusAll (group) {
+    var charts = chartRegistry.list(group);
     for (var i = 0; i < charts.length; ++i) {
         if (charts[i].focus) {
             charts[i].focus();
@@ -170,104 +180,8 @@ dc.refocusAll = function (group) {
     }
 };
 
-/**
- * Re-render all charts belong to the given chart group. If the chart group is not given then only
- * charts that belong to the default chart group will be re-rendered.
- * @memberof dc
- * @name renderAll
- * @param {String} [group]
- */
-dc.renderAll = function (group, callback) {
-    if (!callback) {
-        console.warn('WARNING: No callback provided to an async function. Errors will be unhandled.')
-    }
-    if (dc._refreshDisabled) {
-        return;
-    }
-
-    var queryGroupId = dc._renderId++;
-    var stackEmpty = dc._renderIdStack === null;
-    dc._renderIdStack = queryGroupId;
-
-    if (!stackEmpty) {
-        return;
-    }
-
-    dc._startRenderTime = new Date();
-
-    var charts = dc.chartRegistry.list(group);
-    charts.forEach(function (chart) {
-        chart.expireCache()
-        if (dc._sampledCount > 0) {
-            chart.renderAsyncWithQueryGroup(queryGroupId, charts.length - 1, callback);
-        } else {
-            chart.renderAsyncWithQueryGroup(queryGroupId, charts.length, callback);
-        }
-    })
-
-    if (dc._renderlet !== null) {
-        dc._renderlet(group);
-    }
-};
-
-/**
- * Redraw all charts belong to the given chart group. If the chart group is not given then only charts
- * that belong to the default chart group will be re-drawn. Redraw is different from re-render since
- * when redrawing dc tries to update the graphic incrementally, using transitions, instead of starting
- * from scratch.
- * @memberof dc
- * @name redrawAll
- * @param {String} [group]
- */
-dc.redrawAll = function (group, callback) {
-    if (dc._refreshDisabled) {
-        return;
-    }
-
-    var queryGroupId = dc._redrawId++;
-    var stackEmpty = false;
-
-    if (!callback) {
-        console.warn('WARNING: No callback provided to an async function. Errors will be unhandled.')
-        var stackEmpty = dc._redrawIdStack === null;
-        dc._redrawIdStack = queryGroupId;
-    }
-
-    if (!stackEmpty && !callback) {
-        return;
-    }
-
-    dc._startRedrawTime = new Date();
-
-    var charts = dc.chartRegistry.list(group);
-
-    charts.forEach(function (chart) {
-        chart.expireCache()
-        if (dc._sampledCount > 0) {
-            chart.redrawAsyncWithQueryGroup(queryGroupId, charts.length - 1, callback);
-        } else {
-            chart.redrawAsyncWithQueryGroup(queryGroupId, charts.length, callback);
-        }
-    })
-
-    if (dc._renderlet !== null) {
-        dc._renderlet(group);
-    }
-};
-
-
-/**
- * If this boolean is set truthy, all transitions will be disabled, and changes to the charts will happen
- * immediately
- * @memberof dc
- * @name disableTransitions
- * @type {Boolean}
- * @default false
- */
-dc.disableTransitions = false;
-
-dc.transition = function (selections, duration, callback, name) {
-    if (duration <= 0 || duration === undefined || dc.disableTransitions) {
+export function transition (selections, duration, callback, name) {
+    if (duration <= 0 || duration === undefined || _disableTransitions) {
         return selections;
     }
 
@@ -283,10 +197,10 @@ dc.transition = function (selections, duration, callback, name) {
 };
 
 /* somewhat silly, but to avoid duplicating logic */
-dc.optionalTransition = function (enable, duration, callback, name) {
+export function optionalTransition (enable, duration, callback, name) {
     if (enable) {
         return function (selection) {
-            return dc.transition(selection, duration, callback, name);
+            return transition(selection, duration, callback, name);
         };
     } else {
         return function (selection) {
@@ -296,16 +210,16 @@ dc.optionalTransition = function (enable, duration, callback, name) {
 };
 
 // See http://stackoverflow.com/a/20773846
-dc.afterTransition = function (transition, callback) {
-    if (transition.empty() || !transition.duration) {
-        callback.call(transition);
+export function afterTransition (_transition, callback) {
+    if (_transition.empty() || !_transition.duration) {
+        callback.call(_transition);
     } else {
         var n = 0;
-        transition
+        _transition
             .each(function () { ++n; })
             .each('end', function () {
                 if (!--n) {
-                    callback.call(transition);
+                    callback.call(_transition);
                 }
             });
     }
@@ -316,7 +230,7 @@ dc.afterTransition = function (transition, callback) {
  * @memberof dc
  * @type {{}}
  */
-dc.units = {};
+export const units = {};
 
 /**
  * The default value for {@link #dc.coordinateGridMixin+xUnits .xUnits} for the
@@ -324,15 +238,15 @@ dc.units = {};
  * be used when the x values are a sequence of integers.
  * It is a function that counts the number of integers in the range supplied in its start and end parameters.
  * @name integers
- * @memberof dc.units
+ * @memberof units
  * @see {@link #dc.coordinateGridMixin+xUnits coordinateGridMixin.xUnits}
  * @example
- * chart.xUnits(dc.units.integers) // already the default
+ * chart.xUnits(units.integers) // already the default
  * @param {Number} start
  * @param {Number} end
  * @return {Number}
  */
-dc.units.integers = function (start, end) {
+units.integers = function (start, end) {
     return Math.abs(end - start);
 };
 
@@ -343,7 +257,7 @@ dc.units.integers = function (start, end) {
  * {@link #dc.coordinateGridMixin+x .x}.
  * It just returns the domain passed to it, which for ordinal charts is an array of all values.
  * @name ordinal
- * @memberof dc.units
+ * @memberof units
  * @see {@link https://github.com/mbostock/d3/wiki/Ordinal-Scales d3.scale.ordinal}
  * @see {@link #dc.coordinateGridMixin+xUnits coordinateGridMixin.xUnits}
  * @see {@link #dc.coordinateGridMixin+x coordinateGridMixin.x}
@@ -355,16 +269,16 @@ dc.units.integers = function (start, end) {
  * @param {Array<String>} domain
  * @return {Array<String>}
  */
-dc.units.ordinal = function (start, end, domain) {
+units.ordinal = function (start, end, domain) {
     return domain;
 };
 
 /**
  * @name fp
- * @memberof dc.units
+ * @memberof units
  * @type {{}}
  */
-dc.units.fp = {};
+units.fp = {};
 /**
  * This function generates an argument for the {@link #dc.coordinateGridMixin Coordinate Grid Chart}
  * {@link #dc.coordinateGridMixin+xUnits .xUnits} function specifying that the x values are floating-point
@@ -372,21 +286,21 @@ dc.units.fp = {};
  * The returned function determines how many values at the given precision will fit into the range
  * supplied in its start and end parameters.
  * @name precision
- * @memberof dc.units.fp
+ * @memberof units.fp
  * @see {@link #dc.coordinateGridMixin+xUnits coordinateGridMixin.xUnits}
  * @example
  * // specify values (and ticks) every 0.1 units
- * chart.xUnits(dc.units.fp.precision(0.1)
+ * chart.xUnits(units.fp.precision(0.1)
  * // there are 500 units between 0.5 and 1 if the precision is 0.001
- * var thousandths = dc.units.fp.precision(0.001);
+ * var thousandths = units.fp.precision(0.001);
  * thousandths(0.5, 1.0) // returns 500
  * @param {Number} precision
  * @return {Function} start-end unit function
  */
-dc.units.fp.precision = function (precision) {
+units.fp.precision = function (precision) {
     var _f = function (s, e) {
         var d = Math.abs((e - s) / _f.resolution);
-        if (dc.utils.isNegligible(d - Math.floor(d))) {
+        if (utils.isNegligible(d - Math.floor(d))) {
             return Math.floor(d);
         } else {
             return Math.ceil(d);
@@ -396,31 +310,30 @@ dc.units.fp.precision = function (precision) {
     return _f;
 };
 
-dc.round = {};
-dc.round.floor = function (n) {
+export const round = {};
+round.floor = function (n) {
     return Math.floor(n);
 };
-dc.round.ceil = function (n) {
+round.ceil = function (n) {
     return Math.ceil(n);
 };
-dc.round.round = function (n) {
+round.round = function (n) {
     return Math.round(n);
 };
 
-dc.override = function (obj, functionName, newFunction) {
+export function override (obj, functionName, newFunction) {
     var existingFunction = obj[functionName];
     obj['_' + functionName] = existingFunction;
     obj[functionName] = newFunction;
 };
 
-dc.renderlet = function (_) {
+export function renderlet (_) {
     if (!arguments.length) {
-        return dc._renderlet;
+        return _renderlet;
     }
-    dc._renderlet = _;
-    return dc;
+    _renderlet = _;
 };
 
-dc.instanceOfChart = function (o) {
+export function instanceOfChart (o) {
     return o instanceof Object && o.__dcFlag__ && true;
 };

@@ -3,8 +3,8 @@ cp ../../node_modules/lodash/lodash.js example/js
 cp ../../node_modules/d3/d3.min.js example/js
 cp ../../node_modules/mapbox-gl-draw/dist/mapbox-gl-draw.js example/js
 cp ../../node_modules/mapbox-gl-draw/dist/mapbox-gl-draw.css example/css
-cp mapdc.min.css example/css/
-cp chart.min.css example/css/
+cp mapdc.css example/css/
+cp chart.css example/css/
 cp dist/mapdc.js example/js/
 cp ../mapd-crossfilter/dist/mapd-crossfilter.js example/js/
 cp ../mapd-con/thrift/browser/thrift.js example/js/

@@ -1,7 +1,7 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
-import dc from "../../index"
 import d3 from "d3"
+import heatMap from "../../src/heatmap"
 
 chai.use(spies)
 
@@ -9,7 +9,7 @@ describe("MapD Heatmap Chart", () => {
   let heat
   beforeEach(() => {
     const node = window.document.createElement("DIV")
-    heat = dc.heatMap(node)
+    heat = heatMap(node)
   })
   describe("colorAccessor", () => {
     it('should return the value prop of data', () => {

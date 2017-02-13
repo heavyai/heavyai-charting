@@ -1,14 +1,14 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
-import FilterMixin from "../src/filter-mixin"
-import dc from "../../index"
+import FilterMixin from "../../src/filter-mixin"
+import baseMixin from "../../src/base-mixin"
 
 chai.use(spies)
 
 describe("Filter Mixin", () => {
   let chart
   beforeEach(() => {
-    chart = FilterMixin(dc.baseMixin({}))
+    chart = FilterMixin(baseMixin({}))
   })
   describe("hasFilterHandler", () => {
     it("should handler cases where second argument if array of object collections", () => {

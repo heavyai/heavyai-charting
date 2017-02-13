@@ -1,4 +1,10 @@
-dc.rasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
+import coordinateGridRasterMixin from "./coordinate-grid-raster-mixin"
+import mapMixin from "./map-mixin"
+import baseMixin from "./base-mixin"
+import scatterMixin from "./scatter-mixin"
+import {lastFilteredSize} from "./core-async"
+
+export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     var _chart = null;
 
     var _useMap = useMap !== undefined ? useMap : false;
@@ -17,9 +23,9 @@ dc.rasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     if (_useMap){
-        _chart = dc.mapMixin(dc.baseMixin({}), parentDivId, _mapboxgl);
+        _chart = mapMixin(baseMixin({}), parentDivId, _mapboxgl);
     } else {
-        _chart = dc.scatterMixin(dc.coordinateGridRasterMixin({}, _mapboxgl, browser), _mapboxgl);
+        _chart = scatterMixin(coordinateGridRasterMixin({}, _mapboxgl, browser), _mapboxgl);
     }
 
     // unset predefined mandatory attributes
@@ -176,7 +182,7 @@ dc.rasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
         var bounds = _chart.getDataRenderBounds();
         _chart._updateXAndYScales(bounds);
 
-        _chart._vegaSpec = genLayeredVega(_chart, group, dc.lastFilteredSize(group.getCrossfilterId()));
+        _chart._vegaSpec = genLayeredVega(_chart, group, lastFilteredSize(group.getCrossfilterId()));
 
         var result = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec));
 

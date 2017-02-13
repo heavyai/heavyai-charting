@@ -1,3 +1,8 @@
+import baseMixin from "./base-mixin"
+import d3 from "d3"
+import {groupAll} from "./core-async"
+import {override} from "./core"
+
 /**
  * The data count widget is a simple widget designed to display the number of records selected by the
  * current filters out of the total number of records in the data set. Once created the data count widget
@@ -25,21 +30,21 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.dataCount}
  */
-dc.dataCount = function (parent, chartGroup) {
+export default function dataCount (parent, chartGroup) {
     var _formatNumber = d3.format(',d');
-    var _chart = dc.baseMixin({});
+    var _chart = baseMixin({});
     var _html = {some: '', all: ''};
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.isCountChart = function() { return true; } // override for count chart
 /* ------------------------------------------------------------------------- */
 
-    dc.override(_chart, "group", function (group, name) {
+    override(_chart, "group", function (group, name) {
       if (!arguments.length) {
         return _chart._group()
       }
 
-      dc.groupAll(group)
+      groupAll(group)
       return _chart._group(group, name)
     })
     /**

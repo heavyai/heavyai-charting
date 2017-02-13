@@ -1,3 +1,10 @@
+import baseMixin from "./base-mixin"
+import capMixin from "./cap-mixin"
+import colorMixin from "./color-mixin"
+import d3 from "d3"
+import marginMixin from "./margin-mixin"
+import {transition} from "./core"
+import {utils} from "./utils"
 /**
  * Concrete row chart implementation.
  *
@@ -21,7 +28,7 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.rowChart}
  */
-dc.rowChart = function (parent, chartGroup) {
+export default function rowChart (parent, chartGroup) {
 
     var _g;
 
@@ -47,7 +54,7 @@ dc.rowChart = function (parent, chartGroup) {
     var _titleRowCssClass = 'titlerow';
     var _renderTitleLabel = false;
 
-    var _chart = dc.capMixin(dc.marginMixin(dc.colorMixin(dc.baseMixin({}))));
+    var _chart = capMixin(marginMixin(colorMixin(baseMixin({}))));
 
     var _x;
 
@@ -156,7 +163,7 @@ dc.rowChart = function (parent, chartGroup) {
             .style('left', (_chart.effectiveWidth()/2 + _chart.margins().left) +'px');
 /* --------------------------------------------------------------------------*/
 
-        dc.transition(axisG, _chart.transitionDuration())
+        transition(axisG, _chart.transitionDuration())
             .call(_xAxis);
     }
 
@@ -178,7 +185,7 @@ dc.rowChart = function (parent, chartGroup) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     _chart.measureValue = function (d) {
-        return dc.utils.formatValue(_chart.cappedValueAccessor(d));
+        return utils.formatValue(_chart.cappedValueAccessor(d));
     };
 /* ------------------------------------------------------------------------- */
 
@@ -220,7 +227,7 @@ dc.rowChart = function (parent, chartGroup) {
     function drawChart (data) {
 /* OVERRIDE -----------------------------------------------------------------*/
         var rData = data ? data : _chart.data();
-        _rowData = dc.utils.maybeFormatInfinity(rData)
+        _rowData = utils.maybeFormatInfinity(rData)
 /* --------------------------------------------------------------------------*/
 
         drawAxis();
@@ -308,7 +315,7 @@ dc.rowChart = function (parent, chartGroup) {
                 return (_chart.hasFilter()) ? isSelectedRow(d) : false;
             });
 
-        dc.transition(rect, _chart.transitionDuration())
+        transition(rect, _chart.transitionDuration())
             .attr('width', function (d) {
                 return Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
             })
@@ -374,7 +381,7 @@ dc.rowChart = function (parent, chartGroup) {
                 .text(function (d) {
                     return _chart.label()(d);
                 });
-            dc.transition(lab, _chart.transitionDuration())
+            transition(lab, _chart.transitionDuration())
                 .attr('transform', translateX);
         }
 
@@ -410,7 +417,7 @@ dc.rowChart = function (parent, chartGroup) {
 
                     return width > minIdealWidth ? width - 4 : dimWidth + 16;
                 });
-            dc.transition(measureLab, _chart.transitionDuration())
+            transition(measureLab, _chart.transitionDuration())
                 .attr('transform', translateX);
         }
 /* --------------------------------------------------------------------------*/
@@ -427,7 +434,7 @@ dc.rowChart = function (parent, chartGroup) {
                     .text(function (d) {
                         return _chart.title()(d);
                     });
-            dc.transition(titlelab, _chart.transitionDuration())
+            transition(titlelab, _chart.transitionDuration())
                 .attr('transform', translateX);
         }
     }
@@ -633,6 +640,3 @@ dc.rowChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
-/* ****************************************************************************
- * OVERRIDE: dc.rowChart                                                      *
- * ***************************************************************************/

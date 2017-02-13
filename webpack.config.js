@@ -12,7 +12,6 @@ module.exports = {
     libraryTarget: "umd",
     library: "mapdc"
   },
-  devtool: "source-map",
   externals: {
     "d3": "d3",
     "crossfilter": {

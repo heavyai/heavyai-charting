@@ -1,3 +1,7 @@
+import coordinateGridMixin from "./coordinate-grid-mixin"
+import d3 from "d3"
+import {override} from "./core"
+import {utils} from "./utils"
 /**
  * Composite charts are a special kind of chart that render multiple charts on the same Coordinate
  * Grid. You can overlay (compose) different bar/line/area charts in a single composite chart to
@@ -17,12 +21,12 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.compositeChart}
  */
-dc.compositeChart = function (parent, chartGroup) {
+export default function compositeChart (parent, chartGroup) {
 
     var SUB_CHART_CLASS = 'sub';
     var DEFAULT_RIGHT_Y_AXIS_LABEL_PADDING = 12;
 
-    var _chart = dc.coordinateGridMixin({});
+    var _chart = coordinateGridMixin({});
     var _children = [];
 
     var _childOptions = {};
@@ -40,7 +44,7 @@ dc.compositeChart = function (parent, chartGroup) {
     _chart._mandatoryAttributes([]);
     _chart.transitionDuration(500);
 
-    dc.override(_chart, '_generateG', function () {
+    override(_chart, '_generateG', function () {
         var g = this.__generateG();
 
         for (var i = 0; i < _children.length; ++i) {
@@ -448,11 +452,11 @@ dc.compositeChart = function (parent, chartGroup) {
 
     delete _chart.yAxisMax;
     function yAxisMax () {
-        return dc.utils.add(d3.max(getYAxisMax(leftYAxisChildren())), _chart.yAxisPadding());
+        return utils.add(d3.max(getYAxisMax(leftYAxisChildren())), _chart.yAxisPadding());
     }
 
     function rightYAxisMax () {
-        return dc.utils.add(d3.max(getYAxisMax(rightYAxisChildren())), _chart.yAxisPadding());
+        return utils.add(d3.max(getYAxisMax(rightYAxisChildren())), _chart.yAxisPadding());
     }
 
     function getAllXAxisMinFromChildCharts () {
@@ -461,8 +465,8 @@ dc.compositeChart = function (parent, chartGroup) {
         });
     }
 
-    dc.override(_chart, 'xAxisMin', function () {
-        return dc.utils.subtract(d3.min(getAllXAxisMinFromChildCharts()), _chart.xAxisPadding());
+    override(_chart, 'xAxisMin', function () {
+        return utils.subtract(d3.min(getAllXAxisMinFromChildCharts()), _chart.xAxisPadding());
     });
 
     function getAllXAxisMaxFromChildCharts () {
@@ -471,8 +475,8 @@ dc.compositeChart = function (parent, chartGroup) {
         });
     }
 
-    dc.override(_chart, 'xAxisMax', function () {
-        return dc.utils.add(d3.max(getAllXAxisMaxFromChildCharts()), _chart.xAxisPadding());
+    override(_chart, 'xAxisMax', function () {
+        return utils.add(d3.max(getAllXAxisMaxFromChildCharts()), _chart.xAxisPadding());
     });
 
     _chart.legendables = function () {
@@ -532,6 +536,3 @@ dc.compositeChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
-/******************************************************************************
- * END OVERRIDE: dc.compositeChart                                            *
- * ***************************************************************************/

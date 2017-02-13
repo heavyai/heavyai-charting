@@ -1,5 +1,6 @@
 import d3 from "d3"
-import dc from "../../mapdc"
+import {redrawAllAsync, resetRedrawStack, resetRenderStack} from "../../src/core-async"
+import {logging, refreshDisabled} from "../../src/core"
 
 const NON_INDEX = -1
 
@@ -52,7 +53,7 @@ export default function asyncMixin (_chart) {
   })
 
   _chart.renderAsync = function (queryGroupId, queryCount) {
-    if (dc._refreshDisabled) {
+    if (refreshDisabled()) {
       return Promise.resolve()
     }
 
@@ -72,7 +73,7 @@ export default function asyncMixin (_chart) {
 
       const dataCallback = function (error, data) {
         if (error) {
-          dc._renderIdStack = null
+          resetRenderStack()
           reject(error)
         } else {
           _chart.render(id, queryGroupId, queryCount, data, renderCallback)
@@ -83,7 +84,7 @@ export default function asyncMixin (_chart) {
   }
 
   _chart.redrawAsync = function (queryGroupId, queryCount) {
-    if (dc._refreshDisabled) {
+    if (refreshDisabled()) {
       return Promise.resolve()
     }
 
@@ -104,7 +105,7 @@ export default function asyncMixin (_chart) {
       const dataCallback = function (error, data) {
         if (error) {
           _chart._invokeDataErrorListener()
-          dc.resetRedrawStack()
+          resetRedrawStack()
           reject(error)
         } else {
           _chart.redraw(id, queryGroupId, queryCount, data, redrawCallback)
@@ -118,7 +119,7 @@ export default function asyncMixin (_chart) {
 
   _chart.redrawGroup = function () {
     function logRedrawGroupError (e) {
-      if (dc._logging) {
+      if (logging()) {
         console.log("Redraw Group Error", e) // eslint-disable-line no-console
       }
     }
@@ -128,12 +129,12 @@ export default function asyncMixin (_chart) {
         if (error) {
           logRedrawGroupError(error)
         } else {
-          dc.redrawAllAsync(_chart.chartGroup())
+          redrawAllAsync(_chart.chartGroup())
             .catch(e => logRedrawGroupError(e))
         }
       })
     } else {
-      dc.redrawAllAsync(_chart.chartGroup())
+      redrawAllAsync(_chart.chartGroup())
         .catch(e => logRedrawGroupError(e))
     }
     return _chart

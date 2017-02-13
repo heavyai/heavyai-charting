@@ -1,6 +1,8 @@
 import {xAxisTickFormat, xDomain, xScale} from "./utils"
 import d3 from "d3"
-import dc from "../../mapdc"
+import {filters} from "../../src/filters"
+import {utils} from "../../src/utils"
+import {transition} from "../../src/core"
 
 const DEFAULT_NUM_TICKS = 10
 const MAX_TICK_WIDTH = 64
@@ -14,7 +16,7 @@ export function overrideCoordinate (chart) {
   chart._binInput = false
   chart._binSnap = false
 
-  chart.popupTextAccessor = (arr) => () => (dc.utils.formatValue(arr[0].datum.data.key0))
+  chart.popupTextAccessor = (arr) => () => (utils.formatValue(arr[0].datum.data.key0))
 
   chart.getNumTicksForXAxis = () => {
     const xDomain = chart.x().domain()
@@ -168,7 +170,7 @@ export function overrideCoordinate (chart) {
       extent[1] = new Date(extent[1].getTime() + ONE_SECOND_IN_MS)
     }
 
-    const domFilter = dc.filters.RangedFilter(extent[0], extent[1])
+    const domFilter = filters.RangedFilter(extent[0], extent[1])
 
     extentChart.replaceFilter(domFilter)
     extentChart.rescale()
@@ -276,7 +278,7 @@ export function overrideCoordinate (chart) {
           .text(chart.xAxisLabel())
     }
 
-    dc.transition(axisXG, chart.transitionDuration())
+    transition(axisXG, chart.transitionDuration())
         .attr("transform", "translate(" + chart.margins().left + "," + chart._xAxisY() + ")")
         .call(chart.xAxis())
 

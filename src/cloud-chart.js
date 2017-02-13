@@ -1,14 +1,16 @@
-/* ****************************************************************************
- * EXTEND: dc.cloudChart                                                      *
- * ***************************************************************************/
+import baseMixin from "./base-mixin"
+import capMixin from "./cap-mixin"
+import d3 from "d3"
+import colorMixin from "./color-mixin"
+import marginMixin from "./margin-mixin"
 
-dc.cloudChart = function(parent, chartGroup) {
+export default function cloudChart (parent, chartGroup) {
     var _g;
-    var _chart = dc.capMixin(dc.marginMixin(dc.colorMixin(dc.baseMixin({}))));
+    var _chart = capMixin(marginMixin(colorMixin(baseMixin({}))));
     var _cloudData;
     var _cloudLayout;
     var _r;
-    var _tags; // store output of _cloudLayout 
+    var _tags; // store output of _cloudLayout
     var _noRelayout = false; // flag to set on click so rerender doesn't relayout elements
     var _hasBeenRendered = false;
 
@@ -37,7 +39,7 @@ dc.cloudChart = function(parent, chartGroup) {
 
     function calculateSizeScale() {
         var extent = d3.extent(_cloudData, _chart.cappedValueAccessor);
-        
+
         _r = d3.scale.log().domain(extent)
                 .range([10,Math.max(14,Math.min(_chart.effectiveWidth(),_chart.effectiveHeight())/10)]);
     }
@@ -125,7 +127,3 @@ dc.cloudChart = function(parent, chartGroup) {
     return _chart.anchor(parent, chartGroup);
 
 };
-
-/* ****************************************************************************
- * END EXTEND: dc.cloudChart                                                  *
- * ***************************************************************************/

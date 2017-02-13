@@ -1,6 +1,4 @@
-/******************************************************************************
- * EXTEND: dc.scatterMixin                                                    *
- * ***************************************************************************/
+import {utils} from "./utils"
 
 function extend(destination, source) {
   for (var k in source) {
@@ -11,7 +9,7 @@ function extend(destination, source) {
   return destination;
 }
 
-dc.scatterMixin = function (_chart, _mapboxgl) {
+export default function scatterMixin (_chart, _mapboxgl) {
     var _mapboxgl = typeof mapboxgl === 'undefined' ? _mapboxgl : mapboxgl
 
     _chart._xDimName = null;
@@ -102,8 +100,8 @@ dc.scatterMixin = function (_chart, _mapboxgl) {
 
             if (_chart.elasticX()) {
                 var xPadding = _chart.xAxisPadding();
-                _xRange[0] = dc.utils.subtract(_xRange[0], xPadding) || 0;
-                _xRange[1] = dc.utils.add(_xRange[1], xPadding) || 0;
+                _xRange[0] = utils.subtract(_xRange[0], xPadding) || 0;
+                _xRange[1] = utils.add(_xRange[1], xPadding) || 0;
             }
         }
 
@@ -122,8 +120,8 @@ dc.scatterMixin = function (_chart, _mapboxgl) {
 
             if (_chart.elasticY()) {
                 var yPadding = _chart.yAxisPadding();
-                _yRange[0] = dc.utils.subtract(_yRange[0], yPadding) || 0;
-                _yRange[1] = dc.utils.add(_yRange[1], yPadding) || 0;
+                _yRange[0] = utils.subtract(_yRange[0], yPadding) || 0;
+                _yRange[1] = utils.add(_yRange[1], yPadding) || 0;
             }
         }
 
@@ -190,7 +188,7 @@ dc.scatterMixin = function (_chart, _mapboxgl) {
 
         if (data) {
             if(browser.isSafari || browser.isIE || browser.isEdge){
-                blob = dc.utils.b64toBlob(data, 'image/png');
+                blob = utils.b64toBlob(data, 'image/png');
                 var blobUrl = URL.createObjectURL(blob);
             } else {
                 var blobUrl = 'data:image/png;base64,' + data;

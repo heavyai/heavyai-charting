@@ -1,5 +1,9 @@
-dc.numberChart = function (parent, chartGroup) {
-    var _chart = dc.baseMixin({});
+import baseMixin from "./base-mixin"
+import d3 from "d3"
+import {utils} from "./utils"
+
+export default function numberChart (parent, chartGroup) {
+    var _chart = baseMixin({});
     var _colors = '#22a7f0';
     var _fontSize = null;
     var _chartWidth = null;
@@ -33,7 +37,7 @@ dc.numberChart = function (parent, chartGroup) {
     });
 
     _chart._doRender = function (val) {
-        var selected = dc.utils.formatValue(val);
+        var selected = utils.formatValue(val);
 
         var wrapper = _chart.root().html('')
             .append('div')

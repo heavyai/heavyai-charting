@@ -1,4 +1,6 @@
-dc.legendContinuous = function () {
+import d3 from "d3"
+
+export default function legendContinuous () {
     var LABEL_GAP = 2;
     var _legend = {},
         _parent,

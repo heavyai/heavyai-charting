@@ -1,9 +1,11 @@
-/******************************************************************************
- * EXTEND: dc.polyRasterChart                                               *
- * ***************************************************************************/
+import rasterMixin from "./raster-mixin"
+import mapMixin from "./map-mixin"
+import colorMixin from "./color-mixin"
+import capMixin from "./cap-mixin"
+import baseMixin from "./base-mixin"
 
-dc.polyRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
-  var chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), parent.attributes.id.value, _mapboxgl))
+export default function polyRasterChart (parent, useMap, chartGroup, _mapboxgl) {
+  var chart = rasterMixin(mapMixin(colorMixin(capMixin(baseMixin({}))), parent.attributes.id.value, _mapboxgl))
   var layer = {isActive: false, name: "overlay_polygons"};
   var renderBoundsMap = {};
   var hasBeenRendered = false;
@@ -189,7 +191,3 @@ function polyJoinValidator (newPolyJoin) {
     throw new Error(".polyJoin takes {table: STRING, keysColumn: STRING}.")
   }
 }
-
-/******************************************************************************
- * EXTEND END: dc.polyRasterChart                                           *
- * ***************************************************************************/

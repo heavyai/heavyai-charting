@@ -1,3 +1,5 @@
+import {normalizeFiltersArray} from "../overrides/src/formatting-helpers"
+
 /**
  * The dc.js filters are functions which are passed into crossfilter to chose which records will be
  * accumulated to produce values for the charts.  In the crossfilter model, any filters applied on one
@@ -18,7 +20,7 @@
  * @memberof dc
  * @type {{}}
  */
-dc.filters = {};
+export const filters = {};
 
 /**
  * RangedFilter is a filter which accepts keys between `low` and `high`.  It is used to implement X
@@ -32,7 +34,7 @@ dc.filters = {};
  * @return {Array<Number>}
  * @constructor
  */
-dc.filters.RangedFilter = function (low, high) {
+filters.RangedFilter = function (low, high) {
     var range = new Array(low, high);
     range.isFiltered = function (value) {
         return value >= this[0] && value < this[1];
@@ -49,15 +51,15 @@ dc.filters.RangedFilter = function (low, high) {
  *
  * Its `filterType` is 'TwoDimensionalFilter'
  * @name TwoDimensionalFilter
- * @memberof dc.filters
+ * @memberof filters
  * @param {Array<Number>} filter
  * @return {Array<Number>}
  * @constructor
  */
-dc.filters.TwoDimensionalFilter = function (filter) {
+filters.TwoDimensionalFilter = function (filter = []) {
     if (filter === null) { return null; }
 
-    var f = filter;
+    var f = normalizeFiltersArray(filter);
     f.isFiltered = function (value) {
         return value.length && value.length === f.length &&
                value[0] === f[0] && value[1] === f[1];
@@ -81,12 +83,12 @@ dc.filters.TwoDimensionalFilter = function (filter) {
  *
  * Its `filterType` is 'RangedTwoDimensionalFilter'
  * @name RangedTwoDimensionalFilter
- * @memberof dc.filters
+ * @memberof filters
  * @param {Array<Array<Number>>} filter
  * @return {Array<Array<Number>>}
  * @constructor
  */
-dc.filters.RangedTwoDimensionalFilter = function (filter) {
+filters.RangedTwoDimensionalFilter = function (filter) {
     if (filter === null) { return null; }
 
     var f = filter;

@@ -1,3 +1,13 @@
+import d3 from "d3"
+import baseMixin from "./base-mixin"
+import colorMixin from "./color-mixin"
+import marginMixin from "./margin-mixin"
+import {events} from "./events"
+import {override, transition} from "./core"
+import {utils} from "./utils"
+import {filters} from "./filters"
+import heatMapMixin from "../overrides/src/heatmap"
+
 /* ****************************************************************************
  * OVERRIDE: dc.heatMap                                                       *
  * ***************************************************************************/
@@ -20,7 +30,7 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.heatMap}
  */
-dc.heatMap = function (parent, chartGroup) {
+export default function heatMap (parent, chartGroup) {
     var INTERVAL_LABELS = {
 
       // ISO DOW starts at 1, set null at 0 index
@@ -70,7 +80,7 @@ dc.heatMap = function (parent, chartGroup) {
     var _xBorderRadius = DEFAULT_BORDER_RADIUS;
     var _yBorderRadius = DEFAULT_BORDER_RADIUS;
 
-    var _chart = dc.colorMixin(dc.marginMixin(dc.baseMixin({})));
+    var _chart = colorMixin(marginMixin(baseMixin({})));
     _chart._mandatoryAttributes(['group']);
     _chart.title(_chart.colorAccessor());
 
@@ -78,7 +88,7 @@ dc.heatMap = function (parent, chartGroup) {
         return d;
     };
     var _rowsLabel = function (d) {
-        return d;  
+        return d;
     };
 
     _chart.dockedAxesSize = function (_) {
@@ -169,7 +179,7 @@ dc.heatMap = function (parent, chartGroup) {
 /* --------------------------------------------------------------------------*/
 
         });
-        dc.events.trigger(function () {
+        events.trigger(function () {
             if (unfilteredCellsOnAxis.empty()) {
                 cellsOnAxis.each(function (d) {
 
@@ -192,12 +202,12 @@ dc.heatMap = function (parent, chartGroup) {
         });
     }
 
-    dc.override(_chart, 'filter', function (filter, isInverseFilter) {
+    override(_chart, 'filter', function (filter, isInverseFilter) {
         if (!arguments.length) {
             return _chart._filter();
         }
 
-        return _chart._filter(dc.filters.TwoDimensionalFilter(filter), isInverseFilter);
+        return _chart._filter(filters.TwoDimensionalFilter(filter), isInverseFilter);
     });
 
     function uniq (d, i, a) {
@@ -302,7 +312,7 @@ dc.heatMap = function (parent, chartGroup) {
         cols = _colScale.domain(cols);
 
         _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()))
-        
+
         var rowCount = rows.domain().length,
             colCount = cols.domain().length,
             availWidth = _chart.width() - _dockedAxesSize.left,
@@ -357,7 +367,7 @@ dc.heatMap = function (parent, chartGroup) {
             .on('mouseleave', hidePopup)
             .on('click', _chart.boxOnClick());
 
-        dc.transition(boxes.select('rect'), _chart.transitionDuration())
+        transition(boxes.select('rect'), _chart.transitionDuration())
             .attr('x', function (d, i) { return cols(_chart.keyAccessor()(d, i)); })
             .attr('y', function (d, i) { return rows(_chart.valueAccessor()(d, i)); })
             .attr('rx', _xBorderRadius)
@@ -403,7 +413,7 @@ dc.heatMap = function (parent, chartGroup) {
                 .style('width', _dockedAxesSize.left + 'px')
                 .style('left', _dockedAxesSize.left + 'px')
                 .html('').selectAll('div.text').data(rows.domain());
-        
+
         rowsText.enter()
           .append('div')
           .attr('class', 'text')
@@ -452,7 +462,7 @@ dc.heatMap = function (parent, chartGroup) {
      * // default box on click handler
      * chart.boxOnClick(function (d) {
      *     var filter = d.key;
-     *     dc.events.trigger(function () {
+     *     events.trigger(function () {
      *         _chart.filter(filter);
      *         _chart.redrawGroup();
      *     });
@@ -605,7 +615,7 @@ dc.heatMap = function (parent, chartGroup) {
         popupItem.append('div')
             .attr('class', 'popup-item-value')
             .html(function(){
-                return dc.utils.formatValue(d.color);
+                return utils.formatValue(d.color);
             });
 
         popup.classed('js-showPopup', true);
@@ -635,6 +645,7 @@ dc.heatMap = function (parent, chartGroup) {
     }
 /* ------------------------------------------------------------------------- */
 
+    _chart = heatMapMixin(_chart)
     return _chart.anchor(parent, chartGroup);
 };
 /* ****************************************************************************

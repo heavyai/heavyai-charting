@@ -1,4 +1,4 @@
-dc.events = {
+export const events = {
     current: null
 };
 
@@ -21,7 +21,7 @@ dc.events = {
  * @param {Function} closure
  * @param {Number} [delay]
  */
-dc.events.trigger = function (closure, delay) {
+events.trigger = function (closure, delay) {
     if (!delay) {
         closure();
         return;

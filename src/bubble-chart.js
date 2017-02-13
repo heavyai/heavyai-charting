@@ -1,3 +1,10 @@
+import d3 from "d3"
+import bubbleMixin from "./bubble-mixin"
+import capMixin from "./cap-mixin"
+import coordinateGridMixin from "./coordinate-grid-mixin"
+import {utils} from "./utils"
+import {transition} from "./core"
+
 /**
  * A concrete implementation of a general purpose bubble chart that allows data visualization using the
  * following dimensions:
@@ -24,10 +31,10 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.bubbleChart}
  */
-dc.bubbleChart = function (parent, chartGroup) {
+export default function bubbleChart (parent, chartGroup) {
 
 /* OVERRIDE -----------------------------------------------------------------*/
-    var _chart = dc.bubbleMixin(dc.capMixin(dc.coordinateGridMixin({})));
+    var _chart = bubbleMixin(capMixin(coordinateGridMixin({})));
     var _popupHeader = [];
     var _isHoverNode = null;
 /* --------------------------------------------------------------------------*/
@@ -255,7 +262,7 @@ dc.bubbleChart = function (parent, chartGroup) {
 
         for (var i = 1; i< _popupHeader.length; i++) {
             if (_popupHeader[i].alias) {
-                str += '<td>'+ dc.utils.formatValue(d[_popupHeader[i].alias]) +'</td>';
+                str += '<td>'+ utils.formatValue(d[_popupHeader[i].alias]) +'</td>';
             }
         }
         return str;
@@ -401,7 +408,7 @@ dc.bubbleChart = function (parent, chartGroup) {
             })
 /* --------------------------------------------------------------------------*/
 
-        dc.transition(bubbleG, _chart.transitionDuration())
+        transition(bubbleG, _chart.transitionDuration())
             .selectAll('circle.' + _chart.BUBBLE_CLASS)
             .attr('r', function (d) {
                 return _chart.bubbleR(d);
@@ -414,7 +421,7 @@ dc.bubbleChart = function (parent, chartGroup) {
     }
 
     function updateNodes (bubbleG) {
-        dc.transition(bubbleG, _chart.transitionDuration())
+        transition(bubbleG, _chart.transitionDuration())
             .attr('transform', bubbleLocator)
 
 /* OVERRIDE -----------------------------------------------------------------*/
@@ -466,6 +473,3 @@ dc.bubbleChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
-/******************************************************************************
- * END OVERRIDE: dc.bubbleChart                                               *
- * ***************************************************************************/

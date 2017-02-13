@@ -1,3 +1,5 @@
+import d3 from "d3"
+import baseMixin from "./base-mixin"
 /**
  * The data table is a simple widget designed to list crossfilter focused data set (rows being
  * filtered) in a good old tabular fashion.
@@ -25,14 +27,14 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.dataTable}
  */
-dc.dataTable = function (parent, chartGroup) {
+export default function dataTable (parent, chartGroup) {
     var LABEL_CSS_CLASS = 'dc-table-label';
     var ROW_CSS_CLASS = 'dc-table-row';
     var COLUMN_CSS_CLASS = 'dc-table-column';
     var GROUP_CSS_CLASS = 'dc-table-group';
     var HEAD_CSS_CLASS = 'dc-table-head';
 
-    var _chart = dc.baseMixin({});
+    var _chart = baseMixin({});
 
     var _size = 25;
     var _columns = [];

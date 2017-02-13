@@ -31,11 +31,11 @@
     "build": "bash scripts/build.sh",
     "build:example": "npm run build && npm run webpack && bash scripts/copy-example-libs.sh",
     "start": "npm run build:example && node ../../node_modules/http-server/bin/http-server -p 8081 -o",
-    "test": "grunt test",
     "clean": "bash scripts/clean.sh",
     "watch": "grunt watch",
     "lint": "grunt lint",
-    "webpack": "node ../../node_modules/webpack/bin/webpack.js"
+    "webpack": "node ../../node_modules/webpack/bin/webpack.js",
+    "test": "../../node_modules/.bin/mocha ./test --require ./test/config --require ./test/setup"
   },
   "npmName": "mapdc",
   "npmFileMap": [

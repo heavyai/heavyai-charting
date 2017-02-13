@@ -1,3 +1,9 @@
+import baseMixin from "./base-mixin"
+import colorMixin from "./color-mixin"
+import d3 from "d3"
+import mapMixin from "./map-mixin"
+import {transition} from "./core"
+import {utils} from "./utils"
 /**
  * The geo choropleth chart is designed as an easy way to create a crossfilter driven choropleth map
  * from GeoJson data. This chart implementation was inspired by
@@ -21,15 +27,15 @@
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.geoChoroplethChart}
  */
-dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
+export default function geoChoroplethChart (parent, useMap, chartGroup, mapbox) {
     var _useMap = useMap !== undefined ? useMap : false;
     var parentDivId = parent.attributes.id.value;
     var _chart = null;
     if (_useMap) {
-        _chart = dc.mapMixin(dc.colorMixin(dc.baseMixin({})),parentDivId, mapbox);
+        _chart = mapMixin(colorMixin(baseMixin({})),parentDivId, mapbox);
     }
     else {
-        _chart = dc.colorMixin(dc.baseMixin({}));
+        _chart = colorMixin(baseMixin({}));
     }
 
     _chart.colorAccessor(function (d) {
@@ -162,7 +168,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
             })
             .attr('class', function (d) {
                 var layerNameClass = geoJson(layerIndex).name;
-                var regionClass = dc.utils.nameToId(geoJson(layerIndex).keyAccessor(d));
+                var regionClass = utils.nameToId(geoJson(layerIndex).keyAccessor(d));
                 var baseClasses = layerNameClass + ' ' + regionClass;
                 if (isSelected(layerIndex, d)) {
                     baseClasses += ' selected';
@@ -243,7 +249,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
                 return _chart.onClick(d, layerIndex);
             });
 
-        dc.transition(paths, _chart.transitionDuration()).attr('fill', function (d, i) {
+        transition(paths, _chart.transitionDuration()).attr('fill', function (d, i) {
             var dataColor = data[geoJson(layerIndex).keyAccessor(d)]
             return _chart.getColor(dataColor, i)
         });
@@ -404,7 +410,7 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
             .attr('class', 'popup-value')
             .html(function(){
                 var key = getKey(0, d);
-                var value = isNaN(data[key]) ?  'N/A' : dc.utils.formatValue(data[key]);
+                var value = isNaN(data[key]) ?  'N/A' : utils.formatValue(data[key]);
                 return '<div class="popup-value-dim">'+ key +'</div><div class="popup-value-measure">'+ value +'</div>';
             });
 
@@ -435,6 +441,3 @@ dc.geoChoroplethChart = function (parent, useMap, chartGroup, mapbox) {
 
     return _chart.anchor(parent, chartGroup);
 };
-/* ****************************************************************************
- * END OVERRIDE: dc.geoChoroplethChart                                        *
- * ***************************************************************************/

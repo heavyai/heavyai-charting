@@ -1,5 +1,5 @@
 import chai, {expect} from "chai"
-import dc from "../../mapdc"
+import coordinateGridMixin from "../../src/coordinate-grid-mixin"
 import spies from "chai-spies"
 
 chai.use(spies)
@@ -8,7 +8,7 @@ describe("coordinateGridMixin", () => {
   let chart
   beforeEach(() => {
     const label = "arr_timestamp"
-    chart = dc.coordinateGridMixin({})
+    chart = coordinateGridMixin({})
     chart.xAxisLabel = () => label
   })
 

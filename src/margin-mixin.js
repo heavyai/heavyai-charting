@@ -7,7 +7,7 @@
  * @param {Object} _chart
  * @return {dc.marginMixin}
  */
-dc.marginMixin = function (_chart) {
+export default function marginMixin (_chart) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
     var _margin = { top: 10, right: 50, bottom: 48, left: 60 };

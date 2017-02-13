@@ -1,6 +1,9 @@
 import {deepClone, deepEquals, xAxisTickFormat, xDomain, xScale} from "./utils"
 import d3 from "d3"
-import dc from "../../mapdc"
+
+import lineChart from "../../src/line-chart"
+import barChart from "../../src/bar-chart"
+import {deregisterChart, override} from "../../src/core"
 
 const CHART_HEIGHT = 0.75
 const RANGE_CHART_HEIGHT = 0.25
@@ -12,7 +15,7 @@ export const DEFAULT_CHART_MARGINS = {top: 24, right: 24, bottom: 52, left: 48}
 
 function overridePlotData (chart) {
   if (!chart._plotData) {
-    dc.override(chart, "plotData", () => {
+    override(chart, "plotData", () => {
 
       if (chart.rangeChartEnabled() && !chart._rangeChartCreated) {
         chart._rangeChartCreated = true
@@ -73,12 +76,12 @@ export function initializeRangeChart (chart) {
   rangeChartDiv.className = "range-chart"
 
   if (chart._chartType === "line") {
-    RangeChart = dc.lineChart(rangeChartDiv)
+    RangeChart = lineChart(rangeChartDiv)
                    .defined(d => d.y !== null)
                    .interpolate("linear")
                    .renderArea(false)
   } else if (chart._chartType === "histogram") {
-    RangeChart = dc.barChart(rangeChartDiv)
+    RangeChart = barChart(rangeChartDiv)
   }
 
   RangeChart
@@ -175,7 +178,7 @@ export function createRangeChart (chart) {
     }
     _chart.group().binParams(_RangeChart.group().binParams())
     _chart.xAxisLabel(_RangeChart.xAxisLabel())
-    dc.deregisterChart(_RangeChart)
+    deregisterChart(_RangeChart)
     _chart.margins(DEFAULT_CHART_MARGINS)
     _chart.renderHorizontalGridLines(false)
     _chart._rangeChartCreated = false
@@ -206,7 +209,7 @@ export default function rangeMixin (chart) {
     return chart
   }
 
-  dc.override(chart, "height", function (height) {
+  override(chart, "height", function (height) {
     if (!arguments.length) {
       return chart._height()
     }

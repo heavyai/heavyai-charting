@@ -1,4 +1,7 @@
-dc.rasterLayerPointMixin = function(_layer) {
+import {decrementSampledCount, incrementSampledCount} from "./core"
+import {lastFilteredSize} from "./core-async"
+
+export default function rasterLayerPointMixin (_layer) {
     _layer.xDim = createRasterLayerGetterSetter(_layer, null);
     _layer.yDim = createRasterLayerGetterSetter(_layer, null);
 
@@ -11,9 +14,9 @@ dc.rasterLayerPointMixin = function(_layer) {
     _layer.sampling = createRasterLayerGetterSetter(_layer, false,
                           function(doSampling, isCurrSampling) {
                               if (doSampling && !isCurrSampling) {
-                                  dc._sampledCount++;
+                                  incrementSampledCount();
                               } else if (!doSampling && isCurrSampling) {
-                                  dc._sampledCount--;
+                                  decrementSampledCount();
                               }
                               return !!doSampling;
                           },
@@ -99,10 +102,10 @@ dc.rasterLayerPointMixin = function(_layer) {
                     } else {
                         throw new Error("Type error for the sizeAttr property for layer " + layerName + ". The sizeAttr must be a string (referencing an column in the query) or a number.");
                     }
-                } else if (_layer.dynamicSize() !== null && _layer.sampling() && dc.lastFilteredSize(group.getCrossfilterId()) !== undefined) {
+                } else if (_layer.dynamicSize() !== null && _layer.sampling() && lastFilteredSize(group.getCrossfilterId()) !== undefined) {
                     // @TODO don't tie this to sampling - meaning having a dynamicSize will also require count to be computed first by dc
                     var cap = _layer.cap();
-                    markPropObj.size = Math.round(_layer.dynamicSize()(Math.min(dc.lastFilteredSize(group.getCrossfilterId()), cap)) * pixelRatio);
+                    markPropObj.size = Math.round(_layer.dynamicSize()(Math.min(lastFilteredSize(group.getCrossfilterId()), cap)) * pixelRatio);
                 } else {
                     markPropObj.size = _layer.defaultSize() * pixelRatio;
                 }
@@ -154,7 +157,7 @@ dc.rasterLayerPointMixin = function(_layer) {
     _layer.setSample = function() {
         if (_layer.sampling() && _layer.dimension()) {
             var id = _layer.dimension().getCrossfilterId();
-            var filterSize = dc.lastFilteredSize(id);
+            var filterSize = lastFilteredSize(id);
             if (filterSize == undefined)
                 _layer.dimension().samplingRatio(null);
             else {
@@ -322,4 +325,3 @@ dc.rasterLayerPointMixin = function(_layer) {
 
     return _layer;
 }
-

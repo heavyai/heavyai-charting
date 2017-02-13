@@ -1,8 +1,16 @@
-/******************************************************************************
- * EXTEND: dc.bubbleRasterChart                                               *
- * ***************************************************************************/
+import baseMixin from "./base-mixin"
+import capMixin from "./cap-mixin"
+import colorMixin from "./color-mixin"
+import coordinateGridRasterMixin from "./coordinate-grid-raster-mixin"
+import d3 from "d3"
+import {lastFilteredSize} from "./core-async"
+import mapMixin from "./map-mixin"
+import rasterMixin from "./raster-mixin"
+import scatterMixin from "./scatter-mixin"
+import legend from "./legend"
+import {utils} from "./utils"
 
-dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
+export default function bubbleRasterChart (parent, useMap, chartGroup, _mapboxgl) {
     var _chart = null;
 
     var _useMap = useMap !== undefined ? useMap : false;
@@ -21,9 +29,9 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     if (_useMap){
-        _chart = dc.rasterMixin(dc.mapMixin(dc.colorMixin(dc.capMixin(dc.baseMixin({}))), parentDivId, _mapboxgl));
+        _chart = rasterMixin(mapMixin(colorMixin(capMixin(baseMixin({}))), parentDivId, _mapboxgl));
     } else {
-        _chart = dc.rasterMixin(dc.scatterMixin(dc.capMixin(dc.coordinateGridRasterMixin({}, _mapboxgl, browser)), _mapboxgl), parentDivId, chartGroup);
+        _chart = rasterMixin(scatterMixin(capMixin(coordinateGridRasterMixin({}, _mapboxgl, browser)), _mapboxgl), parentDivId, chartGroup);
     }
 
     var _imageOverlay = null;
@@ -146,9 +154,9 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     function getMinMaxOrTopColors (color) {
-        if (dc.utils.isQuantitative(color.type)) {
+        if (utils.isQuantitative(color.type)) {
             return _chart.getMinMax(color.value)
-        } else if (dc.utils.isOrdinal(color.type)) {
+        } else if (utils.isOrdinal(color.type)) {
             return _chart.getTopValues(color.value)
         } else {
             return Promise.resolve()
@@ -167,7 +175,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
                 }))
 
                 var legend = _chart
-                   .legend(dc.legend())
+                   .legend(legend())
                    .legend()
                    .setKey("key0")
 
@@ -225,12 +233,11 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
                 sql = group.writeTopQuery(_chart.cap(), undefined, false, true);
             }
 
-            _chart._vegaSpec = genVegaSpec(_chart, sql, dc.lastFilteredSize(group.getCrossfilterId()));
+            _chart._vegaSpec = genVegaSpec(_chart, sql, lastFilteredSize(group.getCrossfilterId()));
             var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks);
 
             _renderBoundsMap[nonce] = bounds;
         })
-
     });
 
     _chart.data(function (group) {
@@ -249,7 +256,7 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
             sql = group.writeTopQuery(_chart.cap(), undefined, false, true);
         }
 
-        _chart._vegaSpec = genVegaSpec(_chart, sql, dc.lastFilteredSize(group.getCrossfilterId()));
+        _chart._vegaSpec = genVegaSpec(_chart, sql, lastFilteredSize(group.getCrossfilterId()));
 
         var result = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {});
 
@@ -332,8 +339,6 @@ dc.bubbleRasterChart = function(parent, useMap, chartGroup, _mapboxgl) {
     return _chart.anchor(parent, chartGroup);
 }
 
-function valuesOb (obj) { return Object.keys(obj).map(function (key) { return obj[key]; }) }
-
 function genVegaSpec(chart, sqlstr, lastFilteredSize) {
   var pixelRatio = chart._getPixelRatio();
   var width = (typeof chart.effectiveWidth === 'function' ? chart.effectiveWidth() : chart.width()) * pixelRatio;
@@ -392,6 +397,3 @@ function genVegaSpec(chart, sqlstr, lastFilteredSize) {
 }
 
 function notNull (value) { return value != null /* double-equals also catches undefined */ }
-/******************************************************************************
- * EXTEND END: dc.bubbleRasterChart                                           *
- * ***************************************************************************/

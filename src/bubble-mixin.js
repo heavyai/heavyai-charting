@@ -1,3 +1,6 @@
+import colorMixin from "./color-mixin"
+import d3 from "d3"
+import {transition} from "./core"
 /**
  * This Mixin provides reusable functionalities for any chart that needs to visualize data using bubbles.
  * @name bubbleMixin
@@ -7,7 +10,7 @@
  * @param {Object} _chart
  * @return {dc.bubbleMixin}
  */
-dc.bubbleMixin = function (_chart) {
+export default function bubbleMixin (_chart) {
     var _maxBubbleRelativeSize = 0.3;
 
 /* OVERRIDE ---------------------------------------------------------------- */
@@ -23,7 +26,7 @@ dc.bubbleMixin = function (_chart) {
     _chart.unAccent = unAccentBubble;
 /* ------------------------------------------------------------------------- */
 
-    _chart = dc.colorMixin(_chart);
+    _chart = colorMixin(_chart);
 
     _chart.renderLabel(true);
 
@@ -154,7 +157,7 @@ dc.bubbleMixin = function (_chart) {
                 .attr('opacity', 0)
                 .attr('pointer-events', labelPointerEvent)
                 .text(labelFunction);
-            dc.transition(label, _chart.transitionDuration())
+            transition(label, _chart.transitionDuration())
                 .attr('opacity', 1);
 
 
@@ -167,7 +170,7 @@ dc.bubbleMixin = function (_chart) {
             var labels = bubbleGEnter.selectAll('text')
                 .attr('pointer-events', labelPointerEvent)
                 .text(labelFunction);
-            dc.transition(labels, _chart.transitionDuration())
+            transition(labels, _chart.transitionDuration())
                 .attr('opacity', 1);
 
         }

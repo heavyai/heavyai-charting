@@ -1,22 +1,23 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
-import dcLegendMixin from "../src/dc-legend-mixin"
-import dc from "../../index"
+import dcLegendMixin from "../../src/dc-legend-mixin"
+import barChart from "../../src/bar-chart"
+import legend from "../../src/legend"
 
 chai.use(spies)
 
 describe("dc legend mixin", () => {
-  let legend
+  let _legend
   let chart
   beforeEach(()=> {
     const node = window.document.createElement("DIV")
-    chart = dc.barChart(node)
-    legend = chart.legend(dcLegendMixin(dc.legend())).legend()
+    chart = barChart(node)
+    _legend = chart.legend(dcLegendMixin(legend())).legend()
   })
 
   describe('legend remove', () => {
     it('should set the parent to node', () => {
-      legend.removeLegend()
+      _legend.removeLegend()
       expect(chart.legend()).to.equal(null)
     })
   })
@@ -24,7 +25,7 @@ describe("dc legend mixin", () => {
   describe('legend setTitle', () => {
     it('should set title of the legend', () => {
       const testTitle = "Test Title"
-      legend.setTitle(testTitle)
+      _legend.setTitle(testTitle)
       expect(chart.legend()._title).to.equal(testTitle)
     })
   })
@@ -32,7 +33,7 @@ describe("dc legend mixin", () => {
   describe('legend setKey', () => {
     it('should set key of the legend', () => {
       const testKey = "key0"
-      legend.setKey(testKey)
+      _legend.setKey(testKey)
       expect(chart.legend()._key).to.equal(testKey)
     })
   })
