@@ -211,6 +211,7 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl, _MapboxDraw = MapboxD
     chart.filters = filters
 
     chart.filterAll = () => {
+      chart.drawMode(false)
       coordFilter.filter()
       Draw.deleteAll()
       return chart

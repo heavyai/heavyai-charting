@@ -325,7 +325,7 @@ export default function rasterMixin (_chart) {
       var html = '';
       for (var key in data) {
         if(key !== "xPoint" && key !== "yPoint" && !((_chart.colorBy() && key === _chart.colorBy().value) && hideColorColumnInPopup())){
-          html += '<div class="map-popup-item"><span class="popup-item-key">' + key + ':</span><span class="popup-item-val"> ' + dc.utils.formatValue(data[key]) +'</span></div>'
+          html += '<div class="map-popup-item"><span class="popup-item-key">' + key + ':</span><span class="popup-item-val"> ' + utils.formatValue(data[key]) +'</span></div>'
         }
       }
       return html;
