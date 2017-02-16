@@ -501,7 +501,7 @@
      * username, password, host, port, and database name */
     new MapdCon()
       .protocol("http")
-      .host("kali.mapd.com")
+      .host("forge.mapd.com")
       .port("9092")
       .dbName("mapd")
       .user("mapd")
@@ -514,7 +514,7 @@
          *
          *  to see all availables --  con.getTables()
          */
-         crossfilter.crossfilter(con, "flights").then(createCharts)
+         crossfilter.crossfilter(con, "flights_donotmodify").then(createCharts)
         /*
          *  Pass instance of crossfilter into our reateCharts.
          */

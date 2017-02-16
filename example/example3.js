@@ -12,9 +12,9 @@ document.addEventListener("DOMContentLoaded", function init() {
   //   numTimeBins: 288 // 288 * 5 = number of minutes in a day.
   // }
   var config = {
-    table: "contributions",
-    valueColumn: "contributions.amount",
-    joinColumn: "contributions.contributor_zipcode",
+    table: "contributions_donotmodify",
+    valueColumn: "contributions_donotmodify.amount",
+    joinColumn: "contributions_donotmodify.contributor_zipcode",
     polyTable: "zipcodes",
     polyJoinColumn: "ZCTA5CE10",
     timeColumn: "contrib_date",
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function init() {
   }
   new MapdCon()
     .protocol("http")
-    .host("kali.mapd.com")
+    .host("forge.mapd.com")
     .port("9092")
     .dbName("mapd")
     .user("mapd")

@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     // A MapdCon instance is used for performing raw queries on a MapD GPU database.
     new MapdCon()
       .protocol("http")
-      .host("kali.mapd.com")
+      .host("forge.mapd.com")
       .port("9092")
       .dbName("mapd")
       .user("mapd")

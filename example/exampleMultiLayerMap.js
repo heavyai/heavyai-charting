@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function init() {
   // A MapdCon instance is used for performing raw queries on a MapD GPU database.
   new MapdCon()
     .protocol("http")
-    .host("kali.mapd.com")
+    .host("forge.mapd.com")
     .port("9092")
     .dbName("mapd")
     .user("mapd")
@@ -17,9 +17,9 @@ document.addEventListener("DOMContentLoaded", function init() {
       // This layer will be polygons of zipcodes and
       // will be colored by data joined from the contributions
       // table
-      var tableName1 = ["contributions", "zipcodes"];
+      var tableName1 = ["contributions_donotmodify", "zipcodes"];
       var table1Joins = [{
-        table1: "contributions",
+        table1: "contributions_donotmodify",
         attr1: "contributor_zipcode",
         table2: "zipcodes",
         attr2: "ZCTA5CE10"
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
       // Table to use for the 3nd layer, which will be points
       // from the contributions table.
-      var tableName3 = 'contributions';
+      var tableName3 = 'contributions_donotmodify';
 
       // make 3 crossfilters for all 3 layers
       // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
