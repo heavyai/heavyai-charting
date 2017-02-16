@@ -1058,6 +1058,10 @@ export default function coordinateGridMixin (_chart) {
                      _chart.brushSnap(isRangeChart);
                  } else if (isRangeChart) {
                      _chart.focusChart().brushSnap(isRangeChart);
+                     var binParams = _chart.focusChart().group().binParams()[0]
+                     if (!binParams.auto && !binParams.extract) {
+                         _chart.focusChart()._invokeBinListener(binParams.timeBin)
+                     }
                  }
                  disableTransitions(false)
              });
