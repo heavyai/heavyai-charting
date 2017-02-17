@@ -1,3 +1,5 @@
+import {createVegaAttrMixin} from "./vega-utils"
+
 var vegaLineJoinOptions = ["miter", "round", "bevel"];
 var polyTableGeomColumns = {
     // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.

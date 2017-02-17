@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
     // we're going to color based on the average contribution of the zipcode,
     // so reduce the average from the join
-    var polyGrp1 = polyDim1.group().reduceAvg("contributions.amount", "avgContrib");
+    var polyGrp1 = polyDim1.group().reduceAvg("contributions_donotmodify.amount", "avgContrib");
 
     // create the scale to use for the fill color of the polygons.
     // We're going to use the avg contribution of the zipcode to color the poly.

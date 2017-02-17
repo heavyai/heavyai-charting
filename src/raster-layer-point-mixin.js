@@ -1,5 +1,6 @@
 import {decrementSampledCount, incrementSampledCount} from "./core"
 import {lastFilteredSize} from "./core-async"
+import {createVegaAttrMixin, createRasterLayerGetterSetter} from "./vega-utils"
 
 export default function rasterLayerPointMixin (_layer) {
     _layer.xDim = createRasterLayerGetterSetter(_layer, null);
