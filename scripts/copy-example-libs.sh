@@ -11,5 +11,5 @@ cp ../mapd-con/thrift/browser/thrift.js example/js/
 cp ../mapd-con/thrift/browser/mapd.thrift.js example/js/
 cp ../mapd-con/thrift/browser/mapd_types.js example/js/
 cp ../mapd-con/dist/MapdCon.js example/js/
-cp ../mapd-mapbox-gl-js/dist/mapbox-gl.js example/js/
-cp ../mapd-mapbox-gl-js/dist/mapboxgl-overrides.js example/js/
+cp ../../node_modules/mapbox-gl-js/dist/mapbox-gl.js example/js/
+cp ../../node_modules/mapbox-gl-js/dist/mapboxgl-overrides.js example/js/
