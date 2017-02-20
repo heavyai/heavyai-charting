@@ -174,7 +174,7 @@ export default function bubbleRasterChart (parent, useMap, chartGroup, _mapboxgl
                     domain: bounds
                 }))
 
-                var legend = _chart
+                _chart
                    .legend(legend())
                    .legend()
                    .setKey("key0")
