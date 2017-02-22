@@ -27,7 +27,6 @@
   "dependencies": {
   },
   "scripts": {
-    "postinstall": "cd ./overrides && npm install",
     "build": "bash scripts/build.sh",
     "build:example": "npm run build && npm run webpack && bash scripts/copy-example-libs.sh",
     "start": "npm run build:example && node ../../node_modules/http-server/bin/http-server -p 8081 -o",
