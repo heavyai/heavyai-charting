@@ -1,4 +1,4 @@
-import {createVegaAttrMixin} from "./vega-utils"
+import {createVegaAttrMixin} from "./utils-vega"
 
 var vegaLineJoinOptions = ["miter", "round", "bevel"];
 var polyTableGeomColumns = {

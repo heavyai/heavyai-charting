@@ -4,8 +4,8 @@ import colorMixin from "./color-mixin"
 import capMixin from "./cap-mixin"
 import baseMixin from "./base-mixin"
 
-export default function polyRasterChart (parent, useMap, chartGroup, _mapboxgl) {
-  var chart = rasterMixin(mapMixin(colorMixin(capMixin(baseMixin({}))), parent.attributes.id.value, _mapboxgl))
+export default function polyRasterChart (parent, useMap, chartGroup, _mapboxgl, _MapboxDraw = MapboxDraw) {
+  var chart = rasterMixin(mapMixin(colorMixin(capMixin(baseMixin({}))), parent.attributes.id.value, _mapboxgl, _MapboxDraw))
   var layer = {isActive: false, name: "overlay_polygons"};
   var renderBoundsMap = {};
   var hasBeenRendered = false;

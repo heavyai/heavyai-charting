@@ -1,4 +1,4 @@
-import {utils} from "./utils"
+import * as utils from "./utils-lasso"
 import {redrawAllAsync} from "./core-async"
 
 const DRAW_OPTIONS = {

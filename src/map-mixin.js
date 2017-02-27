@@ -5,7 +5,7 @@ import {mapDrawMixin} from "./map-draw-mixin"
 
 function valuesOb (obj) { return Object.keys(obj).map(function (key) { return obj[key]; }) }
 
-export default function mapMixin (_chart, chartDivId, _mapboxgl) {
+export default function mapMixin (_chart, chartDivId, _mapboxgl, _MapboxDraw = MapboxDraw) {
     var DEFAULT_ZOOM_LEVEL = 15
     var EASE_DURATION_MS = 1500
     var SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
@@ -594,7 +594,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl) {
         }
     }
 
-    _chart = mapDrawMixin(_chart, _mapboxgl)
+    _chart = mapDrawMixin(_chart, _mapboxgl, _MapboxDraw)
 
     return _chart;
 }

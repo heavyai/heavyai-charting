@@ -1,7 +1,7 @@
 import capMixin from "./cap-mixin"
 import rasterLayerPointMixin from "./raster-layer-point-mixin"
 import rasterLayerPolyMixin from "./raster-layer-poly-mixin"
-import {createVegaAttrMixin, createRasterLayerGetterSetter, notNull} from "./vega-utils"
+import {createVegaAttrMixin, createRasterLayerGetterSetter, notNull} from "./utils-vega"
 
 var validLayerTypes = ["points", "polys"];
 
