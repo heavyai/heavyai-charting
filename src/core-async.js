@@ -143,7 +143,7 @@ export function renderAllAsync (group) {
 
 export function groupAll (group) {
   if (!arguments.length) {
-    for (var key in groupAll) {
+    for (var key in _groupAll) {
       if (_groupAll.hasOwnProperty(key)) {
         return _groupAll;
       }
@@ -152,6 +152,7 @@ export function groupAll (group) {
   }
 
   _groupAll[group.getCrossfilterId()] = group;
+
   return _groupAll
 }
 
