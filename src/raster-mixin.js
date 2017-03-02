@@ -209,7 +209,7 @@ export default function rasterMixin (_chart) {
     }
 
     _chart.getClosestResult = function getClosestResult (point, callback) {
-        if (_chart.drawMode && _chart.drawMode()) {
+        if (_chart.drawMode && _chart.drawMode() || !_chart.popupColumns().length) {
             return;
         }
         var height = (typeof _chart.effectiveHeight === 'function' ? _chart.effectiveHeight() : _chart.height());
@@ -219,7 +219,6 @@ export default function rasterMixin (_chart) {
         var columns = getColumnsWithPoints()
         // TODO best to fail, skip cb, or call cb wo args?
         if (!point || !tableName || !columns.length || columns.length === 3 && hideColorColumnInPopup()) { return; }
-
         return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, {"table": columns}, [function(results){
             return callback(results[0])
         }], _popupSearchRadius * pixelRatio)
