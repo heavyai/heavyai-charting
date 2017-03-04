@@ -855,7 +855,10 @@ export default function coordinateGridMixin (_chart) {
          var min = d3.min(_chart.data(), function (e) {
              return _chart.keyAccessor()(e);
          });
-         return utils.subtract(min, _xAxisPadding);
+         var max = d3.max(_chart.data(), function (e) {
+             return _chart.keyAccessor()(e);
+         });
+         return utils.subtract(min, _xAxisPadding, max - min);
      };
 
      /**
@@ -869,7 +872,10 @@ export default function coordinateGridMixin (_chart) {
          var max = d3.max(_chart.data(), function (e) {
              return _chart.keyAccessor()(e);
          });
-         return utils.add(max, _xAxisPadding);
+         var min = d3.min(_chart.data(), function (e) {
+             return _chart.keyAccessor()(e);
+         });
+         return utils.add(max, _xAxisPadding, max - min);
      };
 
      /**
@@ -883,7 +889,10 @@ export default function coordinateGridMixin (_chart) {
          var min = d3.min(_chart.data(), function (e) {
              return _chart.valueAccessor()(e);
          });
-         return utils.subtract(min, _yAxisPadding);
+         var max = d3.max(_chart.data(), function (e) {
+             return _chart.valueAccessor()(e);
+         });
+         return utils.subtract(min, _yAxisPadding, max - min);
      };
 
      /**
@@ -897,7 +906,10 @@ export default function coordinateGridMixin (_chart) {
          var max = d3.max(_chart.data(), function (e) {
              return _chart.valueAccessor()(e);
          });
-         return utils.add(max, _yAxisPadding);
+         var min = d3.min(_chart.data(), function (e) {
+             return _chart.valueAccessor()(e);
+         });
+         return utils.add(max, _yAxisPadding, max - min);
      };
 
      /**

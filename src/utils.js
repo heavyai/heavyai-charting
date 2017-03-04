@@ -75,8 +75,8 @@ utils.printSingleValue = function (filter) {
 utils.printSingleValue.fformat = d3.format('.2f');
 
 // FIXME: these assume than any string r is a percentage (whether or not it
-// includes %). They also generate strange results if l is a string.
-utils.add = function (l, r) {
+// includes %).
+utils.add = function (l, r, c) {
     if (typeof r === 'string') {
         r = r.replace('%', '');
     }
@@ -91,13 +91,13 @@ utils.add = function (l, r) {
         return d;
     } else if (typeof r === 'string') {
         var percentage = (+r / 100);
-        return l > 0 ? l * (1 + percentage) : l * (1 - percentage);
+        return l + (c * percentage);
     } else {
         return l + r;
     }
 };
 
-utils.subtract = function (l, r) {
+utils.subtract = function (l, r, c) {
     if (typeof r === 'string') {
         r = r.replace('%', '');
     }
@@ -112,7 +112,7 @@ utils.subtract = function (l, r) {
         return d;
     } else if (typeof r === 'string') {
         var percentage = (+r / 100);
-        return l < 0 ? l * (1 + percentage) : l * (1 - percentage);
+        return l - (c * percentage);
     } else {
         return l - r;
     }
