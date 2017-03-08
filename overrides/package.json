@@ -8,7 +8,8 @@
     "shjs": "node --harmony_destructuring ../../../node_modules/.bin/shjs",
     "test": "../../../node_modules/.bin/mocha ./test --require ./test/config --require ./test/setup",
     "test:cover": "../../../node_modules/.bin/istanbul cover ../../../node_modules/mocha/bin/_mocha -- ./test --require ./test/config --require ./test/setup",
-    "test:check-cover": "npm run shjs ../../../scripts/check-coverage.js"
+    "test:check-cover": "npm run shjs ../../../scripts/check-coverage.js",
+    "bump": "npm run shjs ../../../scripts/check-coverage.js -- --bump"
   },
   "author": "",
   "license": "ISC",
