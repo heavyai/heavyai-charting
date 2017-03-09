@@ -82,7 +82,7 @@ export default function binningMixin (chart) {
   }
 
   chart.binBrush = (isRangeChart) => {
-    const rangeChartBrush = chart.rangeChart().extendBrush()
+    const rangeChartBrush = isRangeChart ? chart.rangeChart().extendBrush() : null
     const extent0 = isRangeChart ? rangeChartBrush : chart.extendBrush()
     const chartBounds = isRangeChart ? rangeChartBrush : chart.group().binParams()[0].binBounds
 

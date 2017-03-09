@@ -52,4 +52,21 @@ describe("dc legend cont", () => {
       legend.render()
     })
   })
+
+  describe('legendables continuous', () => {
+    it('should return correct legend swatches, color and value', () => {
+      const node = window.document.createElement("DIV")
+      const parent = pieChart(node)
+      parent.colors().domain([5.5, 15.75])
+      parent.colors().range(['red', 'blue', 'green'])
+      expect(parent.legendablesContinuous()).to.deep.equal([ { color: 'red', value: '5.5' },{ color: 'blue', value: '8.92' },{ color: 'green', value: '12.33' } ])
+    })
+    it('should round value of legendables for start value over 1000', () => {
+      const node = window.document.createElement("DIV")
+      const parent = pieChart(node)
+      parent.colors().domain([1224.85, 1500.75])
+      parent.colors().range(['red', 'blue', 'green'])
+      expect(parent.legendablesContinuous()).to.deep.equal([ { color: 'red', value: '1,225' },{ color: 'blue', value: '1,317' },{ color: 'green', value: '1,409' } ])
+    })
+  })
 })
