@@ -474,6 +474,8 @@ export default function rowChart (parent, chartGroup) {
     }
 
     _chart._doRedraw = function (data) {
+        if (!_g) return _chart._doRender(data)
+
         drawChart(data);
         return _chart;
     };
