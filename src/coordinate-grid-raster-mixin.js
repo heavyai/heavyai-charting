@@ -1193,7 +1193,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     function destroyWebGL() {
         var gl = _gl;
-
+        if (typeof _shaderProgram !== "object") return
         gl.deleteProgram(_shaderProgram);
         gl.deleteShader(_fragShader);
         gl.deleteShader(_vertShader);
