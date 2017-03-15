@@ -57,6 +57,7 @@ export default function geoChoroplethChart (parent, useMap, chartGroup, mapbox) 
     _chart._projectionFlag;
 
     var _geoJsons = [];
+    _chart.transitionDuration(0);
 
     function findGeomMinMax (layerIndex) {
         var data = geoJson(layerIndex).data;
