@@ -630,7 +630,7 @@ export default function lineChart (parent, chartGroup) {
         });
     });
 
-      _chart = multiSeriesMixin(_chart)
+    _chart = multiSeriesMixin(_chart)
 
     return _chart.anchor(parent, chartGroup);
 };

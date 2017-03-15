@@ -976,29 +976,29 @@ export default function coordinateGridMixin (_chart) {
      };
 
      function updateBinParamsForChart (_chart, filter) {
-         var extract = _chart.group().binParams()[0] ? _chart.group().binParams()[0].extract : false
+         var extract = _chart.binParams()[0] ? _chart.binParams()[0].extract : false
          if (_chart._isRangeChart && filter.length && !extract) {
              var FocusChart = _chart.focusChart()
-             var currentBinParams = FocusChart.group().binParams()
+             var currentBinParams = FocusChart.binParams()
              if (currentBinParams[0]) {
                  currentBinParams[0].binBounds = filter
-                 FocusChart.group().binParams(currentBinParams)
+                 FocusChart.binParams(currentBinParams)
              }
              _chart.brush().extent(filter);
          }
      }
 
      function resetBinParamsForChart (_chart) {
-         if (_chart.group().binParams()[0]) {
-             var extract = _chart.group().binParams()[0].extract
+         if (_chart.binParams()[0]) {
+             var extract = _chart.binParams()[0].extract
              var isRangeAndIsNotFiltered = _chart._isRangeChart && !_chart.filters().length && !extract
 
              if (isRangeAndIsNotFiltered) {
-                 var chartBinParams = _chart.focusChart().group().binParams().map(function(p) {
+                 var chartBinParams = _chart.focusChart().binParams().map(function(p) {
                      return p
                  })
-                 chartBinParams[0].binBounds = _chart.group().binParams()[0].binBounds
-                 _chart.focusChart().group().binParams(chartBinParams)
+                 chartBinParams[0].binBounds = _chart.binParams()[0].binBounds
+                 _chart.focusChart().binParams(chartBinParams)
              }
          }
      }
@@ -1070,7 +1070,7 @@ export default function coordinateGridMixin (_chart) {
                      _chart.brushSnap(isRangeChart);
                  } else if (isRangeChart) {
                      _chart.focusChart().brushSnap(isRangeChart);
-                     var binParams = _chart.focusChart().group().binParams()[0]
+                     var binParams = _chart.focusChart().binParams()[0]
                      if (!binParams.auto && !binParams.extract) {
                          _chart.focusChart()._invokeBinListener(binParams.timeBin)
                      }

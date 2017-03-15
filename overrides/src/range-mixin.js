@@ -1,9 +1,8 @@
 import {deepClone, deepEquals, xAxisTickFormat, xDomain, xScale} from "./utils"
-import d3 from "d3"
-
-import lineChart from "../../src/line-chart"
-import barChart from "../../src/bar-chart"
 import {deregisterChart, override} from "../../src/core"
+import barChart from "../../src/bar-chart"
+import d3 from "d3"
+import lineChart from "../../src/line-chart"
 
 const CHART_HEIGHT = 0.75
 const RANGE_CHART_HEIGHT = 0.25
@@ -111,7 +110,7 @@ export function createRangeChart (chart) {
   const isChartDate = chart.isTime()
   RangeChart._isTime = isChartDate
 
-  const binParams = deepClone(chart.group().binParams())
+  const binParams = deepClone(chart.binParams())
 
   if (isChartDate) {
     binParams[0].binBounds = binParams[0].binBounds.map(time => new Date(time))
@@ -122,8 +121,9 @@ export function createRangeChart (chart) {
   }
 
   RangeChart.dimension(chart.dimension())
-  const group = RangeChart.dimension().group().reduceMulti(chart._rangeMeasure).binParams(binParams)
+  const group = RangeChart.dimension().group().reduceMulti(chart._rangeMeasure)
   RangeChart.group(group)
+  RangeChart.binParams(binParams)
 
   const defaultExact = binParams[0] ? binParams[0].extract : null
   const defaultTimeBin = binParams[0] ? binParams[0].timeBin : null
@@ -176,7 +176,7 @@ export function createRangeChart (chart) {
     if (_RangeChart.filters().length) {
       _RangeChart.filter(null)
     }
-    _chart.group().binParams(_RangeChart.group().binParams())
+    _chart.binParams(_RangeChart.binParams())
     _chart.xAxisLabel(_RangeChart.xAxisLabel())
     deregisterChart(_RangeChart)
     _chart.margins(DEFAULT_CHART_MARGINS)

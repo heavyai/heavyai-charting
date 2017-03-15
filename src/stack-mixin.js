@@ -1,3 +1,4 @@
+import {createBinParams, checkIfTimeBinInRange} from "../overrides/src/binning-helpers"
 import {pluck, utils} from "./utils"
 import d3 from "d3"
 import {override} from "./core"
@@ -348,6 +349,35 @@ export default function stackMixin (_chart) {
             _chart.renderGroup();
         }
     };
+
+    override(_chart, "binParams", function (binParams) {
+      if (!arguments.length) {
+        return _chart.group().binParams()
+      }
+
+      binParams = Array.isArray(binParams) ? binParams : [binParams]
+
+      const parsedBinParams = binParams.map((param) => {
+        if (param) {
+          const {timeBin = "auto", binBounds, numBins, auto} = param
+          const extract = param.extract || false
+          const isDate = binBounds[0] instanceof Date
+          if (isDate && timeBin && !extract) {
+            const bounds = binBounds.map(date => date.getTime())
+            return Object.assign({}, param, {
+              extract,
+              timeBin: checkIfTimeBinInRange(bounds, timeBin, numBins),
+              binBounds: binBounds.slice()
+            })
+          } else {
+            return param
+          }
+        }
+        return null
+      })
+
+      return createBinParams(_chart, parsedBinParams)
+    })
 
     _chart.keyAccessor(multipleKeysAccessorForStack)
 

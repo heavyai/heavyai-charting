@@ -33,6 +33,7 @@ import labelMixin from "../overrides/src/label-mixin"
 import multipleKeysLabelMixin from "../overrides/src/multiple-key-label-mixin"
 import asyncMixin from "../overrides/src/async-mixin"
 import {multipleKeysAccessorForCap} from "../overrides/src/multiple-key-accessors"
+import {createBinParams} from "../overrides/src/binning-helpers"
 
 /**
  * `dc.baseMixin` is an abstract functional object representing a basic `dc` chart object
@@ -346,6 +347,18 @@ export default function baseMixin (_chart) {
         _chart._groupName = name;
         _chart.expireCache();
         return _chart;
+    };
+
+    /**
+     * Wrapper for binParams in Crossfilter.
+    */
+    _chart.binParams = function (binParams) {
+
+        if (!arguments.length) {
+          return _chart.group().binParams()
+        }
+
+        return createBinParams(_chart, binParams)
     };
 
     /**

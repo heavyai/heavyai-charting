@@ -1,21 +1,8 @@
+import {autoBinParams, BIN_INPUT_OPTIONS} from "./binning-helpers"
 import d3 from "d3"
 import {events} from "../../src/events"
 import {filters} from "../../src/filters"
 import {constants} from "../../src/core"
-
-const binInputOptions = [
-  {val: "auto", label: "auto", numSeconds: null},
-  {val: "century", label: "1c", numSeconds: 3153600000},
-  {val: "decade", label: "10y", numSeconds: 315360000},
-  {val: "year", label: "1y", numSeconds: 31536000},
-  {val: "quarter", label: "1q", numSeconds: 10368000},
-  {val: "month", label: "1mo", numSeconds: 2592000},
-  {val: "week", label: "1w", numSeconds: 604800},
-  {val: "day", label: "1d", numSeconds: 86400},
-  {val: "hour", label: "1h", numSeconds: 3600},
-  {val: "minute", label: "1m", numSeconds: 60},
-  {val: "second", label: "1s", numSeconds: 1}
-]
 
 export function roundTimeBin (date, timeInterval, operation) {
   if (!timeInterval) {
@@ -71,7 +58,7 @@ export default function binningMixin (chart) {
     }
   }
 
-  chart.binInputOptions = () => binInputOptions
+  chart.binInputOptions = () => BIN_INPUT_OPTIONS
 
   chart.timeBinInputVal = (val) => {
     if (typeof val === "undefined") {
@@ -138,8 +125,11 @@ export default function binningMixin (chart) {
     for (let i = 0; i < currentStack.length; i++) {
       const binParams = currentStack[i].group.binParams().map((binParam, idx) => {
         if (idx === i && binParam) {
-          binParam.auto = val === "auto"
-          binParam.timeBin = val
+          const {binBounds, numBins} = binParam
+          const isAuto = val === "auto"
+          const bounds = binBounds.map(date => date.getTime())
+          binParam.timeBin = isAuto ? autoBinParams(bounds, numBins) : val
+          binParam.auto = isAuto
         }
         return binParam
       })
