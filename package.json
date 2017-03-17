@@ -31,8 +31,7 @@
     "build:example": "npm run build && npm run webpack && bash scripts/copy-example-libs.sh",
     "start": "npm run build:example && node ../../node_modules/http-server/bin/http-server -p 8081 -o",
     "clean": "bash scripts/clean.sh",
-    "watch": "grunt watch",
-    "lint": "grunt lint",
+    "lint": "../../node_modules/.bin/eslint",
     "webpack": "node ../../node_modules/webpack/bin/webpack.js",
     "test": "../../node_modules/.bin/mocha ./test --require ./test/config --require ./test/setup"
   },

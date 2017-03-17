@@ -6,6 +6,8 @@ let _renderCount = 0
 let _redrawCount = 0
 let _renderIdStack = null
 let _redrawIdStack = null
+let _renderStackEmpty = true
+let _redrawStackEmpty = true
 let _startRenderTime = null
 let _startRedrawTime = null
 
@@ -20,23 +22,25 @@ export function startRedrawTime () {
   return _startRedrawTime
 }
 
-export function incrementRedrawStack () {
-  const queryGroupId = _redrawId++
-  _redrawIdStack = queryGroupId
-  return queryGroupId
-}
-
 export function resetRedrawStack () {
   _redrawCount = 0
   _redrawIdStack = null
 }
 
-export function isRedrawStackEmpty (queryGroupId) {
-  if (typeof queryGroupId === "number") {
-    return _redrawIdStack === null || _redrawIdStack === queryGroupId
-  } else {
-    return _redrawIdStack === null
+export function redrawStackEmpty (isRedrawStackEmpty) {
+  if (!arguments.length) {
+    return _redrawStackEmpty
   }
+  _redrawStackEmpty = isRedrawStackEmpty
+  return _redrawStackEmpty
+}
+
+export function renderStackEmpty (isRenderStackEmpty) {
+  if (!arguments.length) {
+    return _renderStackEmpty
+  }
+  _renderStackEmpty = isRenderStackEmpty
+  return _renderStackEmpty
 }
 
 export function isEqualToRedrawCount (queryCount) {
@@ -54,14 +58,6 @@ export function resetRenderStack () {
   _renderIdStack = null
 }
 
-export function isRenderStackEmpty (queryGroupId) {
-  if (typeof queryGroupId === "number") {
-    return _renderIdStack === null || _renderIdStack === queryGroupId
-  } else {
-    return _renderIdStack === null
-  }
-}
-
 export function isEqualToRenderCount (queryCount) {
   return ++_renderCount === queryCount
 }
@@ -71,15 +67,19 @@ export function redrawAllAsync (group) {
     return Promise.resolve()
   }
 
-  const stackEmpty = isRedrawStackEmpty()
-  const queryGroupId = incrementRedrawStack()
+  const queryGroupId = _redrawId++
+  const stackEmpty = _redrawIdStack === null
+  _redrawIdStack = queryGroupId
+
   if (!stackEmpty) {
+    _redrawStackEmpty = false
     return Promise.resolve()
   }
 
   _startRedrawTime = new Date()
 
   const charts = chartRegistry.list(group)
+
   const createRedrawPromises = () => charts.map(chart => {
     chart.expireCache()
     chart._invokeDataFetchListener()
@@ -98,11 +98,13 @@ export function redrawAllAsync (group) {
     return getLastFilteredSizeAsync()
       .then(() => Promise.all(createRedrawPromises()))
       .catch(err => {
+        console.log(err)
         resetRedrawStack()
         throw err
       })
   } else {
     return Promise.all(createRedrawPromises()).catch(err => {
+      console.log(err)
       resetRedrawStack()
       throw err
     })
@@ -110,20 +112,23 @@ export function redrawAllAsync (group) {
 }
 
 export function renderAllAsync (group) {
-
   if (refreshDisabled()) {
     return Promise.resolve()
   }
 
-  const stackEmpty = isRenderStackEmpty()
-  const queryGroupId = incrementRenderStack()
+  const queryGroupId = _renderId++
+  const stackEmpty = _renderIdStack === null
+  _renderIdStack = queryGroupId
+
   if (!stackEmpty) {
+    _renderStackEmpty = false
     return Promise.resolve()
   }
 
   _startRenderTime = new Date()
 
   const charts = chartRegistry.list(group)
+
   const createRenderPromises = () => charts.map(chart => {
     chart.expireCache()
     return chart.renderAsync(queryGroupId, charts.length)
@@ -143,50 +148,50 @@ export function renderAllAsync (group) {
 
 export function groupAll (group) {
   if (!arguments.length) {
-    for (var key in _groupAll) {
+    for (const key in _groupAll) {
       if (_groupAll.hasOwnProperty(key)) {
-        return _groupAll;
+        return _groupAll
       }
     }
-    return null;
+    return null
   }
 
-  _groupAll[group.getCrossfilterId()] = group;
+  _groupAll[group.getCrossfilterId()] = group
 
   return _groupAll
 }
 
 export function getLastFilteredSizeAsync (arg) {
-  var keyArray = [];
-  var crossfilterId;
+  const keyArray = []
+  let crossfilterId = null
   if (typeof arg === "number") {
-    crossfilterId = arg;
+    crossfilterId = arg
   } else if (typeof arg === "object" && typeof arg.getCrossfilterId === "function") {
-    crossfilterId = arg.getCrossfilterId();
+    crossfilterId = arg.getCrossfilterId()
   }
 
-  if (crossfilterId !== undefined) {
-    let group = _groupAll[crossfilterId];
+  if (typeof crossfilterId !== "undefined") {
+    const group = _groupAll[crossfilterId]
     if (group) {
       return group.valueAsync().then(value => {
-        _lastFilteredSize[crossfilterId] = value;
-        return value;
+        _lastFilteredSize[crossfilterId] = value
+        return value
       })
     } else {
-      return new Promise(reject => reject("The group with crossfilterId " + crossfilterId + " is not an active groupAll() group"));
+      return new Promise(reject => reject("The group with crossfilterId " + crossfilterId + " is not an active groupAll() group"))
     }
   } else if (arg) {
     return new Promise(reject => reject("The argument to getLastFilteredSizeAsync must be a crossfilterId or a group/groupAll object, or call getLastFilteredSizeAsync without an argument to calculate all groupAlls"))
   }
 
-  return Promise.all(Object.keys(_groupAll).map(function(key) {
-    keyArray.push(key);
-    return _groupAll[key].valueAsync();
+  return Promise.all(Object.keys(_groupAll).map((key) => {
+    keyArray.push(key)
+    return _groupAll[key].valueAsync()
   })).then(values => {
-    for (var i=0; i<values.length; ++i) {
-      _lastFilteredSize[keyArray[i]] = values[i];
+    for (let i = 0; i < values.length; ++i) {
+      _lastFilteredSize[keyArray[i]] = values[i]
     }
-  });
+  })
 }
 
 export function lastFilteredSize (crossfilterId) {
