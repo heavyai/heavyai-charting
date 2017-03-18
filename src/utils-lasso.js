@@ -77,7 +77,7 @@ export function convertGeojsonToSql (features, px, py) {
         return clause.substring(0, clause.length - 3)
       }
     }).join(" OR (")
-    sql = sql + `(${px} IS NOT NULL AND ${py} IS NOT NULL) AND (${triangleClause})`
+    sql = sql + `((${px} IS NOT NULL AND ${py} IS NOT NULL) AND (${triangleClause}))`
   }
 
   if (circleStmts.length) {
@@ -86,6 +86,8 @@ export function convertGeojsonToSql (features, px, py) {
     } else {
       sql = sql + `(${circleStmts.join(" OR ")})`
     }
+
+    sql = `(${sql})`
   }
 
   if (triangleTests.length) {

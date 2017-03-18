@@ -419,10 +419,10 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, _MapboxDraw = M
             return initialBounds
         }
 
-        var latMaxSafe = bounds.latMax < LATMAX ? bounds.latMax : LATMAX
-        var latMinSafe = bounds.latMin > LATMIN ? bounds.latMin : LATMIN
-        var lonMaxSafe = bounds.lonMax < LONMAX ? bounds.lonMax : LONMAX
-        var lonMinSafe = bounds.lonMin > LONMIN ? bounds.lonMin : LONMIN
+        var latMaxSafe = bounds.latMax < LATMAX ? bounds.latMax : null
+        var latMinSafe = bounds.latMin > LATMIN ? bounds.latMin : null
+        var lonMaxSafe = bounds.lonMax < LONMAX ? bounds.lonMax : null
+        var lonMinSafe = bounds.lonMin > LONMIN ? bounds.lonMin : null
 
         var sw = new _mapboxgl.LngLat(lonMinSafe, latMinSafe)
         var ne = new _mapboxgl.LngLat(lonMaxSafe, latMaxSafe)
