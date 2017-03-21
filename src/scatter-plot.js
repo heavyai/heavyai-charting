@@ -257,7 +257,7 @@ export default function scatterPlot (parent, chartGroup) {
 
         if (_chart.brushIsEmpty(extent)) {
             events.trigger(function () {
-                _chart.filter(null);
+                _chart.filterAll();
                 _chart.redrawGroup();
             });
 
@@ -266,7 +266,7 @@ export default function scatterPlot (parent, chartGroup) {
         } else {
             var ranged2DFilter = filters.RangedTwoDimensionalFilter(extent);
             events.trigger(function () {
-                _chart.filter(null);
+                _chart.filterAll();
                 _chart.filter(ranged2DFilter);
                 _chart.redrawGroup();
             }, constants.EVENT_DELAY);

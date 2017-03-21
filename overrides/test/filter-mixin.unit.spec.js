@@ -19,17 +19,17 @@ describe("Filter Mixin", () => {
     })
   })
   describe("filter method", () => {
-    describe("null case", () => {
+    describe("clearFilter case", () => {
       it("should call resetFilterHandler", () => {
         const handler = chai.spy(() => [])
         chart.resetFilterHandler(handler)
-        chart.filter(null)
+        chart.filter(Symbol.for("clear"))
         expect(handler).to.have.been.called.with([])
       })
       it("should reset _filters", () => {
         chart.filter("Test")
         expect(chart.filter()).to.deep.equal("Test")
-        chart.filter(null)
+        chart.filter(Symbol.for("clear"))
         expect(chart.filter()).to.deep.equal(null)
       })
     })

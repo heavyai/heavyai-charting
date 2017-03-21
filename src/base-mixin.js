@@ -976,9 +976,9 @@ export default function baseMixin (_chart) {
     _listeners.zoomed(_chart)
   }
 
-  let _hasFilterHandler = function (filters, filter) {
-    if (filter === null || typeof (filter) === "undefined") {
-      return filters.length > 0
+  var _hasFilterHandler = function (filters, filter) {
+    if (typeof filter === 'undefined') {
+        return filters.length > 0;
     }
 
     return filters.some((f) => filter <= f && filter >= f)
@@ -1210,11 +1210,11 @@ export default function baseMixin (_chart) {
         if (_chart.hasFilter(d)) {
           _removeFilterHandler(_filters, d)
         } else {
-          _addFilterHandler(_filters, d)
+          _addFilterHandler(_filters, d);
         }
-      })
-    } else if (filter === null) {
-      _filters = _resetFilterHandler(_filters)
+      });
+    } else if (filter === Symbol.for("clear")) {
+      filters = _resetFilterHandler(_filters);
     } else if (_chart.hasFilter(filter)) {
       _removeFilterHandler(_filters, filter)
     } else {
@@ -1294,9 +1294,9 @@ export default function baseMixin (_chart) {
      * @example
      * // default filter handler
      * chart.filterHandler(function (dimension, filters) {
-     *     dimension.filter(null);
+     *     dimension.filter(Symbol.for("clear"));
      *     if (filters.length === 0) {
-     *         dimension.filter(null);
+     *         dimension.filter(Symbol.for("clear"));
      *     } else {
      *         dimension.filterFunction(function (d) {
      *             for (var i = 0; i < filters.length; i++) {
@@ -1756,6 +1756,17 @@ export default function baseMixin (_chart) {
       timeout = setTimeout(later, wait)
       if (callNow) { func.apply(context, args) }
     }
+  }
+
+  _chart.showNullDimensions = function (showNulls) {
+    if (!arguments.length) {
+      return !_chart.dimension().getEliminateNull();
+    }
+
+    _chart.expireCache()
+    _chart.dimension().setEliminateNull(!showNulls)
+
+    return _chart
   }
 
   _chart.keyAccessor(multipleKeysAccessorForCap)

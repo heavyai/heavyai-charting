@@ -171,10 +171,10 @@ export function createRangeChart (chart) {
     const _RangeChart = _chart.rangeChart()
 
     if (_chart.filters().length) {
-      _chart.filter(null)
+      _chart.filterAll()
     }
     if (_RangeChart.filters().length) {
-      _RangeChart.filter(null)
+      _RangeChart.filterAll()
     }
     _chart.binParams(_RangeChart.binParams())
     _chart.xAxisLabel(_RangeChart.xAxisLabel())

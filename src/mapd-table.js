@@ -266,7 +266,7 @@ export default function mapdTable (parent, chartGroup) {
 
     cols.forEach(col => {
       rowItem.append("td")
-        .text(d => formatDataValue(d[col.name]))
+        .html(d => formatDataValue(d[col.name]))
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
           if (_isGroupedData) {

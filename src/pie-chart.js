@@ -4,6 +4,7 @@ import colorMixin from "./color-mixin"
 import d3 from "d3"
 import {transition} from "./core"
 import multipleKeysLabelMixin from "../overrides/src/multiple-key-label-mixin"
+import {nullLabelHtml} from "../overrides/src/formatting-helpers"
 import {utils} from "./utils"
 
 /**
@@ -208,14 +209,14 @@ export default function pieChart (parent, chartGroup) {
             .style('font-size', (pieIsBig() ? '14px' : '12px'));
 
         labelsEnter.select('.value-dim')
-            .text(function(d){
+            .html(function(d){
                 return _chart.label()(d.data);
             })
-            .text(function(d){
+            .html(function(d){
                 var availableLabelWidth = getAvailableLabelWidth(d);
                 var width = d3.select(this).node().getBoundingClientRect().width;
-
-                var displayText = width > availableLabelWidth ? truncateLabel(_chart.label()(d.data), width, availableLabelWidth) : _chart.label()(d.data);
+                var label = _chart.label()(d.data)
+                var displayText = truncateLabelWithNull(label, width, availableLabelWidth)
 
                 d3.select(this.parentNode)
                     .classed('hide-label', displayText === '');
@@ -563,19 +564,32 @@ export default function pieChart (parent, chartGroup) {
 
     function truncateLabel(data, width, availableLabelWidth) {
 
-        var labelText = data + '';
+        var labelText = `${data}`
+        const labelLength = labelText.length
 
-        if (labelText.length < 4) {
+        if (labelLength < 4) {
             return '';
         }
 
-        var trimIndex = labelText.length - Math.ceil((width - availableLabelWidth) / (width/labelText.length) * 1.25);
+        var trimIndex = labelLength - Math.ceil((width - availableLabelWidth) / (width/labelLength) * 1.25);
 
-        if (labelText.length - trimIndex > 2) {
+        if (labelLength - trimIndex > 2) {
             labelText = trimIndex > 2  ? labelText.slice(0, trimIndex) + '…' : '';
         }
 
-        return labelText;
+        return labelText
+    }
+
+    function truncateLabelWithNull(data, width, availableLabelWidth) {
+         if (width > availableLabelWidth) {
+            return truncateLabel(
+                data.replace(nullLabelHtml, "NULL"),
+                width,
+                availableLabelWidth
+            ).replace(/\bNULL[^A-Za-z]/g, `${nullLabelHtml} `)
+        } else {
+            return data
+        }
     }
 
 /* ------------------------------------------------------------------------- */
@@ -630,7 +644,14 @@ export default function pieChart (parent, chartGroup) {
         popupBox.append('div')
             .attr('class', 'popup-value')
             .html(function(){
-                return '<div class="popup-value-dim">'+ _chart.label()(d.data) +'</div><div class="popup-value-measure">'+ _chart.measureValue(d.data) +'</div>';
+                return (`
+                    <div class="popup-value-dim">
+                        ${_chart.label()(d.data)}
+                    </div>
+                    <div class="popup-value-measure">
+                        ${_chart.measureValue(d.data)}
+                    </div>`
+                );
             });
 
         popup.classed('js-showPopup', true);

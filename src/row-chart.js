@@ -378,7 +378,7 @@ export default function rowChart (parent, chartGroup) {
 /* OVERRIDE -----------------------------------------------------------------*/
                 .classed('value-dim', true)
 /* --------------------------------------------------------------------------*/
-                .text(function (d) {
+                .html(function (d) {
                     return _chart.label()(d);
                 });
             transition(lab, _chart.transitionDuration())

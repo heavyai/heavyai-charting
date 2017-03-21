@@ -5,7 +5,7 @@ const noop = () => {} // eslint-disable-line no-empty-function
 
 export function addFilterHandler (filters, filter) {
   if (isArrayOfObjects(filter)) {
-    filters.push(filter.map(f => f.value))
+    filters.push(filter.map(f => f === null ? null : f.value))
   } else {
     filters.push(filter)
   }
@@ -13,7 +13,7 @@ export function addFilterHandler (filters, filter) {
 }
 
 export function hasFilterHandler (filters, filter) {
-  if (filter === null || typeof filter === "undefined") {
+  if (typeof filter === "undefined") {
     return filters.length > 0
   } else if (Array.isArray(filter)) {
     filter = filter.map(normalizeArrayByValue)
@@ -74,7 +74,7 @@ export default function filterMixin (_chart) {
   /**
    * Clear all filters associated with this chart
    *
-   * The same can be achieved by calling {@link #dc.baseMixin+filter chart.filter(null)}.
+   * The same can be achieved by calling {@link #dc.baseMixin+filter chart.filter(Symbol.for("clear"))}.
    * @name filterAll
    * @memberof dc.baseMixin
    * @instance
@@ -86,7 +86,7 @@ export default function filterMixin (_chart) {
     } else {
       _chart.softFilterClear(false)
     }
-    return _chart.filter(null)
+    return _chart.filter(Symbol.for("clear"))
   }
 
   _chart.filterHandler(filterHandlerWithChartContext(_chart))
@@ -132,7 +132,7 @@ export default function filterMixin (_chart) {
       _chart.filtersInverse(isFilterInverse)
     }
 
-    if (filter === null || Array.isArray(filter) && filter.length === 0) {
+    if (filter === Symbol.for("clear") || Array.isArray(filter) && filter.length === 0) {
       _filters = _chart.resetFilterHandler()(_filters)
     } else if (_chart.hasFilter(filter)) {
       _chart.removeFilterHandler()(_filters, filter)

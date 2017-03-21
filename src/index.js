@@ -1,3 +1,4 @@
+require("./polyfills/inner-svg")
 require('./d3.box')
 
 export * as d3 from 'd3'

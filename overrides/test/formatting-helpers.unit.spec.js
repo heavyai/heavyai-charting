@@ -56,6 +56,9 @@ describe("Formatting Helpers", () => {
     it("should format strings", () => {
       expect(Helpers.formatDataValue("TEST")).to.equal("TEST")
     })
+    it("should format null value", () => {
+      expect(Helpers.formatDataValue(null)).to.equal(`<tspan class="null-value"> NULL </tspan>`)
+    })
   })
   describe("maybeFormatInfinity", () => {
     const valList = [

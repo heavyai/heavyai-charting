@@ -1010,7 +1010,7 @@ export default function coordinateGridMixin (_chart) {
 
          _chart._filter(filter, isInverseFilter);
 
-         if (filter) {
+         if (filter !== Symbol.for("clear")) {
              updateBinParamsForChart(_chart, filter)
              _chart.brush().extent(filter);
          } else {
@@ -1129,9 +1129,9 @@ export default function coordinateGridMixin (_chart) {
          if (_chart.brushIsEmpty(extent)) {
              events.trigger(function () {
                  if (_chart.focusChart()) {
-                     _chart.focusChart().filter(null);
+                     _chart.focusChart().filterAll();
                  }
-                 _chart.filter(null);
+                 _chart.filterAll();
                  _chart.redrawGroup();
              }, constants.EVENT_DELAY);
 

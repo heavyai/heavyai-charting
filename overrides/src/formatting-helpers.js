@@ -7,6 +7,7 @@ const NUMBER_LENGTH = 4
 const numFormat = d3.format(".2s")
 const commafy = d3.format(",")
 
+export const nullLabelHtml = `<tspan class="null-value"> NULL </tspan>`
 export const momentUTCFormat = (d, f) => moment.utc(d).locale("en").format(f)
 export const genericDateTimeFormat = d => (`${momentUTCFormat(d, "MMM D, YYYY")} \u205F${momentUTCFormat(d, "HH:mm:ss")}`)
 export const isPlainObject = value => !Array.isArray(value) && typeof value === "object" && !(value instanceof Date)
@@ -21,6 +22,8 @@ export function formatDataValue (data, numAbbr) {
     return formatArrayValue(data)
   } else if (data instanceof Date) {
     return genericDateTimeFormat(data)
+  } else if (data === null) {
+    return nullLabelHtml
   }
   return data
 }

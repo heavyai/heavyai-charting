@@ -1,7 +1,6 @@
 import {
   customTimeFormat,
   extractTickFormat,
-  deepEquals,
   convertGeojsonToSql
 } from "../overrides/src/utils"
 
@@ -9,6 +8,8 @@ import {
   formatDataValue,
   maybeFormatInfinity
 } from "../overrides/src/formatting-helpers"
+
+import deepEqual from "deep-equal"
 
 import d3 from 'd3';
 import {constants} from './core';
@@ -225,9 +226,33 @@ utils.isQuantitative = function (type) {
     return type in NONCUSTOM_NUMERICAL_TYPES
 }
 
-utils.deepEquals = deepEquals
+utils.deepEquals = deepEqual
 utils.customTimeFormat = customTimeFormat
 utils.extractTickFormat = extractTickFormat
 utils.convertGeojsonToSql = convertGeojsonToSql
 utils.formatValue = formatDataValue
 utils.maybeFormatInfinity = maybeFormatInfinity
+
+utils.nullsFirst = function (sorting) {
+  return (a,b) => {
+    if (a === null) {
+      return -1
+    } else if (b === null) {
+      return 1
+    }
+
+    return sorting(a,b)
+  }
+}
+
+utils.nullsLast = function (sorting) {
+  return (a,b) => {
+    if (a === null) {
+      return 1
+    } else if (b === null) {
+      return -1
+    }
+
+    return sorting(a,b)
+  }
+}

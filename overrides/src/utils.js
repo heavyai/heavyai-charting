@@ -1,5 +1,6 @@
 import d3 from "d3"
 import {utils} from "../../src/utils"
+import deepEqual from "deep-equal"
 
 export const DAYS = [
   "Mon",
@@ -36,7 +37,7 @@ export const HOURS = [
   '6PM', '7PM', '8PM', '9PM', '10PM', '11PM'
 ]
 
-export const deepEquals = require("deep-equal") // eslint-disable-line global-require
+export const deepEquals = deepEqual
 
 export const deepClone = obj => JSON.parse(JSON.stringify(obj))
 

@@ -59,8 +59,9 @@ export default function heatMap (parent, chartGroup) {
 
     var _cols;
     var _rows;
-    var _colOrdering = d3.ascending;
-    var _rowOrdering = d3.ascending;
+
+    var _colOrdering = utils.nullsFirst(d3.ascending)
+    var _rowOrdering = utils.nullsFirst(d3.ascending)
     var _colScale = d3.scale.ordinal();
     var _rowScale = d3.scale.ordinal();
 
@@ -301,8 +302,9 @@ export default function heatMap (parent, chartGroup) {
             cols = _chart.cols(),
             rows = _chart.rows() || data.map(_chart.valueAccessor()),
             cols = _chart.cols() || data.map(_chart.keyAccessor());
+
         if (_rowOrdering) {
-            _rowOrdering = _chart.shouldSortYAxisDescending(data) ? d3.descending : d3.ascending;
+            _rowOrdering = _chart.shouldSortYAxisDescending(data) ? utils.nullsLast(d3.descending) : utils.nullsFirst(d3.ascending);
             rows = rows.sort(_rowOrdering);
         }
         if (_colOrdering) {
@@ -399,8 +401,8 @@ export default function heatMap (parent, chartGroup) {
           .style('left', function (d) { return cols(d) + (boxWidth / 2) + _dockedAxesSize.left + 'px'; })
           .on('click', _chart.xAxisOnClick())
           .append('span')
-          .text(_chart.colsLabel())
-          .attr('title', _chart.colsLabel());
+          .html(_chart.colsLabel())
+          .attr('title', (d) => _chart.colsLabel()(d).includes("NULL") ? "NULL" : _chart.colsLabel()(d));
 
         var YAxis = _dockedAxes.selectAll('.docked-y-axis');
 
@@ -419,8 +421,8 @@ export default function heatMap (parent, chartGroup) {
           .attr('class', 'text')
           .style('top', function (d) { return rows(d) + (boxHeight / 2) + _chart.margins().top + 'px'; })
           .on('click', _chart.yAxisOnClick())
-          .text(_chart.rowsLabel())
-          .attr('title', _chart.rowsLabel());
+          .html(_chart.rowsLabel())
+          .attr('title', (d) => _chart.rowsLabel()(d).includes("NULL") ? "NULL" : _chart.rowsLabel()(d));
 
         var axesMask = _dockedAxes.selectAll('.axes-mask');
 
@@ -600,7 +602,7 @@ export default function heatMap (parent, chartGroup) {
 
         popupBox.append('div')
             .attr('class', 'popup-header')
-            .text(function(){
+            .html(function(){
               return _colsLabel(_chart.keyAccessor()(d, i)) + ' x ' + _rowsLabel(_chart.valueAccessor()(d, i));
             });
 

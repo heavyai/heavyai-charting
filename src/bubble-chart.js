@@ -258,7 +258,14 @@ export default function bubbleChart (parent, chartGroup) {
 
     function renderPopupRow(d) {
 
-        var str = '<td><div class="table-dim"><div class="table-legend" style="background:'+_chart.getColor(d)+'"></div><div class="table-dim-val">'+_chart.label()(d)+'</div></div></td>';
+        var str = `
+            <td>
+                <div class="table-dim">
+                    <div class="table-legend" style="background:${_chart.getColor(d)}"></div>
+                    <div class="table-dim-val">${_chart.label()(d)}</div>
+                </div>
+            </td>
+        `;
 
         for (var i = 1; i< _popupHeader.length; i++) {
             if (_popupHeader[i].alias) {

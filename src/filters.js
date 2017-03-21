@@ -58,6 +58,7 @@ filters.RangedFilter = function (low, high) {
  */
 filters.TwoDimensionalFilter = function (filter = []) {
     if (filter === null) { return null; }
+    if (filter === Symbol.for("clear")) { return filter; }
 
     var f = normalizeFiltersArray(filter);
     f.isFiltered = function (value) {
@@ -90,6 +91,7 @@ filters.TwoDimensionalFilter = function (filter = []) {
  */
 filters.RangedTwoDimensionalFilter = function (filter) {
     if (filter === null) { return null; }
+    if (filter === Symbol.for("clear")) { return filter }
 
     var f = filter;
     var fromBottomLeft;

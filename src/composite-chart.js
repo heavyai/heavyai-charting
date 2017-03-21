@@ -76,7 +76,7 @@ export default function compositeChart (parent, chartGroup) {
         var brushIsEmpty = _chart.brushIsEmpty(extent);
 
         for (var i = 0; i < _children.length; ++i) {
-            _children[i].filter(null);
+            _children[i].filterAll();
             if (!brushIsEmpty) {
                 _children[i].filter(extent);
             }
