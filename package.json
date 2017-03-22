@@ -27,13 +27,18 @@
   "dependencies": {
   },
   "scripts": {
+    "bump": "npm run shjs ../../scripts/check-coverage.js -- --bump",
     "build": "bash scripts/build.sh",
     "build:example": "npm run build && npm run webpack && bash scripts/copy-example-libs.sh",
     "start": "npm run build:example && node ../../node_modules/http-server/bin/http-server -p 8081 -o",
     "clean": "bash scripts/clean.sh",
     "lint": "../../node_modules/.bin/eslint",
     "webpack": "node ../../node_modules/webpack/bin/webpack.js",
-    "test": "../../node_modules/.bin/mocha ./test --require ./test/config --require ./test/setup"
+    "test": "npm run shjs ./scripts/run-unit-tests.js",
+    "test:cover": "COVER=true npm run shjs ./scripts/run-unit-tests.js",
+    "test:check-cover": "npm run shjs ../../scripts/check-coverage.js",
+    "bump": "npm run shjs ../../scripts/check-coverage.js -- --bump",
+    "shjs": "node --harmony_destructuring ../../node_modules/.bin/shjs"
   },
   "npmName": "mapdc",
   "npmFileMap": [
