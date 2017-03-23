@@ -170,7 +170,7 @@ export function getLastFilteredSizeAsync (arg) {
     crossfilterId = arg.getCrossfilterId()
   }
 
-  if (typeof crossfilterId !== "undefined") {
+  if (crossfilterId !== null) {
     const group = _groupAll[crossfilterId]
     if (group) {
       return group.valueAsync().then(value => {
