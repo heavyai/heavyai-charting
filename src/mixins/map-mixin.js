@@ -9,8 +9,8 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, _MapboxDraw = M
     var DEFAULT_ZOOM_LEVEL = 15
     var EASE_DURATION_MS = 1500
     var SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
-    var LONMAX = 180 - SMALL_AMOUNT
-    var LONMIN = -180 + SMALL_AMOUNT
+    var LONMAX = 90 - SMALL_AMOUNT
+    var LONMIN = -90 + SMALL_AMOUNT
     var LATMAX = 90 - SMALL_AMOUNT
     var LATMIN = -90 + SMALL_AMOUNT
 
@@ -419,10 +419,10 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, _MapboxDraw = M
             return initialBounds
         }
 
-        var latMaxSafe = bounds.latMax < LATMAX ? bounds.latMax : null
-        var latMinSafe = bounds.latMin > LATMIN ? bounds.latMin : null
-        var lonMaxSafe = bounds.lonMax < LONMAX ? bounds.lonMax : null
-        var lonMinSafe = bounds.lonMin > LONMIN ? bounds.lonMin : null
+        var latMaxSafe = bounds.latMax < LATMAX ? bounds.latMax : LATMAX
+        var latMinSafe = bounds.latMin > LATMIN ? bounds.latMin : LATMIN
+        var lonMaxSafe = bounds.lonMax < LONMAX ? bounds.lonMax : LONMAX
+        var lonMinSafe = bounds.lonMin > LONMIN ? bounds.lonMin : LONMIN
 
         var sw = new _mapboxgl.LngLat(lonMinSafe, latMinSafe)
         var ne = new _mapboxgl.LngLat(lonMaxSafe, latMaxSafe)
