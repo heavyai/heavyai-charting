@@ -1678,7 +1678,7 @@ export default function coordinateGridMixin (_chart) {
            rangeDisplay.selectAll("input")
                    .each(function () { bindRangeInputEvents(this) })
 
-           if (_chart.group().binParams()[0].timeBin) {
+           if (_chart.group().binParams()[0] && _chart.group().binParams()[0].timeBin) {
              _chart.updateRangeInput()
            }
 
@@ -1716,7 +1716,7 @@ export default function coordinateGridMixin (_chart) {
 
      /* istanbul ignore next */
      _chart.updateBinInput = () => {
-       if (_chart.binInput()) {
+       if (_chart.binInput() && _chart.group().binParams()[0]) {
          const root = _chart.root()
 
          let binRow = root.selectAll(".bin-row")
