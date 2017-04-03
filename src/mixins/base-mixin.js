@@ -750,6 +750,22 @@ export default function baseMixin (_chart) {
     }
   }
 
+  function maybeRenderLegend (data) {
+    if (_legend && _chart.colorDomain) {
+
+      if (_legend.legendType() === "quantitative") {
+        const isLegendLocked = _legend.isLocked && _legend.isLocked()
+        const newColorDomain = d3.extent(data, _chart.colorAccessor())
+
+        if (!utils.deepEquals(newColorDomain, _chart.colorDomain()) && !isLegendLocked) {
+          _chart.colorDomain(newColorDomain)
+        }
+      }
+
+      _legend.render()
+    }
+  }
+
     /**
      * Invoking this method will force the chart to re-render everything from scratch. Generally it
      * should only be used to render the chart for the first time on the page or if you want to make
@@ -779,9 +795,7 @@ export default function baseMixin (_chart) {
 
     const result = _chart._doRender(data)
 
-    if (_legend && _chart.colors().domain) {
-      _legend.render()
-    }
+    maybeRenderLegend(data)
 
     _chart.generatePopup()
 
@@ -862,9 +876,7 @@ export default function baseMixin (_chart) {
 
     const result = _chart._doRedraw(data)
 
-    if (_legend && _chart.colors().domain) {
-      _legend.render()
-    }
+    maybeRenderLegend(data)
 
     _chart._activateRenderlets("postRedraw", data)
     if (typeof queryGroupId !== "undefined" && queryGroupId !== null) {
