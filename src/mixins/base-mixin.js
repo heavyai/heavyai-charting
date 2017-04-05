@@ -750,19 +750,14 @@ export default function baseMixin (_chart) {
     }
   }
 
-  function maybeRenderLegend (data) {
-    if (_legend && _chart.colorDomain) {
+  function maybeUpdateColorDomain (data) {
+    if (_chart.colorDomain && _legend && _legend.legendType() === "quantitative") {
+      const isLegendLocked = _legend.isLocked && _legend.isLocked()
+      const newColorDomain = d3.extent(data, _chart.colorAccessor())
 
-      if (_legend.legendType() === "quantitative") {
-        const isLegendLocked = _legend.isLocked && _legend.isLocked()
-        const newColorDomain = d3.extent(data, _chart.colorAccessor())
-
-        if (!utils.deepEquals(newColorDomain, _chart.colorDomain()) && !isLegendLocked) {
-          _chart.colorDomain(newColorDomain)
-        }
+      if (!isLegendLocked) {
+        _chart.colorDomain(newColorDomain)
       }
-
-      _legend.render()
     }
   }
 
@@ -793,9 +788,13 @@ export default function baseMixin (_chart) {
       _mandatoryAttributes.forEach(checkForMandatoryAttributes)
     }
 
+    maybeUpdateColorDomain(data)
+
     const result = _chart._doRender(data)
 
-    maybeRenderLegend(data)
+    if (_legend && _chart.colorDomain) {
+      _legend.render()
+    }
 
     _chart.generatePopup()
 
@@ -874,9 +873,13 @@ export default function baseMixin (_chart) {
 
     _listeners.preRedraw(_chart, data)
 
+    maybeUpdateColorDomain(data)
+
     const result = _chart._doRedraw(data)
 
-    maybeRenderLegend(data)
+    if (_legend && _chart.colorDomain) {
+      _legend.render()
+    }
 
     _chart._activateRenderlets("postRedraw", data)
     if (typeof queryGroupId !== "undefined" && queryGroupId !== null) {
