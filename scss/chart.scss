@@ -1790,3 +1790,52 @@ body {
       background-size: 65px 20px;
     }
 
+.mapd-draw-button-control-group {
+  margin: 10px 0 0 10px;
+  float: left;
+  position: absolute;
+  border-radius: 2px;
+  box-shadow: none!important;
+  border: 1px solid #e2e2e2;
+  clear: both;
+}
+
+.mapd-draw-button-control-group>button {
+  border-bottom: none;
+  width: 32px;
+  height: 32px;
+  display: block;
+  padding: 0;
+  outline: none;
+  border: none;
+  box-sizing: border-box;
+  background-color: white;
+  cursor: pointer;
+}
+
+.mapd-draw-active-button {
+  background-color: #22a7f0!important;
+}
+
+.mapd-draw-button {
+  background-repeat: no-repeat;
+  background-position: 50%;
+  position: relative;
+  background-size: 20px 20px;
+}
+
+.mapd-draw-button-circle {
+  background-image: url('data:image/svg+xml;utf8,<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 48 48" style="enable-background:new 0 0 48 48;" xml:space="preserve"><style type="text/css">.st0{fill:none;stroke:black;stroke-width:2;stroke-miterlimit:10;}</style><circle class="st0" cx="24" cy="24" r="18"/></svg>');
+}
+
+.mapd-draw-button-polyline {
+  background-image: url('data:image/svg+xml;utf8,<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve"><style type="text/css">.st0{fill:black;}</style><g><path class="st0" transform="rotate(16.257719039916992 50.821998596191385,50.10000228881835)" d="M92.672,40.704L76.688,89.902H24.958L8.972,40.704l41.85-30.406L92.672,40.704z M50.822,14.359L12.833,41.959l14.51,44.658  h46.958l14.51-44.658L50.822,14.359z"/></g></svg>')
+}
+
+.mapd-draw-button-lasso {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="-2 -2 28 28" style="enable-background:new 0 0 30 30;" xml:space="preserve"><g><path d="M4.5,24c-0.128,0-0.256-0.049-0.354-0.146c-0.195-0.195-0.195-0.512,0-0.707C6.293,21,6.293,19,4.146,16.854   c-0.195-0.195-0.195-0.512,0-0.707c0.195-0.195,0.512-0.195,0.707,0c2.521,2.521,2.521,5.186,0,7.707C4.756,23.951,4.628,24,4.5,24   z"/><path d="M12,16c-2.249,0-4.448-0.42-6.36-1.215c-0.11-0.046-0.2-0.129-0.253-0.235c-0.201-0.392-0.645-0.604-1.057-0.531   c-0.118,0.019-0.239-0.002-0.342-0.063C1.453,12.441,0,10.271,0,8c0-4.411,5.383-8,12-8s12,3.589,12,8   c0,2.239-1.418,4.389-3.892,5.898c-0.153,0.094-0.346,0.098-0.503,0.01l-4.119-2.288l1.261,3.151   c0.053,0.133,0.047,0.283-0.018,0.411c-0.064,0.128-0.181,0.222-0.319,0.259C14.993,15.812,13.51,16,12,16z M6.179,13.925   c2.804,1.124,6.309,1.38,9.425,0.683l-1.569-3.922c-0.079-0.196-0.025-0.421,0.134-0.561c0.159-0.14,0.389-0.165,0.573-0.062   l5.09,2.828C21.878,11.566,23,9.838,23,8c0-3.86-4.935-7-11-7S1,4.14,1,8c0,1.868,1.219,3.685,3.353,5.007   C5.066,12.936,5.786,13.308,6.179,13.925z"/><path d="M4.5,17c-1.103,0-2-0.897-2-2s0.897-2,2-2s2,0.897,2,2S5.603,17,4.5,17z M4.5,14c-0.551,0-1,0.449-1,1s0.449,1,1,1   s1-0.449,1-1S5.051,14,4.5,14z"/><path d="M18.5,21c-0.002,0-0.004,0-0.006,0c-0.203-0.002-0.383-0.126-0.458-0.314l-4-10c-0.079-0.196-0.025-0.421,0.134-0.561   c0.159-0.14,0.389-0.165,0.573-0.062l9,5c0.167,0.093,0.267,0.272,0.257,0.462s-0.127,0.359-0.303,0.434l-3.316,1.421l-1.421,3.316   C18.881,20.881,18.7,21,18.5,21z M15.486,11.62l3.03,7.573l1.024-2.39c0.05-0.118,0.145-0.212,0.263-0.263l2.563-1.099   L15.486,11.62z"/></g></svg>');
+}
+
+.mapd-draw-canvas {
+  outline: none;
+}

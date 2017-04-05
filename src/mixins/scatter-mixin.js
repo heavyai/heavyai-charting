@@ -1,4 +1,5 @@
 import {utils} from "../utils/utils"
+import {rasterDrawMixin} from "./raster-draw-mixin"
 
 function extend(destination, source) {
   for (var k in source) {
@@ -9,7 +10,7 @@ function extend(destination, source) {
   return destination;
 }
 
-export default function scatterMixin (_chart, _mapboxgl) {
+export default function scatterMixin (_chart, _mapboxgl, mixinDraw = true) {
     var _mapboxgl = typeof mapboxgl === 'undefined' ? _mapboxgl : mapboxgl
 
     _chart._xDimName = null;
@@ -200,6 +201,10 @@ export default function scatterMixin (_chart, _mapboxgl) {
 
     _chart.isLoaded = function() {
         return (_xRange && _yRange);
+    }
+
+    if (mixinDraw) {
+        _chart = rasterDrawMixin(_chart)
     }
 
     return _chart;

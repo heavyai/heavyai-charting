@@ -2,10 +2,11 @@ import d3 from "d3"
 import {redrawAllAsync, resetRedrawStack} from "../core/core-async"
 import {utils} from "../utils/utils"
 import {mapDrawMixin} from "./map-draw-mixin"
+import {rasterDrawMixin} from "./raster-draw-mixin"
 
 function valuesOb (obj) { return Object.keys(obj).map(function (key) { return obj[key]; }) }
 
-export default function mapMixin (_chart, chartDivId, _mapboxgl, _MapboxDraw = MapboxDraw) {
+export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = true, useMapboxDraw = true) {
     var DEFAULT_ZOOM_LEVEL = 15
     var EASE_DURATION_MS = 1500
     var SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
@@ -52,6 +53,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, _MapboxDraw = M
     var _geocoder = null
 
     var _minMaxCache = {}
+    var _interactionsEnabled = true
 
     _chart.useLonLat = function(useLonLat) {
        if (!arguments.length)
@@ -61,6 +63,38 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, _MapboxDraw = M
     }
     _chart.map = function() {
         return _map;
+    }
+
+    _chart.enableInteractions = function(enableInteractions, opts = {}) {
+        if (!arguments.length) {
+            return _interactionsEnabled
+        }
+
+        const mapboxInteractionProps = ["scrollZoom", "boxZoom", "dragRotate", "dragPan", "keyboard", "doubleClickZoom", "touchZoomRotate"]
+        _interactionsEnabled = Boolean(enableInteractions)
+
+        if (_mapInitted) {
+            mapboxInteractionProps.forEach(prop => {
+                if (_map[prop]) {
+                    const enable = (typeof opts[prop] !== "undefined" ? Boolean(opts[prop]) : _interactionsEnabled)
+                    if (enable) {
+                        _map[prop].enable()
+                    } else {
+                        _map[prop].disable()
+
+                        if (prop === "dragPan") {
+                            // force a clear of the current event state on the map
+                            // to fully disable pans
+                            _map[prop]._onMouseUp({
+                                button: 0
+                            })
+                        }
+                    }
+                }
+            })
+        }
+
+        return _chart
     }
 
     _chart.getDataRenderBounds = function() {
@@ -377,6 +411,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, _MapboxDraw = M
         _map.touchZoomRotate.disableRotation();
         _chart.addMapListeners()
         _mapInitted = true;
+        _chart.enableInteractions(_interactionsEnabled)
     }
 
     _chart.addMapListeners = function () {
@@ -594,7 +629,13 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, _MapboxDraw = M
         }
     }
 
-    _chart = mapDrawMixin(_chart, _mapboxgl, _MapboxDraw)
+    if (mixinDraw) {
+        if (useMapboxDraw) {
+            _chart = mapDrawMixin(_chart, _mapboxgl, MapboxDraw)
+        } else {
+            _chart = rasterDrawMixin(_chart)
+        }
+    }
 
     return _chart;
 }

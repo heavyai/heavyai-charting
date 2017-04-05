@@ -65,7 +65,6 @@
     <script src="js/mapdc.js"></script>
     <script src="js/mapbox-gl.js"></script>
     <script src="js/mapboxgl-overrides.js"></script>
-    <script src="js/mapbox-gl-draw.js"></script>
     <link rel="stylesheet" type="text/css" href="css/mapbox-gl-draw.css" />
     <script>
 
@@ -148,7 +147,6 @@
 
   function init() {
     var con = new MapdCon()
-      .logging(true)
       .protocol("http")
       .host("forge.mapd.com")
       .port("9092")

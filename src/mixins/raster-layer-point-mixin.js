@@ -36,6 +36,7 @@ export default function rasterLayerPointMixin (_layer) {
 
     var _vega = null;
     var _scaledPopups = {};
+    var _minMaxCache = {}
 
     _layer._mandatoryAttributes(_layer._mandatoryAttributes().concat(["xAttr", "yAttr"]));
 
@@ -165,6 +166,36 @@ export default function rasterLayerPointMixin (_layer) {
                 _layer.dimension().samplingRatio(Math.min(_layer.cap()/filterSize, 1.0))
             }
         }
+    }
+
+    _layer.xRangeFilter = function (range) {
+        if (!_layer.xDim()) {
+            throw new Error("Must set layer's xDim before invoking xRange")
+        }
+
+        var xValue = _layer.xDim().value()[0]
+
+        if (!arguments.length) {
+            return _minMaxCache[xValue]
+        }
+
+        _minMaxCache[xValue] = range
+        return _layer
+    }
+
+    _layer.yRangeFilter = function (range) {
+        if (!_layer.yDim()) {
+            throw new Error("Must set layer's yDim before invoking yRange")
+        }
+
+        var yValue = _layer.yDim().value()[0]
+
+        if (!arguments.length) {
+            return _minMaxCache[yValue]
+        }
+
+        _minMaxCache[yValue] = range
+        return _layer
     }
 
     _layer._genVega = function(chart, layerName, group, query) {

@@ -5,7 +5,7 @@ import mapboxglMock from "../../test/mapbox-gl-mock"
 describe("Scatter Mixin", () => {
   describe("constructor", () => {
     it('should mixin a scatter', () => {
-      dc.scatterMixin({}, mapboxglMock)
+      dc.scatterMixin({}, mapboxglMock, false)
     })
   })
 })

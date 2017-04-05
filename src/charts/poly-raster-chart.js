@@ -4,8 +4,8 @@ import colorMixin from "../mixins/color-mixin"
 import capMixin from "../mixins/cap-mixin"
 import baseMixin from "../mixins/base-mixin"
 
-export default function polyRasterChart (parent, useMap, chartGroup, _mapboxgl, _MapboxDraw = MapboxDraw) {
-  var chart = rasterMixin(mapMixin(colorMixin(capMixin(baseMixin({}))), parent.attributes.id.value, _mapboxgl, _MapboxDraw))
+export default function polyRasterChart (parent, useMap, chartGroup, _mapboxgl) {
+  var chart = rasterMixin(mapMixin(colorMixin(capMixin(baseMixin({}))), parent.attributes.id.value, _mapboxgl, false))
   var layer = {isActive: false, name: "overlay_polygons"};
   var renderBoundsMap = {};
   var hasBeenRendered = false;
@@ -140,7 +140,7 @@ function setOverlay(data, bounds, map, layer, opacity){
       id: layer.name,
       source: layer.name,
       type: "raster",
-      paint: {"raster-opacity": opacity}
+      paint: {"raster-opacity": opacity, "raster-fade-duration": 0}
     });
   }
 }

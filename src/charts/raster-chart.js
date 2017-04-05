@@ -2,6 +2,7 @@ import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
 import baseMixin from "../mixins/base-mixin"
 import scatterMixin from "../mixins/scatter-mixin"
+import {rasterDrawMixin} from "../mixins/raster-draw-mixin"
 import {lastFilteredSize} from "../core/core-async"
 
 export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
@@ -23,9 +24,9 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     }
 
     if (_useMap){
-        _chart = mapMixin(baseMixin({}), parentDivId, _mapboxgl);
+        _chart = mapMixin(baseMixin({}), parentDivId, _mapboxgl, false);
     } else {
-        _chart = scatterMixin(coordinateGridRasterMixin({}, _mapboxgl, browser), _mapboxgl);
+        _chart = scatterMixin(coordinateGridRasterMixin({}, _mapboxgl, browser), _mapboxgl, false);
     }
 
     // unset predefined mandatory attributes

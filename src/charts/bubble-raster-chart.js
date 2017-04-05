@@ -29,9 +29,9 @@ export default function bubbleRasterChart (parent, useMap, chartGroup, _mapboxgl
     }
 
     if (_useMap){
-        _chart = rasterMixin(mapMixin(colorMixin(capMixin(baseMixin({}))), parentDivId, _mapboxgl));
+        _chart = rasterMixin(mapMixin(colorMixin(capMixin(baseMixin({}))), parentDivId, _mapboxgl, true, false));
     } else {
-        _chart = rasterMixin(scatterMixin(capMixin(coordinateGridRasterMixin({}, _mapboxgl, browser)), _mapboxgl), parentDivId, chartGroup);
+        _chart = rasterMixin(scatterMixin(capMixin(coordinateGridRasterMixin({}, _mapboxgl, browser)), _mapboxgl, true), parentDivId, chartGroup);
     }
 
     var _imageOverlay = null;

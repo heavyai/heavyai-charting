@@ -78,6 +78,10 @@ export default function rasterLayer (layerType) {
     var _popup_item_val_class = "popup-item-val";
     var _layerPopups = {};
 
+    _layer.layerType = function() {
+        return _layerType
+    }
+
     /**
      * **mandatory**
      *

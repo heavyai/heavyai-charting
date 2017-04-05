@@ -22,6 +22,12 @@ export default function rasterMixin (_chart) {
     var _listeners = d3.dispatch.apply(d3, _data_events)
     var _on = _chart.on.bind(_chart)
 
+    var _popupDisplayable = true;
+
+    _chart.popupDisplayable = function(displayable) {
+        _popupDisplayable = Boolean(displayable)
+    }
+
     _chart.on = function (event, listener) {
       if (_data_events.indexOf(event) === -1) {
         _on(event, listener)
@@ -225,7 +231,7 @@ export default function rasterMixin (_chart) {
     }
 
     _chart.displayPopup = function displayPopup (result) {
-      if(_mouseLeave || !result || !result.row_set || !result.row_set.length){ return }
+      if(!_popupDisplayable || _mouseLeave || !result || !result.row_set || !result.row_set.length){ return }
       if(_chart.select('.map-popup').empty()){ // show only one popup at a time.
         var data = result.row_set[0];
         var mappedData = mapDataViaColumns(data, _popupColumnsMapped)
