@@ -751,11 +751,13 @@ export default function baseMixin (_chart) {
   }
 
   function maybeUpdateColorDomain (data) {
-    if (_chart.colorDomain && _legend && _legend.legendType() === "quantitative") {
+    const isFEQuantitativeColored = Array.isArray(data) && _chart.colorDomain && _legend && _legend.legendType() === "quantitative"
+
+    if (isFEQuantitativeColored) {
       const isLegendLocked = _legend.isLocked && _legend.isLocked()
-      const newColorDomain = d3.extent(data, _chart.colorAccessor())
 
       if (!isLegendLocked) {
+        const newColorDomain = d3.extent(data, _chart.colorAccessor())
         _chart.colorDomain(newColorDomain)
       }
     }
