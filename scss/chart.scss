@@ -1667,13 +1667,14 @@ body {
 
 .coordinate-chart, .chart-type-backendScatter  {
     .dc-legend {
-        top: 32px !important;
+        top: 24px !important;
         bottom: auto !important;
-        left: 72px !important;
-
+        left: auto !important;
+        right: 24px !important;
         .toggle-btn {
             right: -6px;
             top: -4px;
+            transform: scale(-0.4, 0.4) !important;
             &:after {
                 transform: translate(-50%, -50%) rotate(-45deg);
             }
@@ -1791,7 +1792,7 @@ body {
     }
 
 .mapd-draw-button-control-group {
-  margin: 10px 0 0 10px;
+  margin: 8px 0 0 8px;
   float: left;
   position: absolute;
   border-radius: 2px;
