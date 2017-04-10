@@ -140,7 +140,6 @@ class ShapeHandler {
     this.mouseupCB = this.mouseupCB.bind(this)
     this.mousemoveCB = this.mousemoveCB.bind(this)
     this.mouseoverCB = this.mouseoverCB.bind(this)
-    this.mouseoutCB = this.mouseoutCB.bind(this)
     this.clickCB = this.clickCB.bind(this)
     this.dblclickCB = this.dblclickCB.bind(this)
     this.keydownCB = this.keydownCB.bind(this)
@@ -183,20 +182,41 @@ class ShapeHandler {
   mouseupCB(event) {}
   mousemoveCB(event) {}
   mouseoverCB(event) {}
-  mouseoutCB(event) {}
   clickCB(event) {}
   dblclickCB(event) {}
   keydownCB(event) {}
 
+  isMouseEventInCanvas(mouseEvent) {
+    const width = this.canvas.offsetWidth
+    const height = this.canvas.offsetHeight
+    const rect = this.canvas.getBoundingClientRect()
+
+    const diffX = mouseEvent.clientX - rect.left - this.canvas.clientLeft
+    const diffY = mouseEvent.clientY - rect.top - this.canvas.clientTop
+
+    return (diffX >= 0 && diffX < width && diffY >= 0 && diffY < height)
+  }
+
+  getRelativeMousePosFromEvent(mouseEvent) {
+    const width = this.canvas.offsetWidth
+    const height = this.canvas.offsetHeight
+    const rect = this.canvas.getBoundingClientRect()
+
+    const diffX = mouseEvent.clientX - rect.left - this.canvas.clientLeft
+    const diffY = mouseEvent.clientY - rect.top - this.canvas.clientTop
+    const mousepos = MapdDraw.Point2d.create(diffX, diffY)
+
+    return mousepos
+  }
+
   activate() {
     if (!this.active) {
-      parent.addEventListener("mousedown", this.mousedownCB)
-      parent.addEventListener("mouseup", this.mouseupCB)
-      parent.addEventListener("mousemove", this.mousemoveCB)
-      parent.addEventListener("mouseover", this.mouseoverCB)
-      parent.addEventListener("mouseout", this.mouseoutCB)
-      parent.addEventListener("click", this.clickCB)
-      parent.addEventListener("dblclick", this.dblclickCB)
+      document.addEventListener("mousedown", this.mousedownCB)
+      document.addEventListener("mouseup", this.mouseupCB)
+      document.addEventListener("mousemove", this.mousemoveCB)
+      document.addEventListener("mouseover", this.mouseoverCB)
+      document.addEventListener("click", this.clickCB)
+      document.addEventListener("dblclick", this.dblclickCB)
 
       // NOTE: canvas div was setup to be focusable
       // and handle keyboard events in initControls()
@@ -211,13 +231,12 @@ class ShapeHandler {
   deactivate() {
     if (this.active) {
       this.destroy()
-      parent.removeEventListener("mousedown", this.mousedownCB)
-      parent.removeEventListener("mouseup", this.mouseupCB)
-      parent.removeEventListener("mousemove", this.mousemoveCB)
-      parent.removeEventListener("mouseover", this.mouseoverCB)
-      parent.removeEventListener("mouseout", this.mouseoutCB)
-      parent.removeEventListener("click", this.clickCB)
-      parent.removeEventListener("dblclick", this.dblclickCB)
+      document.removeEventListener("mousedown", this.mousedownCB)
+      document.removeEventListener("mouseup", this.mouseupCB)
+      document.removeEventListener("mousemove", this.mousemoveCB)
+      document.removeEventListener("mouseover", this.mouseoverCB)
+      document.removeEventListener("click", this.clickCB)
+      document.removeEventListener("dblclick", this.dblclickCB)
 
       this.canvas.removeEventListener("keydown", this.keydownCB)
       this.canvas.blur()
@@ -281,9 +300,12 @@ class CircleShapeHandler extends ShapeHandler {
   }
 
   mousedownCB(event) {
-    // activeButton.createShape
+    if (!this.isMouseEventInCanvas(event)) {
+      return
+    }
+
     this.disableBasemapEvents()
-    MapdDraw.Point2d.set(this.startmousepos, event.offsetX, event.offsetY)
+    MapdDraw.Point2d.copy(this.startmousepos, this.getRelativeMousePosFromEvent(event))
     this.drawEngine.project(this.startmouseworldpos, this.startmousepos)
     this.timer = performance.now()
 
@@ -320,7 +342,7 @@ class CircleShapeHandler extends ShapeHandler {
 
   mousemoveCB(event) {
     if (this.activeShape) {
-      const mousepos = MapdDraw.Point2d.create(event.offsetX, event.offsetY)
+      const mousepos = this.getRelativeMousePosFromEvent(event)
       const mousescreenpos = MapdDraw.Point2d.create(0, 0)
       this.drawEngine.project(mousescreenpos, mousepos)
 
@@ -338,15 +360,6 @@ class CircleShapeHandler extends ShapeHandler {
       event.stopImmediatePropagation()
       event.preventDefault()
     }
-  }
-
-  mouseoutCB(event) {
-    // NOTE: for some reason, this event was called when chart a update was being called
-    // inside immerse. I (croot) could not figure out why. This means we couldn't
-    // do live filtering as the circle was being created because this event handler
-    // was being called, and therefore the circle being deleted.
-    this.destroy()
-    this.enableBasemapEvents()
   }
 
   clickCB(event) {
@@ -390,11 +403,9 @@ class PolylineShapeHandler extends ShapeHandler {
     if (this.lineShape) {
       this.drawEngine.deleteShape(this.lineShape)
     }
-    if (this.activeShape) {
-      this.drawEngine.deleteShape(this.activeShape)
-    }
 
-    this.startVert = this.lastVert = this.lineShape = this.activeShape = null
+    this.startVert = this.lastVert = this.lineShape = this.activeShape = this.prevVertPos = null
+    MapdDraw.AABox2d.initEmpty(this.startPosAABox)
     this.activeIdx = -1
   }
 
@@ -413,8 +424,6 @@ class PolylineShapeHandler extends ShapeHandler {
     const verts = (this.lineShape ? this.lineShape.vertsRef : [])
     const removeLastVert = (verts.length > 1 && !MapdDraw.Point2d.equals(verts[0], verts[verts.length - 1]) && this.lastVert && !MapdDraw.Point2d.equals(verts[verts.length - 1], this.lastVert.getPositionRef()))
     if (verts.length > 2 && (!removeLastVert || verts.length > 3)) {
-      this.drawEngine.deleteShape([this.startVert, this.lastVert, this.lineShape])
-
       // Check if there is a loop in the current verts, remove the last point
       // if so
       if (removeLastVert) {
@@ -425,6 +434,9 @@ class PolylineShapeHandler extends ShapeHandler {
         verts
       }, this.defaultStyle))
       this.setupFinalShape(poly)
+
+      // clear out all other shapes using our destroy method
+      this.destroy()
     } else {
       this.destroy()
       this.enableBasemapEvents()
@@ -432,15 +444,20 @@ class PolylineShapeHandler extends ShapeHandler {
   }
 
   mousedownCB(event) {
+    if (!this.isMouseEventInCanvas(event)) {
+      this.timer = null
+      return
+    }
+
     this.timer = performance.now()
   }
 
   mouseupCB(event) {
-    if (performance.now() - this.timer < 500) {
+    if (this.timer && performance.now() - this.timer < 500) {
       this.disableBasemapEvents()
 
       let shapeBuilt = false
-      const mousepos = MapdDraw.Point2d.create(event.offsetX, event.offsetY)
+      const mousepos = this.getRelativeMousePosFromEvent(event)
       const mouseworldpos = MapdDraw.Point2d.create(0, 0)
       this.drawEngine.project(mouseworldpos, mousepos)
 
@@ -492,14 +509,14 @@ class PolylineShapeHandler extends ShapeHandler {
 
   mousemoveCB(event) {
     if (this.startVert && this.lineShape && this.activeIdx < 0) {
-      const mousepos = MapdDraw.Point2d.create(event.offsetX, event.offsetY)
+      const mousepos = this.getRelativeMousePosFromEvent(event)
       const mouseworldpos = MapdDraw.Point2d.create(0, 0)
       this.drawEngine.project(mouseworldpos, mousepos)
       this.activeIdx = this.appendVertex(mousepos, mouseworldpos)
     }
 
     if (this.activeShape || this.activeIdx >= 0) {
-      const mousepos = MapdDraw.Point2d.create(event.offsetX, event.offsetY)
+      const mousepos = this.getRelativeMousePosFromEvent(event)
       const mouseworldpos = MapdDraw.Point2d.create(0, 0)
       this.drawEngine.project(mouseworldpos, mousepos)
 
@@ -553,12 +570,11 @@ class PolylineShapeHandler extends ShapeHandler {
   }
 
   dblclickCB(event) {
-    this.finishShape()
-  }
+    if (!this.isMouseEventInCanvas(event)) {
+      return
+    }
 
-  mouseoutCB(event) {
-    this.destroy()
-    this.enableBasemapEvents()
+    this.finishShape()
   }
 
   keydownCB(event) {
@@ -589,17 +605,32 @@ class LassoShapeHandler extends ShapeHandler {
   }
 
   mousedownCB(event) {
+    if (!this.isMouseEventInCanvas(event)) {
+      return
+    }
+
     this.disableBasemapEvents()
     this.activeShape = null
-    this.lastPos = MapdDraw.Point2d.create(event.offsetX, event.offsetY)
+    this.lastPos = this.getRelativeMousePosFromEvent(event)
     this.lastWorldPos = MapdDraw.Point2d.create(0, 0)
     this.drawEngine.project(this.lastWorldPos, this.lastPos)
     event.preventDefault()
   }
 
   mousemoveCB(event) {
+    if (!this.isMouseEventInCanvas(event)) {
+      if (this.activeShape) {
+        this.drawEngine.deleteShape(this.activeShape)
+        this.activeShape = null
+        this.lastPos = null
+        this.lastWorldPos = null
+        this.enableBasemapEvents()
+      }
+      return
+    }
+
     if (this.lastPos) {
-      const currPos = MapdDraw.Point2d.create(event.offsetX, event.offsetY)
+      const currPos = this.getRelativeMousePosFromEvent(event)
       const currWorldPos = MapdDraw.Point2d.create(0, 0)
       this.drawEngine.project(currWorldPos, currPos)
       if (!MapdDraw.Point2d.equals(currPos, this.lastPos)) {
@@ -653,15 +684,6 @@ class LassoShapeHandler extends ShapeHandler {
     }
     this.lastPos = null
     this.lastWorldPos = null
-  }
-
-  mouseoutCB(event) {
-    if (this.activeShape) {
-      this.drawEngine.deleteShape(this.activeShape)
-      this.activeShape = null
-      this.lastPos = null
-      this.lastWorldPos = null
-    }
   }
 
   keydownCB(event) {
@@ -769,6 +791,10 @@ export default class LassoButtonGroupController {
       }
     })
     return shapeHandler
+  }
+
+  isActive() {
+    return Boolean(this._activeButton)
   }
 
   deactivateButton(id) {

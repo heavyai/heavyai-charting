@@ -46,6 +46,7 @@ function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
 /* istanbul ignore next */
 export function rasterDrawMixin(chart) {
   let drawEngine = null
+  let buttonController = null
   let currXRange = null
   let currYRange = null
   const coordFilters = new Map()
@@ -233,7 +234,9 @@ export function rasterDrawMixin(chart) {
       }
     }
 
-    drawEngine.enableInteractions()
+    if (!buttonController || !buttonController.isActive()) {
+      drawEngine.enableInteractions()
+    }
   }
 
   chart.addDrawControl = () => {
@@ -275,7 +278,7 @@ export function rasterDrawMixin(chart) {
     }
 
     drawEngine = new MapdDraw.ShapeBuilder(parent, engineOpts)
-    const buttonController = new LassoButtonGroupController(parent, chart, drawEngine, defaultStyle, defaultSelectStyle)
+    buttonController = new LassoButtonGroupController(parent, chart, drawEngine, defaultStyle, defaultSelectStyle)
 
     function updateDraw() {
       const bounds = chart.getDataRenderBounds()
