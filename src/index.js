@@ -44,6 +44,7 @@ export {default as mapdTable} from './charts/mapd-table';
 export {default as boxPlot} from './charts/box-plot';
 export {default as countWidget} from "./charts/count-widget"
 
+export {default as asyncMixin} from './mixins/async-mixin';
 export {default as baseMixin} from './mixins/base-mixin';
 export {default as bubbleMixin} from './mixins/bubble-mixin';
 export {default as capMixin} from './mixins/cap-mixin'
@@ -58,6 +59,7 @@ export {default as rasterLayerPolyMixin} from "./mixins/raster-layer-poly-mixin"
 export {default as rasterLayer} from "./mixins/raster-layer"
 export {default as rasterMixin} from "./mixins/raster-mixin"
 export {default as scatterMixin} from "./mixins/scatter-mixin";
+export {default as spinnerMixin} from "./mixins/spinner-mixin";
 
 export {default as legendContinuous} from "./chart-addons/legend-continuous"
 export {default as legend} from "./chart-addons/legend"

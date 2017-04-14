@@ -23,17 +23,18 @@ import {
   startRenderTime
 } from "../core/core-async"
 
+
+import asyncMixin from "../mixins/async-mixin"
+import chartLegendMixin from "../mixins/legend-mixin"
+import {createBinParams} from "../utils/binning-helpers"
 import d3 from "d3"
 import {errors} from "../core/errors"
-import {logger} from "../utils/logger"
-
-import chartLegendMixin from "../mixins/legend-mixin"
 import filterMixin from "../mixins/filter-mixin"
 import labelMixin from "../mixins/label-mixin"
-import multipleKeysLabelMixin from "../mixins/multiple-key-label-mixin"
-import asyncMixin from "../mixins/async-mixin"
+import {logger} from "../utils/logger"
 import {multipleKeysAccessorForCap} from "../utils/multiple-key-accessors"
-import {createBinParams} from "../utils/binning-helpers"
+import multipleKeysLabelMixin from "../mixins/multiple-key-label-mixin"
+import spinnerMixin from "../mixins/spinner-mixin"
 
 /**
  * `dc.baseMixin` is an abstract functional object representing a basic `dc` chart object
@@ -1791,7 +1792,7 @@ export default function baseMixin (_chart) {
   _chart.rangeChartEnabled = () => false
   _chart.isTime = () => null
 
-  _chart = chartLegendMixin(filterMixin(labelMixin(multipleKeysLabelMixin(asyncMixin(_chart)))))
+  _chart = chartLegendMixin(filterMixin(labelMixin(multipleKeysLabelMixin(spinnerMixin(asyncMixin(_chart))))))
 
   return _chart
 }

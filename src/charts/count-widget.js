@@ -19,7 +19,10 @@ export default function countWidget (parent, chartGroup) {
     return _chart._group(group, name)
   })
 
+  const noop = () => null
   _chart.isCountChart = function () { return true } // override for count chart
+  _chart.dataFetchRequestCallback(noop)
+  _chart.dataFetchSuccessfulCallback(noop)
 
   _chart.formatNumber = function (formatter) {
     if (!arguments.length) {
