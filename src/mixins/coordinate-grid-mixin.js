@@ -9,6 +9,7 @@ import {filters} from "../core/filters"
 import marginMixin from "./margin-mixin"
 import {utils} from "../utils/utils"
 import rangeMixin from "../mixins/range-mixin"
+import elasticDimensionMixin from "../mixins/elastic-dimension-mixin"
 import {redrawAllAsync} from "../core/core-async"
 
  /**
@@ -485,8 +486,8 @@ export default function coordinateGridMixin (_chart) {
 
      function prepareXAxis (g, render) {
          if (!_chart.isOrdinal()) {
-             if (_chart.elasticX()) {
-                 _x.domain([_chart.xAxisMin(), _chart.xAxisMax()]);
+             if (_chart.elasticX() && (!_chart.rangeChartEnabled() || (_chart.rangeChartEnabled() && _chart.rangeChart() && !_chart.rangeChart().filters().length))) {
+                _x.domain([_chart.xAxisMin(), _chart.xAxisMax()]);
              }
          } else { // _chart.isOrdinal()
              if (_chart.elasticX() || _x.domain().length === 0) {
@@ -1011,6 +1012,7 @@ export default function coordinateGridMixin (_chart) {
                  })
                  chartBinParams[0].binBounds = _chart.binParams()[0].binBounds
                  _chart.focusChart().binParams(chartBinParams)
+                 _chart.focusChart().x().domain(_chart.x().domain().slice(0))
              }
          }
      }
@@ -1387,7 +1389,7 @@ export default function coordinateGridMixin (_chart) {
              _focusChart.rangeFocused(true);
  /* ------------------------------------------------------------------------- */
 
-             if (!chart.filter()) {
+            if (!chart.filter()) {
                  events.trigger(function () {
                      _focusChart.x().domain(_focusChart.xOriginalDomain());
                  });
@@ -1770,7 +1772,7 @@ export default function coordinateGridMixin (_chart) {
          })
      }
 
-     _chart = rangeMixin(binningMixin(_chart))
+     _chart = elasticDimensionMixin(rangeMixin(binningMixin(_chart)))
 
      return _chart;
  };

@@ -17,7 +17,8 @@ export default function asyncMixin (_chart) {
   }
 
   _chart.on = function (event, listener) {
-    if (events.indexOf(event) === NON_INDEX) {
+    const baseEvent = event.includes(".") ? event.slice(0, event.indexOf(".")) : event
+    if (events.indexOf(baseEvent) === NON_INDEX) {
       _on(event, listener)
     } else {
       _listeners.on(event, listener)
@@ -36,6 +37,8 @@ export default function asyncMixin (_chart) {
   _chart.dataAsync = function (callback) {
     return _dataAsync.call(_chart, _chart.group(), callback)
   }
+
+  _chart.getDataAsync = () => _dataAsync
 
   _chart.setDataAsync = function (callback) {
     _dataAsync = callback
@@ -104,13 +107,14 @@ export default function asyncMixin (_chart) {
 
       const dataCallback = function (error, data) {
         if (error) {
+           _chart._invokeDataErrorListener()
           resetRedrawStack()
           reject(error)
         } else {
           _chart.redraw(id, queryGroupId, queryCount, data, redrawCallback)
         }
       }
-
+      _chart._invokeDataFetchListener()
       _chart.dataAsync(dataCallback)
     })
   }

@@ -88,6 +88,7 @@ export function initializeRangeChart (chart) {
       .height(chart.height() * RANGE_CHART_HEIGHT)
       .colorByLayerId(true)
       .elasticY(true)
+      .elasticX(chart.elasticX())
       .margins(Object.assign({}, DEFAULT_RANGE_MARGINS))
       .valueAccessor(d => d.series_1)
       .xAxisLabel(chart.xAxisLabel())
@@ -127,7 +128,7 @@ export function createRangeChart (chart) {
 
   const defaultExact = binParams[0] ? binParams[0].extract : null
   const defaultTimeBin = binParams[0] ? binParams[0].timeBin : null
-  const xDomainArr = [defaultExact, binParams[0].binBounds[0], binParams[0].binBounds[1], defaultTimeBin]
+  const xDomainArr = [defaultExact, chart.xAxisMin(), chart.xAxisMax(), defaultTimeBin]
   RangeChart.x(xScale(defaultExact, isChartDate).domain(xDomain(...xDomainArr)))
   RangeChart.xAxis().scale(RangeChart.x()).tickFormat(xAxisTickFormat(binParams[0] || {extract: false, timeBin: false}, isChartDate))
   RangeChart.yAxis().tickFormat(d3.format(".2s"))
@@ -160,9 +161,11 @@ export function createRangeChart (chart) {
   RangeChart.updateAxes = function (_chart, _binParams) {
     const _RangeChart = _chart.rangeChart()
     const _isChartDate = _chart.isTime()
-    const _xDomainArr = [_binParams[0].extract, _binParams[0].binBounds[0], _binParams[0].binBounds[1], _binParams[0].timeBin]
-    _RangeChart.x(xScale(_binParams[0].extract, _isChartDate).domain(xDomain(..._xDomainArr)))
-    _RangeChart.xAxis().scale(RangeChart.x()).tickFormat(xAxisTickFormat(_binParams[0], _isChartDate))
+    const bounds = _binParams[0] ? [_binParams[0].binBounds[0], _binParams[0].binBounds[1]] : [_chart.xAxisMin(), _chart.xAxisMax()]
+    const _binning = _binParams[0] || {}
+    const _xDomainArr = [_binning.extract, ...bounds, _binning.timeBin]
+    _RangeChart.x(xScale(_binning.extract, _isChartDate).domain(xDomain(..._xDomainArr)))
+    _RangeChart.xAxis().scale(RangeChart.x()).tickFormat(xAxisTickFormat(_binning, _isChartDate))
     _RangeChart.yAxis().tickFormat(d3.format(".2s"))
   }
 
