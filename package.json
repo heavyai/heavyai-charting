@@ -24,21 +24,20 @@
     "type": "git",
     "url": "https://github.com/map-d/mapdc.js.git"
   },
-  "dependencies": {
-  },
   "scripts": {
-    "bump": "npm run shjs ../../scripts/check-coverage.js -- --bump",
+    "build": "bash scripts/build.sh",
     "build": "bash scripts/build.sh",
     "build:example": "npm run build && npm run webpack && bash scripts/copy-example-libs.sh",
-    "start": "npm run build:example && node ../../node_modules/http-server/bin/http-server -p 8081 -o",
-    "clean": "bash scripts/clean.sh",
-    "lint": "../../node_modules/.bin/eslint",
-    "webpack": "node ../../node_modules/webpack/bin/webpack.js",
-    "test": "npm run shjs ./scripts/run-unit-tests.js",
-    "test:cover": "COVER=true npm run shjs ./scripts/run-unit-tests.js",
-    "test:check-cover": "npm run shjs ../../scripts/check-coverage.js",
     "bump": "npm run shjs ../../scripts/check-coverage.js -- --bump",
-    "shjs": "node --harmony_destructuring ../../node_modules/.bin/shjs"
+    "clean": "bash scripts/clean.sh",
+    "docs": "../../node_modules/.bin/esdoc -c .esdoc.json && open docs/index.html",
+    "lint": "../../node_modules/.bin/eslint",
+    "shjs": "node --harmony_destructuring ../../node_modules/.bin/shjs",
+    "start": "npm run build:example && node ../../node_modules/http-server/bin/http-server -p 8081 -o",
+    "test": "npm run shjs ./scripts/run-unit-tests.js",
+    "test:check-cover": "npm run shjs ../../scripts/check-coverage.js",
+    "test:cover": "COVER=true npm run shjs ./scripts/run-unit-tests.js",
+    "webpack": "node ../../node_modules/webpack/bin/webpack.js"
   },
   "npmName": "mapdc",
   "npmFileMap": [
