@@ -10,8 +10,8 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
     var DEFAULT_ZOOM_LEVEL = 15
     var EASE_DURATION_MS = 1500
     var SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
-    var LONMAX = 90 - SMALL_AMOUNT
-    var LONMIN = -90 + SMALL_AMOUNT
+    var LONMAX = 180 - SMALL_AMOUNT
+    var LONMIN = -180 + SMALL_AMOUNT
     var LATMAX = 90 - SMALL_AMOUNT
     var LATMIN = -90 + SMALL_AMOUNT
 
@@ -233,6 +233,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
 
         var redrawall = false;
         if (typeof _chart.getLayers === "function") {
+
             _chart.getLayers().forEach(function(layer) {
                 if (typeof layer.xDim === "function" &&
                     typeof layer.yDim === "function") {
@@ -245,6 +246,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
                     }
                 }
             });
+
         }
 
         if (_xDim !== null && _yDim !== null) {
@@ -506,8 +508,21 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
     function init (_bounds) {
       if (!_bounds) return Promise.resolve()
 
-      var xValue = _xDim.value()[0]
-      var yValue = _yDim.value()[0]
+      var xValue
+      var yValue
+
+      _chart.getLayers().forEach(function(layer) {
+          if (typeof layer.xDim === "function" &&
+              typeof layer.yDim === "function") {
+              var xdim = layer.xDim();
+              var ydim = layer.yDim();
+              if (xdim !== null && ydim !== null) {
+                  xValue = xdim.value()
+                  yValue = ydim.value()
+              }
+          }
+      });
+
 
       if (Array.isArray(_bounds) && Array.isArray(_bounds[0]) && Array.isArray(_bounds[1])) {
         _minMaxCache[xValue] = _bounds[0]
@@ -571,8 +586,17 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
            _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
         }
 
-          _xDim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
-          _yDim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
+        _chart.getLayers().forEach(function(layer) {
+            if (typeof layer.xDim === "function" &&
+                typeof layer.yDim === "function") {
+                var xdim = layer.xDim();
+                var ydim = layer.yDim();
+                if (xdim !== null && ydim !== null) {
+                    xdim.filter([_chart._minCoord[0],_chart._maxCoord[0]]);
+                    ydim.filter([_chart._minCoord[1],_chart._maxCoord[1]]);
+                }
+            }
+        });
     }
 
     function boundsRoughlyEqual(a, b) {

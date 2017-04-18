@@ -24,7 +24,7 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     }
 
     if (_useMap){
-        _chart = mapMixin(baseMixin({}), parentDivId, _mapboxgl, false);
+        _chart = mapMixin(baseMixin({}), parentDivId, _mapboxgl, true, false);
     } else {
         _chart = scatterMixin(coordinateGridRasterMixin({}, _mapboxgl, browser), _mapboxgl, false);
     }
@@ -50,7 +50,11 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     var _minPopupShapeBoundsArea = 16*16;
     var _popupSearchRadius = 2;
     var _popupDivClassName = "map-popup";
+    var _popupDisplayable = true
 
+    _chart.popupDisplayable = function(displayable) {
+        _popupDisplayable = Boolean(displayable)
+    }
 
     _chart.x = function (x) {
         if (!arguments.length) {
@@ -116,8 +120,9 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     }
 
     _chart.destroyChart = function () {
-        for (layer in layers) {
-            layer.destroyLayer(chart);
+        for (let layerName in _layerNames) {
+            const layer = _layerNames[layerName]
+            layer.destroyLayer(_chart);
         }
 
         this.map().remove()
@@ -344,7 +349,7 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     };
 
     _chart.displayPopup = function displayPopup (result, animate) {
-        if(!result || !result.row_set || !result.row_set.length){ return }
+        if(!_popupDisplayable || !result || !result.row_set || !result.row_set.length){ return }
         if (_chart.select('.' + _popupDivClassName).empty()) { // only one popup at a time
             var layer = _layerNames[result.vega_table_name];
             if (layer && layer.areResultsValidForPopup(result.row_set)) {
