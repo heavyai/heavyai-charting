@@ -31,53 +31,62 @@ document.addEventListener("DOMContentLoaded", function init() {
     .user("mapd")
     .password("HyperInteractive")
     .connect(function(error, con) {
-      crossfilter.crossfilter(con, config.table).then(function(cf) {
-        createPolyMap(cf, con, dc, config)
-        createTimeChart(cf, dc, config)
+      crossfilter.crossfilter(con, ["contributions_donotmodify", "zipcodes"], [{
+        table1: "contributions_donotmodify",
+        attr1: "contributor_zipcode",
+        table2: "zipcodes",
+        attr2: "ZCTA5CE10"
+      }]).then(function(cf) {
+
+        crossfilter.crossfilter(con, "contributions_donotmodify").then(cf2 => {
+          createPolyMap(cf, con, dc, config, cf2)
+
+        })
+
+        createTimeChart(cf2, dc, config)
       })
     })
 
 
-  function createPolyMap(crossFilter, con, dc, config) {
+  function createPolyMap(crossFilter, con, dc, config, cf2) {
     var parent = document.getElementById("polymap")
     // The values in the table and column specified in crossFilter.dimension
     // must correspond to values in the table and keysColumn specified in polyRasterChart.polyJoin.
-    var dim = crossFilter.dimension(config.joinColumn) // Values to join on.
-    var grp = dim.group().reduceAvg(config.valueColumn) // Values to color on.
+    var dim = crossFilter.dimension("zipcodes.rowid") // Values to join on.
+    var grp = dim.group().reduceAvg("contributions_donotmodify.amount", "avgContrib") // Values to color on.
     // var dim = crossFilter.dimension("tweets_nov_feb.state_abbr") // Values to join on.
     // var grp = dim.group().reduceAvg("tweets_nov_feb.tweet_count") // Values to color on.
 
     // Can use getDomainBounds to dynamically find min and max of values that will be colored,
     // or the domain [min, max] can be set directly
     // (in which case nesting chart creation inside this callback is unnecessary).
-    getDomainBounds(config.valueColumn, dim.groupAll(), function(domainBounds){
+    getDomainBounds(config.valueColumn, cf2.groupAll(), function(domainBounds){
       // Can set colorDomain directly or use domainFromBoundsAndRange to generate a .
       var colorRange = ["#115f9a","#1984c5","#22a7f0","#48b5c4","#76c68f","#a6d75b","#c9e52f","#d0ee11","#d0f400"]
       var colorDomain = domainFromBoundsAndRange(config.domainBoundMin, config.domainBoundMax, colorRange)
       // var colorDomain = domainFromBoundsAndRange(domainBounds.minimum, domainBounds.maximum, colorRange)
 
       var polyMap = dc
-      .polyRasterChart(parent, true)
+      .rasterChart(parent, true)
       .con(con)
       .height(height()/1.5)
       .width(width())
+      .mapUpdateInterval(750) // ms
+      .mapStyle("mapbox://styles/mapbox/light-v8")
+
+      var polyLayer = dc
+      .rasterLayer("polys")
       .dimension(dim)
       .group(grp)
-      .tableName(config.table)
-      .mapUpdateInterval(750) // ms
-      .othersGrouper(false)
-      .opacity(0.90)
-      .mapStyle("mapbox://styles/mapbox/light-v8")
-      .polyJoin({table: config.polyTable, keysColumn: config.polyJoinColumn})
-      .colors(d3.scale.linear().domain(colorDomain).range(colorRange))
-      .borderColor("white")
+      .fillColorAttr('avgContrib')
+      .defaultFillColor("green")
+      .fillColorScale(d3.scale.linear().domain(colorDomain).range(colorRange))
 
-
-      polyMap.init().then(() => {
-        polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
+      polyMap.pushLayer("polys", polyLayer).init().then(() => {
+        // polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
         // Keeps the border widths reasonable regardless of zoom level.
         polyMap.map().on("zoom", function() {
-          polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
+          // polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
         })
 
         dc.renderAllAsync()
@@ -107,14 +116,9 @@ document.addEventListener("DOMContentLoaded", function init() {
   function createTimeChart(crossFilter, dc, config) {
     getDomainBounds(config.timeColumn, crossFilter.groupAll(), function(timeChartBounds){
       var timeChartDimension = crossFilter.dimension(config.timeColumn)
-
       var timeChartGroup = timeChartDimension
       .group()
       .reduceCount("*")
-      .setBinParams({
-        numBins: config.numTimeBins,
-        binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
-      })
 
       var timeChart = dc.lineChart("#timechart")
       .width(width())
@@ -126,6 +130,10 @@ document.addEventListener("DOMContentLoaded", function init() {
       .yAxisLabel(config.timeLabel)
       .dimension(timeChartDimension)
       .group(timeChartGroup)
+      .binParams({
+        numBins: config.numTimeBins,
+        binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
+      })
 
       timeChart.x(d3.time.scale.utc().domain([timeChartBounds.minimum, timeChartBounds.maximum]))
       timeChart.yAxis().ticks(5)

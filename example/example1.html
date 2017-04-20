@@ -110,7 +110,7 @@
   */
 
   var countGroup = crossFilter.groupAll();
-  var dataCount = dc.dataCount(".data-count")
+  var countWidget = dc.countWidget(".data-count")
     .dimension(crossFilter)
     .group(countGroup);
 
@@ -398,10 +398,6 @@
 
           var timeChartGroup = timeChartDimension.group()
                       .reduceCount()
-                      .setBinParams({
-                         numBins: 400,
-                         binBounds: [timeChartBounds.minimum,timeChartBounds.maximum]
-                        });
 
           /*  We create the time chart as a line chart
            *  with the following parameters:
@@ -427,7 +423,11 @@
             .xAxisLabel('Departure Time')
             .yAxisLabel('# Flights')
             .dimension(timeChartDimension)
-            .group(timeChartGroup);
+            .group(timeChartGroup)
+            .binParams({
+               numBins: 400,
+               binBounds: [timeChartBounds.minimum,timeChartBounds.maximum]
+              });
 
           /* Set the x and y axis formatting with standard d3 functions */
 
