@@ -2,6 +2,7 @@ import {constants, transition, override} from "../core/core"
 import {pluck, utils} from "../utils/utils"
 import d3 from "d3"
 import stackMixin from "../mixins/stack-mixin"
+import elasticDimensionMixin from "../mixins/elastic-dimension-mixin"
 import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
 
 const TIME_UNIT_PER_SECONDS = {
@@ -60,7 +61,7 @@ export default function barChart (parent, chartGroup) {
     var DEFAULT_GAP_BETWEEN_BARS = 4;
     var LABEL_PADDING = 3;
 
-    var _chart = stackMixin(coordinateGridMixin({}));
+    var _chart = elasticDimensionMixin(stackMixin(coordinateGridMixin({})));
 
     var _gap = DEFAULT_GAP_BETWEEN_BARS;
     var _centerBar = false;

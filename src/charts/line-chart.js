@@ -2,6 +2,7 @@ import {override, transition} from "../core/core"
 import {pluck, utils} from "../utils/utils"
 import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
 import d3 from "d3"
+import elasticDimensionMixin from "../mixins/elastic-dimension-mixin"
 import stackMixin from "../mixins/stack-mixin"
 import multiSeriesMixin from "../mixins/multi-series-mixin"
 
@@ -39,7 +40,7 @@ export default function lineChart (parent, chartGroup) {
     var X_AXIS_REF_LINE_CLASS = 'xRef';
     var DEFAULT_DOT_OPACITY = 1e-6;
 
-    var _chart = stackMixin(coordinateGridMixin({}));
+    var _chart = elasticDimensionMixin(stackMixin(coordinateGridMixin({})));
     var _renderArea = false;
     var _dotRadius = DEFAULT_DOT_RADIUS;
     var _dataPointRadius = null;

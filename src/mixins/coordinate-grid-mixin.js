@@ -9,7 +9,6 @@ import {filters} from "../core/filters"
 import marginMixin from "./margin-mixin"
 import {utils} from "../utils/utils"
 import rangeMixin from "../mixins/range-mixin"
-import elasticDimensionMixin from "../mixins/elastic-dimension-mixin"
 import {redrawAllAsync} from "../core/core-async"
 
  /**
@@ -1772,7 +1771,7 @@ export default function coordinateGridMixin (_chart) {
          })
      }
 
-     _chart = elasticDimensionMixin(rangeMixin(binningMixin(_chart)))
+     _chart = rangeMixin(binningMixin(_chart))
 
      return _chart;
  };
