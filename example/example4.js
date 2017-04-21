@@ -259,7 +259,10 @@ document.addEventListener("DOMContentLoaded", function init() {
             .yAxis().ticks(5);
 
           dcTimeChart
-            .xAxis().orient('top');
+            .xAxis()
+            .scale(dcTimeChart.x())
+            .tickFormat(dc.utils.customTimeFormat)
+            .orient('bottom');
 
 
           /*---------------------SET UP FILTER ----------------------------------*/
@@ -335,7 +338,7 @@ document.addEventListener("DOMContentLoaded", function init() {
         .width(w)
         .height(h/2.5)
 
-      dc.renderAll();
+      dc.redrawAllAsync();
     }
 
     function mapLangColors(n) {

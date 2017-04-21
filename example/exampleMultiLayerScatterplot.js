@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", function init() {
           .width(w)
           .height(h/1.5);
 
-        dc.renderAll();
+        dc.redrawAllAsync();
       }
     })
   }

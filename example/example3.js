@@ -1,16 +1,5 @@
 document.addEventListener("DOMContentLoaded", function init() {
-  // var config = {
-  //   table: "tweets_nov_feb",
-  //   valueColumn: "tweets_nov_feb.tweet_count",
-  //   joinColumn: "tweets_nov_feb.state_abbr",
-  //   polyTable: "states",
-  //   polyJoinColumn: "STATE_ABBR",
-  //   timeColumn: "tweet_time",
-  //   timeLabel: "Number of Tweets",
-  //   domainBoundMin: 12196,
-  //   domainBoundMax: 32586,
-  //   numTimeBins: 288 // 288 * 5 = number of minutes in a day.
-  // }
+
   var config = {
     table: "contributions_donotmodify",
     valueColumn: "contributions_donotmodify.amount",
@@ -23,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     domainBoundMax: 2600,
     numTimeBins: 423
   }
+
   new MapdCon()
     .protocol("http")
     .host("forge.mapd.com")
@@ -37,16 +27,12 @@ document.addEventListener("DOMContentLoaded", function init() {
         table2: "zipcodes",
         attr2: "ZCTA5CE10"
       }]).then(function(cf) {
-
         crossfilter.crossfilter(con, "contributions_donotmodify").then(cf2 => {
           createPolyMap(cf, con, dc, config, cf2)
-
+          createTimeChart(cf, dc, config, cf2)
         })
-
-        createTimeChart(cf2, dc, config)
       })
     })
-
 
   function createPolyMap(crossFilter, con, dc, config, cf2) {
     var parent = document.getElementById("polymap")
@@ -113,8 +99,8 @@ document.addEventListener("DOMContentLoaded", function init() {
     return zoomLevel / ZOOM_BORDER_DIVISOR - MIN_ZOOM / ZOOM_BORDER_DIVISOR
   }
 
-  function createTimeChart(crossFilter, dc, config) {
-    getDomainBounds(config.timeColumn, crossFilter.groupAll(), function(timeChartBounds){
+  function createTimeChart(crossFilter, dc, config, cf2) {
+    getDomainBounds(config.timeColumn, cf2.groupAll(), function(timeChartBounds){
       var timeChartDimension = crossFilter.dimension(config.timeColumn)
       var timeChartGroup = timeChartDimension
       .group()
@@ -137,7 +123,11 @@ document.addEventListener("DOMContentLoaded", function init() {
 
       timeChart.x(d3.time.scale.utc().domain([timeChartBounds.minimum, timeChartBounds.maximum]))
       timeChart.yAxis().ticks(5)
-      timeChart.xAxis().orient("top")
+      timeChart
+        .xAxis()
+        .scale(timeChart.x())
+        .tickFormat(dc.utils.customTimeFormat)
+        .orient('bottom');
 
       dc.renderAllAsync()
 
@@ -162,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     .width(width())
     .height(height()/heightDivisor)
     .renderAsync()
-    dc.renderAllAsync()
+    dc.redrawAllAsync()
   }
 
   function noop () {}

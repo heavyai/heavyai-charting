@@ -336,7 +336,10 @@
                .yAxis().ticks(5);
 
              dcTimeChart
-               .xAxis().orient('top');
+               .xAxis()
+               .scale(dcTimeChart.x())
+               .tickFormat(dc.utils.customTimeFormat)
+               .orient('top');
 
 
          /*---------------------SET UP FILTER ----------------------------------*/
@@ -411,7 +414,7 @@
                  .width(w)
                  .height(h/2.5)
 
-               dc.renderAll();
+               dc.redrawAllAsync();
              }
            });
     })
