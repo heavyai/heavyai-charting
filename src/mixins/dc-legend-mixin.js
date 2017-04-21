@@ -10,6 +10,12 @@ export default function legendMixin (legend) {
   }
 
   legend.render = function () {
+
+    // Does not re-render if a custom cursor is on the screen
+    if (document.getElementById('cursor') !== null) {
+      return
+    }
+
     legend.parent().root().select(".dc-legend").remove()
 
     const wrapper = legend.parent().root().append("div")
