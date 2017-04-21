@@ -705,6 +705,7 @@ export default class LassoButtonGroupController {
     this._activeShape = null
 
     this._selectionchangedCB = this._selectionchangedCB.bind(this)
+    this._dragbeginCB = this._dragbeginCB.bind(this)
     this._dragendCB = this._dragendCB.bind(this)
     this._keyboardCB = this._keyboardCB.bind(this)
     this._initControls(defaultStyle, defaultSelectStyle)
@@ -720,6 +721,7 @@ export default class LassoButtonGroupController {
       this._lassoHandler.deactivate()
 
       this._drawEngine.off(MapdDraw.ShapeBuilder.EventConstants.DRAG_END, this._dragendCB)
+      this._drawEngine.off(MapdDraw.ShapeBuilder.EventConstants.DRAG_END, this._dragbeginCB)
       this._drawEngine.off(MapdDraw.ShapeBuilder.EventConstants.SELECTION_CHANGED, this._selectionchangedCB)
 
       this._controlContainer.removeChild(this._controlGroup)
@@ -868,6 +870,13 @@ export default class LassoButtonGroupController {
     }
   }
 
+  _dragbeginCB(event) {
+    if (!this._activeShape && !this._activeButton) {
+      const canvas = this._drawEngine.getCanvas()
+      canvas.focus()
+    }
+  }
+
   _dragendCB(event) {
     const CircleClass = getLatLonCircleClass()
     event.shapes.forEach(shape => {
@@ -918,6 +927,7 @@ export default class LassoButtonGroupController {
     this._controlContainer.appendChild(this._controlGroup)
 
     this._drawEngine.on(MapdDraw.ShapeBuilder.EventConstants.SELECTION_CHANGED, this._selectionchangedCB)
+    this._drawEngine.on(MapdDraw.ShapeBuilder.EventConstants.DRAG_BEGIN, this._dragbeginCB)
     this._drawEngine.on(MapdDraw.ShapeBuilder.EventConstants.DRAG_END, this._dragendCB)
 
     this._circleHandler = this._createButtonControl("circle", CircleShapeHandler, defaultStyle, defaultSelectStyle)
