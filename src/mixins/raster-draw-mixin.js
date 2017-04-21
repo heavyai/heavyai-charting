@@ -299,17 +299,20 @@ export function rasterDrawMixin(chart) {
     }
 
     function updateDrawResize(eventObj) {
-       // make sure all buttons and events are deactivated when resizing
-       // so shape creation/modification events aren't unintentionally
-       // triggered
+      // make sure all buttons and events are deactivated when resizing
+      // so shape creation/modification events aren't unintentionally
+      // triggered
       buttonController.deactivateButtons()
-      if (typeof chart.margins === "function") {
-        margins = chart.margins()
-        drawEngine.margins = margins
-        drawEngine.viewport = [0, 0, parent.offsetWidth - margins.left - margins.right, parent.offsetHeight - margins.top - margins.bottom]
-      } else {
-        drawEngine.viewport = [0, 0, parent.offsetWidth, parent.offsetHeight]
-      }
+
+      // NOTE: in the scatterplot case, there's no guarantee that the parent div will have been properly
+      // resized by the time we reach here. Getting the effectiveWidth of the chart is a safer
+      // bet. That method should be defined on a scatterplot chart.
+      // Do we need to be concerned with margins/padding on the div? I don't believe we
+      // do since we're only setting the viewport here, which should cover the entire
+      // width/height of the canvas.
+      const widthToUse = (typeof chart.effectiveWidth === "function" ? chart.effectiveWidth() : parent.offsetWidth)
+      const heightToUse = (typeof chart.effectiveHeight === "function" ? chart.effectiveHeight() : parent.offsetHeight)
+      drawEngine.viewport = [0, 0, widthToUse, heightToUse]
       updateDraw()
     }
 
