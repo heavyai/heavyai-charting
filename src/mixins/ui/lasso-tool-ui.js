@@ -765,6 +765,7 @@ export default class LassoButtonGroupController {
     button.addEventListener("mouseout", e => {
       if (!this._activeShape && !this._activeButton) {
         this._chart.popupDisplayable(true)
+        this._drawEngine.enableInteractions()
       }
     })
 
