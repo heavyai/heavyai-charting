@@ -33,7 +33,7 @@
     "docs": "../../node_modules/.bin/esdoc -c .esdoc.json && open docs/index.html",
     "lint": "../../node_modules/.bin/eslint",
     "shjs": "node --harmony_destructuring ../../node_modules/.bin/shjs",
-    "start": "npm run build:example && node ../../node_modules/http-server/bin/http-server -p 8081 -o",
+    "start": "npm run build:example && node ../../node_modules/http-server/bin/http-server -p 8081 -o -c-1",
     "test": "npm run shjs ./scripts/run-unit-tests.js",
     "test:check-cover": "npm run shjs ../../scripts/check-coverage.js",
     "test:cover": "COVER=true npm run shjs ./scripts/run-unit-tests.js",

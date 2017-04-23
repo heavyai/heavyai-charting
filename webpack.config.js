@@ -1,4 +1,5 @@
 var webpack = require("webpack");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require("path");
 
 module.exports = {
@@ -26,6 +27,10 @@ module.exports = {
         test: /\.js?$/,
         exclude: /node_modules/,
         loader: "babel-loader"
+      },
+      {
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract("style", "css!sass")
       }
     ]
   },
@@ -36,6 +41,7 @@ module.exports = {
       }
     }),
     new webpack.optimize.OccurenceOrderPlugin(),
+    new ExtractTextPlugin("chart.css"),
     new webpack.optimize.DedupePlugin(),
   ],
   resolve: {
