@@ -506,45 +506,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
     }
 
     function init (_bounds) {
-      if (!_bounds) return Promise.resolve()
-
-      var xValue
-      var yValue
-
-      _chart.getLayers().forEach(function(layer) {
-          if (typeof layer.xDim === "function" &&
-              typeof layer.yDim === "function") {
-              var xdim = layer.xDim();
-              var ydim = layer.yDim();
-              if (xdim !== null && ydim !== null) {
-                  xValue = xdim.value()
-                  yValue = ydim.value()
-              }
-          }
-      });
-
-
-      if (Array.isArray(_bounds) && Array.isArray(_bounds[0]) && Array.isArray(_bounds[1])) {
-        _minMaxCache[xValue] = _bounds[0]
-        _minMaxCache[yValue] = _bounds[1]
-      }
-
-      return Promise.all(
-          [xValue, yValue].reduce(createRangeMinMaxPromises, [])
-      ).then(function () {
-          _chart.fitInitialBounds(function () {
-              if (!initialBounds) {
-                  var lonMin = _minMaxCache[xValue][0]
-                  var lonMax = _minMaxCache[xValue][1]
-                  var latMin = _minMaxCache[yValue][0]
-                  var latMax = _minMaxCache[yValue][1]
-                  var sw = new _mapboxgl.LngLat(lonMin > LONMIN ? lonMin : LONMIN, latMin > LATMIN ? latMin : LATMIN)
-                  var ne = new _mapboxgl.LngLat(lonMax < LONMAX ? lonMax : LONMAX, latMax < LATMAX ? latMax : LATMAX)
-                  var lonLatBounds = new _mapboxgl.LngLatBounds(sw, ne)
-                  _map.fitBounds(lonLatBounds, {linear: true, duration: 0})
-              }
-          })
-      })
+      return Promise.resolve()
     }
 
     _chart.init = function (bounds) {
