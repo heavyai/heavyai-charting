@@ -89,8 +89,8 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 
     _filters = shouldReset ? [] : [[xrange, yrange]]
     _chart._invokeFilteredListener(_filters, false)
-    _chart.xRangeFilter(xrange)
-    _chart.yRangeFilter(yrange)
+    _chart.xRangeFilter && _chart.xRangeFilter(xrange)
+    _chart.yRangeFilter && _chart.yRangeFilter(yrange)
   }
 
   var _parent

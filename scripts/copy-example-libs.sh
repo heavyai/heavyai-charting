@@ -6,6 +6,7 @@ cp ../../node_modules/mapbox-gl-draw/dist/mapbox-gl-draw.css example/css
 cp mapdc.css example/css/
 cp chart.css example/css/
 cp dist/mapdc.js example/js/
+cp dist/chart.css example/css/
 cp ../mapd-crossfilter/dist/mapd-crossfilter.js example/js/
 cp ../mapd-con/thrift/browser/thrift.js example/js/
 cp ../mapd-con/thrift/browser/mapd.thrift.js example/js/

@@ -60,12 +60,12 @@ document.addEventListener("DOMContentLoaded", function init() {
      *  Note that for the count we use crossFilter itself as the dimension.
      */
     var countGroup1 = pointcfLayer2.groupAll();
-    var dataCount1 = dc.dataCount(".data-count1")
+    var dataCount1 = dc.countWidget(".data-count1")
                        .dimension(pointcfLayer2)
                        .group(countGroup1);
 
     var countGroup2 = pointcfLayer3.groupAll();
-    var dataCount2 = dc.dataCount(".data-count2")
+    var dataCount2 = dc.countWidget(".data-count2")
       .dimension(pointcfLayer3)
       .group(countGroup2);
 
@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", function init() {
           .width(w)
           .height(h/1.5);
 
-        dc.renderAll();
+        dc.redrawAllAsync();
       }
     })
   }

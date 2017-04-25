@@ -1,4 +1,4 @@
--<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <title>MapD</title>
@@ -72,7 +72,7 @@
     var w = document.documentElement.clientWidth - 30;
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
     var countGroup = crossFilter.groupAll();
-    var dataCount = dc.dataCount(".data-count")
+    var dataCount = dc.countWidget(".data-count")
       .dimension(crossFilter)
       .group(countGroup);
 
@@ -134,7 +134,7 @@
         .height(h/1.5)
         .render();
 
-      dc.renderAllAsync();
+      dc.redrawAllAsync();
     }
 
     function mapLangColors(n) {

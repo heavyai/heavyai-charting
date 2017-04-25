@@ -96,7 +96,7 @@
      *  Note that for the count we use crossFilter itself as the dimension.
      */
     var countGroup = crossFilter.groupAll();
-    var dataCount = dc.dataCount(".data-count")
+    var dataCount = dc.countWidget(".data-count")
       .dimension(crossFilter)
       .group(countGroup);
 
@@ -118,29 +118,32 @@
 
      We then pass this scale into the r function within bubbleRasterChart
     */
-    var rScale = d3.scale.linear().domain([0,5000]).range([2,12]);
+    var sizeScale = d3.scale.linear().domain([0,5000]).range([2,12]);
 
     var pointMapChart = dc
-    .bubbleRasterChart(parent, true)
+    .rasterChart(parent, true)
     .con(con)
     .height(h/1.5)
     .width(w)
+    .mapUpdateInterval(750)
+    .mapStyle('json/dark-v8.json')
+
+    var pointLayer = dc
+    .rasterLayer("points")
     .dimension(pointMapDim)
     .group(pointMapDim)
-    .tableName(tableName)
-    .mapUpdateInterval(750)
     .cap(500000)
     .sampling(true)
-    .dynamicR(d3.scale.sqrt().domain([20000,0]).range([1.0,7.0]).clamp(true))
-    .othersGrouper(false)
+    .sizeAttr("size")
+    .dynamicSize(d3.scale.sqrt().domain([20000,0]).range([1.0,7.0]).clamp(true))
+    .sizeScale(sizeScale)
+    .xAttr("x")
+    .yAttr("y")
     .xDim(xDim)
     .yDim(yDim)
-    .colorBy({type: 'STR', value: 'lang', domain: langDomain})
-    .r(rScale)
-    .defaultColor("#80DEEA")
-    .colors(d3.scale.ordinal().domain(langDomain).range(langColors))
-    .mapStyle('json/dark-v8.json')
-    .popupSearchRadius(2)
+    .fillColorAttr("color")
+    .defaultFillColor("#80DEEA")
+    .fillColorScale(d3.scale.ordinal().domain(langDomain).range(langColors))
     .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
 
     function mapLangColors(n) {
@@ -150,7 +153,7 @@
       }
     }
 
-    pointMapChart.init().then((chart) => {
+    pointMapChart.pushLayer("points", pointLayer).init().then((chart) => {
       // custom click handler with just event data (no network calls)
       pointMapChart.map().on('mouseup', logClick)
       function logClick (result) {
@@ -295,10 +298,6 @@
              var timeChartGroup = timeChartDimension
                .group()
                .reduceCount('*')
-               .setBinParams({
-                  numBins: 288, // 288 * 5 = number of minutes in a day
-                  binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
-                 });
 
            /*  We create the time chart as a line chart
             *  with the following parameters:
@@ -324,7 +323,11 @@
                .xAxisLabel('Time of Day')
                .yAxisLabel('Number of Tweets')
                .dimension(timeChartDimension)
-               .group(timeChartGroup);
+               .group(timeChartGroup)
+               .binParams({
+                  numBins: 288, // 288 * 5 = number of minutes in a day
+                  binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
+                 });
 
              /* Set the x and y axis formatting with standard d3 functions */
 
@@ -333,7 +336,10 @@
                .yAxis().ticks(5);
 
              dcTimeChart
-               .xAxis().orient('top');
+               .xAxis()
+               .scale(dcTimeChart.x())
+               .tickFormat(dc.utils.customTimeFormat)
+               .orient('top');
 
 
          /*---------------------SET UP FILTER ----------------------------------*/
@@ -408,7 +414,7 @@
                  .width(w)
                  .height(h/2.5)
 
-               dc.renderAll();
+               dc.redrawAllAsync();
              }
            });
     })

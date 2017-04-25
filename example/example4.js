@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function init() {
      *  Note that for the count we use crossFilter itself as the dimension.
      */
     var countGroup = crossFilter.groupAll();
-    var dataCount = dc.dataCount(".data-count")
+    var dataCount = dc.countWidget(".data-count")
       .dimension(crossFilter)
       .group(countGroup);
 
@@ -50,8 +50,6 @@ document.addEventListener("DOMContentLoaded", function init() {
     var scatterplotDim = crossFilter.dimension(null).projectOn(["goog_x as x", "goog_y as y", "followers as size", "lang as color"]);
     var parent = document.getElementById("chart1-example");
     mapLangColors(40);
-
-
 
     /*
      * We need the min/max of each dimension of the scatterplot to
@@ -223,10 +221,6 @@ document.addEventListener("DOMContentLoaded", function init() {
           var timeChartGroup = timeChartDimension
             .group()
             .reduceCount('*')
-            .setBinParams({
-               numBins: 288, // 288 * 5 = number of minutes in a day
-               binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
-              });
 
         /*  We create the time chart as a line chart
          *  with the following parameters:
@@ -252,7 +246,11 @@ document.addEventListener("DOMContentLoaded", function init() {
             .xAxisLabel('Time of Day')
             .yAxisLabel('Number of Tweets')
             .dimension(timeChartDimension)
-            .group(timeChartGroup);
+            .group(timeChartGroup)
+            .binParams({
+               numBins: 288, // 288 * 5 = number of minutes in a day
+               binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
+              });
 
           /* Set the x and y axis formatting with standard d3 functions */
 
@@ -261,7 +259,10 @@ document.addEventListener("DOMContentLoaded", function init() {
             .yAxis().ticks(5);
 
           dcTimeChart
-            .xAxis().orient('top');
+            .xAxis()
+            .scale(dcTimeChart.x())
+            .tickFormat(dc.utils.customTimeFormat)
+            .orient('bottom');
 
 
           /*---------------------SET UP FILTER ----------------------------------*/
@@ -337,7 +338,7 @@ document.addEventListener("DOMContentLoaded", function init() {
         .width(w)
         .height(h/2.5)
 
-      dc.renderAll();
+      dc.redrawAllAsync();
     }
 
     function mapLangColors(n) {

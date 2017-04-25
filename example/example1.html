@@ -110,7 +110,7 @@
   */
 
   var countGroup = crossFilter.groupAll();
-  var dataCount = dc.dataCount(".data-count")
+  var countWidget = dc.countWidget(".data-count")
     .dimension(crossFilter)
     .group(countGroup);
 
@@ -341,6 +341,7 @@
       var setScales = function(chart, type){
         chart.on(type, function(chart) {
           chart.x(d3.scale.linear().domain(d3.extent(chart.data(), chart.keyAccessor())));
+          chart.xAxis().scale(chart.x()).tickFormat(d3.format(".2s"))
           chart.y(d3.scale.linear().domain(d3.extent(chart.data(), chart.valueAccessor())));
           chart.r(d3.scale.linear().domain(d3.extent(chart.data(), chart.radiusValueAccessor())));
         });
@@ -398,10 +399,6 @@
 
           var timeChartGroup = timeChartDimension.group()
                       .reduceCount()
-                      .setBinParams({
-                         numBins: 400,
-                         binBounds: [timeChartBounds.minimum,timeChartBounds.maximum]
-                        });
 
           /*  We create the time chart as a line chart
            *  with the following parameters:
@@ -427,7 +424,11 @@
             .xAxisLabel('Departure Time')
             .yAxisLabel('# Flights')
             .dimension(timeChartDimension)
-            .group(timeChartGroup);
+            .group(timeChartGroup)
+            .binParams({
+               numBins: 400,
+               binBounds: [timeChartBounds.minimum,timeChartBounds.maximum]
+              });
 
           /* Set the x and y axis formatting with standard d3 functions */
 
@@ -436,7 +437,10 @@
             .yAxis().ticks(5);
 
           dcTimeChart
-            .xAxis().orient('top');
+            .xAxis()
+            .scale(dcTimeChart.x())
+            .tickFormat(dc.utils.customTimeFormat)
+            .orient('top');
 
           /* Calling dc.renderAllAsync() will render all of the charts we set up.  Any
            * filters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
@@ -466,7 +470,7 @@
               .width(w)
               .height(h/2.5)
 
-            dc.renderAllAsync();
+            dc.redrawAllAsync();
           }
       });
   }
