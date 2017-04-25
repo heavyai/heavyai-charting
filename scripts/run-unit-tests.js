@@ -13,13 +13,13 @@ const options = `\
 
 if (sh.env.SUITE) {
   sh.exec(
-    `NODE_PATH=./src ../../node_modules/.bin/mocha src/${sh.env.SUITE} \
+    `NODE_PATH=./src ./node_modules/.bin/mocha src/${sh.env.SUITE} \
     ${options}`
   )
 } else if (sh.env.COVER) {
   sh.exec(
     `find ./src -name '*.spec.js' | NODE_PATH=./src xargs \
-    ../../node_modules/.bin/istanbul cover -x *.spec.js ../../node_modules/mocha/bin/_mocha  -- \
+    ./node_modules/.bin/istanbul cover -x *.spec.js ./node_modules/mocha/bin/_mocha  -- \
     ${options}`
   )
   if (sh.env.OPEN) {
@@ -29,7 +29,7 @@ if (sh.env.SUITE) {
   }
 } else {
   sh.exit(sh.exec(
-    `find ./src -name '*.spec.js' | NODE_PATH=./src xargs ../../node_modules/.bin/mocha \
+    `find ./src -name '*.spec.js' | NODE_PATH=./src xargs ./node_modules/.bin/mocha \
     ${options}`
   ).code)
 }
