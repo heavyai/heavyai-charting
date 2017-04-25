@@ -24,6 +24,7 @@
     "type": "git",
     "url": "https://github.com/map-d/mapdc.js.git"
   },
+  "main": "src/index.js",
   "scripts": {
     "build": "bash scripts/build.sh",
     "build:css": "../../node_modules/.bin/node-sass --include-path scss scss/chart.scss chart.css",
