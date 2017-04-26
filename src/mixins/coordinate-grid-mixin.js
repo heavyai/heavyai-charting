@@ -6,6 +6,7 @@ import colorMixin from "./color-mixin"
 import d3 from "d3"
 import {events} from "../core/events"
 import {filters} from "../core/filters"
+import lockAxisMixin from "./lock-axis-mixin"
 import marginMixin from "./margin-mixin"
 import {utils} from "../utils/utils"
 import rangeMixin from "../mixins/range-mixin"
@@ -43,7 +44,7 @@ export default function coordinateGridMixin (_chart) {
   let _hasBeenRendered = false
      /* --------------------------------------------------------------------------*/
 
-  _chart = colorMixin(marginMixin(baseMixin(_chart)))
+  _chart = lockAxisMixin(colorMixin(marginMixin(baseMixin(_chart))))
 
   _chart.colors(d3.scale.category10())
   _chart._mandatoryAttributes().push("x")
@@ -629,6 +630,7 @@ export default function coordinateGridMixin (_chart) {
     }
 
     _chart._renderHorizontalGridLinesForAxis(g, _y, _yAxis)
+    _chart.prepareLockAxis("y")
   }
 
   _chart.renderYAxisLabel = function (axisClass, text, rotation, labelXPosition) {
@@ -1709,7 +1711,12 @@ export default function coordinateGridMixin (_chart) {
                })
                .classed("underline", d => auto && d.val === timeBin)
                .text(d => d.label)
-               .on("click", d => _chart.changeBinVal(d.val))
+               .on("click", d => {
+                 _chart.changeBinVal(d.val)
+                 if (!_chart.elasticY()) {
+                   _chart.elasticY(true)
+                 }
+               })
 
     }
   }

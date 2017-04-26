@@ -268,7 +268,7 @@ export default function bubbleChart (parent, chartGroup) {
 
     for (let i = 1; i < _popupHeader.length; i++) {
       if (_popupHeader[i].alias) {
-        str = str + ("<td>" + utils.formatValue(d[_popupHeader[i].alias]) + "</td>")
+        str += "<td>" + utils.formatValue(d[_popupHeader[i].alias]) + "</td>"
       }
     }
     return str
@@ -414,6 +414,9 @@ export default function bubbleChart (parent, chartGroup) {
             .attr("opacity", (d) => (_chart.bubbleR(d) > 0) ? 1 : 0)
 
     _chart._doRenderLabel(bubbleGEnter)
+
+    _chart.prepareLockAxis("x")
+
   }
 
   function updateNodes (bubbleG) {
