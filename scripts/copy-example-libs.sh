@@ -4,13 +4,12 @@ cp ./node_modules/d3/d3.min.js example/js
 cp ./node_modules/mapbox-gl-draw/dist/mapbox-gl-draw.js example/js
 cp ./node_modules/mapbox-gl-draw/dist/mapbox-gl-draw.css example/css
 cp mapdc.css example/css/
-cp chart.css example/css/
 cp dist/mapdc.js example/js/
 cp dist/chart.css example/css/
 cp ./node_modules/@mapd/crossfilter/dist/mapd-crossfilter.js example/js/
-cp ./node_modules/@mapd/mapd-con/thrift/browser/thrift.js example/js/
-cp ./node_modules/@mapd/mapd-con/thrift/browser/mapd.thrift.js example/js/
-cp ./node_modules/@mapd/mapd-con/thrift/browser/mapd_types.js example/js/
-cp ./node_modules/@mapd/mapd-con/dist/mapd-connector.js example/js/MapdCon.js
+cp ./node_modules/@mapd/connector/thrift/browser/thrift.js example/js/
+cp ./node_modules/@mapd/connector/thrift/browser/mapd.thrift.js example/js/
+cp ./node_modules/@mapd/connector/thrift/browser/mapd_types.js example/js/
+cp ./node_modules/@mapd/connector/dist/mapd-connector.js example/js/MapdCon.js
 cp ./node_modules/mapbox-gl-js/dist/mapbox-gl.js example/js/
 cp ./node_modules/mapbox-gl-js/dist/mapboxgl-overrides.js example/js/

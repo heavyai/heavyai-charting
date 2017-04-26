@@ -28,7 +28,7 @@
   "scripts": {
     "build": "bash scripts/build.sh",
     "build:css": "./node_modules/.bin/node-sass --include-path scss scss/chart.scss chart.css",
-    "build:example": "npm run build && npm run webpack && bash scripts/copy-example-libs.sh",
+    "build:example": "npm run build && bash scripts/copy-example-libs.sh",
     "clean": "bash scripts/clean.sh",
     "docs": "./node_modules/.bin/esdoc -c .esdoc.json && open docs/index.html",
     "lint": "./node_modules/.bin/eslint",
@@ -41,8 +41,8 @@
     "webpack": "node ./node_modules/webpack/bin/webpack.js"
   },
   "dependencies": {
+    "@mapd/connector": "ssh://git@github.com/mapd/mapd-connector-os-testing.git",
     "@mapd/crossfilter": "ssh://git@github.com/mapd/mapd-crossfilter-os-testing.git",
-    "@mapd/mapd-con": "ssh://git@github.com/mapd/mapd-connector-os-testing.git",
     "d3": "^3.5.17",
     "deep-equal": "1.0.1",
     "earcut": "^2.1.1",

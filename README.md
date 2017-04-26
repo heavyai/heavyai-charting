@@ -5,17 +5,12 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 
 ## Running the Examples
 
-##### Step 1 Build Dependencies
-```bash
-# ./mapd-crossfilter
-npm run build
+##### Step 1 Install Dependencies
 
-# ./mapd-con
-npm run build
-
-# ./mapdc
-npm run build
 ```
+yarn install
+```
+
 ##### Step 2 Run Start Script
 
 ```bash
