@@ -1,7 +1,7 @@
 import * as LatLonUtils from "../utils/utils-latlon"
 import LassoButtonGroupController, {getLatLonCircleClass} from "./ui/lasso-tool-ui"
 import earcut from "earcut"
-import * as MapdDraw from "mapd-draw/dist/mapd-draw"
+import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 import {redrawAllAsync} from "../core/core-async"
 
 /* istanbul ignore next */

@@ -1,6 +1,16 @@
 language: node_js
 node_js:
 - '5'
+sudo: required
+before_install:
+  - echo -e "machine github.com\n  login $CI_USER_TOKEN" >> ~/.netrc
+  - npm install -g node-gyp
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-5
 notifications:
   email: false
   slack:

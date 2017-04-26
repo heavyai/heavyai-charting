@@ -1,6 +1,6 @@
 "use strict"
 
-import * as MapdDraw from "mapd-draw/dist/mapd-draw"
+import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 
 /**
  * Calculates the distance in meters between two lon/lat coordinates
