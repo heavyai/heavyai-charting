@@ -1,10 +1,7 @@
 language: node_js
 node_js:
-  - '0.12'
-sudo: false
-script:
-  - 'if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then grunt ci; else grunt ci-pull; fi'
-env:
-  global:
-  - secure: Kt+5IJDJRVwr28xRnmR5YDsJceXDcDR21/JUBfk6DYFixPbIq7LCPnZUmiSZQs8akU95ucXwB5hsirUAdEhXdYKilec6go70lticVlZBLy8IdJ+Di1uPwMOeMHvalC2P0woIRJSMzP8u5E+e+5ASggTjsXID7/p1rE0jXtoOueQ=
-  - secure: TED5eLMxEsyIGzKP8xxhyRDbKlIX9POzj1qgan40a8rkwIVzkdglkviLAXJJeP0ilc1GeGz1ctXyA6NAZt7RHB79mdQbH9iV1AsR29ItH4jdBs7eWRybDRKYRlmOntH0n7zlJDB4qQMxvNdI8BKYrPQymgZ3jtRJ/INOvLerg1g=
+- '5'
+notifications:
+  email: false
+  slack:
+    secure: V4wAm8r5FFcnHOEf8dufSxJy5IYI0mzakAVAMyq1tbUbjfPabA/xj+fITnYt4UyzxWGALskIl8mGjwtU2fnfiRRpMY6QVbbCn+B5UkBtOAgbYl2ut6mra5kMx/+/4PGChwrSfTSsHkBlTy5Cg3VWtOqTGRAW3SWPFbkrbR6hpYvH72Vld5SIC9soDAsBmkKStAPtjK82zQ9y7n8cnCkAfZ3SqgJ8cLqFGWrFtujSw5Xq77FVlkQEG1D5lDuj32yFbfEwB9/djv9fUZGNPzWnRYrPlDDSG9iQzNT46lPY8GPRPzhrPEAwylPNyh6Bdl+8MZ1ri9qevk4Rfj5Zoh7lrK8H4cED3ifZaJMeEQ0SpaDfCCB8KTRHXIpP8SsCEyVE6WLo57W5nrs1lzgHxBeCLVmk41S1Nc2R0gA9c/2Lp5wQj0Zt3WHIUTmUqvUKkNU60QYyXovEYG/9FQMSiMiN1OxmS/8HpR6yzFqwZAx+mILG5MLOshZj5ay0uzmgRS3lIckKMNslod1P1PE4R6KW42tQaVJ4ib+VStxJYjzXt6iFkGy7qGrqEIzuEIT9Zxb+J2G2UXug4huUAYmV1WBbBna6VKNQDP9jiLQe7QPKbOaozdVy5WLOKmC3a10NlpGsBlC2U660ljmBLA6i6oI/53D/7xqEkP3rDQXXVGuujQI=
