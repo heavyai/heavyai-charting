@@ -2,7 +2,7 @@ import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
 import d3 from "d3"
 import {events} from "../core/events"
 import {filters} from "../core/filters"
-import {constants, transition, override} from "../core/core"
+import {constants, override, transition} from "../core/core"
 /**
  * A scatter plot chart
  *
@@ -27,64 +27,63 @@ import {constants, transition, override} from "../core/core"
  * @return {dc.scatterPlot}
  */
 export default function scatterPlot (parent, chartGroup) {
-    var _chart = coordinateGridMixin({});
-    var _symbol = d3.svg.symbol();
+  const _chart = coordinateGridMixin({})
+  const _symbol = d3.svg.symbol()
 
-    var _existenceAccessor = function (d) { return d.value; };
+  let _existenceAccessor = function (d) { return d.value }
 
-    var originalKeyAccessor = _chart.keyAccessor();
-    _chart.keyAccessor(function (d) { return originalKeyAccessor(d)[0]; });
-    _chart.valueAccessor(function (d) { return originalKeyAccessor(d)[1]; });
-    _chart.colorAccessor(function () { return _chart._groupName; });
+  const originalKeyAccessor = _chart.keyAccessor()
+  _chart.keyAccessor((d) => originalKeyAccessor(d)[0])
+  _chart.valueAccessor((d) => originalKeyAccessor(d)[1])
+  _chart.colorAccessor(() => _chart._groupName)
 
-    var _locator = function (d) {
-        return 'translate(' + _chart.x()(_chart.keyAccessor()(d)) + ',' +
-                              _chart.y()(_chart.valueAccessor()(d)) + ')';
-    };
+  const _locator = function (d) {
+    return "translate(" + _chart.x()(_chart.keyAccessor()(d)) + "," + _chart.y()(_chart.valueAccessor()(d)) + ")"
+  }
 
-    var _symbolSize = 3;
-    var _highlightedSize = 5;
-    var _hiddenSize = 0;
+  let _symbolSize = 3
+  let _highlightedSize = 5
+  let _hiddenSize = 0
 
-    _symbol.size(function (d) {
-        if (!_existenceAccessor(d)) {
-            return _hiddenSize;
-        } else if (this.filtered) {
-            return Math.pow(_highlightedSize, 2);
-        } else {
-            return Math.pow(_symbolSize, 2);
-        }
-    });
+  _symbol.size(function (d) {
+    if (!_existenceAccessor(d)) {
+      return _hiddenSize
+    } else if (this.filtered) {
+      return Math.pow(_highlightedSize, 2)
+    } else {
+      return Math.pow(_symbolSize, 2)
+    }
+  })
 
-    override(_chart, '_filter', function (filter) {
-        if (!arguments.length) {
-            return _chart.__filter();
-        }
+  override(_chart, "_filter", function (filter) {
+    if (!arguments.length) {
+      return _chart.__filter()
+    }
 
-        return _chart.__filter(filters.RangedTwoDimensionalFilter(filter));
-    });
+    return _chart.__filter(filters.RangedTwoDimensionalFilter(filter))
+  })
 
-    _chart.plotData = function () {
-        var symbols = _chart.chartBodyG().selectAll('path.symbol')
-            .data(_chart.data());
+  _chart.plotData = function () {
+    const symbols = _chart.chartBodyG().selectAll("path.symbol")
+            .data(_chart.data())
 
-        symbols
+    symbols
             .enter()
-        .append('path')
-            .attr('class', 'symbol')
-            .attr('opacity', 0)
-            .attr('fill', _chart.getColor)
-            .attr('transform', _locator);
+        .append("path")
+            .attr("class", "symbol")
+            .attr("opacity", 0)
+            .attr("fill", _chart.getColor)
+            .attr("transform", _locator)
 
-        transition(symbols, _chart.transitionDuration())
-            .attr('opacity', function (d) { return _existenceAccessor(d) ? 1 : 0; })
-            .attr('fill', _chart.getColor)
-            .attr('transform', _locator)
-            .attr('d', _symbol);
+    transition(symbols, _chart.transitionDuration())
+            .attr("opacity", (d) => _existenceAccessor(d) ? 1 : 0)
+            .attr("fill", _chart.getColor)
+            .attr("transform", _locator)
+            .attr("d", _symbol)
 
-        transition(symbols.exit(), _chart.transitionDuration())
-            .attr('opacity', 0).remove();
-    };
+    transition(symbols.exit(), _chart.transitionDuration())
+            .attr("opacity", 0).remove()
+  }
 
     /**
      * Get or set the existence accessor.  If a point exists, it is drawn with
@@ -104,13 +103,13 @@ export default function scatterPlot (parent, chartGroup) {
      * @return {Function}
      * @return {dc.scatterPlot}
      */
-    _chart.existenceAccessor = function (accessor) {
-        if (!arguments.length) {
-            return _existenceAccessor;
-        }
-        _existenceAccessor = accessor;
-        return this;
-    };
+  _chart.existenceAccessor = function (accessor) {
+    if (!arguments.length) {
+      return _existenceAccessor
+    }
+    _existenceAccessor = accessor
+    return this
+  }
 
     /**
      * Get or set the symbol type used for each point. By default the symbol is a circle.
@@ -128,13 +127,13 @@ export default function scatterPlot (parent, chartGroup) {
      * @return {String|Function}
      * @return {dc.scatterPlot}
      */
-    _chart.symbol = function (type) {
-        if (!arguments.length) {
-            return _symbol.type();
-        }
-        _symbol.type(type);
-        return _chart;
-    };
+  _chart.symbol = function (type) {
+    if (!arguments.length) {
+      return _symbol.type()
+    }
+    _symbol.type(type)
+    return _chart
+  }
 
     /**
      * Set or get radius for symbols.
@@ -146,13 +145,13 @@ export default function scatterPlot (parent, chartGroup) {
      * @return {Number}
      * @return {dc.scatterPlot}
      */
-    _chart.symbolSize = function (symbolSize) {
-        if (!arguments.length) {
-            return _symbolSize;
-        }
-        _symbolSize = symbolSize;
-        return _chart;
-    };
+  _chart.symbolSize = function (symbolSize) {
+    if (!arguments.length) {
+      return _symbolSize
+    }
+    _symbolSize = symbolSize
+    return _chart
+  }
 
     /**
      * Set or get radius for highlighted symbols.
@@ -164,13 +163,13 @@ export default function scatterPlot (parent, chartGroup) {
      * @return {Number}
      * @return {dc.scatterPlot}
      */
-    _chart.highlightedSize = function (highlightedSize) {
-        if (!arguments.length) {
-            return _highlightedSize;
-        }
-        _highlightedSize = highlightedSize;
-        return _chart;
-    };
+  _chart.highlightedSize = function (highlightedSize) {
+    if (!arguments.length) {
+      return _highlightedSize
+    }
+    _highlightedSize = highlightedSize
+    return _chart
+  }
 
     /**
      * Set or get radius for symbols when the group is empty.
@@ -182,102 +181,98 @@ export default function scatterPlot (parent, chartGroup) {
      * @return {Number}
      * @return {dc.scatterPlot}
      */
-    _chart.hiddenSize = function (hiddenSize) {
-        if (!arguments.length) {
-            return _hiddenSize;
-        }
-        _hiddenSize = hiddenSize;
-        return _chart;
-    };
-
-    _chart.legendables = function () {
-        return [{chart: _chart, name: _chart._groupName, color: _chart.getColor()}];
-    };
-
-    _chart.legendHighlight = function (d) {
-        resizeSymbolsWhere(function (symbol) {
-            return symbol.attr('fill') === d.color;
-        }, _highlightedSize);
-        _chart.selectAll('.chart-body path.symbol').filter(function () {
-            return d3.select(this).attr('fill') !== d.color;
-        }).classed('fadeout', true);
-    };
-
-    _chart.legendReset = function (d) {
-        resizeSymbolsWhere(function (symbol) {
-            return symbol.attr('fill') === d.color;
-        }, _symbolSize);
-        _chart.selectAll('.chart-body path.symbol').filter(function () {
-            return d3.select(this).attr('fill') !== d.color;
-        }).classed('fadeout', false);
-    };
-
-    function resizeSymbolsWhere (condition, size) {
-        var symbols = _chart.selectAll('.chart-body path.symbol').filter(function () {
-            return condition(d3.select(this));
-        });
-        var oldSize = _symbol.size();
-        _symbol.size(Math.pow(size, 2));
-        transition(symbols, _chart.transitionDuration()).attr('d', _symbol);
-        _symbol.size(oldSize);
+  _chart.hiddenSize = function (hiddenSize) {
+    if (!arguments.length) {
+      return _hiddenSize
     }
+    _hiddenSize = hiddenSize
+    return _chart
+  }
 
-    _chart.setHandlePaths = function () {
+  _chart.legendables = function () {
+    return [{chart: _chart, name: _chart._groupName, color: _chart.getColor()}]
+  }
+
+  _chart.legendHighlight = function (d) {
+    resizeSymbolsWhere((symbol) => symbol.attr("fill") === d.color, _highlightedSize)
+    _chart.selectAll(".chart-body path.symbol").filter(function () {
+      return d3.select(this).attr("fill") !== d.color
+    }).classed("fadeout", true)
+  }
+
+  _chart.legendReset = function (d) {
+    resizeSymbolsWhere((symbol) => symbol.attr("fill") === d.color, _symbolSize)
+    _chart.selectAll(".chart-body path.symbol").filter(function () {
+      return d3.select(this).attr("fill") !== d.color
+    }).classed("fadeout", false)
+  }
+
+  function resizeSymbolsWhere (condition, size) {
+    const symbols = _chart.selectAll(".chart-body path.symbol").filter(function () {
+      return condition(d3.select(this))
+    })
+    const oldSize = _symbol.size()
+    _symbol.size(Math.pow(size, 2))
+    transition(symbols, _chart.transitionDuration()).attr("d", _symbol)
+    _symbol.size(oldSize)
+  }
+
+  _chart.setHandlePaths = function () {
         // no handle paths for poly-brushes
-    };
+  }
 
-    _chart.extendBrush = function () {
-        var extent = _chart.brush().extent();
-        if (_chart.round()) {
-            extent[0] = extent[0].map(_chart.round());
-            extent[1] = extent[1].map(_chart.round());
+  _chart.extendBrush = function () {
+    const extent = _chart.brush().extent()
+    if (_chart.round()) {
+      extent[0] = extent[0].map(_chart.round())
+      extent[1] = extent[1].map(_chart.round())
 
-            _chart.g().select('.brush')
-                .call(_chart.brush().extent(extent));
-        }
-        return extent;
-    };
-
-    _chart.brushIsEmpty = function (extent) {
-        return _chart.brush().empty() || !extent || extent[0][0] >= extent[1][0] || extent[0][1] >= extent[1][1];
-    };
-
-    function resizeFiltered (filter) {
-        var symbols = _chart.selectAll('.chart-body path.symbol').each(function (d) {
-            this.filtered = filter && filter.isFiltered(d.key);
-        });
-
-        transition(symbols, _chart.transitionDuration()).attr('d', _symbol);
+      _chart.g().select(".brush")
+                .call(_chart.brush().extent(extent))
     }
+    return extent
+  }
 
-    _chart._brushing = function () {
-        var extent = _chart.extendBrush();
+  _chart.brushIsEmpty = function (extent) {
+    return _chart.brush().empty() || !extent || extent[0][0] >= extent[1][0] || extent[0][1] >= extent[1][1]
+  }
 
-        _chart.redrawBrush(_chart.g());
+  function resizeFiltered (filter) {
+    const symbols = _chart.selectAll(".chart-body path.symbol").each(function (d) {
+      this.filtered = filter && filter.isFiltered(d.key)
+    })
 
-        if (_chart.brushIsEmpty(extent)) {
-            events.trigger(function () {
-                _chart.filterAll();
-                _chart.redrawGroup();
-            });
+    transition(symbols, _chart.transitionDuration()).attr("d", _symbol)
+  }
 
-            resizeFiltered(false);
+  _chart._brushing = function () {
+    const extent = _chart.extendBrush()
 
-        } else {
-            var ranged2DFilter = filters.RangedTwoDimensionalFilter(extent);
-            events.trigger(function () {
-                _chart.filterAll();
-                _chart.filter(ranged2DFilter);
-                _chart.redrawGroup();
-            }, constants.EVENT_DELAY);
+    _chart.redrawBrush(_chart.g())
 
-            resizeFiltered(ranged2DFilter);
-        }
-    };
+    if (_chart.brushIsEmpty(extent)) {
+      events.trigger(() => {
+        _chart.filterAll()
+        _chart.redrawGroup()
+      })
 
-    _chart.setBrushY = function (gBrush) {
-        gBrush.call(_chart.brush().y(_chart.y()));
-    };
+      resizeFiltered(false)
 
-    return _chart.anchor(parent, chartGroup);
-};
+    } else {
+      const ranged2DFilter = filters.RangedTwoDimensionalFilter(extent)
+      events.trigger(() => {
+        _chart.filterAll()
+        _chart.filter(ranged2DFilter)
+        _chart.redrawGroup()
+      }, constants.EVENT_DELAY)
+
+      resizeFiltered(ranged2DFilter)
+    }
+  }
+
+  _chart.setBrushY = function (gBrush) {
+    gBrush.call(_chart.brush().y(_chart.y()))
+  }
+
+  return _chart.anchor(parent, chartGroup)
+}

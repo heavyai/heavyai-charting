@@ -12,7 +12,7 @@ export default function legendMixin (legend) {
   legend.render = function () {
 
     // Does not re-render if a custom cursor is on the screen
-    if (document.getElementById('cursor') !== null) {
+    if (document.getElementById("cursor") !== null) {
       return
     }
 

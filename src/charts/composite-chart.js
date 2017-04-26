@@ -23,200 +23,200 @@ import {utils} from "../utils/utils"
  */
 export default function compositeChart (parent, chartGroup) {
 
-    var SUB_CHART_CLASS = 'sub';
-    var DEFAULT_RIGHT_Y_AXIS_LABEL_PADDING = 12;
+  const SUB_CHART_CLASS = "sub"
+  const DEFAULT_RIGHT_Y_AXIS_LABEL_PADDING = 12
 
-    var _chart = coordinateGridMixin({});
-    var _children = [];
+  const _chart = coordinateGridMixin({})
+  let _children = []
 
-    var _childOptions = {};
+  let _childOptions = {}
 
-    var _shareColors = false,
-        _shareTitle = true,
-        _alignYAxes = false;
+  let _shareColors = false,
+    _shareTitle = true,
+    _alignYAxes = false
 
-    var _rightYAxis = d3.svg.axis(),
-        _rightYAxisLabel = 0,
-        _rightYAxisLabelPadding = DEFAULT_RIGHT_Y_AXIS_LABEL_PADDING,
-        _rightY,
-        _rightAxisGridLines = false;
+  let _rightYAxis = d3.svg.axis(),
+    _rightYAxisLabel = 0,
+    _rightYAxisLabelPadding = DEFAULT_RIGHT_Y_AXIS_LABEL_PADDING,
+    _rightY,
+    _rightAxisGridLines = false
 
-    _chart._mandatoryAttributes([]);
-    _chart.transitionDuration(500);
+  _chart._mandatoryAttributes([])
+  _chart.transitionDuration(500)
 
-    override(_chart, '_generateG', function () {
-        var g = this.__generateG();
+  override(_chart, "_generateG", function () {
+    const g = this.__generateG()
 
-        for (var i = 0; i < _children.length; ++i) {
-            var child = _children[i];
+    for (let i = 0; i < _children.length; ++i) {
+      const child = _children[i]
 
-            generateChildG(child, i);
+      generateChildG(child, i)
 
-            if (!child.dimension()) {
-                child.dimension(_chart.dimension());
-            }
-            if (!child.group()) {
-                child.group(_chart.group());
-            }
+      if (!child.dimension()) {
+        child.dimension(_chart.dimension())
+      }
+      if (!child.group()) {
+        child.group(_chart.group())
+      }
 
-            child.chartGroup(_chart.chartGroup());
-            child.svg(_chart.svg());
-            child.xUnits(_chart.xUnits());
-            child.transitionDuration(_chart.transitionDuration());
-            child.brushOn(_chart.brushOn());
-            child.renderTitle(_chart.renderTitle());
-            child.elasticX(_chart.elasticX());
-        }
+      child.chartGroup(_chart.chartGroup())
+      child.svg(_chart.svg())
+      child.xUnits(_chart.xUnits())
+      child.transitionDuration(_chart.transitionDuration())
+      child.brushOn(_chart.brushOn())
+      child.renderTitle(_chart.renderTitle())
+      child.elasticX(_chart.elasticX())
+    }
 
-        return g;
-    });
+    return g
+  })
 
-    _chart._brushing = function () {
-        var extent = _chart.extendBrush();
-        var brushIsEmpty = _chart.brushIsEmpty(extent);
+  _chart._brushing = function () {
+    const extent = _chart.extendBrush()
+    const brushIsEmpty = _chart.brushIsEmpty(extent)
 
-        for (var i = 0; i < _children.length; ++i) {
-            _children[i].filterAll();
-            if (!brushIsEmpty) {
-                _children[i].filter(extent);
-            }
-        }
-    };
+    for (let i = 0; i < _children.length; ++i) {
+      _children[i].filterAll()
+      if (!brushIsEmpty) {
+        _children[i].filter(extent)
+      }
+    }
+  }
 
-    _chart._prepareYAxis = function () {
-        var left = (leftYAxisChildren().length !== 0);
-        var right = (rightYAxisChildren().length !== 0);
-        var ranges = calculateYAxisRanges(left, right);
+  _chart._prepareYAxis = function () {
+    const left = (leftYAxisChildren().length !== 0)
+    const right = (rightYAxisChildren().length !== 0)
+    const ranges = calculateYAxisRanges(left, right)
 
-        if (left) { prepareLeftYAxis(ranges); }
-        if (right) { prepareRightYAxis(ranges); }
+    if (left) { prepareLeftYAxis(ranges) }
+    if (right) { prepareRightYAxis(ranges) }
 
-        if (leftYAxisChildren().length > 0 && !_rightAxisGridLines) {
-            _chart._renderHorizontalGridLinesForAxis(_chart.g(), _chart.y(), _chart.yAxis());
-        } else if (rightYAxisChildren().length > 0) {
-            _chart._renderHorizontalGridLinesForAxis(_chart.g(), _rightY, _rightYAxis);
-        }
-    };
+    if (leftYAxisChildren().length > 0 && !_rightAxisGridLines) {
+      _chart._renderHorizontalGridLinesForAxis(_chart.g(), _chart.y(), _chart.yAxis())
+    } else if (rightYAxisChildren().length > 0) {
+      _chart._renderHorizontalGridLinesForAxis(_chart.g(), _rightY, _rightYAxis)
+    }
+  }
 
-    _chart.renderYAxis = function () {
-        if (leftYAxisChildren().length !== 0) {
-            _chart.renderYAxisAt('y', _chart.yAxis(), _chart.margins().left);
-            _chart.renderYAxisLabel('y', _chart.yAxisLabel(), -90);
-        }
+  _chart.renderYAxis = function () {
+    if (leftYAxisChildren().length !== 0) {
+      _chart.renderYAxisAt("y", _chart.yAxis(), _chart.margins().left)
+      _chart.renderYAxisLabel("y", _chart.yAxisLabel(), -90)
+    }
 
-        if (rightYAxisChildren().length !== 0) {
-            _chart.renderYAxisAt('yr', _chart.rightYAxis(), _chart.width() - _chart.margins().right);
-            _chart.renderYAxisLabel('yr', _chart.rightYAxisLabel(), 90, _chart.width() - _rightYAxisLabelPadding);
-        }
-    };
+    if (rightYAxisChildren().length !== 0) {
+      _chart.renderYAxisAt("yr", _chart.rightYAxis(), _chart.width() - _chart.margins().right)
+      _chart.renderYAxisLabel("yr", _chart.rightYAxisLabel(), 90, _chart.width() - _rightYAxisLabelPadding)
+    }
+  }
 
-    function calculateYAxisRanges (left, right) {
-        var lyAxisMin, lyAxisMax, ryAxisMin, ryAxisMax;
+  function calculateYAxisRanges (left, right) {
+    let lyAxisMin, lyAxisMax, ryAxisMin, ryAxisMax
 
-        if (left) {
-            lyAxisMin = yAxisMin();
-            lyAxisMax = yAxisMax();
-        }
+    if (left) {
+      lyAxisMin = yAxisMin()
+      lyAxisMax = yAxisMax()
+    }
 
-        if (right) {
-            ryAxisMin = rightYAxisMin();
-            ryAxisMax = rightYAxisMax();
-        }
+    if (right) {
+      ryAxisMin = rightYAxisMin()
+      ryAxisMax = rightYAxisMax()
+    }
 
-        if (_chart.alignYAxes() && left && right && (lyAxisMin < 0 || ryAxisMin < 0)) {
+    if (_chart.alignYAxes() && left && right && (lyAxisMin < 0 || ryAxisMin < 0)) {
             // both y axis are linear and at least one doesn't start at zero
-            var leftYRatio, rightYRatio;
+      let leftYRatio, rightYRatio
 
-            if (lyAxisMin < 0) {
-                leftYRatio = lyAxisMax / lyAxisMin;
-            }
+      if (lyAxisMin < 0) {
+        leftYRatio = lyAxisMax / lyAxisMin
+      }
 
-            if (ryAxisMin < 0) {
-                rightYRatio = ryAxisMax / ryAxisMin;
-            }
+      if (ryAxisMin < 0) {
+        rightYRatio = ryAxisMax / ryAxisMin
+      }
 
-            if (lyAxisMin < 0 && ryAxisMin < 0) {
-                if (leftYRatio < rightYRatio) {
-                    ryAxisMax = ryAxisMin * leftYRatio;
-                } else {
-                    lyAxisMax = lyAxisMin * rightYRatio;
-                }
-            } else if (lyAxisMin < 0) {
-                ryAxisMin = ryAxisMax / leftYRatio;
-            } else {
-                lyAxisMin = lyAxisMax / (ryAxisMax / ryAxisMin);
-            }
+      if (lyAxisMin < 0 && ryAxisMin < 0) {
+        if (leftYRatio < rightYRatio) {
+          ryAxisMax = ryAxisMin * leftYRatio
+        } else {
+          lyAxisMax = lyAxisMin * rightYRatio
         }
-        return {
-            lyAxisMin: lyAxisMin,
-            lyAxisMax: lyAxisMax,
-            ryAxisMin: ryAxisMin,
-            ryAxisMax: ryAxisMax
-        };
+      } else if (lyAxisMin < 0) {
+        ryAxisMin = ryAxisMax / leftYRatio
+      } else {
+        lyAxisMin = lyAxisMax / (ryAxisMax / ryAxisMin)
+      }
+    }
+    return {
+      lyAxisMin,
+      lyAxisMax,
+      ryAxisMin,
+      ryAxisMax
+    }
+  }
+
+  function prepareRightYAxis (ranges) {
+    if (_chart.rightY() === undefined || _chart.elasticY() || _chart.resizing()) {
+      if (_chart.rightY() === undefined) {
+        _chart.rightY(d3.scale.linear())
+      }
+      _chart.rightY().domain([ranges.ryAxisMin, ranges.ryAxisMax]).rangeRound([_chart.yAxisHeight(), 0])
     }
 
-    function prepareRightYAxis (ranges) {
-        if (_chart.rightY() === undefined || _chart.elasticY() || _chart.resizing()) {
-            if (_chart.rightY() === undefined) {
-                _chart.rightY(d3.scale.linear());
-            }
-            _chart.rightY().domain([ranges.ryAxisMin, ranges.ryAxisMax]).rangeRound([_chart.yAxisHeight(), 0]);
-        }
+    _chart.rightY().range([_chart.yAxisHeight(), 0])
+    _chart.rightYAxis(_chart.rightYAxis().scale(_chart.rightY()))
 
-        _chart.rightY().range([_chart.yAxisHeight(), 0]);
-        _chart.rightYAxis(_chart.rightYAxis().scale(_chart.rightY()));
+    _chart.rightYAxis().orient("right")
+  }
 
-        _chart.rightYAxis().orient('right');
+  function prepareLeftYAxis (ranges) {
+    if (_chart.y() === undefined || _chart.elasticY() || _chart.resizing()) {
+      if (_chart.y() === undefined) {
+        _chart.y(d3.scale.linear())
+      }
+      _chart.y().domain([ranges.lyAxisMin, ranges.lyAxisMax]).rangeRound([_chart.yAxisHeight(), 0])
     }
 
-    function prepareLeftYAxis (ranges) {
-        if (_chart.y() === undefined || _chart.elasticY() || _chart.resizing()) {
-            if (_chart.y() === undefined) {
-                _chart.y(d3.scale.linear());
-            }
-            _chart.y().domain([ranges.lyAxisMin, ranges.lyAxisMax]).rangeRound([_chart.yAxisHeight(), 0]);
-        }
+    _chart.y().range([_chart.yAxisHeight(), 0])
+    _chart.yAxis(_chart.yAxis().scale(_chart.y()))
 
-        _chart.y().range([_chart.yAxisHeight(), 0]);
-        _chart.yAxis(_chart.yAxis().scale(_chart.y()));
+    _chart.yAxis().orient("left")
+  }
 
-        _chart.yAxis().orient('left');
+  function generateChildG (child, i) {
+    child._generateG(_chart.g())
+    child.g().attr("class", SUB_CHART_CLASS + " _" + i)
+  }
+
+  _chart.plotData = function () {
+    for (let i = 0; i < _children.length; ++i) {
+      const child = _children[i]
+
+      if (!child.g()) {
+        generateChildG(child, i)
+      }
+
+      if (_shareColors) {
+        child.colors(_chart.colors())
+      }
+
+      child.x(_chart.x())
+
+      child.xAxis(_chart.xAxis())
+
+      if (child.useRightYAxis()) {
+        child.y(_chart.rightY())
+        child.yAxis(_chart.rightYAxis())
+      } else {
+        child.y(_chart.y())
+        child.yAxis(_chart.yAxis())
+      }
+
+      child.plotData()
+
+      child._activateRenderlets()
     }
-
-    function generateChildG (child, i) {
-        child._generateG(_chart.g());
-        child.g().attr('class', SUB_CHART_CLASS + ' _' + i);
-    }
-
-    _chart.plotData = function () {
-        for (var i = 0; i < _children.length; ++i) {
-            var child = _children[i];
-
-            if (!child.g()) {
-                generateChildG(child, i);
-            }
-
-            if (_shareColors) {
-                child.colors(_chart.colors());
-            }
-
-            child.x(_chart.x());
-
-            child.xAxis(_chart.xAxis());
-
-            if (child.useRightYAxis()) {
-                child.y(_chart.rightY());
-                child.yAxis(_chart.rightYAxis());
-            } else {
-                child.y(_chart.y());
-                child.yAxis(_chart.yAxis());
-            }
-
-            child.plotData();
-
-            child._activateRenderlets();
-        }
-    };
+  }
 
     /**
      * Get or set whether to draw gridlines from the right y axis.  Drawing from the left y axis is the
@@ -229,14 +229,14 @@ export default function compositeChart (parent, chartGroup) {
      * @return {Boolean}
      * @return {dc.compositeChart}
      */
-    _chart.useRightAxisGridLines = function (useRightAxisGridLines) {
-        if (!arguments) {
-            return _rightAxisGridLines;
-        }
+  _chart.useRightAxisGridLines = function (useRightAxisGridLines) {
+    if (!arguments) {
+      return _rightAxisGridLines
+    }
 
-        _rightAxisGridLines = useRightAxisGridLines;
-        return _chart;
-    };
+    _rightAxisGridLines = useRightAxisGridLines
+    return _chart
+  }
 
     /**
      * Get or set chart-specific options for all child charts. This is equivalent to calling
@@ -248,24 +248,24 @@ export default function compositeChart (parent, chartGroup) {
      * @return {Object}
      * @return {dc.compositeChart}
      */
-    _chart.childOptions = function (childOptions) {
-        if (!arguments.length) {
-            return _childOptions;
-        }
-        _childOptions = childOptions;
-        _children.forEach(function (child) {
-            child.options(_childOptions);
-        });
-        return _chart;
-    };
+  _chart.childOptions = function (childOptions) {
+    if (!arguments.length) {
+      return _childOptions
+    }
+    _childOptions = childOptions
+    _children.forEach((child) => {
+      child.options(_childOptions)
+    })
+    return _chart
+  }
 
-    _chart.fadeDeselectedArea = function () {
-        for (var i = 0; i < _children.length; ++i) {
-            var child = _children[i];
-            child.brush(_chart.brush());
-            child.fadeDeselectedArea();
-        }
-    };
+  _chart.fadeDeselectedArea = function () {
+    for (let i = 0; i < _children.length; ++i) {
+      const child = _children[i]
+      child.brush(_chart.brush())
+      child.fadeDeselectedArea()
+    }
+  }
 
     /**
      * Set or get the right y axis label.
@@ -277,16 +277,16 @@ export default function compositeChart (parent, chartGroup) {
      * @return {String}
      * @return {dc.compositeChart}
      */
-    _chart.rightYAxisLabel = function (rightYAxisLabel, padding) {
-        if (!arguments.length) {
-            return _rightYAxisLabel;
-        }
-        _rightYAxisLabel = rightYAxisLabel;
-        _chart.margins().right -= _rightYAxisLabelPadding;
-        _rightYAxisLabelPadding = (padding === undefined) ? DEFAULT_RIGHT_Y_AXIS_LABEL_PADDING : padding;
-        _chart.margins().right += _rightYAxisLabelPadding;
-        return _chart;
-    };
+  _chart.rightYAxisLabel = function (rightYAxisLabel, padding) {
+    if (!arguments.length) {
+      return _rightYAxisLabel
+    }
+    _rightYAxisLabel = rightYAxisLabel
+    _chart.margins().right -= _rightYAxisLabelPadding
+    _rightYAxisLabelPadding = (padding === undefined) ? DEFAULT_RIGHT_Y_AXIS_LABEL_PADDING : padding
+    _chart.margins().right += _rightYAxisLabelPadding
+    return _chart
+  }
 
     /**
      * Combine the given charts into one single composite coordinate grid chart.
@@ -314,21 +314,21 @@ export default function compositeChart (parent, chartGroup) {
      * @param {Array<Chart>} [subChartArray]
      * @return {dc.compositeChart}
      */
-    _chart.compose = function (subChartArray) {
-        _children = subChartArray;
-        _children.forEach(function (child) {
-            child.height(_chart.height());
-            child.width(_chart.width());
-            child.margins(_chart.margins());
+  _chart.compose = function (subChartArray) {
+    _children = subChartArray
+    _children.forEach((child) => {
+      child.height(_chart.height())
+      child.width(_chart.width())
+      child.margins(_chart.margins())
 
-            if (_shareTitle) {
-                child.title(_chart.title());
-            }
+      if (_shareTitle) {
+        child.title(_chart.title())
+      }
 
-            child.options(_childOptions);
-        });
-        return _chart;
-    };
+      child.options(_childOptions)
+    })
+    return _chart
+  }
 
     /**
      * Returns the child charts which are composed into the composite chart.
@@ -337,9 +337,9 @@ export default function compositeChart (parent, chartGroup) {
      * @instance
      * @return {Array<dc.baseMixin>}
      */
-    _chart.children = function () {
-        return _children;
-    };
+  _chart.children = function () {
+    return _children
+  }
 
     /**
      * Get or set color sharing for the chart. If set, the {@link #dc.colorMixin+colors .colors()} value from this chart
@@ -353,13 +353,13 @@ export default function compositeChart (parent, chartGroup) {
      * @return {Boolean}
      * @return {dc.compositeChart}
      */
-    _chart.shareColors = function (shareColors) {
-        if (!arguments.length) {
-            return _shareColors;
-        }
-        _shareColors = shareColors;
-        return _chart;
-    };
+  _chart.shareColors = function (shareColors) {
+    if (!arguments.length) {
+      return _shareColors
+    }
+    _shareColors = shareColors
+    return _chart
+  }
 
     /**
      * Get or set title sharing for the chart. If set, the {@link #dc.baseMixin+title .title()} value from
@@ -371,13 +371,13 @@ export default function compositeChart (parent, chartGroup) {
      * @return {Boolean}
      * @return {dc.compositeChart}
      */
-    _chart.shareTitle = function (shareTitle) {
-        if (!arguments.length) {
-            return _shareTitle;
-        }
-        _shareTitle = shareTitle;
-        return _chart;
-    };
+  _chart.shareTitle = function (shareTitle) {
+    if (!arguments.length) {
+      return _shareTitle
+    }
+    _shareTitle = shareTitle
+    return _chart
+  }
 
     /**
      * Get or set the y scale for the right axis. The right y scale is typically automatically
@@ -390,14 +390,14 @@ export default function compositeChart (parent, chartGroup) {
      * @return {d3.scale}
      * @return {dc.compositeChart}
      */
-    _chart.rightY = function (yScale) {
-        if (!arguments.length) {
-            return _rightY;
-        }
-        _rightY = yScale;
-        _chart.rescale();
-        return _chart;
-    };
+  _chart.rightY = function (yScale) {
+    if (!arguments.length) {
+      return _rightY
+    }
+    _rightY = yScale
+    _chart.rescale()
+    return _chart
+  }
 
     /**
      * Get or set alignment between left and right y axes. A line connecting '0' on both y axis
@@ -408,104 +408,88 @@ export default function compositeChart (parent, chartGroup) {
      * @param {Boolean} [alignYAxes=false]
      * @return {Chart}
      */
-    _chart.alignYAxes = function (alignYAxes) {
-        if (!arguments.length) {
-            return _alignYAxes;
-        }
-        _alignYAxes = alignYAxes;
-        _chart.rescale();
-        return _chart;
-    };
-
-    function leftYAxisChildren () {
-        return _children.filter(function (child) {
-            return !child.useRightYAxis();
-        });
+  _chart.alignYAxes = function (alignYAxes) {
+    if (!arguments.length) {
+      return _alignYAxes
     }
+    _alignYAxes = alignYAxes
+    _chart.rescale()
+    return _chart
+  }
 
-    function rightYAxisChildren () {
-        return _children.filter(function (child) {
-            return child.useRightYAxis();
-        });
+  function leftYAxisChildren () {
+    return _children.filter((child) => !child.useRightYAxis())
+  }
+
+  function rightYAxisChildren () {
+    return _children.filter((child) => child.useRightYAxis())
+  }
+
+  function getYAxisMin (charts) {
+    return charts.map((c) => c.yAxisMin())
+  }
+
+  delete _chart.yAxisMin
+  function yAxisMin () {
+    return d3.min(getYAxisMin(leftYAxisChildren()))
+  }
+
+  function rightYAxisMin () {
+    return d3.min(getYAxisMin(rightYAxisChildren()))
+  }
+
+  function getYAxisMax (charts) {
+    return charts.map((c) => c.yAxisMax())
+  }
+
+  delete _chart.yAxisMax
+  function yAxisMax () {
+    return utils.add(d3.max(getYAxisMax(leftYAxisChildren())), _chart.yAxisPadding())
+  }
+
+  function rightYAxisMax () {
+    return utils.add(d3.max(getYAxisMax(rightYAxisChildren())), _chart.yAxisPadding())
+  }
+
+  function getAllXAxisMinFromChildCharts () {
+    return _children.map((c) => c.xAxisMin())
+  }
+
+  override(_chart, "xAxisMin", () => utils.subtract(d3.min(getAllXAxisMinFromChildCharts()), _chart.xAxisPadding()))
+
+  function getAllXAxisMaxFromChildCharts () {
+    return _children.map((c) => c.xAxisMax())
+  }
+
+  override(_chart, "xAxisMax", () => utils.add(d3.max(getAllXAxisMaxFromChildCharts()), _chart.xAxisPadding()))
+
+  _chart.legendables = function () {
+    return _children.reduce((items, child) => {
+      if (_shareColors) {
+        child.colors(_chart.colors())
+      }
+      items.push.apply(items, child.legendables())
+      return items
+    }, [])
+  }
+
+  _chart.legendHighlight = function (d) {
+    for (let j = 0; j < _children.length; ++j) {
+      const child = _children[j]
+      child.legendHighlight(d)
     }
+  }
 
-    function getYAxisMin (charts) {
-        return charts.map(function (c) {
-            return c.yAxisMin();
-        });
+  _chart.legendReset = function (d) {
+    for (let j = 0; j < _children.length; ++j) {
+      const child = _children[j]
+      child.legendReset(d)
     }
+  }
 
-    delete _chart.yAxisMin;
-    function yAxisMin () {
-        return d3.min(getYAxisMin(leftYAxisChildren()));
-    }
-
-    function rightYAxisMin () {
-        return d3.min(getYAxisMin(rightYAxisChildren()));
-    }
-
-    function getYAxisMax (charts) {
-        return charts.map(function (c) {
-            return c.yAxisMax();
-        });
-    }
-
-    delete _chart.yAxisMax;
-    function yAxisMax () {
-        return utils.add(d3.max(getYAxisMax(leftYAxisChildren())), _chart.yAxisPadding());
-    }
-
-    function rightYAxisMax () {
-        return utils.add(d3.max(getYAxisMax(rightYAxisChildren())), _chart.yAxisPadding());
-    }
-
-    function getAllXAxisMinFromChildCharts () {
-        return _children.map(function (c) {
-            return c.xAxisMin();
-        });
-    }
-
-    override(_chart, 'xAxisMin', function () {
-        return utils.subtract(d3.min(getAllXAxisMinFromChildCharts()), _chart.xAxisPadding());
-    });
-
-    function getAllXAxisMaxFromChildCharts () {
-        return _children.map(function (c) {
-            return c.xAxisMax();
-        });
-    }
-
-    override(_chart, 'xAxisMax', function () {
-        return utils.add(d3.max(getAllXAxisMaxFromChildCharts()), _chart.xAxisPadding());
-    });
-
-    _chart.legendables = function () {
-        return _children.reduce(function (items, child) {
-            if (_shareColors) {
-                child.colors(_chart.colors());
-            }
-            items.push.apply(items, child.legendables());
-            return items;
-        }, []);
-    };
-
-    _chart.legendHighlight = function (d) {
-        for (var j = 0; j < _children.length; ++j) {
-            var child = _children[j];
-            child.legendHighlight(d);
-        }
-    };
-
-    _chart.legendReset = function (d) {
-        for (var j = 0; j < _children.length; ++j) {
-            var child = _children[j];
-            child.legendReset(d);
-        }
-    };
-
-    _chart.legendToggle = function () {
-        console.log('composite should not be getting legendToggle itself');
-    };
+  _chart.legendToggle = function () {
+    console.log("composite should not be getting legendToggle itself")
+  }
 
     /**
      * Set or get the right y axis used by the composite chart. This function is most useful when y
@@ -526,13 +510,13 @@ export default function compositeChart (parent, chartGroup) {
      * @return {d3.svg.axis}
      * @return {dc.compositeChart}
      */
-    _chart.rightYAxis = function (rightYAxis) {
-        if (!arguments.length) {
-            return _rightYAxis;
-        }
-        _rightYAxis = rightYAxis;
-        return _chart;
-    };
+  _chart.rightYAxis = function (rightYAxis) {
+    if (!arguments.length) {
+      return _rightYAxis
+    }
+    _rightYAxis = rightYAxis
+    return _chart
+  }
 
-    return _chart.anchor(parent, chartGroup);
-};
+  return _chart.anchor(parent, chartGroup)
+}

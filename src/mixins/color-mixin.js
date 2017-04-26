@@ -10,10 +10,10 @@ import d3 from "d3"
  * @return {dc.colorMixin}
  */
 export default function colorMixin (_chart) {
-    var _colors = d3.scale.category20c();
-    var _defaultAccessor = true;
+  let _colors = d3.scale.category20c()
+  let _defaultAccessor = true
 
-    var _colorAccessor = function (d) { return _chart.keyAccessor()(d); };
+  let _colorAccessor = function (d) { return _chart.keyAccessor()(d) }
 
     /**
      * Retrieve current color scale or set a new color scale. This methods accepts any function that
@@ -35,17 +35,17 @@ export default function colorMixin (_chart) {
      * @return {d3.scale}
      * @return {dc.colorMixin}
      */
-    _chart.colors = function (colorScale) {
-        if (!arguments.length) {
-            return _colors;
-        }
-        if (colorScale instanceof Array) {
-            _colors = d3.scale.quantize().range(colorScale); // deprecated legacy support, note: this fails for ordinal domains
-        } else {
-            _colors = d3.functor(colorScale);
-        }
-        return _chart;
-    };
+  _chart.colors = function (colorScale) {
+    if (!arguments.length) {
+      return _colors
+    }
+    if (colorScale instanceof Array) {
+      _colors = d3.scale.quantize().range(colorScale) // deprecated legacy support, note: this fails for ordinal domains
+    } else {
+      _colors = d3.functor(colorScale)
+    }
+    return _chart
+  }
 
     /**
      * Convenience method to set the color scale to
@@ -57,9 +57,9 @@ export default function colorMixin (_chart) {
      * @param {Array<String>} r
      * @return {dc.colorMixin}
      */
-    _chart.ordinalColors = function (r) {
-        return _chart.colors(d3.scale.ordinal().range(r));
-    };
+  _chart.ordinalColors = function (r) {
+    return _chart.colors(d3.scale.ordinal().range(r))
+  }
 
     /**
      * Convenience method to set the color scale to an Hcl interpolated linear scale with range `r`.
@@ -69,11 +69,11 @@ export default function colorMixin (_chart) {
      * @param {Array<Number>} r
      * @return {dc.colorMixin}
      */
-    _chart.linearColors = function (r) {
-        return _chart.colors(d3.scale.linear()
+  _chart.linearColors = function (r) {
+    return _chart.colors(d3.scale.linear()
                              .range(r)
-                             .interpolate(d3.interpolateHcl));
-    };
+                             .interpolate(d3.interpolateHcl))
+  }
 
     /**
      * Set or the get color accessor function. This function will be used to map a data point in a
@@ -91,19 +91,19 @@ export default function colorMixin (_chart) {
      * @return {Function}
      * @return {dc.colorMixin}
      */
-    _chart.colorAccessor = function (colorAccessor) {
-        if (!arguments.length) {
-            return _colorAccessor;
-        }
-        _colorAccessor = colorAccessor;
-        _defaultAccessor = false;
-        return _chart;
-    };
+  _chart.colorAccessor = function (colorAccessor) {
+    if (!arguments.length) {
+      return _colorAccessor
+    }
+    _colorAccessor = colorAccessor
+    _defaultAccessor = false
+    return _chart
+  }
 
     // what is this?
-    _chart.defaultColorAccessor = function () {
-        return _defaultAccessor;
-    };
+  _chart.defaultColorAccessor = function () {
+    return _defaultAccessor
+  }
 
     /**
      * Set or get the current domain for the color mapping function. The domain must be supplied as an
@@ -118,13 +118,13 @@ export default function colorMixin (_chart) {
      * @return {Array<String>}
      * @return {dc.colorMixin}
      */
-    _chart.colorDomain = function (domain) {
-        if (!arguments.length) {
-            return _colors.domain();
-        }
-        _colors.domain(domain);
-        return _chart;
-    };
+  _chart.colorDomain = function (domain) {
+    if (!arguments.length) {
+      return _colors.domain()
+    }
+    _colors.domain(domain)
+    return _chart
+  }
 
     /**
      * Set the domain by determining the min and max values as retrieved by
@@ -134,12 +134,12 @@ export default function colorMixin (_chart) {
      * @instance
      * @return {dc.colorMixin}
      */
-    _chart.calculateColorDomain = function () {
-        var newDomain = [d3.min(_chart.data(), _chart.colorAccessor()),
-                         d3.max(_chart.data(), _chart.colorAccessor())];
-        _colors.domain(newDomain);
-        return _chart;
-    };
+  _chart.calculateColorDomain = function () {
+    const newDomain = [d3.min(_chart.data(), _chart.colorAccessor()),
+      d3.max(_chart.data(), _chart.colorAccessor())]
+    _colors.domain(newDomain)
+    return _chart
+  }
 
     /**
      * Get the color for the datum d and counter i. This is used internally by charts to retrieve a color.
@@ -150,17 +150,17 @@ export default function colorMixin (_chart) {
      * @param {Number} [i]
      * @return {String}
      */
-    _chart.getColor = function (data, index) {
-        if (typeof data === "undefined") {
-          const GREY = "#e2e2e2"
-          return GREY
-        }
+  _chart.getColor = function (data, index) {
+    if (typeof data === "undefined") {
+      const GREY = "#e2e2e2"
+      return GREY
+    }
 
-        const range = _chart.colors().range()
-        const middleColor = range[Math.floor(range.length / 2)]
+    const range = _chart.colors().range()
+    const middleColor = range[Math.floor(range.length / 2)]
 
-        return _colors(_colorAccessor.call(this, data, index)) || middleColor
-    };
+    return _colors(_colorAccessor.call(this, data, index)) || middleColor
+  }
 
     /**
      * Get the color for the datum d and counter i. This is used internally by charts to retrieve a color.
@@ -170,13 +170,13 @@ export default function colorMixin (_chart) {
      * @param {*} [colorCalculator]
      * @return {*}
      */
-    _chart.colorCalculator = function (colorCalculator) {
-        if (!arguments.length) {
-            return _chart.getColor;
-        }
-        _chart.getColor = colorCalculator;
-        return _chart;
-    };
+  _chart.colorCalculator = function (colorCalculator) {
+    if (!arguments.length) {
+      return _chart.getColor
+    }
+    _chart.getColor = colorCalculator
+    return _chart
+  }
 
-    return _chart;
-};
+  return _chart
+}

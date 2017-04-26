@@ -31,7 +31,7 @@
     "build:example": "npm run build && bash scripts/copy-example-libs.sh",
     "clean": "bash scripts/clean.sh",
     "docs": "./node_modules/.bin/esdoc -c .esdoc.json && open docs/index.html",
-    "lint": "./node_modules/.bin/eslint",
+    "lint": "./node_modules/.bin/eslint $(find src -name \"*.js\" ! -name '*.spec.js')",
     "shjs": "node --harmony_destructuring ./node_modules/.bin/shjs",
     "start": "npm run build:example && node ./node_modules/http-server/bin/http-server -p 8081 -o -c-1",
     "test": "npm run shjs ./scripts/run-unit-tests.js",

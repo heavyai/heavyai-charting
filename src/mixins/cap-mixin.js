@@ -16,114 +16,112 @@ import {override} from "../core/core"
  */
 export default function capMixin (_chart) {
 
-    var _cap = Infinity;
-    var _ordering = 'desc';
+  let _cap = Infinity
+  let _ordering = "desc"
 
-    var _othersLabel = 'Others';
+  let _othersLabel = "Others"
 
-    var _othersGrouper = function (topRows) {
-        var topRowsSum = d3.sum(topRows, _chart.valueAccessor()),
-            allRows = _chart.group().all(),
-            allRowsSum = d3.sum(allRows, _chart.valueAccessor()),
-            topKeys = topRows.map(_chart.keyAccessor()),
-            allKeys = allRows.map(_chart.keyAccessor()),
-            topSet = d3.set(topKeys),
-            others = allKeys.filter(function (d) {return !topSet.has(d);});
-        if (allRowsSum > topRowsSum) {
-            return topRows.concat([{'others': others, 'key': _othersLabel, 'value': allRowsSum - topRowsSum}]);
-        }
-        return topRows;
-    };
+  let _othersGrouper = function (topRows) {
+    let topRowsSum = d3.sum(topRows, _chart.valueAccessor()),
+      allRows = _chart.group().all(),
+      allRowsSum = d3.sum(allRows, _chart.valueAccessor()),
+      topKeys = topRows.map(_chart.keyAccessor()),
+      allKeys = allRows.map(_chart.keyAccessor()),
+      topSet = d3.set(topKeys),
+      others = allKeys.filter((d) => !topSet.has(d))
+    if (allRowsSum > topRowsSum) {
+      return topRows.concat([{others, key: _othersLabel, value: allRowsSum - topRowsSum}])
+    }
+    return topRows
+  }
 
-    _chart.cappedKeyAccessor = function (d, i) {
-        if (d.others) {
+  _chart.cappedKeyAccessor = function (d, i) {
+    if (d.others) {
 
 /* OVERRIDE ---------------------------------------------------------------- */
-            return d.key0;
+      return d.key0
 /* ------------------------------------------------------------------------- */
 
-        }
-        return _chart.keyAccessor()(d, i);
-    };
+    }
+    return _chart.keyAccessor()(d, i)
+  }
 
-    _chart.cappedValueAccessor = function (d, i) {
-        if (d.others) {
-            return d.value;
-        }
-        return _chart.valueAccessor()(d, i);
-    };
+  _chart.cappedValueAccessor = function (d, i) {
+    if (d.others) {
+      return d.value
+    }
+    return _chart.valueAccessor()(d, i)
+  }
 
 /* OVERRIDE EXTEND --------------------------------------------------------- */
-    _chart.ordering = function (order) {
-        _chart.expireCache()
-        if (!order) {
-            return _ordering;
-        }
-        _ordering = order;
-        return _chart;
+  _chart.ordering = function (order) {
+    _chart.expireCache()
+    if (!order) {
+      return _ordering
+    }
+    _ordering = order
+    return _chart
+  }
+
+  _chart.setDataAsync((group, callback) => {
+    function resultCallback (error, result) {
+      if (error) {
+        callback(error)
+        return
+      }
+      const rows = _chart._computeOrderedGroups(result)
+      if (_othersGrouper) {
+        callback(null, _othersGrouper(rows))
+      } else {
+        callback(null, rows)
+      }
     }
 
-    _chart.setDataAsync(function(group, callback) {
-        function resultCallback (error, result) {
-            if (error) {
-                callback(error)
-                return
-            }
-            var rows = _chart._computeOrderedGroups(result)
-            if (_othersGrouper) {
-              callback(null, _othersGrouper(rows))
-            } else {
-              callback(null, rows)
-            }
-        }
-
-        if (_cap === Infinity) {
-            if (_chart.dataCache != null) {
-                callback(null, _chart._computeOrderedGroups(_chart.dataCache));
-            } else {
-                group.allAsync(function (error, result) {
-                    if (error) {
-                        callback(error)
-                        return
-                    }
-                    callback(null, _chart._computeOrderedGroups(result));
-                })
-            }
-        } else {
-            if (_chart.dataCache != null) {
-                  resultCallback(null, _chart.dataCache)
-              } else if (_ordering === 'desc') {
-                  return group.topAsync(_cap)
-                    .then(function(result) {
+    if (_cap === Infinity) {
+      if (_chart.dataCache != null) {
+        callback(null, _chart._computeOrderedGroups(_chart.dataCache))
+      } else {
+        group.allAsync((error, result) => {
+          if (error) {
+            callback(error)
+            return
+          }
+          callback(null, _chart._computeOrderedGroups(result))
+        })
+      }
+    } else if (_chart.dataCache != null) {
+      resultCallback(null, _chart.dataCache)
+    } else if (_ordering === "desc") {
+      return group.topAsync(_cap)
+                    .then((result) => {
                       resultCallback(null, result)
                     })
-                    .catch(function(error) {
+                    .catch((error) => {
                       resultCallback(error)
-                    });
-              } else if (_ordering === 'asc') {
-                  group.bottomAsync(_cap, undefined, undefined, resultCallback); // ordered by crossfilter group order (default value)
-              }
-        }
-    });
+                    })
+    } else if (_ordering === "asc") {
+      group.bottomAsync(_cap, undefined, undefined, resultCallback) // ordered by crossfilter group order (default value)
+    }
+  })
 
-    _chart.expireCache = function () {
-        _chart.dataCache = null;
-    };
+  _chart.expireCache = function () {
+    _chart.dataCache = null
+  }
 
-    _chart.data(function (group) {
-        if(!_chart.dataCache) {
-          console.warn('Empty dataCache. Please fetch new data')
-        }
-        if (_cap === Infinity) {
-            return _chart._computeOrderedGroups(_chart.dataCache);
-        } else {
-            var rows = _chart.dataCache
-            if (_othersGrouper) {
-                return _othersGrouper(rows);
-            }
-            return rows;
-        }
-    });
+  _chart.data((group) => {
+    if (!_chart.dataCache) {
+      console.warn("Empty dataCache. Please fetch new data")
+    }
+    if (_cap === Infinity) {
+      return _chart._computeOrderedGroups(_chart.dataCache)
+    } else {
+      const rows = _chart.dataCache
+      if (_othersGrouper) {
+        return _othersGrouper(rows)
+      }
+      return rows
+    }
+  })
 
 /* ------------------------------------------------------------------------- */
 
@@ -136,14 +134,14 @@ export default function capMixin (_chart) {
      * @return {Number}
      * @return {dc.capMixin}
      */
-    _chart.cap = function (count) {
-        if (!arguments.length) {
-            return _cap;
-        }
-        _cap = count;
-        _chart.expireCache()
-        return _chart;
-    };
+  _chart.cap = function (count) {
+    if (!arguments.length) {
+      return _cap
+    }
+    _cap = count
+    _chart.expireCache()
+    return _chart
+  }
 
     /**
      * Get or set the label for *Others* slice when slices cap is specified
@@ -154,13 +152,13 @@ export default function capMixin (_chart) {
      * @return {String}
      * @return {dc.capMixin}
      */
-    _chart.othersLabel = function (label) {
-        if (!arguments.length) {
-            return _othersLabel;
-        }
-        _othersLabel = label;
-        return _chart;
-    };
+  _chart.othersLabel = function (label) {
+    if (!arguments.length) {
+      return _othersLabel
+    }
+    _othersLabel = label
+    return _chart
+  }
 
     /**
      * Get or set the grouper function that will perform the insertion of data for the *Others* slice
@@ -201,20 +199,20 @@ export default function capMixin (_chart) {
      * @return {Function}
      * @return {dc.capMixin}
      */
-    _chart.othersGrouper = function (grouperFunction) {
-        if (!arguments.length) {
-            return _othersGrouper;
-        }
-        _othersGrouper = grouperFunction;
-        return _chart;
-    };
+  _chart.othersGrouper = function (grouperFunction) {
+    if (!arguments.length) {
+      return _othersGrouper
+    }
+    _othersGrouper = grouperFunction
+    return _chart
+  }
 
-    override(_chart, 'onClick', function (d) {
-        if (d.others) {
-            _chart.filter([d.others]);
-        }
-        _chart._onClick(d);
-    });
+  override(_chart, "onClick", (d) => {
+    if (d.others) {
+      _chart.filter([d.others])
+    }
+    _chart._onClick(d)
+  })
 
-    return _chart;
-};
+  return _chart
+}

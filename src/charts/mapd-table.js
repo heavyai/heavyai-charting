@@ -1,7 +1,7 @@
 import d3 from "d3"
 import {formatDataValue} from "../utils/formatting-helpers.js"
 import baseMixin from "../mixins/base-mixin"
-import {incrementSampledCount, decrementSampledCount} from "../core/core"
+import {decrementSampledCount, incrementSampledCount} from "../core/core"
 import {redrawAllAsync} from "../core/core-async"
 
 const INITIAL_SIZE = 50

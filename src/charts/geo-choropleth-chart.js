@@ -28,269 +28,255 @@ import {utils} from "../utils/utils"
  * @return {dc.geoChoroplethChart}
  */
 export default function geoChoroplethChart (parent, useMap, chartGroup, mapbox) {
-    var _useMap = useMap !== undefined ? useMap : false;
-    var parentDivId = parent.attributes.id.value;
-    var _chart = null;
-    if (_useMap) {
-        _chart = mapMixin(colorMixin(baseMixin({})),parentDivId, mapbox);
-    }
-    else {
-        _chart = colorMixin(baseMixin({}));
-    }
+  const _useMap = useMap !== undefined ? useMap : false
+  const parentDivId = parent.attributes.id.value
+  let _chart = null
+  if (_useMap) {
+    _chart = mapMixin(colorMixin(baseMixin({})), parentDivId, mapbox)
+  } else {
+    _chart = colorMixin(baseMixin({}))
+  }
 
-    _chart.colorAccessor(function (d) {
-        return d || 0;
-    });
+  _chart.colorAccessor((d) => d || 0)
 
 /* OVERRIDE -----------------------------------------------------------------*/
-    _chart.accent = accentPoly;
-    _chart.unAccent = unAccentPoly;
+  _chart.accent = accentPoly
+  _chart.unAccent = unAccentPoly
 
-    var _hasBeenRendered = false;
+  let _hasBeenRendered = false
 /* --------------------------------------------------------------------------*/
 
-    var _geoPath = d3.geo.path();
-    if (_useMap) {
-        _geoPath.projection(_chart.mapProject.bind(_chart));
-    }
+  const _geoPath = d3.geo.path()
+  if (_useMap) {
+    _geoPath.projection(_chart.mapProject.bind(_chart))
+  }
 
-    _chart._projectionFlag;
+  _chart._projectionFlag
 
-    var _geoJsons = [];
-    _chart.transitionDuration(0);
+  let _geoJsons = []
+  _chart.transitionDuration(0)
 
-    function findGeomMinMax (layerIndex) {
-        var data = geoJson(layerIndex).data;
-        var dataLength = data.length;
-        var xMin = 9999999999999;
-        var xMax = -9999999999999;
-        var yMin = 9999999999999;
-        var yMax = -9999999999999;
+  function findGeomMinMax (layerIndex) {
+    const data = geoJson(layerIndex).data
+    const dataLength = data.length
+    let xMin = 9999999999999
+    let xMax = -9999999999999
+    let yMin = 9999999999999
+    let yMax = -9999999999999
 
-        for (var d = 0; d < dataLength; d++) {
-            var geom = data[d].geometry.coordinates;
-            var numGeoms = geom.length;
-            for (var g = 0; g < numGeoms; g++) {
-                var coords = geom[g];
-                var numCoords = coords.length;
-                for (var c = 0; c < numCoords; c++) {
-                    var coord = coords[c];
-                    if (coord[0] < xMin)
-                        xMin = coord[0];
-                    if (coord[0] > xMax)
-                        xMax = coord[0];
-                    if (coord[1] < yMin)
-                        yMin = coord[1];
-                    if (coord[1] > yMax)
-                        yMax = coord[1];
-                }
-            }
+    for (let d = 0; d < dataLength; d++) {
+      const geom = data[d].geometry.coordinates
+      const numGeoms = geom.length
+      for (let g = 0; g < numGeoms; g++) {
+        const coords = geom[g]
+        const numCoords = coords.length
+        for (let c = 0; c < numCoords; c++) {
+          const coord = coords[c]
+          if (coord[0] < xMin) { xMin = coord[0] }
+          if (coord[0] > xMax) { xMax = coord[0] }
+          if (coord[1] < yMin) { yMin = coord[1] }
+          if (coord[1] > yMax) { yMax = coord[1] }
         }
-        return [[xMin,yMin],[xMax,yMax]];
+      }
     }
+    return [[xMin, yMin], [xMax, yMax]]
+  }
 
-    _chart.fitBounds = function () {
-        if (geoJson(0)) {
-            var bounds = geoJson(0).bounds;
-            _chart.map().fitBounds(bounds, {animate: false}, {skipRedraw: true});
-        }
+  _chart.fitBounds = function () {
+    if (geoJson(0)) {
+      const bounds = geoJson(0).bounds
+      _chart.map().fitBounds(bounds, {animate: false}, {skipRedraw: true})
     }
+  }
 
-    _chart.destroyChart = function () {
-        this.map().remove()
-        if (this.legend()) {
-            this.legend().removeLegend()
-        }
+  _chart.destroyChart = function () {
+    this.map().remove()
+    if (this.legend()) {
+      this.legend().removeLegend()
     }
+  }
 
-    _chart._doRender = function (d) {
-        _chart.resetSvg(); // will use map mixin reset svg if we inherit map mixin
-        for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
-            var states = _chart.svg().append('g')
-                .attr('class', 'layer' + layerIndex);
-                //.attr('transform', 'translate(0, -16)');
+  _chart._doRender = function (d) {
+    _chart.resetSvg() // will use map mixin reset svg if we inherit map mixin
+    for (let layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
+      const states = _chart.svg().append("g")
+                .attr("class", "layer" + layerIndex)
+                // .attr('transform', 'translate(0, -16)');
 
-            var regionG = states.selectAll('g.' + geoJson(layerIndex).name)
+      const regionG = states.selectAll("g." + geoJson(layerIndex).name)
                 .data(geoJson(layerIndex).data)
                 .enter()
-                .append('g')
-                .attr('class', geoJson(layerIndex).name);
+                .append("g")
+                .attr("class", geoJson(layerIndex).name)
 
-            regionG
-                .append('path')
-                .attr('fill', 'white')
-                .attr('d', _geoPath);
+      regionG
+                .append("path")
+                .attr("fill", "white")
+                .attr("d", _geoPath)
 
-            regionG.append('title');
+      regionG.append("title")
 
-            plotData(layerIndex, d);
-        }
-        _chart._projectionFlag = false;
+      plotData(layerIndex, d)
+    }
+    _chart._projectionFlag = false
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        _hasBeenRendered = true;
+    _hasBeenRendered = true
 /* --------------------------------------------------------------------------*/
 
-    };
+  }
 
-    function plotData (layerIndex, d) {
-        var data = generateLayeredData(d);
+  function plotData (layerIndex, d) {
+    const data = generateLayeredData(d)
 
-        if (isDataLayer(layerIndex)) {
-            var regionG = renderRegionG(layerIndex);
+    if (isDataLayer(layerIndex)) {
+      const regionG = renderRegionG(layerIndex)
 
-            renderPaths(regionG, layerIndex, data);
+      renderPaths(regionG, layerIndex, data)
 
-            //renderTitle(regionG, layerIndex, data);
-        }
+            // renderTitle(regionG, layerIndex, data);
     }
+  }
 
-    function generateLayeredData (d) {
-        var data = {};
-        var groupAll = d;
-        for (var i = 0; i < groupAll.length; ++i) {
-            data[_chart.keyAccessor()(groupAll[i])] = _chart.valueAccessor()(groupAll[i]);
-        }
-        return data;
+  function generateLayeredData (d) {
+    const data = {}
+    const groupAll = d
+    for (let i = 0; i < groupAll.length; ++i) {
+      data[_chart.keyAccessor()(groupAll[i])] = _chart.valueAccessor()(groupAll[i])
     }
+    return data
+  }
 
-    function isDataLayer (layerIndex) {
-        return geoJson(layerIndex).keyAccessor;
-    }
+  function isDataLayer (layerIndex) {
+    return geoJson(layerIndex).keyAccessor
+  }
 
-    function renderRegionG (layerIndex) {
-        var regionG = _chart.svg()
+  function renderRegionG (layerIndex) {
+    const regionG = _chart.svg()
             .selectAll(layerSelector(layerIndex))
-            .classed('selected', function (d) {
-                return isSelected(layerIndex, d);
+            .classed("selected", (d) => isSelected(layerIndex, d))
+            .classed("deselected", (d) => isDeselected(layerIndex, d))
+            .attr("class", (d) => {
+              const layerNameClass = geoJson(layerIndex).name
+              const regionClass = utils.nameToId(geoJson(layerIndex).keyAccessor(d))
+              let baseClasses = layerNameClass + " " + regionClass
+              if (isSelected(layerIndex, d)) {
+                baseClasses = baseClasses + " selected"
+              }
+              if (isDeselected(layerIndex, d)) {
+                baseClasses = baseClasses + " deselected"
+              }
+              return baseClasses
             })
-            .classed('deselected', function (d) {
-                return isDeselected(layerIndex, d);
-            })
-            .attr('class', function (d) {
-                var layerNameClass = geoJson(layerIndex).name;
-                var regionClass = utils.nameToId(geoJson(layerIndex).keyAccessor(d));
-                var baseClasses = layerNameClass + ' ' + regionClass;
-                if (isSelected(layerIndex, d)) {
-                    baseClasses += ' selected';
-                }
-                if (isDeselected(layerIndex, d)) {
-                    baseClasses += ' deselected';
-                }
-                return baseClasses;
-            });
-        return regionG;
-    }
+    return regionG
+  }
 
-    function layerSelector (layerIndex) {
-        return 'g.layer' + layerIndex + ' g.' + geoJson(layerIndex).name;
-    }
+  function layerSelector (layerIndex) {
+    return "g.layer" + layerIndex + " g." + geoJson(layerIndex).name
+  }
 
 /* OVERRIDE EXTEND ----------------------------------------------------------*/
-    function accentPoly(label) {
-      var layerNameClass = geoJson(0).name; // hack for now as we only allow one layer currently
-    _chart.selectAll('g.' + layerNameClass).each(function (d) {
-        if (getKey(0,d) == label) {
-          _chart.accentSelected(this);
-        }
-      });
-    }
+  function accentPoly (label) {
+    const layerNameClass = geoJson(0).name // hack for now as we only allow one layer currently
+    _chart.selectAll("g." + layerNameClass).each(function (d) {
+      if (getKey(0, d) == label) {
+        _chart.accentSelected(this)
+      }
+    })
+  }
 
-    function unAccentPoly(label) {
-      var layerNameClass = geoJson(0).name; // hack for now as we only allow one layer currently
-    _chart.selectAll('g.' + layerNameClass).each(function (d) {
-        if (getKey(0,d) == label) {
-          _chart.unAccentSelected(this);
-        }
-      });
-    }
+  function unAccentPoly (label) {
+    const layerNameClass = geoJson(0).name // hack for now as we only allow one layer currently
+    _chart.selectAll("g." + layerNameClass).each(function (d) {
+      if (getKey(0, d) == label) {
+        _chart.unAccentSelected(this)
+      }
+    })
+  }
 /* --------------------------------------------------------------------------*/
 
-    function isSelected (layerIndex, d) {
-        return _chart.hasFilter() && _chart.hasFilter(getKey(layerIndex, d)) ^ _chart.filtersInverse();
-    }
+  function isSelected (layerIndex, d) {
+    return _chart.hasFilter() && _chart.hasFilter(getKey(layerIndex, d)) ^ _chart.filtersInverse()
+  }
 
-    function isDeselected (layerIndex, d) {
-        return _chart.hasFilter() && !isSelected(layerIndex, d)
-    }
+  function isDeselected (layerIndex, d) {
+    return _chart.hasFilter() && !isSelected(layerIndex, d)
+  }
 
-    function getKey (layerIndex, d) {
-        return geoJson(layerIndex).keyAccessor(d);
-    }
+  function getKey (layerIndex, d) {
+    return geoJson(layerIndex).keyAccessor(d)
+  }
 
-    function geoJson (index) {
-        return _geoJsons[index];
-    }
+  function geoJson (index) {
+    return _geoJsons[index]
+  }
 
 
-    function renderPaths (regionG, layerIndex, data) {
+  function renderPaths (regionG, layerIndex, data) {
 /* OVERRIDE ---------------------------------------------------------------- */
-        var dragRegion = d3.behavior.drag()
-            .on('dragstart', function () {
-            d3.event.sourceEvent.preventDefault();
-        })
+    const dragRegion = d3.behavior.drag()
+            .on("dragstart", () => {
+              d3.event.sourceEvent.preventDefault()
+            })
 /* ------------------------------------------------------------------------- */
 
-        var paths = regionG
-            .select('path')
-            .attr('fill', function () {
-                var currentFill = d3.select(this).attr('fill');
-                if (currentFill) {
-                    return currentFill;
-                }
-                return '#e2e2e2';
+    const paths = regionG
+            .select("path")
+            .attr("fill", function () {
+              const currentFill = d3.select(this).attr("fill")
+              if (currentFill) {
+                return currentFill
+              }
+              return "#e2e2e2"
             })
 /* OVERRIDE ---------------------------------------------------------------- */
-            .on('mouseenter', function(d, i){showPopup(d, i, data);})
-            .on('mousemove', positionPopup)
-            .on('mouseleave', hidePopup)
+            .on("mouseenter", (d, i) => { showPopup(d, i, data) })
+            .on("mousemove", positionPopup)
+            .on("mouseleave", hidePopup)
             .call(dragRegion)
 /* ------------------------------------------------------------------------- */
-            .on('click', function (d) {
-                return _chart.onClick(d, layerIndex);
-            });
+            .on("click", (d) => _chart.onClick(d, layerIndex))
 
-        transition(paths, _chart.transitionDuration()).attr('fill', function (d, i) {
-            var dataColor = data[geoJson(layerIndex).keyAccessor(d)]
-            return _chart.getColor(dataColor, i)
-        });
-    }
+    transition(paths, _chart.transitionDuration()).attr("fill", (d, i) => {
+      const dataColor = data[geoJson(layerIndex).keyAccessor(d)]
+      return _chart.getColor(dataColor, i)
+    })
+  }
 
-    _chart.onClick = function (d, layerIndex) {
-        var selectedRegion = geoJson(layerIndex).keyAccessor(d);
-        _chart.handleFilterClick(d3.event, selectedRegion)
-    };
+  _chart.onClick = function (d, layerIndex) {
+    const selectedRegion = geoJson(layerIndex).keyAccessor(d)
+    _chart.handleFilterClick(d3.event, selectedRegion)
+  }
 
-    function renderTitle (regionG, layerIndex, data) {
-        if (_chart.renderTitle()) {
-            regionG.selectAll('title').text(function (d) {
-                var key = getKey(layerIndex, d);
+  function renderTitle (regionG, layerIndex, data) {
+    if (_chart.renderTitle()) {
+      regionG.selectAll("title").text((d) => {
+        const key = getKey(layerIndex, d)
 
 /* OVERRIDE -----------------------------------------------------------------*/
-                var value = Number(data[key]).toFixed(2);
-                return _chart.title()({key0: key, value: value});
+        const value = Number(data[key]).toFixed(2)
+        return _chart.title()({key0: key, value})
 /* --------------------------------------------------------------------------*/
 
-            });
-        }
+      })
     }
+  }
 
-    _chart._doRedraw = function (data) {
+  _chart._doRedraw = function (data) {
 
 
 /* OVERRIDE -----------------------------------------------------------------*/
-        if (!_hasBeenRendered)
-            return _chart._doRender();
+    if (!_hasBeenRendered) { return _chart._doRender() }
 /* --------------------------------------------------------------------------*/
 
-        for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
-            plotData(layerIndex, data);
-            if (_chart._projectionFlag) {
-                _chart.svg().selectAll('g.' + geoJson(layerIndex).name + ' path').attr('d', _geoPath);
-            }
-        }
-        _chart._projectionFlag = false;
-    };
+    for (let layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
+      plotData(layerIndex, data)
+      if (_chart._projectionFlag) {
+        _chart.svg().selectAll("g." + geoJson(layerIndex).name + " path").attr("d", _geoPath)
+      }
+    }
+    _chart._projectionFlag = false
+  }
 
     /**
      * **mandatory**
@@ -315,19 +301,19 @@ export default function geoChoroplethChart (parent, useMap, chartGroup, mapbox) 
      * this function should match the keys returned by the crossfilter groups.
      * @return {dc.geoChoroplethChart}
      */
-    _chart.overlayGeoJson = function (json, name, keyAccessor) {
-        for (var i = 0; i < _geoJsons.length; ++i) {
-            if (_geoJsons[i].name === name) {
-                _geoJsons[i].data = json;
-                _geoJsons[i].keyAccessor = keyAccessor;
-                return _chart;
-            }
-        }
-        _geoJsons.push({name: name, data: json, keyAccessor: keyAccessor});
-        _geoJsons[_geoJsons.length - 1].bounds = findGeomMinMax(_geoJsons.length - 1);
+  _chart.overlayGeoJson = function (json, name, keyAccessor) {
+    for (let i = 0; i < _geoJsons.length; ++i) {
+      if (_geoJsons[i].name === name) {
+        _geoJsons[i].data = json
+        _geoJsons[i].keyAccessor = keyAccessor
+        return _chart
+      }
+    }
+    _geoJsons.push({name, data: json, keyAccessor})
+    _geoJsons[_geoJsons.length - 1].bounds = findGeomMinMax(_geoJsons.length - 1)
 
-        return _chart;
-    };
+    return _chart
+  }
 
     /**
      * Set custom geo projection function. See the available [d3 geo projection
@@ -340,13 +326,13 @@ export default function geoChoroplethChart (parent, useMap, chartGroup, mapbox) 
      * @param {d3.projection} [projection=d3.geo.albersUsa()]
      * @return {dc.geoChoroplethChart}
      */
-    _chart.projection = function (projection) {
-        if (!_useMap) {
-            _geoPath.projection(projection);
-            _chart._projectionFlag = true;
-        }
-        return _chart;
-    };
+  _chart.projection = function (projection) {
+    if (!_useMap) {
+      _geoPath.projection(projection)
+      _chart._projectionFlag = true
+    }
+    return _chart
+  }
 
     /**
      * Returns all GeoJson layers currently registered with this chart. The returned array is a
@@ -357,9 +343,9 @@ export default function geoChoroplethChart (parent, useMap, chartGroup, mapbox) 
      * @instance
      * @return {Array<{name:String, data: Object, accessor: Function}>}
      */
-    _chart.geoJsons = function () {
-        return _geoJsons;
-    };
+  _chart.geoJsons = function () {
+    return _geoJsons
+  }
 
     /**
      * Returns the {@link https://github.com/mbostock/d3/wiki/Geo-Paths#path d3.geo.path} object used to
@@ -371,9 +357,9 @@ export default function geoChoroplethChart (parent, useMap, chartGroup, mapbox) 
      * @see {@link https://github.com/mbostock/d3/wiki/Geo-Paths#path d3.geo.path}
      * @return {d3.geo.path}
      */
-    _chart.geoPath = function () {
-        return _geoPath;
-    };
+  _chart.geoPath = function () {
+    return _geoPath
+  }
 
     /**
      * Remove a GeoJson layer from this chart by name
@@ -383,62 +369,60 @@ export default function geoChoroplethChart (parent, useMap, chartGroup, mapbox) 
      * @param {String} name
      * @return {dc.geoChoroplethChart}
      */
-    _chart.removeGeoJson = function (name) {
-        var geoJsons = [];
+  _chart.removeGeoJson = function (name) {
+    const geoJsons = []
 
-        for (var i = 0; i < _geoJsons.length; ++i) {
-            var layer = _geoJsons[i];
-            if (layer.name !== name) {
-                geoJsons.push(layer);
-            }
-        }
+    for (let i = 0; i < _geoJsons.length; ++i) {
+      const layer = _geoJsons[i]
+      if (layer.name !== name) {
+        geoJsons.push(layer)
+      }
+    }
 
-        _geoJsons = geoJsons;
+    _geoJsons = geoJsons
 
-        return _chart;
-    };
+    return _chart
+  }
 /* OVERRIDE ---------------------------------------------------------------- */
-    function showPopup(d, i, data) {
-        var popup = _chart.popup();
+  function showPopup (d, i, data) {
+    const popup = _chart.popup()
 
-        var popupBox = popup.select('.chart-popup-content').html('');
+    const popupBox = popup.select(".chart-popup-content").html("")
 
-        popupBox.append('div')
-            .attr('class', 'popup-legend')
-            .style('background-color', _chart.getColor(data[geoJson(0).keyAccessor(d)], i));
+    popupBox.append("div")
+            .attr("class", "popup-legend")
+            .style("background-color", _chart.getColor(data[geoJson(0).keyAccessor(d)], i))
 
-        popupBox.append('div')
-            .attr('class', 'popup-value')
-            .html(function(){
-                var key = getKey(0, d);
-                var value = isNaN(data[key]) ?  'N/A' : utils.formatValue(data[key]);
-                return '<div class="popup-value-dim">'+ key +'</div><div class="popup-value-measure">'+ value +'</div>';
-            });
+    popupBox.append("div")
+            .attr("class", "popup-value")
+            .html(() => {
+              const key = getKey(0, d)
+              const value = isNaN(data[key]) ? "N/A" : utils.formatValue(data[key])
+              return "<div class=\"popup-value-dim\">" + key + "</div><div class=\"popup-value-measure\">" + value + "</div>"
+            })
 
-        popup.classed('js-showPopup', true);
-    }
+    popup.classed("js-showPopup", true)
+  }
 
-    function hidePopup() {
-        _chart.popup().classed('js-showPopup', false);
-    }
+  function hidePopup () {
+    _chart.popup().classed("js-showPopup", false)
+  }
 
-    function positionPopup() {
-        var coordinates = [0, 0];
-        coordinates = _chart.popupCoordinates(d3.mouse(this));
-        var x = coordinates[0];
-        var y = coordinates[1] - 16;
+  function positionPopup () {
+    let coordinates = [0, 0]
+    coordinates = _chart.popupCoordinates(d3.mouse(this))
+    const x = coordinates[0]
+    const y = coordinates[1] - 16
 
-        var popup =_chart.popup()
-            .attr('style', function(){
-                return 'transform:translate('+x+'px,'+y+'px)';
-            });
+    const popup = _chart.popup()
+            .attr("style", () => "transform:translate(" + x + "px," + y + "px)")
 
-        popup.select('.chart-popup-box')
-            .classed('align-right', function(){
-                return x + d3.select(this).node().getBoundingClientRect().width > _chart.width();
-            });
-    }
+    popup.select(".chart-popup-box")
+            .classed("align-right", function () {
+              return x + d3.select(this).node().getBoundingClientRect().width > _chart.width()
+            })
+  }
 /* ------------------------------------------------------------------------- */
 
-    return _chart.anchor(parent, chartGroup);
-};
+  return _chart.anchor(parent, chartGroup)
+}

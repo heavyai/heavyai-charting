@@ -107,7 +107,7 @@ export default function asyncMixin (_chart) {
 
       const dataCallback = function (error, data) {
         if (error) {
-           _chart._invokeDataErrorListener()
+          _chart._invokeDataErrorListener()
           resetRedrawStack()
           reject(error)
         } else {

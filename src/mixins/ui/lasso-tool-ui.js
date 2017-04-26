@@ -9,30 +9,30 @@ import {logger} from "../../utils/logger"
 let LatLonCircleClass = null
 
 /* istanbul ignore next */
-export function getLatLonCircleClass() {
+export function getLatLonCircleClass () {
   if (!LatLonCircleClass) {
     LatLonCircleClass = class LatLonCircle extends MapdDraw.Circle {
-      constructor(opts) {
+      constructor (opts) {
         super(opts)
         this._mercatorPts = []
         this._geomDirty = true
         this._initialRadius = this._radius
       }
 
-      setScale(scale) {
+      setScale (scale) {
         this.radius = this._initialRadius * Math.min(scale[0], scale[1])
       }
 
-      set initialRadius(radius) {
+      set initialRadius (radius) {
         this.radius = radius
         this._initialRadius = radius
       }
 
-      resetInitialRadius() {
+      resetInitialRadius () {
         this._initialRadius = this.radius
       }
 
-      _updateGeom() {
+      _updateGeom () {
         if (this._geomDirty || this._boundsOutOfDate) {
           const centerMerc = [0, 0]
           const centerLatLon = [0, 0]
@@ -51,7 +51,7 @@ export function getLatLonCircleClass() {
 
           MapdDraw.AABox2d.initEmpty(this._aabox)
           this._mercatorPts = []
-          for (let index = 0; index < number_of_points; index += 1) {
+          for (let index = 0; index < number_of_points; index = index + 1) {
             const degrees = index * degrees_between_points
             const degree_radians = degrees * Math.PI / 180
             const point_lat_radians = Math.asin(Math.sin(center_lat_radians) * Math.cos(dist_radians) + Math.cos(center_lat_radians) * Math.sin(dist_radians) * Math.cos(degree_radians))
@@ -77,25 +77,25 @@ export function getLatLonCircleClass() {
         }
       }
 
-      getDimensions() {
+      getDimensions () {
         return [this.width, this.height]
       }
 
-      get width() {
+      get width () {
         this._updateAABox()
         return this._aabox[2] - this._aabox[0]
       }
 
-      get height() {
+      get height () {
         this._updateAABox()
         return this._aabox[3] - this._aabox[1]
       }
 
-      _updateAABox() {
+      _updateAABox () {
         this._updateGeom()
       }
 
-      _draw(ctx) {
+      _draw (ctx) {
         // only need the mercator to screen projection -- pull out any
         // local transforms here
         const xform = MapdDraw.Mat2d.clone(this.globalXform)
@@ -107,14 +107,14 @@ export function getLatLonCircleClass() {
 
         if (this._mercatorPts.length) {
           ctx.moveTo(this._mercatorPts[0][0], this._mercatorPts[0][1])
-          for (let i = 1; i < this._mercatorPts.length; i += 1) {
+          for (let i = 1; i < this._mercatorPts.length; i = i + 1) {
             ctx.lineTo(this._mercatorPts[i][0], this._mercatorPts[i][1])
           }
           ctx.closePath()
         }
       }
 
-      toJSON() {
+      toJSON () {
         return Object.assign(super.toJSON(), {
           type: "LatLonCircle" // this must match the name of the class
         })
@@ -126,7 +126,7 @@ export function getLatLonCircleClass() {
 
 /* istanbul ignore next */
 class ShapeHandler {
-  constructor(parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
+  constructor (parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
     this.parent = parent
     this.drawEngine = drawEngine
     this.canvas = drawEngine.getCanvas()
@@ -146,21 +146,21 @@ class ShapeHandler {
     this.active = false
   }
 
-  disableBasemapEvents(options = {}) {
+  disableBasemapEvents (options = {}) {
     this.chart.hidePopup(true)
     this.chart.enableInteractions(false, options)
   }
 
-  enableBasemapEvents(options = {}) {
+  enableBasemapEvents (options = {}) {
     this.chart.enableInteractions(true, options)
   }
 
-  addShape(shape, selectOpts = {}) {
+  addShape (shape, selectOpts = {}) {
     this.drawEngine.addShape(shape, selectOpts)
     this.drawEngine.moveShapeToTop(shape)
   }
 
-  setupFinalShape(shape, selectOpts = {}) {
+  setupFinalShape (shape, selectOpts = {}) {
     // deactivate the button associated with this shape handler
     // first to make sure that when the shape is selected,
     // the selection event handler is run. The selection event
@@ -178,15 +178,15 @@ class ShapeHandler {
     this.canvas.focus()
   }
 
-  mousedownCB(event) {}
-  mouseupCB(event) {}
-  mousemoveCB(event) {}
-  mouseoverCB(event) {}
-  clickCB(event) {}
-  dblclickCB(event) {}
-  keydownCB(event) {}
+  mousedownCB (event) {}
+  mouseupCB (event) {}
+  mousemoveCB (event) {}
+  mouseoverCB (event) {}
+  clickCB (event) {}
+  dblclickCB (event) {}
+  keydownCB (event) {}
 
-  isMouseEventInCanvas(mouseEvent) {
+  isMouseEventInCanvas (mouseEvent) {
     const width = this.canvas.offsetWidth
     const height = this.canvas.offsetHeight
     const rect = this.canvas.getBoundingClientRect()
@@ -197,7 +197,7 @@ class ShapeHandler {
     return (diffX >= 0 && diffX < width && diffY >= 0 && diffY < height)
   }
 
-  getRelativeMousePosFromEvent(mouseEvent) {
+  getRelativeMousePosFromEvent (mouseEvent) {
     const width = this.canvas.offsetWidth
     const height = this.canvas.offsetHeight
     const rect = this.canvas.getBoundingClientRect()
@@ -209,7 +209,7 @@ class ShapeHandler {
     return mousepos
   }
 
-  activate() {
+  activate () {
     if (!this.active) {
       document.addEventListener("mousedown", this.mousedownCB)
       document.addEventListener("mouseup", this.mouseupCB)
@@ -228,7 +228,7 @@ class ShapeHandler {
     }
   }
 
-  deactivate() {
+  deactivate () {
     if (this.active) {
       this.destroy()
       document.removeEventListener("mousedown", this.mousedownCB)
@@ -248,7 +248,7 @@ class ShapeHandler {
 
 /* istanbul ignore next */
 class CircleShapeHandler extends ShapeHandler {
-  constructor(parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
+  constructor (parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
     super(parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle)
     this.startmousepos = MapdDraw.Point2d.create(0, 0)
     this.startmouseworldpos = MapdDraw.Point2d.create(0, 0)
@@ -262,7 +262,7 @@ class CircleShapeHandler extends ShapeHandler {
     this.timer = null
   }
 
-  deactivateShape() {
+  deactivateShape () {
     if (this.activeShape) {
       const shape = this.activeShape
       if (performance.now() - this.timer < 500) {
@@ -292,14 +292,14 @@ class CircleShapeHandler extends ShapeHandler {
     }
   }
 
-  destroy() {
+  destroy () {
     if (this.activeShape) {
       this.drawEngine.deleteShape(this.activeShape)
       this.activeShape = null
     }
   }
 
-  mousedownCB(event) {
+  mousedownCB (event) {
     if (!this.isMouseEventInCanvas(event)) {
       return
     }
@@ -336,11 +336,11 @@ class CircleShapeHandler extends ShapeHandler {
     event.preventDefault()
   }
 
-  mouseupCB(event) {
+  mouseupCB (event) {
     this.deactivateShape()
   }
 
-  mousemoveCB(event) {
+  mousemoveCB (event) {
     if (this.activeShape) {
       const mousepos = this.getRelativeMousePosFromEvent(event)
       const mousescreenpos = MapdDraw.Point2d.create(0, 0)
@@ -362,11 +362,11 @@ class CircleShapeHandler extends ShapeHandler {
     }
   }
 
-  clickCB(event) {
+  clickCB (event) {
     this.deactivateShape()
   }
 
-  keydownCB(event) {
+  keydownCB (event) {
     if (event.key === "Escape" || event.code === "Escape" || event.keyCode === 27) {
       this.destroy()
       this.enableBasemapEvents()
@@ -376,7 +376,7 @@ class CircleShapeHandler extends ShapeHandler {
 
 /* istanbul ignore next */
 class PolylineShapeHandler extends ShapeHandler {
-  constructor(parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
+  constructor (parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
     super(parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle)
     this.activeShape = null
     this.startVert = null
@@ -393,7 +393,7 @@ class PolylineShapeHandler extends ShapeHandler {
     }, 100)
   }
 
-  destroy() {
+  destroy () {
     if (this.startVert) {
       this.drawEngine.deleteShape(this.startVert)
     }
@@ -409,10 +409,9 @@ class PolylineShapeHandler extends ShapeHandler {
     this.activeIdx = -1
   }
 
-  appendVertex(mousepos, mouseworldpos) {
+  appendVertex (mousepos, mouseworldpos) {
     if (this.lineShape) {
-      if (!this.prevVertPos || Math.abs(mousepos[0] - this.prevVertPos[0]) > 2 ||
-        Math.abs(mousepos[1] - this.prevVertPos[1]) > 2) {
+      if (!this.prevVertPos || Math.abs(mousepos[0] - this.prevVertPos[0]) > 2 || Math.abs(mousepos[1] - this.prevVertPos[1]) > 2) {
         this.prevVertPos = mousepos
         return this.lineShape.appendVert(mouseworldpos)
       }
@@ -420,7 +419,7 @@ class PolylineShapeHandler extends ShapeHandler {
     return -1
   }
 
-  finishShape() {
+  finishShape () {
     const verts = (this.lineShape ? this.lineShape.vertsRef : [])
     const removeLastVert = (verts.length > 1 && !MapdDraw.Point2d.equals(verts[0], verts[verts.length - 1]) && this.lastVert && !MapdDraw.Point2d.equals(verts[verts.length - 1], this.lastVert.getPositionRef()))
     if (verts.length > 2 && (!removeLastVert || verts.length > 3)) {
@@ -443,7 +442,7 @@ class PolylineShapeHandler extends ShapeHandler {
     }
   }
 
-  mousedownCB(event) {
+  mousedownCB (event) {
     if (!this.isMouseEventInCanvas(event)) {
       this.timer = null
       return
@@ -452,7 +451,7 @@ class PolylineShapeHandler extends ShapeHandler {
     this.timer = performance.now()
   }
 
-  mouseupCB(event) {
+  mouseupCB (event) {
     if (this.timer && performance.now() - this.timer < 500) {
       this.disableBasemapEvents()
 
@@ -463,7 +462,7 @@ class PolylineShapeHandler extends ShapeHandler {
 
       if (!this.startVert) {
         this.lineShape = new MapdDraw.PolyLine(Object.assign({
-          verts: [mouseworldpos],
+          verts: [mouseworldpos]
         }, this.defaultSelectStyle))
         this.addShape(this.lineShape)
         this.startVert = new MapdDraw.Point({
@@ -507,7 +506,7 @@ class PolylineShapeHandler extends ShapeHandler {
     }
   }
 
-  mousemoveCB(event) {
+  mousemoveCB (event) {
     if (this.startVert && this.lineShape && this.activeIdx < 0) {
       const mousepos = this.getRelativeMousePosFromEvent(event)
       const mouseworldpos = MapdDraw.Point2d.create(0, 0)
@@ -569,7 +568,7 @@ class PolylineShapeHandler extends ShapeHandler {
     }
   }
 
-  dblclickCB(event) {
+  dblclickCB (event) {
     if (!this.isMouseEventInCanvas(event)) {
       return
     }
@@ -577,7 +576,7 @@ class PolylineShapeHandler extends ShapeHandler {
     this.finishShape()
   }
 
-  keydownCB(event) {
+  keydownCB (event) {
     if (event.key === "Escape" || event.code === "Escape" || event.keyCode === 27) {
       this.destroy()
       this.enableBasemapEvents()
@@ -589,14 +588,14 @@ class PolylineShapeHandler extends ShapeHandler {
 
 /* istanbul ignore next */
 class LassoShapeHandler extends ShapeHandler {
-  constructor(parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
+  constructor (parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
     super(parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle)
     this.activeShape = null
     this.lastPos = null
     this.lastWorldPos = null
   }
 
-  destroy() {
+  destroy () {
     if (this.activeShape) {
       this.drawEngine.deleteShape(this.activeShape)
       this.activeShape = null
@@ -604,7 +603,7 @@ class LassoShapeHandler extends ShapeHandler {
     this.lastPos = this.lastWorldPos = null
   }
 
-  mousedownCB(event) {
+  mousedownCB (event) {
     if (!this.isMouseEventInCanvas(event)) {
       return
     }
@@ -617,7 +616,7 @@ class LassoShapeHandler extends ShapeHandler {
     event.preventDefault()
   }
 
-  mousemoveCB(event) {
+  mousemoveCB (event) {
     if (!this.isMouseEventInCanvas(event)) {
       if (this.activeShape) {
         this.drawEngine.deleteShape(this.activeShape)
@@ -650,7 +649,7 @@ class LassoShapeHandler extends ShapeHandler {
     }
   }
 
-  mouseupCB(event) {
+  mouseupCB (event) {
     if (this.activeShape) {
       const verts = this.activeShape.vertsRef
       const screenVert = MapdDraw.Point2d.create(0, 0)
@@ -686,7 +685,7 @@ class LassoShapeHandler extends ShapeHandler {
     this.lastWorldPos = null
   }
 
-  keydownCB(event) {
+  keydownCB (event) {
     if (event.key === "Escape" || event.code === "Escape" || event.keyCode === 27) {
       this.destroy()
       this.enableBasemapEvents()
@@ -696,7 +695,7 @@ class LassoShapeHandler extends ShapeHandler {
 
 /* istanbul ignore next */
 export default class LassoButtonGroupController {
-  constructor(parentContainer, parentChart, parentDrawEngine, defaultStyle, defaultSelectStyle) {
+  constructor (parentContainer, parentChart, parentDrawEngine, defaultStyle, defaultSelectStyle) {
     this._container = parentContainer
     this._chart = parentChart
     this._drawEngine = parentDrawEngine
@@ -711,7 +710,7 @@ export default class LassoButtonGroupController {
     this._initControls(defaultStyle, defaultSelectStyle)
   }
 
-  destroy() {
+  destroy () {
     if (this._controlsInitted) {
       const canvas = this._drawEngine.getCanvas()
       canvas.removeEventListener("keydown", this._keyboardCB)
@@ -729,7 +728,7 @@ export default class LassoButtonGroupController {
     }
   }
 
-  _createControlButton(id, options = {}) {
+  _createControlButton (id, options = {}) {
     const button = document.createElement("button")
     button.className = `mapd-draw-button ${options.className}`
     button.setAttribute("title", options.title)
@@ -779,7 +778,7 @@ export default class LassoButtonGroupController {
     return button
   }
 
-  _createButtonControl(id, ShapeHandlerClass, defaultStyle, defaultSelectStyle, keybindingStr = "") {
+  _createButtonControl (id, ShapeHandlerClass, defaultStyle, defaultSelectStyle, keybindingStr = "") {
     const shapeHandler = new ShapeHandlerClass(this._container, this._drawEngine, this._chart, this, id, defaultStyle, defaultSelectStyle)
     this._buttonElements[id] = this._createControlButton(id, {
       className: `mapd-draw-button-${id}`,
@@ -796,11 +795,11 @@ export default class LassoButtonGroupController {
     return shapeHandler
   }
 
-  isActive() {
+  isActive () {
     return Boolean(this._activeButton)
   }
 
-  deactivateButton(id) {
+  deactivateButton (id) {
     if (this._activeButton && this._buttonElements[id] === this._activeButton.button) {
       this.deactivateButtons()
       return true
@@ -808,7 +807,7 @@ export default class LassoButtonGroupController {
     return false
   }
 
-  deactivateButtons() {
+  deactivateButtons () {
     if (this._activeButton) {
       this._activeButton.button.classList.remove("mapd-draw-active-button")
       if (this._activeButton.options && this._activeButton.options.onDeactivate) {
@@ -826,7 +825,7 @@ export default class LassoButtonGroupController {
     // Leaving that for the "mouseout" event
   }
 
-  setActiveButton(id, options) {
+  setActiveButton (id, options) {
     const button = this._buttonElements[id]
     if (!button) {
       return
@@ -849,7 +848,7 @@ export default class LassoButtonGroupController {
     this._chart.popupDisplayable(false)
   }
 
-  _selectionchangedCB(event) {
+  _selectionchangedCB (event) {
     if (!this._activeShape && !this._activeButton) {
       const canvas = this._drawEngine.getCanvas()
       if (event.selectedShapes && event.selectedShapes.length) {
@@ -870,14 +869,14 @@ export default class LassoButtonGroupController {
     }
   }
 
-  _dragbeginCB(event) {
+  _dragbeginCB (event) {
     if (!this._activeShape && !this._activeButton) {
       const canvas = this._drawEngine.getCanvas()
       canvas.focus()
     }
   }
 
-  _dragendCB(event) {
+  _dragendCB (event) {
     const CircleClass = getLatLonCircleClass()
     event.shapes.forEach(shape => {
       if (shape instanceof CircleClass) {
@@ -889,7 +888,7 @@ export default class LassoButtonGroupController {
     })
   }
 
-  _keyboardCB(event) {
+  _keyboardCB (event) {
     if ((event.key === "Backspace" || event.code === "Backspace" || event.keyCode === 8) && this._drawEngine) {
       const selectedShapes = this._drawEngine.selectedShapes
       if (selectedShapes.length) {
@@ -903,7 +902,7 @@ export default class LassoButtonGroupController {
   }
 
 
-  _initControls(defaultStyle, defaultSelectStyle) {
+  _initControls (defaultStyle, defaultSelectStyle) {
     let margins = null
     if (typeof this._chart.margins === "function") {
       margins = this._chart.margins()

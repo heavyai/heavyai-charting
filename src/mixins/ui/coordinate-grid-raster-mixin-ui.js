@@ -3,7 +3,7 @@
 import {redrawAllAsync} from "../../core/core-async"
 
 /* istanbul ignore next */
-function bindAll(funcNames, thisArg) {
+function bindAll (funcNames, thisArg) {
   funcNames.forEach(funcName => {
     if (!thisArg[funcName]) {
       return
@@ -13,7 +13,7 @@ function bindAll(funcNames, thisArg) {
 }
 
 /* istanbul ignore next */
-function isInChart(chart, container, e, mousePos) {
+function isInChart (chart, container, e, mousePos) {
   const width = chart.effectiveWidth()
   const height = chart.effectiveHeight()
   const margins = chart.margins()
@@ -36,7 +36,7 @@ function isInChart(chart, container, e, mousePos) {
 
 /* istanbul ignore next */
 class BaseHandler {
-  constructor(chart, container, dataBounds, dataScale, dataOffset, filterDimensionCB, chartRedrawCB, mapboxglModule) {
+  constructor (chart, container, dataBounds, dataScale, dataOffset, filterDimensionCB, chartRedrawCB, mapboxglModule) {
     this._chart = chart
     this._map = chart.map()
     this._container = container
@@ -48,15 +48,15 @@ class BaseHandler {
     this._mapboxglModule = mapboxglModule
   }
 
-  isEnabled() {
-    return !!this._enabled
+  isEnabled () {
+    return Boolean(this._enabled)
   }
 
-  isActive() {
-    return !!this._active
+  isActive () {
+    return Boolean(this._active)
   }
 
-  enable() {
+  enable () {
     if (this.isEnabled()) {
       return
     }
@@ -65,7 +65,7 @@ class BaseHandler {
     this._enabled = true
   }
 
-  disable() {
+  disable () {
     if (!this.isEnabled()) {
       return
     }
@@ -74,7 +74,7 @@ class BaseHandler {
     this._enabled = false
   }
 
-  _fireEvent(type, e, eventMetaData) {
+  _fireEvent (type, e, eventMetaData) {
     if (!eventMetaData) {
       eventMetaData = {}
     }
@@ -86,8 +86,8 @@ class BaseHandler {
 }
 
 /* istanbul ignore next */
-function testProp(props, docStyle) {
-  for (let i = 0; i < props.length; i += 1) {
+function testProp (props, docStyle) {
+  for (let i = 0; i < props.length; i = i + 1) {
     if (props[i] in docStyle) {
       return props[i]
     }
@@ -95,7 +95,7 @@ function testProp(props, docStyle) {
 }
 
 /* istanbul ignore next */
-function createHTMLElement(tagName, className, container) {
+function createHTMLElement (tagName, className, container) {
   const el = document.createElement(tagName)
   if (className) {
     el.className = className
@@ -108,7 +108,7 @@ function createHTMLElement(tagName, className, container) {
 
 /* istanbul ignore next */
 class BoxZoomHandler extends BaseHandler {
-  constructor(chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, mapboxglModule) {
+  constructor (chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, mapboxglModule) {
     super(chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, mapboxglModule)
     this._startBoxZoomPos = null
     this._boxZoomBox = null
@@ -119,11 +119,11 @@ class BoxZoomHandler extends BaseHandler {
     bindAll(["onBoxZoom", "onMouseMove", "onMouseUp", "onKeyDown"], this)
   }
 
-  _enable() {
+  _enable () {
     this._container.addEventListener("mousedown", this.onBoxZoom)
   }
 
-  _disable() {
+  _disable () {
     if (this._active) {
       this._finish()
       this._fireEvent("boxzoomcancel", {})
@@ -131,20 +131,20 @@ class BoxZoomHandler extends BaseHandler {
     this._container.removeEventListener("mousedown", this.onBoxZoom)
   }
 
-  _enableDrag() {
+  _enableDrag () {
     if (this._selectProp) {
       document.documentElement.style[this._selectProp] = this._userSelect
     }
   }
 
-  _disableDrag() {
+  _disableDrag () {
     if (this._selectProp) {
       this._userSelect = document.documentElement.style[this._selectProp]
       document.documentElement.style[this._selectProp] = "none"
     }
   }
 
-  onBoxZoom(e) {
+  onBoxZoom (e) {
     // make sure the mouse position is in the
     // chart
     const pos = new this._mapboxglModule.Point(0, 0)
@@ -166,7 +166,7 @@ class BoxZoomHandler extends BaseHandler {
     this._active = true
   }
 
-  onMouseMove(e) {
+  onMouseMove (e) {
     const p0 = this._startBoxZoomPos
     const p1 = new this._mapboxglModule.Point(0, 0)
 
@@ -193,7 +193,7 @@ class BoxZoomHandler extends BaseHandler {
     this._boxZoomBox.style.height = `${maxY - minY}px`
   }
 
-  onMouseUp(e) {
+  onMouseUp (e) {
     if (e.button !== 0) {
       return
     }
@@ -256,14 +256,14 @@ class BoxZoomHandler extends BaseHandler {
     }
   }
 
-  onKeyDown(e) {
+  onKeyDown (e) {
     if (e.keyCode === 27) {
       this._finish()
       this._fireEvent("boxzoomcancel", e)
     }
   }
 
-  _boxZoomFinished(e, xmin, xmax, ymin, ymax) {
+  _boxZoomFinished (e, xmin, xmax, ymin, ymax) {
     this._fireEvent("zoomend", e)
     this._fireEvent("moveend", e)
 
@@ -283,7 +283,7 @@ class BoxZoomHandler extends BaseHandler {
     })
   }
 
-  _perFrameFunc(e, t, startminx, diffminx, startmaxx, diffmaxx, startminy, diffminy, startmaxy, diffmaxy) {
+  _perFrameFunc (e, t, startminx, diffminx, startmaxx, diffmaxx, startminy, diffminy, startmaxy, diffmaxy) {
     const xrange = [
       startminx + t * diffminx,
       startmaxx + t * diffmaxx
@@ -314,7 +314,7 @@ class BoxZoomHandler extends BaseHandler {
     this._fireEvent("move", e)
   }
 
-  _finish() {
+  _finish () {
     this._active = false
 
     document.removeEventListener("mousemove", this.onMouseMove, false)
@@ -336,7 +336,7 @@ class BoxZoomHandler extends BaseHandler {
 
 /* istanbul ignore next */
 class ScrollZoomHandler extends BaseHandler {
-  constructor(chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, mapboxglModule, browser) {
+  constructor (chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, mapboxglModule, browser) {
     super(chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, mapboxglModule)
     this._startWheelPos = null
     this._wheelType = null
@@ -348,12 +348,12 @@ class ScrollZoomHandler extends BaseHandler {
     bindAll(["_onSingularWheelTimeout", "_onWheelTimeout", "onWheel"], this)
   }
 
-  _onSingularWheelTimeout() {
+  _onSingularWheelTimeout () {
     this._wheelType = "wheel"
     this._wheelZoom(true, -this._lastWheelVal)
   }
 
-  _onWheelTimeout() {
+  _onWheelTimeout () {
     this._wheelZoom(true, -this._lastWheelVal)
   }
 
@@ -370,17 +370,17 @@ class ScrollZoomHandler extends BaseHandler {
   // }
 
 
-  _enable() {
+  _enable () {
     this._container.addEventListener("wheel", this.onWheel)
     this._container.addEventListener("mousewheel", this.onWheel)
   }
 
-  _disable() {
+  _disable () {
     this._container.removeEventListener("wheel", this.onWheel)
     this._container.removeEventListener("mousewheel", this.onWheel)
   }
 
-  onWheel(e) {
+  onWheel (e) {
     let value = 0
 
     // make sure the mouse position is in the
@@ -394,11 +394,11 @@ class ScrollZoomHandler extends BaseHandler {
       value = e.deltaY
       // Firefox doubles the values on retina screens...
       if (this._browser.isFirefox && e.deltaMode === window.WheelEvent.DOM_DELTA_PIXEL) {
-        value /= (window.devicePixelRatio || 1)
+        value = value / (window.devicePixelRatio || 1)
       }
 
       if (e.deltaMode === window.WheelEvent.DOM_DELTA_LINE) {
-        value *= 40
+        value = value * 40
       }
     } else if (e.type === "mousewheel") {
       value = -e.wheelDeltaY
@@ -447,7 +447,7 @@ class ScrollZoomHandler extends BaseHandler {
       if (this._singularWheelTimeout) {
         clearTimeout(this._singularWheelTimeout)
         this._singularWheelTimeout = null
-        value += this._lastWheelVal
+        value = value + this._lastWheelVal
       }
 
       this._lastWheelVal = value
@@ -467,7 +467,7 @@ class ScrollZoomHandler extends BaseHandler {
     e.preventDefault()
   }
 
-  _wheelZoom(doFullRender, delta, e) {
+  _wheelZoom (doFullRender, delta, e) {
     if (!doFullRender && delta === 0) {
       return
     }
@@ -555,7 +555,7 @@ class ScrollZoomHandler extends BaseHandler {
 
 /* istanbul ignore next */
 class DragPanHandler extends BaseHandler {
-  constructor(chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, mapboxglModule) {
+  constructor (chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, mapboxglModule) {
     super(chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, mapboxglModule)
     this._dragInertia = []
     this._startDragPos = null
@@ -564,12 +564,12 @@ class DragPanHandler extends BaseHandler {
     bindAll(["onDrag", "onMove", "onTouchEnd", "onMouseUp"], this)
   }
 
-  _enable() {
+  _enable () {
     this._container.addEventListener("mousedown", this.onDrag)
     this._container.addEventListener("touchstart", this.onDrag)
   }
 
-  _disable() {
+  _disable () {
     this._container.removeEventListener("mousedown", this.onDrag)
     this._container.removeEventListener("touchstart", this.onDrag)
 
@@ -585,7 +585,7 @@ class DragPanHandler extends BaseHandler {
     }
   }
 
-  onDrag(e) {
+  onDrag (e) {
     if (this._ignoreEvent(e)) {
       return
     }
@@ -613,7 +613,7 @@ class DragPanHandler extends BaseHandler {
     this._dragInertia = [[Date.now(), this._dragPos]]
   }
 
-  onMove(e) {
+  onMove (e) {
     // make sure the mouse position is in the chart
     if (this._ignoreEvent(e)) {
       return
@@ -658,8 +658,8 @@ class DragPanHandler extends BaseHandler {
     let ymax = yRange[1] - deltaY
 
     const bounds = this._chart._fitToMaxBounds([[xmin, ymin], [xmax, ymax]], true)
-    deltaX += (xmin - bounds[0][0])
-    deltaY += (ymin - bounds[0][1])
+    deltaX = deltaX + (xmin - bounds[0][0])
+    deltaY = deltaY + (ymin - bounds[0][1])
     xmin = bounds[0][0]
     ymin = bounds[0][1]
     xmax = bounds[1][0]
@@ -688,7 +688,7 @@ class DragPanHandler extends BaseHandler {
     e.preventDefault()
   }
 
-  _onUp(e) {
+  _onUp (e) {
     if (!this._active) {
       return
     }
@@ -741,7 +741,7 @@ class DragPanHandler extends BaseHandler {
     // Do the animated ease-out of the pan like mapbox
   }
 
-  onTouchEnd(e) {
+  onTouchEnd (e) {
     // TODO(croot): check that the event is in the chart window?
     if (this._ignoreEvent(e)) {
       return
@@ -751,7 +751,7 @@ class DragPanHandler extends BaseHandler {
     document.removeEventListener("touchend", this.onTouchEnd)
   }
 
-  onMouseUp(e) {
+  onMouseUp (e) {
     // TODO(croot): check that the event is in the chart window?
     if (this._ignoreEvent(e)) {
       return
@@ -761,7 +761,7 @@ class DragPanHandler extends BaseHandler {
     document.removeEventListener("mouseup", this.onMouseUp)
   }
 
-  _ignoreEvent(e) {
+  _ignoreEvent (e) {
     const map = this._chart.map()
     if (map.boxZoom && map.boxZoom.isActive()) {
       return true
@@ -779,7 +779,7 @@ class DragPanHandler extends BaseHandler {
     }
   }
 
-  _drainInertiaBuffer() {
+  _drainInertiaBuffer () {
     const now = Date.now()
     const cutoff = 160 // msec
 
@@ -792,7 +792,7 @@ class DragPanHandler extends BaseHandler {
 }
 
 /* istanbul ignore next */
-export default function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, browser, mapboxglModule, enableInteractions) {
+export default function bindEventHandlers (chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, browser, mapboxglModule, enableInteractions) {
   const map = chart.map()
   let startPos = null
   let tapped = null
@@ -812,7 +812,7 @@ export default function bindEventHandlers(chart, container, dataBounds, dataScal
   container.addEventListener("click", onClick, false)
   container.addEventListener("dblclick", onDblClick, false)
 
-  function destroyAllEvents() {
+  function destroyAllEvents () {
     container.removeEventListener("mouseout", onMouseOut)
     container.removeEventListener("mousedown", onMouseDown)
     container.removeEventListener("mouseup", onMouseUp)
@@ -825,14 +825,14 @@ export default function bindEventHandlers(chart, container, dataBounds, dataScal
     container.removeEventListener("dblclick", onDblClick)
   }
 
-  function onMouseOut(e) {
+  function onMouseOut (e) {
     const pos = new mapboxglModule.Point(0, 0)
     if (isInChart(chart, container, e, pos)) {
       fireMouseEvent("mouseout", e, pos)
     }
   }
 
-  function onMouseDown(e) {
+  function onMouseDown (e) {
     // TODO(croot): if we support animated
     // pans/zooms, we want to stop any currently
     // running animation here first:
@@ -844,12 +844,12 @@ export default function bindEventHandlers(chart, container, dataBounds, dataScal
     }
   }
 
-  function onMouseUp(e) {
+  function onMouseUp (e) {
     const pos = new mapboxglModule.Point(0, 0)
     fireMouseEvent("mouseup", e, pos)
   }
 
-  function onMouseMove(e) {
+  function onMouseMove (e) {
     const pos = new mapboxglModule.Point(0, 0)
     if (isInChart(chart, container, e, pos)) {
       if (map.dragPan && map.dragPan.isActive()) {
@@ -868,13 +868,12 @@ export default function bindEventHandlers(chart, container, dataBounds, dataScal
     }
   }
 
-  function onTouchStart(e) {
+  function onTouchStart (e) {
     if (isInChart(chart, container, e)) {
       // TODO(croot): if we support animated
       // pans/zooms, we want to stop any currently
       // running animation here first:
-      if ((map.dragPan && map.dragPan.isActive()) ||
-          (map.bozZoom && map.boxZoom.isActive())) {
+      if ((map.dragPan && map.dragPan.isActive()) || (map.bozZoom && map.boxZoom.isActive())) {
         return
       }
 
@@ -894,29 +893,29 @@ export default function bindEventHandlers(chart, container, dataBounds, dataScal
     }
   }
 
-  function onTouchMove(e) {
+  function onTouchMove (e) {
     if (isInChart(chart, container, e)) {
       fireTouchEvent("touchmove", e)
     }
   }
 
-  function onTouchEnd(e) {
+  function onTouchEnd (e) {
     if (isInChart(chart, container, e)) {
       fireTouchEvent("touchend", e)
     }
   }
 
-  function onTouchCancel(e) {
+  function onTouchCancel (e) {
     if (isInChart(chart, container, e)) {
       fireTouchEvent("touchcancel", e)
     }
   }
 
-  function onTouchTimeout() {
+  function onTouchTimeout () {
     tapped = null
   }
 
-  function onClick(e) {
+  function onClick (e) {
     const pos = new mapboxglModule.Point(0, 0)
     if (isInChart(chart, container, e, pos)) {
       if (pos.equals(startPos)) {
@@ -925,7 +924,7 @@ export default function bindEventHandlers(chart, container, dataBounds, dataScal
     }
   }
 
-  function onDblClick(e) {
+  function onDblClick (e) {
     const pos = new mapboxglModule.Point(0, 0)
     if (isInChart(chart, container, e, pos)) {
       fireMouseEvent("dblclick", e, pos)
@@ -933,7 +932,7 @@ export default function bindEventHandlers(chart, container, dataBounds, dataScal
     }
   }
 
-  function fireMouseEvent(type, e, pos) {
+  function fireMouseEvent (type, e, pos) {
     return map.fire(type, {
       dataCoord: chart.unproject(pos),
       point: pos,
@@ -941,12 +940,12 @@ export default function bindEventHandlers(chart, container, dataBounds, dataScal
     })
   }
 
-  function touchPos(touchContainer, e) {
+  function touchPos (touchContainer, e) {
     const rect = touchContainer.getBoundingClientRect()
     const points = []
     const margins = chart.margins()
 
-    for (let i = 0; i < e.touches.length; i += 1) {
+    for (let i = 0; i < e.touches.length; i = i + 1) {
       // TODO(croot): should we only add points that are
       // within the container?
       points.push(new mapboxglModule.Point(
@@ -957,31 +956,27 @@ export default function bindEventHandlers(chart, container, dataBounds, dataScal
     return points
   }
 
-  function fireTouchEvent(type, e) {
+  function fireTouchEvent (type, e) {
     const touches = touchPos(container, e)
-    const singular = touches.reduce((prev, curr, i, arr) => {
-      return prev.add(curr.div(arr.length))
-    }, new mapboxglModule.Point(0, 0))
+    const singular = touches.reduce((prev, curr, i, arr) => prev.add(curr.div(arr.length)), new mapboxglModule.Point(0, 0))
 
     return map.fire(type, {
       dataCoord: chart.unproject(singular),
       point: singular,
-      dataCoords: touches.map(t => {
-        return chart.unproject(t)
-      }, this),
+      dataCoords: touches.map(t => chart.unproject(t), this),
       points: touches,
       originalEvent: e
     })
   }
 
-  function enableInteractionsInternal() {
+  function enableInteractionsInternal () {
     map.scrollZoom.enable()
     map.boxZoom.enable()
     // NOTE: box zoom must be enabled before dragPan
     map.dragPan.enable()
   }
 
-  function disableInteractionsInternal() {
+  function disableInteractionsInternal () {
     map.dragPan.disable()
     map.boxZoom.disable()
     map.scrollZoom.disable()
@@ -1001,12 +996,10 @@ export default function bindEventHandlers(chart, container, dataBounds, dataScal
       disableInteractionsInternal()
     },
 
-    getInteractionPropNames: () => {
-      return ["scrollZoom", "boxZoom", "dragPan"]
-    }
+    getInteractionPropNames: () => ["scrollZoom", "boxZoom", "dragPan"]
   }
 
-  if (!!enableInteractions) {
+  if (enableInteractions) {
     rtn.enableInteractions()
   }
 

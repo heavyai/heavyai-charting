@@ -55,8 +55,8 @@ export const BIN_INPUT_OPTIONS = [
 
 export function autoBinParams (timeBounds, maxNumBins, reverse) {
   const epochTimeBounds = [(timeBounds[0] * 0.001), (timeBounds[1] * 0.001)]
-  const timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
-  const timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
+  const timeRange = epochTimeBounds[1] - epochTimeBounds[0] // in seconds
+  const timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS
   for (let s = 0; s < timeSpans.length; s++) {
     if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
       return timeSpans[s].label

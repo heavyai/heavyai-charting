@@ -1,4 +1,4 @@
-import {createBinParams, checkIfTimeBinInRange} from "../utils/binning-helpers"
+import {checkIfTimeBinInRange, createBinParams} from "../utils/binning-helpers"
 import {pluck, utils} from "../utils/utils"
 import d3 from "d3"
 import {override} from "../core/core"
@@ -16,59 +16,57 @@ import {multipleKeysAccessorForStack} from "../utils/multiple-key-accessors"
 
 export default function stackMixin (_chart) {
 
-    function prepareValues (layer, layerIdx) {
-        var valAccessor = layer.accessor || _chart.valueAccessor();
-        layer.name = String(layer.name || "series_" + (layerIdx + 1));
-        layer.layer = layer.name
-        layer.idx = layerIdx;
+  function prepareValues (layer, layerIdx) {
+    const valAccessor = layer.accessor || _chart.valueAccessor()
+    layer.name = String(layer.name || "series_" + (layerIdx + 1))
+    layer.layer = layer.name
+    layer.idx = layerIdx
 
 /* OVERRIDE ---------------------------------------------------------------- */
         // WARNING: probably destroys stack functionality: find workaround
-        var preValues = _chart.dataCache != null ? _chart.dataCache : layer.group.all();
-        //layer.values = layer.group.all().map(function (d, i) {
-        layer.values = preValues.map(function (d,i) {
-            return {
-                x: _chart.keyAccessor()(d, i),
-                y: layer.hidden ? null : valAccessor(d, i) || 0,
-                idx: layerIdx,
-                data: d,
-                layer: layer.name,
-                hidden: layer.hidden
-            };
-        });
+    const preValues = _chart.dataCache != null ? _chart.dataCache : layer.group.all()
+        // layer.values = layer.group.all().map(function (d, i) {
+    layer.values = preValues.map((d, i) => ({
+      x: _chart.keyAccessor()(d, i),
+      y: layer.hidden ? null : valAccessor(d, i) || 0,
+      idx: layerIdx,
+      data: d,
+      layer: layer.name,
+      hidden: layer.hidden
+    }))
 /* ------------------------------------------------------------------------- */
-        layer.values = layer.values.filter(domainFilter());
-        return layer.values;
+    layer.values = layer.values.filter(domainFilter())
+    return layer.values
+  }
+
+  let _stackLayout = d3.layout.stack()
+        .values(prepareValues)
+
+  let _stack = []
+  let _titles = {}
+
+  let _hidableStacks = false
+  let _colorByLayerId = false
+
+  function domainFilter () {
+    if (!_chart.x()) {
+      return d3.functor(true)
     }
-
-    var _stackLayout = d3.layout.stack()
-        .values(prepareValues);
-
-    var _stack = [];
-    var _titles = {};
-
-    var _hidableStacks = false;
-    var _colorByLayerId = false;
-
-    function domainFilter () {
-        if (!_chart.x()) {
-            return d3.functor(true);
-        }
-        var xDomain = _chart.x().domain();
-        if (_chart.isOrdinal()) {
+    const xDomain = _chart.x().domain()
+    if (_chart.isOrdinal()) {
             // TODO #416
-            //var domainSet = d3.set(xDomain);
-            return function () {
-                return true; //domainSet.has(p.x);
-            };
-        }
-        if (_chart.elasticX()) {
-            return function () { return true; };
-        }
-        return function (p) {
-            return true;
-        };
+            // var domainSet = d3.set(xDomain);
+      return function () {
+        return true // domainSet.has(p.x);
+      }
     }
+    if (_chart.elasticX()) {
+      return function () { return true }
+    }
+    return function (p) {
+      return true
+    }
+  }
 
     /**
      * Stack a new crossfilter group onto this chart with an optional custom value accessor. All stacks
@@ -92,39 +90,39 @@ export default function stackMixin (_chart) {
      * @return {Array<{group: crossfilter.group, name: String, accessor: Function}>}
      * @return {dc.stackMixin}
      */
-    _chart.stack = function (group, name, accessor) {
-        if (!arguments.length) {
-            return _stack;
-        }
+  _chart.stack = function (group, name, accessor) {
+    if (!arguments.length) {
+      return _stack
+    }
 
-        if (arguments.length <= 2) {
-            accessor = name;
-        }
+    if (arguments.length <= 2) {
+      accessor = name
+    }
 
-        var layer = {group: group};
-        if (typeof name === 'string') {
-            layer.name = name;
-        }
-        if (typeof accessor === 'function') {
-            layer.accessor = accessor;
-        }
-        _stack.push(layer);
+    const layer = {group}
+    if (typeof name === "string") {
+      layer.name = name
+    }
+    if (typeof accessor === "function") {
+      layer.accessor = accessor
+    }
+    _stack.push(layer)
 
-        return _chart;
-    };
+    return _chart
+  }
 
-    override(_chart, 'group', function (g, n, f) {
-        if (!arguments.length) {
-            return _chart._group();
-        }
-        _stack = [];
-        _titles = {};
-        _chart.stack(g, n);
-        if (f) {
-            _chart.valueAccessor(f);
-        }
-        return _chart._group(g, n);
-    });
+  override(_chart, "group", function (g, n, f) {
+    if (!arguments.length) {
+      return _chart._group()
+    }
+    _stack = []
+    _titles = {}
+    _chart.stack(g, n)
+    if (f) {
+      _chart.valueAccessor(f)
+    }
+    return _chart._group(g, n)
+  })
 
     /**
      * Allow named stacks to be hidden or shown by clicking on legend items.
@@ -136,18 +134,18 @@ export default function stackMixin (_chart) {
      * @return {Boolean}
      * @return {dc.stackMixin}
      */
-    _chart.hidableStacks = function (hidableStacks) {
-        if (!arguments.length) {
-            return _hidableStacks;
-        }
-        _hidableStacks = hidableStacks;
-        return _chart;
-    };
-
-    function findLayerByName (n) {
-        var i = _stack.map(pluck('name')).indexOf(n);
-        return _stack[i];
+  _chart.hidableStacks = function (hidableStacks) {
+    if (!arguments.length) {
+      return _hidableStacks
     }
+    _hidableStacks = hidableStacks
+    return _chart
+  }
+
+  function findLayerByName (n) {
+    const i = _stack.map(pluck("name")).indexOf(n)
+    return _stack[i]
+  }
 
     /**
      * Hide all stacks on the chart with the given name.
@@ -158,13 +156,13 @@ export default function stackMixin (_chart) {
      * @param {String} stackName
      * @return {dc.stackMixin}
      */
-    _chart.hideStack = function (stackName) {
-        var layer = findLayerByName(stackName);
-        if (layer) {
-            layer.hidden = true;
-        }
-        return _chart;
-    };
+  _chart.hideStack = function (stackName) {
+    const layer = findLayerByName(stackName)
+    if (layer) {
+      layer.hidden = true
+    }
+    return _chart
+  }
 
     /**
      * Show all stacks on the chart with the given name.
@@ -175,59 +173,53 @@ export default function stackMixin (_chart) {
      * @param {String} stackName
      * @return {dc.stackMixin}
      */
-    _chart.showStack = function (stackName) {
-        var layer = findLayerByName(stackName);
-        if (layer) {
-            layer.hidden = false;
-        }
-        return _chart;
-    };
-
-    _chart.getValueAccessorByIndex = function (index) {
-        return _stack[index].accessor || _chart.valueAccessor();
-    };
-
-    _chart.yAxisMin = function () {
-        var min = d3.min(flattenStack(), function (p) {
-/* OVERRIDE ---------------------------------------------------------------- */
-            if (_chart.renderArea === undefined || _chart.renderArea())
-                return (p.y + p.y0 < p.y0) ? (p.y + p.y0) : p.y0;
-            else
-                return p.y;
-        });
-/* ------------------------------------------------------------------------- */
-
-        return utils.subtract(min, _chart.yAxisPadding());
-
-    };
-
-    _chart.yAxisMax = function () {
-        var max = d3.max(flattenStack(), function (p) {
-/* OVERRIDE ---------------------------------------------------------------- */
-            if (_chart.renderArea === undefined || _chart.renderArea())
-                return p.y + p.y0;
-            else
-                return p.y;
-/* ------------------------------------------------------------------------- */
-        });
-
-        return utils.add(max, _chart.yAxisPadding());
-    };
-
-    function flattenStack () {
-        var valueses = _chart.data().map(function (layer) { return layer.values; });
-        return Array.prototype.concat.apply([], valueses);
+  _chart.showStack = function (stackName) {
+    const layer = findLayerByName(stackName)
+    if (layer) {
+      layer.hidden = false
     }
+    return _chart
+  }
 
-    _chart.xAxisMin = function () {
-        var min = d3.min(flattenStack(), pluck('x'));
-        return utils.subtract(min, _chart.xAxisPadding());
-    };
+  _chart.getValueAccessorByIndex = function (index) {
+    return _stack[index].accessor || _chart.valueAccessor()
+  }
 
-    _chart.xAxisMax = function () {
-        var max = d3.max(flattenStack(), pluck('x'));
-        return utils.add(max, _chart.xAxisPadding());
-    };
+  _chart.yAxisMin = function () {
+    const min = d3.min(flattenStack(), (p) => {
+/* OVERRIDE ---------------------------------------------------------------- */
+      if (_chart.renderArea === undefined || _chart.renderArea()) { return (p.y + p.y0 < p.y0) ? (p.y + p.y0) : p.y0 } else { return p.y }
+    })
+/* ------------------------------------------------------------------------- */
+
+    return utils.subtract(min, _chart.yAxisPadding())
+
+  }
+
+  _chart.yAxisMax = function () {
+    const max = d3.max(flattenStack(), (p) => {
+/* OVERRIDE ---------------------------------------------------------------- */
+      if (_chart.renderArea === undefined || _chart.renderArea()) { return p.y + p.y0 } else { return p.y }
+/* ------------------------------------------------------------------------- */
+    })
+
+    return utils.add(max, _chart.yAxisPadding())
+  }
+
+  function flattenStack () {
+    const valueses = _chart.data().map((layer) => layer.values)
+    return Array.prototype.concat.apply([], valueses)
+  }
+
+  _chart.xAxisMin = function () {
+    const min = d3.min(flattenStack(), pluck("x"))
+    return utils.subtract(min, _chart.xAxisPadding())
+  }
+
+  _chart.xAxisMax = function () {
+    const max = d3.max(flattenStack(), pluck("x"))
+    return utils.add(max, _chart.xAxisPadding())
+  }
 
     /**
      * Set or get the title function. Chart class will use this function to render svg title (usually interpreted by
@@ -250,26 +242,26 @@ export default function stackMixin (_chart) {
      * @return {String}
      * @return {dc.stackMixin}
      */
-    override(_chart, 'title', function (stackName, titleAccessor) {
-        if (!stackName) {
-            return _chart._title();
-        }
+  override(_chart, "title", (stackName, titleAccessor) => {
+    if (!stackName) {
+      return _chart._title()
+    }
 
-        if (typeof stackName === 'function') {
-            return _chart._title(stackName);
-        }
-        if (stackName === _chart._groupName && typeof titleAccessor === 'function') {
-            return _chart._title(titleAccessor);
-        }
+    if (typeof stackName === "function") {
+      return _chart._title(stackName)
+    }
+    if (stackName === _chart._groupName && typeof titleAccessor === "function") {
+      return _chart._title(titleAccessor)
+    }
 
-        if (typeof titleAccessor !== 'function') {
-            return _titles[stackName] || _chart._title();
-        }
+    if (typeof titleAccessor !== "function") {
+      return _titles[stackName] || _chart._title()
+    }
 
-        _titles[stackName] = titleAccessor;
+    _titles[stackName] = titleAccessor
 
-        return _chart;
-    });
+    return _chart
+  })
 
     /**
      * Gets or sets the stack layout algorithm, which computes a baseline for each stack and
@@ -282,104 +274,98 @@ export default function stackMixin (_chart) {
      * @return {Function}
      * @return {dc.stackMixin}
      */
-    _chart.stackLayout = function (stack) {
-        if (!arguments.length) {
-            return _stackLayout;
-        }
-        _stackLayout = stack;
-        return _chart;
-    };
+  _chart.stackLayout = function (stack) {
+    if (!arguments.length) {
+      return _stackLayout
+    }
+    _stackLayout = stack
+    return _chart
+  }
 
-    function visability (l) {
-        return !l.hidden;
+  function visability (l) {
+    return !l.hidden
+  }
+
+  _chart.data(() => {
+    const layers = _stack.filter(visability)
+    return layers.length ? _chart.stackLayout()(layers) : []
+  })
+
+  _chart._ordinalXDomain = function () {
+    const flat = flattenStack().map(pluck("data"))
+    const ordered = _chart._computeOrderedGroups(flat)
+    return ordered.map(_chart.keyAccessor())
+  }
+
+  _chart.colorByLayerId = function (_) {
+    if (!arguments.length) { return _colorByLayerId }
+    _colorByLayerId = _
+    return _chart
+  }
+
+  _chart.colorAccessor(function (d) {
+/* OVERRIDE ---------------------------------------------------------------- */
+    let layer = null
+    if (_colorByLayerId) { layer = this.idx } else { layer = this.layer || this.name || d.name || d.layer }
+/* ------------------------------------------------------------------------- */
+    return layer
+  })
+
+  _chart.legendables = function () {
+    return _stack.map((layer, i) => ({
+      chart: _chart,
+      name: layer.name,
+      hidden: layer.hidden || false,
+      color: _chart.getColor.call(layer, layer.values, i)
+    }))
+  }
+
+  _chart.isLegendableHidden = function (d) {
+    const layer = findLayerByName(d.name)
+    return layer ? layer.hidden : false
+  }
+
+  _chart.legendToggle = function (d) {
+    if (_hidableStacks) {
+      if (_chart.isLegendableHidden(d)) {
+        _chart.showStack(d.name)
+      } else {
+        _chart.hideStack(d.name)
+      }
+      _chart.renderGroup()
+    }
+  }
+
+  override(_chart, "binParams", function (binParams) {
+    if (!arguments.length) {
+      return _chart.group().binParams()
     }
 
-    _chart.data(function () {
-        var layers = _stack.filter(visability);
-        return layers.length ? _chart.stackLayout()(layers) : [];
-    });
+    binParams = Array.isArray(binParams) ? binParams : [binParams]
 
-    _chart._ordinalXDomain = function () {
-        var flat = flattenStack().map(pluck('data'));
-        var ordered = _chart._computeOrderedGroups(flat);
-        return ordered.map(_chart.keyAccessor());
-    };
-
-    _chart.colorByLayerId = function(_) {
-        if (!arguments.length)
-            return _colorByLayerId;
-        _colorByLayerId = _;
-        return _chart;
-    };
-
-    _chart.colorAccessor(function (d) {
-/* OVERRIDE ---------------------------------------------------------------- */
-        var layer = null;
-        if (_colorByLayerId)
-            layer = this.idx;
-        else
-            layer = this.layer || this.name || d.name || d.layer;
-/* ------------------------------------------------------------------------- */
-        return layer;
-    });
-
-    _chart.legendables = function () {
-        return _stack.map(function (layer, i) {
-            return {
-                chart: _chart,
-                name: layer.name,
-                hidden: layer.hidden || false,
-                color: _chart.getColor.call(layer, layer.values, i)
-            };
-        });
-    };
-
-    _chart.isLegendableHidden = function (d) {
-        var layer = findLayerByName(d.name);
-        return layer ? layer.hidden : false;
-    };
-
-    _chart.legendToggle = function (d) {
-        if (_hidableStacks) {
-            if (_chart.isLegendableHidden(d)) {
-                _chart.showStack(d.name);
-            } else {
-                _chart.hideStack(d.name);
-            }
-            _chart.renderGroup();
+    const parsedBinParams = binParams.map((param) => {
+      if (param) {
+        const {timeBin = "auto", binBounds, numBins, auto} = param
+        const extract = param.extract || false
+        const isDate = binBounds[0] instanceof Date
+        if (isDate && timeBin && !extract) {
+          const bounds = binBounds.map(date => date.getTime())
+          return Object.assign({}, param, {
+            extract,
+            timeBin: checkIfTimeBinInRange(bounds, timeBin, numBins),
+            binBounds: binBounds.slice()
+          })
+        } else {
+          return param
         }
-    };
-
-    override(_chart, "binParams", function (binParams) {
-      if (!arguments.length) {
-        return _chart.group().binParams()
       }
-
-      binParams = Array.isArray(binParams) ? binParams : [binParams]
-
-      const parsedBinParams = binParams.map((param) => {
-        if (param) {
-          const {timeBin = "auto", binBounds, numBins, auto} = param
-          const extract = param.extract || false
-          const isDate = binBounds[0] instanceof Date
-          if (isDate && timeBin && !extract) {
-            const bounds = binBounds.map(date => date.getTime())
-            return Object.assign({}, param, {
-              extract,
-              timeBin: checkIfTimeBinInRange(bounds, timeBin, numBins),
-              binBounds: binBounds.slice()
-            })
-          } else {
-            return param
-          }
-        }
-        return null
-      })
-
-      return createBinParams(_chart, parsedBinParams)
+      return null
     })
 
-    _chart.keyAccessor(multipleKeysAccessorForStack)
+    return createBinParams(_chart, parsedBinParams)
+  })
 
-    return _chart;
-};
+  _chart.keyAccessor(multipleKeysAccessorForStack)
+
+  return _chart
+}

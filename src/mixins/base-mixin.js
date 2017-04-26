@@ -994,9 +994,9 @@ export default function baseMixin (_chart) {
     _listeners.zoomed(_chart)
   }
 
-  var _hasFilterHandler = function (filters, filter) {
-    if (typeof filter === 'undefined') {
-        return filters.length > 0;
+  let _hasFilterHandler = function (filters, filter) {
+    if (typeof filter === "undefined") {
+      return filters.length > 0
     }
 
     return filters.some((f) => filter <= f && filter >= f)
@@ -1228,11 +1228,11 @@ export default function baseMixin (_chart) {
         if (_chart.hasFilter(d)) {
           _removeFilterHandler(_filters, d)
         } else {
-          _addFilterHandler(_filters, d);
+          _addFilterHandler(_filters, d)
         }
-      });
+      })
     } else if (filter === Symbol.for("clear")) {
-      filters = _resetFilterHandler(_filters);
+      filters = _resetFilterHandler(_filters)
     } else if (_chart.hasFilter(filter)) {
       _removeFilterHandler(_filters, filter)
     } else {
@@ -1778,7 +1778,7 @@ export default function baseMixin (_chart) {
 
   _chart.showNullDimensions = function (showNulls) {
     if (!arguments.length) {
-      return !_chart.dimension().getEliminateNull();
+      return !_chart.dimension().getEliminateNull()
     }
 
     _chart.expireCache()

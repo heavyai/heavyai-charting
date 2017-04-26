@@ -28,75 +28,70 @@ import baseMixin from "../mixins/base-mixin"
  * @return {dc.dataTable}
  */
 export default function dataTable (parent, chartGroup) {
-    var LABEL_CSS_CLASS = 'dc-table-label';
-    var ROW_CSS_CLASS = 'dc-table-row';
-    var COLUMN_CSS_CLASS = 'dc-table-column';
-    var GROUP_CSS_CLASS = 'dc-table-group';
-    var HEAD_CSS_CLASS = 'dc-table-head';
+  const LABEL_CSS_CLASS = "dc-table-label"
+  const ROW_CSS_CLASS = "dc-table-row"
+  const COLUMN_CSS_CLASS = "dc-table-column"
+  const GROUP_CSS_CLASS = "dc-table-group"
+  const HEAD_CSS_CLASS = "dc-table-head"
 
-    var _chart = baseMixin({});
+  const _chart = baseMixin({})
 
-    var _size = 25;
-    var _columns = [];
-    var _sortBy = function (d) {
-        return d;
-    };
-    var _order = d3.ascending;
-    var _beginSlice = 0;
-    var _endSlice;
-    var _showGroups = true;
+  let _size = 25
+  let _columns = []
+  let _sortBy = function (d) {
+    return d
+  }
+  let _order = d3.ascending
+  let _beginSlice = 0
+  let _endSlice
+  let _showGroups = true
 
-    _chart._doRender = function () {
-        _chart.selectAll('tbody').remove();
+  _chart._doRender = function () {
+    _chart.selectAll("tbody").remove()
 
-        renderRows(renderGroups());
+    renderRows(renderGroups())
 
-        return _chart;
-    };
+    return _chart
+  }
 
-    _chart._doColumnValueFormat = function (v, d) {
-        return ((typeof v === 'function') ?
-                v(d) :                          // v as function
-                ((typeof v === 'string') ?
-                 d[v] :                         // v is field name string
+  _chart._doColumnValueFormat = function (v, d) {
+    return ((typeof v === "function") ? v(d) :                          // v as function
+                ((typeof v === "string") ? d[v] :                         // v is field name string
                  v.format(d)                        // v is Object, use fn (element 2)
                 )
-               );
-    };
+    )
+  }
 
-    _chart._doColumnHeaderFormat = function (d) {
+  _chart._doColumnHeaderFormat = function (d) {
         // if 'function', convert to string representation
         // show a string capitalized
         // if an object then display its label string as-is.
-        return (typeof d === 'function') ?
-                _chart._doColumnHeaderFnToString(d) :
-                ((typeof d === 'string') ?
-                 _chart._doColumnHeaderCapitalize(d) : String(d.label));
-    };
+    return (typeof d === "function") ? _chart._doColumnHeaderFnToString(d) : ((typeof d === "string") ? _chart._doColumnHeaderCapitalize(d) : String(d.label))
+  }
 
-    _chart._doColumnHeaderCapitalize = function (s) {
+  _chart._doColumnHeaderCapitalize = function (s) {
         // capitalize
-        return s.charAt(0).toUpperCase() + s.slice(1);
-    };
+    return s.charAt(0).toUpperCase() + s.slice(1)
+  }
 
-    _chart._doColumnHeaderFnToString = function (f) {
+  _chart._doColumnHeaderFnToString = function (f) {
         // columnString(f) {
-        var s = String(f);
-        var i1 = s.indexOf('return ');
-        if (i1 >= 0) {
-            var i2 = s.lastIndexOf(';');
-            if (i2 >= 0) {
-                s = s.substring(i1 + 7, i2);
-                var i3 = s.indexOf('numberFormat');
-                if (i3 >= 0) {
-                    s = s.replace('numberFormat', '');
-                }
-            }
+    let s = String(f)
+    const i1 = s.indexOf("return ")
+    if (i1 >= 0) {
+      const i2 = s.lastIndexOf(";")
+      if (i2 >= 0) {
+        s = s.substring(i1 + 7, i2)
+        const i3 = s.indexOf("numberFormat")
+        if (i3 >= 0) {
+          s = s.replace("numberFormat", "")
         }
-        return s;
-    };
+      }
+    }
+    return s
+  }
 
-    function renderGroups () {
+  function renderGroups () {
         // The 'original' example uses all 'functions'.
         // If all 'functions' are used, then don't remove/add a header, and leave
         // the html alone. This preserves the functionality of earlier releases.
@@ -104,105 +99,92 @@ export default function dataTable (parent, chartGroup) {
         // A third option is to supply an Object such as an array of 'information', and
         // supply your own _doColumnHeaderFormat and _doColumnValueFormat functions to
         // create what you need.
-        var bAllFunctions = true;
-        _columns.forEach(function (f) {
-            bAllFunctions = bAllFunctions & (typeof f === 'function');
-        });
+    let bAllFunctions = true
+    _columns.forEach((f) => {
+      bAllFunctions = bAllFunctions & (typeof f === "function")
+    })
 
-        if (!bAllFunctions) {
+    if (!bAllFunctions) {
             // ensure one thead
-            var thead = _chart.selectAll('thead').data([0]);
-            thead.enter().append('thead');
-            thead.exit().remove();
+      const thead = _chart.selectAll("thead").data([0])
+      thead.enter().append("thead")
+      thead.exit().remove()
 
             // with one tr
-            var headrow = thead.selectAll('tr').data([0]);
-            headrow.enter().append('tr');
-            headrow.exit().remove();
+      const headrow = thead.selectAll("tr").data([0])
+      headrow.enter().append("tr")
+      headrow.exit().remove()
 
             // with a th for each column
-            var headcols = headrow.selectAll('th')
-                .data(_columns);
-            headcols.enter().append('th');
-            headcols.exit().remove();
+      const headcols = headrow.selectAll("th")
+                .data(_columns)
+      headcols.enter().append("th")
+      headcols.exit().remove()
 
-            headcols
-                .attr('class', HEAD_CSS_CLASS)
-                    .html(function (d) {
-                        return (_chart._doColumnHeaderFormat(d));
-
-                    });
-        }
-
-        var groups = _chart.root().selectAll('tbody')
-            .data(nestEntries(), function (d) {
-                return _chart.keyAccessor()(d);
-            });
-
-        var rowGroup = groups
-            .enter()
-            .append('tbody');
-
-        if (_showGroups === true) {
-            rowGroup
-                .append('tr')
-                .attr('class', GROUP_CSS_CLASS)
-                    .append('td')
-                    .attr('class', LABEL_CSS_CLASS)
-                    .attr('colspan', _columns.length)
-                    .html(function (d) {
-                        return _chart.keyAccessor()(d);
-                    });
-        }
-
-        groups.exit().remove();
-
-        return rowGroup;
+      headcols
+                .attr("class", HEAD_CSS_CLASS)
+                    .html((d) => (_chart._doColumnHeaderFormat(d)))
     }
 
-    function nestEntries () {
-        var entries;
-        if (_order === d3.ascending) {
-            entries = _chart.dimension().bottom(_size);
-        } else {
-            entries = _chart.dimension().top(_size);
-        }
+    const groups = _chart.root().selectAll("tbody")
+            .data(nestEntries(), (d) => _chart.keyAccessor()(d))
 
-        return d3.nest()
+    const rowGroup = groups
+            .enter()
+            .append("tbody")
+
+    if (_showGroups === true) {
+      rowGroup
+                .append("tr")
+                .attr("class", GROUP_CSS_CLASS)
+                    .append("td")
+                    .attr("class", LABEL_CSS_CLASS)
+                    .attr("colspan", _columns.length)
+                    .html((d) => _chart.keyAccessor()(d))
+    }
+
+    groups.exit().remove()
+
+    return rowGroup
+  }
+
+  function nestEntries () {
+    let entries
+    if (_order === d3.ascending) {
+      entries = _chart.dimension().bottom(_size)
+    } else {
+      entries = _chart.dimension().top(_size)
+    }
+
+    return d3.nest()
             .key(_chart.group())
             .sortKeys(_order)
-            .entries(entries.sort(function (a, b) {
-                return _order(_sortBy(a), _sortBy(b));
-            }).slice(_beginSlice, _endSlice));
-    }
+            .entries(entries.sort((a, b) => _order(_sortBy(a), _sortBy(b))).slice(_beginSlice, _endSlice))
+  }
 
-    function renderRows (groups) {
-        var rows = groups.order()
-            .selectAll('tr.' + ROW_CSS_CLASS)
-            .data(function (d) {
-                return d.values;
-            });
+  function renderRows (groups) {
+    const rows = groups.order()
+            .selectAll("tr." + ROW_CSS_CLASS)
+            .data((d) => d.values)
 
-        var rowEnter = rows.enter()
-            .append('tr')
-            .attr('class', ROW_CSS_CLASS);
+    const rowEnter = rows.enter()
+            .append("tr")
+            .attr("class", ROW_CSS_CLASS)
 
-        _columns.forEach(function (v, i) {
-            rowEnter.append('td')
-                .attr('class', COLUMN_CSS_CLASS + ' _' + i)
-                .html(function (d) {
-                    return _chart._doColumnValueFormat(v, d);
-                });
-        });
+    _columns.forEach((v, i) => {
+      rowEnter.append("td")
+                .attr("class", COLUMN_CSS_CLASS + " _" + i)
+                .html((d) => _chart._doColumnValueFormat(v, d))
+    })
 
-        rows.exit().remove();
+    rows.exit().remove()
 
-        return rows;
-    }
+    return rows
+  }
 
-    _chart._doRedraw = function () {
-        return _chart._doRender();
-    };
+  _chart._doRedraw = function () {
+    return _chart._doRender()
+  }
 
     /**
      * Get or set the table size which determines the number of rows displayed by the widget.
@@ -213,13 +195,13 @@ export default function dataTable (parent, chartGroup) {
      * @return {Number}
      * @return {dc.dataTable}
      */
-    _chart.size = function (size) {
-        if (!arguments.length) {
-            return _size;
-        }
-        _size = size;
-        return _chart;
-    };
+  _chart.size = function (size) {
+    if (!arguments.length) {
+      return _size
+    }
+    _size = size
+    return _chart
+  }
 
     /**
      * Get or set the index of the beginning slice which determines which entries get displayed
@@ -236,13 +218,13 @@ export default function dataTable (parent, chartGroup) {
      * @return {Number}
      * @return {dc.dataTable}
      */
-    _chart.beginSlice = function (beginSlice) {
-        if (!arguments.length) {
-            return _beginSlice;
-        }
-        _beginSlice = beginSlice;
-        return _chart;
-    };
+  _chart.beginSlice = function (beginSlice) {
+    if (!arguments.length) {
+      return _beginSlice
+    }
+    _beginSlice = beginSlice
+    return _chart
+  }
 
     /**
      * Get or set the index of the end slice which determines which entries get displayed by the
@@ -254,13 +236,13 @@ export default function dataTable (parent, chartGroup) {
      * @return {Number}
      * @return {dc.dataTable}
      */
-    _chart.endSlice = function (endSlice) {
-        if (!arguments.length) {
-            return _endSlice;
-        }
-        _endSlice = endSlice;
-        return _chart;
-    };
+  _chart.endSlice = function (endSlice) {
+    if (!arguments.length) {
+      return _endSlice
+    }
+    _endSlice = endSlice
+    return _chart
+  }
 
     /**
      * Get or set column functions. The data table widget supports several methods of specifying the
@@ -342,13 +324,13 @@ export default function dataTable (parent, chartGroup) {
      * @return {Array<Function>}}
      * @return {dc.dataTable}
      */
-    _chart.columns = function (columns) {
-        if (!arguments.length) {
-            return _columns;
-        }
-        _columns = columns;
-        return _chart;
-    };
+  _chart.columns = function (columns) {
+    if (!arguments.length) {
+      return _columns
+    }
+    _columns = columns
+    return _chart
+  }
 
     /**
      * Get or set sort-by function. This function works as a value accessor at row level and returns a
@@ -364,13 +346,13 @@ export default function dataTable (parent, chartGroup) {
      * @return {Function}
      * @return {dc.dataTable}
      */
-    _chart.sortBy = function (sortBy) {
-        if (!arguments.length) {
-            return _sortBy;
-        }
-        _sortBy = sortBy;
-        return _chart;
-    };
+  _chart.sortBy = function (sortBy) {
+    if (!arguments.length) {
+      return _sortBy
+    }
+    _sortBy = sortBy
+    return _chart
+  }
 
     /**
      * Get or set sort order. If the order is `d3.ascending`, the data table will use
@@ -386,13 +368,13 @@ export default function dataTable (parent, chartGroup) {
      * @return {Function}
      * @return {dc.dataTable}
      */
-    _chart.order = function (order) {
-        if (!arguments.length) {
-            return _order;
-        }
-        _order = order;
-        return _chart;
-    };
+  _chart.order = function (order) {
+    if (!arguments.length) {
+      return _order
+    }
+    _order = order
+    return _chart
+  }
 
     /**
      * Get or set if group rows will be shown.
@@ -409,13 +391,13 @@ export default function dataTable (parent, chartGroup) {
      * @return {Boolean}
      * @return {dc.dataTable}
      */
-    _chart.showGroups = function (showGroups) {
-        if (!arguments.length) {
-            return _showGroups;
-        }
-        _showGroups = showGroups;
-        return _chart;
-    };
+  _chart.showGroups = function (showGroups) {
+    if (!arguments.length) {
+      return _showGroups
+    }
+    _showGroups = showGroups
+    return _chart
+  }
 
-    return _chart.anchor(parent, chartGroup);
-};
+  return _chart.anchor(parent, chartGroup)
+}

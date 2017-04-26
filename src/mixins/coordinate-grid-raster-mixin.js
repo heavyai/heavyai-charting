@@ -17,34 +17,34 @@ import marginMixin from "./margin-mixin"
  * @param {Object} _chart
  * @return {dc.coordinateGridRasterMixin}
  */
-export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
+export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   var _mapboxgl = typeof mapboxgl === "undefined" ? _mapboxgl : mapboxgl
 
-  var GRID_LINE_CLASS = "grid-line"
-  var HORIZONTAL_CLASS = "horizontal"
-  var VERTICAL_CLASS = "vertical"
-  var Y_AXIS_LABEL_CLASS = "y-axis-label"
-  var X_AXIS_LABEL_CLASS = "x-axis-label"
-  var DEFAULT_AXIS_LABEL_PADDING = 12
+  const GRID_LINE_CLASS = "grid-line"
+  const HORIZONTAL_CLASS = "horizontal"
+  const VERTICAL_CLASS = "vertical"
+  const Y_AXIS_LABEL_CLASS = "y-axis-label"
+  const X_AXIS_LABEL_CLASS = "x-axis-label"
+  const DEFAULT_AXIS_LABEL_PADDING = 12
 
-  var _brush = d3.svg.brush()
-  var _hasBeenRendered = false
-  var _scale = [1, 1]
-  var _offset = [0, 0]
-  var _currDataBounds = [[0, 1], [0, 1]]
-  var _queryId = null
-  var _filters = null
-  var _initialFilters = null
-  var _gridInitted = false
+  let _brush = d3.svg.brush()
+  let _hasBeenRendered = false
+  const _scale = [1, 1]
+  const _offset = [0, 0]
+  const _currDataBounds = [[0, 1], [0, 1]]
+  let _queryId = null
+  let _filters = null
+  let _initialFilters = null
+  let _gridInitted = false
 
   _chart = colorMixin(marginMixin(baseMixin(_chart)))
   _chart._mandatoryAttributes().push("x", "y")
 
-  _chart.filters = function() {
+  _chart.filters = function () {
     return _filters
   }
 
-  _chart.filter = function(filters) {
+  _chart.filter = function (filters) {
     if (typeof filters === "undefined" || filters === null) {
       _initialFilters = _initialFilters || [[]]
       filterChartDimensions(_initialFilters[0][0], _initialFilters[0][1], true)
@@ -57,13 +57,13 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   }
 
-  function filterChartDimensions(xrange, yrange, shouldReset) {
+  function filterChartDimensions (xrange, yrange, shouldReset) {
     if (!_initialFilters) {
       _initialFilters = [[xrange, yrange]]
     }
 
-    var xdim = _chart.xDim()
-    var ydim = _chart.yDim()
+    let xdim = _chart.xDim()
+    let ydim = _chart.yDim()
 
     if (xdim) {
       xdim.filter(xrange)
@@ -74,9 +74,8 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     }
 
     if (typeof _chart.getLayers === "function") {
-      _chart.getLayers().forEach(function(layer) {
-        if (typeof layer.xDim === "function" &&
-          typeof layer.yDim === "function") {
+      _chart.getLayers().forEach((layer) => {
+        if (typeof layer.xDim === "function" && typeof layer.yDim === "function") {
           xdim = layer.xDim()
           ydim = layer.yDim()
           if (xdim !== null && ydim !== null) {
@@ -93,69 +92,69 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     _chart.yRangeFilter && _chart.yRangeFilter(yrange)
   }
 
-  var _parent
-  var _g
-  var _chartBody
-  var _gl
-  var _shaderProgram, _fragShader, _vertShader
-  var _vbo
-  var _tex
-  var _img
+  let _parent
+  let _g
+  let _chartBody
+  let _gl
+  let _shaderProgram, _fragShader, _vertShader
+  let _vbo
+  let _tex
+  let _img
 
-  var _eventHandler
-  var _interactionsEnabled = false
+  let _eventHandler
+  let _interactionsEnabled = false
 
-  var _xOriginalDomain
-  var _xAxis = d3.svg.axis().orient("bottom")
-  var _xUnits = units.integers
-  var _xAxisPadding = 0
-  var _xElasticity = false
-  var _xAxisLabel
-  var _xAxisLabelPadding = 0
-  var _lastXDomain
+  let _xOriginalDomain
+  let _xAxis = d3.svg.axis().orient("bottom")
+  let _xUnits = units.integers
+  let _xAxisPadding = 0
+  let _xElasticity = false
+  let _xAxisLabel
+  let _xAxisLabelPadding = 0
+  let _lastXDomain
 
-  var _yAxis = d3.svg.axis().orient("left")
-  var _yAxisPadding = 0
-  var _yElasticity = false
-  var _yAxisLabel
-  var _yAxisLabelPadding = 0
+  let _yAxis = d3.svg.axis().orient("left")
+  let _yAxisPadding = 0
+  let _yElasticity = false
+  let _yAxisLabel
+  let _yAxisLabelPadding = 0
 
-  var _renderHorizontalGridLine = false
-  var _renderVerticalGridLine = false
+  let _renderHorizontalGridLine = false
+  let _renderVerticalGridLine = false
 
-  var _resizing = false
+  let _resizing = false
 
-  var _unitCount
+  let _unitCount
 
-  var _outerRangeBandPadding = 0.5
-  var _rangeBandPadding = 0
+  let _outerRangeBandPadding = 0.5
+  let _rangeBandPadding = 0
 
-  var _useRightYAxis = false
+  let _useRightYAxis = false
 
-  var _maxBounds = [[-Infinity, -Infinity], [Infinity, Infinity]]
+  let _maxBounds = [[-Infinity, -Infinity], [Infinity, Infinity]]
 
-  _chart._fitToMaxBounds = function(currBounds, resizeToScale) {
-    var xmin = currBounds[0][0]
-    var ymin = currBounds[0][1]
-    var xmax = currBounds[1][0]
-    var ymax = currBounds[1][1]
-    var xdiff = xmax - xmin
-    var ydiff = ymax - ymin
+  _chart._fitToMaxBounds = function (currBounds, resizeToScale) {
+    const xmin = currBounds[0][0]
+    const ymin = currBounds[0][1]
+    const xmax = currBounds[1][0]
+    const ymax = currBounds[1][1]
+    const xdiff = xmax - xmin
+    const ydiff = ymax - ymin
 
-    var bounds_xmin = _maxBounds[0][0]
-    var bounds_ymin = _maxBounds[0][1]
-    var bounds_xmax = _maxBounds[1][0]
-    var bounds_ymax = _maxBounds[1][1]
+    const bounds_xmin = _maxBounds[0][0]
+    const bounds_ymin = _maxBounds[0][1]
+    const bounds_xmax = _maxBounds[1][0]
+    const bounds_ymax = _maxBounds[1][1]
 
-    var newbounds = [[Math.max(xmin, bounds_xmin), Math.max(ymin, bounds_ymin)],
+    const newbounds = [[Math.max(xmin, bounds_xmin), Math.max(ymin, bounds_ymin)],
                          [Math.min(xmax, bounds_xmax), Math.min(ymax, bounds_ymax)]]
 
-    if (!!resizeToScale) {
-      var newxdiff = newbounds[1][0] - newbounds[0][0]
-      var newydiff = newbounds[1][1] - newbounds[0][1]
+    if (resizeToScale) {
+      const newxdiff = newbounds[1][0] - newbounds[0][0]
+      const newydiff = newbounds[1][1] - newbounds[0][1]
 
-      var deltax = xdiff - newxdiff
-      var deltay = ydiff - newydiff
+      const deltax = xdiff - newxdiff
+      const deltay = ydiff - newydiff
 
       // NOTE: deltax & deltay should be >= 0
       if (deltax !== 0) {
@@ -178,15 +177,13 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return newbounds
   }
 
-  _chart.maxBounds = function(maxBounds) {
+  _chart.maxBounds = function (maxBounds) {
     if (!arguments.length) {
       return _maxBounds
     }
 
     // TODO(croot): verify max bounds?
-    if (!(maxBounds instanceof Array) || maxBounds.length !== 2 ||
-      !(maxBounds[0] instanceof Array) || maxBounds[0].length !== 2 ||
-      !(maxBounds[1] instanceof Array) || maxBounds[1].length !== 2) {
+    if (!(maxBounds instanceof Array) || maxBounds.length !== 2 || !(maxBounds[0] instanceof Array) || maxBounds[0].length !== 2 || !(maxBounds[1] instanceof Array) || maxBounds[1].length !== 2) {
       throw new Error("Invalid bounds argument. A bounds object should be: [[xmin, ymin], [xmax, ymax]]")
     }
 
@@ -196,15 +193,15 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   }
 
-  _chart.unproject = function(pt) {
-    var xscale = _chart.x(),
+  _chart.unproject = function (pt) {
+    let xscale = _chart.x(),
       yscale = _chart.y()
-    var x = (xscale ? xscale.invert(pt.x) : 0)
-    var y = (yscale ? yscale.invert(pt.y) : 0)
+    const x = (xscale ? xscale.invert(pt.x) : 0)
+    const y = (yscale ? yscale.invert(pt.y) : 0)
     return new _mapboxgl.Point(x, y)
   }
 
-  _chart.enableInteractions = function(enableInteractions, opts = {}) {
+  _chart.enableInteractions = function (enableInteractions, opts = {}) {
     if (!arguments.length) {
       return _interactionsEnabled
     }
@@ -245,18 +242,18 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @instance
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.rescale = function() {
+  _chart.rescale = function () {
     _unitCount = undefined
     _resizing = true
     return _chart
   }
 
-  _chart.resizing = function() {
+  _chart.resizing = function () {
     return _resizing
   }
 
-  function initWebGL(canvas) {
-    var webglAttrs = {
+  function initWebGL (canvas) {
+    const webglAttrs = {
       alpha: true,
       antialias: true,
       // premultipliedAlpha: false,
@@ -267,47 +264,22 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     }
     _gl = canvas.getContext("webgl", webglAttrs) || canvas.getContext("experimental-webgl", webglAttrs)
 
-    var vertShaderSrc = "" +
-      "precision mediump float;\n" +
-      "attribute vec2 a_pos;\n" +
-      "attribute vec2 a_texCoords;\n" +
-      "\n" +
-      "varying vec2 v_texCoords;\n" +
-      "uniform vec2 u_texCoordsScale;\n" +
-      "uniform vec2 u_texCoordsOffset;\n" +
-      "\n" +
-      "void main(void) {\n" +
-      "    gl_Position = vec4(a_pos, 0, 1);\n" +
-      "\n" +
-      "    v_texCoords = u_texCoordsScale * a_texCoords + u_texCoordsOffset;\n" +
+    const vertShaderSrc = "" + "precision mediump float;\n" + "attribute vec2 a_pos;\n" + "attribute vec2 a_texCoords;\n" + "\n" + "varying vec2 v_texCoords;\n" + "uniform vec2 u_texCoordsScale;\n" + "uniform vec2 u_texCoordsOffset;\n" + "\n" + "void main(void) {\n" + "    gl_Position = vec4(a_pos, 0, 1);\n" + "\n" + "    v_texCoords = u_texCoordsScale * a_texCoords + u_texCoordsOffset;\n" +
       // NOTE: right now it seems that unpacking the base64 array via the
       // createImageBitmap() call puts pixel 0,0 in the upper left-hand
       // corner rather than the lower left-hand corner in the way that
       // webgl expects, so flipping the y texture coords below.
       // If another way of extracing the base64 image data is done
       // that doesn"t flip the image, then flip the y tex coords
-      "    v_texCoords.y = (1.0 - v_texCoords.y);\n" +
-      "}"
+      "    v_texCoords.y = (1.0 - v_texCoords.y);\n" + "}"
 
-    var fragShaderSrc = "" +
-      "precision mediump float;\n" +
-      "\n" +
-      "uniform sampler2D u_sampler;\n" +
-      "\n" +
-      "varying vec2 v_texCoords;\n" +
-      "\n" +
-      "void main() {\n" +
-      "    if (v_texCoords[0] >= 0.0 && v_texCoords[0] <= 1.0 &&\n" +
-      "        v_texCoords[1] >= 0.0 && v_texCoords[1] <= 1.0) {\n" +
-      "        gl_FragColor = texture2D(u_sampler, v_texCoords);\n" +
-      "    }\n" +
-      "}"
+    const fragShaderSrc = "" + "precision mediump float;\n" + "\n" + "uniform sampler2D u_sampler;\n" + "\n" + "varying vec2 v_texCoords;\n" + "\n" + "void main() {\n" + "    if (v_texCoords[0] >= 0.0 && v_texCoords[0] <= 1.0 &&\n" + "        v_texCoords[1] >= 0.0 && v_texCoords[1] <= 1.0) {\n" + "        gl_FragColor = texture2D(u_sampler, v_texCoords);\n" + "    }\n" + "}"
 
-    var gl = _gl
+    const gl = _gl
 
-    var program = _shaderProgram = gl.createProgram()
+    const program = _shaderProgram = gl.createProgram()
 
-    var fragShader = _fragShader = gl.createShader(gl.FRAGMENT_SHADER)
+    const fragShader = _fragShader = gl.createShader(gl.FRAGMENT_SHADER)
     gl.shaderSource(fragShader, fragShaderSrc)
     gl.compileShader(fragShader)
     if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
@@ -315,7 +287,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     }
     gl.attachShader(program, fragShader)
 
-    var vertShader = _vertShader = gl.createShader(gl.VERTEX_SHADER)
+    const vertShader = _vertShader = gl.createShader(gl.VERTEX_SHADER)
     gl.shaderSource(vertShader, vertShaderSrc)
     gl.compileShader(vertShader)
     if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
@@ -341,10 +313,10 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 
     gl.useProgram(program)
 
-    var vbo = _vbo = gl.createBuffer()
+    const vbo = _vbo = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
 
-    var vertData = [-1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, 1, 1, 1, 1]; // unflipped
+    const vertData = [-1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, 1, 1, 1, 1] // unflipped
 
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertData), gl.STATIC_DRAW)
     gl.vertexAttribPointer(_shaderProgram.a_pos, 2, gl.FLOAT, false, 16, 0)
@@ -353,7 +325,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     createGLTexture()
   }
 
-  function destroy() {
+  function destroy () {
     destroyWebGL()
 
     if (_eventHandler) {
@@ -368,36 +340,36 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     _chartBody = null
   }
 
-  function destroyWebGL() {
-    var gl = _gl;
-    if (typeof _shaderProgram !== "object") return
-    gl.deleteProgram(_shaderProgram);
-    if (_fragShader) gl.deleteShader(_fragShader);
-    if (_vertShader) gl.deleteShader(_vertShader);
-    if (_vbo) gl.deleteBuffer(_vbo);
+  function destroyWebGL () {
+    const gl = _gl
+    if (typeof _shaderProgram !== "object") { return }
+    gl.deleteProgram(_shaderProgram)
+    if (_fragShader) { gl.deleteShader(_fragShader) }
+    if (_vertShader) { gl.deleteShader(_vertShader) }
+    if (_vbo) { gl.deleteBuffer(_vbo) }
 
     _shaderProgram = _fragShader = _vertShader = _vbo = 0
 
     removeGLTexture()
   }
 
-  function createGLTexture() {
+  function createGLTexture () {
     if (!_tex) {
-      var gl = _gl
+      const gl = _gl
 
       // use cyan as the default color.
-      var initialColor = new Uint8Array([0, 0, 0, 0])
+      const initialColor = new Uint8Array([0, 0, 0, 0])
 
       // make a texture with 1x1 pixels so we can use the texture immediately
       // while we wait for the image to load
-      var tex = _tex = gl.createTexture()
+      const tex = _tex = gl.createTexture()
       gl.bindTexture(gl.TEXTURE_2D, tex)
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0,
         gl.RGBA, gl.UNSIGNED_BYTE, initialColor)
     }
   }
 
-  function removeGLTexture() {
+  function removeGLTexture () {
     if (_tex) {
       _gl.deleteTexture(_tex)
       _tex = 0
@@ -407,17 +379,17 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     _img = null
   }
 
-  _chart._removeOverlay = function() {
+  _chart._removeOverlay = function () {
     removeGLTexture()
   }
 
 
-  _chart._generateG = function(parent) {
+  _chart._generateG = function (parent) {
     if (parent === undefined) {
       parent = _chart.svg()
     }
 
-    var reset = (parent !== _parent)
+    const reset = (parent !== _parent)
     _parent = parent
 
     if (!_g || reset) {
@@ -431,8 +403,8 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
         .attr("class", "webgl-canvas")
         .style("position", "absolute")
 
-      var containerNode = root.node()
-      var chartNode = _chartBody.node()
+      const containerNode = root.node()
+      const chartNode = _chartBody.node()
 
       initWebGL(chartNode)
       _eventHandler = bindEventHandlers(
@@ -448,7 +420,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
                         _interactionsEnabled)
     } else if (reset) {
       var root = _chart.root().node()
-      var node = _chartBody.node()
+      const node = _chartBody.node()
       root.appendChild(node)
     }
 
@@ -466,7 +438,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {SVGElement}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.g = function(gElement) {
+  _chart.g = function (gElement) {
     if (!arguments.length) {
       return _g
     }
@@ -479,11 +451,11 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @param {SVGElement} [chartBody]
    * @return {SVGElement}
    */
-  _chart.chartBody = function(chartBody) {
+  _chart.chartBody = function (chartBody) {
     return _chartBody
   }
 
-  _chart.xOriginalDomain = function() {
+  _chart.xOriginalDomain = function () {
     return _xOriginalDomain
   }
 
@@ -522,7 +494,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {Function}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.xUnits = function(xUnits) {
+  _chart.xUnits = function (xUnits) {
     if (!arguments.length) {
       return _xUnits
     }
@@ -549,7 +521,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {d3.svg.axis}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.xAxis = function(xAxis) {
+  _chart.xAxis = function (xAxis) {
     if (!arguments.length) {
       return _xAxis
     }
@@ -567,7 +539,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {Boolean}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.elasticX = function(elasticX) {
+  _chart.elasticX = function (elasticX) {
     if (!arguments.length) {
       return _xElasticity
     }
@@ -589,7 +561,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {Number|String}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.xAxisPadding = function(padding) {
+  _chart.xAxisPadding = function (padding) {
     if (!arguments.length) {
       return _xAxisPadding
     }
@@ -605,9 +577,9 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @instance
    * @return {Number}
    */
-  _chart.xUnitCount = function() {
+  _chart.xUnitCount = function () {
     if (_unitCount === undefined) {
-      var units = _chart.xUnits()(_chart.x().domain()[0], _chart.x().domain()[1], _chart.x().domain())
+      const units = _chart.xUnits()(_chart.x().domain()[0], _chart.x().domain()[1], _chart.x().domain())
 
       if (units instanceof Array) {
         _unitCount = units.length
@@ -630,7 +602,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {Boolean}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.useRightYAxis = function(useRightYAxis) {
+  _chart.useRightYAxis = function (useRightYAxis) {
     if (!arguments.length) {
       return _useRightYAxis
     }
@@ -647,31 +619,28 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @instance
    * @return {Boolean}
    */
-  _chart.isOrdinal = function() {
+  _chart.isOrdinal = function () {
     return _chart.xUnits() === units.ordinal
   }
 
-  _chart._useOuterPadding = function() {
+  _chart._useOuterPadding = function () {
     return true
   }
 
-  function compareDomains(d1, d2) {
-    return !d1 || !d2 || d1.length !== d2.length ||
-      d1.some(function(elem, i) {
-        return (elem && d2[i]) ? elem.toString() !== d2[i].toString() : elem === d2[i]
-      })
+  function compareDomains (d1, d2) {
+    return !d1 || !d2 || d1.length !== d2.length || d1.some((elem, i) => (elem && d2[i]) ? elem.toString() !== d2[i].toString() : elem === d2[i])
   }
 
-  function prepareChartBody() {
-    var width = _chart.effectiveWidth()
-    var height = _chart.effectiveHeight()
-    var margins = _chart.margins()
-    var left = margins.left
-    var top = margins.top
-    var pixelRatio = window.devicePixelRatio || 1
+  function prepareChartBody () {
+    const width = _chart.effectiveWidth()
+    const height = _chart.effectiveHeight()
+    const margins = _chart.margins()
+    const left = margins.left
+    const top = margins.top
+    const pixelRatio = window.devicePixelRatio || 1
 
-    var prevWidth = _chartBody.style("width")
-    var prevHeight = _chartBody.style("height")
+    const prevWidth = _chartBody.style("width")
+    const prevHeight = _chartBody.style("height")
 
     // set the actual canvas size, taking pixel ratio into account
     _chartBody.style("width", width + "px")
@@ -681,8 +650,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
       .attr("width", width * pixelRatio)
       .attr("height", height * pixelRatio)
 
-    if (prevWidth !== _chartBody.style("width") ||
-        prevHeight !== _chartBody.style("height")) {
+    if (prevWidth !== _chartBody.style("width") || prevHeight !== _chartBody.style("height")) {
       // TODO(croot): What about when the margins change?
       // That's not truly a resize event
       _chart.map().fire("resize", {
@@ -694,24 +662,22 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     }
   }
 
-  function renderChart(imgUrl, renderBounds, queryId) {
-    var gl = _gl
+  function renderChart (imgUrl, renderBounds, queryId) {
+    const gl = _gl
 
     if (imgUrl) { // should we check to see if the imgUrl is the same from the previous render?
-      _mapboxgl.util.getImage(imgUrl, function(err, img) {
+      _mapboxgl.util.getImage(imgUrl, (err, img) => {
         if (queryId === _queryId) {
-          var xdom = _chart.x().domain()
-          var ydom = _chart.y().domain()
+          const xdom = _chart.x().domain()
+          const ydom = _chart.y().domain()
 
-          if (xdom[0] === renderBounds[0][0] && xdom[1] === renderBounds[1][0] &&
-            ydom[0] === renderBounds[2][1] && ydom[1] === renderBounds[0][1]) {
+          if (xdom[0] === renderBounds[0][0] && xdom[1] === renderBounds[1][0] && ydom[0] === renderBounds[2][1] && ydom[1] === renderBounds[0][1]) {
 
             if (!_tex) {
               createGLTexture()
             }
 
-            if (!_img || img.width != _img.width ||
-              img.height != _img.height) {
+            if (!_img || img.width != _img.width || img.height != _img.height) {
               // Image was updated and dimensions changed.
               gl.bindTexture(gl.TEXTURE_2D, _tex)
               gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
@@ -733,8 +699,8 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
             _scale[1] = 1
             _offset[0] = 0
             _offset[1] = 0
-            var xrange = _chart.xRange()
-            var yrange = _chart.yRange()
+            const xrange = _chart.xRange()
+            const yrange = _chart.yRange()
             _currDataBounds[0][0] = xrange[0]
             _currDataBounds[0][1] = xrange[1]
             _currDataBounds[1][0] = yrange[0]
@@ -746,9 +712,9 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
       })
     }
 
-    if (queryId !== null && queryId !== undefined) _queryId = queryId
+    if (queryId !== null && queryId !== undefined) { _queryId = queryId }
 
-    var pixelRatio = window.devicePixelRatio || 1
+    const pixelRatio = window.devicePixelRatio || 1
     gl.viewport(0, 0, _chart.effectiveWidth() * pixelRatio, _chart.effectiveHeight() * pixelRatio)
 
     gl.clearColor(0, 0, 0, 0)
@@ -769,9 +735,9 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
   }
 
-  function prepareXAxis(g, x, render, transitionDuration) {
+  function prepareXAxis (g, x, render, transitionDuration) {
     // has the domain changed?
-    var xdom = x.domain()
+    const xdom = x.domain()
     if (render || compareDomains(_lastXDomain, xdom)) {
       _chart.rescale()
     }
@@ -784,32 +750,32 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     // currently only supports quantitative scales
     x.range([0, Math.round(_chart.xAxisLength())])
 
-    var customTimeFormat = d3.time.format.utc.multi([
-          [".%L", function(d) {
+    const customTimeFormat = d3.time.format.utc.multi([
+      [".%L", function (d) {
         return d.getUTCMilliseconds()
       }],
-          [":%S", function(d) {
+      [":%S", function (d) {
         return d.getUTCSeconds()
       }],
-          ["%I:%M", function(d) {
+      ["%I:%M", function (d) {
         return d.getUTCMinutes()
       }],
-          ["%I %p", function(d) {
+      ["%I %p", function (d) {
         return d.getUTCHours()
       }],
-          ["%a %d", function(d) {
+      ["%a %d", function (d) {
         return d.getUTCDay() && d.getUTCDate() != 1
       }],
-          ["%b %d", function(d) {
+      ["%b %d", function (d) {
         return d.getUTCDate() != 1
       }],
-          ["%b", function(d) {
+      ["%b", function (d) {
         return d.getUTCMonth()
       }],
-          ["%Y", function() {
+      ["%Y", function () {
         return true
       }]
-        ])
+    ])
 
     _xAxis = _xAxis.scale(x).tickFormat(xdom[0] instanceof Date ? customTimeFormat : null)
 
@@ -819,8 +785,8 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     renderVerticalGridLines(g, x, transitionDuration)
   }
 
-  _chart.renderXAxis = function(g, transitionDuration) {
-    var axisXG = g.selectAll("g.x")
+  _chart.renderXAxis = function (g, transitionDuration) {
+    let axisXG = g.selectAll("g.x")
 
     if (axisXG.empty()) {
       axisXG = g.append("g")
@@ -828,8 +794,8 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
         .attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")")
     }
 
-    var root = _chart.root()
-    var xLabel = root.selectAll(".x-axis-label")
+    const root = _chart.root()
+    let xLabel = root.selectAll(".x-axis-label")
 
     if (xLabel.empty()) {
       xLabel = root.append("div")
@@ -849,8 +815,8 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
       .call(_xAxis)
   }
 
-  function renderVerticalGridLines(g, x, transitionDuration) {
-    var gridLineG = g.selectAll("g." + VERTICAL_CLASS)
+  function renderVerticalGridLines (g, x, transitionDuration) {
+    let gridLineG = g.selectAll("g." + VERTICAL_CLASS)
 
     if (_renderVerticalGridLine) {
       if (gridLineG.empty()) {
@@ -859,22 +825,17 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
           .attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")")
       }
 
-      var ticks = _xAxis.tickValues() ? _xAxis.tickValues() :
-        (typeof x.ticks === "function" ? x.ticks(_xAxis.ticks()[0]) : x.domain())
+      const ticks = _xAxis.tickValues() ? _xAxis.tickValues() : (typeof x.ticks === "function" ? x.ticks(_xAxis.ticks()[0]) : x.domain())
 
-      var lines = gridLineG.selectAll("line")
+      const lines = gridLineG.selectAll("line")
         .data(ticks)
 
       // enter
-      var linesGEnter = lines.enter()
+      const linesGEnter = lines.enter()
         .append("line")
-        .attr("x1", function(d) {
-          return x(d)
-        })
+        .attr("x1", (d) => x(d))
         .attr("y1", _chart._xAxisY() - _chart.margins().top)
-        .attr("x2", function(d) {
-          return x(d)
-        })
+        .attr("x2", (d) => x(d))
         .attr("y2", 0)
         .attr("opacity", 0)
 
@@ -887,13 +848,9 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 
       // update
       transition(lines, transitionDuration)
-        .attr("x1", function(d) {
-          return x(d)
-        })
+        .attr("x1", (d) => x(d))
         .attr("y1", _chart._xAxisY() - _chart.margins().top)
-        .attr("x2", function(d) {
-          return x(d)
-        })
+        .attr("x2", (d) => x(d))
         .attr("y2", 0)
 
       // exit
@@ -903,11 +860,11 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     }
   }
 
-  _chart._xAxisY = function() {
+  _chart._xAxisY = function () {
     return (_chart.height() - _chart.margins().bottom)
   }
 
-  _chart.xAxisLength = function() {
+  _chart.xAxisLength = function () {
     return _chart.effectiveWidth()
   }
 
@@ -921,7 +878,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @param {Number} [padding=12]
    * @return {String}
    */
-  _chart.xAxisLabel = function(labelText, padding) {
+  _chart.xAxisLabel = function (labelText, padding) {
     if (!arguments.length) {
       return _xAxisLabel
     }
@@ -932,7 +889,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   }
 
-  _chart._prepareYAxis = function(g, y, transitionDuration) {
+  _chart._prepareYAxis = function (g, y, transitionDuration) {
     y.range([Math.round(_chart.yAxisHeight()), 0])
 
     _yAxis = _yAxis.scale(y)
@@ -946,10 +903,10 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     _chart._renderHorizontalGridLinesForAxis(g, y, _yAxis, transitionDuration)
   }
 
-  _chart.renderYAxisLabel = function(axisClass, text, rotation, labelXPosition) {
-    var root = _chart.root()
+  _chart.renderYAxisLabel = function (axisClass, text, rotation, labelXPosition) {
+    const root = _chart.root()
 
-    var yLabel = root.selectAll(".y-axis-label")
+    let yLabel = root.selectAll(".y-axis-label")
 
     if (yLabel.empty()) {
       yLabel = root.append("div")
@@ -960,7 +917,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
       // TODO(croot): should add the rotation and labelXPosition here
       // As of now (09/02/2016) the chart.css is breaking this.
 
-      var yOffset = 0
+      const yOffset = 0
 
       yLabel
         .style("top", ((_chart.effectiveHeight() + yOffset) / 2 + _chart.margins().top) + "px")
@@ -968,8 +925,8 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     }
   }
 
-  _chart.renderYAxisAt = function(axisClass, axis, position, transitionDuration) {
-    var axisYG = _chart.g().selectAll("g." + axisClass)
+  _chart.renderYAxisAt = function (axisClass, axis, position, transitionDuration) {
+    let axisYG = _chart.g().selectAll("g." + axisClass)
     if (axisYG.empty()) {
       axisYG = _chart.g().append("g")
         .attr("class", "axis " + axisClass)
@@ -985,19 +942,19 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
       .call(axis)
   }
 
-  _chart.renderYAxis = function(g, transitionDuration) {
-    var axisPosition = _useRightYAxis ? (_chart.width() - _chart.margins().right) : _chart._yAxisX()
+  _chart.renderYAxis = function (g, transitionDuration) {
+    const axisPosition = _useRightYAxis ? (_chart.width() - _chart.margins().right) : _chart._yAxisX()
     _chart.renderYAxisAt("y", _yAxis, axisPosition, transitionDuration)
-    var labelPosition = _useRightYAxis ? (_chart.width() - _yAxisLabelPadding) : _yAxisLabelPadding
-    var rotation = _useRightYAxis ? 90 : -90
+    const labelPosition = _useRightYAxis ? (_chart.width() - _yAxisLabelPadding) : _yAxisLabelPadding
+    const rotation = _useRightYAxis ? 90 : -90
     _chart.renderYAxisLabel("y", _chart.yAxisLabel(), rotation, labelPosition)
   }
 
-  _chart._renderHorizontalGridLinesForAxis = function(g, scale, axis, transitionDuration) {
-    var gridLineG = g.selectAll("g." + HORIZONTAL_CLASS)
+  _chart._renderHorizontalGridLinesForAxis = function (g, scale, axis, transitionDuration) {
+    let gridLineG = g.selectAll("g." + HORIZONTAL_CLASS)
 
     if (_renderHorizontalGridLine) {
-      var ticks = axis.tickValues() ? axis.tickValues() : scale.ticks(axis.ticks()[0])
+      const ticks = axis.tickValues() ? axis.tickValues() : scale.ticks(axis.ticks()[0])
 
       if (gridLineG.empty()) {
         gridLineG = g.insert("g", ":first-child")
@@ -1005,20 +962,16 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
           .attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")")
       }
 
-      var lines = gridLineG.selectAll("line")
+      const lines = gridLineG.selectAll("line")
         .data(ticks)
 
       // enter
-      var linesGEnter = lines.enter()
+      const linesGEnter = lines.enter()
         .append("line")
         .attr("x1", 1)
-        .attr("y1", function(d) {
-          return scale(d)
-        })
+        .attr("y1", (d) => scale(d))
         .attr("x2", _chart.xAxisLength())
-        .attr("y2", function(d) {
-          return scale(d)
-        })
+        .attr("y2", (d) => scale(d))
         .attr("opacity", 0)
 
       if (transitionDuration === undefined) {
@@ -1031,13 +984,9 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
       // update
       transition(lines, transitionDuration)
         .attr("x1", 1)
-        .attr("y1", function(d) {
-          return scale(d)
-        })
+        .attr("y1", (d) => scale(d))
         .attr("x2", _chart.xAxisLength())
-        .attr("y2", function(d) {
-          return scale(d)
-        })
+        .attr("y2", (d) => scale(d))
 
       // exit
       lines.exit().remove()
@@ -1046,7 +995,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     }
   }
 
-  _chart._yAxisX = function() {
+  _chart._yAxisX = function () {
     return _chart.useRightYAxis() ? _chart.width() - _chart.margins().right : _chart.margins().left
   }
 
@@ -1062,7 +1011,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {String}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.yAxisLabel = function(labelText, padding) {
+  _chart.yAxisLabel = function (labelText, padding) {
     if (!arguments.length) {
       return _yAxisLabel
     }
@@ -1092,7 +1041,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {d3.svg.axis}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.yAxis = function(yAxis) {
+  _chart.yAxis = function (yAxis) {
     if (!arguments.length) {
       return _yAxis
     }
@@ -1110,7 +1059,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {Boolean}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.elasticY = function(elasticY) {
+  _chart.elasticY = function (elasticY) {
     if (!arguments.length) {
       return _yElasticity
     }
@@ -1127,7 +1076,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {Boolean}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.renderHorizontalGridLines = function(renderHorizontalGridLines) {
+  _chart.renderHorizontalGridLines = function (renderHorizontalGridLines) {
     if (!arguments.length) {
       return _renderHorizontalGridLine
     }
@@ -1144,7 +1093,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {Boolean}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.renderVerticalGridLines = function(renderVerticalGridLines) {
+  _chart.renderVerticalGridLines = function (renderVerticalGridLines) {
     if (!arguments.length) {
       return _renderVerticalGridLine
     }
@@ -1166,7 +1115,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
    * @return {Number}
    * @return {dc.coordinateGridRasterMixin}
    */
-  _chart.yAxisPadding = function(padding) {
+  _chart.yAxisPadding = function (padding) {
     if (!arguments.length) {
       return _yAxisPadding
     }
@@ -1174,11 +1123,11 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   }
 
-  _chart.yAxisHeight = function() {
+  _chart.yAxisHeight = function () {
     return _chart.effectiveHeight()
   }
 
-  _chart._rangeBandPadding = function(_) {
+  _chart._rangeBandPadding = function (_) {
     if (!arguments.length) {
       return _rangeBandPadding
     }
@@ -1186,7 +1135,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   }
 
-  _chart._outerRangeBandPadding = function(_) {
+  _chart._outerRangeBandPadding = function (_) {
     if (!arguments.length) {
       return _outerRangeBandPadding
     }
@@ -1194,7 +1143,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   }
 
-  override(_chart, "filter", function(filter, isInverseFilter) {
+  override(_chart, "filter", function (filter, isInverseFilter) {
     if (!arguments.length) {
       return _chart._filter()
     }
@@ -1210,7 +1159,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   })
 
-  _chart.brush = function(_) {
+  _chart.brush = function (_) {
     if (!arguments.length) {
       return _brush
     }
@@ -1218,7 +1167,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   }
 
-  _chart.isBrushing = function(_) {
+  _chart.isBrushing = function (_) {
     if (!arguments.length) {
       return _isBrushing
     }
@@ -1226,37 +1175,29 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   }
 
-  function brushHeight() {
+  function brushHeight () {
     return _chart._xAxisY() - _chart.margins().top
   }
 
-  _chart.fadeDeselectedArea = function() {
+  _chart.fadeDeselectedArea = function () {
     // do nothing, sub-chart should override this function
   }
 
   // borrowed from Crossfilter example
-  _chart.resizeHandlePath = function(d) {
-    var e = +(d === "e"),
+  _chart.resizeHandlePath = function (d) {
+    let e = Number(d === "e"),
       x = e ? 1 : -1,
       y = brushHeight() / 3
-    return "M" + (0.5 * x) + "," + y +
-      "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6) +
-      "V" + (2 * y - 6) +
-      "A6,6 0 0 " + e + " " + (0.5 * x) + "," + (2 * y) +
-      "Z" +
-      "M" + (2.5 * x) + "," + (y + 8) +
-      "V" + (2 * y - 8) +
-      "M" + (4.5 * x) + "," + (y + 8) +
-      "V" + (2 * y - 8)
+    return "M" + (0.5 * x) + "," + y + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6) + "V" + (2 * y - 6) + "A6,6 0 0 " + e + " " + (0.5 * x) + "," + (2 * y) + "Z" + "M" + (2.5 * x) + "," + (y + 8) + "V" + (2 * y - 8) + "M" + (4.5 * x) + "," + (y + 8) + "V" + (2 * y - 8)
   }
 
-  function getClipPathId() {
+  function getClipPathId () {
     return _chart.anchorName().replace(/[ .#=\[\]]/g, "-") + "-clip"
   }
 
-  _chart._preprocessData = function() {}
+  _chart._preprocessData = function () {}
 
-  function initGrid() {
+  function initGrid () {
     if (_gridInitted) {
       return
     }
@@ -1267,7 +1208,7 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
   }
 
 
-  function doChartRender(imgUrl, renderBounds, queryId) {
+  function doChartRender (imgUrl, renderBounds, queryId) {
     initGrid()
     _chart._preprocessData()
     drawChart(true, imgUrl, renderBounds, queryId)
@@ -1275,13 +1216,13 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   }
 
-  _chart._doRender = function() {
+  _chart._doRender = function () {
     doChartRender()
   }
 
-  function doChartRedraw(imgUrl, renderBounds, queryId) {
+  function doChartRedraw (imgUrl, renderBounds, queryId) {
     if (!_hasBeenRendered) // guard to prevent a redraw before a render
-      return doChartRender(imgUrl, renderBounds, queryId)
+      { return doChartRender(imgUrl, renderBounds, queryId) }
 
     _chart._preprocessData()
 
@@ -1290,29 +1231,29 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart
   }
 
-  _chart._doRedraw = function() {
+  _chart._doRedraw = function () {
     doChartRedraw()
   }
 
-  _chart._drawScatterPlot = function(doFullRender, imgUrl, renderBounds, queryId) {
-    if (!!doFullRender) {
+  _chart._drawScatterPlot = function (doFullRender, imgUrl, renderBounds, queryId) {
+    if (doFullRender) {
       doChartRender(imgUrl, renderBounds, queryId)
     } else {
       doChartRedraw(imgUrl, renderBounds, queryId)
     }
   }
 
-  _chart._destroyScatterPlot = function() {
+  _chart._destroyScatterPlot = function () {
     destroy()
   }
 
-  function drawChart(render, imgUrl, renderBounds, queryId) {
+  function drawChart (render, imgUrl, renderBounds, queryId) {
     // prepare and render the chart first so the grid lines/axes
     // are drawn on top
     prepareChartBody()
     renderChart(imgUrl, renderBounds, queryId)
 
-    var transitionDuration = (render ? _chart.transitionDuration() : 10)
+    const transitionDuration = (render ? _chart.transitionDuration() : 10)
 
     prepareXAxis(_chart.g(), _chart.x(), render, transitionDuration)
     _chart._prepareYAxis(_chart.g(), _chart.y(), transitionDuration)
@@ -1330,9 +1271,9 @@ export default function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     _chart.map().fire("render", {})
   }
 
-  _chart.init = function() {
+  _chart.init = function () {
     initGrid()
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       resolve(_chart)
     })
   }

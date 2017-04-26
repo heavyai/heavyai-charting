@@ -1,55 +1,55 @@
-(function() {
+(function () {
   if (window.SVGElement) {
-    var serializeXML = function(node, output) {
-      var nodeType = node.nodeType;
+    var serializeXML = function (node, output) {
+      const nodeType = node.nodeType
       if (nodeType == 3) { // TEXT nodes.
         // Replace special XML characters with their entities.
-        output.push(node.textContent.replace(/&/, '&amp;').replace(/</, '&lt;').replace('>', '&gt;'));
+        output.push(node.textContent.replace(/&/, "&amp;").replace(/</, "&lt;").replace(">", "&gt;"))
       } else if (nodeType == 1) { // ELEMENT nodes.
         // Serialize Element nodes.
-        output.push('<', node.tagName);
+        output.push("<", node.tagName)
         if (node.hasAttributes()) {
-          var attrMap = node.attributes;
+          const attrMap = node.attributes
           for (var i = 0, len = attrMap.length; i < len; ++i) {
-            var attrNode = attrMap.item(i);
-            output.push(' ', attrNode.name, '=\'', attrNode.value, '\'');
+            const attrNode = attrMap.item(i)
+            output.push(" ", attrNode.name, "='", attrNode.value, "'")
           }
         }
         if (node.hasChildNodes()) {
-          output.push('>');
-          var childNodes = node.childNodes;
+          output.push(">")
+          const childNodes = node.childNodes
           for (var i = 0, len = childNodes.length; i < len; ++i) {
-            serializeXML(childNodes.item(i), output);
+            serializeXML(childNodes.item(i), output)
           }
-          output.push('</', node.tagName, '>');
+          output.push("</", node.tagName, ">")
         } else {
-          output.push('/>');
+          output.push("/>")
         }
       } else if (nodeType == 8) {
         // TODO(codedread): Replace special characters with XML entities?
-        output.push('<!--', node.nodeValue, '-->');
+        output.push("<!--", node.nodeValue, "-->")
       } else {
         // TODO: Handle CDATA nodes.
         // TODO: Handle ENTITY nodes.
         // TODO: Handle DOCUMENT nodes.
-        throw 'Error serializing XML. Unhandled node of type: ' + nodeType;
+        throw "Error serializing XML. Unhandled node of type: " + nodeType
       }
     }
     // The innerHTML DOM property for SVGElement.
-    Object.defineProperty(SVGElement.prototype, 'innerHTML', {
-      get: function() {
-        var output = [];
-        var childNode = this.firstChild;
+    Object.defineProperty(SVGElement.prototype, "innerHTML", {
+      get () {
+        const output = []
+        let childNode = this.firstChild
         while (childNode) {
-          serializeXML(childNode, output);
-          childNode = childNode.nextSibling;
+          serializeXML(childNode, output)
+          childNode = childNode.nextSibling
         }
-        return output.join('');
+        return output.join("")
       },
-      set: function(markupText) {
+      set (markupText) {
         // Wipe out the current contents of the element.
         while (this.firstChild) {
-          this.removeChild(this.firstChild);
+          this.removeChild(this.firstChild)
         }
 
         try {
@@ -57,31 +57,31 @@
           // var dXML = new DOMParser();
           // dXML.async = false;
           // Wrap the markup into a SVG node to ensure parsing works.
-          markupText = '<svg xmlns=\'http://www.w3.org/2000/svg\'>' + markupText + '</svg>';
+          markupText = "<svg xmlns='http://www.w3.org/2000/svg'>" + markupText + "</svg>"
 
-          var divContainer = document.createElement('div');
-          divContainer.innerHTML = markupText;
-          var svgDocElement = divContainer.querySelector('svg')
+          const divContainer = document.createElement("div")
+          divContainer.innerHTML = markupText
+          const svgDocElement = divContainer.querySelector("svg")
           // Now take each node, import it and append to this element.
-          var childNode = svgDocElement.firstChild;
-          while(childNode) {
-            this.appendChild(this.ownerDocument.importNode(childNode, true));
-            childNode = childNode.nextSibling;
+          let childNode = svgDocElement.firstChild
+          while (childNode) {
+            this.appendChild(this.ownerDocument.importNode(childNode, true))
+            childNode = childNode.nextSibling
           }
-        } catch(e) {
-          throw e;
-        };
+        } catch (e) {
+          throw e
+        }
       }
-    });
+    })
 
     // The innerSVG DOM property for SVGElement.
-    Object.defineProperty(SVGElement.prototype, 'innerSVG', {
-      get: function() {
-        return this.innerHTML;
+    Object.defineProperty(SVGElement.prototype, "innerSVG", {
+      get () {
+        return this.innerHTML
       },
-      set: function(markupText) {
-        this.innerHTML = markupText;
+      set (markupText) {
+        this.innerHTML = markupText
       }
-    });
+    })
   }
-})();
+})()

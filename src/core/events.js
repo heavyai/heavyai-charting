@@ -1,6 +1,6 @@
 export const events = {
-    current: null
-};
+  current: null
+}
 
 /**
  * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
@@ -22,16 +22,16 @@ export const events = {
  * @param {Number} [delay]
  */
 events.trigger = function (closure, delay) {
-    if (!delay) {
-        closure();
-        return;
+  if (!delay) {
+    closure()
+    return
+  }
+
+  dc.events.current = closure
+
+  setTimeout(() => {
+    if (closure === dc.events.current) {
+      closure()
     }
-
-    dc.events.current = closure;
-
-    setTimeout(function () {
-        if (closure === dc.events.current) {
-            closure();
-        }
-    }, delay);
-};
+  }, delay)
+}

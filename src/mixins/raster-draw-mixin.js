@@ -5,12 +5,12 @@ import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 import {redrawAllAsync} from "../core/core-async"
 
 /* istanbul ignore next */
-function writePointInTriangleSqlTest(p0, p1, p2, px, py, cast = false) {
-  function writeSign(p0, p1) {
+function writePointInTriangleSqlTest (p0, p1, p2, px, py, cast = false) {
+  function writeSign (p0, p1) {
     if (cast) {
-      return `((CAST(${px} AS FLOAT)-(${p1[0]}))*(${p0[1]-p1[1]}) - ` + `(${p0[0]-p1[0]})*(CAST(${py} AS FLOAT)-(${p1[1]})) < 0.0)`
+      return `((CAST(${px} AS FLOAT)-(${p1[0]}))*(${p0[1] - p1[1]}) - ` + `(${p0[0] - p1[0]})*(CAST(${py} AS FLOAT)-(${p1[1]})) < 0.0)`
     } else {
-      return `((${px}-(${p1[0]}))*(${p0[1]-p1[1]}) - ` + `(${p0[0]-p1[0]})*(${py}-(${p1[1]})) < 0.0)`
+      return `((${px}-(${p1[0]}))*(${p0[1] - p1[1]}) - ` + `(${p0[0] - p1[0]})*(${py}-(${p1[1]})) < 0.0)`
     }
   }
 
@@ -21,7 +21,7 @@ function writePointInTriangleSqlTest(p0, p1, p2, px, py, cast = false) {
 }
 
 /* istanbul ignore next */
-function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
+function createUnlikelyStmtFromShape (shape, xAttr, yAttr, useLonLat) {
   const aabox = shape.aabox
   let xmin = aabox[MapdDraw.AABox2d.MINX]
   let xmax = aabox[MapdDraw.AABox2d.MAXX]
@@ -44,7 +44,7 @@ function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
 }
 
 /* istanbul ignore next */
-export function rasterDrawMixin(chart) {
+export function rasterDrawMixin (chart) {
   let drawEngine = null
   let buttonController = null
   let currXRange = null
@@ -68,7 +68,7 @@ export function rasterDrawMixin(chart) {
     dashPattern: [8, 2]
   }
 
-  function applyFilter() {
+  function applyFilter () {
     const NUM_SIDES = 3
     const useLonLat = (typeof chart.useLonLat === "function" && chart.useLonLat())
     const shapes = drawEngine.sortedShapes
@@ -134,7 +134,7 @@ export function rasterDrawMixin(chart) {
                 const triangles = earcut(earcutverts)
                 const triangleTests = []
                 let idx = 0
-                for (let j = 0; j < triangles.length; j += NUM_SIDES) {
+                for (let j = 0; j < triangles.length; j = j + NUM_SIDES) {
                   idx = triangles[j] * 2
                   MapdDraw.Point2d.set(p0, earcutverts[idx], earcutverts[idx + 1])
 
@@ -169,7 +169,7 @@ export function rasterDrawMixin(chart) {
     chart._invokeFilteredListener(chart.filters(), false)
   }
 
-  function drawEventHandler() {
+  function drawEventHandler () {
     applyFilter()
     redrawAllAsync()
   }
@@ -178,7 +178,7 @@ export function rasterDrawMixin(chart) {
     drawEventHandler()
   }, 50)
 
-  function updateDrawFromGeom() {
+  function updateDrawFromGeom () {
     debounceRedraw()
   }
 
@@ -192,11 +192,11 @@ export function rasterDrawMixin(chart) {
     updateDrawFromGeom()
   }
 
-  function filters() {
+  function filters () {
     return drawEngine.getShapesAsJSON()
   }
 
-  function filter(filterArg) {
+  function filter (filterArg) {
     if (!arguments.length) {
       return drawEngine.getShapesAsJSON()
     }
@@ -204,34 +204,32 @@ export function rasterDrawMixin(chart) {
     if (filterArg === null) {
       drawEngine.deleteAllShapes()
       applyFilter()
-    } else {
-      if (typeof filterArg.type !== "undefined") {
-        let newShape = null
-        if (filterArg.type === "Feature") {
-          console.log("WARNING - trying to load an incompatible lasso dashboard. All filters will be cleared.")
-          return
-        }
-        const selectOpts = {}
-        if (filterArg.type === "LatLonCircle") {
-          const LatLonCircle = getLatLonCircleClass()
-          newShape = new LatLonCircle(filterArg)
-          selectOpts.uniformScaleOnly = true
-          selectOpts.centerScaleOnly = true
-          selectOpts.rotatable = false
-        } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
-          newShape = new MapdDraw[filterArg.type](filterArg)
-        } else {
-          origFilterFunc(filterArg)
-        }
-
-        if (newShape) {
-          drawEngine.addShape(newShape, selectOpts)
-          chart.addFilterShape(newShape)
-          applyFilter()
-        }
+    } else if (typeof filterArg.type !== "undefined") {
+      let newShape = null
+      if (filterArg.type === "Feature") {
+        console.log("WARNING - trying to load an incompatible lasso dashboard. All filters will be cleared.")
+        return
+      }
+      const selectOpts = {}
+      if (filterArg.type === "LatLonCircle") {
+        const LatLonCircle = getLatLonCircleClass()
+        newShape = new LatLonCircle(filterArg)
+        selectOpts.uniformScaleOnly = true
+        selectOpts.centerScaleOnly = true
+        selectOpts.rotatable = false
+      } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
+        newShape = new MapdDraw[filterArg.type](filterArg)
       } else {
         origFilterFunc(filterArg)
       }
+
+      if (newShape) {
+        drawEngine.addShape(newShape, selectOpts)
+        chart.addFilterShape(newShape)
+        applyFilter()
+      }
+    } else {
+      origFilterFunc(filterArg)
     }
 
     if (!buttonController || !buttonController.isActive()) {
@@ -280,7 +278,7 @@ export function rasterDrawMixin(chart) {
     drawEngine = new MapdDraw.ShapeBuilder(parent, engineOpts)
     buttonController = new LassoButtonGroupController(parent, chart, drawEngine, defaultStyle, defaultSelectStyle)
 
-    function updateDraw() {
+    function updateDraw () {
       const bounds = chart.getDataRenderBounds()
       currXRange = [bounds[0][0], bounds[1][0]]
       currYRange = [bounds[0][1], bounds[2][1]]
@@ -298,7 +296,7 @@ export function rasterDrawMixin(chart) {
       // debounceRedraw()
     }
 
-    function updateDrawResize(eventObj) {
+    function updateDrawResize (eventObj) {
       // make sure all buttons and events are deactivated when resizing
       // so shape creation/modification events aren't unintentionally
       // triggered

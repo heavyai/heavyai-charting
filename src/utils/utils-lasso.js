@@ -60,7 +60,7 @@ export function convertGeojsonToSql (features, px, py) {
       const data = earcut.flatten(feature.geometry.coordinates)
       const triangles = earcut(data.vertices, data.holes, data.dimensions)
       const result = translateVertexIndexIntoLatLon(triangles, data)
-      for (let j = 0; j < result.length; j += NUM_SIDES) {
+      for (let j = 0; j < result.length; j = j + NUM_SIDES) {
         const p2 = result[j + 2]
         const p1 = result[j + 1]
         const p0 = result[j]

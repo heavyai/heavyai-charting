@@ -96,7 +96,7 @@ export default function spinnerMixin (_chart) {
   })
 
   _chart.on("dataError", () => {
-    console.log(_chart.__dcFlag__, ': error')
+    console.log(_chart.__dcFlag__, ": error")
   })
 
   return _chart
