@@ -751,7 +751,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     // If BE supports ordinal scales for X axis, use
     // rangeBands here: i.e. x.rangeBands([0, _chart.xAxisLength()], ...)
 
-    // currently only supports quantitative scales
+    // currently only supports quantitative scal
     x.range([0, Math.round(_chart.xAxisLength())])
 
     const customTimeFormat = d3.time.format.utc.multi([
@@ -781,7 +781,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       }]
     ])
 
-    _xAxis = _xAxis.scale(x).tickFormat(xdom[0] instanceof Date ? customTimeFormat : null)
+    _xAxis = _xAxis.scale(x).tickFormat(xdom[0] instanceof Date ? customTimeFormat : _xAxis.tickFormat())
 
     _xAxis.ticks(_chart.effectiveWidth() / _xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth() / 64) : 10)
 

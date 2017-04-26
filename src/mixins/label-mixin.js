@@ -65,7 +65,7 @@ export default function labelMixin (chart) {
     if (chart._isRangeChart) {
       chart.focusChart()[`_invokeLabel${type.toUpperCase()}Listener`](val)
       if (type === "x") {
-        chart.xAxisLabel(chart.focusChart().xAxisLabel())
+        chart.xAxisLabel(val)
         chart.redrawAsync()
       }
       return
