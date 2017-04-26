@@ -41,14 +41,14 @@
     "webpack": "node ./node_modules/webpack/bin/webpack.js"
   },
   "dependencies": {
-    "@mapd/connector": "https://github.com/mapd/mapd-connector-os-testing.git",
-    "@mapd/crossfilter": "https://github.com/mapd/mapd-crossfilter-os-testing.git",
+    "@mapd/connector": "ssh://git@github.com/mapd/mapd-connector-os-testing.git",
+    "@mapd/crossfilter": "ssh://git@github.com/mapd/mapd-crossfilter-os-testing.git",
     "d3": "^3.5.17",
     "deep-equal": "1.0.1",
     "earcut": "^2.1.1",
     "@mapbox/mapbox-gl-draw": "https://github.com/mapd/mapbox-gl-draw/tarball/jon/upgrade",
     "mapbox-gl": "https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307",
-    "@mapd/mapd-draw": "https://github.com/mapd/mapd-draw.git#v1.1.0",
+    "@mapd/mapd-draw": "ssh://git@github.com/mapd/mapd-draw.git#v1.1.0",
     "moment": "2.13.0",
     "ramda": "0.21.0",
     "simplify-js": "^1.2.1"
