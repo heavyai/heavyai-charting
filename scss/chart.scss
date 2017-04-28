@@ -905,6 +905,7 @@ body {
         transition: none;
 
         .chart-popup-box {
+            pointer-events: auto;
             opacity: 1;
             top: -24px;
             transition-delay: 0s;
@@ -1064,6 +1065,7 @@ body {
     }
 
     .chart-popup-box {
+        pointer-events: none;
         min-height: 32px;
         min-width: 120px;
         background: white;
