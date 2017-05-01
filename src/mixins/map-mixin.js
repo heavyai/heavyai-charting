@@ -6,7 +6,7 @@ import {rasterDrawMixin} from "./raster-draw-mixin"
 
 function valuesOb (obj) { return Object.keys(obj).map((key) => obj[key]) }
 
-export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = true, useMapboxDraw = true) {
+export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = true) {
   const DEFAULT_ZOOM_LEVEL = 15
   const EASE_DURATION_MS = 1500
   const SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
@@ -599,11 +599,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
   }
 
   if (mixinDraw) {
-    if (useMapboxDraw) {
-      _chart = mapDrawMixin(_chart, _mapboxgl, MapboxDraw)
-    } else {
-      _chart = rasterDrawMixin(_chart)
-    }
+    _chart = rasterDrawMixin(_chart)
   }
 
   return _chart

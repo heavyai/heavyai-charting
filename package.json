@@ -86,7 +86,7 @@
     "lines": 32,
     "statements": 31.5,
     "functions": 16.65,
-    "branches": 12.87,
+    "branches": 12.83,
     "exclude": [
       "**/*.spec.js"
     ]
