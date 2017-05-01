@@ -1,7 +1,7 @@
 import chai, {expect} from "chai"
 import spies from "chai-spies"
 import dcLegendCont from "./dc-legend-cont"
-import {d3, pieChart} from "../../index"
+import {d3, pieChart} from "../index"
 
 chai.use(spies)
 

@@ -55,3 +55,5 @@ mapdc.min.js.map
 mapdc.min.css
 
 dist/
+
+.nyc_output

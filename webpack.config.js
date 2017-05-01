@@ -5,7 +5,7 @@ var path = require("path");
 module.exports = {
   context: __dirname,
   entry: {
-    "mapdc": "./example.entry.js"
+    "mapdc": "./index.js"
   },
   output: {
     path: __dirname + "/dist",
