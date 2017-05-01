@@ -1,54 +1,58 @@
-mapdc.js
-=====
+# MapD Charting
 
 Dimensional charting built to work natively with crossfilter rendered using d3.js.
 
-## Running the Examples
+### Table of Contents
+- [Quick Start](#quick-start)
+- [Screenshots](#screenshots)
+- [Examples](#examples)
+- [Synopsis](#synopsis)
+- [Development Guidelines](#development-guidelines)
+- [Testing](#testing)
+- [Scripts](#scripts)
+- [Documentation](#documentation)
+- [Contributing](.github/CONTRIBUTING.md)
+- [License](LICENSE.md)
 
-##### Step 1 Install Dependencies
+# Quick Start
 
-```
-yarn install
-```
-
-##### Step 2 Run Start Script
+##### Step 1: Install Dependencies
 
 ```bash
-# ./mapdc
-npm run start 
+npm install #downloads all dependencies and devDependencies
+npm install mapbox-gl@https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307 #downloads mapbox peer dependency
 ```
 
-## Organization
+##### Step 2: Run Start Script
+```bash
+npm run start
+```
 
-The repo is separated into two parts. The root file is `mapdc/index.js`
+# Screenshots
 
-#### Part 1: `mapdc/src`
+#### Flights Dataset: Brushing on timeline with Bubble Chart and Row Chart
 
-The original DC source and our overwrites make up the files in this folder. 
+![example1](https://cloud.githubusercontent.com/assets/2932405/25641647/1acce1f2-2f4a-11e7-87d4-a4e80cb262f5.gif)
 
-There are a few things to keep in mind in this folder:
-* The files in here are concated together by `grunt tasks`, so one cannot use `require`.
-* The `dc` and `d3` objects are considered globals.
-* Our overwrites to DC are flagged with comments, but not all of them are flagged
-* The code is written in ES5
+#### Tweets Dataset: Brushing on timeline and hovering on Pointmap datapoint which displays row information
 
-#### Part 2: `mapdc/overrides`
+![example2](https://cloud.githubusercontent.com/assets/2932405/25641746/acd9cdd0-2f4a-11e7-9821-99e3152075cd.gif)
 
-This folder only contains our overrides and mixins to DC.
+#### Tweets Dataset: Using MapD-Draw tool on pointmap to select specific areas on a map
 
-Our goal is to eventually move all our additions to the DC library to this folder from `mapdc/src`
+![example5](https://cloud.githubusercontent.com/assets/2932405/25641955/ab7015ac-2f4b-11e7-848a-c749fe2081bf.gif)
 
-When working in this folder, note that:
-* The code is written in ES6/7
-* The `dc` and `d3` objects are imports, not globals
+# Synopsis
 
-## Development Guidelines
+MapD-Charting is a superfast charting library that works natively with [crossfilter](https://github.com/square/crossfilter) that is based off [dc.js](https://github.com/dc-js/dc.js).  It is designed to work with MapD-Connector and MapD-Crossfilter to create charts instantly with our MapD-Core SQL Database.  Please see [examples](#examples) for further understanding to quickly create interactive charts.
 
-### Use Mixins and Overrides
+Our [Tweetmap Demo](https://www.mapd.com/demos/tweetmap/) was made only using MapD-Charting.
 
-When making new additions to DC, do not directly modify the files in `mapdc/src`. Instead, one should use the overrides and mixin patterns found in `mapdc/overrides`. 
+# Examples
 
-Straying from this guideline will prevent us from upgrading the DC library. In addition, any new code you add to `mapdc/src` will not be linted or tested.
+##### To do -- insert links to examples
+
+# Development Guidelines
 
 ### Use Asynchronous Methods
 
@@ -87,30 +91,37 @@ chart.dataAsync((group, callback) => {
 chart.data(() => chart.dataCache)
 ```
 
-### Testing
+# Testing
 
-Please write unit tests for all your `mapdc/overrides` code. The test files are located in `overrides/test`. 
+New components in MapD-Charting should be unit-tested and linted.  All tests will be in the same folder as the new component.
+
+```
++-- src
+|   +-- /mixins/new-mixin-component.js
+|   +-- /mixins/new-mixin-component.unit.spec.js
+```
+
+The linter and all tests run on
+```bash
+npm run test
+```
+
+To check only unit-tests run:
+```bash
+npm run test:unit
+```
 
 ### Linting
 
-Please lint all your code in `mapdc/overrides`. The lint config file can be found in `overrides/.eslintrc.json` and closely mirrors the rules in `projects/dashboard-v2`
+Please lint all your code in `mapd-charting/`. The lint config file can be found in `.eslintrc.json`.  For new new components, please fix all lint warnings and errors.
 
+# Scripts
 
-### Scripts
-
-In the `mapdc/overrides` folder
-
-Command | Description
---- | ---
-`npm run test` | Runs unit tests and provides coverage info
-`npm run lint` | Lints files
-
-In the `mapdc` folder
-
-Command | Description
+| Command        | Description  |
 --- | ---
 `npm run start` | Copies files for examples and then serves the example
-`npm run build` | Build DC for dashboard-v2
-`npm run watch` | Watches for changes in `./overrides` and `./src`
-
-
+`npm run build` | Runs webpack and builds js and css in `/dist`
+`npm run docs` | Creates and opens docs
+`npm run nyc` | Runs coverage reporting for unit tests
+`npm run test` | Runs both linting and unit tests
+`npm run clean` | Removes node modules, dist, docs, and example files 

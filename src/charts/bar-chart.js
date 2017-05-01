@@ -36,7 +36,7 @@ const EXTRACT_UNIT_NUM_BUCKETS = {
  * Examples:
  * - {@link http://dc-js.github.com/dc.js/ Nasdaq 100 Index}
  * - {@link http://dc-js.github.com/dc.js/crime/index.html Canadian City Crime Stats}
- * @name barChart
+ * @class barChart
  * @memberof dc
  * @mixes dc.stackMixin
  * @mixes dc.coordinateGridMixin
@@ -48,13 +48,13 @@ const EXTRACT_UNIT_NUM_BUCKETS = {
  * // create a sub-chart under a composite parent chart
  * var chart3 = dc.barChart(compositeChart);
  * @param {String|node|d3.selection|dc.compositeChart} parent - Any valid
- * {@link https://github.com/mbostock/d3/wiki/Selections#selecting-elements d3 single selector}
+ * {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements d3 single selector}
  * specifying a dom block element such as a div; or a dom element or d3 selection.  If the bar
- * chart is a sub-chart in a {@link #dc.compositeChart Composite Chart} then pass in the parent
+ * chart is a sub-chart in a {@link dc.compositeChart Composite Chart} then pass in the parent
  * composite chart instance instead.
  * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
  * Interaction with a chart will only trigger events and redraws within the chart's group.
- * @return {dc.barChart}
+ * @returns {dc.barChart}
  */
 export default function barChart (parent, chartGroup) {
   const MIN_BAR_WIDTH = 1
@@ -67,35 +67,18 @@ export default function barChart (parent, chartGroup) {
   let _centerBar = false
   let _alwaysUseRounding = false
 
-/* OVERRIDE ---------------------------------------------------------------- */
   let _numBars
   const _parent = parent
 
   _chart._numberOfBars = null
-/* ------------------------------------------------------------------------- */
-
   let _barWidth
 
   override(_chart, "rescale", () => {
     _chart._rescale()
     _barWidth = undefined
 
-/* TODO: ------------------------------------------------------------------- */
-// This was either deleted or did not exist when dc.mapd.js was written.
     return _chart
-/* ------------------------------------------------------------------------- */
   })
-
-/* OVERRIDE ---------------------------------------------------------------- */
-    // override(_chart, 'render', function () {
-    //     if (_chart.round() && _centerBar && !_alwaysUseRounding) {
-    //         dc.logger.warn('By default, brush rounding is disabled if bars are centered. ' +
-    //                      'See dc.js bar chart API documentation for details.');
-    //     }
-    //
-    //     return _chart._render();
-    // });
-/* ------------------------------------------------------------------------- */
 
   _chart.label((d) => utils.printSingleValue(d.y0 + d.y), false)
 
@@ -544,6 +527,3 @@ export default function barChart (parent, chartGroup) {
 
   return _chart.anchor(parent, chartGroup)
 }
-/* ****************************************************************************
- * END OVERRIDE: dc.barChart                                                  *
- * ***************************************************************************/
