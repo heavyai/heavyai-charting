@@ -1792,6 +1792,10 @@ export default function baseMixin (_chart) {
   _chart.rangeChartEnabled = () => false
   _chart.isTime = () => null
 
+  _chart.isMulti = function () {
+    return false
+  }
+
   _chart = chartLegendMixin(filterMixin(labelMixin(multipleKeysLabelMixin(spinnerMixin(asyncMixin(_chart))))))
 
   return _chart
