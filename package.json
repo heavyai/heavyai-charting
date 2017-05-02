@@ -47,8 +47,8 @@
     "simplify-js": "^1.2.1"
   },
   "devDependencies": {
-    "@mapd/connector": "ssh://git@github.com/mapd/mapd-connector-os-testing.git",
-    "@mapd/crossfilter": "ssh://git@github.com/mapd/mapd-crossfilter-os-testing.git#build-dist",
+    "@mapd/connector": "ssh://git@github.com/mapd/mapd-connector.git",
+    "@mapd/crossfilter": "ssh://git@github.com/mapd/mapd-crossfilter.git",
     "atob": "^2.0.3",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
@@ -85,7 +85,7 @@
     "check-coverage": true,
     "lines": 32,
     "statements": 31.5,
-    "functions": 16.65,
+    "functions": 16.63,
     "branches": 12.83,
     "exclude": [
       "**/*.spec.js"
