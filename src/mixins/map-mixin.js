@@ -4,84 +4,83 @@ import {utils} from "../utils/utils"
 import {mapDrawMixin} from "./map-draw-mixin"
 import {rasterDrawMixin} from "./raster-draw-mixin"
 
-function valuesOb (obj) { return Object.keys(obj).map(function (key) { return obj[key]; }) }
+function valuesOb (obj) { return Object.keys(obj).map((key) => obj[key]) }
 
 export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = true) {
-    var DEFAULT_ZOOM_LEVEL = 15
-    var EASE_DURATION_MS = 1500
-    var SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
-    var LONMAX = 180 - SMALL_AMOUNT
-    var LONMIN = -180 + SMALL_AMOUNT
-    var LATMAX = 90 - SMALL_AMOUNT
-    var LATMIN = -90 + SMALL_AMOUNT
+  const DEFAULT_ZOOM_LEVEL = 15
+  const EASE_DURATION_MS = 1500
+  const SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
+  const LONMAX = 180 - SMALL_AMOUNT
+  const LONMIN = -180 + SMALL_AMOUNT
+  const LATMAX = 90 - SMALL_AMOUNT
+  const LATMIN = -90 + SMALL_AMOUNT
 
-    var _mapboxgl = typeof _mapboxgl === 'undefined' ? mapboxgl : _mapboxgl
-    var _map = null;
-    var _mapboxAccessToken = 'pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g';
-    var _lastWidth = null;
-    var _lastHeight = null;
-    var _mapId = chartDivId;
+  var _mapboxgl = typeof _mapboxgl === "undefined" ? mapboxgl : _mapboxgl
+  let _map = null
+  const _mapboxAccessToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g"
+  let _lastWidth = null
+  let _lastHeight = null
+  const _mapId = chartDivId
 
-    _chart._xDimName = null;
-    _chart._yDimName = null;
-    var hasAppliedInitialBounds = false;
-    var _hasRendered = false;
-    var _activeLayer = null;
-    var _mapInitted = false;
-    var _xDim = null;
-    var _yDim = null;
-    var _lastMapMoveType = null;
-    var _lastMapUpdateTime = 0;
-    var _isFirstMoveEvent = true;
-    var _mapUpdateInterval = 100; //default
-    var _mapStyle = 'mapbox://styles/mapbox/light-v8';
-    var _center = [0,30];
-    var _zoom = 1;
-    var _popupFunction = null;
-    var _colorBy = null;
-    var _mouseLeave = false;
-    var _useLonLat = true;
-    _chart._minCoord = null;
-    _chart._maxCoord = null;
-    _chart._reProjMapbox = true;
+  _chart._xDimName = null
+  _chart._yDimName = null
+  let hasAppliedInitialBounds = false
+  let _hasRendered = false
+  let _activeLayer = null
+  let _mapInitted = false
+  let _xDim = null
+  let _yDim = null
+  let _lastMapMoveType = null
+  let _lastMapUpdateTime = 0
+  let _isFirstMoveEvent = true
+  let _mapUpdateInterval = 100 // default
+  let _mapStyle = "mapbox://styles/mapbox/light-v8"
+  let _center = [0, 30]
+  let _zoom = 1
+  const _popupFunction = null
+  let _colorBy = null
+  const _mouseLeave = false
+  let _useLonLat = true
+  _chart._minCoord = null
+  _chart._maxCoord = null
+  _chart._reProjMapbox = true
 
-    var _arr = [[-180, -85], [180, 85]];
+  const _arr = [[-180, -85], [180, 85]]
 
-    var _llb = _mapboxgl.LngLatBounds.convert(_arr);
+  const _llb = _mapboxgl.LngLatBounds.convert(_arr)
 
-    var _geocoder = null
+  let _geocoder = null
 
-    var _minMaxCache = {}
-    var _interactionsEnabled = true
+  const _minMaxCache = {}
+  let _interactionsEnabled = true
 
-    _chart.useLonLat = function(useLonLat) {
-       if (!arguments.length)
-          return _useLonLat;
-       _useLonLat = useLonLat;
-       return _chart;
+  _chart.useLonLat = function (useLonLat) {
+    if (!arguments.length) { return _useLonLat }
+    _useLonLat = useLonLat
+    return _chart
+  }
+  _chart.map = function () {
+    return _map
+  }
+
+  _chart.enableInteractions = function (enableInteractions, opts = {}) {
+    if (!arguments.length) {
+      return _interactionsEnabled
     }
-    _chart.map = function() {
-        return _map;
-    }
 
-    _chart.enableInteractions = function(enableInteractions, opts = {}) {
-        if (!arguments.length) {
-            return _interactionsEnabled
-        }
+    const mapboxInteractionProps = ["scrollZoom", "boxZoom", "dragRotate", "dragPan", "keyboard", "doubleClickZoom", "touchZoomRotate"]
+    _interactionsEnabled = Boolean(enableInteractions)
 
-        const mapboxInteractionProps = ["scrollZoom", "boxZoom", "dragRotate", "dragPan", "keyboard", "doubleClickZoom", "touchZoomRotate"]
-        _interactionsEnabled = Boolean(enableInteractions)
+    if (_mapInitted) {
+      mapboxInteractionProps.forEach(prop => {
+        if (_map[prop]) {
+          const enable = (typeof opts[prop] !== "undefined" ? Boolean(opts[prop]) : _interactionsEnabled)
+          if (enable) {
+            _map[prop].enable()
+          } else {
+            _map[prop].disable()
 
-        if (_mapInitted) {
-            mapboxInteractionProps.forEach(prop => {
-                if (_map[prop]) {
-                    const enable = (typeof opts[prop] !== "undefined" ? Boolean(opts[prop]) : _interactionsEnabled)
-                    if (enable) {
-                        _map[prop].enable()
-                    } else {
-                        _map[prop].disable()
-
-                        if (prop === "dragPan") {
+            if (prop === "dragPan") {
                             // force a clear of the current event state on the map
                             // to fully disable pans
               _map[prop]._onMouseUp({
@@ -95,28 +94,28 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
     return _chart
   }
 
-  _chart.getDataRenderBounds = function() {
-      var bounds =  _map.getBounds();
+  _chart.getDataRenderBounds = function () {
+    const bounds = _map.getBounds()
 
-      if (!hasAppliedInitialBounds)  {
-        _chart.setFilterBounds(bounds)
-      }
+    if (!hasAppliedInitialBounds) {
+      _chart.setFilterBounds(bounds)
+    }
 
-      var renderBounds = [valuesOb(bounds.getNorthWest()),
-                          valuesOb(bounds.getNorthEast()),
-                          valuesOb(bounds.getSouthEast()),
-                          valuesOb(bounds.getSouthWest())]
+    let renderBounds = [valuesOb(bounds.getNorthWest()),
+      valuesOb(bounds.getNorthEast()),
+      valuesOb(bounds.getSouthEast()),
+      valuesOb(bounds.getSouthWest())]
 
-      if (!_useLonLat) {
-          renderBounds = [
-              _chart.conv4326To900913(renderBounds[0]),
-              _chart.conv4326To900913(renderBounds[1]),
-              _chart.conv4326To900913(renderBounds[2]),
-              _chart.conv4326To900913(renderBounds[3])
-          ];
-      }
-      hasAppliedInitialBounds = true
-      return renderBounds;
+    if (!_useLonLat) {
+      renderBounds = [
+        _chart.conv4326To900913(renderBounds[0]),
+        _chart.conv4326To900913(renderBounds[1]),
+        _chart.conv4326To900913(renderBounds[2]),
+        _chart.conv4326To900913(renderBounds[3])
+      ]
+    }
+    hasAppliedInitialBounds = true
+    return renderBounds
   }
 
   _chart.xDim = function (xDim) {
@@ -418,7 +417,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
     _map.off("moveend", onMapMove)
   }
 
-  _chart.on('postRender', function () {
+  _chart.on("postRender", () => {
     _hasRendered = true
   })
 
