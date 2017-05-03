@@ -88,8 +88,8 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     _filters = shouldReset ? [] : [[xrange, yrange]]
     _chart._invokeFilteredListener(_filters, false)
-    _chart.xRangeFilter && _chart.xRangeFilter(xrange)
-    _chart.yRangeFilter && _chart.yRangeFilter(yrange)
+    _chart.xRangeFilter(xrange)
+    _chart.yRangeFilter(yrange)
   }
 
   let _parent
@@ -817,6 +817,8 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     transition(axisXG, transitionDuration)
       .attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")")
       .call(_xAxis)
+
+    _chart.prepareLabelEdit("x")
   }
 
   function renderVerticalGridLines (g, x, transitionDuration) {
@@ -921,12 +923,13 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       // TODO(croot): should add the rotation and labelXPosition here
       // As of now (09/02/2016) the chart.css is breaking this.
 
-      const yOffset = 0
+      const yOffset = _chart.margins().bottom
 
       yLabel
         .style("top", ((_chart.effectiveHeight() + yOffset) / 2 + _chart.margins().top) + "px")
         .text(text)
     }
+    _chart.prepareLabelEdit("y")
   }
 
   _chart.renderYAxisAt = function (axisClass, axis, position, transitionDuration) {
