@@ -65,7 +65,6 @@
     <script src="js/mapdc.js"></script>
     <script src="js/mapbox-gl.js"></script>
     <script src="js/mapboxgl-overrides.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/mapbox-gl-draw.css" />
     <script>
 
   function createCharts(crossFilter, con, tableName) {
@@ -147,9 +146,9 @@
 
   function init() {
     var con = new MapdCon()
-      .protocol("http")
-      .host("forge.mapd.com")
-      .port("9092")
+      .protocol("https")
+      .host("metis.mapd.com")
+      .port("443")
       .dbName("mapd")
       .user("mapd")
       .password("HyperInteractive")

@@ -1,13 +1,106 @@
-<a href="./example1.html">Example 1</a>
-<br />
-<a href="./example2.html">Example 2</a>
-<br />
-<a href="./example3.html">Example 3</a>
-<br />
-<a href="./example4.html">Example 4</a>
-<br />
-<a href="./example5.html">Example 5</a>
-<br />
-<a href="./exampleMultiLayerMap.html">Backend-rendered Multi-Layer Map Example</a>
-<br />
-<a href="./exampleMultiLayerScatterplot.html">Backend-rendered Multi-Layer Scatterplot Example</a>
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<style>
+  hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 0px 200px 0px 200px;
+    padding: 0; 
+  }
+  body {
+    font-family: "Open Sans", sans-serif;
+    line-height: 1.25;
+  }
+  table {
+    border-collapse: collapse;
+    margin-top: 15px;
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+  }
+  .title {
+    font-size: 1.5em;
+    margin: .5em 0 .75em;
+    text-align: center;
+  }
+  .table-wrapper {
+    padding: 0px 20px 0px 20px;
+  }
+  table tr {
+    padding: .35em;
+  }
+  table th,
+  table td {
+    padding: .625em;
+    text-align: center;
+  }
+  table th {
+    font-size: .85em;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  @media screen and (max-width: 600px) {
+    table {
+      border: 0;
+    }
+    table thead {
+      border: none;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
+    table tr {
+      border-bottom: 3px solid #ddd;
+      display: block;
+      margin-bottom: .625em;
+    }
+    table td {
+      border-bottom: 1px solid #ddd;
+      display: block;
+      font-size: .8em;
+      text-align: right;
+    }
+    table td:last-child {
+      border-bottom: 0;
+    }
+  }
+</style>
+<body>
+<div class="title">MapD-Charting Examples</div>
+<hr>
+<div class="table-wrapper">
+  <table>
+    
+    <tbody>
+      <tr>
+        <td scope="row"><a href="./example1.html">Bar Chart, Scatterplot, and Time Chart</a></td>
+      </tr>
+      <tr>
+        <td scope="row"><a href="./example2.html">Backend-rendered Point Map</a></td>
+      </tr>
+      <tr>
+        <td scope="row"><a href="./example3.html">Backend-rendered Poly Map</a></td>
+      </tr>
+      <tr>
+        <td scope="row"><a href="./example4.html">Backend-rendered Scatter Plot</a></td>
+      </tr>
+      <tr>
+        <td scope="row"><a href="./exampleMultiLayerMap.html">Backend-rendered Multi-Layer Map</a></td>
+      </tr>
+      <tr>
+        <td scope="row"><a href="./exampleMultiLayerScatterplot.html">Backend-rendered Multi-Layer Scatterplot</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
