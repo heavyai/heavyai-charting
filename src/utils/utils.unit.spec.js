@@ -149,6 +149,98 @@ describe("DC Utils", () => {
     })
   })
 
+  describe("add", () => {
+    it("should add first two params under non-date condition", () => {
+      expect(dc.utils.add(10, 80, null)).to.equal(90)
+    })
+
+    it("should parse string and add it to a percentage of last param", () => {
+      expect(dc.utils.add(10, "80%", 10)).to.equal(18)
+    })
+
+    it("should bypass string parsing and add it to a percentage of last param", () => {
+      expect(dc.utils.add(10, "80", 10)).to.equal(18)
+    })
+
+    // it("should be able to handle adding dates", () => {
+    //   const testDate = new Date(2017, 0, 1).setHours(0, 0, 0, 0)
+    //   expect(dc.utils.add(testDate, "1", null)).to.equal(new Date(2017, 0, 2).setHours(0, 0, 0, 0))
+    // })
+  })
+
+  describe("isNumber", () => {
+    it("should return true for integers", () => {
+      expect(dc.utils.isNumber(10)).to.be.true
+    })
+
+    it("should return true for floats", () => {
+      expect(dc.utils.isNumber(10.25)).to.be.true
+    })
+
+    it("should return true for negative numbers", () => {
+      expect(dc.utils.isNumber(-10)).to.be.true
+    })
+
+    it("should return false for a string", () => {
+      expect(dc.utils.isNumber("10")).to.be.false
+    })
+  })
+
+  describe("isFloat", () => {
+    it("should return false for integers", () => {
+      expect(dc.utils.isFloat(10)).to.be.false
+    })
+
+    it("should return true for floats", () => {
+      expect(dc.utils.isFloat(10.25)).to.be.true
+    })
+
+    it("should return true for negative floats", () => {
+      expect(dc.utils.isFloat(-10.25)).to.be.true
+    })
+
+    it("should return false for a string", () => {
+      expect(dc.utils.isFloat("10")).to.be.false
+    })
+  })
+
+  describe("isInteger", () => {
+    it("should return true for integers", () => {
+      expect(dc.utils.isInteger(10)).to.be.true
+    })
+
+    it("should return false for floats", () => {
+      expect(dc.utils.isInteger(10.25)).to.be.false
+    })
+
+    it("should return true for negative integers", () => {
+      expect(dc.utils.isInteger(10)).to.be.true
+    })
+
+    it("should return false for a string", () => {
+      expect(dc.utils.isInteger("10")).to.be.false
+    })
+  })
+
+  describe("subtract", () => {
+    it("should subtract first two params under non-date condition", () => {
+      expect(dc.utils.subtract(80, 10, null)).to.equal(70)
+    })
+
+    it("should parse string and subtract it from a percentage of last param", () => {
+      expect(dc.utils.subtract(10, "80%", 10)).to.equal(2)
+    })
+
+    it("should bypass string parsing and subtract it to a percentage of last param", () => {
+      expect(dc.utils.subtract(10, "80", 10)).to.equal(2)
+    })
+
+    // it("should be able to handle subtracting dates", () => {
+    //   const testDate = new Date(2017, 0, 1).setHours(0, 0, 0, 0)
+    //   expect(dc.utils.add(testDate, "1", null)).to.equal(new Date(2017, 0, 0).setHours(0, 0, 0, 0))
+    // })
+  })
+
   // describe("printer filters", () => {
   //   it("should return an empty string if filter is undefined", () => {
   //     expect(dc.printers.filters(undefined)).to.equal("")
