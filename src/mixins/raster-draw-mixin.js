@@ -193,7 +193,11 @@ export function rasterDrawMixin (chart) {
   }
 
   function filters () {
-    return drawEngine.getShapesAsJSON()
+    const shapes = drawEngine.getShapesAsJSON()
+    if (shapes[0]) {
+      return chart.zoomFilters().concat(Array.from(shapes))
+    }
+    return chart.zoomFilters()
   }
 
   function filter (filterArg) {
@@ -327,6 +331,7 @@ export function rasterDrawMixin (chart) {
 
     origFilterFunc = chart.filter
     chart.filter = filter
+    chart.zoomFilters = chart.filters
     chart.filters = filters
 
     chart.filterAll = () => {
