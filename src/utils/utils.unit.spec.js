@@ -1,12 +1,14 @@
-import {expect} from "chai"
-import {utils, xAxisTickFormat} from "./utils"
+/* eslint-disable max-nested-callbacks*/
+
 import * as dc from "../index"
+import {utils, xAxisTickFormat} from "./utils"
+import {expect} from "chai"
 
 
 describe("DC Utils", () => {
 
   describe("All Utils", () => {
-    it('should have all the necessary exports', () => {
+    it("should have all the necessary exports", () => {
       expect(typeof dc.printers.filters).to.equal("function")
       expect(typeof dc.printers.filter).to.equal("function")
       expect(typeof dc.pluck).to.equal("function")
@@ -70,4 +72,90 @@ describe("DC Utils", () => {
 
     })
   })
+
+  describe("clamp", () => {
+    it("should return max if value is greater than max", () => {
+      expect(dc.utils.clamp(8, 1, 7)).to.equal(7)
+    })
+
+    it("should return min if value is lower than min", () => {
+      expect(dc.utils.clamp(0, 1, 7)).to.equal(1)
+    })
+
+    it("should return value if value is within min and max", () => {
+      expect(dc.utils.clamp(5, 1, 7)).to.equal(5)
+    })
+  })
+
+  describe("nullsLast", () => {
+    const nullsLast = dc.utils.nullsLast()
+
+    it("should return a sorting function", () => {
+      expect(typeof nullsLast).to.equal("function")
+    })
+
+    it("should place null values at the end of array", () => {
+      expect([null, 1].sort(dc.utils.nullsLast())).to.deep.equal([1, null])
+    })
+
+    it("should place null values at the end of array", () => {
+      expect([null, 1, null].sort(dc.utils.nullsLast())).to.deep.equal([1, null, null])
+    })
+  })
+
+  describe("nullsFirst", () => {
+    const nullsFirst = dc.utils.nullsFirst()
+
+    it("should return a sorting function", () => {
+      expect(typeof nullsFirst).to.equal("function")
+    })
+
+    it("should place null values at the start of array", () => {
+      expect([1, null].sort(dc.utils.nullsFirst())).to.deep.equal([null, 1])
+    })
+
+    it("should place null values at the start of array", () => {
+      expect([null, 1, null].sort(dc.utils.nullsFirst())).to.deep.equal([null, null, 1])
+    })
+  })
+
+  describe("isOrdinal", () => {
+    it("should return true when passed a valid option", () => {
+      expect(dc.utils.isOrdinal("text")).to.be.true
+    })
+
+    it("should return false when passed an invalid option", () => {
+      expect(dc.utils.isOrdinal("INT")).to.be.false
+    })
+  })
+
+  describe("isQuantitative", () => {
+    it("should return true when passed a valid option", () => {
+      expect(dc.utils.isQuantitative("INT")).to.be.true
+    })
+
+    it("should return false when passed an invalid option", () => {
+      expect(dc.utils.isQuantitative("text")).to.be.false
+    })
+  })
+
+  describe("isNegligible", () => {
+    it("should return true when passed a non-numeric value", () => {
+      expect(dc.utils.isNegligible("INT")).to.be.true
+    })
+
+    it("should return false when passed a non-negligible number", () => {
+      expect(dc.utils.isNegligible(10)).to.be.false
+    })
+  })
+
+  // describe("printer filters", () => {
+  //   it("should return an empty string if filter is undefined", () => {
+  //     expect(dc.printers.filters(undefined)).to.equal("")
+  //   })
+  //
+  //   it("should return an empty string if filter is null", () => {
+  //     expect(dc.printers.filters(null)).to.equal("")
+  //   })
+  // })
 })

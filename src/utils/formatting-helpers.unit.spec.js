@@ -1,5 +1,5 @@
-import {expect} from "chai"
 import * as Helpers from "./formatting-helpers"
+import {expect} from "chai"
 
 describe("Formatting Helpers", () => {
   describe("isPlainObject", () => {
@@ -31,7 +31,7 @@ describe("Formatting Helpers", () => {
   })
   describe("normalizeArrayByValue", () => {
     it("should map value property of a collection object", () => {
-      expect(Helpers.normalizeArrayByValue([{value: 1}, {value: 2}])).to.deep.equal([1,2])
+      expect(Helpers.normalizeArrayByValue([{value: 1}, {value: 2}])).to.deep.equal([1, 2])
     })
     it("should return the collection if it isn't a collection of objects", () => {
       const collection = [new Date(1), new Date(2)]
@@ -51,20 +51,20 @@ describe("Formatting Helpers", () => {
       expect(Helpers.formatDataValue(10000)).to.equal("10,000")
     })
     it("should format dates", () => {
-      expect(Helpers.formatDataValue(new Date(Date.UTC(2001, 0, 1)))).to.equal('Jan 1, 2001  00:00:00')
+      expect(Helpers.formatDataValue(new Date(Date.UTC(2001, 0, 1)))).to.equal("Jan 1, 2001  00:00:00")
     })
     it("should format strings", () => {
       expect(Helpers.formatDataValue("TEST")).to.equal("TEST")
     })
     it("should format null value", () => {
-      expect(Helpers.formatDataValue(null)).to.equal(`<tspan class="null-value"> NULL </tspan>`)
+      expect(Helpers.formatDataValue(null)).to.equal("<tspan class=\"null-value\"> NULL </tspan>")
     })
   })
   describe("maybeFormatInfinity", () => {
     const valList = [
       {val: 100},
       {val: "-Infinity"},
-      {val: "Infinity"},
+      {val: "Infinity"}
     ]
 
     it("should do nothing to numbers", () => {
@@ -80,19 +80,19 @@ describe("Formatting Helpers", () => {
   describe("formatDataValue", () => {
     it("should format results with object collections", () => {
       expect(Helpers.formatDataValue([
-        {alias: 'July', value: 7, timeBin: "month", isExtract: true, extractUnit: "month"},
-        {alias: 'August', value: 8, timeBin: "month", isExtract: true, extractUnit: "month"}
-      ])).to.equal('Jul')
+        {alias: "July", value: 7, timeBin: "month", isExtract: true, extractUnit: "month"},
+        {alias: "August", value: 8, timeBin: "month", isExtract: true, extractUnit: "month"}
+      ])).to.equal("Jul")
       expect(Helpers.formatDataValue([
-        {alias: 'July', value: new Date(Date.UTC(2016, 10, 1)), timeBin: "month"},
-        {alias: 'August', value: new Date(Date.UTC(2016, 10, 1)), timeBin: "month"}
-      ])).to.equal('Nov 2016')
+        {alias: "July", value: new Date(Date.UTC(2016, 10, 1)), timeBin: "month"},
+        {alias: "August", value: new Date(Date.UTC(2016, 10, 1)), timeBin: "month"}
+      ])).to.equal("Nov 2016")
     })
     it("should format results with non-object collections", () => {
-      expect(Helpers.formatDataValue([10000, 20000])).to.equal('10,000 \u2013 20,000')
+      expect(Helpers.formatDataValue([10000, 20000])).to.equal("10,000 \u2013 20,000")
     })
     it("shoud format other formats", () => {
-      expect(Helpers.formatDataValue('ATL')).to.equal('ATL')
+      expect(Helpers.formatDataValue("ATL")).to.equal("ATL")
     })
   })
 
