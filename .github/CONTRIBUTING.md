@@ -105,8 +105,8 @@ Create a temporary `hotfix/your-urgent-matter` branch when an urgent fix needs t
 We use an extensive linter to help prevent typos and to maintain a consistent style in the codebase. The linter runs whenever you run `npm test`. The [linter settings file contains justifications](../.eslintrc.json) for most rules, but we're open to suggestions if you're willing to make the change!
 
 
-# Becoming a Core Contributor
-We may ask community members who've proven themselves with consistently excellent PR and issue contributions to join our **Core Contributors** team. There they'll help curate issues, review pull requests, and keep improving the community they're leading.
+# Becoming a Code Maintainer
+We may ask community members who've proven themselves with consistently excellent PR and issue contributions to join our **Code Maintainers** team. There they'll help curate issues, review pull requests, and keep improving the community they're leading.
 
 As we grow our internal engineering team, we may consider hiring contributors, particularly those who've earned this level of trust.
 
