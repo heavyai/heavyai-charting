@@ -113,7 +113,7 @@ npm run test:unit
 
 ### Linting
 
-Please lint all your code in `mapd-charting/`. The lint config file can be found in `.eslintrc.json`.  For new new components, please fix all lint warnings and errors.
+Please lint all your code in `mapd-charting/`. The lint config file can be found in `.eslintrc.json`.  For new components, please fix all lint warnings and errors.
 
 # Scripts
 
@@ -125,3 +125,6 @@ Please lint all your code in `mapd-charting/`. The lint config file can be found
 `npm run nyc` | Runs coverage reporting for unit tests
 `npm run test` | Runs both linting and unit tests
 `npm run clean` | Removes node modules, dist, docs, and example files
+
+# Documentation
+The charting library uses [documentation.js](https://github.com/documentationjs/documentation) for API documentation. Docs can be built and viewed locally with the `npm run docs` command.
