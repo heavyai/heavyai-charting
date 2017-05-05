@@ -5,9 +5,6 @@ import legendMixin from "../mixins/dc-legend-mixin"
  * Legend is a attachable widget that can be added to other dc charts to render horizontal legend
  * labels.
  *
- * Examples:
- * - {@link http://dc-js.github.com/dc.js/ Nasdaq 100 Index}
- * - {@link http://dc-js.github.com/dc.js/crime/index.html Canadian City Crime Stats}
  * @name legend
  * @memberof dc
  * @example

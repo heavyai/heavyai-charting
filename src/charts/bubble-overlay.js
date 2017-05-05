@@ -10,8 +10,7 @@ import {utils} from "../utils/utils"
  * chart you can arbitrarily place bubbles on an existing svg or bitmap image, thus changing the
  * typical x and y positioning while retaining the capability to visualize data using bubble radius
  * and coloring.
- * Examples:
- * - {@link http://dc-js.github.com/dc.js/crime/index.html Canadian City Crime Stats}
+ *
  * @name bubbleOverlay
  * @memberof dc
  * @mixes dc.bubbleMixin

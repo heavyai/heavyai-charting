@@ -4,9 +4,6 @@ import d3 from "d3"
 import {utils} from "../utils/utils"
 /**
  * A box plot is a chart that depicts numerical data via their quartile ranges.
- * Examples:
- * - {@link http://dc-js.github.com/dc.js/ Nasdaq 100 Index}
- * - {@link http://dc-js.github.com/dc.js/crime/index.html Canadian City Crime Stats}
  * @name boxPlot
  * @memberof dc
  * @mixes dc.coordinateGridMixin

@@ -10,8 +10,7 @@ import multiSeriesMixin from "../mixins/multi-series-mixin"
  * Concrete line/area chart implementation.
  *
  * Examples:
- * - {@link http://dc-js.github.com/dc.js/ Nasdaq 100 Index}
- * - {@link http://dc-js.github.com/dc.js/crime/index.html Canadian City Crime Stats}
+ * - {@link https://mapd.github.io/mapd-charting/example/example1.html Number of Flights by Departure Time}
  * @name lineChart
  * @memberof dc
  * @mixes dc.stackMixin

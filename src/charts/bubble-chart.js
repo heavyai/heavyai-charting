@@ -13,8 +13,8 @@ import {transition} from "../core/core"
  * - bubble radius
  * - color
  * Examples:
- * - {@link http://dc-js.github.com/dc.js/ Nasdaq 100 Index}
- * - {@link http://dc-js.github.com/dc.js/vc/index.html US Venture Capital Landscape 2011}
+ * - {@link https://mapd.github.io/mapd-charting/example/example1.html Carrier Departure Delay by Arrival Delay (Minutes)
+}
  * @name bubbleChart
  * @memberof dc
  * @mixes dc.bubbleMixin

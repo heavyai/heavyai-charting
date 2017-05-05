@@ -146,8 +146,7 @@ export default function coordinateGridMixin (_chart) {
       * Get or set the range selection chart associated with this instance. Setting the range selection
       * chart using this function will automatically update its selection brush when the current chart
       * zooms in. In return the given range chart will also automatically attach this chart as its focus
-      * chart hence zoom in when range brush updates. See the [Nasdaq 100
-      * Index](http://dc-js.github.com/dc.js/) example for this effect in action.
+      * chart hence zoom in when range brush updates.
       * @name rangeChart
       * @memberof dc.coordinateGridMixin
       * @instance

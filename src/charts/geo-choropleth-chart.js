@@ -9,8 +9,6 @@ import {utils} from "../utils/utils"
  * from GeoJson data. This chart implementation was inspired by
  * {@link http://bl.ocks.org/4060606 the great d3 choropleth example}.
  *
- * Examples:
- * - {@link http://dc-js.github.com/dc.js/vc/index.html US Venture Capital Landscape 2011}
  * @name geoChoroplethChart
  * @memberof dc
  * @mixes dc.colorMixin

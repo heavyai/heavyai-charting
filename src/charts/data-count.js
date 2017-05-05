@@ -11,8 +11,6 @@ import {override} from "../core/core"
  * '.total-count' - total number of records
  * '.filter-count' - number of records matched by the current filters
  *
- * Examples:
- * - {@link http://dc-js.github.com/dc.js/ Nasdaq 100 Index}
  * @name dataCount
  * @memberof dc
  * @mixes dc.baseMixin

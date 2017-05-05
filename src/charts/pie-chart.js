@@ -13,8 +13,6 @@ import {utils} from "../utils/utils"
  * slice relative to the sum of all values. Slices are ordered by {@link #dc.baseMixin+ordering ordering}
  * which defaults to sorting by key.
  *
- * Examples:
- * - {@link http://dc-js.github.com/dc.js/ Nasdaq 100 Index}
  * @name pieChart
  * @memberof dc
  * @mixes dc.capMixin
