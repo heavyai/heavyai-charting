@@ -12,7 +12,7 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 - [Scripts](#scripts)
 - [Documentation](#documentation)
 - [Contributing](.github/CONTRIBUTING.md)
-- [License](LICENSE.md)
+- [License](LICENSE)
 
 # Quick Start
 
@@ -124,4 +124,4 @@ Please lint all your code in `mapd-charting/`. The lint config file can be found
 `npm run docs` | Creates and opens docs
 `npm run nyc` | Runs coverage reporting for unit tests
 `npm run test` | Runs both linting and unit tests
-`npm run clean` | Removes node modules, dist, docs, and example files 
+`npm run clean` | Removes node modules, dist, docs, and example files
