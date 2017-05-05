@@ -49,7 +49,7 @@
 
     <div class="main-container">
       <div class="col-xs-12">
-        <div class="title">Point Map with Lasso Tool</div>
+        <div class="title">Pointmap with Selection Tool</div>
         <div id="chart1-example"></div>
       </div>
     </div>
@@ -69,7 +69,7 @@
 
   function createCharts(crossFilter, con, tableName) {
     var w = document.documentElement.clientWidth - 30;
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
     var countGroup = crossFilter.groupAll();
     var dataCount = dc.countWidget(".data-count")
       .dimension(crossFilter)
@@ -86,34 +86,38 @@
     var rScale = d3.scale.linear().domain([0,5000]).range([2,12]);
     mapLangColors(40);
 
-    var pointMapChart = dc.bubbleRasterChart(parent, true)
+    var pointMapChart = dc.rasterChart(parent, true, null, mapboxgl)
                           .con(con)
-                          .height(h/1.5)
+                          .height(h)
                           .width(w)
-                          .dimension(pointMapDim)
-                          .group(pointMapDim)
-                          .tableName(tableName)
                           .mapUpdateInterval(750)
-                          .cap(500000)
-                          .sampling(true)
-                          .dynamicR(d3.scale.sqrt().domain([20000,0]).range([1.0,7.0]).clamp(true))
-                          .othersGrouper(false)
-                          .xDim(xDim)
-                          .yDim(yDim)
-                          .colorBy({type: 'STR', value: 'lang', domain: langDomain})
-                          .r(rScale)
-                          .defaultColor("#80DEEA")
-                          .colors(d3.scale.ordinal().domain(langDomain).range(langColors))
                           .mapStyle('json/dark-v8.json')
                           .popupSearchRadius(2)
-                          .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
 
-    pointMapChart.init().then((chart) => {
+    var pointLayer = dc.rasterLayer("points")
+                       .dimension(pointMapDim)
+                       .group(pointMapDim)
+                       .cap(500000)
+                       .sampling(true)
+                       .dynamicSize(d3.scale.sqrt().domain([20000,0]).range([1.0,7.0]).clamp(true))
+                       .xDim(xDim)
+                       .yDim(yDim)
+                       .sizeScale(rScale)
+                       .xAttr("x")
+                       .yAttr("y")
+                       .sizeAttr("size")
+                       .fillColorAttr("color")
+                       .defaultFillColor("#80DEEA")
+                       .fillColorScale(d3.scale.ordinal().domain(langDomain).range(langColors))
+                       .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
+
+    pointMapChart.pushLayer("points", pointLayer).init().then((chart) => {
       /*--------------------------LASSO TOOL DRAW CONTROL------------------------------*/
       /* Here enable the lasso tool draw control and pass in a coordinate filter */
       pointMapChart
         .addDrawControl()
         .coordFilter(crossFilter.filter())
+
       dc.renderAllAsync()
     })
 
@@ -130,7 +134,7 @@
       pointMapChart.isNodeAnimate = false;
       pointMapChart
         .width(w)
-        .height(h/1.5)
+        .height(h)
         .render();
 
       dc.redrawAllAsync();

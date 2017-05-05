@@ -7,4 +7,4 @@
   "mimerl": {:hex, :mimerl, "1.0.2", "993f9b0e084083405ed8252b99460c4f0563e41729ab42d9074fd5e52439be88", [:rebar3], []},
   "poison": {:hex, :poison, "3.1.0", "d9eb636610e096f86f25d9a46f35a9facac35609a7591b3be3326e99a0484665", [:mix], []},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.1", "28a4d65b7f59893bc2c7de786dec1e1555bd742d336043fe644ae956c3497fbe", [:make, :rebar], []},
-  "whippet": {:hex, :whippet, "0.1.0", "15e5b7acd90592e7ca8942b536599c0d2b54487cccbb7834ca366f2804b90f58", [:mix], [{:beagle, "~> 0.1.0", [hex: :beagle, optional: false]}, {:hound, "~> 1.0", [hex: :hound, optional: false]}]}}
+  "whippet": {:git, "https://github.com/mrblueblue/whippet.git", "4fc0b71d74d2f684a536d8857d99c99bc8db2a62", []}}
