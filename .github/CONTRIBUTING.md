@@ -73,6 +73,34 @@ Unsure where to begin contributing? You can start by looking for issues tagged `
 
 ° Squashing makes reverting easier should that become necessary.
 
+### Branch Naming
+
+We use the following branch names to ensure the stability of our codebase.
+
+#### `develop`
+
+This is a long-living branch off of master where active development work gets merged in via feature/ or chore/ branches. Do not commit to this branch directly.
+
+#### `master`
+
+This is a long-living branch that only contains production-ready code. Stable work should be merged into this branch from a `release/` branch when that code is ready for production. Urgent work may be merged in via `hotfix/` branches.
+
+#### `feature/`
+
+Create a temporary `feature/your-cool-feature` branch off of `develop` whenever you want to submit work through the normal release cycle. Your branch lives for as long as it takes for the feature to be complete enough to merge into `develop`, at which point you should rebase `develop` one final time and open a pull request into `develop`.
+
+#### `chore/`
+
+Create a temporary `chore/your-maintenance-task` branch off of `develop` when you're factoring/rewriting production code or performing general maintenance to architecture, dependencies, or documentation. Use the same process for merging a `feature/`.
+
+#### `release/`
+
+Create a temporary `release/version` branch off of `develop` when there is a viable release candidate. This branch lives for as long as it takes for the release candidate to be ready for production. To prepare a release, bump the version number using `npm version major/minor/patch` and merge into `master`.
+
+#### `hotfix/`
+
+Create a temporary `hotfix/your-urgent-matter` branch when an urgent fix needs to be released without merging the code in `develop`. Merge this branch back into `master` when ready, follow the normal release process, then back-merge the hotfix into `develop`.
+
 ### Style Guide
 We use an extensive linter to help prevent typos and to maintain a consistent style in the codebase. The linter runs whenever you run `npm test`. The [linter settings file contains justifications](../.eslintrc.json) for most rules, but we're open to suggestions if you're willing to make the change!
 
