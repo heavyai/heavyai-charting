@@ -119,6 +119,34 @@ describe("DC Utils", () => {
     })
   })
 
+  describe("add", () => {
+    it("should add first two params under non-date condition", () => {
+      expect(dc.utils.add(10, 80, null)).to.equal(90)
+    })
+
+    it("should parse string and add it to a percentage of last param", () => {
+      expect(dc.utils.add(10, "80%", 10)).to.equal(18)
+    })
+
+    it("should bypass string parsing and add it to a percentage of last param", () => {
+      expect(dc.utils.add(10, "80", 10)).to.equal(18)
+    })
+  })
+
+  describe("subtract", () => {
+    it("should subtract first two params under non-date condition", () => {
+      expect(dc.utils.subtract(80, 10, null)).to.equal(70)
+    })
+
+    it("should parse string and subtract it from a percentage of last param", () => {
+      expect(dc.utils.subtract(10, "80%", 10)).to.equal(2)
+    })
+
+    it("should bypass string parsing and subtract it to a percentage of last param", () => {
+      expect(dc.utils.subtract(10, "80", 10)).to.equal(2)
+    })
+  })
+
   describe("isOrdinal", () => {
     it("should return true when passed a valid option", () => {
       expect(dc.utils.isOrdinal("text")).to.be.true
@@ -147,25 +175,6 @@ describe("DC Utils", () => {
     it("should return false when passed a non-negligible number", () => {
       expect(dc.utils.isNegligible(10)).to.be.false
     })
-  })
-
-  describe("add", () => {
-    it("should add first two params under non-date condition", () => {
-      expect(dc.utils.add(10, 80, null)).to.equal(90)
-    })
-
-    it("should parse string and add it to a percentage of last param", () => {
-      expect(dc.utils.add(10, "80%", 10)).to.equal(18)
-    })
-
-    it("should bypass string parsing and add it to a percentage of last param", () => {
-      expect(dc.utils.add(10, "80", 10)).to.equal(18)
-    })
-
-    // it("should be able to handle adding dates", () => {
-    //   const testDate = new Date(2017, 0, 1).setHours(0, 0, 0, 0)
-    //   expect(dc.utils.add(testDate, "1", null)).to.equal(new Date(2017, 0, 2).setHours(0, 0, 0, 0))
-    // })
   })
 
   describe("isNumber", () => {
@@ -221,33 +230,4 @@ describe("DC Utils", () => {
       expect(dc.utils.isInteger("10")).to.be.false
     })
   })
-
-  describe("subtract", () => {
-    it("should subtract first two params under non-date condition", () => {
-      expect(dc.utils.subtract(80, 10, null)).to.equal(70)
-    })
-
-    it("should parse string and subtract it from a percentage of last param", () => {
-      expect(dc.utils.subtract(10, "80%", 10)).to.equal(2)
-    })
-
-    it("should bypass string parsing and subtract it to a percentage of last param", () => {
-      expect(dc.utils.subtract(10, "80", 10)).to.equal(2)
-    })
-
-    // it("should be able to handle subtracting dates", () => {
-    //   const testDate = new Date(2017, 0, 1).setHours(0, 0, 0, 0)
-    //   expect(dc.utils.add(testDate, "1", null)).to.equal(new Date(2017, 0, 0).setHours(0, 0, 0, 0))
-    // })
-  })
-
-  // describe("printer filters", () => {
-  //   it("should return an empty string if filter is undefined", () => {
-  //     expect(dc.printers.filters(undefined)).to.equal("")
-  //   })
-  //
-  //   it("should return an empty string if filter is null", () => {
-  //     expect(dc.printers.filters(null)).to.equal("")
-  //   })
-  // })
 })
