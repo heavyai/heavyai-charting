@@ -5,6 +5,9 @@ import capMixin from "../mixins/cap-mixin"
 import baseMixin from "../mixins/base-mixin"
 
 export default function polyRasterChart (parent, useMap, chartGroup, _mapboxgl) {
+
+  console.warn("The polyRasterChart is deprecated and will be removed in a coming release. Please use the rasterChart instead")
+
   const chart = rasterMixin(mapMixin(colorMixin(capMixin(baseMixin({}))), parent.attributes.id.value, _mapboxgl, false))
   const layer = {isActive: false, name: "overlay_polygons"}
   let renderBoundsMap = {}

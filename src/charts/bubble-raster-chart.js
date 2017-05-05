@@ -11,6 +11,9 @@ import legend from "../chart-addons/legend"
 import {utils} from "../utils/utils"
 
 export default function bubbleRasterChart (parent, useMap, chartGroup, _mapboxgl) {
+
+  console.warn("The bubbleRasterChart is deprecated and will be removed in a coming release. Please use the rasterChart instead")
+
   let _chart = null
 
   const _useMap = useMap !== undefined ? useMap : false
