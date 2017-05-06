@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function init() {
   // function to create the backend-rendered map.
   function createPointMap(polycfLayer1, pointcfLayer2, pointcfLayer3, con) {
     var w = document.documentElement.clientWidth - 30;
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 150;
 
     /*---------------------BASIC COUNT ON CROSSFILTER--------------------------*/
     /*
@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function init() {
                                                 // screen for proper sizing of the backend-rendered image
                           .useLonLat(true)    // all point layers need their x,y coordinates, which
                                               // are lon,lat converted to mercator.
-                          .height(h/1.5)  // set width/height
+                          .height(h)  // set width/height
                           .width(w)
                           .mapUpdateInterval(750)
                           .mapStyle('mapbox://styles/mapbox/light-v8')
@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
       function reSizeAll() {
         var w = document.documentElement.clientWidth - 30;
-        var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+        var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 150;
 
         pointMapChart
           .width(w)

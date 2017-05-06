@@ -9,7 +9,7 @@ import {utils} from "../utils/utils"
  * Concrete row chart implementation.
  *
  * Examples:
- * - {@link http://dc-js.github.com/dc.js/ Nasdaq 100 Index}
+ * - {@link https://mapd.github.io/mapd-charting/example/example1.html Total Number of Flights by State}
  * @name rowChart
  * @memberof dc
  * @mixes dc.capMixin

@@ -33,9 +33,6 @@ const EXTRACT_UNIT_NUM_BUCKETS = {
 /**
  * Concrete bar chart/histogram implementation.
  *
- * Examples:
- * - {@link http://dc-js.github.com/dc.js/ Nasdaq 100 Index}
- * - {@link http://dc-js.github.com/dc.js/crime/index.html Canadian City Crime Stats}
  * @class barChart
  * @memberof dc
  * @mixes dc.stackMixin
