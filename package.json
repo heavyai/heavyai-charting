@@ -44,7 +44,7 @@
     "test:unit": "find ./src -name '*.spec.js' | NODE_PATH=./src xargs nyc mocha --opts ./test/mocha.unit.opts"
   },
   "dependencies": {
-    "@mapd/mapd-draw": "ssh://git@github.com/mapd/mapd-draw.git#v1.1.2",
+    "@mapd/mapd-draw": "git://github.com/mapd/mapd-draw.git",
     "d3": "^3.5.17",
     "deep-equal": "1.0.1",
     "earcut": "^2.1.1",
@@ -53,8 +53,8 @@
     "simplify-js": "^1.2.1"
   },
   "devDependencies": {
-    "@mapd/connector": "ssh://git@github.com/mapd/mapd-connector.git",
-    "@mapd/crossfilter": "ssh://git@github.com/mapd/mapd-crossfilter.git",
+    "@mapd/connector": "git://github.com/mapd/mapd-connector.git",
+    "@mapd/crossfilter": "git://github.com/mapd/mapd-crossfilter.git",
     "atob": "^2.0.3",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
