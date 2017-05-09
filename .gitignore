@@ -57,3 +57,4 @@ mapdc.min.css
 dist/
 
 .nyc_output
+*.lcov
