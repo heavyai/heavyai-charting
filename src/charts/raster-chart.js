@@ -26,7 +26,7 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
   if (_useMap) {
     _chart = mapMixin(baseMixin({}), parentDivId, _mapboxgl, true, false)
   } else {
-    _chart = scatterMixin(coordinateGridRasterMixin({}, _mapboxgl, browser), _mapboxgl, false)
+    _chart = scatterMixin(coordinateGridRasterMixin({}, _mapboxgl, browser), _mapboxgl, true)
   }
 
     // unset predefined mandatory attributes
@@ -115,6 +115,20 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.getLayerNames = function () {
     return _layers
+  }
+
+  _chart.xRangeFilter = function (filter) {
+    for (const layerName in _layerNames) {
+      const layer = _layerNames[layerName]
+      layer.yDim().filter(filter)
+    }
+  }
+
+  _chart.yRangeFilter = function (filter) {
+    for (const layerName in _layerNames) {
+      const layer = _layerNames[layerName]
+      layer.yDim().filter(filter)
+    }
   }
 
   _chart.destroyChart = function () {

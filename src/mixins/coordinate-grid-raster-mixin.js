@@ -33,7 +33,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   const _offset = [0, 0]
   const _currDataBounds = [[0, 1], [0, 1]]
   let _queryId = null
-  let _filters = null
+  let _filters = []
   let _initialFilters = null
   let _gridInitted = false
 
@@ -647,6 +647,10 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       .style("height", height + "px")
       .style("left", left + "px")
       .style("top", top + "px")
+      .attr("width", width * pixelRatio)
+      .attr("height", height * pixelRatio)
+
+    _parent
       .attr("width", width * pixelRatio)
       .attr("height", height * pixelRatio)
 
