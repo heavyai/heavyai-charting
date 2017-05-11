@@ -785,6 +785,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     _xAxis.ticks(_chart.effectiveWidth() / _xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth() / 64) : 10)
 
+    _chart.prepareLabelEdit("x")
 
     renderVerticalGridLines(g, x, transitionDuration)
   }
@@ -817,8 +818,6 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     transition(axisXG, transitionDuration)
       .attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")")
       .call(_xAxis)
-
-    _chart.prepareLabelEdit("x")
   }
 
   function renderVerticalGridLines (g, x, transitionDuration) {
@@ -907,6 +906,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     }
 
     _chart._renderHorizontalGridLinesForAxis(g, y, _yAxis, transitionDuration)
+    _chart.prepareLabelEdit("y")
   }
 
   _chart.renderYAxisLabel = function (axisClass, text, rotation, labelXPosition) {
@@ -929,7 +929,6 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
         .style("top", ((_chart.effectiveHeight() + yOffset) / 2 + _chart.margins().top) + "px")
         .text(text)
     }
-    _chart.prepareLabelEdit("y")
   }
 
   _chart.renderYAxisAt = function (axisClass, axis, position, transitionDuration) {
