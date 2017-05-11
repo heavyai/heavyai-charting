@@ -70,6 +70,7 @@ export default function rasterLayer (layerType) {
   _layer.popupColumnsMapped = createRasterLayerGetterSetter(_layer, {})
   _layer.popupFunction = createRasterLayerGetterSetter(_layer, null)
   _layer.popupStyle = createRasterLayerGetterSetter(_layer, {})
+  _layer.densityAccumulatorEnabled = createRasterLayerGetterSetter(_layer, false)
 
   const _popup_wrap_class = "map-popup-wrap-new"
   const _popup_box_class = "map-popup-box-new"

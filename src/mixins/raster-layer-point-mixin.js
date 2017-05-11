@@ -125,13 +125,20 @@ export default function rasterLayerPointMixin (_layer) {
             throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The vega color scale does not have a name.")
           }
 
-          if (colorAttr === null) {
-            throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The layer does not have a fillColorAttr defined.")
-          }
+          if (colorScale.hasOwnProperty("accumulator")) {
+            markPropObj.fillColor = {
+              scale: colorScale.name,
+              value: 0
+            }
+          } else {
+            if (colorAttr === null) {
+              throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The layer does not have a fillColorAttr defined.")
+            }
 
-          markPropObj.fillColor = {
-            scale: colorScale.name,
-            field: colorAttr
+            markPropObj.fillColor = {
+              scale: colorScale.name,
+              field: colorAttr
+            }
           }
           scales.push(colorScale)
         } else if (colorAttr) {
