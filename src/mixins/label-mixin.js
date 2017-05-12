@@ -37,6 +37,10 @@ export default function labelMixin (chart) {
     _listeners.xLabel(chart, val)
   }
 
+  function isIE11 () {
+    return Boolean(window.MSInputMethodContext) && Boolean(document.documentMode)
+  }
+
   function getMaxLabelWidth (type, hasLegend) {
     if (type === "y") {
       const height = chart.height() + (chart.rangeChartEnabled() && chart._rangeChartCreated ? chart.rangeChart().height() : 0)
@@ -102,7 +106,8 @@ export default function labelMixin (chart) {
       .style("left", iconPosition.left)
       .append("div")
       .attr("class", "input-wrapper")
-      .style("width", `${getMaxLabelWidth(type, hasLegend)}px`)
+      .style("max-width", `${getMaxLabelWidth(type, hasLegend)}px`)
+      .style("width", isIE11() ? `${getMaxLabelWidth(type, hasLegend)}px` : "auto")
 
     editorWrapper
       .append("span")
