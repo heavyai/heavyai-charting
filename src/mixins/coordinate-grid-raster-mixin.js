@@ -923,10 +923,8 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       // TODO(croot): should add the rotation and labelXPosition here
       // As of now (09/02/2016) the chart.css is breaking this.
 
-      const yOffset = _chart.margins().bottom
-
       yLabel
-        .style("top", ((_chart.effectiveHeight() + yOffset) / 2 + _chart.margins().top) + "px")
+        .style("top", (_chart.effectiveHeight() / 2 + _chart.margins().top) + "px")
         .text(text)
     }
   }
