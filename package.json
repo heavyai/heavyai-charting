@@ -94,7 +94,7 @@
     "check-coverage": true,
     "lines": 32,
     "statements": 31.5,
-    "functions": 16.63,
+    "functions": 16.5,
     "branches": 12.83,
     "exclude": [
       "**/*.spec.js"

@@ -377,25 +377,123 @@ body {
         }
     }
 
-    div.x-axis-label, div.y-axis-label {
+    div.x-axis-label, div.y-axis-label, div.axis-label-edit {
         position: absolute;
         font-size: 13px !important;
         color: $gray4;
         font-weight: bold;
         z-index: 2;
         pointer-events: none;
+        height: 18px;
+        max-width: 100%;
     }
 
-    div.y-axis-label {
+    div.y-axis-label, div.axis-label-edit.type-y {
         transform-origin: 50% 0;
         transform:translateX(-50%) rotate(270deg) ;
         left: 4px;
+        input {
+            cursor: vertical-text;
+            top: -1px;
+        }
     }
 
 
-    div.x-axis-label {
+    div.x-axis-label, div.axis-label-edit.type-x {
         transform: translateX(-50%);
         bottom: 4px;
+    }
+
+    div.axis-label-edit {
+        pointer-events: none;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        .input-wrapper {
+            position: relative;
+            display: block;
+        }
+        
+        span {
+            white-space: nowrap;
+            padding: 0 4px;
+            display: block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+            min-width: 64px;
+            pointer-events: auto;
+        }
+
+        input {
+            pointer-events: auto;
+            position: absolute;
+            top: -2px;
+            left: 0;
+            cursor: text;
+            width: 100%;
+            color: $gray4;
+            font-weight: bold;
+            outline: none;
+            text-align: center;
+            opacity: 0;
+            height: 20px;
+
+            &:focus {
+                opacity: 1;
+            }
+
+            &:placeholder {
+                font-weight: normal;
+                font-style: italic;
+            }
+
+            &::-ms-clear {display: none; width:0; height:0;}
+
+            &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                font-weight: normal;
+                font-style: italic;
+            }
+            &::-moz-placeholder { /* Firefox 19+ */
+                font-weight: normal;
+                font-style: italic;
+            }
+            &:-ms-input-placeholder { /* IE 10+ */
+                font-weight: normal;
+                font-style: italic;
+            }
+            &:-moz-placeholder { /* Firefox 18- */
+                font-weight: normal;
+                font-style: italic;
+            }
+        }
+
+        &:hover {
+            z-index: 3;
+            input {
+                opacity: 1;
+            }
+        } 
+
+        & + .x-axis-label {
+            display: none;
+        }
+
+        &.has-legend {
+            &:before, &:after {
+                content: "";
+                display: block;
+                flex-grow: 1;
+                pointer-events: none;
+                width: 120px;
+            }
+
+            &:before {
+                flex-shrink: 0;
+            }
+        }
     }
 
     .external-axis {
