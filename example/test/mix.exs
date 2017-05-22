@@ -11,13 +11,13 @@ defmodule Test.Mixfile do
   end
 
   def application do
-    [extra_applications: [:logger]]
+    [extra_applications: [:logger, :whippet, :beagle]]
   end
 
   defp deps do
     [
       {:hound, "~> 1.0"},
-      {:beagle, "~> 0.1.0"},
+      {:beagle, github: "mrblueblue/beagle"},
       {:whippet, github: "mrblueblue/whippet"}
     ]
   end
