@@ -46,6 +46,7 @@ export default function lockAxisMixin (chart) {
       chart.x().domain(minMax)
       chart._invokeXDomainListener(minMax)
     }
+    chart.redrawAsync()
   }
 
   function toggleLock (type) {
@@ -66,6 +67,7 @@ export default function lockAxisMixin (chart) {
         chart._invokeXDomainListener(chart.x().domain().slice(0))
       }
     }
+    chart.redrawAsync()
   }
 
   function updateMinMax (type, value) {
