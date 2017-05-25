@@ -2,6 +2,7 @@ import baseMixin from "../mixins/base-mixin"
 import capMixin from "../mixins/cap-mixin"
 import colorMixin from "../mixins/color-mixin"
 import d3 from "d3"
+import lockAxisMixin from "../mixins/lock-axis-mixin"
 import marginMixin from "../mixins/margin-mixin"
 import {transition} from "../core/core"
 import {utils} from "../utils/utils"
@@ -37,6 +38,8 @@ export default function rowChart (parent, chartGroup) {
   let _hasLabelOffsetY = false
   const _dyOffset = "0.35em"  // this helps center labels https://github.com/mbostock/d3/wiki/SVG-Shapes#svg_text
   let _titleLabelOffsetX = 2
+  const MAX_TICK_WIDTH = 64
+  const DEFAULT_NUM_TICKS = 10
 
 /* OVERRIDE -----------------------------------------------------------------*/
   let _xAxisLabel
@@ -54,7 +57,7 @@ export default function rowChart (parent, chartGroup) {
   const _titleRowCssClass = "titlerow"
   let _renderTitleLabel = false
 
-  const _chart = capMixin(marginMixin(colorMixin(baseMixin({}))))
+  const _chart = lockAxisMixin(capMixin(marginMixin(colorMixin(baseMixin({})))))
 
   let _x
 
@@ -91,36 +94,49 @@ export default function rowChart (parent, chartGroup) {
 
     return _chart
   }
+
+  _chart.getNumTicksForXAxis = () => {
+    const effectiveWidth = _chart.effectiveWidth()
+    const numTicks = _chart.xAxis().scale().ticks().length
+    return effectiveWidth / numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : DEFAULT_NUM_TICKS
+  }
 /* --------------------------------------------------------------------------*/
 
   function calculateAxisScale () {
-    if (!_x || _elasticX) {
+
+    if (!_x) {
+      _x = d3.scale.linear()
+    }
+    _x.range([0, _chart.effectiveWidth()])
+
+    if (_elasticX) {
       const extent = d3.extent(_rowData, _chart.cappedValueAccessor)
       if (extent[0] > 0) {
         extent[0] = 0
       }
-      _x = d3.scale.linear().domain(extent)
-                .range([0, _chart.effectiveWidth()])
+      _x.domain(extent)
+
     }
     _xAxis.scale(_x)
+
+    _chart.xAxis().ticks(_chart.getNumTicksForXAxis())
   }
 
   function drawAxis () {
 /* OVERRIDE -----------------------------------------------------------------*/
-
     const root = _chart.root()
-
     let axisG = root.select("g.axis")
 
     calculateAxisScale()
 
     if (axisG.empty()) {
       if (_chart.autoScroll()) {
-
-        axisG = root.append("div").attr("class", "external-axis")
+        axisG = root.append("div")
+                    .attr("class", "external-axis")
+                    .style("height", _chart.margins().bottom + "px")
                     .append("svg").attr("height", 32)
                     .append("g").attr("class", "axis")
-                    .attr("transform", "translate(" + _chart.margins().left + ", 0)")
+                    .attr("transform", "translate(" + _chart.margins().left + ", 1)")
 
         const saveScrollTop = _chart.debounce(function () {
           _scrollTop = d3.select(this).node().scrollTop
@@ -165,6 +181,8 @@ export default function rowChart (parent, chartGroup) {
 
     transition(axisG, _chart.transitionDuration())
             .call(_xAxis)
+
+    _chart.prepareLockAxis("x")
   }
 
   _chart._doRender = function (data) {
@@ -283,7 +301,7 @@ export default function rowChart (parent, chartGroup) {
     if (_chart.autoScroll()) {
       height = height < _minBarHeight ? _minBarHeight : height
       _chart.root().select(".svg-wrapper")
-                .style("height", _chart.height() - 52 + "px")
+                .style("height", _chart.height() - _chart.margins().bottom + "px")
                 .style("overflow-y", "auto")
                 .style("overflow-x", "hidden")
       _chart.svg()
