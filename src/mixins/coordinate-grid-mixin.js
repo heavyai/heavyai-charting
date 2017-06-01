@@ -1711,12 +1711,7 @@ export default function coordinateGridMixin (_chart) {
                })
                .classed("underline", d => auto && d.val === timeBin)
                .text(d => d.label)
-               .on("click", d => {
-                 _chart.changeBinVal(d.val)
-                 if (!_chart.elasticY()) {
-                   _chart.elasticY(true)
-                 }
-               })
+               .on("click", d => _chart.changeBinVal(d.val))
 
     }
   }
