@@ -350,8 +350,12 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
       return
     }
 
-    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, layerObj, [function (results) {
-      return callback(results[0])
+    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, layerObj, [function (err, results) {
+      if (err) {
+        throw new Error(`getResultRowForPixel failed with message: ${err.message}`)
+      } else {
+        return callback(results[0])
+      }
     }], Math.ceil(_popupSearchRadius * pixelRatio))
   }
 
