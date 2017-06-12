@@ -26,7 +26,7 @@ export default function elasticDimensionMixin (_chart) {
 
   function updateBinRange (group, callback) {
     if (
-      !_chart.elasticX() || !_chart.binParams()[0] || (_chart.rangeChartEnabled() && _chart.rangeChart() && _chart.rangeChart().filter())
+      !_chart.elasticX() || !_chart.binParams()[0] || (_chart.rangeChart() && _chart.rangeChart().filter())
     ) {
       return _dataAsync(group, callback)
     }
@@ -46,7 +46,7 @@ export default function elasticDimensionMixin (_chart) {
           )
         )
 
-        if (_chart._isRangeChart && _chart.filter()) {
+        if (_chart.focusChart() && _chart.filter()) {
           _chart
             .focusChart()
             ._invokeBinBoundsListener([bounds.min_val, bounds.max_val])
@@ -67,8 +67,7 @@ export default function elasticDimensionMixin (_chart) {
 
   _chart.on("preRedraw.maybeRemoveRangeFilter", () => {
     const range = _chart.rangeChart()
-
-    if (_chart.rangeChartEnabled() && range && range.filter()) {
+    if (range && range.filter()) {
       if (
         range.filter()[0] < range.x().domain()[0] || range.filter()[1] > range.x().domain()[1]
       ) {

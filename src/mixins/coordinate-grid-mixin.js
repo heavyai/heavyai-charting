@@ -1,5 +1,13 @@
-import {constants, disableTransitions, globalTransitionDuration, optionalTransition, override, transition, units} from "../core/core"
-import {xAxisTickFormat, xDomain, xScale} from "../../src/utils/utils"
+import {
+  constants,
+  deregisterChart,
+  disableTransitions,
+  globalTransitionDuration,
+  optionalTransition,
+  override,
+  transition,
+  units
+} from "../core/core"
 import baseMixin from "./base-mixin"
 import binningMixin from "../mixins/binning-mixin"
 import colorMixin from "./color-mixin"
@@ -9,10 +17,9 @@ import {filters} from "../core/filters"
 import lockAxisMixin from "./lock-axis-mixin"
 import marginMixin from "./margin-mixin"
 import {utils} from "../utils/utils"
-import rangeMixin from "../mixins/range-mixin"
 import {redrawAllAsync} from "../core/core-async"
 
- /**
+/**
   * Coordinate Grid is an abstract base chart designed to support a number of coordinate grid based
   * concrete chart types, e.g. bar chart, line chart, and bubble chart.
   * @name coordinateGridMixin
@@ -39,10 +46,9 @@ export default function coordinateGridMixin (_chart) {
   const X_AXIS_LABEL_CLASS = "x-axis-label"
   const DEFAULT_AXIS_LABEL_PADDING = 12
 
-
-     /* OVERRIDE EXTEND ----------------------------------------------------------*/
+  /* OVERRIDE EXTEND ----------------------------------------------------------*/
   let _hasBeenRendered = false
-     /* --------------------------------------------------------------------------*/
+  /* --------------------------------------------------------------------------*/
 
   _chart = lockAxisMixin(colorMixin(marginMixin(baseMixin(_chart))))
 
@@ -58,7 +64,9 @@ export default function coordinateGridMixin (_chart) {
     if (_zoomOutRestrict) {
       _chart.x().domain(constrainRange(_chart.x().domain(), _xOriginalDomain))
       if (_rangeChart) {
-        _chart.x().domain(constrainRange(_chart.x().domain(), _rangeChart.x().domain()))
+        _chart
+          .x()
+          .domain(constrainRange(_chart.x().domain(), _rangeChart.x().domain()))
       }
     }
 
@@ -69,7 +77,6 @@ export default function coordinateGridMixin (_chart) {
     _chart.rescale()
     redrawAllAsync()
   }
-
 
   let _parent
   let _g
@@ -100,8 +107,8 @@ export default function coordinateGridMixin (_chart) {
   let _renderHorizontalGridLine = false
   let _renderVerticalGridLine = false
 
-  var _refocused = false, _resizing = false
-
+  var _refocused = false,
+    _resizing = false
 
   let _unitCount
 
@@ -123,7 +130,7 @@ export default function coordinateGridMixin (_chart) {
 
   let _useRightYAxis = false
 
-     /**
+  /**
       * When changing the domain of the x or y scale, it is necessary to tell the chart to recalculate
       * and redraw the axes. (`.rescale()` is called automatically when the x or y scale is replaced
       * with {@link #dc.coordinateGridMixin+x .x()} or {@link #dc.coordinateGridMixin+y .y()}, and has
@@ -143,7 +150,7 @@ export default function coordinateGridMixin (_chart) {
     return _resizing
   }
 
-     /**
+  /**
       * Get or set the range selection chart associated with this instance. Setting the range selection
       * chart using this function will automatically update its selection brush when the current chart
       * zooms in. In return the given range chart will also automatically attach this chart as its focus
@@ -159,11 +166,15 @@ export default function coordinateGridMixin (_chart) {
       return _rangeChart
     }
     _rangeChart = rangeChart
-    _rangeChart.focusChart(_chart)
+
+    if (_rangeChart) {
+      _rangeChart.focusChart(_chart)
+    }
+
     return _chart
   }
 
-     /**
+  /**
       * Get or set the scale extent for mouse zooms.
       * @name zoomScale
       * @memberof dc.coordinateGridMixin
@@ -180,7 +191,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Get or set the zoom restriction for the chart. If true limits the zoom to origional domain of the chart.
       * @name zoomOutRestrict
       * @memberof dc.coordinateGridMixin
@@ -207,14 +218,19 @@ export default function coordinateGridMixin (_chart) {
 
     _g = _parent.append("g")
 
-    _chartBodyG = _g.append("g").attr("class", "chart-body")
-             .attr("transform", "translate(" + _chart.margins().left + ", " + _chart.margins().top + ")")
-             .attr("clip-path", "url(#" + getClipPathId() + ")")
+    _chartBodyG = _g
+      .append("g")
+      .attr("class", "chart-body")
+      .attr(
+        "transform",
+        "translate(" + _chart.margins().left + ", " + _chart.margins().top + ")"
+      )
+      .attr("clip-path", "url(#" + getClipPathId() + ")")
 
     return _g
   }
 
-     /**
+  /**
       * Get or set the root g element. This method is usually used to retrieve the g element in order to
       * overlay custom svg drawing programatically. **Caution**: The root g element is usually generated
       * by dc.js internals, and resetting it might produce unpredictable result.
@@ -233,7 +249,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Set or get mouse zoom capability flag (default: false). When turned on the chart will be
       * zoomable using the mouse wheel. If the range selector chart is attached zooming will also update
       * the range selection brush on the associated range selector chart.
@@ -252,7 +268,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Retrieve the svg group for the chart body.
       * @name chartBodyG
       * @memberof dc.coordinateGridMixin
@@ -268,7 +284,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * **mandatory**
       *
       * Get or set the x scale. The x scale can be any d3
@@ -301,7 +317,7 @@ export default function coordinateGridMixin (_chart) {
     return _xOriginalDomain
   }
 
-     /**
+  /**
       * Set or get the xUnits function. The coordinate grid chart uses the xUnits function to calculate
       * the number of data projections on x axis such as the number of bars for a bar chart or the
       * number of dots for a line chart. This function is expected to return a Javascript array of all
@@ -343,7 +359,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Set or get the x axis used by a particular coordinate grid chart instance. This function is most
       * useful when x axis customization is required. The x axis in dc.js is an instance of a [d3
       * axis object](https://github.com/mbostock/d3/wiki/SVG-Axes#wiki-axis); therefore it supports any
@@ -370,7 +386,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Turn on/off elastic x axis behavior. If x axis elasticity is turned on, then the grid chart will
       * attempt to recalculate the x axis range whenever a redraw event is triggered.
       * @name elasticX
@@ -388,7 +404,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Set or get x axis padding for the elastic x axis. The padding will be added to both end of the x
       * axis if elasticX is turned on; otherwise it is ignored.
       *
@@ -410,7 +426,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Returns the number of units displayed on the x axis using the unit measure configured by
       * .xUnits.
       * @name xUnitCount
@@ -420,7 +436,11 @@ export default function coordinateGridMixin (_chart) {
       */
   _chart.xUnitCount = function () {
     if (_unitCount === undefined) {
-      const units = _chart.xUnits()(_chart.x().domain()[0], _chart.x().domain()[1], _chart.x().domain())
+      const units = _chart.xUnits()(
+        _chart.x().domain()[0],
+        _chart.x().domain()[1],
+        _chart.x().domain()
+      )
 
       if (units instanceof Array) {
         _unitCount = units.length
@@ -432,7 +452,7 @@ export default function coordinateGridMixin (_chart) {
     return _unitCount
   }
 
-     /**
+  /**
       * Gets or sets whether the chart should be drawn with a right axis instead of a left axis. When
       * used with a chart in a composite chart, allows both left and right Y axes to be shown on a
       * chart.
@@ -451,7 +471,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Returns true if the chart is using ordinal xUnits ({@link #dc.units.ordinal dc.units.ordinal}, or false
       * otherwise. Most charts behave differently with ordinal data and use the result of this method to
       * trigger the appropriate logic.
@@ -473,37 +493,40 @@ export default function coordinateGridMixin (_chart) {
     return groups.map(_chart.keyAccessor())
   }
 
- /* OVERRIDE ---------------------------------------------------------------- */
-
-  _chart.binVal = _chart.changeBinVal
-
- /* ------------------------------------------------------------------------ */
   function compareDomains (d1, d2) {
-    return !d1 || !d2 || d1.length !== d2.length || d1.some((elem, i) => (elem && d2[i]) ? elem.toString() !== d2[i].toString() : elem === d2[i])
+    return (
+      !d1 || !d2 || d1.length !== d2.length || d1.some(
+        (elem, i) =>
+          elem && d2[i] ? elem.toString() !== d2[i].toString() : elem === d2[i]
+      )
+    )
   }
 
   function prepareXAxis (g, render) {
     if (!_chart.isOrdinal()) {
-      if (_chart.elasticX() && (!_chart.rangeChartEnabled() || (_chart.rangeChartEnabled() && _chart.rangeChart() && !_chart.rangeChart().filters().length))) {
+      if (
+        _chart.elasticX() && (!_chart.rangeChart() || (_chart.rangeChart() && !_chart.rangeChart().filters().length))
+      ) {
         _x.domain([_chart.xAxisMin(), _chart.xAxisMax()])
       }
-    } else { // _chart.isOrdinal()
+    } else {
       if (_chart.elasticX() || _x.domain().length === 0) {
         _x.domain(_chart._ordinalXDomain())
       }
     }
 
-         // has the domain changed?
     const xdom = _x.domain()
     if (render || compareDomains(_lastXDomain, xdom)) {
       _chart.rescale()
     }
     _lastXDomain = xdom
 
-         // please can't we always use rangeBands for bar charts?
     if (_chart.isOrdinal()) {
-      _x.rangeBands([0, _chart.xAxisLength()], _rangeBandPadding,
-                           _chart._useOuterPadding() ? _outerRangeBandPadding : 0)
+      _x.rangeBands(
+        [0, _chart.xAxisLength()],
+        _rangeBandPadding,
+        _chart._useOuterPadding() ? _outerRangeBandPadding : 0
+      )
     } else {
       _x.range([0, _chart.xAxisLength()])
     }
@@ -518,27 +541,40 @@ export default function coordinateGridMixin (_chart) {
     let axisXG = g.selectAll("g.x")
 
     if (axisXG.empty()) {
-      axisXG = g.append("g")
-                 .attr("class", "axis x")
-                 .attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")")
+      axisXG = g
+        .append("g")
+        .attr("class", "axis x")
+        .attr(
+          "transform",
+          "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
+        )
     }
 
     let axisXLab = g.selectAll("text." + X_AXIS_LABEL_CLASS)
     if (axisXLab.empty() && _chart.xAxisLabel()) {
-      axisXLab = g.append("text")
-                 .attr("class", X_AXIS_LABEL_CLASS)
-                 .attr("transform", "translate(" + (_chart.margins().left + _chart.xAxisLength() / 2) + "," + (_chart.height() - _xAxisLabelPadding) + ")")
-                 .attr("text-anchor", "middle")
+      axisXLab = g
+        .append("text")
+        .attr("class", X_AXIS_LABEL_CLASS)
+        .attr(
+          "transform",
+          "translate(" + (_chart.margins().left + _chart.xAxisLength() / 2) + "," + (_chart.height() - _xAxisLabelPadding) + ")"
+        )
+        .attr("text-anchor", "middle")
     }
     if (_chart.xAxisLabel() && axisXLab.text() !== _chart.xAxisLabel()) {
       axisXLab.text(_chart.xAxisLabel())
     }
 
     transition(axisXG, _chart.transitionDuration())
-             .attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")")
-             .call(_xAxis)
-    transition(axisXLab, _chart.transitionDuration())
-             .attr("transform", "translate(" + (_chart.margins().left + _chart.xAxisLength() / 2) + "," + (_chart.height() - _xAxisLabelPadding) + ")")
+      .attr(
+        "transform",
+        "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
+      )
+      .call(_xAxis)
+    transition(axisXLab, _chart.transitionDuration()).attr(
+      "transform",
+      "translate(" + (_chart.margins().left + _chart.xAxisLength() / 2) + "," + (_chart.height() - _xAxisLabelPadding) + ")"
+    )
   }
 
   function renderVerticalGridLines (g) {
@@ -546,35 +582,35 @@ export default function coordinateGridMixin (_chart) {
 
     if (_renderVerticalGridLine) {
       if (gridLineG.empty()) {
-        gridLineG = g.insert("g", ":first-child")
-                     .attr("class", GRID_LINE_CLASS + " " + VERTICAL_CLASS)
-                     .attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")")
+        gridLineG = g
+          .insert("g", ":first-child")
+          .attr("class", GRID_LINE_CLASS + " " + VERTICAL_CLASS)
+          .attr(
+            "transform",
+            "translate(" + _chart.margins().left + "," + _chart.margins().top + ")"
+          )
       }
 
-      const ticks = _xAxis.tickValues() ? _xAxis.tickValues() : (typeof _x.ticks === "function" ? _x.ticks(_xAxis.ticks()[0]) : _x.domain())
+      const ticks = _xAxis.tickValues() ? _xAxis.tickValues() : typeof _x.ticks === "function" ? _x.ticks(_xAxis.ticks()[0]) : _x.domain()
 
-      const lines = gridLineG.selectAll("line")
-                 .data(ticks)
+      const lines = gridLineG.selectAll("line").data(ticks)
 
-             // enter
-      const linesGEnter = lines.enter()
-                 .append("line")
-                 .attr("x1", (d) => _x(d))
-                 .attr("y1", _chart._xAxisY() - _chart.margins().top)
-                 .attr("x2", (d) => _x(d))
-                 .attr("y2", 0)
-                 .attr("opacity", 0)
-      transition(linesGEnter, _chart.transitionDuration())
-                 .attr("opacity", 1)
+      const linesGEnter = lines
+        .enter()
+        .append("line")
+        .attr("x1", d => _x(d))
+        .attr("y1", _chart._xAxisY() - _chart.margins().top)
+        .attr("x2", d => _x(d))
+        .attr("y2", 0)
+        .attr("opacity", 0)
+      transition(linesGEnter, _chart.transitionDuration()).attr("opacity", 1)
 
-             // update
       transition(lines, _chart.transitionDuration())
-                 .attr("x1", (d) => _x(d))
-                 .attr("y1", _chart._xAxisY() - _chart.margins().top)
-                 .attr("x2", (d) => _x(d))
-                 .attr("y2", 0)
+        .attr("x1", d => _x(d))
+        .attr("y1", _chart._xAxisY() - _chart.margins().top)
+        .attr("x2", d => _x(d))
+        .attr("y2", 0)
 
-             // exit
       lines.exit().remove()
     } else {
       gridLineG.selectAll("line").remove()
@@ -582,14 +618,14 @@ export default function coordinateGridMixin (_chart) {
   }
 
   _chart._xAxisY = function () {
-    return (_chart.height() - _chart.margins().bottom)
+    return _chart.height() - _chart.margins().bottom
   }
 
   _chart.xAxisLength = function () {
     return _chart.effectiveWidth()
   }
 
-     /**
+  /**
       * Set or get the x axis label. If setting the label, you may optionally include additional padding to
       * the margin to make room for the label. By default the padded is set to 12 to accomodate the text height.
       * @name xAxisLabel
@@ -605,7 +641,7 @@ export default function coordinateGridMixin (_chart) {
     }
     _xAxisLabel = labelText
     _chart.margins().bottom -= _xAxisLabelPadding
-    _xAxisLabelPadding = (padding === undefined) ? DEFAULT_AXIS_LABEL_PADDING : padding
+    _xAxisLabelPadding = padding === undefined ? DEFAULT_AXIS_LABEL_PADDING : padding
     _chart.margins().bottom += _xAxisLabelPadding
     return _chart
   }
@@ -623,7 +659,9 @@ export default function coordinateGridMixin (_chart) {
     _y.range([_chart.yAxisHeight(), 0])
     _yAxis = _yAxis.scale(_y)
 
-    _yAxis.ticks(_chart.effectiveHeight() / _yAxis.scale().ticks().length < 16 ? Math.ceil(_chart.effectiveHeight() / 16) : 10)
+    _yAxis.ticks(
+      _chart.effectiveHeight() / _yAxis.scale().ticks().length < 16 ? Math.ceil(_chart.effectiveHeight() / 16) : 10
+    )
 
     if (_useRightYAxis) {
       _yAxis.orient("right")
@@ -633,43 +671,31 @@ export default function coordinateGridMixin (_chart) {
     _chart.prepareLockAxis("y")
   }
 
-  _chart.renderYAxisLabel = function (axisClass, text, rotation, labelXPosition) {
-    labelXPosition = labelXPosition || _yAxisLabelPadding
-
-    let axisYLab = _chart.g().selectAll("text." + Y_AXIS_LABEL_CLASS + "." + axisClass + "-label")
-    const labelYPosition = (_chart.margins().top + _chart.yAxisHeight() / 2)
-    if (axisYLab.empty() && text) {
-      axisYLab = _chart.g().append("text")
-                 .attr("transform", "translate(" + labelXPosition + "," + labelYPosition + "),rotate(" + rotation + ")")
-                 .attr("class", Y_AXIS_LABEL_CLASS + " " + axisClass + "-label")
-                 .attr("text-anchor", "middle")
-                 .text(text)
-    }
-    if (text && axisYLab.text() !== text) {
-      axisYLab.text(text)
-    }
-    transition(axisYLab, _chart.transitionDuration())
-             .attr("transform", "translate(" + labelXPosition + "," + labelYPosition + "),rotate(" + rotation + ")")
-
-  }
-
   _chart.renderYAxisAt = function (axisClass, axis, position) {
     let axisYG = _chart.g().selectAll("g." + axisClass)
     if (axisYG.empty()) {
-      axisYG = _chart.g().append("g")
-                 .attr("class", "axis " + axisClass)
-                 .attr("transform", "translate(" + position + "," + _chart.margins().top + ")")
+      axisYG = _chart
+        .g()
+        .append("g")
+        .attr("class", "axis " + axisClass)
+        .attr(
+          "transform",
+          "translate(" + position + "," + _chart.margins().top + ")"
+        )
     }
 
     transition(axisYG, _chart.transitionDuration())
-             .attr("transform", "translate(" + position + "," + _chart.margins().top + ")")
-             .call(axis)
+      .attr(
+        "transform",
+        "translate(" + position + "," + _chart.margins().top + ")"
+      )
+      .call(axis)
   }
 
   _chart.renderYAxis = function () {
-    const axisPosition = _useRightYAxis ? (_chart.width() - _chart.margins().right) : _chart._yAxisX()
+    const axisPosition = _useRightYAxis ? _chart.width() - _chart.margins().right : _chart._yAxisX()
     _chart.renderYAxisAt("y", _yAxis, axisPosition)
-    const labelPosition = _useRightYAxis ? (_chart.width() - _yAxisLabelPadding) : _yAxisLabelPadding
+    const labelPosition = _useRightYAxis ? _chart.width() - _yAxisLabelPadding : _yAxisLabelPadding
     const rotation = _useRightYAxis ? 90 : -90
     _chart.renderYAxisLabel("y", _chart.yAxisLabel(), rotation, labelPosition)
   }
@@ -681,33 +707,33 @@ export default function coordinateGridMixin (_chart) {
       const ticks = axis.tickValues() ? axis.tickValues() : scale.ticks(axis.ticks()[0])
 
       if (gridLineG.empty()) {
-        gridLineG = g.insert("g", ":first-child")
-                     .attr("class", GRID_LINE_CLASS + " " + HORIZONTAL_CLASS)
-                     .attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")")
+        gridLineG = g
+          .insert("g", ":first-child")
+          .attr("class", GRID_LINE_CLASS + " " + HORIZONTAL_CLASS)
+          .attr(
+            "transform",
+            "translate(" + _chart.margins().left + "," + _chart.margins().top + ")"
+          )
       }
 
-      const lines = gridLineG.selectAll("line")
-                 .data(ticks)
+      const lines = gridLineG.selectAll("line").data(ticks)
 
-             // enter
-      const linesGEnter = lines.enter()
-                 .append("line")
-                 .attr("x1", 1)
-                 .attr("y1", (d) => scale(d))
-                 .attr("x2", _chart.xAxisLength())
-                 .attr("y2", (d) => scale(d))
-                 .attr("opacity", 0)
-      transition(linesGEnter, _chart.transitionDuration())
-                 .attr("opacity", 1)
+      const linesGEnter = lines
+        .enter()
+        .append("line")
+        .attr("x1", 1)
+        .attr("y1", d => scale(d))
+        .attr("x2", _chart.xAxisLength())
+        .attr("y2", d => scale(d))
+        .attr("opacity", 0)
+      transition(linesGEnter, _chart.transitionDuration()).attr("opacity", 1)
 
-             // update
       transition(lines, _chart.transitionDuration())
-                 .attr("x1", 1)
-                 .attr("y1", (d) => scale(d))
-                 .attr("x2", _chart.xAxisLength())
-                 .attr("y2", (d) => scale(d))
+        .attr("x1", 1)
+        .attr("y1", d => scale(d))
+        .attr("x2", _chart.xAxisLength())
+        .attr("y2", d => scale(d))
 
-             // exit
       lines.exit().remove()
     } else {
       gridLineG.selectAll("line").remove()
@@ -718,7 +744,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart.useRightYAxis() ? _chart.width() - _chart.margins().right : _chart.margins().left
   }
 
-     /**
+  /**
       * Set or get the y axis label. If setting the label, you may optionally include additional padding
       * to the margin to make room for the label. By default the padded is set to 12 to accomodate the
       * text height.
@@ -736,12 +762,12 @@ export default function coordinateGridMixin (_chart) {
     }
     _yAxisLabel = labelText
     _chart.margins().left -= _yAxisLabelPadding
-    _yAxisLabelPadding = (padding === undefined) ? DEFAULT_AXIS_LABEL_PADDING : padding
+    _yAxisLabelPadding = padding === undefined ? DEFAULT_AXIS_LABEL_PADDING : padding
     _chart.margins().left += _yAxisLabelPadding
     return _chart
   }
 
-     /**
+  /**
       * Get or set the y scale. The y scale is typically automatically determined by the chart implementation.
       * @name y
       * @memberof dc.coordinateGridMixin
@@ -760,7 +786,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Set or get the y axis used by the coordinate grid chart instance. This function is most useful
       * when y axis customization is required. The y axis in dc.js is simply an instance of a [d3 axis
       * object](https://github.com/mbostock/d3/wiki/SVG-Axes#wiki-_axis); therefore it supports any
@@ -787,7 +813,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Turn on/off elastic y axis behavior. If y axis elasticity is turned on, then the grid chart will
       * attempt to recalculate the y axis range whenever a redraw event is triggered.
       * @name elasticY
@@ -805,7 +831,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Turn on/off horizontal grid lines.
       * @name renderHorizontalGridLines
       * @memberof dc.coordinateGridMixin
@@ -822,7 +848,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Turn on/off vertical grid lines.
       * @name renderVerticalGridLines
       * @memberof dc.coordinateGridMixin
@@ -839,7 +865,7 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-     /**
+  /**
       * Calculates the minimum x value to display in the chart. Includes xAxisPadding if set.
       * @name xAxisMin
       * @memberof dc.coordinateGridMixin
@@ -847,12 +873,12 @@ export default function coordinateGridMixin (_chart) {
       * @return {*}
       */
   _chart.xAxisMin = function () {
-    const min = d3.min(_chart.data(), (e) => _chart.keyAccessor()(e))
-    const max = d3.max(_chart.data(), (e) => _chart.keyAccessor()(e))
+    const min = d3.min(_chart.data(), e => _chart.keyAccessor()(e))
+    const max = d3.max(_chart.data(), e => _chart.keyAccessor()(e))
     return utils.subtract(min, _xAxisPadding, max - min)
   }
 
-     /**
+  /**
       * Calculates the maximum x value to display in the chart. Includes xAxisPadding if set.
       * @name xAxisMax
       * @memberof dc.coordinateGridMixin
@@ -860,12 +886,12 @@ export default function coordinateGridMixin (_chart) {
       * @return {*}
       */
   _chart.xAxisMax = function () {
-    const max = d3.max(_chart.data(), (e) => _chart.keyAccessor()(e))
-    const min = d3.min(_chart.data(), (e) => _chart.keyAccessor()(e))
+    const max = d3.max(_chart.data(), e => _chart.keyAccessor()(e))
+    const min = d3.min(_chart.data(), e => _chart.keyAccessor()(e))
     return utils.add(max, _xAxisPadding, max - min)
   }
 
-     /**
+  /**
       * Calculates the minimum y value to display in the chart. Includes yAxisPadding if set.
       * @name yAxisMin
       * @memberof dc.coordinateGridMixin
@@ -873,12 +899,12 @@ export default function coordinateGridMixin (_chart) {
       * @return {*}
       */
   _chart.yAxisMin = function () {
-    const min = d3.min(_chart.data(), (e) => _chart.valueAccessor()(e))
-    const max = d3.max(_chart.data(), (e) => _chart.valueAccessor()(e))
+    const min = d3.min(_chart.data(), e => _chart.valueAccessor()(e))
+    const max = d3.max(_chart.data(), e => _chart.valueAccessor()(e))
     return utils.subtract(min, _yAxisPadding, max - min)
   }
 
-     /**
+  /**
       * Calculates the maximum y value to display in the chart. Includes yAxisPadding if set.
       * @name yAxisMax
       * @memberof dc.coordinateGridMixin
@@ -886,12 +912,12 @@ export default function coordinateGridMixin (_chart) {
       * @return {*}
       */
   _chart.yAxisMax = function () {
-    const max = d3.max(_chart.data(), (e) => _chart.valueAccessor()(e))
-    const min = d3.min(_chart.data(), (e) => _chart.valueAccessor()(e))
+    const max = d3.max(_chart.data(), e => _chart.valueAccessor()(e))
+    const min = d3.min(_chart.data(), e => _chart.valueAccessor()(e))
     return utils.add(max, _yAxisPadding, max - min)
   }
 
-     /**
+  /**
       * Set or get y axis padding for the elastic y axis. The padding will be added to the top of the y
       * axis if elasticY is turned on; otherwise it is ignored.
       *
@@ -914,10 +940,11 @@ export default function coordinateGridMixin (_chart) {
   }
 
   _chart.yAxisHeight = function () {
-    return _chart.effectiveHeight()
+    const height = _chart.effectiveHeight()
+    return height < 0 ? 0 : height
   }
 
-     /**
+  /**
       * Set or get the rounding function used to quantize the selection when brushing is enabled.
       * @name round
       * @memberof dc.coordinateGridMixin
@@ -956,7 +983,7 @@ export default function coordinateGridMixin (_chart) {
 
   function updateBinParamsForChart (_chart, filter) {
     const extract = _chart.binParams()[0] ? _chart.binParams()[0].extract : false
-    if (_chart._isRangeChart && filter.length && !extract) {
+    if (_chart.focusChart() && filter.length && !extract) {
       const FocusChart = _chart.focusChart()
       const currentBinParams = FocusChart.binParams()
       if (currentBinParams[0]) {
@@ -970,10 +997,10 @@ export default function coordinateGridMixin (_chart) {
   function resetBinParamsForChart (_chart) {
     if (_chart.binParams()[0]) {
       const extract = _chart.binParams()[0].extract
-      const isRangeAndIsNotFiltered = _chart._isRangeChart && !_chart.filters().length && !extract
+      const isRangeAndIsNotFiltered = _chart.focusChart() && !_chart.filters().length && !extract
 
       if (isRangeAndIsNotFiltered) {
-        const chartBinParams = _chart.focusChart().binParams().map((p) => p)
+        const chartBinParams = _chart.focusChart().binParams().map(p => p)
         chartBinParams[0].binBounds = _chart.binParams()[0].binBounds
         _chart.focusChart().binParams(chartBinParams)
         _chart.focusChart().x().domain(_chart.x().domain().slice(0))
@@ -985,10 +1012,8 @@ export default function coordinateGridMixin (_chart) {
     if (!arguments.length) {
       return _chart._filter()
     }
-
     _chart._filter(filter, isInverseFilter)
-
-    if (filter !== Symbol.for("clear")) {
+    if (filter.length) {
       updateBinParamsForChart(_chart, filter)
       _chart.brush().extent(filter)
     } else {
@@ -996,6 +1021,9 @@ export default function coordinateGridMixin (_chart) {
       _chart.brush().clear()
     }
 
+    if (_chart.rangeInput()) {
+      _chart.updateRangeInput()
+    }
     return _chart
   })
 
@@ -1016,7 +1044,8 @@ export default function coordinateGridMixin (_chart) {
   }
 
   function brushHeight () {
-    return _chart._xAxisY() - _chart.margins().top
+    const height = _chart._xAxisY() - _chart.margins().top
+    return height < 0 ? 0 : height
   }
 
   _chart.renderBrush = function (g) {
@@ -1024,12 +1053,16 @@ export default function coordinateGridMixin (_chart) {
       const gBrush = g.select("g.brush").empty() ? g.append("g") : g.select("g.brush")
 
       gBrush
-                 .attr("class", "brush")
-                 .attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")")
-                 .call(_brush.x(_chart.x()))
+        .attr("class", "brush")
+        .attr(
+          "transform",
+          "translate(" + _chart.margins().left + "," + _chart.margins().top + ")"
+        )
+        .call(_brush.x(_chart.x()))
 
-      gBrush.select("rect.extent")
-                 .attr("clip-path", "url(#" + getClipPathId() + ")")
+      gBrush
+        .select("rect.extent")
+        .attr("clip-path", "url(#" + getClipPathId() + ")")
 
       _chart.setBrushY(gBrush, false)
       _chart.setHandlePaths(gBrush)
@@ -1042,17 +1075,8 @@ export default function coordinateGridMixin (_chart) {
       })
       _brush.on("brushend", () => {
         _isBrushing = false
-        const isRangeChart = _chart._isRangeChart
         configureMouseZoom()
-        if (!isRangeChart) {
-          _chart.brushSnap(isRangeChart)
-        } else if (isRangeChart) {
-          _chart.focusChart().brushSnap(isRangeChart)
-          const binParams = _chart.focusChart().binParams()[0]
-          if (!binParams.auto && !binParams.extract) {
-            _chart.focusChart()._invokeBinListener(binParams.timeBin)
-          }
-        }
+        _chart.brushSnap()
         disableTransitions(false)
       })
 
@@ -1062,10 +1086,11 @@ export default function coordinateGridMixin (_chart) {
     }
   }
 
-  _chart.brushSnap = function (isRangeChart) {
-
-    if (!d3.event.sourceEvent) { return } // only transition after input
-    _chart.binBrush(isRangeChart)
+  _chart.brushSnap = function () {
+    if (!d3.event.sourceEvent) {
+      return
+    } // only transition after input
+    _chart.binBrush()
   }
 
   _chart.triggerReplaceFilter = function (shouldSetSizingFalse) {
@@ -1073,14 +1098,15 @@ export default function coordinateGridMixin (_chart) {
   }
 
   _chart.setHandlePaths = function (gBrush) {
-    gBrush.selectAll(".resize").append("path").attr("d", _chart.resizeHandlePath)
+    gBrush
+      .selectAll(".resize")
+      .append("path")
+      .attr("d", _chart.resizeHandlePath)
   }
 
   _chart.setBrushY = function (gBrush) {
-    gBrush.selectAll(".brush rect")
-             .attr("height", brushHeight())
-    gBrush.selectAll(".resize path")
-             .attr("d", _chart.resizeHandlePath)
+    gBrush.selectAll(".brush rect").attr("height", brushHeight())
+    gBrush.selectAll(".resize path").attr("d", _chart.resizeHandlePath)
   }
 
   _chart.extendBrush = function () {
@@ -1089,8 +1115,7 @@ export default function coordinateGridMixin (_chart) {
       extent[0] = extent.map(_chart.round())[0]
       extent[1] = extent.map(_chart.round())[1]
 
-      _g.select(".brush")
-                 .call(_brush.extent(extent))
+      _g.select(".brush").call(_brush.extent(extent))
     }
     return extent
   }
@@ -1112,16 +1137,13 @@ export default function coordinateGridMixin (_chart) {
         _chart.filterAll()
         _chart.redrawGroup()
       }, constants.EVENT_DELAY)
-
-
     } else {
       const rangedFilter = filters.RangedFilter(extent[0], extent[1])
 
       events.trigger(() => {
-
- /* OVERRIDE ---------------------------------------------------------------- */
+        /* OVERRIDE ---------------------------------------------------------------- */
         globalTransitionDuration(10)
- /* ------------------------------------------------------------------------- */
+        /* ------------------------------------------------------------------------- */
         _chart.replaceFilter(rangedFilter)
         _chart.redrawGroup()
       }, constants.EVENT_DELAY)
@@ -1136,40 +1158,46 @@ export default function coordinateGridMixin (_chart) {
 
   _chart.redrawBrush = function (g, doTransition) {
     if (_brushOn) {
- /* OVERRIDE ---------------------------------------------------------------- */
-      if (_chart.filter() && (_chart.brush().empty() || _chart._redrawBrushFlag)) {
+      /* OVERRIDE ---------------------------------------------------------------- */
+      if (
+        _chart.filter() && (_chart.brush().empty() || _chart._redrawBrushFlag)
+      ) {
         _chart._redrawBrushFlag = false
- /* ------------------------------------------------------------------------- */
+        /* ------------------------------------------------------------------------- */
 
         _chart.brush().extent(_chart.filter())
       }
 
-      const gBrush = optionalTransition(doTransition, _chart.transitionDuration())(g.select("g.brush"))
+      const gBrush = optionalTransition(
+        doTransition,
+        _chart.transitionDuration()
+      )(g.select("g.brush"))
       _chart.setBrushY(gBrush)
-      gBrush.call(_chart.brush()
-                       .x(_chart.x())
-                       .extent(_chart.brush().extent()))
-
+      gBrush.call(_chart.brush().x(_chart.x()).extent(_chart.brush().extent()))
     }
 
     _chart.fadeDeselectedArea()
   }
 
   _chart.fadeDeselectedArea = function () {
-         // do nothing, sub-chart should override this function
+    // do nothing, sub-chart should override this function
   }
 
-     // borrowed from Crossfilter example
+  // borrowed from Crossfilter example
   _chart.resizeHandlePath = function (d) {
-    let e = Number(d === "e"), x = e ? 1 : -1, y = brushHeight() / 3
-    return "M" + (0.5 * x) + "," + y + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6) + "V" + (2 * y - 6) + "A6,6 0 0 " + e + " " + (0.5 * x) + "," + (2 * y) + "Z" + "M" + (2.5 * x) + "," + (y + 8) + "V" + (2 * y - 8) + "M" + (4.5 * x) + "," + (y + 8) + "V" + (2 * y - 8)
+    let e = Number(d === "e"),
+      x = e ? 1 : -1,
+      y = brushHeight() / 3
+    return (
+      "M" + 0.5 * x + "," + y + "A6,6 0 0 " + e + " " + 6.5 * x + "," + (y + 6) + "V" + (2 * y - 6) + "A6,6 0 0 " + e + " " + 0.5 * x + "," + 2 * y + "Z" + "M" + 2.5 * x + "," + (y + 8) + "V" + (2 * y - 8) + "M" + 4.5 * x + "," + (y + 8) + "V" + (2 * y - 8)
+    )
   }
 
   function getClipPathId () {
     return _chart.anchorName().replace(/[ .#=\[\]]/g, "-") + "-clip"
   }
 
-     /**
+  /**
       * Get or set the padding in pixels for the clip path. Once set padding will be applied evenly to
       * the top, left, right, and bottom when the clip path is generated. If set to zero, the clip area
       * will be exactly the chart body area minus the margins.
@@ -1190,26 +1218,31 @@ export default function coordinateGridMixin (_chart) {
 
   function generateClipPath () {
     const defs = utils.appendOrSelect(_parent, "defs")
-         // cannot select <clippath> elements; bug in WebKit, must select by id
-         // https://groups.google.com/forum/#!topic/d3-js/6EpAzQ2gU9I
+    // cannot select <clippath> elements; bug in WebKit, must select by id
+    // https://groups.google.com/forum/#!topic/d3-js/6EpAzQ2gU9I
     const id = getClipPathId()
-    const chartBodyClip = utils.appendOrSelect(defs, "#" + id, "clipPath").attr("id", id)
+    const chartBodyClip = utils
+      .appendOrSelect(defs, "#" + id, "clipPath")
+      .attr("id", id)
 
     const padding = _clipPadding * 2
 
-    utils.appendOrSelect(chartBodyClip, "rect")
-             .attr("width", _chart.xAxisLength() + padding)
-             .attr("height", _chart.yAxisHeight() + padding)
-             .attr("transform", "translate(-" + _clipPadding + ", -" + _clipPadding + ")")
+    utils
+      .appendOrSelect(chartBodyClip, "rect")
+      .attr("width", _chart.xAxisLength() + padding)
+      .attr("height", _chart.yAxisHeight() + padding)
+      .attr(
+        "transform",
+        "translate(-" + _clipPadding + ", -" + _clipPadding + ")"
+      )
   }
 
-  _chart._preprocessData = function (data) {
-  }
+  _chart._preprocessData = function (data) {}
 
   _chart._doRender = function () {
- /* OVERRIDE ---------------------------------------------------------------- */
+    /* OVERRIDE ---------------------------------------------------------------- */
     _chart._redrawBrushFlag = true
- /* ------------------------------------------------------------------------- */
+    /* ------------------------------------------------------------------------- */
 
     _chart.resetSvg()
 
@@ -1225,17 +1258,19 @@ export default function coordinateGridMixin (_chart) {
 
     configureMouseZoom()
 
- /* OVERRIDE ---------------------------------------------------------------- */
+    /* OVERRIDE ---------------------------------------------------------------- */
     _hasBeenRendered = true
- /* ------------------------------------------------------------------------- */
+    /* ------------------------------------------------------------------------- */
     return _chart
   }
 
   _chart._doRedraw = function () {
- /* OVERRIDE ---------------------------------------------------------------- */
-    if (!_hasBeenRendered) // guard to prevent a redraw before a render
-      { return _chart._doRender() }
- /* ------------------------------------------------------------------------- */
+    /* OVERRIDE ---------------------------------------------------------------- */
+    if (!_hasBeenRendered) {
+      // guard to prevent a redraw before a render
+      return _chart._doRender()
+    }
+    /* ------------------------------------------------------------------------- */
     _chart._preprocessData()
 
     drawChart(false)
@@ -1269,7 +1304,6 @@ export default function coordinateGridMixin (_chart) {
     }
     _chart.fadeDeselectedArea()
     _resizing = false
-
   }
 
   function configureMouseZoom () {
@@ -1282,10 +1316,11 @@ export default function coordinateGridMixin (_chart) {
 
   _chart._enableMouseZoom = function () {
     _hasBeenMouseZoomable = true
-    _zoom.x(_chart.x())
-             .scaleExtent(_zoomScale)
-             .size([_chart.width(), _chart.height()])
-             .duration(_chart.transitionDuration())
+    _zoom
+      .x(_chart.x())
+      .scaleExtent(_zoomScale)
+      .size([_chart.width(), _chart.height()])
+      .duration(_chart.transitionDuration())
     _chart.root().call(_zoom)
   }
 
@@ -1300,7 +1335,7 @@ export default function coordinateGridMixin (_chart) {
     return constrainedRange
   }
 
-     /**
+  /**
       * Zoom this chart to focus on the given range. The given range should be an array containing only
       * 2 elements (`[start, end]`) defining a range in the x domain. If the range is not given or set
       * to null, then the zoom will be reset. _For focus to work elasticX has to be turned off;
@@ -1339,11 +1374,10 @@ export default function coordinateGridMixin (_chart) {
       return _focusChart
     }
     _focusChart = c
-    _chart.on("filtered", (chart) => {
-
- /* OVERRIDE ---------------------------------------------------------------- */
+    _chart.on("filtered", chart => {
+      /* OVERRIDE ---------------------------------------------------------------- */
       _focusChart.rangeFocused(true)
- /* ------------------------------------------------------------------------- */
+      /* ------------------------------------------------------------------------- */
 
       if (!chart.filter()) {
         events.trigger(() => {
@@ -1355,10 +1389,9 @@ export default function coordinateGridMixin (_chart) {
         })
       }
 
- /* OVERRIDE ---------------------------------------------------------------- */
+      /* OVERRIDE ---------------------------------------------------------------- */
       _focusChart.rangeFocused(false)
- /* ------------------------------------------------------------------------- */
-
+      /* ------------------------------------------------------------------------- */
     })
     return _chart
   }
@@ -1370,13 +1403,15 @@ export default function coordinateGridMixin (_chart) {
       return false
     } else if (range1.length === 0 && range2.length === 0) {
       return true
-    } else if (range1[0].valueOf() === range2[0].valueOf() && range1[1].valueOf() === range2[1].valueOf()) {
+    } else if (
+      range1[0].valueOf() === range2[0].valueOf() && range1[1].valueOf() === range2[1].valueOf()
+    ) {
       return true
     }
     return false
   }
 
-     /**
+  /**
       * Turn on/off the brush-based range filter. When brushing is on then user can drag the mouse
       * across a chart with a quantitative scale to perform range filtering based on the extent of the
       * brush, or click on the bars of an ordinal bar chart or slices of a pie chart to filter and
@@ -1402,11 +1437,14 @@ export default function coordinateGridMixin (_chart) {
     return range instanceof Array && range.length > 1
   }
 
-  _chart.popupTextAccessor = (arr) => () => (utils.formatValue(arr[0].datum.data.key0))
+  _chart.popupTextAccessor = arr => () =>
+    utils.formatValue(arr[0].datum.data.key0)
 
   _chart.getNumTicksForXAxis = () => {
     const xDomain = _chart.x().domain()
-    const timeBinParam = _chart.group().binParams()[DEFAULT_TIME_DIMENSION_INDEX]
+    const timeBinParam = _chart.group().binParams()[
+      DEFAULT_TIME_DIMENSION_INDEX
+    ]
     if (timeBinParam && timeBinParam.extract) {
       return xDomain[xDomain.length - 1] - xDomain[0]
     } else {
@@ -1417,9 +1455,11 @@ export default function coordinateGridMixin (_chart) {
   }
 
   _chart.destroyChart = function () {
-    if (_chart.rangeChartEnabled()) {
-      _chart.rangeChartEnabled(false)
-    }
+    deregisterChart(_chart)
+    _chart.on("filtered", null)
+    _chart.filterAll()
+    _chart.resetSvg()
+    _chart.root().attr("style", "").attr("class", "").html("")
   }
 
   _chart.rangeFocused = function (_) {
@@ -1441,7 +1481,6 @@ export default function coordinateGridMixin (_chart) {
   }
 
   _chart.binInput = function (_) {
-
     if (!arguments.length) {
       return _chart._binInput
     }
@@ -1450,52 +1489,43 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-  _chart.isTime = function (_) {
-    if (!arguments.length) {
-      return _chart._isTime
-    }
-
-    _chart._isTime = _
-    return _chart
-  }
-
-
-     /* istanbul ignore next */
-  _chart.getBinInputVal = function () {
-    return _chart.binInputOptions().filter((d) => d.val === _chart.timeBinInputVal())
-  }
-
-     /* istanbul ignore next */
+  /* istanbul ignore next */
   _chart.updateRangeInput = function () {
     const dateFormat = d3.time.format.utc("%b %d, %Y")
     const timeFormat = d3.time.format.utc("%I:%M%p")
 
     const extent = _chart.filter() || _chart.x().domain()
     const rangeDisplay = _chart.root().selectAll(".range-display")
-    const binNumSecs = _chart.binInputOptions().filter((d) => _chart.group().binParams()[0].timeBin === d.val)[0].numSeconds
+    const binNumSecs = _chart
+      .binInputOptions()
+      .filter(d => _chart.group().binParams()[0].timeBin === d.val)[0]
+      .numSeconds
 
-    rangeDisplay.select(".range-start-day")
-             .property("value", dateFormat(extent[0]))
-             .attr("value", dateFormat(extent[0]))
+    rangeDisplay
+      .select(".range-start-day")
+      .property("value", dateFormat(extent[0]))
+      .attr("value", dateFormat(extent[0]))
 
-    rangeDisplay.select(".range-start-time")
-             .classed("disable", binNumSecs > 3600)
-             .property("value", timeFormat(extent[0]))
-             .attr("value", timeFormat(extent[0]))
+    rangeDisplay
+      .select(".range-start-time")
+      .classed("disable", binNumSecs > 3600)
+      .property("value", timeFormat(extent[0]))
+      .attr("value", timeFormat(extent[0]))
 
-    rangeDisplay.select(".range-end-day")
-             .property("value", dateFormat(extent[1]))
-             .attr("value", dateFormat(extent[1]))
+    rangeDisplay
+      .select(".range-end-day")
+      .property("value", dateFormat(extent[1]))
+      .attr("value", dateFormat(extent[1]))
 
-    rangeDisplay.select(".range-end-time")
-             .classed("disable", binNumSecs > 3600)
-             .property("value", timeFormat(extent[1]))
-             .attr("value", timeFormat(extent[1]))
+    rangeDisplay
+      .select(".range-end-time")
+      .classed("disable", binNumSecs > 3600)
+      .property("value", timeFormat(extent[1]))
+      .attr("value", timeFormat(extent[1]))
   }
 
-     /* istanbul ignore next */
+  /* istanbul ignore next */
   function rangeInputOnFocus () {
-
     this.select()
 
     const dateInputFormat = d3.time.format.utc("%m-%d-%Y")
@@ -1505,11 +1535,13 @@ export default function coordinateGridMixin (_chart) {
     const extent = _chart.filter() || _chart.x().domain()
     const index = currentInput.attr("class").indexOf("start") >= 0 ? 0 : 1
 
-    currentInput
-               .property("value", currentInput.classed("range-day") ? dateInputFormat(extent[index]) : timeInputFormat(extent[index]))
+    currentInput.property(
+      "value",
+      currentInput.classed("range-day") ? dateInputFormat(extent[index]) : timeInputFormat(extent[index])
+    )
   }
 
-     /* istanbul ignore next */
+  /* istanbul ignore next */
   function rangeInputChange (input) {
     const thisInput = this || input
     const currentInput = d3.select(thisInput)
@@ -1518,11 +1550,20 @@ export default function coordinateGridMixin (_chart) {
 
     const currentExtent = _chart.filter() || _chart.x().domain()
 
-    const binNumSecs = _chart.binInputOptions().filter((d) => _chart.group().binParams()[0].timeBin === d.val)[0].numSeconds
+    const binNumSecs = _chart
+      .binInputOptions()
+      .filter(d => _chart.group().binParams()[0].timeBin === d.val)[0]
+      .numSeconds
 
-    const inputFormat = binNumSecs > 3600 ? d3.time.format.utc("%m-%d-%Y") : (currentInput.attr("class").indexOf("day") >= 0 ? d3.time.format.utc("%m-%d-%Y %I:%M%p") : d3.time.format.utc("%b %d, %Y %I:%M%p"))
+    const inputFormat = binNumSecs > 3600 ? d3.time.format.utc("%m-%d-%Y") : currentInput.attr("class").indexOf("day") >= 0 ? d3.time.format.utc("%m-%d-%Y %I:%M%p") : d3.time.format.utc("%b %d, %Y %I:%M%p")
 
-    const inputStr = binNumSecs > 3600 ? newValue : d3.select(thisInput.parentNode).selectAll(".range-day").property("value") + " " + d3.select(thisInput.parentNode).selectAll(".range-time").property("value")
+    const inputStr = binNumSecs > 3600 ? newValue : d3
+            .select(thisInput.parentNode)
+            .selectAll(".range-day")
+            .property("value") + " " + d3
+            .select(thisInput.parentNode)
+            .selectAll(".range-time")
+            .property("value")
 
     const date = inputFormat.parse(inputStr)
 
@@ -1532,7 +1573,7 @@ export default function coordinateGridMixin (_chart) {
       return
     }
 
-    const extentChart = _chart.rangeChartEnabled() ? _chart.rangeChart() : _chart
+    const extentChart = _chart.rangeChart() ? _chart.rangeChart() : _chart
 
     const extent = extentChart.filter() || extentChart.x().domain()
 
@@ -1540,7 +1581,7 @@ export default function coordinateGridMixin (_chart) {
 
     const other = index === 0 ? 1 : 0
 
-    extent[index] = date < extentChart.xAxisMin() ? extentChart.xAxisMin() : (date > extentChart.xAxisMax() ? extentChart.xAxisMax() : date)
+    extent[index] = date < extentChart.xAxisMin() ? extentChart.xAxisMin() : date > extentChart.xAxisMax() ? extentChart.xAxisMax() : date
 
     if (binNumSecs > 3600) {
       extent[other] = d3.time.day.utc.round(extent[other])
@@ -1549,7 +1590,7 @@ export default function coordinateGridMixin (_chart) {
     extent.sort((a, b) => a - b)
 
     if (extent[0].getTime() === extent[1].getTime()) {
-      extent[1] = new Date(extent[1].getTime() + (binNumSecs * ONE_SECOND_IN_MS))
+      extent[1] = new Date(extent[1].getTime() + binNumSecs * ONE_SECOND_IN_MS)
     }
 
     if (_chart._binInput) {
@@ -1561,7 +1602,7 @@ export default function coordinateGridMixin (_chart) {
     extentChart.replaceFilter(domFilter)
     extentChart.rescale()
     extentChart.redrawAsync().then(() => {
-      if (_chart.rangeChartEnabled()) {
+      if (_chart.rangeChart()) {
         _chart._binSnap = _chart._binInput
         _chart.focus(domFilter)
         _chart.replaceFilter(domFilter)
@@ -1569,110 +1610,123 @@ export default function coordinateGridMixin (_chart) {
 
       thisInput.blur()
       _chart.updateRangeInput()
+
+      _chart.redrawGroup()
     })
   }
 
-     /* istanbul ignore next */
+  /* istanbul ignore next */
   _chart.renderYAxisLabel = function (axisClass, text, rotation) {
     const root = _chart.root()
 
     let yLabel = root.selectAll(".y-axis-label")
 
-    if (yLabel.empty() && !_chart._isRangeChart) {
-      yLabel = root.append("div")
-         .attr("class", "y-axis-label")
+    if (yLabel.empty()) {
+      yLabel = root.append("div").attr("class", "y-axis-label")
     }
 
     if (text !== "") {
-      const yOffset = (_chart.rangeChartEnabled() && _chart._rangeChartCreated ? _chart.rangeChart().height() - _chart.rangeChart().margins().bottom + _chart.margins().bottom : _chart.margins().bottom)
+      const yOffset = _chart.rangeChart() ? _chart.rangeChart().height() - _chart.rangeChart().margins().bottom + _chart.margins().bottom : _chart.margins().bottom
 
       yLabel
-             .style("top", ((_chart.effectiveHeight() + yOffset) / 2 + _chart.margins().top) + "px")
-             .text(text)
+        .style(
+          "top",
+          (_chart.effectiveHeight() + yOffset) / 2 + _chart.margins().top + "px"
+        )
+        .text(text)
     }
     _chart.prepareLabelEdit("y")
   }
 
-     /* istanbul ignore next */
+  /* istanbul ignore next */
   _chart.renderXAxis = function (g) {
     let axisXG = g.selectAll("g.x")
 
     if (axisXG.empty()) {
-      axisXG = g.append("g")
-               .attr("class", "axis x")
-               .attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")")
+      axisXG = g
+        .append("g")
+        .attr("class", "axis x")
+        .attr(
+          "transform",
+          "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
+        )
     }
 
-       /* OVERRIDE -----------------------------------------------------------------*/
+    /* OVERRIDE -----------------------------------------------------------------*/
     const root = _chart.root()
 
     if (_chart.rangeInput()) {
       let rangeDisplay = root.selectAll(".range-display")
 
       if (rangeDisplay.empty()) {
-        rangeDisplay = root.append("div")
-                   .attr("class", "range-display")
-                   .style("right", _chart.margins().right + "px")
+        rangeDisplay = root
+          .append("div")
+          .attr("class", "range-display")
+          .style("right", _chart.margins().right + "px")
 
         const group1 = rangeDisplay.append("div")
 
-        rangeDisplay.append("span")
-                   .html(" &mdash; ")
+        rangeDisplay.append("span").html(" &mdash; ")
 
         const group2 = rangeDisplay.append("div")
 
-        group1.append("input")
-                   .attr("class", "range-start-day range-day")
+        group1.append("input").attr("class", "range-start-day range-day")
 
-        group1.append("input")
-                   .attr("class", "range-start-time range-time")
+        group1.append("input").attr("class", "range-start-time range-time")
 
-        group2.append("input")
-                   .attr("class", "range-end-day range-day")
+        group2.append("input").attr("class", "range-end-day range-day")
 
-        group2.append("input")
-                   .attr("class", "range-end-time range-time")
+        group2.append("input").attr("class", "range-end-time range-time")
 
-        rangeDisplay.selectAll("input")
-                   .each(function () { bindRangeInputEvents(this) })
+        rangeDisplay.selectAll("input").each(function () {
+          bindRangeInputEvents(this)
+        })
 
-        if (_chart.group().binParams()[0] && _chart.group().binParams()[0].timeBin) {
+        if (
+          _chart.group().binParams()[0] && _chart.group().binParams()[0].timeBin
+        ) {
           _chart.updateRangeInput()
         }
 
-        _chart.root().select("div > .svg-wrapper")
-             .on("mouseover", () => {
-               rangeDisplay.selectAll("input").classed("active", true)
-             })
-             .on("mouseleave", () => {
-               rangeDisplay.selectAll("input").classed("active", false)
-             })
+        _chart
+          .root()
+          .select("div > .svg-wrapper")
+          .on("mouseover", () => {
+            rangeDisplay.selectAll("input").classed("active", true)
+          })
+          .on("mouseleave", () => {
+            rangeDisplay.selectAll("input").classed("active", false)
+          })
       }
-
     }
 
     let xLabel = root.selectAll(".x-axis-label")
 
-    const shouldAppendLabel = _chart.rangeChartEnabled() ? false : xLabel.empty()
+    const shouldAppendLabel = _chart.rangeChart() ? false : xLabel.empty()
     if (shouldAppendLabel) {
-      xLabel = root.append("div")
-           .attr("class", "x-axis-label")
+      xLabel = root.append("div").attr("class", "x-axis-label")
     }
 
-    if (!_chart.rangeChartEnabled()) {
+    if (!_chart.rangeChart()) {
       xLabel
-             .style("left", (_chart.effectiveWidth() / 2 + _chart.margins().left) + "px")
-             .text(_chart.xAxisLabel())
+        .style(
+          "left",
+          _chart.effectiveWidth() / 2 + _chart.margins().left + "px"
+        )
+        .text(_chart.xAxisLabel())
     }
 
     transition(axisXG, _chart.transitionDuration())
-           .attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")")
-           .call(_chart.xAxis())
+      .attr(
+        "transform",
+        "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
+      )
+      .call(_chart.xAxis())
 
     _chart.updateBinInput()
   }
 
-     /* istanbul ignore next */
+  /* istanbul ignore next */
   _chart.updateBinInput = () => {
     if (_chart.binInput() && _chart.group().binParams()[0]) {
       const root = _chart.root()
@@ -1680,55 +1734,54 @@ export default function coordinateGridMixin (_chart) {
       let binRow = root.selectAll(".bin-row")
 
       if (binRow.empty()) {
-        binRow = root.append("div")
-                   .attr("class", "bin-row")
-                   .style("left", _chart.margins().left + "px")
-
+        binRow = root
+          .append("div")
+          .attr("class", "bin-row")
+          .style("left", _chart.margins().left + "px")
       }
 
-      binRow.html("")
-               .append("span")
-               .text("BIN:")
+      binRow.html("").append("span").text("BIN:")
 
-      const binRowItems = binRow.selectAll(".bin-row-item")
-               .data(_chart.binInputOptions())
-               .enter()
+      const binRowItems = binRow
+        .selectAll(".bin-row-item")
+        .data(_chart.binInputOptions())
+        .enter()
 
-      const rangeInSeconds = Math.abs((_chart.x().domain()[0].getTime() - _chart.x().domain()[1].getTime()) / ONE_SECOND_IN_MS)
+      const rangeInSeconds = Math.abs(
+        (_chart.x().domain()[0].getTime() - _chart.x().domain()[1].getTime()) / ONE_SECOND_IN_MS
+      )
       const {auto, timeBin, numBins} = _chart.group().binParams()[0]
 
-      const shouldShowTimeBinOption = d => d.numSeconds && rangeInSeconds / d.numSeconds > numBins || d.numSeconds && rangeInSeconds / d.numSeconds < 2
+      const shouldShowTimeBinOption = d =>
+        (d.numSeconds && rangeInSeconds / d.numSeconds > numBins) || (d.numSeconds && rangeInSeconds / d.numSeconds < 2)
 
-      binRowItems.append("div")
-               .attr("class", "bin-row-item")
-               .classed("inactive", d => shouldShowTimeBinOption(d))
-               .classed("active", (d) => {
-                 if (d.val === "auto" && auto) {
-                   return true
-                 } else if (!auto) {
-                   return d.val === timeBin
-                 }
-               })
-               .classed("underline", d => auto && d.val === timeBin)
-               .text(d => d.label)
-               .on("click", d => _chart.changeBinVal(d.val))
-
+      binRowItems
+        .append("div")
+        .attr("class", "bin-row-item")
+        .classed("inactive", d => shouldShowTimeBinOption(d))
+        .classed("active", d => {
+          if (d.val === "auto" && auto) {
+            return true
+          } else if (!auto) {
+            return d.val === timeBin
+          }
+        })
+        .classed("underline", d => auto && d.val === timeBin)
+        .text(d => d.label)
+        .on("click", d => _chart.changeBinVal(d.val))
     }
   }
 
-     /* istanbul ignore next */
+  /* istanbul ignore next */
   function bindRangeInputEvents (input) {
-    d3.select(input)
-         .on("focus", rangeInputOnFocus)
-         .on("blur", rangeInputChange)
-         .on("keydown", function () {
-           if (d3.event.keyCode === ENTER_KEY) {
-             rangeInputChange(this)
-           }
-         })
+    d3.select(input).on("focus", rangeInputOnFocus).on("keydown", function () {
+      if (d3.event.keyCode === ENTER_KEY) {
+        rangeInputChange(this)
+      }
+    })
   }
 
-  _chart = rangeMixin(binningMixin(_chart))
+  _chart = binningMixin(_chart)
 
   return _chart
 }

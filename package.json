@@ -81,6 +81,7 @@
     "mocha-jenkins-reporter": "^0.1.9",
     "node-sass": "^3.4.2",
     "nyc": "^10.3.0",
+    "prettier": "^1.5.2",
     "proxyquire": "1.7.4",
     "sass-loader": "3.1.2",
     "selenium-standalone": "^6.4.1",

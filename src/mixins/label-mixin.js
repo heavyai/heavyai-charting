@@ -43,7 +43,7 @@ export default function labelMixin (chart) {
 
   function getMaxLabelWidth (type, hasLegend) {
     if (type === "y") {
-      const height = chart.height() + (chart.rangeChartEnabled() && chart._rangeChartCreated ? chart.rangeChart().height() : 0)
+      const height = chart.height() + (chart.rangeChart() ? chart.rangeChart().height() : 0)
       return (height - Math.max(chart.margins().top + chart.margins().bottom, 64)) * LABEL_WIDTH_MULTIPLIER
     }
 
@@ -55,14 +55,14 @@ export default function labelMixin (chart) {
   }
 
   function getYaxisTopPosition () {
-    const yOffset = chart.rangeChartEnabled() && chart._rangeChartCreated ? chart.rangeChart().height() - chart.rangeChart().margins().bottom + chart.margins().bottom : 0
+    const yOffset = chart.rangeChart() ? chart.rangeChart().height() - chart.rangeChart().margins().bottom + chart.margins().bottom : 0
     return (chart.height() - Math.max(chart.margins().top + chart.margins().bottom, 64) + yOffset) / 2 + chart.margins().top
   }
 
   function setLabel (type, val) {
 
     chart[`${type}AxisLabel`](val)
-    if (chart._isRangeChart) {
+    if (chart.focusChart()) {
       chart.focusChart()[`_invokeLabel${type.toUpperCase()}Listener`](val)
       if (type === "x") {
         chart.xAxisLabel(val)
@@ -76,7 +76,7 @@ export default function labelMixin (chart) {
 
   chart.prepareLabelEdit = function (type = "y") {
     if (
-      (chart.rangeChartEnabled() && type === "x") || (chart._isRangeChart && type === "y")
+      (chart.rangeChart() && type === "x") || (chart.focusChart() && type === "y")
     ) {
       return
     }
