@@ -645,7 +645,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     // set the actual canvas size, taking pixel ratio into account
     _chartBody.style("width", width + "px")
       .style("height", height + "px")
-      .style("left", margins.left + "px")
+      .style("left", left + "px")
       .style("top", top + "px")
       .attr("width", width * pixelRatio)
       .attr("height", height * pixelRatio)
