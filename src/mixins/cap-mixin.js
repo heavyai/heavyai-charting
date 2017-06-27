@@ -16,7 +16,7 @@ import {override} from "../core/core"
  */
 export default function capMixin (_chart) {
 
-  let _cap = Infinity
+  let _cap
   let _ordering = "desc"
 
   let _othersLabel = "Others"
@@ -34,6 +34,8 @@ export default function capMixin (_chart) {
     }
     return topRows
   }
+
+  _chart._mandatoryAttributes().push("cap")
 
   _chart.cappedKeyAccessor = function (d, i) {
     if (d.others) {
@@ -77,7 +79,7 @@ export default function capMixin (_chart) {
       }
     }
 
-    if (_cap === Infinity) {
+    if (_cap === undefined) {
       if (_chart.dataCache != null) {
         callback(null, _chart._computeOrderedGroups(_chart.dataCache))
       } else {
@@ -112,7 +114,7 @@ export default function capMixin (_chart) {
     if (!_chart.dataCache) {
       console.warn("Empty dataCache. Please fetch new data")
     }
-    if (_cap === Infinity) {
+    if (_cap === undefined) {
       return _chart._computeOrderedGroups(_chart.dataCache)
     } else {
       const rows = _chart.dataCache

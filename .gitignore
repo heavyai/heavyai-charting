@@ -47,14 +47,5 @@ example/css/chart.min.css
 example/css/mapdc.css
 example/css/chart.css
 
-# generated files
-mapdc.js
-mapdc.min.js
-mapdc.js.map
-mapdc.min.js.map
-mapdc.min.css
-
-dist/
-
 .nyc_output
 *.lcov
