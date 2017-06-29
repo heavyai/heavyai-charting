@@ -7,7 +7,8 @@ describe("Cap Mixin", () => {
       dc.capMixin({
         data: () => {},
         renderLabel: () => {},
-        setDataAsync: () => {}
+        setDataAsync: () => {},
+        _mandatoryAttributes: () => []
       })
     })
   })
