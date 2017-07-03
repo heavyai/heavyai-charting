@@ -509,10 +509,8 @@ export default function coordinateGridMixin (_chart) {
       ) {
         _x.domain([_chart.xAxisMin(), _chart.xAxisMax()])
       }
-    } else {
-      if (_chart.elasticX() || _x.domain().length === 0) {
-        _x.domain(_chart._ordinalXDomain())
-      }
+    } else if (_chart.elasticX() || _x.domain().length === 0) {
+      _x.domain(_chart._ordinalXDomain())
     }
 
     const xdom = _x.domain()
