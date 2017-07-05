@@ -1592,7 +1592,7 @@ export default function coordinateGridMixin (_chart) {
     }
 
     if (_chart._binInput) {
-      extent[1] = new Date(extent[1].getTime() + ONE_SECOND_IN_MS)
+      extent[1] = new Date(extent[1].getTime())
     }
 
     const domFilter = filters.RangedFilter(extent[0], extent[1])
