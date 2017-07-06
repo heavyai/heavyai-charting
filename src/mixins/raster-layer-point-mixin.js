@@ -2,6 +2,7 @@ import {decrementSampledCount, incrementSampledCount} from "../core/core"
 import {lastFilteredSize} from "../core/core-async"
 import {createRasterLayerGetterSetter, createVegaAttrMixin} from "../utils/utils-vega"
 
+const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
