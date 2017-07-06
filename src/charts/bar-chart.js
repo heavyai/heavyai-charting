@@ -259,19 +259,28 @@ export default function barChart (parent, chartGroup) {
             .remove()
   }
 
-  function renderBars (layer, layerIndex, d) {
+  
 
+  function renderBars (layer, layerIndex, d) {
 /* OVERRIDE ---------------------------------------------------------------- */
     _numBars = d.values.length
 /* ------------------------------------------------------------------------- */
-
+    function colors (d, i) {
+      if (d.name) {
+        d.layer = d.name
+        return _chart.getColor(d, i)
+      } else {
+        return _chart.getColor(d, i)
+      }
+    }
+    
     const bars = layer.selectAll("rect.bar")
             .data(d.values, pluck("x"))
 
     const enter = bars.enter()
             .append("rect")
             .attr("class", "bar")
-            .attr("fill", pluck("data", _chart.getColor))
+            .attr("fill", colors)
             .attr("y", _chart.yAxisHeight())
             .attr("height", 0)
 
@@ -305,7 +314,7 @@ export default function barChart (parent, chartGroup) {
             })
             .attr("width", _barWidth)
             .attr("height", (d) => barHeight(d))
-            .attr("fill", pluck("data", _chart.getColor))
+            .attr("fill", colors)
             .select("title").text(pluck("data", _chart.title(d.name)))
 
     transition(bars.exit(), _chart.transitionDuration())
