@@ -112,6 +112,8 @@ describe("MultiSeriesMixin", () => {
 
       const chart = MultiSeriesMixin(baseMixin({}))
 
+      chart.rangeChart = () => true
+
       let processedResult
       before(function(done) {
         chart.series().group(group)

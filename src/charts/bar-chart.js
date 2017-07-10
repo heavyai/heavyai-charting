@@ -259,7 +259,6 @@ export default function barChart (parent, chartGroup) {
             .remove()
   }
 
-  
 
   function renderBars (layer, layerIndex, d) {
 /* OVERRIDE ---------------------------------------------------------------- */
@@ -273,7 +272,7 @@ export default function barChart (parent, chartGroup) {
         return _chart.getColor(d, i)
       }
     }
-    
+
     const bars = layer.selectAll("rect.bar")
             .data(d.values, pluck("x"))
 

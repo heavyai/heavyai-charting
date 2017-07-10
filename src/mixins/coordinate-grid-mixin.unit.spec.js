@@ -46,14 +46,6 @@ describe("coordinateGridMixin", () => {
     })
   })
 
-  describe("Destroy Chart", () => {
-    it("should not try and destroy range chart when range is not enabled", () => {
-      chart.rangeChartEnabled = chai.spy(() => true)
-      chart.destroyChart()
-      expect(chart.rangeChartEnabled).to.be.called.with(false)
-    })
-  })
-
   describe("Range Focused", () => {
     it("should set range focused", () => {
       chart.rangeFocused(true)
