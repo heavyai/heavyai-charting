@@ -37,6 +37,7 @@
     "lint": "eslint $(find src -name \"*.js\" ! -name '*.spec.js')",
     "lint:errors": "npm run lint -- --quiet",
     "nyc": "nyc",
+    "report": "nyc report --reporter=lcov && open coverage/lcov-report/index.html",
     "selenium:install": "selenium-standalone install --version=3.0.0-beta4",
     "selenium:start": "selenium-standalone start --version=3.0.0-beta4",
     "start": "npm run build:example && http-server -p 8081 -o -c-1",
@@ -92,7 +93,7 @@
     "mapbox-gl": "https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307"
   },
   "nyc": {
-    "check-coverage": true,
+    "check-coverage": false,
     "lines": 32,
     "statements": 31.5,
     "functions": 16.5,

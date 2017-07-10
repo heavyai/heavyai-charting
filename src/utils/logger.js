@@ -2,6 +2,7 @@ export const logger = {}
 
 logger.enableDebugLog = false
 
+/* istanbul ignore next */
 logger.warn = function (msg) {
   if (console) {
     if (console.warn) {
@@ -14,6 +15,7 @@ logger.warn = function (msg) {
   return logger
 }
 
+/* istanbul ignore next */
 logger.debug = function (msg) {
   if (logger.enableDebugLog && console) {
     if (console.debug) {
@@ -26,6 +28,7 @@ logger.debug = function (msg) {
   return logger
 }
 
+/* istanbul ignore next */
 logger.deprecate = function (fn, msg) {
     // Allow logging of deprecation
   let warned = false
