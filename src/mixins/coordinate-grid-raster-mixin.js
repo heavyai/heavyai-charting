@@ -636,7 +636,9 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     const height = _chart.effectiveHeight()
     const margins = _chart.margins()
     const left = margins.left
+    const right = margins.right
     const top = margins.top
+    const bottom = margins.bottom
     const pixelRatio = window.devicePixelRatio || 1
 
     const prevWidth = _chartBody.style("width")
@@ -650,9 +652,11 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       .attr("width", width * pixelRatio)
       .attr("height", height * pixelRatio)
 
-    _parent
-      .attr("width", width * pixelRatio)
-      .attr("height", height + margins.bottom * pixelRatio)
+    _parent.style("width", (width + (right + left)) + "px")
+      .style("height", (height + (top + bottom)) + "px")
+      .attr("width", (width + (right + left)) * pixelRatio)
+      .attr("height", (height + (top + bottom)) * pixelRatio)
+
 
     if (prevWidth !== _chartBody.style("width") || prevHeight !== _chartBody.style("height")) {
       // TODO(croot): What about when the margins change?
