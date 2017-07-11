@@ -533,6 +533,7 @@ export default function coordinateGridMixin (_chart) {
 
     renderVerticalGridLines(g)
     _chart.prepareLabelEdit("x")
+    _chart.prepareLockAxis("x")
   }
 
   _chart.renderXAxis = function (g) {
