@@ -80,7 +80,7 @@
     var xDim = crossFilter.dimension("lon");
     var yDim = crossFilter.dimension("lat");
     var parent = document.getElementById("chart1-example");
-    var rScale = d3.scale.linear().domain([0,5000]).range([2,12]);
+    var rScale = d3.scale.linear().domain([0,5000]).range([1,5]);
     mapLangColors(40);
 
     var pointMapChart = dc.rasterChart(parent, true, null, mapboxgl)
