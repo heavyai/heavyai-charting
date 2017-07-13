@@ -11,6 +11,13 @@ const NON_INDEX = -1
 const ADDITIONAL_HEIGHT = 18
 const SCROLL_DIVISOR = 5
 
+export const splitStrOnLastAs = str => {
+  const splitStr = []
+  splitStr[0] = str.substring(0, str.lastIndexOf("as") - 1)
+  splitStr[1] = str.substring(str.lastIndexOf("as") + 3, str.length)
+  return splitStr
+}
+
 export default function mapdTable (parent, chartGroup) {
   const _chart = baseMixin({})
   let _tableWrapper = null
@@ -229,7 +236,7 @@ export default function mapdTable (parent, chartGroup) {
 
     } else {
       cols = _chart.dimension().getProjectOn().map((d, i) => {
-        const splitStr = d.split(" as ")
+        const splitStr = splitStrOnLastAs(d)
         return {expression: splitStr[0], name: splitStr[1], label: _colAliases ? _colAliases[i] : splitStr[0]}
       })
     }
@@ -433,7 +440,6 @@ export default function mapdTable (parent, chartGroup) {
   _chart.destroyChart = function () {
     _chart.sampling(false)
   }
-
 
   /* istanbul ignore next */
   _chart.sampling = function (setting) { // setting should be true or false
