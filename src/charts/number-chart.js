@@ -45,7 +45,7 @@ export default function numberChart (parent, chartGroup) {
             .attr("class", "number-chart-number")
             .style("color", _chart.getColor)
             .style("font-size", (d) => Math.max(Math.floor(_chart.height() / 5), 32) + "px")
-            .text(selected === "-0" ? 0 : selected)
+            .html(selected === "-0" ? 0 : selected)
             .style("font-size", function (d) {
               const width = d3.select(this).node().getBoundingClientRect().width
               let calcFontSize = parseInt(d3.select(this).node().style.fontSize.replace(/\D/g, ""))
