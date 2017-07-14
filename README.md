@@ -10,11 +10,11 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 
 #### Tweets Dataset: Brushing on timeline and hovering on Pointmap datapoint which displays row information
 
-![example2](https://cloud.githubusercontent.com/assets/2932405/25641746/acd9cdd0-2f4a-11e7-9821-99e3152075cd.gif)
+![example2](https://user-images.githubusercontent.com/4845281/28191946-21bb7ec0-67e8-11e7-855e-8922939d1241.gif)
 
 #### Tweets Dataset: Using MapD-Draw tool on pointmap to select specific areas on a map
 
-![example5](https://cloud.githubusercontent.com/assets/2932405/25641955/ab7015ac-2f4b-11e7-848a-c749fe2081bf.gif)
+![example5](https://user-images.githubusercontent.com/4845281/28191947-21bd2ad6-67e8-11e7-9c8d-a5ddcd0f07fc.gif)
 
 # Examples
 

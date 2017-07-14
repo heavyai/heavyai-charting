@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function init() {
        *
        * We then pass this scale into the r function within bubbleRasterChart
        */
-      var rScale = d3.scale.linear().domain([0,5000]).range([2,12]);
+      var rScale = d3.scale.linear().domain([0,5000]).range([1,5]);
 
       pointMapChart = dc.bubbleRasterChart(parent, false)
                               .con(con)
