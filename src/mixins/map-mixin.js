@@ -37,6 +37,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
   let _mapStyle = "mapbox://styles/mapbox/light-v8"
   let _center = [0, 30]
   let _zoom = 1
+  let _attribLocation = "bottom-right"
   const _popupFunction = null
   let _colorBy = null
   const _mouseLeave = false
@@ -181,7 +182,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
   }
 
   function onLoad (e) {
-    _map.addControl(new _mapboxgl.AttributionControl())
+    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
 
     const mapboxlogo = document.createElement("a")
     mapboxlogo.className = "mapbox-maplogo"
@@ -296,6 +297,14 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
     if (_mapInitted) {
       _map.setZoom(_zoom)
     }
+    return _chart
+  }
+
+  _chart.attribLocation = function (_) {
+    if (!arguments.length) {
+      return _attribLocation
+    }
+    _attribLocation = _
     return _chart
   }
 
