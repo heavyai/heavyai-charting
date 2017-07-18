@@ -51,7 +51,7 @@ export default function labelMixin (chart) {
   }
 
   function getXaxisLeftPosition (hasLegend) {
-    return hasLegend ? chart.width() / 2 + 32 : chart.effectiveWidth() / 2 + chart.margins().left
+    return hasLegend ? (chart.effectiveWidth() / 2) + 32 : (chart.effectiveWidth() / 2) + chart.margins().left
   }
 
   function getYaxisTopPosition () {
@@ -92,10 +92,6 @@ export default function labelMixin (chart) {
       .selectAll(`.axis-label-edit.type-${type}`)
       .remove()
 
-    chart
-      .root()
-      .selectAll(".y-axis-label, .x-axis-label")
-      .style("display", "none")
 
     const editorWrapper = chart
       .root()
