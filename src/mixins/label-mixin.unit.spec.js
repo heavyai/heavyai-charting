@@ -18,4 +18,13 @@ describe("label mixin", () => {
       expect(chart.measureLabelsOn()).to.equal(true)
     })
   })
+  describe("getContainerWidth", () => {
+    it ("should return correct container width", () => {
+      chart.effectiveWidth = () => (180)
+      chart.effectiveHeight = () => (160)
+      expect(chart.getAxisLabelContainerWidth("x", false)).to.equal(180)
+      expect(chart.getAxisLabelContainerWidth("x", true)).to.equal(180 - 32)
+      expect(chart.getAxisLabelContainerWidth("y", false)).to.equal(160)
+    })
+  })
 })
