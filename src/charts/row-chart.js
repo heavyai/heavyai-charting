@@ -393,7 +393,7 @@ export default function rowChart (parent, chartGroup) {
                 .attr("dy", isStackLabel() ? "1.1em" : _dyOffset)
                 .on("click", onClick)
                 .attr("text-anchor", isStackLabel() ? "start" : "end")
-                .text((d) => {
+                .html((d) => {
 
                   if (d.label) {
                     return d.label
