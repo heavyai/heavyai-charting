@@ -107,6 +107,14 @@ body {
 
 }
 
+.chart-edit-mode {
+    .axis-label-edit {
+        display: flex !important;
+    }
+    .y-axis-label, .x-axis-label {
+        display: none;
+    }
+}
 
 .dc-chart {
     position: relative;
@@ -411,17 +419,18 @@ body {
         bottom: 4px;
     }
 
+
+
     div.axis-label-edit {
         pointer-events: none;
         text-align: center;
-        display: flex;
+        display: none;
         justify-content: center;
         width: 100%;
         .input-wrapper {
             position: relative;
             display: block;
         }
-        
         span {
             white-space: nowrap;
             padding: 0 4px;
@@ -482,10 +491,6 @@ body {
             input {
                 opacity: 1;
             }
-        } 
-
-        & + .x-axis-label {
-            display: none;
         }
 
         &.has-legend {
