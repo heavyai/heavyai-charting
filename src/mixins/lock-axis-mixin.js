@@ -79,7 +79,7 @@ export default function lockAxisMixin (chart) {
   }
 
   chart.prepareLockAxis = function (type = "y") {
-    if (chart._isRangeChart) {
+    if (chart.focusChart && chart.focusChart()) {
       return
     }
 

@@ -4,6 +4,7 @@ import d3 from "d3"
 import stackMixin from "../mixins/stack-mixin"
 import elasticDimensionMixin from "../mixins/elastic-dimension-mixin"
 import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
+import multiSeriesMixin from "../mixins/multi-series-mixin"
 
 const TIME_UNIT_PER_SECONDS = {
   century: 3153600000,
@@ -58,7 +59,7 @@ export default function barChart (parent, chartGroup) {
   const DEFAULT_GAP_BETWEEN_BARS = 4
   const LABEL_PADDING = 3
 
-  const _chart = elasticDimensionMixin(stackMixin(coordinateGridMixin({})))
+  let _chart = elasticDimensionMixin(stackMixin(coordinateGridMixin({})))
 
   let _gap = DEFAULT_GAP_BETWEEN_BARS
   let _centerBar = false
@@ -258,11 +259,19 @@ export default function barChart (parent, chartGroup) {
             .remove()
   }
 
-  function renderBars (layer, layerIndex, d) {
 
+  function renderBars (layer, layerIndex, d) {
 /* OVERRIDE ---------------------------------------------------------------- */
     _numBars = d.values.length
 /* ------------------------------------------------------------------------- */
+    function colors (d, i) {
+      if (d.name) {
+        d.layer = d.name
+        return _chart.getColor(d, i)
+      } else {
+        return _chart.getColor(d, i)
+      }
+    }
 
     const bars = layer.selectAll("rect.bar")
             .data(d.values, pluck("x"))
@@ -270,7 +279,7 @@ export default function barChart (parent, chartGroup) {
     const enter = bars.enter()
             .append("rect")
             .attr("class", "bar")
-            .attr("fill", pluck("data", _chart.getColor))
+            .attr("fill", colors)
             .attr("y", _chart.yAxisHeight())
             .attr("height", 0)
 
@@ -304,7 +313,7 @@ export default function barChart (parent, chartGroup) {
             })
             .attr("width", _barWidth)
             .attr("height", (d) => barHeight(d))
-            .attr("fill", pluck("data", _chart.getColor))
+            .attr("fill", colors)
             .select("title").text(pluck("data", _chart.title(d.name)))
 
     transition(bars.exit(), _chart.transitionDuration())
@@ -521,6 +530,8 @@ export default function barChart (parent, chartGroup) {
   }
 
   _chart.renderLabel(false)
+
+  _chart = multiSeriesMixin(_chart)
 
   return _chart.anchor(parent, chartGroup)
 }
