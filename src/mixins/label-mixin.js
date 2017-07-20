@@ -64,7 +64,7 @@ export default function labelMixin (chart) {
   }
 
   function getXaxisLeftPosition (hasLegend) {
-    return hasLegend ? chart.width() / 2 + 32 : chart.effectiveWidth() / 2 + chart.margins().left
+    return hasLegend ? chart.getAxisLabelContainerWidth("x", hasLegend) / 2 + 32 : chart.effectiveWidth() / 2 + chart.margins().left
   }
 
   function getYaxisTopPosition () {
@@ -72,6 +72,12 @@ export default function labelMixin (chart) {
     return (
       (chart.height() - Math.max(chart.margins().top + chart.margins().bottom, 64) + yOffset) / 2 + chart.margins().top
     )
+  }
+
+  chart.getAxisLabelContainerWidth = function (type, hasLegend) {
+    const width = type === "x" ? chart.effectiveWidth() : chart.effectiveHeight()
+    const adjustForLegend = type === "x" && hasLegend ? 32 : 0
+    return width - adjustForLegend
   }
 
   function setLabel (type, val) {
@@ -110,6 +116,7 @@ export default function labelMixin (chart) {
       .root()
       .append("div")
       .attr("class", `axis-label-edit type-${type}`)
+      .style("width", `${chart.getAxisLabelContainerWidth(type, hasLegend)}px`)
       .classed("has-legend", hasLegend)
       .style("top", iconPosition.top)
       .style("left", iconPosition.left)
