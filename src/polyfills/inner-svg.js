@@ -1,4 +1,5 @@
 (function () {
+  /* istanbul ignore next */
   if (window.SVGElement) {
     var serializeXML = function (node, output) {
       const nodeType = node.nodeType

@@ -2,7 +2,6 @@ require("./polyfills/inner-svg")
 require("./mixins/d3.box")
 
 export * as d3 from "d3"
-
 export * from "./core/core"
 export * from "./core/core-async"
 export * from "./core/events"
