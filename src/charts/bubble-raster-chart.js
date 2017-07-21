@@ -10,7 +10,6 @@ import scatterMixin from "../mixins/scatter-mixin"
 import legend from "../chart-addons/legend"
 import {utils} from "../utils/utils"
 
-/* istanbul ignore next */
 export default function bubbleRasterChart (parent, useMap, chartGroup, _mapboxgl) {
 
   console.warn("The bubbleRasterChart is deprecated and will be removed in a coming release. Please use the rasterChart instead")
@@ -339,7 +338,6 @@ export default function bubbleRasterChart (parent, useMap, chartGroup, _mapboxgl
   return _chart.anchor(parent, chartGroup)
 }
 
-/* istanbul ignore next */
 function genVegaSpec (chart, sqlstr, lastFilteredSize) {
   const pixelRatio = chart._getPixelRatio()
   const width = (typeof chart.effectiveWidth === "function" ? chart.effectiveWidth() : chart.width()) * pixelRatio
@@ -395,5 +393,4 @@ function genVegaSpec (chart, sqlstr, lastFilteredSize) {
   return vegaSpec
 }
 
-/* istanbul ignore next */
 function notNull (value) { return value != null /* double-equals also catches undefined */ }

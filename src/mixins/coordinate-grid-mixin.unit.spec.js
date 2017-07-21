@@ -46,6 +46,14 @@ describe("coordinateGridMixin", () => {
     })
   })
 
+  describe("Destroy Chart", () => {
+    it("should not try and destroy range chart when range is not enabled", () => {
+      chart.rangeChartEnabled = chai.spy(() => true)
+      chart.destroyChart()
+      expect(chart.rangeChartEnabled).to.be.called.with(false)
+    })
+  })
+
   describe("Range Focused", () => {
     it("should set range focused", () => {
       chart.rangeFocused(true)
@@ -71,36 +79,6 @@ describe("coordinateGridMixin", () => {
     it("should set bin input", () => {
       chart.binInput(true)
       expect(chart.binInput()).to.equal(true)
-    })
-  })
-
-  describe("rescale method", () => {
-    it("should set _resizing to be true", () => {
-      expect(chart.rescale().resizing()).to.equal(true)
-    })
-  })
-
-  describe("rangeChart method", () => {
-    it("should", () => {
-      const range = coordinateGridMixin({})
-      chart.rangeChart(range)
-      expect(chart.rangeChart()).to.equal(range)
-      expect(range.focusChart()).to.equal(chart)
-    })
-  })
-
-  describe("zoomScale method", () => {
-    it("should", () => {
-      const extent = [0, 100]
-      expect(chart.zoomScale(extent)).to.equal(chart)
-      expect(chart.zoomScale()).to.equal(extent)
-    })
-  })
-
-  describe("mouseZoomable method", () => {
-    it("should set and get mouseZoomable", () => {
-      chart.mouseZoomable(true)
-      expect(chart.mouseZoomable()).to.equal(true)
     })
   })
 })

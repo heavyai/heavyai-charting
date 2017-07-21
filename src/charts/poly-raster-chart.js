@@ -4,7 +4,6 @@ import colorMixin from "../mixins/color-mixin"
 import capMixin from "../mixins/cap-mixin"
 import baseMixin from "../mixins/base-mixin"
 
-/* istanbul ignore next */
 export default function polyRasterChart (parent, useMap, chartGroup, _mapboxgl) {
 
   console.warn("The polyRasterChart is deprecated and will be removed in a coming release. Please use the rasterChart instead")
@@ -97,7 +96,6 @@ export default function polyRasterChart (parent, useMap, chartGroup, _mapboxgl) 
   return chart.anchor(parent, chartGroup)
 }
 
-/* istanbul ignore next */
 function genPolyVegaSpec (sqlstr, vegaSpec, mapBoundsMerc, color, polyJoin, stroke) {
   const xDomain = [mapBoundsMerc[0][0], mapBoundsMerc[2][0]] // northwest x, southeast x
   const yDomain = [mapBoundsMerc[2][1], mapBoundsMerc[0][1]] // southeast y, northwest y
@@ -124,7 +122,6 @@ function genPolyVegaSpec (sqlstr, vegaSpec, mapBoundsMerc, color, polyJoin, stro
   }]
 }
 
-/* istanbul ignore next */
 function setOverlay (data, bounds, map, layer, opacity) {
   if (typeof data === "undefined") { throw new Error("Data is undefined") }
   const browser = detectBrowser()
@@ -151,7 +148,6 @@ function setOverlay (data, bounds, map, layer, opacity) {
   }
 }
 
-/* istanbul ignore next */
 function detectBrowser () { // from SO: http://bit.ly/1Wd156O
   const isOpera = (Boolean(window.opr) && Boolean(opr.addons)) || Boolean(window.opera) || navigator.userAgent.indexOf(" OPR/") >= 0
   const isFirefox = typeof InstallTrigger !== "undefined"
@@ -162,7 +158,6 @@ function detectBrowser () { // from SO: http://bit.ly/1Wd156O
   return {isOpera, isFirefox, isSafari, isIE, isEdge, isChrome}
 }
 
-/* istanbul ignore next */
 function b64toBlob (b64Data, contentType, sliceSize) {
   contentType = contentType || ""
   sliceSize = sliceSize || 512
@@ -180,10 +175,8 @@ function b64toBlob (b64Data, contentType, sliceSize) {
   return new Blob(byteArrays, {type: contentType})
 }
 
-/* istanbul ignore next */
 function valuesOb (obj) { return Object.keys(obj).map((key) => obj[key]) }
 
-/* istanbul ignore next */
 function createGetterSetter (chainableObject, oldVal, validator) {
   validator = validator || identity
   return function (newVal) {
@@ -192,10 +185,8 @@ function createGetterSetter (chainableObject, oldVal, validator) {
   }
 }
 
-/* istanbul ignore next */
 function identity (x) { return x }
 
-/* istanbul ignore next */
 function polyJoinValidator (newPolyJoin) {
   if (typeof newPolyJoin.table === "string" && typeof newPolyJoin.keysColumn === "string") {
     return newPolyJoin

@@ -18,6 +18,7 @@ export default function labelMixin (chart) {
     return chart
   }
 
+
   chart.on = function (event, listener) {
     const baseEvent = event.includes(".") ? event.slice(0, event.indexOf(".")) : event
     if (events.indexOf(baseEvent) === NON_INDEX) {
@@ -36,31 +37,17 @@ export default function labelMixin (chart) {
     _listeners.xLabel(chart, val)
   }
 
-  function rangeChart () {
-    return typeof chart.rangeChart === "function" && chart.rangeChart()
-  }
-
-  function focusChart () {
-    return typeof chart.focusChart === "function" && chart.focusChart()
-  }
-
   function isIE11 () {
-    return (
-      Boolean(window.MSInputMethodContext) && Boolean(document.documentMode)
-    )
+    return Boolean(window.MSInputMethodContext) && Boolean(document.documentMode)
   }
 
   function getMaxLabelWidth (type, hasLegend) {
     if (type === "y") {
-      const height = chart.height() + (rangeChart() ? chart.rangeChart().height() : 0)
-      return (
-        (height - Math.max(chart.margins().top + chart.margins().bottom, 64)) * LABEL_WIDTH_MULTIPLIER
-      )
+      const height = chart.height() + (chart.rangeChartEnabled() && chart._rangeChartCreated ? chart.rangeChart().height() : 0)
+      return (height - Math.max(chart.margins().top + chart.margins().bottom, 64)) * LABEL_WIDTH_MULTIPLIER
     }
 
-    return (
-      (hasLegend ? chart.width() - LEGEND_WIDTH : chart.effectiveWidth()) * LABEL_WIDTH_MULTIPLIER
-    )
+    return (hasLegend ? (chart.width() - LEGEND_WIDTH) : chart.effectiveWidth()) * LABEL_WIDTH_MULTIPLIER
   }
 
   function getXaxisLeftPosition (hasLegend) {
@@ -68,10 +55,8 @@ export default function labelMixin (chart) {
   }
 
   function getYaxisTopPosition () {
-    const yOffset = rangeChart() ? chart.rangeChart().height() - chart.rangeChart().margins().bottom + chart.margins().bottom : 0
-    return (
-      (chart.height() - Math.max(chart.margins().top + chart.margins().bottom, 64) + yOffset) / 2 + chart.margins().top
-    )
+    const yOffset = chart.rangeChartEnabled() && chart._rangeChartCreated ? chart.rangeChart().height() - chart.rangeChart().margins().bottom + chart.margins().bottom : 0
+    return (chart.height() - Math.max(chart.margins().top + chart.margins().bottom, 64) + yOffset) / 2 + chart.margins().top
   }
 
   chart.getAxisLabelContainerWidth = function (type, hasLegend) {
@@ -81,8 +66,9 @@ export default function labelMixin (chart) {
   }
 
   function setLabel (type, val) {
+
     chart[`${type}AxisLabel`](val)
-    if (focusChart()) {
+    if (chart._isRangeChart) {
       chart.focusChart()[`_invokeLabel${type.toUpperCase()}Listener`](val)
       if (type === "x") {
         chart.xAxisLabel(val)
@@ -95,17 +81,22 @@ export default function labelMixin (chart) {
   }
 
   chart.prepareLabelEdit = function (type = "y") {
-    if ((rangeChart() && type === "x") || (focusChart() && type === "y")) {
+    if (
+      (chart.rangeChartEnabled() && type === "x") || (chart._isRangeChart && type === "y")
+    ) {
       return
     }
-    const hasLegend = type === "x" && chart.legend() && chart.legend().legendType() === "quantitative"
+    const hasLegend = (type === "x" && chart.legend() && chart.legend().legendType() === "quantitative")
 
     const iconPosition = {
       left: type === "y" ? "" : `${getXaxisLeftPosition(hasLegend)}px`,
       top: type === "y" ? `${getYaxisTopPosition()}px` : ""
     }
 
-    chart.root().selectAll(`.axis-label-edit.type-${type}`).remove()
+    chart
+      .root()
+      .selectAll(`.axis-label-edit.type-${type}`)
+      .remove()
 
     chart
       .root()
@@ -123,12 +114,11 @@ export default function labelMixin (chart) {
       .append("div")
       .attr("class", "input-wrapper")
       .style("max-width", `${getMaxLabelWidth(type, hasLegend)}px`)
-      .style(
-        "width",
-        isIE11() ? `${getMaxLabelWidth(type, hasLegend)}px` : "auto"
-      )
+      .style("width", isIE11() ? `${getMaxLabelWidth(type, hasLegend)}px` : "auto")
 
-    editorWrapper.append("span").text(chart[`${type}AxisLabel`]())
+    editorWrapper
+      .append("span")
+      .text(chart[`${type}AxisLabel`]())
 
     editorWrapper
       .append("input")

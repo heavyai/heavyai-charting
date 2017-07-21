@@ -1,6 +1,5 @@
 import d3 from "d3"
 // https://github.com/d3/d3-plugins/blob/master/box/box.js
-/* istanbul ignore next */
 (function () {
 
     // Inspired by http://informationandvisualization.de/blog/box-plot
