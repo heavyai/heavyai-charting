@@ -27,10 +27,10 @@ events.trigger = function (closure, delay) {
     return
   }
 
-  events.current = closure
+  dc.events.current = closure
 
   setTimeout(() => {
-    if (closure === events.current) {
+    if (closure === dc.events.current) {
       closure()
     }
   }, delay)

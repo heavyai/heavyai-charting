@@ -27,15 +27,13 @@ export function roundTimeBin (date, timeInterval, operation) {
     break
   }
 
-  const startRange = operation === "round" ? ranges[0] : operation === "ceil" ? 0 : -ranges[2]
-  const endRange = operation === "round" ? ranges[1] : operation === "ceil" ? ranges[2] : 0
+  const startRange = operation === "round" ? ranges[0] : (operation === "ceil" ? 0 : -ranges[2])
+  const endRange = operation === "round" ? ranges[1] : (operation === "ceil" ? ranges[2] : 0)
 
   const subHalf = d3.time[unit].offset(date, startRange)
   const addHalf = d3.time[unit].offset(date, endRange)
 
-  return d3.time[unit].utc.round(
-    d3.time[unit + "s"](subHalf, addHalf, ranges[2])[0]
-  )
+  return d3.time[unit].utc.round(d3.time[unit + "s"](subHalf, addHalf, ranges[2])[0])
 }
 
 export default function binningMixin (chart) {
@@ -62,7 +60,7 @@ export default function binningMixin (chart) {
 
   chart.binInputOptions = () => BIN_INPUT_OPTIONS
 
-  chart.timeBinInputVal = val => {
+  chart.timeBinInputVal = (val) => {
     if (typeof val === "undefined") {
       return _timeBinInputVal
     }
@@ -70,19 +68,18 @@ export default function binningMixin (chart) {
     return chart
   }
 
-  chart.binBrush = isRangeChart => {
+  chart.binBrush = (isRangeChart) => {
     const rangeChartBrush = isRangeChart ? chart.rangeChart().extendBrush() : null
     const extent0 = isRangeChart ? rangeChartBrush : chart.extendBrush()
     const chartBounds = isRangeChart ? rangeChartBrush : chart.group().binParams()[0].binBounds
+
     if (!extent0[0].getTime || extent0[0].getTime() === extent0[1].getTime()) {
       return
     }
 
     const timeInterval = chart.group().binParams()[0].timeBin
 
-    const extent1 = extent0.map(date =>
-      roundTimeBin(date, timeInterval, "round")
-    )
+    const extent1 = extent0.map(date => roundTimeBin(date, timeInterval, "round"))
 
     if (extent1[0] < chartBounds[0]) {
       extent1[0] = roundTimeBin(extent0[0], timeInterval, "ceil")
@@ -100,26 +97,16 @@ export default function binningMixin (chart) {
     }
 
     /* istanbul ignore next */
-    if (
-      !isNaN(chart.xAxisMax()) && extent1[0].getTime() === chart.xAxisMax().getTime()
-    ) {
-      const binNumSecs = chart
-        .binInputOptions()
-        .filter(d => chart.group().binParams()[0].timeBin === d.val)[0]
-        .numSeconds
-      extent1[0] = new Date(extent1[0].getTime() - binNumSecs * 1000)
+    if (!isNaN(chart.xAxisMax()) && extent1[0].getTime() === chart.xAxisMax().getTime()) {
+      const binNumSecs = chart.binInputOptions().filter(d => chart.group().binParams()[0].timeBin === d.val)[0].numSeconds
+      extent1[0] = new Date(extent1[0].getTime() - (binNumSecs * 1000))
       extent1[0] = roundTimeBin(extent1[0], timeInterval, "round")
     }
 
     /* istanbul ignore next */
-    if (
-      !isNaN(chart.xAxisMin()) && extent1[1].getTime() === chart.xAxisMin().getTime()
-    ) {
-      const binNumSecs = chart
-        .binInputOptions()
-        .filter(d => chart.group().binParams()[0].timeBin === d.val)[0]
-        .numSeconds
-      extent1[1] = new Date(extent1[1].getTime() + binNumSecs * 1000)
+    if (!isNaN(chart.xAxisMin()) && extent1[1].getTime() === chart.xAxisMin().getTime()) {
+      const binNumSecs = chart.binInputOptions().filter(d => chart.group().binParams()[0].timeBin === d.val)[0].numSeconds
+      extent1[1] = new Date(extent1[1].getTime() + (binNumSecs * 1000))
       extent1[1] = roundTimeBin(extent1[1], timeInterval, "round")
     }
 
@@ -130,37 +117,28 @@ export default function binningMixin (chart) {
     }, constants.EVENT_DELAY)
   }
 
-  chart.changeBinVal = val => {
+  chart.changeBinVal = (val) => {
     chart.timeBinInputVal(val)
 
     const currentStack = chart.stack().slice()
     /* istanbul ignore next */
     for (let i = 0; i < currentStack.length; i++) {
-      const binParams = currentStack[i].group
-        .binParams()
-        .map((binParam, idx) => {
-          if (idx === i && binParam) {
-            const {binBounds, numBins} = binParam
-            const isAuto = val === "auto"
-            const bounds = binBounds.map(date => date.getTime())
-            binParam.timeBin = isAuto ? autoBinParams(bounds, numBins) : val
-            binParam.auto = isAuto
-          }
-          return binParam
-        })
+      const binParams = currentStack[i].group.binParams().map((binParam, idx) => {
+        if (idx === i && binParam) {
+          const {binBounds, numBins} = binParam
+          const isAuto = val === "auto"
+          const bounds = binBounds.map(date => date.getTime())
+          binParam.timeBin = isAuto ? autoBinParams(bounds, numBins) : val
+          binParam.auto = isAuto
+        }
+        return binParam
+      })
 
       /* istanbul ignore next */
       if (i === 0) {
-        chart.group(
-          currentStack[i].group.binParams(binParams),
-          currentStack[i].name
-        )
+        chart.group(currentStack[i].group.binParams(binParams), currentStack[i].name)
       } else {
-        chart.stack(
-          currentStack[i].group.binParams(binParams),
-          currentStack[i].name,
-          currentStack[i].accessor
-        )
+        chart.stack(currentStack[i].group.binParams(binParams), currentStack[i].name, currentStack[i].accessor)
       }
     }
 
