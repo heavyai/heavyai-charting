@@ -4511,9 +4511,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var dateFormat = exports.dateFormat = _d2.default.time.format("%m/%d/%Y");
 
-	var deepEquals = exports.deepEquals = __webpack_require__(39 // eslint-disable-line global-require
+	var deepEquals = exports.deepEquals = __webpack_require__(39); // eslint-disable-line global-require
 
-	);var deepClone = exports.deepClone = function deepClone(obj) {
+	var deepClone = exports.deepClone = function deepClone(obj) {
 	  return JSON.parse(JSON.stringify(obj));
 	};
 
@@ -4674,11 +4674,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  return s;
 	};
-	utils.printSingleValue.fformat = _d2.default.format(".2f"
+	utils.printSingleValue.fformat = _d2.default.format(".2f");
 
 	// FIXME: these assume than any string r is a percentage (whether or not it
 	// includes %).
-	);utils.add = function (l, r, c) {
+	utils.add = function (l, r, c) {
 	  if (typeof r === "string") {
 	    r = r.replace("%", "");
 	  }
@@ -4888,6 +4888,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _errors = __webpack_require__(29);
 
+	var errors = _interopRequireWildcard(_errors);
+
 	var _filterMixin = __webpack_require__(167);
 
 	var _filterMixin2 = _interopRequireDefault(_filterMixin);
@@ -4907,6 +4909,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _spinnerMixin = __webpack_require__(36);
 
 	var _spinnerMixin2 = _interopRequireDefault(_spinnerMixin);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5002,10 +5006,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  var _startNextQuery = function _startNextQuery() {
-	    _topQueryCallback.func
+	    _topQueryCallback.func();
 	    // var callback = _firstQueryCallback;
 	    // callback();
-	    ();
 	  };
 
 	  // override for count chart
@@ -5260,7 +5263,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  _chart._computeOrderedGroups = function (data) {
-	    var dataCopy = data.slice(0
+	    var dataCopy = data.slice(0);
 
 	    /* OVERRIDE ---------------------------------------------------------------- */
 	    // if (dataCopy.length <= 1) {
@@ -5273,7 +5276,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    //
 	    // return _orderSort(dataCopy, 0, dataCopy.length);
 	    /* ------------------------------------------------------------------------- */
-	    );return dataCopy;
+	    return dataCopy;
 	  };
 
 	  /**
@@ -5347,7 +5350,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (0, _core.registerChart)(_chart, chartGroup);
 	      _isChild = false;
 	    } else {
-	      throw new _errors.errors.BadArgumentException("parent must be defined");
+	      throw new errors.BadArgumentException("parent must be defined");
 	    }
 	    _chartGroup = chartGroup;
 	    return _chart;
@@ -5423,10 +5426,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _chart.resetSvg = function () {
 
 	    /* OVERRIDE ---------------------------------------------------------------- */
-	    _chart.root().html(""
+	    _chart.root().html("");
 	    /* ------------------------------------------------------------------------- */
 
-	    );return _chart.generateSvg();
+	    return _chart.generateSvg();
 	  };
 
 	  function sizeSvg() {
@@ -5438,10 +5441,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _chart.generateSvg = function () {
 
 	    /* OVERRIDE ---------------------------------------------------------------- */
-	    _svg = _chart.root().append("div").attr("class", "svg-wrapper").append("svg"
+	    _svg = _chart.root().append("div").attr("class", "svg-wrapper").append("svg");
 	    /* ------------------------------------------------------------------------- */
 
-	    );sizeSvg();
+	    sizeSvg();
 	    return _svg;
 	  };
 
@@ -5609,7 +5612,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function checkForMandatoryAttributes(a) {
 	    if (!_chart[a] || !_chart[a]()) {
-	      throw new _errors.errors.InvalidStateException("Mandatory attribute chart." + a + " is missing on chart[#" + _chart.anchorName() + "]");
+	      throw new errors.InvalidStateException("Mandatory attribute chart." + a + " is missing on chart[#" + _chart.anchorName() + "]");
 	    }
 	  }
 
@@ -5756,8 +5759,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          console.log("Redraw elapsed: " + elapsed + " ms");
 	        }
 
-	        (0, _core.globalTransitionDuration)(null // reset to null if was brush
-	        );(0, _coreAsync.resetRedrawStack)();
+	        (0, _core.globalTransitionDuration)(null); // reset to null if was brush
+	        (0, _coreAsync.resetRedrawStack)();
 
 	        if (!(0, _coreAsync.redrawStackEmpty)()) {
 	          (0, _coreAsync.redrawStackEmpty)(true);
@@ -6445,7 +6448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _chart.renderlet = _logger.logger.deprecate(function (renderletFunction) {
 	    _chart.on("renderlet." + _utils.utils.uniqueId(), renderletFunction);
 	    return _chart;
-	  }, "chart.renderlet has been deprecated.  Please use chart.on(\"renderlet.<renderletKey>\", renderletFunction)"
+	  }, "chart.renderlet has been deprecated.  Please use chart.on(\"renderlet.<renderletKey>\", renderletFunction)");
 
 	  /**
 	   * Get or set the chart group to which this chart belongs. Chart groups are rendered or redrawn
@@ -6457,7 +6460,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {String}
 	   * @return {dc.baseMixin}
 	   */
-	  );_chart.chartGroup = function (chartGroup) {
+	  _chart.chartGroup = function (chartGroup) {
 	    if (!arguments.length) {
 	      return _chartGroup;
 	    }
@@ -6962,8 +6965,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _colors;
 	    }
 	    if (colorScale instanceof Array) {
-	      _colors = _d2.default.scale.quantize().range(colorScale // deprecated legacy support, note: this fails for ordinal domains
-	      );
+	      _colors = _d2.default.scale.quantize().range(colorScale); // deprecated legacy support, note: this fails for ordinal domains
 	    } else {
 	      _colors = _d2.default.functor(colorScale);
 	    }
@@ -7136,7 +7138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function capMixin(_chart) {
 
-	  var _cap = Infinity;
+	  var _cap = void 0;
 	  var _ordering = "desc";
 
 	  var _othersLabel = "Others";
@@ -7156,6 +7158,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return topRows;
 	  };
+
+	  _chart._mandatoryAttributes().push("cap");
 
 	  _chart.cappedKeyAccessor = function (d, i) {
 	    if (d.others) {
@@ -7198,7 +7202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
-	    if (_cap === Infinity) {
+	    if (_cap === undefined) {
 	      if (_chart.dataCache != null) {
 	        callback(null, _chart._computeOrderedGroups(_chart.dataCache));
 	      } else {
@@ -7219,8 +7223,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        resultCallback(error);
 	      });
 	    } else if (_ordering === "asc") {
-	      group.bottomAsync(_cap, undefined, undefined, resultCallback // ordered by crossfilter group order (default value)
-	      );
+	      group.bottomAsync(_cap, undefined, undefined, resultCallback); // ordered by crossfilter group order (default value)
 	    }
 	  });
 
@@ -7232,7 +7235,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!_chart.dataCache) {
 	      console.warn("Empty dataCache. Please fetch new data");
 	    }
-	    if (_cap === Infinity) {
+	    if (_cap === undefined) {
 	      return _chart._computeOrderedGroups(_chart.dataCache);
 	    } else {
 	      var rows = _chart.dataCache;
@@ -7241,7 +7244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      return rows;
 	    }
-	  }
+	  });
 
 	  /* ------------------------------------------------------------------------- */
 
@@ -7254,7 +7257,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Number}
 	   * @return {dc.capMixin}
 	   */
-	  );_chart.cap = function (count) {
+	  _chart.cap = function (count) {
 	    if (!arguments.length) {
 	      return _cap;
 	    }
@@ -8072,25 +8075,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var ticks = _xAxis.tickValues() ? _xAxis.tickValues() : typeof _x.ticks === "function" ? _x.ticks(_xAxis.ticks()[0]) : _x.domain();
 
-	      var lines = gridLineG.selectAll("line").data(ticks
+	      var lines = gridLineG.selectAll("line").data(ticks);
 
 	      // enter
-	      );var linesGEnter = lines.enter().append("line").attr("x1", function (d) {
+	      var linesGEnter = lines.enter().append("line").attr("x1", function (d) {
 	        return _x(d);
 	      }).attr("y1", _chart._xAxisY() - _chart.margins().top).attr("x2", function (d) {
 	        return _x(d);
 	      }).attr("y2", 0).attr("opacity", 0);
-	      (0, _core.transition)(linesGEnter, _chart.transitionDuration()).attr("opacity", 1
+	      (0, _core.transition)(linesGEnter, _chart.transitionDuration()).attr("opacity", 1);
 
 	      // update
-	      );(0, _core.transition)(lines, _chart.transitionDuration()).attr("x1", function (d) {
+	      (0, _core.transition)(lines, _chart.transitionDuration()).attr("x1", function (d) {
 	        return _x(d);
 	      }).attr("y1", _chart._xAxisY() - _chart.margins().top).attr("x2", function (d) {
 	        return _x(d);
-	      }).attr("y2", 0
+	      }).attr("y2", 0);
 
 	      // exit
-	      );lines.exit().remove();
+	      lines.exit().remove();
 	    } else {
 	      gridLineG.selectAll("line").remove();
 	    }
@@ -8189,25 +8192,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        gridLineG = g.insert("g", ":first-child").attr("class", GRID_LINE_CLASS + " " + HORIZONTAL_CLASS).attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")");
 	      }
 
-	      var lines = gridLineG.selectAll("line").data(ticks
+	      var lines = gridLineG.selectAll("line").data(ticks);
 
 	      // enter
-	      );var linesGEnter = lines.enter().append("line").attr("x1", 1).attr("y1", function (d) {
+	      var linesGEnter = lines.enter().append("line").attr("x1", 1).attr("y1", function (d) {
 	        return scale(d);
 	      }).attr("x2", _chart.xAxisLength()).attr("y2", function (d) {
 	        return scale(d);
 	      }).attr("opacity", 0);
-	      (0, _core.transition)(linesGEnter, _chart.transitionDuration()).attr("opacity", 1
+	      (0, _core.transition)(linesGEnter, _chart.transitionDuration()).attr("opacity", 1);
 
 	      // update
-	      );(0, _core.transition)(lines, _chart.transitionDuration()).attr("x1", 1).attr("y1", function (d) {
+	      (0, _core.transition)(lines, _chart.transitionDuration()).attr("x1", 1).attr("y1", function (d) {
 	        return scale(d);
 	      }).attr("x2", _chart.xAxisLength()).attr("y2", function (d) {
 	        return scale(d);
-	      }
+	      });
 
 	      // exit
-	      );lines.exit().remove();
+	      lines.exit().remove();
 	    } else {
 	      gridLineG.selectAll("line").remove();
 	    }
@@ -8630,9 +8633,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _events.events.trigger(function () {
 
 	        /* OVERRIDE ---------------------------------------------------------------- */
-	        (0, _core.globalTransitionDuration)(10
+	        (0, _core.globalTransitionDuration)(10);
 	        /* ------------------------------------------------------------------------- */
-	        );_chart.replaceFilter(rangedFilter);
+	        _chart.replaceFilter(rangedFilter);
 	        _chart.redrawGroup();
 	      }, _core.constants.EVENT_DELAY);
 	    }
@@ -8698,10 +8701,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  function generateClipPath() {
-	    var defs = _utils2.utils.appendOrSelect(_parent, "defs"
+	    var defs = _utils2.utils.appendOrSelect(_parent, "defs");
 	    // cannot select <clippath> elements; bug in WebKit, must select by id
 	    // https://groups.google.com/forum/#!topic/d3-js/6EpAzQ2gU9I
-	    );var id = getClipPathId();
+	    var id = getClipPathId();
 	    var chartBodyClip = _utils2.utils.appendOrSelect(defs, "#" + id, "clipPath").attr("id", id);
 
 	    var padding = _clipPadding * 2;
@@ -8728,10 +8731,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    drawChart(true);
 
-	    configureMouseZoom
+	    configureMouseZoom();
 
 	    /* OVERRIDE ---------------------------------------------------------------- */
-	    ();_hasBeenRendered = true;
+	    _hasBeenRendered = true;
 	    /* ------------------------------------------------------------------------- */
 	    return _chart;
 	  };
@@ -8845,10 +8848,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _chart.on("filtered", function (chart) {
 
 	      /* OVERRIDE ---------------------------------------------------------------- */
-	      _focusChart.rangeFocused(true
+	      _focusChart.rangeFocused(true);
 	      /* ------------------------------------------------------------------------- */
 
-	      );if (!chart.filter()) {
+	      if (!chart.filter()) {
 	        _events.events.trigger(function () {
 	          _focusChart.x().domain(_focusChart.xOriginalDomain());
 	        });
@@ -8859,10 +8862,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      /* OVERRIDE ---------------------------------------------------------------- */
-	      _focusChart.rangeFocused(false
+	      _focusChart.rangeFocused(false);
 	      /* ------------------------------------------------------------------------- */
-
-	      );
 	    });
 	    return _chart;
 	  };
@@ -10116,10 +10117,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _chart = (0, _colorMixin2.default)(_chart);
 
-	  _chart.renderLabel(true
+	  _chart.renderLabel(true);
 
 	  /* OVERRIDE ---------------------------------------------------------------- */
-	  );_chart.setDataAsync(function (group, callbacks) {
+	  _chart.setDataAsync(function (group, callbacks) {
 	    if (_chart.cap() !== undefined) {
 	      return group.topAsync(_chart.cap()).then(function (result) {
 	        callbacks(null, result);
@@ -10129,10 +10130,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else {
 	      group.allAsync(callbacks);
 	    }
-	  }
+	  });
 	  /* ------------------------------------------------------------------------- */
 
-	  );_chart.data(function (group) {
+	  _chart.data(function (group) {
 	    /* OVERRIDE ---------------------------------------------------------------- */
 	    if (_chart.dataCache !== null) {
 	      return _chart.dataCache;
@@ -10339,10 +10340,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _chart.isSelectedNode = function (d) {
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    return _chart.hasFilter(d.key0) ^ _chart.filtersInverse
+	    return _chart.hasFilter(d.key0) ^ _chart.filtersInverse();
 	    /* --------------------------------------------------------------------------*/
-
-	    ();
 	  };
 
 	  _chart.onClick = function (d) {
@@ -11042,16 +11041,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var height = _chart.effectiveHeight();
 	    var margins = _chart.margins();
 	    var left = margins.left;
+	    var right = margins.right;
 	    var top = margins.top;
+	    var bottom = margins.bottom;
 	    var pixelRatio = window.devicePixelRatio || 1;
 
 	    var prevWidth = _chartBody.style("width");
-	    var prevHeight = _chartBody.style("height"
+	    var prevHeight = _chartBody.style("height");
 
 	    // set the actual canvas size, taking pixel ratio into account
-	    );_chartBody.style("width", width + "px").style("height", height + "px").style("left", left + "px").style("top", top + "px").attr("width", width * pixelRatio).attr("height", height * pixelRatio);
+	    _chartBody.style("width", width + "px").style("height", height + "px").style("left", left + "px").style("top", top + "px").attr("width", width * pixelRatio).attr("height", height * pixelRatio);
 
-	    _parent.attr("width", width * pixelRatio).attr("height", height * pixelRatio);
+	    _parent.style("width", width + (right + left) + "px").style("height", height + (top + bottom) + "px").attr("width", (width + (right + left)) * pixelRatio).attr("height", (height + (top + bottom)) * pixelRatio);
 
 	    if (prevWidth !== _chartBody.style("width") || prevHeight !== _chartBody.style("height")) {
 	      // TODO(croot): What about when the margins change?
@@ -11215,10 +11216,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var ticks = _xAxis.tickValues() ? _xAxis.tickValues() : typeof x.ticks === "function" ? x.ticks(_xAxis.ticks()[0]) : x.domain();
 
-	      var lines = gridLineG.selectAll("line").data(ticks
+	      var lines = gridLineG.selectAll("line").data(ticks);
 
 	      // enter
-	      );var linesGEnter = lines.enter().append("line").attr("x1", function (d) {
+	      var linesGEnter = lines.enter().append("line").attr("x1", function (d) {
 	        return x(d);
 	      }).attr("y1", _chart._xAxisY() - _chart.margins().top).attr("x2", function (d) {
 	        return x(d);
@@ -11228,17 +11229,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        transitionDuration = _chart.transitionDuration();
 	      }
 
-	      (0, _core.transition)(linesGEnter, transitionDuration).attr("opacity", 1
+	      (0, _core.transition)(linesGEnter, transitionDuration).attr("opacity", 1);
 
 	      // update
-	      );(0, _core.transition)(lines, transitionDuration).attr("x1", function (d) {
+	      (0, _core.transition)(lines, transitionDuration).attr("x1", function (d) {
 	        return x(d);
 	      }).attr("y1", _chart._xAxisY() - _chart.margins().top).attr("x2", function (d) {
 	        return x(d);
-	      }).attr("y2", 0
+	      }).attr("y2", 0);
 
 	      // exit
-	      );lines.exit().remove();
+	      lines.exit().remove();
 	    } else {
 	      gridLineG.selectAll("line").remove();
 	    }
@@ -11336,10 +11337,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        gridLineG = g.insert("g", ":first-child").attr("class", GRID_LINE_CLASS + " " + HORIZONTAL_CLASS).attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")");
 	      }
 
-	      var lines = gridLineG.selectAll("line").data(ticks
+	      var lines = gridLineG.selectAll("line").data(ticks);
 
 	      // enter
-	      );var linesGEnter = lines.enter().append("line").attr("x1", 1).attr("y1", function (d) {
+	      var linesGEnter = lines.enter().append("line").attr("x1", 1).attr("y1", function (d) {
 	        return scale(d);
 	      }).attr("x2", _chart.xAxisLength()).attr("y2", function (d) {
 	        return scale(d);
@@ -11349,17 +11350,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        transitionDuration = _chart.transitionDuration();
 	      }
 
-	      (0, _core.transition)(linesGEnter, transitionDuration).attr("opacity", 1
+	      (0, _core.transition)(linesGEnter, transitionDuration).attr("opacity", 1);
 
 	      // update
-	      );(0, _core.transition)(lines, transitionDuration).attr("x1", 1).attr("y1", function (d) {
+	      (0, _core.transition)(lines, transitionDuration).attr("x1", 1).attr("y1", function (d) {
 	        return scale(d);
 	      }).attr("x2", _chart.xAxisLength()).attr("y2", function (d) {
 	        return scale(d);
-	      }
+	      });
 
 	      // exit
-	      );lines.exit().remove();
+	      lines.exit().remove();
 	    } else {
 	      gridLineG.selectAll("line").remove();
 	    }
@@ -11789,9 +11790,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            filterObj.py = py;
 	            shapes.forEach(function (shape) {
 	              if (shape instanceof LatLonCircle) {
-	                var pos = shape.getWorldPosition
+	                var pos = shape.getWorldPosition();
 	                // convert from mercator to lat-lon
-	                ();LatLonUtils.conv900913To4326(pos, pos);
+	                LatLonUtils.conv900913To4326(pos, pos);
 	                var meters = shape.radius * 1000;
 	                filterObj.shapeFilters.push("DISTANCE_IN_METERS(" + pos[0] + ", " + pos[1] + ", " + px + ", " + py + ") < " + meters);
 	              } else if (shape instanceof MapdDraw.Circle) {
@@ -11987,7 +11988,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // make sure all buttons and events are deactivated when resizing
 	      // so shape creation/modification events aren't unintentionally
 	      // triggered
-	      buttonController.deactivateButtons
+	      buttonController.deactivateButtons();
 
 	      // NOTE: in the scatterplot case, there's no guarantee that the parent div will have been properly
 	      // resized by the time we reach here. Getting the effectiveWidth of the chart is a safer
@@ -11995,7 +11996,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Do we need to be concerned with margins/padding on the div? I don't believe we
 	      // do since we're only setting the viewport here, which should cover the entire
 	      // width/height of the canvas.
-	      ();var widthToUse = typeof chart.effectiveWidth === "function" ? chart.effectiveWidth() : parent.offsetWidth;
+	      var widthToUse = typeof chart.effectiveWidth === "function" ? chart.effectiveWidth() : parent.offsetWidth;
 	      var heightToUse = typeof chart.effectiveHeight === "function" ? chart.effectiveHeight() : parent.offsetHeight;
 	      drawEngine.viewport = [0, 0, widthToUse, heightToUse];
 	      updateDraw();
@@ -12247,8 +12248,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    _sampling = isSetting;
 	    if (_sampling === false) {
-	      _chart.dimension().samplingRatio(null // unset sampling
-	      );
+	      _chart.dimension().samplingRatio(null); // unset sampling
 	    }
 	    return _chart;
 	  };
@@ -12317,9 +12317,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var pixelRatio = _chart._getPixelRatio() || 1;
 	    var pixel = new TPixel({ x: Math.round(point.x * pixelRatio), y: Math.round((height - point.y) * pixelRatio) });
 	    var tableName = _chart.tableName();
-	    var columns = getColumnsWithPoints
+	    var columns = getColumnsWithPoints();
 	    // TODO best to fail, skip cb, or call cb wo args?
-	    ();if (!point || !tableName || !columns.length || columns.length === 3 && hideColorColumnInPopup()) {
+	    if (!point || !tableName || !columns.length || columns.length === 3 && hideColorColumnInPopup()) {
 	      return;
 	    }
 	    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, { table: columns }, [function (results) {
@@ -12719,9 +12719,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /* OVERRIDE ---------------------------------------------------------------- */
 	    // WARNING: probably destroys stack functionality: find workaround
-	    var preValues = _chart.dataCache != null ? _chart.dataCache : layer.group.all
+	    var preValues = _chart.dataCache != null ? _chart.dataCache : layer.group.all();
 	    // layer.values = layer.group.all().map(function (d, i) {
-	    ();layer.values = preValues.map(function (d, i) {
+	    layer.values = preValues.map(function (d, i) {
 	      return {
 	        x: _chart.keyAccessor()(d, i),
 	        y: layer.hidden ? null : valAccessor(d, i) || 0,
@@ -12730,9 +12730,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        layer: layer.name,
 	        hidden: layer.hidden
 	      };
-	    }
+	    });
 	    /* ------------------------------------------------------------------------- */
-	    );layer.values = layer.values.filter(domainFilter());
+	    layer.values = layer.values.filter(domainFilter());
 	    return layer.values;
 	  }
 
@@ -12820,7 +12820,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _chart.valueAccessor(f);
 	    }
 	    return _chart._group(g, n);
-	  }
+	  });
 
 	  /**
 	   * Allow named stacks to be hidden or shown by clicking on legend items.
@@ -12832,7 +12832,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Boolean}
 	   * @return {dc.stackMixin}
 	   */
-	  );_chart.hidableStacks = function (hidableStacks) {
+	  _chart.hidableStacks = function (hidableStacks) {
 	    if (!arguments.length) {
 	      return _hidableStacks;
 	    }
@@ -12891,10 +12891,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else {
 	        return p.y;
 	      }
-	    }
+	    });
 	    /* ------------------------------------------------------------------------- */
 
-	    );return _utils.utils.subtract(min, _chart.yAxisPadding());
+	    return _utils.utils.subtract(min, _chart.yAxisPadding());
 	  };
 
 	  _chart.yAxisMax = function () {
@@ -12968,7 +12968,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _titles[stackName] = titleAccessor;
 
 	    return _chart;
-	  }
+	  });
 
 	  /**
 	   * Gets or sets the stack layout algorithm, which computes a baseline for each stack and
@@ -12981,7 +12981,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Function}
 	   * @return {dc.stackMixin}
 	   */
-	  );_chart.stackLayout = function (stack) {
+	  _chart.stackLayout = function (stack) {
 	    if (!arguments.length) {
 	      return _stackLayout;
 	    }
@@ -14038,7 +14038,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  (0, _core.override)(_chart, "onClick", function (d) {
 	    _chart._onClick(d.data);
-	  }
+	  });
 
 	  /**
 	   * Get or set the spacing between bars as a fraction of bar size. Valid values are between 0-1.
@@ -14052,7 +14052,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Number}
 	   * @return {dc.barChart}
 	   */
-	  );_chart.barPadding = function (barPadding) {
+	  _chart.barPadding = function (barPadding) {
 	    if (!arguments.length) {
 	      return _chart._rangeBandPadding();
 	    }
@@ -14425,9 +14425,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      path.attr("stroke-dasharray", _dashStyle);
 	    }
 
-	    (0, _core.transition)(layers.select("path.line"), _chart.transitionDuration()
+	    (0, _core.transition)(layers.select("path.line"), _chart.transitionDuration())
 	    // .ease('linear')
-	    ).attr("stroke", colors).attr("d", function (d) {
+	    .attr("stroke", colors).attr("d", function (d) {
 	      return safeD(line(d.values));
 	    });
 	  }
@@ -14449,9 +14449,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return safeD(area(d.values));
 	      });
 
-	      (0, _core.transition)(layers.select("path.area"), _chart.transitionDuration()
+	      (0, _core.transition)(layers.select("path.area"), _chart.transitionDuration())
 	      // .ease('linear')
-	      ).attr("fill", colors).attr("d", function (d) {
+	      .attr("fill", colors).attr("d", function (d) {
 	        return safeD(area(d.values));
 	      });
 	    }
@@ -14911,8 +14911,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // eslint-disable-line no-negated-condition
 	      return _chart.dataCache;
 	    } else {
-	      console.log("Warning: Deprecate sync method .data()" // eslint-disable-line no-console
-	      );return group.all();
+	      console.log("Warning: Deprecate sync method .data()"); // eslint-disable-line no-console
+	      return group.all();
 	    }
 	  });
 
@@ -14983,8 +14983,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _chart.redrawGroup = function () {
 	    function logRedrawGroupError(e) {
 	      if ((0, _core.logging)()) {
-	        console.log("Redraw Group Error", e // eslint-disable-line no-console
-	        );
+	        console.log("Redraw Group Error", e); // eslint-disable-line no-console
 	      }
 	    }
 
@@ -15311,13 +15310,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utilsVega = __webpack_require__(24);
 
+	var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
+	var AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0];
+	var AUTOSIZE_RANGE_MININUM = [1, 1];
+	var SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000;
+
 	function rasterLayerPointMixin(_layer) {
 	  _layer.xDim = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
-	  _layer.yDim = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null
+	  _layer.yDim = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
 
 	  // NOTE: builds _layer.defaultSize(), _layer.nullSize(),
 	  //              _layer.sizeScale(), & _layer.sizeAttr()
-	  );(0, _utilsVega.createVegaAttrMixin)(_layer, "size", 3, 1, true);
+	  (0, _utilsVega.createVegaAttrMixin)(_layer, "size", 3, 1, true);
 
 	  _layer.dynamicSize = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
 
@@ -15392,10 +15396,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            domain: sizeScale.domain(),
 	            range: scaleRange,
 	            clamp: true
-	          }
+	          });
 
 	          // TODO(croot): do additional dynamic sizing here?
-	          );markPropObj.size = { scale: sizeScaleName, field: sizeAttr };
+	          markPropObj.size = { scale: sizeScaleName, field: sizeAttr };
 	        } else if (sizeAttr) {
 	          // TODO(croot): do dynamic additional dynamic sizing?
 	          var sizeAttrType = typeof sizeAttr === "undefined" ? "undefined" : _typeof(sizeAttr);
@@ -15410,7 +15414,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else if (_layer.dynamicSize() !== null && _layer.sampling() && (0, _coreAsync.lastFilteredSize)(group.getCrossfilterId()) !== undefined) {
 	          // @TODO don't tie this to sampling - meaning having a dynamicSize will also require count to be computed first by dc
 	          var cap = _layer.cap();
-	          markPropObj.size = Math.round(_layer.dynamicSize()(Math.min((0, _coreAsync.lastFilteredSize)(group.getCrossfilterId()), cap)) * pixelRatio);
+	          var size = Math.min((0, _coreAsync.lastFilteredSize)(group.getCrossfilterId()), cap);
+
+	          var dynamicRScale = d3.scale.sqrt().domain(AUTOSIZE_DOMAIN_DEFAULTS).range(size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM ? AUTOSIZE_RANGE_MININUM : AUTOSIZE_RANGE_DEFAULTS).clamp(true);
+
+	          _layer.dynamicSize(dynamicRScale);
+
+	          markPropObj.size = Math.round(dynamicRScale(size) * pixelRatio);
 	        } else {
 	          markPropObj.size = _layer.defaultSize() * pixelRatio;
 	        }
@@ -15897,12 +15907,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColsSet) {
-	    popupColsSet.add(polyTableGeomColumns.verts // add the poly geometry to the query
-	    );popupColsSet.add(polyTableGeomColumns.linedrawinfo // need to get the linedrawinfo beause there can be
+	    popupColsSet.add(polyTableGeomColumns.verts); // add the poly geometry to the query
+	    popupColsSet.add(polyTableGeomColumns.linedrawinfo); // need to get the linedrawinfo beause there can be
 	    // multiple polys per row, and linedrawinfo will
 	    // tell us this
 
-	    );if (_vega && _vega.mark && _vega.mark.properties) {
+	    if (_vega && _vega.mark && _vega.mark.properties) {
 	      for (var rndrProp in _renderProps) {
 	        // x & y are implied, and are added by the verts and linedrawinfo
 	        // so don't need to add those here
@@ -16084,9 +16094,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (_scaledPopups[chart]) {
 	        mapPoly.classed("removePoly", true);
 	      } else {
-	        mapPoly.classed("fadeOutPoly", true
+	        mapPoly.classed("fadeOutPoly", true);
 	        // mapPoly.attr('transform', 'scale(0, 0)');
-	        );
 	      }
 
 	      if (hideCallback) {
@@ -26748,20 +26757,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    itemEnter.append("div").attr("class", "legend-swatch").style("background-color", function (d) {
 	      return d ? d.color : "#e2e2e2";
-	    } // eslint-disable-line no-confusing-arrow
+	    }); // eslint-disable-line no-confusing-arrow
 
-	    );itemEnter.append("div").attr("class", "legend-label").append("span").text(function (d) {
+	    itemEnter.append("div").attr("class", "legend-label").append("span").text(function (d) {
 	      return d ? d.value : 0;
-	    } // eslint-disable-line no-confusing-arrow
+	    }); // eslint-disable-line no-confusing-arrow
 
-	    );legendGroup.selectAll(".legend-item:first-child , .legend-item:last-child").on("mouseenter", function () {
+	    legendGroup.selectAll(".legend-item:first-child , .legend-item:last-child").on("mouseenter", function () {
 	      var item = _d2.default.select(this);
 	      var w = item.select("span").node().getBoundingClientRect().width + OFFSET_WIDTH;
 	      item.select(".legend-input input").style("width", w + "px");
 	    }).selectAll(".legend-label").append("div").attr("class", "legend-input").append("input").attr("value", function (d) {
 	      return d ? d.value : 0;
-	    } // eslint-disable-line no-confusing-arrow
-	    ).on("click", function () {
+	    }) // eslint-disable-line no-confusing-arrow
+	    .on("click", function () {
 	      this.select();
 	      var item = _d2.default.select(this.parentNode.parentNode);
 	      item.classed("active", true);
@@ -27070,10 +27079,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {dc.boxPlot}
 	 */
 	function boxPlot(parent, chartGroup) {
-	  var _chart = (0, _coordinateGridMixin2.default)({}
+	  var _chart = (0, _coordinateGridMixin2.default)({});
 
 	  // Returns a function to compute the interquartile range.
-	  );function DEFAULT_WHISKERS_IQR(k) {
+	  function DEFAULT_WHISKERS_IQR(k) {
 	    return function (d) {
 	      var q1 = d.quartiles[0],
 	          q3 = d.quartiles[2],
@@ -27106,16 +27115,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  // default padding to handle min/max whisker text
-	  _chart.yAxisPadding(12
+	  _chart.yAxisPadding(12);
 
 	  // default to ordinal
-	  );_chart.x(_d2.default.scale.ordinal());
-	  _chart.xUnits(_core.units.ordinal
+	  _chart.x(_d2.default.scale.ordinal());
+	  _chart.xUnits(_core.units.ordinal);
 
 	  // valueAccessor should return an array of values that can be coerced into numbers
 	  // or if data is overloaded for a static array of arrays, it should be `Number`.
 	  // Empty arrays are not included.
-	  );_chart.data(function (group) {
+	  _chart.data(function (group) {
 	    return group.all().map(function (d) {
 	      d.map = function (accessor) {
 	        return accessor.call(d, d);
@@ -27125,7 +27134,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var values = _chart.valueAccessor()(d);
 	      return values.length !== 0;
 	    });
-	  }
+	  });
 
 	  /**
 	   * Get or set the spacing between boxes as a fraction of box size. Valid values are within 0-1.
@@ -27139,8 +27148,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Number}
 	   * @return {dc.boxPlot}
 	   */
-	  );_chart.boxPadding = _chart._rangeBandPadding;
-	  _chart.boxPadding(0.8
+	  _chart.boxPadding = _chart._rangeBandPadding;
+	  _chart.boxPadding(0.8);
 
 	  /**
 	   * Get or set the outer padding on an ordinal box chart. This setting has no effect on non-ordinal charts
@@ -27153,8 +27162,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Number}
 	   * @return {dc.boxPlot}
 	   */
-	  );_chart.outerPadding = _chart._outerRangeBandPadding;
-	  _chart.outerPadding(0.5
+	  _chart.outerPadding = _chart._outerRangeBandPadding;
+	  _chart.outerPadding(0.5);
 
 	  /**
 	   * Get or set the numerical width of the boxplot box. The width may also be a function taking as
@@ -27172,7 +27181,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Number|Function}
 	   * @return {dc.boxPlot}
 	   */
-	  );_chart.boxWidth = function (boxWidth) {
+	  _chart.boxWidth = function (boxWidth) {
 	    if (!arguments.length) {
 	      return _boxWidth;
 	    }
@@ -27629,13 +27638,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return _d2.default.descending(radiusAccessor(a), radiusAccessor(b));
 	      });
 	    }
-	    var bubbleG = _chart.chartBodyG().selectAll("g." + _chart.BUBBLE_NODE_CLASS
+	    var bubbleG = _chart.chartBodyG().selectAll("g." + _chart.BUBBLE_NODE_CLASS)
 
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    ).data(data
+	    .data(data);
 	    /* --------------------------------------------------------------------------*/
 
-	    );if (_sortBubbleSize) {
+	    if (_sortBubbleSize) {
 	      // Call order here to update dom order based on sort
 	      bubbleG.order();
 	    }
@@ -27661,17 +27670,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _chart.showPopup(d, i);
 	    }, 250);
 
-	    bubbleGEnter.attr("class", _chart.BUBBLE_NODE_CLASS).attr("transform", bubbleLocator
+	    bubbleGEnter.attr("class", _chart.BUBBLE_NODE_CLASS).attr("transform", bubbleLocator)
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    ).on("mouseover", function (d, i) {
+	    .on("mouseover", function (d, i) {
 	      if (JSON.stringify(_isHoverNode) !== JSON.stringify(d)) {
 	        debouncePopUp(d, i, this);
 	        _chart.hidePopup();
 	      }
-	    }
+	    });
 	    /* --------------------------------------------------------------------------*/
 
-	    );(0, _core.transition)(bubbleG, _chart.transitionDuration()).selectAll("circle." + _chart.BUBBLE_CLASS).attr("r", function (d) {
+	    (0, _core.transition)(bubbleG, _chart.transitionDuration()).selectAll("circle." + _chart.BUBBLE_CLASS).attr("r", function (d) {
 	      return _chart.bubbleR(d);
 	    }).attr("opacity", function (d) {
 	      return _chart.bubbleR(d) > 0 ? 1 : 0;
@@ -27683,13 +27692,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function updateNodes(bubbleG) {
-	    (0, _core.transition)(bubbleG, _chart.transitionDuration()).attr("transform", bubbleLocator
+	    (0, _core.transition)(bubbleG, _chart.transitionDuration()).attr("transform", bubbleLocator)
 
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    ).select("circle." + _chart.BUBBLE_CLASS
+	    .select("circle." + _chart.BUBBLE_CLASS)
 	    /* --------------------------------------------------------------------------*/
 
-	    ).attr("fill", _chart.getColor).attr("r", function (d) {
+	    .attr("fill", _chart.getColor).attr("r", function (d) {
 	      return _chart.bubbleR(d);
 	    }).attr("opacity", function (d) {
 	      return _chart.bubbleR(d) > 0 ? 1 : 0;
@@ -27815,10 +27824,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  /* OVERRIDE -----------------------------------------------------------------*/
-	  var _chart = (0, _bubbleMixin2.default)((0, _capMixin2.default)((0, _baseMixin2.default)({}))
+	  var _chart = (0, _bubbleMixin2.default)((0, _capMixin2.default)((0, _baseMixin2.default)({})));
 	  /* --------------------------------------------------------------------------*/
 
-	  );var _g = void 0;
+	  var _g = void 0;
 	  var _points = [];
 
 	  /* OVERRIDE EXTEND ----------------------------------------------------------*/
@@ -27841,15 +27850,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _chart;
 	  };
 
-	  _chart.transitionDuration(0
+	  _chart.transitionDuration(0);
 	  /* --------------------------------------------------------------------------*/
 
-	  );_chart.radiusValueAccessor(function (d) {
+	  _chart.radiusValueAccessor(function (d) {
 	    return d.value;
-	  }
+	  });
 
 	  /* OVERRIDE EXTEND ----------------------------------------------------------*/
-	  );_chart.r(_d2.default.scale.sqrt());
+	  _chart.r(_d2.default.scale.sqrt());
 
 	  _chart.bounds = null;
 	  _chart.savedData = [];
@@ -27944,14 +27953,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /* --------------------------------------------------------------------------*/
 
 	  _chart._doRender = function () {
-	    _g = initOverlayG
+	    _g = initOverlayG();
 
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    ();_g.selectAll("g").remove();
-	    _chart.plotData
+	    _g.selectAll("g").remove();
+	    _chart.plotData();
 	    /* --------------------------------------------------------------------------*/
 
-	    ();_chart.fadeDeselectedArea();
+	    _chart.fadeDeselectedArea();
 
 	    return _chart;
 	  };
@@ -28098,10 +28107,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _chart._doRedraw = function () {
 
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    _chart.plotData
+	    _chart.plotData();
 	    /* --------------------------------------------------------------------------*/
 
-	    ();_chart.fadeDeselectedArea();
+	    _chart.fadeDeselectedArea();
 	    return _chart;
 	  };
 
@@ -28118,10 +28127,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    bubbleG.attr("transform", function (d) {
 	      return "translate(" + d.xPixel + "," + d.yPixel + ")";
-	    }
+	    });
 	    /* --------------------------------------------------------------------------*/
-
-	    );
 	  }
 
 	  _chart.debug = function (flag) {
@@ -28333,9 +28340,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _pixelRatio;
 	  };
 
-	  _chart.colors("#22A7F0" // set constant as picton blue as default
+	  _chart.colors("#22A7F0"); // set constant as picton blue as default
 
-	  );function getXYRange() {
+	  function getXYRange() {
 	    if (_useMap) {
 	      return Promise.resolve();
 	    }
@@ -28668,8 +28675,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    tagElems.exit().remove();
 	    tagElems.style("font-size", function (d) {
 	      return d.size + "px";
-	    }).style("font-family", "Impact").style("fill", _chart.getColor // function(d, i) { return fill(i); })
-	    ).style("cursor", "pointer").attr("text-anchor", "middle").attr("transform", function (d) {
+	    }).style("font-family", "Impact").style("fill", _chart.getColor) // function(d, i) { return fill(i); })
+	    .style("cursor", "pointer").attr("text-anchor", "middle").attr("transform", function (d) {
 	      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
 	    }).text(function (d) {
 	      return d.key0;
@@ -28709,8 +28716,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _g = _chart.svg().append("g").attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")");
 
 	    if (_noRelayout) {
-	      cloudDraw(_tags // skip layout so tags remain in place
-	      );_noRelayout = false;
+	      cloudDraw(_tags); // skip layout so tags remain in place
+	      _noRelayout = false;
 	    } else {
 	      drawChart();
 	    }
@@ -29496,7 +29503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    (0, _coreAsync.groupAll)(group);
 	    return _chart._group(group, name);
-	  }
+	  });
 	  /**
 	   * Gets or sets an optional object specifying HTML templates to use depending how many items are
 	   * selected. The text `%total-count` will replaced with the total number of records, and the text
@@ -29515,7 +29522,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {{some:String, all: String}}
 	   * @return {dc.dataCount}
 	   */
-	  );_chart.html = function (options) {
+	  _chart.html = function (options) {
 	    if (!arguments.length) {
 	      return _html;
 	    }
@@ -29555,16 +29562,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }).catch(function (error) {
 	      callbacks(error);
 	    });
-	  }
+	  });
 	  /* ------------------------------------------------------------------------- */
 
-	  );_chart._doRender = function () {
+	  _chart._doRender = function () {
 	    // ok to call size b/c will hit cache every time
 	    var tot = _chart.dimension().size();
-	    _chart.root().style("width", "auto").style("height", "auto"
+	    _chart.root().style("width", "auto").style("height", "auto");
 
 	    /* OVERRIDE ---------------------------------------------------------------- */
-	    );var val = null;
+	    var val = null;
 	    if (_chart.dataCache != null) {
 	      val = _chart.dataCache;
 	    } else {
@@ -29580,13 +29587,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else if (_html.some !== "") {
 	      _chart.root().html(_html.some.replace("%total-count", all).replace("%filter-count", selected));
 	    } else {
-	      _chart.selectAll(".total-count").text(all
+	      _chart.selectAll(".total-count").text(all);
 
 	      /* OVERRIDE ---------------------------------------------------------------- */
-	      );_chart.selectAll(".filter-count").classed("dark-text", all !== selected).text(selected
+	      _chart.selectAll(".filter-count").classed("dark-text", all !== selected).text(selected);
 	      /* ------------------------------------------------------------------------- */
-
-	      );
 	    }
 	    return _chart;
 	  };
@@ -29926,8 +29931,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _chart._doColumnValueFormat = function (v, d) {
 	    return typeof v === "function" ? v(d) : // v as function
 	    typeof v === "string" ? d[v] : // v is field name string
-	    v.format(d // v is Object, use fn (element 2)
-	    );
+	    v.format(d) // v is Object, use fn (element 2)
+	    ;
 	  };
 
 	  _chart._doColumnHeaderFormat = function (d) {
@@ -29976,15 +29981,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // ensure one thead
 	      var thead = _chart.selectAll("thead").data([0]);
 	      thead.enter().append("thead");
-	      thead.exit().remove
+	      thead.exit().remove();
 
 	      // with one tr
-	      ();var headrow = thead.selectAll("tr").data([0]);
+	      var headrow = thead.selectAll("tr").data([0]);
 	      headrow.enter().append("tr");
-	      headrow.exit().remove
+	      headrow.exit().remove();
 
 	      // with a th for each column
-	      ();var headcols = headrow.selectAll("th").data(_columns);
+	      var headcols = headrow.selectAll("th").data(_columns);
 	      headcols.enter().append("th");
 	      headcols.exit().remove();
 
@@ -30326,10 +30331,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _chart.colorAccessor(function (d) {
 	    return d || 0;
-	  }
+	  });
 
 	  /* OVERRIDE -----------------------------------------------------------------*/
-	  );_chart.accent = accentPoly;
+	  _chart.accent = accentPoly;
 	  _chart.unAccent = unAccentPoly;
 
 	  var _hasBeenRendered = false;
@@ -30394,12 +30399,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  _chart._doRender = function (d) {
-	    _chart.resetSvg // will use map mixin reset svg if we inherit map mixin
-	    ();for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
-	      var states = _chart.svg().append("g").attr("class", "layer" + layerIndex
+	    _chart.resetSvg(); // will use map mixin reset svg if we inherit map mixin
+	    for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
+	      var states = _chart.svg().append("g").attr("class", "layer" + layerIndex);
 	      // .attr('transform', 'translate(0, -16)');
 
-	      );var regionG = states.selectAll("g." + geoJson(layerIndex).name).data(geoJson(layerIndex).data).enter().append("g").attr("class", geoJson(layerIndex).name);
+	      var regionG = states.selectAll("g." + geoJson(layerIndex).name).data(geoJson(layerIndex).data).enter().append("g").attr("class", geoJson(layerIndex).name);
 
 	      regionG.append("path").attr("fill", "white").attr("d", _geoPath);
 
@@ -30420,10 +30425,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (isDataLayer(layerIndex)) {
 	      var regionG = renderRegionG(layerIndex);
 
-	      renderPaths(regionG, layerIndex, data
+	      renderPaths(regionG, layerIndex, data);
 
 	      // renderTitle(regionG, layerIndex, data);
-	      );
 	    }
 	  }
 
@@ -30504,22 +30508,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /* OVERRIDE ---------------------------------------------------------------- */
 	    var dragRegion = _d2.default.behavior.drag().on("dragstart", function () {
 	      _d2.default.event.sourceEvent.preventDefault();
-	    }
+	    });
 	    /* ------------------------------------------------------------------------- */
 
-	    );var paths = regionG.select("path").attr("fill", function () {
+	    var paths = regionG.select("path").attr("fill", function () {
 	      var currentFill = _d2.default.select(this).attr("fill");
 	      if (currentFill) {
 	        return currentFill;
 	      }
 	      return "#e2e2e2";
-	    }
+	    })
 	    /* OVERRIDE ---------------------------------------------------------------- */
-	    ).on("mouseenter", function (d, i) {
+	    .on("mouseenter", function (d, i) {
 	      showPopup(d, i, data);
-	    }).on("mousemove", positionPopup).on("mouseleave", hidePopup).call(dragRegion
+	    }).on("mousemove", positionPopup).on("mouseleave", hidePopup).call(dragRegion)
 	    /* ------------------------------------------------------------------------- */
-	    ).on("click", function (d) {
+	    .on("click", function (d) {
 	      return _chart.onClick(d, layerIndex);
 	    });
 
@@ -30537,14 +30541,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function renderTitle(regionG, layerIndex, data) {
 	    if (_chart.renderTitle()) {
 	      regionG.selectAll("title").text(function (d) {
-	        var key = getKey(layerIndex, d
+	        var key = getKey(layerIndex, d);
 
 	        /* OVERRIDE -----------------------------------------------------------------*/
-	        );var value = Number(data[key]).toFixed(2);
-	        return _chart.title()({ key0: key, value: value }
+	        var value = Number(data[key]).toFixed(2);
+	        return _chart.title()({ key0: key, value: value });
 	        /* --------------------------------------------------------------------------*/
-
-	        );
 	      });
 	    }
 	  }
@@ -30973,30 +30975,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return (
 
 	        /* OVERRIDE -----------------------------------------------------------------*/
-	        !_chart.hasFilter([d.key0, d.key1]
-	        /* --------------------------------------------------------------------------*/
-
-	        )
+	        !_chart.hasFilter([d.key0, d.key1])
 	      );
-	    });
+	    }
+	    /* --------------------------------------------------------------------------*/
+
+	    );
 	    _events.events.trigger(function () {
 	      if (unfilteredCellsOnAxis.empty()) {
 	        cellsOnAxis.each(function (d) {
 
 	          /* OVERRIDE -----------------------------------------------------------------*/
-	          _chart.filter([d.key0, d.key1]
+	          _chart.filter([d.key0, d.key1]);
 	          /* --------------------------------------------------------------------------*/
-
-	          );
 	        });
 	      } else {
 	        unfilteredCellsOnAxis.each(function (d) {
 
 	          /* OVERRIDE -----------------------------------------------------------------*/
-	          _chart.filter([d.key0, d.key1]
+	          _chart.filter([d.key0, d.key1]);
 	          /* --------------------------------------------------------------------------*/
-
-	          );
 	        });
 	      }
 
@@ -31071,21 +31069,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  _chart._doRender = function () {
-	    _chart.resetSvg
+	    _chart.resetSvg();
 
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    ();_chart.margins({ top: 8, right: 16, bottom: 0, left: 0 }
+	    _chart.margins({ top: 8, right: 16, bottom: 0, left: 0 });
 	    /* --------------------------------------------------------------------------*/
 
-	    );_chartBody = _chart.svg().append("g").attr("class", "heatmap").attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")"
+	    _chartBody = _chart.svg().append("g").attr("class", "heatmap").attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")");
 
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    );_chartBody.append("g").attr("class", "box-wrapper");
+	    _chartBody.append("g").attr("class", "box-wrapper");
 	    _hasBeenRendered = true;
 
-	    _dockedAxes = _chart.root().append("div").attr("class", "docked-axis-wrapper"
+	    _dockedAxes = _chart.root().append("div").attr("class", "docked-axis-wrapper");
 	    /* --------------------------------------------------------------------------*/
-	    );return _chart._doRedraw();
+	    return _chart._doRedraw();
 	  };
 
 	  _chart._doRedraw = function () {
@@ -31340,10 +31338,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _chart.isSelectedNode = function (d) {
 
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    return _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse
+	    return _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse();
 	    /* --------------------------------------------------------------------------*/
-
-	    ();
 	  };
 
 	  /* OVERRIDE ---------------------------------------------------------------- */
@@ -31857,8 +31853,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _sampling = setting;
 
 	    if (_sampling === false) {
-	      _chart.dimension().samplingRatio(null // unset sampling
-	      );
+	      _chart.dimension().samplingRatio(null); // unset sampling
 	    }
 
 	    return _chart;
@@ -32037,10 +32032,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _minAngleForLabel = DEFAULT_MIN_ANGLE_FOR_LABEL;
 	  var _externalLabelRadius = void 0;
 	  var _drawPaths = false;
-	  var _chart = (0, _capMixin2.default)((0, _colorMixin2.default)((0, _baseMixin2.default)({}))
+	  var _chart = (0, _capMixin2.default)((0, _colorMixin2.default)((0, _baseMixin2.default)({})));
 
 	  /* OVERRIDE ---------------------------------------------------------------- */
-	  );var _pieStyle = void 0; // "pie" or "donut"
+	  var _pieStyle = void 0; // "pie" or "donut"
 	  var _pieSizeThreshold = 480;
 	  var _hasBeenRendered = false;
 	  _chart.redoSelect = highlightFilter;
@@ -32052,7 +32047,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _chart.title(function (d) {
 	    return _chart.cappedKeyAccessor(d) + ": " + _chart.cappedValueAccessor(d);
-	  }
+	  });
 
 	  /**
 	   * Get or set the maximum number of slices the pie chart will generate. The top slices are determined by
@@ -32064,15 +32059,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Number}
 	   * @return {dc.pieChart}
 	   */
-	  );_chart.slicesCap = _chart.cap;
+	  _chart.slicesCap = _chart.cap;
 
 	  _chart.label(_chart.cappedKeyAccessor);
 	  _chart.renderLabel(true);
 
-	  _chart.transitionDuration(350
+	  _chart.transitionDuration(350);
 
 	  /* OVERRIDE ---------------------------------------------------------------- */
-	  );_chart.measureValue = function (d) {
+	  _chart.measureValue = function (d) {
 	    return _utils.utils.formatValue(_chart.cappedValueAccessor(d));
 	  };
 
@@ -32086,10 +32081,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _g = _chart.svg().append("g").attr("class", "pie-wrapper").attr("transform", "translate(" + _chart.cx() + "," + _chart.cy() + ")");
 
-	    drawChart
+	    drawChart();
 
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    ();_hasBeenRendered = true;
+	    _hasBeenRendered = true;
 	    /* --------------------------------------------------------------------------*/
 	    return _chart;
 	  };
@@ -32143,19 +32138,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function createSliceNodes(slices) {
 	    var slicesEnter = slices.enter().append("g").attr("class", function (d, i) {
 	      return _sliceCssClass + " _" + i;
-	    }
+	    })
 	    /* OVERRIDE ---------------------------------------------------------------- */
-	    ).classed("stroke-thick", pieIsBig
+	    .classed("stroke-thick", pieIsBig);
 	    /* ------------------------------------------------------------------------- */
-	    );return slicesEnter;
+	    return slicesEnter;
 	  }
 
 	  function createSlicePath(slicesEnter, arc) {
-	    var slicePath = slicesEnter.append("path").attr("fill", fill).on("click", onClick
+	    var slicePath = slicesEnter.append("path").attr("fill", fill).on("click", onClick)
 	    /* OVERRIDE ---------------------------------------------------------------- */
-	    ).on("mouseenter", showPopup).on("mousemove", positionPopup).on("mouseleave", hidePopup
+	    .on("mouseenter", showPopup).on("mousemove", positionPopup).on("mouseleave", hidePopup)
 	    /* ------------------------------------------------------------------------- */
-	    ).attr("d", function (d, i) {
+	    .attr("d", function (d, i) {
 	      return safeArc(d, i, arc);
 	    });
 
@@ -32175,11 +32170,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function positionLabels(labelsEnter, arc) {
 	    (0, _core.transition)(labelsEnter, _chart.transitionDuration()).attr("transform", function (d) {
 	      return labelPosition(d, arc);
-	    }
+	    });
 
 	    /* OVERRIDE ---------------------------------------------------------------- */
 
-	    );labelsEnter.style("font-size", pieIsBig() ? "14px" : "12px");
+	    labelsEnter.style("font-size", pieIsBig() ? "14px" : "12px");
 
 	    labelsEnter.select(".value-dim").html(function (d) {
 	      return _chart.label()(d.data);
@@ -32217,9 +32212,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      labels.exit().remove();
 
-	      var labelsEnter = labels.enter
+	      var labelsEnter = labels.enter()
 	      /* OVERRIDE ---------------------------------------------------------------- */
-	      ().append("g").attr("class", function (d, i) {
+	      .append("g").attr("class", function (d, i) {
 	        var classes = "pie-label _" + i;
 	        if (_externalLabelRadius) {
 	          classes = classes + " external";
@@ -32227,12 +32222,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return classes;
 	      }).attr("transform", function (d) {
 	        return labelPosition(d, arc);
-	      }
+	      })
 	      /* ------------------------------------------------------------------------- */
-	      ).on("click", onClick
+	      .on("click", onClick);
 
 	      /* OVERRIDE ---------------------------------------------------------------- */
-	      );labelsEnter.append("text").attr("class", "value-dim").attr("dy", _chart.measureLabelsOn() ? "0" : ".4em");
+	      labelsEnter.append("text").attr("class", "value-dim").attr("dy", _chart.measureLabelsOn() ? "0" : ".4em");
 
 	      if (_chart.measureLabelsOn()) {
 	        labelsEnter.append("text").attr("class", "value-measure").attr("dy", "1.2em");
@@ -32286,9 +32281,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function updateLabels(pieData, arc) {
 	    if (_chart.renderLabel()) {
 	      /* OVERRIDE ---------------------------------------------------------------- */
-	      var labels = _g.selectAll("g.pie-label"
+	      var labels = _g.selectAll("g.pie-label")
 	      /* ------------------------------------------------------------------------- */
-	      ).data(pieData);
+	      .data(pieData);
 	      positionLabels(labels, arc);
 	      if (_externalLabelRadius && _drawPaths) {
 	        updateLabelPaths(pieData, arc);
@@ -32445,9 +32440,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function buildArcs() {
 	    /* OVERRIDE ---------------------------------------------------------------- */
-	    return _d2.default.svg.arc().outerRadius(_radius - _externalRadiusPadding).innerRadius(_chart.innerRadius()
+	    return _d2.default.svg.arc().outerRadius(_radius - _externalRadiusPadding).innerRadius(_chart.innerRadius());
 	    /* ------------------------------------------------------------------------- */
-	    );
 	  }
 
 	  function isSelectedSlice(d) {
@@ -32548,9 +32542,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function tweenPie(b) {
 	    /* OVERRIDE ---------------------------------------------------------------- */
-	    b.innerRadius = _chart.innerRadius
+	    b.innerRadius = _chart.innerRadius();
 	    /* ------------------------------------------------------------------------- */
-	    ();var current = this._current;
+	    var current = this._current;
 	    if (isOffCanvas(current)) {
 	      current = { startAngle: 0, endAngle: 0 };
 	    }
@@ -32687,9 +32681,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      centroid = _d2.default.svg.arc().outerRadius(_radius - _externalRadiusPadding + _externalLabelRadius).innerRadius(_radius - _externalRadiusPadding + _externalLabelRadius).centroid(d);
 	    } else {
 	      /* OVERRIDE -----------------------------------------------------------------*/
-	      centroid = labelCentroid(d, arc
+	      centroid = labelCentroid(d, arc);
 	      /* --------------------------------------------------------------------------*/
-	      );
 	    }
 	    if (isNaN(centroid[0]) || isNaN(centroid[1])) {
 	      return "translate(0,0)";
@@ -32806,12 +32799,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  chart.borderWidth = createGetterSetter(chart, 0.5);
 
-	  chart.polyJoin = createGetterSetter(chart, { table: "states", keysColumn: "STATE_ABBR" }, polyJoinValidator
+	  chart.polyJoin = createGetterSetter(chart, { table: "states", keysColumn: "STATE_ABBR" }, polyJoinValidator);
 
 	  // TODO(croot): pixel ratio should probably be configured on the backend
 	  // rather than here to deal with scenarios where data is used directly
 	  // in pixel-space.
-	  );chart.usePixelRatio = function (usePixelRatio) {
+	  chart.usePixelRatio = function (usePixelRatio) {
 	    if (!arguments.length) {
 	      return _usePixelRatio;
 	    }
@@ -33372,10 +33365,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        layerObj[layerName] = layer.getPopupAndRenderColumns(_chart);
 	        ++cnt;
 	      }
-	    }
+	    });
 
 	    // TODO best to fail, skip cb, or call cb wo args?
-	    );if (!cnt) {
+	    if (!cnt) {
 	      return;
 	    }
 
@@ -33660,10 +33653,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      xLabel = root.append("div").attr("class", "x-axis-label");
 	    }
 
-	    xLabel.text(_chart.xAxisLabel()).style("left", _chart.effectiveWidth() / 2 + _chart.margins().left + "px"
+	    xLabel.text(_chart.xAxisLabel()).style("left", _chart.effectiveWidth() / 2 + _chart.margins().left + "px");
 	    /* --------------------------------------------------------------------------*/
 
-	    );(0, _core.transition)(axisG, _chart.transitionDuration()).call(_xAxis);
+	    (0, _core.transition)(axisG, _chart.transitionDuration()).call(_xAxis);
 
 	    _chart.prepareLockAxis("x");
 	  }
@@ -33680,10 +33673,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _chart.title(function (d) {
 	    return _chart.cappedKeyAccessor(d) + ": " + _chart.cappedValueAccessor(d);
-	  }
+	  });
 
 	  /* OVERRIDE ---------------------------------------------------------------- */
-	  );_chart.measureValue = function (d) {
+	  _chart.measureValue = function (d) {
 	    return _utils.utils.formatValue(_chart.cappedValueAccessor(d));
 	  };
 	  /* ------------------------------------------------------------------------- */
@@ -33718,10 +33711,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function drawChart(data) {
 	    /* OVERRIDE -----------------------------------------------------------------*/
 	    var rData = data ? data : _chart.data();
-	    _rowData = _utils.utils.maybeFormatInfinity(rData
+	    _rowData = _utils.utils.maybeFormatInfinity(rData);
 	    /* --------------------------------------------------------------------------*/
 
-	    );drawAxis();
+	    drawAxis();
 	    drawGridLines();
 
 	    var rows = _g.selectAll("g." + _rowCssClass).data(_rowData);
@@ -33831,21 +33824,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function updateLabels(rows) {
 
 	    /* OVERRIDE -----------------------------------------------------------------*/
-	    rows.selectAll("text").style("font-size", _isBigBar ? "14px" : "12px"
+	    rows.selectAll("text").style("font-size", _isBigBar ? "14px" : "12px");
 	    /* --------------------------------------------------------------------------*/
 
-	    );if (_chart.renderLabel()) {
-	      var lab = rows.select("text").attr("x", _labelOffsetX).attr("y", _labelOffsetY).attr("dy", _dyOffset
+	    if (_chart.renderLabel()) {
+	      var lab = rows.select("text").attr("x", _labelOffsetX).attr("y", _labelOffsetY).attr("dy", _dyOffset)
 	      /* OVERRIDE -----------------------------------------------------------------*/
-	      ).attr("dy", isStackLabel() ? "-0.25em" : _dyOffset
+	      .attr("dy", isStackLabel() ? "-0.25em" : _dyOffset)
 	      /* --------------------------------------------------------------------------*/
-	      ).on("click", onClick).attr("class", function (d, i) {
+	      .on("click", onClick).attr("class", function (d, i) {
 	        return _rowCssClass + " _" + i;
-	      }
+	      })
 	      /* OVERRIDE -----------------------------------------------------------------*/
-	      ).classed("value-dim", true
+	      .classed("value-dim", true)
 	      /* --------------------------------------------------------------------------*/
-	      ).html(function (d) {
+	      .html(function (d) {
 	        return _chart.label()(d);
 	      });
 	      (0, _core.transition)(lab, _chart.transitionDuration()).attr("transform", translateX);
@@ -35022,9 +35015,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  chart.changeBinVal = function (val) {
 	    chart.timeBinInputVal(val);
 
-	    var currentStack = chart.stack().slice
+	    var currentStack = chart.stack().slice();
 	    /* istanbul ignore next */
-	    ();
+
 	    var _loop = function _loop(i) {
 	      var binParams = currentStack[i].group.binParams().map(function (binParam, idx) {
 	        if (idx === i && binParam) {
@@ -35039,10 +35032,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          binParam.auto = isAuto;
 	        }
 	        return binParam;
-	      }
+	      });
 
 	      /* istanbul ignore next */
-	      );if (i === 0) {
+	      if (i === 0) {
 	        chart.group(currentStack[i].group.binParams(binParams), currentStack[i].name);
 	      } else {
 	        chart.stack(currentStack[i].group.binParams(binParams), currentStack[i].name, currentStack[i].accessor);
@@ -35098,26 +35091,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	            max = d[n - 1];
 
 	        // Compute quartiles. Must return exactly 3 elements.
-	        var quartileData = d.quartiles = quartiles(d
+	        var quartileData = d.quartiles = quartiles(d);
 
 	        // Compute whiskers. Must return exactly 2 elements, or null.
-	        );var whiskerIndices = whiskers && whiskers.call(this, d, i),
+	        var whiskerIndices = whiskers && whiskers.call(this, d, i),
 	            whiskerData = whiskerIndices && whiskerIndices.map(function (i) {
 	          return d[i];
-	        }
+	        });
 
 	        // Compute outliers. If no whiskers are specified, all data are 'outliers'.
 	        // We compute the outliers as indices, so that we can join across transitions!
-	        );var outlierIndices = whiskerIndices ? _d2.default.range(0, whiskerIndices[0]).concat(_d2.default.range(whiskerIndices[1] + 1, n)) : _d2.default.range(n
+	        var outlierIndices = whiskerIndices ? _d2.default.range(0, whiskerIndices[0]).concat(_d2.default.range(whiskerIndices[1] + 1, n)) : _d2.default.range(n);
 
 	        // Compute the new x-scale.
-	        );var x1 = _d2.default.scale.linear().domain(domain && domain.call(this, d, i) || [min, max]).range([height, 0]
+	        var x1 = _d2.default.scale.linear().domain(domain && domain.call(this, d, i) || [min, max]).range([height, 0]);
 
 	        // Retrieve the old x-scale, if this is an update.
-	        );var x0 = this.__chart__ || _d2.default.scale.linear().domain([0, Infinity]).range(x1.range()
+	        var x0 = this.__chart__ || _d2.default.scale.linear().domain([0, Infinity]).range(x1.range());
 
 	        // Stash the new scale.
-	        );this.__chart__ = x1;
+	        this.__chart__ = x1;
 
 	        // Note: the box, median, and box tick elements are fixed in number,
 	        // so we only have to handle enter and update. In contrast, the outliers
@@ -35147,10 +35140,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return x1(d[0]);
 	        }).attr("y2", function (d) {
 	          return x1(d[1]);
-	        }).remove
+	        }).remove();
 
 	        // Update innerquartile box.
-	        ();var box = g.selectAll("rect.box").data([quartileData]);
+	        var box = g.selectAll("rect.box").data([quartileData]);
 
 	        box.enter().append("rect").attr("class", "box").attr("x", 0).attr("y", function (d) {
 	          return x0(d[2]);
@@ -35166,26 +35159,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return x1(d[2]);
 	        }).attr("height", function (d) {
 	          return x1(d[0]) - x1(d[2]);
-	        }
+	        });
 
 	        // Update median line.
-	        );var medianLine = g.selectAll("line.median").data([quartileData[1]]);
+	        var medianLine = g.selectAll("line.median").data([quartileData[1]]);
 
 	        medianLine.enter().append("line").attr("class", "median").attr("x1", 0).attr("y1", x0).attr("x2", width).attr("y2", x0).transition().duration(duration).attr("y1", x1).attr("y2", x1);
 
-	        medianLine.transition().duration(duration).attr("y1", x1).attr("y2", x1
+	        medianLine.transition().duration(duration).attr("y1", x1).attr("y2", x1);
 
 	        // Update whiskers.
-	        );var whisker = g.selectAll("line.whisker").data(whiskerData || []);
+	        var whisker = g.selectAll("line.whisker").data(whiskerData || []);
 
 	        whisker.enter().insert("line", "circle, text").attr("class", "whisker").attr("x1", 0).attr("y1", x0).attr("x2", width).attr("y2", x0).style("opacity", 1e-6).transition().duration(duration).attr("y1", x1).attr("y2", x1).style("opacity", 1);
 
 	        whisker.transition().duration(duration).attr("y1", x1).attr("y2", x1).style("opacity", 1);
 
-	        whisker.exit().transition().duration(duration).attr("y1", x1).attr("y2", x1).style("opacity", 1e-6).remove
+	        whisker.exit().transition().duration(duration).attr("y1", x1).attr("y2", x1).style("opacity", 1e-6).remove();
 
 	        // Update outliers.
-	        ();var outlier = g.selectAll("circle.outlier").data(outlierIndices, Number);
+	        var outlier = g.selectAll("circle.outlier").data(outlierIndices, Number);
 
 	        outlier.enter().insert("circle", "text").attr("class", "outlier").attr("r", 5).attr("cx", width / 2).attr("cy", function (i) {
 	          return x0(d[i]);
@@ -35199,13 +35192,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        outlier.exit().transition().duration(duration).attr("cy", function (i) {
 	          return x1(d[i]);
-	        }).style("opacity", 1e-6).remove
+	        }).style("opacity", 1e-6).remove();
 
 	        // Compute the tick format.
-	        ();var format = tickFormat || x1.tickFormat(8
+	        var format = tickFormat || x1.tickFormat(8);
 
 	        // Update box ticks.
-	        );var boxTick = g.selectAll("text.box").data(quartileData);
+	        var boxTick = g.selectAll("text.box").data(quartileData);
 
 	        boxTick.enter().append("text").attr("class", "box").attr("dy", ".3em").attr("dx", function (d, i) {
 	          return i & 1 ? 6 : -6;
@@ -35215,12 +35208,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return i & 1 ? "start" : "end";
 	        }).text(format).transition().duration(duration).attr("y", x1);
 
-	        boxTick.transition().duration(duration).text(format).attr("y", x1
+	        boxTick.transition().duration(duration).text(format).attr("y", x1);
 
 	        // Update whisker ticks. These are handled separately from the box
 	        // ticks because they may or may not exist, and we want don't want
 	        // to join box ticks pre-transition with whisker ticks post-.
-	        );var whiskerTick = g.selectAll("text.whisker").data(whiskerData || []);
+	        var whiskerTick = g.selectAll("text.whisker").data(whiskerData || []);
 
 	        whiskerTick.enter().append("text").attr("class", "whisker").attr("dy", ".3em").attr("dx", 6).attr("x", width).attr("y", x0).text(format).style("opacity", 1e-6).transition().duration(duration).attr("y", x1).style("opacity", 1);
 
@@ -35459,8 +35452,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else if (_chart.hasOwnProperty("rangeFocused")) {
 	      dimension.filterMulti(filters, _chart.rangeFocused(), _chart.filtersInverse(), _chart.group().binParams());
 	    } else {
-	      dimension.filterMulti(filters, undefined, _chart.filtersInverse(), _chart.group().binParams() // eslint-disable-line no-undefined
-	      );
+	      dimension.filterMulti(filters, undefined, _chart.filtersInverse(), _chart.group().binParams()); // eslint-disable-line no-undefined
 	    }
 	    return filters;
 	  };
@@ -35776,8 +35768,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (chart.isTargeting()) {
 	        startRange = "%" + (parseFloat(startRange) * PERCENTAGE).toFixed(2);
 	      } else if (chart.colorByExpr() === "count(*)") {
-	        startRange = parseInt(startRange // eslint-disable-line radix
-	        );
+	        startRange = parseInt(startRange); // eslint-disable-line radix
 	      } else {
 	        startRange = parseFloat(startRange).toFixed(2);
 	        startRange = startRange >= LOWER_THAN_START_RANGE ? Math.round(startRange) : startRange;
@@ -36662,10 +36653,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  });
 
-	  _layer.othersGrouper(false // TODO(croot): what does othersGrouper in capMixin do exactly?
+	  _layer.othersGrouper(false); // TODO(croot): what does othersGrouper in capMixin do exactly?
 	  // Always set to false for now, tho user can override.
 
-	  );if (layerType == "points") {
+	  if (layerType == "points") {
 	    _layer = (0, _rasterLayerPointMixin2.default)(_layer);
 	  } else if (layerType == "polys") {
 	    _layer = (0, _rasterLayerPolyMixin2.default)(_layer);
@@ -36677,15 +36668,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // NOTE: builds _layer.defaultFillColor(), _layer.nullFillColor(),
 	  //              _layer.fillColorScale(), & _layer.fillColorAttr()
-	  (0, _utilsVega.createVegaAttrMixin)(_layer, "fillColor", "#22A7F0", "#CACACA", true
+	  (0, _utilsVega.createVegaAttrMixin)(_layer, "fillColor", "#22A7F0", "#CACACA", true);
 
 	  // NOTE: builds _layer.defaultStrokeColor(), _layer.nullStrokeColor(),
 	  //              _layer.strokeColorScale(), & _layer.strokeColorAttr()
-	  );(0, _utilsVega.createVegaAttrMixin)(_layer, "strokeColor", "white", "white", true
+	  (0, _utilsVega.createVegaAttrMixin)(_layer, "strokeColor", "white", "white", true);
 
 	  // NOTE: builds _layer.defaultStrokeWidth(), _layer.nullStrokeWidth(),
 	  //              _layer.strokeWidthScale(), & _layer.strokeWidthAttr()
-	  );(0, _utilsVega.createVegaAttrMixin)(_layer, "strokeWidth", 0, 0, true);
+	  (0, _utilsVega.createVegaAttrMixin)(_layer, "strokeWidth", 0, 0, true);
 
 	  _layer.popupColumns = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, []);
 	  _layer.popupColumnsMapped = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, {});
@@ -36825,8 +36816,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // of popup col attrs to iterate through is small
 	    var dim = _layer.group() || _layer.dimension();
 	    if (dim) {
-	      var projExprs = dim.getProjectOn(true // handles the group and dimension case
-	      );var regex = /^\s*(\S+)\s+as\s+(\S+)/i;
+	      var projExprs = dim.getProjectOn(true); // handles the group and dimension case
+	      var regex = /^\s*(\S+)\s+as\s+(\S+)/i;
 	      var funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i;
 	      for (var i = 0; i < projExprs.length; ++i) {
 	        var projExpr = projExprs[i];
@@ -36916,10 +36907,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    xscale.range([0, width]);
 	    yscale.range([0, height]);
 
-	    var popupData = _layer._displayPopup(chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate
+	    var popupData = _layer._displayPopup(chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate);
 
 	    // restore the original ranges so we don't screw anything else up
-	    );xscale.range(origXRange);
+	    xscale.range(origXRange);
 	    yscale.range(origYRange);
 
 	    var rndrProps = popupData.rndrPropSet;
@@ -37423,10 +37414,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._fireEvent("zoomend", e);
 	      this._fireEvent("moveend", e);
 
-	      this._filterDimensionCB([xmin, xmax], [ymin, ymax]
+	      this._filterDimensionCB([xmin, xmax], [ymin, ymax]);
 
 	      // upon box zoom, elasticity is turned off
-	      );this._chart.elasticX(false);
+	      this._chart.elasticX(false);
 	      this._chart.elasticY(false);
 
 	      var bounds = [[xmin, ymax], [xmax, ymax], [xmax, ymin], [xmin, ymin]];
@@ -37857,10 +37848,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._offset[0] -= deltaX / xBoundsDiff;
 	      this._offset[1] -= deltaY / yBoundsDiff;
 
-	      this._filterDimensionCB([xmin, xmax], [ymin, ymax]
+	      this._filterDimensionCB([xmin, xmax], [ymin, ymax]);
 
 	      // upon pan, elasticity is turned off
-	      );this._chart.elasticX(false);
+	      this._chart.elasticX(false);
 	      this._chart.elasticY(false);
 
 	      this._chart._updateXAndYScales(this._chart.getDataRenderBounds());
@@ -37914,9 +37905,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // calculate px/s velocity & adjust for increased initial animation speed when easing out
 	      var velocity = flingOffset.mult(inertiaLinearity / flingDuration);
-	      var speed = velocity.mag // pixels/sec
+	      var speed = velocity.mag(); // pixels/sec
 
-	      ();if (speed > inertiaMaxSpeed) {
+	      if (speed > inertiaMaxSpeed) {
 	        speed = inertiaMaxSpeed;
 	        velocity._unit()._mult(speed);
 	      }
@@ -37924,11 +37915,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var duration = speed / (inertiaDeceleration * inertiaLinearity);
 	      var offset = velocity.mult(-duration / 2);
 
-	      finish
+	      finish();
 
 	      // TODO(croot):
 	      // Do the animated ease-out of the pan like mapbox
-	      ();
 	    }
 	  }, {
 	    key: "onTouchEnd",
@@ -38171,9 +38161,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function enableInteractionsInternal() {
 	    map.scrollZoom.enable();
-	    map.boxZoom.enable
+	    map.boxZoom.enable();
 	    // NOTE: box zoom must be enabled before dragPan
-	    ();map.dragPan.enable();
+	    map.dragPan.enable();
 	  }
 
 	  function disableInteractionsInternal() {
@@ -38306,10 +38296,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	              var point_lon_radians = center_lon_radians + Math.atan2(Math.sin(degree_radians) * Math.sin(dist_radians) * Math.cos(center_lat_radians), Math.cos(dist_radians) - Math.sin(center_lat_radians) * Math.sin(point_lat_radians));
 	              var point_lat = point_lat_radians * 180 / Math.PI;
 	              var point_lon = point_lon_radians * 180 / Math.PI;
-	              var point = MapdDraw.Point2d.create(point_lon, point_lat
+	              var point = MapdDraw.Point2d.create(point_lon, point_lat);
 
 	              // convert from lon/lat to mercator
-	              );LatLonUtils.conv4326To900913(point, point);
+	              LatLonUtils.conv4326To900913(point, point);
 
 	              MapdDraw.AABox2d.encapsulatePt(this._aabox, this._aabox, point);
 	              this._mercatorPts.push(point);
@@ -38511,12 +38501,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        document.addEventListener("mousemove", this.mousemoveCB);
 	        document.addEventListener("mouseover", this.mouseoverCB);
 	        document.addEventListener("click", this.clickCB);
-	        document.addEventListener("dblclick", this.dblclickCB
+	        document.addEventListener("dblclick", this.dblclickCB);
 
 	        // NOTE: canvas div was setup to be focusable
 	        // and handle keyboard events in initControls()
 	        // function
-	        );this.canvas.addEventListener("keydown", this.keydownCB);
+	        this.canvas.addEventListener("keydown", this.keydownCB);
 	        this.canvas.focus();
 
 	        this.active = true;
@@ -38581,9 +38571,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var currYRange = [bounds[0][1], bounds[2][1]];
 	          var projDims = [0.1 * Math.abs(currXRange[1] - currXRange[0]), 0.1 * Math.abs(currYRange[1] - currYRange[0])];
 	          if (this.useLonLat) {
-	            var pos = shape.getPosition
+	            var pos = shape.getPosition();
 	            // convert from mercator to lat/lon
-	            ();LatLonUtils.conv900913To4326(pos, pos);
+	            LatLonUtils.conv900913To4326(pos, pos);
 
 	            projDims[0] = LatLonUtils.distance_in_meters(pos[0], pos[1], pos[0] + projDims[0], pos[1]) / 1000.0;
 	            projDims[1] = LatLonUtils.distance_in_meters(pos[0], pos[1], pos[0], pos[1] + projDims[1]) / 1000.0;
@@ -38618,10 +38608,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.disableBasemapEvents();
 	      MapdDraw.Point2d.copy(this.startmousepos, this.getRelativeMousePosFromEvent(event));
 	      this.drawEngine.project(this.startmouseworldpos, this.startmousepos);
-	      this.timer = performance.now
+	      this.timer = performance.now();
 
 	      // convert from mercator to lat/lon
-	      ();var selectOpts = {};
+	      var selectOpts = {};
 	      if (this.useLonLat) {
 	        LatLonUtils.conv900913To4326(this.startmouselatlonpos, this.startmouseworldpos);
 
@@ -38761,10 +38751,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var poly = new MapdDraw.Poly(Object.assign({
 	          verts: verts
 	        }, this.defaultStyle));
-	        this.setupFinalShape(poly
+	        this.setupFinalShape(poly);
 
 	        // clear out all other shapes using our destroy method
-	        );this.destroy();
+	        this.destroy();
 	      } else {
 	        this.destroy();
 	        this.enableBasemapEvents();
@@ -38874,9 +38864,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            MapdDraw.Point2d.sub(dir1, pt2, pt1);
 	            MapdDraw.Vec2d.normalize(dir1, dir1);
 	            var dir2 = [0, 0];
-	            MapdDraw.Point2d.sub(dir2, _mousepos, pt2
+	            MapdDraw.Point2d.sub(dir2, _mousepos, pt2);
 	            // MapdDraw.Vec2d.normalize(dir2, dir2)
-	            );var _angle = MapdDraw.Vec2d.angle(dir1, dir2);
+	            var _angle = MapdDraw.Vec2d.angle(dir1, dir2);
 	            _angle = MapdDraw.Math.round(_angle / MapdDraw.Math.QUATER_PI) * MapdDraw.Math.QUATER_PI;
 	            var matrix = MapdDraw.Mat2.create();
 	            MapdDraw.Mat2.fromRotation(matrix, _angle);
@@ -39230,10 +39220,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var canvas = this._drawEngine.getCanvas();
 	        if (event.selectedShapes && event.selectedShapes.length) {
 	          this._chart.hidePopup(true);
-	          this._chart.popupDisplayable(false
+	          this._chart.popupDisplayable(false);
 
 	          // deactivate all map interactions except scroll zoom
-	          );this._chart.enableInteractions(false, {
+	          this._chart.enableInteractions(false, {
 	            scrollZoom: true
 	          });
 
@@ -39297,10 +39287,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._controlContainer.className = "mapd-draw-button-container";
 	      this._container.appendChild(this._controlContainer);
 
-	      var canvas = this._drawEngine.getCanvas
+	      var canvas = this._drawEngine.getCanvas();
 	      // make the canvas focusable so we can catch keyboard events
 	      // from it, but don't outline it when it is focused
-	      ();canvas.setAttribute("tabindex", -1);
+	      canvas.setAttribute("tabindex", -1);
 	      canvas.style.outline = "none";
 
 	      this._controlGroup = document.createElement("div");
@@ -39313,12 +39303,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this._circleHandler = this._createButtonControl("circle", CircleShapeHandler, defaultStyle, defaultSelectStyle);
 	      this._polylineHandler = this._createButtonControl("polyline", PolylineShapeHandler, defaultStyle, defaultSelectStyle);
-	      this._lassoHandler = this._createButtonControl("lasso", LassoShapeHandler, defaultStyle, defaultSelectStyle
+	      this._lassoHandler = this._createButtonControl("lasso", LassoShapeHandler, defaultStyle, defaultSelectStyle);
 
 	      // NOTE: the canvas dom element needs to have a "tabindex" set to have
 	      // focusability, and best to have "outline: none" as part
 	      // of its style so an outline isn't shown when focused
-	      );canvas.addEventListener("keydown", this._keyboardCB);
+	      canvas.addEventListener("keydown", this._keyboardCB);
 
 	      this._controlsInitted = true;
 	    }
@@ -39400,9 +39390,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          var divContainer = document.createElement("div");
 	          divContainer.innerHTML = markupText;
-	          var svgDocElement = divContainer.querySelector("svg"
+	          var svgDocElement = divContainer.querySelector("svg");
 	          // Now take each node, import it and append to this element.
-	          );var childNode = svgDocElement.firstChild;
+	          var childNode = svgDocElement.firstChild;
 	          while (childNode) {
 	            this.appendChild(this.ownerDocument.importNode(childNode, true));
 	            childNode = childNode.nextSibling;
@@ -39411,10 +39401,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          throw e;
 	        }
 	      }
-	    }
+	    });
 
 	    // The innerSVG DOM property for SVGElement.
-	    );Object.defineProperty(SVGElement.prototype, "innerSVG", {
+	    Object.defineProperty(SVGElement.prototype, "innerSVG", {
 	      get: function get() {
 	        return this.innerHTML;
 	      },
