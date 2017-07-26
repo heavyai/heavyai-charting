@@ -313,8 +313,12 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-  _chart.xOriginalDomain = function () {
-    return _xOriginalDomain
+  _chart.xOriginalDomain = function (domain) {
+    if (!arguments.length) {
+      return _xOriginalDomain
+    }
+    _xOriginalDomain = domain
+    return _chart
   }
 
   /**
@@ -533,6 +537,7 @@ export default function coordinateGridMixin (_chart) {
 
     renderVerticalGridLines(g)
     _chart.prepareLabelEdit("x")
+    _chart.prepareLockAxis("x")
   }
 
   _chart.renderXAxis = function (g) {

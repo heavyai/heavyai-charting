@@ -5,6 +5,10 @@ const CHART_HEIGHT = 0.75
 const TOGGLE_SIZE = 24
 const NON_INDEX = -1
 
+function formatVal (val) {
+  return val instanceof Date ? d3.time.format.utc("%m-%d-%Y")(val) : formatDataValue(val)
+}
+
 export default function lockAxisMixin (chart) {
   const events = ["elasticX", "elasticY", "xDomain", "yDomain"]
   const _listeners = d3.dispatch.apply(d3, events)
@@ -34,6 +38,20 @@ export default function lockAxisMixin (chart) {
     _listeners.xDomain(chart, minMax)
   }
 
+  function handleRangeFocus (chart, minMax) {
+    if (chart.filters().length) {
+      if (minMax[0] <= chart.filter()[0] && chart.filter()[1] <= minMax[1]) {
+        const preserveFilter = chart.filter().slice()
+        chart.rangeChart().replaceFilter(minMax)
+        chart.replaceFilter(preserveFilter)
+      } else {
+        chart.rangeChart().replaceFilter(minMax)
+      }
+    } else {
+      chart.rangeChart().filter(minMax)
+    }
+  }
+
   function setAxis (type, minMax) {
     if (type === "y") {
       chart.elasticY(false)
@@ -41,10 +59,24 @@ export default function lockAxisMixin (chart) {
       chart.y().domain(minMax)
       chart._invokeYDomainListener(minMax)
     } else {
+      if (chart.rangeChart && chart.rangeChart()) {
+        return handleRangeFocus(chart, minMax)
+      }
+
       chart.elasticX(false)
       chart._invokeelasticXListener()
       chart.x().domain(minMax)
       chart._invokeXDomainListener(minMax)
+      if (chart.focusChart && chart.focusChart()) {
+        chart.focusChart().elasticX(false)
+        chart.focusChart()._invokeelasticXListener()
+        chart.focusChart()._invokeXDomainListener(minMax)
+        if (!chart.filters().length) {
+          chart.focusChart().x().domain(minMax)
+        }
+        chart.focusChart().xOriginalDomain(minMax)
+        chart.focusChart().renderAsync()
+      }
     }
     chart.renderAsync()
   }
@@ -64,14 +96,28 @@ export default function lockAxisMixin (chart) {
       if (chart.elasticX()) {
         chart._invokeXDomainListener(null)
       } else {
-        chart._invokeXDomainListener(chart.x().domain().slice(0))
+        chart._invokeXDomainListener(chart.x().domain().slice())
+      }
+      if (chart.focusChart && chart.focusChart()) {
+        chart.focusChart().elasticX(!chart.focusChart().elasticX())
+        chart.focusChart()._invokeelasticXListener()
+        if (chart.elasticX()) {
+          chart.focusChart()._invokeXDomainListener(null)
+        } else {
+          chart
+            .focusChart()
+            ._invokeXDomainListener(chart.x().domain().slice())
+        }
+        chart.focusChart().redrawAsync()
       }
     }
     chart.redrawAsync()
   }
 
   function updateMinMax (type, value) {
-    if (value.some(isNaN)) {
+    if (
+      value.some(isNaN) || value[1] <= value[0] || (type === "x" && chart.rangeChart && chart.rangeChart() && (value[0] < chart.rangeChart().x().domain()[0] || value[1] > chart.rangeChart().x().domain()[1]))
+    ) {
       chart.prepareLockAxis(type)
     } else {
       setAxis(type, value)
@@ -79,30 +125,36 @@ export default function lockAxisMixin (chart) {
   }
 
   chart.prepareLockAxis = function (type = "y") {
-    if (chart.focusChart && chart.focusChart()) {
+    if (chart.focusChart && chart.focusChart() && type === "y") {
       return
     }
 
     const iconPosition = {
-      left: type === "y" ? `${chart.margins().left - TOGGLE_SIZE / 2}px` : `${chart.width() - chart.margins().right}px`,
-      top: type === "y" ? `${chart.margins().top - TOGGLE_SIZE}px` : `${chart.height() - chart.margins().bottom}px`
+      left:
+        type === "y" ? `${chart.margins().left - TOGGLE_SIZE / 2}px` : `${chart.width() - chart.margins().right}px`,
+      top:
+        type === "y" ? `${chart.margins().top - TOGGLE_SIZE}px` : `${chart.height() - chart.margins().bottom}px`
     }
 
     const inputsPosition = {
       minLeft: `${chart.margins().left}px`,
       minTop: `${chart.height() - chart.margins().bottom}px`,
-      maxLeft: type === "y" ? `${chart.margins().left}px` : `${chart.width() - chart.margins().right}px`,
-      maxTop: type === "y" ? `${chart.margins().top}px` : `${chart.height() - chart.margins().bottom}px`
+      maxLeft:
+        type === "y" ? `${chart.margins().left}px` : `${chart.width() - chart.margins().right}px`,
+      maxTop:
+        type === "y" ? `${chart.margins().top}px` : `${chart.height() - chart.margins().bottom}px`
     }
 
     const hitBoxDim = {
       top: type === "y" ? 0 : `${chart.height() - chart.margins().bottom}px`,
       left: type === "y" ? 0 : `${chart.margins().left}px`,
-      width: type === "y" ? `${chart.margins().left}px` : `${chart.width() - chart.margins().left}px`,
-      height: type === "y" ? `${chart.height()}px` : `${chart.margins().bottom}px`
+      width:
+        type === "y" ? `${chart.margins().left}px` : `${chart.width() - chart.margins().left}px`,
+      height:
+        type === "y" ? `${chart.height()}px` : `${chart.margins().bottom}px`
     }
 
-    const minMax = chart[type]().domain()
+    const minMax = chart[type]().domain().slice()
 
     chart.root().selectAll(`.axis-lock.type-${type}`).remove()
 
@@ -121,14 +173,18 @@ export default function lockAxisMixin (chart) {
 
     lockWrapper
       .append("div")
-      .attr("class", "lock-toggle")
+      .attr("class", `lock-toggle type-${type}`)
       .classed(
         "is-locked",
-        () => type === "y" ? !chart.elasticY() : !chart.elasticX()
+        () => (type === "y" ? !chart.elasticY() : !chart.elasticX())
       )
       .style("top", iconPosition.top)
       .style("left", iconPosition.left)
       .on("click", () => toggleLock(type))
+
+    if (chart.rangeChart && chart.rangeChart() && type === "x") {
+      lockWrapper.selectAll(".lock-toggle.type-x").remove()
+    }
 
     const axisMax = lockWrapper
       .append("div")
@@ -138,18 +194,16 @@ export default function lockAxisMixin (chart) {
 
     axisMax
       .append("input")
-      .attr("value", formatDataValue(minMax[1]))
+      .attr("value", formatVal(minMax[1]))
       .on("focus", function () {
         this.select()
       })
       .on("change", function () {
-        updateMinMax(type, [
-          minMax[0],
-          parseFloat(this.value.replace(/,/g, ""))
-        ])
+        const val = minMax[1] instanceof Date ? new Date(this.value) : parseFloat(this.value.replace(/,/g, ""))
+        updateMinMax(type, [minMax[0], val])
       })
 
-    axisMax.append("div").text(formatDataValue(minMax[1]))
+    axisMax.append("div").text(formatVal(minMax[1]))
 
     const axisMin = lockWrapper
       .append("div")
@@ -159,18 +213,16 @@ export default function lockAxisMixin (chart) {
 
     axisMin
       .append("input")
-      .attr("value", formatDataValue(minMax[0]))
+      .attr("value", formatVal(minMax[0]))
       .on("focus", function () {
         this.select()
       })
       .on("change", function () {
-        updateMinMax(type, [
-          parseFloat(this.value.replace(/,/g, "")),
-          minMax[1]
-        ])
+        const val = minMax[0] instanceof Date ? new Date(this.value) : parseFloat(this.value.replace(/,/g, ""))
+        updateMinMax(type, [val, minMax[1]])
       })
 
-    axisMin.append("div").text(formatDataValue(minMax[0]))
+    axisMin.append("div").text(formatVal(minMax[0]))
   }
 
   return chart
