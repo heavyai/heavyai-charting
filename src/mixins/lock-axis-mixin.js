@@ -73,13 +73,12 @@ export default function lockAxisMixin (chart) {
         chart.focusChart()._invokeXDomainListener(minMax)
         if (!chart.filters().length) {
           chart.focusChart().x().domain(minMax)
-        } else {
-          chart.focusChart().xOriginalDomain(minMax)
         }
-        chart.focusChart().redrawAsync()
+        chart.focusChart().xOriginalDomain(minMax)
+        chart.focusChart().renderAsync()
       }
     }
-    chart.redrawAsync()
+    chart.renderAsync()
   }
 
   function toggleLock (type) {
