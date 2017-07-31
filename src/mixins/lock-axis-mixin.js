@@ -9,6 +9,14 @@ function formatVal (val) {
   return val instanceof Date ? d3.time.format.utc("%m-%d-%Y")(val) : formatDataValue(val)
 }
 
+function parseFloatStrict (value) {
+  if (/^(\-|\+)?([0-9]+(\.[0-9]+)?)$/.test(value)) {
+    return Number(value)
+  } else {
+    return NaN
+  }
+}
+
 export default function lockAxisMixin (chart) {
   const events = ["elasticX", "elasticY", "xDomain", "yDomain"]
   const _listeners = d3.dispatch.apply(d3, events)
@@ -194,12 +202,13 @@ export default function lockAxisMixin (chart) {
 
     axisMax
       .append("input")
+      .attr("pattern", "[0-9\-]")
       .attr("value", formatVal(minMax[1]))
       .on("focus", function () {
         this.select()
       })
       .on("change", function () {
-        const val = minMax[1] instanceof Date ? new Date(this.value) : parseFloat(this.value.replace(/,/g, ""))
+        const val = minMax[1] instanceof Date ? new Date(this.value) : parseFloatStrict(this.value.replace(/,/g, ""))
         updateMinMax(type, [minMax[0], val])
       })
 
@@ -218,7 +227,7 @@ export default function lockAxisMixin (chart) {
         this.select()
       })
       .on("change", function () {
-        const val = minMax[0] instanceof Date ? new Date(this.value) : parseFloat(this.value.replace(/,/g, ""))
+        const val = minMax[0] instanceof Date ? new Date(this.value) : parseFloatStrict(this.value.replace(/,/g, ""))
         updateMinMax(type, [val, minMax[1]])
       })
 
