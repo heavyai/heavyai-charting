@@ -1,12 +1,22 @@
 import d3 from "d3"
 import {formatDataValue} from "../utils/formatting-helpers"
+import moment from "moment"
 
 const CHART_HEIGHT = 0.75
 const TOGGLE_SIZE = 24
 const NON_INDEX = -1
+const DATE_FORMAT = "MM-DD-YYYY"
 
 function formatVal (val) {
   return val instanceof Date ? d3.time.format.utc("%m-%d-%Y")(val) : formatDataValue(val)
+}
+
+function parseFloatStrict (value) {
+  if (/^(\-|\+)?([0-9]+(\.[0-9]+)?)$/.test(value)) {
+    return Number(value)
+  } else {
+    return NaN
+  }
 }
 
 export default function lockAxisMixin (chart) {
@@ -194,12 +204,13 @@ export default function lockAxisMixin (chart) {
 
     axisMax
       .append("input")
+      .attr("pattern", "[0-9\-]")
       .attr("value", formatVal(minMax[1]))
       .on("focus", function () {
         this.select()
       })
       .on("change", function () {
-        const val = minMax[1] instanceof Date ? new Date(this.value) : parseFloat(this.value.replace(/,/g, ""))
+        const val = minMax[1] instanceof Date ? moment(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""))
         updateMinMax(type, [minMax[0], val])
       })
 
@@ -218,7 +229,7 @@ export default function lockAxisMixin (chart) {
         this.select()
       })
       .on("change", function () {
-        const val = minMax[0] instanceof Date ? new Date(this.value) : parseFloat(this.value.replace(/,/g, ""))
+        const val = minMax[0] instanceof Date ? moment(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""))
         updateMinMax(type, [val, minMax[1]])
       })
 
