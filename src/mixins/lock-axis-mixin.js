@@ -5,6 +5,7 @@ import moment from "moment"
 const CHART_HEIGHT = 0.75
 const TOGGLE_SIZE = 24
 const NON_INDEX = -1
+const RETURN_KEY = 13
 const DATE_FORMAT = "MM-DD-YYYY"
 
 function formatVal (val) {
@@ -213,6 +214,11 @@ export default function lockAxisMixin (chart) {
         const val = minMax[1] instanceof Date ? moment(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""))
         updateMinMax(type, [minMax[0], val])
       })
+      .on("keyup", function () {
+        if (d3.event.keyCode === RETURN_KEY) {
+          this.blur()
+        }
+      })
 
     axisMax.append("div").text(formatVal(minMax[1]))
 
@@ -231,6 +237,11 @@ export default function lockAxisMixin (chart) {
       .on("change", function () {
         const val = minMax[0] instanceof Date ? moment(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""))
         updateMinMax(type, [val, minMax[1]])
+      })
+      .on("keyup", function () {
+        if (d3.event.keyCode === RETURN_KEY) {
+          this.blur()
+        }
       })
 
     axisMin.append("div").text(formatVal(minMax[0]))
