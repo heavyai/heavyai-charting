@@ -7,7 +7,6 @@
 # local files
 node_modules
 bower_components
-docs
 
 # ide files
 *.iml
