@@ -56,8 +56,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 
-	__webpack_require__(181);
-	__webpack_require__(180);
+	__webpack_require__(179);
+	__webpack_require__(178);
 
 /***/ }),
 /* 1 */
@@ -461,7 +461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                module && module.exports) {
 	            try {
 	                oldLocale = globalLocale._abbr;
-	                __webpack_require__(182)("./" + name);
+	                __webpack_require__(180)("./" + name);
 	                // because defineLocale currently also sets the global locale, we
 	                // want to undo that for lazy loaded locales
 	                locale_locales__getSetGlobalLocale(oldLocale);
@@ -4103,7 +4103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _moment;
 
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(185)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(183)(module)))
 
 /***/ }),
 /* 2 */
@@ -4495,9 +4495,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _formattingHelpers = __webpack_require__(9);
 
-	var _datesAndTimes = __webpack_require__(28);
+	var _datesAndTimes = __webpack_require__(26);
 
-	var _deepEqual = __webpack_require__(39);
+	var _deepEqual = __webpack_require__(38);
 
 	var _deepEqual2 = _interopRequireDefault(_deepEqual);
 
@@ -4511,7 +4511,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var dateFormat = exports.dateFormat = _d2.default.time.format("%m/%d/%Y");
 
-	var deepEquals = exports.deepEquals = __webpack_require__(39); // eslint-disable-line global-require
+	var deepEquals = exports.deepEquals = __webpack_require__(38); // eslint-disable-line global-require
 
 	var deepClone = exports.deepClone = function deepClone(obj) {
 	  return JSON.parse(JSON.stringify(obj));
@@ -4872,7 +4872,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _coreAsync = __webpack_require__(6);
 
-	var _asyncMixin = __webpack_require__(30);
+	var _asyncMixin = __webpack_require__(28);
 
 	var _asyncMixin2 = _interopRequireDefault(_asyncMixin);
 
@@ -4886,7 +4886,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _errors = __webpack_require__(29);
+	var _errors = __webpack_require__(27);
 
 	var errors = _interopRequireWildcard(_errors);
 
@@ -4900,13 +4900,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _logger = __webpack_require__(23);
 
-	var _multipleKeyAccessors = __webpack_require__(37);
+	var _multipleKeyAccessors = __webpack_require__(36);
 
-	var _multipleKeyLabelMixin = __webpack_require__(33);
+	var _multipleKeyLabelMixin = __webpack_require__(32);
 
 	var _multipleKeyLabelMixin2 = _interopRequireDefault(_multipleKeyLabelMixin);
 
-	var _spinnerMixin = __webpack_require__(36);
+	var _spinnerMixin = __webpack_require__(35);
 
 	var _spinnerMixin2 = _interopRequireDefault(_spinnerMixin);
 
@@ -7361,7 +7361,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.formatExtractValue = formatExtractValue;
 	exports.normalizeFiltersArray = normalizeFiltersArray;
 
-	var _datesAndTimes = __webpack_require__(28);
+	var _datesAndTimes = __webpack_require__(26);
 
 	var _d = __webpack_require__(2);
 
@@ -7506,8 +7506,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _core = __webpack_require__(3);
 
-	var _utils = __webpack_require__(4);
-
 	var _baseMixin = __webpack_require__(5);
 
 	var _baseMixin2 = _interopRequireDefault(_baseMixin);
@@ -7528,7 +7526,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _filters = __webpack_require__(13);
 
-	var _lockAxisMixin = __webpack_require__(32);
+	var _lockAxisMixin = __webpack_require__(30);
 
 	var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
@@ -7536,28 +7534,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-	var _utils2 = __webpack_require__(4);
-
-	var _rangeMixin = __webpack_require__(172);
-
-	var _rangeMixin2 = _interopRequireDefault(_rangeMixin);
+	var _utils = __webpack_require__(4);
 
 	var _coreAsync = __webpack_require__(6);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	/**
-	 * Coordinate Grid is an abstract base chart designed to support a number of coordinate grid based
-	 * concrete chart types, e.g. bar chart, line chart, and bubble chart.
-	 * @name coordinateGridMixin
-	 * @memberof dc
-	 * @mixin
-	 * @mixes dc.colorMixin
-	 * @mixes dc.marginMixin
-	 * @mixes dc.baseMixin
-	 * @param {Object} _chart
-	 * @return {dc.coordinateGridMixin}
-	 */
+	  * Coordinate Grid is an abstract base chart designed to support a number of coordinate grid based
+	  * concrete chart types, e.g. bar chart, line chart, and bubble chart.
+	  * @name coordinateGridMixin
+	  * @memberof dc
+	  * @mixin
+	  * @mixes dc.colorMixin
+	  * @mixes dc.marginMixin
+	  * @mixes dc.baseMixin
+	  * @param {Object} _chart
+	  * @return {dc.coordinateGridMixin}
+	  */
 
 	var DEFAULT_NUM_TICKS = 10;
 	var MAX_TICK_WIDTH = 64;
@@ -7656,15 +7650,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _useRightYAxis = false;
 
 	  /**
-	   * When changing the domain of the x or y scale, it is necessary to tell the chart to recalculate
-	   * and redraw the axes. (`.rescale()` is called automatically when the x or y scale is replaced
-	   * with {@link #dc.coordinateGridMixin+x .x()} or {@link #dc.coordinateGridMixin+y .y()}, and has
-	   * no effect on elastic scales.)
-	   * @name rescale
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * When changing the domain of the x or y scale, it is necessary to tell the chart to recalculate
+	      * and redraw the axes. (`.rescale()` is called automatically when the x or y scale is replaced
+	      * with {@link #dc.coordinateGridMixin+x .x()} or {@link #dc.coordinateGridMixin+y .y()}, and has
+	      * no effect on elastic scales.)
+	      * @name rescale
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.rescale = function () {
 	    _unitCount = undefined;
 	    _resizing = true;
@@ -7676,34 +7670,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Get or set the range selection chart associated with this instance. Setting the range selection
-	   * chart using this function will automatically update its selection brush when the current chart
-	   * zooms in. In return the given range chart will also automatically attach this chart as its focus
-	   * chart hence zoom in when range brush updates.
-	   * @name rangeChart
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {dc.coordinateGridMixin} [rangeChart]
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Get or set the range selection chart associated with this instance. Setting the range selection
+	      * chart using this function will automatically update its selection brush when the current chart
+	      * zooms in. In return the given range chart will also automatically attach this chart as its focus
+	      * chart hence zoom in when range brush updates.
+	      * @name rangeChart
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {dc.coordinateGridMixin} [rangeChart]
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.rangeChart = function (rangeChart) {
 	    if (!arguments.length) {
 	      return _rangeChart;
 	    }
 	    _rangeChart = rangeChart;
-	    _rangeChart.focusChart(_chart);
+
+	    if (_rangeChart) {
+	      _rangeChart.focusChart(_chart);
+	    }
+
 	    return _chart;
 	  };
 
 	  /**
-	   * Get or set the scale extent for mouse zooms.
-	   * @name zoomScale
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Array<Number|Date>} [extent=[1, Infinity]]
-	   * @return {Array<Number|Date>}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Get or set the scale extent for mouse zooms.
+	      * @name zoomScale
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Array<Number|Date>} [extent=[1, Infinity]]
+	      * @return {Array<Number|Date>}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.zoomScale = function (extent) {
 	    if (!arguments.length) {
 	      return _zoomScale;
@@ -7713,14 +7711,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Get or set the zoom restriction for the chart. If true limits the zoom to origional domain of the chart.
-	   * @name zoomOutRestrict
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Boolean} [zoomOutRestrict=true]
-	   * @return {Boolean}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Get or set the zoom restriction for the chart. If true limits the zoom to origional domain of the chart.
+	      * @name zoomOutRestrict
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Boolean} [zoomOutRestrict=true]
+	      * @return {Boolean}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.zoomOutRestrict = function (zoomOutRestrict) {
 	    if (!arguments.length) {
 	      return _zoomOutRestrict;
@@ -7745,16 +7743,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Get or set the root g element. This method is usually used to retrieve the g element in order to
-	   * overlay custom svg drawing programatically. **Caution**: The root g element is usually generated
-	   * by dc.js internals, and resetting it might produce unpredictable result.
-	   * @name g
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {SVGElement} [gElement]
-	   * @return {SVGElement}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Get or set the root g element. This method is usually used to retrieve the g element in order to
+	      * overlay custom svg drawing programatically. **Caution**: The root g element is usually generated
+	      * by dc.js internals, and resetting it might produce unpredictable result.
+	      * @name g
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {SVGElement} [gElement]
+	      * @return {SVGElement}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.g = function (gElement) {
 	    if (!arguments.length) {
 	      return _g;
@@ -7764,16 +7762,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Set or get mouse zoom capability flag (default: false). When turned on the chart will be
-	   * zoomable using the mouse wheel. If the range selector chart is attached zooming will also update
-	   * the range selection brush on the associated range selector chart.
-	   * @name mouseZoomable
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Boolean} [mouseZoomable=false]
-	   * @return {Boolean}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Set or get mouse zoom capability flag (default: false). When turned on the chart will be
+	      * zoomable using the mouse wheel. If the range selector chart is attached zooming will also update
+	      * the range selection brush on the associated range selector chart.
+	      * @name mouseZoomable
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Boolean} [mouseZoomable=false]
+	      * @return {Boolean}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.mouseZoomable = function (mouseZoomable) {
 	    if (!arguments.length) {
 	      return _mouseZoomable;
@@ -7783,13 +7781,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Retrieve the svg group for the chart body.
-	   * @name chartBodyG
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {SVGElement} [chartBodyG]
-	   * @return {SVGElement}
-	   */
+	      * Retrieve the svg group for the chart body.
+	      * @name chartBodyG
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {SVGElement} [chartBodyG]
+	      * @return {SVGElement}
+	      */
 	  _chart.chartBodyG = function (chartBodyG) {
 	    if (!arguments.length) {
 	      return _chartBodyG;
@@ -7799,24 +7797,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * **mandatory**
-	   *
-	   * Get or set the x scale. The x scale can be any d3
-	   * {@link https://github.com/mbostock/d3/wiki/Quantitative-Scales quantitive scale} or
-	   * {@link https://github.com/mbostock/d3/wiki/Ordinal-Scales ordinal scale}.
-	   * @name x
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
-	   * @example
-	   * // set x to a linear scale
-	   * chart.x(d3.scale.linear().domain([-2500, 2500]))
-	   * // set x to a time scale to generate histogram
-	   * chart.x(d3.time.scale().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
-	   * @param {d3.scale} [xScale]
-	   * @return {d3.scale}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * **mandatory**
+	      *
+	      * Get or set the x scale. The x scale can be any d3
+	      * {@link https://github.com/mbostock/d3/wiki/Quantitative-Scales quantitive scale} or
+	      * {@link https://github.com/mbostock/d3/wiki/Ordinal-Scales ordinal scale}.
+	      * @name x
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
+	      * @example
+	      * // set x to a linear scale
+	      * chart.x(d3.scale.linear().domain([-2500, 2500]))
+	      * // set x to a time scale to generate histogram
+	      * chart.x(d3.time.scale().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
+	      * @param {d3.scale} [xScale]
+	      * @return {d3.scale}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.x = function (xScale) {
 	    if (!arguments.length) {
 	      return _x;
@@ -7827,44 +7825,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _chart;
 	  };
 
-	  _chart.xOriginalDomain = function () {
-	    return _xOriginalDomain;
+	  _chart.xOriginalDomain = function (domain) {
+	    if (!arguments.length) {
+	      return _xOriginalDomain;
+	    }
+	    _xOriginalDomain = domain;
+	    return _chart;
 	  };
 
 	  /**
-	   * Set or get the xUnits function. The coordinate grid chart uses the xUnits function to calculate
-	   * the number of data projections on x axis such as the number of bars for a bar chart or the
-	   * number of dots for a line chart. This function is expected to return a Javascript array of all
-	   * data points on x axis, or the number of points on the axis. [d3 time range functions
-	   * d3.time.days, d3.time.months, and
-	   * d3.time.years](https://github.com/mbostock/d3/wiki/Time-Intervals#aliases) are all valid xUnits
-	   * function. dc.js also provides a few units function, see the {@link #utilities Utilities} section for
-	   * a list of built-in units functions. The default xUnits function is dc.units.integers.
-	   * @name xUnits
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @todo Add docs for utilities
-	   * @example
-	   * // set x units to count days
-	   * chart.xUnits(d3.time.days);
-	   * // set x units to count months
-	   * chart.xUnits(d3.time.months);
-	   *
-	   * // A custom xUnits function can be used as long as it follows the following interface:
-	   * // units in integer
-	   * function(start, end, xDomain) {
-	   *      // simply calculates how many integers in the domain
-	   *      return Math.abs(end - start);
-	   * };
-	   *
-	   * // fixed units
-	   * function(start, end, xDomain) {
-	   *      // be aware using fixed units will disable the focus/zoom ability on the chart
-	   *      return 1000;
-	   * @param {Function} [xUnits]
-	   * @return {Function}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Set or get the xUnits function. The coordinate grid chart uses the xUnits function to calculate
+	      * the number of data projections on x axis such as the number of bars for a bar chart or the
+	      * number of dots for a line chart. This function is expected to return a Javascript array of all
+	      * data points on x axis, or the number of points on the axis. [d3 time range functions
+	      * d3.time.days, d3.time.months, and
+	      * d3.time.years](https://github.com/mbostock/d3/wiki/Time-Intervals#aliases) are all valid xUnits
+	      * function. dc.js also provides a few units function, see the {@link #utilities Utilities} section for
+	      * a list of built-in units functions. The default xUnits function is dc.units.integers.
+	      * @name xUnits
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @todo Add docs for utilities
+	      * @example
+	      * // set x units to count days
+	      * chart.xUnits(d3.time.days);
+	      * // set x units to count months
+	      * chart.xUnits(d3.time.months);
+	      *
+	      * // A custom xUnits function can be used as long as it follows the following interface:
+	      * // units in integer
+	      * function(start, end, xDomain) {
+	      *      // simply calculates how many integers in the domain
+	      *      return Math.abs(end - start);
+	      * };
+	      *
+	      * // fixed units
+	      * function(start, end, xDomain) {
+	      *      // be aware using fixed units will disable the focus/zoom ability on the chart
+	      *      return 1000;
+	      * @param {Function} [xUnits]
+	      * @return {Function}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.xUnits = function (xUnits) {
 	    if (!arguments.length) {
 	      return _xUnits;
@@ -7874,24 +7876,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Set or get the x axis used by a particular coordinate grid chart instance. This function is most
-	   * useful when x axis customization is required. The x axis in dc.js is an instance of a [d3
-	   * axis object](https://github.com/mbostock/d3/wiki/SVG-Axes#wiki-axis); therefore it supports any
-	   * valid d3 axis manipulation. **Caution**: The x axis is usually generated internally by dc;
-	   * resetting it may cause unexpected results.
-	   * @name xAxis
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @see {@link http://github.com/mbostock/d3/wiki/SVG-Axes d3.svg.axis}
-	   * @example
-	   * // customize x axis tick format
-	   * chart.xAxis().tickFormat(function(v) {return v + '%';});
-	   * // customize x axis tick values
-	   * chart.xAxis().tickValues([0, 100, 200, 300]);
-	   * @param {d3.svg.axis} [xAxis=d3.svg.axis().orient('bottom')]
-	   * @return {d3.svg.axis}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Set or get the x axis used by a particular coordinate grid chart instance. This function is most
+	      * useful when x axis customization is required. The x axis in dc.js is an instance of a [d3
+	      * axis object](https://github.com/mbostock/d3/wiki/SVG-Axes#wiki-axis); therefore it supports any
+	      * valid d3 axis manipulation. **Caution**: The x axis is usually generated internally by dc;
+	      * resetting it may cause unexpected results.
+	      * @name xAxis
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @see {@link http://github.com/mbostock/d3/wiki/SVG-Axes d3.svg.axis}
+	      * @example
+	      * // customize x axis tick format
+	      * chart.xAxis().tickFormat(function(v) {return v + '%';});
+	      * // customize x axis tick values
+	      * chart.xAxis().tickValues([0, 100, 200, 300]);
+	      * @param {d3.svg.axis} [xAxis=d3.svg.axis().orient('bottom')]
+	      * @return {d3.svg.axis}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.xAxis = function (xAxis) {
 	    if (!arguments.length) {
 	      return _xAxis;
@@ -7901,15 +7903,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Turn on/off elastic x axis behavior. If x axis elasticity is turned on, then the grid chart will
-	   * attempt to recalculate the x axis range whenever a redraw event is triggered.
-	   * @name elasticX
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Boolean} [elasticX=false]
-	   * @return {Boolean}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Turn on/off elastic x axis behavior. If x axis elasticity is turned on, then the grid chart will
+	      * attempt to recalculate the x axis range whenever a redraw event is triggered.
+	      * @name elasticX
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Boolean} [elasticX=false]
+	      * @return {Boolean}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.elasticX = function (elasticX) {
 	    if (!arguments.length) {
 	      return _xElasticity;
@@ -7919,19 +7921,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Set or get x axis padding for the elastic x axis. The padding will be added to both end of the x
-	   * axis if elasticX is turned on; otherwise it is ignored.
-	   *
-	   * padding can be an integer or percentage in string (e.g. '10%'). Padding can be applied to
-	   * number or date x axes.  When padding a date axis, an integer represents number of days being padded
-	   * and a percentage string will be treated the same as an integer.
-	   * @name xAxisPadding
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Number|String} [padding=0]
-	   * @return {Number|String}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Set or get x axis padding for the elastic x axis. The padding will be added to both end of the x
+	      * axis if elasticX is turned on; otherwise it is ignored.
+	      *
+	      * padding can be an integer or percentage in string (e.g. '10%'). Padding can be applied to
+	      * number or date x axes.  When padding a date axis, an integer represents number of days being padded
+	      * and a percentage string will be treated the same as an integer.
+	      * @name xAxisPadding
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Number|String} [padding=0]
+	      * @return {Number|String}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.xAxisPadding = function (padding) {
 	    if (!arguments.length) {
 	      return _xAxisPadding;
@@ -7941,13 +7943,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Returns the number of units displayed on the x axis using the unit measure configured by
-	   * .xUnits.
-	   * @name xUnitCount
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @return {Number}
-	   */
+	      * Returns the number of units displayed on the x axis using the unit measure configured by
+	      * .xUnits.
+	      * @name xUnitCount
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @return {Number}
+	      */
 	  _chart.xUnitCount = function () {
 	    if (_unitCount === undefined) {
 	      var _units = _chart.xUnits()(_chart.x().domain()[0], _chart.x().domain()[1], _chart.x().domain());
@@ -7963,16 +7965,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Gets or sets whether the chart should be drawn with a right axis instead of a left axis. When
-	   * used with a chart in a composite chart, allows both left and right Y axes to be shown on a
-	   * chart.
-	   * @name useRightYAxis
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Boolean} [useRightYAxis=false]
-	   * @return {Boolean}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Gets or sets whether the chart should be drawn with a right axis instead of a left axis. When
+	      * used with a chart in a composite chart, allows both left and right Y axes to be shown on a
+	      * chart.
+	      * @name useRightYAxis
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Boolean} [useRightYAxis=false]
+	      * @return {Boolean}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.useRightYAxis = function (useRightYAxis) {
 	    if (!arguments.length) {
 	      return _useRightYAxis;
@@ -7982,14 +7984,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Returns true if the chart is using ordinal xUnits ({@link #dc.units.ordinal dc.units.ordinal}, or false
-	   * otherwise. Most charts behave differently with ordinal data and use the result of this method to
-	   * trigger the appropriate logic.
-	   * @name isOrdinal
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @return {Boolean}
-	   */
+	      * Returns true if the chart is using ordinal xUnits ({@link #dc.units.ordinal dc.units.ordinal}, or false
+	      * otherwise. Most charts behave differently with ordinal data and use the result of this method to
+	      * trigger the appropriate logic.
+	      * @name isOrdinal
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @return {Boolean}
+	      */
 	  _chart.isOrdinal = function () {
 	    return _chart.xUnits() === _core.units.ordinal;
 	  };
@@ -8003,11 +8005,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return groups.map(_chart.keyAccessor());
 	  };
 
-	  /* OVERRIDE ---------------------------------------------------------------- */
-
-	  _chart.binVal = _chart.changeBinVal;
-
-	  /* ------------------------------------------------------------------------ */
 	  function compareDomains(d1, d2) {
 	    return !d1 || !d2 || d1.length !== d2.length || d1.some(function (elem, i) {
 	      return elem && d2[i] ? elem.toString() !== d2[i].toString() : elem === d2[i];
@@ -8016,24 +8013,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function prepareXAxis(g, render) {
 	    if (!_chart.isOrdinal()) {
-	      if (_chart.elasticX() && (!_chart.rangeChartEnabled() || _chart.rangeChartEnabled() && _chart.rangeChart() && !_chart.rangeChart().filters().length)) {
+	      if (_chart.elasticX() && (!_chart.rangeChart() || _chart.rangeChart() && !_chart.rangeChart().filters().length)) {
 	        _x.domain([_chart.xAxisMin(), _chart.xAxisMax()]);
 	      }
-	    } else {
-	      // _chart.isOrdinal()
-	      if (_chart.elasticX() || _x.domain().length === 0) {
-	        _x.domain(_chart._ordinalXDomain());
-	      }
+	    } else if (_chart.elasticX() || _x.domain().length === 0) {
+	      _x.domain(_chart._ordinalXDomain());
 	    }
 
-	    // has the domain changed?
 	    var xdom = _x.domain();
 	    if (render || compareDomains(_lastXDomain, xdom)) {
 	      _chart.rescale();
 	    }
 	    _lastXDomain = xdom;
 
-	    // please can't we always use rangeBands for bar charts?
 	    if (_chart.isOrdinal()) {
 	      _x.rangeBands([0, _chart.xAxisLength()], _rangeBandPadding, _chart._useOuterPadding() ? _outerRangeBandPadding : 0);
 	    } else {
@@ -8044,6 +8036,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    renderVerticalGridLines(g);
 	    _chart.prepareLabelEdit("x");
+	    _chart.prepareLockAxis("x");
 	  }
 
 	  _chart.renderXAxis = function (g) {
@@ -8077,7 +8070,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var lines = gridLineG.selectAll("line").data(ticks);
 
-	      // enter
 	      var linesGEnter = lines.enter().append("line").attr("x1", function (d) {
 	        return _x(d);
 	      }).attr("y1", _chart._xAxisY() - _chart.margins().top).attr("x2", function (d) {
@@ -8085,14 +8077,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }).attr("y2", 0).attr("opacity", 0);
 	      (0, _core.transition)(linesGEnter, _chart.transitionDuration()).attr("opacity", 1);
 
-	      // update
 	      (0, _core.transition)(lines, _chart.transitionDuration()).attr("x1", function (d) {
 	        return _x(d);
 	      }).attr("y1", _chart._xAxisY() - _chart.margins().top).attr("x2", function (d) {
 	        return _x(d);
 	      }).attr("y2", 0);
 
-	      // exit
 	      lines.exit().remove();
 	    } else {
 	      gridLineG.selectAll("line").remove();
@@ -8108,15 +8098,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Set or get the x axis label. If setting the label, you may optionally include additional padding to
-	   * the margin to make room for the label. By default the padded is set to 12 to accomodate the text height.
-	   * @name xAxisLabel
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {String} [labelText]
-	   * @param {Number} [padding=12]
-	   * @return {String}
-	   */
+	      * Set or get the x axis label. If setting the label, you may optionally include additional padding to
+	      * the margin to make room for the label. By default the padded is set to 12 to accomodate the text height.
+	      * @name xAxisLabel
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {String} [labelText]
+	      * @param {Number} [padding=12]
+	      * @return {String}
+	      */
 	  _chart.xAxisLabel = function (labelText, padding) {
 	    if (!arguments.length) {
 	      return _xAxisLabel;
@@ -8151,20 +8141,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _chart.prepareLockAxis("y");
 	  };
 
-	  _chart.renderYAxisLabel = function (axisClass, text, rotation, labelXPosition) {
-	    labelXPosition = labelXPosition || _yAxisLabelPadding;
-
-	    var axisYLab = _chart.g().selectAll("text." + Y_AXIS_LABEL_CLASS + "." + axisClass + "-label");
-	    var labelYPosition = _chart.margins().top + _chart.yAxisHeight() / 2;
-	    if (axisYLab.empty() && text) {
-	      axisYLab = _chart.g().append("text").attr("transform", "translate(" + labelXPosition + "," + labelYPosition + "),rotate(" + rotation + ")").attr("class", Y_AXIS_LABEL_CLASS + " " + axisClass + "-label").attr("text-anchor", "middle").text(text);
-	    }
-	    if (text && axisYLab.text() !== text) {
-	      axisYLab.text(text);
-	    }
-	    (0, _core.transition)(axisYLab, _chart.transitionDuration()).attr("transform", "translate(" + labelXPosition + "," + labelYPosition + "),rotate(" + rotation + ")");
-	  };
-
 	  _chart.renderYAxisAt = function (axisClass, axis, position) {
 	    var axisYG = _chart.g().selectAll("g." + axisClass);
 	    if (axisYG.empty()) {
@@ -8194,7 +8170,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var lines = gridLineG.selectAll("line").data(ticks);
 
-	      // enter
 	      var linesGEnter = lines.enter().append("line").attr("x1", 1).attr("y1", function (d) {
 	        return scale(d);
 	      }).attr("x2", _chart.xAxisLength()).attr("y2", function (d) {
@@ -8202,14 +8177,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }).attr("opacity", 0);
 	      (0, _core.transition)(linesGEnter, _chart.transitionDuration()).attr("opacity", 1);
 
-	      // update
 	      (0, _core.transition)(lines, _chart.transitionDuration()).attr("x1", 1).attr("y1", function (d) {
 	        return scale(d);
 	      }).attr("x2", _chart.xAxisLength()).attr("y2", function (d) {
 	        return scale(d);
 	      });
 
-	      // exit
 	      lines.exit().remove();
 	    } else {
 	      gridLineG.selectAll("line").remove();
@@ -8221,17 +8194,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Set or get the y axis label. If setting the label, you may optionally include additional padding
-	   * to the margin to make room for the label. By default the padded is set to 12 to accomodate the
-	   * text height.
-	   * @name yAxisLabel
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {String} [labelText]
-	   * @param {Number} [padding=12]
-	   * @return {String}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Set or get the y axis label. If setting the label, you may optionally include additional padding
+	      * to the margin to make room for the label. By default the padded is set to 12 to accomodate the
+	      * text height.
+	      * @name yAxisLabel
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {String} [labelText]
+	      * @param {Number} [padding=12]
+	      * @return {String}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.yAxisLabel = function (labelText, padding) {
 	    if (!arguments.length) {
 	      return _yAxisLabel;
@@ -8244,15 +8217,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Get or set the y scale. The y scale is typically automatically determined by the chart implementation.
-	   * @name y
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
-	   * @param {d3.scale} [yScale]
-	   * @return {d3.scale}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Get or set the y scale. The y scale is typically automatically determined by the chart implementation.
+	      * @name y
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
+	      * @param {d3.scale} [yScale]
+	      * @return {d3.scale}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.y = function (yScale) {
 	    if (!arguments.length) {
 	      return _y;
@@ -8263,24 +8236,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Set or get the y axis used by the coordinate grid chart instance. This function is most useful
-	   * when y axis customization is required. The y axis in dc.js is simply an instance of a [d3 axis
-	   * object](https://github.com/mbostock/d3/wiki/SVG-Axes#wiki-_axis); therefore it supports any
-	   * valid d3 axis manipulation. **Caution**: The y axis is usually generated internally by dc;
-	   * resetting it may cause unexpected results.
-	   * @name yAxis
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @see {@link http://github.com/mbostock/d3/wiki/SVG-Axes d3.svg.axis}
-	   * @example
-	   * // customize y axis tick format
-	   * chart.yAxis().tickFormat(function(v) {return v + '%';});
-	   * // customize y axis tick values
-	   * chart.yAxis().tickValues([0, 100, 200, 300]);
-	   * @param {d3.svg.axis} [yAxis=d3.svg.axis().orient('left')]
-	   * @return {d3.svg.axis}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Set or get the y axis used by the coordinate grid chart instance. This function is most useful
+	      * when y axis customization is required. The y axis in dc.js is simply an instance of a [d3 axis
+	      * object](https://github.com/mbostock/d3/wiki/SVG-Axes#wiki-_axis); therefore it supports any
+	      * valid d3 axis manipulation. **Caution**: The y axis is usually generated internally by dc;
+	      * resetting it may cause unexpected results.
+	      * @name yAxis
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @see {@link http://github.com/mbostock/d3/wiki/SVG-Axes d3.svg.axis}
+	      * @example
+	      * // customize y axis tick format
+	      * chart.yAxis().tickFormat(function(v) {return v + '%';});
+	      * // customize y axis tick values
+	      * chart.yAxis().tickValues([0, 100, 200, 300]);
+	      * @param {d3.svg.axis} [yAxis=d3.svg.axis().orient('left')]
+	      * @return {d3.svg.axis}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.yAxis = function (yAxis) {
 	    if (!arguments.length) {
 	      return _yAxis;
@@ -8290,15 +8263,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Turn on/off elastic y axis behavior. If y axis elasticity is turned on, then the grid chart will
-	   * attempt to recalculate the y axis range whenever a redraw event is triggered.
-	   * @name elasticY
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Boolean} [elasticY=false]
-	   * @return {Boolean}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Turn on/off elastic y axis behavior. If y axis elasticity is turned on, then the grid chart will
+	      * attempt to recalculate the y axis range whenever a redraw event is triggered.
+	      * @name elasticY
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Boolean} [elasticY=false]
+	      * @return {Boolean}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.elasticY = function (elasticY) {
 	    if (!arguments.length) {
 	      return _yElasticity;
@@ -8308,14 +8281,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Turn on/off horizontal grid lines.
-	   * @name renderHorizontalGridLines
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Boolean} [renderHorizontalGridLines=false]
-	   * @return {Boolean}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Turn on/off horizontal grid lines.
+	      * @name renderHorizontalGridLines
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Boolean} [renderHorizontalGridLines=false]
+	      * @return {Boolean}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.renderHorizontalGridLines = function (renderHorizontalGridLines) {
 	    if (!arguments.length) {
 	      return _renderHorizontalGridLine;
@@ -8325,14 +8298,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Turn on/off vertical grid lines.
-	   * @name renderVerticalGridLines
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Boolean} [renderVerticalGridLines=false]
-	   * @return {Boolean}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Turn on/off vertical grid lines.
+	      * @name renderVerticalGridLines
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Boolean} [renderVerticalGridLines=false]
+	      * @return {Boolean}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.renderVerticalGridLines = function (renderVerticalGridLines) {
 	    if (!arguments.length) {
 	      return _renderVerticalGridLine;
@@ -8342,12 +8315,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Calculates the minimum x value to display in the chart. Includes xAxisPadding if set.
-	   * @name xAxisMin
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @return {*}
-	   */
+	      * Calculates the minimum x value to display in the chart. Includes xAxisPadding if set.
+	      * @name xAxisMin
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @return {*}
+	      */
 	  _chart.xAxisMin = function () {
 	    var min = _d2.default.min(_chart.data(), function (e) {
 	      return _chart.keyAccessor()(e);
@@ -8355,16 +8328,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var max = _d2.default.max(_chart.data(), function (e) {
 	      return _chart.keyAccessor()(e);
 	    });
-	    return _utils2.utils.subtract(min, _xAxisPadding, max - min);
+	    return _utils.utils.subtract(min, _xAxisPadding, max - min);
 	  };
 
 	  /**
-	   * Calculates the maximum x value to display in the chart. Includes xAxisPadding if set.
-	   * @name xAxisMax
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @return {*}
-	   */
+	      * Calculates the maximum x value to display in the chart. Includes xAxisPadding if set.
+	      * @name xAxisMax
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @return {*}
+	      */
 	  _chart.xAxisMax = function () {
 	    var max = _d2.default.max(_chart.data(), function (e) {
 	      return _chart.keyAccessor()(e);
@@ -8372,16 +8345,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var min = _d2.default.min(_chart.data(), function (e) {
 	      return _chart.keyAccessor()(e);
 	    });
-	    return _utils2.utils.add(max, _xAxisPadding, max - min);
+	    return _utils.utils.add(max, _xAxisPadding, max - min);
 	  };
 
 	  /**
-	   * Calculates the minimum y value to display in the chart. Includes yAxisPadding if set.
-	   * @name yAxisMin
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @return {*}
-	   */
+	      * Calculates the minimum y value to display in the chart. Includes yAxisPadding if set.
+	      * @name yAxisMin
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @return {*}
+	      */
 	  _chart.yAxisMin = function () {
 	    var min = _d2.default.min(_chart.data(), function (e) {
 	      return _chart.valueAccessor()(e);
@@ -8389,16 +8362,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var max = _d2.default.max(_chart.data(), function (e) {
 	      return _chart.valueAccessor()(e);
 	    });
-	    return _utils2.utils.subtract(min, _yAxisPadding, max - min);
+	    return _utils.utils.subtract(min, _yAxisPadding, max - min);
 	  };
 
 	  /**
-	   * Calculates the maximum y value to display in the chart. Includes yAxisPadding if set.
-	   * @name yAxisMax
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @return {*}
-	   */
+	      * Calculates the maximum y value to display in the chart. Includes yAxisPadding if set.
+	      * @name yAxisMax
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @return {*}
+	      */
 	  _chart.yAxisMax = function () {
 	    var max = _d2.default.max(_chart.data(), function (e) {
 	      return _chart.valueAccessor()(e);
@@ -8406,23 +8379,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var min = _d2.default.min(_chart.data(), function (e) {
 	      return _chart.valueAccessor()(e);
 	    });
-	    return _utils2.utils.add(max, _yAxisPadding, max - min);
+	    return _utils.utils.add(max, _yAxisPadding, max - min);
 	  };
 
 	  /**
-	   * Set or get y axis padding for the elastic y axis. The padding will be added to the top of the y
-	   * axis if elasticY is turned on; otherwise it is ignored.
-	   *
-	   * padding can be an integer or percentage in string (e.g. '10%'). Padding can be applied to
-	   * number or date axes. When padding a date axis, an integer represents number of days being padded
-	   * and a percentage string will be treated the same as an integer.
-	   * @name yAxisPadding
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Number|String} [padding=0]
-	   * @return {Number}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Set or get y axis padding for the elastic y axis. The padding will be added to the top of the y
+	      * axis if elasticY is turned on; otherwise it is ignored.
+	      *
+	      * padding can be an integer or percentage in string (e.g. '10%'). Padding can be applied to
+	      * number or date axes. When padding a date axis, an integer represents number of days being padded
+	      * and a percentage string will be treated the same as an integer.
+	      * @name yAxisPadding
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Number|String} [padding=0]
+	      * @return {Number}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.yAxisPadding = function (padding) {
 	    if (!arguments.length) {
 	      return _yAxisPadding;
@@ -8432,22 +8405,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  _chart.yAxisHeight = function () {
-	    return _chart.effectiveHeight();
+	    var height = _chart.effectiveHeight();
+	    return height < 0 ? 0 : height;
 	  };
 
 	  /**
-	   * Set or get the rounding function used to quantize the selection when brushing is enabled.
-	   * @name round
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @example
-	   * // set x unit round to by month, this will make sure range selection brush will
-	   * // select whole months
-	   * chart.round(d3.time.month.round);
-	   * @param {Function} [round]
-	   * @return {Function}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Set or get the rounding function used to quantize the selection when brushing is enabled.
+	      * @name round
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @example
+	      * // set x unit round to by month, this will make sure range selection brush will
+	      * // select whole months
+	      * chart.round(d3.time.month.round);
+	      * @param {Function} [round]
+	      * @return {Function}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.round = function (round) {
 	    if (!arguments.length) {
 	      return _round;
@@ -8474,7 +8448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function updateBinParamsForChart(_chart, filter) {
 	    var extract = _chart.binParams()[0] ? _chart.binParams()[0].extract : false;
-	    if (_chart._isRangeChart && filter.length && !extract) {
+	    if (_chart.focusChart() && filter.length && !extract) {
 	      var FocusChart = _chart.focusChart();
 	      var currentBinParams = FocusChart.binParams();
 	      if (currentBinParams[0]) {
@@ -8488,7 +8462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function resetBinParamsForChart(_chart) {
 	    if (_chart.binParams()[0]) {
 	      var extract = _chart.binParams()[0].extract;
-	      var isRangeAndIsNotFiltered = _chart._isRangeChart && !_chart.filters().length && !extract;
+	      var isRangeAndIsNotFiltered = _chart.focusChart() && !_chart.filters().length && !extract;
 
 	      if (isRangeAndIsNotFiltered) {
 	        var chartBinParams = _chart.focusChart().binParams().map(function (p) {
@@ -8505,10 +8479,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!arguments.length) {
 	      return _chart._filter();
 	    }
-
 	    _chart._filter(filter, isInverseFilter);
-
-	    if (filter !== Symbol.for("clear")) {
+	    if (filter.length) {
 	      updateBinParamsForChart(_chart, filter);
 	      _chart.brush().extent(filter);
 	    } else {
@@ -8516,6 +8488,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _chart.brush().clear();
 	    }
 
+	    if (_chart.rangeInput()) {
+	      _chart.updateRangeInput();
+	    }
 	    return _chart;
 	  });
 
@@ -8536,7 +8511,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  function brushHeight() {
-	    return _chart._xAxisY() - _chart.margins().top;
+	    var height = _chart._xAxisY() - _chart.margins().top;
+	    return height < 0 ? 0 : height;
 	  }
 
 	  _chart.renderBrush = function (g) {
@@ -8558,17 +8534,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	      _brush.on("brushend", function () {
 	        _isBrushing = false;
-	        var isRangeChart = _chart._isRangeChart;
 	        configureMouseZoom();
-	        if (!isRangeChart) {
-	          _chart.brushSnap(isRangeChart);
-	        } else if (isRangeChart) {
-	          _chart.focusChart().brushSnap(isRangeChart);
-	          var binParams = _chart.focusChart().binParams()[0];
-	          if (!binParams.auto && !binParams.extract) {
-	            _chart.focusChart()._invokeBinListener(binParams.timeBin);
-	          }
-	        }
+	        _chart.brushSnap();
 	        (0, _core.disableTransitions)(false);
 	      });
 
@@ -8578,12 +8545,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  };
 
-	  _chart.brushSnap = function (isRangeChart) {
-
+	  _chart.brushSnap = function () {
 	    if (!_d2.default.event.sourceEvent) {
 	      return;
 	    } // only transition after input
-	    _chart.binBrush(isRangeChart);
+	    _chart.binBrush();
 	  };
 
 	  _chart.triggerReplaceFilter = function (shouldSetSizingFalse) {
@@ -8631,7 +8597,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var rangedFilter = _filters.filters.RangedFilter(extent[0], extent[1]);
 
 	      _events.events.trigger(function () {
-
 	        /* OVERRIDE ---------------------------------------------------------------- */
 	        (0, _core.globalTransitionDuration)(10);
 	        /* ------------------------------------------------------------------------- */
@@ -8682,16 +8647,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   * Get or set the padding in pixels for the clip path. Once set padding will be applied evenly to
-	   * the top, left, right, and bottom when the clip path is generated. If set to zero, the clip area
-	   * will be exactly the chart body area minus the margins.
-	   * @name clipPadding
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Number} [padding=5]
-	   * @return {Number}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Get or set the padding in pixels for the clip path. Once set padding will be applied evenly to
+	      * the top, left, right, and bottom when the clip path is generated. If set to zero, the clip area
+	      * will be exactly the chart body area minus the margins.
+	      * @name clipPadding
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Number} [padding=5]
+	      * @return {Number}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.clipPadding = function (padding) {
 	    if (!arguments.length) {
 	      return _clipPadding;
@@ -8701,15 +8666,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  function generateClipPath() {
-	    var defs = _utils2.utils.appendOrSelect(_parent, "defs");
+	    var defs = _utils.utils.appendOrSelect(_parent, "defs");
 	    // cannot select <clippath> elements; bug in WebKit, must select by id
 	    // https://groups.google.com/forum/#!topic/d3-js/6EpAzQ2gU9I
 	    var id = getClipPathId();
-	    var chartBodyClip = _utils2.utils.appendOrSelect(defs, "#" + id, "clipPath").attr("id", id);
+	    var chartBodyClip = _utils.utils.appendOrSelect(defs, "#" + id, "clipPath").attr("id", id);
 
 	    var padding = _clipPadding * 2;
 
-	    _utils2.utils.appendOrSelect(chartBodyClip, "rect").attr("width", _chart.xAxisLength() + padding).attr("height", _chart.yAxisHeight() + padding).attr("transform", "translate(-" + _clipPadding + ", -" + _clipPadding + ")");
+	    _utils.utils.appendOrSelect(chartBodyClip, "rect").attr("width", _chart.xAxisLength() + padding).attr("height", _chart.yAxisHeight() + padding).attr("transform", "translate(-" + _clipPadding + ", -" + _clipPadding + ")");
 	  }
 
 	  _chart._preprocessData = function (data) {};
@@ -8741,10 +8706,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _chart._doRedraw = function () {
 	    /* OVERRIDE ---------------------------------------------------------------- */
-	    if (!_hasBeenRendered) // guard to prevent a redraw before a render
-	      {
-	        return _chart._doRender();
-	      }
+	    if (!_hasBeenRendered) {
+	      // guard to prevent a redraw before a render
+	      return _chart._doRender();
+	    }
 	    /* ------------------------------------------------------------------------- */
 	    _chart._preprocessData();
 
@@ -8807,23 +8772,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   * Zoom this chart to focus on the given range. The given range should be an array containing only
-	   * 2 elements (`[start, end]`) defining a range in the x domain. If the range is not given or set
-	   * to null, then the zoom will be reset. _For focus to work elasticX has to be turned off;
-	   * otherwise focus will be ignored.
-	   * @name focus
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @example
-	   * chart.on('renderlet', function(chart) {
-	   *     // smooth the rendering through event throttling
-	   *     events.trigger(function(){
-	   *          // focus some other chart to the range selected by user on this chart
-	   *          someOtherChart.focus(chart.filter());
-	   *     });
-	   * })
-	   * @param {Array<Number>} [range]
-	   */
+	      * Zoom this chart to focus on the given range. The given range should be an array containing only
+	      * 2 elements (`[start, end]`) defining a range in the x domain. If the range is not given or set
+	      * to null, then the zoom will be reset. _For focus to work elasticX has to be turned off;
+	      * otherwise focus will be ignored.
+	      * @name focus
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @example
+	      * chart.on('renderlet', function(chart) {
+	      *     // smooth the rendering through event throttling
+	      *     events.trigger(function(){
+	      *          // focus some other chart to the range selected by user on this chart
+	      *          someOtherChart.focus(chart.filter());
+	      *     });
+	      * })
+	      * @param {Array<Number>} [range]
+	      */
 	  _chart.focus = function (range) {
 	    if (hasRangeSelected(range)) {
 	      _chart.x().domain(range);
@@ -8846,7 +8811,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    _focusChart = c;
 	    _chart.on("filtered", function (chart) {
-
 	      /* OVERRIDE ---------------------------------------------------------------- */
 	      _focusChart.rangeFocused(true);
 	      /* ------------------------------------------------------------------------- */
@@ -8882,19 +8846,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   * Turn on/off the brush-based range filter. When brushing is on then user can drag the mouse
-	   * across a chart with a quantitative scale to perform range filtering based on the extent of the
-	   * brush, or click on the bars of an ordinal bar chart or slices of a pie chart to filter and
-	   * un-filter them. However turning on the brush filter will disable other interactive elements on
-	   * the chart such as highlighting, tool tips, and reference lines. Zooming will still be possible
-	   * if enabled, but only via scrolling (panning will be disabled.)
-	   * @name brushOn
-	   * @memberof dc.coordinateGridMixin
-	   * @instance
-	   * @param {Boolean} [brushOn=true]
-	   * @return {Boolean}
-	   * @return {dc.coordinateGridMixin}
-	   */
+	      * Turn on/off the brush-based range filter. When brushing is on then user can drag the mouse
+	      * across a chart with a quantitative scale to perform range filtering based on the extent of the
+	      * brush, or click on the bars of an ordinal bar chart or slices of a pie chart to filter and
+	      * un-filter them. However turning on the brush filter will disable other interactive elements on
+	      * the chart such as highlighting, tool tips, and reference lines. Zooming will still be possible
+	      * if enabled, but only via scrolling (panning will be disabled.)
+	      * @name brushOn
+	      * @memberof dc.coordinateGridMixin
+	      * @instance
+	      * @param {Boolean} [brushOn=true]
+	      * @return {Boolean}
+	      * @return {dc.coordinateGridMixin}
+	      */
 	  _chart.brushOn = function (brushOn) {
 	    if (!arguments.length) {
 	      return _brushOn;
@@ -8909,7 +8873,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _chart.popupTextAccessor = function (arr) {
 	    return function () {
-	      return _utils2.utils.formatValue(arr[0].datum.data.key0);
+	      return _utils.utils.formatValue(arr[0].datum.data.key0);
 	    };
 	  };
 
@@ -8926,9 +8890,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  _chart.destroyChart = function () {
-	    if (_chart.rangeChartEnabled()) {
-	      _chart.rangeChartEnabled(false);
-	    }
+	    (0, _core.deregisterChart)(_chart);
+	    _chart.on("filtered", null);
+	    _chart.filterAll();
+	    _chart.resetSvg();
+	    _chart.root().attr("style", "").attr("class", "").html("");
 	  };
 
 	  _chart.rangeFocused = function (_) {
@@ -8950,29 +8916,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  _chart.binInput = function (_) {
-
 	    if (!arguments.length) {
 	      return _chart._binInput;
 	    }
 	    _chart._binInput = _;
 
 	    return _chart;
-	  };
-
-	  _chart.isTime = function (_) {
-	    if (!arguments.length) {
-	      return _chart._isTime;
-	    }
-
-	    _chart._isTime = _;
-	    return _chart;
-	  };
-
-	  /* istanbul ignore next */
-	  _chart.getBinInputVal = function () {
-	    return _chart.binInputOptions().filter(function (d) {
-	      return d.val === _chart.timeBinInputVal();
-	    });
 	  };
 
 	  /* istanbul ignore next */
@@ -8997,7 +8946,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  /* istanbul ignore next */
 	  function rangeInputOnFocus() {
-
 	    this.select();
 
 	    var dateInputFormat = _d2.default.time.format.utc("%m-%d-%Y");
@@ -9035,7 +8983,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 
-	    var extentChart = _chart.rangeChartEnabled() ? _chart.rangeChart() : _chart;
+	    var extentChart = _chart.rangeChart() ? _chart.rangeChart() : _chart;
 
 	    var extent = extentChart.filter() || extentChart.x().domain();
 
@@ -9058,7 +9006,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (_chart._binInput) {
-	      extent[1] = new Date(extent[1].getTime() + ONE_SECOND_IN_MS);
+	      extent[1] = new Date(extent[1].getTime());
 	    }
 
 	    var domFilter = _filters.filters.RangedFilter(extent[0], extent[1]);
@@ -9066,7 +9014,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    extentChart.replaceFilter(domFilter);
 	    extentChart.rescale();
 	    extentChart.redrawAsync().then(function () {
-	      if (_chart.rangeChartEnabled()) {
+	      if (_chart.rangeChart()) {
 	        _chart._binSnap = _chart._binInput;
 	        _chart.focus(domFilter);
 	        _chart.replaceFilter(domFilter);
@@ -9074,6 +9022,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      thisInput.blur();
 	      _chart.updateRangeInput();
+
+	      _chart.redrawGroup();
 	    });
 	  }
 
@@ -9083,12 +9033,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var yLabel = root.selectAll(".y-axis-label");
 
-	    if (yLabel.empty() && !_chart._isRangeChart) {
+	    if (yLabel.empty()) {
 	      yLabel = root.append("div").attr("class", "y-axis-label");
 	    }
 
 	    if (text !== "") {
-	      var yOffset = _chart.rangeChartEnabled() && _chart._rangeChartCreated ? _chart.rangeChart().height() - _chart.rangeChart().margins().bottom + _chart.margins().bottom : _chart.margins().bottom;
+	      var yOffset = _chart.rangeChart() ? _chart.rangeChart().height() - _chart.rangeChart().margins().bottom + _chart.margins().bottom : _chart.margins().bottom;
 
 	      yLabel.style("top", (_chart.effectiveHeight() + yOffset) / 2 + _chart.margins().top + "px").text(text);
 	    }
@@ -9144,12 +9094,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var xLabel = root.selectAll(".x-axis-label");
 
-	    var shouldAppendLabel = _chart.rangeChartEnabled() ? false : xLabel.empty();
+	    var shouldAppendLabel = _chart.rangeChart() ? false : xLabel.empty();
 	    if (shouldAppendLabel) {
 	      xLabel = root.append("div").attr("class", "x-axis-label");
 	    }
 
-	    if (!_chart.rangeChartEnabled()) {
+	    if (!_chart.rangeChart()) {
 	      xLabel.style("left", _chart.effectiveWidth() / 2 + _chart.margins().left + "px").text(_chart.xAxisLabel());
 	    }
 
@@ -9204,14 +9154,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  /* istanbul ignore next */
 	  function bindRangeInputEvents(input) {
-	    _d2.default.select(input).on("focus", rangeInputOnFocus).on("blur", rangeInputChange).on("keydown", function () {
+	    _d2.default.select(input).on("focus", rangeInputOnFocus).on("keydown", function () {
 	      if (_d2.default.event.keyCode === ENTER_KEY) {
 	        rangeInputChange(this);
 	      }
 	    });
 	  }
 
-	  _chart = (0, _rangeMixin2.default)((0, _binningMixin2.default)(_chart));
+	  _chart = (0, _binningMixin2.default)(_chart);
 
 	  return _chart;
 	}
@@ -9253,10 +9203,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return;
 	  }
 
-	  dc.events.current = closure;
+	  events.current = closure;
 
 	  setTimeout(function () {
-	    if (closure === dc.events.current) {
+	    if (closure === events.current) {
 	      closure();
 	    }
 	  }, delay);
@@ -9370,7 +9320,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	filters.RangedFilter = function (low, high) {
 	  var range = new Array(low, high);
 	  range.isFiltered = function (value) {
-	    return value >= this[0] && value < this[1];
+	    return value >= this[0] && value <= this[1];
 	  };
 	  range.filterType = "RangedFilter";
 
@@ -9530,6 +9480,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _mapStyle = "mapbox://styles/mapbox/light-v8";
 	  var _center = [0, 30];
 	  var _zoom = 1;
+	  var _attribLocation = "bottom-right";
 	  var _popupFunction = null;
 	  var _colorBy = null;
 	  var _mouseLeave = false;
@@ -9678,7 +9629,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  function onLoad(e) {
-	    _map.addControl(new _mapboxgl.AttributionControl());
+	    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation);
 
 	    var mapboxlogo = document.createElement("a");
 	    mapboxlogo.className = "mapbox-maplogo";
@@ -9794,6 +9745,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (_mapInitted) {
 	      _map.setZoom(_zoom);
 	    }
+	    return _chart;
+	  };
+
+	  _chart.attribLocation = function (_) {
+	    if (!arguments.length) {
+	      return _attribLocation;
+	    }
+	    _attribLocation = _;
 	    return _chart;
 	  };
 
@@ -10394,7 +10353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-	var _coordinateGridRasterMixinUi = __webpack_require__(174);
+	var _coordinateGridRasterMixinUi = __webpack_require__(172);
 
 	var _coordinateGridRasterMixinUi2 = _interopRequireDefault(_coordinateGridRasterMixinUi);
 
@@ -11664,15 +11623,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.rasterDrawMixin = rasterDrawMixin;
 
-	var _utilsLatlon = __webpack_require__(38);
+	var _utilsLatlon = __webpack_require__(37);
 
 	var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-	var _lassoToolUi = __webpack_require__(175);
+	var _lassoToolUi = __webpack_require__(173);
 
 	var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
 
-	var _earcut = __webpack_require__(40);
+	var _earcut = __webpack_require__(39);
 
 	var _earcut2 = _interopRequireDefault(_earcut);
 
@@ -11912,7 +11871,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      if (newShape) {
-	        drawEngine.addShape(newShape, selectOpts);
 	        chart.addFilterShape(newShape);
 	        applyFilter();
 	      }
@@ -12696,7 +12654,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _core = __webpack_require__(3);
 
-	var _multipleKeyAccessors = __webpack_require__(37);
+	var _multipleKeyAccessors = __webpack_require__(36);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13218,6 +13176,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	logger.enableDebugLog = false;
 
+	/* istanbul ignore next */
 	logger.warn = function (msg) {
 	  if (console) {
 	    if (console.warn) {
@@ -13230,6 +13189,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return logger;
 	};
 
+	/* istanbul ignore next */
 	logger.debug = function (msg) {
 	  if (logger.enableDebugLog && console) {
 	    if (console.debug) {
@@ -13242,6 +13202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return logger;
 	};
 
+	/* istanbul ignore next */
 	logger.deprecate = function (fn, msg) {
 	  // Allow logging of deprecation
 	  var warned = false;
@@ -13656,1134 +13617,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = barChart;
-
-	var _core = __webpack_require__(3);
-
-	var _utils = __webpack_require__(4);
-
-	var _d = __webpack_require__(2);
-
-	var _d2 = _interopRequireDefault(_d);
-
-	var _stackMixin = __webpack_require__(21);
-
-	var _stackMixin2 = _interopRequireDefault(_stackMixin);
-
-	var _elasticDimensionMixin = __webpack_require__(31);
-
-	var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
-
-	var _coordinateGridMixin = __webpack_require__(10);
-
-	var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var TIME_UNIT_PER_SECONDS = {
-	  century: 3153600000,
-	  decade: 315360000,
-	  year: 31536000,
-	  quarter: 10368000,
-	  month: 2592000,
-	  week: 604800,
-	  day: 86400,
-	  hour: 3600,
-	  minute: 60,
-	  second: 1
-	};
-
-	var MILLISECONDS_IN_SECOND = 1000;
-
-	var EXTRACT_UNIT_NUM_BUCKETS = {
-	  isodom: 31,
-	  isodow: 7,
-	  month: 12,
-	  quarter: 4,
-	  hour: 24,
-	  minute: 60
-
-	  /**
-	   * Concrete bar chart/histogram implementation.
-	   *
-	   * @class barChart
-	   * @memberof dc
-	   * @mixes dc.stackMixin
-	   * @mixes dc.coordinateGridMixin
-	   * @example
-	   * // create a bar chart under #chart-container1 element using the default global chart group
-	   * var chart1 = dc.barChart('#chart-container1');
-	   * // create a bar chart under #chart-container2 element using chart group A
-	   * var chart2 = dc.barChart('#chart-container2', 'chartGroupA');
-	   * // create a sub-chart under a composite parent chart
-	   * var chart3 = dc.barChart(compositeChart);
-	   * @param {String|node|d3.selection|dc.compositeChart} parent - Any valid
-	   * {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements d3 single selector}
-	   * specifying a dom block element such as a div; or a dom element or d3 selection.  If the bar
-	   * chart is a sub-chart in a {@link dc.compositeChart Composite Chart} then pass in the parent
-	   * composite chart instance instead.
-	   * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
-	   * Interaction with a chart will only trigger events and redraws within the chart's group.
-	   * @returns {dc.barChart}
-	   */
-	};function barChart(parent, chartGroup) {
-	  var MIN_BAR_WIDTH = 1;
-	  var DEFAULT_GAP_BETWEEN_BARS = 4;
-	  var LABEL_PADDING = 3;
-
-	  var _chart = (0, _elasticDimensionMixin2.default)((0, _stackMixin2.default)((0, _coordinateGridMixin2.default)({})));
-
-	  var _gap = DEFAULT_GAP_BETWEEN_BARS;
-	  var _centerBar = false;
-	  var _alwaysUseRounding = false;
-
-	  var _numBars = void 0;
-	  var _parent = parent;
-
-	  _chart._numberOfBars = null;
-	  var _barWidth = void 0;
-
-	  (0, _core.override)(_chart, "rescale", function () {
-	    _chart._rescale();
-	    _barWidth = undefined;
-
-	    return _chart;
-	  });
-
-	  _chart.label(function (d) {
-	    return _utils.utils.printSingleValue(d.y0 + d.y);
-	  }, false);
-
-	  _chart.plotData = function () {
-	    var layers = _chart.chartBodyG().selectAll("g.stack").data(_chart.data());
-
-	    calculateBarWidth();
-
-	    layers.enter().append("g").attr("class", function (d, i) {
-	      return "stack " + "_" + i;
-	    });
-
-	    var last = layers.size() - 1;
-	    layers.each(function (d, i) {
-	      var layer = _d2.default.select(this);
-
-	      renderBars(layer, i, d);
-	      if (_chart.renderLabel() && last === i) {
-	        renderLabels(layer, i, d);
-	      }
-	    });
-
-	    if (_chart.brushOn()) {
-	      hoverOverBrush();
-	    }
-	  };
-
-	  function hoverOverBrush() {
-
-	    var g = _chart.g().on("mouseout", function () {
-	      dehighlightBars();
-	    }).on("mousemove", function () {
-	      if (_chart.isBrushing()) {
-	        hidePopup();
-	      } else {
-	        highlightBars(g, this);
-	      }
-	    });
-	  }
-
-	  function highlightBars(g, e) {
-
-	    var coordinates = [0, 0];
-	    coordinates = _chart.popupCoordinates(_d2.default.mouse(e));
-	    var x = coordinates[0];
-	    var y = coordinates[1];
-	    var xAdjusted = x - _chart.margins().left;
-	    var yAdjusted = y - _chart.margins().top;
-
-	    var popupRows = [];
-
-	    var toolTips = g.selectAll(".stack").each(function () {
-
-	      var hoverBar = null;
-
-	      var bars = _d2.default.select(this).selectAll(".bar").style("fill-opacity", 1);
-
-	      bars[0].sort(function (a, b) {
-	        return _d2.default.select(a).attr("x") - _d2.default.select(b).attr("x");
-	      });
-
-	      bars[0].some(function (obj, i) {
-
-	        var elm = _d2.default.select(obj);
-
-	        if (xAdjusted < elm.attr("x")) {
-	          return true;
-	        }
-
-	        hoverBar = { elm: elm, datum: elm.datum(), i: i };
-	      });
-
-	      if (hoverBar && Math.abs(hoverBar.elm.attr("x") - xAdjusted) < _barWidth && yAdjusted > hoverBar.elm.attr("y") - 32) {
-	        hoverBar.elm.style("fill-opacity", 0.8);
-	        popupRows.push(hoverBar);
-	      }
-	    });
-
-	    if (popupRows.length > 0) {
-	      showPopup(popupRows, x, y);
-	    } else {
-	      hidePopup();
-	    }
-	  }
-
-	  function dehighlightBars() {
-	    _chart.g().selectAll(".bar").style("fill-opacity", 1);
-	    hidePopup();
-	  }
-
-	  function showPopup(arr, x, y) {
-	    var popup = _chart.popup().classed("hide-delay", true);
-
-	    var popupBox = popup.select(".chart-popup-content").html("").classed("popup-list", true);
-
-	    popupBox.append("div").attr("class", "popup-header").text(_chart.popupTextAccessor(arr));
-
-	    var popupItems = popupBox.selectAll(".popup-item").data(arr).enter().append("div").attr("class", "popup-item");
-
-	    popupItems.append("div").attr("class", "popup-legend").style("background-color", function (d) {
-	      return _chart.getColor(d.datum, d.i);
-	    });
-
-	    popupItems.append("div").attr("class", "popup-item-value").text(function (d) {
-	      return _utils.utils.formatValue(d.datum.y + d.datum.y0);
-	    });
-
-	    positionPopup(x, y);
-	    popup.classed("js-showPopup", true);
-	  }
-
-	  function hidePopup() {
-	    _chart.popup().classed("js-showPopup", false);
-	  }
-
-	  function positionPopup(x, y) {
-
-	    var popup = _chart.popup().attr("style", function () {
-	      return "transform:translate(" + x + "px," + y + "px)";
-	    });
-
-	    popup.select(".chart-popup-box").classed("align-left-center", true).classed("align-right-center", function () {
-	      return x + (_d2.default.select(this).node().getBoundingClientRect().width + 32) > _chart.width();
-	    });
-	  }
-
-	  function barHeight(d) {
-	    return _utils.utils.safeNumber(Math.abs(_chart.y()(d.y + d.y0) - _chart.y()(d.y0)));
-	  }
-
-	  function renderLabels(layer, layerIndex, d) {
-	    var labels = layer.selectAll("text.barLabel").data(d.values, (0, _utils.pluck)("x"));
-
-	    labels.enter().append("text").attr("class", "barLabel").attr("text-anchor", "middle");
-
-	    if (_chart.isOrdinal()) {
-	      labels.on("click", _chart.onClick);
-	      labels.attr("cursor", "pointer");
-	    }
-
-	    (0, _core.transition)(labels, _chart.transitionDuration()).attr("x", function (d) {
-	      var x = _chart.x()(d.x);
-	      if (!_centerBar) {
-	        x = x + _barWidth / 2;
-	      }
-	      return _utils.utils.safeNumber(x);
-	    }).attr("y", function (d) {
-	      var y = _chart.y()(d.y + d.y0);
-
-	      if (d.y < 0) {
-	        y = y - barHeight(d);
-	      }
-
-	      return _utils.utils.safeNumber(y - LABEL_PADDING);
-	    }).text(function (d) {
-	      return _chart.label()(d);
-	    });
-
-	    (0, _core.transition)(labels.exit(), _chart.transitionDuration()).attr("height", 0).remove();
-	  }
-
-	  function renderBars(layer, layerIndex, d) {
-
-	    /* OVERRIDE ---------------------------------------------------------------- */
-	    _numBars = d.values.length;
-	    /* ------------------------------------------------------------------------- */
-
-	    var bars = layer.selectAll("rect.bar").data(d.values, (0, _utils.pluck)("x"));
-
-	    var enter = bars.enter().append("rect").attr("class", "bar").attr("fill", (0, _utils.pluck)("data", _chart.getColor)).attr("y", _chart.yAxisHeight()).attr("height", 0);
-
-	    if (_chart.renderTitle()) {
-	      enter.append("title").text((0, _utils.pluck)("data", _chart.title(d.name)));
-	    }
-
-	    if (_chart.isOrdinal()) {
-	      bars.on("click", _chart.onClick);
-	    }
-
-	    (0, _core.transition)(bars, _chart.transitionDuration()).attr("x", function (d) {
-	      var x = _chart.x()(d.x);
-	      if (_centerBar) {
-	        x = x - _barWidth / 2;
-	      }
-	      if (_chart.isOrdinal() && _gap !== undefined) {
-	        x = x + _gap / 2;
-	      }
-	      return _utils.utils.safeNumber(x);
-	    }).attr("y", function (d) {
-	      var y = _chart.y()(d.y + d.y0);
-
-	      if (d.y < 0) {
-	        y = y - barHeight(d);
-	      }
-
-	      return _utils.utils.safeNumber(y);
-	    }).attr("width", _barWidth).attr("height", function (d) {
-	      return barHeight(d);
-	    }).attr("fill", (0, _utils.pluck)("data", _chart.getColor)).select("title").text((0, _utils.pluck)("data", _chart.title(d.name)));
-
-	    (0, _core.transition)(bars.exit(), _chart.transitionDuration()).attr("height", 0).remove();
-	  }
-
-	  function calculateBarWidth() {
-
-	    var numberOfBars = void 0;
-	    var binParams = _chart.group().binParams()[0];
-
-	    if (binParams) {
-	      numberOfBars = binParams.timeBin ? _chart.getTimeBinSize(binParams) : binParams.numBins;
-	    } else {
-	      var allValues = _chart.data()[0].values.map(function (val) {
-	        return val.x;
-	      });
-	      var maxVal = Math.max.apply(null, allValues);
-	      var minVal = Math.min.apply(null, allValues);
-
-	      numberOfBars = maxVal - minVal;
-	    }
-
-	    if (_chart.isOrdinal() && _gap === undefined) {
-	      _barWidth = Math.floor(_chart.x().rangeBand());
-	    } else if (_gap) {
-	      _barWidth = Math.floor((_chart.xAxisLength() - (numberOfBars - 1) * _gap) / numberOfBars);
-	    } else {
-	      _barWidth = Math.floor(_chart.xAxisLength() / (1 + _chart.barPadding()) / numberOfBars);
-	    }
-
-	    if (_barWidth === Infinity || isNaN(_barWidth) || _barWidth < MIN_BAR_WIDTH) {
-	      _barWidth = MIN_BAR_WIDTH;
-	    }
-	  }
-
-	  _chart.fadeDeselectedArea = function () {
-	    var bars = _chart.chartBodyG().selectAll("rect.bar");
-	    var extent = _chart.brush().extent();
-
-	    if (_chart.isOrdinal()) {
-	      if (_chart.hasFilter()) {
-	        bars.classed(_core.constants.SELECTED_CLASS, function (d) {
-	          return _chart.hasFilter(d.x);
-	        });
-	        bars.classed(_core.constants.DESELECTED_CLASS, function (d) {
-	          return !_chart.hasFilter(d.x);
-	        });
-	      } else {
-	        bars.classed(_core.constants.SELECTED_CLASS, false);
-	        bars.classed(_core.constants.DESELECTED_CLASS, false);
-	      }
-	    } else if (!_chart.brushIsEmpty(extent)) {
-	      var start = extent[0];
-	      var end = extent[1];
-
-	      bars.classed(_core.constants.DESELECTED_CLASS, function (d) {
-	        return d.x < start || d.x >= end;
-	      });
-	    } else {
-	      bars.classed(_core.constants.DESELECTED_CLASS, false);
-	    }
-	  };
-
-	  /**
-	   * Whether the bar chart will render each bar centered around the data position on the x-axis.
-	   * @name centerBar
-	   * @memberof dc.barChart
-	   * @instance
-	   * @param {Boolean} [centerBar=false]
-	   * @return {Boolean}
-	   * @return {dc.barChart}
-	   */
-	  _chart.centerBar = function (centerBar) {
-	    if (!arguments.length) {
-	      return _centerBar;
-	    }
-	    _centerBar = centerBar;
-	    return _chart;
-	  };
-
-	  (0, _core.override)(_chart, "onClick", function (d) {
-	    _chart._onClick(d.data);
-	  });
-
-	  /**
-	   * Get or set the spacing between bars as a fraction of bar size. Valid values are between 0-1.
-	   * Setting this value will also remove any previously set {@link #dc.barChart+gap gap}. See the
-	   * {@link https://github.com/mbostock/d3/wiki/Ordinal-Scales#wiki-ordinal_rangeBands d3 docs}
-	   * for a visual description of how the padding is applied.
-	   * @name barPadding
-	   * @memberof dc.barChart
-	   * @instance
-	   * @param {Number} [barPadding=0]
-	   * @return {Number}
-	   * @return {dc.barChart}
-	   */
-	  _chart.barPadding = function (barPadding) {
-	    if (!arguments.length) {
-	      return _chart._rangeBandPadding();
-	    }
-	    _chart._rangeBandPadding(barPadding);
-	    _gap = undefined;
-	    return _chart;
-	  };
-
-	  _chart._useOuterPadding = function () {
-	    return _gap === undefined;
-	  };
-
-	  /**
-	   * Get or set the outer padding on an ordinal bar chart. This setting has no effect on non-ordinal charts.
-	   * Will pad the width by `padding * barWidth` on each side of the chart.
-	   * @name outerPadding
-	   * @memberof dc.barChart
-	   * @instance
-	   * @param {Number} [padding=0.5]
-	   * @return {Number}
-	   * @return {dc.barChart}
-	   */
-	  _chart.outerPadding = _chart._outerRangeBandPadding;
-
-	  /**
-	   * Manually set fixed gap (in px) between bars instead of relying on the default auto-generated
-	   * gap.  By default the bar chart implementation will calculate and set the gap automatically
-	   * based on the number of data points and the length of the x axis.
-	   * @name gap
-	   * @memberof dc.barChart
-	   * @instance
-	   * @param {Number} [gap=2]
-	   * @return {Number}
-	   * @return {dc.barChart}
-	   */
-	  _chart.gap = function (gap) {
-	    if (!arguments.length) {
-	      return _gap;
-	    }
-	    _gap = gap;
-	    return _chart;
-	  };
-
-	  _chart.extendBrush = function () {
-	    var extent = _chart.brush().extent();
-	    if (_chart.round() && (!_centerBar || _alwaysUseRounding)) {
-	      extent[0] = extent.map(_chart.round())[0];
-	      extent[1] = extent.map(_chart.round())[1];
-
-	      _chart.chartBodyG().select(".brush").call(_chart.brush().extent(extent));
-	    }
-
-	    return extent;
-	  };
-
-	  /**
-	   * Set or get whether rounding is enabled when bars are centered. If false, using
-	   * rounding with centered bars will result in a warning and rounding will be ignored.  This flag
-	   * has no effect if bars are not {@link #dc.barChart+centerBar centered}.
-	   * When using standard d3.js rounding methods, the brush often doesn't align correctly with
-	   * centered bars since the bars are offset.  The rounding function must add an offset to
-	   * compensate, such as in the following example.
-	   * @name alwaysUseRounding
-	   * @memberof dc.barChart
-	   * @instance
-	   * @example
-	   * chart.round(function(n) { return Math.floor(n) + 0.5; });
-	   * @param {Boolean} [alwaysUseRounding=false]
-	   * @return {Boolean}
-	   * @return {dc.barChart}
-	   */
-	  _chart.alwaysUseRounding = function (alwaysUseRounding) {
-	    if (!arguments.length) {
-	      return _alwaysUseRounding;
-	    }
-	    _alwaysUseRounding = alwaysUseRounding;
-	    return _chart;
-	  };
-
-	  function colorFilter(color, inv) {
-	    return function () {
-	      var item = _d2.default.select(this);
-	      var match = item.attr("fill") === color;
-	      return inv ? !match : match;
-	    };
-	  }
-
-	  _chart.legendHighlight = function (d) {
-	    if (!_chart.isLegendableHidden(d)) {
-	      _chart.g().selectAll("rect.bar").classed("highlight", colorFilter(d.color)).classed("fadeout", colorFilter(d.color, true));
-	    }
-	  };
-
-	  _chart.legendReset = function () {
-	    _chart.g().selectAll("rect.bar").classed("highlight", false).classed("fadeout", false);
-	  };
-
-	  (0, _core.override)(_chart, "xAxisMax", function () {
-	    var max = this._xAxisMax();
-	    if ("resolution" in _chart.xUnits()) {
-	      var res = _chart.xUnits().resolution;
-	      max = max + res;
-	    }
-	    return max;
-	  });
-
-	  var getConservativeDateTruncBucket = function getConservativeDateTruncBucket(binUnit) {
-	    return TIME_UNIT_PER_SECONDS[binUnit] * MILLISECONDS_IN_SECOND;
-	  };
-
-	  var getDateExtractBucket = function getDateExtractBucket(binUnit) {
-	    return EXTRACT_UNIT_NUM_BUCKETS[binUnit];
-	  };
-
-	  _chart.getTimeBinSize = function (binParams) {
-	    if (binParams.extract && binParams.timeBin !== "year") {
-	      return getDateExtractBucket(binParams.timeBin);
-	    }
-	    return Math.ceil((_chart.xAxisMax() - _chart.xAxisMin()) / getConservativeDateTruncBucket(binParams.timeBin));
-	  };
-
-	  _chart.renderLabel(false);
-
-	  return _chart.anchor(parent, chartGroup);
-	}
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = lineChart;
-
-	var _core = __webpack_require__(3);
-
-	var _utils = __webpack_require__(4);
-
-	var _coordinateGridMixin = __webpack_require__(10);
-
-	var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
-
-	var _d = __webpack_require__(2);
-
-	var _d2 = _interopRequireDefault(_d);
-
-	var _elasticDimensionMixin = __webpack_require__(31);
-
-	var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
-
-	var _stackMixin = __webpack_require__(21);
-
-	var _stackMixin2 = _interopRequireDefault(_stackMixin);
-
-	var _multiSeriesMixin = __webpack_require__(171);
-
-	var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	/**
-	 * Concrete line/area chart implementation.
-	 *
-	 * Examples:
-	 * - {@link https://mapd.github.io/mapd-charting/example/example1.html Number of Flights by Departure Time}
-	 * @name lineChart
-	 * @memberof dc
-	 * @mixes dc.stackMixin
-	 * @mixes dc.coordinateGridMixin
-	 * @example
-	 * // create a line chart under #chart-container1 element using the default global chart group
-	 * var chart1 = dc.lineChart('#chart-container1');
-	 * // create a line chart under #chart-container2 element using chart group A
-	 * var chart2 = dc.lineChart('#chart-container2', 'chartGroupA');
-	 * // create a sub-chart under a composite parent chart
-	 * var chart3 = dc.lineChart(compositeChart);
-	 * @param {String|node|d3.selection|dc.compositeChart} parent - Any valid
-	 * {@link https://github.com/mbostock/d3/wiki/Selections#selecting-elements d3 single selector}
-	 * specifying a dom block element such as a div; or a dom element or d3 selection.  If the line
-	 * chart is a sub-chart in a {@link #dc.compositeChart Composite Chart} then pass in the parent
-	 * composite chart instance instead.
-	 * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
-	 * Interaction with a chart will only trigger events and redraws within the chart's group.
-	 * @return {dc.lineChart}
-	 */
-	function lineChart(parent, chartGroup) {
-	  var DEFAULT_DOT_RADIUS = 5;
-	  var TOOLTIP_G_CLASS = "dc-tooltip";
-	  var DOT_CIRCLE_CLASS = "dot";
-	  var Y_AXIS_REF_LINE_CLASS = "yRef";
-	  var X_AXIS_REF_LINE_CLASS = "xRef";
-	  var DEFAULT_DOT_OPACITY = 1e-6;
-
-	  var _chart = (0, _elasticDimensionMixin2.default)((0, _stackMixin2.default)((0, _coordinateGridMixin2.default)({})));
-	  var _renderArea = false;
-	  var _dotRadius = DEFAULT_DOT_RADIUS;
-	  var _dataPointRadius = null;
-	  var _dataPointFillOpacity = DEFAULT_DOT_OPACITY;
-	  var _dataPointStrokeOpacity = DEFAULT_DOT_OPACITY;
-	  var _interpolate = "linear";
-	  var _tension = 0.7;
-	  var _defined = void 0;
-	  var _dashStyle = void 0;
-	  var _xyTipsOn = true;
-
-	  _chart.transitionDuration(500);
-	  _chart._rangeBandPadding(1);
-
-	  _chart.plotData = function () {
-	    var chartBody = _chart.chartBodyG();
-	    var layersList = chartBody.selectAll("g.stack-list");
-
-	    if (layersList.empty()) {
-	      layersList = chartBody.append("g").attr("class", "stack-list");
-	    }
-
-	    var layers = layersList.selectAll("g.stack").data(_chart.data());
-
-	    var layersEnter = layers.enter().append("g").attr("class", function (d, i) {
-	      return "stack " + "_" + i;
-	    });
-
-	    drawLine(layersEnter, layers);
-
-	    drawArea(layersEnter, layers);
-
-	    drawDots(chartBody, layers);
-	  };
-
-	  /**
-	   * Gets or sets the interpolator to use for lines drawn, by string name, allowing e.g. step
-	   * functions, splines, and cubic interpolation.  This is passed to
-	   * {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate d3.svg.line.interpolate} and
-	   * {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#area_interpolate d3.svg.area.interpolate},
-	   * where you can find a complete list of valid arguments
-	   * @name interpolate
-	   * @memberof dc.lineChart
-	   * @instance
-	   * @see {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate d3.svg.line.interpolate}
-	   * @see {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#area_interpolate d3.svg.area.interpolate}
-	   * @param  {String} [interpolate='linear']
-	   * @return {String}
-	   * @return {dc.lineChart}
-	   */
-	  _chart.interpolate = function (interpolate) {
-	    if (!arguments.length) {
-	      return _interpolate;
-	    }
-	    _interpolate = interpolate;
-	    return _chart;
-	  };
-
-	  /**
-	   * Gets or sets the tension to use for lines drawn, in the range 0 to 1.
-	   * This parameter further customizes the interpolation behavior.  It is passed to
-	   * {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_tension d3.svg.line.tension} and
-	   * {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#area_tension d3.svg.area.tension}.
-	   * @name tension
-	   * @memberof dc.lineChart
-	   * @instance
-	   * @see {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate d3.svg.line.interpolate}
-	   * @see {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#area_interpolate d3.svg.area.interpolate}
-	   * @param  {Number} [tension=0.7]
-	   * @return {Number}
-	   * @return {dc.lineChart}
-	   */
-	  _chart.tension = function (tension) {
-	    if (!arguments.length) {
-	      return _tension;
-	    }
-	    _tension = tension;
-	    return _chart;
-	  };
-
-	  /**
-	   * Gets or sets a function that will determine discontinuities in the line which should be
-	   * skipped: the path will be broken into separate subpaths if some points are undefined.
-	   * This function is passed to
-	   * {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_defined d3.svg.line.defined}
-	   *
-	   * Note: crossfilter will sometimes coerce nulls to 0, so you may need to carefully write
-	   * custom reduce functions to get this to work, depending on your data. See
-	   * https://github.com/dc-js/dc.js/issues/615#issuecomment-49089248
-	   * @name defined
-	   * @memberof dc.lineChart
-	   * @instance
-	   * @see {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_defined d3.svg.line.defined}
-	   * @param  {Function} [defined]
-	   * @return {Function}
-	   * @return {dc.lineChart}
-	   */
-	  _chart.defined = function (defined) {
-	    if (!arguments.length) {
-	      return _defined;
-	    }
-	    _defined = defined;
-	    return _chart;
-	  };
-
-	  /**
-	   * Set the line's d3 dashstyle. This value becomes the 'stroke-dasharray' of line. Defaults to empty
-	   * array (solid line).
-	   * @name dashStyle
-	   * @memberof dc.lineChart
-	   * @instance
-	   * @see {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray stroke-dasharray}
-	   * @example
-	   * // create a Dash Dot Dot Dot
-	   * chart.dashStyle([3,1,1,1]);
-	   * @param  {Array<Number>} [dashStyle=[]]
-	   * @return {Array<Number>}
-	   * @return {dc.lineChart}
-	   */
-	  _chart.dashStyle = function (dashStyle) {
-	    if (!arguments.length) {
-	      return _dashStyle;
-	    }
-	    _dashStyle = dashStyle;
-	    return _chart;
-	  };
-
-	  /**
-	   * Get or set render area flag. If the flag is set to true then the chart will render the area
-	   * beneath each line and the line chart effectively becomes an area chart.
-	   * @name renderArea
-	   * @memberof dc.lineChart
-	   * @instance
-	   * @param  {Boolean} [renderArea=false]
-	   * @return {Boolean}
-	   * @return {dc.lineChart}
-	   */
-	  _chart.renderArea = function (renderArea) {
-	    if (!arguments.length) {
-	      return _renderArea;
-	    }
-	    _renderArea = renderArea;
-	    return _chart;
-	  };
-
-	  function colors(d, i) {
-	    if (d.name) {
-	      d.layer = d.name;
-	      return _chart.getColor(d, i);
-	    } else {
-	      return _chart.getColor(d, i);
-	    }
-	  }
-
-	  function drawLine(layersEnter, layers) {
-	    var line = _d2.default.svg.line().x(function (d) {
-	      return _chart.x()(d.x);
-	    }).y(function (d) {
-	      /* OVERRIDE ---------------------------------------------------------------- */
-	      if (_renderArea) {
-	        return _chart.y()(d.y + d.y0);
-	      } else {
-	        return _chart.y()(d.y);
-	      }
-	      /* ------------------------------------------------------------------------- */
-	    }).interpolate(_interpolate).tension(_tension);
-	    if (_defined) {
-	      line.defined(_defined);
-	    }
-
-	    var path = layersEnter.append("path").attr("class", "line").attr("stroke", colors);
-	    if (_dashStyle) {
-	      path.attr("stroke-dasharray", _dashStyle);
-	    }
-
-	    (0, _core.transition)(layers.select("path.line"), _chart.transitionDuration())
-	    // .ease('linear')
-	    .attr("stroke", colors).attr("d", function (d) {
-	      return safeD(line(d.values));
-	    });
-	  }
-
-	  function drawArea(layersEnter, layers) {
-	    if (_renderArea) {
-	      var area = _d2.default.svg.area().x(function (d) {
-	        return _chart.x()(d.x);
-	      }).y(function (d) {
-	        return _chart.y()(d.y + d.y0);
-	      }).y0(function (d) {
-	        return _chart.y()(d.y0);
-	      }).interpolate(_interpolate).tension(_tension);
-	      if (_defined) {
-	        area.defined(_defined);
-	      }
-
-	      layersEnter.append("path").attr("class", "area").attr("fill", colors).attr("d", function (d) {
-	        return safeD(area(d.values));
-	      });
-
-	      (0, _core.transition)(layers.select("path.area"), _chart.transitionDuration())
-	      // .ease('linear')
-	      .attr("fill", colors).attr("d", function (d) {
-	        return safeD(area(d.values));
-	      });
-	    }
-	  }
-
-	  function safeD(d) {
-	    return !d || d.indexOf("NaN") >= 0 ? "M0,0" : d;
-	  }
-
-	  function hoverOverBrush() {
-
-	    var g = _chart.g().on("mouseout", function () {
-	      hideBrushDots();
-	    }).on("mousemove", function () {
-
-	      if (_chart.isBrushing()) {
-	        hidePopup();
-	      } else {
-	        showBrushDots(g, this);
-	      }
-	    });
-	  }
-
-	  function hideBrushDots() {
-	    _chart.g().selectAll(".dot").style("fill-opacity", 0);
-	    hidePopup();
-	  }
-
-	  function showBrushDots(g, e) {
-
-	    var coordinates = [0, 0];
-	    coordinates = _chart.popupCoordinates(_d2.default.mouse(e));
-	    var x = coordinates[0];
-	    var y = coordinates[1];
-	    var xAdjusted = x - _chart.margins().left;
-
-	    var popupRows = [];
-
-	    var toolTips = g.selectAll(".dc-tooltip").each(function () {
-
-	      var lastDot = null;
-	      var hoverDot = null;
-
-	      var dots = _d2.default.select(this).selectAll(".dot").style("fill-opacity", 0);
-
-	      dots[0].sort(function (a, b) {
-	        return _d2.default.select(a).attr("cx") - _d2.default.select(b).attr("cx");
-	      });
-
-	      dots[0].some(function (obj, i) {
-
-	        var elm = _d2.default.select(obj);
-
-	        if (xAdjusted < elm.attr("cx")) {
-	          hoverDot = { elm: elm, datum: elm.datum(), i: i };
-	          return true;
-	        }
-
-	        lastDot = { elm: elm, datum: elm.datum(), i: i };
-	      });
-
-	      hoverDot = lastDot && hoverDot ? Math.abs(lastDot.elm.attr("cx") - xAdjusted) < Math.abs(hoverDot.elm.attr("cx") - xAdjusted) ? lastDot : hoverDot : hoverDot;
-
-	      if (hoverDot && Math.abs(hoverDot.elm.attr("cx") - xAdjusted) < 32) {
-	        hoverDot.elm.style("fill-opacity", 1);
-	        popupRows.push(hoverDot);
-	      }
-	    });
-
-	    if (popupRows.length > 0) {
-	      showPopup(popupRows, x, y);
-	    } else {
-	      hidePopup();
-	    }
-	  }
-
-	  function showPopup(arr, x, y) {
-	    var popup = _chart.popup();
-
-	    var popupBox = popup.select(".chart-popup-content").html("").classed("popup-list", true);
-
-	    popupBox.append("div").attr("class", "popup-header").text(_chart.popupTextAccessor(arr));
-
-	    var popupItems = popupBox.selectAll(".popup-item").data(arr.sort(function (a, b) {
-	      return _renderArea ? b.datum.y + b.datum.y0 - (a.datum.y + a.datum.y0) : b.datum.y - a.datum.y;
-	    })).enter().append("div").attr("class", "popup-item");
-
-	    popupItems.append("div").attr("class", "popup-legend").style("background-color", function (d) {
-	      return colors(d.datum, d.i);
-	    });
-
-	    if (_chart.series().keys()) {
-	      popupItems.append("div").attr("class", "popup-item-key").text(function (d) {
-	        return _chart.colorDomain()[d.datum.idx];
-	      });
-	    }
-
-	    popupItems.append("div").attr("class", "popup-item-value").classed("text-align-right", Boolean(_chart.series().keys())).text(function (d) {
-	      return _utils.utils.formatValue(d.datum.y);
-	    });
-
-	    positionPopup(x, y);
-	    popup.classed("js-showPopup", true);
-	  }
-
-	  function hidePopup() {
-	    _chart.popup().classed("js-showPopup", false);
-	  }
-
-	  function positionPopup(x, y) {
-
-	    var popup = _chart.popup().attr("style", function () {
-	      return "transform:translate(" + x + "px," + y + "px)";
-	    });
-
-	    popup.select(".chart-popup-box").classed("align-left-center", true).classed("align-right-center", function () {
-	      return x + (_d2.default.select(this).node().getBoundingClientRect().width + 32) > _chart.width();
-	    });
-	  }
-
-	  function drawDots(chartBody, layers) {
-
-	    /* OVERRIDE ---------------------------------------------------------------- */
-	    // if (!_chart.brushOn() && _chart.xyTipsOn()) {
-	    /* ------------------------------------------------------------------------- */
-
-	    var tooltipListClass = TOOLTIP_G_CLASS + "-list";
-	    var tooltips = chartBody.select("g." + tooltipListClass);
-
-	    if (tooltips.empty()) {
-	      tooltips = chartBody.append("g").attr("class", tooltipListClass);
-	    }
-
-	    layers.each(function (d, layerIndex) {
-	      var points = d.values;
-	      if (_defined) {
-	        points = points.filter(_defined);
-	      }
-
-	      var g = tooltips.select("g." + TOOLTIP_G_CLASS + "._" + layerIndex);
-	      if (g.empty()) {
-	        g = tooltips.append("g").attr("class", TOOLTIP_G_CLASS + " _" + layerIndex);
-	      }
-
-	      createRefLines(g);
-
-	      var dots = g.selectAll("circle." + DOT_CIRCLE_CLASS).data(points, (0, _utils.pluck)("x"));
-
-	      dots.enter().append("circle").attr("class", DOT_CIRCLE_CLASS).attr("r", getDotRadius()).style("fill-opacity", _dataPointFillOpacity).style("stroke-opacity", _dataPointStrokeOpacity).on("mousemove", function () {
-	        var dot = _d2.default.select(this);
-	        showDot(dot);
-	        showRefLines(dot, g);
-	      }).on("mouseout", function () {
-	        var dot = _d2.default.select(this);
-	        hideDot(dot);
-	        hideRefLines(g);
-	      });
-
-	      dots.attr("cx", function (d) {
-	        return _utils.utils.safeNumber(_chart.x()(d.x));
-	      }).attr("cy", function (d) {
-	        /* OVERRIDE ---------------------------------------------------------------- */
-	        if (_renderArea) {
-	          return _utils.utils.safeNumber(_chart.y()(d.y + d.y0));
-	        } else {
-	          return _utils.utils.safeNumber(_chart.y()(d.y));
-	        }
-	        /* ------------------------------------------------------------------------- */
-	      }).attr("fill", colors).call(renderTitle, d);
-
-	      dots.exit().remove();
-	    });
-
-	    if (_chart.brushOn() && !_chart.focusChart()) {
-	      hoverOverBrush();
-	    }
-
-	    /* OVERRIDE ---------------------------------------------------------------- */
-	    // }
-	    /* ------------------------------------------------------------------------- */
-	  }
-
-	  function createRefLines(g) {
-	    var yRefLine = g.select("path." + Y_AXIS_REF_LINE_CLASS).empty() ? g.append("path").attr("class", Y_AXIS_REF_LINE_CLASS) : g.select("path." + Y_AXIS_REF_LINE_CLASS);
-	    yRefLine.style("display", "none").attr("stroke-dasharray", "5,5");
-
-	    var xRefLine = g.select("path." + X_AXIS_REF_LINE_CLASS).empty() ? g.append("path").attr("class", X_AXIS_REF_LINE_CLASS) : g.select("path." + X_AXIS_REF_LINE_CLASS);
-	    xRefLine.style("display", "none").attr("stroke-dasharray", "5,5");
-	  }
-
-	  function showDot(dot) {
-	    dot.style("fill-opacity", 0.8);
-	    dot.style("stroke-opacity", 0.8);
-	    dot.attr("r", _dotRadius);
-	    return dot;
-	  }
-
-	  function showRefLines(dot, g) {
-	    var x = dot.attr("cx");
-	    var y = dot.attr("cy");
-	    var yAxisX = _chart._yAxisX() - _chart.margins().left;
-	    var yAxisRefPathD = "M" + yAxisX + " " + y + "L" + x + " " + y;
-	    var xAxisRefPathD = "M" + x + " " + _chart.yAxisHeight() + "L" + x + " " + y;
-	    g.select("path." + Y_AXIS_REF_LINE_CLASS).style("display", "").attr("d", yAxisRefPathD);
-	    g.select("path." + X_AXIS_REF_LINE_CLASS).style("display", "").attr("d", xAxisRefPathD);
-	  }
-
-	  function getDotRadius() {
-	    return _dataPointRadius || _dotRadius;
-	  }
-
-	  function hideDot(dot) {
-	    dot.style("fill-opacity", _dataPointFillOpacity).style("stroke-opacity", _dataPointStrokeOpacity).attr("r", getDotRadius());
-	  }
-
-	  function hideRefLines(g) {
-	    g.select("path." + Y_AXIS_REF_LINE_CLASS).style("display", "none");
-	    g.select("path." + X_AXIS_REF_LINE_CLASS).style("display", "none");
-	  }
-
-	  function renderTitle(dot, d) {
-	    if (_chart.renderTitle()) {
-	      dot.selectAll("title").remove();
-	      dot.append("title").text((0, _utils.pluck)("data", _chart.title(d.name)));
-	    }
-	  }
-
-	  /**
-	   * Turn on/off the mouseover behavior of an individual data point which renders a circle and x/y axis
-	   * dashed lines back to each respective axis.  This is ignored if the chart
-	   * {@link #dc.coordinateGridMixin+brushOn brush} is on
-	   * @name xyTipsOn
-	   * @memberof dc.lineChart
-	   * @instance
-	   * @param  {Boolean} [xyTipsOn=false]
-	   * @return {Boolean}
-	   * @return {dc.lineChart}
-	   */
-	  _chart.xyTipsOn = function (xyTipsOn) {
-	    if (!arguments.length) {
-	      return _xyTipsOn;
-	    }
-	    _xyTipsOn = xyTipsOn;
-	    return _chart;
-	  };
-
-	  /**
-	   * Get or set the radius (in px) for dots displayed on the data points.
-	   * @name dotRadius
-	   * @memberof dc.lineChart
-	   * @instance
-	   * @param  {Number} [dotRadius=5]
-	   * @return {Number}
-	   * @return {dc.lineChart}
-	   */
-	  _chart.dotRadius = function (dotRadius) {
-	    if (!arguments.length) {
-	      return _dotRadius;
-	    }
-	    _dotRadius = dotRadius;
-	    return _chart;
-	  };
-
-	  /**
-	   * Always show individual dots for each datapoint.
-	   * If `options` is falsy, it disables data point rendering.
-	   *
-	   * If no `options` are provided, the current `options` values are instead returned.
-	   * @name renderDataPoints
-	   * @memberof dc.lineChart
-	   * @instance
-	   * @example
-	   * chart.renderDataPoints({radius: 2, fillOpacity: 0.8, strokeOpacity: 0.8})
-	   * @param  {{fillOpacity: Number, strokeOpacity: Number, radius: Number}} [options={fillOpacity: 0.8, strokeOpacity: 0.8, radius: 2}]
-	   * @return {{fillOpacity: Number, strokeOpacity: Number, radius: Number}}
-	   * @return {dc.lineChart}
-	   */
-	  _chart.renderDataPoints = function (options) {
-	    if (!arguments.length) {
-	      return {
-	        fillOpacity: _dataPointFillOpacity,
-	        strokeOpacity: _dataPointStrokeOpacity,
-	        radius: _dataPointRadius
-	      };
-	    } else if (!options) {
-	      _dataPointFillOpacity = DEFAULT_DOT_OPACITY;
-	      _dataPointStrokeOpacity = DEFAULT_DOT_OPACITY;
-	      _dataPointRadius = null;
-	    } else {
-	      _dataPointFillOpacity = options.fillOpacity || 0.8;
-	      _dataPointStrokeOpacity = options.strokeOpacity || 0.8;
-	      _dataPointRadius = options.radius || 2;
-	    }
-	    return _chart;
-	  };
-
-	  function colorFilter(color, dashstyle, inv) {
-	    return function () {
-	      var item = _d2.default.select(this);
-	      var match = item.attr("stroke") === color && item.attr("stroke-dasharray") === (dashstyle instanceof Array ? dashstyle.join(",") : null) || item.attr("fill") === color;
-	      return inv ? !match : match;
-	    };
-	  }
-
-	  _chart.legendHighlight = function (d) {
-	    if (!_chart.isLegendableHidden(d)) {
-	      _chart.g().selectAll("path.line, path.area").classed("highlight", colorFilter(d.color, d.dashstyle)).classed("fadeout", colorFilter(d.color, d.dashstyle, true));
-	    }
-	  };
-
-	  _chart.legendReset = function () {
-	    _chart.g().selectAll("path.line, path.area").classed("highlight", false).classed("fadeout", false);
-	  };
-
-	  (0, _core.override)(_chart, "legendables", function () {
-	    var legendables = _chart._legendables();
-	    if (!_dashStyle) {
-	      return legendables;
-	    }
-	    return legendables.map(function (l) {
-	      l.dashstyle = _dashStyle;
-	      return l;
-	    });
-	  });
-
-	  _chart = (0, _multiSeriesMixin2.default)(_chart);
-
-	  return _chart.anchor(parent, chartGroup);
-	}
-
-/***/ }),
-/* 28 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -14800,7 +13633,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM", "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM", "8PM", "9PM", "10PM", "11PM"];
 
 /***/ }),
-/* 29 */
+/* 27 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -14840,7 +13673,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	BadArgumentException.prototype.constructor = BadArgumentException;
 
 /***/ }),
-/* 30 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15009,7 +13842,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 31 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15019,7 +13852,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = elasticDimensionMixin;
 
-	var _ramda = __webpack_require__(183);
+	var _ramda = __webpack_require__(181);
 
 	var _d = __webpack_require__(2);
 
@@ -15051,7 +13884,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  function updateBinRange(group, callback) {
-	    if (!_chart.elasticX() || !_chart.binParams()[0] || _chart.rangeChartEnabled() && _chart.rangeChart() && _chart.rangeChart().filter()) {
+	    if (!_chart.elasticX() || !_chart.binParams()[0] || _chart.rangeChart() && _chart.rangeChart().filter()) {
 	      return _dataAsync(group, callback);
 	    }
 
@@ -15062,7 +13895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      _chart.binParams((0, _ramda.adjust)((0, _ramda.set)((0, _ramda.lensProp)("binBounds"), [bounds.min_val, bounds.max_val]), 0, _chart.binParams()));
 
-	      if (_chart._isRangeChart && _chart.filter()) {
+	      if (_chart.focusChart() && _chart.filter()) {
 	        _chart.focusChart()._invokeBinBoundsListener([bounds.min_val, bounds.max_val]);
 	      } else {
 	        _chart._invokeBinBoundsListener([bounds.min_val, bounds.max_val]);
@@ -15082,8 +13915,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _chart.on("preRedraw.maybeRemoveRangeFilter", function () {
 	    var range = _chart.rangeChart();
-
-	    if (_chart.rangeChartEnabled() && range && range.filter()) {
+	    if (range && range.filter()) {
 	      if (range.filter()[0] < range.x().domain()[0] || range.filter()[1] > range.x().domain()[1]) {
 	        _chart.filterAll();
 	        range.filterAll();
@@ -15095,7 +13927,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 32 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15116,6 +13948,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var CHART_HEIGHT = 0.75;
 	var TOGGLE_SIZE = 24;
 	var NON_INDEX = -1;
+
+	function formatVal(val) {
+	  return val instanceof Date ? _d2.default.time.format.utc("%m-%d-%Y")(val) : (0, _formattingHelpers.formatDataValue)(val);
+	}
 
 	function lockAxisMixin(chart) {
 	  var events = ["elasticX", "elasticY", "xDomain", "yDomain"];
@@ -15146,6 +13982,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _listeners.xDomain(chart, minMax);
 	  };
 
+	  function handleRangeFocus(chart, minMax) {
+	    if (chart.filters().length) {
+	      if (minMax[0] <= chart.filter()[0] && chart.filter()[1] <= minMax[1]) {
+	        var preserveFilter = chart.filter().slice();
+	        chart.rangeChart().replaceFilter(minMax);
+	        chart.replaceFilter(preserveFilter);
+	      } else {
+	        chart.rangeChart().replaceFilter(minMax);
+	      }
+	    } else {
+	      chart.rangeChart().filter(minMax);
+	    }
+	  }
+
 	  function setAxis(type, minMax) {
 	    if (type === "y") {
 	      chart.elasticY(false);
@@ -15153,10 +14003,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      chart.y().domain(minMax);
 	      chart._invokeYDomainListener(minMax);
 	    } else {
+	      if (chart.rangeChart && chart.rangeChart()) {
+	        return handleRangeFocus(chart, minMax);
+	      }
+
 	      chart.elasticX(false);
 	      chart._invokeelasticXListener();
 	      chart.x().domain(minMax);
 	      chart._invokeXDomainListener(minMax);
+	      if (chart.focusChart && chart.focusChart()) {
+	        chart.focusChart().elasticX(false);
+	        chart.focusChart()._invokeelasticXListener();
+	        chart.focusChart()._invokeXDomainListener(minMax);
+	        if (!chart.filters().length) {
+	          chart.focusChart().x().domain(minMax);
+	        }
+	        chart.focusChart().xOriginalDomain(minMax);
+	        chart.focusChart().renderAsync();
+	      }
 	    }
 	    chart.renderAsync();
 	  }
@@ -15176,14 +14040,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (chart.elasticX()) {
 	        chart._invokeXDomainListener(null);
 	      } else {
-	        chart._invokeXDomainListener(chart.x().domain().slice(0));
+	        chart._invokeXDomainListener(chart.x().domain().slice());
+	      }
+	      if (chart.focusChart && chart.focusChart()) {
+	        chart.focusChart().elasticX(!chart.focusChart().elasticX());
+	        chart.focusChart()._invokeelasticXListener();
+	        if (chart.elasticX()) {
+	          chart.focusChart()._invokeXDomainListener(null);
+	        } else {
+	          chart.focusChart()._invokeXDomainListener(chart.x().domain().slice());
+	        }
+	        chart.focusChart().redrawAsync();
 	      }
 	    }
 	    chart.redrawAsync();
 	  }
 
 	  function updateMinMax(type, value) {
-	    if (value.some(isNaN)) {
+	    if (value.some(isNaN) || value[1] <= value[0] || type === "x" && chart.rangeChart && chart.rangeChart() && (value[0] < chart.rangeChart().x().domain()[0] || value[1] > chart.rangeChart().x().domain()[1])) {
 	      chart.prepareLockAxis(type);
 	    } else {
 	      setAxis(type, value);
@@ -15193,7 +14067,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  chart.prepareLockAxis = function () {
 	    var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "y";
 
-	    if (chart._isRangeChart) {
+	    if (chart.focusChart && chart.focusChart() && type === "y") {
 	      return;
 	    }
 
@@ -15216,7 +14090,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      height: type === "y" ? chart.height() + "px" : chart.margins().bottom + "px"
 	    };
 
-	    var minMax = chart[type]().domain();
+	    var minMax = chart[type]().domain().slice();
 
 	    chart.root().selectAll(".axis-lock.type-" + type).remove();
 
@@ -15224,38 +14098,290 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    lockWrapper.append("div").attr("class", "hit-box").style("width", hitBoxDim.width).style("height", hitBoxDim.height).style("top", hitBoxDim.top).style("left", hitBoxDim.left);
 
-	    lockWrapper.append("div").attr("class", "lock-toggle").classed("is-locked", function () {
+	    lockWrapper.append("div").attr("class", "lock-toggle type-" + type).classed("is-locked", function () {
 	      return type === "y" ? !chart.elasticY() : !chart.elasticX();
 	    }).style("top", iconPosition.top).style("left", iconPosition.left).on("click", function () {
 	      return toggleLock(type);
 	    });
 
+	    if (chart.rangeChart && chart.rangeChart() && type === "x") {
+	      lockWrapper.selectAll(".lock-toggle.type-x").remove();
+	    }
+
 	    var axisMax = lockWrapper.append("div").attr("class", "axis-input max").style("top", inputsPosition.maxTop).style("left", inputsPosition.maxLeft);
 
-	    axisMax.append("input").attr("value", (0, _formattingHelpers.formatDataValue)(minMax[1])).on("focus", function () {
+	    axisMax.append("input").attr("value", formatVal(minMax[1])).on("focus", function () {
 	      this.select();
 	    }).on("change", function () {
-	      updateMinMax(type, [minMax[0], parseFloat(this.value.replace(/,/g, ""))]);
+	      var val = minMax[1] instanceof Date ? new Date(this.value) : parseFloat(this.value.replace(/,/g, ""));
+	      updateMinMax(type, [minMax[0], val]);
 	    });
 
-	    axisMax.append("div").text((0, _formattingHelpers.formatDataValue)(minMax[1]));
+	    axisMax.append("div").text(formatVal(minMax[1]));
 
 	    var axisMin = lockWrapper.append("div").attr("class", "axis-input min").style("top", inputsPosition.minTop).style("left", inputsPosition.minLeft);
 
-	    axisMin.append("input").attr("value", (0, _formattingHelpers.formatDataValue)(minMax[0])).on("focus", function () {
+	    axisMin.append("input").attr("value", formatVal(minMax[0])).on("focus", function () {
 	      this.select();
 	    }).on("change", function () {
-	      updateMinMax(type, [parseFloat(this.value.replace(/,/g, "")), minMax[1]]);
+	      var val = minMax[0] instanceof Date ? new Date(this.value) : parseFloat(this.value.replace(/,/g, ""));
+	      updateMinMax(type, [val, minMax[1]]);
 	    });
 
-	    axisMin.append("div").text((0, _formattingHelpers.formatDataValue)(minMax[0]));
+	    axisMin.append("div").text(formatVal(minMax[0]));
 	  };
 
 	  return chart;
 	}
 
 /***/ }),
-/* 33 */
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = multiSeriesMixin;
+
+	var _core = __webpack_require__(3);
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	var LIMIT = 21;
+	var OFFSET = 0;
+	var TOP = 5;
+	var MULTI_DIMENSION_INDEX = 1;
+
+	function processMultiSeriesResults(results) {
+	  return results.reduce(function (accum, _ref) {
+	    var key1 = _ref.key1,
+	        key0 = _ref.key0,
+	        val = _ref.val;
+
+	    if (accum.keys[key1]) {
+	      accum.keys[key1] = accum.keys[key1];
+	    } else if (key1 === "other") {
+	      accum.keys[key1] = key1;
+	    } else {
+	      accum.keys[key1] = "series_" + (Object.keys(accum.keys).length + 1);
+	    }
+
+	    if (Array.isArray(key0)) {
+	      var isExtract = key0[0].isExtract;
+
+	      var min = isExtract ? key0[0].value : key0[0].value || key0[0];
+	      var alias = key0[0].alias || min;
+
+	      if (typeof accum.ranges[alias] !== "number") {
+	        // eslint-disable-line no-negated-condition
+	        accum.data[accum.data.length] = _defineProperty({
+	          key0: key0
+	        }, accum.keys[key1], val);
+	        accum.ranges[alias] = accum.data.length - 1;
+	      } else {
+	        accum.data[accum.ranges[alias]][accum.keys[key1]] = val;
+	      }
+	    } else if (typeof accum.ranges[key0] !== "number") {
+	      // eslint-disable-line
+	      accum.data[accum.data.length] = _defineProperty({
+	        key0: key0
+	      }, accum.keys[key1], val);
+	      accum.ranges[key0] = accum.data.length - 1;
+	    } else {
+	      accum.data[accum.ranges[key0]][accum.keys[key1]] = val;
+	    }
+
+	    return accum;
+	  }, {
+	    keys: {},
+	    ranges: {},
+	    data: []
+	  });
+	}
+
+	function selectWithCase(dimension, values) {
+	  var set = values.map(function (val) {
+	    return "'" + val.replace(/'/, "''") + "'";
+	  }).join(",");
+	  return "CASE when " + dimension + " IN (" + set + ") then " + dimension + " ELSE 'other' END";
+	}
+
+	function setDimensionsWithColumns(columns, selected) {
+	  return function setDimensions(crossfilterDimensionArray) {
+	    return [crossfilterDimensionArray[0], selectWithCase(columns[MULTI_DIMENSION_INDEX], selected)];
+	  };
+	}
+
+	function flipKeys(keys) {
+	  return Object.keys(keys).reduce(function (accum, val) {
+	    accum[keys[val]] = val;
+	    return accum;
+	  }, {});
+	}
+
+	function multiSeriesMixin(chart) {
+	  var columns = null;
+	  var showOther = false;
+
+	  var series = {
+	    group: null,
+	    values: null,
+	    selected: null,
+	    keys: null
+	  };
+
+	  var seriesApi = {
+	    group: seriesMethodWithKey("group"),
+	    values: seriesMethodWithKey("values"),
+	    selected: seriesMethodWithKey("selected"),
+	    keys: seriesMethodWithKey("keys")
+	  };
+
+	  function seriesMethodWithKey(key) {
+	    return function seriesMethod(value) {
+	      if (typeof value === "undefined") {
+	        return series[key];
+	      }
+	      series[key] = value;
+	      return seriesApi;
+	    };
+	  }
+
+	  (0, _core.override)(chart, "_doRedraw", function () {
+	    if (chart.isMulti()) {
+	      setUpMultiStack();
+	      var rendered = chart.__doRedraw();
+	      chart.generatePopup();
+	      return rendered;
+	    } else {
+	      return chart.__doRedraw();
+	    }
+	  });
+
+	  (0, _core.override)(chart, "dimension", function (dimension) {
+	    if (!dimension) {
+	      return chart._dimension();
+	    }
+
+	    columns = dimension.value().slice();
+	    return chart._dimension(dimension);
+	  });
+
+	  chart.series = function () {
+	    return seriesApi;
+	  };
+
+	  chart.isMulti = function () {
+	    return chart.dimension().value().length > MULTI_DIMENSION_INDEX;
+	  };
+
+	  chart.showOther = function (other) {
+	    if (typeof other === "boolean") {
+	      showOther = other;
+	      return chart;
+	    }
+	    return showOther;
+	  };
+
+	  function dataAsync(group, callback) {
+	    if (chart.isMulti()) {
+	      return chart.series().group().topAsync(LIMIT, OFFSET).then(function (topValues) {
+	        var currentSelected = chart.series().selected();
+	        var hasSelected = Boolean(currentSelected && currentSelected.length);
+
+	        chart.series().values(topValues.map(function (result) {
+	          return result.key0;
+	        })).selected(hasSelected ? currentSelected : chart.series().values().slice(0, TOP));
+
+	        if (chart.rangeChart()) {
+	          chart.group().dimension().set(setDimensionsWithColumns(columns, chart.series().selected()));
+	        }
+	        chart.group().dimension().multiDim(false);
+
+	        return chart.group().reduce(chart.group().reduce()).all(function (error, results) {
+	          if (error) {
+	            return callback(error);
+	          } else {
+	            var _processMultiSeriesRe = processMultiSeriesResults(results),
+	                data = _processMultiSeriesRe.data,
+	                keys = _processMultiSeriesRe.keys;
+
+	            chart.series().keys(flipKeys(keys));
+	            return callback(error, data);
+	          }
+	        });
+	      }).catch(function (e) {
+	        return callback(e);
+	      });
+	    } else {
+	      return group.all(callback);
+	    }
+	  }
+
+	  function emptyStackMutation() {
+	    while (chart.stack().length) {
+	      chart.stack().pop();
+	    }
+	  }
+
+	  function addValuesWithNoKeysToKeysMutation() {
+	    function valuesWithNoKeys() {
+	      var keys = chart.series().keys();
+	      var selected = chart.series().selected() || [];
+	      var values = selected.slice();
+	      var indexes = Object.keys(keys).reduce(function (accum, key) {
+	        return accum.concat(selected.indexOf(keys[key]));
+	      }, []);
+	      indexes.forEach(function (index) {
+	        return values.splice(index, 1);
+	      });
+	      return values;
+	    }
+
+	    valuesWithNoKeys().forEach(function (select) {
+	      var currentLength = Object.keys(chart.series().keys()).length;
+	      var key = "series_" + (currentLength + 1);
+	      chart.series().keys()[key] = select;
+	    });
+	  }
+
+	  function stackFromSelected() {
+	    var keys = chart.series().keys();
+	    chart.series().selected().forEach(function (value) {
+	      var seriesName = Object.keys(keys).reduce(function (accum, v) {
+	        return keys[v] === value ? v : accum;
+	      }, null);
+	      chart.stack(chart.group(), seriesName, function (d) {
+	        return d[seriesName];
+	      });
+	    });
+	  }
+
+	  function setUpMultiStack() {
+	    if (chart.isMulti()) {
+	      emptyStackMutation();
+	      stackFromSelected();
+	      if (Object.keys(chart.series().keys()).length !== chart.stack().length && !chart.series().keys().other) {
+	        addValuesWithNoKeysToKeysMutation();
+	      }
+	      if (chart.showOther()) {
+	        chart.stack(chart.group(), "other", function (d) {
+	          return d.other;
+	        });
+	      }
+	    }
+	  }
+
+	  chart.setDataAsync(dataAsync);
+	  chart.on("preRender", setUpMultiStack);
+
+	  return chart;
+	}
+
+/***/ }),
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15291,7 +14417,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15667,7 +14793,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -16116,7 +15242,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -16241,7 +15367,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -16297,7 +15423,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var multipleKeysAccessorForStack = exports.multipleKeysAccessorForStack = createAccessor(getMinOfRange);
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -16395,12 +15521,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var pSlice = Array.prototype.slice;
-	var objectKeys = __webpack_require__(179);
-	var isArguments = __webpack_require__(178);
+	var objectKeys = __webpack_require__(177);
+	var isArguments = __webpack_require__(176);
 
 	var deepEqual = module.exports = function (actual, expected, opts) {
 	  if (!opts) opts = {};
@@ -16495,7 +15621,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -17145,7 +16271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -17222,7 +16348,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -17286,7 +16412,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -17394,7 +16520,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -17456,7 +16582,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -17597,7 +16723,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -17706,7 +16832,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -17844,7 +16970,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -17938,7 +17064,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -18061,7 +17187,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -18184,7 +17310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -18296,7 +17422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -18443,7 +17569,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -18528,7 +17654,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -18703,7 +17829,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -18770,7 +17896,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -18854,7 +17980,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -18918,7 +18044,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19001,7 +18127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19083,7 +18209,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19186,7 +18312,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19288,7 +18414,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19358,7 +18484,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19425,7 +18551,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19496,7 +18622,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19567,7 +18693,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 66 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19637,7 +18763,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19714,7 +18840,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19799,7 +18925,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 69 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19883,7 +19009,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 70 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -19953,7 +19079,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20063,7 +19189,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 72 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20174,7 +19300,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20238,7 +19364,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20302,7 +19428,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20370,7 +19496,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20438,7 +19564,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20515,7 +19641,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 78 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20595,7 +19721,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20676,7 +19802,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20779,7 +19905,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -20907,7 +20033,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21056,7 +20182,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21169,7 +20295,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21268,7 +20394,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 85 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21355,7 +20481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 86 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21486,7 +20612,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 87 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21560,7 +20686,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 88 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21640,7 +20766,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 89 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21727,7 +20853,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 90 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21820,7 +20946,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 91 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21911,7 +21037,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 92 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -21973,7 +21099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 93 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -22045,7 +21171,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 94 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -22137,7 +21263,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 95 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -22277,7 +21403,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 96 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -22351,7 +21477,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 97 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -22471,7 +21597,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 98 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -22572,7 +21698,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 99 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -22687,7 +21813,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 100 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -22781,7 +21907,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 101 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -22866,7 +21992,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 102 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23029,7 +22155,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 103 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23115,7 +22241,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 104 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23201,7 +22327,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 105 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23298,7 +22424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 106 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23365,7 +22491,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 107 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23492,7 +22618,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 108 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23569,7 +22695,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 109 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23633,7 +22759,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 110 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23761,7 +22887,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 111 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23870,7 +22996,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 112 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -23935,7 +23061,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 113 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -24004,7 +23130,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 114 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -24083,7 +23209,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 115 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -24262,7 +23388,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 116 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -24327,7 +23453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 117 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -24402,7 +23528,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 118 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -24556,7 +23682,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 119 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -24722,7 +23848,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 120 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -24796,7 +23922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 121 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -24910,7 +24036,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 122 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25024,7 +24150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 123 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25117,7 +24243,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 124 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25190,7 +24316,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 125 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25253,7 +24379,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 126 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25386,7 +24512,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 127 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25479,7 +24605,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 128 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25550,7 +24676,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 129 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25616,7 +24742,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 130 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25740,7 +24866,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 131 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25834,7 +24960,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 132 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25929,7 +25055,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 133 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -25991,7 +25117,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 134 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -26053,7 +25179,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 135 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -26203,7 +25329,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 136 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -26265,7 +25391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 137 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -26348,7 +25474,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 138 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -26420,7 +25546,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 139 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -26551,7 +25677,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 140 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -26656,7 +25782,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ }),
-/* 141 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26843,7 +25969,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 142 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27034,6 +26160,544 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /* --------------------------------------------------------------------------*/
 
 	  return _legend;
+	}
+
+/***/ }),
+/* 142 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = barChart;
+
+	var _core = __webpack_require__(3);
+
+	var _utils = __webpack_require__(4);
+
+	var _d = __webpack_require__(2);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _stackMixin = __webpack_require__(21);
+
+	var _stackMixin2 = _interopRequireDefault(_stackMixin);
+
+	var _elasticDimensionMixin = __webpack_require__(29);
+
+	var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
+
+	var _coordinateGridMixin = __webpack_require__(10);
+
+	var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
+
+	var _multiSeriesMixin = __webpack_require__(31);
+
+	var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var TIME_UNIT_PER_SECONDS = {
+	  century: 3153600000,
+	  decade: 315360000,
+	  year: 31536000,
+	  quarter: 10368000,
+	  month: 2592000,
+	  week: 604800,
+	  day: 86400,
+	  hour: 3600,
+	  minute: 60,
+	  second: 1
+	};
+
+	var MILLISECONDS_IN_SECOND = 1000;
+
+	var EXTRACT_UNIT_NUM_BUCKETS = {
+	  isodom: 31,
+	  isodow: 7,
+	  month: 12,
+	  quarter: 4,
+	  hour: 24,
+	  minute: 60
+
+	  /**
+	   * Concrete bar chart/histogram implementation.
+	   *
+	   * @class barChart
+	   * @memberof dc
+	   * @mixes dc.stackMixin
+	   * @mixes dc.coordinateGridMixin
+	   * @example
+	   * // create a bar chart under #chart-container1 element using the default global chart group
+	   * var chart1 = dc.barChart('#chart-container1');
+	   * // create a bar chart under #chart-container2 element using chart group A
+	   * var chart2 = dc.barChart('#chart-container2', 'chartGroupA');
+	   * // create a sub-chart under a composite parent chart
+	   * var chart3 = dc.barChart(compositeChart);
+	   * @param {String|node|d3.selection|dc.compositeChart} parent - Any valid
+	   * {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements d3 single selector}
+	   * specifying a dom block element such as a div; or a dom element or d3 selection.  If the bar
+	   * chart is a sub-chart in a {@link dc.compositeChart Composite Chart} then pass in the parent
+	   * composite chart instance instead.
+	   * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
+	   * Interaction with a chart will only trigger events and redraws within the chart's group.
+	   * @returns {dc.barChart}
+	   */
+	};function barChart(parent, chartGroup) {
+	  var MIN_BAR_WIDTH = 1;
+	  var DEFAULT_GAP_BETWEEN_BARS = 4;
+	  var LABEL_PADDING = 3;
+
+	  var _chart = (0, _elasticDimensionMixin2.default)((0, _stackMixin2.default)((0, _coordinateGridMixin2.default)({})));
+
+	  var _gap = DEFAULT_GAP_BETWEEN_BARS;
+	  var _centerBar = false;
+	  var _alwaysUseRounding = false;
+
+	  var _numBars = void 0;
+	  var _parent = parent;
+
+	  _chart._numberOfBars = null;
+	  var _barWidth = void 0;
+
+	  (0, _core.override)(_chart, "rescale", function () {
+	    _chart._rescale();
+	    _barWidth = undefined;
+
+	    return _chart;
+	  });
+
+	  _chart.label(function (d) {
+	    return _utils.utils.printSingleValue(d.y0 + d.y);
+	  }, false);
+
+	  _chart.plotData = function () {
+	    var layers = _chart.chartBodyG().selectAll("g.stack").data(_chart.data());
+
+	    calculateBarWidth();
+
+	    layers.enter().append("g").attr("class", function (d, i) {
+	      return "stack " + "_" + i;
+	    });
+
+	    var last = layers.size() - 1;
+	    layers.each(function (d, i) {
+	      var layer = _d2.default.select(this);
+
+	      renderBars(layer, i, d);
+	      if (_chart.renderLabel() && last === i) {
+	        renderLabels(layer, i, d);
+	      }
+	    });
+
+	    if (_chart.brushOn()) {
+	      hoverOverBrush();
+	    }
+	  };
+
+	  function hoverOverBrush() {
+
+	    var g = _chart.g().on("mouseout", function () {
+	      dehighlightBars();
+	    }).on("mousemove", function () {
+	      if (_chart.isBrushing()) {
+	        hidePopup();
+	      } else {
+	        highlightBars(g, this);
+	      }
+	    });
+	  }
+
+	  function highlightBars(g, e) {
+
+	    var coordinates = [0, 0];
+	    coordinates = _chart.popupCoordinates(_d2.default.mouse(e));
+	    var x = coordinates[0];
+	    var y = coordinates[1];
+	    var xAdjusted = x - _chart.margins().left;
+	    var yAdjusted = y - _chart.margins().top;
+
+	    var popupRows = [];
+
+	    var toolTips = g.selectAll(".stack").each(function () {
+
+	      var hoverBar = null;
+
+	      var bars = _d2.default.select(this).selectAll(".bar").style("fill-opacity", 1);
+
+	      bars[0].sort(function (a, b) {
+	        return _d2.default.select(a).attr("x") - _d2.default.select(b).attr("x");
+	      });
+
+	      bars[0].some(function (obj, i) {
+
+	        var elm = _d2.default.select(obj);
+
+	        if (xAdjusted < elm.attr("x")) {
+	          return true;
+	        }
+
+	        hoverBar = { elm: elm, datum: elm.datum(), i: i };
+	      });
+
+	      if (hoverBar && Math.abs(hoverBar.elm.attr("x") - xAdjusted) < _barWidth && yAdjusted > hoverBar.elm.attr("y") - 32) {
+	        hoverBar.elm.style("fill-opacity", 0.8);
+	        popupRows.push(hoverBar);
+	      }
+	    });
+
+	    if (popupRows.length > 0) {
+	      showPopup(popupRows, x, y);
+	    } else {
+	      hidePopup();
+	    }
+	  }
+
+	  function dehighlightBars() {
+	    _chart.g().selectAll(".bar").style("fill-opacity", 1);
+	    hidePopup();
+	  }
+
+	  function showPopup(arr, x, y) {
+	    var popup = _chart.popup().classed("hide-delay", true);
+
+	    var popupBox = popup.select(".chart-popup-content").html("").classed("popup-list", true);
+
+	    popupBox.append("div").attr("class", "popup-header").text(_chart.popupTextAccessor(arr));
+
+	    var popupItems = popupBox.selectAll(".popup-item").data(arr).enter().append("div").attr("class", "popup-item");
+
+	    popupItems.append("div").attr("class", "popup-legend").style("background-color", function (d) {
+	      return _chart.getColor(d.datum, d.i);
+	    });
+
+	    popupItems.append("div").attr("class", "popup-item-value").text(function (d) {
+	      return _utils.utils.formatValue(d.datum.y + d.datum.y0);
+	    });
+
+	    positionPopup(x, y);
+	    popup.classed("js-showPopup", true);
+	  }
+
+	  function hidePopup() {
+	    _chart.popup().classed("js-showPopup", false);
+	  }
+
+	  function positionPopup(x, y) {
+
+	    var popup = _chart.popup().attr("style", function () {
+	      return "transform:translate(" + x + "px," + y + "px)";
+	    });
+
+	    popup.select(".chart-popup-box").classed("align-left-center", true).classed("align-right-center", function () {
+	      return x + (_d2.default.select(this).node().getBoundingClientRect().width + 32) > _chart.width();
+	    });
+	  }
+
+	  function barHeight(d) {
+	    return _utils.utils.safeNumber(Math.abs(_chart.y()(d.y + d.y0) - _chart.y()(d.y0)));
+	  }
+
+	  function renderLabels(layer, layerIndex, d) {
+	    var labels = layer.selectAll("text.barLabel").data(d.values, (0, _utils.pluck)("x"));
+
+	    labels.enter().append("text").attr("class", "barLabel").attr("text-anchor", "middle");
+
+	    if (_chart.isOrdinal()) {
+	      labels.on("click", _chart.onClick);
+	      labels.attr("cursor", "pointer");
+	    }
+
+	    (0, _core.transition)(labels, _chart.transitionDuration()).attr("x", function (d) {
+	      var x = _chart.x()(d.x);
+	      if (!_centerBar) {
+	        x = x + _barWidth / 2;
+	      }
+	      return _utils.utils.safeNumber(x);
+	    }).attr("y", function (d) {
+	      var y = _chart.y()(d.y + d.y0);
+
+	      if (d.y < 0) {
+	        y = y - barHeight(d);
+	      }
+
+	      return _utils.utils.safeNumber(y - LABEL_PADDING);
+	    }).text(function (d) {
+	      return _chart.label()(d);
+	    });
+
+	    (0, _core.transition)(labels.exit(), _chart.transitionDuration()).attr("height", 0).remove();
+	  }
+
+	  function renderBars(layer, layerIndex, d) {
+	    /* OVERRIDE ---------------------------------------------------------------- */
+	    _numBars = d.values.length;
+	    /* ------------------------------------------------------------------------- */
+	    function colors(d, i) {
+	      if (d.name) {
+	        d.layer = d.name;
+	        return _chart.getColor(d, i);
+	      } else {
+	        return _chart.getColor(d, i);
+	      }
+	    }
+
+	    var bars = layer.selectAll("rect.bar").data(d.values, (0, _utils.pluck)("x"));
+
+	    var enter = bars.enter().append("rect").attr("class", "bar").attr("fill", colors).attr("y", _chart.yAxisHeight()).attr("height", 0);
+
+	    if (_chart.renderTitle()) {
+	      enter.append("title").text((0, _utils.pluck)("data", _chart.title(d.name)));
+	    }
+
+	    if (_chart.isOrdinal()) {
+	      bars.on("click", _chart.onClick);
+	    }
+
+	    (0, _core.transition)(bars, _chart.transitionDuration()).attr("x", function (d) {
+	      var x = _chart.x()(d.x);
+	      if (_centerBar) {
+	        x = x - _barWidth / 2;
+	      }
+	      if (_chart.isOrdinal() && _gap !== undefined) {
+	        x = x + _gap / 2;
+	      }
+	      return _utils.utils.safeNumber(x);
+	    }).attr("y", function (d) {
+	      var y = _chart.y()(d.y + d.y0);
+
+	      if (d.y < 0) {
+	        y = y - barHeight(d);
+	      }
+
+	      return _utils.utils.safeNumber(y);
+	    }).attr("width", _barWidth).attr("height", function (d) {
+	      return barHeight(d);
+	    }).attr("fill", colors).select("title").text((0, _utils.pluck)("data", _chart.title(d.name)));
+
+	    (0, _core.transition)(bars.exit(), _chart.transitionDuration()).attr("height", 0).remove();
+	  }
+
+	  function calculateBarWidth() {
+
+	    var numberOfBars = void 0;
+	    var binParams = _chart.group().binParams()[0];
+
+	    if (binParams) {
+	      numberOfBars = binParams.timeBin ? _chart.getTimeBinSize(binParams) : binParams.numBins;
+	    } else {
+	      var allValues = _chart.data()[0].values.map(function (val) {
+	        return val.x;
+	      });
+	      var maxVal = Math.max.apply(null, allValues);
+	      var minVal = Math.min.apply(null, allValues);
+
+	      numberOfBars = maxVal - minVal;
+	    }
+
+	    if (_chart.isOrdinal() && _gap === undefined) {
+	      _barWidth = Math.floor(_chart.x().rangeBand());
+	    } else if (_gap) {
+	      _barWidth = Math.floor((_chart.xAxisLength() - (numberOfBars - 1) * _gap) / numberOfBars);
+	    } else {
+	      _barWidth = Math.floor(_chart.xAxisLength() / (1 + _chart.barPadding()) / numberOfBars);
+	    }
+
+	    if (_barWidth === Infinity || isNaN(_barWidth) || _barWidth < MIN_BAR_WIDTH) {
+	      _barWidth = MIN_BAR_WIDTH;
+	    }
+	  }
+
+	  _chart.fadeDeselectedArea = function () {
+	    var bars = _chart.chartBodyG().selectAll("rect.bar");
+	    var extent = _chart.brush().extent();
+
+	    if (_chart.isOrdinal()) {
+	      if (_chart.hasFilter()) {
+	        bars.classed(_core.constants.SELECTED_CLASS, function (d) {
+	          return _chart.hasFilter(d.x);
+	        });
+	        bars.classed(_core.constants.DESELECTED_CLASS, function (d) {
+	          return !_chart.hasFilter(d.x);
+	        });
+	      } else {
+	        bars.classed(_core.constants.SELECTED_CLASS, false);
+	        bars.classed(_core.constants.DESELECTED_CLASS, false);
+	      }
+	    } else if (!_chart.brushIsEmpty(extent)) {
+	      var start = extent[0];
+	      var end = extent[1];
+
+	      bars.classed(_core.constants.DESELECTED_CLASS, function (d) {
+	        return d.x < start || d.x >= end;
+	      });
+	    } else {
+	      bars.classed(_core.constants.DESELECTED_CLASS, false);
+	    }
+	  };
+
+	  /**
+	   * Whether the bar chart will render each bar centered around the data position on the x-axis.
+	   * @name centerBar
+	   * @memberof dc.barChart
+	   * @instance
+	   * @param {Boolean} [centerBar=false]
+	   * @return {Boolean}
+	   * @return {dc.barChart}
+	   */
+	  _chart.centerBar = function (centerBar) {
+	    if (!arguments.length) {
+	      return _centerBar;
+	    }
+	    _centerBar = centerBar;
+	    return _chart;
+	  };
+
+	  (0, _core.override)(_chart, "onClick", function (d) {
+	    _chart._onClick(d.data);
+	  });
+
+	  /**
+	   * Get or set the spacing between bars as a fraction of bar size. Valid values are between 0-1.
+	   * Setting this value will also remove any previously set {@link #dc.barChart+gap gap}. See the
+	   * {@link https://github.com/mbostock/d3/wiki/Ordinal-Scales#wiki-ordinal_rangeBands d3 docs}
+	   * for a visual description of how the padding is applied.
+	   * @name barPadding
+	   * @memberof dc.barChart
+	   * @instance
+	   * @param {Number} [barPadding=0]
+	   * @return {Number}
+	   * @return {dc.barChart}
+	   */
+	  _chart.barPadding = function (barPadding) {
+	    if (!arguments.length) {
+	      return _chart._rangeBandPadding();
+	    }
+	    _chart._rangeBandPadding(barPadding);
+	    _gap = undefined;
+	    return _chart;
+	  };
+
+	  _chart._useOuterPadding = function () {
+	    return _gap === undefined;
+	  };
+
+	  /**
+	   * Get or set the outer padding on an ordinal bar chart. This setting has no effect on non-ordinal charts.
+	   * Will pad the width by `padding * barWidth` on each side of the chart.
+	   * @name outerPadding
+	   * @memberof dc.barChart
+	   * @instance
+	   * @param {Number} [padding=0.5]
+	   * @return {Number}
+	   * @return {dc.barChart}
+	   */
+	  _chart.outerPadding = _chart._outerRangeBandPadding;
+
+	  /**
+	   * Manually set fixed gap (in px) between bars instead of relying on the default auto-generated
+	   * gap.  By default the bar chart implementation will calculate and set the gap automatically
+	   * based on the number of data points and the length of the x axis.
+	   * @name gap
+	   * @memberof dc.barChart
+	   * @instance
+	   * @param {Number} [gap=2]
+	   * @return {Number}
+	   * @return {dc.barChart}
+	   */
+	  _chart.gap = function (gap) {
+	    if (!arguments.length) {
+	      return _gap;
+	    }
+	    _gap = gap;
+	    return _chart;
+	  };
+
+	  _chart.extendBrush = function () {
+	    var extent = _chart.brush().extent();
+	    if (_chart.round() && (!_centerBar || _alwaysUseRounding)) {
+	      extent[0] = extent.map(_chart.round())[0];
+	      extent[1] = extent.map(_chart.round())[1];
+
+	      _chart.chartBodyG().select(".brush").call(_chart.brush().extent(extent));
+	    }
+
+	    return extent;
+	  };
+
+	  /**
+	   * Set or get whether rounding is enabled when bars are centered. If false, using
+	   * rounding with centered bars will result in a warning and rounding will be ignored.  This flag
+	   * has no effect if bars are not {@link #dc.barChart+centerBar centered}.
+	   * When using standard d3.js rounding methods, the brush often doesn't align correctly with
+	   * centered bars since the bars are offset.  The rounding function must add an offset to
+	   * compensate, such as in the following example.
+	   * @name alwaysUseRounding
+	   * @memberof dc.barChart
+	   * @instance
+	   * @example
+	   * chart.round(function(n) { return Math.floor(n) + 0.5; });
+	   * @param {Boolean} [alwaysUseRounding=false]
+	   * @return {Boolean}
+	   * @return {dc.barChart}
+	   */
+	  _chart.alwaysUseRounding = function (alwaysUseRounding) {
+	    if (!arguments.length) {
+	      return _alwaysUseRounding;
+	    }
+	    _alwaysUseRounding = alwaysUseRounding;
+	    return _chart;
+	  };
+
+	  function colorFilter(color, inv) {
+	    return function () {
+	      var item = _d2.default.select(this);
+	      var match = item.attr("fill") === color;
+	      return inv ? !match : match;
+	    };
+	  }
+
+	  _chart.legendHighlight = function (d) {
+	    if (!_chart.isLegendableHidden(d)) {
+	      _chart.g().selectAll("rect.bar").classed("highlight", colorFilter(d.color)).classed("fadeout", colorFilter(d.color, true));
+	    }
+	  };
+
+	  _chart.legendReset = function () {
+	    _chart.g().selectAll("rect.bar").classed("highlight", false).classed("fadeout", false);
+	  };
+
+	  (0, _core.override)(_chart, "xAxisMax", function () {
+	    var max = this._xAxisMax();
+	    if ("resolution" in _chart.xUnits()) {
+	      var res = _chart.xUnits().resolution;
+	      max = max + res;
+	    }
+	    return max;
+	  });
+
+	  var getConservativeDateTruncBucket = function getConservativeDateTruncBucket(binUnit) {
+	    return TIME_UNIT_PER_SECONDS[binUnit] * MILLISECONDS_IN_SECOND;
+	  };
+
+	  var getDateExtractBucket = function getDateExtractBucket(binUnit) {
+	    return EXTRACT_UNIT_NUM_BUCKETS[binUnit];
+	  };
+
+	  _chart.getTimeBinSize = function (binParams) {
+	    if (binParams.extract && binParams.timeBin !== "year") {
+	      return getDateExtractBucket(binParams.timeBin);
+	    }
+	    return Math.ceil((_chart.xAxisMax() - _chart.xAxisMin()) / getConservativeDateTruncBucket(binParams.timeBin));
+	  };
+
+	  _chart.renderLabel(false);
+
+	  _chart = (0, _multiSeriesMixin2.default)(_chart);
+
+	  return _chart.anchor(parent, chartGroup);
 	}
 
 /***/ }),
@@ -28214,6 +27878,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/* istanbul ignore next */
 	function bubbleRasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
 	  console.warn("The bubbleRasterChart is deprecated and will be removed in a coming release. Please use the rasterChart instead");
@@ -28537,6 +28202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return _chart.anchor(parent, chartGroup);
 	}
 
+	/* istanbul ignore next */
 	function genVegaSpec(chart, sqlstr, lastFilteredSize) {
 	  var pixelRatio = chart._getPixelRatio();
 	  var width = (typeof chart.effectiveWidth === "function" ? chart.effectiveWidth() : chart.width()) * pixelRatio;
@@ -28594,6 +28260,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return vegaSpec;
 	}
 
+	/* istanbul ignore next */
 	function notNull(value) {
 	  return value != null; /* double-equals also catches undefined */
 	}
@@ -29866,414 +29533,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = dataTable;
-
-	var _d = __webpack_require__(2);
-
-	var _d2 = _interopRequireDefault(_d);
-
-	var _baseMixin = __webpack_require__(5);
-
-	var _baseMixin2 = _interopRequireDefault(_baseMixin);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	/**
-	 * The data table is a simple widget designed to list crossfilter focused data set (rows being
-	 * filtered) in a good old tabular fashion.
-	 *
-	 * Note: Unlike other charts, the data table (and data grid chart) use the group attribute as a
-	 * keying function for {@link https://github.com/mbostock/d3/wiki/Arrays#-nest nesting} the data
-	 * together in groups.  Do not pass in a crossfilter group as this will not work.
-	 *
-	 * Another interesting feature of the data table is that you can pass a crossfilter group to the `dimension`, as
-	 * long as you specify the {@link dc.dataTable#order order} as `d3.descending`, since the data
-	 * table will use `dimension.top()` to fetch the data in that case, and the method is equally
-	 * supported on the crossfilter group as the crossfilter dimension.
-	 *
-	 * @class dataTable
-	 * @memberof dc
-	 * @mixes dc.baseMixin
-	 * @param {String|node|d3.selection} parent - Any valid
-	 * {@link https://github.com/mbostock/d3/wiki/Selections#selecting-elements d3 single selector} specifying
-	 * a dom block element such as a div; or a dom element or d3 selection.
-	 * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
-	 * Interaction with a chart will only trigger events and redraws within the chart's group.
-	 * @return {dc.dataTable}
-	 */
-	function dataTable(parent, chartGroup) {
-	  var LABEL_CSS_CLASS = "dc-table-label";
-	  var ROW_CSS_CLASS = "dc-table-row";
-	  var COLUMN_CSS_CLASS = "dc-table-column";
-	  var GROUP_CSS_CLASS = "dc-table-group";
-	  var HEAD_CSS_CLASS = "dc-table-head";
-
-	  var _chart = (0, _baseMixin2.default)({});
-
-	  var _size = 25;
-	  var _columns = [];
-	  var _sortBy = function _sortBy(d) {
-	    return d;
-	  };
-	  var _order = _d2.default.ascending;
-	  var _beginSlice = 0;
-	  var _endSlice = void 0;
-	  var _showGroups = true;
-
-	  _chart._doRender = function () {
-	    _chart.selectAll("tbody").remove();
-
-	    renderRows(renderGroups());
-
-	    return _chart;
-	  };
-
-	  _chart._doColumnValueFormat = function (v, d) {
-	    return typeof v === "function" ? v(d) : // v as function
-	    typeof v === "string" ? d[v] : // v is field name string
-	    v.format(d) // v is Object, use fn (element 2)
-	    ;
-	  };
-
-	  _chart._doColumnHeaderFormat = function (d) {
-	    // if 'function', convert to string representation
-	    // show a string capitalized
-	    // if an object then display its label string as-is.
-	    return typeof d === "function" ? _chart._doColumnHeaderFnToString(d) : typeof d === "string" ? _chart._doColumnHeaderCapitalize(d) : String(d.label);
-	  };
-
-	  _chart._doColumnHeaderCapitalize = function (s) {
-	    // capitalize
-	    return s.charAt(0).toUpperCase() + s.slice(1);
-	  };
-
-	  _chart._doColumnHeaderFnToString = function (f) {
-	    // columnString(f) {
-	    var s = String(f);
-	    var i1 = s.indexOf("return ");
-	    if (i1 >= 0) {
-	      var i2 = s.lastIndexOf(";");
-	      if (i2 >= 0) {
-	        s = s.substring(i1 + 7, i2);
-	        var i3 = s.indexOf("numberFormat");
-	        if (i3 >= 0) {
-	          s = s.replace("numberFormat", "");
-	        }
-	      }
-	    }
-	    return s;
-	  };
-
-	  function renderGroups() {
-	    // The 'original' example uses all 'functions'.
-	    // If all 'functions' are used, then don't remove/add a header, and leave
-	    // the html alone. This preserves the functionality of earlier releases.
-	    // A 2nd option is a string representing a field in the data.
-	    // A third option is to supply an Object such as an array of 'information', and
-	    // supply your own _doColumnHeaderFormat and _doColumnValueFormat functions to
-	    // create what you need.
-	    var bAllFunctions = true;
-	    _columns.forEach(function (f) {
-	      bAllFunctions = bAllFunctions & typeof f === "function";
-	    });
-
-	    if (!bAllFunctions) {
-	      // ensure one thead
-	      var thead = _chart.selectAll("thead").data([0]);
-	      thead.enter().append("thead");
-	      thead.exit().remove();
-
-	      // with one tr
-	      var headrow = thead.selectAll("tr").data([0]);
-	      headrow.enter().append("tr");
-	      headrow.exit().remove();
-
-	      // with a th for each column
-	      var headcols = headrow.selectAll("th").data(_columns);
-	      headcols.enter().append("th");
-	      headcols.exit().remove();
-
-	      headcols.attr("class", HEAD_CSS_CLASS).html(function (d) {
-	        return _chart._doColumnHeaderFormat(d);
-	      });
-	    }
-
-	    var groups = _chart.root().selectAll("tbody").data(nestEntries(), function (d) {
-	      return _chart.keyAccessor()(d);
-	    });
-
-	    var rowGroup = groups.enter().append("tbody");
-
-	    if (_showGroups === true) {
-	      rowGroup.append("tr").attr("class", GROUP_CSS_CLASS).append("td").attr("class", LABEL_CSS_CLASS).attr("colspan", _columns.length).html(function (d) {
-	        return _chart.keyAccessor()(d);
-	      });
-	    }
-
-	    groups.exit().remove();
-
-	    return rowGroup;
-	  }
-
-	  function nestEntries() {
-	    var entries = void 0;
-	    if (_order === _d2.default.ascending) {
-	      entries = _chart.dimension().bottom(_size);
-	    } else {
-	      entries = _chart.dimension().top(_size);
-	    }
-
-	    return _d2.default.nest().key(_chart.group()).sortKeys(_order).entries(entries.sort(function (a, b) {
-	      return _order(_sortBy(a), _sortBy(b));
-	    }).slice(_beginSlice, _endSlice));
-	  }
-
-	  function renderRows(groups) {
-	    var rows = groups.order().selectAll("tr." + ROW_CSS_CLASS).data(function (d) {
-	      return d.values;
-	    });
-
-	    var rowEnter = rows.enter().append("tr").attr("class", ROW_CSS_CLASS);
-
-	    _columns.forEach(function (v, i) {
-	      rowEnter.append("td").attr("class", COLUMN_CSS_CLASS + " _" + i).html(function (d) {
-	        return _chart._doColumnValueFormat(v, d);
-	      });
-	    });
-
-	    rows.exit().remove();
-
-	    return rows;
-	  }
-
-	  _chart._doRedraw = function () {
-	    return _chart._doRender();
-	  };
-
-	  /**
-	   * Get or set the table size which determines the number of rows displayed by the widget.
-	   * @method size
-	   * @memberof dc.dataTable
-	   * @instance
-	   * @param {Number} [size=25]
-	   * @return {Number}
-	   * @return {dc.dataTable}
-	   */
-	  _chart.size = function (size) {
-	    if (!arguments.length) {
-	      return _size;
-	    }
-	    _size = size;
-	    return _chart;
-	  };
-
-	  /**
-	   * Get or set the index of the beginning slice which determines which entries get displayed
-	   * by the widget. Useful when implementing pagination.
-	   *
-	   * Note: the sortBy function will determine how the rows are ordered for pagination purposes.
-	    * See the {@link http://dc-js.github.io/dc.js/examples/table-pagination.html table pagination example}
-	   * to see how to implement the pagination user interface using `beginSlice` and `endSlice`.
-	   * @method beginSlice
-	   * @memberof dc.dataTable
-	   * @instance
-	   * @param {Number} [beginSlice=0]
-	   * @return {Number}
-	   * @return {dc.dataTable}
-	   */
-	  _chart.beginSlice = function (beginSlice) {
-	    if (!arguments.length) {
-	      return _beginSlice;
-	    }
-	    _beginSlice = beginSlice;
-	    return _chart;
-	  };
-
-	  /**
-	   * Get or set the index of the end slice which determines which entries get displayed by the
-	   * widget. Useful when implementing pagination. See {@link dc.dataTable#beginSlice `beginSlice`} for more information.
-	   * @method endSlice
-	   * @memberof dc.dataTable
-	   * @instance
-	   * @param {Number|undefined} [endSlice=undefined]
-	   * @return {Number}
-	   * @return {dc.dataTable}
-	   */
-	  _chart.endSlice = function (endSlice) {
-	    if (!arguments.length) {
-	      return _endSlice;
-	    }
-	    _endSlice = endSlice;
-	    return _chart;
-	  };
-
-	  /**
-	   * Get or set column functions. The data table widget supports several methods of specifying the
-	   * columns to display.
-	   *
-	   * The original method uses an array of functions to generate dynamic columns. Column functions
-	   * are simple javascript functions with only one input argument `d` which represents a row in
-	   * the data set. The return value of these functions will be used to generate the content for
-	   * each cell. However, this method requires the HTML for the table to have a fixed set of column
-	   * headers.
-	   *
-	   * <pre><code>chart.columns([
-	   *     function(d) { return d.date; },
-	   *     function(d) { return d.open; },
-	   *     function(d) { return d.close; },
-	   *     function(d) { return numberFormat(d.close - d.open); },
-	   *     function(d) { return d.volume; }
-	   * ]);
-	   * </code></pre>
-	   *
-	   * In the second method, you can list the columns to read from the data without specifying it as
-	   * a function, except where necessary (ie, computed columns).  Note the data element name is
-	   * capitalized when displayed in the table header. You can also mix in functions as necessary,
-	   * using the third `{label, format}` form, as shown below.
-	   *
-	   * <pre><code>chart.columns([
-	   *     "date",    // d["date"], ie, a field accessor; capitalized automatically
-	   *     "open",    // ...
-	   *     "close",   // ...
-	   *     {
-	   *         label: "Change",
-	   *         format: function (d) {
-	   *             return numberFormat(d.close - d.open);
-	   *         }
-	   *     },
-	   *     "volume"   // d["volume"], ie, a field accessor; capitalized automatically
-	   * ]);
-	   * </code></pre>
-	   *
-	   * In the third example, we specify all fields using the `{label, format}` method:
-	   * <pre><code>chart.columns([
-	   *     {
-	   *         label: "Date",
-	   *         format: function (d) { return d.date; }
-	   *     },
-	   *     {
-	   *         label: "Open",
-	   *         format: function (d) { return numberFormat(d.open); }
-	   *     },
-	   *     {
-	   *         label: "Close",
-	   *         format: function (d) { return numberFormat(d.close); }
-	   *     },
-	   *     {
-	   *         label: "Change",
-	   *         format: function (d) { return numberFormat(d.close - d.open); }
-	   *     },
-	   *     {
-	   *         label: "Volume",
-	   *         format: function (d) { return d.volume; }
-	   *     }
-	   * ]);
-	   * </code></pre>
-	   *
-	   * You may wish to override the dataTable functions `_doColumnHeaderCapitalize` and
-	   * `_doColumnHeaderFnToString`, which are used internally to translate the column information or
-	   * function into a displayed header. The first one is used on the "string" column specifier; the
-	   * second is used to transform a stringified function into something displayable. For the Stock
-	   * example, the function for Change becomes the table header **d.close - d.open**.
-	   *
-	   * Finally, you can even specify a completely different form of column definition. To do this,
-	   * override `_chart._doColumnHeaderFormat` and `_chart._doColumnValueFormat` Be aware that
-	   * fields without numberFormat specification will be displayed just as they are stored in the
-	   * data, unformatted.
-	   * @method columns
-	   * @memberof dc.dataTable
-	   * @instance
-	   * @param {Array<Function>} [columns=[]]
-	   * @return {Array<Function>}}
-	   * @return {dc.dataTable}
-	   */
-	  _chart.columns = function (columns) {
-	    if (!arguments.length) {
-	      return _columns;
-	    }
-	    _columns = columns;
-	    return _chart;
-	  };
-
-	  /**
-	   * Get or set sort-by function. This function works as a value accessor at row level and returns a
-	   * particular field to be sorted by. Default value: identity function
-	   * @method sortBy
-	   * @memberof dc.dataTable
-	   * @instance
-	   * @example
-	   * chart.sortBy(function(d) {
-	   *     return d.date;
-	   * });
-	   * @param {Function} [sortBy]
-	   * @return {Function}
-	   * @return {dc.dataTable}
-	   */
-	  _chart.sortBy = function (sortBy) {
-	    if (!arguments.length) {
-	      return _sortBy;
-	    }
-	    _sortBy = sortBy;
-	    return _chart;
-	  };
-
-	  /**
-	   * Get or set sort order. If the order is `d3.ascending`, the data table will use
-	   * `dimension().bottom()` to fetch the data; otherwise it will use `dimension().top()`
-	   * @method order
-	   * @memberof dc.dataTable
-	   * @instance
-	   * @see {@link https://github.com/mbostock/d3/wiki/Arrays#d3_ascending d3.ascending}
-	   * @see {@link https://github.com/mbostock/d3/wiki/Arrays#d3_descending d3.descending}
-	   * @example
-	   * chart.order(d3.descending);
-	   * @param {Function} [order=d3.ascending]
-	   * @return {Function}
-	   * @return {dc.dataTable}
-	   */
-	  _chart.order = function (order) {
-	    if (!arguments.length) {
-	      return _order;
-	    }
-	    _order = order;
-	    return _chart;
-	  };
-
-	  /**
-	   * Get or set if group rows will be shown.
-	   *
-	   * The .group() getter-setter must be provided in either case.
-	   * @method showGroups
-	   * @memberof dc.dataTable
-	   * @instance
-	   * @example
-	   * chart
-	   *     .group([value], [name])
-	   *     .showGroups(true|false);
-	   * @param {Boolean} [showGroups=true]
-	   * @return {Boolean}
-	   * @return {dc.dataTable}
-	   */
-	  _chart.showGroups = function (showGroups) {
-	    if (!arguments.length) {
-	      return _showGroups;
-	    }
-	    _showGroups = showGroups;
-	    return _chart;
-	  };
-
-	  return _chart.anchor(parent, chartGroup);
-	}
-
-/***/ }),
-/* 153 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
 	exports.default = geoChoroplethChart;
 
 	var _baseMixin = __webpack_require__(5);
@@ -30714,7 +29973,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 154 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -31420,6 +30679,609 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * ***************************************************************************/
 
 /***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = lineChart;
+
+	var _core = __webpack_require__(3);
+
+	var _utils = __webpack_require__(4);
+
+	var _coordinateGridMixin = __webpack_require__(10);
+
+	var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
+
+	var _d = __webpack_require__(2);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _elasticDimensionMixin = __webpack_require__(29);
+
+	var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
+
+	var _stackMixin = __webpack_require__(21);
+
+	var _stackMixin2 = _interopRequireDefault(_stackMixin);
+
+	var _multiSeriesMixin = __webpack_require__(31);
+
+	var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/**
+	 * Concrete line/area chart implementation.
+	 *
+	 * Examples:
+	 * - {@link https://mapd.github.io/mapd-charting/example/example1.html Number of Flights by Departure Time}
+	 * @name lineChart
+	 * @memberof dc
+	 * @mixes dc.stackMixin
+	 * @mixes dc.coordinateGridMixin
+	 * @example
+	 * // create a line chart under #chart-container1 element using the default global chart group
+	 * var chart1 = dc.lineChart('#chart-container1');
+	 * // create a line chart under #chart-container2 element using chart group A
+	 * var chart2 = dc.lineChart('#chart-container2', 'chartGroupA');
+	 * // create a sub-chart under a composite parent chart
+	 * var chart3 = dc.lineChart(compositeChart);
+	 * @param {String|node|d3.selection|dc.compositeChart} parent - Any valid
+	 * {@link https://github.com/mbostock/d3/wiki/Selections#selecting-elements d3 single selector}
+	 * specifying a dom block element such as a div; or a dom element or d3 selection.  If the line
+	 * chart is a sub-chart in a {@link #dc.compositeChart Composite Chart} then pass in the parent
+	 * composite chart instance instead.
+	 * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
+	 * Interaction with a chart will only trigger events and redraws within the chart's group.
+	 * @return {dc.lineChart}
+	 */
+	function lineChart(parent, chartGroup) {
+	  var DEFAULT_DOT_RADIUS = 5;
+	  var TOOLTIP_G_CLASS = "dc-tooltip";
+	  var DOT_CIRCLE_CLASS = "dot";
+	  var Y_AXIS_REF_LINE_CLASS = "yRef";
+	  var X_AXIS_REF_LINE_CLASS = "xRef";
+	  var DEFAULT_DOT_OPACITY = 1e-6;
+
+	  var _chart = (0, _elasticDimensionMixin2.default)((0, _stackMixin2.default)((0, _coordinateGridMixin2.default)({})));
+	  var _renderArea = false;
+	  var _dotRadius = DEFAULT_DOT_RADIUS;
+	  var _dataPointRadius = null;
+	  var _dataPointFillOpacity = DEFAULT_DOT_OPACITY;
+	  var _dataPointStrokeOpacity = DEFAULT_DOT_OPACITY;
+	  var _interpolate = "linear";
+	  var _tension = 0.7;
+	  var _defined = void 0;
+	  var _dashStyle = void 0;
+	  var _xyTipsOn = true;
+
+	  _chart.transitionDuration(500);
+	  _chart._rangeBandPadding(1);
+
+	  _chart.plotData = function () {
+	    var chartBody = _chart.chartBodyG();
+	    var layersList = chartBody.selectAll("g.stack-list");
+
+	    if (layersList.empty()) {
+	      layersList = chartBody.append("g").attr("class", "stack-list");
+	    }
+
+	    var layers = layersList.selectAll("g.stack").data(_chart.data());
+
+	    var layersEnter = layers.enter().append("g").attr("class", function (d, i) {
+	      return "stack " + "_" + i;
+	    });
+
+	    drawLine(layersEnter, layers);
+
+	    drawArea(layersEnter, layers);
+
+	    drawDots(chartBody, layers);
+	  };
+
+	  /**
+	   * Gets or sets the interpolator to use for lines drawn, by string name, allowing e.g. step
+	   * functions, splines, and cubic interpolation.  This is passed to
+	   * {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate d3.svg.line.interpolate} and
+	   * {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#area_interpolate d3.svg.area.interpolate},
+	   * where you can find a complete list of valid arguments
+	   * @name interpolate
+	   * @memberof dc.lineChart
+	   * @instance
+	   * @see {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate d3.svg.line.interpolate}
+	   * @see {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#area_interpolate d3.svg.area.interpolate}
+	   * @param  {String} [interpolate='linear']
+	   * @return {String}
+	   * @return {dc.lineChart}
+	   */
+	  _chart.interpolate = function (interpolate) {
+	    if (!arguments.length) {
+	      return _interpolate;
+	    }
+	    _interpolate = interpolate;
+	    return _chart;
+	  };
+
+	  /**
+	   * Gets or sets the tension to use for lines drawn, in the range 0 to 1.
+	   * This parameter further customizes the interpolation behavior.  It is passed to
+	   * {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_tension d3.svg.line.tension} and
+	   * {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#area_tension d3.svg.area.tension}.
+	   * @name tension
+	   * @memberof dc.lineChart
+	   * @instance
+	   * @see {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate d3.svg.line.interpolate}
+	   * @see {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#area_interpolate d3.svg.area.interpolate}
+	   * @param  {Number} [tension=0.7]
+	   * @return {Number}
+	   * @return {dc.lineChart}
+	   */
+	  _chart.tension = function (tension) {
+	    if (!arguments.length) {
+	      return _tension;
+	    }
+	    _tension = tension;
+	    return _chart;
+	  };
+
+	  /**
+	   * Gets or sets a function that will determine discontinuities in the line which should be
+	   * skipped: the path will be broken into separate subpaths if some points are undefined.
+	   * This function is passed to
+	   * {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_defined d3.svg.line.defined}
+	   *
+	   * Note: crossfilter will sometimes coerce nulls to 0, so you may need to carefully write
+	   * custom reduce functions to get this to work, depending on your data. See
+	   * https://github.com/dc-js/dc.js/issues/615#issuecomment-49089248
+	   * @name defined
+	   * @memberof dc.lineChart
+	   * @instance
+	   * @see {@link https://github.com/mbostock/d3/wiki/SVG-Shapes#line_defined d3.svg.line.defined}
+	   * @param  {Function} [defined]
+	   * @return {Function}
+	   * @return {dc.lineChart}
+	   */
+	  _chart.defined = function (defined) {
+	    if (!arguments.length) {
+	      return _defined;
+	    }
+	    _defined = defined;
+	    return _chart;
+	  };
+
+	  /**
+	   * Set the line's d3 dashstyle. This value becomes the 'stroke-dasharray' of line. Defaults to empty
+	   * array (solid line).
+	   * @name dashStyle
+	   * @memberof dc.lineChart
+	   * @instance
+	   * @see {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray stroke-dasharray}
+	   * @example
+	   * // create a Dash Dot Dot Dot
+	   * chart.dashStyle([3,1,1,1]);
+	   * @param  {Array<Number>} [dashStyle=[]]
+	   * @return {Array<Number>}
+	   * @return {dc.lineChart}
+	   */
+	  _chart.dashStyle = function (dashStyle) {
+	    if (!arguments.length) {
+	      return _dashStyle;
+	    }
+	    _dashStyle = dashStyle;
+	    return _chart;
+	  };
+
+	  /**
+	   * Get or set render area flag. If the flag is set to true then the chart will render the area
+	   * beneath each line and the line chart effectively becomes an area chart.
+	   * @name renderArea
+	   * @memberof dc.lineChart
+	   * @instance
+	   * @param  {Boolean} [renderArea=false]
+	   * @return {Boolean}
+	   * @return {dc.lineChart}
+	   */
+	  _chart.renderArea = function (renderArea) {
+	    if (!arguments.length) {
+	      return _renderArea;
+	    }
+	    _renderArea = renderArea;
+	    return _chart;
+	  };
+
+	  function colors(d, i) {
+	    if (d.name) {
+	      d.layer = d.name;
+	      return _chart.getColor(d, i);
+	    } else {
+	      return _chart.getColor(d, i);
+	    }
+	  }
+
+	  function drawLine(layersEnter, layers) {
+	    var line = _d2.default.svg.line().x(function (d) {
+	      return _chart.x()(d.x);
+	    }).y(function (d) {
+	      /* OVERRIDE ---------------------------------------------------------------- */
+	      if (_renderArea) {
+	        return _chart.y()(d.y + d.y0);
+	      } else {
+	        return _chart.y()(d.y);
+	      }
+	      /* ------------------------------------------------------------------------- */
+	    }).interpolate(_interpolate).tension(_tension);
+	    if (_defined) {
+	      line.defined(_defined);
+	    }
+
+	    var path = layersEnter.append("path").attr("class", "line").attr("stroke", colors);
+	    if (_dashStyle) {
+	      path.attr("stroke-dasharray", _dashStyle);
+	    }
+
+	    (0, _core.transition)(layers.select("path.line"), _chart.transitionDuration())
+	    // .ease('linear')
+	    .attr("stroke", colors).attr("d", function (d) {
+	      return safeD(line(d.values));
+	    });
+	  }
+
+	  function drawArea(layersEnter, layers) {
+	    if (_renderArea) {
+	      var area = _d2.default.svg.area().x(function (d) {
+	        return _chart.x()(d.x);
+	      }).y(function (d) {
+	        return _chart.y()(d.y + d.y0);
+	      }).y0(function (d) {
+	        return _chart.y()(d.y0);
+	      }).interpolate(_interpolate).tension(_tension);
+	      if (_defined) {
+	        area.defined(_defined);
+	      }
+
+	      layersEnter.append("path").attr("class", "area").attr("fill", colors).attr("d", function (d) {
+	        return safeD(area(d.values));
+	      });
+
+	      (0, _core.transition)(layers.select("path.area"), _chart.transitionDuration())
+	      // .ease('linear')
+	      .attr("fill", colors).attr("d", function (d) {
+	        return safeD(area(d.values));
+	      });
+	    }
+	  }
+
+	  function safeD(d) {
+	    return !d || d.indexOf("NaN") >= 0 ? "M0,0" : d;
+	  }
+
+	  function hoverOverBrush() {
+
+	    var g = _chart.g().on("mouseout", function () {
+	      hideBrushDots();
+	    }).on("mousemove", function () {
+
+	      if (_chart.isBrushing()) {
+	        hidePopup();
+	      } else {
+	        showBrushDots(g, this);
+	      }
+	    });
+	  }
+
+	  function hideBrushDots() {
+	    _chart.g().selectAll(".dot").style("fill-opacity", 0);
+	    hidePopup();
+	  }
+
+	  function showBrushDots(g, e) {
+
+	    var coordinates = [0, 0];
+	    coordinates = _chart.popupCoordinates(_d2.default.mouse(e));
+	    var x = coordinates[0];
+	    var y = coordinates[1];
+	    var xAdjusted = x - _chart.margins().left;
+
+	    var popupRows = [];
+
+	    var toolTips = g.selectAll(".dc-tooltip").each(function () {
+
+	      var lastDot = null;
+	      var hoverDot = null;
+
+	      var dots = _d2.default.select(this).selectAll(".dot").style("fill-opacity", 0);
+
+	      dots[0].sort(function (a, b) {
+	        return _d2.default.select(a).attr("cx") - _d2.default.select(b).attr("cx");
+	      });
+
+	      dots[0].some(function (obj, i) {
+
+	        var elm = _d2.default.select(obj);
+
+	        if (xAdjusted < elm.attr("cx")) {
+	          hoverDot = { elm: elm, datum: elm.datum(), i: i };
+	          return true;
+	        }
+
+	        lastDot = { elm: elm, datum: elm.datum(), i: i };
+	      });
+
+	      hoverDot = lastDot && hoverDot ? Math.abs(lastDot.elm.attr("cx") - xAdjusted) < Math.abs(hoverDot.elm.attr("cx") - xAdjusted) ? lastDot : hoverDot : hoverDot;
+
+	      if (hoverDot && Math.abs(hoverDot.elm.attr("cx") - xAdjusted) < 32) {
+	        hoverDot.elm.style("fill-opacity", 1);
+	        popupRows.push(hoverDot);
+	      }
+	    });
+
+	    if (popupRows.length > 0) {
+	      showPopup(popupRows, x, y);
+	    } else {
+	      hidePopup();
+	    }
+	  }
+
+	  function showPopup(arr, x, y) {
+	    var popup = _chart.popup();
+
+	    var popupBox = popup.select(".chart-popup-content").html("").classed("popup-list", true);
+
+	    popupBox.append("div").attr("class", "popup-header").text(_chart.popupTextAccessor(arr));
+
+	    var popupItems = popupBox.selectAll(".popup-item").data(arr.sort(function (a, b) {
+	      return _renderArea ? b.datum.y + b.datum.y0 - (a.datum.y + a.datum.y0) : b.datum.y - a.datum.y;
+	    })).enter().append("div").attr("class", "popup-item");
+
+	    popupItems.append("div").attr("class", "popup-legend").style("background-color", function (d) {
+	      return colors(d.datum, d.i);
+	    });
+
+	    if (_chart.series().keys()) {
+	      popupItems.append("div").attr("class", "popup-item-key").text(function (d) {
+	        return _chart.colorDomain()[d.datum.idx];
+	      });
+	    }
+
+	    popupItems.append("div").attr("class", "popup-item-value").classed("text-align-right", Boolean(_chart.series().keys())).text(function (d) {
+	      return _utils.utils.formatValue(d.datum.y);
+	    });
+
+	    positionPopup(x, y);
+	    popup.classed("js-showPopup", true);
+	  }
+
+	  function hidePopup() {
+	    _chart.popup().classed("js-showPopup", false);
+	  }
+
+	  function positionPopup(x, y) {
+
+	    var popup = _chart.popup().attr("style", function () {
+	      return "transform:translate(" + x + "px," + y + "px)";
+	    });
+
+	    popup.select(".chart-popup-box").classed("align-left-center", true).classed("align-right-center", function () {
+	      return x + (_d2.default.select(this).node().getBoundingClientRect().width + 32) > _chart.width();
+	    });
+	  }
+
+	  function drawDots(chartBody, layers) {
+
+	    /* OVERRIDE ---------------------------------------------------------------- */
+	    // if (!_chart.brushOn() && _chart.xyTipsOn()) {
+	    /* ------------------------------------------------------------------------- */
+
+	    var tooltipListClass = TOOLTIP_G_CLASS + "-list";
+	    var tooltips = chartBody.select("g." + tooltipListClass);
+
+	    if (tooltips.empty()) {
+	      tooltips = chartBody.append("g").attr("class", tooltipListClass);
+	    }
+
+	    layers.each(function (d, layerIndex) {
+	      var points = d.values;
+	      if (_defined) {
+	        points = points.filter(_defined);
+	      }
+
+	      var g = tooltips.select("g." + TOOLTIP_G_CLASS + "._" + layerIndex);
+	      if (g.empty()) {
+	        g = tooltips.append("g").attr("class", TOOLTIP_G_CLASS + " _" + layerIndex);
+	      }
+
+	      createRefLines(g);
+
+	      var dots = g.selectAll("circle." + DOT_CIRCLE_CLASS).data(points, (0, _utils.pluck)("x"));
+
+	      dots.enter().append("circle").attr("class", DOT_CIRCLE_CLASS).attr("r", getDotRadius()).style("fill-opacity", _dataPointFillOpacity).style("stroke-opacity", _dataPointStrokeOpacity).on("mousemove", function () {
+	        var dot = _d2.default.select(this);
+	        showDot(dot);
+	        showRefLines(dot, g);
+	      }).on("mouseout", function () {
+	        var dot = _d2.default.select(this);
+	        hideDot(dot);
+	        hideRefLines(g);
+	      });
+
+	      dots.attr("cx", function (d) {
+	        return _utils.utils.safeNumber(_chart.x()(d.x));
+	      }).attr("cy", function (d) {
+	        /* OVERRIDE ---------------------------------------------------------------- */
+	        if (_renderArea) {
+	          return _utils.utils.safeNumber(_chart.y()(d.y + d.y0));
+	        } else {
+	          return _utils.utils.safeNumber(_chart.y()(d.y));
+	        }
+	        /* ------------------------------------------------------------------------- */
+	      }).attr("fill", colors).call(renderTitle, d);
+
+	      dots.exit().remove();
+	    });
+
+	    if (_chart.brushOn() && !_chart.focusChart()) {
+	      hoverOverBrush();
+	    }
+
+	    /* OVERRIDE ---------------------------------------------------------------- */
+	    // }
+	    /* ------------------------------------------------------------------------- */
+	  }
+
+	  function createRefLines(g) {
+	    var yRefLine = g.select("path." + Y_AXIS_REF_LINE_CLASS).empty() ? g.append("path").attr("class", Y_AXIS_REF_LINE_CLASS) : g.select("path." + Y_AXIS_REF_LINE_CLASS);
+	    yRefLine.style("display", "none").attr("stroke-dasharray", "5,5");
+
+	    var xRefLine = g.select("path." + X_AXIS_REF_LINE_CLASS).empty() ? g.append("path").attr("class", X_AXIS_REF_LINE_CLASS) : g.select("path." + X_AXIS_REF_LINE_CLASS);
+	    xRefLine.style("display", "none").attr("stroke-dasharray", "5,5");
+	  }
+
+	  function showDot(dot) {
+	    dot.style("fill-opacity", 0.8);
+	    dot.style("stroke-opacity", 0.8);
+	    dot.attr("r", _dotRadius);
+	    return dot;
+	  }
+
+	  function showRefLines(dot, g) {
+	    var x = dot.attr("cx");
+	    var y = dot.attr("cy");
+	    var yAxisX = _chart._yAxisX() - _chart.margins().left;
+	    var yAxisRefPathD = "M" + yAxisX + " " + y + "L" + x + " " + y;
+	    var xAxisRefPathD = "M" + x + " " + _chart.yAxisHeight() + "L" + x + " " + y;
+	    g.select("path." + Y_AXIS_REF_LINE_CLASS).style("display", "").attr("d", yAxisRefPathD);
+	    g.select("path." + X_AXIS_REF_LINE_CLASS).style("display", "").attr("d", xAxisRefPathD);
+	  }
+
+	  function getDotRadius() {
+	    return _dataPointRadius || _dotRadius;
+	  }
+
+	  function hideDot(dot) {
+	    dot.style("fill-opacity", _dataPointFillOpacity).style("stroke-opacity", _dataPointStrokeOpacity).attr("r", getDotRadius());
+	  }
+
+	  function hideRefLines(g) {
+	    g.select("path." + Y_AXIS_REF_LINE_CLASS).style("display", "none");
+	    g.select("path." + X_AXIS_REF_LINE_CLASS).style("display", "none");
+	  }
+
+	  function renderTitle(dot, d) {
+	    if (_chart.renderTitle()) {
+	      dot.selectAll("title").remove();
+	      dot.append("title").text((0, _utils.pluck)("data", _chart.title(d.name)));
+	    }
+	  }
+
+	  /**
+	   * Turn on/off the mouseover behavior of an individual data point which renders a circle and x/y axis
+	   * dashed lines back to each respective axis.  This is ignored if the chart
+	   * {@link #dc.coordinateGridMixin+brushOn brush} is on
+	   * @name xyTipsOn
+	   * @memberof dc.lineChart
+	   * @instance
+	   * @param  {Boolean} [xyTipsOn=false]
+	   * @return {Boolean}
+	   * @return {dc.lineChart}
+	   */
+	  _chart.xyTipsOn = function (xyTipsOn) {
+	    if (!arguments.length) {
+	      return _xyTipsOn;
+	    }
+	    _xyTipsOn = xyTipsOn;
+	    return _chart;
+	  };
+
+	  /**
+	   * Get or set the radius (in px) for dots displayed on the data points.
+	   * @name dotRadius
+	   * @memberof dc.lineChart
+	   * @instance
+	   * @param  {Number} [dotRadius=5]
+	   * @return {Number}
+	   * @return {dc.lineChart}
+	   */
+	  _chart.dotRadius = function (dotRadius) {
+	    if (!arguments.length) {
+	      return _dotRadius;
+	    }
+	    _dotRadius = dotRadius;
+	    return _chart;
+	  };
+
+	  /**
+	   * Always show individual dots for each datapoint.
+	   * If `options` is falsy, it disables data point rendering.
+	   *
+	   * If no `options` are provided, the current `options` values are instead returned.
+	   * @name renderDataPoints
+	   * @memberof dc.lineChart
+	   * @instance
+	   * @example
+	   * chart.renderDataPoints({radius: 2, fillOpacity: 0.8, strokeOpacity: 0.8})
+	   * @param  {{fillOpacity: Number, strokeOpacity: Number, radius: Number}} [options={fillOpacity: 0.8, strokeOpacity: 0.8, radius: 2}]
+	   * @return {{fillOpacity: Number, strokeOpacity: Number, radius: Number}}
+	   * @return {dc.lineChart}
+	   */
+	  _chart.renderDataPoints = function (options) {
+	    if (!arguments.length) {
+	      return {
+	        fillOpacity: _dataPointFillOpacity,
+	        strokeOpacity: _dataPointStrokeOpacity,
+	        radius: _dataPointRadius
+	      };
+	    } else if (!options) {
+	      _dataPointFillOpacity = DEFAULT_DOT_OPACITY;
+	      _dataPointStrokeOpacity = DEFAULT_DOT_OPACITY;
+	      _dataPointRadius = null;
+	    } else {
+	      _dataPointFillOpacity = options.fillOpacity || 0.8;
+	      _dataPointStrokeOpacity = options.strokeOpacity || 0.8;
+	      _dataPointRadius = options.radius || 2;
+	    }
+	    return _chart;
+	  };
+
+	  function colorFilter(color, dashstyle, inv) {
+	    return function () {
+	      var item = _d2.default.select(this);
+	      var match = item.attr("stroke") === color && item.attr("stroke-dasharray") === (dashstyle instanceof Array ? dashstyle.join(",") : null) || item.attr("fill") === color;
+	      return inv ? !match : match;
+	    };
+	  }
+
+	  _chart.legendHighlight = function (d) {
+	    if (!_chart.isLegendableHidden(d)) {
+	      _chart.g().selectAll("path.line, path.area").classed("highlight", colorFilter(d.color, d.dashstyle)).classed("fadeout", colorFilter(d.color, d.dashstyle, true));
+	    }
+	  };
+
+	  _chart.legendReset = function () {
+	    _chart.g().selectAll("path.line, path.area").classed("highlight", false).classed("fadeout", false);
+	  };
+
+	  (0, _core.override)(_chart, "legendables", function () {
+	    var legendables = _chart._legendables();
+	    if (!_dashStyle) {
+	      return legendables;
+	    }
+	    return legendables.map(function (l) {
+	      l.dashstyle = _dashStyle;
+	      return l;
+	    });
+	  });
+
+	  _chart = (0, _multiSeriesMixin2.default)(_chart);
+
+	  return _chart.anchor(parent, chartGroup);
+	}
+
+/***/ }),
 /* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -31428,6 +31290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.splitStrOnLastAs = undefined;
 	exports.default = mapdTable;
 
 	var _d = __webpack_require__(2);
@@ -31452,6 +31315,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var NON_INDEX = -1;
 	var ADDITIONAL_HEIGHT = 18;
 	var SCROLL_DIVISOR = 5;
+
+	var splitStrOnLastAs = exports.splitStrOnLastAs = function splitStrOnLastAs(str) {
+	  var splitStr = [];
+	  splitStr[0] = str.substring(0, str.lastIndexOf("as") - 1);
+	  splitStr[1] = str.substring(str.lastIndexOf("as") + 3, str.length);
+	  return splitStr;
+	};
 
 	function mapdTable(parent, chartGroup) {
 	  var _chart = (0, _baseMixin2.default)({});
@@ -31670,7 +31540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	    } else {
 	      cols = _chart.dimension().getProjectOn().map(function (d, i) {
-	        var splitStr = d.split(" as ");
+	        var splitStr = splitStrOnLastAs(d);
 	        return { expression: splitStr[0], name: splitStr[1], label: _colAliases ? _colAliases[i] : splitStr[0] };
 	      });
 	    }
@@ -31926,7 +31796,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    wrapper.append("span").attr("class", "number-chart-number").style("color", _chart.getColor).style("font-size", function (d) {
 	      return Math.max(Math.floor(_chart.height() / 5), 32) + "px";
-	    }).text(selected === "-0" ? 0 : selected).style("font-size", function (d) {
+	    }).html(selected === "-0" ? 0 : selected).style("font-size", function (d) {
 	      var width = _d2.default.select(this).node().getBoundingClientRect().width;
 	      var calcFontSize = parseInt(_d2.default.select(this).node().style.fontSize.replace(/\D/g, ""));
 
@@ -31978,7 +31848,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _multipleKeyLabelMixin = __webpack_require__(33);
+	var _multipleKeyLabelMixin = __webpack_require__(32);
 
 	var _multipleKeyLabelMixin2 = _interopRequireDefault(_multipleKeyLabelMixin);
 
@@ -32781,6 +32651,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/* istanbul ignore next */
 	function polyRasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
 	  console.warn("The polyRasterChart is deprecated and will be removed in a coming release. Please use the rasterChart instead");
@@ -32860,6 +32731,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return chart.anchor(parent, chartGroup);
 	}
 
+	/* istanbul ignore next */
 	function genPolyVegaSpec(sqlstr, vegaSpec, mapBoundsMerc, color, polyJoin, stroke) {
 	  var xDomain = [mapBoundsMerc[0][0], mapBoundsMerc[2][0]]; // northwest x, southeast x
 	  var yDomain = [mapBoundsMerc[2][1], mapBoundsMerc[0][1]]; // southeast y, northwest y
@@ -32886,6 +32758,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }];
 	}
 
+	/* istanbul ignore next */
 	function setOverlay(data, bounds, map, layer, opacity) {
 	  if (typeof data === "undefined") {
 	    throw new Error("Data is undefined");
@@ -32914,6 +32787,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 
+	/* istanbul ignore next */
 	function detectBrowser() {
 	  // from SO: http://bit.ly/1Wd156O
 	  var isOpera = Boolean(window.opr) && Boolean(opr.addons) || Boolean(window.opera) || navigator.userAgent.indexOf(" OPR/") >= 0;
@@ -32925,6 +32799,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return { isOpera: isOpera, isFirefox: isFirefox, isSafari: isSafari, isIE: isIE, isEdge: isEdge, isChrome: isChrome };
 	}
 
+	/* istanbul ignore next */
 	function b64toBlob(b64Data, contentType, sliceSize) {
 	  contentType = contentType || "";
 	  sliceSize = sliceSize || 512;
@@ -32942,12 +32817,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return new Blob(byteArrays, { type: contentType });
 	}
 
+	/* istanbul ignore next */
 	function valuesOb(obj) {
 	  return Object.keys(obj).map(function (key) {
 	    return obj[key];
 	  });
 	}
 
+	/* istanbul ignore next */
 	function createGetterSetter(chainableObject, oldVal, validator) {
 	  validator = validator || identity;
 	  return function (newVal) {
@@ -32956,10 +32833,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	}
 
+	/* istanbul ignore next */
 	function identity(x) {
 	  return x;
 	}
 
+	/* istanbul ignore next */
 	function polyJoinValidator(newPolyJoin) {
 	  if (typeof newPolyJoin.table === "string" && typeof newPolyJoin.keysColumn === "string") {
 	    return newPolyJoin;
@@ -33485,7 +33364,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _lockAxisMixin = __webpack_require__(32);
+	var _lockAxisMixin = __webpack_require__(30);
 
 	var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
@@ -33847,7 +33726,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /* OVERRIDE -----------------------------------------------------------------*/
 	    if (_chart.measureLabelsOn()) {
 
-	      var measureLab = rows.select(".value-measure").attr("y", _labelOffsetY).attr("dy", isStackLabel() ? "1.1em" : _dyOffset).on("click", onClick).attr("text-anchor", isStackLabel() ? "start" : "end").text(function (d) {
+	      var measureLab = rows.select(".value-measure").attr("y", _labelOffsetY).attr("dy", isStackLabel() ? "1.1em" : _dyOffset).on("click", onClick).attr("text-anchor", isStackLabel() ? "start" : "end").html(function (d) {
 
 	        if (d.label) {
 	          return d.label;
@@ -34411,7 +34290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.legendCont = exports.legend = exports.legendContinuous = exports.spinnerMixin = exports.scatterMixin = exports.rasterMixin = exports.rasterLayer = exports.rasterLayerPolyMixin = exports.rasterLayerPointMixin = exports.mapMixin = exports.marginMixin = exports.stackMixin = exports.coordinateGridRasterMixin = exports.coordinateGridMixin = exports.colorMixin = exports.capMixin = exports.bubbleMixin = exports.baseMixin = exports.asyncMixin = exports.countWidget = exports.boxPlot = exports.mapdTable = exports.scatterPlot = exports.rowChart = exports.rasterChart = exports.polyRasterChart = exports.numberChart = exports.lineChart = exports.pieChart = exports.heatMap = exports.geoChoroplethChart = exports.dataTable = exports.dataGrid = exports.dataCount = exports.compositeChart = exports.cloudChart = exports.bubbleRasterChart = exports.bubbleChart = exports.barChart = exports.bubbleOverlay = exports.errors = exports.d3 = undefined;
+	exports.legendCont = exports.legend = exports.legendContinuous = exports.spinnerMixin = exports.scatterMixin = exports.rasterMixin = exports.rasterLayer = exports.rasterLayerPolyMixin = exports.rasterLayerPointMixin = exports.mapMixin = exports.marginMixin = exports.stackMixin = exports.coordinateGridRasterMixin = exports.coordinateGridMixin = exports.colorMixin = exports.capMixin = exports.bubbleMixin = exports.baseMixin = exports.asyncMixin = exports.countWidget = exports.boxPlot = exports.mapdTable = exports.scatterPlot = exports.rowChart = exports.rasterChart = exports.polyRasterChart = exports.numberChart = exports.lineChart = exports.pieChart = exports.heatMap = exports.geoChoroplethChart = exports.dataGrid = exports.dataCount = exports.compositeChart = exports.cloudChart = exports.bubbleRasterChart = exports.bubbleChart = exports.barChart = exports.bubbleOverlay = exports.errors = exports.d3 = undefined;
 
 	var _core = __webpack_require__(3);
 
@@ -34494,7 +34373,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _barChart = __webpack_require__(26);
+	var _barChart = __webpack_require__(142);
 
 	Object.defineProperty(exports, "barChart", {
 	  enumerable: true,
@@ -34557,16 +34436,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _dataTable = __webpack_require__(152);
-
-	Object.defineProperty(exports, "dataTable", {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_dataTable).default;
-	  }
-	});
-
-	var _geoChoroplethChart = __webpack_require__(153);
+	var _geoChoroplethChart = __webpack_require__(152);
 
 	Object.defineProperty(exports, "geoChoroplethChart", {
 	  enumerable: true,
@@ -34575,7 +34445,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _heatmap = __webpack_require__(154);
+	var _heatmap = __webpack_require__(153);
 
 	Object.defineProperty(exports, "heatMap", {
 	  enumerable: true,
@@ -34593,7 +34463,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _lineChart = __webpack_require__(27);
+	var _lineChart = __webpack_require__(154);
 
 	Object.defineProperty(exports, "lineChart", {
 	  enumerable: true,
@@ -34674,7 +34544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _asyncMixin = __webpack_require__(30);
+	var _asyncMixin = __webpack_require__(28);
 
 	Object.defineProperty(exports, "asyncMixin", {
 	  enumerable: true,
@@ -34764,7 +34634,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _rasterLayerPointMixin = __webpack_require__(34);
+	var _rasterLayerPointMixin = __webpack_require__(33);
 
 	Object.defineProperty(exports, "rasterLayerPointMixin", {
 	  enumerable: true,
@@ -34773,7 +34643,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _rasterLayerPolyMixin = __webpack_require__(35);
+	var _rasterLayerPolyMixin = __webpack_require__(34);
 
 	Object.defineProperty(exports, "rasterLayerPolyMixin", {
 	  enumerable: true,
@@ -34782,7 +34652,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _rasterLayer = __webpack_require__(173);
+	var _rasterLayer = __webpack_require__(171);
 
 	Object.defineProperty(exports, "rasterLayer", {
 	  enumerable: true,
@@ -34809,7 +34679,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _spinnerMixin = __webpack_require__(36);
+	var _spinnerMixin = __webpack_require__(35);
 
 	Object.defineProperty(exports, "spinnerMixin", {
 	  enumerable: true,
@@ -34818,7 +34688,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _legendContinuous = __webpack_require__(142);
+	var _legendContinuous = __webpack_require__(141);
 
 	Object.defineProperty(exports, "legendContinuous", {
 	  enumerable: true,
@@ -34836,7 +34706,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _dcLegendCont = __webpack_require__(141);
+	var _dcLegendCont = __webpack_require__(140);
 
 	Object.defineProperty(exports, "legendCont", {
 	  enumerable: true,
@@ -34849,13 +34719,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _d = _interopRequireWildcard(_d2);
 
-	var _errors = __webpack_require__(29);
+	var _errors = __webpack_require__(27);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	__webpack_require__(176);
+	__webpack_require__(174);
 	__webpack_require__(165);
 
 	exports.d3 = _d;
@@ -34961,7 +34831,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var rangeChartBrush = isRangeChart ? chart.rangeChart().extendBrush() : null;
 	    var extent0 = isRangeChart ? rangeChartBrush : chart.extendBrush();
 	    var chartBounds = isRangeChart ? rangeChartBrush : chart.group().binParams()[0].binBounds;
-
 	    if (!extent0[0].getTime || extent0[0].getTime() === extent0[1].getTime()) {
 	      return;
 	    }
@@ -35068,6 +34937,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// https://github.com/d3/d3-plugins/blob/master/box/box.js
+	/* istanbul ignore next */
 	(function () {
 
 	  // Inspired by http://informationandvisualization.de/blog/box-plot
@@ -35652,13 +35522,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _listeners.xLabel(chart, val);
 	  };
 
+	  function rangeChart() {
+	    return typeof chart.rangeChart === "function" && chart.rangeChart();
+	  }
+
+	  function focusChart() {
+	    return typeof chart.focusChart === "function" && chart.focusChart();
+	  }
+
 	  function isIE11() {
 	    return Boolean(window.MSInputMethodContext) && Boolean(document.documentMode);
 	  }
 
 	  function getMaxLabelWidth(type, hasLegend) {
 	    if (type === "y") {
-	      var height = chart.height() + (chart.rangeChartEnabled() && chart._rangeChartCreated ? chart.rangeChart().height() : 0);
+	      var height = chart.height() + (rangeChart() ? chart.rangeChart().height() : 0);
 	      return (height - Math.max(chart.margins().top + chart.margins().bottom, 64)) * LABEL_WIDTH_MULTIPLIER;
 	    }
 
@@ -35666,18 +35544,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function getXaxisLeftPosition(hasLegend) {
-	    return hasLegend ? chart.width() / 2 + 32 : chart.effectiveWidth() / 2 + chart.margins().left;
+	    return hasLegend ? chart.getAxisLabelContainerWidth("x", hasLegend) / 2 + 32 : chart.effectiveWidth() / 2 + chart.margins().left;
 	  }
 
 	  function getYaxisTopPosition() {
-	    var yOffset = chart.rangeChartEnabled() && chart._rangeChartCreated ? chart.rangeChart().height() - chart.rangeChart().margins().bottom + chart.margins().bottom : 0;
+	    var yOffset = rangeChart() ? chart.rangeChart().height() - chart.rangeChart().margins().bottom + chart.margins().bottom : 0;
 	    return (chart.height() - Math.max(chart.margins().top + chart.margins().bottom, 64) + yOffset) / 2 + chart.margins().top;
 	  }
 
-	  function setLabel(type, val) {
+	  chart.getAxisLabelContainerWidth = function (type, hasLegend) {
+	    var width = type === "x" ? chart.effectiveWidth() : chart.effectiveHeight();
+	    var adjustForLegend = type === "x" && hasLegend ? 32 : 0;
+	    return width - adjustForLegend;
+	  };
 
+	  function setLabel(type, val) {
 	    chart[type + "AxisLabel"](val);
-	    if (chart._isRangeChart) {
+	    if (focusChart()) {
 	      chart.focusChart()["_invokeLabel" + type.toUpperCase() + "Listener"](val);
 	      if (type === "x") {
 	        chart.xAxisLabel(val);
@@ -35692,7 +35575,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  chart.prepareLabelEdit = function () {
 	    var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "y";
 
-	    if (chart.rangeChartEnabled() && type === "x" || chart._isRangeChart && type === "y") {
+	    if (rangeChart() && type === "x" || focusChart() && type === "y") {
 	      return;
 	    }
 	    var hasLegend = type === "x" && chart.legend() && chart.legend().legendType() === "quantitative";
@@ -35706,7 +35589,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    chart.root().selectAll(".y-axis-label, .x-axis-label").style("display", "none");
 
-	    var editorWrapper = chart.root().append("div").attr("class", "axis-label-edit type-" + type).classed("has-legend", hasLegend).style("top", iconPosition.top).style("left", iconPosition.left).append("div").attr("class", "input-wrapper").style("max-width", getMaxLabelWidth(type, hasLegend) + "px").style("width", isIE11() ? getMaxLabelWidth(type, hasLegend) + "px" : "auto");
+	    var editorWrapper = chart.root().append("div").attr("class", "axis-label-edit type-" + type).style("width", chart.getAxisLabelContainerWidth(type, hasLegend) + "px").classed("has-legend", hasLegend).style("top", iconPosition.top).style("left", iconPosition.left).append("div").attr("class", "input-wrapper").style("max-width", getMaxLabelWidth(type, hasLegend) + "px").style("width", isIE11() ? getMaxLabelWidth(type, hasLegend) + "px" : "auto");
 
 	    editorWrapper.append("span").text(chart[type + "AxisLabel"]());
 
@@ -35828,7 +35711,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.mapDrawMixin = mapDrawMixin;
 
-	var _utilsLasso = __webpack_require__(177);
+	var _utilsLasso = __webpack_require__(175);
 
 	var utils = _interopRequireWildcard(_utilsLasso);
 
@@ -36086,518 +35969,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = multiSeriesMixin;
-
-	var _core = __webpack_require__(3);
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	var LIMIT = 21;
-	var OFFSET = 0;
-	var TOP = 5;
-	var MULTI_DIMENSION_INDEX = 1;
-
-	function processMultiSeriesResults(results) {
-	  return results.reduce(function (accum, _ref) {
-	    var key1 = _ref.key1,
-	        key0 = _ref.key0,
-	        val = _ref.val;
-
-	    if (accum.keys[key1]) {
-	      accum.keys[key1] = accum.keys[key1];
-	    } else if (key1 === "other") {
-	      accum.keys[key1] = key1;
-	    } else {
-	      accum.keys[key1] = "series_" + (Object.keys(accum.keys).length + 1);
-	    }
-
-	    if (Array.isArray(key0)) {
-	      var isExtract = key0[0].isExtract;
-
-	      var min = isExtract ? key0[0].value : key0[0].value || key0[0];
-	      var alias = key0[0].alias || min;
-
-	      if (typeof accum.ranges[alias] !== "number") {
-	        // eslint-disable-line no-negated-condition
-	        accum.data[accum.data.length] = _defineProperty({
-	          key0: key0
-	        }, accum.keys[key1], val);
-	        accum.ranges[alias] = accum.data.length - 1;
-	      } else {
-	        accum.data[accum.ranges[alias]][accum.keys[key1]] = val;
-	      }
-	    } else {
-	      if (typeof accum.ranges[key0] !== "number") {
-	        // eslint-disable-line
-	        accum.data[accum.data.length] = _defineProperty({
-	          key0: key0
-	        }, accum.keys[key1], val);
-	        accum.ranges[key0] = accum.data.length - 1;
-	      } else {
-	        accum.data[accum.ranges[key0]][accum.keys[key1]] = val;
-	      }
-	    }
-
-	    return accum;
-	  }, {
-	    keys: {},
-	    ranges: {},
-	    data: []
-	  });
-	}
-
-	function selectWithCase(dimension, values) {
-	  var set = values.map(function (val) {
-	    return "'" + val.replace(/'/, "''") + "'";
-	  }).join(",");
-	  return "CASE when " + dimension + " IN (" + set + ") then " + dimension + " ELSE 'other' END";
-	}
-
-	function setDimensionsWithColumns(columns, selected) {
-	  return function setDimensions(crossfilterDimensionArray) {
-	    return [crossfilterDimensionArray[0], selectWithCase(columns[MULTI_DIMENSION_INDEX], selected)];
-	  };
-	}
-
-	function flipKeys(keys) {
-	  return Object.keys(keys).reduce(function (accum, val) {
-	    accum[keys[val]] = val;
-	    return accum;
-	  }, {});
-	}
-
-	function multiSeriesMixin(chart) {
-	  var columns = null;
-	  var showOther = false;
-
-	  var series = {
-	    group: null,
-	    values: null,
-	    selected: null,
-	    keys: null
-	  };
-
-	  var seriesApi = {
-	    group: seriesMethodWithKey("group"),
-	    values: seriesMethodWithKey("values"),
-	    selected: seriesMethodWithKey("selected"),
-	    keys: seriesMethodWithKey("keys")
-	  };
-
-	  function seriesMethodWithKey(key) {
-	    return function seriesMethod(value) {
-	      if (typeof value === "undefined") {
-	        return series[key];
-	      }
-	      series[key] = value;
-	      return seriesApi;
-	    };
-	  }
-
-	  (0, _core.override)(chart, "_doRedraw", function () {
-	    if (chart.isMulti()) {
-	      setUpMultiStack();
-	      var rendered = chart.__doRedraw();
-	      chart.generatePopup();
-	      return rendered;
-	    } else {
-	      return chart.__doRedraw();
-	    }
-	  });
-
-	  (0, _core.override)(chart, "dimension", function (dimension) {
-	    if (!dimension) {
-	      return chart._dimension();
-	    }
-
-	    columns = dimension.value().slice();
-	    return chart._dimension(dimension);
-	  });
-
-	  chart.series = function () {
-	    return seriesApi;
-	  };
-
-	  chart.isMulti = function () {
-	    return chart.dimension().value().length > MULTI_DIMENSION_INDEX;
-	  };
-
-	  chart.showOther = function (other) {
-	    if (typeof other === "boolean") {
-	      showOther = other;
-	      return chart;
-	    }
-	    return showOther;
-	  };
-
-	  function dataAsync(group, callback) {
-	    if (chart.isMulti()) {
-	      return chart.series().group().topAsync(LIMIT, OFFSET).then(function (topValues) {
-	        var currentSelected = chart.series().selected();
-	        var hasSelected = Boolean(currentSelected && currentSelected.length);
-
-	        chart.series().values(topValues.map(function (result) {
-	          return result.key0;
-	        })).selected(hasSelected ? currentSelected : chart.series().values().slice(0, TOP));
-
-	        if (!chart._isRangeChart) {
-	          chart.group().dimension().set(setDimensionsWithColumns(columns, chart.series().selected()));
-	        }
-	        chart.group().dimension().multiDim(false);
-
-	        return chart.group().reduce(chart.group().reduce()).all(function (error, results) {
-	          if (error) {
-	            return callback(error);
-	          } else {
-	            var _processMultiSeriesRe = processMultiSeriesResults(results),
-	                data = _processMultiSeriesRe.data,
-	                keys = _processMultiSeriesRe.keys;
-
-	            chart.series().keys(flipKeys(keys));
-	            return callback(error, data);
-	          }
-	        });
-	      }).catch(function (e) {
-	        return callback(e);
-	      });
-	    } else {
-	      return group.all(callback);
-	    }
-	  }
-
-	  function emptyStackMutation() {
-	    while (chart.stack().length) {
-	      chart.stack().pop();
-	    }
-	  }
-
-	  function addValuesWithNoKeysToKeysMutation() {
-	    function valuesWithNoKeys() {
-	      var keys = chart.series().keys();
-	      var selected = chart.series().selected() || [];
-	      var values = selected.slice();
-	      var indexes = Object.keys(keys).reduce(function (accum, key) {
-	        return accum.concat(selected.indexOf(keys[key]));
-	      }, []);
-	      indexes.forEach(function (index) {
-	        return values.splice(index, 1);
-	      });
-	      return values;
-	    }
-
-	    valuesWithNoKeys().forEach(function (select) {
-	      var currentLength = Object.keys(chart.series().keys()).length;
-	      var key = "series_" + (currentLength + 1);
-	      chart.series().keys()[key] = select;
-	    });
-	  }
-
-	  function stackFromSelected() {
-	    var keys = chart.series().keys();
-	    chart.series().selected().forEach(function (value) {
-	      var seriesName = Object.keys(keys).reduce(function (accum, v) {
-	        return keys[v] === value ? v : accum;
-	      }, null);
-	      chart.stack(chart.group(), seriesName, function (d) {
-	        return d[seriesName];
-	      });
-	    });
-	  }
-
-	  function setUpMultiStack() {
-	    if (chart.isMulti()) {
-	      emptyStackMutation();
-	      stackFromSelected();
-	      if (Object.keys(chart.series().keys()).length !== chart.stack().length && !chart.series().keys().other) {
-	        addValuesWithNoKeysToKeysMutation();
-	      }
-	      if (chart.showOther()) {
-	        chart.stack(chart.group(), "other", function (d) {
-	          return d.other;
-	        });
-	      }
-	    }
-	  }
-
-	  chart.setDataAsync(dataAsync);
-	  chart.on("preRender", setUpMultiStack);
-
-	  return chart;
-	}
-
-/***/ }),
-/* 172 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.DEFAULT_CHART_MARGINS = exports.DEFAULT_CHART_MARGINS_W_RANGE = exports.DEFAULT_RANGE_MARGINS = exports.MIN_RANGE_HEIGHT_IN_PX = exports.MAX_RANGE_HEIGHT_IN_PX = undefined;
-	exports.initializeRangeChart = initializeRangeChart;
-	exports.createRangeChart = createRangeChart;
-	exports.default = rangeMixin;
-	exports.calcChartHeightWithMaxRangeChartHeight = calcChartHeightWithMaxRangeChartHeight;
-	exports.calcMaxRangeChartHeight = calcMaxRangeChartHeight;
-
-	var _utils = __webpack_require__(4);
-
-	var _core = __webpack_require__(3);
-
-	var _barChart = __webpack_require__(26);
-
-	var _barChart2 = _interopRequireDefault(_barChart);
-
-	var _d = __webpack_require__(2);
-
-	var _d2 = _interopRequireDefault(_d);
-
-	var _lineChart = __webpack_require__(27);
-
-	var _lineChart2 = _interopRequireDefault(_lineChart);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-	var CHART_HEIGHT = 0.75;
-	var RANGE_CHART_HEIGHT = 0.25;
-	var MAX_RANGE_HEIGHT_IN_PX = exports.MAX_RANGE_HEIGHT_IN_PX = 200;
-	var MIN_RANGE_HEIGHT_IN_PX = exports.MIN_RANGE_HEIGHT_IN_PX = 72;
-	var DEFAULT_RANGE_MARGINS = exports.DEFAULT_RANGE_MARGINS = { top: 12, right: 24, bottom: 32, left: 48 };
-	var DEFAULT_CHART_MARGINS_W_RANGE = exports.DEFAULT_CHART_MARGINS_W_RANGE = { top: 24, right: 24, bottom: 20, left: 60 };
-	var DEFAULT_CHART_MARGINS = exports.DEFAULT_CHART_MARGINS = { top: 24, right: 24, bottom: 52, left: 48 };
-
-	function overridePlotData(chart) {
-	  if (!chart._plotData) {
-	    (0, _core.override)(chart, "plotData", function () {
-
-	      if (chart.rangeChartEnabled() && !chart._rangeChartCreated) {
-	        chart._rangeChartCreated = true;
-	        initializeRangeChart(chart);
-	        createRangeChart(chart);
-	      }
-
-	      chart._plotData();
-
-	      if (chart.rangeChartEnabled()) {
-	        var RangeChart = chart.rangeChart();
-	        chart.anchor().appendChild(RangeChart.rangeChartDiv);
-
-	        var parentHeight = chart.anchor().parentNode.clientHeight;
-
-	        if (RangeChart.colors() !== chart.colors()) {
-	          RangeChart.colors(chart.colors());
-	          RangeChart._hasRendered = false;
-	        }
-
-	        if (!(0, _utils.deepEquals)(RangeChart.series().selected(), chart.series().selected())) {
-	          RangeChart.series().selected(chart.series().selected());
-	          RangeChart._hasRendered = false;
-	        }
-
-	        if (chart.showOther() !== RangeChart.showOther()) {
-	          RangeChart.showOther(chart.showOther());
-	          RangeChart._hasRendered = false;
-	        }
-
-	        if (calcMaxRangeChartHeight(parentHeight) !== RangeChart.height()) {
-	          RangeChart.height(calcMaxRangeChartHeight(parentHeight));
-	          RangeChart._hasRendered = false;
-	        }
-
-	        if (chart.width() !== RangeChart.width()) {
-	          RangeChart.width(chart.width());
-	          RangeChart._hasRendered = false;
-	        }
-
-	        if (chart.renderArea() !== RangeChart.renderArea()) {
-	          RangeChart.renderArea(chart.renderArea());
-	          RangeChart._hasRendered = false;
-	        }
-
-	        if (!RangeChart._hasRendered) {
-	          RangeChart._hasRendered = true;
-	          RangeChart.renderAsync();
-	        }
-	      }
-	    });
-	  }
-	}
-
-	function initializeRangeChart(chart) {
-	  var RangeChart = null;
-	  var rangeChartDiv = document.createElement("DIV");
-	  rangeChartDiv.className = "range-chart";
-
-	  if (chart._chartType === "line") {
-	    RangeChart = (0, _lineChart2.default)(rangeChartDiv).defined(function (d) {
-	      return d.y !== null;
-	    }).interpolate("linear").renderArea(false);
-	  } else if (chart._chartType === "histogram") {
-	    RangeChart = (0, _barChart2.default)(rangeChartDiv);
-	  }
-
-	  RangeChart.width(chart.width()).height(chart.height() * RANGE_CHART_HEIGHT).colorByLayerId(true).elasticY(true).elasticX(chart.elasticX()).margins(Object.assign({}, DEFAULT_RANGE_MARGINS)).valueAccessor(function (d) {
-	    return d.series_1;
-	  }).xAxisLabel(chart.xAxisLabel()).yAxisLabel("");
-
-	  RangeChart._isRangeChart = true;
-	  RangeChart._hasRendered = false;
-	  chart._tempRangeChart = RangeChart;
-	  chart.renderHorizontalGridLines(true);
-	  RangeChart._focusChart = chart;
-	  RangeChart.rangeChartDiv = rangeChartDiv;
-	}
-
-	function createRangeChart(chart) {
-	  var RangeChart = chart._tempRangeChart;
-	  chart._height(calcChartHeightWithMaxRangeChartHeight(chart._height()));
-	  chart.xAxisLabel("");
-	  chart.margins(Object.assign({}, DEFAULT_CHART_MARGINS_W_RANGE));
-
-	  var isChartDate = chart.isTime();
-	  RangeChart._isTime = isChartDate;
-
-	  var binParams = (0, _utils.deepClone)(chart.binParams());
-
-	  if (isChartDate) {
-	    binParams[0].binBounds = binParams[0].binBounds.map(function (time) {
-	      return new Date(time);
-	    });
-
-	    if (!binParams[0].extract) {
-	      binParams[0].timeBin = "auto";
-	    }
-	  }
-
-	  RangeChart.dimension(chart.dimension());
-	  var group = RangeChart.dimension().group().reduceMulti(chart._rangeMeasure);
-	  RangeChart.group(group);
-	  RangeChart.binParams(binParams);
-
-	  var defaultExact = binParams[0] ? binParams[0].extract : null;
-	  var defaultTimeBin = binParams[0] ? binParams[0].timeBin : null;
-	  var xDomainArr = [defaultExact, chart.xAxisMin(), chart.xAxisMax(), defaultTimeBin];
-	  RangeChart.x((0, _utils.xScale)(defaultExact, isChartDate).domain(_utils.xDomain.apply(undefined, xDomainArr)));
-	  RangeChart.xAxis().scale(RangeChart.x()).tickFormat((0, _utils.xAxisTickFormat)(binParams[0] || { extract: false, timeBin: false }, isChartDate));
-	  RangeChart.yAxis().tickFormat(_d2.default.format(".2s"));
-	  RangeChart.colorAccessor(chart.colorAccessor());
-	  RangeChart.colors(chart.colors());
-	  RangeChart.renderArea(chart.renderArea());
-
-	  if (chart.isMulti()) {
-	    RangeChart.series().group(chart.series().group());
-	    RangeChart.series().selected(chart.series().selected());
-	  }
-
-	  chart.rangeChart(chart._tempRangeChart);
-	  if (chart._loadRangeFilter) {
-	    RangeChart.filter(chart._loadRangeFilter);
-	    chart.focus(chart._loadRangeFilter);
-	  }
-
-	  chart.renderAsync().then(function () {
-	    if (chart._loadRangeFilter) {
-	      if (chart._loadChartFilter && chart._loadRangeFilter[0] !== chart._loadChartFilter[0] && chart._loadRangeFilter[1] !== chart._loadChartFilter[1]) {
-	        chart.replaceFilter(chart._loadChartFilter);
-	      }
-	      chart._loadChartFilter = null;
-	      chart._loadRangeFilter = null;
-	    }
-	  });
-
-	  RangeChart.updateAxes = function (_chart, _binParams) {
-	    var _RangeChart = _chart.rangeChart();
-	    var _isChartDate = _chart.isTime();
-	    var bounds = _binParams[0] ? [_binParams[0].binBounds[0], _binParams[0].binBounds[1]] : [_chart.xAxisMin(), _chart.xAxisMax()];
-	    var _binning = _binParams[0] || {};
-	    var _xDomainArr = [_binning.extract].concat(bounds, [_binning.timeBin]);
-	    _RangeChart.x((0, _utils.xScale)(_binning.extract, _isChartDate).domain(_utils.xDomain.apply(undefined, _toConsumableArray(_xDomainArr))));
-	    _RangeChart.xAxis().scale(RangeChart.x()).tickFormat((0, _utils.xAxisTickFormat)(_binning, _isChartDate));
-	    _RangeChart.yAxis().tickFormat(_d2.default.format(".2s"));
-	  };
-
-	  RangeChart.destroyRangeChart = function (_chart) {
-	    _chart._height(_chart.anchor().parentNode.clientHeight);
-	    var _RangeChart = _chart.rangeChart();
-
-	    if (_chart.filters().length) {
-	      _chart.filterAll();
-	    }
-	    if (_RangeChart.filters().length) {
-	      _RangeChart.filterAll();
-	    }
-	    _chart.binParams(_RangeChart.binParams());
-	    _chart.xAxisLabel(_RangeChart.xAxisLabel());
-	    (0, _core.deregisterChart)(_RangeChart);
-	    _chart.margins(DEFAULT_CHART_MARGINS);
-	    _chart.renderHorizontalGridLines(false);
-	    _chart._rangeChartCreated = false;
-	    _chart.renderAsync();
-	  };
-	}
-
-	function rangeMixin(chart) {
-
-	  var hasRangeChart = false;
-
-	  chart.rangeChartEnabled = function (_) {
-	    var chartType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "line";
-
-	    if (!arguments.length) {
-	      return hasRangeChart;
-	    }
-
-	    if (!hasRangeChart && _) {
-	      overridePlotData(chart);
-	    } else if (hasRangeChart && !_) {
-	      hasRangeChart = _;
-	      chart.rangeChart().destroyRangeChart(chart);
-	    }
-
-	    hasRangeChart = _;
-	    chart._chartType = chartType;
-
-	    return chart;
-	  };
-
-	  (0, _core.override)(chart, "height", function (height) {
-	    if (!arguments.length) {
-	      return chart._height();
-	    }
-
-	    if (chart._isRangeChart) {
-	      chart._height(height);
-	    } else {
-	      chart._height(hasRangeChart ? calcChartHeightWithMaxRangeChartHeight(height) : height);
-	    }
-	    return chart;
-	  });
-
-	  return chart;
-	}
-
-	function calcChartHeightWithMaxRangeChartHeight(height) {
-	  var rangeHeight = calcMaxRangeChartHeight(height);
-	  return height - rangeHeight;
-	}
-
-	function calcMaxRangeChartHeight(height) {
-	  var rangeHeight = height * RANGE_CHART_HEIGHT;
-	  return Math.max(Math.min(rangeHeight, MAX_RANGE_HEIGHT_IN_PX), MIN_RANGE_HEIGHT_IN_PX);
-	}
-
-/***/ }),
-/* 173 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -36607,11 +35978,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _capMixin2 = _interopRequireDefault(_capMixin);
 
-	var _rasterLayerPointMixin = __webpack_require__(34);
+	var _rasterLayerPointMixin = __webpack_require__(33);
 
 	var _rasterLayerPointMixin2 = _interopRequireDefault(_rasterLayerPointMixin);
 
-	var _rasterLayerPolyMixin = __webpack_require__(35);
+	var _rasterLayerPolyMixin = __webpack_require__(34);
 
 	var _rasterLayerPolyMixin2 = _interopRequireDefault(_rasterLayerPolyMixin);
 
@@ -37096,7 +36467,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 174 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38199,7 +37570,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 175 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38214,7 +37585,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.getLatLonCircleClass = getLatLonCircleClass;
 
-	var _utilsLatlon = __webpack_require__(38);
+	var _utilsLatlon = __webpack_require__(37);
 
 	var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
@@ -38222,7 +37593,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-	var _simplifyJs = __webpack_require__(184);
+	var _simplifyJs = __webpack_require__(182);
 
 	var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
@@ -39320,12 +38691,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = LassoButtonGroupController;
 
 /***/ }),
-/* 176 */
+/* 174 */
 /***/ (function(module, exports) {
 
 	"use strict";
 
 	(function () {
+	  /* istanbul ignore next */
 	  if (window.SVGElement) {
 	    var serializeXML = function serializeXML(node, output) {
 	      var nodeType = node.nodeType;
@@ -39416,7 +38788,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	})();
 
 /***/ }),
-/* 177 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -39426,7 +38798,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.convertGeojsonToSql = convertGeojsonToSql;
 
-	var _earcut = __webpack_require__(40);
+	var _earcut = __webpack_require__(39);
 
 	var _earcut2 = _interopRequireDefault(_earcut);
 
@@ -39542,7 +38914,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 178 */
+/* 176 */
 /***/ (function(module, exports) {
 
 	var supportsArgumentsClass = (function(){
@@ -39568,7 +38940,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 179 */
+/* 177 */
 /***/ (function(module, exports) {
 
 	exports = module.exports = typeof Object.keys === 'function'
@@ -39583,223 +38955,223 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 180 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(163);
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 181 */
+/* 179 */
 /***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 182 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./af": 41,
-		"./af.js": 41,
-		"./ar": 45,
-		"./ar-ma": 42,
-		"./ar-ma.js": 42,
-		"./ar-sa": 43,
-		"./ar-sa.js": 43,
-		"./ar-tn": 44,
-		"./ar-tn.js": 44,
-		"./ar.js": 45,
-		"./az": 46,
-		"./az.js": 46,
-		"./be": 47,
-		"./be.js": 47,
-		"./bg": 48,
-		"./bg.js": 48,
-		"./bn": 49,
-		"./bn.js": 49,
-		"./bo": 50,
-		"./bo.js": 50,
-		"./br": 51,
-		"./br.js": 51,
-		"./bs": 52,
-		"./bs.js": 52,
-		"./ca": 53,
-		"./ca.js": 53,
-		"./cs": 54,
-		"./cs.js": 54,
-		"./cv": 55,
-		"./cv.js": 55,
-		"./cy": 56,
-		"./cy.js": 56,
-		"./da": 57,
-		"./da.js": 57,
-		"./de": 59,
-		"./de-at": 58,
-		"./de-at.js": 58,
-		"./de.js": 59,
-		"./dv": 60,
-		"./dv.js": 60,
-		"./el": 61,
-		"./el.js": 61,
-		"./en-au": 62,
-		"./en-au.js": 62,
-		"./en-ca": 63,
-		"./en-ca.js": 63,
-		"./en-gb": 64,
-		"./en-gb.js": 64,
-		"./en-ie": 65,
-		"./en-ie.js": 65,
-		"./en-nz": 66,
-		"./en-nz.js": 66,
-		"./eo": 67,
-		"./eo.js": 67,
-		"./es": 68,
-		"./es.js": 68,
-		"./et": 69,
-		"./et.js": 69,
-		"./eu": 70,
-		"./eu.js": 70,
-		"./fa": 71,
-		"./fa.js": 71,
-		"./fi": 72,
-		"./fi.js": 72,
-		"./fo": 73,
-		"./fo.js": 73,
-		"./fr": 76,
-		"./fr-ca": 74,
-		"./fr-ca.js": 74,
-		"./fr-ch": 75,
-		"./fr-ch.js": 75,
-		"./fr.js": 76,
-		"./fy": 77,
-		"./fy.js": 77,
-		"./gd": 78,
-		"./gd.js": 78,
-		"./gl": 79,
-		"./gl.js": 79,
-		"./he": 80,
-		"./he.js": 80,
-		"./hi": 81,
-		"./hi.js": 81,
-		"./hr": 82,
-		"./hr.js": 82,
-		"./hu": 83,
-		"./hu.js": 83,
-		"./hy-am": 84,
-		"./hy-am.js": 84,
-		"./id": 85,
-		"./id.js": 85,
-		"./is": 86,
-		"./is.js": 86,
-		"./it": 87,
-		"./it.js": 87,
-		"./ja": 88,
-		"./ja.js": 88,
-		"./jv": 89,
-		"./jv.js": 89,
-		"./ka": 90,
-		"./ka.js": 90,
-		"./kk": 91,
-		"./kk.js": 91,
-		"./km": 92,
-		"./km.js": 92,
-		"./ko": 93,
-		"./ko.js": 93,
-		"./ky": 94,
-		"./ky.js": 94,
-		"./lb": 95,
-		"./lb.js": 95,
-		"./lo": 96,
-		"./lo.js": 96,
-		"./lt": 97,
-		"./lt.js": 97,
-		"./lv": 98,
-		"./lv.js": 98,
-		"./me": 99,
-		"./me.js": 99,
-		"./mk": 100,
-		"./mk.js": 100,
-		"./ml": 101,
-		"./ml.js": 101,
-		"./mr": 102,
-		"./mr.js": 102,
-		"./ms": 104,
-		"./ms-my": 103,
-		"./ms-my.js": 103,
-		"./ms.js": 104,
-		"./my": 105,
-		"./my.js": 105,
-		"./nb": 106,
-		"./nb.js": 106,
-		"./ne": 107,
-		"./ne.js": 107,
-		"./nl": 108,
-		"./nl.js": 108,
-		"./nn": 109,
-		"./nn.js": 109,
-		"./pa-in": 110,
-		"./pa-in.js": 110,
-		"./pl": 111,
-		"./pl.js": 111,
-		"./pt": 113,
-		"./pt-br": 112,
-		"./pt-br.js": 112,
-		"./pt.js": 113,
-		"./ro": 114,
-		"./ro.js": 114,
-		"./ru": 115,
-		"./ru.js": 115,
-		"./se": 116,
-		"./se.js": 116,
-		"./si": 117,
-		"./si.js": 117,
-		"./sk": 118,
-		"./sk.js": 118,
-		"./sl": 119,
-		"./sl.js": 119,
-		"./sq": 120,
-		"./sq.js": 120,
-		"./sr": 122,
-		"./sr-cyrl": 121,
-		"./sr-cyrl.js": 121,
-		"./sr.js": 122,
-		"./ss": 123,
-		"./ss.js": 123,
-		"./sv": 124,
-		"./sv.js": 124,
-		"./sw": 125,
-		"./sw.js": 125,
-		"./ta": 126,
-		"./ta.js": 126,
-		"./te": 127,
-		"./te.js": 127,
-		"./th": 128,
-		"./th.js": 128,
-		"./tl-ph": 129,
-		"./tl-ph.js": 129,
-		"./tlh": 130,
-		"./tlh.js": 130,
-		"./tr": 131,
-		"./tr.js": 131,
-		"./tzl": 132,
-		"./tzl.js": 132,
-		"./tzm": 134,
-		"./tzm-latn": 133,
-		"./tzm-latn.js": 133,
-		"./tzm.js": 134,
-		"./uk": 135,
-		"./uk.js": 135,
-		"./uz": 136,
-		"./uz.js": 136,
-		"./vi": 137,
-		"./vi.js": 137,
-		"./x-pseudo": 138,
-		"./x-pseudo.js": 138,
-		"./zh-cn": 139,
-		"./zh-cn.js": 139,
-		"./zh-tw": 140,
-		"./zh-tw.js": 140
+		"./af": 40,
+		"./af.js": 40,
+		"./ar": 44,
+		"./ar-ma": 41,
+		"./ar-ma.js": 41,
+		"./ar-sa": 42,
+		"./ar-sa.js": 42,
+		"./ar-tn": 43,
+		"./ar-tn.js": 43,
+		"./ar.js": 44,
+		"./az": 45,
+		"./az.js": 45,
+		"./be": 46,
+		"./be.js": 46,
+		"./bg": 47,
+		"./bg.js": 47,
+		"./bn": 48,
+		"./bn.js": 48,
+		"./bo": 49,
+		"./bo.js": 49,
+		"./br": 50,
+		"./br.js": 50,
+		"./bs": 51,
+		"./bs.js": 51,
+		"./ca": 52,
+		"./ca.js": 52,
+		"./cs": 53,
+		"./cs.js": 53,
+		"./cv": 54,
+		"./cv.js": 54,
+		"./cy": 55,
+		"./cy.js": 55,
+		"./da": 56,
+		"./da.js": 56,
+		"./de": 58,
+		"./de-at": 57,
+		"./de-at.js": 57,
+		"./de.js": 58,
+		"./dv": 59,
+		"./dv.js": 59,
+		"./el": 60,
+		"./el.js": 60,
+		"./en-au": 61,
+		"./en-au.js": 61,
+		"./en-ca": 62,
+		"./en-ca.js": 62,
+		"./en-gb": 63,
+		"./en-gb.js": 63,
+		"./en-ie": 64,
+		"./en-ie.js": 64,
+		"./en-nz": 65,
+		"./en-nz.js": 65,
+		"./eo": 66,
+		"./eo.js": 66,
+		"./es": 67,
+		"./es.js": 67,
+		"./et": 68,
+		"./et.js": 68,
+		"./eu": 69,
+		"./eu.js": 69,
+		"./fa": 70,
+		"./fa.js": 70,
+		"./fi": 71,
+		"./fi.js": 71,
+		"./fo": 72,
+		"./fo.js": 72,
+		"./fr": 75,
+		"./fr-ca": 73,
+		"./fr-ca.js": 73,
+		"./fr-ch": 74,
+		"./fr-ch.js": 74,
+		"./fr.js": 75,
+		"./fy": 76,
+		"./fy.js": 76,
+		"./gd": 77,
+		"./gd.js": 77,
+		"./gl": 78,
+		"./gl.js": 78,
+		"./he": 79,
+		"./he.js": 79,
+		"./hi": 80,
+		"./hi.js": 80,
+		"./hr": 81,
+		"./hr.js": 81,
+		"./hu": 82,
+		"./hu.js": 82,
+		"./hy-am": 83,
+		"./hy-am.js": 83,
+		"./id": 84,
+		"./id.js": 84,
+		"./is": 85,
+		"./is.js": 85,
+		"./it": 86,
+		"./it.js": 86,
+		"./ja": 87,
+		"./ja.js": 87,
+		"./jv": 88,
+		"./jv.js": 88,
+		"./ka": 89,
+		"./ka.js": 89,
+		"./kk": 90,
+		"./kk.js": 90,
+		"./km": 91,
+		"./km.js": 91,
+		"./ko": 92,
+		"./ko.js": 92,
+		"./ky": 93,
+		"./ky.js": 93,
+		"./lb": 94,
+		"./lb.js": 94,
+		"./lo": 95,
+		"./lo.js": 95,
+		"./lt": 96,
+		"./lt.js": 96,
+		"./lv": 97,
+		"./lv.js": 97,
+		"./me": 98,
+		"./me.js": 98,
+		"./mk": 99,
+		"./mk.js": 99,
+		"./ml": 100,
+		"./ml.js": 100,
+		"./mr": 101,
+		"./mr.js": 101,
+		"./ms": 103,
+		"./ms-my": 102,
+		"./ms-my.js": 102,
+		"./ms.js": 103,
+		"./my": 104,
+		"./my.js": 104,
+		"./nb": 105,
+		"./nb.js": 105,
+		"./ne": 106,
+		"./ne.js": 106,
+		"./nl": 107,
+		"./nl.js": 107,
+		"./nn": 108,
+		"./nn.js": 108,
+		"./pa-in": 109,
+		"./pa-in.js": 109,
+		"./pl": 110,
+		"./pl.js": 110,
+		"./pt": 112,
+		"./pt-br": 111,
+		"./pt-br.js": 111,
+		"./pt.js": 112,
+		"./ro": 113,
+		"./ro.js": 113,
+		"./ru": 114,
+		"./ru.js": 114,
+		"./se": 115,
+		"./se.js": 115,
+		"./si": 116,
+		"./si.js": 116,
+		"./sk": 117,
+		"./sk.js": 117,
+		"./sl": 118,
+		"./sl.js": 118,
+		"./sq": 119,
+		"./sq.js": 119,
+		"./sr": 121,
+		"./sr-cyrl": 120,
+		"./sr-cyrl.js": 120,
+		"./sr.js": 121,
+		"./ss": 122,
+		"./ss.js": 122,
+		"./sv": 123,
+		"./sv.js": 123,
+		"./sw": 124,
+		"./sw.js": 124,
+		"./ta": 125,
+		"./ta.js": 125,
+		"./te": 126,
+		"./te.js": 126,
+		"./th": 127,
+		"./th.js": 127,
+		"./tl-ph": 128,
+		"./tl-ph.js": 128,
+		"./tlh": 129,
+		"./tlh.js": 129,
+		"./tr": 130,
+		"./tr.js": 130,
+		"./tzl": 131,
+		"./tzl.js": 131,
+		"./tzm": 133,
+		"./tzm-latn": 132,
+		"./tzm-latn.js": 132,
+		"./tzm.js": 133,
+		"./uk": 134,
+		"./uk.js": 134,
+		"./uz": 135,
+		"./uz.js": 135,
+		"./vi": 136,
+		"./vi.js": 136,
+		"./x-pseudo": 137,
+		"./x-pseudo.js": 137,
+		"./zh-cn": 138,
+		"./zh-cn.js": 138,
+		"./zh-tw": 139,
+		"./zh-tw.js": 139
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -39812,11 +39184,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 182;
+	webpackContext.id = 180;
 
 
 /***/ }),
-/* 183 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//  Ramda v0.21.0
@@ -48606,7 +47978,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 184 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -48743,7 +48115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 185 */
+/* 183 */
 /***/ (function(module, exports) {
 
 	module.exports = function(module) {

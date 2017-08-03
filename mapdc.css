@@ -200,20 +200,6 @@ art {
     font-weight: bold;
 }
 
-.dc-data-table {
-}
-
-.dc-table-column:hover{
-    -webkit-transition: all 0.2s;
-     transition: all 0.2s;
-}
-
-.dc-table-column:hover{
-    color:black;
-    font-weight:bold;
-    cursor: pointer;
-}
-
 .dc-chart g.state {
     cursor: pointer;
 }
