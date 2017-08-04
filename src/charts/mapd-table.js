@@ -11,6 +11,18 @@ const NON_INDEX = -1
 const ADDITIONAL_HEIGHT = 18
 const SCROLL_DIVISOR = 5
 
+const formatDataOnExpression = (d, col) => {
+  const {expression} = col
+  if (expression === "sum(pl_usd) * 1000000 / sum(abs(units) * base_usd)") {
+    return d3.format(".2f")(d[col.name])
+  } else if (expression === "sum((ask - bid) * abs(units) * base_usd) / sum(abs(units) * base_usd)") 
+  {
+    return d3.format(".5f")(d[col.name])
+  } else {
+    return formatDataValue(d[col.name])
+  }
+}
+
 export const splitStrOnLastAs = str => {
   const splitStr = []
   splitStr[0] = str.substring(0, str.lastIndexOf("as") - 1)
@@ -273,7 +285,7 @@ export default function mapdTable (parent, chartGroup) {
 
     cols.forEach(col => {
       rowItem.append("td")
-        .html(d => formatDataValue(d[col.name]))
+        .html(d => formatDataOnExpression(d, col))
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
           if (_isGroupedData) {

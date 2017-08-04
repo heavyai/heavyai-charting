@@ -54,6 +54,15 @@ const EXTRACT_UNIT_NUM_BUCKETS = {
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @returns {dc.barChart}
  */
+
+const formatNumber = value => {
+  if (value < 1 && value > -1) {
+    return d3.format(".5f")(value)
+  } else {
+    return d3.format(",.0f")(value)
+  }
+}
+
 export default function barChart (parent, chartGroup) {
   const MIN_BAR_WIDTH = 1
   const DEFAULT_GAP_BETWEEN_BARS = 4
@@ -205,7 +214,7 @@ export default function barChart (parent, chartGroup) {
 
     popupItems.append("div")
             .attr("class", "popup-item-value")
-            .text((d) => utils.formatValue(d.datum.y))
+            .text((d) => formatNumber(d.datum.y))
 
     positionPopup(x, y)
     popup.classed("js-showPopup", true)

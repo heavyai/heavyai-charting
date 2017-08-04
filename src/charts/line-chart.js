@@ -31,6 +31,15 @@ import multiSeriesMixin from "../mixins/multi-series-mixin"
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.lineChart}
  */
+
+const formatNumber = value => {
+  if (value < 1 && value > -1) {
+    return d3.format(".5f")(value)
+  } else {
+    return d3.format(",.0f")(value)
+  }
+}
+
 export default function lineChart (parent, chartGroup) {
   const DEFAULT_DOT_RADIUS = 5
   const TOOLTIP_G_CLASS = "dc-tooltip"
@@ -354,7 +363,7 @@ export default function lineChart (parent, chartGroup) {
     popupItems.append("div")
             .attr("class", "popup-item-value")
             .classed("text-align-right", Boolean(_chart.series().keys()))
-            .text((d) => utils.formatValue(d.datum.y))
+            .text((d) => formatNumber(d.datum.y))
 
     positionPopup(x, y)
     popup.classed("js-showPopup", true)
