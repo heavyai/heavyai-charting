@@ -56,6 +56,7 @@ export default function baseMixin (_chart) {
   let _svg
   let _isChild
   let _popup
+  let _popupIsEnabled = true
   const _redrawBrushFlag = false
   let _isTargeting = false
   let _colorByExpr = null
@@ -591,6 +592,15 @@ export default function baseMixin (_chart) {
     }
     _popup = popupElement
     return _chart
+  }
+
+  _chart.enablePopup = function (popupIsEnabled) {
+    _popupIsEnabled = popupIsEnabled
+    return _chart
+  }
+
+  _chart.popupIsEnabled = function () {
+    return _popupIsEnabled
   }
 
   _chart.generatePopup = function () {
