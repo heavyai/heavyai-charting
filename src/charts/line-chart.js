@@ -322,6 +322,10 @@ export default function lineChart (parent, chartGroup) {
   }
 
   function showPopup (arr, x, y) {
+    if (!_chart.popupIsEnabled()) {
+      hidePopup()
+      return false
+    }
     const popup = _chart.popup()
 
     const popupBox = popup.select(".chart-popup-content").html("")
