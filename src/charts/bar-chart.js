@@ -1,4 +1,4 @@
-import {constants, override, transition} from "../core/core"
+import {constants, deregisterChart, override, transition} from "../core/core"
 import {pluck, utils} from "../utils/utils"
 import d3 from "d3"
 import stackMixin from "../mixins/stack-mixin"
@@ -542,6 +542,14 @@ export default function barChart (parent, chartGroup) {
   _chart.renderLabel(false)
 
   _chart = multiSeriesMixin(_chart)
+
+  _chart.destroyChart = function () {
+    deregisterChart(_chart)
+    _chart.on("filtered", null)
+    _chart.filterAll()
+    _chart.resetSvg()
+    _chart.root().attr("style", "").attr("class", "").html("")
+  }
 
   return _chart.anchor(parent, chartGroup)
 }

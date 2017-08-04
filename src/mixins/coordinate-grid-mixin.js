@@ -1,6 +1,5 @@
 import {
   constants,
-  deregisterChart,
   disableTransitions,
   globalTransitionDuration,
   optionalTransition,
@@ -1455,14 +1454,6 @@ export default function coordinateGridMixin (_chart) {
       const numTicks = _chart.xAxis().scale().ticks().length
       return effectiveWidth / numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : DEFAULT_NUM_TICKS
     }
-  }
-
-  _chart.destroyChart = function () {
-    deregisterChart(_chart)
-    _chart.on("filtered", null)
-    _chart.filterAll()
-    _chart.resetSvg()
-    _chart.root().attr("style", "").attr("class", "").html("")
   }
 
   _chart.rangeFocused = function (_) {
