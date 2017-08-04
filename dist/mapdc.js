@@ -4934,6 +4934,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _svg = void 0;
 	  var _isChild = void 0;
 	  var _popup = void 0;
+	  var _popupIsEnabled = true;
 	  var _redrawBrushFlag = false;
 	  var _isTargeting = false;
 	  var _colorByExpr = null;
@@ -5461,6 +5462,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    _popup = popupElement;
 	    return _chart;
+	  };
+
+	  _chart.enablePopup = function (popupIsEnabled) {
+	    _popupIsEnabled = popupIsEnabled;
+	    return _chart;
+	  };
+
+	  _chart.popupIsEnabled = function () {
+	    return _popupIsEnabled;
 	  };
 
 	  _chart.generatePopup = function () {
@@ -13943,14 +13953,28 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _formattingHelpers = __webpack_require__(9);
 
+	var _moment = __webpack_require__(1);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var CHART_HEIGHT = 0.75;
 	var TOGGLE_SIZE = 24;
 	var NON_INDEX = -1;
+	var RETURN_KEY = 13;
+	var DATE_FORMAT = "MM-DD-YYYY";
 
 	function formatVal(val) {
 	  return val instanceof Date ? _d2.default.time.format.utc("%m-%d-%Y")(val) : (0, _formattingHelpers.formatDataValue)(val);
+	}
+
+	function parseFloatStrict(value) {
+	  if (/^(\-|\+)?([0-9]+(\.[0-9]+)?)$/.test(value)) {
+	    return Number(value);
+	  } else {
+	    return NaN;
+	  }
 	}
 
 	function lockAxisMixin(chart) {
@@ -14110,11 +14134,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var axisMax = lockWrapper.append("div").attr("class", "axis-input max").style("top", inputsPosition.maxTop).style("left", inputsPosition.maxLeft);
 
-	    axisMax.append("input").attr("value", formatVal(minMax[1])).on("focus", function () {
+	    axisMax.append("input").attr("pattern", "[0-9\-]").attr("value", formatVal(minMax[1])).on("focus", function () {
 	      this.select();
 	    }).on("change", function () {
-	      var val = minMax[1] instanceof Date ? new Date(this.value) : parseFloat(this.value.replace(/,/g, ""));
+	      var val = minMax[1] instanceof Date ? (0, _moment2.default)(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""));
 	      updateMinMax(type, [minMax[0], val]);
+	    }).on("keyup", function () {
+	      if (_d2.default.event.keyCode === RETURN_KEY) {
+	        this.blur();
+	      }
 	    });
 
 	    axisMax.append("div").text(formatVal(minMax[1]));
@@ -14124,8 +14152,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    axisMin.append("input").attr("value", formatVal(minMax[0])).on("focus", function () {
 	      this.select();
 	    }).on("change", function () {
-	      var val = minMax[0] instanceof Date ? new Date(this.value) : parseFloat(this.value.replace(/,/g, ""));
+	      var val = minMax[0] instanceof Date ? (0, _moment2.default)(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""));
 	      updateMinMax(type, [val, minMax[1]]);
+	    }).on("keyup", function () {
+	      if (_d2.default.event.keyCode === RETURN_KEY) {
+	        this.blur();
+	      }
 	    });
 
 	    axisMin.append("div").text(formatVal(minMax[0]));
@@ -26342,14 +26374,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        hoverBar = { elm: elm, datum: elm.datum(), i: i };
 	      });
 
-	      if (hoverBar && Math.abs(hoverBar.elm.attr("x") - xAdjusted) < _barWidth && yAdjusted > hoverBar.elm.attr("y") - 32) {
+	      if (hoverBar && Math.abs(hoverBar.elm.attr("x") - xAdjusted) < _barWidth) {
 	        hoverBar.elm.style("fill-opacity", 0.8);
 	        popupRows.push(hoverBar);
 	      }
 	    });
 
 	    if (popupRows.length > 0) {
-	      showPopup(popupRows, x, y);
+	      showPopup(popupRows.reverse(), x, y);
 	    } else {
 	      hidePopup();
 	    }
@@ -26361,6 +26393,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function showPopup(arr, x, y) {
+	    if (!_chart.popupIsEnabled()) {
+	      hidePopup();
+	      return false;
+	    }
 	    var popup = _chart.popup().classed("hide-delay", true);
 
 	    var popupBox = popup.select(".chart-popup-content").html("").classed("popup-list", true);
@@ -26373,8 +26409,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _chart.getColor(d.datum, d.i);
 	    });
 
+	    if (_chart.series().keys()) {
+	      popupItems.append("div").attr("class", "popup-item-key").text(function (d) {
+	        return _chart.colorDomain()[d.datum.idx];
+	      });
+	    }
+
 	    popupItems.append("div").attr("class", "popup-item-value").text(function (d) {
-	      return _utils.utils.formatValue(d.datum.y + d.datum.y0);
+	      return _utils.utils.formatValue(d.datum.y);
 	    });
 
 	    positionPopup(x, y);
@@ -31028,6 +31070,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function showPopup(arr, x, y) {
+	    if (!_chart.popupIsEnabled()) {
+	      hidePopup();
+	      return false;
+	    }
 	    var popup = _chart.popup();
 
 	    var popupBox = popup.select(".chart-popup-content").html("").classed("popup-list", true);

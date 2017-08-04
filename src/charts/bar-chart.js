@@ -154,7 +154,7 @@ export default function barChart (parent, chartGroup) {
                 hoverBar = {elm, datum: elm.datum(), i}
               })
 
-              if (hoverBar && Math.abs(hoverBar.elm.attr("x") - xAdjusted) < _barWidth && yAdjusted > hoverBar.elm.attr("y") - 32) {
+              if (hoverBar && Math.abs(hoverBar.elm.attr("x") - xAdjusted) < _barWidth) {
                 hoverBar.elm.style("fill-opacity", 0.8)
                 popupRows.push(hoverBar)
               }
@@ -162,7 +162,7 @@ export default function barChart (parent, chartGroup) {
             })
 
     if (popupRows.length > 0) {
-      showPopup(popupRows, x, y)
+      showPopup(popupRows.reverse(), x, y)
     } else {
       hidePopup()
     }
@@ -174,6 +174,10 @@ export default function barChart (parent, chartGroup) {
   }
 
   function showPopup (arr, x, y) {
+    if (!_chart.popupIsEnabled()) {
+      hidePopup()
+      return false
+    }
     const popup = _chart.popup().classed("hide-delay", true)
 
     const popupBox = popup.select(".chart-popup-content").html("")
@@ -193,9 +197,15 @@ export default function barChart (parent, chartGroup) {
             .attr("class", "popup-legend")
             .style("background-color", (d) => _chart.getColor(d.datum, d.i))
 
+    if (_chart.series().keys()) {
+      popupItems.append("div")
+                .attr("class", "popup-item-key")
+                .text((d) => _chart.colorDomain()[d.datum.idx])
+    }
+
     popupItems.append("div")
             .attr("class", "popup-item-value")
-            .text((d) => utils.formatValue(d.datum.y + d.datum.y0))
+            .text((d) => utils.formatValue(d.datum.y))
 
     positionPopup(x, y)
     popup.classed("js-showPopup", true)
