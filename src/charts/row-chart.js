@@ -379,6 +379,7 @@ export default function rowChart (parent, chartGroup) {
                 .attr("class", (d, i) => _rowCssClass + " _" + i)
 /* OVERRIDE -----------------------------------------------------------------*/
                 .classed("value-dim", true)
+                .classed("deselected-label", (d) => (_chart.hasFilter() && !isSelectedRow(d)))
 /* --------------------------------------------------------------------------*/
                 .html((d) => _chart.label()(d))
       transition(lab, _chart.transitionDuration())
@@ -389,6 +390,7 @@ export default function rowChart (parent, chartGroup) {
     if (_chart.measureLabelsOn()) {
 
       const measureLab = rows.select(".value-measure")
+                .classed("deselected-label", (d) => (_chart.hasFilter() && !isSelectedRow(d)))
                 .attr("y", _labelOffsetY)
                 .attr("dy", isStackLabel() ? "1.1em" : _dyOffset)
                 .on("click", onClick)

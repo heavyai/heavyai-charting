@@ -197,6 +197,7 @@ export default function pieChart (parent, chartGroup) {
             .style("font-size", (pieIsBig() ? "14px" : "12px"))
 
     labelsEnter.select(".value-dim")
+            .classed("deselected-label", (d) => (_chart.hasFilter() && !isSelectedSlice(d)))
             .html((d) => _chart.label()(d.data))
             .html(function (d) {
               const availableLabelWidth = getAvailableLabelWidth(d)
@@ -212,6 +213,7 @@ export default function pieChart (parent, chartGroup) {
 
     if (_chart.measureLabelsOn()) {
       labelsEnter.select(".value-measure")
+                .classed("deselected-label", (d) => (_chart.hasFilter() && !isSelectedSlice(d)))
                 .text((d) => _chart.measureValue(d.data))
                 .text(function (d) {
                   if (d3.select(this.parentNode).classed("hide-label")) { return "" }
