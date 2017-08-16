@@ -9470,7 +9470,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var _mapboxgl = typeof _mapboxgl === "undefined" ? mapboxgl : _mapboxgl;
 	  var _map = null;
-	  var _mapboxAccessToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
+	  var _mapboxAccessToken = null;
 	  var _lastWidth = null;
 	  var _lastHeight = null;
 	  var _mapId = chartDivId;
@@ -9731,6 +9731,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
+	    return _chart;
+	  };
+
+	  _chart.mapboxToken = function (mapboxToken) {
+	    if (!arguments.length) {
+	      return _mapboxAccessToken;
+	    }
+	    _mapboxAccessToken = mapboxToken;
 	    return _chart;
 	  };
 
