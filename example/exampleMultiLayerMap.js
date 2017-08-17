@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function init() {
   function createPointMap(polycfLayer1, pointcfLayer2, pointcfLayer3, con) {
     var w = document.documentElement.clientWidth - 30;
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 150;
+    var mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
 
     /*---------------------BASIC COUNT ON CROSSFILTER--------------------------*/
     /*
@@ -98,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     var polyLayer1 = dc.rasterLayer("polys")
                        .dimension(polyDim1)
                        .group(polyGrp1)
-                       // .cap(100)  // We can add a cap if we want.
+                       .cap(100)  // Cap is required
                        .fillColorScale(polyFillColorScale)  // set the fill color scale
                        .fillColorAttr('avgContrib')   // set the driving attribute for the fill color scale, in
                                                       // this case, the average contribution
@@ -245,6 +246,7 @@ document.addEventListener("DOMContentLoaded", function init() {
                           .width(w)
                           .mapUpdateInterval(750)
                           .mapStyle('mapbox://styles/mapbox/light-v8')
+                          .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
 
                           // add the layers to the pointmap
                           .pushLayer('polytable1', polyLayer1)
