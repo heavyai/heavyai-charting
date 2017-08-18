@@ -382,6 +382,14 @@ body {
         &:hover {
             fill: $gray2;
         }
+
+        text {
+            fill-opacity: $gray4;
+        }
+    }
+
+    text.deselected-label {
+        fill: $gray5 !important;
     }
 
     div.x-axis-label, div.y-axis-label, div.axis-label-edit {
