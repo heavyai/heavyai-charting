@@ -345,6 +345,10 @@ export function rasterDrawMixin (chart) {
       shapes.forEach(shape => {
         chart.deleteFilterShape(shape)
       })
+
+      if (typeof chart.useLonLat === "function") { // pointmap should preserve the zoom filter
+        chart.setFilterBounds(chart.map().getBounds())
+      }
       return chart
     }
 
