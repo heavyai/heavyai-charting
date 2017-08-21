@@ -49,3 +49,9 @@ example/css/chart.css
 
 .nyc_output
 *.lcov
+
+# publish files
+dist
+lib
+es
+build

@@ -4,9 +4,7 @@
     <title>MapD</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/mapdc.css" />
     <link rel="stylesheet" type="text/css" href="css/chart.css" />
-    <link rel="stylesheet" type="text/css" href="css/mapbox-gl.css" />
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <style>
       .title {
@@ -52,9 +50,7 @@
     <script src="js/browser-connector.js"></script>
     <script src="js/mapd-crossfilter.js"></script>
     <script src="js/mapdc.js"></script>
-    <script src="js/mapbox-gl.js"></script>
-    <script src="js/mapboxgl-overrides.js"></script>
-
+    
     <script>
 
   var globalGeocoder = null;
@@ -82,11 +78,11 @@
            .valuesAsync(true).then(function(timeChartBounds) {
 
             var joinDimension = crossFilter.dimension(["join_time", "country"])
-            
+
             var joinGroup = joinDimension
                             .group()
                             .reduceCount()
-            
+
 
              var dcTimeChart = dc.barChart('.stacked-bar-example')
                .width(w)
@@ -104,7 +100,7 @@
 
               /* Pass in a series to enable stacking function */
               dcTimeChart.series().group(crossFilter.dimension('country').group())
-              
+
               dcTimeChart.series().selected(['US','BR','ID','AR','TR'])
 
              /* Set the x and y axis formatting with standard d3 functions */
@@ -136,7 +132,7 @@
              }
             });
   }
-  
+
 
   function init() {
     // A MapdCon instance is used for performing raw queries on a MapD GPU database.

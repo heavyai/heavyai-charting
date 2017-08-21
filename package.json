@@ -1,5 +1,5 @@
 {
-  "name": "@mapd/mapdc",
+  "name": "mapd-charting",
   "version": "1.0.0",
   "license": "Apache-2.0",
   "copyright": "2017",
@@ -24,11 +24,22 @@
     "type": "git",
     "url": "https://github.com/mapd/mapd-charting.git"
   },
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "files": [
+    "dist",
+    "lib",
+    "es",
+    "src"
+  ],
   "scripts": {
-    "build": "webpack",
+    "build": "npm run build:commonjs && npm run build:umd && npm run build:es",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
     "build:docs": "./node_modules/documentation/bin/documentation.js build src/** -f html -o docs",
+    "build:es": "cross-env BABEL_ENV=es babel src --out-dir es",
     "build:example": "npm run clean:example && webpack && bash scripts/copy-example-libs.sh",
+    "build:umd": "webpack",
     "clean": "rm -rf build.log node_modules/ dist/ && npm run clean:docs && npm run clean:example",
     "clean:docs": "rm -rf docs",
     "clean:example": "rm -rf build.log example/js/*",
@@ -49,6 +60,7 @@
     "d3": "^3.5.17",
     "deep-equal": "1.0.1",
     "earcut": "^2.1.1",
+    "mapbox-gl": "https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307",
     "moment": "2.13.0",
     "ramda": "0.21.0",
     "simplify-js": "^1.2.1"
@@ -62,12 +74,14 @@
     "babel-eslint": "^6.1.1",
     "babel-loader": "6.2.4",
     "babel-plugin-istanbul": "^4.1.3",
+    "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.4.3",
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
     "codecov": "^2.1.0",
+    "cross-env": "^5.0.5",
     "css-loader": "0.22.0",
     "documentation": "4.0.0-rc.1",
     "eslint": "^3.0.1",
@@ -88,9 +102,6 @@
     "selenium-standalone": "^6.4.1",
     "style-loader": "0.13.0",
     "webpack": "^1.13.1"
-  },
-  "peerDependencies": {
-    "mapbox-gl": "https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307"
   },
   "nyc": {
     "check-coverage": false,
