@@ -65,17 +65,5 @@ export default function elasticDimensionMixin (_chart) {
     }
   })
 
-  _chart.on("preRedraw.maybeRemoveRangeFilter", () => {
-    const range = _chart.rangeChart()
-    if (range && range.filter()) {
-      if (
-        range.filter()[0] < range.x().domain()[0] || range.filter()[1] > range.x().domain()[1]
-      ) {
-        _chart.filterAll()
-        range.filterAll()
-      }
-    }
-  })
-
   return _chart
 }
