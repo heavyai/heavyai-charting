@@ -1,11 +1,13 @@
 var webpack = require("webpack");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 var path = require("path");
 
 module.exports = {
   context: __dirname,
   entry: {
-    "mapdc": "./index.js"
+    "mapdc": "./index.js",
+    "mapdc.min": "./index.js"
   },
   output: {
     path: __dirname + "/dist",
@@ -51,7 +53,14 @@ module.exports = {
       }
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new ExtractTextPlugin("chart.css")
+    new ExtractTextPlugin("[name].css"),
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+    }),
+    new OptimizeCssAssetsPlugin({
+      assetNameRegExp: /\min\.css$/g,
+      cssProcessorOptions: { discardComments: {removeAll: true } }
+    })
   ],
   resolve: {
     extensions: [".js"]
