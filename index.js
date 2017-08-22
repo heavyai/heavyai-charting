@@ -1,2 +1,1 @@
-require("./scss/chart.scss")
-require("expose?dc!./src/index.js")
+require("expose-loader?dc!./src/index.js")

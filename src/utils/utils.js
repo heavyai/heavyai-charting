@@ -1,3 +1,4 @@
+import {createParser} from "mapd-data-layer"
 import {
   formatDataValue,
   maybeFormatInfinity
@@ -14,6 +15,80 @@ import deepEqual from "deep-equal"
 
 import d3 from "d3"
 import {constants} from "../core/core"
+
+export const parser = createParser()
+
+function hexBinSQL (sql, {width, height, mark, x, y, aggregate}, parser) {
+  const hexoffsetx = 0
+  const hexoffsety = 0
+
+  const heximgwidth = width
+  const heximgheight = height
+
+  let hexminmercx = x.domain[0]
+  let hexmaxmercx = x.domain[1]
+  let hexminmercy = y.domain[0]
+  let hexmaxmercy = y.domain[1]
+
+  if (hexoffsetx) {
+    const mercxdiff = hexoffsetx * (hexmaxmercx - hexminmercx) / heximgwidth
+    hexminmercx -= mercxdiff
+    hexmaxmercx -= mercxdiff
+  }
+
+  if (hexoffsety) {
+    const mercydiff = hexoffsety * (hexmaxmercy - hexminmercy) / heximgheight
+    hexminmercy -= mercydiff
+    hexmaxmercy -= mercydiff
+  }
+
+  const args =
+    `${parser.parseExpression(x.field)},`
+    + `${hexminmercx},`
+    + `${hexmaxmercx},`
+    + `${parser.parseExpression(y.field)},`
+    + `${hexminmercy},`
+    + `${hexmaxmercy},`
+    + `${mark.width},`
+    + `${mark.height},`
+    + `${hexoffsetx},`
+    + `${hexoffsety},`
+    + `${width},`
+    + `${height}`
+
+
+  sql.select.push(`reg_${mark.shape}_horiz_pixel_bin_x(${args}) as x`)
+  sql.select.push(`reg_${mark.shape}_horiz_pixel_bin_y(${args}) as y`)
+  sql.select.push(`${parser.parseExpression(aggregate)} as color`)
+  sql.groupby.push("x")
+  sql.groupby.push("y")
+
+  return sql
+}
+
+function rectBinSQL (sql, {width, height, mark, x, y, aggregate}, parser) {
+  sql.select.push(`rect_pixel_bin_x(${parser.parseExpression(x.field)}, ${x.domain[0]}, ${x.domain[1]}, ${mark.width}, 0, ${width}) as x`)
+  sql.select.push(`rect_pixel_bin_y(${parser.parseExpression(y.field)}, ${y.domain[0]}, ${y.domain[1]}, ${mark.height}, 0, ${height}) as y`)
+  sql.select.push(`${parser.parseExpression(aggregate)} as color`)
+  sql.groupby.push("x")
+  sql.groupby.push("y")
+
+  return sql
+}
+
+parser.registerParser({
+  meta: "transform",
+  type: "pixel_bin"
+}, (sql, transform, parser) => {
+  switch (transform.mark.shape) {
+  case "hex":
+    return hexBinSQL(sql, transform, parser)
+  case "square":
+    return rectBinSQL(sql, transform, parser)
+  default:
+    return sql
+  }
+})
 
 export const dateFormat = d3.time.format("%m/%d/%Y")
 

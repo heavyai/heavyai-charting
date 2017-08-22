@@ -184,11 +184,20 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
-    _chart._vegaSpec = genLayeredVega(_chart)
-
-    const nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks)
-
-    _renderBoundsMap[nonce] = bounds
+    const heatLayer = _chart.getLayer("heat")
+    if (heatLayer && heatLayer.getState().encoding.color.scale.domain === "auto") {
+      _chart.getLayer("heat").getColorDomain(_chart)
+        .then(domain => {
+          _chart.colors().domain(domain)
+          _chart._vegaSpec = genLayeredVega(_chart)
+          const nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks)
+          _renderBoundsMap[nonce] = bounds
+        })
+    } else {
+      _chart._vegaSpec = genLayeredVega(_chart)
+      const nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks)
+      _renderBoundsMap[nonce] = bounds
+    }
   })
 
   _chart.data((group) => {

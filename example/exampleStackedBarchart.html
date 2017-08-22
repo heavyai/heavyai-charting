@@ -3,10 +3,7 @@
   <head>
     <title>MapD</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/mapdc.css" />
-    <link rel="stylesheet" type="text/css" href="css/chart.css" />
-    <link rel="stylesheet" type="text/css" href="css/mapbox-gl.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <style>
       .title {
@@ -46,14 +43,10 @@
       </div>
     </div>
 
-    <script src="js/lodash.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-    <script src="js/d3.min.js"></script>
-    <script src="js/browser-connector.js"></script>
-    <script src="js/mapd-crossfilter.js"></script>
-    <script src="js/mapdc.js"></script>
-    <script src="js/mapbox-gl.js"></script>
-    <script src="js/mapboxgl-overrides.js"></script>
+    <script src="assets/app.bundle.js"></script>
 
     <script>
 
@@ -82,11 +75,11 @@
            .valuesAsync(true).then(function(timeChartBounds) {
 
             var joinDimension = crossFilter.dimension(["join_time", "country"])
-            
+
             var joinGroup = joinDimension
                             .group()
                             .reduceCount()
-            
+
 
              var dcTimeChart = dc.barChart('.stacked-bar-example')
                .width(w)
@@ -104,7 +97,7 @@
 
               /* Pass in a series to enable stacking function */
               dcTimeChart.series().group(crossFilter.dimension('country').group())
-              
+
               dcTimeChart.series().selected(['US','BR','ID','AR','TR'])
 
              /* Set the x and y axis formatting with standard d3 functions */
@@ -136,7 +129,7 @@
              }
             });
   }
-  
+
 
   function init() {
     // A MapdCon instance is used for performing raw queries on a MapD GPU database.

@@ -170,7 +170,9 @@ export default function legendCont () {
       _parent._invokeSetCustomContLegendListener({detail: _parent.colors().domain()})
     } else {
       const minMax = _chartType === "pointmap" || _chartType === "backendScatter" ? _minMax : d3.extent(_parent.data(), _parent.colorAccessor())
-      _parent.colorDomain(minMax)
+      if (minMax) {
+        _parent.colorDomain(minMax)
+      }
       _parent._invokeClearCustomContLegendListener()
     }
     _parent.redrawAsync()

@@ -1,6 +1,7 @@
 import capMixin from "./cap-mixin"
 import rasterLayerPointMixin from "./raster-layer-point-mixin"
 import rasterLayerPolyMixin from "./raster-layer-poly-mixin"
+import rasterLayerHeatmapMixin from "./raster-layer-heatmap-mixin"
 import {createRasterLayerGetterSetter, createVegaAttrMixin, notNull} from "../utils/utils-vega"
 
 const validLayerTypes = ["points", "polys"]
@@ -47,6 +48,8 @@ export default function rasterLayer (layerType) {
     _layer = rasterLayerPointMixin(_layer)
   } else if (layerType == "polys") {
     _layer = rasterLayerPolyMixin(_layer)
+  } else if (layerType == "heat") {
+    _layer = rasterLayerHeatmapMixin(_layer)
   } else {
     throw new Error("\"" + layerType + "\" is not a valid layer type. The valid layer types are: " + validLayerTypes.join(", "))
   }
@@ -158,6 +161,41 @@ export default function rasterLayer (layerType) {
     }
   }
 
+  function genHeatConfigFromChart (chart) {
+    return {
+      table: _layer.crossfilter().getTable()[0],
+      width: Math.round(chart.width() * chart._getPixelRatio()),
+      height: Math.round(chart.height() * chart._getPixelRatio()),
+      min: chart.conv4326To900913(chart._minCoord),
+      max: chart.conv4326To900913(chart._maxCoord),
+      filter: _layer.crossfilter().getFilterString(),
+      neLat: chart._maxCoord[1],
+      zoom: chart.zoom(),
+      domain: chart.colors().domain()
+    }
+  }
+
+  _layer.getColorDomain = function (chart) {
+    const subquery = _layer.genSQL(genHeatConfigFromChart(chart))
+
+    const sql = `SELECT MIN(c.color) as minimum, MAX(c.color) as maximum, STDDEV(c.color) as deviation, AVG(c.color) as mean FROM (${subquery}) as c`
+
+    return new Promise ((resolve, reject) => {
+      chart.con().query(sql, null, (error, result) => {
+        if (error) {
+          reject(error)
+        } else {
+          const {minimum, maximum, mean, deviation} = result[0]
+          const step = 2 * deviation
+          resolve([
+            Math.max(minimum, mean - step),
+            Math.min(maximum, mean + step)
+          ])
+        }
+      })
+    })
+  }
+
   _layer.genVega = function (chart, layerName) {
     _mandatoryAttributes.forEach((attrName) => {
       checkForMandatoryLayerAttr(_layer, attrName, layerName)
@@ -168,23 +206,26 @@ export default function rasterLayer (layerType) {
       throw new Error("A cap for the layer " + layerName + " is undefined but a cap is required. Cannot create a query.")
     }
 
-    const group = _layer.group()
+    const group = _layer.group() || {}
     let query = ""
     if (group.type === "dimension") {
-            // it's actually a dimension
       query = group.writeTopQuery(cap, undefined, true)
     } else if (group.type === "group") {
-            // we're dealing with a group
       query = group.writeTopQuery(cap, undefined, false, true)
     }
 
     if (!query.length) {
-      throw new Error("Crossfilter group/dimension did not provide a sql query string for layer " + layerName + "." + (groupType.length ? " Group type: " + (group.type || "unknown") + "." : ""))
+      // throw new Error("Crossfilter group/dimension did not provide a sql query string for layer " + layerName + "." + (groupType.length ? " Group type: " + (group.type || "unknown") + "." : ""))
     }
 
-        // TODO(croot): handle an opacity per layer?
-    const vega = _layer._genVega(chart, layerName, group, query)
-    return vega
+    if (_layer.type === "heatmap") {
+      const vega = _layer._genVega(genHeatConfigFromChart(chart))
+      return vega
+    } else {
+      const vega = _layer._genVega(chart, layerName, group, query)
+      return vega
+    }
+
   }
 
   _layer.hasPopupColumns = function () {
