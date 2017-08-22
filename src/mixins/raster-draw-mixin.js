@@ -228,6 +228,7 @@ export function rasterDrawMixin (chart) {
       }
 
       if (newShape) {
+        drawEngine.addShape(newShape, selectOpts)
         chart.addFilterShape(newShape)
         applyFilter()
       }
