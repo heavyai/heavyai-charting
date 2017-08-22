@@ -106,6 +106,7 @@
     var yDim = crossFilter.dimension("lat");
     var parent = document.getElementById("chart1-example");
     mapLangColors(40);
+    var mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
     /* Point Map Radius Size:
      * in order to calculate the radius size.  We use d3 scale and pass in a
      * domain and range.
@@ -124,6 +125,7 @@
     .width(w)
     .mapUpdateInterval(750)
     .mapStyle('json/dark-v8.json')
+    .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
 
     var pointLayer = dc
     .rasterLayer("points")

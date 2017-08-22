@@ -51,6 +51,7 @@ document.addEventListener("DOMContentLoaded", function init() {
       var colorRange = ["#115f9a","#1984c5","#22a7f0","#48b5c4","#76c68f","#a6d75b","#c9e52f","#d0ee11","#d0f400"]
       var colorDomain = domainFromBoundsAndRange(config.domainBoundMin, config.domainBoundMax, colorRange)
       // var colorDomain = domainFromBoundsAndRange(domainBounds.minimum, domainBounds.maximum, colorRange)
+      var mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
 
       var polyMap = dc
       .rasterChart(parent, true)
@@ -59,11 +60,13 @@ document.addEventListener("DOMContentLoaded", function init() {
       .width(width())
       .mapUpdateInterval(750) // ms
       .mapStyle("mapbox://styles/mapbox/light-v8")
+      .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
 
       var polyLayer = dc
       .rasterLayer("polys")
       .dimension(dim)
       .group(grp)
+      .cap(1000000)
       .fillColorAttr('avgContrib')
       .defaultFillColor("green")
       .fillColorScale(d3.scale.linear().domain(colorDomain).range(colorRange))
