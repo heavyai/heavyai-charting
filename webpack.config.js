@@ -30,11 +30,17 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract("style", "css!sass")
+        loader: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: "css-loader!sass-loader"
+        })
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract("style", "css")
+        loader: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: "css-loader"
+        })
       },
     ]
   },
@@ -44,11 +50,10 @@ module.exports = {
         NODE_ENV: JSON.stringify("production")
       }
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new ExtractTextPlugin("chart.css"),
-    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new ExtractTextPlugin("chart.css")
   ],
   resolve: {
-    extensions: ["", ".js"]
+    extensions: [".js"]
   }
 };
