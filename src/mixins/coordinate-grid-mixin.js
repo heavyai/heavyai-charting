@@ -1078,7 +1078,6 @@ export default function coordinateGridMixin (_chart) {
       _brush.on("brushend", () => {
         _isBrushing = false
         configureMouseZoom()
-        _chart.brushSnap()
         disableTransitions(false)
       })
 
@@ -1127,6 +1126,7 @@ export default function coordinateGridMixin (_chart) {
   }
 
   _chart._brushing = function () {
+    _chart.brushSnap()
     const extent = _chart.extendBrush()
 
     _chart.redrawBrush(_g, false)
