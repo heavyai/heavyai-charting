@@ -74,7 +74,7 @@ export default function spinnerMixin (_chart) {
     return _chart
   }
 
-  _chart.on("dataFetch", () => {
+  function initSpinner () {
     if (_spinnerTimeout) {
       window.clearTimeout(_spinnerTimeout)
     }
@@ -84,18 +84,23 @@ export default function spinnerMixin (_chart) {
       _dataFetchRequestCallback()
       setCursorSpinner()
     }, _spinnerDelay)
-  })
+  }
 
-  _chart.on("postRedraw", () => {
+  function tearDownSpinner () {
     if (_spinnerIsVisible) {
       _spinnerIsVisible = false
       _dataFetchSuccessfulCallback()
       setCursorSpinner()
     }
     window.clearTimeout(_spinnerTimeout)
-  })
+  }
 
-  _chart.on("dataError", () => {
+  _chart.on("dataFetch.spinner", initSpinner)
+
+  _chart.on("postRedraw.spinner", tearDownSpinner)
+  _chart.on("postRender.spinner", tearDownSpinner)
+
+  _chart.on("dataError.spinner", () => {
     console.log(_chart.__dcFlag__, ": error")
   })
 

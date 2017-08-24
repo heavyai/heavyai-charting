@@ -541,91 +541,91 @@ export default function coordinateGridMixin (_chart) {
 
  /* istanbul ignore next */
   _chart.renderXAxis = function (g) {
-     let axisXG = g.selectAll("g.x")
+    let axisXG = g.selectAll("g.x")
 
-     if (axisXG.empty()) {
-       axisXG = g
-         .append("g")
-         .attr("class", "axis x")
-         .attr(
-           "transform",
-           "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
-         )
-     }
+    if (axisXG.empty()) {
+      axisXG = g
+        .append("g")
+        .attr("class", "axis x")
+        .attr(
+          "transform",
+          "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
+        )
+    }
 
-     /* OVERRIDE -----------------------------------------------------------------*/
-     const root = _chart.root()
+    /* OVERRIDE -----------------------------------------------------------------*/
+    const root = _chart.root()
 
-     if (_chart.rangeInput()) {
-       let rangeDisplay = root.selectAll(".range-display")
+    if (_chart.rangeInput()) {
+      let rangeDisplay = root.selectAll(".range-display")
 
-       if (rangeDisplay.empty()) {
-         rangeDisplay = root
-           .append("div")
-           .attr("class", "range-display")
-           .style("right", _chart.margins().right + "px")
+      if (rangeDisplay.empty()) {
+        rangeDisplay = root
+          .append("div")
+          .attr("class", "range-display")
+          .style("right", _chart.margins().right + "px")
 
-         const group1 = rangeDisplay.append("div")
+        const group1 = rangeDisplay.append("div")
 
-         rangeDisplay.append("span").html(" &mdash; ")
+        rangeDisplay.append("span").html(" &mdash; ")
 
-         const group2 = rangeDisplay.append("div")
+        const group2 = rangeDisplay.append("div")
 
-         group1.append("input").attr("class", "range-start-day range-day")
+        group1.append("input").attr("class", "range-start-day range-day")
 
-         group1.append("input").attr("class", "range-start-time range-time")
+        group1.append("input").attr("class", "range-start-time range-time")
 
-         group2.append("input").attr("class", "range-end-day range-day")
+        group2.append("input").attr("class", "range-end-day range-day")
 
-         group2.append("input").attr("class", "range-end-time range-time")
+        group2.append("input").attr("class", "range-end-time range-time")
 
-         rangeDisplay.selectAll("input").each(function () {
-           bindRangeInputEvents(this)
-         })
+        rangeDisplay.selectAll("input").each(function () {
+          bindRangeInputEvents(this)
+        })
 
-         if (
-           _chart.group().binParams()[0] && _chart.group().binParams()[0].timeBin
-         ) {
-           _chart.updateRangeInput()
-         }
+        if (
+          _chart.group().binParams()[0] && _chart.group().binParams()[0].timeBin
+        ) {
+          _chart.updateRangeInput()
+        }
 
-         _chart
-           .root()
-           .select("div > .svg-wrapper")
-           .on("mouseover", () => {
-             rangeDisplay.selectAll("input").classed("active", true)
-           })
-           .on("mouseleave", () => {
-             rangeDisplay.selectAll("input").classed("active", false)
-           })
-       }
-     }
+        _chart
+          .root()
+          .select("div > .svg-wrapper")
+          .on("mouseover", () => {
+            rangeDisplay.selectAll("input").classed("active", true)
+          })
+          .on("mouseleave", () => {
+            rangeDisplay.selectAll("input").classed("active", false)
+          })
+      }
+    }
 
-     let xLabel = root.selectAll(".x-axis-label")
+    let xLabel = root.selectAll(".x-axis-label")
 
-     const shouldAppendLabel = _chart.rangeChart() ? false : xLabel.empty()
-     if (shouldAppendLabel) {
-       xLabel = root.append("div").attr("class", "x-axis-label")
-     }
+    const shouldAppendLabel = _chart.rangeChart() ? false : xLabel.empty()
+    if (shouldAppendLabel) {
+      xLabel = root.append("div").attr("class", "x-axis-label")
+    }
 
-     if (!_chart.rangeChart()) {
-       xLabel
-         .style(
-           "left",
-           _chart.effectiveWidth() / 2 + _chart.margins().left + "px"
-         )
-         .text(_chart.xAxisLabel())
-     }
+    if (!_chart.rangeChart()) {
+      xLabel
+        .style(
+          "left",
+          _chart.effectiveWidth() / 2 + _chart.margins().left + "px"
+        )
+        .text(_chart.xAxisLabel())
+    }
 
-     transition(axisXG, _chart.transitionDuration())
-       .attr(
-         "transform",
-         "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
-       )
-       .call(_chart.xAxis())
+    transition(axisXG, _chart.transitionDuration())
+      .attr(
+       "transform",
+       "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
+     )
+     .call(_chart.xAxis())
 
-     _chart.updateBinInput()
-   }
+    _chart.updateBinInput()
+  }
 
   function renderVerticalGridLines (g) {
     let gridLineG = g.selectAll("g." + VERTICAL_CLASS)
