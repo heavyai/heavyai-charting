@@ -76,12 +76,14 @@ export default function asyncMixin (_chart) {
 
       const dataCallback = function (error, data) {
         if (error) {
+          _chart._invokeDataErrorListener()
           resetRenderStack()
           reject(error)
         } else {
           _chart.render(id, queryGroupId, queryCount, data, renderCallback)
         }
       }
+      _chart._invokeDataFetchListener()
       return _chart.dataAsync(dataCallback)
     })
   }

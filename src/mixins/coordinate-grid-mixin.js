@@ -539,6 +539,7 @@ export default function coordinateGridMixin (_chart) {
     _chart.prepareLockAxis("x")
   }
 
+ /* istanbul ignore next */
   _chart.renderXAxis = function (g) {
     let axisXG = g.selectAll("g.x")
 
@@ -552,31 +553,78 @@ export default function coordinateGridMixin (_chart) {
         )
     }
 
-    let axisXLab = g.selectAll("text." + X_AXIS_LABEL_CLASS)
-    if (axisXLab.empty() && _chart.xAxisLabel()) {
-      axisXLab = g
-        .append("text")
-        .attr("class", X_AXIS_LABEL_CLASS)
-        .attr(
-          "transform",
-          "translate(" + (_chart.margins().left + _chart.xAxisLength() / 2) + "," + (_chart.height() - _xAxisLabelPadding) + ")"
-        )
-        .attr("text-anchor", "middle")
+    /* OVERRIDE -----------------------------------------------------------------*/
+    const root = _chart.root()
+
+    if (_chart.rangeInput()) {
+      let rangeDisplay = root.selectAll(".range-display")
+
+      if (rangeDisplay.empty()) {
+        rangeDisplay = root
+          .append("div")
+          .attr("class", "range-display")
+          .style("right", _chart.margins().right + "px")
+
+        const group1 = rangeDisplay.append("div")
+
+        rangeDisplay.append("span").html(" &mdash; ")
+
+        const group2 = rangeDisplay.append("div")
+
+        group1.append("input").attr("class", "range-start-day range-day")
+
+        group1.append("input").attr("class", "range-start-time range-time")
+
+        group2.append("input").attr("class", "range-end-day range-day")
+
+        group2.append("input").attr("class", "range-end-time range-time")
+
+        rangeDisplay.selectAll("input").each(function () {
+          bindRangeInputEvents(this)
+        })
+
+        if (
+          _chart.group().binParams()[0] && _chart.group().binParams()[0].timeBin
+        ) {
+          _chart.updateRangeInput()
+        }
+
+        _chart
+          .root()
+          .select("div > .svg-wrapper")
+          .on("mouseover", () => {
+            rangeDisplay.selectAll("input").classed("active", true)
+          })
+          .on("mouseleave", () => {
+            rangeDisplay.selectAll("input").classed("active", false)
+          })
+      }
     }
-    if (_chart.xAxisLabel() && axisXLab.text() !== _chart.xAxisLabel()) {
-      axisXLab.text(_chart.xAxisLabel())
+
+    let xLabel = root.selectAll(".x-axis-label")
+
+    const shouldAppendLabel = _chart.rangeChart() ? false : xLabel.empty()
+    if (shouldAppendLabel) {
+      xLabel = root.append("div").attr("class", "x-axis-label")
+    }
+
+    if (!_chart.rangeChart()) {
+      xLabel
+        .style(
+          "left",
+          _chart.effectiveWidth() / 2 + _chart.margins().left + "px"
+        )
+        .text(_chart.xAxisLabel())
     }
 
     transition(axisXG, _chart.transitionDuration())
       .attr(
-        "transform",
-        "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
-      )
-      .call(_xAxis)
-    transition(axisXLab, _chart.transitionDuration()).attr(
-      "transform",
-      "translate(" + (_chart.margins().left + _chart.xAxisLength() / 2) + "," + (_chart.height() - _xAxisLabelPadding) + ")"
-    )
+       "transform",
+       "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
+     )
+     .call(_chart.xAxis())
+
+    _chart.updateBinInput()
   }
 
   function renderVerticalGridLines (g) {
@@ -1078,7 +1126,6 @@ export default function coordinateGridMixin (_chart) {
       _brush.on("brushend", () => {
         _isBrushing = false
         configureMouseZoom()
-        _chart.brushSnap()
         disableTransitions(false)
       })
 
@@ -1127,6 +1174,7 @@ export default function coordinateGridMixin (_chart) {
   }
 
   _chart._brushing = function () {
+    _chart.brushSnap()
     const extent = _chart.extendBrush()
 
     _chart.redrawBrush(_g, false)
@@ -1630,94 +1678,6 @@ export default function coordinateGridMixin (_chart) {
         .text(text)
     }
     _chart.prepareLabelEdit("y")
-  }
-
-  /* istanbul ignore next */
-  _chart.renderXAxis = function (g) {
-    let axisXG = g.selectAll("g.x")
-
-    if (axisXG.empty()) {
-      axisXG = g
-        .append("g")
-        .attr("class", "axis x")
-        .attr(
-          "transform",
-          "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
-        )
-    }
-
-    /* OVERRIDE -----------------------------------------------------------------*/
-    const root = _chart.root()
-
-    if (_chart.rangeInput()) {
-      let rangeDisplay = root.selectAll(".range-display")
-
-      if (rangeDisplay.empty()) {
-        rangeDisplay = root
-          .append("div")
-          .attr("class", "range-display")
-          .style("right", _chart.margins().right + "px")
-
-        const group1 = rangeDisplay.append("div")
-
-        rangeDisplay.append("span").html(" &mdash; ")
-
-        const group2 = rangeDisplay.append("div")
-
-        group1.append("input").attr("class", "range-start-day range-day")
-
-        group1.append("input").attr("class", "range-start-time range-time")
-
-        group2.append("input").attr("class", "range-end-day range-day")
-
-        group2.append("input").attr("class", "range-end-time range-time")
-
-        rangeDisplay.selectAll("input").each(function () {
-          bindRangeInputEvents(this)
-        })
-
-        if (
-          _chart.group().binParams()[0] && _chart.group().binParams()[0].timeBin
-        ) {
-          _chart.updateRangeInput()
-        }
-
-        _chart
-          .root()
-          .select("div > .svg-wrapper")
-          .on("mouseover", () => {
-            rangeDisplay.selectAll("input").classed("active", true)
-          })
-          .on("mouseleave", () => {
-            rangeDisplay.selectAll("input").classed("active", false)
-          })
-      }
-    }
-
-    let xLabel = root.selectAll(".x-axis-label")
-
-    const shouldAppendLabel = _chart.rangeChart() ? false : xLabel.empty()
-    if (shouldAppendLabel) {
-      xLabel = root.append("div").attr("class", "x-axis-label")
-    }
-
-    if (!_chart.rangeChart()) {
-      xLabel
-        .style(
-          "left",
-          _chart.effectiveWidth() / 2 + _chart.margins().left + "px"
-        )
-        .text(_chart.xAxisLabel())
-    }
-
-    transition(axisXG, _chart.transitionDuration())
-      .attr(
-        "transform",
-        "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")"
-      )
-      .call(_chart.xAxis())
-
-    _chart.updateBinInput()
   }
 
   /* istanbul ignore next */
