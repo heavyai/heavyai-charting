@@ -4,7 +4,7 @@ import rasterLayerPolyMixin from "./raster-layer-poly-mixin"
 import rasterLayerHeatmapMixin from "./raster-layer-heatmap-mixin"
 import {createRasterLayerGetterSetter, createVegaAttrMixin, notNull} from "../utils/utils-vega"
 
-const validLayerTypes = ["points", "polys"]
+const validLayerTypes = ["points", "polys", "heat"]
 
 export default function rasterLayer (layerType) {
   const _layerType = layerType
@@ -48,7 +48,7 @@ export default function rasterLayer (layerType) {
     _layer = rasterLayerPointMixin(_layer)
   } else if (layerType == "polys") {
     _layer = rasterLayerPolyMixin(_layer)
-  } else if (layerType == "heat") {
+  } else if (/heat/.test(layerType)) {
     _layer = rasterLayerHeatmapMixin(_layer)
   } else {
     throw new Error("\"" + layerType + "\" is not a valid layer type. The valid layer types are: " + validLayerTypes.join(", "))
@@ -211,7 +211,7 @@ export default function rasterLayer (layerType) {
     }
 
     if (_layer.type === "heatmap") {
-      const vega = _layer._genVega(genHeatConfigFromChart(chart))
+      const vega = _layer._genVega({...genHeatConfigFromChart(chart), layerName})
       return vega
     } else {
       const vega = _layer._genVega(chart, layerName, group, query)

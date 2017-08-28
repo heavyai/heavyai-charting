@@ -375,7 +375,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
         id: toBeAddedOverlay,
         source: toBeAddedOverlay,
         type: "raster",
-        paint: {"raster-opacity": _chart.getLayer("heat") ? 0.5 : 0.85, "raster-fade-duration": 0}
+        paint: {"raster-opacity": _chart.getAllLayers().some(l => l.type === "heatmap") ? 0.5 : 0.85, "raster-fade-duration": 0}
       })
     } else {
       const overlayName = "overlay" + _activeLayer

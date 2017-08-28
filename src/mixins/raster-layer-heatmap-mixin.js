@@ -38,6 +38,7 @@ export default function rasterLayerHeatmapMixin (_layer) {
   _layer.yDim = createRasterLayerGetterSetter(_layer, null)
   _layer.dynamicSize = createRasterLayerGetterSetter(_layer, null)
   _layer.dynamicBinning = createRasterLayerGetterSetter(_layer, null)
+  _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
   _layer._mandatoryAttributes([])
 
   _layer.setState = function (setterOrState) {
@@ -96,21 +97,23 @@ export default function rasterLayerHeatmapMixin (_layer) {
     })
   }
 
-  _layer._genVega = function ({table, width, height, min, max, filter, neLat, zoom, domain}) {
+  _layer._genVega = function ({table, width, height, min, max, filter, neLat, zoom, domain, layerName = ""}) {
     const {markWidth, markHeight} = getMarkSize({width, neLat, zoom, domain})
     return {
       width,
       height,
       data:
       {
-        name: "heatmap_query",
+        name: `heatmap_query${layerName}`,
         sql: _layer.genSQL({table, width, height, min, max, filter, neLat, zoom, domain})
       },
       scales: [
         {
-          name: "heat_color",
+          name: `heat_color${layerName}`,
           type: state.encoding.color.type,
-          domain: state.encoding.color.scale.domain === "auto" ? domain : state.encoding.color.scale.domain,
+          domain: state.encoding.color.scale.domain === "auto" ?
+            _layer.colorDomain()
+           : state.encoding.color.scale.domain,
           range: state.encoding.color.scale.range,
           default: state.encoding.color.scale.default,
           nullValue: state.encoding.color.scale.nullValue
@@ -120,7 +123,7 @@ export default function rasterLayerHeatmapMixin (_layer) {
       {
         type: "symbol",
         from: {
-          data: "heatmap_query"
+          data: `heatmap_query${layerName}`
         },
         properties: {
           shape: getMarkType(state.mark),
@@ -133,7 +136,7 @@ export default function rasterLayerHeatmapMixin (_layer) {
           width: markWidth,
           height: markHeight,
           fillColor: {
-            scale: "heat_color",
+            scale: `heat_color${layerName}`,
             field: "color"
           }
         }
