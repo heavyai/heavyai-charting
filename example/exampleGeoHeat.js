@@ -41,13 +41,76 @@ function countWidget(cf) {
   return dc.countWidget(".data-count").dimension(cf).group(cf.groupAll())
 }
 
+const colorDomainSetter = domain => state => ({
+  ...state,
+  encoding: {
+    ...state.encoding,
+    color: {
+      ...state.encoding.color,
+      scale: {
+        ...state.encoding.color.scale,
+        domain
+      }
+    }
+  }
+})
+
+
+function polyfillColorsGetter () {
+  let colorScale = null
+  this.colors = scale => {
+    if (scale) {
+      colorScale = scale
+      return this
+    } else {
+      return colorScale
+    }
+  }
+
+  this.colorDomain = colorDomain => {
+    if (colorScale) {
+      colorScale.domain(colorDomain)
+    }
+
+    this.getLayer("heat").setState(colorDomainSetter(colorDomain))
+    return this
+  }
+  this.colorAccessor = () => a => a
+  return this
+}
+
+const colorRange = [
+  "#0d0887",
+  "#2a0593",
+  "#41049d",
+  "#5601a4",
+  "#6a00a8",
+  "#7e03a8",
+  "#8f0da4",
+  "#a11b9b",
+  "#b12a90",
+  "#bf3984",
+  "#cb4679",
+  "#d6556d",
+  "#e16462",
+  "#ea7457",
+  "#f2844b",
+  "#f89540",
+  "#fca636",
+  "#feba2c",
+  "#fcce25",
+  "#f7e425",
+  "#f0f921"
+]
+
 function rasterChart(cf) {
   var xDim = cf.dimension("lon")
   var yDim = cf.dimension("lat")
   const RasterChart = dc.rasterChart(document.getElementById("heatmap"), true)
   HeatLayer = dc.rasterLayer("heat")
+
   HeatLayer.crossfilter(cf).xDim(xDim).yDim(yDim).setState({
-    mark: "square",
+    mark: "hex",
     encoding: {
       x: {
         type: "quantitative",
@@ -61,38 +124,18 @@ function rasterChart(cf) {
       },
       color: {
         type: "quantize",
-        aggregate: "count",
-        field: "lang",
+        aggregate: "count(lang)",
         scale: {
-          domain: [0, 25],
-          range: [
-            "#0d0887",
-            "#2a0593",
-            "#41049d",
-            "#5601a4",
-            "#6a00a8",
-            "#7e03a8",
-            "#8f0da4",
-            "#a11b9b",
-            "#b12a90",
-            "#bf3984",
-            "#cb4679",
-            "#d6556d",
-            "#e16462",
-            "#ea7457",
-            "#f2844b",
-            "#f89540",
-            "#fca636",
-            "#feba2c",
-            "#fcce25",
-            "#f7e425",
-            "#f0f921"
-          ],
+          domain: "auto",
+          range: colorRange,
           default: "#0d0887",
           nullValue: "#0d0887"
         }
       },
-      size: "auto"
+      size: {
+        type: "manual",
+        value: 10
+      }
     }
   })
 
@@ -103,7 +146,10 @@ function rasterChart(cf) {
     .width(WIDTH)
     .mapUpdateInterval(UPDATE_INTERVAL)
     .mapStyle(MAP_STYLE)
+    .mapboxToken("pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g") // need a mapbox accessToken for loading the tiles
 
+  polyfillColorsGetter.apply(RasterChart)
+  RasterChart.colors(d3.scale.linear().range(colorRange))
   RasterChart.pushLayer("heat", HeatLayer)
 
   return RasterChart
