@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     var polyLayer1 = dc.rasterLayer("polys")
                        .dimension(polyDim1)
                        .group(polyGrp1)
-                       .cap(1000000) // Cap is required
+                       .cap(Infinity)  // We can add a cap if we want.
                        .fillColorScale(polyFillColorScale)  // set the fill color scale
                        .fillColorAttr('avgContrib')   // set the driving attribute for the fill color scale, in
                                                       // this case, the average contribution

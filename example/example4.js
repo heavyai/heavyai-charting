@@ -103,48 +103,43 @@ document.addEventListener("DOMContentLoaded", function init() {
        */
       var rScale = d3.scale.linear().domain([0,5000]).range([1,5]);
 
-      pointMapChart = dc.bubbleRasterChart(parent, false)
-                              .con(con)
-                              .crossfilter(crossFilter)
-                              .height(h/1.5)
-                              .width(w)
-                              .dimension(scatterplotDim)
-                              .group(scatterplotDim)
-                              .tableName(tableName)
-                              .cap(500000)
-                              .othersGrouper(false)
 
-                              .xDim(xDim)
-                              .yDim(yDim)
+      var pointLayer = dc.rasterLayer("points")
+                        .dimension(scatterplotDim)
+                        .group(scatterplotDim)
+                        .cap(500000)
+                        .othersGrouper(false)
+                        .xDim(xDim)
+                        .yDim(yDim)
+                        .xAttr("x")               // indicate which column will drive the x dimension
+                        .yAttr("y")
+                        .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
+                        .fillColorAttr("color")   // indicate which column will drive the fill color scale
+                        .defaultFillColor("#80DEEA") // set a default color so points that aren't democrat or
+                        .fillColorScale(d3.scale.ordinal().domain(langDomain).range(langColors))
+                        .sizeAttr("size")
+                        .sizeScale(rScale)
+                        .sampling(true)
 
-                              // set the radius scale
-                              .r(rScale)
+      pointMapChart =  dc.rasterChart(parent, false)
+                          .con(con)
+                          .height(h/1.5)
+                          .width(w)
+                          .pushLayer('points', pointLayer)
+                          // render the grid lines
+                          .renderHorizontalGridLines(true)
+                          .renderVerticalGridLines(true)
 
-                              // set the color scale and defaults
-                              .colorBy({type: 'STR', value: 'lang', domain: langDomain})
-                              .defaultColor("#80DEEA")
-                              .colors(d3.scale.ordinal().domain(langDomain).range(langColors))
+                          // set the axis labels
+                          .xAxisLabel('X Axis')
+                          .yAxisLabel('Y Axis')
 
-                              // render the grid lines
-                              .renderHorizontalGridLines(true)
-                              .renderVerticalGridLines(true)
+                          // enable the mouse/touch interactions
+                          .enableInteractions(true)
 
-                              // set the axis labels
-                              .xAxisLabel('X Axis')
-                              .yAxisLabel('Y Axis')
-
-                              // uncomment the following to adjust the padding
-                              // of the axes
-                              // .xAxisPadding('15%')
-                              // .yAxisPadding('15%')
-
-                              // enable the mouse/touch interactions
-                              .enableInteractions(true)
-
-                              // pixel radius for hit-testing and the columns that
-                              // are shown on a hit
-                              .popupSearchRadius(2)
-                              .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
+                          // pixel radius for hit-testing and the columns that
+                          // are shown on a hit
+                          .popupSearchRadius(2)
 
       // custom click handler with just event data (no network calls)
       pointMapChart.map().on('mouseup', logClick)

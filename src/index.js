@@ -1,3 +1,12 @@
+require("../mapdc.css")
+require("../scss/chart.scss")
+require("mapbox-gl/dist/styles.css")
+
+if (process.env.BABEL_ENV !== "test") {
+  window.mapboxgl = require("mapbox-gl/dist/mapbox-gl.js")
+  require("mapbox-gl/dist/mapboxgl-overrides.js")
+}
+
 require("./polyfills/inner-svg")
 require("./mixins/d3.box")
 
@@ -24,7 +33,6 @@ export const errors = {
 export {default as bubbleOverlay} from "./charts/bubble-overlay"
 export {default as barChart} from "./charts/bar-chart"
 export {default as bubbleChart} from "./charts/bubble-chart"
-export {default as bubbleRasterChart} from "./charts/bubble-raster-chart"
 export {default as cloudChart} from "./charts/cloud-chart"
 export {default as compositeChart} from "./charts/composite-chart"
 export {default as dataCount} from "./charts/data-count"
@@ -34,7 +42,6 @@ export {default as heatMap} from "./charts/heatmap"
 export {default as pieChart} from "./charts/pie-chart"
 export {default as lineChart} from "./charts/line-chart"
 export {default as numberChart} from "./charts/number-chart"
-export {default as polyRasterChart} from "./charts/poly-raster-chart"
 export {default as rasterChart} from "./charts/raster-chart"
 export {default as rowChart} from "./charts/row-chart"
 export {default as scatterPlot} from "./charts/scatter-plot"
@@ -52,6 +59,7 @@ export {default as coordinateGridRasterMixin} from "./mixins/coordinate-grid-ras
 export {default as stackMixin} from "./mixins/stack-mixin"
 export {default as marginMixin} from "./mixins/margin-mixin"
 export {default as mapMixin} from "./mixins/map-mixin"
+export {default as rasterLayerHeatmapMixin} from "./mixins/raster-layer-heatmap-mixin"
 export {default as rasterLayerPointMixin} from "./mixins/raster-layer-point-mixin"
 export {default as rasterLayerPolyMixin} from "./mixins/raster-layer-poly-mixin"
 export {default as rasterLayer} from "./mixins/raster-layer"

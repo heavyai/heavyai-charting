@@ -25,7 +25,7 @@
     "func-names": 0, // having named functions makes following stack traces much easier.
     "func-style": [0, "declaration"], // differentiates funcs from consts; hoisting allows more readable code ordering.
     "generator-star-spacing": [2, {"before": false, "after": true}], // standard on MDN docs.
-    "global-require": 2, // avoid unexpected sync file load.
+    "global-require": 0, // avoid unexpected sync file load.
     "guard-for-in": 1, // protects against looping over props up prototype chain.
     "handle-callback-err": [1, "^.*(e|E)rr"], // often omitted in error.
     "id-blacklist": 0, // will add variable names to this list if abused.
@@ -115,7 +115,7 @@
     "no-param-reassign": 0, // useful for guarding a function.
     "no-path-concat": 2, // breaks for non-unix system.
     "no-plusplus": 0,
-    "no-process-env": 2, // global deps are bad; better to use config files.
+    "no-process-env": 0, // global deps are bad; better to use config files.
     "no-process-exit": 2, // too drastic; almost always better to throw and handle.
     "no-proto": 2, // deprecated.
     "no-redeclare": [1, {"builtinGlobals": true}], // probably a mistake; should use const/let instead anyway.

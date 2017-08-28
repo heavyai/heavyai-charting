@@ -1,6 +1,7 @@
 var webpack = require("webpack");
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require("path");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   context: __dirname,
@@ -26,11 +27,21 @@ module.exports = {
       {
         test: /\.js?$/,
         exclude: /node_modules/,
-        loader: "babel-loader"
+        use: "babel-loader"
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: "css-loader"
+        })
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract("style", "css!sass")
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: ["css-loader", "sass-loader"]
+        })
       }
     ]
   },
@@ -40,11 +51,7 @@ module.exports = {
         NODE_ENV: JSON.stringify("production")
       }
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new ExtractTextPlugin("chart.css"),
-    new webpack.optimize.DedupePlugin(),
-  ],
-  resolve: {
-    extensions: ["", ".js"]
-  }
+    new ExtractTextPlugin("mapdc.css"),
+    // new UglifyJSPlugin()
+  ]
 };

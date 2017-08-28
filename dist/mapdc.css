@@ -1,3 +1,460 @@
+art {
+    float: left;
+}
+
+.dc-chart rect.bar {
+    stroke: none;
+    cursor: pointer;
+}
+
+.dc-chart rect.bar.accented {
+    fill: #E637A8;
+}
+
+.dc-chart rect.bar:hover {
+    fill-opacity: .5;
+}
+
+.dc-chart rect.stack1 {
+    stroke: none;
+    fill: red;
+}
+
+.dc-chart rect.stack2 {
+    stroke: none;
+    fill: green;
+}
+
+.dc-chart rect.deselected {
+    stroke: none;
+    fill: #ccc;
+}
+
+.dc-chart text.deselected {
+    fill: #ccc !important; /*why do we need to override?*/
+}
+
+.dc-chart .empty-chart .pie-slice path {
+    fill: #FFEEEE;
+    cursor: default;
+}
+
+.dc-chart .empty-chart .pie-slice {
+    cursor: default;
+}
+
+.dc-chart .pie-slice {
+    fill: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.dc-chart .pie-slice.external{
+    fill: black;
+}
+
+.dc-chart .pie-slice :hover {
+    fill-opacity: .8;
+}
+
+.dc-chart .pie-slice.accented {
+    fill-opacity: .8;
+    stroke-width: 3;
+    //stroke: white;
+    stroke: #E637A8;
+    //stroke: rgb(188,71,71);
+}
+
+.dc-chart line.accented {
+    stroke-width: 2;
+    stroke: #E637A8;
+    //stroke: rgb(188,71,71);
+}
+
+.dc-chart thead {
+    position: relative;
+    top: 38px;
+}
+
+.dc-chart .selected path {
+    stroke-width: 1;
+    stroke: #ccc;
+    fill-opacity: 1;
+}
+
+.dc-chart .deselected path {
+    stroke: none;
+    fill-opacity: .5;
+    fill: #ccc;
+}
+
+.dc-chart .axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.dc-chart .axis text {
+    font: 10px sans-serif;
+}
+
+.dc-chart .grid-line {
+    fill: none;
+    stroke: #ccc;
+    opacity: .5;
+    shape-rendering: crispEdges;
+}
+
+.dc-chart .grid-line line {
+    fill: none;
+    stroke: #ccc;
+    opacity: .5;
+    shape-rendering: crispEdges;
+}
+
+.dc-chart .brush rect.background {
+    z-index: -999;
+}
+
+.dc-chart .brush rect.extent {
+    fill: steelblue;
+    fill-opacity: .125;
+}
+
+.dc-chart .brush .resize path {
+    fill: #eee;
+    stroke: #666;
+}
+
+.dc-chart path.line {
+    fill: none;
+    stroke-width: 1.5px;
+}
+
+.dc-chart circle.dot {
+    stroke: none;
+}
+
+.dc-chart g.dc-tooltip path {
+    fill: none;
+    stroke: grey;
+    stroke-opacity: .8;
+}
+
+.dc-chart path.area {
+    fill-opacity: .3;
+    stroke: none;
+}
+
+.dc-chart .node {
+    font-size: 0.7em;
+    cursor: pointer;
+}
+
+.dc-chart .node :hover {
+    fill-opacity: .8;
+}
+/*
+.dc-chart .outlined {
+    fill-opacity: .8;
+}
+*/
+
+.dc-chart .accented circle {
+    fill-opacity: .8;
+    stroke-width: 3;
+    stroke: #E637A8;
+    //stroke: rgb(188,71,71);
+}
+
+.dc-chart .selected circle {
+    stroke-width: 1;
+    stroke: #ccc;
+    fill-opacity: 1;
+}
+
+.dc-chart .deselected circle {
+    stroke: none;
+    fill-opacity: .5;
+    fill: #ccc;
+}
+
+.dc-chart .bubble {
+    stroke: none;
+    fill-opacity: 0.6;
+}
+
+.dc-data-count {
+    //float: right;
+    margin-top: 15px;
+    margin-right: 15px;
+}
+
+.dc-data-count .filter-count {
+    color: #3182bd;
+    font-weight: bold;
+}
+
+.dc-data-count .total-count {
+    color: #3182bd;
+    font-weight: bold;
+}
+
+.dc-chart g.state {
+    cursor: pointer;
+}
+
+.dc-chart g.state :hover {
+    fill-opacity: .8;
+}
+
+.dc-chart g.state path {
+    stroke: white;
+}
+
+.dc-chart g.selected path {
+}
+
+.dc-chart g.deselected path {
+    fill: grey;
+}
+
+.dc-chart g.selected text {
+}
+
+.dc-chart g.deselected text {
+    display: none;
+}
+
+.dc-chart g.county path {
+    stroke: white;
+    //fill: none;
+}
+
+.dc-chart g.county :hover {
+    fill-opacity: .8;
+}
+
+.dc-chart g.debug rect {
+    fill: blue;
+    fill-opacity: .2;
+}
+
+.dc-chart g.row rect {
+    fill-opacity: 0.8;
+    cursor: pointer;
+}
+
+.dc-chart g.row rect:hover {
+    fill-opacity: 0.6;
+}
+
+.dc-chart g.row.accented rect {
+    fill-opacity: 0.6;
+    stroke-width: 3;
+    stroke: #E637A8;
+    //stroke: rgb(188,71,71);
+    //stroke: white;
+}
+
+.dc-chart g.row text {
+    fill: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.dc-legend {
+    font-size: 11px;
+}
+
+.dc-legend-item {
+    cursor: pointer;
+}
+
+.dc-chart g.axis text {
+    /* Makes it so the user can't accidentally click and select text that is meant as a label only */
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10 */
+    -o-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+.dc-chart .accented path {
+    fill-opacity: .8;
+    stroke-width: 3;
+    stroke: #E637A8 !important;
+    //stroke: rgb(188,71,71) !important;
+}
+
+.dc-chart .highlight {
+    fill-opacity: 1;
+    stroke-opacity: 1;
+}
+
+.dc-chart .fadeout {
+    fill-opacity: 0.2;
+    stroke-opacity: 0.2;
+}
+
+.dc-chart path.dc-symbol, g.dc-legend-item.fadeout {
+    fill-opacity: 0.5;
+    stroke-opacity: 0.5;
+}
+
+.dc-hard .number-display {
+    float: none;
+}
+
+.dc-chart .box text {
+    font: 10px sans-serif;
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10 */
+    -o-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+.dc-chart .box line,
+.dc-chart .box circle {
+    fill: #fff;
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.dc-chart .box rect {
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.dc-chart .box .center {
+    stroke-dasharray: 3,3;
+}
+
+.dc-chart .box .outlier {
+    fill: none;
+    stroke: #ccc;
+}
+
+.dc-chart .box.deselected .box {
+    fill: #ccc;
+}
+
+.dc-chart .box.deselected {
+    opacity: .5;
+}
+
+.dc-chart .symbol{
+    stroke: none;
+}
+
+.dc-chart .heatmap .box-group.deselected rect {
+    stroke: none;
+    fill-opacity: .5;
+    fill: #ccc;
+}
+
+.dc-chart .heatmap g.axis text {
+    pointer-events: all;
+    cursor: pointer;
+}
+
+.dc-chart .heat-box {
+    cursor: pointer;
+}
+
+.dc-chart .heat-box:hover{
+    fill-opacity:0.8;
+}
+
+/* loading */
+
+/* spinner */
+
+.chart-loading-overlay {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.loading-widget-dc {
+  font-size: 12px;
+  position: absolute;
+  top: calc(50% - 24px);
+  left: calc(50% - 24px);
+  transform: translate(-50%, -50%);
+  color: blue;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: bold;
+}
+.loading-widget-dc .loading-msg {
+  margin-top: 24px;
+}
+
+.waiting, .waiting *{
+  cursor: wait !important;
+}
+
+.main-loading-icon {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border: 4px solid transparent;
+  border-top-color: blue;
+  border-radius: 50%;
+  animation: mainLoadIconAnimation .6s infinite linear;
+}
+
+.main-loading-icon:before, .main-loading-icon:after {
+  z-index: -1;
+  position: absolute;
+  content: "";
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: blue;
+  top: -4px;
+  left: -4px;
+  animation: beforeGrow .3s infinite linear alternate;
+}
+
+.main-loading-icon:after {
+  animation: afterGrow .3s infinite linear alternate;
+}
+
+@keyframes beforeGrow {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes afterGrow {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(90deg);
+  }
+}
+
+@keyframes mainLoadIconAnimation {
+  0% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /*--------Variables-------*/
 body {
   font-family: "Roboto", Sans-Serif; }
@@ -221,6 +678,10 @@ body {
     fill: #c7c7c7; }
     .dc-chart g.deselected path:hover {
       fill: #e2e2e2; }
+    .dc-chart g.deselected path text {
+      fill-opacity: #a7a7a7; }
+  .dc-chart text.deselected-label {
+    fill: #868686 !important; }
   .dc-chart div.x-axis-label, .dc-chart div.y-axis-label, .dc-chart div.axis-label-edit {
     position: absolute;
     font-size: 13px !important;
@@ -1336,3 +1797,258 @@ body {
       text-align: right; }
   .axis-lock .hit-box {
     position: absolute; }
+.mapboxgl-canvas-container.mapboxgl-interactive:active,
+.mapboxgl-ctrl-nav-compass:active {
+    cursor: default;
+}
+
+.mapboxgl-ctrl-top-left,
+.mapboxgl-ctrl-top-right,
+.mapboxgl-ctrl-bottom-left,
+
+.mapboxgl-ctrl-top-left      { top:0; left:0; }
+.mapboxgl-ctrl-top-right     { top:0; right:0; }
+.mapboxgl-ctrl-bottom-left   { bottom:0; left:0; }
+
+
+.mapboxgl-ctrl { clear:both; }
+.mapboxgl-ctrl-top-left .mapboxgl-ctrl { margin:10px 0 0 10px; float:left; }
+.mapboxgl-ctrl-top-right .mapboxgl-ctrl{ margin:10px 10px 0 0; float:right; }
+.mapboxgl-ctrl-bottom-left .mapboxgl-ctrl { margin:0 0 10px 10px; float:left; }
+
+.mapboxgl-ctrl-attrib {
+  position: absolute;
+  right: 20px;
+  bottom: 4px;
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.mapboxgl-ctrl-attrib a, .mapboxgl-ctrl-attrib a:visited {
+  color: #868686;
+  padding: 0 4px;
+  text-decoration: none;
+}
+
+.mapboxgl-ctrl-group {
+    border-radius: 4px;
+    -moz-box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 0px 2px rgba(0,0,0,0.1);
+    overflow: hidden;
+    background: #fff;
+}
+
+.mapboxgl-ctrl-group > button {
+    width: 30px;
+    height: 30px;
+    display: block;
+    padding: 0;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    background-color: rgba(0,0,0,0);
+    cursor: pointer;
+}
+/* https://bugzilla.mozilla.org/show_bug.cgi?id=140562 */
+.mapboxgl-ctrl > button::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+.mapboxgl-ctrl > button:last-child {
+    border-bottom: 0;
+}
+.mapboxgl-ctrl > button:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+.mapboxgl-ctrl-icon,
+.mapboxgl-ctrl-icon > div.arrow {
+    speak: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-out {
+    padding: 5px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20viewBox%3D%270%200%2020%2020%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%0A%20%20%3Cpath%20style%3D%27fill%3A%23333333%3B%27%20d%3D%27m%207%2C9%20c%20-0.554%2C0%20-1%2C0.446%20-1%2C1%200%2C0.554%200.446%2C1%201%2C1%20l%206%2C0%20c%200.554%2C0%201%2C-0.446%201%2C-1%200%2C-0.554%20-0.446%2C-1%20-1%2C-1%20z%27%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+}
+.mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-in  {
+    padding: 5px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20viewBox%3D%270%200%2020%2020%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%0A%20%20%3Cpath%20style%3D%27fill%3A%23333333%3B%27%20d%3D%27M%2010%206%20C%209.446%206%209%206.4459904%209%207%20L%209%209%20L%207%209%20C%206.446%209%206%209.446%206%2010%20C%206%2010.554%206.446%2011%207%2011%20L%209%2011%20L%209%2013%20C%209%2013.55401%209.446%2014%2010%2014%20C%2010.554%2014%2011%2013.55401%2011%2013%20L%2011%2011%20L%2013%2011%20C%2013.554%2011%2014%2010.554%2014%2010%20C%2014%209.446%2013.554%209%2013%209%20L%2011%209%20L%2011%207%20C%2011%206.4459904%2010.554%206%2010%206%20z%27%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+}
+.mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate  {
+    padding: 5px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20viewBox%3D%270%200%2020%2020%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20style%3D%27fill%3A%23333333%3B%27%20d%3D%27M13%2C7%20L10.5%2C11.75%20L10.25%2C10%20z%20M13.888%2C6.112%20C13.615%2C5.84%2013.382%2C6.076%2012.5%2C6.5%20C10.14%2C7.634%206%2C10%206%2C10%20L9.5%2C10.5%20L10%2C14%20C10%2C14%2012.366%2C9.86%2013.5%2C7.5%20C13.924%2C6.617%2014.16%2C6.385%2013.888%2C6.112%27%2F%3E%3C%2Fsvg%3E");
+}
+
+.mapboxgl-ctrl-icon.mapboxgl-ctrl-compass > div.arrow {
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%0A%09%3Cpolygon%20fill%3D%27%23333333%27%20points%3D%276%2C9%2010%2C1%2014%2C9%27%2F%3E%0A%09%3Cpolygon%20fill%3D%27%23CCCCCC%27%20points%3D%276%2C11%2010%2C19%2014%2C11%20%27%2F%3E%0A%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+}
+
+.mapboxgl-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: -webkit-flex;
+    display: flex;
+    will-change: transform;
+    pointer-events: none;
+}
+.mapboxgl-popup-anchor-top,
+.mapboxgl-popup-anchor-top-left,
+.mapboxgl-popup-anchor-top-right {
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+.mapboxgl-popup-anchor-bottom,
+.mapboxgl-popup-anchor-bottom-left,
+.mapboxgl-popup-anchor-bottom-right {
+    -webkit-flex-direction: column-reverse;
+    flex-direction: column-reverse;
+}
+.mapboxgl-popup-anchor-left {
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+.mapboxgl-popup-anchor-right {
+    -webkit-flex-direction: row-reverse;
+    flex-direction: row-reverse;
+}
+.mapboxgl-popup-tip {
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    z-index: 1;
+}
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+    -webkit-align-self: center;
+    align-self: center;
+    border-top: none;
+    border-bottom-color: #fff;
+}
+.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {
+    -webkit-align-self: flex-start;
+    align-self: flex-start;
+    border-top: none;
+    border-left: none;
+    border-bottom-color: #fff;
+}
+.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+    -webkit-align-self: flex-end;
+    align-self: flex-end;
+    border-top: none;
+    border-right: none;
+    border-bottom-color: #fff;
+}
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+    -webkit-align-self: center;
+    align-self: center;
+    border-bottom: none;
+    border-top-color: #fff;
+}
+.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {
+    -webkit-align-self: flex-start;
+    align-self: flex-start;
+    border-bottom: none;
+    border-left: none;
+    border-top-color: #fff;
+}
+.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+    -webkit-align-self: flex-end;
+    align-self: flex-end;
+    border-bottom: none;
+    border-right: none;
+    border-top-color: #fff;
+}
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+    -webkit-align-self: center;
+    align-self: center;
+    border-left: none;
+    border-right-color: #fff;
+}
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+    -webkit-align-self: center;
+    align-self: center;
+    border-right: none;
+    border-left-color: #fff;
+}
+.mapboxgl-popup-close-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: none;
+    border-radius: 0 3px 0 0;
+    cursor: pointer;
+    background-color: rgba(0,0,0,0);
+}
+.mapboxgl-popup-close-button:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+.mapboxgl-popup-content {
+    position: relative;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+    padding: 10px 10px 15px;
+    pointer-events: auto;
+}
+.mapboxgl-popup-anchor-top-left .mapboxgl-popup-content {
+    border-top-left-radius: 0;
+}
+.mapboxgl-popup-anchor-top-right .mapboxgl-popup-content {
+    border-top-right-radius: 0;
+}
+.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-content {
+    border-bottom-left-radius: 0;
+}
+.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-content {
+    border-bottom-right-radius: 0;
+}
+
+.mapboxgl-marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    will-change: transform;
+}
+
+.mapboxgl-crosshair,
+.mapboxgl-crosshair .mapboxgl-interactive,
+.mapboxgl-crosshair .mapboxgl-interactive:active {
+    cursor: crosshair;
+}
+.mapboxgl-boxzoom {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    background: #fff;
+    border: 2px dotted #202020;
+    opacity: 0.5;
+}
+@media print {
+    .mapbox-improve-map {
+        display:none;
+    }
+}
+
+.mapbox-maplogo {
+  position: absolute;
+  display: block;
+  height: 20px;
+  width: 65px;
+  right: 20px;
+  bottom: 20px;
+  text-indent: -9999px;
+  z-index: 99999;
+  overflow: hidden;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAAAoCAMAAAAFWtJHAAAAwFBMVEUAAAAAAAAAAABtbW0AAAAAAAAAAAAAAAAAAAAAAAClpaUAAADp6ekAAAD5+fna2toAAAAMDAzv7+/Nzc0AAAA2Njb8/Pz9/f3T09MAAAAAAAD7+/sAAAArKyuxsbH39/fs7OwbGxuIiIjz8/N8fHyenp7u7u74+PgAAAC8vLxWVlbx8fF1dXXl5eVcXFyUlJTQ0NDFxcVCQkLAwMC4uLj19fXo6OjW1tarq6ve3t77+/vi4uL6+vrKysrNzc3///8w7gSSAAAAP3RSTlMAOQNdPSYBPywKexLLGPCxNEHXnzFL+v2nGwf1IEiE6dBFad9jd9PuLo1V2mDDV3Cjl06SiuXIq4C3973ym6BQMVUPAAAEXElEQVR4Ae2WCVP6OBiH05L0l1IqrVbkKHJ54I0oHn+PfP9vtUle0z/YdhbH2XVnd58ZnRJIeHiPJOx//mH4vQSAN+8FjAhFxgHIaPvJeZ99hxwEElon5iAQbj85Y98g8ODwjEOMAvGFyeE3FEKgodTBqj0BJGN9DhyNd5Ta3ean9QEopfaA+LsKhnEKRExqg4FSP6Og7oEkAjBWnxSCgBX4xF+kcLoPcOBQrSv0e5kH7s1j37jECQieCTPiFGxL5VHw2zQWCeeJiPt6kjRQw0XSkIdVChf67xGa4alSnZlT6HEQ8CK9ANbhvXUF9xlDkBfTuHDWScgC9+z5FQpPI12TlwC6+sV7ixR8CUMKiwjm2GQeOQWHMGuHGdbnObJAwCEqFJpNU5H6uaPUaEIKiQfg+PHk1+u4OwW9PlWW2ctbA4BHCtp+cNK+H8Jos4gDmC5ar4Nx9waaG/2B13NgDqS7+vm2RgEtEws82P+kwIHhs/pgkQKcFIhfd7CogtGNjYMHTLpurD0ERbYFw4JaD3GlQuNAL/JEsSAF4HqlCnaHACk4WhOn4OgCkMD5hSpYNYDJTD8Y46n+jsE1kPhVCuR6QBXhFK7MUOu9O6b1SWF3b+/9ZVWMGOlu93E8UDaAhgc7bfH+0DHqKXCkHzoNDFfU+zxiVQrUC9QXTuHYtKpN59OA3IxCG4b7jh6ZFuVockaNTW09mkJzOaPU49a6mE9cAchZpQJNpUWcwgV9r6FJswsFKrITp2B5pMBMdnS0z2HZNy2+BNKxSZxZfglkrFYBJxQnpzA5sN/HheR2aFQoZBLAi149dQoyAYYjW0hHlHguBAdMcR0DuDZ5omevX6+AI8qcU7ikKT3GBHCnXwydgmCC0tRwCnGQ2Wp6Be71yNIWfQSkOl9vAI1SBCNWrwC01RROgX7BuT2HI4r7tFAw086p/NwZEdOEa7R1uAFuNmQPuKAEAjYNQ0CyeoUEWHYBnpQVQgpvc0Ph+gsKlAnKg1+vEHsw5LKciLKCAJobiWBzYFGbCKpHqkZZrxBFHEASyFI59vJPCskcwNVGOWZAOqsrR+pKbaNeAMT1CixMEtlnsqopNxUMzVJT3tY35aXZm6a6Y9QhwMN6BUJWbE1lhbMO1WehkO7poO0sK7em9MJGxp1XSbC1gtugzzSLQmGsX7VntJGSwsPZ2d2z3bIPKzdoOp3Wzqt8G4XyMVUoFIxLx1S7+piaHtCvR3FeRVsq0GFdp9C5TbGpcNqsPqyHKxcfd14h21KhuLKUFU4f3osrC7F6uV3WXFnadL7wyAPeKDXw2RoJCO5GY4DouYvb/gepVXheLoewzPseQG9N/vzilrMIjoStE3++zvle4eSurw7XEe76ynI4aq+v7lEyt1x5awiFlFLQbHKIpabnM3eJLym4Szzzc/du7SU+zOXv9UNpECH7IoH/gecURPlN9vdQpeD47yhIFNX0U0QgvID9nENm+yxk/xb+AGAjNfRZuk9qAAAAAElFTkSuQmCC);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 65px 20px;
+}

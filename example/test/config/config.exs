@@ -7,7 +7,7 @@ config :hound,
   retry_time: 1500
 
 config :test,
-  url: "http://127.0.0.1:8081/example"
+  url: "http://127.0.0.1:8080"
 
 config :whippet,
   animation_timeout: 1500

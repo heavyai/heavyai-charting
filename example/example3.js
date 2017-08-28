@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
       var polyLayer = dc
       .rasterLayer("polys")
+      .cap(Infinity)
       .dimension(dim)
       .group(grp)
       .cap(1000000)
