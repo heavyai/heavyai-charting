@@ -96,23 +96,39 @@ document.addEventListener("DOMContentLoaded", function init() {
 
     // setup the first layer, the zipcode polygons
     var polyLayer1 = dc.rasterLayer("polys")
-                       .dimension(polyDim1)
-                       .group(polyGrp1)
-                       .cap(Infinity)  // We can add a cap if we want.
-                       .fillColorScale(polyFillColorScale)  // set the fill color scale
-                       .fillColorAttr('avgContrib')   // set the driving attribute for the fill color scale, in
-                                                      // this case, the average contribution
-                       .defaultFillColor("green")     // Set a default fill color. This is unnecessary here
-                                                      // as the quantize scale will catch all possible values
-
-                       // .defaultStrokeColor("red")  // can optionally set up stroking of the polys to see
-                                                      // the boundaries of the zipcodes. This requires
-                                                      // a stroke color and a stroke width. Stroke width is
-                                                      // in pixels.
-                       // .defaultStrokeWidth(4)
-                       .popupColumns(['avgContrib', 'ZCTA5CE10']) // setup the columns we want to show when
+                        .crossfilter(polycfLayer1)
+                        .setState({
+                          data: [
+                            {
+                              table: "contributions_donotmodify",
+                              attr: "contributor_zipcode"
+                            }, {
+                              table: "zipcodes",
+                              attr: "ZCTA5CE10"
+                            }
+                          ],
+                          transform: {
+                            limit: 1000000
+                          },
+                          mark: {
+                            type: "poly",
+                            strokeColor: "white",
+                            strokeWidth: 0,
+                            lineJoin: "miter",
+                            miterLimit: 10
+                          },
+                          encoding: {
+                            color: {
+                              type: "quantitative",
+                              aggregrate: "AVG(contributions_donotmodify.amount)",
+                              domain: [0, 5000],
+                              range: polyColorRange
+                            }
+                          }
+                        })
+                       .popupColumns(['color', 'ZCTA5CE10']) // setup the columns we want to show when
                                                                   // hit-testing the polygons
-                       .popupColumnsMapped({avgContrib: "avg contribution", ZCTA5CE10: 'zipcode'})
+                       .popupColumnsMapped({color: "avg contribution", ZCTA5CE10: 'zipcode'})
                                                                   // setup a map so rename the popup columns
                                                                   // to something readable.
 
@@ -159,23 +175,38 @@ document.addEventListener("DOMContentLoaded", function init() {
 
     // setup the second layer, points of the tweets.
     var pointLayer2 = dc.rasterLayer("points")
-                        .dimension(pointMapDim2)  // need a dimension and a group, but just supply
-                        .group(pointMapDim2)      // the dimension as the group too as we're not grouping anything
-                        .xDim(xDim2)              // add the x dimension
-                        .yDim(yDim2)              // add the y dimension
-                        .xAttr("goog_x")               // indicate project column that'll drive the x dimension
-                        .yAttr("goog_y")               // indicate project column that'll drive the y dimension
-                        .sizeScale(sizeScaleLayer2)      // setup the scale used to adjust the size of the points
-                        .sizeAttr("size")       // indicate which column will drive the size scale
-                        .fillColorScale(layer2ColorScale) // set the scale to use to define the fill color
-                                                        // of the points
-                        .fillColorAttr("color")   // indicate which column will drive the fill color scale
-                        .defaultFillColor("#80DEEA") // set a default color for cases where the language
-                                                     // of a tweet is not found in the domain fo the scale
-                        .cap(500000)              // set a max number of points to render. This is required
-                                                  // for point layers.
-                        .sampling(true)           // set sampling so you get a more equal distribution
-                                                  // of the points.
+                        .crossfilter(pointcfLayer2)
+                        .xDim(xDim2)
+                        .yDim(yDim2)
+                        .setState({
+                          transform: {
+                            sample: true,
+                            limit: 500000
+                          },
+                          mark: "point",
+                          encoding: {
+                            x: {
+                              type: "quantitative",
+                              field: "goog_x"
+                            },
+                            y: {
+                              type: "quantitative",
+                              field: "goog_y"
+                            },
+                            size: {
+                              type: "quantitative",
+                              field: "followers",
+                              domain: [0, 5000],
+                              range: [2, 12]
+                            },
+                            color: {
+                              type: "ordinal",
+                              field: "lang",
+                              domain: langDomain,
+                              range: langColors
+                            }
+                          }
+                        })                                                   // of a tweet is not found in the domain fo the scale
                         .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
                                                   // setup the columns to show when a point is properly hit-tested
                                                   // against
@@ -215,24 +246,33 @@ document.addEventListener("DOMContentLoaded", function init() {
     var layer3ColorScale = d3.scale.ordinal().domain(["D", "R"]).range(["blue", "red"]);
 
     var pointLayer3 = dc.rasterLayer("points")
-                        .dimension(pointMapDim3)  // need a dimension and a group, but just supply
-                        .group(pointMapDim3)      // the dimension as the group too as we're not grouping anything
-                        .xDim(xDim3)              // add the x dimension
-                        .yDim(yDim3)              // add the y dimension
-                        .xAttr("merc_x")               // indicate which column will drive the x dimension
-                        .yAttr("merc_y")               // indicate which column will drive the y dimension
-                        .fillColorScale(layer3ColorScale) // set the scale to use to define the fill color
-                                                         // of the points
-                        .fillColorAttr("color")   // indicate which column will drive the fill color scale
-                        .defaultFillColor("green") // set a default color so points that aren't democrat or
-                                                   // republican get a color
-                        .defaultSize(1)         // set a default size for the points
-                        .dynamicSize(dynamicSizeScale)  // but setup dynamic sizing of the points according
-                                                  // to the number of points drawn
-                        .cap(500000)              // set a cap for the # of points to draw, this is required
-                                                  // for point layers
-                        .sampling(true)           // activate sampling so the points rendered are evenly
-                                                  // distributed
+                        .crossfilter(pointcfLayer3)
+                        .setState({
+                          transform: {
+                            sample: true,
+                            limit: 500000
+                          },
+                          mark: "point",
+                          encoding: {
+                            x: {
+                              type: "quantitative",
+                              field: "merc_x"
+                            },
+                            y: {
+                              type: "quantitative",
+                              field: "merc_y"
+                            },
+                            size: "auto",
+                            color: {
+                              type: "ordinal",
+                              field: "recipient_party",
+                              domain: ["D", "R"],
+                              range: ["blue", "red"]
+                            }
+                          }
+                        })
+                        .xDim(xDim3)
+                        .yDim(yDim3)
                         .popupColumns(['amount', 'recipient_party', 'recipient_name'])
                                                   // setup columns to show when a point is properly hit-tested
 

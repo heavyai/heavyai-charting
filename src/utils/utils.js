@@ -42,19 +42,7 @@ function hexBinSQL (sql, {width, height, mark, x, y, aggregate}, parser) {
     hexmaxmercy -= mercydiff
   }
 
-  const args =
-    `${parser.parseExpression(x.field)},`
-    + `${hexminmercx},`
-    + `${hexmaxmercx},`
-    + `${parser.parseExpression(y.field)},`
-    + `${hexminmercy},`
-    + `${hexmaxmercy},`
-    + `${mark.width},`
-    + `${mark.height},`
-    + `${hexoffsetx},`
-    + `${hexoffsety},`
-    + `${width},`
-    + `${height}`
+  const args = `${parser.parseExpression(x.field)},` + `${hexminmercx},` + `${hexmaxmercx},` + `${parser.parseExpression(y.field)},` + `${hexminmercy},` + `${hexmaxmercy},` + `${mark.width},` + `${mark.height},` + `${hexoffsetx},` + `${hexoffsety},` + `${width},` + `${height}`
 
 
   sql.select.push(`reg_${mark.shape}_horiz_pixel_bin_x(${args}) as x`)
@@ -88,6 +76,16 @@ parser.registerParser({
   default:
     return sql
   }
+})
+
+parser.registerParser({
+  meta: "transform",
+  type: "rowid"
+}, (sql, transform) => {
+  const rowid = transform.table + ".rowid"
+  sql.select.push(rowid)
+  sql.groupby.push(rowid)
+  return sql
 })
 
 export const dateFormat = d3.time.format("%m/%d/%Y")

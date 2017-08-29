@@ -1,4 +1,5 @@
-import {createVegaAttrMixin} from "../utils/utils-vega"
+import {createRasterLayerGetterSetter, createVegaAttrMixin} from "../utils/utils-vega"
+import {parser} from "../utils/utils"
 
 const vegaLineJoinOptions = ["miter", "round", "bevel"]
 const polyTableGeomColumns = {
@@ -37,6 +38,8 @@ function validateMiterLimit (newMiterLimit, currMiterLimit) {
 }
 
 export default function rasterLayerPolyMixin (_layer) {
+  _layer.crossfilter = createRasterLayerGetterSetter(_layer, null)
+
   createVegaAttrMixin(_layer, "lineJoin", vegaLineJoinOptions[0], vegaLineJoinOptions[0], false, {
     preDefault: validateLineJoin,
     preNull: validateLineJoin
@@ -47,142 +50,121 @@ export default function rasterLayerPolyMixin (_layer) {
     preNull: validateMiterLimit
   })
 
+  let state = null
   let _vega = null
+  let _cf = null
+
   const _scaledPopups = {}
 
-  const _renderProps = {
-        // NOTE: the x/y scales will be built by the primary chart
-    x: {
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.x = {scale: chart._getXScaleName(), field: "x"} // x is implied when poly-rendering
-      }
-    },
+  _layer.setState = function (setter) {
+    if (typeof setter === "function") {
+      state = setter(state)
+    } else {
+      state = setter
+    }
 
-    y: {
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.y = {scale: chart._getYScaleName(), field: "y"} // y is implied when poly-rendering
-      }
-    },
+    if (!state.hasOwnProperty("transform")) {
+      state.transform = {}
+    }
 
-    fillColor: {
-      getQueryAttr () {
-        return _layer.fillColorAttr()
+    return _layer
+  }
+
+  _layer.getState = function () {
+    return state
+  }
+
+  function getTransforms ({filter, globalFilter}) {
+    const transforms = [
+      {
+        type: "rowid",
+        table: state.data[1].table
       },
-
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        const fillColorScale = _layer._buildFillColorScale(chart, layerName)
-        const fillColorAttr = this.getQueryAttr()
-        if (fillColorScale) {
-          if (!fillColorScale.name) {
-            throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The vega fill color scale does not have a name.")
-          }
-
-          if (fillColorAttr === null) {
-            throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The layer does not have a fillColorAttr defined.")
-          }
-
-          markPropObj.fillColor = {
-            scale: fillColorScale.name,
-            field: fillColorAttr
-          }
-          scales.push(fillColorScale)
-        } else if (fillColorAttr) {
-          const fillColorAttrType = typeof fillColorAttr
-          if (fillColorAttrType === "string") {
-                        // indicates that the fillColorAttr directly references a value in the query
-            markPropObj.fillColor = {field: fillColorAttr}
-          } else {
-            throw new Error("Type error for the fillColorAttr property for layer " + layerName + ". The fillColorAttr must be a string (referencing an column in the query).")
-          }
-        } else {
-          markPropObj.fillColor = _layer.defaultFillColor()
-        }
-      }
-    },
-
-    strokeColor: {
-      getQueryAttr () {
-        return _layer.strokeColorAttr()
+      {
+        type: "project",
+        expr: state.encoding.color.aggregrate,
+        as: "color"
       },
-
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        const strokeColorScale = _layer._buildStrokeColorScale(chart, layerName)
-        const strokeColorAttr = this.getQueryAttr()
-        if (strokeColorScale) {
-          if (!strokeColorScale.name) {
-            throw new Error("Error trying to reference a stroke color scale for raster layer " + layerName + ". The vega stroke color scale does not have a name.")
-          }
-
-          if (strokeColorAttr === null) {
-            throw new Error("Error trying to reference a stroke color scale for raster layer " + layerName + ". The layer does not have a strokeColorAttr defined.")
-          }
-
-          markPropObj.strokeColor = {
-            scale: strokeColorScale.name,
-            field: strokeColorAttr
-          }
-          scales.push(strokeColorScale)
-        } else if (strokeColorAttr) {
-          const strokeColorAttrType = typeof strokeColorAttr
-          if (strokeColorAttrType === "string") {
-                        // indicates that the strokeColorAttr directly references a value in the query
-            markPropObj.strokeColor = {field: strokeColorAttr}
-          } else {
-            throw new Error("Type error for the strokeColorAttr property for layer " + layerName + ". The strokeColorAttr must be a string (referencing an column in the query).")
-          }
-        } else {
-          markPropObj.strokeColor = _layer.defaultStrokeColor()
-        }
-      }
-    },
-
-    strokeWidth: {
-      getQueryAttr () {
-        return _layer.strokeWidthAttr()
+      {
+        type: "filter",
+        expr: `${state.data[0].table}.${state.data[0].attr} = ${state.data[1].table}.${state.data[1].attr}`
       },
+      {
+        type: "sort",
+        field: ["color"]
+      }
+    ]
 
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        const strokeWidthScale = _layer._buildStrokeWidthScale(chart, layerName)
-        const strokeWidthAttr = this.getQueryAttr()
-        if (strokeWidthScale) {
-          if (!strokeWidthScale.name) {
-            throw new Error("Error trying to reference a stroke color scale for raster layer " + layerName + ". The vega stroke color scale does not have a name.")
-          }
+    if (typeof state.transform.limit === "number") {
+      transforms.push({
+        type: "limit",
+        row: state.transform.limit
+      })
+    }
 
-          if (strokeWidthAttr === null) {
-            throw new Error("Error trying to reference a stroke color scale for raster layer " + layerName + ". The layer does not have a strokeWidthAttr defined.")
-          }
+    if (typeof filter === "string" && filter.length) {
+      transforms.push({
+        type: "filter",
+        expr: filter
+      })
+    }
 
-          markPropObj.strokeWidth = {
-            scale: strokeWidthScale.name,
-            field: strokeWidthAttr
-          }
-          scales.push(strokeWidthScale)
-        } else if (strokeWidthAttr) {
-          const strokeWidthAttrType = typeof strokeWidthAttr
-          if (strokeWidthAttrType === "string") {
-                        // indicates that the strokeWidthAttr directly references a value in the query
-            markPropObj.strokeWidth = {field: strokeWidthAttr}
-          } else if (strokeWidthAttrType === "number") {
-            markPropObj.strokeWidth = strokeWidthAttr
-          } else {
-            throw new Error("Type error for the strokeWidthAttr property for layer " + layerName + ". The strokeWidthAttr must be a string (referencing an column in the query) or a number.")
-          }
-        } else {
-          markPropObj.strokeWidth = _layer.defaultStrokeWidth()
+    if (typeof globalFilter === "string" && globalFilter.length) {
+      transforms.push({
+        type: "filter",
+        expr: globalFilter
+      })
+    }
+
+    return transforms
+  }
+
+  _layer.__genVega = function ({filter, globalFilter, layerName}) {
+    return {
+      data: {
+        name: layerName,
+        format: "polys",
+        shapeColGroup: "mapd",
+        sql: parser.writeSQL({
+          type: "root",
+          source: state.data.map(source => source.table).join(", "),
+          transform: getTransforms({filter, globalFilter})
+        })
+      },
+      scales: [
+        {
+          name: layerName + "_fillColor",
+          type: "linear",
+          domain: state.encoding.color.domain,
+          range: state.encoding.color.range,
+          default: "green",
+          nullValue: "#CACACA",
+          clamp: false
         }
-      }
-    },
-
-    lineJoin: {
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.lineJoin = _layer.defaultLineJoin()
-      }
-    },
-
-    miterLimit: {
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.miterLimit = _layer.defaultMiterLimit()
+      ],
+      mark: {
+        type: "polys",
+        from: {
+          data: layerName
+        },
+        properties: {
+          x: {
+            scale: "x",
+            field: "x"
+          },
+          y: {
+            scale: "y",
+            field: "y"
+          },
+          fillColor: {
+            scale: layerName + "_fillColor",
+            field: "color"
+          },
+          strokeColor: typeof state.mark === "object" ? state.mark.strokeColor : "white",
+          strokeWidth: typeof state.mark === "object" ? state.mark.strokeWidth : 0,
+          lineJoin: typeof state.mark === "object" ? state.mark.lineJoin : "miter",
+          miterLimit: typeof state.mark === "object" ? state.mark.miterLimit : 10
+        }
       }
     }
   }
@@ -193,37 +175,16 @@ export default function rasterLayerPolyMixin (_layer) {
   }
 
   _layer._genVega = function (chart, layerName, group, query) {
-    const data = {
-      name: layerName,
-      format: "polys",
-      shapeColGroup: "mapd",
-      sql: query
-    }
-
-    const scales = []
-    const pixelRatio = chart._getPixelRatio()
-    const props = {}
-
-    for (const rndrProp in _renderProps) {
-      if (_renderProps.hasOwnProperty(rndrProp)) {
-        _renderProps[rndrProp].genVega(chart, layerName, group, pixelRatio, props, scales)
-      }
-    }
-
-    const mark = {
-      type: "polys",
-      from: {data: layerName},
-      properties: props
-    }
-
-    _vega = {
-      data,
-      scales,
-      mark
-    }
-
+    _vega = _layer.__genVega({
+      layerName,
+      filter: _layer.crossfilter().getFilterString(),
+      globalFilter: _layer.crossfilter().getGlobalFilterString()
+    })
     return _vega
   }
+
+  const renderAttributes = ["x", "y", "fillColor", "strokeColor", "strokeWidth", "lineJoin", "miterLimit"]
+
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColsSet) {
     popupColsSet.add(polyTableGeomColumns.verts) // add the poly geometry to the query
@@ -232,13 +193,12 @@ export default function rasterLayerPolyMixin (_layer) {
                                                         // tell us this
 
     if (_vega && _vega.mark && _vega.mark.properties) {
-      for (const rndrProp in _renderProps) {
-                // x & y are implied, and are added by the verts and linedrawinfo
-                // so don't need to add those here
-        if (_renderProps.hasOwnProperty(rndrProp) && rndrProp !== "x" && rndrProp !== "y") {
+      renderAttributes.forEach(rndrProp => {
+        if (rndrProp !== "x" && rndrProp !== "y") {
           _layer._addQueryDrivenRenderPropToSet(popupColsSet, _vega.mark.properties, rndrProp)
         }
-      }
+      })
+
     }
   }
 
@@ -337,12 +297,14 @@ export default function rasterLayerPolyMixin (_layer) {
     const queryRndrProps = new Set([polyTableGeomColumns.verts, polyTableGeomColumns.linedrawinfo])
     if (_vega && _vega.mark && _vega.mark.properties) {
       const propObj = _vega.mark.properties
-      for (const rndrProp in _renderProps) {
-        if (_renderProps.hasOwnProperty(rndrProp) && typeof propObj[rndrProp] === "object" && propObj[rndrProp].field && typeof propObj[rndrProp].field === "string") {
-          rndrProps[rndrProp] = propObj[rndrProp].field
-          queryRndrProps.add(propObj[rndrProp].field)
+      renderAttributes.forEach(prop => {
+        if (
+          typeof propObj[prop] === "object" && propObj[prop].field && typeof propObj[prop].field === "string"
+        ) {
+          rndrProps[prop] = propObj[prop].field
+          queryRndrProps.add(propObj[prop].field)
         }
-      }
+      })
     }
 
     const boundsWidth = bounds[1] - bounds[0]

@@ -87,20 +87,38 @@
                           .popupSearchRadius(2)
 
     var pointLayer = dc.rasterLayer("points")
-                       .dimension(pointMapDim)
-                       .group(pointMapDim)
-                       .cap(500000)
-                       .sampling(true)
-                       .dynamicSize(d3.scale.sqrt().domain([20000,0]).range([1.0,7.0]).clamp(true))
+                       .crossfilter(crossFilter)
+                       .setState({
+                         transform: {
+                           sample: true,
+                           limit: 500000
+                         },
+                         mark: "point",
+                         encoding: {
+                           x: {
+                             type: "quantitative",
+                             field: "conv_4326_900913_x(lon)"
+                           },
+                           y: {
+                             type: "quantitative",
+                             field: "conv_4326_900913_y(lat)"
+                           },
+                           size: {
+                             type: "quantitative",
+                             field: "followers",
+                             domain: [0, 5000],
+                             range: [1, 5]
+                           },
+                           color: {
+                             type: "ordinal",
+                             field: "lang",
+                             domain: langDomain,
+                             range: langColors
+                           }
+                         }
+                       })
                        .xDim(xDim)
                        .yDim(yDim)
-                       .sizeScale(rScale)
-                       .xAttr("x")
-                       .yAttr("y")
-                       .sizeAttr("size")
-                       .fillColorAttr("color")
-                       .defaultFillColor("#80DEEA")
-                       .fillColorScale(d3.scale.ordinal().domain(langDomain).range(langColors))
                        .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
 
     pointMapChart.pushLayer("points", pointLayer).init().then((chart) => {

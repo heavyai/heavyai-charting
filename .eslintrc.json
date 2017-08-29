@@ -58,7 +58,7 @@
     "no-constant-condition": 2, // unnecessary; usually a typo.
     "no-continue": 1, // makes reasoning about loops more difficult.
     "no-control-regex": 2, // usually a typo.
-    "no-debugger": 1, // for debugging only; shouldn't be committed.
+    "no-debugger": 2, // for debugging only; shouldn't be committed.
     "no-delete-var": 2, // only properties should be deleted.
     "no-div-regex": 0, // regex are difficult enough; also operator-assignment disallows /= operator.
     "no-dupe-args": 1, // shadowing increases ambiguity.

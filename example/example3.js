@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     })
 
   function createPolyMap(crossFilter, con, dc, config, cf2) {
+    window.cf = crossFilter
     var parent = document.getElementById("polymap")
     // The values in the table and column specified in crossFilter.dimension
     // must correspond to values in the table and keysColumn specified in polyRasterChart.polyJoin.
@@ -64,13 +65,36 @@ document.addEventListener("DOMContentLoaded", function init() {
 
       var polyLayer = dc
       .rasterLayer("polys")
-      .cap(Infinity)
-      .dimension(dim)
-      .group(grp)
-      .cap(1000000)
-      .fillColorAttr('avgContrib')
-      .defaultFillColor("green")
-      .fillColorScale(d3.scale.linear().domain(colorDomain).range(colorRange))
+      .crossfilter(crossFilter)
+      .setState({
+        data: [
+          {
+            table: "contributions_donotmodify",
+            attr: "contributor_zipcode"
+          }, {
+            table: "zipcodes",
+            attr: "ZCTA5CE10"
+          }
+        ],
+        transform: {
+          limit: 1000000
+        },
+        mark: {
+          type: "poly",
+          strokeColor: "white",
+          strokeWidth: 0,
+          lineJoin: "miter",
+          miterLimit: 10
+        },
+        encoding: {
+          color: {
+            type: "quantitative",
+            aggregrate: "AVG(contributions_donotmodify.amount)",
+            domain: colorDomain,
+            range: colorRange
+          }
+        }
+      })
 
       polyMap.pushLayer("polys", polyLayer).init().then(() => {
         // polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
