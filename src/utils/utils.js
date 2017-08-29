@@ -78,6 +78,16 @@ parser.registerParser({
   }
 })
 
+parser.registerParser({
+  meta: "transform",
+  type: "rowid"
+}, (sql, transform) => {
+  const rowid = transform.table + ".rowid"
+  sql.select.push(rowid)
+  sql.groupby.push(rowid)
+  return sql
+})
+
 export const dateFormat = d3.time.format("%m/%d/%Y")
 
 export const deepEquals = require("deep-equal") // eslint-disable-line global-require
