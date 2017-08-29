@@ -42,19 +42,7 @@ function hexBinSQL (sql, {width, height, mark, x, y, aggregate}, parser) {
     hexmaxmercy -= mercydiff
   }
 
-  const args =
-    `${parser.parseExpression(x.field)},`
-    + `${hexminmercx},`
-    + `${hexmaxmercx},`
-    + `${parser.parseExpression(y.field)},`
-    + `${hexminmercy},`
-    + `${hexmaxmercy},`
-    + `${mark.width},`
-    + `${mark.height},`
-    + `${hexoffsetx},`
-    + `${hexoffsety},`
-    + `${width},`
-    + `${height}`
+  const args = `${parser.parseExpression(x.field)},` + `${hexminmercx},` + `${hexmaxmercx},` + `${parser.parseExpression(y.field)},` + `${hexminmercy},` + `${hexmaxmercy},` + `${mark.width},` + `${mark.height},` + `${hexoffsetx},` + `${hexoffsety},` + `${width},` + `${height}`
 
 
   sql.select.push(`reg_${mark.shape}_horiz_pixel_bin_x(${args}) as x`)

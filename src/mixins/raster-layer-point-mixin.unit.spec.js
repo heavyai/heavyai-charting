@@ -32,7 +32,6 @@ describe.only("rasterLayerPointMixin", () => {
         }
       }
       layer.setState(spec)
-      expect(layer.getState()).to.not.equal(spec)
       expect(layer.getState()).to.deep.equal(spec)
     })
   })
@@ -48,7 +47,7 @@ describe.only("rasterLayerPointMixin", () => {
         type: "quantitative",
         field: "lat"
       },
-      sizing: 11,
+      size: 11,
       color: "#27aeef"
     }
 
@@ -60,13 +59,13 @@ describe.only("rasterLayerPointMixin", () => {
           encoding: baseEncoding
         })
 
-        layer.__genVega({
+        expect(layer.__genVega({
           table: "tweets_nov_feb",
           filter: "lon = 100"
-        }).to.deep.equal({
+        })).to.deep.equal({
           data: {
             name: "points",
-            sql: "SELECT conv_4326_900913_x(lon) as x,conv_4326_900913_y(lat) as y,tweets_nov_feb.rowid FROM contributions WHERE (lon = 100)"
+            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
           },
           "scales": [],
            "mark": {
@@ -116,12 +115,12 @@ describe.only("rasterLayerPointMixin", () => {
           })
         })
 
-        layer.__genVega({
+        expect(layer.__genVega({
           table: "tweets_nov_feb",
           filter: "lon = 100",
           lastFilteredSize: 223509,
           pixelRatio: 1
-        }).properties.size.to.equal(2)
+        })).properties.size.to.equal(2)
 
         layer.setState({
           transform: [{type: "limit", row: 2000000}],
@@ -131,12 +130,12 @@ describe.only("rasterLayerPointMixin", () => {
           })
         })
 
-        layer.__genVega({
+        expect(layer.__genVega({
           table: "tweets_nov_feb",
           filter: "lon = 100",
           lastFilteredSize: 1947993,
           pixelRatio: 1
-        }).properties.size.to.equal(1)
+        })).properties.size.to.equal(1)
 
       })
 
@@ -145,7 +144,7 @@ describe.only("rasterLayerPointMixin", () => {
         layer.setState({
           mark: "point",
           encoding: Object.assign({}, baseEncoding, {
-            sizing: {
+            size: {
               type: "quantitative",
               field: "tweet_count",
               domain: [-5000000, 25177212],
@@ -154,13 +153,13 @@ describe.only("rasterLayerPointMixin", () => {
           })
         })
 
-        layer.__genVega({
+        expect(layer.__genVega({
           table: "tweets_nov_feb",
           filter: "lon = 100",
-        }).to.deep.equal({
+        })).to.deep.equal({
           data: {
             name: "points",
-            sql: "SELECT conv_4326_900913_x(lon) as x,conv_4326_900913_y(lat) as y, tweet_count as size, weets_nov_feb.rowid FROM contributions WHERE (lon = 100)"
+            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as size, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
           },
           "scales": [
             {

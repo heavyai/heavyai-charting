@@ -1,11 +1,84 @@
 import {decrementSampledCount, incrementSampledCount} from "../core/core"
 import {lastFilteredSize} from "../core/core-async"
 import {createRasterLayerGetterSetter, createVegaAttrMixin} from "../utils/utils-vega"
+import {parser} from "../utils/utils"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
+
+function getSizing (sizeAttr) {
+  if (typeof sizeAttr === "number") {
+    return sizeAttr
+  } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
+    return {
+      "scale": "points_size",
+      "field": "size"
+    }
+  } else if (sizeAttr === "auto") {
+    return
+  }
+}
+
+function getTransforms (table, filter, {x, y, size, color}) {
+
+  const transforms = [
+    {
+      type: "filter",
+      expr: filter
+    },
+    {
+      type: "project",
+      expr: `conv_4326_900913_x(${x.field})`,
+      as: "x"
+    },
+    {
+      type: "project",
+      expr: `conv_4326_900913_y(${y.field})`,
+      as: "y"
+    }
+  ]
+
+  if (typeof size === "object" && size.type === "quantitative") {
+    transforms.push({
+      type: "project",
+      expr: size.field,
+      as: "size"
+    })
+  }
+
+  if (typeof color === "object" && color.type === "quantitative") {
+    transforms.push({
+      type: "project",
+      expr: color.field,
+      as: "color"
+    })
+  }
+
+  transforms.push({
+    type: "project",
+    expr: `${table}.rowid`
+  })
+
+  return transforms
+}
+
+function getScales ({size}) {
+  const scales = []
+
+  if (typeof size === "object" && size.type === "quantitative") {
+    scales.push({
+     "name": "points_size",
+     "type": "linear",
+     "domain": size.domain,
+     "range": size.range,
+     "clamp": true
+   })
+  }
+
+  return scales
+}
 
 export default function rasterLayerPointMixin (_layer) {
   let state = null
@@ -23,8 +96,35 @@ export default function rasterLayerPointMixin (_layer) {
   }
 
   _layer.__genVega = function ({table, filter}) {
-
-    return { }
+    return {
+      data: {
+        name: "points",
+        sql: parser.writeSQL({
+          type: "root",
+          source: table,
+          transform: getTransforms(table, filter, state.encoding)
+        })
+      },
+      scales: getScales(state.encoding),
+      mark: {
+       type: "points",
+       from: {
+         data: "points"
+       },
+       properties: {
+        x: {
+          scale: "x",
+           field: "x"
+         },
+         y: {
+           scale: "y",
+           field: "y"
+         },
+         size: getSizing(state.encoding.size),
+         fillColor: "#27aeef"
+       }
+      }
+    }
   }
 
   _layer.xDim = createRasterLayerGetterSetter(_layer, null)
