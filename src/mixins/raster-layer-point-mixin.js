@@ -1,23 +1,45 @@
 import {decrementSampledCount, incrementSampledCount} from "../core/core"
 import {lastFilteredSize} from "../core/core-async"
-import {createRasterLayerGetterSetter, createVegaAttrMixin} from "../utils/utils-vega"
+import {convertHexToRGBA, createRasterLayerGetterSetter, createVegaAttrMixin} from "../utils/utils-vega"
 import {parser} from "../utils/utils"
+import * as d3 from "d3"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
 
-function getSizing (sizeAttr) {
+function getSizing (sizeAttr, cap, lastFilteredSize, pixelRatio) {
   if (typeof sizeAttr === "number") {
     return sizeAttr
   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
     return {
-      "scale": "points_size",
-      "field": "size"
+      scale: "points_size",
+      field: "size"
     }
   } else if (sizeAttr === "auto") {
-    return
+    const size = Math.min(lastFilteredSize, cap)
+    const dynamicRScale = d3.scale.sqrt()
+      .domain(AUTOSIZE_DOMAIN_DEFAULTS)
+      .range(size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM ? AUTOSIZE_RANGE_MININUM : AUTOSIZE_RANGE_DEFAULTS)
+      .clamp(true)
+    return Math.round(dynamicRScale(size) * pixelRatio)
+  }
+}
+
+function getColor (color) {
+  if (typeof color === "object" && color.type === "density") {
+    return {
+      scale: "points_fillColor",
+      value: 0
+    }
+  } else if (typeof color === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
+    return {
+      scale: "points_fillColor",
+      value: 0
+    }
+  } else {
+    return color
   }
 }
 
@@ -48,7 +70,7 @@ function getTransforms (table, filter, {x, y, size, color}) {
     })
   }
 
-  if (typeof color === "object" && color.type === "quantitative") {
+  if (typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
     transforms.push({
       type: "project",
       expr: color.field,
@@ -64,17 +86,46 @@ function getTransforms (table, filter, {x, y, size, color}) {
   return transforms
 }
 
-function getScales ({size}) {
+function getScales ({size, color}) {
   const scales = []
 
   if (typeof size === "object" && size.type === "quantitative") {
     scales.push({
-     "name": "points_size",
-     "type": "linear",
-     "domain": size.domain,
-     "range": size.range,
-     "clamp": true
-   })
+      name: "points_size",
+      type: "linear",
+      domain: size.domain,
+      range: size.range,
+      clamp: true
+    })
+  }
+
+  if (typeof color === "object" && color.type === "density") {
+    scales.push({
+      name: "points_fillColor",
+      type: "linear",
+      domain: color.range.map((c, i) => i * 100 / (color.range.length - 1) / 100),
+      range: color.range.map((c, i, colorArray) => {
+        const normVal = i / (colorArray.length - 1)
+        let interp = Math.min(normVal / 0.65, 1.0)
+        interp = interp * 0.375 + 0.625
+        return convertHexToRGBA(c, interp * 100)
+      }),
+      accumulator: "density",
+      minDensityCnt: "-2ndStdDev",
+      maxDensityCnt: "2ndStdDev",
+      clamp: true
+    })
+  }
+
+  if (typeof color === "object" && color.type === "ordinal") {
+    scales.push({
+      name: "points_fillColor",
+      type: "ordinal",
+      domain: color.domain,
+      range: color.range,
+      default: "#27aeef",
+      nullValue: "#CACACA"
+    })
   }
 
   return scales
@@ -95,7 +146,7 @@ export default function rasterLayerPointMixin (_layer) {
     return state
   }
 
-  _layer.__genVega = function ({table, filter}) {
+  _layer.__genVega = function ({table, filter, lastFilteredSize, pixelRatio}) {
     return {
       data: {
         name: "points",
@@ -107,22 +158,22 @@ export default function rasterLayerPointMixin (_layer) {
       },
       scales: getScales(state.encoding),
       mark: {
-       type: "points",
-       from: {
-         data: "points"
-       },
-       properties: {
-        x: {
-          scale: "x",
-           field: "x"
-         },
-         y: {
-           scale: "y",
-           field: "y"
-         },
-         size: getSizing(state.encoding.size),
-         fillColor: "#27aeef"
-       }
+        type: "points",
+        from: {
+          data: "points"
+        },
+        properties: {
+          x: {
+            scale: "x",
+            field: "x"
+          },
+          y: {
+            scale: "y",
+            field: "y"
+          },
+          size: getSizing(state.encoding.size, state.transform && state.transform.length && state.transform[0].row, lastFilteredSize, pixelRatio),
+          fillColor: getColor(state.encoding.color)
+        }
       }
     }
   }
@@ -364,8 +415,6 @@ export default function rasterLayerPointMixin (_layer) {
       scales,
       mark
     }
-
-    console.log(JSON.stringify(_vega, null, 2))
 
     return _vega
   }

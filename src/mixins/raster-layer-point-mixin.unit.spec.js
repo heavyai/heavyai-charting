@@ -100,12 +100,12 @@ describe.only("rasterLayerPointMixin", () => {
           })
         })
 
-        layer.__genVega({
+        expect(layer.__genVega({
           table: "tweets_nov_feb",
           filter: "lon = 100",
           lastFilteredSize: 13884,
           pixelRatio: 1
-        }).properties.size.to.equal(4)
+        }).mark.properties.size).to.equal(4)
 
         layer.setState({
           transform: [{type: "limit", row: 2000000}],
@@ -120,7 +120,7 @@ describe.only("rasterLayerPointMixin", () => {
           filter: "lon = 100",
           lastFilteredSize: 223509,
           pixelRatio: 1
-        })).properties.size.to.equal(2)
+        }).mark.properties.size).to.equal(2)
 
         layer.setState({
           transform: [{type: "limit", row: 2000000}],
@@ -135,7 +135,7 @@ describe.only("rasterLayerPointMixin", () => {
           filter: "lon = 100",
           lastFilteredSize: 1947993,
           pixelRatio: 1
-        })).properties.size.to.equal(1)
+        }).mark.properties.size).to.equal(1)
 
       })
 
@@ -201,12 +201,138 @@ describe.only("rasterLayerPointMixin", () => {
       })
     })
 
-    xdescribe("Color prop", () => {
+    describe("Color prop", () => {
       it("should properly transform density coloring", () => {
 
+        const layer = rasterLayer("points")
+        layer.setState({
+          mark: "point",
+          encoding: Object.assign({}, baseEncoding, {
+            color: {
+              type: "density",
+              range: ["#115f9a", "#1984c5", "#22a7f0", "#48b5c4", "#76c68f", "#a6d75b", "#c9e52f", "#d0ee11", "#d0f400"]
+            }
+          })
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+        })).to.deep.equal({
+          data: {
+            name: "points",
+            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+          },
+          "scales": [
+            {
+              "name": "points_fillColor",
+              "type": "linear",
+              "domain": [
+                0,
+                0.125,
+                0.25,
+                0.375,
+                0.5,
+                0.625,
+                0.75,
+                0.875,
+                1
+              ],
+              "range": [
+                "rgba(17,95,154,0.625)",
+                "rgba(25,132,197,0.6971153846153846)",
+                "rgba(34,167,240,0.7692307692307692)",
+                "rgba(72,181,196,0.8413461538461539)",
+                "rgba(118,198,143,0.9134615384615384)",
+                "rgba(166,215,91,0.985576923076923)",
+                "rgba(201,229,47,1)",
+                "rgba(208,238,17,1)",
+                "rgba(208,244,0,1)"
+              ],
+              "accumulator": "density",
+              "minDensityCnt": "-2ndStdDev",
+              "maxDensityCnt": "2ndStdDev",
+              "clamp": true
+           }
+          ],
+           "mark": {
+             "type": "points",
+             "from": {
+               "data": "points"
+             },
+             "properties": {
+               "x": {
+                 "scale": "x",
+                 "field": "x"
+               },
+               "y": {
+                 "scale": "y",
+                 "field": "y"
+               },
+               "size": 11,
+               "fillColor": {
+                  "scale": "points_fillColor",
+                  "value": 0
+                }
+             }
+           }
+        })
       })
 
       it("should properly transform quantitative and ordinal coloring", () => {
+        const layer = rasterLayer("points")
+        layer.setState({
+          mark: "point",
+          encoding: Object.assign({}, baseEncoding, {
+            color: {
+              type: "ordinal",
+              field: "party",
+              domain: ["D", "R", "I"],
+              range: ["#115f9a", "#1984c5", "#22a7f0"]
+            }
+          })
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+        })).to.deep.equal({
+          data: {
+            name: "points",
+            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+          },
+          "scales": [
+            {
+              "name": "points_fillColor",
+              "type": "ordinal",
+              "domain": ["D", "R", "I"],
+              "range": ["#115f9a", "#1984c5", "#22a7f0"],
+              "default": "#27aeef",
+              "nullValue": "#CACACA"
+           }
+          ],
+           "mark": {
+             "type": "points",
+             "from": {
+               "data": "points"
+             },
+             "properties": {
+               "x": {
+                 "scale": "x",
+                 "field": "x"
+               },
+               "y": {
+                 "scale": "y",
+                 "field": "y"
+               },
+               "size": 11,
+               "fillColor": {
+                  "scale": "points_fillColor",
+                  "value": 0
+                }
+             }
+           }
+        })
 
       })
     })
