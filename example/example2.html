@@ -119,20 +119,33 @@
 
     var pointLayer = dc
     .rasterLayer("points")
-    .dimension(pointMapDim)
-    .group(pointMapDim)
-    .cap(500000)
-    .sampling(true)
-    .sizeAttr("size")
-    .dynamicSize(d3.scale.sqrt().domain([20000,0]).range([1.0,7.0]).clamp(true))
-    .sizeScale(sizeScale)
-    .xAttr("x")
-    .yAttr("y")
+    .crossfilter(crossFilter)
+    .setState({
+      transform: {
+        sample: true,
+        limit: 500000
+      },
+      mark: "point",
+      encoding: {
+        x: {
+          type: "quantitative",
+          field: "conv_4326_900913_x(lon)"
+        },
+        y: {
+          type: "quantitative",
+          field: "conv_4326_900913_y(lat)"
+        },
+        size: "auto",
+        color: {
+          type: "ordinal",
+          field: "lang",
+          domain: langDomain,
+          range: langColors
+        }
+      }
+    })
     .xDim(xDim)
     .yDim(yDim)
-    .fillColorAttr("color")
-    .defaultFillColor("#80DEEA")
-    .fillColorScale(d3.scale.ordinal().domain(langDomain).range(langColors))
     .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
 
     function mapLangColors(n) {
@@ -419,6 +432,7 @@
       .user("mapd")
       .password("HyperInteractive")
       .connect(function(error, con) {
+        con.logging(true)
         // Get a table from the database
         var tableName = 'tweets_nov_feb';
         // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
