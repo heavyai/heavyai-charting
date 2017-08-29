@@ -103,23 +103,40 @@ document.addEventListener("DOMContentLoaded", function init() {
        */
       var rScale = d3.scale.linear().domain([0,5000]).range([1,5]);
 
-
       var pointLayer = dc.rasterLayer("points")
-                        .dimension(scatterplotDim)
-                        .group(scatterplotDim)
-                        .cap(500000)
-                        .othersGrouper(false)
+                        .crossfilter(crossFilter)
                         .xDim(xDim)
                         .yDim(yDim)
-                        .xAttr("x")               // indicate which column will drive the x dimension
-                        .yAttr("y")
+                        .setState({
+                          transform: {
+                            sample: true,
+                            limit: 500000
+                          },
+                          mark: "point",
+                          encoding: {
+                            x: {
+                              type: "quantitative",
+                              field: "goog_x"
+                            },
+                            y: {
+                              type: "quantitative",
+                              field: "goog_y"
+                            },
+                            size: {
+                              type: "quantitative",
+                              field: "followers",
+                              domain: [0, 5000],
+                              range: [1, 5]
+                            },
+                            color: {
+                              type: "ordinal",
+                              field: "lang",
+                              domain: langDomain,
+                              range: langOriginColors
+                            }
+                          }
+                        })
                         .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
-                        .fillColorAttr("color")   // indicate which column will drive the fill color scale
-                        .defaultFillColor("#80DEEA") // set a default color so points that aren't democrat or
-                        .fillColorScale(d3.scale.ordinal().domain(langDomain).range(langColors))
-                        .sizeAttr("size")
-                        .sizeScale(rScale)
-                        .sampling(true)
 
       pointMapChart =  dc.rasterChart(parent, false)
                           .con(con)
