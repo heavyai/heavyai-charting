@@ -44,11 +44,11 @@ describe("rasterLayerPointMixin", () => {
     const baseEncoding = {
       x: {
         type: "quantitative",
-        field: "lon"
+        field: "conv_4326_900913_x(lon)"
       },
       y: {
         type: "quantitative",
-        field: "lat"
+        field: "conv_4326_900913_y(lat)"
       },
       size: 11,
       color: "#27aeef"
@@ -349,11 +349,11 @@ describe("rasterLayerPointMixin", () => {
         encoding: {
           x: {
             type: "quantitative",
-            field: "lon"
+            field: "conv_4326_900913_x(lon)"
           },
           y: {
             type: "quantitative",
-            field: "lat"
+            field: "conv_4326_900913_y(lat)"
           },
           size: 11,
           color: {

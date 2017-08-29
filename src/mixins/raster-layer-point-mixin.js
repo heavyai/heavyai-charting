@@ -60,12 +60,12 @@ function getTransforms (table, filter, {x, y, size, color}) {
     },
     {
       type: "project",
-      expr: `conv_4326_900913_x(${x.field})`,
+      expr: x.field,
       as: "x"
     },
     {
       type: "project",
-      expr: `conv_4326_900913_y(${y.field})`,
+      expr: y.field,
       as: "y"
     }
   ]
