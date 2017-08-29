@@ -2,7 +2,7 @@ import { expect } from "chai"
 import rasterLayer from "./raster-layer"
 import rasterLayerPointMixin from "./raster-layer-heatmap-mixin"
 
-describe.only("rasterLayerPointMixin", () => {
+describe("rasterLayerPointMixin", () => {
   it("should have the correct getters/setters", () => {
     const layer = rasterLayer("points")
     const xDim = "xDim"
@@ -328,7 +328,7 @@ describe.only("rasterLayerPointMixin", () => {
                "size": 11,
                "fillColor": {
                   "scale": "points_fillColor",
-                  "value": 0
+                  "field": "color"
                 }
              }
            }

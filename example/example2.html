@@ -119,20 +119,37 @@
 
     var pointLayer = dc
     .rasterLayer("points")
-    .dimension(pointMapDim)
-    .group(pointMapDim)
+    .crossfilter(crossFilter)
+    .setState({
+      transform: [
+        {
+          type: "limit",
+          row: 500000
+        }
+      ],
+      mark: "point",
+      encoding: {
+        x: {
+          type: "quantitative",
+          field: "lon"
+        },
+        y: {
+          type: "quantitative",
+          field: "lat"
+        },
+        size: "auto",
+        color: {
+          type: "ordinal",
+          field: "lang",
+          domain: langDomain,
+          range: langColors
+        }
+      }
+    })
     .cap(500000)
     .sampling(true)
-    .sizeAttr("size")
-    .dynamicSize(d3.scale.sqrt().domain([20000,0]).range([1.0,7.0]).clamp(true))
-    .sizeScale(sizeScale)
-    .xAttr("x")
-    .yAttr("y")
     .xDim(xDim)
     .yDim(yDim)
-    .fillColorAttr("color")
-    .defaultFillColor("#80DEEA")
-    .fillColorScale(d3.scale.ordinal().domain(langDomain).range(langColors))
     .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
 
     function mapLangColors(n) {

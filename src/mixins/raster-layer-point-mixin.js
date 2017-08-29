@@ -36,7 +36,7 @@ function getColor (color) {
   } else if (typeof color === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
     return {
       scale: "points_fillColor",
-      value: 0
+      field: "color"
     }
   } else {
     return color
@@ -140,6 +140,8 @@ export default function rasterLayerPointMixin (_layer) {
     } else {
       state = setter
     }
+
+    return _layer
   }
 
   _layer.getState = function () {
@@ -212,8 +214,18 @@ export default function rasterLayerPointMixin (_layer) {
   let _vega = null
   const _scaledPopups = {}
   const _minMaxCache = {}
+  let _cf = null
+  _layer.crossfilter = function (cf) {
+    if (!arguments.length) {
+      return _cf
+    }
 
-  _layer._mandatoryAttributes(_layer._mandatoryAttributes().concat(["xAttr", "yAttr"]))
+    _cf = cf
+
+    return _layer
+  }
+
+  // _layer._mandatoryAttributes(_layer._mandatoryAttributes().concat(["xAttr", "yAttr"]))
 
   const _renderProps = {
         // NOTE: the x/y scales will be built by the primary chart
@@ -389,32 +401,12 @@ export default function rasterLayerPointMixin (_layer) {
   }
 
   _layer._genVega = function (chart, layerName, group, query) {
-    const data = {
-      name: layerName,
-      sql: query
-    }
-
-    const scales = []
-    const pixelRatio = chart._getPixelRatio()
-    const props = {}
-
-    for (const rndrProp in _renderProps) {
-      if (_renderProps.hasOwnProperty(rndrProp)) {
-        _renderProps[rndrProp].genVega(chart, layerName, group, pixelRatio, props, scales)
-      }
-    }
-
-    const mark = {
-      type: "points",
-      from: {data: layerName},
-      properties: props
-    }
-
-    _vega = {
-      data,
-      scales,
-      mark
-    }
+    _vega = _layer.__genVega({
+      table: _layer.crossfilter().getTable()[0],
+      filter: _layer.crossfilter().getFilterString(),
+      lastFilteredSize: lastFilteredSize(0),
+      pixelRatio: chart._getPixelRatio()
+    })
 
     return _vega
   }

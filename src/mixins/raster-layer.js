@@ -12,7 +12,7 @@ export default function rasterLayer (layerType) {
   let _dimension = null
   let _group = null
   const _groupName = null
-  let _mandatoryAttributes = ["dimension", "group"]
+  let _mandatoryAttributes = []
 
   var _layer = capMixin({
     setDataAsync (callback) {
