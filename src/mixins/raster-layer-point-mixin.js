@@ -8,6 +8,25 @@ const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
 
 export default function rasterLayerPointMixin (_layer) {
+  let state = null
+
+  _layer.setState = function (setter) {
+    if (typeof setter === "function") {
+      state = setter(state)
+    } else {
+      state = setter
+    }
+  }
+
+  _layer.getState = function () {
+    return state
+  }
+
+  _layer.__genVega = function ({table, filter}) {
+
+    return { }
+  }
+
   _layer.xDim = createRasterLayerGetterSetter(_layer, null)
   _layer.yDim = createRasterLayerGetterSetter(_layer, null)
 
@@ -82,6 +101,7 @@ export default function rasterLayerPointMixin (_layer) {
 
           const sizeScaleName = layerName + "_size"
           let scaleRange = sizeScale.range()
+          debugger
           if (pixelRatio !== 1) {
             scaleRange = scaleRange.map((rangeVal) => rangeVal * pixelRatio)
           }
@@ -109,6 +129,8 @@ export default function rasterLayerPointMixin (_layer) {
           }
         } else if (_layer.dynamicSize() !== null && _layer.sampling() && lastFilteredSize(group.getCrossfilterId()) !== undefined) {
           // @TODO don't tie this to sampling - meaning having a dynamicSize will also require count to be computed first by dc
+          console.log(lastFilteredSize(group.getCrossfilterId()), _layer.cap())
+          console.log(pixelRatio)
           const cap = _layer.cap()
           const size = Math.min(lastFilteredSize(group.getCrossfilterId()), cap)
 
@@ -118,7 +140,7 @@ export default function rasterLayerPointMixin (_layer) {
             .clamp(true)
 
           _layer.dynamicSize(dynamicRScale)
-
+          console.log(Math.round(dynamicRScale(size) * pixelRatio))
           markPropObj.size = Math.round(dynamicRScale(size) * pixelRatio)
         } else {
           markPropObj.size = _layer.defaultSize() * pixelRatio
@@ -242,6 +264,8 @@ export default function rasterLayerPointMixin (_layer) {
       scales,
       mark
     }
+
+    console.log(JSON.stringify(_vega, null, 2))
 
     return _vega
   }
