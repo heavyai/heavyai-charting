@@ -1,6 +1,10 @@
 import {decrementSampledCount, incrementSampledCount} from "../core/core"
 import {lastFilteredSize} from "../core/core-async"
-import {convertHexToRGBA, createRasterLayerGetterSetter, createVegaAttrMixin} from "../utils/utils-vega"
+import {
+  convertHexToRGBA,
+  createRasterLayerGetterSetter,
+  createVegaAttrMixin
+} from "../utils/utils-vega"
 import {parser} from "../utils/utils"
 import * as d3 from "d3"
 
@@ -19,9 +23,12 @@ function getSizing (sizeAttr, cap, lastFilteredSize, pixelRatio) {
     }
   } else if (sizeAttr === "auto") {
     const size = Math.min(lastFilteredSize, cap)
-    const dynamicRScale = d3.scale.sqrt()
+    const dynamicRScale = d3.scale
+      .sqrt()
       .domain(AUTOSIZE_DOMAIN_DEFAULTS)
-      .range(size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM ? AUTOSIZE_RANGE_MININUM : AUTOSIZE_RANGE_DEFAULTS)
+      .range(
+        size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM ? AUTOSIZE_RANGE_MININUM : AUTOSIZE_RANGE_DEFAULTS
+      )
       .clamp(true)
     return Math.round(dynamicRScale(size) * pixelRatio)
   }
@@ -33,7 +40,9 @@ function getColor (color) {
       scale: "points_fillColor",
       value: 0
     }
-  } else if (typeof color === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
+  } else if (
+    typeof color === "object" && (color.type === "ordinal" || color.type === "quantitative")
+  ) {
     return {
       scale: "points_fillColor",
       field: "color"
@@ -44,7 +53,6 @@ function getColor (color) {
 }
 
 function getTransforms (table, filter, {x, y, size, color}) {
-
   const transforms = [
     {
       type: "filter",
@@ -70,7 +78,9 @@ function getTransforms (table, filter, {x, y, size, color}) {
     })
   }
 
-  if (typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
+  if (
+    typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
+  ) {
     transforms.push({
       type: "project",
       expr: color.field,
@@ -103,7 +113,9 @@ function getScales ({size, color}) {
     scales.push({
       name: "points_fillColor",
       type: "linear",
-      domain: color.range.map((c, i) => i * 100 / (color.range.length - 1) / 100),
+      domain: color.range.map(
+        (c, i) => i * 100 / (color.range.length - 1) / 100
+      ),
       range: color.range.map((c, i, colorArray) => {
         const normVal = i / (colorArray.length - 1)
         let interp = Math.min(normVal / 0.65, 1.0)
@@ -148,6 +160,13 @@ export default function rasterLayerPointMixin (_layer) {
     return state
   }
 
+  _layer.getProjections = function () {
+    return getTransforms("", "", state.encoding)
+      .filter(transform => transform.type === "project" && transform.hasOwnProperty("as"))
+      .map(projection => parser.parseTransform({select: []}, projection))
+      .map(sql => sql.select[0])
+  }
+
   _layer.__genVega = function ({table, filter, lastFilteredSize, pixelRatio}) {
     return {
       data: {
@@ -173,7 +192,12 @@ export default function rasterLayerPointMixin (_layer) {
             scale: "y",
             field: "y"
           },
-          size: getSizing(state.encoding.size, state.transform && state.transform.length && state.transform[0].row, lastFilteredSize, pixelRatio),
+          size: getSizing(
+            state.encoding.size,
+            state.transform && state.transform.length && state.transform[0].row,
+            lastFilteredSize,
+            pixelRatio
+          ),
           fillColor: getColor(state.encoding.color)
         }
       }
@@ -183,26 +207,29 @@ export default function rasterLayerPointMixin (_layer) {
   _layer.xDim = createRasterLayerGetterSetter(_layer, null)
   _layer.yDim = createRasterLayerGetterSetter(_layer, null)
 
-    // NOTE: builds _layer.defaultSize(), _layer.nullSize(),
-    //              _layer.sizeScale(), & _layer.sizeAttr()
+  // NOTE: builds _layer.defaultSize(), _layer.nullSize(),
+  //              _layer.sizeScale(), & _layer.sizeAttr()
   createVegaAttrMixin(_layer, "size", 3, 1, true)
 
   _layer.dynamicSize = createRasterLayerGetterSetter(_layer, null)
 
-  _layer.sampling = createRasterLayerGetterSetter(_layer, false,
-                          (doSampling, isCurrSampling) => {
-                            if (doSampling && !isCurrSampling) {
-                              incrementSampledCount()
-                            } else if (!doSampling && isCurrSampling) {
-                              decrementSampledCount()
-                            }
-                            return Boolean(doSampling)
-                          },
-                          (isCurrSampling) => {
-                            if (!isCurrSampling) {
-                              _layer.dimension().samplingRatio(null)
-                            }
-                          })
+  _layer.sampling = createRasterLayerGetterSetter(
+    _layer,
+    false,
+    (doSampling, isCurrSampling) => {
+      if (doSampling && !isCurrSampling) {
+        incrementSampledCount()
+      } else if (!doSampling && isCurrSampling) {
+        decrementSampledCount()
+      }
+      return Boolean(doSampling)
+    },
+    isCurrSampling => {
+      if (!isCurrSampling) {
+        _layer.dimension().samplingRatio(null)
+      }
+    }
+  )
 
   _layer.xAttr = createRasterLayerGetterSetter(_layer, null)
   _layer.yAttr = createRasterLayerGetterSetter(_layer, null)
@@ -215,147 +242,15 @@ export default function rasterLayerPointMixin (_layer) {
   const _scaledPopups = {}
   const _minMaxCache = {}
   let _cf = null
+
   _layer.crossfilter = function (cf) {
     if (!arguments.length) {
       return _cf
     }
-
     _cf = cf
-
     return _layer
   }
 
-  // _layer._mandatoryAttributes(_layer._mandatoryAttributes().concat(["xAttr", "yAttr"]))
-
-  const _renderProps = {
-        // NOTE: the x/y scales will be built by the primary chart
-    x: {
-      getQueryAttr () {
-        return _layer.xAttr()
-      },
-
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.x = {scale: chart._getXScaleName(), field: this.getQueryAttr()}
-      }
-    },
-
-    y: {
-      getQueryAttr () {
-        return _layer.yAttr()
-      },
-
-
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.y = {scale: chart._getYScaleName(), field: this.getQueryAttr()}
-      }
-    },
-    size: {
-      getQueryAttr () {
-        return _layer.sizeAttr()
-      },
-
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        const sizeScale = _layer.sizeScale()
-        const sizeAttr = this.getQueryAttr()
-        if (typeof sizeScale === "function") {
-          if (sizeAttr === null) {
-            throw new Error("Error trying to reference a size scale for raster layer " + layerName + ". The layer does not have sizeAttr defined. Please call the sizeAttr() setter to set a size attribute in the dimension for the layer")
-          }
-
-          const sizeScaleName = layerName + "_size"
-          let scaleRange = sizeScale.range()
-          debugger
-          if (pixelRatio !== 1) {
-            scaleRange = scaleRange.map((rangeVal) => rangeVal * pixelRatio)
-          }
-
-          scales.push({
-            name: sizeScaleName,
-            type: chart._determineScaleType(sizeScale),
-            domain: sizeScale.domain(),
-            range: scaleRange,
-            clamp: true
-          })
-
-                    // TODO(croot): do additional dynamic sizing here?
-          markPropObj.size = {scale: sizeScaleName, field: sizeAttr}
-        } else if (sizeAttr) {
-                    // TODO(croot): do dynamic additional dynamic sizing?
-          const sizeAttrType = typeof sizeAttr
-          if (sizeAttrType === "string") {
-                        // indicates that the sizeAttr directly references a value in the query
-            markPropObj.size = {field: sizeAttr}
-          } else if (sizeAttrType === "number") {
-            markPropObj.size = sizeAttr
-          } else {
-            throw new Error("Type error for the sizeAttr property for layer " + layerName + ". The sizeAttr must be a string (referencing an column in the query) or a number.")
-          }
-        } else if (_layer.dynamicSize() !== null && _layer.sampling() && lastFilteredSize(group.getCrossfilterId()) !== undefined) {
-          // @TODO don't tie this to sampling - meaning having a dynamicSize will also require count to be computed first by dc
-          console.log(lastFilteredSize(group.getCrossfilterId()), _layer.cap())
-          console.log(pixelRatio)
-          const cap = _layer.cap()
-          const size = Math.min(lastFilteredSize(group.getCrossfilterId()), cap)
-
-          const dynamicRScale = d3.scale.sqrt()
-            .domain(AUTOSIZE_DOMAIN_DEFAULTS)
-            .range(size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM ? AUTOSIZE_RANGE_MININUM : AUTOSIZE_RANGE_DEFAULTS)
-            .clamp(true)
-
-          _layer.dynamicSize(dynamicRScale)
-          console.log(Math.round(dynamicRScale(size) * pixelRatio))
-          markPropObj.size = Math.round(dynamicRScale(size) * pixelRatio)
-        } else {
-          markPropObj.size = _layer.defaultSize() * pixelRatio
-        }
-      }
-    },
-
-    fillColor: {
-      getQueryAttr () {
-        return _layer.fillColorAttr()
-      },
-
-      genVega (chart, layerName, group, pixelRatio, markPropObj, scales) {
-        const colorScale = _layer._buildFillColorScale(chart, layerName)
-        const colorAttr = this.getQueryAttr()
-        if (colorScale) {
-          if (!colorScale.name) {
-            throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The vega color scale does not have a name.")
-          }
-
-          if (colorScale.hasOwnProperty("accumulator")) {
-            markPropObj.fillColor = {
-              scale: colorScale.name,
-              value: 0
-            }
-          } else {
-            if (colorAttr === null) {
-              throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The layer does not have a fillColorAttr defined.")
-            }
-
-            markPropObj.fillColor = {
-              scale: colorScale.name,
-              field: colorAttr
-            }
-          }
-          scales.push(colorScale)
-        } else if (colorAttr) {
-          const colorAttrType = typeof colorAttr
-          if (colorAttrType === "string") {
-                        // indicates that the colorAttr directly references a value in the query
-            markPropObj.fillColor = {field: colorAttr}
-          } else {
-            throw new Error("Type error for the fillColorAttr property for layer " + layerName + ". The fillColorAttr must be a string (referencing an column in the query).")
-          }
-        } else {
-          markPropObj.fillColor = _layer.defaultFillColor()
-        }
-      }
-    }
-  }
-
-    // points require a cap
   _layer._requiresCap = function () {
     return true
   }
@@ -364,8 +259,12 @@ export default function rasterLayerPointMixin (_layer) {
     if (_layer.sampling() && _layer.dimension()) {
       const id = _layer.dimension().getCrossfilterId()
       const filterSize = lastFilteredSize(id)
-      if (filterSize == undefined) { _layer.dimension().samplingRatio(null) } else {
-        _layer.dimension().samplingRatio(Math.min(_layer.cap() / filterSize, 1.0))
+      if (filterSize == undefined) {
+        _layer.dimension().samplingRatio(null)
+      } else {
+        _layer
+          .dimension()
+          .samplingRatio(Math.min(_layer.cap() / filterSize, 1.0))
       }
     }
   }
@@ -411,45 +310,61 @@ export default function rasterLayerPointMixin (_layer) {
     return _vega
   }
 
+  const renderAttributes = ["x", "y", "size", "fillColor"]
+
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
     if (_vega && _vega.mark && _vega.mark.properties) {
-      for (const rndrProp in _renderProps) {
-        if (_renderProps.hasOwnProperty(rndrProp)) {
-          _layer._addQueryDrivenRenderPropToSet(popupColumnsSet, _vega.mark.properties, rndrProp)
-        }
-      }
+      renderAttributes.forEach(prop => {
+        _layer._addQueryDrivenRenderPropToSet(
+          popupColumnsSet,
+          _vega.mark.properties,
+          prop
+        )
+      })
     }
   }
 
   _layer._areResultsValidForPopup = function (results) {
-        // NOTE: it is implied that the _renderProps.[x/y].getQueryAttr()
-        // will be the field attr in the vega
-    if (results[_renderProps.x.getQueryAttr()] === undefined || results[_renderProps.y.getQueryAttr()] === undefined) {
+    if (typeof results.x === "undefined" || typeof results.y === "undefined") {
       return false
+    } else {
+      return true
     }
-    return true
   }
 
-  _layer._displayPopup = function (chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate) {
+  _layer._displayPopup = function (
+    chart,
+    parentElem,
+    data,
+    width,
+    height,
+    margins,
+    xscale,
+    yscale,
+    minPopupArea,
+    animate
+  ) {
     const rndrProps = {}
     const queryRndrProps = new Set()
     if (_vega && _vega.mark && _vega.mark.properties) {
       const propObj = _vega.mark.properties
-      for (const rndrProp in _renderProps) {
-        if (_renderProps.hasOwnProperty(rndrProp) && typeof propObj[rndrProp] === "object" && propObj[rndrProp].field && typeof propObj[rndrProp].field === "string") {
-          rndrProps[rndrProp] = propObj[rndrProp].field
-          queryRndrProps.add(propObj[rndrProp].field)
+      renderAttributes.forEach(prop => {
+        if (
+          typeof propObj[prop] === "object" && propObj[prop].field && typeof propObj[prop].field === "string"
+        ) {
+          rndrProps[prop] = propObj[prop].field
+          queryRndrProps.add(propObj[prop].field)
         }
-      }
+      })
     }
 
     const xPixel = xscale(data[rndrProps.x]) + margins.left
-    const yPixel = (height - yscale(data[rndrProps.y])) + margins.top
+    const yPixel = height - yscale(data[rndrProps.y]) + margins.top
 
     let dotSize = _layer.getSizeVal(data[rndrProps.size])
     let scale = 1
     const scaleRatio = minPopupArea / (dotSize * dotSize)
-    const isScaled = (scaleRatio > 1)
+    const isScaled = scaleRatio > 1
     if (isScaled) {
       scale = Math.sqrt(scaleRatio)
       dotSize = dotSize * scale
@@ -464,12 +379,12 @@ export default function rasterLayerPointMixin (_layer) {
       strokeWidth = popupStyle.strokeWidth
     }
 
-    const wrapDiv = parentElem.append("div")
-                                .attr("class", _point_wrap_class)
+    const wrapDiv = parentElem.append("div").attr("class", _point_wrap_class)
 
-    const pointDiv = wrapDiv.append("div")
-                              .attr("class", _point_class)
-                              .style({left: xPixel + "px", top: yPixel + "px"})
+    const pointDiv = wrapDiv
+      .append("div")
+      .attr("class", _point_class)
+      .style({left: xPixel + "px", top: yPixel + "px"})
 
     if (animate) {
       if (isScaled) {
@@ -481,11 +396,12 @@ export default function rasterLayerPointMixin (_layer) {
 
     _scaledPopups[chart] = isScaled
 
-    const gfxDiv = pointDiv.append("div")
-                             .attr("class", _point_gfx_class)
-                             .style("background", bgColor)
-                             .style("width", dotSize + "px")
-                             .style("height", dotSize + "px")
+    const gfxDiv = pointDiv
+      .append("div")
+      .attr("class", _point_gfx_class)
+      .style("background", bgColor)
+      .style("width", dotSize + "px")
+      .style("height", dotSize + "px")
 
     if (strokeColor) {
       gfxDiv.style("border-color", strokeColor)
@@ -497,7 +413,12 @@ export default function rasterLayerPointMixin (_layer) {
 
     return {
       rndrPropSet: queryRndrProps,
-      bounds: [xPixel - dotSize / 2, xPixel + dotSize / 2, yPixel - dotSize / 2, yPixel + dotSize / 2]
+      bounds: [
+        xPixel - dotSize / 2,
+        xPixel + dotSize / 2,
+        yPixel - dotSize / 2,
+        yPixel + dotSize / 2
+      ]
     }
   }
 

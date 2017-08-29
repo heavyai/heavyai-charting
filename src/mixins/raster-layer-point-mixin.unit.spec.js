@@ -1,6 +1,9 @@
-import { expect } from "chai"
+import chai, { expect } from "chai"
+import spies from "chai-spies"
 import rasterLayer from "./raster-layer"
 import rasterLayerPointMixin from "./raster-layer-heatmap-mixin"
+
+chai.use(spies)
 
 describe("rasterLayerPointMixin", () => {
   it("should have the correct getters/setters", () => {
@@ -336,6 +339,98 @@ describe("rasterLayerPointMixin", () => {
 
       })
     })
+  })
 
+  describe("getProjections", () => {
+    it("should return project statements", () => {
+      const layer = rasterLayer("points")
+      layer.setState({
+        mark: "point",
+        encoding: {
+          x: {
+            type: "quantitative",
+            field: "lon"
+          },
+          y: {
+            type: "quantitative",
+            field: "lat"
+          },
+          size: 11,
+          color: {
+            type: "ordinal",
+            field: "party",
+            domain: ["D", "R", "I"],
+            range: ["#115f9a", "#1984c5", "#22a7f0"]
+          }
+        }
+      })
+
+      expect(layer.getProjections()).to.deep.equal([
+        "conv_4326_900913_x(lon) as x",
+        "conv_4326_900913_y(lat) as y",
+        "party as color"
+      ])
+    })
+  })
+
+  describe("popup methods", () => {
+    const cf = {
+      getTable: () => ["flights"],
+      getFilterString: () => ""
+    }
+
+    const chart = {
+      _getPixelRatio: () => 1
+    }
+
+    describe("_addRenderAttrsToPopupColumnSet", () => {
+      const layer = rasterLayer("points")
+      layer.setState({
+        transform: [
+          {
+            type: "limit",
+            row: 500000
+          }
+        ],
+        mark: "point",
+        encoding: {
+          x: {
+            type: "quantitative",
+            field: "lon"
+          },
+          y: {
+            type: "quantitative",
+            field: "lat"
+          },
+          size: "auto",
+          color: {
+            type: "ordinal",
+            field: "lang",
+            domain: ["d", "r"],
+            range: ["red", "blue"]
+          }
+        }
+      })
+      layer.crossfilter(cf)
+      layer._genVega(chart)
+      layer._addQueryDrivenRenderPropToSet = chai.spy(a => console.log(a))
+      it("should", () => {
+        const set = {}
+        layer._addRenderAttrsToPopupColumnSet({}, set)
+        const vega = layer._genVega(chart)
+        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "x")
+        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "y")
+        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "size")
+        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "fillColor")
+      })
+    })
+
+    describe("_areResultsValidForPopup", () => {
+      it("should", () => {
+        const layer = rasterLayer("points")
+        expect(layer._areResultsValidForPopup({})).to.equal(false)
+        expect(layer._areResultsValidForPopup({x: 1, y: 1})).to.equal(true)
+      })
+    })
   })
 })

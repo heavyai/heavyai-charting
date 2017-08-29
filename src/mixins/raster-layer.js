@@ -244,8 +244,9 @@ export default function rasterLayer (layerType) {
         // data structure, but probably not an issue given the amount
         // of popup col attrs to iterate through is small
     const dim = _layer.group() || _layer.dimension()
-    if (dim) {
-      const projExprs = dim.getProjectOn(true) // handles the group and dimension case
+    if (dim || _layer.layerType() === "points") {
+      const projExprs = _layer.layerType() === "points" ?
+        _layer.getProjections() : dim.getProjectOn(true) // handles the group and dimension case
       const regex = /^\s*(\S+)\s+as\s+(\S+)/i
       const funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i
       for (let i = 0; i < projExprs.length; ++i) {
@@ -253,11 +254,13 @@ export default function rasterLayer (layerType) {
         let regexRtn = projExpr.match(regex)
         if (regexRtn) {
           if (regexRtn[2] === colAttr) {
+            // debugger
             popupColSet.delete(colAttr)
             colAttr = projExpr
             break
           }
         } else if ((regexRtn = projExpr.match(funcRegex)) && regexRtn[2] === colAttr) {
+          // debugger
           popupColSet.delete(colAttr)
           colAttr = projExpr
           break
@@ -266,6 +269,7 @@ export default function rasterLayer (layerType) {
         }
       }
     }
+
 
     return popupColSet.add(colAttr)
   }
