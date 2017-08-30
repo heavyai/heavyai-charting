@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    .title {
+      font-weight: bold;
+      text-align:center;
+    }
+    .mapd{
+      position: relative;
+      top: 2px;
+    }
+    .data-count{
+      padding-right:20px;
+    }
+    .filter-count{
+      font-weight: bold;
+      color:  #45B1E8;
+    }
+    #control {
+      margin: 25px;
+      width: 25%;
+      display: inline-block;
+    }
+    .map {
+      width: 50%
+    }
+    #heatmap {
+      width: 900px;
+      height: 600px;
+    }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <div id="heatmap"></div>
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+  <script src="assets/app.bundle.js"></script>
+  <script src="assets/simplegeoheat.bundle.js"></script>
+  <!-- <script src="assets/geoheat.bundle.js"></script> -->
+</body>
+</html>

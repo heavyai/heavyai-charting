@@ -12,7 +12,8 @@ module.exports = {
     example4: path.resolve(__dirname, "./example4.js"),
     multilayermap: path.resolve(__dirname, "./exampleMultiLayerMap.js"),
     multilayerscatterplot: path.resolve(__dirname, "./exampleMultiLayerScatterplot.js"),
-    geoheat: path.resolve(__dirname, "./exampleGeoHeat.js")
+    geoheat: path.resolve(__dirname, "./exampleGeoHeat.js"),
+    simplegeoheat: path.resolve(__dirname, "./simpleGeoHeat.js")
   },
   devtool: "source-map",
   output: {
@@ -27,7 +28,7 @@ module.exports = {
         include: [
           path.resolve(__dirname, "./example3.js"),
           path.resolve(__dirname, "./exampleMultiLayerMap.js"),
-          path.resolve(__dirname, "./exampleMultiLayerScatterplot.js"),
+          path.resolve(__dirname, "./exampleMultiLayerScatterplot.js")
         ],
         loader: "script-loader"
       },
@@ -36,7 +37,8 @@ module.exports = {
         include: [
           path.resolve(__dirname, "../src"),
           path.resolve(__dirname, "../index.js"),
-          path.resolve(__dirname, "./exampleGeoHeat.js")
+          path.resolve(__dirname, "./exampleGeoHeat.js"),
+          path.resolve(__dirname, "./simpleGeoHeat.js")
         ],
         loader: "babel-loader"
       },
