@@ -113,6 +113,16 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return layer
   }
 
+  _chart.popAllLayers = function() {
+    const poppedLayers = _layers.map(layerName => {
+      const layer = _layerNames[layerName]
+      delete _layerNames[layerName]
+      return layer
+    })
+    _layers = []
+    return poppedLayers
+  }
+
   _chart.getLayer = function(layerName) {
     return _layerNames[layerName]
   }
@@ -202,8 +212,8 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart.setDataAsync((group, callbacks) => {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
-    const heatLayers = _layers.filter(
-      layer => _chart.getLayer(layer).type === "heatmap"
+    const heatLayers = _chart.getLayerNames().filter(
+      layerName => _chart.getLayer(layerName).type === "heatmap"
     )
 
     if (heatLayers.length) {
@@ -220,7 +230,6 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
           }
         })
       ).then(allBounds => {
-        console.log(allBounds)
         _chart._vegaSpec = genLayeredVega(_chart)
         const nonce = _chart
           .con()

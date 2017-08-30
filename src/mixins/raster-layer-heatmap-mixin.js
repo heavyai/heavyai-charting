@@ -70,10 +70,10 @@ export default function rasterLayerHeatmapMixin (_layer) {
       type: "root",
       source: table,
       transform: [
-        {
+        (filter && {
           type: "filter",
           expr: filter
-        },
+        }),
         {
           type: "pixel_bin",
           width,
