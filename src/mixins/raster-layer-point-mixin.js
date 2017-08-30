@@ -55,9 +55,10 @@ function getColor (color, layerName) {
   }
 }
 
-function getTransforms (table, filter, {x, y, size, color}) {
+function getTransforms (table, filter, {encoding: {x, y, size, color}, transform}) {
 
   const transforms = [
+    ...transform,
     {
       type: "project",
       expr: x.field,
@@ -168,7 +169,7 @@ export default function rasterLayerPointMixin (_layer) {
   }
 
   _layer.getProjections = function () {
-    return getTransforms("", "", state.encoding)
+    return getTransforms("", "", state)
       .filter(transform => transform.type === "project" && transform.hasOwnProperty("as"))
       .map(projection => parser.parseTransform({select: []}, projection))
       .map(sql => sql.select[0])
@@ -188,7 +189,7 @@ export default function rasterLayerPointMixin (_layer) {
         sql: parser.writeSQL({
           type: "root",
           source: table,
-          transform: getTransforms(table, filter, state.encoding)
+          transform: getTransforms(table, filter, state)
         })
       },
       scales: getScales(state.encoding, layerName),

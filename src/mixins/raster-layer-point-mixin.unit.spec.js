@@ -58,6 +58,7 @@ describe("rasterLayerPointMixin", () => {
       it("should properly transform manual sizing", () => {
         const layer = rasterLayer("points")
         layer.setState({
+          transform: [],
           mark: "point",
           encoding: baseEncoding
         })
@@ -149,6 +150,7 @@ describe("rasterLayerPointMixin", () => {
       it("should properly transform field sizing", () => {
         const layer = rasterLayer("points")
         layer.setState({
+          transform: [],
           mark: "point",
           encoding: Object.assign({}, baseEncoding, {
             size: {
@@ -214,6 +216,7 @@ describe("rasterLayerPointMixin", () => {
 
         const layer = rasterLayer("points")
         layer.setState({
+          transform: [],
           mark: "point",
           encoding: Object.assign({}, baseEncoding, {
             color: {
@@ -291,6 +294,7 @@ describe("rasterLayerPointMixin", () => {
       it("should properly transform quantitative and ordinal coloring", () => {
         const layer = rasterLayer("points")
         layer.setState({
+          transform: [],
           mark: "point",
           encoding: Object.assign({}, baseEncoding, {
             color: {
@@ -352,6 +356,7 @@ describe("rasterLayerPointMixin", () => {
     it("should return project statements", () => {
       const layer = rasterLayer("points")
       layer.setState({
+        transform: [],
         mark: "point",
         encoding: {
           x: {
