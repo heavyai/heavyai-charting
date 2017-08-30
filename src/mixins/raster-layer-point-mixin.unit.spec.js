@@ -64,7 +64,8 @@ describe("rasterLayerPointMixin", () => {
 
         expect(layer.__genVega({
           table: "tweets_nov_feb",
-          filter: "lon = 100"
+          filter: "lon = 100",
+          layerName: "points"
         })).to.deep.equal({
           data: {
             name: "points",
@@ -107,7 +108,8 @@ describe("rasterLayerPointMixin", () => {
           table: "tweets_nov_feb",
           filter: "lon = 100",
           lastFilteredSize: 13884,
-          pixelRatio: 1
+          pixelRatio: 1,
+          layerName: "points"
         }).mark.properties.size).to.equal(4)
 
         layer.setState({
@@ -122,7 +124,8 @@ describe("rasterLayerPointMixin", () => {
           table: "tweets_nov_feb",
           filter: "lon = 100",
           lastFilteredSize: 223509,
-          pixelRatio: 1
+          pixelRatio: 1,
+          layerName: "points"
         }).mark.properties.size).to.equal(2)
 
         layer.setState({
@@ -137,7 +140,8 @@ describe("rasterLayerPointMixin", () => {
           table: "tweets_nov_feb",
           filter: "lon = 100",
           lastFilteredSize: 1947993,
-          pixelRatio: 1
+          pixelRatio: 1,
+          layerName: "points"
         }).mark.properties.size).to.equal(1)
 
       })
@@ -159,6 +163,7 @@ describe("rasterLayerPointMixin", () => {
         expect(layer.__genVega({
           table: "tweets_nov_feb",
           filter: "lon = 100",
+          layerName: "points"
         })).to.deep.equal({
           data: {
             name: "points",
@@ -221,6 +226,7 @@ describe("rasterLayerPointMixin", () => {
         expect(layer.__genVega({
           table: "tweets_nov_feb",
           filter: "lon = 100",
+          layerName: "points"
         })).to.deep.equal({
           data: {
             name: "points",
@@ -299,6 +305,7 @@ describe("rasterLayerPointMixin", () => {
         expect(layer.__genVega({
           table: "tweets_nov_feb",
           filter: "lon = 100",
+          layerName: "points"
         })).to.deep.equal({
           data: {
             name: "points",
@@ -376,7 +383,8 @@ describe("rasterLayerPointMixin", () => {
   describe("popup methods", () => {
     const cf = {
       getTable: () => ["flights"],
-      getFilterString: () => ""
+      getFilterString: () => "",
+      getId: () => 1
     }
 
     const chart = {

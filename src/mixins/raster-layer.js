@@ -254,13 +254,11 @@ export default function rasterLayer (layerType) {
         let regexRtn = projExpr.match(regex)
         if (regexRtn) {
           if (regexRtn[2] === colAttr) {
-            // debugger
             popupColSet.delete(colAttr)
             colAttr = projExpr
             break
           }
         } else if ((regexRtn = projExpr.match(funcRegex)) && regexRtn[2] === colAttr) {
-          // debugger
           popupColSet.delete(colAttr)
           colAttr = projExpr
           break
