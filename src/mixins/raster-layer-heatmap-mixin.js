@@ -98,7 +98,6 @@ export default function rasterLayerHeatmapMixin (_layer) {
 
   _layer._genVega = function ({table, width, height, min, max, filter, neLat, zoom, domain}) {
     const {markWidth, markHeight} = getMarkSize({width, neLat, zoom, domain})
-    console.log(555, _layer.genSQL({table, width, height, min, max, filter, neLat, zoom, domain}))
     return {
       width,
       height,
