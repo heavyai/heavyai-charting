@@ -121,12 +121,10 @@
     .rasterLayer("points")
     .crossfilter(crossFilter)
     .setState({
-      transform: [
-        {
-          type: "limit",
-          row: 500000
-        }
-      ],
+      transform: {
+        sample: true,
+        limit: 500000
+      },
       mark: "point",
       encoding: {
         x: {
@@ -146,8 +144,6 @@
         }
       }
     })
-    .cap(500000)
-    .sampling(true)
     .xDim(xDim)
     .yDim(yDim)
     .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
@@ -436,6 +432,7 @@
       .user("mapd")
       .password("HyperInteractive")
       .connect(function(error, con) {
+        con.logging(true)
         // Get a table from the database
         var tableName = 'tweets_nov_feb';
         // A CrossFilter instance is used for generating the raw query strings for your MapdCon.

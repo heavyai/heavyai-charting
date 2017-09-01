@@ -163,12 +163,10 @@ document.addEventListener("DOMContentLoaded", function init() {
                         .xDim(xDim2)
                         .yDim(yDim2)
                         .setState({
-                          transform: [
-                            {
-                              type: "limit",
-                              row: 500000
-                            }
-                          ],
+                          transform: {
+                            sample: true,
+                            limit: 500000
+                          },
                           mark: "point",
                           encoding: {
                             x: {
@@ -193,10 +191,6 @@ document.addEventListener("DOMContentLoaded", function init() {
                             }
                           }
                         })                                                   // of a tweet is not found in the domain fo the scale
-                        .cap(500000)              // set a max number of points to render. This is required
-                                                  // for point layers.
-                        .sampling(true)           // set sampling so you get a more equal distribution
-                                                  // of the points.
                         .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
                                                   // setup the columns to show when a point is properly hit-tested
                                                   // against
@@ -238,12 +232,10 @@ document.addEventListener("DOMContentLoaded", function init() {
     var pointLayer3 = dc.rasterLayer("points")
                         .crossfilter(pointcfLayer3)
                         .setState({
-                          transform: [
-                            {
-                              type: "limit",
-                              row: 500000
-                            }
-                          ],
+                          transform: {
+                            sample: true,
+                            limit: 500000
+                          },
                           mark: "point",
                           encoding: {
                             x: {
@@ -263,13 +255,8 @@ document.addEventListener("DOMContentLoaded", function init() {
                             }
                           }
                         })
-                        .xDim(xDim3)              // add the x dimension
-                        .yDim(yDim3)              // add the y dimension
-                                                  // to the number of points drawn
-                        .cap(500000)              // set a cap for the # of points to draw, this is required
-                                                  // for point layers
-                        .sampling(true)           // activate sampling so the points rendered are evenly
-                                                  // distributed
+                        .xDim(xDim3)
+                        .yDim(yDim3)
                         .popupColumns(['amount', 'recipient_party', 'recipient_name'])
                                                   // setup columns to show when a point is properly hit-tested
 

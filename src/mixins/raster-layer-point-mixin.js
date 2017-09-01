@@ -22,10 +22,7 @@ function getSizing (sizeAttr, cap, lastFilteredSize, pixelRatio, layerName) {
       field: "size"
     }
   } else if (sizeAttr === "auto") {
-    console.log(lastFilteredSize, cap)
     const size = Math.min(lastFilteredSize, cap)
-    console.log(size)
-    console.log(pixelRatio)
     const dynamicRScale = d3.scale
       .sqrt()
       .domain(AUTOSIZE_DOMAIN_DEFAULTS)
@@ -55,10 +52,13 @@ function getColor (color, layerName) {
   }
 }
 
-function getTransforms (table, filter, {encoding: {x, y, size, color}, transform}) {
-
+function getTransforms (
+  table,
+  filter,
+  {encoding: {x, y, size, color}, transform},
+  lastFilteredSize
+) {
   const transforms = [
-    ...transform,
     {
       type: "project",
       expr: x.field,
@@ -70,6 +70,21 @@ function getTransforms (table, filter, {encoding: {x, y, size, color}, transform
       as: "y"
     }
   ]
+
+  if (typeof transform.limit === "number") {
+    transforms.push({
+      type: "limit",
+      row: transform.limit
+    })
+    if (transform.sample) {
+      transforms.push({
+        type: "sample",
+        method: "multiplicative",
+        size: lastFilteredSize,
+        limit: transform.limit
+      })
+    }
+  }
 
   if (typeof filter === "string" && filter.length) {
     transforms.push({
@@ -161,6 +176,10 @@ export default function rasterLayerPointMixin (_layer) {
       state = setter
     }
 
+    if (!state.hasOwnProperty("transform")) {
+      state.transform = {}
+    }
+
     return _layer
   }
 
@@ -169,27 +188,34 @@ export default function rasterLayerPointMixin (_layer) {
   }
 
   _layer.getProjections = function () {
-    return getTransforms("", "", state)
-      .filter(transform => transform.type === "project" && transform.hasOwnProperty("as"))
+    return getTransforms(
+      "",
+      "",
+      state,
+      lastFilteredSize(_layer.crossfilter().getId())
+    )
+      .filter(
+        transform =>
+          transform.type === "project" && transform.hasOwnProperty("as")
+      )
       .map(projection => parser.parseTransform({select: []}, projection))
       .map(sql => sql.select[0])
   }
 
-  _layer.__genVega = function ({table, filter, lastFilteredSize, pixelRatio, layerName}) {
-    console.log(getSizing(
-      state.encoding.size,
-      state.transform && state.transform.length && state.transform[0].row,
-      lastFilteredSize,
-      pixelRatio,
-      layerName
-    ))
+  _layer.__genVega = function ({
+    table,
+    filter,
+    lastFilteredSize,
+    pixelRatio,
+    layerName
+  }) {
     return {
       data: {
         name: layerName,
         sql: parser.writeSQL({
           type: "root",
           source: table,
-          transform: getTransforms(table, filter, state)
+          transform: getTransforms(table, filter, state, lastFilteredSize)
         })
       },
       scales: getScales(state.encoding, layerName),
@@ -209,7 +235,7 @@ export default function rasterLayerPointMixin (_layer) {
           },
           size: getSizing(
             state.encoding.size,
-            state.transform && state.transform.length && state.transform[0].row,
+            state.transform && state.transform.limit,
             lastFilteredSize,
             pixelRatio,
             layerName
@@ -228,24 +254,6 @@ export default function rasterLayerPointMixin (_layer) {
   createVegaAttrMixin(_layer, "size", 3, 1, true)
 
   _layer.dynamicSize = createRasterLayerGetterSetter(_layer, null)
-
-  _layer.sampling = createRasterLayerGetterSetter(
-    _layer,
-    false,
-    (doSampling, isCurrSampling) => {
-      if (doSampling && !isCurrSampling) {
-        incrementSampledCount()
-      } else if (!doSampling && isCurrSampling) {
-        decrementSampledCount()
-      }
-      return Boolean(doSampling)
-    },
-    isCurrSampling => {
-      if (!isCurrSampling) {
-        _layer.dimension().samplingRatio(null)
-      }
-    }
-  )
 
   _layer.xAttr = createRasterLayerGetterSetter(_layer, null)
   _layer.yAttr = createRasterLayerGetterSetter(_layer, null)
@@ -268,21 +276,7 @@ export default function rasterLayerPointMixin (_layer) {
   }
 
   _layer._requiresCap = function () {
-    return true
-  }
-
-  _layer.setSample = function () {
-    if (_layer.sampling() && _layer.dimension()) {
-      const id = _layer.dimension().getCrossfilterId()
-      const filterSize = lastFilteredSize(id)
-      if (filterSize == undefined) {
-        _layer.dimension().samplingRatio(null)
-      } else {
-        _layer
-          .dimension()
-          .samplingRatio(Math.min(_layer.cap() / filterSize, 1.0))
-      }
-    }
+    return false
   }
 
   _layer.xRangeFilter = function (range) {

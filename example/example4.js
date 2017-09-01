@@ -108,12 +108,10 @@ document.addEventListener("DOMContentLoaded", function init() {
                         .xDim(xDim)
                         .yDim(yDim)
                         .setState({
-                          transform: [
-                            {
-                              type: "limit",
-                              row: 500000
-                            }
-                          ],
+                          transform: {
+                            sample: true,
+                            limit: 500000
+                          },
                           mark: "point",
                           encoding: {
                             x: {
@@ -138,9 +136,7 @@ document.addEventListener("DOMContentLoaded", function init() {
                             }
                           }
                         })
-                        .cap(500000)
                         .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
-                        .sampling(true)
 
       pointMapChart =  dc.rasterChart(parent, false)
                           .con(con)

@@ -54,11 +54,41 @@ describe("rasterLayerPointMixin", () => {
       color: "#27aeef"
     }
 
+    describe("sampling", () => {
+      it("should set sampling transform", () => {
+        const layer = rasterLayer("points")
+
+        layer.setState({
+          transform: {
+            limit: 2000000,
+            sample: true
+          },
+          mark: "point",
+          encoding: baseEncoding
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+          lastFilteredSize: 1189279639,
+          pixelRatio: 1,
+          layerName: "points"
+        }).data.sql).to.equal(
+          "SELECT conv_4326_900913_x(lon) as x, "
+          + "conv_4326_900913_y(lat) as y, "
+          + "tweets_nov_feb.rowid FROM tweets_nov_feb "
+          + "WHERE MOD(tweets_nov_feb.rowid * 265445761, 4294967296) < 7222804 "
+          + "AND (lon = 100) LIMIT 2000000"
+        )
+
+      })
+    })
+
     describe("Sizing prop", () => {
       it("should properly transform manual sizing", () => {
         const layer = rasterLayer("points")
         layer.setState({
-          transform: [],
+          transform: {},
           mark: "point",
           encoding: baseEncoding
         })
@@ -98,7 +128,7 @@ describe("rasterLayerPointMixin", () => {
         const layer = rasterLayer("points")
 
         layer.setState({
-          transform: [{type: "limit", row: 2000000}],
+          transform: {limit: 2000000},
           mark: "point",
           encoding: Object.assign({}, baseEncoding, {
             size: "auto"
@@ -114,7 +144,7 @@ describe("rasterLayerPointMixin", () => {
         }).mark.properties.size).to.equal(4)
 
         layer.setState({
-          transform: [{type: "limit", row: 2000000}],
+          transform: {limit: 2000000},
           mark: "point",
           encoding: Object.assign({}, baseEncoding, {
             size: "auto"
@@ -130,7 +160,7 @@ describe("rasterLayerPointMixin", () => {
         }).mark.properties.size).to.equal(2)
 
         layer.setState({
-          transform: [{type: "limit", row: 2000000}],
+          transform: {limit: 2000000},
           mark: "point",
           encoding: Object.assign({}, baseEncoding, {
             size: "auto"
@@ -150,7 +180,7 @@ describe("rasterLayerPointMixin", () => {
       it("should properly transform field sizing", () => {
         const layer = rasterLayer("points")
         layer.setState({
-          transform: [],
+          transform: {},
           mark: "point",
           encoding: Object.assign({}, baseEncoding, {
             size: {
@@ -216,7 +246,7 @@ describe("rasterLayerPointMixin", () => {
 
         const layer = rasterLayer("points")
         layer.setState({
-          transform: [],
+          transform: {},
           mark: "point",
           encoding: Object.assign({}, baseEncoding, {
             color: {
@@ -294,7 +324,7 @@ describe("rasterLayerPointMixin", () => {
       it("should properly transform quantitative and ordinal coloring", () => {
         const layer = rasterLayer("points")
         layer.setState({
-          transform: [],
+          transform: {},
           mark: "point",
           encoding: Object.assign({}, baseEncoding, {
             color: {
@@ -355,8 +385,13 @@ describe("rasterLayerPointMixin", () => {
   describe("getProjections", () => {
     it("should return project statements", () => {
       const layer = rasterLayer("points")
+
+      layer.crossfilter({
+        getId: () => 1
+      })
+
       layer.setState({
-        transform: [],
+        transform: {},
         mark: "point",
         encoding: {
           x: {

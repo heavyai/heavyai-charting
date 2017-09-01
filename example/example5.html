@@ -89,12 +89,10 @@
     var pointLayer = dc.rasterLayer("points")
                        .crossfilter(crossFilter)
                        .setState({
-                         transform: [
-                           {
-                             type: "limit",
-                             row: 500000
-                           }
-                         ],
+                         transform: {
+                           sample: true,
+                           limit: 500000
+                         },
                          mark: "point",
                          encoding: {
                            x: {
@@ -119,8 +117,6 @@
                            }
                          }
                        })
-                       .cap(500000)
-                       .sampling(true)
                        .xDim(xDim)
                        .yDim(yDim)
                        .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
