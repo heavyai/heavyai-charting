@@ -169,6 +169,7 @@ export default function rasterLayer (layerType) {
       min: chart.conv4326To900913(chart._minCoord),
       max: chart.conv4326To900913(chart._maxCoord),
       filter: _layer.crossfilter().getFilterString(),
+      globalFilter: _layer.crossfilter().getGlobalFilterString(),
       neLat: chart._maxCoord[1],
       zoom: chart.zoom(),
       domain: chart.colors().domain()
@@ -177,7 +178,6 @@ export default function rasterLayer (layerType) {
 
   _layer.getColorDomain = function (chart) {
     const subquery = _layer.genSQL(genHeatConfigFromChart(chart))
-
     const sql = `SELECT MIN(c.color) as minimum, MAX(c.color) as maximum, STDDEV(c.color) as deviation, AVG(c.color) as mean FROM (${subquery}) as c`
 
     return new Promise ((resolve, reject) => {
