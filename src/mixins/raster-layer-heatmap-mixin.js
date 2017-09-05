@@ -52,7 +52,7 @@ export default function rasterLayerHeatmapMixin (_layer) {
     return JSON.parse(JSON.stringify(state))
   }
 
-  function getMarkSize ({width, neLat, zoom, domain}) {
+  function getMarkSize ({width, neLat, zoom}) {
     const pixelSize = state.encoding.size.type === "manual" ? state.encoding.size.value : getPixelSize(neLat, width, zoom)
     const numBinsX = Math.round(width / pixelSize)
     const markWidth = width / numBinsX
@@ -63,16 +63,30 @@ export default function rasterLayerHeatmapMixin (_layer) {
     }
   }
 
-  _layer.genSQL = function ({table, width, height, min, max, filter, neLat, zoom, domain}) {
+  _layer.genSQL = function ({table, width, height, min, max, filter, globalFilter, neLat, zoom, domain}) {
     const {markWidth, markHeight} = getMarkSize({width, neLat, zoom, domain})
+
+    const transforms = []
+
+    if (typeof filter === "string" && filter.length) {
+      transforms.push({
+        type: "filter",
+        expr: filter
+      })
+    }
+
+    if (typeof globalFilter === "string" && globalFilter.length) {
+      transforms.push({
+        type: "filter",
+        expr: globalFilter
+      })
+    }
+
     return parser.writeSQL({
       type: "root",
       source: table,
       transform: [
-        {
-          type: "filter",
-          expr: filter
-        },
+        ...transforms,
         {
           type: "pixel_bin",
           width,
@@ -96,7 +110,7 @@ export default function rasterLayerHeatmapMixin (_layer) {
     })
   }
 
-  _layer._genVega = function ({table, width, height, min, max, filter, neLat, zoom, domain}) {
+  _layer._genVega = function ({table, width, height, min, max, filter, globalFilter, neLat, zoom, domain}) {
     const {markWidth, markHeight} = getMarkSize({width, neLat, zoom, domain})
     return {
       width,
@@ -104,7 +118,7 @@ export default function rasterLayerHeatmapMixin (_layer) {
       data:
       {
         name: "heatmap_query",
-        sql: _layer.genSQL({table, width, height, min, max, filter, neLat, zoom, domain})
+        sql: _layer.genSQL({table, width, height, min, max, filter, globalFilter, neLat, zoom, domain})
       },
       scales: [
         {
@@ -141,7 +155,7 @@ export default function rasterLayerHeatmapMixin (_layer) {
     }
   }
 
-  _layer._destroyLayer = function (chart) {
+  _layer._destroyLayer = function () {
     const xDim = _layer.xDim()
     if (xDim) {
       xDim.dispose()
