@@ -31,6 +31,8 @@ function getSizing (sizeAttr, cap, lastFilteredSize, pixelRatio, layerName) {
       )
       .clamp(true)
     return Math.round(dynamicRScale(size) * pixelRatio)
+  } else {
+    return null
   }
 }
 

@@ -96,23 +96,39 @@ document.addEventListener("DOMContentLoaded", function init() {
 
     // setup the first layer, the zipcode polygons
     var polyLayer1 = dc.rasterLayer("polys")
-                       .dimension(polyDim1)
-                       .group(polyGrp1)
-                       .cap(Infinity)  // We can add a cap if we want.
-                       .fillColorScale(polyFillColorScale)  // set the fill color scale
-                       .fillColorAttr('avgContrib')   // set the driving attribute for the fill color scale, in
-                                                      // this case, the average contribution
-                       .defaultFillColor("green")     // Set a default fill color. This is unnecessary here
-                                                      // as the quantize scale will catch all possible values
-
-                       // .defaultStrokeColor("red")  // can optionally set up stroking of the polys to see
-                                                      // the boundaries of the zipcodes. This requires
-                                                      // a stroke color and a stroke width. Stroke width is
-                                                      // in pixels.
-                       // .defaultStrokeWidth(4)
-                       .popupColumns(['avgContrib', 'ZCTA5CE10']) // setup the columns we want to show when
+                        .crossfilter(polycfLayer1)
+                        .setState({
+                          data: [
+                            {
+                              table: "contributions_donotmodify",
+                              attr: "contributor_zipcode"
+                            }, {
+                              table: "zipcodes",
+                              attr: "ZCTA5CE10"
+                            }
+                          ],
+                          transform: {
+                            limit: 1000000
+                          },
+                          mark: {
+                            type: "poly",
+                            strokeColor: "white",
+                            strokeWidth: 0,
+                            lineJoin: "miter",
+                            miterLimit: 10
+                          },
+                          encoding: {
+                            color: {
+                              type: "quantitative",
+                              aggregrate: "AVG(contributions_donotmodify.amount)",
+                              domain: [0, 5000],
+                              range: polyColorRange
+                            }
+                          }
+                        })
+                       .popupColumns(['color', 'ZCTA5CE10']) // setup the columns we want to show when
                                                                   // hit-testing the polygons
-                       .popupColumnsMapped({avgContrib: "avg contribution", ZCTA5CE10: 'zipcode'})
+                       .popupColumnsMapped({color: "avg contribution", ZCTA5CE10: 'zipcode'})
                                                                   // setup a map so rename the popup columns
                                                                   // to something readable.
 

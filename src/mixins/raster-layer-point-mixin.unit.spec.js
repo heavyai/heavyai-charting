@@ -1,7 +1,6 @@
 import chai, { expect } from "chai"
 import spies from "chai-spies"
 import rasterLayer from "./raster-layer"
-import rasterLayerPointMixin from "./raster-layer-heatmap-mixin"
 
 chai.use(spies)
 

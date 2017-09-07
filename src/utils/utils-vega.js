@@ -42,7 +42,6 @@ export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, us
 
         return rtnObj
       } else if (layerObj.densityAccumulatorEnabled()) {
-        console.log(layerObj.defaultFillColor())
         const
           colorScaleName = layerName + "_" + attrName,
           colorsToUse = layerObj.defaultFillColor(),
