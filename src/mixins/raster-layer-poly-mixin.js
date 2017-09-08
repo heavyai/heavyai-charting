@@ -400,7 +400,7 @@ export default function rasterLayerPolyMixin (_layer) {
   }
 
   _layer._destroyLayer = function (chart) {
-    deleteCanvas(chart)
+    // deleteCanvas(chart)
   }
 
   return _layer
