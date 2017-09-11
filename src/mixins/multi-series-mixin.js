@@ -53,8 +53,12 @@ function processMultiSeriesResults (results) {
 }
 
 function selectWithCase (dimension, values) {
-  const set = values.map(val => `'${val.replace(/'/, "''")}'`).join(",")
-  return `CASE when ${dimension} IN (${set}) then ${dimension} ELSE 'other' END`
+  if (dimension.slice(0, 9) === "CASE when") {
+    return dimension
+  } else {
+    const set = values.map(val => `'${val.replace(/'/, "''")}'`).join(",")
+    return `CASE when ${dimension} IN (${set}) then ${dimension} ELSE 'other' END`
+  }
 }
 
 function setDimensionsWithColumns (columns, selected) {
@@ -150,12 +154,11 @@ export default function multiSeriesMixin (chart) {
               hasSelected ? currentSelected : chart.series().values().slice(0, TOP)
             )
 
-          if (chart.rangeChart()) {
-            chart
-              .group()
-              .dimension()
-              .set(setDimensionsWithColumns(columns, chart.series().selected()))
-          }
+          chart
+            .group()
+            .dimension()
+            .set(setDimensionsWithColumns(columns, chart.series().selected()))
+
           chart.group().dimension().multiDim(false)
 
           return chart
