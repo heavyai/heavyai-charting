@@ -396,7 +396,7 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
   }
 
   _chart.isLoaded = function () {
-    return _map._loaded && _map.style._loaded
+    return _map._loaded && _map.style && _map.style._loaded
   }
 
   function initMap () {
