@@ -52,7 +52,7 @@ export default function rasterLayerPolyMixin (_layer) {
 
   let state = null
   let _vega = null
-  let _cf = null
+  const _cf = null
 
   const _scaledPopups = {}
 

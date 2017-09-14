@@ -2,10 +2,10 @@ import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
 import baseMixin from "../mixins/base-mixin"
 import scatterMixin from "../mixins/scatter-mixin"
-import { rasterDrawMixin } from "../mixins/raster-draw-mixin"
-import { lastFilteredSize } from "../core/core-async"
+import {rasterDrawMixin} from "../mixins/raster-draw-mixin"
+import {lastFilteredSize} from "../core/core-async"
 
-export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
+export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
 
   const _useMap = useMap !== undefined ? useMap : false
@@ -13,21 +13,17 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   const parentDivId = parent.attributes.id.value
 
   const browser = detectBrowser()
-  function detectBrowser() {
+  function detectBrowser () {
     // from SO: http://bit.ly/1Wd156O
-    const isOpera =
-      (Boolean(window.opr) && Boolean(opr.addons)) ||
-      Boolean(window.opera) ||
-      navigator.userAgent.indexOf(" OPR/") >= 0
+    const isOpera = (Boolean(window.opr) && Boolean(opr.addons)) || Boolean(window.opera) || navigator.userAgent.indexOf(" OPR/") >= 0
     const isFirefox = typeof InstallTrigger !== "undefined"
-    const isSafari =
-      Object.prototype.toString
+    const isSafari = Object.prototype.toString
         .call(window.HTMLElement)
         .indexOf("Constructor") > 0
     const isIE = /* @cc_on!@*/ false || Boolean(document.documentMode)
     const isEdge = !isIE && Boolean(window.StyleMedia)
     const isChrome = Boolean(window.chrome) && Boolean(window.chrome.webstore)
-    return { isOpera, isFirefox, isSafari, isIE, isEdge, isChrome }
+    return {isOpera, isFirefox, isSafari, isIE, isEdge, isChrome}
   }
 
   if (_useMap) {
@@ -63,11 +59,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   const _popupDivClassName = "map-popup"
   let _popupDisplayable = true
 
-  _chart.popupDisplayable = function(displayable) {
+  _chart.popupDisplayable = function (displayable) {
     _popupDisplayable = Boolean(displayable)
   }
 
-  _chart.x = function(x) {
+  _chart.x = function (x) {
     if (!arguments.length) {
       return _x
     }
@@ -75,7 +71,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.y = function(_) {
+  _chart.y = function (_) {
     if (!arguments.length) {
       return _y
     }
@@ -83,18 +79,18 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart._resetRenderBounds = function() {
+  _chart._resetRenderBounds = function () {
     _renderBoundsMap = {}
   }
 
-  _chart._resetLayers = function() {
+  _chart._resetLayers = function () {
     _layers = []
     _layerNames = {}
   }
 
-  _chart.pushLayer = function(layerName, layer) {
+  _chart.pushLayer = function (layerName, layer) {
     if (_layerNames[layerName]) {
-      throw new Error('A layer with name "' + layerName + '" already exists.')
+      throw new Error("A layer with name \"" + layerName + "\" already exists.")
     } else if (!layerName.match(/^\w+$/)) {
       throw new Error(
         "A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)"
@@ -106,14 +102,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.popLayer = function() {
+  _chart.popLayer = function () {
     const layerName = _layers.pop()
     const layer = _layerNames[layerName]
     delete _layerNames[layerName]
     return layer
   }
 
-  _chart.popAllLayers = function() {
+  _chart.popAllLayers = function () {
     const poppedLayers = _layers.map(layerName => {
       const layer = _layerNames[layerName]
       delete _layerNames[layerName]
@@ -123,42 +119,42 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return poppedLayers
   }
 
-  _chart.getLayer = function(layerName) {
+  _chart.getLayer = function (layerName) {
     return _layerNames[layerName]
   }
 
-  _chart.getAllLayers = function() {
+  _chart.getAllLayers = function () {
     return Object.keys(_layerNames).map(k => _layerNames[k])
   }
 
-  _chart.getLayerAt = function(idx) {
+  _chart.getLayerAt = function (idx) {
     const layerName = _layers[idx]
     return _layerNames[layerName]
   }
 
-  _chart.getLayers = function() {
+  _chart.getLayers = function () {
     return _layers.map(layerName => _layerNames[layerName])
   }
 
-  _chart.getLayerNames = function() {
+  _chart.getLayerNames = function () {
     return _layers
   }
 
-  _chart.xRangeFilter = function(filter) {
+  _chart.xRangeFilter = function (filter) {
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
       // layer.xDim() & layer.xDim().filter(filter)
     }
   }
 
-  _chart.yRangeFilter = function(filter) {
+  _chart.yRangeFilter = function (filter) {
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
       // layer.yDim() && layer.yDim().filter(filter)
     }
   }
 
-  _chart.destroyChart = function() {
+  _chart.destroyChart = function () {
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
       layer.destroyLayer(_chart)
@@ -170,7 +166,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart.con = function(_) {
+  _chart.con = function (_) {
     if (!arguments.length) {
       return _con
     }
@@ -181,7 +177,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   // TODO(croot): pixel ratio should probably be configured on the backend
   // rather than here to deal with scenarios where data is used directly
   // in pixel-space.
-  _chart.usePixelRatio = function(usePixelRatio) {
+  _chart.usePixelRatio = function (usePixelRatio) {
     if (!arguments.length) {
       return _usePixelRatio
     }
@@ -196,11 +192,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart._getPixelRatio = function() {
+  _chart._getPixelRatio = function () {
     return _pixelRatio
   }
 
-  _chart.setSample = function() {
+  _chart.setSample = function () {
     _layers.forEach(layerName => {
       const layer = _layerNames[layerName]
       if (layer && typeof layer.setSample === "function") {
@@ -278,21 +274,17 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return result
   })
 
-  _chart._getXScaleName = function() {
+  _chart._getXScaleName = function () {
     return _xScaleName
   }
 
-  _chart._getYScaleName = function() {
+  _chart._getYScaleName = function () {
     return _yScaleName
   }
 
-  _chart._updateXAndYScales = function(renderBounds) {
+  _chart._updateXAndYScales = function (renderBounds) {
     // renderBounds should be in this order - top left, top-right, bottom-right, bottom-left
-    const useRenderBounds =
-      renderBounds &&
-      renderBounds.length === 4 &&
-      renderBounds[0] instanceof Array &&
-      renderBounds[0].length === 2
+    const useRenderBounds = renderBounds && renderBounds.length === 4 && renderBounds[0] instanceof Array && renderBounds[0].length === 2
 
     if (_x === null) {
       _x = d3.scale.linear()
@@ -382,7 +374,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart._determineScaleType = function(scale) {
+  _chart._determineScaleType = function (scale) {
     const scaleType = null
     if (scale.rangeBand !== undefined) {
       return "ordinal"
@@ -402,11 +394,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return "quantize"
   }
 
-  function removeOverlay(overlay) {
+  function removeOverlay (overlay) {
     _chart._removeOverlay(overlay)
   }
 
-  _chart._doRender = function(data, redraw, doNotForceData) {
+  _chart._doRender = function (data, redraw, doNotForceData) {
     if (!data && Boolean(!doNotForceData)) {
       data = _chart.data()
     }
@@ -427,11 +419,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart._doRedraw = function() {
+  _chart._doRedraw = function () {
     _chart._doRender(null, true)
   }
 
-  _chart.minPopupShapeBoundsArea = function(minPopupShapeBoundsArea) {
+  _chart.minPopupShapeBoundsArea = function (minPopupShapeBoundsArea) {
     if (!arguments.length) {
       return _minPopupShapeBoundsArea
     }
@@ -439,7 +431,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.popupSearchRadius = function(popupSearchRadius) {
+  _chart.popupSearchRadius = function (popupSearchRadius) {
     if (!arguments.length) {
       return _popupSearchRadius
     }
@@ -447,11 +439,8 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart
   }
 
-  _chart.getClosestResult = function getClosestResult(point, callback) {
-    const height =
-      typeof _chart.effectiveHeight === "function"
-        ? _chart.effectiveHeight()
-        : _chart.height()
+  _chart.getClosestResult = function getClosestResult (point, callback) {
+    const height = typeof _chart.effectiveHeight === "function" ? _chart.effectiveHeight() : _chart.height()
     const pixelRatio = _chart._getPixelRatio() || 1
     const pixel = new TPixel({
       x: Math.round(point.x * pixelRatio),
@@ -467,9 +456,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _layers.forEach(layerName => {
       const layer = _layerNames[layerName]
       if (
-        layer.getPopupAndRenderColumns &&
-        layer.hasPopupColumns &&
-        layer.hasPopupColumns()
+        layer.getPopupAndRenderColumns && layer.hasPopupColumns && layer.hasPopupColumns()
       ) {
         layerObj[layerName] = layer.getPopupAndRenderColumns(_chart)
         ++cnt
@@ -486,7 +473,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       pixel,
       layerObj,
       [
-        function(err, results) {
+        function (err, results) {
           if (err) {
             throw new Error(
               `getResultRowForPixel failed with message: ${err.message}`
@@ -500,12 +487,9 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     )
   }
 
-  _chart.displayPopup = function displayPopup(result, animate) {
+  _chart.displayPopup = function displayPopup (result, animate) {
     if (
-      !_popupDisplayable ||
-      !result ||
-      !result.row_set ||
-      !result.row_set.length
+      !_popupDisplayable || !result || !result.row_set || !result.row_set.length
     ) {
       return
     }
@@ -528,7 +512,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart.hidePopup = function hidePopup(animate) {
+  _chart.hidePopup = function hidePopup (animate) {
     const popupElem = _chart.select("." + _popupDivClassName)
     if (!popupElem.empty()) {
       for (let i = 0; i < _layers.length; ++i) {
@@ -553,20 +537,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   return _chart.anchor(parent, chartGroup)
 }
 
-function valuesOb(obj) {
+function valuesOb (obj) {
   return Object.keys(obj).map(key => obj[key])
 }
 
-function genLayeredVega(chart) {
+function genLayeredVega (chart) {
   const pixelRatio = chart._getPixelRatio()
-  const width =
-    (typeof chart.effectiveWidth === "function"
-      ? chart.effectiveWidth()
-      : chart.width()) * pixelRatio
-  const height =
-    (typeof chart.effectiveHeight === "function"
-      ? chart.effectiveHeight()
-      : chart.height()) * pixelRatio
+  const width = (typeof chart.effectiveWidth === "function" ? chart.effectiveWidth() : chart.width()) * pixelRatio
+  const height = (typeof chart.effectiveHeight === "function" ? chart.effectiveHeight() : chart.height()) * pixelRatio
 
   const xdom = chart.x().domain()
   const ydom = chart.y().domain()
