@@ -11,8 +11,8 @@ let _redrawStackEmpty = true
 let _startRenderTime = null
 let _startRedrawTime = null
 
-const _groupAll = {}
-const _lastFilteredSize = {}
+let _groupAll = {}
+let _lastFilteredSize = {}
 
 export function startRenderTime () {
   return _startRenderTime
@@ -199,6 +199,8 @@ export function lastFilteredSize (crossfilterId) {
 }
 
 export function resetState () {
+  _groupAll = {}
+  _lastFilteredSize = {}
   resetRedrawStack()
   resetRenderStack()
 }
