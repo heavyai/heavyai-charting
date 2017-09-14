@@ -45,7 +45,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   _chart.filter = function (filters) {
-    if (typeof filters === "undefined" || filters === null) {
+    if (typeof filters === "undefined" || filters === null || filters === Symbol.for("clear")) {
       _initialFilters = _initialFilters || [[]]
       filterChartDimensions(_initialFilters[0][0], _initialFilters[0][1], true)
     } else if (Array.isArray(filters) && filters.length === 2) {
