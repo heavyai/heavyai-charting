@@ -1,12 +1,25 @@
 export function notNull (value) { return value != null /* double-equals also catches undefined */ }
 
-export function convertHexToRGBA (hex, opacity) {
-  hex = hex.replace("#", "")
+export function adjustOpacity (color, opacity = 1) {
+  if (!(/#/).test(color)) {
+    return color
+  }
+  const hex = color.replace("#", "")
   const r = parseInt(hex.substring(0, 2), 16)
   const g = parseInt(hex.substring(2, 4), 16)
   const b = parseInt(hex.substring(4, 6), 16)
+  return `rgba(${r},${g},${b},${opacity})`
+}
 
-  return `rgba(${r},${g},${b},${opacity / 100})`
+export function adjustRGBAOpacity (rgba, opacity) {
+  let [r, g, b, a] = rgba.split("(")[1].split(")")[0].split(",")
+  if (a) {
+    const relativeOpacity = (parseFloat(a) - (1 - opacity))
+    a = `${relativeOpacity > 0 ? relativeOpacity : 0.01}`
+  } else {
+    a = opacity
+  }
+  return `rgba(${r},${g},${b},${a})`
 }
 
 export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, useScale, prePostFuncs) {
