@@ -1,4 +1,4 @@
-import {createRasterLayerGetterSetter, createVegaAttrMixin} from "../utils/utils-vega"
+import {adjustOpacity, createRasterLayerGetterSetter, createVegaAttrMixin} from "../utils/utils-vega"
 import {parser} from "../utils/utils"
 
 const vegaLineJoinOptions = ["miter", "round", "bevel"]
@@ -136,7 +136,7 @@ export default function rasterLayerPolyMixin (_layer) {
           name: layerName + "_fillColor",
           type: "linear",
           domain: state.encoding.color.domain,
-          range: state.encoding.color.range,
+          range: state.encoding.color.range.map(c => adjustOpacity(c, state.encoding.color.opacity)),
           default: "green",
           nullValue: "#CACACA",
           clamp: false
