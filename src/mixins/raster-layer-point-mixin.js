@@ -1,7 +1,8 @@
 import {decrementSampledCount, incrementSampledCount} from "../core/core"
 import {lastFilteredSize} from "../core/core-async"
 import {
-  convertHexToRGBA,
+  adjustOpacity,
+  adjustRGBAOpacity,
   createRasterLayerGetterSetter,
   createVegaAttrMixin
 } from "../utils/utils-vega"
@@ -49,6 +50,8 @@ function getColor (color, layerName) {
       scale: layerName + "_fillColor",
       field: "color"
     }
+  } else if (typeof color === "object") {
+    return adjustOpacity(color.value, color.opacity)
   } else {
     return color
   }
@@ -141,12 +144,14 @@ function getScales ({size, color}, layerName) {
       domain: color.range.map(
         (c, i) => i * 100 / (color.range.length - 1) / 100
       ),
-      range: color.range.map((c, i, colorArray) => {
-        const normVal = i / (colorArray.length - 1)
-        let interp = Math.min(normVal / 0.65, 1.0)
-        interp = interp * 0.375 + 0.625
-        return convertHexToRGBA(c, interp * 100)
-      }),
+      range: color.range
+        .map(c => adjustOpacity(c, color.opacity))
+        .map((c, i, colorArray) => {
+          const normVal = i / (colorArray.length - 1)
+          let interp = Math.min(normVal / 0.65, 1.0)
+          interp = interp * 0.375 + 0.625
+          return adjustRGBAOpacity(c, interp)
+        }),
       accumulator: "density",
       minDensityCnt: "-2ndStdDev",
       maxDensityCnt: "2ndStdDev",
@@ -159,9 +164,9 @@ function getScales ({size, color}, layerName) {
       name: layerName + "_fillColor",
       type: "ordinal",
       domain: color.domain,
-      range: color.range,
-      default: "#27aeef",
-      nullValue: "#CACACA"
+      range: color.range.map(c => adjustOpacity(c, color.opacity)),
+      default: adjustOpacity("#27aeef", color.opacity),
+      nullValue: adjustOpacity("#CACACA", color.opacity)
     })
   }
 
@@ -169,7 +174,7 @@ function getScales ({size, color}, layerName) {
     scales.push({
       name: layerName + "_fillColor",
       type: "linear",
-      domain: color.domain,
+      domain: color.domain.map(c => adjustOpacity(c, color.opacity)),
       range: color.range,
       clamp: true
     })

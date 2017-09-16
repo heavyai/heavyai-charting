@@ -330,7 +330,7 @@ describe("rasterLayerPointMixin", () => {
               type: "ordinal",
               field: "party",
               domain: ["D", "R", "I"],
-              range: ["#115f9a", "#1984c5", "#22a7f0"]
+              range: ["red", "green", "blue"]
             }
           })
         })
@@ -349,9 +349,9 @@ describe("rasterLayerPointMixin", () => {
               "name": "points_fillColor",
               "type": "ordinal",
               "domain": ["D", "R", "I"],
-              "range": ["#115f9a", "#1984c5", "#22a7f0"],
-              "default": "#27aeef",
-              "nullValue": "#CACACA"
+              "range": ["red", "green", "blue"],
+              "default": "rgba(39,174,239,1)",
+              "nullValue": "rgba(202,202,202,1)"
            }
           ],
            "mark": {
@@ -378,6 +378,68 @@ describe("rasterLayerPointMixin", () => {
         })
 
       })
+
+
+      it("should adjust opacity on colors", () => {
+        const layer = rasterLayer("points")
+        layer.setState({
+          transform: {},
+          mark: "point",
+          encoding: Object.assign({}, baseEncoding, {
+            color: {
+              type: "ordinal",
+              field: "party",
+              domain: ["D", "R", "I"],
+              range: ["#115f9a", "#1984c5", "#22a7f0"],
+              opacity: 0.2
+            }
+          })
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+          layerName: "points"
+        })).to.deep.equal({
+          data: {
+            name: "points",
+            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+          },
+          "scales": [
+            {
+              "name": "points_fillColor",
+              "type": "ordinal",
+              "domain": ["D", "R", "I"],
+              "range": ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"],
+              "default": "rgba(39,174,239,0.2)",
+              "nullValue": "rgba(202,202,202,0.2)"
+           }
+          ],
+           "mark": {
+             "type": "points",
+             "from": {
+               "data": "points"
+             },
+             "properties": {
+               "x": {
+                 "scale": "x",
+                 "field": "x"
+               },
+               "y": {
+                 "scale": "y",
+                 "field": "y"
+               },
+               "size": 11,
+               "fillColor": {
+                  "scale": "points_fillColor",
+                  "field": "color"
+                }
+             }
+           }
+        })
+
+      })
+
     })
   })
 
