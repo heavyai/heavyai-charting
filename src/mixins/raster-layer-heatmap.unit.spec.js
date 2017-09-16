@@ -28,6 +28,7 @@ const spec = {
           "#f7e425",
           "#f0f921"
         ],
+        opacity: 0.2,
         default: "#0d0887",
         nullValue: "#0d0887"
       }
@@ -85,12 +86,12 @@ describe("rasterLayerHeatmapMixin", () => {
              type: "quantize",
              domain: [0, 25],
              range: [
-               "#0d0887",
-               "#f7e425",
-               "#f0f921"
+               "rgba(13,8,135,0.2)",
+               "rgba(247,228,37,0.2)",
+               "rgba(240,249,33,0.2)"
              ],
-             default: "#0d0887",
-             nullValue: "#0d0887"
+             default: "rgba(13,8,135,0.2)",
+             nullValue: "rgba(13,8,135,0.2)"
            }
          ],
          mark: {
@@ -142,12 +143,12 @@ describe("rasterLayerHeatmapMixin", () => {
               type: "quantize",
               domain: [0, 25],
               range: [
-                "#0d0887",
-                "#f7e425",
-                "#f0f921"
+                "rgba(13,8,135,0.2)",
+                "rgba(247,228,37,0.2)",
+                "rgba(240,249,33,0.2)"
               ],
-              default: "#0d0887",
-              nullValue: "#0d0887"
+              default: "rgba(13,8,135,0.2)",
+              nullValue: "rgba(13,8,135,0.2)"
             }
           ],
           mark: {
