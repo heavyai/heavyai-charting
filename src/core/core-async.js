@@ -111,7 +111,7 @@ export function redrawAllAsync (group) {
   }
 }
 
-export function renderAllAsync (group) {
+export function renderAllAsync (group, should) {
   if (refreshDisabled()) {
     return Promise.resolve()
   }
@@ -127,7 +127,7 @@ export function renderAllAsync (group) {
 
   _startRenderTime = new Date()
 
-  const charts = chartRegistry.list(group)
+  const charts = should ? chartRegistry.listAll() : chartRegistry.list(group)
 
   const createRenderPromises = () => charts.map(chart => {
     chart.expireCache()

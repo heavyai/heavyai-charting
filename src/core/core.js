@@ -124,6 +124,12 @@ export const chartRegistry = (function () {
     list (group) {
       group = initializeChartGroup(group)
       return _chartMap[group]
+    },
+
+    listAll () {
+      return Object.keys(_chartMap).reduce((accum, key) => {
+        return accum.concat(_chartMap[key])
+      }, [])
     }
   }
 })()
