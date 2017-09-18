@@ -127,9 +127,7 @@ export const chartRegistry = (function () {
     },
 
     listAll () {
-      return Object.keys(_chartMap).reduce((accum, key) => {
-        return accum.concat(_chartMap[key])
-      }, [])
+      return Object.keys(_chartMap).reduce((accum, key) => accum.concat(_chartMap[key]), [])
     }
   }
 })()
@@ -139,7 +137,7 @@ export function registerChart (chart, group) {
 }
 
 export function getChart (dcFlag) {
-  return chartRegistry.list().reduce((accum, chrt) => chrt.__dcFlag__ === dcFlag ? chrt : accum, null)
+  return chartRegistry.listAll().reduce((accum, chrt) => chrt.__dcFlag__ === dcFlag ? chrt : accum, null)
 }
 
 export function deregisterChart (chart, group) {
