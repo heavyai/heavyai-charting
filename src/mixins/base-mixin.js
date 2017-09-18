@@ -909,7 +909,7 @@ export default function baseMixin (_chart) {
         if (!redrawStackEmpty()) {
           redrawStackEmpty(true)
 
-          return redrawAllAsync()
+          return redrawAllAsync(_chart.chartGroup())
                     .then((result) => {
                       callback(null, result)
                     })

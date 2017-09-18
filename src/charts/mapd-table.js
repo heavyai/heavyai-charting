@@ -330,7 +330,7 @@ export default function mapdTable (parent, chartGroup) {
                       }
 
                       _chart._invokeSortListener(_sortColumn)
-                      redrawAllAsync()
+                      redrawAllAsync(_chart.chartGroup())
                     })
                     .style("width", d3.select(this).node().getBoundingClientRect().width + "px")
 
@@ -386,7 +386,7 @@ export default function mapdTable (parent, chartGroup) {
     _columnFilterMap[expr] = val
     _tableFilter.filter(computeTableFilter(_columnFilterMap))
 
-    redrawAllAsync()
+    redrawAllAsync(_chart.chartGroup())
   }
 
 
@@ -394,7 +394,7 @@ export default function mapdTable (parent, chartGroup) {
     delete _columnFilterMap[expr]
     _chart.removeFilteredColumn(expr)
     _tableFilter.filter(computeTableFilter(_columnFilterMap))
-    redrawAllAsync()
+    redrawAllAsync(_chart.chartGroup())
   }
 
   function computeTableFilter (columnFilterMap) { // should use class letiables?

@@ -74,7 +74,7 @@ export default function coordinateGridMixin (_chart) {
 
     _chart.replaceFilter(domFilter)
     _chart.rescale()
-    redrawAllAsync()
+    redrawAllAsync(_chart.chartGroup())
   }
 
   let _parent

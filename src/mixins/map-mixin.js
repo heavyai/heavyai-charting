@@ -248,13 +248,13 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
     if (_xDim !== null && _yDim !== null) {
       _xDim.filter([_chart._minCoord[0], _chart._maxCoord[0]])
       _yDim.filter([_chart._minCoord[1], _chart._maxCoord[1]])
-      redrawAllAsync()
+      redrawAllAsync(_chart.chartGroup())
               .catch((error) => {
                 resetRedrawStack()
                 console.log("on move event redrawall error:", error)
               })
     } else if (redrawall) {
-      redrawAllAsync()
+      redrawAllAsync(_chart.chartGroup())
               .catch((error) => {
                 resetRedrawStack()
                 console.log("on move event redrawall error:", error)
