@@ -130,7 +130,7 @@ export function mapDrawMixin (chart, _mapboxgl = mapboxgl, _MapboxDraw = MapboxD
 
   function drawEventHandler () {
     applyFilter()
-    redrawAllAsync()
+    redrawAllAsync(chart.chartGroup())
   }
 
   function applyFilter () {

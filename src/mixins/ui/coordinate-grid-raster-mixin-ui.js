@@ -275,7 +275,7 @@ class BoxZoomHandler extends BaseHandler {
 
     const bounds = [[xmin, ymax], [xmax, ymax], [xmax, ymin], [xmin, ymin]]
 
-    redrawAllAsync()
+    redrawAllAsync(this._chart.chartGroup())
 
     this._active = false
     this._fireEvent("boxzoomend", e, {
@@ -545,7 +545,7 @@ class ScrollZoomHandler extends BaseHandler {
     this._chart.elasticY(false)
 
     if (doFullRender) {
-      redrawAllAsync()
+      redrawAllAsync(this._chart.chartGroup())
     } else {
       this._chart._updateXAndYScales(this._chart.getDataRenderBounds())
       this._chartRedrawCB()
@@ -698,7 +698,7 @@ class DragPanHandler extends BaseHandler {
     this._drainInertiaBuffer()
 
     const finish = () => {
-      redrawAllAsync()
+      redrawAllAsync(this._chart.chartGroup())
       this._fireEvent("moveend", e)
     }
 
