@@ -73,7 +73,7 @@ export function disableTransitions (_) {
 }
 
 export const chartRegistry = (function () {
-    // chartGroup:string => charts:array
+  // chartGroup:string => charts:array
   let _chartMap = {}
 
   function initializeChartGroup (group) {
@@ -99,22 +99,39 @@ export const chartRegistry = (function () {
     },
 
     register (chart, group) {
-      group = initializeChartGroup(group)
-      _chartMap[group].push(chart)
+      if (Array.isArray(group)) {
+        group.forEach(g => _chartMap[initializeChartGroup(g)].push(chart))
+      } else {
+        _chartMap[initializeChartGroup(group)].push(chart)
+      }
     },
 
     deregister (chart, group) {
-      group = initializeChartGroup(group)
-      for (let i = 0; i < _chartMap[group].length; i++) {
-        if (_chartMap[group][i].anchorName() === chart.anchorName()) {
-          _chartMap[group].splice(i, 1)
-          break
+      if (Array.isArray(group)) {
+        group.forEach(g => {
+          group = initializeChartGroup(g)
+          for (let i = 0; i < _chartMap[group].length; i++) {
+            if (_chartMap[group][i].anchorName() === chart.anchorName()) {
+              _chartMap[group].splice(i, 1)
+              break
+            }
+          }
+        })
+      } else {
+        group = initializeChartGroup(group)
+        for (let i = 0; i < _chartMap[group].length; i++) {
+          if (_chartMap[group][i].anchorName() === chart.anchorName()) {
+            _chartMap[group].splice(i, 1)
+            break
+          }
         }
       }
     },
 
     clear (group) {
-      if (group) {
+      if (Array.isArray(group)) {
+        group.forEach(g => delete _chartMap[g])
+      } else if (group) {
         delete _chartMap[group]
       } else {
         _chartMap = {}
@@ -122,12 +139,25 @@ export const chartRegistry = (function () {
     },
 
     list (group) {
-      group = initializeChartGroup(group)
-      return _chartMap[group]
+      if (Array.isArray(group)) {
+        return group
+          .reduce(
+            (accum, g) => [...accum, ..._chartMap[initializeChartGroup(g)]],
+            []
+          )
+          .filter((item, i, self) => self.indexOf(item) === i)
+      } else {
+        group = initializeChartGroup(group)
+        return _chartMap[group]
+      }
     },
 
     listAll () {
-      return Object.keys(_chartMap).reduce((accum, key) => accum.concat(_chartMap[key]), [])
+      return Object.keys(_chartMap).reduce(
+        (accum, key) => accum.concat(_chartMap[key]),
+        []
+      )
+      .filter((item, i, self) => self.indexOf(item) === i)
     }
   }
 })()
@@ -137,7 +167,9 @@ export function registerChart (chart, group) {
 }
 
 export function getChart (dcFlag) {
-  return chartRegistry.listAll().reduce((accum, chrt) => chrt.__dcFlag__ === dcFlag ? chrt : accum, null)
+  return chartRegistry
+    .listAll()
+    .reduce((accum, chrt) => (chrt.__dcFlag__ === dcFlag ? chrt : accum), null)
 }
 
 export function deregisterChart (chart, group) {
@@ -187,11 +219,9 @@ export function transition (selections, duration, callback, name) {
     return selections
   }
 
-  const s = selections
-        .transition(name)
-        .duration(duration)
+  const s = selections.transition(name).duration(duration)
 
-  if (typeof (callback) === "function") {
+  if (typeof callback === "function") {
     callback(s)
   }
 
@@ -218,12 +248,14 @@ export function afterTransition (_transition, callback) {
   } else {
     let n = 0
     _transition
-            .each(() => { ++n })
-            .each("end", () => {
-              if (!--n) {
-                callback.call(_transition)
-              }
-            })
+      .each(() => {
+        ++n
+      })
+      .each("end", () => {
+        if (!--n) {
+          callback.call(_transition)
+        }
+      })
   }
 }
 
