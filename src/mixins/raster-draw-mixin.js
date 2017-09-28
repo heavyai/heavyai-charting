@@ -76,7 +76,7 @@ export function rasterDrawMixin (chart) {
 
     const layers = (chart.getLayers && typeof chart.getLayers === "function") ? chart.getLayers() : [chart]
     layers.forEach(layer => {
-      if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points") {
+      if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points" || layer.layerType() === "heat") {
         let crossFilter = null
         let filterObj = null
         const group = layer.group()
@@ -86,6 +86,8 @@ export function rasterDrawMixin (chart) {
           const dim = layer.dimension()
           if (dim) {
             crossFilter = dim.getCrossfilter()
+          } else {
+            crossFilter = layer.crossfilter()
           }
         }
         if (crossFilter) {
