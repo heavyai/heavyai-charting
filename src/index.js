@@ -1,6 +1,7 @@
 require("../mapdc.css")
 require("../scss/chart.scss")
 require("mapbox-gl/dist/styles.css")
+require("legendables/src/styles.css")
 
 if (process.env.BABEL_ENV !== "test") {
   window.mapboxgl = require("mapbox-gl/dist/mapbox-gl.js")
