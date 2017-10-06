@@ -4,9 +4,111 @@ import baseMixin from "../mixins/base-mixin"
 import scatterMixin from "../mixins/scatter-mixin"
 import {rasterDrawMixin} from "../mixins/raster-draw-mixin"
 import {lastFilteredSize} from "../core/core-async"
+import {Legend} from "legendables"
+
+function handleLegendOpen (index = 0) {
+  this.getLayers()[index].setState(state => { // eslint-disable-line
+    return {
+      ...state,
+      encoding: {
+        ...state.encoding,
+        color: {
+          ...state.encoding.color,
+          legend: {
+            ...state.encoding.color.legend,
+            open: state.encoding.color.legend.hasOwnProperty("open") ? !state.encoding.color.legend.open : false
+          }
+        }
+      }
+    }
+  })
+
+  this.legend().setState(toLegendState(this.getLayerNames().map(
+    layerName => this.getLayer(layerName).getState().encoding.color
+  )))
+}
+
+function handleLegendLock ({locked, index = 0}) {
+  this.getLayers()[index].setState(state => { // eslint-disable-line
+    return {
+      ...state,
+      encoding: {
+        ...state.encoding,
+        color: {
+          ...state.encoding.color,
+          legend: {
+            ...state.encoding.color.legend,
+            locked: typeof locked === "undefined" ? true : !locked
+          }
+        }
+      }
+    }
+  })
+  this.legend().setState(toLegendState(this.getLayerNames().map(
+    layerName => this.getLayer(layerName).getState().encoding.color
+  )))
+}
+
+function handleLegendInput ({domain, index = 0}) {
+  this.getLayers()[index].setState(state => { // eslint-disable-line
+    return {
+      ...state,
+      encoding: {
+        ...state.encoding,
+        color: {
+          ...state.encoding.color,
+          domain
+        }
+      }
+    }
+  })
+
+  this.legend().setState(toLegendState(this.getLayerNames().map(
+    layerName => this.getLayer(layerName).getState().encoding.color
+  )))
+
+  this.renderAsync()
+}
+
+function legendState (state) {
+  if (state.type === "ordinal") {
+    return {
+      type: "nominal",
+      title: state.legend ? state.legend.title : "Legend",
+      open: state.legend ? state.legend.hasOwnProperty("open") ? state.legend.open : true : true,
+      range: state.range,
+      domain: state.domain
+    }
+  } else if (state.type === "quantitative") {
+    return {
+      type: "gradient",
+      title: state.legend ? state.legend.title : "Legend",
+      locked: state.legend ? state.legend.locked : false,
+      open: state.legend ? state.legend.hasOwnProperty("open") ? state.legend.open : true : true,
+      range: state.range,
+      domain: state.domain
+    }
+  } else {
+    return {}
+  }
+}
+
+export function toLegendState (states = []) {
+  if (states.length === 1) {
+    return legendState(states[0])
+  } else if (states.length) {
+    return {
+      type: "stacked",
+      list: states.map(legendState)
+    }
+  } else {
+    return {}
+  }
+}
 
 export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
+  let _legend = null
 
   const _useMap = useMap !== undefined ? useMap : false
 
@@ -162,9 +264,6 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     }
 
     this.map().remove()
-    if (this.legend()) {
-      this.legend().removeLegend()
-    }
   }
 
   _chart.con = function (_) {
@@ -404,6 +503,12 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
       data = _chart.data()
     }
 
+    const state = toLegendState(_chart.getLayerNames().map(
+      layerName => _chart.getLayer(layerName).getState().encoding.color
+    ))
+
+    _legend.setState(state)
+
     if (_chart.isLoaded()) {
       if (Object.keys(data).length) {
         _chart._setOverlay(
@@ -535,7 +640,20 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  return _chart.anchor(parent, chartGroup)
+  const anchored = _chart.anchor(parent, chartGroup)
+  const legend = anchored.root().append("div").attr("class", "legend")
+  _legend = new Legend(legend.node())
+
+
+  _legend.on("open", handleLegendOpen.bind(_chart))
+  _legend.on("lock", handleLegendLock.bind(_chart))
+  _legend.on("input", handleLegendInput.bind(_chart))
+
+  _chart.legend = function (l) {
+    return _legend
+  }
+
+  return anchored
 }
 
 function valuesOb (obj) {
