@@ -34,11 +34,13 @@ describe("Raster Chart", () => {
         domain: [0, 100],
         range: ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b"],
         legend: {
-          title: "My Legend"
+          title: "My Legend",
+          locked: true
         }
       }])).to.deep.equal({
         type: "gradient",
         title: "My Legend",
+        locked: true,
         open: true,
         domain: [0, 100],
         range: ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b"]

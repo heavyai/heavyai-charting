@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     .user("mapd")
     .password("HyperInteractive")
     .connect(function(error, con) {
+      con.logging(true)
       crossfilter.crossfilter(con, ["contributions_donotmodify", "zipcodes"], [{
         table1: "contributions_donotmodify",
         attr1: "contributor_zipcode",
@@ -35,7 +36,6 @@ document.addEventListener("DOMContentLoaded", function init() {
     })
 
   function createPolyMap(crossFilter, con, dc, config, cf2) {
-    window.cf = crossFilter
     var parent = document.getElementById("polymap")
     // The values in the table and column specified in crossFilter.dimension
     // must correspond to values in the table and keysColumn specified in polyRasterChart.polyJoin.
