@@ -1,3 +1,4 @@
+import {handleLegendInput, handleLegendLock, handleLegendOpen, toLegendState} from "../chart-addons/stacked-legend"
 import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
 import baseMixin from "../mixins/base-mixin"
@@ -5,106 +6,6 @@ import scatterMixin from "../mixins/scatter-mixin"
 import {rasterDrawMixin} from "../mixins/raster-draw-mixin"
 import {lastFilteredSize} from "../core/core-async"
 import {Legend} from "legendables"
-
-function handleLegendOpen (index = 0) {
-  this.getLayers()[index].setState(state => { // eslint-disable-line
-    return {
-      ...state,
-      encoding: {
-        ...state.encoding,
-        color: {
-          ...state.encoding.color,
-          legend: {
-            ...state.encoding.color.legend,
-            open: state.encoding.color.legend.hasOwnProperty("open") ? !state.encoding.color.legend.open : false
-          }
-        }
-      }
-    }
-  })
-
-  this.legend().setState(toLegendState(this.getLayerNames().map(
-    layerName => this.getLayer(layerName).getState().encoding.color
-  )))
-}
-
-function handleLegendLock ({locked, index = 0}) {
-  this.getLayers()[index].setState(state => { // eslint-disable-line
-    return {
-      ...state,
-      encoding: {
-        ...state.encoding,
-        color: {
-          ...state.encoding.color,
-          legend: {
-            ...state.encoding.color.legend,
-            locked: typeof locked === "undefined" ? true : !locked
-          }
-        }
-      }
-    }
-  })
-  this.legend().setState(toLegendState(this.getLayerNames().map(
-    layerName => this.getLayer(layerName).getState().encoding.color
-  )))
-}
-
-function handleLegendInput ({domain, index = 0}) {
-  this.getLayers()[index].setState(state => { // eslint-disable-line
-    return {
-      ...state,
-      encoding: {
-        ...state.encoding,
-        color: {
-          ...state.encoding.color,
-          domain
-        }
-      }
-    }
-  })
-
-  this.legend().setState(toLegendState(this.getLayerNames().map(
-    layerName => this.getLayer(layerName).getState().encoding.color
-  )))
-
-  this.renderAsync()
-}
-
-function legendState (state) {
-  if (state.type === "ordinal") {
-    return {
-      type: "nominal",
-      title: state.legend ? state.legend.title : "Legend",
-      open: state.legend ? state.legend.hasOwnProperty("open") ? state.legend.open : true : true,
-      range: state.range,
-      domain: state.domain
-    }
-  } else if (state.type === "quantitative") {
-    return {
-      type: "gradient",
-      title: state.legend ? state.legend.title : "Legend",
-      locked: state.legend ? state.legend.locked : false,
-      open: state.legend ? state.legend.hasOwnProperty("open") ? state.legend.open : true : true,
-      range: state.range,
-      domain: state.domain
-    }
-  } else {
-    return {}
-  }
-}
-
-export function toLegendState (states = []) {
-  if (states.length === 1) {
-    return legendState(states[0])
-  } else if (states.length) {
-    return {
-      type: "stacked",
-      list: states.map(legendState)
-    }
-  } else {
-    return {}
-  }
-}
 
 export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
