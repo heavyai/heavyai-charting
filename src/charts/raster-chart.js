@@ -1,4 +1,4 @@
-import {handleLegendInput, handleLegendLock, handleLegendOpen, toLegendState} from "../chart-addons/stacked-legend"
+import {getLegendStateFromChart, handleLegendInput, handleLegendLock, handleLegendOpen, toLegendState} from "../chart-addons/stacked-legend"
 import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
 import baseMixin from "../mixins/base-mixin"
@@ -404,9 +404,7 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
       data = _chart.data()
     }
 
-    const state = toLegendState(_chart.getLayerNames().map(
-      layerName => _chart.getLayer(layerName).getState().encoding.color
-    ))
+    const state = getLegendStateFromChart(_chart)
 
     _legend.setState(state)
 
@@ -602,7 +600,6 @@ function genLayeredVega (chart) {
     scales,
     marks
   }
-  console.log(JSON.stringify(vegaSpec, null, 2))
-  return vegaSpec
 
+  return vegaSpec
 }

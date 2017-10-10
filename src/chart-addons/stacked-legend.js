@@ -38,10 +38,42 @@ function setColorState (setter) {
   }
 }
 
-function mapLayerColorState (chart) {
-  return chart
-    .getLayerNames()
-    .map(layerName => chart.getLayer(layerName).getState().encoding.color)
+function setColorScaleDomain (domain) {
+  return function setState (state) {
+    return {
+      ...state,
+      encoding: {
+        ...state.encoding,
+        color: {
+          ...state.encoding.color,
+          scale: {
+            ...state.encoding.color.scale,
+            domain
+          }
+        }
+      }
+    }
+  }
+}
+
+export function getLegendStateFromChart (chart) {
+  return toLegendState(chart.getLayerNames().map(
+    layerName => {
+      const layer = chart.getLayer(layerName)
+      const color = layer.getState().encoding.color
+      if (typeof color.scale === "object" && color.scale.domain === "auto") {
+        return {
+          ...color,
+          scale: {
+            ...color.scale,
+            domain: layer.colorDomain()
+          }
+        }
+      } else {
+        return color
+      }
+    }
+  ))
 }
 
 export function handleLegendOpen (index = 0) {
@@ -51,26 +83,45 @@ export function handleLegendOpen (index = 0) {
     }))
   )
 
-  this.legend().setState(toLegendState(mapLayerColorState(this)))
+  this.legend().setState(getLegendStateFromChart(this))
 }
 
 export function handleLegendLock ({locked, index = 0}) {
-  this.getLayers()[index].setState(
+  const layer = this.getLayers()[index]
+
+  layer.setState(
     setLegendState(color => ({
       locked: typeof locked === "undefined" ? true : !locked
     }))
   )
 
-  this.legend().setState(toLegendState(mapLayerColorState(this)))
+  const {encoding: {color}} = layer.getState()
+  if (typeof color.scale === "object") {
+    if (color.legend.locked) {
+      layer.setState(setColorScaleDomain(layer.colorDomain()))
+    } else {
+      layer.setState(setColorScaleDomain("auto"))
+    }
+  }
+
+  this.legend().setState(getLegendStateFromChart(this))
 }
 
 export function handleLegendInput ({domain, index = 0}) {
-  this.getLayers()[index].setState(
-    setColorState(() => ({
-      domain
-    }))
-  )
-  this.legend().setState(toLegendState(mapLayerColorState(this)))
+  const layer = this.getLayers()[index]
+  const {scale} = layer.getState().encoding.color
+
+  if (typeof scale === "object") {
+    layer.setState(setColorScaleDomain(domain))
+  } else {
+    layer.setState(
+      setColorState(() => ({
+        domain
+      }))
+    )
+  }
+
+  this.legend().setState(getLegendStateFromChart(this))
   this.renderAsync()
 }
 
@@ -91,6 +142,16 @@ function legendState (state) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain
+    }
+  } else if (state.type === "quantize") {
+    const {scale} = state
+    return {
+      type: "gradient",
+      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
+      locked: hasLegendLockedProp(state) ? state.legend.locked : false,
+      open: hasLegendOpenProp(state) ? state.legend.open : true,
+      range: scale.range,
+      domain: scale.domain
     }
   } else {
     return {}
