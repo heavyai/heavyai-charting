@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MapD</title>
+    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <style>
+      .title {
+        font-weight: bold;
+        text-align:center;
+      }
+      .mapd {
+        position: relative;
+        top: 2px;
+      }
+      .search{
+        display: inline-block;
+        margin-top: 12px;
+        margin-left: 50px;
+      }
+      .data-count {
+        padding-right:20px;
+      }
+      .filter-count {
+        font-weight: bold;
+        color:  #45B1E8;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header" style="margin-top:10px">
+          <img alt="Brand" src="images/favicon.png" height="30" width="30">
+          <span class="mapd">MapD Demo</span>
+        </div>
+        <div class="navbar-text navbar-right">
+        <div class="data-count">
+          <span class="total"><span><span class="filter-count"></span></span>
+          <span>of <span class="total-count"></span> tweets</span>
+        </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="main-container">
+      <div class="col-xs-12">
+        <div class="title">Pointmap with Selection Tool</div>
+        <div id="chart1-example"></div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="assets/app.bundle.js"></script>
+    <script>
+
+  function createCharts(crossFilter, con, tableName) {
+    var w = document.documentElement.clientWidth - 30;
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
+    var countGroup = crossFilter.groupAll();
+    var dataCount = dc.countWidget(".data-count")
+      .dimension(crossFilter)
+      .group(countGroup);
+
+  /*----------------BACKEND RENDERED POINT MAP WITH LASSO TOOL EXAMPLE-----------------------*/
+    var langDomain = ['en', 'pt', 'es', 'in', 'und', 'ja', 'tr', 'fr', 'tl', 'ru', 'ar', 'th', 'it', 'nl', 'sv', 'ht', 'de', 'et', 'pl', 'sl', 'ko', 'fi', 'lv', 'sk', 'uk', 'da', 'zh', 'ro', 'no', 'cy', 'iw', 'hu', 'bg', 'lt', 'bs', 'vi', 'el', 'is', 'hi', 'hr', 'fa', 'ur', 'ne', 'ta',  'sr', 'bn', 'si', 'ml', 'hy', 'lo', 'iu', 'ka', 'ps', 'te', 'pa', 'am', 'kn', 'chr', 'my', 'gu', 'ckb', 'km', 'ug', 'sd', 'bo', 'dv'];
+    var langOriginColors = ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b", "#bdcf32", "#ef9b20", "#4db6ac", "#edbf33", "#7c4dff"]
+    var langColors = [];
+    var pointMapDim = crossFilter.dimension(null).projectOn(["conv_4326_900913_x(lon) as x", "conv_4326_900913_y(lat) as y", "lang as color", "followers as size"]);
+    var xDim = crossFilter.dimension("lon");
+    var yDim = crossFilter.dimension("lat");
+    var parent = document.getElementById("chart1-example");
+    var rScale = d3.scale.linear().domain([0,5000]).range([1,5]);
+    mapLangColors(40);
+    var mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
+
+    var pointMapChart = dc.rasterChart(parent, true, null, mapboxgl)
+                          .con(con)
+                          .height(h)
+                          .width(w)
+                          .mapUpdateInterval(750)
+                          .mapStyle('json/dark-v8.json')
+                          .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
+                          .popupSearchRadius(2)
+
+    var pointLayer = dc.rasterLayer("points")
+                       .crossfilter(crossFilter)
+                       .setState({
+                         transform: {
+                           sample: true,
+                           limit: 500000
+                         },
+                         mark: "point",
+                         encoding: {
+                           name: {
+                            type: "ordinal",
+                            field: "sender_name"
+                           },
+                           x: {
+                             type: "quantitative",
+                             field: "conv_4326_900913_x(lon)"
+                           },
+                           y: {
+                             type: "quantitative",
+                             field: "conv_4326_900913_y(lat)"
+                           },
+                           size: {
+                             type: "quantitative",
+                             field: "AVG(followers)",
+                             domain: [0, 5000],
+                             range: [1, 5],
+                           },
+                           color: {
+                             type: "ordinal",
+                             field: "lang",
+                             domain: langDomain,
+                             range: langColors
+                           }
+                         }
+                       })
+                       .xDim(xDim)
+                       .yDim(yDim)
+                       .popupColumns(['name', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
+
+    pointMapChart.pushLayer("points", pointLayer).init().then((chart) => {
+      /*--------------------------LASSO TOOL DRAW CONTROL------------------------------*/
+      /* Here enable the lasso tool draw control and pass in a coordinate filter */
+      pointMapChart
+        .addDrawControl()
+        .coordFilter(crossFilter.filter())
+
+      dc.renderAllAsync()
+    })
+
+    /*--------------------------RESIZE EVENT------------------------------*/
+    /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+
+    window.addEventListener("resize", _.debounce(reSizeAll, 500));
+
+    function reSizeAll(){
+      var w = document.documentElement.clientWidth - 30;
+      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+
+      pointMapChart.map().resize();
+      pointMapChart.isNodeAnimate = false;
+      pointMapChart
+        .width(w)
+        .height(h)
+        .render();
+
+      dc.redrawAllAsync();
+    }
+
+    function mapLangColors(n) {
+      langDomain = langDomain.slice(0, n);
+      for (var i = 0; i < langDomain.length; i++) {
+        langColors.push(langOriginColors[i%langOriginColors.length]);
+      }
+    }
+  }
+
+  function init() {
+    var con = new MapdCon()
+      .protocol("https")
+      .host("metis.mapd.com")
+      .port("443")
+      .dbName("mapd")
+      .user("mapd")
+      .password("HyperInteractive")
+      .connect(function(error, con) {
+        var tableName = 'tweets_nov_feb';
+        var crossFilter = crossfilter.crossfilter(con, tableName)
+          .then(function(cf) {
+            createCharts(cf, con, tableName)
+          })
+        ;
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', init, false);
+    </script>
+  </body>
+</html>

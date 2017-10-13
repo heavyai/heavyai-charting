@@ -60,35 +60,95 @@ function getColor (color, layerName) {
 function getTransforms (
   table,
   filter,
-  {encoding: {x, y, size, color}, transform},
-  lastFilteredSize
+  {encoding: {name, x, y, size, color}, transform},
+  lastFilteredSize,
 ) {
-  const transforms = [
-    {
-      type: "project",
-      expr: x.field,
-      as: "x"
-    },
-    {
-      type: "project",
-      expr: y.field,
-      as: "y"
-    }
-  ]
+  let transforms
 
-  if (typeof transform.limit === "number") {
-    transforms.push({
-      type: "limit",
-      row: transform.limit
-    })
-    if (transform.sample) {
+  if (name) {
+    transforms = [
+      {
+        type: "aggregate",
+        fields: [size.field],
+        as: ["size"],
+        ops: [null],
+        groupby: [
+        {
+          type: "project",
+          expr: x.field,
+          as: "x"
+        },
+        {
+          type: "project",
+          expr: y.field,
+          as: "y"
+        },
+        {
+          type: "project",
+          expr: name.field,
+          as: "name"
+        },
+
+        {
+          type: "project",
+          expr: color.field,
+          as: "color"
+        },
+        ]
+      }
+    ]
+  } else {
+    transforms = [
+      {
+        type: "project",
+        expr: x.field,
+        as: "x"
+      },
+      {
+        type: "project",
+        expr: y.field,
+        as: "y"
+      }
+    ]
+    if (typeof transform.limit === "number") {
       transforms.push({
-        type: "sample",
-        method: "multiplicative",
-        size: lastFilteredSize,
-        limit: transform.limit
+        type: "limit",
+        row: transform.limit
+      })
+      if (transform.sample) {
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          size: lastFilteredSize,
+          limit: transform.limit
+        })
+      }
+    }
+
+    if (typeof size === "object" && size.type === "quantitative") {
+      transforms.push({
+        type: "project",
+        expr: size.field,
+        as: "size"
       })
     }
+
+    if (
+      typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
+    ) {
+      transforms.push({
+        type: "project",
+        expr: color.field,
+        as: "color"
+      })
+    }
+
+    transforms.push({
+      type: "project",
+      expr: `${table}.rowid`
+    })
+
+
   }
 
   if (typeof filter === "string" && filter.length) {
@@ -98,28 +158,6 @@ function getTransforms (
     })
   }
 
-  if (typeof size === "object" && size.type === "quantitative") {
-    transforms.push({
-      type: "project",
-      expr: size.field,
-      as: "size"
-    })
-  }
-
-  if (
-    typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
-  ) {
-    transforms.push({
-      type: "project",
-      expr: color.field,
-      as: "color"
-    })
-  }
-
-  transforms.push({
-    type: "project",
-    expr: `${table}.rowid`
-  })
 
   return transforms
 }
@@ -210,7 +248,8 @@ export default function rasterLayerPointMixin (_layer) {
       "",
       "",
       state,
-      lastFilteredSize(_layer.crossfilter().getId())
+      lastFilteredSize(_layer.crossfilter().getId()),
+      // _layer.popupColumns()
     )
       .filter(
         transform =>
