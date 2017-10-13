@@ -180,7 +180,7 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     })
   }
 
-  _chart.setDataAsync((group, callbacks) => {
+  _chart.setDataAsync((group, callback) => {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
@@ -190,12 +190,12 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
         .then(domain => {
           _chart.colors().domain(domain)
           _chart._vegaSpec = genLayeredVega(_chart)
-          const nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks)
+          const nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callback)
           _renderBoundsMap[nonce] = bounds
-        })
+        }).catch(callback)
     } else {
       _chart._vegaSpec = genLayeredVega(_chart)
-      const nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks)
+      const nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callback)
       _renderBoundsMap[nonce] = bounds
     }
   })
