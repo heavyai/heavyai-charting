@@ -98,7 +98,7 @@ export default function labelMixin (chart) {
     if ((rangeChart() && type === "x") || (focusChart() && type === "y")) {
       return
     }
-    const hasLegend = type === "x" && chart.legend() && chart.legend().legendType() === "quantitative"
+    const hasLegend = type === "x" && chart.legend() && chart.legend().legendType && chart.legend().legendType() === "quantitative"
 
     const iconPosition = {
       left: type === "y" ? "" : `${getXaxisLeftPosition(hasLegend)}px`,
