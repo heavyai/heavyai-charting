@@ -125,7 +125,7 @@ export default function rasterLayerHeatmapMixin (_layer) {
         {
           name: `heat_color${layerName}`,
           type: state.encoding.color.type,
-          domain: state.encoding.color.scale.domain === "auto" ? _layer.colorDomain() : state.encoding.color.scale.domain,
+          domain: state.encoding.color.scale.domain === "auto" ? (_layer.colorDomain() || domain) : state.encoding.color.scale.domain,
           range: state.encoding.color.scale.range.map(c => adjustOpacity(c, state.encoding.color.scale.opacity)),
           default: adjustOpacity(state.encoding.color.scale.default, state.encoding.color.scale.opacity),
           nullValue: adjustOpacity(state.encoding.color.scale.nullValue, state.encoding.color.scale.opacity)
