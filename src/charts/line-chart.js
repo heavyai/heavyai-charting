@@ -597,11 +597,12 @@ export default function lineChart (parent, chartGroup) {
   _chart = multiSeriesMixin(_chart)
 
   _chart.destroyChart = function () {
-    deregisterChart(_chart)
+    deregisterChart(_chart, _chart.chartGroup())
     _chart.on("filtered", null)
     _chart.filterAll()
     _chart.resetSvg()
     _chart.root().attr("style", "").attr("class", "").html("")
+    _chart._doRender = () => _chart
   }
 
   return _chart.anchor(parent, chartGroup)

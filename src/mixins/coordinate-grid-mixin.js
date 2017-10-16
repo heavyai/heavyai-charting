@@ -1290,9 +1290,7 @@ export default function coordinateGridMixin (_chart) {
   _chart._preprocessData = function (data) {}
 
   _chart._doRender = function () {
-    /* OVERRIDE ---------------------------------------------------------------- */
     _chart._redrawBrushFlag = true
-    /* ------------------------------------------------------------------------- */
 
     _chart.resetSvg()
 

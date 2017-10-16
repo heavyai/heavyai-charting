@@ -544,7 +544,7 @@ export default function barChart (parent, chartGroup) {
   _chart = multiSeriesMixin(_chart)
 
   _chart.destroyChart = function () {
-    deregisterChart(_chart)
+    deregisterChart(_chart, _chart.chartGroup())
     _chart.on("filtered", null)
     _chart.filterAll()
     _chart.resetSvg()
