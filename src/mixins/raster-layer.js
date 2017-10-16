@@ -55,7 +55,7 @@ export default function rasterLayer (layerType) {
   }
 
 
-  let _opacity = 1
+  let _opacity = null
 
     // NOTE: builds _layer.defaultFillColor(), _layer.nullFillColor(),
     //              _layer.fillColorScale(), & _layer.fillColorAttr()
