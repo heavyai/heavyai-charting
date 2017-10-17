@@ -1,12 +1,15 @@
+import {getLegendStateFromChart, handleLegendInput, handleLegendLock, handleLegendOpen, toLegendState} from "../chart-addons/stacked-legend"
 import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
 import baseMixin from "../mixins/base-mixin"
 import scatterMixin from "../mixins/scatter-mixin"
 import {rasterDrawMixin} from "../mixins/raster-draw-mixin"
 import {lastFilteredSize} from "../core/core-async"
+import {Legend} from "legendables"
 
 export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
+  let _legend = null
 
   const _useMap = useMap !== undefined ? useMap : false
 
@@ -162,9 +165,6 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     }
 
     _chart.map().remove()
-    if (_chart.legend()) {
-      _chart.legend().removeLegend()
-    }
   }
 
   _chart.con = function (_) {
@@ -404,6 +404,10 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
       data = _chart.data()
     }
 
+    const state = getLegendStateFromChart(_chart)
+
+    _legend.setState(state)
+
     if (_chart.isLoaded()) {
       if (Object.keys(data).length) {
         _chart._setOverlay(
@@ -535,7 +539,20 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  return _chart.anchor(parent, chartGroup)
+  const anchored = _chart.anchor(parent, chartGroup)
+  const legend = anchored.root().append("div").attr("class", "legend")
+  _legend = new Legend(legend.node())
+
+
+  _legend.on("open", handleLegendOpen.bind(_chart))
+  _legend.on("lock", handleLegendLock.bind(_chart))
+  _legend.on("input", handleLegendInput.bind(_chart))
+
+  _chart.legend = function (l) {
+    return _legend
+  }
+
+  return anchored
 }
 
 function valuesOb (obj) {
@@ -583,7 +600,6 @@ function genLayeredVega (chart) {
     scales,
     marks
   }
-  console.log(JSON.stringify(vegaSpec, null, 2))
-  return vegaSpec
 
+  return vegaSpec
 }
