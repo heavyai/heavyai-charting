@@ -22,4 +22,12 @@ describe("MapD Table Chart", () => {
       )
     })
   })
+  describe("Nulls Order", () => {
+    it("should return nullsOrder", () => {
+      const node = window.document.createElement("DIV")
+      const tableChart = dc.mapdTable(node)
+      tableChart.nullsOrder(" NULLS LAST")
+      expect(tableChart.nullsOrder()).to.equal(" NULLS LAST")
+    })
+  })
 })
