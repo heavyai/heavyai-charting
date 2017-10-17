@@ -137,9 +137,9 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
       layer.destroyLayer(_chart)
     }
 
-    this.map().remove()
-    if (this.legend()) {
-      this.legend().removeLegend()
+    _chart.map().remove()
+    if (_chart.legend()) {
+      _chart.legend().removeLegend()
     }
   }
 
