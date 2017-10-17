@@ -124,7 +124,10 @@ document.addEventListener("DOMContentLoaded", function init() {
                              type: "quantitative",
                              aggregrate: "AVG(contributions_donotmodify.amount)",
                              domain: [0, 5000],
-                             range: polyColorRange
+                             range: polyColorRange,
+                             legend: {
+                               title: "contribs[avg(amount)]"
+                             }
                            }
                          }
                        })
@@ -193,7 +196,10 @@ document.addEventListener("DOMContentLoaded", function init() {
                               type: "ordinal",
                               field: "lang",
                               domain: langDomain,
-                              range: langColors
+                              range: langColors,
+                              legend: {
+                                title: "tweets[lang]"
+                              }
                             }
                           }
                         })
@@ -255,7 +261,10 @@ document.addEventListener("DOMContentLoaded", function init() {
                               type: "ordinal",
                               field: "recipient_party",
                               domain: ["D", "R"],
-                              range: ["blue", "red"]
+                              range: ["blue", "red"],
+                              legend: {
+                                title: "contributions[recipient_party]"
+                              }
                             }
                           }
                         })
@@ -364,8 +373,6 @@ document.addEventListener("DOMContentLoaded", function init() {
         dc.redrawAllAsync();
       }
     })
-
-
   }
 
 });
