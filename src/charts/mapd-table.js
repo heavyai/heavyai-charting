@@ -35,6 +35,7 @@ export default function mapdTable (parent, chartGroup) {
   let _isGroupedData = false
   let _colAliases = null
   let _sampling = false
+  let _nullsOrder = ""
 
   const _table_events = ["sort"]
   const _listeners = d3.dispatch.apply(d3, _table_events)
@@ -72,6 +73,14 @@ export default function mapdTable (parent, chartGroup) {
       return _sortColumn
     }
     _sortColumn = _
+    return _chart
+  }
+
+  _chart.nullsOrder = function (_) {
+    if (!arguments.length) {
+      return _nullsOrder
+    }
+    _nullsOrder = _
     return _chart
   }
 
@@ -120,6 +129,10 @@ export default function mapdTable (parent, chartGroup) {
     _dimOrGroup = _isGroupedData ? _chart.group() : _chart.dimension()
     _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null)
     const sortFuncName = _sortColumn && _sortColumn.order === "asc" ? "bottomAsync" : "topAsync"
+
+    if (!_isGroupedData) {
+      _dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "")
+    }
 
     if (sortFuncName === "topAsync") {
       return _dimOrGroup[sortFuncName](size, offset)
@@ -316,7 +329,10 @@ export default function mapdTable (parent, chartGroup) {
 
               const sortLabel = headerItem.append("div")
                     .attr("class", "table-sort")
-                    .classed("disabled", !_isGroupedData)
+                    .classed("disabled", () => {
+                      const isString = data[0] ? typeof data[0][`col${i}`] === "string" : false
+                      return !_isGroupedData && isString
+                    })
                     .classed("active", _sortColumn ? _sortColumn.index === i : false)
                     .classed(_sortColumn ? _sortColumn.order : "", true)
                     .on("click", () => {
@@ -362,7 +378,7 @@ export default function mapdTable (parent, chartGroup) {
                     .on("click", function () {
                       clearColFilter(d3.select(this).attr("data-expr"))
                     })
-                    .style("left", textSpan.node().getBoundingClientRect().width + (_isGroupedData ? GROUP_DATA_WIDTH : NON_GROUP_DATA_WIDTH) + "px")
+                    .style("left", textSpan.node().getBoundingClientRect().width + GROUP_DATA_WIDTH + "px")
                     .append("svg")
                     .attr("class", "svg-icon")
                     .classed("icon-unfilter", true)
