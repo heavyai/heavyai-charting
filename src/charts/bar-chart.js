@@ -549,6 +549,7 @@ export default function barChart (parent, chartGroup) {
     _chart.filterAll()
     _chart.resetSvg()
     _chart.root().attr("style", "").attr("class", "").html("")
+    _chart._doRender = () => _chart
   }
 
   return _chart.anchor(parent, chartGroup)
