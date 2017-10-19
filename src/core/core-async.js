@@ -62,7 +62,7 @@ export function isEqualToRenderCount (queryCount) {
   return ++_renderCount === queryCount
 }
 
-export function redrawAllAsync (group) {
+export function redrawAllAsync (group, allCharts) {
   if (refreshDisabled()) {
     return Promise.resolve()
   }
@@ -78,7 +78,7 @@ export function redrawAllAsync (group) {
 
   _startRedrawTime = new Date()
 
-  const charts = chartRegistry.list(group)
+  const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
 
   const createRedrawPromises = () => charts.map(chart => {
     chart.expireCache()
@@ -111,7 +111,7 @@ export function redrawAllAsync (group) {
   }
 }
 
-export function renderAllAsync (group, should) {
+export function renderAllAsync (group, allCharts) {
   if (refreshDisabled()) {
     return Promise.resolve()
   }
@@ -127,7 +127,7 @@ export function renderAllAsync (group, should) {
 
   _startRenderTime = new Date()
 
-  const charts = should ? chartRegistry.listAll() : chartRegistry.list(group)
+  const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
 
   const createRenderPromises = () => charts.map(chart => {
     chart.expireCache()
