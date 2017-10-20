@@ -485,6 +485,7 @@ describe("rasterLayerPointMixin", () => {
     const cf = {
       getTable: () => ["flights"],
       getFilterString: () => "",
+      getGlobalFilterString: () => "",
       getId: () => 1
     }
 
