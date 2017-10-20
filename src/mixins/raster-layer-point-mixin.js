@@ -60,6 +60,7 @@ function getColor (color, layerName) {
 function getTransforms (
   table,
   filter,
+  globalFilter,
   {encoding: {x, y, size, color}, transform},
   lastFilteredSize
 ) {
@@ -95,6 +96,13 @@ function getTransforms (
     transforms.push({
       type: "filter",
       expr: filter
+    })
+  }
+
+  if (typeof globalFilter === "string" && globalFilter.length) {
+    transforms.push({
+      type: "filter",
+      expr: globalFilter
     })
   }
 
@@ -209,6 +217,7 @@ export default function rasterLayerPointMixin (_layer) {
     return getTransforms(
       "",
       "",
+      "",
       state,
       lastFilteredSize(_layer.crossfilter().getId())
     )
@@ -224,6 +233,7 @@ export default function rasterLayerPointMixin (_layer) {
     table,
     filter,
     lastFilteredSize,
+    globalFilter,
     pixelRatio,
     layerName
   }) {
@@ -233,7 +243,7 @@ export default function rasterLayerPointMixin (_layer) {
         sql: parser.writeSQL({
           type: "root",
           source: table,
-          transform: getTransforms(table, filter, state, lastFilteredSize)
+          transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
         })
       },
       scales: getScales(state.encoding, layerName),
@@ -332,6 +342,7 @@ export default function rasterLayerPointMixin (_layer) {
       layerName,
       table: _layer.crossfilter().getTable()[0],
       filter: _layer.crossfilter().getFilterString(),
+      globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio()
     })
