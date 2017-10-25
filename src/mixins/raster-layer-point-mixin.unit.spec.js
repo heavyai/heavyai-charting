@@ -53,6 +53,63 @@ describe("rasterLayerPointMixin", () => {
       color: "#27aeef"
     }
 
+    describe("grouby transform", () => {
+      it("should handle appropriate grouby and aggregation", () => {
+        const layer = rasterLayer("points")
+        layer.setState({
+          transform: {
+            grouby: "state"
+          },
+          mark: "point",
+          encoding: {
+            x: {
+              type: "quantitative",
+              aggregate: "average",
+              field: "conv_4326_900913_x(lon)"
+            },
+            y: {
+              type: "quantitative",
+              aggregate: "average",
+              field: "conv_4326_900913_y(lat)"
+            },
+            size: 11,
+            color: "#27aeef"
+          }
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+          layerName: "points"
+        })).to.deep.equal({
+          data: {
+            name: "points",
+            sql: "SELECT state, AVG(conv_4326_900913_x(lon)) as x, AVG(conv_4326_900913_y(lat)) as y FROM tweets_nov_feb WHERE (lon = 100) GROUP BY state"
+          },
+          "scales": [],
+           "mark": {
+             "type": "points",
+             "from": {
+               "data": "points"
+             },
+             "properties": {
+               "x": {
+                 "scale": "x",
+                 "field": "x"
+               },
+               "y": {
+                 "scale": "y",
+                 "field": "y"
+               },
+               "size": 11,
+               "fillColor": "#27aeef"
+             }
+           }
+        })
+
+      })
+    })
+
     describe("symbol mark types", () => {
       it("should handle crosses", () => {
         const layer = rasterLayer("points")
