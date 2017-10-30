@@ -5,6 +5,9 @@ const hasLegendLockedProp = color =>
 const hasLegendTitleProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("title")
 
+const TOP_PADDING = 56
+const LASSO_TOOL_VERTICAL_SPACE = 120
+
 function setLegendState (setter) {
   return function setState (state) {
     return {
@@ -73,7 +76,26 @@ export function getLegendStateFromChart (chart) {
         return color
       }
     }
-  ))
+  ), chart)
+}
+
+export function handleLegendToggle () {
+  this.legend().setState({
+    ...this.legend().state,
+    open: !this.legend().state.open
+  })
+}
+
+export function handleLegendDoneRender () {
+  this.root().classed("horizontal-lasso-tools", () => {
+    const legendNode = this.root().select(".legendables").node()
+    const isHorizontal = legendNode && legendNode.clientHeight > this.height() - LASSO_TOOL_VERTICAL_SPACE
+
+    this.root().select(".mapd-draw-button-control-group")
+      .style("width", isHorizontal ? legendNode.clientWidth + 2 + "px" : "auto")
+
+    return isHorizontal
+  })
 }
 
 export function handleLegendOpen (index = 0) {
@@ -82,7 +104,6 @@ export function handleLegendOpen (index = 0) {
       open: hasLegendOpenProp(color) ? !color.legend.open : false
     }))
   )
-
   this.legend().setState(getLegendStateFromChart(this))
 }
 
@@ -158,13 +179,15 @@ function legendState (state) {
   }
 }
 
-export function toLegendState (states = []) {
+export function toLegendState (states = [], chart) {
   if (states.length === 1) {
     return legendState(states[0])
   } else if (states.length) {
     return {
       type: "stacked",
-      list: states.map(legendState)
+      list: states.map(legendState),
+      open: chart.legendOpen(),
+      maxHeight: chart.height() - TOP_PADDING
     }
   } else {
     return {}

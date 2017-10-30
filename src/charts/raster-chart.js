@@ -1,4 +1,4 @@
-import {getLegendStateFromChart, handleLegendInput, handleLegendLock, handleLegendOpen, toLegendState} from "../chart-addons/stacked-legend"
+import {getLegendStateFromChart, handleLegendInput, handleLegendLock, handleLegendOpen, handleLegendToggle, toLegendState, handleLegendDoneRender} from "../chart-addons/stacked-legend"
 import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
 import baseMixin from "../mixins/base-mixin"
@@ -61,6 +61,15 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
   let _popupSearchRadius = 2
   const _popupDivClassName = "map-popup"
   let _popupDisplayable = true
+  let _legendOpen = true
+
+  _chart.legendOpen = function (_) {
+    if (!arguments.length) {
+      return _legendOpen
+    }
+    _legendOpen = _
+    return _chart
+  }
 
   _chart.popupDisplayable = function (displayable) {
     _popupDisplayable = Boolean(displayable)
@@ -418,6 +427,7 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
           Boolean(redraw)
         )
         _hasBeenRendered = true
+
       } else {
         _chart._setOverlay(null, null, null, browser, Boolean(redraw))
       }
@@ -547,6 +557,8 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
   _legend.on("open", handleLegendOpen.bind(_chart))
   _legend.on("lock", handleLegendLock.bind(_chart))
   _legend.on("input", handleLegendInput.bind(_chart))
+  _legend.on("toggle", handleLegendToggle.bind(_chart))
+  _legend.on("doneRender", handleLegendDoneRender.bind(_chart))
 
   _chart.legend = function (l) {
     return _legend
