@@ -14,6 +14,33 @@ const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
 
+function validSymbol (type) {
+  switch (type) {
+  case "circle":
+  case "cross":
+  case "diamond":
+  case "hexagon":
+  case "square":
+  case "triangle-down":
+  case "triangle-left":
+  case "triangle-right":
+  case "triangle-up":
+  case "hexagon-vert":
+  case "hexagon-horiz":
+    return true
+  default:
+    return false
+  }
+}
+
+function getMarkType (config = {point: {}}) {
+  if (validSymbol(config.point.shape)) {
+    return config.point.shape
+  } else {
+    return "circle"
+  }
+}
+
 function getSizing (sizeAttr, cap, lastFilteredSize = cap, pixelRatio, layerName) {
   if (typeof sizeAttr === "number") {
     return sizeAttr
@@ -237,6 +264,17 @@ export default function rasterLayerPointMixin (_layer) {
     pixelRatio,
     layerName
   }) {
+
+    const size = getSizing(
+      state.encoding.size,
+      state.transform && state.transform.limit,
+      lastFilteredSize,
+      pixelRatio,
+      layerName
+    )
+
+    const markType = getMarkType(state.config)
+
     return {
       data: {
         name: layerName,
@@ -248,11 +286,11 @@ export default function rasterLayerPointMixin (_layer) {
       },
       scales: getScales(state.encoding, layerName),
       mark: {
-        type: "points",
+        type: markType === "circle" ? "points" : "symbol",
         from: {
           data: layerName
         },
-        properties: {
+        properties: Object.assign({}, {
           x: {
             scale: "x",
             field: "x"
@@ -261,15 +299,14 @@ export default function rasterLayerPointMixin (_layer) {
             scale: "y",
             field: "y"
           },
-          size: getSizing(
-            state.encoding.size,
-            state.transform && state.transform.limit,
-            lastFilteredSize,
-            pixelRatio,
-            layerName
-          ),
           fillColor: getColor(state.encoding.color, layerName)
-        }
+        }, markType == "circle" ? {
+          size
+        } : {
+          shape: state.config.point.shape,
+          width: size,
+          height: size
+        })
       }
     }
   }

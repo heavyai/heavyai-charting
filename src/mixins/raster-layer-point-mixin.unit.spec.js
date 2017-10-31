@@ -53,6 +53,54 @@ describe("rasterLayerPointMixin", () => {
       color: "#27aeef"
     }
 
+    describe("symbol mark types", () => {
+      it("should handle crosses", () => {
+        const layer = rasterLayer("points")
+        layer.setState({
+          transform: {},
+          mark: "point",
+          encoding: baseEncoding,
+          config: {
+            point: {
+              shape: "cross"
+            }
+          }
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+          layerName: "points"
+        })).to.deep.equal({
+          data: {
+            name: "points",
+            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+          },
+          "scales": [],
+           "mark": {
+             "type": "symbol",
+             "from": {
+               "data": "points"
+             },
+             "properties": {
+               shape: "cross",
+               "x": {
+                 "scale": "x",
+                 "field": "x"
+               },
+               "y": {
+                 "scale": "y",
+                 "field": "y"
+               },
+               "width": 11,
+               "height": 11,
+               "fillColor": "#27aeef"
+             }
+           }
+        })
+      })
+    })
+
     describe("sampling", () => {
       it("should set sampling transform", () => {
         const layer = rasterLayer("points")
