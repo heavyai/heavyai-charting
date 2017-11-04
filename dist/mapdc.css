@@ -578,6 +578,8 @@ body {
     stroke-width: 1px; }
   .dc-chart .pie-slice.stroke-thick path {
     stroke-width: 2px; }
+  .dc-chart .pie-slice.highlight path {
+    fill-opacity: .8; }
   .dc-chart .pie-label {
     fill: #404040;
     pointer-events: none; }
