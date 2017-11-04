@@ -20,7 +20,8 @@ describe("Core Async", () => {
       const chart = {
         _invokeDataFetchListener: chai.spy(),
         expireCache: chai.spy(),
-        redrawAsync: chai.spy(() => new Promise(resolve => resolve()))
+        redrawAsync: chai.spy(() => new Promise(resolve => resolve())),
+        renderAsync: chai.spy(() => new Promise(resolve => resolve())),
       }
       return chart
     }
@@ -43,12 +44,15 @@ describe("Core Async", () => {
     })
 
     it("should call redraw for each chart in the group", (done) => {
-      dc.redrawAllAsync().then(() => {
-        charts.forEach(chart => {
-          expect(chart.redrawAsync).to.have.been.called.once()
+        Promise.resolve()
+        .then(() => dc.renderAllAsync())
+        .then(() => dc.redrawAllAsync())
+        .then(() => {
+          charts.forEach(chart => {
+            expect(chart.redrawAsync).to.have.been.called.once()
+          })
+          done()
         })
-        done()
-      })
     })
 
     it("should immediately resolve and set redraw stack empty to false when invoked when redrawAllAsync is already in flight", (done) => {

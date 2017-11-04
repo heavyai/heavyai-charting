@@ -67,6 +67,10 @@ export function redrawAllAsync (group, allCharts) {
     return Promise.resolve()
   }
 
+  if (!startRenderTime()) {
+    return Promise.reject("redrawAllAsync() is called before renderAllAsync(), please call renderAllAsync() first.")
+  }
+
   const queryGroupId = _redrawId++
   const stackEmpty = _redrawIdStack === null
   _redrawIdStack = queryGroupId

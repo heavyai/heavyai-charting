@@ -4281,6 +4281,11 @@ var chartRegistry = exports.chartRegistry = function () {
     list: function list(group) {
       group = initializeChartGroup(group);
       return _chartMap[group];
+    },
+    listAll: function listAll() {
+      return Object.keys(_chartMap).reduce(function (accum, key) {
+        return accum.concat(_chartMap[key]);
+      }, []);
     }
   };
 }();
@@ -4290,7 +4295,7 @@ function registerChart(chart, group) {
 }
 
 function getChart(dcFlag) {
-  return chartRegistry.list().reduce(function (accum, chrt) {
+  return chartRegistry.listAll().reduce(function (accum, chrt) {
     return chrt.__dcFlag__ === dcFlag ? chrt : accum;
   }, null);
 }
@@ -5041,9 +5046,13 @@ function isEqualToRenderCount(queryCount) {
   return ++_renderCount === queryCount;
 }
 
-function redrawAllAsync(group) {
+function redrawAllAsync(group, allCharts) {
   if ((0, _core.refreshDisabled)()) {
     return Promise.resolve();
+  }
+
+  if (!startRenderTime()) {
+    return Promise.reject("redrawAllAsync() is called before renderAllAsync(), please call renderAllAsync() first.");
   }
 
   var queryGroupId = _redrawId++;
@@ -5057,7 +5066,7 @@ function redrawAllAsync(group) {
 
   _startRedrawTime = new Date();
 
-  var charts = _core.chartRegistry.list(group);
+  var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
 
   var createRedrawPromises = function createRedrawPromises() {
     return charts.map(function (chart) {
@@ -5091,7 +5100,7 @@ function redrawAllAsync(group) {
   }
 }
 
-function renderAllAsync(group) {
+function renderAllAsync(group, allCharts) {
   if ((0, _core.refreshDisabled)()) {
     return Promise.resolve();
   }
@@ -5107,7 +5116,7 @@ function renderAllAsync(group) {
 
   _startRenderTime = new Date();
 
-  var charts = _core.chartRegistry.list(group);
+  var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
 
   var createRenderPromises = function createRenderPromises() {
     return charts.map(function (chart) {
@@ -5186,6 +5195,8 @@ function lastFilteredSize(crossfilterId) {
 }
 
 function resetState() {
+  _groupAll = {};
+  _lastFilteredSize = {};
   resetRedrawStack();
   resetRenderStack();
 }
@@ -6111,7 +6122,7 @@ function baseMixin(_chart) {
         if (!(0, _coreAsync.redrawStackEmpty)()) {
           (0, _coreAsync.redrawStackEmpty)(true);
 
-          return (0, _coreAsync.redrawAllAsync)().then(function (result) {
+          return (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function (result) {
             callback(null, result);
           }).catch(function (error) {
             callback(error);
@@ -7816,7 +7827,7 @@ function coordinateGridMixin(_chart) {
 
     _chart.replaceFilter(domFilter);
     _chart.rescale();
-    (0, _coreAsync.redrawAllAsync)();
+    (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
   }
 
   var _parent = void 0;
@@ -8946,9 +8957,7 @@ function coordinateGridMixin(_chart) {
   _chart._preprocessData = function (data) {};
 
   _chart._doRender = function () {
-    /* OVERRIDE ---------------------------------------------------------------- */
     _chart._redrawBrushFlag = true;
-    /* ------------------------------------------------------------------------- */
 
     _chart.resetSvg();
 
@@ -10914,12 +10923,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (_xDim !== null && _yDim !== null) {
       _xDim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
       _yDim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
-      (0, _coreAsync.redrawAllAsync)().catch(function (error) {
+      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
       });
     } else if (redrawall) {
-      (0, _coreAsync.redrawAllAsync)().catch(function (error) {
+      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
       });
@@ -11446,7 +11455,7 @@ function rasterDrawMixin(chart) {
 
   function drawEventHandler() {
     applyFilter();
-    (0, _coreAsync.redrawAllAsync)();
+    (0, _coreAsync.redrawAllAsync)(chart.chartGroup());
   }
 
   var debounceRedraw = chart.debounce(function () {
@@ -22249,10 +22258,14 @@ function processMultiSeriesResults(results) {
 }
 
 function selectWithCase(dimension, values) {
-  var set = values.map(function (val) {
-    return "'" + val.replace(/'/, "''") + "'";
-  }).join(",");
-  return "CASE when " + dimension + " IN (" + set + ") then " + dimension + " ELSE 'other' END";
+  if (dimension.slice(0, 9) === "CASE when") {
+    return dimension;
+  } else {
+    var set = values.map(function (val) {
+      return "'" + val.replace(/'/, "''") + "'";
+    }).join(",");
+    return "CASE when " + dimension + " IN (" + set + ") then " + dimension + " ELSE 'other' END";
+  }
 }
 
 function setDimensionsWithColumns(columns, selected) {
@@ -22342,9 +22355,8 @@ function multiSeriesMixin(chart) {
           return result.key0;
         })).selected(hasSelected ? currentSelected : chart.series().values().slice(0, TOP));
 
-        if (chart.rangeChart()) {
-          chart.group().dimension().set(setDimensionsWithColumns(columns, chart.series().selected()));
-        }
+        chart.group().dimension().set(setDimensionsWithColumns(columns, chart.series().selected()));
+
         chart.group().dimension().multiDim(false);
 
         return chart.group().reduce(chart.group().reduce()).all(function (error, results) {
@@ -22435,6 +22447,7 @@ function multiSeriesMixin(chart) {
 
 
 module.exports = earcut;
+module.exports.default = earcut;
 
 function earcut(data, holeIndices, dim) {
 
@@ -22447,7 +22460,7 @@ function earcut(data, holeIndices, dim) {
 
     if (!outerNode) return triangles;
 
-    var minX, minY, maxX, maxY, x, y, size;
+    var minX, minY, maxX, maxY, x, y, invSize;
 
     if (hasHoles) outerNode = eliminateHoles(data, holeIndices, outerNode, dim);
 
@@ -22465,11 +22478,12 @@ function earcut(data, holeIndices, dim) {
             if (y > maxY) maxY = y;
         }
 
-        // minX, minY and size are later used to transform coords into integers for z-order calculation
-        size = Math.max(maxX - minX, maxY - minY);
+        // minX, minY and invSize are later used to transform coords into integers for z-order calculation
+        invSize = Math.max(maxX - minX, maxY - minY);
+        invSize = invSize !== 0 ? 1 / invSize : 0;
     }
 
-    earcutLinked(outerNode, triangles, dim, minX, minY, size);
+    earcutLinked(outerNode, triangles, dim, minX, minY, invSize);
 
     return triangles;
 }
@@ -22505,7 +22519,7 @@ function filterPoints(start, end) {
         if (!p.steiner && (equals(p, p.next) || area(p.prev, p, p.next) === 0)) {
             removeNode(p);
             p = end = p.prev;
-            if (p === p.next) return null;
+            if (p === p.next) break;
             again = true;
 
         } else {
@@ -22517,11 +22531,11 @@ function filterPoints(start, end) {
 }
 
 // main ear slicing loop which triangulates a polygon (given as a linked list)
-function earcutLinked(ear, triangles, dim, minX, minY, size, pass) {
+function earcutLinked(ear, triangles, dim, minX, minY, invSize, pass) {
     if (!ear) return;
 
     // interlink polygon nodes in z-order
-    if (!pass && size) indexCurve(ear, minX, minY, size);
+    if (!pass && invSize) indexCurve(ear, minX, minY, invSize);
 
     var stop = ear,
         prev, next;
@@ -22531,7 +22545,7 @@ function earcutLinked(ear, triangles, dim, minX, minY, size, pass) {
         prev = ear.prev;
         next = ear.next;
 
-        if (size ? isEarHashed(ear, minX, minY, size) : isEar(ear)) {
+        if (invSize ? isEarHashed(ear, minX, minY, invSize) : isEar(ear)) {
             // cut off the triangle
             triangles.push(prev.i / dim);
             triangles.push(ear.i / dim);
@@ -22552,16 +22566,16 @@ function earcutLinked(ear, triangles, dim, minX, minY, size, pass) {
         if (ear === stop) {
             // try filtering points and slicing again
             if (!pass) {
-                earcutLinked(filterPoints(ear), triangles, dim, minX, minY, size, 1);
+                earcutLinked(filterPoints(ear), triangles, dim, minX, minY, invSize, 1);
 
             // if this didn't work, try curing all small self-intersections locally
             } else if (pass === 1) {
                 ear = cureLocalIntersections(ear, triangles, dim);
-                earcutLinked(ear, triangles, dim, minX, minY, size, 2);
+                earcutLinked(ear, triangles, dim, minX, minY, invSize, 2);
 
             // as a last resort, try splitting the remaining polygon into two
             } else if (pass === 2) {
-                splitEarcut(ear, triangles, dim, minX, minY, size);
+                splitEarcut(ear, triangles, dim, minX, minY, invSize);
             }
 
             break;
@@ -22589,7 +22603,7 @@ function isEar(ear) {
     return true;
 }
 
-function isEarHashed(ear, minX, minY, size) {
+function isEarHashed(ear, minX, minY, invSize) {
     var a = ear.prev,
         b = ear,
         c = ear.next;
@@ -22603,8 +22617,8 @@ function isEarHashed(ear, minX, minY, size) {
         maxTY = a.y > b.y ? (a.y > c.y ? a.y : c.y) : (b.y > c.y ? b.y : c.y);
 
     // z-order range for the current triangle bbox;
-    var minZ = zOrder(minTX, minTY, minX, minY, size),
-        maxZ = zOrder(maxTX, maxTY, minX, minY, size);
+    var minZ = zOrder(minTX, minTY, minX, minY, invSize),
+        maxZ = zOrder(maxTX, maxTY, minX, minY, invSize);
 
     // first look for points inside the triangle in increasing z-order
     var p = ear.nextZ;
@@ -22655,7 +22669,7 @@ function cureLocalIntersections(start, triangles, dim) {
 }
 
 // try splitting polygon into two and triangulate them independently
-function splitEarcut(start, triangles, dim, minX, minY, size) {
+function splitEarcut(start, triangles, dim, minX, minY, invSize) {
     // look for a valid diagonal that divides the polygon into two
     var a = start;
     do {
@@ -22670,8 +22684,8 @@ function splitEarcut(start, triangles, dim, minX, minY, size) {
                 c = filterPoints(c, c.next);
 
                 // run earcut on each half
-                earcutLinked(a, triangles, dim, minX, minY, size);
-                earcutLinked(c, triangles, dim, minX, minY, size);
+                earcutLinked(a, triangles, dim, minX, minY, invSize);
+                earcutLinked(c, triangles, dim, minX, minY, invSize);
                 return;
             }
             b = b.next;
@@ -22728,7 +22742,7 @@ function findHoleBridge(hole, outerNode) {
     // find a segment intersected by a ray from the hole's leftmost point to the left;
     // segment's endpoint with lesser x will be potential connection point
     do {
-        if (hy <= p.y && hy >= p.next.y) {
+        if (hy <= p.y && hy >= p.next.y && p.next.y !== p.y) {
             var x = p.x + (hy - p.y) * (p.next.x - p.x) / (p.next.y - p.y);
             if (x <= hx && x > qx) {
                 qx = x;
@@ -22759,7 +22773,7 @@ function findHoleBridge(hole, outerNode) {
     p = m.next;
 
     while (p !== stop) {
-        if (hx >= p.x && p.x >= mx &&
+        if (hx >= p.x && p.x >= mx && hx !== p.x &&
                 pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.x, p.y)) {
 
             tan = Math.abs(hy - p.y) / (hx - p.x); // tangential
@@ -22777,10 +22791,10 @@ function findHoleBridge(hole, outerNode) {
 }
 
 // interlink polygon nodes in z-order
-function indexCurve(start, minX, minY, size) {
+function indexCurve(start, minX, minY, invSize) {
     var p = start;
     do {
-        if (p.z === null) p.z = zOrder(p.x, p.y, minX, minY, size);
+        if (p.z === null) p.z = zOrder(p.x, p.y, minX, minY, invSize);
         p.prevZ = p.prev;
         p.nextZ = p.next;
         p = p.next;
@@ -22813,20 +22827,11 @@ function sortLinked(list) {
                 q = q.nextZ;
                 if (!q) break;
             }
-
             qSize = inSize;
 
             while (pSize > 0 || (qSize > 0 && q)) {
 
-                if (pSize === 0) {
-                    e = q;
-                    q = q.nextZ;
-                    qSize--;
-                } else if (qSize === 0 || !q) {
-                    e = p;
-                    p = p.nextZ;
-                    pSize--;
-                } else if (p.z <= q.z) {
+                if (pSize !== 0 && (qSize === 0 || !q || p.z <= q.z)) {
                     e = p;
                     p = p.nextZ;
                     pSize--;
@@ -22854,11 +22859,11 @@ function sortLinked(list) {
     return list;
 }
 
-// z-order of a point given coords and size of the data bounding box
-function zOrder(x, y, minX, minY, size) {
+// z-order of a point given coords and inverse of the longer side of data bbox
+function zOrder(x, y, minX, minY, invSize) {
     // coords are transformed into non-negative 15-bit integer range
-    x = 32767 * (x - minX) / size;
-    y = 32767 * (y - minY) / size;
+    x = 32767 * (x - minX) * invSize;
+    y = 32767 * (y - minY) * invSize;
 
     x = (x | (x << 8)) & 0x00FF00FF;
     x = (x | (x << 4)) & 0x0F0F0F0F;
@@ -22942,7 +22947,8 @@ function middleInside(a, b) {
         px = (a.x + b.x) / 2,
         py = (a.y + b.y) / 2;
     do {
-        if (((p.y > py) !== (p.next.y > py)) && (px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x))
+        if (((p.y > py) !== (p.next.y > py)) && p.next.y !== p.y &&
+                (px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x))
             inside = !inside;
         p = p.next;
     } while (p !== a);
@@ -24755,8 +24761,7 @@ function rasterLayerHeatmapMixin(_layer) {
   function getMarkSize(_ref) {
     var width = _ref.width,
         neLat = _ref.neLat,
-        zoom = _ref.zoom,
-        domain = _ref.domain;
+        zoom = _ref.zoom;
 
     var pixelSize = state.encoding.size.type === "manual" ? state.encoding.size.value : getPixelSize(neLat, width, zoom);
     var numBinsX = Math.round(width / pixelSize);
@@ -24775,6 +24780,7 @@ function rasterLayerHeatmapMixin(_layer) {
         min = _ref2.min,
         max = _ref2.max,
         filter = _ref2.filter,
+        globalFilter = _ref2.globalFilter,
         neLat = _ref2.neLat,
         zoom = _ref2.zoom,
         domain = _ref2.domain;
@@ -24783,13 +24789,26 @@ function rasterLayerHeatmapMixin(_layer) {
         markWidth = _getMarkSize.markWidth,
         markHeight = _getMarkSize.markHeight;
 
+    var transforms = [];
+
+    if (typeof filter === "string" && filter.length) {
+      transforms.push({
+        type: "filter",
+        expr: filter
+      });
+    }
+
+    if (typeof globalFilter === "string" && globalFilter.length) {
+      transforms.push({
+        type: "filter",
+        expr: globalFilter
+      });
+    }
+
     return _utils.parser.writeSQL({
       type: "root",
       source: table,
-      transform: [{
-        type: "filter",
-        expr: filter
-      }, {
+      transform: [].concat(transforms, [{
         type: "pixel_bin",
         width: width,
         height: height,
@@ -24807,7 +24826,7 @@ function rasterLayerHeatmapMixin(_layer) {
           domain: [min[1], max[1]]
         },
         aggregate: state.encoding.color.aggregate
-      }]
+      }])
     });
   };
 
@@ -24818,6 +24837,7 @@ function rasterLayerHeatmapMixin(_layer) {
         min = _ref3.min,
         max = _ref3.max,
         filter = _ref3.filter,
+        globalFilter = _ref3.globalFilter,
         neLat = _ref3.neLat,
         zoom = _ref3.zoom,
         domain = _ref3.domain;
@@ -24831,7 +24851,7 @@ function rasterLayerHeatmapMixin(_layer) {
       height: height,
       data: {
         name: "heatmap_query",
-        sql: _layer.genSQL({ table: table, width: width, height: height, min: min, max: max, filter: filter, neLat: neLat, zoom: zoom, domain: domain })
+        sql: _layer.genSQL({ table: table, width: width, height: height, min: min, max: max, filter: filter, globalFilter: globalFilter, neLat: neLat, zoom: zoom, domain: domain })
       },
       scales: [{
         name: "heat_color",
@@ -24865,7 +24885,7 @@ function rasterLayerHeatmapMixin(_layer) {
     };
   };
 
-  _layer._destroyLayer = function (chart) {
+  _layer._destroyLayer = function () {
     var xDim = _layer.xDim();
     if (xDim) {
       xDim.dispose();
@@ -26171,7 +26191,8 @@ if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
 __webpack_require__(208);
 __webpack_require__(209);
 
-exports.d3 = _d;
+exports.d3 = _d; // eslint-disable-line
+
 var errors = exports.errors = {
   Exception: _errors.Exception,
   InvalidStateException: _errors.InvalidStateException,
@@ -29019,11 +29040,14 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
   _chart = (0, _multiSeriesMixin2.default)(_chart);
 
   _chart.destroyChart = function () {
-    (0, _core.deregisterChart)(_chart);
+    (0, _core.deregisterChart)(_chart, _chart.chartGroup());
     _chart.on("filtered", null);
     _chart.filterAll();
     _chart.resetSvg();
     _chart.root().attr("style", "").attr("class", "").html("");
+    _chart._doRender = function () {
+      return _chart;
+    };
   };
 
   return _chart.anchor(parent, chartGroup);
@@ -40196,7 +40220,7 @@ function mapDrawMixin(chart) {
 
   function drawEventHandler() {
     applyFilter();
-    (0, _coreAsync.redrawAllAsync)();
+    (0, _coreAsync.redrawAllAsync)(chart.chartGroup());
   }
 
   function applyFilter() {
@@ -43807,11 +43831,14 @@ function lineChart(parent, chartGroup) {
   _chart = (0, _multiSeriesMixin2.default)(_chart);
 
   _chart.destroyChart = function () {
-    (0, _core.deregisterChart)(_chart);
+    (0, _core.deregisterChart)(_chart, _chart.chartGroup());
     _chart.on("filtered", null);
     _chart.filterAll();
     _chart.resetSvg();
     _chart.root().attr("style", "").attr("class", "").html("");
+    _chart._doRender = function () {
+      return _chart;
+    };
   };
 
   return _chart.anchor(parent, chartGroup);
@@ -44076,9 +44103,9 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       _layer3.destroyLayer(_chart);
     }
 
-    this.map().remove();
-    if (this.legend()) {
-      this.legend().removeLegend();
+    _chart.map().remove();
+    if (_chart.legend()) {
+      _chart.legend().removeLegend();
     }
   };
 
@@ -44121,7 +44148,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     });
   };
 
-  _chart.setDataAsync(function (group, callbacks) {
+  _chart.setDataAsync(function (group, callback) {
     var bounds = _chart.getDataRenderBounds();
     _chart._updateXAndYScales(bounds);
 
@@ -44130,12 +44157,12 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       _chart.getLayer("heat").getColorDomain(_chart).then(function (domain) {
         _chart.colors().domain(domain);
         _chart._vegaSpec = genLayeredVega(_chart);
-        var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks);
+        var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callback);
         _renderBoundsMap[nonce] = bounds;
-      });
+      }).catch(callback);
     } else {
       _chart._vegaSpec = genLayeredVega(_chart);
-      var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callbacks);
+      var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callback);
       _renderBoundsMap[nonce] = bounds;
     }
   });
@@ -44734,7 +44761,7 @@ var BoxZoomHandler = function (_BaseHandler) {
 
       var bounds = [[xmin, ymax], [xmax, ymax], [xmax, ymin], [xmin, ymin]];
 
-      (0, _coreAsync.redrawAllAsync)();
+      (0, _coreAsync.redrawAllAsync)(this._chart.chartGroup());
 
       this._active = false;
       this._fireEvent("boxzoomend", e, {
@@ -45018,7 +45045,7 @@ var ScrollZoomHandler = function (_BaseHandler2) {
       this._chart.elasticY(false);
 
       if (doFullRender) {
-        (0, _coreAsync.redrawAllAsync)();
+        (0, _coreAsync.redrawAllAsync)(this._chart.chartGroup());
       } else {
         this._chart._updateXAndYScales(this._chart.getDataRenderBounds());
         this._chartRedrawCB();
@@ -45190,7 +45217,7 @@ var DragPanHandler = function (_BaseHandler3) {
       this._drainInertiaBuffer();
 
       var finish = function finish() {
-        (0, _coreAsync.redrawAllAsync)();
+        (0, _coreAsync.redrawAllAsync)(_this5._chart.chartGroup());
         _this5._fireEvent("moveend", e);
       };
 
@@ -46509,6 +46536,7 @@ function mapdTable(parent, chartGroup) {
   var _isGroupedData = false;
   var _colAliases = null;
   var _sampling = false;
+  var _nullsOrder = "";
 
   var _table_events = ["sort"];
   var _listeners = _d2.default.dispatch.apply(_d2.default, _table_events);
@@ -46546,6 +46574,14 @@ function mapdTable(parent, chartGroup) {
       return _sortColumn;
     }
     _sortColumn = _;
+    return _chart;
+  };
+
+  _chart.nullsOrder = function (_) {
+    if (!arguments.length) {
+      return _nullsOrder;
+    }
+    _nullsOrder = _;
     return _chart;
   };
 
@@ -46596,6 +46632,10 @@ function mapdTable(parent, chartGroup) {
     _dimOrGroup = _isGroupedData ? _chart.group() : _chart.dimension();
     _dimOrGroup.order(_sortColumn ? _sortColumn.col.name : null);
     var sortFuncName = _sortColumn && _sortColumn.order === "asc" ? "bottomAsync" : "topAsync";
+
+    if (!_isGroupedData) {
+      _dimOrGroup.nullsOrder(_sortColumn ? _nullsOrder : "");
+    }
 
     if (sortFuncName === "topAsync") {
       return _dimOrGroup[sortFuncName](size, offset).then(function (result) {
@@ -46779,7 +46819,10 @@ function mapdTable(parent, chartGroup) {
         return d.expression in _filteredColumns;
       });
 
-      var sortLabel = headerItem.append("div").attr("class", "table-sort").classed("disabled", !_isGroupedData).classed("active", _sortColumn ? _sortColumn.index === i : false).classed(_sortColumn ? _sortColumn.order : "", true).on("click", function () {
+      var sortLabel = headerItem.append("div").attr("class", "table-sort").classed("disabled", function () {
+        var isString = data[0] ? typeof data[0]["col" + i] === "string" : false;
+        return !_isGroupedData && isString;
+      }).classed("active", _sortColumn ? _sortColumn.index === i : false).classed(_sortColumn ? _sortColumn.order : "", true).on("click", function () {
         _tableWrapper.selectAll(".table-sort").classed("active asc desc", false);
 
         if (_sortColumn && _sortColumn.index === i) {
@@ -46789,7 +46832,7 @@ function mapdTable(parent, chartGroup) {
         }
 
         _chart._invokeSortListener(_sortColumn);
-        (0, _coreAsync.redrawAllAsync)();
+        (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
       }).style("width", _d2.default.select(this).node().getBoundingClientRect().width + "px");
 
       var textSpan = sortLabel.append("span").text(d.label);
@@ -46802,7 +46845,7 @@ function mapdTable(parent, chartGroup) {
 
       headerItem.append("div").attr("class", "unfilter-btn").attr("data-expr", d.expression).on("click", function () {
         clearColFilter(_d2.default.select(this).attr("data-expr"));
-      }).style("left", textSpan.node().getBoundingClientRect().width + (_isGroupedData ? GROUP_DATA_WIDTH : NON_GROUP_DATA_WIDTH) + "px").append("svg").attr("class", "svg-icon").classed("icon-unfilter", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-unfilter");
+      }).style("left", textSpan.node().getBoundingClientRect().width + GROUP_DATA_WIDTH + "px").append("svg").attr("class", "svg-icon").classed("icon-unfilter", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-unfilter");
     });
   }
 
@@ -46819,14 +46862,14 @@ function mapdTable(parent, chartGroup) {
     _columnFilterMap[expr] = val;
     _tableFilter.filter(computeTableFilter(_columnFilterMap));
 
-    (0, _coreAsync.redrawAllAsync)();
+    (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
   }
 
   function clearColFilter(expr) {
     delete _columnFilterMap[expr];
     _chart.removeFilteredColumn(expr);
     _tableFilter.filter(computeTableFilter(_columnFilterMap));
-    (0, _coreAsync.redrawAllAsync)();
+    (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
   }
 
   function computeTableFilter(columnFilterMap) {
@@ -47481,6 +47524,7 @@ function rasterLayer(layerType) {
       min: chart.conv4326To900913(chart._minCoord),
       max: chart.conv4326To900913(chart._maxCoord),
       filter: _layer.crossfilter().getFilterString(),
+      globalFilter: _layer.crossfilter().getGlobalFilterString(),
       neLat: chart._maxCoord[1],
       zoom: chart.zoom(),
       domain: chart.colors().domain()
@@ -47489,7 +47533,6 @@ function rasterLayer(layerType) {
 
   _layer.getColorDomain = function (chart) {
     var subquery = _layer.genSQL(genHeatConfigFromChart(chart));
-
     var sql = "SELECT MIN(c.color) as minimum, MAX(c.color) as maximum, STDDEV(c.color) as deviation, AVG(c.color) as mean FROM (" + subquery + ") as c";
 
     return new Promise(function (resolve, reject) {
