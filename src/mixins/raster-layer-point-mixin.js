@@ -93,7 +93,7 @@ function getTransforms (
 ) {
   const transforms = []
 
-  if (typeof transform === "object" && transform.groupby.length) {
+  if (typeof transform === "object" && typeof transform.groupby === "object" && transform.groupby.length) {
     const fields = [x.field, y.field]
     const alias = ["x", "y"]
     const ops = [x.aggregate, y.aggregate]
