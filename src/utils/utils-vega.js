@@ -1,3 +1,5 @@
+import d3 from "d3"
+
 export function notNull (value) { return value != null /* double-equals also catches undefined */ }
 
 export function adjustOpacity (color, opacity = 1) {
