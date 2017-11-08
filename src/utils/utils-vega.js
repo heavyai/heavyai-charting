@@ -22,6 +22,9 @@ export function adjustRGBAOpacity (rgba, opacity) {
   return `rgba(${r},${g},${b},${a})`
 }
 
+const ordScale = d3.scale.ordinal()
+const quantScale = d3.scale.quantize()
+
 export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, useScale, prePostFuncs) {
   let scaleFunc = "", fieldAttrFunc = ""
   const capAttrName = attrName.charAt(0).toUpperCase() + attrName.slice(1)
@@ -89,9 +92,15 @@ export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, us
     if (input === null) {
       rtnVal = layerObj[nullFunc]()
     } else if (input !== undefined && useScale) {
-      const scaleObj = layerObj[scaleFunc]()
-      if (scaleObj && scaleObj.domain && scaleObj.domain().length && scaleObj.range().length) {
-        rtnVal = scaleObj(input)
+      const colorObj = layerObj.getState().encoding.color
+      if (colorObj && colorObj.domain && colorObj.domain.length && colorObj.range.length) {
+        if (colorObj.type === "ordinal") {
+          ordScale.domain(colorObj.domain).range(colorObj.range)
+          rtnVal = ordScale(input)
+        } else {
+          quantScale.domain(colorObj.domain).range(colorObj.range)
+          rtnVal = quantScale(input)
+        }
       }
     }
 
