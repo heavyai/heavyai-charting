@@ -25,6 +25,14 @@ body {
     height: auto !important;
 }
 
+.open-toggle {
+    cursor: pointer;
+}
+
+.nominal-legend.legendables {
+    border: 1px solid $gray2 !important;
+}
+
 .anim-button-play, .anim-button-stop {
     z-index: 2;
     opacity: 1 !important;
