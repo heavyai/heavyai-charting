@@ -88,36 +88,93 @@ function getTransforms (
   table,
   filter,
   globalFilter,
-  {encoding: {x, y, size, color}, transform},
+  {transform, encoding: {x, y, size, color}},
   lastFilteredSize
 ) {
-  const transforms = [
-    {
+  const transforms = []
+
+  if (typeof transform === "object" && typeof transform.groupby === "object" && transform.groupby.length) {
+    const fields = [x.field, y.field]
+    const alias = ["x", "y"]
+    const ops = [x.aggregate, y.aggregate]
+
+    if (typeof size === "object" && size.type === "quantitative") {
+      fields.push(size.field)
+      alias.push("size")
+      ops.push(size.aggregate)
+    }
+
+    if (
+      typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
+    ) {
+      fields.push(color.field)
+      alias.push("color")
+      ops.push(color.aggregate)
+    }
+
+    transforms.push({
+      type: "aggregate",
+      fields,
+      ops,
+      as: alias,
+      groupby: transform.groupby.map((g, i) => ({
+        type: "project",
+        expr: g,
+        as: `key${i}`
+      }))
+    })
+
+  } else {
+    transforms.push({
       type: "project",
       expr: x.field,
       as: "x"
-    },
-    {
+    })
+    transforms.push({
       type: "project",
       expr: y.field,
       as: "y"
-    }
-  ]
-
-  if (typeof transform.limit === "number") {
-    transforms.push({
-      type: "limit",
-      row: transform.limit
     })
-    if (transform.sample) {
+
+    if (typeof transform.limit === "number") {
       transforms.push({
-        type: "sample",
-        method: "multiplicative",
-        size: lastFilteredSize,
-        limit: transform.limit
+        type: "limit",
+        row: transform.limit
+      })
+      if (transform.sample) {
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          size: lastFilteredSize,
+          limit: transform.limit
+        })
+      }
+    }
+
+    if (typeof size === "object" && size.type === "quantitative") {
+      transforms.push({
+        type: "project",
+        expr: size.field,
+        as: "size"
       })
     }
+
+    if (
+      typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
+    ) {
+      transforms.push({
+        type: "project",
+        expr: color.field,
+        as: "color"
+      })
+    }
+
+    transforms.push({
+      type: "project",
+      expr: `${table}.rowid`
+    })
   }
+
 
   if (typeof filter === "string" && filter.length) {
     transforms.push({
@@ -132,29 +189,6 @@ function getTransforms (
       expr: globalFilter
     })
   }
-
-  if (typeof size === "object" && size.type === "quantitative") {
-    transforms.push({
-      type: "project",
-      expr: size.field,
-      as: "size"
-    })
-  }
-
-  if (
-    typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
-  ) {
-    transforms.push({
-      type: "project",
-      expr: color.field,
-      as: "color"
-    })
-  }
-
-  transforms.push({
-    type: "project",
-    expr: `${table}.rowid`
-  })
 
   return transforms
 }

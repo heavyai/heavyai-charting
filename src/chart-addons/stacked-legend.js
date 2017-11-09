@@ -4,6 +4,10 @@ const hasLegendLockedProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("locked")
 const hasLegendTitleProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("title")
+const handleColorLegendOpenUndefined = color =>
+  typeof color.legend.open === "undefined" ? true : color.legend.open
+const handleNonStackedOpenState = state =>
+  state.type === "gradient" ? Object.assign({}, state, {open: true}) : state
 
 const TOP_PADDING = 56
 const LASSO_TOOL_VERTICAL_SPACE = 120
@@ -101,7 +105,7 @@ export function handleLegendDoneRender () {
 export function handleLegendOpen (index = 0) {
   this.getLayers()[index].setState(
     setLegendState(color => ({
-      open: hasLegendOpenProp(color) ? !color.legend.open : false
+      open: hasLegendOpenProp(color) ? !handleColorLegendOpenUndefined(color) : false
     }))
   )
   this.legend().setState(getLegendStateFromChart(this))
@@ -181,12 +185,12 @@ function legendState (state) {
 
 export function toLegendState (states = [], chart) {
   if (states.length === 1) {
-    return legendState(states[0])
+    return handleNonStackedOpenState(legendState(states[0]))
   } else if (states.length) {
     return {
       type: "stacked",
       list: states.map(legendState),
-      open: chart.legendOpen(),
+      open: typeof chart.legendOpen() === "undefined" ? true : chart.legendOpen(),
       maxHeight: chart.height() - TOP_PADDING
     }
   } else {
