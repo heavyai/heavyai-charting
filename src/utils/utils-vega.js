@@ -27,6 +27,11 @@ export function adjustRGBAOpacity (rgba, opacity) {
 const ordScale = d3.scale.ordinal()
 const quantScale = d3.scale.quantize()
 
+const capAttrMap = {
+  FillColor: "color",
+  Size: "size"
+}
+
 export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, useScale, prePostFuncs) {
   let scaleFunc = "", fieldAttrFunc = ""
   const capAttrName = attrName.charAt(0).toUpperCase() + attrName.slice(1)
@@ -94,13 +99,13 @@ export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, us
     if (input === null) {
       rtnVal = layerObj[nullFunc]()
     } else if (input !== undefined && useScale) {
-      const colorObj = layerObj.getState().encoding.color
-      if (colorObj && colorObj.domain && colorObj.domain.length && colorObj.range.length) {
-        if (colorObj.type === "ordinal") {
-          ordScale.domain(colorObj.domain).range(colorObj.range)
+      const capAttrObj = layerObj.getState().encoding[capAttrMap[capAttrName]]
+      if (capAttrObj && capAttrObj.domain && capAttrObj.domain.length && capAttrObj.domain.includes(input) && capAttrObj.range.length) {
+        if (capAttrObj.type === "ordinal") {
+          ordScale.domain(capAttrObj.domain).range(capAttrObj.range)
           rtnVal = ordScale(input)
         } else {
-          quantScale.domain(colorObj.domain).range(colorObj.range)
+          quantScale.domain(capAttrObj.domain).range(capAttrObj.range)
           rtnVal = quantScale(input)
         }
       }
