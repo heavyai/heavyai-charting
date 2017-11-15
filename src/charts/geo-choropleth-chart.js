@@ -27,9 +27,9 @@ import {utils} from "../utils/utils"
  */
 export default function geoChoroplethChart (parent, useMap, chartGroup, mapbox) {
   const _useMap = useMap !== undefined ? useMap : false
-  const parentDivId = parent.attributes.id.value
   let _chart = null
   if (_useMap) {
+    const parentDivId = parent.attributes.id.value
     _chart = mapMixin(colorMixin(baseMixin({})), parentDivId, mapbox)
   } else {
     _chart = colorMixin(baseMixin({}))
