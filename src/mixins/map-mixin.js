@@ -574,24 +574,43 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
               if (d3.event.key === "Enter" || d3.event.keyCode === 13) {
                 _geocoder
                         .locate(this.value)
-                        .then(zoomToLocation)
+                        .then(_chart.zoomToLocation)
               }
             })
   }
 
-  function zoomToLocation (data) {
+  function validateBounds (data) {
+    const sw = data.bounds.sw
+    const ne = data.bounds.ne
+    /* eslint-disable operator-linebreak */
+    return (!isNaN(sw[0]) && !isNaN(ne[0])
+      && !isNaN(sw[1]) && !isNaN(ne[1])
+      && sw[0] <= ne[0] && sw[1] < ne[1]
+      && sw[0] >= -180 && sw[0] <= 180
+      && sw[1] >= -90 && sw[1] <= 90
+      && ne[0] >= -180 && ne[0] <= 180
+      && ne[1] >= -90 && ne[1] <= 90
+    )
+    /* eslint-enable operator-linebreak */
+  }
+
+  _chart.zoomToLocation = function (data) {
+    if (!_mapInitted) {
+      return _chart
+    }
     if (data.bounds) {
-      const sw = data.bounds.sw
-      const ne = data.bounds.ne
-      _map.fitBounds([sw, ne], {
-        linear: true,
-        duration: EASE_DURATION_MS
-      })
+      if (validateBounds(data)) {
+        _map.fitBounds([data.bounds.sw, data.bounds.ne], {
+          linear: true,
+          duration: EASE_DURATION_MS
+        })
+      }
     } else {
       const center = data.center
       _map.setCenter(center)
       _map.setZoom(DEFAULT_ZOOM_LEVEL)
     }
+    return _chart
   }
 
   if (mixinDraw) {
