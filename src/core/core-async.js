@@ -173,11 +173,12 @@ export function getLastFilteredSizeAsync (arg) {
   } else if (typeof arg === "object" && typeof arg.getCrossfilterId === "function") {
     crossfilterId = arg.getCrossfilterId()
   }
-
+  console.log(_groupAll)
   if (crossfilterId !== null) {
     const group = _groupAll[crossfilterId]
     if (group) {
       return group.valueAsync().then(value => {
+        console.log(crossfilterId, value)
         _lastFilteredSize[crossfilterId] = value
         return value
       })
@@ -201,6 +202,11 @@ export function getLastFilteredSizeAsync (arg) {
 export function lastFilteredSize (crossfilterId) {
   return _lastFilteredSize[crossfilterId]
 }
+
+export function setLastFilteredSize (crossfilterId, value) {
+  _lastFilteredSize[crossfilterId] = value
+}
+
 
 export function resetState () {
   _groupAll = {}
