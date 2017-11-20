@@ -1,6 +1,8 @@
 import baseMixin from "../mixins/base-mixin"
 import d3 from "d3"
 import {utils} from "../utils/utils"
+import {lastFilteredSize, setLastFilteredSize} from "../core/core-async"
+
 
 export default function numberChart (parent, chartGroup) {
   const _chart = baseMixin({})
@@ -29,6 +31,22 @@ export default function numberChart (parent, chartGroup) {
   }
 
   _chart.setDataAsync((group, callbacks) => group.valueAsync().then((data) => {
+    console.log(group.getReduceExpression())
+    if (group.getReduceExpression() === "COUNT(*) AS val") {
+      const id = group.getCrossfilterId()
+      const filterSize = lastFilteredSize(id)
+      if (filterSize !== undefined) {
+        return Promise.resolve(filterSize)
+      } else {
+        return group.valueAsync().then(value => {
+          setLastFilteredSize(id, value)
+          return value
+        })
+      }
+    } else {
+      return data
+    }
+  }).then(data => {
     callbacks(null, data)
   }).catch((error) => {
     callbacks(error)

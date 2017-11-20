@@ -1,6 +1,6 @@
 import d3 from "d3"
 import {override} from "../core/core"
-import {groupAll, lastFilteredSize} from "../core/core-async"
+import {groupAll, lastFilteredSize, setLastFilteredSize} from "../core/core-async"
 import baseMixin from "../mixins/base-mixin"
 
 export default function countWidget (parent, chartGroup) {
@@ -64,13 +64,18 @@ export default function countWidget (parent, chartGroup) {
           .then(() => {
             const id = group.getCrossfilterId()
             const filterSize = lastFilteredSize(id)
+            console.log(filterSize)
             if (filterSize !== undefined) {
               return Promise.resolve(filterSize)
             } else {
-              return group.valueAsync()
+              return group.valueAsync().then(value => {
+                setLastFilteredSize(id, value)
+                return value
+              })
             }
           })
           .then((value) => {
+            console.log(value)
             callbacks(null, value)
           })
           .catch((error) => {
