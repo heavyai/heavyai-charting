@@ -1,4 +1,4 @@
-import {getLegendStateFromChart, handleLegendInput, handleLegendLock, handleLegendOpen, handleLegendToggle, toLegendState, handleLegendDoneRender} from "../chart-addons/stacked-legend"
+import {getLegendStateFromChart, handleLegendDoneRender, handleLegendInput, handleLegendLock, handleLegendOpen, handleLegendToggle, toLegendState} from "../chart-addons/stacked-legend"
 import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
 import baseMixin from "../mixins/base-mixin"
