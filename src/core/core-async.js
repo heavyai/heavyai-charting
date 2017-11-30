@@ -178,7 +178,6 @@ export function getLastFilteredSizeAsync (arg) {
     const group = _groupAll[crossfilterId]
     if (group) {
       return group.valueAsync().then(value => {
-        console.log(crossfilterId, value)
         _lastFilteredSize[crossfilterId] = value
         return value
       })

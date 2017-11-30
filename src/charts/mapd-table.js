@@ -399,7 +399,7 @@ export default function mapdTable (parent, chartGroup) {
 
     if (type === "TIMESTAMP") {
       val = `TIMESTAMP(0) '${val.toISOString().slice(0, 19).replace("T", " ")}'`
-    }  else if (type === "DATE") {
+    } else if (type === "DATE") {
       const dateFormat = d3.time.format.utc("%Y-%m-%d")
       val = "DATE '" + dateFormat(val) + "'"
     } else if (val && typeof val === "string") {
