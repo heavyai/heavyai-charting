@@ -158,7 +158,7 @@ function legendState (state, useMap = true) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain,
-      position: useMap ? "bottom-left" : "top-right",
+      position: useMap ? "bottom-left" : "top-right"
     }
   } else if (state.type === "quantitative") {
     return {
@@ -168,7 +168,7 @@ function legendState (state, useMap = true) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain,
-      position: useMap ? "bottom-left" : "top-right",
+      position: useMap ? "bottom-left" : "top-right"
     }
   } else if (state.type === "quantize") {
     const {scale} = state
@@ -179,7 +179,7 @@ function legendState (state, useMap = true) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: scale.range,
       domain: scale.domain,
-      position: useMap ? "bottom-left" : "top-right",
+      position: useMap ? "bottom-left" : "top-right"
     }
   } else {
     return {}
