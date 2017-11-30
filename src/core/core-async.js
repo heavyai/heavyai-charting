@@ -173,7 +173,7 @@ export function getLastFilteredSizeAsync (arg) {
   } else if (typeof arg === "object" && typeof arg.getCrossfilterId === "function") {
     crossfilterId = arg.getCrossfilterId()
   }
-  console.log(_groupAll)
+
   if (crossfilterId !== null) {
     const group = _groupAll[crossfilterId]
     if (group) {
