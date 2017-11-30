@@ -63,7 +63,7 @@ function setColorScaleDomain (domain) {
   }
 }
 
-export function getLegendStateFromChart (chart) {
+export function getLegendStateFromChart (chart, useMap) {
   return toLegendState(chart.getLayerNames().map(
     layerName => {
       const layer = chart.getLayer(layerName)
@@ -77,10 +77,12 @@ export function getLegendStateFromChart (chart) {
           }
         }
       } else {
-        return color
+        return {
+          ...color,
+        }
       }
     }
-  ), chart)
+  ), chart, useMap)
 }
 
 export function handleLegendToggle () {
@@ -150,14 +152,15 @@ export function handleLegendInput ({domain, index = 0}) {
   this.renderAsync()
 }
 
-function legendState (state) {
+function legendState (state, useMap = true) {
   if (state.type === "ordinal") {
     return {
       type: "nominal",
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
-      domain: state.domain
+      domain: state.domain,
+      position: useMap ? "bottom-left" : "top-right",
     }
   } else if (state.type === "quantitative") {
     return {
@@ -166,7 +169,8 @@ function legendState (state) {
       locked: hasLegendLockedProp(state) ? state.legend.locked : false,
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
-      domain: state.domain
+      domain: state.domain,
+      position: useMap ? "bottom-left" : "top-right",
     }
   } else if (state.type === "quantize") {
     const {scale} = state
@@ -176,16 +180,17 @@ function legendState (state) {
       locked: hasLegendLockedProp(state) ? state.legend.locked : false,
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: scale.range,
-      domain: scale.domain
+      domain: scale.domain,
+      position: useMap ? "bottom-left" : "top-right",
     }
   } else {
     return {}
   }
 }
 
-export function toLegendState (states = [], chart) {
+export function toLegendState (states = [], chart, useMap) {
   if (states.length === 1) {
-    return handleNonStackedOpenState(legendState(states[0]))
+    return handleNonStackedOpenState(legendState(states[0], useMap))
   } else if (states.length) {
     return {
       type: "stacked",

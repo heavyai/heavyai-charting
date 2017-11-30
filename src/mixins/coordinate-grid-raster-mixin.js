@@ -40,6 +40,12 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   _chart = colorMixin(marginMixin(baseMixin(_chart)))
   _chart._mandatoryAttributes().push("x", "y")
 
+  _chart.resetSvg = function () {
+    _chart.select("div.svg-wrapper").html("")
+
+    return _chart.generateSvg()
+  }
+
   _chart.filters = function () {
     return _filters
   }
