@@ -77,9 +77,7 @@ export function getLegendStateFromChart (chart, useMap) {
           }
         }
       } else {
-        return {
-          ...color,
-        }
+        return color
       }
     }
   ), chart, useMap)
