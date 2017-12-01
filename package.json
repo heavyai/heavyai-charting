@@ -50,7 +50,7 @@
     "d3": "^3.5.17",
     "deep-equal": "1.0.1",
     "earcut": "^2.1.1",
-    "legendables": "1.0.0-rc.4",
+    "legendables": "1.0.0-rc.7",
     "mapbox-gl": "https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307",
     "mapd-data-layer": "0.0.3-beta",
     "moment": "2.13.0",

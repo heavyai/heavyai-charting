@@ -13,6 +13,7 @@ describe("Stacked Legend", () => {
         title: "Legend",
         open: true,
         domain: ["en", "pt", "es", "in", "und", "ja"],
+        position: "bottom-left",
         range: ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b"]
       })
     })
@@ -31,6 +32,7 @@ describe("Stacked Legend", () => {
         locked: true,
         open: true,
         domain: [0, 100],
+        position: "bottom-left",
         range: ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b"]
       })
     })

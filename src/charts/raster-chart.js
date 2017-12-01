@@ -415,7 +415,7 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
       data = _chart.data()
     }
 
-    const state = getLegendStateFromChart(_chart)
+    const state = getLegendStateFromChart(_chart, useMap)
 
     _legend.setState(state)
 
