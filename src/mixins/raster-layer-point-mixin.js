@@ -419,7 +419,7 @@ export default function rasterLayerPointMixin (_layer) {
     return _vega
   }
 
-  const renderAttributes = ["x", "y", "size", "fillColor"]
+  const renderAttributes = ["xc", "yc", "size", "fillColor"]
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
     if (_vega && _vega.mark && _vega.mark.properties) {
@@ -467,8 +467,8 @@ export default function rasterLayerPointMixin (_layer) {
       })
     }
 
-    const xPixel = xscale(data[rndrProps.x]) + margins.left
-    const yPixel = height - yscale(data[rndrProps.y]) + margins.top
+    const xPixel = xscale(data[rndrProps.xc]) + margins.left
+    const yPixel = height - yscale(data[rndrProps.yc]) + margins.top
 
     let dotSize = _layer.getSizeVal(data[rndrProps.size])
     let scale = 1
