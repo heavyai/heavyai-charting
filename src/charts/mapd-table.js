@@ -29,6 +29,7 @@ export default function mapdTable (parent, chartGroup) {
 
   let _filteredColumns = {}
   let _columnFilterMap = {}
+  let _crossfilter = null
   let _tableFilter = null
   let _sortColumn = null
   let _dimOrGroup = null
@@ -60,11 +61,12 @@ export default function mapdTable (parent, chartGroup) {
     _chart.root().html("")
   }
 
-  _chart.tableFilter = function (_) {
+  _chart.crossfilter = function (_) {
     if (!arguments.length) {
-      return _tableFilter
+      return _crossfilter
     }
-    _tableFilter = _
+    _tableFilter = _.filter()
+    _crossfilter = _
     return _chart
   }
 
@@ -390,9 +392,15 @@ export default function mapdTable (parent, chartGroup) {
   }
 
   function filterCol (expr, val) {
-    const dateFormat = d3.time.format.utc("%Y-%m-%d")
 
-    if (Object.prototype.toString.call(val) === "[object Date]") {
+    const key = _crossfilter.getTable()[0] + "." + expr
+    const columns = (_crossfilter.getColumns())
+    const type = columns[key].type
+
+    if (type === "TIMESTAMP") {
+      val = `TIMESTAMP(0) '${val.toISOString().slice(0, 19).replace("T", " ")}'`
+    } else if (type === "DATE") {
+      const dateFormat = d3.time.format.utc("%Y-%m-%d")
       val = "DATE '" + dateFormat(val) + "'"
     } else if (val && typeof val === "string") {
       val = "'" + val.replace(/'/g, "''") + "'"
