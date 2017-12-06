@@ -364,6 +364,12 @@ body {
                 stroke-width: 2px;
             }
         }
+
+        &.highlight {
+            path {
+                fill-opacity: .8;
+            }
+        }
     }
 
     .pie-label {

@@ -793,7 +793,7 @@ export default function pieChart (parent, chartGroup) {
 
   function highlightSliceFromLegendable (legendable, highlighted) {
     _chart.selectAll("g.pie-slice").each(function (d) {
-      if (legendable.name === d.data.key) {
+      if (legendable.name === d.data.key0) {
         d3.select(this).classed("highlight", highlighted)
       }
     })

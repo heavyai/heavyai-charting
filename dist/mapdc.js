@@ -43211,7 +43211,7 @@ function pieChart(parent, chartGroup) {
 
   function highlightSliceFromLegendable(legendable, highlighted) {
     _chart.selectAll("g.pie-slice").each(function (d) {
-      if (legendable.name === d.data.key) {
+      if (legendable.name === d.data.key0) {
         _d2.default.select(this).classed("highlight", highlighted);
       }
     });
@@ -48799,7 +48799,13 @@ function legendMixin(legend) {
 
       var legendables = legend.legendables();
 
-      var itemEnter = body.selectAll(".dc-legend-item").data(legendables).enter().append("div").attr("class", "dc-legend-item");
+      var itemEnter = body.selectAll(".dc-legend-item").data(legendables).enter().append("div").attr("class", "dc-legend-item").on("mouseover", function (d) {
+        d.chart.legendHighlight(d);
+      }).on("mouseout", function (d) {
+        d.chart.legendReset(d);
+      }).on("click", function (d) {
+        d.chart.legendToggle(d);
+      });
 
       itemEnter.append("div").attr("class", "legend-item-color").style("background", function (d) {
         return d ? d.color : "#a7a7a7";

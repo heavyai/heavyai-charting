@@ -48,6 +48,15 @@ export default function legendMixin (legend) {
         .enter()
         .append("div")
         .attr("class", "dc-legend-item")
+        .on("mouseover", (d) => {
+          d.chart.legendHighlight(d)
+        })
+        .on("mouseout", (d) => {
+          d.chart.legendReset(d)
+        })
+        .on("click", (d) => {
+          d.chart.legendToggle(d)
+        })
 
       itemEnter.append("div")
         .attr("class", "legend-item-color")
