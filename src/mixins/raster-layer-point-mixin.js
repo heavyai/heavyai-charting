@@ -208,7 +208,7 @@ function getScales ({size, color}, layerName) {
   if (typeof color === "object" && color.type === "quantitative") {
     scales.push({
       name: layerName + "_fillColor",
-      type: "linear",
+      type: "quantize",
       domain: color.domain.map(c => adjustOpacity(c, color.opacity)),
       range: color.range,
       clamp: true
