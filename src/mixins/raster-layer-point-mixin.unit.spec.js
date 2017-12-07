@@ -19,7 +19,11 @@ describe("rasterLayerPointMixin", () => {
     it("should be able to be set and retrieved", () => {
       const layer = rasterLayer("points")
       const spec = {
-        mark: "point",
+        config: {
+          point: {
+            shape: "cross"
+          }
+        },
         encoding: {
           x: {
             type: "quantitative",
@@ -52,13 +56,16 @@ describe("rasterLayerPointMixin", () => {
       size: 11,
       color: "#27aeef"
     }
-
     describe("symbol mark types", () => {
       it("should handle crosses", () => {
         const layer = rasterLayer("points")
         layer.setState({
           transform: {},
-          mark: "point",
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
           encoding: baseEncoding,
           config: {
             point: {
@@ -70,7 +77,7 @@ describe("rasterLayerPointMixin", () => {
         expect(layer.__genVega({
           table: "tweets_nov_feb",
           filter: "lon = 100",
-          layerName: "points"
+          layerName: "points",
         })).to.deep.equal({
           data: {
             name: "points",
@@ -84,11 +91,11 @@ describe("rasterLayerPointMixin", () => {
              },
              "properties": {
                shape: "cross",
-               "x": {
+               "xc": {
                  "scale": "x",
                  "field": "x"
                },
-               "y": {
+               "yc": {
                  "scale": "y",
                  "field": "y"
                },
@@ -110,7 +117,11 @@ describe("rasterLayerPointMixin", () => {
             limit: 2000000,
             sample: true
           },
-          mark: "point",
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
           encoding: baseEncoding
         })
 
@@ -136,7 +147,11 @@ describe("rasterLayerPointMixin", () => {
         const layer = rasterLayer("points")
         layer.setState({
           transform: {},
-          mark: "point",
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
           encoding: baseEncoding
         })
 
@@ -151,20 +166,22 @@ describe("rasterLayerPointMixin", () => {
           },
           "scales": [],
            "mark": {
-             "type": "points",
+             "type": "symbol",
              "from": {
                "data": "points"
              },
              "properties": {
-               "x": {
+               "xc": {
                  "scale": "x",
                  "field": "x"
                },
-               "y": {
+               "yc": {
                  "scale": "y",
                  "field": "y"
                },
-               "size": 11,
+               "height": 11,
+               "width": 11,
+               "shape": "cross",
                "fillColor": "#27aeef"
              }
            }
@@ -176,7 +193,11 @@ describe("rasterLayerPointMixin", () => {
 
         layer.setState({
           transform: {limit: 2000000},
-          mark: "point",
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
           encoding: Object.assign({}, baseEncoding, {
             size: "auto"
           })
@@ -188,11 +209,15 @@ describe("rasterLayerPointMixin", () => {
           lastFilteredSize: 13884,
           pixelRatio: 1,
           layerName: "points"
-        }).mark.properties.size).to.equal(4)
+        }).mark.properties.width).to.equal(4)
 
         layer.setState({
           transform: {limit: 2000000},
-          mark: "point",
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
           encoding: Object.assign({}, baseEncoding, {
             size: "auto"
           })
@@ -204,11 +229,15 @@ describe("rasterLayerPointMixin", () => {
           lastFilteredSize: 223509,
           pixelRatio: 1,
           layerName: "points"
-        }).mark.properties.size).to.equal(2)
+        }).mark.properties.width).to.equal(2)
 
         layer.setState({
           transform: {limit: 2000000},
-          mark: "point",
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
           encoding: Object.assign({}, baseEncoding, {
             size: "auto"
           })
@@ -220,7 +249,7 @@ describe("rasterLayerPointMixin", () => {
           lastFilteredSize: 1947993,
           pixelRatio: 1,
           layerName: "points"
-        }).mark.properties.size).to.equal(1)
+        }).mark.properties.height).to.equal(1)
 
       })
 
@@ -228,7 +257,11 @@ describe("rasterLayerPointMixin", () => {
         const layer = rasterLayer("points")
         layer.setState({
           transform: {},
-          mark: "point",
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
           encoding: Object.assign({}, baseEncoding, {
             size: {
               type: "quantitative",
@@ -264,23 +297,28 @@ describe("rasterLayerPointMixin", () => {
            }
           ],
            "mark": {
-             "type": "points",
+             "type": "symbol",
              "from": {
                "data": "points"
              },
              "properties": {
-               "x": {
+               "xc": {
                  "scale": "x",
                  "field": "x"
                },
-               "y": {
+               "yc": {
                  "scale": "y",
                  "field": "y"
                },
-               "size": {
+               "width": {
+                 "scale": "points_size",
+                 "field": "size"
+               },
+               "height": {
                   "scale": "points_size",
                   "field": "size"
                 },
+               "shape": "cross",
                "fillColor": "#27aeef"
              }
            }
@@ -294,7 +332,11 @@ describe("rasterLayerPointMixin", () => {
         const layer = rasterLayer("points")
         layer.setState({
           transform: {},
-          mark: "point",
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
           encoding: Object.assign({}, baseEncoding, {
             color: {
               type: "density",
@@ -345,20 +387,22 @@ describe("rasterLayerPointMixin", () => {
            }
           ],
            "mark": {
-             "type": "points",
+             "type": "symbol",
              "from": {
                "data": "points"
              },
              "properties": {
-               "x": {
+               "xc": {
                  "scale": "x",
                  "field": "x"
                },
-               "y": {
+               "yc": {
                  "scale": "y",
                  "field": "y"
                },
-               "size": 11,
+               "width": 11,
+               "height": 11,
+               "shape": "cross",
                "fillColor": {
                   "scale": "points_fillColor",
                   "value": 0
@@ -372,7 +416,11 @@ describe("rasterLayerPointMixin", () => {
         const layer = rasterLayer("points")
         layer.setState({
           transform: {},
-          mark: "point",
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
           encoding: Object.assign({}, baseEncoding, {
             color: {
               type: "ordinal",
@@ -403,20 +451,22 @@ describe("rasterLayerPointMixin", () => {
            }
           ],
            "mark": {
-             "type": "points",
+             "type": "symbol",
              "from": {
                "data": "points"
              },
              "properties": {
-               "x": {
+               "xc": {
                  "scale": "x",
                  "field": "x"
                },
-               "y": {
+               "yc": {
                  "scale": "y",
                  "field": "y"
                },
-               "size": 11,
+               "width": 11,
+               "height": 11,
+               "shape": "cross",
                "fillColor": {
                   "scale": "points_fillColor",
                   "field": "color"
@@ -432,7 +482,11 @@ describe("rasterLayerPointMixin", () => {
         const layer = rasterLayer("points")
         layer.setState({
           transform: {},
-          mark: "point",
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
           encoding: Object.assign({}, baseEncoding, {
             color: {
               type: "ordinal",
@@ -464,20 +518,22 @@ describe("rasterLayerPointMixin", () => {
            }
           ],
            "mark": {
-             "type": "points",
+             "type": "symbol",
              "from": {
                "data": "points"
              },
              "properties": {
-               "x": {
+               "xc": {
                  "scale": "x",
                  "field": "x"
                },
-               "y": {
+               "yc": {
                  "scale": "y",
                  "field": "y"
                },
-               "size": 11,
+               "width": 11,
+               "height": 11,
+               "shape": "cross",
                "fillColor": {
                   "scale": "points_fillColor",
                   "field": "color"
@@ -501,7 +557,11 @@ describe("rasterLayerPointMixin", () => {
 
       layer.setState({
         transform: {},
-        mark: "point",
+        config: {
+          point: {
+            shape: "cross"
+          }
+        },
         encoding: {
           x: {
             type: "quantitative",
@@ -550,7 +610,11 @@ describe("rasterLayerPointMixin", () => {
             row: 500000
           }
         ],
-        mark: "point",
+        config: {
+          point: {
+            shape: "cross"
+          }
+        },
         encoding: {
           x: {
             type: "quantitative",
@@ -571,13 +635,13 @@ describe("rasterLayerPointMixin", () => {
       })
       layer.crossfilter(cf)
       layer._genVega(chart)
-      layer._addQueryDrivenRenderPropToSet = chai.spy(a => console.log(a))
+      layer._addQueryDrivenRenderPropToSet = chai.spy()
       it("should", () => {
         const set = {}
         layer._addRenderAttrsToPopupColumnSet({}, set)
         const vega = layer._genVega(chart)
-        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "x")
-        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "y")
+        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "xc")
+        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "yc")
         expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "size")
         expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "fillColor")
       })
