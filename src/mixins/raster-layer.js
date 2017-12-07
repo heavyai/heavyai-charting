@@ -280,7 +280,7 @@ export default function rasterLayer (layerType) {
     return rtnArray
   }
 
-  function mapDataViaColumns (data, popupColumns) {
+  function mapDataViaColumns (data, popupColumns, chart) {
     const newData = {}
     const columnSet = new Set(popupColumns)
     for (const key in data) {
@@ -288,6 +288,13 @@ export default function rasterLayer (layerType) {
         continue
       }
       newData[key] = data[key]
+      if (typeof chart.useLonLat === "function" && chart.useLonLat()) {
+        if (key === "x") {
+          newData[key] = chart.conv900913To4326X(data[key])
+        } else if (key === "y") {
+          newData[key] = chart.conv900913To4326Y(data[key])
+        }
+      }
     }
     return newData
   }
@@ -302,9 +309,10 @@ export default function rasterLayer (layerType) {
   function renderPopupHTML (data, columnOrder, columnMap) {
     let html = ""
     columnOrder.forEach((key) => {
-      if (!data[key]) {
+      if (!data[key] || !columnMap[key]) {
         return
       }
+
       html = html + ("<div class=\"" + _popup_box_item_class + "\"><span class=\"" + _popup_item_key_class + "\">" + (columnMap && columnMap[key] ? columnMap[key] : key) + ":</span><span class=\"" + _popup_item_val_class + "\"> " + data[key] + "</span></div>")
     })
     return html
@@ -314,7 +322,7 @@ export default function rasterLayer (layerType) {
     const data = result.row_set[0]
     const popupColumns = _layer.popupColumns()
     const mappedColumns = _layer.popupColumnsMapped()
-    const filteredData = mapDataViaColumns(data, popupColumns, mappedColumns)
+    const filteredData = mapDataViaColumns(data, popupColumns, chart)
 
     const width = (typeof chart.effectiveWidth === "function" ? chart.effectiveWidth() : chart.width())
     const height = (typeof chart.effectiveHeight === "function" ? chart.effectiveHeight() : chart.height())
