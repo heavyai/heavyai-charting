@@ -291,6 +291,10 @@ export default function mapdTable (parent, chartGroup) {
         .html(d => formatDataValue(d[col.name]))
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
+          // detect if user is selecting text or clicking a value, if so don't filter data
+          const s = window.getSelection().toString()
+          if (s.length) { return }
+
           if (_isGroupedData) {
             _chart.onClick(d)
           } else if (col.expression in _filteredColumns) {
