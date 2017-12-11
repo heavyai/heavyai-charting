@@ -291,6 +291,10 @@ export default function mapdTable (parent, chartGroup) {
         .html(d => formatDataValue(d[col.name]))
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
+          // detect if user is selecting text or clicking a value, if so don't filter data
+          const s = window.getSelection().toString()
+          if (s.length) { return }
+
           if (_isGroupedData) {
             _chart.onClick(d)
           } else if (col.expression in _filteredColumns) {
@@ -337,6 +341,14 @@ export default function mapdTable (parent, chartGroup) {
                     })
                     .classed("active", _sortColumn ? _sortColumn.index === i : false)
                     .classed(_sortColumn ? _sortColumn.order : "", true)
+                    .style("width", d3.select(this).node().getBoundingClientRect().width + "px")
+
+
+              const textSpan = sortLabel.append("span")
+                    .text(d.label)
+
+              const sortButton = sortLabel.append("div")
+                    .attr("class", "sort-btn")
                     .on("click", () => {
                       _tableWrapper.selectAll(".table-sort")
                             .classed("active asc desc", false)
@@ -350,15 +362,6 @@ export default function mapdTable (parent, chartGroup) {
                       _chart._invokeSortListener(_sortColumn)
                       redrawAllAsync(_chart.chartGroup())
                     })
-                    .style("width", d3.select(this).node().getBoundingClientRect().width + "px")
-
-
-              const textSpan = sortLabel.append("span")
-                    .text(d.label)
-
-              const sortButton = sortLabel.append("div")
-                    .attr("class", "sort-btn")
-
 
               sortButton.append("svg")
                     .attr("class", "svg-icon")

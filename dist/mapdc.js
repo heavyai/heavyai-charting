@@ -7,7 +7,7 @@
 		exports["mapdc"] = factory(require("d3"));
 	else
 		root["mapdc"] = factory(root["d3"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 143);
+/******/ 	return __webpack_require__(__webpack_require__.s = 152);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -475,7 +475,7 @@ return /******/ (function(modules) { // webpackBootstrap
                 module && module.exports) {
             try {
                 oldLocale = globalLocale._abbr;
-                __webpack_require__(165)("./" + name);
+                __webpack_require__(174)("./" + name);
                 // because defineLocale currently also sets the global locale, we
                 // want to undo that for lazy loaded locales
                 locale_locales__getSetGlobalLocale(oldLocale);
@@ -4117,7 +4117,7 @@ return /******/ (function(modules) { // webpackBootstrap
     return _moment;
 
 }));
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(164)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(173)(module)))
 
 /***/ }),
 /* 1 */
@@ -4160,6 +4160,8 @@ exports.renderlet = renderlet;
 exports.instanceOfChart = instanceOfChart;
 
 var _utils = __webpack_require__(3);
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var _logging = false;
 var _sampledCount = 0;
@@ -4259,33 +4261,64 @@ var chartRegistry = exports.chartRegistry = function () {
       return false;
     },
     register: function register(chart, group) {
-      group = initializeChartGroup(group);
-      _chartMap[group].push(chart);
+      if (Array.isArray(group)) {
+        group.forEach(function (g) {
+          return _chartMap[initializeChartGroup(g)].push(chart);
+        });
+      } else {
+        _chartMap[initializeChartGroup(group)].push(chart);
+      }
     },
     deregister: function deregister(chart, group) {
-      group = initializeChartGroup(group);
-      for (var i = 0; i < _chartMap[group].length; i++) {
-        if (_chartMap[group][i].anchorName() === chart.anchorName()) {
-          _chartMap[group].splice(i, 1);
-          break;
+      if (Array.isArray(group)) {
+        group.forEach(function (g) {
+          group = initializeChartGroup(g);
+          for (var i = 0; i < _chartMap[group].length; i++) {
+            if (_chartMap[group][i].anchorName() === chart.anchorName()) {
+              _chartMap[group].splice(i, 1);
+              break;
+            }
+          }
+        });
+      } else {
+        group = initializeChartGroup(group);
+        for (var i = 0; i < _chartMap[group].length; i++) {
+          if (_chartMap[group][i].anchorName() === chart.anchorName()) {
+            _chartMap[group].splice(i, 1);
+            break;
+          }
         }
       }
     },
     clear: function clear(group) {
-      if (group) {
+      if (Array.isArray(group)) {
+        group.forEach(function (g) {
+          return delete _chartMap[g];
+        });
+      } else if (group) {
         delete _chartMap[group];
       } else {
         _chartMap = {};
       }
     },
     list: function list(group) {
-      group = initializeChartGroup(group);
-      return _chartMap[group];
+      if (Array.isArray(group)) {
+        return group.reduce(function (accum, g) {
+          return [].concat(_toConsumableArray(accum), _toConsumableArray(_chartMap[initializeChartGroup(g)]));
+        }, []).filter(function (item, i, self) {
+          return self.indexOf(item) === i;
+        });
+      } else {
+        group = initializeChartGroup(group);
+        return _chartMap[group];
+      }
     },
     listAll: function listAll() {
       return Object.keys(_chartMap).reduce(function (accum, key) {
         return accum.concat(_chartMap[key]);
-      }, []);
+      }, []).filter(function (item, i, self) {
+        return self.indexOf(item) === i;
+      });
     }
   };
 }();
@@ -4514,13 +4547,13 @@ exports.xDomain = xDomain;
 exports.xScale = xScale;
 exports.xAxisTickFormat = xAxisTickFormat;
 
-var _mapdDataLayer = __webpack_require__(146);
+var _mapdDataLayer = __webpack_require__(155);
 
 var _formattingHelpers = __webpack_require__(6);
 
-var _datesAndTimes = __webpack_require__(26);
+var _datesAndTimes = __webpack_require__(29);
 
-var _deepEqual = __webpack_require__(127);
+var _deepEqual = __webpack_require__(130);
 
 var _deepEqual2 = _interopRequireDefault(_deepEqual);
 
@@ -4607,9 +4640,19 @@ parser.registerParser({
   }
 });
 
+parser.registerParser({
+  meta: "transform",
+  type: "rowid"
+}, function (sql, transform) {
+  var rowid = transform.table + ".rowid";
+  sql.select.push(rowid);
+  sql.groupby.push(rowid);
+  return sql;
+});
+
 var dateFormat = exports.dateFormat = _d2.default.time.format("%m/%d/%Y");
 
-var deepEquals = exports.deepEquals = __webpack_require__(127); // eslint-disable-line global-require
+var deepEquals = exports.deepEquals = __webpack_require__(130); // eslint-disable-line global-require
 
 var deepClone = exports.deepClone = function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -4980,6 +5023,7 @@ exports.renderAllAsync = renderAllAsync;
 exports.groupAll = groupAll;
 exports.getLastFilteredSizeAsync = getLastFilteredSizeAsync;
 exports.lastFilteredSize = lastFilteredSize;
+exports.setLastFilteredSize = setLastFilteredSize;
 exports.resetState = resetState;
 
 var _core = __webpack_require__(2);
@@ -5194,6 +5238,10 @@ function lastFilteredSize(crossfilterId) {
   return _lastFilteredSize[crossfilterId];
 }
 
+function setLastFilteredSize(crossfilterId, value) {
+  _lastFilteredSize[crossfilterId] = value;
+}
+
 function resetState() {
   _groupAll = {};
   _lastFilteredSize = {};
@@ -5219,41 +5267,41 @@ var _core = __webpack_require__(2);
 
 var _coreAsync = __webpack_require__(4);
 
-var _asyncMixin = __webpack_require__(128);
+var _asyncMixin = __webpack_require__(131);
 
 var _asyncMixin2 = _interopRequireDefault(_asyncMixin);
 
-var _legendMixin = __webpack_require__(169);
+var _legendMixin = __webpack_require__(178);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
-var _binningHelpers = __webpack_require__(16);
+var _binningHelpers = __webpack_require__(17);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _errors = __webpack_require__(129);
+var _errors = __webpack_require__(132);
 
 var errors = _interopRequireWildcard(_errors);
 
-var _filterMixin = __webpack_require__(170);
+var _filterMixin = __webpack_require__(179);
 
 var _filterMixin2 = _interopRequireDefault(_filterMixin);
 
-var _labelMixin = __webpack_require__(171);
+var _labelMixin = __webpack_require__(180);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
-var _logger = __webpack_require__(15);
+var _logger = __webpack_require__(16);
 
-var _multipleKeyAccessors = __webpack_require__(130);
+var _multipleKeyAccessors = __webpack_require__(133);
 
-var _multipleKeyLabelMixin = __webpack_require__(131);
+var _multipleKeyLabelMixin = __webpack_require__(134);
 
 var _multipleKeyLabelMixin2 = _interopRequireDefault(_multipleKeyLabelMixin);
 
-var _spinnerMixin = __webpack_require__(132);
+var _spinnerMixin = __webpack_require__(135);
 
 var _spinnerMixin2 = _interopRequireDefault(_spinnerMixin);
 
@@ -7044,7 +7092,7 @@ exports.formatTimeBinValue = formatTimeBinValue;
 exports.formatExtractValue = formatExtractValue;
 exports.normalizeFiltersArray = normalizeFiltersArray;
 
-var _datesAndTimes = __webpack_require__(26);
+var _datesAndTimes = __webpack_require__(29);
 
 var _d = __webpack_require__(1);
 
@@ -7380,11 +7428,11 @@ function colorMixin(_chart) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(147);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(148);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(149);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(158);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(156);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(157);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(158);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(167);
 
 
 
@@ -7743,7 +7791,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _binningMixin = __webpack_require__(175);
+var _binningMixin = __webpack_require__(184);
 
 var _binningMixin2 = _interopRequireDefault(_binningMixin);
 
@@ -7759,7 +7807,7 @@ var _events = __webpack_require__(11);
 
 var _filters = __webpack_require__(13);
 
-var _lockAxisMixin = __webpack_require__(134);
+var _lockAxisMixin = __webpack_require__(137);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
@@ -9625,6 +9673,19 @@ filters.RangedTwoDimensionalFilter = function (filter) {
 
 /***/ }),
 /* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(24);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(x) {
+  return x = Object(__WEBPACK_IMPORTED_MODULE_0__formatDecimal__["a" /* default */])(Math.abs(x)), x ? x[1] : NaN;
+});
+
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9633,21 +9694,62 @@ filters.RangedTwoDimensionalFilter = function (filter) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 exports.notNull = notNull;
+exports.adjustOpacity = adjustOpacity;
+exports.adjustRGBAOpacity = adjustRGBAOpacity;
 exports.createVegaAttrMixin = createVegaAttrMixin;
 exports.createRasterLayerGetterSetter = createRasterLayerGetterSetter;
+
+var _d2 = __webpack_require__(1);
+
+var _d3 = _interopRequireDefault(_d2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function notNull(value) {
   return value != null; /* double-equals also catches undefined */
 }
 
-function convertHexToRGBA(hex, opacity) {
-  hex = hex.replace("#", "");
+function adjustOpacity(color) {
+  var opacity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
+  if (!/#/.test(color)) {
+    return color;
+  }
+  var hex = color.replace("#", "");
   var r = parseInt(hex.substring(0, 2), 16);
   var g = parseInt(hex.substring(2, 4), 16);
   var b = parseInt(hex.substring(4, 6), 16);
-
-  return "rgba(" + r + "," + g + "," + b + "," + opacity / 100 + ")";
+  return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
 }
+
+function adjustRGBAOpacity(rgba, opacity) {
+  var _rgba$split$1$split$ = rgba.split("(")[1].split(")")[0].split(","),
+      _rgba$split$1$split$2 = _slicedToArray(_rgba$split$1$split$, 4),
+      r = _rgba$split$1$split$2[0],
+      g = _rgba$split$1$split$2[1],
+      b = _rgba$split$1$split$2[2],
+      a = _rgba$split$1$split$2[3];
+
+  if (a) {
+    var relativeOpacity = parseFloat(a) - (1 - opacity);
+    a = "" + (relativeOpacity > 0 ? relativeOpacity : 0.01);
+  } else {
+    a = opacity;
+  }
+  return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+}
+
+var ordScale = _d3.default.scale.ordinal();
+var quantScale = _d3.default.scale.quantize();
+
+var capAttrMap = {
+  FillColor: "color",
+  Size: "size"
+};
 
 function createVegaAttrMixin(layerObj, attrName, defaultVal, nullVal, useScale, prePostFuncs) {
   var scaleFunc = "",
@@ -9718,9 +9820,15 @@ function createVegaAttrMixin(layerObj, attrName, defaultVal, nullVal, useScale, 
     if (input === null) {
       rtnVal = layerObj[nullFunc]();
     } else if (input !== undefined && useScale) {
-      var scaleObj = layerObj[scaleFunc]();
-      if (scaleObj && scaleObj.domain && scaleObj.domain().length && scaleObj.range().length) {
-        rtnVal = scaleObj(input);
+      var capAttrObj = layerObj.getState().encoding[capAttrMap[capAttrName]];
+      if (capAttrObj && capAttrObj.domain && capAttrObj.domain.length && capAttrObj.domain.includes(input) && capAttrObj.range.length) {
+        if (capAttrObj.type === "ordinal") {
+          ordScale.domain(capAttrObj.domain).range(capAttrObj.range);
+          rtnVal = ordScale(input);
+        } else {
+          quantScale.domain(capAttrObj.domain).range(capAttrObj.range);
+          rtnVal = quantScale(input);
+        }
       }
     }
 
@@ -9751,7 +9859,7 @@ function createRasterLayerGetterSetter(layerObj, attrVal, preSetFunc, postSetFun
 }
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9805,7 +9913,7 @@ logger.deprecate = function (fn, msg) {
 };
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9919,7 +10027,7 @@ var createBinParams = exports.createBinParams = function createBinParams(chart, 
 };
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10227,7 +10335,7 @@ function bubbleMixin(_chart) {
 }
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10238,7 +10346,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = stackMixin;
 
-var _binningHelpers = __webpack_require__(16);
+var _binningHelpers = __webpack_require__(17);
 
 var _utils = __webpack_require__(3);
 
@@ -10248,7 +10356,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _core = __webpack_require__(2);
 
-var _multipleKeyAccessors = __webpack_require__(130);
+var _multipleKeyAccessors = __webpack_require__(133);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10645,7 +10753,7 @@ function stackMixin(_chart) {
 }
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10664,9 +10772,9 @@ var _coreAsync = __webpack_require__(4);
 
 var _utils = __webpack_require__(3);
 
-var _mapDrawMixin = __webpack_require__(182);
+var _mapDrawMixin = __webpack_require__(191);
 
-var _rasterDrawMixin = __webpack_require__(20);
+var _rasterDrawMixin = __webpack_require__(21);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11047,7 +11155,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         id: toBeAddedOverlay,
         source: toBeAddedOverlay,
         type: "raster",
-        paint: { "raster-opacity": _chart.getLayer("heat") ? 0.5 : 0.85, "raster-fade-duration": 0 }
+        paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
       });
     } else {
       var overlayName = "overlay" + _activeLayer;
@@ -11068,7 +11176,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   };
 
   _chart.isLoaded = function () {
-    return _map._loaded && _map.style._loaded;
+    return _map._loaded && _map.style && _map.style._loaded;
   };
 
   function initMap() {
@@ -11225,25 +11333,37 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   function initGeocoder() {
     _chart.root().append("input").attr("type", "text").attr("placeholder", "Zoom to").classed("geocoder-input", true).style("top", "5px").style("right", "5px").style("float", "right").style("position", "absolute").on("keydown", function () {
       if (_d2.default.event.key === "Enter" || _d2.default.event.keyCode === 13) {
-        _geocoder.locate(this.value).then(zoomToLocation);
+        _geocoder.locate(this.value).then(_chart.zoomToLocation);
       }
     });
   }
 
-  function zoomToLocation(data) {
+  function validateBounds(data) {
+    var sw = data.bounds.sw;
+    var ne = data.bounds.ne;
+    /* eslint-disable operator-linebreak */
+    return !isNaN(sw[0]) && !isNaN(ne[0]) && !isNaN(sw[1]) && !isNaN(ne[1]) && sw[0] <= ne[0] && sw[1] < ne[1] && sw[0] >= -180 && sw[0] <= 180 && sw[1] >= -90 && sw[1] <= 90 && ne[0] >= -180 && ne[0] <= 180 && ne[1] >= -90 && ne[1] <= 90;
+    /* eslint-enable operator-linebreak */
+  }
+
+  _chart.zoomToLocation = function (data) {
+    if (!_mapInitted) {
+      return _chart;
+    }
     if (data.bounds) {
-      var sw = data.bounds.sw;
-      var ne = data.bounds.ne;
-      _map.fitBounds([sw, ne], {
-        linear: true,
-        duration: EASE_DURATION_MS
-      });
+      if (validateBounds(data)) {
+        _map.fitBounds([data.bounds.sw, data.bounds.ne], {
+          linear: true,
+          duration: EASE_DURATION_MS
+        });
+      }
     } else {
       var center = data.center;
       _map.setCenter(center);
       _map.setZoom(DEFAULT_ZOOM_LEVEL);
     }
-  }
+    return _chart;
+  };
 
   if (mixinDraw) {
     _chart = (0, _rasterDrawMixin.rasterDrawMixin)(_chart);
@@ -11253,7 +11373,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 }
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11264,19 +11384,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.rasterDrawMixin = rasterDrawMixin;
 
-var _utilsLatlon = __webpack_require__(137);
+var _utilsLatlon = __webpack_require__(140);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _lassoToolUi = __webpack_require__(184);
+var _lassoToolUi = __webpack_require__(193);
 
 var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
 
-var _earcut = __webpack_require__(136);
+var _earcut = __webpack_require__(139);
 
 var _earcut2 = _interopRequireDefault(_earcut);
 
-var _mapdDraw = __webpack_require__(21);
+var _mapdDraw = __webpack_require__(22);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
@@ -11285,6 +11405,8 @@ var _coreAsync = __webpack_require__(4);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 /* istanbul ignore next */
 function writePointInTriangleSqlTest(p0, p1, p2, px, py) {
@@ -11360,7 +11482,7 @@ function rasterDrawMixin(chart) {
 
     var layers = chart.getLayers && typeof chart.getLayers === "function" ? chart.getLayers() : [chart];
     layers.forEach(function (layer) {
-      if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points") {
+      if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points" || layer.layerType() === "heat") {
         var crossFilter = null;
         var filterObj = null;
         var group = layer.group();
@@ -11370,24 +11492,28 @@ function rasterDrawMixin(chart) {
           var dim = layer.dimension();
           if (dim) {
             crossFilter = dim.getCrossfilter();
+          } else {
+            crossFilter = layer.crossfilter();
           }
         }
         if (crossFilter) {
           filterObj = coordFilters.get(crossFilter);
           if (!filterObj) {
             filterObj = {
-              coordFilter: crossFilter.filter()
+              coordFilter: crossFilter.filter(),
+              px: [],
+              py: []
             };
             coordFilters.set(crossFilter, filterObj);
+            filterObj.shapeFilters = [];
           }
-          filterObj.shapeFilters = [];
           var xdim = layer.xDim();
           var ydim = layer.yDim();
           if (xdim && ydim) {
             var px = xdim.value()[0];
             var py = ydim.value()[0];
-            filterObj.px = px;
-            filterObj.py = py;
+            filterObj.px.push(px);
+            filterObj.py.push(py);
             shapes.forEach(function (shape) {
               if (shape instanceof LatLonCircle) {
                 var pos = shape.getWorldPosition();
@@ -11442,9 +11568,20 @@ function rasterDrawMixin(chart) {
     });
 
     coordFilters.forEach(function (filterObj) {
-      if (filterObj.px && filterObj.py && filterObj.shapeFilters.length) {
-        var filterStmt = "(" + filterObj.px + " IS NOT NULL AND " + filterObj.py + " IS NOT NULL AND (" + filterObj.shapeFilters.join(" OR ") + "))";
+      if (filterObj.px.length && filterObj.py.length && filterObj.shapeFilters.length) {
+        var filterStmt = filterObj.px.map(function (e, i) {
+          return { px: e, py: filterObj.py[i] };
+        }).reduce(function (acc, e) {
+          return acc.some(function (e1) {
+            return e1.px === e.px && e1.py === e.py;
+          }) ? acc : [].concat(_toConsumableArray(acc), [e]);
+        }, []).map(function (e, i) {
+          return "(" + e.px + " IS NOT NULL AND " + e.py + " IS NOT NULL AND (" + filterObj.shapeFilters[i] + "))";
+        }).join(" AND ");
         filterObj.coordFilter.filter([filterStmt]);
+        filterObj.px = [];
+        filterObj.py = [];
+        filterObj.shapeFilters = [];
       } else {
         filterObj.coordFilter.filter();
       }
@@ -11649,7 +11786,7 @@ function rasterDrawMixin(chart) {
 }
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 !function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.MapdDraw=e():t.MapdDraw=e()}(this,function(){return function(t){function e(n){if(r[n])return r[n].exports;var a=r[n]={exports:{},id:n,loaded:!1};return t[n].call(a.exports,a,a.exports,e),a.loaded=!0,a.exports}var r={};return e.m=t,e.c=r,e.p="",e(0)}([function(t,e,r){"use strict";function n(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function a(t){return t&&t.__esModule?t:{default:t}}Object.defineProperty(e,"__esModule",{value:!0}),e.simpleHull_2D=e.Math=e.Point=e.PolyLine=e.Poly=e.Rect=e.Circle=e.Vec2d=e.BasicStyle=e.Mat2=e.Point2d=e.Mat2d=e.AABox2d=e.DrawEngine=e.ShapeBuilder=e.version=void 0;var i=r(39);Object.defineProperty(e,"version",{enumerable:!0,get:function(){return i.version}});var o=r(1);Object.defineProperty(e,"Mat2",{enumerable:!0,get:function(){return o.mat2}});var s=r(15);Object.defineProperty(e,"simpleHull_2D",{enumerable:!0,get:function(){return s.simpleHull_2D}});var l=r(23),u=a(l),c=r(14),f=a(c),h=r(2),d=n(h),p=r(5),_=a(p),v=r(4),y=n(v),m=r(9),M=a(m),b=r(10),x=a(b),g=r(27),S=a(g),I=r(16),D=a(I),w=r(29),F=a(w),O=r(11),k=a(O),E=r(28),P=a(E),C=r(6),A=a(C);e.ShapeBuilder=u.default,e.DrawEngine=f.default,e.AABox2d=d,e.Mat2d=_.default,e.Point2d=y,e.BasicStyle=M.default,e.Vec2d=x.default,e.Circle=S.default,e.Rect=D.default,e.Poly=F.default,e.PolyLine=k.default,e.Point=P.default,e.Math=A.default},function(t,e,r){e.glMatrix=r(3),e.mat2=r(34),e.mat2d=r(35),e.mat3=r(20),e.mat4=r(36),e.quat=r(37),e.vec2=r(38),e.vec3=r(21),e.vec4=r(22)},function(t,e,r){"use strict";function n(t,e,r,n,a){return t[P]="number"==typeof e?e:1/0,t[C]="number"==typeof r?r:1/0,t[A]="number"==typeof n?n:-(1/0),t[j]="number"==typeof a?a:-(1/0),t}function a(t,e,r,a){var i=new E.glMatrix.ARRAY_TYPE(z.BOX_SIDES);return n(i,t,e,r,a)}function i(t){var e=new E.glMatrix.ARRAY_TYPE(z.BOX_SIDES);return e[P]=t[P],e[C]=t[C],e[A]=t[A],e[j]=t[j],e}function o(t,e){return t[P]=e[P],t[C]=e[C],t[A]=e[A],t[j]=e[j],t}function s(t){return t[P]=1/0,t[C]=1/0,t[A]=-(1/0),t[j]=-(1/0),t}function l(t){return t[P]=-(1/0),t[C]=-(1/0),t[A]=1/0,t[j]=1/0,t}function u(t,e){return e[0]<0?(t[P]=-e[0],t[A]=0):(t[P]=0,t[A]=e[0]),e[1]<0?(t[C]=-e[1],t[j]=0):(t[C]=0,t[j]=e[1]),t}function c(t,e,r){for(var n=0;n<2;n+=1)r[n]<0?(t[n]=e[n]-r[n],t[n+2]=e[n]):(t[n]=e[n],t[n+2]=e[n]+r[n]);return t}function f(t,e,r){for(var n=0;n<2;n+=1)r[n]<0?(t[n]=e[n]+r[n],t[n+2]=e[n]-r[n]):(t[n]=e[n]-r[n],t[n+2]=e[n]+r[n]);return t}function h(t){return t[P]>t[A]||t[C]>t[j]}function d(t){return!(isFinite(t[P])&&isFinite(t[C])&&isFinite(t[A])&&isFinite(t[j]))}function p(t,e){var r=t[0],n=t[1],a=t[2],i=t[3],o=e[0],s=e[1],l=e[2],u=e[3];return Math.abs(r-o)<=E.glMatrix.EPSILON&&Math.abs(n-s)<=E.glMatrix.EPSILON&&Math.abs(a-l)<=E.glMatrix.EPSILON&&Math.abs(i-u)<=E.glMatrix.EPSILON}function _(t,e){return E.vec2.set(t,e[A]-e[P],e[j]-e[C])}function v(t,e){return _(t,e),E.vec2.scale(t,t,.5)}function y(t,e){return v(t,e),t[P]+=e[P],t[C]+=e[C],t}function m(t,e,r){t[P]=e[P]-r[0],t[A]=e[A]+r[0],t[C]=e[C]-r[1],t[j]=e[j]+r[1]}function M(t){return(t[A]-t[P])*(t[j]-t[C])}function b(t,e,r){return a(Math.min(e[P],r[P]),Math.min(e[C],r[C]),Math.max(e[A],r[A]),Math.max(e[j],r[j]))}function x(t,e,r){var n=t;t===e&&(n=a());for(var i=P,l=A;i<=C&&!(e[l]<r[i]||e[i]>r[l]);i+=1,l+=1)n[i]=Math.max(e[i],r[i]),n[l]=Math.min(e[l],r[l]);return i!==C+1&&s(n),t===e&&o(t,n),t}function g(t,e){return!(t[A]<=e[P]||t[P]>=e[A]||t[j]<=e[C]||t[C]>=e[j])}function S(t,e){return!(e[P]<t[P]||e[A]>t[A]||e[C]<t[C]||e[j]>t[j])}function I(t,e){return e[P]>=t[P]&&e[P]<=t[A]&&e[C]>=t[C]&&e[C]<=t[j]}function D(t,e,r){return t!==e&&o(t,e),h(e)?(t[P]=r[P],t[A]=r[P],t[C]=r[C],t[j]=r[C]):(r[P]<t[P]?t[P]=r[P]:r[P]>t[A]&&(t[A]=r[P]),r[C]<t[C]?t[C]=r[C]:r[C]>t[j]&&(t[j]=r[C])),t}function w(t,e,r){t[P]=e[P]+r[0],t[C]=e[C]+r[1],t[A]=e[A]+r[0],t[j]=e[j]+r[1]}function F(t,e,r,n){var i=t;t===e&&(i=a()),s(i);var l=E.vec2.set(E.vec2.create(),e[P],e[C]),u=E.vec2.create();return n(u,l,r),D(i,i,u),l[P]=e[A],n(u,l,r),D(i,i,u),l[C]=e[j],n(u,l,r),D(i,i,u),l[P]=e[P],n(u,l,r),D(i,i,u),t===e&&o(t,i),t}function O(t,e,r){return F(t,e,r,E.vec2.transformMat2)}function k(t,e,r){return F(t,e,r,E.vec2.transformMat2d)}Object.defineProperty(e,"__esModule",{value:!0}),e.MAXY=e.MAXX=e.MINY=e.MINX=void 0,e.set=n,e.create=a,e.clone=i,e.copy=o,e.initEmpty=s,e.initInfinity=l,e.initSizeFromOrigin=u,e.initSizeFromLocation=c,e.initCenterExtents=f,e.isEmpty=h,e.isInfinite=d,e.equals=p,e.getSize=_,e.getExtents=v,e.getCenter=y,e.expand=m,e.area=M,e.hull=b,e.intersection=x,e.overlaps=g,e.contains=S,e.containsPt=I,e.encapsulatePt=D,e.translate=w,e.transformMat2=O,e.transformMat2d=k;var E=r(1),P=e.MINX=0,C=e.MINY=1,A=e.MAXX=2,j=e.MAXY=3,z={BOX_SIDES:4}},function(t,e){var r={};r.EPSILON=1e-6,r.ARRAY_TYPE="undefined"!=typeof Float32Array?Float32Array:Array,r.RANDOM=Math.random,r.ENABLE_SIMD=!1,r.SIMD_AVAILABLE=r.ARRAY_TYPE===Float32Array&&"SIMD"in this,r.USE_SIMD=r.ENABLE_SIMD&&r.SIMD_AVAILABLE,r.setMatrixArrayType=function(t){r.ARRAY_TYPE=t};var n=Math.PI/180;r.toRadian=function(t){return t*n},r.equals=function(t,e){return Math.abs(t-e)<=r.EPSILON*Math.max(1,Math.abs(t),Math.abs(e))},t.exports=r},function(t,e,r){"use strict";function n(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:0;return t[M]=e,t[b]=r,t}function a(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,r=new m.glMatrix.ARRAY_TYPE(2);return n(r,t,e)}function i(t){var e=new m.glMatrix.ARRAY_TYPE(2);return e[M]=t[M],e[b]=t[b],e}function o(t,e){return t[M]=e[M],t[b]=e[b],t}function s(t,e){return a(t,e)}function l(t,e,r){return m.vec2.add(t,e,r)}function u(t,e,r){return m.vec2.sub(t,e,r)}function c(t,e,r){return m.vec2.transformMat2(t,e,r)}function f(t,e,r){return m.vec2.transformMat2d(t,e,r)}function h(t){return"point2d("+t[0]+" , "+t[1]+")"}function d(t,e){return m.vec2.distance(t,e)}function p(t,e){return m.vec2.squaredDistance(t,e)}function _(t,e,r,n){return m.vec2.lerp(t,e,r,n)}function v(t,e){return m.vec2.equals(t,e)}function y(t,e){return m.vec2.exactEquals(t,e)}Object.defineProperty(e,"__esModule",{value:!0}),e.sqrDist=e.dist=void 0,e.set=n,e.create=a,e.clone=i,e.copy=o,e.initFromValues=s,e.addVec2=l,e.sub=u,e.transformMat2=c,e.transformMat2d=f,e.str=h,e.distance=d,e.squaredDistance=p,e.lerp=_,e.equals=v,e.exactEquals=y;var m=r(1),M=0,b=1;e.dist=d,e.sqrDist=p},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=r(1);n.mat2d.svd=function(t,e,r,n){if(t&&(t[0]=n[4],t[1]=n[5]),e||r){var a=(n[0]+n[3])/2,i=(n[0]-n[3])/2,o=(n[1]+n[2])/2,s=(n[1]-n[2])/2;if(e){var l=Math.sqrt(a*a+s*s),u=Math.sqrt(i*i+o*o);e[0]=l+u,e[1]=l-u}if(r){var c=Math.atan2(o,i),f=Math.atan2(s,a);r[0]=(f-c)/2,r[1]=(f+c)/2}}},e.default=n.mat2d},function(t,e){"use strict";function r(t,e,r){return t<e?e:t>r?r:t}function n(t){return t<0?0:t>1?1:t}function a(t,e,r){return t*(1-r)+e*r}Object.defineProperty(e,"__esModule",{value:!0});var i=1e-5,o=.25,s=.5,l=2;Math.QUATER_PI=o*Math.PI,Math.HALF_PI=s*Math.PI,Math.HALF_NPI=-s*Math.PI,Math.TWO_PI=l*Math.PI,Math.NPI=-Math.PI,Math.NQUATER_PI=o*Math.NPI,Math.NHALF_PI=s*Math.NPI,Math.NTWO_PI=l*Math.NPI,Math.INV_PI=1/Math.PI,Math.RAD_TO_DEG=180/Math.PI,Math.DEG_TO_RAD=Math.PI/180,Math.EPS=i,Math.clamp=r,Math.clamp01=n,Math.lerp=a,e.default=Math},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function s(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var l=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),u=r(2),c=a(u),f=r(18),h=n(f),d=r(19),p=n(d),_=r(12),v=n(_),y=r(8),m=n(y),M=r(9),b=n(M),x=r(13),g=n(x),S=r(1),I=function(t){function e(t){i(this,e);var r=o(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,["changed:xform","changed:style","changed:order","changed:visibility","changed:geom"]));return r._aabox=c.create(),r._zIndex=t&&t.zIndex?t.zIndex:0,r._visible=!0,r._geomDirty=!1,r._fullXform=S.mat2d.create(),r}return s(e,t),l(e,[{key:"zIndex",set:function(t){if(!Number.isInteger(t))throw new Error("zIndex must be an integer");if(t!==this._zIndex){var e=this._zIndex;this._zIndex=t,this.fire("changed:order",{attr:"zIndex",prevVal:e,currVal:this._zIndex})}return this},get:function(){return this._zIndex}},{key:"aabox",get:function(){return this._updateAABox(),this._aabox}},{key:"visible",set:function(t){if("boolean"!=typeof t)throw new Error("visible must be a boolean");return t!==this._visible&&(this._visible=t,this.fire("changed:visibility",{attr:"visible",prevVal:!this._visible,currVal:this._visible})),this},get:function(){return this._visible}}]),e}(g.default),D=function(t){function e(t){i(this,e);var r=o(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,t));return r._stateStack=[],r}return s(e,t),l(e,[{key:"save",value:function(){var t=new b.default;return b.default.copyBasicStyle(this,t),t.zIndex=this.zIndex,this._stateStack.push(t),this}},{key:"restore",value:function(){var t=this._stateStack.pop();return t&&(b.default.copyBasicStyle(t,this),this.zIndex=t.zIndex),this}},{key:"getGlobalDimensions",value:function(){var t=[0,0];return S.mat2d.svd(null,t,null,this.globalXform),t[0]*=this.width,t[1]*=this.height,t}},{key:"containsPoint",value:function(t,e,r,n){var a=!1,i=this.aabox;return this.visible&&c.containsPt(i,e)&&(n.save(),n.setTransform(this._fullXform[0],this._fullXform[1],this._fullXform[2],this._fullXform[3],this._fullXform[4],this._fullXform[5]),n.beginPath(),this._draw(n),n.strokeStyle="rgba(0,0,0,0)",n.lineWidth=this.strokeWidth+5,n.dashPattern=[],n.setTransform(1,0,0,1,0,0),n.stroke(),(this.isFillVisible()&&n.isPointInPath(t[0],t[1])||this.isStrokeVisible()&&n.isPointInStroke(t[0],t[1]))&&(a=!0),n.restore()),a}},{key:"renderBounds",value:function(t,e,r){t.save(),t.setTransform(e[0],e[1],e[2],e[3],e[4],e[5]),r.setStrokeCtx(t);var n=[0,0],a=[0,0],i=this.aabox;c.getCenter(n,i),c.getExtents(a,i),t.beginPath(),t.rect(n[0]-a[0],n[1]-a[1],2*a[0],2*a[1]),t.setTransform(1,0,0,1,0,0),t.stroke(),t.restore()}},{key:"_localXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"_globalXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"render",value:function(t,e,r){var n=arguments.length>3&&void 0!==arguments[3]?arguments[3]:null,a=arguments.length>4&&void 0!==arguments[4]?arguments[4]:null;this.transformCtx(t,this._fullXform,e),t.beginPath();var i=this._draw(t);(i||"undefined"==typeof i)&&(this.isFillVisible()&&(null===n||Boolean(n))&&(r.setFillStyle(t,this),t.fill()),this.isStrokeVisible()&&(null===a||Boolean(a))&&(r.setStrokeStyle(t,this),t.setTransform(1,0,0,1,0,0),t.stroke()))}},{key:"setStyle",value:function(t){return b.default.copyBasicStyle(t,this),this}},{key:"toJSON",value:function(){var t=this;return this._stateStack&&this._stateStack.length&&(t=this._stateStack[0]),Object.assign({visible:this.visible,zIndex:t.zIndex},b.default.toJSON(t),v.default.toJSON(this))}},{key:"visible",get:function(){return this._visible&&(this.isFillVisible()||this.isStrokeVisible())}}],[{key:"shapeCompare",value:function(t,e){var r=t.zIndex,n=e.zIndex;if(r<n)return-1;if(r>n)return 1;var a=h.default.compareFillStyle(t,e);return a||(a=p.default.compareStrokeStyle(t,e)),a}}]),e}((0,m.default)(I,(0,_.createEventedTransform2dMixin)("changed:xform"),(0,f.createEventedFillStyleMixin)("changed:style"),(0,d.createEventedStrokeStyleMixin)("changed:style")));e.default=D},function(t,e){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function n(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function a(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var i=function(t){for(var e=arguments.length,i=Array(e>1?e-1:0),o=1;o<e;o++)i[o-1]=arguments[o];var s=t?function(t){function e(){for(var t,a=arguments.length,o=Array(a),s=0;s<a;s++)o[s]=arguments[s];r(this,e);var l=n(this,(t=e.__proto__||Object.getPrototypeOf(e)).call.apply(t,[this].concat(o)));return i.forEach(function(t){if("function"==typeof t.prototype.initializer){var e;(e=t.prototype.initializer).call.apply(e,[l].concat(o))}}),l}return a(e,t),e}(t):function(){},l=function(e,r){Object.getOwnPropertyNames(r).concat(Object.getOwnPropertySymbols(r)).forEach(function(n){n.match(/^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)||t&&n.match(/^(?:initializer)$/)||Object.defineProperty(e,n,Object.getOwnPropertyDescriptor(r,n))})};return i.forEach(function(t){l(s.prototype,t.prototype),l(s,t)}),s};e.default=i},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function o(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var s=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),l=r(8),u=n(l),c=r(18),f=n(c),h=r(19),d=n(h),p=function(t){function e(){return a(this,e),i(this,(e.__proto__||Object.getPrototypeOf(e)).apply(this,arguments))}return o(e,t),s(e,null,[{key:"copyBasicStyle",value:function(t,e){f.default.copyFillStyle(t,e),d.default.copyStrokeStyle(t,e)}},{key:"toJSON",value:function(t){return Object.assign(f.default.toJSON(t),d.default.toJSON(t))}}]),e}((0,u.default)(function t(){a(this,t)},f.default,d.default));e.default=p},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=r(1);n.vec2.cross2d=function(t,e){return t[0]*e[1]-t[1]*e[0]},n.vec2.angleFast=function(t,e){return Math.acos(n.vec2.dot(t,e))},n.vec2.angle=function(t,e){var r=n.vec2.dot(t,e),a=n.vec2.cross2d(t,e),i=Math.atan2(a,r);return i},n.vec2.anglePosX=function(t){var e=Math.atan2(t[1],t[0]);return e<0&&(e*=-1),e},e.default=n.vec2},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function s(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}function l(t,e,r,n){p.isEmpty(t)?(t[0]=e[0],t[2]=e[0],n[0]=n[2]=r,t[1]=e[1],t[3]=e[1],n[1]=n[3]=r):(e[0]<t[0]?(t[0]=e[0],n[0]=r):e[0]>t[2]&&(t[2]=e[0],n[2]=r),e[1]<t[1]?(t[1]=e[1],n[1]=r):e[1]>t[3]&&(t[3]=e[1],n[3]=r))}function u(t,e,r){var n=e[0]*r[1]-r[0]*e[1];return t[0]+=(e[0]+r[0])*n,t[1]+=(e[1]+r[1])*n,n}function c(t){return Array.isArray(t)||ArrayBuffer&&ArrayBuffer.isView(t)}Object.defineProperty(e,"__esModule",{value:!0});var f=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),h=function t(e,r,n){null===e&&(e=Function.prototype);var a=Object.getOwnPropertyDescriptor(e,r);if(void 0===a){var i=Object.getPrototypeOf(e);return null===i?void 0:t(i,r,n)}if("value"in a)return a.value;var o=a.get;if(void 0!==o)return o.call(n)},d=r(2),p=a(d),_=r(4),v=a(_),y=r(7),m=n(y),M=r(1),b=r(6),x=n(b),g=r(15),S=M.mat2d.create(),I=function(t){function e(t){i(this,e);var r=t.verts||[],n=o(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,t));if(!c(r)||0===r.length||c(r[0])&&r.length<1||!c(r[0])&&(r.length<2||r.length%2!==0))throw new Error("PolyLine shapes must be initialized with an array of 2d points and contain at least 1 points");n._extentIndices=[-1,-1,-1,-1],n._localaabox=p.create(),n._verts=[],n._centroid=[0,0],p.initEmpty(n._aabox);var a=0,s=0;if(c(r[0])){for(s=0;s<r.length-1;s+=1)n._verts.push(v.clone(r[s])),l(n._aabox,r[s],s,n._extentIndices),a+=u(n._centroid,r[s],r[s+1]);n._verts.push(v.clone(r[s])),l(n._aabox,r[s],s,n._extentIndices),a+=u(n._centroid,r[s],r[0])}else{n._verts.push(v.create(r[0],r[1])),l(n._aabox,n._verts[0],0,n._extentIndices);var f=1;for(s=2;s<r.length-2;s+=2,f+=1)n._verts.push(v.create(r[s],r[s+1])),l(n._aabox,n._verts[f],f,n._extentIndices),a+=u(n._centroid,n._verts[f-1],n._verts[f]);n._verts.push(v.create(r[s],r[s+1])),l(n._aabox,n._verts[f],f,n._extentIndices),a+=u(n._centroid,n._verts[f],n._verts[0])}a*=.5,n._centroid[0]/=6*a,n._centroid[1]/=6*a;var h=v.create();return p.getCenter(h,n._aabox),n.pivot=h,n._verts.length<3?n._convexHull=n._verts.map(function(t,e){return e}):n._convexHull=(0,g.simpleHull_2D)(n._verts),n}return s(e,t),f(e,[{key:"getDimensions",value:function(){return[this.width,this.height]}},{key:"_collapseVerts",value:function(){var t=this;v.set(this._pivot,0,0);var e=this.localXform;if(M.mat2d.equals(e,S))return!1;p.initEmpty(this._aabox);for(var r=0;r<this._verts.length;r+=1)v.transformMat2d(this._verts[r],this._verts[r],e);return this._verts.length<3?this._convexHull=this._verts.map(function(t,e){return e}):this._convexHull=(0,g.simpleHull_2D)(this._verts),this._convexHull.forEach(function(e){l(t._aabox,t._verts[e],e,t._extentIndices)}),this.setTransformations(0,0,1,1,0),!0}},{key:"translateVert",value:function(t,e){if(t>=this._verts.length)throw new Error("Cannot translate vertex at index "+t+". There are only "+this._verts.length+" vertices in the polygon.");if(e[0]||e[1]){var r=v.clone(this._verts[t]),n=v.clone(this._verts[t]);v.addVec2(n,n,e),this._collapseVerts(),this._resetAABox=!0,this._geomDirty=!0,v.copy(n),this.fire("changed:geom",{attr:"verts["+t+"]",prevVal:r,currVal:n})}return this}},{key:"setVertPosition",value:function(t,e){if(t>=this._verts.length)throw new Error("Cannot translate vertex at index "+t+". There are only "+this._verts.length+" vertices in the polygon.");if(!v.equals(e,this._verts[t])){var r=v.clone(this._verts[t]);this._collapseVerts(),v.copy(this._verts[t],e),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom",{attr:"verts["+t+"]",prevVal:r,currVal:e})}}},{key:"insertVert",value:function(t,e){var r=x.default.min(x.default.max(t,0),this._verts.length);return this._collapseVerts(),t>=this._verts.length?(this._verts.push(v.clone(e)),r=this._verts.length-1):this._verts.splice(t,0,v.clone(e)),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom:addvert",{attr:"verts["+r+"]",currVal:e}),r}},{key:"appendVert",value:function(t){return this.insertVert(this._verts.length,t)}},{key:"removeVert",value:function(t){if(t>=this._verts.length||t<0)throw new Error("Cannot remove vertex "+t+". Invalid index. There are only "+this._verts.length+" vertices in the shape.");var e=this._verts[t];return this._verts.splice(t,1),this._collapseVerts(),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom:removevert",{attr:"verts["+t+"]",currVal:e}),t}},{key:"_rebuildAABox",value:function(){var t=this;p.initEmpty(this._aabox),this._verts.length<3?this._convexHull=this._verts.map(function(t,e){return e}):this._convexHull=(0,g.simpleHull_2D)(this._verts),this._convexHull.forEach(function(e){l(t._aabox,t._verts[e],e,t._extentIndices)});var e=v.create(0,0);p.getCenter(e,this._aabox),this.pivot=e}},{key:"_updateAABox",value:function(){var t=this;if(this._resetAABox&&(this._rebuildAABox(),this._resetAABox=!1),this._boundsOutOfDate||this._geomDirty){p.initEmpty(this._aabox);var e=[0,0],r=this.globalXform;if(this._convexHull.forEach(function(n){p.encapsulatePt(t._aabox,t._aabox,v.transformMat2d(e,t._verts[n],r))}),this._boundsOutOfDate=!1,this._geomDirty){var n=v.create();n[0]=this._verts[this._extentIndices[0]][0]+.5*(this._verts[this._extentIndices[2]][0]-this._verts[this._extentIndices[0]][0]),n[1]=this._verts[this._extentIndices[1]][1]+.5*(this._verts[this._extentIndices[3]][1]-this._verts[this._extentIndices[1]][1]),this.pivot=n,this._geomDirty=!1}}}},{key:"_draw",value:function(t){var e=!1;if(this._verts.length>=2){t.moveTo(this._verts[0][0],this._verts[0][1]);for(var r=1;r<this._verts.length;r+=1)t.lineTo(this._verts[r][0],this._verts[r][1]);e=!0}return e}},{key:"toJSON",value:function(){return Object.assign({type:"PolyLine",verts:this.vertsRef.map(function(t){return[t[0],t[1]]})},h(e.prototype.__proto__||Object.getPrototypeOf(e.prototype),"toJSON",this).call(this))}},{key:"width",get:function(){return this._updateAABox(),!this._verts.length||this._extentIndices[0]<0||this._extentIndices[2]<0?0:this._verts[this._extentIndices[2]][0]-this._verts[this._extentIndices[0]][0]}},{key:"height",get:function(){return this._updateAABox(),!this._verts.length||this._extentIndices[0]<0||this._extentIndices[2]<0?0:this._verts[this._extentIndices[3]][1]-this._verts[this._extentIndices[1]][1]}},{key:"vertsRef",get:function(){return this._verts}},{key:"numVerts",get:function(){return this._verts.length}}]),e}(m.default);e.default=I,I.aaboxEncapsulatePt=l},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e,r,n,a){return h.mat2d.identity(t),h.mat2d.translate(t,t,[n[0]+a[0],n[1]+a[1]]),h.mat2d.rotate(t,t,v.default.DEG_TO_RAD*e),h.mat2d.scale(t,t,r),h.mat2d.translate(t,t,[-a[0],-a[1]]),t}function s(t){t.forEach(function(t){t._xformDirty=!0,s(t._children)})}function l(t){return(0,p.default)(null,y,function(){function e(){i(this,e)}return u(e,[{key:"setPosition",value:function(e){if(!f.equals(e,this._pos)){var r=[this._pos[0],this._pos[1]];f.copy(this._pos,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"position",prevVal:r,currVal:e})}return this}},{key:"translate",value:function(e){if(e[0]||e[1]){var r=[this._pos[0],this._pos[1]];f.addVec2(this._pos,this._pos,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"position",prevVal:r,currVal:[this._pos[0],this._pos[1]]})}return this}},{key:"setScale",value:function(e){if(!h.vec2.equals(e,this._scale)){var r=[this._scale[0],this._scale[1]];h.vec2.copy(this._scale,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"size",prevVal:r,currVal:e})}return this}},{key:"scale",value:function(e){if(1!==e[0]||1!==e[1]){var r=[this._scale[0],this._scale[1]];h.vec2.multiply(this._scale,this._scale,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"size",prevVal:r,currVal:[this._scale[0],this._scale[1]]})}return this}},{key:"setRotation",value:function(e){var r=e%360;if(r!==this._rotDeg){var n=this._rotDeg;this._rotDeg=r,this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"orientation",prevVal:n,curral:this._rotDeg})}}},{key:"rotate",value:function(e){if(e){var r=this._rotDeg;this._rotDeg+=e,this._rotDeg%=360,this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"orientation",prevVal:r,curral:this._rotDeg})}return this}},{key:"setTransformations",value:function(e,r,n,a,i){var o=[],l=[],u=[];if(!("undefined"==typeof e||"undefined"==typeof r||h.glMatrix.equals(e,this._pos[0])&&h.glMatrix.equals(r,this._pos[1]))){var c=f.clone(this._pos);this._pos[0]=e,this._pos[1]=r,o.push("position"),l.push(c),u.push(f.clone(this._pos))}if(!("undefined"==typeof n||"undefined"==typeof a||h.glMatrix.equals(n,this._scale[0])&&h.glMatrix.equals(a,this._scale[1]))){var d=h.vec2.clone(this._scale);h.vec2.set(this._scale,n,a),o.push("size"),l.push(d),u.push(h.vec2.clone(this._scale))}if("undefined"!=typeof i){var p=i%360;if(!h.glMatrix.equals(p,this._rotDeg)){var _=this._rotDeg;this._rotDeg=p,o.push("orientation"),l.push(_),u.push(this._rotDeg)}}return o.length&&(this._lxformDirty=!0,s(this._children),this.fire(t,{attrs:o,prevVals:l,currVals:u})),this}},{key:"pivot",set:function(e){if(!f.equals(e,this._pivot)){var r=[this._pivot[0],this._pivot[1]];f.copy(this._pivot,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"pivot",prevVal:r,currVal:e})}return this},get:function(){return f.clone(this._pivot)}}]),e}())}Object.defineProperty(e,"__esModule",{value:!0});var u=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}();e.buildXformMatrix=o,e.createEventedTransform2dMixin=l;var c=r(4),f=a(c),h=r(1),d=r(8),p=n(d),_=r(6),v=n(_),y=function(){function t(e){i(this,t),this.initializer(e)}return u(t,[{key:"_initTransformFromOptions",value:function(t){t&&("undefined"!=typeof t.position&&this.setPosition(t.position),"undefined"!=typeof t.scale&&this.setScale(t.scale),"undefined"!=typeof t.rotation&&this.setRotation(t.rotation),"undefined"!=typeof t.pivot&&(this.pivot=t.pivot))}},{key:"initializer",value:function(t){this._localXform=h.mat2d.create(),this._lxformDirty=!1,this._pivot=f.create(0,0),this._pos=f.create(0,0),this._scale=h.vec2.fromValues(1,1),this._rotDeg=0,this._globalXform=h.mat2d.create(),this._xformDirty=!1,this._parent=null,this._children=new Set,this._initTransformFromOptions(t)}},{key:"addChildXform",value:function(t){this._children.has(t)||(this._children.add(t),t._parent&&t._parent.removeChild(t),t._parent=this,t._xformDirty=!0,s(t._children))}},{key:"removeChildXform",value:function(t){this._children.delete(t)}},{key:"unparentXform",value:function(){this._parent&&(this._parent.removeChild(this),this._parent=null,h.mat2d.copy(this._globalXform,this.localXform))}},{key:"getPosition",value:function(){return h.vec2.clone(this._pos)}},{key:"getPositionRef",value:function(){return this._pos}},{key:"getWorldPosition",value:function(){var t=this.globalXform;return f.create(t[4],t[5])}},{key:"setPosition",value:function(t){f.copy(this._pos,t),this._lxformDirty=!0,s(this._children)}},{key:"translate",value:function(t){return(t[0]||t[1])&&(f.addVec2(this._pos,this._pos,t),this._lxformDirty=!0,s(this._children)),this}},{key:"getScale",value:function(){return h.vec2.clone(this._scale)}},{key:"getScaleRef",value:function(){return this._scale}},{key:"setScale",value:function(t){return h.vec2.copy(this._scale,t),this._lxformDirty=!0,s(this._children),this}},{key:"scale",value:function(t){return 1===t[0]&&1===t[1]||(h.vec2.multiply(this._scale,this._scale,t),this._lxformDirty=!0,s(this._children)),this}},{key:"getRotation",value:function(){return this._rotDeg}},{key:"setRotation",value:function(t){return this._rotDeg=t,this._lxformDirty=!0,s(this._children),this}},{key:"rotate",value:function(t){return t&&(this._rotDeg+=t,this._lxformDirty=!0,s(this._children)),this}},{key:"_dirtyChildren",value:function(){s(this._children)}},{key:"_updatelocalxform",value:function(){this._lxformDirty&&(o(this._localXform,this._rotDeg,this._scale,this._pos,this._pivot),this._localXformUpdated&&this._localXformUpdated(),this._lxformDirty=!1)}},{key:"_updateglobalxform",value:function(){(this._lxformDirty||this._xformDirty)&&(this._updatelocalxform(),this._parent?h.mat2d.multiply(this._globalXform,this._parent.globalXform,this._localXform):h.mat2d.copy(this._globalXform,this._localXform),this._globalXformUpdated&&this._globalXformUpdated(),this._xformDirty=!1)}},{key:"transformCtx",value:function(t,e,r){h.mat2d.multiply(e,r,this.globalXform),t.setTransform(e[0],e[1],e[2],e[3],e[4],e[5])}},{key:"pivot",set:function(t){return f.copy(this._pivot,t),this._lxformDirty=!0,s(this._children),this},get:function(){return f.clone(this._pivot)}},{key:"pivotRef",get:function(){return this._pivot}},{key:"parent",get:function(){return this._parent}},{key:"localXform",get:function(){return this._updatelocalxform(),this._localXform}},{key:"globalXform",get:function(){return this._updateglobalxform(),this._globalXform}}],[{key:"toJSON",value:function(t){var e=t.getPositionRef(),r=t.getScaleRef(),n=t.pivotRef;return{position:[e[0],e[1]],scale:[r[0],r[1]],rotation:t.getRotation(),pivot:[n[0],n[1]]}}}]),t}();e.default=y},function(t,e){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function n(t,e,r,a){var i=this;if(r>=e.length)return 0;var o=0,s=null;return s=t.get(e[r]),s&&(o=n(s[0],e,r+1,a),s[1].forEach(function(t){return t.call(i,a)}),o+=s[1].length),o}function a(t,e){var r=-1,n=t[0],i=t[1];i.length&&e.forEach(function(t){(r=i.indexOf(t))>=0&&i.splice(r,1)}),n.forEach(function(t){a(t,e)})}function i(t){var e=t;if("string"==typeof t)e=[t];else if(!Array.isArray(t))throw new Error("Input must be an array of strings");return e}Object.defineProperty(e,"__esModule",{value:!0});var o=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),s=function(){function t(e){r(this,t),this.initializer(e)}return o(t,[{key:"initializer",value:function(t){this._listeners=new Map,this.registerEvents(t)}},{key:"registerEvents",value:function(t){var e=this;if(t){var r=i(t);if("string"==typeof t)r=[t];else if(!Array.isArray(t))throw new Error("Events must be an array of strings");r.forEach(function(t){for(var r=t.split(":"),n=e._listeners,a=0;a<r.length;a+=1){var i=n.get(r[a]);i||(i=[new Map,[]],n.set(r[a],i)),n=i[0]}})}}},{key:"on",value:function(t,e){var r=this,n=i(t);return n.forEach(function(t){var n=t.split(":"),a=r._listeners,i=null;n.forEach(function(e){if(i=a.get(e),!i){var r=[];throw a.forEach(function(t,e){return r.push(e)}),new Error(t+" is not a valid event type. The registered event types at this level are ["+r+"]")}a=i[0]}),i[1].indexOf(e)<0&&i[1].push(e);
@@ -11661,7 +11798,93 @@ s.normalize=o.normalize,s.fromMat3=function(t,e){var r,n=e[0]+e[4]+e[8];if(n>0)r
 //# sourceMappingURL=mapd-draw.js.map
 
 /***/ }),
-/* 22 */
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var vnode_1 = __webpack_require__(143);
+var is = __webpack_require__(144);
+function addNS(data, children, sel) {
+    data.ns = 'http://www.w3.org/2000/svg';
+    if (sel !== 'foreignObject' && children !== undefined) {
+        for (var i = 0; i < children.length; ++i) {
+            var childData = children[i].data;
+            if (childData !== undefined) {
+                addNS(childData, children[i].children, children[i].sel);
+            }
+        }
+    }
+}
+function h(sel, b, c) {
+    var data = {}, children, text, i;
+    if (c !== undefined) {
+        data = b;
+        if (is.array(c)) {
+            children = c;
+        }
+        else if (is.primitive(c)) {
+            text = c;
+        }
+        else if (c && c.sel) {
+            children = [c];
+        }
+    }
+    else if (b !== undefined) {
+        if (is.array(b)) {
+            children = b;
+        }
+        else if (is.primitive(b)) {
+            text = b;
+        }
+        else if (b && b.sel) {
+            children = [b];
+        }
+        else {
+            data = b;
+        }
+    }
+    if (is.array(children)) {
+        for (i = 0; i < children.length; ++i) {
+            if (is.primitive(children[i]))
+                children[i] = vnode_1.vnode(undefined, undefined, undefined, children[i]);
+        }
+    }
+    if (sel[0] === 's' && sel[1] === 'v' && sel[2] === 'g' &&
+        (sel.length === 3 || sel[3] === '.' || sel[3] === '#')) {
+        addNS(data, children, sel);
+    }
+    return vnode_1.vnode(sel, data, children, text, undefined);
+}
+exports.h = h;
+;
+exports.default = h;
+//# sourceMappingURL=h.js.map
+
+/***/ }),
+/* 24 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// Computes the decimal coefficient and exponent of the specified number x with
+// significant digits p, where x is positive and p is in [1, 21] or undefined.
+// For example, formatDecimal(1.23) returns ["123", 0].
+/* harmony default export */ __webpack_exports__["a"] = (function(x, p) {
+  if ((i = (x = p ? x.toExponential(p - 1) : x.toExponential()).indexOf("e")) < 0) return null; // NaN, ±Infinity
+  var i, coefficient = x.slice(0, i);
+
+  // The string returned by toExponential either has the form \d\.\d+e[-+]\d+
+  // (e.g., 1.2e+3) or the form \de[-+]\d+ (e.g., 1e+3).
+  return [
+    coefficient.length > 1 ? coefficient[0] + coefficient.slice(2) : coefficient,
+    +x.slice(i + 1)
+  ];
+});
+
+
+/***/ }),
+/* 25 */
 /***/ (function(module, exports) {
 
 var g;
@@ -11688,7 +11911,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11711,7 +11934,7 @@ function parseFilter(sql, transform) {
 }
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11758,7 +11981,7 @@ function parseSource(transforms) {
 }
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11816,7 +12039,7 @@ module.exports = invariant;
 
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11834,7 +12057,7 @@ var QUARTERS = exports.QUARTERS = ["Q1", "Q2", "Q3", "Q4"];
 var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM", "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM", "8PM", "9PM", "10PM", "11PM"];
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11911,7 +12134,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12052,7 +12275,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12116,7 +12339,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 30 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12224,7 +12447,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12286,7 +12509,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 32 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12395,7 +12618,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 33 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12533,7 +12756,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 34 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12627,7 +12850,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 35 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12750,7 +12973,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 36 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12873,7 +13096,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 37 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12985,7 +13208,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 38 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13132,7 +13355,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 39 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13217,7 +13440,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 40 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13392,7 +13615,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13459,7 +13682,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13543,7 +13766,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 43 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13607,7 +13830,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 44 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13689,7 +13912,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 45 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13772,7 +13995,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13875,7 +14098,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 47 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13977,7 +14200,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 48 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14047,7 +14270,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 49 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14114,7 +14337,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 50 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14185,7 +14408,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 51 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14256,7 +14479,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 52 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14326,7 +14549,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 53 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14403,7 +14626,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 54 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14488,7 +14711,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 55 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14572,7 +14795,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 56 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14642,7 +14865,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 57 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14752,7 +14975,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 58 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14863,7 +15086,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 59 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14927,7 +15150,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 60 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14995,7 +15218,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 61 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15059,7 +15282,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 62 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15127,7 +15350,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 63 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15204,7 +15427,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 64 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15284,7 +15507,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 65 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15365,7 +15588,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 66 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15468,7 +15691,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 67 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15596,7 +15819,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 68 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15745,7 +15968,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 69 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15858,7 +16081,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 70 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15957,7 +16180,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 71 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16044,7 +16267,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 72 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16175,7 +16398,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 73 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16249,7 +16472,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 74 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16329,7 +16552,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 75 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16416,7 +16639,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 76 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16509,7 +16732,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 77 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16600,7 +16823,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 78 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16662,7 +16885,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 79 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16734,7 +16957,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 80 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16826,7 +17049,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 81 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16966,7 +17189,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 82 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17040,7 +17263,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 83 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17160,7 +17383,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 84 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17261,7 +17484,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 85 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17376,7 +17599,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 86 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17470,7 +17693,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 87 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17555,7 +17778,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 88 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17718,7 +17941,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 89 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17804,7 +18027,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 90 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17890,7 +18113,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 91 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17987,7 +18210,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 92 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18054,7 +18277,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 93 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18181,7 +18404,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 94 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18258,7 +18481,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 95 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18322,7 +18545,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 96 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18450,7 +18673,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 97 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18559,7 +18782,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 98 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18628,7 +18851,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 99 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18693,7 +18916,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 100 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18772,7 +18995,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 101 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18951,7 +19174,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 102 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19016,7 +19239,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 103 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19091,7 +19314,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 104 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19245,7 +19468,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 105 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19411,7 +19634,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 106 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19485,7 +19708,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 107 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19599,7 +19822,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 108 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19713,7 +19936,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 109 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19806,7 +20029,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 110 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19879,7 +20102,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 111 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19942,7 +20165,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 112 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20075,7 +20298,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 113 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20168,7 +20391,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 114 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20239,7 +20462,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 115 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20305,7 +20528,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 116 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20429,7 +20652,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 117 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20523,7 +20746,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 118 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20618,7 +20841,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 119 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20680,7 +20903,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 120 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20742,7 +20965,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 121 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20892,7 +21115,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 122 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20954,7 +21177,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 123 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21037,7 +21260,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 124 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21109,7 +21332,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 125 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21240,7 +21463,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 126 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21345,12 +21568,12 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 127 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var pSlice = Array.prototype.slice;
-var objectKeys = __webpack_require__(166);
-var isArguments = __webpack_require__(167);
+var objectKeys = __webpack_require__(175);
+var isArguments = __webpack_require__(176);
 
 var deepEqual = module.exports = function (actual, expected, opts) {
   if (!opts) opts = {};
@@ -21445,7 +21668,7 @@ function objEquiv(a, b, opts) {
 
 
 /***/ }),
-/* 128 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21617,7 +21840,7 @@ function asyncMixin(_chart) {
 }
 
 /***/ }),
-/* 129 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21658,7 +21881,7 @@ BadArgumentException.prototype = Object.create(Exception.prototype);
 BadArgumentException.prototype.constructor = BadArgumentException;
 
 /***/ }),
-/* 130 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21715,7 +21938,7 @@ var multipleKeysAccessorForCap = exports.multipleKeysAccessorForCap = createAcce
 var multipleKeysAccessorForStack = exports.multipleKeysAccessorForStack = createAccessor(getMinOfRange);
 
 /***/ }),
-/* 131 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21752,7 +21975,7 @@ function multipleKeysLabelMixin(_chart) {
 }
 
 /***/ }),
-/* 132 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21770,7 +21993,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _dcConstants = __webpack_require__(172);
+var _dcConstants = __webpack_require__(181);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21883,7 +22106,7 @@ function spinnerMixin(_chart) {
 }
 
 /***/ }),
-/* 133 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21894,7 +22117,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = elasticDimensionMixin;
 
-var _ramda = __webpack_require__(174);
+var _ramda = __webpack_require__(183);
 
 var _d = __webpack_require__(1);
 
@@ -21959,7 +22182,7 @@ function elasticDimensionMixin(_chart) {
 }
 
 /***/ }),
-/* 134 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22190,7 +22413,7 @@ function lockAxisMixin(chart) {
 }
 
 /***/ }),
-/* 135 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22440,7 +22663,7 @@ function multiSeriesMixin(chart) {
 }
 
 /***/ }),
-/* 136 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23085,7 +23308,7 @@ earcut.flatten = function (data) {
 
 
 /***/ }),
-/* 137 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23102,7 +23325,7 @@ exports.conv4326To900913X = conv4326To900913X;
 exports.conv4326To900913Y = conv4326To900913Y;
 exports.conv4326To900913 = conv4326To900913;
 
-var _mapdDraw = __webpack_require__(21);
+var _mapdDraw = __webpack_require__(22);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
@@ -23184,7 +23407,7 @@ function conv4326To900913(out, coord) {
 }
 
 /***/ }),
-/* 138 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23204,7 +23427,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _coordinateGridRasterMixinUi = __webpack_require__(191);
+var _coordinateGridRasterMixinUi = __webpack_require__(201);
 
 var _coordinateGridRasterMixinUi2 = _interopRequireDefault(_coordinateGridRasterMixinUi);
 
@@ -23257,12 +23480,18 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
   _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _baseMixin2.default)(_chart)));
   _chart._mandatoryAttributes().push("x", "y");
 
+  _chart.resetSvg = function () {
+    _chart.select("div.svg-wrapper").html("");
+
+    return _chart.generateSvg();
+  };
+
   _chart.filters = function () {
     return _filters;
   };
 
   _chart.filter = function (filters) {
-    if (typeof filters === "undefined" || filters === null) {
+    if (typeof filters === "undefined" || filters === null || filters === Symbol.for("clear")) {
       _initialFilters = _initialFilters || [[]];
       filterChartDimensions(_initialFilters[0][0], _initialFilters[0][1], true);
     } else if (Array.isArray(filters) && filters.length === 2) {
@@ -24464,7 +24693,7 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 }
 
 /***/ }),
-/* 139 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24477,7 +24706,7 @@ exports.default = scatterMixin;
 
 var _utils = __webpack_require__(3);
 
-var _rasterDrawMixin = __webpack_require__(20);
+var _rasterDrawMixin = __webpack_require__(21);
 
 function extend(destination, source) {
   for (var k in source) {
@@ -24695,7 +24924,299 @@ function scatterMixin(_chart, _mapboxgl) {
 }
 
 /***/ }),
-/* 140 */
+/* 143 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function vnode(sel, data, children, text, elm) {
+    var key = data === undefined ? undefined : data.key;
+    return { sel: sel, data: data, children: children,
+        text: text, elm: elm, key: key };
+}
+exports.vnode = vnode;
+exports.default = vnode;
+//# sourceMappingURL=vnode.js.map
+
+/***/ }),
+/* 144 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.array = Array.isArray;
+function primitive(s) {
+    return typeof s === 'string' || typeof s === 'number';
+}
+exports.primitive = primitive;
+//# sourceMappingURL=is.js.map
+
+/***/ }),
+/* 145 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(217);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(218);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(146);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTypes__ = __webpack_require__(147);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatPrefixAuto__ = __webpack_require__(148);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__identity__ = __webpack_require__(221);
+
+
+
+
+
+
+
+
+var prefixes = ["y","z","a","f","p","n","µ","m","","k","M","G","T","P","E","Z","Y"];
+
+/* harmony default export */ __webpack_exports__["a"] = (function(locale) {
+  var group = locale.grouping && locale.thousands ? Object(__WEBPACK_IMPORTED_MODULE_1__formatGroup__["a" /* default */])(locale.grouping, locale.thousands) : __WEBPACK_IMPORTED_MODULE_6__identity__["a" /* default */],
+      currency = locale.currency,
+      decimal = locale.decimal,
+      numerals = locale.numerals ? Object(__WEBPACK_IMPORTED_MODULE_2__formatNumerals__["a" /* default */])(locale.numerals) : __WEBPACK_IMPORTED_MODULE_6__identity__["a" /* default */],
+      percent = locale.percent || "%";
+
+  function newFormat(specifier) {
+    specifier = Object(__WEBPACK_IMPORTED_MODULE_3__formatSpecifier__["a" /* default */])(specifier);
+
+    var fill = specifier.fill,
+        align = specifier.align,
+        sign = specifier.sign,
+        symbol = specifier.symbol,
+        zero = specifier.zero,
+        width = specifier.width,
+        comma = specifier.comma,
+        precision = specifier.precision,
+        type = specifier.type;
+
+    // Compute the prefix and suffix.
+    // For SI-prefix, the suffix is lazily computed.
+    var prefix = symbol === "$" ? currency[0] : symbol === "#" && /[boxX]/.test(type) ? "0" + type.toLowerCase() : "",
+        suffix = symbol === "$" ? currency[1] : /[%p]/.test(type) ? percent : "";
+
+    // What format function should we use?
+    // Is this an integer type?
+    // Can this type generate exponential notation?
+    var formatType = __WEBPACK_IMPORTED_MODULE_4__formatTypes__["a" /* default */][type],
+        maybeSuffix = !type || /[defgprs%]/.test(type);
+
+    // Set the default precision if not specified,
+    // or clamp the specified precision to the supported range.
+    // For significant precision, it must be in [1, 21].
+    // For fixed precision, it must be in [0, 20].
+    precision = precision == null ? (type ? 6 : 12)
+        : /[gprs]/.test(type) ? Math.max(1, Math.min(21, precision))
+        : Math.max(0, Math.min(20, precision));
+
+    function format(value) {
+      var valuePrefix = prefix,
+          valueSuffix = suffix,
+          i, n, c;
+
+      if (type === "c") {
+        valueSuffix = formatType(value) + valueSuffix;
+        value = "";
+      } else {
+        value = +value;
+
+        // Perform the initial formatting.
+        var valueNegative = value < 0;
+        value = formatType(Math.abs(value), precision);
+
+        // If a negative value rounds to zero during formatting, treat as positive.
+        if (valueNegative && +value === 0) valueNegative = false;
+
+        // Compute the prefix and suffix.
+        valuePrefix = (valueNegative ? (sign === "(" ? sign : "-") : sign === "-" || sign === "(" ? "" : sign) + valuePrefix;
+        valueSuffix = valueSuffix + (type === "s" ? prefixes[8 + __WEBPACK_IMPORTED_MODULE_5__formatPrefixAuto__["b" /* prefixExponent */] / 3] : "") + (valueNegative && sign === "(" ? ")" : "");
+
+        // Break the formatted value into the integer “value” part that can be
+        // grouped, and fractional or exponential “suffix” part that is not.
+        if (maybeSuffix) {
+          i = -1, n = value.length;
+          while (++i < n) {
+            if (c = value.charCodeAt(i), 48 > c || c > 57) {
+              valueSuffix = (c === 46 ? decimal + value.slice(i + 1) : value.slice(i)) + valueSuffix;
+              value = value.slice(0, i);
+              break;
+            }
+          }
+        }
+      }
+
+      // If the fill character is not "0", grouping is applied before padding.
+      if (comma && !zero) value = group(value, Infinity);
+
+      // Compute the padding.
+      var length = valuePrefix.length + value.length + valueSuffix.length,
+          padding = length < width ? new Array(width - length + 1).join(fill) : "";
+
+      // If the fill character is "0", grouping is applied after padding.
+      if (comma && zero) value = group(padding + value, padding.length ? width - valueSuffix.length : Infinity), padding = "";
+
+      // Reconstruct the final output based on the desired alignment.
+      switch (align) {
+        case "<": value = valuePrefix + value + valueSuffix + padding; break;
+        case "=": value = valuePrefix + padding + value + valueSuffix; break;
+        case "^": value = padding.slice(0, length = padding.length >> 1) + valuePrefix + value + valueSuffix + padding.slice(length); break;
+        default: value = padding + valuePrefix + value + valueSuffix; break;
+      }
+
+      return numerals(value);
+    }
+
+    format.toString = function() {
+      return specifier + "";
+    };
+
+    return format;
+  }
+
+  function formatPrefix(specifier, value) {
+    var f = newFormat((specifier = Object(__WEBPACK_IMPORTED_MODULE_3__formatSpecifier__["a" /* default */])(specifier), specifier.type = "f", specifier)),
+        e = Math.max(-8, Math.min(8, Math.floor(Object(__WEBPACK_IMPORTED_MODULE_0__exponent__["a" /* default */])(value) / 3))) * 3,
+        k = Math.pow(10, -e),
+        prefix = prefixes[8 + e / 3];
+    return function(value) {
+      return f(k * value) + prefix;
+    };
+  }
+
+  return {
+    format: newFormat,
+    formatPrefix: formatPrefix
+  };
+});
+
+
+/***/ }),
+/* 146 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = formatSpecifier;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatTypes__ = __webpack_require__(147);
+
+
+// [[fill]align][sign][symbol][0][width][,][.precision][type]
+var re = /^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$/i;
+
+function formatSpecifier(specifier) {
+  return new FormatSpecifier(specifier);
+}
+
+formatSpecifier.prototype = FormatSpecifier.prototype; // instanceof
+
+function FormatSpecifier(specifier) {
+  if (!(match = re.exec(specifier))) throw new Error("invalid format: " + specifier);
+
+  var match,
+      fill = match[1] || " ",
+      align = match[2] || ">",
+      sign = match[3] || "-",
+      symbol = match[4] || "",
+      zero = !!match[5],
+      width = match[6] && +match[6],
+      comma = !!match[7],
+      precision = match[8] && +match[8].slice(1),
+      type = match[9] || "";
+
+  // The "n" type is an alias for ",g".
+  if (type === "n") comma = true, type = "g";
+
+  // Map invalid types to the default format.
+  else if (!__WEBPACK_IMPORTED_MODULE_0__formatTypes__["a" /* default */][type]) type = "";
+
+  // If zero fill is specified, padding goes after sign and before digits.
+  if (zero || (fill === "0" && align === "=")) zero = true, fill = "0", align = "=";
+
+  this.fill = fill;
+  this.align = align;
+  this.sign = sign;
+  this.symbol = symbol;
+  this.zero = zero;
+  this.width = width;
+  this.comma = comma;
+  this.precision = precision;
+  this.type = type;
+}
+
+FormatSpecifier.prototype.toString = function() {
+  return this.fill
+      + this.align
+      + this.sign
+      + this.symbol
+      + (this.zero ? "0" : "")
+      + (this.width == null ? "" : Math.max(1, this.width | 0))
+      + (this.comma ? "," : "")
+      + (this.precision == null ? "" : "." + Math.max(0, this.precision | 0))
+      + this.type;
+};
+
+
+/***/ }),
+/* 147 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDefault__ = __webpack_require__(219);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatPrefixAuto__ = __webpack_require__(148);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatRounded__ = __webpack_require__(220);
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  "": __WEBPACK_IMPORTED_MODULE_0__formatDefault__["a" /* default */],
+  "%": function(x, p) { return (x * 100).toFixed(p); },
+  "b": function(x) { return Math.round(x).toString(2); },
+  "c": function(x) { return x + ""; },
+  "d": function(x) { return Math.round(x).toString(10); },
+  "e": function(x, p) { return x.toExponential(p); },
+  "f": function(x, p) { return x.toFixed(p); },
+  "g": function(x, p) { return x.toPrecision(p); },
+  "o": function(x) { return Math.round(x).toString(8); },
+  "p": function(x, p) { return Object(__WEBPACK_IMPORTED_MODULE_2__formatRounded__["a" /* default */])(x * 100, p); },
+  "r": __WEBPACK_IMPORTED_MODULE_2__formatRounded__["a" /* default */],
+  "s": __WEBPACK_IMPORTED_MODULE_1__formatPrefixAuto__["a" /* default */],
+  "X": function(x) { return Math.round(x).toString(16).toUpperCase(); },
+  "x": function(x) { return Math.round(x).toString(16); }
+});
+
+
+/***/ }),
+/* 148 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return prefixExponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(24);
+
+
+var prefixExponent;
+
+/* harmony default export */ __webpack_exports__["a"] = (function(x, p) {
+  var d = Object(__WEBPACK_IMPORTED_MODULE_0__formatDecimal__["a" /* default */])(x, p);
+  if (!d) return x + "";
+  var coefficient = d[0],
+      exponent = d[1],
+      i = exponent - (prefixExponent = Math.max(-8, Math.min(8, Math.floor(exponent / 3))) * 3) + 1,
+      n = coefficient.length;
+  return i === n ? coefficient
+      : i > n ? coefficient + new Array(i - n + 1).join("0")
+      : i > 0 ? coefficient.slice(0, i) + "." + coefficient.slice(i)
+      : "0." + new Array(1 - i).join("0") + Object(__WEBPACK_IMPORTED_MODULE_0__formatDecimal__["a" /* default */])(x, Math.max(0, p + i - 1))[0]; // less than 1y!
+});
+
+
+/***/ }),
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24706,7 +25227,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rasterLayerHeatmapMixin;
 
-var _utilsVega = __webpack_require__(14);
+var _utilsVega = __webpack_require__(15);
 
 var _utils = __webpack_require__(3);
 
@@ -24744,6 +25265,7 @@ function rasterLayerHeatmapMixin(_layer) {
   _layer.yDim = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
   _layer.dynamicSize = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
   _layer.dynamicBinning = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
+  _layer.colorDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
   _layer._mandatoryAttributes([]);
 
   _layer.setState = function (setterOrState) {
@@ -24840,7 +25362,9 @@ function rasterLayerHeatmapMixin(_layer) {
         globalFilter = _ref3.globalFilter,
         neLat = _ref3.neLat,
         zoom = _ref3.zoom,
-        domain = _ref3.domain;
+        domain = _ref3.domain,
+        _ref3$layerName = _ref3.layerName,
+        layerName = _ref3$layerName === undefined ? "" : _ref3$layerName;
 
     var _getMarkSize2 = getMarkSize({ width: width, neLat: neLat, zoom: zoom, domain: domain }),
         markWidth = _getMarkSize2.markWidth,
@@ -24850,21 +25374,23 @@ function rasterLayerHeatmapMixin(_layer) {
       width: width,
       height: height,
       data: {
-        name: "heatmap_query",
+        name: "heatmap_query" + layerName,
         sql: _layer.genSQL({ table: table, width: width, height: height, min: min, max: max, filter: filter, globalFilter: globalFilter, neLat: neLat, zoom: zoom, domain: domain })
       },
       scales: [{
-        name: "heat_color",
+        name: "heat_color" + layerName,
         type: state.encoding.color.type,
-        domain: state.encoding.color.scale.domain === "auto" ? domain : state.encoding.color.scale.domain,
-        range: state.encoding.color.scale.range,
-        default: state.encoding.color.scale.default,
-        nullValue: state.encoding.color.scale.nullValue
+        domain: state.encoding.color.scale.domain === "auto" ? _layer.colorDomain() || domain : state.encoding.color.scale.domain,
+        range: state.encoding.color.scale.range.map(function (c) {
+          return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.scale.opacity);
+        }),
+        default: (0, _utilsVega.adjustOpacity)(state.encoding.color.scale.default, state.encoding.color.scale.opacity),
+        nullValue: (0, _utilsVega.adjustOpacity)(state.encoding.color.scale.nullValue, state.encoding.color.scale.opacity)
       }],
       mark: {
         type: "symbol",
         from: {
-          data: "heatmap_query"
+          data: "heatmap_query" + layerName
         },
         properties: {
           shape: getMarkType(state.mark),
@@ -24877,7 +25403,7 @@ function rasterLayerHeatmapMixin(_layer) {
           width: markWidth,
           height: markHeight,
           fillColor: {
-            scale: "heat_color",
+            scale: "heat_color" + layerName,
             field: "color"
           }
         }
@@ -24901,7 +25427,7 @@ function rasterLayerHeatmapMixin(_layer) {
 }
 
 /***/ }),
-/* 141 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24919,14 +25445,306 @@ var _core = __webpack_require__(2);
 
 var _coreAsync = __webpack_require__(4);
 
-var _utilsVega = __webpack_require__(14);
+var _utilsVega = __webpack_require__(15);
+
+var _utils = __webpack_require__(3);
+
+var _d = __webpack_require__(1);
+
+var d3 = _interopRequireWildcard(_d);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
 var AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0];
 var AUTOSIZE_RANGE_MININUM = [1, 1];
 var SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000;
 
+function validSymbol(type) {
+  switch (type) {
+    case "circle":
+    case "cross":
+    case "diamond":
+    case "hexagon":
+    case "square":
+    case "triangle-down":
+    case "triangle-left":
+    case "triangle-right":
+    case "triangle-up":
+    case "hexagon-vert":
+    case "hexagon-horiz":
+      return true;
+    default:
+      return false;
+  }
+}
+
+function getMarkType() {
+  var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { point: {} };
+
+  if (validSymbol(config.point.shape)) {
+    return config.point.shape;
+  } else {
+    return "circle";
+  }
+}
+
+function getSizing(sizeAttr, cap) {
+  var lastFilteredSize = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : cap;
+  var pixelRatio = arguments[3];
+  var layerName = arguments[4];
+
+  if (typeof sizeAttr === "number") {
+    return sizeAttr;
+  } else if ((typeof sizeAttr === "undefined" ? "undefined" : _typeof(sizeAttr)) === "object" && sizeAttr.type === "quantitative") {
+    return {
+      scale: layerName + "_size",
+      field: "size"
+    };
+  } else if (sizeAttr === "auto") {
+    var size = Math.min(lastFilteredSize, cap);
+    var dynamicRScale = d3.scale.sqrt().domain(AUTOSIZE_DOMAIN_DEFAULTS).range(size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM ? AUTOSIZE_RANGE_MININUM : AUTOSIZE_RANGE_DEFAULTS).clamp(true);
+    return Math.round(dynamicRScale(size) * pixelRatio);
+  } else {
+    return null;
+  }
+}
+
+function getColor(color, layerName) {
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
+    return {
+      scale: layerName + "_fillColor",
+      value: 0
+    };
+  } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
+    return {
+      scale: layerName + "_fillColor",
+      field: "color"
+    };
+  } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object") {
+    return (0, _utilsVega.adjustOpacity)(color.value, color.opacity);
+  } else {
+    return color;
+  }
+}
+
+function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
+  var _ref$encoding = _ref.encoding,
+      x = _ref$encoding.x,
+      y = _ref$encoding.y,
+      size = _ref$encoding.size,
+      color = _ref$encoding.color,
+      transform = _ref.transform;
+
+  var transforms = [{
+    type: "project",
+    expr: x.field,
+    as: "x"
+  }, {
+    type: "project",
+    expr: y.field,
+    as: "y"
+  }];
+
+  if (typeof transform.limit === "number") {
+    transforms.push({
+      type: "limit",
+      row: transform.limit
+    });
+    if (transform.sample) {
+      transforms.push({
+        type: "sample",
+        method: "multiplicative",
+        size: lastFilteredSize,
+        limit: transform.limit
+      });
+    }
+  }
+
+  if (typeof filter === "string" && filter.length) {
+    transforms.push({
+      type: "filter",
+      expr: filter
+    });
+  }
+
+  if (typeof globalFilter === "string" && globalFilter.length) {
+    transforms.push({
+      type: "filter",
+      expr: globalFilter
+    });
+  }
+
+  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
+    transforms.push({
+      type: "project",
+      expr: size.field,
+      as: "size"
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
+    transforms.push({
+      type: "project",
+      expr: color.field,
+      as: "color"
+    });
+  }
+
+  transforms.push({
+    type: "project",
+    expr: table + ".rowid"
+  });
+
+  return transforms;
+}
+
+function getScales(_ref2, layerName) {
+  var size = _ref2.size,
+      color = _ref2.color;
+
+  var scales = [];
+
+  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
+    scales.push({
+      name: layerName + "_size",
+      type: "linear",
+      domain: size.domain,
+      range: size.range,
+      clamp: true
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
+    scales.push({
+      name: layerName + "_fillColor",
+      type: "linear",
+      domain: color.range.map(function (c, i) {
+        return i * 100 / (color.range.length - 1) / 100;
+      }),
+      range: color.range.map(function (c) {
+        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
+      }).map(function (c, i, colorArray) {
+        var normVal = i / (colorArray.length - 1);
+        var interp = Math.min(normVal / 0.65, 1.0);
+        interp = interp * 0.375 + 0.625;
+        return (0, _utilsVega.adjustRGBAOpacity)(c, interp);
+      }),
+      accumulator: "density",
+      minDensityCnt: "-2ndStdDev",
+      maxDensityCnt: "2ndStdDev",
+      clamp: true
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "ordinal") {
+    scales.push({
+      name: layerName + "_fillColor",
+      type: "ordinal",
+      domain: color.domain,
+      range: color.range.map(function (c) {
+        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
+      }),
+      default: (0, _utilsVega.adjustOpacity)("#27aeef", color.opacity),
+      nullValue: (0, _utilsVega.adjustOpacity)("#CACACA", color.opacity)
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "quantitative") {
+    scales.push({
+      name: layerName + "_fillColor",
+      type: "quantize",
+      domain: color.domain.map(function (c) {
+        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
+      }),
+      range: color.range,
+      clamp: true
+    });
+  }
+
+  return scales;
+}
+
 function rasterLayerPointMixin(_layer) {
+  var state = null;
+
+  _layer.setState = function (setter) {
+    if (typeof setter === "function") {
+      state = setter(state);
+    } else {
+      state = setter;
+    }
+
+    if (!state.hasOwnProperty("transform")) {
+      state.transform = {};
+    }
+
+    return _layer;
+  };
+
+  _layer.getState = function () {
+    return state;
+  };
+
+  _layer.getProjections = function () {
+    return getTransforms("", "", "", state, (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())).filter(function (transform) {
+      return transform.type === "project" && transform.hasOwnProperty("as");
+    }).map(function (projection) {
+      return _utils.parser.parseTransform({ select: [] }, projection);
+    }).map(function (sql) {
+      return sql.select[0];
+    });
+  };
+
+  _layer.__genVega = function (_ref3) {
+    var table = _ref3.table,
+        filter = _ref3.filter,
+        lastFilteredSize = _ref3.lastFilteredSize,
+        globalFilter = _ref3.globalFilter,
+        pixelRatio = _ref3.pixelRatio,
+        layerName = _ref3.layerName;
+
+
+    var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName);
+
+    var markType = getMarkType(state.config);
+
+    return {
+      data: {
+        name: layerName,
+        sql: _utils.parser.writeSQL({
+          type: "root",
+          source: table,
+          transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+        })
+      },
+      scales: getScales(state.encoding, layerName),
+      mark: {
+        type: markType === "circle" ? "points" : "symbol",
+        from: {
+          data: layerName
+        },
+        properties: Object.assign({}, {
+          x: {
+            scale: "x",
+            field: "x"
+          },
+          y: {
+            scale: "y",
+            field: "y"
+          },
+          fillColor: getColor(state.encoding.color, layerName)
+        }, markType == "circle" ? {
+          size: size
+        } : {
+          shape: state.config.point.shape,
+          width: size,
+          height: size
+        })
+      }
+    };
+  };
+
   _layer.xDim = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
   _layer.yDim = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
 
@@ -24935,19 +25753,6 @@ function rasterLayerPointMixin(_layer) {
   (0, _utilsVega.createVegaAttrMixin)(_layer, "size", 3, 1, true);
 
   _layer.dynamicSize = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
-
-  _layer.sampling = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, false, function (doSampling, isCurrSampling) {
-    if (doSampling && !isCurrSampling) {
-      (0, _core.incrementSampledCount)();
-    } else if (!doSampling && isCurrSampling) {
-      (0, _core.decrementSampledCount)();
-    }
-    return Boolean(doSampling);
-  }, function (isCurrSampling) {
-    if (!isCurrSampling) {
-      _layer.dimension().samplingRatio(null);
-    }
-  });
 
   _layer.xAttr = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
   _layer.yAttr = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
@@ -24959,142 +25764,18 @@ function rasterLayerPointMixin(_layer) {
   var _vega = null;
   var _scaledPopups = {};
   var _minMaxCache = {};
+  var _cf = null;
 
-  _layer._mandatoryAttributes(_layer._mandatoryAttributes().concat(["xAttr", "yAttr"]));
-
-  var _renderProps = {
-    // NOTE: the x/y scales will be built by the primary chart
-    x: {
-      getQueryAttr: function getQueryAttr() {
-        return _layer.xAttr();
-      },
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.x = { scale: chart._getXScaleName(), field: this.getQueryAttr() };
-      }
-    },
-
-    y: {
-      getQueryAttr: function getQueryAttr() {
-        return _layer.yAttr();
-      },
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.y = { scale: chart._getYScaleName(), field: this.getQueryAttr() };
-      }
-    },
-    size: {
-      getQueryAttr: function getQueryAttr() {
-        return _layer.sizeAttr();
-      },
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        var sizeScale = _layer.sizeScale();
-        var sizeAttr = this.getQueryAttr();
-        if (typeof sizeScale === "function") {
-          if (sizeAttr === null) {
-            throw new Error("Error trying to reference a size scale for raster layer " + layerName + ". The layer does not have sizeAttr defined. Please call the sizeAttr() setter to set a size attribute in the dimension for the layer");
-          }
-
-          var sizeScaleName = layerName + "_size";
-          var scaleRange = sizeScale.range();
-          if (pixelRatio !== 1) {
-            scaleRange = scaleRange.map(function (rangeVal) {
-              return rangeVal * pixelRatio;
-            });
-          }
-
-          scales.push({
-            name: sizeScaleName,
-            type: chart._determineScaleType(sizeScale),
-            domain: sizeScale.domain(),
-            range: scaleRange,
-            clamp: true
-          });
-
-          // TODO(croot): do additional dynamic sizing here?
-          markPropObj.size = { scale: sizeScaleName, field: sizeAttr };
-        } else if (sizeAttr) {
-          // TODO(croot): do dynamic additional dynamic sizing?
-          var sizeAttrType = typeof sizeAttr === "undefined" ? "undefined" : _typeof(sizeAttr);
-          if (sizeAttrType === "string") {
-            // indicates that the sizeAttr directly references a value in the query
-            markPropObj.size = { field: sizeAttr };
-          } else if (sizeAttrType === "number") {
-            markPropObj.size = sizeAttr;
-          } else {
-            throw new Error("Type error for the sizeAttr property for layer " + layerName + ". The sizeAttr must be a string (referencing an column in the query) or a number.");
-          }
-        } else if (_layer.dynamicSize() !== null && _layer.sampling() && (0, _coreAsync.lastFilteredSize)(group.getCrossfilterId()) !== undefined) {
-          // @TODO don't tie this to sampling - meaning having a dynamicSize will also require count to be computed first by dc
-          var cap = _layer.cap();
-          var size = Math.min((0, _coreAsync.lastFilteredSize)(group.getCrossfilterId()), cap);
-
-          var dynamicRScale = d3.scale.sqrt().domain(AUTOSIZE_DOMAIN_DEFAULTS).range(size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM ? AUTOSIZE_RANGE_MININUM : AUTOSIZE_RANGE_DEFAULTS).clamp(true);
-
-          _layer.dynamicSize(dynamicRScale);
-
-          markPropObj.size = Math.round(dynamicRScale(size) * pixelRatio);
-        } else {
-          markPropObj.size = _layer.defaultSize() * pixelRatio;
-        }
-      }
-    },
-
-    fillColor: {
-      getQueryAttr: function getQueryAttr() {
-        return _layer.fillColorAttr();
-      },
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        var colorScale = _layer._buildFillColorScale(chart, layerName);
-        var colorAttr = this.getQueryAttr();
-        if (colorScale) {
-          if (!colorScale.name) {
-            throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The vega color scale does not have a name.");
-          }
-
-          if (colorScale.hasOwnProperty("accumulator")) {
-            markPropObj.fillColor = {
-              scale: colorScale.name,
-              value: 0
-            };
-          } else {
-            if (colorAttr === null) {
-              throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The layer does not have a fillColorAttr defined.");
-            }
-
-            markPropObj.fillColor = {
-              scale: colorScale.name,
-              field: colorAttr
-            };
-          }
-          scales.push(colorScale);
-        } else if (colorAttr) {
-          var colorAttrType = typeof colorAttr === "undefined" ? "undefined" : _typeof(colorAttr);
-          if (colorAttrType === "string") {
-            // indicates that the colorAttr directly references a value in the query
-            markPropObj.fillColor = { field: colorAttr };
-          } else {
-            throw new Error("Type error for the fillColorAttr property for layer " + layerName + ". The fillColorAttr must be a string (referencing an column in the query).");
-          }
-        } else {
-          markPropObj.fillColor = _layer.defaultFillColor();
-        }
-      }
+  _layer.crossfilter = function (cf) {
+    if (!arguments.length) {
+      return _cf;
     }
-
-    // points require a cap
-  };_layer._requiresCap = function () {
-    return true;
+    _cf = cf;
+    return _layer;
   };
 
-  _layer.setSample = function () {
-    if (_layer.sampling() && _layer.dimension()) {
-      var id = _layer.dimension().getCrossfilterId();
-      var filterSize = (0, _coreAsync.lastFilteredSize)(id);
-      if (filterSize == undefined) {
-        _layer.dimension().samplingRatio(null);
-      } else {
-        _layer.dimension().samplingRatio(Math.min(_layer.cap() / filterSize, 1.0));
-      }
-    }
+  _layer._requiresCap = function () {
+    return false;
   };
 
   _layer.xRangeFilter = function (range) {
@@ -25128,53 +25809,34 @@ function rasterLayerPointMixin(_layer) {
   };
 
   _layer._genVega = function (chart, layerName, group, query) {
-    var data = {
-      name: layerName,
-      sql: query
-    };
-
-    var scales = [];
-    var pixelRatio = chart._getPixelRatio();
-    var props = {};
-
-    for (var rndrProp in _renderProps) {
-      if (_renderProps.hasOwnProperty(rndrProp)) {
-        _renderProps[rndrProp].genVega(chart, layerName, group, pixelRatio, props, scales);
-      }
-    }
-
-    var mark = {
-      type: "points",
-      from: { data: layerName },
-      properties: props
-    };
-
-    _vega = {
-      data: data,
-      scales: scales,
-      mark: mark
-    };
+    _vega = _layer.__genVega({
+      layerName: layerName,
+      table: _layer.crossfilter().getTable()[0],
+      filter: _layer.crossfilter().getFilterString(),
+      globalFilter: _layer.crossfilter().getGlobalFilterString(),
+      lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId()),
+      pixelRatio: chart._getPixelRatio()
+    });
 
     return _vega;
   };
 
+  var renderAttributes = ["x", "y", "size", "fillColor"];
+
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
     if (_vega && _vega.mark && _vega.mark.properties) {
-      for (var rndrProp in _renderProps) {
-        if (_renderProps.hasOwnProperty(rndrProp)) {
-          _layer._addQueryDrivenRenderPropToSet(popupColumnsSet, _vega.mark.properties, rndrProp);
-        }
-      }
+      renderAttributes.forEach(function (prop) {
+        _layer._addQueryDrivenRenderPropToSet(popupColumnsSet, _vega.mark.properties, prop);
+      });
     }
   };
 
   _layer._areResultsValidForPopup = function (results) {
-    // NOTE: it is implied that the _renderProps.[x/y].getQueryAttr()
-    // will be the field attr in the vega
-    if (results[_renderProps.x.getQueryAttr()] === undefined || results[_renderProps.y.getQueryAttr()] === undefined) {
+    if (typeof results.x === "undefined" || typeof results.y === "undefined") {
       return false;
+    } else {
+      return true;
     }
-    return true;
   };
 
   _layer._displayPopup = function (chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate) {
@@ -25182,12 +25844,12 @@ function rasterLayerPointMixin(_layer) {
     var queryRndrProps = new Set();
     if (_vega && _vega.mark && _vega.mark.properties) {
       var propObj = _vega.mark.properties;
-      for (var rndrProp in _renderProps) {
-        if (_renderProps.hasOwnProperty(rndrProp) && _typeof(propObj[rndrProp]) === "object" && propObj[rndrProp].field && typeof propObj[rndrProp].field === "string") {
-          rndrProps[rndrProp] = propObj[rndrProp].field;
-          queryRndrProps.add(propObj[rndrProp].field);
+      renderAttributes.forEach(function (prop) {
+        if (_typeof(propObj[prop]) === "object" && propObj[prop].field && typeof propObj[prop].field === "string") {
+          rndrProps[prop] = propObj[prop].field;
+          queryRndrProps.add(propObj[prop].field);
         }
-      }
+      });
     }
 
     var xPixel = xscale(data[rndrProps.x]) + margins.left;
@@ -25262,7 +25924,6 @@ function rasterLayerPointMixin(_layer) {
   };
 
   _layer._destroyLayer = function (chart) {
-    _layer.sampling(false);
     var xDim = _layer.xDim();
     if (xDim) {
       xDim.dispose();
@@ -25278,7 +25939,7 @@ function rasterLayerPointMixin(_layer) {
 }
 
 /***/ }),
-/* 142 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25292,7 +25953,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = rasterLayerPolyMixin;
 
-var _utilsVega = __webpack_require__(14);
+var _utilsVega = __webpack_require__(15);
+
+var _utils = __webpack_require__(3);
 
 var vegaLineJoinOptions = ["miter", "round", "bevel"];
 var polyTableGeomColumns = {
@@ -25331,6 +25994,8 @@ function validateMiterLimit(newMiterLimit, currMiterLimit) {
 }
 
 function rasterLayerPolyMixin(_layer) {
+  _layer.crossfilter = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
+
   (0, _utilsVega.createVegaAttrMixin)(_layer, "lineJoin", vegaLineJoinOptions[0], vegaLineJoinOptions[0], false, {
     preDefault: validateLineJoin,
     preNull: validateLineJoin
@@ -25341,143 +26006,127 @@ function rasterLayerPolyMixin(_layer) {
     preNull: validateMiterLimit
   });
 
+  var state = null;
   var _vega = null;
+  var _cf = null;
+
   var _scaledPopups = {};
 
-  var _renderProps = {
-    // NOTE: the x/y scales will be built by the primary chart
-    x: {
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.x = { scale: chart._getXScaleName(), field: "x" // x is implied when poly-rendering
-        };
-      }
-    },
-
-    y: {
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.y = { scale: chart._getYScaleName(), field: "y" // y is implied when poly-rendering
-        };
-      }
-    },
-
-    fillColor: {
-      getQueryAttr: function getQueryAttr() {
-        return _layer.fillColorAttr();
-      },
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        var fillColorScale = _layer._buildFillColorScale(chart, layerName);
-        var fillColorAttr = this.getQueryAttr();
-        if (fillColorScale) {
-          if (!fillColorScale.name) {
-            throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The vega fill color scale does not have a name.");
-          }
-
-          if (fillColorAttr === null) {
-            throw new Error("Error trying to reference a fill color scale for raster layer " + layerName + ". The layer does not have a fillColorAttr defined.");
-          }
-
-          markPropObj.fillColor = {
-            scale: fillColorScale.name,
-            field: fillColorAttr
-          };
-          scales.push(fillColorScale);
-        } else if (fillColorAttr) {
-          var fillColorAttrType = typeof fillColorAttr === "undefined" ? "undefined" : _typeof(fillColorAttr);
-          if (fillColorAttrType === "string") {
-            // indicates that the fillColorAttr directly references a value in the query
-            markPropObj.fillColor = { field: fillColorAttr };
-          } else {
-            throw new Error("Type error for the fillColorAttr property for layer " + layerName + ". The fillColorAttr must be a string (referencing an column in the query).");
-          }
-        } else {
-          markPropObj.fillColor = _layer.defaultFillColor();
-        }
-      }
-    },
-
-    strokeColor: {
-      getQueryAttr: function getQueryAttr() {
-        return _layer.strokeColorAttr();
-      },
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        var strokeColorScale = _layer._buildStrokeColorScale(chart, layerName);
-        var strokeColorAttr = this.getQueryAttr();
-        if (strokeColorScale) {
-          if (!strokeColorScale.name) {
-            throw new Error("Error trying to reference a stroke color scale for raster layer " + layerName + ". The vega stroke color scale does not have a name.");
-          }
-
-          if (strokeColorAttr === null) {
-            throw new Error("Error trying to reference a stroke color scale for raster layer " + layerName + ". The layer does not have a strokeColorAttr defined.");
-          }
-
-          markPropObj.strokeColor = {
-            scale: strokeColorScale.name,
-            field: strokeColorAttr
-          };
-          scales.push(strokeColorScale);
-        } else if (strokeColorAttr) {
-          var strokeColorAttrType = typeof strokeColorAttr === "undefined" ? "undefined" : _typeof(strokeColorAttr);
-          if (strokeColorAttrType === "string") {
-            // indicates that the strokeColorAttr directly references a value in the query
-            markPropObj.strokeColor = { field: strokeColorAttr };
-          } else {
-            throw new Error("Type error for the strokeColorAttr property for layer " + layerName + ". The strokeColorAttr must be a string (referencing an column in the query).");
-          }
-        } else {
-          markPropObj.strokeColor = _layer.defaultStrokeColor();
-        }
-      }
-    },
-
-    strokeWidth: {
-      getQueryAttr: function getQueryAttr() {
-        return _layer.strokeWidthAttr();
-      },
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        var strokeWidthScale = _layer._buildStrokeWidthScale(chart, layerName);
-        var strokeWidthAttr = this.getQueryAttr();
-        if (strokeWidthScale) {
-          if (!strokeWidthScale.name) {
-            throw new Error("Error trying to reference a stroke color scale for raster layer " + layerName + ". The vega stroke color scale does not have a name.");
-          }
-
-          if (strokeWidthAttr === null) {
-            throw new Error("Error trying to reference a stroke color scale for raster layer " + layerName + ". The layer does not have a strokeWidthAttr defined.");
-          }
-
-          markPropObj.strokeWidth = {
-            scale: strokeWidthScale.name,
-            field: strokeWidthAttr
-          };
-          scales.push(strokeWidthScale);
-        } else if (strokeWidthAttr) {
-          var strokeWidthAttrType = typeof strokeWidthAttr === "undefined" ? "undefined" : _typeof(strokeWidthAttr);
-          if (strokeWidthAttrType === "string") {
-            // indicates that the strokeWidthAttr directly references a value in the query
-            markPropObj.strokeWidth = { field: strokeWidthAttr };
-          } else if (strokeWidthAttrType === "number") {
-            markPropObj.strokeWidth = strokeWidthAttr;
-          } else {
-            throw new Error("Type error for the strokeWidthAttr property for layer " + layerName + ". The strokeWidthAttr must be a string (referencing an column in the query) or a number.");
-          }
-        } else {
-          markPropObj.strokeWidth = _layer.defaultStrokeWidth();
-        }
-      }
-    },
-
-    lineJoin: {
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.lineJoin = _layer.defaultLineJoin();
-      }
-    },
-
-    miterLimit: {
-      genVega: function genVega(chart, layerName, group, pixelRatio, markPropObj, scales) {
-        markPropObj.miterLimit = _layer.defaultMiterLimit();
-      }
+  _layer.setState = function (setter) {
+    if (typeof setter === "function") {
+      state = setter(state);
+    } else {
+      state = setter;
     }
+
+    if (!state.hasOwnProperty("transform")) {
+      state.transform = {};
+    }
+
+    return _layer;
+  };
+
+  _layer.getState = function () {
+    return state;
+  };
+
+  function getTransforms(_ref) {
+    var filter = _ref.filter,
+        globalFilter = _ref.globalFilter;
+
+    var transforms = [{
+      type: "rowid",
+      table: state.data[1].table
+    }, {
+      type: "project",
+      expr: state.encoding.color.aggregrate,
+      as: "color"
+    }, {
+      type: "filter",
+      expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
+    }, {
+      type: "sort",
+      field: ["color"]
+    }];
+
+    if (typeof state.transform.limit === "number") {
+      transforms.push({
+        type: "limit",
+        row: state.transform.limit
+      });
+    }
+
+    if (typeof filter === "string" && filter.length) {
+      transforms.push({
+        type: "filter",
+        expr: filter
+      });
+    }
+
+    if (typeof globalFilter === "string" && globalFilter.length) {
+      transforms.push({
+        type: "filter",
+        expr: globalFilter
+      });
+    }
+
+    return transforms;
+  }
+
+  _layer.__genVega = function (_ref2) {
+    var filter = _ref2.filter,
+        globalFilter = _ref2.globalFilter,
+        layerName = _ref2.layerName;
+
+    return {
+      data: {
+        name: layerName,
+        format: "polys",
+        shapeColGroup: "mapd",
+        sql: _utils.parser.writeSQL({
+          type: "root",
+          source: state.data.map(function (source) {
+            return source.table;
+          }).join(", "),
+          transform: getTransforms({ filter: filter, globalFilter: globalFilter })
+        })
+      },
+      scales: [{
+        name: layerName + "_fillColor",
+        type: "linear",
+        domain: state.encoding.color.domain,
+        range: state.encoding.color.range.map(function (c) {
+          return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
+        }),
+        default: "green",
+        nullValue: "#CACACA",
+        clamp: false
+      }],
+      mark: {
+        type: "polys",
+        from: {
+          data: layerName
+        },
+        properties: {
+          x: {
+            scale: "x",
+            field: "x"
+          },
+          y: {
+            scale: "y",
+            field: "y"
+          },
+          fillColor: {
+            scale: layerName + "_fillColor",
+            field: "color"
+          },
+          strokeColor: _typeof(state.mark) === "object" ? state.mark.strokeColor : "white",
+          strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 0,
+          lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
+          miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
+        }
+      }
+    };
   };
 
   _layer._requiresCap = function () {
@@ -25486,37 +26135,15 @@ function rasterLayerPolyMixin(_layer) {
   };
 
   _layer._genVega = function (chart, layerName, group, query) {
-    var data = {
-      name: layerName,
-      format: "polys",
-      shapeColGroup: "mapd",
-      sql: query
-    };
-
-    var scales = [];
-    var pixelRatio = chart._getPixelRatio();
-    var props = {};
-
-    for (var rndrProp in _renderProps) {
-      if (_renderProps.hasOwnProperty(rndrProp)) {
-        _renderProps[rndrProp].genVega(chart, layerName, group, pixelRatio, props, scales);
-      }
-    }
-
-    var mark = {
-      type: "polys",
-      from: { data: layerName },
-      properties: props
-    };
-
-    _vega = {
-      data: data,
-      scales: scales,
-      mark: mark
-    };
-
+    _vega = _layer.__genVega({
+      layerName: layerName,
+      filter: _layer.crossfilter().getFilterString(),
+      globalFilter: _layer.crossfilter().getGlobalFilterString()
+    });
     return _vega;
   };
+
+  var renderAttributes = ["x", "y", "fillColor", "strokeColor", "strokeWidth", "lineJoin", "miterLimit"];
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColsSet) {
     popupColsSet.add(polyTableGeomColumns.verts); // add the poly geometry to the query
@@ -25525,13 +26152,11 @@ function rasterLayerPolyMixin(_layer) {
     // tell us this
 
     if (_vega && _vega.mark && _vega.mark.properties) {
-      for (var rndrProp in _renderProps) {
-        // x & y are implied, and are added by the verts and linedrawinfo
-        // so don't need to add those here
-        if (_renderProps.hasOwnProperty(rndrProp) && rndrProp !== "x" && rndrProp !== "y") {
+      renderAttributes.forEach(function (rndrProp) {
+        if (rndrProp !== "x" && rndrProp !== "y") {
           _layer._addQueryDrivenRenderPropToSet(popupColsSet, _vega.mark.properties, rndrProp);
         }
-      }
+      });
     }
   };
 
@@ -25630,12 +26255,12 @@ function rasterLayerPolyMixin(_layer) {
     var queryRndrProps = new Set([polyTableGeomColumns.verts, polyTableGeomColumns.linedrawinfo]);
     if (_vega && _vega.mark && _vega.mark.properties) {
       var propObj = _vega.mark.properties;
-      for (var rndrProp in _renderProps) {
-        if (_renderProps.hasOwnProperty(rndrProp) && _typeof(propObj[rndrProp]) === "object" && propObj[rndrProp].field && typeof propObj[rndrProp].field === "string") {
-          rndrProps[rndrProp] = propObj[rndrProp].field;
-          queryRndrProps.add(propObj[rndrProp].field);
+      renderAttributes.forEach(function (prop) {
+        if (_typeof(propObj[prop]) === "object" && propObj[prop].field && typeof propObj[prop].field === "string") {
+          rndrProps[prop] = propObj[prop].field;
+          queryRndrProps.add(propObj[prop].field);
         }
-      }
+      });
     }
 
     var boundsWidth = bounds[1] - bounds[0];
@@ -25721,30 +26346,30 @@ function rasterLayerPolyMixin(_layer) {
   };
 
   _layer._destroyLayer = function (chart) {
-    deleteCanvas(chart);
+    // deleteCanvas(chart)
   };
 
   return _layer;
 }
 
 /***/ }),
-/* 143 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(144);
+__webpack_require__(153);
 
 /***/ }),
-/* 144 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(145);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(154);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ }),
-/* 145 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25815,7 +26440,7 @@ Object.keys(_utils).forEach(function (key) {
   });
 });
 
-var _logger = __webpack_require__(15);
+var _logger = __webpack_require__(16);
 
 Object.keys(_logger).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -25827,7 +26452,7 @@ Object.keys(_logger).forEach(function (key) {
   });
 });
 
-var _bubbleOverlay = __webpack_require__(168);
+var _bubbleOverlay = __webpack_require__(177);
 
 Object.defineProperty(exports, "bubbleOverlay", {
   enumerable: true,
@@ -25836,7 +26461,7 @@ Object.defineProperty(exports, "bubbleOverlay", {
   }
 });
 
-var _barChart = __webpack_require__(173);
+var _barChart = __webpack_require__(182);
 
 Object.defineProperty(exports, "barChart", {
   enumerable: true,
@@ -25845,7 +26470,7 @@ Object.defineProperty(exports, "barChart", {
   }
 });
 
-var _bubbleChart = __webpack_require__(176);
+var _bubbleChart = __webpack_require__(185);
 
 Object.defineProperty(exports, "bubbleChart", {
   enumerable: true,
@@ -25854,7 +26479,7 @@ Object.defineProperty(exports, "bubbleChart", {
   }
 });
 
-var _cloudChart = __webpack_require__(177);
+var _cloudChart = __webpack_require__(186);
 
 Object.defineProperty(exports, "cloudChart", {
   enumerable: true,
@@ -25863,7 +26488,7 @@ Object.defineProperty(exports, "cloudChart", {
   }
 });
 
-var _compositeChart = __webpack_require__(178);
+var _compositeChart = __webpack_require__(187);
 
 Object.defineProperty(exports, "compositeChart", {
   enumerable: true,
@@ -25872,7 +26497,7 @@ Object.defineProperty(exports, "compositeChart", {
   }
 });
 
-var _dataCount = __webpack_require__(179);
+var _dataCount = __webpack_require__(188);
 
 Object.defineProperty(exports, "dataCount", {
   enumerable: true,
@@ -25881,7 +26506,7 @@ Object.defineProperty(exports, "dataCount", {
   }
 });
 
-var _dataGrid = __webpack_require__(180);
+var _dataGrid = __webpack_require__(189);
 
 Object.defineProperty(exports, "dataGrid", {
   enumerable: true,
@@ -25890,7 +26515,7 @@ Object.defineProperty(exports, "dataGrid", {
   }
 });
 
-var _geoChoroplethChart = __webpack_require__(181);
+var _geoChoroplethChart = __webpack_require__(190);
 
 Object.defineProperty(exports, "geoChoroplethChart", {
   enumerable: true,
@@ -25899,7 +26524,7 @@ Object.defineProperty(exports, "geoChoroplethChart", {
   }
 });
 
-var _heatmap = __webpack_require__(186);
+var _heatmap = __webpack_require__(195);
 
 Object.defineProperty(exports, "heatMap", {
   enumerable: true,
@@ -25908,7 +26533,7 @@ Object.defineProperty(exports, "heatMap", {
   }
 });
 
-var _pieChart = __webpack_require__(187);
+var _pieChart = __webpack_require__(196);
 
 Object.defineProperty(exports, "pieChart", {
   enumerable: true,
@@ -25917,7 +26542,7 @@ Object.defineProperty(exports, "pieChart", {
   }
 });
 
-var _lineChart = __webpack_require__(188);
+var _lineChart = __webpack_require__(197);
 
 Object.defineProperty(exports, "lineChart", {
   enumerable: true,
@@ -25926,7 +26551,7 @@ Object.defineProperty(exports, "lineChart", {
   }
 });
 
-var _numberChart = __webpack_require__(189);
+var _numberChart = __webpack_require__(198);
 
 Object.defineProperty(exports, "numberChart", {
   enumerable: true,
@@ -25935,7 +26560,7 @@ Object.defineProperty(exports, "numberChart", {
   }
 });
 
-var _rasterChart = __webpack_require__(190);
+var _rasterChart = __webpack_require__(199);
 
 Object.defineProperty(exports, "rasterChart", {
   enumerable: true,
@@ -25944,7 +26569,7 @@ Object.defineProperty(exports, "rasterChart", {
   }
 });
 
-var _rowChart = __webpack_require__(192);
+var _rowChart = __webpack_require__(225);
 
 Object.defineProperty(exports, "rowChart", {
   enumerable: true,
@@ -25953,7 +26578,7 @@ Object.defineProperty(exports, "rowChart", {
   }
 });
 
-var _scatterPlot = __webpack_require__(193);
+var _scatterPlot = __webpack_require__(226);
 
 Object.defineProperty(exports, "scatterPlot", {
   enumerable: true,
@@ -25962,7 +26587,7 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _mapdTable = __webpack_require__(194);
+var _mapdTable = __webpack_require__(227);
 
 Object.defineProperty(exports, "mapdTable", {
   enumerable: true,
@@ -25971,7 +26596,7 @@ Object.defineProperty(exports, "mapdTable", {
   }
 });
 
-var _boxPlot = __webpack_require__(195);
+var _boxPlot = __webpack_require__(228);
 
 Object.defineProperty(exports, "boxPlot", {
   enumerable: true,
@@ -25980,7 +26605,7 @@ Object.defineProperty(exports, "boxPlot", {
   }
 });
 
-var _countWidget = __webpack_require__(196);
+var _countWidget = __webpack_require__(229);
 
 Object.defineProperty(exports, "countWidget", {
   enumerable: true,
@@ -25989,7 +26614,7 @@ Object.defineProperty(exports, "countWidget", {
   }
 });
 
-var _asyncMixin = __webpack_require__(128);
+var _asyncMixin = __webpack_require__(131);
 
 Object.defineProperty(exports, "asyncMixin", {
   enumerable: true,
@@ -26007,7 +26632,7 @@ Object.defineProperty(exports, "baseMixin", {
   }
 });
 
-var _bubbleMixin = __webpack_require__(17);
+var _bubbleMixin = __webpack_require__(18);
 
 Object.defineProperty(exports, "bubbleMixin", {
   enumerable: true,
@@ -26043,7 +26668,7 @@ Object.defineProperty(exports, "coordinateGridMixin", {
   }
 });
 
-var _coordinateGridRasterMixin = __webpack_require__(138);
+var _coordinateGridRasterMixin = __webpack_require__(141);
 
 Object.defineProperty(exports, "coordinateGridRasterMixin", {
   enumerable: true,
@@ -26052,7 +26677,7 @@ Object.defineProperty(exports, "coordinateGridRasterMixin", {
   }
 });
 
-var _stackMixin = __webpack_require__(18);
+var _stackMixin = __webpack_require__(19);
 
 Object.defineProperty(exports, "stackMixin", {
   enumerable: true,
@@ -26070,7 +26695,7 @@ Object.defineProperty(exports, "marginMixin", {
   }
 });
 
-var _mapMixin = __webpack_require__(19);
+var _mapMixin = __webpack_require__(20);
 
 Object.defineProperty(exports, "mapMixin", {
   enumerable: true,
@@ -26079,7 +26704,7 @@ Object.defineProperty(exports, "mapMixin", {
   }
 });
 
-var _rasterLayerHeatmapMixin = __webpack_require__(140);
+var _rasterLayerHeatmapMixin = __webpack_require__(149);
 
 Object.defineProperty(exports, "rasterLayerHeatmapMixin", {
   enumerable: true,
@@ -26088,7 +26713,7 @@ Object.defineProperty(exports, "rasterLayerHeatmapMixin", {
   }
 });
 
-var _rasterLayerPointMixin = __webpack_require__(141);
+var _rasterLayerPointMixin = __webpack_require__(150);
 
 Object.defineProperty(exports, "rasterLayerPointMixin", {
   enumerable: true,
@@ -26097,7 +26722,7 @@ Object.defineProperty(exports, "rasterLayerPointMixin", {
   }
 });
 
-var _rasterLayerPolyMixin = __webpack_require__(142);
+var _rasterLayerPolyMixin = __webpack_require__(151);
 
 Object.defineProperty(exports, "rasterLayerPolyMixin", {
   enumerable: true,
@@ -26106,7 +26731,7 @@ Object.defineProperty(exports, "rasterLayerPolyMixin", {
   }
 });
 
-var _rasterLayer = __webpack_require__(197);
+var _rasterLayer = __webpack_require__(230);
 
 Object.defineProperty(exports, "rasterLayer", {
   enumerable: true,
@@ -26115,7 +26740,7 @@ Object.defineProperty(exports, "rasterLayer", {
   }
 });
 
-var _rasterMixin = __webpack_require__(198);
+var _rasterMixin = __webpack_require__(231);
 
 Object.defineProperty(exports, "rasterMixin", {
   enumerable: true,
@@ -26124,7 +26749,7 @@ Object.defineProperty(exports, "rasterMixin", {
   }
 });
 
-var _scatterMixin = __webpack_require__(139);
+var _scatterMixin = __webpack_require__(142);
 
 Object.defineProperty(exports, "scatterMixin", {
   enumerable: true,
@@ -26133,7 +26758,7 @@ Object.defineProperty(exports, "scatterMixin", {
   }
 });
 
-var _spinnerMixin = __webpack_require__(132);
+var _spinnerMixin = __webpack_require__(135);
 
 Object.defineProperty(exports, "spinnerMixin", {
   enumerable: true,
@@ -26142,7 +26767,7 @@ Object.defineProperty(exports, "spinnerMixin", {
   }
 });
 
-var _legendContinuous = __webpack_require__(199);
+var _legendContinuous = __webpack_require__(232);
 
 Object.defineProperty(exports, "legendContinuous", {
   enumerable: true,
@@ -26151,7 +26776,7 @@ Object.defineProperty(exports, "legendContinuous", {
   }
 });
 
-var _legend = __webpack_require__(200);
+var _legend = __webpack_require__(233);
 
 Object.defineProperty(exports, "legend", {
   enumerable: true,
@@ -26160,7 +26785,7 @@ Object.defineProperty(exports, "legend", {
   }
 });
 
-var _dcLegendCont = __webpack_require__(202);
+var _dcLegendCont = __webpack_require__(235);
 
 Object.defineProperty(exports, "legendCont", {
   enumerable: true,
@@ -26173,23 +26798,24 @@ var _d2 = __webpack_require__(1);
 
 var _d = _interopRequireWildcard(_d2);
 
-var _errors = __webpack_require__(129);
+var _errors = __webpack_require__(132);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(203);
-__webpack_require__(204);
-__webpack_require__(205);
+__webpack_require__(236);
+__webpack_require__(237);
+__webpack_require__(238);
+__webpack_require__(239);
 
 if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
-  window.mapboxgl = __webpack_require__(206);
-  __webpack_require__(207);
+  window.mapboxgl = __webpack_require__(240);
+  __webpack_require__(241);
 }
 
-__webpack_require__(208);
-__webpack_require__(209);
+__webpack_require__(242);
+__webpack_require__(243);
 
 exports.d3 = _d; // eslint-disable-line
 
@@ -26200,18 +26826,18 @@ var errors = exports.errors = {
 };
 
 /***/ }),
-/* 146 */
+/* 155 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(8);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(168);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(162);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(171);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(172);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
 /**
  * The exported `mapd-data-layer` module. Consists of a graph constructor and
@@ -26228,7 +26854,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 147 */
+/* 156 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26262,7 +26888,7 @@ function parseExpression(expression) {
     case "ilike":
     case "like":
     case "not like":
-      return expression.left + " " + expression.type.toUpperCase() + " " + ("%\"" + expression.right + "\"%");
+      return expression.left + " " + expression.type.toUpperCase() + " " + ("'%" + expression.right + "%'");
     case "coalesce":
       return "COALESCE(" + expression.values.map(function (field) {
         return "'" + field + "'";
@@ -26323,7 +26949,7 @@ function parseExpression(expression) {
 }
 
 /***/ }),
-/* 148 */
+/* 157 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26359,21 +26985,21 @@ function parseDataState(state, parser) {
 }
 
 /***/ }),
-/* 149 */
+/* 158 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTransform;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(150);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(151);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(152);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(153);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(154);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_project__ = __webpack_require__(155);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_resolvefilter__ = __webpack_require__(156);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_sample__ = __webpack_require__(157);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_source__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(160);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(161);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(162);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_project__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_resolvefilter__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_sample__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_source__ = __webpack_require__(27);
 
 
 
@@ -26412,7 +27038,7 @@ function parseTransform(sql, t, parser) {
 }
 
 /***/ }),
-/* 150 */
+/* 159 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26474,7 +27100,7 @@ function parseGroupBy(sql, groupby, parser) {
 }
 
 /***/ }),
-/* 151 */
+/* 160 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26494,13 +27120,13 @@ function parseBin(sql, _ref) {
 }
 
 /***/ }),
-/* 152 */
+/* 161 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseCrossfilter;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(26);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -26530,7 +27156,7 @@ function parseCrossfilter(sql, transform) {
 }
 
 /***/ }),
-/* 153 */
+/* 162 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26551,7 +27177,7 @@ function parseSort(sql, transform) {
 }
 
 /***/ }),
-/* 154 */
+/* 163 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26565,7 +27191,7 @@ function parseLimit(sql, transform) {
 }
 
 /***/ }),
-/* 155 */
+/* 164 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26582,7 +27208,7 @@ function parseProject(sql, transform) {
 }
 
 /***/ }),
-/* 156 */
+/* 165 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26605,7 +27231,7 @@ function parseResolvefilter(sql, transform) {
 }
 
 /***/ }),
-/* 157 */
+/* 166 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26633,7 +27259,7 @@ function sample(sql, transform) {
 }
 
 /***/ }),
-/* 158 */
+/* 167 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26683,14 +27309,14 @@ function writeOffset(offset) {
 }
 
 /***/ }),
-/* 159 */
+/* 168 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(160);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(169);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -26762,14 +27388,14 @@ function createDataGraph(connector) {
 }
 
 /***/ }),
-/* 160 */
+/* 169 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataNode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_invariant__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(161);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(170);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -26855,7 +27481,7 @@ function createDataNode(context) {
 }
 
 /***/ }),
-/* 161 */
+/* 170 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26895,7 +27521,7 @@ function reduceToSQL(context, node) {
 }
 
 /***/ }),
-/* 162 */
+/* 171 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27103,7 +27729,7 @@ function between(field, range) {
 }
 
 /***/ }),
-/* 163 */
+/* 172 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -27331,7 +27957,7 @@ function bottom(field, limit, offset) {
 }
 
 /***/ }),
-/* 164 */
+/* 173 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -27359,210 +27985,210 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 165 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 27,
-	"./af.js": 27,
-	"./ar": 28,
-	"./ar-ma": 29,
-	"./ar-ma.js": 29,
-	"./ar-sa": 30,
-	"./ar-sa.js": 30,
-	"./ar-tn": 31,
-	"./ar-tn.js": 31,
-	"./ar.js": 28,
-	"./az": 32,
-	"./az.js": 32,
-	"./be": 33,
-	"./be.js": 33,
-	"./bg": 34,
-	"./bg.js": 34,
-	"./bn": 35,
-	"./bn.js": 35,
-	"./bo": 36,
-	"./bo.js": 36,
-	"./br": 37,
-	"./br.js": 37,
-	"./bs": 38,
-	"./bs.js": 38,
-	"./ca": 39,
-	"./ca.js": 39,
-	"./cs": 40,
-	"./cs.js": 40,
-	"./cv": 41,
-	"./cv.js": 41,
-	"./cy": 42,
-	"./cy.js": 42,
-	"./da": 43,
-	"./da.js": 43,
-	"./de": 44,
-	"./de-at": 45,
-	"./de-at.js": 45,
-	"./de.js": 44,
-	"./dv": 46,
-	"./dv.js": 46,
-	"./el": 47,
-	"./el.js": 47,
-	"./en-au": 48,
-	"./en-au.js": 48,
-	"./en-ca": 49,
-	"./en-ca.js": 49,
-	"./en-gb": 50,
-	"./en-gb.js": 50,
-	"./en-ie": 51,
-	"./en-ie.js": 51,
-	"./en-nz": 52,
-	"./en-nz.js": 52,
-	"./eo": 53,
-	"./eo.js": 53,
-	"./es": 54,
-	"./es.js": 54,
-	"./et": 55,
-	"./et.js": 55,
-	"./eu": 56,
-	"./eu.js": 56,
-	"./fa": 57,
-	"./fa.js": 57,
-	"./fi": 58,
-	"./fi.js": 58,
-	"./fo": 59,
-	"./fo.js": 59,
-	"./fr": 60,
-	"./fr-ca": 61,
-	"./fr-ca.js": 61,
-	"./fr-ch": 62,
-	"./fr-ch.js": 62,
-	"./fr.js": 60,
-	"./fy": 63,
-	"./fy.js": 63,
-	"./gd": 64,
-	"./gd.js": 64,
-	"./gl": 65,
-	"./gl.js": 65,
-	"./he": 66,
-	"./he.js": 66,
-	"./hi": 67,
-	"./hi.js": 67,
-	"./hr": 68,
-	"./hr.js": 68,
-	"./hu": 69,
-	"./hu.js": 69,
-	"./hy-am": 70,
-	"./hy-am.js": 70,
-	"./id": 71,
-	"./id.js": 71,
-	"./is": 72,
-	"./is.js": 72,
-	"./it": 73,
-	"./it.js": 73,
-	"./ja": 74,
-	"./ja.js": 74,
-	"./jv": 75,
-	"./jv.js": 75,
-	"./ka": 76,
-	"./ka.js": 76,
-	"./kk": 77,
-	"./kk.js": 77,
-	"./km": 78,
-	"./km.js": 78,
-	"./ko": 79,
-	"./ko.js": 79,
-	"./ky": 80,
-	"./ky.js": 80,
-	"./lb": 81,
-	"./lb.js": 81,
-	"./lo": 82,
-	"./lo.js": 82,
-	"./lt": 83,
-	"./lt.js": 83,
-	"./lv": 84,
-	"./lv.js": 84,
-	"./me": 85,
-	"./me.js": 85,
-	"./mk": 86,
-	"./mk.js": 86,
-	"./ml": 87,
-	"./ml.js": 87,
-	"./mr": 88,
-	"./mr.js": 88,
-	"./ms": 89,
-	"./ms-my": 90,
-	"./ms-my.js": 90,
-	"./ms.js": 89,
-	"./my": 91,
-	"./my.js": 91,
-	"./nb": 92,
-	"./nb.js": 92,
-	"./ne": 93,
-	"./ne.js": 93,
-	"./nl": 94,
-	"./nl.js": 94,
-	"./nn": 95,
-	"./nn.js": 95,
-	"./pa-in": 96,
-	"./pa-in.js": 96,
-	"./pl": 97,
-	"./pl.js": 97,
-	"./pt": 98,
-	"./pt-br": 99,
-	"./pt-br.js": 99,
-	"./pt.js": 98,
-	"./ro": 100,
-	"./ro.js": 100,
-	"./ru": 101,
-	"./ru.js": 101,
-	"./se": 102,
-	"./se.js": 102,
-	"./si": 103,
-	"./si.js": 103,
-	"./sk": 104,
-	"./sk.js": 104,
-	"./sl": 105,
-	"./sl.js": 105,
-	"./sq": 106,
-	"./sq.js": 106,
-	"./sr": 107,
-	"./sr-cyrl": 108,
-	"./sr-cyrl.js": 108,
-	"./sr.js": 107,
-	"./ss": 109,
-	"./ss.js": 109,
-	"./sv": 110,
-	"./sv.js": 110,
-	"./sw": 111,
-	"./sw.js": 111,
-	"./ta": 112,
-	"./ta.js": 112,
-	"./te": 113,
-	"./te.js": 113,
-	"./th": 114,
-	"./th.js": 114,
-	"./tl-ph": 115,
-	"./tl-ph.js": 115,
-	"./tlh": 116,
-	"./tlh.js": 116,
-	"./tr": 117,
-	"./tr.js": 117,
-	"./tzl": 118,
-	"./tzl.js": 118,
-	"./tzm": 119,
-	"./tzm-latn": 120,
-	"./tzm-latn.js": 120,
-	"./tzm.js": 119,
-	"./uk": 121,
-	"./uk.js": 121,
-	"./uz": 122,
-	"./uz.js": 122,
-	"./vi": 123,
-	"./vi.js": 123,
-	"./x-pseudo": 124,
-	"./x-pseudo.js": 124,
-	"./zh-cn": 125,
-	"./zh-cn.js": 125,
-	"./zh-tw": 126,
-	"./zh-tw.js": 126
+	"./af": 30,
+	"./af.js": 30,
+	"./ar": 31,
+	"./ar-ma": 32,
+	"./ar-ma.js": 32,
+	"./ar-sa": 33,
+	"./ar-sa.js": 33,
+	"./ar-tn": 34,
+	"./ar-tn.js": 34,
+	"./ar.js": 31,
+	"./az": 35,
+	"./az.js": 35,
+	"./be": 36,
+	"./be.js": 36,
+	"./bg": 37,
+	"./bg.js": 37,
+	"./bn": 38,
+	"./bn.js": 38,
+	"./bo": 39,
+	"./bo.js": 39,
+	"./br": 40,
+	"./br.js": 40,
+	"./bs": 41,
+	"./bs.js": 41,
+	"./ca": 42,
+	"./ca.js": 42,
+	"./cs": 43,
+	"./cs.js": 43,
+	"./cv": 44,
+	"./cv.js": 44,
+	"./cy": 45,
+	"./cy.js": 45,
+	"./da": 46,
+	"./da.js": 46,
+	"./de": 47,
+	"./de-at": 48,
+	"./de-at.js": 48,
+	"./de.js": 47,
+	"./dv": 49,
+	"./dv.js": 49,
+	"./el": 50,
+	"./el.js": 50,
+	"./en-au": 51,
+	"./en-au.js": 51,
+	"./en-ca": 52,
+	"./en-ca.js": 52,
+	"./en-gb": 53,
+	"./en-gb.js": 53,
+	"./en-ie": 54,
+	"./en-ie.js": 54,
+	"./en-nz": 55,
+	"./en-nz.js": 55,
+	"./eo": 56,
+	"./eo.js": 56,
+	"./es": 57,
+	"./es.js": 57,
+	"./et": 58,
+	"./et.js": 58,
+	"./eu": 59,
+	"./eu.js": 59,
+	"./fa": 60,
+	"./fa.js": 60,
+	"./fi": 61,
+	"./fi.js": 61,
+	"./fo": 62,
+	"./fo.js": 62,
+	"./fr": 63,
+	"./fr-ca": 64,
+	"./fr-ca.js": 64,
+	"./fr-ch": 65,
+	"./fr-ch.js": 65,
+	"./fr.js": 63,
+	"./fy": 66,
+	"./fy.js": 66,
+	"./gd": 67,
+	"./gd.js": 67,
+	"./gl": 68,
+	"./gl.js": 68,
+	"./he": 69,
+	"./he.js": 69,
+	"./hi": 70,
+	"./hi.js": 70,
+	"./hr": 71,
+	"./hr.js": 71,
+	"./hu": 72,
+	"./hu.js": 72,
+	"./hy-am": 73,
+	"./hy-am.js": 73,
+	"./id": 74,
+	"./id.js": 74,
+	"./is": 75,
+	"./is.js": 75,
+	"./it": 76,
+	"./it.js": 76,
+	"./ja": 77,
+	"./ja.js": 77,
+	"./jv": 78,
+	"./jv.js": 78,
+	"./ka": 79,
+	"./ka.js": 79,
+	"./kk": 80,
+	"./kk.js": 80,
+	"./km": 81,
+	"./km.js": 81,
+	"./ko": 82,
+	"./ko.js": 82,
+	"./ky": 83,
+	"./ky.js": 83,
+	"./lb": 84,
+	"./lb.js": 84,
+	"./lo": 85,
+	"./lo.js": 85,
+	"./lt": 86,
+	"./lt.js": 86,
+	"./lv": 87,
+	"./lv.js": 87,
+	"./me": 88,
+	"./me.js": 88,
+	"./mk": 89,
+	"./mk.js": 89,
+	"./ml": 90,
+	"./ml.js": 90,
+	"./mr": 91,
+	"./mr.js": 91,
+	"./ms": 92,
+	"./ms-my": 93,
+	"./ms-my.js": 93,
+	"./ms.js": 92,
+	"./my": 94,
+	"./my.js": 94,
+	"./nb": 95,
+	"./nb.js": 95,
+	"./ne": 96,
+	"./ne.js": 96,
+	"./nl": 97,
+	"./nl.js": 97,
+	"./nn": 98,
+	"./nn.js": 98,
+	"./pa-in": 99,
+	"./pa-in.js": 99,
+	"./pl": 100,
+	"./pl.js": 100,
+	"./pt": 101,
+	"./pt-br": 102,
+	"./pt-br.js": 102,
+	"./pt.js": 101,
+	"./ro": 103,
+	"./ro.js": 103,
+	"./ru": 104,
+	"./ru.js": 104,
+	"./se": 105,
+	"./se.js": 105,
+	"./si": 106,
+	"./si.js": 106,
+	"./sk": 107,
+	"./sk.js": 107,
+	"./sl": 108,
+	"./sl.js": 108,
+	"./sq": 109,
+	"./sq.js": 109,
+	"./sr": 110,
+	"./sr-cyrl": 111,
+	"./sr-cyrl.js": 111,
+	"./sr.js": 110,
+	"./ss": 112,
+	"./ss.js": 112,
+	"./sv": 113,
+	"./sv.js": 113,
+	"./sw": 114,
+	"./sw.js": 114,
+	"./ta": 115,
+	"./ta.js": 115,
+	"./te": 116,
+	"./te.js": 116,
+	"./th": 117,
+	"./th.js": 117,
+	"./tl-ph": 118,
+	"./tl-ph.js": 118,
+	"./tlh": 119,
+	"./tlh.js": 119,
+	"./tr": 120,
+	"./tr.js": 120,
+	"./tzl": 121,
+	"./tzl.js": 121,
+	"./tzm": 122,
+	"./tzm-latn": 123,
+	"./tzm-latn.js": 123,
+	"./tzm.js": 122,
+	"./uk": 124,
+	"./uk.js": 124,
+	"./uz": 125,
+	"./uz.js": 125,
+	"./vi": 126,
+	"./vi.js": 126,
+	"./x-pseudo": 127,
+	"./x-pseudo.js": 127,
+	"./zh-cn": 128,
+	"./zh-cn.js": 128,
+	"./zh-tw": 129,
+	"./zh-tw.js": 129
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -27578,10 +28204,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 165;
+webpackContext.id = 174;
 
 /***/ }),
-/* 166 */
+/* 175 */
 /***/ (function(module, exports) {
 
 exports = module.exports = typeof Object.keys === 'function'
@@ -27596,7 +28222,7 @@ function shim (obj) {
 
 
 /***/ }),
-/* 167 */
+/* 176 */
 /***/ (function(module, exports) {
 
 var supportsArgumentsClass = (function(){
@@ -27622,7 +28248,7 @@ function unsupported(object){
 
 
 /***/ }),
-/* 168 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27641,7 +28267,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _bubbleMixin = __webpack_require__(17);
+var _bubbleMixin = __webpack_require__(18);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
@@ -28044,7 +28670,7 @@ function bubbleOverlay(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 169 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28133,7 +28759,7 @@ function legendMixin(chart) {
 }
 
 /***/ }),
-/* 170 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28338,7 +28964,7 @@ function filterMixin(_chart) {
 }
 
 /***/ }),
-/* 171 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28447,7 +29073,7 @@ function labelMixin(chart) {
     if (rangeChart() && type === "x" || focusChart() && type === "y") {
       return;
     }
-    var hasLegend = type === "x" && chart.legend() && chart.legend().legendType() === "quantitative";
+    var hasLegend = type === "x" && chart.legend() && chart.legend().legendType && chart.legend().legendType() === "quantitative";
 
     var iconPosition = {
       left: type === "y" ? "" : getXaxisLeftPosition(hasLegend) + "px",
@@ -28482,7 +29108,7 @@ function labelMixin(chart) {
 }
 
 /***/ }),
-/* 172 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28494,7 +29120,7 @@ Object.defineProperty(exports, "__esModule", {
 var SPINNER_DELAY = exports.SPINNER_DELAY = 1000;
 
 /***/ }),
-/* 173 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28513,11 +29139,11 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackMixin = __webpack_require__(18);
+var _stackMixin = __webpack_require__(19);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
-var _elasticDimensionMixin = __webpack_require__(133);
+var _elasticDimensionMixin = __webpack_require__(136);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
@@ -28525,7 +29151,7 @@ var _coordinateGridMixin = __webpack_require__(10);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
-var _multiSeriesMixin = __webpack_require__(135);
+var _multiSeriesMixin = __webpack_require__(138);
 
 var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
 
@@ -29054,7 +29680,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 }
 
 /***/ }),
-/* 174 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //  Ramda v0.21.0
@@ -37844,7 +38470,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 
 
 /***/ }),
-/* 175 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37856,7 +38482,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.roundTimeBin = roundTimeBin;
 exports.default = binningMixin;
 
-var _binningHelpers = __webpack_require__(16);
+var _binningHelpers = __webpack_require__(17);
 
 var _d = __webpack_require__(1);
 
@@ -38034,7 +38660,7 @@ function binningMixin(chart) {
 }
 
 /***/ }),
-/* 176 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38049,7 +38675,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _bubbleMixin = __webpack_require__(17);
+var _bubbleMixin = __webpack_require__(18);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
@@ -38482,7 +39108,7 @@ function bubbleChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 177 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38627,7 +39253,7 @@ function cloudChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 178 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39196,7 +39822,7 @@ function compositeChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 179 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39365,7 +39991,7 @@ function dataCount(parent, chartGroup) {
 }
 
 /***/ }),
-/* 180 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39620,7 +40246,7 @@ function dataGrid(parent, chartGroup) {
 }
 
 /***/ }),
-/* 181 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39643,7 +40269,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _mapMixin = __webpack_require__(19);
+var _mapMixin = __webpack_require__(20);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -40069,7 +40695,7 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 }
 
 /***/ }),
-/* 182 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40080,7 +40706,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.mapDrawMixin = mapDrawMixin;
 
-var _utilsLasso = __webpack_require__(183);
+var _utilsLasso = __webpack_require__(192);
 
 var utils = _interopRequireWildcard(_utilsLasso);
 
@@ -40330,7 +40956,7 @@ function mapDrawMixin(chart) {
 }
 
 /***/ }),
-/* 183 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40341,7 +40967,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.convertGeojsonToSql = convertGeojsonToSql;
 
-var _earcut = __webpack_require__(136);
+var _earcut = __webpack_require__(139);
 
 var _earcut2 = _interopRequireDefault(_earcut);
 
@@ -40457,7 +41083,7 @@ function convertGeojsonToSql(features, px, py) {
 }
 
 /***/ }),
-/* 184 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40473,19 +41099,19 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 exports.getLatLonCircleClass = getLatLonCircleClass;
 
-var _utilsLatlon = __webpack_require__(137);
+var _utilsLatlon = __webpack_require__(140);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _mapdDraw = __webpack_require__(21);
+var _mapdDraw = __webpack_require__(22);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _simplifyJs = __webpack_require__(185);
+var _simplifyJs = __webpack_require__(194);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
-var _logger = __webpack_require__(15);
+var _logger = __webpack_require__(16);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -41579,7 +42205,7 @@ var LassoButtonGroupController = function () {
 exports.default = LassoButtonGroupController;
 
 /***/ }),
-/* 185 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -41707,7 +42333,7 @@ function simplify(points, tolerance, highestQuality) {
 }
 
 // export as AMD module / Node module / browser or worker variable
-if (true) !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return simplify; }.call(exports, __webpack_require__, exports, module),
+if (true) !(__WEBPACK_AMD_DEFINE_RESULT__ = (function() { return simplify; }).call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 else if (typeof module !== 'undefined') module.exports = simplify;
 else if (typeof self !== 'undefined') self.simplify = simplify;
@@ -41717,7 +42343,7 @@ else window.simplify = simplify;
 
 
 /***/ }),
-/* 186 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42424,7 +43050,7 @@ function heatMap(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 187 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42451,7 +43077,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _multipleKeyLabelMixin = __webpack_require__(131);
+var _multipleKeyLabelMixin = __webpack_require__(134);
 
 var _multipleKeyLabelMixin2 = _interopRequireDefault(_multipleKeyLabelMixin);
 
@@ -43226,7 +43852,7 @@ function pieChart(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 188 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43249,15 +43875,15 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _elasticDimensionMixin = __webpack_require__(133);
+var _elasticDimensionMixin = __webpack_require__(136);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _stackMixin = __webpack_require__(18);
+var _stackMixin = __webpack_require__(19);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
-var _multiSeriesMixin = __webpack_require__(135);
+var _multiSeriesMixin = __webpack_require__(138);
 
 var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
 
@@ -43845,7 +44471,7 @@ function lineChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 189 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43865,6 +44491,8 @@ var _d = __webpack_require__(1);
 var _d2 = _interopRequireDefault(_d);
 
 var _utils = __webpack_require__(3);
+
+var _coreAsync = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43896,6 +44524,21 @@ function numberChart(parent, chartGroup) {
 
   _chart.setDataAsync(function (group, callbacks) {
     return group.valueAsync().then(function (data) {
+      if (group.getReduceExpression() === "COUNT(*) AS val") {
+        var id = group.getCrossfilterId();
+        var filterSize = (0, _coreAsync.lastFilteredSize)(id);
+        if (filterSize !== undefined) {
+          return Promise.resolve(filterSize);
+        } else {
+          return _chart.dimension().sizeAsync().then(group.valueAsync).then(function (value) {
+            (0, _coreAsync.setLastFilteredSize)(id, value);
+            return value;
+          });
+        }
+      } else {
+        return data;
+      }
+    }).then(function (data) {
       callbacks(null, data);
     }).catch(function (error) {
       callbacks(error);
@@ -43935,7 +44578,7 @@ function numberChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 190 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43946,11 +44589,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rasterChart;
 
-var _coordinateGridRasterMixin = __webpack_require__(138);
+var _stackedLegend = __webpack_require__(200);
+
+var _coordinateGridRasterMixin = __webpack_require__(141);
 
 var _coordinateGridRasterMixin2 = _interopRequireDefault(_coordinateGridRasterMixin);
 
-var _mapMixin = __webpack_require__(19);
+var _mapMixin = __webpack_require__(20);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -43958,18 +44603,21 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _scatterMixin = __webpack_require__(139);
+var _scatterMixin = __webpack_require__(142);
 
 var _scatterMixin2 = _interopRequireDefault(_scatterMixin);
 
-var _rasterDrawMixin = __webpack_require__(20);
+var _rasterDrawMixin = __webpack_require__(21);
 
 var _coreAsync = __webpack_require__(4);
+
+var _legendables = __webpack_require__(202);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   var _chart = null;
+  var _legend = null;
 
   var _useMap = useMap !== undefined ? useMap : false;
 
@@ -44015,6 +44663,15 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   var _popupSearchRadius = 2;
   var _popupDivClassName = "map-popup";
   var _popupDisplayable = true;
+  var _legendOpen = true;
+
+  _chart.legendOpen = function (_) {
+    if (!arguments.length) {
+      return _legendOpen;
+    }
+    _legendOpen = _;
+    return _chart;
+  };
 
   _chart.popupDisplayable = function (displayable) {
     _popupDisplayable = Boolean(displayable);
@@ -44064,8 +44721,24 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return layer;
   };
 
+  _chart.popAllLayers = function () {
+    var poppedLayers = _layers.map(function (layerName) {
+      var layer = _layerNames[layerName];
+      delete _layerNames[layerName];
+      return layer;
+    });
+    _layers = [];
+    return poppedLayers;
+  };
+
   _chart.getLayer = function (layerName) {
     return _layerNames[layerName];
+  };
+
+  _chart.getAllLayers = function () {
+    return Object.keys(_layerNames).map(function (k) {
+      return _layerNames[k];
+    });
   };
 
   _chart.getLayerAt = function (idx) {
@@ -44086,27 +44759,27 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart.xRangeFilter = function (filter) {
     for (var layerName in _layerNames) {
       var _layer = _layerNames[layerName];
-      _layer.yDim().filter(filter);
+      // layer.xDim() & layer.xDim().filter(filter)
     }
   };
 
   _chart.yRangeFilter = function (filter) {
     for (var layerName in _layerNames) {
       var _layer2 = _layerNames[layerName];
-      _layer2.yDim().filter(filter);
+      // layer.yDim() && layer.yDim().filter(filter)
     }
   };
 
   _chart.destroyChart = function () {
+    _legend.setState({});
+
+    _chart.filterAll();
     for (var layerName in _layerNames) {
       var _layer3 = _layerNames[layerName];
       _layer3.destroyLayer(_chart);
     }
 
     _chart.map().remove();
-    if (_chart.legend()) {
-      _chart.legend().removeLegend();
-    }
   };
 
   _chart.con = function (_) {
@@ -44151,13 +44824,25 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart.setDataAsync(function (group, callback) {
     var bounds = _chart.getDataRenderBounds();
     _chart._updateXAndYScales(bounds);
+    var heatLayers = _chart.getLayerNames().filter(function (layerName) {
+      return _chart.getLayer(layerName).type === "heatmap";
+    });
 
-    var heatLayer = _chart.getLayer("heat");
-    if (heatLayer && heatLayer.getState().encoding.color.scale.domain === "auto") {
-      _chart.getLayer("heat").getColorDomain(_chart).then(function (domain) {
-        _chart.colors().domain(domain);
+    if (heatLayers.length) {
+      Promise.all(heatLayers.map(function (layerId) {
+        var layer = _chart.getLayer(layerId);
+        if (layer.getState().encoding.color.scale.domain === "auto") {
+          return layer.getColorDomain(_chart).then(function (domain) {
+            layer.colorDomain(domain);
+            return domain;
+          });
+        } else {
+          return Promise.resolve(layer.getState().encoding.color.scale.domain);
+        }
+      })).then(function (allBounds) {
         _chart._vegaSpec = genLayeredVega(_chart);
         var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callback);
+        _chart.colors().domain(allBounds[0]);
         _renderBoundsMap[nonce] = bounds;
       }).catch(callback);
     } else {
@@ -44168,7 +44853,6 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   });
 
   _chart.data(function (group) {
-
     if (_chart.dataCache !== null) {
       return _chart.dataCache;
     }
@@ -44293,6 +44977,10 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       data = _chart.data();
     }
 
+    var state = (0, _stackedLegend.getLegendStateFromChart)(_chart, useMap);
+
+    _legend.setState(state);
+
     if (_chart.isLoaded()) {
       if (Object.keys(data).length) {
         _chart._setOverlay(data.image, _renderBoundsMap[data.nonce], data.nonce, browser, Boolean(redraw));
@@ -44326,7 +45014,10 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart.getClosestResult = function getClosestResult(point, callback) {
     var height = typeof _chart.effectiveHeight === "function" ? _chart.effectiveHeight() : _chart.height();
     var pixelRatio = _chart._getPixelRatio() || 1;
-    var pixel = new TPixel({ x: Math.round(point.x * pixelRatio), y: Math.round((height - point.y) * pixelRatio) });
+    var pixel = new TPixel({
+      x: Math.round(point.x * pixelRatio),
+      y: Math.round((height - point.y) * pixelRatio)
+    });
 
     if (!point) {
       return;
@@ -44392,7 +45083,21 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   };
 
-  return _chart.anchor(parent, chartGroup);
+  var anchored = _chart.anchor(parent, chartGroup);
+  var legend = anchored.root().append("div").attr("class", "legend");
+  _legend = new _legendables.Legend(legend.node());
+
+  _legend.on("open", _stackedLegend.handleLegendOpen.bind(_chart));
+  _legend.on("lock", _stackedLegend.handleLegendLock.bind(_chart));
+  _legend.on("input", _stackedLegend.handleLegendInput.bind(_chart));
+  _legend.on("toggle", _stackedLegend.handleLegendToggle.bind(_chart));
+  _legend.on("doneRender", _stackedLegend.handleLegendDoneRender.bind(_chart));
+
+  _chart.legend = function (l) {
+    return _legend;
+  };
+
+  return anchored;
 }
 
 function valuesOb(obj) {
@@ -44411,7 +45116,17 @@ function genLayeredVega(chart) {
 
   var data = [];
 
-  var scales = [{ name: chart._getXScaleName(), type: chart._determineScaleType(chart.x()), domain: chart.x().domain(), range: "width" }, { name: chart._getYScaleName(), type: chart._determineScaleType(chart.y()), domain: chart.y().domain(), range: "height" }];
+  var scales = [{
+    name: chart._getXScaleName(),
+    type: chart._determineScaleType(chart.x()),
+    domain: chart.x().domain(),
+    range: "width"
+  }, {
+    name: chart._getYScaleName(),
+    type: chart._determineScaleType(chart.y()),
+    domain: chart.y().domain(),
+    range: "height"
+  }];
   var marks = [];
 
   chart.getLayerNames().forEach(function (layerName) {
@@ -44434,7 +45149,238 @@ function genLayeredVega(chart) {
 }
 
 /***/ }),
-/* 191 */
+/* 200 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.getLegendStateFromChart = getLegendStateFromChart;
+exports.handleLegendToggle = handleLegendToggle;
+exports.handleLegendDoneRender = handleLegendDoneRender;
+exports.handleLegendOpen = handleLegendOpen;
+exports.handleLegendLock = handleLegendLock;
+exports.handleLegendInput = handleLegendInput;
+exports.toLegendState = toLegendState;
+var hasLegendOpenProp = function hasLegendOpenProp(color) {
+  return _typeof(color.legend) === "object" && color.legend.hasOwnProperty("open");
+};
+var hasLegendLockedProp = function hasLegendLockedProp(color) {
+  return _typeof(color.legend) === "object" && color.legend.hasOwnProperty("locked");
+};
+var hasLegendTitleProp = function hasLegendTitleProp(color) {
+  return _typeof(color.legend) === "object" && color.legend.hasOwnProperty("title");
+};
+var handleColorLegendOpenUndefined = function handleColorLegendOpenUndefined(color) {
+  return typeof color.legend.open === "undefined" ? true : color.legend.open;
+};
+var handleNonStackedOpenState = function handleNonStackedOpenState(state) {
+  return state.type === "gradient" ? Object.assign({}, state, { open: true }) : state;
+};
+
+var TOP_PADDING = 56;
+var LASSO_TOOL_VERTICAL_SPACE = 120;
+
+function setLegendState(setter) {
+  return function setState(state) {
+    return _extends({}, state, {
+      encoding: _extends({}, state.encoding, {
+        color: _extends({}, state.encoding.color, {
+          legend: _extends({}, state.encoding.color.legend, setter(state.encoding.color))
+        })
+      })
+    });
+  };
+}
+
+function setColorState(setter) {
+  return function setState(state) {
+    return _extends({}, state, {
+      encoding: _extends({}, state.encoding, {
+        color: _extends({}, state.encoding.color, setter(state.encoding.color))
+      })
+    });
+  };
+}
+
+function setColorScaleDomain(domain) {
+  return function setState(state) {
+    return _extends({}, state, {
+      encoding: _extends({}, state.encoding, {
+        color: _extends({}, state.encoding.color, {
+          scale: _extends({}, state.encoding.color.scale, {
+            domain: domain
+          })
+        })
+      })
+    });
+  };
+}
+
+function getLegendStateFromChart(chart, useMap) {
+  return toLegendState(chart.getLayerNames().map(function (layerName) {
+    var layer = chart.getLayer(layerName);
+    var color = layer.getState().encoding.color;
+    if (_typeof(color.scale) === "object" && color.scale.domain === "auto") {
+      return _extends({}, color, {
+        scale: _extends({}, color.scale, {
+          domain: layer.colorDomain()
+        })
+      });
+    } else {
+      return color;
+    }
+  }), chart, useMap);
+}
+
+function handleLegendToggle() {
+  this.legend().setState(_extends({}, this.legend().state, {
+    open: !this.legend().state.open
+  }));
+}
+
+function handleLegendDoneRender() {
+  var _this = this;
+
+  this.root().classed("horizontal-lasso-tools", function () {
+    var legendNode = _this.root().select(".legendables").node();
+    var isHorizontal = legendNode && legendNode.clientHeight > _this.height() - LASSO_TOOL_VERTICAL_SPACE;
+
+    _this.root().select(".mapd-draw-button-control-group").style("width", isHorizontal ? legendNode.clientWidth + 2 + "px" : "auto");
+
+    return isHorizontal;
+  });
+}
+
+function handleLegendOpen() {
+  var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+  this.getLayers()[index].setState(setLegendState(function (color) {
+    return {
+      open: hasLegendOpenProp(color) ? !handleColorLegendOpenUndefined(color) : false
+    };
+  }));
+  this.legend().setState(getLegendStateFromChart(this));
+}
+
+function handleLegendLock(_ref) {
+  var locked = _ref.locked,
+      _ref$index = _ref.index,
+      index = _ref$index === undefined ? 0 : _ref$index;
+
+  var layer = this.getLayers()[index];
+
+  layer.setState(setLegendState(function (color) {
+    return {
+      locked: typeof locked === "undefined" ? true : !locked
+    };
+  }));
+
+  var _layer$getState = layer.getState(),
+      color = _layer$getState.encoding.color;
+
+  if (_typeof(color.scale) === "object") {
+    if (color.legend.locked) {
+      layer.setState(setColorScaleDomain(layer.colorDomain()));
+    } else {
+      layer.setState(setColorScaleDomain("auto"));
+    }
+  }
+
+  this.legend().setState(getLegendStateFromChart(this));
+}
+
+function handleLegendInput(_ref2) {
+  var domain = _ref2.domain,
+      _ref2$index = _ref2.index,
+      index = _ref2$index === undefined ? 0 : _ref2$index;
+
+  var layer = this.getLayers()[index];
+  var scale = layer.getState().encoding.color.scale;
+
+
+  if ((typeof scale === "undefined" ? "undefined" : _typeof(scale)) === "object") {
+    layer.setState(setColorScaleDomain(domain));
+  } else {
+    layer.setState(setColorState(function () {
+      return {
+        domain: domain
+      };
+    }));
+  }
+
+  this.legend().setState(getLegendStateFromChart(this));
+  this.renderAsync();
+}
+
+function legendState(state) {
+  var useMap = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+  if (state.type === "ordinal") {
+    return {
+      type: "nominal",
+      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
+      open: hasLegendOpenProp(state) ? state.legend.open : true,
+      range: state.range,
+      domain: state.domain,
+      position: useMap ? "bottom-left" : "top-right"
+    };
+  } else if (state.type === "quantitative") {
+    return {
+      type: "gradient",
+      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
+      locked: hasLegendLockedProp(state) ? state.legend.locked : false,
+      open: hasLegendOpenProp(state) ? state.legend.open : true,
+      range: state.range,
+      domain: state.domain,
+      position: useMap ? "bottom-left" : "top-right"
+    };
+  } else if (state.type === "quantize") {
+    var scale = state.scale;
+
+    return {
+      type: "gradient",
+      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
+      locked: hasLegendLockedProp(state) ? state.legend.locked : false,
+      open: hasLegendOpenProp(state) ? state.legend.open : true,
+      range: scale.range,
+      domain: scale.domain,
+      position: useMap ? "bottom-left" : "top-right"
+    };
+  } else {
+    return {};
+  }
+}
+
+function toLegendState() {
+  var states = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var chart = arguments[1];
+  var useMap = arguments[2];
+
+  if (states.length === 1) {
+    return handleNonStackedOpenState(legendState(states[0], useMap));
+  } else if (states.length) {
+    return {
+      type: "stacked",
+      list: states.map(legendState),
+      open: typeof chart.legendOpen() === "undefined" ? true : chart.legendOpen(),
+      maxHeight: chart.height() - TOP_PADDING
+    };
+  } else {
+    return {};
+  }
+}
+
+/***/ }),
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45538,7 +46484,1283 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 }
 
 /***/ }),
-/* 192 */
+/* 202 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var legend_1 = __webpack_require__(203);
+exports.Legend = legend_1.default;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 203 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var h_1 = __webpack_require__(23);
+var vdom_1 = __webpack_require__(204);
+var d3_dispatch_1 = __webpack_require__(213);
+var d3_format_1 = __webpack_require__(215);
+var commafy = function (d) { return d3_format_1.format(",")(parseFloat(d.toFixed(2))); };
+var formatNumber = function (d) { return String(d).length > 4 ? d3_format_1.format(".2s")(d) : commafy(d); };
+function rangeStep(domain, index, bins) {
+    if (bins === void 0) { bins = 9; }
+    if (index === 0) {
+        return domain[0];
+    }
+    else if (index + 1 === bins) {
+        return domain[1];
+    }
+    else {
+        var increment = (domain[1] - domain[0]) / bins;
+        return domain[0] + increment * index;
+    }
+}
+function validateNumericalInput(previousValue, nextValue) {
+    if (isNaN(parseInt(nextValue))) {
+        return parseInt(previousValue);
+    }
+    else {
+        return parseInt(nextValue);
+    }
+}
+function renderTickIcon(state, dispatch) {
+    var _this = this;
+    return h_1.default("div.tick", { on: { click: function () { return dispatch.call("open", _this, state.index); } } });
+}
+function renderToggleIcon(state, dispatch) {
+    var _this = this;
+    return h_1.default("div.open-toggle", {
+        on: {
+            click: function () {
+                dispatch.call("toggle", _this, state);
+            }
+        }
+    });
+}
+function renderLockIcon(locked, index, dispatch) {
+    var _this = this;
+    return h_1.default("div.lock" + (locked ? ".locked" : ".unlocked"), { on: { click: function () { return dispatch.call("lock", _this, { locked: locked, index: index }); } } }, [
+        h_1.default("svg", { attrs: { viewBox: [0, 0, 48, 48] } }, [
+            h_1.default("g", { style: { stroke: "white" } }, [
+                h_1.default("path", {
+                    attrs: {
+                        d: locked
+                            ? "M34,20v-4c0-5.5-4.5-10-10-10c-5.5,0-10,4.5-10,10v4H8v20h32V20H34z M18,16c0-3.3,2.7-6,6-6s6,2.7,6,6v4H18V16z"
+                            : "M18,20v-8c0-3.3,2.7-6,6-6s6,2.7,6,6v2h4v-2c0-5.5-4.5-10-10-10c-5.5,0-10,4.5-10,10v8H8v20h32V20H18z"
+                    }
+                })
+            ])
+        ])
+    ]);
+}
+function renderInput(state, domain, dispatch) {
+    var _this = this;
+    return h_1.default("input", {
+        hook: {
+            update: function (prevNode, nextNode) {
+                nextNode.elm.value = domain.value;
+            }
+        },
+        props: {
+            type: " number",
+            value: domain.value
+        },
+        on: {
+            focus: function (e) {
+                e.target.select();
+            },
+            blur: function (e) {
+                var value = validateNumericalInput(domain.value, e.target.value);
+                var _a = state.domain, min = _a[0], max = _a[1];
+                dispatch.call("input", _this, {
+                    index: state.index,
+                    domain: domain.index === 0 ? [value, max] : [min, value]
+                });
+            },
+            keydown: function (e) {
+                if (e.code === "Enter") {
+                    e.target.blur();
+                }
+            }
+        }
+    });
+}
+function renderGradientLegend(state, dispatch) {
+    var stacked = typeof state.index === "number";
+    return h_1.default("div.legend.gradient-legend" + (stacked ? ".with-header" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [
+        stacked ?
+            h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]) : h_1.default("div"),
+        state.open
+            ? h_1.default("div.range", state.range.map(function (color, index) {
+                var isMinMax = index === 0 || index === state.range.length - 1;
+                var step = formatNumber(rangeStep(state.domain, index, state.range.length));
+                var _a = state.domain, min = _a[0], max = _a[1];
+                return h_1.default("div.block", [
+                    h_1.default("div.color", { style: { background: color } }),
+                    h_1.default("div.text." + (isMinMax ? "extent" : "step"), [h_1.default("span", "" + (state.domain.length > 2 ? state.domain[index] : step))].concat(isMinMax
+                        ? [
+                            renderInput(state, { value: state.domain.length === 2 ? state.domain[index === 0 ? 0 : 1] : state.domain[index], index: index }, dispatch)
+                        ]
+                        : []))
+                ]);
+            }).slice())
+            : h_1.default("div"),
+        state.open ?
+            renderLockIcon(state.locked, state.index, dispatch) : h_1.default("div")
+    ]);
+}
+exports.renderGradientLegend = renderGradientLegend;
+function renderNominalLegend(state, dispatch) {
+    var _this = this;
+    var stacked = typeof state.index === "number";
+    return h_1.default("div.legend.nominal-legend" + (stacked ? "" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [
+        !stacked ? renderToggleIcon(state, dispatch) : h_1.default("div"),
+        state.title &&
+            h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]),
+        state.open
+            ? h_1.default("div.body", state.domain.map(function (value, index) {
+                return h_1.default("div.legend-row", { on: { click: function () { return dispatch.call("filter", _this, value); } } }, [
+                    h_1.default("div.color", {
+                        style: { background: state.range[index] }
+                    }),
+                    h_1.default("div.text", value)
+                ]);
+            }))
+            : h_1.default("div")
+    ]);
+}
+exports.renderNominalLegend = renderNominalLegend;
+function renderStackedLegend(state, dispatch) {
+    return h_1.default("div.legendables" + (state.open ? ".open" : ".collapsed") + (state.list.length > 1 ? ".show-ticks" : ""), { style: { maxHeight: state.maxHeight + "px" } }, [renderToggleIcon(state, dispatch)].concat(state.list.map(function (legend, index) {
+        if (legend.type === "gradient") {
+            return renderGradientLegend(__assign({}, legend, { index: index }), dispatch);
+        }
+        else if (legend.type === "nominal") {
+            return renderNominalLegend(__assign({}, legend, { index: index }), dispatch);
+        }
+    })));
+}
+exports.renderStackedLegend = renderStackedLegend;
+var Legend = /** @class */ (function () {
+    function Legend(node) {
+        var _this = this;
+        this.setState = function (state) {
+            if (typeof state === "function") {
+                _this.state = state(_this.state);
+            }
+            else {
+                _this.state = state;
+            }
+            var vnode;
+            if (_this.state.type === "gradient") {
+                vnode = renderGradientLegend(_this.state, _this.dispatch);
+            }
+            else if (_this.state.type === "nominal") {
+                vnode = renderNominalLegend(_this.state, _this.dispatch);
+            }
+            else if (_this.state.type === "stacked") {
+                vnode = renderStackedLegend(_this.state, _this.dispatch);
+            }
+            else {
+                vnode = h_1.default("div");
+            }
+            _this.node = vdom_1.patch(_this.node, vnode);
+            _this.dispatch.call("doneRender", _this, state);
+            return _this.node;
+        };
+        this.node = node;
+        this.dispatch = d3_dispatch_1.dispatch("filter", "input", "open", "lock", "toggle", "doneRender");
+        this.state = null;
+    }
+    Legend.prototype.on = function (event, callback) {
+        this.dispatch.on(event, callback);
+    };
+    return Legend;
+}());
+exports.default = Legend;
+//# sourceMappingURL=legend.js.map
+
+/***/ }),
+/* 204 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var snabbdom_1 = __webpack_require__(205);
+var attributes_1 = __webpack_require__(208);
+var class_1 = __webpack_require__(209);
+var props_1 = __webpack_require__(210);
+var style_1 = __webpack_require__(211);
+var eventlisteners_1 = __webpack_require__(212);
+exports.patch = snabbdom_1.init([
+    class_1.default,
+    props_1.default,
+    style_1.default,
+    attributes_1.default,
+    eventlisteners_1.default
+]);
+//# sourceMappingURL=vdom.js.map
+
+/***/ }),
+/* 205 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var vnode_1 = __webpack_require__(143);
+var is = __webpack_require__(144);
+var htmldomapi_1 = __webpack_require__(206);
+function isUndef(s) { return s === undefined; }
+function isDef(s) { return s !== undefined; }
+var emptyNode = vnode_1.default('', {}, [], undefined, undefined);
+function sameVnode(vnode1, vnode2) {
+    return vnode1.key === vnode2.key && vnode1.sel === vnode2.sel;
+}
+function isVnode(vnode) {
+    return vnode.sel !== undefined;
+}
+function createKeyToOldIdx(children, beginIdx, endIdx) {
+    var i, map = {}, key, ch;
+    for (i = beginIdx; i <= endIdx; ++i) {
+        ch = children[i];
+        if (ch != null) {
+            key = ch.key;
+            if (key !== undefined)
+                map[key] = i;
+        }
+    }
+    return map;
+}
+var hooks = ['create', 'update', 'remove', 'destroy', 'pre', 'post'];
+var h_1 = __webpack_require__(23);
+exports.h = h_1.h;
+var thunk_1 = __webpack_require__(207);
+exports.thunk = thunk_1.thunk;
+function init(modules, domApi) {
+    var i, j, cbs = {};
+    var api = domApi !== undefined ? domApi : htmldomapi_1.default;
+    for (i = 0; i < hooks.length; ++i) {
+        cbs[hooks[i]] = [];
+        for (j = 0; j < modules.length; ++j) {
+            var hook = modules[j][hooks[i]];
+            if (hook !== undefined) {
+                cbs[hooks[i]].push(hook);
+            }
+        }
+    }
+    function emptyNodeAt(elm) {
+        var id = elm.id ? '#' + elm.id : '';
+        var c = elm.className ? '.' + elm.className.split(' ').join('.') : '';
+        return vnode_1.default(api.tagName(elm).toLowerCase() + id + c, {}, [], undefined, elm);
+    }
+    function createRmCb(childElm, listeners) {
+        return function rmCb() {
+            if (--listeners === 0) {
+                var parent_1 = api.parentNode(childElm);
+                api.removeChild(parent_1, childElm);
+            }
+        };
+    }
+    function createElm(vnode, insertedVnodeQueue) {
+        var i, data = vnode.data;
+        if (data !== undefined) {
+            if (isDef(i = data.hook) && isDef(i = i.init)) {
+                i(vnode);
+                data = vnode.data;
+            }
+        }
+        var children = vnode.children, sel = vnode.sel;
+        if (sel === '!') {
+            if (isUndef(vnode.text)) {
+                vnode.text = '';
+            }
+            vnode.elm = api.createComment(vnode.text);
+        }
+        else if (sel !== undefined) {
+            // Parse selector
+            var hashIdx = sel.indexOf('#');
+            var dotIdx = sel.indexOf('.', hashIdx);
+            var hash = hashIdx > 0 ? hashIdx : sel.length;
+            var dot = dotIdx > 0 ? dotIdx : sel.length;
+            var tag = hashIdx !== -1 || dotIdx !== -1 ? sel.slice(0, Math.min(hash, dot)) : sel;
+            var elm = vnode.elm = isDef(data) && isDef(i = data.ns) ? api.createElementNS(i, tag)
+                : api.createElement(tag);
+            if (hash < dot)
+                elm.setAttribute('id', sel.slice(hash + 1, dot));
+            if (dotIdx > 0)
+                elm.setAttribute('class', sel.slice(dot + 1).replace(/\./g, ' '));
+            for (i = 0; i < cbs.create.length; ++i)
+                cbs.create[i](emptyNode, vnode);
+            if (is.array(children)) {
+                for (i = 0; i < children.length; ++i) {
+                    var ch = children[i];
+                    if (ch != null) {
+                        api.appendChild(elm, createElm(ch, insertedVnodeQueue));
+                    }
+                }
+            }
+            else if (is.primitive(vnode.text)) {
+                api.appendChild(elm, api.createTextNode(vnode.text));
+            }
+            i = vnode.data.hook; // Reuse variable
+            if (isDef(i)) {
+                if (i.create)
+                    i.create(emptyNode, vnode);
+                if (i.insert)
+                    insertedVnodeQueue.push(vnode);
+            }
+        }
+        else {
+            vnode.elm = api.createTextNode(vnode.text);
+        }
+        return vnode.elm;
+    }
+    function addVnodes(parentElm, before, vnodes, startIdx, endIdx, insertedVnodeQueue) {
+        for (; startIdx <= endIdx; ++startIdx) {
+            var ch = vnodes[startIdx];
+            if (ch != null) {
+                api.insertBefore(parentElm, createElm(ch, insertedVnodeQueue), before);
+            }
+        }
+    }
+    function invokeDestroyHook(vnode) {
+        var i, j, data = vnode.data;
+        if (data !== undefined) {
+            if (isDef(i = data.hook) && isDef(i = i.destroy))
+                i(vnode);
+            for (i = 0; i < cbs.destroy.length; ++i)
+                cbs.destroy[i](vnode);
+            if (vnode.children !== undefined) {
+                for (j = 0; j < vnode.children.length; ++j) {
+                    i = vnode.children[j];
+                    if (i != null && typeof i !== "string") {
+                        invokeDestroyHook(i);
+                    }
+                }
+            }
+        }
+    }
+    function removeVnodes(parentElm, vnodes, startIdx, endIdx) {
+        for (; startIdx <= endIdx; ++startIdx) {
+            var i_1 = void 0, listeners = void 0, rm = void 0, ch = vnodes[startIdx];
+            if (ch != null) {
+                if (isDef(ch.sel)) {
+                    invokeDestroyHook(ch);
+                    listeners = cbs.remove.length + 1;
+                    rm = createRmCb(ch.elm, listeners);
+                    for (i_1 = 0; i_1 < cbs.remove.length; ++i_1)
+                        cbs.remove[i_1](ch, rm);
+                    if (isDef(i_1 = ch.data) && isDef(i_1 = i_1.hook) && isDef(i_1 = i_1.remove)) {
+                        i_1(ch, rm);
+                    }
+                    else {
+                        rm();
+                    }
+                }
+                else {
+                    api.removeChild(parentElm, ch.elm);
+                }
+            }
+        }
+    }
+    function updateChildren(parentElm, oldCh, newCh, insertedVnodeQueue) {
+        var oldStartIdx = 0, newStartIdx = 0;
+        var oldEndIdx = oldCh.length - 1;
+        var oldStartVnode = oldCh[0];
+        var oldEndVnode = oldCh[oldEndIdx];
+        var newEndIdx = newCh.length - 1;
+        var newStartVnode = newCh[0];
+        var newEndVnode = newCh[newEndIdx];
+        var oldKeyToIdx;
+        var idxInOld;
+        var elmToMove;
+        var before;
+        while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+            if (oldStartVnode == null) {
+                oldStartVnode = oldCh[++oldStartIdx]; // Vnode might have been moved left
+            }
+            else if (oldEndVnode == null) {
+                oldEndVnode = oldCh[--oldEndIdx];
+            }
+            else if (newStartVnode == null) {
+                newStartVnode = newCh[++newStartIdx];
+            }
+            else if (newEndVnode == null) {
+                newEndVnode = newCh[--newEndIdx];
+            }
+            else if (sameVnode(oldStartVnode, newStartVnode)) {
+                patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue);
+                oldStartVnode = oldCh[++oldStartIdx];
+                newStartVnode = newCh[++newStartIdx];
+            }
+            else if (sameVnode(oldEndVnode, newEndVnode)) {
+                patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue);
+                oldEndVnode = oldCh[--oldEndIdx];
+                newEndVnode = newCh[--newEndIdx];
+            }
+            else if (sameVnode(oldStartVnode, newEndVnode)) {
+                patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue);
+                api.insertBefore(parentElm, oldStartVnode.elm, api.nextSibling(oldEndVnode.elm));
+                oldStartVnode = oldCh[++oldStartIdx];
+                newEndVnode = newCh[--newEndIdx];
+            }
+            else if (sameVnode(oldEndVnode, newStartVnode)) {
+                patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue);
+                api.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm);
+                oldEndVnode = oldCh[--oldEndIdx];
+                newStartVnode = newCh[++newStartIdx];
+            }
+            else {
+                if (oldKeyToIdx === undefined) {
+                    oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx);
+                }
+                idxInOld = oldKeyToIdx[newStartVnode.key];
+                if (isUndef(idxInOld)) {
+                    api.insertBefore(parentElm, createElm(newStartVnode, insertedVnodeQueue), oldStartVnode.elm);
+                    newStartVnode = newCh[++newStartIdx];
+                }
+                else {
+                    elmToMove = oldCh[idxInOld];
+                    if (elmToMove.sel !== newStartVnode.sel) {
+                        api.insertBefore(parentElm, createElm(newStartVnode, insertedVnodeQueue), oldStartVnode.elm);
+                    }
+                    else {
+                        patchVnode(elmToMove, newStartVnode, insertedVnodeQueue);
+                        oldCh[idxInOld] = undefined;
+                        api.insertBefore(parentElm, elmToMove.elm, oldStartVnode.elm);
+                    }
+                    newStartVnode = newCh[++newStartIdx];
+                }
+            }
+        }
+        if (oldStartIdx > oldEndIdx) {
+            before = newCh[newEndIdx + 1] == null ? null : newCh[newEndIdx + 1].elm;
+            addVnodes(parentElm, before, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
+        }
+        else if (newStartIdx > newEndIdx) {
+            removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
+        }
+    }
+    function patchVnode(oldVnode, vnode, insertedVnodeQueue) {
+        var i, hook;
+        if (isDef(i = vnode.data) && isDef(hook = i.hook) && isDef(i = hook.prepatch)) {
+            i(oldVnode, vnode);
+        }
+        var elm = vnode.elm = oldVnode.elm;
+        var oldCh = oldVnode.children;
+        var ch = vnode.children;
+        if (oldVnode === vnode)
+            return;
+        if (vnode.data !== undefined) {
+            for (i = 0; i < cbs.update.length; ++i)
+                cbs.update[i](oldVnode, vnode);
+            i = vnode.data.hook;
+            if (isDef(i) && isDef(i = i.update))
+                i(oldVnode, vnode);
+        }
+        if (isUndef(vnode.text)) {
+            if (isDef(oldCh) && isDef(ch)) {
+                if (oldCh !== ch)
+                    updateChildren(elm, oldCh, ch, insertedVnodeQueue);
+            }
+            else if (isDef(ch)) {
+                if (isDef(oldVnode.text))
+                    api.setTextContent(elm, '');
+                addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue);
+            }
+            else if (isDef(oldCh)) {
+                removeVnodes(elm, oldCh, 0, oldCh.length - 1);
+            }
+            else if (isDef(oldVnode.text)) {
+                api.setTextContent(elm, '');
+            }
+        }
+        else if (oldVnode.text !== vnode.text) {
+            api.setTextContent(elm, vnode.text);
+        }
+        if (isDef(hook) && isDef(i = hook.postpatch)) {
+            i(oldVnode, vnode);
+        }
+    }
+    return function patch(oldVnode, vnode) {
+        var i, elm, parent;
+        var insertedVnodeQueue = [];
+        for (i = 0; i < cbs.pre.length; ++i)
+            cbs.pre[i]();
+        if (!isVnode(oldVnode)) {
+            oldVnode = emptyNodeAt(oldVnode);
+        }
+        if (sameVnode(oldVnode, vnode)) {
+            patchVnode(oldVnode, vnode, insertedVnodeQueue);
+        }
+        else {
+            elm = oldVnode.elm;
+            parent = api.parentNode(elm);
+            createElm(vnode, insertedVnodeQueue);
+            if (parent !== null) {
+                api.insertBefore(parent, vnode.elm, api.nextSibling(elm));
+                removeVnodes(parent, [oldVnode], 0, 0);
+            }
+        }
+        for (i = 0; i < insertedVnodeQueue.length; ++i) {
+            insertedVnodeQueue[i].data.hook.insert(insertedVnodeQueue[i]);
+        }
+        for (i = 0; i < cbs.post.length; ++i)
+            cbs.post[i]();
+        return vnode;
+    };
+}
+exports.init = init;
+//# sourceMappingURL=snabbdom.js.map
+
+/***/ }),
+/* 206 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function createElement(tagName) {
+    return document.createElement(tagName);
+}
+function createElementNS(namespaceURI, qualifiedName) {
+    return document.createElementNS(namespaceURI, qualifiedName);
+}
+function createTextNode(text) {
+    return document.createTextNode(text);
+}
+function createComment(text) {
+    return document.createComment(text);
+}
+function insertBefore(parentNode, newNode, referenceNode) {
+    parentNode.insertBefore(newNode, referenceNode);
+}
+function removeChild(node, child) {
+    node.removeChild(child);
+}
+function appendChild(node, child) {
+    node.appendChild(child);
+}
+function parentNode(node) {
+    return node.parentNode;
+}
+function nextSibling(node) {
+    return node.nextSibling;
+}
+function tagName(elm) {
+    return elm.tagName;
+}
+function setTextContent(node, text) {
+    node.textContent = text;
+}
+function getTextContent(node) {
+    return node.textContent;
+}
+function isElement(node) {
+    return node.nodeType === 1;
+}
+function isText(node) {
+    return node.nodeType === 3;
+}
+function isComment(node) {
+    return node.nodeType === 8;
+}
+exports.htmlDomApi = {
+    createElement: createElement,
+    createElementNS: createElementNS,
+    createTextNode: createTextNode,
+    createComment: createComment,
+    insertBefore: insertBefore,
+    removeChild: removeChild,
+    appendChild: appendChild,
+    parentNode: parentNode,
+    nextSibling: nextSibling,
+    tagName: tagName,
+    setTextContent: setTextContent,
+    getTextContent: getTextContent,
+    isElement: isElement,
+    isText: isText,
+    isComment: isComment,
+};
+exports.default = exports.htmlDomApi;
+//# sourceMappingURL=htmldomapi.js.map
+
+/***/ }),
+/* 207 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var h_1 = __webpack_require__(23);
+function copyToThunk(vnode, thunk) {
+    thunk.elm = vnode.elm;
+    vnode.data.fn = thunk.data.fn;
+    vnode.data.args = thunk.data.args;
+    thunk.data = vnode.data;
+    thunk.children = vnode.children;
+    thunk.text = vnode.text;
+    thunk.elm = vnode.elm;
+}
+function init(thunk) {
+    var cur = thunk.data;
+    var vnode = cur.fn.apply(undefined, cur.args);
+    copyToThunk(vnode, thunk);
+}
+function prepatch(oldVnode, thunk) {
+    var i, old = oldVnode.data, cur = thunk.data;
+    var oldArgs = old.args, args = cur.args;
+    if (old.fn !== cur.fn || oldArgs.length !== args.length) {
+        copyToThunk(cur.fn.apply(undefined, args), thunk);
+        return;
+    }
+    for (i = 0; i < args.length; ++i) {
+        if (oldArgs[i] !== args[i]) {
+            copyToThunk(cur.fn.apply(undefined, args), thunk);
+            return;
+        }
+    }
+    copyToThunk(oldVnode, thunk);
+}
+exports.thunk = function thunk(sel, key, fn, args) {
+    if (args === undefined) {
+        args = fn;
+        fn = key;
+        key = undefined;
+    }
+    return h_1.h(sel, {
+        key: key,
+        hook: { init: init, prepatch: prepatch },
+        fn: fn,
+        args: args
+    });
+};
+exports.default = exports.thunk;
+//# sourceMappingURL=thunk.js.map
+
+/***/ }),
+/* 208 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var xlinkNS = 'http://www.w3.org/1999/xlink';
+var xmlNS = 'http://www.w3.org/XML/1998/namespace';
+var colonChar = 58;
+var xChar = 120;
+function updateAttrs(oldVnode, vnode) {
+    var key, elm = vnode.elm, oldAttrs = oldVnode.data.attrs, attrs = vnode.data.attrs;
+    if (!oldAttrs && !attrs)
+        return;
+    if (oldAttrs === attrs)
+        return;
+    oldAttrs = oldAttrs || {};
+    attrs = attrs || {};
+    // update modified attributes, add new attributes
+    for (key in attrs) {
+        var cur = attrs[key];
+        var old = oldAttrs[key];
+        if (old !== cur) {
+            if (cur === true) {
+                elm.setAttribute(key, "");
+            }
+            else if (cur === false) {
+                elm.removeAttribute(key);
+            }
+            else {
+                if (key.charCodeAt(0) !== xChar) {
+                    elm.setAttribute(key, cur);
+                }
+                else if (key.charCodeAt(3) === colonChar) {
+                    // Assume xml namespace
+                    elm.setAttributeNS(xmlNS, key, cur);
+                }
+                else if (key.charCodeAt(5) === colonChar) {
+                    // Assume xlink namespace
+                    elm.setAttributeNS(xlinkNS, key, cur);
+                }
+                else {
+                    elm.setAttribute(key, cur);
+                }
+            }
+        }
+    }
+    // remove removed attributes
+    // use `in` operator since the previous `for` iteration uses it (.i.e. add even attributes with undefined value)
+    // the other option is to remove all attributes with value == undefined
+    for (key in oldAttrs) {
+        if (!(key in attrs)) {
+            elm.removeAttribute(key);
+        }
+    }
+}
+exports.attributesModule = { create: updateAttrs, update: updateAttrs };
+exports.default = exports.attributesModule;
+//# sourceMappingURL=attributes.js.map
+
+/***/ }),
+/* 209 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function updateClass(oldVnode, vnode) {
+    var cur, name, elm = vnode.elm, oldClass = oldVnode.data.class, klass = vnode.data.class;
+    if (!oldClass && !klass)
+        return;
+    if (oldClass === klass)
+        return;
+    oldClass = oldClass || {};
+    klass = klass || {};
+    for (name in oldClass) {
+        if (!klass[name]) {
+            elm.classList.remove(name);
+        }
+    }
+    for (name in klass) {
+        cur = klass[name];
+        if (cur !== oldClass[name]) {
+            elm.classList[cur ? 'add' : 'remove'](name);
+        }
+    }
+}
+exports.classModule = { create: updateClass, update: updateClass };
+exports.default = exports.classModule;
+//# sourceMappingURL=class.js.map
+
+/***/ }),
+/* 210 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function updateProps(oldVnode, vnode) {
+    var key, cur, old, elm = vnode.elm, oldProps = oldVnode.data.props, props = vnode.data.props;
+    if (!oldProps && !props)
+        return;
+    if (oldProps === props)
+        return;
+    oldProps = oldProps || {};
+    props = props || {};
+    for (key in oldProps) {
+        if (!props[key]) {
+            delete elm[key];
+        }
+    }
+    for (key in props) {
+        cur = props[key];
+        old = oldProps[key];
+        if (old !== cur && (key !== 'value' || elm[key] !== cur)) {
+            elm[key] = cur;
+        }
+    }
+}
+exports.propsModule = { create: updateProps, update: updateProps };
+exports.default = exports.propsModule;
+//# sourceMappingURL=props.js.map
+
+/***/ }),
+/* 211 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var raf = (typeof window !== 'undefined' && window.requestAnimationFrame) || setTimeout;
+var nextFrame = function (fn) { raf(function () { raf(fn); }); };
+function setNextFrame(obj, prop, val) {
+    nextFrame(function () { obj[prop] = val; });
+}
+function updateStyle(oldVnode, vnode) {
+    var cur, name, elm = vnode.elm, oldStyle = oldVnode.data.style, style = vnode.data.style;
+    if (!oldStyle && !style)
+        return;
+    if (oldStyle === style)
+        return;
+    oldStyle = oldStyle || {};
+    style = style || {};
+    var oldHasDel = 'delayed' in oldStyle;
+    for (name in oldStyle) {
+        if (!style[name]) {
+            if (name[0] === '-' && name[1] === '-') {
+                elm.style.removeProperty(name);
+            }
+            else {
+                elm.style[name] = '';
+            }
+        }
+    }
+    for (name in style) {
+        cur = style[name];
+        if (name === 'delayed' && style.delayed) {
+            for (var name2 in style.delayed) {
+                cur = style.delayed[name2];
+                if (!oldHasDel || cur !== oldStyle.delayed[name2]) {
+                    setNextFrame(elm.style, name2, cur);
+                }
+            }
+        }
+        else if (name !== 'remove' && cur !== oldStyle[name]) {
+            if (name[0] === '-' && name[1] === '-') {
+                elm.style.setProperty(name, cur);
+            }
+            else {
+                elm.style[name] = cur;
+            }
+        }
+    }
+}
+function applyDestroyStyle(vnode) {
+    var style, name, elm = vnode.elm, s = vnode.data.style;
+    if (!s || !(style = s.destroy))
+        return;
+    for (name in style) {
+        elm.style[name] = style[name];
+    }
+}
+function applyRemoveStyle(vnode, rm) {
+    var s = vnode.data.style;
+    if (!s || !s.remove) {
+        rm();
+        return;
+    }
+    var name, elm = vnode.elm, i = 0, compStyle, style = s.remove, amount = 0, applied = [];
+    for (name in style) {
+        applied.push(name);
+        elm.style[name] = style[name];
+    }
+    compStyle = getComputedStyle(elm);
+    var props = compStyle['transition-property'].split(', ');
+    for (; i < props.length; ++i) {
+        if (applied.indexOf(props[i]) !== -1)
+            amount++;
+    }
+    elm.addEventListener('transitionend', function (ev) {
+        if (ev.target === elm)
+            --amount;
+        if (amount === 0)
+            rm();
+    });
+}
+exports.styleModule = {
+    create: updateStyle,
+    update: updateStyle,
+    destroy: applyDestroyStyle,
+    remove: applyRemoveStyle
+};
+exports.default = exports.styleModule;
+//# sourceMappingURL=style.js.map
+
+/***/ }),
+/* 212 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function invokeHandler(handler, vnode, event) {
+    if (typeof handler === "function") {
+        // call function handler
+        handler.call(vnode, event, vnode);
+    }
+    else if (typeof handler === "object") {
+        // call handler with arguments
+        if (typeof handler[0] === "function") {
+            // special case for single argument for performance
+            if (handler.length === 2) {
+                handler[0].call(vnode, handler[1], event, vnode);
+            }
+            else {
+                var args = handler.slice(1);
+                args.push(event);
+                args.push(vnode);
+                handler[0].apply(vnode, args);
+            }
+        }
+        else {
+            // call multiple handlers
+            for (var i = 0; i < handler.length; i++) {
+                invokeHandler(handler[i]);
+            }
+        }
+    }
+}
+function handleEvent(event, vnode) {
+    var name = event.type, on = vnode.data.on;
+    // call event handler(s) if exists
+    if (on && on[name]) {
+        invokeHandler(on[name], vnode, event);
+    }
+}
+function createListener() {
+    return function handler(event) {
+        handleEvent(event, handler.vnode);
+    };
+}
+function updateEventListeners(oldVnode, vnode) {
+    var oldOn = oldVnode.data.on, oldListener = oldVnode.listener, oldElm = oldVnode.elm, on = vnode && vnode.data.on, elm = (vnode && vnode.elm), name;
+    // optimization for reused immutable handlers
+    if (oldOn === on) {
+        return;
+    }
+    // remove existing listeners which no longer used
+    if (oldOn && oldListener) {
+        // if element changed or deleted we remove all existing listeners unconditionally
+        if (!on) {
+            for (name in oldOn) {
+                // remove listener if element was changed or existing listeners removed
+                oldElm.removeEventListener(name, oldListener, false);
+            }
+        }
+        else {
+            for (name in oldOn) {
+                // remove listener if existing listener removed
+                if (!on[name]) {
+                    oldElm.removeEventListener(name, oldListener, false);
+                }
+            }
+        }
+    }
+    // add new listeners which has not already attached
+    if (on) {
+        // reuse existing listener or create new
+        var listener = vnode.listener = oldVnode.listener || createListener();
+        // update vnode for listener
+        listener.vnode = vnode;
+        // if element changed or added we add all needed listeners unconditionally
+        if (!oldOn) {
+            for (name in on) {
+                // add listener if element was changed or new listeners added
+                elm.addEventListener(name, listener, false);
+            }
+        }
+        else {
+            for (name in on) {
+                // add listener if new listener added
+                if (!oldOn[name]) {
+                    elm.addEventListener(name, listener, false);
+                }
+            }
+        }
+    }
+}
+exports.eventListenersModule = {
+    create: updateEventListeners,
+    update: updateEventListeners,
+    destroy: updateEventListeners
+};
+exports.default = exports.eventListenersModule;
+//# sourceMappingURL=eventlisteners.js.map
+
+/***/ }),
+/* 213 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_dispatch__ = __webpack_require__(214);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return __WEBPACK_IMPORTED_MODULE_0__src_dispatch__["a"]; });
+
+
+
+/***/ }),
+/* 214 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var noop = {value: function() {}};
+
+function dispatch() {
+  for (var i = 0, n = arguments.length, _ = {}, t; i < n; ++i) {
+    if (!(t = arguments[i] + "") || (t in _)) throw new Error("illegal type: " + t);
+    _[t] = [];
+  }
+  return new Dispatch(_);
+}
+
+function Dispatch(_) {
+  this._ = _;
+}
+
+function parseTypenames(typenames, types) {
+  return typenames.trim().split(/^|\s+/).map(function(t) {
+    var name = "", i = t.indexOf(".");
+    if (i >= 0) name = t.slice(i + 1), t = t.slice(0, i);
+    if (t && !types.hasOwnProperty(t)) throw new Error("unknown type: " + t);
+    return {type: t, name: name};
+  });
+}
+
+Dispatch.prototype = dispatch.prototype = {
+  constructor: Dispatch,
+  on: function(typename, callback) {
+    var _ = this._,
+        T = parseTypenames(typename + "", _),
+        t,
+        i = -1,
+        n = T.length;
+
+    // If no callback was specified, return the callback of the given type and name.
+    if (arguments.length < 2) {
+      while (++i < n) if ((t = (typename = T[i]).type) && (t = get(_[t], typename.name))) return t;
+      return;
+    }
+
+    // If a type was specified, set the callback for the given type and name.
+    // Otherwise, if a null callback was specified, remove callbacks of the given name.
+    if (callback != null && typeof callback !== "function") throw new Error("invalid callback: " + callback);
+    while (++i < n) {
+      if (t = (typename = T[i]).type) _[t] = set(_[t], typename.name, callback);
+      else if (callback == null) for (t in _) _[t] = set(_[t], typename.name, null);
+    }
+
+    return this;
+  },
+  copy: function() {
+    var copy = {}, _ = this._;
+    for (var t in _) copy[t] = _[t].slice();
+    return new Dispatch(copy);
+  },
+  call: function(type, that) {
+    if ((n = arguments.length - 2) > 0) for (var args = new Array(n), i = 0, n, t; i < n; ++i) args[i] = arguments[i + 2];
+    if (!this._.hasOwnProperty(type)) throw new Error("unknown type: " + type);
+    for (t = this._[type], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
+  },
+  apply: function(type, that, args) {
+    if (!this._.hasOwnProperty(type)) throw new Error("unknown type: " + type);
+    for (var t = this._[type], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
+  }
+};
+
+function get(type, name) {
+  for (var i = 0, n = type.length, c; i < n; ++i) {
+    if ((c = type[i]).name === name) {
+      return c.value;
+    }
+  }
+}
+
+function set(type, name, callback) {
+  for (var i = 0, n = type.length; i < n; ++i) {
+    if (type[i].name === name) {
+      type[i] = noop, type = type.slice(0, i).concat(type.slice(i + 1));
+      break;
+    }
+  }
+  if (callback != null) type.push({name: name, value: callback});
+  return type;
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (dispatch);
+
+
+/***/ }),
+/* 215 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__ = __webpack_require__(216);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatDefaultLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "format", function() { return __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatPrefix", function() { return __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__["c"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_locale__ = __webpack_require__(145);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatLocale", function() { return __WEBPACK_IMPORTED_MODULE_1__src_locale__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__src_formatSpecifier__ = __webpack_require__(146);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatSpecifier", function() { return __WEBPACK_IMPORTED_MODULE_2__src_formatSpecifier__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__src_precisionFixed__ = __webpack_require__(222);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionFixed", function() { return __WEBPACK_IMPORTED_MODULE_3__src_precisionFixed__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__src_precisionPrefix__ = __webpack_require__(223);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionPrefix", function() { return __WEBPACK_IMPORTED_MODULE_4__src_precisionPrefix__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__src_precisionRound__ = __webpack_require__(224);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionRound", function() { return __WEBPACK_IMPORTED_MODULE_5__src_precisionRound__["a"]; });
+
+
+
+
+
+
+
+
+/***/ }),
+/* 216 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return format; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return formatPrefix; });
+/* harmony export (immutable) */ __webpack_exports__["a"] = defaultLocale;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__locale__ = __webpack_require__(145);
+
+
+var locale;
+var format;
+var formatPrefix;
+
+defaultLocale({
+  decimal: ".",
+  thousands: ",",
+  grouping: [3],
+  currency: ["$", ""]
+});
+
+function defaultLocale(definition) {
+  locale = Object(__WEBPACK_IMPORTED_MODULE_0__locale__["a" /* default */])(definition);
+  format = locale.format;
+  formatPrefix = locale.formatPrefix;
+  return locale;
+}
+
+
+/***/ }),
+/* 217 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function(grouping, thousands) {
+  return function(value, width) {
+    var i = value.length,
+        t = [],
+        j = 0,
+        g = grouping[0],
+        length = 0;
+
+    while (i > 0 && g > 0) {
+      if (length + g + 1 > width) g = Math.max(1, width - length);
+      t.push(value.substring(i -= g, i + g));
+      if ((length += g + 1) > width) break;
+      g = grouping[j = (j + 1) % grouping.length];
+    }
+
+    return t.reverse().join(thousands);
+  };
+});
+
+
+/***/ }),
+/* 218 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function(numerals) {
+  return function(value) {
+    return value.replace(/[0-9]/g, function(i) {
+      return numerals[+i];
+    });
+  };
+});
+
+
+/***/ }),
+/* 219 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function(x, p) {
+  x = x.toPrecision(p);
+
+  out: for (var n = x.length, i = 1, i0 = -1, i1; i < n; ++i) {
+    switch (x[i]) {
+      case ".": i0 = i1 = i; break;
+      case "0": if (i0 === 0) i0 = i; i1 = i; break;
+      case "e": break out;
+      default: if (i0 > 0) i0 = 0; break;
+    }
+  }
+
+  return i0 > 0 ? x.slice(0, i0) + x.slice(i1 + 1) : x;
+});
+
+
+/***/ }),
+/* 220 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(24);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(x, p) {
+  var d = Object(__WEBPACK_IMPORTED_MODULE_0__formatDecimal__["a" /* default */])(x, p);
+  if (!d) return x + "";
+  var coefficient = d[0],
+      exponent = d[1];
+  return exponent < 0 ? "0." + new Array(-exponent).join("0") + coefficient
+      : coefficient.length > exponent + 1 ? coefficient.slice(0, exponent + 1) + "." + coefficient.slice(exponent + 1)
+      : coefficient + new Array(exponent - coefficient.length + 2).join("0");
+});
+
+
+/***/ }),
+/* 221 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function(x) {
+  return x;
+});
+
+
+/***/ }),
+/* 222 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(14);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(step) {
+  return Math.max(0, -Object(__WEBPACK_IMPORTED_MODULE_0__exponent__["a" /* default */])(Math.abs(step)));
+});
+
+
+/***/ }),
+/* 223 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(14);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(step, value) {
+  return Math.max(0, Math.max(-8, Math.min(8, Math.floor(Object(__WEBPACK_IMPORTED_MODULE_0__exponent__["a" /* default */])(value) / 3))) * 3 - Object(__WEBPACK_IMPORTED_MODULE_0__exponent__["a" /* default */])(Math.abs(step)));
+});
+
+
+/***/ }),
+/* 224 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(14);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(step, max) {
+  step = Math.abs(step), max = Math.abs(max) - step;
+  return Math.max(0, Object(__WEBPACK_IMPORTED_MODULE_0__exponent__["a" /* default */])(max) - Object(__WEBPACK_IMPORTED_MODULE_0__exponent__["a" /* default */])(step)) + 1;
+});
+
+
+/***/ }),
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45565,7 +47787,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _lockAxisMixin = __webpack_require__(134);
+var _lockAxisMixin = __webpack_require__(137);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
@@ -46175,7 +48397,7 @@ function rowChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 193 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46477,7 +48699,7 @@ function scatterPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 194 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46530,6 +48752,7 @@ function mapdTable(parent, chartGroup) {
 
   var _filteredColumns = {};
   var _columnFilterMap = {};
+  var _crossfilter = null;
   var _tableFilter = null;
   var _sortColumn = null;
   var _dimOrGroup = null;
@@ -46561,11 +48784,12 @@ function mapdTable(parent, chartGroup) {
     _chart.root().html("");
   };
 
-  _chart.tableFilter = function (_) {
+  _chart.crossfilter = function (_) {
     if (!arguments.length) {
-      return _tableFilter;
+      return _crossfilter;
     }
-    _tableFilter = _;
+    _tableFilter = _.filter();
+    _crossfilter = _;
     return _chart;
   };
 
@@ -46822,7 +49046,11 @@ function mapdTable(parent, chartGroup) {
       var sortLabel = headerItem.append("div").attr("class", "table-sort").classed("disabled", function () {
         var isString = data[0] ? typeof data[0]["col" + i] === "string" : false;
         return !_isGroupedData && isString;
-      }).classed("active", _sortColumn ? _sortColumn.index === i : false).classed(_sortColumn ? _sortColumn.order : "", true).on("click", function () {
+      }).classed("active", _sortColumn ? _sortColumn.index === i : false).classed(_sortColumn ? _sortColumn.order : "", true).style("width", _d2.default.select(this).node().getBoundingClientRect().width + "px");
+
+      var textSpan = sortLabel.append("span").text(d.label);
+
+      var sortButton = sortLabel.append("div").attr("class", "sort-btn").on("click", function () {
         _tableWrapper.selectAll(".table-sort").classed("active asc desc", false);
 
         if (_sortColumn && _sortColumn.index === i) {
@@ -46833,11 +49061,7 @@ function mapdTable(parent, chartGroup) {
 
         _chart._invokeSortListener(_sortColumn);
         (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
-      }).style("width", _d2.default.select(this).node().getBoundingClientRect().width + "px");
-
-      var textSpan = sortLabel.append("span").text(d.label);
-
-      var sortButton = sortLabel.append("div").attr("class", "sort-btn");
+      });
 
       sortButton.append("svg").attr("class", "svg-icon").classed("icon-sort", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-sort");
 
@@ -46850,9 +49074,15 @@ function mapdTable(parent, chartGroup) {
   }
 
   function filterCol(expr, val) {
-    var dateFormat = _d2.default.time.format.utc("%Y-%m-%d");
 
-    if (Object.prototype.toString.call(val) === "[object Date]") {
+    var key = _crossfilter.getTable()[0] + "." + expr;
+    var columns = _crossfilter.getColumns();
+    var type = columns[key].type;
+
+    if (type === "TIMESTAMP") {
+      val = "TIMESTAMP(0) '" + val.toISOString().slice(0, 19).replace("T", " ") + "'";
+    } else if (type === "DATE") {
+      var dateFormat = _d2.default.time.format.utc("%Y-%m-%d");
       val = "DATE '" + dateFormat(val) + "'";
     } else if (val && typeof val === "string") {
       val = "'" + val.replace(/'/g, "''") + "'";
@@ -46945,7 +49175,7 @@ function mapdTable(parent, chartGroup) {
 }
 
 /***/ }),
-/* 195 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47203,7 +49433,7 @@ function boxPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 196 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47249,7 +49479,7 @@ function countWidget(parent, chartGroup) {
   };
   _chart.isCountChart = function () {
     return true;
-  }; // override for count chart
+  };
   _chart.dataFetchRequestCallback(noop);
   _chart.dataFetchSuccessfulCallback(noop);
 
@@ -47295,7 +49525,10 @@ function countWidget(parent, chartGroup) {
       if (filterSize !== undefined) {
         return Promise.resolve(filterSize);
       } else {
-        return group.valueAsync();
+        return group.valueAsync().then(function (value) {
+          (0, _coreAsync.setLastFilteredSize)(id, value);
+          return value;
+        });
       }
     }).then(function (value) {
       callbacks(null, value);
@@ -47329,7 +49562,7 @@ function countWidget(parent, chartGroup) {
 }
 
 /***/ }),
-/* 197 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47341,29 +49574,31 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 exports.default = rasterLayer;
 
 var _capMixin = __webpack_require__(9);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _rasterLayerPointMixin = __webpack_require__(141);
+var _rasterLayerPointMixin = __webpack_require__(150);
 
 var _rasterLayerPointMixin2 = _interopRequireDefault(_rasterLayerPointMixin);
 
-var _rasterLayerPolyMixin = __webpack_require__(142);
+var _rasterLayerPolyMixin = __webpack_require__(151);
 
 var _rasterLayerPolyMixin2 = _interopRequireDefault(_rasterLayerPolyMixin);
 
-var _rasterLayerHeatmapMixin = __webpack_require__(140);
+var _rasterLayerHeatmapMixin = __webpack_require__(149);
 
 var _rasterLayerHeatmapMixin2 = _interopRequireDefault(_rasterLayerHeatmapMixin);
 
-var _utilsVega = __webpack_require__(14);
+var _utilsVega = __webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var validLayerTypes = ["points", "polys"];
+var validLayerTypes = ["points", "polys", "heat"];
 
 function rasterLayer(layerType) {
   var _layerType = layerType;
@@ -47371,7 +49606,7 @@ function rasterLayer(layerType) {
   var _dimension = null;
   var _group = null;
   var _groupName = null;
-  var _mandatoryAttributes2 = ["dimension", "group"];
+  var _mandatoryAttributes2 = [];
 
   var _layer = (0, _capMixin2.default)({
     setDataAsync: function setDataAsync(callback) {
@@ -47404,7 +49639,7 @@ function rasterLayer(layerType) {
     _layer = (0, _rasterLayerPointMixin2.default)(_layer);
   } else if (layerType == "polys") {
     _layer = (0, _rasterLayerPolyMixin2.default)(_layer);
-  } else if (layerType == "heat") {
+  } else if (/heat/.test(layerType)) {
     _layer = (0, _rasterLayerHeatmapMixin2.default)(_layer);
   } else {
     throw new Error("\"" + layerType + "\" is not a valid layer type. The valid layer types are: " + validLayerTypes.join(", "));
@@ -47554,15 +49789,7 @@ function rasterLayer(layerType) {
   };
 
   _layer.genVega = function (chart, layerName) {
-    _mandatoryAttributes2.forEach(function (attrName) {
-      checkForMandatoryLayerAttr(_layer, attrName, layerName);
-    });
-
     var cap = _layer.cap();
-    if (_layer._requiresCap && _layer._requiresCap() && cap === Infinity) {
-      throw new Error("A cap for the layer " + layerName + " is undefined but a cap is required. Cannot create a query.");
-    }
-
     var group = _layer.group() || {};
     var query = "";
     if (group.type === "dimension") {
@@ -47576,7 +49803,7 @@ function rasterLayer(layerType) {
     }
 
     if (_layer.type === "heatmap") {
-      var vega = _layer._genVega(genHeatConfigFromChart(chart));
+      var vega = _layer._genVega(_extends({}, genHeatConfigFromChart(chart), { layerName: layerName }));
       return vega;
     } else {
       var _vega = _layer._genVega(chart, layerName, group, query);
@@ -47600,8 +49827,8 @@ function rasterLayer(layerType) {
     // data structure, but probably not an issue given the amount
     // of popup col attrs to iterate through is small
     var dim = _layer.group() || _layer.dimension();
-    if (dim) {
-      var projExprs = dim.getProjectOn(true); // handles the group and dimension case
+    if (dim || _layer.layerType() === "points") {
+      var projExprs = _layer.layerType() === "points" ? _layer.getProjections() : dim.getProjectOn(true); // handles the group and dimension case
       var regex = /^\s*(\S+)\s+as\s+(\S+)/i;
       var funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i;
       for (var i = 0; i < projExprs.length; ++i) {
@@ -47881,7 +50108,7 @@ function rasterLayer(layerType) {
 }
 
 /***/ }),
-/* 198 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48284,7 +50511,7 @@ function rasterMixin(_chart) {
 }
 
 /***/ }),
-/* 199 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48479,7 +50706,7 @@ function legendContinuous() {
 }
 
 /***/ }),
-/* 200 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48496,7 +50723,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _utils = __webpack_require__(3);
 
-var _dcLegendMixin = __webpack_require__(201);
+var _dcLegendMixin = __webpack_require__(234);
 
 var _dcLegendMixin2 = _interopRequireDefault(_dcLegendMixin);
 
@@ -48753,7 +50980,7 @@ function legend() {
 }
 
 /***/ }),
-/* 201 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48849,7 +51076,7 @@ function legendMixin(legend) {
 }
 
 /***/ }),
-/* 202 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49039,25 +51266,31 @@ function legendCont() {
 }
 
 /***/ }),
-/* 203 */
+/* 236 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 204 */
+/* 237 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 205 */
+/* 238 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 206 */
+/* 239 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var require;var require;(function(f){if(true){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.mapboxgl = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return require(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
@@ -49503,10 +51736,10 @@ module.exports={"version":"0.28.0"}
 
 
 //# sourceMappingURL=mapbox-gl.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ }),
-/* 207 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49820,7 +52053,7 @@ module.exports={"version":"0.28.0"}
 
 
 /***/ }),
-/* 208 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49918,7 +52151,7 @@ module.exports={"version":"0.28.0"}
 })();
 
 /***/ }),
-/* 209 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
