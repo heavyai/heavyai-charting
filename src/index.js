@@ -9,7 +9,7 @@ if (process.env.BABEL_ENV !== "test") {
 }
 
 require("./polyfills/inner-svg")
-require("./mixins/d3.box")
+require("./mixins/d3.box.js")
 
 export * as d3 from "d3" // eslint-disable-line
 export * from "./core/core"
