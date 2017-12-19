@@ -94,7 +94,7 @@ export default function legendCont () {
     itemEnter.append("div")
             .attr("class", "legend-label")
             .append("span")
-            .text((d) => d ? d.value : 0) // eslint-disable-line no-confusing-arrow
+            .text((d) => typeof d === "object" && d.value !== "NaN" ? d.value : 0) // eslint-disable-line no-confusing-arrow
 
     legendGroup.selectAll(".legend-item:first-child , .legend-item:last-child")
             .on("mouseenter", function () {
@@ -106,7 +106,7 @@ export default function legendCont () {
             .append("div")
             .attr("class", "legend-input")
             .append("input")
-            .attr("value", (d) => d ? d.value : 0) // eslint-disable-line no-confusing-arrow
+            .attr("value", (d) => typeof d === "object" && d.value !== "NaN" ? d.value : 0) // eslint-disable-line no-confusing-arrow
             .on("click", function () {
               this.select()
               const item = d3.select(this.parentNode.parentNode)
