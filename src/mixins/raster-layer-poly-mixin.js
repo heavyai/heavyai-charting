@@ -134,7 +134,7 @@ export default function rasterLayerPolyMixin (_layer) {
       scales: [
         {
           name: layerName + "_fillColor",
-          type: "linear",
+          type: "quantize",
           domain: state.encoding.color.domain,
           range: state.encoding.color.range.map(c => adjustOpacity(c, state.encoding.color.opacity)),
           default: "green",
