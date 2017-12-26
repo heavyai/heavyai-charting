@@ -94,23 +94,15 @@ export default function rasterLayerPolyMixin(_layer) {
   function getTransforms({ filter, globalFilter }) {
     const transforms = [
       {
-        type: "rowid",
-        table: state.data[1].table
-      },
-      {
-        type: "project",
-        expr: state.encoding.color.aggregrate,
-        as: "color"
-      },
-      {
-        type: "filter",
-        expr: `${state.data[0].table}.${state.data[0].attr} = ${
-          state.data[1].table
-        }.${state.data[1].attr}`
-      },
-      {
-        type: "sort",
-        field: ["color"]
+        type: "aggregate",
+        fields: [parser.parseExpression(state.encoding.color.aggregrate)],
+        ops: [null],
+        as: ["color"],
+        groupby: {
+          type: "project",
+          expr: state.data[0].attr,
+          as: "key0"
+        }
       }
     ]
 
@@ -139,6 +131,9 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.__genVega = function({ filter, globalFilter, layerName }) {
+    const colorRange = state.encoding.color.range.map(c =>
+      adjustOpacity(c, state.encoding.color.opacity)
+    )
     return {
       data: {
         name: layerName,
@@ -146,21 +141,19 @@ export default function rasterLayerPolyMixin(_layer) {
         shapeColGroup: "mapd",
         sql: parser.writeSQL({
           type: "root",
-          source: state.data.map(source => source.table).join(", "),
+          source: state.data[0].table, // .map(source => source.table).join(", "),
           transform: getTransforms({ filter, globalFilter })
-        })
+        }),
+        dbTableName: state.data[1].table,
+        polysKey: state.data[1].attr
       },
       scales: [
         {
           name: layerName + "_fillColor",
-          type: "linear",
+          type: "quantize",
           domain: state.encoding.color.domain,
-          range: state.encoding.color.range.map(c =>
-            adjustOpacity(c, state.encoding.color.opacity)
-          ),
-          default: "green",
-          nullValue: "#CACACA",
-          clamp: false
+          range: colorRange,
+          nullValue: "#CACACA"
         }
       ],
       mark: {
