@@ -88,10 +88,6 @@ export default function rasterLayerPolyMixin (_layer) {
       {
         type: "filter",
         expr: `${state.data[0].table}.${state.data[0].attr} = ${state.data[1].table}.${state.data[1].attr}`
-      },
-      {
-        type: "sort",
-        field: ["color"]
       }
     ]
 
