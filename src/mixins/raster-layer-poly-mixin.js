@@ -159,6 +159,8 @@ export default function rasterLayerPolyMixin (_layer) {
           },
           strokeColor: typeof state.mark === "object" ? state.mark.strokeColor : "white",
           strokeWidth: typeof state.mark === "object" ? state.mark.strokeWidth : 0,
+          lineJoin: typeof state.mark === "object" ? state.mark.lineJoin : "miter",
+          miterLimit: typeof state.mark === "object" ? state.mark.miterLimit : 10
         }
       }
     }
