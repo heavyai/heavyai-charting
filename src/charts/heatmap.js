@@ -364,6 +364,7 @@ export default function heatMap (parent, chartGroup) {
 
     _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()))
 
+
     let rowCount = rows.domain().length,
       colCount = cols.domain().length,
       availWidth = _chart.width() - _dockedAxesSize.left,
@@ -694,11 +695,23 @@ export default function heatMap (parent, chartGroup) {
   _chart.rowsMap = new Map()
   _chart._axisPadding = {left: 36, bottom: 42}
 
-  const getMaxChars = (domain, getLabel) => (domain.map(d => (getLabel(d) ? getLabel(d).toString().length : 0)).reduce((prev, curr) => (Math.max(prev, curr)), null))
+  const getMaxChars = (domain, getLabel) =>
+    domain.map(d => d === null ? "NULL" : d)
+      .map(d => (getLabel(d) ? getLabel(d).toString().length : 0))
+      .reduce((prev, curr) => (Math.max(prev, curr)), null)
 
   _chart.getAxisSizes = (colsDomain, rowsDomain) => ({
-    left: Math.min(getMaxChars(rowsDomain, _chart.rowsLabel()) * CHAR_WIDTH, MAX_LABEL_WIDTH) + _chart._axisPadding.left,
-    bottom: Math.max(Math.min(getMaxChars(colsDomain, _chart.colsLabel()) * CHAR_WIDTH, MAX_LABEL_WIDTH) + _chart._axisPadding.bottom, MIN_AXIS_HEIGHT)
+    left: Math.min(
+      getMaxChars(rowsDomain, _chart.rowsLabel()) * CHAR_WIDTH,
+      MAX_LABEL_WIDTH
+    ) + _chart._axisPadding.left,
+    bottom: Math.max(
+      Math.min(
+        getMaxChars(colsDomain, _chart.colsLabel()) * CHAR_WIDTH,
+        MAX_LABEL_WIDTH
+      ) + _chart._axisPadding.bottom,
+      MIN_AXIS_HEIGHT
+    )
   })
 
   _chart.shouldSortYAxisDescending = (data) => data && data.length && isDescendingAppropriateData(data[0])
