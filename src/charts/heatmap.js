@@ -443,12 +443,16 @@ export default function heatMap (parent, chartGroup) {
 
     colsText.enter()
           .append("div")
-          .attr("class", (d) => "text " + (_dockedAxesSize.bottom > 52 ? "rotate-down" : "center"))
+          .attr("class", () => "text " + (_dockedAxesSize.bottom > 52 ? "rotate-down" : "center"))
           .style("left", (d) => cols(d) + (boxWidth / 2) + _dockedAxesSize.left + "px")
           .on("click", _chart.xAxisOnClick())
           .append("span")
           .html(_chart.colsLabel())
-          .attr("title", (d) => _chart.colsLabel()(d).includes("NULL") ? "NULL" : _chart.colsLabel()(d))
+          .attr("title", (d) => {
+            // detect if a value is null or has the string "null"
+            const val = `${_chart.colsLabel()(d)}`
+            return val.match(/null/gi) ? "NULL" : val
+          })
 
     let YAxis = _dockedAxes.selectAll(".docked-y-axis")
 
@@ -468,7 +472,11 @@ export default function heatMap (parent, chartGroup) {
           .style("top", (d) => rows(d) + (boxHeight / 2) + _chart.margins().top + "px")
           .on("click", _chart.yAxisOnClick())
           .html(_chart.rowsLabel())
-          .attr("title", (d) => _chart.rowsLabel()(d).includes("NULL") ? "NULL" : _chart.rowsLabel()(d))
+          .attr("title", (d) => {
+            // detect if a value is null or has the string "null"
+            const val = `${_chart.rowsLabel()(d)}`
+            return val.match(/null/gi) ? "NULL" : val
+          })
 
     let axesMask = _dockedAxes.selectAll(".axes-mask")
 
