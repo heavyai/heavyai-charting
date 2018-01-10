@@ -79,11 +79,11 @@ document.addEventListener("DOMContentLoaded", function init() {
     // get the dimensions used for the first layer, the polygon layer
     // we need the rowid for polygon rendering, so the dimension will be based on
     // the rowid of the zipcodes
-    var polyDim1 = polycfLayer1.dimension("zipcodes.rowid");
+    var polyDim1 = polycfLayer1.dimension("contributions_donotmodify.amount");
 
     // we're going to color based on the average contribution of the zipcode,
     // so reduce the average from the join
-    var polyGrp1 = polyDim1.group().reduceAvg("contributions_donotmodify.amount", "avgContrib");
+    // var polyGrp1 = polyDim1.group().reduceAvg("contributions_donotmodify.amount", "avgContrib");
 
     // create the scale to use for the fill color of the polygons.
     // We're going to use the avg contribution of the zipcode to color the poly.
@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     // setup the first layer, the zipcode polygons
     var polyLayer1 = dc.rasterLayer("polys")
                        .crossfilter(polycfLayer1)
+                       .dimension(polyDim1)
                        .setState({
                          data: [
                            {
@@ -131,8 +132,8 @@ document.addEventListener("DOMContentLoaded", function init() {
                            }
                          }
                        })
-                       .popupColumns(['color', 'ZCTA5CE10'])
-                       .popupColumnsMapped({color: "avg contribution", ZCTA5CE10: 'zipcode'})
+                       .popupColumns(['color', 'key0'])
+                       .popupColumnsMapped({color: "avg contribution", key0: 'zipcode'})
 
     /*-----------BUILD LAYER #2, POINTS OF TWEETS-------------*/
     /*-----SIZED BY # OF FOLLOWERS AND COLORED BY LANGUAGE----*/
@@ -201,6 +202,11 @@ document.addEventListener("DOMContentLoaded", function init() {
                                 title: "tweets[lang]"
                               }
                             }
+                          },
+                          config: {
+                            point: {
+                              shape: "circle"
+                            }
                           }
                         })
                         .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
@@ -265,6 +271,11 @@ document.addEventListener("DOMContentLoaded", function init() {
                               legend: {
                                 title: "contributions[recipient_party]"
                               }
+                            }
+                          },
+                          config: {
+                            point: {
+                              shape: "circle"
                             }
                           }
                         })

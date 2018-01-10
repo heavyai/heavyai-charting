@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     // get the dimensions used for the first layer, the polygon layer
     // we need the rowid for polygon rendering, so the dimension will be based on
     // the rowid of the zipcodes
-    var polyDim1 = polycfLayer1.dimension("zipcodes.rowid");
+    var polyDim1 = polycfLayer1.dimension("contributor_zipcode");
 
     // we're going to color based on the average contribution of the zipcode,
     // so reduce the average from the join
@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     // setup the first layer, the zipcode polygons
     var polyLayer1 = dc.rasterLayer("polys")
                         .crossfilter(polycfLayer1)
+                        .dimension(polyDim1)
                         .setState({
                           data: [
                             {
@@ -205,6 +206,11 @@ document.addEventListener("DOMContentLoaded", function init() {
                               domain: langDomain,
                               range: langColors
                             }
+                          },
+                          config: {
+                            point: {
+                              shape: "circle"
+                            }
                           }
                         })                                                   // of a tweet is not found in the domain fo the scale
                         .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
@@ -268,6 +274,11 @@ document.addEventListener("DOMContentLoaded", function init() {
                               field: "recipient_party",
                               domain: ["D", "R"],
                               range: ["blue", "red"]
+                            }
+                          },
+                          config: {
+                            point: {
+                              shape: "circle"
                             }
                           }
                         })

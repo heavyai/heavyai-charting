@@ -59,6 +59,7 @@ export function rasterDrawMixin(chart) {
   let currYRange = null
   const coordFilters = new Map()
   let origFilterFunc = null
+  let origFilterAll = null
 
   const defaultStyle = {
     fillColor: "#22a7f0",
@@ -281,9 +282,9 @@ export function rasterDrawMixin(chart) {
   function filters() {
     const shapes = drawEngine.getShapesAsJSON()
     if (shapes[0]) {
-      return chart.zoomFilters().concat(Array.from(shapes))
+      return chart.nonDrawFilters().concat(Array.from(shapes))
     }
-    return chart.zoomFilters()
+    return chart.nonDrawFilters()
   }
 
   function filter(filterArg) {
@@ -442,11 +443,19 @@ export function rasterDrawMixin(chart) {
     chart.map().on("resize", updateDrawResize)
 
     origFilterFunc = chart.filter
+    origFilterAll = chart.filterAll
     chart.filter = filter
-    chart.zoomFilters = chart.filters
+    chart.nonDrawFilters = chart.filters
     chart.filters = filters
 
     chart.filterAll = () => {
+      origFilterAll()
+      chart.getLayerNames().forEach(layerName => {
+        const layer = chart.getLayer(layerName)
+        if (layer.hasOwnProperty("filterAll")) {
+          layer.filterAll()
+        }
+      })
       if (coordFilters) {
         coordFilters.forEach(filterObj => {
           filterObj.shapeFilters = []

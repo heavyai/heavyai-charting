@@ -1,4 +1,4 @@
-import { createParser } from "mapd-data-layer"
+import { createParser } from "mapd-data-layer-2"
 import { formatDataValue, maybeFormatInfinity } from "./formatting-helpers"
 
 import { DAYS, HOURS, MONTHS, QUARTERS } from "../constants/dates-and-times"

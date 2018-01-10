@@ -134,6 +134,11 @@ document.addEventListener("DOMContentLoaded", function init() {
                               domain: langDomain,
                               range: langOriginColors
                             }
+                          },
+                          config: {
+                            point: {
+                              shape: "circle"
+                            }
                           }
                         })
                         .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])

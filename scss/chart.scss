@@ -811,6 +811,10 @@ body {
         pointer-events: none;
     }
 
+    .map-polygon-shape {
+        pointer-events: auto;
+    }
+
 
     .map-popup, .map-point-wrap {
         width: 100%;
