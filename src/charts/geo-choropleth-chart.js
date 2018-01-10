@@ -57,10 +57,12 @@ export default function geoChoroplethChart (parent, useMap, chartGroup, mapbox) 
   function findGeomMinMax (layerIndex) {
     const data = geoJson(layerIndex).data
     const dataLength = data.length
-    let xMin = 9999999999999
-    let xMax = -9999999999999
-    let yMin = 9999999999999
-    let yMax = -9999999999999
+    const mapBounds = _chart.map().getBounds()
+
+    let yMin = mapBounds._sw.lat
+    let yMax = mapBounds._ne.lat
+    let xMin = mapBounds._sw.lng
+    let xMax = mapBounds._ne.lng
 
     for (let d = 0; d < dataLength; d++) {
       const geom = data[d].geometry.coordinates
