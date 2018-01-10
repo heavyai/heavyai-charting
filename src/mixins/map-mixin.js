@@ -585,6 +585,18 @@ export default function mapMixin(
           })
         }
       })
+
+      _map.on("mousedown", event => {
+        _chart.getClosestResult(event.point, result => {
+          const data = result.row_set[0]
+          _chart.getLayerNames().forEach(layerName => {
+            const layer = _chart.getLayer(layerName)
+            if (typeof layer.onClick === "function") {
+              layer.onClick(_chart, data, event.originalEvent)
+            }
+          })
+        })
+      })
     })
   }
 

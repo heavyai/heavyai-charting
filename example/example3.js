@@ -1,38 +1,27 @@
 document.addEventListener("DOMContentLoaded", function init() {
   var config = {
     table: "contributions_donotmodify",
-    valueColumn: "contributions_donotmodify.amount",
-    joinColumn: "contributions_donotmodify.contributor_zipcode",
+    valueColumn: "amount",
+    joinColumn: "contributor_zipcode",
     polyTable: "zipcodes",
     polyJoinColumn: "ZCTA5CE10",
     timeColumn: "contrib_date",
     timeLabel: "Number of Contributions",
-    domainBoundMin: 0,
-    domainBoundMax: 2600,
+    domainBoundMin: 1,
+    domainBoundMax: 2600, //00000,
     numTimeBins: 423
   }
 
   new MapdCon()
-    .protocol("http")
-    .host("kali.mapd.com")
-    .port("9092")
+    .protocol("https")
+    .host("metis.mapd.com")
+    .port("443")
     .dbName("mapd")
     .user("mapd")
     .password("HyperInteractive")
     .connect(function(error, con) {
       crossfilter
-        .crossfilter(
-          con,
-          ["contributions_donotmodify", "zipcodes"],
-          [
-            {
-              table1: "contributions_donotmodify",
-              attr1: "contributor_zipcode",
-              table2: "zipcodes",
-              attr2: "ZCTA5CE10"
-            }
-          ]
-        )
+        .crossfilter(con, "contributions_donotmodify")
         .then(function(cf) {
           crossfilter
             .crossfilter(con, "contributions_donotmodify")
@@ -48,12 +37,12 @@ document.addEventListener("DOMContentLoaded", function init() {
     var parent = document.getElementById("polymap")
     // The values in the table and column specified in crossFilter.dimension
     // must correspond to values in the table and keysColumn specified in polyRasterChart.polyJoin.
-    var dim = crossFilter.dimension("zipcodes.rowid") // Values to join on.
-    var grp = dim
-      .group()
-      .reduceAvg("contributions_donotmodify.amount", "avgContrib") // Values to color on.
-    // var dim = crossFilter.dimension("tweets_nov_feb.state_abbr") // Values to join on.
-    // var grp = dim.group().reduceAvg("tweets_nov_feb.tweet_count") // Values to color on.
+    var dim = crossFilter.dimension(config.joinColumn) // Values to join on.
+    // var grp = dim
+    //   .group()
+    //   .reduceAvg("contributions_donotmodify.amount", "avgContrib") // Values to color on.
+    // // var dim = crossFilter.dimension("tweets_nov_feb.state_abbr") // Values to join on.
+    // // var grp = dim.group().reduceAvg("tweets_nov_feb.tweet_count") // Values to color on.
 
     // Can use getDomainBounds to dynamically find min and max of values that will be colored,
     // or the domain [min, max] can be set directly
@@ -93,15 +82,16 @@ document.addEventListener("DOMContentLoaded", function init() {
       var polyLayer = dc
         .rasterLayer("polys")
         .crossfilter(crossFilter)
+        .dimension(dim)
         .setState({
           data: [
             {
-              table: "contributions_donotmodify",
-              attr: "contributor_zipcode"
+              table: config.table,
+              attr: config.joinColumn
             },
             {
-              table: "zipcodes",
-              attr: "ZCTA5CE10"
+              table: config.polyTable,
+              attr: config.polyJoinColumn
             }
           ],
           mark: {
@@ -114,44 +104,47 @@ document.addEventListener("DOMContentLoaded", function init() {
           encoding: {
             color: {
               type: "quantitative",
-              aggregrate: "AVG(contributions_donotmodify.amount)",
+              aggregrate: `SUM(${config.valueColumn})`,
               domain: colorDomain,
               range: colorRange
             }
           }
         })
 
-      polyLayer.popupColumns(["color"])
+      polyLayer.popupColumns(["key0", "color"])
+      polyLayer.popupColumnsMapped({"key0": "zipcode", "color": "total amount"})
 
-      polyMap.pushLayer("polys", polyLayer).init().then(() => {
-        // polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
-        // Keeps the border widths reasonable regardless of zoom level.
-        polyMap.map().on("zoom", function() {
+      polyMap
+        .pushLayer("polys", polyLayer)
+        .init()
+        .then(() => {
           // polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
+          // Keeps the border widths reasonable regardless of zoom level.
+          polyMap.map().on("zoom", function() {
+            // polyMap.borderWidth(zoomToBorderWidth(polyMap.map().getZoom()))
+          })
+
+          dc.renderAllAsync()
+
+          window.addEventListener(
+            "resize",
+            _.debounce(function() {
+              resizeChart(polyMap, 1.5)
+            }, 500)
+          )
         })
-
-        dc.renderAllAsync()
-
-        window.addEventListener(
-          "resize",
-          _.debounce(function() {
-            resizeChart(polyMap, 1.5)
-          }, 500)
-        )
-      })
 
       // hover effect with popup
       var debouncedPopup = _.debounce(displayPopupWithData, 250)
-      polyMap.map().on('mousewheel', polyMap.hidePopup);
-      polyMap.map().on('wheel', polyMap.hidePopup);
-      polyMap.map().on('mousemove', polyMap.hidePopup);
-      polyMap.map().on('mousemove', debouncedPopup);
-      function displayPopupWithData (event) {
+      polyMap.map().on("mousewheel", polyMap.hidePopup)
+      polyMap.map().on("wheel", polyMap.hidePopup)
+      polyMap.map().on("mousemove", polyMap.hidePopup)
+      polyMap.map().on("mousemove", debouncedPopup)
+      function displayPopupWithData(event) {
         polyMap.getClosestResult(event.point, polyMap.displayPopup)
       }
     })
   }
-
 
   function getDomainBounds(column, groupAll, callback) {
     groupAll
@@ -237,7 +230,10 @@ document.addEventListener("DOMContentLoaded", function init() {
       chart.map().resize()
       chart.isNodeAnimate = false
     }
-    chart.width(width()).height(height() / heightDivisor).renderAsync()
+    chart
+      .width(width())
+      .height(height() / heightDivisor)
+      .renderAsync()
     dc.redrawAllAsync()
   }
 
