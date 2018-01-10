@@ -224,42 +224,56 @@ export default function rasterLayerPolyMixin (_layer) {
     const bounds = [Infinity, -Infinity, Infinity, -Infinity]
     const startIdxDiff = (drawinfo.length ? drawinfo[2] : 0)
 
+    const FLT_MAX = 1E+37
+
     for (let i = 0; i < drawinfo.length; i = i + 4) {
             // Draw info struct:
             //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
             //     1: instanceCount, // should always be 1
             //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
             //     3: baseInstance   // irrelevant for our purposes -- should always be 0
-      const polypts = []
+      let polypts = []
       const count = (drawinfo[i] - 3) * 2 // include x&y, and drop 3 duplicated pts at the end
       const startIdx = (drawinfo[i + 2] - startIdxDiff) * 2 // include x&y
       const endIdx = startIdx + count // remove the 3 duplicate pts at the end
       for (let idx = startIdx; idx < endIdx; idx = idx + 2) {
-        const screenX = xscale(verts[idx]) + margins.left
-        const screenY = height - yscale(verts[idx + 1]) - 1 + margins.top
+        if (verts[idx] <= -FLT_MAX) {
+          // -FLT_MAX is a separator for multi-polygons (like Hawaii,
+          // where there would be a polygon per island), so when we hit a separator,
+          // remove the 3 duplicate points that would end the polygon prior to the separator
+          // and start a new polygon
+          polypts.pop()
+          polypts.pop()
+          polypts.pop()
+          polys.push(polypts)
+          polypts = []
+        } else {
+          const screenX = xscale(verts[idx]) + margins.left
+          const screenY = height - yscale(verts[idx + 1]) - 1 + margins.top
 
-        if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
-          if (bounds[0] === Infinity) {
-            bounds[0] = screenX
-            bounds[1] = screenX
-            bounds[2] = screenY
-            bounds[3] = screenY
-          } else {
-            if (screenX < bounds[0]) {
+          if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
+            if (bounds[0] === Infinity) {
               bounds[0] = screenX
-            } else if (screenX > bounds[1]) {
               bounds[1] = screenX
-            }
-
-            if (screenY < bounds[2]) {
               bounds[2] = screenY
-            } else if (screenY > bounds[3]) {
               bounds[3] = screenY
+            } else {
+              if (screenX < bounds[0]) {
+                bounds[0] = screenX
+              } else if (screenX > bounds[1]) {
+                bounds[1] = screenX
+              }
+
+              if (screenY < bounds[2]) {
+                bounds[2] = screenY
+              } else if (screenY > bounds[3]) {
+                bounds[3] = screenY
+              }
             }
           }
+          polypts.push(screenX)
+          polypts.push(screenY)
         }
-        polypts.push(screenX)
-        polypts.push(screenY)
       }
 
       polys.push(polypts)
