@@ -113,7 +113,7 @@ function getTransforms (
       transforms.push({
         type: "sample",
         method: "multiplicative",
-        size: lastFilteredSize,
+        size: lastFilteredSize || transform.tableSize,
         limit: transform.limit
       })
     }
