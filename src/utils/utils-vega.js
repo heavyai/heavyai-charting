@@ -100,7 +100,7 @@ export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, us
       rtnVal = layerObj[nullFunc]()
     } else if (input !== undefined && useScale) {
       const capAttrObj = layerObj.getState().encoding[capAttrMap[capAttrName]]
-      if (capAttrObj && capAttrObj.domain && capAttrObj.domain.length && capAttrObj.domain.includes(input) && capAttrObj.range.length) {
+      if (capAttrObj && capAttrObj.domain && capAttrObj.domain.length && capAttrObj.range.length) {
         if (capAttrObj.type === "ordinal") {
           ordScale.domain(capAttrObj.domain).range(capAttrObj.range)
           rtnVal = ordScale(input)
