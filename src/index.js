@@ -8,7 +8,7 @@ if (process.env.BABEL_ENV !== "test") {
   require("mapbox-gl/dist/mapboxgl-overrides.js")
 }
 
-require("./polyfills/get-bbox")
+// require("./polyfills/get-bbox")
 require("./polyfills/inner-svg")
 require("./mixins/d3.box.js")
 
