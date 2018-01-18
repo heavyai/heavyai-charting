@@ -411,19 +411,21 @@ export default function rowChart (parent, chartGroup) {
                   const thisLabel = d3.select(this)
 
                   const width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)))
-                  const node = thisLabel.node();
+                  
 
                   //
                   // handle Firefox getBBox bug
                   //
-                  let measureWidth = 0;
-                  if (node.getClientRects().length > 0) {
-                    measureWidth = node.getBBox().width
+                  let measureWidth = 0
+                  const labelNode = thisLabel.node()
+                  if (labelNode.getClientRects().length > 0) {
+                    measureWidth = labelNode.getBBox().width
                   }
 
-                  let dimWidth = 0;
-                  if (_chart.svg().select("text.value-dim._" + i).node().getClientRects().length > 0) {
-                    dimWidth = _chart.svg().select("text.value-dim._" + i).node().getBBox().width
+                  let dimWidth = 0
+                  const textNode = _chart.svg().select("text.value-dim._" + i).node()
+                  if (textNode.getClientRects().length > 0) {
+                    dimWidth = textNode.getBBox().width
                   }
                   const minIdealWidth = measureWidth + dimWidth + 16
 

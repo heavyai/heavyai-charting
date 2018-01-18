@@ -48275,19 +48275,20 @@ function rowChart(parent, chartGroup) {
         var thisLabel = _d2.default.select(this);
 
         var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
-        var node = thisLabel.node();
 
         //
         // handle Firefox getBBox bug
         //
         var measureWidth = 0;
-        if (node.getClientRects().length > 0) {
-          measureWidth = node.getBBox().width;
+        var labelNode = thisLabel.node();
+        if (labelNode.getClientRects().length > 0) {
+          measureWidth = labelNode.getBBox().width;
         }
 
         var dimWidth = 0;
-        if (_chart.svg().select("text.value-dim._" + i).node().getClientRects().length > 0) {
-          dimWidth = _chart.svg().select("text.value-dim._" + i).node().getBBox().width;
+        var textNode = _chart.svg().select("text.value-dim._" + i).node();
+        if (textNode.getClientRects().length > 0) {
+          dimWidth = textNode.getBBox().width;
         }
         var minIdealWidth = measureWidth + dimWidth + 16;
 
