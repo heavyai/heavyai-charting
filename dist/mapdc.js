@@ -48280,13 +48280,18 @@ function rowChart(parent, chartGroup) {
         // of an SVG node that is not visible
         var node = thisLabel.node();
 
+        //
         // handle Firefox getBBox bug
+        //
         var measureWidth = 0;
         if (node.getClientRects().length > 0) {
           measureWidth = node.getBBox().width;
         }
 
-        var dimWidth = _chart.svg().select("text.value-dim._" + i).node().getBBox().width;
+        var dimWidth = 0;
+        if (_chart.svg().select("text.value-dim._" + i).node().getClientRects.length > 0) {
+          dimWidth = _chart.svg().select("text.value-dim._" + i).node().getBBox().width;
+        }
         var minIdealWidth = measureWidth + dimWidth + 16;
 
         thisLabel.attr("text-anchor", isStackLabel() || width < minIdealWidth ? "start" : "end");
