@@ -88,36 +88,93 @@ function getTransforms (
   table,
   filter,
   globalFilter,
-  {encoding: {x, y, size, color}, transform},
+  {transform, encoding: {x, y, size, color}},
   lastFilteredSize
 ) {
-  const transforms = [
-    {
+  const transforms = []
+
+  if (typeof transform === "object" && typeof transform.groupby === "object" && transform.groupby.length) {
+    const fields = [x.field, y.field]
+    const alias = ["x", "y"]
+    const ops = [x.aggregate, y.aggregate]
+
+    if (typeof size === "object" && size.type === "quantitative") {
+      fields.push(size.field)
+      alias.push("size")
+      ops.push(size.aggregate)
+    }
+
+    if (
+      typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
+    ) {
+      fields.push(color.field)
+      alias.push("color")
+      ops.push(color.aggregate)
+    }
+
+    transforms.push({
+      type: "aggregate",
+      fields,
+      ops,
+      as: alias,
+      groupby: transform.groupby.map((g, i) => ({
+        type: "project",
+        expr: g,
+        as: `key${i}`
+      }))
+    })
+
+  } else {
+    transforms.push({
       type: "project",
       expr: x.field,
       as: "x"
-    },
-    {
+    })
+    transforms.push({
       type: "project",
       expr: y.field,
       as: "y"
-    }
-  ]
-
-  if (typeof transform.limit === "number") {
-    transforms.push({
-      type: "limit",
-      row: transform.limit
     })
-    if (transform.sample) {
+
+    if (typeof transform.limit === "number") {
       transforms.push({
-        type: "sample",
-        method: "multiplicative",
-        size: lastFilteredSize || transform.tableSize,
-        limit: transform.limit
+        type: "limit",
+        row: transform.limit
+      })
+      if (transform.sample) {
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          size: lastFilteredSize || transform.tableSize,
+          limit: transform.limit
+        })
+      }
+    }
+
+    if (typeof size === "object" && size.type === "quantitative") {
+      transforms.push({
+        type: "project",
+        expr: size.field,
+        as: "size"
       })
     }
+
+    if (
+      typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
+    ) {
+      transforms.push({
+        type: "project",
+        expr: color.field,
+        as: "color"
+      })
+    }
+
+    transforms.push({
+      type: "project",
+      expr: `${table}.rowid`
+    })
   }
+
 
   if (typeof filter === "string" && filter.length) {
     transforms.push({
@@ -132,29 +189,6 @@ function getTransforms (
       expr: globalFilter
     })
   }
-
-  if (typeof size === "object" && size.type === "quantitative") {
-    transforms.push({
-      type: "project",
-      expr: size.field,
-      as: "size"
-    })
-  }
-
-  if (
-    typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
-  ) {
-    transforms.push({
-      type: "project",
-      expr: color.field,
-      as: "color"
-    })
-  }
-
-  transforms.push({
-    type: "project",
-    expr: `${table}.rowid`
-  })
 
   return transforms
 }
@@ -286,23 +320,21 @@ export default function rasterLayerPointMixin (_layer) {
       },
       scales: getScales(state.encoding, layerName),
       mark: {
-        type: markType === "circle" ? "points" : "symbol",
+        type: "symbol",
         from: {
           data: layerName
         },
         properties: Object.assign({}, {
-          x: {
+          xc: {
             scale: "x",
             field: "x"
           },
-          y: {
+          yc: {
             scale: "y",
             field: "y"
           },
           fillColor: getColor(state.encoding.color, layerName)
-        }, markType == "circle" ? {
-          size
-        } : {
+        }, {
           shape: state.config.point.shape,
           width: size,
           height: size
@@ -387,7 +419,7 @@ export default function rasterLayerPointMixin (_layer) {
     return _vega
   }
 
-  const renderAttributes = ["x", "y", "size", "fillColor"]
+  const renderAttributes = ["xc", "yc", "size", "width", "height", "fillColor"]
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
     if (_vega && _vega.mark && _vega.mark.properties) {
@@ -435,10 +467,10 @@ export default function rasterLayerPointMixin (_layer) {
       })
     }
 
-    const xPixel = xscale(data[rndrProps.x]) + margins.left
-    const yPixel = height - yscale(data[rndrProps.y]) + margins.top
+    const xPixel = xscale(data[rndrProps.xc]) + margins.left
+    const yPixel = height - yscale(data[rndrProps.yc]) + margins.top
 
-    let dotSize = _layer.getSizeVal(data[rndrProps.size])
+    let dotSize = _layer.getSizeVal(data[rndrProps.size || rndrProps.width || rndrProps.height])
     let scale = 1
     const scaleRatio = minPopupArea / (dotSize * dotSize)
     const isScaled = scaleRatio > 1
