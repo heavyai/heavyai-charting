@@ -412,7 +412,6 @@ export default function rowChart (parent, chartGroup) {
 
                   const width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)))
                   
-
                   //
                   // handle Firefox getBBox bug
                   //
