@@ -26823,7 +26823,6 @@ if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
   __webpack_require__(244);
 }
 
-// require("./polyfills/get-bbox")
 __webpack_require__(245);
 __webpack_require__(246);
 
@@ -48276,8 +48275,6 @@ function rowChart(parent, chartGroup) {
         var thisLabel = _d2.default.select(this);
 
         var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
-        // fix for Firefox, which complains if you try to get the bounding box
-        // of an SVG node that is not visible
         var node = thisLabel.node();
 
         //
@@ -48289,7 +48286,7 @@ function rowChart(parent, chartGroup) {
         }
 
         var dimWidth = 0;
-        if (_chart.svg().select("text.value-dim._" + i).node().getClientRects.length > 0) {
+        if (_chart.svg().select("text.value-dim._" + i).node().getClientRects().length > 0) {
           dimWidth = _chart.svg().select("text.value-dim._" + i).node().getBBox().width;
         }
         var minIdealWidth = measureWidth + dimWidth + 16;

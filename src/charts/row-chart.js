@@ -411,8 +411,6 @@ export default function rowChart (parent, chartGroup) {
                   const thisLabel = d3.select(this)
 
                   const width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)))
-                  // fix for Firefox, which complains if you try to get the bounding box
-                  // of an SVG node that is not visible
                   const node = thisLabel.node();
 
                   //
@@ -424,7 +422,7 @@ export default function rowChart (parent, chartGroup) {
                   }
 
                   let dimWidth = 0;
-                  if (_chart.svg().select("text.value-dim._" + i).node().getClientRects.length > 0) {
+                  if (_chart.svg().select("text.value-dim._" + i).node().getClientRects().length > 0) {
                     dimWidth = _chart.svg().select("text.value-dim._" + i).node().getBBox().width
                   }
                   const minIdealWidth = measureWidth + dimWidth + 16
