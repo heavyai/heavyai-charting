@@ -26825,6 +26825,7 @@ if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
 
 __webpack_require__(245);
 __webpack_require__(246);
+__webpack_require__(247);
 
 exports.d3 = _d; // eslint-disable-line
 
@@ -48275,12 +48276,7 @@ function rowChart(parent, chartGroup) {
         var thisLabel = _d2.default.select(this);
 
         var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
-        // fix for Firefox, which complains if you try to get the bounding box
-        // of an SVG node that is not visible
-        var oldDisplay = thisLabel.node().style.display;
-        thisLabel.node().style.display = "block";
         var measureWidth = thisLabel.node().getBBox().width;
-        thisLabel.node().style.display = oldDisplay;
         var dimWidth = _chart.svg().select("text.value-dim._" + i).node().getBBox().width;
         var minIdealWidth = measureWidth + dimWidth + 16;
 
@@ -52188,6 +52184,75 @@ module.exports={"version":"0.28.0"}
       if (nodeType == 3) {
         // TEXT nodes.
         // Replace special XML characters with their entities.
+        output.push(node.textContent.replace(/&/, '&amp;').replace(/</, '&lt;').replace('>', '&gt;'));
+      } else if (nodeType == 1) {
+        // ELEMENT nodes.
+        // Serialize Element nodes.
+        output.push('<', node.tagName);
+        if (node.hasAttributes()) {
+          var attrMap = node.attributes;
+          for (var i = 0, len = attrMap.length; i < len; ++i) {
+            var attrNode = attrMap.item(i);
+            output.push(' ', attrNode.name, "='", attrNode.value, "'");
+          }
+        }
+        if (node.hasChildNodes()) {
+          output.push('>');
+          var childNodes = node.childNodes;
+          for (var i = 0, len = childNodes.length; i < len; ++i) {
+            serializeXML(childNodes.item(i), output);
+          }
+          output.push('</', node.tagName, '>');
+        } else {
+          output.push('/>');
+        }
+      } else if (nodeType == 8) {
+        // TODO(codedread): Replace special characters with XML entities?
+        output.push('<!--', node.nodeValue, '-->');
+      } else {
+        // TODO: Handle CDATA nodes.
+        // TODO: Handle ENTITY nodes.
+        // TODO: Handle DOCUMENT nodes.
+        throw 'Error serializing XML. Unhandled node of type: ' + nodeType;
+      }
+    };
+    // The innerHTML DOM property for SVGElement.
+    Object.defineProperty(SVGElement.prototype, 'getBBox', {
+      function: function _function() {
+        if (this.node.style.display == 'none') {
+          this.show();
+          var hide = true;
+        }
+        var bbox = {};
+        try {
+          bbox = this.node.getBBox();
+        } catch (e) {
+          // Firefox 3.0.x plays badly here
+        } finally {
+          bbox = bbox || {};
+        }
+        hide && this.hide();
+        return bbox;
+      }
+    });
+  }
+})();
+
+/***/ }),
+/* 246 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+(function () {
+  /* istanbul ignore next */
+  if (window.SVGElement) {
+    var serializeXML = function serializeXML(node, output) {
+      var nodeType = node.nodeType;
+      if (nodeType == 3) {
+        // TEXT nodes.
+        // Replace special XML characters with their entities.
         output.push(node.textContent.replace(/&/, "&amp;").replace(/</, "&lt;").replace(">", "&gt;"));
       } else if (nodeType == 1) {
         // ELEMENT nodes.
@@ -52272,7 +52337,7 @@ module.exports={"version":"0.28.0"}
 })();
 
 /***/ }),
-/* 246 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
