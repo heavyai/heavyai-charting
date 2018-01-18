@@ -48279,15 +48279,12 @@ function rowChart(parent, chartGroup) {
         // fix for Firefox, which complains if you try to get the bounding box
         // of an SVG node that is not visible
         var node = thisLabel.node();
-        console.log('node before from row-chart', node);
 
-        var oldDisplay = node.style.display;
-        node.style.display = "block";
-        var measureWidth = node.getBBox().width;
-        node.style.display = oldDisplay;
-
-        console.log('node after from row-chart', node);
-        console.log('oldDisplay from row-chart', oldDisplay);
+        // handle Firefox getBBox bug
+        var measureWidth = 0;
+        if (node.getClientRects().length > 0) {
+          measureWidth = node.getBBox().width;
+        }
 
         var dimWidth = _chart.svg().select("text.value-dim._" + i).node().getBBox().width;
         var minIdealWidth = measureWidth + dimWidth + 16;
