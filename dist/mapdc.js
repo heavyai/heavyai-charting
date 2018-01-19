@@ -9821,7 +9821,7 @@ function createVegaAttrMixin(layerObj, attrName, defaultVal, nullVal, useScale, 
       rtnVal = layerObj[nullFunc]();
     } else if (input !== undefined && useScale) {
       var capAttrObj = layerObj.getState().encoding[capAttrMap[capAttrName]];
-      if (capAttrObj && capAttrObj.domain && capAttrObj.domain.length && capAttrObj.domain.includes(input) && capAttrObj.range.length) {
+      if (capAttrObj && capAttrObj.domain && capAttrObj.domain.length && capAttrObj.range.length) {
         if (capAttrObj.type === "ordinal") {
           ordScale.domain(capAttrObj.domain).range(capAttrObj.range);
           rtnVal = ordScale(input);
@@ -25538,36 +25538,92 @@ function getColor(color, layerName) {
 }
 
 function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
-  var _ref$encoding = _ref.encoding,
+  var transform = _ref.transform,
+      _ref$encoding = _ref.encoding,
       x = _ref$encoding.x,
       y = _ref$encoding.y,
       size = _ref$encoding.size,
-      color = _ref$encoding.color,
-      transform = _ref.transform;
+      color = _ref$encoding.color;
 
-  var transforms = [{
-    type: "project",
-    expr: x.field,
-    as: "x"
-  }, {
-    type: "project",
-    expr: y.field,
-    as: "y"
-  }];
+  var transforms = [];
 
-  if (typeof transform.limit === "number") {
+  if ((typeof transform === "undefined" ? "undefined" : _typeof(transform)) === "object" && _typeof(transform.groupby) === "object" && transform.groupby.length) {
+    var fields = [x.field, y.field];
+    var alias = ["x", "y"];
+    var ops = [x.aggregate, y.aggregate];
+
+    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
+      fields.push(size.field);
+      alias.push("size");
+      ops.push(size.aggregate);
+    }
+
+    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
+      fields.push(color.field);
+      alias.push("color");
+      ops.push(color.aggregate);
+    }
+
     transforms.push({
-      type: "limit",
-      row: transform.limit
+      type: "aggregate",
+      fields: fields,
+      ops: ops,
+      as: alias,
+      groupby: transform.groupby.map(function (g, i) {
+        return {
+          type: "project",
+          expr: g,
+          as: "key" + i
+        };
+      })
     });
-    if (transform.sample) {
+  } else {
+    transforms.push({
+      type: "project",
+      expr: x.field,
+      as: "x"
+    });
+    transforms.push({
+      type: "project",
+      expr: y.field,
+      as: "y"
+    });
+
+    if (typeof transform.limit === "number") {
       transforms.push({
-        type: "sample",
-        method: "multiplicative",
-        size: lastFilteredSize || transform.tableSize,
-        limit: transform.limit
+        type: "limit",
+        row: transform.limit
+      });
+      if (transform.sample) {
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          size: lastFilteredSize || transform.tableSize,
+          limit: transform.limit
+        });
+      }
+    }
+
+    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
+      transforms.push({
+        type: "project",
+        expr: size.field,
+        as: "size"
       });
     }
+
+    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
+      transforms.push({
+        type: "project",
+        expr: color.field,
+        as: "color"
+      });
+    }
+
+    transforms.push({
+      type: "project",
+      expr: table + ".rowid"
+    });
   }
 
   if (typeof filter === "string" && filter.length) {
@@ -25583,27 +25639,6 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
       expr: globalFilter
     });
   }
-
-  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-    transforms.push({
-      type: "project",
-      expr: size.field,
-      as: "size"
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-    transforms.push({
-      type: "project",
-      expr: color.field,
-      as: "color"
-    });
-  }
-
-  transforms.push({
-    type: "project",
-    expr: table + ".rowid"
-  });
 
   return transforms;
 }
@@ -25729,23 +25764,21 @@ function rasterLayerPointMixin(_layer) {
       },
       scales: getScales(state.encoding, layerName),
       mark: {
-        type: markType === "circle" ? "points" : "symbol",
+        type: "symbol",
         from: {
           data: layerName
         },
         properties: Object.assign({}, {
-          x: {
+          xc: {
             scale: "x",
             field: "x"
           },
-          y: {
+          yc: {
             scale: "y",
             field: "y"
           },
           fillColor: getColor(state.encoding.color, layerName)
-        }, markType == "circle" ? {
-          size: size
-        } : {
+        }, {
           shape: state.config.point.shape,
           width: size,
           height: size
@@ -25830,7 +25863,7 @@ function rasterLayerPointMixin(_layer) {
     return _vega;
   };
 
-  var renderAttributes = ["x", "y", "size", "fillColor"];
+  var renderAttributes = ["xc", "yc", "size", "width", "height", "fillColor"];
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
     if (_vega && _vega.mark && _vega.mark.properties) {
@@ -25861,10 +25894,10 @@ function rasterLayerPointMixin(_layer) {
       });
     }
 
-    var xPixel = xscale(data[rndrProps.x]) + margins.left;
-    var yPixel = height - yscale(data[rndrProps.y]) + margins.top;
+    var xPixel = xscale(data[rndrProps.xc]) + margins.left;
+    var yPixel = height - yscale(data[rndrProps.yc]) + margins.top;
 
-    var dotSize = _layer.getSizeVal(data[rndrProps.size]);
+    var dotSize = _layer.getSizeVal(data[rndrProps.size || rndrProps.width || rndrProps.height]);
     var scale = 1;
     var scaleRatio = minPopupArea / (dotSize * dotSize);
     var isScaled = scaleRatio > 1;
@@ -48278,6 +48311,7 @@ function rowChart(parent, chartGroup) {
 
         //
         // handle Firefox getBBox bug
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=612118
         //
         var measureWidth = 0;
         var labelNode = thisLabel.node();
@@ -49996,7 +50030,7 @@ function rasterLayer(layerType) {
     return rtnArray;
   };
 
-  function mapDataViaColumns(data, popupColumns) {
+  function mapDataViaColumns(data, popupColumns, chart) {
     var newData = {};
     var columnSet = new Set(popupColumns);
     for (var key in data) {
@@ -50004,6 +50038,13 @@ function rasterLayer(layerType) {
         continue;
       }
       newData[key] = data[key];
+      if (typeof chart.useLonLat === "function" && chart.useLonLat()) {
+        if (key === "x") {
+          newData[key] = chart.conv900913To4326X(data[key]);
+        } else if (key === "y") {
+          newData[key] = chart.conv900913To4326Y(data[key]);
+        }
+      }
     }
     return newData;
   }
@@ -50018,9 +50059,10 @@ function rasterLayer(layerType) {
   function renderPopupHTML(data, columnOrder, columnMap) {
     var html = "";
     columnOrder.forEach(function (key) {
-      if (!data[key]) {
+      if (!data[key] || !columnMap[key]) {
         return;
       }
+
       html = html + ("<div class=\"" + _popup_box_item_class + "\"><span class=\"" + _popup_item_key_class + "\">" + (columnMap && columnMap[key] ? columnMap[key] : key) + ":</span><span class=\"" + _popup_item_val_class + "\"> " + data[key] + "</span></div>");
     });
     return html;
@@ -50030,7 +50072,7 @@ function rasterLayer(layerType) {
     var data = result.row_set[0];
     var popupColumns = _layer.popupColumns();
     var mappedColumns = _layer.popupColumnsMapped();
-    var filteredData = mapDataViaColumns(data, popupColumns, mappedColumns);
+    var filteredData = mapDataViaColumns(data, popupColumns, chart);
 
     var width = typeof chart.effectiveWidth === "function" ? chart.effectiveWidth() : chart.width();
     var height = typeof chart.effectiveHeight === "function" ? chart.effectiveHeight() : chart.height();
