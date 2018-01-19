@@ -411,7 +411,7 @@ export default function rowChart (parent, chartGroup) {
                   const thisLabel = d3.select(this)
 
                   const width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)))
-                  
+
                   //
                   // handle Firefox getBBox bug
                   // https://bugzilla.mozilla.org/show_bug.cgi?id=612118
