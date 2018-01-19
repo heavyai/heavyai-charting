@@ -95,7 +95,8 @@ export const createBinParams = (chart, binParams) => {
         return Object.assign({}, param, {
           extract,
           timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
-          binBounds: binBounds.slice()
+          binBounds: binBounds.slice(),
+          auto: true
         })
       } else {
         return Object.assign({}, param, {
