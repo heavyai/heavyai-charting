@@ -144,7 +144,7 @@ export default function binningMixin (chart) {
             const isAuto = val === "auto"
             const bounds = binBounds.map(date => date.getTime())
             binParam.timeBin = isAuto ? autoBinParams(bounds, numBins) : val
-            binParam.auto = isAuto
+            binParam.auto = isAuto // hightlights the "auto" UI button
           }
           return binParam
         })
