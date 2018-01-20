@@ -87,16 +87,16 @@ export const createBinParams = (chart, binParams) => {
 
   const parsedBinParams = binParams.map((param) => {
     if (param) {
-      const {timeBin = "auto", binBounds, numBins, auto} = param
+      const {timeBin = "auto", binBounds, numBins} = param
       const extract = param.extract || false
       const isDate = binBounds[0] instanceof Date
-      if (isDate && (auto || timeBin === "auto")) {
+      if (isDate && timeBin === "auto") {
         const bounds = binBounds.map(date => date.getTime())
         return Object.assign({}, param, {
           extract,
           timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
           binBounds: binBounds.slice(),
-          auto: true
+          auto: true // hightlights the "auto" UI button
         })
       } else {
         return Object.assign({}, param, {
