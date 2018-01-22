@@ -24,7 +24,7 @@
     "type": "git",
     "url": "https://github.com/mapd/mapd-charting.git"
   },
-  "main": "src/index.js",
+  "main": "dist/mapdc.js",
   "scripts": {
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel index.js --out-dir lib",
     "build": "webpack",
