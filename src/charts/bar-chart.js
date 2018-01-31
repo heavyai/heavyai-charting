@@ -22,6 +22,7 @@ const TIME_UNIT_PER_SECONDS = {
 const MILLISECONDS_IN_SECOND = 1000
 
 const EXTRACT_UNIT_NUM_BUCKETS = {
+  day: 31,
   isodom: 31,
   isodow: 7,
   month: 12,
