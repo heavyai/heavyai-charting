@@ -600,8 +600,6 @@ export default function mapMixin (_chart, chartDivId, _mapboxgl, mixinDraw = tru
     }
     if (data.bounds) {
       if (validateBounds(data)) {
-        console.log('data.bounds from mapd-charting map-mixin', data.bounds)
-        console.log('[data.bounds.sw, data.bounds.ne]', [data.bounds.sw, data.bounds.ne]);
         _map.fitBounds([data.bounds.sw, data.bounds.ne], {
           linear: true,
           duration: EASE_DURATION_MS
