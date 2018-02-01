@@ -309,7 +309,7 @@ export default function rasterLayer (layerType) {
   function renderPopupHTML (data, columnOrder, columnMap) {
     let html = ""
     columnOrder.forEach((key) => {
-      if (!data[key] || !columnMap[key]) {
+      if (!data[key] && !columnMap[key]) {
         return
       }
 
