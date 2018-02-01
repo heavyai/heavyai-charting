@@ -315,7 +315,7 @@ export default function rasterLayer (layerType) {
     columnOrder.forEach((key) => {
       console.log('key from mapd-charting raster-layer renderPopupHTML columnOrder forEach', key)
       console.log('data[key]', data[key])
-      if (!data[key] || !columnMap[key]) {
+      if (!data[key] && !columnMap[key]) {
         console.log('!data[key] || !columnMap[key] was true in mapd-charting raster-layer renderPopupHTML')
         return
       }
