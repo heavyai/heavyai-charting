@@ -277,7 +277,6 @@ export default function rasterLayer (layerType) {
     popupColsSet.forEach((colName) => {
       rtnArray.push(colName)
     })
-    console.log('rtnArray from mapd-charting raster-layer getPopupAndRenderColumns', rtnArray)
     return rtnArray
   }
 
@@ -297,7 +296,6 @@ export default function rasterLayer (layerType) {
         }
       }
     }
-    console.log('newData from mapd-charting raster-layer mapDataViaColumns', newData)
     return newData
   }
 
@@ -309,20 +307,14 @@ export default function rasterLayer (layerType) {
   }
 
   function renderPopupHTML (data, columnOrder, columnMap) {
-    console.log('arguments from mapd-charting raster-layer renderPopupHTML', arguments)
     let html = ""
-    console.log('columnOrder from mapd-charting raster-layer renderPopupHTML', columnOrder)
     columnOrder.forEach((key) => {
-      console.log('key from mapd-charting raster-layer renderPopupHTML columnOrder forEach', key)
-      console.log('data[key]', data[key])
       if (!data[key] && !columnMap[key]) {
-        console.log('!data[key] || !columnMap[key] was true in mapd-charting raster-layer renderPopupHTML')
         return
       }
 
       html = html + ("<div class=\"" + _popup_box_item_class + "\"><span class=\"" + _popup_item_key_class + "\">" + (columnMap && columnMap[key] ? columnMap[key] : key) + ":</span><span class=\"" + _popup_item_val_class + "\"> " + data[key] + "</span></div>")
     })
-    console.log('html from mapd-charting raster-layer renderPopupHTML', html)
     return html
   }
 
