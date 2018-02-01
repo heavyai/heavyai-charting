@@ -163,7 +163,12 @@ export function rasterDrawMixin (chart) {
 
     coordFilters.forEach((filterObj) => {
       if (filterObj.px.length && filterObj.py.length && filterObj.shapeFilters.length) {
-        const filterStmt = filterObj.px.map((e, i) => ({px: e, py: filterObj.py[i]})).reduce((acc, e) => (acc.some(e1 => e1.px === e.px && e1.py === e.py) ? acc : [...acc, e]), []).map((e, i) => `(${e.px} IS NOT NULL AND ${e.py} IS NOT NULL AND (${filterObj.shapeFilters[i]}))`).join(" AND ")
+        const shapeFilterStmt = filterObj.shapeFilters.join(" OR ")
+        const filterStmt = filterObj.px
+          .map((e, i) => ({px: e, py: filterObj.py[i]}))
+          .reduce((acc, e) => (acc.some(e1 => e1.px === e.px && e1.py === e.py) ? acc : [...acc, e]), [])
+          .map((e, i) => `(${e.px} IS NOT NULL AND ${e.py} IS NOT NULL AND (${shapeFilterStmt}))`)
+          .join(" AND ")
         filterObj.coordFilter.filter([filterStmt])
         filterObj.px = []
         filterObj.py = []
