@@ -35,7 +35,7 @@
     "clean:example": "rm -rf build.log example/assets/*",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "docs": "npm run build:docs && open docs/index.html",
-    "lint": "node_modules/.bin/eslint $(find src -name \"*.js\" ! -name '*.spec.js')",
+    "lint": "./node_modules/.bin/eslint $(find src -name \"*.js\" ! -name '*.spec.js')",
     "lint:errors": "npm run lint -- --quiet",
     "nyc": "nyc",
     "report": "nyc report --reporter=lcov && open coverage/lcov-report/index.html",
