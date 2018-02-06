@@ -4,6 +4,7 @@ node_js:
 sudo: required
 before_install:
 - npm install -g node-gyp
+script: yarn test
 addons:
   apt:
     sources:
