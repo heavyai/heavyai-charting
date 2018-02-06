@@ -9996,12 +9996,11 @@ var createBinParams = exports.createBinParams = function createBinParams(chart, 
       var _param$timeBin = param.timeBin,
           timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
           binBounds = param.binBounds,
-          numBins = param.numBins,
-          auto = param.auto;
+          numBins = param.numBins;
 
       var extract = param.extract || false;
       var isDate = binBounds[0] instanceof Date;
-      if (isDate && (auto || timeBin === "auto")) {
+      if (isDate && timeBin === "auto") {
         var bounds = binBounds.map(function (date) {
           return date.getTime();
         });
@@ -10009,7 +10008,7 @@ var createBinParams = exports.createBinParams = function createBinParams(chart, 
           extract: extract,
           timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
           binBounds: binBounds.slice(),
-          auto: true
+          auto: true // hightlights the "auto" UI button
         });
       } else {
         return Object.assign({}, param, {
@@ -11569,6 +11568,7 @@ function rasterDrawMixin(chart) {
 
     coordFilters.forEach(function (filterObj) {
       if (filterObj.px.length && filterObj.py.length && filterObj.shapeFilters.length) {
+        var shapeFilterStmt = filterObj.shapeFilters.join(" OR ");
         var filterStmt = filterObj.px.map(function (e, i) {
           return { px: e, py: filterObj.py[i] };
         }).reduce(function (acc, e) {
@@ -11576,7 +11576,7 @@ function rasterDrawMixin(chart) {
             return e1.px === e.px && e1.py === e.py;
           }) ? acc : [].concat(_toConsumableArray(acc), [e]);
         }, []).map(function (e, i) {
-          return "(" + e.px + " IS NOT NULL AND " + e.py + " IS NOT NULL AND (" + filterObj.shapeFilters[i] + "))";
+          return "(" + e.px + " IS NOT NULL AND " + e.py + " IS NOT NULL AND (" + shapeFilterStmt + "))";
         }).join(" AND ");
         filterObj.coordFilter.filter([filterStmt]);
         filterObj.px = [];
@@ -26939,7 +26939,7 @@ function parseExpression(expression) {
     case "not in":
       if (Array.isArray(expression.set)) {
         return expression.expr + " " + expression.type.toUpperCase() + " (" + expression.set.map(function (field) {
-          return "'" + field + "'";
+          return typeof field === "number" ? field : "'" + field + "'";
         }).join(", ") + ")";
       } else if (_typeof(expression.set) === "object" && (expression.set.type === "data" || expression.set.type === "root")) {
         return expression.expr + " " + expression.type.toUpperCase() + " (" + parser.writeSQL(expression.set) + ")";
@@ -27012,7 +27012,7 @@ function parseDataState(state, parser) {
   };
 
   return state.transform.reduce(function (sql, t) {
-    return parser.parseTransform(sql, t, parser);
+    return parser.parseTransform(sql, t);
   }, {
     select: initialSQL.select,
     from: state.type === "root" ? typeof state.source === "string" ? state.source : parser.parseSource(state.source) : initialSQL.from,
@@ -27121,7 +27121,10 @@ function aggregateField(op, field, as) {
     str += field;
   } else if (AGGREGATES[op]) {
     str += AGGREGATES[op] + "(" + field + ")";
+  } else {
+    str += op + "(" + field + ")";
   }
+
   return str + ("" + (as ? " as " + as : ""));
 }
 
@@ -27181,11 +27184,12 @@ function parseCrossfilter(sql, transform) {
     case "crossfilter":
       if (_typeof(sql.unresolved) === "object") {
         if (sql.unresolved.hasOwnProperty(transform.signal)) {
-          transform.filter.forEach(function (filter) {
+          Object.keys(transform.filter).forEach(function (key) {
+            var filter = transform.filter[key];
             if (sql.unresolved) {
               var ignore = sql.unresolved[transform.signal].ignore;
 
-              if (Array.isArray(ignore) ? ignore.indexOf(filter.id) === -1 : filter.id !== ignore) {
+              if (Array.isArray(ignore) ? ignore.indexOf(key) === -1 : key !== ignore) {
                 Object(__WEBPACK_IMPORTED_MODULE_1__parse_filter__["a" /* default */])(sql, filter, parser);
               }
             }
@@ -29215,6 +29219,7 @@ var TIME_UNIT_PER_SECONDS = {
 var MILLISECONDS_IN_SECOND = 1000;
 
 var EXTRACT_UNIT_NUM_BUCKETS = {
+  day: 31,
   isodom: 31,
   isodow: 7,
   month: 12,
@@ -38675,7 +38680,7 @@ function binningMixin(chart) {
             return date.getTime();
           });
           binParam.timeBin = isAuto ? (0, _binningHelpers.autoBinParams)(bounds, numBins) : val;
-          binParam.auto = isAuto;
+          binParam.auto = isAuto; // hightlights the "auto" UI button
         }
         return binParam;
       });
@@ -48912,6 +48917,7 @@ function mapdTable(parent, chartGroup) {
   var _dimOrGroup = null;
   var _isGroupedData = false;
   var _colAliases = null;
+  var _cols = [];
   var _sampling = false;
   var _nullsOrder = "";
 
@@ -48976,6 +48982,14 @@ function mapdTable(parent, chartGroup) {
       return _colAliases;
     }
     _colAliases = _;
+    return _chart;
+  };
+
+  _chart.cols = function (_) {
+    if (!arguments.length) {
+      return _cols;
+    }
+    _cols = _;
     return _chart;
   };
 
@@ -49065,6 +49079,7 @@ function mapdTable(parent, chartGroup) {
   };
 
   _chart._doRender = function (data) {
+    console.log('data from mapd-charting mapdTable _doRender', data);
     if (!_tableWrapper) {
       _chart.resetTable();
       _tableWrapper = _chart.root().append("div").attr("class", "md-table-wrapper");
@@ -49104,21 +49119,20 @@ function mapdTable(parent, chartGroup) {
   function renderTable() {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
+    console.log('data from mapd-charting renderTable', data);
     var table = _chart.tableWrapper().select("table").html("");
 
     if (data.length === 0) {
       return;
     }
 
-    var cols = [];
-
     if (_isGroupedData) {
       _chart.dimension().value().forEach(function (d, i) {
-        cols.push({ expression: d, name: "key" + i, label: _colAliases ? _colAliases[i] : d });
+        _cols.push({ expression: d, name: "key" + i, label: _colAliases ? _colAliases[i] : d });
       });
       _chart.group().reduce().forEach(function (d, i) {
         if (d.expression) {
-          cols.push({
+          _cols.push({
             expression: d.expression,
             name: d.name,
             agg_mode: d.agg_mode,
@@ -49126,13 +49140,13 @@ function mapdTable(parent, chartGroup) {
         }
       });
     } else {
-      cols = _chart.dimension().getProjectOn().map(function (d, i) {
+      _cols = _chart.dimension().getProjectOn().map(function (d, i) {
         var splitStr = splitStrOnLastAs(d);
         return { expression: splitStr[0], name: splitStr[1], label: _colAliases ? _colAliases[i] : splitStr[0] };
       });
     }
 
-    var tableHeader = table.append("tr").selectAll("th").data(cols).enter();
+    var tableHeader = table.append("tr").selectAll("th").data(_cols).enter();
 
     tableHeader.append("th").text(function (d) {
       return d.label;
@@ -49158,7 +49172,7 @@ function mapdTable(parent, chartGroup) {
       return tableRowCls;
     });
 
-    cols.forEach(function (col) {
+    _cols.forEach(function (col) {
       rowItem.append("td").html(function (d) {
         return (0, _formattingHelpers.formatDataValue)(d[col.name]);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
@@ -50059,7 +50073,7 @@ function rasterLayer(layerType) {
   function renderPopupHTML(data, columnOrder, columnMap) {
     var html = "";
     columnOrder.forEach(function (key) {
-      if (!data[key] || !columnMap[key]) {
+      if (!data[key] && !columnMap[key]) {
         return;
       }
 
