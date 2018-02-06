@@ -35,6 +35,7 @@ export default function mapdTable (parent, chartGroup) {
   let _dimOrGroup = null
   let _isGroupedData = false
   let _colAliases = null
+  let _cols = []
   let _sampling = false
   let _nullsOrder = ""
 
@@ -99,6 +100,14 @@ export default function mapdTable (parent, chartGroup) {
       return _colAliases
     }
     _colAliases = _
+    return _chart
+  }
+
+  _chart.cols = function (_) {
+    if (!arguments.length) {
+      return _cols
+    }
+    _cols = _
     return _chart
   }
 
@@ -184,6 +193,7 @@ export default function mapdTable (parent, chartGroup) {
   }
 
   _chart._doRender = function (data) {
+    console.log('data from mapd-charting mapdTable _doRender', data);
     if (!_tableWrapper) {
       _chart.resetTable()
       _tableWrapper = _chart.root().append("div")
@@ -226,22 +236,21 @@ export default function mapdTable (parent, chartGroup) {
   }
 
   function renderTable (data = []) {
+    console.log('data from mapd-charting renderTable', data);
     const table = _chart.tableWrapper().select("table").html("")
 
     if (data.length === 0) {
       return
     }
 
-    let cols = []
-
     if (_isGroupedData) {
       _chart.dimension().value().forEach((d, i) => {
-        cols.push({expression: d, name: "key" + i, label: _colAliases ? _colAliases[i] : d})
+        _cols.push({expression: d, name: "key" + i, label: _colAliases ? _colAliases[i] : d})
 
       })
       _chart.group().reduce().forEach((d, i) => {
         if (d.expression) {
-          cols.push({
+          _cols.push({
             expression: d.expression,
             name: d.name,
             agg_mode: d.agg_mode,
@@ -250,14 +259,14 @@ export default function mapdTable (parent, chartGroup) {
       })
 
     } else {
-      cols = _chart.dimension().getProjectOn().map((d, i) => {
+      _cols = _chart.dimension().getProjectOn().map((d, i) => {
         const splitStr = splitStrOnLastAs(d)
         return {expression: splitStr[0], name: splitStr[1], label: _colAliases ? _colAliases[i] : splitStr[0]}
       })
     }
 
     const tableHeader = table.append("tr").selectAll("th")
-            .data(cols)
+            .data(_cols)
             .enter()
 
     tableHeader.append("th")
@@ -286,7 +295,7 @@ export default function mapdTable (parent, chartGroup) {
               return tableRowCls
             })
 
-    cols.forEach(col => {
+    _cols.forEach(col => {
       rowItem.append("td")
         .html(d => formatDataValue(d[col.name]))
         .classed("filtered", col.expression in _filteredColumns)
