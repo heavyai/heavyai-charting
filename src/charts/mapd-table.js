@@ -243,14 +243,16 @@ export default function mapdTable (parent, chartGroup) {
       return
     }
 
+    let cols = [];
+
     if (_isGroupedData) {
       _chart.dimension().value().forEach((d, i) => {
-        _cols.push({expression: d, name: "key" + i, label: _colAliases ? _colAliases[i] : d})
+        cols.push({expression: d, name: "key" + i, label: _colAliases ? _colAliases[i] : d})
 
       })
       _chart.group().reduce().forEach((d, i) => {
         if (d.expression) {
-          _cols.push({
+          cols.push({
             expression: d.expression,
             name: d.name,
             agg_mode: d.agg_mode,
@@ -259,14 +261,17 @@ export default function mapdTable (parent, chartGroup) {
       })
 
     } else {
-      _cols = _chart.dimension().getProjectOn().map((d, i) => {
+      cols = _chart.dimension().getProjectOn().map((d, i) => {
         const splitStr = splitStrOnLastAs(d)
         return {expression: splitStr[0], name: splitStr[1], label: _colAliases ? _colAliases[i] : splitStr[0]}
       })
     }
 
+    console.log('_cols from inside renderTable', _cols);
+    _cols = cols;
+
     const tableHeader = table.append("tr").selectAll("th")
-            .data(_cols)
+            .data(cols)
             .enter()
 
     tableHeader.append("th")
@@ -295,7 +300,7 @@ export default function mapdTable (parent, chartGroup) {
               return tableRowCls
             })
 
-    _cols.forEach(col => {
+    cols.forEach(col => {
       rowItem.append("td")
         .html(d => formatDataValue(d[col.name]))
         .classed("filtered", col.expression in _filteredColumns)
