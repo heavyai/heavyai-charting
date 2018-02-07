@@ -193,7 +193,7 @@ export default function mapdTable (parent, chartGroup) {
   }
 
   _chart._doRender = function (data) {
-    console.log('data from mapd-charting mapdTable _doRender', data);
+    // console.log('data from mapd-charting mapdTable _doRender', data);
     if (!_tableWrapper) {
       _chart.resetTable()
       _tableWrapper = _chart.root().append("div")
@@ -236,7 +236,7 @@ export default function mapdTable (parent, chartGroup) {
   }
 
   function renderTable (data = []) {
-    console.log('data from mapd-charting renderTable', data);
+    // console.log('data from mapd-charting renderTable', data);
     const table = _chart.tableWrapper().select("table").html("")
 
     if (data.length === 0) {
@@ -267,7 +267,7 @@ export default function mapdTable (parent, chartGroup) {
       })
     }
 
-    console.log('_cols from inside renderTable', _cols);
+    // console.log('_cols from inside renderTable', _cols);
     _cols = cols;
 
     const tableHeader = table.append("tr").selectAll("th")
