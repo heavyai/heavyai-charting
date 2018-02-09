@@ -135,12 +135,11 @@ export default function filterMixin(_chart) {
     if (Array.isArray(filter) && filter.length === 1) {
       filter = filter[0];
     } else if (Array.isArray(filter)) {
-      filter = filter.map(filter => {
-        // eslint-disable-line no-shadow, arrow-body-style
-        return Array.isArray(filter) && filter.length === 1
-          ? filter[0]
-          : filter;
-      });
+      filter = filter.map(
+        filter =>
+          // eslint-disable-line no-shadow, arrow-body-style
+          Array.isArray(filter) && filter.length === 1 ? filter[0] : filter
+      );
     }
 
     if (isFilterInverse !== _chart.filtersInverse()) {
