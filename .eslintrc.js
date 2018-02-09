@@ -1,4 +1,4 @@
-{
+module.exports = {
   "extends": ["prettier"],
   "rules": { // And why they're best practice (alphabetized).
     "accessor-pairs": [2, {"getWithoutSet": true}], // omission is usually by mistake.
