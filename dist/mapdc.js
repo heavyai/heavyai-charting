@@ -4588,14 +4588,14 @@ function hexBinSQL(sql, _ref, parser) {
 
   if (hexoffsetx) {
     var mercxdiff = hexoffsetx * (hexmaxmercx - hexminmercx) / heximgwidth;
-    hexminmercx -= mercxdiff;
-    hexmaxmercx -= mercxdiff;
+    hexminmercx = hexminmercx - mercxdiff;
+    hexmaxmercx = hexmaxmercx - mercxdiff;
   }
 
   if (hexoffsety) {
     var mercydiff = hexoffsety * (hexmaxmercy - hexminmercy) / heximgheight;
-    hexminmercy -= mercydiff;
-    hexmaxmercy -= mercydiff;
+    hexminmercy = hexminmercy - mercydiff;
+    hexmaxmercy = hexmaxmercy - mercydiff;
   }
 
   var args = parser.parseExpression(x.field) + "," + (hexminmercx + ",") + (hexmaxmercx + ",") + (parser.parseExpression(y.field) + ",") + (hexminmercy + ",") + (hexmaxmercy + ",") + (mark.width + ",") + (mark.height + ",") + (hexoffsetx + ",") + (hexoffsety + ",") + (width + ",") + ("" + height);
@@ -4666,9 +4666,10 @@ var TIME_UNITS = exports.TIME_UNITS = {
   timestamp: true,
   "timestamp without timezone": true,
   TIME: true
+};
 
-  /* istanbul ignore next */
-};var customTimeFormat = exports.customTimeFormat = _d2.default.time.format.utc.multi([[".%L", function (d) {
+/* istanbul ignore next */
+var customTimeFormat = exports.customTimeFormat = _d2.default.time.format.utc.multi([[".%L", function (d) {
   return d.getUTCMilliseconds();
 }], [":%S", function (d) {
   return d.getUTCSeconds();
@@ -5416,7 +5417,6 @@ function baseMixin(_chart) {
   var _filters = [];
 
   var _filterHandler = function _filterHandler(dimension, filters) {
-
     if (filters.length === 0) {
       return filters;
     }
@@ -5622,9 +5622,8 @@ function baseMixin(_chart) {
 
   /**
    * Wrapper for binParams in Crossfilter.
-  */
+   */
   _chart.binParams = function (binParams) {
-
     if (!arguments.length) {
       return _chart.group().binParams();
     }
@@ -5820,7 +5819,6 @@ function baseMixin(_chart) {
    * @return {SVGElement}
    */
   _chart.resetSvg = function () {
-
     /* OVERRIDE ---------------------------------------------------------------- */
     _chart.root().html("");
     /* ------------------------------------------------------------------------- */
@@ -5835,7 +5833,6 @@ function baseMixin(_chart) {
   }
 
   _chart.generateSvg = function () {
-
     /* OVERRIDE ---------------------------------------------------------------- */
     _svg = _chart.root().append("div").attr("class", "svg-wrapper").append("svg");
     /* ------------------------------------------------------------------------- */
@@ -5998,7 +5995,6 @@ function baseMixin(_chart) {
    */
   _chart.transitionDuration = function (duration) {
     if (!arguments.length) {
-
       /* OVERRIDE ---------------------------------------------------------------- */
       return (0, _core.globalTransitionDuration)() != null ? (0, _core.globalTransitionDuration)() : _transitionDuration;
       /* ------------------------------------------------------------------------- */
@@ -6853,7 +6849,7 @@ function baseMixin(_chart) {
   _chart.renderlet = _logger.logger.deprecate(function (renderletFunction) {
     _chart.on("renderlet." + _utils.utils.uniqueId(), renderletFunction);
     return _chart;
-  }, "chart.renderlet has been deprecated.  Please use chart.on(\"renderlet.<renderletKey>\", renderletFunction)");
+  }, 'chart.renderlet has been deprecated.  Please use chart.on("renderlet.<renderletKey>", renderletFunction)');
 
   /**
    * Get or set the chart group to which this chart belongs. Chart groups are rendered or redrawn
@@ -7109,7 +7105,7 @@ var NUMBER_LENGTH = 4;
 var numFormat = _d2.default.format(".2s");
 var commafy = _d2.default.format(",");
 
-var nullLabelHtml = exports.nullLabelHtml = "<tspan class=\"null-value\"> NULL </tspan>";
+var nullLabelHtml = exports.nullLabelHtml = '<tspan class="null-value"> NULL </tspan>';
 var momentUTCFormat = exports.momentUTCFormat = function momentUTCFormat(d, f) {
   return _moment2.default.utc(d).locale("en").format(f);
 };
@@ -7570,7 +7566,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {dc.capMixin}
  */
 function capMixin(_chart) {
-
   var _cap = void 0;
   var _ordering = "desc";
 
@@ -7596,7 +7591,6 @@ function capMixin(_chart) {
 
   _chart.cappedKeyAccessor = function (d, i) {
     if (d.others) {
-
       /* OVERRIDE ---------------------------------------------------------------- */
       return d.key0;
       /* ------------------------------------------------------------------------- */
@@ -9430,27 +9424,28 @@ Object.defineProperty(exports, "__esModule", {
 });
 var events = exports.events = {
   current: null
+};
 
-  /**
-   * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
-   * that are triggered repetitively due to user interaction such brush dragging might flood the library
-   * and invoke more renders than can be executed in time. Using this function to wrap your event
-   * function allows the library to smooth out the rendering by throttling events and only responding to
-   * the most recent event.
-   * @name events.trigger
-   * @memberof dc
-   * @example
-   * chart.on('renderlet', function(chart) {
-   *     // smooth the rendering through event throttling
-   *     dc.events.trigger(function(){
-   *         // focus some other chart to the range selected by user on this chart
-   *         someOtherChart.focus(chart.filter());
-   *     });
-   * })
-   * @param {Function} closure
-   * @param {Number} [delay]
-   */
-};events.trigger = function (closure, delay) {
+/**
+ * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
+ * that are triggered repetitively due to user interaction such brush dragging might flood the library
+ * and invoke more renders than can be executed in time. Using this function to wrap your event
+ * function allows the library to smooth out the rendering by throttling events and only responding to
+ * the most recent event.
+ * @name events.trigger
+ * @memberof dc
+ * @example
+ * chart.on('renderlet', function(chart) {
+ *     // smooth the rendering through event throttling
+ *     dc.events.trigger(function(){
+ *         // focus some other chart to the range selected by user on this chart
+ *         someOtherChart.focus(chart.filter());
+ *     });
+ * })
+ * @param {Function} closure
+ * @param {Number} [delay]
+ */
+events.trigger = function (closure, delay) {
   if (!delay) {
     closure();
     return;
@@ -9486,26 +9481,25 @@ exports.default = marginMixin;
  * @return {dc.marginMixin}
  */
 function marginMixin(_chart) {
-
   /* OVERRIDE ---------------------------------------------------------------- */
-  var _margin = { top: 10, right: 50, bottom: 48, left: 60
-    /* ------------------------------------------------------------------------- */
+  var _margin = { top: 10, right: 50, bottom: 48, left: 60 };
+  /* ------------------------------------------------------------------------- */
 
-    /**
-     * Get or set the margins for a particular coordinate grid chart instance. The margins is stored as
-     * an associative Javascript array.
-     * @name margins
-     * @memberof dc.marginMixin
-     * @instance
-     * @example
-     * var leftMargin = chart.margins().left; // 30 by default
-     * chart.margins().left = 50;
-     * leftMargin = chart.margins().left; // now 50
-     * @param {{top: Number, right: Number, left: Number, bottom: Number}} [margins={top: 10, right: 50, bottom: 30, left: 30}]
-     * @return {{top: Number, right: Number, left: Number, bottom: Number}}
-     * @return {dc.marginMixin}
-     */
-  };_chart.margins = function (margins) {
+  /**
+   * Get or set the margins for a particular coordinate grid chart instance. The margins is stored as
+   * an associative Javascript array.
+   * @name margins
+   * @memberof dc.marginMixin
+   * @instance
+   * @example
+   * var leftMargin = chart.margins().left; // 30 by default
+   * chart.margins().left = 50;
+   * leftMargin = chart.margins().left; // now 50
+   * @param {{top: Number, right: Number, left: Number, bottom: Number}} [margins={top: 10, right: 50, bottom: 30, left: 30}]
+   * @return {{top: Number, right: Number, left: Number, bottom: Number}}
+   * @return {dc.marginMixin}
+   */
+  _chart.margins = function (margins) {
     if (!arguments.length) {
       return _margin;
     }
@@ -9996,12 +9990,11 @@ var createBinParams = exports.createBinParams = function createBinParams(chart, 
       var _param$timeBin = param.timeBin,
           timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
           binBounds = param.binBounds,
-          numBins = param.numBins,
-          auto = param.auto;
+          numBins = param.numBins;
 
       var extract = param.extract || false;
       var isDate = binBounds[0] instanceof Date;
-      if (isDate && (auto || timeBin === "auto")) {
+      if (isDate && timeBin === "auto") {
         var bounds = binBounds.map(function (date) {
           return date.getTime();
         });
@@ -10009,7 +10002,7 @@ var createBinParams = exports.createBinParams = function createBinParams(chart, 
           extract: extract,
           timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
           binBounds: binBounds.slice(),
-          auto: true
+          auto: true // hightlights the "auto" UI button
         });
       } else {
         return Object.assign({}, param, {
@@ -10305,7 +10298,6 @@ function bubbleMixin(_chart) {
   };
 
   _chart.onClick = function (d) {
-
     /* OVERRIDE -----------------------------------------------------------------*/
     var filter = d.key0;
     /* --------------------------------------------------------------------------*/
@@ -10370,7 +10362,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 
 function stackMixin(_chart) {
-
   function prepareValues(layer, layerIdx) {
     var valAccessor = layer.accessor || _chart.valueAccessor();
     layer.name = String(layer.name || "series_" + (layerIdx + 1));
@@ -11014,7 +11005,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
     var redrawall = false;
     if (typeof _chart.getLayers === "function") {
-
       _chart.getLayers().forEach(function (layer) {
         if (typeof layer.xDim === "function" && typeof layer.yDim === "function") {
           var xdim = layer.xDim();
@@ -11569,6 +11559,7 @@ function rasterDrawMixin(chart) {
 
     coordFilters.forEach(function (filterObj) {
       if (filterObj.px.length && filterObj.py.length && filterObj.shapeFilters.length) {
+        var shapeFilterStmt = filterObj.shapeFilters.join(" OR ");
         var filterStmt = filterObj.px.map(function (e, i) {
           return { px: e, py: filterObj.py[i] };
         }).reduce(function (acc, e) {
@@ -11576,7 +11567,7 @@ function rasterDrawMixin(chart) {
             return e1.px === e.px && e1.py === e.py;
           }) ? acc : [].concat(_toConsumableArray(acc), [e]);
         }, []).map(function (e, i) {
-          return "(" + e.px + " IS NOT NULL AND " + e.py + " IS NOT NULL AND (" + filterObj.shapeFilters[i] + "))";
+          return "(" + e.px + " IS NOT NULL AND " + e.py + " IS NOT NULL AND (" + shapeFilterStmt + "))";
         }).join(" AND ");
         filterObj.coordFilter.filter([filterStmt]);
         filterObj.px = [];
@@ -21953,7 +21944,6 @@ function spinnerMixin(_chart) {
   };
 
   var _dataFetchRequestCallback = function _dataFetchRequestCallback() {
-
     var anchor = _chart.anchor();
     var selectedAnchor = _d2.default.select(anchor);
 
@@ -22315,7 +22305,7 @@ function lockAxisMixin(chart) {
 
     var axisMax = lockWrapper.append("div").attr("class", "axis-input max").style("top", inputsPosition.maxTop).style("left", inputsPosition.maxLeft);
 
-    axisMax.append("input").attr("pattern", "[0-9\-]").attr("value", formatVal(minMax[1])).on("focus", function () {
+    axisMax.append("input").attr("pattern", "[0-9-]").attr("value", formatVal(minMax[1])).on("focus", function () {
       this.select();
     }).on("change", function () {
       var val = minMax[1] instanceof Date ? (0, _moment2.default)(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""));
@@ -25316,7 +25306,12 @@ function rasterLayerHeatmapMixin(_layer) {
         zoom = _ref2.zoom,
         domain = _ref2.domain;
 
-    var _getMarkSize = getMarkSize({ width: width, neLat: neLat, zoom: zoom, domain: domain }),
+    var _getMarkSize = getMarkSize({
+      width: width,
+      neLat: neLat,
+      zoom: zoom,
+      domain: domain
+    }),
         markWidth = _getMarkSize.markWidth,
         markHeight = _getMarkSize.markHeight;
 
@@ -25375,7 +25370,12 @@ function rasterLayerHeatmapMixin(_layer) {
         _ref3$layerName = _ref3.layerName,
         layerName = _ref3$layerName === undefined ? "" : _ref3$layerName;
 
-    var _getMarkSize2 = getMarkSize({ width: width, neLat: neLat, zoom: zoom, domain: domain }),
+    var _getMarkSize2 = getMarkSize({
+      width: width,
+      neLat: neLat,
+      zoom: zoom,
+      domain: domain
+    }),
         markWidth = _getMarkSize2.markWidth,
         markHeight = _getMarkSize2.markHeight;
 
@@ -25384,7 +25384,18 @@ function rasterLayerHeatmapMixin(_layer) {
       height: height,
       data: {
         name: "heatmap_query" + layerName,
-        sql: _layer.genSQL({ table: table, width: width, height: height, min: min, max: max, filter: filter, globalFilter: globalFilter, neLat: neLat, zoom: zoom, domain: domain })
+        sql: _layer.genSQL({
+          table: table,
+          width: width,
+          height: height,
+          min: min,
+          max: max,
+          filter: filter,
+          globalFilter: globalFilter,
+          neLat: neLat,
+          zoom: zoom,
+          domain: domain
+        })
       },
       scales: [{
         name: "heat_color" + layerName,
@@ -25747,7 +25758,6 @@ function rasterLayerPointMixin(_layer) {
         globalFilter = _ref3.globalFilter,
         pixelRatio = _ref3.pixelRatio,
         layerName = _ref3.layerName;
-
 
     var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName);
 
@@ -26369,7 +26379,6 @@ function rasterLayerPolyMixin(_layer) {
   _layer._hidePopup = function (chart, hideCallback) {
     var mapPoly = chart.select(".map-poly");
     if (mapPoly) {
-
       if (_scaledPopups[chart]) {
         mapPoly.classed("removePoly", true);
       } else {
@@ -26939,7 +26948,7 @@ function parseExpression(expression) {
     case "not in":
       if (Array.isArray(expression.set)) {
         return expression.expr + " " + expression.type.toUpperCase() + " (" + expression.set.map(function (field) {
-          return "'" + field + "'";
+          return typeof field === "number" ? field : "'" + field + "'";
         }).join(", ") + ")";
       } else if (_typeof(expression.set) === "object" && (expression.set.type === "data" || expression.set.type === "root")) {
         return expression.expr + " " + expression.type.toUpperCase() + " (" + parser.writeSQL(expression.set) + ")";
@@ -27012,7 +27021,7 @@ function parseDataState(state, parser) {
   };
 
   return state.transform.reduce(function (sql, t) {
-    return parser.parseTransform(sql, t, parser);
+    return parser.parseTransform(sql, t);
   }, {
     select: initialSQL.select,
     from: state.type === "root" ? typeof state.source === "string" ? state.source : parser.parseSource(state.source) : initialSQL.from,
@@ -27121,7 +27130,10 @@ function aggregateField(op, field, as) {
     str += field;
   } else if (AGGREGATES[op]) {
     str += AGGREGATES[op] + "(" + field + ")";
+  } else {
+    str += op + "(" + field + ")";
   }
+
   return str + ("" + (as ? " as " + as : ""));
 }
 
@@ -27181,11 +27193,12 @@ function parseCrossfilter(sql, transform) {
     case "crossfilter":
       if (_typeof(sql.unresolved) === "object") {
         if (sql.unresolved.hasOwnProperty(transform.signal)) {
-          transform.filter.forEach(function (filter) {
+          Object.keys(transform.filter).forEach(function (key) {
+            var filter = transform.filter[key];
             if (sql.unresolved) {
               var ignore = sql.unresolved[transform.signal].ignore;
 
-              if (Array.isArray(ignore) ? ignore.indexOf(filter.id) === -1 : filter.id !== ignore) {
+              if (Array.isArray(ignore) ? ignore.indexOf(key) === -1 : key !== ignore) {
                 Object(__WEBPACK_IMPORTED_MODULE_1__parse_filter__["a" /* default */])(sql, filter, parser);
               }
             }
@@ -28426,10 +28439,10 @@ function bubbleOverlay(parent, chartGroup) {
       return _sampling;
     }
 
-    if (setting && !_sampling) // if wasn't sampling
-      {
-        (0, _core.incrementSampledCount)();
-      } else if (!setting && _sampling) {
+    if (setting && !_sampling) {
+      // if wasn't sampling
+      (0, _core.incrementSampledCount)();
+    } else if (!setting && _sampling) {
       (0, _core.decrementSampledCount)();
     }
     _sampling = setting;
@@ -28458,7 +28471,10 @@ function bubbleOverlay(parent, chartGroup) {
     var xPixelScale = 1.0 / (_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width();
     var yPixelScale = 1.0 / (_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height();
     var mapCoords = conv4326To900913([d.x, d.y]);
-    var pixelPos = { x: (mapCoords[0] - _chart.bounds[0][0]) * xPixelScale, y: _chart.height() - (mapCoords[1] - _chart.bounds[0][1]) * yPixelScale };
+    var pixelPos = {
+      x: (mapCoords[0] - _chart.bounds[0][0]) * xPixelScale,
+      y: _chart.height() - (mapCoords[1] - _chart.bounds[0][1]) * yPixelScale
+    };
 
     if (_clickCallbackFunc != null) {
       _clickCallbackFunc(d);
@@ -28655,7 +28671,6 @@ function bubbleOverlay(parent, chartGroup) {
   }
 
   _chart._doRedraw = function () {
-
     /* OVERRIDE -----------------------------------------------------------------*/
     _chart.plotData();
     /* --------------------------------------------------------------------------*/
@@ -28665,7 +28680,6 @@ function bubbleOverlay(parent, chartGroup) {
   };
 
   function updateBubbles() {
-
     /* OVERRIDE -----------------------------------------------------------------*/
     if (!_g) {
       return;
@@ -28707,7 +28721,7 @@ function bubbleOverlay(parent, chartGroup) {
 
   return _chart;
 }
-/* ****************************************************************************
+/** ***************************************************************************
  * END OVERRIDE: dc.bubbleOverlay                                             *
  * ***************************************************************************/
 
@@ -28736,7 +28750,6 @@ var LOWER_THAN_START_RANGE = 1000;
 
 function legendMixin(chart) {
   chart.legendablesContinuous = function () {
-
     var legends = [];
     var colorDomain = chart.colors().domain();
 
@@ -28949,8 +28962,10 @@ function filterMixin(_chart) {
       filter = filter[0];
     } else if (Array.isArray(filter)) {
       filter = filter.map(function (filter) {
-        // eslint-disable-line no-shadow, arrow-body-style
-        return Array.isArray(filter) && filter.length === 1 ? filter[0] : filter;
+        return (
+          // eslint-disable-line no-shadow, arrow-body-style
+          Array.isArray(filter) && filter.length === 1 ? filter[0] : filter
+        );
       });
     }
 
@@ -29215,37 +29230,39 @@ var TIME_UNIT_PER_SECONDS = {
 var MILLISECONDS_IN_SECOND = 1000;
 
 var EXTRACT_UNIT_NUM_BUCKETS = {
+  day: 31,
   isodom: 31,
   isodow: 7,
   month: 12,
   quarter: 4,
   hour: 24,
   minute: 60
+};
 
-  /**
-   * Concrete bar chart/histogram implementation.
-   *
-   * @class barChart
-   * @memberof dc
-   * @mixes dc.stackMixin
-   * @mixes dc.coordinateGridMixin
-   * @example
-   * // create a bar chart under #chart-container1 element using the default global chart group
-   * var chart1 = dc.barChart('#chart-container1');
-   * // create a bar chart under #chart-container2 element using chart group A
-   * var chart2 = dc.barChart('#chart-container2', 'chartGroupA');
-   * // create a sub-chart under a composite parent chart
-   * var chart3 = dc.barChart(compositeChart);
-   * @param {String|node|d3.selection|dc.compositeChart} parent - Any valid
-   * {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements d3 single selector}
-   * specifying a dom block element such as a div; or a dom element or d3 selection.  If the bar
-   * chart is a sub-chart in a {@link dc.compositeChart Composite Chart} then pass in the parent
-   * composite chart instance instead.
-   * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
-   * Interaction with a chart will only trigger events and redraws within the chart's group.
-   * @returns {dc.barChart}
-   */
-};function barChart(parent, chartGroup) {
+/**
+ * Concrete bar chart/histogram implementation.
+ *
+ * @class barChart
+ * @memberof dc
+ * @mixes dc.stackMixin
+ * @mixes dc.coordinateGridMixin
+ * @example
+ * // create a bar chart under #chart-container1 element using the default global chart group
+ * var chart1 = dc.barChart('#chart-container1');
+ * // create a bar chart under #chart-container2 element using chart group A
+ * var chart2 = dc.barChart('#chart-container2', 'chartGroupA');
+ * // create a sub-chart under a composite parent chart
+ * var chart3 = dc.barChart(compositeChart);
+ * @param {String|node|d3.selection|dc.compositeChart} parent - Any valid
+ * {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements d3 single selector}
+ * specifying a dom block element such as a div; or a dom element or d3 selection.  If the bar
+ * chart is a sub-chart in a {@link dc.compositeChart Composite Chart} then pass in the parent
+ * composite chart instance instead.
+ * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
+ * Interaction with a chart will only trigger events and redraws within the chart's group.
+ * @returns {dc.barChart}
+ */
+function barChart(parent, chartGroup) {
   var MIN_BAR_WIDTH = 1;
   var DEFAULT_GAP_BETWEEN_BARS = 4;
   var LABEL_PADDING = 3;
@@ -29298,7 +29315,6 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
   };
 
   function hoverOverBrush() {
-
     var g = _chart.g().on("mouseout", function () {
       dehighlightBars();
     }).on("mousemove", function () {
@@ -29311,7 +29327,6 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
   }
 
   function highlightBars(g, e) {
-
     var coordinates = [0, 0];
     coordinates = _chart.popupCoordinates(_d2.default.mouse(e));
     var x = coordinates[0];
@@ -29322,7 +29337,6 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
     var popupRows = [];
 
     var toolTips = g.selectAll(".stack").each(function () {
-
       var hoverBar = null;
 
       var bars = _d2.default.select(this).selectAll(".bar").style("fill-opacity", 1);
@@ -29332,7 +29346,6 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
       });
 
       bars[0].some(function (obj, i) {
-
         var elm = _d2.default.select(obj);
 
         if (xAdjusted < elm.attr("x")) {
@@ -29396,7 +29409,6 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
   }
 
   function positionPopup(x, y) {
-
     var popup = _chart.popup().attr("style", function () {
       return "transform:translate(" + x + "px," + y + "px)";
     });
@@ -29491,7 +29503,6 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
   }
 
   function calculateBarWidth() {
-
     var numberOfBars = void 0;
     var binParams = _chart.group().binParams()[0];
 
@@ -38675,7 +38686,7 @@ function binningMixin(chart) {
             return date.getTime();
           });
           binParam.timeBin = isAuto ? (0, _binningHelpers.autoBinParams)(bounds, numBins) : val;
-          binParam.auto = isAuto;
+          binParam.auto = isAuto; // hightlights the "auto" UI button
         }
         return binParam;
       });
@@ -38762,7 +38773,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {dc.bubbleChart}
  */
 function bubbleChart(parent, chartGroup) {
-
   /* OVERRIDE -----------------------------------------------------------------*/
   var _chart = (0, _bubbleMixin2.default)((0, _capMixin2.default)((0, _coordinateGridMixin2.default)({})));
   var _popupHeader = [];
@@ -38788,7 +38798,6 @@ function bubbleChart(parent, chartGroup) {
   };
 
   _chart.hideOverlappedLabels = function () {
-
     var nodes = _chart.svg().selectAll(".node");
 
     var labelHeight = 10;
@@ -38799,7 +38808,6 @@ function bubbleChart(parent, chartGroup) {
     nodes.classed("hide-label", function (d) {
       return _chart.bubbleR(d) < _chart.minRadiusWithLabel();
     }).each(function (d, i) {
-
       var a = this;
       var aR = i > 0 ? d.radius : _chart.bubbleR(d);
       var aX = i > 0 ? d.xPixel : bubbleX(d);
@@ -38811,7 +38819,6 @@ function bubbleChart(parent, chartGroup) {
       }
 
       for (var j = i + 1; j < nodes[0].length; j++) {
-
         var b = _d2.default.select(nodes[0][j]);
         var d = b.datum();
 
@@ -38845,7 +38852,6 @@ function bubbleChart(parent, chartGroup) {
   }
 
   _chart.showPopup = function (d, i) {
-
     if (_chart.svg().select(".mouse-out-detect").empty()) {
       _chart.svg().insert("rect", ":first-child").attr("class", "mouse-out-detect").attr({ width: _chart.width(), height: _chart.height() }).on("mousemove", _chart.hidePopup);
     }
@@ -38885,7 +38891,6 @@ function bubbleChart(parent, chartGroup) {
         var dist = textWidth - boxWidth;
 
         elm.style("transition-duration", dist * 0.05 + "s").classed("scroll-text", true).on("webkitTransitionEnd", function () {
-
           setTimeout(function () {
             elm.classed("scroll-text", false).style("transform", "translateX(0)");
           }, 500);
@@ -38908,7 +38913,6 @@ function bubbleChart(parent, chartGroup) {
     nodes[0].reverse();
 
     nodes.each(function (node, i) {
-
       if (d === node) {
         foundCurrentNode = true;
         return;
@@ -38939,10 +38943,8 @@ function bubbleChart(parent, chartGroup) {
   };
 
   _chart.updatePopup = function () {
-
     if (_chart.hasFilter()) {
       _chart.popup().selectAll(".popup-row-item").each(function (d) {
-
         _d2.default.select(this).classed("deselected", !_chart.isSelectedNode(d)).classed("selected", _chart.isSelectedNode(d));
       });
     } else {
@@ -38951,12 +38953,11 @@ function bubbleChart(parent, chartGroup) {
   };
 
   function renderPopupRow(d) {
-
     var str = "\n            <td>\n                <div class=\"table-dim\">\n                    <div class=\"table-legend\" style=\"background:" + _chart.getColor(d) + "\"></div>\n                    <div class=\"table-dim-val\">" + _chart.label()(d) + "</div>\n                </div>\n            </td>\n        ";
 
     for (var i = 1; i < _popupHeader.length; i++) {
       if (_popupHeader[i].alias) {
-        str += "<td>" + _utils.utils.formatValue(d[_popupHeader[i].alias]) + "</td>";
+        str = str + ("<td>" + _utils.utils.formatValue(d[_popupHeader[i].alias]) + "</td>");
       }
     }
     return str;
@@ -38973,7 +38974,6 @@ function bubbleChart(parent, chartGroup) {
   };
 
   function positionPopup(d, e) {
-
     var x = bubbleX(d) + _chart.margins().left;
     var y = bubbleY(d) + _chart.margins().top;
 
@@ -39201,7 +39201,13 @@ function cloudChart(parent, chartGroup) {
     _cloudData = _chart.data();
     calculateSizeScale();
     _cloudLayout = _d2.default.layout.cloud().size([_chart.width(), _chart.height()]).words(_cloudData.map(function (d) {
-      return { key0: d.key0, value: d.value, color: d.color, text: d.key0, size: _r(_chart.valueAccessor()(d)) };
+      return {
+        key0: d.key0,
+        value: d.value,
+        color: d.color,
+        text: d.key0,
+        size: _r(_chart.valueAccessor()(d))
+      };
     }
 
     // return {key: d.key0, value: d.value, text: d.key0, size: _r(_chart.valueAccessor()(d))};
@@ -39220,7 +39226,6 @@ function cloudChart(parent, chartGroup) {
   }
 
   function cloudDraw(newTags) {
-
     _tags = newTags;
     var tagElems = _g.attr("transform", "translate(" + _cloudLayout.size()[0] / 2 + "," + _cloudLayout.size()[1] / 2 + ")").selectAll("text").data(_tags);
     tagElems.enter().append("text");
@@ -39340,7 +39345,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {dc.compositeChart}
  */
 function compositeChart(parent, chartGroup) {
-
   var SUB_CHART_CLASS = "sub";
   var DEFAULT_RIGHT_Y_AXIS_LABEL_PADDING = 12;
 
@@ -39917,10 +39921,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function dataCount(parent, chartGroup) {
   var _formatNumber = _d2.default.format(",d");
   var _chart = (0, _baseMixin2.default)({});
-  var _html = { some: "", all: ""
+  var _html = { some: "", all: "" };
 
-    /* OVERRIDE ---------------------------------------------------------------- */
-  };_chart.isCountChart = function () {
+  /* OVERRIDE ---------------------------------------------------------------- */
+  _chart.isCountChart = function () {
     return true;
   }; // override for count chart
   /* ------------------------------------------------------------------------- */
@@ -40575,7 +40579,6 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
   }
 
   _chart._doRedraw = function (data) {
-
     /* OVERRIDE -----------------------------------------------------------------*/
     if (!_hasBeenRendered) {
       return _chart._doRender();
@@ -40707,7 +40710,7 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
     popupBox.append("div").attr("class", "popup-value").html(function () {
       var key = getKey(0, d);
       var value = isNaN(data[key]) ? "N/A" : _utils.utils.formatValue(data[key]);
-      return "<div class=\"popup-value-dim\">" + key + "</div><div class=\"popup-value-measure\">" + value + "</div>";
+      return '<div class="popup-value-dim">' + key + '</div><div class="popup-value-measure">' + value + "</div>";
     });
 
     popup.classed("js-showPopup", true);
@@ -42421,7 +42424,7 @@ var _filters = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* ****************************************************************************
+/** ***************************************************************************
  * OVERRIDE: dc.heatMap                                                       *
  * ***************************************************************************/
 /**
@@ -42489,7 +42492,6 @@ function isDescendingAppropriateData(_ref3) {
 
 function heatMap(parent, chartGroup) {
   var INTERVAL_LABELS = {
-
     // ISO DOW starts at 1, set null at 0 index
     DAY_OF_WEEK: [null, "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
 
@@ -42497,7 +42499,6 @@ function heatMap(parent, chartGroup) {
     MONTH: [null, "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 
     HOUR_OF_DAY: ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM", "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM", "8PM", "9PM", "10PM", "11PM"]
-
   };
 
   var DEFAULT_BORDER_RADIUS = 6.75;
@@ -42522,10 +42523,10 @@ function heatMap(parent, chartGroup) {
   var _minBoxSize = 16;
   var _scrollPos = { top: null, left: 0 };
   var _dockedAxes = void 0;
-  var _dockedAxesSize = { left: 48, bottom: 56
-    /* --------------------------------------------------------------------------*/
+  var _dockedAxesSize = { left: 48, bottom: 56 };
+  /* --------------------------------------------------------------------------*/
 
-  };var _xBorderRadius = DEFAULT_BORDER_RADIUS;
+  var _xBorderRadius = DEFAULT_BORDER_RADIUS;
   var _yBorderRadius = DEFAULT_BORDER_RADIUS;
 
   var _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _baseMixin2.default)({})));
@@ -42616,7 +42617,6 @@ function heatMap(parent, chartGroup) {
   /* --------------------------------------------------------------------------*/
 
   var _boxOnClick = function _boxOnClick(d) {
-
     /* OVERRIDE -----------------------------------------------------------------*/
     var filter = [d.key0, d.key1];
     /* --------------------------------------------------------------------------*/
@@ -42626,36 +42626,30 @@ function heatMap(parent, chartGroup) {
   function filterAxis(axis, value) {
     var cellsOnAxis = _chart.selectAll(".box-group").filter(function (d) {
       return (
-
         /* OVERRIDE ---------------------------------------------------------------*/
         (axis === 1 ? _chart.valueAccessor()(d) : _chart.keyAccessor()(d)) === value
       );
     }
     /* --------------------------------------------------------------------------*/
-
     );
 
     var unfilteredCellsOnAxis = cellsOnAxis.filter(function (d) {
       return (
-
         /* OVERRIDE -----------------------------------------------------------------*/
         !_chart.hasFilter([d.key0, d.key1])
       );
     }
     /* --------------------------------------------------------------------------*/
-
     );
     _events.events.trigger(function () {
       if (unfilteredCellsOnAxis.empty()) {
         cellsOnAxis.each(function (d) {
-
           /* OVERRIDE -----------------------------------------------------------------*/
           _chart.filter([d.key0, d.key1]);
           /* --------------------------------------------------------------------------*/
         });
       } else {
         unfilteredCellsOnAxis.each(function (d) {
-
           /* OVERRIDE -----------------------------------------------------------------*/
           _chart.filter([d.key0, d.key1]);
           /* --------------------------------------------------------------------------*/
@@ -42751,7 +42745,6 @@ function heatMap(parent, chartGroup) {
   };
 
   _chart._doRedraw = function () {
-
     if (!_hasBeenRendered) {
       return _chart._doRender();
     }
@@ -42960,7 +42953,6 @@ function heatMap(parent, chartGroup) {
 
   /* OVERRIDE -----------------------------------------------------------------*/
   _chart.renderAxisLabels = function () {
-
     var root = _chart.root();
 
     var yLabel = root.selectAll(".y-axis-label");
@@ -43004,7 +42996,6 @@ function heatMap(parent, chartGroup) {
   };
 
   _chart.isSelectedNode = function (d) {
-
     /* OVERRIDE -----------------------------------------------------------------*/
     return _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse();
     /* --------------------------------------------------------------------------*/
@@ -43012,7 +43003,6 @@ function heatMap(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   function showPopup(d, i) {
-
     var popup = _chart.popup();
 
     var popupBox = popup.select(".chart-popup-content").html("").classed("popup-list", true);
@@ -43085,7 +43075,7 @@ function heatMap(parent, chartGroup) {
 
   return _chart.anchor(parent, chartGroup);
 }
-/* ****************************************************************************
+/** ***************************************************************************
  * END OVERRIDE: dc.heatMap                                                   *
  * ***************************************************************************/
 
@@ -43229,7 +43219,6 @@ function pieChart(parent, chartGroup) {
   };
 
   function drawChart() {
-
     /* OVERRIDE ---------------------------------------------------------------- */
     // set radius on basis of chart dimension if missing
     // _radius = d3.min([_chart.width(), _chart.height()]) / 2;
@@ -43519,7 +43508,6 @@ function pieChart(parent, chartGroup) {
   };
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.pieStyle = function (pieStyle) {
-
     if (!arguments.length) {
       return _pieStyle;
     }
@@ -43593,10 +43581,10 @@ function pieChart(parent, chartGroup) {
 
   _chart._doRedraw = function () {
     /* OVERRIDE ---------------------------------------------------------------- */
-    if (!_hasBeenRendered) // guard to prevent a redraw before a render
-      {
-        return _chart._doRender();
-      }
+    if (!_hasBeenRendered) {
+      // guard to prevent a redraw before a render
+      return _chart._doRender();
+    }
     /* ------------------------------------------------------------------------- */
     drawChart();
     return _chart;
@@ -43647,7 +43635,6 @@ function pieChart(parent, chartGroup) {
   }
 
   function truncateLabel(data, width, availableLabelWidth) {
-
     var labelText = "" + data;
     var labelLength = labelText.length;
 
@@ -43849,16 +43836,16 @@ function pieChart(parent, chartGroup) {
 
   _chart.legendables = function () {
     return _chart.data().map(function (d, i) {
-
       /* OVERRIDE -----------------------------------------------------------------*/
       var legendable = {
         name: d.key0,
         data: d.value,
         others: d.others,
         chart: _chart
-        /* --------------------------------------------------------------------------*/
+      };
+      /* --------------------------------------------------------------------------*/
 
-      };legendable.color = _chart.getColor(d, i);
+      legendable.color = _chart.getColor(d, i);
       return legendable;
     });
   };
@@ -43887,7 +43874,7 @@ function pieChart(parent, chartGroup) {
 
   return _chart.anchor(parent, chartGroup);
 }
-/* ****************************************************************************
+/** ***************************************************************************
  * END OVERRIDE: dc.pieChart                                                  *
  * ***************************************************************************/
 
@@ -44175,11 +44162,9 @@ function lineChart(parent, chartGroup) {
   }
 
   function hoverOverBrush() {
-
     var g = _chart.g().on("mouseout", function () {
       hideBrushDots();
     }).on("mousemove", function () {
-
       if (_chart.isBrushing()) {
         hidePopup();
       } else {
@@ -44194,7 +44179,6 @@ function lineChart(parent, chartGroup) {
   }
 
   function showBrushDots(g, e) {
-
     var coordinates = [0, 0];
     coordinates = _chart.popupCoordinates(_d2.default.mouse(e));
     var x = coordinates[0];
@@ -44204,7 +44188,6 @@ function lineChart(parent, chartGroup) {
     var popupRows = [];
 
     var toolTips = g.selectAll(".dc-tooltip").each(function () {
-
       var lastDot = null;
       var hoverDot = null;
 
@@ -44215,7 +44198,6 @@ function lineChart(parent, chartGroup) {
       });
 
       dots[0].some(function (obj, i) {
-
         var elm = _d2.default.select(obj);
 
         if (xAdjusted < elm.attr("cx")) {
@@ -44279,7 +44261,6 @@ function lineChart(parent, chartGroup) {
   }
 
   function positionPopup(x, y) {
-
     var popup = _chart.popup().attr("style", function () {
       return "transform:translate(" + x + "px," + y + "px)";
     });
@@ -44290,7 +44271,6 @@ function lineChart(parent, chartGroup) {
   }
 
   function drawDots(chartBody, layers) {
-
     /* OVERRIDE ---------------------------------------------------------------- */
     // if (!_chart.brushOn() && _chart.xyTipsOn()) {
     /* ------------------------------------------------------------------------- */
@@ -44744,7 +44724,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.pushLayer = function (layerName, layer) {
     if (_layerNames[layerName]) {
-      throw new Error("A layer with name \"" + layerName + "\" already exists.");
+      throw new Error('A layer with name "' + layerName + '" already exists.');
     } else if (!layerName.match(/^\w+$/)) {
       throw new Error("A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)");
     }
@@ -45849,7 +45829,6 @@ var ScrollZoomHandler = function (_BaseHandler2) {
     //   console.log(`CROOT - scrollZoom disable ${this._enabled} ${this.isEnabled()}`)
     //   console.trace()
     // }
-
 
   }, {
     key: "_enable",
@@ -47965,7 +47944,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {dc.rowChart}
  */
 function rowChart(parent, chartGroup) {
-
   var _g = void 0;
 
   var _labelOffsetX = 8;
@@ -48038,7 +48016,6 @@ function rowChart(parent, chartGroup) {
   /* --------------------------------------------------------------------------*/
 
   function calculateAxisScale() {
-
     if (!_x) {
       _x = _d2.default.scale.linear();
     }
@@ -48264,7 +48241,6 @@ function rowChart(parent, chartGroup) {
   }
 
   function updateLabels(rows) {
-
     /* OVERRIDE -----------------------------------------------------------------*/
     rows.selectAll("text").style("font-size", _isBigBar ? "14px" : "12px");
     /* --------------------------------------------------------------------------*/
@@ -48290,11 +48266,9 @@ function rowChart(parent, chartGroup) {
 
     /* OVERRIDE -----------------------------------------------------------------*/
     if (_chart.measureLabelsOn()) {
-
       var measureLab = rows.select(".value-measure").classed("deselected-label", function (d) {
         return _chart.hasFilter() && !isSelectedRow(d);
       }).attr("y", _labelOffsetY).attr("dy", isStackLabel() ? "1.1em" : _dyOffset).on("click", onClick).attr("text-anchor", isStackLabel() ? "start" : "end").html(function (d) {
-
         if (d.label) {
           return d.label;
         } else {
@@ -49114,7 +49088,11 @@ function mapdTable(parent, chartGroup) {
 
     if (_isGroupedData) {
       _chart.dimension().value().forEach(function (d, i) {
-        cols.push({ expression: d, name: "key" + i, label: _colAliases ? _colAliases[i] : d });
+        cols.push({
+          expression: d,
+          name: "key" + i,
+          label: _colAliases ? _colAliases[i] : d
+        });
       });
       _chart.group().reduce().forEach(function (d, i) {
         if (d.expression) {
@@ -49122,13 +49100,18 @@ function mapdTable(parent, chartGroup) {
             expression: d.expression,
             name: d.name,
             agg_mode: d.agg_mode,
-            label: _colAliases ? _colAliases[_chart.dimension().value().length + i] : getMeasureColHeaderLabel(d) });
+            label: _colAliases ? _colAliases[_chart.dimension().value().length + i] : getMeasureColHeaderLabel(d)
+          });
         }
       });
     } else {
       cols = _chart.dimension().getProjectOn().map(function (d, i) {
         var splitStr = splitStrOnLastAs(d);
-        return { expression: splitStr[0], name: splitStr[1], label: _colAliases ? _colAliases[i] : splitStr[0] };
+        return {
+          expression: splitStr[0],
+          name: splitStr[1],
+          label: _colAliases ? _colAliases[i] : splitStr[0]
+        };
       });
     }
 
@@ -49234,7 +49217,6 @@ function mapdTable(parent, chartGroup) {
   }
 
   function filterCol(expr, val) {
-
     var key = _crossfilter.getTable()[0] + "." + expr;
     var columns = _crossfilter.getColumns();
     var type = columns[key].type;
@@ -49802,7 +49784,7 @@ function rasterLayer(layerType) {
   } else if (/heat/.test(layerType)) {
     _layer = (0, _rasterLayerHeatmapMixin2.default)(_layer);
   } else {
-    throw new Error("\"" + layerType + "\" is not a valid layer type. The valid layer types are: " + validLayerTypes.join(", "));
+    throw new Error('"' + layerType + '" is not a valid layer type. The valid layer types are: ' + validLayerTypes.join(", "));
   }
 
   var _opacity = 1;
@@ -49963,7 +49945,9 @@ function rasterLayer(layerType) {
     }
 
     if (_layer.type === "heatmap") {
-      var vega = _layer._genVega(_extends({}, genHeatConfigFromChart(chart), { layerName: layerName }));
+      var vega = _layer._genVega(_extends({}, genHeatConfigFromChart(chart), {
+        layerName: layerName
+      }));
       return vega;
     } else {
       var _vega = _layer._genVega(chart, layerName, group, query);
@@ -50059,11 +50043,11 @@ function rasterLayer(layerType) {
   function renderPopupHTML(data, columnOrder, columnMap) {
     var html = "";
     columnOrder.forEach(function (key) {
-      if (!data[key] || !columnMap[key]) {
+      if (!data[key] && !columnMap[key]) {
         return;
       }
 
-      html = html + ("<div class=\"" + _popup_box_item_class + "\"><span class=\"" + _popup_item_key_class + "\">" + (columnMap && columnMap[key] ? columnMap[key] : key) + ":</span><span class=\"" + _popup_item_val_class + "\"> " + data[key] + "</span></div>");
+      html = html + ('<div class="' + _popup_box_item_class + '"><span class="' + _popup_item_key_class + '">' + (columnMap && columnMap[key] ? columnMap[key] : key) + ':</span><span class="' + _popup_item_val_class + '"> ' + data[key] + "</span></div>");
     });
     return html;
   }
@@ -50548,7 +50532,10 @@ function rasterMixin(_chart) {
     }
     var height = typeof _chart.effectiveHeight === "function" ? _chart.effectiveHeight() : _chart.height();
     var pixelRatio = _chart._getPixelRatio() || 1;
-    var pixel = new TPixel({ x: Math.round(point.x * pixelRatio), y: Math.round((height - point.y) * pixelRatio) });
+    var pixel = new TPixel({
+      x: Math.round(point.x * pixelRatio),
+      y: Math.round((height - point.y) * pixelRatio)
+    });
     var tableName = _chart.tableName();
     var columns = getColumnsWithPoints();
     // TODO best to fail, skip cb, or call cb wo args?
@@ -50647,7 +50634,7 @@ function rasterMixin(_chart) {
     var html = "";
     for (var key in data) {
       if (key !== "xPoint" && key !== "yPoint" && !(_chart.colorBy() && key === _chart.colorBy().value && hideColorColumnInPopup())) {
-        html = html + ("<div class=\"map-popup-item\"><span class=\"popup-item-key\">" + key + ":</span><span class=\"popup-item-val\"> " + _utils.utils.formatValue(data[key]) + "</span></div>");
+        html = html + ('<div class="map-popup-item"><span class="popup-item-key">' + key + ':</span><span class="popup-item-val"> ' + _utils.utils.formatValue(data[key]) + "</span></div>");
       }
     }
     return html;
@@ -51122,18 +51109,18 @@ function legend() {
   };
 
   /**
-  #### .legendText([legendTextFunction])
-  Set or get the legend text function. The legend widget uses this function to render
-  the legend text on each item. If no function is specified the legend widget will display
-  the names associated with each group.
-   Default: pluck('name')
-   ```js
-  // create numbered legend items
-  chart.legend(dc.legend().legendText(function(d, i) { return i + '. ' + d.name; }))
-   // create legend displaying group counts
-  chart.legend(dc.legend().legendText(function(d) { return d.name + ': ' d.data; }))
-  ```
-  **/
+    #### .legendText([legendTextFunction])
+    Set or get the legend text function. The legend widget uses this function to render
+    the legend text on each item. If no function is specified the legend widget will display
+    the names associated with each group.
+     Default: pluck('name')
+     ```js
+    // create numbered legend items
+    chart.legend(dc.legend().legendText(function(d, i) { return i + '. ' + d.name; }))
+     // create legend displaying group counts
+    chart.legend(dc.legend().legendText(function(d) { return d.name + ': ' d.data; }))
+    ```
+    **/
   _legend.legendText = function (_) {
     if (!arguments.length) {
       return _legendText;
@@ -51170,7 +51157,6 @@ function legendMixin(legend) {
   };
 
   legend.render = function () {
-
     // Does not re-render if a custom cursor is on the screen
     if (document.getElementById("cursor") !== null) {
       return;
@@ -51402,7 +51388,9 @@ function legendCont() {
     _isLocked = !_isLocked;
 
     if (_isLocked) {
-      _parent._invokeSetCustomContLegendListener({ detail: _parent.colors().domain() });
+      _parent._invokeSetCustomContLegendListener({
+        detail: _parent.colors().domain()
+      });
     } else {
       var minMax = _chartType === "pointmap" || _chartType === "backendScatter" ? _minMax : _d2.default.extent(_parent.data(), _parent.colorAccessor());
       if (minMax) {
@@ -51427,7 +51415,9 @@ function legendCont() {
     if (!isNaN(startVal) && !isNaN(endVal)) {
       _isLocked = true;
       _parent.colorDomain([startVal, endVal]).on("preRedraw.color", null).redrawAsync();
-      _parent._invokeSetCustomContLegendListener({ detail: [startVal, endVal] });
+      _parent._invokeSetCustomContLegendListener({
+        detail: [startVal, endVal]
+      });
     } else {
       _d2.default.select(this).property("value", currVal);
     }
@@ -52337,7 +52327,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // https://github.com/d3/d3-plugins/blob/master/box/box.js
 /* istanbul ignore next */
 (function () {
-
   // Inspired by http://informationandvisualization.de/blog/box-plot
   _d2.default.box = function () {
     var width = 1,
