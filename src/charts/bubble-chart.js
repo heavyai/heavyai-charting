@@ -268,7 +268,7 @@ export default function bubbleChart (parent, chartGroup) {
 
     for (let i = 1; i < _popupHeader.length; i++) {
       if (_popupHeader[i].alias) {
-        str += "<td>" + utils.formatValue(d[_popupHeader[i].alias]) + "</td>"
+        str = str + ("<td>" + utils.formatValue(d[_popupHeader[i].alias]) + "</td>")
       }
     }
     return str

@@ -32,14 +32,14 @@ function hexBinSQL (sql, {width, height, mark, x, y, aggregate}, parser) {
 
   if (hexoffsetx) {
     const mercxdiff = hexoffsetx * (hexmaxmercx - hexminmercx) / heximgwidth
-    hexminmercx -= mercxdiff
-    hexmaxmercx -= mercxdiff
+    hexminmercx = hexminmercx - mercxdiff
+    hexmaxmercx = hexmaxmercx - mercxdiff
   }
 
   if (hexoffsety) {
     const mercydiff = hexoffsety * (hexmaxmercy - hexminmercy) / heximgheight
-    hexminmercy -= mercydiff
-    hexmaxmercy -= mercydiff
+    hexminmercy = hexminmercy - mercydiff
+    hexmaxmercy = hexmaxmercy - mercydiff
   }
 
   const args = `${parser.parseExpression(x.field)},` + `${hexminmercx},` + `${hexmaxmercx},` + `${parser.parseExpression(y.field)},` + `${hexminmercy},` + `${hexmaxmercy},` + `${mark.width},` + `${mark.height},` + `${hexoffsetx},` + `${hexoffsety},` + `${width},` + `${height}`
