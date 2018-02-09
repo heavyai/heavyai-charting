@@ -1,19 +1,19 @@
 const hasLegendOpenProp = color =>
-  typeof color.legend === "object" && color.legend.hasOwnProperty("open")
+  typeof color.legend === "object" && color.legend.hasOwnProperty("open");
 const hasLegendLockedProp = color =>
-  typeof color.legend === "object" && color.legend.hasOwnProperty("locked")
+  typeof color.legend === "object" && color.legend.hasOwnProperty("locked");
 const hasLegendTitleProp = color =>
-  typeof color.legend === "object" && color.legend.hasOwnProperty("title")
+  typeof color.legend === "object" && color.legend.hasOwnProperty("title");
 const handleColorLegendOpenUndefined = color =>
-  typeof color.legend.open === "undefined" ? true : color.legend.open
+  typeof color.legend.open === "undefined" ? true : color.legend.open;
 const handleNonStackedOpenState = state =>
-  state.type === "gradient" ? Object.assign({}, state, {open: true}) : state
+  state.type === "gradient" ? Object.assign({}, state, { open: true }) : state;
 
-const TOP_PADDING = 56
-const LASSO_TOOL_VERTICAL_SPACE = 120
+const TOP_PADDING = 56;
+const LASSO_TOOL_VERTICAL_SPACE = 120;
 
-function setLegendState (setter) {
-  return function setState (state) {
+function setLegendState(setter) {
+  return function setState(state) {
     return {
       ...state,
       encoding: {
@@ -26,12 +26,12 @@ function setLegendState (setter) {
           }
         }
       }
-    }
-  }
+    };
+  };
 }
 
-function setColorState (setter) {
-  return function setState (state) {
+function setColorState(setter) {
+  return function setState(state) {
     return {
       ...state,
       encoding: {
@@ -41,12 +41,12 @@ function setColorState (setter) {
           ...setter(state.encoding.color)
         }
       }
-    }
-  }
+    };
+  };
 }
 
-function setColorScaleDomain (domain) {
-  return function setState (state) {
+function setColorScaleDomain(domain) {
+  return function setState(state) {
     return {
       ...state,
       encoding: {
@@ -59,15 +59,15 @@ function setColorScaleDomain (domain) {
           }
         }
       }
-    }
-  }
+    };
+  };
 }
 
-export function getLegendStateFromChart (chart, useMap) {
-  return toLegendState(chart.getLayerNames().map(
-    layerName => {
-      const layer = chart.getLayer(layerName)
-      const color = layer.getState().encoding.color
+export function getLegendStateFromChart(chart, useMap) {
+  return toLegendState(
+    chart.getLayerNames().map(layerName => {
+      const layer = chart.getLayer(layerName);
+      const color = layer.getState().encoding.color;
       if (typeof color.scale === "object" && color.scale.domain === "auto") {
         return {
           ...color,
@@ -75,82 +75,94 @@ export function getLegendStateFromChart (chart, useMap) {
             ...color.scale,
             domain: layer.colorDomain()
           }
-        }
+        };
       } else {
-        return color
+        return color;
       }
-    }
-  ), chart, useMap)
+    }),
+    chart,
+    useMap
+  );
 }
 
-export function handleLegendToggle () {
+export function handleLegendToggle() {
   this.legend().setState({
     ...this.legend().state,
     open: !this.legend().state.open
-  })
+  });
 }
 
-export function handleLegendDoneRender () {
+export function handleLegendDoneRender() {
   this.root().classed("horizontal-lasso-tools", () => {
-    const legendNode = this.root().select(".legendables").node()
-    const isHorizontal = legendNode && legendNode.clientHeight > this.height() - LASSO_TOOL_VERTICAL_SPACE
+    const legendNode = this.root()
+      .select(".legendables")
+      .node();
+    const isHorizontal =
+      legendNode &&
+      legendNode.clientHeight > this.height() - LASSO_TOOL_VERTICAL_SPACE;
 
-    this.root().select(".mapd-draw-button-control-group")
-      .style("width", isHorizontal ? legendNode.clientWidth + 2 + "px" : "auto")
+    this.root()
+      .select(".mapd-draw-button-control-group")
+      .style(
+        "width",
+        isHorizontal ? legendNode.clientWidth + 2 + "px" : "auto"
+      );
 
-    return isHorizontal
-  })
+    return isHorizontal;
+  });
 }
 
-export function handleLegendOpen (index = 0) {
+export function handleLegendOpen(index = 0) {
   this.getLayers()[index].setState(
     setLegendState(color => ({
-      open: hasLegendOpenProp(color) ? !handleColorLegendOpenUndefined(color) : false
+      open: hasLegendOpenProp(color)
+        ? !handleColorLegendOpenUndefined(color)
+        : false
     }))
-  )
-  this.legend().setState(getLegendStateFromChart(this))
+  );
+  this.legend().setState(getLegendStateFromChart(this));
 }
 
-export function handleLegendLock ({locked, index = 0}) {
-  const layer = this.getLayers()[index]
+export function handleLegendLock({ locked, index = 0 }) {
+  const layer = this.getLayers()[index];
 
   layer.setState(
     setLegendState(color => ({
       locked: typeof locked === "undefined" ? true : !locked
     }))
-  )
+  );
 
-  const {encoding: {color}} = layer.getState()
+  const { encoding: { color } } = layer.getState();
   if (typeof color.scale === "object") {
     if (color.legend.locked) {
-      layer.setState(setColorScaleDomain(layer.colorDomain()))
+      layer.setState(setColorScaleDomain(layer.colorDomain()));
     } else {
-      layer.setState(setColorScaleDomain("auto"))
+      layer.setState(setColorScaleDomain("auto"));
     }
   }
 
-  this.legend().setState(getLegendStateFromChart(this))
+  this.legend().setState(getLegendStateFromChart(this));
 }
 
-export function handleLegendInput ({domain, index = 0}) {
-  const layer = this.getLayers()[index]
-  const {scale} = layer.getState().encoding.color
+export function handleLegendInput({ domain, index = 0 }) {
+  const layer = this.getLayers()[index];
+  const { scale } = layer.getState().encoding.color;
 
   if (typeof scale === "object") {
-    layer.setState(setColorScaleDomain(domain))
+    layer.setState(setColorScaleDomain(domain));
   } else {
     layer.setState(
       setColorState(() => ({
         domain
       }))
-    )
+    );
   }
 
-  this.legend().setState(getLegendStateFromChart(this))
-  this.renderAsync()
+  this.legend().setState(getLegendStateFromChart(this));
+  this.renderAsync();
 }
 
-function legendState (state, useMap = true) {
+function legendState(state, useMap = true) {
   if (state.type === "ordinal") {
     return {
       type: "nominal",
@@ -159,7 +171,7 @@ function legendState (state, useMap = true) {
       range: state.range,
       domain: state.domain,
       position: useMap ? "bottom-left" : "top-right"
-    }
+    };
   } else if (state.type === "quantitative") {
     return {
       type: "gradient",
@@ -169,9 +181,9 @@ function legendState (state, useMap = true) {
       range: state.range,
       domain: state.domain,
       position: useMap ? "bottom-left" : "top-right"
-    }
+    };
   } else if (state.type === "quantize") {
-    const {scale} = state
+    const { scale } = state;
     return {
       type: "gradient",
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
@@ -180,23 +192,24 @@ function legendState (state, useMap = true) {
       range: scale.range,
       domain: scale.domain,
       position: useMap ? "bottom-left" : "top-right"
-    }
+    };
   } else {
-    return {}
+    return {};
   }
 }
 
-export function toLegendState (states = [], chart, useMap) {
+export function toLegendState(states = [], chart, useMap) {
   if (states.length === 1) {
-    return handleNonStackedOpenState(legendState(states[0], useMap))
+    return handleNonStackedOpenState(legendState(states[0], useMap));
   } else if (states.length) {
     return {
       type: "stacked",
       list: states.map(legendState),
-      open: typeof chart.legendOpen() === "undefined" ? true : chart.legendOpen(),
+      open:
+        typeof chart.legendOpen() === "undefined" ? true : chart.legendOpen(),
       maxHeight: chart.height() - TOP_PADDING
-    }
+    };
   } else {
-    return {}
+    return {};
   }
 }

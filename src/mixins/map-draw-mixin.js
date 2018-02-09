@@ -1,5 +1,5 @@
-import * as utils from "../utils/utils-lasso"
-import {redrawAllAsync} from "../core/core-async"
+import * as utils from "../utils/utils-lasso";
+import { redrawAllAsync } from "../core/core-async";
 
 const DRAW_OPTIONS = {
   drawing: true,
@@ -61,7 +61,12 @@ const DRAW_OPTIONS = {
     {
       id: "gl-draw-polygon-and-line-vertex-halo-active",
       type: "circle",
-      filter: ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["==", "active", "true"]],
+      filter: [
+        "all",
+        ["==", "meta", "vertex"],
+        ["==", "$type", "Point"],
+        ["==", "active", "true"]
+      ],
       paint: {
         "circle-radius": 0,
         "circle-color": "#FFF"
@@ -71,7 +76,12 @@ const DRAW_OPTIONS = {
     {
       id: "gl-draw-polygon-and-line-vertex-active",
       type: "circle",
-      filter: ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["==", "active", "true"]],
+      filter: [
+        "all",
+        ["==", "meta", "vertex"],
+        ["==", "$type", "Point"],
+        ["==", "active", "true"]
+      ],
       paint: {
         "circle-radius": 0,
         "circle-color": "#D20C0C"
@@ -120,118 +130,122 @@ const DRAW_OPTIONS = {
       }
     }
   ]
-}
+};
 
-export function mapDrawMixin (chart, _mapboxgl = mapboxgl, _MapboxDraw = MapboxDraw) {
-  let drawControlAdded = false
-  let coordFilter = null
-  let Draw = null
-  let drawMode = false
+export function mapDrawMixin(
+  chart,
+  _mapboxgl = mapboxgl,
+  _MapboxDraw = MapboxDraw
+) {
+  let drawControlAdded = false;
+  let coordFilter = null;
+  let Draw = null;
+  let drawMode = false;
 
-  function drawEventHandler () {
-    applyFilter()
-    redrawAllAsync(chart.chartGroup())
+  function drawEventHandler() {
+    applyFilter();
+    redrawAllAsync(chart.chartGroup());
   }
 
-  function applyFilter () {
-    const {features} = Draw.getAll()
+  function applyFilter() {
+    const { features } = Draw.getAll();
     if (features.length) {
-      const px = chart.xDim().value()[0]
-      const py = chart.yDim().value()[0]
-      const sql = utils.convertGeojsonToSql(features, px, py)
-      coordFilter.filter(sql)
+      const px = chart.xDim().value()[0];
+      const py = chart.yDim().value()[0];
+      const sql = utils.convertGeojsonToSql(features, px, py);
+      coordFilter.filter(sql);
     } else {
-      coordFilter.filter()
+      coordFilter.filter();
     }
 
-    chart._invokeFilteredListener(chart.filters(), false)
+    chart._invokeFilteredListener(chart.filters(), false);
   }
 
-  function filters () {
-    return Draw.getAll().features
+  function filters() {
+    return Draw.getAll().features;
   }
 
-  function filter (feature) {
+  function filter(feature) {
     if (!arguments.length) {
-      return Draw.getAll().features
+      return Draw.getAll().features;
     }
 
     if (feature === null) {
-      Draw.deleteAll()
+      Draw.deleteAll();
     } else {
-      Draw.add(feature)
+      Draw.add(feature);
     }
 
-    applyFilter()
+    applyFilter();
   }
 
-  function changeDrawMode (a, b) {
-    const {features} = Draw.getSelected()
+  function changeDrawMode(a, b) {
+    const { features } = Draw.getSelected();
 
     if (features.length && Draw.getMode() === "direct_select") {
-      Draw.changeMode("simple_select", features[0].id)
+      Draw.changeMode("simple_select", features[0].id);
     }
 
-    const mode = Draw.getMode()
+    const mode = Draw.getMode();
 
     if (features.length || mode === "draw_polygon" || mode === "draw_circle") {
-      chart.drawMode(true)
+      chart.drawMode(true);
     } else {
-      chart.drawMode(false)
+      chart.drawMode(false);
     }
   }
 
-  chart.drawMode = (mode) => {
+  chart.drawMode = mode => {
     if (typeof mode === "boolean") {
-      drawMode = mode
-      return chart
+      drawMode = mode;
+      return chart;
     } else {
-      return drawMode
+      return drawMode;
     }
-  }
+  };
 
   chart.addDrawControl = () => {
     if (drawControlAdded) {
-      return chart
+      return chart;
     }
-    Draw = new _MapboxDraw(DRAW_OPTIONS)
-    drawControlAdded = true
-    chart.map().addControl(Draw, "top-left")
-    chart.map().on("draw.create", drawEventHandler)
-    chart.map().on("draw.update", drawEventHandler)
+    Draw = new _MapboxDraw(DRAW_OPTIONS);
+    drawControlAdded = true;
+    chart.map().addControl(Draw, "top-left");
+    chart.map().on("draw.create", drawEventHandler);
+    chart.map().on("draw.update", drawEventHandler);
     chart.map().on("draw.delete", () => {
-      changeDrawMode()
-      drawEventHandler()
-    })
-    chart.map().on("draw.modechange", changeDrawMode)
-    chart.map().on("draw.selectionchange", changeDrawMode)
-    chart.map().boxZoom.enable()
+      changeDrawMode();
+      drawEventHandler();
+    });
+    chart.map().on("draw.modechange", changeDrawMode);
+    chart.map().on("draw.selectionchange", changeDrawMode);
+    chart.map().boxZoom.enable();
 
-    chart.filter = filter
-    chart.filters = filters
+    chart.filter = filter;
+    chart.filters = filters;
 
     chart.filterAll = () => {
-      chart.drawMode(false)
-      coordFilter.filter()
-      Draw.deleteAll()
-      return chart
-    }
+      chart.drawMode(false);
+      coordFilter.filter();
+      Draw.deleteAll();
+      return chart;
+    };
 
-    return chart
-  }
+    return chart;
+  };
 
-  chart.coordFilter = (filter) => {
+  chart.coordFilter = filter => {
     if (!filter) {
-      return coordFilter
+      return coordFilter;
     }
 
     if (coordFilter) {
-      coordFilter.filter()
+      coordFilter.filter();
     }
 
-    coordFilter = filter
-    return chart
-  }
+    coordFilter = filter;
+    return chart;
+  };
 
-  return chart
+  return chart;
 }

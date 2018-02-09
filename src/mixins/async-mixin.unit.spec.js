@@ -1,19 +1,19 @@
-import {expect} from "chai"
-import asyncMixin from "./async-mixin"
+import { expect } from "chai";
+import asyncMixin from "./async-mixin";
 
 describe("Async Mixin", () => {
-  let chart
-  
-  beforeEach(()=>{
+  let chart;
+
+  beforeEach(() => {
     chart = {
       on: () => () => null,
       data: () => null
-    }
-  })
-  
+    };
+  });
+
   describe("constructor", () => {
-    it('should construct async', () => {
-      asyncMixin(chart)
-    })
-  })
-})
+    it("should construct async", () => {
+      asyncMixin(chart);
+    });
+  });
+});

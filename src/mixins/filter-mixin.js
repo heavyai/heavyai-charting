@@ -1,75 +1,88 @@
-import {isArrayOfObjects, normalizeArrayByValue} from "../utils/formatting-helpers"
-import {events} from "../core/events"
+import {
+  isArrayOfObjects,
+  normalizeArrayByValue
+} from "../utils/formatting-helpers";
+import { events } from "../core/events";
 
-const noop = () => {} // eslint-disable-line no-empty-function
+const noop = () => {}; // eslint-disable-line no-empty-function
 
-export function addFilterHandler (filters, filter) {
+export function addFilterHandler(filters, filter) {
   if (isArrayOfObjects(filter)) {
-    filters.push(filter.map(f => f === null ? null : f.value))
+    filters.push(filter.map(f => (f === null ? null : f.value)));
   } else {
-    filters.push(filter)
+    filters.push(filter);
   }
-  return filters
+  return filters;
 }
 
-export function hasFilterHandler (filters, filter) {
+export function hasFilterHandler(filters, filter) {
   if (typeof filter === "undefined") {
-    return filters.length > 0
+    return filters.length > 0;
   } else if (Array.isArray(filter)) {
-    filter = filter.map(normalizeArrayByValue)
-    return filters.some(f => filter <= f && filter >= f)
+    filter = filter.map(normalizeArrayByValue);
+    return filters.some(f => filter <= f && filter >= f);
   } else {
-    return filters.some(f => filter <= f && filter >= f)
+    return filters.some(f => filter <= f && filter >= f);
   }
 }
 
-export function filterHandlerWithChartContext (_chart) {
-  return function filterHandler (dimension, filters) {
+export function filterHandlerWithChartContext(_chart) {
+  return function filterHandler(dimension, filters) {
     if (dimension.type === "crossfilter") {
-      return filters
+      return filters;
     }
 
     if (filters.length === 0) {
-      dimension.filterAll(_chart.softFilterClear())
+      dimension.filterAll(_chart.softFilterClear());
     } else if (_chart.hasOwnProperty("rangeFocused")) {
-      dimension.filterMulti(filters, _chart.rangeFocused(), _chart.filtersInverse(), _chart.group().binParams())
+      dimension.filterMulti(
+        filters,
+        _chart.rangeFocused(),
+        _chart.filtersInverse(),
+        _chart.group().binParams()
+      );
     } else {
-      dimension.filterMulti(filters, undefined, _chart.filtersInverse(), _chart.group().binParams()) // eslint-disable-line no-undefined
+      dimension.filterMulti(
+        filters,
+        undefined,
+        _chart.filtersInverse(),
+        _chart.group().binParams()
+      ); // eslint-disable-line no-undefined
     }
-    return filters
-  }
+    return filters;
+  };
 }
 
-export default function filterMixin (_chart) {
-  let _filters = []
-  let softFilterClear = false
-  let areFiltersInverse = false
-  let _hasFilterHandler = noop
+export default function filterMixin(_chart) {
+  let _filters = [];
+  let softFilterClear = false;
+  let areFiltersInverse = false;
+  let _hasFilterHandler = noop;
 
-  _chart.filters = function () {
-    return _filters
-  }
+  _chart.filters = function() {
+    return _filters;
+  };
 
-  _chart.replaceFilter = function (_) {
-    _filters = []
-    _chart.filter(_)
-  }
+  _chart.replaceFilter = function(_) {
+    _filters = [];
+    _chart.filter(_);
+  };
 
-  _chart.softFilterClear = function (val) {
+  _chart.softFilterClear = function(val) {
     if (!arguments.length) {
-      return softFilterClear
+      return softFilterClear;
     }
-    softFilterClear = val
-    return _chart
-  }
+    softFilterClear = val;
+    return _chart;
+  };
 
-  _chart.filtersInverse = function (isInverse) {
+  _chart.filtersInverse = function(isInverse) {
     if (!arguments.length) {
-      return areFiltersInverse
+      return areFiltersInverse;
     }
-    areFiltersInverse = isInverse
-    return _chart
-  }
+    areFiltersInverse = isInverse;
+    return _chart;
+  };
 
   /**
    * Clear all filters associated with this chart
@@ -80,77 +93,83 @@ export default function filterMixin (_chart) {
    * @instance
    * @return {dc.baseMixin}
    */
-  _chart.filterAll = function (_softFilterClear) {
+  _chart.filterAll = function(_softFilterClear) {
     if (_softFilterClear) {
-      _chart.softFilterClear(true)
+      _chart.softFilterClear(true);
     } else {
-      _chart.softFilterClear(false)
+      _chart.softFilterClear(false);
     }
-    return _chart.filter(Symbol.for("clear"))
-  }
+    return _chart.filter(Symbol.for("clear"));
+  };
 
-  _chart.filterHandler(filterHandlerWithChartContext(_chart))
+  _chart.filterHandler(filterHandlerWithChartContext(_chart));
 
-  _chart.addFilterHandler(addFilterHandler)
+  _chart.addFilterHandler(addFilterHandler);
 
-  _chart.hasFilter = function (filter) {
-    return _hasFilterHandler(_filters, filter)
-  }
+  _chart.hasFilter = function(filter) {
+    return _hasFilterHandler(_filters, filter);
+  };
 
-  _chart.hasFilterHandler = function (handler) {
+  _chart.hasFilterHandler = function(handler) {
     if (!arguments.length) {
-      return _hasFilterHandler
+      return _hasFilterHandler;
     }
-    _hasFilterHandler = handler
-    return _chart
-  }
+    _hasFilterHandler = handler;
+    return _chart;
+  };
 
-  _chart.hasFilterHandler(hasFilterHandler)
+  _chart.hasFilterHandler(hasFilterHandler);
 
-  function applyFilters () {
+  function applyFilters() {
     if (_chart.dimension() && _chart.dimension().filter) {
-      const fs = _chart.filterHandler()(_chart.dimension(), _filters)
-      _filters = fs ? fs : _filters
+      const fs = _chart.filterHandler()(_chart.dimension(), _filters);
+      _filters = fs ? fs : _filters;
     }
   }
 
-  _chart.filter = function (filter, isFilterInverse = false) {
+  _chart.filter = function(filter, isFilterInverse = false) {
     if (!arguments.length) {
-      return _filters.length > 0 ? _filters[0] : null
+      return _filters.length > 0 ? _filters[0] : null;
     }
 
     if (Array.isArray(filter) && filter.length === 1) {
-      filter = filter[0]
+      filter = filter[0];
     } else if (Array.isArray(filter)) {
-      filter = filter.map(filter => { // eslint-disable-line no-shadow, arrow-body-style
-        return Array.isArray(filter) && filter.length === 1 ? filter[0] : filter
-      })
+      filter = filter.map(filter => {
+        // eslint-disable-line no-shadow, arrow-body-style
+        return Array.isArray(filter) && filter.length === 1
+          ? filter[0]
+          : filter;
+      });
     }
 
     if (isFilterInverse !== _chart.filtersInverse()) {
-      _filters = _chart.resetFilterHandler()(_filters)
-      _chart.filtersInverse(isFilterInverse)
+      _filters = _chart.resetFilterHandler()(_filters);
+      _chart.filtersInverse(isFilterInverse);
     }
 
-    if (filter === Symbol.for("clear") || Array.isArray(filter) && filter.length === 0) {
-      _filters = _chart.resetFilterHandler()(_filters)
+    if (
+      filter === Symbol.for("clear") ||
+      (Array.isArray(filter) && filter.length === 0)
+    ) {
+      _filters = _chart.resetFilterHandler()(_filters);
     } else if (_chart.hasFilter(filter)) {
-      _chart.removeFilterHandler()(_filters, filter)
+      _chart.removeFilterHandler()(_filters, filter);
     } else {
-      _chart.addFilterHandler()(_filters, filter)
+      _chart.addFilterHandler()(_filters, filter);
     }
 
-    applyFilters()
-    _chart._invokeFilteredListener(filter, isFilterInverse)
+    applyFilters();
+    _chart._invokeFilteredListener(filter, isFilterInverse);
 
     if (_chart.root() !== null && _chart.hasFilter()) {
-      _chart.turnOnControls()
+      _chart.turnOnControls();
     } else {
-      _chart.turnOffControls()
+      _chart.turnOffControls();
     }
 
-    return _chart
-  }
+    return _chart;
+  };
 
   /**
    * Filters chart on click. Determines if filter is inverse and passes
@@ -164,16 +183,16 @@ export default function filterMixin (_chart) {
    * @param {dc filter} filter
    * @return {dc.baseMixin}
    */
-  _chart.handleFilterClick = function (event, filter) {
+  _chart.handleFilterClick = function(event, filter) {
     if (event.defaultPrevented) {
-      return
+      return;
     }
-    const isInverseFilter = event.metaKey || event.ctrlKey
+    const isInverseFilter = event.metaKey || event.ctrlKey;
     events.trigger(() => {
-      _chart.filter(filter, isInverseFilter)
-      _chart.redrawGroup()
-    })
-  }
+      _chart.filter(filter, isInverseFilter);
+      _chart.redrawGroup();
+    });
+  };
 
-  return _chart
+  return _chart;
 }

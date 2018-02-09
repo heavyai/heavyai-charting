@@ -1,4 +1,4 @@
-import {normalizeFiltersArray} from "../utils/formatting-helpers"
+import { normalizeFiltersArray } from "../utils/formatting-helpers";
 
 /**
  * The dc.js filters are functions which are passed into crossfilter to chose which records will be
@@ -20,7 +20,7 @@ import {normalizeFiltersArray} from "../utils/formatting-helpers"
  * @memberof dc
  * @type {{}}
  */
-export const filters = {}
+export const filters = {};
 
 /**
  * RangedFilter is a filter which accepts keys between `low` and `high`.  It is used to implement X
@@ -34,15 +34,15 @@ export const filters = {}
  * @return {Array<Number>}
  * @constructor
  */
-filters.RangedFilter = function (low, high) {
-  const range = new Array(low, high)
-  range.isFiltered = function (value) {
-    return value >= this[0] && value <= this[1]
-  }
-  range.filterType = "RangedFilter"
+filters.RangedFilter = function(low, high) {
+  const range = new Array(low, high);
+  range.isFiltered = function(value) {
+    return value >= this[0] && value <= this[1];
+  };
+  range.filterType = "RangedFilter";
 
-  return range
-}
+  return range;
+};
 
 /**
  * TwoDimensionalFilter is a filter which accepts a single two-dimensional value.  It is used by the
@@ -56,18 +56,27 @@ filters.RangedFilter = function (low, high) {
  * @return {Array<Number>}
  * @constructor
  */
-filters.TwoDimensionalFilter = function (filter = []) {
-  if (filter === null) { return null }
-  if (filter === Symbol.for("clear")) { return filter }
-
-  const f = normalizeFiltersArray(filter)
-  f.isFiltered = function (value) {
-    return value.length && value.length === f.length && value[0] === f[0] && value[1] === f[1]
+filters.TwoDimensionalFilter = function(filter = []) {
+  if (filter === null) {
+    return null;
   }
-  f.filterType = "TwoDimensionalFilter"
+  if (filter === Symbol.for("clear")) {
+    return filter;
+  }
 
-  return f
-}
+  const f = normalizeFiltersArray(filter);
+  f.isFiltered = function(value) {
+    return (
+      value.length &&
+      value.length === f.length &&
+      value[0] === f[0] &&
+      value[1] === f[1]
+    );
+  };
+  f.filterType = "TwoDimensionalFilter";
+
+  return f;
+};
 
 /**
  * The RangedTwoDimensionalFilter allows filtering all values which fit within a rectangular
@@ -88,39 +97,54 @@ filters.TwoDimensionalFilter = function (filter = []) {
  * @return {Array<Array<Number>>}
  * @constructor
  */
-filters.RangedTwoDimensionalFilter = function (filter) {
-  if (filter === null) { return null }
-  if (filter === Symbol.for("clear")) { return filter }
+filters.RangedTwoDimensionalFilter = function(filter) {
+  if (filter === null) {
+    return null;
+  }
+  if (filter === Symbol.for("clear")) {
+    return filter;
+  }
 
-  const f = filter
-  let fromBottomLeft
+  const f = filter;
+  let fromBottomLeft;
 
   if (f[0] instanceof Array) {
     fromBottomLeft = [
-            [Math.min(filter[0][0], filter[1][0]), Math.min(filter[0][1], filter[1][1])],
-            [Math.max(filter[0][0], filter[1][0]), Math.max(filter[0][1], filter[1][1])]
-    ]
+      [
+        Math.min(filter[0][0], filter[1][0]),
+        Math.min(filter[0][1], filter[1][1])
+      ],
+      [
+        Math.max(filter[0][0], filter[1][0]),
+        Math.max(filter[0][1], filter[1][1])
+      ]
+    ];
   } else {
-    fromBottomLeft = [[filter[0], -Infinity], [filter[1], Infinity]]
+    fromBottomLeft = [[filter[0], -Infinity], [filter[1], Infinity]];
   }
 
-  f.isFiltered = function (value) {
-    let x, y
+  f.isFiltered = function(value) {
+    let x, y;
 
     if (value instanceof Array) {
       if (value.length !== 2) {
-        return false
+        return false;
       }
-      x = value[0]
-      y = value[1]
+      x = value[0];
+      y = value[1];
     } else {
-      x = value
-      y = fromBottomLeft[0][1]
+      x = value;
+      y = fromBottomLeft[0][1];
     }
 
-    return x >= fromBottomLeft[0][0] && x < fromBottomLeft[1][0] && y >= fromBottomLeft[0][1] && y < fromBottomLeft[1][1]
-  }
-  f.filterType = "RangedTwoDimensionalFilter"
+    return (
+      x >= fromBottomLeft[0][0] &&
+      x < fromBottomLeft[1][0] &&
+      y >= fromBottomLeft[0][1] &&
+      y < fromBottomLeft[1][1]
+    );
+  };
+  f.filterType = "RangedTwoDimensionalFilter";
 
-  return f
-}
+  return f;
+};

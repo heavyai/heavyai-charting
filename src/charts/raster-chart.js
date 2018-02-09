@@ -1,257 +1,273 @@
-import {getLegendStateFromChart, handleLegendDoneRender, handleLegendInput, handleLegendLock, handleLegendOpen, handleLegendToggle, toLegendState} from "../chart-addons/stacked-legend"
-import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
-import mapMixin from "../mixins/map-mixin"
-import baseMixin from "../mixins/base-mixin"
-import scatterMixin from "../mixins/scatter-mixin"
-import {rasterDrawMixin} from "../mixins/raster-draw-mixin"
-import {lastFilteredSize} from "../core/core-async"
-import {Legend} from "legendables"
+import {
+  getLegendStateFromChart,
+  handleLegendDoneRender,
+  handleLegendInput,
+  handleLegendLock,
+  handleLegendOpen,
+  handleLegendToggle,
+  toLegendState
+} from "../chart-addons/stacked-legend";
+import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin";
+import mapMixin from "../mixins/map-mixin";
+import baseMixin from "../mixins/base-mixin";
+import scatterMixin from "../mixins/scatter-mixin";
+import { rasterDrawMixin } from "../mixins/raster-draw-mixin";
+import { lastFilteredSize } from "../core/core-async";
+import { Legend } from "legendables";
 
-export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
-  let _chart = null
-  let _legend = null
+export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
+  let _chart = null;
+  let _legend = null;
 
-  const _useMap = useMap !== undefined ? useMap : false
+  const _useMap = useMap !== undefined ? useMap : false;
 
-  const parentDivId = parent.attributes.id.value
+  const parentDivId = parent.attributes.id.value;
 
-  const browser = detectBrowser()
-  function detectBrowser () {
+  const browser = detectBrowser();
+  function detectBrowser() {
     // from SO: http://bit.ly/1Wd156O
-    const isOpera = (Boolean(window.opr) && Boolean(opr.addons)) || Boolean(window.opera) || navigator.userAgent.indexOf(" OPR/") >= 0
-    const isFirefox = typeof InstallTrigger !== "undefined"
-    const isSafari = Object.prototype.toString
+    const isOpera =
+      (Boolean(window.opr) && Boolean(opr.addons)) ||
+      Boolean(window.opera) ||
+      navigator.userAgent.indexOf(" OPR/") >= 0;
+    const isFirefox = typeof InstallTrigger !== "undefined";
+    const isSafari =
+      Object.prototype.toString
         .call(window.HTMLElement)
-        .indexOf("Constructor") > 0
-    const isIE = /* @cc_on!@*/ false || Boolean(document.documentMode)
-    const isEdge = !isIE && Boolean(window.StyleMedia)
-    const isChrome = Boolean(window.chrome) && Boolean(window.chrome.webstore)
-    return {isOpera, isFirefox, isSafari, isIE, isEdge, isChrome}
+        .indexOf("Constructor") > 0;
+    const isIE = /* @cc_on!@*/ false || Boolean(document.documentMode);
+    const isEdge = !isIE && Boolean(window.StyleMedia);
+    const isChrome = Boolean(window.chrome) && Boolean(window.chrome.webstore);
+    return { isOpera, isFirefox, isSafari, isIE, isEdge, isChrome };
   }
 
   if (_useMap) {
-    _chart = mapMixin(baseMixin({}), parentDivId, _mapboxgl, true, false)
+    _chart = mapMixin(baseMixin({}), parentDivId, _mapboxgl, true, false);
   } else {
     _chart = scatterMixin(
       coordinateGridRasterMixin({}, _mapboxgl, browser),
       _mapboxgl,
       true
-    )
+    );
   }
 
   // unset predefined mandatory attributes
-  _chart._mandatoryAttributes([])
+  _chart._mandatoryAttributes([]);
 
-  let _con = window.hasOwnProperty("con") ? con : null
-  const _imageOverlay = null
-  let _renderBoundsMap = {}
-  let _layerNames = {}
-  let _layers = []
-  let _hasBeenRendered = false
+  let _con = window.hasOwnProperty("con") ? con : null;
+  const _imageOverlay = null;
+  let _renderBoundsMap = {};
+  let _layerNames = {};
+  let _layers = [];
+  let _hasBeenRendered = false;
 
-  let _x = null
-  let _y = null
-  const _xScaleName = "x"
-  const _yScaleName = "y"
+  let _x = null;
+  let _y = null;
+  const _xScaleName = "x";
+  const _yScaleName = "y";
 
-  let _usePixelRatio = false
-  let _pixelRatio = 1
+  let _usePixelRatio = false;
+  let _pixelRatio = 1;
 
-  let _minPopupShapeBoundsArea = 16 * 16
-  let _popupSearchRadius = 2
-  const _popupDivClassName = "map-popup"
-  let _popupDisplayable = true
-  let _legendOpen = true
+  let _minPopupShapeBoundsArea = 16 * 16;
+  let _popupSearchRadius = 2;
+  const _popupDivClassName = "map-popup";
+  let _popupDisplayable = true;
+  let _legendOpen = true;
 
-  _chart.legendOpen = function (_) {
+  _chart.legendOpen = function(_) {
     if (!arguments.length) {
-      return _legendOpen
+      return _legendOpen;
     }
-    _legendOpen = _
-    return _chart
-  }
+    _legendOpen = _;
+    return _chart;
+  };
 
-  _chart.popupDisplayable = function (displayable) {
-    _popupDisplayable = Boolean(displayable)
-  }
+  _chart.popupDisplayable = function(displayable) {
+    _popupDisplayable = Boolean(displayable);
+  };
 
-  _chart.x = function (x) {
+  _chart.x = function(x) {
     if (!arguments.length) {
-      return _x
+      return _x;
     }
-    _x = x
-    return _chart
-  }
+    _x = x;
+    return _chart;
+  };
 
-  _chart.y = function (_) {
+  _chart.y = function(_) {
     if (!arguments.length) {
-      return _y
+      return _y;
     }
-    _y = _
-    return _chart
-  }
+    _y = _;
+    return _chart;
+  };
 
-  _chart._resetRenderBounds = function () {
-    _renderBoundsMap = {}
-  }
+  _chart._resetRenderBounds = function() {
+    _renderBoundsMap = {};
+  };
 
-  _chart._resetLayers = function () {
-    _layers = []
-    _layerNames = {}
-  }
+  _chart._resetLayers = function() {
+    _layers = [];
+    _layerNames = {};
+  };
 
-  _chart.pushLayer = function (layerName, layer) {
+  _chart.pushLayer = function(layerName, layer) {
     if (_layerNames[layerName]) {
-      throw new Error("A layer with name \"" + layerName + "\" already exists.")
+      throw new Error('A layer with name "' + layerName + '" already exists.');
     } else if (!layerName.match(/^\w+$/)) {
       throw new Error(
         "A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)"
-      )
+      );
     }
 
-    _layers.push(layerName)
-    _layerNames[layerName] = layer
-    return _chart
-  }
+    _layers.push(layerName);
+    _layerNames[layerName] = layer;
+    return _chart;
+  };
 
-  _chart.popLayer = function () {
-    const layerName = _layers.pop()
-    const layer = _layerNames[layerName]
-    delete _layerNames[layerName]
-    return layer
-  }
+  _chart.popLayer = function() {
+    const layerName = _layers.pop();
+    const layer = _layerNames[layerName];
+    delete _layerNames[layerName];
+    return layer;
+  };
 
-  _chart.popAllLayers = function () {
+  _chart.popAllLayers = function() {
     const poppedLayers = _layers.map(layerName => {
-      const layer = _layerNames[layerName]
-      delete _layerNames[layerName]
-      return layer
-    })
-    _layers = []
-    return poppedLayers
-  }
+      const layer = _layerNames[layerName];
+      delete _layerNames[layerName];
+      return layer;
+    });
+    _layers = [];
+    return poppedLayers;
+  };
 
-  _chart.getLayer = function (layerName) {
-    return _layerNames[layerName]
-  }
+  _chart.getLayer = function(layerName) {
+    return _layerNames[layerName];
+  };
 
-  _chart.getAllLayers = function () {
-    return Object.keys(_layerNames).map(k => _layerNames[k])
-  }
+  _chart.getAllLayers = function() {
+    return Object.keys(_layerNames).map(k => _layerNames[k]);
+  };
 
-  _chart.getLayerAt = function (idx) {
-    const layerName = _layers[idx]
-    return _layerNames[layerName]
-  }
+  _chart.getLayerAt = function(idx) {
+    const layerName = _layers[idx];
+    return _layerNames[layerName];
+  };
 
-  _chart.getLayers = function () {
-    return _layers.map(layerName => _layerNames[layerName])
-  }
+  _chart.getLayers = function() {
+    return _layers.map(layerName => _layerNames[layerName]);
+  };
 
-  _chart.getLayerNames = function () {
-    return _layers
-  }
+  _chart.getLayerNames = function() {
+    return _layers;
+  };
 
-  _chart.xRangeFilter = function (filter) {
+  _chart.xRangeFilter = function(filter) {
     for (const layerName in _layerNames) {
-      const layer = _layerNames[layerName]
+      const layer = _layerNames[layerName];
       // layer.xDim() & layer.xDim().filter(filter)
     }
-  }
+  };
 
-  _chart.yRangeFilter = function (filter) {
+  _chart.yRangeFilter = function(filter) {
     for (const layerName in _layerNames) {
-      const layer = _layerNames[layerName]
+      const layer = _layerNames[layerName];
       // layer.yDim() && layer.yDim().filter(filter)
     }
-  }
+  };
 
-  _chart.destroyChart = function () {
-    _legend.setState({})
+  _chart.destroyChart = function() {
+    _legend.setState({});
 
-    _chart.filterAll()
+    _chart.filterAll();
     for (const layerName in _layerNames) {
-      const layer = _layerNames[layerName]
-      layer.destroyLayer(_chart)
+      const layer = _layerNames[layerName];
+      layer.destroyLayer(_chart);
     }
 
-    _chart.map().remove()
-  }
+    _chart.map().remove();
+  };
 
-  _chart.con = function (_) {
+  _chart.con = function(_) {
     if (!arguments.length) {
-      return _con
+      return _con;
     }
-    _con = _
-    return _chart
-  }
+    _con = _;
+    return _chart;
+  };
 
   // TODO(croot): pixel ratio should probably be configured on the backend
   // rather than here to deal with scenarios where data is used directly
   // in pixel-space.
-  _chart.usePixelRatio = function (usePixelRatio) {
+  _chart.usePixelRatio = function(usePixelRatio) {
     if (!arguments.length) {
-      return _usePixelRatio
+      return _usePixelRatio;
     }
 
-    _usePixelRatio = Boolean(usePixelRatio)
+    _usePixelRatio = Boolean(usePixelRatio);
     if (_usePixelRatio) {
-      _pixelRatio = window.devicePixelRatio || 1
+      _pixelRatio = window.devicePixelRatio || 1;
     } else {
-      _pixelRatio = 1
+      _pixelRatio = 1;
     }
 
-    return _chart
-  }
+    return _chart;
+  };
 
-  _chart._getPixelRatio = function () {
-    return _pixelRatio
-  }
+  _chart._getPixelRatio = function() {
+    return _pixelRatio;
+  };
 
-  _chart.setSample = function () {
+  _chart.setSample = function() {
     _layers.forEach(layerName => {
-      const layer = _layerNames[layerName]
+      const layer = _layerNames[layerName];
       if (layer && typeof layer.setSample === "function") {
-        layer.setSample()
+        layer.setSample();
       }
-    })
-  }
+    });
+  };
 
   _chart.setDataAsync((group, callback) => {
-    const bounds = _chart.getDataRenderBounds()
-    _chart._updateXAndYScales(bounds)
-    const heatLayers = _chart.getLayerNames().filter(
-      layerName => _chart.getLayer(layerName).type === "heatmap"
-    )
+    const bounds = _chart.getDataRenderBounds();
+    _chart._updateXAndYScales(bounds);
+    const heatLayers = _chart
+      .getLayerNames()
+      .filter(layerName => _chart.getLayer(layerName).type === "heatmap");
 
     if (heatLayers.length) {
       Promise.all(
         heatLayers.map(layerId => {
-          const layer = _chart.getLayer(layerId)
+          const layer = _chart.getLayer(layerId);
           if (layer.getState().encoding.color.scale.domain === "auto") {
             return layer.getColorDomain(_chart).then(domain => {
-              layer.colorDomain(domain)
-              return domain
-            })
+              layer.colorDomain(domain);
+              return domain;
+            });
           } else {
-            return Promise.resolve(layer.getState().encoding.color.scale.domain)
+            return Promise.resolve(
+              layer.getState().encoding.color.scale.domain
+            );
           }
         })
-      ).then(allBounds => {
-        _chart._vegaSpec = genLayeredVega(_chart)
-        const nonce = _chart
-          .con()
-          .renderVega(
-            _chart.__dcFlag__,
-            JSON.stringify(_chart._vegaSpec),
-            {},
-            callback
-          )
-        _chart.colors().domain(allBounds[0])
-        _renderBoundsMap[nonce] = bounds
-      }).catch(callback)
+      )
+        .then(allBounds => {
+          _chart._vegaSpec = genLayeredVega(_chart);
+          const nonce = _chart
+            .con()
+            .renderVega(
+              _chart.__dcFlag__,
+              JSON.stringify(_chart._vegaSpec),
+              {},
+              callback
+            );
+          _chart.colors().domain(allBounds[0]);
+          _renderBoundsMap[nonce] = bounds;
+        })
+        .catch(callback);
     } else {
-      _chart._vegaSpec = genLayeredVega(_chart)
+      _chart._vegaSpec = genLayeredVega(_chart);
       const nonce = _chart
         .con()
         .renderVega(
@@ -259,51 +275,55 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
           JSON.stringify(_chart._vegaSpec),
           {},
           callback
-        )
-      _renderBoundsMap[nonce] = bounds
+        );
+      _renderBoundsMap[nonce] = bounds;
     }
-  })
+  });
 
   _chart.data(group => {
     if (_chart.dataCache !== null) {
-      return _chart.dataCache
+      return _chart.dataCache;
     }
 
-    const bounds = _chart.getDataRenderBounds()
-    _chart._updateXAndYScales(bounds)
+    const bounds = _chart.getDataRenderBounds();
+    _chart._updateXAndYScales(bounds);
 
     _chart._vegaSpec = genLayeredVega(
       _chart,
       group,
       lastFilteredSize(group.getCrossfilterId())
-    )
+    );
 
     const result = _chart
       .con()
-      .renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec))
+      .renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec));
 
-    _renderBoundsMap[result.nonce] = bounds
-    return result
-  })
+    _renderBoundsMap[result.nonce] = bounds;
+    return result;
+  });
 
-  _chart._getXScaleName = function () {
-    return _xScaleName
-  }
+  _chart._getXScaleName = function() {
+    return _xScaleName;
+  };
 
-  _chart._getYScaleName = function () {
-    return _yScaleName
-  }
+  _chart._getYScaleName = function() {
+    return _yScaleName;
+  };
 
-  _chart._updateXAndYScales = function (renderBounds) {
+  _chart._updateXAndYScales = function(renderBounds) {
     // renderBounds should be in this order - top left, top-right, bottom-right, bottom-left
-    const useRenderBounds = renderBounds && renderBounds.length === 4 && renderBounds[0] instanceof Array && renderBounds[0].length === 2
+    const useRenderBounds =
+      renderBounds &&
+      renderBounds.length === 4 &&
+      renderBounds[0] instanceof Array &&
+      renderBounds[0].length === 2;
 
     if (_x === null) {
-      _x = d3.scale.linear()
+      _x = d3.scale.linear();
     }
 
     if (_y === null) {
-      _y = d3.scale.linear()
+      _y = d3.scale.linear();
     }
 
     if (useRenderBounds) {
@@ -311,33 +331,33 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
         _x.domain([
           _chart.conv4326To900913X(renderBounds[0][0]),
           _chart.conv4326To900913X(renderBounds[1][0])
-        ])
+        ]);
         _y.domain([
           _chart.conv4326To900913Y(renderBounds[2][1]),
           _chart.conv4326To900913Y(renderBounds[0][1])
-        ])
+        ]);
       } else {
-        _x.domain([renderBounds[0][0], renderBounds[1][0]])
-        _y.domain([renderBounds[2][1], renderBounds[0][1]])
+        _x.domain([renderBounds[0][0], renderBounds[1][0]]);
+        _y.domain([renderBounds[2][1], renderBounds[0][1]]);
       }
     } else {
-      const layers = getLayers()
-      const xRanges = []
-      const yRanges = []
+      const layers = getLayers();
+      const xRanges = [];
+      const yRanges = [];
 
       for (layer in layers) {
         let xDim = layer.xDim(),
-          yDim = layer.yDim()
+          yDim = layer.yDim();
         if (xDim) {
-          var range = xDim.getFilter()
+          var range = xDim.getFilter();
           if (range !== null) {
-            xRanges.push(range)
+            xRanges.push(range);
           }
         }
         if (yDim) {
-          var range = yDim.getFilter()
+          var range = yDim.getFilter();
           if (range !== null) {
-            yRanges.push(range)
+            yRanges.push(range);
           }
         }
       }
@@ -349,18 +369,18 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
             Math.max(prevVal[1], currVal[1])
           ],
           [Number.MAX_VALUE, -Number.MAX_VALUE]
-        )
+        );
 
         if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
           _x.domain([
             _chart.conv4326To900913X(xRange[0]),
             _chart.conv4326To900913X(xRange[1])
-          ])
+          ]);
         } else {
-          _x.domain(xRange)
+          _x.domain(xRange);
         }
       } else {
-        _x.domain([0.001, 0.999])
+        _x.domain([0.001, 0.999]);
       }
 
       if (yRanges.length) {
@@ -370,54 +390,54 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
             Math.max(prevVal[1], currVal[1])
           ],
           [Number.MAX_VALUE, -Number.MAX_VALUE]
-        )
+        );
 
         if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
           _y.domain([
             _chart.conv4326To900913X(yRange[0]),
             _chart.conv4326To900913X(yRange[1])
-          ])
+          ]);
         } else {
-          _y.domain(yRange)
+          _y.domain(yRange);
         }
       } else {
-        _y.domain([0.001, 0.999])
+        _y.domain([0.001, 0.999]);
       }
     }
-  }
+  };
 
-  _chart._determineScaleType = function (scale) {
-    const scaleType = null
+  _chart._determineScaleType = function(scale) {
+    const scaleType = null;
     if (scale.rangeBand !== undefined) {
-      return "ordinal"
+      return "ordinal";
     }
     if (scale.exponent !== undefined) {
-      return "power"
+      return "power";
     }
     if (scale.base !== undefined) {
-      return "log"
+      return "log";
     }
     if (scale.quantiles !== undefined) {
-      return "quantiles"
+      return "quantiles";
     }
     if (scale.interpolate !== undefined) {
-      return "linear"
+      return "linear";
     }
-    return "quantize"
+    return "quantize";
+  };
+
+  function removeOverlay(overlay) {
+    _chart._removeOverlay(overlay);
   }
 
-  function removeOverlay (overlay) {
-    _chart._removeOverlay(overlay)
-  }
-
-  _chart._doRender = function (data, redraw, doNotForceData) {
+  _chart._doRender = function(data, redraw, doNotForceData) {
     if (!data && Boolean(!doNotForceData)) {
-      data = _chart.data()
+      data = _chart.data();
     }
 
-    const state = getLegendStateFromChart(_chart, useMap)
+    const state = getLegendStateFromChart(_chart, useMap);
 
-    _legend.setState(state)
+    _legend.setState(state);
 
     if (_chart.isLoaded()) {
       if (Object.keys(data).length) {
@@ -427,62 +447,66 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
           data.nonce,
           browser,
           Boolean(redraw)
-        )
-        _hasBeenRendered = true
-
+        );
+        _hasBeenRendered = true;
       } else {
-        _chart._setOverlay(null, null, null, browser, Boolean(redraw))
+        _chart._setOverlay(null, null, null, browser, Boolean(redraw));
       }
     }
-  }
+  };
 
-  _chart._doRedraw = function () {
-    _chart._doRender(null, true)
-  }
+  _chart._doRedraw = function() {
+    _chart._doRender(null, true);
+  };
 
-  _chart.minPopupShapeBoundsArea = function (minPopupShapeBoundsArea) {
+  _chart.minPopupShapeBoundsArea = function(minPopupShapeBoundsArea) {
     if (!arguments.length) {
-      return _minPopupShapeBoundsArea
+      return _minPopupShapeBoundsArea;
     }
-    _minPopupShapeBoundsArea = minPopupShapeBoundsArea
-    return _chart
-  }
+    _minPopupShapeBoundsArea = minPopupShapeBoundsArea;
+    return _chart;
+  };
 
-  _chart.popupSearchRadius = function (popupSearchRadius) {
+  _chart.popupSearchRadius = function(popupSearchRadius) {
     if (!arguments.length) {
-      return _popupSearchRadius
+      return _popupSearchRadius;
     }
-    _popupSearchRadius = popupSearchRadius
-    return _chart
-  }
+    _popupSearchRadius = popupSearchRadius;
+    return _chart;
+  };
 
-  _chart.getClosestResult = function getClosestResult (point, callback) {
-    const height = typeof _chart.effectiveHeight === "function" ? _chart.effectiveHeight() : _chart.height()
-    const pixelRatio = _chart._getPixelRatio() || 1
+  _chart.getClosestResult = function getClosestResult(point, callback) {
+    const height =
+      typeof _chart.effectiveHeight === "function"
+        ? _chart.effectiveHeight()
+        : _chart.height();
+    const pixelRatio = _chart._getPixelRatio() || 1;
     const pixel = new TPixel({
       x: Math.round(point.x * pixelRatio),
       y: Math.round((height - point.y) * pixelRatio)
-    })
+    });
 
     if (!point) {
-      return
+      return;
     }
 
-    let cnt = 0
-    const layerObj = {}
+    let cnt = 0;
+    const layerObj = {};
     _layers.forEach(layerName => {
-      const layer = _layerNames[layerName]
+      const layer = _layerNames[layerName];
       if (
-        layer.getPopupAndRenderColumns && layer.hasPopupColumns && layer.hasPopupColumns()
+        layer.getPopupAndRenderColumns &&
+        layer.hasPopupColumns &&
+        layer.hasPopupColumns()
       ) {
-        layerObj[layerName] = layer.getPopupAndRenderColumns(_chart)
-        ++cnt
+        layerObj[layerName] = layer.getPopupAndRenderColumns(_chart);
+        ++cnt;
       }
-    })
+    });
 
     // TODO best to fail, skip cb, or call cb wo args?
     if (!cnt) {
-      return
+      return;
     }
 
     return _chart.con().getResultRowForPixel(
@@ -490,98 +514,109 @@ export default function rasterChart (parent, useMap, chartGroup, _mapboxgl) {
       pixel,
       layerObj,
       [
-        function (err, results) {
+        function(err, results) {
           if (err) {
             throw new Error(
               `getResultRowForPixel failed with message: ${err.message}`
-            )
+            );
           } else {
-            return callback(results[0])
+            return callback(results[0]);
           }
         }
       ],
       Math.ceil(_popupSearchRadius * pixelRatio)
-    )
-  }
+    );
+  };
 
-  _chart.displayPopup = function displayPopup (result, animate) {
+  _chart.displayPopup = function displayPopup(result, animate) {
     if (
-      !_popupDisplayable || !result || !result.row_set || !result.row_set.length
+      !_popupDisplayable ||
+      !result ||
+      !result.row_set ||
+      !result.row_set.length
     ) {
-      return
+      return;
     }
     if (_chart.select("." + _popupDivClassName).empty()) {
       // only one popup at a time
-      const layer = _layerNames[result.vega_table_name]
+      const layer = _layerNames[result.vega_table_name];
       if (layer && layer.areResultsValidForPopup(result.row_set)) {
         const mapPopup = _chart
           .root()
           .append("div")
-          .attr("class", _popupDivClassName)
+          .attr("class", _popupDivClassName);
         layer.displayPopup(
           _chart,
           mapPopup,
           result,
           _minPopupShapeBoundsArea,
           animate
-        )
+        );
       }
     }
-  }
+  };
 
-  _chart.hidePopup = function hidePopup (animate) {
-    const popupElem = _chart.select("." + _popupDivClassName)
+  _chart.hidePopup = function hidePopup(animate) {
+    const popupElem = _chart.select("." + _popupDivClassName);
     if (!popupElem.empty()) {
       for (let i = 0; i < _layers.length; ++i) {
-        const layerName = _layers[i]
-        const layer = _layerNames[layerName]
+        const layerName = _layers[i];
+        const layer = _layerNames[layerName];
         if (layer && layer.isPopupDisplayed(_chart)) {
           // TODO(croot): can this be improved? I presume only
           // one popup can be shown at a time
           if (animate) {
             layer.hidePopup(_chart, () => {
-              _chart.select("." + _popupDivClassName).remove()
-            })
+              _chart.select("." + _popupDivClassName).remove();
+            });
           } else {
-            _chart.select("." + _popupDivClassName).remove()
+            _chart.select("." + _popupDivClassName).remove();
           }
-          break
+          break;
         }
       }
     }
-  }
+  };
 
-  const anchored = _chart.anchor(parent, chartGroup)
-  const legend = anchored.root().append("div").attr("class", "legend")
-  _legend = new Legend(legend.node())
+  const anchored = _chart.anchor(parent, chartGroup);
+  const legend = anchored
+    .root()
+    .append("div")
+    .attr("class", "legend");
+  _legend = new Legend(legend.node());
 
+  _legend.on("open", handleLegendOpen.bind(_chart));
+  _legend.on("lock", handleLegendLock.bind(_chart));
+  _legend.on("input", handleLegendInput.bind(_chart));
+  _legend.on("toggle", handleLegendToggle.bind(_chart));
+  _legend.on("doneRender", handleLegendDoneRender.bind(_chart));
 
-  _legend.on("open", handleLegendOpen.bind(_chart))
-  _legend.on("lock", handleLegendLock.bind(_chart))
-  _legend.on("input", handleLegendInput.bind(_chart))
-  _legend.on("toggle", handleLegendToggle.bind(_chart))
-  _legend.on("doneRender", handleLegendDoneRender.bind(_chart))
+  _chart.legend = function(l) {
+    return _legend;
+  };
 
-  _chart.legend = function (l) {
-    return _legend
-  }
-
-  return anchored
+  return anchored;
 }
 
-function valuesOb (obj) {
-  return Object.keys(obj).map(key => obj[key])
+function valuesOb(obj) {
+  return Object.keys(obj).map(key => obj[key]);
 }
 
-function genLayeredVega (chart) {
-  const pixelRatio = chart._getPixelRatio()
-  const width = (typeof chart.effectiveWidth === "function" ? chart.effectiveWidth() : chart.width()) * pixelRatio
-  const height = (typeof chart.effectiveHeight === "function" ? chart.effectiveHeight() : chart.height()) * pixelRatio
+function genLayeredVega(chart) {
+  const pixelRatio = chart._getPixelRatio();
+  const width =
+    (typeof chart.effectiveWidth === "function"
+      ? chart.effectiveWidth()
+      : chart.width()) * pixelRatio;
+  const height =
+    (typeof chart.effectiveHeight === "function"
+      ? chart.effectiveHeight()
+      : chart.height()) * pixelRatio;
 
-  const xdom = chart.x().domain()
-  const ydom = chart.y().domain()
+  const xdom = chart.x().domain();
+  const ydom = chart.y().domain();
 
-  const data = []
+  const data = [];
 
   let scales = [
     {
@@ -596,16 +631,16 @@ function genLayeredVega (chart) {
       domain: chart.y().domain(),
       range: "height"
     }
-  ]
-  const marks = []
+  ];
+  const marks = [];
 
   chart.getLayerNames().forEach(layerName => {
-    const layerVega = chart.getLayer(layerName).genVega(chart, layerName)
+    const layerVega = chart.getLayer(layerName).genVega(chart, layerName);
 
-    data.push(layerVega.data)
-    scales = scales.concat(layerVega.scales)
-    marks.push(layerVega.mark)
-  })
+    data.push(layerVega.data);
+    scales = scales.concat(layerVega.scales);
+    marks.push(layerVega.mark);
+  });
 
   const vegaSpec = {
     width: Math.round(width),
@@ -613,7 +648,7 @@ function genLayeredVega (chart) {
     data,
     scales,
     marks
-  }
+  };
 
-  return vegaSpec
+  return vegaSpec;
 }
