@@ -346,7 +346,7 @@ export default function rasterLayerPointMixin (_layer) {
           },
           fillColor: getColor(state.encoding.color, layerName)
         }, markType === "circle" ? { size } : {
-          shape: state.config.point.shape,
+          shape: markType,
           width: size,
           height: size
         })
