@@ -320,11 +320,22 @@ export default function rasterLayerPointMixin (_layer) {
       },
       scales: getScales(state.encoding, layerName),
       mark: {
-        type: "symbol",
+        type: markType === "circle" ? "points" : "symbol",
         from: {
           data: layerName
         },
-        properties: Object.assign({}, {
+        properties: Object.assign({}, markType === "circle" ? {
+          x: {
+            scale: "x",
+            field: "x"
+          },
+          y: {
+            scale: "y",
+            field: "y"
+          },
+          fillColor: getColor(state.encoding.color, layerName)
+        } :
+        {
           xc: {
             scale: "x",
             field: "x"
@@ -334,8 +345,8 @@ export default function rasterLayerPointMixin (_layer) {
             field: "y"
           },
           fillColor: getColor(state.encoding.color, layerName)
-        }, {
-          shape: state.config.point.shape,
+        }, markType === "circle" ? { size } : {
+          shape: markType,
           width: size,
           height: size
         })
