@@ -36,6 +36,9 @@ coverage
 bundle.js
 spec/index-browserify.html
 
+# built files
+dist
+
 # font noise from some doc tool
 web/docs/public
 
@@ -49,3 +52,4 @@ example/css/chart.css
 
 .nyc_output
 *.lcov
+
