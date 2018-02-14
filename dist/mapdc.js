@@ -44000,6 +44000,7 @@ function lineChart(parent, chartGroup) {
       layersList = chartBody.append("g").attr("class", "stack-list");
     }
 
+    console.log("_chart.data()", _chart.data());
     var layers = layersList.selectAll("g.stack").data(_chart.data());
 
     var layersEnter = layers.enter().append("g").attr("class", function (d, i) {
@@ -45386,7 +45387,7 @@ function legendState(state) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain,
-      position: useMap ? "bottom-left" : "top-right"
+      position: "bottom-left"
     };
   } else if (state.type === "quantitative") {
     return {
@@ -45396,7 +45397,7 @@ function legendState(state) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain,
-      position: useMap ? "bottom-left" : "top-right"
+      position: "bottom-left"
     };
   } else if (state.type === "quantize") {
     var scale = state.scale;
@@ -45408,7 +45409,7 @@ function legendState(state) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: scale.range,
       domain: scale.domain,
-      position: useMap ? "bottom-left" : "top-right"
+      position: "bottom-left"
     };
   } else {
     return {};
