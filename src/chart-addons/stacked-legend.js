@@ -150,7 +150,7 @@ export function handleLegendInput ({domain, index = 0}) {
   this.renderAsync()
 }
 
-function legendState (state, useMap = true) {
+function legendState (state) {
   if (state.type === "ordinal") {
     return {
       type: "nominal",
