@@ -150,7 +150,7 @@ export function handleLegendInput ({domain, index = 0}) {
   this.renderAsync()
 }
 
-function legendState (state) {
+function legendState (state, useMap = true) {
   if (state.type === "ordinal") {
     return {
       type: "nominal",
@@ -158,7 +158,7 @@ function legendState (state) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain,
-      position: "bottom-left"
+      position: useMap ? "bottom-left" : "top-right"
     }
   } else if (state.type === "quantitative") {
     return {
