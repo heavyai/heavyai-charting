@@ -150,7 +150,7 @@ export function handleLegendInput ({domain, index = 0}) {
   this.renderAsync()
 }
 
-function legendState (state, useMap = true) {
+function legendState (state) {
   if (state.type === "ordinal") {
     return {
       type: "nominal",
@@ -158,7 +158,7 @@ function legendState (state, useMap = true) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain,
-      position: useMap ? "bottom-left" : "top-right"
+      position: "bottom-left"
     }
   } else if (state.type === "quantitative") {
     return {
@@ -168,7 +168,7 @@ function legendState (state, useMap = true) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain,
-      position: useMap ? "bottom-left" : "top-right"
+      position: "bottom-left"
     }
   } else if (state.type === "quantize") {
     const {scale} = state
@@ -179,7 +179,7 @@ function legendState (state, useMap = true) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: scale.range,
       domain: scale.domain,
-      position: useMap ? "bottom-left" : "top-right"
+      position: "bottom-left"
     }
   } else {
     return {}
