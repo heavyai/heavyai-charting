@@ -44000,7 +44000,6 @@ function lineChart(parent, chartGroup) {
       layersList = chartBody.append("g").attr("class", "stack-list");
     }
 
-    console.log("_chart.data()", _chart.data());
     var layers = layersList.selectAll("g.stack").data(_chart.data());
 
     var layersEnter = layers.enter().append("g").attr("class", function (d, i) {
