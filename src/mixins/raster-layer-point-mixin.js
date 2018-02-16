@@ -481,7 +481,10 @@ export default function rasterLayerPointMixin (_layer) {
     const xPixel = xscale(data[rndrProps.xc || rndrProps.x]) + margins.left
     const yPixel = height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top
 
-    let dotSize = _layer.getSizeVal(data[rndrProps.size || rndrProps.width || rndrProps.height])
+    let sizeFromData = data[rndrProps.size || rndrProps.width || rndrProps.height]
+    sizeFromData = Math.max(sizeFromData, 1) // size must be > 0 (#164)
+    let dotSize = _layer.getSizeVal(sizeFromData)
+
     let scale = 1
     const scaleRatio = minPopupArea / (dotSize * dotSize)
     const isScaled = scaleRatio > 1
