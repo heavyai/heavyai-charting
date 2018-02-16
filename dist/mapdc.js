@@ -25907,7 +25907,10 @@ function rasterLayerPointMixin(_layer) {
     var xPixel = xscale(data[rndrProps.xc || rndrProps.x]) + margins.left;
     var yPixel = height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top;
 
-    var dotSize = _layer.getSizeVal(data[rndrProps.size || rndrProps.width || rndrProps.height]);
+    var sizeFromData = data[rndrProps.size || rndrProps.width || rndrProps.height];
+    sizeFromData = Math.max(sizeFromData, 1); // size must be > 0 (#164)
+    var dotSize = _layer.getSizeVal(sizeFromData);
+
     var scale = 1;
     var scaleRatio = minPopupArea / (dotSize * dotSize);
     var isScaled = scaleRatio > 1;
@@ -50102,7 +50105,6 @@ function rasterLayer(layerType) {
     xscale.range([0, width]);
     yscale.range([0, height]);
 
-    console.log("_displayPopup", chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate);
     var popupData = _layer._displayPopup(chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate);
 
     // restore the original ranges so we don't screw anything else up
@@ -50111,7 +50113,6 @@ function rasterLayer(layerType) {
 
     var rndrProps = popupData.rndrPropSet;
     var bounds = popupData.bounds;
-    console.log("popupData", popupData);
 
     var boundsWidth = bounds[1] - bounds[0];
     var boundsHeight = bounds[3] - bounds[2];
@@ -50137,7 +50138,6 @@ function rasterLayer(layerType) {
     var bottom = false;
     var topOffset = 0;
 
-    console.log("_popup_wrap_class", posX, posY, bounds, boundsWidth);
     var popupDiv = parentElem.append("div").attr("class", _popup_wrap_class).style({ left: posX + "px", top: posY + "px" });
 
     var popupBox = popupDiv.append("div").attr("class", _popup_box_class).html(_layer.popupFunction() ? _layer.popupFunction(filteredData, popupColumns, mappedColumns) : renderPopupHTML(filteredData, popupColumns, mappedColumns)).style("left", function () {
