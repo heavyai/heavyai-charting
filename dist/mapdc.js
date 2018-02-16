@@ -25873,7 +25873,7 @@ function rasterLayerPointMixin(_layer) {
     return _vega;
   };
 
-  var renderAttributes = ["xc", "yc", "size", "width", "height", "fillColor"];
+  var renderAttributes = ["x", "y", "xc", "yc", "size", "width", "height", "fillColor"];
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
     if (_vega && _vega.mark && _vega.mark.properties) {
@@ -25904,10 +25904,13 @@ function rasterLayerPointMixin(_layer) {
       });
     }
 
-    var xPixel = xscale(data[rndrProps.xc]) + margins.left;
-    var yPixel = height - yscale(data[rndrProps.yc]) + margins.top;
+    var xPixel = xscale(data[rndrProps.xc || rndrProps.x]) + margins.left;
+    var yPixel = height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top;
 
-    var dotSize = _layer.getSizeVal(data[rndrProps.size || rndrProps.width || rndrProps.height]);
+    var sizeFromData = data[rndrProps.size || rndrProps.width || rndrProps.height];
+    sizeFromData = Math.max(sizeFromData, 1); // size must be > 0 (#164)
+    var dotSize = _layer.getSizeVal(sizeFromData);
+
     var scale = 1;
     var scaleRatio = minPopupArea / (dotSize * dotSize);
     var isScaled = scaleRatio > 1;
@@ -45386,7 +45389,7 @@ function legendState(state) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain,
-      position: "bottom-left"
+      position: useMap ? "bottom-left" : "top-right"
     };
   } else if (state.type === "quantitative") {
     return {
