@@ -337,28 +337,42 @@ export default function rasterLayerPointMixin(_layer) {
       },
       scales: getScales(state.encoding, layerName),
       mark: {
-        type: "symbol",
+        type: markType === "circle" ? "points" : "symbol",
         from: {
           data: layerName
         },
         properties: Object.assign(
           {},
-          {
-            xc: {
-              scale: "x",
-              field: "x"
-            },
-            yc: {
-              scale: "y",
-              field: "y"
-            },
-            fillColor: getColor(state.encoding.color, layerName)
-          },
-          {
-            shape: state.config.point.shape,
-            width: size,
-            height: size
-          }
+          markType === "circle"
+            ? {
+                x: {
+                  scale: "x",
+                  field: "x"
+                },
+                y: {
+                  scale: "y",
+                  field: "y"
+                },
+                fillColor: getColor(state.encoding.color, layerName)
+              }
+            : {
+                xc: {
+                  scale: "x",
+                  field: "x"
+                },
+                yc: {
+                  scale: "y",
+                  field: "y"
+                },
+                fillColor: getColor(state.encoding.color, layerName)
+              },
+          markType === "circle"
+            ? { size }
+            : {
+                shape: markType,
+                width: size,
+                height: size
+              }
         )
       }
     };
@@ -440,7 +454,16 @@ export default function rasterLayerPointMixin(_layer) {
     return _vega;
   };
 
-  const renderAttributes = ["xc", "yc", "size", "width", "height", "fillColor"];
+  const renderAttributes = [
+    "x",
+    "y",
+    "xc",
+    "yc",
+    "size",
+    "width",
+    "height",
+    "fillColor"
+  ];
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
     if (_vega && _vega.mark && _vega.mark.properties) {
@@ -490,12 +513,15 @@ export default function rasterLayerPointMixin(_layer) {
       });
     }
 
-    const xPixel = xscale(data[rndrProps.xc]) + margins.left;
-    const yPixel = height - yscale(data[rndrProps.yc]) + margins.top;
+    const xPixel = xscale(data[rndrProps.xc || rndrProps.x]) + margins.left;
+    const yPixel =
+      height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top;
 
-    let dotSize = _layer.getSizeVal(
-      data[rndrProps.size || rndrProps.width || rndrProps.height]
-    );
+    let sizeFromData =
+      data[rndrProps.size || rndrProps.width || rndrProps.height];
+    sizeFromData = Math.max(sizeFromData, 1); // size must be > 0 (#164)
+    let dotSize = _layer.getSizeVal(sizeFromData);
+
     let scale = 1;
     const scaleRatio = minPopupArea / (dotSize * dotSize);
     const isScaled = scaleRatio > 1;

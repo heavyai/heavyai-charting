@@ -25774,11 +25774,21 @@ function rasterLayerPointMixin(_layer) {
       },
       scales: getScales(state.encoding, layerName),
       mark: {
-        type: "symbol",
+        type: markType === "circle" ? "points" : "symbol",
         from: {
           data: layerName
         },
-        properties: Object.assign({}, {
+        properties: Object.assign({}, markType === "circle" ? {
+          x: {
+            scale: "x",
+            field: "x"
+          },
+          y: {
+            scale: "y",
+            field: "y"
+          },
+          fillColor: getColor(state.encoding.color, layerName)
+        } : {
           xc: {
             scale: "x",
             field: "x"
@@ -25788,8 +25798,8 @@ function rasterLayerPointMixin(_layer) {
             field: "y"
           },
           fillColor: getColor(state.encoding.color, layerName)
-        }, {
-          shape: state.config.point.shape,
+        }, markType === "circle" ? { size: size } : {
+          shape: markType,
           width: size,
           height: size
         })
@@ -25873,7 +25883,7 @@ function rasterLayerPointMixin(_layer) {
     return _vega;
   };
 
-  var renderAttributes = ["xc", "yc", "size", "width", "height", "fillColor"];
+  var renderAttributes = ["x", "y", "xc", "yc", "size", "width", "height", "fillColor"];
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
     if (_vega && _vega.mark && _vega.mark.properties) {
@@ -25904,10 +25914,13 @@ function rasterLayerPointMixin(_layer) {
       });
     }
 
-    var xPixel = xscale(data[rndrProps.xc]) + margins.left;
-    var yPixel = height - yscale(data[rndrProps.yc]) + margins.top;
+    var xPixel = xscale(data[rndrProps.xc || rndrProps.x]) + margins.left;
+    var yPixel = height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top;
 
-    var dotSize = _layer.getSizeVal(data[rndrProps.size || rndrProps.width || rndrProps.height]);
+    var sizeFromData = data[rndrProps.size || rndrProps.width || rndrProps.height];
+    sizeFromData = Math.max(sizeFromData, 1); // size must be > 0 (#164)
+    var dotSize = _layer.getSizeVal(sizeFromData);
+
     var scale = 1;
     var scaleRatio = minPopupArea / (dotSize * dotSize);
     var isScaled = scaleRatio > 1;
@@ -45361,7 +45374,7 @@ function legendState(state) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: state.range,
       domain: state.domain,
-      position: useMap ? "bottom-left" : "top-right"
+      position: "bottom-left"
     };
   } else if (state.type === "quantize") {
     var scale = state.scale;
@@ -45373,7 +45386,7 @@ function legendState(state) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range: scale.range,
       domain: scale.domain,
-      position: useMap ? "bottom-left" : "top-right"
+      position: "bottom-left"
     };
   } else {
     return {};
