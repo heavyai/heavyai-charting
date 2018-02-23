@@ -38,6 +38,7 @@
     "format": "prettier --write '{src,test}/**/*.js'",
     "format:check": "prettier --debug-check --list-different '{src,test}/**/*.js'",
     "format:lint": "yarn format && yarn lint:fix",
+    "format:check:lint": "yarn format:check && yarn lint",
     "lint": "./node_modules/.bin/eslint $(find src -name \"*.js\" ! -name '*.spec.js')",
     "lint:fix": "./node_modules/.bin/eslint --fix $(find src -name \"*.js\" ! -name '*.spec.js')",
     "lint:errors": "npm run lint -- --quiet",
