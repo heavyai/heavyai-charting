@@ -136,7 +136,7 @@ module.exports = {
     "require-yield": 2, // omission is probably a mistake.
     "spaced-comment": 2, // improves consistency.
     "use-isnan": 2, // comparing to NaN can be difficult to reason about.
-    "valid-jsdoc": 0, // not using jsdoc
+    "valid-jsdoc": 0, // not using jsdoc.
     "valid-typeof": 2, // there are ways to type-check, but will least prevent typos.
     "yoda": 2 // improves readability and consistency.
   },
