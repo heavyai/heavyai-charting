@@ -41,7 +41,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   _chart._mandatoryAttributes().push("x", "y")
 
   _chart.resetSvg = function () {
-    _chart.select("div.svg-wrapper").html("")
+    _chart.root().selectAll("*:not(.legend)").remove()
 
     return _chart.generateSvg()
   }
