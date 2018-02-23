@@ -90,7 +90,7 @@ module.exports = {
     "no-param-reassign": 0, // useful for guarding a function.
     "no-path-concat": 2, // breaks for non-unix system.
     "no-plusplus": 0,
-    "no-process-env": 1, // global deps are bad; better to use config files.
+    "no-process-env": 0, // global deps are bad; better to use config files.
     "no-process-exit": 2, // too drastic; almost always better to throw and handle.
     "no-proto": 2, // deprecated.
     "no-redeclare": [1, {"builtinGlobals": true}], // probably a mistake; should use const/let instead anyway.
@@ -131,13 +131,12 @@ module.exports = {
     "object-shorthand": 2, // increases consistency. #ES6only
     "prefer-arrow-callback": 2, // increases readability and consistency.
     "prefer-const": 1, // better to be explicit about what is expected to change.
-    // "prefer-reflect": 2, // old versions are deprecated. #TODO enable this rule.
     "prefer-rest-params": 0, // easier to read than slicing args. #ES6only
     "prefer-template": 0,
     "require-yield": 2, // omission is probably a mistake.
     "spaced-comment": 2, // improves consistency.
     "use-isnan": 2, // comparing to NaN can be difficult to reason about.
-    "valid-jsdoc": 0, // lints jsdoc comments
+    "valid-jsdoc": 0, // not using jsdoc
     "valid-typeof": 2, // there are ways to type-check, but will least prevent typos.
     "yoda": 2 // improves readability and consistency.
   },
