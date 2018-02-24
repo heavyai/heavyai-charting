@@ -1,1 +1,1 @@
-export const SPINNER_DELAY = 1000;
+export const SPINNER_DELAY = 1000

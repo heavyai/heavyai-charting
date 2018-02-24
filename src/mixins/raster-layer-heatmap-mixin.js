@@ -1,11 +1,11 @@
 import {
   adjustOpacity,
   createRasterLayerGetterSetter
-} from "../utils/utils-vega";
-import { parser } from "../utils/utils";
+} from "../utils/utils-vega"
+import { parser } from "../utils/utils"
 
-const MIN_AREA_IN_METERS = 30;
-const EARTH_DIAMETER = 40075000;
+const MIN_AREA_IN_METERS = 30
+const EARTH_DIAMETER = 40075000
 
 function getPixelSize(neLat, width, zoom) {
   return Math.max(
@@ -14,63 +14,63 @@ function getPixelSize(neLat, width, zoom) {
         Math.cos(neLat * Math.PI / 180) /
         (width * Math.pow(2, zoom))),
     1.0
-  );
+  )
 }
 
 function getMarkHeight(type, width) {
   switch (type) {
     case "hex":
-      return 2 * width / Math.sqrt(3.0);
+      return 2 * width / Math.sqrt(3.0)
     default:
-      return width;
+      return width
   }
 }
 
 function getMarkType(type) {
   switch (type) {
     case "hex":
-      return "hexagon-horiz";
+      return "hexagon-horiz"
     default:
-      return type;
+      return type
   }
 }
 
 export default function rasterLayerHeatmapMixin(_layer) {
-  let state = {};
+  let state = {}
 
-  _layer.type = "heatmap";
-  _layer.crossfilter = createRasterLayerGetterSetter(_layer, null);
-  _layer.xDim = createRasterLayerGetterSetter(_layer, null);
-  _layer.yDim = createRasterLayerGetterSetter(_layer, null);
-  _layer.dynamicSize = createRasterLayerGetterSetter(_layer, null);
-  _layer.dynamicBinning = createRasterLayerGetterSetter(_layer, null);
-  _layer.colorDomain = createRasterLayerGetterSetter(_layer, null);
-  _layer._mandatoryAttributes([]);
+  _layer.type = "heatmap"
+  _layer.crossfilter = createRasterLayerGetterSetter(_layer, null)
+  _layer.xDim = createRasterLayerGetterSetter(_layer, null)
+  _layer.yDim = createRasterLayerGetterSetter(_layer, null)
+  _layer.dynamicSize = createRasterLayerGetterSetter(_layer, null)
+  _layer.dynamicBinning = createRasterLayerGetterSetter(_layer, null)
+  _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
+  _layer._mandatoryAttributes([])
 
   _layer.setState = function(setterOrState) {
     if (typeof setterOrState === "function") {
-      state = setterOrState(state);
+      state = setterOrState(state)
     } else {
-      state = setterOrState;
+      state = setterOrState
     }
-  };
+  }
 
   _layer.getState = function() {
-    return JSON.parse(JSON.stringify(state));
-  };
+    return JSON.parse(JSON.stringify(state))
+  }
 
   function getMarkSize({ width, neLat, zoom }) {
     const pixelSize =
       state.encoding.size.type === "manual"
         ? state.encoding.size.value
-        : getPixelSize(neLat, width, zoom);
-    const numBinsX = Math.round(width / pixelSize);
-    const markWidth = width / numBinsX;
-    const markHeight = getMarkHeight(state.mark, markWidth);
+        : getPixelSize(neLat, width, zoom)
+    const numBinsX = Math.round(width / pixelSize)
+    const markWidth = width / numBinsX
+    const markHeight = getMarkHeight(state.mark, markWidth)
     return {
       markWidth,
       markHeight
-    };
+    }
   }
 
   _layer.genSQL = function({
@@ -90,22 +90,22 @@ export default function rasterLayerHeatmapMixin(_layer) {
       neLat,
       zoom,
       domain
-    });
+    })
 
-    const transforms = [];
+    const transforms = []
 
     if (typeof filter === "string" && filter.length) {
       transforms.push({
         type: "filter",
         expr: filter
-      });
+      })
     }
 
     if (typeof globalFilter === "string" && globalFilter.length) {
       transforms.push({
         type: "filter",
         expr: globalFilter
-      });
+      })
     }
 
     return parser.writeSQL({
@@ -133,8 +133,8 @@ export default function rasterLayerHeatmapMixin(_layer) {
           aggregate: state.encoding.color.aggregate
         }
       ]
-    });
-  };
+    })
+  }
 
   _layer._genVega = function({
     table,
@@ -154,7 +154,7 @@ export default function rasterLayerHeatmapMixin(_layer) {
       neLat,
       zoom,
       domain
-    });
+    })
     return {
       width,
       height,
@@ -215,20 +215,20 @@ export default function rasterLayerHeatmapMixin(_layer) {
           }
         }
       }
-    };
-  };
+    }
+  }
 
   _layer._destroyLayer = function() {
-    const xDim = _layer.xDim();
+    const xDim = _layer.xDim()
     if (xDim) {
-      xDim.dispose();
+      xDim.dispose()
     }
 
-    const yDim = _layer.yDim();
+    const yDim = _layer.yDim()
     if (yDim) {
-      yDim.dispose();
+      yDim.dispose()
     }
-  };
+  }
 
-  return _layer;
+  return _layer
 }

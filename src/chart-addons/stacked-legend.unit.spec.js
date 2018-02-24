@@ -1,5 +1,5 @@
-import { expect } from "chai";
-import { toLegendState } from "./stacked-legend";
+import { expect } from "chai"
+import { toLegendState } from "./stacked-legend"
 
 describe("Stacked Legend", () => {
   describe("toLegendState helper", () => {
@@ -33,8 +33,8 @@ describe("Stacked Legend", () => {
           "#f46a9b",
           "#ede15b"
         ]
-      });
-    });
+      })
+    })
     it("should gradient", () => {
       expect(
         toLegendState([
@@ -70,9 +70,9 @@ describe("Stacked Legend", () => {
           "#f46a9b",
           "#ede15b"
         ]
-      });
-    });
-    it("should undefined", () => {});
-    it("should stacked", () => {});
-  });
-});
+      })
+    })
+    it("should undefined", () => {})
+    it("should stacked", () => {})
+  })
+})

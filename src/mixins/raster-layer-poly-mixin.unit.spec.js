@@ -1,13 +1,13 @@
-import chai, { expect } from "chai";
-import spies from "chai-spies";
-import rasterLayer from "./raster-layer";
+import chai, { expect } from "chai"
+import spies from "chai-spies"
+import rasterLayer from "./raster-layer"
 
-chai.use(spies);
+chai.use(spies)
 
 describe("rasterLayerPolyMixin", () => {
   describe("layer state", () => {
     it("should be able to be set and retrieved", () => {
-      const layer = rasterLayer("polys");
+      const layer = rasterLayer("polys")
       const spec = {
         mark: {
           type: "poly",
@@ -24,15 +24,15 @@ describe("rasterLayerPolyMixin", () => {
             range: ["black", "blue"]
           }
         }
-      };
-      layer.setState(spec);
-      expect(layer.getState()).to.deep.equal(spec);
-    });
-  });
+      }
+      layer.setState(spec)
+      expect(layer.getState()).to.deep.equal(spec)
+    })
+  })
 
   describe("genVega", () => {
     it("should generate the correct vega spec", () => {
-      const layer = rasterLayer("polys");
+      const layer = rasterLayer("polys")
       layer.setState({
         data: [
           {
@@ -70,7 +70,7 @@ describe("rasterLayerPolyMixin", () => {
             range: ["black", "blue"]
           }
         }
-      });
+      })
 
       expect(
         layer.__genVega({
@@ -119,7 +119,7 @@ describe("rasterLayerPolyMixin", () => {
             miterLimit: 20
           }
         }
-      });
-    });
-  });
-});
+      })
+    })
+  })
+})

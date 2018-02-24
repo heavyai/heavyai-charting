@@ -1,18 +1,18 @@
-import { decrementSampledCount, incrementSampledCount } from "../core/core";
-import { lastFilteredSize } from "../core/core-async";
+import { decrementSampledCount, incrementSampledCount } from "../core/core"
+import { lastFilteredSize } from "../core/core-async"
 import {
   adjustOpacity,
   adjustRGBAOpacity,
   createRasterLayerGetterSetter,
   createVegaAttrMixin
-} from "../utils/utils-vega";
-import { parser } from "../utils/utils";
-import * as d3 from "d3";
+} from "../utils/utils-vega"
+import { parser } from "../utils/utils"
+import * as d3 from "d3"
 
-const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
-const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0];
-const AUTOSIZE_RANGE_MININUM = [1, 1];
-const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000;
+const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
+const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
+const AUTOSIZE_RANGE_MININUM = [1, 1]
+const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
 
 function validSymbol(type) {
   switch (type) {
@@ -27,17 +27,17 @@ function validSymbol(type) {
     case "triangle-up":
     case "hexagon-vert":
     case "hexagon-horiz":
-      return true;
+      return true
     default:
-      return false;
+      return false
   }
 }
 
 function getMarkType(config = { point: {} }) {
   if (validSymbol(config.point.shape)) {
-    return config.point.shape;
+    return config.point.shape
   } else {
-    return "circle";
+    return "circle"
   }
 }
 
@@ -49,14 +49,14 @@ function getSizing(
   layerName
 ) {
   if (typeof sizeAttr === "number") {
-    return sizeAttr;
+    return sizeAttr
   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
     return {
       scale: layerName + "_size",
       field: "size"
-    };
+    }
   } else if (sizeAttr === "auto") {
-    const size = Math.min(lastFilteredSize, cap);
+    const size = Math.min(lastFilteredSize, cap)
     const dynamicRScale = d3.scale
       .sqrt()
       .domain(AUTOSIZE_DOMAIN_DEFAULTS)
@@ -65,10 +65,10 @@ function getSizing(
           ? AUTOSIZE_RANGE_MININUM
           : AUTOSIZE_RANGE_DEFAULTS
       )
-      .clamp(true);
-    return Math.round(dynamicRScale(size) * pixelRatio);
+      .clamp(true)
+    return Math.round(dynamicRScale(size) * pixelRatio)
   } else {
-    return null;
+    return null
   }
 }
 
@@ -77,7 +77,7 @@ function getColor(color, layerName) {
     return {
       scale: layerName + "_fillColor",
       value: 0
-    };
+    }
   } else if (
     typeof color === "object" &&
     (color.type === "ordinal" || color.type === "quantitative")
@@ -85,11 +85,11 @@ function getColor(color, layerName) {
     return {
       scale: layerName + "_fillColor",
       field: "color"
-    };
+    }
   } else if (typeof color === "object") {
-    return adjustOpacity(color.value, color.opacity);
+    return adjustOpacity(color.value, color.opacity)
   } else {
-    return color;
+    return color
   }
 }
 
@@ -100,30 +100,30 @@ function getTransforms(
   { transform, encoding: { x, y, size, color } },
   lastFilteredSize
 ) {
-  const transforms = [];
+  const transforms = []
 
   if (
     typeof transform === "object" &&
     typeof transform.groupby === "object" &&
     transform.groupby.length
   ) {
-    const fields = [x.field, y.field];
-    const alias = ["x", "y"];
-    const ops = [x.aggregate, y.aggregate];
+    const fields = [x.field, y.field]
+    const alias = ["x", "y"]
+    const ops = [x.aggregate, y.aggregate]
 
     if (typeof size === "object" && size.type === "quantitative") {
-      fields.push(size.field);
-      alias.push("size");
-      ops.push(size.aggregate);
+      fields.push(size.field)
+      alias.push("size")
+      ops.push(size.aggregate)
     }
 
     if (
       typeof color === "object" &&
       (color.type === "quantitative" || color.type === "ordinal")
     ) {
-      fields.push(color.field);
-      alias.push("color");
-      ops.push(color.aggregate);
+      fields.push(color.field)
+      alias.push("color")
+      ops.push(color.aggregate)
     }
 
     transforms.push({
@@ -136,31 +136,31 @@ function getTransforms(
         expr: g,
         as: `key${i}`
       }))
-    });
+    })
   } else {
     transforms.push({
       type: "project",
       expr: x.field,
       as: "x"
-    });
+    })
     transforms.push({
       type: "project",
       expr: y.field,
       as: "y"
-    });
+    })
 
     if (typeof transform.limit === "number") {
       transforms.push({
         type: "limit",
         row: transform.limit
-      });
+      })
       if (transform.sample) {
         transforms.push({
           type: "sample",
           method: "multiplicative",
           size: lastFilteredSize || transform.tableSize,
           limit: transform.limit
-        });
+        })
       }
     }
 
@@ -169,7 +169,7 @@ function getTransforms(
         type: "project",
         expr: size.field,
         as: "size"
-      });
+      })
     }
 
     if (
@@ -180,34 +180,34 @@ function getTransforms(
         type: "project",
         expr: color.field,
         as: "color"
-      });
+      })
     }
 
     transforms.push({
       type: "project",
       expr: `${table}.rowid`
-    });
+    })
   }
 
   if (typeof filter === "string" && filter.length) {
     transforms.push({
       type: "filter",
       expr: filter
-    });
+    })
   }
 
   if (typeof globalFilter === "string" && globalFilter.length) {
     transforms.push({
       type: "filter",
       expr: globalFilter
-    });
+    })
   }
 
-  return transforms;
+  return transforms
 }
 
 function getScales({ size, color }, layerName) {
-  const scales = [];
+  const scales = []
 
   if (typeof size === "object" && size.type === "quantitative") {
     scales.push({
@@ -216,7 +216,7 @@ function getScales({ size, color }, layerName) {
       domain: size.domain,
       range: size.range,
       clamp: true
-    });
+    })
   }
 
   if (typeof color === "object" && color.type === "density") {
@@ -229,16 +229,16 @@ function getScales({ size, color }, layerName) {
       range: color.range
         .map(c => adjustOpacity(c, color.opacity))
         .map((c, i, colorArray) => {
-          const normVal = i / (colorArray.length - 1);
-          let interp = Math.min(normVal / 0.65, 1.0);
-          interp = interp * 0.375 + 0.625;
-          return adjustRGBAOpacity(c, interp);
+          const normVal = i / (colorArray.length - 1)
+          let interp = Math.min(normVal / 0.65, 1.0)
+          interp = interp * 0.375 + 0.625
+          return adjustRGBAOpacity(c, interp)
         }),
       accumulator: "density",
       minDensityCnt: "-2ndStdDev",
       maxDensityCnt: "2ndStdDev",
       clamp: true
-    });
+    })
   }
 
   if (typeof color === "object" && color.type === "ordinal") {
@@ -249,7 +249,7 @@ function getScales({ size, color }, layerName) {
       range: color.range.map(c => adjustOpacity(c, color.opacity)),
       default: adjustOpacity("#27aeef", color.opacity),
       nullValue: adjustOpacity("#CACACA", color.opacity)
-    });
+    })
   }
 
   if (typeof color === "object" && color.type === "quantitative") {
@@ -259,32 +259,32 @@ function getScales({ size, color }, layerName) {
       domain: color.domain.map(c => adjustOpacity(c, color.opacity)),
       range: color.range,
       clamp: true
-    });
+    })
   }
 
-  return scales;
+  return scales
 }
 
 export default function rasterLayerPointMixin(_layer) {
-  let state = null;
+  let state = null
 
   _layer.setState = function(setter) {
     if (typeof setter === "function") {
-      state = setter(state);
+      state = setter(state)
     } else {
-      state = setter;
+      state = setter
     }
 
     if (!state.hasOwnProperty("transform")) {
-      state.transform = {};
+      state.transform = {}
     }
 
-    return _layer;
-  };
+    return _layer
+  }
 
   _layer.getState = function() {
-    return state;
-  };
+    return state
+  }
 
   _layer.getProjections = function() {
     return getTransforms(
@@ -299,8 +299,8 @@ export default function rasterLayerPointMixin(_layer) {
           transform.type === "project" && transform.hasOwnProperty("as")
       )
       .map(projection => parser.parseTransform({ select: [] }, projection))
-      .map(sql => sql.select[0]);
-  };
+      .map(sql => sql.select[0])
+  }
 
   _layer.__genVega = function({
     table,
@@ -316,9 +316,9 @@ export default function rasterLayerPointMixin(_layer) {
       lastFilteredSize,
       pixelRatio,
       layerName
-    );
+    )
 
-    const markType = getMarkType(state.config);
+    const markType = getMarkType(state.config)
 
     return {
       data: {
@@ -375,71 +375,71 @@ export default function rasterLayerPointMixin(_layer) {
               }
         )
       }
-    };
-  };
+    }
+  }
 
-  _layer.xDim = createRasterLayerGetterSetter(_layer, null);
-  _layer.yDim = createRasterLayerGetterSetter(_layer, null);
+  _layer.xDim = createRasterLayerGetterSetter(_layer, null)
+  _layer.yDim = createRasterLayerGetterSetter(_layer, null)
 
   // NOTE: builds _layer.defaultSize(), _layer.nullSize(),
   //              _layer.sizeScale(), & _layer.sizeAttr()
-  createVegaAttrMixin(_layer, "size", 3, 1, true);
+  createVegaAttrMixin(_layer, "size", 3, 1, true)
 
-  _layer.dynamicSize = createRasterLayerGetterSetter(_layer, null);
+  _layer.dynamicSize = createRasterLayerGetterSetter(_layer, null)
 
-  _layer.xAttr = createRasterLayerGetterSetter(_layer, null);
-  _layer.yAttr = createRasterLayerGetterSetter(_layer, null);
+  _layer.xAttr = createRasterLayerGetterSetter(_layer, null)
+  _layer.yAttr = createRasterLayerGetterSetter(_layer, null)
 
-  const _point_wrap_class = "map-point-wrap";
-  const _point_class = "map-point-new";
-  const _point_gfx_class = "map-point-gfx";
+  const _point_wrap_class = "map-point-wrap"
+  const _point_class = "map-point-new"
+  const _point_gfx_class = "map-point-gfx"
 
-  let _vega = null;
-  const _scaledPopups = {};
-  const _minMaxCache = {};
-  let _cf = null;
+  let _vega = null
+  const _scaledPopups = {}
+  const _minMaxCache = {}
+  let _cf = null
 
   _layer.crossfilter = function(cf) {
     if (!arguments.length) {
-      return _cf;
+      return _cf
     }
-    _cf = cf;
-    return _layer;
-  };
+    _cf = cf
+    return _layer
+  }
 
   _layer._requiresCap = function() {
-    return false;
-  };
+    return false
+  }
 
   _layer.xRangeFilter = function(range) {
     if (!_layer.xDim()) {
-      throw new Error("Must set layer's xDim before invoking xRange");
+      throw new Error("Must set layer's xDim before invoking xRange")
     }
 
-    const xValue = _layer.xDim().value()[0];
+    const xValue = _layer.xDim().value()[0]
 
     if (!arguments.length) {
-      return _minMaxCache[xValue];
+      return _minMaxCache[xValue]
     }
 
-    _minMaxCache[xValue] = range;
-    return _layer;
-  };
+    _minMaxCache[xValue] = range
+    return _layer
+  }
 
   _layer.yRangeFilter = function(range) {
     if (!_layer.yDim()) {
-      throw new Error("Must set layer's yDim before invoking yRange");
+      throw new Error("Must set layer's yDim before invoking yRange")
     }
 
-    const yValue = _layer.yDim().value()[0];
+    const yValue = _layer.yDim().value()[0]
 
     if (!arguments.length) {
-      return _minMaxCache[yValue];
+      return _minMaxCache[yValue]
     }
 
-    _minMaxCache[yValue] = range;
-    return _layer;
-  };
+    _minMaxCache[yValue] = range
+    return _layer
+  }
 
   _layer._genVega = function(chart, layerName, group, query) {
     _vega = _layer.__genVega({
@@ -449,10 +449,10 @@ export default function rasterLayerPointMixin(_layer) {
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio()
-    });
+    })
 
-    return _vega;
-  };
+    return _vega
+  }
 
   const renderAttributes = [
     "x",
@@ -463,7 +463,7 @@ export default function rasterLayerPointMixin(_layer) {
     "width",
     "height",
     "fillColor"
-  ];
+  ]
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
     if (_vega && _vega.mark && _vega.mark.properties) {
@@ -472,18 +472,18 @@ export default function rasterLayerPointMixin(_layer) {
           popupColumnsSet,
           _vega.mark.properties,
           prop
-        );
-      });
+        )
+      })
     }
-  };
+  }
 
   _layer._areResultsValidForPopup = function(results) {
     if (typeof results.x === "undefined" || typeof results.y === "undefined") {
-      return false;
+      return false
     } else {
-      return true;
+      return true
     }
-  };
+  }
 
   _layer._displayPopup = function(
     chart,
@@ -497,78 +497,78 @@ export default function rasterLayerPointMixin(_layer) {
     minPopupArea,
     animate
   ) {
-    const rndrProps = {};
-    const queryRndrProps = new Set();
+    const rndrProps = {}
+    const queryRndrProps = new Set()
     if (_vega && _vega.mark && _vega.mark.properties) {
-      const propObj = _vega.mark.properties;
+      const propObj = _vega.mark.properties
       renderAttributes.forEach(prop => {
         if (
           typeof propObj[prop] === "object" &&
           propObj[prop].field &&
           typeof propObj[prop].field === "string"
         ) {
-          rndrProps[prop] = propObj[prop].field;
-          queryRndrProps.add(propObj[prop].field);
+          rndrProps[prop] = propObj[prop].field
+          queryRndrProps.add(propObj[prop].field)
         }
-      });
+      })
     }
 
-    const xPixel = xscale(data[rndrProps.xc || rndrProps.x]) + margins.left;
+    const xPixel = xscale(data[rndrProps.xc || rndrProps.x]) + margins.left
     const yPixel =
-      height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top;
+      height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top
 
     let sizeFromData =
-      data[rndrProps.size || rndrProps.width || rndrProps.height];
-    sizeFromData = Math.max(sizeFromData, 1); // size must be > 0 (#164)
-    let dotSize = _layer.getSizeVal(sizeFromData);
+      data[rndrProps.size || rndrProps.width || rndrProps.height]
+    sizeFromData = Math.max(sizeFromData, 1) // size must be > 0 (#164)
+    let dotSize = _layer.getSizeVal(sizeFromData)
 
-    let scale = 1;
-    const scaleRatio = minPopupArea / (dotSize * dotSize);
-    const isScaled = scaleRatio > 1;
+    let scale = 1
+    const scaleRatio = minPopupArea / (dotSize * dotSize)
+    const isScaled = scaleRatio > 1
     if (isScaled) {
-      scale = Math.sqrt(scaleRatio);
-      dotSize = dotSize * scale;
+      scale = Math.sqrt(scaleRatio)
+      dotSize = dotSize * scale
     }
 
-    const popupStyle = _layer.popupStyle();
-    let bgColor = _layer.getFillColorVal(data[rndrProps.fillColor]);
-    let strokeColor, strokeWidth;
+    const popupStyle = _layer.popupStyle()
+    let bgColor = _layer.getFillColorVal(data[rndrProps.fillColor])
+    let strokeColor, strokeWidth
     if (typeof popupStyle === "object" && !isScaled) {
-      bgColor = popupStyle.fillColor || bgColor;
-      strokeColor = popupStyle.strokeColor;
-      strokeWidth = popupStyle.strokeWidth;
+      bgColor = popupStyle.fillColor || bgColor
+      strokeColor = popupStyle.strokeColor
+      strokeWidth = popupStyle.strokeWidth
     }
 
-    const wrapDiv = parentElem.append("div").attr("class", _point_wrap_class);
+    const wrapDiv = parentElem.append("div").attr("class", _point_wrap_class)
 
     const pointDiv = wrapDiv
       .append("div")
       .attr("class", _point_class)
-      .style({ left: xPixel + "px", top: yPixel + "px" });
+      .style({ left: xPixel + "px", top: yPixel + "px" })
 
     if (animate) {
       if (isScaled) {
-        pointDiv.classed("popupPoint", true);
+        pointDiv.classed("popupPoint", true)
       } else {
-        pointDiv.classed("fadeInPoint", true);
+        pointDiv.classed("fadeInPoint", true)
       }
     }
 
-    _scaledPopups[chart] = isScaled;
+    _scaledPopups[chart] = isScaled
 
     const gfxDiv = pointDiv
       .append("div")
       .attr("class", _point_gfx_class)
       .style("background", bgColor)
       .style("width", dotSize + "px")
-      .style("height", dotSize + "px");
+      .style("height", dotSize + "px")
 
     if (strokeColor) {
-      gfxDiv.style("border-color", strokeColor);
+      gfxDiv.style("border-color", strokeColor)
     }
 
     if (typeof strokeWidth === "number") {
-      gfxDiv.style("border-width", strokeWidth);
+      gfxDiv.style("border-width", strokeWidth)
     }
 
     return {
@@ -579,39 +579,39 @@ export default function rasterLayerPointMixin(_layer) {
         yPixel - dotSize / 2,
         yPixel + dotSize / 2
       ]
-    };
-  };
+    }
+  }
 
   _layer._hidePopup = function(chart, hideCallback) {
-    const mapPoint = chart.select("." + _point_class);
+    const mapPoint = chart.select("." + _point_class)
     if (mapPoint) {
       if (_scaledPopups[chart]) {
-        mapPoint.classed("removePoint", true);
+        mapPoint.classed("removePoint", true)
       } else {
-        mapPoint.classed("fadeOutPoint", true);
+        mapPoint.classed("fadeOutPoint", true)
       }
 
       if (hideCallback) {
         mapPoint.on("animationend", () => {
-          hideCallback(chart);
-        });
+          hideCallback(chart)
+        })
       }
 
-      delete _scaledPopups[chart];
+      delete _scaledPopups[chart]
     }
-  };
+  }
 
   _layer._destroyLayer = function(chart) {
-    const xDim = _layer.xDim();
+    const xDim = _layer.xDim()
     if (xDim) {
-      xDim.dispose();
+      xDim.dispose()
     }
 
-    const yDim = _layer.yDim();
+    const yDim = _layer.yDim()
     if (yDim) {
-      yDim.dispose();
+      yDim.dispose()
     }
-  };
+  }
 
-  return _layer;
+  return _layer
 }

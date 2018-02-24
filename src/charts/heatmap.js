@@ -1,12 +1,12 @@
-import { formatDataValue, isArrayOfObjects } from "../utils/formatting-helpers";
-import d3 from "d3";
-import baseMixin from "../mixins/base-mixin";
-import colorMixin from "../mixins/color-mixin";
-import marginMixin from "../mixins/margin-mixin";
-import { events } from "../core/events";
-import { override, transition } from "../core/core";
-import { utils } from "../utils/utils";
-import { filters } from "../core/filters";
+import { formatDataValue, isArrayOfObjects } from "../utils/formatting-helpers"
+import d3 from "d3"
+import baseMixin from "../mixins/base-mixin"
+import colorMixin from "../mixins/color-mixin"
+import marginMixin from "../mixins/margin-mixin"
+import { events } from "../core/events"
+import { override, transition } from "../core/core"
+import { utils } from "../utils/utils"
+import { filters } from "../core/filters"
 
 /** ***************************************************************************
  * OVERRIDE: dc.heatMap                                                       *
@@ -31,41 +31,41 @@ import { filters } from "../core/filters";
  * @return {dc.heatMap}
  */
 
-const MAX_LABEL_WIDTH = 72;
-const CHAR_WIDTH = 5;
-const MIN_AXIS_HEIGHT = 52;
+const MAX_LABEL_WIDTH = 72
+const CHAR_WIDTH = 5
+const MIN_AXIS_HEIGHT = 52
 
 export function heatMapKeyAccessor({ key0 }) {
   if (Array.isArray(key0)) {
-    const value = isArrayOfObjects(key0) ? key0[0].value : key0[0];
-    this.colsMap.set(value, key0);
-    return value;
+    const value = isArrayOfObjects(key0) ? key0[0].value : key0[0]
+    this.colsMap.set(value, key0)
+    return value
   } else {
-    return key0;
+    return key0
   }
 }
 
 export function heatMapValueAccesor({ key1 }) {
   if (Array.isArray(key1)) {
-    const value = isArrayOfObjects(key1) ? key1[0].value : key1[0];
-    this.rowsMap.set(value, key1);
-    return value;
+    const value = isArrayOfObjects(key1) ? key1[0].value : key1[0]
+    this.rowsMap.set(value, key1)
+    return value
   } else {
-    return key1;
+    return key1
   }
 }
 
 export function heatMapRowsLabel(d) {
-  return formatDataValue(this.rowsMap.get(d) || d);
+  return formatDataValue(this.rowsMap.get(d) || d)
 }
 
 export function heatMapColsLabel(d) {
-  return formatDataValue(this.colsMap.get(d) || d);
+  return formatDataValue(this.colsMap.get(d) || d)
 }
 
 export function isDescendingAppropriateData({ key1 }) {
-  const value = Array.isArray(key1) ? key1[0] : key1;
-  return typeof value !== "number";
+  const value = Array.isArray(key1) ? key1[0] : key1
+  return typeof value !== "number"
 }
 
 export default function heatMap(parent, chartGroup) {
@@ -116,54 +116,54 @@ export default function heatMap(parent, chartGroup) {
       "10PM",
       "11PM"
     ]
-  };
+  }
 
-  const DEFAULT_BORDER_RADIUS = 6.75;
+  const DEFAULT_BORDER_RADIUS = 6.75
 
-  let _chartBody;
+  let _chartBody
 
-  let _cols;
-  let _rows;
+  let _cols
+  let _rows
 
-  let _colOrdering = utils.nullsFirst(d3.ascending);
-  let _rowOrdering = utils.nullsFirst(d3.ascending);
-  const _colScale = d3.scale.ordinal();
-  const _rowScale = d3.scale.ordinal();
+  let _colOrdering = utils.nullsFirst(d3.ascending)
+  let _rowOrdering = utils.nullsFirst(d3.ascending)
+  const _colScale = d3.scale.ordinal()
+  const _rowScale = d3.scale.ordinal()
 
-  var _xBorderRadius = DEFAULT_BORDER_RADIUS;
-  var _yBorderRadius = DEFAULT_BORDER_RADIUS;
+  var _xBorderRadius = DEFAULT_BORDER_RADIUS
+  var _yBorderRadius = DEFAULT_BORDER_RADIUS
 
   /* OVERRIDE EXTEND ----------------------------------------------------------*/
-  let _yLabel;
-  let _xLabel;
-  let _hasBeenRendered = false;
-  const _minBoxSize = 16;
-  let _scrollPos = { top: null, left: 0 };
-  let _dockedAxes;
-  let _dockedAxesSize = { left: 48, bottom: 56 };
+  let _yLabel
+  let _xLabel
+  let _hasBeenRendered = false
+  const _minBoxSize = 16
+  let _scrollPos = { top: null, left: 0 }
+  let _dockedAxes
+  let _dockedAxesSize = { left: 48, bottom: 56 }
   /* --------------------------------------------------------------------------*/
 
-  var _xBorderRadius = DEFAULT_BORDER_RADIUS;
-  var _yBorderRadius = DEFAULT_BORDER_RADIUS;
+  var _xBorderRadius = DEFAULT_BORDER_RADIUS
+  var _yBorderRadius = DEFAULT_BORDER_RADIUS
 
-  const _chart = colorMixin(marginMixin(baseMixin({})));
-  _chart._mandatoryAttributes(["group"]);
-  _chart.title(_chart.colorAccessor());
+  const _chart = colorMixin(marginMixin(baseMixin({})))
+  _chart._mandatoryAttributes(["group"])
+  _chart.title(_chart.colorAccessor())
 
   let _colsLabel = function(d) {
-    return d;
-  };
+    return d
+  }
   let _rowsLabel = function(d) {
-    return d;
-  };
+    return d
+  }
 
   _chart.dockedAxesSize = function(_) {
     if (!arguments.length) {
-      return _dockedAxesSize;
+      return _dockedAxesSize
     }
-    _dockedAxesSize = _;
-    return _chart;
-  };
+    _dockedAxesSize = _
+    return _chart
+  }
 
   /**
    * Set or get the column label function. The chart class uses this function to render
@@ -180,11 +180,11 @@ export default function heatMap(parent, chartGroup) {
    */
   _chart.colsLabel = function(labelFunction) {
     if (!arguments.length) {
-      return _colsLabel;
+      return _colsLabel
     }
-    _colsLabel = labelFunction;
-    return _chart;
-  };
+    _colsLabel = labelFunction
+    return _chart
+  }
 
   /**
    * Set or get the row label function. The chart class uses this function to render
@@ -201,44 +201,44 @@ export default function heatMap(parent, chartGroup) {
    */
   _chart.rowsLabel = function(labelFunction) {
     if (!arguments.length) {
-      return _rowsLabel;
+      return _rowsLabel
     }
-    _rowsLabel = labelFunction;
-    return _chart;
-  };
+    _rowsLabel = labelFunction
+    return _chart
+  }
 
   /* OVERRIDE EXTEND ----------------------------------------------------------*/
   _chart.xAxisLabel = function(xLabel) {
     if (!arguments.length) {
-      return _xLabel;
+      return _xLabel
     }
-    _xLabel = xLabel;
-    return _chart;
-  };
+    _xLabel = xLabel
+    return _chart
+  }
 
   _chart.yAxisLabel = function(yLabel) {
     if (!arguments.length) {
-      return _yLabel;
+      return _yLabel
     }
-    _yLabel = yLabel;
-    return _chart;
-  };
+    _yLabel = yLabel
+    return _chart
+  }
 
   let _xAxisOnClick = function(d) {
-    filterAxis(0, d);
-  };
+    filterAxis(0, d)
+  }
 
   let _yAxisOnClick = function(d) {
-    filterAxis(1, d);
-  };
+    filterAxis(1, d)
+  }
   /* --------------------------------------------------------------------------*/
 
   let _boxOnClick = function(d) {
     /* OVERRIDE -----------------------------------------------------------------*/
-    const filter = [d.key0, d.key1];
+    const filter = [d.key0, d.key1]
     /* --------------------------------------------------------------------------*/
-    _chart.handleFilterClick(d3.event, filter);
-  };
+    _chart.handleFilterClick(d3.event, filter)
+  }
 
   function filterAxis(axis, value) {
     const cellsOnAxis = _chart.selectAll(".box-group").filter(
@@ -247,46 +247,43 @@ export default function heatMap(parent, chartGroup) {
         (axis === 1 ? _chart.valueAccessor()(d) : _chart.keyAccessor()(d)) ===
         value
       /* --------------------------------------------------------------------------*/
-    );
+    )
 
     const unfilteredCellsOnAxis = cellsOnAxis.filter(
       d =>
         /* OVERRIDE -----------------------------------------------------------------*/
         !_chart.hasFilter([d.key0, d.key1])
       /* --------------------------------------------------------------------------*/
-    );
+    )
     events.trigger(() => {
       if (unfilteredCellsOnAxis.empty()) {
         cellsOnAxis.each(d => {
           /* OVERRIDE -----------------------------------------------------------------*/
-          _chart.filter([d.key0, d.key1]);
+          _chart.filter([d.key0, d.key1])
           /* --------------------------------------------------------------------------*/
-        });
+        })
       } else {
         unfilteredCellsOnAxis.each(d => {
           /* OVERRIDE -----------------------------------------------------------------*/
-          _chart.filter([d.key0, d.key1]);
+          _chart.filter([d.key0, d.key1])
           /* --------------------------------------------------------------------------*/
-        });
+        })
       }
 
-      _chart.redrawGroup();
-    });
+      _chart.redrawGroup()
+    })
   }
 
   override(_chart, "filter", function(filter, isInverseFilter) {
     if (!arguments.length) {
-      return _chart._filter();
+      return _chart._filter()
     }
 
-    return _chart._filter(
-      filters.TwoDimensionalFilter(filter),
-      isInverseFilter
-    );
-  });
+    return _chart._filter(filters.TwoDimensionalFilter(filter), isInverseFilter)
+  })
 
   function uniq(d, i, a) {
-    return !i || a[i - 1] !== d;
+    return !i || a[i - 1] !== d
   }
 
   /**
@@ -302,19 +299,19 @@ export default function heatMap(parent, chartGroup) {
    */
   _chart.rows = function(rows) {
     if (arguments.length) {
-      _rows = rows;
-      return _chart;
+      _rows = rows
+      return _chart
     }
-    return _rows;
-  };
+    return _rows
+  }
 
   _chart.rowOrdering = function(_) {
     if (!arguments.length) {
-      return _rowOrdering;
+      return _rowOrdering
     }
-    _rowOrdering = _;
-    return _chart;
-  };
+    _rowOrdering = _
+    return _chart
+  }
 
   /**
    * Gets or sets the keys used to create the columns of the heatmap, as an array. By default, all
@@ -329,25 +326,25 @@ export default function heatMap(parent, chartGroup) {
    */
   _chart.cols = function(cols) {
     if (arguments.length) {
-      _cols = cols;
-      return _chart;
+      _cols = cols
+      return _chart
     }
-    return _cols;
-  };
+    return _cols
+  }
 
   _chart.colOrdering = function(_) {
     if (!arguments.length) {
-      return _colOrdering;
+      return _colOrdering
     }
-    _colOrdering = _;
-    return _chart;
-  };
+    _colOrdering = _
+    return _chart
+  }
 
   _chart._doRender = function() {
-    _chart.resetSvg();
+    _chart.resetSvg()
 
     /* OVERRIDE -----------------------------------------------------------------*/
-    _chart.margins({ top: 8, right: 16, bottom: 0, left: 0 });
+    _chart.margins({ top: 8, right: 16, bottom: 0, left: 0 })
     /* --------------------------------------------------------------------------*/
 
     _chartBody = _chart
@@ -357,43 +354,43 @@ export default function heatMap(parent, chartGroup) {
       .attr(
         "transform",
         "translate(" + _chart.margins().left + "," + _chart.margins().top + ")"
-      );
+      )
 
     /* OVERRIDE -----------------------------------------------------------------*/
-    _chartBody.append("g").attr("class", "box-wrapper");
-    _hasBeenRendered = true;
+    _chartBody.append("g").attr("class", "box-wrapper")
+    _hasBeenRendered = true
 
     _dockedAxes = _chart
       .root()
       .append("div")
-      .attr("class", "docked-axis-wrapper");
+      .attr("class", "docked-axis-wrapper")
     /* --------------------------------------------------------------------------*/
-    return _chart._doRedraw();
-  };
+    return _chart._doRedraw()
+  }
 
   _chart._doRedraw = function() {
     if (!_hasBeenRendered) {
-      return _chart._doRender();
+      return _chart._doRender()
     }
 
     var data = _chart.data(),
       cols = _chart.cols(),
       rows = _chart.rows() || data.map(_chart.valueAccessor()),
-      cols = _chart.cols() || data.map(_chart.keyAccessor());
+      cols = _chart.cols() || data.map(_chart.keyAccessor())
 
     if (_rowOrdering) {
       _rowOrdering = _chart.shouldSortYAxisDescending(data)
         ? utils.nullsLast(d3.descending)
-        : utils.nullsFirst(d3.ascending);
-      rows = rows.sort(_rowOrdering);
+        : utils.nullsFirst(d3.ascending)
+      rows = rows.sort(_rowOrdering)
     }
     if (_colOrdering) {
-      cols = cols.sort(_colOrdering);
+      cols = cols.sort(_colOrdering)
     }
-    rows = _rowScale.domain(rows);
-    cols = _colScale.domain(cols);
+    rows = _rowScale.domain(rows)
+    cols = _colScale.domain(cols)
 
-    _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()));
+    _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()))
 
     let rowCount = rows.domain().length,
       colCount = cols.domain().length,
@@ -408,15 +405,15 @@ export default function heatMap(parent, chartGroup) {
         _minBoxSize
       ),
       svgWidth = boxWidth * colCount + _chart.margins().right,
-      svgHeight = boxHeight * rowCount + _chart.margins().top;
+      svgHeight = boxHeight * rowCount + _chart.margins().top
 
-    cols.rangeBands([0, boxWidth * colCount]);
-    rows.rangeBands([boxHeight * rowCount, 0]);
+    cols.rangeBands([0, boxWidth * colCount])
+    rows.rangeBands([boxHeight * rowCount, 0])
 
     _chart
       .svg()
       .attr("width", svgWidth)
-      .attr("height", svgHeight);
+      .attr("height", svgHeight)
 
     const scrollNode = _chart
       .root()
@@ -429,23 +426,23 @@ export default function heatMap(parent, chartGroup) {
         _scrollPos = {
           top: d3.select(this).node().scrollTop,
           left: d3.select(this).node().scrollLeft
-        };
+        }
         _chart
           .root()
           .select(".docked-x-axis")
-          .style("left", -_scrollPos.left + "px");
+          .style("left", -_scrollPos.left + "px")
         _chart
           .root()
           .select(".docked-y-axis")
-          .style("top", -_scrollPos.top + "px");
+          .style("top", -_scrollPos.top + "px")
       })
-      .node();
+      .node()
 
-    scrollNode.scrollLeft = _scrollPos.left;
+    scrollNode.scrollLeft = _scrollPos.left
     scrollNode.scrollTop =
       _scrollPos.top === null && _rowOrdering === d3.ascending
         ? svgHeight
-        : _scrollPos.top || 0;
+        : _scrollPos.top || 0
 
     const boxes = _chartBody
       .select(".box-wrapper")
@@ -454,12 +451,12 @@ export default function heatMap(parent, chartGroup) {
         _chart.data(),
         (d, i) =>
           _chart.keyAccessor()(d, i) + "\0" + _chart.valueAccessor()(d, i)
-      );
+      )
 
     const gEnter = boxes
       .enter()
       .append("g")
-      .attr("class", "box-group");
+      .attr("class", "box-group")
 
     gEnter
       .append("rect")
@@ -468,7 +465,7 @@ export default function heatMap(parent, chartGroup) {
       .on("mouseenter", showPopup)
       .on("mousemove", positionPopup)
       .on("mouseleave", hidePopup)
-      .on("click", _chart.boxOnClick());
+      .on("click", _chart.boxOnClick())
 
     transition(boxes.select("rect"), _chart.transitionDuration())
       .attr("x", (d, i) => cols(_chart.keyAccessor()(d, i)))
@@ -477,20 +474,20 @@ export default function heatMap(parent, chartGroup) {
       .attr("ry", _yBorderRadius)
       .attr("fill", _chart.getColor)
       .attr("width", boxWidth)
-      .attr("height", boxHeight);
+      .attr("height", boxHeight)
 
-    boxes.exit().remove();
+    boxes.exit().remove()
 
-    let XAxis = _dockedAxes.selectAll(".docked-x-axis");
+    let XAxis = _dockedAxes.selectAll(".docked-x-axis")
 
     if (XAxis.empty()) {
-      XAxis = _dockedAxes.append("div").attr("class", "docked-x-axis");
+      XAxis = _dockedAxes.append("div").attr("class", "docked-x-axis")
     }
 
     const colsText = XAxis.style("height", _dockedAxesSize.bottom + "px")
       .html("")
       .selectAll("div.text")
-      .data(cols.domain());
+      .data(cols.domain())
 
     colsText
       .enter()
@@ -505,21 +502,21 @@ export default function heatMap(parent, chartGroup) {
       .html(_chart.colsLabel())
       .attr("title", d => {
         // detect if a value is null or has the string "null"
-        const val = `${_chart.colsLabel()(d)}`;
-        return val.match(/null/gi) ? "NULL" : val;
-      });
+        const val = `${_chart.colsLabel()(d)}`
+        return val.match(/null/gi) ? "NULL" : val
+      })
 
-    let YAxis = _dockedAxes.selectAll(".docked-y-axis");
+    let YAxis = _dockedAxes.selectAll(".docked-y-axis")
 
     if (YAxis.empty()) {
-      YAxis = _dockedAxes.append("div").attr("class", "docked-y-axis");
+      YAxis = _dockedAxes.append("div").attr("class", "docked-y-axis")
     }
 
     const rowsText = YAxis.style("width", _dockedAxesSize.left + "px")
       .style("left", _dockedAxesSize.left + "px")
       .html("")
       .selectAll("div.text")
-      .data(rows.domain());
+      .data(rows.domain())
 
     rowsText
       .enter()
@@ -530,38 +527,38 @@ export default function heatMap(parent, chartGroup) {
       .html(_chart.rowsLabel())
       .attr("title", d => {
         // detect if a value is null or has the string "null"
-        const val = `${_chart.rowsLabel()(d)}`;
-        return val.match(/null/gi) ? "NULL" : val;
-      });
+        const val = `${_chart.rowsLabel()(d)}`
+        return val.match(/null/gi) ? "NULL" : val
+      })
 
-    let axesMask = _dockedAxes.selectAll(".axes-mask");
+    let axesMask = _dockedAxes.selectAll(".axes-mask")
 
     if (axesMask.empty()) {
-      axesMask = _dockedAxes.append("div").attr("class", "axes-mask");
+      axesMask = _dockedAxes.append("div").attr("class", "axes-mask")
     }
 
     axesMask
       .style("width", _dockedAxesSize.left + "px")
-      .style("height", _dockedAxesSize.bottom + "px");
+      .style("height", _dockedAxesSize.bottom + "px")
 
     if (_chart.hasFilter()) {
       _chart.selectAll("g.box-group").each(function(d) {
         if (_chart.isSelectedNode(d)) {
-          _chart.highlightSelected(this);
+          _chart.highlightSelected(this)
         } else {
-          _chart.fadeDeselected(this);
+          _chart.fadeDeselected(this)
         }
-      });
+      })
     } else {
       _chart.selectAll("g.box-group").each(function() {
-        _chart.resetHighlight(this);
-      });
+        _chart.resetHighlight(this)
+      })
     }
 
-    _chart.renderAxisLabels();
+    _chart.renderAxisLabels()
 
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * Gets or sets the handler that fires when an individual cell is clicked in the heatmap.
@@ -584,11 +581,11 @@ export default function heatMap(parent, chartGroup) {
    */
   _chart.boxOnClick = function(handler) {
     if (!arguments.length) {
-      return _boxOnClick;
+      return _boxOnClick
     }
-    _boxOnClick = handler;
-    return _chart;
-  };
+    _boxOnClick = handler
+    return _chart
+  }
 
   /**
    * Gets or sets the handler that fires when a column tick is clicked in the x axis.
@@ -603,11 +600,11 @@ export default function heatMap(parent, chartGroup) {
    */
   _chart.xAxisOnClick = function(handler) {
     if (!arguments.length) {
-      return _xAxisOnClick;
+      return _xAxisOnClick
     }
-    _xAxisOnClick = handler;
-    return _chart;
-  };
+    _xAxisOnClick = handler
+    return _chart
+  }
 
   /**
    * Gets or sets the handler that fires when a row tick is clicked in the y axis.
@@ -622,11 +619,11 @@ export default function heatMap(parent, chartGroup) {
    */
   _chart.yAxisOnClick = function(handler) {
     if (!arguments.length) {
-      return _yAxisOnClick;
+      return _yAxisOnClick
     }
-    _yAxisOnClick = handler;
-    return _chart;
-  };
+    _yAxisOnClick = handler
+    return _chart
+  }
 
   /**
    * Gets or sets the X border radius.  Set to 0 to get full rectangles.
@@ -639,48 +636,48 @@ export default function heatMap(parent, chartGroup) {
    */
   _chart.xBorderRadius = function(xBorderRadius) {
     if (!arguments.length) {
-      return _xBorderRadius;
+      return _xBorderRadius
     }
-    _xBorderRadius = xBorderRadius;
-    return _chart;
-  };
+    _xBorderRadius = xBorderRadius
+    return _chart
+  }
 
   /* OVERRIDE -----------------------------------------------------------------*/
   _chart.renderAxisLabels = function() {
-    const root = _chart.root();
+    const root = _chart.root()
 
-    let yLabel = root.selectAll(".y-axis-label");
+    let yLabel = root.selectAll(".y-axis-label")
 
     if (yLabel.empty()) {
       yLabel = root
         .append("div")
         .attr("class", "y-axis-label")
-        .text(_yLabel);
+        .text(_yLabel)
     }
 
     yLabel.style(
       "top",
       _chart.effectiveHeight() / 2 + _chart.margins().top + "px"
-    );
+    )
 
-    _chart.prepareLabelEdit("y");
+    _chart.prepareLabelEdit("y")
 
-    let xLabel = root.selectAll(".x-axis-label");
+    let xLabel = root.selectAll(".x-axis-label")
 
     if (xLabel.empty()) {
       xLabel = root
         .append("div")
         .attr("class", "x-axis-label")
-        .text(_xLabel);
+        .text(_xLabel)
     }
 
     xLabel.style(
       "left",
       _chart.effectiveWidth() / 2 + _chart.margins().left + "px"
-    );
+    )
 
-    _chart.prepareLabelEdit("x");
-  };
+    _chart.prepareLabelEdit("x")
+  }
 
   /* --------------------------------------------------------------------------*/
 
@@ -695,26 +692,26 @@ export default function heatMap(parent, chartGroup) {
    */
   _chart.yBorderRadius = function(yBorderRadius) {
     if (!arguments.length) {
-      return _yBorderRadius;
+      return _yBorderRadius
     }
-    _yBorderRadius = yBorderRadius;
-    return _chart;
-  };
+    _yBorderRadius = yBorderRadius
+    return _chart
+  }
 
   _chart.isSelectedNode = function(d) {
     /* OVERRIDE -----------------------------------------------------------------*/
-    return _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse();
+    return _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse()
     /* --------------------------------------------------------------------------*/
-  };
+  }
 
   /* OVERRIDE ---------------------------------------------------------------- */
   function showPopup(d, i) {
-    const popup = _chart.popup();
+    const popup = _chart.popup()
 
     const popupBox = popup
       .select(".chart-popup-content")
       .html("")
-      .classed("popup-list", true);
+      .classed("popup-list", true)
 
     popupBox
       .append("div")
@@ -724,41 +721,41 @@ export default function heatMap(parent, chartGroup) {
           _colsLabel(_chart.keyAccessor()(d, i)) +
           " x " +
           _rowsLabel(_chart.valueAccessor()(d, i))
-      );
+      )
 
-    const popupItem = popupBox.append("div").attr("class", "popup-item");
+    const popupItem = popupBox.append("div").attr("class", "popup-item")
 
     popupItem
       .append("div")
       .attr("class", "popup-legend")
-      .style("background-color", _chart.getColor(d, i));
+      .style("background-color", _chart.getColor(d, i))
 
     popupItem
       .append("div")
       .attr("class", "popup-item-value")
-      .html(() => utils.formatValue(d.color));
+      .html(() => utils.formatValue(d.color))
 
-    popup.classed("js-showPopup", true);
+    popup.classed("js-showPopup", true)
   }
 
   function hidePopup() {
-    _chart.popup().classed("js-showPopup", false);
+    _chart.popup().classed("js-showPopup", false)
   }
 
   function positionPopup() {
-    let coordinates = [0, 0];
-    coordinates = _chart.popupCoordinates(d3.mouse(this));
+    let coordinates = [0, 0]
+    coordinates = _chart.popupCoordinates(d3.mouse(this))
 
     const scrollNode = _chart
       .root()
       .select(".svg-wrapper")
-      .node();
-    const x = coordinates[0] + _dockedAxesSize.left - scrollNode.scrollLeft;
-    const y = coordinates[1] + _chart.margins().top - scrollNode.scrollTop;
+      .node()
+    const x = coordinates[0] + _dockedAxesSize.left - scrollNode.scrollLeft
+    const y = coordinates[1] + _chart.margins().top - scrollNode.scrollTop
 
     const popup = _chart
       .popup()
-      .attr("style", () => "transform:translate(" + x + "px," + y + "px)");
+      .attr("style", () => "transform:translate(" + x + "px," + y + "px)")
 
     popup.select(".chart-popup-box").classed("align-right", function() {
       return (
@@ -768,20 +765,20 @@ export default function heatMap(parent, chartGroup) {
             .node()
             .getBoundingClientRect().width >
         _chart.width()
-      );
-    });
+      )
+    })
   }
   /* ------------------------------------------------------------------------- */
 
-  _chart.colsMap = new Map();
-  _chart.rowsMap = new Map();
-  _chart._axisPadding = { left: 36, bottom: 42 };
+  _chart.colsMap = new Map()
+  _chart.rowsMap = new Map()
+  _chart._axisPadding = { left: 36, bottom: 42 }
 
   const getMaxChars = (domain, getLabel) =>
     domain
       .map(d => (d === null ? "NULL" : d))
       .map(d => (getLabel(d) ? getLabel(d).toString().length : 0))
-      .reduce((prev, curr) => Math.max(prev, curr), null);
+      .reduce((prev, curr) => Math.max(prev, curr), null)
 
   _chart.getAxisSizes = (colsDomain, rowsDomain) => ({
     left:
@@ -796,19 +793,19 @@ export default function heatMap(parent, chartGroup) {
       ) + _chart._axisPadding.bottom,
       MIN_AXIS_HEIGHT
     )
-  });
+  })
 
   _chart.shouldSortYAxisDescending = data =>
-    data && data.length && isDescendingAppropriateData(data[0]);
+    data && data.length && isDescendingAppropriateData(data[0])
 
   _chart
     .keyAccessor(heatMapKeyAccessor.bind(_chart))
     .valueAccessor(heatMapValueAccesor.bind(_chart))
     .colorAccessor(d => d.value)
     .rowsLabel(heatMapRowsLabel.bind(_chart))
-    .colsLabel(heatMapColsLabel.bind(_chart));
+    .colsLabel(heatMapColsLabel.bind(_chart))
 
-  return _chart.anchor(parent, chartGroup);
+  return _chart.anchor(parent, chartGroup)
 }
 /** ***************************************************************************
  * END OVERRIDE: dc.heatMap                                                   *

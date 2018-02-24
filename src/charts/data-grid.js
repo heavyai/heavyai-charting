@@ -1,5 +1,5 @@
-import d3 from "d3";
-import baseMixin from "../mixins/base-mixin";
+import d3 from "d3"
+import baseMixin from "../mixins/base-mixin"
 /**
  * Data grid is a simple widget designed to list the filtered records, providing
  * a simple way to define how the items are displayed.
@@ -21,25 +21,23 @@ import baseMixin from "../mixins/base-mixin";
  * @return {dc.dataGrid}
  */
 export default function dataGrid(parent, chartGroup) {
-  const LABEL_CSS_CLASS = "dc-grid-label";
-  const ITEM_CSS_CLASS = "dc-grid-item";
-  const GROUP_CSS_CLASS = "dc-grid-group";
-  const GRID_CSS_CLASS = "dc-grid-top";
+  const LABEL_CSS_CLASS = "dc-grid-label"
+  const ITEM_CSS_CLASS = "dc-grid-item"
+  const GROUP_CSS_CLASS = "dc-grid-group"
+  const GRID_CSS_CLASS = "dc-grid-top"
 
-  const _chart = baseMixin({});
+  const _chart = baseMixin({})
 
-  let _size = 999; // shouldn't be needed, but you might
+  let _size = 999 // shouldn't be needed, but you might
   let _html = function(d) {
-    return (
-      "you need to provide an html() handling param:  " + JSON.stringify(d)
-    );
-  };
+    return "you need to provide an html() handling param:  " + JSON.stringify(d)
+  }
   let _sortBy = function(d) {
-    return d;
-  };
-  let _order = d3.ascending;
+    return d
+  }
+  let _order = d3.ascending
   let _beginSlice = 0,
-    _endSlice;
+    _endSlice
 
   let _htmlGroup = function(d) {
     return (
@@ -50,38 +48,38 @@ export default function dataGrid(parent, chartGroup) {
       "'>" +
       _chart.keyAccessor()(d) +
       "</h1></div>"
-    );
-  };
+    )
+  }
 
   _chart._doRender = function() {
-    _chart.selectAll("div." + GRID_CSS_CLASS).remove();
+    _chart.selectAll("div." + GRID_CSS_CLASS).remove()
 
-    renderItems(renderGroups());
+    renderItems(renderGroups())
 
-    return _chart;
-  };
+    return _chart
+  }
 
   function renderGroups() {
     const groups = _chart
       .root()
       .selectAll("div." + GRID_CSS_CLASS)
-      .data(nestEntries(), d => _chart.keyAccessor()(d));
+      .data(nestEntries(), d => _chart.keyAccessor()(d))
 
     const itemGroup = groups
       .enter()
       .append("div")
-      .attr("class", GRID_CSS_CLASS);
+      .attr("class", GRID_CSS_CLASS)
 
     if (_htmlGroup) {
-      itemGroup.html(d => _htmlGroup(d));
+      itemGroup.html(d => _htmlGroup(d))
     }
 
-    groups.exit().remove();
-    return itemGroup;
+    groups.exit().remove()
+    return itemGroup
   }
 
   function nestEntries() {
-    const entries = _chart.dimension().top(_size);
+    const entries = _chart.dimension().top(_size)
 
     return d3
       .nest()
@@ -91,29 +89,29 @@ export default function dataGrid(parent, chartGroup) {
         entries
           .sort((a, b) => _order(_sortBy(a), _sortBy(b)))
           .slice(_beginSlice, _endSlice)
-      );
+      )
   }
 
   function renderItems(groups) {
     const items = groups
       .order()
       .selectAll("div." + ITEM_CSS_CLASS)
-      .data(d => d.values);
+      .data(d => d.values)
 
     items
       .enter()
       .append("div")
       .attr("class", ITEM_CSS_CLASS)
-      .html(d => _html(d));
+      .html(d => _html(d))
 
-    items.exit().remove();
+    items.exit().remove()
 
-    return items;
+    return items
   }
 
   _chart._doRedraw = function() {
-    return _chart._doRender();
-  };
+    return _chart._doRender()
+  }
 
   /**
    * Get or set the index of the beginning slice which determines which entries get displayed by the widget.
@@ -127,11 +125,11 @@ export default function dataGrid(parent, chartGroup) {
    */
   _chart.beginSlice = function(beginSlice) {
     if (!arguments.length) {
-      return _beginSlice;
+      return _beginSlice
     }
-    _beginSlice = beginSlice;
-    return _chart;
-  };
+    _beginSlice = beginSlice
+    return _chart
+  }
 
   /**
    * Get or set the index of the end slice which determines which entries get displayed by the widget
@@ -145,11 +143,11 @@ export default function dataGrid(parent, chartGroup) {
    */
   _chart.endSlice = function(endSlice) {
     if (!arguments.length) {
-      return _endSlice;
+      return _endSlice
     }
-    _endSlice = endSlice;
-    return _chart;
-  };
+    _endSlice = endSlice
+    return _chart
+  }
 
   /**
    * Get or set the grid size which determines the number of items displayed by the widget.
@@ -162,11 +160,11 @@ export default function dataGrid(parent, chartGroup) {
    */
   _chart.size = function(size) {
     if (!arguments.length) {
-      return _size;
+      return _size
     }
-    _size = size;
-    return _chart;
-  };
+    _size = size
+    return _chart
+  }
 
   /**
    * Get or set the function that formats an item. The data grid widget uses a
@@ -183,11 +181,11 @@ export default function dataGrid(parent, chartGroup) {
    */
   _chart.html = function(html) {
     if (!arguments.length) {
-      return _html;
+      return _html
     }
-    _html = html;
-    return _chart;
-  };
+    _html = html
+    return _chart
+  }
 
   /**
    * Get or set the function that formats a group label.
@@ -202,11 +200,11 @@ export default function dataGrid(parent, chartGroup) {
    */
   _chart.htmlGroup = function(htmlGroup) {
     if (!arguments.length) {
-      return _htmlGroup;
+      return _htmlGroup
     }
-    _htmlGroup = htmlGroup;
-    return _chart;
-  };
+    _htmlGroup = htmlGroup
+    return _chart
+  }
 
   /**
    * Get or set sort-by function. This function works as a value accessor at the item
@@ -224,11 +222,11 @@ export default function dataGrid(parent, chartGroup) {
    */
   _chart.sortBy = function(sortByFunction) {
     if (!arguments.length) {
-      return _sortBy;
+      return _sortBy
     }
-    _sortBy = sortByFunction;
-    return _chart;
-  };
+    _sortBy = sortByFunction
+    return _chart
+  }
 
   /**
    * Get or set sort order function.
@@ -245,11 +243,11 @@ export default function dataGrid(parent, chartGroup) {
    */
   _chart.order = function(order) {
     if (!arguments.length) {
-      return _order;
+      return _order
     }
-    _order = order;
-    return _chart;
-  };
+    _order = order
+    return _chart
+  }
 
-  return _chart.anchor(parent, chartGroup);
+  return _chart.anchor(parent, chartGroup)
 }

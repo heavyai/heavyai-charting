@@ -1,6 +1,6 @@
-import d3 from "d3";
-import { pluck } from "../utils/utils";
-import legendMixin from "../mixins/dc-legend-mixin";
+import d3 from "d3"
+import { pluck } from "../utils/utils"
+import legendMixin from "../mixins/dc-legend-mixin"
 /**
  * Legend is a attachable widget that can be added to other dc charts to render horizontal legend
  * labels.
@@ -12,7 +12,7 @@ import legendMixin from "../mixins/dc-legend-mixin";
  * @return {dc.legend}
  */
 export default function legend() {
-  const LABEL_GAP = 2;
+  const LABEL_GAP = 2
 
   let _legend = {},
     _parent,
@@ -23,29 +23,29 @@ export default function legend() {
     _horizontal = false,
     _legendWidth = 560,
     _itemWidth = 70,
-    _autoItemWidth = false;
+    _autoItemWidth = false
 
-  let _g;
+  let _g
 
   _legend.parent = function(p) {
     if (!arguments.length) {
-      return _parent;
+      return _parent
     }
-    _parent = p;
-    return _legend;
-  };
+    _parent = p
+    return _legend
+  }
 
   _legend.render = function() {
     _parent
       .svg()
       .select("g.dc-legend")
-      .remove();
+      .remove()
     _g = _parent
       .svg()
       .append("g")
       .attr("class", "dc-legend")
-      .attr("transform", "translate(" + _x + "," + _y + ")");
-    const legendables = _parent.legendables();
+      .attr("transform", "translate(" + _x + "," + _y + ")")
+    const legendables = _parent.legendables()
 
     const itemEnter = _g
       .selectAll("g.dc-legend-item")
@@ -54,18 +54,18 @@ export default function legend() {
       .append("g")
       .attr("class", "dc-legend-item")
       .on("mouseover", d => {
-        _parent.legendHighlight(d);
+        _parent.legendHighlight(d)
       })
       .on("mouseout", d => {
-        _parent.legendReset(d);
+        _parent.legendReset(d)
       })
       .on("click", d => {
-        d.chart.legendToggle(d);
-      });
+        d.chart.legendToggle(d)
+      })
 
     _g
       .selectAll("g.dc-legend-item")
-      .classed("fadeout", d => d.chart.isLegendableHidden(d));
+      .classed("fadeout", d => d.chart.isLegendableHidden(d))
 
     if (legendables.some(pluck("dashstyle"))) {
       itemEnter
@@ -76,13 +76,13 @@ export default function legend() {
         .attr("y2", _itemHeight / 2)
         .attr("stroke-width", 2)
         .attr("stroke-dasharray", pluck("dashstyle"))
-        .attr("stroke", pluck("color"));
+        .attr("stroke", pluck("color"))
     } else {
       itemEnter
         .append("rect")
         .attr("width", _itemHeight)
         .attr("height", _itemHeight)
-        .attr("fill", d => (d ? d.color : "blue"));
+        .attr("fill", d => (d ? d.color : "blue"))
     }
 
     itemEnter
@@ -92,11 +92,11 @@ export default function legend() {
       .attr("y", function() {
         return (
           _itemHeight / 2 + (this.clientHeight ? this.clientHeight : 13) / 2 - 2
-        );
-      });
+        )
+      })
 
-    let _cumulativeLegendTextWidth = 0;
-    let row = 0;
+    let _cumulativeLegendTextWidth = 0
+    let row = 0
     itemEnter.attr("transform", function(d, i) {
       if (_horizontal) {
         const translateBy =
@@ -104,25 +104,25 @@ export default function legend() {
           _cumulativeLegendTextWidth +
           "," +
           row * legendItemHeight() +
-          ")";
+          ")"
         const itemWidth =
-          _autoItemWidth === true ? this.getBBox().width + _gap : _itemWidth;
+          _autoItemWidth === true ? this.getBBox().width + _gap : _itemWidth
 
         if (_cumulativeLegendTextWidth + itemWidth >= _legendWidth) {
-          ++row;
-          _cumulativeLegendTextWidth = 0;
+          ++row
+          _cumulativeLegendTextWidth = 0
         } else {
-          _cumulativeLegendTextWidth = _cumulativeLegendTextWidth + itemWidth;
+          _cumulativeLegendTextWidth = _cumulativeLegendTextWidth + itemWidth
         }
-        return translateBy;
+        return translateBy
       } else {
-        return "translate(0," + i * legendItemHeight() + ")";
+        return "translate(0," + i * legendItemHeight() + ")"
       }
-    });
-  };
+    })
+  }
 
   function legendItemHeight() {
-    return _gap + _itemHeight;
+    return _gap + _itemHeight
   }
 
   /**
@@ -136,11 +136,11 @@ export default function legend() {
    */
   _legend.x = function(x) {
     if (!arguments.length) {
-      return _x;
+      return _x
     }
-    _x = x;
-    return _legend;
-  };
+    _x = x
+    return _legend
+  }
 
   /**
    * Set or get y coordinate for legend widget.
@@ -153,11 +153,11 @@ export default function legend() {
    */
   _legend.y = function(y) {
     if (!arguments.length) {
-      return _y;
+      return _y
     }
-    _y = y;
-    return _legend;
-  };
+    _y = y
+    return _legend
+  }
 
   /**
    * Set or get gap between legend items.
@@ -170,11 +170,11 @@ export default function legend() {
    */
   _legend.gap = function(gap) {
     if (!arguments.length) {
-      return _gap;
+      return _gap
     }
-    _gap = gap;
-    return _legend;
-  };
+    _gap = gap
+    return _legend
+  }
 
   /**
    * Set or get legend item height.
@@ -187,11 +187,11 @@ export default function legend() {
    */
   _legend.itemHeight = function(itemHeight) {
     if (!arguments.length) {
-      return _itemHeight;
+      return _itemHeight
     }
-    _itemHeight = itemHeight;
-    return _legend;
-  };
+    _itemHeight = itemHeight
+    return _legend
+  }
 
   /**
    * Position legend horizontally instead of vertically.
@@ -204,11 +204,11 @@ export default function legend() {
    */
   _legend.horizontal = function(horizontal) {
     if (!arguments.length) {
-      return _horizontal;
+      return _horizontal
     }
-    _horizontal = horizontal;
-    return _legend;
-  };
+    _horizontal = horizontal
+    return _legend
+  }
 
   /**
    * Maximum width for horizontal legend.
@@ -221,11 +221,11 @@ export default function legend() {
    */
   _legend.legendWidth = function(legendWidth) {
     if (!arguments.length) {
-      return _legendWidth;
+      return _legendWidth
     }
-    _legendWidth = legendWidth;
-    return _legend;
-  };
+    _legendWidth = legendWidth
+    return _legend
+  }
 
   /**
    * legendItem width for horizontal legend.
@@ -238,11 +238,11 @@ export default function legend() {
    */
   _legend.itemWidth = function(itemWidth) {
     if (!arguments.length) {
-      return _itemWidth;
+      return _itemWidth
     }
-    _itemWidth = itemWidth;
-    return _legend;
-  };
+    _itemWidth = itemWidth
+    return _legend
+  }
 
   /**
    * Turn automatic width for legend items on or off. If true, {@link #dc.legend+itemWidth itemWidth} is ignored.
@@ -256,11 +256,11 @@ export default function legend() {
    */
   _legend.autoItemWidth = function(autoItemWidth) {
     if (!arguments.length) {
-      return _autoItemWidth;
+      return _autoItemWidth
     }
-    _autoItemWidth = autoItemWidth;
-    return _legend;
-  };
+    _autoItemWidth = autoItemWidth
+    return _legend
+  }
 
   /**
     #### .legendText([legendTextFunction])
@@ -280,13 +280,13 @@ export default function legend() {
     **/
   _legend.legendText = function(_) {
     if (!arguments.length) {
-      return _legendText;
+      return _legendText
     }
-    _legendText = _;
-    return _legend;
-  };
+    _legendText = _
+    return _legend
+  }
 
-  _legend = legendMixin(_legend);
+  _legend = legendMixin(_legend)
 
-  return _legend;
+  return _legend
 }

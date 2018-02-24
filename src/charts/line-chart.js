@@ -1,10 +1,10 @@
-import { deregisterChart, override, transition } from "../core/core";
-import { pluck, utils } from "../utils/utils";
-import coordinateGridMixin from "../mixins/coordinate-grid-mixin";
-import d3 from "d3";
-import elasticDimensionMixin from "../mixins/elastic-dimension-mixin";
-import stackMixin from "../mixins/stack-mixin";
-import multiSeriesMixin from "../mixins/multi-series-mixin";
+import { deregisterChart, override, transition } from "../core/core"
+import { pluck, utils } from "../utils/utils"
+import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
+import d3 from "d3"
+import elasticDimensionMixin from "../mixins/elastic-dimension-mixin"
+import stackMixin from "../mixins/stack-mixin"
+import multiSeriesMixin from "../mixins/multi-series-mixin"
 
 /**
  * Concrete line/area chart implementation.
@@ -32,49 +32,49 @@ import multiSeriesMixin from "../mixins/multi-series-mixin";
  * @return {dc.lineChart}
  */
 export default function lineChart(parent, chartGroup) {
-  const DEFAULT_DOT_RADIUS = 5;
-  const TOOLTIP_G_CLASS = "dc-tooltip";
-  const DOT_CIRCLE_CLASS = "dot";
-  const Y_AXIS_REF_LINE_CLASS = "yRef";
-  const X_AXIS_REF_LINE_CLASS = "xRef";
-  const DEFAULT_DOT_OPACITY = 1e-6;
+  const DEFAULT_DOT_RADIUS = 5
+  const TOOLTIP_G_CLASS = "dc-tooltip"
+  const DOT_CIRCLE_CLASS = "dot"
+  const Y_AXIS_REF_LINE_CLASS = "yRef"
+  const X_AXIS_REF_LINE_CLASS = "xRef"
+  const DEFAULT_DOT_OPACITY = 1e-6
 
-  let _chart = elasticDimensionMixin(stackMixin(coordinateGridMixin({})));
-  let _renderArea = false;
-  let _dotRadius = DEFAULT_DOT_RADIUS;
-  let _dataPointRadius = null;
-  let _dataPointFillOpacity = DEFAULT_DOT_OPACITY;
-  let _dataPointStrokeOpacity = DEFAULT_DOT_OPACITY;
-  let _interpolate = "linear";
-  let _tension = 0.7;
-  let _defined;
-  let _dashStyle;
-  let _xyTipsOn = true;
+  let _chart = elasticDimensionMixin(stackMixin(coordinateGridMixin({})))
+  let _renderArea = false
+  let _dotRadius = DEFAULT_DOT_RADIUS
+  let _dataPointRadius = null
+  let _dataPointFillOpacity = DEFAULT_DOT_OPACITY
+  let _dataPointStrokeOpacity = DEFAULT_DOT_OPACITY
+  let _interpolate = "linear"
+  let _tension = 0.7
+  let _defined
+  let _dashStyle
+  let _xyTipsOn = true
 
-  _chart.transitionDuration(500);
-  _chart._rangeBandPadding(1);
+  _chart.transitionDuration(500)
+  _chart._rangeBandPadding(1)
 
   _chart.plotData = function() {
-    const chartBody = _chart.chartBodyG();
-    let layersList = chartBody.selectAll("g.stack-list");
+    const chartBody = _chart.chartBodyG()
+    let layersList = chartBody.selectAll("g.stack-list")
 
     if (layersList.empty()) {
-      layersList = chartBody.append("g").attr("class", "stack-list");
+      layersList = chartBody.append("g").attr("class", "stack-list")
     }
 
-    const layers = layersList.selectAll("g.stack").data(_chart.data());
+    const layers = layersList.selectAll("g.stack").data(_chart.data())
 
     const layersEnter = layers
       .enter()
       .append("g")
-      .attr("class", (d, i) => "stack " + "_" + i);
+      .attr("class", (d, i) => "stack " + "_" + i)
 
-    drawLine(layersEnter, layers);
+    drawLine(layersEnter, layers)
 
-    drawArea(layersEnter, layers);
+    drawArea(layersEnter, layers)
 
-    drawDots(chartBody, layers);
-  };
+    drawDots(chartBody, layers)
+  }
 
   /**
    * Gets or sets the interpolator to use for lines drawn, by string name, allowing e.g. step
@@ -93,11 +93,11 @@ export default function lineChart(parent, chartGroup) {
    */
   _chart.interpolate = function(interpolate) {
     if (!arguments.length) {
-      return _interpolate;
+      return _interpolate
     }
-    _interpolate = interpolate;
-    return _chart;
-  };
+    _interpolate = interpolate
+    return _chart
+  }
 
   /**
    * Gets or sets the tension to use for lines drawn, in the range 0 to 1.
@@ -115,11 +115,11 @@ export default function lineChart(parent, chartGroup) {
    */
   _chart.tension = function(tension) {
     if (!arguments.length) {
-      return _tension;
+      return _tension
     }
-    _tension = tension;
-    return _chart;
-  };
+    _tension = tension
+    return _chart
+  }
 
   /**
    * Gets or sets a function that will determine discontinuities in the line which should be
@@ -140,11 +140,11 @@ export default function lineChart(parent, chartGroup) {
    */
   _chart.defined = function(defined) {
     if (!arguments.length) {
-      return _defined;
+      return _defined
     }
-    _defined = defined;
-    return _chart;
-  };
+    _defined = defined
+    return _chart
+  }
 
   /**
    * Set the line's d3 dashstyle. This value becomes the 'stroke-dasharray' of line. Defaults to empty
@@ -162,11 +162,11 @@ export default function lineChart(parent, chartGroup) {
    */
   _chart.dashStyle = function(dashStyle) {
     if (!arguments.length) {
-      return _dashStyle;
+      return _dashStyle
     }
-    _dashStyle = dashStyle;
-    return _chart;
-  };
+    _dashStyle = dashStyle
+    return _chart
+  }
 
   /**
    * Get or set render area flag. If the flag is set to true then the chart will render the area
@@ -180,18 +180,18 @@ export default function lineChart(parent, chartGroup) {
    */
   _chart.renderArea = function(renderArea) {
     if (!arguments.length) {
-      return _renderArea;
+      return _renderArea
     }
-    _renderArea = renderArea;
-    return _chart;
-  };
+    _renderArea = renderArea
+    return _chart
+  }
 
   function colors(d, i) {
     if (d.name) {
-      d.layer = d.name;
-      return _chart.getColor(d, i);
+      d.layer = d.name
+      return _chart.getColor(d, i)
     } else {
-      return _chart.getColor(d, i);
+      return _chart.getColor(d, i)
     }
   }
 
@@ -202,30 +202,30 @@ export default function lineChart(parent, chartGroup) {
       .y(d => {
         /* OVERRIDE ---------------------------------------------------------------- */
         if (_renderArea) {
-          return _chart.y()(d.y + d.y0);
+          return _chart.y()(d.y + d.y0)
         } else {
-          return _chart.y()(d.y);
+          return _chart.y()(d.y)
         }
         /* ------------------------------------------------------------------------- */
       })
       .interpolate(_interpolate)
-      .tension(_tension);
+      .tension(_tension)
     if (_defined) {
-      line.defined(_defined);
+      line.defined(_defined)
     }
 
     const path = layersEnter
       .append("path")
       .attr("class", "line")
-      .attr("stroke", colors);
+      .attr("stroke", colors)
     if (_dashStyle) {
-      path.attr("stroke-dasharray", _dashStyle);
+      path.attr("stroke-dasharray", _dashStyle)
     }
 
     transition(layers.select("path.line"), _chart.transitionDuration())
       // .ease('linear')
       .attr("stroke", colors)
-      .attr("d", d => safeD(line(d.values)));
+      .attr("d", d => safeD(line(d.values)))
   }
 
   function drawArea(layersEnter, layers) {
@@ -236,81 +236,81 @@ export default function lineChart(parent, chartGroup) {
         .y(d => _chart.y()(d.y + d.y0))
         .y0(d => _chart.y()(d.y0))
         .interpolate(_interpolate)
-        .tension(_tension);
+        .tension(_tension)
       if (_defined) {
-        area.defined(_defined);
+        area.defined(_defined)
       }
 
       layersEnter
         .append("path")
         .attr("class", "area")
         .attr("fill", colors)
-        .attr("d", d => safeD(area(d.values)));
+        .attr("d", d => safeD(area(d.values)))
 
       transition(layers.select("path.area"), _chart.transitionDuration())
         // .ease('linear')
         .attr("fill", colors)
-        .attr("d", d => safeD(area(d.values)));
+        .attr("d", d => safeD(area(d.values)))
     }
   }
 
   function safeD(d) {
-    return !d || d.indexOf("NaN") >= 0 ? "M0,0" : d;
+    return !d || d.indexOf("NaN") >= 0 ? "M0,0" : d
   }
 
   function hoverOverBrush() {
     var g = _chart
       .g()
       .on("mouseout", () => {
-        hideBrushDots();
+        hideBrushDots()
       })
       .on("mousemove", function() {
         if (_chart.isBrushing()) {
-          hidePopup();
+          hidePopup()
         } else {
-          showBrushDots(g, this);
+          showBrushDots(g, this)
         }
-      });
+      })
   }
 
   function hideBrushDots() {
     _chart
       .g()
       .selectAll(".dot")
-      .style("fill-opacity", 0);
-    hidePopup();
+      .style("fill-opacity", 0)
+    hidePopup()
   }
 
   function showBrushDots(g, e) {
-    let coordinates = [0, 0];
-    coordinates = _chart.popupCoordinates(d3.mouse(e));
-    const x = coordinates[0];
-    const y = coordinates[1];
-    const xAdjusted = x - _chart.margins().left;
+    let coordinates = [0, 0]
+    coordinates = _chart.popupCoordinates(d3.mouse(e))
+    const x = coordinates[0]
+    const y = coordinates[1]
+    const xAdjusted = x - _chart.margins().left
 
-    const popupRows = [];
+    const popupRows = []
 
     const toolTips = g.selectAll(".dc-tooltip").each(function() {
-      let lastDot = null;
-      let hoverDot = null;
+      let lastDot = null
+      let hoverDot = null
 
       const dots = d3
         .select(this)
         .selectAll(".dot")
-        .style("fill-opacity", 0);
+        .style("fill-opacity", 0)
 
-      dots[0].sort((a, b) => d3.select(a).attr("cx") - d3.select(b).attr("cx"));
+      dots[0].sort((a, b) => d3.select(a).attr("cx") - d3.select(b).attr("cx"))
 
       dots[0].some((obj, i) => {
-        const elm = d3.select(obj);
+        const elm = d3.select(obj)
 
         if (xAdjusted < elm.attr("cx")) {
-          hoverDot = { elm, datum: elm.datum(), i };
-          return true;
+          hoverDot = { elm, datum: elm.datum(), i }
+          return true
         }
 
-        lastDot = { elm, datum: elm.datum(), i };
-      });
+        lastDot = { elm, datum: elm.datum(), i }
+      })
 
       hoverDot =
         lastDot && hoverDot
@@ -318,37 +318,37 @@ export default function lineChart(parent, chartGroup) {
             Math.abs(hoverDot.elm.attr("cx") - xAdjusted)
             ? lastDot
             : hoverDot
-          : hoverDot;
+          : hoverDot
 
       if (hoverDot && Math.abs(hoverDot.elm.attr("cx") - xAdjusted) < 32) {
-        hoverDot.elm.style("fill-opacity", 1);
-        popupRows.push(hoverDot);
+        hoverDot.elm.style("fill-opacity", 1)
+        popupRows.push(hoverDot)
       }
-    });
+    })
 
     if (popupRows.length > 0) {
-      showPopup(popupRows, x, y);
+      showPopup(popupRows, x, y)
     } else {
-      hidePopup();
+      hidePopup()
     }
   }
 
   function showPopup(arr, x, y) {
     if (!_chart.popupIsEnabled()) {
-      hidePopup();
-      return false;
+      hidePopup()
+      return false
     }
-    const popup = _chart.popup();
+    const popup = _chart.popup()
 
     const popupBox = popup
       .select(".chart-popup-content")
       .html("")
-      .classed("popup-list", true);
+      .classed("popup-list", true)
 
     popupBox
       .append("div")
       .attr("class", "popup-header")
-      .text(_chart.popupTextAccessor(arr));
+      .text(_chart.popupTextAccessor(arr))
 
     const popupItems = popupBox
       .selectAll(".popup-item")
@@ -362,38 +362,38 @@ export default function lineChart(parent, chartGroup) {
       )
       .enter()
       .append("div")
-      .attr("class", "popup-item");
+      .attr("class", "popup-item")
 
     popupItems
       .append("div")
       .attr("class", "popup-legend")
-      .style("background-color", d => colors(d.datum, d.i));
+      .style("background-color", d => colors(d.datum, d.i))
 
     if (_chart.series().keys()) {
       popupItems
         .append("div")
         .attr("class", "popup-item-key")
-        .text(d => _chart.colorDomain()[d.datum.idx]);
+        .text(d => _chart.colorDomain()[d.datum.idx])
     }
 
     popupItems
       .append("div")
       .attr("class", "popup-item-value")
       .classed("text-align-right", Boolean(_chart.series().keys()))
-      .text(d => utils.formatValue(d.datum.y));
+      .text(d => utils.formatValue(d.datum.y))
 
-    positionPopup(x, y);
-    popup.classed("js-showPopup", true);
+    positionPopup(x, y)
+    popup.classed("js-showPopup", true)
   }
 
   function hidePopup() {
-    _chart.popup().classed("js-showPopup", false);
+    _chart.popup().classed("js-showPopup", false)
   }
 
   function positionPopup(x, y) {
     const popup = _chart
       .popup()
-      .attr("style", () => "transform:translate(" + x + "px," + y + "px)");
+      .attr("style", () => "transform:translate(" + x + "px," + y + "px)")
 
     popup
       .select(".chart-popup-box")
@@ -407,8 +407,8 @@ export default function lineChart(parent, chartGroup) {
               .getBoundingClientRect().width +
               32) >
           _chart.width()
-        );
-      });
+        )
+      })
   }
 
   function drawDots(chartBody, layers) {
@@ -416,31 +416,31 @@ export default function lineChart(parent, chartGroup) {
     // if (!_chart.brushOn() && _chart.xyTipsOn()) {
     /* ------------------------------------------------------------------------- */
 
-    const tooltipListClass = TOOLTIP_G_CLASS + "-list";
-    let tooltips = chartBody.select("g." + tooltipListClass);
+    const tooltipListClass = TOOLTIP_G_CLASS + "-list"
+    let tooltips = chartBody.select("g." + tooltipListClass)
 
     if (tooltips.empty()) {
-      tooltips = chartBody.append("g").attr("class", tooltipListClass);
+      tooltips = chartBody.append("g").attr("class", tooltipListClass)
     }
 
     layers.each((d, layerIndex) => {
-      let points = d.values;
+      let points = d.values
       if (_defined) {
-        points = points.filter(_defined);
+        points = points.filter(_defined)
       }
 
-      let g = tooltips.select("g." + TOOLTIP_G_CLASS + "._" + layerIndex);
+      let g = tooltips.select("g." + TOOLTIP_G_CLASS + "._" + layerIndex)
       if (g.empty()) {
         g = tooltips
           .append("g")
-          .attr("class", TOOLTIP_G_CLASS + " _" + layerIndex);
+          .attr("class", TOOLTIP_G_CLASS + " _" + layerIndex)
       }
 
-      createRefLines(g);
+      createRefLines(g)
 
       const dots = g
         .selectAll("circle." + DOT_CIRCLE_CLASS)
-        .data(points, pluck("x"));
+        .data(points, pluck("x"))
 
       dots
         .enter()
@@ -450,35 +450,35 @@ export default function lineChart(parent, chartGroup) {
         .style("fill-opacity", _dataPointFillOpacity)
         .style("stroke-opacity", _dataPointStrokeOpacity)
         .on("mousemove", function() {
-          const dot = d3.select(this);
-          showDot(dot);
-          showRefLines(dot, g);
+          const dot = d3.select(this)
+          showDot(dot)
+          showRefLines(dot, g)
         })
         .on("mouseout", function() {
-          const dot = d3.select(this);
-          hideDot(dot);
-          hideRefLines(g);
-        });
+          const dot = d3.select(this)
+          hideDot(dot)
+          hideRefLines(g)
+        })
 
       dots
         .attr("cx", d => utils.safeNumber(_chart.x()(d.x)))
         .attr("cy", d => {
           /* OVERRIDE ---------------------------------------------------------------- */
           if (_renderArea) {
-            return utils.safeNumber(_chart.y()(d.y + d.y0));
+            return utils.safeNumber(_chart.y()(d.y + d.y0))
           } else {
-            return utils.safeNumber(_chart.y()(d.y));
+            return utils.safeNumber(_chart.y()(d.y))
           }
           /* ------------------------------------------------------------------------- */
         })
         .attr("fill", colors)
-        .call(renderTitle, d);
+        .call(renderTitle, d)
 
-      dots.exit().remove();
-    });
+      dots.exit().remove()
+    })
 
     if (_chart.brushOn() && !_chart.focusChart()) {
-      hoverOverBrush();
+      hoverOverBrush()
     }
 
     /* OVERRIDE ---------------------------------------------------------------- */
@@ -489,59 +489,59 @@ export default function lineChart(parent, chartGroup) {
   function createRefLines(g) {
     const yRefLine = g.select("path." + Y_AXIS_REF_LINE_CLASS).empty()
       ? g.append("path").attr("class", Y_AXIS_REF_LINE_CLASS)
-      : g.select("path." + Y_AXIS_REF_LINE_CLASS);
-    yRefLine.style("display", "none").attr("stroke-dasharray", "5,5");
+      : g.select("path." + Y_AXIS_REF_LINE_CLASS)
+    yRefLine.style("display", "none").attr("stroke-dasharray", "5,5")
 
     const xRefLine = g.select("path." + X_AXIS_REF_LINE_CLASS).empty()
       ? g.append("path").attr("class", X_AXIS_REF_LINE_CLASS)
-      : g.select("path." + X_AXIS_REF_LINE_CLASS);
-    xRefLine.style("display", "none").attr("stroke-dasharray", "5,5");
+      : g.select("path." + X_AXIS_REF_LINE_CLASS)
+    xRefLine.style("display", "none").attr("stroke-dasharray", "5,5")
   }
 
   function showDot(dot) {
-    dot.style("fill-opacity", 0.8);
-    dot.style("stroke-opacity", 0.8);
-    dot.attr("r", _dotRadius);
-    return dot;
+    dot.style("fill-opacity", 0.8)
+    dot.style("stroke-opacity", 0.8)
+    dot.attr("r", _dotRadius)
+    return dot
   }
 
   function showRefLines(dot, g) {
-    const x = dot.attr("cx");
-    const y = dot.attr("cy");
-    const yAxisX = _chart._yAxisX() - _chart.margins().left;
-    const yAxisRefPathD = "M" + yAxisX + " " + y + "L" + x + " " + y;
+    const x = dot.attr("cx")
+    const y = dot.attr("cy")
+    const yAxisX = _chart._yAxisX() - _chart.margins().left
+    const yAxisRefPathD = "M" + yAxisX + " " + y + "L" + x + " " + y
     const xAxisRefPathD =
-      "M" + x + " " + _chart.yAxisHeight() + "L" + x + " " + y;
+      "M" + x + " " + _chart.yAxisHeight() + "L" + x + " " + y
     g
       .select("path." + Y_AXIS_REF_LINE_CLASS)
       .style("display", "")
-      .attr("d", yAxisRefPathD);
+      .attr("d", yAxisRefPathD)
     g
       .select("path." + X_AXIS_REF_LINE_CLASS)
       .style("display", "")
-      .attr("d", xAxisRefPathD);
+      .attr("d", xAxisRefPathD)
   }
 
   function getDotRadius() {
-    return _dataPointRadius || _dotRadius;
+    return _dataPointRadius || _dotRadius
   }
 
   function hideDot(dot) {
     dot
       .style("fill-opacity", _dataPointFillOpacity)
       .style("stroke-opacity", _dataPointStrokeOpacity)
-      .attr("r", getDotRadius());
+      .attr("r", getDotRadius())
   }
 
   function hideRefLines(g) {
-    g.select("path." + Y_AXIS_REF_LINE_CLASS).style("display", "none");
-    g.select("path." + X_AXIS_REF_LINE_CLASS).style("display", "none");
+    g.select("path." + Y_AXIS_REF_LINE_CLASS).style("display", "none")
+    g.select("path." + X_AXIS_REF_LINE_CLASS).style("display", "none")
   }
 
   function renderTitle(dot, d) {
     if (_chart.renderTitle()) {
-      dot.selectAll("title").remove();
-      dot.append("title").text(pluck("data", _chart.title(d.name)));
+      dot.selectAll("title").remove()
+      dot.append("title").text(pluck("data", _chart.title(d.name)))
     }
   }
 
@@ -558,11 +558,11 @@ export default function lineChart(parent, chartGroup) {
    */
   _chart.xyTipsOn = function(xyTipsOn) {
     if (!arguments.length) {
-      return _xyTipsOn;
+      return _xyTipsOn
     }
-    _xyTipsOn = xyTipsOn;
-    return _chart;
-  };
+    _xyTipsOn = xyTipsOn
+    return _chart
+  }
 
   /**
    * Get or set the radius (in px) for dots displayed on the data points.
@@ -575,11 +575,11 @@ export default function lineChart(parent, chartGroup) {
    */
   _chart.dotRadius = function(dotRadius) {
     if (!arguments.length) {
-      return _dotRadius;
+      return _dotRadius
     }
-    _dotRadius = dotRadius;
-    return _chart;
-  };
+    _dotRadius = dotRadius
+    return _chart
+  }
 
   /**
    * Always show individual dots for each datapoint.
@@ -601,29 +601,29 @@ export default function lineChart(parent, chartGroup) {
         fillOpacity: _dataPointFillOpacity,
         strokeOpacity: _dataPointStrokeOpacity,
         radius: _dataPointRadius
-      };
+      }
     } else if (!options) {
-      _dataPointFillOpacity = DEFAULT_DOT_OPACITY;
-      _dataPointStrokeOpacity = DEFAULT_DOT_OPACITY;
-      _dataPointRadius = null;
+      _dataPointFillOpacity = DEFAULT_DOT_OPACITY
+      _dataPointStrokeOpacity = DEFAULT_DOT_OPACITY
+      _dataPointRadius = null
     } else {
-      _dataPointFillOpacity = options.fillOpacity || 0.8;
-      _dataPointStrokeOpacity = options.strokeOpacity || 0.8;
-      _dataPointRadius = options.radius || 2;
+      _dataPointFillOpacity = options.fillOpacity || 0.8
+      _dataPointStrokeOpacity = options.strokeOpacity || 0.8
+      _dataPointRadius = options.radius || 2
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   function colorFilter(color, dashstyle, inv) {
     return function() {
-      const item = d3.select(this);
+      const item = d3.select(this)
       const match =
         (item.attr("stroke") === color &&
           item.attr("stroke-dasharray") ===
             (dashstyle instanceof Array ? dashstyle.join(",") : null)) ||
-        item.attr("fill") === color;
-      return inv ? !match : match;
-    };
+        item.attr("fill") === color
+      return inv ? !match : match
+    }
   }
 
   _chart.legendHighlight = function(d) {
@@ -632,43 +632,43 @@ export default function lineChart(parent, chartGroup) {
         .g()
         .selectAll("path.line, path.area")
         .classed("highlight", colorFilter(d.color, d.dashstyle))
-        .classed("fadeout", colorFilter(d.color, d.dashstyle, true));
+        .classed("fadeout", colorFilter(d.color, d.dashstyle, true))
     }
-  };
+  }
 
   _chart.legendReset = function() {
     _chart
       .g()
       .selectAll("path.line, path.area")
       .classed("highlight", false)
-      .classed("fadeout", false);
-  };
+      .classed("fadeout", false)
+  }
 
   override(_chart, "legendables", () => {
-    const legendables = _chart._legendables();
+    const legendables = _chart._legendables()
     if (!_dashStyle) {
-      return legendables;
+      return legendables
     }
     return legendables.map(l => {
-      l.dashstyle = _dashStyle;
-      return l;
-    });
-  });
+      l.dashstyle = _dashStyle
+      return l
+    })
+  })
 
-  _chart = multiSeriesMixin(_chart);
+  _chart = multiSeriesMixin(_chart)
 
   _chart.destroyChart = function() {
-    deregisterChart(_chart, _chart.chartGroup());
-    _chart.on("filtered", null);
-    _chart.filterAll();
-    _chart.resetSvg();
+    deregisterChart(_chart, _chart.chartGroup())
+    _chart.on("filtered", null)
+    _chart.filterAll()
+    _chart.resetSvg()
     _chart
       .root()
       .attr("style", "")
       .attr("class", "")
-      .html("");
-    _chart._doRender = () => _chart;
-  };
+      .html("")
+    _chart._doRender = () => _chart
+  }
 
-  return _chart.anchor(parent, chartGroup);
+  return _chart.anchor(parent, chartGroup)
 }

@@ -1,6 +1,6 @@
-import { expect } from "chai";
-import rasterLayer from "./raster-layer";
-import rasterLayerHeatmapMixin from "./raster-layer-heatmap-mixin";
+import { expect } from "chai"
+import rasterLayer from "./raster-layer"
+import rasterLayerHeatmapMixin from "./raster-layer-heatmap-mixin"
 
 const spec = {
   mark: "square",
@@ -31,32 +31,32 @@ const spec = {
     },
     size: "auto"
   }
-};
+}
 
 describe("rasterLayerHeatmapMixin", () => {
   it("should have the correct getters/setters", () => {
-    const layer = rasterLayer("heat");
-    const xDim = "xDim";
-    const yDim = "yDim";
-    layer.xDim(xDim);
-    layer.yDim(yDim);
-    expect(layer.xDim()).to.equal(xDim);
-    expect(layer.yDim()).to.equal(yDim);
-  });
+    const layer = rasterLayer("heat")
+    const xDim = "xDim"
+    const yDim = "yDim"
+    layer.xDim(xDim)
+    layer.yDim(yDim)
+    expect(layer.xDim()).to.equal(xDim)
+    expect(layer.yDim()).to.equal(yDim)
+  })
 
   describe("layer state", () => {
     it("should be able to be set and retrieved", () => {
-      const layer = rasterLayer("heat");
-      layer.setState(spec);
-      expect(layer.getState()).to.not.equal(spec);
-      expect(layer.getState()).to.deep.equal(spec);
-    });
-  });
+      const layer = rasterLayer("heat")
+      layer.setState(spec)
+      expect(layer.getState()).to.not.equal(spec)
+      expect(layer.getState()).to.deep.equal(spec)
+    })
+  })
 
   describe("_genVega", () => {
     it("should transform vega-lite spec (state) to full vega spec", () => {
-      const layer = rasterLayer("heat");
-      layer.setState(spec);
+      const layer = rasterLayer("heat")
+      layer.setState(spec)
 
       expect(
         layer._genVega({
@@ -114,9 +114,9 @@ describe("rasterLayerHeatmapMixin", () => {
             }
           }
         }
-      });
+      })
 
-      layer.setState(Object.assign({}, spec, { mark: "hex" }));
+      layer.setState(Object.assign({}, spec, { mark: "hex" }))
 
       expect(
         layer._genVega({
@@ -174,7 +174,7 @@ describe("rasterLayerHeatmapMixin", () => {
             }
           }
         }
-      });
-    });
-  });
-});
+      })
+    })
+  })
+})

@@ -1,7 +1,7 @@
-import baseMixin from "../mixins/base-mixin";
-import d3 from "d3";
-import { groupAll } from "../core/core-async";
-import { override } from "../core/core";
+import baseMixin from "../mixins/base-mixin"
+import d3 from "d3"
+import { groupAll } from "../core/core-async"
+import { override } from "../core/core"
 
 /**
  * The data count widget is a simple widget designed to display the number of records selected by the
@@ -29,24 +29,24 @@ import { override } from "../core/core";
  * @return {dc.dataCount}
  */
 export default function dataCount(parent, chartGroup) {
-  let _formatNumber = d3.format(",d");
-  const _chart = baseMixin({});
-  const _html = { some: "", all: "" };
+  let _formatNumber = d3.format(",d")
+  const _chart = baseMixin({})
+  const _html = { some: "", all: "" }
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.isCountChart = function() {
-    return true;
-  }; // override for count chart
+    return true
+  } // override for count chart
   /* ------------------------------------------------------------------------- */
 
   override(_chart, "group", function(group, name) {
     if (!arguments.length) {
-      return _chart._group();
+      return _chart._group()
     }
 
-    groupAll(group);
-    return _chart._group(group, name);
-  });
+    groupAll(group)
+    return _chart._group(group, name)
+  })
   /**
    * Gets or sets an optional object specifying HTML templates to use depending how many items are
    * selected. The text `%total-count` will replaced with the total number of records, and the text
@@ -67,16 +67,16 @@ export default function dataCount(parent, chartGroup) {
    */
   _chart.html = function(options) {
     if (!arguments.length) {
-      return _html;
+      return _html
     }
     if (options.all) {
-      _html.all = options.all;
+      _html.all = options.all
     }
     if (options.some) {
-      _html.some = options.some;
+      _html.some = options.some
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * Gets or sets an optional function to format the filter count and total count.
@@ -92,44 +92,44 @@ export default function dataCount(parent, chartGroup) {
    */
   _chart.formatNumber = function(formatter) {
     if (!arguments.length) {
-      return _formatNumber;
+      return _formatNumber
     }
-    _formatNumber = formatter;
-    return _chart;
-  };
+    _formatNumber = formatter
+    return _chart
+  }
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.setDataAsync((group, callbacks) =>
     group
       .valueAsync()
       .then(data => {
-        callbacks(null, data);
+        callbacks(null, data)
       })
       .catch(error => {
-        callbacks(error);
+        callbacks(error)
       })
-  );
+  )
   /* ------------------------------------------------------------------------- */
 
   _chart._doRender = function() {
     // ok to call size b/c will hit cache every time
-    const tot = _chart.dimension().size();
+    const tot = _chart.dimension().size()
     _chart
       .root()
       .style("width", "auto")
-      .style("height", "auto");
+      .style("height", "auto")
 
     /* OVERRIDE ---------------------------------------------------------------- */
-    let val = null;
+    let val = null
     if (_chart.dataCache != null) {
-      val = _chart.dataCache;
+      val = _chart.dataCache
     } else {
-      val = _chart.group().value();
+      val = _chart.group().value()
     }
     /* ------------------------------------------------------------------------- */
 
-    const all = _formatNumber(tot);
-    const selected = _formatNumber(val);
+    const all = _formatNumber(tot)
+    const selected = _formatNumber(val)
 
     if (tot === val && _html.all !== "") {
       _chart
@@ -138,7 +138,7 @@ export default function dataCount(parent, chartGroup) {
           _html.all
             .replace("%total-count", all)
             .replace("%filter-count", selected)
-        );
+        )
     } else if (_html.some !== "") {
       _chart
         .root()
@@ -146,23 +146,23 @@ export default function dataCount(parent, chartGroup) {
           _html.some
             .replace("%total-count", all)
             .replace("%filter-count", selected)
-        );
+        )
     } else {
-      _chart.selectAll(".total-count").text(all);
+      _chart.selectAll(".total-count").text(all)
 
       /* OVERRIDE ---------------------------------------------------------------- */
       _chart
         .selectAll(".filter-count")
         .classed("dark-text", all !== selected)
-        .text(selected);
+        .text(selected)
       /* ------------------------------------------------------------------------- */
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   _chart._doRedraw = function() {
-    return _chart._doRender();
-  };
+    return _chart._doRender()
+  }
 
-  return _chart.anchor(parent, chartGroup);
+  return _chart.anchor(parent, chartGroup)
 }

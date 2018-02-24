@@ -1,4 +1,4 @@
-import d3 from "d3";
+import d3 from "d3"
 
 /**
  * The Color Mixin is an abstract chart functional class providing universal coloring support
@@ -10,12 +10,12 @@ import d3 from "d3";
  * @return {dc.colorMixin}
  */
 export default function colorMixin(_chart) {
-  let _colors = d3.scale.category20c();
-  let _defaultAccessor = true;
+  let _colors = d3.scale.category20c()
+  let _defaultAccessor = true
 
   let _colorAccessor = function(d) {
-    return _chart.keyAccessor()(d);
-  };
+    return _chart.keyAccessor()(d)
+  }
 
   /**
    * Retrieve current color scale or set a new color scale. This methods accepts any function that
@@ -39,15 +39,15 @@ export default function colorMixin(_chart) {
    */
   _chart.colors = function(colorScale) {
     if (!arguments.length) {
-      return _colors;
+      return _colors
     }
     if (colorScale instanceof Array) {
-      _colors = d3.scale.quantize().range(colorScale); // deprecated legacy support, note: this fails for ordinal domains
+      _colors = d3.scale.quantize().range(colorScale) // deprecated legacy support, note: this fails for ordinal domains
     } else {
-      _colors = d3.functor(colorScale);
+      _colors = d3.functor(colorScale)
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * Convenience method to set the color scale to
@@ -60,8 +60,8 @@ export default function colorMixin(_chart) {
    * @return {dc.colorMixin}
    */
   _chart.ordinalColors = function(r) {
-    return _chart.colors(d3.scale.ordinal().range(r));
-  };
+    return _chart.colors(d3.scale.ordinal().range(r))
+  }
 
   /**
    * Convenience method to set the color scale to an Hcl interpolated linear scale with range `r`.
@@ -77,8 +77,8 @@ export default function colorMixin(_chart) {
         .linear()
         .range(r)
         .interpolate(d3.interpolateHcl)
-    );
-  };
+    )
+  }
 
   /**
    * Set or the get color accessor function. This function will be used to map a data point in a
@@ -98,17 +98,17 @@ export default function colorMixin(_chart) {
    */
   _chart.colorAccessor = function(colorAccessor) {
     if (!arguments.length) {
-      return _colorAccessor;
+      return _colorAccessor
     }
-    _colorAccessor = colorAccessor;
-    _defaultAccessor = false;
-    return _chart;
-  };
+    _colorAccessor = colorAccessor
+    _defaultAccessor = false
+    return _chart
+  }
 
   // what is this?
   _chart.defaultColorAccessor = function() {
-    return _defaultAccessor;
-  };
+    return _defaultAccessor
+  }
 
   /**
    * Set or get the current domain for the color mapping function. The domain must be supplied as an
@@ -125,11 +125,11 @@ export default function colorMixin(_chart) {
    */
   _chart.colorDomain = function(domain) {
     if (!arguments.length) {
-      return _colors.domain();
+      return _colors.domain()
     }
-    _colors.domain(domain);
-    return _chart;
-  };
+    _colors.domain(domain)
+    return _chart
+  }
 
   /**
    * Set the domain by determining the min and max values as retrieved by
@@ -143,10 +143,10 @@ export default function colorMixin(_chart) {
     const newDomain = [
       d3.min(_chart.data(), _chart.colorAccessor()),
       d3.max(_chart.data(), _chart.colorAccessor())
-    ];
-    _colors.domain(newDomain);
-    return _chart;
-  };
+    ]
+    _colors.domain(newDomain)
+    return _chart
+  }
 
   /**
    * Get the color for the datum d and counter i. This is used internally by charts to retrieve a color.
@@ -159,15 +159,15 @@ export default function colorMixin(_chart) {
    */
   _chart.getColor = function(data, index) {
     if (typeof data === "undefined") {
-      const GREY = "#e2e2e2";
-      return GREY;
+      const GREY = "#e2e2e2"
+      return GREY
     }
 
-    const range = _chart.colors().range();
-    const middleColor = range[Math.floor(range.length / 2)];
+    const range = _chart.colors().range()
+    const middleColor = range[Math.floor(range.length / 2)]
 
-    return _colors(_colorAccessor.call(this, data, index)) || middleColor;
-  };
+    return _colors(_colorAccessor.call(this, data, index)) || middleColor
+  }
 
   /**
    * Get the color for the datum d and counter i. This is used internally by charts to retrieve a color.
@@ -179,11 +179,11 @@ export default function colorMixin(_chart) {
    */
   _chart.colorCalculator = function(colorCalculator) {
     if (!arguments.length) {
-      return _chart.getColor;
+      return _chart.getColor
     }
-    _chart.getColor = colorCalculator;
-    return _chart;
-  };
+    _chart.getColor = colorCalculator
+    return _chart
+  }
 
-  return _chart;
+  return _chart
 }

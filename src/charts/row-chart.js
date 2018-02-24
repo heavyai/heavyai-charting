@@ -1,11 +1,11 @@
-import baseMixin from "../mixins/base-mixin";
-import capMixin from "../mixins/cap-mixin";
-import colorMixin from "../mixins/color-mixin";
-import d3 from "d3";
-import lockAxisMixin from "../mixins/lock-axis-mixin";
-import marginMixin from "../mixins/margin-mixin";
-import { transition } from "../core/core";
-import { utils } from "../utils/utils";
+import baseMixin from "../mixins/base-mixin"
+import capMixin from "../mixins/cap-mixin"
+import colorMixin from "../mixins/color-mixin"
+import d3 from "d3"
+import lockAxisMixin from "../mixins/lock-axis-mixin"
+import marginMixin from "../mixins/margin-mixin"
+import { transition } from "../core/core"
+import { utils } from "../utils/utils"
 /**
  * Concrete row chart implementation.
  *
@@ -30,108 +30,106 @@ import { utils } from "../utils/utils";
  * @return {dc.rowChart}
  */
 export default function rowChart(parent, chartGroup) {
-  let _g;
+  let _g
 
-  let _labelOffsetX = 8;
-  let _labelOffsetY = 16;
-  let _hasLabelOffsetY = false;
-  const _dyOffset = "0.35em"; // this helps center labels https://github.com/mbostock/d3/wiki/SVG-Shapes#svg_text
-  let _titleLabelOffsetX = 2;
-  const MAX_TICK_WIDTH = 64;
-  const DEFAULT_NUM_TICKS = 10;
+  let _labelOffsetX = 8
+  let _labelOffsetY = 16
+  let _hasLabelOffsetY = false
+  const _dyOffset = "0.35em" // this helps center labels https://github.com/mbostock/d3/wiki/SVG-Shapes#svg_text
+  let _titleLabelOffsetX = 2
+  const MAX_TICK_WIDTH = 64
+  const DEFAULT_NUM_TICKS = 10
 
   /* OVERRIDE -----------------------------------------------------------------*/
-  let _xAxisLabel;
-  let _yAxisLabel;
-  let _autoScroll = false;
-  const _minBarHeight = 16;
-  let _isBigBar = false;
-  let _scrollTop = 0;
+  let _xAxisLabel
+  let _yAxisLabel
+  let _autoScroll = false
+  const _minBarHeight = 16
+  let _isBigBar = false
+  let _scrollTop = 0
   /* --------------------------------------------------------------------------*/
 
-  let _gap = 4;
+  let _gap = 4
 
-  let _fixedBarHeight = false;
-  const _rowCssClass = "row";
-  const _titleRowCssClass = "titlerow";
-  let _renderTitleLabel = false;
+  let _fixedBarHeight = false
+  const _rowCssClass = "row"
+  const _titleRowCssClass = "titlerow"
+  let _renderTitleLabel = false
 
-  const _chart = lockAxisMixin(
-    capMixin(marginMixin(colorMixin(baseMixin({}))))
-  );
+  const _chart = lockAxisMixin(capMixin(marginMixin(colorMixin(baseMixin({})))))
 
-  let _x;
+  let _x
 
-  let _elasticX;
+  let _elasticX
 
-  const _xAxis = d3.svg.axis().orient("bottom");
+  const _xAxis = d3.svg.axis().orient("bottom")
 
-  let _rowData;
+  let _rowData
 
-  _chart.rowsCap = _chart.cap;
+  _chart.rowsCap = _chart.cap
 
   /* OVERRIDE -----------------------------------------------------------------*/
-  _chart.accent = accentRow;
-  _chart.unAccent = unAccentRow;
+  _chart.accent = accentRow
+  _chart.unAccent = unAccentRow
 
   _chart.setYAxisLabel = function(yAxisLabel) {
-    _yAxisLabel = yAxisLabel;
-  };
+    _yAxisLabel = yAxisLabel
+  }
 
   _chart.xAxisLabel = function(_, padding) {
     if (!arguments.length) {
-      return _xAxisLabel;
+      return _xAxisLabel
     }
-    _xAxisLabel = _;
+    _xAxisLabel = _
 
-    return _chart;
-  };
+    return _chart
+  }
 
   _chart.scrollTop = function(_) {
     if (!arguments.length) {
-      return _scrollTop;
+      return _scrollTop
     }
-    _scrollTop = _;
+    _scrollTop = _
 
-    return _chart;
-  };
+    return _chart
+  }
 
   _chart.getNumTicksForXAxis = () => {
-    const effectiveWidth = _chart.effectiveWidth();
+    const effectiveWidth = _chart.effectiveWidth()
     const numTicks = _chart
       .xAxis()
       .scale()
-      .ticks().length;
+      .ticks().length
     return effectiveWidth / numTicks < MAX_TICK_WIDTH
       ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH)
-      : DEFAULT_NUM_TICKS;
-  };
+      : DEFAULT_NUM_TICKS
+  }
   /* --------------------------------------------------------------------------*/
 
   function calculateAxisScale() {
     if (!_x) {
-      _x = d3.scale.linear();
+      _x = d3.scale.linear()
     }
-    _x.range([0, _chart.effectiveWidth()]);
+    _x.range([0, _chart.effectiveWidth()])
 
     if (_elasticX) {
-      const extent = d3.extent(_rowData, _chart.cappedValueAccessor);
+      const extent = d3.extent(_rowData, _chart.cappedValueAccessor)
       if (extent[0] > 0) {
-        extent[0] = 0;
+        extent[0] = 0
       }
-      _x.domain(extent);
+      _x.domain(extent)
     }
-    _xAxis.scale(_x);
+    _xAxis.scale(_x)
 
-    _chart.xAxis().ticks(_chart.getNumTicksForXAxis());
+    _chart.xAxis().ticks(_chart.getNumTicksForXAxis())
   }
 
   function drawAxis() {
     /* OVERRIDE -----------------------------------------------------------------*/
-    const root = _chart.root();
-    let axisG = root.select("g.axis");
+    const root = _chart.root()
+    let axisG = root.select("g.axis")
 
-    calculateAxisScale();
+    calculateAxisScale()
 
     if (axisG.empty()) {
       if (_chart.autoScroll()) {
@@ -143,59 +141,56 @@ export default function rowChart(parent, chartGroup) {
           .attr("height", 32)
           .append("g")
           .attr("class", "axis")
-          .attr("transform", "translate(" + _chart.margins().left + ", 1)");
+          .attr("transform", "translate(" + _chart.margins().left + ", 1)")
 
         const saveScrollTop = _chart.debounce(function() {
-          _scrollTop = d3.select(this).node().scrollTop;
-        }, 250);
+          _scrollTop = d3.select(this).node().scrollTop
+        }, 250)
 
         _chart
           .root()
           .select(".svg-wrapper")
-          .on("scroll", saveScrollTop);
+          .on("scroll", saveScrollTop)
       } else {
         axisG = _g
           .append("g")
           .attr("class", "axis")
-          .attr("transform", "translate(0, " + _chart.effectiveHeight() + ")");
+          .attr("transform", "translate(0, " + _chart.effectiveHeight() + ")")
       }
     }
 
     if (_chart.autoScroll()) {
-      root.select(".external-axis svg").attr("width", _chart.width());
+      root.select(".external-axis svg").attr("width", _chart.width())
     }
 
-    let yLabel = root.selectAll(".y-axis-label");
+    let yLabel = root.selectAll(".y-axis-label")
 
     if (yLabel.empty()) {
-      yLabel = root.append("div").attr("class", "y-axis-label");
+      yLabel = root.append("div").attr("class", "y-axis-label")
     }
 
     yLabel
       .text(typeof aliases !== "undefined" ? aliases[_yAxisLabel] : _yAxisLabel)
-      .style("top", _chart.effectiveHeight() / 2 + _chart.margins().top + "px");
+      .style("top", _chart.effectiveHeight() / 2 + _chart.margins().top + "px")
 
-    let xLabel = root.selectAll(".x-axis-label");
+    let xLabel = root.selectAll(".x-axis-label")
 
     if (xLabel.empty()) {
-      xLabel = root.append("div").attr("class", "x-axis-label");
+      xLabel = root.append("div").attr("class", "x-axis-label")
     }
 
     xLabel
       .text(_chart.xAxisLabel())
-      .style(
-        "left",
-        _chart.effectiveWidth() / 2 + _chart.margins().left + "px"
-      );
+      .style("left", _chart.effectiveWidth() / 2 + _chart.margins().left + "px")
     /* --------------------------------------------------------------------------*/
 
-    transition(axisG, _chart.transitionDuration()).call(_xAxis);
+    transition(axisG, _chart.transitionDuration()).call(_xAxis)
 
-    _chart.prepareLockAxis("x");
+    _chart.prepareLockAxis("x")
   }
 
   _chart._doRender = function(data) {
-    _chart.resetSvg();
+    _chart.resetSvg()
 
     _g = _chart
       .svg()
@@ -203,21 +198,21 @@ export default function rowChart(parent, chartGroup) {
       .attr(
         "transform",
         "translate(" + _chart.margins().left + "," + _chart.margins().top + ")"
-      );
+      )
 
-    drawChart(data);
+    drawChart(data)
 
-    return _chart;
-  };
+    return _chart
+  }
 
   _chart.title(
     d => _chart.cappedKeyAccessor(d) + ": " + _chart.cappedValueAccessor(d)
-  );
+  )
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function(d) {
-    return utils.formatValue(_chart.cappedValueAccessor(d));
-  };
+    return utils.formatValue(_chart.cappedValueAccessor(d))
+  }
   /* ------------------------------------------------------------------------- */
 
   /**
@@ -233,17 +228,17 @@ export default function rowChart(parent, chartGroup) {
    */
   _chart.x = function(scale) {
     if (!arguments.length) {
-      return _x;
+      return _x
     }
-    _x = scale;
-    return _chart;
-  };
+    _x = scale
+    return _chart
+  }
 
   function drawGridLines() {
     _g
       .selectAll("g.tick")
       .select("line.grid-line")
-      .remove();
+      .remove()
 
     _g
       .selectAll("g.tick")
@@ -252,29 +247,29 @@ export default function rowChart(parent, chartGroup) {
       .attr("x1", 0)
       .attr("y1", 0)
       .attr("x2", 0)
-      .attr("y2", () => -_chart.effectiveHeight());
+      .attr("y2", () => -_chart.effectiveHeight())
   }
 
   function drawChart(data) {
     /* OVERRIDE -----------------------------------------------------------------*/
-    const rData = data ? data : _chart.data();
-    _rowData = utils.maybeFormatInfinity(rData);
+    const rData = data ? data : _chart.data()
+    _rowData = utils.maybeFormatInfinity(rData)
     /* --------------------------------------------------------------------------*/
 
-    drawAxis();
-    drawGridLines();
+    drawAxis()
+    drawGridLines()
 
-    const rows = _g.selectAll("g." + _rowCssClass).data(_rowData);
+    const rows = _g.selectAll("g." + _rowCssClass).data(_rowData)
 
-    createElements(rows);
-    removeElements(rows);
-    updateElements(rows);
+    createElements(rows)
+    removeElements(rows)
+    updateElements(rows)
 
     if (_chart.autoScroll()) {
       _chart
         .root()
         .select(".svg-wrapper")
-        .node().scrollTop = _scrollTop;
+        .node().scrollTop = _scrollTop
     }
   }
 
@@ -282,50 +277,50 @@ export default function rowChart(parent, chartGroup) {
     const rowEnter = rows
       .enter()
       .append("g")
-      .attr("class", (d, i) => _rowCssClass + " _" + i);
+      .attr("class", (d, i) => _rowCssClass + " _" + i)
 
-    rowEnter.append("rect").attr("width", 0);
+    rowEnter.append("rect").attr("width", 0)
 
-    createLabels(rowEnter);
-    updateLabels(rows);
+    createLabels(rowEnter)
+    updateLabels(rows)
   }
 
   function removeElements(rows) {
-    rows.exit().remove();
+    rows.exit().remove()
   }
 
   function rootValue() {
-    const root = _x(0);
-    return root === -Infinity || root !== root ? _x(1) : root;
+    const root = _x(0)
+    return root === -Infinity || root !== root ? _x(1) : root
   }
 
   function updateElements(rows) {
-    const n = _rowData.length;
+    const n = _rowData.length
 
-    let height;
+    let height
 
     if (!_fixedBarHeight) {
-      height = (_chart.effectiveHeight() - _gap - (n + 1) * _gap) / n;
+      height = (_chart.effectiveHeight() - _gap - (n + 1) * _gap) / n
     } else {
-      height = _fixedBarHeight;
+      height = _fixedBarHeight
     }
 
     /* OVERRIDE -----------------------------------------------------------------*/
 
-    _isBigBar = _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32);
+    _isBigBar = _labelOffsetY * 2 > (_chart.measureLabelsOn() ? 64 : 32)
 
     if (_isBigBar) {
-      height = (_chart.effectiveHeight() - _gap - (n + 1) * _gap) / n;
+      height = (_chart.effectiveHeight() - _gap - (n + 1) * _gap) / n
     }
 
     if (_chart.autoScroll()) {
-      height = height < _minBarHeight ? _minBarHeight : height;
+      height = height < _minBarHeight ? _minBarHeight : height
       _chart
         .root()
         .select(".svg-wrapper")
         .style("height", _chart.height() - _chart.margins().bottom + "px")
         .style("overflow-y", "auto")
-        .style("overflow-x", "hidden");
+        .style("overflow-x", "hidden")
       _chart
         .svg()
         .attr(
@@ -333,13 +328,13 @@ export default function rowChart(parent, chartGroup) {
           height === _minBarHeight
             ? n * (height + _gap) + 8
             : _chart.height() - 56
-        );
+        )
     }
     /* --------------------------------------------------------------------------*/
 
     // vertically align label in center unless they override the value via property setter
     if (!_hasLabelOffsetY) {
-      _labelOffsetY = height / 2;
+      _labelOffsetY = height / 2
     }
 
     const rect = rows
@@ -355,32 +350,29 @@ export default function rowChart(parent, chartGroup) {
         "deselected",
         d => (_chart.hasFilter() ? !isSelectedRow(d) : false)
       )
-      .classed(
-        "selected",
-        d => (_chart.hasFilter() ? isSelectedRow(d) : false)
-      );
+      .classed("selected", d => (_chart.hasFilter() ? isSelectedRow(d) : false))
 
     transition(rect, _chart.transitionDuration())
       .attr("width", d => Math.abs(rootValue() - _x(_chart.valueAccessor()(d))))
-      .attr("transform", translateX);
+      .attr("transform", translateX)
 
     if (!_chart.measureLabelsOn()) {
-      createTitles(rows);
+      createTitles(rows)
     }
 
-    updateLabels(rows);
+    updateLabels(rows)
   }
 
   function createTitles(rows) {
     if (_chart.renderTitle()) {
-      rows.selectAll("title").remove();
-      rows.append("title").text(_chart.title());
+      rows.selectAll("title").remove()
+      rows.append("title").text(_chart.title())
     }
   }
 
   function createLabels(rowEnter) {
     if (_chart.renderLabel()) {
-      rowEnter.append("text").on("click", onClick);
+      rowEnter.append("text").on("click", onClick)
     }
 
     /* OVERRIDE -----------------------------------------------------------------*/
@@ -388,7 +380,7 @@ export default function rowChart(parent, chartGroup) {
       rowEnter
         .append("text")
         .attr("class", "value-measure")
-        .on("click", onClick);
+        .on("click", onClick)
     }
     /* --------------------------------------------------------------------------*/
 
@@ -396,13 +388,13 @@ export default function rowChart(parent, chartGroup) {
       rowEnter
         .append("text")
         .attr("class", _titleRowCssClass)
-        .on("click", onClick);
+        .on("click", onClick)
     }
   }
 
   function updateLabels(rows) {
     /* OVERRIDE -----------------------------------------------------------------*/
-    rows.selectAll("text").style("font-size", _isBigBar ? "14px" : "12px");
+    rows.selectAll("text").style("font-size", _isBigBar ? "14px" : "12px")
     /* --------------------------------------------------------------------------*/
 
     if (_chart.renderLabel()) {
@@ -423,11 +415,8 @@ export default function rowChart(parent, chartGroup) {
           d => _chart.hasFilter() && !isSelectedRow(d)
         )
         /* --------------------------------------------------------------------------*/
-        .html(d => _chart.label()(d));
-      transition(lab, _chart.transitionDuration()).attr(
-        "transform",
-        translateX
-      );
+        .html(d => _chart.label()(d))
+      transition(lab, _chart.transitionDuration()).attr("transform", translateX)
     }
 
     /* OVERRIDE -----------------------------------------------------------------*/
@@ -444,51 +433,51 @@ export default function rowChart(parent, chartGroup) {
         .attr("text-anchor", isStackLabel() ? "start" : "end")
         .html(d => {
           if (d.label) {
-            return d.label;
+            return d.label
           } else {
-            return _chart.measureValue(d);
+            return _chart.measureValue(d)
           }
         })
         .attr("x", function(d, i) {
           if (isStackLabel()) {
-            return _labelOffsetX + 1;
+            return _labelOffsetX + 1
           }
 
-          const thisLabel = d3.select(this);
+          const thisLabel = d3.select(this)
 
-          const width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
+          const width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)))
 
           //
           // handle Firefox getBBox bug
           // https://bugzilla.mozilla.org/show_bug.cgi?id=612118
           //
-          let measureWidth = 0;
-          const labelNode = thisLabel.node();
+          let measureWidth = 0
+          const labelNode = thisLabel.node()
           if (labelNode.getClientRects().length > 0) {
-            measureWidth = labelNode.getBBox().width;
+            measureWidth = labelNode.getBBox().width
           }
 
-          let dimWidth = 0;
+          let dimWidth = 0
           const textNode = _chart
             .svg()
             .select("text.value-dim._" + i)
-            .node();
+            .node()
           if (textNode.getClientRects().length > 0) {
-            dimWidth = textNode.getBBox().width;
+            dimWidth = textNode.getBBox().width
           }
-          const minIdealWidth = measureWidth + dimWidth + 16;
+          const minIdealWidth = measureWidth + dimWidth + 16
 
           thisLabel.attr(
             "text-anchor",
             isStackLabel() || width < minIdealWidth ? "start" : "end"
-          );
+          )
 
-          return width > minIdealWidth ? width - 4 : dimWidth + 16;
-        });
+          return width > minIdealWidth ? width - 4 : dimWidth + 16
+        })
       transition(measureLab, _chart.transitionDuration()).attr(
         "transform",
         translateX
-      );
+      )
     }
     /* --------------------------------------------------------------------------*/
 
@@ -500,11 +489,11 @@ export default function rowChart(parent, chartGroup) {
         .attr("text-anchor", "end")
         .on("click", onClick)
         .attr("class", (d, i) => _titleRowCssClass + " _" + i)
-        .text(d => _chart.title()(d));
+        .text(d => _chart.title()(d))
       transition(titlelab, _chart.transitionDuration()).attr(
         "transform",
         translateX
-      );
+      )
     }
   }
 
@@ -519,37 +508,37 @@ export default function rowChart(parent, chartGroup) {
    */
   _chart.renderTitleLabel = function(renderTitleLabel) {
     if (!arguments.length) {
-      return _renderTitleLabel;
+      return _renderTitleLabel
     }
-    _renderTitleLabel = renderTitleLabel;
-    return _chart;
-  };
+    _renderTitleLabel = renderTitleLabel
+    return _chart
+  }
 
   function onClick(d) {
-    _chart.onClick(d);
+    _chart.onClick(d)
   }
 
   /* OVERRIDE -----------------------------------------------------------------*/
   function isStackLabel() {
-    return _chart.measureLabelsOn() && _labelOffsetY > 16;
+    return _chart.measureLabelsOn() && _labelOffsetY > 16
   }
   /* --------------------------------------------------------------------------*/
 
   function translateX(d) {
     let x = _x(_chart.cappedValueAccessor(d)),
       x0 = rootValue(),
-      s = x > x0 ? x0 : x;
-    return "translate(" + s + ",0)";
+      s = x > x0 ? x0 : x
+    return "translate(" + s + ",0)"
   }
 
   _chart._doRedraw = function(data) {
     if (!_g) {
-      return _chart._doRender(data);
+      return _chart._doRender(data)
     }
 
-    drawChart(data);
-    return _chart;
-  };
+    drawChart(data)
+    return _chart
+  }
 
   /**
    * Get the x axis for the row chart instance.  Note: not settable for row charts.
@@ -567,8 +556,8 @@ export default function rowChart(parent, chartGroup) {
    * @return {d3.svg.axis}
    */
   _chart.xAxis = function() {
-    return _xAxis;
-  };
+    return _xAxis
+  }
 
   /**
    * Get or set the fixed bar height. Default is [false] which will auto-scale bars.
@@ -586,11 +575,11 @@ export default function rowChart(parent, chartGroup) {
    */
   _chart.fixedBarHeight = function(fixedBarHeight) {
     if (!arguments.length) {
-      return _fixedBarHeight;
+      return _fixedBarHeight
     }
-    _fixedBarHeight = fixedBarHeight;
-    return _chart;
-  };
+    _fixedBarHeight = fixedBarHeight
+    return _chart
+  }
 
   /**
    * Get or set the vertical gap space between rows on a particular row chart instance
@@ -603,11 +592,11 @@ export default function rowChart(parent, chartGroup) {
    */
   _chart.gap = function(gap) {
     if (!arguments.length) {
-      return _gap;
+      return _gap
     }
-    _gap = gap;
-    return _chart;
-  };
+    _gap = gap
+    return _chart
+  }
 
   /**
    * Get or set the elasticity on x axis. If this attribute is set to true, then the x axis will rescle to auto-fit the
@@ -621,20 +610,20 @@ export default function rowChart(parent, chartGroup) {
    */
   _chart.elasticX = function(elasticX) {
     if (!arguments.length) {
-      return _elasticX;
+      return _elasticX
     }
-    _elasticX = elasticX;
-    return _chart;
-  };
+    _elasticX = elasticX
+    return _chart
+  }
 
   /* OVERRIDE -----------------------------------------------------------------*/
   _chart.autoScroll = function(autoScroll) {
     if (!arguments.length) {
-      return _autoScroll;
+      return _autoScroll
     }
-    _autoScroll = autoScroll;
-    return _chart;
-  };
+    _autoScroll = autoScroll
+    return _chart
+  }
 
   /* --------------------------------------------------------------------------*/
   /**
@@ -648,11 +637,11 @@ export default function rowChart(parent, chartGroup) {
    */
   _chart.labelOffsetX = function(labelOffsetX) {
     if (!arguments.length) {
-      return _labelOffsetX;
+      return _labelOffsetX
     }
-    _labelOffsetX = labelOffsetX;
-    return _chart;
-  };
+    _labelOffsetX = labelOffsetX
+    return _chart
+  }
 
   /**
    * Get or set the y offset (vertical space to the top left corner of a row) for labels on a particular row chart.
@@ -665,12 +654,12 @@ export default function rowChart(parent, chartGroup) {
    */
   _chart.labelOffsetY = function(labelOffsety) {
     if (!arguments.length) {
-      return _labelOffsetY;
+      return _labelOffsetY
     }
-    _labelOffsetY = labelOffsety;
-    _hasLabelOffsetY = true;
-    return _chart;
-  };
+    _labelOffsetY = labelOffsety
+    _hasLabelOffsetY = true
+    return _chart
+  }
 
   /**
    * Get of set the x offset (horizontal space between right edge of row and right edge or text.
@@ -683,35 +672,35 @@ export default function rowChart(parent, chartGroup) {
    */
   _chart.titleLabelOffsetX = function(titleLabelOffsetX) {
     if (!arguments.length) {
-      return _titleLabelOffsetX;
+      return _titleLabelOffsetX
     }
-    _titleLabelOffsetX = titleLabelOffsetX;
-    return _chart;
-  };
+    _titleLabelOffsetX = titleLabelOffsetX
+    return _chart
+  }
 
   /* OVERRIDE -----------------------------------------------------------------*/
   function accentRow(label) {
     _chart.selectAll("g." + _rowCssClass).each(function(d) {
       if (_chart.cappedKeyAccessor(d) == label) {
-        _chart.accentSelected(this);
+        _chart.accentSelected(this)
       }
-    });
+    })
   }
 
   function unAccentRow(label) {
     _chart.selectAll("g." + _rowCssClass).each(function(d) {
       if (_chart.cappedKeyAccessor(d) == label) {
-        _chart.unAccentSelected(this);
+        _chart.unAccentSelected(this)
       }
-    });
+    })
   }
   /* --------------------------------------------------------------------------*/
 
   function isSelectedRow(d) {
     return (
       _chart.hasFilter(_chart.cappedKeyAccessor(d)) ^ _chart.filtersInverse()
-    );
+    )
   }
 
-  return _chart.anchor(parent, chartGroup);
+  return _chart.anchor(parent, chartGroup)
 }

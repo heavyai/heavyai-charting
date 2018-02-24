@@ -1,4 +1,4 @@
-export const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+export const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 export const MONTHS = [
   "Jan",
@@ -13,9 +13,9 @@ export const MONTHS = [
   "Oct",
   "Nov",
   "Dec"
-];
+]
 
-export const QUARTERS = ["Q1", "Q2", "Q3", "Q4"];
+export const QUARTERS = ["Q1", "Q2", "Q3", "Q4"]
 
 export const HOURS = [
   "12AM",
@@ -42,4 +42,4 @@ export const HOURS = [
   "9PM",
   "10PM",
   "11PM"
-];
+]

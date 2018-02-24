@@ -1,5 +1,5 @@
-import d3 from "d3";
-import { override } from "../core/core";
+import d3 from "d3"
+import { override } from "../core/core"
 /**
  * Cap is a mixin that groups small data elements below a _cap_ into an *others* grouping for both the
  * Row and Pie Charts.
@@ -15,10 +15,10 @@ import { override } from "../core/core";
  * @return {dc.capMixin}
  */
 export default function capMixin(_chart) {
-  let _cap;
-  let _ordering = "desc";
+  let _cap
+  let _ordering = "desc"
 
-  let _othersLabel = "Others";
+  let _othersLabel = "Others"
 
   let _othersGrouper = function(topRows) {
     let topRowsSum = d3.sum(topRows, _chart.valueAccessor()),
@@ -27,103 +27,103 @@ export default function capMixin(_chart) {
       topKeys = topRows.map(_chart.keyAccessor()),
       allKeys = allRows.map(_chart.keyAccessor()),
       topSet = d3.set(topKeys),
-      others = allKeys.filter(d => !topSet.has(d));
+      others = allKeys.filter(d => !topSet.has(d))
     if (allRowsSum > topRowsSum) {
       return topRows.concat([
         { others, key: _othersLabel, value: allRowsSum - topRowsSum }
-      ]);
+      ])
     }
-    return topRows;
-  };
+    return topRows
+  }
 
-  _chart._mandatoryAttributes().push("cap");
+  _chart._mandatoryAttributes().push("cap")
 
   _chart.cappedKeyAccessor = function(d, i) {
     if (d.others) {
       /* OVERRIDE ---------------------------------------------------------------- */
-      return d.key0;
+      return d.key0
       /* ------------------------------------------------------------------------- */
     }
-    return _chart.keyAccessor()(d, i);
-  };
+    return _chart.keyAccessor()(d, i)
+  }
 
   _chart.cappedValueAccessor = function(d, i) {
     if (d.others) {
-      return d.value;
+      return d.value
     }
-    return _chart.valueAccessor()(d, i);
-  };
+    return _chart.valueAccessor()(d, i)
+  }
 
   /* OVERRIDE EXTEND --------------------------------------------------------- */
   _chart.ordering = function(order) {
-    _chart.expireCache();
+    _chart.expireCache()
     if (!order) {
-      return _ordering;
+      return _ordering
     }
-    _ordering = order;
-    return _chart;
-  };
+    _ordering = order
+    return _chart
+  }
 
   _chart.setDataAsync((group, callback) => {
     function resultCallback(error, result) {
       if (error) {
-        callback(error);
-        return;
+        callback(error)
+        return
       }
-      const rows = _chart._computeOrderedGroups(result);
+      const rows = _chart._computeOrderedGroups(result)
       if (_othersGrouper) {
-        callback(null, _othersGrouper(rows));
+        callback(null, _othersGrouper(rows))
       } else {
-        callback(null, rows);
+        callback(null, rows)
       }
     }
 
     if (_cap === undefined) {
       if (_chart.dataCache != null) {
-        callback(null, _chart._computeOrderedGroups(_chart.dataCache));
+        callback(null, _chart._computeOrderedGroups(_chart.dataCache))
       } else {
         group.allAsync((error, result) => {
           if (error) {
-            callback(error);
-            return;
+            callback(error)
+            return
           }
-          callback(null, _chart._computeOrderedGroups(result));
-        });
+          callback(null, _chart._computeOrderedGroups(result))
+        })
       }
     } else if (_chart.dataCache != null) {
-      resultCallback(null, _chart.dataCache);
+      resultCallback(null, _chart.dataCache)
     } else if (_ordering === "desc") {
       return group
         .topAsync(_cap)
         .then(result => {
-          resultCallback(null, result);
+          resultCallback(null, result)
         })
         .catch(error => {
-          resultCallback(error);
-        });
+          resultCallback(error)
+        })
     } else if (_ordering === "asc") {
-      group.bottomAsync(_cap, undefined, undefined, resultCallback); // ordered by crossfilter group order (default value)
+      group.bottomAsync(_cap, undefined, undefined, resultCallback) // ordered by crossfilter group order (default value)
     }
-  });
+  })
 
   _chart.expireCache = function() {
-    _chart.dataCache = null;
-  };
+    _chart.dataCache = null
+  }
 
   _chart.data(group => {
     if (!_chart.dataCache) {
-      console.warn("Empty dataCache. Please fetch new data");
+      console.warn("Empty dataCache. Please fetch new data")
     }
     if (_cap === undefined) {
-      return _chart._computeOrderedGroups(_chart.dataCache);
+      return _chart._computeOrderedGroups(_chart.dataCache)
     } else {
-      const rows = _chart.dataCache;
+      const rows = _chart.dataCache
       if (_othersGrouper) {
-        return _othersGrouper(rows);
+        return _othersGrouper(rows)
       }
-      return rows;
+      return rows
     }
-  });
+  })
 
   /* ------------------------------------------------------------------------- */
 
@@ -138,12 +138,12 @@ export default function capMixin(_chart) {
    */
   _chart.cap = function(count) {
     if (!arguments.length) {
-      return _cap;
+      return _cap
     }
-    _cap = count;
-    _chart.expireCache();
-    return _chart;
-  };
+    _cap = count
+    _chart.expireCache()
+    return _chart
+  }
 
   /**
    * Get or set the label for *Others* slice when slices cap is specified
@@ -156,11 +156,11 @@ export default function capMixin(_chart) {
    */
   _chart.othersLabel = function(label) {
     if (!arguments.length) {
-      return _othersLabel;
+      return _othersLabel
     }
-    _othersLabel = label;
-    return _chart;
-  };
+    _othersLabel = label
+    return _chart
+  }
 
   /**
    * Get or set the grouper function that will perform the insertion of data for the *Others* slice
@@ -203,18 +203,18 @@ export default function capMixin(_chart) {
    */
   _chart.othersGrouper = function(grouperFunction) {
     if (!arguments.length) {
-      return _othersGrouper;
+      return _othersGrouper
     }
-    _othersGrouper = grouperFunction;
-    return _chart;
-  };
+    _othersGrouper = grouperFunction
+    return _chart
+  }
 
   override(_chart, "onClick", d => {
     if (d.others) {
-      _chart.filter([d.others]);
+      _chart.filter([d.others])
     }
-    _chart._onClick(d);
-  });
+    _chart._onClick(d)
+  })
 
-  return _chart;
+  return _chart
 }

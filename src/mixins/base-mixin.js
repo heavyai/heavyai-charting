@@ -1,4 +1,4 @@
-import { pluck, printers, utils } from "../utils/utils";
+import { pluck, printers, utils } from "../utils/utils"
 
 import {
   constants,
@@ -8,7 +8,7 @@ import {
   logging,
   refreshDisabled,
   registerChart
-} from "../core/core";
+} from "../core/core"
 
 import {
   isEqualToRedrawCount,
@@ -21,19 +21,19 @@ import {
   resetRenderStack,
   startRedrawTime,
   startRenderTime
-} from "../core/core-async";
+} from "../core/core-async"
 
-import asyncMixin from "../mixins/async-mixin";
-import chartLegendMixin from "../mixins/legend-mixin";
-import { createBinParams } from "../utils/binning-helpers";
-import d3 from "d3";
-import * as errors from "../core/errors";
-import filterMixin from "../mixins/filter-mixin";
-import labelMixin from "../mixins/label-mixin";
-import { logger } from "../utils/logger";
-import { multipleKeysAccessorForCap } from "../utils/multiple-key-accessors";
-import multipleKeysLabelMixin from "../mixins/multiple-key-label-mixin";
-import spinnerMixin from "../mixins/spinner-mixin";
+import asyncMixin from "../mixins/async-mixin"
+import chartLegendMixin from "../mixins/legend-mixin"
+import { createBinParams } from "../utils/binning-helpers"
+import d3 from "d3"
+import * as errors from "../core/errors"
+import filterMixin from "../mixins/filter-mixin"
+import labelMixin from "../mixins/label-mixin"
+import { logger } from "../utils/logger"
+import { multipleKeysAccessorForCap } from "../utils/multiple-key-accessors"
+import multipleKeysLabelMixin from "../mixins/multiple-key-label-mixin"
+import spinnerMixin from "../mixins/spinner-mixin"
 
 /**
  * `dc.baseMixin` is an abstract functional object representing a basic `dc` chart object
@@ -46,65 +46,65 @@ import spinnerMixin from "../mixins/spinner-mixin";
  * @return {dc.baseMixin}
  */
 export default function baseMixin(_chart) {
-  _chart.__dcFlag__ = utils.uniqueId();
+  _chart.__dcFlag__ = utils.uniqueId()
 
-  let _dimension;
-  let _group;
-  let _anchor;
-  let _root;
-  let _svg;
-  let _isChild;
-  let _popup;
-  let _popupIsEnabled = true;
-  const _redrawBrushFlag = false;
-  let _isTargeting = false;
-  let _colorByExpr = null;
-  let _legendLock = null;
-  let _legendUnlock = null;
-  let _legendInputChange = null;
+  let _dimension
+  let _group
+  let _anchor
+  let _root
+  let _svg
+  let _isChild
+  let _popup
+  let _popupIsEnabled = true
+  const _redrawBrushFlag = false
+  let _isTargeting = false
+  let _colorByExpr = null
+  let _legendLock = null
+  let _legendUnlock = null
+  let _legendInputChange = null
 
-  let _minWidth = 200;
+  let _minWidth = 200
 
   const _defaultWidth = function(element) {
     const width =
       element &&
       element.getBoundingClientRect &&
-      element.getBoundingClientRect().width;
-    return width && width > _minWidth ? width : _minWidth;
-  };
-  let _width = _defaultWidth;
+      element.getBoundingClientRect().width
+    return width && width > _minWidth ? width : _minWidth
+  }
+  let _width = _defaultWidth
 
-  let _minHeight = 200;
+  let _minHeight = 200
   const _defaultHeight = function(element) {
     const height =
       element &&
       element.getBoundingClientRect &&
-      element.getBoundingClientRect().height;
-    return height && height > _minHeight ? height : _minHeight;
-  };
-  let _height = _defaultHeight;
+      element.getBoundingClientRect().height
+    return height && height > _minHeight ? height : _minHeight
+  }
+  let _height = _defaultHeight
 
-  let _keyAccessor = pluck("key");
-  let _label = pluck("key");
+  let _keyAccessor = pluck("key")
+  let _label = pluck("key")
 
-  let _valueAccessor = pluck("val");
-  let _orderSort;
+  let _valueAccessor = pluck("val")
+  let _orderSort
 
-  let _renderLabel = false;
+  let _renderLabel = false
 
   let _title = function(d) {
-    return _chart.keyAccessor()(d) + ": " + _chart.valueAccessor()(d);
-  };
-  let _renderTitle = true;
-  let _controlsUseVisibility = true;
+    return _chart.keyAccessor()(d) + ": " + _chart.valueAccessor()(d)
+  }
+  let _renderTitle = true
+  let _controlsUseVisibility = true
 
-  let _transitionDuration = 500;
+  let _transitionDuration = 500
 
-  let _filterPrinter = printers.filters;
+  let _filterPrinter = printers.filters
 
-  let _mandatoryAttributes = ["dimension", "group"];
+  let _mandatoryAttributes = ["dimension", "group"]
 
-  let _chartGroup = constants.DEFAULT_CHART_GROUP;
+  let _chartGroup = constants.DEFAULT_CHART_GROUP
 
   const _listeners = d3.dispatch(
     "preRender",
@@ -115,56 +115,56 @@ export default function baseMixin(_chart) {
     "zoomed",
     "renderlet",
     "pretransition"
-  );
+  )
 
-  let _legend;
-  let _commitHandler;
+  let _legend
+  let _commitHandler
 
   /* OVERRIDE ---------------------------------------------------------------- */
-  let _legendContinuous;
+  let _legendContinuous
 
-  let _topQueryCallback = null;
+  let _topQueryCallback = null
 
   const _registerQuery = function(callback) {
-    const stackEmpty = _topQueryCallback == null;
+    const stackEmpty = _topQueryCallback == null
     // need to check if max query?
-    _topQueryCallback = callback;
+    _topQueryCallback = callback
     if (stackEmpty) {
-      _topQueryCallback.func();
+      _topQueryCallback.func()
     }
-  };
+  }
 
   const _popQueryStack = function(id) {
     if (_topQueryCallback != null && id == _topQueryCallback.id) {
-      _topQueryCallback = null;
+      _topQueryCallback = null
     } else {
-      _topQueryCallback.func();
+      _topQueryCallback.func()
     }
-  };
+  }
 
   const _startNextQuery = function() {
-    _topQueryCallback.func();
+    _topQueryCallback.func()
     // var callback = _firstQueryCallback;
     // callback();
-  };
+  }
 
   // override for count chart
   _chart.isCountChart = function() {
-    return false;
-  };
+    return false
+  }
   /* ------------------------------------------------------------------------- */
 
-  let _filters = [];
+  let _filters = []
 
   let _filterHandler = function(dimension, filters) {
     if (filters.length === 0) {
-      return filters;
+      return filters
     }
-  };
+  }
 
   let _data = function(group) {
-    return group.all();
-  };
+    return group.all()
+  }
   /**
    * Set or get the height attribute of a chart. The height is applied to the SVGElement generated by
    * the chart when rendered (or re-rendered). If a value is given, then it will be used to calculate
@@ -196,12 +196,12 @@ export default function baseMixin(_chart) {
    */
   _chart.height = function(height) {
     if (!arguments.length) {
-      return _height(_root.node());
+      return _height(_root.node())
     }
 
-    _height = d3.functor(height || _defaultHeight);
-    return _chart;
-  };
+    _height = d3.functor(height || _defaultHeight)
+    return _chart
+  }
 
   /**
    * Set or get the width attribute of a chart.
@@ -222,15 +222,15 @@ export default function baseMixin(_chart) {
    */
   _chart.width = function(width) {
     if (!arguments.length) {
-      return _width(_root.node());
+      return _width(_root.node())
     }
-    _width = d3.functor(width || _defaultWidth);
-    return _chart;
-  };
+    _width = d3.functor(width || _defaultWidth)
+    return _chart
+  }
 
   /* OVERRIDE ---------------------------------------------------------------- */
-  _chart.accent = function() {}; // no-op
-  _chart.unAccent = function() {}; // no-op
+  _chart.accent = function() {} // no-op
+  _chart.unAccent = function() {} // no-op
   /* ------------------------------------------------------------------------- */
 
   /**
@@ -246,11 +246,11 @@ export default function baseMixin(_chart) {
    */
   _chart.minWidth = function(minWidth) {
     if (!arguments.length) {
-      return _minWidth;
+      return _minWidth
     }
-    _minWidth = minWidth;
-    return _chart;
-  };
+    _minWidth = minWidth
+    return _chart
+  }
 
   /**
    * Set or get the minimum height attribute of a chart. This only has effect when used with the default
@@ -265,11 +265,11 @@ export default function baseMixin(_chart) {
    */
   _chart.minHeight = function(minHeight) {
     if (!arguments.length) {
-      return _minHeight;
+      return _minHeight
     }
-    _minHeight = minHeight;
-    return _chart;
-  };
+    _minHeight = minHeight
+    return _chart
+  }
 
   /**
    * **mandatory**
@@ -293,12 +293,12 @@ export default function baseMixin(_chart) {
    */
   _chart.dimension = function(dimension) {
     if (!arguments.length) {
-      return _dimension;
+      return _dimension
     }
-    _dimension = dimension;
-    _chart.expireCache();
-    return _chart;
-  };
+    _dimension = dimension
+    _chart.expireCache()
+    return _chart
+  }
 
   /**
    * Set the data callback or retrieve the chart's data set. The data callback is passed the chart's
@@ -319,12 +319,12 @@ export default function baseMixin(_chart) {
    */
   _chart.data = function(callback) {
     if (!arguments.length) {
-      return _data.call(_chart, _group);
+      return _data.call(_chart, _group)
     }
-    _data = d3.functor(callback);
-    _chart.expireCache();
-    return _chart;
-  };
+    _data = d3.functor(callback)
+    _chart.expireCache()
+    return _chart
+  }
 
   /**
    * **mandatory**
@@ -352,24 +352,24 @@ export default function baseMixin(_chart) {
    */
   _chart.group = function(group, name) {
     if (!arguments.length) {
-      return _group;
+      return _group
     }
-    _group = group;
-    _chart._groupName = name;
-    _chart.expireCache();
-    return _chart;
-  };
+    _group = group
+    _chart._groupName = name
+    _chart.expireCache()
+    return _chart
+  }
 
   /**
    * Wrapper for binParams in Crossfilter.
    */
   _chart.binParams = function(binParams) {
     if (!arguments.length) {
-      return _chart.group().binParams();
+      return _chart.group().binParams()
     }
 
-    return createBinParams(_chart, binParams);
-  };
+    return createBinParams(_chart, binParams)
+  }
 
   /**
    * Get or set an accessor to order ordinal dimensions.  This uses
@@ -389,16 +389,16 @@ export default function baseMixin(_chart) {
 
   _chart.ordering = function(orderFunction) {
     if (!arguments.length) {
-      return _ordering;
+      return _ordering
     }
-    _ordering = orderFunction;
-    _orderSort = crossfilter.quicksort.by(_ordering);
-    _chart.expireCache();
-    return _chart;
-  };
+    _ordering = orderFunction
+    _orderSort = crossfilter.quicksort.by(_ordering)
+    _chart.expireCache()
+    return _chart
+  }
 
   _chart._computeOrderedGroups = function(data) {
-    const dataCopy = data.slice(0);
+    const dataCopy = data.slice(0)
 
     /* OVERRIDE ---------------------------------------------------------------- */
     // if (dataCopy.length <= 1) {
@@ -411,8 +411,8 @@ export default function baseMixin(_chart) {
     //
     // return _orderSort(dataCopy, 0, dataCopy.length);
     /* ------------------------------------------------------------------------- */
-    return dataCopy;
-  };
+    return dataCopy
+  }
 
   /**
    * Execute d3 single selection in the chart's scope using the given selector and return the d3
@@ -430,8 +430,8 @@ export default function baseMixin(_chart) {
    * @return {d3.selection}
    */
   _chart.select = function(s) {
-    return _root.select(s);
-  };
+    return _root.select(s)
+  }
 
   /**
    * Execute in scope d3 selectAll using the given selector and return d3 selection result.
@@ -448,8 +448,8 @@ export default function baseMixin(_chart) {
    * @return {d3.selection}
    */
   _chart.selectAll = function(s) {
-    return _root ? _root.selectAll(s) : null;
-  };
+    return _root ? _root.selectAll(s) : null
+  }
 
   /**
    * Set the root SVGElement to either be an existing chart's root; or any valid [d3 single
@@ -467,29 +467,29 @@ export default function baseMixin(_chart) {
    */
   _chart.anchor = function(parent, chartGroup) {
     if (!arguments.length) {
-      return _anchor;
+      return _anchor
     }
     if (instanceOfChart(parent)) {
-      _anchor = parent.anchor();
-      _root = parent.root();
-      _isChild = true;
+      _anchor = parent.anchor()
+      _root = parent.root()
+      _isChild = true
     } else if (parent) {
       if (parent.select && parent.classed) {
         // detect d3 selection
-        _anchor = parent.node();
+        _anchor = parent.node()
       } else {
-        _anchor = parent;
+        _anchor = parent
       }
-      _root = d3.select(_anchor);
-      _root.classed(constants.CHART_CLASS, true);
-      registerChart(_chart, chartGroup);
-      _isChild = false;
+      _root = d3.select(_anchor)
+      _root.classed(constants.CHART_CLASS, true)
+      registerChart(_chart, chartGroup)
+      _isChild = false
     } else {
-      throw new errors.BadArgumentException("parent must be defined");
+      throw new errors.BadArgumentException("parent must be defined")
     }
-    _chartGroup = chartGroup;
-    return _chart;
-  };
+    _chartGroup = chartGroup
+    return _chart
+  }
 
   /**
    * Returns the DOM id for the chart's anchored location.
@@ -499,15 +499,15 @@ export default function baseMixin(_chart) {
    * @return {String}
    */
   _chart.anchorName = function() {
-    const a = _chart.anchor();
+    const a = _chart.anchor()
     if (a && a.id) {
-      return a.id;
+      return a.id
     }
     if (a && a.replace) {
-      return a.replace("#", "");
+      return a.replace("#", "")
     }
-    return "dc-chart" + _chart.chartID();
-  };
+    return "dc-chart" + _chart.chartID()
+  }
 
   /**
    * Returns the root element where a chart resides. Usually it will be the parent div element where
@@ -524,11 +524,11 @@ export default function baseMixin(_chart) {
    */
   _chart.root = function(rootElement) {
     if (!arguments.length) {
-      return _root;
+      return _root
     }
-    _root = rootElement;
-    return _chart;
-  };
+    _root = rootElement
+    return _chart
+  }
 
   /**
    * Returns the top SVGElement for this specific chart. You can also pass in a new SVGElement,
@@ -544,11 +544,11 @@ export default function baseMixin(_chart) {
    */
   _chart.svg = function(svgElement) {
     if (!arguments.length) {
-      return _svg;
+      return _svg
     }
-    _svg = svgElement;
-    return _chart;
-  };
+    _svg = svgElement
+    return _chart
+  }
 
   /**
    * Remove the chart's SVGElements from the dom and recreate the container SVGElement.
@@ -560,15 +560,15 @@ export default function baseMixin(_chart) {
    */
   _chart.resetSvg = function() {
     /* OVERRIDE ---------------------------------------------------------------- */
-    _chart.root().html("");
+    _chart.root().html("")
     /* ------------------------------------------------------------------------- */
 
-    return _chart.generateSvg();
-  };
+    return _chart.generateSvg()
+  }
 
   function sizeSvg() {
     if (_svg) {
-      _svg.attr("width", _chart.width()).attr("height", _chart.height());
+      _svg.attr("width", _chart.width()).attr("height", _chart.height())
     }
   }
 
@@ -578,97 +578,97 @@ export default function baseMixin(_chart) {
       .root()
       .append("div")
       .attr("class", "svg-wrapper")
-      .append("svg");
+      .append("svg")
     /* ------------------------------------------------------------------------- */
 
-    sizeSvg();
-    return _svg;
-  };
+    sizeSvg()
+    return _svg
+  }
 
   /* OVERRIDE ---------------------------------------------------------------- */
   function sizeRoot() {
     if (_root) {
       _root
         .style("height", _chart.height() + "px")
-        .style("width", _chart.width() + "px");
+        .style("width", _chart.width() + "px")
     }
   }
 
   _chart.popup = function(popupElement) {
     if (!arguments.length) {
-      return _popup;
+      return _popup
     }
-    _popup = popupElement;
-    return _chart;
-  };
+    _popup = popupElement
+    return _chart
+  }
 
   _chart.enablePopup = function(popupIsEnabled) {
-    _popupIsEnabled = popupIsEnabled;
-    return _chart;
-  };
+    _popupIsEnabled = popupIsEnabled
+    return _chart
+  }
 
   _chart.popupIsEnabled = function() {
-    return _popupIsEnabled;
-  };
+    return _popupIsEnabled
+  }
 
   _chart.generatePopup = function() {
-    _chart.select(".chart-popup").remove();
+    _chart.select(".chart-popup").remove()
 
     _popup = _chart
       .root()
       .append("div")
-      .attr("class", "chart-popup");
+      .attr("class", "chart-popup")
 
     _popup
       .append("div")
       .attr("class", "chart-popup-box")
       .append("div")
-      .attr("class", "chart-popup-content");
+      .attr("class", "chart-popup-content")
 
-    return _popup;
-  };
+    return _popup
+  }
 
   _chart.popupCoordinates = function(coords) {
-    const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
+    const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1
 
     if (
       !isFirefox ||
       d3.selectAll(".react-grid-item.cssTransforms").empty() ||
       !d3.selectAll(".react-grid-layout.chart-edit-mode").empty()
     ) {
-      return coords;
+      return coords
     }
 
     const rootRect = _chart
       .root()
       .node()
-      .getBoundingClientRect();
+      .getBoundingClientRect()
     const gridTop = d3
       .select(".react-grid-layout")
       .node()
-      .getBoundingClientRect().top;
+      .getBoundingClientRect().top
 
     return [
       coords[0] - rootRect.x,
       coords[1] - Math.abs(gridTop - rootRect.y) + 40
-    ];
-  };
+    ]
+  }
 
   _chart.isTargeting = function(isTargeting) {
     if (!arguments.length) {
-      return _isTargeting;
+      return _isTargeting
     }
-    _isTargeting = isTargeting;
-    return _chart;
-  };
+    _isTargeting = isTargeting
+    return _chart
+  }
 
   _chart.colorByExpr = function(colorByExpr) {
     if (!arguments.length) {
-      return _colorByExpr;
+      return _colorByExpr
     }
-    _colorByExpr = colorByExpr;
-    return _chart;
-  };
+    _colorByExpr = colorByExpr
+    return _chart
+  }
   /* ------------------------------------------------------------------------- */
 
   /**
@@ -685,11 +685,11 @@ export default function baseMixin(_chart) {
    */
   _chart.filterPrinter = function(filterPrinterFunction) {
     if (!arguments.length) {
-      return _filterPrinter;
+      return _filterPrinter
     }
-    _filterPrinter = filterPrinterFunction;
-    return _chart;
-  };
+    _filterPrinter = filterPrinterFunction
+    return _chart
+  }
 
   /**
    * If set, use the `visibility` attribute instead of the `display` attribute for showing/hiding
@@ -703,11 +703,11 @@ export default function baseMixin(_chart) {
    **/
   _chart.controlsUseVisibility = function(_) {
     if (!arguments.length) {
-      return _controlsUseVisibility;
+      return _controlsUseVisibility
     }
-    _controlsUseVisibility = _;
-    return _chart;
-  };
+    _controlsUseVisibility = _
+    return _chart
+  }
 
   /**
    * Turn on optional control elements within the root element. dc currently supports the
@@ -727,15 +727,15 @@ export default function baseMixin(_chart) {
     if (_root) {
       const attribute = _chart.controlsUseVisibility()
         ? "visibility"
-        : "display";
-      _chart.selectAll(".reset").style(attribute, null);
+        : "display"
+      _chart.selectAll(".reset").style(attribute, null)
       _chart
         .selectAll(".filter")
         .text(_filterPrinter(_chart.filters()))
-        .style(attribute, null);
+        .style(attribute, null)
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * Turn off optional control elements within the root element.
@@ -749,16 +749,16 @@ export default function baseMixin(_chart) {
     if (_root) {
       const attribute = _chart.controlsUseVisibility()
         ? "visibility"
-        : "display";
-      const value = _chart.controlsUseVisibility() ? "hidden" : "none";
-      _chart.selectAll(".reset").style(attribute, value);
+        : "display"
+      const value = _chart.controlsUseVisibility() ? "hidden" : "none"
+      _chart.selectAll(".reset").style(attribute, value)
       _chart
         .selectAll(".filter")
         .style(attribute, value)
-        .text(_chart.filter());
+        .text(_chart.filter())
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * Set or get the animation transition duration (in milliseconds) for this chart instance.
@@ -774,20 +774,20 @@ export default function baseMixin(_chart) {
       /* OVERRIDE ---------------------------------------------------------------- */
       return globalTransitionDuration() != null
         ? globalTransitionDuration()
-        : _transitionDuration;
+        : _transitionDuration
       /* ------------------------------------------------------------------------- */
     }
-    _transitionDuration = duration;
-    return _chart;
-  };
+    _transitionDuration = duration
+    return _chart
+  }
 
   _chart._mandatoryAttributes = function(_) {
     if (!arguments.length) {
-      return _mandatoryAttributes;
+      return _mandatoryAttributes
     }
-    _mandatoryAttributes = _;
-    return _chart;
-  };
+    _mandatoryAttributes = _
+    return _chart
+  }
 
   function checkForMandatoryAttributes(a) {
     if (!_chart[a] || !_chart[a]()) {
@@ -797,7 +797,7 @@ export default function baseMixin(_chart) {
           " is missing on chart[#" +
           _chart.anchorName() +
           "]"
-      );
+      )
     }
   }
 
@@ -806,14 +806,14 @@ export default function baseMixin(_chart) {
       Array.isArray(data) &&
       _chart.colorDomain &&
       _legend &&
-      _legend.legendType() === "quantitative";
+      _legend.legendType() === "quantitative"
 
     if (isFEQuantitativeColored) {
-      const isLegendLocked = _legend.isLocked && _legend.isLocked();
+      const isLegendLocked = _legend.isLocked && _legend.isLocked()
 
       if (!isLegendLocked) {
-        const newColorDomain = d3.extent(data, _chart.colorAccessor());
-        _chart.colorDomain(newColorDomain);
+        const newColorDomain = d3.extent(data, _chart.colorAccessor())
+        _chart.colorDomain(newColorDomain)
       }
     }
   }
@@ -835,79 +835,79 @@ export default function baseMixin(_chart) {
    */
   _chart.render = function(id, queryGroupId, queryCount, data, callback) {
     if (refreshDisabled()) {
-      return;
+      return
     }
     _chart.dataCache =
-      typeof data !== "undefined" && data !== null ? data : null;
+      typeof data !== "undefined" && data !== null ? data : null
 
-    sizeRoot();
+    sizeRoot()
 
-    _listeners.preRender(_chart, data);
+    _listeners.preRender(_chart, data)
 
     if (_mandatoryAttributes) {
-      _mandatoryAttributes.forEach(checkForMandatoryAttributes);
+      _mandatoryAttributes.forEach(checkForMandatoryAttributes)
     }
 
-    maybeUpdateColorDomain(data);
+    maybeUpdateColorDomain(data)
 
-    const result = _chart._doRender(data);
+    const result = _chart._doRender(data)
 
     if (_legend && _chart.colorDomain) {
-      _legend.render();
+      _legend.render()
     }
 
-    _chart.generatePopup();
+    _chart.generatePopup()
 
-    _chart._activateRenderlets("postRender", data);
+    _chart._activateRenderlets("postRender", data)
 
     if (typeof queryGroupId !== "undefined" && queryGroupId !== null) {
       if (isEqualToRenderCount(queryCount)) {
         if (logging()) {
-          const endTime = new Date();
-          const elapsed = endTime - dc._startRenderTime;
-          console.log("Render elapsed: " + elapsed + " ms");
+          const endTime = new Date()
+          const elapsed = endTime - dc._startRenderTime
+          console.log("Render elapsed: " + elapsed + " ms")
         }
 
-        globalTransitionDuration(null);
-        resetRenderStack();
+        globalTransitionDuration(null)
+        resetRenderStack()
 
         if (!renderStackEmpty()) {
-          renderStackEmpty(true);
+          renderStackEmpty(true)
 
           return renderAllAsync(null)
             .then(result => {
-              callback(null, result);
+              callback(null, result)
             })
             .catch(error => {
-              callback(error);
-            });
+              callback(error)
+            })
         }
       }
     }
 
-    callback && callback(null, result || _chart);
-    return result;
-  };
+    callback && callback(null, result || _chart)
+    return result
+  }
 
   _chart._activateRenderlets = function(event, data) {
-    _listeners.pretransition(_chart, data);
+    _listeners.pretransition(_chart, data)
     if (_chart.transitionDuration() > 0 && _svg) {
       _svg
         .transition()
         .duration(_chart.transitionDuration())
         .each("end", () => {
-          _listeners.renderlet(_chart, data);
+          _listeners.renderlet(_chart, data)
           if (event) {
-            _listeners[event](_chart, data);
+            _listeners[event](_chart, data)
           }
-        });
+        })
     } else {
-      _listeners.renderlet(_chart, data);
+      _listeners.renderlet(_chart, data)
       if (event) {
-        _listeners[event](_chart, data);
+        _listeners[event](_chart, data)
       }
     }
-  };
+  }
 
   /**
    * Calling redraw will cause the chart to re-render data changes incrementally. If there is no
@@ -929,52 +929,52 @@ export default function baseMixin(_chart) {
    */
   _chart.redraw = function(id, queryGroupId, queryCount, data, callback) {
     if (refreshDisabled()) {
-      return;
+      return
     }
     _chart.dataCache =
-      typeof data !== "undefined" && data !== null ? data : null;
+      typeof data !== "undefined" && data !== null ? data : null
 
-    sizeSvg();
+    sizeSvg()
 
-    _listeners.preRedraw(_chart, data);
+    _listeners.preRedraw(_chart, data)
 
-    maybeUpdateColorDomain(data);
+    maybeUpdateColorDomain(data)
 
-    const result = _chart._doRedraw(data);
+    const result = _chart._doRedraw(data)
 
     if (_legend && _chart.colorDomain) {
-      _legend.render();
+      _legend.render()
     }
 
-    _chart._activateRenderlets("postRedraw", data);
+    _chart._activateRenderlets("postRedraw", data)
     if (typeof queryGroupId !== "undefined" && queryGroupId !== null) {
       if (isEqualToRedrawCount(queryCount)) {
         if (logging()) {
-          const endTime = new Date();
-          const elapsed = endTime - dc._startRedrawTime;
-          console.log("Redraw elapsed: " + elapsed + " ms");
+          const endTime = new Date()
+          const elapsed = endTime - dc._startRedrawTime
+          console.log("Redraw elapsed: " + elapsed + " ms")
         }
 
-        globalTransitionDuration(null); // reset to null if was brush
-        resetRedrawStack();
+        globalTransitionDuration(null) // reset to null if was brush
+        resetRedrawStack()
 
         if (!redrawStackEmpty()) {
-          redrawStackEmpty(true);
+          redrawStackEmpty(true)
 
           return redrawAllAsync(_chart.chartGroup())
             .then(result => {
-              callback(null, result);
+              callback(null, result)
             })
             .catch(error => {
-              callback(error);
-            });
+              callback(error)
+            })
         }
       }
     }
 
-    callback && callback(null, result || _chart);
-    return result;
-  };
+    callback && callback(null, result || _chart)
+    return result
+  }
 
   /**
    * Gets/sets the commit handler. If the chart has a commit handler, the handler will be called when
@@ -991,11 +991,11 @@ export default function baseMixin(_chart) {
    */
   _chart.commitHandler = function(commitHandler) {
     if (!arguments.length) {
-      return _commitHandler;
+      return _commitHandler
     }
-    _commitHandler = commitHandler;
-    return _chart;
-  };
+    _commitHandler = commitHandler
+    return _chart
+  }
 
   /**
    * Redraws all charts in the same group as this chart, typically in reaction to a filter
@@ -1010,17 +1010,17 @@ export default function baseMixin(_chart) {
     if (_commitHandler) {
       _commitHandler(false, (error, result) => {
         if (error) {
-          console.log(error);
-          callback && callback(error);
+          console.log(error)
+          callback && callback(error)
         } else {
-          dc.redrawAll(_chart.chartGroup(), callback);
+          dc.redrawAll(_chart.chartGroup(), callback)
         }
-      });
+      })
     } else {
-      dc.redrawAll(_chart.chartGroup(), callback);
+      dc.redrawAll(_chart.chartGroup(), callback)
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * Renders all charts in the same group as this chart. If the chart has a
@@ -1034,35 +1034,35 @@ export default function baseMixin(_chart) {
     if (_commitHandler) {
       _commitHandler(false, (error, result) => {
         if (error) {
-          console.log(error);
-          callback && callback(error);
+          console.log(error)
+          callback && callback(error)
         } else {
-          dc.renderAll(_chart.chartGroup(), callback);
+          dc.renderAll(_chart.chartGroup(), callback)
         }
-      });
+      })
     } else {
-      dc.renderAll(_chart.chartGroup(), callback);
+      dc.renderAll(_chart.chartGroup(), callback)
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   _chart._invokeFilteredListener = function(f, i) {
     if (f !== undefined) {
-      _listeners.filtered(_chart, f, i);
+      _listeners.filtered(_chart, f, i)
     }
-  };
+  }
 
   _chart._invokeZoomedListener = function() {
-    _listeners.zoomed(_chart);
-  };
+    _listeners.zoomed(_chart)
+  }
 
   let _hasFilterHandler = function(filters, filter) {
     if (typeof filter === "undefined") {
-      return filters.length > 0;
+      return filters.length > 0
     }
 
-    return filters.some(f => filter <= f && filter >= f);
-  };
+    return filters.some(f => filter <= f && filter >= f)
+  }
 
   /**
    * Set or get the has filter handler. The has filter handler is a function that checks to see if
@@ -1092,11 +1092,11 @@ export default function baseMixin(_chart) {
    */
   _chart.hasFilterHandler = function(hasFilterHandler) {
     if (!arguments.length) {
-      return _hasFilterHandler;
+      return _hasFilterHandler
     }
-    _hasFilterHandler = hasFilterHandler;
-    return _chart;
-  };
+    _hasFilterHandler = hasFilterHandler
+    return _chart
+  }
 
   /**
    * Check whether any active filter or a specific filter is associated with particular chart instance.
@@ -1109,24 +1109,24 @@ export default function baseMixin(_chart) {
    * @return {Boolean}
    */
   _chart.hasFilter = function(filter) {
-    return _hasFilterHandler(_filters, filter);
-  };
+    return _hasFilterHandler(_filters, filter)
+  }
 
   let _removeFilterHandler = function(filters, filter) {
     for (let i = 0; i < filters.length; i++) {
       if (utils.deepEquals(filters[i], filter)) {
-        filters.splice(i, 1);
-        break;
+        filters.splice(i, 1)
+        break
       }
 
       if (filters[i] <= filter && filters[i] >= filter) {
-        filters.splice(i, 1);
-        break;
+        filters.splice(i, 1)
+        break
       }
     }
 
-    return filters;
-  };
+    return filters
+  }
 
   /**
    * Set or get the remove filter handler. The remove filter handler is a function that removes a
@@ -1160,16 +1160,16 @@ export default function baseMixin(_chart) {
    */
   _chart.removeFilterHandler = function(removeFilterHandler) {
     if (!arguments.length) {
-      return _removeFilterHandler;
+      return _removeFilterHandler
     }
-    _removeFilterHandler = removeFilterHandler;
-    return _chart;
-  };
+    _removeFilterHandler = removeFilterHandler
+    return _chart
+  }
 
   let _addFilterHandler = function(filters, filter) {
-    filters.push(filter);
-    return filters;
-  };
+    filters.push(filter)
+    return filters
+  }
 
   /**
    * Set or get the add filter handler. The add filter handler is a function that adds a filter to
@@ -1198,15 +1198,15 @@ export default function baseMixin(_chart) {
    */
   _chart.addFilterHandler = function(addFilterHandler) {
     if (!arguments.length) {
-      return _addFilterHandler;
+      return _addFilterHandler
     }
-    _addFilterHandler = addFilterHandler;
-    return _chart;
-  };
+    _addFilterHandler = addFilterHandler
+    return _chart
+  }
 
   let _resetFilterHandler = function(filters) {
-    return [];
-  };
+    return []
+  }
 
   /**
    * Set or get the reset filter handler. The reset filter handler is a function that resets the
@@ -1233,23 +1233,23 @@ export default function baseMixin(_chart) {
    */
   _chart.resetFilterHandler = function(resetFilterHandler) {
     if (!arguments.length) {
-      return _resetFilterHandler;
+      return _resetFilterHandler
     }
-    _resetFilterHandler = resetFilterHandler;
-    return _chart;
-  };
+    _resetFilterHandler = resetFilterHandler
+    return _chart
+  }
 
   function applyFilters() {
     if (_chart.dimension() && _chart.dimension().filter) {
-      const fs = _filterHandler(_chart.dimension(), _filters);
-      _filters = fs ? fs : _filters;
+      const fs = _filterHandler(_chart.dimension(), _filters)
+      _filters = fs ? fs : _filters
     }
   }
 
   _chart.replaceFilter = function(_) {
-    _filters = [];
-    _chart.filter(_);
-  };
+    _filters = []
+    _chart.filter(_)
+  }
 
   /**
    * Filter the chart by the given value or return the current filter if the input parameter is missing.
@@ -1278,13 +1278,13 @@ export default function baseMixin(_chart) {
    */
   _chart.filter = function(filter, isFilterInverse) {
     if (!arguments.length) {
-      return _filters.length > 0 ? _filters[0] : null;
+      return _filters.length > 0 ? _filters[0] : null
     }
     isFilterInverse =
-      typeof isFilterInverse === "undefined" ? false : isFilterInverse;
+      typeof isFilterInverse === "undefined" ? false : isFilterInverse
     if (isFilterInverse !== _chart.filtersInverse()) {
-      _filters = _resetFilterHandler(_filters);
-      _chart.filtersInverse(isFilterInverse);
+      _filters = _resetFilterHandler(_filters)
+      _chart.filtersInverse(isFilterInverse)
     }
     if (
       filter instanceof Array &&
@@ -1293,29 +1293,29 @@ export default function baseMixin(_chart) {
     ) {
       filter[0].forEach(d => {
         if (_chart.hasFilter(d)) {
-          _removeFilterHandler(_filters, d);
+          _removeFilterHandler(_filters, d)
         } else {
-          _addFilterHandler(_filters, d);
+          _addFilterHandler(_filters, d)
         }
-      });
+      })
     } else if (filter === Symbol.for("clear")) {
-      filters = _resetFilterHandler(_filters);
+      filters = _resetFilterHandler(_filters)
     } else if (_chart.hasFilter(filter)) {
-      _removeFilterHandler(_filters, filter);
+      _removeFilterHandler(_filters, filter)
     } else {
-      _addFilterHandler(_filters, filter);
+      _addFilterHandler(_filters, filter)
     }
-    applyFilters();
-    _chart._invokeFilteredListener(filter, isFilterInverse);
+    applyFilters()
+    _chart._invokeFilteredListener(filter, isFilterInverse)
 
     if (_root !== null && _chart.hasFilter()) {
-      _chart.turnOnControls();
+      _chart.turnOnControls()
     } else {
-      _chart.turnOffControls();
+      _chart.turnOffControls()
     }
 
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * Returns all current filters. This method does not perform defensive cloning of the internal
@@ -1327,33 +1327,33 @@ export default function baseMixin(_chart) {
    * @return {Array<*>}
    */
   _chart.filters = function() {
-    return _filters;
-  };
+    return _filters
+  }
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.accentSelected = function(e) {
-    d3.select(e).classed(constants.ACCENT_CLASS, true);
-  };
+    d3.select(e).classed(constants.ACCENT_CLASS, true)
+  }
 
   _chart.unAccentSelected = function(e) {
-    d3.select(e).classed(constants.ACCENT_CLASS, false);
-  };
+    d3.select(e).classed(constants.ACCENT_CLASS, false)
+  }
   /* ------------------------------------------------------------------------- */
 
   _chart.highlightSelected = function(e) {
-    d3.select(e).classed(constants.SELECTED_CLASS, true);
-    d3.select(e).classed(constants.DESELECTED_CLASS, false);
-  };
+    d3.select(e).classed(constants.SELECTED_CLASS, true)
+    d3.select(e).classed(constants.DESELECTED_CLASS, false)
+  }
 
   _chart.fadeDeselected = function(e) {
-    d3.select(e).classed(constants.SELECTED_CLASS, false);
-    d3.select(e).classed(constants.DESELECTED_CLASS, true);
-  };
+    d3.select(e).classed(constants.SELECTED_CLASS, false)
+    d3.select(e).classed(constants.DESELECTED_CLASS, true)
+  }
 
   _chart.resetHighlight = function(e) {
-    d3.select(e).classed(constants.SELECTED_CLASS, false);
-    d3.select(e).classed(constants.DESELECTED_CLASS, false);
-  };
+    d3.select(e).classed(constants.SELECTED_CLASS, false)
+    d3.select(e).classed(constants.DESELECTED_CLASS, false)
+  }
 
   /**
    * This function is passed to d3 as the onClick handler for each chart. The default behavior is to
@@ -1364,9 +1364,9 @@ export default function baseMixin(_chart) {
    * @param {*} datum
    */
   _chart.onClick = function(datum) {
-    const filter = _chart.keyAccessor()(datum);
-    _chart.handleFilterClick(d3.event, filter);
-  };
+    const filter = _chart.keyAccessor()(datum)
+    _chart.handleFilterClick(d3.event, filter)
+  }
 
   /**
    * Set or get the filter handler. The filter handler is a function that performs the filter action
@@ -1410,72 +1410,72 @@ export default function baseMixin(_chart) {
    */
   _chart.filterHandler = function(filterHandler) {
     if (!arguments.length) {
-      return _filterHandler;
+      return _filterHandler
     }
-    _filterHandler = filterHandler;
-    return _chart;
-  };
+    _filterHandler = filterHandler
+    return _chart
+  }
 
   // abstract function stub
   _chart._doRender = function() {
     // do nothing in base, should be overridden by sub-function
-    return _chart;
-  };
+    return _chart
+  }
 
   _chart._doRedraw = function() {
     // do nothing in base, should be overridden by sub-function
-    return _chart;
-  };
+    return _chart
+  }
 
   _chart.legendables = function() {
     // do nothing in base, should be overridden by sub-function
-    return [];
-  };
+    return []
+  }
 
   /* OVERRIDE -----------------------------------------------------------------*/
 
   _chart.legendLock = function(_) {
     if (!arguments.length) {
-      return _legendLock;
+      return _legendLock
     }
-    _legendLock = _;
-    return _chart;
-  };
+    _legendLock = _
+    return _chart
+  }
 
   _chart.legendUnlock = function(_) {
     if (!arguments.length) {
-      return _legendUnlock;
+      return _legendUnlock
     }
-    _legendUnlock = _;
-    return _chart;
-  };
+    _legendUnlock = _
+    return _chart
+  }
 
   _chart.legendInputChange = function(_) {
     if (!arguments.length) {
-      return _legendInputChange;
+      return _legendInputChange
     }
-    _legendInputChange = _;
-    return _chart;
-  };
+    _legendInputChange = _
+    return _chart
+  }
 
   /* ------------------------------------------------------------------------- */
 
   _chart.legendHighlight = function() {
     // do nothing in base, should be overridden by sub-function
-  };
+  }
 
   _chart.legendReset = function() {
     // do nothing in base, should be overridden by sub-function
-  };
+  }
 
   _chart.legendToggle = function() {
     // do nothing in base, should be overriden by sub-function
-  };
+  }
 
   _chart.isLegendableHidden = function() {
     // do nothing in base, should be overridden by sub-function
-    return false;
-  };
+    return false
+  }
 
   /**
    * Set or get the key accessor function. The key accessor function is used to retrieve the key
@@ -1495,11 +1495,11 @@ export default function baseMixin(_chart) {
    */
   _chart.keyAccessor = function(keyAccessor) {
     if (!arguments.length) {
-      return _keyAccessor;
+      return _keyAccessor
     }
-    _keyAccessor = keyAccessor;
-    return _chart;
-  };
+    _keyAccessor = keyAccessor
+    return _chart
+  }
 
   /**
    * Set or get the value accessor function. The value accessor function is used to retrieve the
@@ -1520,11 +1520,11 @@ export default function baseMixin(_chart) {
    */
   _chart.valueAccessor = function(valueAccessor) {
     if (!arguments.length) {
-      return _valueAccessor;
+      return _valueAccessor
     }
-    _valueAccessor = valueAccessor;
-    return _chart;
-  };
+    _valueAccessor = valueAccessor
+    return _chart
+  }
 
   /**
    * Set or get the label function. The chart class will use this function to render labels for each
@@ -1546,14 +1546,14 @@ export default function baseMixin(_chart) {
    */
   _chart.label = function(labelFunction, enableLabels) {
     if (!arguments.length) {
-      return _label;
+      return _label
     }
-    _label = labelFunction;
+    _label = labelFunction
     if (enableLabels === undefined || enableLabels) {
-      _renderLabel = true;
+      _renderLabel = true
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * Turn on/off label rendering
@@ -1566,11 +1566,11 @@ export default function baseMixin(_chart) {
    */
   _chart.renderLabel = function(renderLabel) {
     if (!arguments.length) {
-      return _renderLabel;
+      return _renderLabel
     }
-    _renderLabel = renderLabel;
-    return _chart;
-  };
+    _renderLabel = renderLabel
+    return _chart
+  }
 
   /**
    * Set or get the title function. The chart class will use this function to render the SVGElement title
@@ -1598,11 +1598,11 @@ export default function baseMixin(_chart) {
    */
   _chart.title = function(titleFunction) {
     if (!arguments.length) {
-      return _title;
+      return _title
     }
-    _title = titleFunction;
-    return _chart;
-  };
+    _title = titleFunction
+    return _chart
+  }
 
   /**
    * Turn on/off title rendering, or return the state of the render title flag if no arguments are
@@ -1616,11 +1616,11 @@ export default function baseMixin(_chart) {
    */
   _chart.renderTitle = function(renderTitle) {
     if (!arguments.length) {
-      return _renderTitle;
+      return _renderTitle
     }
-    _renderTitle = renderTitle;
-    return _chart;
-  };
+    _renderTitle = renderTitle
+    return _chart
+  }
 
   /**
    * A renderlet is similar to an event listener on rendering event. Multiple renderlets can be added
@@ -1647,9 +1647,9 @@ export default function baseMixin(_chart) {
    * @return {dc.baseMixin}
    */
   _chart.renderlet = logger.deprecate(renderletFunction => {
-    _chart.on("renderlet." + utils.uniqueId(), renderletFunction);
-    return _chart;
-  }, 'chart.renderlet has been deprecated.  Please use chart.on("renderlet.<renderletKey>", renderletFunction)');
+    _chart.on("renderlet." + utils.uniqueId(), renderletFunction)
+    return _chart
+  }, 'chart.renderlet has been deprecated.  Please use chart.on("renderlet.<renderletKey>", renderletFunction)')
 
   /**
    * Get or set the chart group to which this chart belongs. Chart groups are rendered or redrawn
@@ -1663,17 +1663,17 @@ export default function baseMixin(_chart) {
    */
   _chart.chartGroup = function(chartGroup) {
     if (!arguments.length) {
-      return _chartGroup;
+      return _chartGroup
     }
     if (!_isChild) {
-      deregisterChart(_chart, _chartGroup);
+      deregisterChart(_chart, _chartGroup)
     }
-    _chartGroup = chartGroup;
+    _chartGroup = chartGroup
     if (!_isChild) {
-      registerChart(_chart, _chartGroup);
+      registerChart(_chart, _chartGroup)
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * Expire the internal chart cache. dc charts cache some data internally on a per chart basis to
@@ -1689,8 +1689,8 @@ export default function baseMixin(_chart) {
    */
   _chart.expireCache = function() {
     // do nothing in base, should be overridden by sub-function
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * MAPDC-extension function
@@ -1702,8 +1702,8 @@ export default function baseMixin(_chart) {
    */
   _chart.destroyChart = function() {
     // do nothing in base, should be overridden by sub-function
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * Attach a dc.legend widget to this chart. The legend widget will automatically draw legend labels
@@ -1719,26 +1719,26 @@ export default function baseMixin(_chart) {
    */
   _chart.legend = function(legend) {
     if (!arguments.length) {
-      return _legend;
+      return _legend
     }
-    _legend = legend;
+    _legend = legend
 
     if (_legend) {
-      _legend.parent(_chart);
+      _legend.parent(_chart)
     }
 
-    return _chart;
-  };
+    return _chart
+  }
 
   /* OVERRIDE -----------------------------------------------------------------*/
   _chart.legendContinuous = function(legendContinuous) {
     if (!arguments.length) {
-      return _legendContinuous;
+      return _legendContinuous
     }
-    _legendContinuous = legendContinuous;
-    _legendContinuous.parent(_chart);
-    return _chart;
-  };
+    _legendContinuous = legendContinuous
+    _legendContinuous.parent(_chart)
+    return _chart
+  }
   /* --------------------------------------------------------------------------*/
 
   /**
@@ -1749,8 +1749,8 @@ export default function baseMixin(_chart) {
    * @return {String}
    */
   _chart.chartID = function() {
-    return _chart.__dcFlag__;
-  };
+    return _chart.__dcFlag__
+  }
 
   /**
    * Set chart options using a configuration object. Each key in the object will cause the method of
@@ -1774,21 +1774,21 @@ export default function baseMixin(_chart) {
       "point",
       "getColor",
       "overlayGeoJson"
-    ];
+    ]
 
     for (const o in opts) {
       if (typeof _chart[o] === "function") {
         if (opts[o] instanceof Array && applyOptions.indexOf(o) !== -1) {
-          _chart[o].apply(_chart, opts[o]);
+          _chart[o].apply(_chart, opts[o])
         } else {
-          _chart[o].call(_chart, opts[o]);
+          _chart[o].call(_chart, opts[o])
         }
       } else {
-        dc.logger.debug("Not a valid option setter name: " + o);
+        dc.logger.debug("Not a valid option setter name: " + o)
       }
     }
-    return _chart;
-  };
+    return _chart
+  }
 
   /**
    * All dc chart instance supports the following listeners.
@@ -1822,56 +1822,56 @@ export default function baseMixin(_chart) {
    * @return {dc.baseMixin}
    */
   _chart.on = function(event, listener) {
-    _listeners.on(event, listener);
-    return _chart;
-  };
+    _listeners.on(event, listener)
+    return _chart
+  }
 
   _chart.debounce = function(func, wait, immediate) {
-    let timeout;
+    let timeout
 
     return function() {
       let context = this,
-        args = arguments;
+        args = arguments
       const later = function() {
-        timeout = null;
+        timeout = null
         if (!immediate) {
-          func.apply(context, args);
+          func.apply(context, args)
         }
-      };
-      const callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) {
-        func.apply(context, args);
       }
-    };
-  };
+      const callNow = immediate && !timeout
+      clearTimeout(timeout)
+      timeout = setTimeout(later, wait)
+      if (callNow) {
+        func.apply(context, args)
+      }
+    }
+  }
 
   _chart.showNullDimensions = function(showNulls) {
     if (!arguments.length) {
-      return !_chart.dimension().getEliminateNull();
+      return !_chart.dimension().getEliminateNull()
     }
 
-    _chart.expireCache();
-    _chart.dimension().setEliminateNull(!showNulls);
+    _chart.expireCache()
+    _chart.dimension().setEliminateNull(!showNulls)
 
-    return _chart;
-  };
+    return _chart
+  }
 
-  _chart.keyAccessor(multipleKeysAccessorForCap);
-  _chart.ordering = () => {};
-  _chart.rangeChartEnabled = () => false;
-  _chart.isTime = () => null;
+  _chart.keyAccessor(multipleKeysAccessorForCap)
+  _chart.ordering = () => {}
+  _chart.rangeChartEnabled = () => false
+  _chart.isTime = () => null
 
   _chart.isMulti = function() {
-    return false;
-  };
+    return false
+  }
 
   _chart = chartLegendMixin(
     filterMixin(
       labelMixin(multipleKeysLabelMixin(spinnerMixin(asyncMixin(_chart))))
     )
-  );
+  )
 
-  return _chart;
+  return _chart
 }
