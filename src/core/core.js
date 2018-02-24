@@ -1,4 +1,4 @@
-import {utils} from "../utils/utils"
+import { utils } from "../utils/utils"
 
 let _logging = false
 let _sampledCount = 0
@@ -21,62 +21,62 @@ export const constants = {
   EVENT_DELAY: 0
 }
 
-export function logging (_) {
+export function logging(_) {
   if (!arguments.length) {
     return _logging
   }
   _logging = _
 }
 
-export function sampledCount (_) {
+export function sampledCount(_) {
   if (!arguments.length) {
     return _sampledCount
   }
   _sampledCount = _
 }
 
-export function incrementSampledCount () {
+export function incrementSampledCount() {
   return _sampledCount++
 }
 
-export function decrementSampledCount () {
+export function decrementSampledCount() {
   return _sampledCount--
 }
 
-export function refreshDisabled (_) {
+export function refreshDisabled(_) {
   if (!arguments.length) {
     return _refreshDisabled
   }
   _refreshDisabled = _
 }
 
-export function disableRefresh () {
+export function disableRefresh() {
   _refreshDisabled = true
 }
 
-export function enableRefresh () {
+export function enableRefresh() {
   _refreshDisabled = false
 }
 
-export function globalTransitionDuration (_) {
+export function globalTransitionDuration(_) {
   if (!arguments.length) {
     return _globalTransitionDuration
   }
   _globalTransitionDuration = _
 }
 
-export function disableTransitions (_) {
+export function disableTransitions(_) {
   if (!arguments.length) {
     return _disableTransitions
   }
   _disableTransitions = _
 }
 
-export const chartRegistry = (function () {
+export const chartRegistry = (function() {
   // chartGroup:string => charts:array
   let _chartMap = {}
 
-  function initializeChartGroup (group) {
+  function initializeChartGroup(group) {
     if (!group) {
       group = constants.DEFAULT_CHART_GROUP
     }
@@ -89,7 +89,7 @@ export const chartRegistry = (function () {
   }
 
   return {
-    has (chart) {
+    has(chart) {
       for (const e in _chartMap) {
         if (_chartMap[e].indexOf(chart) >= 0) {
           return true
@@ -98,7 +98,7 @@ export const chartRegistry = (function () {
       return false
     },
 
-    register (chart, group) {
+    register(chart, group) {
       if (Array.isArray(group)) {
         group.forEach(g => _chartMap[initializeChartGroup(g)].push(chart))
       } else {
@@ -106,7 +106,7 @@ export const chartRegistry = (function () {
       }
     },
 
-    deregister (chart, group) {
+    deregister(chart, group) {
       if (Array.isArray(group)) {
         group.forEach(g => {
           group = initializeChartGroup(g)
@@ -128,7 +128,7 @@ export const chartRegistry = (function () {
       }
     },
 
-    clear (group) {
+    clear(group) {
       if (Array.isArray(group)) {
         group.forEach(g => delete _chartMap[g])
       } else if (group) {
@@ -138,7 +138,7 @@ export const chartRegistry = (function () {
       }
     },
 
-    list (group) {
+    list(group) {
       if (Array.isArray(group)) {
         return group
           .reduce(
@@ -152,35 +152,33 @@ export const chartRegistry = (function () {
       }
     },
 
-    listAll () {
-      return Object.keys(_chartMap).reduce(
-        (accum, key) => accum.concat(_chartMap[key]),
-        []
-      )
-      .filter((item, i, self) => self.indexOf(item) === i)
+    listAll() {
+      return Object.keys(_chartMap)
+        .reduce((accum, key) => accum.concat(_chartMap[key]), [])
+        .filter((item, i, self) => self.indexOf(item) === i)
     }
   }
 })()
 
-export function registerChart (chart, group) {
+export function registerChart(chart, group) {
   chartRegistry.register(chart, group)
 }
 
-export function getChart (dcFlag) {
+export function getChart(dcFlag) {
   return chartRegistry
     .listAll()
     .reduce((accum, chrt) => (chrt.__dcFlag__ === dcFlag ? chrt : accum), null)
 }
 
-export function deregisterChart (chart, group) {
+export function deregisterChart(chart, group) {
   chartRegistry.deregister(chart, group)
 }
 
-export function hasChart (chart) {
+export function hasChart(chart) {
   return chartRegistry.has(chart)
 }
 
-export function deregisterAllCharts (group) {
+export function deregisterAllCharts(group) {
   chartRegistry.clear(group)
 }
 
@@ -191,7 +189,7 @@ export function deregisterAllCharts (group) {
  * @name filterAll
  * @param {String} [group]
  */
-export function filterAll (group) {
+export function filterAll(group) {
   const charts = chartRegistry.list(group)
   for (let i = 0; i < charts.length; ++i) {
     charts[i].filterAll()
@@ -205,7 +203,7 @@ export function filterAll (group) {
  * @name refocusAll
  * @param {String} [group]
  */
-export function refocusAll (group) {
+export function refocusAll(group) {
   const charts = chartRegistry.list(group)
   for (let i = 0; i < charts.length; ++i) {
     if (charts[i].focus) {
@@ -214,7 +212,7 @@ export function refocusAll (group) {
   }
 }
 
-export function transition (selections, duration, callback, name) {
+export function transition(selections, duration, callback, name) {
   if (duration <= 0 || duration === undefined || _disableTransitions) {
     return selections
   }
@@ -229,20 +227,20 @@ export function transition (selections, duration, callback, name) {
 }
 
 /* somewhat silly, but to avoid duplicating logic */
-export function optionalTransition (enable, duration, callback, name) {
+export function optionalTransition(enable, duration, callback, name) {
   if (enable) {
-    return function (selection) {
+    return function(selection) {
       return transition(selection, duration, callback, name)
     }
   } else {
-    return function (selection) {
+    return function(selection) {
       return selection
     }
   }
 }
 
 // See http://stackoverflow.com/a/20773846
-export function afterTransition (_transition, callback) {
+export function afterTransition(_transition, callback) {
   if (_transition.empty() || !_transition.duration) {
     callback.call(_transition)
   } else {
@@ -280,7 +278,7 @@ export const units = {}
  * @param {Number} end
  * @return {Number}
  */
-units.integers = function (start, end) {
+units.integers = function(start, end) {
   return Math.abs(end - start)
 }
 
@@ -303,7 +301,7 @@ units.integers = function (start, end) {
  * @param {Array<String>} domain
  * @return {Array<String>}
  */
-units.ordinal = function (start, end, domain) {
+units.ordinal = function(start, end, domain) {
   return domain
 }
 
@@ -331,8 +329,8 @@ units.fp = {}
  * @param {Number} precision
  * @return {Function} start-end unit function
  */
-units.fp.precision = function (precision) {
-  var _f = function (s, e) {
+units.fp.precision = function(precision) {
+  var _f = function(s, e) {
     const d = Math.abs((e - s) / _f.resolution)
     if (utils.isNegligible(d - Math.floor(d))) {
       return Math.floor(d)
@@ -345,29 +343,29 @@ units.fp.precision = function (precision) {
 }
 
 export const round = {}
-round.floor = function (n) {
+round.floor = function(n) {
   return Math.floor(n)
 }
-round.ceil = function (n) {
+round.ceil = function(n) {
   return Math.ceil(n)
 }
-round.round = function (n) {
+round.round = function(n) {
   return Math.round(n)
 }
 
-export function override (obj, functionName, newFunction) {
+export function override(obj, functionName, newFunction) {
   const existingFunction = obj[functionName]
   obj["_" + functionName] = existingFunction
   obj[functionName] = newFunction
 }
 
-export function renderlet (_) {
+export function renderlet(_) {
   if (!arguments.length) {
     return _renderlet
   }
   _renderlet = _
 }
 
-export function instanceOfChart (o) {
+export function instanceOfChart(o) {
   return o instanceof Object && o.__dcFlag__ && true
 }

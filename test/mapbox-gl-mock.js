@@ -1,6 +1,6 @@
 const mapboxgl = {}
 
-function Evented () {}
+function Evented() {}
 
 const LngLatBounds = {
   convert: () => {}

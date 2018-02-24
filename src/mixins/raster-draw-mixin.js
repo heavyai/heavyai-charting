@@ -1,16 +1,24 @@
 import * as LatLonUtils from "../utils/utils-latlon"
-import LassoButtonGroupController, {getLatLonCircleClass} from "./ui/lasso-tool-ui"
+import LassoButtonGroupController, {
+  getLatLonCircleClass
+} from "./ui/lasso-tool-ui"
 import earcut from "earcut"
 import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
-import {redrawAllAsync} from "../core/core-async"
+import { redrawAllAsync } from "../core/core-async"
 
 /* istanbul ignore next */
-function writePointInTriangleSqlTest (p0, p1, p2, px, py, cast = false) {
-  function writeSign (p0, p1) {
+function writePointInTriangleSqlTest(p0, p1, p2, px, py, cast = false) {
+  function writeSign(p0, p1) {
     if (cast) {
-      return `((CAST(${px} AS FLOAT)-(${p1[0]}))*(${p0[1] - p1[1]}) - ` + `(${p0[0] - p1[0]})*(CAST(${py} AS FLOAT)-(${p1[1]})) < 0.0)`
+      return (
+        `((CAST(${px} AS FLOAT)-(${p1[0]}))*(${p0[1] - p1[1]}) - ` +
+        `(${p0[0] - p1[0]})*(CAST(${py} AS FLOAT)-(${p1[1]})) < 0.0)`
+      )
     } else {
-      return `((${px}-(${p1[0]}))*(${p0[1] - p1[1]}) - ` + `(${p0[0] - p1[0]})*(${py}-(${p1[1]})) < 0.0)`
+      return (
+        `((${px}-(${p1[0]}))*(${p0[1] - p1[1]}) - ` +
+        `(${p0[0] - p1[0]})*(${py}-(${p1[1]})) < 0.0)`
+      )
     }
   }
 
@@ -21,7 +29,7 @@ function writePointInTriangleSqlTest (p0, p1, p2, px, py, cast = false) {
 }
 
 /* istanbul ignore next */
-function createUnlikelyStmtFromShape (shape, xAttr, yAttr, useLonLat) {
+function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
   const aabox = shape.aabox
   let xmin = aabox[MapdDraw.AABox2d.MINX]
   let xmax = aabox[MapdDraw.AABox2d.MAXX]
@@ -44,7 +52,7 @@ function createUnlikelyStmtFromShape (shape, xAttr, yAttr, useLonLat) {
 }
 
 /* istanbul ignore next */
-export function rasterDrawMixin (chart) {
+export function rasterDrawMixin(chart) {
   let drawEngine = null
   let buttonController = null
   let currXRange = null
@@ -68,15 +76,23 @@ export function rasterDrawMixin (chart) {
     dashPattern: [8, 2]
   }
 
-  function applyFilter () {
+  function applyFilter() {
     const NUM_SIDES = 3
-    const useLonLat = (typeof chart.useLonLat === "function" && chart.useLonLat())
+    const useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat()
     const shapes = drawEngine.sortedShapes
     const LatLonCircle = getLatLonCircleClass()
 
-    const layers = (chart.getLayers && typeof chart.getLayers === "function") ? chart.getLayers() : [chart]
+    const layers =
+      chart.getLayers && typeof chart.getLayers === "function"
+        ? chart.getLayers()
+        : [chart]
     layers.forEach(layer => {
-      if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points" || layer.layerType() === "heat") {
+      if (
+        !layer.layerType ||
+        typeof layer.layerType !== "function" ||
+        layer.layerType() === "points" ||
+        layer.layerType() === "heat"
+      ) {
         let crossFilter = null
         let filterObj = null
         const group = layer.group()
@@ -114,12 +130,31 @@ export function rasterDrawMixin (chart) {
                 // convert from mercator to lat-lon
                 LatLonUtils.conv900913To4326(pos, pos)
                 const meters = shape.radius * 1000
-                filterObj.shapeFilters.push(`DISTANCE_IN_METERS(${pos[0]}, ${pos[1]}, ${px}, ${py}) < ${meters}`)
+                filterObj.shapeFilters.push(
+                  `DISTANCE_IN_METERS(${pos[0]}, ${
+                    pos[1]
+                  }, ${px}, ${py}) < ${meters}`
+                )
               } else if (shape instanceof MapdDraw.Circle) {
                 const radsqr = Math.pow(shape.radius, 2)
                 const mat = MapdDraw.Mat2d.clone(shape.globalXform)
                 MapdDraw.Mat2d.invert(mat, mat)
-                filterObj.shapeFilters.push(`${createUnlikelyStmtFromShape(shape, px, py, useLonLat)} AND (POWER(${mat[0]} * CAST(${px} AS FLOAT) + ${mat[2]} * CAST(${py} AS FLOAT) + ${mat[4]}, 2.0) + POWER(${mat[1]} * CAST(${px} AS FLOAT) + ${mat[3]} * CAST(${py} AS FLOAT) + ${mat[5]}, 2.0)) / ${radsqr} <= 1.0`)
+                filterObj.shapeFilters.push(
+                  `${createUnlikelyStmtFromShape(
+                    shape,
+                    px,
+                    py,
+                    useLonLat
+                  )} AND (POWER(${mat[0]} * CAST(${px} AS FLOAT) + ${
+                    mat[2]
+                  } * CAST(${py} AS FLOAT) + ${mat[4]}, 2.0) + POWER(${
+                    mat[1]
+                  } * CAST(${px} AS FLOAT) + ${
+                    mat[3]
+                  } * CAST(${py} AS FLOAT) + ${
+                    mat[5]
+                  }, 2.0)) / ${radsqr} <= 1.0`
+                )
               } else if (shape instanceof MapdDraw.Poly) {
                 const p0 = [0, 0]
                 const p1 = [0, 0]
@@ -140,19 +175,40 @@ export function rasterDrawMixin (chart) {
                 let idx = 0
                 for (let j = 0; j < triangles.length; j = j + NUM_SIDES) {
                   idx = triangles[j] * 2
-                  MapdDraw.Point2d.set(p0, earcutverts[idx], earcutverts[idx + 1])
+                  MapdDraw.Point2d.set(
+                    p0,
+                    earcutverts[idx],
+                    earcutverts[idx + 1]
+                  )
 
                   idx = triangles[j + 1] * 2
-                  MapdDraw.Point2d.set(p1, earcutverts[idx], earcutverts[idx + 1])
+                  MapdDraw.Point2d.set(
+                    p1,
+                    earcutverts[idx],
+                    earcutverts[idx + 1]
+                  )
 
                   idx = triangles[j + 2] * 2
-                  MapdDraw.Point2d.set(p2, earcutverts[idx], earcutverts[idx + 1])
+                  MapdDraw.Point2d.set(
+                    p2,
+                    earcutverts[idx],
+                    earcutverts[idx + 1]
+                  )
 
-                  triangleTests.push(writePointInTriangleSqlTest(p0, p1, p2, px, py, !useLonLat))
+                  triangleTests.push(
+                    writePointInTriangleSqlTest(p0, p1, p2, px, py, !useLonLat)
+                  )
                 }
 
                 if (triangleTests.length) {
-                  filterObj.shapeFilters.push(`${createUnlikelyStmtFromShape(shape, px, py, useLonLat)} AND (${triangleTests.join(" OR ")})`)
+                  filterObj.shapeFilters.push(
+                    `${createUnlikelyStmtFromShape(
+                      shape,
+                      px,
+                      py,
+                      useLonLat
+                    )} AND (${triangleTests.join(" OR ")})`
+                  )
                 }
               }
             })
@@ -161,13 +217,28 @@ export function rasterDrawMixin (chart) {
       }
     })
 
-    coordFilters.forEach((filterObj) => {
-      if (filterObj.px.length && filterObj.py.length && filterObj.shapeFilters.length) {
+    coordFilters.forEach(filterObj => {
+      if (
+        filterObj.px.length &&
+        filterObj.py.length &&
+        filterObj.shapeFilters.length
+      ) {
         const shapeFilterStmt = filterObj.shapeFilters.join(" OR ")
         const filterStmt = filterObj.px
-          .map((e, i) => ({px: e, py: filterObj.py[i]}))
-          .reduce((acc, e) => (acc.some(e1 => e1.px === e.px && e1.py === e.py) ? acc : [...acc, e]), [])
-          .map((e, i) => `(${e.px} IS NOT NULL AND ${e.py} IS NOT NULL AND (${shapeFilterStmt}))`)
+          .map((e, i) => ({ px: e, py: filterObj.py[i] }))
+          .reduce(
+            (acc, e) =>
+              acc.some(e1 => e1.px === e.px && e1.py === e.py)
+                ? acc
+                : [...acc, e],
+            []
+          )
+          .map(
+            (e, i) =>
+              `(${e.px} IS NOT NULL AND ${
+                e.py
+              } IS NOT NULL AND (${shapeFilterStmt}))`
+          )
           .join(" AND ")
         filterObj.coordFilter.filter([filterStmt])
         filterObj.px = []
@@ -181,7 +252,7 @@ export function rasterDrawMixin (chart) {
     chart._invokeFilteredListener(chart.filters(), false)
   }
 
-  function drawEventHandler () {
+  function drawEventHandler() {
     applyFilter()
     redrawAllAsync(chart.chartGroup())
   }
@@ -190,12 +261,15 @@ export function rasterDrawMixin (chart) {
     drawEventHandler()
   }, 50)
 
-  function updateDrawFromGeom () {
+  function updateDrawFromGeom() {
     debounceRedraw()
   }
 
   chart.addFilterShape = shape => {
-    shape.on(["changed:geom", "changed:xform", "changed:visibility"], updateDrawFromGeom)
+    shape.on(
+      ["changed:geom", "changed:xform", "changed:visibility"],
+      updateDrawFromGeom
+    )
     updateDrawFromGeom()
   }
 
@@ -204,7 +278,7 @@ export function rasterDrawMixin (chart) {
     updateDrawFromGeom()
   }
 
-  function filters () {
+  function filters() {
     const shapes = drawEngine.getShapesAsJSON()
     if (shapes[0]) {
       return chart.zoomFilters().concat(Array.from(shapes))
@@ -212,7 +286,7 @@ export function rasterDrawMixin (chart) {
     return chart.zoomFilters()
   }
 
-  function filter (filterArg) {
+  function filter(filterArg) {
     if (!arguments.length) {
       return drawEngine.getShapesAsJSON()
     }
@@ -223,7 +297,9 @@ export function rasterDrawMixin (chart) {
     } else if (typeof filterArg.type !== "undefined") {
       let newShape = null
       if (filterArg.type === "Feature") {
-        console.log("WARNING - trying to load an incompatible lasso dashboard. All filters will be cleared.")
+        console.log(
+          "WARNING - trying to load an incompatible lasso dashboard. All filters will be cleared."
+        )
         return
       }
       const selectOpts = {}
@@ -270,12 +346,18 @@ export function rasterDrawMixin (chart) {
     currXRange = xscale.domain()
     currYRange = yscale.domain()
 
-    const projDims = [Math.abs(currXRange[1] - currXRange[0]), Math.abs(currYRange[1] - currYRange[0])]
+    const projDims = [
+      Math.abs(currXRange[1] - currXRange[0]),
+      Math.abs(currYRange[1] - currYRange[0])
+    ]
 
     const engineOpts = {
       enableInteractions: true,
       projectionDimensions: projDims,
-      cameraPosition: [currXRange[0] + 0.5 * projDims[0], Math.min(currYRange[0], currYRange[1]) + 0.5 * projDims[1]],
+      cameraPosition: [
+        currXRange[0] + 0.5 * projDims[0],
+        Math.min(currYRange[0], currYRange[1]) + 0.5 * projDims[1]
+      ],
       flipY: true,
       selectStyle: defaultSelectStyle,
       xformStyle: {
@@ -292,9 +374,15 @@ export function rasterDrawMixin (chart) {
     }
 
     drawEngine = new MapdDraw.ShapeBuilder(parent, engineOpts)
-    buttonController = new LassoButtonGroupController(parent, chart, drawEngine, defaultStyle, defaultSelectStyle)
+    buttonController = new LassoButtonGroupController(
+      parent,
+      chart,
+      drawEngine,
+      defaultStyle,
+      defaultSelectStyle
+    )
 
-    function updateDraw () {
+    function updateDraw() {
       const bounds = chart.getDataRenderBounds()
       currXRange = [bounds[0][0], bounds[1][0]]
       currYRange = [bounds[0][1], bounds[2][1]]
@@ -305,14 +393,20 @@ export function rasterDrawMixin (chart) {
         currYRange[1] = LatLonUtils.conv4326To900913Y(currYRange[1])
       }
 
-      const newProjDims = [Math.abs(currXRange[1] - currXRange[0]), Math.abs(currYRange[1] - currYRange[0])]
+      const newProjDims = [
+        Math.abs(currXRange[1] - currXRange[0]),
+        Math.abs(currYRange[1] - currYRange[0])
+      ]
       drawEngine.projectionDimensions = newProjDims
-      drawEngine.cameraPosition = [currXRange[0] + 0.5 * newProjDims[0], Math.min(currYRange[0], currYRange[1]) + 0.5 * newProjDims[1]]
+      drawEngine.cameraPosition = [
+        currXRange[0] + 0.5 * newProjDims[0],
+        Math.min(currYRange[0], currYRange[1]) + 0.5 * newProjDims[1]
+      ]
 
       // debounceRedraw()
     }
 
-    function updateDrawResize (eventObj) {
+    function updateDrawResize(eventObj) {
       // make sure all buttons and events are deactivated when resizing
       // so shape creation/modification events aren't unintentionally
       // triggered
@@ -324,8 +418,14 @@ export function rasterDrawMixin (chart) {
       // Do we need to be concerned with margins/padding on the div? I don't believe we
       // do since we're only setting the viewport here, which should cover the entire
       // width/height of the canvas.
-      const widthToUse = (typeof chart.effectiveWidth === "function" ? chart.effectiveWidth() : parent.offsetWidth)
-      const heightToUse = (typeof chart.effectiveHeight === "function" ? chart.effectiveHeight() : parent.offsetHeight)
+      const widthToUse =
+        typeof chart.effectiveWidth === "function"
+          ? chart.effectiveWidth()
+          : parent.offsetWidth
+      const heightToUse =
+        typeof chart.effectiveHeight === "function"
+          ? chart.effectiveHeight()
+          : parent.offsetHeight
       drawEngine.viewport = [0, 0, widthToUse, heightToUse]
       updateDraw()
     }
@@ -348,7 +448,7 @@ export function rasterDrawMixin (chart) {
 
     chart.filterAll = () => {
       if (coordFilters) {
-        coordFilters.forEach((filterObj) => {
+        coordFilters.forEach(filterObj => {
           filterObj.shapeFilters = []
           filterObj.coordFilter.filter()
         })
@@ -359,7 +459,8 @@ export function rasterDrawMixin (chart) {
         chart.deleteFilterShape(shape)
       })
 
-      if (typeof chart.useLonLat === "function") { // pointmap should preserve the zoom filter
+      if (typeof chart.useLonLat === "function") {
+        // pointmap should preserve the zoom filter
         chart.setFilterBounds(chart.map().getBounds())
       }
       return chart
@@ -368,7 +469,7 @@ export function rasterDrawMixin (chart) {
     return chart
   }
 
-  chart.coordFilter = (filter) => {
+  chart.coordFilter = filter => {
     // noop - for backwards compatibility
   }
 

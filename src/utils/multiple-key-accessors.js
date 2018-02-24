@@ -1,9 +1,9 @@
-import {isArrayOfObjects} from "../../src/utils/formatting-helpers"
+import { isArrayOfObjects } from "../../src/utils/formatting-helpers"
 
 const INDEX_NONE = -1
 const identity = a => a
 
-function normalize (data) {
+function normalize(data) {
   if (isArrayOfObjects(data)) {
     return data.map(d => d.value)
   } else {
@@ -11,7 +11,7 @@ function normalize (data) {
   }
 }
 
-function getMinOfRange (d) {
+function getMinOfRange(d) {
   if (Array.isArray(d)) {
     return d[0]
   } else {
@@ -19,8 +19,8 @@ function getMinOfRange (d) {
   }
 }
 
-function createAccessor (transform = identity) {
-  return function multipleKeyAccessor (d) {
+function createAccessor(transform = identity) {
+  return function multipleKeyAccessor(d) {
     let filteredKeys = []
     for (const key in d) {
       if (d.hasOwnProperty(key) && key.indexOf("key") > INDEX_NONE) {

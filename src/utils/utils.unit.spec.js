@@ -1,12 +1,10 @@
 /* eslint-disable max-nested-callbacks*/
 
 import * as dc from "../index"
-import {utils, xAxisTickFormat} from "./utils"
-import {expect} from "chai"
-
+import { utils, xAxisTickFormat } from "./utils"
+import { expect } from "chai"
 
 describe("DC Utils", () => {
-
   describe("All Utils", () => {
     it("should have all the necessary exports", () => {
       expect(typeof dc.printers.filters).to.equal("function")
@@ -62,14 +60,13 @@ describe("DC Utils", () => {
 
   describe("xAxisTickFormat", () => {
     it("returns the correct format for extract", () => {
-      const f = xAxisTickFormat({extract: true, timeBin: "year"})
+      const f = xAxisTickFormat({ extract: true, timeBin: "year" })
       expect(f(1.5)).to.eq(2)
     })
 
     it("return the correct format function for chart that is time binned", () => {
       const f = xAxisTickFormat({}, true)
       expect(f(new Date("2016-11-30T08:00:00.000Z"))).to.eq("08 AM")
-
     })
   })
 
@@ -99,7 +96,11 @@ describe("DC Utils", () => {
     })
 
     it("should place null values at the end of array", () => {
-      expect([null, 1, null].sort(dc.utils.nullsLast())).to.deep.equal([1, null, null])
+      expect([null, 1, null].sort(dc.utils.nullsLast())).to.deep.equal([
+        1,
+        null,
+        null
+      ])
     })
   })
 
@@ -115,7 +116,11 @@ describe("DC Utils", () => {
     })
 
     it("should place null values at the start of array", () => {
-      expect([null, 1, null].sort(dc.utils.nullsFirst())).to.deep.equal([null, null, 1])
+      expect([null, 1, null].sort(dc.utils.nullsFirst())).to.deep.equal([
+        null,
+        null,
+        1
+      ])
     })
   })
 

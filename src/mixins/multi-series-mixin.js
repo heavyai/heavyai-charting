@@ -1,13 +1,13 @@
-import {override} from "../core/core"
+import { override } from "../core/core"
 
 const LIMIT = 21
 const OFFSET = 0
 const TOP = 5
 const MULTI_DIMENSION_INDEX = 1
 
-function processMultiSeriesResults (results) {
+function processMultiSeriesResults(results) {
   return results.reduce(
-    (accum, {key1, key0, val}) => {
+    (accum, { key1, key0, val }) => {
       if (accum.keys[key1]) {
         accum.keys[key1] = accum.keys[key1]
       } else if (key1 === "other") {
@@ -17,7 +17,7 @@ function processMultiSeriesResults (results) {
       }
 
       if (Array.isArray(key0)) {
-        const {isExtract} = key0[0]
+        const { isExtract } = key0[0]
         const min = isExtract ? key0[0].value : key0[0].value || key0[0]
         const alias = key0[0].alias || min
 
@@ -32,7 +32,7 @@ function processMultiSeriesResults (results) {
           accum.data[accum.ranges[alias]][accum.keys[key1]] = val
         }
       } else if (typeof accum.ranges[key0] !== "number") {
-          // eslint-disable-line
+        // eslint-disable-line
         accum.data[accum.data.length] = {
           key0,
           [accum.keys[key1]]: val
@@ -52,7 +52,7 @@ function processMultiSeriesResults (results) {
   )
 }
 
-function selectWithCase (dimension, values) {
+function selectWithCase(dimension, values) {
   if (dimension.slice(0, 9) === "CASE when") {
     return dimension
   } else {
@@ -61,8 +61,8 @@ function selectWithCase (dimension, values) {
   }
 }
 
-function setDimensionsWithColumns (columns, selected) {
-  return function setDimensions (crossfilterDimensionArray) {
+function setDimensionsWithColumns(columns, selected) {
+  return function setDimensions(crossfilterDimensionArray) {
     return [
       crossfilterDimensionArray[0],
       selectWithCase(columns[MULTI_DIMENSION_INDEX], selected)
@@ -70,14 +70,14 @@ function setDimensionsWithColumns (columns, selected) {
   }
 }
 
-function flipKeys (keys) {
+function flipKeys(keys) {
   return Object.keys(keys).reduce((accum, val) => {
     accum[keys[val]] = val
     return accum
   }, {})
 }
 
-export default function multiSeriesMixin (chart) {
+export default function multiSeriesMixin(chart) {
   let columns = null
   let showOther = false
 
@@ -95,8 +95,8 @@ export default function multiSeriesMixin (chart) {
     keys: seriesMethodWithKey("keys")
   }
 
-  function seriesMethodWithKey (key) {
-    return function seriesMethod (value) {
+  function seriesMethodWithKey(key) {
+    return function seriesMethod(value) {
       if (typeof value === "undefined") {
         return series[key]
       }
@@ -137,7 +137,7 @@ export default function multiSeriesMixin (chart) {
     return showOther
   }
 
-  function dataAsync (group, callback) {
+  function dataAsync(group, callback) {
     if (chart.isMulti()) {
       return chart
         .series()
@@ -151,7 +151,12 @@ export default function multiSeriesMixin (chart) {
             .series()
             .values(topValues.map(result => result.key0))
             .selected(
-              hasSelected ? currentSelected : chart.series().values().slice(0, TOP)
+              hasSelected
+                ? currentSelected
+                : chart
+                    .series()
+                    .values()
+                    .slice(0, TOP)
             )
 
           chart
@@ -159,7 +164,10 @@ export default function multiSeriesMixin (chart) {
             .dimension()
             .set(setDimensionsWithColumns(columns, chart.series().selected()))
 
-          chart.group().dimension().multiDim(false)
+          chart
+            .group()
+            .dimension()
+            .multiDim(false)
 
           return chart
             .group()
@@ -168,7 +176,7 @@ export default function multiSeriesMixin (chart) {
               if (error) {
                 return callback(error)
               } else {
-                const {data, keys} = processMultiSeriesResults(results)
+                const { data, keys } = processMultiSeriesResults(results)
                 chart.series().keys(flipKeys(keys))
                 return callback(error, data)
               }
@@ -180,14 +188,14 @@ export default function multiSeriesMixin (chart) {
     }
   }
 
-  function emptyStackMutation () {
+  function emptyStackMutation() {
     while (chart.stack().length) {
       chart.stack().pop()
     }
   }
 
-  function addValuesWithNoKeysToKeysMutation () {
-    function valuesWithNoKeys () {
+  function addValuesWithNoKeysToKeysMutation() {
+    function valuesWithNoKeys() {
       const keys = chart.series().keys()
       const selected = chart.series().selected() || []
       const values = selected.slice()
@@ -206,23 +214,27 @@ export default function multiSeriesMixin (chart) {
     })
   }
 
-  function stackFromSelected () {
+  function stackFromSelected() {
     const keys = chart.series().keys()
-    chart.series().selected().forEach(value => {
-      const seriesName = Object.keys(keys).reduce(
-        (accum, v) => (keys[v] === value ? v : accum),
-        null
-      )
-      chart.stack(chart.group(), seriesName, d => d[seriesName])
-    })
+    chart
+      .series()
+      .selected()
+      .forEach(value => {
+        const seriesName = Object.keys(keys).reduce(
+          (accum, v) => (keys[v] === value ? v : accum),
+          null
+        )
+        chart.stack(chart.group(), seriesName, d => d[seriesName])
+      })
   }
 
-  function setUpMultiStack () {
+  function setUpMultiStack() {
     if (chart.isMulti()) {
       emptyStackMutation()
       stackFromSelected()
       if (
-        Object.keys(chart.series().keys()).length !== chart.stack().length && !chart.series().keys().other
+        Object.keys(chart.series().keys()).length !== chart.stack().length &&
+        !chart.series().keys().other
       ) {
         addValuesWithNoKeysToKeysMutation()
       }

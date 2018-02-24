@@ -1,12 +1,12 @@
-import {decrementSampledCount, incrementSampledCount} from "../core/core"
-import {lastFilteredSize} from "../core/core-async"
+import { decrementSampledCount, incrementSampledCount } from "../core/core"
+import { lastFilteredSize } from "../core/core-async"
 import {
   adjustOpacity,
   adjustRGBAOpacity,
   createRasterLayerGetterSetter,
   createVegaAttrMixin
 } from "../utils/utils-vega"
-import {parser} from "../utils/utils"
+import { parser } from "../utils/utils"
 import * as d3 from "d3"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
@@ -14,26 +14,26 @@ const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
 
-function validSymbol (type) {
+function validSymbol(type) {
   switch (type) {
-  case "circle":
-  case "cross":
-  case "diamond":
-  case "hexagon":
-  case "square":
-  case "triangle-down":
-  case "triangle-left":
-  case "triangle-right":
-  case "triangle-up":
-  case "hexagon-vert":
-  case "hexagon-horiz":
-    return true
-  default:
-    return false
+    case "circle":
+    case "cross":
+    case "diamond":
+    case "hexagon":
+    case "square":
+    case "triangle-down":
+    case "triangle-left":
+    case "triangle-right":
+    case "triangle-up":
+    case "hexagon-vert":
+    case "hexagon-horiz":
+      return true
+    default:
+      return false
   }
 }
 
-function getMarkType (config = {point: {}}) {
+function getMarkType(config = { point: {} }) {
   if (validSymbol(config.point.shape)) {
     return config.point.shape
   } else {
@@ -41,7 +41,13 @@ function getMarkType (config = {point: {}}) {
   }
 }
 
-function getSizing (sizeAttr, cap, lastFilteredSize = cap, pixelRatio, layerName) {
+function getSizing(
+  sizeAttr,
+  cap,
+  lastFilteredSize = cap,
+  pixelRatio,
+  layerName
+) {
   if (typeof sizeAttr === "number") {
     return sizeAttr
   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
@@ -55,7 +61,9 @@ function getSizing (sizeAttr, cap, lastFilteredSize = cap, pixelRatio, layerName
       .sqrt()
       .domain(AUTOSIZE_DOMAIN_DEFAULTS)
       .range(
-        size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM ? AUTOSIZE_RANGE_MININUM : AUTOSIZE_RANGE_DEFAULTS
+        size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM
+          ? AUTOSIZE_RANGE_MININUM
+          : AUTOSIZE_RANGE_DEFAULTS
       )
       .clamp(true)
     return Math.round(dynamicRScale(size) * pixelRatio)
@@ -64,14 +72,15 @@ function getSizing (sizeAttr, cap, lastFilteredSize = cap, pixelRatio, layerName
   }
 }
 
-function getColor (color, layerName) {
+function getColor(color, layerName) {
   if (typeof color === "object" && color.type === "density") {
     return {
       scale: layerName + "_fillColor",
       value: 0
     }
   } else if (
-    typeof color === "object" && (color.type === "ordinal" || color.type === "quantitative")
+    typeof color === "object" &&
+    (color.type === "ordinal" || color.type === "quantitative")
   ) {
     return {
       scale: layerName + "_fillColor",
@@ -84,16 +93,20 @@ function getColor (color, layerName) {
   }
 }
 
-function getTransforms (
+function getTransforms(
   table,
   filter,
   globalFilter,
-  {transform, encoding: {x, y, size, color}},
+  { transform, encoding: { x, y, size, color } },
   lastFilteredSize
 ) {
   const transforms = []
 
-  if (typeof transform === "object" && typeof transform.groupby === "object" && transform.groupby.length) {
+  if (
+    typeof transform === "object" &&
+    typeof transform.groupby === "object" &&
+    transform.groupby.length
+  ) {
     const fields = [x.field, y.field]
     const alias = ["x", "y"]
     const ops = [x.aggregate, y.aggregate]
@@ -105,7 +118,8 @@ function getTransforms (
     }
 
     if (
-      typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
+      typeof color === "object" &&
+      (color.type === "quantitative" || color.type === "ordinal")
     ) {
       fields.push(color.field)
       alias.push("color")
@@ -123,7 +137,6 @@ function getTransforms (
         as: `key${i}`
       }))
     })
-
   } else {
     transforms.push({
       type: "project",
@@ -160,7 +173,8 @@ function getTransforms (
     }
 
     if (
-      typeof color === "object" && (color.type === "quantitative" || color.type === "ordinal")
+      typeof color === "object" &&
+      (color.type === "quantitative" || color.type === "ordinal")
     ) {
       transforms.push({
         type: "project",
@@ -174,7 +188,6 @@ function getTransforms (
       expr: `${table}.rowid`
     })
   }
-
 
   if (typeof filter === "string" && filter.length) {
     transforms.push({
@@ -193,7 +206,7 @@ function getTransforms (
   return transforms
 }
 
-function getScales ({size, color}, layerName) {
+function getScales({ size, color }, layerName) {
   const scales = []
 
   if (typeof size === "object" && size.type === "quantitative") {
@@ -249,14 +262,13 @@ function getScales ({size, color}, layerName) {
     })
   }
 
-
   return scales
 }
 
-export default function rasterLayerPointMixin (_layer) {
+export default function rasterLayerPointMixin(_layer) {
   let state = null
 
-  _layer.setState = function (setter) {
+  _layer.setState = function(setter) {
     if (typeof setter === "function") {
       state = setter(state)
     } else {
@@ -270,11 +282,11 @@ export default function rasterLayerPointMixin (_layer) {
     return _layer
   }
 
-  _layer.getState = function () {
+  _layer.getState = function() {
     return state
   }
 
-  _layer.getProjections = function () {
+  _layer.getProjections = function() {
     return getTransforms(
       "",
       "",
@@ -286,11 +298,11 @@ export default function rasterLayerPointMixin (_layer) {
         transform =>
           transform.type === "project" && transform.hasOwnProperty("as")
       )
-      .map(projection => parser.parseTransform({select: []}, projection))
+      .map(projection => parser.parseTransform({ select: [] }, projection))
       .map(sql => sql.select[0])
   }
 
-  _layer.__genVega = function ({
+  _layer.__genVega = function({
     table,
     filter,
     lastFilteredSize,
@@ -298,7 +310,6 @@ export default function rasterLayerPointMixin (_layer) {
     pixelRatio,
     layerName
   }) {
-
     const size = getSizing(
       state.encoding.size,
       state.transform && state.transform.limit,
@@ -315,7 +326,13 @@ export default function rasterLayerPointMixin (_layer) {
         sql: parser.writeSQL({
           type: "root",
           source: table,
-          transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+          transform: getTransforms(
+            table,
+            filter,
+            globalFilter,
+            state,
+            lastFilteredSize
+          )
         })
       },
       scales: getScales(state.encoding, layerName),
@@ -324,32 +341,39 @@ export default function rasterLayerPointMixin (_layer) {
         from: {
           data: layerName
         },
-        properties: Object.assign({}, markType === "circle" ? {
-          x: {
-            scale: "x",
-            field: "x"
-          },
-          y: {
-            scale: "y",
-            field: "y"
-          },
-          fillColor: getColor(state.encoding.color, layerName)
-        } :
-        {
-          xc: {
-            scale: "x",
-            field: "x"
-          },
-          yc: {
-            scale: "y",
-            field: "y"
-          },
-          fillColor: getColor(state.encoding.color, layerName)
-        }, markType === "circle" ? { size } : {
-          shape: markType,
-          width: size,
-          height: size
-        })
+        properties: Object.assign(
+          {},
+          markType === "circle"
+            ? {
+                x: {
+                  scale: "x",
+                  field: "x"
+                },
+                y: {
+                  scale: "y",
+                  field: "y"
+                },
+                fillColor: getColor(state.encoding.color, layerName)
+              }
+            : {
+                xc: {
+                  scale: "x",
+                  field: "x"
+                },
+                yc: {
+                  scale: "y",
+                  field: "y"
+                },
+                fillColor: getColor(state.encoding.color, layerName)
+              },
+          markType === "circle"
+            ? { size }
+            : {
+                shape: markType,
+                width: size,
+                height: size
+              }
+        )
       }
     }
   }
@@ -375,7 +399,7 @@ export default function rasterLayerPointMixin (_layer) {
   const _minMaxCache = {}
   let _cf = null
 
-  _layer.crossfilter = function (cf) {
+  _layer.crossfilter = function(cf) {
     if (!arguments.length) {
       return _cf
     }
@@ -383,11 +407,11 @@ export default function rasterLayerPointMixin (_layer) {
     return _layer
   }
 
-  _layer._requiresCap = function () {
+  _layer._requiresCap = function() {
     return false
   }
 
-  _layer.xRangeFilter = function (range) {
+  _layer.xRangeFilter = function(range) {
     if (!_layer.xDim()) {
       throw new Error("Must set layer's xDim before invoking xRange")
     }
@@ -402,7 +426,7 @@ export default function rasterLayerPointMixin (_layer) {
     return _layer
   }
 
-  _layer.yRangeFilter = function (range) {
+  _layer.yRangeFilter = function(range) {
     if (!_layer.yDim()) {
       throw new Error("Must set layer's yDim before invoking yRange")
     }
@@ -417,7 +441,7 @@ export default function rasterLayerPointMixin (_layer) {
     return _layer
   }
 
-  _layer._genVega = function (chart, layerName, group, query) {
+  _layer._genVega = function(chart, layerName, group, query) {
     _vega = _layer.__genVega({
       layerName,
       table: _layer.crossfilter().getTable()[0],
@@ -430,9 +454,18 @@ export default function rasterLayerPointMixin (_layer) {
     return _vega
   }
 
-  const renderAttributes = ["x", "y", "xc", "yc", "size", "width", "height", "fillColor"]
+  const renderAttributes = [
+    "x",
+    "y",
+    "xc",
+    "yc",
+    "size",
+    "width",
+    "height",
+    "fillColor"
+  ]
 
-  _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
+  _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
     if (_vega && _vega.mark && _vega.mark.properties) {
       renderAttributes.forEach(prop => {
         _layer._addQueryDrivenRenderPropToSet(
@@ -444,7 +477,7 @@ export default function rasterLayerPointMixin (_layer) {
     }
   }
 
-  _layer._areResultsValidForPopup = function (results) {
+  _layer._areResultsValidForPopup = function(results) {
     if (typeof results.x === "undefined" || typeof results.y === "undefined") {
       return false
     } else {
@@ -452,7 +485,7 @@ export default function rasterLayerPointMixin (_layer) {
     }
   }
 
-  _layer._displayPopup = function (
+  _layer._displayPopup = function(
     chart,
     parentElem,
     data,
@@ -470,7 +503,9 @@ export default function rasterLayerPointMixin (_layer) {
       const propObj = _vega.mark.properties
       renderAttributes.forEach(prop => {
         if (
-          typeof propObj[prop] === "object" && propObj[prop].field && typeof propObj[prop].field === "string"
+          typeof propObj[prop] === "object" &&
+          propObj[prop].field &&
+          typeof propObj[prop].field === "string"
         ) {
           rndrProps[prop] = propObj[prop].field
           queryRndrProps.add(propObj[prop].field)
@@ -479,9 +514,11 @@ export default function rasterLayerPointMixin (_layer) {
     }
 
     const xPixel = xscale(data[rndrProps.xc || rndrProps.x]) + margins.left
-    const yPixel = height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top
+    const yPixel =
+      height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top
 
-    let sizeFromData = data[rndrProps.size || rndrProps.width || rndrProps.height]
+    let sizeFromData =
+      data[rndrProps.size || rndrProps.width || rndrProps.height]
     sizeFromData = Math.max(sizeFromData, 1) // size must be > 0 (#164)
     let dotSize = _layer.getSizeVal(sizeFromData)
 
@@ -507,7 +544,7 @@ export default function rasterLayerPointMixin (_layer) {
     const pointDiv = wrapDiv
       .append("div")
       .attr("class", _point_class)
-      .style({left: xPixel + "px", top: yPixel + "px"})
+      .style({ left: xPixel + "px", top: yPixel + "px" })
 
     if (animate) {
       if (isScaled) {
@@ -545,7 +582,7 @@ export default function rasterLayerPointMixin (_layer) {
     }
   }
 
-  _layer._hidePopup = function (chart, hideCallback) {
+  _layer._hidePopup = function(chart, hideCallback) {
     const mapPoint = chart.select("." + _point_class)
     if (mapPoint) {
       if (_scaledPopups[chart]) {
@@ -564,7 +601,7 @@ export default function rasterLayerPointMixin (_layer) {
     }
   }
 
-  _layer._destroyLayer = function (chart) {
+  _layer._destroyLayer = function(chart) {
     const xDim = _layer.xDim()
     if (xDim) {
       xDim.dispose()

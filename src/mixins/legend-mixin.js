@@ -1,12 +1,11 @@
 import d3 from "d3"
-import {override} from "../../src/core/core"
+import { override } from "../../src/core/core"
 
 const PERCENTAGE = 100.0
 const LOWER_THAN_START_RANGE = 1000
 
-export default function legendMixin (chart) {
-  chart.legendablesContinuous = function () {
-
+export default function legendMixin(chart) {
+  chart.legendablesContinuous = function() {
     const legends = []
     const colorDomain = chart.colors().domain()
 
@@ -16,7 +15,7 @@ export default function legendMixin (chart) {
     const commafy = d3.format(",")
 
     for (let c = 0; c < numColors; c++) {
-      let startRange = (c / numColors) * colorDomainSize + colorDomain[0]
+      let startRange = c / numColors * colorDomainSize + colorDomain[0]
 
       if (chart.isTargeting()) {
         startRange = "%" + (parseFloat(startRange) * PERCENTAGE).toFixed(2)
@@ -24,7 +23,10 @@ export default function legendMixin (chart) {
         startRange = parseInt(startRange) // eslint-disable-line radix
       } else {
         startRange = parseFloat(startRange).toFixed(2)
-        startRange = (startRange >= LOWER_THAN_START_RANGE ? Math.round(startRange) : startRange)
+        startRange =
+          startRange >= LOWER_THAN_START_RANGE
+            ? Math.round(startRange)
+            : startRange
       }
 
       let color = null
@@ -44,10 +46,7 @@ export default function legendMixin (chart) {
     return legends
   }
 
-  const legend_events = [
-    "clearCustomContLegend",
-    "setCustomContLegend"
-  ]
+  const legend_events = ["clearCustomContLegend", "setCustomContLegend"]
 
   const legend_listeners = d3.dispatch(...legend_events)
 
@@ -62,11 +61,11 @@ export default function legendMixin (chart) {
     return chart
   })
 
-  chart._invokeClearCustomContLegendListener = function () {
+  chart._invokeClearCustomContLegendListener = function() {
     legend_listeners.clearCustomContLegend(chart)
   }
 
-  chart._invokeSetCustomContLegendListener = function (f) {
+  chart._invokeSetCustomContLegendListener = function(f) {
     legend_listeners.setCustomContLegend(chart, f)
   }
 

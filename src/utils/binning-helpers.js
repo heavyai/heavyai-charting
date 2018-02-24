@@ -40,33 +40,36 @@ export const TIME_SPANS = TIME_LABELS.map(label => ({
 }))
 
 export const BIN_INPUT_OPTIONS = [
-  {val: "auto", label: "auto", numSeconds: null},
-  {val: "century", label: "1c", numSeconds: 3153600000},
-  {val: "decade", label: "10y", numSeconds: 315360000},
-  {val: "year", label: "1y", numSeconds: 31536000},
-  {val: "quarter", label: "1q", numSeconds: 10368000},
-  {val: "month", label: "1mo", numSeconds: 2592000},
-  {val: "week", label: "1w", numSeconds: 604800},
-  {val: "day", label: "1d", numSeconds: 86400},
-  {val: "hour", label: "1h", numSeconds: 3600},
-  {val: "minute", label: "1m", numSeconds: 60},
-  {val: "second", label: "1s", numSeconds: 1}
+  { val: "auto", label: "auto", numSeconds: null },
+  { val: "century", label: "1c", numSeconds: 3153600000 },
+  { val: "decade", label: "10y", numSeconds: 315360000 },
+  { val: "year", label: "1y", numSeconds: 31536000 },
+  { val: "quarter", label: "1q", numSeconds: 10368000 },
+  { val: "month", label: "1mo", numSeconds: 2592000 },
+  { val: "week", label: "1w", numSeconds: 604800 },
+  { val: "day", label: "1d", numSeconds: 86400 },
+  { val: "hour", label: "1h", numSeconds: 3600 },
+  { val: "minute", label: "1m", numSeconds: 60 },
+  { val: "second", label: "1s", numSeconds: 1 }
 ]
 
-export function autoBinParams (timeBounds, maxNumBins, reverse) {
-  const epochTimeBounds = [(timeBounds[0] * 0.001), (timeBounds[1] * 0.001)]
+export function autoBinParams(timeBounds, maxNumBins, reverse) {
+  const epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001]
   const timeRange = epochTimeBounds[1] - epochTimeBounds[0] // in seconds
   const timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS
   for (let s = 0; s < timeSpans.length; s++) {
-    if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
+    if (
+      timeRange / timeSpans[s].numSeconds < maxNumBins &&
+      timeRange / timeSpans[s].numSeconds > 2
+    ) {
       return timeSpans[s].label
     }
   }
   return "century" // default;
 }
 
-export function checkIfTimeBinInRange (timeBounds, timeBin, maxNumBins) {
-  const epochTimeBounds = [(timeBounds[0] * 0.001), (timeBounds[1] * 0.001)]
+export function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
+  const epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001]
   const timeRange = epochTimeBounds[1] - epochTimeBounds[0] // in seconds
   const timeLabelToSecs = TIME_LABEL_TO_SECS
   if (timeRange / timeLabelToSecs[timeBin] > maxNumBins) {
@@ -85,16 +88,18 @@ export const createBinParams = (chart, binParams) => {
 
   binParams = Array.isArray(binParams) ? binParams : [binParams]
 
-  const parsedBinParams = binParams.map((param) => {
+  const parsedBinParams = binParams.map(param => {
     if (param) {
-      const {timeBin = "auto", binBounds, numBins} = param
+      const { timeBin = "auto", binBounds, numBins } = param
       const extract = param.extract || false
       const isDate = binBounds[0] instanceof Date
       if (isDate && timeBin === "auto") {
         const bounds = binBounds.map(date => date.getTime())
         return Object.assign({}, param, {
           extract,
-          timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
+          timeBin: extract
+            ? DEFAULT_EXTRACT_INTERVAL
+            : autoBinParams(bounds, numBins),
           binBounds: binBounds.slice(),
           auto: true // hightlights the "auto" UI button
         })

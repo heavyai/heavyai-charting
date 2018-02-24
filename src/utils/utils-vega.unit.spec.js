@@ -1,15 +1,16 @@
 /* eslint-disable */
 
 import * as VegaUtils from "./utils-vega"
-import {expect} from "chai"
+import { expect } from "chai"
 
 describe("Vega Utils", () => {
-
   describe("All Utils", () => {
     it("should have all the necessary exports", () => {
       expect(typeof VegaUtils.notNull).to.equal("function")
       expect(typeof VegaUtils.createVegaAttrMixin).to.equal("function")
-      expect(typeof VegaUtils.createRasterLayerGetterSetter).to.equal("function")
+      expect(typeof VegaUtils.createRasterLayerGetterSetter).to.equal(
+        "function"
+      )
     })
   })
 

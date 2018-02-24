@@ -1,4 +1,4 @@
-import {normalizeFiltersArray} from "../utils/formatting-helpers"
+import { normalizeFiltersArray } from "../utils/formatting-helpers"
 
 /**
  * The dc.js filters are functions which are passed into crossfilter to chose which records will be
@@ -34,9 +34,9 @@ export const filters = {}
  * @return {Array<Number>}
  * @constructor
  */
-filters.RangedFilter = function (low, high) {
+filters.RangedFilter = function(low, high) {
   const range = new Array(low, high)
-  range.isFiltered = function (value) {
+  range.isFiltered = function(value) {
     return value >= this[0] && value <= this[1]
   }
   range.filterType = "RangedFilter"
@@ -56,13 +56,22 @@ filters.RangedFilter = function (low, high) {
  * @return {Array<Number>}
  * @constructor
  */
-filters.TwoDimensionalFilter = function (filter = []) {
-  if (filter === null) { return null }
-  if (filter === Symbol.for("clear")) { return filter }
+filters.TwoDimensionalFilter = function(filter = []) {
+  if (filter === null) {
+    return null
+  }
+  if (filter === Symbol.for("clear")) {
+    return filter
+  }
 
   const f = normalizeFiltersArray(filter)
-  f.isFiltered = function (value) {
-    return value.length && value.length === f.length && value[0] === f[0] && value[1] === f[1]
+  f.isFiltered = function(value) {
+    return (
+      value.length &&
+      value.length === f.length &&
+      value[0] === f[0] &&
+      value[1] === f[1]
+    )
   }
   f.filterType = "TwoDimensionalFilter"
 
@@ -88,23 +97,33 @@ filters.TwoDimensionalFilter = function (filter = []) {
  * @return {Array<Array<Number>>}
  * @constructor
  */
-filters.RangedTwoDimensionalFilter = function (filter) {
-  if (filter === null) { return null }
-  if (filter === Symbol.for("clear")) { return filter }
+filters.RangedTwoDimensionalFilter = function(filter) {
+  if (filter === null) {
+    return null
+  }
+  if (filter === Symbol.for("clear")) {
+    return filter
+  }
 
   const f = filter
   let fromBottomLeft
 
   if (f[0] instanceof Array) {
     fromBottomLeft = [
-            [Math.min(filter[0][0], filter[1][0]), Math.min(filter[0][1], filter[1][1])],
-            [Math.max(filter[0][0], filter[1][0]), Math.max(filter[0][1], filter[1][1])]
+      [
+        Math.min(filter[0][0], filter[1][0]),
+        Math.min(filter[0][1], filter[1][1])
+      ],
+      [
+        Math.max(filter[0][0], filter[1][0]),
+        Math.max(filter[0][1], filter[1][1])
+      ]
     ]
   } else {
     fromBottomLeft = [[filter[0], -Infinity], [filter[1], Infinity]]
   }
 
-  f.isFiltered = function (value) {
+  f.isFiltered = function(value) {
     let x, y
 
     if (value instanceof Array) {
@@ -118,7 +137,12 @@ filters.RangedTwoDimensionalFilter = function (filter) {
       y = fromBottomLeft[0][1]
     }
 
-    return x >= fromBottomLeft[0][0] && x < fromBottomLeft[1][0] && y >= fromBottomLeft[0][1] && y < fromBottomLeft[1][1]
+    return (
+      x >= fromBottomLeft[0][0] &&
+      x < fromBottomLeft[1][0] &&
+      y >= fromBottomLeft[0][1] &&
+      y < fromBottomLeft[1][1]
+    )
   }
   f.filterType = "RangedTwoDimensionalFilter"
 

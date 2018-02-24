@@ -1,5 +1,5 @@
 import * as Helpers from "./formatting-helpers"
-import {expect} from "chai"
+import { expect } from "chai"
 
 describe("Formatting Helpers", () => {
   describe("isPlainObject", () => {
@@ -31,11 +31,16 @@ describe("Formatting Helpers", () => {
   })
   describe("normalizeArrayByValue", () => {
     it("should map value property of a collection object", () => {
-      expect(Helpers.normalizeArrayByValue([{value: 1}, {value: 2}])).to.deep.equal([1, 2])
+      expect(
+        Helpers.normalizeArrayByValue([{ value: 1 }, { value: 2 }])
+      ).to.deep.equal([1, 2])
     })
     it("should return the collection if it isn't a collection of objects", () => {
       const collection = [new Date(1), new Date(2)]
-      expect(Helpers.normalizeArrayByValue(collection)).to.deep.equal([new Date(1), new Date(2)])
+      expect(Helpers.normalizeArrayByValue(collection)).to.deep.equal([
+        new Date(1),
+        new Date(2)
+      ])
     })
   })
   describe("formatNumber", () => {
@@ -51,45 +56,77 @@ describe("Formatting Helpers", () => {
       expect(Helpers.formatDataValue(10000)).to.equal("10,000")
     })
     it("should format dates", () => {
-      expect(Helpers.formatDataValue(new Date(Date.UTC(2001, 0, 1)))).to.equal("Jan 1, 2001  00:00:00")
+      expect(Helpers.formatDataValue(new Date(Date.UTC(2001, 0, 1)))).to.equal(
+        "Jan 1, 2001  00:00:00"
+      )
     })
     it("should format strings", () => {
       expect(Helpers.formatDataValue("TEST")).to.equal("TEST")
     })
     it("should format null value", () => {
-      expect(Helpers.formatDataValue(null)).to.equal("<tspan class=\"null-value\"> NULL </tspan>")
+      expect(Helpers.formatDataValue(null)).to.equal(
+        '<tspan class="null-value"> NULL </tspan>'
+      )
     })
   })
   describe("maybeFormatInfinity", () => {
-    const valList = [
-      {val: 100},
-      {val: "-Infinity"},
-      {val: "Infinity"}
-    ]
+    const valList = [{ val: 100 }, { val: "-Infinity" }, { val: "Infinity" }]
 
     it("should do nothing to numbers", () => {
       expect(Helpers.maybeFormatInfinity(valList)[0]).to.deep.equal(valList[0])
     })
     it("should handle '-Infinity'", () => {
-      expect(Helpers.maybeFormatInfinity(valList)[1]).to.deep.equal({val: 0, label: "-Infinity"})
+      expect(Helpers.maybeFormatInfinity(valList)[1]).to.deep.equal({
+        val: 0,
+        label: "-Infinity"
+      })
     })
     it("should handle Infinity", () => {
-      expect(Helpers.maybeFormatInfinity(valList)[2]).to.deep.equal({val: 0, label: "Infinity"})
+      expect(Helpers.maybeFormatInfinity(valList)[2]).to.deep.equal({
+        val: 0,
+        label: "Infinity"
+      })
     })
   })
   describe("formatDataValue", () => {
     it("should format results with object collections", () => {
-      expect(Helpers.formatDataValue([
-        {alias: "July", value: 7, timeBin: "month", isExtract: true, extractUnit: "month"},
-        {alias: "August", value: 8, timeBin: "month", isExtract: true, extractUnit: "month"}
-      ])).to.equal("Jul")
-      expect(Helpers.formatDataValue([
-        {alias: "July", value: new Date(Date.UTC(2016, 10, 1)), timeBin: "month"},
-        {alias: "August", value: new Date(Date.UTC(2016, 10, 1)), timeBin: "month"}
-      ])).to.equal("Nov 2016")
+      expect(
+        Helpers.formatDataValue([
+          {
+            alias: "July",
+            value: 7,
+            timeBin: "month",
+            isExtract: true,
+            extractUnit: "month"
+          },
+          {
+            alias: "August",
+            value: 8,
+            timeBin: "month",
+            isExtract: true,
+            extractUnit: "month"
+          }
+        ])
+      ).to.equal("Jul")
+      expect(
+        Helpers.formatDataValue([
+          {
+            alias: "July",
+            value: new Date(Date.UTC(2016, 10, 1)),
+            timeBin: "month"
+          },
+          {
+            alias: "August",
+            value: new Date(Date.UTC(2016, 10, 1)),
+            timeBin: "month"
+          }
+        ])
+      ).to.equal("Nov 2016")
     })
     it("should format results with non-object collections", () => {
-      expect(Helpers.formatDataValue([10000, 20000])).to.equal("10,000 \u2013 20,000")
+      expect(Helpers.formatDataValue([10000, 20000])).to.equal(
+        "10,000 \u2013 20,000"
+      )
     })
     it("shoud format other formats", () => {
       expect(Helpers.formatDataValue("ATL")).to.equal("ATL")
@@ -98,38 +135,40 @@ describe("Formatting Helpers", () => {
 
   describe("formatTimeBinValue", () => {
     const decade = [
-      {value: new Date(Date.UTC(2001, 0, 1)), timeBin: "decade"},
-      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "decade"}
+      { value: new Date(Date.UTC(2001, 0, 1)), timeBin: "decade" },
+      { value: new Date(Date.UTC(2010, 11, 31)), timeBin: "decade" }
     ]
     const year = [
-      {value: new Date(Date.UTC(2001, 0, 1)), timeBin: "year"},
-      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "year"}
+      { value: new Date(Date.UTC(2001, 0, 1)), timeBin: "year" },
+      { value: new Date(Date.UTC(2010, 11, 31)), timeBin: "year" }
     ]
     const quarter = [
-      {value: new Date(Date.UTC(2001, 0, 1)), timeBin: "quarter"},
-      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "quarter"}
+      { value: new Date(Date.UTC(2001, 0, 1)), timeBin: "quarter" },
+      { value: new Date(Date.UTC(2010, 11, 31)), timeBin: "quarter" }
     ]
     const week = [
-      {value: new Date(Date.UTC(2001, 0, 1)), timeBin: "week"},
-      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "week"}
+      { value: new Date(Date.UTC(2001, 0, 1)), timeBin: "week" },
+      { value: new Date(Date.UTC(2010, 11, 31)), timeBin: "week" }
     ]
     const month = [
-      {value: new Date(Date.UTC(2010, 11, 1)), timeBin: "month"},
-      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "month"}
+      { value: new Date(Date.UTC(2010, 11, 1)), timeBin: "month" },
+      { value: new Date(Date.UTC(2010, 11, 31)), timeBin: "month" }
     ]
 
     const day = [
-      {value: new Date(Date.UTC(2010, 11, 12)), timeBin: "day"},
-      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "day"}
+      { value: new Date(Date.UTC(2010, 11, 12)), timeBin: "day" },
+      { value: new Date(Date.UTC(2010, 11, 31)), timeBin: "day" }
     ]
 
     const minute = [
-      {value: new Date(Date.UTC(2010, 11, 12)), timeBin: "minute"},
-      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "minute"}
+      { value: new Date(Date.UTC(2010, 11, 12)), timeBin: "minute" },
+      { value: new Date(Date.UTC(2010, 11, 31)), timeBin: "minute" }
     ]
 
     it("should format decade correctly", () => {
-      expect(Helpers.formatTimeBinValue(decade, "decade")).to.equal("2001 \u2013 2010")
+      expect(Helpers.formatTimeBinValue(decade, "decade")).to.equal(
+        "2001 \u2013 2010"
+      )
     })
 
     it("should format year correctly", () => {
@@ -141,7 +180,9 @@ describe("Formatting Helpers", () => {
     })
 
     it("should format week correctly", () => {
-      expect(Helpers.formatTimeBinValue(week, "week")).to.equal("Jan 1 \u2013 Dec 31, 2010")
+      expect(Helpers.formatTimeBinValue(week, "week")).to.equal(
+        "Jan 1 \u2013 Dec 31, 2010"
+      )
     })
 
     it("should format month correctly", () => {
@@ -153,7 +194,9 @@ describe("Formatting Helpers", () => {
     })
 
     it("should format minute correctly", () => {
-      expect(Helpers.formatTimeBinValue(minute, "minute")).to.equal("Dec 12, 2010  00:00")
+      expect(Helpers.formatTimeBinValue(minute, "minute")).to.equal(
+        "Dec 12, 2010  00:00"
+      )
     })
   })
 
@@ -184,8 +227,8 @@ describe("Formatting Helpers", () => {
 
   describe("formatArrayValue", () => {
     const month = [
-      {value: new Date(Date.UTC(2010, 11, 1)), timeBin: "month"},
-      {value: new Date(Date.UTC(2010, 11, 31)), timeBin: "month"}
+      { value: new Date(Date.UTC(2010, 11, 1)), timeBin: "month" },
+      { value: new Date(Date.UTC(2010, 11, 31)), timeBin: "month" }
     ]
 
     const data = [2.33333, 10.25343]
@@ -197,6 +240,5 @@ describe("Formatting Helpers", () => {
     it("should format number array", () => {
       expect(Helpers.formatArrayValue(data)).to.equal("2.33 – 10.25")
     })
-
   })
 })

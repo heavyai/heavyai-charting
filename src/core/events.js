@@ -21,7 +21,7 @@ export const events = {
  * @param {Function} closure
  * @param {Number} [delay]
  */
-events.trigger = function (closure, delay) {
+events.trigger = function(closure, delay) {
   if (!delay) {
     closure()
     return

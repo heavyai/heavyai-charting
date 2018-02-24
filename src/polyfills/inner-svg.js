@@ -1,12 +1,19 @@
-(function () {
+(function() {
   /* istanbul ignore next */
   if (window.SVGElement) {
-    var serializeXML = function (node, output) {
+    var serializeXML = function(node, output) {
       const nodeType = node.nodeType
-      if (nodeType == 3) { // TEXT nodes.
+      if (nodeType == 3) {
+        // TEXT nodes.
         // Replace special XML characters with their entities.
-        output.push(node.textContent.replace(/&/, "&amp;").replace(/</, "&lt;").replace(">", "&gt;"))
-      } else if (nodeType == 1) { // ELEMENT nodes.
+        output.push(
+          node.textContent
+            .replace(/&/, "&amp;")
+            .replace(/</, "&lt;")
+            .replace(">", "&gt;")
+        )
+      } else if (nodeType == 1) {
+        // ELEMENT nodes.
         // Serialize Element nodes.
         output.push("<", node.tagName)
         if (node.hasAttributes()) {
@@ -38,7 +45,7 @@
     }
     // The innerHTML DOM property for SVGElement.
     Object.defineProperty(SVGElement.prototype, "innerHTML", {
-      get () {
+      get() {
         const output = []
         let childNode = this.firstChild
         while (childNode) {
@@ -47,7 +54,7 @@
         }
         return output.join("")
       },
-      set (markupText) {
+      set(markupText) {
         // Wipe out the current contents of the element.
         while (this.firstChild) {
           this.removeChild(this.firstChild)
@@ -58,7 +65,8 @@
           // var dXML = new DOMParser();
           // dXML.async = false;
           // Wrap the markup into a SVG node to ensure parsing works.
-          markupText = "<svg xmlns='http://www.w3.org/2000/svg'>" + markupText + "</svg>"
+          markupText =
+            "<svg xmlns='http://www.w3.org/2000/svg'>" + markupText + "</svg>"
 
           const divContainer = document.createElement("div")
           divContainer.innerHTML = markupText
@@ -77,10 +85,10 @@
 
     // The innerSVG DOM property for SVGElement.
     Object.defineProperty(SVGElement.prototype, "innerSVG", {
-      get () {
+      get() {
         return this.innerHTML
       },
-      set (markupText) {
+      set(markupText) {
         this.innerHTML = markupText
       }
     })

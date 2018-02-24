@@ -3,7 +3,7 @@ export const logger = {}
 logger.enableDebugLog = false
 
 /* istanbul ignore next */
-logger.warn = function (msg) {
+logger.warn = function(msg) {
   if (console) {
     if (console.warn) {
       console.warn(msg)
@@ -16,7 +16,7 @@ logger.warn = function (msg) {
 }
 
 /* istanbul ignore next */
-logger.debug = function (msg) {
+logger.debug = function(msg) {
   if (logger.enableDebugLog && console) {
     if (console.debug) {
       console.debug(msg)
@@ -29,10 +29,10 @@ logger.debug = function (msg) {
 }
 
 /* istanbul ignore next */
-logger.deprecate = function (fn, msg) {
-    // Allow logging of deprecation
+logger.deprecate = function(fn, msg) {
+  // Allow logging of deprecation
   let warned = false
-  function deprecated () {
+  function deprecated() {
     if (!warned) {
       logger.warn(msg)
       warned = true

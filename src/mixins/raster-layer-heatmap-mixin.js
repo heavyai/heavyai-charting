@@ -1,35 +1,41 @@
-import {adjustOpacity, createRasterLayerGetterSetter} from "../utils/utils-vega"
-import {parser} from "../utils/utils"
+import {
+  adjustOpacity,
+  createRasterLayerGetterSetter
+} from "../utils/utils-vega"
+import { parser } from "../utils/utils"
 
 const MIN_AREA_IN_METERS = 30
 const EARTH_DIAMETER = 40075000
 
-function getPixelSize (neLat, width, zoom) {
+function getPixelSize(neLat, width, zoom) {
   return Math.max(
-    MIN_AREA_IN_METERS / (EARTH_DIAMETER * Math.cos(neLat * Math.PI / 180) / (width * Math.pow(2, zoom))),
+    MIN_AREA_IN_METERS /
+      (EARTH_DIAMETER *
+        Math.cos(neLat * Math.PI / 180) /
+        (width * Math.pow(2, zoom))),
     1.0
   )
 }
 
-function getMarkHeight (type, width) {
+function getMarkHeight(type, width) {
   switch (type) {
-  case "hex":
-    return 2 * width / Math.sqrt(3.0)
-  default:
-    return width
+    case "hex":
+      return 2 * width / Math.sqrt(3.0)
+    default:
+      return width
   }
 }
 
-function getMarkType (type) {
+function getMarkType(type) {
   switch (type) {
-  case "hex":
-    return "hexagon-horiz"
-  default:
-    return type
+    case "hex":
+      return "hexagon-horiz"
+    default:
+      return type
   }
 }
 
-export default function rasterLayerHeatmapMixin (_layer) {
+export default function rasterLayerHeatmapMixin(_layer) {
   let state = {}
 
   _layer.type = "heatmap"
@@ -41,7 +47,7 @@ export default function rasterLayerHeatmapMixin (_layer) {
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
   _layer._mandatoryAttributes([])
 
-  _layer.setState = function (setterOrState) {
+  _layer.setState = function(setterOrState) {
     if (typeof setterOrState === "function") {
       state = setterOrState(state)
     } else {
@@ -49,12 +55,15 @@ export default function rasterLayerHeatmapMixin (_layer) {
     }
   }
 
-  _layer.getState = function () {
+  _layer.getState = function() {
     return JSON.parse(JSON.stringify(state))
   }
 
-  function getMarkSize ({width, neLat, zoom}) {
-    const pixelSize = state.encoding.size.type === "manual" ? state.encoding.size.value : getPixelSize(neLat, width, zoom)
+  function getMarkSize({ width, neLat, zoom }) {
+    const pixelSize =
+      state.encoding.size.type === "manual"
+        ? state.encoding.size.value
+        : getPixelSize(neLat, width, zoom)
     const numBinsX = Math.round(width / pixelSize)
     const markWidth = width / numBinsX
     const markHeight = getMarkHeight(state.mark, markWidth)
@@ -64,8 +73,24 @@ export default function rasterLayerHeatmapMixin (_layer) {
     }
   }
 
-  _layer.genSQL = function ({table, width, height, min, max, filter, globalFilter, neLat, zoom, domain}) {
-    const {markWidth, markHeight} = getMarkSize({width, neLat, zoom, domain})
+  _layer.genSQL = function({
+    table,
+    width,
+    height,
+    min,
+    max,
+    filter,
+    globalFilter,
+    neLat,
+    zoom,
+    domain
+  }) {
+    const { markWidth, markHeight } = getMarkSize({
+      width,
+      neLat,
+      zoom,
+      domain
+    })
 
     const transforms = []
 
@@ -111,28 +136,65 @@ export default function rasterLayerHeatmapMixin (_layer) {
     })
   }
 
-  _layer._genVega = function ({table, width, height, min, max, filter, globalFilter, neLat, zoom, domain, layerName = ""}) {
-    const {markWidth, markHeight} = getMarkSize({width, neLat, zoom, domain})
+  _layer._genVega = function({
+    table,
+    width,
+    height,
+    min,
+    max,
+    filter,
+    globalFilter,
+    neLat,
+    zoom,
+    domain,
+    layerName = ""
+  }) {
+    const { markWidth, markHeight } = getMarkSize({
+      width,
+      neLat,
+      zoom,
+      domain
+    })
     return {
       width,
       height,
-      data:
-      {
+      data: {
         name: `heatmap_query${layerName}`,
-        sql: _layer.genSQL({table, width, height, min, max, filter, globalFilter, neLat, zoom, domain})
+        sql: _layer.genSQL({
+          table,
+          width,
+          height,
+          min,
+          max,
+          filter,
+          globalFilter,
+          neLat,
+          zoom,
+          domain
+        })
       },
       scales: [
         {
           name: `heat_color${layerName}`,
           type: state.encoding.color.type,
-          domain: state.encoding.color.scale.domain === "auto" ? (_layer.colorDomain() || domain) : state.encoding.color.scale.domain,
-          range: state.encoding.color.scale.range.map(c => adjustOpacity(c, state.encoding.color.scale.opacity)),
-          default: adjustOpacity(state.encoding.color.scale.default, state.encoding.color.scale.opacity),
-          nullValue: adjustOpacity(state.encoding.color.scale.nullValue, state.encoding.color.scale.opacity)
+          domain:
+            state.encoding.color.scale.domain === "auto"
+              ? _layer.colorDomain() || domain
+              : state.encoding.color.scale.domain,
+          range: state.encoding.color.scale.range.map(c =>
+            adjustOpacity(c, state.encoding.color.scale.opacity)
+          ),
+          default: adjustOpacity(
+            state.encoding.color.scale.default,
+            state.encoding.color.scale.opacity
+          ),
+          nullValue: adjustOpacity(
+            state.encoding.color.scale.nullValue,
+            state.encoding.color.scale.opacity
+          )
         }
       ],
-      mark:
-      {
+      mark: {
         type: "symbol",
         from: {
           data: `heatmap_query${layerName}`
@@ -156,7 +218,7 @@ export default function rasterLayerHeatmapMixin (_layer) {
     }
   }
 
-  _layer._destroyLayer = function () {
+  _layer._destroyLayer = function() {
     const xDim = _layer.xDim()
     if (xDim) {
       xDim.dispose()

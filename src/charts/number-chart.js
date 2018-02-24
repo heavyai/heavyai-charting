@@ -1,15 +1,15 @@
 import baseMixin from "../mixins/base-mixin"
 import d3 from "d3"
-import {utils} from "../utils/utils"
-import {lastFilteredSize, setLastFilteredSize} from "../core/core-async"
+import { utils } from "../utils/utils"
+import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 
-export default function numberChart (parent, chartGroup) {
+export default function numberChart(parent, chartGroup) {
   const _chart = baseMixin({})
   let _colors = "#22a7f0"
   let _fontSize = null
   let _chartWidth = null
 
-  _chart.formatNumber = function (formatter) {
+  _chart.formatNumber = function(formatter) {
     if (!arguments.length) {
       return _formatNumber
     }
@@ -17,7 +17,7 @@ export default function numberChart (parent, chartGroup) {
     return _chart
   }
 
-  _chart.colors = function (_) {
+  _chart.colors = function(_) {
     if (!arguments.length) {
       return _colors
     }
@@ -25,7 +25,7 @@ export default function numberChart (parent, chartGroup) {
     return _chart
   }
 
-  _chart.getColor = function (selected, all) {
+  _chart.getColor = function(selected, all) {
     return typeof _colors === "string" ? _colors : _colors[0]
   }
 
@@ -60,7 +60,7 @@ export default function numberChart (parent, chartGroup) {
       })
   )
 
-  _chart._doRender = function (val) {
+  _chart._doRender = function(val) {
     const selected = utils.formatValue(val)
 
     const wrapper = _chart
@@ -78,7 +78,7 @@ export default function numberChart (parent, chartGroup) {
         d => Math.max(Math.floor(_chart.height() / 5), 32) + "px"
       )
       .html(selected === "-0" ? 0 : selected)
-      .style("font-size", function (d) {
+      .style("font-size", function(d) {
         const width = d3
           .select(this)
           .node()
@@ -97,7 +97,10 @@ export default function numberChart (parent, chartGroup) {
           )
         }
 
-        _fontSize = !_fontSize || _chartWidth < _chart.width() ? calcFontSize : Math.min(_fontSize, calcFontSize)
+        _fontSize =
+          !_fontSize || _chartWidth < _chart.width()
+            ? calcFontSize
+            : Math.min(_fontSize, calcFontSize)
 
         _chartWidth = _chart.width()
 
@@ -107,7 +110,7 @@ export default function numberChart (parent, chartGroup) {
     return _chart
   }
 
-  _chart._doRedraw = function (val) {
+  _chart._doRedraw = function(val) {
     return _chart._doRender(val)
   }
 

@@ -1,5 +1,5 @@
 import d3 from "d3"
-import {override} from "../core/core"
+import { override } from "../core/core"
 import {
   groupAll,
   lastFilteredSize,
@@ -7,14 +7,14 @@ import {
 } from "../core/core-async"
 import baseMixin from "../mixins/base-mixin"
 
-export default function countWidget (parent, chartGroup) {
+export default function countWidget(parent, chartGroup) {
   const _chart = baseMixin({})
 
   let _formatNumber = d3.format(",")
   let _countLabel = "rows"
   let _tot = null
 
-  override(_chart, "group", function (group, name) {
+  override(_chart, "group", function(group, name) {
     if (!arguments.length) {
       return _chart._group()
     }
@@ -28,7 +28,7 @@ export default function countWidget (parent, chartGroup) {
   _chart.dataFetchRequestCallback(noop)
   _chart.dataFetchSuccessfulCallback(noop)
 
-  _chart.formatNumber = function (formatter) {
+  _chart.formatNumber = function(formatter) {
     if (!arguments.length) {
       return _formatNumber
     }
@@ -36,7 +36,7 @@ export default function countWidget (parent, chartGroup) {
     return _chart
   }
 
-  _chart.countLabel = function (_) {
+  _chart.countLabel = function(_) {
     if (!arguments.length) {
       return _countLabel
     }
@@ -44,7 +44,7 @@ export default function countWidget (parent, chartGroup) {
     return _chart
   }
 
-  _chart.tot = function (number) {
+  _chart.tot = function(number) {
     if (!arguments.length) {
       return _tot
     }
@@ -52,7 +52,7 @@ export default function countWidget (parent, chartGroup) {
     return _chart
   }
 
-  _chart.getTotalRecordsAsync = function () {
+  _chart.getTotalRecordsAsync = function() {
     if (_chart.tot()) {
       return Promise.resolve()
     }
@@ -89,7 +89,7 @@ export default function countWidget (parent, chartGroup) {
       })
   )
 
-  _chart._doRender = function (val) {
+  _chart._doRender = function(val) {
     const all = _formatNumber(_chart.tot())
     const selected = _formatNumber(val)
 
@@ -125,7 +125,7 @@ export default function countWidget (parent, chartGroup) {
     return _chart
   }
 
-  _chart._doRedraw = function (val) {
+  _chart._doRedraw = function(val) {
     return _chart._doRender(val)
   }
 

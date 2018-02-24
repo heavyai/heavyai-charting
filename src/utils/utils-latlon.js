@@ -10,15 +10,19 @@ import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
  * @param  {number} tolat   Latitude to end at
  * @return {number}         Distance in meters from two lon/lat coords
  */
-export function distance_in_meters (fromlon, fromlat, tolon, tolat) {
+export function distance_in_meters(fromlon, fromlat, tolon, tolat) {
   const latitudeArc = (fromlat - tolat) * MapdDraw.Math.DEG_TO_RAD
   const longitudeArc = (fromlon - tolon) * MapdDraw.Math.DEG_TO_RAD
   let latitudeH = Math.sin(latitudeArc * 0.5)
   latitudeH = latitudeH * latitudeH
   let lontitudeH = Math.sin(longitudeArc * 0.5)
   lontitudeH = lontitudeH * lontitudeH
-  const tmp = Math.cos(fromlat * MapdDraw.Math.DEG_TO_RAD) * Math.cos(tolat * MapdDraw.Math.DEG_TO_RAD)
-  return 6372797.560856 * (2.0 * Math.asin(Math.sqrt(latitudeH + tmp * lontitudeH)))
+  const tmp =
+    Math.cos(fromlat * MapdDraw.Math.DEG_TO_RAD) *
+    Math.cos(tolat * MapdDraw.Math.DEG_TO_RAD)
+  return (
+    6372797.560856 * (2.0 * Math.asin(Math.sqrt(latitudeH + tmp * lontitudeH)))
+  )
 }
 
 /**
@@ -26,7 +30,7 @@ export function distance_in_meters (fromlon, fromlat, tolon, tolat) {
  * @param  {number} x X coordinate in mercator projected space
  * @return {number}   Longitude
  */
-export function conv900913To4326X (x) {
+export function conv900913To4326X(x) {
   return x / 111319.490778
 }
 
@@ -35,8 +39,10 @@ export function conv900913To4326X (x) {
  * @param  {number} y Y coordinate in mercator projected space
  * @return {number}   Latitude
  */
-export function conv900913To4326Y (y) {
-  return 57.295779513 * (2 * Math.atan(Math.exp(y / 6378136.99911)) - 1.570796327)
+export function conv900913To4326Y(y) {
+  return (
+    57.295779513 * (2 * Math.atan(Math.exp(y / 6378136.99911)) - 1.570796327)
+  )
 }
 
 /**
@@ -45,8 +51,12 @@ export function conv900913To4326Y (y) {
  * @param  {Point2d} coord 2d point in mercator projected space to convert
  * @return {Point2d}       Point referred to by the out arg
  */
-export function conv900913To4326 (out, coord) {
-  return MapdDraw.Point2d.set(out, conv900913To4326X(coord[0]), conv900913To4326Y(coord[1]))
+export function conv900913To4326(out, coord) {
+  return MapdDraw.Point2d.set(
+    out,
+    conv900913To4326X(coord[0]),
+    conv900913To4326Y(coord[1])
+  )
 }
 
 /**
@@ -54,7 +64,7 @@ export function conv900913To4326 (out, coord) {
  * @param  {number} x Longitude
  * @return {number}   X coordinate in mercator projected space
  */
-export function conv4326To900913X (x) {
+export function conv4326To900913X(x) {
   return x * 111319.490778
 }
 
@@ -63,7 +73,7 @@ export function conv4326To900913X (x) {
  * @param  {number} x Latitude
  * @return {number}   Y coordinate in mercator projected space
  */
-export function conv4326To900913Y (y) {
+export function conv4326To900913Y(y) {
   return 6378136.99911 * Math.log(Math.tan(0.00872664626 * y + 0.785398163397))
 }
 
@@ -73,6 +83,10 @@ export function conv4326To900913Y (y) {
  * @param  {Point2d} coord 2d point in lon/lat to convert
  * @return {Point2d}       Point referred to by the out arg
  */
-export function conv4326To900913 (out, coord) {
-  return MapdDraw.Point2d.set(out, conv4326To900913X(coord[0]), conv4326To900913Y(coord[1]))
+export function conv4326To900913(out, coord) {
+  return MapdDraw.Point2d.set(
+    out,
+    conv4326To900913X(coord[0]),
+    conv4326To900913Y(coord[1])
+  )
 }

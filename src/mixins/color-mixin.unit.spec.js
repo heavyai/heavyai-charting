@@ -1,4 +1,4 @@
-import chai, {expect} from "chai"
+import chai, { expect } from "chai"
 import spies from "chai-spies"
 import * as dc from "../index"
 
@@ -6,7 +6,7 @@ chai.use(spies)
 
 describe("Color Mixin", () => {
   describe("constructor", () => {
-    it('should create a chart', () => {
+    it("should create a chart", () => {
       dc.colorMixin({})
     })
   })
@@ -15,7 +15,7 @@ describe("Color Mixin", () => {
     let chart
 
     beforeEach(() => {
-      chart = dc.colorMixin({ })
+      chart = dc.colorMixin({})
       chart.colorAccessor(() => {})
     })
 
@@ -28,7 +28,7 @@ describe("Color Mixin", () => {
     it("should return the middle color range value if getColor is undefined", () => {
       const range = () => ["GREEN", "WHITE", "ORANGE"]
       chart.colors(() => {})
-      chart.colors = () => ({range})
+      chart.colors = () => ({ range })
       expect(chart.getColor({}, 1)).to.equal("WHITE")
     })
   })

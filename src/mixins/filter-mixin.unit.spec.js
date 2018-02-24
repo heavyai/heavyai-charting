@@ -1,4 +1,4 @@
-import chai, {expect} from "chai"
+import chai, { expect } from "chai"
 import spies from "chai-spies"
 import FilterMixin from "./filter-mixin"
 import baseMixin from "./base-mixin"
@@ -14,7 +14,7 @@ describe("Filter Mixin", () => {
     it("should handler cases where second argument if array of object collections", () => {
       const range = [new Date("7/1/2009"), new Date("6/1/2010")]
       const filters = [range]
-      const filter = [[{value: range[0]}, {value: range[1]}]]
+      const filter = [[{ value: range[0] }, { value: range[1] }]]
       expect(chart.hasFilterHandler()(filters, filter))
     })
   })

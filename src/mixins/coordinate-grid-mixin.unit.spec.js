@@ -1,4 +1,4 @@
-import chai, {expect} from "chai"
+import chai, { expect } from "chai"
 import coordinateGridMixin from "./coordinate-grid-mixin"
 import spies from "chai-spies"
 
@@ -14,8 +14,8 @@ describe("coordinateGridMixin", () => {
 
   describe("popupTextAccessor", () => {
     it("should return the proper popup text", () => {
-      const value = new Date( Date.UTC(2016, 9, 21) )
-      const arr = [{datum: {data: {key0: [{value}]}}}]
+      const value = new Date(Date.UTC(2016, 9, 21))
+      const arr = [{ datum: { data: { key0: [{ value }] } } }]
       expect(chart.popupTextAccessor(arr)()).to.equal("Oct 21, 2016  00:00:00")
     })
   })
@@ -26,7 +26,7 @@ describe("coordinateGridMixin", () => {
         domain: () => [1, 4]
       })
       chart.group = () => ({
-        binParams: () => [{extract: true}]
+        binParams: () => [{ extract: true }]
       })
     })
     it("should handle extract case", () => {
@@ -34,7 +34,7 @@ describe("coordinateGridMixin", () => {
     })
     it("should handle non-extract case", () => {
       chart.group = () => ({
-        binParams: () => [{extract: false}]
+        binParams: () => [{ extract: false }]
       })
       chart.effectiveWidth = () => 50
       chart.xAxis = () => ({

@@ -1,9 +1,11 @@
 import d3 from "d3"
 
-export function notNull (value) { return value != null /* double-equals also catches undefined */ }
+export function notNull(value) {
+  return value != null /* double-equals also catches undefined */
+}
 
-export function adjustOpacity (color, opacity = 1) {
-  if (!(/#/).test(color)) {
+export function adjustOpacity(color, opacity = 1) {
+  if (!/#/.test(color)) {
     return color
   }
   const hex = color.replace("#", "")
@@ -13,10 +15,13 @@ export function adjustOpacity (color, opacity = 1) {
   return `rgba(${r},${g},${b},${opacity})`
 }
 
-export function adjustRGBAOpacity (rgba, opacity) {
-  let [r, g, b, a] = rgba.split("(")[1].split(")")[0].split(",")
+export function adjustRGBAOpacity(rgba, opacity) {
+  let [r, g, b, a] = rgba
+    .split("(")[1]
+    .split(")")[0]
+    .split(",")
   if (a) {
-    const relativeOpacity = (parseFloat(a) - (1 - opacity))
+    const relativeOpacity = parseFloat(a) - (1 - opacity)
     a = `${relativeOpacity > 0 ? relativeOpacity : 0.01}`
   } else {
     a = opacity
@@ -32,23 +37,57 @@ const capAttrMap = {
   Size: "size"
 }
 
-export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, useScale, prePostFuncs) {
-  let scaleFunc = "", fieldAttrFunc = ""
+export function createVegaAttrMixin(
+  layerObj,
+  attrName,
+  defaultVal,
+  nullVal,
+  useScale,
+  prePostFuncs
+) {
+  let scaleFunc = "",
+    fieldAttrFunc = ""
   const capAttrName = attrName.charAt(0).toUpperCase() + attrName.slice(1)
   const defaultFunc = "default" + capAttrName
   const nullFunc = "null" + capAttrName
-  layerObj[defaultFunc] = createRasterLayerGetterSetter(layerObj, defaultVal, (prePostFuncs ? prePostFuncs.preDefault : null), (prePostFuncs ? prePostFuncs.postDefault : null))
-  layerObj[nullFunc] = createRasterLayerGetterSetter(layerObj, nullVal, (prePostFuncs ? prePostFuncs.preNull : null), (prePostFuncs ? prePostFuncs.postNull : null))
+  layerObj[defaultFunc] = createRasterLayerGetterSetter(
+    layerObj,
+    defaultVal,
+    prePostFuncs ? prePostFuncs.preDefault : null,
+    prePostFuncs ? prePostFuncs.postDefault : null
+  )
+  layerObj[nullFunc] = createRasterLayerGetterSetter(
+    layerObj,
+    nullVal,
+    prePostFuncs ? prePostFuncs.preNull : null,
+    prePostFuncs ? prePostFuncs.postNull : null
+  )
 
   if (useScale) {
     scaleFunc = attrName + "Scale"
     fieldAttrFunc = attrName + "Attr"
-    layerObj[scaleFunc] = createRasterLayerGetterSetter(layerObj, null, (prePostFuncs ? prePostFuncs.preScale : null), (prePostFuncs ? prePostFuncs.postScale : null))
-    layerObj[fieldAttrFunc] = createRasterLayerGetterSetter(layerObj, null, (prePostFuncs ? prePostFuncs.preField : null), (prePostFuncs ? prePostFuncs.postField : null))
+    layerObj[scaleFunc] = createRasterLayerGetterSetter(
+      layerObj,
+      null,
+      prePostFuncs ? prePostFuncs.preScale : null,
+      prePostFuncs ? prePostFuncs.postScale : null
+    )
+    layerObj[fieldAttrFunc] = createRasterLayerGetterSetter(
+      layerObj,
+      null,
+      prePostFuncs ? prePostFuncs.preField : null,
+      prePostFuncs ? prePostFuncs.postField : null
+    )
 
-    layerObj["_build" + capAttrName + "Scale"] = function (chart, layerName) {
+    layerObj["_build" + capAttrName + "Scale"] = function(chart, layerName) {
       const scale = layerObj[scaleFunc]()
-      if (scale && scale.domain && scale.domain().length && scale.range().length && scaleFunc === "fillColorScale") {
+      if (
+        scale &&
+        scale.domain &&
+        scale.domain().length &&
+        scale.range().length &&
+        scaleFunc === "fillColorScale"
+      ) {
         const colorScaleName = layerName + "_" + attrName
         const rtnObj = {
           name: colorScaleName,
@@ -65,8 +104,7 @@ export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, us
 
         return rtnObj
       } else if (layerObj.densityAccumulatorEnabled()) {
-        const
-          colorScaleName = layerName + "_" + attrName,
+        const colorScaleName = layerName + "_" + attrName,
           colorsToUse = layerObj.defaultFillColor(),
           domainInterval = 100 / (colorsToUse.length - 1),
           linearScale = colorsToUse.map((color, i) => i * domainInterval / 100),
@@ -94,13 +132,18 @@ export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, us
   }
 
   const getValFunc = "get" + capAttrName + "Val"
-  layerObj[getValFunc] = function (input) {
+  layerObj[getValFunc] = function(input) {
     let rtnVal = layerObj[defaultFunc]()
     if (input === null) {
       rtnVal = layerObj[nullFunc]()
     } else if (input !== undefined && useScale) {
       const capAttrObj = layerObj.getState().encoding[capAttrMap[capAttrName]]
-      if (capAttrObj && capAttrObj.domain && capAttrObj.domain.length && capAttrObj.range.length) {
+      if (
+        capAttrObj &&
+        capAttrObj.domain &&
+        capAttrObj.domain.length &&
+        capAttrObj.range.length
+      ) {
         if (capAttrObj.type === "ordinal") {
           ordScale.domain(capAttrObj.domain).range(capAttrObj.range)
           rtnVal = ordScale(input)
@@ -115,8 +158,13 @@ export function createVegaAttrMixin (layerObj, attrName, defaultVal, nullVal, us
   }
 }
 
-export function createRasterLayerGetterSetter (layerObj, attrVal, preSetFunc, postSetFunc) {
-  return function (newVal) {
+export function createRasterLayerGetterSetter(
+  layerObj,
+  attrVal,
+  preSetFunc,
+  postSetFunc
+) {
+  return function(newVal) {
     if (!arguments.length) {
       return attrVal
     }

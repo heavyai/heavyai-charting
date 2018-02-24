@@ -1,18 +1,21 @@
-import {isArrayOfObjects, normalizeArrayByValue} from "../utils/formatting-helpers"
-import {events} from "../core/events"
+import {
+  isArrayOfObjects,
+  normalizeArrayByValue
+} from "../utils/formatting-helpers"
+import { events } from "../core/events"
 
 const noop = () => {} // eslint-disable-line no-empty-function
 
-export function addFilterHandler (filters, filter) {
+export function addFilterHandler(filters, filter) {
   if (isArrayOfObjects(filter)) {
-    filters.push(filter.map(f => f === null ? null : f.value))
+    filters.push(filter.map(f => (f === null ? null : f.value)))
   } else {
     filters.push(filter)
   }
   return filters
 }
 
-export function hasFilterHandler (filters, filter) {
+export function hasFilterHandler(filters, filter) {
   if (typeof filter === "undefined") {
     return filters.length > 0
   } else if (Array.isArray(filter)) {
@@ -23,8 +26,8 @@ export function hasFilterHandler (filters, filter) {
   }
 }
 
-export function filterHandlerWithChartContext (_chart) {
-  return function filterHandler (dimension, filters) {
+export function filterHandlerWithChartContext(_chart) {
+  return function filterHandler(dimension, filters) {
     if (dimension.type === "crossfilter") {
       return filters
     }
@@ -32,30 +35,40 @@ export function filterHandlerWithChartContext (_chart) {
     if (filters.length === 0) {
       dimension.filterAll(_chart.softFilterClear())
     } else if (_chart.hasOwnProperty("rangeFocused")) {
-      dimension.filterMulti(filters, _chart.rangeFocused(), _chart.filtersInverse(), _chart.group().binParams())
+      dimension.filterMulti(
+        filters,
+        _chart.rangeFocused(),
+        _chart.filtersInverse(),
+        _chart.group().binParams()
+      )
     } else {
-      dimension.filterMulti(filters, undefined, _chart.filtersInverse(), _chart.group().binParams()) // eslint-disable-line no-undefined
+      dimension.filterMulti(
+        filters,
+        undefined,
+        _chart.filtersInverse(),
+        _chart.group().binParams()
+      ) // eslint-disable-line no-undefined
     }
     return filters
   }
 }
 
-export default function filterMixin (_chart) {
+export default function filterMixin(_chart) {
   let _filters = []
   let softFilterClear = false
   let areFiltersInverse = false
   let _hasFilterHandler = noop
 
-  _chart.filters = function () {
+  _chart.filters = function() {
     return _filters
   }
 
-  _chart.replaceFilter = function (_) {
+  _chart.replaceFilter = function(_) {
     _filters = []
     _chart.filter(_)
   }
 
-  _chart.softFilterClear = function (val) {
+  _chart.softFilterClear = function(val) {
     if (!arguments.length) {
       return softFilterClear
     }
@@ -63,7 +76,7 @@ export default function filterMixin (_chart) {
     return _chart
   }
 
-  _chart.filtersInverse = function (isInverse) {
+  _chart.filtersInverse = function(isInverse) {
     if (!arguments.length) {
       return areFiltersInverse
     }
@@ -80,7 +93,7 @@ export default function filterMixin (_chart) {
    * @instance
    * @return {dc.baseMixin}
    */
-  _chart.filterAll = function (_softFilterClear) {
+  _chart.filterAll = function(_softFilterClear) {
     if (_softFilterClear) {
       _chart.softFilterClear(true)
     } else {
@@ -93,11 +106,11 @@ export default function filterMixin (_chart) {
 
   _chart.addFilterHandler(addFilterHandler)
 
-  _chart.hasFilter = function (filter) {
+  _chart.hasFilter = function(filter) {
     return _hasFilterHandler(_filters, filter)
   }
 
-  _chart.hasFilterHandler = function (handler) {
+  _chart.hasFilterHandler = function(handler) {
     if (!arguments.length) {
       return _hasFilterHandler
     }
@@ -107,14 +120,14 @@ export default function filterMixin (_chart) {
 
   _chart.hasFilterHandler(hasFilterHandler)
 
-  function applyFilters () {
+  function applyFilters() {
     if (_chart.dimension() && _chart.dimension().filter) {
       const fs = _chart.filterHandler()(_chart.dimension(), _filters)
       _filters = fs ? fs : _filters
     }
   }
 
-  _chart.filter = function (filter, isFilterInverse = false) {
+  _chart.filter = function(filter, isFilterInverse = false) {
     if (!arguments.length) {
       return _filters.length > 0 ? _filters[0] : null
     }
@@ -122,9 +135,11 @@ export default function filterMixin (_chart) {
     if (Array.isArray(filter) && filter.length === 1) {
       filter = filter[0]
     } else if (Array.isArray(filter)) {
-      filter = filter.map(filter => { // eslint-disable-line no-shadow, arrow-body-style
-        return Array.isArray(filter) && filter.length === 1 ? filter[0] : filter
-      })
+      filter = filter.map(
+        filter =>
+          // eslint-disable-line no-shadow, arrow-body-style
+          Array.isArray(filter) && filter.length === 1 ? filter[0] : filter
+      )
     }
 
     if (isFilterInverse !== _chart.filtersInverse()) {
@@ -132,7 +147,10 @@ export default function filterMixin (_chart) {
       _chart.filtersInverse(isFilterInverse)
     }
 
-    if (filter === Symbol.for("clear") || Array.isArray(filter) && filter.length === 0) {
+    if (
+      filter === Symbol.for("clear") ||
+      (Array.isArray(filter) && filter.length === 0)
+    ) {
       _filters = _chart.resetFilterHandler()(_filters)
     } else if (_chart.hasFilter(filter)) {
       _chart.removeFilterHandler()(_filters, filter)
@@ -164,7 +182,7 @@ export default function filterMixin (_chart) {
    * @param {dc filter} filter
    * @return {dc.baseMixin}
    */
-  _chart.handleFilterClick = function (event, filter) {
+  _chart.handleFilterClick = function(event, filter) {
     if (event.defaultPrevented) {
       return
     }

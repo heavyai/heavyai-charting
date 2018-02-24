@@ -1,5 +1,5 @@
 import * as dc from "../index"
-import {expect} from "chai"
+import { expect } from "chai"
 
 describe("Errors", () => {
   it("should export an Exception class", () => {

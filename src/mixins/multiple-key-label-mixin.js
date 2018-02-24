@@ -1,10 +1,10 @@
-import {formatDataValue} from "../utils/formatting-helpers"
+import { formatDataValue } from "../utils/formatting-helpers"
 
 const INDEX_NONE = -1
 const SHOULD_RENDER_LABELS = true
 
-export default function multipleKeysLabelMixin (_chart) {
-  function label (d) {
+export default function multipleKeysLabelMixin(_chart) {
+  function label(d) {
     if (_chart.dimension().value().length === 1) {
       return formatDataValue(d.key0)
     }

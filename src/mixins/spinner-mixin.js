@@ -1,11 +1,13 @@
-import {chartRegistry} from "../core/core"
+import { chartRegistry } from "../core/core"
 import d3 from "d3"
-import {SPINNER_DELAY} from "../constants/dc-constants"
+import { SPINNER_DELAY } from "../constants/dc-constants"
 
-export const areAnySpinnersShowing = () => chartRegistry.list().some(chart => chart.isSpinnerShowing())
-export const setCursorSpinner = () => d3.select("body").classed("waiting", areAnySpinnersShowing())
+export const areAnySpinnersShowing = () =>
+  chartRegistry.list().some(chart => chart.isSpinnerShowing())
+export const setCursorSpinner = () =>
+  d3.select("body").classed("waiting", areAnySpinnersShowing())
 
-export default function spinnerMixin (_chart) {
+export default function spinnerMixin(_chart) {
   let _spinnerDelay = SPINNER_DELAY
   let _spinnerTimeout = null
   let _spinnerIsVisible = false
@@ -13,20 +15,16 @@ export default function spinnerMixin (_chart) {
   _chart.isSpinnerShowing = () => _spinnerIsVisible
 
   let _dataFetchRequestCallback = () => {
-
     const anchor = _chart.anchor()
     const selectedAnchor = d3.select(anchor)
 
-    selectedAnchor
-      .classed("chart-loading-overlay", true)
+    selectedAnchor.classed("chart-loading-overlay", true)
 
     const loadingWidget = selectedAnchor
       .append("div")
       .classed("loading-widget-dc", true)
 
-    loadingWidget
-      .append("div")
-      .classed("main-loading-icon", true)
+    loadingWidget.append("div").classed("main-loading-icon", true)
   }
 
   let _dataFetchSuccessfulCallback = () => {
@@ -34,20 +32,20 @@ export default function spinnerMixin (_chart) {
 
     const selectedAnchor = d3.select(anchor)
 
-    selectedAnchor
-      .classed("chart-loading-overlay", false)
+    selectedAnchor.classed("chart-loading-overlay", false)
 
     selectedAnchor
-      .selectAll(function () {
-        return [...this.childNodes].filter(node => node.className === "loading-widget-dc")
+      .selectAll(function() {
+        return [...this.childNodes].filter(
+          node => node.className === "loading-widget-dc"
+        )
       })
       .remove()
 
-    d3.select("body")
-      .classed("waiting", areAnySpinnersShowing())
+    d3.select("body").classed("waiting", areAnySpinnersShowing())
   }
 
-  _chart.spinnerDelay = function (delay) {
+  _chart.spinnerDelay = function(delay) {
     if (!arguments.length) {
       return _spinnerDelay
     }
@@ -56,7 +54,7 @@ export default function spinnerMixin (_chart) {
     return _chart
   }
 
-  _chart.dataFetchSuccessfulCallback = function (func) {
+  _chart.dataFetchSuccessfulCallback = function(func) {
     if (!arguments.length) {
       return _dataFetchSuccessfulCallback
     }
@@ -65,7 +63,7 @@ export default function spinnerMixin (_chart) {
     return _chart
   }
 
-  _chart.dataFetchRequestCallback = function (func) {
+  _chart.dataFetchRequestCallback = function(func) {
     if (!arguments.length) {
       return _dataFetchRequestCallback
     }
@@ -74,7 +72,7 @@ export default function spinnerMixin (_chart) {
     return _chart
   }
 
-  function initSpinner () {
+  function initSpinner() {
     if (_spinnerTimeout) {
       window.clearTimeout(_spinnerTimeout)
     }
@@ -86,7 +84,7 @@ export default function spinnerMixin (_chart) {
     }, _spinnerDelay)
   }
 
-  function tearDownSpinner () {
+  function tearDownSpinner() {
     if (_spinnerIsVisible) {
       _spinnerIsVisible = false
       _dataFetchSuccessfulCallback()

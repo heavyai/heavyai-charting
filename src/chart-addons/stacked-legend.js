@@ -7,13 +7,13 @@ const hasLegendTitleProp = color =>
 const handleColorLegendOpenUndefined = color =>
   typeof color.legend.open === "undefined" ? true : color.legend.open
 const handleNonStackedOpenState = state =>
-  state.type === "gradient" ? Object.assign({}, state, {open: true}) : state
+  state.type === "gradient" ? Object.assign({}, state, { open: true }) : state
 
 const TOP_PADDING = 56
 const LASSO_TOOL_VERTICAL_SPACE = 120
 
-function setLegendState (setter) {
-  return function setState (state) {
+function setLegendState(setter) {
+  return function setState(state) {
     return {
       ...state,
       encoding: {
@@ -30,8 +30,8 @@ function setLegendState (setter) {
   }
 }
 
-function setColorState (setter) {
-  return function setState (state) {
+function setColorState(setter) {
+  return function setState(state) {
     return {
       ...state,
       encoding: {
@@ -45,8 +45,8 @@ function setColorState (setter) {
   }
 }
 
-function setColorScaleDomain (domain) {
-  return function setState (state) {
+function setColorScaleDomain(domain) {
+  return function setState(state) {
     return {
       ...state,
       encoding: {
@@ -63,9 +63,9 @@ function setColorScaleDomain (domain) {
   }
 }
 
-export function getLegendStateFromChart (chart, useMap) {
-  return toLegendState(chart.getLayerNames().map(
-    layerName => {
+export function getLegendStateFromChart(chart, useMap) {
+  return toLegendState(
+    chart.getLayerNames().map(layerName => {
       const layer = chart.getLayer(layerName)
       const color = layer.getState().encoding.color
       if (typeof color.scale === "object" && color.scale.domain === "auto") {
@@ -79,39 +79,48 @@ export function getLegendStateFromChart (chart, useMap) {
       } else {
         return color
       }
-    }
-  ), chart, useMap)
+    }),
+    chart,
+    useMap
+  )
 }
 
-export function handleLegendToggle () {
+export function handleLegendToggle() {
   this.legend().setState({
     ...this.legend().state,
     open: !this.legend().state.open
   })
 }
 
-export function handleLegendDoneRender () {
+export function handleLegendDoneRender() {
   this.root().classed("horizontal-lasso-tools", () => {
-    const legendNode = this.root().select(".legendables").node()
-    const isHorizontal = legendNode && legendNode.clientHeight > this.height() - LASSO_TOOL_VERTICAL_SPACE
+    const legendNode = this.root()
+      .select(".legendables")
+      .node()
+    const isHorizontal =
+      legendNode &&
+      legendNode.clientHeight > this.height() - LASSO_TOOL_VERTICAL_SPACE
 
-    this.root().select(".mapd-draw-button-control-group")
+    this.root()
+      .select(".mapd-draw-button-control-group")
       .style("width", isHorizontal ? legendNode.clientWidth + 2 + "px" : "auto")
 
     return isHorizontal
   })
 }
 
-export function handleLegendOpen (index = 0) {
+export function handleLegendOpen(index = 0) {
   this.getLayers()[index].setState(
     setLegendState(color => ({
-      open: hasLegendOpenProp(color) ? !handleColorLegendOpenUndefined(color) : false
+      open: hasLegendOpenProp(color)
+        ? !handleColorLegendOpenUndefined(color)
+        : false
     }))
   )
   this.legend().setState(getLegendStateFromChart(this))
 }
 
-export function handleLegendLock ({locked, index = 0}) {
+export function handleLegendLock({ locked, index = 0 }) {
   const layer = this.getLayers()[index]
 
   layer.setState(
@@ -120,7 +129,7 @@ export function handleLegendLock ({locked, index = 0}) {
     }))
   )
 
-  const {encoding: {color}} = layer.getState()
+  const { encoding: { color } } = layer.getState()
   if (typeof color.scale === "object") {
     if (color.legend.locked) {
       layer.setState(setColorScaleDomain(layer.colorDomain()))
@@ -132,9 +141,9 @@ export function handleLegendLock ({locked, index = 0}) {
   this.legend().setState(getLegendStateFromChart(this))
 }
 
-export function handleLegendInput ({domain, index = 0}) {
+export function handleLegendInput({ domain, index = 0 }) {
   const layer = this.getLayers()[index]
-  const {scale} = layer.getState().encoding.color
+  const { scale } = layer.getState().encoding.color
 
   if (typeof scale === "object") {
     layer.setState(setColorScaleDomain(domain))
@@ -150,7 +159,7 @@ export function handleLegendInput ({domain, index = 0}) {
   this.renderAsync()
 }
 
-function legendState (state, useMap = true) {
+function legendState(state, useMap = true) {
   if (state.type === "ordinal") {
     return {
       type: "nominal",
@@ -171,7 +180,7 @@ function legendState (state, useMap = true) {
       position: "bottom-left"
     }
   } else if (state.type === "quantize") {
-    const {scale} = state
+    const { scale } = state
     return {
       type: "gradient",
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
@@ -186,14 +195,15 @@ function legendState (state, useMap = true) {
   }
 }
 
-export function toLegendState (states = [], chart, useMap) {
+export function toLegendState(states = [], chart, useMap) {
   if (states.length === 1) {
     return handleNonStackedOpenState(legendState(states[0], useMap))
   } else if (states.length) {
     return {
       type: "stacked",
       list: states.map(legendState),
-      open: typeof chart.legendOpen() === "undefined" ? true : chart.legendOpen(),
+      open:
+        typeof chart.legendOpen() === "undefined" ? true : chart.legendOpen(),
       maxHeight: chart.height() - TOP_PADDING
     }
   } else {
