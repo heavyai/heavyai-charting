@@ -3,3 +3,4 @@ src/mixins/coordinate-grid-raster-mixin.js
 src/mixins/raster-layer-point-mixin.unit.spec.js
 src/utils/utils-lasso.unit.spec.js
 test/setup-unit-tests.js
+mapd-charting/src/polyfills/inner-svg.js
