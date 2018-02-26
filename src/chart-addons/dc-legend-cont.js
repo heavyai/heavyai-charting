@@ -226,7 +226,7 @@ export default function legendCont() {
     const startVal = isFinite(inputBox1) ? inputBox1 : _parent.colorDomain()[0]
     const endVal = isFinite(inputBox2) ? inputBox2 : _parent.colorDomain()[1]
 
-    if (!isNaN(startVal) && !isNaN(endVal)) {
+    if (!isNaN(startVal) && !isNaN(endVal) && startVal < endVal) {
       _isLocked = true
       _parent
         .colorDomain([startVal, endVal])
