@@ -1,4 +1,4 @@
-import { createParser } from "mapd-data-layer"
+import { createParser } from "mapd-data-layer-2"
 import R from "ramda"
 
 const TABLE = "tweets_nov_feb"
