@@ -208,25 +208,7 @@ export default function mapdTable(parent, chartGroup) {
       _tableWrapper.select(".md-table-scroll").node().scrollTop = _scrollTop
     }
 
-    if (!_pauseAutoLoad) {
-      shouldLoadMore()
-    }
-
     return _chart
-  }
-
-  function shouldLoadMore() {
-    const scrollDivNode = _tableWrapper.select(".md-table-scroll").node()
-    const tableNode = _tableWrapper.select("table").node()
-    if (
-      tableNode.scrollHeight > 0 &&
-      tableNode.scrollHeight <=
-        scrollDivNode.scrollTop +
-          scrollDivNode.getBoundingClientRect().height +
-          ADDITIONAL_HEIGHT
-    ) {
-      _chart.addRows()
-    }
   }
 
   function getMeasureColHeaderLabel(d) {
