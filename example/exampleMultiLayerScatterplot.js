@@ -6,9 +6,9 @@
 document.addEventListener("DOMContentLoaded", function init() {
   // A MapdCon instance is used for performing raw queries on a MapD GPU database.
   new MapdCon()
-    .protocol("https")
-    .host("metis.mapd.com")
-    .port("443")
+    .protocol("http")
+    .host("localhost")
+    .port("9090")
     .dbName("mapd")
     .user("mapd")
     .password("HyperInteractive")
@@ -17,11 +17,11 @@ document.addEventListener("DOMContentLoaded", function init() {
       // This layer will be polygons of zipcodes and
       // will be colored by data joined from the contributions
       // table
-      var tableName1 = ["contributions_donotmodify", "zipcodes"];
+      var tableName1 = ["contributions", "zipcodes_merc"];
       var table1Joins = [{
-        table1: "contributions_donotmodify",
+        table1: "contributions",
         attr1: "contributor_zipcode",
-        table2: "zipcodes",
+        table2: "zipcodes_merc",
         attr2: "ZCTA5CE10"
       }];
       // Table to use for the 2nd layer, which will be points
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
       // Table to use for the 3nd layer, which will be points
       // from the contributions table.
-      var tableName3 = 'contributions_donotmodify';
+      var tableName3 = 'contributions';
 
       // make 3 crossfilters for all 3 layers
       // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
     // we're going to color based on the average contribution of the zipcode,
     // so reduce the average from the join
-    var polyGrp1 = polyDim1.group().reduceAvg("contributions_donotmodify.amount", "avgContrib");
+    var polyGrp1 = polyDim1.group().reduceAvg("contributions.amount", "avgContrib");
 
     // create the scale to use for the fill color of the polygons.
     // We're going to use the avg contribution of the zipcode to color the poly.
@@ -101,10 +101,10 @@ document.addEventListener("DOMContentLoaded", function init() {
                         .setState({
                           data: [
                             {
-                              table: "contributions_donotmodify",
+                              table: "contributions",
                               attr: "contributor_zipcode"
                             }, {
-                              table: "zipcodes",
+                              table: "zipcodes_merc",
                               attr: "ZCTA5CE10"
                             }
                           ],
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function init() {
                           encoding: {
                             color: {
                               type: "quantitative",
-                              aggregrate: "AVG(contributions_donotmodify.amount)",
+                              aggregrate: "AVG(contributions.amount)",
                               domain: [0, 5000],
                               range: polyColorRange
                             }

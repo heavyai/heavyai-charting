@@ -267,7 +267,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
     popupColsSet.add(polyTableGeomColumns.verts) // add the poly geometry to the query
-    popupColsSet.add(polyTableGeomColumns.linedrawinfo) // need to get the linedrawinfo beause there can be
+    // popupColsSet.add(polyTableGeomColumns.linedrawinfo) // need to get the linedrawinfo beause there can be
     // multiple polys per row, and linedrawinfo will
     // tell us this
 
@@ -286,8 +286,8 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer._areResultsValidForPopup = function(results) {
     if (
-      results[polyTableGeomColumns.verts] &&
-      results[polyTableGeomColumns.linedrawinfo]
+      results[polyTableGeomColumns.verts] /*&&
+      results[polyTableGeomColumns.linedrawinfo]*/
     ) {
       return true
     }
@@ -344,6 +344,7 @@ export default function rasterLayerPolyMixin(_layer) {
     // verts and drawinfo should be valid as the _resultsAreValidForPopup()
     // method should've been called beforehand
     const verts = data[polyTableGeomColumns.verts]
+    // TODO
     const drawinfo = data[polyTableGeomColumns.linedrawinfo]
 
     const polys = []
@@ -356,10 +357,11 @@ export default function rasterLayerPolyMixin(_layer) {
 
     // bounds: [minX, maxX, minY, maxY]
     const bounds = [Infinity, -Infinity, Infinity, -Infinity]
-    const startIdxDiff = drawinfo.length ? drawinfo[2] : 0
+    const startIdxDiff = 0 //drawinfo.length ? drawinfo[2] : 0
 
     const FLT_MAX = 1e37
 
+/*
     for (let i = 0; i < drawinfo.length; i = i + 4) {
       // Draw info struct:
       //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
@@ -417,6 +419,43 @@ export default function rasterLayerPolyMixin(_layer) {
 
       polys.push(polypts)
     }
+*/
+    // TODO(adb): handle multi-poly properly again...
+    let polypts = [];
+    for(let idx = 0; idx < verts.length; idx+=2) {
+      const screenX = xscale(verts[idx]) + margins.left
+      const screenY = height - yscale(verts[idx + 1]) - 1 + margins.top
+
+      if (
+        screenX >= 0 &&
+        screenX <= width &&
+        screenY >= 0 &&
+        screenY <= height
+      ) {
+          if (bounds[0] === Infinity) {
+            bounds[0] = screenX
+            bounds[1] = screenX
+            bounds[2] = screenY
+            bounds[3] = screenY
+          } else {
+            if (screenX < bounds[0]) {
+              bounds[0] = screenX
+            } else if (screenX > bounds[1]) {
+              bounds[1] = screenX
+            }
+
+            if (screenY < bounds[2]) {
+              bounds[2] = screenY
+            } else if (screenY > bounds[3]) {
+              bounds[3] = screenY
+            }
+          }
+        }
+      polypts.push(screenX);
+      polypts.push(screenY);
+    }
+
+    polys.push(polypts);
 
     if (bounds[0] === Infinity) {
       bounds[0] = 0
@@ -446,7 +485,7 @@ export default function rasterLayerPolyMixin(_layer) {
     const rndrProps = {}
     const queryRndrProps = new Set([
       polyTableGeomColumns.verts,
-      polyTableGeomColumns.linedrawinfo
+      // polyTableGeomColumns.linedrawinfo
     ])
     if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
       const propObj = _vega.marks[0].properties

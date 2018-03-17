@@ -11858,8 +11858,9 @@ function rasterDrawMixin(chart) {
       }
       var shapes = drawEngine.sortedShapes;
       drawEngine.deleteAllShapes();
-      
-      origFilterFunc(Symbol.for("clear"))
+
+      origFilterFunc(Symbol.for("clear"));
+
       shapes.forEach(function (shape) {
         chart.deleteFilterShape(shape);
       });
@@ -26483,7 +26484,7 @@ function rasterLayerPolyMixin(_layer) {
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColsSet) {
     popupColsSet.add(polyTableGeomColumns.verts); // add the poly geometry to the query
-    popupColsSet.add(polyTableGeomColumns.linedrawinfo); // need to get the linedrawinfo beause there can be
+    // popupColsSet.add(polyTableGeomColumns.linedrawinfo) // need to get the linedrawinfo beause there can be
     // multiple polys per row, and linedrawinfo will
     // tell us this
 
@@ -26497,9 +26498,11 @@ function rasterLayerPolyMixin(_layer) {
   };
 
   _layer._areResultsValidForPopup = function (results) {
-    if (results[polyTableGeomColumns.verts] && results[polyTableGeomColumns.linedrawinfo]) {
-      return true;
-    }
+    if (results[polyTableGeomColumns.verts] /*&&
+                                            results[polyTableGeomColumns.linedrawinfo]*/
+    ) {
+        return true;
+      }
     return false;
   };
 
@@ -26540,6 +26543,7 @@ function rasterLayerPolyMixin(_layer) {
     // verts and drawinfo should be valid as the _resultsAreValidForPopup()
     // method should've been called beforehand
     var verts = data[polyTableGeomColumns.verts];
+    // TODO
     var drawinfo = data[polyTableGeomColumns.linedrawinfo];
 
     var polys = [];
@@ -26552,62 +26556,100 @@ function rasterLayerPolyMixin(_layer) {
 
     // bounds: [minX, maxX, minY, maxY]
     var bounds = [Infinity, -Infinity, Infinity, -Infinity];
-    var startIdxDiff = drawinfo.length ? drawinfo[2] : 0;
+    var startIdxDiff = 0; //drawinfo.length ? drawinfo[2] : 0
 
     var FLT_MAX = 1e37;
 
-    for (var i = 0; i < drawinfo.length; i = i + 4) {
-      // Draw info struct:
-      //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
-      //     1: instanceCount, // should always be 1
-      //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
-      //     3: baseInstance   // irrelevant for our purposes -- should always be 0
-      var polypts = [];
-      var count = (drawinfo[i] - 3) * 2; // include x&y, and drop 3 duplicated pts at the end
-      var startIdx = (drawinfo[i + 2] - startIdxDiff) * 2; // include x&y
-      var endIdx = startIdx + count; // remove the 3 duplicate pts at the end
-      for (var idx = startIdx; idx < endIdx; idx = idx + 2) {
-        if (verts[idx] <= -FLT_MAX) {
-          // -FLT_MAX is a separator for multi-polygons (like Hawaii,
-          // where there would be a polygon per island), so when we hit a separator,
-          // remove the 3 duplicate points that would end the polygon prior to the separator
-          // and start a new polygon
-          polypts.pop();
-          polypts.pop();
-          polypts.pop();
-          polys.push(polypts);
-          polypts = [];
-        } else {
-          var screenX = xscale(verts[idx]) + margins.left;
-          var screenY = height - yscale(verts[idx + 1]) - 1 + margins.top;
-
-          if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
-            if (bounds[0] === Infinity) {
-              bounds[0] = screenX;
-              bounds[1] = screenX;
-              bounds[2] = screenY;
-              bounds[3] = screenY;
+    /*
+        for (let i = 0; i < drawinfo.length; i = i + 4) {
+          // Draw info struct:
+          //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
+          //     1: instanceCount, // should always be 1
+          //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
+          //     3: baseInstance   // irrelevant for our purposes -- should always be 0
+          let polypts = []
+          const count = (drawinfo[i] - 3) * 2 // include x&y, and drop 3 duplicated pts at the end
+          const startIdx = (drawinfo[i + 2] - startIdxDiff) * 2 // include x&y
+          const endIdx = startIdx + count // remove the 3 duplicate pts at the end
+          for (let idx = startIdx; idx < endIdx; idx = idx + 2) {
+            if (verts[idx] <= -FLT_MAX) {
+              // -FLT_MAX is a separator for multi-polygons (like Hawaii,
+              // where there would be a polygon per island), so when we hit a separator,
+              // remove the 3 duplicate points that would end the polygon prior to the separator
+              // and start a new polygon
+              polypts.pop()
+              polypts.pop()
+              polypts.pop()
+              polys.push(polypts)
+              polypts = []
             } else {
-              if (screenX < bounds[0]) {
-                bounds[0] = screenX;
-              } else if (screenX > bounds[1]) {
-                bounds[1] = screenX;
+              const screenX = xscale(verts[idx]) + margins.left
+              const screenY = height - yscale(verts[idx + 1]) - 1 + margins.top
+    
+              if (
+                screenX >= 0 &&
+                screenX <= width &&
+                screenY >= 0 &&
+                screenY <= height
+              ) {
+                if (bounds[0] === Infinity) {
+                  bounds[0] = screenX
+                  bounds[1] = screenX
+                  bounds[2] = screenY
+                  bounds[3] = screenY
+                } else {
+                  if (screenX < bounds[0]) {
+                    bounds[0] = screenX
+                  } else if (screenX > bounds[1]) {
+                    bounds[1] = screenX
+                  }
+    
+                  if (screenY < bounds[2]) {
+                    bounds[2] = screenY
+                  } else if (screenY > bounds[3]) {
+                    bounds[3] = screenY
+                  }
+                }
               }
-
-              if (screenY < bounds[2]) {
-                bounds[2] = screenY;
-              } else if (screenY > bounds[3]) {
-                bounds[3] = screenY;
-              }
+              polypts.push(screenX)
+              polypts.push(screenY)
             }
           }
-          polypts.push(screenX);
-          polypts.push(screenY);
+    
+          polys.push(polypts)
+        }
+    */
+    // TODO(adb): handle multi-poly properly again...
+    var polypts = [];
+    for (var idx = 0; idx < verts.length; idx += 2) {
+      var screenX = xscale(verts[idx]) + margins.left;
+      var screenY = height - yscale(verts[idx + 1]) - 1 + margins.top;
+
+      if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
+        if (bounds[0] === Infinity) {
+          bounds[0] = screenX;
+          bounds[1] = screenX;
+          bounds[2] = screenY;
+          bounds[3] = screenY;
+        } else {
+          if (screenX < bounds[0]) {
+            bounds[0] = screenX;
+          } else if (screenX > bounds[1]) {
+            bounds[1] = screenX;
+          }
+
+          if (screenY < bounds[2]) {
+            bounds[2] = screenY;
+          } else if (screenY > bounds[3]) {
+            bounds[3] = screenY;
+          }
         }
       }
-
-      polys.push(polypts);
+      polypts.push(screenX);
+      polypts.push(screenY);
     }
+
+    polys.push(polypts);
 
     if (bounds[0] === Infinity) {
       bounds[0] = 0;
@@ -26635,7 +26677,7 @@ function rasterLayerPolyMixin(_layer) {
     }
 
     var rndrProps = {};
-    var queryRndrProps = new Set([polyTableGeomColumns.verts, polyTableGeomColumns.linedrawinfo]);
+    var queryRndrProps = new Set([polyTableGeomColumns.verts]);
     if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
       var propObj = _vega.marks[0].properties;
       renderAttributes.forEach(function (prop) {
@@ -26689,8 +26731,8 @@ function rasterLayerPolyMixin(_layer) {
       }
 
       var pointStr = "";
-      for (var _i = 0; _i < pts.length; _i = _i + 2) {
-        pointStr = pointStr + (scale * (pts[_i] - bounds[0]) + " " + scale * (pts[_i + 1] - bounds[2]) + ", ");
+      for (var i = 0; i < pts.length; i = i + 2) {
+        pointStr = pointStr + (scale * (pts[i] - bounds[0]) + " " + scale * (pts[i + 1] - bounds[2]) + ", ");
       }
       pointStr = pointStr.slice(0, pointStr.length - 2).replace(/NaN/g, "");
 
