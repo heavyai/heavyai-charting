@@ -7847,7 +7847,9 @@ function capMixin(_chart) {
     if (d.others) {
       _chart.filter([d.others]);
     }
-    _chart._onClick(d);
+    if (_chart._onClick) {
+      _chart._onClick(d);
+    }
   });
 
   return _chart;
@@ -10933,6 +10935,9 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   _chart._maxCoord = null;
   _chart._reProjMapbox = true;
 
+  var _clientClickX = null;
+  var _clientClickY = null;
+
   var _arr = [[-180, -85], [180, 85]];
 
   var _llb = _mapboxgl.LngLatBounds.convert(_arr);
@@ -11399,15 +11404,23 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       });
 
       _map.on("mousedown", function (event) {
-        _chart.getClosestResult(event.point, function (result) {
-          var data = result.row_set[0];
-          _chart.getLayerNames().forEach(function (layerName) {
-            var layer = _chart.getLayer(layerName);
-            if (typeof layer.onClick === "function") {
-              layer.onClick(_chart, data, event.originalEvent);
-            }
+        _clientClickX = event.point.x;
+        _clientClickY = event.point.y;
+      });
+
+      _map.on("mouseup", function (event) {
+        // Make sure that the user is clicking to filter, and not dragging or panning the map
+        if (_clientClickX === event.point.x && _clientClickY === event.point.y) {
+          _chart.getClosestResult(event.point, function (result) {
+            var data = result.row_set[0];
+            _chart.getLayerNames().forEach(function (layerName) {
+              var layer = _chart.getLayer(layerName);
+              if (typeof layer.onClick === "function") {
+                layer.onClick(_chart, data, event.originalEvent);
+              }
+            });
           });
-        });
+        }
       });
     });
   };
@@ -22035,7 +22048,6 @@ function format(value, key, numberFormatter, dateFormatter) {
 }
 
 function multipleKeysLabelMixin(_chart) {
-
   function label(d) {
     var numberFormatter = _chart && _chart.valueFormatter();
     var dateFormatter = _chart && _chart.dateFormatter();
@@ -26339,21 +26351,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
+// NOTE: Reqd until ST_Transform supported on projection columns
+function conv4326To900913(x, y) {
+  var transCoord = [0.0, 0.0];
+  transCoord[0] = x * 111319.49077777777778;
+  transCoord[1] = Math.log(Math.tan((90.0 + y) * 0.00872664625997)) * 6378136.99911215736947;
+  return transCoord;
+}
+
 var vegaLineJoinOptions = ["miter", "round", "bevel"];
 var polyTableGeomColumns = {
   // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
   verts: "mapd_geo_coords",
-  indices: "mapd_geo_indices",
-
-  // NOTE: the line draw info references the line loops in the verts. This struct looks like the following:
-  // {
-  //     count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
-  //     instanceCount, // should always be 1
-  //     firstIndex,    // the index in verts (includes x & y) where the verts for the loop start
-  //     baseInstance   // irrelevant for our purposes -- should always be 0
-  // }
-  linedrawinfo: "mapd_geo_linedrawinfo",
-  polydrawinfo: "mapd_geo_polydrawinfo"
+  ring_sizes: "mapd_geo_ring_sizes",
+  poly_rings: "mapd_geo_poly_rings",
+  // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
+  indices_LEGACY: "mapd_geo_indices",
+  linedrawinfo_LEGACY: "mapd_geo_linedrawinfo",
+  polydrawinfo_LEGACY: "mapd_geo_polydrawinfo"
 };
 
 function validateLineJoin(newLineJoin, currLineJoin) {
@@ -26479,60 +26494,75 @@ function rasterLayerPolyMixin(_layer) {
         globalFilter = _ref2.globalFilter,
         layerFilter = _ref2.layerFilter,
         filtersInverse = _ref2.filtersInverse,
-        layerName = _ref2.layerName;
+        layerName = _ref2.layerName,
+        useProjection = _ref2.useProjection;
 
     var colorRange = state.encoding.color.range.map(function (c) {
       return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
     });
-    return {
-      data: [{
-        name: layerName,
-        format: "polys",
-        sql: _utils.parser.writeSQL({
-          type: "root",
-          source: [].concat(_toConsumableArray(new Set(state.data.map(function (source, index) {
-            return source.table;
-          })))).join(", "),
-          transform: getTransforms({
-            filter: filter,
-            globalFilter: globalFilter,
-            layerFilter: layerFilter,
-            filtersInverse: filtersInverse
-          })
+
+    var data = [{
+      name: layerName,
+      format: "polys",
+      sql: _utils.parser.writeSQL({
+        type: "root",
+        source: [].concat(_toConsumableArray(new Set(state.data.map(function (source) {
+          return source.table;
+        })))).join(", "),
+        transform: getTransforms({
+          filter: filter,
+          globalFilter: globalFilter,
+          layerFilter: layerFilter,
+          filtersInverse: filtersInverse
         })
-      }],
-      scales: [{
-        name: layerName + "_fillColor",
-        type: "quantize",
-        domain: state.encoding.color.domain,
-        range: colorRange,
-        nullValue: "#D6D7D6",
-        default: "#D6D7D6"
-      }],
-      marks: [{
-        type: "polys",
-        from: {
-          data: layerName
+      })
+    }];
+
+    var scales = [{
+      name: layerName + "_fillColor",
+      type: "quantize",
+      domain: state.encoding.color.domain,
+      range: colorRange,
+      nullValue: "rgba(214, 215, 214, 0.65)",
+      default: "rgba(214, 215, 214, 0.65)"
+    }];
+
+    var marks = [{
+      type: "polys",
+      from: {
+        data: layerName
+      },
+      properties: {
+        x: {
+          field: "x"
         },
-        properties: {
-          x: {
-            scale: "x",
-            field: "x"
-          },
-          y: {
-            scale: "y",
-            field: "y"
-          },
-          fillColor: {
-            scale: layerName + "_fillColor",
-            field: "color"
-          },
-          strokeColor: _typeof(state.mark) === "object" ? state.mark.strokeColor : "white",
-          strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 0.5,
-          lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
-          miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
-        }
-      }]
+        y: {
+          field: "y"
+        },
+        fillColor: {
+          scale: layerName + "_fillColor",
+          field: "color"
+        },
+        strokeColor: _typeof(state.mark) === "object" ? state.mark.strokeColor : "white",
+        strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 0.5,
+        lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
+        miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
+      }
+    }];
+
+    if (useProjection) {
+      marks[0].transform = {
+        projection: "mercator_map_projection"
+      };
+    } else {
+      marks[0].properties.x.scale = "x";
+      marks[0].properties.y.scale = "y";
+    }
+
+    return {
+      data: data,
+      scales: scales,
+      marks: marks
     };
   };
 
@@ -26547,7 +26577,8 @@ function rasterLayerPolyMixin(_layer) {
       filter: _layer.crossfilter().getFilterString(_layer.dimension().getDimensionIndex()),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
-      filtersInverse: _layer.filtersInverse()
+      filtersInverse: _layer.filtersInverse(),
+      useProjection: chart._useGeoTypes
     });
     return _vega;
   };
@@ -26555,10 +26586,15 @@ function rasterLayerPolyMixin(_layer) {
   var renderAttributes = ["x", "y", "fillColor", "strokeColor", "strokeWidth", "lineJoin", "miterLimit"];
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColsSet) {
-    popupColsSet.add(polyTableGeomColumns.verts); // add the poly geometry to the query
-    // popupColsSet.add(polyTableGeomColumns.linedrawinfo) // need to get the linedrawinfo beause there can be
-    // multiple polys per row, and linedrawinfo will
-    // tell us this
+    // add the poly geometry to the query
+    popupColsSet.add(polyTableGeomColumns.verts);
+
+    if (chart._useGeoTypes) {
+      popupColsSet.add(polyTableGeomColumns.ring_sizes);
+      popupColsSet.add(polyTableGeomColumns.poly_rings);
+    } else {
+      popupColsSet.add(polyTableGeomColumns.linedrawinfo_LEGACY);
+    }
 
     if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
       renderAttributes.forEach(function (rndrProp) {
@@ -26570,11 +26606,9 @@ function rasterLayerPolyMixin(_layer) {
   };
 
   _layer._areResultsValidForPopup = function (results) {
-    if (results[polyTableGeomColumns.verts] /* &&
-                                            results[polyTableGeomColumns.linedrawinfo]*/
-    ) {
-        return true;
-      }
+    if (results[polyTableGeomColumns.verts] && results[polyTableGeomColumns.ring_sizes] || results[polyTableGeomColumns.verts] && results[polyTableGeomColumns.linedrawinfo_LEGACY]) {
+      return true;
+    }
     return false;
   };
 
@@ -26612,116 +26646,156 @@ function rasterLayerPolyMixin(_layer) {
   };
 
   _layer._displayPopup = function (chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate) {
-    // verts and drawinfo should be valid as the _resultsAreValidForPopup()
-    // method should've been called beforehand
-    var verts = data[polyTableGeomColumns.verts];
-    // TODO
-    var drawinfo = data[polyTableGeomColumns.linedrawinfo];
-
     var polys = [];
 
-    // TODO(croot): when the bounds is added as a column to the poly db table, we
-    // can just use those bounds rather than build our own
-    // But until then, we need to build our own bounds -- we use this to
-    // find the reasonable center of the geom and scale from there when
-    // necessary
+    // Only used for geotypes, but needs to be referenced when building the svg polystring
+    var is_multi_ring_poly = [];
 
     // bounds: [minX, maxX, minY, maxY]
     var bounds = [Infinity, -Infinity, Infinity, -Infinity];
-    var startIdxDiff = 0; // drawinfo.length ? drawinfo[2] : 0
+    if (chart._useGeoTypes) {
+      // verts and ring_sizes should be valid as the _resultsAreValidForPopup()
+      // method should've been called beforehand
+      var verts = data[polyTableGeomColumns.verts];
+      var ring_sizes = data[polyTableGeomColumns.ring_sizes];
+      var poly_rings = data[polyTableGeomColumns.poly_rings];
 
-    var FLT_MAX = 1e37;
+      // It is possible that the poly rings column is not populated. If not populated, we have a single polygon with number of rings equal to the number of entries in the ring sizes column
+      if (poly_rings === null) {
+        poly_rings = [ring_sizes.length];
+      }
 
-    /*
-        for (let i = 0; i < drawinfo.length; i = i + 4) {
-          // Draw info struct:
-          //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
-          //     1: instanceCount, // should always be 1
-          //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
-          //     3: baseInstance   // irrelevant for our purposes -- should always be 0
-          let polypts = []
-          const count = (drawinfo[i] - 3) * 2 // include x&y, and drop 3 duplicated pts at the end
-          const startIdx = (drawinfo[i + 2] - startIdxDiff) * 2 // include x&y
-          const endIdx = startIdx + count // remove the 3 duplicate pts at the end
-          for (let idx = startIdx; idx < endIdx; idx = idx + 2) {
-            if (verts[idx] <= -FLT_MAX) {
-              // -FLT_MAX is a separator for multi-polygons (like Hawaii,
-              // where there would be a polygon per island), so when we hit a separator,
-              // remove the 3 duplicate points that would end the polygon prior to the separator
-              // and start a new polygon
-              polypts.pop()
-              polypts.pop()
-              polypts.pop()
-              polys.push(polypts)
-              polypts = []
+      // TODO(croot): when the bounds is added as a column to the poly db table, we
+      // can just use those bounds rather than build our own
+      // But until then, we need to build our own bounds -- we use this to
+      // find the reasonable center of the geom and scale from there when
+      // necessary
+
+      var processPoly = function processPoly(verts) {
+        var polypts = [];
+        for (var idx = 0; idx < verts.length; idx += 2) {
+          var projectedCoord = conv4326To900913(verts[idx], verts[idx + 1]);
+
+          var screenX = xscale(projectedCoord[0]) + margins.left;
+          var screenY = height - yscale(projectedCoord[1]) - 1 + margins.top;
+
+          if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
+            if (bounds[0] === Infinity) {
+              bounds[0] = screenX;
+              bounds[1] = screenX;
+              bounds[2] = screenY;
+              bounds[3] = screenY;
             } else {
-              const screenX = xscale(verts[idx]) + margins.left
-              const screenY = height - yscale(verts[idx + 1]) - 1 + margins.top
-    
-              if (
-                screenX >= 0 &&
-                screenX <= width &&
-                screenY >= 0 &&
-                screenY <= height
-              ) {
-                if (bounds[0] === Infinity) {
-                  bounds[0] = screenX
-                  bounds[1] = screenX
-                  bounds[2] = screenY
-                  bounds[3] = screenY
-                } else {
-                  if (screenX < bounds[0]) {
-                    bounds[0] = screenX
-                  } else if (screenX > bounds[1]) {
-                    bounds[1] = screenX
-                  }
-    
-                  if (screenY < bounds[2]) {
-                    bounds[2] = screenY
-                  } else if (screenY > bounds[3]) {
-                    bounds[3] = screenY
-                  }
-                }
+              if (screenX < bounds[0]) {
+                bounds[0] = screenX;
+              } else if (screenX > bounds[1]) {
+                bounds[1] = screenX;
               }
-              polypts.push(screenX)
-              polypts.push(screenY)
+
+              if (screenY < bounds[2]) {
+                bounds[2] = screenY;
+              } else if (screenY > bounds[3]) {
+                bounds[3] = screenY;
+              }
             }
           }
-    
-          polys.push(polypts)
+          polypts.push(screenX);
+          polypts.push(screenY);
         }
-    */
-    // TODO(adb): handle multi-poly properly again...
-    var polypts = [];
-    for (var idx = 0; idx < verts.length; idx += 2) {
-      var screenX = xscale(verts[idx]) + margins.left;
-      var screenY = height - yscale(verts[idx + 1]) - 1 + margins.top;
+        return polypts;
+      };
 
-      if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
-        if (bounds[0] === Infinity) {
-          bounds[0] = screenX;
-          bounds[1] = screenX;
-          bounds[2] = screenY;
-          bounds[3] = screenY;
+      // process each ring
+      var ring_start = 0;
+      var poly_count = 0;
+      var poly_ring_idx = 0;
+      for (var ring = 0; ring < ring_sizes.length; ring++) {
+        var ring_slice = verts.slice(ring_start * 2, (ring_start + ring_sizes[ring]) * 2);
+
+        var polypts = processPoly(ring_slice);
+
+        if (poly_rings[poly_count] === 1) {
+          polys.push(polypts);
+          poly_count++;
+          is_multi_ring_poly[poly_count] = false;
         } else {
-          if (screenX < bounds[0]) {
-            bounds[0] = screenX;
-          } else if (screenX > bounds[1]) {
-            bounds[1] = screenX;
+          is_multi_ring_poly[poly_count] = true;
+          if (poly_ring_idx === 0) {
+            polys.push([polypts]);
+          } else {
+            polys[poly_count].push(polypts);
           }
-
-          if (screenY < bounds[2]) {
-            bounds[2] = screenY;
-          } else if (screenY > bounds[3]) {
-            bounds[3] = screenY;
+          if (++poly_ring_idx === polys[poly_count]) {
+            poly_count++;
+            poly_ring_idx = 0;
           }
         }
-      }
-      polypts.push(screenX);
-      polypts.push(screenY);
-    }
 
-    polys.push(polypts);
+        ring_start += ring_sizes[ring];
+      }
+    } else {
+      // verts and drawinfo should be valid as the _resultsAreValidForPopup()
+      // method should've been called beforehand
+      var _verts = data[polyTableGeomColumns.verts];
+      var drawinfo = data[polyTableGeomColumns.linedrawinfo_LEGACY];
+
+      var startIdxDiff = drawinfo.length ? drawinfo[2] : 0;
+
+      var FLT_MAX = 1e37;
+
+      for (var i = 0; i < drawinfo.length; i = i + 4) {
+        // Draw info struct:
+        //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
+        //     1: instanceCount, // should always be 1
+        //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
+        //     3: baseInstance   // irrelevant for our purposes -- should always be 0
+        var _polypts = [];
+        var count = (drawinfo[i] - 3) * 2; // include x&y, and drop 3 duplicated pts at the end
+        var startIdx = (drawinfo[i + 2] - startIdxDiff) * 2; // include x&y
+        var endIdx = startIdx + count; // remove the 3 duplicate pts at the end
+        for (var idx = startIdx; idx < endIdx; idx = idx + 2) {
+          if (_verts[idx] <= -FLT_MAX) {
+            // -FLT_MAX is a separator for multi-polygons (like Hawaii,
+            // where there would be a polygon per island), so when we hit a separator,
+            // remove the 3 duplicate points that would end the polygon prior to the separator
+            // and start a new polygon
+            _polypts.pop();
+            _polypts.pop();
+            _polypts.pop();
+            polys.push(_polypts);
+            _polypts = [];
+          } else {
+            var screenX = xscale(_verts[idx]) + margins.left;
+            var screenY = height - yscale(_verts[idx + 1]) - 1 + margins.top;
+
+            if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
+              if (bounds[0] === Infinity) {
+                bounds[0] = screenX;
+                bounds[1] = screenX;
+                bounds[2] = screenY;
+                bounds[3] = screenY;
+              } else {
+                if (screenX < bounds[0]) {
+                  bounds[0] = screenX;
+                } else if (screenX > bounds[1]) {
+                  bounds[1] = screenX;
+                }
+
+                if (screenY < bounds[2]) {
+                  bounds[2] = screenY;
+                } else if (screenY > bounds[3]) {
+                  bounds[3] = screenY;
+                }
+              }
+            }
+            _polypts.push(screenX);
+            _polypts.push(screenY);
+          }
+        }
+
+        polys.push(_polypts);
+      }
+    }
 
     if (bounds[0] === Infinity) {
       bounds[0] = 0;
@@ -26749,7 +26823,7 @@ function rasterLayerPolyMixin(_layer) {
     }
 
     var rndrProps = {};
-    var queryRndrProps = new Set([polyTableGeomColumns.verts]);
+    var queryRndrProps = new Set([polyTableGeomColumns.verts, polyTableGeomColumns.ring_sizes]);
     if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
       var propObj = _vega.marks[0].properties;
       renderAttributes.forEach(function (prop) {
@@ -26783,7 +26857,7 @@ function rasterLayerPolyMixin(_layer) {
 
     var xform = svg.append("g").attr("class", "map-poly-xform").attr("transform", "translate(" + (scale * bounds[0] - (scale - 1) * (bounds[0] + boundsWidth / 2)) + ", " + (scale * (bounds[2] + 1) - (scale - 1) * (bounds[2] + 1 + boundsHeight / 2)) + ")");
 
-    var group = xform.append("g").attr("class", "map-poly").attr("transform-origin", boundsWidth / 2, boundsHeight / 2).style("fill", fillColor).style("stroke", strokeColor);
+    var group = xform.append("g").attr("class", "map-poly").attr("transform-origin", boundsWidth / 2, boundsHeight / 2);
 
     if (typeof strokeWidth === "number") {
       group.style("stroke-width", strokeWidth);
@@ -26797,21 +26871,57 @@ function rasterLayerPolyMixin(_layer) {
       }
     }
 
-    polys.forEach(function (pts) {
-      if (!pts) {
-        return;
-      }
+    if (chart._useGeoTypes) {
+      var ptsToSvgPath = function ptsToSvgPath(pts) {
+        var pointStr = "";
+        for (var _i = 0; _i < pts.length; _i = _i + 2) {
+          pointStr = pointStr + (scale * (pts[_i] - bounds[0]) + " " + scale * (pts[_i + 1] - bounds[2]) + ", ");
+        }
+        return pointStr;
+      };
 
-      var pointStr = "";
-      for (var i = 0; i < pts.length; i = i + 2) {
-        pointStr = pointStr + (scale * (pts[i] - bounds[0]) + " " + scale * (pts[i + 1] - bounds[2]) + ", ");
-      }
-      pointStr = pointStr.slice(0, pointStr.length - 2).replace(/NaN/g, "");
+      polys.forEach(function (pts, idx) {
+        if (!pts) {
+          return;
+        }
 
-      group.append("polygon").attr("points", pointStr).attr("class", "map-polygon-shape").on("click", function () {
-        return _layer.onClick(chart, data, _d2.default.event);
+        ptsToSvgPath(pts);
+
+        var pointStr = "M ";
+        if (is_multi_ring_poly[idx]) {
+          // poly with multiple rings
+          pts.forEach(function (ring) {
+            pointStr += ptsToSvgPath(ring);
+            pointStr += " z M ";
+          });
+          pointStr = pointStr.slice(0, pointStr.length - 3);
+        } else {
+          pointStr += ptsToSvgPath(pts);
+        }
+        pointStr = pointStr.slice(0, pointStr.length - 2).replace(/NaN/g, "");
+        pointStr += "z";
+
+        group.append("path").attr("d", pointStr).attr("class", "map-polygon-shape").attr("fill", fillColor).attr("fill-rule", "evenodd").attr("stroke", strokeColor).on("click", function () {
+          return _layer.onClick(chart, data, _d2.default.event);
+        });
       });
-    });
+    } else {
+      polys.forEach(function (pts) {
+        if (!pts) {
+          return;
+        }
+
+        var pointStr = "";
+        for (var _i2 = 0; _i2 < pts.length; _i2 = _i2 + 2) {
+          pointStr = pointStr + (scale * (pts[_i2] - bounds[0]) + " " + scale * (pts[_i2 + 1] - bounds[2]) + ", ");
+        }
+        pointStr = pointStr.slice(0, pointStr.length - 2).replace(/NaN/g, "");
+
+        group.append("polygon").attr("points", pointStr).attr("class", "map-polygon-shape").on("click", function () {
+          return _layer.onClick(chart, data, _d2.default.event);
+        });
+      });
+    }
 
     _scaledPopups[chart] = isScaled;
 
@@ -47092,6 +47202,10 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   var _xScaleName = "x";
   var _yScaleName = "y";
 
+  var _xLatLngBnds = null;
+  var _yLatLngBnds = null;
+  var _useGeoTypes = false;
+
   var _usePixelRatio = false;
   var _pixelRatio = 1;
 
@@ -47127,6 +47241,22 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
     _y = _;
     return _chart;
+  };
+
+  _chart.xLatLngBnds = function (_) {
+    if (!arguments.length) {
+      return _xLatLngBnds;
+    }
+    _xLatLngBnds = _;
+    return chart;
+  };
+
+  _chart.yLatLngBnds = function (_) {
+    if (!arguments.length) {
+      return _yLatLngBnds;
+    }
+    _yLatLngBnds = _;
+    return chart;
   };
 
   _chart._resetRenderBounds = function () {
@@ -47226,6 +47356,11 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _chart;
   };
 
+  _chart.useGeoTypes = function (geoTypesEnabled) {
+    _chart._useGeoTypes = geoTypesEnabled;
+    return _chart;
+  };
+
   // TODO(croot): pixel ratio should probably be configured on the backend
   // rather than here to deal with scenarios where data is used directly
   // in pixel-space.
@@ -47299,6 +47434,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     if (_y === null) {
       _y = d3.scale.linear();
+    }
+
+    // if _chart.useLonLat() is not true, the chart bounds have already been projected into mercator space
+    // TODO(adb): could probably collape this into line 353
+    if (_chart._useGeoTypes && typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
+      _xLatLngBnds = [renderBounds[0][0], renderBounds[1][0]];
+      _yLatLngBnds = [renderBounds[2][1], renderBounds[0][1]];
     }
 
     if (useRenderBounds) {
@@ -47562,6 +47704,19 @@ function genLayeredVega(chart) {
     domain: chart.y().domain(),
     range: "height"
   }];
+
+  // NOTE(adb): When geo types are enabled, vega spatial projections are applied and the scales for the x and y properties are not being used. However, we still need the legacy scaling terms to properly size poly popups on hover, which is why _xLatLngBnds, etc are separate scales
+  var projections = [];
+  if (chart._useGeoTypes) {
+    projections.push({
+      name: "mercator_map_projection",
+      type: "mercator",
+      bounds: {
+        x: chart.xLatLngBnds(),
+        y: chart.yLatLngBnds()
+      }
+    });
+  }
   var marks = [];
 
   chart.getLayerNames().forEach(function (layerName) {
@@ -47577,6 +47732,7 @@ function genLayeredVega(chart) {
     height: Math.round(height),
     data: data,
     scales: scales,
+    projections: projections,
     marks: marks
   };
 
