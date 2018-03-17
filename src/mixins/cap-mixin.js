@@ -213,7 +213,9 @@ export default function capMixin(_chart) {
     if (d.others) {
       _chart.filter([d.others])
     }
-    _chart._onClick(d)
+    if (_chart._onClick) {
+      _chart._onClick(d)
+    }
   })
 
   return _chart

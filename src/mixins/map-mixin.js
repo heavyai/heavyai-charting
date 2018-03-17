@@ -53,6 +53,9 @@ export default function mapMixin(
   _chart._maxCoord = null
   _chart._reProjMapbox = true
 
+  let _clientClickX = null
+  let _clientClickY = null
+
   const _arr = [[-180, -85], [180, 85]]
 
   const _llb = _mapboxgl.LngLatBounds.convert(_arr)
@@ -587,15 +590,26 @@ export default function mapMixin(
       })
 
       _map.on("mousedown", event => {
-        _chart.getClosestResult(event.point, result => {
-          const data = result.row_set[0]
-          _chart.getLayerNames().forEach(layerName => {
-            const layer = _chart.getLayer(layerName)
-            if (typeof layer.onClick === "function") {
-              layer.onClick(_chart, data, event.originalEvent)
-            }
+        _clientClickX = event.point.x
+        _clientClickY = event.point.y
+      })
+
+      _map.on("mouseup", event => {
+        // Make sure that the user is clicking to filter, and not dragging or panning the map
+        if (
+          _clientClickX === event.point.x &&
+          _clientClickY === event.point.y
+        ) {
+          _chart.getClosestResult(event.point, result => {
+            const data = result.row_set[0]
+            _chart.getLayerNames().forEach(layerName => {
+              const layer = _chart.getLayer(layerName)
+              if (typeof layer.onClick === "function") {
+                layer.onClick(_chart, data, event.originalEvent)
+              }
+            })
           })
-        })
+        }
       })
     })
   }
