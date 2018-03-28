@@ -48278,7 +48278,10 @@ function rowChart(parent, chartGroup) {
     updateElements(rows);
 
     if (_chart.autoScroll()) {
-      _chart.root().select(".svg-wrapper").node().scrollTop = _scrollTop;
+      var svgWrapperNode = _chart.root().select(".svg-wrapper").node();
+      if (svgWrapperNode) {
+        svgWrapperNode.scrollTop = _scrollTop;
+      }
     }
   }
 
@@ -51325,7 +51328,11 @@ function legendMixin(legend) {
         return d.name;
       });
 
-      body.node().scrollTop = legend._scrollPos;
+      var bodyNode = body.node();
+      if (bodyNode) {
+        // fix for #4196#issuecomment-376704328
+        bodyNode.scrollTop = legend._scrollPos;
+      }
     }
   };
 

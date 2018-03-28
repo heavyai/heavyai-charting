@@ -70,7 +70,11 @@ export default function legendMixin(legend) {
         .attr("class", "legend-item-text")
         .text(d => d.name)
 
-      body.node().scrollTop = legend._scrollPos
+      const bodyNode = body.node()
+      if (bodyNode) {
+        // fix for #4196#issuecomment-376704328
+        bodyNode.scrollTop = legend._scrollPos
+      }
     }
   }
 
