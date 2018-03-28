@@ -4666,10 +4666,9 @@ var TIME_UNITS = exports.TIME_UNITS = {
   timestamp: true,
   "timestamp without timezone": true,
   TIME: true
-};
 
-/* istanbul ignore next */
-var customTimeFormat = exports.customTimeFormat = _d2.default.time.format.utc.multi([[".%L", function (d) {
+  /* istanbul ignore next */
+};var customTimeFormat = exports.customTimeFormat = _d2.default.time.format.utc.multi([[".%L", function (d) {
   return d.getUTCMilliseconds();
 }], [":%S", function (d) {
   return d.getUTCSeconds();
@@ -7541,6 +7540,53 @@ function createParser() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var events = exports.events = {
+  current: null
+
+  /**
+   * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
+   * that are triggered repetitively due to user interaction such brush dragging might flood the library
+   * and invoke more renders than can be executed in time. Using this function to wrap your event
+   * function allows the library to smooth out the rendering by throttling events and only responding to
+   * the most recent event.
+   * @name events.trigger
+   * @memberof dc
+   * @example
+   * chart.on('renderlet', function(chart) {
+   *     // smooth the rendering through event throttling
+   *     dc.events.trigger(function(){
+   *         // focus some other chart to the range selected by user on this chart
+   *         someOtherChart.focus(chart.filter());
+   *     });
+   * })
+   * @param {Function} closure
+   * @param {Number} [delay]
+   */
+};events.trigger = function (closure, delay) {
+  if (!delay) {
+    closure();
+    return;
+  }
+
+  events.current = closure;
+
+  setTimeout(function () {
+    if (closure === events.current) {
+      closure();
+    }
+  }, delay);
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = capMixin;
 
 var _d = __webpack_require__(1);
@@ -7768,7 +7814,7 @@ function capMixin(_chart) {
 }
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7797,7 +7843,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(11);
+var _events = __webpack_require__(9);
 
 var _filters = __webpack_require__(13);
 
@@ -9413,54 +9459,6 @@ function coordinateGridMixin(_chart) {
 }
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var events = exports.events = {
-  current: null
-};
-
-/**
- * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
- * that are triggered repetitively due to user interaction such brush dragging might flood the library
- * and invoke more renders than can be executed in time. Using this function to wrap your event
- * function allows the library to smooth out the rendering by throttling events and only responding to
- * the most recent event.
- * @name events.trigger
- * @memberof dc
- * @example
- * chart.on('renderlet', function(chart) {
- *     // smooth the rendering through event throttling
- *     dc.events.trigger(function(){
- *         // focus some other chart to the range selected by user on this chart
- *         someOtherChart.focus(chart.filter());
- *     });
- * })
- * @param {Function} closure
- * @param {Number} [delay]
- */
-events.trigger = function (closure, delay) {
-  if (!delay) {
-    closure();
-    return;
-  }
-
-  events.current = closure;
-
-  setTimeout(function () {
-    if (closure === events.current) {
-      closure();
-    }
-  }, delay);
-};
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9482,24 +9480,24 @@ exports.default = marginMixin;
  */
 function marginMixin(_chart) {
   /* OVERRIDE ---------------------------------------------------------------- */
-  var _margin = { top: 10, right: 50, bottom: 48, left: 60 };
-  /* ------------------------------------------------------------------------- */
+  var _margin = { top: 10, right: 50, bottom: 48, left: 60
+    /* ------------------------------------------------------------------------- */
 
-  /**
-   * Get or set the margins for a particular coordinate grid chart instance. The margins is stored as
-   * an associative Javascript array.
-   * @name margins
-   * @memberof dc.marginMixin
-   * @instance
-   * @example
-   * var leftMargin = chart.margins().left; // 30 by default
-   * chart.margins().left = 50;
-   * leftMargin = chart.margins().left; // now 50
-   * @param {{top: Number, right: Number, left: Number, bottom: Number}} [margins={top: 10, right: 50, bottom: 30, left: 30}]
-   * @return {{top: Number, right: Number, left: Number, bottom: Number}}
-   * @return {dc.marginMixin}
-   */
-  _chart.margins = function (margins) {
+    /**
+     * Get or set the margins for a particular coordinate grid chart instance. The margins is stored as
+     * an associative Javascript array.
+     * @name margins
+     * @memberof dc.marginMixin
+     * @instance
+     * @example
+     * var leftMargin = chart.margins().left; // 30 by default
+     * chart.margins().left = 50;
+     * leftMargin = chart.margins().left; // now 50
+     * @param {{top: Number, right: Number, left: Number, bottom: Number}} [margins={top: 10, right: 50, bottom: 30, left: 30}]
+     * @return {{top: Number, right: Number, left: Number, bottom: Number}}
+     * @return {dc.marginMixin}
+     */
+  };_chart.margins = function (margins) {
     if (!arguments.length) {
       return _margin;
     }
@@ -11281,6 +11279,18 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
           });
         }
       });
+
+      _map.on("mousedown", function (event) {
+        _chart.getClosestResult(event.point, function (result) {
+          var data = result.row_set[0];
+          _chart.getLayerNames().forEach(function (layerName) {
+            var layer = _chart.getLayer(layerName);
+            if (typeof layer.onClick === "function") {
+              layer.onClick(_chart, data, event.originalEvent);
+            }
+          });
+        });
+      });
     });
   };
 
@@ -11447,6 +11457,7 @@ function rasterDrawMixin(chart) {
   var currYRange = null;
   var coordFilters = new Map();
   var origFilterFunc = null;
+  var origFilterAll = null;
 
   var defaultStyle = {
     fillColor: "#22a7f0",
@@ -11607,9 +11618,9 @@ function rasterDrawMixin(chart) {
   function filters() {
     var shapes = drawEngine.getShapesAsJSON();
     if (shapes[0]) {
-      return chart.zoomFilters().concat(Array.from(shapes));
+      return chart.nonDrawFilters().concat(Array.from(shapes));
     }
-    return chart.zoomFilters();
+    return chart.nonDrawFilters();
   }
 
   function filter(filterArg) {
@@ -11742,11 +11753,19 @@ function rasterDrawMixin(chart) {
     chart.map().on("resize", updateDrawResize);
 
     origFilterFunc = chart.filter;
+    origFilterAll = chart.filterAll;
     chart.filter = filter;
-    chart.zoomFilters = chart.filters;
+    chart.nonDrawFilters = chart.filters;
     chart.filters = filters;
 
     chart.filterAll = function () {
+      origFilterAll();
+      chart.getLayerNames().forEach(function (layerName) {
+        var layer = chart.getLayer(layerName);
+        if (layer.hasOwnProperty("filterAll")) {
+          layer.filterAll();
+        }
+      });
       if (coordFilters) {
         coordFilters.forEach(function (filterObj) {
           filterObj.shapeFilters = [];
@@ -23418,7 +23437,7 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
   _chart._mandatoryAttributes().push("x", "y");
 
   _chart.resetSvg = function () {
-    _chart.select("div.svg-wrapper").html("");
+    _chart.root().selectAll("*:not(.legend)").remove();
 
     return _chart.generateSvg();
   };
@@ -26020,7 +26039,17 @@ exports.default = rasterLayerPolyMixin;
 
 var _utilsVega = __webpack_require__(15);
 
+var _d = __webpack_require__(1);
+
+var _d2 = _interopRequireDefault(_d);
+
+var _events = __webpack_require__(9);
+
 var _utils = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var vegaLineJoinOptions = ["miter", "round", "bevel"];
 var polyTableGeomColumns = {
@@ -26060,6 +26089,7 @@ function validateMiterLimit(newMiterLimit, currMiterLimit) {
 
 function rasterLayerPolyMixin(_layer) {
   _layer.crossfilter = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
+  _layer.filtersInverse = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, false);
 
   (0, _utilsVega.createVegaAttrMixin)(_layer, "lineJoin", vegaLineJoinOptions[0], vegaLineJoinOptions[0], false, {
     preDefault: validateLineJoin,
@@ -26097,21 +26127,39 @@ function rasterLayerPolyMixin(_layer) {
 
   function getTransforms(_ref) {
     var filter = _ref.filter,
-        globalFilter = _ref.globalFilter;
+        globalFilter = _ref.globalFilter,
+        _ref$layerFilter = _ref.layerFilter,
+        layerFilter = _ref$layerFilter === undefined ? [] : _ref$layerFilter,
+        filtersInverse = _ref.filtersInverse;
+
+    var selfJoin = state.data[0].table === state.data[1].table;
+
+    var groupby = {
+      type: "project",
+      expr: state.data[0].table + "." + state.data[0].attr,
+      as: "key0"
+    };
 
     var transforms = [{
       type: "rowid",
       table: state.data[1].table
-    }, {
-      type: "project",
-      expr: state.encoding.color.aggregrate,
-      as: "color"
-    }, {
+    }, !selfJoin && {
       type: "filter",
       expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
     }, {
-      type: "sort",
-      field: ["color"]
+      type: "aggregate",
+      fields: [layerFilter.length ? _utils.parser.parseExpression({
+        type: "case",
+        cond: [[{
+          type: filtersInverse ? "not in" : "in",
+          expr: state.data[0].table + "." + state.data[0].attr,
+          set: layerFilter
+        }, _utils.parser.parseExpression(state.encoding.color.aggregrate)]],
+        else: null
+      }) : _utils.parser.parseExpression(state.encoding.color.aggregrate)],
+      ops: [null],
+      as: ["color"],
+      groupby: groupby
     }];
 
     if (typeof state.transform.limit === "number") {
@@ -26141,31 +26189,37 @@ function rasterLayerPolyMixin(_layer) {
   _layer.__genVega = function (_ref2) {
     var filter = _ref2.filter,
         globalFilter = _ref2.globalFilter,
+        layerFilter = _ref2.layerFilter,
+        filtersInverse = _ref2.filtersInverse,
         layerName = _ref2.layerName;
 
+    var colorRange = state.encoding.color.range.map(function (c) {
+      return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
+    });
     return {
       data: {
         name: layerName,
         format: "polys",
-        shapeColGroup: "mapd",
         sql: _utils.parser.writeSQL({
           type: "root",
-          source: state.data.map(function (source) {
+          source: [].concat(_toConsumableArray(new Set(state.data.map(function (source, index) {
             return source.table;
-          }).join(", "),
-          transform: getTransforms({ filter: filter, globalFilter: globalFilter })
+          })))).join(", "),
+          transform: getTransforms({
+            filter: filter,
+            globalFilter: globalFilter,
+            layerFilter: layerFilter,
+            filtersInverse: filtersInverse
+          })
         })
       },
       scales: [{
         name: layerName + "_fillColor",
-        type: "linear",
+        type: "quantize",
         domain: state.encoding.color.domain,
-        range: state.encoding.color.range.map(function (c) {
-          return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
-        }),
-        default: "green",
-        nullValue: "#CACACA",
-        clamp: false
+        range: colorRange,
+        nullValue: "#D6D7D6",
+        default: "#D6D7D6"
       }],
       mark: {
         type: "polys",
@@ -26186,7 +26240,7 @@ function rasterLayerPolyMixin(_layer) {
             field: "color"
           },
           strokeColor: _typeof(state.mark) === "object" ? state.mark.strokeColor : "white",
-          strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 0,
+          strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 0.5,
           lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
           miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
         }
@@ -26202,8 +26256,10 @@ function rasterLayerPolyMixin(_layer) {
   _layer._genVega = function (chart, layerName, group, query) {
     _vega = _layer.__genVega({
       layerName: layerName,
-      filter: _layer.crossfilter().getFilterString(),
-      globalFilter: _layer.crossfilter().getGlobalFilterString()
+      filter: _layer.crossfilter().getFilterString(_layer.dimension().getDimensionIndex()),
+      globalFilter: _layer.crossfilter().getGlobalFilterString(),
+      layerFilter: _layer.filters(),
+      filtersInverse: _layer.filtersInverse()
     });
     return _vega;
   };
@@ -26232,6 +26288,39 @@ function rasterLayerPolyMixin(_layer) {
     return false;
   };
 
+  var _filtersArray = [];
+  var _isInverseFilter = false;
+  var polyLayerEvents = ["filtered"];
+  var _listeners = _d2.default.dispatch.apply(_d2.default, polyLayerEvents);
+
+  _layer.filter = function (key, isInverseFilter) {
+    if (isInverseFilter !== _layer.filtersInverse()) {
+      _layer.filterAll();
+      _layer.filtersInverse(isInverseFilter);
+    }
+    if (_filtersArray.includes(key)) {
+      _filtersArray = _filtersArray.filter(function (v) {
+        return v !== key;
+      });
+    } else {
+      _filtersArray = [].concat(_toConsumableArray(_filtersArray), [key]);
+    }
+    _filtersArray.length ? _layer.dimension().filterMulti(_filtersArray, undefined, isInverseFilter) : _layer.dimension().filterAll();
+  };
+
+  _layer.filters = function () {
+    return _filtersArray;
+  };
+
+  _layer.filterAll = function () {
+    _filtersArray = [];
+  };
+
+  _layer.on = function (event, listener) {
+    _listeners.on(event, listener);
+    return _layer;
+  };
+
   _layer._displayPopup = function (chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate) {
     // verts and drawinfo should be valid as the _resultsAreValidForPopup()
     // method should've been called beforehand
@@ -26250,6 +26339,8 @@ function rasterLayerPolyMixin(_layer) {
     var bounds = [Infinity, -Infinity, Infinity, -Infinity];
     var startIdxDiff = drawinfo.length ? drawinfo[2] : 0;
 
+    var FLT_MAX = 1e37;
+
     for (var i = 0; i < drawinfo.length; i = i + 4) {
       // Draw info struct:
       //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
@@ -26261,31 +26352,43 @@ function rasterLayerPolyMixin(_layer) {
       var startIdx = (drawinfo[i + 2] - startIdxDiff) * 2; // include x&y
       var endIdx = startIdx + count; // remove the 3 duplicate pts at the end
       for (var idx = startIdx; idx < endIdx; idx = idx + 2) {
-        var screenX = xscale(verts[idx]) + margins.left;
-        var screenY = height - yscale(verts[idx + 1]) - 1 + margins.top;
+        if (verts[idx] <= -FLT_MAX) {
+          // -FLT_MAX is a separator for multi-polygons (like Hawaii,
+          // where there would be a polygon per island), so when we hit a separator,
+          // remove the 3 duplicate points that would end the polygon prior to the separator
+          // and start a new polygon
+          polypts.pop();
+          polypts.pop();
+          polypts.pop();
+          polys.push(polypts);
+          polypts = [];
+        } else {
+          var screenX = xscale(verts[idx]) + margins.left;
+          var screenY = height - yscale(verts[idx + 1]) - 1 + margins.top;
 
-        if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
-          if (bounds[0] === Infinity) {
-            bounds[0] = screenX;
-            bounds[1] = screenX;
-            bounds[2] = screenY;
-            bounds[3] = screenY;
-          } else {
-            if (screenX < bounds[0]) {
+          if (screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
+            if (bounds[0] === Infinity) {
               bounds[0] = screenX;
-            } else if (screenX > bounds[1]) {
               bounds[1] = screenX;
-            }
-
-            if (screenY < bounds[2]) {
               bounds[2] = screenY;
-            } else if (screenY > bounds[3]) {
               bounds[3] = screenY;
+            } else {
+              if (screenX < bounds[0]) {
+                bounds[0] = screenX;
+              } else if (screenX > bounds[1]) {
+                bounds[1] = screenX;
+              }
+
+              if (screenY < bounds[2]) {
+                bounds[2] = screenY;
+              } else if (screenY > bounds[3]) {
+                bounds[3] = screenY;
+              }
             }
           }
+          polypts.push(screenX);
+          polypts.push(screenY);
         }
-        polypts.push(screenX);
-        polypts.push(screenY);
       }
 
       polys.push(polypts);
@@ -26374,9 +26477,11 @@ function rasterLayerPolyMixin(_layer) {
       for (var _i = 0; _i < pts.length; _i = _i + 2) {
         pointStr = pointStr + (scale * (pts[_i] - bounds[0]) + " " + scale * (pts[_i + 1] - bounds[2]) + ", ");
       }
-      pointStr = pointStr.slice(0, pointStr.length - 2);
+      pointStr = pointStr.slice(0, pointStr.length - 2).replace(/NaN/g, "");
 
-      group.append("polygon").attr("points", pointStr);
+      group.append("polygon").attr("points", pointStr).attr("class", "map-polygon-shape").on("click", function () {
+        return _layer.onClick(chart, data, _d2.default.event);
+      });
     });
 
     _scaledPopups[chart] = isScaled;
@@ -26387,6 +26492,21 @@ function rasterLayerPolyMixin(_layer) {
       rndrPropSet: queryRndrProps,
       bounds: bounds
     };
+  };
+
+  _layer.onClick = function (chart, data, event) {
+    if (!data) {
+      return;
+    }
+    var isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey));
+
+    chart.hidePopup();
+    _events.events.trigger(function () {
+      _layer.filter(data.key0, isInverseFilter);
+      chart.filter(data.key0, isInverseFilter);
+      _listeners.filtered(_layer, _filtersArray);
+      chart.redrawGroup();
+    });
   };
 
   _layer._hidePopup = function (chart, hideCallback) {
@@ -26410,6 +26530,7 @@ function rasterLayerPolyMixin(_layer) {
   };
 
   _layer._destroyLayer = function (chart) {
+    _layer.on("filtered", null);
     // deleteCanvas(chart)
   };
 
@@ -26468,7 +26589,7 @@ Object.keys(_coreAsync).forEach(function (key) {
   });
 });
 
-var _events = __webpack_require__(11);
+var _events = __webpack_require__(9);
 
 Object.keys(_events).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -26705,7 +26826,7 @@ Object.defineProperty(exports, "bubbleMixin", {
   }
 });
 
-var _capMixin = __webpack_require__(9);
+var _capMixin = __webpack_require__(10);
 
 Object.defineProperty(exports, "capMixin", {
   enumerable: true,
@@ -26723,7 +26844,7 @@ Object.defineProperty(exports, "colorMixin", {
   }
 });
 
-var _coordinateGridMixin = __webpack_require__(10);
+var _coordinateGridMixin = __webpack_require__(11);
 
 Object.defineProperty(exports, "coordinateGridMixin", {
   enumerable: true,
@@ -26976,7 +27097,7 @@ function parseExpression(expression) {
     case "case":
       return "CASE WHEN " + expression.cond.map(function (cond) {
         return parseExpression(cond[0]) + " THEN " + cond[1];
-      }).join(" ") + " ELSE '" + expression.else + "' END";
+      }).join(" ") + (expression.else ? " ELSE '" + expression.else + "'" : "") + " END";
     case "date_trunc":
       return "date_trunc(" + expression.unit + ", " + expression.field + ")";
     case "extract":
@@ -28339,7 +28460,7 @@ var _bubbleMixin = __webpack_require__(18);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(9);
+var _capMixin = __webpack_require__(10);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -28843,7 +28964,7 @@ exports.default = filterMixin;
 
 var _formattingHelpers = __webpack_require__(6);
 
-var _events = __webpack_require__(11);
+var _events = __webpack_require__(9);
 
 var noop = function noop() {}; // eslint-disable-line no-empty-function
 
@@ -29217,7 +29338,7 @@ var _elasticDimensionMixin = __webpack_require__(135);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _coordinateGridMixin = __webpack_require__(10);
+var _coordinateGridMixin = __webpack_require__(11);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -29250,32 +29371,31 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
   quarter: 4,
   hour: 24,
   minute: 60
-};
 
-/**
- * Concrete bar chart/histogram implementation.
- *
- * @class barChart
- * @memberof dc
- * @mixes dc.stackMixin
- * @mixes dc.coordinateGridMixin
- * @example
- * // create a bar chart under #chart-container1 element using the default global chart group
- * var chart1 = dc.barChart('#chart-container1');
- * // create a bar chart under #chart-container2 element using chart group A
- * var chart2 = dc.barChart('#chart-container2', 'chartGroupA');
- * // create a sub-chart under a composite parent chart
- * var chart3 = dc.barChart(compositeChart);
- * @param {String|node|d3.selection|dc.compositeChart} parent - Any valid
- * {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements d3 single selector}
- * specifying a dom block element such as a div; or a dom element or d3 selection.  If the bar
- * chart is a sub-chart in a {@link dc.compositeChart Composite Chart} then pass in the parent
- * composite chart instance instead.
- * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
- * Interaction with a chart will only trigger events and redraws within the chart's group.
- * @returns {dc.barChart}
- */
-function barChart(parent, chartGroup) {
+  /**
+   * Concrete bar chart/histogram implementation.
+   *
+   * @class barChart
+   * @memberof dc
+   * @mixes dc.stackMixin
+   * @mixes dc.coordinateGridMixin
+   * @example
+   * // create a bar chart under #chart-container1 element using the default global chart group
+   * var chart1 = dc.barChart('#chart-container1');
+   * // create a bar chart under #chart-container2 element using chart group A
+   * var chart2 = dc.barChart('#chart-container2', 'chartGroupA');
+   * // create a sub-chart under a composite parent chart
+   * var chart3 = dc.barChart(compositeChart);
+   * @param {String|node|d3.selection|dc.compositeChart} parent - Any valid
+   * {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements d3 single selector}
+   * specifying a dom block element such as a div; or a dom element or d3 selection.  If the bar
+   * chart is a sub-chart in a {@link dc.compositeChart Composite Chart} then pass in the parent
+   * composite chart instance instead.
+   * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
+   * Interaction with a chart will only trigger events and redraws within the chart's group.
+   * @returns {dc.barChart}
+   */
+};function barChart(parent, chartGroup) {
   var MIN_BAR_WIDTH = 1;
   var DEFAULT_GAP_BETWEEN_BARS = 4;
   var LABEL_PADDING = 3;
@@ -38554,7 +38674,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(11);
+var _events = __webpack_require__(9);
 
 var _filters = __webpack_require__(13);
 
@@ -38745,11 +38865,11 @@ var _bubbleMixin = __webpack_require__(18);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(9);
+var _capMixin = __webpack_require__(10);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _coordinateGridMixin = __webpack_require__(10);
+var _coordinateGridMixin = __webpack_require__(11);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -39178,7 +39298,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(9);
+var _capMixin = __webpack_require__(10);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -39324,7 +39444,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = compositeChart;
 
-var _coordinateGridMixin = __webpack_require__(10);
+var _coordinateGridMixin = __webpack_require__(11);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -39934,10 +40054,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function dataCount(parent, chartGroup) {
   var _formatNumber = _d2.default.format(",d");
   var _chart = (0, _baseMixin2.default)({});
-  var _html = { some: "", all: "" };
+  var _html = { some: "", all: ""
 
-  /* OVERRIDE ---------------------------------------------------------------- */
-  _chart.isCountChart = function () {
+    /* OVERRIDE ---------------------------------------------------------------- */
+  };_chart.isCountChart = function () {
     return true;
   }; // override for count chart
   /* ------------------------------------------------------------------------- */
@@ -42427,7 +42547,7 @@ var _marginMixin = __webpack_require__(12);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _events = __webpack_require__(11);
+var _events = __webpack_require__(9);
 
 var _core = __webpack_require__(2);
 
@@ -42536,10 +42656,10 @@ function heatMap(parent, chartGroup) {
   var _minBoxSize = 16;
   var _scrollPos = { top: null, left: 0 };
   var _dockedAxes = void 0;
-  var _dockedAxesSize = { left: 48, bottom: 56 };
-  /* --------------------------------------------------------------------------*/
+  var _dockedAxesSize = { left: 48, bottom: 56
+    /* --------------------------------------------------------------------------*/
 
-  var _xBorderRadius = DEFAULT_BORDER_RADIUS;
+  };var _xBorderRadius = DEFAULT_BORDER_RADIUS;
   var _yBorderRadius = DEFAULT_BORDER_RADIUS;
 
   var _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _baseMixin2.default)({})));
@@ -43108,7 +43228,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(9);
+var _capMixin = __webpack_require__(10);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -43855,10 +43975,9 @@ function pieChart(parent, chartGroup) {
         data: d.value,
         others: d.others,
         chart: _chart
-      };
-      /* --------------------------------------------------------------------------*/
+        /* --------------------------------------------------------------------------*/
 
-      legendable.color = _chart.getColor(d, i);
+      };legendable.color = _chart.getColor(d, i);
       return legendable;
     });
   };
@@ -43907,7 +44026,7 @@ var _core = __webpack_require__(2);
 
 var _utils = __webpack_require__(3);
 
-var _coordinateGridMixin = __webpack_require__(10);
+var _coordinateGridMixin = __webpack_require__(11);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -45021,6 +45140,10 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       } else {
         _chart._setOverlay(null, null, null, browser, Boolean(redraw));
       }
+    } else {
+      _chart.map().once("style.load", function () {
+        _chart._doRender(data, redraw, doNotForceData);
+      });
     }
   };
 
@@ -46607,7 +46730,6 @@ function renderInput(state, domain, dispatch) {
             }
         },
         props: {
-            type: "number",
             value: domain.value
         },
         on: {
@@ -47907,7 +48029,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(9);
+var _capMixin = __webpack_require__(10);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -48156,7 +48278,10 @@ function rowChart(parent, chartGroup) {
     updateElements(rows);
 
     if (_chart.autoScroll()) {
-      _chart.root().select(".svg-wrapper").node().scrollTop = _scrollTop;
+      var svgWrapperNode = _chart.root().select(".svg-wrapper").node();
+      if (svgWrapperNode) {
+        svgWrapperNode.scrollTop = _scrollTop;
+      }
     }
   }
 
@@ -48302,13 +48427,13 @@ function rowChart(parent, chartGroup) {
         //
         var measureWidth = 0;
         var labelNode = thisLabel.node();
-        if (labelNode.getClientRects().length > 0) {
+        if (labelNode && labelNode.getClientRects && labelNode.getClientRects().length > 0) {
           measureWidth = labelNode.getBBox().width;
         }
 
         var dimWidth = 0;
         var textNode = _chart.svg().select("text.value-dim._" + i).node();
-        if (textNode.getClientRects().length > 0) {
+        if (textNode && textNode.getClientRects && textNode.getClientRects().length > 0) {
           dimWidth = textNode.getBBox().width;
         }
         var minIdealWidth = measureWidth + dimWidth + 16;
@@ -48549,7 +48674,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = scatterPlot;
 
-var _coordinateGridMixin = __webpack_require__(10);
+var _coordinateGridMixin = __webpack_require__(11);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -48557,7 +48682,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(11);
+var _events = __webpack_require__(9);
 
 var _filters = __webpack_require__(13);
 
@@ -49343,7 +49468,7 @@ exports.default = boxPlot;
 
 var _core = __webpack_require__(2);
 
-var _coordinateGridMixin = __webpack_require__(10);
+var _coordinateGridMixin = __webpack_require__(11);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -49733,7 +49858,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = rasterLayer;
 
-var _capMixin = __webpack_require__(9);
+var _capMixin = __webpack_require__(10);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -50056,7 +50181,7 @@ function rasterLayer(layerType) {
   function renderPopupHTML(data, columnOrder, columnMap) {
     var html = "";
     columnOrder.forEach(function (key) {
-      if (!data[key] && !columnMap[key]) {
+      if (typeof data[key] === "undefined" || data[key] === null) {
         return;
       }
 
@@ -51203,7 +51328,11 @@ function legendMixin(legend) {
         return d.name;
       });
 
-      body.node().scrollTop = legend._scrollPos;
+      var bodyNode = body.node();
+      if (bodyNode) {
+        // fix for #4196#issuecomment-376704328
+        bodyNode.scrollTop = legend._scrollPos;
+      }
     }
   };
 
@@ -52337,8 +52466,6 @@ var _d2 = _interopRequireDefault(_d);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// https://github.com/d3/d3-plugins/blob/master/box/box.js
-/* istanbul ignore next */
 (function () {
   // Inspired by http://informationandvisualization.de/blog/box-plot
   _d2.default.box = function () {

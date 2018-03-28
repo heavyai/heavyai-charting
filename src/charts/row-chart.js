@@ -453,7 +453,7 @@ export default function rowChart(parent, chartGroup) {
           //
           let measureWidth = 0
           const labelNode = thisLabel.node()
-          if (labelNode.getClientRects().length > 0) {
+          if (labelNode && labelNode.getClientRects && labelNode.getClientRects().length > 0) {
             measureWidth = labelNode.getBBox().width
           }
 
@@ -462,7 +462,7 @@ export default function rowChart(parent, chartGroup) {
             .svg()
             .select("text.value-dim._" + i)
             .node()
-          if (textNode.getClientRects().length > 0) {
+          if (textNode && textNode.getClientRects && textNode.getClientRects().length > 0) {
             dimWidth = textNode.getBBox().width
           }
           const minIdealWidth = measureWidth + dimWidth + 16
