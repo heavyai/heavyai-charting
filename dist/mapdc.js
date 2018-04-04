@@ -48278,10 +48278,7 @@ function rowChart(parent, chartGroup) {
     updateElements(rows);
 
     if (_chart.autoScroll()) {
-      var svgWrapperNode = _chart.root().select(".svg-wrapper").node();
-      if (svgWrapperNode) {
-        svgWrapperNode.scrollTop = _scrollTop;
-      }
+      _chart.root().select(".svg-wrapper").node().scrollTop = _scrollTop;
     }
   }
 
