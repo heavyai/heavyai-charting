@@ -28,6 +28,7 @@
   "scripts": {
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel index.js --out-dir lib",
     "build": "webpack",
+    "watch": "webpack --watch",
     "build:docs": "./node_modules/documentation/bin/documentation.js build src/** -f html -o docs",
     "build:example": "webpack --config ./example/webpack.config.js",
     "clean": "rm -rf build.log node_modules/ dist/ && npm run clean:docs && npm run clean:example",

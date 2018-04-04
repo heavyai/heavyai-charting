@@ -25,13 +25,15 @@ Visit our [examples page](https://mapd.github.io/mapd-charting/example/) for ide
 ##### Step 1: Install Dependencies
 
 ```bash
-npm install #downloads all dependencies and devDependencies
-npm install mapbox-gl@https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307 #downloads mapbox peer dependency
+yarn install #downloads all dependencies and devDependencies
+yarn install mapbox-gl@https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307 #downloads mapbox peer dependency
 ```
 
 ##### Step 2: Run Start Script
 ```bash
-npm run start
+yarn run start
+or
+yarn run watch
 ```
 
 # Synopsis
@@ -56,12 +58,12 @@ New components in MapD-Charting should be unit-tested and linted.  All tests wil
 
 The linter and all tests run on
 ```bash
-npm run test
+yarn run test
 ```
 
 To check only unit-tests run:
 ```bash
-npm run test:unit
+yarn run test:unit
 ```
 
 ### Linting
@@ -72,11 +74,11 @@ Please lint all your code in `mapd-charting/`. The lint config file can be found
 
 | Command        | Description  |
 --- | ---
-`npm run start` | Copies files for examples and then serves the example
-`npm run build` | Runs webpack and builds js and css in `/dist`
-`npm run docs` | Creates and opens docs
-`npm run test` | Runs both linting and unit tests
-`npm run clean` | Removes node modules, dist, docs, and example files
+`yarn run start` | Copies files for examples and then serves the example
+`yarn run build` | Runs webpack and builds js and css in `/dist`
+`yarn run docs` | Creates and opens docs
+`yarn run test` | Runs both linting and unit tests
+`yarn run clean` | Removes node modules, dist, docs, and example files
 
 # Documentation
 The charting library uses [documentation.js](https://github.com/documentationjs/documentation) for API documentation. Docs can be built and viewed locally with the `npm run docs` command.
