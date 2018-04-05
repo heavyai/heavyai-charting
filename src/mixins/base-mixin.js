@@ -119,6 +119,7 @@ export default function baseMixin(_chart) {
 
   let _legend
   let _commitHandler
+  let _valueFormatter
 
   /* OVERRIDE ---------------------------------------------------------------- */
   let _legendContinuous
@@ -1865,6 +1866,14 @@ export default function baseMixin(_chart) {
 
   _chart.isMulti = function() {
     return false
+  }
+
+  _chart.valueFormatter = function(formatter) {
+    if (!arguments.length) {
+      return _valueFormatter
+    }
+    _valueFormatter = formatter
+    return _chart
   }
 
   _chart = chartLegendMixin(

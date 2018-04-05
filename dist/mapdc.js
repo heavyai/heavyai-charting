@@ -5378,6 +5378,7 @@ function baseMixin(_chart) {
 
   var _legend = void 0;
   var _commitHandler = void 0;
+  var _valueFormatter = void 0;
 
   /* OVERRIDE ---------------------------------------------------------------- */
   var _legendContinuous = void 0;
@@ -7060,6 +7061,14 @@ function baseMixin(_chart) {
     return false;
   };
 
+  _chart.valueFormatter = function (formatter) {
+    if (!arguments.length) {
+      return _valueFormatter;
+    }
+    _valueFormatter = formatter;
+    return _chart;
+  };
+
   _chart = (0, _legendMixin2.default)((0, _filterMixin2.default)((0, _labelMixin2.default)((0, _multipleKeyLabelMixin2.default)((0, _spinnerMixin2.default)((0, _asyncMixin2.default)(_chart))))));
 
   return _chart;
@@ -7130,7 +7139,7 @@ var normalizeArrayByValue = exports.normalizeArrayByValue = function normalizeAr
 
 function formatDataValue(data, numAbbr) {
   if (typeof data === "number") {
-    return formatNumber(data, numAbbr);
+    return formatNumber(data, numAbbr) + "test";
   } else if (Array.isArray(data)) {
     return formatArrayValue(data);
   } else if (data instanceof Date) {
@@ -8620,6 +8629,7 @@ function coordinateGridMixin(_chart) {
       * @return {dc.coordinateGridMixin}
       */
   _chart.yAxis = function (yAxis) {
+    console.log(_yAxis);
     if (!arguments.length) {
       return _yAxis;
     }
@@ -49278,7 +49288,9 @@ function mapdTable(parent, chartGroup) {
 
     cols.forEach(function (col) {
       rowItem.append("td").html(function (d) {
-        return (0, _formattingHelpers.formatDataValue)(d[col.name]);
+        // use custom formatter or default one
+        var cutomFormatter = _chart.valueFormatter();
+        return cutomFormatter && cutomFormatter(d[col.name], col.expression) || (0, _formattingHelpers.formatDataValue)(d[col.name]);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
         var s = window.getSelection().toString();

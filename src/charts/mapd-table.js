@@ -325,7 +325,11 @@ export default function mapdTable(parent, chartGroup) {
     cols.forEach(col => {
       rowItem
         .append("td")
-        .html(d => formatDataValue(d[col.name]))
+        .html(d => {
+          // use custom formatter or default one
+          const cutomFormatter = _chart.valueFormatter()
+          return cutomFormatter && cutomFormatter(d[col.name], col.expression) || formatDataValue(d[col.name])
+        })
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
           // detect if user is selecting text or clicking a value, if so don't filter data
