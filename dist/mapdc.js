@@ -7139,7 +7139,7 @@ var normalizeArrayByValue = exports.normalizeArrayByValue = function normalizeAr
 
 function formatDataValue(data, numAbbr) {
   if (typeof data === "number") {
-    return formatNumber(data, numAbbr) + "test";
+    return formatNumber(data, numAbbr);
   } else if (Array.isArray(data)) {
     return formatArrayValue(data);
   } else if (data instanceof Date) {
@@ -8629,7 +8629,6 @@ function coordinateGridMixin(_chart) {
       * @return {dc.coordinateGridMixin}
       */
   _chart.yAxis = function (yAxis) {
-    console.log(_yAxis);
     if (!arguments.length) {
       return _yAxis;
     }
@@ -44664,14 +44663,6 @@ function numberChart(parent, chartGroup) {
   var _fontSize = null;
   var _chartWidth = null;
 
-  _chart.formatNumber = function (formatter) {
-    if (!arguments.length) {
-      return _formatNumber;
-    }
-    _formatNumber = formatter;
-    return _chart;
-  };
-
   _chart.colors = function (_) {
     if (!arguments.length) {
       return _colors;
@@ -44708,13 +44699,22 @@ function numberChart(parent, chartGroup) {
   });
 
   _chart._doRender = function (val) {
-    var selected = _utils.utils.formatValue(val);
+    var customFormatter = _chart.valueFormatter();
+    var formattedValue = val;
+    if (customFormatter && customFormatter(val)) {
+      formattedValue = customFormatter(val);
+    } else {
+      var _formattedValue = _utils.utils.formatValue(val);
+      if (_formattedValue === "-0") {
+        _formattedValue = 0;
+      }
+    }
 
     var wrapper = _chart.root().html("").append("div").attr("class", "number-chart-wrapper");
 
     wrapper.append("span").attr("class", "number-chart-number").style("color", _chart.getColor).style("font-size", function (d) {
       return Math.max(Math.floor(_chart.height() / 5), 32) + "px";
-    }).html(selected === "-0" ? 0 : selected).style("font-size", function (d) {
+    }).html(formattedValue).style("font-size", function (d) {
       var width = _d2.default.select(this).node().getBoundingClientRect().width;
       var calcFontSize = parseInt(_d2.default.select(this).node().style.fontSize.replace(/\D/g, ""));
 
@@ -49289,8 +49289,8 @@ function mapdTable(parent, chartGroup) {
     cols.forEach(function (col) {
       rowItem.append("td").html(function (d) {
         // use custom formatter or default one
-        var cutomFormatter = _chart.valueFormatter();
-        return cutomFormatter && cutomFormatter(d[col.name], col.expression) || (0, _formattingHelpers.formatDataValue)(d[col.name]);
+        var customFormatter = _chart.valueFormatter();
+        return customFormatter && customFormatter(d[col.name], col.expression) || (0, _formattingHelpers.formatDataValue)(d[col.name]);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
         var s = window.getSelection().toString();

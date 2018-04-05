@@ -327,8 +327,8 @@ export default function mapdTable(parent, chartGroup) {
         .append("td")
         .html(d => {
           // use custom formatter or default one
-          const cutomFormatter = _chart.valueFormatter()
-          return cutomFormatter && cutomFormatter(d[col.name], col.expression) || formatDataValue(d[col.name])
+          const customFormatter = _chart.valueFormatter()
+          return customFormatter && customFormatter(d[col.name], col.expression) || formatDataValue(d[col.name])
         })
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
