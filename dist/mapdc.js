@@ -43339,7 +43339,9 @@ function pieChart(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function (d) {
-    return _utils.utils.formatValue(_chart.cappedValueAccessor(d));
+    var customFormatter = _chart.valueFormatter();
+    var value = _chart.cappedValueAccessor(d);
+    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
   };
 
   _chart.redoSelect = highlightFilter;
@@ -43449,8 +43451,6 @@ function pieChart(parent, chartGroup) {
     labelsEnter.select(".value-dim").classed("deselected-label", function (d) {
       return _chart.hasFilter() && !isSelectedSlice(d);
     }).html(function (d) {
-      return _chart.label()(d.data);
-    }).html(function (d) {
       var availableLabelWidth = getAvailableLabelWidth(d);
       var width = _d2.default.select(this).node().getBoundingClientRect().width;
       var label = _chart.label()(d.data);
@@ -43464,8 +43464,6 @@ function pieChart(parent, chartGroup) {
     if (_chart.measureLabelsOn()) {
       labelsEnter.select(".value-measure").classed("deselected-label", function (d) {
         return _chart.hasFilter() && !isSelectedSlice(d);
-      }).text(function (d) {
-        return _chart.measureValue(d.data);
       }).text(function (d) {
         if (_d2.default.select(this.parentNode).classed("hide-label")) {
           return "";
