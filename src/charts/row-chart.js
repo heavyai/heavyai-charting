@@ -211,7 +211,9 @@ export default function rowChart(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function(d) {
-    return utils.formatValue(_chart.cappedValueAccessor(d))
+    const customFormatter = _chart.valueFormatter()
+    const value = _chart.cappedValueAccessor(d)
+    return customFormatter && customFormatter(value) || utils.formatValue(value)
   }
   /* ------------------------------------------------------------------------- */
 

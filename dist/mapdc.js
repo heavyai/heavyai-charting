@@ -48241,7 +48241,9 @@ function rowChart(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function (d) {
-    return _utils.utils.formatValue(_chart.cappedValueAccessor(d));
+    var customFormatter = _chart.valueFormatter();
+    var value = _chart.cappedValueAccessor(d);
+    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
   };
   /* ------------------------------------------------------------------------- */
 
