@@ -43158,7 +43158,8 @@ function heatMap(parent, chartGroup) {
     popupItem.append("div").attr("class", "popup-legend").style("background-color", _chart.getColor(d, i));
 
     popupItem.append("div").attr("class", "popup-item-value").html(function () {
-      return _utils.utils.formatValue(d.color);
+      var customFormatter = _chart.valueFormatter();
+      return customFormatter && customFormatter(d.color) || _utils.utils.formatValue(d.color);
     });
 
     popup.classed("js-showPopup", true);

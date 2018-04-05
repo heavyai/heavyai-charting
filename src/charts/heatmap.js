@@ -733,7 +733,10 @@ export default function heatMap(parent, chartGroup) {
     popupItem
       .append("div")
       .attr("class", "popup-item-value")
-      .html(() => utils.formatValue(d.color))
+      .html(() => {
+        const customFormatter = _chart.valueFormatter()
+        return customFormatter && customFormatter(d.color) || utils.formatValue(d.color)
+      })
 
     popup.classed("js-showPopup", true)
   }
