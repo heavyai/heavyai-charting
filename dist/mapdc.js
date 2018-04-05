@@ -42618,11 +42618,15 @@ function heatMapValueAccesor(_ref2) {
 }
 
 function heatMapRowsLabel(d) {
-  return (0, _formattingHelpers.formatDataValue)(this.rowsMap.get(d) || d);
+  var customFormatter = this.valueFormatter();
+  var value = this.rowsMap.get(d) || d;
+  return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function heatMapColsLabel(d) {
-  return (0, _formattingHelpers.formatDataValue)(this.colsMap.get(d) || d);
+  var customFormatter = this.valueFormatter();
+  var value = this.colsMap.get(d) || d;
+  return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function isDescendingAppropriateData(_ref3) {

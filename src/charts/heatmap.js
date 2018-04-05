@@ -56,11 +56,15 @@ export function heatMapValueAccesor({ key1 }) {
 }
 
 export function heatMapRowsLabel(d) {
-  return formatDataValue(this.rowsMap.get(d) || d)
+  const customFormatter = this.valueFormatter()
+  const value = this.rowsMap.get(d) || d
+  return customFormatter && customFormatter(value) || formatDataValue(value)
 }
 
 export function heatMapColsLabel(d) {
-  return formatDataValue(this.colsMap.get(d) || d)
+  const customFormatter = this.valueFormatter()
+  const value = this.colsMap.get(d) || d
+  return customFormatter && customFormatter(value) || formatDataValue(value)
 }
 
 export function isDescendingAppropriateData({ key1 }) {
