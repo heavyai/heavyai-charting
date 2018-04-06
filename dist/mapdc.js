@@ -9245,7 +9245,9 @@ function coordinateGridMixin(_chart) {
 
   _chart.popupTextAccessor = function (arr) {
     return function () {
-      return _utils.utils.formatValue(arr[0].datum.data.key0);
+      var customFormatter = _chart.valueFormatter();
+      var value = arr[0].datum.data.key0;
+      return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
     };
   };
 
@@ -29432,6 +29434,11 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
     return _utils.utils.printSingleValue(d.y0 + d.y);
   }, false);
 
+  _chart.measureValue = function (value) {
+    var customFormatter = _chart.valueFormatter();
+    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
+  };
+
   _chart.plotData = function () {
     var layers = _chart.chartBodyG().selectAll("g.stack").data(_chart.data());
 
@@ -29539,7 +29546,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
     }
 
     popupItems.append("div").attr("class", "popup-item-value").text(function (d) {
-      return _utils.utils.formatValue(d.datum.y);
+      return _chart.measureValue(d.datum.y);
     });
 
     positionPopup(x, y);
@@ -44221,6 +44228,11 @@ function lineChart(parent, chartGroup) {
     return _chart;
   };
 
+  _chart.measureValue = function (value) {
+    var customFormatter = _chart.valueFormatter();
+    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
+  };
+
   /**
    * Get or set render area flag. If the flag is set to true then the chart will render the area
    * beneath each line and the line chart effectively becomes an area chart.
@@ -44393,7 +44405,7 @@ function lineChart(parent, chartGroup) {
     }
 
     popupItems.append("div").attr("class", "popup-item-value").classed("text-align-right", Boolean(_chart.series().keys())).text(function (d) {
-      return _utils.utils.formatValue(d.datum.y);
+      return _chart.measureValue(d.datum.y);
     });
 
     positionPopup(x, y);

@@ -1485,8 +1485,11 @@ export default function coordinateGridMixin (_chart) {
     return range instanceof Array && range.length > 1
   }
 
-  _chart.popupTextAccessor = arr => () =>
-    utils.formatValue(arr[0].datum.data.key0)
+  _chart.popupTextAccessor = arr => () => {
+    const customFormatter = _chart.valueFormatter()
+    const value = arr[0].datum.data.key0
+    return customFormatter && customFormatter(value) || utils.formatValue(value)
+  }
 
   _chart.getNumTicksForXAxis = () => {
     const xDomain = _chart.x().domain()
