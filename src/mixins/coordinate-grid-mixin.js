@@ -721,6 +721,13 @@ export default function coordinateGridMixin (_chart) {
     _chart.prepareLockAxis("y")
   }
 
+  function setYAxisFormat () {
+    const customFormatter = _chart.valueFormatter()
+    if (customFormatter) {
+      _yAxis.tickFormat(customFormatter)
+    }
+  }
+
   _chart.renderYAxisAt = function (axisClass, axis, position) {
     let axisYG = _chart.g().selectAll("g." + axisClass)
     if (axisYG.empty()) {
@@ -744,6 +751,7 @@ export default function coordinateGridMixin (_chart) {
 
   _chart.renderYAxis = function () {
     const axisPosition = _useRightYAxis ? _chart.width() - _chart.margins().right : _chart._yAxisX()
+    setYAxisFormat()
     _chart.renderYAxisAt("y", _yAxis, axisPosition)
     const labelPosition = _useRightYAxis ? _chart.width() - _yAxisLabelPadding : _yAxisLabelPadding
     const rotation = _useRightYAxis ? 90 : -90

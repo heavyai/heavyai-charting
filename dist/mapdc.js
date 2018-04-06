@@ -8515,6 +8515,13 @@ function coordinateGridMixin(_chart) {
     _chart.prepareLockAxis("y");
   };
 
+  function setYAxisFormat() {
+    var customFormatter = _chart.valueFormatter();
+    if (customFormatter) {
+      _yAxis.tickFormat(customFormatter);
+    }
+  }
+
   _chart.renderYAxisAt = function (axisClass, axis, position) {
     var axisYG = _chart.g().selectAll("g." + axisClass);
     if (axisYG.empty()) {
@@ -8526,6 +8533,7 @@ function coordinateGridMixin(_chart) {
 
   _chart.renderYAxis = function () {
     var axisPosition = _useRightYAxis ? _chart.width() - _chart.margins().right : _chart._yAxisX();
+    setYAxisFormat();
     _chart.renderYAxisAt("y", _yAxis, axisPosition);
     var labelPosition = _useRightYAxis ? _chart.width() - _yAxisLabelPadding : _yAxisLabelPadding;
     var rotation = _useRightYAxis ? 90 : -90;
