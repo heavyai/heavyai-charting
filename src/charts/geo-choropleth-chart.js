@@ -54,13 +54,25 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
   let _geoJsons = []
   _chart.transitionDuration(0)
 
-  function findGeomMinMax(layerIndex) {
-    const data = geoJson(layerIndex).data
-    const dataLength = data.length
+  function findGeomMinMax (layerIndex) {
     let xMin = 9999999999999
     let xMax = -9999999999999
     let yMin = 9999999999999
     let yMax = -9999999999999
+
+    function setNewCoord (coord) {
+      if (Array.isArray(coord[0])) {
+        coord.forEach(setNewCoord)
+      } else {
+        if (coord[0] < xMin) { xMin = coord[0] }
+        if (coord[0] > xMax) { xMax = coord[0] }
+        if (coord[1] < yMin) { yMin = coord[1] }
+        if (coord[1] > yMax) { yMax = coord[1] }
+      }
+    }
+
+    const data = geoJson(layerIndex).data
+    const dataLength = data.length
 
     for (let d = 0; d < dataLength; d++) {
       const geom = data[d].geometry.coordinates
@@ -69,19 +81,7 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
         const coords = geom[g]
         const numCoords = coords.length
         for (let c = 0; c < numCoords; c++) {
-          const coord = coords[c]
-          if (coord[0] < xMin) {
-            xMin = coord[0]
-          }
-          if (coord[0] > xMax) {
-            xMax = coord[0]
-          }
-          if (coord[1] < yMin) {
-            yMin = coord[1]
-          }
-          if (coord[1] > yMax) {
-            yMax = coord[1]
-          }
+          setNewCoord(coords[c])
         }
       }
     }
