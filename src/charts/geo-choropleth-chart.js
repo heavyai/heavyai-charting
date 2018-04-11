@@ -4,6 +4,8 @@ import d3 from "d3"
 import mapMixin from "../mixins/map-mixin"
 import { transition } from "../core/core"
 import { utils } from "../utils/utils"
+import turfBbox from "@turf/bbox"
+
 /**
  * The geo choropleth chart is designed as an easy way to create a crossfilter driven choropleth map
  * from GeoJson data. This chart implementation was inspired by
@@ -54,37 +56,14 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
   let _geoJsons = []
   _chart.transitionDuration(0)
 
-  function findGeomMinMax(layerIndex) {
-    const data = geoJson(layerIndex).data
-    const dataLength = data.length
-    let xMin = 9999999999999
-    let xMax = -9999999999999
-    let yMin = 9999999999999
-    let yMax = -9999999999999
-
-    for (let d = 0; d < dataLength; d++) {
-      const geom = data[d].geometry.coordinates
-      const numGeoms = geom.length
-      for (let g = 0; g < numGeoms; g++) {
-        const coords = geom[g]
-        const numCoords = coords.length
-        for (let c = 0; c < numCoords; c++) {
-          const coord = coords[c]
-          if (coord[0] < xMin) {
-            xMin = coord[0]
-          }
-          if (coord[0] > xMax) {
-            xMax = coord[0]
-          }
-          if (coord[1] < yMin) {
-            yMin = coord[1]
-          }
-          if (coord[1] > yMax) {
-            yMax = coord[1]
-          }
-        }
-      }
+  function findGeomMinMax (layerIndex) {
+    const _geoJson = geoJson(layerIndex)
+    const { data } = _geoJson
+    const realGeoJson = {
+      type: "FeatureCollection",
+      features: data
     }
+    const [xMin, yMin, xMax, yMax] = turfBbox(realGeoJson)
     return [[xMin, yMin], [xMax, yMax]]
   }
 
