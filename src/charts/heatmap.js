@@ -56,11 +56,15 @@ export function heatMapValueAccesor({ key1 }) {
 }
 
 export function heatMapRowsLabel(d) {
-  return formatDataValue(this.rowsMap.get(d) || d)
+  const customFormatter = this.valueFormatter()
+  const value = this.rowsMap.get(d) || d
+  return customFormatter && customFormatter(value) || formatDataValue(value)
 }
 
 export function heatMapColsLabel(d) {
-  return formatDataValue(this.colsMap.get(d) || d)
+  const customFormatter = this.valueFormatter()
+  const value = this.colsMap.get(d) || d
+  return customFormatter && customFormatter(value) || formatDataValue(value)
 }
 
 export function isDescendingAppropriateData({ key1 }) {
@@ -733,7 +737,10 @@ export default function heatMap(parent, chartGroup) {
     popupItem
       .append("div")
       .attr("class", "popup-item-value")
-      .html(() => utils.formatValue(d.color))
+      .html(() => {
+        const customFormatter = _chart.valueFormatter()
+        return customFormatter && customFormatter(d.color) || utils.formatValue(d.color)
+      })
 
     popup.classed("js-showPopup", true)
   }

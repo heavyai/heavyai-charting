@@ -168,6 +168,11 @@ export default function lineChart(parent, chartGroup) {
     return _chart
   }
 
+  _chart.measureValue = function(value) {
+    const customFormatter = _chart.valueFormatter()
+    return customFormatter && customFormatter(value) || utils.formatValue(value)
+  }
+
   /**
    * Get or set render area flag. If the flag is set to true then the chart will render the area
    * beneath each line and the line chart effectively becomes an area chart.
@@ -380,7 +385,7 @@ export default function lineChart(parent, chartGroup) {
       .append("div")
       .attr("class", "popup-item-value")
       .classed("text-align-right", Boolean(_chart.series().keys()))
-      .text(d => utils.formatValue(d.datum.y))
+      .text(d => _chart.measureValue(d.datum.y))
 
     positionPopup(x, y)
     popup.classed("js-showPopup", true)

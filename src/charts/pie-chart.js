@@ -84,7 +84,9 @@ export default function pieChart(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function(d) {
-    return utils.formatValue(_chart.cappedValueAccessor(d))
+    const customFormatter = _chart.valueFormatter()
+    const value = _chart.cappedValueAccessor(d)
+    return customFormatter && customFormatter(value) || utils.formatValue(value)
   }
 
   _chart.redoSelect = highlightFilter
@@ -208,7 +210,6 @@ export default function pieChart(parent, chartGroup) {
         "deselected-label",
         d => _chart.hasFilter() && !isSelectedSlice(d)
       )
-      .html(d => _chart.label()(d.data))
       .html(function(d) {
         const availableLabelWidth = getAvailableLabelWidth(d)
         const width = d3
@@ -234,7 +235,6 @@ export default function pieChart(parent, chartGroup) {
           "deselected-label",
           d => _chart.hasFilter() && !isSelectedSlice(d)
         )
-        .text(d => _chart.measureValue(d.data))
         .text(function(d) {
           if (d3.select(this.parentNode).classed("hide-label")) {
             return ""

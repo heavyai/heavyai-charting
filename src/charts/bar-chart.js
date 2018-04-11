@@ -80,6 +80,11 @@ export default function barChart(parent, chartGroup) {
 
   _chart.label(d => utils.printSingleValue(d.y0 + d.y), false)
 
+  _chart.measureValue = function(value) {
+    const customFormatter = _chart.valueFormatter()
+    return customFormatter && customFormatter(value) || utils.formatValue(value)
+  }
+
   _chart.plotData = function() {
     const layers = _chart
       .chartBodyG()
@@ -216,7 +221,7 @@ export default function barChart(parent, chartGroup) {
     popupItems
       .append("div")
       .attr("class", "popup-item-value")
-      .text(d => utils.formatValue(d.datum.y))
+      .text(d => _chart.measureValue(d.datum.y))
 
     positionPopup(x, y)
     popup.classed("js-showPopup", true)

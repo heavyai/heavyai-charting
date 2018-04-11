@@ -5378,6 +5378,7 @@ function baseMixin(_chart) {
 
   var _legend = void 0;
   var _commitHandler = void 0;
+  var _valueFormatter = void 0;
 
   /* OVERRIDE ---------------------------------------------------------------- */
   var _legendContinuous = void 0;
@@ -7060,6 +7061,14 @@ function baseMixin(_chart) {
     return false;
   };
 
+  _chart.valueFormatter = function (formatter) {
+    if (!arguments.length) {
+      return _valueFormatter;
+    }
+    _valueFormatter = formatter;
+    return _chart;
+  };
+
   _chart = (0, _legendMixin2.default)((0, _filterMixin2.default)((0, _labelMixin2.default)((0, _multipleKeyLabelMixin2.default)((0, _spinnerMixin2.default)((0, _asyncMixin2.default)(_chart))))));
 
   return _chart;
@@ -8506,6 +8515,13 @@ function coordinateGridMixin(_chart) {
     _chart.prepareLockAxis("y");
   };
 
+  function setYAxisFormat() {
+    var customFormatter = _chart.valueFormatter();
+    if (customFormatter) {
+      _yAxis.tickFormat(customFormatter);
+    }
+  }
+
   _chart.renderYAxisAt = function (axisClass, axis, position) {
     var axisYG = _chart.g().selectAll("g." + axisClass);
     if (axisYG.empty()) {
@@ -8517,6 +8533,7 @@ function coordinateGridMixin(_chart) {
 
   _chart.renderYAxis = function () {
     var axisPosition = _useRightYAxis ? _chart.width() - _chart.margins().right : _chart._yAxisX();
+    setYAxisFormat();
     _chart.renderYAxisAt("y", _yAxis, axisPosition);
     var labelPosition = _useRightYAxis ? _chart.width() - _yAxisLabelPadding : _yAxisLabelPadding;
     var rotation = _useRightYAxis ? 90 : -90;
@@ -9236,7 +9253,9 @@ function coordinateGridMixin(_chart) {
 
   _chart.popupTextAccessor = function (arr) {
     return function () {
-      return _utils.utils.formatValue(arr[0].datum.data.key0);
+      var customFormatter = _chart.valueFormatter();
+      var value = arr[0].datum.data.key0;
+      return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
     };
   };
 
@@ -29421,6 +29440,11 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
     return _utils.utils.printSingleValue(d.y0 + d.y);
   }, false);
 
+  _chart.measureValue = function (value) {
+    var customFormatter = _chart.valueFormatter();
+    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
+  };
+
   _chart.plotData = function () {
     var layers = _chart.chartBodyG().selectAll("g.stack").data(_chart.data());
 
@@ -29528,7 +29552,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
     }
 
     popupItems.append("div").attr("class", "popup-item-value").text(function (d) {
-      return _utils.utils.formatValue(d.datum.y);
+      return _chart.measureValue(d.datum.y);
     });
 
     positionPopup(x, y);
@@ -44512,11 +44536,15 @@ function heatMapValueAccesor(_ref2) {
 }
 
 function heatMapRowsLabel(d) {
-  return (0, _formattingHelpers.formatDataValue)(this.rowsMap.get(d) || d);
+  var customFormatter = this.valueFormatter();
+  var value = this.rowsMap.get(d) || d;
+  return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function heatMapColsLabel(d) {
-  return (0, _formattingHelpers.formatDataValue)(this.colsMap.get(d) || d);
+  var customFormatter = this.valueFormatter();
+  var value = this.colsMap.get(d) || d;
+  return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function isDescendingAppropriateData(_ref3) {
@@ -45052,7 +45080,8 @@ function heatMap(parent, chartGroup) {
     popupItem.append("div").attr("class", "popup-legend").style("background-color", _chart.getColor(d, i));
 
     popupItem.append("div").attr("class", "popup-item-value").html(function () {
-      return _utils.utils.formatValue(d.color);
+      var customFormatter = _chart.valueFormatter();
+      return customFormatter && customFormatter(d.color) || _utils.utils.formatValue(d.color);
     });
 
     popup.classed("js-showPopup", true);
@@ -45233,7 +45262,9 @@ function pieChart(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function (d) {
-    return _utils.utils.formatValue(_chart.cappedValueAccessor(d));
+    var customFormatter = _chart.valueFormatter();
+    var value = _chart.cappedValueAccessor(d);
+    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
   };
 
   _chart.redoSelect = highlightFilter;
@@ -45343,8 +45374,6 @@ function pieChart(parent, chartGroup) {
     labelsEnter.select(".value-dim").classed("deselected-label", function (d) {
       return _chart.hasFilter() && !isSelectedSlice(d);
     }).html(function (d) {
-      return _chart.label()(d.data);
-    }).html(function (d) {
       var availableLabelWidth = getAvailableLabelWidth(d);
       var width = _d2.default.select(this).node().getBoundingClientRect().width;
       var label = _chart.label()(d.data);
@@ -45358,8 +45387,6 @@ function pieChart(parent, chartGroup) {
     if (_chart.measureLabelsOn()) {
       labelsEnter.select(".value-measure").classed("deselected-label", function (d) {
         return _chart.hasFilter() && !isSelectedSlice(d);
-      }).text(function (d) {
-        return _chart.measureValue(d.data);
       }).text(function (d) {
         if (_d2.default.select(this.parentNode).classed("hide-label")) {
           return "";
@@ -46112,6 +46139,11 @@ function lineChart(parent, chartGroup) {
     return _chart;
   };
 
+  _chart.measureValue = function (value) {
+    var customFormatter = _chart.valueFormatter();
+    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
+  };
+
   /**
    * Get or set render area flag. If the flag is set to true then the chart will render the area
    * beneath each line and the line chart effectively becomes an area chart.
@@ -46284,7 +46316,7 @@ function lineChart(parent, chartGroup) {
     }
 
     popupItems.append("div").attr("class", "popup-item-value").classed("text-align-right", Boolean(_chart.series().keys())).text(function (d) {
-      return _utils.utils.formatValue(d.datum.y);
+      return _chart.measureValue(d.datum.y);
     });
 
     positionPopup(x, y);
@@ -46557,14 +46589,6 @@ function numberChart(parent, chartGroup) {
   var _fontSize = null;
   var _chartWidth = null;
 
-  _chart.formatNumber = function (formatter) {
-    if (!arguments.length) {
-      return _formatNumber;
-    }
-    _formatNumber = formatter;
-    return _chart;
-  };
-
   _chart.colors = function (_) {
     if (!arguments.length) {
       return _colors;
@@ -46601,13 +46625,22 @@ function numberChart(parent, chartGroup) {
   });
 
   _chart._doRender = function (val) {
-    var selected = _utils.utils.formatValue(val);
+    var customFormatter = _chart.valueFormatter();
+    var formattedValue = val;
+    if (customFormatter && customFormatter(val)) {
+      formattedValue = customFormatter(val);
+    } else {
+      var _formattedValue = _utils.utils.formatValue(val);
+      if (_formattedValue === "-0") {
+        _formattedValue = 0;
+      }
+    }
 
     var wrapper = _chart.root().html("").append("div").attr("class", "number-chart-wrapper");
 
     wrapper.append("span").attr("class", "number-chart-number").style("color", _chart.getColor).style("font-size", function (d) {
       return Math.max(Math.floor(_chart.height() / 5), 32) + "px";
-    }).html(selected === "-0" ? 0 : selected).style("font-size", function (d) {
+    }).html(formattedValue).style("font-size", function (d) {
       var width = _d2.default.select(this).node().getBoundingClientRect().width;
       var calcFontSize = parseInt(_d2.default.select(this).node().style.fontSize.replace(/\D/g, ""));
 
@@ -50134,7 +50167,9 @@ function rowChart(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function (d) {
-    return _utils.utils.formatValue(_chart.cappedValueAccessor(d));
+    var customFormatter = _chart.valueFormatter();
+    var value = _chart.cappedValueAccessor(d);
+    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
   };
   /* ------------------------------------------------------------------------- */
 
@@ -51181,7 +51216,9 @@ function mapdTable(parent, chartGroup) {
 
     cols.forEach(function (col) {
       rowItem.append("td").html(function (d) {
-        return (0, _formattingHelpers.formatDataValue)(d[col.name]);
+        // use custom formatter or default one
+        var customFormatter = _chart.valueFormatter();
+        return customFormatter && customFormatter(d[col.name], col.expression) || (0, _formattingHelpers.formatDataValue)(d[col.name]);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
         var s = window.getSelection().toString();
