@@ -11950,10 +11950,12 @@ function parseSource(transforms) {
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
  */
 
 
@@ -45374,6 +45376,8 @@ function pieChart(parent, chartGroup) {
     labelsEnter.select(".value-dim").classed("deselected-label", function (d) {
       return _chart.hasFilter() && !isSelectedSlice(d);
     }).html(function (d) {
+      return _chart.label()(d.data);
+    }).html(function (d) {
       var availableLabelWidth = getAvailableLabelWidth(d);
       var width = _d2.default.select(this).node().getBoundingClientRect().width;
       var label = _chart.label()(d.data);
@@ -45387,11 +45391,18 @@ function pieChart(parent, chartGroup) {
     if (_chart.measureLabelsOn()) {
       labelsEnter.select(".value-measure").classed("deselected-label", function (d) {
         return _chart.hasFilter() && !isSelectedSlice(d);
+      })
+      // the label needs to be in the DOM for computing its width
+      .text(function (d) {
+        if (_d2.default.select(this.parentNode).classed("hide-label")) {
+          return "";
+        } else {
+          return _chart.measureValue(d.data);
+        }
       }).text(function (d) {
         if (_d2.default.select(this.parentNode).classed("hide-label")) {
           return "";
         }
-
         var availableLabelWidth = getAvailableLabelWidth(d);
         var width = _d2.default.select(this).node().getBoundingClientRect().width;
 
