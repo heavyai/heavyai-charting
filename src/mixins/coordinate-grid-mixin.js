@@ -542,7 +542,7 @@ export default function coordinateGridMixin (_chart) {
  /* istanbul ignore next */
   _chart.renderXAxis = function (g) {
     let axisXG = g.selectAll("g.x")
-
+    setXAxisFormat()
     if (axisXG.empty()) {
       axisXG = g
         .append("g")
@@ -725,6 +725,13 @@ export default function coordinateGridMixin (_chart) {
     const customFormatter = _chart.valueFormatter()
     if (customFormatter) {
       _yAxis.tickFormat(customFormatter)
+    }
+  }
+
+  function setXAxisFormat () {
+    const customFormatter = _chart.dateFormatter()
+    if (customFormatter) {
+      _xAxis.tickFormat(customFormatter)
     }
   }
 
