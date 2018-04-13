@@ -8528,6 +8528,8 @@ function coordinateGridMixin(_chart) {
     var customFormatter = _chart.valueFormatter();
     if (customFormatter) {
       _yAxis.tickFormat(customFormatter);
+    } else {
+      _yAxis.tickFormat(null);
     }
   }
 
@@ -8535,6 +8537,8 @@ function coordinateGridMixin(_chart) {
     var customFormatter = _chart.dateFormatter();
     if (customFormatter) {
       _xAxis.tickFormat(customFormatter);
+    } else {
+      _xAxis.tickFormat(null);
     }
   }
 
@@ -27034,7 +27038,7 @@ if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
   __webpack_require__(247);
 }
 
-__webpack_require__(249);
+__webpack_require__(248);
 
 exports.d3 = _d; // eslint-disable-line
 
@@ -54323,8 +54327,7 @@ module.exports={"version":"0.28.0"}
 
 
 /***/ }),
-/* 248 */,
-/* 249 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

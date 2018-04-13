@@ -725,6 +725,8 @@ export default function coordinateGridMixin (_chart) {
     const customFormatter = _chart.valueFormatter()
     if (customFormatter) {
       _yAxis.tickFormat(customFormatter)
+    } else {
+      _yAxis.tickFormat(null)
     }
   }
 
@@ -732,6 +734,8 @@ export default function coordinateGridMixin (_chart) {
     const customFormatter = _chart.dateFormatter()
     if (customFormatter) {
       _xAxis.tickFormat(customFormatter)
+    } else {
+      _xAxis.tickFormat(null)
     }
   }
 
