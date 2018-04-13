@@ -5379,6 +5379,7 @@ function baseMixin(_chart) {
   var _legend = void 0;
   var _commitHandler = void 0;
   var _valueFormatter = void 0;
+  var _dateFormatter = void 0;
 
   /* OVERRIDE ---------------------------------------------------------------- */
   var _legendContinuous = void 0;
@@ -7069,6 +7070,14 @@ function baseMixin(_chart) {
     return _chart;
   };
 
+  _chart.dateFormatter = function (formatter) {
+    if (!arguments.length) {
+      return _dateFormatter;
+    }
+    _dateFormatter = formatter;
+    return _chart;
+  };
+
   _chart = (0, _legendMixin2.default)((0, _filterMixin2.default)((0, _labelMixin2.default)((0, _multipleKeyLabelMixin2.default)((0, _spinnerMixin2.default)((0, _asyncMixin2.default)(_chart))))));
 
   return _chart;
@@ -8372,7 +8381,7 @@ function coordinateGridMixin(_chart) {
   /* istanbul ignore next */
   _chart.renderXAxis = function (g) {
     var axisXG = g.selectAll("g.x");
-
+    setXAxisFormat();
     if (axisXG.empty()) {
       axisXG = g.append("g").attr("class", "axis x").attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")");
     }
@@ -8519,6 +8528,13 @@ function coordinateGridMixin(_chart) {
     var customFormatter = _chart.valueFormatter();
     if (customFormatter) {
       _yAxis.tickFormat(customFormatter);
+    }
+  }
+
+  function setXAxisFormat() {
+    var customFormatter = _chart.dateFormatter();
+    if (customFormatter) {
+      _xAxis.tickFormat(customFormatter);
     }
   }
 
@@ -46155,6 +46171,10 @@ function lineChart(parent, chartGroup) {
     return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
   };
 
+  _chart.dimensionValue = function (value) {
+    var customFormatter = _chart.dateFormatter();
+    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
+  };
   /**
    * Get or set render area flag. If the flag is set to true then the chart will render the area
    * beneath each line and the line chart effectively becomes an area chart.
