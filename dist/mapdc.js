@@ -5379,6 +5379,7 @@ function baseMixin(_chart) {
   var _legend = void 0;
   var _commitHandler = void 0;
   var _valueFormatter = void 0;
+  var _dateFormatter = void 0;
 
   /* OVERRIDE ---------------------------------------------------------------- */
   var _legendContinuous = void 0;
@@ -7069,6 +7070,14 @@ function baseMixin(_chart) {
     return _chart;
   };
 
+  _chart.dateFormatter = function (formatter) {
+    if (!arguments.length) {
+      return _dateFormatter;
+    }
+    _dateFormatter = formatter;
+    return _chart;
+  };
+
   _chart = (0, _legendMixin2.default)((0, _filterMixin2.default)((0, _labelMixin2.default)((0, _multipleKeyLabelMixin2.default)((0, _spinnerMixin2.default)((0, _asyncMixin2.default)(_chart))))));
 
   return _chart;
@@ -8372,7 +8381,7 @@ function coordinateGridMixin(_chart) {
   /* istanbul ignore next */
   _chart.renderXAxis = function (g) {
     var axisXG = g.selectAll("g.x");
-
+    setXAxisFormat();
     if (axisXG.empty()) {
       axisXG = g.append("g").attr("class", "axis x").attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")");
     }
@@ -8519,6 +8528,13 @@ function coordinateGridMixin(_chart) {
     var customFormatter = _chart.valueFormatter();
     if (customFormatter) {
       _yAxis.tickFormat(customFormatter);
+    }
+  }
+
+  function setXAxisFormat() {
+    var customFormatter = _chart.dateFormatter();
+    if (customFormatter) {
+      _xAxis.tickFormat(customFormatter);
     }
   }
 
@@ -11950,10 +11966,12 @@ function parseSource(transforms) {
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
  */
 
 
@@ -27016,7 +27034,6 @@ if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
   __webpack_require__(247);
 }
 
-__webpack_require__(248);
 __webpack_require__(249);
 
 exports.d3 = _d; // eslint-disable-line
@@ -45374,6 +45391,8 @@ function pieChart(parent, chartGroup) {
     labelsEnter.select(".value-dim").classed("deselected-label", function (d) {
       return _chart.hasFilter() && !isSelectedSlice(d);
     }).html(function (d) {
+      return _chart.label()(d.data);
+    }).html(function (d) {
       var availableLabelWidth = getAvailableLabelWidth(d);
       var width = _d2.default.select(this).node().getBoundingClientRect().width;
       var label = _chart.label()(d.data);
@@ -45387,11 +45406,18 @@ function pieChart(parent, chartGroup) {
     if (_chart.measureLabelsOn()) {
       labelsEnter.select(".value-measure").classed("deselected-label", function (d) {
         return _chart.hasFilter() && !isSelectedSlice(d);
+      })
+      // the label needs to be in the DOM for computing its width
+      .text(function (d) {
+        if (_d2.default.select(this.parentNode).classed("hide-label")) {
+          return "";
+        } else {
+          return _chart.measureValue(d.data);
+        }
       }).text(function (d) {
         if (_d2.default.select(this.parentNode).classed("hide-label")) {
           return "";
         }
-
         var availableLabelWidth = getAvailableLabelWidth(d);
         var width = _d2.default.select(this).node().getBoundingClientRect().width;
 
@@ -46144,6 +46170,10 @@ function lineChart(parent, chartGroup) {
     return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
   };
 
+  _chart.dimensionValue = function (value) {
+    var customFormatter = _chart.dateFormatter();
+    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
+  };
   /**
    * Get or set render area flag. If the flag is set to true then the chart will render the area
    * beneath each line and the line chart effectively becomes an area chart.
@@ -54293,104 +54323,7 @@ module.exports={"version":"0.28.0"}
 
 
 /***/ }),
-/* 248 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-(function () {
-  /* istanbul ignore next */
-  if (window.SVGElement) {
-    var serializeXML = function serializeXML(node, output) {
-      var nodeType = node.nodeType;
-      if (nodeType == 3) {
-        // TEXT nodes.
-        // Replace special XML characters with their entities.
-        output.push(node.textContent.replace(/&/, "&amp;").replace(/</, "&lt;").replace(">", "&gt;"));
-      } else if (nodeType == 1) {
-        // ELEMENT nodes.
-        // Serialize Element nodes.
-        output.push("<", node.tagName);
-        if (node.hasAttributes()) {
-          var attrMap = node.attributes;
-          for (var i = 0, len = attrMap.length; i < len; ++i) {
-            var attrNode = attrMap.item(i);
-            output.push(" ", attrNode.name, "='", attrNode.value, "'");
-          }
-        }
-        if (node.hasChildNodes()) {
-          output.push(">");
-          var childNodes = node.childNodes;
-          for (var i = 0, len = childNodes.length; i < len; ++i) {
-            serializeXML(childNodes.item(i), output);
-          }
-          output.push("</", node.tagName, ">");
-        } else {
-          output.push("/>");
-        }
-      } else if (nodeType == 8) {
-        // TODO(codedread): Replace special characters with XML entities?
-        output.push("<!--", node.nodeValue, "-->");
-      } else {
-        // TODO: Handle CDATA nodes.
-        // TODO: Handle ENTITY nodes.
-        // TODO: Handle DOCUMENT nodes.
-        throw "Error serializing XML. Unhandled node of type: " + nodeType;
-      }
-    };
-    // The innerHTML DOM property for SVGElement.
-    Object.defineProperty(SVGElement.prototype, "innerHTML", {
-      get: function get() {
-        var output = [];
-        var childNode = this.firstChild;
-        while (childNode) {
-          serializeXML(childNode, output);
-          childNode = childNode.nextSibling;
-        }
-        return output.join("");
-      },
-      set: function set(markupText) {
-        // Wipe out the current contents of the element.
-        while (this.firstChild) {
-          this.removeChild(this.firstChild);
-        }
-
-        try {
-          // Parse the markup into valid nodes.
-          // var dXML = new DOMParser();
-          // dXML.async = false;
-          // Wrap the markup into a SVG node to ensure parsing works.
-          markupText = "<svg xmlns='http://www.w3.org/2000/svg'>" + markupText + "</svg>";
-
-          var divContainer = document.createElement("div");
-          divContainer.innerHTML = markupText;
-          var svgDocElement = divContainer.querySelector("svg");
-          // Now take each node, import it and append to this element.
-          var childNode = svgDocElement.firstChild;
-          while (childNode) {
-            this.appendChild(this.ownerDocument.importNode(childNode, true));
-            childNode = childNode.nextSibling;
-          }
-        } catch (e) {
-          throw e;
-        }
-      }
-    });
-
-    // The innerSVG DOM property for SVGElement.
-    Object.defineProperty(SVGElement.prototype, "innerSVG", {
-      get: function get() {
-        return this.innerHTML;
-      },
-      set: function set(markupText) {
-        this.innerHTML = markupText;
-      }
-    });
-  }
-})();
-
-/***/ }),
+/* 248 */,
 /* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 

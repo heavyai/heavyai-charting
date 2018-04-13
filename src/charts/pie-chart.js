@@ -210,6 +210,7 @@ export default function pieChart(parent, chartGroup) {
         "deselected-label",
         d => _chart.hasFilter() && !isSelectedSlice(d)
       )
+      .html((d) => _chart.label()(d.data))
       .html(function(d) {
         const availableLabelWidth = getAvailableLabelWidth(d)
         const width = d3
@@ -235,11 +236,18 @@ export default function pieChart(parent, chartGroup) {
           "deselected-label",
           d => _chart.hasFilter() && !isSelectedSlice(d)
         )
+        // the label needs to be in the DOM for computing its width
         .text(function(d) {
           if (d3.select(this.parentNode).classed("hide-label")) {
             return ""
+          } else {
+            return _chart.measureValue(d.data)
           }
-
+        })
+        .text(function(d) {
+          if (d3.select(this.parentNode).classed("hide-label")) {
+            return ""
+          } 
           const availableLabelWidth = getAvailableLabelWidth(d)
           const width = d3
             .select(this)

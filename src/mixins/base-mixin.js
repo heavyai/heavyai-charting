@@ -120,6 +120,7 @@ export default function baseMixin(_chart) {
   let _legend
   let _commitHandler
   let _valueFormatter
+  let _dateFormatter
 
   /* OVERRIDE ---------------------------------------------------------------- */
   let _legendContinuous
@@ -1873,6 +1874,14 @@ export default function baseMixin(_chart) {
       return _valueFormatter
     }
     _valueFormatter = formatter
+    return _chart
+  }
+
+  _chart.dateFormatter = function(formatter) {
+    if (!arguments.length) {
+        return _dateFormatter
+    }
+    _dateFormatter = formatter
     return _chart
   }
 
