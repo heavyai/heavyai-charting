@@ -1879,7 +1879,7 @@ export default function baseMixin(_chart) {
 
   _chart.dateFormatter = function(formatter) {
     if (!arguments.length) {
-        return _dateFormatter
+      return _dateFormatter
     }
     _dateFormatter = formatter
     return _chart
