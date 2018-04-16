@@ -56,15 +56,29 @@ export function heatMapValueAccesor({ key1 }) {
 }
 
 export function heatMapRowsLabel(d) {
-  const customFormatter = this.valueFormatter()
-  const value = this.rowsMap.get(d) || d
-  return customFormatter && customFormatter(value) || formatDataValue(value)
+  let customFormatter
+  let value
+  if (d && d instanceof Date) {
+    customFormatter = this.dateFormatter()
+    value = this.rowsMap.get(d) || d
+  } else {
+    customFormatter = this.valueFormatter()
+    value = this.rowsMap.get(d) || d
+  }
+  return (customFormatter && customFormatter(value)) || formatDataValue(value)
 }
 
 export function heatMapColsLabel(d) {
-  const customFormatter = this.valueFormatter()
-  const value = this.colsMap.get(d) || d
-  return customFormatter && customFormatter(value) || formatDataValue(value)
+  let customFormatter
+  let value
+  if (d && d instanceof Date) {
+    customFormatter = this.dateFormatter()
+    value = this.colsMap.get(d) || d
+  } else {
+    customFormatter = this.valueFormatter()
+    value = this.colsMap.get(d) || d
+  }
+  return (customFormatter && customFormatter(value)) || formatDataValue(value)
 }
 
 export function isDescendingAppropriateData({ key1 }) {
@@ -739,7 +753,10 @@ export default function heatMap(parent, chartGroup) {
       .attr("class", "popup-item-value")
       .html(() => {
         const customFormatter = _chart.valueFormatter()
-        return customFormatter && customFormatter(d.color) || utils.formatValue(d.color)
+        return (
+          (customFormatter && customFormatter(d.color)) ||
+          utils.formatValue(d.color)
+        )
       })
 
     popup.classed("js-showPopup", true)
