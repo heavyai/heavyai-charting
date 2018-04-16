@@ -124,6 +124,15 @@ export default function rowChart(parent, chartGroup) {
     _chart.xAxis().ticks(_chart.getNumTicksForXAxis())
   }
 
+  function setXAxisFormat () {
+    const numberFormatter = _chart.valueFormatter()
+    if (numberFormatter) {
+      _xAxis.tickFormat(numberFormatter)
+    } else {
+      _xAxis.tickFormat(null)
+    }
+  }
+
   function drawAxis() {
     /* OVERRIDE -----------------------------------------------------------------*/
     const root = _chart.root()
@@ -184,6 +193,7 @@ export default function rowChart(parent, chartGroup) {
       .style("left", _chart.effectiveWidth() / 2 + _chart.margins().left + "px")
     /* --------------------------------------------------------------------------*/
 
+    setXAxisFormat()
     transition(axisG, _chart.transitionDuration()).call(_xAxis)
 
     _chart.prepareLockAxis("x")
