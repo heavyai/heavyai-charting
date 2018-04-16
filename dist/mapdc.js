@@ -8527,16 +8527,23 @@ function coordinateGridMixin(_chart) {
   function setYAxisFormat() {
     var customFormatter = _chart.valueFormatter();
     if (customFormatter) {
-      _yAxis.tickFormat(customFormatter);
+      _yAxis.tickFormat(function (d) {
+        return customFormatter(d, _chart.yAxisLabel());
+      });
     } else {
       _yAxis.tickFormat(null);
     }
   }
 
   function setXAxisFormat() {
-    var customFormatter = _chart.dateFormatter();
-    if (customFormatter) {
-      _xAxis.tickFormat(customFormatter);
+    var dateFormatter = _chart.dateFormatter();
+    var numberFormatter = _chart.valueFormatter();
+    if (dateFormatter) {
+      _xAxis.tickFormat(dateFormatter);
+    } else if (numberFormatter) {
+      _xAxis.tickFormat(function (d) {
+        return numberFormatter(d, _chart.xAxisLabel());
+      });
     } else {
       _xAxis.tickFormat(null);
     }

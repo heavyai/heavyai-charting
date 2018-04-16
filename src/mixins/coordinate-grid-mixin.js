@@ -724,16 +724,19 @@ export default function coordinateGridMixin (_chart) {
   function setYAxisFormat () {
     const customFormatter = _chart.valueFormatter()
     if (customFormatter) {
-      _yAxis.tickFormat(customFormatter)
+      _yAxis.tickFormat(d => customFormatter(d, _chart.yAxisLabel()))
     } else {
       _yAxis.tickFormat(null)
     }
   }
 
   function setXAxisFormat () {
-    const customFormatter = _chart.dateFormatter()
-    if (customFormatter) {
-      _xAxis.tickFormat(customFormatter)
+    const dateFormatter = _chart.dateFormatter()
+    const numberFormatter = _chart.valueFormatter()
+    if (dateFormatter) {
+      _xAxis.tickFormat(dateFormatter)
+    } else if (numberFormatter) {
+      _xAxis.tickFormat(d => numberFormatter(d, _chart.xAxisLabel()))
     } else {
       _xAxis.tickFormat(null)
     }
