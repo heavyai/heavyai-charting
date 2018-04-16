@@ -38973,6 +38973,15 @@ function bubbleChart(parent, chartGroup) {
     return _chart;
   };
 
+  _chart.measureValue = function (value, key, type) {
+    if (type === "measure") {
+      var customFormatter = _chart.valueFormatter();
+      return customFormatter && customFormatter(value, key) || _utils.utils.formatValue(value);
+    } else {
+      _utils.utils.formatValue(value);
+    }
+  };
+
   _chart.hideOverlappedLabels = function () {
     var nodes = _chart.svg().selectAll(".node");
 
@@ -39133,7 +39142,8 @@ function bubbleChart(parent, chartGroup) {
 
     for (var i = 1; i < _popupHeader.length; i++) {
       if (_popupHeader[i].alias) {
-        str = str + ("<td>" + _utils.utils.formatValue(d[_popupHeader[i].alias]) + "</td>");
+        var value = _popupHeader[i];
+        str = str + ("<td>" + _chart.measureValue(d[value.alias], value.label, value.type) + "</td>");
       }
     }
     return str;
