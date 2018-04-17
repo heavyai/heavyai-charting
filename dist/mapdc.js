@@ -44574,14 +44574,28 @@ function heatMapValueAccesor(_ref2) {
 }
 
 function heatMapRowsLabel(d) {
-  var customFormatter = this.valueFormatter();
-  var value = this.rowsMap.get(d) || d;
+  var customFormatter = void 0;
+  var value = void 0;
+  if (d && d instanceof Date) {
+    customFormatter = this.dateFormatter();
+    value = this.rowsMap.get(d) || d;
+  } else {
+    customFormatter = this.valueFormatter();
+    value = this.rowsMap.get(d) || d;
+  }
   return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function heatMapColsLabel(d) {
-  var customFormatter = this.valueFormatter();
-  var value = this.colsMap.get(d) || d;
+  var customFormatter = void 0;
+  var value = void 0;
+  if (d && d instanceof Date) {
+    customFormatter = this.dateFormatter();
+    value = this.colsMap.get(d) || d;
+  } else {
+    customFormatter = this.valueFormatter();
+    value = this.colsMap.get(d) || d;
+  }
   return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
@@ -51278,8 +51292,21 @@ function mapdTable(parent, chartGroup) {
     cols.forEach(function (col) {
       rowItem.append("td").html(function (d) {
         // use custom formatter or default one
-        var customFormatter = _chart.valueFormatter();
-        return customFormatter && customFormatter(d[col.name], col.expression) || (0, _formattingHelpers.formatDataValue)(d[col.name]);
+        var customFormatter = void 0;
+        var val = void 0;
+
+        if (col.name && col.name.includes("col")) {
+          val = d[col.name];
+          customFormatter = _chart.valueFormatter();
+        } else {
+          val = d[col.name];
+          if (val && val[0].value instanceof Date) {
+            customFormatter = _chart.dateFormatter();
+          } else {
+            customFormatter = _chart.valueFormatter();
+          }
+        }
+        return customFormatter && customFormatter(val, col.expression) || (0, _formattingHelpers.formatDataValue)(val);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
         var s = window.getSelection().toString();
