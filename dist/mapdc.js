@@ -21962,20 +21962,43 @@ var _formattingHelpers = __webpack_require__(6);
 var INDEX_NONE = -1;
 var SHOULD_RENDER_LABELS = true;
 
+function format(value, key, numberFormatter, dateFormatter) {
+  var customFormatter = null;
+
+  if (Array.isArray(value) && value[0]) {
+    value = value[0].value || value[0];
+  }
+
+  if (dateFormatter && value instanceof Date) {
+    customFormatter = dateFormatter;
+  } else if (numberFormatter && typeof value === "number") {
+    customFormatter = numberFormatter;
+  }
+
+  return customFormatter && customFormatter(value, key) || (0, _formattingHelpers.formatDataValue)(value);
+}
+
 function multipleKeysLabelMixin(_chart) {
+
   function label(d) {
-    if (_chart.dimension().value().length === 1) {
-      return (0, _formattingHelpers.formatDataValue)(d.key0);
+    var numberFormatter = _chart && _chart.valueFormatter();
+    var dateFormatter = _chart && _chart.dateFormatter();
+    var dimensionNames = _chart.dimension().value();
+
+    if (dimensionNames.length === 1) {
+      return format(d.key0, dimensionNames[0], numberFormatter, dateFormatter);
     }
-    var keysStr = "";
-    var i = 1;
+
+    var keysStr = [];
+    var i = 0;
     for (var key in d) {
       if (d.hasOwnProperty(key) && key.indexOf("key") > INDEX_NONE) {
-        keysStr = keysStr + (i > 1 ? " / " : "") + (0, _formattingHelpers.formatDataValue)(d[key]);
+        var formatted = format(d[key], dimensionNames[i], numberFormatter, dateFormatter);
+        keysStr.push(formatted);
       }
       i++;
     }
-    return keysStr;
+    return keysStr.join(" / ");
   }
 
   _chart.label(label, SHOULD_RENDER_LABELS);
@@ -50460,9 +50483,7 @@ function rowChart(parent, chartGroup) {
         return _chart.hasFilter() && !isSelectedRow(d);
       })
       /* --------------------------------------------------------------------------*/
-      .html(function (d) {
-        return _chart.label()(d);
-      });
+      .html(_chart.label());
       (0, _core.transition)(lab, _chart.transitionDuration()).attr("transform", translateX);
     }
 

@@ -427,7 +427,7 @@ export default function rowChart(parent, chartGroup) {
           d => _chart.hasFilter() && !isSelectedRow(d)
         )
         /* --------------------------------------------------------------------------*/
-        .html(d => _chart.label()(d))
+        .html(_chart.label())
       transition(lab, _chart.transitionDuration()).attr("transform", translateX)
     }
 
