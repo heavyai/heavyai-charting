@@ -327,8 +327,24 @@ export default function mapdTable(parent, chartGroup) {
         .append("td")
         .html(d => {
           // use custom formatter or default one
-          const customFormatter = _chart.valueFormatter()
-          return customFormatter && customFormatter(d[col.name], col.expression) || formatDataValue(d[col.name])
+          let customFormatter
+          let val
+
+          if (col.name && col.name.includes("col")) {
+            val = d[col.name]
+            customFormatter = _chart.valueFormatter()
+          } else {
+            val = d[col.name]
+            if (val && val[0].value instanceof Date) {
+              customFormatter = _chart.dateFormatter()
+            } else {
+              customFormatter = _chart.valueFormatter()
+            }
+          }
+          return (
+            (customFormatter && customFormatter(val, col.expression)) ||
+            formatDataValue(val)
+          )
         })
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
