@@ -9285,8 +9285,20 @@ function coordinateGridMixin(_chart) {
 
   _chart.popupTextAccessor = function (arr) {
     return function () {
-      var customFormatter = _chart.valueFormatter();
+      var numberFormatter = _chart.valueFormatter();
+      var dateFormatter = _chart.dateFormatter();
+      var customFormatter = null;
       var value = arr[0].datum.data.key0;
+      if (Array.isArray(value) && value[0]) {
+        value = value[0].value;
+      }
+
+      if (dateFormatter && value instanceof Date) {
+        customFormatter = dateFormatter;
+      } else if (numberFormatter) {
+        customFormatter = numberFormatter;
+      }
+
       return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
     };
   };

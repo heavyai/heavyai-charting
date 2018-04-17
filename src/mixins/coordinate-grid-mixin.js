@@ -1515,8 +1515,20 @@ export default function coordinateGridMixin (_chart) {
   }
 
   _chart.popupTextAccessor = arr => () => {
-    const customFormatter = _chart.valueFormatter()
-    const value = arr[0].datum.data.key0
+    const numberFormatter = _chart.valueFormatter()
+    const dateFormatter = _chart.dateFormatter()
+    let customFormatter = null
+    let value = arr[0].datum.data.key0
+    if (Array.isArray(value) && value[0]) {
+      value = value[0].value
+    }
+
+    if (dateFormatter && value instanceof Date) {
+      customFormatter = dateFormatter
+    } else if (numberFormatter) {
+      customFormatter = numberFormatter
+    }
+
     return customFormatter && customFormatter(value) || utils.formatValue(value)
   }
 
