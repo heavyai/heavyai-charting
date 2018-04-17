@@ -731,14 +731,21 @@ export default function coordinateGridMixin (_chart) {
   }
 
   function setXAxisFormat () {
+    const timeBinParam = _chart.group().binParams()[
+      DEFAULT_TIME_DIMENSION_INDEX
+    ] || {}
+
+    const domain = _chart.x().domain()
+
     const dateFormatter = _chart.dateFormatter()
     const numberFormatter = _chart.valueFormatter()
-    if (dateFormatter) {
+
+    if (domain && domain[0] && domain[0] instanceof Date && !timeBinParam.extract) {
       _xAxis.tickFormat(dateFormatter)
-    } else if (numberFormatter) {
+    } else if (numberFormatter && !timeBinParam.extract) {
       _xAxis.tickFormat(d => numberFormatter(d, _chart.xAxisLabel()))
     } else {
-      _xAxis.tickFormat(null)
+      _xAxis.tickFormat(_xAxis.tickFormat())
     }
   }
 

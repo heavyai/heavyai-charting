@@ -8536,16 +8536,21 @@ function coordinateGridMixin(_chart) {
   }
 
   function setXAxisFormat() {
+    var timeBinParam = _chart.group().binParams()[DEFAULT_TIME_DIMENSION_INDEX] || {};
+
+    var domain = _chart.x().domain();
+
     var dateFormatter = _chart.dateFormatter();
     var numberFormatter = _chart.valueFormatter();
-    if (dateFormatter) {
+
+    if (domain && domain[0] && domain[0] instanceof Date && !timeBinParam.extract) {
       _xAxis.tickFormat(dateFormatter);
-    } else if (numberFormatter) {
+    } else if (numberFormatter && !timeBinParam.extract) {
       _xAxis.tickFormat(function (d) {
         return numberFormatter(d, _chart.xAxisLabel());
       });
     } else {
-      _xAxis.tickFormat(null);
+      _xAxis.tickFormat(_xAxis.tickFormat());
     }
   }
 
@@ -24183,6 +24188,40 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
+  var customTimeFormat = _d2.default.time.format.utc.multi([[".%L", function (d) {
+    return d.getUTCMilliseconds();
+  }], [":%S", function (d) {
+    return d.getUTCSeconds();
+  }], ["%I:%M", function (d) {
+    return d.getUTCMinutes();
+  }], ["%I %p", function (d) {
+    return d.getUTCHours();
+  }], ["%a %d", function (d) {
+    return d.getUTCDay() && d.getUTCDate() != 1;
+  }], ["%b %d", function (d) {
+    return d.getUTCDate() != 1;
+  }], ["%b", function (d) {
+    return d.getUTCMonth();
+  }], ["%Y", function () {
+    return true;
+  }]]);
+
+  function setXAxisFormat(needsDateFormat) {
+    var dateFormatter = _chart.dateFormatter();
+    var numberFormatter = _chart.valueFormatter();
+    if (needsDateFormat && dateFormatter) {
+      _xAxis.tickFormat(dateFormatter);
+    } else if (needsDateFormat) {
+      _xAxis.tickFormat(customTimeFormat);
+    } else if (!needsDateFormat && numberFormatter) {
+      _xAxis.tickFormat(function (d) {
+        return numberFormatter(d, _chart.xAxisLabel());
+      });
+    } else {
+      _xAxis.tickFormat(_xAxis.tickFormat());
+    }
+  }
+
   function prepareXAxis(g, x, render, transitionDuration) {
     // has the domain changed?
     var xdom = x.domain();
@@ -24198,25 +24237,10 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     // currently only supports quantitative scal
     x.range([0, Math.round(_chart.xAxisLength())]);
 
-    var customTimeFormat = _d2.default.time.format.utc.multi([[".%L", function (d) {
-      return d.getUTCMilliseconds();
-    }], [":%S", function (d) {
-      return d.getUTCSeconds();
-    }], ["%I:%M", function (d) {
-      return d.getUTCMinutes();
-    }], ["%I %p", function (d) {
-      return d.getUTCHours();
-    }], ["%a %d", function (d) {
-      return d.getUTCDay() && d.getUTCDate() != 1;
-    }], ["%b %d", function (d) {
-      return d.getUTCDate() != 1;
-    }], ["%b", function (d) {
-      return d.getUTCMonth();
-    }], ["%Y", function () {
-      return true;
-    }]]);
+    _xAxis = _xAxis.scale(x);
 
-    _xAxis = _xAxis.scale(x).tickFormat(xdom[0] instanceof Date ? customTimeFormat : _xAxis.tickFormat());
+    var needsDateFormat = xdom[0] instanceof Date;
+    setXAxisFormat(needsDateFormat);
 
     _xAxis.ticks(_chart.effectiveWidth() / _xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth() / 64) : 10);
 
@@ -24315,6 +24339,22 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart;
   };
 
+  function setYAxisFormat(needsDateFormat) {
+    var dateFormatter = _chart.dateFormatter();
+    var numberFormatter = _chart.valueFormatter();
+    if (needsDateFormat && dateFormatter) {
+      _yAxis.tickFormat(dateFormatter);
+    } else if (needsDateFormat) {
+      _yAxis.tickFormat(customTimeFormat);
+    } else if (!needsDateFormat && numberFormatter) {
+      _yAxis.tickFormat(function (d) {
+        return numberFormatter(d, _chart.yAxisLabel());
+      });
+    } else {
+      _yAxis.tickFormat(_yAxis.tickFormat());
+    }
+  }
+
   _chart._prepareYAxis = function (g, y, transitionDuration) {
     y.range([Math.round(_chart.yAxisHeight()), 0]);
 
@@ -24325,6 +24365,8 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     if (_useRightYAxis) {
       _yAxis.orient("right");
     }
+
+    setYAxisFormat();
 
     _chart._renderHorizontalGridLinesForAxis(g, y, _yAxis, transitionDuration);
     _chart.prepareLabelEdit("y");
@@ -44575,26 +44617,18 @@ function heatMapValueAccesor(_ref2) {
 
 function heatMapRowsLabel(d) {
   var customFormatter = void 0;
-  var value = void 0;
+  var value = this.rowsMap.get(d) || d;
   if (d && d instanceof Date) {
     customFormatter = this.dateFormatter();
-    value = this.rowsMap.get(d) || d;
-  } else {
-    customFormatter = this.valueFormatter();
-    value = this.rowsMap.get(d) || d;
   }
   return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function heatMapColsLabel(d) {
   var customFormatter = void 0;
-  var value = void 0;
+  var value = this.colsMap.get(d) || d;
   if (d && d instanceof Date) {
     customFormatter = this.dateFormatter();
-    value = this.colsMap.get(d) || d;
-  } else {
-    customFormatter = this.valueFormatter();
-    value = this.colsMap.get(d) || d;
   }
   return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
 }
@@ -47202,6 +47236,14 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         return callback(results[0]);
       }
     }], Math.ceil(_popupSearchRadius * pixelRatio));
+  };
+
+  _chart.measureValue = function (value, key) {
+    var customFormatter = _chart.valueFormatter();
+    // hack to undo the popup concatenation like "AVG(arrdelay)"
+    var keyTrimmed = key.replace(/.*\((.*)\).*/, "$1");
+    console.log(value, key);
+    return customFormatter && customFormatter(value, keyTrimmed) || value;
   };
 
   _chart.displayPopup = function displayPopup(result, animate) {
@@ -52157,7 +52199,6 @@ function rasterLayer(layerType) {
         }
       }
     }
-
     return popupColSet.add(colAttr);
   }
 
@@ -52204,14 +52245,14 @@ function rasterLayer(layerType) {
     return _layer._areResultsValidForPopup(results[0]);
   };
 
-  function renderPopupHTML(data, columnOrder, columnMap) {
+  function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
     var html = "";
     columnOrder.forEach(function (key) {
       if (typeof data[key] === "undefined" || data[key] === null) {
         return;
       }
 
-      html = html + ('<div class="' + _popup_box_item_class + '"><span class="' + _popup_item_key_class + '">' + (columnMap && columnMap[key] ? columnMap[key] : key) + ':</span><span class="' + _popup_item_val_class + '"> ' + data[key] + "</span></div>");
+      html = html + ('<div class="' + _popup_box_item_class + '"><span class="' + _popup_item_key_class + '">' + (columnMap && columnMap[key] ? columnMap[key] : key) + ':</span><span class="' + _popup_item_val_class + '"> ' + formatMeasureValue(data[key], columnMap[key]) + "</span></div>");
     });
     return html;
   }
@@ -52270,7 +52311,7 @@ function rasterLayer(layerType) {
 
     var popupDiv = parentElem.append("div").attr("class", _popup_wrap_class).style({ left: posX + "px", top: posY + "px" });
 
-    var popupBox = popupDiv.append("div").attr("class", _popup_box_class).html(_layer.popupFunction() ? _layer.popupFunction(filteredData, popupColumns, mappedColumns) : renderPopupHTML(filteredData, popupColumns, mappedColumns)).style("left", function () {
+    var popupBox = popupDiv.append("div").attr("class", _popup_box_class).html(_layer.popupFunction() ? _layer.popupFunction(filteredData, popupColumns, mappedColumns) : renderPopupHTML(filteredData, popupColumns, mappedColumns, chart.measureValue)).style("left", function () {
       var rect = d3.select(this).node().getBoundingClientRect();
       var boxWidth = rect.width;
       var halfBoxWidth = boxWidth / 2;
