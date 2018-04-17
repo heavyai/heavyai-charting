@@ -8381,7 +8381,9 @@ function coordinateGridMixin(_chart) {
   /* istanbul ignore next */
   _chart.renderXAxis = function (g) {
     var axisXG = g.selectAll("g.x");
+
     setXAxisFormat();
+
     if (axisXG.empty()) {
       axisXG = g.append("g").attr("class", "axis x").attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")");
     }
@@ -45846,7 +45848,7 @@ function pieChart(parent, chartGroup) {
 
   function truncateLabelWithNull(data, width, availableLabelWidth) {
     if (width > availableLabelWidth) {
-      return truncateLabel(data.replace(_formattingHelpers.nullLabelHtml, "NULL"), width, availableLabelWidth).replace(/\bNULL[^A-Za-z]/g, _formattingHelpers.nullLabelHtml + " ");
+      return truncateLabel(data.toString().replace(_formattingHelpers.nullLabelHtml, "NULL"), width, availableLabelWidth).replace(/\bNULL[^A-Za-z]/g, _formattingHelpers.nullLabelHtml + " ");
     } else {
       return data;
     }

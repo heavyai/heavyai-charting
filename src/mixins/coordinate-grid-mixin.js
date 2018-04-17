@@ -542,7 +542,9 @@ export default function coordinateGridMixin (_chart) {
  /* istanbul ignore next */
   _chart.renderXAxis = function (g) {
     let axisXG = g.selectAll("g.x")
+
     setXAxisFormat()
+
     if (axisXG.empty()) {
       axisXG = g
         .append("g")

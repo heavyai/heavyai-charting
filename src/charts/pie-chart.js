@@ -629,7 +629,7 @@ export default function pieChart(parent, chartGroup) {
   function truncateLabelWithNull(data, width, availableLabelWidth) {
     if (width > availableLabelWidth) {
       return truncateLabel(
-        data.replace(nullLabelHtml, "NULL"),
+        data.toString().replace(nullLabelHtml, "NULL"),
         width,
         availableLabelWidth
       ).replace(/\bNULL[^A-Za-z]/g, `${nullLabelHtml} `)
