@@ -52237,7 +52237,7 @@ function rasterLayer(layerType) {
           popupColSet.delete(colAttr);
           colAttr = projExpr;
           break;
-        } else if (projExpr.replace(/^\s+|\s+$/g, "") === colAttr) {
+        } else if (projExpr && projExpr.replace(/^\s+|\s+$/g, "") === colAttr) {
           break;
         }
       }
