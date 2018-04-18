@@ -44662,7 +44662,7 @@ function heatMapRowsLabel(d) {
   if (d && d instanceof Date) {
     customFormatter = this.dateFormatter();
   }
-  return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
+  return customFormatter && customFormatter(value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function heatMapColsLabel(d) {
@@ -44675,7 +44675,7 @@ function heatMapColsLabel(d) {
   if (d && d instanceof Date) {
     customFormatter = this.dateFormatter();
   }
-  return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
+  return customFormatter && customFormatter(value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function isDescendingAppropriateData(_ref3) {

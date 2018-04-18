@@ -65,7 +65,7 @@ export function heatMapRowsLabel(d) {
   if (d && d instanceof Date) {
     customFormatter = this.dateFormatter()
   }
-  return (customFormatter && customFormatter(value)) || formatDataValue(value)
+  return (customFormatter && customFormatter(value, this.yAxisLabel())) || formatDataValue(value)
 }
 
 export function heatMapColsLabel(d) {
@@ -78,7 +78,7 @@ export function heatMapColsLabel(d) {
   if (d && d instanceof Date) {
     customFormatter = this.dateFormatter()
   }
-  return (customFormatter && customFormatter(value)) || formatDataValue(value)
+  return (customFormatter && customFormatter(value, this.xAxisLabel())) || formatDataValue(value)
 }
 
 export function isDescendingAppropriateData({ key1 }) {
