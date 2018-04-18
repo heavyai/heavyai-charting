@@ -56,28 +56,28 @@ export function heatMapValueAccesor({ key1 }) {
 }
 
 export function heatMapRowsLabel(d) {
-  let customFormatter
   let value = this.rowsMap.get(d) || d
-  if (Array.isArray(value) && value[0]) {
-    value = value[0].value || value[0]
+
+  let customFormatter = this.dateFormatter()
+  if (customFormatter && d && d instanceof Date) {
+    if (Array.isArray(value) && value[0]) {
+      value = value[0].value || value[0]
+    }
   }
 
-  if (d && d instanceof Date) {
-    customFormatter = this.dateFormatter()
-  }
   return (customFormatter && customFormatter(value, this.yAxisLabel())) || formatDataValue(value)
 }
 
 export function heatMapColsLabel(d) {
-  let customFormatter
   let value = this.colsMap.get(d) || d
-  if (Array.isArray(value) && value[0]) {
-    value = value[0].value || value[0]
+
+  let customFormatter = this.dateFormatter()
+  if (customFormatter && d && d instanceof Date) {
+    if (Array.isArray(value) && value[0]) {
+      value = value[0].value || value[0]
+    }
   }
 
-  if (d && d instanceof Date) {
-    customFormatter = this.dateFormatter()
-  }
   return (customFormatter && customFormatter(value, this.xAxisLabel())) || formatDataValue(value)
 }
 
