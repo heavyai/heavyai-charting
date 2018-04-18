@@ -170,12 +170,12 @@ export default function lineChart(parent, chartGroup) {
 
   _chart.measureValue = function(value) {
     const customFormatter = _chart.valueFormatter()
-    return customFormatter && customFormatter(value) || utils.formatValue(value)
+    return (customFormatter && customFormatter(value)) || utils.formatValue(value)
   }
 
   _chart.dimensionValue = function(value) {
     const customFormatter = _chart.dateFormatter()
-    return customFormatter && customFormatter(value) || utils.formatValue(value)
+    return (customFormatter && customFormatter(value)) || utils.formatValue(value)
   }
   /**
    * Get or set render area flag. If the flag is set to true then the chart will render the area

@@ -277,12 +277,11 @@ export default function rasterLayer(layerType) {
           popupColSet.delete(colAttr)
           colAttr = projExpr
           break
-        } else if (projExpr.replace(/^\s+|\s+$/g, "") === colAttr) {
+        } else if (projExpr && projExpr.replace(/^\s+|\s+$/g, "") === colAttr) {
           break
         }
       }
     }
-
     return popupColSet.add(colAttr)
   }
 
@@ -329,7 +328,7 @@ export default function rasterLayer(layerType) {
     return _layer._areResultsValidForPopup(results[0])
   }
 
-  function renderPopupHTML(data, columnOrder, columnMap) {
+  function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
     let html = ""
     columnOrder.forEach(key => {
       if (typeof data[key] === "undefined" || data[key] === null) {
@@ -347,7 +346,7 @@ export default function rasterLayer(layerType) {
           ':</span><span class="' +
           _popup_item_val_class +
           '"> ' +
-          data[key] +
+          formatMeasureValue(data[key], columnMap[key]) +
           "</span></div>")
     })
     return html
@@ -452,7 +451,7 @@ export default function rasterLayer(layerType) {
       .html(
         _layer.popupFunction()
           ? _layer.popupFunction(filteredData, popupColumns, mappedColumns)
-          : renderPopupHTML(filteredData, popupColumns, mappedColumns)
+          : renderPopupHTML(filteredData, popupColumns, mappedColumns, chart.measureValue)
       )
       .style("left", function() {
         const rect = d3

@@ -8381,7 +8381,9 @@ function coordinateGridMixin(_chart) {
   /* istanbul ignore next */
   _chart.renderXAxis = function (g) {
     var axisXG = g.selectAll("g.x");
+
     setXAxisFormat();
+
     if (axisXG.empty()) {
       axisXG = g.append("g").attr("class", "axis x").attr("transform", "translate(" + _chart.margins().left + "," + _chart._xAxisY() + ")");
     }
@@ -8527,18 +8529,30 @@ function coordinateGridMixin(_chart) {
   function setYAxisFormat() {
     var customFormatter = _chart.valueFormatter();
     if (customFormatter) {
-      _yAxis.tickFormat(customFormatter);
+      _yAxis.tickFormat(function (d) {
+        return customFormatter(d, _chart.yAxisLabel());
+      });
     } else {
       _yAxis.tickFormat(null);
     }
   }
 
   function setXAxisFormat() {
-    var customFormatter = _chart.dateFormatter();
-    if (customFormatter) {
-      _xAxis.tickFormat(customFormatter);
+    var timeBinParam = _chart.group().binParams()[DEFAULT_TIME_DIMENSION_INDEX] || {};
+
+    var domain = _chart.x().domain();
+
+    var dateFormatter = _chart.dateFormatter();
+    var numberFormatter = _chart.valueFormatter();
+
+    if (domain && domain[0] && domain[0] instanceof Date && !timeBinParam.extract) {
+      _xAxis.tickFormat(dateFormatter);
+    } else if (numberFormatter && !timeBinParam.extract) {
+      _xAxis.tickFormat(function (d) {
+        return numberFormatter(d, _chart.xAxisLabel());
+      });
     } else {
-      _xAxis.tickFormat(null);
+      _xAxis.tickFormat(_xAxis.tickFormat());
     }
   }
 
@@ -9273,8 +9287,20 @@ function coordinateGridMixin(_chart) {
 
   _chart.popupTextAccessor = function (arr) {
     return function () {
-      var customFormatter = _chart.valueFormatter();
+      var numberFormatter = _chart.valueFormatter();
+      var dateFormatter = _chart.dateFormatter();
+      var customFormatter = null;
       var value = arr[0].datum.data.key0;
+      if (Array.isArray(value) && value[0]) {
+        value = value[0].value;
+      }
+
+      if (dateFormatter && value instanceof Date) {
+        customFormatter = dateFormatter;
+      } else if (numberFormatter) {
+        customFormatter = numberFormatter;
+      }
+
       return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
     };
   };
@@ -11970,12 +11996,10 @@ function parseSource(transforms) {
 
 "use strict";
 /**
- * Copyright 2013-2015, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) 2013-present, Facebook, Inc.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 
@@ -21938,20 +21962,43 @@ var _formattingHelpers = __webpack_require__(6);
 var INDEX_NONE = -1;
 var SHOULD_RENDER_LABELS = true;
 
+function format(value, key, numberFormatter, dateFormatter) {
+  var customFormatter = null;
+
+  if (Array.isArray(value) && value[0]) {
+    value = value[0].value || value[0];
+  }
+
+  if (dateFormatter && value instanceof Date) {
+    customFormatter = dateFormatter;
+  } else if (numberFormatter && typeof value === "number") {
+    customFormatter = numberFormatter;
+  }
+
+  return customFormatter && customFormatter(value, key) || (0, _formattingHelpers.formatDataValue)(value);
+}
+
 function multipleKeysLabelMixin(_chart) {
+
   function label(d) {
-    if (_chart.dimension().value().length === 1) {
-      return (0, _formattingHelpers.formatDataValue)(d.key0);
+    var numberFormatter = _chart && _chart.valueFormatter();
+    var dateFormatter = _chart && _chart.dateFormatter();
+    var dimensionNames = _chart.dimension().value();
+
+    if (dimensionNames.length === 1) {
+      return format(d.key0, dimensionNames[0], numberFormatter, dateFormatter);
     }
-    var keysStr = "";
-    var i = 1;
+
+    var keysStr = [];
+    var i = 0;
     for (var key in d) {
       if (d.hasOwnProperty(key) && key.indexOf("key") > INDEX_NONE) {
-        keysStr = keysStr + (i > 1 ? " / " : "") + (0, _formattingHelpers.formatDataValue)(d[key]);
+        var formatted = format(d[key], dimensionNames[i], numberFormatter, dateFormatter);
+        keysStr.push(formatted);
       }
       i++;
     }
-    return keysStr;
+    return keysStr.join(" / ");
   }
 
   _chart.label(label, SHOULD_RENDER_LABELS);
@@ -24176,6 +24223,40 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
+  var customTimeFormat = _d2.default.time.format.utc.multi([[".%L", function (d) {
+    return d.getUTCMilliseconds();
+  }], [":%S", function (d) {
+    return d.getUTCSeconds();
+  }], ["%I:%M", function (d) {
+    return d.getUTCMinutes();
+  }], ["%I %p", function (d) {
+    return d.getUTCHours();
+  }], ["%a %d", function (d) {
+    return d.getUTCDay() && d.getUTCDate() != 1;
+  }], ["%b %d", function (d) {
+    return d.getUTCDate() != 1;
+  }], ["%b", function (d) {
+    return d.getUTCMonth();
+  }], ["%Y", function () {
+    return true;
+  }]]);
+
+  function setXAxisFormat(needsDateFormat) {
+    var dateFormatter = _chart.dateFormatter();
+    var numberFormatter = _chart.valueFormatter();
+    if (needsDateFormat && dateFormatter) {
+      _xAxis.tickFormat(dateFormatter);
+    } else if (needsDateFormat) {
+      _xAxis.tickFormat(customTimeFormat);
+    } else if (!needsDateFormat && numberFormatter) {
+      _xAxis.tickFormat(function (d) {
+        return numberFormatter(d, _chart.xAxisLabel());
+      });
+    } else {
+      _xAxis.tickFormat(_xAxis.tickFormat());
+    }
+  }
+
   function prepareXAxis(g, x, render, transitionDuration) {
     // has the domain changed?
     var xdom = x.domain();
@@ -24191,25 +24272,10 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     // currently only supports quantitative scal
     x.range([0, Math.round(_chart.xAxisLength())]);
 
-    var customTimeFormat = _d2.default.time.format.utc.multi([[".%L", function (d) {
-      return d.getUTCMilliseconds();
-    }], [":%S", function (d) {
-      return d.getUTCSeconds();
-    }], ["%I:%M", function (d) {
-      return d.getUTCMinutes();
-    }], ["%I %p", function (d) {
-      return d.getUTCHours();
-    }], ["%a %d", function (d) {
-      return d.getUTCDay() && d.getUTCDate() != 1;
-    }], ["%b %d", function (d) {
-      return d.getUTCDate() != 1;
-    }], ["%b", function (d) {
-      return d.getUTCMonth();
-    }], ["%Y", function () {
-      return true;
-    }]]);
+    _xAxis = _xAxis.scale(x);
 
-    _xAxis = _xAxis.scale(x).tickFormat(xdom[0] instanceof Date ? customTimeFormat : _xAxis.tickFormat());
+    var needsDateFormat = xdom[0] instanceof Date;
+    setXAxisFormat(needsDateFormat);
 
     _xAxis.ticks(_chart.effectiveWidth() / _xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth() / 64) : 10);
 
@@ -24308,6 +24374,22 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart;
   };
 
+  function setYAxisFormat(needsDateFormat) {
+    var dateFormatter = _chart.dateFormatter();
+    var numberFormatter = _chart.valueFormatter();
+    if (needsDateFormat && dateFormatter) {
+      _yAxis.tickFormat(dateFormatter);
+    } else if (needsDateFormat) {
+      _yAxis.tickFormat(customTimeFormat);
+    } else if (!needsDateFormat && numberFormatter) {
+      _yAxis.tickFormat(function (d) {
+        return numberFormatter(d, _chart.yAxisLabel());
+      });
+    } else {
+      _yAxis.tickFormat(_yAxis.tickFormat());
+    }
+  }
+
   _chart._prepareYAxis = function (g, y, transitionDuration) {
     y.range([Math.round(_chart.yAxisHeight()), 0]);
 
@@ -24318,6 +24400,8 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     if (_useRightYAxis) {
       _yAxis.orient("right");
     }
+
+    setYAxisFormat();
 
     _chart._renderHorizontalGridLinesForAxis(g, y, _yAxis, transitionDuration);
     _chart.prepareLabelEdit("y");
@@ -38973,6 +39057,15 @@ function bubbleChart(parent, chartGroup) {
     return _chart;
   };
 
+  _chart.measureValue = function (value, key, type) {
+    if (type === "measure") {
+      var customFormatter = _chart.valueFormatter();
+      return customFormatter && customFormatter(value, key) || _utils.utils.formatValue(value);
+    } else {
+      _utils.utils.formatValue(value);
+    }
+  };
+
   _chart.hideOverlappedLabels = function () {
     var nodes = _chart.svg().selectAll(".node");
 
@@ -39133,7 +39226,8 @@ function bubbleChart(parent, chartGroup) {
 
     for (var i = 1; i < _popupHeader.length; i++) {
       if (_popupHeader[i].alias) {
-        str = str + ("<td>" + _utils.utils.formatValue(d[_popupHeader[i].alias]) + "</td>");
+        var value = _popupHeader[i];
+        str = str + ("<td>" + _chart.measureValue(d[value.alias], value.label, value.type) + "</td>");
       }
     }
     return str;
@@ -44557,15 +44651,29 @@ function heatMapValueAccesor(_ref2) {
 }
 
 function heatMapRowsLabel(d) {
-  var customFormatter = this.valueFormatter();
   var value = this.rowsMap.get(d) || d;
-  return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
+
+  var customFormatter = this.dateFormatter();
+  if (customFormatter && d && d instanceof Date) {
+    if (Array.isArray(value) && value[0]) {
+      value = value[0].value || value[0];
+    }
+  }
+
+  return customFormatter && customFormatter(value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function heatMapColsLabel(d) {
-  var customFormatter = this.valueFormatter();
   var value = this.colsMap.get(d) || d;
-  return customFormatter && customFormatter(value) || (0, _formattingHelpers.formatDataValue)(value);
+
+  var customFormatter = this.dateFormatter();
+  if (customFormatter && d && d instanceof Date) {
+    if (Array.isArray(value) && value[0]) {
+      value = value[0].value || value[0];
+    }
+  }
+
+  return customFormatter && customFormatter(value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function isDescendingAppropriateData(_ref3) {
@@ -45746,7 +45854,7 @@ function pieChart(parent, chartGroup) {
 
   function truncateLabelWithNull(data, width, availableLabelWidth) {
     if (width > availableLabelWidth) {
-      return truncateLabel(data.replace(_formattingHelpers.nullLabelHtml, "NULL"), width, availableLabelWidth).replace(/\bNULL[^A-Za-z]/g, _formattingHelpers.nullLabelHtml + " ");
+      return truncateLabel(data.toString().replace(_formattingHelpers.nullLabelHtml, "NULL"), width, availableLabelWidth).replace(/\bNULL[^A-Za-z]/g, _formattingHelpers.nullLabelHtml + " ");
     } else {
       return data;
     }
@@ -47171,6 +47279,16 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         return callback(results[0]);
       }
     }], Math.ceil(_popupSearchRadius * pixelRatio));
+  };
+
+  _chart.measureValue = function (value, key) {
+    var customFormatter = _chart.valueFormatter();
+    // hack to undo the popup concatenation like "AVG(arrdelay)"
+    var keyTrimmed = null;
+    if (key) {
+      keyTrimmed = key.replace(/.*\((.*)\).*/, "$1");
+    }
+    return keyTrimmed && customFormatter && customFormatter(value, keyTrimmed) || value;
   };
 
   _chart.displayPopup = function displayPopup(result, animate) {
@@ -50138,6 +50256,15 @@ function rowChart(parent, chartGroup) {
     _chart.xAxis().ticks(_chart.getNumTicksForXAxis());
   }
 
+  function setXAxisFormat() {
+    var numberFormatter = _chart.valueFormatter();
+    if (numberFormatter) {
+      _xAxis.tickFormat(numberFormatter);
+    } else {
+      _xAxis.tickFormat(null);
+    }
+  }
+
   function drawAxis() {
     /* OVERRIDE -----------------------------------------------------------------*/
     var root = _chart.root();
@@ -50180,6 +50307,7 @@ function rowChart(parent, chartGroup) {
     xLabel.text(_chart.xAxisLabel()).style("left", _chart.effectiveWidth() / 2 + _chart.margins().left + "px");
     /* --------------------------------------------------------------------------*/
 
+    setXAxisFormat();
     (0, _core.transition)(axisG, _chart.transitionDuration()).call(_xAxis);
 
     _chart.prepareLockAxis("x");
@@ -50365,9 +50493,7 @@ function rowChart(parent, chartGroup) {
         return _chart.hasFilter() && !isSelectedRow(d);
       })
       /* --------------------------------------------------------------------------*/
-      .html(function (d) {
-        return _chart.label()(d);
-      });
+      .html(_chart.label());
       (0, _core.transition)(lab, _chart.transitionDuration()).attr("transform", translateX);
     }
 
@@ -51198,7 +51324,8 @@ function mapdTable(parent, chartGroup) {
         cols.push({
           expression: d,
           name: "key" + i,
-          label: _colAliases ? _colAliases[i] : d
+          label: _colAliases ? _colAliases[i] : d,
+          type: "dimension"
         });
       });
       _chart.group().reduce().forEach(function (d, i) {
@@ -51207,7 +51334,8 @@ function mapdTable(parent, chartGroup) {
             expression: d.expression,
             name: d.name,
             agg_mode: d.agg_mode,
-            label: _colAliases ? _colAliases[_chart.dimension().value().length + i] : getMeasureColHeaderLabel(d)
+            label: _colAliases ? _colAliases[_chart.dimension().value().length + i] : getMeasureColHeaderLabel(d),
+            type: "measure"
           });
         }
       });
@@ -51217,7 +51345,8 @@ function mapdTable(parent, chartGroup) {
         return {
           expression: splitStr[0],
           name: splitStr[1],
-          label: _colAliases ? _colAliases[i] : splitStr[0]
+          label: _colAliases ? _colAliases[i] : splitStr[0],
+          type: "project"
         };
       });
     }
@@ -51251,8 +51380,19 @@ function mapdTable(parent, chartGroup) {
     cols.forEach(function (col) {
       rowItem.append("td").html(function (d) {
         // use custom formatter or default one
-        var customFormatter = _chart.valueFormatter();
-        return customFormatter && customFormatter(d[col.name], col.expression) || (0, _formattingHelpers.formatDataValue)(d[col.name]);
+        var customFormatter = void 0;
+        var val = d[col.name];
+        if (col.type === "measure") {
+          customFormatter = _chart.valueFormatter();
+        } else {
+          if (val && val[0].value instanceof Date) {
+            customFormatter = _chart.dateFormatter();
+            val = val[0].value;
+          } else {
+            customFormatter = _chart.valueFormatter();
+          }
+        }
+        return customFormatter && customFormatter(val, col.expression) || (0, _formattingHelpers.formatDataValue)(val);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
         var s = window.getSelection().toString();
@@ -52097,12 +52237,11 @@ function rasterLayer(layerType) {
           popupColSet.delete(colAttr);
           colAttr = projExpr;
           break;
-        } else if (projExpr.replace(/^\s+|\s+$/g, "") === colAttr) {
+        } else if (projExpr && projExpr.replace(/^\s+|\s+$/g, "") === colAttr) {
           break;
         }
       }
     }
-
     return popupColSet.add(colAttr);
   }
 
@@ -52149,14 +52288,14 @@ function rasterLayer(layerType) {
     return _layer._areResultsValidForPopup(results[0]);
   };
 
-  function renderPopupHTML(data, columnOrder, columnMap) {
+  function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
     var html = "";
     columnOrder.forEach(function (key) {
       if (typeof data[key] === "undefined" || data[key] === null) {
         return;
       }
 
-      html = html + ('<div class="' + _popup_box_item_class + '"><span class="' + _popup_item_key_class + '">' + (columnMap && columnMap[key] ? columnMap[key] : key) + ':</span><span class="' + _popup_item_val_class + '"> ' + data[key] + "</span></div>");
+      html = html + ('<div class="' + _popup_box_item_class + '"><span class="' + _popup_item_key_class + '">' + (columnMap && columnMap[key] ? columnMap[key] : key) + ':</span><span class="' + _popup_item_val_class + '"> ' + formatMeasureValue(data[key], columnMap[key]) + "</span></div>");
     });
     return html;
   }
@@ -52215,7 +52354,7 @@ function rasterLayer(layerType) {
 
     var popupDiv = parentElem.append("div").attr("class", _popup_wrap_class).style({ left: posX + "px", top: posY + "px" });
 
-    var popupBox = popupDiv.append("div").attr("class", _popup_box_class).html(_layer.popupFunction() ? _layer.popupFunction(filteredData, popupColumns, mappedColumns) : renderPopupHTML(filteredData, popupColumns, mappedColumns)).style("left", function () {
+    var popupBox = popupDiv.append("div").attr("class", _popup_box_class).html(_layer.popupFunction() ? _layer.popupFunction(filteredData, popupColumns, mappedColumns) : renderPopupHTML(filteredData, popupColumns, mappedColumns, chart.measureValue)).style("left", function () {
       var rect = d3.select(this).node().getBoundingClientRect();
       var boxWidth = rect.width;
       var halfBoxWidth = boxWidth / 2;

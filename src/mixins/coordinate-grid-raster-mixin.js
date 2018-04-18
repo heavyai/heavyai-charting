@@ -749,6 +749,47 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
   }
 
+  const customTimeFormat = d3.time.format.utc.multi([
+    [".%L", function (d) {
+      return d.getUTCMilliseconds()
+    }],
+    [":%S", function (d) {
+      return d.getUTCSeconds()
+    }],
+    ["%I:%M", function (d) {
+      return d.getUTCMinutes()
+    }],
+    ["%I %p", function (d) {
+      return d.getUTCHours()
+    }],
+    ["%a %d", function (d) {
+      return d.getUTCDay() && d.getUTCDate() != 1
+    }],
+    ["%b %d", function (d) {
+      return d.getUTCDate() != 1
+    }],
+    ["%b", function (d) {
+      return d.getUTCMonth()
+    }],
+    ["%Y", function () {
+      return true
+    }]
+  ])
+
+  function setXAxisFormat (needsDateFormat) {
+    const dateFormatter = _chart.dateFormatter()
+    const numberFormatter = _chart.valueFormatter()
+    if (needsDateFormat && dateFormatter) {
+      _xAxis.tickFormat(dateFormatter)
+    } else if (needsDateFormat) {
+      _xAxis.tickFormat(customTimeFormat)
+    } else if (!needsDateFormat && numberFormatter) {
+      _xAxis.tickFormat(d => numberFormatter(d, _chart.xAxisLabel()))
+    } else {
+      _xAxis.tickFormat(_xAxis.tickFormat())
+    }
+  }
+
   function prepareXAxis (g, x, render, transitionDuration) {
     // has the domain changed?
     const xdom = x.domain()
@@ -764,34 +805,10 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     // currently only supports quantitative scal
     x.range([0, Math.round(_chart.xAxisLength())])
 
-    const customTimeFormat = d3.time.format.utc.multi([
-      [".%L", function (d) {
-        return d.getUTCMilliseconds()
-      }],
-      [":%S", function (d) {
-        return d.getUTCSeconds()
-      }],
-      ["%I:%M", function (d) {
-        return d.getUTCMinutes()
-      }],
-      ["%I %p", function (d) {
-        return d.getUTCHours()
-      }],
-      ["%a %d", function (d) {
-        return d.getUTCDay() && d.getUTCDate() != 1
-      }],
-      ["%b %d", function (d) {
-        return d.getUTCDate() != 1
-      }],
-      ["%b", function (d) {
-        return d.getUTCMonth()
-      }],
-      ["%Y", function () {
-        return true
-      }]
-    ])
+    _xAxis = _xAxis.scale(x)
 
-    _xAxis = _xAxis.scale(x).tickFormat(xdom[0] instanceof Date ? customTimeFormat : _xAxis.tickFormat())
+    const needsDateFormat = xdom[0] instanceof Date
+    setXAxisFormat(needsDateFormat)
 
     _xAxis.ticks(_chart.effectiveWidth() / _xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth() / 64) : 10)
 
@@ -904,6 +921,20 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     return _chart
   }
 
+  function setYAxisFormat (needsDateFormat) {
+    const dateFormatter = _chart.dateFormatter()
+    const numberFormatter = _chart.valueFormatter()
+    if (needsDateFormat && dateFormatter) {
+      _yAxis.tickFormat(dateFormatter)
+    } else if (needsDateFormat) {
+      _yAxis.tickFormat(customTimeFormat)
+    } else if (!needsDateFormat && numberFormatter) {
+      _yAxis.tickFormat(d => numberFormatter(d, _chart.yAxisLabel()))
+    } else {
+      _yAxis.tickFormat(_yAxis.tickFormat())
+    }
+  }
+
   _chart._prepareYAxis = function (g, y, transitionDuration) {
     y.range([Math.round(_chart.yAxisHeight()), 0])
 
@@ -914,6 +945,8 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     if (_useRightYAxis) {
       _yAxis.orient("right")
     }
+
+    setYAxisFormat()
 
     _chart._renderHorizontalGridLinesForAxis(g, y, _yAxis, transitionDuration)
     _chart.prepareLabelEdit("y")

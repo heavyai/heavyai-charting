@@ -542,7 +542,9 @@ export default function coordinateGridMixin (_chart) {
  /* istanbul ignore next */
   _chart.renderXAxis = function (g) {
     let axisXG = g.selectAll("g.x")
+
     setXAxisFormat()
+
     if (axisXG.empty()) {
       axisXG = g
         .append("g")
@@ -724,18 +726,28 @@ export default function coordinateGridMixin (_chart) {
   function setYAxisFormat () {
     const customFormatter = _chart.valueFormatter()
     if (customFormatter) {
-      _yAxis.tickFormat(customFormatter)
+      _yAxis.tickFormat(d => customFormatter(d, _chart.yAxisLabel()))
     } else {
       _yAxis.tickFormat(null)
     }
   }
 
   function setXAxisFormat () {
-    const customFormatter = _chart.dateFormatter()
-    if (customFormatter) {
-      _xAxis.tickFormat(customFormatter)
+    const timeBinParam = _chart.group().binParams()[
+      DEFAULT_TIME_DIMENSION_INDEX
+    ] || {}
+
+    const domain = _chart.x().domain()
+
+    const dateFormatter = _chart.dateFormatter()
+    const numberFormatter = _chart.valueFormatter()
+
+    if (domain && domain[0] && domain[0] instanceof Date && !timeBinParam.extract) {
+      _xAxis.tickFormat(dateFormatter)
+    } else if (numberFormatter && !timeBinParam.extract) {
+      _xAxis.tickFormat(d => numberFormatter(d, _chart.xAxisLabel()))
     } else {
-      _xAxis.tickFormat(null)
+      _xAxis.tickFormat(_xAxis.tickFormat())
     }
   }
 
@@ -1505,8 +1517,20 @@ export default function coordinateGridMixin (_chart) {
   }
 
   _chart.popupTextAccessor = arr => () => {
-    const customFormatter = _chart.valueFormatter()
-    const value = arr[0].datum.data.key0
+    const numberFormatter = _chart.valueFormatter()
+    const dateFormatter = _chart.dateFormatter()
+    let customFormatter = null
+    let value = arr[0].datum.data.key0
+    if (Array.isArray(value) && value[0]) {
+      value = value[0].value
+    }
+
+    if (dateFormatter && value instanceof Date) {
+      customFormatter = dateFormatter
+    } else if (numberFormatter) {
+      customFormatter = numberFormatter
+    }
+
     return customFormatter && customFormatter(value) || utils.formatValue(value)
   }
 

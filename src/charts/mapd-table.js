@@ -255,7 +255,8 @@ export default function mapdTable(parent, chartGroup) {
           cols.push({
             expression: d,
             name: "key" + i,
-            label: _colAliases ? _colAliases[i] : d
+            label: _colAliases ? _colAliases[i] : d,
+            type: "dimension"
           })
         })
       _chart
@@ -269,7 +270,8 @@ export default function mapdTable(parent, chartGroup) {
               agg_mode: d.agg_mode,
               label: _colAliases
                 ? _colAliases[_chart.dimension().value().length + i]
-                : getMeasureColHeaderLabel(d)
+                : getMeasureColHeaderLabel(d),
+              type: "measure"
             })
           }
         })
@@ -282,7 +284,8 @@ export default function mapdTable(parent, chartGroup) {
           return {
             expression: splitStr[0],
             name: splitStr[1],
-            label: _colAliases ? _colAliases[i] : splitStr[0]
+            label: _colAliases ? _colAliases[i] : splitStr[0],
+            type: "project"
           }
         })
     }
@@ -327,8 +330,19 @@ export default function mapdTable(parent, chartGroup) {
         .append("td")
         .html(d => {
           // use custom formatter or default one
-          const customFormatter = _chart.valueFormatter()
-          return customFormatter && customFormatter(d[col.name], col.expression) || formatDataValue(d[col.name])
+          let customFormatter
+          let val = d[col.name]
+          if (col.type === "measure") {
+            customFormatter = _chart.valueFormatter()
+          } else {
+            if (val && val[0].value instanceof Date) {
+              customFormatter = _chart.dateFormatter()
+              val = val[0].value
+            } else {
+              customFormatter = _chart.valueFormatter()
+            }
+          }
+          return customFormatter && customFormatter(val, col.expression) || formatDataValue(val)
         })
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {

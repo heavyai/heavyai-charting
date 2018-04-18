@@ -530,6 +530,16 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     )
   }
 
+  _chart.measureValue = function(value, key) {
+    const customFormatter = _chart.valueFormatter()
+    // hack to undo the popup concatenation like "AVG(arrdelay)"
+    let keyTrimmed = null
+    if (key) {
+       keyTrimmed = key.replace(/.*\((.*)\).*/, "$1")
+    }
+    return (keyTrimmed && customFormatter && customFormatter(value, keyTrimmed)) || value
+  }
+
   _chart.displayPopup = function displayPopup(result, animate) {
     if (
       !_popupDisplayable ||
