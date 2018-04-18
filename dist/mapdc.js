@@ -44655,6 +44655,10 @@ function heatMapValueAccesor(_ref2) {
 function heatMapRowsLabel(d) {
   var customFormatter = void 0;
   var value = this.rowsMap.get(d) || d;
+  if (Array.isArray(value) && value[0]) {
+    value = value[0].value || value[0];
+  }
+
   if (d && d instanceof Date) {
     customFormatter = this.dateFormatter();
   }
@@ -44664,6 +44668,10 @@ function heatMapRowsLabel(d) {
 function heatMapColsLabel(d) {
   var customFormatter = void 0;
   var value = this.colsMap.get(d) || d;
+  if (Array.isArray(value) && value[0]) {
+    value = value[0].value || value[0];
+  }
+
   if (d && d instanceof Date) {
     customFormatter = this.dateFormatter();
   }
