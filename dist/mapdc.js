@@ -25442,14 +25442,12 @@ function rasterLayerHeatmapMixin(_layer) {
         filter = _ref2.filter,
         globalFilter = _ref2.globalFilter,
         neLat = _ref2.neLat,
-        zoom = _ref2.zoom,
-        domain = _ref2.domain;
+        zoom = _ref2.zoom;
 
     var _getMarkSize = getMarkSize({
       width: width,
       neLat: neLat,
-      zoom: zoom,
-      domain: domain
+      zoom: zoom
     }),
         markWidth = _getMarkSize.markWidth,
         markHeight = _getMarkSize.markHeight;
@@ -25495,6 +25493,48 @@ function rasterLayerHeatmapMixin(_layer) {
     });
   };
 
+  function getColorScaleName(layerName) {
+    return "heat_color" + layerName;
+  }
+
+  function usesAutoColors() {
+    return state.encoding.color.scale.domain === "auto";
+  }
+
+  _layer._updateFromMetadata = function (metadata) {
+    var layerName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+
+    if (usesAutoColors() && Array.isArray(metadata.scales)) {
+      var colorScaleName = getColorScaleName(layerName);
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = metadata.scales[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var scale = _step.value;
+
+          if (scale.name === colorScaleName) {
+            _layer.colorDomain(scale.domain);
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  };
+
   _layer._genVega = function (_ref3) {
     var table = _ref3.table,
         width = _ref3.width,
@@ -25505,69 +25545,100 @@ function rasterLayerHeatmapMixin(_layer) {
         globalFilter = _ref3.globalFilter,
         neLat = _ref3.neLat,
         zoom = _ref3.zoom,
-        domain = _ref3.domain,
         _ref3$layerName = _ref3.layerName,
         layerName = _ref3$layerName === undefined ? "" : _ref3$layerName;
 
     var _getMarkSize2 = getMarkSize({
       width: width,
       neLat: neLat,
-      zoom: zoom,
-      domain: domain
+      zoom: zoom
     }),
         markWidth = _getMarkSize2.markWidth,
         markHeight = _getMarkSize2.markHeight;
 
-    return {
+    var datalayerName = "heatmap_query" + layerName;
+
+    var autocolors = usesAutoColors();
+    var getStatsLayerName = function getStatsLayerName() {
+      return datalayerName + "_stats";
+    };
+
+    var vega = {
       width: width,
-      height: height,
-      data: {
-        name: "heatmap_query" + layerName,
-        sql: _layer.genSQL({
-          table: table,
-          width: width,
-          height: height,
-          min: min,
-          max: max,
-          filter: filter,
-          globalFilter: globalFilter,
-          neLat: neLat,
-          zoom: zoom,
-          domain: domain
-        })
+      height: height
+    };
+
+    vega.data = [{
+      name: datalayerName,
+      sql: _layer.genSQL({
+        table: table,
+        width: width,
+        height: height,
+        min: min,
+        max: max,
+        filter: filter,
+        globalFilter: globalFilter,
+        neLat: neLat,
+        zoom: zoom
+      })
+    }];
+
+    if (autocolors) {
+      vega.data.push({
+        name: getStatsLayerName(),
+        source: datalayerName,
+        transform: [{
+          type: "aggregate",
+          fields: ["color", "color", "color", "color"],
+          ops: ["min", "max", "avg", "stddev"],
+          as: ["minimum", "maximum", "mean", "deviation"]
+        }, {
+          type: "formula",
+          expr: "max(minimum, mean-2*deviation)",
+          as: "mincolor"
+        }, {
+          type: "formula",
+          expr: "min(maximum, mean+2*deviation)",
+          as: "maxcolor"
+        }]
+      });
+    }
+
+    var colorScaleName = getColorScaleName(layerName);
+    vega.scales = [{
+      name: colorScaleName,
+      type: state.encoding.color.type,
+      domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.scale.domain,
+      range: state.encoding.color.scale.range.map(function (c) {
+        return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.scale.opacity);
+      }),
+      default: (0, _utilsVega.adjustOpacity)(state.encoding.color.scale.default, state.encoding.color.scale.opacity),
+      nullValue: (0, _utilsVega.adjustOpacity)(state.encoding.color.scale.nullValue, state.encoding.color.scale.opacity)
+    }];
+
+    vega.marks = [{
+      type: "symbol",
+      from: {
+        data: datalayerName
       },
-      scales: [{
-        name: "heat_color" + layerName,
-        type: state.encoding.color.type,
-        domain: state.encoding.color.scale.domain === "auto" ? _layer.colorDomain() || domain : state.encoding.color.scale.domain,
-        range: state.encoding.color.scale.range.map(function (c) {
-          return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.scale.opacity);
-        }),
-        default: (0, _utilsVega.adjustOpacity)(state.encoding.color.scale.default, state.encoding.color.scale.opacity),
-        nullValue: (0, _utilsVega.adjustOpacity)(state.encoding.color.scale.nullValue, state.encoding.color.scale.opacity)
-      }],
-      mark: {
-        type: "symbol",
-        from: {
-          data: "heatmap_query" + layerName
+      properties: {
+        shape: getMarkType(state.mark),
+        xc: {
+          field: "x"
         },
-        properties: {
-          shape: getMarkType(state.mark),
-          xc: {
-            field: "x"
-          },
-          yc: {
-            field: "y"
-          },
-          width: markWidth,
-          height: markHeight,
-          fillColor: {
-            scale: "heat_color" + layerName,
-            field: "color"
-          }
+        yc: {
+          field: "y"
+        },
+        width: markWidth,
+        height: markHeight,
+        fillColor: {
+          scale: colorScaleName,
+          field: "color"
         }
       }
-    };
+    }];
+
+    return vega;
   };
 
   _layer._destroyLayer = function () {
@@ -25903,16 +25974,16 @@ function rasterLayerPointMixin(_layer) {
     var markType = getMarkType(state.config);
 
     return {
-      data: {
+      data: [{
         name: layerName,
         sql: _utils.parser.writeSQL({
           type: "root",
           source: table,
           transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
         })
-      },
+      }],
       scales: getScales(state.encoding, layerName),
-      mark: {
+      marks: [{
         type: markType === "circle" ? "points" : "symbol",
         from: {
           data: layerName
@@ -25942,7 +26013,7 @@ function rasterLayerPointMixin(_layer) {
           width: size,
           height: size
         })
-      }
+      }]
     };
   };
 
@@ -26025,9 +26096,9 @@ function rasterLayerPointMixin(_layer) {
   var renderAttributes = ["x", "y", "xc", "yc", "size", "width", "height", "fillColor"];
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
-    if (_vega && _vega.mark && _vega.mark.properties) {
+    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
       renderAttributes.forEach(function (prop) {
-        _layer._addQueryDrivenRenderPropToSet(popupColumnsSet, _vega.mark.properties, prop);
+        _layer._addQueryDrivenRenderPropToSet(popupColumnsSet, _vega.marks[0].properties, prop);
       });
     }
   };
@@ -26043,8 +26114,8 @@ function rasterLayerPointMixin(_layer) {
   _layer._displayPopup = function (chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate) {
     var rndrProps = {};
     var queryRndrProps = new Set();
-    if (_vega && _vega.mark && _vega.mark.properties) {
-      var propObj = _vega.mark.properties;
+    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+      var propObj = _vega.marks[0].properties;
       renderAttributes.forEach(function (prop) {
         if (_typeof(propObj[prop]) === "object" && propObj[prop].field && typeof propObj[prop].field === "string") {
           rndrProps[prop] = propObj[prop].field;
@@ -26317,7 +26388,7 @@ function rasterLayerPolyMixin(_layer) {
       return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
     });
     return {
-      data: {
+      data: [{
         name: layerName,
         format: "polys",
         sql: _utils.parser.writeSQL({
@@ -26332,7 +26403,7 @@ function rasterLayerPolyMixin(_layer) {
             filtersInverse: filtersInverse
           })
         })
-      },
+      }],
       scales: [{
         name: layerName + "_fillColor",
         type: "quantize",
@@ -26341,7 +26412,7 @@ function rasterLayerPolyMixin(_layer) {
         nullValue: "#D6D7D6",
         default: "#D6D7D6"
       }],
-      mark: {
+      marks: [{
         type: "polys",
         from: {
           data: layerName
@@ -26364,7 +26435,7 @@ function rasterLayerPolyMixin(_layer) {
           lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
           miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
         }
-      }
+      }]
     };
   };
 
@@ -26392,10 +26463,10 @@ function rasterLayerPolyMixin(_layer) {
     // multiple polys per row, and linedrawinfo will
     // tell us this
 
-    if (_vega && _vega.mark && _vega.mark.properties) {
+    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
       renderAttributes.forEach(function (rndrProp) {
         if (rndrProp !== "x" && rndrProp !== "y") {
-          _layer._addQueryDrivenRenderPropToSet(popupColsSet, _vega.mark.properties, rndrProp);
+          _layer._addQueryDrivenRenderPropToSet(popupColsSet, _vega.marks[0].properties, rndrProp);
         }
       });
     }
@@ -26541,8 +26612,8 @@ function rasterLayerPolyMixin(_layer) {
 
     var rndrProps = {};
     var queryRndrProps = new Set([polyTableGeomColumns.verts, polyTableGeomColumns.linedrawinfo]);
-    if (_vega && _vega.mark && _vega.mark.properties) {
-      var propObj = _vega.mark.properties;
+    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+      var propObj = _vega.marks[0].properties;
       renderAttributes.forEach(function (prop) {
         if (_typeof(propObj[prop]) === "object" && propObj[prop].field && typeof propObj[prop].field === "string") {
           rndrProps[prop] = propObj[prop].field;
@@ -46851,6 +46922,8 @@ var _legendables = __webpack_require__(205);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   var _chart = null;
   var _legend = null;
@@ -47060,32 +47133,9 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart.setDataAsync(function (group, callback) {
     var bounds = _chart.getDataRenderBounds();
     _chart._updateXAndYScales(bounds);
-    var heatLayers = _chart.getLayerNames().filter(function (layerName) {
-      return _chart.getLayer(layerName).type === "heatmap";
-    });
-
-    if (heatLayers.length) {
-      Promise.all(heatLayers.map(function (layerId) {
-        var layer = _chart.getLayer(layerId);
-        if (layer.getState().encoding.color.scale.domain === "auto") {
-          return layer.getColorDomain(_chart).then(function (domain) {
-            layer.colorDomain(domain);
-            return domain;
-          });
-        } else {
-          return Promise.resolve(layer.getState().encoding.color.scale.domain);
-        }
-      })).then(function (allBounds) {
-        _chart._vegaSpec = genLayeredVega(_chart);
-        var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callback);
-        _chart.colors().domain(allBounds[0]);
-        _renderBoundsMap[nonce] = bounds;
-      }).catch(callback);
-    } else {
-      _chart._vegaSpec = genLayeredVega(_chart);
-      var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callback);
-      _renderBoundsMap[nonce] = bounds;
-    }
+    _chart._vegaSpec = genLayeredVega(_chart);
+    var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callback);
+    _renderBoundsMap[nonce] = bounds;
   });
 
   _chart.data(function (group) {
@@ -47213,8 +47263,16 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       data = _chart.data();
     }
 
-    var state = (0, _stackedLegend.getLegendStateFromChart)(_chart, useMap);
+    if (data.vega_metadata) {
+      var vega_metadata = JSON.parse(data.vega_metadata);
+      for (var layerName in _layerNames) {
+        if (typeof _layerNames[layerName]._updateFromMetadata === "function") {
+          _layerNames[layerName]._updateFromMetadata(vega_metadata, layerName);
+        }
+      }
+    }
 
+    var state = (0, _stackedLegend.getLegendStateFromChart)(_chart, useMap);
     _legend.setState(state);
 
     if (_chart.isLoaded()) {
@@ -47382,9 +47440,9 @@ function genLayeredVega(chart) {
   chart.getLayerNames().forEach(function (layerName) {
     var layerVega = chart.getLayer(layerName).genVega(chart, layerName);
 
-    data.push(layerVega.data);
-    scales = scales.concat(layerVega.scales);
-    marks.push(layerVega.mark);
+    data.push.apply(data, _toConsumableArray(layerVega.data));
+    scales.push.apply(scales, _toConsumableArray(layerVega.scales));
+    marks.push.apply(marks, _toConsumableArray(layerVega.marks));
   });
 
   var vegaSpec = {
@@ -52160,32 +52218,9 @@ function rasterLayer(layerType) {
       filter: _layer.crossfilter().getFilterString(),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       neLat: chart._maxCoord[1],
-      zoom: chart.zoom(),
-      domain: chart.colors().domain()
+      zoom: chart.zoom()
     };
   }
-
-  _layer.getColorDomain = function (chart) {
-    var subquery = _layer.genSQL(genHeatConfigFromChart(chart));
-    var sql = "SELECT MIN(c.color) as minimum, MAX(c.color) as maximum, STDDEV(c.color) as deviation, AVG(c.color) as mean FROM (" + subquery + ") as c";
-
-    return new Promise(function (resolve, reject) {
-      chart.con().query(sql, null, function (error, result) {
-        if (error) {
-          reject(error);
-        } else {
-          var _result$ = result[0],
-              minimum = _result$.minimum,
-              maximum = _result$.maximum,
-              mean = _result$.mean,
-              deviation = _result$.deviation;
-
-          var step = 2 * deviation;
-          resolve([Math.max(minimum, mean - step), Math.min(maximum, mean + step)]);
-        }
-      });
-    });
-  };
 
   _layer.genVega = function (chart, layerName) {
     var cap = _layer.cap();

@@ -66,7 +66,7 @@
     "simplify-js": "^1.2.1"
   },
   "devDependencies": {
-    "@mapd/connector": "git://github.com/mapd/mapd-connector.git#v2.0.0",
+    "@mapd/connector": "git://github.com/mapd/mapd-connector.git#67dd489",
     "@mapd/crossfilter": "git://github.com/mapd/mapd-crossfilter.git#tai/poly-stuff",
     "atob": "^2.0.3",
     "babel-cli": "^6.10.1",

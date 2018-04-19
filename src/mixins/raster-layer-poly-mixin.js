@@ -180,7 +180,7 @@ export default function rasterLayerPolyMixin(_layer) {
       adjustOpacity(c, state.encoding.color.opacity)
     )
     return {
-      data: {
+      data: [{
         name: layerName,
         format: "polys",
         sql: parser.writeSQL({
@@ -195,7 +195,7 @@ export default function rasterLayerPolyMixin(_layer) {
             filtersInverse
           })
         })
-      },
+      }],
       scales: [
         {
           name: layerName + "_fillColor",
@@ -206,7 +206,7 @@ export default function rasterLayerPolyMixin(_layer) {
           default: "#D6D7D6"
         }
       ],
-      mark: {
+      marks: [{
         type: "polys",
         from: {
           data: layerName
@@ -233,7 +233,7 @@ export default function rasterLayerPolyMixin(_layer) {
           miterLimit:
             typeof state.mark === "object" ? state.mark.miterLimit : 10
         }
-      }
+      }]
     }
   }
 
@@ -271,12 +271,12 @@ export default function rasterLayerPolyMixin(_layer) {
     // multiple polys per row, and linedrawinfo will
     // tell us this
 
-    if (_vega && _vega.mark && _vega.mark.properties) {
+    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
       renderAttributes.forEach(rndrProp => {
         if (rndrProp !== "x" && rndrProp !== "y") {
           _layer._addQueryDrivenRenderPropToSet(
             popupColsSet,
-            _vega.mark.properties,
+            _vega.marks[0].properties,
             rndrProp
           )
         }
@@ -448,8 +448,8 @@ export default function rasterLayerPolyMixin(_layer) {
       polyTableGeomColumns.verts,
       polyTableGeomColumns.linedrawinfo
     ])
-    if (_vega && _vega.mark && _vega.mark.properties) {
-      const propObj = _vega.mark.properties
+    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+      const propObj = _vega.marks[0].properties
       renderAttributes.forEach(prop => {
         if (
           typeof propObj[prop] === "object" &&
