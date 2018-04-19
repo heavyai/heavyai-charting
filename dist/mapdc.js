@@ -4551,9 +4551,9 @@ var _mapdDataLayer = __webpack_require__(155);
 
 var _formattingHelpers = __webpack_require__(6);
 
-var _datesAndTimes = __webpack_require__(28);
+var _datesAndTimes = __webpack_require__(27);
 
-var _deepEqual = __webpack_require__(129);
+var _deepEqual = __webpack_require__(128);
 
 var _deepEqual2 = _interopRequireDefault(_deepEqual);
 
@@ -4652,7 +4652,7 @@ parser.registerParser({
 
 var dateFormat = exports.dateFormat = _d2.default.time.format("%m/%d/%Y");
 
-var deepEquals = exports.deepEquals = __webpack_require__(129); // eslint-disable-line global-require
+var deepEquals = exports.deepEquals = __webpack_require__(128); // eslint-disable-line global-require
 
 var deepClone = exports.deepClone = function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -5267,7 +5267,7 @@ var _core = __webpack_require__(2);
 
 var _coreAsync = __webpack_require__(4);
 
-var _asyncMixin = __webpack_require__(130);
+var _asyncMixin = __webpack_require__(129);
 
 var _asyncMixin2 = _interopRequireDefault(_asyncMixin);
 
@@ -5275,7 +5275,7 @@ var _legendMixin = __webpack_require__(178);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
-var _binningHelpers = __webpack_require__(17);
+var _binningHelpers = __webpack_require__(130);
 
 var _d = __webpack_require__(1);
 
@@ -7105,7 +7105,7 @@ exports.formatTimeBinValue = formatTimeBinValue;
 exports.formatExtractValue = formatExtractValue;
 exports.normalizeFiltersArray = normalizeFiltersArray;
 
-var _datesAndTimes = __webpack_require__(28);
+var _datesAndTimes = __webpack_require__(27);
 
 var _d = __webpack_require__(1);
 
@@ -7444,7 +7444,7 @@ function colorMixin(_chart) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(156);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(157);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(167);
 
 
@@ -7550,53 +7550,6 @@ function createParser() {
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var events = exports.events = {
-  current: null
-
-  /**
-   * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
-   * that are triggered repetitively due to user interaction such brush dragging might flood the library
-   * and invoke more renders than can be executed in time. Using this function to wrap your event
-   * function allows the library to smooth out the rendering by throttling events and only responding to
-   * the most recent event.
-   * @name events.trigger
-   * @memberof dc
-   * @example
-   * chart.on('renderlet', function(chart) {
-   *     // smooth the rendering through event throttling
-   *     dc.events.trigger(function(){
-   *         // focus some other chart to the range selected by user on this chart
-   *         someOtherChart.focus(chart.filter());
-   *     });
-   * })
-   * @param {Function} closure
-   * @param {Number} [delay]
-   */
-};events.trigger = function (closure, delay) {
-  if (!delay) {
-    closure();
-    return;
-  }
-
-  events.current = closure;
-
-  setTimeout(function () {
-    if (closure === events.current) {
-      closure();
-    }
-  }, delay);
-};
-
-/***/ }),
-/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7832,7 +7785,7 @@ function capMixin(_chart) {
 }
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7861,7 +7814,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(9);
+var _events = __webpack_require__(11);
 
 var _filters = __webpack_require__(13);
 
@@ -9521,6 +9474,53 @@ function coordinateGridMixin(_chart) {
 }
 
 /***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var events = exports.events = {
+  current: null
+
+  /**
+   * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
+   * that are triggered repetitively due to user interaction such brush dragging might flood the library
+   * and invoke more renders than can be executed in time. Using this function to wrap your event
+   * function allows the library to smooth out the rendering by throttling events and only responding to
+   * the most recent event.
+   * @name events.trigger
+   * @memberof dc
+   * @example
+   * chart.on('renderlet', function(chart) {
+   *     // smooth the rendering through event throttling
+   *     dc.events.trigger(function(){
+   *         // focus some other chart to the range selected by user on this chart
+   *         someOtherChart.focus(chart.filter());
+   *     });
+   * })
+   * @param {Function} closure
+   * @param {Number} [delay]
+   */
+};events.trigger = function (closure, delay) {
+  if (!delay) {
+    closure();
+    return;
+  }
+
+  events.current = closure;
+
+  setTimeout(function () {
+    if (closure === events.current) {
+      closure();
+    }
+  }, delay);
+};
+
+/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9730,7 +9730,7 @@ filters.RangedTwoDimensionalFilter = function (filter) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(22);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x) {
@@ -9968,119 +9968,6 @@ logger.deprecate = function (fn, msg) {
 
 /***/ }),
 /* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.autoBinParams = autoBinParams;
-exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
-var SEC = 1;
-var MIN_IN_SECS = 60;
-var HOUR_IN_SECS = 3600;
-var DAY_IN_SECS = 86400;
-var WEEK_IN_SECS = 604800;
-var MONTH_IN_SECS = 2592000;
-var QUARTER_IN_SECS = 10368000;
-var YEAR_IN_SECS = 31536000;
-var DECADE_IN_SECS = 315360000;
-
-var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
-
-var TIME_LABELS = ["second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
-
-var TIME_LABEL_TO_SECS = exports.TIME_LABEL_TO_SECS = {
-  second: SEC,
-  minute: MIN_IN_SECS,
-  hour: HOUR_IN_SECS,
-  day: DAY_IN_SECS,
-  week: WEEK_IN_SECS,
-  month: MONTH_IN_SECS,
-  quarter: QUARTER_IN_SECS,
-  year: YEAR_IN_SECS,
-  decade: DECADE_IN_SECS
-};
-
-var TIME_SPANS = exports.TIME_SPANS = TIME_LABELS.map(function (label) {
-  return {
-    label: label,
-    numSeconds: TIME_LABEL_TO_SECS[label]
-  };
-});
-
-var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }];
-
-function autoBinParams(timeBounds, maxNumBins, reverse) {
-  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
-  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
-  var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
-  for (var s = 0; s < timeSpans.length; s++) {
-    if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
-      return timeSpans[s].label;
-    }
-  }
-  return "century"; // default;
-}
-
-function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
-  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
-  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
-  var timeLabelToSecs = TIME_LABEL_TO_SECS;
-  if (timeRange / timeLabelToSecs[timeBin] > maxNumBins) {
-    return autoBinParams(timeBounds, maxNumBins);
-  } else if (timeRange / timeLabelToSecs[timeBin] < 2) {
-    return autoBinParams(timeBounds, maxNumBins, true);
-  } else {
-    return timeBin;
-  }
-}
-
-var createBinParams = exports.createBinParams = function createBinParams(chart, binParams) {
-  if (!chart.group() || !chart.group().binParams) {
-    return;
-  }
-
-  binParams = Array.isArray(binParams) ? binParams : [binParams];
-
-  var parsedBinParams = binParams.map(function (param) {
-    if (param) {
-      var _param$timeBin = param.timeBin,
-          timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
-          binBounds = param.binBounds,
-          numBins = param.numBins;
-
-      var extract = param.extract || false;
-      var isDate = binBounds[0] instanceof Date;
-      if (isDate && timeBin === "auto") {
-        var bounds = binBounds.map(function (date) {
-          return date.getTime();
-        });
-        return Object.assign({}, param, {
-          extract: extract,
-          timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
-          binBounds: binBounds.slice(),
-          auto: true // hightlights the "auto" UI button
-        });
-      } else {
-        return Object.assign({}, param, {
-          extract: extract,
-          timeBin: timeBin,
-          binBounds: binBounds.slice()
-        });
-      }
-    }
-    return param;
-  });
-
-  chart.group().binParams(parsedBinParams);
-  return chart;
-};
-
-/***/ }),
-/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10387,7 +10274,7 @@ function bubbleMixin(_chart) {
 }
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10398,7 +10285,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = stackMixin;
 
-var _binningHelpers = __webpack_require__(17);
+var _binningHelpers = __webpack_require__(130);
 
 var _utils = __webpack_require__(3);
 
@@ -10804,7 +10691,7 @@ function stackMixin(_chart) {
 }
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10825,7 +10712,7 @@ var _utils = __webpack_require__(3);
 
 var _mapDrawMixin = __webpack_require__(191);
 
-var _rasterDrawMixin = __webpack_require__(21);
+var _rasterDrawMixin = __webpack_require__(20);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11435,7 +11322,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 }
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11458,7 +11345,7 @@ var _earcut = __webpack_require__(138);
 
 var _earcut2 = _interopRequireDefault(_earcut);
 
-var _mapdDraw = __webpack_require__(22);
+var _mapdDraw = __webpack_require__(21);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
@@ -11858,7 +11745,7 @@ function rasterDrawMixin(chart) {
 }
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 !function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.MapdDraw=e():t.MapdDraw=e()}(this,function(){return function(t){function e(n){if(r[n])return r[n].exports;var a=r[n]={exports:{},id:n,loaded:!1};return t[n].call(a.exports,a,a.exports,e),a.loaded=!0,a.exports}var r={};return e.m=t,e.c=r,e.p="",e(0)}([function(t,e,r){"use strict";function n(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function a(t){return t&&t.__esModule?t:{default:t}}Object.defineProperty(e,"__esModule",{value:!0}),e.simpleHull_2D=e.Math=e.Point=e.PolyLine=e.Poly=e.Rect=e.Circle=e.Vec2d=e.BasicStyle=e.Mat2=e.Point2d=e.Mat2d=e.AABox2d=e.DrawEngine=e.ShapeBuilder=e.version=void 0;var i=r(39);Object.defineProperty(e,"version",{enumerable:!0,get:function(){return i.version}});var o=r(1);Object.defineProperty(e,"Mat2",{enumerable:!0,get:function(){return o.mat2}});var s=r(15);Object.defineProperty(e,"simpleHull_2D",{enumerable:!0,get:function(){return s.simpleHull_2D}});var l=r(23),u=a(l),c=r(14),f=a(c),h=r(2),d=n(h),p=r(5),_=a(p),v=r(4),y=n(v),m=r(9),M=a(m),b=r(10),x=a(b),g=r(27),S=a(g),I=r(16),D=a(I),w=r(29),F=a(w),O=r(11),k=a(O),E=r(28),P=a(E),C=r(6),A=a(C);e.ShapeBuilder=u.default,e.DrawEngine=f.default,e.AABox2d=d,e.Mat2d=_.default,e.Point2d=y,e.BasicStyle=M.default,e.Vec2d=x.default,e.Circle=S.default,e.Rect=D.default,e.Poly=F.default,e.PolyLine=k.default,e.Point=P.default,e.Math=A.default},function(t,e,r){e.glMatrix=r(3),e.mat2=r(34),e.mat2d=r(35),e.mat3=r(20),e.mat4=r(36),e.quat=r(37),e.vec2=r(38),e.vec3=r(21),e.vec4=r(22)},function(t,e,r){"use strict";function n(t,e,r,n,a){return t[P]="number"==typeof e?e:1/0,t[C]="number"==typeof r?r:1/0,t[A]="number"==typeof n?n:-(1/0),t[j]="number"==typeof a?a:-(1/0),t}function a(t,e,r,a){var i=new E.glMatrix.ARRAY_TYPE(z.BOX_SIDES);return n(i,t,e,r,a)}function i(t){var e=new E.glMatrix.ARRAY_TYPE(z.BOX_SIDES);return e[P]=t[P],e[C]=t[C],e[A]=t[A],e[j]=t[j],e}function o(t,e){return t[P]=e[P],t[C]=e[C],t[A]=e[A],t[j]=e[j],t}function s(t){return t[P]=1/0,t[C]=1/0,t[A]=-(1/0),t[j]=-(1/0),t}function l(t){return t[P]=-(1/0),t[C]=-(1/0),t[A]=1/0,t[j]=1/0,t}function u(t,e){return e[0]<0?(t[P]=-e[0],t[A]=0):(t[P]=0,t[A]=e[0]),e[1]<0?(t[C]=-e[1],t[j]=0):(t[C]=0,t[j]=e[1]),t}function c(t,e,r){for(var n=0;n<2;n+=1)r[n]<0?(t[n]=e[n]-r[n],t[n+2]=e[n]):(t[n]=e[n],t[n+2]=e[n]+r[n]);return t}function f(t,e,r){for(var n=0;n<2;n+=1)r[n]<0?(t[n]=e[n]+r[n],t[n+2]=e[n]-r[n]):(t[n]=e[n]-r[n],t[n+2]=e[n]+r[n]);return t}function h(t){return t[P]>t[A]||t[C]>t[j]}function d(t){return!(isFinite(t[P])&&isFinite(t[C])&&isFinite(t[A])&&isFinite(t[j]))}function p(t,e){var r=t[0],n=t[1],a=t[2],i=t[3],o=e[0],s=e[1],l=e[2],u=e[3];return Math.abs(r-o)<=E.glMatrix.EPSILON&&Math.abs(n-s)<=E.glMatrix.EPSILON&&Math.abs(a-l)<=E.glMatrix.EPSILON&&Math.abs(i-u)<=E.glMatrix.EPSILON}function _(t,e){return E.vec2.set(t,e[A]-e[P],e[j]-e[C])}function v(t,e){return _(t,e),E.vec2.scale(t,t,.5)}function y(t,e){return v(t,e),t[P]+=e[P],t[C]+=e[C],t}function m(t,e,r){t[P]=e[P]-r[0],t[A]=e[A]+r[0],t[C]=e[C]-r[1],t[j]=e[j]+r[1]}function M(t){return(t[A]-t[P])*(t[j]-t[C])}function b(t,e,r){return a(Math.min(e[P],r[P]),Math.min(e[C],r[C]),Math.max(e[A],r[A]),Math.max(e[j],r[j]))}function x(t,e,r){var n=t;t===e&&(n=a());for(var i=P,l=A;i<=C&&!(e[l]<r[i]||e[i]>r[l]);i+=1,l+=1)n[i]=Math.max(e[i],r[i]),n[l]=Math.min(e[l],r[l]);return i!==C+1&&s(n),t===e&&o(t,n),t}function g(t,e){return!(t[A]<=e[P]||t[P]>=e[A]||t[j]<=e[C]||t[C]>=e[j])}function S(t,e){return!(e[P]<t[P]||e[A]>t[A]||e[C]<t[C]||e[j]>t[j])}function I(t,e){return e[P]>=t[P]&&e[P]<=t[A]&&e[C]>=t[C]&&e[C]<=t[j]}function D(t,e,r){return t!==e&&o(t,e),h(e)?(t[P]=r[P],t[A]=r[P],t[C]=r[C],t[j]=r[C]):(r[P]<t[P]?t[P]=r[P]:r[P]>t[A]&&(t[A]=r[P]),r[C]<t[C]?t[C]=r[C]:r[C]>t[j]&&(t[j]=r[C])),t}function w(t,e,r){t[P]=e[P]+r[0],t[C]=e[C]+r[1],t[A]=e[A]+r[0],t[j]=e[j]+r[1]}function F(t,e,r,n){var i=t;t===e&&(i=a()),s(i);var l=E.vec2.set(E.vec2.create(),e[P],e[C]),u=E.vec2.create();return n(u,l,r),D(i,i,u),l[P]=e[A],n(u,l,r),D(i,i,u),l[C]=e[j],n(u,l,r),D(i,i,u),l[P]=e[P],n(u,l,r),D(i,i,u),t===e&&o(t,i),t}function O(t,e,r){return F(t,e,r,E.vec2.transformMat2)}function k(t,e,r){return F(t,e,r,E.vec2.transformMat2d)}Object.defineProperty(e,"__esModule",{value:!0}),e.MAXY=e.MAXX=e.MINY=e.MINX=void 0,e.set=n,e.create=a,e.clone=i,e.copy=o,e.initEmpty=s,e.initInfinity=l,e.initSizeFromOrigin=u,e.initSizeFromLocation=c,e.initCenterExtents=f,e.isEmpty=h,e.isInfinite=d,e.equals=p,e.getSize=_,e.getExtents=v,e.getCenter=y,e.expand=m,e.area=M,e.hull=b,e.intersection=x,e.overlaps=g,e.contains=S,e.containsPt=I,e.encapsulatePt=D,e.translate=w,e.transformMat2=O,e.transformMat2d=k;var E=r(1),P=e.MINX=0,C=e.MINY=1,A=e.MAXX=2,j=e.MAXY=3,z={BOX_SIDES:4}},function(t,e){var r={};r.EPSILON=1e-6,r.ARRAY_TYPE="undefined"!=typeof Float32Array?Float32Array:Array,r.RANDOM=Math.random,r.ENABLE_SIMD=!1,r.SIMD_AVAILABLE=r.ARRAY_TYPE===Float32Array&&"SIMD"in this,r.USE_SIMD=r.ENABLE_SIMD&&r.SIMD_AVAILABLE,r.setMatrixArrayType=function(t){r.ARRAY_TYPE=t};var n=Math.PI/180;r.toRadian=function(t){return t*n},r.equals=function(t,e){return Math.abs(t-e)<=r.EPSILON*Math.max(1,Math.abs(t),Math.abs(e))},t.exports=r},function(t,e,r){"use strict";function n(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:0;return t[M]=e,t[b]=r,t}function a(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,r=new m.glMatrix.ARRAY_TYPE(2);return n(r,t,e)}function i(t){var e=new m.glMatrix.ARRAY_TYPE(2);return e[M]=t[M],e[b]=t[b],e}function o(t,e){return t[M]=e[M],t[b]=e[b],t}function s(t,e){return a(t,e)}function l(t,e,r){return m.vec2.add(t,e,r)}function u(t,e,r){return m.vec2.sub(t,e,r)}function c(t,e,r){return m.vec2.transformMat2(t,e,r)}function f(t,e,r){return m.vec2.transformMat2d(t,e,r)}function h(t){return"point2d("+t[0]+" , "+t[1]+")"}function d(t,e){return m.vec2.distance(t,e)}function p(t,e){return m.vec2.squaredDistance(t,e)}function _(t,e,r,n){return m.vec2.lerp(t,e,r,n)}function v(t,e){return m.vec2.equals(t,e)}function y(t,e){return m.vec2.exactEquals(t,e)}Object.defineProperty(e,"__esModule",{value:!0}),e.sqrDist=e.dist=void 0,e.set=n,e.create=a,e.clone=i,e.copy=o,e.initFromValues=s,e.addVec2=l,e.sub=u,e.transformMat2=c,e.transformMat2d=f,e.str=h,e.distance=d,e.squaredDistance=p,e.lerp=_,e.equals=v,e.exactEquals=y;var m=r(1),M=0,b=1;e.dist=d,e.sqrDist=p},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=r(1);n.mat2d.svd=function(t,e,r,n){if(t&&(t[0]=n[4],t[1]=n[5]),e||r){var a=(n[0]+n[3])/2,i=(n[0]-n[3])/2,o=(n[1]+n[2])/2,s=(n[1]-n[2])/2;if(e){var l=Math.sqrt(a*a+s*s),u=Math.sqrt(i*i+o*o);e[0]=l+u,e[1]=l-u}if(r){var c=Math.atan2(o,i),f=Math.atan2(s,a);r[0]=(f-c)/2,r[1]=(f+c)/2}}},e.default=n.mat2d},function(t,e){"use strict";function r(t,e,r){return t<e?e:t>r?r:t}function n(t){return t<0?0:t>1?1:t}function a(t,e,r){return t*(1-r)+e*r}Object.defineProperty(e,"__esModule",{value:!0});var i=1e-5,o=.25,s=.5,l=2;Math.QUATER_PI=o*Math.PI,Math.HALF_PI=s*Math.PI,Math.HALF_NPI=-s*Math.PI,Math.TWO_PI=l*Math.PI,Math.NPI=-Math.PI,Math.NQUATER_PI=o*Math.NPI,Math.NHALF_PI=s*Math.NPI,Math.NTWO_PI=l*Math.NPI,Math.INV_PI=1/Math.PI,Math.RAD_TO_DEG=180/Math.PI,Math.DEG_TO_RAD=Math.PI/180,Math.EPS=i,Math.clamp=r,Math.clamp01=n,Math.lerp=a,e.default=Math},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function s(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var l=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),u=r(2),c=a(u),f=r(18),h=n(f),d=r(19),p=n(d),_=r(12),v=n(_),y=r(8),m=n(y),M=r(9),b=n(M),x=r(13),g=n(x),S=r(1),I=function(t){function e(t){i(this,e);var r=o(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,["changed:xform","changed:style","changed:order","changed:visibility","changed:geom"]));return r._aabox=c.create(),r._zIndex=t&&t.zIndex?t.zIndex:0,r._visible=!0,r._geomDirty=!1,r._fullXform=S.mat2d.create(),r}return s(e,t),l(e,[{key:"zIndex",set:function(t){if(!Number.isInteger(t))throw new Error("zIndex must be an integer");if(t!==this._zIndex){var e=this._zIndex;this._zIndex=t,this.fire("changed:order",{attr:"zIndex",prevVal:e,currVal:this._zIndex})}return this},get:function(){return this._zIndex}},{key:"aabox",get:function(){return this._updateAABox(),this._aabox}},{key:"visible",set:function(t){if("boolean"!=typeof t)throw new Error("visible must be a boolean");return t!==this._visible&&(this._visible=t,this.fire("changed:visibility",{attr:"visible",prevVal:!this._visible,currVal:this._visible})),this},get:function(){return this._visible}}]),e}(g.default),D=function(t){function e(t){i(this,e);var r=o(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,t));return r._stateStack=[],r}return s(e,t),l(e,[{key:"save",value:function(){var t=new b.default;return b.default.copyBasicStyle(this,t),t.zIndex=this.zIndex,this._stateStack.push(t),this}},{key:"restore",value:function(){var t=this._stateStack.pop();return t&&(b.default.copyBasicStyle(t,this),this.zIndex=t.zIndex),this}},{key:"getGlobalDimensions",value:function(){var t=[0,0];return S.mat2d.svd(null,t,null,this.globalXform),t[0]*=this.width,t[1]*=this.height,t}},{key:"containsPoint",value:function(t,e,r,n){var a=!1,i=this.aabox;return this.visible&&c.containsPt(i,e)&&(n.save(),n.setTransform(this._fullXform[0],this._fullXform[1],this._fullXform[2],this._fullXform[3],this._fullXform[4],this._fullXform[5]),n.beginPath(),this._draw(n),n.strokeStyle="rgba(0,0,0,0)",n.lineWidth=this.strokeWidth+5,n.dashPattern=[],n.setTransform(1,0,0,1,0,0),n.stroke(),(this.isFillVisible()&&n.isPointInPath(t[0],t[1])||this.isStrokeVisible()&&n.isPointInStroke(t[0],t[1]))&&(a=!0),n.restore()),a}},{key:"renderBounds",value:function(t,e,r){t.save(),t.setTransform(e[0],e[1],e[2],e[3],e[4],e[5]),r.setStrokeCtx(t);var n=[0,0],a=[0,0],i=this.aabox;c.getCenter(n,i),c.getExtents(a,i),t.beginPath(),t.rect(n[0]-a[0],n[1]-a[1],2*a[0],2*a[1]),t.setTransform(1,0,0,1,0,0),t.stroke(),t.restore()}},{key:"_localXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"_globalXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"render",value:function(t,e,r){var n=arguments.length>3&&void 0!==arguments[3]?arguments[3]:null,a=arguments.length>4&&void 0!==arguments[4]?arguments[4]:null;this.transformCtx(t,this._fullXform,e),t.beginPath();var i=this._draw(t);(i||"undefined"==typeof i)&&(this.isFillVisible()&&(null===n||Boolean(n))&&(r.setFillStyle(t,this),t.fill()),this.isStrokeVisible()&&(null===a||Boolean(a))&&(r.setStrokeStyle(t,this),t.setTransform(1,0,0,1,0,0),t.stroke()))}},{key:"setStyle",value:function(t){return b.default.copyBasicStyle(t,this),this}},{key:"toJSON",value:function(){var t=this;return this._stateStack&&this._stateStack.length&&(t=this._stateStack[0]),Object.assign({visible:this.visible,zIndex:t.zIndex},b.default.toJSON(t),v.default.toJSON(this))}},{key:"visible",get:function(){return this._visible&&(this.isFillVisible()||this.isStrokeVisible())}}],[{key:"shapeCompare",value:function(t,e){var r=t.zIndex,n=e.zIndex;if(r<n)return-1;if(r>n)return 1;var a=h.default.compareFillStyle(t,e);return a||(a=p.default.compareStrokeStyle(t,e)),a}}]),e}((0,m.default)(I,(0,_.createEventedTransform2dMixin)("changed:xform"),(0,f.createEventedFillStyleMixin)("changed:style"),(0,d.createEventedStrokeStyleMixin)("changed:style")));e.default=D},function(t,e){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function n(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function a(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var i=function(t){for(var e=arguments.length,i=Array(e>1?e-1:0),o=1;o<e;o++)i[o-1]=arguments[o];var s=t?function(t){function e(){for(var t,a=arguments.length,o=Array(a),s=0;s<a;s++)o[s]=arguments[s];r(this,e);var l=n(this,(t=e.__proto__||Object.getPrototypeOf(e)).call.apply(t,[this].concat(o)));return i.forEach(function(t){if("function"==typeof t.prototype.initializer){var e;(e=t.prototype.initializer).call.apply(e,[l].concat(o))}}),l}return a(e,t),e}(t):function(){},l=function(e,r){Object.getOwnPropertyNames(r).concat(Object.getOwnPropertySymbols(r)).forEach(function(n){n.match(/^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)||t&&n.match(/^(?:initializer)$/)||Object.defineProperty(e,n,Object.getOwnPropertyDescriptor(r,n))})};return i.forEach(function(t){l(s.prototype,t.prototype),l(s,t)}),s};e.default=i},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function o(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var s=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),l=r(8),u=n(l),c=r(18),f=n(c),h=r(19),d=n(h),p=function(t){function e(){return a(this,e),i(this,(e.__proto__||Object.getPrototypeOf(e)).apply(this,arguments))}return o(e,t),s(e,null,[{key:"copyBasicStyle",value:function(t,e){f.default.copyFillStyle(t,e),d.default.copyStrokeStyle(t,e)}},{key:"toJSON",value:function(t){return Object.assign(f.default.toJSON(t),d.default.toJSON(t))}}]),e}((0,u.default)(function t(){a(this,t)},f.default,d.default));e.default=p},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=r(1);n.vec2.cross2d=function(t,e){return t[0]*e[1]-t[1]*e[0]},n.vec2.angleFast=function(t,e){return Math.acos(n.vec2.dot(t,e))},n.vec2.angle=function(t,e){var r=n.vec2.dot(t,e),a=n.vec2.cross2d(t,e),i=Math.atan2(a,r);return i},n.vec2.anglePosX=function(t){var e=Math.atan2(t[1],t[0]);return e<0&&(e*=-1),e},e.default=n.vec2},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function s(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}function l(t,e,r,n){p.isEmpty(t)?(t[0]=e[0],t[2]=e[0],n[0]=n[2]=r,t[1]=e[1],t[3]=e[1],n[1]=n[3]=r):(e[0]<t[0]?(t[0]=e[0],n[0]=r):e[0]>t[2]&&(t[2]=e[0],n[2]=r),e[1]<t[1]?(t[1]=e[1],n[1]=r):e[1]>t[3]&&(t[3]=e[1],n[3]=r))}function u(t,e,r){var n=e[0]*r[1]-r[0]*e[1];return t[0]+=(e[0]+r[0])*n,t[1]+=(e[1]+r[1])*n,n}function c(t){return Array.isArray(t)||ArrayBuffer&&ArrayBuffer.isView(t)}Object.defineProperty(e,"__esModule",{value:!0});var f=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),h=function t(e,r,n){null===e&&(e=Function.prototype);var a=Object.getOwnPropertyDescriptor(e,r);if(void 0===a){var i=Object.getPrototypeOf(e);return null===i?void 0:t(i,r,n)}if("value"in a)return a.value;var o=a.get;if(void 0!==o)return o.call(n)},d=r(2),p=a(d),_=r(4),v=a(_),y=r(7),m=n(y),M=r(1),b=r(6),x=n(b),g=r(15),S=M.mat2d.create(),I=function(t){function e(t){i(this,e);var r=t.verts||[],n=o(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,t));if(!c(r)||0===r.length||c(r[0])&&r.length<1||!c(r[0])&&(r.length<2||r.length%2!==0))throw new Error("PolyLine shapes must be initialized with an array of 2d points and contain at least 1 points");n._extentIndices=[-1,-1,-1,-1],n._localaabox=p.create(),n._verts=[],n._centroid=[0,0],p.initEmpty(n._aabox);var a=0,s=0;if(c(r[0])){for(s=0;s<r.length-1;s+=1)n._verts.push(v.clone(r[s])),l(n._aabox,r[s],s,n._extentIndices),a+=u(n._centroid,r[s],r[s+1]);n._verts.push(v.clone(r[s])),l(n._aabox,r[s],s,n._extentIndices),a+=u(n._centroid,r[s],r[0])}else{n._verts.push(v.create(r[0],r[1])),l(n._aabox,n._verts[0],0,n._extentIndices);var f=1;for(s=2;s<r.length-2;s+=2,f+=1)n._verts.push(v.create(r[s],r[s+1])),l(n._aabox,n._verts[f],f,n._extentIndices),a+=u(n._centroid,n._verts[f-1],n._verts[f]);n._verts.push(v.create(r[s],r[s+1])),l(n._aabox,n._verts[f],f,n._extentIndices),a+=u(n._centroid,n._verts[f],n._verts[0])}a*=.5,n._centroid[0]/=6*a,n._centroid[1]/=6*a;var h=v.create();return p.getCenter(h,n._aabox),n.pivot=h,n._verts.length<3?n._convexHull=n._verts.map(function(t,e){return e}):n._convexHull=(0,g.simpleHull_2D)(n._verts),n}return s(e,t),f(e,[{key:"getDimensions",value:function(){return[this.width,this.height]}},{key:"_collapseVerts",value:function(){var t=this;v.set(this._pivot,0,0);var e=this.localXform;if(M.mat2d.equals(e,S))return!1;p.initEmpty(this._aabox);for(var r=0;r<this._verts.length;r+=1)v.transformMat2d(this._verts[r],this._verts[r],e);return this._verts.length<3?this._convexHull=this._verts.map(function(t,e){return e}):this._convexHull=(0,g.simpleHull_2D)(this._verts),this._convexHull.forEach(function(e){l(t._aabox,t._verts[e],e,t._extentIndices)}),this.setTransformations(0,0,1,1,0),!0}},{key:"translateVert",value:function(t,e){if(t>=this._verts.length)throw new Error("Cannot translate vertex at index "+t+". There are only "+this._verts.length+" vertices in the polygon.");if(e[0]||e[1]){var r=v.clone(this._verts[t]),n=v.clone(this._verts[t]);v.addVec2(n,n,e),this._collapseVerts(),this._resetAABox=!0,this._geomDirty=!0,v.copy(n),this.fire("changed:geom",{attr:"verts["+t+"]",prevVal:r,currVal:n})}return this}},{key:"setVertPosition",value:function(t,e){if(t>=this._verts.length)throw new Error("Cannot translate vertex at index "+t+". There are only "+this._verts.length+" vertices in the polygon.");if(!v.equals(e,this._verts[t])){var r=v.clone(this._verts[t]);this._collapseVerts(),v.copy(this._verts[t],e),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom",{attr:"verts["+t+"]",prevVal:r,currVal:e})}}},{key:"insertVert",value:function(t,e){var r=x.default.min(x.default.max(t,0),this._verts.length);return this._collapseVerts(),t>=this._verts.length?(this._verts.push(v.clone(e)),r=this._verts.length-1):this._verts.splice(t,0,v.clone(e)),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom:addvert",{attr:"verts["+r+"]",currVal:e}),r}},{key:"appendVert",value:function(t){return this.insertVert(this._verts.length,t)}},{key:"removeVert",value:function(t){if(t>=this._verts.length||t<0)throw new Error("Cannot remove vertex "+t+". Invalid index. There are only "+this._verts.length+" vertices in the shape.");var e=this._verts[t];return this._verts.splice(t,1),this._collapseVerts(),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom:removevert",{attr:"verts["+t+"]",currVal:e}),t}},{key:"_rebuildAABox",value:function(){var t=this;p.initEmpty(this._aabox),this._verts.length<3?this._convexHull=this._verts.map(function(t,e){return e}):this._convexHull=(0,g.simpleHull_2D)(this._verts),this._convexHull.forEach(function(e){l(t._aabox,t._verts[e],e,t._extentIndices)});var e=v.create(0,0);p.getCenter(e,this._aabox),this.pivot=e}},{key:"_updateAABox",value:function(){var t=this;if(this._resetAABox&&(this._rebuildAABox(),this._resetAABox=!1),this._boundsOutOfDate||this._geomDirty){p.initEmpty(this._aabox);var e=[0,0],r=this.globalXform;if(this._convexHull.forEach(function(n){p.encapsulatePt(t._aabox,t._aabox,v.transformMat2d(e,t._verts[n],r))}),this._boundsOutOfDate=!1,this._geomDirty){var n=v.create();n[0]=this._verts[this._extentIndices[0]][0]+.5*(this._verts[this._extentIndices[2]][0]-this._verts[this._extentIndices[0]][0]),n[1]=this._verts[this._extentIndices[1]][1]+.5*(this._verts[this._extentIndices[3]][1]-this._verts[this._extentIndices[1]][1]),this.pivot=n,this._geomDirty=!1}}}},{key:"_draw",value:function(t){var e=!1;if(this._verts.length>=2){t.moveTo(this._verts[0][0],this._verts[0][1]);for(var r=1;r<this._verts.length;r+=1)t.lineTo(this._verts[r][0],this._verts[r][1]);e=!0}return e}},{key:"toJSON",value:function(){return Object.assign({type:"PolyLine",verts:this.vertsRef.map(function(t){return[t[0],t[1]]})},h(e.prototype.__proto__||Object.getPrototypeOf(e.prototype),"toJSON",this).call(this))}},{key:"width",get:function(){return this._updateAABox(),!this._verts.length||this._extentIndices[0]<0||this._extentIndices[2]<0?0:this._verts[this._extentIndices[2]][0]-this._verts[this._extentIndices[0]][0]}},{key:"height",get:function(){return this._updateAABox(),!this._verts.length||this._extentIndices[0]<0||this._extentIndices[2]<0?0:this._verts[this._extentIndices[3]][1]-this._verts[this._extentIndices[1]][1]}},{key:"vertsRef",get:function(){return this._verts}},{key:"numVerts",get:function(){return this._verts.length}}]),e}(m.default);e.default=I,I.aaboxEncapsulatePt=l},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e,r,n,a){return h.mat2d.identity(t),h.mat2d.translate(t,t,[n[0]+a[0],n[1]+a[1]]),h.mat2d.rotate(t,t,v.default.DEG_TO_RAD*e),h.mat2d.scale(t,t,r),h.mat2d.translate(t,t,[-a[0],-a[1]]),t}function s(t){t.forEach(function(t){t._xformDirty=!0,s(t._children)})}function l(t){return(0,p.default)(null,y,function(){function e(){i(this,e)}return u(e,[{key:"setPosition",value:function(e){if(!f.equals(e,this._pos)){var r=[this._pos[0],this._pos[1]];f.copy(this._pos,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"position",prevVal:r,currVal:e})}return this}},{key:"translate",value:function(e){if(e[0]||e[1]){var r=[this._pos[0],this._pos[1]];f.addVec2(this._pos,this._pos,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"position",prevVal:r,currVal:[this._pos[0],this._pos[1]]})}return this}},{key:"setScale",value:function(e){if(!h.vec2.equals(e,this._scale)){var r=[this._scale[0],this._scale[1]];h.vec2.copy(this._scale,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"size",prevVal:r,currVal:e})}return this}},{key:"scale",value:function(e){if(1!==e[0]||1!==e[1]){var r=[this._scale[0],this._scale[1]];h.vec2.multiply(this._scale,this._scale,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"size",prevVal:r,currVal:[this._scale[0],this._scale[1]]})}return this}},{key:"setRotation",value:function(e){var r=e%360;if(r!==this._rotDeg){var n=this._rotDeg;this._rotDeg=r,this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"orientation",prevVal:n,curral:this._rotDeg})}}},{key:"rotate",value:function(e){if(e){var r=this._rotDeg;this._rotDeg+=e,this._rotDeg%=360,this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"orientation",prevVal:r,curral:this._rotDeg})}return this}},{key:"setTransformations",value:function(e,r,n,a,i){var o=[],l=[],u=[];if(!("undefined"==typeof e||"undefined"==typeof r||h.glMatrix.equals(e,this._pos[0])&&h.glMatrix.equals(r,this._pos[1]))){var c=f.clone(this._pos);this._pos[0]=e,this._pos[1]=r,o.push("position"),l.push(c),u.push(f.clone(this._pos))}if(!("undefined"==typeof n||"undefined"==typeof a||h.glMatrix.equals(n,this._scale[0])&&h.glMatrix.equals(a,this._scale[1]))){var d=h.vec2.clone(this._scale);h.vec2.set(this._scale,n,a),o.push("size"),l.push(d),u.push(h.vec2.clone(this._scale))}if("undefined"!=typeof i){var p=i%360;if(!h.glMatrix.equals(p,this._rotDeg)){var _=this._rotDeg;this._rotDeg=p,o.push("orientation"),l.push(_),u.push(this._rotDeg)}}return o.length&&(this._lxformDirty=!0,s(this._children),this.fire(t,{attrs:o,prevVals:l,currVals:u})),this}},{key:"pivot",set:function(e){if(!f.equals(e,this._pivot)){var r=[this._pivot[0],this._pivot[1]];f.copy(this._pivot,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"pivot",prevVal:r,currVal:e})}return this},get:function(){return f.clone(this._pivot)}}]),e}())}Object.defineProperty(e,"__esModule",{value:!0});var u=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}();e.buildXformMatrix=o,e.createEventedTransform2dMixin=l;var c=r(4),f=a(c),h=r(1),d=r(8),p=n(d),_=r(6),v=n(_),y=function(){function t(e){i(this,t),this.initializer(e)}return u(t,[{key:"_initTransformFromOptions",value:function(t){t&&("undefined"!=typeof t.position&&this.setPosition(t.position),"undefined"!=typeof t.scale&&this.setScale(t.scale),"undefined"!=typeof t.rotation&&this.setRotation(t.rotation),"undefined"!=typeof t.pivot&&(this.pivot=t.pivot))}},{key:"initializer",value:function(t){this._localXform=h.mat2d.create(),this._lxformDirty=!1,this._pivot=f.create(0,0),this._pos=f.create(0,0),this._scale=h.vec2.fromValues(1,1),this._rotDeg=0,this._globalXform=h.mat2d.create(),this._xformDirty=!1,this._parent=null,this._children=new Set,this._initTransformFromOptions(t)}},{key:"addChildXform",value:function(t){this._children.has(t)||(this._children.add(t),t._parent&&t._parent.removeChild(t),t._parent=this,t._xformDirty=!0,s(t._children))}},{key:"removeChildXform",value:function(t){this._children.delete(t)}},{key:"unparentXform",value:function(){this._parent&&(this._parent.removeChild(this),this._parent=null,h.mat2d.copy(this._globalXform,this.localXform))}},{key:"getPosition",value:function(){return h.vec2.clone(this._pos)}},{key:"getPositionRef",value:function(){return this._pos}},{key:"getWorldPosition",value:function(){var t=this.globalXform;return f.create(t[4],t[5])}},{key:"setPosition",value:function(t){f.copy(this._pos,t),this._lxformDirty=!0,s(this._children)}},{key:"translate",value:function(t){return(t[0]||t[1])&&(f.addVec2(this._pos,this._pos,t),this._lxformDirty=!0,s(this._children)),this}},{key:"getScale",value:function(){return h.vec2.clone(this._scale)}},{key:"getScaleRef",value:function(){return this._scale}},{key:"setScale",value:function(t){return h.vec2.copy(this._scale,t),this._lxformDirty=!0,s(this._children),this}},{key:"scale",value:function(t){return 1===t[0]&&1===t[1]||(h.vec2.multiply(this._scale,this._scale,t),this._lxformDirty=!0,s(this._children)),this}},{key:"getRotation",value:function(){return this._rotDeg}},{key:"setRotation",value:function(t){return this._rotDeg=t,this._lxformDirty=!0,s(this._children),this}},{key:"rotate",value:function(t){return t&&(this._rotDeg+=t,this._lxformDirty=!0,s(this._children)),this}},{key:"_dirtyChildren",value:function(){s(this._children)}},{key:"_updatelocalxform",value:function(){this._lxformDirty&&(o(this._localXform,this._rotDeg,this._scale,this._pos,this._pivot),this._localXformUpdated&&this._localXformUpdated(),this._lxformDirty=!1)}},{key:"_updateglobalxform",value:function(){(this._lxformDirty||this._xformDirty)&&(this._updatelocalxform(),this._parent?h.mat2d.multiply(this._globalXform,this._parent.globalXform,this._localXform):h.mat2d.copy(this._globalXform,this._localXform),this._globalXformUpdated&&this._globalXformUpdated(),this._xformDirty=!1)}},{key:"transformCtx",value:function(t,e,r){h.mat2d.multiply(e,r,this.globalXform),t.setTransform(e[0],e[1],e[2],e[3],e[4],e[5])}},{key:"pivot",set:function(t){return f.copy(this._pivot,t),this._lxformDirty=!0,s(this._children),this},get:function(){return f.clone(this._pivot)}},{key:"pivotRef",get:function(){return this._pivot}},{key:"parent",get:function(){return this._parent}},{key:"localXform",get:function(){return this._updatelocalxform(),this._localXform}},{key:"globalXform",get:function(){return this._updateglobalxform(),this._globalXform}}],[{key:"toJSON",value:function(t){var e=t.getPositionRef(),r=t.getScaleRef(),n=t.pivotRef;return{position:[e[0],e[1]],scale:[r[0],r[1]],rotation:t.getRotation(),pivot:[n[0],n[1]]}}}]),t}();e.default=y},function(t,e){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function n(t,e,r,a){var i=this;if(r>=e.length)return 0;var o=0,s=null;return s=t.get(e[r]),s&&(o=n(s[0],e,r+1,a),s[1].forEach(function(t){return t.call(i,a)}),o+=s[1].length),o}function a(t,e){var r=-1,n=t[0],i=t[1];i.length&&e.forEach(function(t){(r=i.indexOf(t))>=0&&i.splice(r,1)}),n.forEach(function(t){a(t,e)})}function i(t){var e=t;if("string"==typeof t)e=[t];else if(!Array.isArray(t))throw new Error("Input must be an array of strings");return e}Object.defineProperty(e,"__esModule",{value:!0});var o=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),s=function(){function t(e){r(this,t),this.initializer(e)}return o(t,[{key:"initializer",value:function(t){this._listeners=new Map,this.registerEvents(t)}},{key:"registerEvents",value:function(t){var e=this;if(t){var r=i(t);if("string"==typeof t)r=[t];else if(!Array.isArray(t))throw new Error("Events must be an array of strings");r.forEach(function(t){for(var r=t.split(":"),n=e._listeners,a=0;a<r.length;a+=1){var i=n.get(r[a]);i||(i=[new Map,[]],n.set(r[a],i)),n=i[0]}})}}},{key:"on",value:function(t,e){var r=this,n=i(t);return n.forEach(function(t){var n=t.split(":"),a=r._listeners,i=null;n.forEach(function(e){if(i=a.get(e),!i){var r=[];throw a.forEach(function(t,e){return r.push(e)}),new Error(t+" is not a valid event type. The registered event types at this level are ["+r+"]")}a=i[0]}),i[1].indexOf(e)<0&&i[1].push(e);
@@ -11870,7 +11757,7 @@ s.normalize=o.normalize,s.fromMat3=function(t,e){var r,n=e[0]+e[4]+e[8];if(n>0)r
 //# sourceMappingURL=mapd-draw.js.map
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11891,7 +11778,7 @@ s.normalize=o.normalize,s.fromMat3=function(t,e){var r,n=e[0]+e[4]+e[8];if(n>0)r
 
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports) {
 
 var g;
@@ -11918,7 +11805,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11941,7 +11828,7 @@ function parseFilter(sql, transform) {
 }
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11988,7 +11875,7 @@ function parseSource(transforms) {
 }
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12044,7 +11931,7 @@ module.exports = invariant;
 
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12062,7 +11949,7 @@ var QUARTERS = exports.QUARTERS = ["Q1", "Q2", "Q3", "Q4"];
 var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM", "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM", "8PM", "9PM", "10PM", "11PM"];
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12139,7 +12026,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12280,7 +12167,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12344,7 +12231,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12452,7 +12339,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12514,7 +12401,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12623,7 +12510,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12761,7 +12648,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12855,7 +12742,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12978,7 +12865,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13101,7 +12988,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13213,7 +13100,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13360,7 +13247,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13445,7 +13332,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13620,7 +13507,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13687,7 +13574,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13771,7 +13658,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13835,7 +13722,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13917,7 +13804,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14000,7 +13887,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14103,7 +13990,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14205,7 +14092,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14275,7 +14162,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14342,7 +14229,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14413,7 +14300,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14484,7 +14371,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14554,7 +14441,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14631,7 +14518,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14716,7 +14603,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14800,7 +14687,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14870,7 +14757,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14980,7 +14867,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15091,7 +14978,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15155,7 +15042,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15223,7 +15110,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15287,7 +15174,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15355,7 +15242,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15432,7 +15319,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 66 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15512,7 +15399,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15593,7 +15480,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15696,7 +15583,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 69 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15824,7 +15711,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 70 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15973,7 +15860,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16086,7 +15973,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 72 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16185,7 +16072,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16272,7 +16159,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16403,7 +16290,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16477,7 +16364,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16557,7 +16444,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16644,7 +16531,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 78 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16737,7 +16624,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16828,7 +16715,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16890,7 +16777,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16962,7 +16849,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17054,7 +16941,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17194,7 +17081,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17268,7 +17155,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 85 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17388,7 +17275,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 86 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17489,7 +17376,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 87 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17604,7 +17491,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 88 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17698,7 +17585,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 89 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17783,7 +17670,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 90 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17946,7 +17833,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 91 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18032,7 +17919,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 92 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18118,7 +18005,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 93 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18215,7 +18102,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 94 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18282,7 +18169,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 95 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18409,7 +18296,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 96 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18486,7 +18373,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 97 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18550,7 +18437,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 98 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18678,7 +18565,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 99 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18787,7 +18674,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 100 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18856,7 +18743,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 101 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18921,7 +18808,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 102 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19000,7 +18887,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 103 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19179,7 +19066,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 104 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19244,7 +19131,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 105 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19319,7 +19206,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 106 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19473,7 +19360,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 107 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19639,7 +19526,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 108 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19713,7 +19600,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 109 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19827,7 +19714,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 110 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19941,7 +19828,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 111 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20034,7 +19921,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 112 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20107,7 +19994,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 113 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20170,7 +20057,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 114 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20303,7 +20190,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 115 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20396,7 +20283,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 116 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20467,7 +20354,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 117 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20533,7 +20420,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 118 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20657,7 +20544,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 119 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20751,7 +20638,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 120 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20846,7 +20733,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 121 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20908,7 +20795,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 122 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20970,7 +20857,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 123 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21120,7 +21007,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 124 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21182,7 +21069,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 125 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21265,7 +21152,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 126 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21337,7 +21224,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 127 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21468,7 +21355,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 128 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21573,7 +21460,7 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 }));
 
 /***/ }),
-/* 129 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var pSlice = Array.prototype.slice;
@@ -21673,7 +21560,7 @@ function objEquiv(a, b, opts) {
 
 
 /***/ }),
-/* 130 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21843,6 +21730,119 @@ function asyncMixin(_chart) {
 
   return _chart;
 }
+
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.autoBinParams = autoBinParams;
+exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
+var SEC = 1;
+var MIN_IN_SECS = 60;
+var HOUR_IN_SECS = 3600;
+var DAY_IN_SECS = 86400;
+var WEEK_IN_SECS = 604800;
+var MONTH_IN_SECS = 2592000;
+var QUARTER_IN_SECS = 10368000;
+var YEAR_IN_SECS = 31536000;
+var DECADE_IN_SECS = 315360000;
+
+var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
+
+var TIME_LABELS = ["second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
+
+var TIME_LABEL_TO_SECS = exports.TIME_LABEL_TO_SECS = {
+  second: SEC,
+  minute: MIN_IN_SECS,
+  hour: HOUR_IN_SECS,
+  day: DAY_IN_SECS,
+  week: WEEK_IN_SECS,
+  month: MONTH_IN_SECS,
+  quarter: QUARTER_IN_SECS,
+  year: YEAR_IN_SECS,
+  decade: DECADE_IN_SECS
+};
+
+var TIME_SPANS = exports.TIME_SPANS = TIME_LABELS.map(function (label) {
+  return {
+    label: label,
+    numSeconds: TIME_LABEL_TO_SECS[label]
+  };
+});
+
+var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }];
+
+function autoBinParams(timeBounds, maxNumBins, reverse) {
+  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
+  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
+  var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
+  for (var s = 0; s < timeSpans.length; s++) {
+    if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
+      return timeSpans[s].label;
+    }
+  }
+  return "century"; // default;
+}
+
+function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
+  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
+  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
+  var timeLabelToSecs = TIME_LABEL_TO_SECS;
+  if (timeRange / timeLabelToSecs[timeBin] > maxNumBins) {
+    return autoBinParams(timeBounds, maxNumBins);
+  } else if (timeRange / timeLabelToSecs[timeBin] < 2) {
+    return autoBinParams(timeBounds, maxNumBins, true);
+  } else {
+    return timeBin;
+  }
+}
+
+var createBinParams = exports.createBinParams = function createBinParams(chart, binParams) {
+  if (!chart.group() || !chart.group().binParams) {
+    return;
+  }
+
+  binParams = Array.isArray(binParams) ? binParams : [binParams];
+
+  var parsedBinParams = binParams.map(function (param) {
+    if (param) {
+      var _param$timeBin = param.timeBin,
+          timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
+          binBounds = param.binBounds,
+          numBins = param.numBins;
+
+      var extract = param.extract || false;
+      var isDate = binBounds[0] instanceof Date;
+      if (isDate && timeBin === "auto") {
+        var bounds = binBounds.map(function (date) {
+          return date.getTime();
+        });
+        return Object.assign({}, param, {
+          extract: extract,
+          timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
+          binBounds: binBounds.slice(),
+          auto: true // hightlights the "auto" UI button
+        });
+      } else {
+        return Object.assign({}, param, {
+          extract: extract,
+          timeBin: timeBin,
+          binBounds: binBounds.slice()
+        });
+      }
+    }
+    return param;
+  });
+
+  chart.group().binParams(parsedBinParams);
+  return chart;
+};
 
 /***/ }),
 /* 131 */
@@ -23364,7 +23364,7 @@ exports.conv4326To900913X = conv4326To900913X;
 exports.conv4326To900913Y = conv4326To900913Y;
 exports.conv4326To900913 = conv4326To900913;
 
-var _mapdDraw = __webpack_require__(22);
+var _mapdDraw = __webpack_require__(21);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
@@ -24782,7 +24782,7 @@ exports.default = scatterMixin;
 
 var _utils = __webpack_require__(3);
 
-var _rasterDrawMixin = __webpack_require__(21);
+var _rasterDrawMixin = __webpack_require__(20);
 
 function extend(destination, source) {
   for (var k in source) {
@@ -25334,7 +25334,7 @@ FormatSpecifier.prototype.toString = function() {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return prefixExponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(22);
 
 
 var prefixExponent;
@@ -26163,7 +26163,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(9);
+var _events = __webpack_require__(11);
 
 var _utils = __webpack_require__(3);
 
@@ -26671,7 +26671,7 @@ __webpack_require__(153);
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(154);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)))
 
 /***/ }),
 /* 154 */
@@ -26709,7 +26709,7 @@ Object.keys(_coreAsync).forEach(function (key) {
   });
 });
 
-var _events = __webpack_require__(9);
+var _events = __webpack_require__(11);
 
 Object.keys(_events).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -26919,7 +26919,7 @@ Object.defineProperty(exports, "countWidget", {
   }
 });
 
-var _asyncMixin = __webpack_require__(130);
+var _asyncMixin = __webpack_require__(129);
 
 Object.defineProperty(exports, "asyncMixin", {
   enumerable: true,
@@ -26937,7 +26937,7 @@ Object.defineProperty(exports, "baseMixin", {
   }
 });
 
-var _bubbleMixin = __webpack_require__(18);
+var _bubbleMixin = __webpack_require__(17);
 
 Object.defineProperty(exports, "bubbleMixin", {
   enumerable: true,
@@ -26946,7 +26946,7 @@ Object.defineProperty(exports, "bubbleMixin", {
   }
 });
 
-var _capMixin = __webpack_require__(10);
+var _capMixin = __webpack_require__(9);
 
 Object.defineProperty(exports, "capMixin", {
   enumerable: true,
@@ -26964,7 +26964,7 @@ Object.defineProperty(exports, "colorMixin", {
   }
 });
 
-var _coordinateGridMixin = __webpack_require__(11);
+var _coordinateGridMixin = __webpack_require__(10);
 
 Object.defineProperty(exports, "coordinateGridMixin", {
   enumerable: true,
@@ -26982,7 +26982,7 @@ Object.defineProperty(exports, "coordinateGridRasterMixin", {
   }
 });
 
-var _stackMixin = __webpack_require__(19);
+var _stackMixin = __webpack_require__(18);
 
 Object.defineProperty(exports, "stackMixin", {
   enumerable: true,
@@ -27000,7 +27000,7 @@ Object.defineProperty(exports, "marginMixin", {
   }
 });
 
-var _mapMixin = __webpack_require__(20);
+var _mapMixin = __webpack_require__(19);
 
 Object.defineProperty(exports, "mapMixin", {
   enumerable: true,
@@ -27299,11 +27299,11 @@ function parseDataState(state, parser) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(161);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(162);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(163);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_project__ = __webpack_require__(164);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_resolvefilter__ = __webpack_require__(165);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_sample__ = __webpack_require__(166);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_source__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_source__ = __webpack_require__(25);
 
 
 
@@ -27433,7 +27433,7 @@ function parseBin(sql, _ref) {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseCrossfilter;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(24);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -27624,7 +27624,7 @@ function writeOffset(offset) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(169);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -27701,7 +27701,7 @@ function createDataGraph(connector) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataNode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(170);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -28297,206 +28297,206 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 29,
-	"./af.js": 29,
-	"./ar": 30,
-	"./ar-ma": 31,
-	"./ar-ma.js": 31,
-	"./ar-sa": 32,
-	"./ar-sa.js": 32,
-	"./ar-tn": 33,
-	"./ar-tn.js": 33,
-	"./ar.js": 30,
-	"./az": 34,
-	"./az.js": 34,
-	"./be": 35,
-	"./be.js": 35,
-	"./bg": 36,
-	"./bg.js": 36,
-	"./bn": 37,
-	"./bn.js": 37,
-	"./bo": 38,
-	"./bo.js": 38,
-	"./br": 39,
-	"./br.js": 39,
-	"./bs": 40,
-	"./bs.js": 40,
-	"./ca": 41,
-	"./ca.js": 41,
-	"./cs": 42,
-	"./cs.js": 42,
-	"./cv": 43,
-	"./cv.js": 43,
-	"./cy": 44,
-	"./cy.js": 44,
-	"./da": 45,
-	"./da.js": 45,
-	"./de": 46,
-	"./de-at": 47,
-	"./de-at.js": 47,
-	"./de.js": 46,
-	"./dv": 48,
-	"./dv.js": 48,
-	"./el": 49,
-	"./el.js": 49,
-	"./en-au": 50,
-	"./en-au.js": 50,
-	"./en-ca": 51,
-	"./en-ca.js": 51,
-	"./en-gb": 52,
-	"./en-gb.js": 52,
-	"./en-ie": 53,
-	"./en-ie.js": 53,
-	"./en-nz": 54,
-	"./en-nz.js": 54,
-	"./eo": 55,
-	"./eo.js": 55,
-	"./es": 56,
-	"./es.js": 56,
-	"./et": 57,
-	"./et.js": 57,
-	"./eu": 58,
-	"./eu.js": 58,
-	"./fa": 59,
-	"./fa.js": 59,
-	"./fi": 60,
-	"./fi.js": 60,
-	"./fo": 61,
-	"./fo.js": 61,
-	"./fr": 62,
-	"./fr-ca": 63,
-	"./fr-ca.js": 63,
-	"./fr-ch": 64,
-	"./fr-ch.js": 64,
-	"./fr.js": 62,
-	"./fy": 65,
-	"./fy.js": 65,
-	"./gd": 66,
-	"./gd.js": 66,
-	"./gl": 67,
-	"./gl.js": 67,
-	"./he": 68,
-	"./he.js": 68,
-	"./hi": 69,
-	"./hi.js": 69,
-	"./hr": 70,
-	"./hr.js": 70,
-	"./hu": 71,
-	"./hu.js": 71,
-	"./hy-am": 72,
-	"./hy-am.js": 72,
-	"./id": 73,
-	"./id.js": 73,
-	"./is": 74,
-	"./is.js": 74,
-	"./it": 75,
-	"./it.js": 75,
-	"./ja": 76,
-	"./ja.js": 76,
-	"./jv": 77,
-	"./jv.js": 77,
-	"./ka": 78,
-	"./ka.js": 78,
-	"./kk": 79,
-	"./kk.js": 79,
-	"./km": 80,
-	"./km.js": 80,
-	"./ko": 81,
-	"./ko.js": 81,
-	"./ky": 82,
-	"./ky.js": 82,
-	"./lb": 83,
-	"./lb.js": 83,
-	"./lo": 84,
-	"./lo.js": 84,
-	"./lt": 85,
-	"./lt.js": 85,
-	"./lv": 86,
-	"./lv.js": 86,
-	"./me": 87,
-	"./me.js": 87,
-	"./mk": 88,
-	"./mk.js": 88,
-	"./ml": 89,
-	"./ml.js": 89,
-	"./mr": 90,
-	"./mr.js": 90,
-	"./ms": 91,
-	"./ms-my": 92,
-	"./ms-my.js": 92,
-	"./ms.js": 91,
-	"./my": 93,
-	"./my.js": 93,
-	"./nb": 94,
-	"./nb.js": 94,
-	"./ne": 95,
-	"./ne.js": 95,
-	"./nl": 96,
-	"./nl.js": 96,
-	"./nn": 97,
-	"./nn.js": 97,
-	"./pa-in": 98,
-	"./pa-in.js": 98,
-	"./pl": 99,
-	"./pl.js": 99,
-	"./pt": 100,
-	"./pt-br": 101,
-	"./pt-br.js": 101,
-	"./pt.js": 100,
-	"./ro": 102,
-	"./ro.js": 102,
-	"./ru": 103,
-	"./ru.js": 103,
-	"./se": 104,
-	"./se.js": 104,
-	"./si": 105,
-	"./si.js": 105,
-	"./sk": 106,
-	"./sk.js": 106,
-	"./sl": 107,
-	"./sl.js": 107,
-	"./sq": 108,
-	"./sq.js": 108,
-	"./sr": 109,
-	"./sr-cyrl": 110,
-	"./sr-cyrl.js": 110,
-	"./sr.js": 109,
-	"./ss": 111,
-	"./ss.js": 111,
-	"./sv": 112,
-	"./sv.js": 112,
-	"./sw": 113,
-	"./sw.js": 113,
-	"./ta": 114,
-	"./ta.js": 114,
-	"./te": 115,
-	"./te.js": 115,
-	"./th": 116,
-	"./th.js": 116,
-	"./tl-ph": 117,
-	"./tl-ph.js": 117,
-	"./tlh": 118,
-	"./tlh.js": 118,
-	"./tr": 119,
-	"./tr.js": 119,
-	"./tzl": 120,
-	"./tzl.js": 120,
-	"./tzm": 121,
-	"./tzm-latn": 122,
-	"./tzm-latn.js": 122,
-	"./tzm.js": 121,
-	"./uk": 123,
-	"./uk.js": 123,
-	"./uz": 124,
-	"./uz.js": 124,
-	"./vi": 125,
-	"./vi.js": 125,
-	"./x-pseudo": 126,
-	"./x-pseudo.js": 126,
-	"./zh-cn": 127,
-	"./zh-cn.js": 127,
-	"./zh-tw": 128,
-	"./zh-tw.js": 128
+	"./af": 28,
+	"./af.js": 28,
+	"./ar": 29,
+	"./ar-ma": 30,
+	"./ar-ma.js": 30,
+	"./ar-sa": 31,
+	"./ar-sa.js": 31,
+	"./ar-tn": 32,
+	"./ar-tn.js": 32,
+	"./ar.js": 29,
+	"./az": 33,
+	"./az.js": 33,
+	"./be": 34,
+	"./be.js": 34,
+	"./bg": 35,
+	"./bg.js": 35,
+	"./bn": 36,
+	"./bn.js": 36,
+	"./bo": 37,
+	"./bo.js": 37,
+	"./br": 38,
+	"./br.js": 38,
+	"./bs": 39,
+	"./bs.js": 39,
+	"./ca": 40,
+	"./ca.js": 40,
+	"./cs": 41,
+	"./cs.js": 41,
+	"./cv": 42,
+	"./cv.js": 42,
+	"./cy": 43,
+	"./cy.js": 43,
+	"./da": 44,
+	"./da.js": 44,
+	"./de": 45,
+	"./de-at": 46,
+	"./de-at.js": 46,
+	"./de.js": 45,
+	"./dv": 47,
+	"./dv.js": 47,
+	"./el": 48,
+	"./el.js": 48,
+	"./en-au": 49,
+	"./en-au.js": 49,
+	"./en-ca": 50,
+	"./en-ca.js": 50,
+	"./en-gb": 51,
+	"./en-gb.js": 51,
+	"./en-ie": 52,
+	"./en-ie.js": 52,
+	"./en-nz": 53,
+	"./en-nz.js": 53,
+	"./eo": 54,
+	"./eo.js": 54,
+	"./es": 55,
+	"./es.js": 55,
+	"./et": 56,
+	"./et.js": 56,
+	"./eu": 57,
+	"./eu.js": 57,
+	"./fa": 58,
+	"./fa.js": 58,
+	"./fi": 59,
+	"./fi.js": 59,
+	"./fo": 60,
+	"./fo.js": 60,
+	"./fr": 61,
+	"./fr-ca": 62,
+	"./fr-ca.js": 62,
+	"./fr-ch": 63,
+	"./fr-ch.js": 63,
+	"./fr.js": 61,
+	"./fy": 64,
+	"./fy.js": 64,
+	"./gd": 65,
+	"./gd.js": 65,
+	"./gl": 66,
+	"./gl.js": 66,
+	"./he": 67,
+	"./he.js": 67,
+	"./hi": 68,
+	"./hi.js": 68,
+	"./hr": 69,
+	"./hr.js": 69,
+	"./hu": 70,
+	"./hu.js": 70,
+	"./hy-am": 71,
+	"./hy-am.js": 71,
+	"./id": 72,
+	"./id.js": 72,
+	"./is": 73,
+	"./is.js": 73,
+	"./it": 74,
+	"./it.js": 74,
+	"./ja": 75,
+	"./ja.js": 75,
+	"./jv": 76,
+	"./jv.js": 76,
+	"./ka": 77,
+	"./ka.js": 77,
+	"./kk": 78,
+	"./kk.js": 78,
+	"./km": 79,
+	"./km.js": 79,
+	"./ko": 80,
+	"./ko.js": 80,
+	"./ky": 81,
+	"./ky.js": 81,
+	"./lb": 82,
+	"./lb.js": 82,
+	"./lo": 83,
+	"./lo.js": 83,
+	"./lt": 84,
+	"./lt.js": 84,
+	"./lv": 85,
+	"./lv.js": 85,
+	"./me": 86,
+	"./me.js": 86,
+	"./mk": 87,
+	"./mk.js": 87,
+	"./ml": 88,
+	"./ml.js": 88,
+	"./mr": 89,
+	"./mr.js": 89,
+	"./ms": 90,
+	"./ms-my": 91,
+	"./ms-my.js": 91,
+	"./ms.js": 90,
+	"./my": 92,
+	"./my.js": 92,
+	"./nb": 93,
+	"./nb.js": 93,
+	"./ne": 94,
+	"./ne.js": 94,
+	"./nl": 95,
+	"./nl.js": 95,
+	"./nn": 96,
+	"./nn.js": 96,
+	"./pa-in": 97,
+	"./pa-in.js": 97,
+	"./pl": 98,
+	"./pl.js": 98,
+	"./pt": 99,
+	"./pt-br": 100,
+	"./pt-br.js": 100,
+	"./pt.js": 99,
+	"./ro": 101,
+	"./ro.js": 101,
+	"./ru": 102,
+	"./ru.js": 102,
+	"./se": 103,
+	"./se.js": 103,
+	"./si": 104,
+	"./si.js": 104,
+	"./sk": 105,
+	"./sk.js": 105,
+	"./sl": 106,
+	"./sl.js": 106,
+	"./sq": 107,
+	"./sq.js": 107,
+	"./sr": 108,
+	"./sr-cyrl": 109,
+	"./sr-cyrl.js": 109,
+	"./sr.js": 108,
+	"./ss": 110,
+	"./ss.js": 110,
+	"./sv": 111,
+	"./sv.js": 111,
+	"./sw": 112,
+	"./sw.js": 112,
+	"./ta": 113,
+	"./ta.js": 113,
+	"./te": 114,
+	"./te.js": 114,
+	"./th": 115,
+	"./th.js": 115,
+	"./tl-ph": 116,
+	"./tl-ph.js": 116,
+	"./tlh": 117,
+	"./tlh.js": 117,
+	"./tr": 118,
+	"./tr.js": 118,
+	"./tzl": 119,
+	"./tzl.js": 119,
+	"./tzm": 120,
+	"./tzm-latn": 121,
+	"./tzm-latn.js": 121,
+	"./tzm.js": 120,
+	"./uk": 122,
+	"./uk.js": 122,
+	"./uz": 123,
+	"./uz.js": 123,
+	"./vi": 124,
+	"./vi.js": 124,
+	"./x-pseudo": 125,
+	"./x-pseudo.js": 125,
+	"./zh-cn": 126,
+	"./zh-cn.js": 126,
+	"./zh-tw": 127,
+	"./zh-tw.js": 127
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -28575,11 +28575,11 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _bubbleMixin = __webpack_require__(18);
+var _bubbleMixin = __webpack_require__(17);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(10);
+var _capMixin = __webpack_require__(9);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -29083,7 +29083,7 @@ exports.default = filterMixin;
 
 var _formattingHelpers = __webpack_require__(6);
 
-var _events = __webpack_require__(9);
+var _events = __webpack_require__(11);
 
 var noop = function noop() {}; // eslint-disable-line no-empty-function
 
@@ -29449,7 +29449,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackMixin = __webpack_require__(19);
+var _stackMixin = __webpack_require__(18);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
@@ -29457,7 +29457,7 @@ var _elasticDimensionMixin = __webpack_require__(135);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _coordinateGridMixin = __webpack_require__(11);
+var _coordinateGridMixin = __webpack_require__(10);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -38792,13 +38792,13 @@ Object.defineProperty(exports, "__esModule", {
 exports.roundTimeBin = roundTimeBin;
 exports.default = binningMixin;
 
-var _binningHelpers = __webpack_require__(17);
+var _binningHelpers = __webpack_require__(130);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(9);
+var _events = __webpack_require__(11);
 
 var _filters = __webpack_require__(13);
 
@@ -38875,7 +38875,11 @@ function binningMixin(chart) {
   chart.binBrush = function (isRangeChart) {
     var rangeChartBrush = isRangeChart ? chart.rangeChart().extendBrush() : null;
     var extent0 = isRangeChart ? rangeChartBrush : chart.extendBrush();
-    var chartBounds = isRangeChart ? rangeChartBrush : chart.group().binParams()[0].binBounds;
+
+    var bin_bounds = chart.group().binParams()[0] ? chart.group().binParams()[0].binBounds : null;
+
+    var chartBounds = isRangeChart ? rangeChartBrush : bin_bounds;
+
     if (!extent0[0].getTime || extent0[0].getTime() === extent0[1].getTime()) {
       return;
     }
@@ -38985,15 +38989,15 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _bubbleMixin = __webpack_require__(18);
+var _bubbleMixin = __webpack_require__(17);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(10);
+var _capMixin = __webpack_require__(9);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _coordinateGridMixin = __webpack_require__(11);
+var _coordinateGridMixin = __webpack_require__(10);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -39432,7 +39436,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(10);
+var _capMixin = __webpack_require__(9);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -39578,7 +39582,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = compositeChart;
 
-var _coordinateGridMixin = __webpack_require__(11);
+var _coordinateGridMixin = __webpack_require__(10);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -40585,7 +40589,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _mapMixin = __webpack_require__(20);
+var _mapMixin = __webpack_require__(19);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -41412,7 +41416,7 @@ var _utilsLatlon = __webpack_require__(139);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _mapdDraw = __webpack_require__(22);
+var _mapdDraw = __webpack_require__(21);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
@@ -44591,7 +44595,7 @@ var _marginMixin = __webpack_require__(12);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _events = __webpack_require__(9);
+var _events = __webpack_require__(11);
 
 var _core = __webpack_require__(2);
 
@@ -45291,7 +45295,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(10);
+var _capMixin = __webpack_require__(9);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -46096,7 +46100,7 @@ var _core = __webpack_require__(2);
 
 var _utils = __webpack_require__(3);
 
-var _coordinateGridMixin = __webpack_require__(11);
+var _coordinateGridMixin = __webpack_require__(10);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -46108,7 +46112,7 @@ var _elasticDimensionMixin = __webpack_require__(135);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _stackMixin = __webpack_require__(19);
+var _stackMixin = __webpack_require__(18);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
@@ -46827,7 +46831,7 @@ var _coordinateGridRasterMixin = __webpack_require__(140);
 
 var _coordinateGridRasterMixin2 = _interopRequireDefault(_coordinateGridRasterMixin);
 
-var _mapMixin = __webpack_require__(20);
+var _mapMixin = __webpack_require__(19);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -46839,7 +46843,7 @@ var _scatterMixin = __webpack_require__(141);
 
 var _scatterMixin2 = _interopRequireDefault(_scatterMixin);
 
-var _rasterDrawMixin = __webpack_require__(21);
+var _rasterDrawMixin = __webpack_require__(20);
 
 var _coreAsync = __webpack_require__(4);
 
@@ -50039,7 +50043,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(22);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x, p) {
@@ -50119,7 +50123,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(10);
+var _capMixin = __webpack_require__(9);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -50771,7 +50775,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = scatterPlot;
 
-var _coordinateGridMixin = __webpack_require__(11);
+var _coordinateGridMixin = __webpack_require__(10);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -50779,7 +50783,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(9);
+var _events = __webpack_require__(11);
 
 var _filters = __webpack_require__(13);
 
@@ -51583,7 +51587,7 @@ exports.default = boxPlot;
 
 var _core = __webpack_require__(2);
 
-var _coordinateGridMixin = __webpack_require__(11);
+var _coordinateGridMixin = __webpack_require__(10);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -51973,7 +51977,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = rasterLayer;
 
-var _capMixin = __webpack_require__(10);
+var _capMixin = __webpack_require__(9);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -54156,7 +54160,7 @@ module.exports={"version":"0.28.0"}
 
 
 //# sourceMappingURL=mapbox-gl.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)))
 
 /***/ }),
 /* 247 */
