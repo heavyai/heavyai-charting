@@ -342,7 +342,7 @@ export default function mapdTable(parent, chartGroup) {
               customFormatter = _chart.valueFormatter()
             }
           }
-          return customFormatter && customFormatter(val, col.expression) || formatDataValue(val)
+          return customFormatter && customFormatter(val, col.label) || formatDataValue(val)
         })
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
