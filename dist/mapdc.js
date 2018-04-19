@@ -21979,7 +21979,6 @@ function format(value, key, numberFormatter, dateFormatter) {
 }
 
 function multipleKeysLabelMixin(_chart) {
-
   function label(d) {
     var numberFormatter = _chart && _chart.valueFormatter();
     var dateFormatter = _chart && _chart.dateFormatter();
@@ -52307,7 +52306,6 @@ function rasterLayer(layerType) {
 
   _layer.displayPopup = function (chart, parentElem, result, minPopupArea, animate) {
     var data = result.row_set[0];
-    console.log('raster layer display popup ', data);
     var popupColumns = _layer.popupColumns();
     var mappedColumns = _layer.popupColumnsMapped();
     var filteredData = mapDataViaColumns(data, popupColumns, chart);
