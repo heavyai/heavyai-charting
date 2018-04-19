@@ -43,6 +43,11 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
   _chart.accent = accentPoly
   _chart.unAccent = unAccentPoly
 
+  _chart.measureValue = function(d) {
+    const customFormatter = _chart.valueFormatter()
+    return (customFormatter && customFormatter(d)) || utils.formatValue(d)
+  }
+
   let _hasBeenRendered = false
   /* --------------------------------------------------------------------------*/
 
@@ -56,7 +61,7 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
   let _geoJsons = []
   _chart.transitionDuration(0)
 
-  function findGeomMinMax (layerIndex) {
+  function findGeomMinMax(layerIndex) {
     const _geoJson = geoJson(layerIndex)
     const { data } = _geoJson
     const realGeoJson = {
@@ -399,7 +404,7 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
       .attr("class", "popup-value")
       .html(() => {
         const key = getKey(0, d)
-        const value = isNaN(data[key]) ? "N/A" : utils.formatValue(data[key])
+        const value = isNaN(data[key]) ? "N/A" : _chart.measureValue(data[key])
         return (
           '<div class="popup-value-dim">' +
           key +
