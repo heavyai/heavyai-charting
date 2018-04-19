@@ -335,6 +335,9 @@ export default function rasterLayer(layerType) {
         return
       }
 
+      const columnKey = (columnMap && columnMap[key]) ? columnMap[key] : key
+      const columnKeyTrimmed = columnKey.replace(/.*\((.*)\).*/, "$1")
+
       html =
         html +
         ('<div class="' +
@@ -342,11 +345,11 @@ export default function rasterLayer(layerType) {
           '"><span class="' +
           _popup_item_key_class +
           '">' +
-          (columnMap && columnMap[key] ? columnMap[key] : key) +
+          columnKey +
           ':</span><span class="' +
           _popup_item_val_class +
           '"> ' +
-          formatMeasureValue(data[key], columnMap[key]) +
+          formatMeasureValue(data[key], columnKeyTrimmed) +
           "</span></div>")
     })
     return html
