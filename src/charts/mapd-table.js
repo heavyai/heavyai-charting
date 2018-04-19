@@ -335,7 +335,7 @@ export default function mapdTable(parent, chartGroup) {
           if (col.type === "measure") {
             customFormatter = _chart.valueFormatter()
           } else {
-            if (val && val[0].value instanceof Date) {
+            if (Array.isArray(val) && val[0].value instanceof Date) {
               customFormatter = _chart.dateFormatter()
               val = val[0].value
             } else {
