@@ -51392,7 +51392,9 @@ function mapdTable(parent, chartGroup) {
             customFormatter = _chart.valueFormatter();
           }
         }
-        return customFormatter && customFormatter(val, col.label) || (0, _formattingHelpers.formatDataValue)(val);
+        // catches "# Record" (#4383)
+        var key = col.expression === "*" ? col.label : col.expression;
+        return customFormatter && customFormatter(val, key) || (0, _formattingHelpers.formatDataValue)(val);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
         var s = window.getSelection().toString();

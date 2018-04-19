@@ -342,7 +342,9 @@ export default function mapdTable(parent, chartGroup) {
               customFormatter = _chart.valueFormatter()
             }
           }
-          return customFormatter && customFormatter(val, col.label) || formatDataValue(val)
+          // catches "# Record" (#4383)
+          const key = col.expression === "*" ? col.label : col.expression
+          return customFormatter && customFormatter(val, key) || formatDataValue(val)
         })
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
