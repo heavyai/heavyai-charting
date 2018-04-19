@@ -51385,14 +51385,16 @@ function mapdTable(parent, chartGroup) {
         if (col.type === "measure") {
           customFormatter = _chart.valueFormatter();
         } else {
-          if (val && val[0].value instanceof Date) {
+          if (Array.isArray(val) && val[0].value instanceof Date) {
             customFormatter = _chart.dateFormatter();
             val = val[0].value;
           } else {
             customFormatter = _chart.valueFormatter();
           }
         }
-        return customFormatter && customFormatter(val, col.expression) || (0, _formattingHelpers.formatDataValue)(val);
+        // catches "# Record" (#4383)
+        var key = col.expression === "*" ? col.label : col.expression;
+        return customFormatter && customFormatter(val, key) || (0, _formattingHelpers.formatDataValue)(val);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
         var s = window.getSelection().toString();
