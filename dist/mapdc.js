@@ -52301,7 +52301,10 @@ function rasterLayer(layerType) {
         return;
       }
 
-      html = html + ('<div class="' + _popup_box_item_class + '"><span class="' + _popup_item_key_class + '">' + (columnMap && columnMap[key] ? columnMap[key] : key) + ':</span><span class="' + _popup_item_val_class + '"> ' + formatMeasureValue(data[key], columnMap[key]) + "</span></div>");
+      var columnKey = columnMap && columnMap[key] ? columnMap[key] : key;
+      var columnKeyTrimmed = columnKey.replace(/.*\((.*)\).*/, "$1");
+
+      html = html + ('<div class="' + _popup_box_item_class + '"><span class="' + _popup_item_key_class + '">' + columnKey + ':</span><span class="' + _popup_item_val_class + '"> ' + formatMeasureValue(data[key], columnKeyTrimmed) + "</span></div>");
     });
     return html;
   }
