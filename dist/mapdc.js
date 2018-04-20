@@ -9287,18 +9287,15 @@ function coordinateGridMixin(_chart) {
 
   _chart.popupTextAccessor = function (arr) {
     return function () {
-      var numberFormatter = _chart.valueFormatter();
       var dateFormatter = _chart.dateFormatter();
       var customFormatter = null;
       var value = arr[0].datum.data.key0;
       if (Array.isArray(value) && value[0]) {
-        value = value[0].value;
+        value = typeof value[0].value !== "undefined" ? value[0].value : value[0];
       }
 
       if (dateFormatter && value instanceof Date) {
         customFormatter = dateFormatter;
-      } else if (numberFormatter) {
-        customFormatter = numberFormatter;
       }
 
       return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
@@ -21979,6 +21976,7 @@ function format(value, key, numberFormatter, dateFormatter) {
 }
 
 function multipleKeysLabelMixin(_chart) {
+
   function label(d) {
     var numberFormatter = _chart && _chart.valueFormatter();
     var dateFormatter = _chart && _chart.dateFormatter();
