@@ -21979,7 +21979,6 @@ function format(value, key, numberFormatter, dateFormatter) {
 }
 
 function multipleKeysLabelMixin(_chart) {
-
   function label(d) {
     var numberFormatter = _chart && _chart.valueFormatter();
     var dateFormatter = _chart && _chart.dateFormatter();
@@ -40641,6 +40640,11 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
   _chart.accent = accentPoly;
   _chart.unAccent = unAccentPoly;
 
+  _chart.measureValue = function (d) {
+    var customFormatter = _chart.valueFormatter();
+    return customFormatter && customFormatter(d) || _utils.utils.formatValue(d);
+  };
+
   var _hasBeenRendered = false;
   /* --------------------------------------------------------------------------*/
 
@@ -40971,7 +40975,7 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 
     popupBox.append("div").attr("class", "popup-value").html(function () {
       var key = getKey(0, d);
-      var value = isNaN(data[key]) ? "N/A" : _utils.utils.formatValue(data[key]);
+      var value = isNaN(data[key]) ? "N/A" : _chart.measureValue(data[key]);
       return '<div class="popup-value-dim">' + key + '</div><div class="popup-value-measure">' + value + "</div>";
     });
 
