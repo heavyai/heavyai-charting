@@ -79,31 +79,35 @@ describe("rasterLayerPointMixin", () => {
           filter: "lon = 100",
           layerName: "points",
         })).to.deep.equal({
-          data: {
-            name: "points",
-            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
-          },
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+            }
+          ],
           "scales": [],
-           "mark": {
-             "type": "symbol",
-             "from": {
-               "data": "points"
-             },
-             "properties": {
-               shape: "cross",
-               "xc": {
-                 "scale": "x",
-                 "field": "x"
-               },
-               "yc": {
-                 "scale": "y",
-                 "field": "y"
-               },
-               "width": 11,
-               "height": 11,
-               "fillColor": "#27aeef"
-             }
-           }
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                shape: "cross",
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "width": 11,
+                "height": 11,
+                "fillColor": "#27aeef"
+              }
+            }
+          ]
         })
       })
     })
@@ -131,7 +135,7 @@ describe("rasterLayerPointMixin", () => {
           lastFilteredSize: 1189279639,
           pixelRatio: 1,
           layerName: "points"
-        }).data.sql).to.equal(
+        }).data[0].sql).to.equal(
           "SELECT conv_4326_900913_x(lon) as x, "
           + "conv_4326_900913_y(lat) as y, "
           + "tweets_nov_feb.rowid FROM tweets_nov_feb "
@@ -160,31 +164,35 @@ describe("rasterLayerPointMixin", () => {
           filter: "lon = 100",
           layerName: "points"
         })).to.deep.equal({
-          data: {
-            name: "points",
-            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
-          },
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+            }
+          ],
           "scales": [],
-           "mark": {
-             "type": "symbol",
-             "from": {
-               "data": "points"
-             },
-             "properties": {
-               "xc": {
-                 "scale": "x",
-                 "field": "x"
-               },
-               "yc": {
-                 "scale": "y",
-                 "field": "y"
-               },
-               "height": 11,
-               "width": 11,
-               "shape": "cross",
-               "fillColor": "#27aeef"
-             }
-           }
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "height": 11,
+                "width": 11,
+                "shape": "cross",
+                "fillColor": "#27aeef"
+              }
+            }
+          ]
         })
       })
 
@@ -209,7 +217,7 @@ describe("rasterLayerPointMixin", () => {
           lastFilteredSize: 13884,
           pixelRatio: 1,
           layerName: "points"
-        }).mark.properties.width).to.equal(4)
+        }).marks[0].properties.width).to.equal(4)
 
         layer.setState({
           transform: {limit: 2000000},
@@ -229,7 +237,7 @@ describe("rasterLayerPointMixin", () => {
           lastFilteredSize: 223509,
           pixelRatio: 1,
           layerName: "points"
-        }).mark.properties.width).to.equal(2)
+        }).marks[0].properties.width).to.equal(2)
 
         layer.setState({
           transform: {limit: 2000000},
@@ -249,7 +257,7 @@ describe("rasterLayerPointMixin", () => {
           lastFilteredSize: 1947993,
           pixelRatio: 1,
           layerName: "points"
-        }).mark.properties.height).to.equal(1)
+        }).marks[0].properties.height).to.equal(1)
 
       })
 
@@ -277,10 +285,12 @@ describe("rasterLayerPointMixin", () => {
           filter: "lon = 100",
           layerName: "points"
         })).to.deep.equal({
-          data: {
-            name: "points",
-            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as size, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
-          },
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as size, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+            }
+          ],
           "scales": [
             {
              "name": "points_size",
@@ -296,32 +306,34 @@ describe("rasterLayerPointMixin", () => {
              "clamp": true
            }
           ],
-           "mark": {
-             "type": "symbol",
-             "from": {
-               "data": "points"
-             },
-             "properties": {
-               "xc": {
-                 "scale": "x",
-                 "field": "x"
-               },
-               "yc": {
-                 "scale": "y",
-                 "field": "y"
-               },
-               "width": {
-                 "scale": "points_size",
-                 "field": "size"
-               },
-               "height": {
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "width": {
                   "scale": "points_size",
                   "field": "size"
                 },
-               "shape": "cross",
-               "fillColor": "#27aeef"
-             }
-           }
+                "height": {
+                  "scale": "points_size",
+                  "field": "size"
+                },
+                "shape": "cross",
+                "fillColor": "#27aeef"
+              }
+            }
+          ]
         })
       })
     })
@@ -350,10 +362,12 @@ describe("rasterLayerPointMixin", () => {
           filter: "lon = 100",
           layerName: "points"
         })).to.deep.equal({
-          data: {
-            name: "points",
-            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
-          },
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+            }
+          ],
           "scales": [
             {
               "name": "points_fillColor",
@@ -386,29 +400,31 @@ describe("rasterLayerPointMixin", () => {
               "clamp": true
            }
           ],
-           "mark": {
-             "type": "symbol",
-             "from": {
-               "data": "points"
-             },
-             "properties": {
-               "xc": {
-                 "scale": "x",
-                 "field": "x"
-               },
-               "yc": {
-                 "scale": "y",
-                 "field": "y"
-               },
-               "width": 11,
-               "height": 11,
-               "shape": "cross",
-               "fillColor": {
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "width": 11,
+                "height": 11,
+                "shape": "cross",
+                "fillColor": {
                   "scale": "points_fillColor",
                   "value": 0
                 }
-             }
-           }
+              }
+            }
+          ]
         })
       })
 
@@ -436,10 +452,12 @@ describe("rasterLayerPointMixin", () => {
           filter: "lon = 100",
           layerName: "points"
         })).to.deep.equal({
-          data: {
-            name: "points",
-            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
-          },
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+            }
+          ],
           "scales": [
             {
               "name": "points_fillColor",
@@ -450,29 +468,31 @@ describe("rasterLayerPointMixin", () => {
               "nullValue": "rgba(202,202,202,1)"
            }
           ],
-           "mark": {
-             "type": "symbol",
-             "from": {
-               "data": "points"
-             },
-             "properties": {
-               "xc": {
-                 "scale": "x",
-                 "field": "x"
-               },
-               "yc": {
-                 "scale": "y",
-                 "field": "y"
-               },
-               "width": 11,
-               "height": 11,
-               "shape": "cross",
-               "fillColor": {
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "width": 11,
+                "height": 11,
+                "shape": "cross",
+                "fillColor": {
                   "scale": "points_fillColor",
                   "field": "color"
                 }
-             }
-           }
+              }
+            }
+          ]
         })
 
       })
@@ -503,10 +523,12 @@ describe("rasterLayerPointMixin", () => {
           filter: "lon = 100",
           layerName: "points"
         })).to.deep.equal({
-          data: {
-            name: "points",
-            sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
-          },
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+            }
+          ],
           "scales": [
             {
               "name": "points_fillColor",
@@ -517,29 +539,31 @@ describe("rasterLayerPointMixin", () => {
               "nullValue": "rgba(202,202,202,0.2)"
            }
           ],
-           "mark": {
-             "type": "symbol",
-             "from": {
-               "data": "points"
-             },
-             "properties": {
-               "xc": {
-                 "scale": "x",
-                 "field": "x"
-               },
-               "yc": {
-                 "scale": "y",
-                 "field": "y"
-               },
-               "width": 11,
-               "height": 11,
-               "shape": "cross",
-               "fillColor": {
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "width": 11,
+                "height": 11,
+                "shape": "cross",
+                "fillColor": {
                   "scale": "points_fillColor",
                   "field": "color"
                 }
-             }
-           }
+              }
+            }
+          ]
         })
 
       })
@@ -640,10 +664,10 @@ describe("rasterLayerPointMixin", () => {
         const set = {}
         layer._addRenderAttrsToPopupColumnSet({}, set)
         const vega = layer._genVega(chart)
-        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "xc")
-        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "yc")
-        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "size")
-        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.mark.properties, "fillColor")
+        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.marks[0].properties, "xc")
+        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.marks[0].properties, "yc")
+        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.marks[0].properties, "size")
+        expect(layer._addQueryDrivenRenderPropToSet).to.have.been.called.with(set, vega.marks[0].properties, "fillColor")
       })
     })
 

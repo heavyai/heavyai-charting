@@ -232,50 +232,16 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart.setDataAsync((group, callback) => {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
-    const heatLayers = _chart
-      .getLayerNames()
-      .filter(layerName => _chart.getLayer(layerName).type === "heatmap")
-
-    if (heatLayers.length) {
-      Promise.all(
-        heatLayers.map(layerId => {
-          const layer = _chart.getLayer(layerId)
-          if (layer.getState().encoding.color.scale.domain === "auto") {
-            return layer.getColorDomain(_chart).then(domain => {
-              layer.colorDomain(domain)
-              return domain
-            })
-          } else {
-            return Promise.resolve(layer.getState().encoding.color.scale.domain)
-          }
-        })
+    _chart._vegaSpec = genLayeredVega(_chart)
+    const nonce = _chart
+      .con()
+      .renderVega(
+        _chart.__dcFlag__,
+        JSON.stringify(_chart._vegaSpec),
+        {},
+        callback
       )
-        .then(allBounds => {
-          _chart._vegaSpec = genLayeredVega(_chart)
-          const nonce = _chart
-            .con()
-            .renderVega(
-              _chart.__dcFlag__,
-              JSON.stringify(_chart._vegaSpec),
-              {},
-              callback
-            )
-          _chart.colors().domain(allBounds[0])
-          _renderBoundsMap[nonce] = bounds
-        })
-        .catch(callback)
-    } else {
-      _chart._vegaSpec = genLayeredVega(_chart)
-      const nonce = _chart
-        .con()
-        .renderVega(
-          _chart.__dcFlag__,
-          JSON.stringify(_chart._vegaSpec),
-          {},
-          callback
-        )
-      _renderBoundsMap[nonce] = bounds
-    }
+    _renderBoundsMap[nonce] = bounds
   })
 
   _chart.data(group => {
@@ -433,8 +399,16 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       data = _chart.data()
     }
 
-    const state = getLegendStateFromChart(_chart, useMap)
+    if (data.vega_metadata) {
+      const vega_metadata = JSON.parse(data.vega_metadata)
+      for (const layerName in _layerNames) {
+        if (typeof _layerNames[layerName]._updateFromMetadata === "function") {
+          _layerNames[layerName]._updateFromMetadata(vega_metadata, layerName)
+        }
+      }
+    }
 
+    const state = getLegendStateFromChart(_chart, useMap)
     _legend.setState(state)
 
     if (_chart.isLoaded()) {
@@ -649,9 +623,9 @@ function genLayeredVega(chart) {
   chart.getLayerNames().forEach(layerName => {
     const layerVega = chart.getLayer(layerName).genVega(chart, layerName)
 
-    data.push(layerVega.data)
-    scales = scales.concat(layerVega.scales)
-    marks.push(layerVega.mark)
+    data.push(...layerVega.data)
+    scales.push(...layerVega.scales)
+    marks.push(...layerVega.marks)
   })
 
   const vegaSpec = {

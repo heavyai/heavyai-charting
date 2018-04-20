@@ -79,12 +79,14 @@ describe("rasterLayerPolyMixin", () => {
           filter: "amount=0"
         })
       ).to.deep.equal({
-        data: {
-          name: "polys",
-          format: "polys",
-          sql:
-            "SELECT zipcodes.rowid, contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY zipcodes.rowid, key0 LIMIT 1000000"
-        },
+        data: [
+          {
+            name: "polys",
+            format: "polys",
+            sql:
+              "SELECT zipcodes.rowid, contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY zipcodes.rowid, key0 LIMIT 1000000"
+          }
+        ],
         scales: [
           {
             name: "polys_fillColor",
@@ -95,28 +97,30 @@ describe("rasterLayerPolyMixin", () => {
             default: "#D6D7D6"
           }
         ],
-        mark: {
-          type: "polys",
-          from: { data: "polys" },
-          properties: {
-            x: {
-              scale: "x",
-              field: "x"
-            },
-            y: {
-              scale: "y",
-              field: "y"
-            },
-            fillColor: {
-              scale: "polys_fillColor",
-              field: "color"
-            },
-            strokeColor: "black",
-            strokeWidth: 5,
-            lineJoin: "miter",
-            miterLimit: 20
+        marks: [
+          {
+            type: "polys",
+            from: { data: "polys" },
+            properties: {
+              x: {
+                scale: "x",
+                field: "x"
+              },
+              y: {
+                scale: "y",
+                field: "y"
+              },
+              fillColor: {
+                scale: "polys_fillColor",
+                field: "color"
+              },
+              strokeColor: "black",
+              strokeWidth: 5,
+              lineJoin: "miter",
+              miterLimit: 20
+            }
           }
-        }
+        ]
       })
     })
   })

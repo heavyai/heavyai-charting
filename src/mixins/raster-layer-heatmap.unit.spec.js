@@ -70,15 +70,17 @@ describe("rasterLayerHeatmapMixin", () => {
           zoom: 10
         })
       ).to.deep.equal({
-        data: {
-          name: "heatmap_query",
-          sql:
-            "SELECT rect_pixel_bin_x(conv_4326_900913_x(lon), -50, -50, 1, 0, 100) as x, " +
-            "rect_pixel_bin_y(conv_4326_900913_y(lat), 50, 50, 1, 0, 100) as y, " +
-            "count(*) as color FROM tweets_nov_feb WHERE (lon = 100) GROUP BY x, y"
-        },
         width: 100,
         height: 100,
+        data: [
+          {
+            name: "heatmap_query",
+            sql:
+              "SELECT rect_pixel_bin_x(conv_4326_900913_x(lon), -50, -50, 1, 0, 100) as x, " +
+              "rect_pixel_bin_y(conv_4326_900913_y(lat), 50, 50, 1, 0, 100) as y, " +
+              "count(*) as color FROM tweets_nov_feb WHERE (lon = 100) GROUP BY x, y"
+          }
+        ],
         scales: [
           {
             name: "heat_color",
@@ -93,27 +95,29 @@ describe("rasterLayerHeatmapMixin", () => {
             nullValue: "rgba(13,8,135,0.2)"
           }
         ],
-        mark: {
-          type: "symbol",
-          from: {
-            data: "heatmap_query"
-          },
-          properties: {
-            shape: "square",
-            xc: {
-              field: "x"
+        marks: [
+          {
+            type: "symbol",
+            from: {
+              data: "heatmap_query"
             },
-            yc: {
-              field: "y"
-            },
-            width: 1,
-            height: 1,
-            fillColor: {
-              scale: "heat_color",
-              field: "color"
+            properties: {
+              shape: "square",
+              xc: {
+                field: "x"
+              },
+              yc: {
+                field: "y"
+              },
+              width: 1,
+              height: 1,
+              fillColor: {
+                scale: "heat_color",
+                field: "color"
+              }
             }
           }
-        }
+        ]
       })
 
       layer.setState(Object.assign({}, spec, { mark: "hex" }))
@@ -130,13 +134,15 @@ describe("rasterLayerHeatmapMixin", () => {
           zoom: 10
         })
       ).to.deep.equal({
-        data: {
-          name: "heatmap_query",
-          sql:
-            "SELECT reg_hex_horiz_pixel_bin_x(conv_4326_900913_x(lon),-50,-50,conv_4326_900913_y(lat),50,50,1,1.1547005383792517,0,0,100,100) as x, " +
-            "reg_hex_horiz_pixel_bin_y(conv_4326_900913_x(lon),-50,-50,conv_4326_900913_y(lat),50,50,1,1.1547005383792517,0,0,100,100) as y, " +
-            "count(*) as color FROM tweets_nov_feb WHERE (lon = 100) GROUP BY x, y"
-        },
+        data: [
+          {
+            name: "heatmap_query",
+            sql:
+              "SELECT reg_hex_horiz_pixel_bin_x(conv_4326_900913_x(lon),-50,-50,conv_4326_900913_y(lat),50,50,1,1.1547005383792517,0,0,100,100) as x, " +
+              "reg_hex_horiz_pixel_bin_y(conv_4326_900913_x(lon),-50,-50,conv_4326_900913_y(lat),50,50,1,1.1547005383792517,0,0,100,100) as y, " +
+              "count(*) as color FROM tweets_nov_feb WHERE (lon = 100) GROUP BY x, y"
+          }
+        ],
         width: 100,
         height: 100,
         scales: [
@@ -153,27 +159,29 @@ describe("rasterLayerHeatmapMixin", () => {
             nullValue: "rgba(13,8,135,0.2)"
           }
         ],
-        mark: {
-          type: "symbol",
-          from: {
-            data: "heatmap_query"
-          },
-          properties: {
-            shape: "hexagon-horiz",
-            xc: {
-              field: "x"
+        marks: [
+          {
+            type: "symbol",
+            from: {
+              data: "heatmap_query"
             },
-            yc: {
-              field: "y"
-            },
-            width: 1,
-            height: 1.1547005383792517,
-            fillColor: {
-              scale: "heat_color",
-              field: "color"
+            properties: {
+              shape: "hexagon-horiz",
+              xc: {
+                field: "x"
+              },
+              yc: {
+                field: "y"
+              },
+              width: 1,
+              height: 1.1547005383792517,
+              fillColor: {
+                scale: "heat_color",
+                field: "color"
+              }
             }
           }
-        }
+        ]
       })
     })
   })
