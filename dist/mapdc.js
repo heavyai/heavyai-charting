@@ -38875,7 +38875,11 @@ function binningMixin(chart) {
   chart.binBrush = function (isRangeChart) {
     var rangeChartBrush = isRangeChart ? chart.rangeChart().extendBrush() : null;
     var extent0 = isRangeChart ? rangeChartBrush : chart.extendBrush();
-    var chartBounds = isRangeChart ? rangeChartBrush : chart.group().binParams()[0].binBounds;
+
+    var bin_bounds = chart.group().binParams()[0] ? chart.group().binParams()[0].binBounds : null;
+
+    var chartBounds = isRangeChart ? rangeChartBrush : bin_bounds;
+
     if (!extent0[0].getTime || extent0[0].getTime() === extent0[1].getTime()) {
       return;
     }
