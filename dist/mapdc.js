@@ -4931,14 +4931,26 @@ utils.b64toBlob = function (b64Data, contentType, sliceSize) {
   return blob;
 };
 
-utils.getFontSizeFromWidth = function (text, parent, chartWidth) {
+utils.getFontSizeFromWidth = function (text, parent, chartWidth, chartHeight) {
   var BASE_FONT_SIZE = 12;
+  var MIN_FONT_SIZE = 4;
   var tmpText = parent.append("span").style("font-size", BASE_FONT_SIZE + "px").style("position", "absolute").html(text);
   var node = tmpText.node();
-  var textWidth = node.getBoundingClientRect ? node.getBoundingClientRect().width : null;
+
+  var textWidth = null;
+  var textHeight = null;
+  if (node.getBoundingClientRect) {
+    var bbox = node.getBoundingClientRect();
+    textWidth = bbox.width;
+    textHeight = bbox.height;
+  }
+
   tmpText.remove();
 
-  return BASE_FONT_SIZE * chartWidth / textWidth;
+  var fontSizeWidth = BASE_FONT_SIZE * chartWidth / textWidth;
+  var fontSizeHeight = BASE_FONT_SIZE * chartHeight / textHeight;
+
+  return Math.max(Math.min(fontSizeWidth, fontSizeHeight), MIN_FONT_SIZE);
 };
 
 utils.isOrdinal = function (type) {
@@ -46868,7 +46880,9 @@ function numberChart(parent, chartGroup) {
     var wrapper = _chart.root().html("").append("div").attr("class", "number-chart-wrapper");
 
     var TEXT_MARGINS = 64;
-    var fontSize = _utils.utils.getFontSizeFromWidth(formattedValue, wrapper, _chart.width() - TEXT_MARGINS);
+    var chartWidth = _chart.width() - TEXT_MARGINS;
+    var chartHeight = _chart.height() - TEXT_MARGINS;
+    var fontSize = _utils.utils.getFontSizeFromWidth(formattedValue, wrapper, chartWidth, chartHeight);
     wrapper.append("span").attr("class", "number-chart-number").style("color", _chart.getColor).style("font-size", fontSize + "px").html(formattedValue);
 
     return _chart;
