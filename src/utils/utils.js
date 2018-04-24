@@ -388,6 +388,19 @@ utils.b64toBlob = function(b64Data, contentType, sliceSize) {
   return blob
 }
 
+utils.getFontSizeFromWidth = function(text, parent, chartWidth) {
+  const BASE_FONT_SIZE = 12
+  const tmpText = parent.append("span")
+    .style("font-size", BASE_FONT_SIZE + "px")
+    .style("position", "absolute")
+    .html(text)
+  const node = tmpText.node()
+  const textWidth = node.getBoundingClientRect ? node.getBoundingClientRect().width : null
+  tmpText.remove()
+
+  return BASE_FONT_SIZE * chartWidth / textWidth
+}
+
 utils.isOrdinal = function(type) {
   const BOOL_TYPES = { BOOL: true }
 
