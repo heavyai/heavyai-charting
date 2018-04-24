@@ -22048,6 +22048,7 @@ function format(value, key, numberFormatter, dateFormatter) {
 }
 
 function multipleKeysLabelMixin(_chart) {
+
   function label(d) {
     var numberFormatter = _chart && _chart.valueFormatter();
     var dateFormatter = _chart && _chart.dateFormatter();
@@ -47336,13 +47337,22 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   };
 
+  _chart.clearLayerFilters = function () {
+    for (var layerName in _layerNames) {
+      var _layer3 = _layerNames[layerName];
+      if (typeof _layer3.filterAll === "function") {
+        _layer3.filterAll();
+      }
+    }
+  };
+
   _chart.destroyChart = function () {
     _legend.setState({});
 
     _chart.filterAll();
     for (var layerName in _layerNames) {
-      var _layer3 = _layerNames[layerName];
-      _layer3.destroyLayer(_chart);
+      var _layer4 = _layerNames[layerName];
+      _layer4.destroyLayer(_chart);
     }
 
     _chart.map().remove();
@@ -47630,10 +47640,10 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
     if (_chart.select("." + _popupDivClassName).empty()) {
       // only one popup at a time
-      var _layer4 = _layerNames[result.vega_table_name];
-      if (_layer4 && _layer4.areResultsValidForPopup(result.row_set)) {
+      var _layer5 = _layerNames[result.vega_table_name];
+      if (_layer5 && _layer5.areResultsValidForPopup(result.row_set)) {
         var mapPopup = _chart.root().append("div").attr("class", _popupDivClassName);
-        _layer4.displayPopup(_chart, mapPopup, result, _minPopupShapeBoundsArea, animate);
+        _layer5.displayPopup(_chart, mapPopup, result, _minPopupShapeBoundsArea, animate);
       }
     }
   };
@@ -47643,12 +47653,12 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     if (!popupElem.empty()) {
       for (var i = 0; i < _layers.length; ++i) {
         var layerName = _layers[i];
-        var _layer5 = _layerNames[layerName];
-        if (_layer5 && _layer5.isPopupDisplayed(_chart)) {
+        var _layer6 = _layerNames[layerName];
+        if (_layer6 && _layer6.isPopupDisplayed(_chart)) {
           // TODO(croot): can this be improved? I presume only
           // one popup can be shown at a time
           if (animate) {
-            _layer5.hidePopup(_chart, function () {
+            _layer6.hidePopup(_chart, function () {
               _chart.select("." + _popupDivClassName).remove();
             });
           } else {

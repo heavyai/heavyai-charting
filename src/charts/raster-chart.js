@@ -198,6 +198,15 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
+  _chart.clearLayerFilters = function() {
+    for (const layerName in _layerNames) {
+      const layer = _layerNames[layerName]
+      if (typeof layer.filterAll === "function") {
+        layer.filterAll()
+      }
+    }
+  }
+
   _chart.destroyChart = function() {
     _legend.setState({})
 
