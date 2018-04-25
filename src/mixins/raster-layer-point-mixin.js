@@ -321,7 +321,7 @@ export default function rasterLayerPointMixin(_layer) {
     const markType = getMarkType(state.config)
 
     return {
-      data: {
+      data: [{
         name: layerName,
         sql: parser.writeSQL({
           type: "root",
@@ -334,9 +334,9 @@ export default function rasterLayerPointMixin(_layer) {
             lastFilteredSize
           )
         })
-      },
+      }],
       scales: getScales(state.encoding, layerName),
-      mark: {
+      marks: [{
         type: markType === "circle" ? "points" : "symbol",
         from: {
           data: layerName
@@ -374,7 +374,7 @@ export default function rasterLayerPointMixin(_layer) {
                 height: size
               }
         )
-      }
+      }]
     }
   }
 
@@ -466,11 +466,11 @@ export default function rasterLayerPointMixin(_layer) {
   ]
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
-    if (_vega && _vega.mark && _vega.mark.properties) {
+    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
       renderAttributes.forEach(prop => {
         _layer._addQueryDrivenRenderPropToSet(
           popupColumnsSet,
-          _vega.mark.properties,
+          _vega.marks[0].properties,
           prop
         )
       })
@@ -499,8 +499,8 @@ export default function rasterLayerPointMixin(_layer) {
   ) {
     const rndrProps = {}
     const queryRndrProps = new Set()
-    if (_vega && _vega.mark && _vega.mark.properties) {
-      const propObj = _vega.mark.properties
+    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+      const propObj = _vega.marks[0].properties
       renderAttributes.forEach(prop => {
         if (
           typeof propObj[prop] === "object" &&

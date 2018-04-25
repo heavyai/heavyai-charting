@@ -70,43 +70,16 @@ export default function numberChart(parent, chartGroup) {
       .append("div")
       .attr("class", "number-chart-wrapper")
 
+    const TEXT_MARGINS = 64
+    const chartWidth = _chart.width() - TEXT_MARGINS
+    const chartHeight = _chart.height() - TEXT_MARGINS
+    const fontSize = utils.getFontSizeFromWidth(formattedValue, wrapper, chartWidth, chartHeight)
     wrapper
       .append("span")
       .attr("class", "number-chart-number")
       .style("color", _chart.getColor)
-      .style(
-        "font-size",
-        d => Math.max(Math.floor(_chart.height() / 5), 32) + "px"
-      )
+      .style("font-size", fontSize + "px")
       .html(formattedValue)
-      .style("font-size", function(d) {
-        const width = d3
-          .select(this)
-          .node()
-          .getBoundingClientRect().width
-        let calcFontSize = parseInt(
-          d3
-            .select(this)
-            .node()
-            .style.fontSize.replace(/\D/g, "")
-        )
-
-        if (width > _chart.width() - 64) {
-          calcFontSize = Math.max(
-            calcFontSize * ((_chart.width() - 64) / width),
-            32
-          )
-        }
-
-        _fontSize =
-          !_fontSize || _chartWidth < _chart.width()
-            ? calcFontSize
-            : Math.min(_fontSize, calcFontSize)
-
-        _chartWidth = _chart.width()
-
-        return _fontSize + "px"
-      })
 
     return _chart
   }

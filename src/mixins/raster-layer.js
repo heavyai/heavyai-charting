@@ -187,29 +187,8 @@ export default function rasterLayer(layerType) {
       filter: _layer.crossfilter().getFilterString(),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       neLat: chart._maxCoord[1],
-      zoom: chart.zoom(),
-      domain: chart.colors().domain()
+      zoom: chart.zoom()
     }
-  }
-
-  _layer.getColorDomain = function(chart) {
-    const subquery = _layer.genSQL(genHeatConfigFromChart(chart))
-    const sql = `SELECT MIN(c.color) as minimum, MAX(c.color) as maximum, STDDEV(c.color) as deviation, AVG(c.color) as mean FROM (${subquery}) as c`
-
-    return new Promise((resolve, reject) => {
-      chart.con().query(sql, null, (error, result) => {
-        if (error) {
-          reject(error)
-        } else {
-          const { minimum, maximum, mean, deviation } = result[0]
-          const step = 2 * deviation
-          resolve([
-            Math.max(minimum, mean - step),
-            Math.min(maximum, mean + step)
-          ])
-        }
-      })
-    })
   }
 
   _layer.genVega = function(chart, layerName) {

@@ -82,14 +82,12 @@ export default function rasterLayerHeatmapMixin(_layer) {
     filter,
     globalFilter,
     neLat,
-    zoom,
-    domain
+    zoom
   }) {
     const { markWidth, markHeight } = getMarkSize({
       width,
       neLat,
-      zoom,
-      domain
+      zoom
     })
 
     const transforms = []
@@ -136,6 +134,25 @@ export default function rasterLayerHeatmapMixin(_layer) {
     })
   }
 
+  function getColorScaleName(layerName) {
+    return `heat_color${layerName}`
+  }
+
+  function usesAutoColors() {
+    return state.encoding.color.scale.domain === "auto"
+  }
+
+  _layer._updateFromMetadata = (metadata, layerName = "") => {
+    if (usesAutoColors() && Array.isArray(metadata.scales)) {
+      const colorScaleName = getColorScaleName(layerName)
+      for (const scale of metadata.scales) {
+        if (scale.name === colorScaleName) {
+          _layer.colorDomain(scale.domain)
+        }
+      }
+    }
+  }
+
   _layer._genVega = function({
     table,
     width,
@@ -146,58 +163,92 @@ export default function rasterLayerHeatmapMixin(_layer) {
     globalFilter,
     neLat,
     zoom,
-    domain,
     layerName = ""
   }) {
     const { markWidth, markHeight } = getMarkSize({
       width,
       neLat,
-      zoom,
-      domain
+      zoom
     })
-    return {
+
+    const datalayerName = `heatmap_query${layerName}`
+
+    const autocolors = usesAutoColors()
+    const getStatsLayerName = () => datalayerName + "_stats"
+
+    const vega = {
       width,
-      height,
-      data: {
-        name: `heatmap_query${layerName}`,
-        sql: _layer.genSQL({
-          table,
-          width,
-          height,
-          min,
-          max,
-          filter,
-          globalFilter,
-          neLat,
-          zoom,
-          domain
-        })
-      },
-      scales: [
-        {
-          name: `heat_color${layerName}`,
-          type: state.encoding.color.type,
-          domain:
-            state.encoding.color.scale.domain === "auto"
-              ? _layer.colorDomain() || domain
-              : state.encoding.color.scale.domain,
-          range: state.encoding.color.scale.range.map(c =>
-            adjustOpacity(c, state.encoding.color.scale.opacity)
-          ),
-          default: adjustOpacity(
-            state.encoding.color.scale.default,
-            state.encoding.color.scale.opacity
-          ),
-          nullValue: adjustOpacity(
-            state.encoding.color.scale.nullValue,
-            state.encoding.color.scale.opacity
-          )
-        }
-      ],
-      mark: {
+      height
+    }
+
+    vega.data = [{
+      name: datalayerName,
+      sql: _layer.genSQL({
+        table,
+        width,
+        height,
+        min,
+        max,
+        filter,
+        globalFilter,
+        neLat,
+        zoom
+      })
+    }]
+
+    if (autocolors) {
+      vega.data.push({
+        name: getStatsLayerName(),
+        source: datalayerName,
+        transform: [
+          {
+            type:   "aggregate",
+            fields: ["color", "color", "color", "color"],
+            ops:    ["min", "max", "avg", "stddev"],
+            as:     ["minimum", "maximum", "mean", "deviation"]
+          },
+          {
+            type: "formula",
+            expr: "max(minimum, mean-2*deviation)",
+            as: "mincolor"
+          },
+          {
+            type: "formula",
+            expr: "min(maximum, mean+2*deviation)",
+            as: "maxcolor"
+          }
+        ]
+      })
+    }
+
+    const colorScaleName = getColorScaleName(layerName)
+    vega.scales = [
+      {
+        name: colorScaleName,
+        type: state.encoding.color.type,
+        domain:
+          autocolors 
+            ? {data: getStatsLayerName(), fields: ["mincolor", "maxcolor"]}
+            : state.encoding.color.scale.domain,
+        range: state.encoding.color.scale.range.map(c =>
+          adjustOpacity(c, state.encoding.color.scale.opacity)
+        ),
+        default: adjustOpacity(
+          state.encoding.color.scale.default,
+          state.encoding.color.scale.opacity
+        ),
+        nullValue: adjustOpacity(
+          state.encoding.color.scale.nullValue,
+          state.encoding.color.scale.opacity
+        )
+      }
+    ]
+
+    vega.marks = [
+      {
         type: "symbol",
         from: {
-          data: `heatmap_query${layerName}`
+          data: datalayerName
         },
         properties: {
           shape: getMarkType(state.mark),
@@ -210,12 +261,14 @@ export default function rasterLayerHeatmapMixin(_layer) {
           width: markWidth,
           height: markHeight,
           fillColor: {
-            scale: `heat_color${layerName}`,
+            scale: colorScaleName,
             field: "color"
           }
         }
       }
-    }
+    ]
+
+    return vega
   }
 
   _layer._destroyLayer = function() {
