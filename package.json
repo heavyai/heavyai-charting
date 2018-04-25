@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@mapd/connector": "git://github.com/mapd/mapd-connector.git#67dd489",
-    "@mapd/crossfilter": "git://github.com/mapd/mapd-crossfilter.git#tai/poly-stuff",
+    "@mapd/crossfilter": "git://github.com/mapd/mapd-crossfilter.git",
     "atob": "^2.0.3",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",

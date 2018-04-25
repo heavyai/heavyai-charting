@@ -4931,6 +4931,28 @@ utils.b64toBlob = function (b64Data, contentType, sliceSize) {
   return blob;
 };
 
+utils.getFontSizeFromWidth = function (text, parent, chartWidth, chartHeight) {
+  var BASE_FONT_SIZE = 12;
+  var MIN_FONT_SIZE = 4;
+  var tmpText = parent.append("span").style("font-size", BASE_FONT_SIZE + "px").style("position", "absolute").html(text);
+  var node = tmpText.node();
+
+  var textWidth = null;
+  var textHeight = null;
+  if (node.getBoundingClientRect) {
+    var bbox = node.getBoundingClientRect();
+    textWidth = bbox.width;
+    textHeight = bbox.height;
+  }
+
+  tmpText.remove();
+
+  var fontSizeWidth = BASE_FONT_SIZE * chartWidth / textWidth;
+  var fontSizeHeight = BASE_FONT_SIZE * chartHeight / textHeight;
+
+  return Math.max(Math.min(fontSizeWidth, fontSizeHeight), MIN_FONT_SIZE);
+};
+
 utils.isOrdinal = function (type) {
   var BOOL_TYPES = { BOOL: true };
 
@@ -46857,22 +46879,11 @@ function numberChart(parent, chartGroup) {
 
     var wrapper = _chart.root().html("").append("div").attr("class", "number-chart-wrapper");
 
-    wrapper.append("span").attr("class", "number-chart-number").style("color", _chart.getColor).style("font-size", function (d) {
-      return Math.max(Math.floor(_chart.height() / 5), 32) + "px";
-    }).html(formattedValue).style("font-size", function (d) {
-      var width = _d2.default.select(this).node().getBoundingClientRect().width;
-      var calcFontSize = parseInt(_d2.default.select(this).node().style.fontSize.replace(/\D/g, ""));
-
-      if (width > _chart.width() - 64) {
-        calcFontSize = Math.max(calcFontSize * ((_chart.width() - 64) / width), 32);
-      }
-
-      _fontSize = !_fontSize || _chartWidth < _chart.width() ? calcFontSize : Math.min(_fontSize, calcFontSize);
-
-      _chartWidth = _chart.width();
-
-      return _fontSize + "px";
-    });
+    var TEXT_MARGINS = 64;
+    var chartWidth = _chart.width() - TEXT_MARGINS;
+    var chartHeight = _chart.height() - TEXT_MARGINS;
+    var fontSize = _utils.utils.getFontSizeFromWidth(formattedValue, wrapper, chartWidth, chartHeight);
+    wrapper.append("span").attr("class", "number-chart-number").style("color", _chart.getColor).style("font-size", fontSize + "px").html(formattedValue);
 
     return _chart;
   };
