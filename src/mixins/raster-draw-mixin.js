@@ -464,6 +464,9 @@ export function rasterDrawMixin(chart) {
       }
       const shapes = drawEngine.sortedShapes
       drawEngine.deleteAllShapes()
+
+      origFilterFunc(Symbol.for("clear"))
+      
       shapes.forEach(shape => {
         chart.deleteFilterShape(shape)
       })

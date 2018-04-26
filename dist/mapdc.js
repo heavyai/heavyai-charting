@@ -11858,6 +11858,8 @@ function rasterDrawMixin(chart) {
       }
       var shapes = drawEngine.sortedShapes;
       drawEngine.deleteAllShapes();
+      
+      origFilterFunc(Symbol.for("clear"))
       shapes.forEach(function (shape) {
         chart.deleteFilterShape(shape);
       });
