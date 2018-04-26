@@ -30,7 +30,7 @@ export default function multipleKeysLabelMixin(_chart) {
       return format(d.key0, dimensionNames[0], numberFormatter, dateFormatter)
     }
 
-    let keysStr = []
+    const keysStr = []
     let i = 0
     for (const key in d) {
       if (d.hasOwnProperty(key) && key.indexOf("key") > INDEX_NONE) {

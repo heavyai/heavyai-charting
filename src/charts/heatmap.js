@@ -58,7 +58,7 @@ export function heatMapValueAccesor({ key1 }) {
 export function heatMapRowsLabel(d) {
   let value = this.rowsMap.get(d) || d
 
-  let customFormatter = this.dateFormatter()
+  const customFormatter = this.dateFormatter()
   if (customFormatter && d && d instanceof Date) {
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0]
@@ -71,7 +71,7 @@ export function heatMapRowsLabel(d) {
 export function heatMapColsLabel(d) {
   let value = this.colsMap.get(d) || d
 
-  let customFormatter = this.dateFormatter()
+  const customFormatter = this.dateFormatter()
   if (customFormatter && d && d instanceof Date) {
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0]

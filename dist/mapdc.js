@@ -26498,7 +26498,7 @@ function rasterLayerPolyMixin(_layer) {
   };
 
   _layer._areResultsValidForPopup = function (results) {
-    if (results[polyTableGeomColumns.verts] /*&&
+    if (results[polyTableGeomColumns.verts] /* &&
                                             results[polyTableGeomColumns.linedrawinfo]*/
     ) {
         return true;
@@ -26556,7 +26556,7 @@ function rasterLayerPolyMixin(_layer) {
 
     // bounds: [minX, maxX, minY, maxY]
     var bounds = [Infinity, -Infinity, Infinity, -Infinity];
-    var startIdxDiff = 0; //drawinfo.length ? drawinfo[2] : 0
+    var startIdxDiff = 0; // drawinfo.length ? drawinfo[2] : 0
 
     var FLT_MAX = 1e37;
 
@@ -51503,13 +51503,11 @@ function mapdTable(parent, chartGroup) {
         var val = d[col.name];
         if (col.type === "measure") {
           customFormatter = _chart.valueFormatter();
+        } else if (Array.isArray(val) && val[0].value instanceof Date) {
+          customFormatter = _chart.dateFormatter();
+          val = val[0].value;
         } else {
-          if (Array.isArray(val) && val[0].value instanceof Date) {
-            customFormatter = _chart.dateFormatter();
-            val = val[0].value;
-          } else {
-            customFormatter = _chart.valueFormatter();
-          }
+          customFormatter = _chart.valueFormatter();
         }
         // catches "# Record" (#4383)
         var key = col.expression === "*" ? col.label : col.expression;

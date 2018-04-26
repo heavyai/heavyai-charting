@@ -6,8 +6,8 @@ import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 export default function numberChart(parent, chartGroup) {
   const _chart = baseMixin({})
   let _colors = "#22a7f0"
-  let _fontSize = null
-  let _chartWidth = null
+  const _fontSize = null
+  const _chartWidth = null
 
   _chart.colors = function(_) {
     if (!arguments.length) {

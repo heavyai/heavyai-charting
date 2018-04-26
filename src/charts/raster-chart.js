@@ -604,7 +604,7 @@ function genLayeredVega(chart) {
 
   const data = []
 
-  let scales = [
+  const scales = [
     {
       name: chart._getXScaleName(),
       type: chart._determineScaleType(chart.x()),

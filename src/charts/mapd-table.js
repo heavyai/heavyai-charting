@@ -334,14 +334,12 @@ export default function mapdTable(parent, chartGroup) {
           let val = d[col.name]
           if (col.type === "measure") {
             customFormatter = _chart.valueFormatter()
-          } else {
-            if (Array.isArray(val) && val[0].value instanceof Date) {
+          } else if (Array.isArray(val) && val[0].value instanceof Date) {
               customFormatter = _chart.dateFormatter()
               val = val[0].value
             } else {
               customFormatter = _chart.valueFormatter()
             }
-          }
           // catches "# Record" (#4383)
           const key = col.expression === "*" ? col.label : col.expression
           return customFormatter && customFormatter(val, key) || formatDataValue(val)
