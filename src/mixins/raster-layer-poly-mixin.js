@@ -286,7 +286,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer._areResultsValidForPopup = function(results) {
     if (
-      results[polyTableGeomColumns.verts] /*&&
+      results[polyTableGeomColumns.verts] /* &&
       results[polyTableGeomColumns.linedrawinfo]*/
     ) {
       return true
@@ -357,7 +357,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
     // bounds: [minX, maxX, minY, maxY]
     const bounds = [Infinity, -Infinity, Infinity, -Infinity]
-    const startIdxDiff = 0 //drawinfo.length ? drawinfo[2] : 0
+    const startIdxDiff = 0 // drawinfo.length ? drawinfo[2] : 0
 
     const FLT_MAX = 1e37
 
@@ -421,7 +421,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
 */
     // TODO(adb): handle multi-poly properly again...
-    let polypts = [];
+    const polypts = [];
     for(let idx = 0; idx < verts.length; idx+=2) {
       const screenX = xscale(verts[idx]) + margins.left
       const screenY = height - yscale(verts[idx + 1]) - 1 + margins.top
