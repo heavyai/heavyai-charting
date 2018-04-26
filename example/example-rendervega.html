@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MapD</title>
+    <meta charset="UTF-8">
+    <style>
+
+    </style>
+  </head>
+  <body>
+    <script src="assets/app.bundle.js"></script>
+<script>
+/*
+See examples in the Vega editor http://kali.immerse-4341.dev.frontend.builds.mapd.com/vega-editor/#/edited
+And documentation https://www.mapd.com/docs/latest/mapd-core-guide/vegaAtaGlance/#connecting-to-the-server-and-rendering-the-visualization
+Start examples with `npm run start`
+*/
+var exampleVega = {
+  width: 600,
+  height: 900,
+  data: [
+    {
+      name: "fec_contributions_oct",
+      sql:
+        "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, recipient_party as dim0, amount as val, rowid FROM fec_contributions_oct WHERE conv_4326_900913_x(lon) between -11406634.55262686 and -10300666.14903983 and conv_4326_900913_y(lat) between 2511525.2344935797 and 7170156.29299669 LIMIT 2000000"
+    }
+  ],
+  scales: [
+    {
+      name: "x",
+      type: "linear",
+      domain: [-11406634.55262686, -10300666.14903983],
+      range: "width"
+    },
+    {
+      name: "y",
+      type: "linear",
+      domain: [2511525.2344935797, 7170156.29299669],
+      range: "height"
+    },
+    {
+      name: "color",
+      type: "linear",
+      domain: [0, 200],
+      range: ["white", "red"]
+    },
+    {
+      name: "symbol",
+      type: "ordinal",
+      domain: ["D", "R", "I"],
+      range: ["circle", "diamond", "square"]
+    },
+    {
+      name: "symbol_size",
+      type: "ordinal",
+      domain: ["D", "R", "I"],
+      range: [11, 7, 3],
+      clamp: true
+    }
+  ],
+  marks: [
+    {
+      type: "symbol",
+      from: { data: "fec_contributions_oct" },
+      properties: {
+        width: { scale: "symbol_size", field: "dim0" },
+        height: { scale: "symbol_size", field: "dim0" },
+        x: { scale: "x", field: "x" },
+        y: { scale: "y", field: "y" },
+        fillColor: { scale: "color", field: "val" },
+        strokeColor: "rgb(0, 0, 0)",
+        strokeWidth: 0.5,
+        shape: { scale: "symbol", field: "dim0" }
+      }
+    }
+  ]
+}
+
+var vegaOptions = {}
+var connector = new MapdCon()
+  .protocol("http")
+  .host("vega-demo.mapd.com")
+  .port("9092")
+  .dbName("mapd")
+  .user("mapd")
+  .password("HyperInteractive")
+  .connect(function(error, con) {
+    con.renderVega(1, JSON.stringify(exampleVega), vegaOptions, function(error, result) {
+      if (error) {
+        console.log(error.message);
+      }
+      else {
+        var blobUrl = `data:image/png;base64,${result.image}`
+        var body = document.querySelector('body')
+        var vegaImg = new Image()
+        vegaImg.src = blobUrl
+        body.append(vegaImg)
+      }
+    });
+  });
+
+</script>
+
+  </body>
+</html>
