@@ -127,7 +127,7 @@ export default function rowChart(parent, chartGroup) {
   function setXAxisFormat () {
     const numberFormatter = _chart.valueFormatter()
     if (numberFormatter) {
-      _xAxis.tickFormat(numberFormatter)
+      _xAxis.tickFormat(d => numberFormatter(d))
     } else {
       _xAxis.tickFormat(null)
     }
