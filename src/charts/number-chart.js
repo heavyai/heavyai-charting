@@ -58,7 +58,7 @@ export default function numberChart(parent, chartGroup) {
     if (customFormatter && customFormatter(val)) {
       formattedValue = customFormatter(val)
     } else {
-      let formattedValue = utils.formatValue(val)
+      formattedValue = utils.formatValue(val)
       if (formattedValue === "-0") {
         formattedValue = 0
       }

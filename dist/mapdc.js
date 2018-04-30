@@ -7941,6 +7941,10 @@ function coordinateGridMixin(_chart) {
   _chart._binInput = false;
   _chart._binSnap = false;
 
+  var NO_CACHE = false;
+  var cachedXTickFormat = NO_CACHE;
+  var cachedYTickFormat = NO_CACHE;
+
   function zoomHandler() {
     _refocused = true;
     if (_zoomOutRestrict) {
@@ -8548,14 +8552,40 @@ function coordinateGridMixin(_chart) {
     _chart.prepareLockAxis("y");
   };
 
+  function setYTickFormat(tickFormat, options) {
+    if (options.toCache && cachedYTickFormat === NO_CACHE) {
+      cachedYTickFormat = _yAxis.tickFormat();
+    }
+
+    _yAxis.tickFormat(tickFormat);
+
+    if (options.fromCache) {
+      cachedYTickFormat = NO_CACHE;
+    }
+  }
+
   function setYAxisFormat() {
-    var customFormatter = _chart.valueFormatter();
-    if (customFormatter) {
-      _yAxis.tickFormat(function (d) {
-        return customFormatter(d, _chart.yAxisLabel());
-      });
-    } else {
-      _yAxis.tickFormat(null);
+    var numberFormatter = _chart.valueFormatter();
+    var formatExistsForThisKey = numberFormatter && numberFormatter(null, _chart.yAxisLabel());
+
+    if (formatExistsForThisKey) {
+      setYTickFormat(function (d) {
+        return numberFormatter(d, _chart.yAxisLabel());
+      }, { toCache: true });
+    } else if (cachedYTickFormat !== NO_CACHE) {
+      setYTickFormat(cachedYTickFormat, { fromCache: true });
+    }
+  }
+
+  function setXTickFormat(tickFormat, options) {
+    if (options.toCache && cachedXTickFormat === NO_CACHE) {
+      cachedXTickFormat = _xAxis.tickFormat();
+    }
+
+    _xAxis.tickFormat(tickFormat);
+
+    if (options.fromCache) {
+      cachedXTickFormat = NO_CACHE;
     }
   }
 
@@ -8566,15 +8596,19 @@ function coordinateGridMixin(_chart) {
 
     var dateFormatter = _chart.dateFormatter();
     var numberFormatter = _chart.valueFormatter();
+    var dateFormatExistsForThisKey = Boolean(dateFormatter && dateFormatter(new Date(), _chart.xAxisLabel()));
+    var numberFormatExistsForThisKey = Boolean(numberFormatter && numberFormatter(null, _chart.xAxisLabel()));
 
-    if (domain && domain[0] && domain[0] instanceof Date && !timeBinParam.extract) {
-      _xAxis.tickFormat(dateFormatter);
-    } else if (numberFormatter && !timeBinParam.extract) {
-      _xAxis.tickFormat(function (d) {
+    if (domain && domain[0] && domain[0] instanceof Date && !timeBinParam.extract && dateFormatExistsForThisKey) {
+      setXTickFormat(function (d) {
+        return dateFormatter(d, _chart.xAxisLabel());
+      }, { toCache: true });
+    } else if (!timeBinParam.extract && numberFormatExistsForThisKey) {
+      setXTickFormat(function (d) {
         return numberFormatter(d, _chart.xAxisLabel());
-      });
-    } else {
-      _xAxis.tickFormat(_xAxis.tickFormat());
+      }, { toCache: true });
+    } else if (cachedXTickFormat !== NO_CACHE) {
+      setXTickFormat(cachedXTickFormat, { fromCache: true });
     }
   }
 
@@ -23541,6 +23575,10 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
   var _initialFilters = null;
   var _gridInitted = false;
 
+  var NO_CACHE = false;
+  var cachedXTickFormat = NO_CACHE;
+  var cachedYTickFormat = NO_CACHE;
+
   _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _baseMixin2.default)(_chart)));
   _chart._mandatoryAttributes().push("x", "y");
 
@@ -24263,19 +24301,36 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return true;
   }]]);
 
+  function setXTickFormat(tickFormat, options) {
+    if (options.toCache && cachedXTickFormat === NO_CACHE) {
+      cachedXTickFormat = _xAxis.tickFormat();
+    }
+
+    _xAxis.tickFormat(tickFormat);
+
+    if (options.fromCache) {
+      cachedXTickFormat = NO_CACHE;
+    }
+  }
+
   function setXAxisFormat(needsDateFormat) {
     var dateFormatter = _chart.dateFormatter();
     var numberFormatter = _chart.valueFormatter();
-    if (needsDateFormat && dateFormatter) {
-      _xAxis.tickFormat(dateFormatter);
+    var dateFormatExistsForThisKey = Boolean(dateFormatter && dateFormatter(new Date(), _chart.xAxisLabel()));
+    var numberFormatExistsForThisKey = Boolean(numberFormatter && numberFormatter(null, _chart.xAxisLabel()));
+
+    if (needsDateFormat && dateFormatExistsForThisKey) {
+      setXTickFormat(function (d) {
+        return dateFormatter(d, _chart.xAxisLabel());
+      }, { toCache: true });
     } else if (needsDateFormat) {
-      _xAxis.tickFormat(customTimeFormat);
-    } else if (!needsDateFormat && numberFormatter) {
-      _xAxis.tickFormat(function (d) {
+      setXTickFormat(customTimeFormat);
+    } else if (numberFormatExistsForThisKey) {
+      setXTickFormat(function (d) {
         return numberFormatter(d, _chart.xAxisLabel());
-      });
-    } else {
-      _xAxis.tickFormat(_xAxis.tickFormat());
+      }, { toCache: true });
+    } else if (cachedXTickFormat !== NO_CACHE) {
+      setXTickFormat(cachedXTickFormat, { fromCache: true });
     }
   }
 
@@ -24396,19 +24451,36 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     return _chart;
   };
 
+  function setYTickFormat(tickFormat, options) {
+    if (options.toCache && cachedYTickFormat === NO_CACHE) {
+      cachedYTickFormat = _yAxis.tickFormat();
+    }
+
+    _yAxis.tickFormat(tickFormat);
+
+    if (options.fromCache) {
+      cachedYTickFormat = NO_CACHE;
+    }
+  }
+
   function setYAxisFormat(needsDateFormat) {
     var dateFormatter = _chart.dateFormatter();
     var numberFormatter = _chart.valueFormatter();
-    if (needsDateFormat && dateFormatter) {
-      _yAxis.tickFormat(dateFormatter);
+    var dateFormatExistsForThisKey = Boolean(dateFormatter && dateFormatter(new Date(), _chart.yAxisLabel()));
+    var numberFormatExistsForThisKey = Boolean(numberFormatter && numberFormatter(null, _chart.yAxisLabel()));
+
+    if (needsDateFormat && dateFormatExistsForThisKey) {
+      setYTickFormat(function (d) {
+        return dateFormatter(d, _chart.yAxisLabel());
+      }, { toCache: true });
     } else if (needsDateFormat) {
-      _yAxis.tickFormat(customTimeFormat);
-    } else if (!needsDateFormat && numberFormatter) {
-      _yAxis.tickFormat(function (d) {
+      setYTickFormat(customTimeFormat);
+    } else if (!needsDateFormat && numberFormatExistsForThisKey) {
+      setYTickFormat(function (d) {
         return numberFormatter(d, _chart.yAxisLabel());
-      });
-    } else {
-      _yAxis.tickFormat(_yAxis.tickFormat());
+      }, { toCache: true });
+    } else if (cachedYTickFormat !== NO_CACHE) {
+      setYTickFormat(cachedYTickFormat, { fromCache: true });
     }
   }
 
@@ -46915,9 +46987,9 @@ function numberChart(parent, chartGroup) {
     if (customFormatter && customFormatter(val)) {
       formattedValue = customFormatter(val);
     } else {
-      var _formattedValue = _utils.utils.formatValue(val);
-      if (_formattedValue === "-0") {
-        _formattedValue = 0;
+      formattedValue = _utils.utils.formatValue(val);
+      if (formattedValue === "-0") {
+        formattedValue = 0;
       }
     }
 
@@ -50378,7 +50450,9 @@ function rowChart(parent, chartGroup) {
   function setXAxisFormat() {
     var numberFormatter = _chart.valueFormatter();
     if (numberFormatter) {
-      _xAxis.tickFormat(numberFormatter);
+      _xAxis.tickFormat(function (d) {
+        return numberFormatter(d);
+      });
     } else {
       _xAxis.tickFormat(null);
     }
