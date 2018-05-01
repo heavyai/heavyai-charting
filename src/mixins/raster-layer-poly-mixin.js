@@ -7,21 +7,25 @@ import d3 from "d3"
 import { events } from "../core/events"
 import { parser } from "../utils/utils"
 
+// NOTE: Reqd until ST_Transform supported on projection columns
+function conv4326To900913(x, y) {
+  const transCoord = [0.0, 0.0]
+  transCoord[0] = x * 111319.49077777777778
+  transCoord[1] =
+    Math.log(Math.tan((90.0 + y) * 0.00872664625997)) * 6378136.99911215736947
+  return transCoord
+}
+
 const vegaLineJoinOptions = ["miter", "round", "bevel"]
 const polyTableGeomColumns = {
   // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
   verts: "mapd_geo_coords",
-  indices: "mapd_geo_indices",
-
-  // NOTE: the line draw info references the line loops in the verts. This struct looks like the following:
-  // {
-  //     count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
-  //     instanceCount, // should always be 1
-  //     firstIndex,    // the index in verts (includes x & y) where the verts for the loop start
-  //     baseInstance   // irrelevant for our purposes -- should always be 0
-  // }
-  linedrawinfo: "mapd_geo_linedrawinfo",
-  polydrawinfo: "mapd_geo_polydrawinfo"
+  ring_sizes: "mapd_geo_ring_sizes",
+  poly_rings: "mapd_geo_poly_rings",
+  // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
+  indices_LEGACY: "mapd_geo_indices",
+  linedrawinfo_LEGACY: "mapd_geo_linedrawinfo",
+  polydrawinfo_LEGACY: "mapd_geo_polydrawinfo"
 }
 
 function validateLineJoin(newLineJoin, currLineJoin) {
@@ -174,20 +178,22 @@ export default function rasterLayerPolyMixin(_layer) {
     globalFilter,
     layerFilter,
     filtersInverse,
-    layerName
+    layerName,
+    useProjection
   }) {
     const colorRange = state.encoding.color.range.map(c =>
       adjustOpacity(c, state.encoding.color.opacity)
     )
-    return {
-      data: [{
+
+    const data = [
+      {
         name: layerName,
         format: "polys",
         sql: parser.writeSQL({
           type: "root",
-          source: [
-            ...new Set(state.data.map((source, index) => source.table))
-          ].join(", "),
+          source: [...new Set(state.data.map(source => source.table))].join(
+            ", "
+          ),
           transform: getTransforms({
             filter,
             globalFilter,
@@ -195,29 +201,31 @@ export default function rasterLayerPolyMixin(_layer) {
             filtersInverse
           })
         })
-      }],
-      scales: [
-        {
-          name: layerName + "_fillColor",
-          type: "quantize",
-          domain: state.encoding.color.domain,
-          range: colorRange,
-          nullValue: "#D6D7D6",
-          default: "#D6D7D6"
-        }
-      ],
-      marks: [{
+      }
+    ]
+
+    const scales = [
+      {
+        name: layerName + "_fillColor",
+        type: "quantize",
+        domain: state.encoding.color.domain,
+        range: colorRange,
+        nullValue: "rgba(214, 215, 214, 0.65)",
+        default: "rgba(214, 215, 214, 0.65)"
+      }
+    ]
+
+    const marks = [
+      {
         type: "polys",
         from: {
           data: layerName
         },
         properties: {
           x: {
-            scale: "x",
             field: "x"
           },
           y: {
-            scale: "y",
             field: "y"
           },
           fillColor: {
@@ -233,7 +241,22 @@ export default function rasterLayerPolyMixin(_layer) {
           miterLimit:
             typeof state.mark === "object" ? state.mark.miterLimit : 10
         }
-      }]
+      }
+    ]
+
+    if (useProjection) {
+      marks[0].transform = {
+        projection: "mercator_map_projection"
+      }
+    } else {
+      marks[0].properties.x.scale = "x"
+      marks[0].properties.y.scale = "y"
+    }
+
+    return {
+      data,
+      scales,
+      marks
     }
   }
 
@@ -250,7 +273,8 @@ export default function rasterLayerPolyMixin(_layer) {
         .getFilterString(_layer.dimension().getDimensionIndex()),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
-      filtersInverse: _layer.filtersInverse()
+      filtersInverse: _layer.filtersInverse(),
+      useProjection: chart._useGeoTypes
     })
     return _vega
   }
@@ -266,12 +290,22 @@ export default function rasterLayerPolyMixin(_layer) {
   ]
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
-    popupColsSet.add(polyTableGeomColumns.verts) // add the poly geometry to the query
-    popupColsSet.add(polyTableGeomColumns.linedrawinfo) // need to get the linedrawinfo beause there can be
-    // multiple polys per row, and linedrawinfo will
-    // tell us this
+    // add the poly geometry to the query
+    popupColsSet.add(polyTableGeomColumns.verts)
 
-    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+    if (chart._useGeoTypes) {
+      popupColsSet.add(polyTableGeomColumns.ring_sizes)
+      popupColsSet.add(polyTableGeomColumns.poly_rings)
+    } else {
+      popupColsSet.add(polyTableGeomColumns.linedrawinfo_LEGACY)
+    }
+
+    if (
+      _vega &&
+      Array.isArray(_vega.marks) &&
+      _vega.marks.length > 0 &&
+      _vega.marks[0].properties
+    ) {
       renderAttributes.forEach(rndrProp => {
         if (rndrProp !== "x" && rndrProp !== "y") {
           _layer._addQueryDrivenRenderPropToSet(
@@ -286,8 +320,10 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer._areResultsValidForPopup = function(results) {
     if (
-      results[polyTableGeomColumns.verts] &&
-      results[polyTableGeomColumns.linedrawinfo]
+      (results[polyTableGeomColumns.verts] &&
+        results[polyTableGeomColumns.ring_sizes]) ||
+      (results[polyTableGeomColumns.verts] &&
+        results[polyTableGeomColumns.linedrawinfo_LEGACY])
     ) {
       return true
     }
@@ -341,49 +377,38 @@ export default function rasterLayerPolyMixin(_layer) {
     minPopupArea,
     animate
   ) {
-    // verts and drawinfo should be valid as the _resultsAreValidForPopup()
-    // method should've been called beforehand
-    const verts = data[polyTableGeomColumns.verts]
-    const drawinfo = data[polyTableGeomColumns.linedrawinfo]
-
     const polys = []
 
-    // TODO(croot): when the bounds is added as a column to the poly db table, we
-    // can just use those bounds rather than build our own
-    // But until then, we need to build our own bounds -- we use this to
-    // find the reasonable center of the geom and scale from there when
-    // necessary
+    // Only used for geotypes, but needs to be referenced when building the svg polystring
+    const is_multi_ring_poly = []
 
     // bounds: [minX, maxX, minY, maxY]
     const bounds = [Infinity, -Infinity, Infinity, -Infinity]
-    const startIdxDiff = drawinfo.length ? drawinfo[2] : 0
+    if (chart._useGeoTypes) {
+      // verts and ring_sizes should be valid as the _resultsAreValidForPopup()
+      // method should've been called beforehand
+      const verts = data[polyTableGeomColumns.verts]
+      const ring_sizes = data[polyTableGeomColumns.ring_sizes]
+      let poly_rings = data[polyTableGeomColumns.poly_rings]
 
-    const FLT_MAX = 1e37
+      // It is possible that the poly rings column is not populated. If not populated, we have a single polygon with number of rings equal to the number of entries in the ring sizes column
+      if (poly_rings === null) {
+        poly_rings = [ring_sizes.length]
+      }
 
-    for (let i = 0; i < drawinfo.length; i = i + 4) {
-      // Draw info struct:
-      //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
-      //     1: instanceCount, // should always be 1
-      //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
-      //     3: baseInstance   // irrelevant for our purposes -- should always be 0
-      let polypts = []
-      const count = (drawinfo[i] - 3) * 2 // include x&y, and drop 3 duplicated pts at the end
-      const startIdx = (drawinfo[i + 2] - startIdxDiff) * 2 // include x&y
-      const endIdx = startIdx + count // remove the 3 duplicate pts at the end
-      for (let idx = startIdx; idx < endIdx; idx = idx + 2) {
-        if (verts[idx] <= -FLT_MAX) {
-          // -FLT_MAX is a separator for multi-polygons (like Hawaii,
-          // where there would be a polygon per island), so when we hit a separator,
-          // remove the 3 duplicate points that would end the polygon prior to the separator
-          // and start a new polygon
-          polypts.pop()
-          polypts.pop()
-          polypts.pop()
-          polys.push(polypts)
-          polypts = []
-        } else {
-          const screenX = xscale(verts[idx]) + margins.left
-          const screenY = height - yscale(verts[idx + 1]) - 1 + margins.top
+      // TODO(croot): when the bounds is added as a column to the poly db table, we
+      // can just use those bounds rather than build our own
+      // But until then, we need to build our own bounds -- we use this to
+      // find the reasonable center of the geom and scale from there when
+      // necessary
+
+      const processPoly = function(verts) {
+        const polypts = []
+        for (let idx = 0; idx < verts.length; idx += 2) {
+          const projectedCoord = conv4326To900913(verts[idx], verts[idx + 1])
+
+          const screenX = xscale(projectedCoord[0]) + margins.left
+          const screenY = height - yscale(projectedCoord[1]) - 1 + margins.top
 
           if (
             screenX >= 0 &&
@@ -413,9 +438,107 @@ export default function rasterLayerPolyMixin(_layer) {
           polypts.push(screenX)
           polypts.push(screenY)
         }
+        return polypts
       }
 
-      polys.push(polypts)
+      // process each ring
+      let ring_start = 0
+      let poly_count = 0
+      let poly_ring_idx = 0
+      for (let ring = 0; ring < ring_sizes.length; ring++) {
+        const ring_slice = verts.slice(
+          ring_start * 2,
+          (ring_start + ring_sizes[ring]) * 2
+        )
+
+        const polypts = processPoly(ring_slice)
+
+        if (poly_rings[poly_count] === 1) {
+          polys.push(polypts)
+          poly_count++
+          is_multi_ring_poly[poly_count] = false
+        } else {
+          is_multi_ring_poly[poly_count] = true
+          if (poly_ring_idx === 0) {
+            polys.push([polypts])
+          } else {
+            polys[poly_count].push(polypts)
+          }
+          if (++poly_ring_idx === polys[poly_count]) {
+            poly_count++
+            poly_ring_idx = 0
+          }
+        }
+
+        ring_start += ring_sizes[ring]
+      }
+    } else {
+      // verts and drawinfo should be valid as the _resultsAreValidForPopup()
+      // method should've been called beforehand
+      const verts = data[polyTableGeomColumns.verts]
+      const drawinfo = data[polyTableGeomColumns.linedrawinfo_LEGACY]
+
+      const startIdxDiff = drawinfo.length ? drawinfo[2] : 0
+
+      const FLT_MAX = 1e37
+
+      for (let i = 0; i < drawinfo.length; i = i + 4) {
+        // Draw info struct:
+        //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
+        //     1: instanceCount, // should always be 1
+        //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
+        //     3: baseInstance   // irrelevant for our purposes -- should always be 0
+        let polypts = []
+        const count = (drawinfo[i] - 3) * 2 // include x&y, and drop 3 duplicated pts at the end
+        const startIdx = (drawinfo[i + 2] - startIdxDiff) * 2 // include x&y
+        const endIdx = startIdx + count // remove the 3 duplicate pts at the end
+        for (let idx = startIdx; idx < endIdx; idx = idx + 2) {
+          if (verts[idx] <= -FLT_MAX) {
+            // -FLT_MAX is a separator for multi-polygons (like Hawaii,
+            // where there would be a polygon per island), so when we hit a separator,
+            // remove the 3 duplicate points that would end the polygon prior to the separator
+            // and start a new polygon
+            polypts.pop()
+            polypts.pop()
+            polypts.pop()
+            polys.push(polypts)
+            polypts = []
+          } else {
+            const screenX = xscale(verts[idx]) + margins.left
+            const screenY = height - yscale(verts[idx + 1]) - 1 + margins.top
+
+            if (
+              screenX >= 0 &&
+              screenX <= width &&
+              screenY >= 0 &&
+              screenY <= height
+            ) {
+              if (bounds[0] === Infinity) {
+                bounds[0] = screenX
+                bounds[1] = screenX
+                bounds[2] = screenY
+                bounds[3] = screenY
+              } else {
+                if (screenX < bounds[0]) {
+                  bounds[0] = screenX
+                } else if (screenX > bounds[1]) {
+                  bounds[1] = screenX
+                }
+
+                if (screenY < bounds[2]) {
+                  bounds[2] = screenY
+                } else if (screenY > bounds[3]) {
+                  bounds[3] = screenY
+                }
+              }
+            }
+            polypts.push(screenX)
+            polypts.push(screenY)
+          }
+        }
+
+        polys.push(polypts)
+      }
     }
 
     if (bounds[0] === Infinity) {
@@ -446,9 +569,14 @@ export default function rasterLayerPolyMixin(_layer) {
     const rndrProps = {}
     const queryRndrProps = new Set([
       polyTableGeomColumns.verts,
-      polyTableGeomColumns.linedrawinfo
+      polyTableGeomColumns.ring_sizes
     ])
-    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+    if (
+      _vega &&
+      Array.isArray(_vega.marks) &&
+      _vega.marks.length > 0 &&
+      _vega.marks[0].properties
+    ) {
       const propObj = _vega.marks[0].properties
       renderAttributes.forEach(prop => {
         if (
@@ -503,8 +631,6 @@ export default function rasterLayerPolyMixin(_layer) {
       .append("g")
       .attr("class", "map-poly")
       .attr("transform-origin", boundsWidth / 2, boundsHeight / 2)
-      .style("fill", fillColor)
-      .style("stroke", strokeColor)
 
     if (typeof strokeWidth === "number") {
       group.style("stroke-width", strokeWidth)
@@ -518,28 +644,74 @@ export default function rasterLayerPolyMixin(_layer) {
       }
     }
 
-    polys.forEach(pts => {
-      if (!pts) {
-        return
+    if (chart._useGeoTypes) {
+      const ptsToSvgPath = function(pts) {
+        let pointStr = ""
+        for (let i = 0; i < pts.length; i = i + 2) {
+          pointStr =
+            pointStr +
+            (scale * (pts[i] - bounds[0]) +
+              " " +
+              scale * (pts[i + 1] - bounds[2]) +
+              ", ")
+        }
+        return pointStr
       }
 
-      let pointStr = ""
-      for (let i = 0; i < pts.length; i = i + 2) {
-        pointStr =
-          pointStr +
-          (scale * (pts[i] - bounds[0]) +
-            " " +
-            scale * (pts[i + 1] - bounds[2]) +
-            ", ")
-      }
-      pointStr = pointStr.slice(0, pointStr.length - 2).replace(/NaN/g, "")
+      polys.forEach((pts, idx) => {
+        if (!pts) {
+          return
+        }
 
-      group
-        .append("polygon")
-        .attr("points", pointStr)
-        .attr("class", "map-polygon-shape")
-        .on("click", () => _layer.onClick(chart, data, d3.event))
-    })
+        ptsToSvgPath(pts)
+
+        let pointStr = "M "
+        if (is_multi_ring_poly[idx]) {
+          // poly with multiple rings
+          pts.forEach(ring => {
+            pointStr += ptsToSvgPath(ring)
+            pointStr += " z M "
+          })
+          pointStr = pointStr.slice(0, pointStr.length - 3)
+        } else {
+          pointStr += ptsToSvgPath(pts)
+        }
+        pointStr = pointStr.slice(0, pointStr.length - 2).replace(/NaN/g, "")
+        pointStr += "z"
+
+        group
+          .append("path")
+          .attr("d", pointStr)
+          .attr("class", "map-polygon-shape")
+          .attr("fill", fillColor)
+          .attr("fill-rule", "evenodd")
+          .attr("stroke", strokeColor)
+          .on("click", () => _layer.onClick(chart, data, d3.event))
+      })
+    } else {
+      polys.forEach(pts => {
+        if (!pts) {
+          return
+        }
+
+        let pointStr = ""
+        for (let i = 0; i < pts.length; i = i + 2) {
+          pointStr =
+            pointStr +
+            (scale * (pts[i] - bounds[0]) +
+              " " +
+              scale * (pts[i + 1] - bounds[2]) +
+              ", ")
+        }
+        pointStr = pointStr.slice(0, pointStr.length - 2).replace(/NaN/g, "")
+
+        group
+          .append("polygon")
+          .attr("points", pointStr)
+          .attr("class", "map-polygon-shape")
+          .on("click", () => _layer.onClick(chart, data, d3.event))
+      })
+    }
 
     _scaledPopups[chart] = isScaled
 

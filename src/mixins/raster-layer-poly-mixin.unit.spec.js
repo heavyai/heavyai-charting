@@ -31,7 +31,7 @@ describe("rasterLayerPolyMixin", () => {
   })
 
   describe("genVega", () => {
-    it("should generate the correct vega spec", () => {
+    it("should generate the correct vega spec with projections", () => {
       const layer = rasterLayer("polys")
       layer.setState({
         data: [
@@ -76,7 +76,8 @@ describe("rasterLayerPolyMixin", () => {
         layer.__genVega({
           table: "contribs",
           layerName: "polys",
-          filter: "amount=0"
+          filter: "amount=0",
+          useProjection: true
         })
       ).to.deep.equal({
         data: [
@@ -93,8 +94,8 @@ describe("rasterLayerPolyMixin", () => {
             type: "quantize",
             domain: [0, 100],
             range: ["black", "blue"],
-            nullValue: "#D6D7D6",
-            default: "#D6D7D6"
+            nullValue: "rgba(214, 215, 214, 0.65)",
+            default: "rgba(214, 215, 214, 0.65)"
           }
         ],
         marks: [
@@ -103,12 +104,107 @@ describe("rasterLayerPolyMixin", () => {
             from: { data: "polys" },
             properties: {
               x: {
-                scale: "x",
                 field: "x"
               },
               y: {
-                scale: "y",
                 field: "y"
+              },
+              fillColor: {
+                scale: "polys_fillColor",
+                field: "color"
+              },
+              strokeColor: "black",
+              strokeWidth: 5,
+              lineJoin: "miter",
+              miterLimit: 20
+            },
+            transform: {
+              projection: "mercator_map_projection"
+            }
+          }
+        ]
+      })
+    })
+
+    it("should generate the correct vega spec without projections", () => {
+      const layer = rasterLayer("polys")
+      layer.setState({
+        data: [
+          {
+            table: "contributions_donotmodify",
+            attr: "contributor_zipcode"
+          },
+          {
+            table: "zipcodes",
+            attr: "ZCTA5CE10"
+          }
+        ],
+        transform: {
+          limit: 1000000
+        },
+        mark: {
+          type: "poly",
+          strokeColor: "black",
+          strokeWidth: 5,
+          lineJoin: "miter",
+          miterLimit: 20
+        },
+        encoding: {
+          x: {
+            type: "quantitative",
+            field: "lon"
+          },
+          y: {
+            type: "quantitative",
+            field: "lat"
+          },
+          color: {
+            type: "quantitative",
+            aggregrate: "AVG(contributions_donotmodify.amount)",
+            domain: [0, 100],
+            range: ["black", "blue"]
+          }
+        }
+      })
+
+      expect(
+        layer.__genVega({
+          table: "contribs",
+          layerName: "polys",
+          filter: "amount=0",
+          useProjection: false
+        })
+      ).to.deep.equal({
+        data: [
+          {
+            name: "polys",
+            format: "polys",
+            sql:
+              "SELECT zipcodes.rowid, contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY zipcodes.rowid, key0 LIMIT 1000000"
+          }
+        ],
+        scales: [
+          {
+            name: "polys_fillColor",
+            type: "quantize",
+            domain: [0, 100],
+            range: ["black", "blue"],
+            nullValue: "rgba(214, 215, 214, 0.65)",
+            default: "rgba(214, 215, 214, 0.65)"
+          }
+        ],
+        marks: [
+          {
+            type: "polys",
+            from: { data: "polys" },
+            properties: {
+              x: {
+                field: "x",
+                scale: "x"
+              },
+              y: {
+                field: "y",
+                scale: "y"
               },
               fillColor: {
                 scale: "polys_fillColor",

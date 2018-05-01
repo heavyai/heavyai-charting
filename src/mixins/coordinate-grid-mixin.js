@@ -58,6 +58,10 @@ export default function coordinateGridMixin (_chart) {
   _chart._binInput = false
   _chart._binSnap = false
 
+  const NO_CACHE = false
+  let cachedXTickFormat = NO_CACHE
+  let cachedYTickFormat = NO_CACHE
+
   function zoomHandler () {
     _refocused = true
     if (_zoomOutRestrict) {
@@ -723,12 +727,38 @@ export default function coordinateGridMixin (_chart) {
     _chart.prepareLockAxis("y")
   }
 
+  function setYTickFormat (tickFormat, options) {
+    if (options.toCache && cachedYTickFormat === NO_CACHE) {
+      cachedYTickFormat = _yAxis.tickFormat()
+    }
+
+    _yAxis.tickFormat(tickFormat)
+
+    if (options.fromCache) {
+      cachedYTickFormat = NO_CACHE
+    }
+  }
+
   function setYAxisFormat () {
-    const customFormatter = _chart.valueFormatter()
-    if (customFormatter) {
-      _yAxis.tickFormat(d => customFormatter(d, _chart.yAxisLabel()))
-    } else {
-      _yAxis.tickFormat(null)
+    const numberFormatter = _chart.valueFormatter()
+    const formatExistsForThisKey = numberFormatter && numberFormatter(null, _chart.yAxisLabel())
+
+    if (formatExistsForThisKey) {
+      setYTickFormat(d => numberFormatter(d, _chart.yAxisLabel()), {toCache: true})
+    } else if (cachedYTickFormat !== NO_CACHE) {
+      setYTickFormat(cachedYTickFormat, {fromCache: true})
+    }
+  }
+
+  function setXTickFormat (tickFormat, options) {
+    if (options.toCache && cachedXTickFormat === NO_CACHE) {
+      cachedXTickFormat = _xAxis.tickFormat()
+    }
+
+    _xAxis.tickFormat(tickFormat)
+
+    if (options.fromCache) {
+      cachedXTickFormat = NO_CACHE
     }
   }
 
@@ -741,13 +771,20 @@ export default function coordinateGridMixin (_chart) {
 
     const dateFormatter = _chart.dateFormatter()
     const numberFormatter = _chart.valueFormatter()
+    const dateFormatExistsForThisKey = Boolean(dateFormatter && dateFormatter(new Date(), _chart.xAxisLabel()))
+    const numberFormatExistsForThisKey = Boolean(numberFormatter && numberFormatter(null, _chart.xAxisLabel()))
 
-    if (domain && domain[0] && domain[0] instanceof Date && !timeBinParam.extract) {
-      _xAxis.tickFormat(dateFormatter)
-    } else if (numberFormatter && !timeBinParam.extract) {
-      _xAxis.tickFormat(d => numberFormatter(d, _chart.xAxisLabel()))
-    } else {
-      _xAxis.tickFormat(_xAxis.tickFormat())
+    if (domain && 
+      domain[0] && 
+      domain[0] instanceof Date && 
+      !timeBinParam.extract && 
+      dateFormatExistsForThisKey
+    ) {
+      setXTickFormat(d => dateFormatter(d, _chart.xAxisLabel()), {toCache: true})
+    } else if (!timeBinParam.extract && numberFormatExistsForThisKey) {
+      setXTickFormat(d => numberFormatter(d, _chart.xAxisLabel()), {toCache: true})
+    } else if (cachedXTickFormat !== NO_CACHE) {
+      setXTickFormat(cachedXTickFormat, {fromCache: true})
     }
   }
 

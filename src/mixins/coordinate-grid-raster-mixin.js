@@ -37,6 +37,10 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   let _initialFilters = null
   let _gridInitted = false
 
+  const NO_CACHE = false
+  let cachedXTickFormat = NO_CACHE
+  let cachedYTickFormat = NO_CACHE
+
   _chart = colorMixin(marginMixin(baseMixin(_chart)))
   _chart._mandatoryAttributes().push("x", "y")
 
@@ -776,17 +780,32 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     }]
   ])
 
+  function setXTickFormat (tickFormat, options) {
+    if (options.toCache && cachedXTickFormat === NO_CACHE) {
+      cachedXTickFormat = _xAxis.tickFormat()
+    }
+
+    _xAxis.tickFormat(tickFormat)
+
+    if (options.fromCache) {
+      cachedXTickFormat = NO_CACHE
+    }
+  }
+
   function setXAxisFormat (needsDateFormat) {
     const dateFormatter = _chart.dateFormatter()
     const numberFormatter = _chart.valueFormatter()
-    if (needsDateFormat && dateFormatter) {
-      _xAxis.tickFormat(dateFormatter)
+    const dateFormatExistsForThisKey = Boolean(dateFormatter && dateFormatter(new Date(), _chart.xAxisLabel()))
+    const numberFormatExistsForThisKey = Boolean(numberFormatter && numberFormatter(null, _chart.xAxisLabel()))
+
+    if (needsDateFormat && dateFormatExistsForThisKey) {
+      setXTickFormat(d => dateFormatter(d, _chart.xAxisLabel()), {toCache: true})
     } else if (needsDateFormat) {
-      _xAxis.tickFormat(customTimeFormat)
-    } else if (!needsDateFormat && numberFormatter) {
-      _xAxis.tickFormat(d => numberFormatter(d, _chart.xAxisLabel()))
-    } else {
-      _xAxis.tickFormat(_xAxis.tickFormat())
+      setXTickFormat(customTimeFormat)
+    } else if (numberFormatExistsForThisKey) {
+      setXTickFormat(d => numberFormatter(d, _chart.xAxisLabel()), {toCache: true})
+    } else if (cachedXTickFormat !== NO_CACHE) {
+      setXTickFormat(cachedXTickFormat, {fromCache: true})
     }
   }
 
@@ -921,17 +940,32 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     return _chart
   }
 
+  function setYTickFormat (tickFormat, options) {
+    if (options.toCache && cachedYTickFormat === NO_CACHE) {
+      cachedYTickFormat = _yAxis.tickFormat()
+    }
+
+    _yAxis.tickFormat(tickFormat)
+
+    if (options.fromCache) {
+      cachedYTickFormat = NO_CACHE
+    }
+  }
+
   function setYAxisFormat (needsDateFormat) {
     const dateFormatter = _chart.dateFormatter()
     const numberFormatter = _chart.valueFormatter()
-    if (needsDateFormat && dateFormatter) {
-      _yAxis.tickFormat(dateFormatter)
+    const dateFormatExistsForThisKey = Boolean(dateFormatter && dateFormatter(new Date(), _chart.yAxisLabel()))
+    const numberFormatExistsForThisKey = Boolean(numberFormatter && numberFormatter(null, _chart.yAxisLabel()))
+
+    if (needsDateFormat && dateFormatExistsForThisKey) {
+      setYTickFormat(d => dateFormatter(d, _chart.yAxisLabel()), {toCache: true})
     } else if (needsDateFormat) {
-      _yAxis.tickFormat(customTimeFormat)
-    } else if (!needsDateFormat && numberFormatter) {
-      _yAxis.tickFormat(d => numberFormatter(d, _chart.yAxisLabel()))
-    } else {
-      _yAxis.tickFormat(_yAxis.tickFormat())
+      setYTickFormat(customTimeFormat)
+    } else if (!needsDateFormat && numberFormatExistsForThisKey) {
+      setYTickFormat(d => numberFormatter(d, _chart.yAxisLabel()), {toCache: true})
+    } else if (cachedYTickFormat !== NO_CACHE) {
+      setYTickFormat(cachedYTickFormat, {fromCache: true})
     }
   }
 

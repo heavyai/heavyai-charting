@@ -44,7 +44,7 @@
       }
     }
     // The innerHTML DOM property for SVGElement.
-    Object.defineProperty(SVGElement.prototype, "innerHTML", {
+    Object.defineProperty(window.SVGElement.prototype, "innerHTML", {
       get() {
         const output = []
         let childNode = this.firstChild
@@ -84,7 +84,7 @@
     })
 
     // The innerSVG DOM property for SVGElement.
-    Object.defineProperty(SVGElement.prototype, "innerSVG", {
+    Object.defineProperty(window.SVGElement.prototype, "innerSVG", {
       get() {
         return this.innerHTML
       },

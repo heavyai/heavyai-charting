@@ -66,6 +66,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   const _xScaleName = "x"
   const _yScaleName = "y"
 
+  let _xLatLngBnds = null
+  let _yLatLngBnds = null
+  const _useGeoTypes = false
+
   let _usePixelRatio = false
   let _pixelRatio = 1
 
@@ -101,6 +105,22 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
     _y = _
     return _chart
+  }
+
+  _chart.xLatLngBnds = function(_) {
+    if (!arguments.length) {
+      return _xLatLngBnds
+    }
+    _xLatLngBnds = _
+    return chart
+  }
+
+  _chart.yLatLngBnds = function(_) {
+    if (!arguments.length) {
+      return _yLatLngBnds
+    }
+    _yLatLngBnds = _
+    return chart
   }
 
   _chart._resetRenderBounds = function() {
@@ -178,6 +198,15 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
+  _chart.clearLayerFilters = function() {
+    for (const layerName in _layerNames) {
+      const layer = _layerNames[layerName]
+      if (typeof layer.filterAll === "function") {
+        layer.filterAll()
+      }
+    }
+  }
+
   _chart.destroyChart = function() {
     _legend.setState({})
 
@@ -195,6 +224,11 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return _con
     }
     _con = _
+    return _chart
+  }
+
+  _chart.useGeoTypes = function(geoTypesEnabled) {
+    _chart._useGeoTypes = geoTypesEnabled
     return _chart
   }
 
@@ -288,6 +322,17 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     if (_y === null) {
       _y = d3.scale.linear()
+    }
+
+    // if _chart.useLonLat() is not true, the chart bounds have already been projected into mercator space
+    // TODO(adb): could probably collape this into line 353
+    if (
+      _chart._useGeoTypes &&
+      typeof _chart.useLonLat === "function" &&
+      _chart.useLonLat()
+    ) {
+      _xLatLngBnds = [renderBounds[0][0], renderBounds[1][0]]
+      _yLatLngBnds = [renderBounds[2][1], renderBounds[0][1]]
     }
 
     if (useRenderBounds) {
@@ -604,7 +649,7 @@ function genLayeredVega(chart) {
 
   const data = []
 
-  let scales = [
+  const scales = [
     {
       name: chart._getXScaleName(),
       type: chart._determineScaleType(chart.x()),
@@ -618,6 +663,19 @@ function genLayeredVega(chart) {
       range: "height"
     }
   ]
+
+  // NOTE(adb): When geo types are enabled, vega spatial projections are applied and the scales for the x and y properties are not being used. However, we still need the legacy scaling terms to properly size poly popups on hover, which is why _xLatLngBnds, etc are separate scales
+  const projections = []
+  if (chart._useGeoTypes) {
+    projections.push({
+      name: "mercator_map_projection",
+      type: "mercator",
+      bounds: {
+        x: chart.xLatLngBnds(),
+        y: chart.yLatLngBnds()
+      }
+    })
+  }
   const marks = []
 
   chart.getLayerNames().forEach(layerName => {
@@ -633,6 +691,7 @@ function genLayeredVega(chart) {
     height: Math.round(height),
     data,
     scales,
+    projections,
     marks
   }
 
