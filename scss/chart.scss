@@ -70,6 +70,12 @@ body {
 }
 
 .basemap-satellite, .basemap-dark, .basemap-odyssey, .basemap-decimal {
+    .gradient-legend .block .text  {
+        color: #eeeeee;
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        background: transparent;
+    }
+
     .mapboxgl-ctrl-attrib {
         background: rgba(black, .4);
     }
