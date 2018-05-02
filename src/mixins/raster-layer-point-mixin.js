@@ -247,7 +247,7 @@ function getScales({ size, color }, layerName) {
       type: "ordinal",
       domain: color.domain,
       range: color.range.map(c => adjustOpacity(c, color.opacity)),
-      default: adjustOpacity("#27aeef", color.opacity),
+      default: adjustOpacity(color.range[color.range.length-1], color.opacity), // in current implementation 'Other' is always added as last element in the array
       nullValue: adjustOpacity("#CACACA", color.opacity)
     })
   }
