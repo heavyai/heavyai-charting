@@ -464,7 +464,7 @@ describe("rasterLayerPointMixin", () => {
               "type": "ordinal",
               "domain": ["D", "R", "I"],
               "range": ["red", "green", "blue"],
-              "default": "rgba(39,174,239,1)",
+              "default": "blue",
               "nullValue": "rgba(202,202,202,1)"
            }
           ],
@@ -535,7 +535,7 @@ describe("rasterLayerPointMixin", () => {
               "type": "ordinal",
               "domain": ["D", "R", "I"],
               "range": ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"],
-              "default": "rgba(39,174,239,0.2)",
+              "default": "rgba(34,167,240,0.2)",
               "nullValue": "rgba(202,202,202,0.2)"
            }
           ],
