@@ -247,7 +247,10 @@ function getScales({ size, color }, layerName) {
       type: "ordinal",
       domain: color.domain,
       range: color.range.map(c => adjustOpacity(c, color.opacity)),
-      default: adjustOpacity(color.range[color.range.length-1], color.opacity), // in current implementation 'Other' is always added as last element in the array
+      default: adjustOpacity(
+        color.range[color.range.length - 1],
+        color.opacity
+      ), // in current implementation 'Other' is always added as last element in the array
       nullValue: adjustOpacity("#CACACA", color.opacity)
     })
   }
@@ -321,60 +324,64 @@ export default function rasterLayerPointMixin(_layer) {
     const markType = getMarkType(state.config)
 
     return {
-      data: [{
-        name: layerName,
-        sql: parser.writeSQL({
-          type: "root",
-          source: table,
-          transform: getTransforms(
-            table,
-            filter,
-            globalFilter,
-            state,
-            lastFilteredSize
-          )
-        })
-      }],
+      data: [
+        {
+          name: layerName,
+          sql: parser.writeSQL({
+            type: "root",
+            source: table,
+            transform: getTransforms(
+              table,
+              filter,
+              globalFilter,
+              state,
+              lastFilteredSize
+            )
+          })
+        }
+      ],
       scales: getScales(state.encoding, layerName),
-      marks: [{
-        type: markType === "circle" ? "points" : "symbol",
-        from: {
-          data: layerName
-        },
-        properties: Object.assign(
-          {},
-          markType === "circle"
-            ? {
-                x: {
-                  scale: "x",
-                  field: "x"
+      marks: [
+        {
+          type: markType === "circle" ? "points" : "symbol",
+          from: {
+            data: layerName
+          },
+          properties: Object.assign(
+            {},
+            markType === "circle"
+              ? {
+                  x: {
+                    scale: "x",
+                    field: "x"
+                  },
+                  y: {
+                    scale: "y",
+                    field: "y"
+                  },
+                  fillColor: getColor(state.encoding.color, layerName)
+                }
+              : {
+                  xc: {
+                    scale: "x",
+                    field: "x"
+                  },
+                  yc: {
+                    scale: "y",
+                    field: "y"
+                  },
+                  fillColor: getColor(state.encoding.color, layerName)
                 },
-                y: {
-                  scale: "y",
-                  field: "y"
-                },
-                fillColor: getColor(state.encoding.color, layerName)
-              }
-            : {
-                xc: {
-                  scale: "x",
-                  field: "x"
-                },
-                yc: {
-                  scale: "y",
-                  field: "y"
-                },
-                fillColor: getColor(state.encoding.color, layerName)
-              },
-          markType === "circle"
-            ? { size }
-            : {
-                shape: markType,
-                width: size,
-                height: size
-              }
-        )
-      }]
+            markType === "circle"
+              ? { size }
+              : {
+                  shape: markType,
+                  width: size,
+                  height: size
+                }
+          )
+        }
+      ]
     }
   }
 
@@ -466,7 +473,12 @@ export default function rasterLayerPointMixin(_layer) {
   ]
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
-    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+    if (
+      _vega &&
+      Array.isArray(_vega.marks) &&
+      _vega.marks.length > 0 &&
+      _vega.marks[0].properties
+    ) {
       renderAttributes.forEach(prop => {
         _layer._addQueryDrivenRenderPropToSet(
           popupColumnsSet,
@@ -499,7 +511,12 @@ export default function rasterLayerPointMixin(_layer) {
   ) {
     const rndrProps = {}
     const queryRndrProps = new Set()
-    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+    if (
+      _vega &&
+      Array.isArray(_vega.marks) &&
+      _vega.marks.length > 0 &&
+      _vega.marks[0].properties
+    ) {
       const propObj = _vega.marks[0].properties
       renderAttributes.forEach(prop => {
         if (
