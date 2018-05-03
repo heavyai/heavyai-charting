@@ -26020,7 +26020,7 @@ function getScales(_ref2, layerName) {
       range: color.range.map(function (c) {
         return (0, _utilsVega.adjustOpacity)(c, color.opacity);
       }),
-      default: (0, _utilsVega.adjustOpacity)("#27aeef", color.opacity),
+      default: (0, _utilsVega.adjustOpacity)(color.range[color.range.length - 1], color.opacity), // in current implementation 'Other' is always added as last element in the array
       nullValue: (0, _utilsVega.adjustOpacity)("#CACACA", color.opacity)
     });
   }
