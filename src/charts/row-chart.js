@@ -127,7 +127,8 @@ export default function rowChart(parent, chartGroup) {
   function setXAxisFormat () {
     const numberFormatter = _chart.valueFormatter()
     if (numberFormatter) {
-      _xAxis.tickFormat(d => numberFormatter(d))
+      const key = _chart.getMeasureName()
+      _xAxis.tickFormat(d => numberFormatter(d, key))
     } else {
       _xAxis.tickFormat(null)
     }
@@ -221,9 +222,10 @@ export default function rowChart(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function(d) {
+    const key = _chart.getMeasureName()
     const customFormatter = _chart.valueFormatter()
     const value = _chart.cappedValueAccessor(d)
-    return customFormatter && customFormatter(value) || utils.formatValue(value)
+    return customFormatter && customFormatter(value, key) || utils.formatValue(value)
   }
   /* ------------------------------------------------------------------------- */
 

@@ -1885,6 +1885,11 @@ export default function baseMixin(_chart) {
     return _chart
   }
 
+  _chart.getMeasureName = function() {
+    const measure = _chart.group().reduce()
+    return (measure && measure[0]) ? measure[0].measureName : null
+  }
+
   _chart = chartLegendMixin(
     filterMixin(
       labelMixin(multipleKeysLabelMixin(spinnerMixin(asyncMixin(_chart))))

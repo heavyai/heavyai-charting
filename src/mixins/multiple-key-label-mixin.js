@@ -3,11 +3,19 @@ import { formatDataValue } from "../utils/formatting-helpers"
 const INDEX_NONE = -1
 const SHOULD_RENDER_LABELS = true
 
-function format(value, key, numberFormatter, dateFormatter) {
+function format(_value, _key, numberFormatter, dateFormatter) {
   let customFormatter = null
 
-  if (Array.isArray(value) && value[0]) {
-    value = value[0].value || value[0]
+  let key = _key
+  let value = _value
+  let isExtract = false
+
+  if (Array.isArray(_value) && _value[0]) {
+    value = _value[0].value || _value[0]
+    if (_value[0].isExtract) {
+      key = null
+      isExtract = true
+    }
   }
 
   if (dateFormatter && value instanceof Date) {
@@ -16,7 +24,7 @@ function format(value, key, numberFormatter, dateFormatter) {
     customFormatter = numberFormatter
   }
 
-  return (customFormatter && customFormatter(value, key)) || formatDataValue(value)
+  return (!isExtract && customFormatter && customFormatter(value, key)) || formatDataValue(_value)
 }
 
 export default function multipleKeysLabelMixin(_chart) {

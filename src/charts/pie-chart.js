@@ -84,9 +84,10 @@ export default function pieChart(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function(d) {
+    const key = _chart.getMeasureName()
     const customFormatter = _chart.valueFormatter()
     const value = _chart.cappedValueAccessor(d)
-    return customFormatter && customFormatter(value) || utils.formatValue(value)
+    return customFormatter && customFormatter(value, key) || utils.formatValue(value)
   }
 
   _chart.redoSelect = highlightFilter

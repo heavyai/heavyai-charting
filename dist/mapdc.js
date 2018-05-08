@@ -7100,6 +7100,11 @@ function baseMixin(_chart) {
     return _chart;
   };
 
+  _chart.getMeasureName = function () {
+    var measure = _chart.group().reduce();
+    return measure && measure[0] ? measure[0].measureName : null;
+  };
+
   _chart = (0, _legendMixin2.default)((0, _filterMixin2.default)((0, _labelMixin2.default)((0, _multipleKeyLabelMixin2.default)((0, _spinnerMixin2.default)((0, _asyncMixin2.default)(_chart))))));
 
   return _chart;
@@ -22031,11 +22036,19 @@ var _formattingHelpers = __webpack_require__(6);
 var INDEX_NONE = -1;
 var SHOULD_RENDER_LABELS = true;
 
-function format(value, key, numberFormatter, dateFormatter) {
+function format(_value, _key, numberFormatter, dateFormatter) {
   var customFormatter = null;
 
-  if (Array.isArray(value) && value[0]) {
-    value = value[0].value || value[0];
+  var key = _key;
+  var value = _value;
+  var isExtract = false;
+
+  if (Array.isArray(_value) && _value[0]) {
+    value = _value[0].value || _value[0];
+    if (_value[0].isExtract) {
+      key = null;
+      isExtract = true;
+    }
   }
 
   if (dateFormatter && value instanceof Date) {
@@ -22044,7 +22057,7 @@ function format(value, key, numberFormatter, dateFormatter) {
     customFormatter = numberFormatter;
   }
 
-  return customFormatter && customFormatter(value, key) || (0, _formattingHelpers.formatDataValue)(value);
+  return !isExtract && customFormatter && customFormatter(value, key) || (0, _formattingHelpers.formatDataValue)(_value);
 }
 
 function multipleKeysLabelMixin(_chart) {
@@ -45717,9 +45730,10 @@ function pieChart(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function (d) {
+    var key = _chart.getMeasureName();
     var customFormatter = _chart.valueFormatter();
     var value = _chart.cappedValueAccessor(d);
-    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
+    return customFormatter && customFormatter(value, key) || _utils.utils.formatValue(value);
   };
 
   _chart.redoSelect = highlightFilter;
@@ -50616,8 +50630,9 @@ function rowChart(parent, chartGroup) {
   function setXAxisFormat() {
     var numberFormatter = _chart.valueFormatter();
     if (numberFormatter) {
+      var key = _chart.getMeasureName();
       _xAxis.tickFormat(function (d) {
-        return numberFormatter(d);
+        return numberFormatter(d, key);
       });
     } else {
       _xAxis.tickFormat(null);
@@ -50688,9 +50703,10 @@ function rowChart(parent, chartGroup) {
 
   /* OVERRIDE ---------------------------------------------------------------- */
   _chart.measureValue = function (d) {
+    var key = _chart.getMeasureName();
     var customFormatter = _chart.valueFormatter();
     var value = _chart.cappedValueAccessor(d);
-    return customFormatter && customFormatter(value) || _utils.utils.formatValue(value);
+    return customFormatter && customFormatter(value, key) || _utils.utils.formatValue(value);
   };
   /* ------------------------------------------------------------------------- */
 
@@ -51684,7 +51700,8 @@ function mapdTable(parent, chartGroup) {
           expression: d,
           name: "key" + i,
           label: _colAliases ? _colAliases[i] : d,
-          type: "dimension"
+          type: "dimension",
+          measureName: d.measureName
         });
       });
       _chart.group().reduce().forEach(function (d, i) {
@@ -51694,7 +51711,8 @@ function mapdTable(parent, chartGroup) {
             name: d.name,
             agg_mode: d.agg_mode,
             label: _colAliases ? _colAliases[_chart.dimension().value().length + i] : getMeasureColHeaderLabel(d),
-            type: "measure"
+            type: "measure",
+            measureName: d.measureName
           });
         }
       });
@@ -51705,7 +51723,8 @@ function mapdTable(parent, chartGroup) {
           expression: splitStr[0],
           name: splitStr[1],
           label: _colAliases ? _colAliases[i] : splitStr[0],
-          type: "project"
+          type: "project",
+          measureName: d.measureName
         };
       });
     }
@@ -51749,8 +51768,8 @@ function mapdTable(parent, chartGroup) {
         } else {
           customFormatter = _chart.valueFormatter();
         }
-        // catches "# Record" (#4383)
-        var key = col.expression === "*" ? col.label : col.expression;
+
+        var key = val && val[0] && val[0].isExtract ? null : col.measureName || col.expression;
         return customFormatter && customFormatter(val, key) || (0, _formattingHelpers.formatDataValue)(val);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
