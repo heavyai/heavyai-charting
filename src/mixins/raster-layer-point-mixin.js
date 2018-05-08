@@ -1,5 +1,5 @@
 import { decrementSampledCount, incrementSampledCount } from "../core/core"
-import { lastFilteredSize } from "../core/core-async"
+import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import {
   adjustOpacity,
   adjustRGBAOpacity,
@@ -48,6 +48,7 @@ function getSizing(
   pixelRatio,
   layerName
 ) {
+  console.log('last filtered size ', lastFilteredSize)
   if (typeof sizeAttr === "number") {
     return sizeAttr
   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
@@ -449,6 +450,12 @@ export default function rasterLayerPointMixin(_layer) {
   }
 
   _layer._genVega = function(chart, layerName, group, query) {
+
+    // needed to set LastFilteredSize when point map first initialized
+    _layer.yDim().groupAll().valueAsync().then(value => {
+      setLastFilteredSize(_layer.crossfilter().getId(), value)
+    })
+
     _vega = _layer.__genVega({
       layerName,
       table: _layer.crossfilter().getTable()[0],
