@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@mapd/connector@git://github.com/mapd/mapd-connector.git#67dd489":
+"@mapd/connector@git://github.com/mapd/mapd-connector.git#ce39eb2":
   version "1.0.0"
-  resolved "git://github.com/mapd/mapd-connector.git#67dd489"
+  resolved "git://github.com/mapd/mapd-connector.git#ce39eb28c994e3051219678114f944aa204e1b8b"
   dependencies:
     codecov "^2.2.0"
     script-loader "^0.7.0"
     thrift "^0.10.0"
 
-"@mapd/crossfilter@git://github.com/mapd/mapd-crossfilter.git#tai/poly-stuff":
+"@mapd/crossfilter@git://github.com/mapd/mapd-crossfilter.git#bf77150":
   version "1.0.0"
-  resolved "git://github.com/mapd/mapd-crossfilter.git#f0176b94a25180d4f65bea194657f6e07fc1bb03"
+  resolved "git://github.com/mapd/mapd-crossfilter.git#bf77150e71b179859b1def1e88b4c2c79bc90440"
 
 "@mapd/mapd-draw@git://github.com/mapd/mapd-draw.git":
   version "1.1.0"
