@@ -48,7 +48,6 @@ function getSizing(
   pixelRatio,
   layerName
 ) {
-  console.log('last filtered size ', lastFilteredSize)
   if (typeof sizeAttr === "number") {
     return sizeAttr
   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
