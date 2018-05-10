@@ -26204,6 +26204,14 @@ function rasterLayerPointMixin(_layer) {
   };
 
   _layer._genVega = function (chart, layerName, group, query) {
+
+    // needed to set LastFilteredSize when point map first initialized
+    if (_layer.yDim()) {
+      _layer.yDim().groupAll().valueAsync().then(function (value) {
+        (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
+      });
+    }
+
     _vega = _layer.__genVega({
       layerName: layerName,
       table: _layer.crossfilter().getTable()[0],
