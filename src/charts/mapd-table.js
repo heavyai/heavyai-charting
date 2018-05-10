@@ -256,7 +256,8 @@ export default function mapdTable(parent, chartGroup) {
             expression: d,
             name: "key" + i,
             label: _colAliases ? _colAliases[i] : d,
-            type: "dimension"
+            type: "dimension",
+            measureName: d.measureName
           })
         })
       _chart
@@ -271,7 +272,8 @@ export default function mapdTable(parent, chartGroup) {
               label: _colAliases
                 ? _colAliases[_chart.dimension().value().length + i]
                 : getMeasureColHeaderLabel(d),
-              type: "measure"
+              type: "measure",
+              measureName: d.measureName
             })
           }
         })
@@ -285,7 +287,8 @@ export default function mapdTable(parent, chartGroup) {
             expression: splitStr[0],
             name: splitStr[1],
             label: _colAliases ? _colAliases[i] : splitStr[0],
-            type: "project"
+            type: "project",
+            measureName: d.measureName
           }
         })
     }
@@ -335,13 +338,13 @@ export default function mapdTable(parent, chartGroup) {
           if (col.type === "measure") {
             customFormatter = _chart.valueFormatter()
           } else if (Array.isArray(val) && val[0].value instanceof Date) {
-              customFormatter = _chart.dateFormatter()
-              val = val[0].value
-            } else {
-              customFormatter = _chart.valueFormatter()
-            }
-          // catches "# Record" (#4383)
-          const key = col.expression === "*" ? col.label : col.expression
+            customFormatter = _chart.dateFormatter()
+            val = val[0].value
+          } else {
+            customFormatter = _chart.valueFormatter()
+          }
+
+          const key = (val && val[0] && val[0].isExtract) ? null : col.measureName || col.expression
           return customFormatter && customFormatter(val, key) || formatDataValue(val)
         })
         .classed("filtered", col.expression in _filteredColumns)
