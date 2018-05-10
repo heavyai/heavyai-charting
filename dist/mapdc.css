@@ -425,6 +425,14 @@ body {
   padding: 0 4px;
   text-decoration: none; }
 
+.basemap-satellite .gradient-legend .block .text, .basemap-dark .gradient-legend .block .text, .basemap-odyssey .gradient-legend .block .text, .basemap-decimal .gradient-legend .block .text {
+  color: #eeeeee;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  background: transparent; }
+
+.basemap-satellite .gradient-legend .block input, .basemap-dark .gradient-legend .block input, .basemap-odyssey .gradient-legend .block input, .basemap-decimal .gradient-legend .block input {
+  color: black; }
+
 .basemap-satellite .mapboxgl-ctrl-attrib, .basemap-dark .mapboxgl-ctrl-attrib, .basemap-odyssey .mapboxgl-ctrl-attrib, .basemap-decimal .mapboxgl-ctrl-attrib {
   background: rgba(0, 0, 0, 0.4); }
 
