@@ -34,7 +34,7 @@ export function filterHandlerWithChartContext(_chart) {
 
     if (filters.length === 0) {
       dimension.filterAll(_chart.softFilterClear())
-      if(_chart.clearTableFilter){
+      if (_chart.clearTableFilter) {
         _chart.clearTableFilter() // global filter also will clear all the columns filters on the table
       }
     } else if (_chart.hasOwnProperty("rangeFocused")) {
@@ -44,7 +44,11 @@ export function filterHandlerWithChartContext(_chart) {
         _chart.filtersInverse(),
         _chart.group().binParams()
       )
-    } else if(_chart.getFilteredColumns && Object.keys(_chart.getFilteredColumns()).length>0){ // case for column filtering on measures
+    } else if (
+      _chart.getFilteredColumns &&
+      Object.keys(_chart.getFilteredColumns()).length > 0
+    ) {
+      // case for column filtering on measures
       return filters
     } else {
       dimension.filterMulti(
