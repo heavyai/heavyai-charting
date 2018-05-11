@@ -361,6 +361,7 @@ export default function mapdTable(parent, chartGroup) {
             clearColFilter(col.expression)
           } else {
             filterCol(col.expression, d[col.name])
+            _chart.onClick(d[col.name]) // will update global filter Clear icon
           }
         })
     })

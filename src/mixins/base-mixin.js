@@ -1366,7 +1366,8 @@ export default function baseMixin(_chart) {
    * @param {*} datum
    */
   _chart.onClick = function(datum) {
-    const filter = _chart.keyAccessor()(datum)
+    // filtering on dimension will have key, but for filtering on measures which is on column is the column value only
+    const filter = _chart.keyAccessor()(datum).length > 0 ? _chart.keyAccessor()(datum) : datum
     _chart.handleFilterClick(d3.event, filter)
   }
 
@@ -1883,11 +1884,6 @@ export default function baseMixin(_chart) {
     }
     _dateFormatter = formatter
     return _chart
-  }
-
-  _chart.getMeasureName = function() {
-    const measure = _chart.group().reduce()
-    return (measure && measure[0]) ? measure[0].measureName : null
   }
 
   _chart = chartLegendMixin(
