@@ -522,6 +522,7 @@ export default function mapdTable(parent, chartGroup) {
     delete _columnFilterMap[expr]
     _chart.removeFilteredColumn(expr)
     _tableFilter.filter(computeTableFilter(_columnFilterMap))
+    _chart.filterAll()
     redrawAllAsync(_chart.chartGroup())
   }
 
