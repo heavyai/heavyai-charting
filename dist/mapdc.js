@@ -7,7 +7,7 @@
 		exports["mapdc"] = factory(require("d3"));
 	else
 		root["mapdc"] = factory(root["d3"]);
-})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -42977,7 +42977,7 @@ function simplify(points, tolerance, highestQuality) {
 }
 
 // export as AMD module / Node module / browser or worker variable
-if (true) !(__WEBPACK_AMD_DEFINE_RESULT__ = (function() { return simplify; }).call(exports, __webpack_require__, exports, module),
+if (true) !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return simplify; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 else if (typeof module !== 'undefined') {
     module.exports = simplify;
