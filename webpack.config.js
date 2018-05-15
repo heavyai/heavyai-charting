@@ -6,7 +6,7 @@ var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 module.exports = {
   context: __dirname,
   entry: {
-    "mapdc": "./index.js"
+    "mapdc": "./compile.js"
   },
   output: {
     path: __dirname + "/dist",
