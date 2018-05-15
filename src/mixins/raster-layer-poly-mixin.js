@@ -6,6 +6,7 @@ import {
 import d3 from "d3"
 import { events } from "../core/events"
 import { parser } from "../utils/utils"
+import wellknown from "wellknown"
 
 // NOTE: Reqd until ST_Transform supported on projection columns
 function conv4326To900913(x, y) {
@@ -19,10 +20,9 @@ function conv4326To900913(x, y) {
 const vegaLineJoinOptions = ["miter", "round", "bevel"]
 const polyTableGeomColumns = {
   // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
-  verts: "mapd_geo_coords",
-  ring_sizes: "mapd_geo_ring_sizes",
-  poly_rings: "mapd_geo_poly_rings",
+  geo: "mapd_geo", // TODO(croot): need to handle tables with either more than 1 geo column or columns with custom names
   // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
+  verts_LEGACY: "mapd_geo_coords",
   indices_LEGACY: "mapd_geo_indices",
   linedrawinfo_LEGACY: "mapd_geo_linedrawinfo",
   polydrawinfo_LEGACY: "mapd_geo_polydrawinfo"
@@ -291,12 +291,11 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
     // add the poly geometry to the query
-    popupColsSet.add(polyTableGeomColumns.verts)
 
     if (chart._useGeoTypes) {
-      popupColsSet.add(polyTableGeomColumns.ring_sizes)
-      popupColsSet.add(polyTableGeomColumns.poly_rings)
+      popupColsSet.add(polyTableGeomColumns.geo)
     } else {
+      popupColsSet.add(polyTableGeomColumns.verts_LEGACY)
       popupColsSet.add(polyTableGeomColumns.linedrawinfo_LEGACY)
     }
 
@@ -320,9 +319,8 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer._areResultsValidForPopup = function(results) {
     if (
-      (results[polyTableGeomColumns.verts] &&
-        results[polyTableGeomColumns.ring_sizes]) ||
-      (results[polyTableGeomColumns.verts] &&
+      results[polyTableGeomColumns.geo] ||
+      (results[polyTableGeomColumns.verts_LEGACY] &&
         results[polyTableGeomColumns.linedrawinfo_LEGACY])
     ) {
       return true
@@ -365,122 +363,58 @@ export default function rasterLayerPolyMixin(_layer) {
     return _layer
   }
 
-  _layer._displayPopup = function(
-    chart,
-    parentElem,
-    data,
-    width,
-    height,
-    margins,
-    xscale,
-    yscale,
-    minPopupArea,
-    animate
-  ) {
-    const polys = []
+  class PolySvgFormatter {
+    /**
+     * Builds the bounds from the incoming poly data
+     * @param {AABox2d} out AABox2d to return
+     * @param {object} data Object with return data from getResultRowForPixel()
+     * @param {Number} width Width of the visualization div
+     * @param {Number} height Height of the visualization div
+     * @param {object} margin Margins of the visualization div
+     * @param {Function} xscale d3 scale in x dimension from world space to pixel space (i.e. mercatorx-to-pixel)
+     * @param {Function} yscale d3 scale in y dimension from world space to pixel space (i.e. mercatory-to-pixel)
+     */
+    getBounds(data, width, height, margins, xscale, yscale) {
+      throw new Error("This must be overridden")
+    }
 
-    // Only used for geotypes, but needs to be referenced when building the svg polystring
-    const is_multi_ring_poly = []
+    /**
+     * Builds the svg path string to use with the d svg attr: 
+     * https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
+     * This function should be called after the getBounds().
+     * The t/s arguments are the transformations to properly place the points underneath
+     * a parent SVG group node. That node is what ultimately handles animations and such
+     * so we need to transform all the points into local space. t is the translation
+     * and s is the scale to transform the points from pixel space to model/object space.
+     * @param {string} out Returns the svg path string
+     * @param {Point2d} t Translation from world to object space.
+     * @param {Number} s Scale from world to object space.
+     */
+    getSvgPath(t, s) {
+      throw new Error("This must be overridden")
+    }
+  }
 
-    // bounds: [minX, maxX, minY, maxY]
-    const bounds = [Infinity, -Infinity, Infinity, -Infinity]
-    if (chart._useGeoTypes) {
-      // verts and ring_sizes should be valid as the _resultsAreValidForPopup()
-      // method should've been called beforehand
-      const verts = data[polyTableGeomColumns.verts]
-      const ring_sizes = data[polyTableGeomColumns.ring_sizes]
-      let poly_rings = data[polyTableGeomColumns.poly_rings]
+  class LegacySvgFormatter extends PolySvgFormatter {
+    constructor() {
+      super()
+      this._polys = []
+    }
 
-      // It is possible that the poly rings column is not populated. If not populated, we have a single polygon with number of rings equal to the number of entries in the ring sizes column
-      if (poly_rings === null) {
-        poly_rings = [ring_sizes.length]
-      }
-
-      // TODO(croot): when the bounds is added as a column to the poly db table, we
-      // can just use those bounds rather than build our own
-      // But until then, we need to build our own bounds -- we use this to
-      // find the reasonable center of the geom and scale from there when
-      // necessary
-
-      const processPoly = function(verts) {
-        const polypts = []
-        for (let idx = 0; idx < verts.length; idx += 2) {
-          const projectedCoord = conv4326To900913(verts[idx], verts[idx + 1])
-
-          const screenX = xscale(projectedCoord[0]) + margins.left
-          const screenY = height - yscale(projectedCoord[1]) - 1 + margins.top
-
-          if (
-            screenX >= 0 &&
-            screenX <= width &&
-            screenY >= 0 &&
-            screenY <= height
-          ) {
-            if (bounds[0] === Infinity) {
-              bounds[0] = screenX
-              bounds[1] = screenX
-              bounds[2] = screenY
-              bounds[3] = screenY
-            } else {
-              if (screenX < bounds[0]) {
-                bounds[0] = screenX
-              } else if (screenX > bounds[1]) {
-                bounds[1] = screenX
-              }
-
-              if (screenY < bounds[2]) {
-                bounds[2] = screenY
-              } else if (screenY > bounds[3]) {
-                bounds[3] = screenY
-              }
-            }
-          }
-          polypts.push(screenX)
-          polypts.push(screenY)
-        }
-        return polypts
-      }
-
-      // process each ring
-      let ring_start = 0
-      let poly_count = 0
-      let poly_ring_idx = 0
-      for (let ring = 0; ring < ring_sizes.length; ring++) {
-        const ring_slice = verts.slice(
-          ring_start * 2,
-          (ring_start + ring_sizes[ring]) * 2
-        )
-
-        const polypts = processPoly(ring_slice)
-
-        if (poly_rings[poly_count] === 1) {
-          polys.push(polypts)
-          poly_count++
-          is_multi_ring_poly[poly_count] = false
-        } else {
-          is_multi_ring_poly[poly_count] = true
-          if (poly_ring_idx === 0) {
-            polys.push([polypts])
-          } else {
-            polys[poly_count].push(polypts)
-          }
-          if (++poly_ring_idx === polys[poly_count]) {
-            poly_count++
-            poly_ring_idx = 0
-          }
-        }
-
-        ring_start += ring_sizes[ring]
-      }
-    } else {
+    getBounds(data, width, height, margins, xscale, yscale) {
+      // NOTE: this is handling legacy poly storage for backwards compatibility.
+      // Once we've put everything post 4.0 behind us, this can be fully deprecated.
+      //
       // verts and drawinfo should be valid as the _resultsAreValidForPopup()
       // method should've been called beforehand
-      const verts = data[polyTableGeomColumns.verts]
+      const verts = data[polyTableGeomColumns.verts_LEGACY]
       const drawinfo = data[polyTableGeomColumns.linedrawinfo_LEGACY]
 
       const startIdxDiff = drawinfo.length ? drawinfo[2] : 0
-
       const FLT_MAX = 1e37
+
+      // bounds: [minX, maxX, minY, maxY]
+      const bounds = [Infinity, -Infinity, Infinity, -Infinity]
 
       for (let i = 0; i < drawinfo.length; i = i + 4) {
         // Draw info struct:
@@ -501,7 +435,7 @@ export default function rasterLayerPolyMixin(_layer) {
             polypts.pop()
             polypts.pop()
             polypts.pop()
-            polys.push(polypts)
+            this._polys.push(polypts)
             polypts = []
           } else {
             const screenX = xscale(verts[idx]) + margins.left
@@ -537,9 +471,118 @@ export default function rasterLayerPolyMixin(_layer) {
           }
         }
 
-        polys.push(polypts)
+        this._polys.push(polypts)
       }
+
+      return bounds
     }
+
+    getSvgPath(t, s) {
+      let rtnPointStr = ""
+      this._polys.forEach(pts => {
+        if (!pts) {
+          return
+        }
+
+        let pointStr = ""
+        for (let i = 0; i < pts.length; i = i + 2) {
+          if (!isNaN(pts[i]) && !isNaN(pts[i+1])) {
+            pointStr +=
+              (pointStr.length ? "L" : "M") +
+              (s * (pts[i] - t[0])) + "," +
+              (s * (pts[i + 1] - t[1]))
+          }
+        }
+        if (pointStr.length) {
+          pointStr += "Z"
+        }
+        rtnPointStr += pointStr
+      })
+      return rtnPointStr
+    }
+  }
+
+  function buildGeoProjection(width, height, margins, xscale, yscale, clamp = true, t = [0, 0], s = 1) {
+    let _translation = t, _scale = s, _clamp = clamp
+
+    const project = d3.geo.transform({
+      point(lon, lat) {
+        const projectedCoord = conv4326To900913(lon, lat)
+        const pt = [_scale * (xscale(projectedCoord[0]) + margins.left - _translation[0]),
+                    _scale * (height - yscale(projectedCoord[1]) - 1 + margins.top - _translation[1])]
+        if (_clamp) {
+          if (pt[0] >= 0 && pt[0] < width && pt[1] >= 0 && pt[1] < height) {
+            return this.stream.point(pt[0], pt[1])
+          }
+        } else {
+          return this.stream.point(pt[0], pt[1])
+        }
+      }
+    })
+
+    project.setTransforms = (t, s) => {
+      _translation = t
+      _scale = s
+    }
+
+    project.setClamp = (clamp) => {
+      _clamp = Boolean(clamp)
+    }
+
+    return project
+  }
+
+  class GeoSvgFormatter extends PolySvgFormatter {
+    constructor() {
+      super()
+      this._geojson = null
+      this._projector = null
+      this._d3projector = null
+    }
+
+    getBounds(data, width, height, margins, xscale, yscale) {
+      const wkt = data[polyTableGeomColumns.geo]
+      if (typeof wkt !== 'string') {
+        throw new Error(`Cannot create SVG from geo polygon column "${polyTableGeomColumns.geo}". The data returned is not a WKT string. It is of type: ${typeof wkt}`)
+      }
+      this._geojson = wellknown.parse(wkt)
+      this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true)
+
+      // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
+      // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
+      // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
+      this._d3projector = d3.geo.path().projection(this._projector)
+      const d3bounds = this._d3projector.bounds(this._geojson)
+      return [d3bounds[0][0], d3bounds[1][0], d3bounds[0][1], d3bounds[1][1]]
+    }
+
+    getSvgPath(t, s) {
+      this._projector.setTransforms(t, s)
+      this._projector.setClamp(false)
+      return this._d3projector(this._geojson)
+    }
+  }
+
+  _layer._displayPopup = function(
+    chart,
+    parentElem,
+    data,
+    width,
+    height,
+    margins,
+    xscale,
+    yscale,
+    minPopupArea,
+    animate
+  ) {
+    let geoPathFormatter = null
+    if (chart._useGeoTypes) {
+      geoPathFormatter = new GeoSvgFormatter()
+    } else {
+      geoPathFormatter = new LegacySvgFormatter()
+    }
+
+    const bounds = geoPathFormatter.getBounds(data, width, height, margins, xscale, yscale)
 
     if (bounds[0] === Infinity) {
       bounds[0] = 0
@@ -567,10 +610,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
 
     const rndrProps = {}
-    const queryRndrProps = new Set([
-      polyTableGeomColumns.verts,
-      polyTableGeomColumns.ring_sizes
-    ])
+    const queryRndrProps = new Set()
     if (
       _vega &&
       Array.isArray(_vega.marks) &&
@@ -630,7 +670,7 @@ export default function rasterLayerPolyMixin(_layer) {
     const group = xform
       .append("g")
       .attr("class", "map-poly")
-      .attr("transform-origin", boundsWidth / 2, boundsHeight / 2)
+      .attr("transform-origin", `${boundsWidth / 2} ${boundsHeight / 2}`)
 
     if (typeof strokeWidth === "number") {
       group.style("stroke-width", strokeWidth)
@@ -644,74 +684,14 @@ export default function rasterLayerPolyMixin(_layer) {
       }
     }
 
-    if (chart._useGeoTypes) {
-      const ptsToSvgPath = function(pts) {
-        let pointStr = ""
-        for (let i = 0; i < pts.length; i = i + 2) {
-          pointStr =
-            pointStr +
-            (scale * (pts[i] - bounds[0]) +
-              " " +
-              scale * (pts[i + 1] - bounds[2]) +
-              ", ")
-        }
-        return pointStr
-      }
-
-      polys.forEach((pts, idx) => {
-        if (!pts) {
-          return
-        }
-
-        ptsToSvgPath(pts)
-
-        let pointStr = "M "
-        if (is_multi_ring_poly[idx]) {
-          // poly with multiple rings
-          pts.forEach(ring => {
-            pointStr += ptsToSvgPath(ring)
-            pointStr += " z M "
-          })
-          pointStr = pointStr.slice(0, pointStr.length - 3)
-        } else {
-          pointStr += ptsToSvgPath(pts)
-        }
-        pointStr = pointStr.slice(0, pointStr.length - 2).replace(/NaN/g, "")
-        pointStr += "z"
-
-        group
-          .append("path")
-          .attr("d", pointStr)
-          .attr("class", "map-polygon-shape")
-          .attr("fill", fillColor)
-          .attr("fill-rule", "evenodd")
-          .attr("stroke", strokeColor)
-          .on("click", () => _layer.onClick(chart, data, d3.event))
-      })
-    } else {
-      polys.forEach(pts => {
-        if (!pts) {
-          return
-        }
-
-        let pointStr = ""
-        for (let i = 0; i < pts.length; i = i + 2) {
-          pointStr =
-            pointStr +
-            (scale * (pts[i] - bounds[0]) +
-              " " +
-              scale * (pts[i + 1] - bounds[2]) +
-              ", ")
-        }
-        pointStr = pointStr.slice(0, pointStr.length - 2).replace(/NaN/g, "")
-
-        group
-          .append("polygon")
-          .attr("points", pointStr)
-          .attr("class", "map-polygon-shape")
-          .on("click", () => _layer.onClick(chart, data, d3.event))
-      })
-    }
+    group
+      .append("path")
+      .attr("d", geoPathFormatter.getSvgPath([bounds[0], bounds[2]], scale))
+      .attr("class", "map-polygon-shape")
+      .attr("fill", fillColor)
+      .attr("fill-rule", "evenodd")
+      .attr("stroke", strokeColor)
+      .on("click", () => _layer.onClick(chart, data, d3.event))
 
     _scaledPopups[chart] = isScaled
 
