@@ -7,6 +7,7 @@ import d3 from "d3"
 import { events } from "../core/events"
 import { parser } from "../utils/utils"
 import wellknown from "wellknown"
+import {AABox2d, Point2d} from "@mapd/mapd-draw/dist/mapd-draw"
 
 // NOTE: Reqd until ST_Transform supported on projection columns
 function conv4326To900913(x, y) {
@@ -413,9 +414,8 @@ export default function rasterLayerPolyMixin(_layer) {
       const startIdxDiff = drawinfo.length ? drawinfo[2] : 0
       const FLT_MAX = 1e37
 
-      // bounds: [minX, maxX, minY, maxY]
-      const bounds = [Infinity, -Infinity, Infinity, -Infinity]
-
+      const bounds = AABox2d.create()
+      const screenPt = Point2d.create()
       for (let i = 0; i < drawinfo.length; i = i + 4) {
         // Draw info struct:
         //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
@@ -438,36 +438,19 @@ export default function rasterLayerPolyMixin(_layer) {
             this._polys.push(polypts)
             polypts = []
           } else {
-            const screenX = xscale(verts[idx]) + margins.left
-            const screenY = height - yscale(verts[idx + 1]) - 1 + margins.top
+            Point2d.set(screenPt, xscale(verts[idx]) + margins.left,
+                        height - yscale(verts[idx + 1]) - 1 + margins.top)
 
             if (
-              screenX >= 0 &&
-              screenX <= width &&
-              screenY >= 0 &&
-              screenY <= height
+              screenPt[0] >= 0 &&
+              screenPt[0] <= width &&
+              screenPt[1] >= 0 &&
+              screenPt[1] <= height
             ) {
-              if (bounds[0] === Infinity) {
-                bounds[0] = screenX
-                bounds[1] = screenX
-                bounds[2] = screenY
-                bounds[3] = screenY
-              } else {
-                if (screenX < bounds[0]) {
-                  bounds[0] = screenX
-                } else if (screenX > bounds[1]) {
-                  bounds[1] = screenX
-                }
-
-                if (screenY < bounds[2]) {
-                  bounds[2] = screenY
-                } else if (screenY > bounds[3]) {
-                  bounds[3] = screenY
-                }
-              }
+              AABox2d.encapsulatePt(bounds, bounds, screenPt)
             }
-            polypts.push(screenX)
-            polypts.push(screenY)
+            polypts.push(screenPt[0])
+            polypts.push(screenPt[1])
           }
         }
 
@@ -553,7 +536,7 @@ export default function rasterLayerPolyMixin(_layer) {
       // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
       this._d3projector = d3.geo.path().projection(this._projector)
       const d3bounds = this._d3projector.bounds(this._geojson)
-      return [d3bounds[0][0], d3bounds[1][0], d3bounds[0][1], d3bounds[1][1]]
+      return AABox2d.create(d3bounds[0][0], d3bounds[0][1], d3bounds[1][0], d3bounds[1][1])
     }
 
     getSvgPath(t, s) {
@@ -584,33 +567,27 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const bounds = geoPathFormatter.getBounds(data, width, height, margins, xscale, yscale)
 
-    if (bounds[0] === Infinity) {
-      bounds[0] = 0
+    // Check for 2 special cases:
+    // 1) zoomed in so far in that the poly encompasses the entire view, so all points are
+    //    outside the view
+    // 2) the poly only has 1 point in view.
+    // Both cases can be handled by checking whether the bounds is empty (infinite) in
+    // either x/y or the bounds size is 0 in x/y.
+    const boundsSz = AABox2d.getSize(Point2d.create(), bounds)
+    if (!isFinite(boundsSz[0]) || boundsSz[0] === 0) {
+      bounds[AABox2d.MINX] = 0
+      bounds[AABox2d.MAXX] = width
+      boundsSz[0] = width
     }
-    if (bounds[1] === -Infinity) {
-      bounds[1] = width
-    }
-    if (bounds[2] === Infinity) {
-      bounds[2] = 0
-    }
-    if (bounds[3] === -Infinity) {
-      bounds[3] = height
-    }
-
-    // NOTE: we could hit the case where the bounds is 0
-    // if 1 point is visible in screen
-    // Handle that here
-    if (bounds[0] === bounds[1]) {
-      bounds[0] = 0
-      bounds[1] = width
-    }
-    if (bounds[2] === bounds[3]) {
-      bounds[2] = 0
-      bounds[3] = height
+    if (!isFinite(boundsSz[1]) || boundsSz[1] === 0) {
+      bounds[AABox2d.MINY] = 0
+      bounds[AABox2d.MAXY] = height
+      boundsSz[1] = height
     }
 
+    // Get the data from the hit-test object used to drive render properties
+    // These will be used to properly style the svg popup object
     const rndrProps = {}
-    const queryRndrProps = new Set()
     if (
       _vega &&
       Array.isArray(_vega.marks) &&
@@ -625,20 +602,22 @@ export default function rasterLayerPolyMixin(_layer) {
           typeof propObj[prop].field === "string"
         ) {
           rndrProps[prop] = propObj[prop].field
-          queryRndrProps.add(propObj[prop].field)
         }
       })
     }
 
-    const boundsWidth = bounds[1] - bounds[0]
-    const boundsHeight = bounds[3] - bounds[2]
+    // If the poly we hit-test is small, we'll scale it so that it
+    // can be seen. The minPopupArea is the minimum area of the popup
+    // poly, so if the poly's bounds is < minPopupArea, we'll scale it
+    // up to that size.
     let scale = 1
-    const scaleRatio = minPopupArea / (boundsWidth * boundsHeight)
+    const scaleRatio = minPopupArea / AABox2d.area(bounds)
     const isScaled = scaleRatio > 1
     if (isScaled) {
       scale = Math.sqrt(scaleRatio)
     }
 
+    // Now grab the style properties for the svg calculated from the vega
     const popupStyle = _layer.popupStyle()
     let fillColor = _layer.getFillColorVal(data[rndrProps.fillColor])
     let strokeColor = _layer.getStrokeColorVal(data[rndrProps.strokeColor])
@@ -649,33 +628,37 @@ export default function rasterLayerPolyMixin(_layer) {
       strokeWidth = popupStyle.strokeWidth
     }
 
+    // build out the svg
     const svg = parentElem
       .append("svg")
       .attr("width", width)
       .attr("height", height)
 
+    // transform svg node. This node will position the svg appropriately. Need
+    // to offset according to the scale above (scale >= 1)
+    const boundsCtr = AABox2d.getCenter(Point2d.create(), bounds)
     const xform = svg
       .append("g")
       .attr("class", "map-poly-xform")
       .attr(
         "transform",
         "translate(" +
-          (scale * bounds[0] - (scale - 1) * (bounds[0] + boundsWidth / 2)) +
+          (scale * bounds[AABox2d.MINX] - (scale - 1) * boundsCtr[0]) +
           ", " +
-          (scale * (bounds[2] + 1) -
-            (scale - 1) * (bounds[2] + 1 + boundsHeight / 2)) +
+          (scale * (bounds[AABox2d.MINY] + 1) -
+            (scale - 1) * (boundsCtr[1] + 1)) +
           ")"
       )
 
+    // now add a transform node that will be used to apply animated scales to
+    // We want the animation to happen from the center of the bounds, so we
+    // place the transform origin there.
     const group = xform
       .append("g")
       .attr("class", "map-poly")
-      .attr("transform-origin", `${boundsWidth / 2} ${boundsHeight / 2}`)
+      .attr("transform-origin", `${boundsSz[0] / 2} ${boundsSz[1] / 2}`)
 
-    if (typeof strokeWidth === "number") {
-      group.style("stroke-width", strokeWidth)
-    }
-
+    // inherited animation classes from css
     if (animate) {
       if (isScaled) {
         group.classed("popupPoly", true)
@@ -684,9 +667,14 @@ export default function rasterLayerPolyMixin(_layer) {
       }
     }
 
+    // now apply the styles
+    if (typeof strokeWidth === "number") {
+      group.style("stroke-width", strokeWidth)
+    }
+
     group
       .append("path")
-      .attr("d", geoPathFormatter.getSvgPath([bounds[0], bounds[2]], scale))
+      .attr("d", geoPathFormatter.getSvgPath(Point2d.create(bounds[AABox2d.MINX], bounds[AABox2d.MINY]), scale))
       .attr("class", "map-polygon-shape")
       .attr("fill", fillColor)
       .attr("fill-rule", "evenodd")
@@ -695,12 +683,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
     _scaledPopups[chart] = isScaled
 
-    return {
-      posX: bounds[0] + boundsWidth / 2,
-      posY: bounds[2] + boundsHeight / 2,
-      rndrPropSet: queryRndrProps,
-      bounds
-    }
+    return bounds
   }
 
   _layer.onClick = function(chart, data, event) {
