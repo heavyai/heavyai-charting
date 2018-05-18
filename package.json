@@ -67,7 +67,7 @@
     "wellknown": "^0.5.0"
   },
   "devDependencies": {
-    "@mapd/connector": "git://github.com/mapd/mapd-connector.git#alexb/geo_types",
+    "@mapd/connector": "git://github.com/mapd/mapd-connector.git#6bf8acd",
     "@mapd/crossfilter": "git://github.com/mapd/mapd-crossfilter.git#bf77150",
     "atob": "^2.0.3",
     "babel-cli": "^6.10.1",
