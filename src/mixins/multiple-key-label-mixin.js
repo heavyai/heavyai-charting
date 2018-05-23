@@ -32,7 +32,7 @@ export default function multipleKeysLabelMixin(_chart) {
   function label(d) {
     const numberFormatter = _chart && _chart.valueFormatter()
     const dateFormatter = _chart && _chart.dateFormatter()
-    const dimensionNames = _chart.dimension().value()
+    const dimensionNames = _chart.dimension().getDimensionName()
 
     if (dimensionNames.length === 1) {
       return format(d.key0, dimensionNames[0], numberFormatter, dateFormatter)
