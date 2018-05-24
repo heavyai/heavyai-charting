@@ -73,7 +73,7 @@ export default function numberChart(parent, chartGroup) {
     const TEXT_MARGINS = 64
     const chartWidth = _chart.width() - TEXT_MARGINS
     const chartHeight = _chart.height() - TEXT_MARGINS
-    const fontSize = utils.getFontSizeFromWidth(formattedValue, wrapper, chartWidth, chartHeight)
+    const fontSize = utils.getFontSizeFromWidth(formattedValue, chartWidth, chartHeight)
     wrapper
       .append("span")
       .attr("class", "number-chart-number")
