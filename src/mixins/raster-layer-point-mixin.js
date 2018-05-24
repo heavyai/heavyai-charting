@@ -1,4 +1,3 @@
-import { decrementSampledCount, incrementSampledCount } from "../core/core"
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import {
   adjustOpacity,
@@ -8,6 +7,7 @@ import {
 } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
+import {AABox2d, Point2d} from "@mapd/mapd-draw/dist/mapd-draw"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
@@ -520,7 +520,6 @@ export default function rasterLayerPointMixin(_layer) {
     animate
   ) {
     const rndrProps = {}
-    const queryRndrProps = new Set()
     if (
       _vega &&
       Array.isArray(_vega.marks) &&
@@ -535,14 +534,12 @@ export default function rasterLayerPointMixin(_layer) {
           typeof propObj[prop].field === "string"
         ) {
           rndrProps[prop] = propObj[prop].field
-          queryRndrProps.add(propObj[prop].field)
         }
       })
     }
 
-    const xPixel = xscale(data[rndrProps.xc || rndrProps.x]) + margins.left
-    const yPixel =
-      height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top
+    const pixel = Point2d.create(xscale(data[rndrProps.xc || rndrProps.x]) + margins.left,
+                                 height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top)
 
     let sizeFromData =
       data[rndrProps.size || rndrProps.width || rndrProps.height]
@@ -571,7 +568,7 @@ export default function rasterLayerPointMixin(_layer) {
     const pointDiv = wrapDiv
       .append("div")
       .attr("class", _point_class)
-      .style({ left: xPixel + "px", top: yPixel + "px" })
+      .style({ left: pixel[0] + "px", top: pixel[1] + "px" })
 
     if (animate) {
       if (isScaled) {
@@ -598,15 +595,7 @@ export default function rasterLayerPointMixin(_layer) {
       gfxDiv.style("border-width", strokeWidth)
     }
 
-    return {
-      rndrPropSet: queryRndrProps,
-      bounds: [
-        xPixel - dotSize / 2,
-        xPixel + dotSize / 2,
-        yPixel - dotSize / 2,
-        yPixel + dotSize / 2
-      ]
-    }
+    return AABox2d.initCenterExtents(AABox2d.create(), pixel, [dotSize / 2, dotSize / 2])
   }
 
   _layer._hidePopup = function(chart, hideCallback) {
