@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MapD</title>
+    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <style>
+      .title {
+        font-weight: bold;
+        text-align:center;
+      }
+      .mapd{
+        position: relative;
+        top: 2px;
+      }
+      .data-count{
+        padding-right:20px;
+      }
+      .filter-count{
+        font-weight: bold;
+        color:  #45B1E8;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="chart"></div>
+    <script src="assets/app.bundle.js"></script>
+    <script>
+
+  function createCharts(crossFilter) {
+    var colorScheme = ["#22A7F0", "#3ad6cd", "#d4e666"]
+
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
+
+    var allColumns = crossFilter.getColumns();
+
+    var reduceMultiExpression2 =
+    [{
+      expression: "dep_timestamp",
+      agg_mode:"min",
+      name: "minimum"
+    },
+    {
+      expression: "dep_timestamp",
+      agg_mode:"max",
+      name: "maximum"}
+    ]
+
+    crossFilter
+      .groupAll()
+      .reduceMulti(reduceMultiExpression2)
+      .valuesAsync(true).then(function(timeChartBounds) {
+
+        var timeChartDimension = crossFilter.dimension("dep_timestamp");
+        var timeChartGroup = timeChartDimension.group()
+                    .reduceCount()
+
+        var chart = dc.compositeChart('.chart')
+          .width(w)
+          .height(h/2.5)
+          .renderHorizontalGridLines(true)
+          .brushOn(true)
+          .xAxisLabel('Departure Time')
+          .yAxisLabel('# Flights')
+          .dimension(timeChartDimension)
+          .group(timeChartGroup)
+          .binParams({
+            numBins: 400,
+            binBounds: [timeChartBounds.minimum, timeChartBounds.maximum]
+          });
+
+        chart
+          .x(d3.time.scale.utc().domain([timeChartBounds.minimum, timeChartBounds.maximum]))
+          .yAxis().ticks(5);
+
+        chart
+          .xAxis()
+          .scale(chart.x())
+          .tickFormat(dc.utils.customTimeFormat)
+          .orient('bottom');
+
+        chart.compose([
+          dc.lineChart(chart),
+          dc.lineChart(chart).useRightYAxis(true)
+        ]);
+
+        dc.renderAllAsync()
+
+    });
+  }
+
+  function init() {
+    new MapdCon()
+      .protocol("https")
+      .host("metis.mapd.com")
+      .port("443")
+      .dbName("mapd")
+      .user("mapd")
+      .password("HyperInteractive")
+      .connect(function(error, con) {
+         crossfilter.crossfilter(con, "flights_donotmodify").then(createCharts)
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', init, false);
+
+    </script>
+
+  </body>
+</html>
