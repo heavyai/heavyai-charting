@@ -76,6 +76,11 @@ export function getLegendStateFromChart(chart, useMap) {
             domain: layer.colorDomain()
           }
         }
+      } else if (typeof color.scale === "undefined" && color.domain === "auto") {
+        return {
+          ...color,
+          domain: layer.colorDomain()
+        }
       } else {
         return color
       }

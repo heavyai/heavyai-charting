@@ -57,6 +57,7 @@ function validateMiterLimit(newMiterLimit, currMiterLimit) {
 export default function rasterLayerPolyMixin(_layer) {
   _layer.crossfilter = createRasterLayerGetterSetter(_layer, null)
   _layer.filtersInverse = createRasterLayerGetterSetter(_layer, false)
+  _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
 
   createVegaAttrMixin(
     _layer,
@@ -174,6 +175,25 @@ export default function rasterLayerPolyMixin(_layer) {
     return transforms
   }
 
+  function getColorScaleName(layerName) {
+    return `${layerName}_fillColor`
+  }
+
+  function usesAutoColors() {
+    return state.encoding.color.domain === "auto"
+  }
+
+  _layer._updateFromMetadata = (metadata, layerName = "") => {
+    if (usesAutoColors() && Array.isArray(metadata.scales)) {
+      const colorScaleName = getColorScaleName(layerName)
+      for (const scale of metadata.scales) {
+        if (scale.name === colorScaleName) {
+          _layer.colorDomain(scale.domain)
+        }
+      }
+    }
+  }
+
   _layer.__genVega = function({
     filter,
     globalFilter,
@@ -182,6 +202,9 @@ export default function rasterLayerPolyMixin(_layer) {
     layerName,
     useProjection
   }) {
+    const autocolors = usesAutoColors()
+    const getStatsLayerName = () => layerName + "_stats"
+
     const colorRange = state.encoding.color.range.map(c =>
       adjustOpacity(c, state.encoding.color.opacity)
     )
@@ -205,11 +228,40 @@ export default function rasterLayerPolyMixin(_layer) {
       }
     ]
 
+    if (autocolors) {
+      data.push({
+        name: getStatsLayerName(),
+        source: layerName,
+        transform: [
+          {
+            type:   "aggregate",
+            fields: ["color", "color", "color", "color"],
+            ops:    ["min", "max", "avg", "stddev"],
+            as:     ["mincol", "maxcol", "avgcol", "stdcol"]
+          },
+          {
+            type: "formula",
+            expr: "max(mincol, avgcol-2*stdcol)",
+            as: "mincolor"
+          },
+          {
+            type: "formula",
+            expr: "min(maxcol, avgcol+2*stdcol)",
+            as: "maxcolor"
+          }
+        ]
+      })
+    }
+
+    const colorScaleName = getColorScaleName(layerName)
     const scales = [
       {
-        name: layerName + "_fillColor",
+        name: colorScaleName,
         type: "quantize",
-        domain: state.encoding.color.domain,
+        domain: 
+          autocolors 
+            ? {data: getStatsLayerName(), fields: ["mincolor", "maxcolor"]}
+            : state.encoding.color.domain,
         range: colorRange,
         nullValue: "rgba(214, 215, 214, 0.65)",
         default: "rgba(214, 215, 214, 0.65)"
@@ -230,7 +282,7 @@ export default function rasterLayerPolyMixin(_layer) {
             field: "y"
           },
           fillColor: {
-            scale: layerName + "_fillColor",
+            scale: colorScaleName,
             field: "color"
           },
           strokeColor:
