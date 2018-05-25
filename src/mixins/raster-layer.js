@@ -4,9 +4,9 @@ import rasterLayerPolyMixin from "./raster-layer-poly-mixin"
 import rasterLayerHeatmapMixin from "./raster-layer-heatmap-mixin"
 import {
   createRasterLayerGetterSetter,
-  createVegaAttrMixin,
-  notNull
+  createVegaAttrMixin
 } from "../utils/utils-vega"
+import {AABox2d, Point2d} from "@mapd/mapd-draw/dist/mapd-draw"
 
 const validLayerTypes = ["points", "polys", "heat"]
 
@@ -15,10 +15,9 @@ export default function rasterLayer(layerType) {
 
   let _dimension = null
   let _group = null
-  const _groupName = null
   let _mandatoryAttributes = []
 
-  var _layer = capMixin({
+  let _layer = capMixin({
     setDataAsync(callback) {
       // noop.
       // This is to appease mixins that require an object initialized with a baseMixin
@@ -48,9 +47,9 @@ export default function rasterLayer(layerType) {
   _layer.othersGrouper(false) // TODO(croot): what does othersGrouper in capMixin do exactly?
   // Always set to false for now, tho user can override.
 
-  if (layerType == "points") {
+  if (layerType === "points") {
     _layer = rasterLayerPointMixin(_layer)
-  } else if (layerType == "polys") {
+  } else if (layerType === "polys") {
     _layer = rasterLayerPolyMixin(_layer)
   } else if (/heat/.test(layerType)) {
     _layer = rasterLayerHeatmapMixin(_layer)
@@ -166,17 +165,6 @@ export default function rasterLayer(layerType) {
     return _layer
   }
 
-  function checkForMandatoryLayerAttr(layer, a, layerName) {
-    if (!layer[a] || !layer[a]()) {
-      throw new Error(
-        "Mandatory attribute chart." +
-          a +
-          " is missing on raster layer " +
-          layerName
-      )
-    }
-  }
-
   function genHeatConfigFromChart(chart) {
     return {
       table: _layer.crossfilter().getTable()[0],
@@ -285,15 +273,14 @@ export default function rasterLayer(layerType) {
     const newData = {}
     const columnSet = new Set(popupColumns)
     for (const key in data) {
-      if (!columnSet.has(key)) {
-        continue
-      }
-      newData[key] = data[key]
-      if (typeof chart.useLonLat === "function" && chart.useLonLat()) {
-        if (key === "x") {
-          newData[key] = chart.conv900913To4326X(data[key])
-        } else if (key === "y") {
-          newData[key] = chart.conv900913To4326Y(data[key])
+      if (columnSet.has(key)) {
+        newData[key] = data[key]
+        if (typeof chart.useLonLat === "function" && chart.useLonLat()) {
+          if (key === "x") {
+            newData[key] = chart.conv900913To4326X(data[key])
+          } else if (key === "y") {
+            newData[key] = chart.conv900913To4326Y(data[key])
+          }
         }
       }
     }
@@ -368,7 +355,7 @@ export default function rasterLayer(layerType) {
     xscale.range([0, width])
     yscale.range([0, height])
 
-    const popupData = _layer._displayPopup(
+    const bounds = _layer._displayPopup(
       chart,
       parentElem,
       data,
@@ -385,27 +372,11 @@ export default function rasterLayer(layerType) {
     xscale.range(origXRange)
     yscale.range(origYRange)
 
-    const rndrProps = popupData.rndrPropSet
-    const bounds = popupData.bounds
+    const boundsCtr = AABox2d.getCenter(Point2d.create(), bounds)
+    const overlapBounds = AABox2d.create(0, 0, width, height)
+    AABox2d.intersection(overlapBounds, overlapBounds, bounds)
 
-    const boundsWidth = bounds[1] - bounds[0]
-    const boundsHeight = bounds[3] - bounds[2]
-    const posX = bounds[0] + boundsWidth / 2
-    const posY = bounds[2] + boundsHeight / 2
-
-    const parentBounds = [0, width, 0, height]
-
-    const overlapBounds = [
-      Math.max(bounds[0], parentBounds[0]),
-      Math.min(bounds[1], parentBounds[1]),
-      Math.max(bounds[2], parentBounds[2]),
-      Math.min(bounds[3], parentBounds[3])
-    ]
-
-    if (
-      overlapBounds[1] <= overlapBounds[0] ||
-      overlapBounds[3] <= overlapBounds[2]
-    ) {
+    if (AABox2d.isEmpty(overlapBounds)) {
       // there is no overlap with the two bounds, we should
       // never get here
       throw new Error(
@@ -413,19 +384,16 @@ export default function rasterLayer(layerType) {
       )
     }
 
-    const overlapBoundsWidth = overlapBounds[1] - overlapBounds[0]
-    const overlapBoundsHeight = overlapBounds[3] - overlapBounds[2]
-    const overlapCenterX = overlapBounds[0] + overlapBoundsWidth / 2
-    const overlapCenterY = overlapBounds[2] + overlapBoundsHeight / 2
+    const overlapSz = AABox2d.getSize(Point2d.create(), overlapBounds)
+    const overlapCtr = AABox2d.getCenter(Point2d.create(), overlapBounds)
 
     const padding = 6 // in pixels TODO(croot): expose in css?
-    const bottom = false
     let topOffset = 0
 
     const popupDiv = parentElem
       .append("div")
       .attr("class", _popup_wrap_class)
-      .style({ left: posX + "px", top: posY + "px" })
+      .style({ left: boundsCtr[0] + "px", top: boundsCtr[1] + "px" })
 
     const popupBox = popupDiv
       .append("div")
@@ -451,119 +419,119 @@ export default function rasterLayer(layerType) {
           wDiff = 0
 
         if (
-          overlapBoundsWidth >= boxWidth ||
-          (posX + halfBoxWidth < width && posX - halfBoxWidth >= 0)
+          overlapSz[0] >= boxWidth ||
+          (boundsCtr[0] + halfBoxWidth < width && boundsCtr[0] - halfBoxWidth >= 0)
         ) {
-          left = posX - overlapCenterX
-          hDiff = overlapBounds[2] - boxHeight
+          left = boundsCtr[0] - overlapCtr[0]
+          hDiff = overlapBounds[AABox2d.MINY] - boxHeight
 
           if (hDiff >= 0) {
             // can fit on top of shape and in the center of the shape horizontally
             topOffset = -(
-              posY -
-              overlapBounds[2] +
+              boundsCtr[1] -
+              overlapBounds[AABox2d.MINY] +
               Math.min(padding, hDiff) +
               halfBoxHeight
             )
             return left + "px"
           }
 
-          hDiff = overlapBounds[3] + boxHeight
+          hDiff = overlapBounds[AABox2d.MAXY] + boxHeight
           if (hDiff < height) {
             // can fit on bottom and in the center of the shape horizontally
             topOffset =
-              overlapBounds[3] - posY + Math.min(padding, hDiff) + halfBoxHeight
+              overlapBounds[AABox2d.MAXY] - boundsCtr[1] + Math.min(padding, hDiff) + halfBoxHeight
             return left + "px"
           }
         }
 
         if (
-          overlapBoundsHeight >= boxHeight ||
-          (posY + halfBoxHeight < height && posY - halfBoxHeight >= 0)
+          overlapSz[1] >= boxHeight ||
+          (boundsCtr[1] + halfBoxHeight < height && boundsCtr[1] - halfBoxHeight >= 0)
         ) {
-          topOffset = overlapCenterY - posY
+          topOffset = overlapCtr[1] - boundsCtr[1]
 
-          wDiff = overlapBounds[0] - boxWidth
+          wDiff = overlapBounds[AABox2d.MINX] - boxWidth
           if (wDiff >= 0) {
             // can fit on the left in the center of the shape vertically
             left = -(
-              posX -
-              overlapBounds[0] +
+              boundsCtr[0] -
+              overlapBounds[AABox2d.MINX] +
               Math.min(padding, wDiff) +
               halfBoxWidth
             )
             return left + "px"
           }
 
-          wDiff = overlapBounds[1] + boxWidth
+          wDiff = overlapBounds[AABox2d.MAXX] + boxWidth
           if (wDiff < width) {
             // can fit on right in the center of the shape vertically
             left =
-              overlapBounds[1] - posX + Math.min(padding, wDiff) + halfBoxWidth
+              overlapBounds[AABox2d.MAXX] - boundsCtr[0] + Math.min(padding, wDiff) + halfBoxWidth
             return left + "px"
           }
         }
 
         if (
-          width - overlapBoundsWidth >= boxWidth &&
-          height - overlapBoundsHeight >= boxHeight
+          width - overlapSz[0] >= boxWidth &&
+          height - overlapSz[1] >= boxHeight
         ) {
           // we can fit the popup box in the remaining negative space.
           // Let's figure out where exactly
           if (
-            Math.abs(boxHeight - overlapBoundsHeight) <
-            Math.abs(boxWidth - overlapBoundsWidth)
+            Math.abs(boxHeight - overlapSz[1]) <
+            Math.abs(boxWidth - overlapSz[0])
           ) {
-            hDiff = height - overlapBoundsHeight - boxHeight
-            if (overlapBounds[2] < height - overlapBounds[3]) {
-              topOffset = Math.min(padding, hDiff) + halfBoxHeight - posY
+            hDiff = height - overlapSz[1] - boxHeight
+            if (overlapBounds[AABox2d.MINY] < height - overlapBounds[AABox2d.MAXY]) {
+              topOffset = Math.min(padding, hDiff) + halfBoxHeight - boundsCtr[1]
             } else {
               topOffset =
-                height - Math.min(padding, hDiff) - halfBoxHeight - posY
+                height - Math.min(padding, hDiff) - halfBoxHeight - boundsCtr[1]
             }
 
-            wDiff = overlapBounds[0] - boxWidth
+            wDiff = overlapBounds[AABox2d.MINX] - boxWidth
             if (wDiff >= 0) {
               // can fit on the left of the bounds
               left = -(
-                posX -
-                overlapBounds[0] +
+                boundsCtr[0] -
+                overlapBounds[AABox2d.MINX] +
                 Math.min(padding, wDiff) +
                 halfBoxWidth
               )
             } else {
-              wDiff = overlapBounds[1] + boxWidth
+              wDiff = overlapBounds[AABox2d.MAXX] + boxWidth
               // can fit on right right of the bounds
               left =
-                overlapBounds[1] -
-                posX +
+                overlapBounds[AABox2d.MAXX] -
+                boundsCtr[0] +
                 Math.min(padding, wDiff) +
                 halfBoxWidth
             }
             return left + "px"
           } else {
-            wDiff = width - overlapBoundsWidth - boxWidth
-            if (overlapBounds[0] < width - overlapBounds[1]) {
-              left = Math.min(padding, wDiff) + halfBoxWidth - posX
+            wDiff = width - overlapSz[0] - boxWidth
+            if (overlapBounds[AABox2d.MINX] < width - overlapBounds[AABox2d.MAXX]) {
+              left = Math.min(padding, wDiff) + halfBoxWidth - boundsCtr[0]
             } else {
-              left = width - Math.min(padding, wDiff) - halfBoxWidth - posX
+              left = width - Math.min(padding, wDiff) - halfBoxWidth - boundsCtr[0]
             }
 
-            hDiff = overlapBounds[2] - boxHeight
+            hDiff = overlapBounds[AABox2d.MINY] - boxHeight
             if (hDiff >= 0) {
               // can fit on top of shape and in the center of the shape horizontally
               topOffset = -(
-                posY -
-                overlapBounds[2] +
+                boundsCtr[1] -
+                overlapBounds[AABox2d.MINY] +
                 Math.min(padding, hDiff) +
                 halfBoxHeight
               )
             } else {
-              hDiff = overlapBounds[3] + boxHeight
+              hDiff = overlapBounds[AABox2d.MAXY] + boxHeight
               // can fit on bottom and in the center of the shape horizontally
               topOffset =
-                overlapBounds[3] -
-                posY +
+                overlapBounds[AABox2d.MAXY] -
+                boundsCtr[1] +
                 Math.min(padding, hDiff) +
                 halfBoxHeight
             }
@@ -571,15 +539,15 @@ export default function rasterLayer(layerType) {
           }
         }
 
-        if (boxWidth * boxHeight < overlapBoundsWidth * overlapBoundsHeight) {
+        if (boxWidth * boxHeight < overlapSz[0] * overlapSz[1]) {
           // use the center of the overlapping bounds in the case where the box
           // can't fit anwhere on the outside
-          topOffset = overlapCenterY - posY
-          left = overlapCenterX - posX
+          topOffset = overlapCtr[1] - boundsCtr[1]
+          left = overlapCtr[0] - boundsCtr[0]
         } else {
           // use the center of the screen
-          topOffset = height / 2 - posY
-          left = width / 2 - posX
+          topOffset = height / 2 - boundsCtr[1]
+          left = width / 2 - boundsCtr[0]
         }
         return left + "px"
       })
