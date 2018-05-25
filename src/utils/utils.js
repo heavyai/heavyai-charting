@@ -388,12 +388,15 @@ utils.b64toBlob = function(b64Data, contentType, sliceSize) {
   return blob
 }
 
-utils.getFontSizeFromWidth = function(text, parent, chartWidth, chartHeight) {
+utils.getFontSizeFromWidth = function(text, chartWidth, chartHeight) {
   const BASE_FONT_SIZE = 12
   const MIN_FONT_SIZE = 4
-  const tmpText = parent.append("span")
+  const tmpText = d3.select("body").append("span")
+    .attr("class", "tmp-text")
     .style("font-size", BASE_FONT_SIZE + "px")
     .style("position", "absolute")
+    .style("opacity", 0)
+    .style("margin-right", 10000)
     .html(text)
   const node = tmpText.node()
 
