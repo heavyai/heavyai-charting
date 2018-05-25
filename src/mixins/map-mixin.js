@@ -427,6 +427,8 @@ export default function mapMixin(
     if (!_activeLayer) {
       _activeLayer = "_points"
       const toBeAddedOverlay = "overlay" + _activeLayer
+      const firstSymbolLayerId = getFirstSymbolLayerId()
+
       map.addSource(toBeAddedOverlay, {
         type: "image",
         url: blobUrl,
@@ -438,7 +440,7 @@ export default function mapMixin(
         source: toBeAddedOverlay,
         type: "raster",
         paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
-      })
+      }, firstSymbolLayerId)
     } else {
       const overlayName = "overlay" + _activeLayer
       const imageSrc = map.getSource(overlayName)
@@ -520,6 +522,18 @@ export default function mapMixin(
       _map.resize()
     }
   })
+
+  function getFirstSymbolLayerId () {
+    let firstSymbolId = null
+    const layers = _map.getStyle().layers
+    for (let i = 0; i < layers.length; ++i) {
+      if (layers[i].type === "symbol") {
+        firstSymbolId = layers[i].id
+        break
+      }
+    }
+    return firstSymbolId
+  }
 
   function getMinMax(value) {
     return _chart

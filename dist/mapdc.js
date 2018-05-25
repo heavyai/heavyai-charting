@@ -11261,6 +11261,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (!_activeLayer) {
       _activeLayer = "_points";
       var toBeAddedOverlay = "overlay" + _activeLayer;
+      var firstSymbolLayerId = getFirstSymbolLayerId();
+
       map.addSource(toBeAddedOverlay, {
         type: "image",
         url: blobUrl,
@@ -11272,7 +11274,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         source: toBeAddedOverlay,
         type: "raster",
         paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
-      });
+      }, firstSymbolLayerId);
     } else {
       var overlayName = "overlay" + _activeLayer;
       var imageSrc = map.getSource(overlayName);
@@ -11347,6 +11349,18 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       _map.resize();
     }
   });
+
+  function getFirstSymbolLayerId() {
+    var firstSymbolId = null;
+    var layers = _map.getStyle().layers;
+    for (var i = 0; i < layers.length; ++i) {
+      if (layers[i].type === "symbol") {
+        firstSymbolId = layers[i].id;
+        break;
+      }
+    }
+    return firstSymbolId;
+  }
 
   function getMinMax(value) {
     return _chart.crossfilter().groupAll().reduce([{ expression: value, agg_mode: "min", name: "minimum" }, { expression: value, agg_mode: "max", name: "maximum" }]).valuesAsync(true, true).then(function (bounds) {
@@ -43033,14 +43047,30 @@ exports.default = bbox;
 
 /***/ }),
 /* 196 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["coordEach"] = coordEach;
+/* harmony export (immutable) */ __webpack_exports__["coordReduce"] = coordReduce;
+/* harmony export (immutable) */ __webpack_exports__["propEach"] = propEach;
+/* harmony export (immutable) */ __webpack_exports__["propReduce"] = propReduce;
+/* harmony export (immutable) */ __webpack_exports__["featureEach"] = featureEach;
+/* harmony export (immutable) */ __webpack_exports__["featureReduce"] = featureReduce;
+/* harmony export (immutable) */ __webpack_exports__["coordAll"] = coordAll;
+/* harmony export (immutable) */ __webpack_exports__["geomEach"] = geomEach;
+/* harmony export (immutable) */ __webpack_exports__["geomReduce"] = geomReduce;
+/* harmony export (immutable) */ __webpack_exports__["flattenEach"] = flattenEach;
+/* harmony export (immutable) */ __webpack_exports__["flattenReduce"] = flattenReduce;
+/* harmony export (immutable) */ __webpack_exports__["segmentEach"] = segmentEach;
+/* harmony export (immutable) */ __webpack_exports__["segmentReduce"] = segmentReduce;
+/* harmony export (immutable) */ __webpack_exports__["lineEach"] = lineEach;
+/* harmony export (immutable) */ __webpack_exports__["lineReduce"] = lineReduce;
+/* harmony export (immutable) */ __webpack_exports__["findSegment"] = findSegment;
+/* harmony export (immutable) */ __webpack_exports__["findPoint"] = findPoint;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__turf_helpers__ = __webpack_require__(197);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__turf_helpers___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__);
 
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var helpers = __webpack_require__(197);
 
 /**
  * Callback for coordEach
@@ -43150,7 +43180,7 @@ function coordEach(geojson, callback, excludeWrapCoord) {
                 break;
             case 'MultiPolygon':
                 for (j = 0; j < coords.length; j++) {
-                    geometryIndex = 0;
+                    if (geomType === 'MultiPolygon') geometryIndex = 0;
                     for (k = 0; k < coords[j].length; k++) {
                         for (l = 0; l < coords[j][k].length - wrapShrink; l++) {
                             if (callback(coords[j][k][l], coordIndex, featureIndex, multiFeatureIndex, geometryIndex) === false) return false;
@@ -43633,7 +43663,7 @@ function flattenEach(geojson, callback) {
         case 'Point':
         case 'LineString':
         case 'Polygon':
-            if (callback(helpers.feature(geometry, properties, {bbox: bbox, id: id}), featureIndex, 0) === false) return false;
+            if (callback(Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["feature"])(geometry, properties, {bbox: bbox, id: id}), featureIndex, 0) === false) return false;
             return;
         }
 
@@ -43658,7 +43688,7 @@ function flattenEach(geojson, callback) {
                 type: geomType,
                 coordinates: coordinate
             };
-            if (callback(helpers.feature(geom, properties), featureIndex, multiFeatureIndex) === false) return false;
+            if (callback(Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["feature"])(geom, properties), featureIndex, multiFeatureIndex) === false) return false;
         }
     });
 }
@@ -43765,20 +43795,13 @@ function segmentEach(geojson, callback) {
 
         // Generate 2-vertex line segments
         var previousCoords;
-        var previousFeatureIndex = 0;
-        var previousMultiIndex = 0;
-        var prevGeomIndex = 0;
-        if (coordEach(feature, function (currentCoord, coordIndex, featureIndexCoord, multiPartIndexCoord, geometryIndex) {
+        if (coordEach(feature, function (currentCoord, coordIndex, featureIndexCoord, mutliPartIndexCoord, geometryIndex) {
             // Simulating a meta.coordReduce() since `reduce` operations cannot be stopped by returning `false`
-            if (previousCoords === undefined || featureIndex > previousFeatureIndex || multiPartIndexCoord > previousMultiIndex || geometryIndex > prevGeomIndex) {
+            if (previousCoords === undefined) {
                 previousCoords = currentCoord;
-                previousFeatureIndex = featureIndex;
-                previousMultiIndex = multiPartIndexCoord;
-                prevGeomIndex = geometryIndex;
-                segmentIndex = 0;
                 return;
             }
-            var currentSegment = helpers.lineString([previousCoords, currentCoord], feature.properties);
+            var currentSegment = Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["lineString"])([previousCoords, currentCoord], feature.properties);
             if (callback(currentSegment, featureIndex, multiFeatureIndex, geometryIndex, segmentIndex) === false) return false;
             segmentIndex++;
             previousCoords = currentCoord;
@@ -43894,7 +43917,7 @@ function lineEach(geojson, callback) {
             break;
         case 'Polygon':
             for (var geometryIndex = 0; geometryIndex < coords.length; geometryIndex++) {
-                if (callback(helpers.lineString(coords[geometryIndex], feature.properties), featureIndex, multiFeatureIndex, geometryIndex) === false) return false;
+                if (callback(Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["lineString"])(coords[geometryIndex], feature.properties), featureIndex, multiFeatureIndex, geometryIndex) === false) return false;
             }
             break;
         }
@@ -43993,7 +44016,7 @@ function lineReduce(geojson, callback, initialValue) {
 function findSegment(geojson, options) {
     // Optional Parameters
     options = options || {};
-    if (!helpers.isObject(options)) throw new Error('options is invalid');
+    if (!Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["isObject"])(options)) throw new Error('options is invalid');
     var featureIndex = options.featureIndex || 0;
     var multiFeatureIndex = options.multiFeatureIndex || 0;
     var geometryIndex = options.geometryIndex || 0;
@@ -44035,20 +44058,20 @@ function findSegment(geojson, options) {
         return null;
     case 'LineString':
         if (segmentIndex < 0) segmentIndex = coords.length + segmentIndex - 1;
-        return helpers.lineString([coords[segmentIndex], coords[segmentIndex + 1]], properties, options);
+        return Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["lineString"])([coords[segmentIndex], coords[segmentIndex + 1]], properties, options);
     case 'Polygon':
         if (geometryIndex < 0) geometryIndex = coords.length + geometryIndex;
         if (segmentIndex < 0) segmentIndex = coords[geometryIndex].length + segmentIndex - 1;
-        return helpers.lineString([coords[geometryIndex][segmentIndex], coords[geometryIndex][segmentIndex + 1]], properties, options);
+        return Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["lineString"])([coords[geometryIndex][segmentIndex], coords[geometryIndex][segmentIndex + 1]], properties, options);
     case 'MultiLineString':
         if (multiFeatureIndex < 0) multiFeatureIndex = coords.length + multiFeatureIndex;
         if (segmentIndex < 0) segmentIndex = coords[multiFeatureIndex].length + segmentIndex - 1;
-        return helpers.lineString([coords[multiFeatureIndex][segmentIndex], coords[multiFeatureIndex][segmentIndex + 1]], properties, options);
+        return Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["lineString"])([coords[multiFeatureIndex][segmentIndex], coords[multiFeatureIndex][segmentIndex + 1]], properties, options);
     case 'MultiPolygon':
         if (multiFeatureIndex < 0) multiFeatureIndex = coords.length + multiFeatureIndex;
         if (geometryIndex < 0) geometryIndex = coords[multiFeatureIndex].length + geometryIndex;
         if (segmentIndex < 0) segmentIndex = coords[multiFeatureIndex][geometryIndex].length - segmentIndex - 1;
-        return helpers.lineString([coords[multiFeatureIndex][geometryIndex][segmentIndex], coords[multiFeatureIndex][geometryIndex][segmentIndex + 1]], properties, options);
+        return Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["lineString"])([coords[multiFeatureIndex][geometryIndex][segmentIndex], coords[multiFeatureIndex][geometryIndex][segmentIndex + 1]], properties, options);
     }
     throw new Error('geojson is invalid');
 }
@@ -44089,7 +44112,7 @@ function findSegment(geojson, options) {
 function findPoint(geojson, options) {
     // Optional Parameters
     options = options || {};
-    if (!helpers.isObject(options)) throw new Error('options is invalid');
+    if (!Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["isObject"])(options)) throw new Error('options is invalid');
     var featureIndex = options.featureIndex || 0;
     var multiFeatureIndex = options.multiFeatureIndex || 0;
     var geometryIndex = options.geometryIndex || 0;
@@ -44127,47 +44150,29 @@ function findPoint(geojson, options) {
     var coords = geometry.coordinates;
     switch (geometry.type) {
     case 'Point':
-        return helpers.point(coords, properties, options);
+        return Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["point"])(coords, properties, options);
     case 'MultiPoint':
         if (multiFeatureIndex < 0) multiFeatureIndex = coords.length + multiFeatureIndex;
-        return helpers.point(coords[multiFeatureIndex], properties, options);
+        return Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["point"])(coords[multiFeatureIndex], properties, options);
     case 'LineString':
         if (coordIndex < 0) coordIndex = coords.length + coordIndex;
-        return helpers.point(coords[coordIndex], properties, options);
+        return Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["point"])(coords[coordIndex], properties, options);
     case 'Polygon':
         if (geometryIndex < 0) geometryIndex = coords.length + geometryIndex;
         if (coordIndex < 0) coordIndex = coords[geometryIndex].length + coordIndex;
-        return helpers.point(coords[geometryIndex][coordIndex], properties, options);
+        return Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["point"])(coords[geometryIndex][coordIndex], properties, options);
     case 'MultiLineString':
         if (multiFeatureIndex < 0) multiFeatureIndex = coords.length + multiFeatureIndex;
         if (coordIndex < 0) coordIndex = coords[multiFeatureIndex].length + coordIndex;
-        return helpers.point(coords[multiFeatureIndex][coordIndex], properties, options);
+        return Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["point"])(coords[multiFeatureIndex][coordIndex], properties, options);
     case 'MultiPolygon':
         if (multiFeatureIndex < 0) multiFeatureIndex = coords.length + multiFeatureIndex;
         if (geometryIndex < 0) geometryIndex = coords[multiFeatureIndex].length + geometryIndex;
         if (coordIndex < 0) coordIndex = coords[multiFeatureIndex][geometryIndex].length - coordIndex;
-        return helpers.point(coords[multiFeatureIndex][geometryIndex][coordIndex], properties, options);
+        return Object(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__["point"])(coords[multiFeatureIndex][geometryIndex][coordIndex], properties, options);
     }
     throw new Error('geojson is invalid');
 }
-
-exports.coordEach = coordEach;
-exports.coordReduce = coordReduce;
-exports.propEach = propEach;
-exports.propReduce = propReduce;
-exports.featureEach = featureEach;
-exports.featureReduce = featureReduce;
-exports.coordAll = coordAll;
-exports.geomEach = geomEach;
-exports.geomReduce = geomReduce;
-exports.flattenEach = flattenEach;
-exports.flattenReduce = flattenReduce;
-exports.segmentEach = segmentEach;
-exports.segmentReduce = segmentReduce;
-exports.lineEach = lineEach;
-exports.lineReduce = lineReduce;
-exports.findSegment = findSegment;
-exports.findPoint = findPoint;
 
 
 /***/ }),
