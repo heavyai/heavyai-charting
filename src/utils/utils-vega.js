@@ -137,18 +137,27 @@ export function createVegaAttrMixin(
     if (input === null) {
       rtnVal = layerObj[nullFunc]()
     } else if (input !== undefined && useScale) {
-      const capAttrObj = layerObj.getState().encoding[capAttrMap[capAttrName]]
+      const encodingAttrName = capAttrMap[capAttrName]
+      const capAttrObj = layerObj.getState().encoding[encodingAttrName]
       if (
         capAttrObj &&
         capAttrObj.domain &&
         capAttrObj.domain.length &&
         capAttrObj.range.length
       ) {
+        let domainVals = capAttrObj.domain
+        if (domainVals === "auto") {
+          const domainGetterFunc = encodingAttrName + "Domain"
+          if (typeof layerObj[domainGetterFunc] !== "function") {
+            throw new Error(`Looking for a ${domainGetterFunc} function on for attr ${attrName}`)
+          }
+          domainVals = layerObj[domainGetterFunc]()
+        }
         if (capAttrObj.type === "ordinal") {
-          ordScale.domain(capAttrObj.domain).range(capAttrObj.range)
+          ordScale.domain(domainVals).range(capAttrObj.range)
           rtnVal = ordScale(input)
         } else {
-          quantScale.domain(capAttrObj.domain).range(capAttrObj.range)
+          quantScale.domain(domainVals).range(capAttrObj.range)
           rtnVal = quantScale(input)
         }
       }

@@ -153,7 +153,7 @@ export default function bubbleMixin(_chart) {
       label
         .attr("opacity", 0)
         .attr("pointer-events", labelPointerEvent)
-        .html(labelFunction)
+        .text(labelFunction)
 
       transition(label, _chart.transitionDuration()).attr("opacity", 1)
 
