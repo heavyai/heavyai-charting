@@ -211,8 +211,8 @@ export default function pieChart(parent, chartGroup) {
         "deselected-label",
         d => _chart.hasFilter() && !isSelectedSlice(d)
       )
-      .text((d) => _chart.label()(d.data))
-      .text(function(d) {
+      .html((d) => _chart.label()(d.data))
+      .html(function(d) {
         const availableLabelWidth = getAvailableLabelWidth(d)
         const width = d3
           .select(this)

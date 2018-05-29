@@ -431,7 +431,7 @@ export default function rowChart(parent, chartGroup) {
           d => _chart.hasFilter() && !isSelectedRow(d)
         )
         /* --------------------------------------------------------------------------*/
-        .text(_chart.label())
+        .html(_chart.label())
       transition(lab, _chart.transitionDuration()).attr("transform", translateX)
     }
 
@@ -447,7 +447,7 @@ export default function rowChart(parent, chartGroup) {
         .attr("dy", isStackLabel() ? "1.1em" : _dyOffset)
         .on("click", onClick)
         .attr("text-anchor", isStackLabel() ? "start" : "end")
-        .text(d => {
+        .html(d => {
           if (d.label) {
             return d.label
           } else {
