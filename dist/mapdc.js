@@ -4931,10 +4931,10 @@ utils.b64toBlob = function (b64Data, contentType, sliceSize) {
   return blob;
 };
 
-utils.getFontSizeFromWidth = function (text, parent, chartWidth, chartHeight) {
+utils.getFontSizeFromWidth = function (text, chartWidth, chartHeight) {
   var BASE_FONT_SIZE = 12;
   var MIN_FONT_SIZE = 4;
-  var tmpText = parent.append("span").style("font-size", BASE_FONT_SIZE + "px").style("position", "absolute").html(text);
+  var tmpText = _d2.default.select("body").append("span").attr("class", "tmp-text").style("font-size", BASE_FONT_SIZE + "px").style("position", "absolute").style("opacity", 0).style("margin-right", 10000).html(text);
   var node = tmpText.node();
 
   var textWidth = null;
@@ -9950,13 +9950,22 @@ function createVegaAttrMixin(layerObj, attrName, defaultVal, nullVal, useScale, 
     if (input === null) {
       rtnVal = layerObj[nullFunc]();
     } else if (input !== undefined && useScale) {
-      var capAttrObj = layerObj.getState().encoding[capAttrMap[capAttrName]];
+      var encodingAttrName = capAttrMap[capAttrName];
+      var capAttrObj = layerObj.getState().encoding[encodingAttrName];
       if (capAttrObj && capAttrObj.domain && capAttrObj.domain.length && capAttrObj.range.length) {
+        var domainVals = capAttrObj.domain;
+        if (domainVals === "auto") {
+          var domainGetterFunc = encodingAttrName + "Domain";
+          if (typeof layerObj[domainGetterFunc] !== "function") {
+            throw new Error("Looking for a " + domainGetterFunc + " function on for attr " + attrName);
+          }
+          domainVals = layerObj[domainGetterFunc]();
+        }
         if (capAttrObj.type === "ordinal") {
-          ordScale.domain(capAttrObj.domain).range(capAttrObj.range);
+          ordScale.domain(domainVals).range(capAttrObj.range);
           rtnVal = ordScale(input);
         } else {
-          quantScale.domain(capAttrObj.domain).range(capAttrObj.range);
+          quantScale.domain(domainVals).range(capAttrObj.range);
           rtnVal = quantScale(input);
         }
       }
@@ -22080,7 +22089,7 @@ function multipleKeysLabelMixin(_chart) {
   function label(d) {
     var numberFormatter = _chart && _chart.valueFormatter();
     var dateFormatter = _chart && _chart.dateFormatter();
-    var dimensionNames = _chart.dimension().value();
+    var dimensionNames = _chart.dimension().getDimensionName();
 
     if (dimensionNames.length === 1) {
       return format(d.key0, dimensionNames[0], numberFormatter, dateFormatter);
@@ -25857,6 +25866,14 @@ function getMarkType() {
   }
 }
 
+function getSizeScaleName(layerName) {
+  return layerName + "_size";
+}
+
+function getColorScaleName(layerName) {
+  return layerName + "_fillColor";
+}
+
 function getSizing(sizeAttr, cap) {
   var lastFilteredSize = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : cap;
   var pixelRatio = arguments[3];
@@ -25866,7 +25883,7 @@ function getSizing(sizeAttr, cap) {
     return sizeAttr;
   } else if ((typeof sizeAttr === "undefined" ? "undefined" : _typeof(sizeAttr)) === "object" && sizeAttr.type === "quantitative") {
     return {
-      scale: layerName + "_size",
+      scale: getSizeScaleName(layerName),
       field: "size"
     };
   } else if (sizeAttr === "auto") {
@@ -25881,12 +25898,12 @@ function getSizing(sizeAttr, cap) {
 function getColor(color, layerName) {
   if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
     return {
-      scale: layerName + "_fillColor",
+      scale: getColorScaleName(layerName),
       value: 0
     };
   } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
     return {
-      scale: layerName + "_fillColor",
+      scale: getColorScaleName(layerName),
       field: "color"
     };
   } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object") {
@@ -26002,7 +26019,7 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
   return transforms;
 }
 
-function getScales(_ref2, layerName) {
+function getScales(_ref2, layerName, scaleDomainFields, xformDataSource) {
   var size = _ref2.size,
       color = _ref2.color;
 
@@ -26010,9 +26027,9 @@ function getScales(_ref2, layerName) {
 
   if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
     scales.push({
-      name: layerName + "_size",
+      name: getSizeScaleName(layerName),
       type: "linear",
-      domain: size.domain,
+      domain: size.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.size } : size.domain,
       range: size.range,
       clamp: true
     });
@@ -26020,7 +26037,7 @@ function getScales(_ref2, layerName) {
 
   if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
     scales.push({
-      name: layerName + "_fillColor",
+      name: getColorScaleName(layerName),
       type: "linear",
       domain: color.range.map(function (c, i) {
         return i * 100 / (color.range.length - 1) / 100;
@@ -26042,9 +26059,9 @@ function getScales(_ref2, layerName) {
 
   if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "ordinal") {
     scales.push({
-      name: layerName + "_fillColor",
+      name: getColorScaleName(layerName),
       type: "ordinal",
-      domain: color.domain,
+      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
       range: color.range.map(function (c) {
         return (0, _utilsVega.adjustOpacity)(c, color.opacity);
       }),
@@ -26055,13 +26072,12 @@ function getScales(_ref2, layerName) {
 
   if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "quantitative") {
     scales.push({
-      name: layerName + "_fillColor",
+      name: getColorScaleName(layerName),
       type: "quantize",
-      domain: color.domain.map(function (c) {
+      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain.map(function (c) {
         return (0, _utilsVega.adjustOpacity)(c, color.opacity);
       }),
-      range: color.range,
-      clamp: true
+      range: color.range
     });
   }
 
@@ -26070,6 +26086,8 @@ function getScales(_ref2, layerName) {
 
 function rasterLayerPointMixin(_layer) {
   var state = null;
+  _layer.colorDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
+  _layer.sizeDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
 
   _layer.setState = function (setter) {
     if (typeof setter === "function") {
@@ -26099,6 +26117,101 @@ function rasterLayerPointMixin(_layer) {
     });
   };
 
+  function usesAutoColors() {
+    return state.encoding.color.domain === "auto";
+  }
+
+  function usesAutoSize() {
+    return state.encoding.size.domain === "auto";
+  }
+
+  function getAutoColorVegaTransforms(aggregateNode) {
+    var rtnobj = { transforms: [], fields: [] };
+    if (state.encoding.color.type === "quantitative") {
+      var minoutput = "mincolor",
+          maxoutput = "maxcolor";
+      aggregateNode.fields = aggregateNode.fields.concat(["color", "color", "color", "color"]);
+      aggregateNode.ops = aggregateNode.ops.concat(["min", "max", "avg", "stddev"]);
+      aggregateNode.as = aggregateNode.as.concat(["mincol", "maxcol", "avgcol", "stdcol"]);
+      rtnobj.transforms.push({
+        type: "formula",
+        expr: "max(mincol, avgcol-2*stdcol)",
+        as: minoutput
+      }, {
+        type: "formula",
+        expr: "min(maxcol, avgcol+2*stdcol)",
+        as: maxoutput
+      });
+      rtnobj.fields = [minoutput, maxoutput];
+    } else if (state.encoding.color.type === "ordinal") {
+      var output = "distinctcolor";
+      aggregateNode.fields.push("color");
+      aggregateNode.ops.push("distinct");
+      aggregateNode.as.push(output);
+      rtnobj.fields.push(output);
+    }
+    return rtnobj;
+  }
+
+  function getAutoSizeVegaTransforms(aggregateNode) {
+    var minoutput = "minsize",
+        maxoutput = "maxsize";
+    aggregateNode.fields.push("size", "size", "size", "size");
+    aggregateNode.ops.push("min", "max", "avg", "stddev");
+    aggregateNode.as.push("minsz", "maxsz", "avgsz", "stdsz");
+    return {
+      transforms: [{
+        type: "formula",
+        expr: "max(minsz, avgsz-2*stdsz)",
+        as: minoutput
+      }, {
+        type: "formula",
+        expr: "min(maxsz, avgsz+2*stdsz)",
+        as: maxoutput
+      }],
+      fields: [minoutput, maxoutput]
+    };
+  }
+
+  _layer._updateFromMetadata = function (metadata) {
+    var layerName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+
+    var autoColors = usesAutoColors();
+    var autoSize = usesAutoSize();
+    if ((autoColors || autoSize) && Array.isArray(metadata.scales)) {
+      var colorScaleName = getColorScaleName(layerName);
+      var sizeScaleName = getSizeScaleName(layerName);
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = metadata.scales[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var scale = _step.value;
+
+          if (autoColors && scale.name === colorScaleName) {
+            _layer.colorDomain(scale.domain);
+          } else if (autoSize && scale.name === sizeScaleName) {
+            _layer.sizeDomain(scale.domain);
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  };
+
   _layer.__genVega = function (_ref3) {
     var table = _ref3.table,
         filter = _ref3.filter,
@@ -26107,51 +26220,89 @@ function rasterLayerPointMixin(_layer) {
         pixelRatio = _ref3.pixelRatio,
         layerName = _ref3.layerName;
 
+    var autocolors = usesAutoColors();
+    var autosize = usesAutoSize();
+    var getStatsLayerName = function getStatsLayerName() {
+      return layerName + "_stats";
+    };
+
     var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName);
 
     var markType = getMarkType(state.config);
 
-    return {
-      data: [{
-        name: layerName,
-        sql: _utils.parser.writeSQL({
-          type: "root",
-          source: table,
-          transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
-        })
-      }],
-      scales: getScales(state.encoding, layerName),
-      marks: [{
-        type: markType === "circle" ? "points" : "symbol",
-        from: {
-          data: layerName
+    var data = [{
+      name: layerName,
+      sql: _utils.parser.writeSQL({
+        type: "root",
+        source: table,
+        transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+      })
+    }];
+
+    var scaledomainfields = {};
+    if (autocolors || autosize) {
+      var aggregateNode = {
+        type: "aggregate",
+        fields: [],
+        ops: [],
+        as: []
+      };
+      var transforms = [aggregateNode];
+      if (autocolors) {
+        var xformdata = getAutoColorVegaTransforms(aggregateNode);
+        scaledomainfields.color = xformdata.fields;
+        transforms = transforms.concat(xformdata.transforms);
+      }
+      if (autosize) {
+        var _xformdata = getAutoSizeVegaTransforms(aggregateNode);
+        scaledomainfields.size = _xformdata.fields;
+        transforms = transforms.concat(_xformdata.transforms);
+      }
+      data.push({
+        name: getStatsLayerName(),
+        source: layerName,
+        transform: transforms
+      });
+    }
+
+    var scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName());
+
+    var marks = [{
+      type: markType === "circle" ? "points" : "symbol",
+      from: {
+        data: layerName
+      },
+      properties: Object.assign({}, markType === "circle" ? {
+        x: {
+          scale: "x",
+          field: "x"
         },
-        properties: Object.assign({}, markType === "circle" ? {
-          x: {
-            scale: "x",
-            field: "x"
-          },
-          y: {
-            scale: "y",
-            field: "y"
-          },
-          fillColor: getColor(state.encoding.color, layerName)
-        } : {
-          xc: {
-            scale: "x",
-            field: "x"
-          },
-          yc: {
-            scale: "y",
-            field: "y"
-          },
-          fillColor: getColor(state.encoding.color, layerName)
-        }, markType === "circle" ? { size: size } : {
-          shape: markType,
-          width: size,
-          height: size
-        })
-      }]
+        y: {
+          scale: "y",
+          field: "y"
+        },
+        fillColor: getColor(state.encoding.color, layerName)
+      } : {
+        xc: {
+          scale: "x",
+          field: "x"
+        },
+        yc: {
+          scale: "y",
+          field: "y"
+        },
+        fillColor: getColor(state.encoding.color, layerName)
+      }, markType === "circle" ? { size: size } : {
+        shape: markType,
+        width: size,
+        height: size
+      })
+    }];
+
+    return {
+      data: data,
+      scales: scales,
+      marks: marks
     };
   };
 
@@ -26437,6 +26588,7 @@ function validateMiterLimit(newMiterLimit, currMiterLimit) {
 function rasterLayerPolyMixin(_layer) {
   _layer.crossfilter = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
   _layer.filtersInverse = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, false);
+  _layer.colorDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
 
   (0, _utilsVega.createVegaAttrMixin)(_layer, "lineJoin", vegaLineJoinOptions[0], vegaLineJoinOptions[0], false, {
     preDefault: validateLineJoin,
@@ -26533,6 +26685,48 @@ function rasterLayerPolyMixin(_layer) {
     return transforms;
   }
 
+  function getColorScaleName(layerName) {
+    return layerName + "_fillColor";
+  }
+
+  function usesAutoColors() {
+    return state.encoding.color.domain === "auto";
+  }
+
+  _layer._updateFromMetadata = function (metadata) {
+    var layerName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+
+    if (usesAutoColors() && Array.isArray(metadata.scales)) {
+      var colorScaleName = getColorScaleName(layerName);
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = metadata.scales[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var scale = _step.value;
+
+          if (scale.name === colorScaleName) {
+            _layer.colorDomain(scale.domain);
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  };
+
   _layer.__genVega = function (_ref2) {
     var filter = _ref2.filter,
         globalFilter = _ref2.globalFilter,
@@ -26540,6 +26734,11 @@ function rasterLayerPolyMixin(_layer) {
         filtersInverse = _ref2.filtersInverse,
         layerName = _ref2.layerName,
         useProjection = _ref2.useProjection;
+
+    var autocolors = usesAutoColors();
+    var getStatsLayerName = function getStatsLayerName() {
+      return layerName + "_stats";
+    };
 
     var colorRange = state.encoding.color.range.map(function (c) {
       return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
@@ -26562,10 +26761,32 @@ function rasterLayerPolyMixin(_layer) {
       })
     }];
 
+    if (autocolors) {
+      data.push({
+        name: getStatsLayerName(),
+        source: layerName,
+        transform: [{
+          type: "aggregate",
+          fields: ["color", "color", "color", "color"],
+          ops: ["min", "max", "avg", "stddev"],
+          as: ["mincol", "maxcol", "avgcol", "stdcol"]
+        }, {
+          type: "formula",
+          expr: "max(mincol, avgcol-2*stdcol)",
+          as: "mincolor"
+        }, {
+          type: "formula",
+          expr: "min(maxcol, avgcol+2*stdcol)",
+          as: "maxcolor"
+        }]
+      });
+    }
+
+    var colorScaleName = getColorScaleName(layerName);
     var scales = [{
-      name: layerName + "_fillColor",
+      name: colorScaleName,
       type: "quantize",
-      domain: state.encoding.color.domain,
+      domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.domain,
       range: colorRange,
       nullValue: "rgba(214, 215, 214, 0.65)",
       default: "rgba(214, 215, 214, 0.65)"
@@ -26584,7 +26805,7 @@ function rasterLayerPolyMixin(_layer) {
           field: "y"
         },
         fillColor: {
-          scale: layerName + "_fillColor",
+          scale: colorScaleName,
           field: "color"
         },
         strokeColor: _typeof(state.mark) === "object" ? state.mark.strokeColor : "white",
@@ -26883,6 +27104,10 @@ function rasterLayerPolyMixin(_layer) {
         }
         this._geojson = _wellknown2.default.parse(wkt);
         this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true);
+
+        // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
+        // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
+        // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
         this._d3projector = _d2.default.geo.path().projection(this._projector);
         var d3bounds = this._d3projector.bounds(this._geojson);
         return _mapdDraw.AABox2d.create(d3bounds[0][0], d3bounds[0][1], d3bounds[1][0], d3bounds[1][1]);
@@ -27503,6 +27728,7 @@ if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
 }
 
 __webpack_require__(249);
+__webpack_require__(250);
 
 exports.d3 = _d; // eslint-disable-line
 
@@ -47179,7 +47405,7 @@ function numberChart(parent, chartGroup) {
     var TEXT_MARGINS = 64;
     var chartWidth = _chart.width() - TEXT_MARGINS;
     var chartHeight = _chart.height() - TEXT_MARGINS;
-    var fontSize = _utils.utils.getFontSizeFromWidth(formattedValue, wrapper, chartWidth, chartHeight);
+    var fontSize = _utils.utils.getFontSizeFromWidth(formattedValue, chartWidth, chartHeight);
     wrapper.append("span").attr("class", "number-chart-number").style("color", _chart.getColor).style("font-size", fontSize + "px").html(formattedValue);
 
     return _chart;
@@ -47905,6 +48131,10 @@ function getLegendStateFromChart(chart, useMap) {
         scale: _extends({}, color.scale, {
           domain: layer.colorDomain()
         })
+      });
+    } else if (typeof color.scale === "undefined" && color.domain === "auto") {
+      return _extends({}, color, {
+        domain: layer.colorDomain()
       });
     } else {
       return color;
@@ -50675,6 +50905,8 @@ function rowChart(parent, chartGroup) {
       var extent = _d2.default.extent(_rowData, _chart.cappedValueAccessor);
       if (extent[0] > 0) {
         extent[0] = 0;
+      } else if (extent[0] === extent[1] && extent[0] < 0) {
+        extent[1] = 0;
       }
       _x.domain(extent);
     }
@@ -51751,7 +51983,7 @@ function mapdTable(parent, chartGroup) {
     var cols = [];
 
     if (_isGroupedData) {
-      _chart.dimension().value().forEach(function (d, i) {
+      _chart.dimension().getDimensionName().forEach(function (d, i) {
         cols.push({
           expression: d,
           name: "key" + i,
@@ -55381,6 +55613,104 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
   function boxQuartiles(d) {
     return [_d2.default.quantile(d, 0.25), _d2.default.quantile(d, 0.5), _d2.default.quantile(d, 0.75)];
+  }
+})();
+
+/***/ }),
+/* 250 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+(function () {
+  /* istanbul ignore next */
+  if (window.SVGElement) {
+    var serializeXML = function serializeXML(node, output) {
+      var nodeType = node.nodeType;
+      if (nodeType == 3) {
+        // TEXT nodes.
+        // Replace special XML characters with their entities.
+        output.push(node.textContent.replace(/&/, "&amp;").replace(/</, "&lt;").replace(">", "&gt;"));
+      } else if (nodeType == 1) {
+        // ELEMENT nodes.
+        // Serialize Element nodes.
+        output.push("<", node.tagName);
+        if (node.hasAttributes()) {
+          var attrMap = node.attributes;
+          for (var i = 0, len = attrMap.length; i < len; ++i) {
+            var attrNode = attrMap.item(i);
+            output.push(" ", attrNode.name, "='", attrNode.value, "'");
+          }
+        }
+        if (node.hasChildNodes()) {
+          output.push(">");
+          var childNodes = node.childNodes;
+          for (var i = 0, len = childNodes.length; i < len; ++i) {
+            serializeXML(childNodes.item(i), output);
+          }
+          output.push("</", node.tagName, ">");
+        } else {
+          output.push("/>");
+        }
+      } else if (nodeType == 8) {
+        // TODO(codedread): Replace special characters with XML entities?
+        output.push("<!--", node.nodeValue, "-->");
+      } else {
+        // TODO: Handle CDATA nodes.
+        // TODO: Handle ENTITY nodes.
+        // TODO: Handle DOCUMENT nodes.
+        throw "Error serializing XML. Unhandled node of type: " + nodeType;
+      }
+    };
+    // The innerHTML DOM property for SVGElement.
+    Object.defineProperty(window.SVGElement.prototype, "innerHTML", {
+      get: function get() {
+        var output = [];
+        var childNode = this.firstChild;
+        while (childNode) {
+          serializeXML(childNode, output);
+          childNode = childNode.nextSibling;
+        }
+        return output.join("");
+      },
+      set: function set(markupText) {
+        // Wipe out the current contents of the element.
+        while (this.firstChild) {
+          this.removeChild(this.firstChild);
+        }
+
+        try {
+          // Parse the markup into valid nodes.
+          // var dXML = new DOMParser();
+          // dXML.async = false;
+          // Wrap the markup into a SVG node to ensure parsing works.
+          markupText = "<svg xmlns='http://www.w3.org/2000/svg'>" + markupText + "</svg>";
+
+          var divContainer = document.createElement("div");
+          divContainer.innerHTML = markupText;
+          var svgDocElement = divContainer.querySelector("svg");
+          // Now take each node, import it and append to this element.
+          var childNode = svgDocElement.firstChild;
+          while (childNode) {
+            this.appendChild(this.ownerDocument.importNode(childNode, true));
+            childNode = childNode.nextSibling;
+          }
+        } catch (e) {
+          throw e;
+        }
+      }
+    });
+
+    // The innerSVG DOM property for SVGElement.
+    Object.defineProperty(window.SVGElement.prototype, "innerSVG", {
+      get: function get() {
+        return this.innerHTML;
+      },
+      set: function set(markupText) {
+        this.innerHTML = markupText;
+      }
+    });
   }
 })();
 

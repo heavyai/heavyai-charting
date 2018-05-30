@@ -116,6 +116,8 @@ export default function rowChart(parent, chartGroup) {
       const extent = d3.extent(_rowData, _chart.cappedValueAccessor)
       if (extent[0] > 0) {
         extent[0] = 0
+      } else if (extent[0] === extent[1] && extent[0] < 0) {
+        extent[1] = 0
       }
       _x.domain(extent)
     }

@@ -41,6 +41,14 @@ function getMarkType(config = { point: {} }) {
   }
 }
 
+function getSizeScaleName(layerName) {
+  return `${layerName}_size`
+}
+
+function getColorScaleName(layerName) {
+  return `${layerName}_fillColor`
+}
+
 function getSizing(
   sizeAttr,
   cap,
@@ -52,7 +60,7 @@ function getSizing(
     return sizeAttr
   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
     return {
-      scale: layerName + "_size",
+      scale: getSizeScaleName(layerName),
       field: "size"
     }
   } else if (sizeAttr === "auto") {
@@ -75,7 +83,7 @@ function getSizing(
 function getColor(color, layerName) {
   if (typeof color === "object" && color.type === "density") {
     return {
-      scale: layerName + "_fillColor",
+      scale: getColorScaleName(layerName),
       value: 0
     }
   } else if (
@@ -83,7 +91,7 @@ function getColor(color, layerName) {
     (color.type === "ordinal" || color.type === "quantitative")
   ) {
     return {
-      scale: layerName + "_fillColor",
+      scale: getColorScaleName(layerName),
       field: "color"
     }
   } else if (typeof color === "object") {
@@ -206,14 +214,14 @@ function getTransforms(
   return transforms
 }
 
-function getScales({ size, color }, layerName) {
+function getScales({ size, color }, layerName, scaleDomainFields, xformDataSource) {
   const scales = []
 
   if (typeof size === "object" && size.type === "quantitative") {
     scales.push({
-      name: layerName + "_size",
+      name: getSizeScaleName(layerName),
       type: "linear",
-      domain: size.domain,
+      domain: (size.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.size} : size.domain),
       range: size.range,
       clamp: true
     })
@@ -221,7 +229,7 @@ function getScales({ size, color }, layerName) {
 
   if (typeof color === "object" && color.type === "density") {
     scales.push({
-      name: layerName + "_fillColor",
+      name: getColorScaleName(layerName),
       type: "linear",
       domain: color.range.map(
         (c, i) => i * 100 / (color.range.length - 1) / 100
@@ -243,9 +251,9 @@ function getScales({ size, color }, layerName) {
 
   if (typeof color === "object" && color.type === "ordinal") {
     scales.push({
-      name: layerName + "_fillColor",
+      name: getColorScaleName(layerName),
       type: "ordinal",
-      domain: color.domain,
+      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
       range: color.range.map(c => adjustOpacity(c, color.opacity)),
       default: adjustOpacity(
         color.range[color.range.length - 1],
@@ -257,11 +265,10 @@ function getScales({ size, color }, layerName) {
 
   if (typeof color === "object" && color.type === "quantitative") {
     scales.push({
-      name: layerName + "_fillColor",
+      name: getColorScaleName(layerName),
       type: "quantize",
-      domain: color.domain.map(c => adjustOpacity(c, color.opacity)),
-      range: color.range,
-      clamp: true
+      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain.map(c => adjustOpacity(c, color.opacity))),
+      range: color.range
     })
   }
 
@@ -270,6 +277,8 @@ function getScales({ size, color }, layerName) {
 
 export default function rasterLayerPointMixin(_layer) {
   let state = null
+  _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
+  _layer.sizeDomain = createRasterLayerGetterSetter(_layer, null)
 
   _layer.setState = function(setter) {
     if (typeof setter === "function") {
@@ -305,6 +314,82 @@ export default function rasterLayerPointMixin(_layer) {
       .map(sql => sql.select[0])
   }
 
+  function usesAutoColors() {
+    return state.encoding.color.domain === "auto"
+  }
+
+  function usesAutoSize() {
+    return state.encoding.size.domain === "auto"
+  }
+
+  function getAutoColorVegaTransforms(aggregateNode) {
+    const rtnobj = {transforms: [], fields: []}
+    if (state.encoding.color.type === "quantitative") {
+      const minoutput = "mincolor", maxoutput = "maxcolor"
+      aggregateNode.fields = aggregateNode.fields.concat(["color", "color", "color", "color"])
+      aggregateNode.ops = aggregateNode.ops.concat(["min", "max", "avg", "stddev"])
+      aggregateNode.as = aggregateNode.as.concat(["mincol", "maxcol", "avgcol", "stdcol"])
+      rtnobj.transforms.push(
+          {
+            type: "formula",
+            expr: "max(mincol, avgcol-2*stdcol)",
+            as: minoutput
+          },
+          {
+            type: "formula",
+            expr: "min(maxcol, avgcol+2*stdcol)",
+            as: maxoutput
+          }
+        )
+      rtnobj.fields = [minoutput, maxoutput]
+    } else if (state.encoding.color.type === "ordinal") {
+      const output = "distinctcolor"
+      aggregateNode.fields.push("color")
+      aggregateNode.ops.push("distinct")
+      aggregateNode.as.push(output)
+      rtnobj.fields.push(output)
+    }
+    return rtnobj
+  }
+
+  function getAutoSizeVegaTransforms(aggregateNode) {
+    const minoutput = "minsize", maxoutput = "maxsize"
+    aggregateNode.fields.push("size", "size", "size", "size")
+    aggregateNode.ops.push("min", "max", "avg", "stddev")
+    aggregateNode.as.push("minsz", "maxsz", "avgsz", "stdsz")
+    return {
+      transforms: [
+        {
+          type: "formula",
+          expr: "max(minsz, avgsz-2*stdsz)",
+          as: minoutput
+        },
+        {
+          type: "formula",
+          expr: "min(maxsz, avgsz+2*stdsz)",
+          as: maxoutput
+        }
+      ],
+      fields: [minoutput, maxoutput]
+    }
+  }
+
+  _layer._updateFromMetadata = (metadata, layerName = "") => {
+    const autoColors = usesAutoColors()
+    const autoSize = usesAutoSize()
+    if ((autoColors || autoSize) && Array.isArray(metadata.scales)) {
+      const colorScaleName = getColorScaleName(layerName)
+      const sizeScaleName = getSizeScaleName(layerName)
+      for (const scale of metadata.scales) {
+        if (autoColors && scale.name === colorScaleName) {
+          _layer.colorDomain(scale.domain)
+        } else if (autoSize && scale.name === sizeScaleName) {
+          _layer.sizeDomain(scale.domain)
+        }
+      }
+    }
+  }
+
   _layer.__genVega = function({
     table,
     filter,
@@ -313,6 +398,10 @@ export default function rasterLayerPointMixin(_layer) {
     pixelRatio,
     layerName
   }) {
+    const autocolors = usesAutoColors()
+    const autosize = usesAutoSize()
+    const getStatsLayerName = () => layerName + "_stats"
+
     const size = getSizing(
       state.encoding.size,
       state.transform && state.transform.limit,
@@ -323,65 +412,97 @@ export default function rasterLayerPointMixin(_layer) {
 
     const markType = getMarkType(state.config)
 
-    return {
-      data: [
-        {
-          name: layerName,
-          sql: parser.writeSQL({
-            type: "root",
-            source: table,
-            transform: getTransforms(
-              table,
-              filter,
-              globalFilter,
-              state,
-              lastFilteredSize
-            )
-          })
-        }
-      ],
-      scales: getScales(state.encoding, layerName),
-      marks: [
-        {
-          type: markType === "circle" ? "points" : "symbol",
-          from: {
-            data: layerName
-          },
-          properties: Object.assign(
-            {},
-            markType === "circle"
-              ? {
-                  x: {
-                    scale: "x",
-                    field: "x"
-                  },
-                  y: {
-                    scale: "y",
-                    field: "y"
-                  },
-                  fillColor: getColor(state.encoding.color, layerName)
-                }
-              : {
-                  xc: {
-                    scale: "x",
-                    field: "x"
-                  },
-                  yc: {
-                    scale: "y",
-                    field: "y"
-                  },
-                  fillColor: getColor(state.encoding.color, layerName)
-                },
-            markType === "circle"
-              ? { size }
-              : {
-                  shape: markType,
-                  width: size,
-                  height: size
-                }
+    const data = [
+      {
+        name: layerName,
+        sql: parser.writeSQL({
+          type: "root",
+          source: table,
+          transform: getTransforms(
+            table,
+            filter,
+            globalFilter,
+            state,
+            lastFilteredSize
           )
-        }
-      ]
+        })
+      }
+    ]
+
+    const scaledomainfields = {}
+    if (autocolors || autosize) {
+      const aggregateNode = {
+        type: "aggregate",
+        fields: [],
+        ops: [],
+        as: []
+      }
+      let transforms = [aggregateNode]
+      if (autocolors) {
+        const xformdata = getAutoColorVegaTransforms(aggregateNode)
+        scaledomainfields.color = xformdata.fields
+        transforms = transforms.concat(xformdata.transforms)
+      }
+      if (autosize) {
+        const xformdata = getAutoSizeVegaTransforms(aggregateNode)
+        scaledomainfields.size = xformdata.fields
+        transforms = transforms.concat(xformdata.transforms)
+      }
+      data.push({
+        name: getStatsLayerName(),
+        source: layerName,
+        transform: transforms
+      })
+    }
+
+    const scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName())
+
+    const marks = [
+      {
+        type: markType === "circle" ? "points" : "symbol",
+        from: {
+          data: layerName
+        },
+        properties: Object.assign(
+          {},
+          markType === "circle"
+            ? {
+                x: {
+                  scale: "x",
+                  field: "x"
+                },
+                y: {
+                  scale: "y",
+                  field: "y"
+                },
+                fillColor: getColor(state.encoding.color, layerName)
+              }
+            : {
+                xc: {
+                  scale: "x",
+                  field: "x"
+                },
+                yc: {
+                  scale: "y",
+                  field: "y"
+                },
+                fillColor: getColor(state.encoding.color, layerName)
+              },
+          markType === "circle"
+            ? { size }
+            : {
+                shape: markType,
+                width: size,
+                height: size
+              }
+        )
+      }
+    ]
+
+    return {
+      data,
+      scales,
+      marks
     }
   }
 

@@ -336,6 +336,104 @@ describe("rasterLayerPointMixin", () => {
           ]
         })
       })
+
+      it("should properly create vega transforms for \"auto\" used in size scale domain", () => {
+        const layer = rasterLayer("points")
+
+        layer.setState({
+          transform: {limit: 2000000},
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
+          encoding: Object.assign({}, baseEncoding, {
+            size: {
+              type: "quantitative",
+              field: "tweet_count",
+              domain: "auto",
+              range: [3, 8, 15, 25]
+            }
+          })
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+          layerName: "points"
+        })).to.deep.equal({
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as size, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+            },
+            {
+              name: "points_stats",
+              source: "points",
+              transform: [
+                {
+                  type: "aggregate",
+                  fields: ["size", "size", "size", "size"],
+                  ops: ["min", "max", "avg", "stddev"],
+                  as: ["minsz", "maxsz", "avgsz", "stdsz"]
+                },
+                {
+                  type: "formula",
+                  expr: "max(minsz, avgsz-2*stdsz)",
+                  as: "minsize"
+                },
+                {
+                  type: "formula",
+                  expr: "min(maxsz, avgsz+2*stdsz)",
+                  as: "maxsize"
+                }
+              ]
+            }
+          ],
+          "scales": [
+            {
+             "name": "points_size",
+             "type": "linear",
+             "domain": {data: "points_stats", fields: ["minsize", "maxsize"]},
+             "range": [
+               3,
+               8,
+               15,
+               25
+             ],
+             "clamp": true
+           }
+          ],
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "width": {
+                  "scale": "points_size",
+                  "field": "size"
+                },
+                "height": {
+                  "scale": "points_size",
+                  "field": "size"
+                },
+                "shape": "cross",
+                "fillColor": "#27aeef"
+              }
+            }
+          ]
+        })
+      })
     })
 
     describe("Color prop", () => {
@@ -566,6 +664,410 @@ describe("rasterLayerPointMixin", () => {
           ]
         })
 
+      })
+
+      it("should properly create vega transforms for \"auto\" used in quantitative scale domain", () => {
+        const layer = rasterLayer("points")
+
+        layer.setState({
+          transform: {limit: 2000000},
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
+          encoding: Object.assign({}, baseEncoding, {
+            color: {
+              type: "quantitative",
+              field: "tweet_count",
+              domain: "auto",
+              range: ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"]
+            }
+          })
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+          layerName: "points"
+        })).to.deep.equal({
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+            },
+            {
+              name: "points_stats",
+              source: "points",
+              transform: [
+                {
+                  type: "aggregate",
+                  fields: ["color", "color", "color", "color"],
+                  ops: ["min", "max", "avg", "stddev"],
+                  as: ["mincol", "maxcol", "avgcol", "stdcol"]
+                },
+                {
+                  type: "formula",
+                  expr: "max(mincol, avgcol-2*stdcol)",
+                  as: "mincolor"
+                },
+                {
+                  type: "formula",
+                  expr: "min(maxcol, avgcol+2*stdcol)",
+                  as: "maxcolor"
+                }
+              ]
+            }
+          ],
+          "scales": [
+            {
+             "name": "points_fillColor",
+             "type": "quantize",
+             "domain": {data: "points_stats", fields: ["mincolor", "maxcolor"]},
+             "range": ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"]
+           }
+          ],
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "width": 11,
+                "height": 11,
+                "shape": "cross",
+                "fillColor": {
+                  "scale": "points_fillColor",
+                  "field": "color"
+                }
+              }
+            }
+          ]
+        })
+      })
+
+      it("should properly create vega transforms for \"auto\" used in ordinal scale domain", () => {
+        const layer = rasterLayer("points")
+
+        layer.setState({
+          transform: {limit: 2000000},
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
+          encoding: Object.assign({}, baseEncoding, {
+            color: {
+              type: "ordinal",
+              field: "party",
+              domain: "auto",
+              range: ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"]
+            }
+          })
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+          layerName: "points"
+        })).to.deep.equal({
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+            },
+            {
+              name: "points_stats",
+              source: "points",
+              transform: [
+                {
+                  type: "aggregate",
+                  fields: ["color"],
+                  ops: ["distinct"],
+                  as: ["distinctcolor"]
+                }
+              ]
+            }
+          ],
+          "scales": [
+            {
+             "name": "points_fillColor",
+             "type": "ordinal",
+             "domain": {data: "points_stats", fields: ["distinctcolor"]},
+             "range": ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"],
+             "default": "rgba(34,167,240,0.2)",
+             "nullValue": "rgba(202,202,202,1)"
+           }
+          ],
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "width": 11,
+                "height": 11,
+                "shape": "cross",
+                "fillColor": {
+                  "scale": "points_fillColor",
+                  "field": "color"
+                }
+              }
+            }
+          ]
+        })
+      })
+
+      it("should properly create vega transforms for \"auto\" used in both color and size scale domains", () => {
+        const layer = rasterLayer("points")
+
+        layer.setState({
+          transform: {limit: 2000000},
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
+          encoding: Object.assign({}, baseEncoding, {
+            size: {
+              type: "quantitative",
+              field: "tweet_count",
+              domain: "auto",
+              range: [3, 8, 15, 25]
+            },
+            color: {
+              type: "ordinal",
+              field: "party",
+              domain: "auto",
+              range: ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"]
+            }
+          })
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+          layerName: "points"
+        })).to.deep.equal({
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as size, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+            },
+            {
+              name: "points_stats",
+              source: "points",
+              transform: [
+                {
+                  type: "aggregate",
+                  fields: ["color", "size", "size", "size", "size"],
+                  ops: ["distinct", "min", "max", "avg", "stddev"],
+                  as: ["distinctcolor", "minsz", "maxsz", "avgsz", "stdsz"]
+                },
+                {
+                  type: "formula",
+                  expr: "max(minsz, avgsz-2*stdsz)",
+                  as: "minsize"
+                },
+                {
+                  type: "formula",
+                  expr: "min(maxsz, avgsz+2*stdsz)",
+                  as: "maxsize"
+                }
+              ]
+            }
+          ],
+          "scales": [
+            {
+              "name": "points_size",
+              "type": "linear",
+              "domain": {data: "points_stats", fields: ["minsize", "maxsize"]},
+              "range": [
+                3,
+                8,
+                15,
+                25
+              ],
+              "clamp": true
+            },
+            {
+              "name": "points_fillColor",
+              "type": "ordinal",
+              "domain": {data: "points_stats", fields: ["distinctcolor"]},
+              "range": ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"],
+              "default": "rgba(34,167,240,0.2)",
+              "nullValue": "rgba(202,202,202,1)"
+            }
+          ],
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "width": {
+                  "scale": "points_size",
+                  "field": "size"
+                },
+                "height": {
+                  "scale": "points_size",
+                  "field": "size"
+                },
+                "shape": "cross",
+                "fillColor": {
+                  "scale": "points_fillColor",
+                  "field": "color"
+                }
+              }
+            }
+          ]
+        })
+
+        layer.setState({
+          transform: {limit: 2000000},
+          config: {
+            point: {
+              shape: "cross"
+            }
+          },
+          encoding: Object.assign({}, baseEncoding, {
+            size: {
+              type: "quantitative",
+              field: "tweet_count",
+              domain: "auto",
+              range: [3, 8, 15, 25]
+            },
+            color: {
+              type: "quantitative",
+              field: "tweet_count",
+              domain: "auto",
+              range: ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"]
+            }
+          })
+        })
+
+        expect(layer.__genVega({
+          table: "tweets_nov_feb",
+          filter: "lon = 100",
+          layerName: "points"
+        })).to.deep.equal({
+          data: [
+            {
+              name: "points",
+              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as size, tweet_count as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+            },
+            {
+              name: "points_stats",
+              source: "points",
+              transform: [
+                {
+                  type: "aggregate",
+                  fields: ["color", "color", "color", "color", "size", "size", "size", "size"],
+                  ops: ["min", "max", "avg", "stddev", "min", "max", "avg", "stddev"],
+                  as: ["mincol", "maxcol", "avgcol", "stdcol", "minsz", "maxsz", "avgsz", "stdsz"]
+                },
+                {
+                  type: "formula",
+                  expr: "max(mincol, avgcol-2*stdcol)",
+                  as: "mincolor"
+                },
+                {
+                  type: "formula",
+                  expr: "min(maxcol, avgcol+2*stdcol)",
+                  as: "maxcolor"
+                },
+                {
+                  type: "formula",
+                  expr: "max(minsz, avgsz-2*stdsz)",
+                  as: "minsize"
+                },
+                {
+                  type: "formula",
+                  expr: "min(maxsz, avgsz+2*stdsz)",
+                  as: "maxsize"
+                }
+              ]
+            }
+          ],
+          "scales": [
+            {
+              "name": "points_size",
+              "type": "linear",
+              "domain": {data: "points_stats", fields: ["minsize", "maxsize"]},
+              "range": [
+                3,
+                8,
+                15,
+                25
+              ],
+              "clamp": true
+            },
+            {
+              "name": "points_fillColor",
+              "type": "quantize",
+              "domain": {data: "points_stats", fields: ["mincolor", "maxcolor"]},
+              "range": ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"]
+            }
+          ],
+          "marks": [
+            {
+              "type": "symbol",
+              "from": {
+                "data": "points"
+              },
+              "properties": {
+                "xc": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "yc": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "width": {
+                  "scale": "points_size",
+                  "field": "size"
+                },
+                "height": {
+                  "scale": "points_size",
+                  "field": "size"
+                },
+                "shape": "cross",
+                "fillColor": {
+                  "scale": "points_fillColor",
+                  "field": "color"
+                }
+              }
+            }
+          ]
+        })
       })
 
     })
