@@ -351,7 +351,7 @@
   /*----------------------MAPD3 COMBO CHART----------------------------------------*/
 
   // SQL query for the combo chart
-  var query = "SELECT date_trunc(day, dep_timestamp) as key0,COUNT(*) AS val FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00') GROUP BY key0 ORDER BY key0"
+  var query = "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00') GROUP BY key0 ORDER BY key0"
 
   // request data directly using mapd-connector, transform data, render chart
   connector.queryAsync(query, {})
@@ -365,13 +365,26 @@
       {
         group: 0, // will be non-zero for 2nd axis
         id: 0,
-        label: "count",
+        label: "count(*)",
         dimensionName: "Departure Time",
-        measureName: "Count",
+        measureName: "Number Records",
         values: _data
           .map(d => ({
             key: Array.isArray(d.key0) ? d.key0[0] : d.key0,
             value: d.val
+          }))
+          .reverse()
+      },
+      {
+        group: 1, // will be non-zero for 2nd axis
+        id: 1,
+        label: "avg(arrdelay)",
+        dimensionName: "Departure Time",
+        measureName: "Average Arrival Delay",
+        values: _data
+          .map(d => ({
+            key: Array.isArray(d.key0) ? d.key0[0] : d.key0,
+            value: d.val1
           }))
           .reverse()
       }
@@ -397,7 +410,7 @@
       chartType: "line",
       xAxisLabel: "Departure Time",
       yAxisLabel: "Count",
-      y2AxisLabel: "",
+      y2AxisLabel: "Average Arrival Delay",
       yDomainEditorIsEnabled: false,
       y2DomainEditorIsEnabled: false,
       legendIsEnabled: false,
