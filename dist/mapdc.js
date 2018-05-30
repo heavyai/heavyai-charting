@@ -11283,6 +11283,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (!_activeLayer) {
       _activeLayer = "_points";
       var toBeAddedOverlay = "overlay" + _activeLayer;
+      var firstSymbolLayerId = getFirstSymbolLayerId();
+
       map.addSource(toBeAddedOverlay, {
         type: "image",
         url: blobUrl,
@@ -11294,7 +11296,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         source: toBeAddedOverlay,
         type: "raster",
         paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
-      });
+      }, firstSymbolLayerId);
     } else {
       var overlayName = "overlay" + _activeLayer;
       var imageSrc = map.getSource(overlayName);
@@ -11369,6 +11371,18 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       _map.resize();
     }
   });
+
+  function getFirstSymbolLayerId() {
+    var firstSymbolId = null;
+    var layers = _map.getStyle().layers;
+    for (var i = 0; i < layers.length; ++i) {
+      if (layers[i].type === "symbol") {
+        firstSymbolId = layers[i].id;
+        break;
+      }
+    }
+    return firstSymbolId;
+  }
 
   function getMinMax(value) {
     return _chart.crossfilter().groupAll().reduce([{ expression: value, agg_mode: "min", name: "minimum" }, { expression: value, agg_mode: "max", name: "maximum" }]).valuesAsync(true, true).then(function (bounds) {
