@@ -4931,10 +4931,10 @@ utils.b64toBlob = function (b64Data, contentType, sliceSize) {
   return blob;
 };
 
-utils.getFontSizeFromWidth = function (text, parent, chartWidth, chartHeight) {
+utils.getFontSizeFromWidth = function (text, chartWidth, chartHeight) {
   var BASE_FONT_SIZE = 12;
   var MIN_FONT_SIZE = 4;
-  var tmpText = parent.append("span").style("font-size", BASE_FONT_SIZE + "px").style("position", "absolute").html(text);
+  var tmpText = _d2.default.select("body").append("span").attr("class", "tmp-text").style("font-size", BASE_FONT_SIZE + "px").style("position", "absolute").style("opacity", 0).style("margin-right", 10000).html(text);
   var node = tmpText.node();
 
   var textWidth = null;
@@ -47390,7 +47390,7 @@ function numberChart(parent, chartGroup) {
     var TEXT_MARGINS = 64;
     var chartWidth = _chart.width() - TEXT_MARGINS;
     var chartHeight = _chart.height() - TEXT_MARGINS;
-    var fontSize = _utils.utils.getFontSizeFromWidth(formattedValue, wrapper, chartWidth, chartHeight);
+    var fontSize = _utils.utils.getFontSizeFromWidth(formattedValue, chartWidth, chartHeight);
     wrapper.append("span").attr("class", "number-chart-number").style("color", _chart.getColor).style("font-size", fontSize + "px").html(formattedValue);
 
     return _chart;
@@ -48093,7 +48093,7 @@ function setColorState(setter) {
   };
 }
 
-function setColorScaleDomain(domain) {
+function setColorScaleDomain_v2(domain) {
   return function setState(state) {
     return _extends({}, state, {
       encoding: _extends({}, state.encoding, {
@@ -48101,6 +48101,18 @@ function setColorScaleDomain(domain) {
           scale: _extends({}, state.encoding.color.scale, {
             domain: domain
           })
+        })
+      })
+    });
+  };
+}
+
+function setColorScaleDomain_v1(domain) {
+  return function setState(state) {
+    return _extends({}, state, {
+      encoding: _extends({}, state.encoding, {
+        color: _extends({}, state.encoding.color, {
+          domain: domain
         })
       })
     });
@@ -48173,15 +48185,29 @@ function handleLegendLock(_ref) {
   var _layer$getState = layer.getState(),
       color = _layer$getState.encoding.color;
 
+  var redraw = false;
   if (_typeof(color.scale) === "object") {
+    // this if or raster-layer-heatmap-mixin.js
     if (color.legend.locked) {
-      layer.setState(setColorScaleDomain(layer.colorDomain()));
+      layer.setState(setColorScaleDomain_v2(layer.colorDomain()));
     } else {
-      layer.setState(setColorScaleDomain("auto"));
+      layer.setState(setColorScaleDomain_v2("auto"));
+      redraw = true;
+    }
+  } else if (typeof color.scale === "undefined" && typeof color.domain !== "undefined") {
+    if (color.legend.locked && color.domain === "auto") {
+      layer.setState(setColorScaleDomain_v1(layer.colorDomain()));
+    } else if (!color.legend.locked) {
+      layer.setState(setColorScaleDomain_v1("auto"));
+      redraw = true;
     }
   }
 
-  this.legend().setState(getLegendStateFromChart(this));
+  if (redraw) {
+    this.renderAsync(); // not setting the state for the legend here because it'll happen on the redraw
+  } else {
+    this.legend().setState(getLegendStateFromChart(this));
+  }
 }
 
 function handleLegendInput(_ref2) {
@@ -48194,7 +48220,7 @@ function handleLegendInput(_ref2) {
 
 
   if ((typeof scale === "undefined" ? "undefined" : _typeof(scale)) === "object") {
-    layer.setState(setColorScaleDomain(domain));
+    layer.setState(setColorScaleDomain_v2(domain));
   } else {
     layer.setState(setColorState(function () {
       return {
@@ -50890,6 +50916,8 @@ function rowChart(parent, chartGroup) {
       var extent = _d2.default.extent(_rowData, _chart.cappedValueAccessor);
       if (extent[0] > 0) {
         extent[0] = 0;
+      } else if (extent[0] === extent[1] && extent[0] < 0) {
+        extent[1] = 0;
       }
       _x.domain(extent);
     }

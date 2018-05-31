@@ -45,7 +45,7 @@ function setColorState(setter) {
   }
 }
 
-function setColorScaleDomain(domain) {
+function setColorScaleDomain_v2(domain) {
   return function setState(state) {
     return {
       ...state,
@@ -57,6 +57,21 @@ function setColorScaleDomain(domain) {
             ...state.encoding.color.scale,
             domain
           }
+        }
+      }
+    }
+  }
+}
+
+function setColorScaleDomain_v1(domain) {
+  return function setState(state) {
+    return {
+      ...state,
+      encoding: {
+        ...state.encoding,
+        color: {
+          ...state.encoding.color,
+          domain
         }
       }
     }
@@ -135,15 +150,28 @@ export function handleLegendLock({ locked, index = 0 }) {
   )
 
   const { encoding: { color } } = layer.getState()
-  if (typeof color.scale === "object") {
+  let redraw = false
+  if (typeof color.scale === "object") { // this if or raster-layer-heatmap-mixin.js
     if (color.legend.locked) {
-      layer.setState(setColorScaleDomain(layer.colorDomain()))
+      layer.setState(setColorScaleDomain_v2(layer.colorDomain()))
     } else {
-      layer.setState(setColorScaleDomain("auto"))
+      layer.setState(setColorScaleDomain_v2("auto"))
+      redraw = true
+    }
+  } else if (typeof color.scale === "undefined" && typeof color.domain !== "undefined") {
+    if (color.legend.locked && color.domain === "auto") {
+      layer.setState(setColorScaleDomain_v1(layer.colorDomain()))
+    } else if (!color.legend.locked) {
+      layer.setState(setColorScaleDomain_v1("auto"))
+      redraw = true
     }
   }
 
-  this.legend().setState(getLegendStateFromChart(this))
+  if (redraw) {
+    this.renderAsync() // not setting the state for the legend here because it'll happen on the redraw
+  } else {
+    this.legend().setState(getLegendStateFromChart(this))
+  }
 }
 
 export function handleLegendInput({ domain, index = 0 }) {
@@ -151,7 +179,7 @@ export function handleLegendInput({ domain, index = 0 }) {
   const { scale } = layer.getState().encoding.color
 
   if (typeof scale === "object") {
-    layer.setState(setColorScaleDomain(domain))
+    layer.setState(setColorScaleDomain_v2(domain))
   } else {
     layer.setState(
       setColorState(() => ({
