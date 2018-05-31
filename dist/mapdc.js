@@ -10334,7 +10334,7 @@ function bubbleMixin(_chart) {
         label = bubbleGEnter.append("text").attr("text-anchor", "middle").attr("dy", ".3em").on("click", _chart.onClick);
       }
 
-      label.attr("opacity", 0).attr("pointer-events", labelPointerEvent).text(labelFunction);
+      label.attr("opacity", 0).attr("pointer-events", labelPointerEvent).html(labelFunction);
 
       (0, _core.transition)(label, _chart.transitionDuration()).attr("opacity", 1);
 
@@ -11283,6 +11283,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (!_activeLayer) {
       _activeLayer = "_points";
       var toBeAddedOverlay = "overlay" + _activeLayer;
+      var firstSymbolLayerId = getFirstSymbolLayerId();
+
       map.addSource(toBeAddedOverlay, {
         type: "image",
         url: blobUrl,
@@ -11294,7 +11296,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         source: toBeAddedOverlay,
         type: "raster",
         paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
-      });
+      }, firstSymbolLayerId);
     } else {
       var overlayName = "overlay" + _activeLayer;
       var imageSrc = map.getSource(overlayName);
@@ -11369,6 +11371,18 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       _map.resize();
     }
   });
+
+  function getFirstSymbolLayerId() {
+    var firstSymbolId = null;
+    var layers = _map.getStyle().layers;
+    for (var i = 0; i < layers.length; ++i) {
+      if (layers[i].type === "symbol") {
+        firstSymbolId = layers[i].id;
+        break;
+      }
+    }
+    return firstSymbolId;
+  }
 
   function getMinMax(value) {
     return _chart.crossfilter().groupAll().reduce([{ expression: value, agg_mode: "min", name: "minimum" }, { expression: value, agg_mode: "max", name: "maximum" }]).valuesAsync(true, true).then(function (bounds) {
@@ -22075,7 +22089,7 @@ function multipleKeysLabelMixin(_chart) {
   function label(d) {
     var numberFormatter = _chart && _chart.valueFormatter();
     var dateFormatter = _chart && _chart.dateFormatter();
-    var dimensionNames = _chart.dimension().value();
+    var dimensionNames = _chart.dimension().getDimensionName();
 
     if (dimensionNames.length === 1) {
       return format(d.key0, dimensionNames[0], numberFormatter, dateFormatter);
@@ -27714,6 +27728,7 @@ if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
 }
 
 __webpack_require__(249);
+__webpack_require__(250);
 
 exports.d3 = _d; // eslint-disable-line
 
@@ -46109,9 +46124,9 @@ function pieChart(parent, chartGroup) {
 
     labelsEnter.select(".value-dim").classed("deselected-label", function (d) {
       return _chart.hasFilter() && !isSelectedSlice(d);
-    }).text(function (d) {
+    }).html(function (d) {
       return _chart.label()(d.data);
-    }).text(function (d) {
+    }).html(function (d) {
       var availableLabelWidth = getAvailableLabelWidth(d);
       var width = _d2.default.select(this).node().getBoundingClientRect().width;
       var label = _chart.label()(d.data);
@@ -51167,7 +51182,7 @@ function rowChart(parent, chartGroup) {
         return _chart.hasFilter() && !isSelectedRow(d);
       })
       /* --------------------------------------------------------------------------*/
-      .text(_chart.label());
+      .html(_chart.label());
       (0, _core.transition)(lab, _chart.transitionDuration()).attr("transform", translateX);
     }
 
@@ -51175,7 +51190,7 @@ function rowChart(parent, chartGroup) {
     if (_chart.measureLabelsOn()) {
       var measureLab = rows.select(".value-measure").classed("deselected-label", function (d) {
         return _chart.hasFilter() && !isSelectedRow(d);
-      }).attr("y", _labelOffsetY).attr("dy", isStackLabel() ? "1.1em" : _dyOffset).on("click", onClick).attr("text-anchor", isStackLabel() ? "start" : "end").text(function (d) {
+      }).attr("y", _labelOffsetY).attr("dy", isStackLabel() ? "1.1em" : _dyOffset).on("click", onClick).attr("text-anchor", isStackLabel() ? "start" : "end").html(function (d) {
         if (d.label) {
           return d.label;
         } else {
@@ -51994,7 +52009,7 @@ function mapdTable(parent, chartGroup) {
     var cols = [];
 
     if (_isGroupedData) {
-      _chart.dimension().value().forEach(function (d, i) {
+      _chart.dimension().getDimensionName().forEach(function (d, i) {
         cols.push({
           expression: d,
           name: "key" + i,
@@ -55624,6 +55639,104 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
   function boxQuartiles(d) {
     return [_d2.default.quantile(d, 0.25), _d2.default.quantile(d, 0.5), _d2.default.quantile(d, 0.75)];
+  }
+})();
+
+/***/ }),
+/* 250 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+(function () {
+  /* istanbul ignore next */
+  if (window.SVGElement) {
+    var serializeXML = function serializeXML(node, output) {
+      var nodeType = node.nodeType;
+      if (nodeType == 3) {
+        // TEXT nodes.
+        // Replace special XML characters with their entities.
+        output.push(node.textContent.replace(/&/, "&amp;").replace(/</, "&lt;").replace(">", "&gt;"));
+      } else if (nodeType == 1) {
+        // ELEMENT nodes.
+        // Serialize Element nodes.
+        output.push("<", node.tagName);
+        if (node.hasAttributes()) {
+          var attrMap = node.attributes;
+          for (var i = 0, len = attrMap.length; i < len; ++i) {
+            var attrNode = attrMap.item(i);
+            output.push(" ", attrNode.name, "='", attrNode.value, "'");
+          }
+        }
+        if (node.hasChildNodes()) {
+          output.push(">");
+          var childNodes = node.childNodes;
+          for (var i = 0, len = childNodes.length; i < len; ++i) {
+            serializeXML(childNodes.item(i), output);
+          }
+          output.push("</", node.tagName, ">");
+        } else {
+          output.push("/>");
+        }
+      } else if (nodeType == 8) {
+        // TODO(codedread): Replace special characters with XML entities?
+        output.push("<!--", node.nodeValue, "-->");
+      } else {
+        // TODO: Handle CDATA nodes.
+        // TODO: Handle ENTITY nodes.
+        // TODO: Handle DOCUMENT nodes.
+        throw "Error serializing XML. Unhandled node of type: " + nodeType;
+      }
+    };
+    // The innerHTML DOM property for SVGElement.
+    Object.defineProperty(window.SVGElement.prototype, "innerHTML", {
+      get: function get() {
+        var output = [];
+        var childNode = this.firstChild;
+        while (childNode) {
+          serializeXML(childNode, output);
+          childNode = childNode.nextSibling;
+        }
+        return output.join("");
+      },
+      set: function set(markupText) {
+        // Wipe out the current contents of the element.
+        while (this.firstChild) {
+          this.removeChild(this.firstChild);
+        }
+
+        try {
+          // Parse the markup into valid nodes.
+          // var dXML = new DOMParser();
+          // dXML.async = false;
+          // Wrap the markup into a SVG node to ensure parsing works.
+          markupText = "<svg xmlns='http://www.w3.org/2000/svg'>" + markupText + "</svg>";
+
+          var divContainer = document.createElement("div");
+          divContainer.innerHTML = markupText;
+          var svgDocElement = divContainer.querySelector("svg");
+          // Now take each node, import it and append to this element.
+          var childNode = svgDocElement.firstChild;
+          while (childNode) {
+            this.appendChild(this.ownerDocument.importNode(childNode, true));
+            childNode = childNode.nextSibling;
+          }
+        } catch (e) {
+          throw e;
+        }
+      }
+    });
+
+    // The innerSVG DOM property for SVGElement.
+    Object.defineProperty(window.SVGElement.prototype, "innerSVG", {
+      get: function get() {
+        return this.innerHTML;
+      },
+      set: function set(markupText) {
+        this.innerHTML = markupText;
+      }
+    });
   }
 })();
 

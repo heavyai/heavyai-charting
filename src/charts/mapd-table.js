@@ -250,7 +250,7 @@ export default function mapdTable(parent, chartGroup) {
     if (_isGroupedData) {
       _chart
         .dimension()
-        .value()
+        .getDimensionName()
         .forEach((d, i) => {
           cols.push({
             expression: d,
