@@ -48108,7 +48108,7 @@ function setColorState(setter) {
   };
 }
 
-function setColorScaleDomain(domain) {
+function setColorScaleDomain_v2(domain) {
   return function setState(state) {
     return _extends({}, state, {
       encoding: _extends({}, state.encoding, {
@@ -48116,6 +48116,18 @@ function setColorScaleDomain(domain) {
           scale: _extends({}, state.encoding.color.scale, {
             domain: domain
           })
+        })
+      })
+    });
+  };
+}
+
+function setColorScaleDomain_v1(domain) {
+  return function setState(state) {
+    return _extends({}, state, {
+      encoding: _extends({}, state.encoding, {
+        color: _extends({}, state.encoding.color, {
+          domain: domain
         })
       })
     });
@@ -48188,15 +48200,29 @@ function handleLegendLock(_ref) {
   var _layer$getState = layer.getState(),
       color = _layer$getState.encoding.color;
 
+  var redraw = false;
   if (_typeof(color.scale) === "object") {
+    // this if or raster-layer-heatmap-mixin.js
     if (color.legend.locked) {
-      layer.setState(setColorScaleDomain(layer.colorDomain()));
+      layer.setState(setColorScaleDomain_v2(layer.colorDomain()));
     } else {
-      layer.setState(setColorScaleDomain("auto"));
+      layer.setState(setColorScaleDomain_v2("auto"));
+      redraw = true;
+    }
+  } else if (typeof color.scale === "undefined" && typeof color.domain !== "undefined") {
+    if (color.legend.locked && color.domain === "auto") {
+      layer.setState(setColorScaleDomain_v1(layer.colorDomain()));
+    } else if (!color.legend.locked) {
+      layer.setState(setColorScaleDomain_v1("auto"));
+      redraw = true;
     }
   }
 
-  this.legend().setState(getLegendStateFromChart(this));
+  if (redraw) {
+    this.renderAsync(); // not setting the state for the legend here because it'll happen on the redraw
+  } else {
+    this.legend().setState(getLegendStateFromChart(this));
+  }
 }
 
 function handleLegendInput(_ref2) {
@@ -48209,7 +48235,7 @@ function handleLegendInput(_ref2) {
 
 
   if ((typeof scale === "undefined" ? "undefined" : _typeof(scale)) === "object") {
-    layer.setState(setColorScaleDomain(domain));
+    layer.setState(setColorScaleDomain_v2(domain));
   } else {
     layer.setState(setColorState(function () {
       return {
