@@ -349,9 +349,94 @@
       setScales(dcScatterPlot, "preRedraw");
 
   /*----------------------MAPD3 COMBO CHART----------------------------------------*/
+  // create an adapter utility that lets us tie into DC and Crossfilter
+  function dcAdapter(groupName) {
+    // eslint-disable-next-line no-underscore-dangle
+    let _dimension = null
+    var events = d3.dispatch("redrawGroup")
+
+    // eslint-disable-next-line consistent-return
+    function setDimension(dim) {
+      _dimension = dim
+    }
+
+    function getFilterString() {
+      if (!_dimension) {
+        throw new Error(
+          "Calling getfilterString before setting a dimension is not allowed."
+        )
+      }
+
+      return _dimension.group().writeFilter()
+    }
+
+    function filter(_filter, _timeBin, _isExtract) {
+      if (!_filter || !_filter.length) {
+        filterAll()
+        return
+      }
+
+      var timeBin = _timeBin === "auto" && _isExtract ? "isodow" : _timeBin
+
+      // eslint-disable-next-line no-undefined
+      _dimension.filter(_filter, undefined, undefined, undefined, [
+        { extract: _isExtract, timeBin }
+      ])
+    }
+
+    function filterAll() {
+      _dimension.filterAll()
+    }
+
+    // create a chart that will allow us to hook into a dc render & redraw calls.
+    var dummyChart = dc.baseMixin({})
+    // dataAsync is a potential hook for introducing a loading state for the chart
+    dummyChart.dataAsync = callback => callback()
+    // eslint-disable-next-line no-underscore-dangle
+    dummyChart._doRender = renderRedraw
+    // eslint-disable-next-line no-underscore-dangle
+    dummyChart._doRedraw = renderRedraw
+    dummyChart.dimension({})
+    dummyChart.group({})
+    dummyChart.generatePopup = () => null
+    dc.registerChart(dummyChart, groupName)
+
+    function renderRedraw() {
+      events.call("redrawGroup", this, getFilterString())
+    }
+
+    function redrawGroup() {
+      if (dc.startRenderTime()) {
+        dc.redrawAllAsync(groupName)
+      } else {
+        dc.renderAllAsync(groupName)
+      }
+    }
+    return {
+      setDimension,
+      filter,
+      redrawGroup,
+      events
+    }
+  }
+
+  // create a new adapter and set its dimension
+  var adapter = dcAdapter("flights_donotmodify")
+  adapter.setDimension("dep_timestamp")
+  adapter.events.on("redrawGroup.combo", function(filterString) {
+    console.log("the filter string is: ", filterString)
+  })
 
   // SQL query for the combo chart
   var query = "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00') GROUP BY key0 ORDER BY key0"
+
+  charts = dc.chartRegistry.listAll()
+  charts.forEach(function(chart) {
+    chart.on("filtered", function(chart, filter) {
+      const filterString = chart.dimension().getDimensionName()[0] + "=" + filter;
+      adapter.events.call("redrawGroup", null, filterString)
+    })
+  })
 
   // request data directly using mapd-connector, transform data, render chart
   connector.queryAsync(query, {})
