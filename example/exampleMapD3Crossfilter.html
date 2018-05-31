@@ -349,11 +349,11 @@
       setScales(dcScatterPlot, "preRedraw");
 
   /*----------------------MAPD3 COMBO CHART----------------------------------------*/
-  // create an adapter utility that lets us tie into DC and Crossfilter
+  // create an adapter utility function that lets us tie into DC and Crossfilter
   function dcAdapter(groupName) {
     // eslint-disable-next-line no-underscore-dangle
     let _dimension = null
-    var events = d3.dispatch("redrawGroup")
+    var events = mapd3.d3.dispatch("redrawGroup")
 
     // eslint-disable-next-line consistent-return
     function setDimension(dim) {
@@ -423,26 +423,63 @@
   // create a new adapter and set its dimension
   var adapter = dcAdapter("flights_donotmodify")
   adapter.setDimension("dep_timestamp")
-  adapter.events.on("redrawGroup.combo", function(filterString) {
-    console.log("the filter string is: ", filterString)
+  adapter.events.on("redrawGroup.combo", function() {
+    var nextQuery = "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00')"
+      + " AND " + (filterStrings[1].length ? "(" + filterStrings[1].join(" OR ") + ")" : "") + (filterStrings[3].length ? "(" + filterStrings[3].join(" OR ") + ")" : "")
+      + " GROUP BY key0 ORDER BY key0"
+
+    console.log(filterStrings)
+    console.log(nextQuery)
+
+    // queryDB(nextQuery).then(data => comboChart.setData(data))
+
+    chartCount = 0
   })
 
-  // SQL query for the combo chart
+  // inital SQL query for the combo chart
   var query = "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00') GROUP BY key0 ORDER BY key0"
 
+  // match filter strings by chart.__dcFlag__
+  // TODO: get flag for each chart when creating them?
+  var filterStrings = {
+    1: [],
+    2: [],
+    3: []
+  }
+  var chartCount = 0
+
+  // array of all dc charts
   charts = dc.chartRegistry.listAll()
+
+  // set up event listeners on the DC charts
   charts.forEach(function(chart) {
     chart.on("filtered", function(chart, filter) {
-      const filterString = chart.dimension().getDimensionName()[0] + "=" + filter;
-      adapter.events.call("redrawGroup", null, filterString)
+      var filterString = chart.dimension().getDimensionName()[0] + " = " + "'" + filter + "'";
+      filterStrings[chart.__dcFlag__].push(filterString);
+    })
+    chart.on("postRedraw", function(chart) {
+      chartCount += 1;
+      if (chartCount === 3) {
+        adapter.events.call("redrawGroup", null);
+      }
     })
   })
 
-  // request data directly using mapd-connector, transform data, render chart
-  connector.queryAsync(query, {})
-    .then(data => transformData(data))
-    .then(data => renderComboChart(data))
-    .catch(error => console.error(error))
+  function buildFilterStrings(filterString) {
+
+  }
+
+  // helper function to request data using mapd-connector
+  // transform the data from the response
+  async function queryDB(query) {
+    try {
+      let response = await connector.queryAsync(query, {})
+      let data = await transformData(response)
+      return data
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   // currently mapd3 expects data in a particular format, so format the data returned by the connector to match it
   function transformData(_data) {
@@ -528,6 +565,9 @@
     })
     .setData(dataTransformed)
   }
+
+  // make the initial query and render the combo chart
+  queryDB(query).then(data => renderComboChart(data))
 
   /*---------------------TIME CHART (CHART 3) EXAMPLE------------------------------*/
 
