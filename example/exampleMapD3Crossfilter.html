@@ -369,6 +369,7 @@
       setScales(dcScatterPlot, "preRender");
       setScales(dcScatterPlot, "preRedraw");
 
+
   /*----------------------MAPD3 COMBO CHART EXAMPLE----------------------------------------*/
 
   // create an adapter utility function that lets us tie into DC and Crossfilter
@@ -427,6 +428,8 @@
       events.call("redrawGroup", this, getFilterString())
     }
 
+    // note: if we had multiple "groups" or datasets we could pass groupName from above as a param to dc.redrawAllAsync()
+    // but in this demo we are only using one so it's unnecessary
     function redrawGroup() {
       if (dc.startRenderTime()) {
         dc.redrawAllAsync()
@@ -446,9 +449,8 @@
   var adapter = dcAdapter("flights_donotmodify")
   adapter.setDimension(crossFilter.dimension("dep_timestamp"))
 
-  //
-  adapter.events.on("redrawGroup.combo", function(filterString) {
-    console.log(filterString)
+  // When the DC Charts have finished rendering, gather their filterStrings and compose a new SQL query for the combo chart
+  adapter.events.on("redrawGroup.combo", function() {
     function filterClause() {
       var wc = "";
       Object.keys(dcCharts).forEach(function(key) {
@@ -463,21 +465,22 @@
       + filterClause()
       + " GROUP BY key0 ORDER BY key0"
 
-    console.log(dcCharts)
-    console.log(nextQuery)
-
+    // but only fire the query if it's different from the previous query
     if (nextQuery !== query) {
       // pass our next SQL query to our queryDB method and then update the comboChart's data
       queryDB(nextQuery)
         .then(data => comboChart.setData(data))
-        .then(() => comboChart.setConfig({ brushRangeMin: brushExtent[0], brushRangeMax: brushExtent[1] }));
+        .then(() => comboChart.setConfig({
+          brushRangeMin: brushExtent.length ? brushExtent[0] : null,
+          brushRangeMax: brushExtent.length ? brushExtent[1] : null
+        }));
     }
 
     query = nextQuery;
   })
 
   // brush extent
-  var brushExtent = [null, null];
+  var brushExtent = [];
 
   // inital SQL query for the combo chart
   var query = "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00') GROUP BY key0 ORDER BY key0"
@@ -613,35 +616,28 @@
     .setData(dataTransformed)
   }
 
-  // helper function to turn a function's arguments objects to a valid array
-  function argsToArray(args) {
-    return [].slice.call(args)
-  }
-
   // date object formatter for constructing SQL query from combo chart brushing
   const dateFormatter = mapd3.d3.timeFormat("%Y-%m-%d %H:%M:%S")
 
   // set up a few event listeners for the comboChart's brush events
   comboChart
+    // we can access the combo chart's event listeners using .getEvents()
     .getEvents()
-    .onBrush("brushMove", function() {
-      console.log("brushMove", argsToArray(arguments));
-    })
-    .onBrush("brushEnd", function() {
-      console.log("brushEnd", argsToArray(arguments));
-      brushExtent = arguments[0]
-
-      // var filterString = "(dep_timestamp >= TIMESTAMP(0) " + "'" + dateFormatter(arguments[0][0]) + "'"
-      //   + " AND dep_timestamp <= TIMESTAMP(0) " + "'" + dateFormatter(arguments[0][1]) + "')"
-
+    // note: it's a good idea to "throttle" the brushMove event as it gets called very frequently
+    .onBrush("brushMove", throttle(function() {
+      brushExtent = [].concat(arguments[0])
       adapter.filter(brushExtent, "auto", false)
-      dc.redrawAllAsync();
+      adapter.redrawGroup();
+    }, 100))
+    .onBrush("brushEnd", function() {
+      brushExtent = [].concat(arguments[0])
+      adapter.filter(brushExtent, "auto", false)
+      adapter.redrawGroup();
     })
     .onBrush("brushClear", function() {
-      console.log("brushClear", argsToArray(arguments));
-      brushExtent = [null, null]
+      brushExtent = []
       adapter.filter()
-      dc.redrawAllAsync();
+      adapter.redrawGroup();
     });
 
 
@@ -650,6 +646,7 @@
       renderComboChart(data)
     })
 
+    // render the DC Charts
     dc.renderAllAsync()
 
     /*--------------------------RESIZE EVENT------------------------------*/
@@ -695,6 +692,21 @@
       if (callNow) func.apply(context, args);
     };
   };
+
+  function throttle(func, limit) {
+    var inThrottle;
+    return function() {
+      const args = arguments
+      const context = this
+      if (!inThrottle) {
+        func.apply(context, args)
+        inThrottle = true
+        setTimeout(function() {
+          inThrottle = false
+        }, limit)
+      }
+    }
+  }
 
 
   function init() {
