@@ -429,9 +429,9 @@
 
     function redrawGroup() {
       if (dc.startRenderTime()) {
-        dc.redrawAllAsync(groupName)
+        dc.redrawAllAsync()
       } else {
-        dc.renderAllAsync(groupName)
+        dc.renderAllAsync()
       }
     }
     return {
@@ -446,29 +446,38 @@
   var adapter = dcAdapter("flights_donotmodify")
   adapter.setDimension(crossFilter.dimension("dep_timestamp"))
 
-  adapter.events.on("redrawGroup.combo", function() {
-    function whereClause() {
+  //
+  adapter.events.on("redrawGroup.combo", function(filterString) {
+    console.log(filterString)
+    function filterClause() {
       var wc = "";
-
       Object.keys(dcCharts).forEach(function(key) {
         if (dcCharts[key].name !== "countWidget" && dcCharts[key].filterStrings.length) {
           wc += " AND (" + dcCharts[key].filterStrings.join(" OR ") + ")"
         }
       })
-
       return wc;
     }
 
     var nextQuery = "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00')"
-      + whereClause()
+      + filterClause()
       + " GROUP BY key0 ORDER BY key0"
 
     console.log(dcCharts)
     console.log(nextQuery)
 
-    // pass our next SQL query to our queryDB method and then update the comboChart's data
-    queryDB(nextQuery).then(data => comboChart.setData(data))
+    if (nextQuery !== query) {
+      // pass our next SQL query to our queryDB method and then update the comboChart's data
+      queryDB(nextQuery)
+        .then(data => comboChart.setData(data))
+        .then(() => comboChart.setConfig({ brushRangeMin: brushExtent[0], brushRangeMax: brushExtent[1] }));
+    }
+
+    query = nextQuery;
   })
+
+  // brush extent
+  var brushExtent = [null, null];
 
   // inital SQL query for the combo chart
   var query = "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00') GROUP BY key0 ORDER BY key0"
@@ -493,7 +502,7 @@
         // if we don't have the filter string stored, add it
         storedFilterStrings.push(filterString);
       } else {
-        // other wise remove it
+        // otherwise remove it
         storedFilterStrings.splice(idx, 1);
       }
     })
@@ -554,8 +563,6 @@
 
   // render combo chart when data is formatted
   function renderComboChart (dataTransformed) {
-    console.log(dataTransformed)
-
     comboChart.setConfig({
       parentNode: parentNode,
       margin: {
@@ -577,6 +584,8 @@
       tooltipIsEnabled: true,
       legendTitle: "",
       brushIsEnabled: true,
+      brushRangeMin: null,
+      brushRangeMax: null,
       binExtent: [],
       rangeBrushExtent: [],
       timeBin: null,
@@ -620,15 +629,17 @@
     })
     .onBrush("brushEnd", function() {
       console.log("brushEnd", argsToArray(arguments));
+      brushExtent = arguments[0]
 
       // var filterString = "(dep_timestamp >= TIMESTAMP(0) " + "'" + dateFormatter(arguments[0][0]) + "'"
       //   + " AND dep_timestamp <= TIMESTAMP(0) " + "'" + dateFormatter(arguments[0][1]) + "')"
 
-      adapter.filter(arguments[0], "auto", false)
+      adapter.filter(brushExtent, "auto", false)
       dc.redrawAllAsync();
     })
     .onBrush("brushClear", function() {
       console.log("brushClear", argsToArray(arguments));
+      brushExtent = [null, null]
       adapter.filter()
       dc.redrawAllAsync();
     });
