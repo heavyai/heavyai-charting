@@ -645,133 +645,39 @@
     });
 
 
-  // make the initial query and render the combo chart
-  queryDB(query).then(data => {
-    renderComboChart(data)
-  })
+    // make the initial query and render the combo chart
+    queryDB(query).then(data => {
+      renderComboChart(data)
+    })
 
-  /*---------------------TIME CHART (CHART 3) EXAMPLE------------------------------*/
+    dc.renderAllAsync()
 
-  /*
-   *  First we want to determine the extent (min,max) of the time variable so we
-   *  can set the bounds on the time chart appropriately.
-   *
-   *  If you know the bounds a priori you can do this manually but here we will
-   *  do it dymaically via a query sent to the backend through the crossfilter
-   *  api.
-   *
-   *  We create a reduceMulti expression that will get the min and max of the
-   *  variable dep_timestamp.
-   *
-   */
+    /*--------------------------RESIZE EVENT------------------------------*/
 
-      var reduceMultiExpression2 =
-      [{
-        expression: "dep_timestamp",
-        agg_mode:"min",
-        name: "minimum"
-      },
-      {
-        expression: "dep_timestamp",
-        agg_mode:"max",
-        name: "maximum"}
-      ]
+    /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
 
-      /* Note than when we are doing aggregations over the entire dataset we use
-       * the crossfilter object itself as the dimension with the groupAll method
-       *
-       * valuesAsync(true) gets the values for our groupAll measure (here min and max
-       * of dep_timestamp) - true means to ignore currently set filters - i.e.
-       * get a global min and max
-       */
+    window.addEventListener("resize", debounce(reSizeAll, 100));
 
-      crossFilter
-        .groupAll()
-        .reduceMulti(reduceMultiExpression2)
-        .valuesAsync(true).then(function(timeChartBounds) {
+    function reSizeAll(){
+      var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
 
-          // var timeChartDimension = crossFilter.dimension("dep_timestamp");
+      dcBarChart
+        .height(h/1.5)
+        .width(w/2)
 
-          /* We would like to bin or histogram the time values.  We do this by
-           * invoking setBinParams on the group.  Here we are asking for 400 equal
-           * sized bins from the min to the max of the time range
-           */
+      dcScatterPlot
+        .height(h/1.5)
+        .width(w/2)
 
-          // var timeChartGroup = timeChartDimension.group().reduceCount()
+      comboChart
+        .setConfig({
+          width: w
+        })
 
-          /*  We create the time chart as a line chart
-           *  with the following parameters:
-           *
-           *  Width and height - as above
-           *
-           *  elasticY(true) - cause the y-axis to scale as filters are changed
-           *
-           *  renderHorizontalGridLines(true) - add grid lines to the chart
-           *
-           *  brushOn(true) - Request a filter brush to be added to the chart - this
-           *  will allow users to drag a filter window along the time chart and filter
-           *  the rest of the data accordingly
-           *
-           */
-
-          // var dcTimeChart = dc.lineChart('.chart3-example')
-          //   .width(w)
-          //   .height(h/2.5)
-          //   .elasticY(true)
-          //   .renderHorizontalGridLines(true)
-          //   .brushOn(true)
-          //   .xAxisLabel('Departure Time')
-          //   .yAxisLabel('# Flights')
-          //   .dimension(timeChartDimension)
-          //   .group(timeChartGroup)
-          //   .binParams({
-          //      numBins: 400,
-          //      binBounds: [timeChartBounds.minimum,timeChartBounds.maximum]
-          //     });
-
-          /* Set the x and y axis formatting with standard d3 functions */
-
-          // dcTimeChart
-          //   .x(d3.time.scale.utc().domain([timeChartBounds.minimum,timeChartBounds.maximum]))
-          //   .yAxis().ticks(5);
-
-          // dcTimeChart
-          //   .xAxis()
-          //   .scale(dcTimeChart.x())
-          //   .tickFormat(dc.utils.customTimeFormat)
-          //   .orient('top');
-
-          /* Calling dc.renderAllAsync() will render all of the charts we set up.  Any
-           * filters applied by the user (via clicking the bar chart, scatter plot or dragging the time brush) will automagically call redraw on the charts without any intervention from us
-           */
-
-          dc.renderAllAsync()
-
-          /*--------------------------RESIZE EVENT------------------------------*/
-
-          /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
-
-          window.addEventListener("resize", debounce(reSizeAll, 100));
-
-          function reSizeAll(){
-            var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
-            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
-
-            dcBarChart
-              .height(h/1.5)
-              .width(w/2)
-
-            dcScatterPlot
-              .height(h/1.5)
-              .width(w/2)
-
-            // dcTimeChart
-            //   .width(w)
-            //   .height(h/2.5)
-
-            dc.redrawAllAsync();
-          }
-      });
+      dc.redrawAllAsync();
+      comboChart.render()
+    }
   }
 
 
