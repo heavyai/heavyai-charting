@@ -235,19 +235,9 @@ export default function rasterLayerPolyMixin(_layer) {
         transform: [
           {
             type:   "aggregate",
-            fields: ["color", "color", "color", "color"],
-            ops:    ["min", "max", "avg", "stddev"],
-            as:     ["mincol", "maxcol", "avgcol", "stdcol"]
-          },
-          {
-            type: "formula",
-            expr: "max(mincol, avgcol-2*stdcol)",
-            as: "mincolor"
-          },
-          {
-            type: "formula",
-            expr: "min(maxcol, avgcol+2*stdcol)",
-            as: "maxcolor"
+            fields: ["color"],
+            ops:    [{type: "quantile", numQuantiles: colorRange.length}],
+            as:     ["quant_color"]
           }
         ]
       })
@@ -257,10 +247,10 @@ export default function rasterLayerPolyMixin(_layer) {
     const scales = [
       {
         name: colorScaleName,
-        type: "quantize",
+        type: (autocolors ? "threshold" : "quantize"),
         domain: 
           autocolors 
-            ? {data: getStatsLayerName(), fields: ["mincolor", "maxcolor"]}
+            ? {data: getStatsLayerName(), fields: ["quant_color"]}
             : state.encoding.color.domain,
         range: colorRange,
         nullValue: "rgba(214, 215, 214, 0.65)",

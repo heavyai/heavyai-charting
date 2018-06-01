@@ -266,7 +266,7 @@ function getScales({ size, color }, layerName, scaleDomainFields, xformDataSourc
   if (typeof color === "object" && color.type === "quantitative") {
     scales.push({
       name: getColorScaleName(layerName),
-      type: "quantize",
+      type: (color.domain === "auto" ? "threshold" : "quantize"),
       domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain.map(c => adjustOpacity(c, color.opacity))),
       range: color.range
     })
@@ -325,23 +325,11 @@ export default function rasterLayerPointMixin(_layer) {
   function getAutoColorVegaTransforms(aggregateNode) {
     const rtnobj = {transforms: [], fields: []}
     if (state.encoding.color.type === "quantitative") {
-      const minoutput = "mincolor", maxoutput = "maxcolor"
-      aggregateNode.fields = aggregateNode.fields.concat(["color", "color", "color", "color"])
-      aggregateNode.ops = aggregateNode.ops.concat(["min", "max", "avg", "stddev"])
-      aggregateNode.as = aggregateNode.as.concat(["mincol", "maxcol", "avgcol", "stdcol"])
-      rtnobj.transforms.push(
-          {
-            type: "formula",
-            expr: "max(mincol, avgcol-2*stdcol)",
-            as: minoutput
-          },
-          {
-            type: "formula",
-            expr: "min(maxcol, avgcol+2*stdcol)",
-            as: maxoutput
-          }
-        )
-      rtnobj.fields = [minoutput, maxoutput]
+      const quantoutput = "quant_color"
+      aggregateNode.fields = aggregateNode.fields.concat(["color"])
+      aggregateNode.ops = aggregateNode.ops.concat([{type: "quantile", numQuantiles: state.encoding.color.range.length}])
+      aggregateNode.as = aggregateNode.as.concat(["quant_color"])
+      rtnobj.fields = [quantoutput]
     } else if (state.encoding.color.type === "ordinal") {
       const output = "distinctcolor"
       aggregateNode.fields.push("color")
