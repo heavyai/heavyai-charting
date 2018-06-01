@@ -29,7 +29,10 @@ import { utils } from "../utils/utils"
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.rowChart}
  */
+
+let timer = undefined
 export default function rowChart(parent, chartGroup) {
+  timer = performance.now()
   let _g
 
   let _labelOffsetX = 8
@@ -556,6 +559,8 @@ export default function rowChart(parent, chartGroup) {
   }
 
   _chart._doRedraw = function(data) {
+    console.log("_doRedraw", performance.now() - timer)
+    timer = performance.now()
     if (!_g) {
       return _chart._doRender(data)
     }
