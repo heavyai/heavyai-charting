@@ -85,6 +85,7 @@
     // NEW: create a hash map to associate DC Chart properties by their id (__dcFlag__) so we can access them later
     var dcCharts = {};
 
+    // select the DOM node for the combo chart to mount to, then pass it to mapd3.Chart
     var parentNode = document.querySelector('.chart3-example')
     var comboChart = mapd3.Chart(parentNode)
 
@@ -369,6 +370,7 @@
       setScales(dcScatterPlot, "preRedraw");
 
   /*----------------------MAPD3 COMBO CHART EXAMPLE----------------------------------------*/
+
   // create an adapter utility function that lets us tie into DC and Crossfilter
   function dcAdapter(groupName) {
     // eslint-disable-next-line no-underscore-dangle
@@ -442,7 +444,8 @@
 
   // create a new adapter and set its dimension
   var adapter = dcAdapter("flights_donotmodify")
-  adapter.setDimension("dep_timestamp")
+  adapter.setDimension(crossFilter.dimension("dep_timestamp"))
+
   adapter.events.on("redrawGroup.combo", function() {
     function whereClause() {
       var wc = "";
@@ -484,10 +487,19 @@
   charts.forEach(function(chart) {
     chart.on("filtered", function(chart, filter) {
       var filterString = chart.dimension().getDimensionName()[0] + " = " + "'" + filter + "'";
-      dcCharts[chart.chartID()].filterStrings.push(filterString);
+      var storedFilterStrings = dcCharts[chart.chartID()].filterStrings;
+      var idx = storedFilterStrings.indexOf(filterString)
+      if (idx === -1) {
+        // if we don't have the filter string stored, add it
+        storedFilterStrings.push(filterString);
+      } else {
+        // other wise remove it
+        storedFilterStrings.splice(idx, 1);
+      }
     })
     chart.on("postRedraw", function(chart) {
       chartCount += 1;
+      // after iterating through all of our charts, call our adapter's "redrawGroup" event to update the comboChart
       if (chartCount === Object.keys(dcCharts).length) {
         adapter.events.call("redrawGroup", null);
         chartCount = 0;
@@ -592,8 +604,40 @@
     .setData(dataTransformed)
   }
 
+  // helper function to turn a function's arguments objects to a valid array
+  function argsToArray(args) {
+    return [].slice.call(args)
+  }
+
+  // date object formatter for constructing SQL query from combo chart brushing
+  const dateFormatter = mapd3.d3.timeFormat("%Y-%m-%d %H:%M:%S")
+
+  // set up a few event listeners for the comboChart's brush events
+  comboChart
+    .getEvents()
+    .onBrush("brushMove", function() {
+      console.log("brushMove", argsToArray(arguments));
+    })
+    .onBrush("brushEnd", function() {
+      console.log("brushEnd", argsToArray(arguments));
+
+      // var filterString = "(dep_timestamp >= TIMESTAMP(0) " + "'" + dateFormatter(arguments[0][0]) + "'"
+      //   + " AND dep_timestamp <= TIMESTAMP(0) " + "'" + dateFormatter(arguments[0][1]) + "')"
+
+      adapter.filter(arguments[0], "auto", false)
+      dc.redrawAllAsync();
+    })
+    .onBrush("brushClear", function() {
+      console.log("brushClear", argsToArray(arguments));
+      adapter.filter()
+      dc.redrawAllAsync();
+    });
+
+
   // make the initial query and render the combo chart
-  queryDB(query).then(data => renderComboChart(data))
+  queryDB(query).then(data => {
+    renderComboChart(data)
+  })
 
   /*---------------------TIME CHART (CHART 3) EXAMPLE------------------------------*/
 
