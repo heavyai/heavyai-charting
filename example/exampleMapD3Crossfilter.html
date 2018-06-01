@@ -82,6 +82,9 @@
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200
 
+    // NEW: create a hash map to associate DC Chart properties by their id (__dcFlag__) so we can access them later
+    var dcCharts = {};
+
     var parentNode = document.querySelector('.chart3-example')
     var comboChart = mapd3.Chart(parentNode)
 
@@ -96,7 +99,7 @@
    *  those columns.
    */
 
-      var allColumns = crossFilter.getColumns();
+    var allColumns = crossFilter.getColumns();
 
 
    /*-------------------BASIC COUNT ON CROSSFILTER---------------------------*/
@@ -111,6 +114,12 @@
   var countWidget = dc.countWidget(".data-count")
     .dimension(crossFilter)
     .group(countGroup);
+
+  // NEW: store chart ID
+  dcCharts[countWidget.chartID()] = {
+    name: "countWidget",
+    filterStrings: []
+  };
 
 
   /*------------------------CHART 1 EXAMPLE------------------------------*/
@@ -183,6 +192,11 @@
                         .group(rowChartGroup)
                         .autoScroll(true);
 
+      // NEW: store chart id
+      dcCharts[dcBarChart.chartID()] = {
+        name: "rowChart",
+        filterStrings: []
+      };
 
   /*--------------------------CHART 2 EXAMPLE------------------------------*/
 
@@ -328,6 +342,12 @@
                         .dimension(scatterPlotDimension)
                         .group(scatterPlotGroup);
 
+      // NEW: store chart id
+      dcCharts[dcScatterPlot.chartID()] = {
+        name: "scatterPlot",
+        filterStrings: []
+      };
+
   /*  We create the bubble chart with the following parameters:
    *  dc.mapd.js allows functions to be applied at specific points in the chart's
    *  lifecycle.  Here we want to re-adjust our chart's x,y and r (radius) scales
@@ -348,7 +368,7 @@
       setScales(dcScatterPlot, "preRender");
       setScales(dcScatterPlot, "preRedraw");
 
-  /*----------------------MAPD3 COMBO CHART----------------------------------------*/
+  /*----------------------MAPD3 COMBO CHART EXAMPLE----------------------------------------*/
   // create an adapter utility function that lets us tie into DC and Crossfilter
   function dcAdapter(groupName) {
     // eslint-disable-next-line no-underscore-dangle
@@ -424,28 +444,37 @@
   var adapter = dcAdapter("flights_donotmodify")
   adapter.setDimension("dep_timestamp")
   adapter.events.on("redrawGroup.combo", function() {
+    function whereClause() {
+      var wc = "";
+
+      Object.keys(dcCharts).forEach(function(key) {
+        if (dcCharts[key].name !== "countWidget" && dcCharts[key].filterStrings.length) {
+          wc += " AND (" + dcCharts[key].filterStrings.join(" OR ") + ")"
+        }
+      })
+
+      return wc;
+    }
+
     var nextQuery = "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00')"
-      + " AND " + (filterStrings[1].length ? "(" + filterStrings[1].join(" OR ") + ")" : "") + (filterStrings[3].length ? "(" + filterStrings[3].join(" OR ") + ")" : "")
+      + whereClause()
       + " GROUP BY key0 ORDER BY key0"
 
-    console.log(filterStrings)
+    console.log(dcCharts)
     console.log(nextQuery)
 
-    // queryDB(nextQuery).then(data => comboChart.setData(data))
-
-    chartCount = 0
+    // pass our next SQL query to our queryDB method and then update the comboChart's data
+    queryDB(nextQuery).then(data => comboChart.setData(data))
   })
 
   // inital SQL query for the combo chart
   var query = "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00') GROUP BY key0 ORDER BY key0"
 
-  // match filter strings by chart.__dcFlag__
-  // TODO: get flag for each chart when creating them?
-  var filterStrings = {
-    1: [],
-    2: [],
-    3: []
-  }
+  // Because DCJS has no "all charts finished rendering" event we can listen for,
+  // we have to listen to each dcChart's "postRedraw" event, and count the number
+  // of charts that have been rendered. Though we technically have 4 DC Charts,
+  // We only count up to 3, because our dummy chart from the bar adapter won't ever
+  // render as it has nothing to render!
   var chartCount = 0
 
   // array of all dc charts
@@ -455,25 +484,22 @@
   charts.forEach(function(chart) {
     chart.on("filtered", function(chart, filter) {
       var filterString = chart.dimension().getDimensionName()[0] + " = " + "'" + filter + "'";
-      filterStrings[chart.__dcFlag__].push(filterString);
+      dcCharts[chart.chartID()].filterStrings.push(filterString);
     })
     chart.on("postRedraw", function(chart) {
       chartCount += 1;
-      if (chartCount === 3) {
+      if (chartCount === Object.keys(dcCharts).length) {
         adapter.events.call("redrawGroup", null);
+        chartCount = 0;
       }
     })
   })
 
-  function buildFilterStrings(filterString) {
-
-  }
-
-  // helper function to request data using mapd-connector
-  // transform the data from the response
+  // Helper function to request data using mapd-connector's browser connector
   async function queryDB(query) {
     try {
       let response = await connector.queryAsync(query, {})
+      // transform the data from the response to be compatible with mapd3.Chart().setData()
       let data = await transformData(response)
       return data
     } catch (error) {
@@ -481,7 +507,7 @@
     }
   }
 
-  // currently mapd3 expects data in a particular format, so format the data returned by the connector to match it
+  // currently mapd3 expects data in a particular data structure, so we need to process the "raw" data returned by the database to match it
   function transformData(_data) {
     var series = [
       {
@@ -498,7 +524,7 @@
           .reverse()
       },
       {
-        group: 1, // will be non-zero for 2nd axis
+        group: 1,
         id: 1,
         label: "avg(arrdelay)",
         dimensionName: "Departure Time",
