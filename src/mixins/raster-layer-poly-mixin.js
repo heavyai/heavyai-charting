@@ -106,7 +106,7 @@ export default function rasterLayerPolyMixin(_layer) {
     layerFilter = [],
     filtersInverse
   }) {
-    const selfJoin = state.data[0].table === state.data[1].table
+    const doJoin = state.data.length > 1
 
     const groupby = {
       type: "project",
@@ -114,19 +114,7 @@ export default function rasterLayerPolyMixin(_layer) {
       as: "key0"
     }
 
-    const transforms = [
-      {
-        type: "rowid",
-        table: state.data[1].table
-      },
-      !selfJoin && {
-        type: "filter",
-        expr: `${state.data[0].table}.${state.data[0].attr} = ${
-          state.data[1].table
-        }.${state.data[1].attr}`
-      },
-      {
-        type: "aggregate",
+    const aggregate = state.encoding.color.type === undefined ? {} : {type: "aggregate",
         fields: [
           layerFilter.length
             ? parser.parseExpression({
@@ -147,8 +135,21 @@ export default function rasterLayerPolyMixin(_layer) {
         ],
         ops: [null],
         as: ["color"],
-        groupby
-      }
+    groupby}
+
+    // Note: It is preferrable to leave the geo table on the right (inner). In the backend choropleth chart, the geo table is the first data source.
+    const transforms = [
+      {
+        type: "rowid",
+        table: state.data[0].table
+      },
+      doJoin && {
+        type: "filter",
+        expr: `${state.data[1].table}.${state.data[1].attr} = ${
+          state.data[0].table
+        }.${state.data[0].attr}`
+      },
+      aggregate
     ]
 
     if (typeof state.transform.limit === "number") {
@@ -202,12 +203,13 @@ export default function rasterLayerPolyMixin(_layer) {
     layerName,
     useProjection
   }) {
-    const autocolors = usesAutoColors()
+    const usesColorScale = !(state.encoding.color.type === undefined)
+    const autocolors = usesColorScale ? usesAutoColors() : false
     const getStatsLayerName = () => layerName + "_stats"
 
-    const colorRange = state.encoding.color.range.map(c =>
+    const colorRange = usesColorScale ? state.encoding.color.range.map(c =>
       adjustOpacity(c, state.encoding.color.opacity)
-    )
+    ) : []
 
     const data = [
       {
@@ -253,8 +255,11 @@ export default function rasterLayerPolyMixin(_layer) {
       })
     }
 
-    const colorScaleName = getColorScaleName(layerName)
-    const scales = [
+    const colorScaleName = usesColorScale ? getColorScaleName(layerName) : ""
+
+    const scales = []
+    if (usesColorScale) {
+      scales.push(
       {
         name: colorScaleName,
         type: "quantize",
@@ -266,7 +271,20 @@ export default function rasterLayerPolyMixin(_layer) {
         nullValue: "rgba(214, 215, 214, 0.65)",
         default: "rgba(214, 215, 214, 0.65)"
       }
-    ]
+      )
+    }
+
+    let fillColor = {}
+    if (usesColorScale) {
+      fillColor = {
+        scale: colorScaleName,
+        field: "color"
+      }
+    } else {
+      fillColor = {
+        value: state.encoding.color.value
+      }
+    }
 
     const marks = [
       {
@@ -281,10 +299,7 @@ export default function rasterLayerPolyMixin(_layer) {
           y: {
             field: "y"
           },
-          fillColor: {
-            scale: colorScaleName,
-            field: "color"
-          },
+          fillColor: fillColor,
           strokeColor:
             typeof state.mark === "object" ? state.mark.strokeColor : "white",
           strokeWidth:
