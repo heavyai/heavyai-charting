@@ -22085,7 +22085,6 @@ function format(_value, _key, numberFormatter, dateFormatter) {
 }
 
 function multipleKeysLabelMixin(_chart) {
-
   function label(d) {
     var numberFormatter = _chart && _chart.valueFormatter();
     var dateFormatter = _chart && _chart.dateFormatter();
@@ -26370,7 +26369,6 @@ function rasterLayerPointMixin(_layer) {
   };
 
   _layer._genVega = function (chart, layerName, group, query) {
-
     // needed to set LastFilteredSize when point map first initialized
     if (_layer.yDim()) {
       _layer.yDim().groupAll().valueAsync().then(function (value) {
@@ -26631,21 +26629,24 @@ function rasterLayerPolyMixin(_layer) {
         layerFilter = _ref$layerFilter === undefined ? [] : _ref$layerFilter,
         filtersInverse = _ref.filtersInverse;
 
-    var selfJoin = state.data[0].table === state.data[1].table;
+    var doJoin = state.data.length > 1;
+    var hasColorMeasure = !(state.encoding.color.domain === undefined);
 
-    var groupby = {
+    var groupby = hasColorMeasure && !(state.data[0].attr === "rowid") ? {
       type: "project",
       expr: state.data[0].table + "." + state.data[0].attr,
       as: "key0"
-    };
+    } : {};
+
+    var rowIdTable = doJoin ? state.data[1].table : state.data[0].table;
 
     var transforms = [{
       type: "rowid",
-      table: state.data[1].table
-    }, !selfJoin && {
+      table: rowIdTable
+    }, doJoin && {
       type: "filter",
       expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
-    }, {
+    }, hasColorMeasure && {
       type: "aggregate",
       fields: [layerFilter.length ? _utils.parser.parseExpression({
         type: "case",
@@ -26690,7 +26691,7 @@ function rasterLayerPolyMixin(_layer) {
   }
 
   function usesAutoColors() {
-    return state.encoding.color.domain === "auto";
+    return state.encoding.color.domain === undefined ? false : state.encoding.color.domain === "auto";
   }
 
   _layer._updateFromMetadata = function (metadata) {
@@ -26740,13 +26741,10 @@ function rasterLayerPolyMixin(_layer) {
       return layerName + "_stats";
     };
 
-    var colorRange = state.encoding.color.range.map(function (c) {
-      return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
-    });
-
     var data = [{
       name: layerName,
       format: "polys",
+      geocolumn: "mapd_geo",
       sql: _utils.parser.writeSQL({
         type: "root",
         source: [].concat(_toConsumableArray(new Set(state.data.map(function (source) {
@@ -26782,15 +26780,31 @@ function rasterLayerPolyMixin(_layer) {
       });
     }
 
-    var colorScaleName = getColorScaleName(layerName);
-    var scales = [{
-      name: colorScaleName,
-      type: "quantize",
-      domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.domain,
-      range: colorRange,
-      nullValue: "rgba(214, 215, 214, 0.65)",
-      default: "rgba(214, 215, 214, 0.65)"
-    }];
+    var scales = [];
+    var fillColor = {};
+    var useColorScale = state.encoding.color.value === undefined;
+    if (useColorScale) {
+      var colorRange = state.encoding.color.range.map(function (c) {
+        return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
+      });
+      var colorScaleName = getColorScaleName(layerName);
+      scales.push({
+        name: colorScaleName,
+        type: "quantize",
+        domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.domain,
+        range: colorRange,
+        nullValue: "rgba(214, 215, 214, 0.65)",
+        default: "rgba(214, 215, 214, 0.65)"
+      });
+      fillColor = {
+        scale: colorScaleName,
+        field: "color"
+      };
+    } else {
+      fillColor = {
+        value: (0, _utilsVega.adjustOpacity)(state.encoding.color.value, state.encoding.color.opacity)
+      };
+    }
 
     var marks = [{
       type: "polys",
@@ -26804,10 +26818,7 @@ function rasterLayerPolyMixin(_layer) {
         y: {
           field: "y"
         },
-        fillColor: {
-          scale: colorScaleName,
-          field: "color"
-        },
+        fillColor: fillColor,
         strokeColor: _typeof(state.mark) === "object" ? state.mark.strokeColor : "white",
         strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 0.5,
         lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
@@ -26839,7 +26850,7 @@ function rasterLayerPolyMixin(_layer) {
   _layer._genVega = function (chart, layerName, group, query) {
     _vega = _layer.__genVega({
       layerName: layerName,
-      filter: _layer.crossfilter().getFilterString(_layer.dimension().getDimensionIndex()),
+      filter: _layer.crossfilter().getFilterString(_layer.dimension() ? _layer.dimension().getDimensionIndex() : null),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
       filtersInverse: _layer.filtersInverse(),
@@ -26932,7 +26943,7 @@ function rasterLayerPolyMixin(_layer) {
       }
 
       /**
-       * Builds the svg path string to use with the d svg attr: 
+       * Builds the svg path string to use with the d svg attr:
        * https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
        * This function should be called after the getBounds().
        * The t/s arguments are the transformations to properly place the points underneath
@@ -27099,7 +27110,7 @@ function rasterLayerPolyMixin(_layer) {
       key: "getBounds",
       value: function getBounds(data, width, height, margins, xscale, yscale) {
         var wkt = data[polyTableGeomColumns.geo];
-        if (typeof wkt !== 'string') {
+        if (typeof wkt !== "string") {
           throw new Error("Cannot create SVG from geo polygon column \"" + polyTableGeomColumns.geo + "\". The data returned is not a WKT string. It is of type: " + (typeof wkt === "undefined" ? "undefined" : _typeof(wkt)));
         }
         this._geojson = _wellknown2.default.parse(wkt);

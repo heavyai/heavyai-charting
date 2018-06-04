@@ -7,7 +7,7 @@ import d3 from "d3"
 import { events } from "../core/events"
 import { parser } from "../utils/utils"
 import wellknown from "wellknown"
-import {AABox2d, Point2d} from "@mapd/mapd-draw/dist/mapd-draw"
+import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
 
 // NOTE: Reqd until ST_Transform supported on projection columns
 function conv4326To900913(x, y) {
@@ -106,26 +106,32 @@ export default function rasterLayerPolyMixin(_layer) {
     layerFilter = [],
     filtersInverse
   }) {
-    const selfJoin = state.data[0].table === state.data[1].table
+    const doJoin = state.data.length > 1
+    const hasColorMeasure = !(state.encoding.color.domain === undefined)
 
-    const groupby = {
-      type: "project",
-      expr: `${state.data[0].table}.${state.data[0].attr}`,
-      as: "key0"
-    }
+    const groupby =
+      hasColorMeasure && !(state.data[0].attr === "rowid")
+        ? {
+            type: "project",
+            expr: `${state.data[0].table}.${state.data[0].attr}`,
+            as: "key0"
+          }
+        : {}
+
+    const rowIdTable = doJoin ? state.data[1].table : state.data[0].table
 
     const transforms = [
       {
         type: "rowid",
-        table: state.data[1].table
+        table: rowIdTable
       },
-      !selfJoin && {
+      doJoin && {
         type: "filter",
         expr: `${state.data[0].table}.${state.data[0].attr} = ${
           state.data[1].table
         }.${state.data[1].attr}`
       },
-      {
+      hasColorMeasure && {
         type: "aggregate",
         fields: [
           layerFilter.length
@@ -180,7 +186,9 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   function usesAutoColors() {
-    return state.encoding.color.domain === "auto"
+    return state.encoding.color.domain === undefined
+      ? false
+      : state.encoding.color.domain === "auto"
   }
 
   _layer._updateFromMetadata = (metadata, layerName = "") => {
@@ -205,14 +213,11 @@ export default function rasterLayerPolyMixin(_layer) {
     const autocolors = usesAutoColors()
     const getStatsLayerName = () => layerName + "_stats"
 
-    const colorRange = state.encoding.color.range.map(c =>
-      adjustOpacity(c, state.encoding.color.opacity)
-    )
-
     const data = [
       {
         name: layerName,
         format: "polys",
+        geocolumn: "mapd_geo",
         sql: parser.writeSQL({
           type: "root",
           source: [...new Set(state.data.map(source => source.table))].join(
@@ -234,10 +239,10 @@ export default function rasterLayerPolyMixin(_layer) {
         source: layerName,
         transform: [
           {
-            type:   "aggregate",
+            type: "aggregate",
             fields: ["color", "color", "color", "color"],
-            ops:    ["min", "max", "avg", "stddev"],
-            as:     ["mincol", "maxcol", "avgcol", "stdcol"]
+            ops: ["min", "max", "avg", "stddev"],
+            as: ["mincol", "maxcol", "avgcol", "stdcol"]
           },
           {
             type: "formula",
@@ -253,20 +258,36 @@ export default function rasterLayerPolyMixin(_layer) {
       })
     }
 
-    const colorScaleName = getColorScaleName(layerName)
-    const scales = [
-      {
+    let scales = []
+    let fillColor = {}
+    const useColorScale = state.encoding.color.value === undefined
+    if (useColorScale) {
+      const colorRange = state.encoding.color.range.map(c =>
+        adjustOpacity(c, state.encoding.color.opacity)
+      )
+      const colorScaleName = getColorScaleName(layerName)
+      scales.push({
         name: colorScaleName,
         type: "quantize",
-        domain: 
-          autocolors 
-            ? {data: getStatsLayerName(), fields: ["mincolor", "maxcolor"]}
-            : state.encoding.color.domain,
+        domain: autocolors
+          ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] }
+          : state.encoding.color.domain,
         range: colorRange,
         nullValue: "rgba(214, 215, 214, 0.65)",
         default: "rgba(214, 215, 214, 0.65)"
+      })
+      fillColor = {
+        scale: colorScaleName,
+        field: "color"
       }
-    ]
+    } else {
+      fillColor = {
+        value: adjustOpacity(
+          state.encoding.color.value,
+          state.encoding.color.opacity
+        )
+      }
+    }
 
     const marks = [
       {
@@ -281,10 +302,7 @@ export default function rasterLayerPolyMixin(_layer) {
           y: {
             field: "y"
           },
-          fillColor: {
-            scale: colorScaleName,
-            field: "color"
-          },
+          fillColor: fillColor,
           strokeColor:
             typeof state.mark === "object" ? state.mark.strokeColor : "white",
           strokeWidth:
@@ -323,7 +341,9 @@ export default function rasterLayerPolyMixin(_layer) {
       layerName,
       filter: _layer
         .crossfilter()
-        .getFilterString(_layer.dimension().getDimensionIndex()),
+        .getFilterString(
+          _layer.dimension() ? _layer.dimension().getDimensionIndex() : null
+        ),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
       filtersInverse: _layer.filtersInverse(),
@@ -432,7 +452,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
 
     /**
-     * Builds the svg path string to use with the d svg attr: 
+     * Builds the svg path string to use with the d svg attr:
      * https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
      * This function should be called after the getBounds().
      * The t/s arguments are the transformations to properly place the points underneath
@@ -490,8 +510,11 @@ export default function rasterLayerPolyMixin(_layer) {
             this._polys.push(polypts)
             polypts = []
           } else {
-            Point2d.set(screenPt, xscale(verts[idx]) + margins.left,
-                        height - yscale(verts[idx + 1]) - 1 + margins.top)
+            Point2d.set(
+              screenPt,
+              xscale(verts[idx]) + margins.left,
+              height - yscale(verts[idx + 1]) - 1 + margins.top
+            )
 
             if (
               screenPt[0] >= 0 &&
@@ -521,11 +544,12 @@ export default function rasterLayerPolyMixin(_layer) {
 
         let pointStr = ""
         for (let i = 0; i < pts.length; i = i + 2) {
-          if (!isNaN(pts[i]) && !isNaN(pts[i+1])) {
+          if (!isNaN(pts[i]) && !isNaN(pts[i + 1])) {
             pointStr +=
               (pointStr.length ? "L" : "M") +
-              (s * (pts[i] - t[0])) + "," +
-              (s * (pts[i + 1] - t[1]))
+              s * (pts[i] - t[0]) +
+              "," +
+              s * (pts[i + 1] - t[1])
           }
         }
         if (pointStr.length) {
@@ -537,14 +561,32 @@ export default function rasterLayerPolyMixin(_layer) {
     }
   }
 
-  function buildGeoProjection(width, height, margins, xscale, yscale, clamp = true, t = [0, 0], s = 1) {
-    let _translation = t, _scale = s, _clamp = clamp
+  function buildGeoProjection(
+    width,
+    height,
+    margins,
+    xscale,
+    yscale,
+    clamp = true,
+    t = [0, 0],
+    s = 1
+  ) {
+    let _translation = t,
+      _scale = s,
+      _clamp = clamp
 
     const project = d3.geo.transform({
       point(lon, lat) {
         const projectedCoord = conv4326To900913(lon, lat)
-        const pt = [_scale * (xscale(projectedCoord[0]) + margins.left - _translation[0]),
-                    _scale * (height - yscale(projectedCoord[1]) - 1 + margins.top - _translation[1])]
+        const pt = [
+          _scale * (xscale(projectedCoord[0]) + margins.left - _translation[0]),
+          _scale *
+            (height -
+              yscale(projectedCoord[1]) -
+              1 +
+              margins.top -
+              _translation[1])
+        ]
         if (_clamp) {
           if (pt[0] >= 0 && pt[0] < width && pt[1] >= 0 && pt[1] < height) {
             return this.stream.point(pt[0], pt[1])
@@ -560,7 +602,7 @@ export default function rasterLayerPolyMixin(_layer) {
       _scale = s
     }
 
-    project.setClamp = (clamp) => {
+    project.setClamp = clamp => {
       _clamp = Boolean(clamp)
     }
 
@@ -577,18 +619,34 @@ export default function rasterLayerPolyMixin(_layer) {
 
     getBounds(data, width, height, margins, xscale, yscale) {
       const wkt = data[polyTableGeomColumns.geo]
-      if (typeof wkt !== 'string') {
-        throw new Error(`Cannot create SVG from geo polygon column "${polyTableGeomColumns.geo}". The data returned is not a WKT string. It is of type: ${typeof wkt}`)
+      if (typeof wkt !== "string") {
+        throw new Error(
+          `Cannot create SVG from geo polygon column "${
+            polyTableGeomColumns.geo
+          }". The data returned is not a WKT string. It is of type: ${typeof wkt}`
+        )
       }
       this._geojson = wellknown.parse(wkt)
-      this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true)
+      this._projector = buildGeoProjection(
+        width,
+        height,
+        margins,
+        xscale,
+        yscale,
+        true
+      )
 
       // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
       // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
       // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
       this._d3projector = d3.geo.path().projection(this._projector)
       const d3bounds = this._d3projector.bounds(this._geojson)
-      return AABox2d.create(d3bounds[0][0], d3bounds[0][1], d3bounds[1][0], d3bounds[1][1])
+      return AABox2d.create(
+        d3bounds[0][0],
+        d3bounds[0][1],
+        d3bounds[1][0],
+        d3bounds[1][1]
+      )
     }
 
     getSvgPath(t, s) {
@@ -617,7 +675,14 @@ export default function rasterLayerPolyMixin(_layer) {
       geoPathFormatter = new LegacySvgFormatter()
     }
 
-    const bounds = geoPathFormatter.getBounds(data, width, height, margins, xscale, yscale)
+    const bounds = geoPathFormatter.getBounds(
+      data,
+      width,
+      height,
+      margins,
+      xscale,
+      yscale
+    )
 
     // Check for 2 special cases:
     // 1) zoomed in so far in that the poly encompasses the entire view, so all points are
@@ -726,7 +791,13 @@ export default function rasterLayerPolyMixin(_layer) {
 
     group
       .append("path")
-      .attr("d", geoPathFormatter.getSvgPath(Point2d.create(bounds[AABox2d.MINX], bounds[AABox2d.MINY]), scale))
+      .attr(
+        "d",
+        geoPathFormatter.getSvgPath(
+          Point2d.create(bounds[AABox2d.MINX], bounds[AABox2d.MINY]),
+          scale
+        )
+      )
       .attr("class", "map-polygon-shape")
       .attr("fill", fillColor)
       .attr("fill-rule", "evenodd")
