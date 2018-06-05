@@ -299,7 +299,7 @@ export default function rasterLayerPolyMixin(_layer) {
           y: {
             field: "y"
           },
-          fillColor: fillColor,
+          fillColor,
           strokeColor:
             typeof state.mark === "object" ? state.mark.strokeColor : "white",
           strokeWidth:
