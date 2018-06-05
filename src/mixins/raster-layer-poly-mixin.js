@@ -21,7 +21,6 @@ function conv4326To900913(x, y) {
 const vegaLineJoinOptions = ["miter", "round", "bevel"]
 const polyTableGeomColumns = {
   // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
-  geo: "mapd_geo", // TODO(croot): need to handle tables with either more than 1 geo column or columns with custom names
   // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
   verts_LEGACY: "mapd_geo_coords",
   indices_LEGACY: "mapd_geo_indices",
@@ -217,7 +216,7 @@ export default function rasterLayerPolyMixin(_layer) {
       {
         name: layerName,
         format: "polys",
-        geocolumn: "mapd_geo",
+        geocolumn: state.encoding.geocol,
         sql: parser.writeSQL({
           type: "root",
           source: [...new Set(state.data.map(source => source.table))].join(
@@ -366,7 +365,9 @@ export default function rasterLayerPolyMixin(_layer) {
     // add the poly geometry to the query
 
     if (chart._useGeoTypes) {
-      popupColsSet.add(polyTableGeomColumns.geo)
+      if (state.encoding.geocol) {
+        popupColsSet.add(state.encoding.geocol)
+      }
     } else {
       popupColsSet.add(polyTableGeomColumns.verts_LEGACY)
       popupColsSet.add(polyTableGeomColumns.linedrawinfo_LEGACY)
@@ -392,7 +393,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer._areResultsValidForPopup = function(results) {
     if (
-      results[polyTableGeomColumns.geo] ||
+      (state.encoding.geocol && results[state.encoding.geocol]) ||
       (results[polyTableGeomColumns.verts_LEGACY] &&
         results[polyTableGeomColumns.linedrawinfo_LEGACY])
     ) {
@@ -610,19 +611,20 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   class GeoSvgFormatter extends PolySvgFormatter {
-    constructor() {
+    constructor(geocol) {
       super()
       this._geojson = null
       this._projector = null
       this._d3projector = null
+      this._geocol = geocol
     }
 
     getBounds(data, width, height, margins, xscale, yscale) {
-      const wkt = data[polyTableGeomColumns.geo]
+      const wkt = data[this._geocol]
       if (typeof wkt !== "string") {
         throw new Error(
           `Cannot create SVG from geo polygon column "${
-            polyTableGeomColumns.geo
+            this._geocol
           }". The data returned is not a WKT string. It is of type: ${typeof wkt}`
         )
       }
@@ -670,7 +672,10 @@ export default function rasterLayerPolyMixin(_layer) {
   ) {
     let geoPathFormatter = null
     if (chart._useGeoTypes) {
-      geoPathFormatter = new GeoSvgFormatter()
+      if (!state.encoding.geocol) {
+        throw new Error("No poly/multipolygon column specified. Cannot build poly outline popup.")
+      }
+      geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol)
     } else {
       geoPathFormatter = new LegacySvgFormatter()
     }

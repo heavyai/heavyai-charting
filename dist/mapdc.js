@@ -22085,6 +22085,7 @@ function format(_value, _key, numberFormatter, dateFormatter) {
 }
 
 function multipleKeysLabelMixin(_chart) {
+
   function label(d) {
     var numberFormatter = _chart && _chart.valueFormatter();
     var dateFormatter = _chart && _chart.dateFormatter();
@@ -26359,6 +26360,7 @@ function rasterLayerPointMixin(_layer) {
   };
 
   _layer._genVega = function (chart, layerName, group, query) {
+
     // needed to set LastFilteredSize when point map first initialized
     if (_layer.yDim()) {
       _layer.yDim().groupAll().valueAsync().then(function (value) {
@@ -26546,7 +26548,6 @@ function conv4326To900913(x, y) {
 var vegaLineJoinOptions = ["miter", "round", "bevel"];
 var polyTableGeomColumns = {
   // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
-  geo: "mapd_geo", // TODO(croot): need to handle tables with either more than 1 geo column or columns with custom names
   // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
   verts_LEGACY: "mapd_geo_coords",
   indices_LEGACY: "mapd_geo_indices",
@@ -26734,7 +26735,7 @@ function rasterLayerPolyMixin(_layer) {
     var data = [{
       name: layerName,
       format: "polys",
-      geocolumn: "mapd_geo",
+      geocolumn: state.encoding.geocol,
       sql: _utils.parser.writeSQL({
         type: "root",
         source: [].concat(_toConsumableArray(new Set(state.data.map(function (source) {
@@ -26855,7 +26856,9 @@ function rasterLayerPolyMixin(_layer) {
     // add the poly geometry to the query
 
     if (chart._useGeoTypes) {
-      popupColsSet.add(polyTableGeomColumns.geo);
+      if (state.encoding.geocol) {
+        popupColsSet.add(state.encoding.geocol);
+      }
     } else {
       popupColsSet.add(polyTableGeomColumns.verts_LEGACY);
       popupColsSet.add(polyTableGeomColumns.linedrawinfo_LEGACY);
@@ -26871,7 +26874,7 @@ function rasterLayerPolyMixin(_layer) {
   };
 
   _layer._areResultsValidForPopup = function (results) {
-    if (results[polyTableGeomColumns.geo] || results[polyTableGeomColumns.verts_LEGACY] && results[polyTableGeomColumns.linedrawinfo_LEGACY]) {
+    if (state.encoding.geocol && results[state.encoding.geocol] || results[polyTableGeomColumns.verts_LEGACY] && results[polyTableGeomColumns.linedrawinfo_LEGACY]) {
       return true;
     }
     return false;
@@ -27085,7 +27088,7 @@ function rasterLayerPolyMixin(_layer) {
   var GeoSvgFormatter = function (_PolySvgFormatter2) {
     _inherits(GeoSvgFormatter, _PolySvgFormatter2);
 
-    function GeoSvgFormatter() {
+    function GeoSvgFormatter(geocol) {
       _classCallCheck(this, GeoSvgFormatter);
 
       var _this2 = _possibleConstructorReturn(this, (GeoSvgFormatter.__proto__ || Object.getPrototypeOf(GeoSvgFormatter)).call(this));
@@ -27093,15 +27096,16 @@ function rasterLayerPolyMixin(_layer) {
       _this2._geojson = null;
       _this2._projector = null;
       _this2._d3projector = null;
+      _this2._geocol = geocol;
       return _this2;
     }
 
     _createClass(GeoSvgFormatter, [{
       key: "getBounds",
       value: function getBounds(data, width, height, margins, xscale, yscale) {
-        var wkt = data[polyTableGeomColumns.geo];
+        var wkt = data[this._geocol];
         if (typeof wkt !== "string") {
-          throw new Error("Cannot create SVG from geo polygon column \"" + polyTableGeomColumns.geo + "\". The data returned is not a WKT string. It is of type: " + (typeof wkt === "undefined" ? "undefined" : _typeof(wkt)));
+          throw new Error("Cannot create SVG from geo polygon column \"" + this._geocol + "\". The data returned is not a WKT string. It is of type: " + (typeof wkt === "undefined" ? "undefined" : _typeof(wkt)));
         }
         this._geojson = _wellknown2.default.parse(wkt);
         this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true);
@@ -27128,7 +27132,10 @@ function rasterLayerPolyMixin(_layer) {
   _layer._displayPopup = function (chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate) {
     var geoPathFormatter = null;
     if (chart._useGeoTypes) {
-      geoPathFormatter = new GeoSvgFormatter();
+      if (!state.encoding.geocol) {
+        throw new Error("No poly/multipolygon column specified. Cannot build poly outline popup.");
+      }
+      geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol);
     } else {
       geoPathFormatter = new LegacySvgFormatter();
     }
