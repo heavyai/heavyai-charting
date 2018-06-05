@@ -99,17 +99,20 @@ export default function rasterLayerPolyMixin(_layer) {
     return state
   }
 
+  function doJoin() {
+    return state.data.length > 1
+  }
+
   function getTransforms({
     filter,
     globalFilter,
     layerFilter = [],
     filtersInverse
   }) {
-    const doJoin = state.data.length > 1
     const hasColorMeasure = !(state.encoding.color.domain === undefined)
 
     const groupby =
-      hasColorMeasure && !(state.data[0].attr === "rowid")
+      doJoin()
         ? {
             type: "project",
             expr: `${state.data[0].table}.${state.data[0].attr}`,
@@ -117,20 +120,20 @@ export default function rasterLayerPolyMixin(_layer) {
           }
         : {}
 
-    const rowIdTable = doJoin ? state.data[1].table : state.data[0].table
+    const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
 
     const transforms = [
       {
         type: "rowid",
         table: rowIdTable
       },
-      doJoin && {
+      doJoin() && {
         type: "filter",
         expr: `${state.data[0].table}.${state.data[0].attr} = ${
           state.data[1].table
         }.${state.data[1].attr}`
       },
-      hasColorMeasure && {
+      hasColorMeasure ? {
         type: "aggregate",
         fields: [
           layerFilter.length
@@ -153,6 +156,9 @@ export default function rasterLayerPolyMixin(_layer) {
         ops: [null],
         as: ["color"],
         groupby
+      } : layerFilter.length && {
+        type: "filter",
+        expr: parser.parseExpression({ type: filtersInverse ? "not in" : "in", expr: `${state.data[0].table}.${state.data[0].attr}`, set: layerFilter })
       }
     ]
 
@@ -339,7 +345,7 @@ export default function rasterLayerPolyMixin(_layer) {
       filter: _layer
         .crossfilter()
         .getFilterString(
-          _layer.dimension() ? _layer.dimension().getDimensionIndex() : null
+         _layer.dimension().getDimensionIndex()
         ),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
@@ -818,10 +824,11 @@ export default function rasterLayerPolyMixin(_layer) {
     }
     const isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey))
 
+    const filterKey = doJoin() ? "key0" : "rowid"
     chart.hidePopup()
     events.trigger(() => {
-      _layer.filter(data.key0, isInverseFilter)
-      chart.filter(data.key0, isInverseFilter)
+      _layer.filter(data[filterKey], isInverseFilter)
+      chart.filter(data[filterKey], isInverseFilter)
       _listeners.filtered(_layer, _filtersArray)
       chart.redrawGroup()
     })
