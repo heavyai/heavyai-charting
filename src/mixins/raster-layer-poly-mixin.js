@@ -185,9 +185,7 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   function usesAutoColors() {
-    return state.encoding.color.domain === undefined
-      ? false
-      : state.encoding.color.domain === "auto"
+    return state.encoding.color.domain === "auto"
   }
 
   _layer._updateFromMetadata = (metadata, layerName = "") => {
