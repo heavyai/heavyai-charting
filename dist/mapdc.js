@@ -26613,6 +26613,10 @@ function rasterLayerPolyMixin(_layer) {
     return state;
   };
 
+  function doJoin() {
+    return state.data.length > 1;
+  }
+
   function getTransforms(_ref) {
     var filter = _ref.filter,
         globalFilter = _ref.globalFilter,
@@ -26620,24 +26624,23 @@ function rasterLayerPolyMixin(_layer) {
         layerFilter = _ref$layerFilter === undefined ? [] : _ref$layerFilter,
         filtersInverse = _ref.filtersInverse;
 
-    var doJoin = state.data.length > 1;
     var hasColorMeasure = !(state.encoding.color.domain === undefined);
 
-    var groupby = hasColorMeasure && !(state.data[0].attr === "rowid") ? {
+    var groupby = doJoin() ? {
       type: "project",
       expr: state.data[0].table + "." + state.data[0].attr,
       as: "key0"
     } : {};
 
-    var rowIdTable = doJoin ? state.data[1].table : state.data[0].table;
+    var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
 
     var transforms = [{
       type: "rowid",
       table: rowIdTable
-    }, doJoin && {
+    }, doJoin() && {
       type: "filter",
       expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
-    }, hasColorMeasure && {
+    }, hasColorMeasure ? {
       type: "aggregate",
       fields: [layerFilter.length ? _utils.parser.parseExpression({
         type: "case",
@@ -26651,6 +26654,9 @@ function rasterLayerPolyMixin(_layer) {
       ops: [null],
       as: ["color"],
       groupby: groupby
+    } : layerFilter.length && {
+      type: "filter",
+      expr: _utils.parser.parseExpression({ type: filtersInverse ? "not in" : "in", expr: state.data[0].table + "." + state.data[0].attr, set: layerFilter })
     }];
 
     if (typeof state.transform.limit === "number") {
@@ -26841,7 +26847,7 @@ function rasterLayerPolyMixin(_layer) {
   _layer._genVega = function (chart, layerName, group, query) {
     _vega = _layer.__genVega({
       layerName: layerName,
-      filter: _layer.crossfilter().getFilterString(_layer.dimension() ? _layer.dimension().getDimensionIndex() : null),
+      filter: _layer.crossfilter().getFilterString(_layer.dimension().getDimensionIndex()),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
       filtersInverse: _layer.filtersInverse(),
@@ -27236,10 +27242,11 @@ function rasterLayerPolyMixin(_layer) {
     }
     var isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey));
 
+    var filterKey = doJoin() ? "key0" : "rowid";
     chart.hidePopup();
     _events.events.trigger(function () {
-      _layer.filter(data.key0, isInverseFilter);
-      chart.filter(data.key0, isInverseFilter);
+      _layer.filter(data[filterKey], isInverseFilter);
+      chart.filter(data[filterKey], isInverseFilter);
       _listeners.filtered(_layer, _filtersArray);
       chart.redrawGroup();
     });
