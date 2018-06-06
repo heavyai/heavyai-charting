@@ -104,7 +104,10 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   function hasColorAggregate() {
-    return !(state.encoding.color.domain === undefined)
+    console.log('color agg state')
+    console.log(state)
+    // TODO(adb): more query fun...
+    return state.encoding.color.type === "quantitative"
   }
 
   function getTransforms({
@@ -214,6 +217,20 @@ export default function rasterLayerPolyMixin(_layer) {
           groupby
         })
       } else {
+        const { encoding: { color } } = state
+        if (typeof color === "object" && color.type === "ordinal") {
+          transforms.push({
+            type: "aggregate",
+            fields: [],
+            ops: [null],
+            as: ["color"],
+            groupby: {
+                type: "project",
+                expr: `${state.data[0].table}.${color.field}`,
+                as: "color"
+            }
+          })
+        }
         if (layerFilter.length) {
           // Add hit testing filter
           transforms.push({
@@ -260,6 +277,39 @@ export default function rasterLayerPolyMixin(_layer) {
     return state.encoding.color.domain === "auto"
   }
 
+  function getStatsLayerName(layerName) {
+    return layerName + "_stats"
+  }
+
+  function getColorScale(layerName) {
+    const { encoding: { color } } = state
+    const colorScaleName = getColorScaleName(layerName)
+    const colorRange = color.range.map(c =>
+      adjustOpacity(c, color.opacity)
+    )
+    if (color.type === "quantitative") {
+      return {
+        name: colorScaleName,
+        type: "quantize",
+        domain: usesAutoColors() ? { data: getStatsLayerName(layerName), fields: ["mincolor", "maxcolor"] } : color.domain,
+        range: colorRange,
+        nullValue: "rgba(214, 215, 214, 0.65)",
+        default: "rgba(214, 215, 214, 0.65)"
+      }
+    } else if (color.type === "ordinal") {
+      return {
+        name: colorScaleName,
+        type: "ordinal",
+        domain: usesAutoColors() ? { data: getStatsLayerName(layerName), fields: ["color"] } : color.domain,
+        range: colorRange,
+        nullValue: "rgba(214, 215, 214, 0.65)",
+        default: "rgba(214, 215, 214, 0.65)"
+      }
+    } else {
+      return {}
+    }
+  }
+
   _layer._updateFromMetadata = (metadata, layerName = "") => {
     if (usesAutoColors() && Array.isArray(metadata.scales)) {
       const colorScaleName = getColorScaleName(layerName)
@@ -280,7 +330,6 @@ export default function rasterLayerPolyMixin(_layer) {
     useProjection
   }) {
     const autocolors = usesAutoColors()
-    const getStatsLayerName = () => layerName + "_stats"
 
     const data = [
       {
@@ -304,7 +353,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
     if (autocolors) {
       data.push({
-        name: getStatsLayerName(),
+        name: getStatsLayerName(layerName),
         source: layerName,
         transform: [
           {
@@ -329,24 +378,11 @@ export default function rasterLayerPolyMixin(_layer) {
 
     let scales = []
     let fillColor = {}
-    const useColorScale = state.encoding.color.value === undefined
+    const useColorScale = !(state.encoding.color.type === "solid")
     if (useColorScale) {
-      const colorRange = state.encoding.color.range.map(c =>
-        adjustOpacity(c, state.encoding.color.opacity)
-      )
-      const colorScaleName = getColorScaleName(layerName)
-      scales.push({
-        name: colorScaleName,
-        type: "quantize",
-        domain: autocolors
-          ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] }
-          : state.encoding.color.domain,
-        range: colorRange,
-        nullValue: "rgba(214, 215, 214, 0.65)",
-        default: "rgba(214, 215, 214, 0.65)"
-      })
+      scales.push(getColorScale(layerName))
       fillColor = {
-        scale: colorScaleName,
+        scale: getColorScaleName(layerName),
         field: "color"
       }
     } else {
