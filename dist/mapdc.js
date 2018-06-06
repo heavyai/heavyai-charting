@@ -26627,14 +26627,16 @@ function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1;
   }
 
+  function hasColorAggregate() {
+    return !(state.encoding.color.domain === undefined);
+  }
+
   function getTransforms(_ref) {
     var filter = _ref.filter,
         globalFilter = _ref.globalFilter,
         _ref$layerFilter = _ref.layerFilter,
         layerFilter = _ref$layerFilter === undefined ? [] : _ref$layerFilter,
         filtersInverse = _ref.filtersInverse;
-
-    var hasColorMeasure = !(state.encoding.color.domain === undefined);
 
     var groupby = doJoin() ? {
       type: "project",
@@ -26647,27 +26649,85 @@ function rasterLayerPolyMixin(_layer) {
     var transforms = [{
       type: "rowid",
       table: rowIdTable
-    }, doJoin() && {
-      type: "filter",
-      expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
-    }, hasColorMeasure ? {
-      type: "aggregate",
-      fields: [layerFilter.length ? _utils.parser.parseExpression({
-        type: "case",
-        cond: [[{
-          type: filtersInverse ? "not in" : "in",
-          expr: state.data[0].table + "." + state.data[0].attr,
-          set: layerFilter
-        }, _utils.parser.parseExpression(state.encoding.color.aggregrate)]],
-        else: null
-      }) : _utils.parser.parseExpression(state.encoding.color.aggregrate)],
-      ops: [null],
-      as: ["color"],
-      groupby: groupby
-    } : layerFilter.length && {
-      type: "filter",
-      expr: _utils.parser.parseExpression({ type: filtersInverse ? "not in" : "in", expr: state.data[0].table + "." + state.data[0].attr, set: layerFilter })
     }];
+
+    if (doJoin()) {
+      // Add the join
+      transforms.push({
+        type: "filter",
+        expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
+      });
+
+      if (hasColorAggregate()) {
+        // CASE WHEN joinKey IN (<<keys>>) THEN <<color>> END as color
+        transforms.push({
+          type: "aggregate",
+          fields: [layerFilter.length ? _utils.parser.parseExpression({
+            type: "case",
+            cond: [[{
+              type: filtersInverse ? "not in" : "in",
+              expr: state.data[0].table + "." + state.data[0].attr,
+              set: layerFilter
+            }, _utils.parser.parseExpression(state.encoding.color.aggregrate)]],
+            else: null
+          }) : _utils.parser.parseExpression(state.encoding.color.aggregrate)],
+          ops: [null],
+          as: ["color"],
+          groupby: groupby
+        });
+      } else {
+        // Ensure we group by the join key
+        transforms.push({
+          type: "aggregate",
+          fields: [],
+          ops: [null],
+          as: ["key0"],
+          groupby: groupby
+        });
+        // Add hit testing filter
+        if (layerFilter.length) {
+          transforms.push({
+            type: "filter",
+            expr: _utils.parser.parseExpression({
+              type: filtersInverse ? "not in" : "in",
+              expr: state.data[0].table + "." + state.data[0].attr,
+              set: layerFilter
+            })
+          });
+        }
+      }
+    } else {
+      if (hasColorAggregate()) {
+        // CASE WHEN rowid IN (<<keys>>) THEN <<color>> END as color
+        transforms.push({
+          type: "aggregate",
+          fields: [layerFilter.length ? _utils.parser.parseExpression({
+            type: "case",
+            cond: [[{
+              type: filtersInverse ? "not in" : "in",
+              expr: state.data[0].table + "." + state.data[0].attr,
+              set: layerFilter
+            }, _utils.parser.parseExpression(state.encoding.color.aggregrate)]],
+            else: null
+          }) : _utils.parser.parseExpression(state.encoding.color.aggregrate)],
+          ops: [null],
+          as: ["color"],
+          groupby: groupby
+        });
+      } else {
+        if (layerFilter.length) {
+          // Add hit testing filter
+          transforms.push({
+            type: "filter",
+            expr: _utils.parser.parseExpression({
+              type: filtersInverse ? "not in" : "in",
+              expr: state.data[0].table + "." + state.data[0].attr,
+              set: layerFilter
+            })
+          });
+        }
+      }
+    }
 
     if (typeof state.transform.limit === "number") {
       transforms.push({
