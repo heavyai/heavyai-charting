@@ -22085,7 +22085,6 @@ function format(_value, _key, numberFormatter, dateFormatter) {
 }
 
 function multipleKeysLabelMixin(_chart) {
-
   function label(d) {
     var numberFormatter = _chart && _chart.valueFormatter();
     var dateFormatter = _chart && _chart.dateFormatter();
@@ -26628,7 +26627,10 @@ function rasterLayerPolyMixin(_layer) {
   }
 
   function hasColorAggregate() {
-    return !(state.encoding.color.domain === undefined);
+    console.log('color agg state');
+    console.log(state);
+    // TODO(adb): more query fun...
+    return state.encoding.color.type === "quantitative";
   }
 
   function getTransforms(_ref) {
@@ -26715,6 +26717,22 @@ function rasterLayerPolyMixin(_layer) {
           groupby: groupby
         });
       } else {
+        var _state = state,
+            color = _state.encoding.color;
+
+        if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "ordinal") {
+          transforms.push({
+            type: "aggregate",
+            fields: [],
+            ops: [null],
+            as: ["color"],
+            groupby: {
+              type: "project",
+              expr: state.data[0].table + "." + color.field,
+              as: "color"
+            }
+          });
+        }
         if (layerFilter.length) {
           // Add hit testing filter
           transforms.push({
@@ -26761,6 +26779,41 @@ function rasterLayerPolyMixin(_layer) {
     return state.encoding.color.domain === "auto";
   }
 
+  function getStatsLayerName(layerName) {
+    return layerName + "_stats";
+  }
+
+  function getColorScale(layerName) {
+    var _state2 = state,
+        color = _state2.encoding.color;
+
+    var colorScaleName = getColorScaleName(layerName);
+    var colorRange = color.range.map(function (c) {
+      return (0, _utilsVega.adjustOpacity)(c, color.opacity);
+    });
+    if (color.type === "quantitative") {
+      return {
+        name: colorScaleName,
+        type: "quantize",
+        domain: usesAutoColors() ? { data: getStatsLayerName(layerName), fields: ["mincolor", "maxcolor"] } : color.domain,
+        range: colorRange,
+        nullValue: "rgba(214, 215, 214, 0.65)",
+        default: "rgba(214, 215, 214, 0.65)"
+      };
+    } else if (color.type === "ordinal") {
+      return {
+        name: colorScaleName,
+        type: "ordinal",
+        domain: usesAutoColors() ? { data: getStatsLayerName(layerName), fields: ["color"] } : color.domain,
+        range: colorRange,
+        nullValue: "rgba(214, 215, 214, 0.65)",
+        default: "rgba(214, 215, 214, 0.65)"
+      };
+    } else {
+      return {};
+    }
+  }
+
   _layer._updateFromMetadata = function (metadata) {
     var layerName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
 
@@ -26804,9 +26857,6 @@ function rasterLayerPolyMixin(_layer) {
         useProjection = _ref2.useProjection;
 
     var autocolors = usesAutoColors();
-    var getStatsLayerName = function getStatsLayerName() {
-      return layerName + "_stats";
-    };
 
     var data = [{
       name: layerName,
@@ -26828,7 +26878,7 @@ function rasterLayerPolyMixin(_layer) {
 
     if (autocolors) {
       data.push({
-        name: getStatsLayerName(),
+        name: getStatsLayerName(layerName),
         source: layerName,
         transform: [{
           type: "aggregate",
@@ -26849,22 +26899,11 @@ function rasterLayerPolyMixin(_layer) {
 
     var scales = [];
     var fillColor = {};
-    var useColorScale = state.encoding.color.value === undefined;
+    var useColorScale = !(state.encoding.color.type === "solid");
     if (useColorScale) {
-      var colorRange = state.encoding.color.range.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
-      });
-      var colorScaleName = getColorScaleName(layerName);
-      scales.push({
-        name: colorScaleName,
-        type: "quantize",
-        domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.domain,
-        range: colorRange,
-        nullValue: "rgba(214, 215, 214, 0.65)",
-        default: "rgba(214, 215, 214, 0.65)"
-      });
+      scales.push(getColorScale(layerName));
       fillColor = {
-        scale: colorScaleName,
+        scale: getColorScaleName(layerName),
         field: "color"
       };
     } else {
