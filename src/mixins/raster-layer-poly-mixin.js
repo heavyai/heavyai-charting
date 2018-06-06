@@ -103,64 +103,130 @@ export default function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1
   }
 
+  function hasColorAggregate() {
+    return !(state.encoding.color.domain === undefined)
+  }
+
   function getTransforms({
     filter,
     globalFilter,
     layerFilter = [],
     filtersInverse
   }) {
-    const hasColorMeasure = !(state.encoding.color.domain === undefined)
-
-    const groupby =
-      doJoin()
-        ? {
-            type: "project",
-            expr: `${state.data[0].table}.${state.data[0].attr}`,
-            as: "key0"
-          }
-        : {}
+    const groupby = doJoin()
+      ? {
+          type: "project",
+          expr: `${state.data[0].table}.${state.data[0].attr}`,
+          as: "key0"
+        }
+      : {}
 
     const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
 
-    const transforms = [
+    let transforms = [
       {
         type: "rowid",
         table: rowIdTable
-      },
-      doJoin() && {
+      }
+    ]
+
+    if (doJoin()) {
+      // Add the join
+      transforms.push({
         type: "filter",
         expr: `${state.data[0].table}.${state.data[0].attr} = ${
           state.data[1].table
         }.${state.data[1].attr}`
-      },
-      hasColorMeasure ? {
-        type: "aggregate",
-        fields: [
-          layerFilter.length
-            ? parser.parseExpression({
-                type: "case",
-                cond: [
-                  [
-                    {
-                      type: filtersInverse ? "not in" : "in",
-                      expr: `${state.data[0].table}.${state.data[0].attr}`,
-                      set: layerFilter
-                    },
-                    parser.parseExpression(state.encoding.color.aggregrate)
-                  ]
-                ],
-                else: null
-              })
-            : parser.parseExpression(state.encoding.color.aggregrate)
-        ],
-        ops: [null],
-        as: ["color"],
-        groupby
-      } : layerFilter.length && {
-        type: "filter",
-        expr: parser.parseExpression({ type: filtersInverse ? "not in" : "in", expr: `${state.data[0].table}.${state.data[0].attr}`, set: layerFilter })
+      })
+
+      if (hasColorAggregate()) {
+        // CASE WHEN joinKey IN (<<keys>>) THEN <<color>> END as color
+        transforms.push({
+          type: "aggregate",
+          fields: [
+            layerFilter.length
+              ? parser.parseExpression({
+                  type: "case",
+                  cond: [
+                    [
+                      {
+                        type: filtersInverse ? "not in" : "in",
+                        expr: `${state.data[0].table}.${state.data[0].attr}`,
+                        set: layerFilter
+                      },
+                      parser.parseExpression(state.encoding.color.aggregrate)
+                    ]
+                  ],
+                  else: null
+                })
+              : parser.parseExpression(state.encoding.color.aggregrate)
+          ],
+          ops: [null],
+          as: ["color"],
+          groupby
+        })
+      } else {
+        // Ensure we group by the join key
+        transforms.push({
+          type: "aggregate",
+          fields: [],
+          ops: [null],
+          as: ["key0"],
+          groupby
+        })
+        // Add hit testing filter
+        if (layerFilter.length) {
+          transforms.push({
+            type: "filter",
+            expr: parser.parseExpression({
+              type: filtersInverse ? "not in" : "in",
+              expr: `${state.data[0].table}.${state.data[0].attr}`,
+              set: layerFilter
+            })
+          })
+        }
       }
-    ]
+    } else {
+      if (hasColorAggregate()) {
+        // CASE WHEN rowid IN (<<keys>>) THEN <<color>> END as color
+        transforms.push({
+          type: "aggregate",
+          fields: [
+            layerFilter.length
+              ? parser.parseExpression({
+                  type: "case",
+                  cond: [
+                    [
+                      {
+                        type: filtersInverse ? "not in" : "in",
+                        expr: `${state.data[0].table}.${state.data[0].attr}`,
+                        set: layerFilter
+                      },
+                      parser.parseExpression(state.encoding.color.aggregrate)
+                    ]
+                  ],
+                  else: null
+                })
+              : parser.parseExpression(state.encoding.color.aggregrate)
+          ],
+          ops: [null],
+          as: ["color"],
+          groupby
+        })
+      } else {
+        if (layerFilter.length) {
+          // Add hit testing filter
+          transforms.push({
+            type: "filter",
+            expr: parser.parseExpression({
+              type: filtersInverse ? "not in" : "in",
+              expr: `${state.data[0].table}.${state.data[0].attr}`,
+              set: layerFilter
+            })
+          })
+        }
+      }
+    }
 
     if (typeof state.transform.limit === "number") {
       transforms.push({
@@ -344,9 +410,7 @@ export default function rasterLayerPolyMixin(_layer) {
       layerName,
       filter: _layer
         .crossfilter()
-        .getFilterString(
-         _layer.dimension().getDimensionIndex()
-        ),
+        .getFilterString(_layer.dimension().getDimensionIndex()),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
       filtersInverse: _layer.filtersInverse(),
@@ -677,7 +741,9 @@ export default function rasterLayerPolyMixin(_layer) {
     let geoPathFormatter = null
     if (chart._useGeoTypes) {
       if (!state.encoding.geocol) {
-        throw new Error("No poly/multipolygon column specified. Cannot build poly outline popup.")
+        throw new Error(
+          "No poly/multipolygon column specified. Cannot build poly outline popup."
+        )
       }
       geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol)
     } else {
