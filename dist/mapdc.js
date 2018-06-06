@@ -26972,6 +26972,7 @@ function rasterLayerPolyMixin(_layer) {
 
   _layer.filterAll = function () {
     _filtersArray = [];
+    _layer.dimension().filterAll();
   };
 
   _layer.on = function (event, listener) {
