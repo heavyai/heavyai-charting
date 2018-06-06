@@ -320,7 +320,7 @@ describe("rasterLayerPolyMixin", () => {
       })
     })
 
-    it("should generate the correct vega spec with \"auto\" color domain", () => {
+    it('should generate the correct vega spec with "auto" color domain', () => {
       const layer = rasterLayer("polys")
       layer.setState({
         data: [
@@ -406,7 +406,7 @@ describe("rasterLayerPolyMixin", () => {
           {
             name: "polys_fillColor",
             type: "quantize",
-            domain: {data: "polys_stats", fields: ["mincolor", "maxcolor"]},
+            domain: { data: "polys_stats", fields: ["mincolor", "maxcolor"] },
             range: ["black", "blue"],
             nullValue: "rgba(214, 215, 214, 0.65)",
             default: "rgba(214, 215, 214, 0.65)"
