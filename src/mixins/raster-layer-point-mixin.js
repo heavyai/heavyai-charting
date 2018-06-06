@@ -579,8 +579,6 @@ export default function rasterLayerPointMixin(_layer) {
   }
 
   const renderAttributes = [
-    "x",
-    "y",
     "xc",
     "yc",
     "width",
