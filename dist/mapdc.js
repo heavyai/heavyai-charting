@@ -26268,21 +26268,11 @@ function rasterLayerPointMixin(_layer) {
     var scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName());
 
     var marks = [{
-      type: markType === "circle" ? "points" : "symbol",
+      type: "symbol",
       from: {
         data: layerName
       },
-      properties: Object.assign({}, markType === "circle" ? {
-        x: {
-          scale: "x",
-          field: "x"
-        },
-        y: {
-          scale: "y",
-          field: "y"
-        },
-        fillColor: getColor(state.encoding.color, layerName)
-      } : {
+      properties: Object.assign({}, {
         xc: {
           scale: "x",
           field: "x"
@@ -26292,7 +26282,7 @@ function rasterLayerPointMixin(_layer) {
           field: "y"
         },
         fillColor: getColor(state.encoding.color, layerName)
-      }, markType === "circle" ? { size: size } : {
+      }, {
         shape: markType,
         width: size,
         height: size
@@ -26390,7 +26380,7 @@ function rasterLayerPointMixin(_layer) {
     return _vega;
   };
 
-  var renderAttributes = ["x", "y", "xc", "yc", "size", "width", "height", "fillColor"];
+  var renderAttributes = ["xc", "yc", "width", "height", "fillColor"];
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
     if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
