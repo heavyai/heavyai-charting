@@ -46151,6 +46151,18 @@ function pieChart(parent, chartGroup) {
 
   function createElements(slices, arc, pieData) {
     var slicesEnter = createSliceNodes(slices);
+    if (slicesEnter[0][0] === null) {
+      _g = _chart.svg().append("g").attr("class", "pie-temp-wrapper").attr("transform", "translate(" + _chart.cx() + "," + _chart.cy() + ")");
+
+      var tempSlices = _g.selectAll("g." + _sliceCssClass).data(pieData);
+      // createElements(tempSlices, arc, pieData)
+      var slicesEnter2 = createSliceNodes(tempSlices);
+      createSlicePath(slicesEnter2, arc);
+
+      createLabels(pieData, arc);
+      console.log('slices ', tempSlices);
+      return;
+    }
 
     createSlicePath(slicesEnter, arc);
 
@@ -46188,8 +46200,52 @@ function pieChart(parent, chartGroup) {
       });
     }
   }
+  function createTempSliceNode(pieData) {
+    // const slices = _g.selectAll("g." + _sliceCssClass).data(pieData)
+    // const slicesEnter = slices
+    //     .enter()
+    //     .append("g")
 
-  function positionLabels(labelsEnter, arc) {
+    _g = _chart.svg().append("g").attr("class", "pie-wrapper").attr("transform", "translate(" + _chart.cx() + "," + _chart.cy() + ")");
+
+    var tempSlices = _g.selectAll("g." + _sliceCssClass).data(pieData);
+    // slicesEnter = createSliceNodes(slices)
+    // console.log('slices ', slicesEnter)
+
+    //     .attr("class", (d, i) => _sliceCssClass + " _" + i)
+    //     /* OVERRIDE ---------------------------------------------------------------- */
+    //     .classed("stroke-thick", pieIsBig)
+    /* ------------------------------------------------------------------------- */
+
+    // const node = slicesEnter.node()
+    // return node.getBoundingClientRect()
+    // const BASE_FONT_SIZE = 12
+    // const MIN_FONT_SIZE = 4
+    // const tmpText = d3.select("body").append("span")
+    //     .attr("class", "tmp-text")
+    //     .style("font-size", BASE_FONT_SIZE + "px")
+    //     .style("position", "absolute")
+    //     .style("opacity", 0)
+    //     .style("margin-right", 10000)
+    //     .html(text)
+    // const node = tmpText.node()
+    //
+    // let textWidth = null
+    // let textHeight = null
+    // if (node.getBoundingClientRect) {
+    //   const bbox = node.getBoundingClientRect()
+    //   textWidth = bbox.width
+    //   textHeight = bbox.height
+    // }
+    //
+    // tmpText.remove()
+    //
+    // const fontSizeWidth = BASE_FONT_SIZE * chartWidth / textWidth
+    // const fontSizeHeight = BASE_FONT_SIZE * chartHeight / textHeight
+    //
+    // return Math.max(Math.min(fontSizeWidth, fontSizeHeight), MIN_FONT_SIZE)
+  }
+  function positionLabels(labelsEnter, arc, pieData) {
     (0, _core.transition)(labelsEnter, _chart.transitionDuration()).attr("transform", function (d) {
       return labelPosition(d, arc);
     });
@@ -46206,6 +46262,21 @@ function pieChart(parent, chartGroup) {
       var availableLabelWidth = getAvailableLabelWidth(d);
       var width = _d2.default.select(this).node().getBoundingClientRect().width;
       var label = _chart.label()(d.data);
+      if (width === 0) {
+        var tempPie = _d2.default.select('.pie-temp-wrapper').selectAll("g").selectAll('data');
+        // tempPie[0].forEach(d=>{
+        console.log(tempPie);
+        // })
+        // debugger
+        //        const sector = tempPie.filter(function(t) {
+        //          return t === d
+        //        })
+        // debugger
+        // width = sector
+        // .getBoundingClientRect().width
+        //          createTempSliceNode(pieData)
+        //   console.log('width from temp pie ', sector)
+      }
       var displayText = truncateLabelWithNull(label, width, availableLabelWidth);
 
       _d2.default.select(this.parentNode).classed("hide-label", displayText === "");
@@ -46265,7 +46336,7 @@ function pieChart(parent, chartGroup) {
       }
       /* ------------------------------------------------------------------------- */
 
-      positionLabels(labelsEnter, arc);
+      positionLabels(labelsEnter, arc, pieData);
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc);
       }
@@ -46315,7 +46386,7 @@ function pieChart(parent, chartGroup) {
       var labels = _g.selectAll("g.pie-label")
       /* ------------------------------------------------------------------------- */
       .data(pieData);
-      positionLabels(labels, arc);
+      positionLabels(labels, arc, pieData);
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc);
       }
