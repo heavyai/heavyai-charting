@@ -18,6 +18,9 @@ function conv4326To900913(x, y) {
   return transCoord
 }
 
+const polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)"
+const polyNullScaleColor = "rgba(214, 215, 214, 0.65)"
+
 const vegaLineJoinOptions = ["miter", "round", "bevel"]
 const polyTableGeomColumns = {
   // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
@@ -110,9 +113,19 @@ export default function rasterLayerPolyMixin(_layer) {
   function getTransforms({
     filter,
     globalFilter,
-    layerFilter = [],
+    layerFilter,
     filtersInverse
   }) {
+    const { encoding: { color } } = state
+
+    const transforms = []
+
+    const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
+    transforms.push({
+      type: "rowid",
+      table: rowIdTable
+    })
+
     const groupby = doJoin()
       ? {
           type: "project",
@@ -121,110 +134,87 @@ export default function rasterLayerPolyMixin(_layer) {
         }
       : {}
 
-    const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
-
-    let transforms = [
-      {
-        type: "rowid",
-        table: rowIdTable
-      }
-    ]
-
     if (doJoin()) {
-      // Add the join
       transforms.push({
         type: "filter",
         expr: `${state.data[0].table}.${state.data[0].attr} = ${
           state.data[1].table
         }.${state.data[1].attr}`
       })
+    }
 
-      if (hasColorAggregate()) {
-        // CASE WHEN joinKey IN (<<keys>>) THEN <<color>> END as color
+    const colorProjection =
+      color.type === "quantitative"
+        ? parser.parseExpression(color.aggregate)
+        : `LAST_SAMPLE(${color.field})`
+
+    if (layerFilter.length) {
+      if (doJoin()) {
         transforms.push({
           type: "aggregate",
-          fields: [
-            layerFilter.length
-              ? parser.parseExpression({
-                  type: "case",
-                  cond: [
-                    [
-                      {
-                        type: filtersInverse ? "not in" : "in",
-                        expr: `${state.data[0].table}.${state.data[0].attr}`,
-                        set: layerFilter
-                      },
-                      parser.parseExpression(state.encoding.color.aggregrate)
-                    ]
-                  ],
-                  else: null
-                })
-              : parser.parseExpression(state.encoding.color.aggregrate)
-          ],
+          fields: parser.parseExpression({
+            type: "case",
+            cond: [
+              [
+                {
+                  type: filtersInverse ? "not in" : "in",
+                  expr: `${state.data[0].table}.${state.data[0].attr}`,
+                  set: layerFilter
+                },
+                color.type === "solid" ? 1 : colorProjection
+              ]
+            ],
+            else: null
+          }),
           ops: [null],
           as: ["color"],
           groupby
         })
       } else {
-        // Ensure we group by the join key
         transforms.push({
-          type: "aggregate",
-          fields: [],
-          ops: [null],
-          as: ["key0"],
-          groupby
+          type: "project",
+          expr: parser.parseExpression({
+            type: "case",
+            cond: [
+              [
+                {
+                  type: filtersInverse ? "not in" : "in",
+                  expr: "rowid",
+                  set: layerFilter
+                },
+                color.type === "solid" ? 1 : colorProjection
+              ]
+            ],
+            else: null
+          }),
+          as: "color"
         })
-        // Add hit testing filter
-        if (layerFilter.length) {
-          transforms.push({
-            type: "filter",
-            expr: parser.parseExpression({
-              type: filtersInverse ? "not in" : "in",
-              expr: `${state.data[0].table}.${state.data[0].attr}`,
-              set: layerFilter
-            })
-          })
-        }
       }
     } else {
-      if (hasColorAggregate()) {
-        // CASE WHEN rowid IN (<<keys>>) THEN <<color>> END as color
-        transforms.push({
-          type: "aggregate",
-          fields: [
-            layerFilter.length
-              ? parser.parseExpression({
-                  type: "case",
-                  cond: [
-                    [
-                      {
-                        type: filtersInverse ? "not in" : "in",
-                        expr: `${state.data[0].table}.${state.data[0].attr}`,
-                        set: layerFilter
-                      },
-                      parser.parseExpression(state.encoding.color.aggregrate)
-                    ]
-                  ],
-                  else: null
-                })
-              : parser.parseExpression(state.encoding.color.aggregrate)
-          ],
-          ops: [null],
-          as: ["color"],
-          groupby
-        })
-      } else {
-        if (layerFilter.length) {
-          // Add hit testing filter
+      if (doJoin()) {
+        if (color.type !== "solid") {
           transforms.push({
-            type: "filter",
-            expr: parser.parseExpression({
-              type: filtersInverse ? "not in" : "in",
-              expr: `${state.data[0].table}.${state.data[0].attr}`,
-              set: layerFilter
-            })
+            type: "aggregate",
+            fields: [colorProjection],
+            ops: [null],
+            as: ["color"],
+            groupby
+          })
+        } else {
+          transforms.push({
+            type: "aggregate",
+            fields: [],
+            ops: [null],
+            as: [],
+            groupby
           })
         }
+      } else if (color.type !== "solid") {
+        transforms.push({
+          type: "project",
+          expr: colorProjection,
+          as: "color"
+        })
       }
     }
 
@@ -274,7 +264,7 @@ export default function rasterLayerPolyMixin(_layer) {
   _layer.__genVega = function({
     filter,
     globalFilter,
-    layerFilter,
+    layerFilter = [],
     filtersInverse,
     layerName,
     useProjection
@@ -329,22 +319,54 @@ export default function rasterLayerPolyMixin(_layer) {
 
     let scales = []
     let fillColor = {}
-    const useColorScale = state.encoding.color.value === undefined
-    if (useColorScale) {
+
+    const useColorScale = !(state.encoding.color.type === "solid")
+    if (layerFilter.length && !useColorScale) {
+      const colorScaleName = getColorScaleName(layerName)
+      scales.push({
+        name: colorScaleName,
+        type: "ordinal",
+        domain: [1],
+        range: [
+          adjustOpacity(
+            state.encoding.color.value,
+            state.encoding.color.opacity
+          )
+        ],
+        nullValue: polyNullScaleColor,
+        default: polyDefaultScaleColor
+      })
+      fillColor = {
+        scale: colorScaleName,
+        field: "color"
+      }
+    } else if (useColorScale) {
       const colorRange = state.encoding.color.range.map(c =>
         adjustOpacity(c, state.encoding.color.opacity)
       )
       const colorScaleName = getColorScaleName(layerName)
-      scales.push({
-        name: colorScaleName,
-        type: "quantize",
-        domain: autocolors
-          ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] }
-          : state.encoding.color.domain,
-        range: colorRange,
-        nullValue: "rgba(214, 215, 214, 0.65)",
-        default: "rgba(214, 215, 214, 0.65)"
-      })
+      if (state.encoding.color.type === "quantitative") {
+        scales.push({
+          name: colorScaleName,
+          type: "quantize",
+          domain: autocolors
+            ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] }
+            : state.encoding.color.domain,
+          range: colorRange,
+          nullValue: polyNullScaleColor,
+          default: polyDefaultScaleColor
+        })
+      } else {
+        scales.push({
+          name: colorScaleName,
+          type: "ordinal",
+          domain: state.encoding.color.domain,
+          range: colorRange,
+          nullValue: polyNullScaleColor,
+          default: polyDefaultScaleColor
+        })
+      }
+
       fillColor = {
         scale: colorScaleName,
         field: "color"

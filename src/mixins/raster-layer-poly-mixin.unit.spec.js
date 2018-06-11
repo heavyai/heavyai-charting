@@ -19,7 +19,7 @@ describe("rasterLayerPolyMixin", () => {
         encoding: {
           color: {
             type: "quantitative",
-            aggregrate: "COUNT(*)",
+            aggregate: "COUNT(*)",
             domain: [0, 100],
             range: ["black", "blue"]
           }
@@ -65,7 +65,7 @@ describe("rasterLayerPolyMixin", () => {
           },
           color: {
             type: "quantitative",
-            aggregrate: "AVG(contributions_donotmodify.amount)",
+            aggregate: "AVG(contributions_donotmodify.amount)",
             domain: [0, 100],
             range: ["black", "blue"]
           },
@@ -162,7 +162,7 @@ describe("rasterLayerPolyMixin", () => {
           },
           color: {
             type: "quantitative",
-            aggregrate: "AVG(contributions_donotmodify.amount)",
+            aggregate: "AVG(contributions_donotmodify.amount)",
             domain: [0, 100],
             range: ["black", "blue"]
           },
@@ -258,7 +258,7 @@ describe("rasterLayerPolyMixin", () => {
           },
           color: {
             type: "quantitative",
-            aggregrate: "AVG(contributions_donotmodify.amount)",
+            aggregate: "AVG(contributions_donotmodify.amount)",
             domain: [0, 100],
             range: ["black", "blue"]
           },
@@ -354,7 +354,7 @@ describe("rasterLayerPolyMixin", () => {
           },
           color: {
             type: "quantitative",
-            aggregrate: "AVG(contributions_donotmodify.amount)",
+            aggregate: "AVG(contributions_donotmodify.amount)",
             domain: "auto",
             range: ["black", "blue"]
           },
