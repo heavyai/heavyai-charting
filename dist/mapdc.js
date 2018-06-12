@@ -52205,7 +52205,7 @@ function mapdTable(parent, chartGroup) {
         }
 
         if (_isGroupedData) {
-          _chart.onClick(d.key0);
+          _chart.onClick(d);
         } else if (col.expression in _filteredColumns) {
           clearColFilter(col.expression);
         } else {
