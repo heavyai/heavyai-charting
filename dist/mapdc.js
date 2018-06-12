@@ -26626,10 +26626,6 @@ function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1;
   }
 
-  function hasColorAggregate() {
-    return !(state.encoding.color.domain === undefined);
-  }
-
   function getTransforms(_ref) {
     var filter = _ref.filter,
         globalFilter = _ref.globalFilter,
@@ -26666,7 +26662,7 @@ function rasterLayerPolyMixin(_layer) {
       if (doJoin()) {
         transforms.push({
           type: "aggregate",
-          fields: _utils.parser.parseExpression({
+          fields: [_utils.parser.parseExpression({
             type: "case",
             cond: [[{
               type: filtersInverse ? "not in" : "in",
@@ -26674,7 +26670,7 @@ function rasterLayerPolyMixin(_layer) {
               set: layerFilter
             }, color.type === "solid" ? 1 : colorProjection]],
             else: null
-          }),
+          })],
           ops: [null],
           as: ["color"],
           groupby: groupby

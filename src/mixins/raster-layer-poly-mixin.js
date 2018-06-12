@@ -106,10 +106,6 @@ export default function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1
   }
 
-  function hasColorAggregate() {
-    return !(state.encoding.color.domain === undefined)
-  }
-
   function getTransforms({
     filter,
     globalFilter,
@@ -152,7 +148,7 @@ export default function rasterLayerPolyMixin(_layer) {
       if (doJoin()) {
         transforms.push({
           type: "aggregate",
-          fields: parser.parseExpression({
+          fields: [parser.parseExpression({
             type: "case",
             cond: [
               [
@@ -165,7 +161,7 @@ export default function rasterLayerPolyMixin(_layer) {
               ]
             ],
             else: null
-          }),
+          })],
           ops: [null],
           as: ["color"],
           groupby
