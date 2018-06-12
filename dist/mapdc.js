@@ -6589,7 +6589,12 @@ function baseMixin(_chart) {
   _chart.onClick = function (datum) {
     // filtering on dimension will have key, but for filtering on measures which is on column doesn't. Thus, the filter is the column value only
     var values = _chart.keyAccessor()(datum);
-    var filter = values || datum;
+    var filter = null;
+    if (Array.isArray(values) && values.length || !Array.isArray(values) && values !== undefined) {
+      filter = values;
+    } else {
+      filter = datum;
+    }
     _chart.handleFilterClick(_d2.default.event, filter);
   };
 

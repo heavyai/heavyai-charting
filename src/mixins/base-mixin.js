@@ -1365,12 +1365,20 @@ export default function baseMixin(_chart) {
    * @instance
    * @param {*} datum
    */
-  _chart.onClick = function(datum) {
-    // filtering on dimension will have key, but for filtering on measures which is on column doesn't. Thus, the filter is the column value only
-    const values = _chart.keyAccessor()(datum)
-    const filter = values || datum
-    _chart.handleFilterClick(d3.event, filter)
-  }
+   _chart.onClick = function(datum) {
+     // filtering on dimension will have key, but for filtering on measures which is on column doesn't. Thus, the filter is the column value only
+     const values = _chart.keyAccessor()(datum);
+     let filter = null;
+     if (
+       (Array.isArray(values) && values.length) ||
+       (!Array.isArray(values) && values !== undefined)
+     ) {
+       filter = values;
+     } else {
+       filter = datum;
+     }
+     _chart.handleFilterClick(d3.event, filter);
+   };
 
   /**
    * Set or get the filter handler. The filter handler is a function that performs the filter action
