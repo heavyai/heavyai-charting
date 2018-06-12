@@ -6588,7 +6588,13 @@ function baseMixin(_chart) {
    */
   _chart.onClick = function (datum) {
     // filtering on dimension will have key, but for filtering on measures which is on column doesn't. Thus, the filter is the column value only
-    var filter = _chart.keyAccessor()(datum).length > 0 ? _chart.keyAccessor()(datum) : datum;
+    var values = _chart.keyAccessor()(datum);
+    var filter = null;
+    if (Array.isArray(values) && values.length || !Array.isArray(values) && values !== undefined) {
+      filter = values;
+    } else {
+      filter = datum;
+    }
     _chart.handleFilterClick(_d2.default.event, filter);
   };
 
@@ -49537,7 +49543,17 @@ var vdom_1 = __webpack_require__(210);
 var d3_dispatch_1 = __webpack_require__(219);
 var d3_format_1 = __webpack_require__(221);
 var commafy = function (d) { return d3_format_1.format(",")(parseFloat(d.toFixed(2))); };
-var formatNumber = function (d) { return String(d).length > 4 ? d3_format_1.format(".2s")(d) : commafy(d); };
+var formatNumber = function (d) {
+    if (String(d).length <= 4) {
+        return commafy(d);
+    }
+    else if (d < 0.0001) {
+        return d3_format_1.format(".2")(d);
+    }
+    else {
+        return d3_format_1.format(".2s")(d);
+    }
+};
 function rangeStep(domain, index, bins) {
     if (bins === void 0) { bins = 9; }
     if (index === 0) {
@@ -49552,11 +49568,11 @@ function rangeStep(domain, index, bins) {
     }
 }
 function validateNumericalInput(previousValue, nextValue) {
-    if (isNaN(parseInt(nextValue))) {
-        return parseInt(previousValue);
+    if (isNaN(parseFloat(nextValue))) {
+        return parseFloat(previousValue);
     }
     else {
-        return parseInt(nextValue);
+        return parseFloat(nextValue);
     }
 }
 function renderTickIcon(state, dispatch) {
