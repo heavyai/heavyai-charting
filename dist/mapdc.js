@@ -26545,6 +26545,9 @@ function conv4326To900913(x, y) {
   return transCoord;
 }
 
+var polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)";
+var polyNullScaleColor = "rgba(214, 215, 214, 0.65)";
+
 var vegaLineJoinOptions = ["miter", "round", "bevel"];
 var polyTableGeomColumns = {
   // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
@@ -26617,16 +26620,22 @@ function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1;
   }
 
-  function hasColorAggregate() {
-    return !(state.encoding.color.domain === undefined);
-  }
-
   function getTransforms(_ref) {
     var filter = _ref.filter,
         globalFilter = _ref.globalFilter,
-        _ref$layerFilter = _ref.layerFilter,
-        layerFilter = _ref$layerFilter === undefined ? [] : _ref$layerFilter,
+        layerFilter = _ref.layerFilter,
         filtersInverse = _ref.filtersInverse;
+    var _state = state,
+        color = _state.encoding.color;
+
+
+    var transforms = [];
+
+    var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
+    transforms.push({
+      type: "rowid",
+      table: rowIdTable
+    });
 
     var groupby = doJoin() ? {
       type: "project",
@@ -26634,88 +26643,72 @@ function rasterLayerPolyMixin(_layer) {
       as: "key0"
     } : {};
 
-    var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
-
-    var transforms = [{
-      type: "rowid",
-      table: rowIdTable
-    }];
-
     if (doJoin()) {
-      // Add the join
       transforms.push({
         type: "filter",
         expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
       });
+    }
 
-      if (hasColorAggregate()) {
-        // CASE WHEN joinKey IN (<<keys>>) THEN <<color>> END as color
+    var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "LAST_SAMPLE(" + color.field + ")";
+
+    if (layerFilter.length) {
+      if (doJoin()) {
         transforms.push({
           type: "aggregate",
-          fields: [layerFilter.length ? _utils.parser.parseExpression({
+          fields: [_utils.parser.parseExpression({
             type: "case",
             cond: [[{
               type: filtersInverse ? "not in" : "in",
               expr: state.data[0].table + "." + state.data[0].attr,
               set: layerFilter
-            }, _utils.parser.parseExpression(state.encoding.color.aggregrate)]],
+            }, color.type === "solid" ? 1 : colorProjection]],
             else: null
-          }) : _utils.parser.parseExpression(state.encoding.color.aggregrate)],
+          })],
           ops: [null],
           as: ["color"],
           groupby: groupby
         });
       } else {
-        // Ensure we group by the join key
         transforms.push({
-          type: "aggregate",
-          fields: [],
-          ops: [null],
-          as: ["key0"],
-          groupby: groupby
-        });
-        // Add hit testing filter
-        if (layerFilter.length) {
-          transforms.push({
-            type: "filter",
-            expr: _utils.parser.parseExpression({
+          type: "project",
+          expr: _utils.parser.parseExpression({
+            type: "case",
+            cond: [[{
               type: filtersInverse ? "not in" : "in",
-              expr: state.data[0].table + "." + state.data[0].attr,
+              expr: "rowid",
               set: layerFilter
-            })
-          });
-        }
+            }, color.type === "solid" ? 1 : colorProjection]],
+            else: null
+          }),
+          as: "color"
+        });
       }
     } else {
-      if (hasColorAggregate()) {
-        // CASE WHEN rowid IN (<<keys>>) THEN <<color>> END as color
-        transforms.push({
-          type: "aggregate",
-          fields: [layerFilter.length ? _utils.parser.parseExpression({
-            type: "case",
-            cond: [[{
-              type: filtersInverse ? "not in" : "in",
-              expr: state.data[0].table + "." + state.data[0].attr,
-              set: layerFilter
-            }, _utils.parser.parseExpression(state.encoding.color.aggregrate)]],
-            else: null
-          }) : _utils.parser.parseExpression(state.encoding.color.aggregrate)],
-          ops: [null],
-          as: ["color"],
-          groupby: groupby
-        });
-      } else {
-        if (layerFilter.length) {
-          // Add hit testing filter
+      if (doJoin()) {
+        if (color.type !== "solid") {
           transforms.push({
-            type: "filter",
-            expr: _utils.parser.parseExpression({
-              type: filtersInverse ? "not in" : "in",
-              expr: state.data[0].table + "." + state.data[0].attr,
-              set: layerFilter
-            })
+            type: "aggregate",
+            fields: [colorProjection],
+            ops: [null],
+            as: ["color"],
+            groupby: groupby
+          });
+        } else {
+          transforms.push({
+            type: "aggregate",
+            fields: [],
+            ops: [null],
+            as: [],
+            groupby: groupby
           });
         }
+      } else if (color.type !== "solid") {
+        transforms.push({
+          type: "project",
+          expr: colorProjection,
+          as: "color"
+        });
       }
     }
 
@@ -26788,7 +26781,8 @@ function rasterLayerPolyMixin(_layer) {
   _layer.__genVega = function (_ref2) {
     var filter = _ref2.filter,
         globalFilter = _ref2.globalFilter,
-        layerFilter = _ref2.layerFilter,
+        _ref2$layerFilter = _ref2.layerFilter,
+        layerFilter = _ref2$layerFilter === undefined ? [] : _ref2$layerFilter,
         filtersInverse = _ref2.filtersInverse,
         layerName = _ref2.layerName,
         useProjection = _ref2.useProjection;
@@ -26839,22 +26833,49 @@ function rasterLayerPolyMixin(_layer) {
 
     var scales = [];
     var fillColor = {};
-    var useColorScale = state.encoding.color.value === undefined;
-    if (useColorScale) {
-      var colorRange = state.encoding.color.range.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
-      });
+
+    var useColorScale = !(state.encoding.color.type === "solid");
+    if (layerFilter.length && !useColorScale) {
       var colorScaleName = getColorScaleName(layerName);
       scales.push({
         name: colorScaleName,
-        type: "quantize",
-        domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.domain,
-        range: colorRange,
-        nullValue: "rgba(214, 215, 214, 0.65)",
-        default: "rgba(214, 215, 214, 0.65)"
+        type: "ordinal",
+        domain: [1],
+        range: [(0, _utilsVega.adjustOpacity)(state.encoding.color.value, state.encoding.color.opacity)],
+        nullValue: polyNullScaleColor,
+        default: polyDefaultScaleColor
       });
       fillColor = {
         scale: colorScaleName,
+        field: "color"
+      };
+    } else if (useColorScale) {
+      var colorRange = state.encoding.color.range.map(function (c) {
+        return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
+      });
+      var _colorScaleName = getColorScaleName(layerName);
+      if (state.encoding.color.type === "quantitative") {
+        scales.push({
+          name: _colorScaleName,
+          type: "quantize",
+          domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.domain,
+          range: colorRange,
+          nullValue: polyNullScaleColor,
+          default: polyDefaultScaleColor
+        });
+      } else {
+        scales.push({
+          name: _colorScaleName,
+          type: "ordinal",
+          domain: state.encoding.color.domain,
+          range: colorRange,
+          nullValue: polyNullScaleColor,
+          default: polyDefaultScaleColor
+        });
+      }
+
+      fillColor = {
+        scale: _colorScaleName,
         field: "color"
       };
     } else {
@@ -46151,18 +46172,6 @@ function pieChart(parent, chartGroup) {
 
   function createElements(slices, arc, pieData) {
     var slicesEnter = createSliceNodes(slices);
-    if (slicesEnter[0][0] === null) {
-      _g = _chart.svg().append("g").attr("class", "pie-temp-wrapper").attr("transform", "translate(" + _chart.cx() + "," + _chart.cy() + ")");
-
-      var tempSlices = _g.selectAll("g." + _sliceCssClass).data(pieData);
-      // createElements(tempSlices, arc, pieData)
-      var slicesEnter2 = createSliceNodes(tempSlices);
-      createSlicePath(slicesEnter2, arc);
-
-      createLabels(pieData, arc);
-      console.log('slices ', tempSlices);
-      return;
-    }
 
     createSlicePath(slicesEnter, arc);
 
@@ -46200,52 +46209,8 @@ function pieChart(parent, chartGroup) {
       });
     }
   }
-  function createTempSliceNode(pieData) {
-    // const slices = _g.selectAll("g." + _sliceCssClass).data(pieData)
-    // const slicesEnter = slices
-    //     .enter()
-    //     .append("g")
 
-    _g = _chart.svg().append("g").attr("class", "pie-wrapper").attr("transform", "translate(" + _chart.cx() + "," + _chart.cy() + ")");
-
-    var tempSlices = _g.selectAll("g." + _sliceCssClass).data(pieData);
-    // slicesEnter = createSliceNodes(slices)
-    // console.log('slices ', slicesEnter)
-
-    //     .attr("class", (d, i) => _sliceCssClass + " _" + i)
-    //     /* OVERRIDE ---------------------------------------------------------------- */
-    //     .classed("stroke-thick", pieIsBig)
-    /* ------------------------------------------------------------------------- */
-
-    // const node = slicesEnter.node()
-    // return node.getBoundingClientRect()
-    // const BASE_FONT_SIZE = 12
-    // const MIN_FONT_SIZE = 4
-    // const tmpText = d3.select("body").append("span")
-    //     .attr("class", "tmp-text")
-    //     .style("font-size", BASE_FONT_SIZE + "px")
-    //     .style("position", "absolute")
-    //     .style("opacity", 0)
-    //     .style("margin-right", 10000)
-    //     .html(text)
-    // const node = tmpText.node()
-    //
-    // let textWidth = null
-    // let textHeight = null
-    // if (node.getBoundingClientRect) {
-    //   const bbox = node.getBoundingClientRect()
-    //   textWidth = bbox.width
-    //   textHeight = bbox.height
-    // }
-    //
-    // tmpText.remove()
-    //
-    // const fontSizeWidth = BASE_FONT_SIZE * chartWidth / textWidth
-    // const fontSizeHeight = BASE_FONT_SIZE * chartHeight / textHeight
-    //
-    // return Math.max(Math.min(fontSizeWidth, fontSizeHeight), MIN_FONT_SIZE)
-  }
-  function positionLabels(labelsEnter, arc, pieData) {
+  function positionLabels(labelsEnter, arc) {
     (0, _core.transition)(labelsEnter, _chart.transitionDuration()).attr("transform", function (d) {
       return labelPosition(d, arc);
     });
@@ -46262,21 +46227,6 @@ function pieChart(parent, chartGroup) {
       var availableLabelWidth = getAvailableLabelWidth(d);
       var width = _d2.default.select(this).node().getBoundingClientRect().width;
       var label = _chart.label()(d.data);
-      if (width === 0) {
-        var tempPie = _d2.default.select('.pie-temp-wrapper').selectAll("g").selectAll('data');
-        // tempPie[0].forEach(d=>{
-        console.log(tempPie);
-        // })
-        // debugger
-        //        const sector = tempPie.filter(function(t) {
-        //          return t === d
-        //        })
-        // debugger
-        // width = sector
-        // .getBoundingClientRect().width
-        //          createTempSliceNode(pieData)
-        //   console.log('width from temp pie ', sector)
-      }
       var displayText = truncateLabelWithNull(label, width, availableLabelWidth);
 
       _d2.default.select(this.parentNode).classed("hide-label", displayText === "");
@@ -46336,7 +46286,7 @@ function pieChart(parent, chartGroup) {
       }
       /* ------------------------------------------------------------------------- */
 
-      positionLabels(labelsEnter, arc, pieData);
+      positionLabels(labelsEnter, arc);
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc);
       }
@@ -46386,7 +46336,7 @@ function pieChart(parent, chartGroup) {
       var labels = _g.selectAll("g.pie-label")
       /* ------------------------------------------------------------------------- */
       .data(pieData);
-      positionLabels(labels, arc, pieData);
+      positionLabels(labels, arc);
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc);
       }
