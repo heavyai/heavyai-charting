@@ -19,7 +19,7 @@ describe("rasterLayerPolyMixin", () => {
         encoding: {
           color: {
             type: "quantitative",
-            aggregrate: "COUNT(*)",
+            aggregate: "COUNT(*)",
             domain: [0, 100],
             range: ["black", "blue"]
           }
@@ -65,10 +65,11 @@ describe("rasterLayerPolyMixin", () => {
           },
           color: {
             type: "quantitative",
-            aggregrate: "AVG(contributions_donotmodify.amount)",
+            aggregate: "AVG(contributions_donotmodify.amount)",
             domain: [0, 100],
             range: ["black", "blue"]
-          }
+          },
+          geocol: "mapd_geo"
         }
       })
 
@@ -84,6 +85,7 @@ describe("rasterLayerPolyMixin", () => {
           {
             name: "polys",
             format: "polys",
+            geocolumn: "mapd_geo",
             sql:
               "SELECT zipcodes.rowid, contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY zipcodes.rowid, key0 LIMIT 1000000"
           }
@@ -160,10 +162,11 @@ describe("rasterLayerPolyMixin", () => {
           },
           color: {
             type: "quantitative",
-            aggregrate: "AVG(contributions_donotmodify.amount)",
+            aggregate: "AVG(contributions_donotmodify.amount)",
             domain: [0, 100],
             range: ["black", "blue"]
-          }
+          },
+          geocol: "mapd_geo"
         }
       })
 
@@ -179,6 +182,7 @@ describe("rasterLayerPolyMixin", () => {
           {
             name: "polys",
             format: "polys",
+            geocolumn: "mapd_geo",
             sql:
               "SELECT zipcodes.rowid, contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY zipcodes.rowid, key0 LIMIT 1000000"
           }
@@ -254,10 +258,11 @@ describe("rasterLayerPolyMixin", () => {
           },
           color: {
             type: "quantitative",
-            aggregrate: "AVG(contributions_donotmodify.amount)",
+            aggregate: "AVG(contributions_donotmodify.amount)",
             domain: [0, 100],
             range: ["black", "blue"]
-          }
+          },
+          geocol: "mapd_geo"
         }
       })
 
@@ -273,6 +278,7 @@ describe("rasterLayerPolyMixin", () => {
           {
             name: "polys",
             format: "polys",
+            geocolumn: "mapd_geo",
             sql:
               "SELECT zipcodes.rowid, contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY zipcodes.rowid, key0 LIMIT 1000000"
           }
@@ -314,7 +320,7 @@ describe("rasterLayerPolyMixin", () => {
       })
     })
 
-    it("should generate the correct vega spec with \"auto\" color domain", () => {
+    it('should generate the correct vega spec with "auto" color domain', () => {
       const layer = rasterLayer("polys")
       layer.setState({
         data: [
@@ -348,10 +354,11 @@ describe("rasterLayerPolyMixin", () => {
           },
           color: {
             type: "quantitative",
-            aggregrate: "AVG(contributions_donotmodify.amount)",
+            aggregate: "AVG(contributions_donotmodify.amount)",
             domain: "auto",
             range: ["black", "blue"]
-          }
+          },
+          geocol: "mapd_geo"
         }
       })
 
@@ -366,7 +373,9 @@ describe("rasterLayerPolyMixin", () => {
         data: [
           {
             name: "polys",
+            geocolumn: "mapd_geo",
             format: "polys",
+            geocolumn: "mapd_geo",
             sql:
               "SELECT zipcodes.rowid, contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY zipcodes.rowid, key0 LIMIT 1000000"
           },
@@ -397,7 +406,7 @@ describe("rasterLayerPolyMixin", () => {
           {
             name: "polys_fillColor",
             type: "quantize",
-            domain: {data: "polys_stats", fields: ["mincolor", "maxcolor"]},
+            domain: { data: "polys_stats", fields: ["mincolor", "maxcolor"] },
             range: ["black", "blue"],
             nullValue: "rgba(214, 215, 214, 0.65)",
             default: "rgba(214, 215, 214, 0.65)"
