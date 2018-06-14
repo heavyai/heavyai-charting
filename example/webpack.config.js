@@ -6,6 +6,7 @@ module.exports = {
     app: [
       "script-loader!@mapd/connector/dist/browser-connector.js",
       "script-loader!@mapd/crossfilter/dist/mapd-crossfilter.js",
+      "script-loader!mapd3/dist/mapd3.js",
       path.resolve(__dirname, "../index.js")
     ],
     example3: path.resolve(__dirname, "./example3.js"),
