@@ -13,7 +13,8 @@ module.exports = {
     example4: path.resolve(__dirname, "./example4.js"),
     multilayermap: path.resolve(__dirname, "./exampleMultiLayerMap.js"),
     multilayerscatterplot: path.resolve(__dirname, "./exampleMultiLayerScatterplot.js"),
-    geoheat: path.resolve(__dirname, "./exampleGeoHeat.js")
+    geoheat: path.resolve(__dirname, "./exampleGeoHeat.js"),
+    exampleMapD3Crossfilter: path.resolve(__dirname, "./exampleMapD3Crossfilter.js")
   },
   devtool: "source-map",
   output: {
@@ -37,7 +38,8 @@ module.exports = {
         include: [
           path.resolve(__dirname, "../src"),
           path.resolve(__dirname, "../index.js"),
-          path.resolve(__dirname, "./exampleGeoHeat.js")
+          path.resolve(__dirname, "./exampleGeoHeat.js"),
+          path.resolve(__dirname, "./exampleMapD3Crossfilter.js")
         ],
         loader: "babel-loader"
       },
