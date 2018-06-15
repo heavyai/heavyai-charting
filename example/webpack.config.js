@@ -4,6 +4,7 @@ var path = require("path");
 module.exports = {
   entry: {
     app: [
+      "babel-polyfill",
       "script-loader!@mapd/connector/dist/browser-connector.js",
       "script-loader!@mapd/crossfilter/dist/mapd-crossfilter.js",
       "script-loader!mapd3/dist/mapd3.js",
