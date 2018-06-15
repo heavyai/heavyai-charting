@@ -1,3 +1,4 @@
+/* global dc, mapd3, d3, crossfilter, MapdCon  */
 require("mapd3/dist/mapd3.css")
 
 /*
@@ -10,20 +11,20 @@ require("mapd3/dist/mapd3.css")
  */
 
 function createCharts(crossFilter, connector) {
-  var colorScheme = ["#22A7F0", "#3ad6cd", "#d4e666"]
+  const colorScheme = ["#22A7F0", "#3ad6cd", "#d4e666"]
 
-  var w =
+  const w =
     Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
-  var h =
+  const h =
     Math.max(document.documentElement.clientHeight, window.innerHeight || 0) -
     200
 
   // NEW: create a hash map to associate DC Chart properties by their id (__dcFlag__) so we can access them later
-  var dcCharts = {}
+  const dcCharts = {}
 
   // select the DOM node for the combo chart to mount to, then pass it to mapd3.Chart
-  var parentNode = document.querySelector(".chart3-example")
-  var comboChart = mapd3.Chart(parentNode)
+  const parentNode = document.querySelector(".chart3-example")
+  const comboChart = mapd3.Chart(parentNode)
 
   /*
  * crossFilter is an object that handles cross-filtered the different
@@ -36,9 +37,9 @@ function createCharts(crossFilter, connector) {
  *  those columns.
  */
 
-  var allColumns = crossFilter.getColumns()
+  const allColumns = crossFilter.getColumns()
 
-  /*-------------------BASIC COUNT ON CROSSFILTER---------------------------*/
+  /* -------------------BASIC COUNT ON CROSSFILTER---------------------------*/
 
   /*
  *  A basic operation is getting the filtered count and total count
@@ -46,8 +47,8 @@ function createCharts(crossFilter, connector) {
  *  Note that for the count we use crossFilter itself as the dimension.
 */
 
-  var countGroup = crossFilter.groupAll()
-  var countWidget = dc
+  const countGroup = crossFilter.groupAll()
+  const countWidget = dc
     .countWidget(".data-count")
     .dimension(crossFilter)
     .group(countGroup)
@@ -58,7 +59,7 @@ function createCharts(crossFilter, connector) {
     filterStrings: []
   }
 
-  /*------------------------CHART 1 EXAMPLE------------------------------*/
+  /* ------------------------CHART 1 EXAMPLE------------------------------*/
 
   /*
  *  In crossfilter dimensions can function as what we would like to "group by"
@@ -74,7 +75,7 @@ function createCharts(crossFilter, connector) {
  *  require string expressions. (i.e "extract(year from dep_timestamp))"
  */
 
-  var rowChartDimension = crossFilter.dimension("dest_state")
+  const rowChartDimension = crossFilter.dimension("dest_state")
   /*
  * To group by a variable, we call group() on the function and then specify
  * a "reducer".  Here we want to get the count for each state, so we use the
@@ -85,7 +86,7 @@ function createCharts(crossFilter, connector) {
  * https://github.com/square/crossfilter/wiki/API-Reference#group-map-reduce
  * https://github.com/square/crossfilter/wiki/API-Reference#group_reduceCount
  */
-  var rowChartGroup = rowChartDimension.group().reduceCount()
+  const rowChartGroup = rowChartDimension.group().reduceCount()
 
   /*
  *  We create a horizontal bar chart with the data specified above (count by destination
@@ -116,7 +117,7 @@ function createCharts(crossFilter, connector) {
  *  https://github.com/dc-js/dc.js/blob/master/web/docs/api-latest.md
  */
 
-  var dcBarChart = dc
+  const dcBarChart = dc
     .rowChart(".chart1-example")
     .height(h / 1.5)
     .width(w / 2)
@@ -135,7 +136,7 @@ function createCharts(crossFilter, connector) {
     filterStrings: []
   }
 
-  /*--------------------------CHART 2 EXAMPLE------------------------------*/
+  /* --------------------------CHART 2 EXAMPLE------------------------------*/
 
   /*
  *  Bubble Chart Example:
@@ -149,7 +150,7 @@ function createCharts(crossFilter, connector) {
  *
  */
 
-  var scatterPlotDimension = crossFilter.dimension("carrier_name")
+  const scatterPlotDimension = crossFilter.dimension("carrier_name")
 
   /*
  *  MapD created a reduceMulti function in order to handle multiple measures.
@@ -161,7 +162,7 @@ function createCharts(crossFilter, connector) {
  *
  */
 
-  var reduceMultiExpression1 = [
+  const reduceMultiExpression1 = [
     {
       expression: "depdelay",
       agg_mode: "avg",
@@ -179,7 +180,7 @@ function createCharts(crossFilter, connector) {
     }
   ]
 
-  var popupHeader = [
+  const popupHeader = [
     { type: "dimension", label: "carrier_name" },
     { type: "measure", label: "depdelay", alias: "x" },
     { type: "measure", label: "arrdelay", alias: "y" }
@@ -195,7 +196,7 @@ function createCharts(crossFilter, connector) {
  * n most popular airlines
  */
 
-  var scatterPlotGroup = scatterPlotDimension
+  const scatterPlotGroup = scatterPlotDimension
     .group()
     .reduce(reduceMultiExpression1)
     .order("size")
@@ -249,7 +250,7 @@ function createCharts(crossFilter, connector) {
  *  using the color ramp defined above (an array of rgb or hex values)
  */
 
-  var dcScatterPlot = dc
+  const dcScatterPlot = dc
     .bubbleChart(".chart2-example")
     .width(w / 2)
     .height(h / 1.5)
@@ -257,18 +258,10 @@ function createCharts(crossFilter, connector) {
     .renderVerticalGridLines(true)
     .cap(15)
     .othersGrouper(false)
-    .keyAccessor(function(d) {
-      return d.x
-    })
-    .valueAccessor(function(d) {
-      return d.y
-    })
-    .radiusValueAccessor(function(d) {
-      return d.size
-    })
-    .colorAccessor(function(d) {
-      return d.key0
-    })
+    .keyAccessor((d) => d.x)
+    .valueAccessor((d) => d.y)
+    .radiusValueAccessor((d) => d.size)
+    .colorAccessor((d) => d.key0)
     .maxBubbleRelativeSize(0.04)
     .transitionDuration(500)
     .xAxisLabel("Departure Delay")
@@ -296,8 +289,8 @@ function createCharts(crossFilter, connector) {
  *  using standard d3 functions - telling dc.mapd.js to do this before each
  *  render and redraw */
 
-  var setScales = function(chart, type) {
-    chart.on(type, function(chart) {
+  const setScales = function(chart, type) {
+    chart.on(type, (chart) => {
       chart.x(
         d3.scale.linear().domain(d3.extent(chart.data(), chart.keyAccessor()))
       )
@@ -319,13 +312,13 @@ function createCharts(crossFilter, connector) {
   setScales(dcScatterPlot, "preRender")
   setScales(dcScatterPlot, "preRedraw")
 
-  /*----------------------MAPD3 COMBO CHART EXAMPLE----------------------------------------*/
+  /* ----------------------MAPD3 COMBO CHART EXAMPLE----------------------------------------*/
 
   // create an adapter utility function that lets us tie into DC and Crossfilter
   function dcAdapter(groupName) {
     // eslint-disable-next-line no-underscore-dangle
     let _dimension = null
-    var events = mapd3.d3.dispatch("redrawGroup")
+    const events = mapd3.d3.dispatch("redrawGroup")
 
     // eslint-disable-next-line consistent-return
     function setDimension(dim) {
@@ -348,7 +341,7 @@ function createCharts(crossFilter, connector) {
         return
       }
 
-      var timeBin = _timeBin === "auto" && _isExtract ? "isodow" : _timeBin
+      const timeBin = _timeBin === "auto" && _isExtract ? "isodow" : _timeBin
 
       // eslint-disable-next-line no-undefined
       _dimension.filter(_filter, undefined, undefined, undefined, [
@@ -361,7 +354,7 @@ function createCharts(crossFilter, connector) {
     }
 
     // create a chart that will allow us to hook into a dc render & redraw calls.
-    var dummyChart = dc.baseMixin({})
+    const dummyChart = dc.baseMixin({})
     // dataAsync is a potential hook for introducing a loading state for the chart
     dummyChart.dataAsync = callback => callback()
     // eslint-disable-next-line no-underscore-dangle
@@ -394,15 +387,21 @@ function createCharts(crossFilter, connector) {
     }
   }
 
+  // brush extent
+  let brushExtent = []
+
+  // inital SQL query for the combo chart
+  let query = "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00') GROUP BY key0 ORDER BY key0"
+
   // create a new adapter and set its dimension
-  var adapter = dcAdapter("flights_donotmodify")
+  const adapter = dcAdapter("flights_donotmodify")
   adapter.setDimension(crossFilter.dimension("dep_timestamp"))
 
   // When the DC Charts have finished rendering, gather their filterStrings and compose a new SQL query for the combo chart
-  adapter.events.on("redrawGroup.combo", function() {
+  adapter.events.on("redrawGroup.combo", () => {
     function filterClause() {
-      var wc = ""
-      Object.keys(dcCharts).forEach(function(key) {
+      let wc = ""
+      Object.keys(dcCharts).forEach((key) => {
         if (
           dcCharts[key].name !== "countWidget" &&
           dcCharts[key].filterStrings.length
@@ -413,7 +412,7 @@ function createCharts(crossFilter, connector) {
       return wc
     }
 
-    var nextQuery =
+    const nextQuery =
       "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00')" +
       filterClause() +
       " GROUP BY key0 ORDER BY key0"
@@ -434,30 +433,23 @@ function createCharts(crossFilter, connector) {
     query = nextQuery
   })
 
-  // brush extent
-  var brushExtent = []
-
-  // inital SQL query for the combo chart
-  var query =
-    "SELECT date_trunc(day, dep_timestamp) as key0, COUNT(*) AS val, AVG(arrdelay) as val1 FROM flights_donotmodify WHERE (dep_timestamp >= TIMESTAMP(0) '2008-01-01 00:01:00' AND dep_timestamp <= TIMESTAMP(0) '2008-12-31 23:59:00') GROUP BY key0 ORDER BY key0"
-
   // Because DCJS has no "all charts finished rendering" event we can listen for,
   // we have to listen to each dcChart's "postRedraw" event, and count the number
   // of charts that have been rendered. Though we technically have 4 DC Charts,
   // We only count up to 3, because our dummy chart from the bar adapter won't ever
   // render as it has nothing to render!
-  var chartCount = 0
+  let chartCount = 0
 
   // array of all dc charts
-  var charts = dc.chartRegistry.listAll()
+  const charts = dc.chartRegistry.listAll()
 
   // set up event listeners on the DC charts
-  charts.forEach(function(chart) {
-    chart.on("filtered", function(chart, filter) {
-      var filterString =
+  charts.forEach((chart) => {
+    chart.on("filtered", (chart, filter) => {
+      const filterString =
         chart.dimension().getDimensionName()[0] + " = " + "'" + filter + "'"
-      var storedFilterStrings = dcCharts[chart.chartID()].filterStrings
-      var idx = storedFilterStrings.indexOf(filterString)
+      const storedFilterStrings = dcCharts[chart.chartID()].filterStrings
+      const idx = storedFilterStrings.indexOf(filterString)
       if (idx === -1) {
         // if we don't have the filter string stored, add it
         storedFilterStrings.push(filterString)
@@ -466,7 +458,7 @@ function createCharts(crossFilter, connector) {
         storedFilterStrings.splice(idx, 1)
       }
     })
-    chart.on("postRedraw", function(chart) {
+    chart.on("postRedraw", () => {
       chartCount += 1
       // after iterating through all of our charts, call our adapter's "redrawGroup" event to update the comboChart
       if (chartCount === Object.keys(dcCharts).length) {
@@ -479,9 +471,9 @@ function createCharts(crossFilter, connector) {
   // Helper function to request data using mapd-connector's browser connector
   async function queryDB(query) {
     try {
-      let response = await connector.queryAsync(query, {})
+      const response = await connector.queryAsync(query, {})
       // transform the data from the response to be compatible with mapd3.Chart().setData()
-      let data = await transformData(response)
+      const data = await transformData(response)
       return data
     } catch (error) {
       console.error(error)
@@ -490,7 +482,7 @@ function createCharts(crossFilter, connector) {
 
   // currently mapd3 expects data in a particular data structure, so we need to process the "raw" data returned by the database to match it
   function transformData(_data) {
-    var series = [
+    const series = [
       {
         group: 0, // will be non-zero for 2nd axis
         id: 0,
@@ -527,7 +519,7 @@ function createCharts(crossFilter, connector) {
     // more info on the options is available here: https://mapd.github.io/mapd3/doc/
     comboChart
       .setConfig({
-        parentNode: parentNode,
+        parentNode,
         margin: {
           top: 32,
           right: 70,
@@ -541,6 +533,7 @@ function createCharts(crossFilter, connector) {
         xLabel: "Departure Time",
         yLabel: "Count",
         y2Label: "Average Arrival Delay",
+        xDomainEditorIsEnabled: false,
         yDomainEditorIsEnabled: false,
         y2DomainEditorIsEnabled: false,
         legendIsEnabled: false,
@@ -562,9 +555,6 @@ function createCharts(crossFilter, connector) {
         xDomain: "auto",
         yDomain: "auto",
         y2Domain: "auto",
-        xDomainEditorIsEnabled: false,
-        yDomainEditorIsEnabled: false,
-        y2DomainEditorIsEnabled: false,
         xLock: false,
         yLock: false,
         y2Lock: false,
@@ -600,7 +590,7 @@ function createCharts(crossFilter, connector) {
       adapter.filter(brushExtent, "auto", false)
       adapter.redrawGroup()
     })
-    .onBrush("brushClear", function() {
+    .onBrush("brushClear", () => {
       brushExtent = []
       adapter.filter()
       adapter.redrawGroup()
@@ -614,17 +604,17 @@ function createCharts(crossFilter, connector) {
   // render the DC Charts
   dc.renderAllAsync()
 
-  /*--------------------------RESIZE EVENT------------------------------*/
+  /* --------------------------RESIZE EVENT------------------------------*/
 
   /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
 
   window.addEventListener("resize", debounce(reSizeAll, 100))
 
   function reSizeAll() {
-    var w =
+    const w =
       Math.max(document.documentElement.clientWidth, window.innerWidth || 0) -
       50
-    var h =
+    const h =
       Math.max(document.documentElement.clientHeight, window.innerHeight || 0) -
       200
 
@@ -642,30 +632,30 @@ function createCharts(crossFilter, connector) {
 }
 
 function debounce(func, wait, immediate) {
-  var timeout
+  let timeout
   return function() {
-    var context = this,
+    let context = this,
       args = arguments
-    var later = function() {
+    const later = function() {
       timeout = null
-      if (!immediate) func.apply(context, args)
+      if (!immediate) {func.apply(context, args)}
     }
-    var callNow = immediate && !timeout
+    const callNow = immediate && !timeout
     clearTimeout(timeout)
     timeout = setTimeout(later, wait)
-    if (callNow) func.apply(context, args)
+    if (callNow) {func.apply(context, args)}
   }
 }
 
 function throttle(func, limit) {
-  var inThrottle
+  let inThrottle
   return function() {
     const args = arguments
     const context = this
     if (!inThrottle) {
       func.apply(context, args)
       inThrottle = true
-      setTimeout(function() {
+      setTimeout(() => {
         inThrottle = false
       }, limit)
     }
@@ -682,7 +672,8 @@ function init() {
     .dbName("mapd")
     .user("mapd")
     .password("HyperInteractive")
-    .connect(function(error, con) {
+    .connect((error, con) => {
+      if (error) { throw error }
       /*
        *  This instantiates a new crossfilter.
        *  Pass in mapdcon as the first argument to crossfilter, then the
@@ -690,7 +681,7 @@ function init() {
        *
        *  to see all availables --  con.getTables()
        */
-      crossfilter.crossfilter(con, "flights_donotmodify").then(function(cf) {
+      crossfilter.crossfilter(con, "flights_donotmodify").then((cf) => {
         createCharts(cf, con)
       })
       /*
