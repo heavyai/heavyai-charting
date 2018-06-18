@@ -128,3 +128,34 @@ export function normalizeFiltersArray(filters) {
     }
   })
 }
+
+export function formatCache(_axis) {
+  const axis = _axis
+  let cachedTickFormat = false
+
+  function setTickFormat (tickFormat, fromCache) {
+    if (tickFormat === false) {
+      return null
+    }
+
+    if (!fromCache && cachedTickFormat === false) {
+      cachedTickFormat = axis.tickFormat()
+    }
+ 
+    axis.tickFormat(tickFormat)
+ 
+    if (fromCache) {
+      cachedTickFormat = false
+    }
+  }
+
+  function setTickFormatFromCache () {
+    const FROM_CACHE = true
+    setTickFormat(cachedTickFormat, FROM_CACHE)
+  }
+
+  return {
+    setTickFormat,
+    setTickFormatFromCache
+  }
+}

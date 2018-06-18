@@ -241,4 +241,30 @@ describe("Formatting Helpers", () => {
       expect(Helpers.formatArrayValue(data)).to.equal("2.33 – 10.25")
     })
   })
+
+  describe("format cache helper", () => {
+    const AxisMock = function () {
+      let cachedFormat = d => d + "foo"
+      return {
+        tickFormat: d => {
+          if (!d) {
+            return cachedFormat
+          }
+          cachedFormat = d
+        }
+      }
+    }
+
+    const axisMock = AxisMock()
+    const formatCache = Helpers.formatCache(axisMock)
+
+    it("should cache the format", () => {
+      expect(axisMock.tickFormat()("a")).to.equal("afoo")
+      formatCache.setTickFormat(d => d + "bar")
+      expect(axisMock.tickFormat()("a")).to.equal("abar")
+      formatCache.setTickFormatFromCache()
+      expect(axisMock.tickFormat()("a")).to.equal("afoo")
+    })
+
+  })
 })
