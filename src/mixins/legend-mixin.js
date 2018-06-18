@@ -4,6 +4,16 @@ import { override } from "../../src/core/core"
 const PERCENTAGE = 100.0
 const LOWER_THAN_START_RANGE = 1000
 
+function defaultFormatter (value) {
+  const commafy = d3.format(",")
+  let formattedValue = parseFloat(value).toFixed(2)
+  if (value >= LOWER_THAN_START_RANGE) {
+    formattedValue = Math.round(value)
+  }
+
+  return commafy(formattedValue)
+}
+
 export default function legendMixin(chart) {
   chart.legendablesContinuous = function() {
     const legends = []
@@ -12,21 +22,15 @@ export default function legendMixin(chart) {
     const colorDomainSize = colorDomain[1] - colorDomain[0]
     const colorRange = chart.colors().range()
     const numColors = colorRange.length
-    const commafy = d3.format(",")
 
     for (let c = 0; c < numColors; c++) {
       let startRange = c / numColors * colorDomainSize + colorDomain[0]
-
       if (chart.isTargeting()) {
         startRange = "%" + (parseFloat(startRange) * PERCENTAGE).toFixed(2)
       } else if (chart.colorByExpr() === "count(*)") {
         startRange = parseInt(startRange) // eslint-disable-line radix
       } else {
-        startRange = parseFloat(startRange).toFixed(2)
-        startRange =
-          startRange >= LOWER_THAN_START_RANGE
-            ? Math.round(startRange)
-            : startRange
+        startRange = parseFloat(startRange)
       }
 
       let color = null
@@ -37,9 +41,15 @@ export default function legendMixin(chart) {
         color = colorRange[c]
       }
 
+      const valueFormatter = chart.valueFormatter()
+      let value = startRange
+      if (!isNaN(value)) {
+        value = valueFormatter && valueFormatter(value) || defaultFormatter(value)
+      }
+
       legends.push({
         color,
-        value: isNaN(startRange) ? startRange : commafy(startRange)
+        value
       })
     }
 
