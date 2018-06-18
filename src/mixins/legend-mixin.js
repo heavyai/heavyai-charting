@@ -45,7 +45,7 @@ export default function legendMixin(chart) {
 
       legends.push({
         color,
-        value: value
+        value
       })
     }
 
