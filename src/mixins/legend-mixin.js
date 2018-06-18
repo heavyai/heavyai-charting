@@ -37,9 +37,15 @@ export default function legendMixin(chart) {
         color = colorRange[c]
       }
 
+      const valueFormatter = chart.valueFormatter()
+      let value = startRange
+      if (!isNaN(value)) {
+        value = valueFormatter && valueFormatter(value) || commafy(value)
+      }
+
       legends.push({
         color,
-        value: isNaN(startRange) ? startRange : commafy(startRange)
+        value: value
       })
     }
 
