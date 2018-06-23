@@ -116,12 +116,6 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const transforms = []
 
-    const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
-    transforms.push({
-      type: "rowid",
-      table: rowIdTable
-    })
-
     const groupby = doJoin()
       ? {
           type: "project",
@@ -130,7 +124,10 @@ export default function rasterLayerPolyMixin(_layer) {
         }
       : {}
 
+    const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
+
     if (doJoin()) {
+      // Join
       transforms.push({
         type: "filter",
         expr: `${state.data[0].table}.${state.data[0].attr} = ${
@@ -178,7 +175,10 @@ export default function rasterLayerPolyMixin(_layer) {
                   expr: "rowid",
                   set: layerFilter
                 },
-                color.type === "solid" ? 1 : colorProjection
+                // Note: When not performing a join, there is no dimension,
+                // and color measures do not have aggregates. Just grab the
+                // field.
+                color.type === "solid" ? 1 : color.aggregate.field
               ]
             ],
             else: null
@@ -208,10 +208,24 @@ export default function rasterLayerPolyMixin(_layer) {
       } else if (color.type !== "solid") {
         transforms.push({
           type: "project",
-          expr: colorProjection,
+          expr: color.type === "quantitative" ? color.aggregate.field : color.field,
           as: "color"
         })
       }
+    }
+
+    if (doJoin()) {
+      transforms.push({
+          type: "project",
+          expr: `LAST_SAMPLE(${rowIdTable}.rowid)`,
+          as: "rowid"
+      })
+    } else {
+      transforms.push({
+        type: "project",
+        expr: `${rowIdTable}.rowid`,
+        as: "rowid"
+      })
     }
 
     if (typeof state.transform.limit === "number") {
