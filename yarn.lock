@@ -4747,9 +4747,9 @@ mapbox-gl-supported@^1.2.0:
     webworkify "^1.4.0"
     whoots-js "^2.0.0"
 
-mapd-data-layer-2@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.3.tgz#ff1c10adf8724b081cfa06915ef353fd0becc979"
+mapd-data-layer-2@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.4.tgz#9ee2927d5943ac59bae57b6ba88e82a0c29ad83b"
   dependencies:
     invariant "^2.2.2"
 
