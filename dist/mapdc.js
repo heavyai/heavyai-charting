@@ -7138,6 +7138,7 @@ exports.formatArrayValue = formatArrayValue;
 exports.formatTimeBinValue = formatTimeBinValue;
 exports.formatExtractValue = formatExtractValue;
 exports.normalizeFiltersArray = normalizeFiltersArray;
+exports.formatCache = formatCache;
 
 var _datesAndTimes = __webpack_require__(29);
 
@@ -7269,6 +7270,37 @@ function normalizeFiltersArray(filters) {
       return f;
     }
   });
+}
+
+function formatCache(_axis) {
+  var axis = _axis;
+  var cachedTickFormat = false;
+
+  function setTickFormat(tickFormat, fromCache) {
+    if (tickFormat === false) {
+      return null;
+    }
+
+    if (!fromCache && cachedTickFormat === false) {
+      cachedTickFormat = axis.tickFormat();
+    }
+
+    axis.tickFormat(tickFormat);
+
+    if (fromCache) {
+      cachedTickFormat = false;
+    }
+  }
+
+  function setTickFormatFromCache() {
+    var FROM_CACHE = true;
+    setTickFormat(cachedTickFormat, FROM_CACHE);
+  }
+
+  return {
+    setTickFormat: setTickFormat,
+    setTickFormatFromCache: setTickFormatFromCache
+  };
 }
 
 /***/ }),
@@ -29725,6 +29757,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var PERCENTAGE = 100.0;
 var LOWER_THAN_START_RANGE = 1000;
 
+function defaultFormatter(value) {
+  var commafy = _d2.default.format(",");
+  var formattedValue = parseFloat(value).toFixed(2);
+  if (value >= LOWER_THAN_START_RANGE) {
+    formattedValue = Math.round(value);
+  }
+
+  return commafy(formattedValue);
+}
+
 function legendMixin(chart) {
   chart.legendablesContinuous = function () {
     var legends = [];
@@ -29733,18 +29775,15 @@ function legendMixin(chart) {
     var colorDomainSize = colorDomain[1] - colorDomain[0];
     var colorRange = chart.colors().range();
     var numColors = colorRange.length;
-    var commafy = _d2.default.format(",");
 
     for (var c = 0; c < numColors; c++) {
       var startRange = c / numColors * colorDomainSize + colorDomain[0];
-
       if (chart.isTargeting()) {
         startRange = "%" + (parseFloat(startRange) * PERCENTAGE).toFixed(2);
       } else if (chart.colorByExpr() === "count(*)") {
         startRange = parseInt(startRange); // eslint-disable-line radix
       } else {
-        startRange = parseFloat(startRange).toFixed(2);
-        startRange = startRange >= LOWER_THAN_START_RANGE ? Math.round(startRange) : startRange;
+        startRange = parseFloat(startRange);
       }
 
       var color = null;
@@ -29755,9 +29794,15 @@ function legendMixin(chart) {
         color = colorRange[c];
       }
 
+      var valueFormatter = chart.valueFormatter();
+      var value = startRange;
+      if (!isNaN(value)) {
+        value = valueFormatter && valueFormatter(value) || defaultFormatter(value);
+      }
+
       legends.push({
         color: color,
-        value: isNaN(startRange) ? startRange : commafy(startRange)
+        value: value
       });
     }
 
@@ -50949,6 +50994,8 @@ var _core = __webpack_require__(2);
 
 var _utils = __webpack_require__(3);
 
+var _formattingHelpers = __webpack_require__(6);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -51008,6 +51055,7 @@ function rowChart(parent, chartGroup) {
   var _elasticX = void 0;
 
   var _xAxis = _d2.default.svg.axis().orient("bottom");
+  var xFormatCache = (0, _formattingHelpers.formatCache)(_xAxis);
 
   var _rowData = void 0;
 
@@ -51070,11 +51118,11 @@ function rowChart(parent, chartGroup) {
     var numberFormatter = _chart.valueFormatter();
     if (numberFormatter) {
       var key = _chart.getMeasureName();
-      _xAxis.tickFormat(function (d) {
+      xFormatCache.setTickFormat(function (d) {
         return numberFormatter(d, key);
       });
     } else {
-      _xAxis.tickFormat(null);
+      xFormatCache.setTickFormatFromCache();
     }
   }
 
