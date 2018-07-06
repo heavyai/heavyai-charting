@@ -68,7 +68,7 @@
   },
   "devDependencies": {
     "@mapd/connector": "git://github.com/mapd/mapd-connector.git#07a6968",
-    "@mapd/crossfilter": "git://github.com/mapd/mapd-crossfilter.git#f49215f",
+    "@mapd/crossfilter": "git://github.com/mapd/mapd-crossfilter.git#4fbdeba",
     "atob": "^2.0.3",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
