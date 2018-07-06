@@ -6,6 +6,8 @@ import lockAxisMixin from "../mixins/lock-axis-mixin"
 import marginMixin from "../mixins/margin-mixin"
 import { transition } from "../core/core"
 import { utils } from "../utils/utils"
+import { formatCache } from "../utils/formatting-helpers"
+
 /**
  * Concrete row chart implementation.
  *
@@ -63,6 +65,7 @@ export default function rowChart(parent, chartGroup) {
   let _elasticX
 
   const _xAxis = d3.svg.axis().orient("bottom")
+  const xFormatCache = formatCache(_xAxis)
 
   let _rowData
 
@@ -130,9 +133,9 @@ export default function rowChart(parent, chartGroup) {
     const numberFormatter = _chart.valueFormatter()
     if (numberFormatter) {
       const key = _chart.getMeasureName()
-      _xAxis.tickFormat(d => numberFormatter(d, key))
+      xFormatCache.setTickFormat(d => numberFormatter(d, key))
     } else {
-      _xAxis.tickFormat(null)
+      xFormatCache.setTickFormatFromCache()
     }
   }
 

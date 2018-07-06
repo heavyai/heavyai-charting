@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MapD</title>
+    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+
+    <!-- mapd3 requires its own css, you may load it from the unpkg cdn -->
+    <!-- <link href="https://unpkg.com/mapd3@0.15.3/dist/mapd3.css" rel="stylesheet" type="text/css"> -->
+
+    <style>
+      .title {
+        font-weight: bold;
+        text-align:center;
+      }
+      .mapd{
+        position: relative;
+        top: 2px;
+      }
+      .data-count{
+        padding-right:20px;
+      }
+      .filter-count{
+        font-weight: bold;
+        color:  #45B1E8;
+      }
+      /* tmp fix for mapd3 css bug  */
+      .mapd3.mapd3-container > .svg-wrapper {
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header" style="margin-top:10px">
+            <img alt="Brand" src="images/favicon.png" height="30" width="30">
+            <span class="mapd">MapD Demo</span>
+        </div>
+        <div class="navbar-text navbar-right">
+        <div class="data-count">
+          <span class="total"><span><span class="filter-count"></span></span>
+          <span>of <span class="total-count"></span> flights</span>
+        </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="main-container">
+      <div class="col-xs-6">
+        <div class="title"> Total Number of Flights by State </div>
+        <div class="chart1-example"></div>
+      </div>
+
+      <div class="col-xs-6">
+        <div class="title"> Carrier Departure Delay by Arrival Delay <small>(Minutes)</small> </div>
+        <div class="chart2-example"></div>
+      </div>
+
+      <div class="col-xs-12">
+        <div class="title"> Number of Flights by Departure Time </div>
+        <div class="chart3-example"></div>
+      </div>
+    </div>
+    <!-- we're loading mapd3 using webpack in this example, but you may also
+      include the mapd3.js library via the unkpg cdn: -->
+    <!-- <script src="https://unpkg.com/mapd3@0.15.3/dist/mapd3.js"></script> -->
+    <script src="assets/app.bundle.js"></script>
+    <script src="assets/exampleMapD3Crossfilter.bundle.js"></script>
+  </body>
+</html>
