@@ -4417,9 +4417,9 @@ left-pad@^1.2.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/left-pad/-/left-pad-1.3.0.tgz#5b8a3a7765dfe001261dde915589e782f8c94d1e"
 
-"legendables@git://github.com/mapd/legendables.git#d678a36de78b008814fab72ce260ee33ee7d48b7":
+"legendables@git://github.com/mapd/legendables.git#9fd4f0a":
   version "1.0.0-rc.6"
-  resolved "git://github.com/mapd/legendables.git#d678a36de78b008814fab72ce260ee33ee7d48b7"
+  resolved "git://github.com/mapd/legendables.git#9fd4f0a23613d52f5e45a5942bdec835bf30d5eb"
   dependencies:
     d3-dispatch "^1.0.3"
     d3-format "^1.2.0"
@@ -4747,9 +4747,9 @@ mapbox-gl-supported@^1.2.0:
     webworkify "^1.4.0"
     whoots-js "^2.0.0"
 
-mapd-data-layer-2@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.1.tgz#e3385e8e58b074f29c086e3b0135081dab43bc48"
+mapd-data-layer-2@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.3.tgz#ff1c10adf8724b081cfa06915ef353fd0becc979"
   dependencies:
     invariant "^2.2.2"
 
