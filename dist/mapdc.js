@@ -28310,7 +28310,7 @@ function parseResolvefilter(sql, transform) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = sample;
 
 
-var GOLDEN_RATIO = 265445761;
+var GOLDEN_RATIO = 2654435761;
 
 var THIRTY_TWO_BITS = 4294967296;
 
