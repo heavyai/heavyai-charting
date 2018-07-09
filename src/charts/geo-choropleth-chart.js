@@ -5,6 +5,7 @@ import mapMixin from "../mixins/map-mixin"
 import { transition } from "../core/core"
 import { utils } from "../utils/utils"
 import turfBbox from "@turf/bbox"
+import turfBboxClip from "@turf/bbox-clip"
 
 /**
  * The geo choropleth chart is designed as an easy way to create a crossfilter driven choropleth map
@@ -75,7 +76,8 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
   _chart.fitBounds = function() {
     if (geoJson(0)) {
       const bounds = geoJson(0).bounds
-      _chart.map().fitBounds(bounds, { animate: false }, { skipRedraw: true })
+      const llb = _chart.convertBounds(bounds)
+      _chart.map().fitBounds(llb, { animate: false }, { skipRedraw: true })
     }
   }
 
@@ -95,9 +97,19 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
         .attr("class", "layer" + layerIndex)
       // .attr('transform', 'translate(0, -16)');
 
+      // Clip each feature to the supported map extents
+      const data = geoJson(layerIndex).data.map(feature =>
+        turfBboxClip(feature, [
+          _chart.lonMin(),
+          _chart.latMin(),
+          _chart.lonMax(),
+          _chart.latMax()
+        ])
+      )
+
       const regionG = states
         .selectAll("g." + geoJson(layerIndex).name)
-        .data(geoJson(layerIndex).data)
+        .data(data)
         .enter()
         .append("g")
         .attr("class", geoJson(layerIndex).name)
@@ -426,7 +438,6 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
     coordinates = _chart.popupCoordinates(d3.mouse(this))
     const x = coordinates[0]
     const y = coordinates[1] - 16
-
     const popup = _chart
       .popup()
       .attr("style", () => "transform:translate(" + x + "px," + y + "px)")
