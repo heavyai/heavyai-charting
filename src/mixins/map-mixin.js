@@ -19,8 +19,8 @@ export default function mapMixin(
   const SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
   const LONMAX = 180 - SMALL_AMOUNT
   const LONMIN = -180 + SMALL_AMOUNT
-  const LATMAX = 90 - SMALL_AMOUNT
-  const LATMIN = -90 + SMALL_AMOUNT
+  const LATMAX = 85 - SMALL_AMOUNT
+  const LATMIN = -85 + SMALL_AMOUNT
 
   var _mapboxgl = typeof _mapboxgl === "undefined" ? mapboxgl : _mapboxgl
   let _map = null
@@ -56,7 +56,7 @@ export default function mapMixin(
   let _clientClickX = null
   let _clientClickY = null
 
-  const _arr = [[-180, -85], [180, 85]]
+  const _arr = [[LONMIN, LATMIN], [LONMAX, LATMAX]]
 
   const _llb = _mapboxgl.LngLatBounds.convert(_arr)
 
@@ -74,6 +74,36 @@ export default function mapMixin(
   }
   _chart.map = function() {
     return _map
+  }
+
+  _chart.lonMin = function() {
+    return LONMIN
+  }
+
+  _chart.lonMax = function() {
+    return LONMAX
+  }
+
+  _chart.latMin = function() {
+    return LATMIN
+  }
+
+  _chart.latMax = function() {
+    return LATMAX
+  }
+
+  function makeBoundsArrSafe([[lowerLon, lowerLat], [upperLon, upperLat]]) {
+    return [
+      [Math.max(LONMIN, lowerLon), Math.max(LATMIN, lowerLat)],
+      [Math.min(LONMAX, upperLon), Math.min(LATMAX, upperLat)]
+    ]
+  }
+
+  _chart.convertBounds = function(arr) {
+    if (!_mapboxgl) {
+      throw new Error(`Cannot convert bounds: mapboxgl uninitialized.`)
+    }
+    return _mapboxgl.LngLatBounds.convert(makeBoundsArrSafe(arr))
   }
 
   _chart.enableInteractions = function(enableInteractions, opts = {}) {
@@ -435,12 +465,15 @@ export default function mapMixin(
         coordinates: boundsToUse
       })
 
-      map.addLayer({
-        id: toBeAddedOverlay,
-        source: toBeAddedOverlay,
-        type: "raster",
-        paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
-      }, firstSymbolLayerId)
+      map.addLayer(
+        {
+          id: toBeAddedOverlay,
+          source: toBeAddedOverlay,
+          type: "raster",
+          paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
+        },
+        firstSymbolLayerId
+      )
     } else {
       const overlayName = "overlay" + _activeLayer
       const imageSrc = map.getSource(overlayName)
@@ -523,7 +556,7 @@ export default function mapMixin(
     }
   })
 
-  function getFirstSymbolLayerId () {
+  function getFirstSymbolLayerId() {
     let firstSymbolId = null
     const layers = _map.getStyle().layers
     for (let i = 0; i < layers.length; ++i) {
@@ -707,14 +740,14 @@ export default function mapMixin(
       !isNaN(ne[1]) &&
       sw[0] <= ne[0] &&
       sw[1] < ne[1] &&
-      sw[0] >= -180 &&
-      sw[0] <= 180 &&
-      sw[1] >= -90 &&
-      sw[1] <= 90 &&
-      ne[0] >= -180 &&
-      ne[0] <= 180 &&
-      ne[1] >= -90 &&
-      ne[1] <= 90
+      sw[0] >= LONMIN &&
+      sw[0] <= LONMAX &&
+      sw[1] >= LATMIN &&
+      sw[1] <= LATMAX &&
+      ne[0] >= LONMIN &&
+      ne[0] <= LONMAX &&
+      ne[1] >= LATMIN &&
+      ne[1] <= LATMAX
     )
     /* eslint-enable operator-linebreak */
   }

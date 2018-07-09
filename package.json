@@ -54,6 +54,7 @@
   "dependencies": {
     "@mapd/mapd-draw": "git://github.com/mapd/mapd-draw.git",
     "@turf/bbox": "^6.0.1",
+    "@turf/bbox-clip": "^6.0.3",
     "d3": "^3.5.17",
     "deep-equal": "1.0.1",
     "earcut": "^2.1.1",
