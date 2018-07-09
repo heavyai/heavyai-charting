@@ -475,7 +475,7 @@ return /******/ (function(modules) { // webpackBootstrap
                 module && module.exports) {
             try {
                 oldLocale = globalLocale._abbr;
-                __webpack_require__(174)("./" + name);
+                __webpack_require__(175)("./" + name);
                 // because defineLocale currently also sets the global locale, we
                 // want to undo that for lazy loaded locales
                 locale_locales__getSetGlobalLocale(oldLocale);
@@ -4117,7 +4117,7 @@ return /******/ (function(modules) { // webpackBootstrap
     return _moment;
 
 }));
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(173)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(174)(module)))
 
 /***/ }),
 /* 1 */
@@ -5293,7 +5293,7 @@ var _asyncMixin = __webpack_require__(131);
 
 var _asyncMixin2 = _interopRequireDefault(_asyncMixin);
 
-var _legendMixin = __webpack_require__(178);
+var _legendMixin = __webpack_require__(179);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
@@ -5307,11 +5307,11 @@ var _errors = __webpack_require__(132);
 
 var errors = _interopRequireWildcard(_errors);
 
-var _filterMixin = __webpack_require__(179);
+var _filterMixin = __webpack_require__(180);
 
 var _filterMixin2 = _interopRequireDefault(_filterMixin);
 
-var _labelMixin = __webpack_require__(180);
+var _labelMixin = __webpack_require__(181);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
@@ -7917,7 +7917,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _binningMixin = __webpack_require__(184);
+var _binningMixin = __webpack_require__(185);
 
 var _binningMixin2 = _interopRequireDefault(_binningMixin);
 
@@ -9844,7 +9844,7 @@ filters.RangedTwoDimensionalFilter = function (filter) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(24);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x) {
@@ -10936,17 +10936,20 @@ function stackMixin(_chart) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 exports.default = mapMixin;
 
-var _d = __webpack_require__(1);
+var _d2 = __webpack_require__(1);
 
-var _d2 = _interopRequireDefault(_d);
+var _d3 = _interopRequireDefault(_d2);
 
 var _coreAsync = __webpack_require__(4);
 
 var _utils = __webpack_require__(3);
 
-var _mapDrawMixin = __webpack_require__(191);
+var _mapDrawMixin = __webpack_require__(192);
 
 var _rasterDrawMixin = __webpack_require__(22);
 
@@ -10966,8 +10969,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   var SMALL_AMOUNT = 0.00001; // Mapbox doesn't like coords being exactly on the edge.
   var LONMAX = 180 - SMALL_AMOUNT;
   var LONMIN = -180 + SMALL_AMOUNT;
-  var LATMAX = 90 - SMALL_AMOUNT;
-  var LATMIN = -90 + SMALL_AMOUNT;
+  var LATMAX = 85 - SMALL_AMOUNT;
+  var LATMIN = -85 + SMALL_AMOUNT;
 
   var _mapboxgl = typeof _mapboxgl === "undefined" ? mapboxgl : _mapboxgl;
   var _map = null;
@@ -11003,7 +11006,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   var _clientClickX = null;
   var _clientClickY = null;
 
-  var _arr = [[-180, -85], [180, 85]];
+  var _arr = [[LONMIN, LATMIN], [LONMAX, LATMAX]];
 
   var _llb = _mapboxgl.LngLatBounds.convert(_arr);
 
@@ -11021,6 +11024,41 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   };
   _chart.map = function () {
     return _map;
+  };
+
+  _chart.lonMin = function () {
+    return LONMIN;
+  };
+
+  _chart.lonMax = function () {
+    return LONMAX;
+  };
+
+  _chart.latMin = function () {
+    return LATMIN;
+  };
+
+  _chart.latMax = function () {
+    return LATMAX;
+  };
+
+  function makeBoundsArrSafe(_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+        _ref2$ = _slicedToArray(_ref2[0], 2),
+        lowerLon = _ref2$[0],
+        lowerLat = _ref2$[1],
+        _ref2$2 = _slicedToArray(_ref2[1], 2),
+        upperLon = _ref2$2[0],
+        upperLat = _ref2$2[1];
+
+    return [[Math.max(LONMIN, lowerLon), Math.max(LATMIN, lowerLat)], [Math.min(LONMAX, upperLon), Math.min(LATMAX, upperLat)]];
+  }
+
+  _chart.convertBounds = function (arr) {
+    if (!_mapboxgl) {
+      throw new Error("Cannot convert bounds: mapboxgl uninitialized.");
+    }
+    return _mapboxgl.LngLatBounds.convert(makeBoundsArrSafe(arr));
   };
 
   _chart.enableInteractions = function (enableInteractions) {
@@ -11281,7 +11319,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (_chart.svg()) {
       _chart.svg().remove();
     }
-    var mapContainer = _d2.default.select(_chart.map().getCanvasContainer());
+    var mapContainer = _d3.default.select(_chart.map().getCanvasContainer());
     var svg = mapContainer.append("svg").attr("class", "poly-svg");
     svg.attr("width", _chart.width()).attr("height", _chart.height());
     _chart.svg(svg);
@@ -11542,7 +11580,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   function initGeocoder() {
     _chart.root().append("input").attr("type", "text").attr("placeholder", "Zoom to").classed("geocoder-input", true).style("top", "5px").style("right", "5px").style("float", "right").style("position", "absolute").on("keydown", function () {
-      if (_d2.default.event.key === "Enter" || _d2.default.event.keyCode === 13) {
+      if (_d3.default.event.key === "Enter" || _d3.default.event.keyCode === 13) {
         _geocoder.locate(this.value).then(_chart.zoomToLocation);
       }
     });
@@ -11552,7 +11590,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     var sw = data.bounds.sw;
     var ne = data.bounds.ne;
     /* eslint-disable operator-linebreak */
-    return !isNaN(sw[0]) && !isNaN(ne[0]) && !isNaN(sw[1]) && !isNaN(ne[1]) && sw[0] <= ne[0] && sw[1] < ne[1] && sw[0] >= -180 && sw[0] <= 180 && sw[1] >= -90 && sw[1] <= 90 && ne[0] >= -180 && ne[0] <= 180 && ne[1] >= -90 && ne[1] <= 90;
+    return !isNaN(sw[0]) && !isNaN(ne[0]) && !isNaN(sw[1]) && !isNaN(ne[1]) && sw[0] <= ne[0] && sw[1] < ne[1] && sw[0] >= LONMIN && sw[0] <= LONMAX && sw[1] >= LATMIN && sw[1] <= LATMAX && ne[0] >= LONMIN && ne[0] <= LONMAX && ne[1] >= LATMIN && ne[1] <= LATMAX;
     /* eslint-enable operator-linebreak */
   }
 
@@ -11598,7 +11636,7 @@ var _utilsLatlon = __webpack_require__(140);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _lassoToolUi = __webpack_require__(193);
+var _lassoToolUi = __webpack_require__(194);
 
 var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
 
@@ -12010,6 +12048,746 @@ function rasterDrawMixin(chart) {
 
 /***/ }),
 /* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * @module helpers
+ */
+/**
+ * Earth Radius used with the Harvesine formula and approximates using a spherical (non-ellipsoid) Earth.
+ *
+ * @memberof helpers
+ * @type {number}
+ */
+exports.earthRadius = 6371008.8;
+/**
+ * Unit of measurement factors using a spherical (non-ellipsoid) earth radius.
+ *
+ * @memberof helpers
+ * @type {Object}
+ */
+exports.factors = {
+    centimeters: exports.earthRadius * 100,
+    centimetres: exports.earthRadius * 100,
+    degrees: exports.earthRadius / 111325,
+    feet: exports.earthRadius * 3.28084,
+    inches: exports.earthRadius * 39.370,
+    kilometers: exports.earthRadius / 1000,
+    kilometres: exports.earthRadius / 1000,
+    meters: exports.earthRadius,
+    metres: exports.earthRadius,
+    miles: exports.earthRadius / 1609.344,
+    millimeters: exports.earthRadius * 1000,
+    millimetres: exports.earthRadius * 1000,
+    nauticalmiles: exports.earthRadius / 1852,
+    radians: 1,
+    yards: exports.earthRadius / 1.0936,
+};
+/**
+ * Units of measurement factors based on 1 meter.
+ *
+ * @memberof helpers
+ * @type {Object}
+ */
+exports.unitsFactors = {
+    centimeters: 100,
+    centimetres: 100,
+    degrees: 1 / 111325,
+    feet: 3.28084,
+    inches: 39.370,
+    kilometers: 1 / 1000,
+    kilometres: 1 / 1000,
+    meters: 1,
+    metres: 1,
+    miles: 1 / 1609.344,
+    millimeters: 1000,
+    millimetres: 1000,
+    nauticalmiles: 1 / 1852,
+    radians: 1 / exports.earthRadius,
+    yards: 1 / 1.0936,
+};
+/**
+ * Area of measurement factors based on 1 square meter.
+ *
+ * @memberof helpers
+ * @type {Object}
+ */
+exports.areaFactors = {
+    acres: 0.000247105,
+    centimeters: 10000,
+    centimetres: 10000,
+    feet: 10.763910417,
+    inches: 1550.003100006,
+    kilometers: 0.000001,
+    kilometres: 0.000001,
+    meters: 1,
+    metres: 1,
+    miles: 3.86e-7,
+    millimeters: 1000000,
+    millimetres: 1000000,
+    yards: 1.195990046,
+};
+/**
+ * Wraps a GeoJSON {@link Geometry} in a GeoJSON {@link Feature}.
+ *
+ * @name feature
+ * @param {Geometry} geometry input geometry
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
+ * @param {string|number} [options.id] Identifier associated with the Feature
+ * @returns {Feature} a GeoJSON Feature
+ * @example
+ * var geometry = {
+ *   "type": "Point",
+ *   "coordinates": [110, 50]
+ * };
+ *
+ * var feature = turf.feature(geometry);
+ *
+ * //=feature
+ */
+function feature(geom, properties, options) {
+    if (options === void 0) { options = {}; }
+    var feat = { type: "Feature" };
+    if (options.id === 0 || options.id) {
+        feat.id = options.id;
+    }
+    if (options.bbox) {
+        feat.bbox = options.bbox;
+    }
+    feat.properties = properties || {};
+    feat.geometry = geom;
+    return feat;
+}
+exports.feature = feature;
+/**
+ * Creates a GeoJSON {@link Geometry} from a Geometry string type & coordinates.
+ * For GeometryCollection type use `helpers.geometryCollection`
+ *
+ * @name geometry
+ * @param {string} type Geometry Type
+ * @param {Array<any>} coordinates Coordinates
+ * @param {Object} [options={}] Optional Parameters
+ * @returns {Geometry} a GeoJSON Geometry
+ * @example
+ * var type = "Point";
+ * var coordinates = [110, 50];
+ * var geometry = turf.geometry(type, coordinates);
+ * // => geometry
+ */
+function geometry(type, coordinates, options) {
+    if (options === void 0) { options = {}; }
+    switch (type) {
+        case "Point": return point(coordinates).geometry;
+        case "LineString": return lineString(coordinates).geometry;
+        case "Polygon": return polygon(coordinates).geometry;
+        case "MultiPoint": return multiPoint(coordinates).geometry;
+        case "MultiLineString": return multiLineString(coordinates).geometry;
+        case "MultiPolygon": return multiPolygon(coordinates).geometry;
+        default: throw new Error(type + " is invalid");
+    }
+}
+exports.geometry = geometry;
+/**
+ * Creates a {@link Point} {@link Feature} from a Position.
+ *
+ * @name point
+ * @param {Array<number>} coordinates longitude, latitude position (each in decimal degrees)
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
+ * @param {string|number} [options.id] Identifier associated with the Feature
+ * @returns {Feature<Point>} a Point feature
+ * @example
+ * var point = turf.point([-75.343, 39.984]);
+ *
+ * //=point
+ */
+function point(coordinates, properties, options) {
+    if (options === void 0) { options = {}; }
+    var geom = {
+        type: "Point",
+        coordinates: coordinates,
+    };
+    return feature(geom, properties, options);
+}
+exports.point = point;
+/**
+ * Creates a {@link Point} {@link FeatureCollection} from an Array of Point coordinates.
+ *
+ * @name points
+ * @param {Array<Array<number>>} coordinates an array of Points
+ * @param {Object} [properties={}] Translate these properties to each Feature
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north]
+ * associated with the FeatureCollection
+ * @param {string|number} [options.id] Identifier associated with the FeatureCollection
+ * @returns {FeatureCollection<Point>} Point Feature
+ * @example
+ * var points = turf.points([
+ *   [-75, 39],
+ *   [-80, 45],
+ *   [-78, 50]
+ * ]);
+ *
+ * //=points
+ */
+function points(coordinates, properties, options) {
+    if (options === void 0) { options = {}; }
+    return featureCollection(coordinates.map(function (coords) {
+        return point(coords, properties);
+    }), options);
+}
+exports.points = points;
+/**
+ * Creates a {@link Polygon} {@link Feature} from an Array of LinearRings.
+ *
+ * @name polygon
+ * @param {Array<Array<Array<number>>>} coordinates an array of LinearRings
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
+ * @param {string|number} [options.id] Identifier associated with the Feature
+ * @returns {Feature<Polygon>} Polygon Feature
+ * @example
+ * var polygon = turf.polygon([[[-5, 52], [-4, 56], [-2, 51], [-7, 54], [-5, 52]]], { name: 'poly1' });
+ *
+ * //=polygon
+ */
+function polygon(coordinates, properties, options) {
+    if (options === void 0) { options = {}; }
+    for (var _i = 0, coordinates_1 = coordinates; _i < coordinates_1.length; _i++) {
+        var ring = coordinates_1[_i];
+        if (ring.length < 4) {
+            throw new Error("Each LinearRing of a Polygon must have 4 or more Positions.");
+        }
+        for (var j = 0; j < ring[ring.length - 1].length; j++) {
+            // Check if first point of Polygon contains two numbers
+            if (ring[ring.length - 1][j] !== ring[0][j]) {
+                throw new Error("First and last Position are not equivalent.");
+            }
+        }
+    }
+    var geom = {
+        type: "Polygon",
+        coordinates: coordinates,
+    };
+    return feature(geom, properties, options);
+}
+exports.polygon = polygon;
+/**
+ * Creates a {@link Polygon} {@link FeatureCollection} from an Array of Polygon coordinates.
+ *
+ * @name polygons
+ * @param {Array<Array<Array<Array<number>>>>} coordinates an array of Polygon coordinates
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
+ * @param {string|number} [options.id] Identifier associated with the FeatureCollection
+ * @returns {FeatureCollection<Polygon>} Polygon FeatureCollection
+ * @example
+ * var polygons = turf.polygons([
+ *   [[[-5, 52], [-4, 56], [-2, 51], [-7, 54], [-5, 52]]],
+ *   [[[-15, 42], [-14, 46], [-12, 41], [-17, 44], [-15, 42]]],
+ * ]);
+ *
+ * //=polygons
+ */
+function polygons(coordinates, properties, options) {
+    if (options === void 0) { options = {}; }
+    return featureCollection(coordinates.map(function (coords) {
+        return polygon(coords, properties);
+    }), options);
+}
+exports.polygons = polygons;
+/**
+ * Creates a {@link LineString} {@link Feature} from an Array of Positions.
+ *
+ * @name lineString
+ * @param {Array<Array<number>>} coordinates an array of Positions
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
+ * @param {string|number} [options.id] Identifier associated with the Feature
+ * @returns {Feature<LineString>} LineString Feature
+ * @example
+ * var linestring1 = turf.lineString([[-24, 63], [-23, 60], [-25, 65], [-20, 69]], {name: 'line 1'});
+ * var linestring2 = turf.lineString([[-14, 43], [-13, 40], [-15, 45], [-10, 49]], {name: 'line 2'});
+ *
+ * //=linestring1
+ * //=linestring2
+ */
+function lineString(coordinates, properties, options) {
+    if (options === void 0) { options = {}; }
+    if (coordinates.length < 2) {
+        throw new Error("coordinates must be an array of two or more positions");
+    }
+    var geom = {
+        type: "LineString",
+        coordinates: coordinates,
+    };
+    return feature(geom, properties, options);
+}
+exports.lineString = lineString;
+/**
+ * Creates a {@link LineString} {@link FeatureCollection} from an Array of LineString coordinates.
+ *
+ * @name lineStrings
+ * @param {Array<Array<Array<number>>>} coordinates an array of LinearRings
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north]
+ * associated with the FeatureCollection
+ * @param {string|number} [options.id] Identifier associated with the FeatureCollection
+ * @returns {FeatureCollection<LineString>} LineString FeatureCollection
+ * @example
+ * var linestrings = turf.lineStrings([
+ *   [[-24, 63], [-23, 60], [-25, 65], [-20, 69]],
+ *   [[-14, 43], [-13, 40], [-15, 45], [-10, 49]]
+ * ]);
+ *
+ * //=linestrings
+ */
+function lineStrings(coordinates, properties, options) {
+    if (options === void 0) { options = {}; }
+    return featureCollection(coordinates.map(function (coords) {
+        return lineString(coords, properties);
+    }), options);
+}
+exports.lineStrings = lineStrings;
+/**
+ * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}.
+ *
+ * @name featureCollection
+ * @param {Feature[]} features input features
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
+ * @param {string|number} [options.id] Identifier associated with the Feature
+ * @returns {FeatureCollection} FeatureCollection of Features
+ * @example
+ * var locationA = turf.point([-75.343, 39.984], {name: 'Location A'});
+ * var locationB = turf.point([-75.833, 39.284], {name: 'Location B'});
+ * var locationC = turf.point([-75.534, 39.123], {name: 'Location C'});
+ *
+ * var collection = turf.featureCollection([
+ *   locationA,
+ *   locationB,
+ *   locationC
+ * ]);
+ *
+ * //=collection
+ */
+function featureCollection(features, options) {
+    if (options === void 0) { options = {}; }
+    var fc = { type: "FeatureCollection" };
+    if (options.id) {
+        fc.id = options.id;
+    }
+    if (options.bbox) {
+        fc.bbox = options.bbox;
+    }
+    fc.features = features;
+    return fc;
+}
+exports.featureCollection = featureCollection;
+/**
+ * Creates a {@link Feature<MultiLineString>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name multiLineString
+ * @param {Array<Array<Array<number>>>} coordinates an array of LineStrings
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
+ * @param {string|number} [options.id] Identifier associated with the Feature
+ * @returns {Feature<MultiLineString>} a MultiLineString feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var multiLine = turf.multiLineString([[[0,0],[10,10]]]);
+ *
+ * //=multiLine
+ */
+function multiLineString(coordinates, properties, options) {
+    if (options === void 0) { options = {}; }
+    var geom = {
+        type: "MultiLineString",
+        coordinates: coordinates,
+    };
+    return feature(geom, properties, options);
+}
+exports.multiLineString = multiLineString;
+/**
+ * Creates a {@link Feature<MultiPoint>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name multiPoint
+ * @param {Array<Array<number>>} coordinates an array of Positions
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
+ * @param {string|number} [options.id] Identifier associated with the Feature
+ * @returns {Feature<MultiPoint>} a MultiPoint feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var multiPt = turf.multiPoint([[0,0],[10,10]]);
+ *
+ * //=multiPt
+ */
+function multiPoint(coordinates, properties, options) {
+    if (options === void 0) { options = {}; }
+    var geom = {
+        type: "MultiPoint",
+        coordinates: coordinates,
+    };
+    return feature(geom, properties, options);
+}
+exports.multiPoint = multiPoint;
+/**
+ * Creates a {@link Feature<MultiPolygon>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name multiPolygon
+ * @param {Array<Array<Array<Array<number>>>>} coordinates an array of Polygons
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
+ * @param {string|number} [options.id] Identifier associated with the Feature
+ * @returns {Feature<MultiPolygon>} a multipolygon feature
+ * @throws {Error} if no coordinates are passed
+ * @example
+ * var multiPoly = turf.multiPolygon([[[[0,0],[0,10],[10,10],[10,0],[0,0]]]]);
+ *
+ * //=multiPoly
+ *
+ */
+function multiPolygon(coordinates, properties, options) {
+    if (options === void 0) { options = {}; }
+    var geom = {
+        type: "MultiPolygon",
+        coordinates: coordinates,
+    };
+    return feature(geom, properties, options);
+}
+exports.multiPolygon = multiPolygon;
+/**
+ * Creates a {@link Feature<GeometryCollection>} based on a
+ * coordinate array. Properties can be added optionally.
+ *
+ * @name geometryCollection
+ * @param {Array<Geometry>} geometries an array of GeoJSON Geometries
+ * @param {Object} [properties={}] an Object of key-value pairs to add as properties
+ * @param {Object} [options={}] Optional Parameters
+ * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
+ * @param {string|number} [options.id] Identifier associated with the Feature
+ * @returns {Feature<GeometryCollection>} a GeoJSON GeometryCollection Feature
+ * @example
+ * var pt = turf.geometry("Point", [100, 0]);
+ * var line = turf.geometry("LineString", [[101, 0], [102, 1]]);
+ * var collection = turf.geometryCollection([pt, line]);
+ *
+ * // => collection
+ */
+function geometryCollection(geometries, properties, options) {
+    if (options === void 0) { options = {}; }
+    var geom = {
+        type: "GeometryCollection",
+        geometries: geometries,
+    };
+    return feature(geom, properties, options);
+}
+exports.geometryCollection = geometryCollection;
+/**
+ * Round number to precision
+ *
+ * @param {number} num Number
+ * @param {number} [precision=0] Precision
+ * @returns {number} rounded number
+ * @example
+ * turf.round(120.4321)
+ * //=120
+ *
+ * turf.round(120.4321, 2)
+ * //=120.43
+ */
+function round(num, precision) {
+    if (precision === void 0) { precision = 0; }
+    if (precision && !(precision >= 0)) {
+        throw new Error("precision must be a positive number");
+    }
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(num * multiplier) / multiplier;
+}
+exports.round = round;
+/**
+ * Convert a distance measurement (assuming a spherical Earth) from radians to a more friendly unit.
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+ *
+ * @name radiansToLength
+ * @param {number} radians in radians across the sphere
+ * @param {string} [units="kilometers"] can be degrees, radians, miles, or kilometers inches, yards, metres,
+ * meters, kilometres, kilometers.
+ * @returns {number} distance
+ */
+function radiansToLength(radians, units) {
+    if (units === void 0) { units = "kilometers"; }
+    var factor = exports.factors[units];
+    if (!factor) {
+        throw new Error(units + " units is invalid");
+    }
+    return radians * factor;
+}
+exports.radiansToLength = radiansToLength;
+/**
+ * Convert a distance measurement (assuming a spherical Earth) from a real-world unit into radians
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+ *
+ * @name lengthToRadians
+ * @param {number} distance in real units
+ * @param {string} [units="kilometers"] can be degrees, radians, miles, or kilometers inches, yards, metres,
+ * meters, kilometres, kilometers.
+ * @returns {number} radians
+ */
+function lengthToRadians(distance, units) {
+    if (units === void 0) { units = "kilometers"; }
+    var factor = exports.factors[units];
+    if (!factor) {
+        throw new Error(units + " units is invalid");
+    }
+    return distance / factor;
+}
+exports.lengthToRadians = lengthToRadians;
+/**
+ * Convert a distance measurement (assuming a spherical Earth) from a real-world unit into degrees
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, centimeters, kilometres, feet
+ *
+ * @name lengthToDegrees
+ * @param {number} distance in real units
+ * @param {string} [units="kilometers"] can be degrees, radians, miles, or kilometers inches, yards, metres,
+ * meters, kilometres, kilometers.
+ * @returns {number} degrees
+ */
+function lengthToDegrees(distance, units) {
+    return radiansToDegrees(lengthToRadians(distance, units));
+}
+exports.lengthToDegrees = lengthToDegrees;
+/**
+ * Converts any bearing angle from the north line direction (positive clockwise)
+ * and returns an angle between 0-360 degrees (positive clockwise), 0 being the north line
+ *
+ * @name bearingToAzimuth
+ * @param {number} bearing angle, between -180 and +180 degrees
+ * @returns {number} angle between 0 and 360 degrees
+ */
+function bearingToAzimuth(bearing) {
+    var angle = bearing % 360;
+    if (angle < 0) {
+        angle += 360;
+    }
+    return angle;
+}
+exports.bearingToAzimuth = bearingToAzimuth;
+/**
+ * Converts an angle in radians to degrees
+ *
+ * @name radiansToDegrees
+ * @param {number} radians angle in radians
+ * @returns {number} degrees between 0 and 360 degrees
+ */
+function radiansToDegrees(radians) {
+    var degrees = radians % (2 * Math.PI);
+    return degrees * 180 / Math.PI;
+}
+exports.radiansToDegrees = radiansToDegrees;
+/**
+ * Converts an angle in degrees to radians
+ *
+ * @name degreesToRadians
+ * @param {number} degrees angle between 0 and 360 degrees
+ * @returns {number} angle in radians
+ */
+function degreesToRadians(degrees) {
+    var radians = degrees % 360;
+    return radians * Math.PI / 180;
+}
+exports.degreesToRadians = degreesToRadians;
+/**
+ * Converts a length to the requested unit.
+ * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
+ *
+ * @param {number} length to be converted
+ * @param {Units} [originalUnit="kilometers"] of the length
+ * @param {Units} [finalUnit="kilometers"] returned unit
+ * @returns {number} the converted length
+ */
+function convertLength(length, originalUnit, finalUnit) {
+    if (originalUnit === void 0) { originalUnit = "kilometers"; }
+    if (finalUnit === void 0) { finalUnit = "kilometers"; }
+    if (!(length >= 0)) {
+        throw new Error("length must be a positive number");
+    }
+    return radiansToLength(lengthToRadians(length, originalUnit), finalUnit);
+}
+exports.convertLength = convertLength;
+/**
+ * Converts a area to the requested unit.
+ * Valid units: kilometers, kilometres, meters, metres, centimetres, millimeters, acres, miles, yards, feet, inches
+ * @param {number} area to be converted
+ * @param {Units} [originalUnit="meters"] of the distance
+ * @param {Units} [finalUnit="kilometers"] returned unit
+ * @returns {number} the converted distance
+ */
+function convertArea(area, originalUnit, finalUnit) {
+    if (originalUnit === void 0) { originalUnit = "meters"; }
+    if (finalUnit === void 0) { finalUnit = "kilometers"; }
+    if (!(area >= 0)) {
+        throw new Error("area must be a positive number");
+    }
+    var startFactor = exports.areaFactors[originalUnit];
+    if (!startFactor) {
+        throw new Error("invalid original units");
+    }
+    var finalFactor = exports.areaFactors[finalUnit];
+    if (!finalFactor) {
+        throw new Error("invalid final units");
+    }
+    return (area / startFactor) * finalFactor;
+}
+exports.convertArea = convertArea;
+/**
+ * isNumber
+ *
+ * @param {*} num Number to validate
+ * @returns {boolean} true/false
+ * @example
+ * turf.isNumber(123)
+ * //=true
+ * turf.isNumber('foo')
+ * //=false
+ */
+function isNumber(num) {
+    return !isNaN(num) && num !== null && !Array.isArray(num);
+}
+exports.isNumber = isNumber;
+/**
+ * isObject
+ *
+ * @param {*} input variable to validate
+ * @returns {boolean} true/false
+ * @example
+ * turf.isObject({elevation: 10})
+ * //=true
+ * turf.isObject('foo')
+ * //=false
+ */
+function isObject(input) {
+    return (!!input) && (input.constructor === Object);
+}
+exports.isObject = isObject;
+/**
+ * Validate BBox
+ *
+ * @private
+ * @param {Array<number>} bbox BBox to validate
+ * @returns {void}
+ * @throws Error if BBox is not valid
+ * @example
+ * validateBBox([-180, -40, 110, 50])
+ * //=OK
+ * validateBBox([-180, -40])
+ * //=Error
+ * validateBBox('Foo')
+ * //=Error
+ * validateBBox(5)
+ * //=Error
+ * validateBBox(null)
+ * //=Error
+ * validateBBox(undefined)
+ * //=Error
+ */
+function validateBBox(bbox) {
+    if (!bbox) {
+        throw new Error("bbox is required");
+    }
+    if (!Array.isArray(bbox)) {
+        throw new Error("bbox must be an Array");
+    }
+    if (bbox.length !== 4 && bbox.length !== 6) {
+        throw new Error("bbox must be an Array of 4 or 6 numbers");
+    }
+    bbox.forEach(function (num) {
+        if (!isNumber(num)) {
+            throw new Error("bbox must only contain numbers");
+        }
+    });
+}
+exports.validateBBox = validateBBox;
+/**
+ * Validate Id
+ *
+ * @private
+ * @param {string|number} id Id to validate
+ * @returns {void}
+ * @throws Error if Id is not valid
+ * @example
+ * validateId([-180, -40, 110, 50])
+ * //=Error
+ * validateId([-180, -40])
+ * //=Error
+ * validateId('Foo')
+ * //=OK
+ * validateId(5)
+ * //=OK
+ * validateId(null)
+ * //=Error
+ * validateId(undefined)
+ * //=Error
+ */
+function validateId(id) {
+    if (!id) {
+        throw new Error("id is required");
+    }
+    if (["string", "number"].indexOf(typeof id) === -1) {
+        throw new Error("id must be a number or a string");
+    }
+}
+exports.validateId = validateId;
+// Deprecated methods
+function radians2degrees() {
+    throw new Error("method has been renamed to `radiansToDegrees`");
+}
+exports.radians2degrees = radians2degrees;
+function degrees2radians() {
+    throw new Error("method has been renamed to `degreesToRadians`");
+}
+exports.degrees2radians = degrees2radians;
+function distanceToDegrees() {
+    throw new Error("method has been renamed to `lengthToDegrees`");
+}
+exports.distanceToDegrees = distanceToDegrees;
+function distanceToRadians() {
+    throw new Error("method has been renamed to `lengthToRadians`");
+}
+exports.distanceToRadians = distanceToRadians;
+function radiansToDistance() {
+    throw new Error("method has been renamed to `radiansToLength`");
+}
+exports.radiansToDistance = radiansToDistance;
+function bearingToAngle() {
+    throw new Error("method has been renamed to `bearingToAzimuth`");
+}
+exports.bearingToAngle = bearingToAngle;
+function convertDistance() {
+    throw new Error("method has been renamed to `convertLength`");
+}
+exports.convertDistance = convertDistance;
+
+
+/***/ }),
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12030,7 +12808,7 @@ function rasterDrawMixin(chart) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 var g;
@@ -12055,55 +12833,6 @@ try {
 
 module.exports = g;
 
-
-/***/ }),
-/* 25 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export traverse */
-/* harmony export (immutable) */ __webpack_exports__["b"] = reduceToSQL;
-/* harmony export (immutable) */ __webpack_exports__["a"] = escapeQuotes;
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var identity = function identity(a) {
-  return a;
-};
-
-
-function traverse(node, iterator, xform, accum) {
-  accum = xform(accum, iterator(node));
-  var source = node.getState().source;
-  return (typeof source === "undefined" ? "undefined" : _typeof(source)) === "object" && !Array.isArray(source) ? traverse(source, iterator, xform, accum) : accum;
-}
-
-function reduceToSQL(context, node) {
-  var initialSQL = {
-    select: [],
-    from: "",
-    where: [],
-    groupby: [],
-    having: [],
-    orderby: [],
-    limit: "",
-    offset: "",
-    unresolved: {}
-  };
-
-  function toSQL(accum, rightNode) {
-    return context.parser.parseDataState(rightNode.getState(), accum);
-  }
-
-  return traverse(node, identity, toSQL, initialSQL);
-}
-
-function escapeQuotes(string) {
-  if (typeof string === "string") {
-    return string.replace(/'/gi, "''");
-  } else {
-    return string;
-  }
-}
 
 /***/ }),
 /* 26 */
@@ -21765,8 +22494,8 @@ var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "
 /***/ (function(module, exports, __webpack_require__) {
 
 var pSlice = Array.prototype.slice;
-var objectKeys = __webpack_require__(175);
-var isArguments = __webpack_require__(176);
+var objectKeys = __webpack_require__(176);
+var isArguments = __webpack_require__(177);
 
 var deepEqual = module.exports = function (actual, expected, opts) {
   if (!opts) opts = {};
@@ -22217,7 +22946,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _dcConstants = __webpack_require__(181);
+var _dcConstants = __webpack_require__(182);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22340,7 +23069,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = elasticDimensionMixin;
 
-var _ramda = __webpack_require__(183);
+var _ramda = __webpack_require__(184);
 
 var _d = __webpack_require__(1);
 
@@ -23662,7 +24391,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _coordinateGridRasterMixinUi = __webpack_require__(204);
+var _coordinateGridRasterMixinUi = __webpack_require__(207);
 
 var _coordinateGridRasterMixinUi2 = _interopRequireDefault(_coordinateGridRasterMixinUi);
 
@@ -25331,12 +26060,12 @@ function h(sel, b, c) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(223);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(224);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(226);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(227);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(147);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTypes__ = __webpack_require__(148);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatPrefixAuto__ = __webpack_require__(149);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__identity__ = __webpack_require__(227);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__identity__ = __webpack_require__(230);
 
 
 
@@ -25537,9 +26266,9 @@ FormatSpecifier.prototype.toString = function() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDefault__ = __webpack_require__(225);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDefault__ = __webpack_require__(228);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatPrefixAuto__ = __webpack_require__(149);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatRounded__ = __webpack_require__(226);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatRounded__ = __webpack_require__(229);
 
 
 
@@ -25568,7 +26297,7 @@ FormatSpecifier.prototype.toString = function() {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return prefixExponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(24);
 
 
 var prefixExponent;
@@ -26608,7 +27337,7 @@ var _events = __webpack_require__(9);
 
 var _utils = __webpack_require__(3);
 
-var _wellknown = __webpack_require__(236);
+var _wellknown = __webpack_require__(239);
 
 var _wellknown2 = _interopRequireDefault(_wellknown);
 
@@ -27463,7 +28192,7 @@ __webpack_require__(154);
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(155);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ }),
 /* 155 */
@@ -27549,7 +28278,7 @@ Object.keys(_logger).forEach(function (key) {
   });
 });
 
-var _bubbleOverlay = __webpack_require__(177);
+var _bubbleOverlay = __webpack_require__(178);
 
 Object.defineProperty(exports, "bubbleOverlay", {
   enumerable: true,
@@ -27558,7 +28287,7 @@ Object.defineProperty(exports, "bubbleOverlay", {
   }
 });
 
-var _barChart = __webpack_require__(182);
+var _barChart = __webpack_require__(183);
 
 Object.defineProperty(exports, "barChart", {
   enumerable: true,
@@ -27567,7 +28296,7 @@ Object.defineProperty(exports, "barChart", {
   }
 });
 
-var _bubbleChart = __webpack_require__(185);
+var _bubbleChart = __webpack_require__(186);
 
 Object.defineProperty(exports, "bubbleChart", {
   enumerable: true,
@@ -27576,7 +28305,7 @@ Object.defineProperty(exports, "bubbleChart", {
   }
 });
 
-var _cloudChart = __webpack_require__(186);
+var _cloudChart = __webpack_require__(187);
 
 Object.defineProperty(exports, "cloudChart", {
   enumerable: true,
@@ -27585,7 +28314,7 @@ Object.defineProperty(exports, "cloudChart", {
   }
 });
 
-var _compositeChart = __webpack_require__(187);
+var _compositeChart = __webpack_require__(188);
 
 Object.defineProperty(exports, "compositeChart", {
   enumerable: true,
@@ -27594,7 +28323,7 @@ Object.defineProperty(exports, "compositeChart", {
   }
 });
 
-var _dataCount = __webpack_require__(188);
+var _dataCount = __webpack_require__(189);
 
 Object.defineProperty(exports, "dataCount", {
   enumerable: true,
@@ -27603,7 +28332,7 @@ Object.defineProperty(exports, "dataCount", {
   }
 });
 
-var _dataGrid = __webpack_require__(189);
+var _dataGrid = __webpack_require__(190);
 
 Object.defineProperty(exports, "dataGrid", {
   enumerable: true,
@@ -27612,7 +28341,7 @@ Object.defineProperty(exports, "dataGrid", {
   }
 });
 
-var _geoChoroplethChart = __webpack_require__(190);
+var _geoChoroplethChart = __webpack_require__(191);
 
 Object.defineProperty(exports, "geoChoroplethChart", {
   enumerable: true,
@@ -27621,7 +28350,7 @@ Object.defineProperty(exports, "geoChoroplethChart", {
   }
 });
 
-var _heatmap = __webpack_require__(198);
+var _heatmap = __webpack_require__(201);
 
 Object.defineProperty(exports, "heatMap", {
   enumerable: true,
@@ -27630,7 +28359,7 @@ Object.defineProperty(exports, "heatMap", {
   }
 });
 
-var _pieChart = __webpack_require__(199);
+var _pieChart = __webpack_require__(202);
 
 Object.defineProperty(exports, "pieChart", {
   enumerable: true,
@@ -27639,7 +28368,7 @@ Object.defineProperty(exports, "pieChart", {
   }
 });
 
-var _lineChart = __webpack_require__(200);
+var _lineChart = __webpack_require__(203);
 
 Object.defineProperty(exports, "lineChart", {
   enumerable: true,
@@ -27648,7 +28377,7 @@ Object.defineProperty(exports, "lineChart", {
   }
 });
 
-var _numberChart = __webpack_require__(201);
+var _numberChart = __webpack_require__(204);
 
 Object.defineProperty(exports, "numberChart", {
   enumerable: true,
@@ -27657,7 +28386,7 @@ Object.defineProperty(exports, "numberChart", {
   }
 });
 
-var _rasterChart = __webpack_require__(202);
+var _rasterChart = __webpack_require__(205);
 
 Object.defineProperty(exports, "rasterChart", {
   enumerable: true,
@@ -27666,7 +28395,7 @@ Object.defineProperty(exports, "rasterChart", {
   }
 });
 
-var _rowChart = __webpack_require__(231);
+var _rowChart = __webpack_require__(234);
 
 Object.defineProperty(exports, "rowChart", {
   enumerable: true,
@@ -27675,7 +28404,7 @@ Object.defineProperty(exports, "rowChart", {
   }
 });
 
-var _scatterPlot = __webpack_require__(232);
+var _scatterPlot = __webpack_require__(235);
 
 Object.defineProperty(exports, "scatterPlot", {
   enumerable: true,
@@ -27684,7 +28413,7 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _mapdTable = __webpack_require__(233);
+var _mapdTable = __webpack_require__(236);
 
 Object.defineProperty(exports, "mapdTable", {
   enumerable: true,
@@ -27693,7 +28422,7 @@ Object.defineProperty(exports, "mapdTable", {
   }
 });
 
-var _boxPlot = __webpack_require__(234);
+var _boxPlot = __webpack_require__(237);
 
 Object.defineProperty(exports, "boxPlot", {
   enumerable: true,
@@ -27702,7 +28431,7 @@ Object.defineProperty(exports, "boxPlot", {
   }
 });
 
-var _countWidget = __webpack_require__(235);
+var _countWidget = __webpack_require__(238);
 
 Object.defineProperty(exports, "countWidget", {
   enumerable: true,
@@ -27828,7 +28557,7 @@ Object.defineProperty(exports, "rasterLayerPolyMixin", {
   }
 });
 
-var _rasterLayer = __webpack_require__(237);
+var _rasterLayer = __webpack_require__(240);
 
 Object.defineProperty(exports, "rasterLayer", {
   enumerable: true,
@@ -27837,7 +28566,7 @@ Object.defineProperty(exports, "rasterLayer", {
   }
 });
 
-var _rasterMixin = __webpack_require__(238);
+var _rasterMixin = __webpack_require__(241);
 
 Object.defineProperty(exports, "rasterMixin", {
   enumerable: true,
@@ -27864,7 +28593,7 @@ Object.defineProperty(exports, "spinnerMixin", {
   }
 });
 
-var _legendContinuous = __webpack_require__(239);
+var _legendContinuous = __webpack_require__(242);
 
 Object.defineProperty(exports, "legendContinuous", {
   enumerable: true,
@@ -27873,7 +28602,7 @@ Object.defineProperty(exports, "legendContinuous", {
   }
 });
 
-var _legend = __webpack_require__(240);
+var _legend = __webpack_require__(243);
 
 Object.defineProperty(exports, "legend", {
   enumerable: true,
@@ -27882,7 +28611,7 @@ Object.defineProperty(exports, "legend", {
   }
 });
 
-var _dcLegendCont = __webpack_require__(242);
+var _dcLegendCont = __webpack_require__(245);
 
 Object.defineProperty(exports, "legendCont", {
   enumerable: true,
@@ -27901,18 +28630,18 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(243);
-__webpack_require__(244);
-__webpack_require__(245);
 __webpack_require__(246);
+__webpack_require__(247);
+__webpack_require__(248);
+__webpack_require__(249);
 
 if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
-  window.mapboxgl = __webpack_require__(247);
-  __webpack_require__(248);
+  window.mapboxgl = __webpack_require__(250);
+  __webpack_require__(251);
 }
 
-__webpack_require__(249);
-__webpack_require__(250);
+__webpack_require__(252);
+__webpack_require__(253);
 
 exports.d3 = _d; // eslint-disable-line
 
@@ -27932,9 +28661,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(169);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(172);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(173);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
 /**
  * The exported `mapd-data-layer` module. Consists of a graph constructor and
@@ -27957,9 +28686,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseExpression;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(25);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 
 
 
@@ -27996,7 +28723,7 @@ function parseExpression(expression) {
     case "not in":
       if (Array.isArray(expression.set)) {
         return expression.expr + " " + expression.type.toUpperCase() + " (" + expression.set.map(function (field) {
-          return typeof field === "number" ? field : "'" + Object(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* escapeQuotes */])(field) + "'";
+          return typeof field === "number" ? field : "'" + field + "'";
         }).join(", ") + ")";
       } else if (_typeof(expression.set) === "object" && (expression.set.type === "data" || expression.set.type === "root")) {
         return expression.expr + " " + expression.type.toUpperCase() + " (" + parser.writeSQL(expression.set) + ")";
@@ -28009,10 +28736,9 @@ function parseExpression(expression) {
     case "or":
       return "(" + parseExpression(expression.left) + " " + expression.type.toUpperCase() + " " + parseExpression(expression.right) + ")";
     case "case":
-      var elseCase = expression.else === null ? "NULL" : "'" + expression.else + "'";
       return "CASE WHEN " + expression.cond.map(function (cond) {
         return parseExpression(cond[0]) + " THEN " + cond[1];
-      }).join(" ") + (typeof expression.else !== "undefined" ? " ELSE " + elseCase : "") + " END";
+      }).join(" ") + (expression.else ? " ELSE '" + expression.else + "'" : "") + " END";
     case "date_trunc":
       return "date_trunc(" + expression.unit + ", " + expression.field + ")";
     case "extract":
@@ -28342,7 +29068,7 @@ function parseResolvefilter(sql, transform) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = sample;
 
 
-var GOLDEN_RATIO = 2654435761;
+var GOLDEN_RATIO = 265445761;
 
 var THIRTY_TWO_BITS = 4294967296;
 
@@ -28499,7 +29225,7 @@ function createDataGraph(connector) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataNode;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_invariant__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(171);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -28555,7 +29281,7 @@ function createDataNode(context) {
    * @inner
    */
   function toSQL() {
-    return context.parser.write(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["b" /* reduceToSQL */])(context, dataNodeAPI));
+    return context.parser.write(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* reduceToSQL */])(context, dataNodeAPI));
   }
 
   /**
@@ -28565,7 +29291,7 @@ function createDataNode(context) {
    * @inner
    */
   function values() {
-    return context.connector.query(context.parser.write(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["b" /* reduceToSQL */])(context, dataNodeAPI)));
+    return context.connector.query(context.parser.write(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* reduceToSQL */])(context, dataNodeAPI)));
   }
 
   /**
@@ -28586,6 +29312,46 @@ function createDataNode(context) {
 
 /***/ }),
 /* 171 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export traverse */
+/* harmony export (immutable) */ __webpack_exports__["a"] = reduceToSQL;
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var identity = function identity(a) {
+  return a;
+};
+
+
+function traverse(node, iterator, xform, accum) {
+  accum = xform(accum, iterator(node));
+  var source = node.getState().source;
+  return (typeof source === "undefined" ? "undefined" : _typeof(source)) === "object" && !Array.isArray(source) ? traverse(source, iterator, xform, accum) : accum;
+}
+
+function reduceToSQL(context, node) {
+  var initialSQL = {
+    select: [],
+    from: "",
+    where: [],
+    groupby: [],
+    having: [],
+    orderby: [],
+    limit: "",
+    offset: "",
+    unresolved: {}
+  };
+
+  function toSQL(accum, rightNode) {
+    return context.parser.parseDataState(rightNode.getState(), accum);
+  }
+
+  return traverse(node, identity, toSQL, initialSQL);
+}
+
+/***/ }),
+/* 172 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -28793,7 +29559,7 @@ function between(field, range) {
 }
 
 /***/ }),
-/* 172 */
+/* 173 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -29021,7 +29787,7 @@ function bottom(field, limit, offset) {
 }
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -29049,7 +29815,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 174 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -29268,10 +30034,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 174;
+webpackContext.id = 175;
 
 /***/ }),
-/* 175 */
+/* 176 */
 /***/ (function(module, exports) {
 
 exports = module.exports = typeof Object.keys === 'function'
@@ -29286,7 +30052,7 @@ function shim (obj) {
 
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports) {
 
 var supportsArgumentsClass = (function(){
@@ -29312,7 +30078,7 @@ function unsupported(object){
 
 
 /***/ }),
-/* 177 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29735,7 +30501,7 @@ function bubbleOverlay(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 178 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29836,7 +30602,7 @@ function legendMixin(chart) {
 }
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30049,7 +30815,7 @@ function filterMixin(_chart) {
 }
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30193,7 +30959,7 @@ function labelMixin(chart) {
 }
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30205,7 +30971,7 @@ Object.defineProperty(exports, "__esModule", {
 var SPINNER_DELAY = exports.SPINNER_DELAY = 1000;
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30765,7 +31531,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 }
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //  Ramda v0.21.0
@@ -39555,7 +40321,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 
 
 /***/ }),
-/* 184 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39749,7 +40515,7 @@ function binningMixin(chart) {
 }
 
 /***/ }),
-/* 185 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40196,7 +40962,7 @@ function bubbleChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 186 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40346,7 +41112,7 @@ function cloudChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40914,7 +41680,7 @@ function compositeChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41083,7 +41849,7 @@ function dataCount(parent, chartGroup) {
 }
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41338,7 +42104,7 @@ function dataGrid(parent, chartGroup) {
 }
 
 /***/ }),
-/* 190 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41372,9 +42138,13 @@ var _core = __webpack_require__(2);
 
 var _utils = __webpack_require__(3);
 
-var _bbox = __webpack_require__(195);
+var _bbox = __webpack_require__(196);
 
 var _bbox2 = _interopRequireDefault(_bbox);
+
+var _bboxClip = __webpack_require__(198);
+
+var _bboxClip2 = _interopRequireDefault(_bboxClip);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -41457,7 +42227,8 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
   _chart.fitBounds = function () {
     if (geoJson(0)) {
       var bounds = geoJson(0).bounds;
-      _chart.map().fitBounds(bounds, { animate: false }, { skipRedraw: true });
+      var llb = _chart.convertBounds(bounds);
+      _chart.map().fitBounds(llb, { animate: false }, { skipRedraw: true });
     }
   };
 
@@ -41474,7 +42245,12 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
       var states = _chart.svg().append("g").attr("class", "layer" + layerIndex);
       // .attr('transform', 'translate(0, -16)');
 
-      var regionG = states.selectAll("g." + geoJson(layerIndex).name).data(geoJson(layerIndex).data).enter().append("g").attr("class", geoJson(layerIndex).name);
+      // Clip each feature to the supported map extents
+      var data = geoJson(layerIndex).data.map(function (feature) {
+        return (0, _bboxClip2.default)(feature, [_chart.lonMin(), _chart.latMin(), _chart.lonMax(), _chart.latMax()]);
+      });
+
+      var regionG = states.selectAll("g." + geoJson(layerIndex).name).data(data).enter().append("g").attr("class", geoJson(layerIndex).name);
 
       regionG.append("path").attr("fill", "white").attr("d", _geoPath);
 
@@ -41768,7 +42544,6 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
     coordinates = _chart.popupCoordinates(_d3.default.mouse(this));
     var x = coordinates[0];
     var y = coordinates[1] - 16;
-
     var popup = _chart.popup().attr("style", function () {
       return "transform:translate(" + x + "px," + y + "px)";
     });
@@ -41783,7 +42558,7 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 }
 
 /***/ }),
-/* 191 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41794,7 +42569,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.mapDrawMixin = mapDrawMixin;
 
-var _utilsLasso = __webpack_require__(192);
+var _utilsLasso = __webpack_require__(193);
 
 var utils = _interopRequireWildcard(_utilsLasso);
 
@@ -42044,7 +42819,7 @@ function mapDrawMixin(chart) {
 }
 
 /***/ }),
-/* 192 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42171,7 +42946,7 @@ function convertGeojsonToSql(features, px, py) {
 }
 
 /***/ }),
-/* 193 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42195,7 +42970,7 @@ var _mapdDraw = __webpack_require__(13);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _simplifyJs = __webpack_require__(194);
+var _simplifyJs = __webpack_require__(195);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
@@ -43293,7 +44068,7 @@ var LassoButtonGroupController = function () {
 exports.default = LassoButtonGroupController;
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -43423,13 +44198,13 @@ else window.simplify = simplify;
 
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var meta_1 = __webpack_require__(196);
+var meta_1 = __webpack_require__(197);
 /**
  * Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
  *
@@ -43466,7 +44241,7 @@ exports.default = bbox;
 
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -43488,7 +44263,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["lineReduce"] = lineReduce;
 /* harmony export (immutable) */ __webpack_exports__["findSegment"] = findSegment;
 /* harmony export (immutable) */ __webpack_exports__["findPoint"] = findPoint;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__turf_helpers__ = __webpack_require__(197);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__turf_helpers__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__turf_helpers___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__turf_helpers__);
 
 
@@ -44596,747 +45371,440 @@ function findPoint(geojson, options) {
 
 
 /***/ }),
-/* 197 */
+/* 198 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var helpers_1 = __webpack_require__(23);
+var invariant_1 = __webpack_require__(199);
+var lineclip = __importStar(__webpack_require__(200));
+/**
+ * Takes a {@link Feature} and a bbox and clips the feature to the bbox using
+ * [lineclip](https://github.com/mapbox/lineclip).
+ * May result in degenerate edges when clipping Polygons.
+ *
+ * @name bboxClip
+ * @param {Feature<LineString|MultiLineString|Polygon|MultiPolygon>} feature feature to clip to the bbox
+ * @param {BBox} bbox extent in [minX, minY, maxX, maxY] order
+ * @returns {Feature<LineString|MultiLineString|Polygon|MultiPolygon>} clipped Feature
+ * @example
+ * var bbox = [0, 0, 10, 10];
+ * var poly = turf.polygon([[[2, 2], [8, 4], [12, 8], [3, 7], [2, 2]]]);
+ *
+ * var clipped = turf.bboxClip(poly, bbox);
+ *
+ * //addToMap
+ * var addToMap = [bbox, poly, clipped]
+ */
+function bboxClip(feature, bbox) {
+    var geom = invariant_1.getGeom(feature);
+    var type = geom.type;
+    var properties = feature.type === "Feature" ? feature.properties : {};
+    var coords = geom.coordinates;
+    switch (type) {
+        case "LineString":
+        case "MultiLineString":
+            var lines_1 = [];
+            if (type === "LineString") {
+                coords = [coords];
+            }
+            coords.forEach(function (line) {
+                lineclip.polyline(line, bbox, lines_1);
+            });
+            if (lines_1.length === 1) {
+                return helpers_1.lineString(lines_1[0], properties);
+            }
+            return helpers_1.multiLineString(lines_1, properties);
+        case "Polygon":
+            return helpers_1.polygon(clipPolygon(coords, bbox), properties);
+        case "MultiPolygon":
+            return helpers_1.multiPolygon(coords.map(function (poly) {
+                return clipPolygon(poly, bbox);
+            }), properties);
+        default:
+            throw new Error("geometry " + type + " not supported");
+    }
+}
+exports.default = bboxClip;
+function clipPolygon(rings, bbox) {
+    var outRings = [];
+    for (var _i = 0, rings_1 = rings; _i < rings_1.length; _i++) {
+        var ring = rings_1[_i];
+        var clipped = lineclip.polygon(ring, bbox);
+        if (clipped.length > 0) {
+            if (clipped[0][0] !== clipped[clipped.length - 1][0] || clipped[0][1] !== clipped[clipped.length - 1][1]) {
+                clipped.push(clipped[0]);
+            }
+            if (clipped.length >= 4) {
+                outRings.push(clipped);
+            }
+        }
+    }
+    return outRings;
+}
+
+
+/***/ }),
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var helpers_1 = __webpack_require__(23);
 /**
- * @module helpers
- */
-/**
- * Earth Radius used with the Harvesine formula and approximates using a spherical (non-ellipsoid) Earth.
+ * Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
  *
- * @memberof helpers
- * @type {number}
- */
-exports.earthRadius = 6371008.8;
-/**
- * Unit of measurement factors using a spherical (non-ellipsoid) earth radius.
- *
- * @memberof helpers
- * @type {Object}
- */
-exports.factors = {
-    centimeters: exports.earthRadius * 100,
-    centimetres: exports.earthRadius * 100,
-    degrees: exports.earthRadius / 111325,
-    feet: exports.earthRadius * 3.28084,
-    inches: exports.earthRadius * 39.370,
-    kilometers: exports.earthRadius / 1000,
-    kilometres: exports.earthRadius / 1000,
-    meters: exports.earthRadius,
-    metres: exports.earthRadius,
-    miles: exports.earthRadius / 1609.344,
-    millimeters: exports.earthRadius * 1000,
-    millimetres: exports.earthRadius * 1000,
-    nauticalmiles: exports.earthRadius / 1852,
-    radians: 1,
-    yards: exports.earthRadius / 1.0936,
-};
-/**
- * Units of measurement factors based on 1 meter.
- *
- * @memberof helpers
- * @type {Object}
- */
-exports.unitsFactors = {
-    centimeters: 100,
-    centimetres: 100,
-    degrees: 1 / 111325,
-    feet: 3.28084,
-    inches: 39.370,
-    kilometers: 1 / 1000,
-    kilometres: 1 / 1000,
-    meters: 1,
-    metres: 1,
-    miles: 1 / 1609.344,
-    millimeters: 1000,
-    millimetres: 1000,
-    nauticalmiles: 1 / 1852,
-    radians: 1 / exports.earthRadius,
-    yards: 1 / 1.0936,
-};
-/**
- * Area of measurement factors based on 1 square meter.
- *
- * @memberof helpers
- * @type {Object}
- */
-exports.areaFactors = {
-    acres: 0.000247105,
-    centimeters: 10000,
-    centimetres: 10000,
-    feet: 10.763910417,
-    inches: 1550.003100006,
-    kilometers: 0.000001,
-    kilometres: 0.000001,
-    meters: 1,
-    metres: 1,
-    miles: 3.86e-7,
-    millimeters: 1000000,
-    millimetres: 1000000,
-    yards: 1.195990046,
-};
-/**
- * Wraps a GeoJSON {@link Geometry} in a GeoJSON {@link Feature}.
- *
- * @name feature
- * @param {Geometry} geometry input geometry
- * @param {Object} [properties={}] an Object of key-value pairs to add as properties
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
- * @param {string|number} [options.id] Identifier associated with the Feature
- * @returns {Feature} a GeoJSON Feature
+ * @name getCoord
+ * @param {Array<number>|Geometry<Point>|Feature<Point>} coord GeoJSON Point or an Array of numbers
+ * @returns {Array<number>} coordinates
  * @example
- * var geometry = {
- *   "type": "Point",
- *   "coordinates": [110, 50]
- * };
+ * var pt = turf.point([10, 10]);
  *
- * var feature = turf.feature(geometry);
- *
- * //=feature
+ * var coord = turf.getCoord(pt);
+ * //= [10, 10]
  */
-function feature(geom, properties, options) {
-    if (options === void 0) { options = {}; }
-    var feat = { type: "Feature" };
-    if (options.id === 0 || options.id) {
-        feat.id = options.id;
+function getCoord(coord) {
+    if (!coord) {
+        throw new Error("coord is required");
     }
-    if (options.bbox) {
-        feat.bbox = options.bbox;
-    }
-    feat.properties = properties || {};
-    feat.geometry = geom;
-    return feat;
-}
-exports.feature = feature;
-/**
- * Creates a GeoJSON {@link Geometry} from a Geometry string type & coordinates.
- * For GeometryCollection type use `helpers.geometryCollection`
- *
- * @name geometry
- * @param {string} type Geometry Type
- * @param {Array<any>} coordinates Coordinates
- * @param {Object} [options={}] Optional Parameters
- * @returns {Geometry} a GeoJSON Geometry
- * @example
- * var type = "Point";
- * var coordinates = [110, 50];
- * var geometry = turf.geometry(type, coordinates);
- * // => geometry
- */
-function geometry(type, coordinates, options) {
-    if (options === void 0) { options = {}; }
-    switch (type) {
-        case "Point": return point(coordinates).geometry;
-        case "LineString": return lineString(coordinates).geometry;
-        case "Polygon": return polygon(coordinates).geometry;
-        case "MultiPoint": return multiPoint(coordinates).geometry;
-        case "MultiLineString": return multiLineString(coordinates).geometry;
-        case "MultiPolygon": return multiPolygon(coordinates).geometry;
-        default: throw new Error(type + " is invalid");
-    }
-}
-exports.geometry = geometry;
-/**
- * Creates a {@link Point} {@link Feature} from a Position.
- *
- * @name point
- * @param {Array<number>} coordinates longitude, latitude position (each in decimal degrees)
- * @param {Object} [properties={}] an Object of key-value pairs to add as properties
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
- * @param {string|number} [options.id] Identifier associated with the Feature
- * @returns {Feature<Point>} a Point feature
- * @example
- * var point = turf.point([-75.343, 39.984]);
- *
- * //=point
- */
-function point(coordinates, properties, options) {
-    if (options === void 0) { options = {}; }
-    var geom = {
-        type: "Point",
-        coordinates: coordinates,
-    };
-    return feature(geom, properties, options);
-}
-exports.point = point;
-/**
- * Creates a {@link Point} {@link FeatureCollection} from an Array of Point coordinates.
- *
- * @name points
- * @param {Array<Array<number>>} coordinates an array of Points
- * @param {Object} [properties={}] Translate these properties to each Feature
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north]
- * associated with the FeatureCollection
- * @param {string|number} [options.id] Identifier associated with the FeatureCollection
- * @returns {FeatureCollection<Point>} Point Feature
- * @example
- * var points = turf.points([
- *   [-75, 39],
- *   [-80, 45],
- *   [-78, 50]
- * ]);
- *
- * //=points
- */
-function points(coordinates, properties, options) {
-    if (options === void 0) { options = {}; }
-    return featureCollection(coordinates.map(function (coords) {
-        return point(coords, properties);
-    }), options);
-}
-exports.points = points;
-/**
- * Creates a {@link Polygon} {@link Feature} from an Array of LinearRings.
- *
- * @name polygon
- * @param {Array<Array<Array<number>>>} coordinates an array of LinearRings
- * @param {Object} [properties={}] an Object of key-value pairs to add as properties
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
- * @param {string|number} [options.id] Identifier associated with the Feature
- * @returns {Feature<Polygon>} Polygon Feature
- * @example
- * var polygon = turf.polygon([[[-5, 52], [-4, 56], [-2, 51], [-7, 54], [-5, 52]]], { name: 'poly1' });
- *
- * //=polygon
- */
-function polygon(coordinates, properties, options) {
-    if (options === void 0) { options = {}; }
-    for (var _i = 0, coordinates_1 = coordinates; _i < coordinates_1.length; _i++) {
-        var ring = coordinates_1[_i];
-        if (ring.length < 4) {
-            throw new Error("Each LinearRing of a Polygon must have 4 or more Positions.");
+    if (!Array.isArray(coord)) {
+        if (coord.type === "Feature" && coord.geometry !== null && coord.geometry.type === "Point") {
+            return coord.geometry.coordinates;
         }
-        for (var j = 0; j < ring[ring.length - 1].length; j++) {
-            // Check if first point of Polygon contains two numbers
-            if (ring[ring.length - 1][j] !== ring[0][j]) {
-                throw new Error("First and last Position are not equivalent.");
-            }
+        if (coord.type === "Point") {
+            return coord.coordinates;
         }
     }
-    var geom = {
-        type: "Polygon",
-        coordinates: coordinates,
-    };
-    return feature(geom, properties, options);
+    if (Array.isArray(coord) && coord.length >= 2 && !Array.isArray(coord[0]) && !Array.isArray(coord[1])) {
+        return coord;
+    }
+    throw new Error("coord must be GeoJSON Point or an Array of numbers");
 }
-exports.polygon = polygon;
+exports.getCoord = getCoord;
 /**
- * Creates a {@link Polygon} {@link FeatureCollection} from an Array of Polygon coordinates.
+ * Unwrap coordinates from a Feature, Geometry Object or an Array
  *
- * @name polygons
- * @param {Array<Array<Array<Array<number>>>>} coordinates an array of Polygon coordinates
- * @param {Object} [properties={}] an Object of key-value pairs to add as properties
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
- * @param {string|number} [options.id] Identifier associated with the FeatureCollection
- * @returns {FeatureCollection<Polygon>} Polygon FeatureCollection
+ * @name getCoords
+ * @param {Array<any>|Geometry|Feature} coords Feature, Geometry Object or an Array
+ * @returns {Array<any>} coordinates
  * @example
- * var polygons = turf.polygons([
- *   [[[-5, 52], [-4, 56], [-2, 51], [-7, 54], [-5, 52]]],
- *   [[[-15, 42], [-14, 46], [-12, 41], [-17, 44], [-15, 42]]],
- * ]);
+ * var poly = turf.polygon([[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]);
  *
- * //=polygons
+ * var coords = turf.getCoords(poly);
+ * //= [[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]
  */
-function polygons(coordinates, properties, options) {
-    if (options === void 0) { options = {}; }
-    return featureCollection(coordinates.map(function (coords) {
-        return polygon(coords, properties);
-    }), options);
-}
-exports.polygons = polygons;
-/**
- * Creates a {@link LineString} {@link Feature} from an Array of Positions.
- *
- * @name lineString
- * @param {Array<Array<number>>} coordinates an array of Positions
- * @param {Object} [properties={}] an Object of key-value pairs to add as properties
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
- * @param {string|number} [options.id] Identifier associated with the Feature
- * @returns {Feature<LineString>} LineString Feature
- * @example
- * var linestring1 = turf.lineString([[-24, 63], [-23, 60], [-25, 65], [-20, 69]], {name: 'line 1'});
- * var linestring2 = turf.lineString([[-14, 43], [-13, 40], [-15, 45], [-10, 49]], {name: 'line 2'});
- *
- * //=linestring1
- * //=linestring2
- */
-function lineString(coordinates, properties, options) {
-    if (options === void 0) { options = {}; }
-    if (coordinates.length < 2) {
-        throw new Error("coordinates must be an array of two or more positions");
+function getCoords(coords) {
+    if (Array.isArray(coords)) {
+        return coords;
     }
-    var geom = {
-        type: "LineString",
-        coordinates: coordinates,
-    };
-    return feature(geom, properties, options);
-}
-exports.lineString = lineString;
-/**
- * Creates a {@link LineString} {@link FeatureCollection} from an Array of LineString coordinates.
- *
- * @name lineStrings
- * @param {Array<Array<Array<number>>>} coordinates an array of LinearRings
- * @param {Object} [properties={}] an Object of key-value pairs to add as properties
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north]
- * associated with the FeatureCollection
- * @param {string|number} [options.id] Identifier associated with the FeatureCollection
- * @returns {FeatureCollection<LineString>} LineString FeatureCollection
- * @example
- * var linestrings = turf.lineStrings([
- *   [[-24, 63], [-23, 60], [-25, 65], [-20, 69]],
- *   [[-14, 43], [-13, 40], [-15, 45], [-10, 49]]
- * ]);
- *
- * //=linestrings
- */
-function lineStrings(coordinates, properties, options) {
-    if (options === void 0) { options = {}; }
-    return featureCollection(coordinates.map(function (coords) {
-        return lineString(coords, properties);
-    }), options);
-}
-exports.lineStrings = lineStrings;
-/**
- * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}.
- *
- * @name featureCollection
- * @param {Feature[]} features input features
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
- * @param {string|number} [options.id] Identifier associated with the Feature
- * @returns {FeatureCollection} FeatureCollection of Features
- * @example
- * var locationA = turf.point([-75.343, 39.984], {name: 'Location A'});
- * var locationB = turf.point([-75.833, 39.284], {name: 'Location B'});
- * var locationC = turf.point([-75.534, 39.123], {name: 'Location C'});
- *
- * var collection = turf.featureCollection([
- *   locationA,
- *   locationB,
- *   locationC
- * ]);
- *
- * //=collection
- */
-function featureCollection(features, options) {
-    if (options === void 0) { options = {}; }
-    var fc = { type: "FeatureCollection" };
-    if (options.id) {
-        fc.id = options.id;
-    }
-    if (options.bbox) {
-        fc.bbox = options.bbox;
-    }
-    fc.features = features;
-    return fc;
-}
-exports.featureCollection = featureCollection;
-/**
- * Creates a {@link Feature<MultiLineString>} based on a
- * coordinate array. Properties can be added optionally.
- *
- * @name multiLineString
- * @param {Array<Array<Array<number>>>} coordinates an array of LineStrings
- * @param {Object} [properties={}] an Object of key-value pairs to add as properties
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
- * @param {string|number} [options.id] Identifier associated with the Feature
- * @returns {Feature<MultiLineString>} a MultiLineString feature
- * @throws {Error} if no coordinates are passed
- * @example
- * var multiLine = turf.multiLineString([[[0,0],[10,10]]]);
- *
- * //=multiLine
- */
-function multiLineString(coordinates, properties, options) {
-    if (options === void 0) { options = {}; }
-    var geom = {
-        type: "MultiLineString",
-        coordinates: coordinates,
-    };
-    return feature(geom, properties, options);
-}
-exports.multiLineString = multiLineString;
-/**
- * Creates a {@link Feature<MultiPoint>} based on a
- * coordinate array. Properties can be added optionally.
- *
- * @name multiPoint
- * @param {Array<Array<number>>} coordinates an array of Positions
- * @param {Object} [properties={}] an Object of key-value pairs to add as properties
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
- * @param {string|number} [options.id] Identifier associated with the Feature
- * @returns {Feature<MultiPoint>} a MultiPoint feature
- * @throws {Error} if no coordinates are passed
- * @example
- * var multiPt = turf.multiPoint([[0,0],[10,10]]);
- *
- * //=multiPt
- */
-function multiPoint(coordinates, properties, options) {
-    if (options === void 0) { options = {}; }
-    var geom = {
-        type: "MultiPoint",
-        coordinates: coordinates,
-    };
-    return feature(geom, properties, options);
-}
-exports.multiPoint = multiPoint;
-/**
- * Creates a {@link Feature<MultiPolygon>} based on a
- * coordinate array. Properties can be added optionally.
- *
- * @name multiPolygon
- * @param {Array<Array<Array<Array<number>>>>} coordinates an array of Polygons
- * @param {Object} [properties={}] an Object of key-value pairs to add as properties
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
- * @param {string|number} [options.id] Identifier associated with the Feature
- * @returns {Feature<MultiPolygon>} a multipolygon feature
- * @throws {Error} if no coordinates are passed
- * @example
- * var multiPoly = turf.multiPolygon([[[[0,0],[0,10],[10,10],[10,0],[0,0]]]]);
- *
- * //=multiPoly
- *
- */
-function multiPolygon(coordinates, properties, options) {
-    if (options === void 0) { options = {}; }
-    var geom = {
-        type: "MultiPolygon",
-        coordinates: coordinates,
-    };
-    return feature(geom, properties, options);
-}
-exports.multiPolygon = multiPolygon;
-/**
- * Creates a {@link Feature<GeometryCollection>} based on a
- * coordinate array. Properties can be added optionally.
- *
- * @name geometryCollection
- * @param {Array<Geometry>} geometries an array of GeoJSON Geometries
- * @param {Object} [properties={}] an Object of key-value pairs to add as properties
- * @param {Object} [options={}] Optional Parameters
- * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
- * @param {string|number} [options.id] Identifier associated with the Feature
- * @returns {Feature<GeometryCollection>} a GeoJSON GeometryCollection Feature
- * @example
- * var pt = turf.geometry("Point", [100, 0]);
- * var line = turf.geometry("LineString", [[101, 0], [102, 1]]);
- * var collection = turf.geometryCollection([pt, line]);
- *
- * // => collection
- */
-function geometryCollection(geometries, properties, options) {
-    if (options === void 0) { options = {}; }
-    var geom = {
-        type: "GeometryCollection",
-        geometries: geometries,
-    };
-    return feature(geom, properties, options);
-}
-exports.geometryCollection = geometryCollection;
-/**
- * Round number to precision
- *
- * @param {number} num Number
- * @param {number} [precision=0] Precision
- * @returns {number} rounded number
- * @example
- * turf.round(120.4321)
- * //=120
- *
- * turf.round(120.4321, 2)
- * //=120.43
- */
-function round(num, precision) {
-    if (precision === void 0) { precision = 0; }
-    if (precision && !(precision >= 0)) {
-        throw new Error("precision must be a positive number");
-    }
-    var multiplier = Math.pow(10, precision || 0);
-    return Math.round(num * multiplier) / multiplier;
-}
-exports.round = round;
-/**
- * Convert a distance measurement (assuming a spherical Earth) from radians to a more friendly unit.
- * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
- *
- * @name radiansToLength
- * @param {number} radians in radians across the sphere
- * @param {string} [units="kilometers"] can be degrees, radians, miles, or kilometers inches, yards, metres,
- * meters, kilometres, kilometers.
- * @returns {number} distance
- */
-function radiansToLength(radians, units) {
-    if (units === void 0) { units = "kilometers"; }
-    var factor = exports.factors[units];
-    if (!factor) {
-        throw new Error(units + " units is invalid");
-    }
-    return radians * factor;
-}
-exports.radiansToLength = radiansToLength;
-/**
- * Convert a distance measurement (assuming a spherical Earth) from a real-world unit into radians
- * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
- *
- * @name lengthToRadians
- * @param {number} distance in real units
- * @param {string} [units="kilometers"] can be degrees, radians, miles, or kilometers inches, yards, metres,
- * meters, kilometres, kilometers.
- * @returns {number} radians
- */
-function lengthToRadians(distance, units) {
-    if (units === void 0) { units = "kilometers"; }
-    var factor = exports.factors[units];
-    if (!factor) {
-        throw new Error(units + " units is invalid");
-    }
-    return distance / factor;
-}
-exports.lengthToRadians = lengthToRadians;
-/**
- * Convert a distance measurement (assuming a spherical Earth) from a real-world unit into degrees
- * Valid units: miles, nauticalmiles, inches, yards, meters, metres, centimeters, kilometres, feet
- *
- * @name lengthToDegrees
- * @param {number} distance in real units
- * @param {string} [units="kilometers"] can be degrees, radians, miles, or kilometers inches, yards, metres,
- * meters, kilometres, kilometers.
- * @returns {number} degrees
- */
-function lengthToDegrees(distance, units) {
-    return radiansToDegrees(lengthToRadians(distance, units));
-}
-exports.lengthToDegrees = lengthToDegrees;
-/**
- * Converts any bearing angle from the north line direction (positive clockwise)
- * and returns an angle between 0-360 degrees (positive clockwise), 0 being the north line
- *
- * @name bearingToAzimuth
- * @param {number} bearing angle, between -180 and +180 degrees
- * @returns {number} angle between 0 and 360 degrees
- */
-function bearingToAzimuth(bearing) {
-    var angle = bearing % 360;
-    if (angle < 0) {
-        angle += 360;
-    }
-    return angle;
-}
-exports.bearingToAzimuth = bearingToAzimuth;
-/**
- * Converts an angle in radians to degrees
- *
- * @name radiansToDegrees
- * @param {number} radians angle in radians
- * @returns {number} degrees between 0 and 360 degrees
- */
-function radiansToDegrees(radians) {
-    var degrees = radians % (2 * Math.PI);
-    return degrees * 180 / Math.PI;
-}
-exports.radiansToDegrees = radiansToDegrees;
-/**
- * Converts an angle in degrees to radians
- *
- * @name degreesToRadians
- * @param {number} degrees angle between 0 and 360 degrees
- * @returns {number} angle in radians
- */
-function degreesToRadians(degrees) {
-    var radians = degrees % 360;
-    return radians * Math.PI / 180;
-}
-exports.degreesToRadians = degreesToRadians;
-/**
- * Converts a length to the requested unit.
- * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
- *
- * @param {number} length to be converted
- * @param {Units} [originalUnit="kilometers"] of the length
- * @param {Units} [finalUnit="kilometers"] returned unit
- * @returns {number} the converted length
- */
-function convertLength(length, originalUnit, finalUnit) {
-    if (originalUnit === void 0) { originalUnit = "kilometers"; }
-    if (finalUnit === void 0) { finalUnit = "kilometers"; }
-    if (!(length >= 0)) {
-        throw new Error("length must be a positive number");
-    }
-    return radiansToLength(lengthToRadians(length, originalUnit), finalUnit);
-}
-exports.convertLength = convertLength;
-/**
- * Converts a area to the requested unit.
- * Valid units: kilometers, kilometres, meters, metres, centimetres, millimeters, acres, miles, yards, feet, inches
- * @param {number} area to be converted
- * @param {Units} [originalUnit="meters"] of the distance
- * @param {Units} [finalUnit="kilometers"] returned unit
- * @returns {number} the converted distance
- */
-function convertArea(area, originalUnit, finalUnit) {
-    if (originalUnit === void 0) { originalUnit = "meters"; }
-    if (finalUnit === void 0) { finalUnit = "kilometers"; }
-    if (!(area >= 0)) {
-        throw new Error("area must be a positive number");
-    }
-    var startFactor = exports.areaFactors[originalUnit];
-    if (!startFactor) {
-        throw new Error("invalid original units");
-    }
-    var finalFactor = exports.areaFactors[finalUnit];
-    if (!finalFactor) {
-        throw new Error("invalid final units");
-    }
-    return (area / startFactor) * finalFactor;
-}
-exports.convertArea = convertArea;
-/**
- * isNumber
- *
- * @param {*} num Number to validate
- * @returns {boolean} true/false
- * @example
- * turf.isNumber(123)
- * //=true
- * turf.isNumber('foo')
- * //=false
- */
-function isNumber(num) {
-    return !isNaN(num) && num !== null && !Array.isArray(num);
-}
-exports.isNumber = isNumber;
-/**
- * isObject
- *
- * @param {*} input variable to validate
- * @returns {boolean} true/false
- * @example
- * turf.isObject({elevation: 10})
- * //=true
- * turf.isObject('foo')
- * //=false
- */
-function isObject(input) {
-    return (!!input) && (input.constructor === Object);
-}
-exports.isObject = isObject;
-/**
- * Validate BBox
- *
- * @private
- * @param {Array<number>} bbox BBox to validate
- * @returns {void}
- * @throws Error if BBox is not valid
- * @example
- * validateBBox([-180, -40, 110, 50])
- * //=OK
- * validateBBox([-180, -40])
- * //=Error
- * validateBBox('Foo')
- * //=Error
- * validateBBox(5)
- * //=Error
- * validateBBox(null)
- * //=Error
- * validateBBox(undefined)
- * //=Error
- */
-function validateBBox(bbox) {
-    if (!bbox) {
-        throw new Error("bbox is required");
-    }
-    if (!Array.isArray(bbox)) {
-        throw new Error("bbox must be an Array");
-    }
-    if (bbox.length !== 4 && bbox.length !== 6) {
-        throw new Error("bbox must be an Array of 4 or 6 numbers");
-    }
-    bbox.forEach(function (num) {
-        if (!isNumber(num)) {
-            throw new Error("bbox must only contain numbers");
+    // Feature
+    if (coords.type === "Feature") {
+        if (coords.geometry !== null) {
+            return coords.geometry.coordinates;
         }
-    });
+    }
+    else {
+        // Geometry
+        if (coords.coordinates) {
+            return coords.coordinates;
+        }
+    }
+    throw new Error("coords must be GeoJSON Feature, Geometry Object or an Array");
 }
-exports.validateBBox = validateBBox;
+exports.getCoords = getCoords;
 /**
- * Validate Id
+ * Checks if coordinates contains a number
  *
- * @private
- * @param {string|number} id Id to validate
- * @returns {void}
- * @throws Error if Id is not valid
- * @example
- * validateId([-180, -40, 110, 50])
- * //=Error
- * validateId([-180, -40])
- * //=Error
- * validateId('Foo')
- * //=OK
- * validateId(5)
- * //=OK
- * validateId(null)
- * //=Error
- * validateId(undefined)
- * //=Error
+ * @name containsNumber
+ * @param {Array<any>} coordinates GeoJSON Coordinates
+ * @returns {boolean} true if Array contains a number
  */
-function validateId(id) {
-    if (!id) {
-        throw new Error("id is required");
+function containsNumber(coordinates) {
+    if (coordinates.length > 1 && helpers_1.isNumber(coordinates[0]) && helpers_1.isNumber(coordinates[1])) {
+        return true;
     }
-    if (["string", "number"].indexOf(typeof id) === -1) {
-        throw new Error("id must be a number or a string");
+    if (Array.isArray(coordinates[0]) && coordinates[0].length) {
+        return containsNumber(coordinates[0]);
+    }
+    throw new Error("coordinates must only contain numbers");
+}
+exports.containsNumber = containsNumber;
+/**
+ * Enforce expectations about types of GeoJSON objects for Turf.
+ *
+ * @name geojsonType
+ * @param {GeoJSON} value any GeoJSON object
+ * @param {string} type expected GeoJSON type
+ * @param {string} name name of calling function
+ * @throws {Error} if value is not the expected type.
+ */
+function geojsonType(value, type, name) {
+    if (!type || !name) {
+        throw new Error("type and name required");
+    }
+    if (!value || value.type !== type) {
+        throw new Error("Invalid input to " + name + ": must be a " + type + ", given " + value.type);
     }
 }
-exports.validateId = validateId;
-// Deprecated methods
-function radians2degrees() {
-    throw new Error("method has been renamed to `radiansToDegrees`");
+exports.geojsonType = geojsonType;
+/**
+ * Enforce expectations about types of {@link Feature} inputs for Turf.
+ * Internally this uses {@link geojsonType} to judge geometry types.
+ *
+ * @name featureOf
+ * @param {Feature} feature a feature with an expected geometry type
+ * @param {string} type expected GeoJSON type
+ * @param {string} name name of calling function
+ * @throws {Error} error if value is not the expected type.
+ */
+function featureOf(feature, type, name) {
+    if (!feature) {
+        throw new Error("No feature passed");
+    }
+    if (!name) {
+        throw new Error(".featureOf() requires a name");
+    }
+    if (!feature || feature.type !== "Feature" || !feature.geometry) {
+        throw new Error("Invalid input to " + name + ", Feature with geometry required");
+    }
+    if (!feature.geometry || feature.geometry.type !== type) {
+        throw new Error("Invalid input to " + name + ": must be a " + type + ", given " + feature.geometry.type);
+    }
 }
-exports.radians2degrees = radians2degrees;
-function degrees2radians() {
-    throw new Error("method has been renamed to `degreesToRadians`");
+exports.featureOf = featureOf;
+/**
+ * Enforce expectations about types of {@link FeatureCollection} inputs for Turf.
+ * Internally this uses {@link geojsonType} to judge geometry types.
+ *
+ * @name collectionOf
+ * @param {FeatureCollection} featureCollection a FeatureCollection for which features will be judged
+ * @param {string} type expected GeoJSON type
+ * @param {string} name name of calling function
+ * @throws {Error} if value is not the expected type.
+ */
+function collectionOf(featureCollection, type, name) {
+    if (!featureCollection) {
+        throw new Error("No featureCollection passed");
+    }
+    if (!name) {
+        throw new Error(".collectionOf() requires a name");
+    }
+    if (!featureCollection || featureCollection.type !== "FeatureCollection") {
+        throw new Error("Invalid input to " + name + ", FeatureCollection required");
+    }
+    for (var _i = 0, _a = featureCollection.features; _i < _a.length; _i++) {
+        var feature = _a[_i];
+        if (!feature || feature.type !== "Feature" || !feature.geometry) {
+            throw new Error("Invalid input to " + name + ", Feature with geometry required");
+        }
+        if (!feature.geometry || feature.geometry.type !== type) {
+            throw new Error("Invalid input to " + name + ": must be a " + type + ", given " + feature.geometry.type);
+        }
+    }
 }
-exports.degrees2radians = degrees2radians;
-function distanceToDegrees() {
-    throw new Error("method has been renamed to `lengthToDegrees`");
+exports.collectionOf = collectionOf;
+/**
+ * Get Geometry from Feature or Geometry Object
+ *
+ * @param {Feature|Geometry} geojson GeoJSON Feature or Geometry Object
+ * @returns {Geometry|null} GeoJSON Geometry Object
+ * @throws {Error} if geojson is not a Feature or Geometry Object
+ * @example
+ * var point = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [110, 40]
+ *   }
+ * }
+ * var geom = turf.getGeom(point)
+ * //={"type": "Point", "coordinates": [110, 40]}
+ */
+function getGeom(geojson) {
+    if (geojson.type === "Feature") {
+        return geojson.geometry;
+    }
+    return geojson;
 }
-exports.distanceToDegrees = distanceToDegrees;
-function distanceToRadians() {
-    throw new Error("method has been renamed to `lengthToRadians`");
+exports.getGeom = getGeom;
+/**
+ * Get GeoJSON object's type, Geometry type is prioritize.
+ *
+ * @param {GeoJSON} geojson GeoJSON object
+ * @param {string} [name="geojson"] name of the variable to display in error message
+ * @returns {string} GeoJSON type
+ * @example
+ * var point = {
+ *   "type": "Feature",
+ *   "properties": {},
+ *   "geometry": {
+ *     "type": "Point",
+ *     "coordinates": [110, 40]
+ *   }
+ * }
+ * var geom = turf.getType(point)
+ * //="Point"
+ */
+function getType(geojson, name) {
+    if (geojson.type === "FeatureCollection") {
+        return "FeatureCollection";
+    }
+    if (geojson.type === "GeometryCollection") {
+        return "GeometryCollection";
+    }
+    if (geojson.type === "Feature" && geojson.geometry !== null) {
+        return geojson.geometry.type;
+    }
+    return geojson.type;
 }
-exports.distanceToRadians = distanceToRadians;
-function radiansToDistance() {
-    throw new Error("method has been renamed to `radiansToLength`");
-}
-exports.radiansToDistance = radiansToDistance;
-function bearingToAngle() {
-    throw new Error("method has been renamed to `bearingToAzimuth`");
-}
-exports.bearingToAngle = bearingToAngle;
-function convertDistance() {
-    throw new Error("method has been renamed to `convertLength`");
-}
-exports.convertDistance = convertDistance;
+exports.getType = getType;
 
 
 /***/ }),
-/* 198 */
+/* 200 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = lineclip;
+module.exports.default = lineclip;
+
+lineclip.polyline = lineclip;
+lineclip.polygon = polygonclip;
+
+
+// Cohen-Sutherland line clippign algorithm, adapted to efficiently
+// handle polylines rather than just segments
+
+function lineclip(points, bbox, result) {
+
+    var len = points.length,
+        codeA = bitCode(points[0], bbox),
+        part = [],
+        i, a, b, codeB, lastCode;
+
+    if (!result) result = [];
+
+    for (i = 1; i < len; i++) {
+        a = points[i - 1];
+        b = points[i];
+        codeB = lastCode = bitCode(b, bbox);
+
+        while (true) {
+
+            if (!(codeA | codeB)) { // accept
+                part.push(a);
+
+                if (codeB !== lastCode) { // segment went outside
+                    part.push(b);
+
+                    if (i < len - 1) { // start a new line
+                        result.push(part);
+                        part = [];
+                    }
+                } else if (i === len - 1) {
+                    part.push(b);
+                }
+                break;
+
+            } else if (codeA & codeB) { // trivial reject
+                break;
+
+            } else if (codeA) { // a outside, intersect with clip edge
+                a = intersect(a, b, codeA, bbox);
+                codeA = bitCode(a, bbox);
+
+            } else { // b outside
+                b = intersect(a, b, codeB, bbox);
+                codeB = bitCode(b, bbox);
+            }
+        }
+
+        codeA = lastCode;
+    }
+
+    if (part.length) result.push(part);
+
+    return result;
+}
+
+// Sutherland-Hodgeman polygon clipping algorithm
+
+function polygonclip(points, bbox) {
+
+    var result, edge, prev, prevInside, i, p, inside;
+
+    // clip against each side of the clip rectangle
+    for (edge = 1; edge <= 8; edge *= 2) {
+        result = [];
+        prev = points[points.length - 1];
+        prevInside = !(bitCode(prev, bbox) & edge);
+
+        for (i = 0; i < points.length; i++) {
+            p = points[i];
+            inside = !(bitCode(p, bbox) & edge);
+
+            // if segment goes through the clip window, add an intersection
+            if (inside !== prevInside) result.push(intersect(prev, p, edge, bbox));
+
+            if (inside) result.push(p); // add a point if it's inside
+
+            prev = p;
+            prevInside = inside;
+        }
+
+        points = result;
+
+        if (!points.length) break;
+    }
+
+    return result;
+}
+
+// intersect a segment against one of the 4 lines that make up the bbox
+
+function intersect(a, b, edge, bbox) {
+    return edge & 8 ? [a[0] + (b[0] - a[0]) * (bbox[3] - a[1]) / (b[1] - a[1]), bbox[3]] : // top
+           edge & 4 ? [a[0] + (b[0] - a[0]) * (bbox[1] - a[1]) / (b[1] - a[1]), bbox[1]] : // bottom
+           edge & 2 ? [bbox[2], a[1] + (b[1] - a[1]) * (bbox[2] - a[0]) / (b[0] - a[0])] : // right
+           edge & 1 ? [bbox[0], a[1] + (b[1] - a[1]) * (bbox[0] - a[0]) / (b[0] - a[0])] : // left
+           null;
+}
+
+// bit code reflects the point position relative to the bbox:
+
+//         left  mid  right
+//    top  1001  1000  1010
+//    mid  0001  0000  0010
+// bottom  0101  0100  0110
+
+function bitCode(p, bbox) {
+    var code = 0;
+
+    if (p[0] < bbox[0]) code |= 1; // left
+    else if (p[0] > bbox[2]) code |= 2; // right
+
+    if (p[1] < bbox[1]) code |= 4; // bottom
+    else if (p[1] > bbox[3]) code |= 8; // top
+
+    return code;
+}
+
+
+/***/ }),
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46055,7 +46523,7 @@ function heatMap(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 199 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46861,7 +47329,7 @@ function pieChart(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 200 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47482,7 +47950,7 @@ function lineChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 201 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47579,7 +48047,7 @@ function numberChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 202 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47590,7 +48058,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rasterChart;
 
-var _stackedLegend = __webpack_require__(203);
+var _stackedLegend = __webpack_require__(206);
 
 var _coordinateGridRasterMixin = __webpack_require__(141);
 
@@ -47612,7 +48080,7 @@ var _rasterDrawMixin = __webpack_require__(22);
 
 var _coreAsync = __webpack_require__(4);
 
-var _legendables = __webpack_require__(205);
+var _legendables = __webpack_require__(208);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48206,7 +48674,7 @@ function genLayeredVega(chart) {
 }
 
 /***/ }),
-/* 203 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48467,7 +48935,7 @@ function toLegendState() {
 }
 
 /***/ }),
-/* 204 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49570,18 +50038,18 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 }
 
 /***/ }),
-/* 205 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var legend_1 = __webpack_require__(206);
+var legend_1 = __webpack_require__(209);
 exports.Legend = legend_1.default;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 206 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49595,10 +50063,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var h_1 = __webpack_require__(207);
-var vdom_1 = __webpack_require__(210);
-var d3_dispatch_1 = __webpack_require__(219);
-var d3_format_1 = __webpack_require__(221);
+var h_1 = __webpack_require__(210);
+var vdom_1 = __webpack_require__(213);
+var d3_dispatch_1 = __webpack_require__(222);
+var d3_format_1 = __webpack_require__(224);
 var commafy = function (d) { return d3_format_1.format(",")(parseFloat(d.toFixed(2))); };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
@@ -49789,14 +50257,14 @@ exports.default = Legend;
 //# sourceMappingURL=legend.js.map
 
 /***/ }),
-/* 207 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var vnode_1 = __webpack_require__(208);
-var is = __webpack_require__(209);
+var vnode_1 = __webpack_require__(211);
+var is = __webpack_require__(212);
 function addNS(data, children, sel) {
     data.ns = 'http://www.w3.org/2000/svg';
     if (sel !== 'foreignObject' && children !== undefined) {
@@ -49854,7 +50322,7 @@ exports.default = h;
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 208 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49870,7 +50338,7 @@ exports.default = vnode;
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 209 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49884,18 +50352,18 @@ exports.primitive = primitive;
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 210 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var snabbdom_1 = __webpack_require__(211);
-var attributes_1 = __webpack_require__(214);
-var class_1 = __webpack_require__(215);
-var props_1 = __webpack_require__(216);
-var style_1 = __webpack_require__(217);
-var eventlisteners_1 = __webpack_require__(218);
+var snabbdom_1 = __webpack_require__(214);
+var attributes_1 = __webpack_require__(217);
+var class_1 = __webpack_require__(218);
+var props_1 = __webpack_require__(219);
+var style_1 = __webpack_require__(220);
+var eventlisteners_1 = __webpack_require__(221);
 exports.patch = snabbdom_1.init([
     class_1.default,
     props_1.default,
@@ -49906,7 +50374,7 @@ exports.patch = snabbdom_1.init([
 //# sourceMappingURL=vdom.js.map
 
 /***/ }),
-/* 211 */
+/* 214 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -49914,10 +50382,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["init"] = init;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(143);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(144);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(215);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(145);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_3__h__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(216);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "thunk", function() { return __WEBPACK_IMPORTED_MODULE_4__thunk__["a"]; });
 
 
@@ -50225,7 +50693,7 @@ function init(modules, domApi) {
 //# sourceMappingURL=snabbdom.js.map
 
 /***/ }),
-/* 212 */
+/* 215 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50296,7 +50764,7 @@ var htmlDomApi = {
 //# sourceMappingURL=htmldomapi.js.map
 
 /***/ }),
-/* 213 */
+/* 216 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50349,7 +50817,7 @@ var thunk = function thunk(sel, key, fn, args) {
 //# sourceMappingURL=thunk.js.map
 
 /***/ }),
-/* 214 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50410,7 +50878,7 @@ exports.default = exports.attributesModule;
 //# sourceMappingURL=attributes.js.map
 
 /***/ }),
-/* 215 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50441,7 +50909,7 @@ exports.default = exports.classModule;
 //# sourceMappingURL=class.js.map
 
 /***/ }),
-/* 216 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50473,7 +50941,7 @@ exports.default = exports.propsModule;
 //# sourceMappingURL=props.js.map
 
 /***/ }),
-/* 217 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50565,7 +51033,7 @@ exports.default = exports.styleModule;
 //# sourceMappingURL=style.js.map
 
 /***/ }),
-/* 218 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50666,18 +51134,18 @@ exports.default = exports.eventListenersModule;
 //# sourceMappingURL=eventlisteners.js.map
 
 /***/ }),
-/* 219 */
+/* 222 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_dispatch__ = __webpack_require__(220);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_dispatch__ = __webpack_require__(223);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return __WEBPACK_IMPORTED_MODULE_0__src_dispatch__["a"]; });
 
 
 
 /***/ }),
-/* 220 */
+/* 223 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50768,12 +51236,12 @@ function set(type, name, callback) {
 
 
 /***/ }),
-/* 221 */
+/* 224 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__ = __webpack_require__(222);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__ = __webpack_require__(225);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatDefaultLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "format", function() { return __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatPrefix", function() { return __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__["c"]; });
@@ -50781,11 +51249,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatLocale", function() { return __WEBPACK_IMPORTED_MODULE_1__src_locale__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__src_formatSpecifier__ = __webpack_require__(147);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatSpecifier", function() { return __WEBPACK_IMPORTED_MODULE_2__src_formatSpecifier__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__src_precisionFixed__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__src_precisionFixed__ = __webpack_require__(231);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionFixed", function() { return __WEBPACK_IMPORTED_MODULE_3__src_precisionFixed__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__src_precisionPrefix__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__src_precisionPrefix__ = __webpack_require__(232);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionPrefix", function() { return __WEBPACK_IMPORTED_MODULE_4__src_precisionPrefix__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__src_precisionRound__ = __webpack_require__(230);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__src_precisionRound__ = __webpack_require__(233);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionRound", function() { return __WEBPACK_IMPORTED_MODULE_5__src_precisionRound__["a"]; });
 
 
@@ -50796,7 +51264,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 222 */
+/* 225 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50826,7 +51294,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 223 */
+/* 226 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50851,7 +51319,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 224 */
+/* 227 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50865,7 +51333,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 225 */
+/* 228 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50886,11 +51354,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 226 */
+/* 229 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(24);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x, p) {
@@ -50905,7 +51373,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 227 */
+/* 230 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50915,7 +51383,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 228 */
+/* 231 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50928,7 +51396,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 229 */
+/* 232 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50941,7 +51409,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 230 */
+/* 233 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50955,7 +51423,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 231 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51620,7 +52088,7 @@ function rowChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 232 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51922,7 +52390,7 @@ function scatterPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 233 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52433,7 +52901,7 @@ function mapdTable(parent, chartGroup) {
 }
 
 /***/ }),
-/* 234 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52691,7 +53159,7 @@ function boxPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 235 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52820,7 +53288,7 @@ function countWidget(parent, chartGroup) {
 }
 
 /***/ }),
-/* 236 */
+/* 239 */
 /***/ (function(module, exports) {
 
 /*eslint-disable no-cond-assign */
@@ -53096,7 +53564,7 @@ function stringify (gj) {
 
 
 /***/ }),
-/* 237 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53614,7 +54082,7 @@ function rasterLayer(layerType) {
 }
 
 /***/ }),
-/* 238 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54020,7 +54488,7 @@ function rasterMixin(_chart) {
 }
 
 /***/ }),
-/* 239 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54215,7 +54683,7 @@ function legendContinuous() {
 }
 
 /***/ }),
-/* 240 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54232,7 +54700,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _utils = __webpack_require__(3);
 
-var _dcLegendMixin = __webpack_require__(241);
+var _dcLegendMixin = __webpack_require__(244);
 
 var _dcLegendMixin2 = _interopRequireDefault(_dcLegendMixin);
 
@@ -54489,7 +54957,7 @@ function legend() {
 }
 
 /***/ }),
-/* 241 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54588,7 +55056,7 @@ function legendMixin(legend) {
 }
 
 /***/ }),
-/* 242 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54785,24 +55253,6 @@ function legendCont() {
 }
 
 /***/ }),
-/* 243 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 244 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 245 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 246 */
 /***/ (function(module, exports) {
 
@@ -54810,6 +55260,24 @@ function legendCont() {
 
 /***/ }),
 /* 247 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 248 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 249 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var require;var require;(function(f){if(true){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.mapboxgl = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return require(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
@@ -55255,10 +55723,10 @@ module.exports={"version":"0.28.0"}
 
 
 //# sourceMappingURL=mapbox-gl.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ }),
-/* 248 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55572,7 +56040,7 @@ module.exports={"version":"0.28.0"}
 
 
 /***/ }),
-/* 249 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55816,7 +56284,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })();
 
 /***/ }),
-/* 250 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
