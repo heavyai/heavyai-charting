@@ -61,7 +61,7 @@
     "http-server": "^0.11.1",
     "legendables": "git://github.com/mapd/legendables.git#9fd4f0a",
     "mapbox-gl": "https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307",
-    "mapd-data-layer-2": "0.0.4",
+    "mapd-data-layer-2": "0.0.6",
     "moment": "2.13.0",
     "ramda": "0.21.0",
     "simplify-js": "^1.2.1",
@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "@mapd/connector": "git://github.com/mapd/mapd-connector.git#07a6968",
-    "@mapd/crossfilter": "git://github.com/mapd/mapd-crossfilter.git#4fbdeba",
+    "@mapd/crossfilter": "git://github.com/mapd/mapd-crossfilter.git#fd08fe1",
     "atob": "^2.0.3",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
