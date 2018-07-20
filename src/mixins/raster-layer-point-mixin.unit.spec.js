@@ -139,7 +139,7 @@ describe("rasterLayerPointMixin", () => {
           "SELECT conv_4326_900913_x(lon) as x, "
           + "conv_4326_900913_y(lat) as y, "
           + "tweets_nov_feb.rowid FROM tweets_nov_feb "
-          + "WHERE MOD(tweets_nov_feb.rowid * 2654435761, 4294967296) < 7222804 "
+          + "WHERE MOD(tweets_nov_feb.rowid * 265445761, 4294967296) < 7222804 "
           + "AND (lon = 100) LIMIT 2000000"
         )
 
