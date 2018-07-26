@@ -31,7 +31,7 @@ import { transition } from "../core/core"
  * Interaction with a chart will only trigger events and redraws within the chart's group.
  * @return {dc.bubbleChart}
  */
-export default function bubbleChart(parent, chartGroup) {
+export default function bubbleChart(parent, chartGroup, showLabels = true) {
   /* OVERRIDE -----------------------------------------------------------------*/
   const _chart = bubbleMixin(capMixin(coordinateGridMixin({})))
   let _popupHeader = []
@@ -42,7 +42,6 @@ export default function bubbleChart(parent, chartGroup) {
   let _sortBubbleSize = false
 
   _chart.transitionDuration(750)
-
   const bubbleLocator = function(d) {
     return "translate(" + bubbleX(d) + "," + bubbleY(d) + ")"
   }
@@ -85,11 +84,11 @@ export default function bubbleChart(parent, chartGroup) {
         const aY = i > 0 ? d.yPixel : bubbleY(d)
         const aKey = d.key0
 
-        if (d3.select(a).classed("hide-label")) {
+        if (d3.select(a).classed("hide-label") && showLabels) {
           return
         }
 
-        for (let j = i + 1; j < nodes[0].length; j++) {
+        for (let j = i + showLabels; j < nodes[0].length; j++) {
           const b = d3.select(nodes[0][j])
           var d = b.datum()
 
@@ -98,10 +97,10 @@ export default function bubbleChart(parent, chartGroup) {
           const bR = (d.radius = _chart.bubbleR(d))
           const bKey = d.key0
 
-          if (
+          if ( showLabels &&(
             Math.abs(aY - bY) > labelHeight ||
             bR < _chart.minRadiusWithLabel() ||
-            b.classed("hide-label")
+            b.classed("hide-label"))
           ) {
             continue
           }
@@ -117,7 +116,7 @@ export default function bubbleChart(parent, chartGroup) {
             (aXmax >= bXmin && aXmax <= bXmax) ||
             (aXmin <= bXmin && aXmax >= bXmax)
 
-          if (isLabelOverlapped) {
+          if (isLabelOverlapped || !showLabels) {
             b.classed("hide-label", true)
           }
         }
@@ -539,5 +538,5 @@ export default function bubbleChart(parent, chartGroup) {
     _chart.fadeDeselectedArea()
   }
 
-  return _chart.anchor(parent, chartGroup)
+  return _chart.anchor(parent, chartGroup, showLabels)
 }
