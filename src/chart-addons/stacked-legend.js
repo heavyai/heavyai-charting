@@ -105,7 +105,12 @@ export function getLegendStateFromChart(chart, useMap) {
   )
 }
 
-export function handleLegendToggle() {
+export function handleLegendToggle() { // when chart legend is collapsed, also collapse layer legends
+  this.getLayers().forEach(l => l.setState(
+    setLegendState(color => ({
+      open: !this.legend().state.open
+    }))
+  ))
   this.legend().setState({
     ...this.legend().state,
     open: !this.legend().state.open

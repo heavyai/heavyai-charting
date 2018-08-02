@@ -48810,19 +48810,29 @@ function getLegendStateFromChart(chart, useMap) {
 }
 
 function handleLegendToggle() {
+  var _this = this;
+
+  // when chart legend is collapsed, also collapse layer legends
+  this.getLayers().forEach(function (l) {
+    return l.setState(setLegendState(function (color) {
+      return {
+        open: !_this.legend().state.open
+      };
+    }));
+  });
   this.legend().setState(_extends({}, this.legend().state, {
     open: !this.legend().state.open
   }));
 }
 
 function handleLegendDoneRender() {
-  var _this = this;
+  var _this2 = this;
 
   this.root().classed("horizontal-lasso-tools", function () {
-    var legendNode = _this.root().select(".legendables").node();
-    var isHorizontal = legendNode && legendNode.clientHeight > _this.height() - LASSO_TOOL_VERTICAL_SPACE;
+    var legendNode = _this2.root().select(".legendables").node();
+    var isHorizontal = legendNode && legendNode.clientHeight > _this2.height() - LASSO_TOOL_VERTICAL_SPACE;
 
-    _this.root().select(".mapd-draw-button-control-group").style("width", isHorizontal ? legendNode.clientWidth + 2 + "px" : "auto");
+    _this2.root().select(".mapd-draw-button-control-group").style("width", isHorizontal ? legendNode.clientWidth + 2 + "px" : "auto");
 
     return isHorizontal;
   });
