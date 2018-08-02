@@ -158,7 +158,7 @@ export function handleLegendLock({ locked, index = 0 }) {
   let redraw = false
   if (typeof color.scale === "object") { // this if or raster-layer-heatmap-mixin.js
     if (color.legend.locked) {
-      const colorDomain = color.scale.domain ? color.scale.domain : layer.colorDomain()
+      const colorDomain = color.scale.domain || layer.colorDomain()
       layer.setState(setColorScaleDomain_v2(colorDomain))
     } else {
       layer.setState(setColorScaleDomain_v2("auto"))
