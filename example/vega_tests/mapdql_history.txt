@@ -1,0 +1,1 @@
+SELECT distinct(recipient_party) FROM contributions;
