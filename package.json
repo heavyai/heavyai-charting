@@ -49,7 +49,8 @@
     "selenium:start": "selenium-standalone start --version=3.0.0-beta4",
     "start": "webpack-dev-server --content-base ./example --config ./example/webpack.config.js",
     "test": "npm run lint && npm run test:unit",
-    "test:unit": "find ./src -name '*.spec.js' | BABEL_ENV=test NODE_PATH=./src xargs nyc mocha --opts ./test/mocha.unit.opts"
+    "test:unit": "find ./src -name '*.spec.js' | BABEL_ENV=test NODE_PATH=./src xargs nyc mocha --opts ./test/mocha.unit.opts",
+    "test:be-render": "BABEL_ENV=test mocha --opts ./test/mocha.unit.opts"
   },
   "dependencies": {
     "@mapd/mapd-draw": "git://github.com/omnisci/mapd-draw.git",
@@ -84,6 +85,7 @@
     "babel-register": "^6.4.3",
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
+    "chai-as-promised": "^7.1.1",
     "codecov": "^2.1.0",
     "cross-env": "^5.0.1",
     "css-loader": "^0.22.0",
@@ -96,8 +98,9 @@
     "jsdom": "^11.7.0",
     "lodash": "^4.17.5",
     "mapd3": "^0.15.3",
-    "mocha": "^2.5.3",
+    "mocha": "^3.3.0",
     "mocha-jenkins-reporter": "^0.1.9",
+    "mocha-image-compare": "^1.0.3",
     "node-sass": "4.8.3",
     "nyc": "^10.3.0",
     "prettier": "^1.5.2",
