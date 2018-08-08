@@ -194,6 +194,13 @@ export function handleLegendInput({ domain, index = 0 }) {
     )
   }
 
+  // automatically lock color legend when min/max input changes
+  layer.setState(
+    setLegendState(color => ({
+      locked: true
+    }))
+  )
+
   this.legend().setState(getLegendStateFromChart(this))
   this.renderAsync()
 }
