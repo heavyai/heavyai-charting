@@ -48900,6 +48900,13 @@ function handleLegendInput(_ref2) {
     }));
   }
 
+  // automatically lock color legend when min/max input changes
+  layer.setState(setLegendState(function (color) {
+    return {
+      locked: true
+    };
+  }));
+
   this.legend().setState(getLegendStateFromChart(this));
   this.renderAsync();
 }
