@@ -48721,7 +48721,6 @@ exports.handleLegendDoneRender = handleLegendDoneRender;
 exports.handleLegendOpen = handleLegendOpen;
 exports.handleLegendLock = handleLegendLock;
 exports.handleLegendInput = handleLegendInput;
-exports.handleLegendInputChange = handleLegendInputChange;
 exports.toLegendState = toLegendState;
 
 var _lodash = __webpack_require__(207);
@@ -48908,7 +48907,7 @@ function handleLegendInput(_ref2) {
   var scale = layer.getState().encoding.color.scale;
 
 
-  var legendDomain = this.legend().state.domain;
+  var legendDomain = this.legend().state.domain || this.legend().state.list[index].domain;
   if (_.difference(domain, legendDomain).length > 0) {
     // automatically lock color legend when min/max input changes
     layer.setState(setLegendState(function (color) {
@@ -48930,10 +48929,6 @@ function handleLegendInput(_ref2) {
 
   this.legend().setState(getLegendStateFromChart(this));
   this.renderAsync();
-}
-
-function handleLegendInputChange() {
-  console.log('input change calles');
 }
 
 function legendState(state) {

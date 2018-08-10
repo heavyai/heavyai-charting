@@ -196,7 +196,7 @@ export function handleLegendInput({ domain, index = 0 }) {
   const layer = this.getLayers()[index]
   const { scale } = layer.getState().encoding.color
 
-  const legendDomain = this.legend().state.domain
+  const legendDomain = this.legend().state.domain || this.legend().state.list[index].domain
   if (_.difference(domain, legendDomain).length > 0) {
     // automatically lock color legend when min/max input changes
     layer.setState(
@@ -218,10 +218,6 @@ export function handleLegendInput({ domain, index = 0 }) {
 
   this.legend().setState(getLegendStateFromChart(this))
   this.renderAsync()
-}
-
-export function handleLegendInputChange() {
-  console.log('input change calles')
 }
 
 function legendState(state, useMap = true) {
