@@ -196,8 +196,8 @@ export function handleLegendInput({ domain, index = 0 }) {
   const layer = this.getLayers()[index]
   const { scale } = layer.getState().encoding.color
 
-  const colorDomain = layer.getState().encoding.color.domain || layer.getState().encoding.color.scale.domain
-  if (colorDomain !== "auto" && _.difference(domain, colorDomain).length > 0) {
+  const legendDomain = this.legend().state.domain || this.legend().state.list[index].domain
+  if (_.difference(domain, legendDomain).length > 0) {
     // automatically lock color legend when min/max input changes
     layer.setState(
       setLegendState(color => ({
