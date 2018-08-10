@@ -3,7 +3,7 @@ import { formatDataValue, maybeFormatInfinity } from "./formatting-helpers"
 
 import { DAYS, HOURS, MONTHS, QUARTERS } from "../constants/dates-and-times"
 
-import deepEqual from "deep-equal"
+import deepEqual from "fast-deep-equal"
 
 import d3 from "d3"
 import { constants } from "../core/core"
@@ -107,7 +107,7 @@ parser.registerParser(
 
 export const dateFormat = d3.time.format("%m/%d/%Y")
 
-export const deepEquals = require("deep-equal") // eslint-disable-line global-require
+export const deepEquals = require("fast-deep-equal") // eslint-disable-line global-require
 
 export const deepClone = obj => JSON.parse(JSON.stringify(obj))
 
