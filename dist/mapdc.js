@@ -48876,11 +48876,7 @@ function handleLegendLock(_ref) {
   if (_typeof(color.scale) === "object") {
     // this if or raster-layer-heatmap-mixin.js
     if (color.legend.locked) {
-<<<<<<< HEAD
-      var colorDomain = color.scale.domain ? color.scale.domain : layer.colorDomain();
-=======
       var colorDomain = color.scale.domain || layer.colorDomain();
->>>>>>> master
       layer.setState(setColorScaleDomain_v2(colorDomain));
     } else {
       layer.setState(setColorScaleDomain_v2("auto"));
