@@ -2,13 +2,14 @@ import capMixin from "./cap-mixin"
 import rasterLayerPointMixin from "./raster-layer-point-mixin"
 import rasterLayerPolyMixin from "./raster-layer-poly-mixin"
 import rasterLayerHeatmapMixin from "./raster-layer-heatmap-mixin"
+import rasterLayerLineMixin from "./raster-layer-line-mixin"
 import {
   createRasterLayerGetterSetter,
   createVegaAttrMixin
 } from "../utils/utils-vega"
 import {AABox2d, Point2d} from "@mapd/mapd-draw/dist/mapd-draw"
 
-const validLayerTypes = ["points", "polys", "heat"]
+const validLayerTypes = ["points", "polys", "heat", "lines"]
 
 export default function rasterLayer(layerType) {
   const _layerType = layerType
@@ -53,6 +54,8 @@ export default function rasterLayer(layerType) {
     _layer = rasterLayerPolyMixin(_layer)
   } else if (/heat/.test(layerType)) {
     _layer = rasterLayerHeatmapMixin(_layer)
+  } else if (layerType === "lines") {
+    _layer = rasterLayerLineMixin(_layer)
   } else {
     throw new Error(
       '"' +
