@@ -28620,7 +28620,7 @@ Object.defineProperty(exports, "rasterLayer", {
   }
 });
 
-var _rasterMixin = __webpack_require__(240);
+var _rasterMixin = __webpack_require__(241);
 
 Object.defineProperty(exports, "rasterMixin", {
   enumerable: true,
@@ -28647,7 +28647,7 @@ Object.defineProperty(exports, "spinnerMixin", {
   }
 });
 
-var _legendContinuous = __webpack_require__(241);
+var _legendContinuous = __webpack_require__(242);
 
 Object.defineProperty(exports, "legendContinuous", {
   enumerable: true,
@@ -28656,7 +28656,7 @@ Object.defineProperty(exports, "legendContinuous", {
   }
 });
 
-var _legend = __webpack_require__(242);
+var _legend = __webpack_require__(243);
 
 Object.defineProperty(exports, "legend", {
   enumerable: true,
@@ -28665,7 +28665,7 @@ Object.defineProperty(exports, "legend", {
   }
 });
 
-var _dcLegendCont = __webpack_require__(244);
+var _dcLegendCont = __webpack_require__(245);
 
 Object.defineProperty(exports, "legendCont", {
   enumerable: true,
@@ -28684,18 +28684,18 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(245);
 __webpack_require__(246);
 __webpack_require__(247);
 __webpack_require__(248);
+__webpack_require__(249);
 
 if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
-  window.mapboxgl = __webpack_require__(249);
-  __webpack_require__(250);
+  window.mapboxgl = __webpack_require__(250);
+  __webpack_require__(251);
 }
 
-__webpack_require__(251);
 __webpack_require__(252);
+__webpack_require__(253);
 
 exports.d3 = _d; // eslint-disable-line
 
@@ -68311,7 +68311,7 @@ var _rasterLayerHeatmapMixin = __webpack_require__(152);
 
 var _rasterLayerHeatmapMixin2 = _interopRequireDefault(_rasterLayerHeatmapMixin);
 
-var _rasterLayerLineMixin = __webpack_require__(259);
+var _rasterLayerLineMixin = __webpack_require__(240);
 
 var _rasterLayerLineMixin2 = _interopRequireDefault(_rasterLayerLineMixin);
 
@@ -68804,6 +68804,12 @@ function rasterLayer(layerType) {
 
 /***/ }),
 /* 240 */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: SyntaxError: Expecting Unicode escape sequence \\uXXXX (245:1)\n\n\u001b[0m \u001b[90m 243 | \u001b[39m      layerName\n \u001b[90m 244 | \u001b[39m    )\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 245 | \u001b[39m\u001b[37m\u001b[41m\u001b[1m\\\u001b[22m\u001b[49m\u001b[39m\n \u001b[90m     | \u001b[39m \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 246 | \u001b[39m    \u001b[36mconst\u001b[39m rowIdTable \u001b[33m=\u001b[39m state\u001b[33m.\u001b[39mdata[\u001b[35m0\u001b[39m]\u001b[33m.\u001b[39mtable\n \u001b[90m 247 | \u001b[39m\n \u001b[90m 248 | \u001b[39m    \u001b[36mconst\u001b[39m data \u001b[33m=\u001b[39m [\u001b[0m\n");
+
+/***/ }),
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69209,7 +69215,7 @@ function rasterMixin(_chart) {
 }
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69404,7 +69410,7 @@ function legendContinuous() {
 }
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69421,7 +69427,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _utils = __webpack_require__(3);
 
-var _dcLegendMixin = __webpack_require__(243);
+var _dcLegendMixin = __webpack_require__(244);
 
 var _dcLegendMixin2 = _interopRequireDefault(_dcLegendMixin);
 
@@ -69678,7 +69684,7 @@ function legend() {
 }
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69777,7 +69783,7 @@ function legendMixin(legend) {
 }
 
 /***/ }),
-/* 244 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69974,12 +69980,6 @@ function legendCont() {
 }
 
 /***/ }),
-/* 245 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 246 */
 /***/ (function(module, exports) {
 
@@ -69999,6 +69999,12 @@ function legendCont() {
 
 /***/ }),
 /* 249 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var require;var require;(function(f){if(true){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.mapboxgl = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return require(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
@@ -70447,7 +70453,7 @@ module.exports={"version":"0.28.0"}
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
 
 /***/ }),
-/* 250 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70761,7 +70767,7 @@ module.exports={"version":"0.28.0"}
 
 
 /***/ }),
-/* 251 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71005,7 +71011,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })();
 
 /***/ }),
-/* 252 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71101,514 +71107,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     });
   }
 })();
-
-/***/ }),
-/* 253 */,
-/* 254 */,
-/* 255 */,
-/* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.default = rasterLayerLineMixin;
-
-var _utilsVega = __webpack_require__(16);
-
-var _coreAsync = __webpack_require__(4);
-
-var _utils = __webpack_require__(3);
-
-var _d = __webpack_require__(1);
-
-var d3 = _interopRequireWildcard(_d);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
-var AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0];
-var AUTOSIZE_RANGE_MININUM = [1, 1];
-var SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000;
-
-function getSizing(sizeAttr, cap) {
-  var lastFilteredSize = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : cap;
-  var pixelRatio = arguments[3];
-  var layerName = arguments[4];
-
-  if (typeof sizeAttr === "number") {
-    return sizeAttr;
-  } else if ((typeof sizeAttr === "undefined" ? "undefined" : _typeof(sizeAttr)) === "object" && sizeAttr.type === "quantitative") {
-    return {
-      scale: getSizeScaleName(layerName),
-      field: "size"
-    };
-  } else if (sizeAttr === "auto") {
-    var size = Math.min(lastFilteredSize, cap);
-    var dynamicRScale = d3.scale.sqrt().domain(AUTOSIZE_DOMAIN_DEFAULTS).range(size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM ? AUTOSIZE_RANGE_MININUM : AUTOSIZE_RANGE_DEFAULTS).clamp(true);
-    return Math.round(dynamicRScale(size) * pixelRatio);
-  } else {
-    return null;
-  }
-}
-
-function getColor(color, layerName) {
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
-    return {
-      scale: getColorScaleName(layerName),
-      value: 0
-    };
-  } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
-    return {
-      scale: getColorScaleName(layerName),
-      field: "color"
-    };
-  } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object") {
-    return (0, _utilsVega.adjustOpacity)(color.value, color.opacity);
-  } else {
-    return color;
-  }
-}
-
-function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
-  var transform = _ref.transform,
-      _ref$encoding = _ref.encoding,
-      x = _ref$encoding.x,
-      y = _ref$encoding.y,
-      size = _ref$encoding.size,
-      color = _ref$encoding.color;
-
-  var transforms = [];
-
-  if ((typeof transform === "undefined" ? "undefined" : _typeof(transform)) === "object" && _typeof(transform.groupby) === "object" && transform.groupby.length) {
-    var fields = [x.field, y.field];
-    var alias = ["x", "y"];
-    var ops = [x.aggregate, y.aggregate];
-
-    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-      fields.push(size.field);
-      alias.push("size");
-      ops.push(size.aggregate);
-    }
-
-    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-      fields.push(color.field);
-      alias.push("color");
-      ops.push(color.aggregate);
-    }
-
-    transforms.push({
-      type: "aggregate",
-      fields: fields,
-      ops: ops,
-      as: alias,
-      groupby: transform.groupby.map(function (g, i) {
-        return {
-          type: "project",
-          expr: g,
-          as: "key" + i
-        };
-      })
-    });
-  } else {
-    transforms.push({
-      type: "project",
-      expr: x.field,
-      as: "x"
-    });
-    transforms.push({
-      type: "project",
-      expr: y.field,
-      as: "y"
-    });
-
-    if (typeof transform.limit === "number") {
-      transforms.push({
-        type: "limit",
-        row: transform.limit
-      });
-      if (transform.sample) {
-        transforms.push({
-          type: "sample",
-          method: "multiplicative",
-          size: lastFilteredSize || transform.tableSize,
-          limit: transform.limit
-        });
-      }
-    }
-
-    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-      transforms.push({
-        type: "project",
-        expr: size.field,
-        as: "size"
-      });
-    }
-
-    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-      transforms.push({
-        type: "project",
-        expr: color.field,
-        as: "color"
-      });
-    }
-
-    transforms.push({
-      type: "project",
-      expr: table + ".rowid"
-    });
-  }
-
-  if (typeof filter === "string" && filter.length) {
-    transforms.push({
-      type: "filter",
-      expr: filter
-    });
-  }
-
-  if (typeof globalFilter === "string" && globalFilter.length) {
-    transforms.push({
-      type: "filter",
-      expr: globalFilter
-    });
-  }
-
-  return transforms;
-}
-
-function getScales(_ref2, layerName, scaleDomainFields, xformDataSource) {
-  var size = _ref2.size,
-      color = _ref2.color;
-
-  var scales = [];
-
-  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-    scales.push({
-      name: getSizeScaleName(layerName),
-      type: "linear",
-      domain: size.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.size } : size.domain,
-      range: size.range,
-      clamp: true
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "linear",
-      domain: color.range.map(function (c, i) {
-        return i * 100 / (color.range.length - 1) / 100;
-      }),
-      range: color.range.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
-      }).map(function (c, i, colorArray) {
-        var normVal = i / (colorArray.length - 1);
-        var interp = Math.min(normVal / 0.65, 1.0);
-        interp = interp * 0.375 + 0.625;
-        return (0, _utilsVega.adjustRGBAOpacity)(c, interp);
-      }),
-      accumulator: "density",
-      minDensityCnt: "-2ndStdDev",
-      maxDensityCnt: "2ndStdDev",
-      clamp: true
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "ordinal") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "ordinal",
-      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
-      range: color.range.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
-      }),
-      default: (0, _utilsVega.adjustOpacity)(color.range[color.range.length - 1], color.opacity), // in current implementation 'Other' is always added as last element in the array
-      nullValue: (0, _utilsVega.adjustOpacity)("#CACACA", color.opacity)
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "quantitative") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "quantize",
-      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
-      }),
-      range: color.range
-    });
-  }
-
-  return scales;
-}
-
-function rasterLayerLineMixin(_layer) {
-  var state = null;
-  _layer.colorDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
-  _layer.sizeDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
-  debugger;
-  _layer.setState = function (setter) {
-    if (typeof setter === "function") {
-      state = setter(state);
-    } else {
-      state = setter;
-    }
-
-    if (!state.hasOwnProperty("transform")) {
-      state.transform = {};
-    }
-
-    return _layer;
-  };
-
-  _layer.getState = function () {
-    return state;
-  };
-
-  _layer.getProjections = function () {
-    return getTransforms("", "", "", state, (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())).filter(function (transform) {
-      return transform.type === "project" && transform.hasOwnProperty("as");
-    }).map(function (projection) {
-      return _utils.parser.parseTransform({ select: [] }, projection);
-    }).map(function (sql) {
-      return sql.select[0];
-    });
-  };
-  debugger;
-  function getAutoColorVegaTransforms(aggregateNode) {
-    var rtnobj = { transforms: [], fields: [] };
-    if (state.encoding.color.type === "quantitative") {
-      var minoutput = "mincolor",
-          maxoutput = "maxcolor";
-      aggregateNode.fields = aggregateNode.fields.concat(["color", "color", "color", "color"]);
-      aggregateNode.ops = aggregateNode.ops.concat(["min", "max", "avg", "stddev"]);
-      aggregateNode.as = aggregateNode.as.concat(["mincol", "maxcol", "avgcol", "stdcol"]);
-      rtnobj.transforms.push({
-        type: "formula",
-        expr: "max(mincol, avgcol-2*stdcol)",
-        as: minoutput
-      }, {
-        type: "formula",
-        expr: "min(maxcol, avgcol+2*stdcol)",
-        as: maxoutput
-      });
-      rtnobj.fields = [minoutput, maxoutput];
-    } else if (state.encoding.color.type === "ordinal") {
-      var output = "distinctcolor";
-      aggregateNode.fields.push("color");
-      aggregateNode.ops.push("distinct");
-      aggregateNode.as.push(output);
-      rtnobj.fields.push(output);
-    }
-    return rtnobj;
-  }
-
-  function getAutoSizeVegaTransforms(aggregateNode) {
-    var minoutput = "minsize",
-        maxoutput = "maxsize";
-    aggregateNode.fields.push("size", "size", "size", "size");
-    aggregateNode.ops.push("min", "max", "avg", "stddev");
-    aggregateNode.as.push("minsz", "maxsz", "avgsz", "stdsz");
-    return {
-      transforms: [{
-        type: "formula",
-        expr: "max(minsz, avgsz-2*stdsz)",
-        as: minoutput
-      }, {
-        type: "formula",
-        expr: "min(maxsz, avgsz+2*stdsz)",
-        as: maxoutput
-      }],
-      fields: [minoutput, maxoutput]
-    };
-  }
-
-  function usesAutoColors() {
-    debugger;
-    return state.encoding.color.domain === "auto";
-  }
-
-  function usesAutoSize() {
-    return state.encoding.size.domain === "auto";
-  }
-
-  _layer.__genVega = function (_ref3) {
-    var table = _ref3.table,
-        filter = _ref3.filter,
-        lastFilteredSize = _ref3.lastFilteredSize,
-        globalFilter = _ref3.globalFilter,
-        pixelRatio = _ref3.pixelRatio,
-        layerName = _ref3.layerName;
-
-    // const autocolors = usesAutoColors()
-    // const autosize = usesAutoSize()
-    var getStatsLayerName = function getStatsLayerName() {
-      return layerName + "_stats";
-    };
-    debugger;
-    var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName);
-
-    var markType = "lines";
-    debugger;
-
-    var data = [{
-      name: layerName,
-      format: {
-        type: "lines",
-        coords: {
-          x: ["points"],
-          y: [{ "from": "points" }]
-        },
-        "layout": "interleaved"
-      },
-      // sql: parser.writeSQL({
-      //   type: "root",
-      //   source: table,
-      //   transform: getTransforms(
-      //     table,
-      //     filter,
-      //     globalFilter,
-      //     state,
-      //     lastFilteredSize
-      //   )
-      // })
-      sql: "SELECT rowid, mapd_geo as points FROM uyanga_fault_lines order by rowid limit 4000"
-    }];
-
-    var scaledomainfields = {};
-    // if (autocolors || autosize) {
-    //   const aggregateNode = {
-    //     type: "aggregate",
-    //     fields: [],
-    //     ops: [],
-    //     as: []
-    //   }
-    //   let transforms = [aggregateNode]
-    //   if (autocolors) {
-    //     const xformdata = getAutoColorVegaTransforms(aggregateNode)
-    //     scaledomainfields.color = xformdata.fields
-    //     transforms = transforms.concat(xformdata.transforms)
-    //   }
-    //   if (autosize) {
-    //     const xformdata = getAutoSizeVegaTransforms(aggregateNode)
-    //     scaledomainfields.size = xformdata.fields
-    //     transforms = transforms.concat(xformdata.transforms)
-    //   }
-    //   data.push({
-    //     name: getStatsLayerName(),
-    //     source: layerName,
-    //     transform: transforms
-    //   })
-    // }
-
-    // const scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName())
-    var scales = [{
-      "name": "x",
-      "type": "linear",
-      "domain": [-180, 180],
-      "range": "width"
-    }, {
-      "name": "y",
-      "type": "linear",
-      "domain": [-85, 85],
-      "range": "height"
-    }];
-
-    var marks = [{
-      type: "lines",
-      from: {
-        data: layerName
-      },
-      properties: Object.assign({}, {
-        x: {
-          field: "x"
-        },
-        y: {
-          field: "y"
-        },
-        // strokeColor: getColor(state.encoding.color, layerName)
-        strokeColor: _typeof(state.mark) === "object" ? state.mark.strokeColor : "black",
-        strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 1,
-        lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
-        miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
-      }, {
-        // shape: markType,
-        transform: {
-          projection: "projection"
-        },
-        width: 300, // TODO make it dynamic
-        height: 200
-      })
-    }];
-
-    return {
-      data: data,
-      scales: scales,
-      marks: marks
-    };
-  };
-
-  (0, _utilsVega.createVegaAttrMixin)(_layer, "size", 3, 1, true);
-
-  var _point_wrap_class = "map-point-wrap";
-  var _point_class = "map-point-new";
-  var _point_gfx_class = "map-point-gfx";
-
-  var _vega = null;
-  var _scaledPopups = {};
-  var _minMaxCache = {};
-  var _cf = null;
-
-  _layer.crossfilter = function (cf) {
-    if (!arguments.length) {
-      return _cf;
-    }
-    _cf = cf;
-    return _layer;
-  };
-
-  _layer._requiresCap = function () {
-    return false;
-  };
-
-  _layer._genVega = function (chart, layerName, group, query) {
-    debugger;
-
-    // needed to set LastFilteredSize when point map first initialized
-    // if (
-    //   _layer.yDim()
-    // ) {
-    //   _layer.yDim().groupAll().valueAsync().then(value => {
-    //     setLastFilteredSize(_layer.crossfilter().getId(), value)
-    //   })
-    // }
-
-    _vega = _layer.__genVega({
-      layerName: layerName,
-      table: _layer.crossfilter().getTable()[0],
-      filter: _layer.crossfilter().getFilterString(),
-      globalFilter: _layer.crossfilter().getGlobalFilterString(),
-      lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId()),
-      pixelRatio: chart._getPixelRatio()
-    });
-
-    return _vega;
-  };
-
-  _layer._destroyLayer = function (chart) {
-    _layer.on("filtered", null);
-  };
-
-  return _layer;
-}
 
 /***/ })
 /******/ ]);

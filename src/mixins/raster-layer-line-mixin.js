@@ -63,119 +63,6 @@ function getColor(color, layerName) {
   }
 }
 
-function getTransforms(
-  table,
-  filter,
-  globalFilter,
-  { transform, encoding: { x, y, size, color } },
-  lastFilteredSize
-) {
-  const transforms = []
-
-  if (
-    typeof transform === "object" &&
-    typeof transform.groupby === "object" &&
-    transform.groupby.length
-  ) {
-    const fields = [x.field, y.field]
-    const alias = ["x", "y"]
-    const ops = [x.aggregate, y.aggregate]
-
-    if (typeof size === "object" && size.type === "quantitative") {
-      fields.push(size.field)
-      alias.push("size")
-      ops.push(size.aggregate)
-    }
-
-    if (
-      typeof color === "object" &&
-      (color.type === "quantitative" || color.type === "ordinal")
-    ) {
-      fields.push(color.field)
-      alias.push("color")
-      ops.push(color.aggregate)
-    }
-
-    transforms.push({
-      type: "aggregate",
-      fields,
-      ops,
-      as: alias,
-      groupby: transform.groupby.map((g, i) => ({
-        type: "project",
-        expr: g,
-        as: `key${i}`
-      }))
-    })
-  } else {
-    transforms.push({
-      type: "project",
-      expr: x.field,
-      as: "x"
-    })
-    transforms.push({
-      type: "project",
-      expr: y.field,
-      as: "y"
-    })
-
-    if (typeof transform.limit === "number") {
-      transforms.push({
-        type: "limit",
-        row: transform.limit
-      })
-      if (transform.sample) {
-        transforms.push({
-          type: "sample",
-          method: "multiplicative",
-          size: lastFilteredSize || transform.tableSize,
-          limit: transform.limit
-        })
-      }
-    }
-
-    if (typeof size === "object" && size.type === "quantitative") {
-      transforms.push({
-        type: "project",
-        expr: size.field,
-        as: "size"
-      })
-    }
-
-    if (
-      typeof color === "object" &&
-      (color.type === "quantitative" || color.type === "ordinal")
-    ) {
-      transforms.push({
-        type: "project",
-        expr: color.field,
-        as: "color"
-      })
-    }
-
-    transforms.push({
-      type: "project",
-      expr: `${table}.rowid`
-    })
-  }
-
-  if (typeof filter === "string" && filter.length) {
-    transforms.push({
-      type: "filter",
-      expr: filter
-    })
-  }
-
-  if (typeof globalFilter === "string" && globalFilter.length) {
-    transforms.push({
-      type: "filter",
-      expr: globalFilter
-    })
-  }
-
-  return transforms
-}
-
 function getScales({ size, color }, layerName, scaleDomainFields, xformDataSource) {
   const scales = []
 
@@ -275,7 +162,7 @@ debugger
       .map(projection => parser.parseTransform({ select: [] }, projection))
       .map(sql => sql.select[0])
   }
-debugger
+
   function getAutoColorVegaTransforms(aggregateNode) {
     const rtnobj = {transforms: [], fields: []}
     if (state.encoding.color.type === "quantitative") {
@@ -329,7 +216,6 @@ debugger
   }
 
   function usesAutoColors() {
-    debugger
     return state.encoding.color.domain === "auto"
   }
 
@@ -343,12 +229,12 @@ debugger
                                 lastFilteredSize,
                                 globalFilter,
                                 pixelRatio,
-                                layerName
+                                layerName,
+                                useProjection
                               }) {
     // const autocolors = usesAutoColors()
     // const autosize = usesAutoSize()
     const getStatsLayerName = () => layerName + "_stats"
-    debugger
     const size = getSizing(
       state.encoding.size,
       state.transform && state.transform.limit,
@@ -356,9 +242,8 @@ debugger
       pixelRatio,
       layerName
     )
-
-    const markType = "lines"
-    debugger
+\
+    const rowIdTable = state.data[0].table
 
     const data = [
       {
@@ -366,26 +251,30 @@ debugger
         format: {
           type: "lines",
           coords: {
-            x: ["points"],
-            y: [{"from": "points"}]
+            x: [state.data[0].attr],
+            y: [{"from": state.data[0].attr}]
           },
           "layout": "interleaved"
         },
-        // sql: parser.writeSQL({
-        //   type: "root",
-        //   source: table,
-        //   transform: getTransforms(
-        //     table,
-        //     filter,
-        //     globalFilter,
-        //     state,
-        //     lastFilteredSize
-        //   )
-        // })
-        sql: "SELECT rowid, mapd_geo as points FROM uyanga_fault_lines order by rowid limit 4000"
+        sql: parser.writeSQL({
+          type: "root",
+          source: table,
+          transform: [
+            {
+            type: "project",
+            expr:  `${rowIdTable}.${state.data[0].attr}`,
+            as: state.data[0].attr
+          }
+          ]
+          // transform: getTransforms(
+          //   table,
+          //   filter,
+          //   globalFilter,
+          //   lastFilteredSize
+          // )
+        })
       }
     ]
-
     const scaledomainfields = {}
     // if (autocolors || autosize) {
     //   const aggregateNode = {
@@ -412,21 +301,7 @@ debugger
     //   })
     // }
 
-    // const scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName())
-    const scales = [
-      {
-        "name": "x",
-        "type": "linear",
-        "domain": [-180, 180],
-        "range": "width"
-      },
-      {
-        "name": "y",
-        "type": "linear",
-        "domain": [-85, 85],
-        "range": "height"
-      }
-      ]
+    const scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName())
 
     const marks = [
       {
@@ -452,19 +327,19 @@ debugger
               typeof state.mark === "object" ? state.mark.lineJoin : "miter",
             miterLimit:
               typeof state.mark === "object" ? state.mark.miterLimit : 10
-          },
-          {
-            // shape: markType,
-            transform: {
-              projection: "projection"
-            },
-            width: 300, // TODO make it dynamic
-            height: 200
           }
         )
       }
     ]
 
+    if (useProjection) {
+      marks[0].transform = {
+        projection: "mercator_map_projection"
+      }
+    } else {
+      marks[0].properties.x.scale = "x"
+      marks[0].properties.y.scale = "y"
+    }
 
     return {
       data,
@@ -498,7 +373,6 @@ debugger
   }
 
   _layer._genVega = function(chart, layerName, group, query) {
-    debugger
 
     // needed to set LastFilteredSize when point map first initialized
     // if (
@@ -515,14 +389,14 @@ debugger
       filter: _layer.crossfilter().getFilterString(),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
-      pixelRatio: chart._getPixelRatio()
+      pixelRatio: chart._getPixelRatio(),
+      useProjection: chart._useGeoTypes
     })
 
     return _vega
   }
 
   _layer._destroyLayer = function(chart) {
-    _layer.on("filtered", null)
   }
 
   return _layer
