@@ -63,6 +63,117 @@ function getColor(color, layerName) {
   }
 }
 
+function getTransforms(
+  table,
+  filter,
+  globalFilter,
+  { transform, encoding: { color } },
+  lastFilteredSize,
+  geocol
+) {
+  const transforms = []
+  if (
+    typeof transform === "object" &&
+    typeof transform.groupby === "object" &&
+    transform.groupby.length
+  ) {
+    // const alias = ["x", "y"]
+    // const ops = [x.aggregate, y.aggregate]
+    //
+    // if (typeof size === "object" && size.type === "quantitative") {
+    //   fields.push(size.field)
+    //   alias.push("size")
+    //   ops.push(size.aggregate)
+    // }
+
+    // if (
+    //   typeof color === "object" &&
+    //   (color.type === "quantitative" || color.type === "ordinal")
+    // ) {
+    //   fields.push(color.field)
+    //   alias.push("color")
+    //   ops.push(color.aggregate)
+    // }
+    // transforms.push({
+    //   type: "project",
+    //   geocol,
+    //   // ops,
+    //   as: geocol,
+    //   groupby: transform.groupby.map((g, i) => ({
+    //     type: "project",
+    //     expr: g,
+    //     as: `key${i}`
+    //   }))
+    // })
+  // } else {
+  //   transforms.push({
+  //     type: "project",
+  //     expr: x.field,
+  //     as: "x"
+  //   })
+  //   transforms.push({
+  //     type: "project",
+  //     expr: y.field,
+  //     as: "y"
+  //   })
+
+    if (typeof transform.limit === "number") {
+      transforms.push({
+        type: "limit",
+        row: transform.limit
+      })
+      if (transform.sample) {
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          size: lastFilteredSize || transform.tableSize,
+          limit: transform.limit
+        })
+      }
+    }
+
+    // if (typeof size === "object" && size.type === "quantitative") {
+    //   transforms.push({
+    //     type: "project",
+    //     expr: size.field,
+    //     as: "size"
+    //   })
+    // }
+
+    if (
+      typeof color === "object" &&
+      (color.type === "quantitative" || color.type === "ordinal")
+    ) {
+      transforms.push({
+        type: "project",
+        expr: color.field,
+        as: "color"
+      })
+    }
+
+    transforms.push({
+      type: "project",
+      expr: `${geocol}`
+    })
+  }
+
+  if (typeof filter === "string" && filter.length) {
+    transforms.push({
+      type: "filter",
+      expr: filter
+    })
+  }
+
+  if (typeof globalFilter === "string" && globalFilter.length) {
+    transforms.push({
+      type: "filter",
+      expr: globalFilter
+    })
+  }
+
+  return transforms
+}
+
 function getScales({ size, color }, layerName, scaleDomainFields, xformDataSource) {
   const scales = []
 
@@ -128,7 +239,7 @@ export default function rasterLayerLineMixin(_layer) {
   let state = null
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
   _layer.sizeDomain = createRasterLayerGetterSetter(_layer, null)
-debugger
+
   _layer.setState = function(setter) {
     if (typeof setter === "function") {
       state = setter(state)
@@ -242,8 +353,6 @@ debugger
       pixelRatio,
       layerName
     )
-\
-    const rowIdTable = state.data[0].table
 
     const data = [
       {
@@ -259,22 +368,18 @@ debugger
         sql: parser.writeSQL({
           type: "root",
           source: table,
-          transform: [
-            {
-            type: "project",
-            expr:  `${rowIdTable}.${state.data[0].attr}`,
-            as: state.data[0].attr
-          }
-          ]
-          // transform: getTransforms(
-          //   table,
-          //   filter,
-          //   globalFilter,
-          //   lastFilteredSize
-          // )
+          transform: getTransforms(
+            table,
+            filter,
+            globalFilter,
+            state,
+            lastFilteredSize,
+            state.data[0].attr
+          )
         })
       }
     ]
+
     const scaledomainfields = {}
     // if (autocolors || autosize) {
     //   const aggregateNode = {
