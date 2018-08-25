@@ -42,6 +42,10 @@ function getSizing(
   }
 }
 
+function getColorScaleName(layerName) {
+  return `${layerName}_strokeColor`
+}
+
 function getColor(color, layerName) {
   if (typeof color === "object" && color.type === "density") {
     return {
@@ -54,7 +58,7 @@ function getColor(color, layerName) {
   ) {
     return {
       scale: getColorScaleName(layerName),
-      field: "color"
+      field: "strokeColor"
     }
   } else if (typeof color === "object") {
     return adjustOpacity(color.value, color.opacity)
@@ -77,45 +81,6 @@ function getTransforms(
     typeof transform.groupby === "object" &&
     transform.groupby.length
   ) {
-    // const alias = ["x", "y"]
-    // const ops = [x.aggregate, y.aggregate]
-    //
-    // if (typeof size === "object" && size.type === "quantitative") {
-    //   fields.push(size.field)
-    //   alias.push("size")
-    //   ops.push(size.aggregate)
-    // }
-
-    // if (
-    //   typeof color === "object" &&
-    //   (color.type === "quantitative" || color.type === "ordinal")
-    // ) {
-    //   fields.push(color.field)
-    //   alias.push("color")
-    //   ops.push(color.aggregate)
-    // }
-    // transforms.push({
-    //   type: "project",
-    //   geocol,
-    //   // ops,
-    //   as: geocol,
-    //   groupby: transform.groupby.map((g, i) => ({
-    //     type: "project",
-    //     expr: g,
-    //     as: `key${i}`
-    //   }))
-    // })
-  // } else {
-  //   transforms.push({
-  //     type: "project",
-  //     expr: x.field,
-  //     as: "x"
-  //   })
-  //   transforms.push({
-  //     type: "project",
-  //     expr: y.field,
-  //     as: "y"
-  //   })
 
     if (typeof transform.limit === "number") {
       transforms.push({
@@ -132,25 +97,18 @@ function getTransforms(
       }
     }
 
-    // if (typeof size === "object" && size.type === "quantitative") {
-    //   transforms.push({
-    //     type: "project",
-    //     expr: size.field,
-    //     as: "size"
-    //   })
-    // }
+    transforms.push({
+      type: "project",
+      expr: `${geocol}`
+    })
+  }
 
-    if (
-      typeof color === "object" &&
-      (color.type === "quantitative" || color.type === "ordinal")
-    ) {
-      transforms.push({
-        type: "project",
-        expr: color.field,
-        as: "color"
-      })
-    }
-
+  if (color.type !== "solid") {
+    transforms.push({
+      type: "project",
+      expr: color.type === "quantitative" ? color.aggregate.field : color.field,
+      as: "strokeColor"
+    })
     transforms.push({
       type: "project",
       expr: `${geocol}`
@@ -423,9 +381,7 @@ export default function rasterLayerLineMixin(_layer) {
             y: {
               field: "y"
             },
-            // strokeColor: getColor(state.encoding.color, layerName)
-            strokeColor:
-              typeof state.mark === "object" ? state.mark.strokeColor : "black",
+            strokeColor: getColor(state.encoding.color, layerName),
             strokeWidth:
               typeof state.mark === "object" ? state.mark.strokeWidth : 1,
             lineJoin:

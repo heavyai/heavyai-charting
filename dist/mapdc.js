@@ -9841,19 +9841,6 @@ filters.RangedTwoDimensionalFilter = function (filter) {
 
 /***/ }),
 /* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(25);
-
-
-/* harmony default export */ __webpack_exports__["a"] = (function(x) {
-  return x = Object(__WEBPACK_IMPORTED_MODULE_0__formatDecimal__["a" /* default */])(Math.abs(x)), x ? x[1] : NaN;
-});
-
-
-/***/ }),
-/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10034,6 +10021,19 @@ function createRasterLayerGetterSetter(layerObj, attrVal, preSetFunc, postSetFun
     return layerObj;
   };
 }
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(25);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(x) {
+  return x = Object(__WEBPACK_IMPORTED_MODULE_0__formatDecimal__["a" /* default */])(Math.abs(x)), x ? x[1] : NaN;
+});
+
 
 /***/ }),
 /* 17 */
@@ -26098,7 +26098,7 @@ function h(sel, b, c) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(225);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(226);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(149);
@@ -26367,7 +26367,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rasterLayerHeatmapMixin;
 
-var _utilsVega = __webpack_require__(16);
+var _utilsVega = __webpack_require__(15);
 
 var _utils = __webpack_require__(3);
 
@@ -26675,7 +26675,7 @@ exports.default = rasterLayerPointMixin;
 
 var _coreAsync = __webpack_require__(4);
 
-var _utilsVega = __webpack_require__(16);
+var _utilsVega = __webpack_require__(15);
 
 var _utils = __webpack_require__(3);
 
@@ -27366,7 +27366,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = rasterLayerPolyMixin;
 
-var _utilsVega = __webpack_require__(16);
+var _utilsVega = __webpack_require__(15);
 
 var _d = __webpack_require__(1);
 
@@ -66102,7 +66102,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step) {
@@ -66115,7 +66115,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, value) {
@@ -66128,7 +66128,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, max) {
@@ -68315,7 +68315,7 @@ var _rasterLayerLineMixin = __webpack_require__(240);
 
 var _rasterLayerLineMixin2 = _interopRequireDefault(_rasterLayerLineMixin);
 
-var _utilsVega = __webpack_require__(16);
+var _utilsVega = __webpack_require__(15);
 
 var _mapdDraw = __webpack_require__(13);
 
@@ -68817,7 +68817,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = rasterLayerLineMixin;
 
-var _utilsVega = __webpack_require__(16);
+var _utilsVega = __webpack_require__(15);
 
 var _coreAsync = __webpack_require__(4);
 
@@ -68855,6 +68855,10 @@ function getSizing(sizeAttr, cap) {
   }
 }
 
+function getColorScaleName(layerName) {
+  return layerName + "_strokeColor";
+}
+
 function getColor(color, layerName) {
   if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
     return {
@@ -68864,7 +68868,7 @@ function getColor(color, layerName) {
   } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
     return {
       scale: getColorScaleName(layerName),
-      field: "color"
+      field: "strokeColor"
     };
   } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object") {
     return (0, _utilsVega.adjustOpacity)(color.value, color.opacity);
@@ -68879,45 +68883,6 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize, geoc
 
   var transforms = [];
   if ((typeof transform === "undefined" ? "undefined" : _typeof(transform)) === "object" && _typeof(transform.groupby) === "object" && transform.groupby.length) {
-    // const alias = ["x", "y"]
-    // const ops = [x.aggregate, y.aggregate]
-    //
-    // if (typeof size === "object" && size.type === "quantitative") {
-    //   fields.push(size.field)
-    //   alias.push("size")
-    //   ops.push(size.aggregate)
-    // }
-
-    // if (
-    //   typeof color === "object" &&
-    //   (color.type === "quantitative" || color.type === "ordinal")
-    // ) {
-    //   fields.push(color.field)
-    //   alias.push("color")
-    //   ops.push(color.aggregate)
-    // }
-    // transforms.push({
-    //   type: "project",
-    //   geocol,
-    //   // ops,
-    //   as: geocol,
-    //   groupby: transform.groupby.map((g, i) => ({
-    //     type: "project",
-    //     expr: g,
-    //     as: `key${i}`
-    //   }))
-    // })
-    // } else {
-    //   transforms.push({
-    //     type: "project",
-    //     expr: x.field,
-    //     as: "x"
-    //   })
-    //   transforms.push({
-    //     type: "project",
-    //     expr: y.field,
-    //     as: "y"
-    //   })
 
     if (typeof transform.limit === "number") {
       transforms.push({
@@ -68934,22 +68899,18 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize, geoc
       }
     }
 
-    // if (typeof size === "object" && size.type === "quantitative") {
-    //   transforms.push({
-    //     type: "project",
-    //     expr: size.field,
-    //     as: "size"
-    //   })
-    // }
+    transforms.push({
+      type: "project",
+      expr: "" + geocol
+    });
+  }
 
-    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-      transforms.push({
-        type: "project",
-        expr: color.field,
-        as: "color"
-      });
-    }
-
+  if (color.type !== "solid") {
+    transforms.push({
+      type: "project",
+      expr: color.type === "quantitative" ? color.aggregate.field : color.field,
+      as: "strokeColor"
+    });
     transforms.push({
       type: "project",
       expr: "" + geocol
@@ -69200,8 +69161,7 @@ function rasterLayerLineMixin(_layer) {
         y: {
           field: "y"
         },
-        // strokeColor: getColor(state.encoding.color, layerName)
-        strokeColor: _typeof(state.mark) === "object" ? state.mark.strokeColor : "black",
+        strokeColor: getColor(state.encoding.color, layerName),
         strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 1,
         lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
         miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
