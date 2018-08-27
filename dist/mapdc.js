@@ -68833,7 +68833,8 @@ var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
 var AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0];
 var AUTOSIZE_RANGE_MININUM = [1, 1];
 var SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000;
-
+var polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)";
+var polyNullScaleColor = "rgba(214, 215, 214, 0.65)";
 function getSizing(sizeAttr, cap) {
   var lastFilteredSize = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : cap;
   var pixelRatio = arguments[3];
@@ -68860,12 +68861,7 @@ function getColorScaleName(layerName) {
 }
 
 function getColor(color, layerName) {
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
-    return {
-      scale: getColorScaleName(layerName),
-      value: 0
-    };
-  } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
     return {
       scale: getColorScaleName(layerName),
       field: "strokeColor"
@@ -69097,7 +69093,7 @@ function rasterLayerLineMixin(_layer) {
         layerName = _ref3.layerName,
         useProjection = _ref3.useProjection;
 
-    // const autocolors = usesAutoColors()
+    var autocolors = usesAutoColors();
     // const autosize = usesAutoSize()
     var getStatsLayerName = function getStatsLayerName() {
       return layerName + "_stats";
@@ -69122,32 +69118,80 @@ function rasterLayerLineMixin(_layer) {
     }];
 
     var scaledomainfields = {};
-    // if (autocolors || autosize) {
-    //   const aggregateNode = {
-    //     type: "aggregate",
-    //     fields: [],
-    //     ops: [],
-    //     as: []
-    //   }
-    //   let transforms = [aggregateNode]
-    //   if (autocolors) {
-    //     const xformdata = getAutoColorVegaTransforms(aggregateNode)
-    //     scaledomainfields.color = xformdata.fields
-    //     transforms = transforms.concat(xformdata.transforms)
-    //   }
-    //   if (autosize) {
-    //     const xformdata = getAutoSizeVegaTransforms(aggregateNode)
-    //     scaledomainfields.size = xformdata.fields
-    //     transforms = transforms.concat(xformdata.transforms)
-    //   }
-    //   data.push({
-    //     name: getStatsLayerName(),
-    //     source: layerName,
-    //     transform: transforms
-    //   })
-    // }
 
-    var scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName());
+    if (autocolors) {
+      data.push({
+        name: getStatsLayerName(),
+        source: layerName,
+        transform: [{
+          type: "aggregate",
+          fields: ["strokeColor", "strokeColor", "strokeColor", "strokeColor"],
+          ops: ["min", "max", "avg", "stddev"],
+          as: ["mincol", "maxcol", "avgcol", "stdcol"]
+        }, {
+          type: "formula",
+          expr: "max(mincol, avgcol-2*stdcol)",
+          as: "mincolor"
+        }, {
+          type: "formula",
+          expr: "min(maxcol, avgcol+2*stdcol)",
+          as: "maxcolor"
+        }]
+      });
+    }
+
+    var scales = [];
+    var stroke_color = {};
+
+    var useColorScale = !(state.encoding.color.type === "solid");
+    if (globalFilter.length && !useColorScale) {
+      var colorScaleName = getColorScaleName(layerName);
+      scales.push({
+        name: colorScaleName,
+        type: "ordinal",
+        domain: [1],
+        range: [(0, _utilsVega.adjustOpacity)(state.encoding.color.value, state.encoding.color.opacity)],
+        nullValue: polyNullScaleColor,
+        default: polyDefaultScaleColor
+      });
+      stroke_color = {
+        scale: colorScaleName,
+        field: "strokeColor"
+      };
+    } else if (useColorScale) {
+      var colorRange = state.encoding.color.range.map(function (c) {
+        return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
+      });
+      var _colorScaleName = getColorScaleName(layerName);
+      if (state.encoding.color.type === "quantitative") {
+        scales.push({
+          name: _colorScaleName,
+          type: "quantize",
+          domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.domain,
+          range: colorRange,
+          nullValue: polyNullScaleColor,
+          default: polyDefaultScaleColor
+        });
+      } else {
+        scales.push({
+          name: _colorScaleName,
+          type: "ordinal",
+          domain: state.encoding.color.domain,
+          range: colorRange,
+          nullValue: polyNullScaleColor,
+          default: polyDefaultScaleColor
+        });
+      }
+
+      stroke_color = {
+        scale: _colorScaleName,
+        field: "strokeColor"
+      };
+    } else {
+      stroke_color = {
+        value: (0, _utilsVega.adjustOpacity)(state.encoding.color.value, state.encoding.color.opacity)
+      };
+    }
 
     var marks = [{
       type: "lines",
@@ -69161,7 +69205,7 @@ function rasterLayerLineMixin(_layer) {
         y: {
           field: "y"
         },
-        strokeColor: getColor(state.encoding.color, layerName),
+        strokeColor: stroke_color,
         strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 1,
         lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
         miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
