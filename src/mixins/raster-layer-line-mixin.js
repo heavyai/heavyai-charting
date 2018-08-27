@@ -288,6 +288,17 @@ export default function rasterLayerLineMixin(_layer) {
     return state.encoding.size.domain === "auto"
   }
 
+  _layer._updateFromMetadata = (metadata, layerName = "") => {
+    if (usesAutoColors() && Array.isArray(metadata.scales)) {
+      const colorScaleName = getColorScaleName(layerName)
+      for (const scale of metadata.scales) {
+        if (scale.name === colorScaleName) {
+          _layer.colorDomain(scale.domain)
+        }
+      }
+    }
+  }
+
   _layer.__genVega = function({
                                 table,
                                 filter,

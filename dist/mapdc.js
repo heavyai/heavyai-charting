@@ -69084,6 +69084,40 @@ function rasterLayerLineMixin(_layer) {
     return state.encoding.size.domain === "auto";
   }
 
+  _layer._updateFromMetadata = function (metadata) {
+    var layerName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+
+    if (usesAutoColors() && Array.isArray(metadata.scales)) {
+      var colorScaleName = getColorScaleName(layerName);
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = metadata.scales[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var scale = _step.value;
+
+          if (scale.name === colorScaleName) {
+            _layer.colorDomain(scale.domain);
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  };
+
   _layer.__genVega = function (_ref3) {
     var table = _ref3.table,
         filter = _ref3.filter,
