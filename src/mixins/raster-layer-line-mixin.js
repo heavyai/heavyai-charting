@@ -7,11 +7,10 @@ import {parser} from "../utils/utils";
 import * as d3 from "d3";
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
-const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
+const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
-const polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)"
-const polyNullScaleColor = "rgba(214, 215, 214, 0.65)"
+
 function getSizing(
   sizeAttr,
   cap,
@@ -24,7 +23,7 @@ function getSizing(
   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
     return {
       scale: getSizeScaleName(layerName),
-      field: "size"
+      field: "strokeWidth"
     }
   } else if (sizeAttr === "auto") {
     const size = Math.min(lastFilteredSize, cap)
@@ -41,6 +40,10 @@ function getSizing(
   } else {
     return null
   }
+}
+
+function getSizeScaleName(layerName) {
+  return `${layerName}_strokeWidth`
 }
 
 function getColorScaleName(layerName) {
@@ -67,7 +70,7 @@ function getTransforms(
   table,
   filter,
   globalFilter,
-  { transform, encoding: { color } },
+  { transform, encoding: { size, color } },
   lastFilteredSize,
   geocol
 ) {
@@ -78,6 +81,38 @@ function getTransforms(
     transform.groupby.length
   ) {
 
+    const fields = []
+    const alias = []
+    const ops = []
+
+    if (typeof size === "object" && size.type === "quantitative") {
+      fields.push(size.field)
+      alias.push("strokeWidth")
+      ops.push(size.aggregate)
+    }
+
+    if (
+      typeof color === "object" &&
+      (color.type === "quantitative" || color.type === "ordinal")
+    ) {
+      fields.push(color.field)
+      alias.push("strokeColor")
+      ops.push(color.aggregate)
+    }
+
+    transforms.push({
+      type: "aggregate",
+      fields,
+      ops,
+      as: alias,
+      groupby: transform.groupby.map((g, i) => ({
+        type: "project",
+        expr: g,
+        as: `key${i}`
+      }))
+    })
+
+  } else {
     if (typeof transform.limit === "number") {
       transforms.push({
         type: "limit",
@@ -93,18 +128,25 @@ function getTransforms(
       }
     }
 
-    transforms.push({
-      type: "project",
-      expr: `${geocol}`
-    })
-  }
+    if (typeof size === "object" && size.type === "quantitative") {
+      transforms.push({
+        type: "project",
+        expr: size.field,
+        as: "strokeWidth"
+      })
+    }
 
-  if (color.type !== "solid") {
-    transforms.push({
-      type: "project",
-      expr: color.type === "quantitative" ? color.aggregate.field : color.field,
-      as: "strokeColor"
-    })
+    if (
+      typeof color === "object" &&
+      (color.type === "quantitative" || color.type === "ordinal")
+    ) {
+      transforms.push({
+        type: "project",
+        expr: color.type === "quantitative" ? color.aggregate.field : color.field,
+        as: "strokeColor"
+      })
+    }
+
     transforms.push({
       type: "project",
       expr: `${geocol}`
@@ -141,28 +183,6 @@ function getScales({ size, color }, layerName, scaleDomainFields, xformDataSourc
     })
   }
 
-  if (typeof color === "object" && color.type === "density") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "linear",
-      domain: color.range.map(
-        (c, i) => i * 100 / (color.range.length - 1) / 100
-      ),
-      range: color.range
-        .map(c => adjustOpacity(c, color.opacity))
-        .map((c, i, colorArray) => {
-          const normVal = i / (colorArray.length - 1)
-          let interp = Math.min(normVal / 0.65, 1.0)
-          interp = interp * 0.375 + 0.625
-          return adjustRGBAOpacity(c, interp)
-        }),
-      accumulator: "density",
-      minDensityCnt: "-2ndStdDev",
-      maxDensityCnt: "2ndStdDev",
-      clamp: true
-    })
-  }
-
   if (typeof color === "object" && color.type === "ordinal") {
     scales.push({
       name: getColorScaleName(layerName),
@@ -182,7 +202,8 @@ function getScales({ size, color }, layerName, scaleDomainFields, xformDataSourc
       name: getColorScaleName(layerName),
       type: "quantize",
       domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain.map(c => adjustOpacity(c, color.opacity))),
-      range: color.range
+      range: color.range,
+      nullValue: adjustOpacity("#CACACA", color.opacity)
     })
   }
 
@@ -232,7 +253,7 @@ export default function rasterLayerLineMixin(_layer) {
     const rtnobj = {transforms: [], fields: []}
     if (state.encoding.color.type === "quantitative") {
       const minoutput = "mincolor", maxoutput = "maxcolor"
-      aggregateNode.fields = aggregateNode.fields.concat(["color", "color", "color", "color"])
+      aggregateNode.fields = aggregateNode.fields.concat(["strokeColor", "strokeColor", "strokeColor", "strokeColor"])
       aggregateNode.ops = aggregateNode.ops.concat(["min", "max", "avg", "stddev"])
       aggregateNode.as = aggregateNode.as.concat(["mincol", "maxcol", "avgcol", "stdcol"])
       rtnobj.transforms.push(
@@ -258,34 +279,8 @@ export default function rasterLayerLineMixin(_layer) {
     return rtnobj
   }
 
-  function getAutoSizeVegaTransforms(aggregateNode) {
-    const minoutput = "minsize", maxoutput = "maxsize"
-    aggregateNode.fields.push("size", "size", "size", "size")
-    aggregateNode.ops.push("min", "max", "avg", "stddev")
-    aggregateNode.as.push("minsz", "maxsz", "avgsz", "stdsz")
-    return {
-      transforms: [
-        {
-          type: "formula",
-          expr: "max(minsz, avgsz-2*stdsz)",
-          as: minoutput
-        },
-        {
-          type: "formula",
-          expr: "min(maxsz, avgsz+2*stdsz)",
-          as: maxoutput
-        }
-      ],
-      fields: [minoutput, maxoutput]
-    }
-  }
-
   function usesAutoColors() {
     return state.encoding.color.domain === "auto"
-  }
-
-  function usesAutoSize() {
-    return state.encoding.size.domain === "auto"
   }
 
   _layer._updateFromMetadata = (metadata, layerName = "") => {
@@ -309,8 +304,8 @@ export default function rasterLayerLineMixin(_layer) {
                                 useProjection
                               }) {
     const autocolors = usesAutoColors()
-    // const autosize = usesAutoSize()
     const getStatsLayerName = () => layerName + "_stats"
+
     const size = getSizing(
       state.encoding.size,
       state.transform && state.transform.limit,
@@ -348,92 +343,27 @@ export default function rasterLayerLineMixin(_layer) {
     const scaledomainfields = {}
 
     if (autocolors) {
+      const aggregateNode = {
+        type: "aggregate",
+        fields: [],
+        ops: [],
+        as: []
+      }
+      let transforms = [aggregateNode]
+      if (autocolors) {
+        const xformdata = getAutoColorVegaTransforms(aggregateNode)
+        scaledomainfields.color = xformdata.fields
+        transforms = transforms.concat(xformdata.transforms)
+      }
+
       data.push({
         name: getStatsLayerName(),
         source: layerName,
-        transform: [
-          {
-            type: "aggregate",
-            fields: ["strokeColor", "strokeColor", "strokeColor", "strokeColor"],
-            ops: ["min", "max", "avg", "stddev"],
-            as: ["mincol", "maxcol", "avgcol", "stdcol"]
-          },
-          {
-            type: "formula",
-            expr: "max(mincol, avgcol-2*stdcol)",
-            as: "mincolor"
-          },
-          {
-            type: "formula",
-            expr: "min(maxcol, avgcol+2*stdcol)",
-            as: "maxcolor"
-          }
-        ]
+        transform: transforms
       })
     }
 
-    let scales = []
-    let stroke_color = {}
-
-    const useColorScale = !(state.encoding.color.type === "solid")
-    if (globalFilter.length && !useColorScale) {
-      const colorScaleName = getColorScaleName(layerName)
-      scales.push({
-        name: colorScaleName,
-        type: "ordinal",
-        domain: [1],
-        range: [
-          adjustOpacity(
-            state.encoding.color.value,
-            state.encoding.color.opacity
-          )
-        ],
-        nullValue: polyNullScaleColor,
-        default: polyDefaultScaleColor
-      })
-      stroke_color = {
-        scale: colorScaleName,
-        field: "strokeColor"
-      }
-    } else if (useColorScale) {
-      const colorRange = state.encoding.color.range.map(c =>
-        adjustOpacity(c, state.encoding.color.opacity)
-      )
-      const colorScaleName = getColorScaleName(layerName)
-      if (state.encoding.color.type === "quantitative") {
-        scales.push({
-          name: colorScaleName,
-          type: "quantize",
-          domain: autocolors
-            ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] }
-            : state.encoding.color.domain,
-          range: colorRange,
-          nullValue: polyNullScaleColor,
-          default: polyDefaultScaleColor
-        })
-      } else {
-        scales.push({
-          name: colorScaleName,
-          type: "ordinal",
-          domain: state.encoding.color.domain,
-          range: colorRange,
-          nullValue: polyNullScaleColor,
-          default: polyDefaultScaleColor
-        })
-      }
-
-      stroke_color = {
-        scale: colorScaleName,
-        field: "strokeColor"
-      }
-    } else {
-      stroke_color = {
-        value: adjustOpacity(
-          state.encoding.color.value,
-          state.encoding.color.opacity
-        )
-      }
-    }
+    const scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName())
 
     const marks = [
       {
@@ -450,9 +380,8 @@ export default function rasterLayerLineMixin(_layer) {
             y: {
               field: "y"
             },
-            strokeColor: stroke_color,
-            strokeWidth:
-              typeof state.mark === "object" ? state.mark.strokeWidth : 1,
+            strokeColor: getColor(state.encoding.color, layerName),
+            strokeWidth: size,
             lineJoin:
               typeof state.mark === "object" ? state.mark.lineJoin : "miter",
             miterLimit:
