@@ -5,11 +5,24 @@ import {
 import {lastFilteredSize, setLastFilteredSize} from "../core/core-async";
 import {parser} from "../utils/utils";
 import * as d3 from "d3";
+import {AABox2d, Point2d} from "@mapd/mapd-draw/dist/mapd-draw";
+import {events} from "../core/events";
+import wellknown from "wellknown";
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
+
+const polyTableGeomColumns = {
+  // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
+  // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
+  verts_LEGACY: "mapd_geo_coords",
+  indices_LEGACY: "mapd_geo_indices",
+  linedrawinfo_LEGACY: "mapd_geo_linedrawinfo",
+  polydrawinfo_LEGACY: "mapd_geo_polydrawinfo"
+}
+
 
 function getSizing(
   sizeAttr,
@@ -454,6 +467,57 @@ export default function rasterLayerLineMixin(_layer) {
 
     return _vega
   }
+
+  const renderAttributes = [
+    "x",
+    "y",
+    "strokeColor",
+    "strokeWidth",
+    "lineJoin",
+    "miterLimit"
+  ]
+
+  _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
+    // add the poly geometry to the query
+
+    if (chart._useGeoTypes) {
+      if (state.encoding.geocol) {
+        popupColsSet.add(state.encoding.geocol)
+      }
+    } else {
+      popupColsSet.add(polyTableGeomColumns.verts_LEGACY)
+      popupColsSet.add(polyTableGeomColumns.linedrawinfo_LEGACY)
+    }
+
+    if (
+      _vega &&
+      Array.isArray(_vega.marks) &&
+      _vega.marks.length > 0 &&
+      _vega.marks[0].properties
+    ) {
+      renderAttributes.forEach(rndrProp => {
+        if (rndrProp !== "x" && rndrProp !== "y") {
+          _layer._addQueryDrivenRenderPropToSet(
+            popupColsSet,
+            _vega.marks[0].properties,
+            rndrProp
+          )
+        }
+      })
+    }
+  }
+
+  _layer._areResultsValidForPopup = function(results) {
+    if (
+      (state.encoding.geocol && results[state.encoding.geocol]) ||
+      (results[polyTableGeomColumns.verts_LEGACY] &&
+        results[polyTableGeomColumns.linedrawinfo_LEGACY])
+    ) {
+      return true
+    }
+    return false
+  }
+
 
   _layer._destroyLayer = function(chart) {
   }

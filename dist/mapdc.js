@@ -68827,12 +68827,31 @@ var _d = __webpack_require__(1);
 
 var d3 = _interopRequireWildcard(_d);
 
+var _mapdDraw = __webpack_require__(13);
+
+var _events = __webpack_require__(9);
+
+var _wellknown = __webpack_require__(238);
+
+var _wellknown2 = _interopRequireDefault(_wellknown);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
 var AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0];
 var AUTOSIZE_RANGE_MININUM = [1, 1];
 var SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000;
+
+var polyTableGeomColumns = {
+  // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
+  // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
+  verts_LEGACY: "mapd_geo_coords",
+  indices_LEGACY: "mapd_geo_indices",
+  linedrawinfo_LEGACY: "mapd_geo_linedrawinfo",
+  polydrawinfo_LEGACY: "mapd_geo_polydrawinfo"
+};
 
 function getSizing(sizeAttr, cap) {
   var lastFilteredSize = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : cap;
@@ -69250,6 +69269,36 @@ function rasterLayerLineMixin(_layer) {
     });
 
     return _vega;
+  };
+
+  var renderAttributes = ["x", "y", "strokeColor", "strokeWidth", "lineJoin", "miterLimit"];
+
+  _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColsSet) {
+    // add the poly geometry to the query
+
+    if (chart._useGeoTypes) {
+      if (state.encoding.geocol) {
+        popupColsSet.add(state.encoding.geocol);
+      }
+    } else {
+      popupColsSet.add(polyTableGeomColumns.verts_LEGACY);
+      popupColsSet.add(polyTableGeomColumns.linedrawinfo_LEGACY);
+    }
+
+    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+      renderAttributes.forEach(function (rndrProp) {
+        if (rndrProp !== "x" && rndrProp !== "y") {
+          _layer._addQueryDrivenRenderPropToSet(popupColsSet, _vega.marks[0].properties, rndrProp);
+        }
+      });
+    }
+  };
+
+  _layer._areResultsValidForPopup = function (results) {
+    if (state.encoding.geocol && results[state.encoding.geocol] || results[polyTableGeomColumns.verts_LEGACY] && results[polyTableGeomColumns.linedrawinfo_LEGACY]) {
+      return true;
+    }
+    return false;
   };
 
   _layer._destroyLayer = function (chart) {};
