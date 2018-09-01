@@ -79,6 +79,10 @@ function getColor(color, layerName) {
   }
 }
 
+function doJoin() {
+  return state.data.length > 1
+}
+
 function getTransforms(
   table,
   filter,
@@ -93,6 +97,16 @@ function getTransforms(
     typeof transform.groupby === "object" &&
     transform.groupby.length
   ) {
+
+    // const groupby = doJoin()
+    //   ? {
+    //     type: "project",
+    //     expr: `${state.data[0].table}.${state.data[0].attr}`,
+    //     as: "key0"
+    //   }
+    //   : {}
+
+    const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
 
     const fields = []
     const alias = []
@@ -333,8 +347,8 @@ export default function rasterLayerLineMixin(_layer) {
         format: {
           type: "lines",
           coords: {
-            x: [state.data[0].attr],
-            y: [{"from": state.data[0].attr}]
+            x: [state.encoding.geocol],
+            y: [{"from": state.encoding.geocol}]
           },
           "layout": "interleaved"
         },
