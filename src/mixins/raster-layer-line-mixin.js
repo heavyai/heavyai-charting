@@ -87,56 +87,90 @@ function getTransforms(
   table,
   filter,
   globalFilter,
-  { transform, encoding: { size, color } },
-  lastFilteredSize,
-  geocol
+  state,
+  lastFilteredSize
 ) {
   const transforms = []
+  const { transform } = state
+  const { size, color, geocol } = state.encoding
+  const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
+
+  function doJoin() {
+    return state.data.length > 1
+  }
+
   if (
     typeof transform === "object" &&
     typeof transform.groupby === "object" &&
     transform.groupby.length
   ) {
 
-    // const groupby = doJoin()
-    //   ? {
-    //     type: "project",
-    //     expr: `${state.data[0].table}.${state.data[0].attr}`,
-    //     as: "key0"
-    //   }
-    //   : {}
+    const groupby = doJoin()
+      ? {
+        type: "project",
+        expr: `${state.data[0].table}.${state.data[0].attr}`,
+        as: "key0"
+      }
+      : {}
 
-    const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
+    const colorProjection =
+      color.type === "quantitative"
+        ? parser.parseExpression(color.aggregate)
+        : `LAST_SAMPLE(${color.field})`
 
-    const fields = []
-    const alias = []
-    const ops = []
+    if (doJoin()) {
+      // Join
+      transforms.push({
+        type: "filter",
+        expr: `${state.data[0].table}.${state.data[0].attr} = ${
+          state.data[1].table
+          }.${state.data[1].attr}`
+      })
+    }
 
     if (typeof size === "object" && size.type === "quantitative") {
-      fields.push(size.field)
-      alias.push("strokeWidth")
-      ops.push(size.aggregate)
+      transforms.push({
+        type: "aggregate",
+        fields: [size.field],
+        ops: [size.aggregate] ,
+        as: ["strokeWidth"],
+        groupby: transform.groupby.map((g, i) => ({
+          type: "project",
+          expr: g,
+          as: `key${i}`
+        }))
+      })
     }
 
     if (
       typeof color === "object" &&
       (color.type === "quantitative" || color.type === "ordinal")
     ) {
-      fields.push(color.field)
-      alias.push("strokeColor")
-      ops.push(color.aggregate)
+      transforms.push({
+        type: "aggregate",
+        fields: [colorProjection],
+        ops: [null] ,
+        as: ["strokeColor"],
+        groupby: transform.groupby.map((g, i) => ({
+          type: "project",
+          expr: g,
+          as: `key${i}`
+        }))
+      })
     }
-
+    else {
+      transforms.push({
+        type: "aggregate",
+        fields: [],
+        ops: [null],
+        as: [],
+        groupby
+      })
+    }
     transforms.push({
-      type: "aggregate",
-      fields,
-      ops,
-      as: alias,
-      groupby: transform.groupby.map((g, i) => ({
-        type: "project",
-        expr: g,
-        as: `key${i}`
-      }))
+      type: "project",
+      expr: `LAST_SAMPLE(${rowIdTable}.rowid)`,
+      as: "rowid"
     })
 
   } else {
@@ -174,6 +208,11 @@ function getTransforms(
       })
     }
 
+    transforms.push({
+      type: "project",
+      expr: `${rowIdTable}.rowid`,
+      as: "rowid"
+    })
     transforms.push({
       type: "project",
       expr: `${geocol}`
@@ -352,16 +391,18 @@ export default function rasterLayerLineMixin(_layer) {
           },
           "layout": "interleaved"
         },
+        geocolumn: state.encoding.geocol,
         sql: parser.writeSQL({
           type: "root",
-          source: table,
+          source: [...new Set(state.data.map(source => source.table))].join(
+            ", "
+          ),
           transform: getTransforms(
             table,
             filter,
             globalFilter,
             state,
-            lastFilteredSize,
-            state.data[0].attr
+            lastFilteredSize
           )
         })
       }

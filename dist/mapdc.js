@@ -68839,6 +68839,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
 var AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0];
 var AUTOSIZE_RANGE_MININUM = [1, 1];
@@ -68899,13 +68901,20 @@ function doJoin() {
   return state.data.length > 1;
 }
 
-function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize, geocol) {
-  var transform = _ref.transform,
-      _ref$encoding = _ref.encoding,
-      size = _ref$encoding.size,
-      color = _ref$encoding.color;
-
+function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   var transforms = [];
+  var transform = state.transform;
+  var _state$encoding = state.encoding,
+      size = _state$encoding.size,
+      color = _state$encoding.color,
+      geocol = _state$encoding.geocol;
+
+  var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
+
+  function doJoin() {
+    return state.data.length > 1;
+  }
+
   if ((typeof transform === "undefined" ? "undefined" : _typeof(transform)) === "object" && _typeof(transform.groupby) === "object" && transform.groupby.length) {
 
     var groupby = doJoin() ? {
@@ -68914,41 +68923,60 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize, geoc
       as: "key0"
     } : {};
 
-    var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
-    debugger;
-    var fields = [];
-    var alias = [];
-    var ops = [];
+    var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "LAST_SAMPLE(" + color.field + ")";
+
+    if (doJoin()) {
+      // Join
+      transforms.push({
+        type: "filter",
+        expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
+      });
+    }
 
     if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-      fields.push(size.field);
-      alias.push("strokeWidth");
-      ops.push(size.aggregate);
+      transforms.push({
+        type: "aggregate",
+        fields: [size.field],
+        ops: [size.aggregate],
+        as: ["strokeWidth"],
+        groupby: transform.groupby.map(function (g, i) {
+          return {
+            type: "project",
+            expr: g,
+            as: "key" + i
+          };
+        })
+      });
     }
 
     if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-      fields.push(color.field);
-      alias.push("strokeColor");
-      ops.push(color.aggregate);
+      transforms.push({
+        type: "aggregate",
+        fields: [colorProjection],
+        ops: [null],
+        as: ["strokeColor"],
+        groupby: transform.groupby.map(function (g, i) {
+          return {
+            type: "project",
+            expr: g,
+            as: "key" + i
+          };
+        })
+      });
+    } else {
+      transforms.push({
+        type: "aggregate",
+        fields: [],
+        ops: [null],
+        as: [],
+        groupby: groupby
+      });
     }
-
     transforms.push({
-      type: "aggregate",
-      fields: fields,
-      ops: ops,
-      as: alias,
-      groupby: transform.groupby.map(function (g, i) {
-        return {
-          type: "project",
-          expr: g,
-          as: "key" + i
-        };
-      })
+      type: "project",
+      expr: "LAST_SAMPLE(" + rowIdTable + ".rowid)",
+      as: "rowid"
     });
-    // transforms.push({
-    //   type: "project",
-    //   expr: `${geocol}`
-    // })
   } else {
     if (typeof transform.limit === "number") {
       transforms.push({
@@ -68983,6 +69011,11 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize, geoc
 
     transforms.push({
       type: "project",
+      expr: rowIdTable + ".rowid",
+      as: "rowid"
+    });
+    transforms.push({
+      type: "project",
       expr: "" + geocol
     });
   }
@@ -69004,9 +69037,9 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize, geoc
   return transforms;
 }
 
-function getScales(_ref2, layerName, scaleDomainFields, xformDataSource) {
-  var size = _ref2.size,
-      color = _ref2.color;
+function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
+  var size = _ref.size,
+      color = _ref.color;
 
   var scales = [];
 
@@ -69147,14 +69180,14 @@ function rasterLayerLineMixin(_layer) {
     }
   };
 
-  _layer.__genVega = function (_ref3) {
-    var table = _ref3.table,
-        filter = _ref3.filter,
-        lastFilteredSize = _ref3.lastFilteredSize,
-        globalFilter = _ref3.globalFilter,
-        pixelRatio = _ref3.pixelRatio,
-        layerName = _ref3.layerName,
-        useProjection = _ref3.useProjection;
+  _layer.__genVega = function (_ref2) {
+    var table = _ref2.table,
+        filter = _ref2.filter,
+        lastFilteredSize = _ref2.lastFilteredSize,
+        globalFilter = _ref2.globalFilter,
+        pixelRatio = _ref2.pixelRatio,
+        layerName = _ref2.layerName,
+        useProjection = _ref2.useProjection;
 
     var autocolors = usesAutoColors();
     var getStatsLayerName = function getStatsLayerName() {
@@ -69173,10 +69206,13 @@ function rasterLayerLineMixin(_layer) {
         },
         "layout": "interleaved"
       },
+      geocolumn: state.encoding.geocol,
       sql: _utils.parser.writeSQL({
         type: "root",
-        source: table,
-        transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize, state.data[0].attr)
+        source: [].concat(_toConsumableArray(new Set(state.data.map(function (source) {
+          return source.table;
+        })))).join(", "),
+        transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
       })
     }];
 
