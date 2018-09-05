@@ -384,7 +384,6 @@ export default function rasterLayerLineMixin(_layer) {
           },
           "layout": "interleaved"
         },
-        geocolumn: state.encoding.geocol,
         sql: parser.writeSQL({
           type: "root",
           source: [...new Set(state.data.map(source => source.table))].join(

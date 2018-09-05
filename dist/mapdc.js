@@ -69199,7 +69199,6 @@ function rasterLayerLineMixin(_layer) {
         },
         "layout": "interleaved"
       },
-      geocolumn: state.encoding.geocol,
       sql: _utils.parser.writeSQL({
         type: "root",
         source: [].concat(_toConsumableArray(new Set(state.data.map(function (source) {
