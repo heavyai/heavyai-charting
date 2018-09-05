@@ -116,10 +116,9 @@ function getTransforms(
     const colorProjection =
       color.type === "quantitative"
         ? parser.parseExpression(color.aggregate)
-        : `LAST_SAMPLE(${color.field})`
+        : `SAMPLE(${color.field})`
 
     if (doJoin()) {
-      // Join
       transforms.push({
         type: "filter",
         expr: `${state.data[0].table}.${state.data[0].attr} = ${
@@ -169,8 +168,7 @@ function getTransforms(
     }
     transforms.push({
       type: "project",
-      expr: `LAST_SAMPLE(${rowIdTable}.rowid)`,
-      as: "rowid"
+      expr: `SAMPLE(mapd_geo)`
     })
 
   } else {
@@ -208,11 +206,6 @@ function getTransforms(
       })
     }
 
-    transforms.push({
-      type: "project",
-      expr: `${rowIdTable}.rowid`,
-      as: "rowid"
-    })
     transforms.push({
       type: "project",
       expr: `${geocol}`

@@ -68923,10 +68923,9 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       as: "key0"
     } : {};
 
-    var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "LAST_SAMPLE(" + color.field + ")";
+    var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + color.field + ")";
 
     if (doJoin()) {
-      // Join
       transforms.push({
         type: "filter",
         expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
@@ -68974,8 +68973,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     }
     transforms.push({
       type: "project",
-      expr: "LAST_SAMPLE(" + rowIdTable + ".rowid)",
-      as: "rowid"
+      expr: "SAMPLE(mapd_geo)"
     });
   } else {
     if (typeof transform.limit === "number") {
@@ -69009,11 +69007,6 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       });
     }
 
-    transforms.push({
-      type: "project",
-      expr: rowIdTable + ".rowid",
-      as: "rowid"
-    });
     transforms.push({
       type: "project",
       expr: "" + geocol
