@@ -1,5 +1,5 @@
 import {
-  adjustOpacity, adjustRGBAOpacity, createRasterLayerGetterSetter,
+  createRasterLayerGetterSetter,
   createVegaAttrMixin
 } from "../utils/utils-vega";
 import {lastFilteredSize, setLastFilteredSize} from "../core/core-async";
@@ -72,9 +72,7 @@ function getColor(color, layerName) {
       scale: getColorScaleName(layerName),
       field: "strokeColor"
     }
-  } else if (typeof color === "object") {
-    return adjustOpacity(color.value, color.opacity)
-  } else {
+  }else {
     return color
   }
 }
@@ -247,12 +245,9 @@ function getScales({ size, color }, layerName, scaleDomainFields, xformDataSourc
       name: getColorScaleName(layerName),
       type: "ordinal",
       domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
-      range: color.range.map(c => adjustOpacity(c, color.opacity)),
-      default: adjustOpacity(
-        color.range[color.range.length - 1],
-        color.opacity
-      ), // in current implementation 'Other' is always added as last element in the array
-      nullValue: adjustOpacity("#CACACA", color.opacity)
+      range: color.range,
+      default: color.range[color.range.length - 1],
+      nullValue: "#CACACA"
     })
   }
 
@@ -260,9 +255,9 @@ function getScales({ size, color }, layerName, scaleDomainFields, xformDataSourc
     scales.push({
       name: getColorScaleName(layerName),
       type: "quantize",
-      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain.map(c => adjustOpacity(c, color.opacity))),
+      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
       range: color.range,
-      nullValue: adjustOpacity("#CACACA", color.opacity)
+      nullValue: "#CACACA"
     })
   }
 
@@ -441,6 +436,7 @@ export default function rasterLayerLineMixin(_layer) {
               field: "y"
             },
             strokeColor: getColor(state.encoding.color, layerName),
+            opacity: state.mark.opacity, // gets updated when opacity slider changes
             strokeWidth: size,
             lineJoin:
               typeof state.mark === "object" ? state.mark.lineJoin : "miter",

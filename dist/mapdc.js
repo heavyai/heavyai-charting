@@ -68890,8 +68890,6 @@ function getColor(color, layerName) {
       scale: getColorScaleName(layerName),
       field: "strokeColor"
     };
-  } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object") {
-    return (0, _utilsVega.adjustOpacity)(color.value, color.opacity);
   } else {
     return color;
   }
@@ -69051,11 +69049,9 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       name: getColorScaleName(layerName),
       type: "ordinal",
       domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
-      range: color.range.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
-      }),
-      default: (0, _utilsVega.adjustOpacity)(color.range[color.range.length - 1], color.opacity), // in current implementation 'Other' is always added as last element in the array
-      nullValue: (0, _utilsVega.adjustOpacity)("#CACACA", color.opacity)
+      range: color.range,
+      default: color.range[color.range.length - 1],
+      nullValue: "#CACACA"
     });
   }
 
@@ -69063,11 +69059,9 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
     scales.push({
       name: getColorScaleName(layerName),
       type: "quantize",
-      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
-      }),
+      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
       range: color.range,
-      nullValue: (0, _utilsVega.adjustOpacity)("#CACACA", color.opacity)
+      nullValue: "#CACACA"
     });
   }
 
@@ -69246,6 +69240,7 @@ function rasterLayerLineMixin(_layer) {
           field: "y"
         },
         strokeColor: getColor(state.encoding.color, layerName),
+        opacity: state.mark.opacity, // gets updated when opacity slider changes
         strokeWidth: size,
         lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
         miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
