@@ -5,24 +5,23 @@ import {
 import {lastFilteredSize, setLastFilteredSize} from "../core/core-async";
 import {parser} from "../utils/utils";
 import * as d3 from "d3";
-import {AABox2d, Point2d} from "@mapd/mapd-draw/dist/mapd-draw";
+import {AABox2d, Point2d, PolyLine} from "@mapd/mapd-draw/dist/mapd-draw";
 import {events} from "../core/events";
 import wellknown from "wellknown";
+
+// NOTE: Reqd until ST_Transform supported on projection columns
+function conv4326To900913(x, y) {
+  const transCoord = [0.0, 0.0]
+  transCoord[0] = x * 111319.49077777777778
+  transCoord[1] =
+    Math.log(Math.tan((90.0 + y) * 0.00872664625997)) * 6378136.99911215736947
+  return transCoord
+}
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
-
-const polyTableGeomColumns = {
-  // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
-  // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
-  verts_LEGACY: "mapd_geo_coords",
-  indices_LEGACY: "mapd_geo_indices",
-  linedrawinfo_LEGACY: "mapd_geo_linedrawinfo",
-  polydrawinfo_LEGACY: "mapd_geo_polydrawinfo"
-}
-
 
 function getSizing(
   sizeAttr,
@@ -527,9 +526,6 @@ export default function rasterLayerLineMixin(_layer) {
       if (state.encoding.geocol) {
         popupColsSet.add(state.encoding.geocol)
       }
-    } else {
-      popupColsSet.add(polyTableGeomColumns.verts_LEGACY)
-      popupColsSet.add(polyTableGeomColumns.linedrawinfo_LEGACY)
     }
 
     if (
@@ -551,15 +547,301 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer._areResultsValidForPopup = function(results) {
-    if (
-      (state.encoding.geocol && results[state.encoding.geocol]) ||
-      (results[polyTableGeomColumns.verts_LEGACY] &&
-        results[polyTableGeomColumns.linedrawinfo_LEGACY])
-    ) {
+    if (state.encoding.geocol && results[state.encoding.geocol]) {
       return true
     }
     return false
   }
+
+
+  class PolySvgFormatter {
+    /**
+     * Builds the bounds from the incoming poly data
+     * @param {AABox2d} out AABox2d to return
+     * @param {object} data Object with return data from getResultRowForPixel()
+     * @param {Number} width Width of the visualization div
+     * @param {Number} height Height of the visualization div
+     * @param {object} margin Margins of the visualization div
+     * @param {Function} xscale d3 scale in x dimension from world space to pixel space (i.e. mercatorx-to-pixel)
+     * @param {Function} yscale d3 scale in y dimension from world space to pixel space (i.e. mercatory-to-pixel)
+     */
+    getBounds(data, width, height, margins, xscale, yscale) {
+      throw new Error("This must be overridden")
+    }
+
+    /**
+     * Builds the svg path string to use with the d svg attr:
+     * https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
+     * This function should be called after the getBounds().
+     * The t/s arguments are the transformations to properly place the points underneath
+     * a parent SVG group node. That node is what ultimately handles animations and such
+     * so we need to transform all the points into local space. t is the translation
+     * and s is the scale to transform the points from pixel space to model/object space.
+     * @param {string} out Returns the svg path string
+     * @param {Point2d} t Translation from world to object space.
+     * @param {Number} s Scale from world to object space.
+     */
+    getSvgPath(t, s) {
+      throw new Error("This must be overridden")
+    }
+  }
+
+  function buildGeoProjection(
+    width,
+    height,
+    margins,
+    xscale,
+    yscale,
+    clamp = true,
+    t = [0, 0],
+    s = 1
+  ) {
+    let _translation = t,
+      _scale = s,
+      _clamp = clamp
+
+    const project = d3.geo.transform({
+      point(lon, lat) {
+        const projectedCoord = conv4326To900913(lon, lat)
+        const pt = [
+          _scale * (xscale(projectedCoord[0]) + margins.left - _translation[0]),
+          _scale *
+          (height -
+            yscale(projectedCoord[1]) -
+            1 +
+            margins.top -
+            _translation[1])
+        ]
+        if (_clamp) {
+          if (pt[0] >= 0 && pt[0] < width && pt[1] >= 0 && pt[1] < height) {
+            return this.stream.point(pt[0], pt[1])
+          }
+        } else {
+          return this.stream.point(pt[0], pt[1])
+        }
+      }
+    })
+
+    project.setTransforms = (t, s) => {
+      _translation = t
+      _scale = s
+    }
+
+    project.setClamp = clamp => {
+      _clamp = Boolean(clamp)
+    }
+
+    return project
+  }
+
+  class GeoSvgFormatter extends PolySvgFormatter {
+    constructor(geocol) {
+      super()
+      this._geojson = null
+      this._projector = null
+      this._d3projector = null
+      this._geocol = geocol
+    }
+
+    getBounds(data, width, height, margins, xscale, yscale) {
+      const wkt = data[this._geocol]
+      if (typeof wkt !== "string") {
+        throw new Error(
+          `Cannot create SVG from geo polygon column "${
+            this._geocol
+            }". The data returned is not a WKT string. It is of type: ${typeof wkt}`
+        )
+      }
+      this._geojson = wellknown.parse(wkt)
+      this._projector = buildGeoProjection(
+        width,
+        height,
+        margins,
+        xscale,
+        yscale,
+        true
+      )
+
+      // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
+      // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
+      // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
+      this._d3projector = d3.geo.path().projection(this._projector)
+      const d3bounds = this._d3projector.bounds(this._geojson)
+      return AABox2d.create(
+        d3bounds[0][0],
+        d3bounds[0][1],
+        d3bounds[1][0],
+        d3bounds[1][1]
+      )
+    }
+
+    getSvgPath(t, s) {
+      this._projector.setTransforms(t, s)
+      this._projector.setClamp(false)
+      return this._d3projector(this._geojson)
+    }
+  }
+
+  _layer._displayPopup = function(
+    chart,
+    parentElem,
+    data,
+    width,
+    height,
+    margins,
+    xscale,
+    yscale,
+    minPopupArea,
+    animate
+  ) {
+    let geoPathFormatter = null
+    debugger
+    if (chart._useGeoTypes) {
+      if (!state.encoding.geocol) {
+        throw new Error(
+          "No poly/multipolygon column specified. Cannot build poly outline popup."
+        )
+      }
+      geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol)
+    } else {
+      geoPathFormatter = new LegacySvgFormatter()
+    }
+
+    const bounds = geoPathFormatter.getBounds(
+      data,
+      width,
+      height,
+      margins,
+      xscale,
+      yscale
+    )
+
+    // Check for 2 special cases:
+    // 1) zoomed in so far in that the poly encompasses the entire view, so all points are
+    //    outside the view
+    // 2) the poly only has 1 point in view.
+    // Both cases can be handled by checking whether the bounds is empty (infinite) in
+    // either x/y or the bounds size is 0 in x/y.
+    const boundsSz = AABox2d.getSize(Point2d.create(), bounds)
+    if (!isFinite(boundsSz[0]) || boundsSz[0] === 0) {
+      bounds[AABox2d.MINX] = 0
+      bounds[AABox2d.MAXX] = width
+      boundsSz[0] = width
+    }
+    if (!isFinite(boundsSz[1]) || boundsSz[1] === 0) {
+      bounds[AABox2d.MINY] = 0
+      bounds[AABox2d.MAXY] = height
+      boundsSz[1] = height
+    }
+
+    // Get the data from the hit-test object used to drive render properties
+    // These will be used to properly style the svg popup object
+    const rndrProps = {}
+    if (
+      _vega &&
+      Array.isArray(_vega.marks) &&
+      _vega.marks.length > 0 &&
+      _vega.marks[0].properties
+    ) {
+      const propObj = _vega.marks[0].properties
+      renderAttributes.forEach(prop => {
+        if (
+          typeof propObj[prop] === "object" &&
+          propObj[prop].field &&
+          typeof propObj[prop].field === "string"
+        ) {
+          rndrProps[prop] = propObj[prop].field
+        }
+      })
+    }
+
+    // If the poly we hit-test is small, we'll scale it so that it
+    // can be seen. The minPopupArea is the minimum area of the popup
+    // poly, so if the poly's bounds is < minPopupArea, we'll scale it
+    // up to that size.
+    let scale = 1
+    const scaleRatio = minPopupArea / AABox2d.area(bounds)
+    const isScaled = scaleRatio > 1
+    if (isScaled) {
+      scale = Math.sqrt(scaleRatio)
+    }
+
+    // Now grab the style properties for the svg calculated from the vega
+    const popupStyle = _layer.popupStyle()
+    let fillColor = _layer.getFillColorVal(data[rndrProps.fillColor])
+    let strokeColor = _layer.getStrokeColorVal(data[rndrProps.strokeColor])
+    let strokeWidth = 1
+    if (typeof popupStyle === "object" && !isScaled) {
+      fillColor = popupStyle.fillColor || fillColor
+      strokeColor = popupStyle.strokeColor || strokeColor
+      strokeWidth = popupStyle.strokeWidth
+    }
+
+    // build out the svg
+    const svg = parentElem
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+
+    // transform svg node. This node will position the svg appropriately. Need
+    // to offset according to the scale above (scale >= 1)
+    const boundsCtr = AABox2d.getCenter(Point2d.create(), bounds)
+
+    const xform = svg
+      .append("g")
+      .attr("class", "map-polyline")
+      .attr(
+        "transform",
+        "translate(" +
+        (scale * bounds[AABox2d.MINX] - (scale - 1) * boundsCtr[0]) +
+        ", " +
+        (scale * (bounds[AABox2d.MINY] + 1) -
+          (scale - 1) * (boundsCtr[1] + 1)) +
+        ")"
+      )
+
+    // now add a transform node that will be used to apply animated scales to
+    // We want the animation to happen from the center of the bounds, so we
+    // place the transform origin there.
+    const group = xform
+      .append("g")
+      .attr("class", "map-polyline")
+      // .attr("transform-origin", `${boundsSz[0] / 2} ${boundsSz[1] / 2}`)
+
+    // inherited animation classes from css
+    if (animate) {
+      if (isScaled) {
+        group.classed("popupPoly", true)
+      } else {
+        group.classed("fadeInPoly", true)
+      }
+    }
+
+    // now apply the styles
+    if (typeof strokeWidth === "number") {
+      group.style("stroke-width", strokeWidth)
+    }
+
+    group
+      .append("path")
+      .attr(
+        "d",
+        geoPathFormatter.getSvgPath(
+          Point2d.create(bounds[AABox2d.MINX], bounds[AABox2d.MINY]),
+          scale
+        )
+      )
+      .attr("class", "map-polyline")
+      .attr("fill", 'none')
+      .attr("stroke-width", strokeWidth)
+      .attr("stroke", strokeColor)
+
+    _scaledPopups[chart] = isScaled
+
+    return bounds
+  }
+
+
 
 
   _layer._destroyLayer = function(chart) {
