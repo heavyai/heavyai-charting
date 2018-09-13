@@ -551,7 +551,6 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         layerObj,
         [
           function(err, results) {
-            debugger
             if (err) {
               throw new Error(
                 `getResultRowForPixel failed with message: ${err.message}`

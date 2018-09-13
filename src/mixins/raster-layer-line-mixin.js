@@ -695,7 +695,6 @@ export default function rasterLayerLineMixin(_layer) {
     animate
   ) {
     let geoPathFormatter = null
-    debugger
     if (chart._useGeoTypes) {
       if (!state.encoding.geocol) {
         throw new Error(
