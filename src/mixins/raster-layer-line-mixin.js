@@ -516,7 +516,8 @@ export default function rasterLayerLineMixin(_layer) {
     "strokeColor",
     "strokeWidth",
     "lineJoin",
-    "miterLimit"
+    "miterLimit",
+    "opacity"
   ]
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
@@ -767,11 +768,9 @@ export default function rasterLayerLineMixin(_layer) {
 
     // Now grab the style properties for the svg calculated from the vega
     const popupStyle = _layer.popupStyle()
-    let fillColor = _layer.getFillColorVal(data[rndrProps.fillColor])
     let strokeColor = _layer.getStrokeColorVal(data[rndrProps.strokeColor])
     let strokeWidth = 1
     if (typeof popupStyle === "object" && !isScaled) {
-      fillColor = popupStyle.fillColor || fillColor
       strokeColor = popupStyle.strokeColor || strokeColor
       strokeWidth = popupStyle.strokeWidth
     }
@@ -805,7 +804,7 @@ export default function rasterLayerLineMixin(_layer) {
     const group = xform
       .append("g")
       .attr("class", "map-polyline")
-      // .attr("transform-origin", `${boundsSz[0] / 2} ${boundsSz[1] / 2}`)
+      .attr("transform-origin", `${boundsSz[0] / 2} ${boundsSz[1] / 2}`)
 
     // inherited animation classes from css
     if (animate) {
@@ -821,6 +820,32 @@ export default function rasterLayerLineMixin(_layer) {
       group.style("stroke-width", strokeWidth)
     }
 
+    // applying shadow
+    const defs = group
+      .append('defs')
+
+    const filter = defs.append("filter")
+      .attr("id", "drop-shadow")
+      .attr("width", "200%")
+      .attr("height", "200%");
+
+    filter.append("feOffset")
+      .attr("in", "SourceAlpha")
+      .attr("result", "offOut")
+      .attr("dx", "2")
+      .attr("dy", "2");
+
+    filter.append("feGaussianBlur")
+      .attr("in", "offOut")
+      .attr("stdDeviation", 2)
+      .attr("result", "blurOut");
+
+
+    filter.append("feBlend")
+      .attr("in", "SourceGraphic")
+      .attr("in2", "blurOut")
+      .attr("mode", "normal")
+
     group
       .append("path")
       .attr(
@@ -834,6 +859,7 @@ export default function rasterLayerLineMixin(_layer) {
       .attr("fill", 'none')
       .attr("stroke-width", strokeWidth)
       .attr("stroke", strokeColor)
+      .style("filter", "url(#drop-shadow)")
 
     _scaledPopups[chart] = isScaled
 
