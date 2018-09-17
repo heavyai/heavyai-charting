@@ -31709,7 +31709,7 @@ function rasterLayerPolyMixin(_layer) {
         }
         this._geojson = _wellknown2.default.parse(wkt);
         this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true);
-        debugger;
+
         // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
         // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
         // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
@@ -31793,7 +31793,7 @@ function rasterLayerPolyMixin(_layer) {
       strokeColor = popupStyle.strokeColor || strokeColor;
       strokeWidth = popupStyle.strokeWidth;
     }
-    debugger;
+
     // build out the svg
     var svg = parentElem.append("svg").attr("width", width).attr("height", height);
 
@@ -47354,7 +47354,6 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
     key: "finishShape",
     value: function finishShape() {
       var verts = this.lineShape ? this.lineShape.vertsRef : [];
-      debugger;
       var removeLastVert = verts.length > 1 && !MapdDraw.Point2d.equals(verts[0], verts[verts.length - 1]) && this.lastVert && !MapdDraw.Point2d.equals(verts[verts.length - 1], this.lastVert.getPositionRef());
       if (verts.length > 2 && (!removeLastVert || verts.length > 3)) {
         // Check if there is a loop in the current verts, remove the last point
@@ -52406,27 +52405,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return;
     }
 
-    if (Object.keys(layerObj)[0] === "linemap") {
-      var tempLinemapHitTestResult = {
-        nonce: "5",
-        pixel: { x: 600, y: 224 },
-        row_id: 57,
-        row_set: [{ rowid: 57, FAULT_TYPE: "Normal Fault", mapd_geo: "LINESTRING (-96.1162319575046 34.4202429775243,-96.0879749693386 34.4601979593095)" }],
-        length: 1,
-        table_id: -2,
-        vega_table_name: "linemap"
-      };
-      return callback(tempLinemapHitTestResult);
-    } else {
-      return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, layerObj, [function (err, results) {
-        debugger;
-        if (err) {
-          throw new Error("getResultRowForPixel failed with message: " + err.message);
-        } else {
-          return callback(results[0]);
-        }
-      }], Math.ceil(_popupSearchRadius * pixelRatio));
-    }
+    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, layerObj, [function (err, results) {
+      if (err) {
+        throw new Error("getResultRowForPixel failed with message: " + err.message);
+      } else {
+        return callback(results[0]);
+      }
+    }], Math.ceil(_popupSearchRadius * pixelRatio));
   };
 
   _chart.measureValue = function (value, key) {
@@ -72519,15 +72504,6 @@ var AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0];
 var AUTOSIZE_RANGE_MININUM = [1, 1];
 var SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000;
 
-var polyTableGeomColumns = {
-  // NOTE: the verts are interleaved x,y, so verts[0] = vert0.x, verts[1] = vert0.y, verts[2] = vert1.x, verts[3] = vert1.y, etc.
-  // NOTE: legacy columns can be removed once pre-geo rendering is no longer used
-  verts_LEGACY: "mapd_geo_coords",
-  indices_LEGACY: "mapd_geo_indices",
-  linedrawinfo_LEGACY: "mapd_geo_linedrawinfo",
-  polydrawinfo_LEGACY: "mapd_geo_polydrawinfo"
-};
-
 function getSizing(sizeAttr, cap) {
   var lastFilteredSize = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : cap;
   var pixelRatio = arguments[3];
@@ -72646,6 +72622,10 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       type: "project",
       expr: "SAMPLE(mapd_geo)"
     });
+    transforms.push({
+      type: "project",
+      expr: "rowid"
+    });
   } else {
     if (typeof transform.limit === "number") {
       transforms.push({
@@ -72681,6 +72661,10 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     transforms.push({
       type: "project",
       expr: "" + geocol
+    });
+    transforms.push({
+      type: "project",
+      expr: "rowid"
     });
   }
 
@@ -72983,7 +72967,7 @@ function rasterLayerLineMixin(_layer) {
     return _vega;
   };
 
-  var renderAttributes = ["x", "y", "strokeColor", "strokeWidth", "lineJoin", "miterLimit"];
+  var renderAttributes = ["x", "y", "strokeColor", "strokeWidth", "lineJoin", "miterLimit", "opacity"];
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColsSet) {
     // add the poly geometry to the query
@@ -72992,9 +72976,6 @@ function rasterLayerLineMixin(_layer) {
       if (state.encoding.geocol) {
         popupColsSet.add(state.encoding.geocol);
       }
-    } else {
-      popupColsSet.add(polyTableGeomColumns.verts_LEGACY);
-      popupColsSet.add(polyTableGeomColumns.linedrawinfo_LEGACY);
     }
 
     if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
@@ -73007,7 +72988,7 @@ function rasterLayerLineMixin(_layer) {
   };
 
   _layer._areResultsValidForPopup = function (results) {
-    if (state.encoding.geocol && results[state.encoding.geocol] || results[polyTableGeomColumns.verts_LEGACY] && results[polyTableGeomColumns.linedrawinfo_LEGACY]) {
+    if (state.encoding.geocol && results[state.encoding.geocol]) {
       return true;
     }
     return false;
@@ -73058,98 +73039,6 @@ function rasterLayerLineMixin(_layer) {
     return PolySvgFormatter;
   }();
 
-  var LegacySvgFormatter = function (_PolySvgFormatter) {
-    _inherits(LegacySvgFormatter, _PolySvgFormatter);
-
-    function LegacySvgFormatter() {
-      _classCallCheck(this, LegacySvgFormatter);
-
-      var _this = _possibleConstructorReturn(this, (LegacySvgFormatter.__proto__ || Object.getPrototypeOf(LegacySvgFormatter)).call(this));
-
-      _this._polys = [];
-      return _this;
-    }
-
-    _createClass(LegacySvgFormatter, [{
-      key: "getBounds",
-      value: function getBounds(data, width, height, margins, xscale, yscale) {
-        // NOTE: this is handling legacy poly storage for backwards compatibility.
-        // Once we've put everything post 4.0 behind us, this can be fully deprecated.
-        //
-        // verts and drawinfo should be valid as the _resultsAreValidForPopup()
-        // method should've been called beforehand
-        var verts = data[polyTableGeomColumns.verts_LEGACY];
-        var drawinfo = data[polyTableGeomColumns.linedrawinfo_LEGACY];
-
-        var startIdxDiff = drawinfo.length ? drawinfo[2] : 0;
-        var FLT_MAX = 1e37;
-
-        var bounds = _mapdDraw.AABox2d.create();
-        var screenPt = _mapdDraw.Point2d.create();
-        for (var i = 0; i < drawinfo.length; i = i + 4) {
-          // Draw info struct:
-          //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
-          //     1: instanceCount, // should always be 1
-          //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
-          //     3: baseInstance   // irrelevant for our purposes -- should always be 0
-          var polypts = [];
-          var count = (drawinfo[i] - 3) * 2; // include x&y, and drop 3 duplicated pts at the end
-          var startIdx = (drawinfo[i + 2] - startIdxDiff) * 2; // include x&y
-          var endIdx = startIdx + count; // remove the 3 duplicate pts at the end
-          for (var idx = startIdx; idx < endIdx; idx = idx + 2) {
-            if (verts[idx] <= -FLT_MAX) {
-              // -FLT_MAX is a separator for multi-polygons (like Hawaii,
-              // where there would be a polygon per island), so when we hit a separator,
-              // remove the 3 duplicate points that would end the polygon prior to the separator
-              // and start a new polygon
-              polypts.pop();
-              polypts.pop();
-              polypts.pop();
-              this._polys.push(polypts);
-              polypts = [];
-            } else {
-              _mapdDraw.Point2d.set(screenPt, xscale(verts[idx]) + margins.left, height - yscale(verts[idx + 1]) - 1 + margins.top);
-
-              if (screenPt[0] >= 0 && screenPt[0] <= width && screenPt[1] >= 0 && screenPt[1] <= height) {
-                _mapdDraw.AABox2d.encapsulatePt(bounds, bounds, screenPt);
-              }
-              polypts.push(screenPt[0]);
-              polypts.push(screenPt[1]);
-            }
-          }
-
-          this._polys.push(polypts);
-        }
-
-        return bounds;
-      }
-    }, {
-      key: "getSvgPath",
-      value: function getSvgPath(t, s) {
-        var rtnPointStr = "";
-        this._polys.forEach(function (pts) {
-          if (!pts) {
-            return;
-          }
-
-          var pointStr = "";
-          for (var i = 0; i < pts.length; i = i + 2) {
-            if (!isNaN(pts[i]) && !isNaN(pts[i + 1])) {
-              pointStr += (pointStr.length ? "L" : "M") + s * (pts[i] - t[0]) + "," + s * (pts[i + 1] - t[1]);
-            }
-          }
-          if (pointStr.length) {
-            pointStr += "Z";
-          }
-          rtnPointStr += pointStr;
-        });
-        return rtnPointStr;
-      }
-    }]);
-
-    return LegacySvgFormatter;
-  }(PolySvgFormatter);
-
   function buildGeoProjection(width, height, margins, xscale, yscale) {
     var clamp = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
     var t = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : [0, 0];
@@ -73185,19 +73074,19 @@ function rasterLayerLineMixin(_layer) {
     return project;
   }
 
-  var GeoSvgFormatter = function (_PolySvgFormatter2) {
-    _inherits(GeoSvgFormatter, _PolySvgFormatter2);
+  var GeoSvgFormatter = function (_PolySvgFormatter) {
+    _inherits(GeoSvgFormatter, _PolySvgFormatter);
 
     function GeoSvgFormatter(geocol) {
       _classCallCheck(this, GeoSvgFormatter);
 
-      var _this2 = _possibleConstructorReturn(this, (GeoSvgFormatter.__proto__ || Object.getPrototypeOf(GeoSvgFormatter)).call(this));
+      var _this = _possibleConstructorReturn(this, (GeoSvgFormatter.__proto__ || Object.getPrototypeOf(GeoSvgFormatter)).call(this));
 
-      _this2._geojson = null;
-      _this2._projector = null;
-      _this2._d3projector = null;
-      _this2._geocol = geocol;
-      return _this2;
+      _this._geojson = null;
+      _this._projector = null;
+      _this._d3projector = null;
+      _this._geocol = geocol;
+      return _this;
     }
 
     _createClass(GeoSvgFormatter, [{
@@ -73209,7 +73098,7 @@ function rasterLayerLineMixin(_layer) {
         }
         this._geojson = _wellknown2.default.parse(wkt);
         this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true);
-        debugger;
+
         // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
         // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
         // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
@@ -73231,7 +73120,6 @@ function rasterLayerLineMixin(_layer) {
 
   _layer._displayPopup = function (chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate) {
     var geoPathFormatter = null;
-    debugger;
     if (chart._useGeoTypes) {
       if (!state.encoding.geocol) {
         throw new Error("No poly/multipolygon column specified. Cannot build poly outline popup.");
@@ -73286,46 +73174,26 @@ function rasterLayerLineMixin(_layer) {
 
     // Now grab the style properties for the svg calculated from the vega
     var popupStyle = _layer.popupStyle();
-    var fillColor = _layer.getFillColorVal(data[rndrProps.fillColor]);
     var strokeColor = _layer.getStrokeColorVal(data[rndrProps.strokeColor]);
     var strokeWidth = 1;
     if ((typeof popupStyle === "undefined" ? "undefined" : _typeof(popupStyle)) === "object" && !isScaled) {
-      fillColor = popupStyle.fillColor || fillColor;
       strokeColor = popupStyle.strokeColor || strokeColor;
       strokeWidth = popupStyle.strokeWidth;
     }
-    debugger;
+
     // build out the svg
     var svg = parentElem.append("svg").attr("width", width).attr("height", height);
 
     // transform svg node. This node will position the svg appropriately. Need
     // to offset according to the scale above (scale >= 1)
-    // const boundsCtr = AABox2d.getCenter(Point2d.create(), bounds)
-    var verts = {
-      dashPattern: [],
-      fillColor: "#22a7f0",
-      fillOpacity: 0.1,
-      strokeColor: "#22a7f0",
-      strokeWidth: 1.5,
-      verts: [[-12541313, 5158594.5], [-11604881, 4341344], [-12268896, 4051901.25]]
-    };
-    var boundsCtr = new _mapdDraw.PolyLine(verts);
-    var xform = svg.append("g").attr("class", "polyline");
-    // .attr(
-    //   "transform",
-    //   "translate(" +
-    //   (scale * bounds[AABox2d.MINX] - (scale - 1) * boundsCtr[0]) +
-    //   ", " +
-    //   (scale * (bounds[AABox2d.MINY] + 1) -
-    //     (scale - 1) * (boundsCtr[1] + 1)) +
-    //   ")"
-    // )
+    var boundsCtr = _mapdDraw.AABox2d.getCenter(_mapdDraw.Point2d.create(), bounds);
+
+    var xform = svg.append("g").attr("class", "map-polyline").attr("transform", "translate(" + (scale * bounds[_mapdDraw.AABox2d.MINX] - (scale - 1) * boundsCtr[0]) + ", " + (scale * (bounds[_mapdDraw.AABox2d.MINY] + 1) - (scale - 1) * (boundsCtr[1] + 1)) + ")");
 
     // now add a transform node that will be used to apply animated scales to
     // We want the animation to happen from the center of the bounds, so we
     // place the transform origin there.
-    var group = xform.append("g").attr("class", "polyline");
-    // .attr("transform-origin", `${boundsSz[0] / 2} ${boundsSz[1] / 2}`)
+    var group = xform.append("g").attr("class", "map-polyline").attr("transform-origin", boundsSz[0] / 2 + " " + boundsSz[1] / 2);
 
     // inherited animation classes from css
     if (animate) {
@@ -73341,7 +73209,18 @@ function rasterLayerLineMixin(_layer) {
       group.style("stroke-width", strokeWidth);
     }
 
-    group.append("path").attr("d", geoPathFormatter.getSvgPath(new _mapdDraw.PolyLine(verts), scale)).attr("class", "polyline").attr("fill", 'none').attr("stroke-width", strokeWidth).attr("stroke", strokeColor);
+    // applying shadow
+    var defs = group.append('defs');
+
+    var filter = defs.append("filter").attr("id", "drop-shadow").attr("width", "200%").attr("height", "200%");
+
+    filter.append("feOffset").attr("in", "SourceAlpha").attr("result", "offOut").attr("dx", "2").attr("dy", "2");
+
+    filter.append("feGaussianBlur").attr("in", "offOut").attr("stdDeviation", 2).attr("result", "blurOut");
+
+    filter.append("feBlend").attr("in", "SourceGraphic").attr("in2", "blurOut").attr("mode", "normal");
+
+    group.append("path").attr("d", geoPathFormatter.getSvgPath(_mapdDraw.Point2d.create(bounds[_mapdDraw.AABox2d.MINX], bounds[_mapdDraw.AABox2d.MINY]), scale)).attr("class", "map-polyline").attr("fill", 'none').attr("stroke-width", strokeWidth).attr("stroke", strokeColor).style("filter", "url(#drop-shadow)");
 
     _scaledPopups[chart] = isScaled;
 

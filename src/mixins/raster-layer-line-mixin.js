@@ -167,6 +167,10 @@ function getTransforms(
       type: "project",
       expr: `SAMPLE(mapd_geo)`
     })
+    transforms.push({
+      type: "project",
+      expr: "rowid"
+    })
 
   } else {
     if (typeof transform.limit === "number") {
@@ -206,6 +210,10 @@ function getTransforms(
     transforms.push({
       type: "project",
       expr: `${geocol}`
+    })
+    transforms.push({
+      type: "project",
+      expr: "rowid"
     })
   }
 

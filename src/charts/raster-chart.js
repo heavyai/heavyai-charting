@@ -530,39 +530,23 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return
     }
 
-    // temporarily added for linemap hit testing
-    if(Object.keys(layerObj)[0] === "linemap"){
-      const tempLinemapHitTestResult = {
-        nonce: "5",
-        pixel: {x: 600, y: 224},
-        row_id: 848,
-        row_set: [{rowid: 848, FAULT_TYPE: "Normal Fault", mapd_geo: "LINESTRING (-114.997142932842 37.1859889743784,-115.028487981776 37.0442479741966,-114.990865977011 36.9482279927229,-114.986375959118 36.8197709679696,-115.007244970187 36.7180319720498,-115.02922693036 36.6137659999606,-115.056680932202 36.5357179923615,-115.106347983287 36.4749379625893,-115.159018940832 36.444231991863,-115.238578959945 36.4023349650215)"}],
-        length: 1,
-        table_id: -2,
-        vega_table_name: "linemap"
-      }
-      return callback(tempLinemapHitTestResult)
-
-    }
-    else {
-      return _chart.con().getResultRowForPixel(
-        _chart.__dcFlag__,
-        pixel,
-        layerObj,
-        [
-          function(err, results) {
-            if (err) {
-              throw new Error(
-                `getResultRowForPixel failed with message: ${err.message}`
-              )
-            } else {
-              return callback(results[0])
-            }
+    return _chart.con().getResultRowForPixel(
+      _chart.__dcFlag__,
+      pixel,
+      layerObj,
+      [
+        function(err, results) {
+          if (err) {
+            throw new Error(
+              `getResultRowForPixel failed with message: ${err.message}`
+            )
+          } else {
+            return callback(results[0])
           }
-        ],
-        Math.ceil(_popupSearchRadius * pixelRatio)
-      )
-    }
+        }
+      ],
+      Math.ceil(_popupSearchRadius * pixelRatio)
+    )
   }
 
   _chart.measureValue = function(value, key) {
