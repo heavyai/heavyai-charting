@@ -31,12 +31,14 @@ export default function mapMixin(
 
   _chart._xDimName = null
   _chart._yDimName = null
+  _chart._polyDimName = null
   let hasAppliedInitialBounds = false
   let _hasRendered = false
   let _activeLayer = null
   let _mapInitted = false
   let _xDim = null
   let _yDim = null
+  let _polyDim = null
   let _lastMapMoveType = null
   let _lastMapUpdateTime = 0
   let _isFirstMoveEvent = true
@@ -196,6 +198,17 @@ export default function mapMixin(
     return _chart
   }
 
+  _chart.polyDim = function(polyDim) {
+    if (!arguments.length) {
+      return _polyDim
+    }
+    _polyDim = polyDim
+    if (_polyDim) {
+      _chart._polyDimName = _polyDim.value()[0]
+    }
+    return _chart
+  }
+
   _chart.resetLayer = function() {
     if (typeof _chart._resetRenderBounds === "function") {
       _chart._resetRenderBounds()
@@ -329,6 +342,16 @@ export default function mapMixin(
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]])
           }
         }
+        else if(typeof layer.polyDim === "function") {
+          const polyDim = layer.polyDim()
+          if(polyDim !== null) {
+            redrawall = true
+            polyDim.filterPoly([[bounds._sw.lng, bounds._sw.lat],
+                                  [bounds._ne.lng, bounds._sw.lat],
+                                  [bounds._ne.lng, bounds._ne.lat],
+                                  [bounds._sw.lng, bounds._ne.lat]])
+          }
+        }
       })
     }
 
@@ -340,6 +363,15 @@ export default function mapMixin(
         console.log("on move event redrawall error:", error)
       })
     } else if (redrawall) {
+      redrawAllAsync(_chart.chartGroup()).catch(error => {
+        resetRedrawStack()
+        console.log("on move event redrawall error:", error)
+      })
+    } else if(_polyDim !== null) {
+      _polyDim.filterPoly([[_chart._minCoord[0], _chart._minCoord[1]],
+                            [_chart._maxCoord[0], _chart._minCoord[1]],
+                          [_chart._maxCoord[0], _chart._maxCoord[1]],
+                          [_chart._minCoord[0], _chart._maxCoord[1]]])
       redrawAllAsync(_chart.chartGroup()).catch(error => {
         resetRedrawStack()
         console.log("on move event redrawall error:", error)

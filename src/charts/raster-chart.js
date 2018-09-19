@@ -198,6 +198,13 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
+  _chart.polyRangeFilter = function (filter) {
+    for (const layerName in _layerNames) {
+      const layer = _layerNames[layerName]
+      // layer.yDim() && layer.yDim().filter(filter)
+    }
+  }
+
   _chart.clearLayerFilters = function() {
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
@@ -353,10 +360,12 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       const layers = getLayers()
       const xRanges = []
       const yRanges = []
+      const polyRanges = []
 
       for (layer in layers) {
         let xDim = layer.xDim(),
-          yDim = layer.yDim()
+          yDim = layer.yDim(),
+          polyDim = layer.polyDim()
         if (xDim) {
           var range = xDim.getFilter()
           if (range !== null) {
@@ -367,6 +376,12 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
           var range = yDim.getFilter()
           if (range !== null) {
             yRanges.push(range)
+          }
+        }
+        if (polyDim) {
+          var range = polyDim.getFilter()
+          if (range !== null) {
+            polyRanges.push(range)
           }
         }
       }

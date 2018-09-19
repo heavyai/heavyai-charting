@@ -118,6 +118,21 @@ export default function rasterMixin(_chart) {
     return _chart
   }
 
+  _chart.polyRangeFilter = function(range) {
+    if (!_chart.polyDim()) {
+      throw new Error("Must set yDim before invoking yRange")
+    }
+
+    const polyValue = _chart.polyDim().value()[0]
+
+    if (!arguments.length) {
+      return _minMaxCache[polyValue]
+    }
+
+    _minMaxCache[polyValue] = range
+    return _chart
+  }
+
   _chart.popupSearchRadius = function(popupSearchRadius) {
     if (!arguments.length) {
       return _popupSearchRadius

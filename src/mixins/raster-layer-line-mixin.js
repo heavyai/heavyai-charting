@@ -174,10 +174,6 @@ function getTransforms(
 
   } else {
     if (typeof transform.limit === "number") {
-      transforms.push({
-        type: "limit",
-        row: transform.limit
-      })
       if (transform.sample) {
         transforms.push({
           type: "sample",
@@ -470,6 +466,8 @@ export default function rasterLayerLineMixin(_layer) {
     }
   }
 
+  _layer.polyDim = createRasterLayerGetterSetter(_layer, null)
+
   createVegaAttrMixin(_layer, "size", 3, 1, true)
 
   const _point_wrap_class = "map-point-wrap"
@@ -494,16 +492,31 @@ export default function rasterLayerLineMixin(_layer) {
     return false
   }
 
+  _layer.polyRangeFilter = function(range) {
+    if (!_layer.polyDim()) {
+      throw new Error("Must set layer's xDim before invoking xRange")
+    }
+
+    const polyValue = _layer.polyDim().value()[0]
+
+    if (!arguments.length) {
+      return _minMaxCache[polyValue]
+    }
+
+    _minMaxCache[polyValue] = range
+    return _layer
+  }
+
   _layer._genVega = function(chart, layerName, group, query) {
 
     // needed to set LastFilteredSize when point map first initialized
-    // if (
-    //   _layer.yDim()
-    // ) {
-    //   _layer.yDim().groupAll().valueAsync().then(value => {
-    //     setLastFilteredSize(_layer.crossfilter().getId(), value)
-    //   })
-    // }
+    if (
+      _layer.polyDim()
+    ) {
+      _layer.polyDim().groupAll().valueAsync().then(value => {
+        setLastFilteredSize(_layer.crossfilter().getId(), value)
+      })
+    }
 
     _vega = _layer.__genVega({
       layerName,
@@ -878,6 +891,10 @@ export default function rasterLayerLineMixin(_layer) {
 
 
   _layer._destroyLayer = function(chart) {
+    const polyDim = _layer.polyDim()
+    if (polyDim) {
+      polyDim.dispose()
+    }
   }
 
   return _layer

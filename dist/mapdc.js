@@ -72628,10 +72628,6 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     });
   } else {
     if (typeof transform.limit === "number") {
-      transforms.push({
-        type: "limit",
-        row: transform.limit
-      });
       if (transform.sample) {
         transforms.push({
           type: "sample",
@@ -72837,7 +72833,8 @@ function rasterLayerLineMixin(_layer) {
     var getStatsLayerName = function getStatsLayerName() {
       return layerName + "_stats";
     };
-
+    console.log('lastFilterSize ', lastFilteredSize);
+    console.log('filter ', filter);
     var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName);
 
     var data = [{
