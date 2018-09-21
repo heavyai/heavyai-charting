@@ -88,6 +88,10 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
     }
   }
 
+  _chart.getClosestResult = function() { // don't use logic in mouseup event in map-mixin.js
+    return
+  }
+
   _chart._doRender = function(d) {
     _chart.resetSvg() // will use map mixin reset svg if we inherit map mixin
     for (let layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
