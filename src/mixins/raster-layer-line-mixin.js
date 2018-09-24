@@ -154,22 +154,26 @@ function getTransforms(
         }))
       })
     }
-    else {
-      transforms.push({
-        type: "aggregate",
-        fields: [],
-        ops: [null],
-        as: [],
-        groupby
-      })
-    }
+
+    // transforms.push({
+    //   type: "project",
+    //   expr: `SAMPLE(mapd_geo)`
+    // })
+
+
     transforms.push({
       type: "project",
-      expr: `SAMPLE(mapd_geo)`
+      expr: `${table}.${geocol}`
     })
     transforms.push({
       type: "project",
-      expr: "rowid"
+      expr: `${state.data[0].table}.${state.data[0].attr}`,
+      as: "key0"
+    })
+    transforms.push({
+      type: "project",
+      expr: `${state.data[1].table}.rowid`,
+      as: "rowid"
     })
 
   } else {

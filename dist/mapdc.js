@@ -14678,12 +14678,14 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   _chart._xDimName = null;
   _chart._yDimName = null;
+  _chart._polyDimName = null;
   var hasAppliedInitialBounds = false;
   var _hasRendered = false;
   var _activeLayer = null;
   var _mapInitted = false;
   var _xDim = null;
   var _yDim = null;
+  var _polyDim = null;
   var _lastMapMoveType = null;
   var _lastMapUpdateTime = 0;
   var _isFirstMoveEvent = true;
@@ -14829,6 +14831,17 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     return _chart;
   };
 
+  _chart.polyDim = function (polyDim) {
+    if (!arguments.length) {
+      return _polyDim;
+    }
+    _polyDim = polyDim;
+    if (_polyDim) {
+      _chart._polyDimName = _polyDim.value()[0];
+    }
+    return _chart;
+  };
+
   _chart.resetLayer = function () {
     if (typeof _chart._resetRenderBounds === "function") {
       _chart._resetRenderBounds();
@@ -14935,6 +14948,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
             xdim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
           }
+        } else if (typeof layer.polyDim === "function") {
+          var polyDim = layer.polyDim();
+          if (polyDim !== null) {
+            redrawall = true;
+            polyDim.filterPoly([[bounds._sw.lng, bounds._sw.lat], [bounds._ne.lng, bounds._sw.lat], [bounds._ne.lng, bounds._ne.lat], [bounds._sw.lng, bounds._ne.lat]]);
+          }
         }
       });
     }
@@ -14947,6 +14966,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         console.log("on move event redrawall error:", error);
       });
     } else if (redrawall) {
+      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
+        (0, _coreAsync.resetRedrawStack)();
+        console.log("on move event redrawall error:", error);
+      });
+    } else if (_polyDim !== null) {
+      _polyDim.filterPoly([[_chart._minCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._maxCoord[1]], [_chart._minCoord[0], _chart._maxCoord[1]]]);
       (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
@@ -52127,11 +52152,18 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   };
 
-  _chart.clearLayerFilters = function () {
+  _chart.polyRangeFilter = function (filter) {
     for (var layerName in _layerNames) {
       var _layer3 = _layerNames[layerName];
-      if (typeof _layer3.filterAll === "function") {
-        _layer3.filterAll();
+      // layer.yDim() && layer.yDim().filter(filter)
+    }
+  };
+
+  _chart.clearLayerFilters = function () {
+    for (var layerName in _layerNames) {
+      var _layer4 = _layerNames[layerName];
+      if (typeof _layer4.filterAll === "function") {
+        _layer4.filterAll();
       }
     }
   };
@@ -52141,8 +52173,8 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     _chart.filterAll();
     for (var layerName in _layerNames) {
-      var _layer4 = _layerNames[layerName];
-      _layer4.destroyLayer(_chart);
+      var _layer5 = _layerNames[layerName];
+      _layer5.destroyLayer(_chart);
     }
 
     _chart.map().remove();
@@ -52255,10 +52287,12 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       var layers = getLayers();
       var xRanges = [];
       var yRanges = [];
+      var polyRanges = [];
 
       for (layer in layers) {
         var xDim = layer.xDim(),
-            yDim = layer.yDim();
+            yDim = layer.yDim(),
+            polyDim = layer.polyDim();
         if (xDim) {
           var range = xDim.getFilter();
           if (range !== null) {
@@ -52269,6 +52303,12 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
           var range = yDim.getFilter();
           if (range !== null) {
             yRanges.push(range);
+          }
+        }
+        if (polyDim) {
+          var range = polyDim.getFilter();
+          if (range !== null) {
+            polyRanges.push(range);
           }
         }
       }
@@ -52430,10 +52470,10 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
     if (_chart.select("." + _popupDivClassName).empty()) {
       // only one popup at a time
-      var _layer5 = _layerNames[result.vega_table_name];
-      if (_layer5 && _layer5.areResultsValidForPopup(result.row_set)) {
+      var _layer6 = _layerNames[result.vega_table_name];
+      if (_layer6 && _layer6.areResultsValidForPopup(result.row_set)) {
         var mapPopup = _chart.root().append("div").attr("class", _popupDivClassName);
-        _layer5.displayPopup(_chart, mapPopup, result, _minPopupShapeBoundsArea, animate);
+        _layer6.displayPopup(_chart, mapPopup, result, _minPopupShapeBoundsArea, animate);
       }
     }
   };
@@ -52443,12 +52483,12 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     if (!popupElem.empty()) {
       for (var i = 0; i < _layers.length; ++i) {
         var layerName = _layers[i];
-        var _layer6 = _layerNames[layerName];
-        if (_layer6 && _layer6.isPopupDisplayed(_chart)) {
+        var _layer7 = _layerNames[layerName];
+        if (_layer7 && _layer7.isPopupDisplayed(_chart)) {
           // TODO(croot): can this be improved? I presume only
           // one popup can be shown at a time
           if (animate) {
-            _layer6.hidePopup(_chart, function () {
+            _layer7.hidePopup(_chart, function () {
               _chart.select("." + _popupDivClassName).remove();
             });
           } else {
@@ -72584,14 +72624,12 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
         type: "aggregate",
         fields: [size.field],
         ops: [size.aggregate],
-        as: ["strokeWidth"],
-        groupby: transform.groupby.map(function (g, i) {
-          return {
-            type: "project",
-            expr: g,
-            as: "key" + i
-          };
-        })
+        as: ["strokeWidth"]
+        // groupby: transform.groupby.map((g, i) => ({
+        //   type: "project",
+        //   expr: g,
+        //   as: `key${i}`
+        // }))
       });
     }
 
@@ -72609,22 +72647,27 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
           };
         })
       });
-    } else {
-      transforms.push({
-        type: "aggregate",
-        fields: [],
-        ops: [null],
-        as: [],
-        groupby: groupby
-      });
     }
+
+    // transforms.push({
+    //   type: "project",
+    //   expr: `SAMPLE(mapd_geo)`
+    // })
+
+
     transforms.push({
       type: "project",
-      expr: "SAMPLE(mapd_geo)"
+      expr: table + "." + geocol
     });
     transforms.push({
       type: "project",
-      expr: "rowid"
+      expr: state.data[0].table + "." + state.data[0].attr,
+      as: "key0"
+    });
+    transforms.push({
+      type: "project",
+      expr: state.data[1].table + ".rowid",
+      as: "rowid"
     });
   } else {
     if (typeof transform.limit === "number") {
@@ -72833,10 +72876,9 @@ function rasterLayerLineMixin(_layer) {
     var getStatsLayerName = function getStatsLayerName() {
       return layerName + "_stats";
     };
-    console.log('lastFilterSize ', lastFilteredSize);
-    console.log('filter ', filter);
-    var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName);
 
+    var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName);
+    debugger;
     var data = [{
       name: layerName,
       format: {
@@ -72855,7 +72897,7 @@ function rasterLayerLineMixin(_layer) {
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
       })
     }];
-
+    console.log('data sql ', data[0].sql);
     var scaledomainfields = {};
 
     if (autocolors) {
@@ -72900,7 +72942,7 @@ function rasterLayerLineMixin(_layer) {
         miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
       })
     }];
-
+    debugger;
     if (useProjection) {
       marks[0].transform = {
         projection: "mercator_map_projection"
@@ -72916,6 +72958,8 @@ function rasterLayerLineMixin(_layer) {
       marks: marks
     };
   };
+
+  _layer.polyDim = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
 
   (0, _utilsVega.createVegaAttrMixin)(_layer, "size", 3, 1, true);
 
@@ -72940,16 +72984,29 @@ function rasterLayerLineMixin(_layer) {
     return false;
   };
 
+  _layer.polyRangeFilter = function (range) {
+    if (!_layer.polyDim()) {
+      throw new Error("Must set layer's xDim before invoking xRange");
+    }
+
+    var polyValue = _layer.polyDim().value()[0];
+
+    if (!arguments.length) {
+      return _minMaxCache[polyValue];
+    }
+
+    _minMaxCache[polyValue] = range;
+    return _layer;
+  };
+
   _layer._genVega = function (chart, layerName, group, query) {
 
     // needed to set LastFilteredSize when point map first initialized
-    // if (
-    //   _layer.yDim()
-    // ) {
-    //   _layer.yDim().groupAll().valueAsync().then(value => {
-    //     setLastFilteredSize(_layer.crossfilter().getId(), value)
-    //   })
-    // }
+    if (_layer.polyDim()) {
+      _layer.polyDim().groupAll().valueAsync().then(function (value) {
+        (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
+      });
+    }
 
     _vega = _layer.__genVega({
       layerName: layerName,
@@ -73224,7 +73281,12 @@ function rasterLayerLineMixin(_layer) {
     return bounds;
   };
 
-  _layer._destroyLayer = function (chart) {};
+  _layer._destroyLayer = function (chart) {
+    var polyDim = _layer.polyDim();
+    if (polyDim) {
+      polyDim.dispose();
+    }
+  };
 
   return _layer;
 }
@@ -73354,6 +73416,21 @@ function rasterMixin(_chart) {
     }
 
     _minMaxCache[yValue] = range;
+    return _chart;
+  };
+
+  _chart.polyRangeFilter = function (range) {
+    if (!_chart.polyDim()) {
+      throw new Error("Must set yDim before invoking yRange");
+    }
+
+    var polyValue = _chart.polyDim().value()[0];
+
+    if (!arguments.length) {
+      return _minMaxCache[polyValue];
+    }
+
+    _minMaxCache[polyValue] = range;
     return _chart;
   };
 
