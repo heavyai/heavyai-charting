@@ -72624,51 +72624,42 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
         type: "aggregate",
         fields: [size.field],
         ops: [size.aggregate],
-        as: ["strokeWidth"]
-        // groupby: transform.groupby.map((g, i) => ({
-        //   type: "project",
-        //   expr: g,
-        //   as: `key${i}`
-        // }))
+        as: ["strokeWidth"],
+        groupby: groupby
       });
     }
-
     if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
       transforms.push({
         type: "aggregate",
         fields: [colorProjection],
         ops: [null],
         as: ["strokeColor"],
-        groupby: transform.groupby.map(function (g, i) {
-          return {
-            type: "project",
-            expr: g,
-            as: "key" + i
-          };
-        })
+        groupby: groupby
       });
     }
 
-    // transforms.push({
-    //   type: "project",
-    //   expr: `SAMPLE(mapd_geo)`
-    // })
-
-
-    transforms.push({
-      type: "project",
-      expr: table + "." + geocol
-    });
-    transforms.push({
-      type: "project",
-      expr: state.data[0].table + "." + state.data[0].attr,
-      as: "key0"
-    });
-    transforms.push({
-      type: "project",
-      expr: state.data[1].table + ".rowid",
-      as: "rowid"
-    });
+    if (size === "auto" && color.type === "solid") {
+      transforms.push({
+        type: "project",
+        expr: rowIdTable + ".rowid",
+        as: "rowid"
+      });
+      transforms.push({
+        type: "project",
+        expr: table + "." + geocol
+      });
+    } else {
+      transforms.push({
+        type: "project",
+        expr: "LAST_SAMPLE(" + rowIdTable + ".rowid)",
+        as: "rowid"
+      });
+      transforms.push({
+        type: "project",
+        expr: "SAMPLE(" + table + "." + geocol + ")",
+        as: "mapd_geo"
+      });
+    }
   } else {
     if (typeof transform.limit === "number") {
       if (transform.sample) {
@@ -72720,7 +72711,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       expr: globalFilter
     });
   }
-
+  debugger;
   return transforms;
 }
 
@@ -72878,7 +72869,7 @@ function rasterLayerLineMixin(_layer) {
     };
 
     var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName);
-    debugger;
+
     var data = [{
       name: layerName,
       format: {
@@ -72897,7 +72888,7 @@ function rasterLayerLineMixin(_layer) {
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
       })
     }];
-    console.log('data sql ', data[0].sql);
+    debugger;
     var scaledomainfields = {};
 
     if (autocolors) {
@@ -72942,7 +72933,7 @@ function rasterLayerLineMixin(_layer) {
         miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
       })
     }];
-    debugger;
+
     if (useProjection) {
       marks[0].transform = {
         projection: "mercator_map_projection"

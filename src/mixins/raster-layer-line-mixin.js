@@ -130,14 +130,9 @@ function getTransforms(
         fields: [size.field],
         ops: [size.aggregate] ,
         as: ["strokeWidth"],
-        groupby: transform.groupby.map((g, i) => ({
-          type: "project",
-          expr: g,
-          as: `key${i}`
-        }))
+        groupby
       })
     }
-
     if (
       typeof color === "object" &&
       (color.type === "quantitative" || color.type === "ordinal")
@@ -147,35 +142,32 @@ function getTransforms(
         fields: [colorProjection],
         ops: [null] ,
         as: ["strokeColor"],
-        groupby: transform.groupby.map((g, i) => ({
-          type: "project",
-          expr: g,
-          as: `key${i}`
-        }))
+        groupby
       })
     }
 
-    // transforms.push({
-    //   type: "project",
-    //   expr: `SAMPLE(mapd_geo)`
-    // })
-
-
-    transforms.push({
-      type: "project",
-      expr: `${table}.${geocol}`
-    })
-    transforms.push({
-      type: "project",
-      expr: `${state.data[0].table}.${state.data[0].attr}`,
-      as: "key0"
-    })
-    transforms.push({
-      type: "project",
-      expr: `${state.data[1].table}.rowid`,
-      as: "rowid"
-    })
-
+    if(size === "auto" && color.type === "solid") {
+      transforms.push({
+        type: "project",
+        expr: `${rowIdTable}.rowid`,
+        as: "rowid"
+      })
+      transforms.push({
+        type: "project",
+        expr: `${table}.${geocol}`
+      })
+    } else {
+      transforms.push({
+        type: "project",
+        expr: `LAST_SAMPLE(${rowIdTable}.rowid)`,
+        as: "rowid"
+      })
+      transforms.push({
+        type: "project",
+        expr: `SAMPLE(${table}.${geocol})`,
+        as: "mapd_geo"
+      })
+    }
   } else {
     if (typeof transform.limit === "number") {
       if (transform.sample) {
@@ -230,7 +222,7 @@ function getTransforms(
       expr: globalFilter
     })
   }
-
+debugger
   return transforms
 }
 
@@ -401,7 +393,7 @@ export default function rasterLayerLineMixin(_layer) {
         })
       }
     ]
-
+debugger
     const scaledomainfields = {}
 
     if (autocolors) {
