@@ -72598,104 +72598,101 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
 
   var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
 
+  var fields = [];
+  var alias = [];
+  var ops = [];
+
+  var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + color.field + ")";
+
   function doJoin() {
     return state.data.length > 1;
   }
 
-  if ((typeof transform === "undefined" ? "undefined" : _typeof(transform)) === "object" && _typeof(transform.groupby) === "object" && transform.groupby.length) {
-
-    var groupby = doJoin() ? {
-      type: "project",
-      expr: state.data[0].table + "." + state.data[0].attr,
-      as: "key0"
-    } : {};
-
-    var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + color.field + ")";
-
+  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
     if (doJoin()) {
-      transforms.push({
-        type: "filter",
-        expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
-      });
-    }
-
-    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-      transforms.push({
-        type: "aggregate",
-        fields: [size.field],
-        ops: [size.aggregate],
-        as: ["strokeWidth"],
-        groupby: groupby
-      });
-    }
-    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-      transforms.push({
-        type: "aggregate",
-        fields: [colorProjection],
-        ops: [null],
-        as: ["strokeColor"],
-        groupby: groupby
-      });
-    }
-
-    if (size === "auto" && color.type === "solid") {
-      transforms.push({
-        type: "project",
-        expr: rowIdTable + ".rowid",
-        as: "rowid"
-      });
-      transforms.push({
-        type: "project",
-        expr: table + "." + geocol
-      });
+      fields.push(state.data[0].table + "." + size.field);
+      alias.push("strokeWidth");
+      ops.push(size.aggregate);
     } else {
-      transforms.push({
-        type: "project",
-        expr: "LAST_SAMPLE(" + rowIdTable + ".rowid)",
-        as: "rowid"
-      });
-      transforms.push({
-        type: "project",
-        expr: "SAMPLE(" + table + "." + geocol + ")",
-        as: "mapd_geo"
-      });
-    }
-  } else {
-    if (typeof transform.limit === "number") {
-      if (transform.sample) {
-        transforms.push({
-          type: "sample",
-          method: "multiplicative",
-          size: lastFilteredSize || transform.tableSize,
-          limit: transform.limit
-        });
-      }
-    }
-
-    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
       transforms.push({
         type: "project",
         expr: size.field,
         as: "strokeWidth"
       });
     }
+  }
 
-    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
+    if (doJoin()) {
+      fields.push(colorProjection);
+      alias.push("strokeColor");
+      ops.push(null);
+    } else {
       transforms.push({
         type: "project",
         expr: color.type === "quantitative" ? color.aggregate.field : color.field,
         as: "strokeColor"
       });
     }
+  }
 
+  if (doJoin()) {
+    transforms.push({
+      type: "filter",
+      expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
+    });
+  }
+
+  var groupby = doJoin() ? {
+    type: "project",
+    expr: state.data[0].table + "." + state.data[0].attr,
+    as: "key0"
+  } : {};
+
+  if (size === "auto" && color.type === "solid") {
     transforms.push({
       type: "project",
-      expr: "" + geocol
+      expr: rowIdTable + ".rowid",
+      as: "rowid"
     });
     transforms.push({
       type: "project",
-      expr: "rowid"
+      expr: table + "." + geocol
     });
+  } else {
+    transforms.push({
+      type: "aggregate",
+      fields: fields,
+      ops: ops,
+      as: alias,
+      groupby: groupby
+      // groupby: transform.groupby.map((g, i) => ({
+      //   type: "project",
+      //   expr: `${rowIdTable}.${g}`,
+      //   as: `key${i}`
+      // }))
+    });
+    transforms.push({
+      type: "project",
+      expr: "LAST_SAMPLE(" + rowIdTable + ".rowid)",
+      as: "rowid"
+    });
+    transforms.push({
+      type: "project",
+      expr: "SAMPLE(" + table + "." + geocol + ")",
+      as: "mapd_geo"
+    });
+  }
+
+  if (typeof transform.limit === "number") {
+    if (transform.sample) {
+      transforms.push({
+        type: "sample",
+        method: "multiplicative",
+        size: lastFilteredSize || transform.tableSize,
+        limit: transform.limit
+      });
+    }
   }
 
   if (typeof filter === "string" && filter.length) {
@@ -72711,7 +72708,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       expr: globalFilter
     });
   }
-  debugger;
+
   return transforms;
 }
 
@@ -72888,7 +72885,7 @@ function rasterLayerLineMixin(_layer) {
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
       })
     }];
-    debugger;
+
     var scaledomainfields = {};
 
     if (autocolors) {

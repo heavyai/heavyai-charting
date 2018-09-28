@@ -92,121 +92,112 @@ function getTransforms(
   const { size, color, geocol } = state.encoding
   const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
 
+  const fields = []
+  const alias = []
+  const ops = []
+
+  const colorProjection =
+    color.type === "quantitative"
+      ? parser.parseExpression(color.aggregate)
+      : `SAMPLE(${color.field})`
+
   function doJoin() {
     return state.data.length > 1
   }
 
-  if (
-    typeof transform === "object" &&
-    typeof transform.groupby === "object" &&
-    transform.groupby.length
-  ) {
-
-    const groupby = doJoin()
-      ? {
-        type: "project",
-        expr: `${state.data[0].table}.${state.data[0].attr}`,
-        as: "key0"
-      }
-      : {}
-
-    const colorProjection =
-      color.type === "quantitative"
-        ? parser.parseExpression(color.aggregate)
-        : `SAMPLE(${color.field})`
-
-    if (doJoin()) {
-      transforms.push({
-        type: "filter",
-        expr: `${state.data[0].table}.${state.data[0].attr} = ${
-          state.data[1].table
-          }.${state.data[1].attr}`
-      })
-    }
-
-    if (typeof size === "object" && size.type === "quantitative") {
-      transforms.push({
-        type: "aggregate",
-        fields: [size.field],
-        ops: [size.aggregate] ,
-        as: ["strokeWidth"],
-        groupby
-      })
-    }
-    if (
-      typeof color === "object" &&
-      (color.type === "quantitative" || color.type === "ordinal")
-    ) {
-      transforms.push({
-        type: "aggregate",
-        fields: [colorProjection],
-        ops: [null] ,
-        as: ["strokeColor"],
-        groupby
-      })
-    }
-
-    if(size === "auto" && color.type === "solid") {
-      transforms.push({
-        type: "project",
-        expr: `${rowIdTable}.rowid`,
-        as: "rowid"
-      })
-      transforms.push({
-        type: "project",
-        expr: `${table}.${geocol}`
-      })
+  if (typeof size === "object" && size.type === "quantitative") {
+    if(doJoin()) {
+      fields.push(`${state.data[0].table}.${size.field}`)
+      alias.push("strokeWidth")
+      ops.push(size.aggregate)
     } else {
-      transforms.push({
-        type: "project",
-        expr: `LAST_SAMPLE(${rowIdTable}.rowid)`,
-        as: "rowid"
-      })
-      transforms.push({
-        type: "project",
-        expr: `SAMPLE(${table}.${geocol})`,
-        as: "mapd_geo"
-      })
-    }
-  } else {
-    if (typeof transform.limit === "number") {
-      if (transform.sample) {
-        transforms.push({
-          type: "sample",
-          method: "multiplicative",
-          size: lastFilteredSize || transform.tableSize,
-          limit: transform.limit
-        })
-      }
-    }
-
-    if (typeof size === "object" && size.type === "quantitative") {
       transforms.push({
         type: "project",
         expr: size.field,
         as: "strokeWidth"
       })
     }
+  }
 
-    if (
-      typeof color === "object" &&
-      (color.type === "quantitative" || color.type === "ordinal")
-    ) {
+  if (
+    typeof color === "object" &&
+    (color.type === "quantitative" || color.type === "ordinal")
+  ) {
+    if(doJoin()) {
+      fields.push(colorProjection)
+      alias.push("strokeColor")
+      ops.push(null)
+    } else {
       transforms.push({
         type: "project",
         expr: color.type === "quantitative" ? color.aggregate.field : color.field,
         as: "strokeColor"
       })
     }
+  }
 
+  if (doJoin()) {
+    transforms.push({
+      type: "filter",
+      expr: `${state.data[0].table}.${state.data[0].attr} = ${
+        state.data[1].table
+        }.${state.data[1].attr}`
+    })
+  }
+
+
+  const groupby = doJoin()
+    ? {
+      type: "project",
+      expr: `${state.data[0].table}.${state.data[0].attr}`,
+      as: "key0"
+    }
+    : {}
+
+  if(size === "auto" && color.type === "solid") {
     transforms.push({
       type: "project",
-      expr: `${geocol}`
+      expr: `${rowIdTable}.rowid`,
+      as: "rowid"
     })
     transforms.push({
       type: "project",
-      expr: "rowid"
+      expr: `${table}.${geocol}`
     })
+  } else {
+    transforms.push({
+      type: "aggregate",
+      fields,
+      ops,
+      as: alias,
+      groupby
+      // groupby: transform.groupby.map((g, i) => ({
+      //   type: "project",
+      //   expr: `${rowIdTable}.${g}`,
+      //   as: `key${i}`
+      // }))
+    })
+    transforms.push({
+      type: "project",
+      expr: `LAST_SAMPLE(${rowIdTable}.rowid)`,
+      as: "rowid"
+    })
+    transforms.push({
+      type: "project",
+      expr: `SAMPLE(${table}.${geocol})`,
+      as: "mapd_geo"
+    })
+  }
+
+  if (typeof transform.limit === "number") {
+    if (transform.sample) {
+      transforms.push({
+        type: "sample",
+        method: "multiplicative",
+        size: lastFilteredSize || transform.tableSize,
+        limit: transform.limit
+      })
+    }
   }
 
   if (typeof filter === "string" && filter.length) {
@@ -222,7 +213,7 @@ function getTransforms(
       expr: globalFilter
     })
   }
-debugger
+
   return transforms
 }
 
@@ -393,7 +384,7 @@ export default function rasterLayerLineMixin(_layer) {
         })
       }
     ]
-debugger
+
     const scaledomainfields = {}
 
     if (autocolors) {
