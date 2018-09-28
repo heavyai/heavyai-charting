@@ -26,7 +26,6 @@ Visit our [examples page](https://mapd.github.io/mapd-charting/example/) for ide
 
 ```bash
 yarn install #downloads all dependencies and devDependencies
-yarn install mapbox-gl@https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307 #downloads mapbox peer dependency
 ```
 
 ##### Step 2: Run Start Script
