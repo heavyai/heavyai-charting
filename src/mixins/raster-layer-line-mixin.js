@@ -154,28 +154,14 @@ function getTransforms(
     }
     : {}
 
-  if(size === "auto" && color.type === "solid") {
-    transforms.push({
-      type: "project",
-      expr: `${rowIdTable}.rowid`,
-      as: "rowid"
-    })
-    transforms.push({
-      type: "project",
-      expr: `${table}.${geocol}`
-    })
-  } else {
+
+  if(doJoin() && (size !== "auto" || color.type !== "solid")) {
     transforms.push({
       type: "aggregate",
       fields,
       ops,
       as: alias,
       groupby
-      // groupby: transform.groupby.map((g, i) => ({
-      //   type: "project",
-      //   expr: `${rowIdTable}.${g}`,
-      //   as: `key${i}`
-      // }))
     })
     transforms.push({
       type: "project",
@@ -186,6 +172,16 @@ function getTransforms(
       type: "project",
       expr: `SAMPLE(${table}.${geocol})`,
       as: "mapd_geo"
+    })
+  } else {
+    transforms.push({
+      type: "project",
+      expr: `${rowIdTable}.rowid`,
+      as: "rowid"
+    })
+    transforms.push({
+      type: "project",
+      expr: `${table}.${geocol}`
     })
   }
 

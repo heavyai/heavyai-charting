@@ -46130,6 +46130,11 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
     }
   };
 
+  _chart.getClosestResult = function () {
+    // don't use logic in mouseup event in map-mixin.js
+    return;
+  };
+
   _chart._doRender = function (d) {
     _chart.resetSvg(); // will use map mixin reset svg if we inherit map mixin
     for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
@@ -72649,28 +72654,13 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     as: "key0"
   } : {};
 
-  if (size === "auto" && color.type === "solid") {
-    transforms.push({
-      type: "project",
-      expr: rowIdTable + ".rowid",
-      as: "rowid"
-    });
-    transforms.push({
-      type: "project",
-      expr: table + "." + geocol
-    });
-  } else {
+  if (doJoin() && (size !== "auto" || color.type !== "solid")) {
     transforms.push({
       type: "aggregate",
       fields: fields,
       ops: ops,
       as: alias,
       groupby: groupby
-      // groupby: transform.groupby.map((g, i) => ({
-      //   type: "project",
-      //   expr: `${rowIdTable}.${g}`,
-      //   as: `key${i}`
-      // }))
     });
     transforms.push({
       type: "project",
@@ -72681,6 +72671,16 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       type: "project",
       expr: "SAMPLE(" + table + "." + geocol + ")",
       as: "mapd_geo"
+    });
+  } else {
+    transforms.push({
+      type: "project",
+      expr: rowIdTable + ".rowid",
+      as: "rowid"
+    });
+    transforms.push({
+      type: "project",
+      expr: table + "." + geocol
     });
   }
 
