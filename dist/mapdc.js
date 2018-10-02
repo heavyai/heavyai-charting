@@ -14952,7 +14952,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
           var polyDim = layer.polyDim();
           if (polyDim !== null) {
             redrawall = true;
-            polyDim.filterPoly([[bounds._sw.lng, bounds._sw.lat], [bounds._ne.lng, bounds._sw.lat], [bounds._ne.lng, bounds._ne.lat], [bounds._sw.lng, bounds._ne.lat]]);
+            polyDim.filterST_Intersects([[bounds._sw.lng, bounds._sw.lat], [bounds._ne.lng, bounds._sw.lat], [bounds._ne.lng, bounds._ne.lat], [bounds._sw.lng, bounds._ne.lat]]);
           }
         }
       });
@@ -14971,7 +14971,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         console.log("on move event redrawall error:", error);
       });
     } else if (_polyDim !== null) {
-      _polyDim.filterPoly([[_chart._minCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._maxCoord[1]], [_chart._minCoord[0], _chart._maxCoord[1]]]);
+      _polyDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._maxCoord[1]], [_chart._minCoord[0], _chart._maxCoord[1]]]);
       (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
