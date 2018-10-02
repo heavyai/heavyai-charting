@@ -6,7 +6,6 @@ import {lastFilteredSize, setLastFilteredSize} from "../core/core-async";
 import {parser} from "../utils/utils";
 import * as d3 from "d3";
 import {AABox2d, Point2d, PolyLine} from "@mapd/mapd-draw/dist/mapd-draw";
-import {events} from "../core/events";
 import wellknown from "wellknown";
 
 // NOTE: Reqd until ST_Transform supported on projection columns
@@ -74,10 +73,6 @@ function getColor(color, layerName) {
   }else {
     return color
   }
-}
-
-function doJoin() {
-  return state.data.length > 1
 }
 
 function getTransforms(
@@ -171,7 +166,7 @@ function getTransforms(
     transforms.push({
       type: "project",
       expr: `SAMPLE(${table}.${geocol})`,
-      as: "mapd_geo"
+      as: geocol
     })
   } else {
     transforms.push({
@@ -453,11 +448,6 @@ export default function rasterLayerLineMixin(_layer) {
 
   createVegaAttrMixin(_layer, "size", 3, 1, true)
 
-  const _point_wrap_class = "map-point-wrap"
-  const _point_class = "map-point-new"
-  const _point_gfx_class = "map-point-gfx"
-
-
   let _vega = null
   const _scaledPopups = {}
   const _minMaxCache = {}
@@ -492,7 +482,7 @@ export default function rasterLayerLineMixin(_layer) {
 
   _layer._genVega = function(chart, layerName, group, query) {
 
-    // needed to set LastFilteredSize when point map first initialized
+    // needed to set LastFilteredSize when linemap map first initialized
     if (
       _layer.polyDim()
     ) {
@@ -703,12 +693,10 @@ export default function rasterLayerLineMixin(_layer) {
     if (chart._useGeoTypes) {
       if (!state.encoding.geocol) {
         throw new Error(
-          "No poly/multipolygon column specified. Cannot build poly outline popup."
+          "No linestring column specified. Cannot build linestring popup."
         )
       }
       geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol)
-    } else {
-      geoPathFormatter = new LegacySvgFormatter()
     }
 
     const bounds = geoPathFormatter.getBounds(
@@ -869,9 +857,6 @@ export default function rasterLayerLineMixin(_layer) {
 
     return bounds
   }
-
-
-
 
   _layer._destroyLayer = function(chart) {
     const polyDim = _layer.polyDim()
