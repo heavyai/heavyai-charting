@@ -94,7 +94,7 @@ function getTransforms(
   const colorProjection =
     color.type === "quantitative"
       ? parser.parseExpression(color.aggregate)
-      : `SAMPLE(${color.field})`
+      : `SAMPLE(${rowIdTable}.${color.field})`
 
   function doJoin() {
     return state.data.length > 1

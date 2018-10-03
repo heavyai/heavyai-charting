@@ -72518,8 +72518,6 @@ var d3 = _interopRequireWildcard(_d);
 
 var _mapdDraw = __webpack_require__(12);
 
-var _events = __webpack_require__(9);
-
 var _wellknown = __webpack_require__(155);
 
 var _wellknown2 = _interopRequireDefault(_wellknown);
@@ -72589,10 +72587,6 @@ function getColor(color, layerName) {
   }
 }
 
-function doJoin() {
-  return state.data.length > 1;
-}
-
 function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   var transforms = [];
   var transform = state.transform;
@@ -72607,7 +72601,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   var alias = [];
   var ops = [];
 
-  var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + color.field + ")";
+  var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + rowIdTable + "." + color.field + ")";
 
   function doJoin() {
     return state.data.length > 1;
@@ -72670,7 +72664,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     transforms.push({
       type: "project",
       expr: "SAMPLE(" + table + "." + geocol + ")",
-      as: "mapd_geo"
+      as: geocol
     });
   } else {
     transforms.push({
@@ -72951,10 +72945,6 @@ function rasterLayerLineMixin(_layer) {
 
   (0, _utilsVega.createVegaAttrMixin)(_layer, "size", 3, 1, true);
 
-  var _point_wrap_class = "map-point-wrap";
-  var _point_class = "map-point-new";
-  var _point_gfx_class = "map-point-gfx";
-
   var _vega = null;
   var _scaledPopups = {};
   var _minMaxCache = {};
@@ -72989,7 +72979,7 @@ function rasterLayerLineMixin(_layer) {
 
   _layer._genVega = function (chart, layerName, group, query) {
 
-    // needed to set LastFilteredSize when point map first initialized
+    // needed to set LastFilteredSize when linemap map first initialized
     if (_layer.polyDim()) {
       _layer.polyDim().groupAll().valueAsync().then(function (value) {
         (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
@@ -73164,11 +73154,9 @@ function rasterLayerLineMixin(_layer) {
     var geoPathFormatter = null;
     if (chart._useGeoTypes) {
       if (!state.encoding.geocol) {
-        throw new Error("No poly/multipolygon column specified. Cannot build poly outline popup.");
+        throw new Error("No linestring column specified. Cannot build linestring popup.");
       }
       geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol);
-    } else {
-      geoPathFormatter = new LegacySvgFormatter();
     }
 
     var bounds = geoPathFormatter.getBounds(data, width, height, margins, xscale, yscale);
