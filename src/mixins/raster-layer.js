@@ -358,8 +358,7 @@ export default function rasterLayer(layerType) {
     xscale.range([0, width])
     yscale.range([0, height])
 
-    const bounds = _layer._displayPopup(
-      chart,
+    const hoverSvgProps = {chart,
       parentElem,
       data,
       width,
@@ -368,8 +367,9 @@ export default function rasterLayer(layerType) {
       xscale,
       yscale,
       minPopupArea,
-      animate
-    )
+      animate}
+
+    const bounds = _layer._displayPopup(hoverSvgProps)
 
     // restore the original ranges so we don't screw anything else up
     xscale.range(origXRange)

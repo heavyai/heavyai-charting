@@ -13491,6 +13491,11 @@ filters.RangedTwoDimensionalFilter = function (filter) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.renderAttributes = exports.GeoSvgFormatter = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
@@ -13499,12 +13504,25 @@ exports.adjustOpacity = adjustOpacity;
 exports.adjustRGBAOpacity = adjustRGBAOpacity;
 exports.createVegaAttrMixin = createVegaAttrMixin;
 exports.createRasterLayerGetterSetter = createRasterLayerGetterSetter;
+exports.__displayPopup = __displayPopup;
 
 var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
+var _wellknown = __webpack_require__(155);
+
+var _wellknown2 = _interopRequireDefault(_wellknown);
+
+var _mapdDraw = __webpack_require__(12);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function notNull(value) {
   return value != null; /* double-equals also catches undefined */
@@ -13662,6 +13680,369 @@ function createRasterLayerGetterSetter(layerObj, attrVal, preSetFunc, postSetFun
     }
     return layerObj;
   };
+}
+
+// Polygon and line svg on hovering
+
+// NOTE: Reqd until ST_Transform supported on projection columns
+function conv4326To900913(x, y) {
+  var transCoord = [0.0, 0.0];
+  transCoord[0] = x * 111319.49077777777778;
+  transCoord[1] = Math.log(Math.tan((90.0 + y) * 0.00872664625997)) * 6378136.99911215736947;
+  return transCoord;
+}
+
+var PolySvgFormatter = function () {
+  function PolySvgFormatter() {
+    _classCallCheck(this, PolySvgFormatter);
+  }
+
+  _createClass(PolySvgFormatter, [{
+    key: "getBounds",
+
+    /**
+     * Builds the bounds from the incoming poly data
+     * @param {AABox2d} out AABox2d to return
+     * @param {object} data Object with return data from getResultRowForPixel()
+     * @param {Number} width Width of the visualization div
+     * @param {Number} height Height of the visualization div
+     * @param {object} margin Margins of the visualization div
+     * @param {Function} xscale d3 scale in x dimension from world space to pixel space (i.e. mercatorx-to-pixel)
+     * @param {Function} yscale d3 scale in y dimension from world space to pixel space (i.e. mercatory-to-pixel)
+     */
+    value: function getBounds(data, width, height, margins, xscale, yscale) {
+      throw new Error("This must be overridden");
+    }
+
+    /**
+     * Builds the svg path string to use with the d svg attr:
+     * https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
+     * This function should be called after the getBounds().
+     * The t/s arguments are the transformations to properly place the points underneath
+     * a parent SVG group node. That node is what ultimately handles animations and such
+     * so we need to transform all the points into local space. t is the translation
+     * and s is the scale to transform the points from pixel space to model/object space.
+     * @param {string} out Returns the svg path string
+     * @param {Point2d} t Translation from world to object space.
+     * @param {Number} s Scale from world to object space.
+     */
+
+  }, {
+    key: "getSvgPath",
+    value: function getSvgPath(t, s) {
+      throw new Error("This must be overridden");
+    }
+  }]);
+
+  return PolySvgFormatter;
+}();
+
+var LegacySvgFormatter = function (_PolySvgFormatter) {
+  _inherits(LegacySvgFormatter, _PolySvgFormatter);
+
+  function LegacySvgFormatter() {
+    _classCallCheck(this, LegacySvgFormatter);
+
+    var _this = _possibleConstructorReturn(this, (LegacySvgFormatter.__proto__ || Object.getPrototypeOf(LegacySvgFormatter)).call(this));
+
+    _this._polys = [];
+    return _this;
+  }
+
+  _createClass(LegacySvgFormatter, [{
+    key: "getBounds",
+    value: function getBounds(data, width, height, margins, xscale, yscale) {
+      // NOTE: this is handling legacy poly storage for backwards compatibility.
+      // Once we've put everything post 4.0 behind us, this can be fully deprecated.
+      //
+      // verts and drawinfo should be valid as the _resultsAreValidForPopup()
+      // method should've been called beforehand
+      var verts = data[polyTableGeomColumns.verts_LEGACY];
+      var drawinfo = data[polyTableGeomColumns.linedrawinfo_LEGACY];
+
+      var startIdxDiff = drawinfo.length ? drawinfo[2] : 0;
+      var FLT_MAX = 1e37;
+
+      var bounds = _mapdDraw.AABox2d.create();
+      var screenPt = _mapdDraw.Point2d.create();
+      for (var i = 0; i < drawinfo.length; i = i + 4) {
+        // Draw info struct:
+        //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
+        //     1: instanceCount, // should always be 1
+        //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
+        //     3: baseInstance   // irrelevant for our purposes -- should always be 0
+        var polypts = [];
+        var count = (drawinfo[i] - 3) * 2; // include x&y, and drop 3 duplicated pts at the end
+        var startIdx = (drawinfo[i + 2] - startIdxDiff) * 2; // include x&y
+        var endIdx = startIdx + count; // remove the 3 duplicate pts at the end
+        for (var idx = startIdx; idx < endIdx; idx = idx + 2) {
+          if (verts[idx] <= -FLT_MAX) {
+            // -FLT_MAX is a separator for multi-polygons (like Hawaii,
+            // where there would be a polygon per island), so when we hit a separator,
+            // remove the 3 duplicate points that would end the polygon prior to the separator
+            // and start a new polygon
+            polypts.pop();
+            polypts.pop();
+            polypts.pop();
+            this._polys.push(polypts);
+            polypts = [];
+          } else {
+            _mapdDraw.Point2d.set(screenPt, xscale(verts[idx]) + margins.left, height - yscale(verts[idx + 1]) - 1 + margins.top);
+
+            if (screenPt[0] >= 0 && screenPt[0] <= width && screenPt[1] >= 0 && screenPt[1] <= height) {
+              _mapdDraw.AABox2d.encapsulatePt(bounds, bounds, screenPt);
+            }
+            polypts.push(screenPt[0]);
+            polypts.push(screenPt[1]);
+          }
+        }
+
+        this._polys.push(polypts);
+      }
+
+      return bounds;
+    }
+  }, {
+    key: "getSvgPath",
+    value: function getSvgPath(t, s) {
+      var rtnPointStr = "";
+      this._polys.forEach(function (pts) {
+        if (!pts) {
+          return;
+        }
+
+        var pointStr = "";
+        for (var i = 0; i < pts.length; i = i + 2) {
+          if (!isNaN(pts[i]) && !isNaN(pts[i + 1])) {
+            pointStr += (pointStr.length ? "L" : "M") + s * (pts[i] - t[0]) + "," + s * (pts[i + 1] - t[1]);
+          }
+        }
+        if (pointStr.length) {
+          pointStr += "Z";
+        }
+        rtnPointStr += pointStr;
+      });
+      return rtnPointStr;
+    }
+  }]);
+
+  return LegacySvgFormatter;
+}(PolySvgFormatter);
+
+function buildGeoProjection(width, height, margins, xscale, yscale) {
+  var clamp = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
+  var t = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : [0, 0];
+  var s = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 1;
+
+  var _translation = t,
+      _scale = s,
+      _clamp = clamp;
+
+  var project = _d3.default.geo.transform({
+    point: function point(lon, lat) {
+      var projectedCoord = conv4326To900913(lon, lat);
+      var pt = [_scale * (xscale(projectedCoord[0]) + margins.left - _translation[0]), _scale * (height - yscale(projectedCoord[1]) - 1 + margins.top - _translation[1])];
+      if (_clamp) {
+        if (pt[0] >= 0 && pt[0] < width && pt[1] >= 0 && pt[1] < height) {
+          return this.stream.point(pt[0], pt[1]);
+        }
+      } else {
+        return this.stream.point(pt[0], pt[1]);
+      }
+    }
+  });
+
+  project.setTransforms = function (t, s) {
+    _translation = t;
+    _scale = s;
+  };
+
+  project.setClamp = function (clamp) {
+    _clamp = Boolean(clamp);
+  };
+
+  return project;
+}
+
+var GeoSvgFormatter = exports.GeoSvgFormatter = function (_PolySvgFormatter2) {
+  _inherits(GeoSvgFormatter, _PolySvgFormatter2);
+
+  function GeoSvgFormatter(geocol) {
+    _classCallCheck(this, GeoSvgFormatter);
+
+    var _this2 = _possibleConstructorReturn(this, (GeoSvgFormatter.__proto__ || Object.getPrototypeOf(GeoSvgFormatter)).call(this));
+
+    _this2._geojson = null;
+    _this2._projector = null;
+    _this2._d3projector = null;
+    _this2._geocol = geocol;
+    return _this2;
+  }
+
+  _createClass(GeoSvgFormatter, [{
+    key: "getBounds",
+    value: function getBounds(data, width, height, margins, xscale, yscale) {
+      var wkt = data[this._geocol];
+      if (typeof wkt !== "string") {
+        throw new Error("Cannot create SVG from geo polygon column \"" + this._geocol + "\". The data returned is not a WKT string. It is of type: " + (typeof wkt === "undefined" ? "undefined" : _typeof(wkt)));
+      }
+      this._geojson = _wellknown2.default.parse(wkt);
+      this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true);
+
+      // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
+      // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
+      // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
+      this._d3projector = _d3.default.geo.path().projection(this._projector);
+      var d3bounds = this._d3projector.bounds(this._geojson);
+      return _mapdDraw.AABox2d.create(d3bounds[0][0], d3bounds[0][1], d3bounds[1][0], d3bounds[1][1]);
+    }
+  }, {
+    key: "getSvgPath",
+    value: function getSvgPath(t, s) {
+      this._projector.setTransforms(t, s);
+      this._projector.setClamp(false);
+      return this._d3projector(this._geojson);
+    }
+  }]);
+
+  return GeoSvgFormatter;
+}(PolySvgFormatter);
+
+var renderAttributes = exports.renderAttributes = ["x", "y", "fillColor", "strokeColor", "strokeWidth", "lineJoin", "miterLimit", "opacity"];
+
+var _scaledPopups = {};
+
+function __displayPopup(svgProps) {
+  var chart = svgProps.chart,
+      parentElem = svgProps.parentElem,
+      data = svgProps.data,
+      width = svgProps.width,
+      height = svgProps.height,
+      margins = svgProps.margins,
+      xscale = svgProps.xscale,
+      yscale = svgProps.yscale,
+      minPopupArea = svgProps.minPopupArea,
+      animate = svgProps.animate,
+      _vega = svgProps._vega,
+      _layer = svgProps._layer,
+      state = svgProps.state;
+
+
+  var geoPathFormatter = null;
+  if (chart._useGeoTypes) {
+    if (!state.encoding.geocol) {
+      throw new Error("No poly/multipolygon column specified. Cannot build poly outline popup.");
+    }
+    geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol);
+  } else {
+    geoPathFormatter = new LegacySvgFormatter();
+  }
+
+  var bounds = geoPathFormatter.getBounds(data, width, height, margins, xscale, yscale);
+
+  // Check for 2 special cases:
+  // 1) zoomed in so far in that the poly encompasses the entire view, so all points are
+  //    outside the view
+  // 2) the poly only has 1 point in view.
+  // Both cases can be handled by checking whether the bounds is empty (infinite) in
+  // either x/y or the bounds size is 0 in x/y.
+  var boundsSz = _mapdDraw.AABox2d.getSize(_mapdDraw.Point2d.create(), bounds);
+  if (!isFinite(boundsSz[0]) || boundsSz[0] === 0) {
+    bounds[_mapdDraw.AABox2d.MINX] = 0;
+    bounds[_mapdDraw.AABox2d.MAXX] = width;
+    boundsSz[0] = width;
+  }
+  if (!isFinite(boundsSz[1]) || boundsSz[1] === 0) {
+    bounds[_mapdDraw.AABox2d.MINY] = 0;
+    bounds[_mapdDraw.AABox2d.MAXY] = height;
+    boundsSz[1] = height;
+  }
+
+  // Get the data from the hit-test object used to drive render properties
+  // These will be used to properly style the svg popup object
+  var rndrProps = {};
+  if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+    var propObj = _vega.marks[0].properties;
+
+    renderAttributes.forEach(function (prop) {
+      if (_typeof(propObj[prop]) === "object" && propObj[prop].field && typeof propObj[prop].field === "string") {
+        rndrProps[prop] = propObj[prop].field;
+      }
+    });
+  }
+
+  // If the poly we hit-test is small, we'll scale it so that it
+  // can be seen. The minPopupArea is the minimum area of the popup
+  // poly, so if the poly's bounds is < minPopupArea, we'll scale it
+  // up to that size.
+  var scale = 1;
+  var scaleRatio = minPopupArea / _mapdDraw.AABox2d.area(bounds);
+  var isScaled = scaleRatio > 1;
+  if (isScaled) {
+    scale = Math.sqrt(scaleRatio);
+  }
+
+  // Now grab the style properties for the svg calculated from the vega
+  var popupStyle = _layer.popupStyle();
+  var fillColor = _layer.getFillColorVal(data[rndrProps.fillColor]);
+  var strokeColor = _layer.getStrokeColorVal(data[rndrProps.strokeColor]);
+  var strokeWidth = 1;
+  if ((typeof popupStyle === "undefined" ? "undefined" : _typeof(popupStyle)) === "object" && !isScaled) {
+    fillColor = popupStyle.fillColor || fillColor;
+    strokeColor = popupStyle.strokeColor || strokeColor;
+    strokeWidth = popupStyle.strokeWidth;
+  }
+
+  // build out the svg
+  var svg = parentElem.append("svg").attr("width", width).attr("height", height);
+
+  // transform svg node. This node will position the svg appropriately. Need
+  // to offset according to the scale above (scale >= 1)
+  var boundsCtr = _mapdDraw.AABox2d.getCenter(_mapdDraw.Point2d.create(), bounds);
+  var layerType = _layer.layerType();
+  var xform = svg.append("g").attr("class", layerType === "polys" ? "map-poly-xform" : "map-polyline").attr("transform", "translate(" + (scale * bounds[_mapdDraw.AABox2d.MINX] - (scale - 1) * boundsCtr[0]) + ", " + (scale * (bounds[_mapdDraw.AABox2d.MINY] + 1) - (scale - 1) * (boundsCtr[1] + 1)) + ")");
+
+  // now add a transform node that will be used to apply animated scales to
+  // We want the animation to happen from the center of the bounds, so we
+  // place the transform origin there.
+  var group = xform.append("g").attr("class", layerType === "polys" ? "map-poly" : "map-polyline").attr("transform-origin", boundsSz[0] / 2 + " " + boundsSz[1] / 2);
+
+  // inherited animation classes from css
+  if (animate) {
+    if (isScaled) {
+      group.classed("popupPoly", true);
+    } else {
+      group.classed("fadeInPoly", true);
+    }
+  }
+
+  // now apply the styles
+  if (typeof strokeWidth === "number") {
+    group.style("stroke-width", strokeWidth);
+  }
+
+  // applying shadow
+  var defs = group.append('defs');
+
+  var filter = defs.append("filter").attr("id", "drop-shadow").attr("width", "200%").attr("height", "200%");
+
+  filter.append("feOffset").attr("in", "SourceAlpha").attr("result", "offOut").attr("dx", "2").attr("dy", "2");
+
+  filter.append("feGaussianBlur").attr("in", "offOut").attr("stdDeviation", 2).attr("result", "blurOut");
+
+  filter.append("feBlend").attr("in", "SourceGraphic").attr("in2", "blurOut").attr("mode", "normal");
+
+  group.append("path").attr("d", geoPathFormatter.getSvgPath(_mapdDraw.Point2d.create(bounds[_mapdDraw.AABox2d.MINX], bounds[_mapdDraw.AABox2d.MINY]), scale)).attr("class", layerType === "polys" ? "map-polygon-shape" : "map-polyline").attr("fill", layerType === "polys" ? fillColor : "none").attr("fill-rule", "evenodd").attr("stroke-width", strokeWidth).attr("stroke", strokeColor).style("filter", "url(#drop-shadow)").on("click", function () {
+    if (layerType === "polys") {
+      return _layer.onClick(chart, data, _d3.default.event);
+    } else {
+      return null;
+    }
+  });
+
+  _scaledPopups[chart] = isScaled;
+
+  return bounds;
 }
 
 /***/ }),
@@ -31027,7 +31408,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -31043,29 +31424,9 @@ var _events = __webpack_require__(9);
 
 var _utils = __webpack_require__(3);
 
-var _wellknown = __webpack_require__(155);
-
-var _wellknown2 = _interopRequireDefault(_wellknown);
-
-var _mapdDraw = __webpack_require__(12);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-// NOTE: Reqd until ST_Transform supported on projection columns
-function conv4326To900913(x, y) {
-  var transCoord = [0.0, 0.0];
-  transCoord[0] = x * 111319.49077777777778;
-  transCoord[1] = Math.log(Math.tan((90.0 + y) * 0.00872664625997)) * 6378136.99911215736947;
-  return transCoord;
-}
 
 var polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)";
 var polyNullScaleColor = "rgba(214, 215, 214, 0.65)";
@@ -31474,8 +31835,6 @@ function rasterLayerPolyMixin(_layer) {
     return _vega;
   };
 
-  var renderAttributes = ["x", "y", "fillColor", "strokeColor", "strokeWidth", "lineJoin", "miterLimit"];
-
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColsSet) {
     // add the poly geometry to the query
 
@@ -31489,7 +31848,7 @@ function rasterLayerPolyMixin(_layer) {
     }
 
     if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
-      renderAttributes.forEach(function (rndrProp) {
+      _utilsVega.renderAttributes.forEach(function (rndrProp) {
         if (rndrProp !== "x" && rndrProp !== "y") {
           _layer._addQueryDrivenRenderPropToSet(popupColsSet, _vega.marks[0].properties, rndrProp);
         }
@@ -31538,321 +31897,8 @@ function rasterLayerPolyMixin(_layer) {
     return _layer;
   };
 
-  var PolySvgFormatter = function () {
-    function PolySvgFormatter() {
-      _classCallCheck(this, PolySvgFormatter);
-    }
-
-    _createClass(PolySvgFormatter, [{
-      key: "getBounds",
-
-      /**
-       * Builds the bounds from the incoming poly data
-       * @param {AABox2d} out AABox2d to return
-       * @param {object} data Object with return data from getResultRowForPixel()
-       * @param {Number} width Width of the visualization div
-       * @param {Number} height Height of the visualization div
-       * @param {object} margin Margins of the visualization div
-       * @param {Function} xscale d3 scale in x dimension from world space to pixel space (i.e. mercatorx-to-pixel)
-       * @param {Function} yscale d3 scale in y dimension from world space to pixel space (i.e. mercatory-to-pixel)
-       */
-      value: function getBounds(data, width, height, margins, xscale, yscale) {
-        throw new Error("This must be overridden");
-      }
-
-      /**
-       * Builds the svg path string to use with the d svg attr:
-       * https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
-       * This function should be called after the getBounds().
-       * The t/s arguments are the transformations to properly place the points underneath
-       * a parent SVG group node. That node is what ultimately handles animations and such
-       * so we need to transform all the points into local space. t is the translation
-       * and s is the scale to transform the points from pixel space to model/object space.
-       * @param {string} out Returns the svg path string
-       * @param {Point2d} t Translation from world to object space.
-       * @param {Number} s Scale from world to object space.
-       */
-
-    }, {
-      key: "getSvgPath",
-      value: function getSvgPath(t, s) {
-        throw new Error("This must be overridden");
-      }
-    }]);
-
-    return PolySvgFormatter;
-  }();
-
-  var LegacySvgFormatter = function (_PolySvgFormatter) {
-    _inherits(LegacySvgFormatter, _PolySvgFormatter);
-
-    function LegacySvgFormatter() {
-      _classCallCheck(this, LegacySvgFormatter);
-
-      var _this = _possibleConstructorReturn(this, (LegacySvgFormatter.__proto__ || Object.getPrototypeOf(LegacySvgFormatter)).call(this));
-
-      _this._polys = [];
-      return _this;
-    }
-
-    _createClass(LegacySvgFormatter, [{
-      key: "getBounds",
-      value: function getBounds(data, width, height, margins, xscale, yscale) {
-        // NOTE: this is handling legacy poly storage for backwards compatibility.
-        // Once we've put everything post 4.0 behind us, this can be fully deprecated.
-        //
-        // verts and drawinfo should be valid as the _resultsAreValidForPopup()
-        // method should've been called beforehand
-        var verts = data[polyTableGeomColumns.verts_LEGACY];
-        var drawinfo = data[polyTableGeomColumns.linedrawinfo_LEGACY];
-
-        var startIdxDiff = drawinfo.length ? drawinfo[2] : 0;
-        var FLT_MAX = 1e37;
-
-        var bounds = _mapdDraw.AABox2d.create();
-        var screenPt = _mapdDraw.Point2d.create();
-        for (var i = 0; i < drawinfo.length; i = i + 4) {
-          // Draw info struct:
-          //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
-          //     1: instanceCount, // should always be 1
-          //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
-          //     3: baseInstance   // irrelevant for our purposes -- should always be 0
-          var polypts = [];
-          var count = (drawinfo[i] - 3) * 2; // include x&y, and drop 3 duplicated pts at the end
-          var startIdx = (drawinfo[i + 2] - startIdxDiff) * 2; // include x&y
-          var endIdx = startIdx + count; // remove the 3 duplicate pts at the end
-          for (var idx = startIdx; idx < endIdx; idx = idx + 2) {
-            if (verts[idx] <= -FLT_MAX) {
-              // -FLT_MAX is a separator for multi-polygons (like Hawaii,
-              // where there would be a polygon per island), so when we hit a separator,
-              // remove the 3 duplicate points that would end the polygon prior to the separator
-              // and start a new polygon
-              polypts.pop();
-              polypts.pop();
-              polypts.pop();
-              this._polys.push(polypts);
-              polypts = [];
-            } else {
-              _mapdDraw.Point2d.set(screenPt, xscale(verts[idx]) + margins.left, height - yscale(verts[idx + 1]) - 1 + margins.top);
-
-              if (screenPt[0] >= 0 && screenPt[0] <= width && screenPt[1] >= 0 && screenPt[1] <= height) {
-                _mapdDraw.AABox2d.encapsulatePt(bounds, bounds, screenPt);
-              }
-              polypts.push(screenPt[0]);
-              polypts.push(screenPt[1]);
-            }
-          }
-
-          this._polys.push(polypts);
-        }
-
-        return bounds;
-      }
-    }, {
-      key: "getSvgPath",
-      value: function getSvgPath(t, s) {
-        var rtnPointStr = "";
-        this._polys.forEach(function (pts) {
-          if (!pts) {
-            return;
-          }
-
-          var pointStr = "";
-          for (var i = 0; i < pts.length; i = i + 2) {
-            if (!isNaN(pts[i]) && !isNaN(pts[i + 1])) {
-              pointStr += (pointStr.length ? "L" : "M") + s * (pts[i] - t[0]) + "," + s * (pts[i + 1] - t[1]);
-            }
-          }
-          if (pointStr.length) {
-            pointStr += "Z";
-          }
-          rtnPointStr += pointStr;
-        });
-        return rtnPointStr;
-      }
-    }]);
-
-    return LegacySvgFormatter;
-  }(PolySvgFormatter);
-
-  function buildGeoProjection(width, height, margins, xscale, yscale) {
-    var clamp = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
-    var t = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : [0, 0];
-    var s = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 1;
-
-    var _translation = t,
-        _scale = s,
-        _clamp = clamp;
-
-    var project = _d2.default.geo.transform({
-      point: function point(lon, lat) {
-        var projectedCoord = conv4326To900913(lon, lat);
-        var pt = [_scale * (xscale(projectedCoord[0]) + margins.left - _translation[0]), _scale * (height - yscale(projectedCoord[1]) - 1 + margins.top - _translation[1])];
-        if (_clamp) {
-          if (pt[0] >= 0 && pt[0] < width && pt[1] >= 0 && pt[1] < height) {
-            return this.stream.point(pt[0], pt[1]);
-          }
-        } else {
-          return this.stream.point(pt[0], pt[1]);
-        }
-      }
-    });
-
-    project.setTransforms = function (t, s) {
-      _translation = t;
-      _scale = s;
-    };
-
-    project.setClamp = function (clamp) {
-      _clamp = Boolean(clamp);
-    };
-
-    return project;
-  }
-
-  var GeoSvgFormatter = function (_PolySvgFormatter2) {
-    _inherits(GeoSvgFormatter, _PolySvgFormatter2);
-
-    function GeoSvgFormatter(geocol) {
-      _classCallCheck(this, GeoSvgFormatter);
-
-      var _this2 = _possibleConstructorReturn(this, (GeoSvgFormatter.__proto__ || Object.getPrototypeOf(GeoSvgFormatter)).call(this));
-
-      _this2._geojson = null;
-      _this2._projector = null;
-      _this2._d3projector = null;
-      _this2._geocol = geocol;
-      return _this2;
-    }
-
-    _createClass(GeoSvgFormatter, [{
-      key: "getBounds",
-      value: function getBounds(data, width, height, margins, xscale, yscale) {
-        var wkt = data[this._geocol];
-        if (typeof wkt !== "string") {
-          throw new Error("Cannot create SVG from geo polygon column \"" + this._geocol + "\". The data returned is not a WKT string. It is of type: " + (typeof wkt === "undefined" ? "undefined" : _typeof(wkt)));
-        }
-        this._geojson = _wellknown2.default.parse(wkt);
-        this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true);
-
-        // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
-        // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
-        // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
-        this._d3projector = _d2.default.geo.path().projection(this._projector);
-        var d3bounds = this._d3projector.bounds(this._geojson);
-        return _mapdDraw.AABox2d.create(d3bounds[0][0], d3bounds[0][1], d3bounds[1][0], d3bounds[1][1]);
-      }
-    }, {
-      key: "getSvgPath",
-      value: function getSvgPath(t, s) {
-        this._projector.setTransforms(t, s);
-        this._projector.setClamp(false);
-        return this._d3projector(this._geojson);
-      }
-    }]);
-
-    return GeoSvgFormatter;
-  }(PolySvgFormatter);
-
-  _layer._displayPopup = function (chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate) {
-    var geoPathFormatter = null;
-    if (chart._useGeoTypes) {
-      if (!state.encoding.geocol) {
-        throw new Error("No poly/multipolygon column specified. Cannot build poly outline popup.");
-      }
-      geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol);
-    } else {
-      geoPathFormatter = new LegacySvgFormatter();
-    }
-
-    var bounds = geoPathFormatter.getBounds(data, width, height, margins, xscale, yscale);
-
-    // Check for 2 special cases:
-    // 1) zoomed in so far in that the poly encompasses the entire view, so all points are
-    //    outside the view
-    // 2) the poly only has 1 point in view.
-    // Both cases can be handled by checking whether the bounds is empty (infinite) in
-    // either x/y or the bounds size is 0 in x/y.
-    var boundsSz = _mapdDraw.AABox2d.getSize(_mapdDraw.Point2d.create(), bounds);
-    if (!isFinite(boundsSz[0]) || boundsSz[0] === 0) {
-      bounds[_mapdDraw.AABox2d.MINX] = 0;
-      bounds[_mapdDraw.AABox2d.MAXX] = width;
-      boundsSz[0] = width;
-    }
-    if (!isFinite(boundsSz[1]) || boundsSz[1] === 0) {
-      bounds[_mapdDraw.AABox2d.MINY] = 0;
-      bounds[_mapdDraw.AABox2d.MAXY] = height;
-      boundsSz[1] = height;
-    }
-
-    // Get the data from the hit-test object used to drive render properties
-    // These will be used to properly style the svg popup object
-    var rndrProps = {};
-    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
-      var propObj = _vega.marks[0].properties;
-      renderAttributes.forEach(function (prop) {
-        if (_typeof(propObj[prop]) === "object" && propObj[prop].field && typeof propObj[prop].field === "string") {
-          rndrProps[prop] = propObj[prop].field;
-        }
-      });
-    }
-
-    // If the poly we hit-test is small, we'll scale it so that it
-    // can be seen. The minPopupArea is the minimum area of the popup
-    // poly, so if the poly's bounds is < minPopupArea, we'll scale it
-    // up to that size.
-    var scale = 1;
-    var scaleRatio = minPopupArea / _mapdDraw.AABox2d.area(bounds);
-    var isScaled = scaleRatio > 1;
-    if (isScaled) {
-      scale = Math.sqrt(scaleRatio);
-    }
-
-    // Now grab the style properties for the svg calculated from the vega
-    var popupStyle = _layer.popupStyle();
-    var fillColor = _layer.getFillColorVal(data[rndrProps.fillColor]);
-    var strokeColor = _layer.getStrokeColorVal(data[rndrProps.strokeColor]);
-    var strokeWidth = void 0;
-    if ((typeof popupStyle === "undefined" ? "undefined" : _typeof(popupStyle)) === "object" && !isScaled) {
-      fillColor = popupStyle.fillColor || fillColor;
-      strokeColor = popupStyle.strokeColor || strokeColor;
-      strokeWidth = popupStyle.strokeWidth;
-    }
-
-    // build out the svg
-    var svg = parentElem.append("svg").attr("width", width).attr("height", height);
-
-    // transform svg node. This node will position the svg appropriately. Need
-    // to offset according to the scale above (scale >= 1)
-    var boundsCtr = _mapdDraw.AABox2d.getCenter(_mapdDraw.Point2d.create(), bounds);
-    var xform = svg.append("g").attr("class", "map-poly-xform").attr("transform", "translate(" + (scale * bounds[_mapdDraw.AABox2d.MINX] - (scale - 1) * boundsCtr[0]) + ", " + (scale * (bounds[_mapdDraw.AABox2d.MINY] + 1) - (scale - 1) * (boundsCtr[1] + 1)) + ")");
-
-    // now add a transform node that will be used to apply animated scales to
-    // We want the animation to happen from the center of the bounds, so we
-    // place the transform origin there.
-    var group = xform.append("g").attr("class", "map-poly").attr("transform-origin", boundsSz[0] / 2 + " " + boundsSz[1] / 2);
-
-    // inherited animation classes from css
-    if (animate) {
-      if (isScaled) {
-        group.classed("popupPoly", true);
-      } else {
-        group.classed("fadeInPoly", true);
-      }
-    }
-
-    // now apply the styles
-    if (typeof strokeWidth === "number") {
-      group.style("stroke-width", strokeWidth);
-    }
-
-    group.append("path").attr("d", geoPathFormatter.getSvgPath(_mapdDraw.Point2d.create(bounds[_mapdDraw.AABox2d.MINX], bounds[_mapdDraw.AABox2d.MINY]), scale)).attr("class", "map-polygon-shape").attr("fill", fillColor).attr("fill-rule", "evenodd").attr("stroke", strokeColor).on("click", function () {
-      return _layer.onClick(chart, data, _d2.default.event);
-    });
-
-    _scaledPopups[chart] = isScaled;
-
-    return bounds;
+  _layer._displayPopup = function (svgProps) {
+    return (0, _utilsVega.__displayPopup)(_extends({}, svgProps, { _vega: _vega, _layer: _layer, state: state }));
   };
 
   _layer.onClick = function (chart, data, event) {
@@ -52157,18 +52203,11 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   };
 
-  _chart.polyRangeFilter = function (filter) {
-    for (var layerName in _layerNames) {
-      var _layer3 = _layerNames[layerName];
-      // layer.yDim() && layer.yDim().filter(filter)
-    }
-  };
-
   _chart.clearLayerFilters = function () {
     for (var layerName in _layerNames) {
-      var _layer4 = _layerNames[layerName];
-      if (typeof _layer4.filterAll === "function") {
-        _layer4.filterAll();
+      var _layer3 = _layerNames[layerName];
+      if (typeof _layer3.filterAll === "function") {
+        _layer3.filterAll();
       }
     }
   };
@@ -52178,8 +52217,8 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     _chart.filterAll();
     for (var layerName in _layerNames) {
-      var _layer5 = _layerNames[layerName];
-      _layer5.destroyLayer(_chart);
+      var _layer4 = _layerNames[layerName];
+      _layer4.destroyLayer(_chart);
     }
 
     _chart.map().remove();
@@ -52475,10 +52514,10 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
     if (_chart.select("." + _popupDivClassName).empty()) {
       // only one popup at a time
-      var _layer6 = _layerNames[result.vega_table_name];
-      if (_layer6 && _layer6.areResultsValidForPopup(result.row_set)) {
+      var _layer5 = _layerNames[result.vega_table_name];
+      if (_layer5 && _layer5.areResultsValidForPopup(result.row_set)) {
         var mapPopup = _chart.root().append("div").attr("class", _popupDivClassName);
-        _layer6.displayPopup(_chart, mapPopup, result, _minPopupShapeBoundsArea, animate);
+        _layer5.displayPopup(_chart, mapPopup, result, _minPopupShapeBoundsArea, animate);
       }
     }
   };
@@ -52488,12 +52527,12 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     if (!popupElem.empty()) {
       for (var i = 0; i < _layers.length; ++i) {
         var layerName = _layers[i];
-        var _layer7 = _layerNames[layerName];
-        if (_layer7 && _layer7.isPopupDisplayed(_chart)) {
+        var _layer6 = _layerNames[layerName];
+        if (_layer6 && _layer6.isPopupDisplayed(_chart)) {
           // TODO(croot): can this be improved? I presume only
           // one popup can be shown at a time
           if (animate) {
-            _layer7.hidePopup(_chart, function () {
+            _layer6.hidePopup(_chart, function () {
               _chart.select("." + _popupDivClassName).remove();
             });
           } else {
@@ -72312,7 +72351,18 @@ function rasterLayer(layerType) {
     xscale.range([0, width]);
     yscale.range([0, height]);
 
-    var bounds = _layer._displayPopup(chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate);
+    var hoverSvgProps = { chart: chart,
+      parentElem: parentElem,
+      data: data,
+      width: width,
+      height: height,
+      margins: margins,
+      xscale: xscale,
+      yscale: yscale,
+      minPopupArea: minPopupArea,
+      animate: animate };
+
+    var bounds = _layer._displayPopup(hoverSvgProps);
 
     // restore the original ranges so we don't screw anything else up
     xscale.range(origXRange);
@@ -72500,7 +72550,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -72516,31 +72566,9 @@ var _d = __webpack_require__(1);
 
 var d3 = _interopRequireWildcard(_d);
 
-var _mapdDraw = __webpack_require__(12);
-
-var _wellknown = __webpack_require__(155);
-
-var _wellknown2 = _interopRequireDefault(_wellknown);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-// NOTE: Reqd until ST_Transform supported on projection columns
-function conv4326To900913(x, y) {
-  var transCoord = [0.0, 0.0];
-  transCoord[0] = x * 111319.49077777777778;
-  transCoord[1] = Math.log(Math.tan((90.0 + y) * 0.00872664625997)) * 6378136.99911215736947;
-  return transCoord;
-}
 
 var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
 var AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0];
@@ -72890,11 +72918,9 @@ function rasterLayerLineMixin(_layer) {
         as: []
       };
       var transforms = [aggregateNode];
-      if (autocolors) {
-        var xformdata = getAutoColorVegaTransforms(aggregateNode);
-        scaledomainfields.color = xformdata.fields;
-        transforms = transforms.concat(xformdata.transforms);
-      }
+      var xformdata = getAutoColorVegaTransforms(aggregateNode);
+      scaledomainfields.color = xformdata.fields;
+      transforms = transforms.concat(xformdata.transforms);
 
       data.push({
         name: getStatsLayerName(),
@@ -72946,7 +72972,6 @@ function rasterLayerLineMixin(_layer) {
   (0, _utilsVega.createVegaAttrMixin)(_layer, "size", 3, 1, true);
 
   var _vega = null;
-  var _scaledPopups = {};
   var _minMaxCache = {};
   var _cf = null;
 
@@ -72960,21 +72985,6 @@ function rasterLayerLineMixin(_layer) {
 
   _layer._requiresCap = function () {
     return false;
-  };
-
-  _layer.polyRangeFilter = function (range) {
-    if (!_layer.polyDim()) {
-      throw new Error("Must set layer's xDim before invoking xRange");
-    }
-
-    var polyValue = _layer.polyDim().value()[0];
-
-    if (!arguments.length) {
-      return _minMaxCache[polyValue];
-    }
-
-    _minMaxCache[polyValue] = range;
-    return _layer;
   };
 
   _layer._genVega = function (chart, layerName, group, query) {
@@ -72999,8 +73009,6 @@ function rasterLayerLineMixin(_layer) {
     return _vega;
   };
 
-  var renderAttributes = ["x", "y", "strokeColor", "strokeWidth", "lineJoin", "miterLimit", "opacity"];
-
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColsSet) {
     // add the poly geometry to the query
 
@@ -73011,7 +73019,7 @@ function rasterLayerLineMixin(_layer) {
     }
 
     if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
-      renderAttributes.forEach(function (rndrProp) {
+      _utilsVega.renderAttributes.forEach(function (rndrProp) {
         if (rndrProp !== "x" && rndrProp !== "y") {
           _layer._addQueryDrivenRenderPropToSet(popupColsSet, _vega.marks[0].properties, rndrProp);
         }
@@ -73026,235 +73034,8 @@ function rasterLayerLineMixin(_layer) {
     return false;
   };
 
-  var PolySvgFormatter = function () {
-    function PolySvgFormatter() {
-      _classCallCheck(this, PolySvgFormatter);
-    }
-
-    _createClass(PolySvgFormatter, [{
-      key: "getBounds",
-
-      /**
-       * Builds the bounds from the incoming poly data
-       * @param {AABox2d} out AABox2d to return
-       * @param {object} data Object with return data from getResultRowForPixel()
-       * @param {Number} width Width of the visualization div
-       * @param {Number} height Height of the visualization div
-       * @param {object} margin Margins of the visualization div
-       * @param {Function} xscale d3 scale in x dimension from world space to pixel space (i.e. mercatorx-to-pixel)
-       * @param {Function} yscale d3 scale in y dimension from world space to pixel space (i.e. mercatory-to-pixel)
-       */
-      value: function getBounds(data, width, height, margins, xscale, yscale) {
-        throw new Error("This must be overridden");
-      }
-
-      /**
-       * Builds the svg path string to use with the d svg attr:
-       * https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
-       * This function should be called after the getBounds().
-       * The t/s arguments are the transformations to properly place the points underneath
-       * a parent SVG group node. That node is what ultimately handles animations and such
-       * so we need to transform all the points into local space. t is the translation
-       * and s is the scale to transform the points from pixel space to model/object space.
-       * @param {string} out Returns the svg path string
-       * @param {Point2d} t Translation from world to object space.
-       * @param {Number} s Scale from world to object space.
-       */
-
-    }, {
-      key: "getSvgPath",
-      value: function getSvgPath(t, s) {
-        throw new Error("This must be overridden");
-      }
-    }]);
-
-    return PolySvgFormatter;
-  }();
-
-  function buildGeoProjection(width, height, margins, xscale, yscale) {
-    var clamp = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
-    var t = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : [0, 0];
-    var s = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 1;
-
-    var _translation = t,
-        _scale = s,
-        _clamp = clamp;
-
-    var project = d3.geo.transform({
-      point: function point(lon, lat) {
-        var projectedCoord = conv4326To900913(lon, lat);
-        var pt = [_scale * (xscale(projectedCoord[0]) + margins.left - _translation[0]), _scale * (height - yscale(projectedCoord[1]) - 1 + margins.top - _translation[1])];
-        if (_clamp) {
-          if (pt[0] >= 0 && pt[0] < width && pt[1] >= 0 && pt[1] < height) {
-            return this.stream.point(pt[0], pt[1]);
-          }
-        } else {
-          return this.stream.point(pt[0], pt[1]);
-        }
-      }
-    });
-
-    project.setTransforms = function (t, s) {
-      _translation = t;
-      _scale = s;
-    };
-
-    project.setClamp = function (clamp) {
-      _clamp = Boolean(clamp);
-    };
-
-    return project;
-  }
-
-  var GeoSvgFormatter = function (_PolySvgFormatter) {
-    _inherits(GeoSvgFormatter, _PolySvgFormatter);
-
-    function GeoSvgFormatter(geocol) {
-      _classCallCheck(this, GeoSvgFormatter);
-
-      var _this = _possibleConstructorReturn(this, (GeoSvgFormatter.__proto__ || Object.getPrototypeOf(GeoSvgFormatter)).call(this));
-
-      _this._geojson = null;
-      _this._projector = null;
-      _this._d3projector = null;
-      _this._geocol = geocol;
-      return _this;
-    }
-
-    _createClass(GeoSvgFormatter, [{
-      key: "getBounds",
-      value: function getBounds(data, width, height, margins, xscale, yscale) {
-        var wkt = data[this._geocol];
-        if (typeof wkt !== "string") {
-          throw new Error("Cannot create SVG from geo polygon column \"" + this._geocol + "\". The data returned is not a WKT string. It is of type: " + (typeof wkt === "undefined" ? "undefined" : _typeof(wkt)));
-        }
-        this._geojson = _wellknown2.default.parse(wkt);
-        this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true);
-
-        // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
-        // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
-        // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
-        this._d3projector = d3.geo.path().projection(this._projector);
-        var d3bounds = this._d3projector.bounds(this._geojson);
-        return _mapdDraw.AABox2d.create(d3bounds[0][0], d3bounds[0][1], d3bounds[1][0], d3bounds[1][1]);
-      }
-    }, {
-      key: "getSvgPath",
-      value: function getSvgPath(t, s) {
-        this._projector.setTransforms(t, s);
-        this._projector.setClamp(false);
-        return this._d3projector(this._geojson);
-      }
-    }]);
-
-    return GeoSvgFormatter;
-  }(PolySvgFormatter);
-
-  _layer._displayPopup = function (chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate) {
-    var geoPathFormatter = null;
-    if (chart._useGeoTypes) {
-      if (!state.encoding.geocol) {
-        throw new Error("No linestring column specified. Cannot build linestring popup.");
-      }
-      geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol);
-    }
-
-    var bounds = geoPathFormatter.getBounds(data, width, height, margins, xscale, yscale);
-
-    // Check for 2 special cases:
-    // 1) zoomed in so far in that the poly encompasses the entire view, so all points are
-    //    outside the view
-    // 2) the poly only has 1 point in view.
-    // Both cases can be handled by checking whether the bounds is empty (infinite) in
-    // either x/y or the bounds size is 0 in x/y.
-    var boundsSz = _mapdDraw.AABox2d.getSize(_mapdDraw.Point2d.create(), bounds);
-    if (!isFinite(boundsSz[0]) || boundsSz[0] === 0) {
-      bounds[_mapdDraw.AABox2d.MINX] = 0;
-      bounds[_mapdDraw.AABox2d.MAXX] = width;
-      boundsSz[0] = width;
-    }
-    if (!isFinite(boundsSz[1]) || boundsSz[1] === 0) {
-      bounds[_mapdDraw.AABox2d.MINY] = 0;
-      bounds[_mapdDraw.AABox2d.MAXY] = height;
-      boundsSz[1] = height;
-    }
-
-    // Get the data from the hit-test object used to drive render properties
-    // These will be used to properly style the svg popup object
-    var rndrProps = {};
-    if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
-      var propObj = _vega.marks[0].properties;
-      renderAttributes.forEach(function (prop) {
-        if (_typeof(propObj[prop]) === "object" && propObj[prop].field && typeof propObj[prop].field === "string") {
-          rndrProps[prop] = propObj[prop].field;
-        }
-      });
-    }
-
-    // If the poly we hit-test is small, we'll scale it so that it
-    // can be seen. The minPopupArea is the minimum area of the popup
-    // poly, so if the poly's bounds is < minPopupArea, we'll scale it
-    // up to that size.
-    var scale = 1;
-    var scaleRatio = minPopupArea / _mapdDraw.AABox2d.area(bounds);
-    var isScaled = scaleRatio > 1;
-    if (isScaled) {
-      scale = Math.sqrt(scaleRatio);
-    }
-
-    // Now grab the style properties for the svg calculated from the vega
-    var popupStyle = _layer.popupStyle();
-    var strokeColor = _layer.getStrokeColorVal(data[rndrProps.strokeColor]);
-    var strokeWidth = 1;
-    if ((typeof popupStyle === "undefined" ? "undefined" : _typeof(popupStyle)) === "object" && !isScaled) {
-      strokeColor = popupStyle.strokeColor || strokeColor;
-      strokeWidth = popupStyle.strokeWidth;
-    }
-
-    // build out the svg
-    var svg = parentElem.append("svg").attr("width", width).attr("height", height);
-
-    // transform svg node. This node will position the svg appropriately. Need
-    // to offset according to the scale above (scale >= 1)
-    var boundsCtr = _mapdDraw.AABox2d.getCenter(_mapdDraw.Point2d.create(), bounds);
-
-    var xform = svg.append("g").attr("class", "map-polyline").attr("transform", "translate(" + (scale * bounds[_mapdDraw.AABox2d.MINX] - (scale - 1) * boundsCtr[0]) + ", " + (scale * (bounds[_mapdDraw.AABox2d.MINY] + 1) - (scale - 1) * (boundsCtr[1] + 1)) + ")");
-
-    // now add a transform node that will be used to apply animated scales to
-    // We want the animation to happen from the center of the bounds, so we
-    // place the transform origin there.
-    var group = xform.append("g").attr("class", "map-polyline").attr("transform-origin", boundsSz[0] / 2 + " " + boundsSz[1] / 2);
-
-    // inherited animation classes from css
-    if (animate) {
-      if (isScaled) {
-        group.classed("popupPoly", true);
-      } else {
-        group.classed("fadeInPoly", true);
-      }
-    }
-
-    // now apply the styles
-    if (typeof strokeWidth === "number") {
-      group.style("stroke-width", strokeWidth);
-    }
-
-    // applying shadow
-    var defs = group.append('defs');
-
-    var filter = defs.append("filter").attr("id", "drop-shadow").attr("width", "200%").attr("height", "200%");
-
-    filter.append("feOffset").attr("in", "SourceAlpha").attr("result", "offOut").attr("dx", "2").attr("dy", "2");
-
-    filter.append("feGaussianBlur").attr("in", "offOut").attr("stdDeviation", 2).attr("result", "blurOut");
-
-    filter.append("feBlend").attr("in", "SourceGraphic").attr("in2", "blurOut").attr("mode", "normal");
-
-    group.append("path").attr("d", geoPathFormatter.getSvgPath(_mapdDraw.Point2d.create(bounds[_mapdDraw.AABox2d.MINX], bounds[_mapdDraw.AABox2d.MINY]), scale)).attr("class", "map-polyline").attr("fill", 'none').attr("stroke-width", strokeWidth).attr("stroke", strokeColor).style("filter", "url(#drop-shadow)");
-
-    _scaledPopups[chart] = isScaled;
-
-    return bounds;
+  _layer._displayPopup = function (svgProps) {
+    return (0, _utilsVega.__displayPopup)(_extends({}, svgProps, { _vega: _vega, _layer: _layer, state: state }));
   };
 
   _layer._destroyLayer = function (chart) {
@@ -73392,21 +73173,6 @@ function rasterMixin(_chart) {
     }
 
     _minMaxCache[yValue] = range;
-    return _chart;
-  };
-
-  _chart.polyRangeFilter = function (range) {
-    if (!_chart.polyDim()) {
-      throw new Error("Must set yDim before invoking yRange");
-    }
-
-    var polyValue = _chart.polyDim().value()[0];
-
-    if (!arguments.length) {
-      return _minMaxCache[polyValue];
-    }
-
-    _minMaxCache[polyValue] = range;
     return _chart;
   };
 

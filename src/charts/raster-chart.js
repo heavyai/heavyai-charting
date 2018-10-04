@@ -198,13 +198,6 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart.polyRangeFilter = function (filter) {
-    for (const layerName in _layerNames) {
-      const layer = _layerNames[layerName]
-      // layer.yDim() && layer.yDim().filter(filter)
-    }
-  }
-
   _chart.clearLayerFilters = function() {
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
