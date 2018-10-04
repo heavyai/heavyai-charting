@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 156);
+/******/ 	return __webpack_require__(__webpack_require__.s = 155);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -475,7 +475,7 @@ return /******/ (function(modules) { // webpackBootstrap
                 module && module.exports) {
             try {
                 oldLocale = globalLocale._abbr;
-                __webpack_require__(176)("./" + name);
+                __webpack_require__(175)("./" + name);
                 // because defineLocale currently also sets the global locale, we
                 // want to undo that for lazy loaded locales
                 locale_locales__getSetGlobalLocale(oldLocale);
@@ -4547,7 +4547,7 @@ exports.xDomain = xDomain;
 exports.xScale = xScale;
 exports.xAxisTickFormat = xAxisTickFormat;
 
-var _mapdDataLayer = __webpack_require__(159);
+var _mapdDataLayer = __webpack_require__(158);
 
 var _formattingHelpers = __webpack_require__(6);
 
@@ -5293,7 +5293,7 @@ var _asyncMixin = __webpack_require__(133);
 
 var _asyncMixin2 = _interopRequireDefault(_asyncMixin);
 
-var _legendMixin = __webpack_require__(178);
+var _legendMixin = __webpack_require__(177);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
@@ -5307,11 +5307,11 @@ var _errors = __webpack_require__(134);
 
 var errors = _interopRequireWildcard(_errors);
 
-var _filterMixin = __webpack_require__(179);
+var _filterMixin = __webpack_require__(178);
 
 var _filterMixin2 = _interopRequireDefault(_filterMixin);
 
-var _labelMixin = __webpack_require__(180);
+var _labelMixin = __webpack_require__(179);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
@@ -7507,11 +7507,11 @@ function colorMixin(_chart) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(160);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(161);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(162);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(160);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(161);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(170);
 
 
 
@@ -7917,7 +7917,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _binningMixin = __webpack_require__(184);
+var _binningMixin = __webpack_require__(183);
 
 var _binningMixin2 = _interopRequireDefault(_binningMixin);
 
@@ -7937,7 +7937,7 @@ var _lockAxisMixin = __webpack_require__(139);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(12);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
@@ -9624,6 +9624,64 @@ function coordinateGridMixin(_chart) {
 
 /***/ }),
 /* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = marginMixin;
+/**
+ * Margin is a mixin that provides margin utility functions for both the Row Chart and Coordinate Grid
+ * Charts.
+ * @name marginMixin
+ * @memberof dc
+ * @mixin
+ * @param {Object} _chart
+ * @return {dc.marginMixin}
+ */
+function marginMixin(_chart) {
+  /* OVERRIDE ---------------------------------------------------------------- */
+  var _margin = { top: 10, right: 50, bottom: 48, left: 60
+    /* ------------------------------------------------------------------------- */
+
+    /**
+     * Get or set the margins for a particular coordinate grid chart instance. The margins is stored as
+     * an associative Javascript array.
+     * @name margins
+     * @memberof dc.marginMixin
+     * @instance
+     * @example
+     * var leftMargin = chart.margins().left; // 30 by default
+     * chart.margins().left = 50;
+     * leftMargin = chart.margins().left; // now 50
+     * @param {{top: Number, right: Number, left: Number, bottom: Number}} [margins={top: 10, right: 50, bottom: 30, left: 30}]
+     * @return {{top: Number, right: Number, left: Number, bottom: Number}}
+     * @return {dc.marginMixin}
+     */
+  };_chart.margins = function (margins) {
+    if (!arguments.length) {
+      return _margin;
+    }
+    _margin = margins;
+    return _chart;
+  };
+
+  _chart.effectiveWidth = function () {
+    return _chart.width() - _chart.margins().left - _chart.margins().right;
+  };
+
+  _chart.effectiveHeight = function () {
+    return _chart.height() - _chart.margins().top - _chart.margins().bottom;
+  };
+
+  return _chart;
+}
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13277,64 +13335,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = marginMixin;
-/**
- * Margin is a mixin that provides margin utility functions for both the Row Chart and Coordinate Grid
- * Charts.
- * @name marginMixin
- * @memberof dc
- * @mixin
- * @param {Object} _chart
- * @return {dc.marginMixin}
- */
-function marginMixin(_chart) {
-  /* OVERRIDE ---------------------------------------------------------------- */
-  var _margin = { top: 10, right: 50, bottom: 48, left: 60
-    /* ------------------------------------------------------------------------- */
-
-    /**
-     * Get or set the margins for a particular coordinate grid chart instance. The margins is stored as
-     * an associative Javascript array.
-     * @name margins
-     * @memberof dc.marginMixin
-     * @instance
-     * @example
-     * var leftMargin = chart.margins().left; // 30 by default
-     * chart.margins().left = 50;
-     * leftMargin = chart.margins().left; // now 50
-     * @param {{top: Number, right: Number, left: Number, bottom: Number}} [margins={top: 10, right: 50, bottom: 30, left: 30}]
-     * @return {{top: Number, right: Number, left: Number, bottom: Number}}
-     * @return {dc.marginMixin}
-     */
-  };_chart.margins = function (margins) {
-    if (!arguments.length) {
-      return _margin;
-    }
-    _margin = margins;
-    return _chart;
-  };
-
-  _chart.effectiveWidth = function () {
-    return _chart.width() - _chart.margins().left - _chart.margins().right;
-  };
-
-  _chart.effectiveHeight = function () {
-    return _chart.height() - _chart.margins().top - _chart.margins().bottom;
-  };
-
-  return _chart;
-}
-
-/***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13510,11 +13510,11 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _wellknown = __webpack_require__(155);
+var _wellknown = __webpack_require__(238);
 
 var _wellknown2 = _interopRequireDefault(_wellknown);
 
-var _mapdDraw = __webpack_require__(12);
+var _mapdDraw = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13692,12 +13692,12 @@ function conv4326To900913(x, y) {
   return transCoord;
 }
 
-var PolySvgFormatter = function () {
-  function PolySvgFormatter() {
-    _classCallCheck(this, PolySvgFormatter);
+var SvgFormatter = function () {
+  function SvgFormatter() {
+    _classCallCheck(this, SvgFormatter);
   }
 
-  _createClass(PolySvgFormatter, [{
+  _createClass(SvgFormatter, [{
     key: "getBounds",
 
     /**
@@ -13734,22 +13734,22 @@ var PolySvgFormatter = function () {
     }
   }]);
 
-  return PolySvgFormatter;
+  return SvgFormatter;
 }();
 
-var LegacySvgFormatter = function (_PolySvgFormatter) {
-  _inherits(LegacySvgFormatter, _PolySvgFormatter);
+var LegacyPolySvgFormatter = function (_SvgFormatter) {
+  _inherits(LegacyPolySvgFormatter, _SvgFormatter);
 
-  function LegacySvgFormatter() {
-    _classCallCheck(this, LegacySvgFormatter);
+  function LegacyPolySvgFormatter() {
+    _classCallCheck(this, LegacyPolySvgFormatter);
 
-    var _this = _possibleConstructorReturn(this, (LegacySvgFormatter.__proto__ || Object.getPrototypeOf(LegacySvgFormatter)).call(this));
+    var _this = _possibleConstructorReturn(this, (LegacyPolySvgFormatter.__proto__ || Object.getPrototypeOf(LegacyPolySvgFormatter)).call(this));
 
     _this._polys = [];
     return _this;
   }
 
-  _createClass(LegacySvgFormatter, [{
+  _createClass(LegacyPolySvgFormatter, [{
     key: "getBounds",
     value: function getBounds(data, width, height, margins, xscale, yscale) {
       // NOTE: this is handling legacy poly storage for backwards compatibility.
@@ -13826,8 +13826,8 @@ var LegacySvgFormatter = function (_PolySvgFormatter) {
     }
   }]);
 
-  return LegacySvgFormatter;
-}(PolySvgFormatter);
+  return LegacyPolySvgFormatter;
+}(SvgFormatter);
 
 function buildGeoProjection(width, height, margins, xscale, yscale) {
   var clamp = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
@@ -13864,8 +13864,8 @@ function buildGeoProjection(width, height, margins, xscale, yscale) {
   return project;
 }
 
-var GeoSvgFormatter = exports.GeoSvgFormatter = function (_PolySvgFormatter2) {
-  _inherits(GeoSvgFormatter, _PolySvgFormatter2);
+var GeoSvgFormatter = exports.GeoSvgFormatter = function (_SvgFormatter2) {
+  _inherits(GeoSvgFormatter, _SvgFormatter2);
 
   function GeoSvgFormatter(geocol) {
     _classCallCheck(this, GeoSvgFormatter);
@@ -13906,7 +13906,7 @@ var GeoSvgFormatter = exports.GeoSvgFormatter = function (_PolySvgFormatter2) {
   }]);
 
   return GeoSvgFormatter;
-}(PolySvgFormatter);
+}(SvgFormatter);
 
 var renderAttributes = exports.renderAttributes = ["x", "y", "fillColor", "strokeColor", "strokeWidth", "lineJoin", "miterLimit", "opacity"];
 
@@ -13928,14 +13928,18 @@ function __displayPopup(svgProps) {
       state = svgProps.state;
 
 
+  var layerType = _layer.layerType();
+
   var geoPathFormatter = null;
   if (chart._useGeoTypes) {
     if (!state.encoding.geocol) {
       throw new Error("No poly/multipolygon column specified. Cannot build poly outline popup.");
     }
     geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol);
+  } else if (!chart._useGeoTypes && layerType === "polys") {
+    geoPathFormatter = new LegacyPolySvgFormatter();
   } else {
-    geoPathFormatter = new LegacySvgFormatter();
+    throw new Error("Cannot build outline popup.");
   }
 
   var bounds = geoPathFormatter.getBounds(data, width, height, margins, xscale, yscale);
@@ -13999,7 +14003,6 @@ function __displayPopup(svgProps) {
   // transform svg node. This node will position the svg appropriately. Need
   // to offset according to the scale above (scale >= 1)
   var boundsCtr = _mapdDraw.AABox2d.getCenter(_mapdDraw.Point2d.create(), bounds);
-  var layerType = _layer.layerType();
   var xform = svg.append("g").attr("class", layerType === "polys" ? "map-poly-xform" : "map-polyline").attr("transform", "translate(" + (scale * bounds[_mapdDraw.AABox2d.MINX] - (scale - 1) * boundsCtr[0]) + ", " + (scale * (bounds[_mapdDraw.AABox2d.MINY] + 1) - (scale - 1) * (boundsCtr[1] + 1)) + ")");
 
   // now add a transform node that will be used to apply animated scales to
@@ -14021,18 +14024,20 @@ function __displayPopup(svgProps) {
     group.style("stroke-width", strokeWidth);
   }
 
-  // applying shadow
-  var defs = group.append('defs');
+  if (layerType === "lines") {
+    // applying shadow
+    var defs = group.append('defs');
 
-  var filter = defs.append("filter").attr("id", "drop-shadow").attr("width", "200%").attr("height", "200%");
+    var filter = defs.append("filter").attr("id", "drop-shadow").attr("width", "200%").attr("height", "200%");
 
-  filter.append("feOffset").attr("in", "SourceAlpha").attr("result", "offOut").attr("dx", "2").attr("dy", "2");
+    filter.append("feOffset").attr("in", "SourceAlpha").attr("result", "offOut").attr("dx", "2").attr("dy", "2");
 
-  filter.append("feGaussianBlur").attr("in", "offOut").attr("stdDeviation", 2).attr("result", "blurOut");
+    filter.append("feGaussianBlur").attr("in", "offOut").attr("stdDeviation", 2).attr("result", "blurOut");
 
-  filter.append("feBlend").attr("in", "SourceGraphic").attr("in2", "blurOut").attr("mode", "normal");
+    filter.append("feBlend").attr("in", "SourceGraphic").attr("in2", "blurOut").attr("mode", "normal");
+  }
 
-  group.append("path").attr("d", geoPathFormatter.getSvgPath(_mapdDraw.Point2d.create(bounds[_mapdDraw.AABox2d.MINX], bounds[_mapdDraw.AABox2d.MINY]), scale)).attr("class", layerType === "polys" ? "map-polygon-shape" : "map-polyline").attr("fill", layerType === "polys" ? fillColor : "none").attr("fill-rule", "evenodd").attr("stroke-width", strokeWidth).attr("stroke", strokeColor).style("filter", "url(#drop-shadow)").on("click", function () {
+  group.append("path").attr("d", geoPathFormatter.getSvgPath(_mapdDraw.Point2d.create(bounds[_mapdDraw.AABox2d.MINX], bounds[_mapdDraw.AABox2d.MINY]), scale)).attr("class", layerType === "polys" ? "map-polygon-shape" : "map-polyline").attr("fill", layerType === "polys" ? fillColor : "none").attr("fill-rule", "evenodd").attr("stroke-width", strokeWidth).attr("stroke", strokeColor).style("filter", layerType === "polys" ? "none" : "url(#drop-shadow)").on("click", function () {
     if (layerType === "polys") {
       return _layer.onClick(chart, data, _d3.default.event);
     } else {
@@ -15027,7 +15032,7 @@ var _coreAsync = __webpack_require__(4);
 
 var _utils = __webpack_require__(3);
 
-var _mapDrawMixin = __webpack_require__(191);
+var _mapDrawMixin = __webpack_require__(190);
 
 var _rasterDrawMixin = __webpack_require__(24);
 
@@ -15059,14 +15064,14 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   _chart._xDimName = null;
   _chart._yDimName = null;
-  _chart._polyDimName = null;
+  _chart._viewBoxDimName = null;
   var hasAppliedInitialBounds = false;
   var _hasRendered = false;
   var _activeLayer = null;
   var _mapInitted = false;
   var _xDim = null;
   var _yDim = null;
-  var _polyDim = null;
+  var _viewBoxDim = null;
   var _lastMapMoveType = null;
   var _lastMapUpdateTime = 0;
   var _isFirstMoveEvent = true;
@@ -15212,13 +15217,13 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     return _chart;
   };
 
-  _chart.polyDim = function (polyDim) {
+  _chart.viewBoxDim = function (viewBoxDim) {
     if (!arguments.length) {
-      return _polyDim;
+      return _viewBoxDim;
     }
-    _polyDim = polyDim;
-    if (_polyDim) {
-      _chart._polyDimName = _polyDim.value()[0];
+    _viewBoxDim = viewBoxDim;
+    if (_viewBoxDim) {
+      _chart._viewBoxDimName = _viewBoxDim.value()[0];
     }
     return _chart;
   };
@@ -15329,11 +15334,11 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
             xdim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
           }
-        } else if (typeof layer.polyDim === "function") {
-          var polyDim = layer.polyDim();
-          if (polyDim !== null) {
+        } else if (typeof layer.viewBoxDim === "function") {
+          var viewBoxDim = layer.viewBoxDim();
+          if (viewBoxDim !== null) {
             redrawall = true;
-            polyDim.filterST_Intersects([[bounds._sw.lng, bounds._sw.lat], [bounds._ne.lng, bounds._sw.lat], [bounds._ne.lng, bounds._ne.lat], [bounds._sw.lng, bounds._ne.lat]]);
+            viewBoxDim.filterST_Intersects([[bounds._sw.lng, bounds._sw.lat], [bounds._ne.lng, bounds._sw.lat], [bounds._ne.lng, bounds._ne.lat], [bounds._sw.lng, bounds._ne.lat]]);
           }
         }
       });
@@ -15351,8 +15356,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
       });
-    } else if (_polyDim !== null) {
-      _polyDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._maxCoord[1]], [_chart._minCoord[0], _chart._maxCoord[1]]]);
+    } else if (_viewBoxDim !== null) {
+      _viewBoxDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._maxCoord[1]], [_chart._minCoord[0], _chart._maxCoord[1]]]);
       (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
@@ -15739,7 +15744,7 @@ var _utilsLatlon = __webpack_require__(142);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _lassoToolUi = __webpack_require__(193);
+var _lassoToolUi = __webpack_require__(192);
 
 var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
 
@@ -15747,7 +15752,7 @@ var _earcut = __webpack_require__(141);
 
 var _earcut2 = _interopRequireDefault(_earcut);
 
-var _mapdDraw = __webpack_require__(12);
+var _mapdDraw = __webpack_require__(13);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
@@ -27033,7 +27038,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _dcConstants = __webpack_require__(181);
+var _dcConstants = __webpack_require__(180);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27156,7 +27161,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = elasticDimensionMixin;
 
-var _ramda = __webpack_require__(183);
+var _ramda = __webpack_require__(182);
 
 var _d = __webpack_require__(1);
 
@@ -28376,7 +28381,7 @@ exports.conv4326To900913X = conv4326To900913X;
 exports.conv4326To900913Y = conv4326To900913Y;
 exports.conv4326To900913 = conv4326To900913;
 
-var _mapdDraw = __webpack_require__(12);
+var _mapdDraw = __webpack_require__(13);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
@@ -28478,7 +28483,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _coordinateGridRasterMixinUi = __webpack_require__(207);
+var _coordinateGridRasterMixinUi = __webpack_require__(206);
 
 var _coordinateGridRasterMixinUi2 = _interopRequireDefault(_coordinateGridRasterMixinUi);
 
@@ -28490,7 +28495,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(12);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
@@ -30147,12 +30152,12 @@ function h(sel, b, c) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(226);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(227);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(225);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(226);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(149);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTypes__ = __webpack_require__(150);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatPrefixAuto__ = __webpack_require__(151);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__identity__ = __webpack_require__(230);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__identity__ = __webpack_require__(229);
 
 
 
@@ -30353,9 +30358,9 @@ FormatSpecifier.prototype.toString = function() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDefault__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDefault__ = __webpack_require__(227);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatPrefixAuto__ = __webpack_require__(151);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatRounded__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatRounded__ = __webpack_require__(228);
 
 
 
@@ -30731,7 +30736,7 @@ var _d = __webpack_require__(1);
 
 var d3 = _interopRequireWildcard(_d);
 
-var _mapdDraw = __webpack_require__(12);
+var _mapdDraw = __webpack_require__(13);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -31947,298 +31952,22 @@ function rasterLayerPolyMixin(_layer) {
 
 /***/ }),
 /* 155 */
-/***/ (function(module, exports) {
-
-/*eslint-disable no-cond-assign */
-module.exports = parse;
-module.exports.parse = parse;
-module.exports.stringify = stringify;
-
-var numberRegexp = /[-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?/;
-// Matches sequences like '100 100' or '100 100 100'.
-var tuples = new RegExp('^' + numberRegexp.source + '(\\s' + numberRegexp.source + '){1,}');
-
-/*
- * Parse WKT and return GeoJSON.
- *
- * @param {string} _ A WKT geometry
- * @return {?Object} A GeoJSON geometry object
- */
-function parse (input) {
-  var parts = input.split(';');
-  var _ = parts.pop();
-  var srid = (parts.shift() || '').split('=').pop();
-
-  var i = 0;
-
-  function $ (re) {
-    var match = _.substring(i).match(re);
-    if (!match) return null;
-    else {
-      i += match[0].length;
-      return match[0];
-    }
-  }
-
-  function crs (obj) {
-    if (obj && srid.match(/\d+/)) {
-      obj.crs = {
-        type: 'name',
-        properties: {
-          name: 'urn:ogc:def:crs:EPSG::' + srid
-        }
-      };
-    }
-
-    return obj;
-  }
-
-  function white () { $(/^\s*/); }
-
-  function multicoords () {
-    white();
-    var depth = 0;
-    var rings = [];
-    var stack = [rings];
-    var pointer = rings;
-    var elem;
-
-    while (elem =
-           $(/^(\()/) ||
-             $(/^(\))/) ||
-               $(/^(,)/) ||
-                 $(tuples)) {
-      if (elem === '(') {
-        stack.push(pointer);
-        pointer = [];
-        stack[stack.length - 1].push(pointer);
-        depth++;
-      } else if (elem === ')') {
-        // For the case: Polygon(), ...
-        if (pointer.length === 0) return null;
-
-        pointer = stack.pop();
-        // the stack was empty, input was malformed
-        if (!pointer) return null;
-        depth--;
-        if (depth === 0) break;
-      } else if (elem === ',') {
-        pointer = [];
-        stack[stack.length - 1].push(pointer);
-      } else if (!elem.split(/\s/g).some(isNaN)) {
-        Array.prototype.push.apply(pointer, elem.split(/\s/g).map(parseFloat));
-      } else {
-        return null;
-      }
-      white();
-    }
-
-    if (depth !== 0) return null;
-
-    return rings;
-  }
-
-  function coords () {
-    var list = [];
-    var item;
-    var pt;
-    while (pt =
-           $(tuples) ||
-             $(/^(,)/)) {
-      if (pt === ',') {
-        list.push(item);
-        item = [];
-      } else if (!pt.split(/\s/g).some(isNaN)) {
-        if (!item) item = [];
-        Array.prototype.push.apply(item, pt.split(/\s/g).map(parseFloat));
-      }
-      white();
-    }
-
-    if (item) list.push(item);
-    else return null;
-
-    return list.length ? list : null;
-  }
-
-  function point () {
-    if (!$(/^(point(\sz)?)/i)) return null;
-    white();
-    if (!$(/^(\()/)) return null;
-    var c = coords();
-    if (!c) return null;
-    white();
-    if (!$(/^(\))/)) return null;
-    return {
-      type: 'Point',
-      coordinates: c[0]
-    };
-  }
-
-  function multipoint () {
-    if (!$(/^(multipoint)/i)) return null;
-    white();
-    var newCoordsFormat = _
-      .substring(_.indexOf('(') + 1, _.length - 1)
-      .replace(/\(/g, '')
-      .replace(/\)/g, '');
-    _ = 'MULTIPOINT (' + newCoordsFormat + ')';
-    var c = multicoords();
-    if (!c) return null;
-    white();
-    return {
-      type: 'MultiPoint',
-      coordinates: c
-    };
-  }
-
-  function multilinestring () {
-    if (!$(/^(multilinestring)/i)) return null;
-    white();
-    var c = multicoords();
-    if (!c) return null;
-    white();
-    return {
-      type: 'MultiLineString',
-      coordinates: c
-    };
-  }
-
-  function linestring () {
-    if (!$(/^(linestring(\sz)?)/i)) return null;
-    white();
-    if (!$(/^(\()/)) return null;
-    var c = coords();
-    if (!c) return null;
-    if (!$(/^(\))/)) return null;
-    return {
-      type: 'LineString',
-      coordinates: c
-    };
-  }
-
-  function polygon () {
-    if (!$(/^(polygon(\sz)?)/i)) return null;
-    white();
-    var c = multicoords();
-    if (!c) return null;
-    return {
-      type: 'Polygon',
-      coordinates: c
-    };
-  }
-
-  function multipolygon () {
-    if (!$(/^(multipolygon)/i)) return null;
-    white();
-    var c = multicoords();
-    if (!c) return null;
-    return {
-      type: 'MultiPolygon',
-      coordinates: c
-    };
-  }
-
-  function geometrycollection () {
-    var geometries = [];
-    var geometry;
-
-    if (!$(/^(geometrycollection)/i)) return null;
-    white();
-
-    if (!$(/^(\()/)) return null;
-    while (geometry = root()) {
-      geometries.push(geometry);
-      white();
-      $(/^(,)/);
-      white();
-    }
-    if (!$(/^(\))/)) return null;
-
-    return {
-      type: 'GeometryCollection',
-      geometries: geometries
-    };
-  }
-
-  function root () {
-    return point() ||
-      linestring() ||
-      polygon() ||
-      multipoint() ||
-      multilinestring() ||
-      multipolygon() ||
-      geometrycollection();
-  }
-
-  return crs(root());
-}
-
-/**
- * Stringifies a GeoJSON object into WKT
- */
-function stringify (gj) {
-  if (gj.type === 'Feature') {
-    gj = gj.geometry;
-  }
-
-  function pairWKT (c) {
-    return c.join(' ');
-  }
-
-  function ringWKT (r) {
-    return r.map(pairWKT).join(', ');
-  }
-
-  function ringsWKT (r) {
-    return r.map(ringWKT).map(wrapParens).join(', ');
-  }
-
-  function multiRingsWKT (r) {
-    return r.map(ringsWKT).map(wrapParens).join(', ');
-  }
-
-  function wrapParens (s) { return '(' + s + ')'; }
-
-  switch (gj.type) {
-    case 'Point':
-      return 'POINT (' + pairWKT(gj.coordinates) + ')';
-    case 'LineString':
-      return 'LINESTRING (' + ringWKT(gj.coordinates) + ')';
-    case 'Polygon':
-      return 'POLYGON (' + ringsWKT(gj.coordinates) + ')';
-    case 'MultiPoint':
-      return 'MULTIPOINT (' + ringWKT(gj.coordinates) + ')';
-    case 'MultiPolygon':
-      return 'MULTIPOLYGON (' + multiRingsWKT(gj.coordinates) + ')';
-    case 'MultiLineString':
-      return 'MULTILINESTRING (' + ringsWKT(gj.coordinates) + ')';
-    case 'GeometryCollection':
-      return 'GEOMETRYCOLLECTION (' + gj.geometries.map(stringify).join(', ') + ')';
-    default:
-      throw new Error('stringify requires a valid GeoJSON Feature or geometry object as input');
-  }
-}
-
-
-/***/ }),
-/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(157);
+__webpack_require__(156);
 
 /***/ }),
-/* 157 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(158);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(157);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
 
 /***/ }),
-/* 158 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32321,7 +32050,7 @@ Object.keys(_logger).forEach(function (key) {
   });
 });
 
-var _bubbleOverlay = __webpack_require__(177);
+var _bubbleOverlay = __webpack_require__(176);
 
 Object.defineProperty(exports, "bubbleOverlay", {
   enumerable: true,
@@ -32330,7 +32059,7 @@ Object.defineProperty(exports, "bubbleOverlay", {
   }
 });
 
-var _barChart = __webpack_require__(182);
+var _barChart = __webpack_require__(181);
 
 Object.defineProperty(exports, "barChart", {
   enumerable: true,
@@ -32339,7 +32068,7 @@ Object.defineProperty(exports, "barChart", {
   }
 });
 
-var _bubbleChart = __webpack_require__(185);
+var _bubbleChart = __webpack_require__(184);
 
 Object.defineProperty(exports, "bubbleChart", {
   enumerable: true,
@@ -32348,7 +32077,7 @@ Object.defineProperty(exports, "bubbleChart", {
   }
 });
 
-var _cloudChart = __webpack_require__(186);
+var _cloudChart = __webpack_require__(185);
 
 Object.defineProperty(exports, "cloudChart", {
   enumerable: true,
@@ -32357,7 +32086,7 @@ Object.defineProperty(exports, "cloudChart", {
   }
 });
 
-var _compositeChart = __webpack_require__(187);
+var _compositeChart = __webpack_require__(186);
 
 Object.defineProperty(exports, "compositeChart", {
   enumerable: true,
@@ -32366,7 +32095,7 @@ Object.defineProperty(exports, "compositeChart", {
   }
 });
 
-var _dataCount = __webpack_require__(188);
+var _dataCount = __webpack_require__(187);
 
 Object.defineProperty(exports, "dataCount", {
   enumerable: true,
@@ -32375,7 +32104,7 @@ Object.defineProperty(exports, "dataCount", {
   }
 });
 
-var _dataGrid = __webpack_require__(189);
+var _dataGrid = __webpack_require__(188);
 
 Object.defineProperty(exports, "dataGrid", {
   enumerable: true,
@@ -32384,7 +32113,7 @@ Object.defineProperty(exports, "dataGrid", {
   }
 });
 
-var _geoChoroplethChart = __webpack_require__(190);
+var _geoChoroplethChart = __webpack_require__(189);
 
 Object.defineProperty(exports, "geoChoroplethChart", {
   enumerable: true,
@@ -32393,7 +32122,7 @@ Object.defineProperty(exports, "geoChoroplethChart", {
   }
 });
 
-var _heatmap = __webpack_require__(200);
+var _heatmap = __webpack_require__(199);
 
 Object.defineProperty(exports, "heatMap", {
   enumerable: true,
@@ -32402,7 +32131,7 @@ Object.defineProperty(exports, "heatMap", {
   }
 });
 
-var _pieChart = __webpack_require__(201);
+var _pieChart = __webpack_require__(200);
 
 Object.defineProperty(exports, "pieChart", {
   enumerable: true,
@@ -32411,7 +32140,7 @@ Object.defineProperty(exports, "pieChart", {
   }
 });
 
-var _lineChart = __webpack_require__(202);
+var _lineChart = __webpack_require__(201);
 
 Object.defineProperty(exports, "lineChart", {
   enumerable: true,
@@ -32420,7 +32149,7 @@ Object.defineProperty(exports, "lineChart", {
   }
 });
 
-var _numberChart = __webpack_require__(203);
+var _numberChart = __webpack_require__(202);
 
 Object.defineProperty(exports, "numberChart", {
   enumerable: true,
@@ -32429,7 +32158,7 @@ Object.defineProperty(exports, "numberChart", {
   }
 });
 
-var _rasterChart = __webpack_require__(204);
+var _rasterChart = __webpack_require__(203);
 
 Object.defineProperty(exports, "rasterChart", {
   enumerable: true,
@@ -32438,7 +32167,7 @@ Object.defineProperty(exports, "rasterChart", {
   }
 });
 
-var _rowChart = __webpack_require__(234);
+var _rowChart = __webpack_require__(233);
 
 Object.defineProperty(exports, "rowChart", {
   enumerable: true,
@@ -32447,7 +32176,7 @@ Object.defineProperty(exports, "rowChart", {
   }
 });
 
-var _scatterPlot = __webpack_require__(235);
+var _scatterPlot = __webpack_require__(234);
 
 Object.defineProperty(exports, "scatterPlot", {
   enumerable: true,
@@ -32456,7 +32185,7 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _mapdTable = __webpack_require__(236);
+var _mapdTable = __webpack_require__(235);
 
 Object.defineProperty(exports, "mapdTable", {
   enumerable: true,
@@ -32465,7 +32194,7 @@ Object.defineProperty(exports, "mapdTable", {
   }
 });
 
-var _boxPlot = __webpack_require__(237);
+var _boxPlot = __webpack_require__(236);
 
 Object.defineProperty(exports, "boxPlot", {
   enumerable: true,
@@ -32474,7 +32203,7 @@ Object.defineProperty(exports, "boxPlot", {
   }
 });
 
-var _countWidget = __webpack_require__(238);
+var _countWidget = __webpack_require__(237);
 
 Object.defineProperty(exports, "countWidget", {
   enumerable: true,
@@ -32555,7 +32284,7 @@ Object.defineProperty(exports, "stackMixin", {
   }
 });
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(12);
 
 Object.defineProperty(exports, "marginMixin", {
   enumerable: true,
@@ -32695,18 +32424,18 @@ var errors = exports.errors = {
 };
 
 /***/ }),
-/* 159 */
+/* 158 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(8);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(171);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(174);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(173);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(175);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(174);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
 /**
  * The exported `mapd-data-layer` module. Consists of a graph constructor and
@@ -32723,7 +32452,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 160 */
+/* 159 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32821,7 +32550,7 @@ function parseExpression(expression) {
 }
 
 /***/ }),
-/* 161 */
+/* 160 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32857,20 +32586,20 @@ function parseDataState(state, parser) {
 }
 
 /***/ }),
-/* 162 */
+/* 161 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTransform;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(163);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(164);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(165);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(166);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(162);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(166);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_project__ = __webpack_require__(168);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_resolvefilter__ = __webpack_require__(169);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_sample__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_project__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_resolvefilter__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_sample__ = __webpack_require__(169);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_source__ = __webpack_require__(29);
 
 
@@ -32910,7 +32639,7 @@ function parseTransform(sql, t, parser) {
 }
 
 /***/ }),
-/* 163 */
+/* 162 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32975,7 +32704,7 @@ function parseGroupBy(sql, groupby, parser) {
 }
 
 /***/ }),
-/* 164 */
+/* 163 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32995,7 +32724,7 @@ function parseBin(sql, _ref) {
 }
 
 /***/ }),
-/* 165 */
+/* 164 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33032,7 +32761,7 @@ function parseCrossfilter(sql, transform) {
 }
 
 /***/ }),
-/* 166 */
+/* 165 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33053,7 +32782,7 @@ function parseSort(sql, transform) {
 }
 
 /***/ }),
-/* 167 */
+/* 166 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33067,7 +32796,7 @@ function parseLimit(sql, transform) {
 }
 
 /***/ }),
-/* 168 */
+/* 167 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33084,7 +32813,7 @@ function parseProject(sql, transform) {
 }
 
 /***/ }),
-/* 169 */
+/* 168 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33107,7 +32836,7 @@ function parseResolvefilter(sql, transform) {
 }
 
 /***/ }),
-/* 170 */
+/* 169 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33135,7 +32864,7 @@ function sample(sql, transform) {
 }
 
 /***/ }),
-/* 171 */
+/* 170 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33185,12 +32914,12 @@ function writeOffset(offset) {
 }
 
 /***/ }),
-/* 172 */
+/* 171 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(172);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
@@ -33264,7 +32993,7 @@ function createDataGraph(connector) {
 }
 
 /***/ }),
-/* 173 */
+/* 172 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33357,7 +33086,7 @@ function createDataNode(context) {
 }
 
 /***/ }),
-/* 174 */
+/* 173 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33565,7 +33294,7 @@ function between(field, range) {
 }
 
 /***/ }),
-/* 175 */
+/* 174 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33793,7 +33522,7 @@ function bottom(field, limit, offset) {
 }
 
 /***/ }),
-/* 176 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -34012,10 +33741,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 176;
+webpackContext.id = 175;
 
 /***/ }),
-/* 177 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34438,7 +34167,7 @@ function bubbleOverlay(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 178 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34539,7 +34268,7 @@ function legendMixin(chart) {
 }
 
 /***/ }),
-/* 179 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34752,7 +34481,7 @@ function filterMixin(_chart) {
 }
 
 /***/ }),
-/* 180 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34896,7 +34625,7 @@ function labelMixin(chart) {
 }
 
 /***/ }),
-/* 181 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34908,7 +34637,7 @@ Object.defineProperty(exports, "__esModule", {
 var SPINNER_DELAY = exports.SPINNER_DELAY = 1000;
 
 /***/ }),
-/* 182 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35468,7 +35197,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 }
 
 /***/ }),
-/* 183 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //  Ramda v0.21.0
@@ -44258,7 +43987,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 
 
 /***/ }),
-/* 184 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44452,7 +44181,7 @@ function binningMixin(chart) {
 }
 
 /***/ }),
-/* 185 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44899,7 +44628,7 @@ function bubbleChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 186 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44926,7 +44655,7 @@ var _colorMixin = __webpack_require__(7);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(12);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
@@ -45049,7 +44778,7 @@ function cloudChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 187 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45617,7 +45346,7 @@ function compositeChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 188 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45786,7 +45515,7 @@ function dataCount(parent, chartGroup) {
 }
 
 /***/ }),
-/* 189 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46041,7 +45770,7 @@ function dataGrid(parent, chartGroup) {
 }
 
 /***/ }),
-/* 190 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46075,11 +45804,11 @@ var _core = __webpack_require__(2);
 
 var _utils = __webpack_require__(3);
 
-var _bbox = __webpack_require__(195);
+var _bbox = __webpack_require__(194);
 
 var _bbox2 = _interopRequireDefault(_bbox);
 
-var _bboxClip = __webpack_require__(197);
+var _bboxClip = __webpack_require__(196);
 
 var _bboxClip2 = _interopRequireDefault(_bboxClip);
 
@@ -46500,7 +46229,7 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 }
 
 /***/ }),
-/* 191 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46511,7 +46240,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.mapDrawMixin = mapDrawMixin;
 
-var _utilsLasso = __webpack_require__(192);
+var _utilsLasso = __webpack_require__(191);
 
 var utils = _interopRequireWildcard(_utilsLasso);
 
@@ -46761,7 +46490,7 @@ function mapDrawMixin(chart) {
 }
 
 /***/ }),
-/* 192 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46888,7 +46617,7 @@ function convertGeojsonToSql(features, px, py) {
 }
 
 /***/ }),
-/* 193 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46908,11 +46637,11 @@ var _utilsLatlon = __webpack_require__(142);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _mapdDraw = __webpack_require__(12);
+var _mapdDraw = __webpack_require__(13);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _simplifyJs = __webpack_require__(194);
+var _simplifyJs = __webpack_require__(193);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
@@ -48010,7 +47739,7 @@ var LassoButtonGroupController = function () {
 exports.default = LassoButtonGroupController;
 
 /***/ }),
-/* 194 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -48140,13 +47869,13 @@ else window.simplify = simplify;
 
 
 /***/ }),
-/* 195 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var meta_1 = __webpack_require__(196);
+var meta_1 = __webpack_require__(195);
 /**
  * Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
  *
@@ -48183,7 +47912,7 @@ exports.default = bbox;
 
 
 /***/ }),
-/* 196 */
+/* 195 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -49313,7 +49042,7 @@ function findPoint(geojson, options) {
 
 
 /***/ }),
-/* 197 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49327,8 +49056,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 var helpers_1 = __webpack_require__(25);
-var invariant_1 = __webpack_require__(198);
-var lineclip = __importStar(__webpack_require__(199));
+var invariant_1 = __webpack_require__(197);
+var lineclip = __importStar(__webpack_require__(198));
 /**
  * Takes a {@link Feature} and a bbox and clips the feature to the bbox using
  * [lineclip](https://github.com/mapbox/lineclip).
@@ -49396,7 +49125,7 @@ function clipPolygon(rings, bbox) {
 
 
 /***/ }),
-/* 198 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49614,7 +49343,7 @@ exports.getType = getType;
 
 
 /***/ }),
-/* 199 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49746,7 +49475,7 @@ function bitCode(p, bbox) {
 
 
 /***/ }),
-/* 200 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49776,7 +49505,7 @@ var _colorMixin = __webpack_require__(7);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(12);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
@@ -50465,7 +50194,7 @@ function heatMap(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 201 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51271,7 +51000,7 @@ function pieChart(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 202 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51892,7 +51621,7 @@ function lineChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 203 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51989,7 +51718,7 @@ function numberChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 204 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52000,7 +51729,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rasterChart;
 
-var _stackedLegend = __webpack_require__(205);
+var _stackedLegend = __webpack_require__(204);
 
 var _coordinateGridRasterMixin = __webpack_require__(143);
 
@@ -52022,7 +51751,7 @@ var _rasterDrawMixin = __webpack_require__(24);
 
 var _coreAsync = __webpack_require__(4);
 
-var _legendables = __webpack_require__(208);
+var _legendables = __webpack_require__(207);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52336,7 +52065,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       for (layer in layers) {
         var xDim = layer.xDim(),
             yDim = layer.yDim(),
-            polyDim = layer.polyDim();
+            viewBoxDim = layer.viewBoxDim();
         if (xDim) {
           var range = xDim.getFilter();
           if (range !== null) {
@@ -52349,8 +52078,8 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
             yRanges.push(range);
           }
         }
-        if (polyDim) {
-          var range = polyDim.getFilter();
+        if (viewBoxDim) {
+          var range = viewBoxDim.getFilter();
           if (range !== null) {
             polyRanges.push(range);
           }
@@ -52624,7 +52353,7 @@ function genLayeredVega(chart) {
 }
 
 /***/ }),
-/* 205 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52646,7 +52375,7 @@ exports.handleLegendLock = handleLegendLock;
 exports.handleLegendInput = handleLegendInput;
 exports.toLegendState = toLegendState;
 
-var _lodash = __webpack_require__(206);
+var _lodash = __webpack_require__(205);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -52913,7 +52642,7 @@ function toLegendState() {
 }
 
 /***/ }),
-/* 206 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -67652,7 +67381,7 @@ function toLegendState() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module), __webpack_require__(17)))
 
 /***/ }),
-/* 207 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68755,18 +68484,18 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 }
 
 /***/ }),
-/* 208 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var legend_1 = __webpack_require__(209);
+var legend_1 = __webpack_require__(208);
 exports.Legend = legend_1.default;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 209 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68780,10 +68509,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var h_1 = __webpack_require__(210);
-var vdom_1 = __webpack_require__(213);
-var d3_dispatch_1 = __webpack_require__(222);
-var d3_format_1 = __webpack_require__(224);
+var h_1 = __webpack_require__(209);
+var vdom_1 = __webpack_require__(212);
+var d3_dispatch_1 = __webpack_require__(221);
+var d3_format_1 = __webpack_require__(223);
 var commafy = function (d) { return d3_format_1.format(",")(parseFloat(d.toFixed(2))); };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
@@ -68974,14 +68703,14 @@ exports.default = Legend;
 //# sourceMappingURL=legend.js.map
 
 /***/ }),
-/* 210 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var vnode_1 = __webpack_require__(211);
-var is = __webpack_require__(212);
+var vnode_1 = __webpack_require__(210);
+var is = __webpack_require__(211);
 function addNS(data, children, sel) {
     data.ns = 'http://www.w3.org/2000/svg';
     if (sel !== 'foreignObject' && children !== undefined) {
@@ -69039,7 +68768,7 @@ exports.default = h;
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 211 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69055,7 +68784,7 @@ exports.default = vnode;
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 212 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69069,18 +68798,18 @@ exports.primitive = primitive;
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 213 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var snabbdom_1 = __webpack_require__(214);
-var attributes_1 = __webpack_require__(217);
-var class_1 = __webpack_require__(218);
-var props_1 = __webpack_require__(219);
-var style_1 = __webpack_require__(220);
-var eventlisteners_1 = __webpack_require__(221);
+var snabbdom_1 = __webpack_require__(213);
+var attributes_1 = __webpack_require__(216);
+var class_1 = __webpack_require__(217);
+var props_1 = __webpack_require__(218);
+var style_1 = __webpack_require__(219);
+var eventlisteners_1 = __webpack_require__(220);
 exports.patch = snabbdom_1.init([
     class_1.default,
     props_1.default,
@@ -69091,7 +68820,7 @@ exports.patch = snabbdom_1.init([
 //# sourceMappingURL=vdom.js.map
 
 /***/ }),
-/* 214 */
+/* 213 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -69099,10 +68828,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["init"] = init;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(145);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(146);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(215);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(214);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(147);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_3__h__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(216);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(215);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "thunk", function() { return __WEBPACK_IMPORTED_MODULE_4__thunk__["a"]; });
 
 
@@ -69410,7 +69139,7 @@ function init(modules, domApi) {
 //# sourceMappingURL=snabbdom.js.map
 
 /***/ }),
-/* 215 */
+/* 214 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -69481,7 +69210,7 @@ var htmlDomApi = {
 //# sourceMappingURL=htmldomapi.js.map
 
 /***/ }),
-/* 216 */
+/* 215 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -69534,7 +69263,7 @@ var thunk = function thunk(sel, key, fn, args) {
 //# sourceMappingURL=thunk.js.map
 
 /***/ }),
-/* 217 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69595,7 +69324,7 @@ exports.default = exports.attributesModule;
 //# sourceMappingURL=attributes.js.map
 
 /***/ }),
-/* 218 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69626,7 +69355,7 @@ exports.default = exports.classModule;
 //# sourceMappingURL=class.js.map
 
 /***/ }),
-/* 219 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69658,7 +69387,7 @@ exports.default = exports.propsModule;
 //# sourceMappingURL=props.js.map
 
 /***/ }),
-/* 220 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69750,7 +69479,7 @@ exports.default = exports.styleModule;
 //# sourceMappingURL=style.js.map
 
 /***/ }),
-/* 221 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69851,18 +69580,18 @@ exports.default = exports.eventListenersModule;
 //# sourceMappingURL=eventlisteners.js.map
 
 /***/ }),
-/* 222 */
+/* 221 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_dispatch__ = __webpack_require__(223);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_dispatch__ = __webpack_require__(222);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return __WEBPACK_IMPORTED_MODULE_0__src_dispatch__["a"]; });
 
 
 
 /***/ }),
-/* 223 */
+/* 222 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -69953,12 +69682,12 @@ function set(type, name, callback) {
 
 
 /***/ }),
-/* 224 */
+/* 223 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__ = __webpack_require__(225);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__ = __webpack_require__(224);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatDefaultLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "format", function() { return __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatPrefix", function() { return __WEBPACK_IMPORTED_MODULE_0__src_defaultLocale__["c"]; });
@@ -69966,11 +69695,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatLocale", function() { return __WEBPACK_IMPORTED_MODULE_1__src_locale__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__src_formatSpecifier__ = __webpack_require__(149);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatSpecifier", function() { return __WEBPACK_IMPORTED_MODULE_2__src_formatSpecifier__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__src_precisionFixed__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__src_precisionFixed__ = __webpack_require__(230);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionFixed", function() { return __WEBPACK_IMPORTED_MODULE_3__src_precisionFixed__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__src_precisionPrefix__ = __webpack_require__(232);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__src_precisionPrefix__ = __webpack_require__(231);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionPrefix", function() { return __WEBPACK_IMPORTED_MODULE_4__src_precisionPrefix__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__src_precisionRound__ = __webpack_require__(233);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__src_precisionRound__ = __webpack_require__(232);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionRound", function() { return __WEBPACK_IMPORTED_MODULE_5__src_precisionRound__["a"]; });
 
 
@@ -69981,7 +69710,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 225 */
+/* 224 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70011,7 +69740,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 226 */
+/* 225 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70036,7 +69765,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 227 */
+/* 226 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70050,7 +69779,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 228 */
+/* 227 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70071,7 +69800,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 229 */
+/* 228 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70090,7 +69819,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 230 */
+/* 229 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70100,7 +69829,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 231 */
+/* 230 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70113,7 +69842,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 232 */
+/* 231 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70126,7 +69855,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 233 */
+/* 232 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70140,7 +69869,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 234 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70171,7 +69900,7 @@ var _lockAxisMixin = __webpack_require__(139);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(12);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
@@ -70805,7 +70534,7 @@ function rowChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 235 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71107,7 +70836,7 @@ function scatterPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 236 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71618,7 +71347,7 @@ function mapdTable(parent, chartGroup) {
 }
 
 /***/ }),
-/* 237 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71876,7 +71605,7 @@ function boxPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 238 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72005,6 +71734,282 @@ function countWidget(parent, chartGroup) {
 }
 
 /***/ }),
+/* 238 */
+/***/ (function(module, exports) {
+
+/*eslint-disable no-cond-assign */
+module.exports = parse;
+module.exports.parse = parse;
+module.exports.stringify = stringify;
+
+var numberRegexp = /[-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?/;
+// Matches sequences like '100 100' or '100 100 100'.
+var tuples = new RegExp('^' + numberRegexp.source + '(\\s' + numberRegexp.source + '){1,}');
+
+/*
+ * Parse WKT and return GeoJSON.
+ *
+ * @param {string} _ A WKT geometry
+ * @return {?Object} A GeoJSON geometry object
+ */
+function parse (input) {
+  var parts = input.split(';');
+  var _ = parts.pop();
+  var srid = (parts.shift() || '').split('=').pop();
+
+  var i = 0;
+
+  function $ (re) {
+    var match = _.substring(i).match(re);
+    if (!match) return null;
+    else {
+      i += match[0].length;
+      return match[0];
+    }
+  }
+
+  function crs (obj) {
+    if (obj && srid.match(/\d+/)) {
+      obj.crs = {
+        type: 'name',
+        properties: {
+          name: 'urn:ogc:def:crs:EPSG::' + srid
+        }
+      };
+    }
+
+    return obj;
+  }
+
+  function white () { $(/^\s*/); }
+
+  function multicoords () {
+    white();
+    var depth = 0;
+    var rings = [];
+    var stack = [rings];
+    var pointer = rings;
+    var elem;
+
+    while (elem =
+           $(/^(\()/) ||
+             $(/^(\))/) ||
+               $(/^(,)/) ||
+                 $(tuples)) {
+      if (elem === '(') {
+        stack.push(pointer);
+        pointer = [];
+        stack[stack.length - 1].push(pointer);
+        depth++;
+      } else if (elem === ')') {
+        // For the case: Polygon(), ...
+        if (pointer.length === 0) return null;
+
+        pointer = stack.pop();
+        // the stack was empty, input was malformed
+        if (!pointer) return null;
+        depth--;
+        if (depth === 0) break;
+      } else if (elem === ',') {
+        pointer = [];
+        stack[stack.length - 1].push(pointer);
+      } else if (!elem.split(/\s/g).some(isNaN)) {
+        Array.prototype.push.apply(pointer, elem.split(/\s/g).map(parseFloat));
+      } else {
+        return null;
+      }
+      white();
+    }
+
+    if (depth !== 0) return null;
+
+    return rings;
+  }
+
+  function coords () {
+    var list = [];
+    var item;
+    var pt;
+    while (pt =
+           $(tuples) ||
+             $(/^(,)/)) {
+      if (pt === ',') {
+        list.push(item);
+        item = [];
+      } else if (!pt.split(/\s/g).some(isNaN)) {
+        if (!item) item = [];
+        Array.prototype.push.apply(item, pt.split(/\s/g).map(parseFloat));
+      }
+      white();
+    }
+
+    if (item) list.push(item);
+    else return null;
+
+    return list.length ? list : null;
+  }
+
+  function point () {
+    if (!$(/^(point(\sz)?)/i)) return null;
+    white();
+    if (!$(/^(\()/)) return null;
+    var c = coords();
+    if (!c) return null;
+    white();
+    if (!$(/^(\))/)) return null;
+    return {
+      type: 'Point',
+      coordinates: c[0]
+    };
+  }
+
+  function multipoint () {
+    if (!$(/^(multipoint)/i)) return null;
+    white();
+    var newCoordsFormat = _
+      .substring(_.indexOf('(') + 1, _.length - 1)
+      .replace(/\(/g, '')
+      .replace(/\)/g, '');
+    _ = 'MULTIPOINT (' + newCoordsFormat + ')';
+    var c = multicoords();
+    if (!c) return null;
+    white();
+    return {
+      type: 'MultiPoint',
+      coordinates: c
+    };
+  }
+
+  function multilinestring () {
+    if (!$(/^(multilinestring)/i)) return null;
+    white();
+    var c = multicoords();
+    if (!c) return null;
+    white();
+    return {
+      type: 'MultiLineString',
+      coordinates: c
+    };
+  }
+
+  function linestring () {
+    if (!$(/^(linestring(\sz)?)/i)) return null;
+    white();
+    if (!$(/^(\()/)) return null;
+    var c = coords();
+    if (!c) return null;
+    if (!$(/^(\))/)) return null;
+    return {
+      type: 'LineString',
+      coordinates: c
+    };
+  }
+
+  function polygon () {
+    if (!$(/^(polygon(\sz)?)/i)) return null;
+    white();
+    var c = multicoords();
+    if (!c) return null;
+    return {
+      type: 'Polygon',
+      coordinates: c
+    };
+  }
+
+  function multipolygon () {
+    if (!$(/^(multipolygon)/i)) return null;
+    white();
+    var c = multicoords();
+    if (!c) return null;
+    return {
+      type: 'MultiPolygon',
+      coordinates: c
+    };
+  }
+
+  function geometrycollection () {
+    var geometries = [];
+    var geometry;
+
+    if (!$(/^(geometrycollection)/i)) return null;
+    white();
+
+    if (!$(/^(\()/)) return null;
+    while (geometry = root()) {
+      geometries.push(geometry);
+      white();
+      $(/^(,)/);
+      white();
+    }
+    if (!$(/^(\))/)) return null;
+
+    return {
+      type: 'GeometryCollection',
+      geometries: geometries
+    };
+  }
+
+  function root () {
+    return point() ||
+      linestring() ||
+      polygon() ||
+      multipoint() ||
+      multilinestring() ||
+      multipolygon() ||
+      geometrycollection();
+  }
+
+  return crs(root());
+}
+
+/**
+ * Stringifies a GeoJSON object into WKT
+ */
+function stringify (gj) {
+  if (gj.type === 'Feature') {
+    gj = gj.geometry;
+  }
+
+  function pairWKT (c) {
+    return c.join(' ');
+  }
+
+  function ringWKT (r) {
+    return r.map(pairWKT).join(', ');
+  }
+
+  function ringsWKT (r) {
+    return r.map(ringWKT).map(wrapParens).join(', ');
+  }
+
+  function multiRingsWKT (r) {
+    return r.map(ringsWKT).map(wrapParens).join(', ');
+  }
+
+  function wrapParens (s) { return '(' + s + ')'; }
+
+  switch (gj.type) {
+    case 'Point':
+      return 'POINT (' + pairWKT(gj.coordinates) + ')';
+    case 'LineString':
+      return 'LINESTRING (' + ringWKT(gj.coordinates) + ')';
+    case 'Polygon':
+      return 'POLYGON (' + ringsWKT(gj.coordinates) + ')';
+    case 'MultiPoint':
+      return 'MULTIPOINT (' + ringWKT(gj.coordinates) + ')';
+    case 'MultiPolygon':
+      return 'MULTIPOLYGON (' + multiRingsWKT(gj.coordinates) + ')';
+    case 'MultiLineString':
+      return 'MULTILINESTRING (' + ringsWKT(gj.coordinates) + ')';
+    case 'GeometryCollection':
+      return 'GEOMETRYCOLLECTION (' + gj.geometries.map(stringify).join(', ') + ')';
+    default:
+      throw new Error('stringify requires a valid GeoJSON Feature or geometry object as input');
+  }
+}
+
+
+/***/ }),
 /* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -72043,7 +72048,7 @@ var _rasterLayerLineMixin2 = _interopRequireDefault(_rasterLayerLineMixin);
 
 var _utilsVega = __webpack_require__(15);
 
-var _mapdDraw = __webpack_require__(12);
+var _mapdDraw = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -72570,10 +72575,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
+var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000];
 var AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0];
 var AUTOSIZE_RANGE_MININUM = [1, 1];
-var SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000;
+var SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 100000;
 
 function getSizing(sizeAttr, cap) {
   var lastFilteredSize = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : cap;
@@ -72967,7 +72972,7 @@ function rasterLayerLineMixin(_layer) {
     };
   };
 
-  _layer.polyDim = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
+  _layer.viewBoxDim = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
 
   (0, _utilsVega.createVegaAttrMixin)(_layer, "size", 3, 1, true);
 
@@ -72990,8 +72995,8 @@ function rasterLayerLineMixin(_layer) {
   _layer._genVega = function (chart, layerName, group, query) {
 
     // needed to set LastFilteredSize when linemap map first initialized
-    if (_layer.polyDim()) {
-      _layer.polyDim().groupAll().valueAsync().then(function (value) {
+    if (_layer.viewBoxDim()) {
+      _layer.viewBoxDim().groupAll().valueAsync().then(function (value) {
         (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
       });
     }
@@ -73039,9 +73044,9 @@ function rasterLayerLineMixin(_layer) {
   };
 
   _layer._destroyLayer = function (chart) {
-    var polyDim = _layer.polyDim();
-    if (polyDim) {
-      polyDim.dispose();
+    var viewBoxDim = _layer.viewBoxDim();
+    if (viewBoxDim) {
+      viewBoxDim.dispose();
     }
   };
 

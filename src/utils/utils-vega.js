@@ -207,7 +207,7 @@ function conv4326To900913(x, y) {
   return transCoord
 }
 
-class PolySvgFormatter {
+class SvgFormatter {
   /**
    * Builds the bounds from the incoming poly data
    * @param {AABox2d} out AABox2d to return
@@ -239,7 +239,7 @@ class PolySvgFormatter {
   }
 }
 
-class LegacySvgFormatter extends PolySvgFormatter {
+class LegacyPolySvgFormatter extends SvgFormatter {
   constructor() {
     super()
     this._polys = []
@@ -380,7 +380,7 @@ function buildGeoProjection(
   return project
 }
 
-export class GeoSvgFormatter extends PolySvgFormatter {
+export class GeoSvgFormatter extends SvgFormatter {
   constructor(geocol) {
     super()
     this._geojson = null
@@ -458,6 +458,8 @@ export function __displayPopup(svgProps) {
       state
   } = svgProps
 
+  const layerType = _layer.layerType()
+
   let geoPathFormatter = null
   if (chart._useGeoTypes) {
     if (!state.encoding.geocol) {
@@ -466,8 +468,12 @@ export function __displayPopup(svgProps) {
       )
     }
     geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol)
+  } else if (!chart._useGeoTypes && layerType === "polys") {
+    geoPathFormatter = new LegacyPolySvgFormatter()
   } else {
-    geoPathFormatter = new LegacySvgFormatter()
+    throw new Error(
+      "Cannot build outline popup."
+    )
   }
 
   const bounds = geoPathFormatter.getBounds(
@@ -550,7 +556,6 @@ export function __displayPopup(svgProps) {
   // transform svg node. This node will position the svg appropriately. Need
   // to offset according to the scale above (scale >= 1)
   const boundsCtr = AABox2d.getCenter(Point2d.create(), bounds)
-  const layerType = _layer.layerType()
   const xform = svg
     .append("g")
     .attr("class", layerType === "polys" ? "map-poly-xform" : "map-polyline")
@@ -586,31 +591,33 @@ export function __displayPopup(svgProps) {
     group.style("stroke-width", strokeWidth)
   }
 
-  // applying shadow
-  const defs = group
+  if(layerType === "lines") {
+    // applying shadow
+    const defs = group
     .append('defs')
 
-  const filter = defs.append("filter")
-    .attr("id", "drop-shadow")
-    .attr("width", "200%")
-    .attr("height", "200%");
+    const filter = defs.append("filter")
+      .attr("id", "drop-shadow")
+      .attr("width", "200%")
+      .attr("height", "200%");
 
-  filter.append("feOffset")
-    .attr("in", "SourceAlpha")
-    .attr("result", "offOut")
-    .attr("dx", "2")
-    .attr("dy", "2");
+    filter.append("feOffset")
+      .attr("in", "SourceAlpha")
+      .attr("result", "offOut")
+      .attr("dx", "2")
+      .attr("dy", "2");
 
-  filter.append("feGaussianBlur")
-    .attr("in", "offOut")
-    .attr("stdDeviation", 2)
-    .attr("result", "blurOut");
+    filter.append("feGaussianBlur")
+      .attr("in", "offOut")
+      .attr("stdDeviation", 2)
+      .attr("result", "blurOut");
 
 
-  filter.append("feBlend")
-    .attr("in", "SourceGraphic")
-    .attr("in2", "blurOut")
-    .attr("mode", "normal")
+    filter.append("feBlend")
+      .attr("in", "SourceGraphic")
+      .attr("in2", "blurOut")
+      .attr("mode", "normal")
+  }
 
   group
     .append("path")
@@ -626,7 +633,7 @@ export function __displayPopup(svgProps) {
     .attr("fill-rule", "evenodd")
     .attr("stroke-width", strokeWidth)
     .attr("stroke", strokeColor)
-    .style("filter", "url(#drop-shadow)")
+    .style("filter", layerType === "polys" ? "none" : "url(#drop-shadow)")
     .on("click", () => {
       if(layerType === "polys") {
         return _layer.onClick(chart, data, d3.event)

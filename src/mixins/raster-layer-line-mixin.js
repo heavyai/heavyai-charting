@@ -8,10 +8,10 @@ import * as d3 from "d3";
 import { __displayPopup, renderAttributes } from "../utils/utils-vega"
 
 
-const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
+const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
 const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
-const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
+const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 100000
 
 function getSizing(
   sizeAttr,
