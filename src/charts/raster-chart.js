@@ -358,7 +358,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       for (layer in layers) {
         let xDim = layer.xDim(),
           yDim = layer.yDim(),
-          polyDim = layer.polyDim()
+          viewBoxDim = layer.viewBoxDim()
         if (xDim) {
           var range = xDim.getFilter()
           if (range !== null) {
@@ -371,8 +371,8 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
             yRanges.push(range)
           }
         }
-        if (polyDim) {
-          var range = polyDim.getFilter()
+        if (viewBoxDim) {
+          var range = viewBoxDim.getFilter()
           if (range !== null) {
             polyRanges.push(range)
           }

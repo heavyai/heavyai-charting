@@ -433,7 +433,7 @@ export default function rasterLayerLineMixin(_layer) {
     }
   }
 
-  _layer.polyDim = createRasterLayerGetterSetter(_layer, null)
+  _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
 
   createVegaAttrMixin(_layer, "size", 3, 1, true)
 
@@ -457,9 +457,9 @@ export default function rasterLayerLineMixin(_layer) {
 
     // needed to set LastFilteredSize when linemap map first initialized
     if (
-      _layer.polyDim()
+      _layer.viewBoxDim()
     ) {
-      _layer.polyDim().groupAll().valueAsync().then(value => {
+      _layer.viewBoxDim().groupAll().valueAsync().then(value => {
         setLastFilteredSize(_layer.crossfilter().getId(), value)
       })
     }
@@ -518,9 +518,9 @@ export default function rasterLayerLineMixin(_layer) {
 
 
   _layer._destroyLayer = function(chart) {
-    const polyDim = _layer.polyDim()
-    if (polyDim) {
-      polyDim.dispose()
+    const viewBoxDim = _layer.viewBoxDim()
+    if (viewBoxDim) {
+      viewBoxDim.dispose()
     }
   }
 

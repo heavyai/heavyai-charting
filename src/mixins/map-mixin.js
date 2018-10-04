@@ -31,14 +31,14 @@ export default function mapMixin(
 
   _chart._xDimName = null
   _chart._yDimName = null
-  _chart._polyDimName = null
+  _chart._viewBoxDimName = null
   let hasAppliedInitialBounds = false
   let _hasRendered = false
   let _activeLayer = null
   let _mapInitted = false
   let _xDim = null
   let _yDim = null
-  let _polyDim = null
+  let _viewBoxDim = null
   let _lastMapMoveType = null
   let _lastMapUpdateTime = 0
   let _isFirstMoveEvent = true
@@ -198,13 +198,13 @@ export default function mapMixin(
     return _chart
   }
 
-  _chart.polyDim = function(polyDim) {
+  _chart.viewBoxDim = function(viewBoxDim) {
     if (!arguments.length) {
-      return _polyDim
+      return _viewBoxDim
     }
-    _polyDim = polyDim
-    if (_polyDim) {
-      _chart._polyDimName = _polyDim.value()[0]
+    _viewBoxDim = viewBoxDim
+    if (_viewBoxDim) {
+      _chart._viewBoxDimName = _viewBoxDim.value()[0]
     }
     return _chart
   }
@@ -342,11 +342,11 @@ export default function mapMixin(
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]])
           }
         }
-        else if(typeof layer.polyDim === "function") {
-          const polyDim = layer.polyDim()
-          if(polyDim !== null) {
+        else if(typeof layer.viewBoxDim === "function") {
+          const viewBoxDim = layer.viewBoxDim()
+          if(viewBoxDim !== null) {
             redrawall = true
-            polyDim.filterST_Intersects([[bounds._sw.lng, bounds._sw.lat],
+            viewBoxDim.filterST_Intersects([[bounds._sw.lng, bounds._sw.lat],
                                   [bounds._ne.lng, bounds._sw.lat],
                                   [bounds._ne.lng, bounds._ne.lat],
                                   [bounds._sw.lng, bounds._ne.lat]])
@@ -367,8 +367,8 @@ export default function mapMixin(
         resetRedrawStack()
         console.log("on move event redrawall error:", error)
       })
-    } else if(_polyDim !== null) {
-      _polyDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]],
+    } else if(_viewBoxDim !== null) {
+      _viewBoxDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]],
                             [_chart._maxCoord[0], _chart._minCoord[1]],
                           [_chart._maxCoord[0], _chart._maxCoord[1]],
                           [_chart._minCoord[0], _chart._maxCoord[1]]])
