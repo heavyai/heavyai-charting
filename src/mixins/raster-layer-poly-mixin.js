@@ -1,12 +1,13 @@
 import {
   adjustOpacity,
   createRasterLayerGetterSetter,
-  createVegaAttrMixin
+  createVegaAttrMixin,
+  __displayPopup,
+  renderAttributes
 } from "../utils/utils-vega"
 import d3 from "d3"
 import { events } from "../core/events"
 import { parser } from "../utils/utils"
-import { __displayPopup, renderAttributes } from "../utils/utils-vega"
 
 
 const polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)"

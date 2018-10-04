@@ -1,12 +1,12 @@
 import {
   createRasterLayerGetterSetter,
-  createVegaAttrMixin
+  createVegaAttrMixin,
+  __displayPopup,
+  renderAttributes
 } from "../utils/utils-vega";
 import {lastFilteredSize, setLastFilteredSize} from "../core/core-async";
 import {parser} from "../utils/utils";
 import * as d3 from "d3";
-import { __displayPopup, renderAttributes } from "../utils/utils-vega"
-
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
 const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
