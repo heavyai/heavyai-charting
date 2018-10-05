@@ -102,6 +102,136 @@ document.addEventListener("DOMContentLoaded", () => {
     ]
   }
 
+  const empty_line_query2 = {
+    "width": 800,
+    "height":464,
+    "data":[
+       {
+          "name":"linemap",
+          "format":{
+             "type":"lines",
+             "coords":{
+                "x":[
+                   "mapd_geo"
+                ],
+                "y":[
+                   {
+                      "from":"mapd_geo"
+                   }
+                ]
+             },
+             "layout":"interleaved"
+          },
+          "sql":"SELECT c5_LENGTH as strokeColor, uyanga_fault_lines.rowid as rowid, uyanga_fault_lines.mapd_geo FROM uyanga_fault_lines WHERE ((ST_Contains(ST_GeomFromText('POLYGON((-119.84215393903816 38.746369630070205, -119.82452866023397 38.746369630070205, -119.82452866023397 38.75434208555501, -119.84215393903816 38.75434208555501, -119.84215393903816 38.746369630070205))'), uyanga_fault_lines.mapd_geo)))"
+       },
+       {
+          "name":"linemap_stats",
+          "source":"linemap",
+          "transform":[
+             {
+                "type":"aggregate",
+                "fields":[
+                   "strokeColor",
+                   "strokeColor",
+                   "strokeColor",
+                   "strokeColor"
+                ],
+                "ops":[
+                   "min",
+                   "max",
+                   "avg",
+                   "stddev"
+                ],
+                "as":[
+                   "mincol",
+                   "maxcol",
+                   "avgcol",
+                   "stdcol"
+                ]
+             },
+             {
+                "type":"formula",
+                "expr":"max(mincol, avgcol-2*stdcol)",
+                "as":"mincolor"
+             },
+             {
+                "type":"formula",
+                "expr":"min(maxcol, avgcol+2*stdcol)",
+                "as":"maxcolor"
+             }
+          ]
+       }
+    ],
+    "scales":[
+       {
+          "name":"linemap_strokeColor",
+          "type":"quantize",
+          "domain":{
+             "data":"linemap_stats",
+             "fields":[
+                "mincolor",
+                "maxcolor"
+             ]
+          },
+          "range":[
+             "#115f9a ",
+             "#1984c5 ",
+             "#22a7f0 ",
+             "#48b5c4 ",
+             "#76c68f ",
+             "#a6d75b ",
+             "#c9e52f ",
+             "#d0ee11 ",
+             "#d0f400 "
+          ],
+          "nullValue":"#CACACA "
+       }
+    ],
+    "projections":[
+       {
+          "name":"mercator_map_projection",
+          "type":"mercator",
+          "bounds":{
+             "x":[
+                -119.84215393903816,
+                -119.82452866023397
+             ],
+             "y":[
+                38.746369630070205,
+                38.75434208555501
+             ]
+          }
+       }
+    ],
+    "marks":[
+       {
+          "type":"lines",
+          "from":{
+             "data":"linemap"
+          },
+          "properties":{
+             "x":{
+                "field":"x"
+             },
+             "y":{
+                "field":"y"
+             },
+             "strokeColor":{
+                "scale":"linemap_strokeColor",
+                "field":"strokeColor"
+             },
+             "opacity":0.85,
+             "strokeWidth":3,
+             "lineJoin":"miter",
+             "miterLimit":10
+          },
+          "transform":{
+             "projection":"mercator_map_projection"
+          }
+       }
+    ]
+  }
+
   const geo_linestring_query = {
     "width": 1162,
     "height": 1057,
@@ -163,6 +293,10 @@ document.addEventListener("DOMContentLoaded", () => {
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
       results = con.renderVega(1, JSON.stringify(empty_line_query))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(empty_line_query2))
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
