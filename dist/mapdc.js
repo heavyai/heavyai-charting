@@ -72812,32 +72812,41 @@ function rasterLayerLineMixin(_layer) {
     });
   };
 
-  function getAutoColorVegaTransforms(aggregateNode) {
-    var rtnobj = { transforms: [], fields: [] };
+  function getAutoColorVegaTransforms(data, layerName, statsLayerName) {
+
+    var aggregateNode = {
+      type: "aggregate",
+      fields: [],
+      ops: [],
+      as: []
+    };
+
+    var transforms = [aggregateNode];
     if (state.encoding.color.type === "quantitative") {
-      var minoutput = "mincolor",
-          maxoutput = "maxcolor";
       aggregateNode.fields = aggregateNode.fields.concat(["strokeColor", "strokeColor", "strokeColor", "strokeColor"]);
       aggregateNode.ops = aggregateNode.ops.concat(["min", "max", "avg", "stddev"]);
       aggregateNode.as = aggregateNode.as.concat(["mincol", "maxcol", "avgcol", "stdcol"]);
-      rtnobj.transforms.push({
+      transforms.push({
         type: "formula",
         expr: "max(mincol, avgcol-2*stdcol)",
-        as: minoutput
+        as: "mincolor"
       }, {
         type: "formula",
         expr: "min(maxcol, avgcol+2*stdcol)",
-        as: maxoutput
+        as: "maxcolor"
       });
-      rtnobj.fields = [minoutput, maxoutput];
     } else if (state.encoding.color.type === "ordinal") {
-      var output = "distinctcolor";
+      // will be used when we support auto for ordinal color type
       aggregateNode.fields.push("color");
       aggregateNode.ops.push("distinct");
-      aggregateNode.as.push(output);
-      rtnobj.fields.push(output);
+      aggregateNode.as.push("distinctcolor");
     }
-    return rtnobj;
+
+    data.push({
+      name: statsLayerName,
+      source: layerName,
+      transform: transforms
+    });
   }
 
   function usesAutoColors() {
@@ -72916,22 +72925,14 @@ function rasterLayerLineMixin(_layer) {
     var scaledomainfields = {};
 
     if (autocolors) {
-      var aggregateNode = {
-        type: "aggregate",
-        fields: [],
-        ops: [],
-        as: []
-      };
-      var transforms = [aggregateNode];
-      var xformdata = getAutoColorVegaTransforms(aggregateNode);
-      scaledomainfields.color = xformdata.fields;
-      transforms = transforms.concat(xformdata.transforms);
+      getAutoColorVegaTransforms(data, layerName, getStatsLayerName());
 
-      data.push({
-        name: getStatsLayerName(),
-        source: layerName,
-        transform: transforms
-      });
+      if (state.encoding.color.type === "quantitative") {
+        scaledomainfields.color = ["mincolor", "maxcolor"];
+      } else if (state.encoding.color.type === "ordinal") {
+        // will be used when we support auto for ordinal color type
+        scaledomainfields.color = ["distinctcolor"];
+      }
     }
 
     var scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName());
