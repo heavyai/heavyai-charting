@@ -170,6 +170,116 @@ document.addEventListener("DOMContentLoaded", () => {
     ]
   }
 
+  const tweets_min_max_density = {
+    "width": 725,
+    "height": 893,
+    "data": [
+      {
+        "name": "pointmap",
+        "sql": "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb_60M.rowid FROM tweets_nov_feb_60M WHERE MOD(tweets_nov_feb_60M.rowid * 265445761, 4294967296) < 643156840 AND ((lon >= -104.53933113713124 AND lon <= -69.63426648195933) AND (lat >= 18.645754755109138 AND lat <= 52.54501741134331)) LIMIT 2000000"
+      }
+    ],
+    "scales": [
+      {
+        "name": "x",
+        "type": "linear",
+        "domain": [ -11637265.10845817, -7751651.085471267 ],
+        "range": "width"
+      },
+      {
+        "name": "y",
+        "type": "linear",
+        "domain": [ 2113273.344013737, 6899277.926819596 ],
+        "range": "height"
+      },
+      {
+        "name": "pointmap_fillColor",
+        "type": "linear",
+        "domain": [ 0, 1 ],
+        "range": [ "rgba(17,95,154,0.475)", "rgba(208,244,0,0.85)" ],
+        "accumulator": "density",
+        "minDensityCnt": "min",
+        "maxDensityCnt": "max",
+        "clamp": true
+      }
+    ],
+    "projections": [],
+    "marks": [
+      {
+        "type": "symbol",
+        "from": {
+          "data": "pointmap"
+        },
+        "properties": {
+          "xc": { "scale": "x", "field": "x" },
+          "yc": { "scale": "y", "field": "y" },
+          "fillColor": {
+            "scale": "pointmap_fillColor",
+            "value": 0
+          },
+          "shape": "circle",
+          "width": 2,
+          "height": 2
+        }
+      }
+    ]
+  }
+
+  const tweets_2_std_dev_density = {
+    "width": 725,
+    "height": 893,
+    "data": [
+      {
+        "name": "pointmap",
+        "sql": "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb_60M.rowid FROM tweets_nov_feb_60M WHERE MOD(tweets_nov_feb_60M.rowid * 265445761, 4294967296) < 643156840 AND ((lon >= -104.53933113713124 AND lon <= -69.63426648195933) AND (lat >= 18.645754755109138 AND lat <= 52.54501741134331)) LIMIT 2000000"
+      }
+    ],
+    "scales": [
+      {
+        "name": "x",
+        "type": "linear",
+        "domain": [ -11637265.10845817, -7751651.085471267 ],
+        "range": "width"
+      },
+      {
+        "name": "y",
+        "type": "linear",
+        "domain": [ 2113273.344013737, 6899277.926819596 ],
+        "range": "height"
+      },
+      {
+        "name": "pointmap_fillColor",
+        "type": "linear",
+        "domain": [ 0, 1 ],
+        "range": [ "rgba(17,95,154,0.475)", "rgba(208,244,0,0.85)" ],
+        "accumulator": "density",
+        "minDensityCnt": "min",
+        "maxDensityCnt": "max",
+        "clamp": true
+      }
+    ],
+    "projections": [],
+    "marks": [
+      {
+        "type": "symbol",
+        "from": {
+          "data": "pointmap"
+        },
+        "properties": {
+          "xc": { "scale": "x", "field": "x" },
+          "yc": { "scale": "y", "field": "y" },
+          "fillColor": {
+            "scale": "pointmap_fillColor",
+            "value": 0
+          },
+          "shape": "circle",
+          "width": 2,
+          "height": 2
+        }
+      }
+    ]
+  }
+
   const contributionDensityAccumulations = [
     {
       "width": 399,
@@ -1192,6 +1302,18 @@ document.addEventListener("DOMContentLoaded", () => {
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
       results = con.renderVega(1, JSON.stringify(contributionBlendAccumulation))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(tweets_min_max_density))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(tweets_2_std_dev_density))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(tweets_min_max_density))
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
