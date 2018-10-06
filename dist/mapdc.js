@@ -72603,7 +72603,12 @@ function getColorScaleName(layerName) {
 }
 
 function getColor(color, layerName) {
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
+    return {
+      scale: getColorScaleName(layerName),
+      value: 0
+    };
+  } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
     return {
       scale: getColorScaleName(layerName),
       field: "strokeColor"
@@ -72744,6 +72749,28 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       type: "linear",
       domain: size.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.size } : size.domain,
       range: size.range,
+      clamp: true
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "linear",
+      domain: color.range.map(function (c, i) {
+        return i * 100 / (color.range.length - 1) / 100;
+      }),
+      range: color.range.map(function (c) {
+        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
+      }).map(function (c, i, colorArray) {
+        var normVal = i / (colorArray.length - 1);
+        var interp = Math.min(normVal / 0.65, 1.0);
+        interp = interp * 0.375 + 0.625;
+        return (0, _utilsVega.adjustRGBAOpacity)(c, interp);
+      }),
+      accumulator: "density",
+      minDensityCnt: "-2ndStdDev",
+      maxDensityCnt: "2ndStdDev",
       clamp: true
     });
   }

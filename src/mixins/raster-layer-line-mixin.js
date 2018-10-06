@@ -2,7 +2,7 @@ import {
   createRasterLayerGetterSetter,
   createVegaAttrMixin,
   __displayPopup,
-  renderAttributes
+  renderAttributes, adjustOpacity, adjustRGBAOpacity
 } from "../utils/utils-vega";
 import {lastFilteredSize, setLastFilteredSize} from "../core/core-async";
 import {parser} from "../utils/utils";
@@ -53,7 +53,12 @@ function getColorScaleName(layerName) {
 }
 
 function getColor(color, layerName) {
-  if (
+  if (typeof color === "object" && color.type === "density") {
+    return {
+      scale: getColorScaleName(layerName),
+      value: 0
+    }
+  } else if (
     typeof color === "object" &&
     (color.type === "ordinal" || color.type === "quantitative")
   ) {
@@ -208,6 +213,28 @@ function getScales({ size, color }, layerName, scaleDomainFields, xformDataSourc
       type: "linear",
       domain: (size.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.size} : size.domain),
       range: size.range,
+      clamp: true
+    })
+  }
+
+  if (typeof color === "object" && color.type === "density") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "linear",
+      domain: color.range.map(
+        (c, i) => i * 100 / (color.range.length - 1) / 100
+      ),
+      range: color.range
+        .map(c => adjustOpacity(c, color.opacity))
+        .map((c, i, colorArray) => {
+          const normVal = i / (colorArray.length - 1)
+          let interp = Math.min(normVal / 0.65, 1.0)
+          interp = interp * 0.375 + 0.625
+          return adjustRGBAOpacity(c, interp)
+        }),
+      accumulator: "density",
+      minDensityCnt: "-2ndStdDev",
+      maxDensityCnt: "2ndStdDev",
       clamp: true
     })
   }
