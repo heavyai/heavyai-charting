@@ -646,3 +646,90 @@ export function __displayPopup(svgProps) {
 
   return bounds
 }
+
+export function getSizeScaleName(layerName) {
+  if(layerName === "pointmap") {
+    return `${layerName}_size`
+  } else if(layerName === "linemap") {
+    return `${layerName}_strokeWidth`
+  } else {
+    throw new Error(
+      `Cannot create a size scale name for ${layerName}`
+    )
+  }
+}
+
+export function getColorScaleName(layerName) {
+  if(layerName === "pointmap") {
+    return `${layerName}_fillColor`
+  } else if(layerName === "linemap") {
+    return `${layerName}_strokeColor`
+  } else {
+    throw new Error(
+      `Cannot create a color scale name for ${layerName}`
+    )
+  }
+}
+
+
+export function getScales({ size, color }, layerName, scaleDomainFields, xformDataSource) {
+  const scales = []
+
+  if (typeof size === "object" && size.type === "quantitative") {
+    scales.push({
+      name: getSizeScaleName(layerName),
+      type: "linear",
+      domain: (size.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.size} : size.domain),
+      range: size.range,
+      clamp: true
+    })
+  }
+
+  if (typeof color === "object" && color.type === "density") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "linear",
+      domain: color.range.map(
+        (c, i) => i * 100 / (color.range.length - 1) / 100
+      ),
+      range: color.range
+        .map(c => adjustOpacity(c, color.opacity))
+        .map((c, i, colorArray) => {
+          const normVal = i / (colorArray.length - 1)
+          let interp = Math.min(normVal / 0.65, 1.0)
+          interp = interp * 0.375 + 0.625
+          return adjustRGBAOpacity(c, interp)
+        }),
+      accumulator: "density",
+      minDensityCnt: "-2ndStdDev",
+      maxDensityCnt: "2ndStdDev",
+      clamp: true
+    })
+  }
+
+  if (typeof color === "object" && color.type === "ordinal") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "ordinal",
+      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
+      range: layerName === "pointmap" ? color.range.map(c => adjustOpacity(c, color.opacity)) : color.range,
+      default: layerName === "pointmap" ? adjustOpacity(
+        color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
+        color.opacity
+      ) : color.range[color.range.length - 1],
+      nullValue: "#CACACA"
+    })
+  }
+
+  if (typeof color === "object" && color.type === "quantitative") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "quantize",
+      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
+      range: color.range,
+      nullValue: "#CACACA"
+    })
+  }
+
+  return scales
+}

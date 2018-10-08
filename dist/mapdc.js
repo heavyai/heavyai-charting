@@ -13505,6 +13505,9 @@ exports.adjustRGBAOpacity = adjustRGBAOpacity;
 exports.createVegaAttrMixin = createVegaAttrMixin;
 exports.createRasterLayerGetterSetter = createRasterLayerGetterSetter;
 exports.__displayPopup = __displayPopup;
+exports.getSizeScaleName = getSizeScaleName;
+exports.getColorScaleName = getColorScaleName;
+exports.getScales = getScales;
 
 var _d2 = __webpack_require__(1);
 
@@ -14048,6 +14051,91 @@ function __displayPopup(svgProps) {
   _scaledPopups[chart] = isScaled;
 
   return bounds;
+}
+
+function getSizeScaleName(layerName) {
+  if (layerName === "pointmap") {
+    return layerName + "_size";
+  } else if (layerName === "linemap") {
+    return layerName + "_strokeWidth";
+  } else {
+    throw new Error("Cannot create a size scale name for " + layerName);
+  }
+}
+
+function getColorScaleName(layerName) {
+  if (layerName === "pointmap") {
+    return layerName + "_fillColor";
+  } else if (layerName === "linemap") {
+    return layerName + "_strokeColor";
+  } else {
+    throw new Error("Cannot create a color scale name for " + layerName);
+  }
+}
+
+function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
+  var size = _ref.size,
+      color = _ref.color;
+
+  var scales = [];
+
+  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
+    scales.push({
+      name: getSizeScaleName(layerName),
+      type: "linear",
+      domain: size.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.size } : size.domain,
+      range: size.range,
+      clamp: true
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "linear",
+      domain: color.range.map(function (c, i) {
+        return i * 100 / (color.range.length - 1) / 100;
+      }),
+      range: color.range.map(function (c) {
+        return adjustOpacity(c, color.opacity);
+      }).map(function (c, i, colorArray) {
+        var normVal = i / (colorArray.length - 1);
+        var interp = Math.min(normVal / 0.65, 1.0);
+        interp = interp * 0.375 + 0.625;
+        return adjustRGBAOpacity(c, interp);
+      }),
+      accumulator: "density",
+      minDensityCnt: "-2ndStdDev",
+      maxDensityCnt: "2ndStdDev",
+      clamp: true
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "ordinal") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "ordinal",
+      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
+      range: layerName === "pointmap" ? color.range.map(function (c) {
+        return adjustOpacity(c, color.opacity);
+      }) : color.range,
+      default: layerName === "pointmap" ? adjustOpacity(color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
+      color.opacity) : color.range[color.range.length - 1],
+      nullValue: "#CACACA"
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "quantitative") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "quantize",
+      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
+      range: color.range,
+      nullValue: "#CACACA"
+    });
+  }
+
+  return scales;
 }
 
 /***/ }),
@@ -30774,14 +30862,6 @@ function getMarkType() {
   }
 }
 
-function getSizeScaleName(layerName) {
-  return layerName + "_size";
-}
-
-function getColorScaleName(layerName) {
-  return layerName + "_fillColor";
-}
-
 function getSizing(sizeAttr, cap) {
   var lastFilteredSize = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : cap;
   var pixelRatio = arguments[3];
@@ -30791,7 +30871,7 @@ function getSizing(sizeAttr, cap) {
     return sizeAttr;
   } else if ((typeof sizeAttr === "undefined" ? "undefined" : _typeof(sizeAttr)) === "object" && sizeAttr.type === "quantitative") {
     return {
-      scale: getSizeScaleName(layerName),
+      scale: (0, _utilsVega.getSizeScaleName)(layerName),
       field: "size"
     };
   } else if (sizeAttr === "auto") {
@@ -30806,12 +30886,12 @@ function getSizing(sizeAttr, cap) {
 function getColor(color, layerName) {
   if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
     return {
-      scale: getColorScaleName(layerName),
+      scale: (0, _utilsVega.getColorScaleName)(layerName),
       value: 0
     };
   } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
     return {
-      scale: getColorScaleName(layerName),
+      scale: (0, _utilsVega.getColorScaleName)(layerName),
       field: "color"
     };
   } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object") {
@@ -30927,71 +31007,6 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
   return transforms;
 }
 
-function getScales(_ref2, layerName, scaleDomainFields, xformDataSource) {
-  var size = _ref2.size,
-      color = _ref2.color;
-
-  var scales = [];
-
-  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-    scales.push({
-      name: getSizeScaleName(layerName),
-      type: "linear",
-      domain: size.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.size } : size.domain,
-      range: size.range,
-      clamp: true
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "linear",
-      domain: color.range.map(function (c, i) {
-        return i * 100 / (color.range.length - 1) / 100;
-      }),
-      range: color.range.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
-      }).map(function (c, i, colorArray) {
-        var normVal = i / (colorArray.length - 1);
-        var interp = Math.min(normVal / 0.65, 1.0);
-        interp = interp * 0.375 + 0.625;
-        return (0, _utilsVega.adjustRGBAOpacity)(c, interp);
-      }),
-      accumulator: "density",
-      minDensityCnt: "-2ndStdDev",
-      maxDensityCnt: "2ndStdDev",
-      clamp: true
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "ordinal") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "ordinal",
-      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
-      range: color.range.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
-      }),
-      default: (0, _utilsVega.adjustOpacity)(color.range[color.range.length - 1], color.opacity), // in current implementation 'Other' is always added as last element in the array
-      nullValue: (0, _utilsVega.adjustOpacity)("#CACACA", color.opacity)
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "quantitative") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "quantize",
-      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
-      }),
-      range: color.range
-    });
-  }
-
-  return scales;
-}
-
 function rasterLayerPointMixin(_layer) {
   var state = null;
   _layer.colorDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
@@ -31087,8 +31102,8 @@ function rasterLayerPointMixin(_layer) {
     var autoColors = usesAutoColors();
     var autoSize = usesAutoSize();
     if ((autoColors || autoSize) && Array.isArray(metadata.scales)) {
-      var colorScaleName = getColorScaleName(layerName);
-      var sizeScaleName = getSizeScaleName(layerName);
+      var colorScaleName = (0, _utilsVega.getColorScaleName)(layerName);
+      var sizeScaleName = (0, _utilsVega.getSizeScaleName)(layerName);
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -31120,13 +31135,13 @@ function rasterLayerPointMixin(_layer) {
     }
   };
 
-  _layer.__genVega = function (_ref3) {
-    var table = _ref3.table,
-        filter = _ref3.filter,
-        lastFilteredSize = _ref3.lastFilteredSize,
-        globalFilter = _ref3.globalFilter,
-        pixelRatio = _ref3.pixelRatio,
-        layerName = _ref3.layerName;
+  _layer.__genVega = function (_ref2) {
+    var table = _ref2.table,
+        filter = _ref2.filter,
+        lastFilteredSize = _ref2.lastFilteredSize,
+        globalFilter = _ref2.globalFilter,
+        pixelRatio = _ref2.pixelRatio,
+        layerName = _ref2.layerName;
 
     var autocolors = usesAutoColors();
     var autosize = usesAutoSize();
@@ -31173,7 +31188,7 @@ function rasterLayerPointMixin(_layer) {
       });
     }
 
-    var scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName());
+    var scales = (0, _utilsVega.getScales)(state.encoding, layerName, scaledomainfields, getStatsLayerName());
 
     var marks = [{
       type: "symbol",
@@ -72582,7 +72597,7 @@ function getSizing(sizeAttr, cap) {
     return sizeAttr;
   } else if ((typeof sizeAttr === "undefined" ? "undefined" : _typeof(sizeAttr)) === "object" && sizeAttr.type === "quantitative") {
     return {
-      scale: getSizeScaleName(layerName),
+      scale: (0, _utilsVega.getSizeScaleName)(layerName),
       field: "strokeWidth"
     };
   } else if (sizeAttr === "auto") {
@@ -72594,23 +72609,15 @@ function getSizing(sizeAttr, cap) {
   }
 }
 
-function getSizeScaleName(layerName) {
-  return layerName + "_strokeWidth";
-}
-
-function getColorScaleName(layerName) {
-  return layerName + "_strokeColor";
-}
-
 function getColor(color, layerName) {
   if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
     return {
-      scale: getColorScaleName(layerName),
+      scale: (0, _utilsVega.getColorScaleName)(layerName),
       value: 0
     };
   } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "ordinal" || color.type === "quantitative")) {
     return {
-      scale: getColorScaleName(layerName),
+      scale: (0, _utilsVega.getColorScaleName)(layerName),
       field: "strokeColor"
     };
   } else {
@@ -72737,68 +72744,6 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   return transforms;
 }
 
-function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
-  var size = _ref.size,
-      color = _ref.color;
-
-  var scales = [];
-
-  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-    scales.push({
-      name: getSizeScaleName(layerName),
-      type: "linear",
-      domain: size.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.size } : size.domain,
-      range: size.range,
-      clamp: true
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "linear",
-      domain: color.range.map(function (c, i) {
-        return i * 100 / (color.range.length - 1) / 100;
-      }),
-      range: color.range.map(function (c) {
-        return (0, _utilsVega.adjustOpacity)(c, color.opacity);
-      }).map(function (c, i, colorArray) {
-        var normVal = i / (colorArray.length - 1);
-        var interp = Math.min(normVal / 0.65, 1.0);
-        interp = interp * 0.375 + 0.625;
-        return (0, _utilsVega.adjustRGBAOpacity)(c, interp);
-      }),
-      accumulator: "density",
-      minDensityCnt: "-2ndStdDev",
-      maxDensityCnt: "2ndStdDev",
-      clamp: true
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "ordinal") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "ordinal",
-      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
-      range: color.range,
-      default: color.range[color.range.length - 1],
-      nullValue: "#CACACA"
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "quantitative") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "quantize",
-      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
-      range: color.range,
-      nullValue: "#CACACA"
-    });
-  }
-
-  return scales;
-}
-
 function rasterLayerLineMixin(_layer) {
   var state = null;
   _layer.colorDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
@@ -72877,7 +72822,7 @@ function rasterLayerLineMixin(_layer) {
     var layerName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
 
     if (usesAutoColors() && Array.isArray(metadata.scales)) {
-      var colorScaleName = getColorScaleName(layerName);
+      var colorScaleName = (0, _utilsVega.getColorScaleName)(layerName);
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -72907,14 +72852,14 @@ function rasterLayerLineMixin(_layer) {
     }
   };
 
-  _layer.__genVega = function (_ref2) {
-    var table = _ref2.table,
-        filter = _ref2.filter,
-        lastFilteredSize = _ref2.lastFilteredSize,
-        globalFilter = _ref2.globalFilter,
-        pixelRatio = _ref2.pixelRatio,
-        layerName = _ref2.layerName,
-        useProjection = _ref2.useProjection;
+  _layer.__genVega = function (_ref) {
+    var table = _ref.table,
+        filter = _ref.filter,
+        lastFilteredSize = _ref.lastFilteredSize,
+        globalFilter = _ref.globalFilter,
+        pixelRatio = _ref.pixelRatio,
+        layerName = _ref.layerName,
+        useProjection = _ref.useProjection;
 
     var autocolors = usesAutoColors();
     var getStatsLayerName = function getStatsLayerName() {
@@ -72955,7 +72900,7 @@ function rasterLayerLineMixin(_layer) {
       }
     }
 
-    var scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName());
+    var scales = (0, _utilsVega.getScales)(state.encoding, layerName, scaledomainfields, getStatsLayerName());
 
     var marks = [{
       type: "lines",

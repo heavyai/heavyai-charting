@@ -3,7 +3,10 @@ import {
   adjustOpacity,
   adjustRGBAOpacity,
   createRasterLayerGetterSetter,
-  createVegaAttrMixin
+  createVegaAttrMixin,
+  getScales,
+  getSizeScaleName,
+  getColorScaleName
 } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
@@ -39,14 +42,6 @@ function getMarkType(config = { point: {} }) {
   } else {
     return "circle"
   }
-}
-
-function getSizeScaleName(layerName) {
-  return `${layerName}_size`
-}
-
-function getColorScaleName(layerName) {
-  return `${layerName}_fillColor`
 }
 
 function getSizing(
@@ -212,67 +207,6 @@ function getTransforms(
   }
 
   return transforms
-}
-
-function getScales({ size, color }, layerName, scaleDomainFields, xformDataSource) {
-  const scales = []
-
-  if (typeof size === "object" && size.type === "quantitative") {
-    scales.push({
-      name: getSizeScaleName(layerName),
-      type: "linear",
-      domain: (size.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.size} : size.domain),
-      range: size.range,
-      clamp: true
-    })
-  }
-
-  if (typeof color === "object" && color.type === "density") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "linear",
-      domain: color.range.map(
-        (c, i) => i * 100 / (color.range.length - 1) / 100
-      ),
-      range: color.range
-        .map(c => adjustOpacity(c, color.opacity))
-        .map((c, i, colorArray) => {
-          const normVal = i / (colorArray.length - 1)
-          let interp = Math.min(normVal / 0.65, 1.0)
-          interp = interp * 0.375 + 0.625
-          return adjustRGBAOpacity(c, interp)
-        }),
-      accumulator: "density",
-      minDensityCnt: "-2ndStdDev",
-      maxDensityCnt: "2ndStdDev",
-      clamp: true
-    })
-  }
-
-  if (typeof color === "object" && color.type === "ordinal") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "ordinal",
-      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
-      range: color.range.map(c => adjustOpacity(c, color.opacity)),
-      default: adjustOpacity(
-        color.range[color.range.length - 1],
-        color.opacity
-      ), // in current implementation 'Other' is always added as last element in the array
-      nullValue: adjustOpacity("#CACACA", color.opacity)
-    })
-  }
-
-  if (typeof color === "object" && color.type === "quantitative") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "quantize",
-      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain.map(c => adjustOpacity(c, color.opacity))),
-      range: color.range
-    })
-  }
-
-  return scales
 }
 
 export default function rasterLayerPointMixin(_layer) {

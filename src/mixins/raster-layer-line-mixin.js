@@ -2,7 +2,10 @@ import {
   createRasterLayerGetterSetter,
   createVegaAttrMixin,
   __displayPopup,
-  renderAttributes, adjustOpacity, adjustRGBAOpacity
+  renderAttributes,
+  getScales,
+  getSizeScaleName,
+  getColorScaleName
 } from "../utils/utils-vega";
 import {lastFilteredSize, setLastFilteredSize} from "../core/core-async";
 import {parser} from "../utils/utils";
@@ -42,14 +45,6 @@ function getSizing(
   } else {
     return null
   }
-}
-
-function getSizeScaleName(layerName) {
-  return `${layerName}_strokeWidth`
-}
-
-function getColorScaleName(layerName) {
-  return `${layerName}_strokeColor`
 }
 
 function getColor(color, layerName) {
@@ -202,65 +197,6 @@ function getTransforms(
   }
 
   return transforms
-}
-
-function getScales({ size, color }, layerName, scaleDomainFields, xformDataSource) {
-  const scales = []
-
-  if (typeof size === "object" && size.type === "quantitative") {
-    scales.push({
-      name: getSizeScaleName(layerName),
-      type: "linear",
-      domain: (size.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.size} : size.domain),
-      range: size.range,
-      clamp: true
-    })
-  }
-
-  if (typeof color === "object" && color.type === "density") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "linear",
-      domain: color.range.map(
-        (c, i) => i * 100 / (color.range.length - 1) / 100
-      ),
-      range: color.range
-        .map(c => adjustOpacity(c, color.opacity))
-        .map((c, i, colorArray) => {
-          const normVal = i / (colorArray.length - 1)
-          let interp = Math.min(normVal / 0.65, 1.0)
-          interp = interp * 0.375 + 0.625
-          return adjustRGBAOpacity(c, interp)
-        }),
-      accumulator: "density",
-      minDensityCnt: "-2ndStdDev",
-      maxDensityCnt: "2ndStdDev",
-      clamp: true
-    })
-  }
-
-  if (typeof color === "object" && color.type === "ordinal") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "ordinal",
-      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
-      range: color.range,
-      default: color.range[color.range.length - 1],
-      nullValue: "#CACACA"
-    })
-  }
-
-  if (typeof color === "object" && color.type === "quantitative") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "quantize",
-      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
-      range: color.range,
-      nullValue: "#CACACA"
-    })
-  }
-
-  return scales
 }
 
 export default function rasterLayerLineMixin(_layer) {
