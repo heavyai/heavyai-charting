@@ -648,26 +648,18 @@ export function __displayPopup(svgProps) {
 }
 
 export function getSizeScaleName(layerName) {
-  if(layerName === "pointmap") {
-    return `${layerName}_size`
-  } else if(layerName === "linemap") {
+  if(layerName === "linemap") {
     return `${layerName}_strokeWidth`
   } else {
-    throw new Error(
-      `Cannot create a size scale name for ${layerName}`
-    )
+    return `${layerName}_size`
   }
 }
 
 export function getColorScaleName(layerName) {
-  if(layerName === "pointmap") {
-    return `${layerName}_fillColor`
-  } else if(layerName === "linemap") {
+  if(layerName === "linemap") {
     return `${layerName}_strokeColor`
   } else {
-    throw new Error(
-      `Cannot create a color scale name for ${layerName}`
-    )
+    return `${layerName}_fillColor`
   }
 }
 
@@ -712,12 +704,12 @@ export function getScales({ size, color }, layerName, scaleDomainFields, xformDa
       name: getColorScaleName(layerName),
       type: "ordinal",
       domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
-      range: layerName === "pointmap" ? color.range.map(c => adjustOpacity(c, color.opacity)) : color.range,
-      default: layerName === "pointmap" ? adjustOpacity(
+      range: (layerName === "pointmap" || layerName === "points") ? color.range.map(c => adjustOpacity(c, color.opacity)) : color.range,
+      default: (layerName === "pointmap" || layerName === "points") ? adjustOpacity(
         color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
         color.opacity
       ) : color.range[color.range.length - 1],
-      nullValue: "#CACACA"
+      nullValue: (layerName === "pointmap" || layerName === "points") ? adjustOpacity("#CACACA", color.opacity) : "#CACACA"
     })
   }
 
@@ -726,8 +718,7 @@ export function getScales({ size, color }, layerName, scaleDomainFields, xformDa
       name: getColorScaleName(layerName),
       type: "quantize",
       domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
-      range: color.range,
-      nullValue: "#CACACA"
+      range: color.range
     })
   }
 
