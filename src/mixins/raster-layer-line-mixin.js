@@ -5,7 +5,7 @@ import {
   renderAttributes,
   getScales,
   getSizeScaleName,
-  getColorScaleName
+  getColorScaleName, adjustOpacity
 } from "../utils/utils-vega";
 import {lastFilteredSize, setLastFilteredSize} from "../core/core-async";
 import {parser} from "../utils/utils";
@@ -61,7 +61,10 @@ function getColor(color, layerName) {
       scale: getColorScaleName(layerName),
       field: "strokeColor"
     }
-  }else {
+  } else if (typeof color === "object") {
+    return adjustOpacity(color.value, color.opacity)
+  }
+  else {
     return color
   }
 }
@@ -369,7 +372,6 @@ export default function rasterLayerLineMixin(_layer) {
               field: "y"
             },
             strokeColor: getColor(state.encoding.color, layerName),
-            opacity: state.mark.opacity, // gets updated when opacity slider changes
             strokeWidth: size,
             lineJoin:
               typeof state.mark === "object" ? state.mark.lineJoin : "miter",

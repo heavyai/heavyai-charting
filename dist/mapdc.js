@@ -14112,12 +14112,12 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       name: getColorScaleName(layerName),
       type: "ordinal",
       domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
-      range: layerName === "pointmap" || layerName === "points" ? color.range.map(function (c) {
+      range: color.range.map(function (c) {
         return adjustOpacity(c, color.opacity);
-      }) : color.range,
-      default: layerName === "pointmap" || layerName === "points" ? adjustOpacity(color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
-      color.opacity) : color.range[color.range.length - 1],
-      nullValue: layerName === "pointmap" || layerName === "points" ? adjustOpacity("#CACACA", color.opacity) : "#CACACA"
+      }),
+      default: adjustOpacity(color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
+      color.opacity),
+      nullValue: adjustOpacity("#CACACA", color.opacity)
     });
   }
 
@@ -14126,7 +14126,9 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       name: getColorScaleName(layerName),
       type: "quantize",
       domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
-      range: color.range
+      range: color.range.map(function (c) {
+        return adjustOpacity(c, color.opacity);
+      })
     });
   }
 
@@ -31316,7 +31318,18 @@ function rasterLayerPointMixin(_layer) {
     }
   };
 
-  _layer._displayPopup = function (chart, parentElem, data, width, height, margins, xscale, yscale, minPopupArea, animate) {
+  _layer._displayPopup = function (svgProps) {
+    var chart = svgProps.chart,
+        parentElem = svgProps.parentElem,
+        data = svgProps.data,
+        height = svgProps.height,
+        margins = svgProps.margins,
+        xscale = svgProps.xscale,
+        yscale = svgProps.yscale,
+        minPopupArea = svgProps.minPopupArea,
+        animate = svgProps.animate;
+
+
     var rndrProps = {};
     if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
       var propObj = _vega.marks[0].properties;
@@ -72615,6 +72628,8 @@ function getColor(color, layerName) {
       scale: (0, _utilsVega.getColorScaleName)(layerName),
       field: "strokeColor"
     };
+  } else if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object") {
+    return (0, _utilsVega.adjustOpacity)(color.value, color.opacity);
   } else {
     return color;
   }
@@ -72910,7 +72925,6 @@ function rasterLayerLineMixin(_layer) {
           field: "y"
         },
         strokeColor: getColor(state.encoding.color, layerName),
-        opacity: state.mark.opacity, // gets updated when opacity slider changes
         strokeWidth: size,
         lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
         miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10

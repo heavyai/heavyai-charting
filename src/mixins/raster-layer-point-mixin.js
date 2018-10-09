@@ -545,18 +545,19 @@ export default function rasterLayerPointMixin(_layer) {
     }
   }
 
-  _layer._displayPopup = function(
-    chart,
-    parentElem,
-    data,
-    width,
-    height,
-    margins,
-    xscale,
-    yscale,
-    minPopupArea,
-    animate
-  ) {
+  _layer._displayPopup = function(svgProps) {
+    const {
+      chart,
+      parentElem,
+      data,
+      height,
+      margins,
+      xscale,
+      yscale,
+      minPopupArea,
+      animate
+    } = svgProps
+
     const rndrProps = {}
     if (
       _vega &&

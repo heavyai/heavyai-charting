@@ -704,12 +704,12 @@ export function getScales({ size, color }, layerName, scaleDomainFields, xformDa
       name: getColorScaleName(layerName),
       type: "ordinal",
       domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
-      range: (layerName === "pointmap" || layerName === "points") ? color.range.map(c => adjustOpacity(c, color.opacity)) : color.range,
-      default: (layerName === "pointmap" || layerName === "points") ? adjustOpacity(
+      range: color.range.map(c => adjustOpacity(c, color.opacity)),
+      default: adjustOpacity(
         color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
         color.opacity
-      ) : color.range[color.range.length - 1],
-      nullValue: (layerName === "pointmap" || layerName === "points") ? adjustOpacity("#CACACA", color.opacity) : "#CACACA"
+      ),
+      nullValue: adjustOpacity("#CACACA", color.opacity)
     })
   }
 
@@ -718,7 +718,7 @@ export function getScales({ size, color }, layerName, scaleDomainFields, xformDa
       name: getColorScaleName(layerName),
       type: "quantize",
       domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
-      range: color.range
+      range: color.range.map(c => adjustOpacity(c, color.opacity))
     })
   }
 
