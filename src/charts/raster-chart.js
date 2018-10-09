@@ -356,7 +356,8 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
       for (layer in layers) {
         let xDim = layer.xDim(),
-          yDim = layer.yDim()
+          yDim = layer.yDim(),
+          viewBoxDim = layer.viewBoxDim()
         if (xDim) {
           var range = xDim.getFilter()
           if (range !== null) {
