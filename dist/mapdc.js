@@ -45930,11 +45930,6 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
     return;
   };
 
-  _chart.getClosestResult = function () {
-    // don't use logic in mouseup event in map-mixin.js
-    return;
-  };
-
   _chart._doRender = function (d) {
     _chart.resetSvg(); // will use map mixin reset svg if we inherit map mixin
     for (var layerIndex = 0; layerIndex < _geoJsons.length; ++layerIndex) {
@@ -72643,7 +72638,8 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   var _state$encoding = state.encoding,
       size = _state$encoding.size,
       color = _state$encoding.color,
-      geocol = _state$encoding.geocol;
+      geocol = _state$encoding.geocol,
+      geoTable = _state$encoding.geoTable;
 
   var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
 
@@ -72713,7 +72709,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     });
     transforms.push({
       type: "project",
-      expr: "SAMPLE(" + table + "." + geocol + ")",
+      expr: "SAMPLE(" + geoTable + "." + geocol + ")",
       as: geocol
     });
   } else {
@@ -72724,7 +72720,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     });
     transforms.push({
       type: "project",
-      expr: table + "." + geocol
+      expr: geoTable + "." + geocol
     });
   }
 

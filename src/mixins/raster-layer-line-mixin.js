@@ -78,7 +78,7 @@ function getTransforms(
 ) {
   const transforms = []
   const { transform } = state
-  const { size, color, geocol } = state.encoding
+  const { size, color, geocol, geoTable } = state.encoding
   const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
 
   const fields = []
@@ -159,7 +159,7 @@ function getTransforms(
     })
     transforms.push({
       type: "project",
-      expr: `SAMPLE(${table}.${geocol})`,
+      expr: `SAMPLE(${geoTable}.${geocol})`,
       as: geocol
     })
   } else {
@@ -170,7 +170,7 @@ function getTransforms(
     })
     transforms.push({
       type: "project",
-      expr: `${table}.${geocol}`
+      expr: `${geoTable}.${geocol}`
     })
   }
 
