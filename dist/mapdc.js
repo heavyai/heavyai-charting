@@ -15420,7 +15420,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
           }
         } else if (typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) {
-          debugger;
+          // spatial filter on only single data source
           var viewBoxDim = layer.viewBoxDim();
           if (viewBoxDim !== null) {
             redrawall = true;
@@ -15443,7 +15443,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         console.log("on move event redrawall error:", error);
       });
     } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
-      debugger;
+      // spatial filter on only single data source
       _viewBoxDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._maxCoord[1]], [_chart._minCoord[0], _chart._maxCoord[1]]]);
       (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
@@ -72644,7 +72644,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       geoTable = _state$encoding.geoTable;
 
   var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
-  debugger;
+
   var fields = [];
   var alias = [];
   var ops = [];
@@ -72728,6 +72728,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
 
   if (typeof transform.limit === "number") {
     if (transform.sample && !doJoin()) {
+      // use Knuth's hash sampling on single data source chart
       transforms.push({
         type: "sample",
         method: "multiplicative",
@@ -72735,6 +72736,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
         limit: transform.limit
       });
     } else {
+      // when geo join is applied, we won't use Knuth's sampling but use LIMIT
       transforms.push({
         type: "limit",
         row: transform.limit
@@ -72944,7 +72946,7 @@ function rasterLayerLineMixin(_layer) {
       marks[0].properties.x.scale = "x";
       marks[0].properties.y.scale = "y";
     }
-    debugger;
+
     return {
       data: data,
       scales: scales,
