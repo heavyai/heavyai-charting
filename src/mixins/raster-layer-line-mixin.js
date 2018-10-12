@@ -175,12 +175,17 @@ function getTransforms(
   }
 
   if (typeof transform.limit === "number") {
-    if (transform.sample) {
+    if (transform.sample && !doJoin()) { // use Knuth's hash sampling on single data source chart
       transforms.push({
         type: "sample",
         method: "multiplicative",
         size: lastFilteredSize || transform.tableSize,
         limit: transform.limit
+      })
+    } else { // when geo join is applied, we won't use Knuth's sampling but use LIMIT
+      transforms.push({
+        type: "limit",
+        row: transform.limit
       })
     }
   }

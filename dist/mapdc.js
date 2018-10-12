@@ -15419,7 +15419,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
             xdim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
           }
-        } else if (typeof layer.viewBoxDim === "function") {
+        } else if (typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) {
+          debugger;
           var viewBoxDim = layer.viewBoxDim();
           if (viewBoxDim !== null) {
             redrawall = true;
@@ -15441,7 +15442,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
       });
-    } else if (_viewBoxDim !== null) {
+    } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
+      debugger;
       _viewBoxDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._maxCoord[1]], [_chart._minCoord[0], _chart._maxCoord[1]]]);
       (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
@@ -72642,7 +72644,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       geoTable = _state$encoding.geoTable;
 
   var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
-
+  debugger;
   var fields = [];
   var alias = [];
   var ops = [];
@@ -72725,12 +72727,17 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   }
 
   if (typeof transform.limit === "number") {
-    if (transform.sample) {
+    if (transform.sample && !doJoin()) {
       transforms.push({
         type: "sample",
         method: "multiplicative",
         size: lastFilteredSize || transform.tableSize,
         limit: transform.limit
+      });
+    } else {
+      transforms.push({
+        type: "limit",
+        row: transform.limit
       });
     }
   }
@@ -72937,7 +72944,7 @@ function rasterLayerLineMixin(_layer) {
       marks[0].properties.x.scale = "x";
       marks[0].properties.y.scale = "y";
     }
-
+    debugger;
     return {
       data: data,
       scales: scales,

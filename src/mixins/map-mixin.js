@@ -342,7 +342,7 @@ export default function mapMixin(
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]])
           }
         }
-        else if(typeof layer.viewBoxDim === "function") {
+        else if(typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) { // spatial filter on only single data source
           const viewBoxDim = layer.viewBoxDim()
           if(viewBoxDim !== null) {
             redrawall = true
@@ -367,7 +367,7 @@ export default function mapMixin(
         resetRedrawStack()
         console.log("on move event redrawall error:", error)
       })
-    } else if(_viewBoxDim !== null) {
+    } else if(_viewBoxDim !== null && layer.getState().data.length < 2) { // spatial filter on only single data source
       _viewBoxDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]],
                             [_chart._maxCoord[0], _chart._minCoord[1]],
                           [_chart._maxCoord[0], _chart._maxCoord[1]],
