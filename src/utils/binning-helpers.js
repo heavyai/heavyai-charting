@@ -1,3 +1,4 @@
+const MS_IN_SECS = 0.001
 const SEC = 1
 const MIN_IN_SECS = 60
 const HOUR_IN_SECS = 3600
@@ -11,6 +12,7 @@ const DECADE_IN_SECS = 315360000
 export const DEFAULT_EXTRACT_INTERVAL = "isodow"
 
 const TIME_LABELS = [
+  "millisecond",
   "second",
   "minute",
   "hour",
@@ -23,6 +25,7 @@ const TIME_LABELS = [
 ]
 
 export const TIME_LABEL_TO_SECS = {
+  millisecond: MS_IN_SECS,
   second: SEC,
   minute: MIN_IN_SECS,
   hour: HOUR_IN_SECS,
@@ -50,7 +53,8 @@ export const BIN_INPUT_OPTIONS = [
   { val: "day", label: "1d", numSeconds: 86400 },
   { val: "hour", label: "1h", numSeconds: 3600 },
   { val: "minute", label: "1m", numSeconds: 60 },
-  { val: "second", label: "1s", numSeconds: 1 }
+  { val: "second", label: "1s", numSeconds: 1 },
+  { val: "millisecond", label: "1ms", numSeconds: 0.001 }
 ]
 
 export function autoBinParams(timeBounds, maxNumBins, reverse) {
