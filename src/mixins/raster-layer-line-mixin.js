@@ -144,7 +144,7 @@ function getTransforms(
     : {}
 
 
-  if(doJoin() && (size !== "auto" || color.type !== "solid")) {
+  if(doJoin()) {
     transforms.push({
       type: "aggregate",
       fields,
