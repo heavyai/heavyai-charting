@@ -11751,7 +11751,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
             xdim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
           }
-        } else if (typeof layer.viewBoxDim === "function") {
+        } else if (typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) {
+          // spatial filter on only single data source
           var viewBoxDim = layer.viewBoxDim();
           if (viewBoxDim !== null) {
             redrawall = true;
@@ -11773,7 +11774,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
       });
-    } else if (_viewBoxDim !== null) {
+    } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
+      // spatial filter on only single data source
       _viewBoxDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._minCoord[1]], [_chart._maxCoord[0], _chart._maxCoord[1]], [_chart._minCoord[0], _chart._maxCoord[1]]]);
       (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
@@ -65018,7 +65020,7 @@ function renderNominalLegend(state, dispatch) {
                     h_1.default("div.color", {
                         style: { background: state.range[index] }
                     }),
-                    h_1.default("div.text", value)
+                    h_1.default("div.text", "" + value)
                 ]);
             }))
             : h_1.default("div")
@@ -68999,7 +69001,8 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   var _state$encoding = state.encoding,
       size = _state$encoding.size,
       color = _state$encoding.color,
-      geocol = _state$encoding.geocol;
+      geocol = _state$encoding.geocol,
+      geoTable = _state$encoding.geoTable;
 
   var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
 
@@ -69054,7 +69057,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     as: "key0"
   } : {};
 
-  if (doJoin() && (size !== "auto" || color.type !== "solid")) {
+  if (doJoin()) {
     transforms.push({
       type: "aggregate",
       fields: fields,
@@ -69069,7 +69072,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     });
     transforms.push({
       type: "project",
-      expr: "SAMPLE(" + table + "." + geocol + ")",
+      expr: "SAMPLE(" + geoTable + "." + geocol + ")",
       as: geocol
     });
   } else {
@@ -69080,17 +69083,24 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     });
     transforms.push({
       type: "project",
-      expr: table + "." + geocol
+      expr: geoTable + "." + geocol
     });
   }
 
   if (typeof transform.limit === "number") {
-    if (transform.sample) {
+    if (transform.sample && !doJoin()) {
+      // use Knuth's hash sampling on single data source chart
       transforms.push({
         type: "sample",
         method: "multiplicative",
         size: lastFilteredSize || transform.tableSize,
         limit: transform.limit
+      });
+    } else {
+      // when geo join is applied, we won't use Knuth's sampling but use LIMIT
+      transforms.push({
+        type: "limit",
+        row: transform.limit
       });
     }
   }
