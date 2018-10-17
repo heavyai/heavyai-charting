@@ -2264,6 +2264,79 @@ document.addEventListener("DOMContentLoaded", () => {
       ]
     }
 
+    const vega_tinyint_test = {
+      "width": 793,
+      "height": 502,
+      "data": [
+        {
+          "name": "pointmap",
+          "sql": "SELECT ST_X(dropoff_point) as x, ST_Y(dropoff_point) as y, cab_type_id as color, rowid FROM taxi_factual_closestbuilding WHERE MOD(rowid * 265445761, 4294967296) < 48373727 AND ((ST_X(dropoff_point) >= -74.23873554769207 AND ST_X(dropoff_point) <= -73.29965110742263) AND (ST_Y(dropoff_point) >= 40.55116668287144 AND ST_Y(dropoff_point) <= 41.00134102538428)) LIMIT 2000000"
+        },
+        {
+          "name": "pointmap_stats",
+          "source": "pointmap",
+          "transform": [
+            {
+              "type": "aggregate",
+              "fields": [ "color", "color", "color", "color" ],
+              "ops": [ "min", "max", "avg", "stddev" ],
+              "as": [ "mincol", "maxcol", "avgcol", "stdcol" ]
+            },
+            {
+              "type": "formula",
+              "expr": "max(mincol, avgcol-2*stdcol)",
+              "as": "mincolor"
+            },
+            {
+              "type": "formula",
+              "expr": "min(maxcol, avgcol+2*stdcol)",
+              "as": "maxcolor"
+            }
+          ]
+        }
+      ],
+      "projections": [
+        {
+          "name": "mercator_map_projection",
+          "type": "mercator",
+          "bounds": {
+            "x": [-74.23873554769207, -73.29965110742263],
+            "y": [40.55116668287144, 41.00134102538428]
+          }
+        }
+      ],
+      "scales": [
+        {
+          "name": "pointmap_fillColor",
+          "type": "quantize",
+          "domain": {
+            "data": "pointmap_stats",
+            "fields": [ "mincolor", "maxcolor" ]
+          },
+          "range": [ "#115f9a", "#1984c5", "#22a7f0", "#48b5c4", "#76c68f", "#a6d75b", "#c9e52f", "#d0ee11", "#d0f400" ]
+        }
+      ],
+      "marks": [
+        {
+          "type": "symbol",
+          "from": {
+            "data": "pointmap"
+          },
+          "properties": {
+            "xc": { "field": "x" },
+            "yc": { "field": "y" },
+            "fillColor": { "scale": "pointmap_fillColor", "field": "color" },
+            "shape": "circle",
+            "width": 1,
+            "height": 1
+          },
+          "transform": {
+            "projection": "mercator_map_projection"
+          }
+        }
+      ]
+    }
+
     
   
 
@@ -2380,6 +2453,10 @@ document.addEventListener("DOMContentLoaded", () => {
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
       results = con.renderVega(1, JSON.stringify(vega_null_baked_float_data))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(vega_tinyint_test))
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
     })
