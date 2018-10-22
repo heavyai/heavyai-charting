@@ -27938,6 +27938,7 @@ function rasterLayerPolyMixin(_layer) {
           groupby: groupby
         });
       } else {
+        var colorField = color.type === "quantitative" ? color.aggregate.field : color.field; // we need to refactor these two different object structure
         transforms.push({
           type: "project",
           expr: _utils.parser.parseExpression({
@@ -27950,7 +27951,7 @@ function rasterLayerPolyMixin(_layer) {
             // Note: When not performing a join, there is no dimension,
             // and color measures do not have aggregates. Just grab the
             // field.
-            color.type === "solid" ? 1 : color.aggregate.field]],
+            color.type === "solid" ? 1 : colorField]],
             else: null
           }),
           as: "color"
