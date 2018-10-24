@@ -94,8 +94,22 @@ function getTransforms(
     return state.data.length > 1
   }
 
+  const groupbyDim = state.transform.groupby ? state.transform.groupby.map((g, i) => ({
+    type: "project",
+    expr: `${state.data[0].table}.${g}`,
+    as: `key${i}`
+  })) : {}
+
+  const groupby = doJoin()
+    ? [{
+      type: "project",
+      expr: `${state.data[0].table}.${state.data[0].attr}`,
+      as: "key0"
+    }]
+    : groupbyDim
+
   if (typeof size === "object" && size.type === "quantitative") {
-    if(doJoin()) {
+    if(groupby.length > 0) {
       fields.push(`${state.data[0].table}.${size.field}`)
       alias.push("strokeWidth")
       ops.push(size.aggregate)
@@ -112,7 +126,7 @@ function getTransforms(
     typeof color === "object" &&
     (color.type === "quantitative" || color.type === "ordinal")
   ) {
-    if(doJoin()) {
+    if(groupby.length > 0) {
       fields.push(colorProjection)
       alias.push("strokeColor")
       ops.push(null)
@@ -135,16 +149,7 @@ function getTransforms(
   }
 
 
-  const groupby = doJoin()
-    ? {
-      type: "project",
-      expr: `${state.data[0].table}.${state.data[0].attr}`,
-      as: "key0"
-    }
-    : {}
-
-
-  if(doJoin()) {
+  if(groupby.length > 0) {
     transforms.push({
       type: "aggregate",
       fields,
