@@ -69019,7 +69019,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       expr: state.data[0].table + "." + g,
       as: "key" + i
     };
-  }) : {};
+  }) : [];
 
   var groupby = doJoin() ? [{
     type: "project",

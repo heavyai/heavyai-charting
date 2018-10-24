@@ -98,7 +98,7 @@ function getTransforms(
     type: "project",
     expr: `${state.data[0].table}.${g}`,
     as: `key${i}`
-  })) : {}
+  })) : []
 
   const groupby = doJoin()
     ? [{
