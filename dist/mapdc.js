@@ -69014,8 +69014,22 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     return state.data.length > 1;
   }
 
+  var groupbyDim = state.transform.groupby ? state.transform.groupby.map(function (g, i) {
+    return {
+      type: "project",
+      expr: state.data[0].table + "." + g,
+      as: "key" + i
+    };
+  }) : [];
+
+  var groupby = doJoin() ? [{
+    type: "project",
+    expr: state.data[0].table + "." + state.data[0].attr,
+    as: "key0"
+  }] : groupbyDim;
+
   if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-    if (doJoin()) {
+    if (groupby.length > 0) {
       fields.push(state.data[0].table + "." + size.field);
       alias.push("strokeWidth");
       ops.push(size.aggregate);
@@ -69029,7 +69043,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   }
 
   if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-    if (doJoin()) {
+    if (groupby.length > 0) {
       fields.push(colorProjection);
       alias.push("strokeColor");
       ops.push(null);
@@ -69049,13 +69063,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     });
   }
 
-  var groupby = doJoin() ? {
-    type: "project",
-    expr: state.data[0].table + "." + state.data[0].attr,
-    as: "key0"
-  } : {};
-
-  if (doJoin()) {
+  if (groupby.length > 0) {
     transforms.push({
       type: "aggregate",
       fields: fields,
