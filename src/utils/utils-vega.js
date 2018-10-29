@@ -667,7 +667,7 @@ export function getColorScaleName(layerName) {
 export function getScales({ size, color }, layerName, scaleDomainFields, xformDataSource) {
   const scales = []
 
-  if (typeof size === "object" && size.type === "quantitative") {
+  if (typeof size === "object" && (size.type === "quantitative" || size.type === "custom")) {
     scales.push({
       name: getSizeScaleName(layerName),
       type: "linear",

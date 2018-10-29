@@ -10433,7 +10433,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
 
   var scales = [];
 
-  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
+  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && (size.type === "quantitative" || size.type === "custom")) {
     scales.push({
       name: getSizeScaleName(layerName),
       type: "linear",
@@ -68961,7 +68961,7 @@ function getSizing(sizeAttr, cap) {
 
   if (typeof sizeAttr === "number") {
     return sizeAttr;
-  } else if ((typeof sizeAttr === "undefined" ? "undefined" : _typeof(sizeAttr)) === "object" && sizeAttr.type === "quantitative") {
+  } else if ((typeof sizeAttr === "undefined" ? "undefined" : _typeof(sizeAttr)) === "object" && (sizeAttr.type === "quantitative" || sizeAttr.type === "custom")) {
     return {
       scale: (0, _utilsVega.getSizeScaleName)(layerName),
       field: "strokeWidth"
@@ -69028,8 +69028,8 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     as: "key0"
   }] : groupbyDim;
 
-  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-    if (groupby.length > 0) {
+  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && (size.type === "quantitative" || size.type === "custom")) {
+    if (groupby.length > 0 && size.type === "quantitative") {
       fields.push(state.data[0].table + "." + size.field);
       alias.push("strokeWidth");
       ops.push(size.aggregate);
@@ -69043,14 +69043,22 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   }
 
   if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-    if (groupby.length > 0) {
+    if (groupby.length > 0 && color.colorMeasureAggType !== "Custom") {
       fields.push(colorProjection);
       alias.push("strokeColor");
       ops.push(null);
     } else {
+      var expression = null;
+      if (color.colorMeasureAggType === "Custom") {
+        expression = color.field ? color.field : color.aggregate;
+      } else if (color.type === "quantitative") {
+        expression = color.aggregate.field;
+      } else {
+        expression = color.field;
+      }
       transforms.push({
         type: "project",
-        expr: color.type === "quantitative" ? color.aggregate.field : color.field,
+        expr: expression,
         as: "strokeColor"
       });
     }
