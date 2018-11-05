@@ -69308,8 +69308,7 @@ function rasterLayerLineMixin(_layer) {
         },
         strokeColor: getColor(state.encoding.color, layerName),
         strokeWidth: size,
-        lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
-        miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
+        lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "bevel"
       })
     }];
 
