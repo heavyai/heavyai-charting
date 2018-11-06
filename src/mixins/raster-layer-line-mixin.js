@@ -338,11 +338,7 @@ export default function rasterLayerLineMixin(_layer) {
         name: layerName,
         format: {
           type: "lines",
-          coords: {
-            x: [state.encoding.geocol],
-            y: [{"from": state.encoding.geocol}]
-          },
-          "layout": "interleaved"
+          coords: state.encoding.geocol
         },
         sql: parser.writeSQL({
           type: "root",
