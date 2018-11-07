@@ -69262,13 +69262,10 @@ function rasterLayerLineMixin(_layer) {
 
     var data = [{
       name: layerName,
+      geocolumn: state.encoding.geocol,
       format: {
         type: "lines",
-        coords: {
-          x: [state.encoding.geocol],
-          y: [{ "from": state.encoding.geocol }]
-        },
-        "layout": "interleaved"
+        coords: state.encoding.geocol
       },
       sql: _utils.parser.writeSQL({
         type: "root",
