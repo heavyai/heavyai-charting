@@ -69400,6 +69400,28 @@ function rasterLayerLineMixin(_layer) {
     return (0, _utilsVega.__displayPopup)(_extends({}, svgProps, { _vega: _vega, _layer: _layer, state: state }));
   };
 
+  var _scaledPopups = {};
+  _layer._hidePopup = function (chart, hideCallback) {
+    var mapPoly = chart.select(".map-polyline");
+
+    if (mapPoly) {
+      if (_scaledPopups[chart]) {
+        mapPoly.classed("removePoly", true);
+      } else {
+        mapPoly.classed("fadeOutPoly", true);
+        // mapPoly.attr('transform', 'scale(0, 0)');
+      }
+
+      if (hideCallback) {
+        mapPoly.on("animationend", function () {
+          hideCallback(chart);
+        });
+      }
+
+      delete _scaledPopups[chart];
+    }
+  };
+
   _layer._destroyLayer = function (chart) {
     var viewBoxDim = _layer.viewBoxDim();
     if (viewBoxDim) {
