@@ -69262,13 +69262,10 @@ function rasterLayerLineMixin(_layer) {
 
     var data = [{
       name: layerName,
+      geocolumn: state.encoding.geocol,
       format: {
         type: "lines",
-        coords: {
-          x: [state.encoding.geocol],
-          y: [{ "from": state.encoding.geocol }]
-        },
-        "layout": "interleaved"
+        coords: state.encoding.geocol
       },
       sql: _utils.parser.writeSQL({
         type: "root",
@@ -69308,8 +69305,7 @@ function rasterLayerLineMixin(_layer) {
         },
         strokeColor: getColor(state.encoding.color, layerName),
         strokeWidth: size,
-        lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
-        miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
+        lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "bevel"
       })
     }];
 
