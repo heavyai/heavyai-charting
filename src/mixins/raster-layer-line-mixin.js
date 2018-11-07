@@ -494,6 +494,27 @@ export default function rasterLayerLineMixin(_layer) {
     return __displayPopup({ ...svgProps, _vega, _layer, state})
   }
 
+  const _scaledPopups = {}
+  _layer._hidePopup = function(chart, hideCallback) {
+    const mapPoly = chart.select(".map-polyline")
+
+    if (mapPoly) {
+      if (_scaledPopups[chart]) {
+        mapPoly.classed("removePoly", true)
+      } else {
+        mapPoly.classed("fadeOutPoly", true)
+        // mapPoly.attr('transform', 'scale(0, 0)');
+      }
+
+      if (hideCallback) {
+        mapPoly.on("animationend", () => {
+          hideCallback(chart)
+        })
+      }
+
+      delete _scaledPopups[chart]
+    }
+  }
 
   _layer._destroyLayer = function(chart) {
     const viewBoxDim = _layer.viewBoxDim()

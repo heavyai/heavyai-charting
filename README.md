@@ -18,7 +18,7 @@ Dimensional charting built to work natively with crossfilter rendered using d3.j
 
 # Examples
 
-Visit our [examples page](https://mapd.github.io/mapd-charting/example/) for ideas of what can be created MapD Charting
+Visit our [examples page](https://omnisci.github.io/mapd-charting/example/) for ideas of what can be created MapD Charting
 
 # Quick Start
 
