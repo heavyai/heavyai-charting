@@ -61,21 +61,22 @@
       .group(countGroup);
 
 
-      const colorRange = [
-        "rgba(234,85,69,1)",
-        "rgba(189,207,50,1)",
-        "rgba(179,61,198,1)",
-        "rgba(239,155,32,1)",
-        "rgba(39,174,239,1)"
-      ]
-      const colorDomain = [
-        "Fault",
-        "Normal Fault",
-        "Low Angle Detachment Fault",
-        "Fault Inferred",
-        "Other"
-      ]
+    const colorRange = [
+      "rgba(234,85,69,1)",
+      "rgba(189,207,50,1)",
+      "rgba(179,61,198,1)",
+      "rgba(239,155,32,1)",
+      "rgba(39,174,239,1)"
+    ]
+    const colorDomain = [
+      "Fault",
+      "Normal Fault",
+      "Low Angle Detachment Fault",
+      "Fault Inferred",
+      "Other"
+    ]
 
+    // map bounding box filtering dimension
     const viewBoxDim = crossFilter.dimension(config.geoMeasure)
 
     const sw_point = [-124.70126, 27.937431]
@@ -83,6 +84,7 @@
     const ne_point =  [-66.82674, 49.467835]
     const nw_point =  [-124.70126, 49.467835]
 
+    // crossfilter method to count number of lines within the map bounding box
     viewBoxDim.filterST_Intersects([
       sw_point,
       se_point,
@@ -97,7 +99,7 @@
       .mapStyle('json/dark-v8.json')
       .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
       .popupSearchRadius(2)
-      .useGeoTypes(true)
+      .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
 
 
     const lineLayer = dc.rasterLayer("lines")
@@ -124,7 +126,7 @@
             colorMeasureAggType: "# Unique",
             domain: colorDomain,
             range: colorRange,
-            legend: {title: "FAULT_TYPE [uyanga_omnisci_linestring]", open: true}
+            legend: {title: config.colorMeasure + ' ['+config.table+']', open: true}
           },
           geocol: config.geoMeasure,
           geoTable: config.table
@@ -136,6 +138,7 @@
 
 
     LinemapChart.pushLayer("linemap", lineLayer).init().then((chart) => {
+      // This will zoom to data extent
       chart.zoomToLocation({
         bounds: {
           sw: [-124.70126, 27.937431],
@@ -146,7 +149,7 @@
         .viewBoxDim(crossFilter.filterST_Intersects)
 
       // hover effect with popup
-      var debouncedPopup = _.debounce(displayPopupWithData, 250)
+      const debouncedPopup = _.debounce(displayPopupWithData, 250)
       LinemapChart.map().on('mousewheel', LinemapChart.hidePopup);
       LinemapChart.map().on('mousemove', LinemapChart.hidePopup)
       LinemapChart.map().on('mousemove', debouncedPopup)
@@ -163,8 +166,8 @@
     window.addEventListener("resize", _.debounce(reSizeAll, 500));
 
     function reSizeAll(){
-      var w = document.documentElement.clientWidth - 30;
-      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+      const w = document.documentElement.clientWidth - 30;
+      const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
 
       LinemapChart.map().resize();
       LinemapChart.isNodeAnimate = false;
