@@ -60,12 +60,12 @@
 /******/ 	__webpack_require__.p = "/assets/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 600);
+/******/ 	return __webpack_require__(__webpack_require__.s = 603);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 600:
+/***/ 603:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74,7 +74,7 @@
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 /* global dc, mapd3, d3, crossfilter, MapdCon  */
-__webpack_require__(601);
+__webpack_require__(604);
 
 /*
  * This is example code that shows how to make 3 cross-filtered charts with the
@@ -720,13 +720,13 @@ document.addEventListener("DOMContentLoaded", init, false);
 
 /***/ }),
 
-/***/ 601:
+/***/ 604:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(602);
+var content = __webpack_require__(605);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(62)(content, {});
@@ -747,7 +747,7 @@ if(false) {
 
 /***/ }),
 
-/***/ 602:
+/***/ 605:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(61)();
