@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <style>
+        .title {
+            font-weight: bold;
+            text-align:center;
+        }
+        .mapd{
+            position: relative;
+            top: 2px;
+        }
+        .data-count{
+            padding-right:20px;
+        }
+        .filter-count{
+            font-weight: bold;
+            color:  #45B1E8;
+        }
+        .map {
+            width: 50%
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header" style="margin-top:10px">
+            <span class="mapd">OmniSci Demo</span>
+        </div>
+        <div class="navbar-text navbar-right">
+            <div class="data-count"></div>
+        </div>
+    </div>
+</nav>
+<div class="col-xs-12 map">
+    <div class="title">US Fault Lines</div>
+    <div id="linemap"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="assets/app.bundle.js"></script>
+
+<script>
+
+  function createLinemapChart(crossFilter, dc, config, con) {
+    const w = document.documentElement.clientWidth - 30;
+    const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
+    const parent = document.getElementById("linemap");
+    const mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
+
+    const countGroup = crossFilter.groupAll();
+
+    dc.countWidget(".data-count")
+      .dimension(crossFilter)
+      .group(countGroup);
+
+
+    const colorRange = [
+      "rgba(234,85,69,1)",
+      "rgba(189,207,50,1)",
+      "rgba(179,61,198,1)",
+      "rgba(239,155,32,1)",
+      "rgba(39,174,239,1)"
+    ]
+    const colorDomain = [
+      "Fault",
+      "Normal Fault",
+      "Low Angle Detachment Fault",
+      "Fault Inferred",
+      "Other"
+    ]
+
+    // map bounding box filtering dimension
+    const viewBoxDim = crossFilter.dimension(config.geoMeasure)
+
+    const sw_point = [-124.70126, 27.937431]
+    const se_point = [-66.82674, 27.937431]
+    const ne_point =  [-66.82674, 49.467835]
+    const nw_point =  [-124.70126, 49.467835]
+
+    // crossfilter method to count number of lines within the map bounding box
+    viewBoxDim.filterST_Intersects([
+      sw_point,
+      se_point,
+      ne_point,
+      nw_point])
+
+    const LinemapChart = dc.rasterChart(parent, true, null, mapboxgl)
+      .con(con)
+      .height(h)
+      .width(w)
+      .mapUpdateInterval(750)
+      .mapStyle('json/dark-v8.json')
+      .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
+      .popupSearchRadius(2)
+      .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
+
+
+    const lineLayer = dc.rasterLayer("lines")
+      .crossfilter(crossFilter)
+      .setState({
+        data: [{
+          table: config.table,
+          attr: "rowid"
+        }],
+        transform: {
+          sample: true,
+          limit: 100000,
+          tableSize: 1391
+        },
+        mark: {
+          type: "lines",
+          lineJoin: "bevel"
+        },
+        encoding: {
+          size: "auto",
+          color: {
+            type: "ordinal",
+            field: config.colorMeasure,
+            colorMeasureAggType: "# Unique",
+            domain: colorDomain,
+            range: colorRange,
+            legend: {title: config.colorMeasure + ' ['+config.table+']', open: true}
+          },
+          geocol: config.geoMeasure,
+          geoTable: config.table
+        }
+      })
+      .viewBoxDim(viewBoxDim)
+      .popupColumns(["rowid", "FAULT_TYPE"])
+      .popupColumnsMapped({})
+
+
+    LinemapChart.pushLayer("linemap", lineLayer).init().then((chart) => {
+      // This will zoom to data extent
+      chart.zoomToLocation({
+        bounds: {
+          sw: [-124.70126, 27.937431],
+          ne: [-66.82674, 49.467835]
+        }
+      })
+      chart
+        .viewBoxDim(crossFilter.filterST_Intersects)
+
+      // hover effect with popup
+      const debouncedPopup = _.debounce(displayPopupWithData, 250)
+      LinemapChart.map().on('mousewheel', LinemapChart.hidePopup);
+      LinemapChart.map().on('mousemove', LinemapChart.hidePopup)
+      LinemapChart.map().on('mousemove', debouncedPopup)
+      function displayPopupWithData (event) {
+        LinemapChart.getClosestResult(event.point, LinemapChart.displayPopup)
+      }
+      dc.renderAllAsync()
+
+    })
+
+    /*--------------------------RESIZE EVENT------------------------------*/
+    /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+
+    window.addEventListener("resize", _.debounce(reSizeAll, 500));
+
+    function reSizeAll(){
+      const w = document.documentElement.clientWidth - 30;
+      const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+
+      LinemapChart.map().resize();
+      LinemapChart.isNodeAnimate = false;
+      LinemapChart
+        .width(w)
+        .height(h)
+        .render();
+
+      dc.redrawAllAsync();
+    }
+
+  }
+
+  function init() {
+    const config = {
+      table: "us_faults",
+      geoMeasure: "omnisci_geo",
+      colorMeasure: "FAULT_TYPE"
+    }
+
+    const con = new MapdCon()
+      .protocol("https")
+      .host("kali.mapd.com")
+      .port("10043")
+      .dbName("mapd")
+      .user("mapd")
+      .password("HyperInteractive")
+      .connect(function(error, con) {
+        crossfilter.crossfilter(con, config.table)
+          .then(function(cf) {
+            createLinemapChart(cf, dc, config, con)
+          })
+        ;
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', init, false);
+
+</script>
+</body>
+</html>

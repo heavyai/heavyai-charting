@@ -960,6 +960,19 @@ body {
       animation: fadeInMapPoint .5s; }
     .dc-chart .map-poly.fadeOutPoly {
       animation: fadeOutMapPoint .25s; }
+  .dc-chart .map-polyline {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 4;
+    pointer-events: none; }
+    .dc-chart .map-polyline.popupPoly {
+      animation: showMapPoint .5s; }
+    .dc-chart .map-polyline.removePoly {
+      animation: hideMapPoint .25s; }
+    .dc-chart .map-polyline.fadeInPoly {
+      animation: fadeInMapPoint .5s; }
+    .dc-chart .map-polyline.fadeOutPoly {
+      animation: fadeOutMapPoint .25s; }
 
 @keyframes showMapPopup {
   0% {

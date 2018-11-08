@@ -961,6 +961,29 @@ body {
             animation: fadeOutMapPoint .25s;
         }
     }
+
+    .map-polyline{
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 4;
+      pointer-events: none;
+
+      &.popupPoly {
+        animation: showMapPoint .5s;
+      }
+
+      &.removePoly {
+        animation: hideMapPoint .25s;
+      }
+
+      &.fadeInPoly {
+        animation: fadeInMapPoint .5s;
+      }
+
+      &.fadeOutPoly {
+        animation: fadeOutMapPoint .25s;
+      }
+    }
 }
 
 @keyframes showMapPopup {

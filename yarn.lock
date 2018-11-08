@@ -2,24 +2,31 @@
 # yarn lockfile v1
 
 
-"@mapd/connector@git://github.com/mapd/mapd-connector.git#07a6968":
+"@mapd/connector@git://github.com/omnisci/mapd-connector.git#07a6968":
   version "1.0.0"
-  resolved "git://github.com/mapd/mapd-connector.git#07a6968fe57537867f31ba6f3772140750956c04"
+  resolved "git://github.com/omnisci/mapd-connector.git#07a6968fe57537867f31ba6f3772140750956c04"
   dependencies:
     codecov "^2.2.0"
     script-loader "^0.7.0"
     thrift "^0.10.0"
 
-"@mapd/crossfilter@git://github.com/mapd/mapd-crossfilter.git#f49215f":
+"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#5f4f7d0":
   version "1.0.0"
-  resolved "git://github.com/mapd/mapd-crossfilter.git#f49215f8ca58aa6d03f764122d1642b40ddaf738"
+  resolved "git://github.com/omnisci/mapd-crossfilter.git#5f4f7d0a90ee00b378ad88433beb3c3e69c7e867"
 
-"@mapd/mapd-draw@git://github.com/mapd/mapd-draw.git":
+"@mapd/mapd-draw@git://github.com/omnisci/mapd-draw.git":
   version "1.1.0"
-  resolved "git://github.com/mapd/mapd-draw.git#a71db40f4708f7ebd1a74910a90fa96a85267e8b"
+  resolved "git://github.com/omnisci/mapd-draw.git#a71db40f4708f7ebd1a74910a90fa96a85267e8b"
   dependencies:
     css-element-queries "^0.4.0"
     gl-matrix "^2.3.2"
+
+"@turf/bbox-clip@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@turf/bbox-clip/-/bbox-clip-6.0.3.tgz#648b8eef157640b88ad66941644e2566a65f0f3c"
+  dependencies:
+    "@turf/helpers" "6.x"
+    "@turf/invariant" "6.x"
 
 "@turf/bbox@^6.0.1":
   version "6.0.1"
@@ -31,6 +38,12 @@
 "@turf/helpers@6.x":
   version "6.1.3"
   resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-6.1.3.tgz#0001a5c4a3bff25b4bbbc64f8713a383c9ab9e94"
+
+"@turf/invariant@6.x":
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-6.1.2.tgz#6013ed6219f9ac2edada9b31e1dfa5918eb0a2f7"
+  dependencies:
+    "@turf/helpers" "6.x"
 
 "@turf/meta@6.x":
   version "6.0.1"
@@ -2527,7 +2540,7 @@ deep-eql@^0.1.3:
   dependencies:
     type-detect "0.1.1"
 
-deep-equal@1.0.1, deep-equal@^1.0.0, deep-equal@^1.0.1:
+deep-equal@^1.0.0, deep-equal@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
 
@@ -3268,6 +3281,10 @@ falafel@^2.1.0:
 fast-deep-equal@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-1.1.0.tgz#c053477817c86b51daa853c81e059b733d023614"
+
+fast-deep-equal@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
 
 fast-json-stable-stringify@^2.0.0:
   version "2.0.0"
@@ -4735,9 +4752,9 @@ left-pad@^1.2.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/left-pad/-/left-pad-1.3.0.tgz#5b8a3a7765dfe001261dde915589e782f8c94d1e"
 
-"legendables@git://github.com/mapd/legendables.git#9fd4f0a":
+"legendables@git://github.com/omnisci/legendables.git#862921c":
   version "1.0.0-rc.6"
-  resolved "git://github.com/mapd/legendables.git#9fd4f0a23613d52f5e45a5942bdec835bf30d5eb"
+  resolved "git://github.com/omnisci/legendables.git#862921cfb47e878505fc3ea40822ad860482d27d"
   dependencies:
     d3-dispatch "^1.0.3"
     d3-format "^1.2.0"
@@ -5031,9 +5048,9 @@ mapbox-gl-supported@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/mapbox-gl-supported/-/mapbox-gl-supported-1.2.0.tgz#cbd34df894206cadda9a33c8d9a4609f26bb1989"
 
-"mapbox-gl@https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307":
+"mapbox-gl@https://github.com/omnisci/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307":
   version "0.28.0"
-  resolved "https://github.com/mapd/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307#998b5cf85ee5a4f62326ef7fcdb7258c8dc1c6e3"
+  resolved "https://github.com/omnisci/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307#bdfa7835e9fafa1a795db6ac5aa568957af6d434"
   dependencies:
     bubleify "^0.5.1"
     csscolorparser "^1.0.2"
@@ -5065,9 +5082,9 @@ mapbox-gl-supported@^1.2.0:
     webworkify "^1.4.0"
     whoots-js "^2.0.0"
 
-mapd-data-layer-2@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.1.tgz#e3385e8e58b074f29c086e3b0135081dab43bc48"
+mapd-data-layer-2@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.6.tgz#6b1e5d7c8d33176b88392107c7b8b7bcbbbad42e"
   dependencies:
     invariant "^2.2.2"
 

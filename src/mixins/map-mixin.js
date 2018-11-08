@@ -19,8 +19,8 @@ export default function mapMixin(
   const SMALL_AMOUNT = 0.00001 // Mapbox doesn't like coords being exactly on the edge.
   const LONMAX = 180 - SMALL_AMOUNT
   const LONMIN = -180 + SMALL_AMOUNT
-  const LATMAX = 90 - SMALL_AMOUNT
-  const LATMIN = -90 + SMALL_AMOUNT
+  const LATMAX = 85 - SMALL_AMOUNT
+  const LATMIN = -85 + SMALL_AMOUNT
 
   var _mapboxgl = typeof _mapboxgl === "undefined" ? mapboxgl : _mapboxgl
   let _map = null
@@ -31,12 +31,14 @@ export default function mapMixin(
 
   _chart._xDimName = null
   _chart._yDimName = null
+  _chart._viewBoxDimName = null
   let hasAppliedInitialBounds = false
   let _hasRendered = false
   let _activeLayer = null
   let _mapInitted = false
   let _xDim = null
   let _yDim = null
+  let _viewBoxDim = null
   let _lastMapMoveType = null
   let _lastMapUpdateTime = 0
   let _isFirstMoveEvent = true
@@ -56,7 +58,7 @@ export default function mapMixin(
   let _clientClickX = null
   let _clientClickY = null
 
-  const _arr = [[-180, -85], [180, 85]]
+  const _arr = [[LONMIN, LATMIN], [LONMAX, LATMAX]]
 
   const _llb = _mapboxgl.LngLatBounds.convert(_arr)
 
@@ -74,6 +76,36 @@ export default function mapMixin(
   }
   _chart.map = function() {
     return _map
+  }
+
+  _chart.lonMin = function() {
+    return LONMIN
+  }
+
+  _chart.lonMax = function() {
+    return LONMAX
+  }
+
+  _chart.latMin = function() {
+    return LATMIN
+  }
+
+  _chart.latMax = function() {
+    return LATMAX
+  }
+
+  function makeBoundsArrSafe([[lowerLon, lowerLat], [upperLon, upperLat]]) {
+    return [
+      [Math.max(LONMIN, lowerLon), Math.max(LATMIN, lowerLat)],
+      [Math.min(LONMAX, upperLon), Math.min(LATMAX, upperLat)]
+    ]
+  }
+
+  _chart.convertBounds = function(arr) {
+    if (!_mapboxgl) {
+      throw new Error(`Cannot convert bounds: mapboxgl uninitialized.`)
+    }
+    return _mapboxgl.LngLatBounds.convert(makeBoundsArrSafe(arr))
   }
 
   _chart.enableInteractions = function(enableInteractions, opts = {}) {
@@ -162,6 +194,17 @@ export default function mapMixin(
     _yDim = yDim
     if (_yDim) {
       _chart._yDimName = _yDim.value()[0]
+    }
+    return _chart
+  }
+
+  _chart.viewBoxDim = function(viewBoxDim) {
+    if (!arguments.length) {
+      return _viewBoxDim
+    }
+    _viewBoxDim = viewBoxDim
+    if (_viewBoxDim) {
+      _chart._viewBoxDimName = _viewBoxDim.value()[0]
     }
     return _chart
   }
@@ -299,6 +342,16 @@ export default function mapMixin(
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]])
           }
         }
+        else if(typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) { // spatial filter on only single data source
+          const viewBoxDim = layer.viewBoxDim()
+          if(viewBoxDim !== null) {
+            redrawall = true
+            viewBoxDim.filterST_Intersects([[bounds._sw.lng, bounds._sw.lat],
+                                  [bounds._ne.lng, bounds._sw.lat],
+                                  [bounds._ne.lng, bounds._ne.lat],
+                                  [bounds._sw.lng, bounds._ne.lat]])
+          }
+        }
       })
     }
 
@@ -310,6 +363,15 @@ export default function mapMixin(
         console.log("on move event redrawall error:", error)
       })
     } else if (redrawall) {
+      redrawAllAsync(_chart.chartGroup()).catch(error => {
+        resetRedrawStack()
+        console.log("on move event redrawall error:", error)
+      })
+    } else if(_viewBoxDim !== null && layer.getState().data.length < 2) { // spatial filter on only single data source
+      _viewBoxDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]],
+                            [_chart._maxCoord[0], _chart._minCoord[1]],
+                          [_chart._maxCoord[0], _chart._maxCoord[1]],
+                          [_chart._minCoord[0], _chart._maxCoord[1]]])
       redrawAllAsync(_chart.chartGroup()).catch(error => {
         resetRedrawStack()
         console.log("on move event redrawall error:", error)
@@ -435,12 +497,15 @@ export default function mapMixin(
         coordinates: boundsToUse
       })
 
-      map.addLayer({
-        id: toBeAddedOverlay,
-        source: toBeAddedOverlay,
-        type: "raster",
-        paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
-      }, firstSymbolLayerId)
+      map.addLayer(
+        {
+          id: toBeAddedOverlay,
+          source: toBeAddedOverlay,
+          type: "raster",
+          paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
+        },
+        firstSymbolLayerId
+      )
     } else {
       const overlayName = "overlay" + _activeLayer
       const imageSrc = map.getSource(overlayName)
@@ -523,7 +588,7 @@ export default function mapMixin(
     }
   })
 
-  function getFirstSymbolLayerId () {
+  function getFirstSymbolLayerId() {
     let firstSymbolId = null
     const layers = _map.getStyle().layers
     for (let i = 0; i < layers.length; ++i) {
@@ -707,14 +772,14 @@ export default function mapMixin(
       !isNaN(ne[1]) &&
       sw[0] <= ne[0] &&
       sw[1] < ne[1] &&
-      sw[0] >= -180 &&
-      sw[0] <= 180 &&
-      sw[1] >= -90 &&
-      sw[1] <= 90 &&
-      ne[0] >= -180 &&
-      ne[0] <= 180 &&
-      ne[1] >= -90 &&
-      ne[1] <= 90
+      sw[0] >= LONMIN &&
+      sw[0] <= LONMAX &&
+      sw[1] >= LATMIN &&
+      sw[1] <= LATMAX &&
+      ne[0] >= LONMIN &&
+      ne[0] <= LONMAX &&
+      ne[1] >= LATMIN &&
+      ne[1] <= LATMAX
     )
     /* eslint-enable operator-linebreak */
   }

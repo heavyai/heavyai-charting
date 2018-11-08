@@ -1,3 +1,5 @@
+import * as _ from "lodash"
+
 const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")
 const hasLegendLockedProp = color =>
@@ -91,7 +93,10 @@ export function getLegendStateFromChart(chart, useMap) {
             domain: layer.colorDomain()
           }
         }
-      } else if (typeof color.scale === "undefined" && color.domain === "auto") {
+      } else if (
+        typeof color.scale === "undefined" &&
+        color.domain === "auto"
+      ) {
         return {
           ...color,
           domain: layer.colorDomain()
@@ -106,6 +111,14 @@ export function getLegendStateFromChart(chart, useMap) {
 }
 
 export function handleLegendToggle() {
+  // when chart legend is collapsed, also collapse layer legends
+  this.getLayers().forEach(l =>
+    l.setState(
+      setLegendState(color => ({
+        open: !this.legend().state.open
+      }))
+    )
+  )
   this.legend().setState({
     ...this.legend().state,
     open: !this.legend().state.open
@@ -151,14 +164,19 @@ export function handleLegendLock({ locked, index = 0 }) {
 
   const { encoding: { color } } = layer.getState()
   let redraw = false
-  if (typeof color.scale === "object") { // this if or raster-layer-heatmap-mixin.js
+  if (typeof color.scale === "object") {
+    // this if or raster-layer-heatmap-mixin.js
     if (color.legend.locked) {
-      layer.setState(setColorScaleDomain_v2(layer.colorDomain()))
+      const colorDomain = color.scale.domain || layer.colorDomain()
+      layer.setState(setColorScaleDomain_v2(colorDomain))
     } else {
       layer.setState(setColorScaleDomain_v2("auto"))
       redraw = true
     }
-  } else if (typeof color.scale === "undefined" && typeof color.domain !== "undefined") {
+  } else if (
+    typeof color.scale === "undefined" &&
+    typeof color.domain !== "undefined"
+  ) {
     if (color.legend.locked && color.domain === "auto") {
       layer.setState(setColorScaleDomain_v1(layer.colorDomain()))
     } else if (!color.legend.locked) {
@@ -177,6 +195,16 @@ export function handleLegendLock({ locked, index = 0 }) {
 export function handleLegendInput({ domain, index = 0 }) {
   const layer = this.getLayers()[index]
   const { scale } = layer.getState().encoding.color
+
+  const legendDomain = this.legend().state.domain || this.legend().state.list[index].domain
+  if (_.difference(domain, legendDomain).length > 0) {
+    // automatically lock color legend when min/max input changes
+    layer.setState(
+      setLegendState(color => ({
+        locked: true
+      }))
+    )
+  }
 
   if (typeof scale === "object") {
     layer.setState(setColorScaleDomain_v2(domain))
