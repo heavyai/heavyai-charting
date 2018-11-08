@@ -336,11 +336,7 @@ export default function rasterLayerLineMixin(_layer) {
     const data = [
       {
         name: layerName,
-        geocolumn: state.encoding.geocol,
-        format: {
-          type: "lines",
-          coords: state.encoding.geocol
-        },
+        format: "lines",
         sql: parser.writeSQL({
           type: "root",
           source: [...new Set(state.data.map(source => source.table))].join(
