@@ -47099,6 +47099,11 @@ function pieChart(parent, chartGroup) {
     var arc = buildArcs();
     var centroid = labelCentroid(d, arc);
     var adjacent = Math.abs(centroid[1]);
+
+    if (angle >= Math.TWO_PI) {
+      // when there's a single slice, no need to compute more than that
+      return adjacent;
+    }
     var useAngle = centroid[0] * centroid[1] < 0 ? d.startAngle : d.endAngle;
     var refAngle = centroid[1] >= 0 ? Math.PI : centroid[0] < 0 ? Math.PI * 2 : 0;
 
@@ -47111,20 +47116,12 @@ function pieChart(parent, chartGroup) {
   }
 
   function truncateLabel(data, width, availableLabelWidth) {
-    var labelText = "" + data;
-    var labelLength = labelText.length;
-
-    if (labelLength < 4) {
-      return "";
+    if (width > availableLabelWidth) {
+      var APPROX_FONT_WIDTH = 9;
+      return String(data).slice(0, availableLabelWidth / APPROX_FONT_WIDTH) + "…";
+    } else {
+      String(data);
     }
-
-    var trimIndex = labelLength - Math.ceil((width - availableLabelWidth) / (width / labelLength) * 1.25);
-
-    if (labelLength - trimIndex > 2) {
-      labelText = trimIndex > 2 ? labelText.slice(0, trimIndex) + "…" : "";
-    }
-
-    return labelText;
   }
 
   function truncateLabelWithNull(data, width, availableLabelWidth) {
@@ -64992,7 +64989,7 @@ function renderNominalLegend(state, dispatch) {
                     h_1.default("div.color", {
                         style: { background: state.range[index] }
                     }),
-                    h_1.default("div.text", "" + value)
+                    h_1.default("div.text", value)
                 ]);
             }))
             : h_1.default("div")
