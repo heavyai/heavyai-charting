@@ -346,10 +346,7 @@ export default function mapMixin(
           const viewBoxDim = layer.viewBoxDim()
           if(viewBoxDim !== null) {
             redrawall = true
-            viewBoxDim.filterST_Intersects([[bounds._sw.lng, bounds._sw.lat],
-                                  [bounds._ne.lng, bounds._sw.lat],
-                                  [bounds._ne.lng, bounds._ne.lat],
-                                  [bounds._sw.lng, bounds._ne.lat]])
+            viewBoxDim.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
           }
         }
       })
@@ -368,10 +365,7 @@ export default function mapMixin(
         console.log("on move event redrawall error:", error)
       })
     } else if(_viewBoxDim !== null && layer.getState().data.length < 2) { // spatial filter on only single data source
-      _viewBoxDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]],
-                            [_chart._maxCoord[0], _chart._minCoord[1]],
-                          [_chart._maxCoord[0], _chart._maxCoord[1]],
-                          [_chart._minCoord[0], _chart._maxCoord[1]]])
+      _viewBoxDim.filterST_Min_ST_Max({lonMin: _chart._minCoord[0],lonMax: _chart._maxCoord[0], latMin: _chart._minCoord[1], latMax: _chart._maxCoord[1]})
       redrawAllAsync(_chart.chartGroup()).catch(error => {
         resetRedrawStack()
         console.log("on move event redrawall error:", error)
