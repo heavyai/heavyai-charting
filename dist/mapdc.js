@@ -68654,8 +68654,8 @@ function rasterLayer(layerType) {
     // data structure, but probably not an issue given the amount
     // of popup col attrs to iterate through is small
     var dim = _layer.group() || _layer.dimension();
-    if (dim || _layer.layerType() === "points") {
-      var projExprs = _layer.layerType() === "points" ? _layer.getProjections() : dim.getProjectOn(true); // handles the group and dimension case
+    if (dim || _layer.layerType() === "points" || _layer.layerType() === "lines") {
+      var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" ? _layer.getProjections() : dim.getProjectOn(true); // handles the group and dimension case
       var regex = /^\s*(\S+)\s+as\s+(\S+)/i;
       var funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i;
       for (var i = 0; i < projExprs.length; ++i) {
