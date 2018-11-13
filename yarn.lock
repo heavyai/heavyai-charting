@@ -10,9 +10,9 @@
     script-loader "^0.7.0"
     thrift "^0.10.0"
 
-"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#uyanga/FE-7438_ST_MinST_Max_viewport_filter":
+"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#84e38fc":
   version "1.0.0"
-  resolved "git://github.com/omnisci/mapd-crossfilter.git#2c7dec3322b5556ed414ec307fbd73070d4fa2eb"
+  resolved "git://github.com/omnisci/mapd-crossfilter.git#84e38fc0f437fe9fb0b570a29d07dfe8534636c7"
 
 "@mapd/mapd-draw@git://github.com/omnisci/mapd-draw.git":
   version "1.1.0"
