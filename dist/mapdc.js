@@ -48740,6 +48740,11 @@ var handleColorLegendOpenUndefined = function handleColorLegendOpenUndefined(col
 var handleNonStackedOpenState = function handleNonStackedOpenState(state) {
   return state.type === "gradient" ? Object.assign({}, state, { open: true }) : state;
 };
+var handleNonStackedNullLegend = function handleNonStackedNullLegend(state) {
+  return (// used for ["NULL", "NULL"} quantitative legend domain
+    Object.assign({}, state, { type: 'nominal', range: state.range, domain: state.domain.slice(1), open: true })
+  );
+};
 
 var TOP_PADDING = 56;
 var LASSO_TOOL_VERTICAL_SPACE = 120;
@@ -48939,6 +48944,16 @@ function legendState(state) {
       domain: state.domain,
       position: useMap ? "bottom-left" : "top-right"
     };
+  } else if (state.type === "quantitative" && state.domain && isNullLegend(state.domain)) {
+    // handles quantitative legend for all null color measure column, ["NULL", "NULL"] domain
+    return {
+      type: "nominal", // show nominal legend with one "NULL" value when all null quantitavie color measure is selected
+      title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
+      open: hasLegendOpenProp(state) ? state.legend.open : true,
+      range: state.range,
+      domain: state.domain.slice(1),
+      position: useMap ? "bottom-left" : "top-right"
+    };
   } else if (state.type === "quantitative") {
     return {
       type: "gradient",
@@ -48971,7 +48986,10 @@ function toLegendState() {
   var chart = arguments[1];
   var useMap = arguments[2];
 
-  if (states.length === 1) {
+  if (states.length === 1 && states[0].domain && isNullLegend(states[0].domain)) {
+    // handles legend for all null color measure column, ["NULL", "NULL"] domain
+    return handleNonStackedNullLegend(states[0], useMap);
+  } else if (states.length === 1) {
     return handleNonStackedOpenState(legendState(states[0], useMap));
   } else if (states.length) {
     return {
@@ -48983,6 +49001,10 @@ function toLegendState() {
   } else {
     return {};
   }
+}
+
+function isNullLegend(domain) {
+  return _.includes(domain, "NULL");
 }
 
 /***/ }),
