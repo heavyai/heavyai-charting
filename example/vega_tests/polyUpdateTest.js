@@ -1256,6 +1256,84 @@ document.addEventListener("DOMContentLoaded", () => {
       ]
     }
 
+    const multi_overflow_buffers = {
+      "width": 1051,
+      "height": 1057,
+      "data": [
+        {
+          "name": "backendChoroplethLayer0",
+          "format": "polys",
+          "geocolumn": "mapd_geo",
+          "sql": "SELECT nyc_buildings.rowid as rowid FROM nyc_buildings"
+        },
+        {
+          "name": "backendChoroplethLayer1",
+          "format": "polys",
+          "geocolumn": "mapd_geo",
+          "sql": "SELECT nyc_buildings.rowid as rowid FROM nyc_buildings"
+        }
+      ],
+      "scales": [],
+      "projections": [
+        {
+          "name": "mercator_map_projection",
+          "type": "mercator",
+          "bounds": {
+            "x": [-74.01063572788345,-73.98152242299047],
+            "y": [40.73545650059788,40.75763878211973]
+          }
+        }
+      ],
+      "marks": [
+        {
+          "type": "polys",
+          "from": {
+            "data": "backendChoroplethLayer0"
+          },
+          "properties": {
+            "x": {
+              "field": "x"
+            },
+            "y": {
+              "field": "y"
+            },
+            "fillColor": {
+              "value": "rgba(234,85,69,0.0)"
+            },
+            "strokeColor": "red",
+            "strokeWidth": 4,
+            "lineJoin": "round"
+          },
+          "transform": {
+            "projection": "mercator_map_projection"
+          }
+        },
+        {
+          "type": "polys",
+          "from": {
+            "data": "backendChoroplethLayer1"
+          },
+          "properties": {
+            "x": {
+              "field": "x"
+            },
+            "y": {
+              "field": "y"
+            },
+            "fillColor": {
+              "value": "rgba(244,106,155,0.0)"
+            },
+            "strokeColor": "blue",
+            "strokeWidth": 2,
+            "lineJoin": "round"
+          },
+          "transform": {
+            "projection": "mercator_map_projection"
+          }
+        }
+      ]
+    }
+
   new MapdCon()
     .protocol("http")
     .host("localhost")
@@ -1340,6 +1418,10 @@ document.addEventListener("DOMContentLoaded", () => {
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
       results = con.renderVega(1, JSON.stringify(poly_bigint_in_formula_transform))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(multi_overflow_buffers))
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
