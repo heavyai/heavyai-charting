@@ -11866,6 +11866,16 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   _chart._setOverlay = function (data, bounds, browser, redraw) {
     var map = _chart.map();
+    var mapboxCanvasContainer = document.getElementsByClassName('mapboxgl-canvas-container');
+    var mapboxCanvas = document.getElementsByClassName('mapboxgl-canvas');
+
+    if (mapboxCanvasContainer.length > 1) {
+      // we use only one canvas for the map, thus remove extra
+      mapboxCanvasContainer[0].remove();
+    }
+    if (mapboxCanvas.length > 1) {
+      mapboxCanvas[0].remove();
+    }
 
     var boundsToUse = bounds;
     if (boundsToUse === undefined) {
