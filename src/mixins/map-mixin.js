@@ -460,6 +460,15 @@ export default function mapMixin(
 
   _chart._setOverlay = function(data, bounds, browser, redraw) {
     const map = _chart.map()
+    const mapboxCanvasContainer = document.getElementsByClassName('mapboxgl-canvas-container')
+    const mapboxCanvas = document.getElementsByClassName('mapboxgl-canvas')
+
+    if(mapboxCanvasContainer.length > 1) { // we use only one canvas for the map, thus remove extra
+      mapboxCanvasContainer[0].remove()
+    }
+    if(mapboxCanvas.length > 1){
+      mapboxCanvas[0].remove()
+    }
 
     let boundsToUse = bounds
     if (boundsToUse === undefined) {
