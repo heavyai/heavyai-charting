@@ -11700,7 +11700,10 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     mapboxlogo.target = "_blank";
     mapboxlogo.innerHTML = "Mapbox";
 
-    _chart.root()[0][0].appendChild(mapboxlogo);
+    var existingLogo = document.getElementsByClassName('mapbox-maplogo');
+    if (existingLogo.length) {
+      _chart.root()[0][0].appendChild(mapboxlogo);
+    }
 
     if (_geocoder) {
       initGeocoder();
@@ -48499,16 +48502,18 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       data = _chart.data();
     }
 
+    var selectedLayer = null;
     if (data.vega_metadata) {
       var vega_metadata = JSON.parse(data.vega_metadata);
       for (var layerName in _layerNames) {
         if (typeof _layerNames[layerName]._updateFromMetadata === "function") {
+          selectedLayer = _layerNames[layerName].getState();
           _layerNames[layerName]._updateFromMetadata(vega_metadata, layerName);
         }
       }
     }
 
-    var state = (0, _stackedLegend.getLegendStateFromChart)(_chart, useMap);
+    var state = (0, _stackedLegend.getLegendStateFromChart)(_chart, useMap, selectedLayer);
     _legend.setState(state);
 
     if (_chart.isLoaded()) {
@@ -48639,6 +48644,31 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.legend = function (l) {
     return _legend;
+  };
+
+  _chart.deleteLayerLegend = function (currentLayer, deleteLayer, prevLayerId) {
+    var legend = document.getElementsByClassName('legend');
+    if (legend.length && currentLayer !== "master") {
+      // the case that has 3 or more layers will be handled in getLegendStateFromChart function in stacked-legend.js by removing extra legend
+      if (prevLayerId && prevLayerId === "master") {
+        legend[deleteLayer].remove();
+      } else if (currentLayer !== deleteLayer && prevLayerId < deleteLayer) {
+        return;
+      } else if (legend[deleteLayer]) {
+        legend[deleteLayer].remove();
+      } else if (deleteLayer && deleteLayer !== 'master' && legend.length === 1 && legend[0]) {
+        legend[0].remove();
+      }
+    }
+  };
+
+  _chart.destroyChartLegend = function () {
+    var legend = document.getElementsByClassName('legend');
+    if (legend.length) {
+      for (var i = legend.length - 1; i >= 0; --i) {
+        legend[i].remove();
+      }
+    }
   };
 
   return anchored;
@@ -48807,20 +48837,36 @@ function setColorScaleDomain_v1(domain) {
   };
 }
 
-function getLegendStateFromChart(chart, useMap) {
+function getLegendStateFromChart(chart, useMap, selectedLayer) {
+  var legend = document.getElementsByClassName('legend');
+  var layers = chart.getLayerNames();
+
+  if (legend.length > layers.length && selectedLayer && selectedLayer.currentLayer !== "master") {
+    for (var i = legend.length - 1; i >= 0; --i) {
+      if (i !== selectedLayer.currentLayer) {
+        legend[i].remove();
+      }
+    }
+  }
   return toLegendState(chart.getLayerNames().map(function (layerName) {
     var layer = chart.getLayer(layerName);
+    var layerState = layer.getState();
     var color = layer.getState().encoding.color;
-    if (_typeof(color.scale) === "object" && color.scale.domain === "auto") {
-      return _extends({}, color, {
-        scale: _extends({}, color.scale, {
+
+    if (layers.length > 1 || _.isEqual(selectedLayer, layerState)) {
+      if (_typeof(color.scale) === "object" && color.scale.domain === "auto") {
+        return _extends({}, color, {
+          scale: _extends({}, color.scale, {
+            domain: layer.colorDomain()
+          })
+        });
+      } else if (typeof color.scale === "undefined" && color.domain === "auto") {
+        return _extends({}, color, {
           domain: layer.colorDomain()
-        })
-      });
-    } else if (typeof color.scale === "undefined" && color.domain === "auto") {
-      return _extends({}, color, {
-        domain: layer.colorDomain()
-      });
+        });
+      } else {
+        return color;
+      }
     } else {
       return color;
     }

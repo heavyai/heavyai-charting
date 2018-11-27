@@ -445,16 +445,18 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       data = _chart.data()
     }
 
+    let selectedLayer = null
     if (data.vega_metadata) {
       const vega_metadata = JSON.parse(data.vega_metadata)
       for (const layerName in _layerNames) {
         if (typeof _layerNames[layerName]._updateFromMetadata === "function") {
+          selectedLayer = _layerNames[layerName].getState()
           _layerNames[layerName]._updateFromMetadata(vega_metadata, layerName)
         }
       }
     }
 
-    const state = getLegendStateFromChart(_chart, useMap)
+    const state = getLegendStateFromChart(_chart, useMap, selectedLayer)
     _legend.setState(state)
 
     if (_chart.isLoaded()) {
@@ -625,6 +627,30 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.legend = function(l) {
     return _legend
+  }
+
+  _chart.deleteLayerLegend = function(currentLayer, deleteLayer, prevLayerId) {
+    const legend = document.getElementsByClassName('legend')
+    if(legend.length && currentLayer !== "master") { // the case that has 3 or more layers will be handled in getLegendStateFromChart function in stacked-legend.js by removing extra legend
+      if(prevLayerId && prevLayerId === "master") {
+        legend[deleteLayer].remove()
+      } else if(currentLayer !== deleteLayer && prevLayerId < deleteLayer) {
+        return
+      } else if(legend[deleteLayer]) {
+        legend[deleteLayer].remove();
+      } else if (deleteLayer && deleteLayer !== 'master' && legend.length ===1 && legend[0]) {
+        legend[0].remove()
+      }
+    }
+  }
+
+  _chart.destroyChartLegend = function() {
+    const legend = document.getElementsByClassName('legend')
+    if(legend.length) {
+      for (let i = legend.length - 1; i >= 0; --i) {
+        legend[i].remove();
+      }
+    }
   }
 
   return anchored

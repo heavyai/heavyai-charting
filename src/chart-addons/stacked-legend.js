@@ -82,26 +82,42 @@ function setColorScaleDomain_v1(domain) {
   }
 }
 
-export function getLegendStateFromChart(chart, useMap) {
+export function getLegendStateFromChart(chart, useMap, selectedLayer) {
+  const legend = document.getElementsByClassName('legend')
+  const layers = chart.getLayerNames()
+
+  if(legend.length>layers.length && selectedLayer && selectedLayer.currentLayer !== "master") {
+    for (let i = legend.length - 1; i >= 0; --i) {
+      if(i !== selectedLayer.currentLayer) {
+        legend[i].remove();
+      }
+    }
+  }
   return toLegendState(
     chart.getLayerNames().map(layerName => {
       const layer = chart.getLayer(layerName)
+      const layerState = layer.getState()
       const color = layer.getState().encoding.color
-      if (typeof color.scale === "object" && color.scale.domain === "auto") {
-        return {
-          ...color,
-          scale: {
-            ...color.scale,
+
+      if(layers.length > 1 || _.isEqual(selectedLayer, layerState)) {
+        if (typeof color.scale === "object" && color.scale.domain === "auto") {
+          return {
+            ...color,
+            scale: {
+              ...color.scale,
+              domain: layer.colorDomain()
+            }
+          }
+        } else if (
+          typeof color.scale === "undefined" &&
+          color.domain === "auto"
+        ) {
+          return {
+            ...color,
             domain: layer.colorDomain()
           }
-        }
-      } else if (
-        typeof color.scale === "undefined" &&
-        color.domain === "auto"
-      ) {
-        return {
-          ...color,
-          domain: layer.colorDomain()
+        } else {
+          return color
         }
       } else {
         return color

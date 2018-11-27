@@ -276,7 +276,10 @@ export default function mapMixin(
     mapboxlogo.target = "_blank"
     mapboxlogo.innerHTML = "Mapbox"
 
-    _chart.root()[0][0].appendChild(mapboxlogo)
+    const existingLogo = document.getElementsByClassName('mapbox-maplogo')
+    if(existingLogo.length  ) {
+      _chart.root()[0][0].appendChild(mapboxlogo)
+    }
 
     if (_geocoder) {
       initGeocoder()
