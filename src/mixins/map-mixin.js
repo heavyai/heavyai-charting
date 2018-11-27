@@ -469,7 +469,7 @@ export default function mapMixin(
     if(mapboxCanvasContainer.length > 1) { // we use only one canvas for the map, thus remove extra
       mapboxCanvasContainer[0].remove()
     }
-    if(mapboxCanvas.length > 1 ){
+    if(mapboxCanvas.length > 1){
       mapboxCanvas[0].remove()
     }
 
