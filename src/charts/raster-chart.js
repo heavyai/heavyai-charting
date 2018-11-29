@@ -14,6 +14,7 @@ import scatterMixin from "../mixins/scatter-mixin"
 import { rasterDrawMixin } from "../mixins/raster-draw-mixin"
 import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
+import * as _ from "lodash";
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -629,26 +630,35 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _legend
   }
 
-  _chart.deleteLayerLegend = function(currentLayer, deleteLayer, prevLayerId) {
-    const legend = document.getElementsByClassName('legend')
-    if(legend.length && currentLayer !== "master") { // the case that has 3 or more layers will be handled in getLegendStateFromChart function in stacked-legend.js by removing extra legend
-      if(prevLayerId && prevLayerId === "master") {
-        legend[deleteLayer].remove()
-      } else if(currentLayer !== deleteLayer && prevLayerId < deleteLayer) {
-        return
-      } else if(legend[deleteLayer]) {
-        legend[deleteLayer].remove();
-      } else if (deleteLayer && deleteLayer !== 'master' && legend.length ===1 && legend[0]) {
-        legend[0].remove()
+  _chart.deleteLayerLegend = function(currentLayerId, deleteLayerId, prevLayerId) {
+    const allDOMLLegend = document.getElementsByClassName('legend')
+    const currentChartId = _chart.selectAll('.legend')[0].parentNode.id
+
+    const chartLegends = _.filter(allDOMLLegend, (l) =>
+      l.parentNode.id === currentChartId || l.parentNode.parentNode.id === currentChartId
+    )
+
+    if(chartLegends.length && currentLayerId !== "master") { // the case that has 3 or more layers will be handled in getLegendStateFromChart function in stacked-legend.js by removing extra legend
+      if(prevLayerId && prevLayerId === "master" || (!(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId) && chartLegends[deleteLayerId])) {
+        chartLegends[deleteLayerId].remove()
+      }
+      else if (deleteLayerId && deleteLayerId !== 'master' && chartLegends.length ===1 && chartLegends[0] && !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId)) {
+        chartLegends[0].remove()
       }
     }
   }
 
   _chart.destroyChartLegend = function() {
-    const legend = document.getElementsByClassName('legend')
-    if(legend.length) {
-      for (let i = legend.length - 1; i >= 0; --i) {
-        legend[i].remove();
+    const allDOMLLegend = document.getElementsByClassName('legend')
+    const currentChartId = _chart.selectAll('.legend')[0].parentNode.id
+
+    const chartLegends = _.filter(allDOMLLegend, (l) =>
+      l.parentNode.id === currentChartId || l.parentNode.parentNode.id === currentChartId
+    )
+
+    if(chartLegends.length) {
+      for (let i = chartLegends.length - 1; i >= 0; --i) {
+        chartLegends[i].remove();
       }
     }
   }

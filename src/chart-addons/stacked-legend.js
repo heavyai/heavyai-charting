@@ -83,16 +83,27 @@ function setColorScaleDomain_v1(domain) {
 }
 
 export function getLegendStateFromChart(chart, useMap, selectedLayer) {
-  const legend = document.getElementsByClassName('legend')
-  const layers = chart.getLayerNames()
 
-  if(legend.length>layers.length && selectedLayer && selectedLayer.currentLayer !== "master") {
-    for (let i = legend.length - 1; i >= 0; --i) {
+  // the getLegendStateFromChart in _doRender gets called from few different options
+  // and some of them are calling with all layers in chart.
+  // As a result, a legend for each layer is rendered.
+  // Thus, we need to remove extra legends here
+  const allDOMLLegend = document.getElementsByClassName('legend')
+  const layers = chart.getLayerNames()
+  const currentChartId = chart.selectAll('.legend')[0].parentNode.id
+
+  const chartLegends = _.filter(allDOMLLegend, (l) =>
+    l.parentNode.id === currentChartId || l.parentNode.parentNode.id === currentChartId
+  )
+
+  if(chartLegends.length>layers.length && selectedLayer && selectedLayer.currentLayer !== "master") {
+    for (let i = chartLegends.length - 1; i >= 0; --i) {
       if(i !== selectedLayer.currentLayer) {
-        legend[i].remove();
+        chartLegends[i].remove();
       }
     }
   }
+
   return toLegendState(
     chart.getLayerNames().map(layerName => {
       const layer = chart.getLayer(layerName)
