@@ -88,20 +88,13 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
   // and some of them are calling with all layers in chart.
   // As a result, a legend for each layer is rendered.
   // Thus, we need to remove extra legends here
-  const allDOMLLegend = document.getElementsByClassName('legend')
+  const legends = chart.root().selectAll(".legend")
   const layers = chart.getLayerNames()
-  const currentChartId = chart.selectAll('.legend')[0].parentNode.id
 
-  const chartLegends = _.filter(allDOMLLegend, (l) =>
-    l.parentNode.id === currentChartId || l.parentNode.parentNode.id === currentChartId
-  )
-
-  if(chartLegends.length>layers.length && selectedLayer && selectedLayer.currentLayer !== "master") {
-    for (let i = chartLegends.length - 1; i >= 0; --i) {
-      if(i !== selectedLayer.currentLayer) {
-        chartLegends[i].remove();
-      }
-    }
+  if(legends.size() > layers.length && selectedLayer && selectedLayer.currentLayer !== "master") {
+    chart.root().selectAll(".legend")
+      .filter((d, i) => i !== selectedLayer.currentLayer)
+      .remove()
   }
 
   return toLegendState(

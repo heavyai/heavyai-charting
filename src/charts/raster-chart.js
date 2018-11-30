@@ -631,36 +631,18 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   }
 
   _chart.deleteLayerLegend = function(currentLayerId, deleteLayerId, prevLayerId) {
-    const allDOMLLegend = document.getElementsByClassName('legend')
-    const currentChartId = _chart.selectAll('.legend')[0].parentNode.id
-
-    const chartLegends = _.filter(allDOMLLegend, (l) =>
-      l.parentNode.id === currentChartId || l.parentNode.parentNode.id === currentChartId
-    )
-
-    if(chartLegends.length && currentLayerId !== "master") { // the case that has 3 or more layers will be handled in getLegendStateFromChart function in stacked-legend.js by removing extra legend
-      if(prevLayerId && prevLayerId === "master" || (!(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId) && chartLegends[deleteLayerId])) {
-        chartLegends[deleteLayerId].remove()
-      }
-      else if (deleteLayerId && deleteLayerId !== 'master' && chartLegends.length ===1 && chartLegends[0] && !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId)) {
-        chartLegends[0].remove()
-      }
+    if (currentLayerId !== "master") {
+      _chart.root().selectAll(".legend")
+        .filter((d, i) => i === deleteLayerId
+            && prevLayerId === "master"
+            || !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId)
+        )
+        .remove()
     }
   }
 
   _chart.destroyChartLegend = function() {
-    const allDOMLLegend = document.getElementsByClassName('legend')
-    const currentChartId = _chart.selectAll('.legend')[0].parentNode.id
-
-    const chartLegends = _.filter(allDOMLLegend, (l) =>
-      l.parentNode.id === currentChartId || l.parentNode.parentNode.id === currentChartId
-    )
-
-    if(chartLegends.length) {
-      for (let i = chartLegends.length - 1; i >= 0; --i) {
-        chartLegends[i].remove();
-      }
-    }
+    _chart.root().selectAll(".legend").remove()
   }
 
   return anchored
