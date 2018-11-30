@@ -633,11 +633,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart.deleteLayerLegend = function(currentLayerId, deleteLayerId, prevLayerId) {
     if (currentLayerId !== "master") {
       _chart.root().selectAll(".legend")
-        .filter((d, i) => {
-          return i === deleteLayerId
+        .filter((d, i) => i === deleteLayerId
             && prevLayerId === "master"
             || !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId)
-        })
+        )
         .remove()
     }
   }
