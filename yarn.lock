@@ -175,9 +175,9 @@ ajv@^5.0.0:
     json-schema-traverse "^0.3.0"
 
 ajv@^6.1.0, ajv@^6.5.5:
-  version "6.5.5"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.5.5.tgz#cf97cdade71c6399a92c6d6c4177381291b781a1"
-  integrity sha512-7q7gtRQDJSyuEHjuVgHoUa2VuemFiCMrfQc9Tc08XTAc4Zj/5U1buQJ0HU6i7fKjXU09SVgSmxa4sLvuvS8Iyg==
+  version "6.6.1"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.6.1.tgz#6360f5ed0d80f232cc2b294c362d5dc2e538dd61"
+  integrity sha512-ZoJjft5B+EJBjUyu9C9Hc0OZyPZSSlOF+plzouTrg6UlA8f+e/n8NIgBFG/9tppJtpPWfthHakK7juJdNDODww==
   dependencies:
     fast-deep-equal "^2.0.1"
     fast-json-stable-stringify "^2.0.0"
@@ -1796,9 +1796,9 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000910"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000910.tgz#58cca84780223291c28e92d97a9b1512260a9a8e"
-  integrity sha512-eysv5eAsXCBnfnhTZsKBtCZKdgeFaRqOlTN74kCfzdHdz0In3E5Aop7PyqPI757DsdjVwJOWrFHIrTPYzmll6g==
+  version "1.0.30000912"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000912.tgz#29c739d8c8fae006de61b51f547bdbf02f5d867e"
+  integrity sha512-uiepPdHcJ06Na9t15L5l+pp3NWQU4IETbmleghD6tqCqbIYqhHSu7nVfbK2gqPjfy+9jl/wHF1UQlyTszh9tJQ==
 
 caseless@~0.11.0:
   version "0.11.0"
@@ -3326,9 +3326,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.2.7:
-  version "1.3.84"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.84.tgz#2e55df59e818f150a9f61b53471ebf4f0feecc65"
-  integrity sha512-IYhbzJYOopiTaNWMBp7RjbecUBsbnbDneOP86f3qvS0G0xfzwNSvMJpTrvi5/Y1gU7tg2NAgeg8a8rCYvW9Whw==
+  version "1.3.86"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.86.tgz#a45ea01da5b26500d12bca5e0f194ebb3e1fd14e"
+  integrity sha512-BcmXOu37FCPxrrh0wyKgKi5dAjIu2ohxN5ptapkLPKRC3IBK2NeIwh9n1x/8HzSRQiEKamJkDce1ZgOGgEX9iw==
 
 elliptic@^6.0.0:
   version "6.4.1"
@@ -4551,9 +4551,9 @@ hash-base@^3.0.0:
     safe-buffer "^5.0.1"
 
 hash.js@^1.0.0, hash.js@^1.0.3:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/hash.js/-/hash.js-1.1.5.tgz#e38ab4b85dfb1e0c40fe9265c0e9b54854c23812"
-  integrity sha512-eWI5HG9Np+eHV1KQhisXWwM+4EPPYe5dFX1UZZH7k/E3JzDEazVH+VGlZi6R94ZqImq+A3D1mCEtrFIfg/E7sA==
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/hash.js/-/hash.js-1.1.7.tgz#0babca538e8d4ee4a0f8988d68866537a003cf42"
+  integrity sha512-taOaskGt4z4SOANNseOviYDvjEJinIkRgmp7LbKP2YTTmVxWBl87s/uzK9r+44BclBSp2X7K1hqeNfz9JbBeXA==
   dependencies:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
@@ -5576,9 +5576,9 @@ left-pad@^1.3.0:
   resolved "https://registry.yarnpkg.com/left-pad/-/left-pad-1.3.0.tgz#5b8a3a7765dfe001261dde915589e782f8c94d1e"
   integrity sha512-XI5MPzVNApjAyhQzphX8BkmKsKUxD4LdyK24iZeQGinBN9yTQT3bFlCBy/aVx2HrNcqQGsdot8ghrjyrvMCoEA==
 
-"legendables@git://github.com/omnisci/legendables.git#uyanga/FE-7268_legend_update":
+"legendables@git://github.com/omnisci/legendables.git#977b1f1":
   version "1.0.0-rc.6"
-  resolved "git://github.com/omnisci/legendables.git#a11a9b9c06b15478c344e6c70e16e0aad656de37"
+  resolved "git://github.com/omnisci/legendables.git#977b1f108b48f09a7667009b86ee0be08cbd28aa"
   dependencies:
     d3-dispatch "^1.0.3"
     d3-format "^1.2.0"
@@ -5851,12 +5851,12 @@ lru-cache@2:
   integrity sha1-bUUk6LlV+V1PW1iFHOId1y+06VI=
 
 lru-cache@^4.0.1:
-  version "4.1.4"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.4.tgz#51cc46e8e6d9530771c857e24ccc720ecdbcc031"
-  integrity sha512-EPstzZ23znHUVLKj+lcXO1KvZkrlw+ZirdwvOmnAnA/1PB4ggyXJ77LRkCqkff+ShQ+cqoxCxLQOh4cKITO5iA==
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.5.tgz#8bbe50ea85bed59bc9e33dcab8235ee9bcf443cd"
+  integrity sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==
   dependencies:
     pseudomap "^1.0.2"
-    yallist "^3.0.2"
+    yallist "^2.1.2"
 
 magic-string@^0.14.0:
   version "0.14.0"
@@ -6937,9 +6937,9 @@ package-json-versionify@^1.0.2:
     browserify-package-json "^1.0.0"
 
 pako@~1.0.5:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.6.tgz#0101211baa70c4bca4a0f63f2206e97b7dfaf258"
-  integrity sha512-lQe48YPsMJAig+yngZ87Lus+NF+3mtu7DVOBu6b/gHO1YpKwIj5AWjZ/TOS7i46HD/UixzWb1zeWDZfGZ3iYcg==
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.7.tgz#2473439021b57f1516c82f58be7275ad8ef1bb27"
+  integrity sha512-3HNK5tW4x8o5mO8RuHZp3Ydw9icZXx0RANAOMzlMzx7LVXhMJ4mo3MOBpzyd7r/+RUu8BmndP47LXT+vzjtWcQ==
 
 parents@^1.0.0:
   version "1.0.1"
@@ -7518,9 +7518,9 @@ preserve@^0.2.0:
   integrity sha1-gV7R9uvGWSb4ZbMQwHE7yzMVzks=
 
 prettier@^1.5.2:
-  version "1.15.2"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.15.2.tgz#d31abe22afa4351efa14c7f8b94b58bb7452205e"
-  integrity sha512-YgPLFFA0CdKL4Eg2IHtUSjzj/BWgszDHiNQAe0VAIBse34148whfdzLagRL+QiKS+YfK5ftB6X4v/MBw8yCoug==
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.15.3.tgz#1feaac5bdd181237b54dbe65d874e02a1472786a"
+  integrity sha512-gAU9AGAPMaKb3NNSUUuhhFAS7SCO4ALTN4nRIn6PJ075Qd28Yn2Ig2ahEJWdJwJmlEBTUfC7mMUSFy8MwsOCfg==
 
 private@^0.1.6, private@^0.1.8:
   version "0.1.8"
@@ -8941,7 +8941,14 @@ string_decoder@0.10, string_decoder@~0.10.x:
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
   integrity sha1-YuIDvEF2bGwoyfyEMB2rHFMQ+pQ=
 
-string_decoder@^1.0.0, string_decoder@~1.1.1:
+string_decoder@^1.0.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.2.0.tgz#fe86e738b19544afe70469243b2a1ee9240eae8d"
+  integrity sha512-6YqyX6ZWEYguAxgZzHGL7SsCeGx3V2TtOTqZz1xSTSWnqsbWwbptafNyvf/ACquZUXV3DANr5BDIwNYe1mN42w==
+  dependencies:
+    safe-buffer "~5.1.0"
+
+string_decoder@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.1.1.tgz#9cf1611ba62685d7030ae9e4ba34149c3af03fc8"
   integrity sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==
@@ -9109,9 +9116,9 @@ table@^3.7.8:
     string-width "^2.0.0"
 
 tapable@^0.2.7:
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/tapable/-/tapable-0.2.8.tgz#99372a5c999bf2df160afc0d74bed4f47948cd22"
-  integrity sha1-mTcqXJmb8t8WCvwNdL7U9HlIzSI=
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/tapable/-/tapable-0.2.9.tgz#af2d8bbc9b04f74ee17af2b4d9048f807acd18a8"
+  integrity sha512-2wsvQ+4GwBvLPLWsNfLCDYGsW6xb7aeC6utq2Qh0PFwgEy7K7dsma9Jsmb2zSQj7GvYAyUGSntLtsv++GmgL1A==
 
 tar-stream@1.6.2:
   version "1.6.2"
@@ -10154,6 +10161,11 @@ y18n@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-3.2.1.tgz#6d15fba884c08679c0d77e88e7759e811e07fa41"
   integrity sha1-bRX7qITAhnnA136I53WegR4H+kE=
+
+yallist@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/yallist/-/yallist-2.1.2.tgz#1c11f9218f076089a47dd512f93c6699a6a81d52"
+  integrity sha1-HBH5IY8HYImkfdUS+TxmmaaoHVI=
 
 yallist@^3.0.0, yallist@^3.0.2:
   version "3.0.3"
