@@ -42691,32 +42691,30 @@ function rasterLayerPolyMixin(_layer) {
           as: "color"
         });
       }
-    } else {
-      if (doJoin()) {
-        if (color.type !== "solid") {
-          transforms.push({
-            type: "aggregate",
-            fields: [colorProjection],
-            ops: [null],
-            as: ["color"],
-            groupby: groupby
-          });
-        } else {
-          transforms.push({
-            type: "aggregate",
-            fields: [],
-            ops: [null],
-            as: [],
-            groupby: groupby
-          });
-        }
-      } else if (color.type !== "solid") {
+    } else if (doJoin()) {
+      if (color.type !== "solid") {
         transforms.push({
-          type: "project",
-          expr: color.type === "quantitative" ? color.aggregate.field : color.field,
-          as: "color"
+          type: "aggregate",
+          fields: [colorProjection],
+          ops: [null],
+          as: ["color"],
+          groupby: groupby
+        });
+      } else {
+        transforms.push({
+          type: "aggregate",
+          fields: [],
+          ops: [null],
+          as: [],
+          groupby: groupby
         });
       }
+    } else if (color.type !== "solid") {
+      transforms.push({
+        type: "project",
+        expr: color.type === "quantitative" ? color.aggregate.field : color.field,
+        as: "color"
+      });
     }
 
     if (doJoin()) {
@@ -63410,36 +63408,15 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   };
 
   _chart.deleteLayerLegend = function (currentLayerId, deleteLayerId, prevLayerId) {
-    var allDOMLLegend = document.getElementsByClassName('legend');
-    var currentChartId = _chart.selectAll('.legend')[0].parentNode.id;
-
-    var chartLegends = _.filter(allDOMLLegend, function (l) {
-      return l.parentNode.id === currentChartId || l.parentNode.parentNode.id === currentChartId;
-    });
-
-    if (chartLegends.length && currentLayerId !== "master") {
-      // the case that has 3 or more layers will be handled in getLegendStateFromChart function in stacked-legend.js by removing extra legend
-      if (prevLayerId && prevLayerId === "master" || !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId) && chartLegends[deleteLayerId]) {
-        chartLegends[deleteLayerId].remove();
-      } else if (deleteLayerId && deleteLayerId !== 'master' && chartLegends.length === 1 && chartLegends[0] && !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId)) {
-        chartLegends[0].remove();
-      }
+    if (currentLayerId !== "master") {
+      _chart.root().selectAll(".legend").filter(function (d, i) {
+        return i === deleteLayerId && prevLayerId === "master" || !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId);
+      }).remove();
     }
   };
 
   _chart.destroyChartLegend = function () {
-    var allDOMLLegend = document.getElementsByClassName('legend');
-    var currentChartId = _chart.selectAll('.legend')[0].parentNode.id;
-
-    var chartLegends = _.filter(allDOMLLegend, function (l) {
-      return l.parentNode.id === currentChartId || l.parentNode.parentNode.id === currentChartId;
-    });
-
-    if (chartLegends.length) {
-      for (var i = chartLegends.length - 1; i >= 0; --i) {
-        chartLegends[i].remove();
-      }
-    }
+    _chart.root().selectAll(".legend").remove();
   };
 
   return anchored;
@@ -63614,20 +63591,13 @@ function getLegendStateFromChart(chart, useMap, selectedLayer) {
   // and some of them are calling with all layers in chart.
   // As a result, a legend for each layer is rendered.
   // Thus, we need to remove extra legends here
-  var allDOMLLegend = document.getElementsByClassName('legend');
+  var legends = chart.root().selectAll(".legend");
   var layers = chart.getLayerNames();
-  var currentChartId = chart.selectAll('.legend')[0].parentNode.id;
 
-  var chartLegends = _.filter(allDOMLLegend, function (l) {
-    return l.parentNode.id === currentChartId || l.parentNode.parentNode.id === currentChartId;
-  });
-
-  if (chartLegends.length > layers.length && selectedLayer && selectedLayer.currentLayer !== "master") {
-    for (var i = chartLegends.length - 1; i >= 0; --i) {
-      if (i !== selectedLayer.currentLayer) {
-        chartLegends[i].remove();
-      }
-    }
+  if (legends.size() > layers.length && selectedLayer && selectedLayer.currentLayer !== "master") {
+    chart.root().selectAll(".legend").filter(function (d, i) {
+      return i !== selectedLayer.currentLayer;
+    }).remove();
   }
 
   return toLegendState(chart.getLayerNames().map(function (layerName) {
@@ -64995,18 +64965,13 @@ function rangeStep(domain, index, bins) {
     if (bins === void 0) {
         bins = 9;
     }
-    if (Array.isArray(domain)) {
-        debugger;
-        if (index === 0) {
-            return domain[0];
-        } else if (index + 1 === bins) {
-            return domain[1];
-        } else {
-            var increment = (domain[1] - domain[0]) / bins;
-            return domain[0] + increment * index;
-        }
+    if (index === 0) {
+        return domain[0];
+    } else if (index + 1 === bins) {
+        return domain[1];
     } else {
-        return 0;
+        var increment = (domain[1] - domain[0]) / bins;
+        return domain[0] + increment * index;
     }
 }
 function validateNumericalInput(previousValue, nextValue) {
@@ -65025,11 +64990,9 @@ function renderTickIcon(state, dispatch) {
 function renderToggleIcon(state, dispatch) {
     var _this = this;
     return h_1.default("div.open-toggle", {
-        on: {
-            click: function () {
-                dispatch.call("toggle", _this, state);
-            }
-        }
+        on: { click: function () {
+                return dispatch.call("toggle", _this, state.index);
+            } }
     });
 }
 function renderLockIcon(locked, index, dispatch) {
@@ -65079,8 +65042,8 @@ function renderGradientLegend(state, dispatch) {
     var stacked = typeof state.index === "number";
     return h_1.default("div.legend.gradient-legend" + (stacked ? ".with-header" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [stacked ? h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]) : h_1.default("div"), state.open ? h_1.default("div.range", state.range.map(function (color, index) {
         var isMinMax = index === 0 || index === state.range.length - 1;
-        var step = formatNumber(rangeStep(state.domain, index, state.range.length));
-        var domain = state.domain && Array.isArray(state.domain) ? state.domain : [0, 0];
+        var step = Array.isArray(state.domain) ? formatNumber(rangeStep(state.domain, index, state.range.length)) : null;
+        var domain = Array.isArray(state.domain) ? state.domain : [null, null];
         var min = domain[0],
             max = domain[1];
         return h_1.default("div.block", [h_1.default("div.color", { style: { background: color } }), h_1.default("div.text." + (isMinMax ? "extent" : "step"), [h_1.default("span", "" + (domain.length > 2 ? domain[index] : step))].concat(isMinMax ? [renderInput(state, { value: domain.length === 2 ? domain[index === 0 ? 0 : 1] : domain[index], index: index }, dispatch)] : []))]);
