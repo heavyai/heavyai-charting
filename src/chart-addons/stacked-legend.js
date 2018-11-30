@@ -82,26 +82,46 @@ function setColorScaleDomain_v1(domain) {
   }
 }
 
-export function getLegendStateFromChart(chart, useMap) {
+export function getLegendStateFromChart(chart, useMap, selectedLayer) {
+
+  // the getLegendStateFromChart in _doRender gets called from few different options
+  // and some of them are calling with all layers in chart.
+  // As a result, a legend for each layer is rendered.
+  // Thus, we need to remove extra legends here
+  const legends = chart.root().selectAll(".legend")
+  const layers = chart.getLayerNames()
+
+  if(legends.size() > layers.length && selectedLayer && selectedLayer.currentLayer !== "master") {
+    chart.root().selectAll(".legend")
+      .filter((d, i) => i !== selectedLayer.currentLayer)
+      .remove()
+  }
+
   return toLegendState(
     chart.getLayerNames().map(layerName => {
       const layer = chart.getLayer(layerName)
+      const layerState = layer.getState()
       const color = layer.getState().encoding.color
-      if (typeof color.scale === "object" && color.scale.domain === "auto") {
-        return {
-          ...color,
-          scale: {
-            ...color.scale,
+
+      if(layers.length > 1 || _.isEqual(selectedLayer, layerState)) {
+        if (typeof color.scale === "object" && color.scale.domain === "auto") {
+          return {
+            ...color,
+            scale: {
+              ...color.scale,
+              domain: layer.colorDomain()
+            }
+          }
+        } else if (
+          typeof color.scale === "undefined" &&
+          color.domain === "auto"
+        ) {
+          return {
+            ...color,
             domain: layer.colorDomain()
           }
-        }
-      } else if (
-        typeof color.scale === "undefined" &&
-        color.domain === "auto"
-      ) {
-        return {
-          ...color,
-          domain: layer.colorDomain()
+        } else {
+          return color
         }
       } else {
         return color

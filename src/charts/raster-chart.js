@@ -14,6 +14,7 @@ import scatterMixin from "../mixins/scatter-mixin"
 import { rasterDrawMixin } from "../mixins/raster-draw-mixin"
 import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
+import * as _ from "lodash";
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -445,16 +446,18 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       data = _chart.data()
     }
 
+    let selectedLayer = null
     if (data.vega_metadata) {
       const vega_metadata = JSON.parse(data.vega_metadata)
       for (const layerName in _layerNames) {
         if (typeof _layerNames[layerName]._updateFromMetadata === "function") {
+          selectedLayer = _layerNames[layerName].getState()
           _layerNames[layerName]._updateFromMetadata(vega_metadata, layerName)
         }
       }
     }
 
-    const state = getLegendStateFromChart(_chart, useMap)
+    const state = getLegendStateFromChart(_chart, useMap, selectedLayer)
     _legend.setState(state)
 
     if (_chart.isLoaded()) {
@@ -625,6 +628,21 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.legend = function(l) {
     return _legend
+  }
+
+  _chart.deleteLayerLegend = function(currentLayerId, deleteLayerId, prevLayerId) {
+    if (currentLayerId !== "master") {
+      _chart.root().selectAll(".legend")
+        .filter((d, i) => i === deleteLayerId
+            && prevLayerId === "master"
+            || !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId)
+        )
+        .remove()
+    }
+  }
+
+  _chart.destroyChartLegend = function() {
+    _chart.root().selectAll(".legend").remove()
   }
 
   return anchored

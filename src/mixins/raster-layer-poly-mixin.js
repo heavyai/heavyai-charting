@@ -179,8 +179,7 @@ export default function rasterLayerPolyMixin(_layer) {
           as: "color"
         })
       }
-    } else {
-      if (doJoin()) {
+    } else if (doJoin()) {
         if (color.type !== "solid") {
           transforms.push({
             type: "aggregate",
@@ -205,7 +204,6 @@ export default function rasterLayerPolyMixin(_layer) {
           as: "color"
         })
       }
-    }
 
     if (doJoin()) {
       transforms.push({
@@ -320,7 +318,7 @@ export default function rasterLayerPolyMixin(_layer) {
       })
     }
 
-    let scales = []
+    const scales = []
     let fillColor = {}
 
     const useColorScale = !(state.encoding.color.type === "solid")

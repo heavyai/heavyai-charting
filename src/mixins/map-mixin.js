@@ -1,4 +1,5 @@
 import d3 from "d3"
+import * as _ from "lodash"
 import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
 import { mapDrawMixin } from "./map-draw-mixin"
@@ -276,7 +277,10 @@ export default function mapMixin(
     mapboxlogo.target = "_blank"
     mapboxlogo.innerHTML = "Mapbox"
 
-    _chart.root()[0][0].appendChild(mapboxlogo)
+    const existingLogo = document.getElementsByClassName('mapbox-maplogo')
+    if(existingLogo.length  ) {
+      _chart.root()[0][0].appendChild(mapboxlogo)
+    }
 
     if (_geocoder) {
       initGeocoder()
@@ -460,14 +464,26 @@ export default function mapMixin(
 
   _chart._setOverlay = function(data, bounds, browser, redraw) {
     const map = _chart.map()
-    const mapboxCanvasContainer = document.getElementsByClassName('mapboxgl-canvas-container')
-    const mapboxCanvas = document.getElementsByClassName('mapboxgl-canvas')
 
-    if(mapboxCanvasContainer.length > 1) { // we use only one canvas for the map, thus remove extra
-      mapboxCanvasContainer[0].remove()
+    const allMapboxCanvasContainer = document.getElementsByClassName('mapboxgl-canvas-container')
+    const chartIdFromCanvasContainer = _chart.selectAll('.mapboxgl-canvas-container')[0].parentNode.id
+
+    const chartMapboxCanvasContainer = _.filter(allMapboxCanvasContainer, (mbcc) =>
+      mbcc.parentNode.id === chartIdFromCanvasContainer || mbcc.parentNode.parentNode.id === chartIdFromCanvasContainer
+    )
+
+    const allMapboxCanvas = document.getElementsByClassName('mapboxgl-canvas')
+    const chartIdFromCanvas = _chart.selectAll('.mapboxgl-canvas')[0].parentNode.id
+
+    const chartMapboxCanvas = _.filter(allMapboxCanvas, (mbc) =>
+      mbc.parentNode.id === chartIdFromCanvas || mbc.parentNode.parentNode.id === chartIdFromCanvas
+    )
+
+    if(chartMapboxCanvasContainer.length > 1) { // we use only one canvas for the chart map, thus remove extra
+      chartMapboxCanvasContainer[0].remove()
     }
-    if(mapboxCanvas.length > 1){
-      mapboxCanvas[0].remove()
+    if(chartMapboxCanvas.length > 1){
+      chartMapboxCanvas[0].remove()
     }
 
     let boundsToUse = bounds
