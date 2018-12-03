@@ -224,9 +224,9 @@ export default function rasterLayer(layerType) {
     // data structure, but probably not an issue given the amount
     // of popup col attrs to iterate through is small
     const dim = _layer.group() || _layer.dimension()
-    if (dim || _layer.layerType() === "points") {
+    if (dim || (_layer.layerType() === "points" || _layer.layerType() === "lines")) {
       const projExprs =
-        _layer.layerType() === "points"
+        _layer.layerType() === "points" || _layer.layerType() === "lines"
           ? _layer.getProjections()
           : dim.getProjectOn(true) // handles the group and dimension case
       const regex = /^\s*(\S+)\s+as\s+(\S+)/i
