@@ -10114,7 +10114,7 @@ var shapeSize = function shapeSize(bins, size) {
 
 var HeatLayer = void 0;
 
-var Connector = new MapdCon().protocol("http").host("mahakali.mapd.com").port("9092").dbName("mapd").user("mapd").password("HyperInteractive");
+var Connector = new MapdCon().protocol("https").host("metis.mapd.com").port("443").dbName("mapd").user("mapd").password("HyperInteractive");
 
 Connector.logging(true);
 

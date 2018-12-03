@@ -1,4 +1,5 @@
 import d3 from "d3"
+import * as _ from "lodash"
 import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
 import { mapDrawMixin } from "./map-draw-mixin"
@@ -276,7 +277,10 @@ export default function mapMixin(
     mapboxlogo.target = "_blank"
     mapboxlogo.innerHTML = "Mapbox"
 
-    _chart.root()[0][0].appendChild(mapboxlogo)
+    const existingLogo = document.getElementsByClassName('mapbox-maplogo')
+    if(existingLogo.length  ) {
+      _chart.root()[0][0].appendChild(mapboxlogo)
+    }
 
     if (_geocoder) {
       initGeocoder()
@@ -346,10 +350,7 @@ export default function mapMixin(
           const viewBoxDim = layer.viewBoxDim()
           if(viewBoxDim !== null) {
             redrawall = true
-            viewBoxDim.filterST_Intersects([[bounds._sw.lng, bounds._sw.lat],
-                                  [bounds._ne.lng, bounds._sw.lat],
-                                  [bounds._ne.lng, bounds._ne.lat],
-                                  [bounds._sw.lng, bounds._ne.lat]])
+            viewBoxDim.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
           }
         }
       })
@@ -368,10 +369,7 @@ export default function mapMixin(
         console.log("on move event redrawall error:", error)
       })
     } else if(_viewBoxDim !== null && layer.getState().data.length < 2) { // spatial filter on only single data source
-      _viewBoxDim.filterST_Intersects([[_chart._minCoord[0], _chart._minCoord[1]],
-                            [_chart._maxCoord[0], _chart._minCoord[1]],
-                          [_chart._maxCoord[0], _chart._maxCoord[1]],
-                          [_chart._minCoord[0], _chart._maxCoord[1]]])
+      _viewBoxDim.filterST_Min_ST_Max({lonMin: _chart._minCoord[0],lonMax: _chart._maxCoord[0], latMin: _chart._minCoord[1], latMax: _chart._maxCoord[1]})
       redrawAllAsync(_chart.chartGroup()).catch(error => {
         resetRedrawStack()
         console.log("on move event redrawall error:", error)
@@ -466,6 +464,27 @@ export default function mapMixin(
 
   _chart._setOverlay = function(data, bounds, browser, redraw) {
     const map = _chart.map()
+
+    const allMapboxCanvasContainer = document.getElementsByClassName('mapboxgl-canvas-container')
+    const chartIdFromCanvasContainer = _chart.selectAll('.mapboxgl-canvas-container')[0].parentNode.id
+
+    const chartMapboxCanvasContainer = _.filter(allMapboxCanvasContainer, (mbcc) =>
+      mbcc.parentNode.id === chartIdFromCanvasContainer || mbcc.parentNode.parentNode.id === chartIdFromCanvasContainer
+    )
+
+    const allMapboxCanvas = document.getElementsByClassName('mapboxgl-canvas')
+    const chartIdFromCanvas = _chart.selectAll('.mapboxgl-canvas')[0].parentNode.id
+
+    const chartMapboxCanvas = _.filter(allMapboxCanvas, (mbc) =>
+      mbc.parentNode.id === chartIdFromCanvas || mbc.parentNode.parentNode.id === chartIdFromCanvas
+    )
+
+    if(chartMapboxCanvasContainer.length > 1) { // we use only one canvas for the chart map, thus remove extra
+      chartMapboxCanvasContainer[0].remove()
+    }
+    if(chartMapboxCanvas.length > 1){
+      chartMapboxCanvas[0].remove()
+    }
 
     let boundsToUse = bounds
     if (boundsToUse === undefined) {
