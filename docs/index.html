@@ -1963,26 +1963,6 @@
               
                 
                 <li><a
-                  href='#getbounds'
-                  class="">
-                  getBounds
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#getsvgpath'
-                  class="">
-                  getSvgPath
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
                   href='#distance_in_meters'
                   class="">
                   distance_in_meters
@@ -2046,6 +2026,26 @@
                   href='#conv4326to900913'
                   class="">
                   conv4326To900913
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getbounds'
+                  class="">
+                  getBounds
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getsvgpath'
+                  class="">
+                  getSvgPath
                   
                 </a>
                 
@@ -21263,214 +21263,6 @@ two x coordinates <code>x1</code> and <code>x2</code> and returns a filter which
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='getbounds'>
-      getBounds
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Builds the bounds from the incoming poly data</p>
-
-
-  <div class='pre p1 fill-light mt0'>getBounds(data: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>, width: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, height: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, margins: any, xscale: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>, yscale: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>, out: AABox2d, margin: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>data</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    Object with return data from getResultRowForPixel()
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>width</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-	    Width of the visualization div
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>height</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-	    Height of the visualization div
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>margins</span> <code class='quiet'>(any)</code>
-	    
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>xscale</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
-	    d3 scale in x dimension from world space to pixel space (i.e. mercatorx-to-pixel)
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>yscale</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
-	    d3 scale in y dimension from world space to pixel space (i.e. mercatory-to-pixel)
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>out</span> <code class='quiet'>(AABox2d)</code>
-	    AABox2d to return
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>margin</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    Margins of the visualization div
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='getsvgpath'>
-      getSvgPath
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Builds the svg path string to use with the d svg attr:
-<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d">https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d</a>
-This function should be called after the getBounds().
-The t/s arguments are the transformations to properly place the points underneath
-a parent SVG group node. That node is what ultimately handles animations and such
-so we need to transform all the points into local space. t is the translation
-and s is the scale to transform the points from pixel space to model/object space.</p>
-
-
-  <div class='pre p1 fill-light mt0'>getSvgPath(t: Point2d, s: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, out: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>t</span> <code class='quiet'>(Point2d)</code>
-	    Translation from world to object space.
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>s</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-	    Scale from world to object space.
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>out</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    Returns the svg path string
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
     <h3 class='fl m0' id='distance_in_meters'>
       distance_in_meters
     </h3>
@@ -21986,6 +21778,214 @@ and s is the scale to transform the points from pixel space to model/object spac
 
       
     
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getbounds'>
+      getBounds
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Builds the bounds from the incoming poly data</p>
+
+
+  <div class='pre p1 fill-light mt0'>getBounds(data: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>, width: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, height: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, margins: any, xscale: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>, yscale: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>, out: AABox2d, margin: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>data</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
+	    Object with return data from getResultRowForPixel()
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>width</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    Width of the visualization div
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>height</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    Height of the visualization div
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>margins</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>xscale</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    d3 scale in x dimension from world space to pixel space (i.e. mercatorx-to-pixel)
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>yscale</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    d3 scale in y dimension from world space to pixel space (i.e. mercatory-to-pixel)
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>out</span> <code class='quiet'>(AABox2d)</code>
+	    AABox2d to return
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>margin</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
+	    Margins of the visualization div
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getsvgpath'>
+      getSvgPath
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Builds the svg path string to use with the d svg attr:
+<a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d">https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d</a>
+This function should be called after the getBounds().
+The t/s arguments are the transformations to properly place the points underneath
+a parent SVG group node. That node is what ultimately handles animations and such
+so we need to transform all the points into local space. t is the translation
+and s is the scale to transform the points from pixel space to model/object space.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getSvgPath(t: Point2d, s: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, out: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>t</span> <code class='quiet'>(Point2d)</code>
+	    Translation from world to object space.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>s</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    Scale from world to object space.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>out</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    Returns the svg path string
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
   
 
   
