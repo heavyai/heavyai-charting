@@ -1938,6 +1938,205 @@ document.addEventListener("DOMContentLoaded", () => {
     ]
   }
 
+  // Tests the scenario with multiple layers where layer 1 is an agg query using xforms
+  // and layer 2 is a projection query using xforms. This should render appropriately.
+  const multi_layer_xform_agg_and_proj = {
+    "width": 695,
+    "height": 723,
+    "data": [
+      {
+        "name": "pointmapLayer0",
+        "sql": "SELECT airtime as key0, AVG(conv_4326_900913_x(dest_lon)) as x, AVG(conv_4326_900913_y(dest_lat)) as y, AVG(cancelled) as color FROM flights_123M WHERE ((dest_lon >= -157.92200520833265 AND dest_lon <= -90.31115097790968) AND (dest_lat >= 6.081626657087739 AND dest_lat <= 60.482290986128845) AND (dest_lon >= -157.92200520833265 AND dest_lon <= -90.31115097790968) AND (dest_lat >= 6.081626657087739 AND dest_lat <= 60.482290986128845)) GROUP BY key0"
+      },
+      {
+        "name": "pointmapLayer0_stats",
+        "source": "pointmapLayer0",
+        "transform": [
+          {
+            "type": "aggregate",
+            "fields": [
+              "color",
+              "color",
+              "color",
+              "color"
+            ],
+            "ops": [
+              "min",
+              "max",
+              "avg",
+              "stddev"
+            ],
+            "as": [
+              "mincol",
+              "maxcol",
+              "avgcol",
+              "stdcol"
+            ]
+          },
+          {
+            "type": "formula",
+            "expr": "max(mincol, avgcol-2*stdcol)",
+            "as": "mincolor"
+          },
+          {
+            "type": "formula",
+            "expr": "min(maxcol, avgcol+2*stdcol)",
+            "as": "maxcolor"
+          }
+        ]
+      },
+      {
+        "name": "pointmapLayer1",
+        "sql": "SELECT conv_4326_900913_x(dest_lon) as x, conv_4326_900913_y(dest_lat) as y, carrierdelay as color, flights_123M.rowid FROM flights_123M WHERE MOD(flights_123M.rowid * 265445761, 4294967296) < 2587046056 AND ((dest_lon >= -157.92200520833265 AND dest_lon <= -90.31115097790968) AND (dest_lat >= 6.081626657087739 AND dest_lat <= 60.482290986128845) AND (dest_lon >= -157.92200520833265 AND dest_lon <= -90.31115097790968) AND (dest_lat >= 6.081626657087739 AND dest_lat <= 60.482290986128845)) AND carrierdelay IS NOT NULL LIMIT 2000000"
+      },
+      {
+        "name": "pointmapLayer1_stats",
+        "source": "pointmapLayer1",
+        "transform": [
+          {
+            "type": "aggregate",
+            "fields": [
+              "color",
+              "color",
+              "color",
+              "color"
+            ],
+            "ops": [
+              "min",
+              "max",
+              "avg",
+              "stddev"
+            ],
+            "as": [
+              "mincol",
+              "maxcol",
+              "avgcol",
+              "stdcol"
+            ]
+          },
+          {
+            "type": "formula",
+            "expr": "max(mincol, avgcol-2*stdcol)",
+            "as": "mincolor"
+          },
+          {
+            "type": "formula",
+            "expr": "min(maxcol, avgcol+2*stdcol)",
+            "as": "maxcolor"
+          }
+        ]
+      }
+    ],
+    "scales": [
+      {
+        "name": "x",
+        "type": "linear",
+        "domain": [
+          -17579797.202432256,
+          -10053391.338435983
+        ],
+        "range": "width"
+      },
+      {
+        "name": "y",
+        "type": "linear",
+        "domain": [
+          678278.4338006375,
+          8507906.404565895
+        ],
+        "range": "height"
+      },
+      {
+        "name": "pointmapLayer0_fillColor",
+        "type": "quantize",
+        "domain": {
+          "data": "pointmapLayer0_stats",
+          "fields": [
+            "mincolor",
+            "maxcolor"
+          ]
+        },
+        "range": [
+          "rgba(17,95,154,0.85)",
+          "rgba(25,132,197,0.85)",
+          "rgba(34,167,240,0.85)",
+          "rgba(72,181,196,0.85)",
+          "rgba(118,198,143,0.85)",
+          "rgba(166,215,91,0.85)",
+          "rgba(201,229,47,0.85)",
+          "rgba(208,238,17,0.85)",
+          "rgba(208,244,0,0.85)"
+        ]
+      },
+      {
+        "name": "pointmapLayer1_fillColor",
+        "type": "quantize",
+        "domain": {
+          "data": "pointmapLayer1_stats",
+          "fields": [
+            "mincolor",
+            "maxcolor"
+          ]
+        },
+        "range": [
+          "red",
+          "green",
+          "blue"
+        ],
+        "nullValue": "orange"
+      }
+    ],
+    "projections": [],
+    "marks": [
+      {
+        "type": "symbol",
+        "from": {
+          "data": "pointmapLayer0"
+        },
+        "properties": {
+          "xc": {
+            "scale": "x",
+            "field": "x"
+          },
+          "yc": {
+            "scale": "y",
+            "field": "y"
+          },
+          "fillColor": {
+            "scale": "pointmapLayer0_fillColor",
+            "field": "color"
+          },
+          "shape": "circle",
+          "width": 5,
+          "height": 5
+        }
+      },
+      {
+        "type": "symbol",
+        "from": {
+          "data": "pointmapLayer1"
+        },
+        "properties": {
+          "xc": {
+            "scale": "x",
+            "field": "x"
+          },
+          "yc": {
+            "scale": "y",
+            "field": "y"
+          },
+          "fillColor": {
+            "scale": "pointmapLayer1_fillColor",
+            "field": "color"
+          },
+          "shape": "circle",
+          "width": 10,
+          "height": 10
+        }
+      }
+    ]
+  }
+
   new MapdCon()
     .protocol("http")
     .host("localhost")
@@ -2032,6 +2231,10 @@ document.addEventListener("DOMContentLoaded", () => {
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
       results = con.renderVega(1, JSON.stringify(vega_live_median_pointmap_stats))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(multi_layer_xform_agg_and_proj))
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
     })
