@@ -57,12 +57,13 @@ export function maybeFormatInfinity(data) {
 }
 
 export function formatNumber(d) {
+  if (d === null || d === undefined) {
+    return "NULL"
+  }
   const isLong = String(d).length > NUMBER_LENGTH
   const formattedHasAlpha = numFormat(d).match(/[a-z]/i)
   const isLargeNumber = isLong && formattedHasAlpha
-  return isLargeNumber
-    ? numFormat(d)
-    : commafy(parseFloat(d.toFixed(2)))
+  return isLargeNumber ? numFormat(d) : commafy(parseFloat(d.toFixed(2)))
 }
 
 export function formatArrayValue(data) {
@@ -142,7 +143,7 @@ export function formatCache(_axis) {
   const axis = _axis
   let cachedTickFormat = false
 
-  function setTickFormat (tickFormat, fromCache) {
+  function setTickFormat(tickFormat, fromCache) {
     if (tickFormat === false) {
       return null
     }
@@ -150,15 +151,15 @@ export function formatCache(_axis) {
     if (!fromCache && cachedTickFormat === false) {
       cachedTickFormat = axis.tickFormat()
     }
- 
+
     axis.tickFormat(tickFormat)
- 
+
     if (fromCache) {
       cachedTickFormat = false
     }
   }
 
-  function setTickFormatFromCache () {
+  function setTickFormatFromCache() {
     const FROM_CACHE = true
     setTickFormat(cachedTickFormat, FROM_CACHE)
   }

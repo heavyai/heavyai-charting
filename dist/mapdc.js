@@ -7154,7 +7154,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var NUMBER_LENGTH = 4;
 
-var numFormat = _d2.default.format(".2s");
+var numFormat = function numFormat(d) {
+  if (d < 1000) {
+    return _d2.default.format(",.2f")(d);
+  } else if (d < 1000000) {
+    return _d2.default.format(",.2s")(d);
+  } else {
+    return _d2.default.format(",.0f")(Math.round(d / 1000000)) + "B";
+  }
+};
+
 var commafy = _d2.default.format(",");
 
 var nullLabelHtml = exports.nullLabelHtml = '<tspan class="null-value"> NULL </tspan>';
@@ -7181,9 +7190,9 @@ var normalizeArrayByValue = exports.normalizeArrayByValue = function normalizeAr
   }) : collection;
 };
 
-function formatDataValue(data, numAbbr) {
+function formatDataValue(data) {
   if (typeof data === "number") {
-    return formatNumber(data, numAbbr);
+    return formatNumber(data);
   } else if (Array.isArray(data)) {
     return formatArrayValue(data);
   } else if (data instanceof Date) {
@@ -7204,11 +7213,14 @@ function maybeFormatInfinity(data) {
   });
 }
 
-function formatNumber(d, abbr) {
+function formatNumber(d) {
+  if (d === null || d === undefined) {
+    return "NULL";
+  }
   var isLong = String(d).length > NUMBER_LENGTH;
   var formattedHasAlpha = numFormat(d).match(/[a-z]/i);
   var isLargeNumber = isLong && formattedHasAlpha;
-  return isLargeNumber && abbr ? numFormat(d) : commafy(parseFloat(d.toFixed(2)));
+  return isLargeNumber ? numFormat(d) : commafy(parseFloat(d.toFixed(2)));
 }
 
 function formatArrayValue(data) {
@@ -64962,21 +64974,15 @@ var formatNumber = function (d) {
 };
 function rangeStep(domain, index, bins) {
     if (bins === void 0) { bins = 9; }
-    if (Array.isArray(domain)) {
-        debugger;
-        if (index === 0) {
-            return domain[0];
-        }
-        else if (index + 1 === bins) {
-            return domain[1];
-        }
-        else {
-            var increment = (domain[1] - domain[0]) / bins;
-            return domain[0] + increment * index;
-        }
+    if (index === 0) {
+        return domain[0];
+    }
+    else if (index + 1 === bins) {
+        return domain[1];
     }
     else {
-        return 0;
+        var increment = (domain[1] - domain[0]) / bins;
+        return domain[0] + increment * index;
     }
 }
 function validateNumericalInput(previousValue, nextValue) {
@@ -65057,13 +65063,12 @@ function renderGradientLegend(state, dispatch) {
             ? h_1.default("div.range", state.range.map(function (color, index) {
                 var isMinMax = index === 0 || index === state.range.length - 1;
                 var step = formatNumber(rangeStep(state.domain, index, state.range.length));
-                var domain = (state.domain && Array.isArray(state.domain)) ? state.domain : [0, 0];
-                var min = domain[0], max = domain[1];
+                var _a = state.domain, min = _a[0], max = _a[1];
                 return h_1.default("div.block", [
                     h_1.default("div.color", { style: { background: color } }),
-                    h_1.default("div.text." + (isMinMax ? "extent" : "step"), [h_1.default("span", "" + (domain.length > 2 ? domain[index] : step))].concat(isMinMax
+                    h_1.default("div.text." + (isMinMax ? "extent" : "step"), [h_1.default("span", "" + (state.domain.length > 2 ? state.domain[index] : step))].concat(isMinMax
                         ? [
-                            renderInput(state, { value: domain.length === 2 ? domain[index === 0 ? 0 : 1] : domain[index], index: index }, dispatch)
+                            renderInput(state, { value: state.domain.length === 2 ? state.domain[index === 0 ? 0 : 1] : state.domain[index], index: index }, dispatch)
                         ]
                         : []))
                 ]);
@@ -65087,7 +65092,7 @@ function renderNominalLegend(state, dispatch) {
                     h_1.default("div.color", {
                         style: { background: state.range[index] }
                     }),
-                    h_1.default("div.text", "" + value)
+                    h_1.default("div.text", value)
                 ]);
             }))
             : h_1.default("div")
