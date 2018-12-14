@@ -58,7 +58,7 @@ export function maybeFormatInfinity(data) {
 
 export function formatNumber(d) {
   if (typeof d !== "number") {
-    return "NULL"
+    return d
   }
   const isLong = String(d).length > NUMBER_LENGTH
   const formattedHasAlpha = numFormat(d).match(/[a-z]/i)

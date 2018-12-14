@@ -7215,7 +7215,7 @@ function maybeFormatInfinity(data) {
 
 function formatNumber(d) {
   if (typeof d !== "number") {
-    return "NULL";
+    return d;
   }
   var isLong = String(d).length > NUMBER_LENGTH;
   var formattedHasAlpha = numFormat(d).match(/[a-z]/i);
