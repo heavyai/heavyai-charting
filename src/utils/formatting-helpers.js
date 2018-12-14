@@ -57,7 +57,7 @@ export function maybeFormatInfinity(data) {
 }
 
 export function formatNumber(d) {
-  if (d === null || d === undefined) {
+  if (typeof d !== "number") {
     return "NULL"
   }
   const isLong = String(d).length > NUMBER_LENGTH
