@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       let results = con.renderVega(1, JSON.stringify(blend_accum_noproj))
       let blobUrl = "data:image/png;base64," + results.image
-      const w = window.open("distributedAggQueryTest", "distributedAggQueryTest results")
+      const w = window.open("distributedAccumRenderTest", "distributedAccumRenderTest")
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
       results = con.renderVega(1, JSON.stringify(pct_accum_noproj))
