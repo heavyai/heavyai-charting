@@ -14,7 +14,7 @@ import scatterMixin from "../mixins/scatter-mixin"
 import { rasterDrawMixin } from "../mixins/raster-draw-mixin"
 import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
-import * as _ from "lodash";
+import * as _ from "lodash"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -558,9 +558,12 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     // hack to undo the popup concatenation like "AVG(arrdelay)"
     let keyTrimmed = null
     if (key) {
-       keyTrimmed = key.replace(/.*\((.*)\).*/, "$1")
+      keyTrimmed = key.replace(/.*\((.*)\).*/, "$1")
     }
-    return (keyTrimmed && customFormatter && customFormatter(value, keyTrimmed)) || value
+    return (
+      (keyTrimmed && customFormatter && customFormatter(value, keyTrimmed)) ||
+      value
+    )
   }
 
   _chart.displayPopup = function displayPopup(result, animate) {
@@ -630,19 +633,29 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _legend
   }
 
-  _chart.deleteLayerLegend = function(currentLayerId, deleteLayerId, prevLayerId) {
+  _chart.deleteLayerLegend = function(
+    currentLayerId,
+    deleteLayerId,
+    prevLayerId
+  ) {
     if (currentLayerId !== "master") {
-      _chart.root().selectAll(".legend")
-        .filter((d, i) => i === deleteLayerId
-            && prevLayerId === "master"
-            || !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId)
+      _chart
+        .root()
+        .selectAll(".legend")
+        .filter(
+          (d, i) =>
+            (i === deleteLayerId && prevLayerId === "master") ||
+            !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId)
         )
         .remove()
     }
   }
 
   _chart.destroyChartLegend = function() {
-    _chart.root().selectAll(".legend").remove()
+    _chart
+      .root()
+      .selectAll(".legend")
+      .remove()
   }
 
   return anchored
