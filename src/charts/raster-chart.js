@@ -268,15 +268,17 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
     _chart._vegaSpec = genLayeredVega(_chart)
-    const nonce = _chart
+
+    _chart
       .con()
-      .renderVega(
-        _chart.__dcFlag__,
-        JSON.stringify(_chart._vegaSpec),
-        {},
-        callback
-      )
-    _renderBoundsMap[nonce] = bounds
+      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
+      .then(result => {
+        _renderBoundsMap[result.nonce] = bounds
+        callback(null, result)
+      })
+      .catch(error => {
+        callback(error)
+      })
   })
 
   _chart.data(group => {
@@ -534,12 +536,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return
     }
 
-    return _chart.con().getResultRowForPixel(
-      _chart.__dcFlag__,
-      pixel,
-      layerObj,
-      [
-        function(err, results) {
+    _chart
+      .con()
+      .getResultRowForPixel(
+        _chart.__dcFlag__,
+        pixel,
+        layerObj,
+        Math.ceil(_popupSearchRadius * pixelRatio),
+        (err, results) => {
           if (err) {
             throw new Error(
               `getResultRowForPixel failed with message: ${err.message}`
@@ -548,9 +552,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
             return callback(results[0])
           }
         }
-      ],
-      Math.ceil(_popupSearchRadius * pixelRatio)
-    )
+      )
   }
 
   _chart.measureValue = function(value, key) {

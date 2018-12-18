@@ -63138,8 +63138,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var bounds = _chart.getDataRenderBounds();
     _chart._updateXAndYScales(bounds);
     _chart._vegaSpec = genLayeredVega(_chart);
-    var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callback);
-    _renderBoundsMap[nonce] = bounds;
+
+    _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
+      _renderBoundsMap[result.nonce] = bounds;
+      callback(null, result);
+    }).catch(function (error) {
+      callback(error);
+    });
   });
 
   _chart.data(function (group) {
@@ -63350,13 +63355,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return;
     }
 
-    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, layerObj, [function (err, results) {
+    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, layerObj, Math.ceil(_popupSearchRadius * pixelRatio), function (err, results) {
       if (err) {
         throw new Error("getResultRowForPixel failed with message: " + err.message);
       } else {
         return callback(results[0]);
       }
-    }], Math.ceil(_popupSearchRadius * pixelRatio));
+    });
   };
 
   _chart.measureValue = function (value, key) {
@@ -64936,6 +64941,7 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var legend_1 = __webpack_require__(207);
 exports.Legend = legend_1.default;
@@ -64947,11 +64953,11 @@ exports.Legend = legend_1.default;
 
 "use strict";
 
-var __assign = (this && this.__assign) || Object.assign || function(t) {
+
+var __assign = this && this.__assign || Object.assign || function (t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
     }
     return t;
 };
@@ -64960,27 +64966,27 @@ var h_1 = __webpack_require__(208);
 var vdom_1 = __webpack_require__(211);
 var d3_dispatch_1 = __webpack_require__(220);
 var d3_format_1 = __webpack_require__(222);
-var commafy = function (d) { return d3_format_1.format(",")(parseFloat(d.toFixed(2))); };
+var commafy = function (d) {
+    return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d;
+};
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
         return commafy(d);
-    }
-    else if (d < 0.0001) {
+    } else if (d < 0.0001) {
         return d3_format_1.format(".2")(d);
-    }
-    else {
+    } else {
         return d3_format_1.format(".2s")(d);
     }
 };
 function rangeStep(domain, index, bins) {
-    if (bins === void 0) { bins = 9; }
+    if (bins === void 0) {
+        bins = 9;
+    }
     if (index === 0) {
         return domain[0];
-    }
-    else if (index + 1 === bins) {
+    } else if (index + 1 === bins) {
         return domain[1];
-    }
-    else {
+    } else {
         var increment = (domain[1] - domain[0]) / bins;
         return domain[0] + increment * index;
     }
@@ -64988,14 +64994,15 @@ function rangeStep(domain, index, bins) {
 function validateNumericalInput(previousValue, nextValue) {
     if (isNaN(parseFloat(nextValue))) {
         return parseFloat(previousValue);
-    }
-    else {
+    } else {
         return parseFloat(nextValue);
     }
 }
 function renderTickIcon(state, dispatch) {
     var _this = this;
-    return h_1.default("div.tick", { on: { click: function () { return dispatch.call("open", _this, state.index); } } });
+    return h_1.default("div.tick", { on: { click: function () {
+                return dispatch.call("open", _this, state.index);
+            } } });
 }
 function renderToggleIcon(state, dispatch) {
     var _this = this;
@@ -65009,19 +65016,13 @@ function renderToggleIcon(state, dispatch) {
 }
 function renderLockIcon(locked, index, dispatch) {
     var _this = this;
-    return h_1.default("div.lock" + (locked ? ".locked" : ".unlocked"), { on: { click: function () { return dispatch.call("lock", _this, { locked: locked, index: index }); } } }, [
-        h_1.default("svg", { attrs: { viewBox: [0, 0, 48, 48] } }, [
-            h_1.default("g", { style: { stroke: "white" } }, [
-                h_1.default("path", {
-                    attrs: {
-                        d: locked
-                            ? "M34,20v-4c0-5.5-4.5-10-10-10c-5.5,0-10,4.5-10,10v4H8v20h32V20H34z M18,16c0-3.3,2.7-6,6-6s6,2.7,6,6v4H18V16z"
-                            : "M18,20v-8c0-3.3,2.7-6,6-6s6,2.7,6,6v2h4v-2c0-5.5-4.5-10-10-10c-5.5,0-10,4.5-10,10v8H8v20h32V20H18z"
-                    }
-                })
-            ])
-        ])
-    ]);
+    return h_1.default("div.lock" + (locked ? ".locked" : ".unlocked"), { on: { click: function () {
+                return dispatch.call("lock", _this, { locked: locked, index: index });
+            } } }, [h_1.default("svg", { attrs: { viewBox: [0, 0, 48, 48] } }, [h_1.default("g", { style: { stroke: "white" } }, [h_1.default("path", {
+        attrs: {
+            d: locked ? "M34,20v-4c0-5.5-4.5-10-10-10c-5.5,0-10,4.5-10,10v4H8v20h32V20H34z M18,16c0-3.3,2.7-6,6-6s6,2.7,6,6v4H18V16z" : "M18,20v-8c0-3.3,2.7-6,6-6s6,2.7,6,6v2h4v-2c0-5.5-4.5-10-10-10c-5.5,0-10,4.5-10,10v8H8v20h32V20H18z"
+        }
+    })])])]);
 }
 function renderInput(state, domain, dispatch) {
     var _this = this;
@@ -65040,7 +65041,9 @@ function renderInput(state, domain, dispatch) {
             },
             blur: function (e) {
                 var value = validateNumericalInput(domain.value, e.target.value);
-                var _a = state.domain, min = _a[0], max = _a[1];
+                var _a = state.domain,
+                    min = _a[0],
+                    max = _a[1];
                 dispatch.call("input", _this, {
                     index: state.index,
                     domain: domain.index === 0 ? [value, max] : [min, value]
@@ -65056,81 +65059,55 @@ function renderInput(state, domain, dispatch) {
 }
 function renderGradientLegend(state, dispatch) {
     var stacked = typeof state.index === "number";
-    return h_1.default("div.legend.gradient-legend" + (stacked ? ".with-header" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [
-        stacked ?
-            h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]) : h_1.default("div"),
-        state.open
-            ? h_1.default("div.range", state.range.map(function (color, index) {
-                var isMinMax = index === 0 || index === state.range.length - 1;
-                var step = formatNumber(rangeStep(state.domain, index, state.range.length));
-                var _a = state.domain, min = _a[0], max = _a[1];
-                return h_1.default("div.block", [
-                    h_1.default("div.color", { style: { background: color } }),
-                    h_1.default("div.text." + (isMinMax ? "extent" : "step"), [h_1.default("span", "" + (state.domain.length > 2 ? state.domain[index] : step))].concat(isMinMax
-                        ? [
-                            renderInput(state, { value: state.domain.length === 2 ? state.domain[index === 0 ? 0 : 1] : state.domain[index], index: index }, dispatch)
-                        ]
-                        : []))
-                ]);
-            }).slice())
-            : h_1.default("div"),
-        state.open ?
-            renderLockIcon(state.locked, state.index, dispatch) : h_1.default("div")
-    ]);
+    return h_1.default("div.legend.gradient-legend" + (stacked ? ".with-header" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [stacked ? h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]) : h_1.default("div"), state.open ? h_1.default("div.range", state.range.map(function (color, index) {
+        var isMinMax = index === 0 || index === state.range.length - 1;
+        var step = Array.isArray(state.domain) ? formatNumber(rangeStep(state.domain, index, state.range.length)) : null;
+        var domain = Array.isArray(state.domain) ? state.domain : [null, null];
+        var min = domain[0],
+            max = domain[1];
+        return h_1.default("div.block", [h_1.default("div.color", { style: { background: color } }), h_1.default("div.text." + (isMinMax ? "extent" : "step"), [h_1.default("span", "" + (domain.length > 2 ? domain[index] : step))].concat(isMinMax ? [renderInput(state, { value: domain.length === 2 ? domain[index === 0 ? 0 : 1] : domain[index], index: index }, dispatch)] : []))]);
+    }).slice()) : h_1.default("div"), state.open ? renderLockIcon(state.locked, state.index, dispatch) : h_1.default("div")]);
 }
 exports.renderGradientLegend = renderGradientLegend;
 function renderNominalLegend(state, dispatch) {
     var _this = this;
     var stacked = typeof state.index === "number";
-    return h_1.default("div.legend.nominal-legend" + (stacked ? "" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [
-        !stacked ? renderToggleIcon(state, dispatch) : h_1.default("div"),
-        state.title &&
-            h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]),
-        state.open
-            ? h_1.default("div.body", state.domain.map(function (value, index) {
-                return h_1.default("div.legend-row", { on: { click: function () { return dispatch.call("filter", _this, value); } } }, [
-                    h_1.default("div.color", {
-                        style: { background: state.range[index] }
-                    }),
-                    h_1.default("div.text", value)
-                ]);
-            }))
-            : h_1.default("div")
-    ]);
+    return h_1.default("div.legend.nominal-legend" + (stacked ? "" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [!stacked ? renderToggleIcon(state, dispatch) : h_1.default("div"), state.title && h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]), state.open ? h_1.default("div.body", state.domain.map(function (value, index) {
+        return h_1.default("div.legend-row", { on: { click: function () {
+                    return dispatch.call("filter", _this, value);
+                } } }, [h_1.default("div.color", {
+            style: { background: state.range[index] }
+        }), h_1.default("div.text", "" + value)]);
+    })) : h_1.default("div")]);
 }
 exports.renderNominalLegend = renderNominalLegend;
 function renderStackedLegend(state, dispatch) {
     return h_1.default("div.legendables" + (state.open ? ".open" : ".collapsed") + (state.list.length > 1 ? ".show-ticks" : ""), { style: { maxHeight: state.maxHeight + "px" } }, [renderToggleIcon(state, dispatch)].concat(state.list.map(function (legend, index) {
         if (legend.type === "gradient") {
             return renderGradientLegend(__assign({}, legend, { index: index }), dispatch);
-        }
-        else if (legend.type === "nominal") {
+        } else if (legend.type === "nominal") {
             return renderNominalLegend(__assign({}, legend, { index: index }), dispatch);
         }
     })));
 }
 exports.renderStackedLegend = renderStackedLegend;
-var Legend = /** @class */ (function () {
+var Legend = /** @class */function () {
     function Legend(node) {
         var _this = this;
         this.setState = function (state) {
             if (typeof state === "function") {
                 _this.state = state(_this.state);
-            }
-            else {
+            } else {
                 _this.state = state;
             }
             var vnode;
             if (_this.state.type === "gradient") {
                 vnode = renderGradientLegend(_this.state, _this.dispatch);
-            }
-            else if (_this.state.type === "nominal") {
+            } else if (_this.state.type === "nominal") {
                 vnode = renderNominalLegend(_this.state, _this.dispatch);
-            }
-            else if (_this.state.type === "stacked") {
+            } else if (_this.state.type === "stacked") {
                 vnode = renderStackedLegend(_this.state, _this.dispatch);
-            }
-            else {
+            } else {
                 vnode = h_1.default("div");
             }
             _this.node = vdom_1.patch(_this.node, vnode);
@@ -65145,7 +65122,7 @@ var Legend = /** @class */ (function () {
         this.dispatch.on(event, callback);
     };
     return Legend;
-}());
+}();
 exports.default = Legend;
 //# sourceMappingURL=legend.js.map
 
@@ -65250,6 +65227,7 @@ exports.primitive = primitive;
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var snabbdom_1 = __webpack_require__(212);
 var attributes_1 = __webpack_require__(215);
@@ -65257,13 +65235,7 @@ var class_1 = __webpack_require__(216);
 var props_1 = __webpack_require__(217);
 var style_1 = __webpack_require__(218);
 var eventlisteners_1 = __webpack_require__(219);
-exports.patch = snabbdom_1.init([
-    class_1.default,
-    props_1.default,
-    style_1.default,
-    attributes_1.default,
-    eventlisteners_1.default
-]);
+exports.patch = snabbdom_1.init([class_1.default, props_1.default, style_1.default, attributes_1.default, eventlisteners_1.default]);
 //# sourceMappingURL=vdom.js.map
 
 /***/ }),
@@ -69813,9 +69785,9 @@ function rasterMixin(_chart) {
     if (!point || !tableName || !columns.length || columns.length === 3 && hideColorColumnInPopup()) {
       return;
     }
-    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, { table: columns }, [function (results) {
+    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, { table: columns }, _popupSearchRadius * pixelRatio, function (results) {
       return callback(results[0]);
-    }], _popupSearchRadius * pixelRatio);
+    });
   };
 
   _chart.displayPopup = function displayPopup(result) {
