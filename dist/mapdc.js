@@ -63355,12 +63355,10 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return;
     }
 
-    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, layerObj, Math.ceil(_popupSearchRadius * pixelRatio), function (err, results) {
-      if (err) {
-        throw new Error("getResultRowForPixel failed with message: " + err.message);
-      } else {
-        return callback(results[0]);
-      }
+    _chart.con().getResultRowForPixelAsync(_chart.__dcFlag__, pixel, layerObj, Math.ceil(_popupSearchRadius * pixelRatio)).then(function (results) {
+      return callback(results[0]);
+    }).catch(function (error) {
+      throw new Error("getResultRowForPixel failed with message: " + error.message);
     });
   };
 
@@ -69785,7 +69783,8 @@ function rasterMixin(_chart) {
     if (!point || !tableName || !columns.length || columns.length === 3 && hideColorColumnInPopup()) {
       return;
     }
-    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, { table: columns }, _popupSearchRadius * pixelRatio, function (results) {
+
+    _chart.con().getResultRowForPixelAsync(_chart.__dcFlag__, pixel, { table: columns }, _popupSearchRadius * pixelRatio).then(function (results) {
       return callback(results[0]);
     });
   };

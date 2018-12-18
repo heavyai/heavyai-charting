@@ -538,21 +538,18 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     _chart
       .con()
-      .getResultRowForPixel(
+      .getResultRowForPixelAsync(
         _chart.__dcFlag__,
         pixel,
         layerObj,
-        Math.ceil(_popupSearchRadius * pixelRatio),
-        (err, results) => {
-          if (err) {
-            throw new Error(
-              `getResultRowForPixel failed with message: ${err.message}`
-            )
-          } else {
-            return callback(results[0])
-          }
-        }
+        Math.ceil(_popupSearchRadius * pixelRatio)
       )
+      .then(results => callback(results[0]))
+      .catch(error => {
+        throw new Error(
+          `getResultRowForPixel failed with message: ${error.message}`
+        )
+      })
   }
 
   _chart.measureValue = function(value, key) {

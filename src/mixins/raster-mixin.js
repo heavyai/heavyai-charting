@@ -288,15 +288,16 @@ export default function rasterMixin(_chart) {
     ) {
       return
     }
-    return _chart
+
+    _chart
       .con()
-      .getResultRowForPixel(
+      .getResultRowForPixelAsync(
         _chart.__dcFlag__,
         pixel,
         { table: columns },
-        _popupSearchRadius * pixelRatio,
-        results => callback(results[0])
+        _popupSearchRadius * pixelRatio
       )
+      .then(results => callback(results[0]))
   }
 
   _chart.displayPopup = function displayPopup(result) {
