@@ -33,9 +33,9 @@ export const isArrayOfObjects = value =>
 export const normalizeArrayByValue = collection =>
   isArrayOfObjects(collection) ? collection.map(data => data.value) : collection
 
-export function formatDataValue(data) {
+export function formatDataValue(data, numAbbr) {
   if (typeof data === "number") {
-    return formatNumber(data)
+    return formatNumber(data, numAbbr)
   } else if (Array.isArray(data)) {
     return formatArrayValue(data)
   } else if (data instanceof Date) {
@@ -56,14 +56,16 @@ export function maybeFormatInfinity(data) {
   })
 }
 
-export function formatNumber(d) {
+export function formatNumber(d, abbr) {
   if (typeof d !== "number") {
     return d
   }
   const isLong = String(d).length > NUMBER_LENGTH
   const formattedHasAlpha = numFormat(d).match(/[a-z]/i)
   const isLargeNumber = isLong && formattedHasAlpha
-  return isLargeNumber ? numFormat(d) : commafy(parseFloat(d.toFixed(2)))
+  return isLargeNumber && abbr
+    ? numFormat(d)
+    : commafy(parseFloat(d.toFixed(2)))
 }
 
 export function formatArrayValue(data) {
