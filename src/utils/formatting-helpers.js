@@ -5,12 +5,12 @@ import moment from "moment"
 const NUMBER_LENGTH = 4
 
 const numFormat = d => {
-  if (d < 1000) {
+  const abs = Math.abs(d)
+  if (abs < 1000) {
     return d3.format(",.2f")(d)
-  } else if (d < 1000000) {
-    return d3.format(",.2s")(d)
   } else {
-    return `${d3.format(",.0f")(Math.round(d / 1000000))}B`
+    const formatted = d3.format(",.2s")(d)
+    return formatted.replace("G", "B")
   }
 }
 
