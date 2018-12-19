@@ -1334,6 +1334,63 @@ document.addEventListener("DOMContentLoaded", () => {
       ]
     }
 
+  const insitu_poly_test = {
+    "width": 1117,
+    "height": 1116,
+    "data": [
+      {
+        "name": "polys_projected3",
+        "format": "polys",
+        "sql": "SELECT rowid, mapd_geo, MapD_GeoPolyBoundsPtr(mapd_geo) AS mapd_geo_bounds, MapD_GeoPolyRenderGroup(mapd_geo) AS mapd_geo_render_group, NAME as color FROM mapd_states WHERE (ST_XMax(mapd_geo) >= -171.94850212956538 AND ST_XMin(mapd_geo) <= -64.23798693816666 AND ST_YMax(mapd_geo) >= 4.89805464614507 AND ST_YMin(mapd_geo) <= 74.02453067764594)",
+        "enableInSituPolys": true
+      }
+    ],
+    "projections": [
+      {
+        "name": "projection",
+        "type": "mercator",
+        "bounds": {
+          "x": [-171.94850212956538,-64.23798693816666],
+          "y": [4.89805464614507,74.02453067764594]
+        }
+      }
+    ],
+    "scales": [
+      {
+        "name": "polys_fillColor",
+        "type": "ordinal",
+        "domain": [
+          "California",
+          "Florida",
+          "Texas",
+          "Kentucky",
+          "Minnesota",
+          "Colorado"
+        ],
+        "range": ["blue","red","yellow","green","cyan","magenta"],
+        "default": "gray",
+        "nullValue": "#cacaca "
+      }
+    ],
+    "marks": [
+      {
+        "type": "polys",
+        "from": {"data": "polys_projected3"},
+        "properties": {
+          "x": {"field": "x"},
+          "y": {"field": "y"},
+          "fillOpacity": 0.8,
+          "fillColor": {"scale": "polys_fillColor","field": "color"},
+          "strokeColor": "green",
+          "strokeWidth": 1,
+          "lineJoin": "miter",
+          "miterLimit": 10
+        },
+        "transform": {"projection": "projection"}
+      }
+    ]
+  }
+
   new MapdCon()
     .protocol("http")
     .host("localhost")
@@ -1422,6 +1479,10 @@ document.addEventListener("DOMContentLoaded", () => {
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
       results = con.renderVega(1, JSON.stringify(multi_overflow_buffers))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(insitu_poly_test))
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
