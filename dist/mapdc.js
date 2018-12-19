@@ -64960,7 +64960,7 @@ var h_1 = __webpack_require__(208);
 var vdom_1 = __webpack_require__(211);
 var d3_dispatch_1 = __webpack_require__(220);
 var d3_format_1 = __webpack_require__(222);
-var commafy = function (d) { return d3_format_1.format(",")(parseFloat(d.toFixed(2))); };
+var commafy = function (d) { return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d; };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
         return commafy(d);
@@ -65062,13 +65062,14 @@ function renderGradientLegend(state, dispatch) {
         state.open
             ? h_1.default("div.range", state.range.map(function (color, index) {
                 var isMinMax = index === 0 || index === state.range.length - 1;
-                var step = formatNumber(rangeStep(state.domain, index, state.range.length));
-                var _a = state.domain, min = _a[0], max = _a[1];
+                var step = Array.isArray(state.domain) ? formatNumber(rangeStep(state.domain, index, state.range.length)) : null;
+                var domain = Array.isArray(state.domain) ? state.domain : [null, null];
+                var min = domain[0], max = domain[1];
                 return h_1.default("div.block", [
                     h_1.default("div.color", { style: { background: color } }),
-                    h_1.default("div.text." + (isMinMax ? "extent" : "step"), [h_1.default("span", "" + (state.domain.length > 2 ? state.domain[index] : step))].concat(isMinMax
+                    h_1.default("div.text." + (isMinMax ? "extent" : "step"), [h_1.default("span", "" + (domain.length > 2 ? domain[index] : step))].concat(isMinMax
                         ? [
-                            renderInput(state, { value: state.domain.length === 2 ? state.domain[index === 0 ? 0 : 1] : state.domain[index], index: index }, dispatch)
+                            renderInput(state, { value: domain.length === 2 ? domain[index === 0 ? 0 : 1] : domain[index], index: index }, dispatch)
                         ]
                         : []))
                 ]);
@@ -65092,7 +65093,7 @@ function renderNominalLegend(state, dispatch) {
                     h_1.default("div.color", {
                         style: { background: state.range[index] }
                     }),
-                    h_1.default("div.text", value)
+                    h_1.default("div.text", "" + value)
                 ]);
             }))
             : h_1.default("div")
