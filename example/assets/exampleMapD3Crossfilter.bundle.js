@@ -60,12 +60,12 @@
 /******/ 	__webpack_require__.p = "/assets/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 603);
+/******/ 	return __webpack_require__(__webpack_require__.s = 607);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 603:
+/***/ 607:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74,7 +74,7 @@
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 /* global dc, mapd3, d3, crossfilter, MapdCon  */
-__webpack_require__(604);
+__webpack_require__(608);
 
 /*
  * This is example code that shows how to make 3 cross-filtered charts with the
@@ -720,16 +720,16 @@ document.addEventListener("DOMContentLoaded", init, false);
 
 /***/ }),
 
-/***/ 604:
+/***/ 608:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(605);
+var content = __webpack_require__(609);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(62)(content, {});
+var update = __webpack_require__(63)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -747,10 +747,10 @@ if(false) {
 
 /***/ }),
 
-/***/ 605:
+/***/ 609:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(61)();
+exports = module.exports = __webpack_require__(62)();
 // imports
 
 
@@ -762,7 +762,7 @@ exports.push([module.i, ".mapd3 [contenteditable]:focus {\n  outline: 1px solid 
 
 /***/ }),
 
-/***/ 61:
+/***/ 62:
 /***/ (function(module, exports) {
 
 /*
@@ -819,7 +819,7 @@ module.exports = function() {
 
 /***/ }),
 
-/***/ 62:
+/***/ 63:
 /***/ (function(module, exports) {
 
 /*

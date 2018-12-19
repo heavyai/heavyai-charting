@@ -7154,7 +7154,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var NUMBER_LENGTH = 4;
 
-var numFormat = _d2.default.format(".2s");
+var numFormat = function numFormat(d) {
+  if (d < 1000) {
+    return _d2.default.format(",.2f")(d);
+  } else if (d < 1000000) {
+    return _d2.default.format(",.2s")(d);
+  } else {
+    return _d2.default.format(",.0f")(Math.round(d / 1000000)) + "B";
+  }
+};
+
 var commafy = _d2.default.format(",");
 
 var nullLabelHtml = exports.nullLabelHtml = '<tspan class="null-value"> NULL </tspan>';
@@ -7181,9 +7190,9 @@ var normalizeArrayByValue = exports.normalizeArrayByValue = function normalizeAr
   }) : collection;
 };
 
-function formatDataValue(data, numAbbr) {
+function formatDataValue(data) {
   if (typeof data === "number") {
-    return formatNumber(data, numAbbr);
+    return formatNumber(data);
   } else if (Array.isArray(data)) {
     return formatArrayValue(data);
   } else if (data instanceof Date) {
@@ -7204,11 +7213,14 @@ function maybeFormatInfinity(data) {
   });
 }
 
-function formatNumber(d, abbr) {
+function formatNumber(d) {
+  if (typeof d !== "number") {
+    return d;
+  }
   var isLong = String(d).length > NUMBER_LENGTH;
   var formattedHasAlpha = numFormat(d).match(/[a-z]/i);
   var isLargeNumber = isLong && formattedHasAlpha;
-  return isLargeNumber && abbr ? numFormat(d) : commafy(parseFloat(d.toFixed(2)));
+  return isLargeNumber ? numFormat(d) : commafy(parseFloat(d.toFixed(2)));
 }
 
 function formatArrayValue(data) {
@@ -38940,7 +38952,7 @@ function earcut(data, holeIndices, dim) {
         outerNode = linkedList(data, 0, outerLen, dim, true),
         triangles = [];
 
-    if (!outerNode) return triangles;
+    if (!outerNode || outerNode.next === outerNode.prev) return triangles;
 
     var minX, minY, maxX, maxY, x, y, invSize;
 
@@ -39035,7 +39047,7 @@ function earcutLinked(ear, triangles, dim, minX, minY, invSize, pass) {
 
             removeNode(ear);
 
-            // skipping the next vertice leads to less sliver triangles
+            // skipping the next vertex leads to less sliver triangles
             ear = next.next;
             stop = next.next;
 
@@ -39499,14 +39511,14 @@ function removeNode(p) {
 }
 
 function Node(i, x, y) {
-    // vertice index in coordinates array
+    // vertex index in coordinates array
     this.i = i;
 
     // vertex coordinates
     this.x = x;
     this.y = y;
 
-    // previous and next vertice nodes in a polygon ring
+    // previous and next vertex nodes in a polygon ring
     this.prev = null;
     this.next = null;
 
@@ -64948,7 +64960,7 @@ var h_1 = __webpack_require__(208);
 var vdom_1 = __webpack_require__(211);
 var d3_dispatch_1 = __webpack_require__(220);
 var d3_format_1 = __webpack_require__(222);
-var commafy = function (d) { return d3_format_1.format(",")(parseFloat(d.toFixed(2))); };
+var commafy = function (d) { return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d; };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
         return commafy(d);
@@ -64962,21 +64974,15 @@ var formatNumber = function (d) {
 };
 function rangeStep(domain, index, bins) {
     if (bins === void 0) { bins = 9; }
-    if (Array.isArray(domain)) {
-        debugger;
-        if (index === 0) {
-            return domain[0];
-        }
-        else if (index + 1 === bins) {
-            return domain[1];
-        }
-        else {
-            var increment = (domain[1] - domain[0]) / bins;
-            return domain[0] + increment * index;
-        }
+    if (index === 0) {
+        return domain[0];
+    }
+    else if (index + 1 === bins) {
+        return domain[1];
     }
     else {
-        return 0;
+        var increment = (domain[1] - domain[0]) / bins;
+        return domain[0] + increment * index;
     }
 }
 function validateNumericalInput(previousValue, nextValue) {
@@ -65056,8 +65062,8 @@ function renderGradientLegend(state, dispatch) {
         state.open
             ? h_1.default("div.range", state.range.map(function (color, index) {
                 var isMinMax = index === 0 || index === state.range.length - 1;
-                var step = formatNumber(rangeStep(state.domain, index, state.range.length));
-                var domain = (state.domain && Array.isArray(state.domain)) ? state.domain : [0, 0];
+                var step = Array.isArray(state.domain) ? formatNumber(rangeStep(state.domain, index, state.range.length)) : null;
+                var domain = Array.isArray(state.domain) ? state.domain : [null, null];
                 var min = domain[0], max = domain[1];
                 return h_1.default("div.block", [
                     h_1.default("div.color", { style: { background: color } }),

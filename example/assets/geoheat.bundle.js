@@ -60,23 +60,23 @@
 /******/ 	__webpack_require__.p = "/assets/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 602);
+/******/ 	return __webpack_require__(__webpack_require__.s = 606);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 116:
+/***/ 119:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(14);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(129);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(132);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(131);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(134);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(132);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(135);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
 /**
  * The exported `mapd-data-layer` module. Consists of a graph constructor and
@@ -94,13 +94,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
-/***/ 117:
+/***/ 120:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseExpression;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(69);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -193,7 +193,7 @@ function parseExpression(expression) {
 
 /***/ }),
 
-/***/ 118:
+/***/ 121:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -230,21 +230,21 @@ function parseDataState(state, parser) {
 
 /***/ }),
 
-/***/ 119:
+/***/ 122:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTransform;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(120);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(121);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(122);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(123);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(124);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(68);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_project__ = __webpack_require__(125);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_resolvefilter__ = __webpack_require__(126);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_sample__ = __webpack_require__(127);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_source__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(125);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(126);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(127);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_project__ = __webpack_require__(128);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_resolvefilter__ = __webpack_require__(129);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_sample__ = __webpack_require__(130);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_source__ = __webpack_require__(71);
 
 
 
@@ -284,7 +284,7 @@ function parseTransform(sql, t, parser) {
 
 /***/ }),
 
-/***/ 120:
+/***/ 123:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -350,7 +350,7 @@ function parseGroupBy(sql, groupby, parser) {
 
 /***/ }),
 
-/***/ 121:
+/***/ 124:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -371,13 +371,13 @@ function parseBin(sql, _ref) {
 
 /***/ }),
 
-/***/ 122:
+/***/ 125:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseCrossfilter;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(70);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -409,7 +409,7 @@ function parseCrossfilter(sql, transform) {
 
 /***/ }),
 
-/***/ 123:
+/***/ 126:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -431,7 +431,7 @@ function parseSort(sql, transform) {
 
 /***/ }),
 
-/***/ 124:
+/***/ 127:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -446,7 +446,7 @@ function parseLimit(sql, transform) {
 
 /***/ }),
 
-/***/ 125:
+/***/ 128:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -464,7 +464,7 @@ function parseProject(sql, transform) {
 
 /***/ }),
 
-/***/ 126:
+/***/ 129:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -488,7 +488,7 @@ function parseResolvefilter(sql, transform) {
 
 /***/ }),
 
-/***/ 127:
+/***/ 130:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -517,7 +517,7 @@ function sample(sql, transform) {
 
 /***/ }),
 
-/***/ 128:
+/***/ 131:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -568,14 +568,14 @@ function writeOffset(offset) {
 
 /***/ }),
 
-/***/ 129:
+/***/ 132:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(130);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(133);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -648,14 +648,14 @@ function createDataGraph(connector) {
 
 /***/ }),
 
-/***/ 130:
+/***/ 133:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataNode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_invariant__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(69);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -742,7 +742,7 @@ function createDataNode(context) {
 
 /***/ }),
 
-/***/ 131:
+/***/ 134:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -951,7 +951,7 @@ function between(field, range) {
 
 /***/ }),
 
-/***/ 132:
+/***/ 135:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1180,7 +1180,121 @@ function bottom(field, limit, offset) {
 
 /***/ }),
 
-/***/ 137:
+/***/ 14:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(120);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(121);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(122);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(131);
+
+
+
+
+
+
+/**
+ * Creates a parser than can parse expressions, transforms, and intermediary
+ * SQL representations. This parser is used internally by the data graph.
+ * @see {@link Parser} for further information.
+ * @memberof API
+ */
+function createParser() {
+  var transformParsers = {};
+  var expressionParsers = {};
+
+  /**
+   * A collection of functions used for parsing expressions, transforms, and
+   * intermediary SQL representations
+   * @namespace Parser
+   */
+  var parser = {
+    parseExpression: parseExpression,
+    parseTransform: parseTransform,
+    parseDataState: parseDataState,
+    parseSource: parseSource,
+    writeSQL: writeSQL,
+    write: __WEBPACK_IMPORTED_MODULE_4__write_sql__["b" /* write */],
+    registerParser: registerParser
+  };
+
+  /**
+   * Returns all child data node instances of the graph.
+   * @memberof Parser
+   * @inner
+   */
+  function registerParser(definition, typeParser) {
+    if (definition.meta === "expression") {
+      expressionParsers[definition.type] = typeParser;
+    } else if (definition.meta === "transform") {
+      transformParsers[definition.type] = typeParser;
+    }
+  }
+
+  /**
+   * Parses expressions and returns a valid SQL expression string
+   * @memberof Parser
+   * @inner
+   * @see {@link Expression} for further information.
+   */
+  function parseExpression(expression) {
+    if (expressionParsers[expression.type]) {
+      return expressionParsers[expression.type](expression, parser);
+    }
+    return Object(__WEBPACK_IMPORTED_MODULE_0__parse_expression__["a" /* default */])(expression, parser);
+  }
+
+  /**
+   * Parses transforms and returns an intermediary SQL representation
+   * @memberof Parser
+   * @inner
+   * @see {@link Transform} for further information.
+   */
+  function parseTransform(sql, transform) {
+    if (transformParsers[transform.type]) {
+      return transformParsers[transform.type](sql, transform, parser);
+    }
+    return Object(__WEBPACK_IMPORTED_MODULE_2__parse_transform__["a" /* default */])(sql, transform, parser);
+  }
+
+  /**
+   * Parses a data node state and returns an intermediary SQL representation
+   * @memberof Parser
+   * @inner
+   */
+  function parseDataState(data, sql) {
+    return Object(__WEBPACK_IMPORTED_MODULE_1__parse_datastate__["a" /* default */])(data, parser, sql);
+  }
+
+  /**
+   * Parses a source transform and returns a valid SQL FROM clause
+   * @memberof Parser
+   * @inner
+   */
+  function parseSource(sourceTransforms) {
+    return Object(__WEBPACK_IMPORTED_MODULE_3__parse_source__["a" /* default */])(sourceTransforms, parser);
+  }
+
+  /**
+  * Parses a data node state and returns a valid SQL string
+   * @memberof Parser
+   * @inner
+   */
+  function writeSQL(state) {
+    return Object(__WEBPACK_IMPORTED_MODULE_4__write_sql__["a" /* default */])(state, parser);
+  }
+
+  return parser;
+}
+
+/* harmony default export */ __webpack_exports__["b"] = (createParser());
+
+/***/ }),
+
+/***/ 140:
 /***/ (function(module, exports, __webpack_require__) {
 
 //  Ramda v0.21.0
@@ -9971,121 +10085,7 @@ function bottom(field, limit, offset) {
 
 /***/ }),
 
-/***/ 14:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(117);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(118);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(119);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(69);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(128);
-
-
-
-
-
-
-/**
- * Creates a parser than can parse expressions, transforms, and intermediary
- * SQL representations. This parser is used internally by the data graph.
- * @see {@link Parser} for further information.
- * @memberof API
- */
-function createParser() {
-  var transformParsers = {};
-  var expressionParsers = {};
-
-  /**
-   * A collection of functions used for parsing expressions, transforms, and
-   * intermediary SQL representations
-   * @namespace Parser
-   */
-  var parser = {
-    parseExpression: parseExpression,
-    parseTransform: parseTransform,
-    parseDataState: parseDataState,
-    parseSource: parseSource,
-    writeSQL: writeSQL,
-    write: __WEBPACK_IMPORTED_MODULE_4__write_sql__["b" /* write */],
-    registerParser: registerParser
-  };
-
-  /**
-   * Returns all child data node instances of the graph.
-   * @memberof Parser
-   * @inner
-   */
-  function registerParser(definition, typeParser) {
-    if (definition.meta === "expression") {
-      expressionParsers[definition.type] = typeParser;
-    } else if (definition.meta === "transform") {
-      transformParsers[definition.type] = typeParser;
-    }
-  }
-
-  /**
-   * Parses expressions and returns a valid SQL expression string
-   * @memberof Parser
-   * @inner
-   * @see {@link Expression} for further information.
-   */
-  function parseExpression(expression) {
-    if (expressionParsers[expression.type]) {
-      return expressionParsers[expression.type](expression, parser);
-    }
-    return Object(__WEBPACK_IMPORTED_MODULE_0__parse_expression__["a" /* default */])(expression, parser);
-  }
-
-  /**
-   * Parses transforms and returns an intermediary SQL representation
-   * @memberof Parser
-   * @inner
-   * @see {@link Transform} for further information.
-   */
-  function parseTransform(sql, transform) {
-    if (transformParsers[transform.type]) {
-      return transformParsers[transform.type](sql, transform, parser);
-    }
-    return Object(__WEBPACK_IMPORTED_MODULE_2__parse_transform__["a" /* default */])(sql, transform, parser);
-  }
-
-  /**
-   * Parses a data node state and returns an intermediary SQL representation
-   * @memberof Parser
-   * @inner
-   */
-  function parseDataState(data, sql) {
-    return Object(__WEBPACK_IMPORTED_MODULE_1__parse_datastate__["a" /* default */])(data, parser, sql);
-  }
-
-  /**
-   * Parses a source transform and returns a valid SQL FROM clause
-   * @memberof Parser
-   * @inner
-   */
-  function parseSource(sourceTransforms) {
-    return Object(__WEBPACK_IMPORTED_MODULE_3__parse_source__["a" /* default */])(sourceTransforms, parser);
-  }
-
-  /**
-  * Parses a data node state and returns a valid SQL string
-   * @memberof Parser
-   * @inner
-   */
-  function writeSQL(state) {
-    return Object(__WEBPACK_IMPORTED_MODULE_4__write_sql__["a" /* default */])(state, parser);
-  }
-
-  return parser;
-}
-
-/* harmony default export */ __webpack_exports__["b"] = (createParser());
-
-/***/ }),
-
-/***/ 602:
+/***/ 606:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10093,9 +10093,9 @@ function createParser() {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _mapdDataLayer = __webpack_require__(116);
+var _mapdDataLayer = __webpack_require__(119);
 
-var _ramda = __webpack_require__(137);
+var _ramda = __webpack_require__(140);
 
 var _ramda2 = _interopRequireDefault(_ramda);
 
@@ -10242,7 +10242,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
 /***/ }),
 
-/***/ 67:
+/***/ 69:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10292,7 +10292,7 @@ function escapeQuotes(string) {
 
 /***/ }),
 
-/***/ 68:
+/***/ 70:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10316,7 +10316,7 @@ function parseFilter(sql, transform) {
 
 /***/ }),
 
-/***/ 69:
+/***/ 71:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10364,7 +10364,7 @@ function parseSource(transforms) {
 
 /***/ }),
 
-/***/ 70:
+/***/ 72:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10418,11 +10418,11 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 
 module.exports = invariant;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(88)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(90)))
 
 /***/ }),
 
-/***/ 88:
+/***/ 90:
 /***/ (function(module, exports) {
 
 // shim for using process in browser

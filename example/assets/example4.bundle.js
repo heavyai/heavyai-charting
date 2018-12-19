@@ -60,12 +60,12 @@
 /******/ 	__webpack_require__.p = "/assets/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 597);
+/******/ 	return __webpack_require__(__webpack_require__.s = 601);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 597:
+/***/ 601:
 /***/ (function(module, exports) {
 
 document.addEventListener("DOMContentLoaded", function init() {
