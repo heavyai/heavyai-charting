@@ -18,11 +18,11 @@ document.addEventListener("DOMContentLoaded", function init() {
       // This layer will be polygons of zipcodes and
       // will be colored by data joined from the contributions
       // table
-      var tableName1 = ["contributions_donotmodify", "zipcodes"];
+      var tableName1 = ["contributions_donotmodify", "zipcodes_2017"];
       var table1Joins = [{
         table1: "contributions_donotmodify",
         attr1: "contributor_zipcode",
-        table2: "zipcodes",
+        table2: "zipcodes_2017",
         attr2: "ZCTA5CE10"
       }];
       // Table to use for the 2nd layer, which will be points
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function init() {
                              table: "contributions_donotmodify",
                              attr: "contributor_zipcode"
                            }, {
-                             table: "zipcodes",
+                             table: "zipcodes_2017",
                              attr: "ZCTA5CE10"
                            }
                          ],
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function init() {
                          encoding: {
                            color: {
                              type: "quantitative",
-                             aggregrate: "AVG(contributions_donotmodify.amount)",
+                             aggregate: "AVG(contributions_donotmodify.amount)",
                              domain: [0, 5000],
                              range: polyColorRange,
                              legend: {
