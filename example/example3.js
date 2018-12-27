@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function init() {
     table: "contributions_donotmodify",
     valueColumn: "amount",
     joinColumn: "contributor_zipcode",
-    polyTable: "zipcodes",
+    polyTable: "zipcodes_2017",
     polyJoinColumn: "ZCTA5CE10",
     timeColumn: "contrib_date",
     timeLabel: "Number of Contributions",
@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function init() {
         .mapUpdateInterval(750) // ms
         .mapStyle("mapbox://styles/mapbox/light-v8")
         .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
+        .useGeoTypes(true)
 
       var polyLayer = dc
         .rasterLayer("polys")
@@ -104,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function init() {
           encoding: {
             color: {
               type: "quantitative",
-              aggregrate: `SUM(${config.valueColumn})`,
+              aggregate: `SUM(${config.valueColumn})`,
               domain: colorDomain,
               range: colorRange
             }

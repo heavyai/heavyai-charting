@@ -79,17 +79,15 @@
     // map bounding box filtering dimension
     const viewBoxDim = crossFilter.dimension(config.geoMeasure)
 
-    const sw_point = [-124.70126, 27.937431]
-    const se_point = [-66.82674, 27.937431]
-    const ne_point =  [-66.82674, 49.467835]
-    const nw_point =  [-124.70126, 49.467835]
+    const bounds = {
+      lonMin: -124.70126,
+      lonMax: -66.82674,
+      latMin: 27.937431,
+      latMax: 49.467835
+    }
 
     // crossfilter method to count number of lines within the map bounding box
-    viewBoxDim.filterST_Intersects([
-      sw_point,
-      se_point,
-      ne_point,
-      nw_point])
+    viewBoxDim.filterST_Min_ST_Max(bounds)
 
     const LinemapChart = dc.rasterChart(parent, true, null, mapboxgl)
       .con(con)

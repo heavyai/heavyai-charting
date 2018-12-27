@@ -45,7 +45,7 @@ describe("Formatting Helpers", () => {
   })
   describe("formatNumber", () => {
     it("should add commas to large numbers", () => {
-      expect(Helpers.formatNumber(10000000000)).to.equal("10,000B")
+      expect(Helpers.formatNumber(10000)).to.equal("10,000")
     })
     it("should round decimenals", () => {
       expect(Helpers.formatNumber(3.33333)).to.equal("3.33")
@@ -53,7 +53,7 @@ describe("Formatting Helpers", () => {
   })
   describe("formatValue", () => {
     it("should format large numbers", () => {
-      expect(Helpers.formatDataValue(10000000000000)).to.equal("10,000,000B")
+      expect(Helpers.formatDataValue(10000)).to.equal("10,000")
     })
     it("should format dates", () => {
       expect(Helpers.formatDataValue(new Date(Date.UTC(2001, 0, 1)))).to.equal(
@@ -125,7 +125,7 @@ describe("Formatting Helpers", () => {
     })
     it("should format results with non-object collections", () => {
       expect(Helpers.formatDataValue([10000, 20000])).to.equal(
-        "10k \u2013 20k"
+        "10,000 \u2013 20,000"
       )
     })
     it("shoud format other formats", () => {
