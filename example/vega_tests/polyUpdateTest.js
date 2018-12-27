@@ -1256,6 +1256,232 @@ document.addEventListener("DOMContentLoaded", () => {
       ]
     }
 
+    const poly_smallint_in_formula_transform = {
+      "width": 897,
+      "height": 654,
+      "data": [
+        {
+          "name": "backendChoropleth",
+          "format": "polys",
+          "geocolumn": "mapd_geo",
+          "sql": "SELECT flights_123M.dest_state as key0, avg(arrdelay) as color, LAST_SAMPLE(us_states.rowid) as rowid FROM flights_123M, us_states WHERE (flights_123M.dest_state = us_states.STUSPS) GROUP BY key0"
+        },
+        {
+          "name": "backendChoropleth_stats",
+          "source": "backendChoropleth",
+          "transform": [
+            {
+              "type": "aggregate",
+              "fields": [
+                "color",
+                "color",
+                "color",
+                "color"
+              ],
+              "ops": [
+                "min",
+                "max",
+                "avg",
+                "stddev"
+              ],
+              "as": [
+                "mincol",
+                "maxcol",
+                "avgcol",
+                "stdcol"
+              ]
+            },
+            {
+              "type": "formula",
+              "expr": "max(mincol, avgcol-2*stdcol)",
+              "as": "mincolor"
+            },
+            {
+              "type": "formula",
+              "expr": "min(maxcol, avgcol+2*stdcol)",
+              "as": "maxcolor"
+            }
+          ]
+        }
+      ],
+      "scales": [
+        {
+          "name": "x",
+          "type": "linear",
+          "domain": [
+            -19942765.32331395,
+            20012847.7332476
+          ],
+          "range": "width"
+        },
+        {
+          "name": "y",
+          "type": "linear",
+          "domain": [
+            -9620230.117018905,
+            19511287.095055554
+          ],
+          "range": "height"
+        },
+        {
+          "name": "backendChoropleth_fillColor",
+          "type": "quantize",
+          "domain": {
+            "data": "backendChoropleth_stats",
+            "fields": [
+              "mincolor",
+              "maxcolor"
+            ]
+          },
+          "range": [
+            "rgba(17,95,154,0.85)",
+            "rgba(25,132,197,0.85)",
+            "rgba(34,167,240,0.85)",
+            "rgba(72,181,196,0.85)",
+            "rgba(118,198,143,0.85)",
+            "rgba(166,215,91,0.85)",
+            "rgba(201,229,47,0.85)",
+            "rgba(208,238,17,0.85)",
+            "rgba(208,244,0,0.85)"
+          ],
+          "nullValue": "rgba(214, 215, 214, 0.65)",
+          "default": "rgba(214, 215, 214, 0.65)"
+        }
+      ],
+      "projections": [
+        {
+          "name": "mercator_map_projection",
+          "type": "mercator",
+          "bounds": {
+            "x": [
+              -179.14890899999722,
+              179.77846999999684
+            ],
+            "y": [
+              -65.04498263324443,
+              84.62611050562805
+            ]
+          }
+        }
+      ],
+      "marks": [
+        {
+          "type": "polys",
+          "from": {
+            "data": "backendChoropleth"
+          },
+          "properties": {
+            "x": {
+              "field": "x"
+            },
+            "y": {
+              "field": "y"
+            },
+            "fillColor": {
+              "scale": "backendChoropleth_fillColor",
+              "field": "color"
+            },
+            "strokeWidth": 0
+          },
+          "transform": {
+            "projection": "mercator_map_projection"
+          }
+        }
+      ]
+    }
+
+    // should be exactly the same as poly_smallint_in_formula_transform
+    const poly_smallint_no_xform = {
+      "width": 897,
+      "height": 654,
+      "data": [
+        {
+          "name": "backendChoropleth",
+          "format": "polys",
+          "geocolumn": "mapd_geo",
+          "sql": "SELECT flights_123M.dest_state as key0, avg(arrdelay) as color, LAST_SAMPLE(us_states.rowid) as rowid FROM flights_123M, us_states WHERE (flights_123M.dest_state = us_states.STUSPS) GROUP BY key0"
+        }
+      ],
+      "scales": [
+        {
+          "name": "x",
+          "type": "linear",
+          "domain": [
+            -19942765.32331395,
+            20012847.7332476
+          ],
+          "range": "width"
+        },
+        {
+          "name": "y",
+          "type": "linear",
+          "domain": [
+            -9620230.117018905,
+            19511287.095055554
+          ],
+          "range": "height"
+        },
+        {
+          "name": "backendChoropleth_fillColor",
+          "type": "quantize",
+          "domain": [3.3737057220377015,10.9184498731137],
+          "range": [
+            "rgba(17,95,154,0.85)",
+            "rgba(25,132,197,0.85)",
+            "rgba(34,167,240,0.85)",
+            "rgba(72,181,196,0.85)",
+            "rgba(118,198,143,0.85)",
+            "rgba(166,215,91,0.85)",
+            "rgba(201,229,47,0.85)",
+            "rgba(208,238,17,0.85)",
+            "rgba(208,244,0,0.85)"
+          ],
+          "nullValue": "rgba(214, 215, 214, 0.65)",
+          "default": "rgba(214, 215, 214, 0.65)"
+        }
+      ],
+      "projections": [
+        {
+          "name": "mercator_map_projection",
+          "type": "mercator",
+          "bounds": {
+            "x": [
+              -179.14890899999722,
+              179.77846999999684
+            ],
+            "y": [
+              -65.04498263324443,
+              84.62611050562805
+            ]
+          }
+        }
+      ],
+      "marks": [
+        {
+          "type": "polys",
+          "from": {
+            "data": "backendChoropleth"
+          },
+          "properties": {
+            "x": {
+              "field": "x"
+            },
+            "y": {
+              "field": "y"
+            },
+            "fillColor": {
+              "scale": "backendChoropleth_fillColor",
+              "field": "color"
+            },
+            "strokeWidth": 0
+          },
+          "transform": {
+            "projection": "mercator_map_projection"
+          }
+        }
+      ]
+    }
+
     const multi_overflow_buffers = {
       "width": 1051,
       "height": 1057,
@@ -1475,6 +1701,14 @@ document.addEventListener("DOMContentLoaded", () => {
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
       results = con.renderVega(1, JSON.stringify(poly_bigint_in_formula_transform))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(poly_smallint_in_formula_transform))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(poly_smallint_no_xform))
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
