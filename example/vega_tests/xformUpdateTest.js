@@ -2337,6 +2337,143 @@ document.addEventListener("DOMContentLoaded", () => {
       ]
     }
 
+    // Tests empty data, but buffers have data (from invalidkeys), should properly create an empty image without
+    // error and with nulls in the scale domain metadata
+    const vega_empty_xform_with_invalidkeys = {
+      "width": 716,
+      "height": 352,
+      "data": [
+        {
+          "name": "backendScatter",
+          "sql": "SELECT dropoff_y as x, dropoff_x as y, extra as size, mta_tax as color, nyc_yellow_taxi_2014.rowid FROM nyc_yellow_taxi_2014 WHERE ((nyc_yellow_taxi_2014.dropoff_x >= -8227853.667385602 AND nyc_yellow_taxi_2014.dropoff_x <= -8226214.25584072) AND (nyc_yellow_taxi_2014.dropoff_y >= 4978689.731019676 AND nyc_yellow_taxi_2014.dropoff_y <= 4979529.601558646) AND (nyc_yellow_taxi_2014.dropoff_y >= -8227853.667385602 AND nyc_yellow_taxi_2014.dropoff_y <= -8226214.25584072) AND (nyc_yellow_taxi_2014.dropoff_x >= 4978689.731019676 AND nyc_yellow_taxi_2014.dropoff_x <= 4979529.601558646)) LIMIT 2000000"
+        },
+        {
+          "name": "backendScatter_stats",
+          "source": "backendScatter",
+          "transform": [
+            {
+              "type": "aggregate",
+              "fields": [
+                "color",
+                "color",
+                "color",
+                "color"
+              ],
+              "ops": [
+                "min",
+                "max",
+                "avg",
+                "stddev"
+              ],
+              "as": [
+                "mincol",
+                "maxcol",
+                "avgcol",
+                "stdcol"
+              ]
+            },
+            {
+              "type": "formula",
+              "expr": "max(mincol, avgcol-2*stdcol)",
+              "as": "mincolor"
+            },
+            {
+              "type": "formula",
+              "expr": "min(maxcol, avgcol+2*stdcol)",
+              "as": "maxcolor"
+            }
+          ]
+        }
+      ],
+      "scales": [
+        {
+          "name": "x",
+          "type": "linear",
+          "domain": [
+            -8227853.667385602,
+            -8226214.25584072
+          ],
+          "range": "width"
+        },
+        {
+          "name": "y",
+          "type": "linear",
+          "domain": [
+            4978689.731019676,
+            4979529.601558646
+          ],
+          "range": "height"
+        },
+        {
+          "name": "backendScatter_size",
+          "type": "linear",
+          "domain": [
+            0,
+            628.8699951171875
+          ],
+          "range": [
+            3,
+            10
+          ],
+          "clamp": true
+        },
+        {
+          "name": "backendScatter_fillColor",
+          "type": "quantize",
+          "domain": {
+            "data": "backendScatter_stats",
+            "fields": [
+              "mincolor",
+              "maxcolor"
+            ]
+          },
+          "range": [
+            "rgba(17,95,154,0.85)",
+            "rgba(25,132,197,0.85)",
+            "rgba(34,167,240,0.85)",
+            "rgba(72,181,196,0.85)",
+            "rgba(118,198,143,0.85)",
+            "rgba(166,215,91,0.85)",
+            "rgba(201,229,47,0.85)",
+            "rgba(208,238,17,0.85)",
+            "rgba(208,244,0,0.85)"
+          ]
+        }
+      ],
+      "projections": [],
+      "marks": [
+        {
+          "type": "symbol",
+          "from": {
+            "data": "backendScatter"
+          },
+          "properties": {
+            "xc": {
+              "scale": "x",
+              "field": "x"
+            },
+            "yc": {
+              "scale": "y",
+              "field": "y"
+            },
+            "fillColor": {
+              "scale": "backendScatter_fillColor",
+              "field": "color"
+            },
+            "shape": "circle",
+            "width": {
+              "scale": "backendScatter_size",
+              "field": "size"
+            },
+            "height": {
+              "scale": "backendScatter_size",
+              "field": "size"
+            }
+          }
+        }
+      ]
+    }
+
     
   
 
@@ -2457,6 +2594,10 @@ document.addEventListener("DOMContentLoaded", () => {
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
       results = con.renderVega(1, JSON.stringify(vega_tinyint_test))
+      blobUrl = "data:image/png;base64," + results.image
+      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      results = con.renderVega(1, JSON.stringify(vega_empty_xform_with_invalidkeys))
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
     })
