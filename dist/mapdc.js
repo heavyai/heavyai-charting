@@ -5765,7 +5765,7 @@ function baseMixin(_chart) {
       }
       _root = _d2.default.select(_anchor);
       _root.classed(_core.constants.CHART_CLASS, true);
-      (0, _core.deregisterChart)(_chart, chartGroup);
+      // deregisterChart(_chart, chartGroup)
       (0, _core.registerChart)(_chart, chartGroup);
       _isChild = false;
     } else {
