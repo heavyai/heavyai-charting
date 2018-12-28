@@ -5581,9 +5581,9 @@ left-pad@^1.3.0:
   resolved "https://registry.yarnpkg.com/left-pad/-/left-pad-1.3.0.tgz#5b8a3a7765dfe001261dde915589e782f8c94d1e"
   integrity sha512-XI5MPzVNApjAyhQzphX8BkmKsKUxD4LdyK24iZeQGinBN9yTQT3bFlCBy/aVx2HrNcqQGsdot8ghrjyrvMCoEA==
 
-"legendables@git://github.com/omnisci/legendables.git#5f569b6":
+"legendables@git://github.com/omnisci/legendables.git#dccae61":
   version "1.0.0-rc.6"
-  resolved "git://github.com/omnisci/legendables.git#5f569b66c843358837a20ac944ef48f388003128"
+  resolved "git://github.com/omnisci/legendables.git#dccae6163b1738932438ed0e30cd6d00568d2b04"
   dependencies:
     d3-dispatch "^1.0.3"
     d3-format "^1.2.0"
