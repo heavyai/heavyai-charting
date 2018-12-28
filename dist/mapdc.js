@@ -65774,9 +65774,6 @@ function init(modules, domApi) {
             }
         }
         else if (oldVnode.text !== vnode.text) {
-            if (isDef(oldCh)) {
-                removeVnodes(elm, oldCh, 0, oldCh.length - 1);
-            }
             api.setTextContent(elm, vnode.text);
         }
         if (isDef(hook) && isDef(i = hook.postpatch)) {
@@ -66068,8 +66065,7 @@ exports.default = exports.propsModule;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-// Bindig `requestAnimationFrame` like this fixes a bug in IE/Edge. See #360 and #409.
-var raf = (typeof window !== 'undefined' && (window.requestAnimationFrame).bind(window)) || setTimeout;
+var raf = (typeof window !== 'undefined' && window.requestAnimationFrame) || setTimeout;
 var nextFrame = function (fn) { raf(function () { raf(fn); }); };
 var reflowForced = false;
 function setNextFrame(obj, prop, val) {
@@ -66192,7 +66188,7 @@ function invokeHandler(handler, vnode, event) {
         else {
             // call multiple handlers
             for (var i = 0; i < handler.length; i++) {
-                invokeHandler(handler[i], vnode, event);
+                invokeHandler(handler[i]);
             }
         }
     }
