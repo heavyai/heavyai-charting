@@ -1435,7 +1435,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "pointmap",
-          "sql": "SELECT origin_lon as x1, origin_lat as y1, dest_lon as x2, dest_lat as y2, carrier_name, rowid FROM flights WHERE ((origin_lon >= -130.704671914419 AND origin_lon <= -63.48944119720274) AND (origin_lat >= 8.161828727775116 AND origin_lat <= 60.13379788749944)) OR ((dest_lon >= -130.704671914419 AND dest_lon <= -63.48944119720274) AND (dest_lat >= 8.161828727775116 AND dest_lat <= 60.13379788749944)) LIMIT 200000",
+          "sql": "SELECT origin_lon as x1, origin_lat as y1, dest_lon as x2, dest_lat as y2, carrier_name, rowid FROM flights WHERE (((origin_lon >= -130.704671914419 AND origin_lon <= -63.48944119720274) AND (origin_lat >= 8.161828727775116 AND origin_lat <= 60.13379788749944)) OR ((dest_lon >= -130.704671914419 AND dest_lon <= -63.48944119720274) AND (dest_lat >= 8.161828727775116 AND dest_lat <= 60.13379788749944))) AND MOD(rowid * 2654435761, 4294967296) < 124472468",
           "format": {
             "type": "lines",
             "coords": {"x": ["x1","x2"],"y": ["y1","y2"]},
