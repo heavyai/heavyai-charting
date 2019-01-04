@@ -27034,6 +27034,7 @@ function rasterDrawMixin(chart) {
         var crossFilter = null;
         var filterObj = null;
         var group = layer.group();
+
         if (group) {
           crossFilter = group.getCrossfilter();
         } else {
@@ -27058,22 +27059,22 @@ function rasterDrawMixin(chart) {
           var xdim = layer.xDim();
           var ydim = layer.yDim();
           if (xdim && ydim) {
-            var _px = xdim.value()[0];
-            var _py = ydim.value()[0];
-            filterObj.px.push(_px);
-            filterObj.py.push(_py);
+            var px = xdim.value()[0];
+            var py = ydim.value()[0];
+            filterObj.px.push(px);
+            filterObj.py.push(py);
             shapes.forEach(function (shape) {
               if (shape instanceof LatLonCircle) {
                 var pos = shape.getWorldPosition();
                 // convert from mercator to lat-lon
                 LatLonUtils.conv900913To4326(pos, pos);
                 var meters = shape.radius * 1000;
-                filterObj.shapeFilters.push("DISTANCE_IN_METERS(" + pos[0] + ", " + pos[1] + ", " + _px + ", " + _py + ") < " + meters);
+                filterObj.shapeFilters.push("DISTANCE_IN_METERS(" + pos[0] + ", " + pos[1] + ", " + px + ", " + py + ") < " + meters);
               } else if (shape instanceof MapdDraw.Circle) {
                 var radsqr = Math.pow(shape.radius, 2);
                 var mat = MapdDraw.Mat2d.clone(shape.globalXform);
                 MapdDraw.Mat2d.invert(mat, mat);
-                filterObj.shapeFilters.push(createUnlikelyStmtFromShape(shape, _px, _py, useLonLat) + " AND (POWER(" + mat[0] + " * CAST(" + _px + " AS FLOAT) + " + mat[2] + " * CAST(" + _py + " AS FLOAT) + " + mat[4] + ", 2.0) + POWER(" + mat[1] + " * CAST(" + _px + " AS FLOAT) + " + mat[3] + " * CAST(" + _py + " AS FLOAT) + " + mat[5] + ", 2.0)) / " + radsqr + " <= 1.0");
+                filterObj.shapeFilters.push(createUnlikelyStmtFromShape(shape, px, py, useLonLat) + " AND (POWER(" + mat[0] + " * CAST(" + px + " AS FLOAT) + " + mat[2] + " * CAST(" + py + " AS FLOAT) + " + mat[4] + ", 2.0) + POWER(" + mat[1] + " * CAST(" + px + " AS FLOAT) + " + mat[3] + " * CAST(" + py + " AS FLOAT) + " + mat[5] + ", 2.0)) / " + radsqr + " <= 1.0");
               } else if (shape instanceof MapdDraw.Poly) {
                 var p0 = [0, 0];
                 var p1 = [0, 0];
@@ -27102,11 +27103,11 @@ function rasterDrawMixin(chart) {
                   idx = triangles[j + 2] * 2;
                   MapdDraw.Point2d.set(p2, earcutverts[idx], earcutverts[idx + 1]);
 
-                  triangleTests.push(writePointInTriangleSqlTest(p0, p1, p2, _px, _py, !useLonLat));
+                  triangleTests.push(writePointInTriangleSqlTest(p0, p1, p2, px, py, !useLonLat));
                 }
 
                 if (triangleTests.length) {
-                  filterObj.shapeFilters.push(createUnlikelyStmtFromShape(shape, _px, _py, useLonLat) + " AND (" + triangleTests.join(" OR ") + ")");
+                  filterObj.shapeFilters.push(createUnlikelyStmtFromShape(shape, px, py, useLonLat) + " AND (" + triangleTests.join(" OR ") + ")");
                 }
               }
             });
@@ -27117,87 +27118,75 @@ function rasterDrawMixin(chart) {
         var _crossFilter = null;
         var _filterObj = null;
         var _group = layer.group();
-        debugger;
+
         if (_group) {
           _crossFilter = _group.getCrossfilter();
         } else {
-          var _dim = layer.dimension();
+          var _dim = layer.viewBoxDim();
           if (_dim) {
-            _crossFilter = _dim.getCrossfilter();
+            _crossFilter = _dim;
           } else {
             _crossFilter = layer.crossfilter();
           }
         }
         if (_crossFilter) {
           _filterObj = coordFilters.get(_crossFilter);
-          debugger;
           if (!_filterObj) {
             _filterObj = {
-              coordFilter: _crossFilter.dimension(),
-              viewBoxDim: []
+              coordFilters: _crossFilter
+              // coordFilter: crossFilter.dimension(),
             };
-            debugger;
             coordFilters.set(_crossFilter, _filterObj);
-            coordFilters.set(vlayer.dimension().value()[0]);
-
             _filterObj.shapeFilters = [];
           }
-          var viewBoxDim = layer.dimension();
 
-          if (viewBoxDim) {
-            var pCoord = viewBoxDim.value()[0];
-            _filterObj.viewBoxDim.push(pCoord);
-            shapes.forEach(function (shape) {
-              if (shape instanceof LatLonCircle) {
-                var pos = shape.getWorldPosition();
-                // convert from mercator to lat-lon
-                LatLonUtils.conv900913To4326(pos, pos);
-                var meters = shape.radius * 1000;
-                _filterObj.shapeFilters.push("DISTANCE_IN_METERS(" + pos[0] + ", " + pos[1] + ", " + pCoord + ") < " + meters);
-              } else if (shape instanceof MapdDraw.Circle) {
-                var radsqr = Math.pow(shape.radius, 2);
-                var mat = MapdDraw.Mat2d.clone(shape.globalXform);
-                MapdDraw.Mat2d.invert(mat, mat);
-                _filterObj.shapeFilters.push(createUnlikelyStmtFromShape(shape, px, py, useLonLat) + " AND (POWER(" + mat[0] + " * CAST(" + px + " AS FLOAT) + " + mat[2] + " * CAST(" + py + " AS FLOAT) + " + mat[4] + ", 2.0) + POWER(" + mat[1] + " * CAST(" + px + " AS FLOAT) + " + mat[3] + " * CAST(" + py + " AS FLOAT) + " + mat[5] + ", 2.0)) / " + radsqr + " <= 1.0");
-              } else if (shape instanceof MapdDraw.Poly) {
-                var p0 = [0, 0];
-                var p1 = [0, 0];
-                var p2 = [0, 0];
-                var earcutverts = [];
-                var convertedVerts = [];
-                var verts = shape.vertsRef;
-                var xform = shape.globalXform;
-                verts.forEach(function (vert) {
-                  MapdDraw.Point2d.transformMat2d(p0, vert, xform);
-                  if (useLonLat) {
-                    LatLonUtils.conv900913To4326(p0, p0);
-                    convertedVerts.push(LatLonUtils.conv900913To4326([], vert));
-                  }
-                  earcutverts.push(p0[0], p0[1]);
-                });
-
-                var triangles = (0, _earcut2.default)(earcutverts);
-                var triangleTests = [];
-                var idx = 0;
-                for (var j = 0; j < triangles.length; j = j + NUM_SIDES) {
-                  idx = triangles[j] * 2;
-                  MapdDraw.Point2d.set(p0, earcutverts[idx], earcutverts[idx + 1]);
-
-                  idx = triangles[j + 1] * 2;
-                  MapdDraw.Point2d.set(p1, earcutverts[idx], earcutverts[idx + 1]);
-
-                  idx = triangles[j + 2] * 2;
-                  MapdDraw.Point2d.set(p2, earcutverts[idx], earcutverts[idx + 1]);
-
-                  triangleTests.push(writePointInTriangleSqlTest(p0, p1, p2, !useLonLat));
+          shapes.forEach(function (shape) {
+            if (shape instanceof LatLonCircle) {
+              var pos = shape.getWorldPosition();
+              // convert from mercator to lat-lon
+              LatLonUtils.conv900913To4326(pos, pos);
+              var km = shape.radius;
+              _filterObj.circleFilters = { point: [pos[0], pos[1]], distanceInKm: km };
+            } else if (shape instanceof MapdDraw.Circle) {
+              console.log('shape is MapdDraw.Circle');
+            } else if (shape instanceof MapdDraw.Poly) {
+              var p0 = [0, 0];
+              var p1 = [0, 0];
+              var p2 = [0, 0];
+              var earcutverts = [];
+              var convertedVerts = [];
+              var verts = shape.vertsRef;
+              var xform = shape.globalXform;
+              verts.forEach(function (vert) {
+                MapdDraw.Point2d.transformMat2d(p0, vert, xform);
+                if (useLonLat) {
+                  LatLonUtils.conv900913To4326(p0, p0);
+                  convertedVerts.push(LatLonUtils.conv900913To4326([], vert));
                 }
+                earcutverts.push(p0[0], p0[1]);
+              });
 
-                if (triangleTests.length) {
-                  _filterObj.shapeFilters = convertedVerts;
-                }
+              var triangles = (0, _earcut2.default)(earcutverts);
+              var triangleTests = [];
+              var idx = 0;
+              for (var j = 0; j < triangles.length; j = j + NUM_SIDES) {
+                idx = triangles[j] * 2;
+                MapdDraw.Point2d.set(p0, earcutverts[idx], earcutverts[idx + 1]);
+
+                idx = triangles[j + 1] * 2;
+                MapdDraw.Point2d.set(p1, earcutverts[idx], earcutverts[idx + 1]);
+
+                idx = triangles[j + 2] * 2;
+                MapdDraw.Point2d.set(p2, earcutverts[idx], earcutverts[idx + 1]);
+
+                triangleTests.push(writePointInTriangleSqlTest(p0, p1, p2, !useLonLat));
               }
-            });
-          }
+
+              if (triangleTests.length) {
+                _filterObj.shapeFilters = convertedVerts;
+              }
+            }
+          });
         }
       }
     });
@@ -27218,9 +27207,10 @@ function rasterDrawMixin(chart) {
         filterObj.px = [];
         filterObj.py = [];
         filterObj.shapeFilters = [];
-      } else if (filterObj.viewBoxDim && filterObj.viewBoxDim.length && filterObj.shapeFilters.length) {
-        debugger;
-        filterObj.coordFilter.filterST_Contains(filterObj.shapeFilters);
+      } else if (filterObj.coordFilters && filterObj.shapeFilters.length) {
+        filterObj.coordFilters.filterST_Contains(filterObj.shapeFilters);
+      } else if (filterObj.circleFilters) {
+        filterObj.coordFilters.filterST_Distance(filterObj.circleFilters.point, filterObj.circleFilters.distanceInKm);
       } else {
         filterObj.coordFilter.filter();
       }

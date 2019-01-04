@@ -97,6 +97,7 @@ export function rasterDrawMixin(chart) {
         let crossFilter = null
         let filterObj = null
         const group = layer.group()
+
         if (group) {
           crossFilter = group.getCrossfilter()
         } else {
@@ -228,93 +229,83 @@ export function rasterDrawMixin(chart) {
         } else {
           const dim = layer.viewBoxDim()
           if (dim) {
-            crossFilter = dim.getCrossfilter()
+            crossFilter = dim
           } else {
             crossFilter = layer.crossfilter()
           }
         }
         if (crossFilter) {
           filterObj = coordFilters.get(crossFilter)
-
-          const viewBoxDim = layer.viewBoxDim()
-
           if (!filterObj) {
             filterObj = {
-              coordFilters: viewBoxDim,
+              coordFilters: crossFilter,
               // coordFilter: crossFilter.dimension(),
             }
             coordFilters.set(crossFilter, filterObj)
             filterObj.shapeFilters = []
           }
 
-          if (viewBoxDim) {
-            shapes.forEach(shape => {
-              if (shape instanceof LatLonCircle) {
-                const pos = shape.getWorldPosition()
-                // convert from mercator to lat-lon
-                LatLonUtils.conv900913To4326(pos, pos)
-                const meters = shape.radius * 1000
-                filterObj.shapeFilters.push(
-                  `DISTANCE_IN_METERS(${pos[0]}, ${
-                    pos[1]
-                    }, ${pCoord}) < ${meters}`
+          shapes.forEach(shape => {
+            if (shape instanceof LatLonCircle) {
+              const pos = shape.getWorldPosition()
+              // convert from mercator to lat-lon
+              LatLonUtils.conv900913To4326(pos, pos)
+              const km = shape.radius
+              filterObj.circleFilters = {point: [pos[0], pos[1]], distanceInKm: km}
+            } else if (shape instanceof MapdDraw.Circle) {
+               console.log('shape is MapdDraw.Circle')
+            } else if (shape instanceof MapdDraw.Poly) {
+              const p0 = [0, 0]
+              const p1 = [0, 0]
+              const p2 = [0, 0]
+              const earcutverts = []
+              const convertedVerts = []
+              const verts = shape.vertsRef
+              const xform = shape.globalXform
+              verts.forEach(vert => {
+                MapdDraw.Point2d.transformMat2d(p0, vert, xform)
+                if (useLonLat) {
+                  LatLonUtils.conv900913To4326(p0, p0)
+                  convertedVerts.push(LatLonUtils.conv900913To4326([], vert))
+                }
+                earcutverts.push(p0[0], p0[1])
+              })
+
+              const triangles = earcut(earcutverts)
+              const triangleTests = []
+              let idx = 0
+              for (let j = 0; j < triangles.length; j = j + NUM_SIDES) {
+                idx = triangles[j] * 2
+                MapdDraw.Point2d.set(
+                  p0,
+                  earcutverts[idx],
+                  earcutverts[idx + 1]
                 )
-              } else if (shape instanceof MapdDraw.Circle) {
 
-              } else if (shape instanceof MapdDraw.Poly) {
-                const p0 = [0, 0]
-                const p1 = [0, 0]
-                const p2 = [0, 0]
-                const earcutverts = []
-                const convertedVerts = []
-                const verts = shape.vertsRef
-                const xform = shape.globalXform
-                verts.forEach(vert => {
-                  MapdDraw.Point2d.transformMat2d(p0, vert, xform)
-                  if (useLonLat) {
-                    LatLonUtils.conv900913To4326(p0, p0)
-                    convertedVerts.push(LatLonUtils.conv900913To4326([], vert))
-                  }
-                  earcutverts.push(p0[0], p0[1])
-                })
+                idx = triangles[j + 1] * 2
+                MapdDraw.Point2d.set(
+                  p1,
+                  earcutverts[idx],
+                  earcutverts[idx + 1]
+                )
 
-                const triangles = earcut(earcutverts)
-                const triangleTests = []
-                let idx = 0
-                for (let j = 0; j < triangles.length; j = j + NUM_SIDES) {
-                  idx = triangles[j] * 2
-                  MapdDraw.Point2d.set(
-                    p0,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
+                idx = triangles[j + 2] * 2
+                MapdDraw.Point2d.set(
+                  p2,
+                  earcutverts[idx],
+                  earcutverts[idx + 1]
+                )
 
-                  idx = triangles[j + 1] * 2
-                  MapdDraw.Point2d.set(
-                    p1,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
-
-                  idx = triangles[j + 2] * 2
-                  MapdDraw.Point2d.set(
-                    p2,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
-
-                  triangleTests.push(
-                    writePointInTriangleSqlTest(p0, p1, p2, !useLonLat)
-                  )
-                }
-
-                if (triangleTests.length) {
-                  filterObj.shapeFilters = convertedVerts
-
-                }
+                triangleTests.push(
+                  writePointInTriangleSqlTest(p0, p1, p2, !useLonLat)
+                )
               }
-            })
-          }
+
+              if (triangleTests.length) {
+                filterObj.shapeFilters = convertedVerts
+              }
+            }
+          })
         }
       }
     })
@@ -347,8 +338,10 @@ export function rasterDrawMixin(chart) {
         filterObj.px = []
         filterObj.py = []
         filterObj.shapeFilters = []
-      } else if (filterObj.viewBoxDim && filterObj.viewBoxDim.length && filterObj.shapeFilters.length) {
+      } else if (filterObj.coordFilters && filterObj.shapeFilters.length) {
         filterObj.coordFilters.filterST_Contains(filterObj.shapeFilters)
+      } else if (filterObj.circleFilters) {
+        filterObj.coordFilters.filterST_Distance(filterObj.circleFilters.point, filterObj.circleFilters.distanceInKm)
       }
       else {
         filterObj.coordFilter.filter()
