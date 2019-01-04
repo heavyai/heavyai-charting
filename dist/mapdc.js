@@ -7507,20 +7507,37 @@ function colorMixin(_chart) {
 
 /***/ }),
 /* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(159);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(160);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(161);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(170);
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createParser = createParser;
 
+var _parseExpression = __webpack_require__(159);
 
+var _parseExpression2 = _interopRequireDefault(_parseExpression);
 
+var _parseDatastate = __webpack_require__(160);
+
+var _parseDatastate2 = _interopRequireDefault(_parseDatastate);
+
+var _parseTransform = __webpack_require__(161);
+
+var _parseTransform2 = _interopRequireDefault(_parseTransform);
+
+var _parseSource = __webpack_require__(29);
+
+var _parseSource2 = _interopRequireDefault(_parseSource);
+
+var _writeSql = __webpack_require__(170);
+
+var _writeSql2 = _interopRequireDefault(_writeSql);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Creates a parser than can parse expressions, transforms, and intermediary
@@ -7543,7 +7560,7 @@ function createParser() {
     parseDataState: parseDataState,
     parseSource: parseSource,
     writeSQL: writeSQL,
-    write: __WEBPACK_IMPORTED_MODULE_4__write_sql__["b" /* write */],
+    write: _writeSql.write,
     registerParser: registerParser
   };
 
@@ -7570,7 +7587,7 @@ function createParser() {
     if (expressionParsers[expression.type]) {
       return expressionParsers[expression.type](expression, parser);
     }
-    return Object(__WEBPACK_IMPORTED_MODULE_0__parse_expression__["a" /* default */])(expression, parser);
+    return (0, _parseExpression2.default)(expression, parser);
   }
 
   /**
@@ -7583,7 +7600,7 @@ function createParser() {
     if (transformParsers[transform.type]) {
       return transformParsers[transform.type](sql, transform, parser);
     }
-    return Object(__WEBPACK_IMPORTED_MODULE_2__parse_transform__["a" /* default */])(sql, transform, parser);
+    return (0, _parseTransform2.default)(sql, transform, parser);
   }
 
   /**
@@ -7592,7 +7609,7 @@ function createParser() {
    * @inner
    */
   function parseDataState(data, sql) {
-    return Object(__WEBPACK_IMPORTED_MODULE_1__parse_datastate__["a" /* default */])(data, parser, sql);
+    return (0, _parseDatastate2.default)(data, parser, sql);
   }
 
   /**
@@ -7601,7 +7618,7 @@ function createParser() {
    * @inner
    */
   function parseSource(sourceTransforms) {
-    return Object(__WEBPACK_IMPORTED_MODULE_3__parse_source__["a" /* default */])(sourceTransforms, parser);
+    return (0, _parseSource2.default)(sourceTransforms, parser);
   }
 
   /**
@@ -7610,13 +7627,13 @@ function createParser() {
    * @inner
    */
   function writeSQL(state) {
-    return Object(__WEBPACK_IMPORTED_MODULE_4__write_sql__["a" /* default */])(state, parser);
+    return (0, _writeSql2.default)(state, parser);
   }
 
   return parser;
 }
 
-/* harmony default export */ __webpack_exports__["b"] = (createParser());
+exports.default = createParser();
 
 /***/ }),
 /* 9 */
@@ -28108,18 +28125,29 @@ exports.convertDistance = convertDistance;
 
 /***/ }),
 /* 27 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* unused harmony export traverse */
-/* harmony export (immutable) */ __webpack_exports__["b"] = reduceToSQL;
-/* harmony export (immutable) */ __webpack_exports__["a"] = escapeQuotes;
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.traverse = traverse;
+exports.reduceToSQL = reduceToSQL;
+exports.escapeQuotes = escapeQuotes;
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 var identity = function identity(a) {
   return a;
 };
-
 
 function traverse(node, iterator, xform, accum) {
   accum = xform(accum, iterator(node));
@@ -28157,18 +28185,33 @@ function escapeQuotes(string) {
 
 /***/ }),
 /* 28 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseFilter;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.default = parseFilter;
+
+var _createParser = __webpack_require__(8);
+
+var _createParser2 = _interopRequireDefault(_createParser);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 function parseFilter(sql, transform) {
-  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
+  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _createParser2.default;
 
   switch (transform.type) {
     case "filter":
@@ -28180,12 +28223,21 @@ function parseFilter(sql, transform) {
 
 /***/ }),
 /* 29 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseSource;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
 
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = parseSource;
+
+var _createParser = __webpack_require__(8);
+
+var _createParser2 = _interopRequireDefault(_createParser);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function joinRelation(type) {
   switch (type) {
@@ -28202,7 +28254,7 @@ function joinRelation(type) {
 }
 
 function parseSource(transforms) {
-  var parser = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
+  var parser = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _createParser2.default;
 
   return transforms.reduce(function (stmt, transform, index) {
     if (typeof transform.table === "string" && transform.type === "scan") {
@@ -28231,10 +28283,12 @@ function parseSource(transforms) {
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
  */
 
 
@@ -43545,47 +43599,76 @@ var errors = exports.errors = {
 
 /***/ }),
 /* 158 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(8);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(171);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(173);
-/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(174);
-/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
-/**
- * The exported `mapd-data-layer` module. Consists of a graph constructor and
- * helper functions to build expressions and transforms and to parse them
- * @namespace API
- */
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.rel = exports.expr = exports.createDataGraph = exports.createParser = undefined;
 
+var _createParser = __webpack_require__(8);
 
+Object.defineProperty(exports, "createParser", {
+  enumerable: true,
+  get: function get() {
+    return _createParser.createParser;
+  }
+});
 
+var _createDataGraph2 = __webpack_require__(171);
 
+var _createDataGraph3 = _interopRequireDefault(_createDataGraph2);
 
+var _expressionBuilders = __webpack_require__(173);
 
+var _expr = _interopRequireWildcard(_expressionBuilders);
+
+var _transformBuilders = __webpack_require__(174);
+
+var _rel = _interopRequireWildcard(_transformBuilders);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.createDataGraph = _createDataGraph3.default;
+exports.expr = _expr;
+exports.rel = _rel;
 
 /***/ }),
 /* 159 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseExpression;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(27);
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.default = parseExpression;
+
+var _createParser = __webpack_require__(8);
+
+var _createParser2 = _interopRequireDefault(_createParser);
+
+var _utils = __webpack_require__(27);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 function parseExpression(expression) {
-  var parser = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
+  var parser = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _createParser2.default;
 
   if (typeof expression === "string" || !(typeof expression === "undefined" ? "undefined" : _typeof(expression)) === "object") {
     return expression;
@@ -43617,7 +43700,7 @@ function parseExpression(expression) {
     case "not in":
       if (Array.isArray(expression.set)) {
         return expression.expr + " " + expression.type.toUpperCase() + " (" + expression.set.map(function (field) {
-          return typeof field === "number" ? field : "'" + Object(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* escapeQuotes */])(field) + "'";
+          return typeof field === "number" ? field : "'" + (0, _utils.escapeQuotes)(field) + "'";
         }).join(", ") + ")";
       } else if (_typeof(expression.set) === "object" && (expression.set.type === "data" || expression.set.type === "root")) {
         return expression.expr + " " + expression.type.toUpperCase() + " (" + parser.writeSQL(expression.set) + ")";
@@ -43661,6 +43744,7 @@ function parseExpression(expression) {
     case "min":
     case "max":
     case "sum":
+    case "sample":
       return expression.type + "(" + expression.field + ")";
     case "average":
       return "avg(" + expression.field + ")";
@@ -43671,12 +43755,15 @@ function parseExpression(expression) {
 
 /***/ }),
 /* 160 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseDataState;
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = parseDataState;
 function parseDataState(state, parser) {
   var initialSQL = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
     select: [],
@@ -43707,51 +43794,78 @@ function parseDataState(state, parser) {
 
 /***/ }),
 /* 161 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseTransform;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(162);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(163);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(164);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(165);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(166);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_project__ = __webpack_require__(167);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_resolvefilter__ = __webpack_require__(168);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_sample__ = __webpack_require__(169);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_source__ = __webpack_require__(29);
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = parseTransform;
 
+var _parseAggregate = __webpack_require__(162);
 
+var _parseAggregate2 = _interopRequireDefault(_parseAggregate);
 
+var _parseBin = __webpack_require__(163);
 
+var _parseBin2 = _interopRequireDefault(_parseBin);
 
+var _parseCrossfilter = __webpack_require__(164);
 
+var _parseCrossfilter2 = _interopRequireDefault(_parseCrossfilter);
 
+var _parseSort = __webpack_require__(165);
 
+var _parseSort2 = _interopRequireDefault(_parseSort);
+
+var _parseLimit = __webpack_require__(166);
+
+var _parseLimit2 = _interopRequireDefault(_parseLimit);
+
+var _parseFilter = __webpack_require__(28);
+
+var _parseFilter2 = _interopRequireDefault(_parseFilter);
+
+var _parseProject = __webpack_require__(167);
+
+var _parseProject2 = _interopRequireDefault(_parseProject);
+
+var _parseResolvefilter = __webpack_require__(168);
+
+var _parseResolvefilter2 = _interopRequireDefault(_parseResolvefilter);
+
+var _parseSample = __webpack_require__(169);
+
+var _parseSample2 = _interopRequireDefault(_parseSample);
+
+var _parseSource = __webpack_require__(29);
+
+var _parseSource2 = _interopRequireDefault(_parseSource);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function parseTransform(sql, t, parser) {
   switch (t.type) {
     case "aggregate":
-      return Object(__WEBPACK_IMPORTED_MODULE_0__parse_aggregate__["a" /* default */])(sql, t, parser);
+      return (0, _parseAggregate2.default)(sql, t, parser);
     case "bin":
-      return Object(__WEBPACK_IMPORTED_MODULE_1__parse_bin__["a" /* default */])(sql, t);
+      return (0, _parseBin2.default)(sql, t);
     case "sort":
-      return Object(__WEBPACK_IMPORTED_MODULE_3__parse_sort__["a" /* default */])(sql, t);
+      return (0, _parseSort2.default)(sql, t);
     case "limit":
-      return Object(__WEBPACK_IMPORTED_MODULE_4__parse_limit__["a" /* default */])(sql, t);
+      return (0, _parseLimit2.default)(sql, t);
     case "filter":
-      return Object(__WEBPACK_IMPORTED_MODULE_5__parse_filter__["a" /* default */])(sql, t, parser);
+      return (0, _parseFilter2.default)(sql, t, parser);
     case "project":
-      return Object(__WEBPACK_IMPORTED_MODULE_6__parse_project__["a" /* default */])(sql, t, parser);
+      return (0, _parseProject2.default)(sql, t, parser);
     case "sample":
-      return Object(__WEBPACK_IMPORTED_MODULE_8__parse_sample__["a" /* default */])(sql, t);
+      return (0, _parseSample2.default)(sql, t);
     case "resolvefilter":
-      return Object(__WEBPACK_IMPORTED_MODULE_7__parse_resolvefilter__["a" /* default */])(sql, t);
+      return (0, _parseResolvefilter2.default)(sql, t);
     case "crossfilter":
-      return Object(__WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__["a" /* default */])(sql, t);
+      return (0, _parseCrossfilter2.default)(sql, t);
     /* istanbul ignore next */
     default:
       return sql;
@@ -43760,12 +43874,21 @@ function parseTransform(sql, t, parser) {
 
 /***/ }),
 /* 162 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseAggregate;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
 
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = parseAggregate;
+
+var _createParser = __webpack_require__(8);
+
+var _createParser2 = _interopRequireDefault(_createParser);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var AGGREGATES = {
   average: "AVG",
@@ -43776,7 +43899,7 @@ var AGGREGATES = {
 };
 
 function parseAggregate(sql, transform) {
-  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
+  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _createParser2.default;
 
   if (Array.isArray(transform.groupby)) {
     transform.groupby.forEach(function (group) {
@@ -43825,39 +43948,60 @@ function parseGroupBy(sql, groupby, parser) {
 
 /***/ }),
 /* 163 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseBin;
 
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = parseBin;
 function parseBin(sql, _ref) {
-  var field = _ref.field,
-      as = _ref.as,
-      extent = _ref.extent,
-      maxbins = _ref.maxbins;
+    var field = _ref.field,
+        as = _ref.as,
+        extent = _ref.extent,
+        maxbins = _ref.maxbins;
 
-  sql.select.push("cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int) as " + as);
-  sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
-  sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
-  return sql;
+    sql.select.push("cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int) as " + as);
+    sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
+    sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
+    return sql;
 }
 
 /***/ }),
 /* 164 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseCrossfilter;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(28);
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.default = parseCrossfilter;
+
+var _createParser = __webpack_require__(8);
+
+var _createParser2 = _interopRequireDefault(_createParser);
+
+var _parseFilter = __webpack_require__(28);
+
+var _parseFilter2 = _interopRequireDefault(_parseFilter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 function parseCrossfilter(sql, transform) {
-  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
+  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _createParser2.default;
 
   switch (transform.type) {
     case "crossfilter":
@@ -43869,7 +44013,7 @@ function parseCrossfilter(sql, transform) {
               var ignore = sql.unresolved[transform.signal].ignore;
 
               if (Array.isArray(ignore) ? ignore.indexOf(key) === -1 : key !== ignore) {
-                Object(__WEBPACK_IMPORTED_MODULE_1__parse_filter__["a" /* default */])(sql, filter, parser);
+                (0, _parseFilter2.default)(sql, filter, parser);
               }
             }
           });
@@ -43882,17 +44026,21 @@ function parseCrossfilter(sql, transform) {
 
 /***/ }),
 /* 165 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseSort;
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = parseSort;
 
 
 var ORDERINGS = {
   ascending: "ASC",
   descending: "DESC"
 };
-
 
 function parseSort(sql, transform) {
   transform.field.forEach(function (field, index) {
@@ -43903,12 +44051,15 @@ function parseSort(sql, transform) {
 
 /***/ }),
 /* 166 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseLimit;
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = parseLimit;
 function parseLimit(sql, transform) {
   sql.limit += transform.row;
   sql.offset += transform.offset || sql.offset;
@@ -43917,16 +44068,24 @@ function parseLimit(sql, transform) {
 
 /***/ }),
 /* 167 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseProject;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = parseProject;
+
+var _createParser = __webpack_require__(8);
+
+var _createParser2 = _interopRequireDefault(_createParser);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function parseProject(sql, transform) {
-  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
+  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _createParser2.default;
 
   sql.select.push(parser.parseExpression(transform.expr) + (transform.as ? " as " + transform.as : ""));
   return sql;
@@ -43934,13 +44093,31 @@ function parseProject(sql, transform) {
 
 /***/ }),
 /* 168 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseResolvefilter;
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.default = parseResolvefilter;
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }return obj;
+}
 
 function parseResolvefilter(sql, transform) {
   switch (transform.type) {
@@ -43957,26 +44134,32 @@ function parseResolvefilter(sql, transform) {
 
 /***/ }),
 /* 169 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = sample;
 
 
-var GOLDEN_RATIO = 265445761;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = sample;
+
+
+var GOLDEN_RATIO = 2654435761;
 
 var THIRTY_TWO_BITS = 4294967296;
 
 function sample(sql, transform) {
   /* istanbul ignore else */
   if (transform.method === "multiplicative") {
+    debugger;
     var size = transform.size,
         limit = transform.limit;
 
     var ratio = Math.min(limit / size, 1.0);
     if (ratio < 1) {
       var threshold = Math.floor(THIRTY_TWO_BITS * ratio);
-      sql.where.push("MOD(" + sql.from + ".rowid * " + GOLDEN_RATIO + ", " + THIRTY_TWO_BITS + ") < " + threshold);
+      sql.where.push("MOD( MOD (" + sql.from + ".rowid, " + THIRTY_TWO_BITS + ") * MOD (" + GOLDEN_RATIO + ", " + THIRTY_TWO_BITS + ") , " + THIRTY_TWO_BITS + ") < " + threshold);
     }
   }
 
@@ -43985,17 +44168,19 @@ function sample(sql, transform) {
 
 /***/ }),
 /* 170 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = writeSQL;
-/* harmony export (immutable) */ __webpack_exports__["b"] = write;
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = writeSQL;
+exports.write = write;
 function writeSQL(state, parser) {
   return write(parser.parseDataState(state));
 }
-
 
 function write(sql) {
   return writeSelect(sql.select) + writeFrom(sql.from) + writeWhere(sql.where) + writeGroupby(sql.groupby) + writeHaving(sql.having) + writeOrderBy(sql.orderby) + writeLimit(sql.limit) + writeOffset(sql.offset);
@@ -44035,19 +44220,37 @@ function writeOffset(offset) {
 
 /***/ }),
 /* 171 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(172);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createDataGraph;
 
+var _createDataNode = __webpack_require__(172);
 
+var _createDataNode2 = _interopRequireDefault(_createDataNode);
+
+var _createParser = __webpack_require__(8);
+
+var _invariant = __webpack_require__(30);
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
 
 /**
  * Creates a data graph instance. Must pass in a connector object that implements a query method.
@@ -44055,11 +44258,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
  * @memberof API
  */
 function createDataGraph(connector) {
-  __WEBPACK_IMPORTED_MODULE_2_invariant___default()(typeof connector.query === "function", "invalid connector");
+  (0, _invariant2.default)(typeof connector.query === "function", "invalid connector");
 
   var context = {
     connector: connector,
-    parser: Object(__WEBPACK_IMPORTED_MODULE_1__parser_create_parser__["a" /* createParser */])()
+    parser: (0, _createParser.createParser)()
   };
 
   var childNodes = [];
@@ -44104,7 +44307,7 @@ function createDataGraph(connector) {
    * @inner
    */
   function data(state) {
-    var dataNode = Object(__WEBPACK_IMPORTED_MODULE_0__create_data_node__["a" /* default */])(context, typeof state === "string" || Array.isArray(state) ? { source: state, type: "root" } : _extends({}, state, { type: "root" }));
+    var dataNode = (0, _createDataNode2.default)(context, typeof state === "string" || Array.isArray(state) ? { source: state, type: "root" } : _extends({}, state, { type: "root" }));
     childNodes.push(dataNode);
     return dataNode;
   }
@@ -44114,17 +44317,33 @@ function createDataGraph(connector) {
 
 /***/ }),
 /* 172 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = createDataNode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_invariant__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(27);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createDataNode;
 
+var _invariant = __webpack_require__(30);
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _utils = __webpack_require__(27);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
 
 function createDataNode(context) {
   var initialState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -44176,7 +44395,7 @@ function createDataNode(context) {
    * @inner
    */
   function toSQL() {
-    return context.parser.write(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["b" /* reduceToSQL */])(context, dataNodeAPI));
+    return context.parser.write((0, _utils.reduceToSQL)(context, dataNodeAPI));
   }
 
   /**
@@ -44186,7 +44405,7 @@ function createDataNode(context) {
    * @inner
    */
   function values() {
-    return context.connector.query(context.parser.write(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["b" /* reduceToSQL */])(context, dataNodeAPI)));
+    return context.connector.query(context.parser.write((0, _utils.reduceToSQL)(context, dataNodeAPI)));
   }
 
   /**
@@ -44207,24 +44426,28 @@ function createDataNode(context) {
 
 /***/ }),
 /* 173 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (immutable) */ __webpack_exports__["alias"] = alias;
-/* harmony export (immutable) */ __webpack_exports__["avg"] = avg;
-/* harmony export (immutable) */ __webpack_exports__["min"] = min;
-/* harmony export (immutable) */ __webpack_exports__["max"] = max;
-/* harmony export (immutable) */ __webpack_exports__["sum"] = sum;
-/* harmony export (immutable) */ __webpack_exports__["count"] = count;
-/* harmony export (immutable) */ __webpack_exports__["approxCount"] = approxCount;
-/* harmony export (immutable) */ __webpack_exports__["countStar"] = countStar;
-/* harmony export (immutable) */ __webpack_exports__["extract"] = extract;
-/* harmony export (immutable) */ __webpack_exports__["dateTrunc"] = dateTrunc;
-/* harmony export (immutable) */ __webpack_exports__["inExpr"] = inExpr;
-/* harmony export (immutable) */ __webpack_exports__["not"] = not;
-/* harmony export (immutable) */ __webpack_exports__["caseExpr"] = caseExpr;
-/* harmony export (immutable) */ __webpack_exports__["between"] = between;
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.alias = alias;
+exports.avg = avg;
+exports.min = min;
+exports.max = max;
+exports.sum = sum;
+exports.count = count;
+exports.approxCount = approxCount;
+exports.countStar = countStar;
+exports.extract = extract;
+exports.dateTrunc = dateTrunc;
+exports.inExpr = inExpr;
+exports.not = not;
+exports.caseExpr = caseExpr;
+exports.between = between;
 
 
 /**
@@ -44415,21 +44638,32 @@ function between(field, range) {
 
 /***/ }),
 /* 174 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (immutable) */ __webpack_exports__["project"] = project;
-/* harmony export (immutable) */ __webpack_exports__["aggregate"] = aggregate;
-/* harmony export (immutable) */ __webpack_exports__["filter"] = filter;
-/* harmony export (immutable) */ __webpack_exports__["filterRange"] = filterRange;
-/* harmony export (immutable) */ __webpack_exports__["filterIn"] = filterIn;
-/* harmony export (immutable) */ __webpack_exports__["bin"] = bin;
-/* harmony export (immutable) */ __webpack_exports__["limit"] = limit;
-/* harmony export (immutable) */ __webpack_exports__["sort"] = sort;
-/* harmony export (immutable) */ __webpack_exports__["top"] = top;
-/* harmony export (immutable) */ __webpack_exports__["bottom"] = bottom;
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.project = project;
+exports.aggregate = aggregate;
+exports.filter = filter;
+exports.filterRange = filterRange;
+exports.filterIn = filterIn;
+exports.bin = bin;
+exports.limit = limit;
+exports.sort = sort;
+exports.top = top;
+exports.bottom = bottom;
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 /**
  * Creates a Project transform
@@ -44455,7 +44689,6 @@ function project(expr) {
  * @name Transform
  * @see {@link https://github.com/mapd/mapd-data-layer/tree/master/src/types/transform-type.js|Transform Types}
  */
-
 
 function getAggs(agg) {
   if (Array.isArray(agg)) {
@@ -64928,7 +65161,6 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 
 "use strict";
 
-
 Object.defineProperty(exports, "__esModule", { value: true });
 var legend_1 = __webpack_require__(207);
 exports.Legend = legend_1.default;
@@ -64940,43 +65172,40 @@ exports.Legend = legend_1.default;
 
 "use strict";
 
-
-var __assign = this && this.__assign || function () {
-    __assign = Object.assign || function (t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var h_1 = __webpack_require__(208);
 var vdom_1 = __webpack_require__(211);
 var d3_dispatch_1 = __webpack_require__(220);
 var d3_format_1 = __webpack_require__(222);
-var commafy = function (d) {
-    return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d;
-};
+var commafy = function (d) { return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d; };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
         return commafy(d);
-    } else if (d < 0.0001) {
+    }
+    else if (d < 0.0001) {
         return d3_format_1.format(".2")(d);
-    } else {
+    }
+    else {
         return d3_format_1.format(".2s")(d);
     }
 };
 function rangeStep(domain, index, bins) {
-    if (bins === void 0) {
-        bins = 9;
-    }
+    if (bins === void 0) { bins = 9; }
     if (index === 0) {
         return domain[0];
-    } else if (index + 1 === bins) {
+    }
+    else if (index + 1 === bins) {
         return domain[1];
-    } else {
+    }
+    else {
         var increment = (domain[1] - domain[0]) / bins;
         return domain[0] + increment * index;
     }
@@ -64984,15 +65213,14 @@ function rangeStep(domain, index, bins) {
 function validateNumericalInput(previousValue, nextValue) {
     if (isNaN(parseFloat(nextValue))) {
         return parseFloat(previousValue);
-    } else {
+    }
+    else {
         return parseFloat(nextValue);
     }
 }
 function renderTickIcon(state, dispatch) {
     var _this = this;
-    return h_1.default("div.tick", { on: { click: function () {
-                return dispatch.call("open", _this, state.index);
-            } } });
+    return h_1.default("div.tick", { on: { click: function () { return dispatch.call("open", _this, state.index); } } });
 }
 function renderToggleIcon(state, dispatch) {
     var _this = this;
@@ -65006,13 +65234,19 @@ function renderToggleIcon(state, dispatch) {
 }
 function renderLockIcon(locked, index, dispatch) {
     var _this = this;
-    return h_1.default("div.lock" + (locked ? ".locked" : ".unlocked"), { on: { click: function () {
-                return dispatch.call("lock", _this, { locked: locked, index: index });
-            } } }, [h_1.default("svg", { attrs: { viewBox: [0, 0, 48, 48] } }, [h_1.default("g", { style: { stroke: "white" } }, [h_1.default("path", {
-        attrs: {
-            d: locked ? "M34,20v-4c0-5.5-4.5-10-10-10c-5.5,0-10,4.5-10,10v4H8v20h32V20H34z M18,16c0-3.3,2.7-6,6-6s6,2.7,6,6v4H18V16z" : "M18,20v-8c0-3.3,2.7-6,6-6s6,2.7,6,6v2h4v-2c0-5.5-4.5-10-10-10c-5.5,0-10,4.5-10,10v8H8v20h32V20H18z"
-        }
-    })])])]);
+    return h_1.default("div.lock" + (locked ? ".locked" : ".unlocked"), { on: { click: function () { return dispatch.call("lock", _this, { locked: locked, index: index }); } } }, [
+        h_1.default("svg", { attrs: { viewBox: [0, 0, 48, 48] } }, [
+            h_1.default("g", { style: { stroke: "white" } }, [
+                h_1.default("path", {
+                    attrs: {
+                        d: locked
+                            ? "M34,20v-4c0-5.5-4.5-10-10-10c-5.5,0-10,4.5-10,10v4H8v20h32V20H34z M18,16c0-3.3,2.7-6,6-6s6,2.7,6,6v4H18V16z"
+                            : "M18,20v-8c0-3.3,2.7-6,6-6s6,2.7,6,6v2h4v-2c0-5.5-4.5-10-10-10c-5.5,0-10,4.5-10,10v8H8v20h32V20H18z"
+                    }
+                })
+            ])
+        ])
+    ]);
 }
 function renderInput(state, domain, dispatch) {
     var _this = this;
@@ -65031,9 +65265,7 @@ function renderInput(state, domain, dispatch) {
             },
             blur: function (e) {
                 var value = validateNumericalInput(domain.value, e.target.value);
-                var _a = state.domain,
-                    min = _a[0],
-                    max = _a[1];
+                var _a = state.domain, min = _a[0], max = _a[1];
                 dispatch.call("input", _this, {
                     index: state.index,
                     domain: domain.index === 0 ? [value, max] : [min, value]
@@ -65049,55 +65281,82 @@ function renderInput(state, domain, dispatch) {
 }
 function renderGradientLegend(state, dispatch) {
     var stacked = typeof state.index === "number";
-    return h_1.default("div.legend.gradient-legend" + (stacked ? ".with-header" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [stacked ? h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]) : h_1.default("div"), state.open ? h_1.default("div.range", state.range.map(function (color, index) {
-        var isMinMax = index === 0 || index === state.range.length - 1;
-        var step = Array.isArray(state.domain) ? formatNumber(rangeStep(state.domain, index, state.range.length)) : null;
-        var domain = Array.isArray(state.domain) ? state.domain : [null, null];
-        var min = domain[0],
-            max = domain[1];
-        return h_1.default("div.block", [h_1.default("div.color", { style: { background: color } }), h_1.default("div.text." + (isMinMax ? "extent" : "step"), [h_1.default("span", "" + (domain.length > 2 ? domain[index] : step))].concat(isMinMax ? [renderInput(state, { value: domain.length === 2 ? domain[index === 0 ? 0 : 1] : domain[index], index: index }, dispatch)] : []))]);
-    }).slice()) : h_1.default("div"), state.open ? renderLockIcon(state.locked, state.index, dispatch) : h_1.default("div")]);
+    return h_1.default("div.legend.gradient-legend" + (stacked ? ".with-header" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [
+        stacked ?
+            h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]) : h_1.default("div"),
+        state.open
+            ? h_1.default("div.range", state.range.map(function (color, index) {
+                var isMinMax = index === 0 || index === state.range.length - 1;
+                var step = Array.isArray(state.domain) ? formatNumber(rangeStep(state.domain, index, state.range.length)) : null;
+                var domain = Array.isArray(state.domain) ? state.domain : [null, null];
+                var min = domain[0], max = domain[1];
+                return h_1.default("div.block", [
+                    h_1.default("div.color", { style: { background: color } }),
+                    h_1.default("div.text." + (isMinMax ? "extent" : "step"), [h_1.default("span", "" + (domain.length > 2 ? domain[index] : step))].concat(isMinMax
+                        ? [
+                            renderInput(state, { value: domain.length === 2 ? domain[index === 0 ? 0 : 1] : domain[index], index: index }, dispatch)
+                        ]
+                        : []))
+                ]);
+            }).slice())
+            : h_1.default("div"),
+        state.open ?
+            renderLockIcon(state.locked, state.index, dispatch) : h_1.default("div")
+    ]);
 }
 exports.renderGradientLegend = renderGradientLegend;
 function renderNominalLegend(state, dispatch) {
     var _this = this;
     var stacked = typeof state.index === "number";
-    return h_1.default("div.legend.nominal-legend" + (stacked ? "" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [!stacked ? renderToggleIcon(state, dispatch) : h_1.default("div"), state.title && h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]), state.open ? h_1.default("div.body", state.domain.map(function (value, index) {
-        return h_1.default("div.legend-row", { on: { click: function () {
-                    return dispatch.call("filter", _this, value);
-                } } }, [h_1.default("div.color", {
-            style: { background: state.range[index] }
-        }), h_1.default("div.text", "" + value)]);
-    })) : h_1.default("div")]);
+    return h_1.default("div.legend.nominal-legend" + (stacked ? "" : ".legendables") + (state.open ? ".open" : ".collapsed") + (state.position ? "." + state.position : ""), [
+        !stacked ? renderToggleIcon(state, dispatch) : h_1.default("div"),
+        state.title &&
+            h_1.default("div.header", [h_1.default("div.title-text", state.title), renderTickIcon(state, dispatch)]),
+        state.open
+            ? h_1.default("div.body", state.domain.map(function (value, index) {
+                return h_1.default("div.legend-row", { on: { click: function () { return dispatch.call("filter", _this, value); } } }, [
+                    h_1.default("div.color", {
+                        style: { background: state.range[index] }
+                    }),
+                    h_1.default("div.text", "" + value)
+                ]);
+            }))
+            : h_1.default("div")
+    ]);
 }
 exports.renderNominalLegend = renderNominalLegend;
 function renderStackedLegend(state, dispatch) {
     return h_1.default("div.legendables" + (state.open ? ".open" : ".collapsed") + (state.list.length > 1 ? ".show-ticks" : ""), { style: { maxHeight: state.maxHeight + "px" } }, [renderToggleIcon(state, dispatch)].concat(state.list.map(function (legend, index) {
         if (legend.type === "gradient") {
             return renderGradientLegend(__assign({}, legend, { index: index }), dispatch);
-        } else if (legend.type === "nominal") {
+        }
+        else if (legend.type === "nominal") {
             return renderNominalLegend(__assign({}, legend, { index: index }), dispatch);
         }
     })));
 }
 exports.renderStackedLegend = renderStackedLegend;
-var Legend = /** @class */function () {
+var Legend = /** @class */ (function () {
     function Legend(node) {
         var _this = this;
         this.setState = function (state) {
             if (typeof state === "function") {
                 _this.state = state(_this.state);
-            } else {
+            }
+            else {
                 _this.state = state;
             }
             var vnode;
             if (_this.state.type === "gradient") {
                 vnode = renderGradientLegend(_this.state, _this.dispatch);
-            } else if (_this.state.type === "nominal") {
+            }
+            else if (_this.state.type === "nominal") {
                 vnode = renderNominalLegend(_this.state, _this.dispatch);
-            } else if (_this.state.type === "stacked") {
+            }
+            else if (_this.state.type === "stacked") {
                 vnode = renderStackedLegend(_this.state, _this.dispatch);
-            } else {
+            }
+            else {
                 vnode = h_1.default("div");
             }
             _this.node = vdom_1.patch(_this.node, vnode);
@@ -65112,7 +65371,7 @@ var Legend = /** @class */function () {
         this.dispatch.on(event, callback);
     };
     return Legend;
-}();
+}());
 exports.default = Legend;
 //# sourceMappingURL=legend.js.map
 
@@ -65217,7 +65476,6 @@ exports.primitive = primitive;
 
 "use strict";
 
-
 Object.defineProperty(exports, "__esModule", { value: true });
 var snabbdom_1 = __webpack_require__(212);
 var attributes_1 = __webpack_require__(215);
@@ -65225,7 +65483,13 @@ var class_1 = __webpack_require__(216);
 var props_1 = __webpack_require__(217);
 var style_1 = __webpack_require__(218);
 var eventlisteners_1 = __webpack_require__(219);
-exports.patch = snabbdom_1.init([class_1.default, props_1.default, style_1.default, attributes_1.default, eventlisteners_1.default]);
+exports.patch = snabbdom_1.init([
+    class_1.default,
+    props_1.default,
+    style_1.default,
+    attributes_1.default,
+    eventlisteners_1.default
+]);
 //# sourceMappingURL=vdom.js.map
 
 /***/ }),
