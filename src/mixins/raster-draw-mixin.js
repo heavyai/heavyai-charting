@@ -231,55 +231,56 @@ export function rasterDrawMixin(chart) {
       } else if (!layer.layerType ||
         typeof layer.layerType !== "function" ||
         layer.layerType() === "lines") {
+        if (layer.getState().data.length < 2) {
+          let crossFilter = null
+          let filterObj = null
+          const group = layer.group()
 
-        let crossFilter = null
-        let filterObj = null
-        const group = layer.group()
-
-        if (group) {
-          crossFilter = group.getCrossfilter()
-        } else {
-          const dim = layer.viewBoxDim()
-          if (dim) {
-            crossFilter = dim
+          if (group) {
+            crossFilter = group.getCrossfilter()
           } else {
-            crossFilter = layer.crossfilter()
-          }
-        }
-        if (crossFilter) {
-          filterObj = coordFilters.get(crossFilter)
-          if (!filterObj) {
-            filterObj = {
-              coordFilter: crossFilter,
+            const dim = layer.viewBoxDim()
+            if (dim) {
+              crossFilter = dim
+            } else {
+              crossFilter = layer.crossfilter()
             }
-            coordFilters.set(crossFilter, filterObj)
-            filterObj.shapeFilters = {}
           }
+          if (crossFilter) {
+            filterObj = coordFilters.get(crossFilter)
+            if (!filterObj) {
+              filterObj = {
+                coordFilter: crossFilter,
+              }
+              coordFilters.set(crossFilter, filterObj)
+              filterObj.shapeFilters = {}
+            }
 
-          shapes.forEach(shape => {
-            if (shape instanceof LatLonCircle) {
-              const pos = shape.getWorldPosition()
-              // convert from mercator to lat-lon
-              LatLonUtils.conv900913To4326(pos, pos)
-              const km = shape.radius
-              filterObj.shapeFilters = {
-                spatialRelAndMeas: "filterST_Distance",
-                filters: {point: [pos[0], pos[1]], distanceInKm: km}
-              }
-            } else if (shape instanceof MapdDraw.Poly) {
-              const convertedVerts = []
-              const verts = shape.vertsRef
-              verts.forEach(vert => {
-                if (useLonLat) {
-                  convertedVerts.push(LatLonUtils.conv900913To4326([], vert))
+            shapes.forEach(shape => {
+              if (shape instanceof LatLonCircle) {
+                const pos = shape.getWorldPosition()
+                // convert from mercator to lat-lon
+                LatLonUtils.conv900913To4326(pos, pos)
+                const km = shape.radius
+                filterObj.shapeFilters = {
+                  spatialRelAndMeas: "filterST_Distance",
+                  filters: {point: [pos[0], pos[1]], distanceInKm: km}
                 }
-              })
-              const  triangleTests = runTriangleTests(shape, useLonLat)
-              if (triangleTests.length) {
-                filterObj.shapeFilters = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
+              } else if (shape instanceof MapdDraw.Poly) {
+                const convertedVerts = []
+                const verts = shape.vertsRef
+                verts.forEach(vert => {
+                  if (useLonLat) {
+                    convertedVerts.push(LatLonUtils.conv900913To4326([], vert))
+                  }
+                })
+                const  triangleTests = runTriangleTests(shape, useLonLat)
+                if (triangleTests.length) {
+                  filterObj.shapeFilters = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
+                }
               }
-            }
-          })
+            })
+          }
         }
       }
     })

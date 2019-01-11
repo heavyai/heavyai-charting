@@ -27123,55 +27123,56 @@ function rasterDrawMixin(chart) {
           }
         }
       } else if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "lines") {
+        if (layer.getState().data.length < 2) {
+          var _crossFilter = null;
+          var _filterObj = null;
+          var _group = layer.group();
 
-        var _crossFilter = null;
-        var _filterObj = null;
-        var _group = layer.group();
-
-        if (_group) {
-          _crossFilter = _group.getCrossfilter();
-        } else {
-          var _dim = layer.viewBoxDim();
-          if (_dim) {
-            _crossFilter = _dim;
+          if (_group) {
+            _crossFilter = _group.getCrossfilter();
           } else {
-            _crossFilter = layer.crossfilter();
-          }
-        }
-        if (_crossFilter) {
-          _filterObj = coordFilters.get(_crossFilter);
-          if (!_filterObj) {
-            _filterObj = {
-              coordFilter: _crossFilter
-            };
-            coordFilters.set(_crossFilter, _filterObj);
-            _filterObj.shapeFilters = {};
-          }
-
-          shapes.forEach(function (shape) {
-            if (shape instanceof LatLonCircle) {
-              var pos = shape.getWorldPosition();
-              // convert from mercator to lat-lon
-              LatLonUtils.conv900913To4326(pos, pos);
-              var km = shape.radius;
-              _filterObj.shapeFilters = {
-                spatialRelAndMeas: "filterST_Distance",
-                filters: { point: [pos[0], pos[1]], distanceInKm: km }
-              };
-            } else if (shape instanceof MapdDraw.Poly) {
-              var convertedVerts = [];
-              var verts = shape.vertsRef;
-              verts.forEach(function (vert) {
-                if (useLonLat) {
-                  convertedVerts.push(LatLonUtils.conv900913To4326([], vert));
-                }
-              });
-              var triangleTests = runTriangleTests(shape, useLonLat);
-              if (triangleTests.length) {
-                _filterObj.shapeFilters = { spatialRelAndMeas: "filterST_Contains", filters: convertedVerts };
-              }
+            var _dim = layer.viewBoxDim();
+            if (_dim) {
+              _crossFilter = _dim;
+            } else {
+              _crossFilter = layer.crossfilter();
             }
-          });
+          }
+          if (_crossFilter) {
+            _filterObj = coordFilters.get(_crossFilter);
+            if (!_filterObj) {
+              _filterObj = {
+                coordFilter: _crossFilter
+              };
+              coordFilters.set(_crossFilter, _filterObj);
+              _filterObj.shapeFilters = {};
+            }
+
+            shapes.forEach(function (shape) {
+              if (shape instanceof LatLonCircle) {
+                var pos = shape.getWorldPosition();
+                // convert from mercator to lat-lon
+                LatLonUtils.conv900913To4326(pos, pos);
+                var km = shape.radius;
+                _filterObj.shapeFilters = {
+                  spatialRelAndMeas: "filterST_Distance",
+                  filters: { point: [pos[0], pos[1]], distanceInKm: km }
+                };
+              } else if (shape instanceof MapdDraw.Poly) {
+                var convertedVerts = [];
+                var verts = shape.vertsRef;
+                verts.forEach(function (vert) {
+                  if (useLonLat) {
+                    convertedVerts.push(LatLonUtils.conv900913To4326([], vert));
+                  }
+                });
+                var triangleTests = runTriangleTests(shape, useLonLat);
+                if (triangleTests.length) {
+                  _filterObj.shapeFilters = { spatialRelAndMeas: "filterST_Contains", filters: convertedVerts };
+                }
+              }
+            });
+          }
         }
       }
     });
