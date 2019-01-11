@@ -249,10 +249,10 @@ export function rasterDrawMixin(chart) {
                 const pos = shape.getWorldPosition()
                 // convert from mercator to lat-lon
                 LatLonUtils.conv900913To4326(pos, pos)
-                const km = shape.radius
+                const radiusInKm = shape.radius
                 filterObj.shapeFilters = {
                   spatialRelAndMeas: "filterST_Distance",
-                  filters: {point: [pos[0], pos[1]], distanceInKm: km}
+                  filters: {point: [pos[0], pos[1]], distanceInKm: radiusInKm}
                 }
               } else if (shape instanceof MapdDraw.Poly) {
                 const convertedVerts = []

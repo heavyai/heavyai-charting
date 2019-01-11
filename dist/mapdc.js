@@ -27144,10 +27144,10 @@ function rasterDrawMixin(chart) {
                 var pos = shape.getWorldPosition();
                 // convert from mercator to lat-lon
                 LatLonUtils.conv900913To4326(pos, pos);
-                var km = shape.radius;
+                var radiusInKm = shape.radius;
                 _filterObj.shapeFilters = {
                   spatialRelAndMeas: "filterST_Distance",
-                  filters: { point: [pos[0], pos[1]], distanceInKm: km }
+                  filters: { point: [pos[0], pos[1]], distanceInKm: radiusInKm }
                 };
               } else if (shape instanceof MapdDraw.Poly) {
                 var convertedVerts = [];
