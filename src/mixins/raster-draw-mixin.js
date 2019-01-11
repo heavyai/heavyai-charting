@@ -77,62 +77,8 @@ export function rasterDrawMixin(chart) {
     dashPattern: [8, 2]
   }
 
-  function runTriangleTests(shape, useLonLat, px, py) {
-    const NUM_SIDES = 3
-    const p0 = [0, 0]
-    const p1 = [0, 0]
-    const p2 = [0, 0]
-    const earcutverts = []
-    const verts = shape.vertsRef
-    const xform = shape.globalXform
-    verts.forEach(vert => {
-      MapdDraw.Point2d.transformMat2d(p0, vert, xform)
-      if (useLonLat) {
-        LatLonUtils.conv900913To4326(p0, p0)
-      }
-      earcutverts.push(p0[0], p0[1])
-    })
-
-    const triangles = earcut(earcutverts)
-    const triangleTests = []
-    let idx = 0
-    for (let j = 0; j < triangles.length; j = j + NUM_SIDES) {
-      idx = triangles[j] * 2
-      MapdDraw.Point2d.set(
-        p0,
-        earcutverts[idx],
-        earcutverts[idx + 1]
-      )
-
-      idx = triangles[j + 1] * 2
-      MapdDraw.Point2d.set(
-        p1,
-        earcutverts[idx],
-        earcutverts[idx + 1]
-      )
-
-      idx = triangles[j + 2] * 2
-      MapdDraw.Point2d.set(
-        p2,
-        earcutverts[idx],
-        earcutverts[idx + 1]
-      )
-
-      if (px && py) {
-        triangleTests.push(
-          writePointInTriangleSqlTest(p0, p1, p2, px, py, !useLonLat)
-        )
-      } else {
-        triangleTests.push(
-          writePointInTriangleSqlTest(p0, p1, p2, !useLonLat)
-        )
-      }
-
-    }
-    return triangleTests
-  }
-
   function applyFilter() {
+    const NUM_SIDES = 3
     const useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat()
     const shapes = drawEngine.sortedShapes
     const LatLonCircle = getLatLonCircleClass()
@@ -212,7 +158,49 @@ export function rasterDrawMixin(chart) {
                   }, 2.0)) / ${radsqr} <= 1.0`
                 )
               } else if (shape instanceof MapdDraw.Poly) {
-                const  triangleTests = runTriangleTests(shape, useLonLat, px, py)
+                const p0 = [0, 0]
+                const p1 = [0, 0]
+                const p2 = [0, 0]
+                const earcutverts = []
+                const verts = shape.vertsRef
+                const xform = shape.globalXform
+                verts.forEach(vert => {
+                  MapdDraw.Point2d.transformMat2d(p0, vert, xform)
+                  if (useLonLat) {
+                    LatLonUtils.conv900913To4326(p0, p0)
+                  }
+                  earcutverts.push(p0[0], p0[1])
+                })
+
+                const triangles = earcut(earcutverts)
+                const triangleTests = []
+                let idx = 0
+                for (let j = 0; j < triangles.length; j = j + NUM_SIDES) {
+                  idx = triangles[j] * 2
+                  MapdDraw.Point2d.set(
+                    p0,
+                    earcutverts[idx],
+                    earcutverts[idx + 1]
+                  )
+
+                  idx = triangles[j + 1] * 2
+                  MapdDraw.Point2d.set(
+                    p1,
+                    earcutverts[idx],
+                    earcutverts[idx + 1]
+                  )
+
+                  idx = triangles[j + 2] * 2
+                  MapdDraw.Point2d.set(
+                    p2,
+                    earcutverts[idx],
+                    earcutverts[idx + 1]
+                  )
+
+                  triangleTests.push(
+                    writePointInTriangleSqlTest(p0, p1, p2, px, py, !useLonLat)
+                  )
+                }
 
                 if (triangleTests.length) {
                   filterObj.shapeFilters.push(
@@ -274,10 +262,7 @@ export function rasterDrawMixin(chart) {
                     convertedVerts.push(LatLonUtils.conv900913To4326([], vert))
                   }
                 })
-                const  triangleTests = runTriangleTests(shape, useLonLat)
-                if (triangleTests.length) {
-                  filterObj.shapeFilters = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
-                }
+                filterObj.shapeFilters = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
               }
             })
           }
