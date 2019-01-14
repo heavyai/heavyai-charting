@@ -106,7 +106,7 @@ export default function rasterLayerPolyMixin(_layer) {
     filtersInverse,
     lastFilteredSize
   }) {
-    const { geocol, geoTable, encoding: { color } } = state
+    const { encoding: { color, geocol, geoTable } } = state
 
     const transforms = []
 
@@ -292,7 +292,6 @@ export default function rasterLayerPolyMixin(_layer) {
       {
         name: layerName,
         format: "polys",
-        geocolumn: state.encoding.geocol,
         sql: parser.writeSQL({
           type: "root",
           source: [...new Set(state.data.map(source => source.table))].join(

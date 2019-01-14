@@ -42696,9 +42696,10 @@ function rasterLayerPolyMixin(_layer) {
         filtersInverse = _ref.filtersInverse,
         lastFilteredSize = _ref.lastFilteredSize;
     var _state = state,
-        geocol = _state.geocol,
-        geoTable = _state.geoTable,
-        color = _state.encoding.color;
+        _state$encoding = _state.encoding,
+        color = _state$encoding.color,
+        geocol = _state$encoding.geocol,
+        geoTable = _state$encoding.geoTable;
 
 
     var transforms = [];
@@ -42833,7 +42834,7 @@ function rasterLayerPolyMixin(_layer) {
         expr: globalFilter
       });
     }
-
+    debugger;
     return transforms;
   }
 
@@ -42896,7 +42897,6 @@ function rasterLayerPolyMixin(_layer) {
     var data = [{
       name: layerName,
       format: "polys",
-      geocolumn: state.encoding.geocol,
       sql: _utils.parser.writeSQL({
         type: "root",
         source: [].concat(_toConsumableArray(new Set(state.data.map(function (source) {
