@@ -5765,6 +5765,7 @@ function baseMixin(_chart) {
       }
       _root = _d2.default.select(_anchor);
       _root.classed(_core.constants.CHART_CLASS, true);
+      (0, _core.deregisterChart)(_chart, chartGroup);
       (0, _core.registerChart)(_chart, chartGroup);
       _isChild = false;
     } else {
@@ -27033,6 +27034,7 @@ function rasterDrawMixin(chart) {
         var crossFilter = null;
         var filterObj = null;
         var group = layer.group();
+
         if (group) {
           crossFilter = group.getCrossfilter();
         } else {
@@ -27111,11 +27113,60 @@ function rasterDrawMixin(chart) {
             });
           }
         }
+      } else if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "lines") {
+        if (layer.getState().data.length < 2) {
+          var _crossFilter = null;
+          var _filterObj = null;
+          var _group = layer.group();
+
+          if (_group) {
+            _crossFilter = _group.getCrossfilter();
+          } else {
+            var _dim = layer.viewBoxDim();
+            if (_dim) {
+              _crossFilter = _dim;
+            } else {
+              _crossFilter = layer.crossfilter();
+            }
+          }
+          if (_crossFilter) {
+            _filterObj = coordFilters.get(_crossFilter);
+            if (!_filterObj) {
+              _filterObj = {
+                coordFilter: _crossFilter
+              };
+              coordFilters.set(_crossFilter, _filterObj);
+              _filterObj.shapeFilters = {};
+            }
+
+            shapes.forEach(function (shape) {
+              if (shape instanceof LatLonCircle) {
+                var pos = shape.getWorldPosition();
+                // convert from mercator to lat-lon
+                LatLonUtils.conv900913To4326(pos, pos);
+                var radiusInKm = shape.radius;
+                _filterObj.shapeFilters = {
+                  spatialRelAndMeas: "filterST_Distance",
+                  filters: { point: [pos[0], pos[1]], distanceInKm: radiusInKm }
+                };
+              } else if (shape instanceof MapdDraw.Poly) {
+                var convertedVerts = [];
+                var verts = shape.vertsRef;
+                verts.forEach(function (vert) {
+                  if (useLonLat) {
+                    convertedVerts.push(LatLonUtils.conv900913To4326([], vert));
+                  }
+                });
+                _filterObj.shapeFilters = { spatialRelAndMeas: "filterST_Contains", filters: convertedVerts };
+              }
+            });
+          }
+        }
       }
     });
 
     coordFilters.forEach(function (filterObj) {
-      if (filterObj.px.length && filterObj.py.length && filterObj.shapeFilters.length) {
+      if (filterObj.px && filterObj.py && filterObj.px.length && filterObj.py.length && filterObj.shapeFilters.length) {
         var shapeFilterStmt = filterObj.shapeFilters.join(" OR ");
         var filterStmt = filterObj.px.map(function (e, i) {
           return { px: e, py: filterObj.py[i] };
@@ -27130,6 +27181,8 @@ function rasterDrawMixin(chart) {
         filterObj.px = [];
         filterObj.py = [];
         filterObj.shapeFilters = [];
+      } else if (filterObj.coordFilter && filterObj.shapeFilters && filterObj.shapeFilters.spatialRelAndMeas) {
+        filterObj.coordFilter.filterSpatial(filterObj.shapeFilters.spatialRelAndMeas, filterObj.shapeFilters.filters);
       } else {
         filterObj.coordFilter.filter();
       }
@@ -27314,8 +27367,14 @@ function rasterDrawMixin(chart) {
       });
       if (coordFilters) {
         coordFilters.forEach(function (filterObj) {
+          if (filterObj.coordFilter && 'spatialRelAndMeas' in filterObj.shapeFilters) {
+            filterObj.coordFilter.filterSpatial();
+            var bounds = chart.map().getBounds();
+            filterObj.coordFilter.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat });
+          } else {
+            filterObj.coordFilter.filter();
+          }
           filterObj.shapeFilters = [];
-          filterObj.coordFilter.filter();
         });
       }
       var shapes = drawEngine.sortedShapes;

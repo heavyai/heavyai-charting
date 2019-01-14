@@ -484,6 +484,7 @@ export default function baseMixin(_chart) {
       }
       _root = d3.select(_anchor)
       _root.classed(constants.CHART_CLASS, true)
+      deregisterChart(_chart, chartGroup)
       registerChart(_chart, chartGroup)
       _isChild = false
     } else {
