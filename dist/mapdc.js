@@ -42608,6 +42608,8 @@ var _events = __webpack_require__(9);
 
 var _utils = __webpack_require__(3);
 
+var _coreAsync = __webpack_require__(4);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -42691,8 +42693,11 @@ function rasterLayerPolyMixin(_layer) {
     var filter = _ref.filter,
         globalFilter = _ref.globalFilter,
         layerFilter = _ref.layerFilter,
-        filtersInverse = _ref.filtersInverse;
+        filtersInverse = _ref.filtersInverse,
+        lastFilteredSize = _ref.lastFilteredSize;
     var _state = state,
+        geocol = _state.geocol,
+        geoTable = _state.geoTable,
         color = _state.encoding.color;
 
 
@@ -42791,13 +42796,28 @@ function rasterLayerPolyMixin(_layer) {
         expr: rowIdTable + ".rowid",
         as: "rowid"
       });
+      transforms.push({
+        type: "project",
+        expr: geoTable + "." + geocol
+      });
     }
 
     if (typeof state.transform.limit === "number") {
-      transforms.push({
-        type: "limit",
-        row: state.transform.limit
-      });
+      if (state.transform.sample && !doJoin()) {
+        // use Knuth's hash sampling on single data source chart
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          size: lastFilteredSize || state.transform.tableSize,
+          limit: state.transform.limit
+        });
+      } else {
+        // when geo join is applied, we won't use Knuth's sampling but use LIMIT
+        transforms.push({
+          type: "limit",
+          row: state.transform.limit
+        });
+      }
     }
 
     if (typeof filter === "string" && filter.length) {
@@ -42886,7 +42906,8 @@ function rasterLayerPolyMixin(_layer) {
           filter: filter,
           globalFilter: globalFilter,
           layerFilter: layerFilter,
-          filtersInverse: filtersInverse
+          filtersInverse: filtersInverse,
+          lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())
         })
       })
     }];
@@ -43719,6 +43740,7 @@ function parseExpression(expression) {
     case "min":
     case "max":
     case "sum":
+    case "sample":
       return expression.type + "(" + expression.field + ")";
     case "average":
       return "avg(" + expression.field + ")";
@@ -44021,7 +44043,7 @@ function parseResolvefilter(sql, transform) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = sample;
 
 
-var GOLDEN_RATIO = 265445761;
+var GOLDEN_RATIO = 2654435761;
 
 var THIRTY_TWO_BITS = 4294967296;
 
@@ -44034,7 +44056,12 @@ function sample(sql, transform) {
     var ratio = Math.min(limit / size, 1.0);
     if (ratio < 1) {
       var threshold = Math.floor(THIRTY_TWO_BITS * ratio);
-      sql.where.push("MOD(" + sql.from + ".rowid * " + GOLDEN_RATIO + ", " + THIRTY_TWO_BITS + ") < " + threshold);
+      // We are using simple modulo arithmetic expression conversion, 
+      // (A * B) mod C = (A mod C * B mod C) mod C, 
+      // to optimize the filter here. This helps  the overflow on the backend.
+      // We don't have the full modulo expression for golden ratio since 
+      // that is a constant expression and we can avoid that execution
+      sql.where.push("MOD( MOD (" + sql.from + ".rowid, " + THIRTY_TWO_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold);
     }
   }
 

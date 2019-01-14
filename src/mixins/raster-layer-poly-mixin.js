@@ -8,6 +8,7 @@ import {
 import d3 from "d3"
 import { events } from "../core/events"
 import { parser } from "../utils/utils"
+import {lastFilteredSize} from "../core/core-async";
 
 
 const polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)"
@@ -102,9 +103,10 @@ export default function rasterLayerPolyMixin(_layer) {
     filter,
     globalFilter,
     layerFilter,
-    filtersInverse
+    filtersInverse,
+    lastFilteredSize
   }) {
-    const { encoding: { color } } = state
+    const { geocol, geoTable, encoding: { color } } = state
 
     const transforms = []
 
@@ -217,13 +219,26 @@ export default function rasterLayerPolyMixin(_layer) {
         expr: `${rowIdTable}.rowid`,
         as: "rowid"
       })
+      transforms.push({
+        type: "project",
+        expr: `${geoTable}.${geocol}`
+      })
     }
 
     if (typeof state.transform.limit === "number") {
-      transforms.push({
-        type: "limit",
-        row: state.transform.limit
-      })
+      if (state.transform.sample && !doJoin()) { // use Knuth's hash sampling on single data source chart
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          size: lastFilteredSize || state.transform.tableSize,
+          limit: state.transform.limit
+        })
+      } else { // when geo join is applied, we won't use Knuth's sampling but use LIMIT
+        transforms.push({
+          type: "limit",
+          row: state.transform.limit
+        })
+      }
     }
 
     if (typeof filter === "string" && filter.length) {
@@ -287,7 +302,8 @@ export default function rasterLayerPolyMixin(_layer) {
             filter,
             globalFilter,
             layerFilter,
-            filtersInverse
+            filtersInverse,
+            lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId())
           })
         })
       }
