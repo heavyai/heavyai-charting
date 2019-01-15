@@ -10,9 +10,9 @@
     script-loader "^0.7.0"
     thrift "^0.10.0"
 
-"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#2bdfad8":
+"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#905b15c":
   version "1.0.0"
-  resolved "git://github.com/omnisci/mapd-crossfilter.git#2bdfad84e1200bcde394f3786685920a2ce4c898"
+  resolved "git://github.com/omnisci/mapd-crossfilter.git#905b15ca288a904cf8fef27f35b987ebc83c5afd"
 
 "@mapd/mapd-draw@git://github.com/omnisci/mapd-draw.git":
   version "1.1.0"
@@ -175,9 +175,9 @@ ajv@^5.0.0:
     json-schema-traverse "^0.3.0"
 
 ajv@^6.1.0, ajv@^6.5.5:
-  version "6.6.2"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.6.2.tgz#caceccf474bf3fc3ce3b147443711a24063cc30d"
-  integrity sha512-FBHEW6Jf5TB9MGBgUUA9XHkTbjXYfAUjY43ACMfmdMRHniyoMHjHjzD50OK8LGDWQwp4rWEsIq5kEqq7rvIM1g==
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.7.0.tgz#e3ce7bb372d6577bb1839f1dfdfcbf5ad2948d96"
+  integrity sha512-RZXPviBTtfmtka9n9sy1N5M5b82CbxWIR6HIis4s3WQTXDJamc/0gpCWNGz6EWdWp4DOfjzJfhz/AS9zVPjjWg==
   dependencies:
     fast-deep-equal "^2.0.1"
     fast-json-stable-stringify "^2.0.0"
@@ -3331,9 +3331,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.2.7:
-  version "1.3.101"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.101.tgz#6dfdba9fd71db9adef904c1bb36e0b31c39f899d"
-  integrity sha512-WiqTxlFFzJP1CbG3XFWfEhs2390qKvx92PQGGqAhin2pIR1mqZjR5zv+aQmloU/kutDN9UMq3yx8uCAIRS0Eow==
+  version "1.3.102"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.102.tgz#3ac43a037c8a63bca3dfa189eb3d90f097196787"
+  integrity sha512-2nzZuXw/KBPnI3QX3UOCSRvJiVy7o9+VHRDQ3D/EHCvVc89X6aj/GlNmEgiR2GBIhmSWXIi4W1M5okA5ScSlNg==
 
 elliptic@^6.0.0:
   version "6.4.1"
@@ -5980,10 +5980,10 @@ mapbox-gl-supported@^1.2.0:
     webworkify "^1.4.0"
     whoots-js "^2.0.0"
 
-mapd-data-layer-2@0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.6.tgz#6b1e5d7c8d33176b88392107c7b8b7bcbbbad42e"
-  integrity sha512-aLAhMKQbwUPAXsJaCqeWFiEU+B7//J+mLoCTXTw9CaeBV52WLnOies9U2M6fzqKLvT3T1peK19OS+BklS6FDIA==
+mapd-data-layer-2@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.8.tgz#e95c8567616e21077b1e3bf9f5b250e931fa0197"
+  integrity sha512-l7LNNH96wTourDXL7/aSRdu826NKGoDmeHgUS0WwxzIFSBMrC4h8v9wS36lMy5Tjnuqqlq5Dvjq5o6U7DhD6VQ==
   dependencies:
     invariant "^2.2.2"
 
@@ -6012,9 +6012,9 @@ math-expression-evaluator@^1.2.14:
   integrity sha1-3oGf282E3M2PrlnGrreWFbnSZqw=
 
 math-random@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/math-random/-/math-random-1.0.1.tgz#8b3aac588b8a66e4975e3cdea67f7bb329601fac"
-  integrity sha1-izqsWIuKZuSXXjzepn97sylgH6w=
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/math-random/-/math-random-1.0.2.tgz#8ab7f026363816c1e00b774d87dee67f61e37ad6"
+  integrity sha512-Bp2Bx2wFaUymE7pWi0bbldiheIXMvyzC3hRkT5YAv2qiqqJO5VB8KafgYgZmGCxkTmloLuAx3Jv2OmJ66990mg==
 
 md5-hex@^1.2.0:
   version "1.3.0"
@@ -6960,9 +6960,9 @@ package-json-versionify@^1.0.2:
     browserify-package-json "^1.0.0"
 
 pako@~1.0.5:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.7.tgz#2473439021b57f1516c82f58be7275ad8ef1bb27"
-  integrity sha512-3HNK5tW4x8o5mO8RuHZp3Ydw9icZXx0RANAOMzlMzx7LVXhMJ4mo3MOBpzyd7r/+RUu8BmndP47LXT+vzjtWcQ==
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.8.tgz#6844890aab9c635af868ad5fecc62e8acbba3ea4"
+  integrity sha512-6i0HVbUfcKaTv+EG8ZTr75az7GFXcLYk9UyLEg7Notv/Ma+z/UG3TCoz6GiNeOrn1E/e63I0X/Hpw18jHOTUnA==
 
 parents@^1.0.0:
   version "1.0.1"
