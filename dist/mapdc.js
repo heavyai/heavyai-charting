@@ -43719,6 +43719,7 @@ function parseExpression(expression) {
     case "min":
     case "max":
     case "sum":
+    case "sample":
       return expression.type + "(" + expression.field + ")";
     case "average":
       return "avg(" + expression.field + ")";
@@ -44021,7 +44022,7 @@ function parseResolvefilter(sql, transform) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = sample;
 
 
-var GOLDEN_RATIO = 265445761;
+var GOLDEN_RATIO = 2654435761;
 
 var THIRTY_TWO_BITS = 4294967296;
 
@@ -44034,7 +44035,12 @@ function sample(sql, transform) {
     var ratio = Math.min(limit / size, 1.0);
     if (ratio < 1) {
       var threshold = Math.floor(THIRTY_TWO_BITS * ratio);
-      sql.where.push("MOD(" + sql.from + ".rowid * " + GOLDEN_RATIO + ", " + THIRTY_TWO_BITS + ") < " + threshold);
+      // We are using simple modulo arithmetic expression conversion, 
+      // (A * B) mod C = (A mod C * B mod C) mod C, 
+      // to optimize the filter here. This helps  the overflow on the backend.
+      // We don't have the full modulo expression for golden ratio since 
+      // that is a constant expression and we can avoid that execution
+      sql.where.push("MOD( MOD (" + sql.from + ".rowid, " + THIRTY_TWO_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold);
     }
   }
 
