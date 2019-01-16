@@ -2,17 +2,18 @@
 # yarn lockfile v1
 
 
-"@mapd/connector@git://github.com/omnisci/mapd-connector.git#162e197":
-  version "4.2.0"
-  resolved "git://github.com/omnisci/mapd-connector.git#162e197395abbefaa5cb9cab1bc202c775c9618c"
+"@mapd/connector@git://github.com/omnisci/mapd-connector.git#d81908b":
+  version "4.4.0"
+  resolved "git://github.com/omnisci/mapd-connector.git#d81908b657c22f2166557c46350bd564742832aa"
   dependencies:
     codecov "^2.2.0"
+    eventemitter3 "^3.1.0"
     script-loader "^0.7.0"
     thrift "^0.10.0"
 
-"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#2bdfad8":
+"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#9f57637":
   version "1.0.0"
-  resolved "git://github.com/omnisci/mapd-crossfilter.git#2bdfad84e1200bcde394f3786685920a2ce4c898"
+  resolved "git://github.com/omnisci/mapd-crossfilter.git#9f57637ce31a247efc930bf503cbe8412e31db5c"
 
 "@mapd/mapd-draw@git://github.com/omnisci/mapd-draw.git":
   version "1.1.0"
@@ -3680,7 +3681,7 @@ event-emitter@~0.3.5:
     d "1"
     es5-ext "~0.10.14"
 
-eventemitter3@^3.0.0:
+eventemitter3@^3.0.0, eventemitter3@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
   integrity sha512-ivIvhpq/Y0uSjcHDcOIccjmYjGLcP09MFGE7ysAwkAvkXfpZlC985pH2/ui64DKazbTW/4kN3yqozUxlXzI6cA==
@@ -5980,10 +5981,10 @@ mapbox-gl-supported@^1.2.0:
     webworkify "^1.4.0"
     whoots-js "^2.0.0"
 
-mapd-data-layer-2@0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.6.tgz#6b1e5d7c8d33176b88392107c7b8b7bcbbbad42e"
-  integrity sha512-aLAhMKQbwUPAXsJaCqeWFiEU+B7//J+mLoCTXTw9CaeBV52WLnOies9U2M6fzqKLvT3T1peK19OS+BklS6FDIA==
+mapd-data-layer-2@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.8.tgz#e95c8567616e21077b1e3bf9f5b250e931fa0197"
+  integrity sha512-l7LNNH96wTourDXL7/aSRdu826NKGoDmeHgUS0WwxzIFSBMrC4h8v9wS36lMy5Tjnuqqlq5Dvjq5o6U7DhD6VQ==
   dependencies:
     invariant "^2.2.2"
 
