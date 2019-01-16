@@ -95,6 +95,22 @@ export default function rasterLayerPolyMixin(_layer) {
     return state
   }
 
+  _layer.getProjections = function() {
+    return getTransforms({
+      filter: "",
+      globalFilter: "",
+      layerFilter: _layer.filters(),
+      filterInvers: _layer.filtersInverse(),
+      lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId())
+      })
+      .filter(
+        transform =>
+          transform.type === "project" && transform.hasOwnProperty("as")
+      )
+      .map(projection => parser.parseTransform({ select: [] }, projection))
+      .map(sql => sql.select[0])
+  }
+
   function doJoin() {
     return state.data.length > 1
   }

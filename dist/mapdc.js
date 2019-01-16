@@ -42685,6 +42685,22 @@ function rasterLayerPolyMixin(_layer) {
     return state;
   };
 
+  _layer.getProjections = function () {
+    return getTransforms({
+      filter: "",
+      globalFilter: "",
+      layerFilter: _layer.filters(),
+      filterInvers: _layer.filtersInverse(),
+      lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())
+    }).filter(function (transform) {
+      return transform.type === "project" && transform.hasOwnProperty("as");
+    }).map(function (projection) {
+      return _utils.parser.parseTransform({ select: [] }, projection);
+    }).map(function (sql) {
+      return sql.select[0];
+    });
+  };
+
   function doJoin() {
     return state.data.length > 1;
   }
@@ -42834,7 +42850,7 @@ function rasterLayerPolyMixin(_layer) {
         expr: globalFilter
       });
     }
-    debugger;
+
     return transforms;
   }
 
@@ -68813,8 +68829,8 @@ function rasterLayer(layerType) {
     // data structure, but probably not an issue given the amount
     // of popup col attrs to iterate through is small
     var dim = _layer.group() || _layer.dimension();
-    if (dim || _layer.layerType() === "points" || _layer.layerType() === "lines") {
-      var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" ? _layer.getProjections() : dim.getProjectOn(true); // handles the group and dimension case
+    if (dim || _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys") {
+      var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys" || _layer.layerType() === "" ? _layer.getProjections() : dim.getProjectOn(true); // handles the group and dimension case
       var regex = /^\s*(\S+)\s+as\s+(\S+)/i;
       var funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i;
       for (var i = 0; i < projExprs.length; ++i) {
