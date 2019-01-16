@@ -63194,8 +63194,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var bounds = _chart.getDataRenderBounds();
     _chart._updateXAndYScales(bounds);
     _chart._vegaSpec = genLayeredVega(_chart);
-    var nonce = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}, callback);
-    _renderBoundsMap[nonce] = bounds;
+
+    _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
+      _renderBoundsMap[result.nonce] = bounds;
+      callback(null, result);
+    }).catch(function (error) {
+      callback(error);
+    });
   });
 
   _chart.data(function (group) {
@@ -63406,13 +63411,11 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return;
     }
 
-    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, layerObj, [function (err, results) {
-      if (err) {
-        throw new Error("getResultRowForPixel failed with message: " + err.message);
-      } else {
-        return callback(results[0]);
-      }
-    }], Math.ceil(_popupSearchRadius * pixelRatio));
+    _chart.con().getResultRowForPixelAsync(_chart.__dcFlag__, pixel, layerObj, Math.ceil(_popupSearchRadius * pixelRatio)).then(function (results) {
+      return callback(results[0]);
+    }).catch(function (error) {
+      throw new Error("getResultRowForPixel failed with message: " + error.message);
+    });
   };
 
   _chart.measureValue = function (value, key) {
@@ -69870,9 +69873,10 @@ function rasterMixin(_chart) {
     if (!point || !tableName || !columns.length || columns.length === 3 && hideColorColumnInPopup()) {
       return;
     }
-    return _chart.con().getResultRowForPixel(_chart.__dcFlag__, pixel, { table: columns }, [function (results) {
+
+    _chart.con().getResultRowForPixelAsync(_chart.__dcFlag__, pixel, { table: columns }, _popupSearchRadius * pixelRatio).then(function (results) {
       return callback(results[0]);
-    }], _popupSearchRadius * pixelRatio);
+    });
   };
 
   _chart.displayPopup = function displayPopup(result) {
