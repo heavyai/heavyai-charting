@@ -45,7 +45,9 @@ describe("rasterLayerPolyMixin", () => {
           }
         ],
         transform: {
-          limit: 1000000
+          sample: true,
+          limit: 1000000,
+          tableSize: 500000
         },
         mark: {
           type: "poly",
@@ -69,7 +71,8 @@ describe("rasterLayerPolyMixin", () => {
             domain: [0, 100],
             range: ["black", "blue"]
           },
-          geocol: "mapd_geo"
+          geocol: "mapd_geo",
+          geoTable: "zipcodes"
         }
       })
 
@@ -78,6 +81,8 @@ describe("rasterLayerPolyMixin", () => {
           table: "contribs",
           layerName: "polys",
           filter: "amount=0",
+          filtersInverse: false,
+          lastFilteredSize: 500000,
           useProjection: true
         })
       ).to.deep.equal({
@@ -85,9 +90,8 @@ describe("rasterLayerPolyMixin", () => {
           {
             name: "polys",
             format: "polys",
-            geocolumn: "mapd_geo",
             sql:
-              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid) as rowid FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
+              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid), SAMPLE(zipcodes.mapd_geo) FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
           }
         ],
         scales: [
@@ -166,7 +170,8 @@ describe("rasterLayerPolyMixin", () => {
             domain: [0, 100],
             range: ["black", "blue"]
           },
-          geocol: "mapd_geo"
+          geocol: "mapd_geo",
+          geoTable: "zipcodes"
         }
       })
 
@@ -175,6 +180,8 @@ describe("rasterLayerPolyMixin", () => {
           table: "contribs",
           layerName: "polys",
           filter: "amount=0",
+          filtersInverse: false,
+          lastFilteredSize: 500000,
           useProjection: false
         })
       ).to.deep.equal({
@@ -184,7 +191,7 @@ describe("rasterLayerPolyMixin", () => {
             format: "polys",
             geocolumn: "mapd_geo",
             sql:
-              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid) as rowid FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
+              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid), SAMPLE(zipcodes.mapd_geo) FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
           }
         ],
         scales: [
@@ -262,7 +269,8 @@ describe("rasterLayerPolyMixin", () => {
             domain: [0, 100],
             range: ["black", "blue"]
           },
-          geocol: "mapd_geo"
+          geocol: "mapd_geo",
+          geoTable: "zipcodes"
         }
       })
 
@@ -271,6 +279,8 @@ describe("rasterLayerPolyMixin", () => {
           table: "contribs",
           layerName: "polys",
           filter: "amount=0",
+          filtersInverse: false,
+          lastFilteredSize: 500000,
           useProjection: false
         })
       ).to.deep.equal({
@@ -280,7 +290,7 @@ describe("rasterLayerPolyMixin", () => {
             format: "polys",
             geocolumn: "mapd_geo",
             sql:
-              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid) as rowid FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
+              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid), SAMPLE(zipcodes.mapd_geo) FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
           }
         ],
         scales: [
@@ -358,7 +368,8 @@ describe("rasterLayerPolyMixin", () => {
             domain: "auto",
             range: ["black", "blue"]
           },
-          geocol: "mapd_geo"
+          geocol: "mapd_geo",
+          geoTable: "zipcodes"
         }
       })
 
@@ -367,6 +378,8 @@ describe("rasterLayerPolyMixin", () => {
           table: "contribs",
           layerName: "polys",
           filter: "amount=0",
+          filtersInverse: false,
+          lastFilteredSize: 500000,
           useProjection: false
         })
       ).to.deep.equal({
@@ -375,9 +388,8 @@ describe("rasterLayerPolyMixin", () => {
             name: "polys",
             geocolumn: "mapd_geo",
             format: "polys",
-            geocolumn: "mapd_geo",
             sql:
-              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid) as rowid FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
+              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid), SAMPLE(zipcodes.mapd_geo) FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
           },
           {
             name: "polys_stats",

@@ -122,6 +122,7 @@ export default function rasterLayerPolyMixin(_layer) {
     filtersInverse,
     lastFilteredSize
   }) {
+    console.log('test ', filter, globalFilter, layerFilter, filtersInverse, lastFilteredSize)
     const { encoding: { color, geocol, geoTable } } = state
 
     const transforms = []
