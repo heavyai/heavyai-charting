@@ -42804,14 +42804,16 @@ function rasterLayerPolyMixin(_layer) {
     if (doJoin()) {
       transforms.push({
         type: "project",
-        expr: "LAST_SAMPLE(" + rowIdTable + ".rowid)",
-        as: "rowid"
+        expr: "LAST_SAMPLE(" + rowIdTable + ".rowid)"
+      });
+      transforms.push({
+        type: "project",
+        expr: "SAMPLE(" + geoTable + "." + geocol + ")"
       });
     } else {
       transforms.push({
         type: "project",
-        expr: rowIdTable + ".rowid",
-        as: "rowid"
+        expr: rowIdTable + ".rowid"
       });
       transforms.push({
         type: "project",
@@ -43030,7 +43032,7 @@ function rasterLayerPolyMixin(_layer) {
       marks[0].properties.x.scale = "x";
       marks[0].properties.y.scale = "y";
     }
-
+    debugger;
     return {
       data: data,
       scales: scales,
