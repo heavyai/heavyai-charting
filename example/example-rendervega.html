@@ -84,19 +84,19 @@ var connector = new MapdCon()
   .dbName("mapd")
   .user("mapd")
   .password("HyperInteractive")
-  .connect(function(error, con) {
-    con.renderVega(1, JSON.stringify(exampleVega), vegaOptions, function(error, result) {
-      if (error) {
-        console.log(error.message);
-      }
-      else {
+  .connectAsync()
+  .then(function(con) {
+    con.renderVegaAsync(1, JSON.stringify(exampleVega), vegaOptions)
+      .then(function(result) {
         var blobUrl = `data:image/png;base64,${result.image}`
         var body = document.querySelector('body')
         var vegaImg = new Image()
         vegaImg.src = blobUrl
         body.append(vegaImg)
-      }
-    });
+      })
+      .catch(function(error) {
+        console.log(error.message);
+      });
   });
 
 </script>
