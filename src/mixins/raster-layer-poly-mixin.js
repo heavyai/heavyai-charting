@@ -122,7 +122,6 @@ export default function rasterLayerPolyMixin(_layer) {
     filtersInverse,
     lastFilteredSize
   }) {
-    console.log('test ', filter, globalFilter, layerFilter, filtersInverse, lastFilteredSize)
     const { encoding: { color, geocol, geoTable } } = state
 
     const transforms = []
@@ -226,12 +225,9 @@ export default function rasterLayerPolyMixin(_layer) {
 
     if (doJoin()) {
       transforms.push({
-          type: "project",
-          expr: `LAST_SAMPLE(${rowIdTable}.rowid)`
-      })
-      transforms.push({
         type: "project",
-        expr: `SAMPLE(${geoTable}.${geocol})`
+        expr: `SAMPLE(${geoTable}.${geocol})`,
+        as: geocol
       })
     } else {
       transforms.push({
@@ -251,11 +247,6 @@ export default function rasterLayerPolyMixin(_layer) {
           method: "multiplicative",
           size: lastFilteredSize || state.transform.tableSize,
           limit: state.transform.limit
-        })
-      } else { // when geo join is applied, we won't use Knuth's sampling but use LIMIT
-        transforms.push({
-          type: "limit",
-          row: state.transform.limit
         })
       }
     }
@@ -449,7 +440,7 @@ export default function rasterLayerPolyMixin(_layer) {
       marks[0].properties.x.scale = "x"
       marks[0].properties.y.scale = "y"
     }
-debugger
+
     return {
       data,
       scales,
