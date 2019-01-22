@@ -75,14 +75,15 @@ describe("rasterLayerPolyMixin", () => {
           geoTable: "zipcodes"
         }
       })
+      layer.crossfilter({
+        getId: () => 1
+      })
 
       expect(
         layer.__genVega({
           table: "contribs",
           layerName: "polys",
           filter: "amount=0",
-          filtersInverse: false,
-          lastFilteredSize: 500000,
           useProjection: true
         })
       ).to.deep.equal({
@@ -91,7 +92,7 @@ describe("rasterLayerPolyMixin", () => {
             name: "polys",
             format: "polys",
             sql:
-              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid), SAMPLE(zipcodes.mapd_geo) FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
+              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, SAMPLE(zipcodes.mapd_geo) as mapd_geo FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0"
           }
         ],
         scales: [
@@ -146,7 +147,9 @@ describe("rasterLayerPolyMixin", () => {
           }
         ],
         transform: {
-          limit: 1000000
+          sample: true,
+          limit: 1000000,
+          tableSize: 500000
         },
         mark: {
           type: "poly",
@@ -174,14 +177,15 @@ describe("rasterLayerPolyMixin", () => {
           geoTable: "zipcodes"
         }
       })
+      layer.crossfilter({
+        getId: () => 1
+      })
 
       expect(
         layer.__genVega({
           table: "contribs",
           layerName: "polys",
           filter: "amount=0",
-          filtersInverse: false,
-          lastFilteredSize: 500000,
           useProjection: false
         })
       ).to.deep.equal({
@@ -189,9 +193,8 @@ describe("rasterLayerPolyMixin", () => {
           {
             name: "polys",
             format: "polys",
-            geocolumn: "mapd_geo",
             sql:
-              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid), SAMPLE(zipcodes.mapd_geo) FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
+              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, SAMPLE(zipcodes.mapd_geo) as mapd_geo FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0"
           }
         ],
         scales: [
@@ -245,7 +248,9 @@ describe("rasterLayerPolyMixin", () => {
           }
         ],
         transform: {
-          limit: 1000000
+          sample: true,
+          limit: 1000000,
+          tableSize: 500000
         },
         mark: {
           type: "poly",
@@ -273,24 +278,24 @@ describe("rasterLayerPolyMixin", () => {
           geoTable: "zipcodes"
         }
       })
+      layer.crossfilter({
+        getId: () => 1
+      })
 
       expect(
         layer.__genVega({
           table: "contribs",
           layerName: "polys",
           filter: "amount=0",
-          filtersInverse: false,
-          lastFilteredSize: 500000,
-          useProjection: false
+          filtersInverse: false
         })
       ).to.deep.equal({
         data: [
           {
             name: "polys",
             format: "polys",
-            geocolumn: "mapd_geo",
             sql:
-              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid), SAMPLE(zipcodes.mapd_geo) FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
+              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, SAMPLE(zipcodes.mapd_geo) as mapd_geo FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0"
           }
         ],
         scales: [
@@ -372,24 +377,23 @@ describe("rasterLayerPolyMixin", () => {
           geoTable: "zipcodes"
         }
       })
-
+      layer.crossfilter({
+        getId: () => 1
+      })
       expect(
         layer.__genVega({
           table: "contribs",
           layerName: "polys",
           filter: "amount=0",
-          filtersInverse: false,
-          lastFilteredSize: 500000,
           useProjection: false
         })
       ).to.deep.equal({
         data: [
           {
             name: "polys",
-            geocolumn: "mapd_geo",
             format: "polys",
             sql:
-              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, LAST_SAMPLE(zipcodes.rowid), SAMPLE(zipcodes.mapd_geo) FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0 LIMIT 1000000"
+              "SELECT contributions_donotmodify.contributor_zipcode as key0, AVG(contributions_donotmodify.amount) as color, SAMPLE(zipcodes.mapd_geo) as mapd_geo FROM contributions_donotmodify, zipcodes WHERE (contributions_donotmodify.contributor_zipcode = zipcodes.ZCTA5CE10) AND (amount=0) GROUP BY key0"
           },
           {
             name: "polys_stats",
