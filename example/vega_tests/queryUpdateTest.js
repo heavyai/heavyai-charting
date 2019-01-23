@@ -444,6 +444,197 @@ document.addEventListener("DOMContentLoaded", function init() {
     }]
   }
 
+  // this set of vegas must be run sequentially by the same session/widget.
+  // This tests a scenario where the first vega has 2 layers with two queries where the data
+  // layout of the two queries is exactly the same. The second vega keeps the 2nd query from
+  // the first and re-uses the first mark, just pointing to the new data. This should properly
+  // render.
+  const sequential_data_update_test_with_same_layout_test = [
+    {
+      "width": 1062,
+      "height": 1073,
+      "data": [
+        {
+          "name": "brands_poi_1000",
+          "sql": "SELECT ST_X(pickup_point) AS x, ST_Y(pickup_point) AS y, convert_meters_to_pixel_width(2000, pickup_point, -74.08060703564206, -73.84964107807978, 1062, 0) AS pxwidth, convert_meters_to_pixel_height(2000, pickup_point, 40.62751366168115, 40.804388026304196, 1073, 0) AS pxheight, rowid, pickup_boroname AS color FROM taxi_factual_closestbuilding WHERE pickup_boroname IN ('Manhattan') AND vendor_id like 'CMT' AND MOD(rowid * 2654435761, 4294967296) < 2432"
+        },
+        {
+          "name": "brands_poi_500",
+          "sql": "SELECT ST_X(dropoff_point) AS x, ST_Y(dropoff_point) AS y, convert_meters_to_pixel_width(1000, dropoff_point, -74.08060703564206, -73.84964107807978, 1062, 0) AS pxwidth, convert_meters_to_pixel_height(1000, dropoff_point, 40.62751366168115, 40.804388026304196, 1073, 0) AS pxheight, rowid, pickup_boroname AS color FROM taxi_factual_closestbuilding WHERE pickup_boroname IN ('Manhattan') AND vendor_id like 'CMT' AND MOD(rowid * 2654435761, 4294967296) < 2432"
+        }
+      ],
+      "scales": [
+        {
+          "name": "brands_fill_color",
+          "type": "ordinal",
+          "domain": [
+            "Manhattan"
+          ],
+          "range": [
+            "#00AFD7"
+          ]
+        }
+      ],
+      "projections": [
+        {
+          "name": "merc",
+          "type": "mercator",
+          "bounds": {
+            "x": [
+              -74.08060703564206,
+              -73.84964107807978
+            ],
+            "y": [
+              40.62751366168115,
+              40.804388026304196
+            ]
+          }
+        }
+      ],
+      "marks": [
+        {
+          "type": "symbol",
+          "from": {
+            "data": "brands_poi_1000"
+          },
+          "properties": {
+            "xc": {
+              "field": "x"
+            },
+            "yc": {
+              "field": "y"
+            },
+            "fillColor": {
+              "scale": "brands_fill_color",
+              "field": "color"
+            },
+            "fillOpacity": 0.7,
+            "width": {
+              "field": "pxwidth"
+            },
+            "height": {
+              "field": "pxheight"
+            },
+            "shape": "circle",
+            "strokeColor": "#FFFFFF",
+            "strokeWidth": 1.5,
+            "lineJoin": "miter",
+            "miterLimit": 10
+          },
+          "transform": {
+            "projection": "merc"
+          }
+        },
+        {
+          "type": "symbol",
+          "from": {
+            "data": "brands_poi_500"
+          },
+          "properties": {
+            "xc": {
+              "field": "x"
+            },
+            "yc": {
+              "field": "y"
+            },
+            "fillColor": {
+              "scale": "brands_fill_color",
+              "field": "color"
+            },
+            "fillOpacity": 0.7,
+            "width": {
+              "field": "pxwidth"
+            },
+            "height": {
+              "field": "pxheight"
+            },
+            "shape": "circle",
+            "strokeColor": "#FFFFFF",
+            "strokeWidth": 1.5,
+            "lineJoin": "miter",
+            "miterLimit": 10
+          },
+          "transform": {
+            "projection": "merc"
+          }
+        }
+      ]
+    },
+    {
+      "width": 1062,
+      "height": 1073,
+      "data": [
+        {
+          "name": "brands_poi_500",
+          "sql": "SELECT ST_X(dropoff_point) AS x, ST_Y(dropoff_point) AS y, convert_meters_to_pixel_width(1000, dropoff_point, -74.08060703564206, -73.84964107807978, 1062, 0) AS pxwidth, convert_meters_to_pixel_height(1000, dropoff_point, 40.62751366168115, 40.804388026304196, 1073, 0) AS pxheight, rowid, pickup_boroname AS color FROM taxi_factual_closestbuilding WHERE pickup_boroname IN ('Manhattan') AND vendor_id like 'CMT' AND MOD(rowid * 2654435761, 4294967296) < 2432"
+        }
+      ],
+      "scales": [
+        {
+          "name": "brands_fill_color",
+          "type": "ordinal",
+          "domain": [
+            "Manhattan"
+          ],
+          "range": [
+            "#00AFD7"
+          ]
+        }
+      ],
+      "projections": [
+        {
+          "name": "merc",
+          "type": "mercator",
+          "bounds": {
+            "x": [
+              -74.08060703564206,
+              -73.84964107807978
+            ],
+            "y": [
+              40.62751366168115,
+              40.804388026304196
+            ]
+          }
+        }
+      ],
+      "marks": [
+        {
+          "type": "symbol",
+          "from": {
+            "data": "brands_poi_500"
+          },
+          "properties": {
+            "xc": {
+              "field": "x"
+            },
+            "yc": {
+              "field": "y"
+            },
+            "fillColor": {
+              "scale": "brands_fill_color",
+              "field": "color"
+            },
+            "fillOpacity": 0.7,
+            "width": {
+              "field": "pxwidth"
+            },
+            "height": {
+              "field": "pxheight"
+            },
+            "shape": "circle",
+            "strokeColor": "#FFFFFF",
+            "strokeWidth": 1.5,
+            "lineJoin": "miter",
+            "miterLimit": 10
+          },
+          "transform": {
+            "projection": "merc"
+          }
+        }
+      ]
+    }
+  ]
+
   new MapdCon()
     .protocol('http')
     .host('localhost')
@@ -505,5 +696,11 @@ document.addEventListener("DOMContentLoaded", function init() {
       results = con.renderVega(1, JSON.stringify(scatter_query_with_int2double_coerscion))
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      sequential_data_update_test_with_same_layout_test.forEach((vega) => {
+        results = con.renderVega(1, JSON.stringify(vega))
+        blobUrl = "data:image/png;base64," + results.image
+        w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+      })
     })
 })
