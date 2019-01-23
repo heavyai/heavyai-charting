@@ -30137,7 +30137,7 @@ function rasterDrawMixin(chart) {
         filterObj.px = [];
         filterObj.py = [];
         filterObj.shapeFilters = [];
-      } else if (filterObj.coordFilter && filterObj.shapeFilters && filterObj.shapeFilters.length) {
+      } else if (filterObj.coordFilter && filterObj.shapeFilters && filterObj.shapeFilters.length && filterObj.shapeFilters[0].spatialRelAndMeas) {
         filterObj.coordFilter.filterSpatial();
         filterObj.shapeFilters.forEach(function (sf) {
           filterObj.coordFilter.filterSpatial(sf.spatialRelAndMeas, sf.filters);
