@@ -3,6 +3,7 @@ import LassoButtonGroupController, {
   getLatLonCircleClass
 } from "./ui/lasso-tool-ui"
 import earcut from "earcut"
+import * as _ from "lodash"
 import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 import { redrawAllAsync } from "../core/core-async"
 
@@ -241,7 +242,7 @@ export function rasterDrawMixin(chart) {
                 coordFilter: crossFilter,
               }
               coordFilters.set(crossFilter, filterObj)
-              filterObj.shapeFilters = {}
+              filterObj.shapeFilters = []
             }
 
             shapes.forEach(shape => {
@@ -250,19 +251,32 @@ export function rasterDrawMixin(chart) {
                 // convert from mercator to lat-lon
                 LatLonUtils.conv900913To4326(pos, pos)
                 const radiusInKm = shape.radius
-                filterObj.shapeFilters = {
+                const shapeFilter = {
                   spatialRelAndMeas: "filterST_Distance",
                   filters: {point: [pos[0], pos[1]], distanceInKm: radiusInKm}
                 }
+                
+                if (!_.find(filterObj.shapeFilters, shapeFilter)) {
+                  filterObj.shapeFilters.push(shapeFilter)
+                }
               } else if (shape instanceof MapdDraw.Poly) {
+                const p0 = [0, 0]
                 const convertedVerts = []
+
                 const verts = shape.vertsRef
+                const xform = shape.globalXform
                 verts.forEach(vert => {
+                  MapdDraw.Point2d.transformMat2d(p0, vert, xform)
                   if (useLonLat) {
-                    convertedVerts.push(LatLonUtils.conv900913To4326([], vert))
+                    LatLonUtils.conv900913To4326(p0, p0)
                   }
+                  convertedVerts.push([p0[0], p0[1]])
                 })
-                filterObj.shapeFilters = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
+                const shapeFilter = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
+
+                if (!_.find(filterObj.shapeFilters, shapeFilter)) {
+                  filterObj.shapeFilters.push(shapeFilter)
+                }
               }
             })
           }
@@ -298,8 +312,16 @@ export function rasterDrawMixin(chart) {
         filterObj.px = []
         filterObj.py = []
         filterObj.shapeFilters = []
-      } else if (filterObj.coordFilter && filterObj.shapeFilters && filterObj.shapeFilters.spatialRelAndMeas) {
-        filterObj.coordFilter.filterSpatial(filterObj.shapeFilters.spatialRelAndMeas, filterObj.shapeFilters.filters)
+      } else if (filterObj.coordFilter &&
+        filterObj.shapeFilters &&
+        filterObj.shapeFilters.length &&
+        filterObj.shapeFilters[0].spatialRelAndMeas
+      ) {
+        filterObj.coordFilter.filterSpatial()
+        filterObj.shapeFilters.forEach(sf => {
+          filterObj.coordFilter.filterSpatial(sf.spatialRelAndMeas, sf.filters)
+        })
+        filterObj.shapeFilters = []
       } else {
         filterObj.coordFilter.filter()
       }
