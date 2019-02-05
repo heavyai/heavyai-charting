@@ -58,7 +58,7 @@ export function rasterDrawMixin(chart) {
   let buttonController = null
   let currXRange = null
   let currYRange = null
-  const coordFilters = new Map()
+  let coordFilters = new Map()
   let origFilterFunc = null
   let origFilterAll = null
 
@@ -78,56 +78,60 @@ export function rasterDrawMixin(chart) {
     dashPattern: [8, 2]
   }
 
-  function applyFilter() {
+  function applyFilter(l) {
     const NUM_SIDES = 3
     const useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat()
-    const shapes = drawEngine.sortedShapes
     const LatLonCircle = getLatLonCircleClass()
 
     const layers =
       chart.getLayers && typeof chart.getLayers === "function"
         ? chart.getLayers()
         : [chart]
-    layers.forEach(layer => {
-      if (
-        !layer.layerType ||
-        typeof layer.layerType !== "function" ||
-        layer.layerType() === "points" ||
-        layer.layerType() === "heat"
-      ) {
-        let crossFilter = null
-        let filterObj = null
-        const group = layer.group()
 
-        if (group) {
-          crossFilter = group.getCrossfilter()
-        } else {
-          const dim = layer.dimension()
-          if (dim) {
-            crossFilter = dim.getCrossfilter()
+    const layer = l || layers[0]
+    const filters = layer.getState().filters
+
+    if (filters && l) {
+      filters.forEach(filter => {
+        const shape = createShape(filter)
+        if (
+          !layer.layerType ||
+          typeof layer.layerType !== "function" ||
+          layer.layerType() === "points" ||
+          layer.layerType() === "heat"
+        ) {
+          let crossFilter = null
+          let filterObj = null
+          const group = layer.group()
+
+          if (group) {
+            crossFilter = group.getCrossfilter()
           } else {
-            crossFilter = layer.crossfilter()
-          }
-        }
-        if (crossFilter) {
-          filterObj = coordFilters.get(crossFilter)
-          if (!filterObj) {
-            filterObj = {
-              coordFilter: crossFilter.filter(),
-              px: [],
-              py: []
+            const dim = layer.dimension()
+            if (dim) {
+              crossFilter = dim.getCrossfilter()
+            } else {
+              crossFilter = layer.crossfilter()
             }
-            coordFilters.set(crossFilter, filterObj)
-            filterObj.shapeFilters = []
           }
-          const xdim = layer.xDim()
-          const ydim = layer.yDim()
-          if (xdim && ydim) {
-            const px = xdim.value()[0]
-            const py = ydim.value()[0]
-            filterObj.px.push(px)
-            filterObj.py.push(py)
-            shapes.forEach(shape => {
+          if (crossFilter) {
+            filterObj = coordFilters.get(crossFilter)
+            if (!filterObj) {
+              filterObj = {
+                coordFilter: crossFilter.filter(),
+                px: [],
+                py: []
+              }
+              coordFilters.set(crossFilter, filterObj)
+              filterObj.shapeFilters = []
+            }
+            const xdim = layer.xDim()
+            const ydim = layer.yDim()
+            if (xdim && ydim) {
+              const px = xdim.value()[0]
+              const py = ydim.value()[0]
+              filterObj.px.push(px)
+              filterObj.py.push(py)
               if (shape instanceof LatLonCircle) {
                 const pos = shape.getWorldPosition()
                 // convert from mercator to lat-lon
@@ -136,7 +140,7 @@ export function rasterDrawMixin(chart) {
                 filterObj.shapeFilters.push(
                   `DISTANCE_IN_METERS(${pos[0]}, ${
                     pos[1]
-                  }, ${px}, ${py}) < ${meters}`
+                    }, ${px}, ${py}) < ${meters}`
                 )
               } else if (shape instanceof MapdDraw.Circle) {
                 const radsqr = Math.pow(shape.radius, 2)
@@ -150,13 +154,13 @@ export function rasterDrawMixin(chart) {
                     useLonLat
                   )} AND (POWER(${mat[0]} * CAST(${px} AS FLOAT) + ${
                     mat[2]
-                  } * CAST(${py} AS FLOAT) + ${mat[4]}, 2.0) + POWER(${
+                    } * CAST(${py} AS FLOAT) + ${mat[4]}, 2.0) + POWER(${
                     mat[1]
-                  } * CAST(${px} AS FLOAT) + ${
+                    } * CAST(${px} AS FLOAT) + ${
                     mat[3]
-                  } * CAST(${py} AS FLOAT) + ${
+                    } * CAST(${py} AS FLOAT) + ${
                     mat[5]
-                  }, 2.0)) / ${radsqr} <= 1.0`
+                    }, 2.0)) / ${radsqr} <= 1.0`
                 )
               } else if (shape instanceof MapdDraw.Poly) {
                 const p0 = [0, 0]
@@ -214,38 +218,35 @@ export function rasterDrawMixin(chart) {
                   )
                 }
               }
-            })
+            }
           }
-        }
-      } else if (!layer.layerType ||
-        typeof layer.layerType !== "function" ||
-        layer.layerType() === "lines") {
-        if (layer.getState().data.length < 2) {
-          let crossFilter = null
-          let filterObj = null
-          const group = layer.group()
+        } else if (!layer.layerType ||
+          typeof layer.layerType !== "function" ||
+          layer.layerType() === "lines") {
+          if (layer.getState().data.length < 2) {
+            let crossFilter = null
+            let filterObj = null
+            const group = layer.group()
 
-          if (group) {
-            crossFilter = group.getCrossfilter()
-          } else {
-            const dim = layer.viewBoxDim()
-            if (dim) {
-              crossFilter = dim
+            if (group) {
+              crossFilter = group.getCrossfilter()
             } else {
-              crossFilter = layer.crossfilter()
-            }
-          }
-          if (crossFilter) {
-            filterObj = coordFilters.get(crossFilter)
-            if (!filterObj) {
-              filterObj = {
-                coordFilter: crossFilter,
+              const dim = layer.viewBoxDim()
+              if (dim) {
+                crossFilter = dim
+              } else {
+                crossFilter = layer.crossfilter()
               }
-              coordFilters.set(crossFilter, filterObj)
-              filterObj.shapeFilters = []
             }
-
-            shapes.forEach(shape => {
+            if (crossFilter) {
+              filterObj = coordFilters.get(crossFilter)
+              if (!filterObj) {
+                filterObj = {
+                  coordFilter: crossFilter,
+                }
+                coordFilters.set(crossFilter, filterObj)
+                filterObj.shapeFilters = []
+              }
               if (shape instanceof LatLonCircle) {
                 const pos = shape.getWorldPosition()
                 // convert from mercator to lat-lon
@@ -278,11 +279,11 @@ export function rasterDrawMixin(chart) {
                   filterObj.shapeFilters.push(shapeFilter)
                 }
               }
-            })
+            }
           }
         }
-      }
-    })
+      })
+    }
 
     coordFilters.forEach(filterObj => {
       if (
@@ -364,40 +365,54 @@ export function rasterDrawMixin(chart) {
     return chart.nonDrawFilters()
   }
 
+  function createShape(filterArg) {
+    let newShape = null
+    const selectOpts = {}
+    if (filterArg.type === "LatLonCircle") {
+      const LatLonCircle = getLatLonCircleClass()
+      newShape = new LatLonCircle(filterArg)
+      selectOpts.uniformScaleOnly = true
+      selectOpts.centerScaleOnly = true
+      selectOpts.rotatable = false
+    } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
+      newShape = new MapdDraw[filterArg.type](filterArg)
+    } else {
+      origFilterFunc(filterArg)
+    }
+
+    if (newShape) {
+      drawEngine.addShape(newShape, selectOpts)
+      chart.addFilterShape(newShape)
+    }
+    return newShape
+  }
+
   function filter(filterArg) {
     if (!arguments.length) {
       return drawEngine.getShapesAsJSON()
     }
-
     if (filterArg === null) {
       drawEngine.deleteAllShapes()
       applyFilter()
-    } else if (typeof filterArg.type !== "undefined") {
-      let newShape = null
+    } else if (typeof filterArg.type !== "undefined" || filterArg === "master") {
       if (filterArg.type === "Feature") {
         console.log(
           "WARNING - trying to load an incompatible lasso dashboard. All filters will be cleared."
         )
         return
       }
-      const selectOpts = {}
-      if (filterArg.type === "LatLonCircle") {
-        const LatLonCircle = getLatLonCircleClass()
-        newShape = new LatLonCircle(filterArg)
-        selectOpts.uniformScaleOnly = true
-        selectOpts.centerScaleOnly = true
-        selectOpts.rotatable = false
-      } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
-        newShape = new MapdDraw[filterArg.type](filterArg)
+      const layers = chart.getLayers()
+      drawEngine.deleteAllShapes()
+
+      if (layers.length > 1 && layers[0].getState().currentLayer === "master") {
+        layers.forEach(layer => {
+          applyFilter(layer)
+          coordFilters = new Map()
+        })
       } else {
-        origFilterFunc(filterArg)
+        applyFilter(layers[0])
       }
 
-      if (newShape) {
-        drawEngine.addShape(newShape, selectOpts)
-        chart.addFilterShape(newShape)
-        applyFilter()
-      }
     } else {
       origFilterFunc(filterArg)
     }
@@ -543,6 +558,7 @@ export function rasterDrawMixin(chart) {
             filterObj.coordFilter.filter()
           }
           filterObj.shapeFilters = []
+          filterObj.coordFilter = {}
         })
       }
       const shapes = drawEngine.sortedShapes

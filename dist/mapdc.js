@@ -29965,48 +29965,52 @@ function rasterDrawMixin(chart) {
     dashPattern: [8, 2]
   };
 
-  function applyFilter() {
+  function applyFilter(l) {
     var NUM_SIDES = 3;
     var useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat();
-    var shapes = drawEngine.sortedShapes;
     var LatLonCircle = (0, _lassoToolUi.getLatLonCircleClass)();
 
     var layers = chart.getLayers && typeof chart.getLayers === "function" ? chart.getLayers() : [chart];
-    layers.forEach(function (layer) {
-      if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points" || layer.layerType() === "heat") {
-        var crossFilter = null;
-        var filterObj = null;
-        var group = layer.group();
 
-        if (group) {
-          crossFilter = group.getCrossfilter();
-        } else {
-          var dim = layer.dimension();
-          if (dim) {
-            crossFilter = dim.getCrossfilter();
+    var layer = l || layers[0];
+    var filters = layer.getState().filters;
+
+    if (filters && l) {
+      filters.forEach(function (filter) {
+        var shape = createShape(filter);
+        if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points" || layer.layerType() === "heat") {
+          var crossFilter = null;
+          var filterObj = null;
+          var group = layer.group();
+
+          if (group) {
+            crossFilter = group.getCrossfilter();
           } else {
-            crossFilter = layer.crossfilter();
+            var dim = layer.dimension();
+            if (dim) {
+              crossFilter = dim.getCrossfilter();
+            } else {
+              crossFilter = layer.crossfilter();
+            }
           }
-        }
-        if (crossFilter) {
-          filterObj = coordFilters.get(crossFilter);
-          if (!filterObj) {
-            filterObj = {
-              coordFilter: crossFilter.filter(),
-              px: [],
-              py: []
-            };
-            coordFilters.set(crossFilter, filterObj);
-            filterObj.shapeFilters = [];
-          }
-          var xdim = layer.xDim();
-          var ydim = layer.yDim();
-          if (xdim && ydim) {
-            var px = xdim.value()[0];
-            var py = ydim.value()[0];
-            filterObj.px.push(px);
-            filterObj.py.push(py);
-            shapes.forEach(function (shape) {
+          if (crossFilter) {
+            filterObj = coordFilters.get(crossFilter);
+            if (!filterObj) {
+              filterObj = {
+                coordFilter: crossFilter.filter(),
+                px: [],
+                py: []
+              };
+              coordFilters.set(crossFilter, filterObj);
+              filterObj.shapeFilters = [];
+            }
+            var xdim = layer.xDim();
+            var ydim = layer.yDim();
+            if (xdim && ydim) {
+              var px = xdim.value()[0];
+              var py = ydim.value()[0];
+              filterObj.px.push(px);
+              filterObj.py.push(py);
               if (shape instanceof LatLonCircle) {
                 var pos = shape.getWorldPosition();
                 // convert from mercator to lat-lon
@@ -30053,61 +30057,58 @@ function rasterDrawMixin(chart) {
                   filterObj.shapeFilters.push(createUnlikelyStmtFromShape(shape, px, py, useLonLat) + " AND (" + triangleTests.join(" OR ") + ")");
                 }
               }
-            });
+            }
           }
-        }
-      } else if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "lines") {
-        if (layer.getState().data.length < 2) {
-          var _crossFilter = null;
-          var _filterObj = null;
-          var _group = layer.group();
+        } else if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "lines") {
+          if (layer.getState().data.length < 2) {
+            var _crossFilter = null;
+            var _filterObj = null;
+            var _group = layer.group();
 
-          if (_group) {
-            _crossFilter = _group.getCrossfilter();
-          } else {
-            var _dim = layer.viewBoxDim();
-            if (_dim) {
-              _crossFilter = _dim;
+            if (_group) {
+              _crossFilter = _group.getCrossfilter();
             } else {
-              _crossFilter = layer.crossfilter();
+              var _dim = layer.viewBoxDim();
+              if (_dim) {
+                _crossFilter = _dim;
+              } else {
+                _crossFilter = layer.crossfilter();
+              }
             }
-          }
-          if (_crossFilter) {
-            _filterObj = coordFilters.get(_crossFilter);
-            if (!_filterObj) {
-              _filterObj = {
-                coordFilter: _crossFilter
-              };
-              coordFilters.set(_crossFilter, _filterObj);
-              _filterObj.shapeFilters = [];
-            }
-
-            shapes.forEach(function (shape) {
+            if (_crossFilter) {
+              _filterObj = coordFilters.get(_crossFilter);
+              if (!_filterObj) {
+                _filterObj = {
+                  coordFilter: _crossFilter
+                };
+                coordFilters.set(_crossFilter, _filterObj);
+                _filterObj.shapeFilters = [];
+              }
               if (shape instanceof LatLonCircle) {
-                var pos = shape.getWorldPosition();
+                var _pos = shape.getWorldPosition();
                 // convert from mercator to lat-lon
-                LatLonUtils.conv900913To4326(pos, pos);
+                LatLonUtils.conv900913To4326(_pos, _pos);
                 var radiusInKm = shape.radius;
                 var shapeFilter = {
                   spatialRelAndMeas: "filterST_Distance",
-                  filters: { point: [pos[0], pos[1]], distanceInKm: radiusInKm }
+                  filters: { point: [_pos[0], _pos[1]], distanceInKm: radiusInKm }
                 };
 
                 if (!_.find(_filterObj.shapeFilters, shapeFilter)) {
                   _filterObj.shapeFilters.push(shapeFilter);
                 }
               } else if (shape instanceof MapdDraw.Poly) {
-                var p0 = [0, 0];
+                var _p = [0, 0];
                 var convertedVerts = [];
 
-                var verts = shape.vertsRef;
-                var xform = shape.globalXform;
-                verts.forEach(function (vert) {
-                  MapdDraw.Point2d.transformMat2d(p0, vert, xform);
+                var _verts = shape.vertsRef;
+                var _xform = shape.globalXform;
+                _verts.forEach(function (vert) {
+                  MapdDraw.Point2d.transformMat2d(_p, vert, _xform);
                   if (useLonLat) {
-                    LatLonUtils.conv900913To4326(p0, p0);
+                    LatLonUtils.conv900913To4326(_p, _p);
                   }
-                  convertedVerts.push([p0[0], p0[1]]);
+                  convertedVerts.push([_p[0], _p[1]]);
                 });
                 var _shapeFilter = { spatialRelAndMeas: "filterST_Contains", filters: convertedVerts };
 
@@ -30115,11 +30116,11 @@ function rasterDrawMixin(chart) {
                   _filterObj.shapeFilters.push(_shapeFilter);
                 }
               }
-            });
+            }
           }
         }
-      }
-    });
+      });
+    }
 
     coordFilters.forEach(function (filterObj) {
       if (filterObj.px && filterObj.py && filterObj.px.length && filterObj.py.length && filterObj.shapeFilters.length) {
@@ -30182,37 +30183,50 @@ function rasterDrawMixin(chart) {
     return chart.nonDrawFilters();
   }
 
+  function createShape(filterArg) {
+    var newShape = null;
+    var selectOpts = {};
+    if (filterArg.type === "LatLonCircle") {
+      var LatLonCircle = (0, _lassoToolUi.getLatLonCircleClass)();
+      newShape = new LatLonCircle(filterArg);
+      selectOpts.uniformScaleOnly = true;
+      selectOpts.centerScaleOnly = true;
+      selectOpts.rotatable = false;
+    } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
+      newShape = new MapdDraw[filterArg.type](filterArg);
+    } else {
+      origFilterFunc(filterArg);
+    }
+
+    if (newShape) {
+      drawEngine.addShape(newShape, selectOpts);
+      chart.addFilterShape(newShape);
+    }
+    return newShape;
+  }
+
   function filter(filterArg) {
     if (!arguments.length) {
       return drawEngine.getShapesAsJSON();
     }
-
     if (filterArg === null) {
       drawEngine.deleteAllShapes();
       applyFilter();
-    } else if (typeof filterArg.type !== "undefined") {
-      var newShape = null;
+    } else if (typeof filterArg.type !== "undefined" || filterArg === "master") {
       if (filterArg.type === "Feature") {
         console.log("WARNING - trying to load an incompatible lasso dashboard. All filters will be cleared.");
         return;
       }
-      var selectOpts = {};
-      if (filterArg.type === "LatLonCircle") {
-        var LatLonCircle = (0, _lassoToolUi.getLatLonCircleClass)();
-        newShape = new LatLonCircle(filterArg);
-        selectOpts.uniformScaleOnly = true;
-        selectOpts.centerScaleOnly = true;
-        selectOpts.rotatable = false;
-      } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
-        newShape = new MapdDraw[filterArg.type](filterArg);
-      } else {
-        origFilterFunc(filterArg);
-      }
+      var layers = chart.getLayers();
+      drawEngine.deleteAllShapes();
 
-      if (newShape) {
-        drawEngine.addShape(newShape, selectOpts);
-        chart.addFilterShape(newShape);
-        applyFilter();
+      if (layers.length > 1 && layers[0].getState().currentLayer === "master") {
+        layers.forEach(function (layer) {
+          applyFilter(layer);
+          coordFilters = new Map();
+        });
+      } else {
+        applyFilter(layers[0]);
       }
     } else {
       origFilterFunc(filterArg);
@@ -30335,6 +30349,7 @@ function rasterDrawMixin(chart) {
             filterObj.coordFilter.filter();
           }
           filterObj.shapeFilters = [];
+          filterObj.coordFilter = {};
         });
       }
       var shapes = drawEngine.sortedShapes;
