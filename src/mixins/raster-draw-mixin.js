@@ -91,14 +91,16 @@ export function rasterDrawMixin(chart) {
     const layer = l || layers[0]
     const filters = layer.getState().filters
 
-    if (filters && l) {
+    if (filters) {
       filters.forEach(filter => {
+        debugger
         const shape = createShape(filter)
         if (
+          shape && (
           !layer.layerType ||
           typeof layer.layerType !== "function" ||
           layer.layerType() === "points" ||
-          layer.layerType() === "heat"
+          layer.layerType() === "heat")
         ) {
           let crossFilter = null
           let filterObj = null
@@ -220,9 +222,9 @@ export function rasterDrawMixin(chart) {
               }
             }
           }
-        } else if (!layer.layerType ||
+        } else if (shape && (!layer.layerType ||
           typeof layer.layerType !== "function" ||
-          layer.layerType() === "lines") {
+          layer.layerType() === "lines")) {
           if (layer.getState().data.length < 2) {
             let crossFilter = null
             let filterObj = null
@@ -344,7 +346,17 @@ export function rasterDrawMixin(chart) {
     debounceRedraw()
   }
 
-  chart.addFilterShape = shape => {
+  chart.addFilterShape = (shape, newShape) => { // newShape arg is only passed when we call chart.filter() from immerse
+    if(!newShape) {
+      const layers =
+        chart.getLayers && typeof chart.getLayers === "function"
+          ? chart.getLayers()
+          : [chart]
+      const currentLayer = layers[0] // we only get one layer from "Layer" tab, but get all layers from "Master" tab ?
+      currentLayer.setState({...currentLayer.getState(), filters: chart.filters()}) // need to update layer's filter from here
+      // because we apply filter for each layer.filters
+    }
+
     shape.on(
       ["changed:geom", "changed:xform", "changed:visibility"],
       updateDrawFromGeom
@@ -366,6 +378,7 @@ export function rasterDrawMixin(chart) {
   }
 
   function createShape(filterArg) {
+    const shapes = drawEngine.getShapesAsJSON()
     let newShape = null
     const selectOpts = {}
     if (filterArg.type === "LatLonCircle") {
@@ -380,9 +393,10 @@ export function rasterDrawMixin(chart) {
       origFilterFunc(filterArg)
     }
 
-    if (newShape) {
+    if (newShape &&  !_.find(shapes, filterArg)) { // this will prevent adding a shape that is already added by drawing a new shape on the map,
+        // should pass the check when calling chart.filter(filter) from immerse
       drawEngine.addShape(newShape, selectOpts)
-      chart.addFilterShape(newShape)
+      chart.addFilterShape(newShape, true)
     }
     return newShape
   }

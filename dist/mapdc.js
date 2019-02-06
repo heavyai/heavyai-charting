@@ -29868,6 +29868,9 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 exports.rasterDrawMixin = rasterDrawMixin;
 
 var _utilsLatlon = __webpack_require__(170);
@@ -29975,10 +29978,11 @@ function rasterDrawMixin(chart) {
     var layer = l || layers[0];
     var filters = layer.getState().filters;
 
-    if (filters && l) {
+    if (filters) {
       filters.forEach(function (filter) {
+        debugger;
         var shape = createShape(filter);
-        if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points" || layer.layerType() === "heat") {
+        if (shape && (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points" || layer.layerType() === "heat")) {
           var crossFilter = null;
           var filterObj = null;
           var group = layer.group();
@@ -30059,7 +30063,7 @@ function rasterDrawMixin(chart) {
               }
             }
           }
-        } else if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "lines") {
+        } else if (shape && (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "lines")) {
           if (layer.getState().data.length < 2) {
             var _crossFilter = null;
             var _filterObj = null;
@@ -30165,7 +30169,15 @@ function rasterDrawMixin(chart) {
     debounceRedraw();
   }
 
-  chart.addFilterShape = function (shape) {
+  chart.addFilterShape = function (shape, newShape) {
+    // newShape arg is only passed when we call chart.filter() from immerse
+    if (!newShape) {
+      var layers = chart.getLayers && typeof chart.getLayers === "function" ? chart.getLayers() : [chart];
+      var currentLayer = layers[0]; // we only get one layer from "Layer" tab, but get all layers from "Master" tab ?
+      currentLayer.setState(_extends({}, currentLayer.getState(), { filters: chart.filters() })); // need to update layer's filter from here
+      // because we apply filter for each layer.filters
+    }
+
     shape.on(["changed:geom", "changed:xform", "changed:visibility"], updateDrawFromGeom);
     updateDrawFromGeom();
   };
@@ -30184,6 +30196,7 @@ function rasterDrawMixin(chart) {
   }
 
   function createShape(filterArg) {
+    var shapes = drawEngine.getShapesAsJSON();
     var newShape = null;
     var selectOpts = {};
     if (filterArg.type === "LatLonCircle") {
@@ -30198,9 +30211,11 @@ function rasterDrawMixin(chart) {
       origFilterFunc(filterArg);
     }
 
-    if (newShape) {
+    if (newShape && !_.find(shapes, filterArg)) {
+      // this will prevent adding a shape that is already added by drawing a new shape on the map,
+      // should pass the check when calling chart.filter(filter) from immerse
       drawEngine.addShape(newShape, selectOpts);
-      chart.addFilterShape(newShape);
+      chart.addFilterShape(newShape, true);
     }
     return newShape;
   }
