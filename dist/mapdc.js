@@ -29980,8 +29980,7 @@ function rasterDrawMixin(chart) {
 
     if (filters) {
       filters.forEach(function (filter) {
-        debugger;
-        var shape = createShape(filter);
+        var shape = createShape(filter, layer.getState());
         if (shape && (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points" || layer.layerType() === "heat")) {
           var crossFilter = null;
           var filterObj = null;
@@ -30195,7 +30194,7 @@ function rasterDrawMixin(chart) {
     return chart.nonDrawFilters();
   }
 
-  function createShape(filterArg) {
+  function createShape(filterArg, layer) {
     var shapes = drawEngine.getShapesAsJSON();
     var newShape = null;
     var selectOpts = {};
@@ -30211,7 +30210,10 @@ function rasterDrawMixin(chart) {
       origFilterFunc(filterArg);
     }
 
-    if (newShape && !_.find(shapes, filterArg)) {
+    // for some reason, _.find (checking if shape is already added) is not fully protecting, so added additional check here
+    var shouldAddShape = layer.currentLayer === "master" ? true : shapes.length <= layer.filters.length;
+
+    if (newShape && !_.find(shapes, filterArg) && shouldAddShape) {
       // this will prevent adding a shape that is already added by drawing a new shape on the map,
       // should pass the check when calling chart.filter(filter) from immerse
       drawEngine.addShape(newShape, selectOpts);

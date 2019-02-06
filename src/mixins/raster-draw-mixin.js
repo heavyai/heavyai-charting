@@ -93,8 +93,7 @@ export function rasterDrawMixin(chart) {
 
     if (filters) {
       filters.forEach(filter => {
-        debugger
-        const shape = createShape(filter)
+        const shape = createShape(filter, layer.getState())
         if (
           shape && (
           !layer.layerType ||
@@ -377,7 +376,7 @@ export function rasterDrawMixin(chart) {
     return chart.nonDrawFilters()
   }
 
-  function createShape(filterArg) {
+  function createShape(filterArg, layer) {
     const shapes = drawEngine.getShapesAsJSON()
     let newShape = null
     const selectOpts = {}
@@ -393,7 +392,10 @@ export function rasterDrawMixin(chart) {
       origFilterFunc(filterArg)
     }
 
-    if (newShape &&  !_.find(shapes, filterArg)) { // this will prevent adding a shape that is already added by drawing a new shape on the map,
+    // for some reason, _.find (checking if shape is already added) is not fully protecting, so added additional check here
+    const shouldAddShape = layer.currentLayer === "master" ? true : shapes.length <= layer.filters.length
+
+    if (newShape && !_.find(shapes, filterArg) && shouldAddShape) { // this will prevent adding a shape that is already added by drawing a new shape on the map,
         // should pass the check when calling chart.filter(filter) from immerse
       drawEngine.addShape(newShape, selectOpts)
       chart.addFilterShape(newShape, true)
