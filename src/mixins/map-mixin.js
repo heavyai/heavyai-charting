@@ -277,7 +277,8 @@ export default function mapMixin(
     mapboxlogo.target = "_blank"
     mapboxlogo.innerHTML = "Mapbox"
 
-    const existingLogo = document.getElementsByClassName('mapbox-maplogo')
+    const thisMapContainer = _map._container
+    const existingLogo = thisMapContainer.querySelectorAll('.mapbox-maplogo')
     if(!existingLogo.length) {
       _chart.root()[0][0].appendChild(mapboxlogo)
     }
