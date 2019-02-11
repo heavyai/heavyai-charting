@@ -29297,7 +29297,8 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     mapboxlogo.target = "_blank";
     mapboxlogo.innerHTML = "Mapbox";
 
-    var existingLogo = document.getElementsByClassName('mapbox-maplogo');
+    var thisMapContainer = _map._container;
+    var existingLogo = thisMapContainer.querySelectorAll('.mapbox-maplogo');
     if (!existingLogo.length) {
       _chart.root()[0][0].appendChild(mapboxlogo);
     }
