@@ -48757,7 +48757,7 @@ function rasterLayerPolyMixin(_layer) {
     var isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey));
 
     var filterKey = doJoin() ? "key0" : "rowid";
-    debugger;
+
     chart.hidePopup();
     _events.events.trigger(function () {
       _layer.filter(data[filterKey], isInverseFilter);

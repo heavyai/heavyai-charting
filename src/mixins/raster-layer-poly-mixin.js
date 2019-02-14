@@ -567,7 +567,7 @@ export default function rasterLayerPolyMixin(_layer) {
     const isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey))
 
     const filterKey = doJoin() ? "key0" : "rowid"
-    debugger
+
     chart.hidePopup()
     events.trigger(() => {
       _layer.filter(data[filterKey], isInverseFilter)
