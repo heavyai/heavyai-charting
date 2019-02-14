@@ -8,7 +8,7 @@ import {
 import d3 from "d3"
 import { events } from "../core/events"
 import { parser } from "../utils/utils"
-import {lastFilteredSize} from "../core/core-async";
+import {lastFilteredSize, setLastFilteredSize} from "../core/core-async";
 
 
 const polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)"
@@ -100,7 +100,7 @@ export default function rasterLayerPolyMixin(_layer) {
       filter: "",
       globalFilter: "",
       layerFilter: _layer.filters(),
-      filterInvers: _layer.filtersInverse(),
+      filtersInverse: _layer.filtersInverse(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId())
       })
       .filter(
@@ -291,6 +291,7 @@ export default function rasterLayerPolyMixin(_layer) {
     filter,
     globalFilter,
     layerFilter = [],
+    lastFilteredSize,
     filtersInverse,
     layerName,
     useProjection
@@ -312,7 +313,7 @@ export default function rasterLayerPolyMixin(_layer) {
             globalFilter,
             layerFilter,
             filtersInverse,
-            lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId())
+            lastFilteredSize
           })
         })
       }
@@ -453,7 +454,17 @@ export default function rasterLayerPolyMixin(_layer) {
     return false
   }
 
+  _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
+
   _layer._genVega = function(chart, layerName, group, query) {
+    // needed to set LastFilteredSize when Choropleth map first initialized
+    if (
+      _layer.viewBoxDim()
+    ) {
+      _layer.viewBoxDim().groupAll().valueAsync().then(value => {
+        setLastFilteredSize(_layer.crossfilter().getId(), value)
+      })
+    }
     _vega = _layer.__genVega({
       layerName,
       filter: _layer
@@ -461,6 +472,7 @@ export default function rasterLayerPolyMixin(_layer) {
         .getFilterString(_layer.dimension().getDimensionIndex()),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
+      lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
       filtersInverse: _layer.filtersInverse(),
       useProjection: chart._useGeoTypes
     })
@@ -555,6 +567,7 @@ export default function rasterLayerPolyMixin(_layer) {
     const isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey))
 
     const filterKey = doJoin() ? "key0" : "rowid"
+    debugger
     chart.hidePopup()
     events.trigger(() => {
       _layer.filter(data[filterKey], isInverseFilter)

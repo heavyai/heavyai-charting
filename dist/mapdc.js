@@ -48316,7 +48316,7 @@ function rasterLayerPolyMixin(_layer) {
       filter: "",
       globalFilter: "",
       layerFilter: _layer.filters(),
-      filterInvers: _layer.filtersInverse(),
+      filtersInverse: _layer.filtersInverse(),
       lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())
     }).filter(function (transform) {
       return transform.type === "project" && transform.hasOwnProperty("as");
@@ -48520,6 +48520,7 @@ function rasterLayerPolyMixin(_layer) {
         globalFilter = _ref2.globalFilter,
         _ref2$layerFilter = _ref2.layerFilter,
         layerFilter = _ref2$layerFilter === undefined ? [] : _ref2$layerFilter,
+        lastFilteredSize = _ref2.lastFilteredSize,
         filtersInverse = _ref2.filtersInverse,
         layerName = _ref2.layerName,
         useProjection = _ref2.useProjection;
@@ -48542,7 +48543,7 @@ function rasterLayerPolyMixin(_layer) {
           globalFilter: globalFilter,
           layerFilter: layerFilter,
           filtersInverse: filtersInverse,
-          lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())
+          lastFilteredSize: lastFilteredSize
         })
       })
     }];
@@ -48662,12 +48663,21 @@ function rasterLayerPolyMixin(_layer) {
     return false;
   };
 
+  _layer.viewBoxDim = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
+
   _layer._genVega = function (chart, layerName, group, query) {
+    // needed to set LastFilteredSize when Choropleth map first initialized
+    if (_layer.viewBoxDim()) {
+      _layer.viewBoxDim().groupAll().valueAsync().then(function (value) {
+        (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
+      });
+    }
     _vega = _layer.__genVega({
       layerName: layerName,
       filter: _layer.crossfilter().getFilterString(_layer.dimension().getDimensionIndex()),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
+      lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId()),
       filtersInverse: _layer.filtersInverse(),
       useProjection: chart._useGeoTypes
     });
@@ -48747,6 +48757,7 @@ function rasterLayerPolyMixin(_layer) {
     var isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey));
 
     var filterKey = doJoin() ? "key0" : "rowid";
+    debugger;
     chart.hidePopup();
     _events.events.trigger(function () {
       _layer.filter(data[filterKey], isInverseFilter);
