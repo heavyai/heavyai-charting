@@ -467,9 +467,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
     _vega = _layer.__genVega({
       layerName,
-      filter: _layer
-        .crossfilter()
-        .getFilterString(_layer.dimension().getDimensionIndex()),
+      filter: _layer.crossfilter().getFilterString(),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
@@ -535,10 +533,20 @@ export default function rasterLayerPolyMixin(_layer) {
     } else {
       _filtersArray = [..._filtersArray, key]
     }
+
+    if (_filtersArray.length === 1) {
+      _layer.dimension().set(() => ["rowid"])
+      _layer.viewBoxDim(null)
+    } else if (!_filtersArray.length) {
+      const geoCol = `${_layer.getState().encoding.geoTable}.${_layer.getState().encoding.geocol}`
+      const viewboxdim = _layer.dimension().set(() => [geoCol])
+      _layer.viewBoxDim(viewboxdim)
+    }
+
     _filtersArray.length
       ? _layer
-          .dimension()
-          .filterMulti(_filtersArray, undefined, isInverseFilter)
+        .dimension()
+        .filterMulti(_filtersArray, undefined, isInverseFilter)
       : _layer.dimension().filterAll()
   }
 

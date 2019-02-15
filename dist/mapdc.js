@@ -5860,7 +5860,7 @@ var _legendMixin = __webpack_require__(204);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
-var _binningHelpers = __webpack_require__(19);
+var _binningHelpers = __webpack_require__(20);
 
 var _d = __webpack_require__(1);
 
@@ -5878,7 +5878,7 @@ var _labelMixin = __webpack_require__(206);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
-var _logger = __webpack_require__(18);
+var _logger = __webpack_require__(19);
 
 var _multipleKeyAccessors = __webpack_require__(163);
 
@@ -11062,937 +11062,6 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
 
 /***/ }),
 /* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(26);
-
-
-/* harmony default export */ __webpack_exports__["a"] = (function(x) {
-  return x = Object(__WEBPACK_IMPORTED_MODULE_0__formatDecimal__["a" /* default */])(Math.abs(x)), x ? x[1] : NaN;
-});
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var logger = exports.logger = {};
-
-logger.enableDebugLog = false;
-
-/* istanbul ignore next */
-logger.warn = function (msg) {
-  if (console) {
-    if (console.warn) {
-      console.warn(msg);
-    } else if (console.log) {
-      console.log(msg);
-    }
-  }
-
-  return logger;
-};
-
-/* istanbul ignore next */
-logger.debug = function (msg) {
-  if (logger.enableDebugLog && console) {
-    if (console.debug) {
-      console.debug(msg);
-    } else if (console.log) {
-      console.log(msg);
-    }
-  }
-
-  return logger;
-};
-
-/* istanbul ignore next */
-logger.deprecate = function (fn, msg) {
-  // Allow logging of deprecation
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      logger.warn(msg);
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-  return deprecated;
-};
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.autoBinParams = autoBinParams;
-exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
-var SEC = 1;
-var MIN_IN_SECS = 60;
-var HOUR_IN_SECS = 3600;
-var DAY_IN_SECS = 86400;
-var WEEK_IN_SECS = 604800;
-var MONTH_IN_SECS = 2592000;
-var QUARTER_IN_SECS = 10368000;
-var YEAR_IN_SECS = 31536000;
-var DECADE_IN_SECS = 315360000;
-
-var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
-
-var TIME_LABELS = ["second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
-
-var TIME_LABEL_TO_SECS = exports.TIME_LABEL_TO_SECS = {
-  second: SEC,
-  minute: MIN_IN_SECS,
-  hour: HOUR_IN_SECS,
-  day: DAY_IN_SECS,
-  week: WEEK_IN_SECS,
-  month: MONTH_IN_SECS,
-  quarter: QUARTER_IN_SECS,
-  year: YEAR_IN_SECS,
-  decade: DECADE_IN_SECS
-};
-
-var TIME_SPANS = exports.TIME_SPANS = TIME_LABELS.map(function (label) {
-  return {
-    label: label,
-    numSeconds: TIME_LABEL_TO_SECS[label]
-  };
-});
-
-var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }];
-
-function autoBinParams(timeBounds, maxNumBins, reverse) {
-  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
-  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
-  var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
-  for (var s = 0; s < timeSpans.length; s++) {
-    if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
-      return timeSpans[s].label;
-    }
-  }
-  return "century"; // default;
-}
-
-function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
-  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
-  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
-  var timeLabelToSecs = TIME_LABEL_TO_SECS;
-  if (timeRange / timeLabelToSecs[timeBin] > maxNumBins) {
-    return autoBinParams(timeBounds, maxNumBins);
-  } else if (timeRange / timeLabelToSecs[timeBin] < 2) {
-    return autoBinParams(timeBounds, maxNumBins, true);
-  } else {
-    return timeBin;
-  }
-}
-
-var createBinParams = exports.createBinParams = function createBinParams(chart, binParams) {
-  if (!chart.group() || !chart.group().binParams) {
-    return;
-  }
-
-  binParams = Array.isArray(binParams) ? binParams : [binParams];
-
-  var parsedBinParams = binParams.map(function (param) {
-    if (param) {
-      var _param$timeBin = param.timeBin,
-          timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
-          binBounds = param.binBounds,
-          numBins = param.numBins;
-
-      var extract = param.extract || false;
-      var isDate = binBounds[0] instanceof Date;
-      if (isDate && timeBin === "auto") {
-        var bounds = binBounds.map(function (date) {
-          return date.getTime();
-        });
-        return Object.assign({}, param, {
-          extract: extract,
-          timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
-          binBounds: binBounds.slice(),
-          auto: true // hightlights the "auto" UI button
-        });
-      } else {
-        return Object.assign({}, param, {
-          extract: extract,
-          timeBin: timeBin,
-          binBounds: binBounds.slice()
-        });
-      }
-    }
-    return param;
-  });
-
-  chart.group().binParams(parsedBinParams);
-  return chart;
-};
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = bubbleMixin;
-
-var _colorMixin = __webpack_require__(7);
-
-var _colorMixin2 = _interopRequireDefault(_colorMixin);
-
-var _d = __webpack_require__(1);
-
-var _d2 = _interopRequireDefault(_d);
-
-var _core = __webpack_require__(2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * This Mixin provides reusable functionalities for any chart that needs to visualize data using bubbles.
- * @name bubbleMixin
- * @memberof dc
- * @mixin
- * @mixes dc.colorMixin
- * @param {Object} _chart
- * @return {dc.bubbleMixin}
- */
-function bubbleMixin(_chart) {
-  var _maxBubbleRelativeSize = 0.3;
-
-  /* OVERRIDE ---------------------------------------------------------------- */
-  var _minRadiusWithLabel = 2;
-  /* ------------------------------------------------------------------------- */
-
-  _chart.BUBBLE_NODE_CLASS = "node";
-  _chart.BUBBLE_CLASS = "bubble";
-  _chart.MIN_RADIUS = 10;
-
-  /* OVERRIDE ---------------------------------------------------------------- */
-  _chart.accent = accentBubble;
-  _chart.unAccent = unAccentBubble;
-  /* ------------------------------------------------------------------------- */
-
-  _chart = (0, _colorMixin2.default)(_chart);
-
-  _chart.renderLabel(true);
-
-  /* OVERRIDE ---------------------------------------------------------------- */
-  _chart.setDataAsync(function (group, callbacks) {
-    if (_chart.cap() !== undefined) {
-      return group.topAsync(_chart.cap()).then(function (result) {
-        callbacks(null, result);
-      }).catch(function (error) {
-        callbacks(error);
-      });
-    } else {
-      group.allAsync(callbacks);
-    }
-  });
-  /* ------------------------------------------------------------------------- */
-
-  _chart.data(function (group) {
-    /* OVERRIDE ---------------------------------------------------------------- */
-    if (_chart.dataCache !== null) {
-      return _chart.dataCache;
-    } else {
-      return group.top(_chart.cap() !== undefined ? _chart.cap() : Infinity);
-    }
-    /* ------------------------------------------------------------------------- */
-  });
-
-  var _r = _d2.default.scale.linear().domain([0, 100]);
-
-  var _rValueAccessor = function _rValueAccessor(d) {
-    return d.r;
-  };
-
-  /**
-   * Get or set the bubble radius scale. By default the bubble chart uses
-   * {@link https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear d3.scale.linear().domain([0, 100])}
-   * as its radius scale.
-   * @name r
-   * @memberof dc.bubbleMixin
-   * @instance
-   * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
-   * @param {d3.scale} [bubbleRadiusScale=d3.scale.linear().domain([0, 100])]
-   * @return {d3.scale}
-   * @return {dc.bubbleMixin}
-   */
-  _chart.r = function (bubbleRadiusScale) {
-    if (!arguments.length) {
-      return _r;
-    }
-    _r = bubbleRadiusScale;
-    return _chart;
-  };
-
-  /**
-   * Get or set the radius value accessor function. If set, the radius value accessor function will
-   * be used to retrieve a data value for each bubble. The data retrieved then will be mapped using
-   * the r scale to the actual bubble radius. This allows you to encode a data dimension using bubble
-   * size.
-   * @name radiusValueAccessor
-   * @memberof dc.bubbleMixin
-   * @instance
-   * @param {Function} [radiusValueAccessor]
-   * @return {Function}
-   * @return {dc.bubbleMixin}
-   */
-  _chart.radiusValueAccessor = function (radiusValueAccessor) {
-    if (!arguments.length) {
-      return _rValueAccessor;
-    }
-    _rValueAccessor = radiusValueAccessor;
-    return _chart;
-  };
-
-  _chart.rMin = function () {
-    var min = _d2.default.min(_chart.data(), function (e) {
-      return _chart.radiusValueAccessor()(e);
-    });
-    return min;
-  };
-
-  _chart.rMax = function () {
-    var max = _d2.default.max(_chart.data(), function (e) {
-      return _chart.radiusValueAccessor()(e);
-    });
-    return max;
-  };
-
-  _chart.bubbleR = function (d) {
-    var value = _chart.radiusValueAccessor()(d);
-    var r = _chart.r()(value);
-    if (isNaN(r) || value <= 0) {
-      r = 0;
-    }
-    return r;
-  };
-
-  var labelFunction = function labelFunction(d) {
-    return _chart.label()(d);
-  };
-
-  var shouldLabel = function shouldLabel(d) {
-    return _chart.bubbleR(d) > _minRadiusWithLabel;
-  };
-
-  var labelOpacity = function labelOpacity(d) {
-    return shouldLabel(d) ? 1 : 0;
-  };
-
-  var labelPointerEvent = function labelPointerEvent(d) {
-    return shouldLabel(d) ? "all" : "none";
-  };
-
-  _chart._doRenderLabel = function (bubbleGEnter) {
-    if (_chart.renderLabel()) {
-      var label = bubbleGEnter.select("text");
-
-      if (label.empty()) {
-        label = bubbleGEnter.append("text").attr("text-anchor", "middle").attr("dy", ".3em").on("click", _chart.onClick);
-      }
-
-      label.attr("opacity", 0).attr("pointer-events", labelPointerEvent).html(labelFunction);
-
-      (0, _core.transition)(label, _chart.transitionDuration()).attr("opacity", 1);
-
-      _chart.hideOverlappedLabels();
-    }
-  };
-
-  _chart.doUpdateLabels = function (bubbleGEnter) {
-    _chart._doRenderLabel(bubbleGEnter);
-  };
-
-  var titleFunction = function titleFunction(d) {
-    return _chart.title()(d);
-  };
-
-  _chart._doRenderTitles = function (g) {
-    if (_chart.renderTitle()) {
-      var title = g.select("title");
-
-      if (title.empty()) {
-        g.append("title").text(titleFunction);
-      }
-    }
-  };
-
-  _chart.doUpdateTitles = function (g) {
-    if (_chart.renderTitle()) {
-      g.selectAll("title").text(titleFunction);
-    }
-  };
-
-  /**
-   * Get or set the minimum radius. This will be used to initialize the radius scale's range.
-   * @name minRadius
-   * @memberof dc.bubbleMixin
-   * @instance
-   * @param {Number} [radius=10]
-   * @return {Number}
-   * @return {dc.bubbleMixin}
-   */
-  _chart.minRadius = function (radius) {
-    if (!arguments.length) {
-      return _chart.MIN_RADIUS;
-    }
-    _chart.MIN_RADIUS = radius;
-    return _chart;
-  };
-
-  /**
-   * Get or set the minimum radius for label rendering. If a bubble's radius is less than this value
-   * then no label will be rendered.
-   * @name minRadiusWithLabel
-   * @memberof dc.bubbleMixin
-   * @instance
-   * @param {Number} [radius=10]
-   * @return {Number}
-   * @return {dc.bubbleMixin}
-   */
-
-  _chart.minRadiusWithLabel = function (radius) {
-    if (!arguments.length) {
-      return _minRadiusWithLabel;
-    }
-    _minRadiusWithLabel = radius;
-    return _chart;
-  };
-
-  /**
-   * Get or set the maximum relative size of a bubble to the length of x axis. This value is useful
-   * when the difference in radius between bubbles is too great.
-   * @name maxBubbleRelativeSize
-   * @memberof dc.bubbleMixin
-   * @instance
-   * @param {Number} [relativeSize=0.3]
-   * @return {Number}
-   * @return {dc.bubbleMixin}
-   */
-  _chart.maxBubbleRelativeSize = function (relativeSize) {
-    if (!arguments.length) {
-      return _maxBubbleRelativeSize;
-    }
-    _maxBubbleRelativeSize = relativeSize;
-    return _chart;
-  };
-
-  _chart.fadeDeselectedArea = function () {
-    if (_chart.hasFilter()) {
-      _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
-        if (_chart.isSelectedNode(d)) {
-          _chart.highlightSelected(this);
-        } else {
-          _chart.fadeDeselected(this);
-        }
-      });
-    } else {
-      _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function () {
-        _chart.resetHighlight(this);
-      });
-    }
-  };
-
-  _chart.isSelectedNode = function (d) {
-    /* OVERRIDE -----------------------------------------------------------------*/
-    return _chart.hasFilter(d.key0) ^ _chart.filtersInverse();
-    /* --------------------------------------------------------------------------*/
-  };
-
-  _chart.onClick = function (d) {
-    /* OVERRIDE -----------------------------------------------------------------*/
-    var filter = d.key0;
-    /* --------------------------------------------------------------------------*/
-    _chart.handleFilterClick(_d2.default.event, filter);
-    _chart.updatePopup(d);
-  };
-
-  /* OVERRIDE -----------------------------------------------------------------*/
-  function accentBubble(label) {
-    _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
-      if (d.key0 === label) {
-        _chart.accentSelected(this);
-      }
-    });
-  }
-
-  function unAccentBubble(label) {
-    _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
-      if (d.key0 === label) {
-        _chart.unAccentSelected(this);
-      }
-    });
-  }
-  /* --------------------------------------------------------------------------*/
-
-  return _chart;
-}
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = stackMixin;
-
-var _binningHelpers = __webpack_require__(19);
-
-var _utils = __webpack_require__(3);
-
-var _d = __webpack_require__(1);
-
-var _d2 = _interopRequireDefault(_d);
-
-var _core = __webpack_require__(2);
-
-var _multipleKeyAccessors = __webpack_require__(163);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Stack Mixin is an mixin that provides cross-chart support of stackability using d3.layout.stack.
- * @name stackMixin
- * @memberof dc
- * @mixin
- * @param {Object} _chart
- * @return {dc.stackMixin}
- */
-
-function stackMixin(_chart) {
-  function prepareValues(layer, layerIdx) {
-    var valAccessor = layer.accessor || _chart.valueAccessor();
-    layer.name = String(layer.name || "series_" + (layerIdx + 1));
-    layer.layer = layer.name;
-    layer.idx = layerIdx;
-
-    /* OVERRIDE ---------------------------------------------------------------- */
-    // WARNING: probably destroys stack functionality: find workaround
-    var preValues = _chart.dataCache != null ? _chart.dataCache : layer.group.all();
-    // layer.values = layer.group.all().map(function (d, i) {
-    layer.values = preValues.map(function (d, i) {
-      return {
-        x: _chart.keyAccessor()(d, i),
-        y: layer.hidden ? null : valAccessor(d, i) || 0,
-        idx: layerIdx,
-        data: d,
-        layer: layer.name,
-        hidden: layer.hidden
-      };
-    });
-    /* ------------------------------------------------------------------------- */
-    layer.values = layer.values.filter(domainFilter());
-    return layer.values;
-  }
-
-  var _stackLayout = _d2.default.layout.stack().values(prepareValues);
-
-  var _stack = [];
-  var _titles = {};
-
-  var _hidableStacks = false;
-  var _colorByLayerId = false;
-
-  function domainFilter() {
-    if (!_chart.x()) {
-      return _d2.default.functor(true);
-    }
-    var xDomain = _chart.x().domain();
-    if (_chart.isOrdinal()) {
-      // TODO #416
-      // var domainSet = d3.set(xDomain);
-      return function () {
-        return true; // domainSet.has(p.x);
-      };
-    }
-    if (_chart.elasticX()) {
-      return function () {
-        return true;
-      };
-    }
-    return function (p) {
-      return true;
-    };
-  }
-
-  /**
-   * Stack a new crossfilter group onto this chart with an optional custom value accessor. All stacks
-   * in the same chart will share the same key accessor and therefore the same set of keys.
-   *
-   * For example, in a stacked bar chart, the bars of each stack will be positioned using the same set
-   * of keys on the x axis, while stacked vertically. If name is specified then it will be used to
-   * generate the legend label.
-   * @name stack
-   * @memberof dc.stackMixin
-   * @instance
-   * @see {@link https://github.com/square/crossfilter/wiki/API-Reference#group-map-reduce crossfilter.group}
-   * @example
-   * // stack group using default accessor
-   * chart.stack(valueSumGroup)
-   * // stack group using custom accessor
-   * .stack(avgByDayGroup, function(d){return d.value.avgByDay;});
-   * @param {crossfilter.group} group
-   * @param {String} [name]
-   * @param {Function} [accessor]
-   * @return {Array<{group: crossfilter.group, name: String, accessor: Function}>}
-   * @return {dc.stackMixin}
-   */
-  _chart.stack = function (group, name, accessor) {
-    if (!arguments.length) {
-      return _stack;
-    }
-
-    if (arguments.length <= 2) {
-      accessor = name;
-    }
-
-    var layer = { group: group };
-    if (typeof name === "string") {
-      layer.name = name;
-    }
-    if (typeof accessor === "function") {
-      layer.accessor = accessor;
-    }
-    _stack.push(layer);
-
-    return _chart;
-  };
-
-  (0, _core.override)(_chart, "group", function (g, n, f) {
-    if (!arguments.length) {
-      return _chart._group();
-    }
-    _stack = [];
-    _titles = {};
-    _chart.stack(g, n);
-    if (f) {
-      _chart.valueAccessor(f);
-    }
-    return _chart._group(g, n);
-  });
-
-  /**
-   * Allow named stacks to be hidden or shown by clicking on legend items.
-   * This does not affect the behavior of hideStack or showStack.
-   * @name hidableStacks
-   * @memberof dc.stackMixin
-   * @instance
-   * @param {Boolean} [hidableStacks=false]
-   * @return {Boolean}
-   * @return {dc.stackMixin}
-   */
-  _chart.hidableStacks = function (hidableStacks) {
-    if (!arguments.length) {
-      return _hidableStacks;
-    }
-    _hidableStacks = hidableStacks;
-    return _chart;
-  };
-
-  function findLayerByName(n) {
-    var i = _stack.map((0, _utils.pluck)("name")).indexOf(n);
-    return _stack[i];
-  }
-
-  /**
-   * Hide all stacks on the chart with the given name.
-   * The chart must be re-rendered for this change to appear.
-   * @name hideStack
-   * @memberof dc.stackMixin
-   * @instance
-   * @param {String} stackName
-   * @return {dc.stackMixin}
-   */
-  _chart.hideStack = function (stackName) {
-    var layer = findLayerByName(stackName);
-    if (layer) {
-      layer.hidden = true;
-    }
-    return _chart;
-  };
-
-  /**
-   * Show all stacks on the chart with the given name.
-   * The chart must be re-rendered for this change to appear.
-   * @name showStack
-   * @memberof dc.stackMixin
-   * @instance
-   * @param {String} stackName
-   * @return {dc.stackMixin}
-   */
-  _chart.showStack = function (stackName) {
-    var layer = findLayerByName(stackName);
-    if (layer) {
-      layer.hidden = false;
-    }
-    return _chart;
-  };
-
-  _chart.getValueAccessorByIndex = function (index) {
-    return _stack[index].accessor || _chart.valueAccessor();
-  };
-
-  _chart.yAxisMin = function () {
-    var min = _d2.default.min(flattenStack(), function (p) {
-      /* OVERRIDE ---------------------------------------------------------------- */
-      if (_chart.renderArea === undefined || _chart.renderArea()) {
-        return p.y + p.y0 < p.y0 ? p.y + p.y0 : p.y0;
-      } else {
-        return p.y;
-      }
-    });
-    /* ------------------------------------------------------------------------- */
-
-    return _utils.utils.subtract(min, _chart.yAxisPadding());
-  };
-
-  _chart.yAxisMax = function () {
-    var max = _d2.default.max(flattenStack(), function (p) {
-      /* OVERRIDE ---------------------------------------------------------------- */
-      if (_chart.renderArea === undefined || _chart.renderArea()) {
-        return p.y + p.y0;
-      } else {
-        return p.y;
-      }
-      /* ------------------------------------------------------------------------- */
-    });
-
-    return _utils.utils.add(max, _chart.yAxisPadding());
-  };
-
-  function flattenStack() {
-    var valueses = _chart.data().map(function (layer) {
-      return layer.values;
-    });
-    return Array.prototype.concat.apply([], valueses);
-  }
-
-  _chart.xAxisMin = function () {
-    var min = _d2.default.min(flattenStack(), (0, _utils.pluck)("x"));
-    return _utils.utils.subtract(min, _chart.xAxisPadding());
-  };
-
-  _chart.xAxisMax = function () {
-    var max = _d2.default.max(flattenStack(), (0, _utils.pluck)("x"));
-    return _utils.utils.add(max, _chart.xAxisPadding());
-  };
-
-  /**
-   * Set or get the title function. Chart class will use this function to render svg title (usually interpreted by
-   * browser as tooltips) for each child element in the chart, i.e. a slice in a pie chart or a bubble in a bubble chart.
-   * Almost every chart supports title function however in grid coordinate chart you need to turn off brush in order to
-   * use title otherwise the brush layer will block tooltip trigger.
-   *
-   * If the first argument is a stack name, the title function will get or set the title for that stack. If stackName
-   * is not provided, the first stack is implied.
-   * @name title
-   * @memberof dc.stackMixin
-   * @instance
-   * @example
-   * // set a title function on 'first stack'
-   * chart.title('first stack', function(d) { return d.key + ': ' + d.value; });
-   * // get a title function from 'second stack'
-   * var secondTitleFunction = chart.title('second stack');
-   * @param {String} [stackName]
-   * @param {Function} [titleAccessor]
-   * @return {String}
-   * @return {dc.stackMixin}
-   */
-  (0, _core.override)(_chart, "title", function (stackName, titleAccessor) {
-    if (!stackName) {
-      return _chart._title();
-    }
-
-    if (typeof stackName === "function") {
-      return _chart._title(stackName);
-    }
-    if (stackName === _chart._groupName && typeof titleAccessor === "function") {
-      return _chart._title(titleAccessor);
-    }
-
-    if (typeof titleAccessor !== "function") {
-      return _titles[stackName] || _chart._title();
-    }
-
-    _titles[stackName] = titleAccessor;
-
-    return _chart;
-  });
-
-  /**
-   * Gets or sets the stack layout algorithm, which computes a baseline for each stack and
-   * propagates it to the next
-   * @name stackLayout
-   * @memberof dc.stackMixin
-   * @instance
-   * @see {@link http://github.com/mbostock/d3/wiki/Stack-Layout d3.layout.stack}
-   * @param {Function} [stack=d3.layout.stack]
-   * @return {Function}
-   * @return {dc.stackMixin}
-   */
-  _chart.stackLayout = function (stack) {
-    if (!arguments.length) {
-      return _stackLayout;
-    }
-    _stackLayout = stack;
-    return _chart;
-  };
-
-  function visability(l) {
-    return !l.hidden;
-  }
-
-  _chart.data(function () {
-    var layers = _stack.filter(visability);
-    return layers.length ? _chart.stackLayout()(layers) : [];
-  });
-
-  _chart._ordinalXDomain = function () {
-    var flat = flattenStack().map((0, _utils.pluck)("data"));
-    var ordered = _chart._computeOrderedGroups(flat);
-    return ordered.map(_chart.keyAccessor());
-  };
-
-  _chart.colorByLayerId = function (_) {
-    if (!arguments.length) {
-      return _colorByLayerId;
-    }
-    _colorByLayerId = _;
-    return _chart;
-  };
-
-  _chart.colorAccessor(function (d) {
-    /* OVERRIDE ---------------------------------------------------------------- */
-    var layer = null;
-    if (_colorByLayerId) {
-      layer = this.idx;
-    } else {
-      layer = this.layer || this.name || d.name || d.layer;
-    }
-    /* ------------------------------------------------------------------------- */
-    return layer;
-  });
-
-  _chart.legendables = function () {
-    return _stack.map(function (layer, i) {
-      return {
-        chart: _chart,
-        name: layer.name,
-        hidden: layer.hidden || false,
-        color: _chart.getColor.call(layer, layer.values, i)
-      };
-    });
-  };
-
-  _chart.isLegendableHidden = function (d) {
-    var layer = findLayerByName(d.name);
-    return layer ? layer.hidden : false;
-  };
-
-  _chart.legendToggle = function (d) {
-    if (_hidableStacks) {
-      if (_chart.isLegendableHidden(d)) {
-        _chart.showStack(d.name);
-      } else {
-        _chart.hideStack(d.name);
-      }
-      _chart.renderGroup();
-    }
-  };
-
-  (0, _core.override)(_chart, "binParams", function (binParams) {
-    if (!arguments.length) {
-      return _chart.group().binParams();
-    }
-
-    binParams = Array.isArray(binParams) ? binParams : [binParams];
-
-    var parsedBinParams = binParams.map(function (param) {
-      if (param) {
-        var _param$timeBin = param.timeBin,
-            timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
-            binBounds = param.binBounds,
-            numBins = param.numBins,
-            auto = param.auto;
-
-        var extract = param.extract || false;
-        var isDate = binBounds[0] instanceof Date;
-        if (isDate && timeBin && !extract) {
-          var bounds = binBounds.map(function (date) {
-            return date.getTime();
-          });
-          return Object.assign({}, param, {
-            extract: extract,
-            timeBin: (0, _binningHelpers.checkIfTimeBinInRange)(bounds, timeBin, numBins),
-            binBounds: binBounds.slice()
-          });
-        } else {
-          return param;
-        }
-      }
-      return null;
-    });
-
-    return (0, _binningHelpers.createBinParams)(_chart, parsedBinParams);
-  });
-
-  _chart.keyAccessor(_multipleKeyAccessors.multipleKeysAccessorForStack);
-
-  return _chart;
-}
-
-/***/ }),
-/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12739,6 +11808,937 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   if (mixinDraw) {
     _chart = (0, _rasterDrawMixin.rasterDrawMixin)(_chart);
   }
+
+  return _chart;
+}
+
+/***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(26);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(x) {
+  return x = Object(__WEBPACK_IMPORTED_MODULE_0__formatDecimal__["a" /* default */])(Math.abs(x)), x ? x[1] : NaN;
+});
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var logger = exports.logger = {};
+
+logger.enableDebugLog = false;
+
+/* istanbul ignore next */
+logger.warn = function (msg) {
+  if (console) {
+    if (console.warn) {
+      console.warn(msg);
+    } else if (console.log) {
+      console.log(msg);
+    }
+  }
+
+  return logger;
+};
+
+/* istanbul ignore next */
+logger.debug = function (msg) {
+  if (logger.enableDebugLog && console) {
+    if (console.debug) {
+      console.debug(msg);
+    } else if (console.log) {
+      console.log(msg);
+    }
+  }
+
+  return logger;
+};
+
+/* istanbul ignore next */
+logger.deprecate = function (fn, msg) {
+  // Allow logging of deprecation
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      logger.warn(msg);
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+  return deprecated;
+};
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.autoBinParams = autoBinParams;
+exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
+var SEC = 1;
+var MIN_IN_SECS = 60;
+var HOUR_IN_SECS = 3600;
+var DAY_IN_SECS = 86400;
+var WEEK_IN_SECS = 604800;
+var MONTH_IN_SECS = 2592000;
+var QUARTER_IN_SECS = 10368000;
+var YEAR_IN_SECS = 31536000;
+var DECADE_IN_SECS = 315360000;
+
+var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
+
+var TIME_LABELS = ["second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
+
+var TIME_LABEL_TO_SECS = exports.TIME_LABEL_TO_SECS = {
+  second: SEC,
+  minute: MIN_IN_SECS,
+  hour: HOUR_IN_SECS,
+  day: DAY_IN_SECS,
+  week: WEEK_IN_SECS,
+  month: MONTH_IN_SECS,
+  quarter: QUARTER_IN_SECS,
+  year: YEAR_IN_SECS,
+  decade: DECADE_IN_SECS
+};
+
+var TIME_SPANS = exports.TIME_SPANS = TIME_LABELS.map(function (label) {
+  return {
+    label: label,
+    numSeconds: TIME_LABEL_TO_SECS[label]
+  };
+});
+
+var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }];
+
+function autoBinParams(timeBounds, maxNumBins, reverse) {
+  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
+  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
+  var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
+  for (var s = 0; s < timeSpans.length; s++) {
+    if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
+      return timeSpans[s].label;
+    }
+  }
+  return "century"; // default;
+}
+
+function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
+  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
+  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
+  var timeLabelToSecs = TIME_LABEL_TO_SECS;
+  if (timeRange / timeLabelToSecs[timeBin] > maxNumBins) {
+    return autoBinParams(timeBounds, maxNumBins);
+  } else if (timeRange / timeLabelToSecs[timeBin] < 2) {
+    return autoBinParams(timeBounds, maxNumBins, true);
+  } else {
+    return timeBin;
+  }
+}
+
+var createBinParams = exports.createBinParams = function createBinParams(chart, binParams) {
+  if (!chart.group() || !chart.group().binParams) {
+    return;
+  }
+
+  binParams = Array.isArray(binParams) ? binParams : [binParams];
+
+  var parsedBinParams = binParams.map(function (param) {
+    if (param) {
+      var _param$timeBin = param.timeBin,
+          timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
+          binBounds = param.binBounds,
+          numBins = param.numBins;
+
+      var extract = param.extract || false;
+      var isDate = binBounds[0] instanceof Date;
+      if (isDate && timeBin === "auto") {
+        var bounds = binBounds.map(function (date) {
+          return date.getTime();
+        });
+        return Object.assign({}, param, {
+          extract: extract,
+          timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
+          binBounds: binBounds.slice(),
+          auto: true // hightlights the "auto" UI button
+        });
+      } else {
+        return Object.assign({}, param, {
+          extract: extract,
+          timeBin: timeBin,
+          binBounds: binBounds.slice()
+        });
+      }
+    }
+    return param;
+  });
+
+  chart.group().binParams(parsedBinParams);
+  return chart;
+};
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = bubbleMixin;
+
+var _colorMixin = __webpack_require__(7);
+
+var _colorMixin2 = _interopRequireDefault(_colorMixin);
+
+var _d = __webpack_require__(1);
+
+var _d2 = _interopRequireDefault(_d);
+
+var _core = __webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * This Mixin provides reusable functionalities for any chart that needs to visualize data using bubbles.
+ * @name bubbleMixin
+ * @memberof dc
+ * @mixin
+ * @mixes dc.colorMixin
+ * @param {Object} _chart
+ * @return {dc.bubbleMixin}
+ */
+function bubbleMixin(_chart) {
+  var _maxBubbleRelativeSize = 0.3;
+
+  /* OVERRIDE ---------------------------------------------------------------- */
+  var _minRadiusWithLabel = 2;
+  /* ------------------------------------------------------------------------- */
+
+  _chart.BUBBLE_NODE_CLASS = "node";
+  _chart.BUBBLE_CLASS = "bubble";
+  _chart.MIN_RADIUS = 10;
+
+  /* OVERRIDE ---------------------------------------------------------------- */
+  _chart.accent = accentBubble;
+  _chart.unAccent = unAccentBubble;
+  /* ------------------------------------------------------------------------- */
+
+  _chart = (0, _colorMixin2.default)(_chart);
+
+  _chart.renderLabel(true);
+
+  /* OVERRIDE ---------------------------------------------------------------- */
+  _chart.setDataAsync(function (group, callbacks) {
+    if (_chart.cap() !== undefined) {
+      return group.topAsync(_chart.cap()).then(function (result) {
+        callbacks(null, result);
+      }).catch(function (error) {
+        callbacks(error);
+      });
+    } else {
+      group.allAsync(callbacks);
+    }
+  });
+  /* ------------------------------------------------------------------------- */
+
+  _chart.data(function (group) {
+    /* OVERRIDE ---------------------------------------------------------------- */
+    if (_chart.dataCache !== null) {
+      return _chart.dataCache;
+    } else {
+      return group.top(_chart.cap() !== undefined ? _chart.cap() : Infinity);
+    }
+    /* ------------------------------------------------------------------------- */
+  });
+
+  var _r = _d2.default.scale.linear().domain([0, 100]);
+
+  var _rValueAccessor = function _rValueAccessor(d) {
+    return d.r;
+  };
+
+  /**
+   * Get or set the bubble radius scale. By default the bubble chart uses
+   * {@link https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear d3.scale.linear().domain([0, 100])}
+   * as its radius scale.
+   * @name r
+   * @memberof dc.bubbleMixin
+   * @instance
+   * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
+   * @param {d3.scale} [bubbleRadiusScale=d3.scale.linear().domain([0, 100])]
+   * @return {d3.scale}
+   * @return {dc.bubbleMixin}
+   */
+  _chart.r = function (bubbleRadiusScale) {
+    if (!arguments.length) {
+      return _r;
+    }
+    _r = bubbleRadiusScale;
+    return _chart;
+  };
+
+  /**
+   * Get or set the radius value accessor function. If set, the radius value accessor function will
+   * be used to retrieve a data value for each bubble. The data retrieved then will be mapped using
+   * the r scale to the actual bubble radius. This allows you to encode a data dimension using bubble
+   * size.
+   * @name radiusValueAccessor
+   * @memberof dc.bubbleMixin
+   * @instance
+   * @param {Function} [radiusValueAccessor]
+   * @return {Function}
+   * @return {dc.bubbleMixin}
+   */
+  _chart.radiusValueAccessor = function (radiusValueAccessor) {
+    if (!arguments.length) {
+      return _rValueAccessor;
+    }
+    _rValueAccessor = radiusValueAccessor;
+    return _chart;
+  };
+
+  _chart.rMin = function () {
+    var min = _d2.default.min(_chart.data(), function (e) {
+      return _chart.radiusValueAccessor()(e);
+    });
+    return min;
+  };
+
+  _chart.rMax = function () {
+    var max = _d2.default.max(_chart.data(), function (e) {
+      return _chart.radiusValueAccessor()(e);
+    });
+    return max;
+  };
+
+  _chart.bubbleR = function (d) {
+    var value = _chart.radiusValueAccessor()(d);
+    var r = _chart.r()(value);
+    if (isNaN(r) || value <= 0) {
+      r = 0;
+    }
+    return r;
+  };
+
+  var labelFunction = function labelFunction(d) {
+    return _chart.label()(d);
+  };
+
+  var shouldLabel = function shouldLabel(d) {
+    return _chart.bubbleR(d) > _minRadiusWithLabel;
+  };
+
+  var labelOpacity = function labelOpacity(d) {
+    return shouldLabel(d) ? 1 : 0;
+  };
+
+  var labelPointerEvent = function labelPointerEvent(d) {
+    return shouldLabel(d) ? "all" : "none";
+  };
+
+  _chart._doRenderLabel = function (bubbleGEnter) {
+    if (_chart.renderLabel()) {
+      var label = bubbleGEnter.select("text");
+
+      if (label.empty()) {
+        label = bubbleGEnter.append("text").attr("text-anchor", "middle").attr("dy", ".3em").on("click", _chart.onClick);
+      }
+
+      label.attr("opacity", 0).attr("pointer-events", labelPointerEvent).html(labelFunction);
+
+      (0, _core.transition)(label, _chart.transitionDuration()).attr("opacity", 1);
+
+      _chart.hideOverlappedLabels();
+    }
+  };
+
+  _chart.doUpdateLabels = function (bubbleGEnter) {
+    _chart._doRenderLabel(bubbleGEnter);
+  };
+
+  var titleFunction = function titleFunction(d) {
+    return _chart.title()(d);
+  };
+
+  _chart._doRenderTitles = function (g) {
+    if (_chart.renderTitle()) {
+      var title = g.select("title");
+
+      if (title.empty()) {
+        g.append("title").text(titleFunction);
+      }
+    }
+  };
+
+  _chart.doUpdateTitles = function (g) {
+    if (_chart.renderTitle()) {
+      g.selectAll("title").text(titleFunction);
+    }
+  };
+
+  /**
+   * Get or set the minimum radius. This will be used to initialize the radius scale's range.
+   * @name minRadius
+   * @memberof dc.bubbleMixin
+   * @instance
+   * @param {Number} [radius=10]
+   * @return {Number}
+   * @return {dc.bubbleMixin}
+   */
+  _chart.minRadius = function (radius) {
+    if (!arguments.length) {
+      return _chart.MIN_RADIUS;
+    }
+    _chart.MIN_RADIUS = radius;
+    return _chart;
+  };
+
+  /**
+   * Get or set the minimum radius for label rendering. If a bubble's radius is less than this value
+   * then no label will be rendered.
+   * @name minRadiusWithLabel
+   * @memberof dc.bubbleMixin
+   * @instance
+   * @param {Number} [radius=10]
+   * @return {Number}
+   * @return {dc.bubbleMixin}
+   */
+
+  _chart.minRadiusWithLabel = function (radius) {
+    if (!arguments.length) {
+      return _minRadiusWithLabel;
+    }
+    _minRadiusWithLabel = radius;
+    return _chart;
+  };
+
+  /**
+   * Get or set the maximum relative size of a bubble to the length of x axis. This value is useful
+   * when the difference in radius between bubbles is too great.
+   * @name maxBubbleRelativeSize
+   * @memberof dc.bubbleMixin
+   * @instance
+   * @param {Number} [relativeSize=0.3]
+   * @return {Number}
+   * @return {dc.bubbleMixin}
+   */
+  _chart.maxBubbleRelativeSize = function (relativeSize) {
+    if (!arguments.length) {
+      return _maxBubbleRelativeSize;
+    }
+    _maxBubbleRelativeSize = relativeSize;
+    return _chart;
+  };
+
+  _chart.fadeDeselectedArea = function () {
+    if (_chart.hasFilter()) {
+      _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
+        if (_chart.isSelectedNode(d)) {
+          _chart.highlightSelected(this);
+        } else {
+          _chart.fadeDeselected(this);
+        }
+      });
+    } else {
+      _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function () {
+        _chart.resetHighlight(this);
+      });
+    }
+  };
+
+  _chart.isSelectedNode = function (d) {
+    /* OVERRIDE -----------------------------------------------------------------*/
+    return _chart.hasFilter(d.key0) ^ _chart.filtersInverse();
+    /* --------------------------------------------------------------------------*/
+  };
+
+  _chart.onClick = function (d) {
+    /* OVERRIDE -----------------------------------------------------------------*/
+    var filter = d.key0;
+    /* --------------------------------------------------------------------------*/
+    _chart.handleFilterClick(_d2.default.event, filter);
+    _chart.updatePopup(d);
+  };
+
+  /* OVERRIDE -----------------------------------------------------------------*/
+  function accentBubble(label) {
+    _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
+      if (d.key0 === label) {
+        _chart.accentSelected(this);
+      }
+    });
+  }
+
+  function unAccentBubble(label) {
+    _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
+      if (d.key0 === label) {
+        _chart.unAccentSelected(this);
+      }
+    });
+  }
+  /* --------------------------------------------------------------------------*/
+
+  return _chart;
+}
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = stackMixin;
+
+var _binningHelpers = __webpack_require__(20);
+
+var _utils = __webpack_require__(3);
+
+var _d = __webpack_require__(1);
+
+var _d2 = _interopRequireDefault(_d);
+
+var _core = __webpack_require__(2);
+
+var _multipleKeyAccessors = __webpack_require__(163);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Stack Mixin is an mixin that provides cross-chart support of stackability using d3.layout.stack.
+ * @name stackMixin
+ * @memberof dc
+ * @mixin
+ * @param {Object} _chart
+ * @return {dc.stackMixin}
+ */
+
+function stackMixin(_chart) {
+  function prepareValues(layer, layerIdx) {
+    var valAccessor = layer.accessor || _chart.valueAccessor();
+    layer.name = String(layer.name || "series_" + (layerIdx + 1));
+    layer.layer = layer.name;
+    layer.idx = layerIdx;
+
+    /* OVERRIDE ---------------------------------------------------------------- */
+    // WARNING: probably destroys stack functionality: find workaround
+    var preValues = _chart.dataCache != null ? _chart.dataCache : layer.group.all();
+    // layer.values = layer.group.all().map(function (d, i) {
+    layer.values = preValues.map(function (d, i) {
+      return {
+        x: _chart.keyAccessor()(d, i),
+        y: layer.hidden ? null : valAccessor(d, i) || 0,
+        idx: layerIdx,
+        data: d,
+        layer: layer.name,
+        hidden: layer.hidden
+      };
+    });
+    /* ------------------------------------------------------------------------- */
+    layer.values = layer.values.filter(domainFilter());
+    return layer.values;
+  }
+
+  var _stackLayout = _d2.default.layout.stack().values(prepareValues);
+
+  var _stack = [];
+  var _titles = {};
+
+  var _hidableStacks = false;
+  var _colorByLayerId = false;
+
+  function domainFilter() {
+    if (!_chart.x()) {
+      return _d2.default.functor(true);
+    }
+    var xDomain = _chart.x().domain();
+    if (_chart.isOrdinal()) {
+      // TODO #416
+      // var domainSet = d3.set(xDomain);
+      return function () {
+        return true; // domainSet.has(p.x);
+      };
+    }
+    if (_chart.elasticX()) {
+      return function () {
+        return true;
+      };
+    }
+    return function (p) {
+      return true;
+    };
+  }
+
+  /**
+   * Stack a new crossfilter group onto this chart with an optional custom value accessor. All stacks
+   * in the same chart will share the same key accessor and therefore the same set of keys.
+   *
+   * For example, in a stacked bar chart, the bars of each stack will be positioned using the same set
+   * of keys on the x axis, while stacked vertically. If name is specified then it will be used to
+   * generate the legend label.
+   * @name stack
+   * @memberof dc.stackMixin
+   * @instance
+   * @see {@link https://github.com/square/crossfilter/wiki/API-Reference#group-map-reduce crossfilter.group}
+   * @example
+   * // stack group using default accessor
+   * chart.stack(valueSumGroup)
+   * // stack group using custom accessor
+   * .stack(avgByDayGroup, function(d){return d.value.avgByDay;});
+   * @param {crossfilter.group} group
+   * @param {String} [name]
+   * @param {Function} [accessor]
+   * @return {Array<{group: crossfilter.group, name: String, accessor: Function}>}
+   * @return {dc.stackMixin}
+   */
+  _chart.stack = function (group, name, accessor) {
+    if (!arguments.length) {
+      return _stack;
+    }
+
+    if (arguments.length <= 2) {
+      accessor = name;
+    }
+
+    var layer = { group: group };
+    if (typeof name === "string") {
+      layer.name = name;
+    }
+    if (typeof accessor === "function") {
+      layer.accessor = accessor;
+    }
+    _stack.push(layer);
+
+    return _chart;
+  };
+
+  (0, _core.override)(_chart, "group", function (g, n, f) {
+    if (!arguments.length) {
+      return _chart._group();
+    }
+    _stack = [];
+    _titles = {};
+    _chart.stack(g, n);
+    if (f) {
+      _chart.valueAccessor(f);
+    }
+    return _chart._group(g, n);
+  });
+
+  /**
+   * Allow named stacks to be hidden or shown by clicking on legend items.
+   * This does not affect the behavior of hideStack or showStack.
+   * @name hidableStacks
+   * @memberof dc.stackMixin
+   * @instance
+   * @param {Boolean} [hidableStacks=false]
+   * @return {Boolean}
+   * @return {dc.stackMixin}
+   */
+  _chart.hidableStacks = function (hidableStacks) {
+    if (!arguments.length) {
+      return _hidableStacks;
+    }
+    _hidableStacks = hidableStacks;
+    return _chart;
+  };
+
+  function findLayerByName(n) {
+    var i = _stack.map((0, _utils.pluck)("name")).indexOf(n);
+    return _stack[i];
+  }
+
+  /**
+   * Hide all stacks on the chart with the given name.
+   * The chart must be re-rendered for this change to appear.
+   * @name hideStack
+   * @memberof dc.stackMixin
+   * @instance
+   * @param {String} stackName
+   * @return {dc.stackMixin}
+   */
+  _chart.hideStack = function (stackName) {
+    var layer = findLayerByName(stackName);
+    if (layer) {
+      layer.hidden = true;
+    }
+    return _chart;
+  };
+
+  /**
+   * Show all stacks on the chart with the given name.
+   * The chart must be re-rendered for this change to appear.
+   * @name showStack
+   * @memberof dc.stackMixin
+   * @instance
+   * @param {String} stackName
+   * @return {dc.stackMixin}
+   */
+  _chart.showStack = function (stackName) {
+    var layer = findLayerByName(stackName);
+    if (layer) {
+      layer.hidden = false;
+    }
+    return _chart;
+  };
+
+  _chart.getValueAccessorByIndex = function (index) {
+    return _stack[index].accessor || _chart.valueAccessor();
+  };
+
+  _chart.yAxisMin = function () {
+    var min = _d2.default.min(flattenStack(), function (p) {
+      /* OVERRIDE ---------------------------------------------------------------- */
+      if (_chart.renderArea === undefined || _chart.renderArea()) {
+        return p.y + p.y0 < p.y0 ? p.y + p.y0 : p.y0;
+      } else {
+        return p.y;
+      }
+    });
+    /* ------------------------------------------------------------------------- */
+
+    return _utils.utils.subtract(min, _chart.yAxisPadding());
+  };
+
+  _chart.yAxisMax = function () {
+    var max = _d2.default.max(flattenStack(), function (p) {
+      /* OVERRIDE ---------------------------------------------------------------- */
+      if (_chart.renderArea === undefined || _chart.renderArea()) {
+        return p.y + p.y0;
+      } else {
+        return p.y;
+      }
+      /* ------------------------------------------------------------------------- */
+    });
+
+    return _utils.utils.add(max, _chart.yAxisPadding());
+  };
+
+  function flattenStack() {
+    var valueses = _chart.data().map(function (layer) {
+      return layer.values;
+    });
+    return Array.prototype.concat.apply([], valueses);
+  }
+
+  _chart.xAxisMin = function () {
+    var min = _d2.default.min(flattenStack(), (0, _utils.pluck)("x"));
+    return _utils.utils.subtract(min, _chart.xAxisPadding());
+  };
+
+  _chart.xAxisMax = function () {
+    var max = _d2.default.max(flattenStack(), (0, _utils.pluck)("x"));
+    return _utils.utils.add(max, _chart.xAxisPadding());
+  };
+
+  /**
+   * Set or get the title function. Chart class will use this function to render svg title (usually interpreted by
+   * browser as tooltips) for each child element in the chart, i.e. a slice in a pie chart or a bubble in a bubble chart.
+   * Almost every chart supports title function however in grid coordinate chart you need to turn off brush in order to
+   * use title otherwise the brush layer will block tooltip trigger.
+   *
+   * If the first argument is a stack name, the title function will get or set the title for that stack. If stackName
+   * is not provided, the first stack is implied.
+   * @name title
+   * @memberof dc.stackMixin
+   * @instance
+   * @example
+   * // set a title function on 'first stack'
+   * chart.title('first stack', function(d) { return d.key + ': ' + d.value; });
+   * // get a title function from 'second stack'
+   * var secondTitleFunction = chart.title('second stack');
+   * @param {String} [stackName]
+   * @param {Function} [titleAccessor]
+   * @return {String}
+   * @return {dc.stackMixin}
+   */
+  (0, _core.override)(_chart, "title", function (stackName, titleAccessor) {
+    if (!stackName) {
+      return _chart._title();
+    }
+
+    if (typeof stackName === "function") {
+      return _chart._title(stackName);
+    }
+    if (stackName === _chart._groupName && typeof titleAccessor === "function") {
+      return _chart._title(titleAccessor);
+    }
+
+    if (typeof titleAccessor !== "function") {
+      return _titles[stackName] || _chart._title();
+    }
+
+    _titles[stackName] = titleAccessor;
+
+    return _chart;
+  });
+
+  /**
+   * Gets or sets the stack layout algorithm, which computes a baseline for each stack and
+   * propagates it to the next
+   * @name stackLayout
+   * @memberof dc.stackMixin
+   * @instance
+   * @see {@link http://github.com/mbostock/d3/wiki/Stack-Layout d3.layout.stack}
+   * @param {Function} [stack=d3.layout.stack]
+   * @return {Function}
+   * @return {dc.stackMixin}
+   */
+  _chart.stackLayout = function (stack) {
+    if (!arguments.length) {
+      return _stackLayout;
+    }
+    _stackLayout = stack;
+    return _chart;
+  };
+
+  function visability(l) {
+    return !l.hidden;
+  }
+
+  _chart.data(function () {
+    var layers = _stack.filter(visability);
+    return layers.length ? _chart.stackLayout()(layers) : [];
+  });
+
+  _chart._ordinalXDomain = function () {
+    var flat = flattenStack().map((0, _utils.pluck)("data"));
+    var ordered = _chart._computeOrderedGroups(flat);
+    return ordered.map(_chart.keyAccessor());
+  };
+
+  _chart.colorByLayerId = function (_) {
+    if (!arguments.length) {
+      return _colorByLayerId;
+    }
+    _colorByLayerId = _;
+    return _chart;
+  };
+
+  _chart.colorAccessor(function (d) {
+    /* OVERRIDE ---------------------------------------------------------------- */
+    var layer = null;
+    if (_colorByLayerId) {
+      layer = this.idx;
+    } else {
+      layer = this.layer || this.name || d.name || d.layer;
+    }
+    /* ------------------------------------------------------------------------- */
+    return layer;
+  });
+
+  _chart.legendables = function () {
+    return _stack.map(function (layer, i) {
+      return {
+        chart: _chart,
+        name: layer.name,
+        hidden: layer.hidden || false,
+        color: _chart.getColor.call(layer, layer.values, i)
+      };
+    });
+  };
+
+  _chart.isLegendableHidden = function (d) {
+    var layer = findLayerByName(d.name);
+    return layer ? layer.hidden : false;
+  };
+
+  _chart.legendToggle = function (d) {
+    if (_hidableStacks) {
+      if (_chart.isLegendableHidden(d)) {
+        _chart.showStack(d.name);
+      } else {
+        _chart.hideStack(d.name);
+      }
+      _chart.renderGroup();
+    }
+  };
+
+  (0, _core.override)(_chart, "binParams", function (binParams) {
+    if (!arguments.length) {
+      return _chart.group().binParams();
+    }
+
+    binParams = Array.isArray(binParams) ? binParams : [binParams];
+
+    var parsedBinParams = binParams.map(function (param) {
+      if (param) {
+        var _param$timeBin = param.timeBin,
+            timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
+            binBounds = param.binBounds,
+            numBins = param.numBins,
+            auto = param.auto;
+
+        var extract = param.extract || false;
+        var isDate = binBounds[0] instanceof Date;
+        if (isDate && timeBin && !extract) {
+          var bounds = binBounds.map(function (date) {
+            return date.getTime();
+          });
+          return Object.assign({}, param, {
+            extract: extract,
+            timeBin: (0, _binningHelpers.checkIfTimeBinInRange)(bounds, timeBin, numBins),
+            binBounds: binBounds.slice()
+          });
+        } else {
+          return param;
+        }
+      }
+      return null;
+    });
+
+    return (0, _binningHelpers.createBinParams)(_chart, parsedBinParams);
+  });
+
+  _chart.keyAccessor(_multipleKeyAccessors.multipleKeysAccessorForStack);
 
   return _chart;
 }
@@ -29856,7 +29856,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17), __webpack_require__(32)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18), __webpack_require__(32)(module)))
 
 /***/ }),
 /* 24 */
@@ -47054,7 +47054,7 @@ function h(sel, b, c) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(251);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(252);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(177);
@@ -48674,7 +48674,7 @@ function rasterLayerPolyMixin(_layer) {
     }
     _vega = _layer.__genVega({
       layerName: layerName,
-      filter: _layer.crossfilter().getFilterString(_layer.dimension().getDimensionIndex()),
+      filter: _layer.crossfilter().getFilterString(),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
       lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId()),
@@ -48729,6 +48729,20 @@ function rasterLayerPolyMixin(_layer) {
     } else {
       _filtersArray = [].concat(_toConsumableArray(_filtersArray), [key]);
     }
+
+    if (_filtersArray.length === 1) {
+      _layer.dimension().set(function () {
+        return ["rowid"];
+      });
+      _layer.viewBoxDim(null);
+    } else if (!_filtersArray.length) {
+      var geoCol = _layer.getState().encoding.geoTable + "." + _layer.getState().encoding.geocol;
+      var viewboxdim = _layer.dimension().set(function () {
+        return [geoCol];
+      });
+      _layer.viewBoxDim(viewboxdim);
+    }
+
     _filtersArray.length ? _layer.dimension().filterMulti(_filtersArray, undefined, isInverseFilter) : _layer.dimension().filterAll();
   };
 
@@ -48809,7 +48823,7 @@ __webpack_require__(183);
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(184);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
 /* 184 */
@@ -48883,7 +48897,7 @@ Object.keys(_utils).forEach(function (key) {
   });
 });
 
-var _logger = __webpack_require__(18);
+var _logger = __webpack_require__(19);
 
 Object.keys(_logger).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -49075,7 +49089,7 @@ Object.defineProperty(exports, "baseMixin", {
   }
 });
 
-var _bubbleMixin = __webpack_require__(20);
+var _bubbleMixin = __webpack_require__(21);
 
 Object.defineProperty(exports, "bubbleMixin", {
   enumerable: true,
@@ -49120,7 +49134,7 @@ Object.defineProperty(exports, "coordinateGridRasterMixin", {
   }
 });
 
-var _stackMixin = __webpack_require__(21);
+var _stackMixin = __webpack_require__(22);
 
 Object.defineProperty(exports, "stackMixin", {
   enumerable: true,
@@ -49138,7 +49152,7 @@ Object.defineProperty(exports, "marginMixin", {
   }
 });
 
-var _mapMixin = __webpack_require__(22);
+var _mapMixin = __webpack_require__(16);
 
 Object.defineProperty(exports, "mapMixin", {
   enumerable: true,
@@ -50668,7 +50682,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _bubbleMixin = __webpack_require__(20);
+var _bubbleMixin = __webpack_require__(21);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
@@ -51561,7 +51575,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackMixin = __webpack_require__(21);
+var _stackMixin = __webpack_require__(22);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
@@ -60904,7 +60918,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.roundTimeBin = roundTimeBin;
 exports.default = binningMixin;
 
-var _binningHelpers = __webpack_require__(19);
+var _binningHelpers = __webpack_require__(20);
 
 var _d = __webpack_require__(1);
 
@@ -61101,7 +61115,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _bubbleMixin = __webpack_require__(20);
+var _bubbleMixin = __webpack_require__(21);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
@@ -62701,7 +62715,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _mapMixin = __webpack_require__(22);
+var _mapMixin = __webpack_require__(16);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -63547,7 +63561,7 @@ var _simplifyJs = __webpack_require__(220);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
-var _logger = __webpack_require__(18);
+var _logger = __webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -67935,7 +67949,7 @@ var _elasticDimensionMixin = __webpack_require__(166);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _stackMixin = __webpack_require__(21);
+var _stackMixin = __webpack_require__(22);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
@@ -68643,7 +68657,7 @@ var _coordinateGridRasterMixin = __webpack_require__(171);
 
 var _coordinateGridRasterMixin2 = _interopRequireDefault(_coordinateGridRasterMixin);
 
-var _mapMixin = __webpack_require__(22);
+var _mapMixin = __webpack_require__(16);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -72094,7 +72108,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(17);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step) {
@@ -72107,7 +72121,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(17);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, value) {
@@ -72120,7 +72134,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(17);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, max) {
@@ -74505,7 +74519,7 @@ function rasterLayer(layerType) {
     return Boolean(popCols && popCols instanceof Array && popCols.length > 0);
   };
 
-  function addPopupColumnToSet(colAttr, popupColSet) {
+  function addPopupColumnToSet(colAttr, popupColSet, chart) {
     // TODO(croot): getProjectOn for groups requires the two arguments,
     // dimension.getProjectOn() doesn't have any args.
     // Need to come up with a better API for group.getProjectOn()
@@ -74517,7 +74531,7 @@ function rasterLayer(layerType) {
     // of popup col attrs to iterate through is small
     var dim = _layer.group() || _layer.dimension();
     if (dim || _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys") {
-      var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys" || _layer.layerType() === "" ? _layer.getProjections() : dim.getProjectOn(true); // handles the group and dimension case
+      var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys" || _layer.layerType() === "" ? _layer.getProjections(chart) : dim.getProjectOn(true); // handles the group and dimension case
       var regex = /^\s*(\S+)\s+as\s+(\S+)/i;
       var funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i;
       for (var i = 0; i < projExprs.length; ++i) {
@@ -74546,7 +74560,7 @@ function rasterLayer(layerType) {
     var popupCols = _layer.popupColumns();
     if (popupCols) {
       popupCols.forEach(function (colAttr) {
-        addPopupColumnToSet(colAttr, popupColsSet);
+        addPopupColumnToSet(colAttr, popupColsSet, chart);
       });
     }
     _layer._addRenderAttrsToPopupColumnSet(chart, popupColsSet);
@@ -76954,7 +76968,7 @@ module.exports={"version":"0.28.0"}
 
 
 //# sourceMappingURL=mapbox-gl.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
 /* 278 */

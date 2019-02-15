@@ -213,7 +213,7 @@ export default function rasterLayer(layerType) {
     return Boolean(popCols && popCols instanceof Array && popCols.length > 0)
   }
 
-  function addPopupColumnToSet(colAttr, popupColSet) {
+  function addPopupColumnToSet(colAttr, popupColSet, chart) {
     // TODO(croot): getProjectOn for groups requires the two arguments,
     // dimension.getProjectOn() doesn't have any args.
     // Need to come up with a better API for group.getProjectOn()
@@ -227,7 +227,7 @@ export default function rasterLayer(layerType) {
     if (dim || (_layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys")) {
       const projExprs =
         _layer.layerType() === "points" || _layer.layerType() === "lines" ||  _layer.layerType() === "polys" ||  _layer.layerType() === ""
-          ? _layer.getProjections()
+          ? _layer.getProjections(chart)
           : dim.getProjectOn(true) // handles the group and dimension case
       const regex = /^\s*(\S+)\s+as\s+(\S+)/i
       const funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i
@@ -260,7 +260,7 @@ export default function rasterLayer(layerType) {
     const popupCols = _layer.popupColumns()
     if (popupCols) {
       popupCols.forEach(colAttr => {
-        addPopupColumnToSet(colAttr, popupColsSet)
+        addPopupColumnToSet(colAttr, popupColsSet, chart)
       })
     }
     _layer._addRenderAttrsToPopupColumnSet(chart, popupColsSet)
