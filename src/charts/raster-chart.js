@@ -709,9 +709,9 @@ function genLayeredVega(chart) {
   }
   const marks = []
 
-  chart.getLayerNames().forEach(layerName => {
-    const layerVega = chart.getLayer(layerName).genVega(chart, layerName)
-
+  chart.getLayerNames().forEach(async layerName => {
+    const layerVega = await chart.getLayer(layerName).genVega(chart, layerName)
+debugger
     data.push(...layerVega.data)
     scales.push(...layerVega.scales)
     marks.push(...layerVega.marks)

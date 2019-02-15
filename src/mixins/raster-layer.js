@@ -182,7 +182,7 @@ export default function rasterLayer(layerType) {
     }
   }
 
-  _layer.genVega = function(chart, layerName) {
+  _layer.genVega = async function(chart, layerName) {
     const cap = _layer.cap()
     const group = _layer.group() || {}
     let query = ""
@@ -197,13 +197,13 @@ export default function rasterLayer(layerType) {
     }
 
     if (_layer.type === "heatmap") {
-      const vega = _layer._genVega({
+      const vega = await _layer._genVega({
         ...genHeatConfigFromChart(chart),
         layerName
       })
       return vega
     } else {
-      const vega = _layer._genVega(chart, layerName, group, query)
+      const vega = await _layer._genVega(chart, layerName, group, query)
       return vega
     }
   }
