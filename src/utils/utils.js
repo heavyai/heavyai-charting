@@ -105,7 +105,7 @@ parser.registerParser(
   }
 )
 
-export const dateFormat = d3.time.format("%m/%d/%Y")
+export const dateFormat = d3.time.format.utc("%m/%d/%Y")
 
 export const deepEquals = require("fast-deep-equal") // eslint-disable-line global-require
 
