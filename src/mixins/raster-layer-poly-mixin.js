@@ -547,7 +547,7 @@ export default function rasterLayerPolyMixin(_layer) {
   const polyLayerEvents = ["filtered"]
   const _listeners = d3.dispatch.apply(d3, polyLayerEvents)
 
-  _layer.filter = function(key, isInverseFilter, filterCol) {
+  _layer.filter = function(key, isInverseFilter, filterCol = "rowid") {
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll()
       _layer.filtersInverse(isInverseFilter)
