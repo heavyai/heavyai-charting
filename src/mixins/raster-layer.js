@@ -227,7 +227,7 @@ export default function rasterLayer(layerType) {
     if (dim || (_layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys")) {
       const projExprs =
         _layer.layerType() === "points" || _layer.layerType() === "lines" ||  _layer.layerType() === "polys" ||  _layer.layerType() === ""
-          ? _layer.getProjections(chart)
+          ? _layer.getProjections()
           : dim.getProjectOn(true) // handles the group and dimension case
       const regex = /^\s*(\S+)\s+as\s+(\S+)/i
       const funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i

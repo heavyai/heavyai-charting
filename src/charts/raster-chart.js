@@ -266,14 +266,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   async function getCountFromBoundingBox(chart, _layer) {
     const mapBounds = chart.map().getBounds()
+    const geoTable = _layer.getState().encoding.geoTable
+    const geoCol = _layer.getState().encoding.geocol
 
-    // debugger;
-    // console.log('mapBounds', mapBounds)
-
-    const columnExpr = `${_layer.getState().encoding.geoTable}.${_layer.getState().encoding.geocol}`
-
-    const preflightQuery = `SELECT COUNT(*) as n FROM zipcodes WHERE ST_XMax(${columnExpr}) >= ${ mapBounds._sw.lng } AND ST_XMin(${columnExpr}) <= ${ mapBounds._ne.lng } AND ST_YMax(${columnExpr}) >= ${ mapBounds._sw.lat } AND ST_YMin(${columnExpr}) <= ${ mapBounds._ne.lat }`
-    // debugger
+    const preflightQuery = `SELECT COUNT(*) as n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${ mapBounds._sw.lng } AND ST_XMin(${geoTable}.${geoCol}) <= ${ mapBounds._ne.lng } AND ST_YMax(${geoTable}.${geoCol}) >= ${ mapBounds._sw.lat } AND ST_YMin(${geoTable}.${geoCol}) <= ${ mapBounds._ne.lat }`
     return await chart.con().queryAsync(preflightQuery, {})
   }
 
@@ -282,21 +278,16 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart._updateXAndYScales(bounds)
 
     const layers = _chart.getAllLayers()
-
     const layerIndex = layers[0].getState().currentLayer || 0
-
     const currentLayer = layers[layerIndex]
 
     if (currentLayer.getState().mark.type === "poly") {
       const result = await getCountFromBoundingBox(_chart, currentLayer)
-
       const count = result && result[0] && result[0].n
-
       _chart._vegaSpec = genLayeredVega(_chart, count)
     } else {
       _chart._vegaSpec = genLayeredVega(_chart)
     }
-
 
     _chart
       .con()
@@ -740,7 +731,7 @@ function genLayeredVega(chart, count) {
 
   chart.getLayerNames().forEach(layerName => {
     const layerVega = chart.getLayer(layerName).genVega(chart, layerName, count)
-// debugger
+
     data.push(...layerVega.data)
     scales.push(...layerVega.scales)
     marks.push(...layerVega.marks)

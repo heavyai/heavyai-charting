@@ -95,13 +95,13 @@ export default function rasterLayerPolyMixin(_layer) {
     return state
   }
 
-  _layer.getProjections = async function(chart) {
+  _layer.getProjections = function() {
     return getTransforms({
       filter: "",
       globalFilter: "",
       layerFilter: _layer.filters(),
       filtersInverse: _layer.filtersInverse(),
-      lastFilteredSize: 500
+      lastFilteredSize: _layer.filters().length ? bboxCount : lastFilteredSize(_layer.crossfilter().getId())
     })
       .filter(
         transform =>
@@ -467,6 +467,8 @@ export default function rasterLayerPolyMixin(_layer) {
     }
   }
 
+  let bboxCount = null
+
   _layer._requiresCap = function() {
     // polys don't require a cap
     return false
@@ -475,6 +477,8 @@ export default function rasterLayerPolyMixin(_layer) {
   _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
 
   _layer._genVega = function(chart, layerName, group, _, count) {
+
+    bboxCount = count
 
     const layers = chart.getAllLayers()
 
