@@ -226,8 +226,8 @@ export default function rasterLayerPolyMixin(_layer) {
     if (doJoin()) {
       transforms.push({
         type: "project",
-        expr: `SAMPLE(${geoTable}.${geocol})`,
-        as: geocol
+        expr: `SAMPLE(${rowIdTable}.rowid)`,
+        as: "rowid"
       })
     } else {
       transforms.push({
@@ -565,7 +565,7 @@ export default function rasterLayerPolyMixin(_layer) {
       _filtersArray = [..._filtersArray, key]
     }
 
-    if (_filtersArray.length === 1) {
+    if (_filtersArray.length === 1 && !doJoin()) {
       _layer.dimension().set(() => [filterCol])
       _layer.viewBoxDim(null)
     }
