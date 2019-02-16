@@ -281,13 +281,9 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const layerIndex = layers[0].getState().currentLayer || 0
     const currentLayer = layers[layerIndex]
 
-    if (currentLayer.getState().mark.type === "poly") {
-      const result = await getCountFromBoundingBox(_chart, currentLayer)
-      const count = result && result[0] && result[0].n
-      _chart._vegaSpec = genLayeredVega(_chart, count)
-    } else {
-      _chart._vegaSpec = genLayeredVega(_chart)
-    }
+    const result = await getCountFromBoundingBox(_chart, currentLayer)
+    const count = result && result[0] && result[0].n
+    _chart._vegaSpec = genLayeredVega(_chart, count)
 
     _chart
       .con()

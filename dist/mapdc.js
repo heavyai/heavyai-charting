@@ -48475,6 +48475,7 @@ function rasterLayerPolyMixin(_layer) {
         transforms.push({
           type: "sample",
           method: "rowid",
+          field: "" + state.data[0].attr,
           expr: layerFilter
         });
       }
@@ -48747,7 +48748,7 @@ function rasterLayerPolyMixin(_layer) {
   var polyLayerEvents = ["filtered"];
   var _listeners = _d2.default.dispatch.apply(_d2.default, polyLayerEvents);
 
-  _layer.filter = function (key, isInverseFilter) {
+  _layer.filter = function (key, isInverseFilter, chart) {
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll();
       _layer.filtersInverse(isInverseFilter);
@@ -48762,7 +48763,7 @@ function rasterLayerPolyMixin(_layer) {
 
     if (_filtersArray.length === 1) {
       _layer.dimension().set(function () {
-        return ["rowid"];
+        return [key];
       });
       _layer.viewBoxDim(null);
     } else if (!_filtersArray.length) {
@@ -48771,6 +48772,7 @@ function rasterLayerPolyMixin(_layer) {
         return [geoCol];
       });
       _layer.viewBoxDim(viewboxdim);
+      var bounds = chart.map().getBounds();
     }
 
     _filtersArray.length ? _layer.dimension().filterMulti(_filtersArray, undefined, isInverseFilter) : _layer.dimension().filterAll();
@@ -48804,7 +48806,7 @@ function rasterLayerPolyMixin(_layer) {
 
     chart.hidePopup();
     _events.events.trigger(function () {
-      _layer.filter(data[filterKey], isInverseFilter);
+      _layer.filter(data[filterKey], isInverseFilter, chart);
       chart.filter(data[filterKey], isInverseFilter);
       _listeners.filtered(_layer, _filtersArray);
       chart.redrawGroup();
@@ -69011,27 +69013,14 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
               layers = _chart.getAllLayers();
               layerIndex = layers[0].getState().currentLayer || 0;
               currentLayer = layers[layerIndex];
-
-              if (!(currentLayer.getState().mark.type === "poly")) {
-                _context2.next = 13;
-                break;
-              }
-
-              _context2.next = 8;
+              _context2.next = 7;
               return getCountFromBoundingBox(_chart, currentLayer);
 
-            case 8:
+            case 7:
               result = _context2.sent;
               count = result && result[0] && result[0].n;
 
               _chart._vegaSpec = genLayeredVega(_chart, count);
-              _context2.next = 14;
-              break;
-
-            case 13:
-              _chart._vegaSpec = genLayeredVega(_chart);
-
-            case 14:
 
               _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
                 _renderBoundsMap[result.nonce] = bounds;
@@ -69040,7 +69029,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
                 callback(error);
               });
 
-            case 15:
+            case 11:
             case "end":
               return _context2.stop();
           }
