@@ -264,10 +264,39 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     })
   }
 
-  _chart.setDataAsync((group, callback) => {
+  async function getCountFromBoundingBox(chart, _layer) {
+    const mapBounds = chart.map().getBounds()
+
+    // debugger;
+    // console.log('mapBounds', mapBounds)
+
+    const columnExpr = `${_layer.getState().encoding.geoTable}.${_layer.getState().encoding.geocol}`
+
+    const preflightQuery = `SELECT COUNT(*) as n FROM zipcodes WHERE ST_XMax(${columnExpr}) >= ${ mapBounds._sw.lng } AND ST_XMin(${columnExpr}) <= ${ mapBounds._ne.lng } AND ST_YMax(${columnExpr}) >= ${ mapBounds._sw.lat } AND ST_YMin(${columnExpr}) <= ${ mapBounds._ne.lat }`
+    // debugger
+    return await chart.con().queryAsync(preflightQuery, {})
+  }
+
+  _chart.setDataAsync(async (group, callback) => {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
-    _chart._vegaSpec = genLayeredVega(_chart)
+
+    const layers = _chart.getAllLayers()
+
+    const layerIndex = layers[0].getState().currentLayer || 0
+
+    const currentLayer = layers[layerIndex]
+
+    if (currentLayer.getState().mark.type === "poly") {
+      const result = await getCountFromBoundingBox(_chart, currentLayer)
+
+      const count = result && result[0] && result[0].n
+
+      _chart._vegaSpec = genLayeredVega(_chart, count)
+    } else {
+      _chart._vegaSpec = genLayeredVega(_chart)
+    }
+
 
     _chart
       .con()
@@ -664,7 +693,7 @@ function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
 }
 
-function genLayeredVega(chart) {
+function genLayeredVega(chart, count) {
   const pixelRatio = chart._getPixelRatio()
   const width =
     (typeof chart.effectiveWidth === "function"
@@ -709,9 +738,9 @@ function genLayeredVega(chart) {
   }
   const marks = []
 
-  chart.getLayerNames().forEach(async layerName => {
-    const layerVega = await chart.getLayer(layerName).genVega(chart, layerName)
-debugger
+  chart.getLayerNames().forEach(layerName => {
+    const layerVega = chart.getLayer(layerName).genVega(chart, layerName, count)
+// debugger
     data.push(...layerVega.data)
     scales.push(...layerVega.scales)
     marks.push(...layerVega.marks)
