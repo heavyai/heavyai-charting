@@ -264,16 +264,17 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     })
   }
 
-  async function getCountFromBoundingBox(chart, _layer) {
+  function getCountFromBoundingBox(chart, _layer) {
     const mapBounds = chart.map().getBounds()
     const geoTable = _layer.getState().encoding.geoTable
     const geoCol = _layer.getState().encoding.geocol
 
     const preflightQuery = `SELECT COUNT(*) as n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${ mapBounds._sw.lng } AND ST_XMin(${geoTable}.${geoCol}) <= ${ mapBounds._ne.lng } AND ST_YMax(${geoTable}.${geoCol}) >= ${ mapBounds._sw.lat } AND ST_YMin(${geoTable}.${geoCol}) <= ${ mapBounds._ne.lat }`
-    return await chart.con().queryAsync(preflightQuery, {})
+
+    return chart.con().queryAsync(preflightQuery, {})
   }
 
-  _chart.setDataAsync(async (group, callback) => {
+  _chart.setDataAsync((group, callback) => {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
 
@@ -281,20 +282,22 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const layerIndex = layers[0].getState().currentLayer || 0
     const currentLayer = layers[layerIndex]
 
-    const result = await getCountFromBoundingBox(_chart, currentLayer)
-    const count = result && result[0] && result[0].n
-    _chart._vegaSpec = genLayeredVega(_chart, count)
+    getCountFromBoundingBox(_chart, currentLayer).then(result => {
+      const count = result && result[0] && result[0].n
 
-    _chart
-      .con()
-      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
-      .then(result => {
-        _renderBoundsMap[result.nonce] = bounds
-        callback(null, result)
-      })
-      .catch(error => {
-        callback(error)
-      })
+      _chart._vegaSpec = genLayeredVega(_chart, count)
+
+      _chart
+        .con()
+        .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
+        .then(result => {
+          _renderBoundsMap[result.nonce] = bounds
+          callback(null, result)
+        })
+        .catch(error => {
+          callback(error)
+        })
+    })
   })
 
   _chart.data(group => {
