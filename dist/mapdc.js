@@ -48748,7 +48748,7 @@ function rasterLayerPolyMixin(_layer) {
   var polyLayerEvents = ["filtered"];
   var _listeners = _d2.default.dispatch.apply(_d2.default, polyLayerEvents);
 
-  _layer.filter = function (key, isInverseFilter, chart) {
+  _layer.filter = function (key, isInverseFilter, filterkey, chart) {
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll();
       _layer.filtersInverse(isInverseFilter);
@@ -48763,7 +48763,7 @@ function rasterLayerPolyMixin(_layer) {
 
     if (_filtersArray.length === 1) {
       _layer.dimension().set(function () {
-        return [key];
+        return [filterkey];
       });
       _layer.viewBoxDim(null);
     } else if (!_filtersArray.length) {
@@ -48806,7 +48806,7 @@ function rasterLayerPolyMixin(_layer) {
 
     chart.hidePopup();
     _events.events.trigger(function () {
-      _layer.filter(data[filterKey], isInverseFilter, chart);
+      _layer.filter(data[filterKey], isInverseFilter, filterKey, chart);
       chart.filter(data[filterKey], isInverseFilter);
       _listeners.filtered(_layer, _filtersArray);
       chart.redrawGroup();
