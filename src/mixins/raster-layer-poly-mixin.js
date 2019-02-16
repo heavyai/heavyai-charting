@@ -96,14 +96,12 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.getProjections = async function(chart) {
-    const res = await getCountFromBoundingBox(chart)[0]
-
     return getTransforms({
       filter: "",
       globalFilter: "",
       layerFilter: _layer.filters(),
       filtersInverse: _layer.filtersInverse(),
-      lastFilteredSize: res ? res.n : 500
+      lastFilteredSize: 500
     })
       .filter(
         transform =>
@@ -250,15 +248,26 @@ export default function rasterLayerPolyMixin(_layer) {
     }
 
     if (typeof state.transform.limit === "number") {
-      if (state.transform.sample && !doJoin()) { // use Knuth's hash sampling on single data source chart
+      const doSample = state.transform.sample && !doJoin()
+      const doRowid = layerFilter.length
+
+      if (doSample && doRowid) {
         transforms.push({
           type: "sample",
-          method: "multiplicative",
+          method: "multiplicativeRowid",
+          expr: layerFilter,
           size: lastFilteredSize || state.transform.tableSize,
           limit: state.transform.limit
         })
-      }
-      if(layerFilter.length) {
+      } else if (doSample) {
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          expr: layerFilter,
+          size: lastFilteredSize || state.transform.tableSize,
+          limit: state.transform.limit
+        })
+      } else if (doRowid) {
         transforms.push({
           type: "sample",
           method: "rowid",
@@ -465,24 +474,28 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
 
-  async function getCountFromBoundingBox(chart) {
-    const mapBounds = _layer.filters().length ? chart.map().getBounds() : null
+  _layer._genVega = function(chart, layerName, group, _, count) {
 
-    const preflightQuery = `SELECT COUNT(*) as n FROM Paris_Mena WHERE ST_XMax(Paris_Mena.mapd_geo) >= 2.355722925685626 AND ST_XMin(Paris_Mena.mapd_geo) <= 2.374415492634114 AND ST_YMax(Paris_Mena.mapd_geo) >= 48.85232020266966 AND ST_YMin(Paris_Mena.mapd_geo) <= 48.85850594155414`
-    debugger
-    return await chart.con().queryAsync(preflightQuery, {})
-  }
+    const layers = chart.getAllLayers()
 
-  _layer._genVega = async function(chart, layerName, group) {
-    const preflightQuery = `ST_XMax(Paris_Mena.mapd_geo) >= 2.355722925685626 AND ST_XMin(Paris_Mena.mapd_geo) <= 2.374415492634114 AND ST_YMax(Paris_Mena.mapd_geo) >= 48.85232020266966 AND ST_YMin(Paris_Mena.mapd_geo) <= 48.85850594155414`
+    const layerIndex = layers[0].getState().currentLayer || 0
 
-    const res = await  getCountFromBoundingBox(chart)[0]
+    const currentLayer = layers[layerIndex]
+
+    const mapBounds = chart.map().getBounds()
+
+    const columnExpr = `${currentLayer.getState().encoding.geoTable}.${currentLayer.getState().encoding.geocol}`
+
+    const bboxFilter = `ST_XMax(${columnExpr}) >= ${ mapBounds._sw.lng } AND ST_XMin(${columnExpr}) <= ${ mapBounds._ne.lng } AND ST_YMax(${columnExpr}) >= ${ mapBounds._sw.lat } AND ST_YMin(${columnExpr}) <= ${ mapBounds._ne.lat }`
+
+    const layerFilter = _layer.filters()
+
     _vega = _layer.__genVega({
       layerName,
-      filter: preflightQuery,
+      filter: bboxFilter,
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
-      layerFilter: _layer.filters(),
-      lastFilteredSize: res ? res.n : 500,
+      layerFilter,
+      lastFilteredSize: count,
       filtersInverse: _layer.filtersInverse(),
       useProjection: chart._useGeoTypes
     })
