@@ -48460,6 +48460,7 @@ function rasterLayerPolyMixin(_layer) {
           type: "sample",
           method: "multiplicativeRowid",
           expr: layerFilter,
+          field: state.data[0].table + "." + state.data[0].attr,
           size: lastFilteredSize || state.transform.tableSize,
           limit: state.transform.limit
         });
@@ -48475,7 +48476,7 @@ function rasterLayerPolyMixin(_layer) {
         transforms.push({
           type: "sample",
           method: "rowid",
-          field: "" + state.data[0].attr,
+          field: state.data[0].table + "." + state.data[0].attr,
           expr: layerFilter
         });
       }
