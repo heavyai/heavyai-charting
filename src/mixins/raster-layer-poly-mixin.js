@@ -268,13 +268,6 @@ export default function rasterLayerPolyMixin(_layer) {
           size: lastFilteredSize || state.transform.tableSize,
           limit: state.transform.limit
         })
-      } else if (doRowid) {
-        transforms.push({
-          type: "sample",
-          method: "rowid",
-          field: `${state.data[0].table}.${state.data[0].attr}`,
-          expr: layerFilter
-        })
       }
     }
 
