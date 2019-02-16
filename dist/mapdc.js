@@ -48749,7 +48749,7 @@ function rasterLayerPolyMixin(_layer) {
   var polyLayerEvents = ["filtered"];
   var _listeners = _d2.default.dispatch.apply(_d2.default, polyLayerEvents);
 
-  _layer.filter = function (key, isInverseFilter, filterkey, chart) {
+  _layer.filter = function (key, isInverseFilter, filterCol) {
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll();
       _layer.filtersInverse(isInverseFilter);
@@ -48764,19 +48764,12 @@ function rasterLayerPolyMixin(_layer) {
 
     if (_filtersArray.length === 1) {
       _layer.dimension().set(function () {
-        return [filterkey];
+        return [filterCol];
       });
       _layer.viewBoxDim(null);
-    } else if (!_filtersArray.length) {
-      var geoCol = _layer.getState().encoding.geoTable + "." + _layer.getState().encoding.geocol;
-      var viewboxdim = _layer.dimension().set(function () {
-        return [geoCol];
-      });
-      _layer.viewBoxDim(viewboxdim);
-      var bounds = chart.map().getBounds();
     }
 
-    _filtersArray.length ? _layer.dimension().filterMulti(_filtersArray, undefined, isInverseFilter) : _layer.dimension().filterAll();
+    _filtersArray.length ? _layer.dimension().filterMulti(_filtersArray, undefined, isInverseFilter) : _layer.filterAll();
   };
 
   _layer.filters = function () {
@@ -48786,6 +48779,11 @@ function rasterLayerPolyMixin(_layer) {
   _layer.filterAll = function () {
     _filtersArray = [];
     _layer.dimension().filterAll();
+    var geoCol = _layer.getState().encoding.geoTable + "." + _layer.getState().encoding.geocol;
+    var viewboxdim = _layer.dimension().set(function () {
+      return [geoCol];
+    });
+    _layer.viewBoxDim(viewboxdim);
   };
 
   _layer.on = function (event, listener) {
@@ -49749,9 +49747,9 @@ function sample(sql, transform) {
 
   if (transform.method === "multiplicativeRowid") {
     if (ratio < 1) {
-      sql.where.push("((MOD( MOD (" + sql.from + ".rowid, " + THIRTY_TWO_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + sql.from + ".rowid IN (" + transform.expr.join(", ") + ")))");
+      sql.where.push("((MOD( MOD (" + transform.field + ", " + THIRTY_TWO_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + transform.field + " IN (" + transform.expr.join(", ") + ")))");
     } else {
-      sql.where.push("(" + sql.from + ".rowid IN (" + transform.expr.join(", ") + "))");
+      sql.where.push("(" + transform.field + " IN (" + transform.expr.join(", ") + "))");
     }
   } else if (transform.method === "multiplicative") {
     if (ratio < 1) {
@@ -49763,7 +49761,7 @@ function sample(sql, transform) {
       sql.where.push("MOD( MOD (" + sql.from + ".rowid, " + THIRTY_TWO_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold);
     }
   } else if (transform.method === "rowid") {
-    sql.where.push("(" + sql.from + ".rowid IN (" + transform.expr.join(", ") + "))");
+    sql.where.push("(" + transform.field + " IN (" + transform.expr.join(", ") + "))");
   }
 
   return sql;

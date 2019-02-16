@@ -554,7 +554,7 @@ export default function rasterLayerPolyMixin(_layer) {
   const polyLayerEvents = ["filtered"]
   const _listeners = d3.dispatch.apply(d3, polyLayerEvents)
 
-  _layer.filter = function(key, isInverseFilter, filterkey, chart) {
+  _layer.filter = function(key, isInverseFilter, filterCol) {
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll()
       _layer.filtersInverse(isInverseFilter)
@@ -566,20 +566,15 @@ export default function rasterLayerPolyMixin(_layer) {
     }
 
     if (_filtersArray.length === 1) {
-      _layer.dimension().set(() => [filterkey])
+      _layer.dimension().set(() => [filterCol])
       _layer.viewBoxDim(null)
-    } else if (!_filtersArray.length) {
-      const geoCol = `${_layer.getState().encoding.geoTable}.${_layer.getState().encoding.geocol}`
-      const viewboxdim = _layer.dimension().set(() => [geoCol])
-      _layer.viewBoxDim(viewboxdim)
-      const bounds = chart.map().getBounds()
     }
 
     _filtersArray.length
       ? _layer
         .dimension()
         .filterMulti(_filtersArray, undefined, isInverseFilter)
-      : _layer.dimension().filterAll()
+      : _layer.filterAll()
   }
 
   _layer.filters = function() {
@@ -589,6 +584,9 @@ export default function rasterLayerPolyMixin(_layer) {
   _layer.filterAll = function() {
     _filtersArray = []
     _layer.dimension().filterAll()
+    const geoCol = `${_layer.getState().encoding.geoTable}.${_layer.getState().encoding.geocol}`
+    const viewboxdim = _layer.dimension().set(() => [geoCol])
+    _layer.viewBoxDim(viewboxdim)
   }
 
   _layer.on = function(event, listener) {
