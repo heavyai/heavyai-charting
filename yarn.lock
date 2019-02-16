@@ -2516,9 +2516,9 @@ cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   integrity sha512-DtUeseGk9/GBW0hl0vVPpU22iHL6YB5BUX7ml1hB+GMpo0NX5G4voX3kdWiMSEguFtcW3Vh3djqNF4aIe6ne0A==
 
 cssstyle@^1.0.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-1.2.0.tgz#fc1e4df631374b4a3f12a1fc8278217d5a718ec5"
-  integrity sha512-CYz0dquY+OlKR9ueeUsB94aXWEopcvnTLVt7efxKAG3wWOEWwLYrI183/VEGSsns7ZUjDCEoqJcbVe9xcp6ldA==
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-1.2.1.tgz#3aceb2759eaf514ac1a21628d723d6043a819495"
+  integrity sha512-7DYm8qe+gPx/h77QlCyFmX80+fGaE/6A/Ekl0zaszYOubvySO2saYFdQ78P29D0UsULxFKCetDGNaNRUdSF+2A==
   dependencies:
     cssom "0.3.x"
 
@@ -5958,10 +5958,10 @@ mapbox-gl-supported@^1.2.0:
     webworkify "^1.4.0"
     whoots-js "^2.0.0"
 
-mapd-data-layer-2@0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.9.tgz#b1b3c7e024014479b742ea7eed1074709d8e2fc2"
-  integrity sha512-iaTuyUc+zOtp67IGgW0oz0KoLKrVHhqtq9RkERR/VI+F+GyNXquuBLKaod62pKPwFyKh6sL893QK9UBLjLl4gQ==
+mapd-data-layer-2@0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.10.tgz#2d77401d70b191f796cb4afb25873bbbb3efe9fd"
+  integrity sha512-F6yQSB+bl2aVZPaZt6A/2FsoVNm9qOT7H6iTtaA09NKnhuZR4B/Hd30FpX+13Z9cdYatXaKmlnKZFssM9BuseQ==
   dependencies:
     invariant "^2.2.2"
 
