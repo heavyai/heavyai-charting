@@ -282,25 +282,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const layerIndex = layers[0].getState().currentLayer || 0
     const currentLayer = layers[layerIndex]
 
-    if (currentLayer.getState().mark.type === "poly") {
-      getCountFromBoundingBox(_chart, currentLayer).then(result => {
-        const count = result && result[0] && result[0].n
+    getCountFromBoundingBox(_chart, currentLayer).then(result => {
+      const count = result && result[0] && result[0].n
 
-        _chart._vegaSpec = genLayeredVega(_chart, count)
-
-        _chart
-          .con()
-          .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
-          .then(result => {
-            _renderBoundsMap[result.nonce] = bounds
-            callback(null, result)
-          })
-          .catch(error => {
-            callback(error)
-          })
-      })
-    } else {
-      _chart._vegaSpec = genLayeredVega(_chart)
+      _chart._vegaSpec = genLayeredVega(_chart, count)
 
       _chart
         .con()
@@ -312,7 +297,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         .catch(error => {
           callback(error)
         })
-    }
+    })
   })
 
   _chart.data(group => {

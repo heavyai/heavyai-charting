@@ -49925,6 +49925,8 @@ function sample(sql, transform) {
   var ratio = Math.min(limit / size, 1.0);
   var threshold = Math.floor(THIRTY_TWO_BITS * ratio);
 
+  console.log('sample acting on transform', { transform: transform, size: size, limit: limit, ratio: ratio, threshold: threshold });
+
   if (transform.method === "multiplicativeRowid") {
     if (ratio < 1) {
       sql.where.push("((MOD( MOD (" + sql.from + ".rowid, " + THIRTY_TWO_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + sql.from + ".rowid IN (" + transform.expr.join(", ") + ")))");
@@ -69212,21 +69214,10 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var layerIndex = layers[0].getState().currentLayer || 0;
     var currentLayer = layers[layerIndex];
 
-    if (currentLayer.getState().mark.type === "poly") {
-      getCountFromBoundingBox(_chart, currentLayer).then(function (result) {
-        var count = result && result[0] && result[0].n;
+    getCountFromBoundingBox(_chart, currentLayer).then(function (result) {
+      var count = result && result[0] && result[0].n;
 
-        _chart._vegaSpec = genLayeredVega(_chart, count);
-
-        _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
-          _renderBoundsMap[result.nonce] = bounds;
-          callback(null, result);
-        }).catch(function (error) {
-          callback(error);
-        });
-      });
-    } else {
-      _chart._vegaSpec = genLayeredVega(_chart);
+      _chart._vegaSpec = genLayeredVega(_chart, count);
 
       _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
         _renderBoundsMap[result.nonce] = bounds;
@@ -69234,7 +69225,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       }).catch(function (error) {
         callback(error);
       });
-    }
+    });
   });
 
   _chart.data(function (group) {
