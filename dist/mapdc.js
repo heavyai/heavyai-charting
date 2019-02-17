@@ -68968,9 +68968,8 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var layers = _chart.getAllLayers();
     var layerIndex = layers[0].getState().currentLayer || 0;
     var currentLayer = layers[layerIndex];
-    var currentLayerType = _chart.getLayerNames()[layerIndex];
 
-    if (currentLayerType === "backendChoropleth") {
+    if (currentLayer.getState().mark.type === "poly") {
       getCountFromBoundingBox(_chart, currentLayer).then(function (result) {
         var count = result && result[0] && result[0].n;
         _chart._vegaSpec = genLayeredVega(_chart, count);
@@ -75304,7 +75303,7 @@ function rasterLayerLineMixin(_layer) {
         (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
       });
     }
-    debugger;
+
     _vega = _layer.__genVega({
       layerName: layerName,
       table: _layer.crossfilter().getTable()[0],

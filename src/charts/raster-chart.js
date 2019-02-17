@@ -281,9 +281,8 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const layers = _chart.getAllLayers()
     const layerIndex = layers[0].getState().currentLayer || 0
     const currentLayer = layers[layerIndex]
-    const currentLayerType = _chart.getLayerNames()[layerIndex]
 
-    if (currentLayerType === "backendChoropleth") {
+    if (currentLayer.getState().mark.type === "poly") {
       getCountFromBoundingBox(_chart, currentLayer).then(result => {
         const count = result && result[0] && result[0].n
         _chart._vegaSpec = genLayeredVega(_chart, count)
