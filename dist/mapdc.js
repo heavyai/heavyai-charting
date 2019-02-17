@@ -48742,9 +48742,10 @@ function rasterLayerPolyMixin(_layer) {
   var polyLayerEvents = ["filtered"];
   var _listeners = _d2.default.dispatch.apply(_d2.default, polyLayerEvents);
 
+  // temporary fix until we update crossfilter dim correctly
   _layer.filter = function (key, isInverseFilter) {
     var filterCol = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "rowid";
-    //temporary fix until we update crossfilter dim correctly
+
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll();
       _layer.filtersInverse(isInverseFilter);
