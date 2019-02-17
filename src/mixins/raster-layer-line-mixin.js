@@ -437,7 +437,7 @@ export default function rasterLayerLineMixin(_layer) {
         setLastFilteredSize(_layer.crossfilter().getId(), value)
       })
     }
-
+debugger
     _vega = _layer.__genVega({
       layerName,
       table: _layer.crossfilter().getTable()[0],

@@ -491,7 +491,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
     _vega = _layer.__genVega({
       layerName,
-      filter: bboxFilter,
+      filter: _layer.filters().length ? bboxFilter : _layer.crossfilter().getFilterString(),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter,
       lastFilteredSize: count,
@@ -547,7 +547,7 @@ export default function rasterLayerPolyMixin(_layer) {
   const polyLayerEvents = ["filtered"]
   const _listeners = d3.dispatch.apply(d3, polyLayerEvents)
 
-  _layer.filter = function(key, isInverseFilter, filterCol = "rowid") {
+  _layer.filter = function(key, isInverseFilter, filterCol = "rowid") { //temporary fix until we update crossfilter dim correctly
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll()
       _layer.filtersInverse(isInverseFilter)

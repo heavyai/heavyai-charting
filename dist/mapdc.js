@@ -48699,7 +48699,7 @@ function rasterLayerPolyMixin(_layer) {
 
     _vega = _layer.__genVega({
       layerName: layerName,
-      filter: bboxFilter,
+      filter: _layer.filters().length ? bboxFilter : _layer.crossfilter().getFilterString(),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: layerFilter,
       lastFilteredSize: count,
@@ -48744,7 +48744,7 @@ function rasterLayerPolyMixin(_layer) {
 
   _layer.filter = function (key, isInverseFilter) {
     var filterCol = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "rowid";
-
+    //temporary fix until we update crossfilter dim correctly
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll();
       _layer.filtersInverse(isInverseFilter);
@@ -75304,7 +75304,7 @@ function rasterLayerLineMixin(_layer) {
         (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
       });
     }
-
+    debugger;
     _vega = _layer.__genVega({
       layerName: layerName,
       table: _layer.crossfilter().getTable()[0],
