@@ -488,10 +488,23 @@ export default function rasterLayerPolyMixin(_layer) {
     const bboxFilter = `ST_XMax(${columnExpr}) >= ${ mapBounds._sw.lng } AND ST_XMin(${columnExpr}) <= ${ mapBounds._ne.lng } AND ST_YMax(${columnExpr}) >= ${ mapBounds._sw.lat } AND ST_YMin(${columnExpr}) <= ${ mapBounds._ne.lat }`
 
     const layerFilter = _layer.filters()
+    let filterStr = null
+    const crossfiltering = _layer.crossfilter().getFilter().find(f => f !== "")
+    const bboxIsInCr = crossfiltering ? crossfiltering.includes("ST_XMin") : false
+
+    if (layerFilter.length && crossfiltering) { // poly selection filter
+      filterStr = bboxFilter
+    } else if (crossfiltering && bboxIsInCr) { // just bbox filter from immerse
+      filterStr = _layer.crossfilter().getFilterString()
+    } else if (!layerFilter.length && !crossfiltering) { // global filter clear
+      filterStr = bboxFilter
+    } else if (crossfiltering && !bboxIsInCr) { // other charts has filter, but BE choropleth cleared
+      filterStr = `${crossfiltering} AND ${bboxFilter}`
+    }
 
     _vega = _layer.__genVega({
       layerName,
-      filter: _layer.filters().length ? bboxFilter : _layer.crossfilter().getFilterString(),
+      filter: filterStr,
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter,
       lastFilteredSize: count,
