@@ -279,37 +279,28 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart._updateXAndYScales(bounds)
 
     const layers = _chart.getAllLayers()
-    const layerIndex = layers[0].getState().currentLayer || 0
-    const currentLayer = layers[layerIndex]
+    const polyLayers = layers.length ? _.filter(layers, (layer) => layer.getState().mark.type === "poly" ) : null
 
-    if (currentLayer.getState().mark.type === "poly") {
-      getCountFromBoundingBox(_chart, currentLayer).then(result => {
-        const count = result && result[0] && result[0].n
-        _chart._vegaSpec = genLayeredVega(_chart, count)
-        _chart
-          .con()
-          .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
-          .then(result => {
-            _renderBoundsMap[result.nonce] = bounds
-            callback(null, result)
-          })
-          .catch(error => {
-            callback(error)
-          })
+    if (polyLayers && polyLayers.length) { // add bboxCount to poly layers run sample
+      polyLayers.forEach(polyLayer => {
+        getCountFromBoundingBox(_chart, polyLayer).then(res => {
+          const count = res && res[0] && res[0].n
+          polyLayer.setState({...polyLayer.getState(), bboxCount: count})
+        })
       })
-    } else {
-      _chart._vegaSpec = genLayeredVega(_chart)
-      _chart
-        .con()
-        .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
-        .then(result => {
-          _renderBoundsMap[result.nonce] = bounds
-          callback(null, result)
-        })
-        .catch(error => {
-          callback(error)
-        })
     }
+
+    _chart._vegaSpec = genLayeredVega(_chart)
+    _chart
+      .con()
+      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
+      .then(result => {
+        _renderBoundsMap[result.nonce] = bounds
+        callback(null, result)
+      })
+      .catch(error => {
+        callback(error)
+      })
   })
 
   _chart.data(group => {
@@ -695,7 +686,7 @@ function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
 }
 
-function genLayeredVega(chart, count) {
+function genLayeredVega(chart) {
   const pixelRatio = chart._getPixelRatio()
   const width =
     (typeof chart.effectiveWidth === "function"
@@ -741,7 +732,7 @@ function genLayeredVega(chart, count) {
   const marks = []
 
   chart.getLayerNames().forEach(layerName => {
-    const layerVega = chart.getLayer(layerName).genVega(chart, layerName, count)
+    const layerVega = chart.getLayer(layerName).genVega(chart, layerName)
 
     data.push(...layerVega.data)
     scales.push(...layerVega.scales)

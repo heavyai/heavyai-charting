@@ -182,7 +182,7 @@ export default function rasterLayer(layerType) {
     }
   }
 
-  _layer.genVega = function(chart, layerName, count) {
+  _layer.genVega = function(chart, layerName) {
     const cap = _layer.cap()
     const group = _layer.group() || {}
     let query = ""
@@ -203,7 +203,7 @@ export default function rasterLayer(layerType) {
       })
       return vega
     } else {
-      const vega = _layer._genVega(chart, layerName, group, query, count)
+      const vega = _layer._genVega(chart, layerName, group, query)
       return vega
     }
   }

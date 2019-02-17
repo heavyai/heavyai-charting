@@ -101,7 +101,7 @@ export default function rasterLayerPolyMixin(_layer) {
       globalFilter: "",
       layerFilter: _layer.filters(),
       filtersInverse: _layer.filtersInverse(),
-      lastFilteredSize: _layer.filters().length ? bboxCount : lastFilteredSize(_layer.crossfilter().getId())
+      lastFilteredSize: _layer.filters().length ? _layer.getState().bboxCount : lastFilteredSize(_layer.crossfilter().getId())
     })
       .filter(
         transform =>
@@ -475,19 +475,11 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer.viewBoxDim = createRasterLayerGetterSetter(_layer, null)
 
-  _layer._genVega = function(chart, layerName, group, _, count) {
-
-    bboxCount = count
-
-    const layers = chart.getAllLayers()
-
-    const layerIndex = layers[0].getState().currentLayer || 0
-
-    const currentLayer = layers[layerIndex]
+  _layer._genVega = function(chart, layerName, group) {
 
     const mapBounds = chart.map().getBounds()
 
-    const columnExpr = `${currentLayer.getState().encoding.geoTable}.${currentLayer.getState().encoding.geocol}`
+    const columnExpr = `${_layer.getState().encoding.geoTable}.${_layer.getState().encoding.geocol}`
 
     const bboxFilter = `ST_XMax(${columnExpr}) >= ${ mapBounds._sw.lng } AND ST_XMin(${columnExpr}) <= ${ mapBounds._ne.lng } AND ST_YMax(${columnExpr}) >= ${ mapBounds._sw.lat } AND ST_YMin(${columnExpr}) <= ${ mapBounds._ne.lat }`
 
@@ -505,13 +497,12 @@ export default function rasterLayerPolyMixin(_layer) {
     } else if (crossfiltering && !bboxIsInCr) { // other charts has filter, but BE choropleth cleared
       filterStr = `${crossfiltering} AND ${bboxFilter}`
     }
-
     _vega = _layer.__genVega({
       layerName,
       filter: filterStr,
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter,
-      lastFilteredSize: count,
+      lastFilteredSize: _layer.getState().bboxCount,
       filtersInverse: _layer.filtersInverse(),
       useProjection: chart._useGeoTypes
     })
