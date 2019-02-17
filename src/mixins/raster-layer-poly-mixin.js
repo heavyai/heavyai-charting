@@ -151,6 +151,28 @@ export default function rasterLayerPolyMixin(_layer) {
         ? parser.parseExpression(color.aggregate)
         : `LAST_SAMPLE(${color.field})`
 
+    const colorField =
+      color.type === "quantitative"
+        ? (typeof color.aggregate === "string" ? color.aggregate : color.aggregate.field)
+        : color.field
+
+    if (doJoin()) {
+      transforms.push({
+        type: "project",
+        expr: `SAMPLE(${rowIdTable}.rowid)`,
+        as: "rowid"
+      })
+    } else {
+      transforms.push({
+        type: "project",
+        expr: `${rowIdTable}.rowid`
+      })
+      transforms.push({
+        type: "project",
+        expr: `${geoTable}.${geocol}`
+      })
+    }
+
     if (layerFilter.length) {
       if (doJoin()) {
         transforms.push({
@@ -174,7 +196,6 @@ export default function rasterLayerPolyMixin(_layer) {
           groupby
         })
       } else {
-        const colorField = color.type === "quantitative" ? color.aggregate.field : color.field // we need to refactor these two different object structure
         transforms.push({
           type: "project",
           expr: parser.parseExpression({
@@ -218,27 +239,10 @@ export default function rasterLayerPolyMixin(_layer) {
       } else if (color.type !== "solid") {
         transforms.push({
           type: "project",
-          expr: color.type === "quantitative" ? color.aggregate.field : color.field,
+          expr: colorField,
           as: "color"
         })
       }
-
-    if (doJoin()) {
-      transforms.push({
-        type: "project",
-        expr: `SAMPLE(${rowIdTable}.rowid)`,
-        as: "rowid"
-      })
-    } else {
-      transforms.push({
-        type: "project",
-        expr: `${rowIdTable}.rowid`
-      })
-      transforms.push({
-        type: "project",
-        expr: `${geoTable}.${geocol}`
-      })
-    }
 
     if (typeof filter === "string" && filter.length) {
       transforms.push({
