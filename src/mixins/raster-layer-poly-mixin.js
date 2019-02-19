@@ -281,7 +281,7 @@ export default function rasterLayerPolyMixin(_layer) {
         expr: globalFilter
       })
     }
-debugger
+
     return transforms
   }
 
