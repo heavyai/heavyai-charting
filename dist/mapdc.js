@@ -48482,7 +48482,7 @@ function rasterLayerPolyMixin(_layer) {
         expr: globalFilter
       });
     }
-
+    debugger;
     return transforms;
   }
 
@@ -48769,7 +48769,10 @@ function rasterLayerPolyMixin(_layer) {
       _filtersArray = [].concat(_toConsumableArray(_filtersArray), [key]);
     }
 
-    if (_filtersArray.length === 1 && !doJoin()) {
+    if (filterCol === "key0") {
+      filterCol = _layer.getState().data[0].table + "." + _layer.getState().data[0].attr;
+    }
+    if (_filtersArray.length === 1) {
       _layer.dimension().set(function () {
         return [filterCol];
       });

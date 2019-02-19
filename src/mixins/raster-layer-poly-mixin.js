@@ -281,7 +281,7 @@ export default function rasterLayerPolyMixin(_layer) {
         expr: globalFilter
       })
     }
-
+debugger
     return transforms
   }
 
@@ -567,7 +567,10 @@ export default function rasterLayerPolyMixin(_layer) {
       _filtersArray = [..._filtersArray, key]
     }
 
-    if (_filtersArray.length === 1 && !doJoin()) {
+    if(filterCol === "key0") {
+      filterCol = `${_layer.getState().data[0].table}.${_layer.getState().data[0].attr}`
+    }
+    if (_filtersArray.length === 1) {
       _layer.dimension().set(() => [filterCol])
       _layer.viewBoxDim(null)
     }
