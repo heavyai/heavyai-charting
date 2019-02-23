@@ -48688,31 +48688,27 @@ function rasterLayerPolyMixin(_layer) {
 
     var bboxFilter = "ST_XMax(" + columnExpr + ") >= " + mapBounds._sw.lng + " AND ST_XMin(" + columnExpr + ") <= " + mapBounds._ne.lng + " AND ST_YMax(" + columnExpr + ") >= " + mapBounds._sw.lat + " AND ST_YMin(" + columnExpr + ") <= " + mapBounds._ne.lat;
 
-    var layerFilter = _layer.filters();
-    var filterStr = null;
-    var crossfiltering = _layer.crossfilter().getFilter().find(function (f) {
-      return f !== "";
+    var allFilters = _layer.crossfilter().getFilter();
+    var otherChartFilters = allFilters.filter(function (f, i) {
+      return i !== _layer.dimension().getDimensionIndex() && f !== "" && f != null;
     });
-    var bboxIsInCr = crossfiltering ? crossfiltering.includes("ST_XMin") : false;
 
-    if (layerFilter.length && crossfiltering) {
-      // poly selection filter
-      filterStr = bboxFilter;
-    } else if (crossfiltering && bboxIsInCr) {
-      // just bbox filter from immerse
-      filterStr = _layer.crossfilter().getFilterString();
-    } else if (!layerFilter.length && !crossfiltering) {
-      // global filter clear
-      filterStr = bboxFilter;
-    } else if (crossfiltering && !bboxIsInCr) {
-      // other charts has filter, but BE choropleth cleared
-      filterStr = crossfiltering + " AND " + bboxFilter;
-    }
+    var polyFilterString = "";
+    var firstElem = true;
+
+    otherChartFilters.forEach(function (value) {
+      if (!firstElem) {
+        polyFilterString += " AND ";
+      }
+      firstElem = false;
+      polyFilterString += value;
+    });
+
     _vega = _layer.__genVega({
       layerName: layerName,
-      filter: filterStr,
+      filter: polyFilterString !== "" ? bboxFilter + " AND " + polyFilterString : bboxFilter,
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
-      layerFilter: layerFilter,
+      layerFilter: _layer.filters(),
       lastFilteredSize: _layer.getState().bboxCount,
       filtersInverse: _layer.filtersInverse(),
       useProjection: chart._useGeoTypes
@@ -48754,9 +48750,7 @@ function rasterLayerPolyMixin(_layer) {
   var _listeners = _d2.default.dispatch.apply(_d2.default, polyLayerEvents);
 
   // temporary fix until we update crossfilter dim correctly
-  _layer.filter = function (key, isInverseFilter) {
-    var filterCol = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "rowid";
-
+  _layer.filter = function (key, isInverseFilter, filterCol) {
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll();
       _layer.filtersInverse(isInverseFilter);

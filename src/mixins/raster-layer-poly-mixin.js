@@ -483,25 +483,25 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const bboxFilter = `ST_XMax(${columnExpr}) >= ${ mapBounds._sw.lng } AND ST_XMin(${columnExpr}) <= ${ mapBounds._ne.lng } AND ST_YMax(${columnExpr}) >= ${ mapBounds._sw.lat } AND ST_YMin(${columnExpr}) <= ${ mapBounds._ne.lat }`
 
-    const layerFilter = _layer.filters()
-    let filterStr = null
-    const crossfiltering = _layer.crossfilter().getFilter().find(f => f !== "")
-    const bboxIsInCr = crossfiltering ? crossfiltering.includes("ST_XMin") : false
+    const allFilters = _layer.crossfilter().getFilter()
+    const otherChartFilters = allFilters.filter((f, i) => i !== _layer.dimension().getDimensionIndex() && f !== "" && f != null)
 
-    if (layerFilter.length && crossfiltering) { // poly selection filter
-      filterStr = bboxFilter
-    } else if (crossfiltering && bboxIsInCr) { // just bbox filter from immerse
-      filterStr = _layer.crossfilter().getFilterString()
-    } else if (!layerFilter.length && !crossfiltering) { // global filter clear
-      filterStr = bboxFilter
-    } else if (crossfiltering && !bboxIsInCr) { // other charts has filter, but BE choropleth cleared
-      filterStr = `${crossfiltering} AND ${bboxFilter}`
-    }
+    let polyFilterString = ""
+    let firstElem = true
+
+    otherChartFilters.forEach(value => {
+      if (!firstElem) {
+        polyFilterString += " AND "
+      }
+      firstElem = false
+      polyFilterString += value
+    })
+
     _vega = _layer.__genVega({
       layerName,
-      filter: filterStr,
+      filter: polyFilterString !== "" ? `${bboxFilter} AND ${polyFilterString}` : bboxFilter,
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
-      layerFilter,
+      layerFilter: _layer.filters(),
       lastFilteredSize: _layer.getState().bboxCount,
       filtersInverse: _layer.filtersInverse(),
       useProjection: chart._useGeoTypes
@@ -556,7 +556,7 @@ export default function rasterLayerPolyMixin(_layer) {
   const _listeners = d3.dispatch.apply(d3, polyLayerEvents)
 
   // temporary fix until we update crossfilter dim correctly
-  _layer.filter = function(key, isInverseFilter, filterCol = "rowid") { 
+  _layer.filter = function(key, isInverseFilter, filterCol) {
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll()
       _layer.filtersInverse(isInverseFilter)
