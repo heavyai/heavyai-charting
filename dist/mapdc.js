@@ -48671,8 +48671,6 @@ function rasterLayerPolyMixin(_layer) {
     };
   };
 
-  var bboxCount = null;
-
   _layer._requiresCap = function () {
     // polys don't require a cap
     return false;
@@ -48749,7 +48747,6 @@ function rasterLayerPolyMixin(_layer) {
   var polyLayerEvents = ["filtered"];
   var _listeners = _d2.default.dispatch.apply(_d2.default, polyLayerEvents);
 
-  // temporary fix until we update crossfilter dim correctly
   _layer.filter = function (key, isInverseFilter, filterCol) {
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll();
@@ -48764,6 +48761,7 @@ function rasterLayerPolyMixin(_layer) {
     }
 
     if (filterCol === "key0") {
+      // groupby col is always fact table colunm
       filterCol = _layer.getState().data[0].table + "." + _layer.getState().data[0].attr;
     }
     if (_filtersArray.length === 1) {

@@ -466,8 +466,6 @@ export default function rasterLayerPolyMixin(_layer) {
     }
   }
 
-  let bboxCount = null
-
   _layer._requiresCap = function() {
     // polys don't require a cap
     return false
@@ -555,7 +553,6 @@ export default function rasterLayerPolyMixin(_layer) {
   const polyLayerEvents = ["filtered"]
   const _listeners = d3.dispatch.apply(d3, polyLayerEvents)
 
-  // temporary fix until we update crossfilter dim correctly
   _layer.filter = function(key, isInverseFilter, filterCol) {
     if (isInverseFilter !== _layer.filtersInverse()) {
       _layer.filterAll()
@@ -567,7 +564,7 @@ export default function rasterLayerPolyMixin(_layer) {
       _filtersArray = [..._filtersArray, key]
     }
 
-    if(filterCol === "key0") {
+    if(filterCol === "key0") { // groupby col is always fact table colunm
       filterCol = `${_layer.getState().data[0].table}.${_layer.getState().data[0].attr}`
     }
     if (_filtersArray.length === 1) {
