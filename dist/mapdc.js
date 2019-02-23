@@ -74580,7 +74580,7 @@ function rasterLayer(layerType) {
     return Boolean(popCols && popCols instanceof Array && popCols.length > 0);
   };
 
-  function addPopupColumnToSet(colAttr, popupColSet, chart) {
+  function addPopupColumnToSet(colAttr, popupColSet) {
     // TODO(croot): getProjectOn for groups requires the two arguments,
     // dimension.getProjectOn() doesn't have any args.
     // Need to come up with a better API for group.getProjectOn()
@@ -74621,7 +74621,7 @@ function rasterLayer(layerType) {
     var popupCols = _layer.popupColumns();
     if (popupCols) {
       popupCols.forEach(function (colAttr) {
-        addPopupColumnToSet(colAttr, popupColsSet, chart);
+        addPopupColumnToSet(colAttr, popupColsSet);
       });
     }
     _layer._addRenderAttrsToPopupColumnSet(chart, popupColsSet);
