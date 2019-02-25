@@ -48764,14 +48764,15 @@ function rasterLayerPolyMixin(_layer) {
       // groupby col is always fact table colunm
       filterCol = _layer.getState().data[0].table + "." + _layer.getState().data[0].attr;
     }
-    if (_filtersArray.length === 1) {
+
+    if (_filtersArray.length === 1 && filterCol) {
       _layer.dimension().set(function () {
         return [filterCol];
       });
       _layer.viewBoxDim(null);
     }
 
-    _filtersArray.length ? _layer.dimension().filterMulti(_filtersArray, undefined, isInverseFilter) : _layer.filterAll();
+    _filtersArray.length && filterCol ? _layer.dimension().filterMulti(_filtersArray, undefined, isInverseFilter) : _layer.filterAll();
   };
 
   _layer.filters = function () {

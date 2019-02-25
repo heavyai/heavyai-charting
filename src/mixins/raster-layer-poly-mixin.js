@@ -567,12 +567,13 @@ export default function rasterLayerPolyMixin(_layer) {
     if(filterCol === "key0") { // groupby col is always fact table colunm
       filterCol = `${_layer.getState().data[0].table}.${_layer.getState().data[0].attr}`
     }
-    if (_filtersArray.length === 1) {
+
+    if (_filtersArray.length === 1 && filterCol) {
       _layer.dimension().set(() => [filterCol])
       _layer.viewBoxDim(null)
     }
 
-    _filtersArray.length
+    _filtersArray.length && filterCol
       ? _layer
         .dimension()
         .filterMulti(_filtersArray, undefined, isInverseFilter)
