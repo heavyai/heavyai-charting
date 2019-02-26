@@ -286,21 +286,32 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         getCountFromBoundingBox(_chart, polyLayer).then(res => {
           const count = res && res[0] && res[0].n
           polyLayer.setState({...polyLayer.getState(), bboxCount: count})
+          _chart._vegaSpec = genLayeredVega(_chart)
+          _chart
+            .con()
+            .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
+            .then(result => {
+              _renderBoundsMap[result.nonce] = bounds
+              callback(null, result)
+            })
+            .catch(error => {
+              callback(error)
+            })
         })
       })
+    } else {
+      _chart._vegaSpec = genLayeredVega(_chart)
+      _chart
+        .con()
+        .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
+        .then(result => {
+          _renderBoundsMap[result.nonce] = bounds
+          callback(null, result)
+        })
+        .catch(error => {
+          callback(error)
+        })
     }
-
-    _chart._vegaSpec = genLayeredVega(_chart)
-    _chart
-      .con()
-      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
-      .then(result => {
-        _renderBoundsMap[result.nonce] = bounds
-        callback(null, result)
-      })
-      .catch(error => {
-        callback(error)
-      })
   })
 
   _chart.data(group => {
