@@ -68974,10 +68974,20 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return chart.con().queryAsync(preflightQuery, {});
   }
 
-  _chart.setDataAsync(function (group, callback) {
+  function handleRenderVega(callback) {
     var bounds = _chart.getDataRenderBounds();
     _chart._updateXAndYScales(bounds);
 
+    _chart._vegaSpec = genLayeredVega(_chart);
+    _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
+      _renderBoundsMap[result.nonce] = bounds;
+      callback(null, result);
+    }).catch(function (error) {
+      callback(error);
+    });
+  }
+
+  _chart.setDataAsync(function (group, callback) {
     var layers = _chart.getAllLayers();
     var polyLayers = layers.length ? _.filter(layers, function (layer) {
       return layer.getState().mark.type === "poly";
@@ -68989,23 +68999,11 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         getCountFromBoundingBox(_chart, polyLayer).then(function (res) {
           var count = res && res[0] && res[0].n;
           polyLayer.setState(_extends({}, polyLayer.getState(), { bboxCount: count }));
-          _chart._vegaSpec = genLayeredVega(_chart);
-          _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
-            _renderBoundsMap[result.nonce] = bounds;
-            callback(null, result);
-          }).catch(function (error) {
-            callback(error);
-          });
+          handleRenderVega(callback);
         });
       });
     } else {
-      _chart._vegaSpec = genLayeredVega(_chart);
-      _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
-        _renderBoundsMap[result.nonce] = bounds;
-        callback(null, result);
-      }).catch(function (error) {
-        callback(error);
-      });
+      handleRenderVega(callback);
     }
   });
 
