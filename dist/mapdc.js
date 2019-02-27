@@ -48760,8 +48760,8 @@ function rasterLayerPolyMixin(_layer) {
       _filtersArray = [].concat(_toConsumableArray(_filtersArray), [key]);
     }
 
-    if (filterCol === "key0") {
-      // groupby col is always fact table colunm
+    if (filterCol === "key0" && _layer.getState().data.length > 1) {
+      // groupby col is always fact table column
       filterCol = _layer.getState().data[0].table + "." + _layer.getState().data[0].attr;
     }
 
@@ -48804,7 +48804,9 @@ function rasterLayerPolyMixin(_layer) {
     }
     var isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey));
 
-    var filterKey = doJoin() ? "key0" : "rowid";
+    var filterKey = Object.keys(data).find(function (k) {
+      return k === "rowid" || k === "key0";
+    });
 
     chart.hidePopup();
     _events.events.trigger(function () {

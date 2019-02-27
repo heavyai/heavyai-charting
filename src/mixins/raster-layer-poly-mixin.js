@@ -564,7 +564,7 @@ export default function rasterLayerPolyMixin(_layer) {
       _filtersArray = [..._filtersArray, key]
     }
 
-    if(filterCol === "key0") { // groupby col is always fact table colunm
+    if(filterCol === "key0" && _layer.getState().data.length > 1) { // groupby col is always fact table column
       filterCol = `${_layer.getState().data[0].table}.${_layer.getState().data[0].attr}`
     }
 
@@ -607,7 +607,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
     const isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey))
 
-    const filterKey = doJoin() ? "key0" : "rowid"
+    const filterKey = Object.keys(data).find(k => k === "rowid" || k === "key0")
 
     chart.hidePopup()
     events.trigger(() => {
