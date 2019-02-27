@@ -1,11 +1,10 @@
 require("../mapdc.css")
 require("../scss/chart.scss")
-require("mapbox-gl/dist/styles.css")
+require("mapbox-gl/dist/mapbox-gl.css")
 require("legendables/src/styles.css")
 
 if (process.env.BABEL_ENV !== "test") {
   window.mapboxgl = require("mapbox-gl/dist/mapbox-gl.js")
-  require("mapbox-gl/dist/mapboxgl-overrides.js")
 }
 
 require("./mixins/d3.box.js")

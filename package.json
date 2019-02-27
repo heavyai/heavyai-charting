@@ -60,7 +60,7 @@
     "fast-deep-equal": "^2.0.1",
     "http-server": "^0.11.1",
     "legendables": "git://github.com/omnisci/legendables.git#63e2ad9a8375a11e5510a5dadf0b7a4326fae888",
-    "mapbox-gl": "https://github.com/omnisci/mapbox-gl-js/tarball/9c04de6949fe498c8c79f5c0627dfd6d6321f307",
+    "mapbox-gl": "^0.53.0",
     "mapd-data-layer-2": "0.0.8",
     "moment": "^2.19.3",
     "ramda": "0.21.0",
