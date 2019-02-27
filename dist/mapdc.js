@@ -5213,7 +5213,7 @@ parser.registerParser({
   return sql;
 });
 
-var dateFormat = exports.dateFormat = _d2.default.time.format("%m/%d/%Y");
+var dateFormat = exports.dateFormat = _d2.default.time.format.utc("%m/%d/%Y");
 
 var deepEquals = exports.deepEquals = __webpack_require__(160); // eslint-disable-line global-require
 
@@ -5860,7 +5860,7 @@ var _legendMixin = __webpack_require__(204);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
-var _binningHelpers = __webpack_require__(19);
+var _binningHelpers = __webpack_require__(20);
 
 var _d = __webpack_require__(1);
 
@@ -5878,7 +5878,7 @@ var _labelMixin = __webpack_require__(206);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
-var _logger = __webpack_require__(18);
+var _logger = __webpack_require__(19);
 
 var _multipleKeyAccessors = __webpack_require__(163);
 
@@ -11062,1689 +11062,6 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
 
 /***/ }),
 /* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(26);
-
-
-/* harmony default export */ __webpack_exports__["a"] = (function(x) {
-  return x = Object(__WEBPACK_IMPORTED_MODULE_0__formatDecimal__["a" /* default */])(Math.abs(x)), x ? x[1] : NaN;
-});
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var logger = exports.logger = {};
-
-logger.enableDebugLog = false;
-
-/* istanbul ignore next */
-logger.warn = function (msg) {
-  if (console) {
-    if (console.warn) {
-      console.warn(msg);
-    } else if (console.log) {
-      console.log(msg);
-    }
-  }
-
-  return logger;
-};
-
-/* istanbul ignore next */
-logger.debug = function (msg) {
-  if (logger.enableDebugLog && console) {
-    if (console.debug) {
-      console.debug(msg);
-    } else if (console.log) {
-      console.log(msg);
-    }
-  }
-
-  return logger;
-};
-
-/* istanbul ignore next */
-logger.deprecate = function (fn, msg) {
-  // Allow logging of deprecation
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      logger.warn(msg);
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-  return deprecated;
-};
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.autoBinParams = autoBinParams;
-exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
-var SEC = 1;
-var MIN_IN_SECS = 60;
-var HOUR_IN_SECS = 3600;
-var DAY_IN_SECS = 86400;
-var WEEK_IN_SECS = 604800;
-var MONTH_IN_SECS = 2592000;
-var QUARTER_IN_SECS = 10368000;
-var YEAR_IN_SECS = 31536000;
-var DECADE_IN_SECS = 315360000;
-
-var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
-
-var TIME_LABELS = ["second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
-
-var TIME_LABEL_TO_SECS = exports.TIME_LABEL_TO_SECS = {
-  second: SEC,
-  minute: MIN_IN_SECS,
-  hour: HOUR_IN_SECS,
-  day: DAY_IN_SECS,
-  week: WEEK_IN_SECS,
-  month: MONTH_IN_SECS,
-  quarter: QUARTER_IN_SECS,
-  year: YEAR_IN_SECS,
-  decade: DECADE_IN_SECS
-};
-
-var TIME_SPANS = exports.TIME_SPANS = TIME_LABELS.map(function (label) {
-  return {
-    label: label,
-    numSeconds: TIME_LABEL_TO_SECS[label]
-  };
-});
-
-var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }];
-
-function autoBinParams(timeBounds, maxNumBins, reverse) {
-  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
-  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
-  var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
-  for (var s = 0; s < timeSpans.length; s++) {
-    if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
-      return timeSpans[s].label;
-    }
-  }
-  return "century"; // default;
-}
-
-function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
-  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
-  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
-  var timeLabelToSecs = TIME_LABEL_TO_SECS;
-  if (timeRange / timeLabelToSecs[timeBin] > maxNumBins) {
-    return autoBinParams(timeBounds, maxNumBins);
-  } else if (timeRange / timeLabelToSecs[timeBin] < 2) {
-    return autoBinParams(timeBounds, maxNumBins, true);
-  } else {
-    return timeBin;
-  }
-}
-
-var createBinParams = exports.createBinParams = function createBinParams(chart, binParams) {
-  if (!chart.group() || !chart.group().binParams) {
-    return;
-  }
-
-  binParams = Array.isArray(binParams) ? binParams : [binParams];
-
-  var parsedBinParams = binParams.map(function (param) {
-    if (param) {
-      var _param$timeBin = param.timeBin,
-          timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
-          binBounds = param.binBounds,
-          numBins = param.numBins;
-
-      var extract = param.extract || false;
-      var isDate = binBounds[0] instanceof Date;
-      if (isDate && timeBin === "auto") {
-        var bounds = binBounds.map(function (date) {
-          return date.getTime();
-        });
-        return Object.assign({}, param, {
-          extract: extract,
-          timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
-          binBounds: binBounds.slice(),
-          auto: true // hightlights the "auto" UI button
-        });
-      } else {
-        return Object.assign({}, param, {
-          extract: extract,
-          timeBin: timeBin,
-          binBounds: binBounds.slice()
-        });
-      }
-    }
-    return param;
-  });
-
-  chart.group().binParams(parsedBinParams);
-  return chart;
-};
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = bubbleMixin;
-
-var _colorMixin = __webpack_require__(7);
-
-var _colorMixin2 = _interopRequireDefault(_colorMixin);
-
-var _d = __webpack_require__(1);
-
-var _d2 = _interopRequireDefault(_d);
-
-var _core = __webpack_require__(2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * This Mixin provides reusable functionalities for any chart that needs to visualize data using bubbles.
- * @name bubbleMixin
- * @memberof dc
- * @mixin
- * @mixes dc.colorMixin
- * @param {Object} _chart
- * @return {dc.bubbleMixin}
- */
-function bubbleMixin(_chart) {
-  var _maxBubbleRelativeSize = 0.3;
-
-  /* OVERRIDE ---------------------------------------------------------------- */
-  var _minRadiusWithLabel = 2;
-  /* ------------------------------------------------------------------------- */
-
-  _chart.BUBBLE_NODE_CLASS = "node";
-  _chart.BUBBLE_CLASS = "bubble";
-  _chart.MIN_RADIUS = 10;
-
-  /* OVERRIDE ---------------------------------------------------------------- */
-  _chart.accent = accentBubble;
-  _chart.unAccent = unAccentBubble;
-  /* ------------------------------------------------------------------------- */
-
-  _chart = (0, _colorMixin2.default)(_chart);
-
-  _chart.renderLabel(true);
-
-  /* OVERRIDE ---------------------------------------------------------------- */
-  _chart.setDataAsync(function (group, callbacks) {
-    if (_chart.cap() !== undefined) {
-      return group.topAsync(_chart.cap()).then(function (result) {
-        callbacks(null, result);
-      }).catch(function (error) {
-        callbacks(error);
-      });
-    } else {
-      group.allAsync(callbacks);
-    }
-  });
-  /* ------------------------------------------------------------------------- */
-
-  _chart.data(function (group) {
-    /* OVERRIDE ---------------------------------------------------------------- */
-    if (_chart.dataCache !== null) {
-      return _chart.dataCache;
-    } else {
-      return group.top(_chart.cap() !== undefined ? _chart.cap() : Infinity);
-    }
-    /* ------------------------------------------------------------------------- */
-  });
-
-  var _r = _d2.default.scale.linear().domain([0, 100]);
-
-  var _rValueAccessor = function _rValueAccessor(d) {
-    return d.r;
-  };
-
-  /**
-   * Get or set the bubble radius scale. By default the bubble chart uses
-   * {@link https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear d3.scale.linear().domain([0, 100])}
-   * as its radius scale.
-   * @name r
-   * @memberof dc.bubbleMixin
-   * @instance
-   * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
-   * @param {d3.scale} [bubbleRadiusScale=d3.scale.linear().domain([0, 100])]
-   * @return {d3.scale}
-   * @return {dc.bubbleMixin}
-   */
-  _chart.r = function (bubbleRadiusScale) {
-    if (!arguments.length) {
-      return _r;
-    }
-    _r = bubbleRadiusScale;
-    return _chart;
-  };
-
-  /**
-   * Get or set the radius value accessor function. If set, the radius value accessor function will
-   * be used to retrieve a data value for each bubble. The data retrieved then will be mapped using
-   * the r scale to the actual bubble radius. This allows you to encode a data dimension using bubble
-   * size.
-   * @name radiusValueAccessor
-   * @memberof dc.bubbleMixin
-   * @instance
-   * @param {Function} [radiusValueAccessor]
-   * @return {Function}
-   * @return {dc.bubbleMixin}
-   */
-  _chart.radiusValueAccessor = function (radiusValueAccessor) {
-    if (!arguments.length) {
-      return _rValueAccessor;
-    }
-    _rValueAccessor = radiusValueAccessor;
-    return _chart;
-  };
-
-  _chart.rMin = function () {
-    var min = _d2.default.min(_chart.data(), function (e) {
-      return _chart.radiusValueAccessor()(e);
-    });
-    return min;
-  };
-
-  _chart.rMax = function () {
-    var max = _d2.default.max(_chart.data(), function (e) {
-      return _chart.radiusValueAccessor()(e);
-    });
-    return max;
-  };
-
-  _chart.bubbleR = function (d) {
-    var value = _chart.radiusValueAccessor()(d);
-    var r = _chart.r()(value);
-    if (isNaN(r) || value <= 0) {
-      r = 0;
-    }
-    return r;
-  };
-
-  var labelFunction = function labelFunction(d) {
-    return _chart.label()(d);
-  };
-
-  var shouldLabel = function shouldLabel(d) {
-    return _chart.bubbleR(d) > _minRadiusWithLabel;
-  };
-
-  var labelOpacity = function labelOpacity(d) {
-    return shouldLabel(d) ? 1 : 0;
-  };
-
-  var labelPointerEvent = function labelPointerEvent(d) {
-    return shouldLabel(d) ? "all" : "none";
-  };
-
-  _chart._doRenderLabel = function (bubbleGEnter) {
-    if (_chart.renderLabel()) {
-      var label = bubbleGEnter.select("text");
-
-      if (label.empty()) {
-        label = bubbleGEnter.append("text").attr("text-anchor", "middle").attr("dy", ".3em").on("click", _chart.onClick);
-      }
-
-      label.attr("opacity", 0).attr("pointer-events", labelPointerEvent).html(labelFunction);
-
-      (0, _core.transition)(label, _chart.transitionDuration()).attr("opacity", 1);
-
-      _chart.hideOverlappedLabels();
-    }
-  };
-
-  _chart.doUpdateLabels = function (bubbleGEnter) {
-    _chart._doRenderLabel(bubbleGEnter);
-  };
-
-  var titleFunction = function titleFunction(d) {
-    return _chart.title()(d);
-  };
-
-  _chart._doRenderTitles = function (g) {
-    if (_chart.renderTitle()) {
-      var title = g.select("title");
-
-      if (title.empty()) {
-        g.append("title").text(titleFunction);
-      }
-    }
-  };
-
-  _chart.doUpdateTitles = function (g) {
-    if (_chart.renderTitle()) {
-      g.selectAll("title").text(titleFunction);
-    }
-  };
-
-  /**
-   * Get or set the minimum radius. This will be used to initialize the radius scale's range.
-   * @name minRadius
-   * @memberof dc.bubbleMixin
-   * @instance
-   * @param {Number} [radius=10]
-   * @return {Number}
-   * @return {dc.bubbleMixin}
-   */
-  _chart.minRadius = function (radius) {
-    if (!arguments.length) {
-      return _chart.MIN_RADIUS;
-    }
-    _chart.MIN_RADIUS = radius;
-    return _chart;
-  };
-
-  /**
-   * Get or set the minimum radius for label rendering. If a bubble's radius is less than this value
-   * then no label will be rendered.
-   * @name minRadiusWithLabel
-   * @memberof dc.bubbleMixin
-   * @instance
-   * @param {Number} [radius=10]
-   * @return {Number}
-   * @return {dc.bubbleMixin}
-   */
-
-  _chart.minRadiusWithLabel = function (radius) {
-    if (!arguments.length) {
-      return _minRadiusWithLabel;
-    }
-    _minRadiusWithLabel = radius;
-    return _chart;
-  };
-
-  /**
-   * Get or set the maximum relative size of a bubble to the length of x axis. This value is useful
-   * when the difference in radius between bubbles is too great.
-   * @name maxBubbleRelativeSize
-   * @memberof dc.bubbleMixin
-   * @instance
-   * @param {Number} [relativeSize=0.3]
-   * @return {Number}
-   * @return {dc.bubbleMixin}
-   */
-  _chart.maxBubbleRelativeSize = function (relativeSize) {
-    if (!arguments.length) {
-      return _maxBubbleRelativeSize;
-    }
-    _maxBubbleRelativeSize = relativeSize;
-    return _chart;
-  };
-
-  _chart.fadeDeselectedArea = function () {
-    if (_chart.hasFilter()) {
-      _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
-        if (_chart.isSelectedNode(d)) {
-          _chart.highlightSelected(this);
-        } else {
-          _chart.fadeDeselected(this);
-        }
-      });
-    } else {
-      _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function () {
-        _chart.resetHighlight(this);
-      });
-    }
-  };
-
-  _chart.isSelectedNode = function (d) {
-    /* OVERRIDE -----------------------------------------------------------------*/
-    return _chart.hasFilter(d.key0) ^ _chart.filtersInverse();
-    /* --------------------------------------------------------------------------*/
-  };
-
-  _chart.onClick = function (d) {
-    /* OVERRIDE -----------------------------------------------------------------*/
-    var filter = d.key0;
-    /* --------------------------------------------------------------------------*/
-    _chart.handleFilterClick(_d2.default.event, filter);
-    _chart.updatePopup(d);
-  };
-
-  /* OVERRIDE -----------------------------------------------------------------*/
-  function accentBubble(label) {
-    _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
-      if (d.key0 === label) {
-        _chart.accentSelected(this);
-      }
-    });
-  }
-
-  function unAccentBubble(label) {
-    _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
-      if (d.key0 === label) {
-        _chart.unAccentSelected(this);
-      }
-    });
-  }
-  /* --------------------------------------------------------------------------*/
-
-  return _chart;
-}
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = stackMixin;
-
-var _binningHelpers = __webpack_require__(19);
-
-var _utils = __webpack_require__(3);
-
-var _d = __webpack_require__(1);
-
-var _d2 = _interopRequireDefault(_d);
-
-var _core = __webpack_require__(2);
-
-var _multipleKeyAccessors = __webpack_require__(163);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Stack Mixin is an mixin that provides cross-chart support of stackability using d3.layout.stack.
- * @name stackMixin
- * @memberof dc
- * @mixin
- * @param {Object} _chart
- * @return {dc.stackMixin}
- */
-
-function stackMixin(_chart) {
-  function prepareValues(layer, layerIdx) {
-    var valAccessor = layer.accessor || _chart.valueAccessor();
-    layer.name = String(layer.name || "series_" + (layerIdx + 1));
-    layer.layer = layer.name;
-    layer.idx = layerIdx;
-
-    /* OVERRIDE ---------------------------------------------------------------- */
-    // WARNING: probably destroys stack functionality: find workaround
-    var preValues = _chart.dataCache != null ? _chart.dataCache : layer.group.all();
-    // layer.values = layer.group.all().map(function (d, i) {
-    layer.values = preValues.map(function (d, i) {
-      return {
-        x: _chart.keyAccessor()(d, i),
-        y: layer.hidden ? null : valAccessor(d, i) || 0,
-        idx: layerIdx,
-        data: d,
-        layer: layer.name,
-        hidden: layer.hidden
-      };
-    });
-    /* ------------------------------------------------------------------------- */
-    layer.values = layer.values.filter(domainFilter());
-    return layer.values;
-  }
-
-  var _stackLayout = _d2.default.layout.stack().values(prepareValues);
-
-  var _stack = [];
-  var _titles = {};
-
-  var _hidableStacks = false;
-  var _colorByLayerId = false;
-
-  function domainFilter() {
-    if (!_chart.x()) {
-      return _d2.default.functor(true);
-    }
-    var xDomain = _chart.x().domain();
-    if (_chart.isOrdinal()) {
-      // TODO #416
-      // var domainSet = d3.set(xDomain);
-      return function () {
-        return true; // domainSet.has(p.x);
-      };
-    }
-    if (_chart.elasticX()) {
-      return function () {
-        return true;
-      };
-    }
-    return function (p) {
-      return true;
-    };
-  }
-
-  /**
-   * Stack a new crossfilter group onto this chart with an optional custom value accessor. All stacks
-   * in the same chart will share the same key accessor and therefore the same set of keys.
-   *
-   * For example, in a stacked bar chart, the bars of each stack will be positioned using the same set
-   * of keys on the x axis, while stacked vertically. If name is specified then it will be used to
-   * generate the legend label.
-   * @name stack
-   * @memberof dc.stackMixin
-   * @instance
-   * @see {@link https://github.com/square/crossfilter/wiki/API-Reference#group-map-reduce crossfilter.group}
-   * @example
-   * // stack group using default accessor
-   * chart.stack(valueSumGroup)
-   * // stack group using custom accessor
-   * .stack(avgByDayGroup, function(d){return d.value.avgByDay;});
-   * @param {crossfilter.group} group
-   * @param {String} [name]
-   * @param {Function} [accessor]
-   * @return {Array<{group: crossfilter.group, name: String, accessor: Function}>}
-   * @return {dc.stackMixin}
-   */
-  _chart.stack = function (group, name, accessor) {
-    if (!arguments.length) {
-      return _stack;
-    }
-
-    if (arguments.length <= 2) {
-      accessor = name;
-    }
-
-    var layer = { group: group };
-    if (typeof name === "string") {
-      layer.name = name;
-    }
-    if (typeof accessor === "function") {
-      layer.accessor = accessor;
-    }
-    _stack.push(layer);
-
-    return _chart;
-  };
-
-  (0, _core.override)(_chart, "group", function (g, n, f) {
-    if (!arguments.length) {
-      return _chart._group();
-    }
-    _stack = [];
-    _titles = {};
-    _chart.stack(g, n);
-    if (f) {
-      _chart.valueAccessor(f);
-    }
-    return _chart._group(g, n);
-  });
-
-  /**
-   * Allow named stacks to be hidden or shown by clicking on legend items.
-   * This does not affect the behavior of hideStack or showStack.
-   * @name hidableStacks
-   * @memberof dc.stackMixin
-   * @instance
-   * @param {Boolean} [hidableStacks=false]
-   * @return {Boolean}
-   * @return {dc.stackMixin}
-   */
-  _chart.hidableStacks = function (hidableStacks) {
-    if (!arguments.length) {
-      return _hidableStacks;
-    }
-    _hidableStacks = hidableStacks;
-    return _chart;
-  };
-
-  function findLayerByName(n) {
-    var i = _stack.map((0, _utils.pluck)("name")).indexOf(n);
-    return _stack[i];
-  }
-
-  /**
-   * Hide all stacks on the chart with the given name.
-   * The chart must be re-rendered for this change to appear.
-   * @name hideStack
-   * @memberof dc.stackMixin
-   * @instance
-   * @param {String} stackName
-   * @return {dc.stackMixin}
-   */
-  _chart.hideStack = function (stackName) {
-    var layer = findLayerByName(stackName);
-    if (layer) {
-      layer.hidden = true;
-    }
-    return _chart;
-  };
-
-  /**
-   * Show all stacks on the chart with the given name.
-   * The chart must be re-rendered for this change to appear.
-   * @name showStack
-   * @memberof dc.stackMixin
-   * @instance
-   * @param {String} stackName
-   * @return {dc.stackMixin}
-   */
-  _chart.showStack = function (stackName) {
-    var layer = findLayerByName(stackName);
-    if (layer) {
-      layer.hidden = false;
-    }
-    return _chart;
-  };
-
-  _chart.getValueAccessorByIndex = function (index) {
-    return _stack[index].accessor || _chart.valueAccessor();
-  };
-
-  _chart.yAxisMin = function () {
-    var min = _d2.default.min(flattenStack(), function (p) {
-      /* OVERRIDE ---------------------------------------------------------------- */
-      if (_chart.renderArea === undefined || _chart.renderArea()) {
-        return p.y + p.y0 < p.y0 ? p.y + p.y0 : p.y0;
-      } else {
-        return p.y;
-      }
-    });
-    /* ------------------------------------------------------------------------- */
-
-    return _utils.utils.subtract(min, _chart.yAxisPadding());
-  };
-
-  _chart.yAxisMax = function () {
-    var max = _d2.default.max(flattenStack(), function (p) {
-      /* OVERRIDE ---------------------------------------------------------------- */
-      if (_chart.renderArea === undefined || _chart.renderArea()) {
-        return p.y + p.y0;
-      } else {
-        return p.y;
-      }
-      /* ------------------------------------------------------------------------- */
-    });
-
-    return _utils.utils.add(max, _chart.yAxisPadding());
-  };
-
-  function flattenStack() {
-    var valueses = _chart.data().map(function (layer) {
-      return layer.values;
-    });
-    return Array.prototype.concat.apply([], valueses);
-  }
-
-  _chart.xAxisMin = function () {
-    var min = _d2.default.min(flattenStack(), (0, _utils.pluck)("x"));
-    return _utils.utils.subtract(min, _chart.xAxisPadding());
-  };
-
-  _chart.xAxisMax = function () {
-    var max = _d2.default.max(flattenStack(), (0, _utils.pluck)("x"));
-    return _utils.utils.add(max, _chart.xAxisPadding());
-  };
-
-  /**
-   * Set or get the title function. Chart class will use this function to render svg title (usually interpreted by
-   * browser as tooltips) for each child element in the chart, i.e. a slice in a pie chart or a bubble in a bubble chart.
-   * Almost every chart supports title function however in grid coordinate chart you need to turn off brush in order to
-   * use title otherwise the brush layer will block tooltip trigger.
-   *
-   * If the first argument is a stack name, the title function will get or set the title for that stack. If stackName
-   * is not provided, the first stack is implied.
-   * @name title
-   * @memberof dc.stackMixin
-   * @instance
-   * @example
-   * // set a title function on 'first stack'
-   * chart.title('first stack', function(d) { return d.key + ': ' + d.value; });
-   * // get a title function from 'second stack'
-   * var secondTitleFunction = chart.title('second stack');
-   * @param {String} [stackName]
-   * @param {Function} [titleAccessor]
-   * @return {String}
-   * @return {dc.stackMixin}
-   */
-  (0, _core.override)(_chart, "title", function (stackName, titleAccessor) {
-    if (!stackName) {
-      return _chart._title();
-    }
-
-    if (typeof stackName === "function") {
-      return _chart._title(stackName);
-    }
-    if (stackName === _chart._groupName && typeof titleAccessor === "function") {
-      return _chart._title(titleAccessor);
-    }
-
-    if (typeof titleAccessor !== "function") {
-      return _titles[stackName] || _chart._title();
-    }
-
-    _titles[stackName] = titleAccessor;
-
-    return _chart;
-  });
-
-  /**
-   * Gets or sets the stack layout algorithm, which computes a baseline for each stack and
-   * propagates it to the next
-   * @name stackLayout
-   * @memberof dc.stackMixin
-   * @instance
-   * @see {@link http://github.com/mbostock/d3/wiki/Stack-Layout d3.layout.stack}
-   * @param {Function} [stack=d3.layout.stack]
-   * @return {Function}
-   * @return {dc.stackMixin}
-   */
-  _chart.stackLayout = function (stack) {
-    if (!arguments.length) {
-      return _stackLayout;
-    }
-    _stackLayout = stack;
-    return _chart;
-  };
-
-  function visability(l) {
-    return !l.hidden;
-  }
-
-  _chart.data(function () {
-    var layers = _stack.filter(visability);
-    return layers.length ? _chart.stackLayout()(layers) : [];
-  });
-
-  _chart._ordinalXDomain = function () {
-    var flat = flattenStack().map((0, _utils.pluck)("data"));
-    var ordered = _chart._computeOrderedGroups(flat);
-    return ordered.map(_chart.keyAccessor());
-  };
-
-  _chart.colorByLayerId = function (_) {
-    if (!arguments.length) {
-      return _colorByLayerId;
-    }
-    _colorByLayerId = _;
-    return _chart;
-  };
-
-  _chart.colorAccessor(function (d) {
-    /* OVERRIDE ---------------------------------------------------------------- */
-    var layer = null;
-    if (_colorByLayerId) {
-      layer = this.idx;
-    } else {
-      layer = this.layer || this.name || d.name || d.layer;
-    }
-    /* ------------------------------------------------------------------------- */
-    return layer;
-  });
-
-  _chart.legendables = function () {
-    return _stack.map(function (layer, i) {
-      return {
-        chart: _chart,
-        name: layer.name,
-        hidden: layer.hidden || false,
-        color: _chart.getColor.call(layer, layer.values, i)
-      };
-    });
-  };
-
-  _chart.isLegendableHidden = function (d) {
-    var layer = findLayerByName(d.name);
-    return layer ? layer.hidden : false;
-  };
-
-  _chart.legendToggle = function (d) {
-    if (_hidableStacks) {
-      if (_chart.isLegendableHidden(d)) {
-        _chart.showStack(d.name);
-      } else {
-        _chart.hideStack(d.name);
-      }
-      _chart.renderGroup();
-    }
-  };
-
-  (0, _core.override)(_chart, "binParams", function (binParams) {
-    if (!arguments.length) {
-      return _chart.group().binParams();
-    }
-
-    binParams = Array.isArray(binParams) ? binParams : [binParams];
-
-    var parsedBinParams = binParams.map(function (param) {
-      if (param) {
-        var _param$timeBin = param.timeBin,
-            timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
-            binBounds = param.binBounds,
-            numBins = param.numBins,
-            auto = param.auto;
-
-        var extract = param.extract || false;
-        var isDate = binBounds[0] instanceof Date;
-        if (isDate && timeBin && !extract) {
-          var bounds = binBounds.map(function (date) {
-            return date.getTime();
-          });
-          return Object.assign({}, param, {
-            extract: extract,
-            timeBin: (0, _binningHelpers.checkIfTimeBinInRange)(bounds, timeBin, numBins),
-            binBounds: binBounds.slice()
-          });
-        } else {
-          return param;
-        }
-      }
-      return null;
-    });
-
-    return (0, _binningHelpers.createBinParams)(_chart, parsedBinParams);
-  });
-
-  _chart.keyAccessor(_multipleKeyAccessors.multipleKeysAccessorForStack);
-
-  return _chart;
-}
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-exports.default = mapMixin;
-
-var _d2 = __webpack_require__(1);
-
-var _d3 = _interopRequireDefault(_d2);
-
-var _lodash = __webpack_require__(23);
-
-var _ = _interopRequireWildcard(_lodash);
-
-var _coreAsync = __webpack_require__(4);
-
-var _utils = __webpack_require__(3);
-
-var _mapDrawMixin = __webpack_require__(217);
-
-var _rasterDrawMixin = __webpack_require__(24);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function valuesOb(obj) {
-  return Object.keys(obj).map(function (key) {
-    return obj[key];
-  });
-}
-
-function mapMixin(_chart, chartDivId, _mapboxgl) {
-  var mixinDraw = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-
-  var DEFAULT_ZOOM_LEVEL = 15;
-  var EASE_DURATION_MS = 1500;
-  var SMALL_AMOUNT = 0.00001; // Mapbox doesn't like coords being exactly on the edge.
-  var LONMAX = 180 - SMALL_AMOUNT;
-  var LONMIN = -180 + SMALL_AMOUNT;
-  var LATMAX = 85 - SMALL_AMOUNT;
-  var LATMIN = -85 + SMALL_AMOUNT;
-
-  var _mapboxgl = typeof _mapboxgl === "undefined" ? mapboxgl : _mapboxgl;
-  var _map = null;
-  var _mapboxAccessToken = null;
-  var _lastWidth = null;
-  var _lastHeight = null;
-  var _mapId = chartDivId;
-
-  _chart._xDimName = null;
-  _chart._yDimName = null;
-  _chart._viewBoxDimName = null;
-  var hasAppliedInitialBounds = false;
-  var _hasRendered = false;
-  var _activeLayer = null;
-  var _mapInitted = false;
-  var _xDim = null;
-  var _yDim = null;
-  var _viewBoxDim = null;
-  var _lastMapMoveType = null;
-  var _lastMapUpdateTime = 0;
-  var _isFirstMoveEvent = true;
-  var _mapUpdateInterval = 100; // default
-  var _mapStyle = "mapbox://styles/mapbox/light-v8";
-  var _center = [0, 30];
-  var _zoom = 1;
-  var _attribLocation = "bottom-right";
-  var _popupFunction = null;
-  var _colorBy = null;
-  var _mouseLeave = false;
-  var _useLonLat = true;
-  _chart._minCoord = null;
-  _chart._maxCoord = null;
-  _chart._reProjMapbox = true;
-
-  var _clientClickX = null;
-  var _clientClickY = null;
-
-  var _arr = [[LONMIN, LATMIN], [LONMAX, LATMAX]];
-
-  var _llb = _mapboxgl.LngLatBounds.convert(_arr);
-
-  var _geocoder = null;
-
-  var _minMaxCache = {};
-  var _interactionsEnabled = true;
-
-  _chart.useLonLat = function (useLonLat) {
-    if (!arguments.length) {
-      return _useLonLat;
-    }
-    _useLonLat = useLonLat;
-    return _chart;
-  };
-  _chart.map = function () {
-    return _map;
-  };
-
-  _chart.lonMin = function () {
-    return LONMIN;
-  };
-
-  _chart.lonMax = function () {
-    return LONMAX;
-  };
-
-  _chart.latMin = function () {
-    return LATMIN;
-  };
-
-  _chart.latMax = function () {
-    return LATMAX;
-  };
-
-  function makeBoundsArrSafe(_ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-        _ref2$ = _slicedToArray(_ref2[0], 2),
-        lowerLon = _ref2$[0],
-        lowerLat = _ref2$[1],
-        _ref2$2 = _slicedToArray(_ref2[1], 2),
-        upperLon = _ref2$2[0],
-        upperLat = _ref2$2[1];
-
-    return [[Math.max(LONMIN, lowerLon), Math.max(LATMIN, lowerLat)], [Math.min(LONMAX, upperLon), Math.min(LATMAX, upperLat)]];
-  }
-
-  _chart.convertBounds = function (arr) {
-    if (!_mapboxgl) {
-      throw new Error("Cannot convert bounds: mapboxgl uninitialized.");
-    }
-    return _mapboxgl.LngLatBounds.convert(makeBoundsArrSafe(arr));
-  };
-
-  _chart.enableInteractions = function (enableInteractions) {
-    var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    if (!arguments.length) {
-      return _interactionsEnabled;
-    }
-
-    var mapboxInteractionProps = ["scrollZoom", "boxZoom", "dragRotate", "dragPan", "keyboard", "doubleClickZoom", "touchZoomRotate"];
-    _interactionsEnabled = Boolean(enableInteractions);
-
-    if (_mapInitted) {
-      mapboxInteractionProps.forEach(function (prop) {
-        if (_map[prop]) {
-          var enable = typeof opts[prop] !== "undefined" ? Boolean(opts[prop]) : _interactionsEnabled;
-          if (enable) {
-            _map[prop].enable();
-          } else {
-            _map[prop].disable();
-
-            if (prop === "dragPan") {
-              // force a clear of the current event state on the map
-              // to fully disable pans
-              _map[prop]._onMouseUp({
-                button: 0
-              });
-            }
-          }
-        }
-      });
-    }
-    return _chart;
-  };
-
-  _chart.getDataRenderBounds = function () {
-    var bounds = _map.getBounds();
-
-    if (!hasAppliedInitialBounds) {
-      _chart.setFilterBounds(bounds);
-    }
-
-    var renderBounds = [valuesOb(bounds.getNorthWest()), valuesOb(bounds.getNorthEast()), valuesOb(bounds.getSouthEast()), valuesOb(bounds.getSouthWest())];
-
-    if (!_useLonLat) {
-      renderBounds = [_chart.conv4326To900913(renderBounds[0]), _chart.conv4326To900913(renderBounds[1]), _chart.conv4326To900913(renderBounds[2]), _chart.conv4326To900913(renderBounds[3])];
-    }
-    hasAppliedInitialBounds = true;
-    return renderBounds;
-  };
-
-  _chart.xDim = function (xDim) {
-    if (!arguments.length) {
-      return _xDim;
-    }
-    _xDim = xDim;
-    if (_xDim) {
-      _chart._xDimName = _xDim.value()[0];
-    }
-    return _chart;
-  };
-
-  _chart.yDim = function (yDim) {
-    if (!arguments.length) {
-      return _yDim;
-    }
-    _yDim = yDim;
-    if (_yDim) {
-      _chart._yDimName = _yDim.value()[0];
-    }
-    return _chart;
-  };
-
-  _chart.viewBoxDim = function (viewBoxDim) {
-    if (!arguments.length) {
-      return _viewBoxDim;
-    }
-    _viewBoxDim = viewBoxDim;
-    if (_viewBoxDim) {
-      _chart._viewBoxDimName = _viewBoxDim.value()[0];
-    }
-    return _chart;
-  };
-
-  _chart.resetLayer = function () {
-    if (typeof _chart._resetRenderBounds === "function") {
-      _chart._resetRenderBounds();
-    }
-
-    _activeLayer = null;
-  };
-
-  _chart.colorBy = function (_) {
-    if (!arguments.length) {
-      return _colorBy;
-    }
-    _colorBy = _;
-    return _chart;
-  };
-
-  _chart.mapUpdateInterval = function (mapUpdateInterval) {
-    if (!arguments.length) {
-      return _mapUpdateInterval;
-    }
-    _mapUpdateInterval = mapUpdateInterval;
-    return _chart;
-  };
-
-  _chart.conv900913To4326X = function (x) {
-    return x / 111319.490778;
-  };
-
-  _chart.conv900913To4326Y = function (y) {
-    return 57.295779513 * (2 * Math.atan(Math.exp(y / 6378136.99911)) - 1.570796327);
-  };
-
-  _chart.conv900913To4326 = function (coord) {
-    return [_chart.conv900913To4326X(coord[0]), _chart.conv900913To4326Y(coord[1])];
-  };
-
-  _chart.conv4326To900913X = function (x) {
-    return x * 111319.490778;
-  };
-
-  _chart.conv4326To900913Y = function (y) {
-    return 6378136.99911 * Math.log(Math.tan(0.00872664626 * y + 0.785398163397));
-  };
-
-  _chart.conv4326To900913 = function (coord) {
-    return [_chart.conv4326To900913X(coord[0]), _chart.conv4326To900913Y(coord[1])];
-  };
-
-  function onLoad(e) {
-    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation);
-
-    var mapboxlogo = document.createElement("a");
-    mapboxlogo.className = "mapbox-maplogo";
-    mapboxlogo.href = "http://mapbox.com/about/maps";
-    mapboxlogo.target = "_blank";
-    mapboxlogo.innerHTML = "Mapbox";
-
-    var existingLogo = document.getElementsByClassName('mapbox-maplogo');
-    if (existingLogo.length) {
-      _chart.root()[0][0].appendChild(mapboxlogo);
-    }
-
-    if (_geocoder) {
-      initGeocoder();
-    }
-  }
-
-  function onMapMove(e) {
-    if (e.type === "moveend" && _lastMapMoveType === "moveend" || !_hasRendered || e.skipRedraw) {
-      return;
-    }
-
-    _lastMapMoveType = e.type;
-    var curTime = new Date().getTime();
-
-    var bounds = _map.getBounds();
-
-    if (!_useLonLat) {
-      _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
-      _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
-    } else {
-      _chart._minCoord = [bounds._sw.lng, bounds._sw.lat];
-      _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
-    }
-
-    if (e.type === "move") {
-      if (_isFirstMoveEvent) {
-        _lastMapUpdateTime = curTime;
-        _isFirstMoveEvent = false;
-      }
-      if (_mapUpdateInterval === Infinity || curTime - _lastMapUpdateTime < _mapUpdateInterval) {
-        return;
-      }
-    } else if (e.type === "moveend") {
-      _isFirstMoveEvent = true;
-    }
-    _lastMapUpdateTime = curTime;
-
-    var redrawall = false;
-    if (typeof _chart.getLayers === "function") {
-      _chart.getLayers().forEach(function (layer) {
-        if (typeof layer.xDim === "function" && typeof layer.yDim === "function") {
-          var xdim = layer.xDim();
-          var ydim = layer.yDim();
-          if (xdim !== null && ydim !== null) {
-            redrawall = true;
-            xdim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
-            ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
-          }
-        } else if (typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) {
-          // spatial filter on only single data source
-          var viewBoxDim = layer.viewBoxDim();
-          if (viewBoxDim !== null) {
-            redrawall = true;
-            viewBoxDim.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat });
-          }
-        }
-      });
-    }
-
-    if (_xDim !== null && _yDim !== null) {
-      _xDim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
-      _yDim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
-        (0, _coreAsync.resetRedrawStack)();
-        console.log("on move event redrawall error:", error);
-      });
-    } else if (redrawall) {
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
-        (0, _coreAsync.resetRedrawStack)();
-        console.log("on move event redrawall error:", error);
-      });
-    } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
-      // spatial filter on only single data source
-      _viewBoxDim.filterST_Min_ST_Max({ lonMin: _chart._minCoord[0], lonMax: _chart._maxCoord[0], latMin: _chart._minCoord[1], latMax: _chart._maxCoord[1] });
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
-        (0, _coreAsync.resetRedrawStack)();
-        console.log("on move event redrawall error:", error);
-      });
-    } else {
-      _chart._projectionFlag = true;
-      _chart.redrawAsync();
-    }
-  }
-
-  _chart.mapStyle = function (style) {
-    if (!arguments.length) {
-      return _mapStyle;
-    }
-    _mapStyle = style;
-    if (_map) {
-      _map.setStyle(_mapStyle);
-      if (typeof _chart.resetLayer !== "undefined") {
-        _chart.resetLayer();
-      }
-    }
-
-    return _chart;
-  };
-
-  _chart.mapboxToken = function (mapboxToken) {
-    if (!arguments.length) {
-      return _mapboxAccessToken;
-    }
-    _mapboxAccessToken = mapboxToken;
-    return _chart;
-  };
-
-  _chart.center = function (_) {
-    if (!arguments.length) {
-      _center = _map.getCenter();
-      return _center;
-    }
-    _center = _;
-    if (_mapInitted) {
-      _map.setCenter(_center);
-    }
-    return _chart;
-  };
-
-  _chart.zoom = function (_) {
-    if (!arguments.length) {
-      _zoom = _map.getZoom();
-      return _zoom;
-    }
-    _zoom = _;
-    if (_mapInitted) {
-      _map.setZoom(_zoom);
-    }
-    return _chart;
-  };
-
-  _chart.attribLocation = function (_) {
-    if (!arguments.length) {
-      return _attribLocation;
-    }
-    _attribLocation = _;
-    return _chart;
-  };
-
-  _chart.resetSvg = function () {
-    if (_chart.svg()) {
-      _chart.svg().remove();
-    }
-    var mapContainer = _d3.default.select(_chart.map().getCanvasContainer());
-    var svg = mapContainer.append("svg").attr("class", "poly-svg");
-    svg.attr("width", _chart.width()).attr("height", _chart.height());
-    _chart.svg(svg);
-  };
-
-  _chart.mapProject = function (input) {
-    // keep both methods before now until we can establish performance
-    // profiles of each - seem about equally fast at first glance
-    if (_chart._reProjMapbox == false) {
-      var xDiff = this._maxCoord[0] - this._minCoord[0];
-      var yDiff = this._maxCoord[1] - this._minCoord[1];
-      var projectedPoint = this.conv4326To900913(input);
-      return [(projectedPoint[0] - this._minCoord[0]) / xDiff * this.width(), (1.0 - (projectedPoint[1] - this._minCoord[1]) / yDiff) * this.height()];
-    } else {
-      var projectedPoint = this.map().project(input);
-      return [projectedPoint.x, projectedPoint.y];
-    }
-  };
-
-  _chart._setOverlay = function (data, bounds, browser, redraw) {
-    var map = _chart.map();
-
-    var allMapboxCanvasContainer = document.getElementsByClassName('mapboxgl-canvas-container');
-    var chartIdFromCanvasContainer = _chart.selectAll('.mapboxgl-canvas-container')[0].parentNode.id;
-
-    var chartMapboxCanvasContainer = _.filter(allMapboxCanvasContainer, function (mbcc) {
-      return mbcc.parentNode.id === chartIdFromCanvasContainer || mbcc.parentNode.parentNode.id === chartIdFromCanvasContainer;
-    });
-
-    var allMapboxCanvas = document.getElementsByClassName('mapboxgl-canvas');
-    var chartIdFromCanvas = _chart.selectAll('.mapboxgl-canvas')[0].parentNode.id;
-
-    var chartMapboxCanvas = _.filter(allMapboxCanvas, function (mbc) {
-      return mbc.parentNode.id === chartIdFromCanvas || mbc.parentNode.parentNode.id === chartIdFromCanvas;
-    });
-
-    if (chartMapboxCanvasContainer.length > 1) {
-      // we use only one canvas for the chart map, thus remove extra
-      chartMapboxCanvasContainer[0].remove();
-    }
-    if (chartMapboxCanvas.length > 1) {
-      chartMapboxCanvas[0].remove();
-    }
-
-    var boundsToUse = bounds;
-    if (boundsToUse === undefined) {
-      return;
-    } else if (!_useLonLat) {
-      boundsToUse = [_chart.conv900913To4326(bounds[0]), _chart.conv900913To4326(bounds[1]), _chart.conv900913To4326(bounds[2]), _chart.conv900913To4326(bounds[3])];
-    }
-
-    if (browser.isSafari || browser.isIE || browser.isEdge) {
-      var blob = utilss.b64toBlob(data, "image/png");
-      var blobUrl = URL.createObjectURL(blob);
-    } else {
-      var blobUrl = "data:image/png;base64," + data;
-    }
-
-    if (!_activeLayer) {
-      _activeLayer = "_points";
-      var toBeAddedOverlay = "overlay" + _activeLayer;
-      var firstSymbolLayerId = getFirstSymbolLayerId();
-
-      map.addSource(toBeAddedOverlay, {
-        type: "image",
-        url: blobUrl,
-        coordinates: boundsToUse
-      });
-
-      map.addLayer({
-        id: toBeAddedOverlay,
-        source: toBeAddedOverlay,
-        type: "raster",
-        paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
-      }, firstSymbolLayerId);
-    } else {
-      var overlayName = "overlay" + _activeLayer;
-      var imageSrc = map.getSource(overlayName);
-      imageSrc.updateImage({
-        url: blobUrl,
-        coordinates: boundsToUse
-      });
-    }
-  };
-
-  _chart._removeOverlay = function () {
-    var map = _chart.map();
-
-    var overlay = "overlay" + _activeLayer;
-    map.removeLayer(overlay);
-    map.removeSource(overlay);
-  };
-
-  _chart.isLoaded = function () {
-    return _map._loaded && _map.style && _map.style._loaded;
-  };
-
-  function initMap() {
-    if (_mapInitted) {
-      return;
-    }
-    _mapboxgl.accessToken = _mapboxAccessToken;
-
-    _chart.root().style("width", _chart.width() + "px").style("height", _chart.height() + "px");
-
-    _map = new _mapboxgl.Map({
-      container: _mapId, // container id
-      style: _mapStyle,
-      interactive: true,
-      center: _center, // starting position
-      zoom: _zoom, // starting zoom
-      maxBounds: _llb,
-      preserveDrawingBuffer: true,
-      attributionControl: false
-    });
-
-    _map.dragRotate.disable();
-    _map.touchZoomRotate.disableRotation();
-    _chart.addMapListeners();
-    _mapInitted = true;
-    _chart.enableInteractions(_interactionsEnabled);
-  }
-
-  _chart.addMapListeners = function () {
-    _map.on("move", onMapMove);
-    _map.on("moveend", onMapMove);
-  };
-
-  _chart.removeMapListeners = function () {
-    _map.off("move", onMapMove);
-    _map.off("moveend", onMapMove);
-  };
-
-  _chart.on("postRender", function () {
-    _hasRendered = true;
-  });
-
-  _chart.on("preRender", function (chart) {
-    var width = chart.width();
-    var height = chart.height();
-
-    if (width !== _lastWidth || height !== _lastHeight) {
-      _chart.root().select("#" + _mapId + " canvas").attr("width", width).attr("height", height);
-
-      _lastWidth = width;
-      _lastHeight = height;
-      _map.resize();
-    }
-  });
-
-  function getFirstSymbolLayerId() {
-    var firstSymbolId = null;
-    var layers = _map.getStyle().layers;
-    for (var i = 0; i < layers.length; ++i) {
-      if (layers[i].type === "symbol") {
-        firstSymbolId = layers[i].id;
-        break;
-      }
-    }
-    return firstSymbolId;
-  }
-
-  function getMinMax(value) {
-    return _chart.crossfilter().groupAll().reduce([{ expression: value, agg_mode: "min", name: "minimum" }, { expression: value, agg_mode: "max", name: "maximum" }]).valuesAsync(true, true).then(function (bounds) {
-      return [bounds.minimum, bounds.maximum];
-    });
-  }
-
-  function createRangeMinMaxPromises(promises, value) {
-    if (!_minMaxCache[value]) {
-      return promises.concat(getMinMax(value).then(function (bounds) {
-        _minMaxCache[value] = bounds;
-      }));
-    } else {
-      return promises;
-    }
-  }
-
-  var _fitInitialBounds = void 0;
-
-  _chart.fitInitialBounds = function (callback) {
-    if (!arguments.length) {
-      _fitInitialBounds();
-    }
-    _fitInitialBounds = callback;
-    return _chart;
-  };
-
-  function init(_bounds) {
-    return Promise.resolve();
-  }
-
-  _chart.init = function (bounds) {
-    if (_mapInitted) {
-      return;
-    }
-
-    var styleLoaded = false;
-    var loaded = false;
-
-    initMap();
-
-    return new Promise(function (resolve, reject) {
-      _map.on("load", function (e) {
-        onLoad(e);
-        loaded = true;
-        if (styleLoaded) {
-          init(bounds).then(function () {
-            resolve(_chart);
-          });
-        }
-      });
-
-      _map.on("style.load", function () {
-        styleLoaded = true;
-        if (loaded) {
-          init(bounds).then(function () {
-            resolve(_chart);
-          });
-        }
-      });
-
-      _map.on("mousedown", function (event) {
-        _clientClickX = event.point.x;
-        _clientClickY = event.point.y;
-      });
-
-      _map.on("mouseup", function (event) {
-        // Make sure that the user is clicking to filter, and not dragging or panning the map
-        if (_clientClickX === event.point.x && _clientClickY === event.point.y) {
-          _chart.getClosestResult(event.point, function (result) {
-            var data = result.row_set[0];
-            _chart.getLayerNames().forEach(function (layerName) {
-              var layer = _chart.getLayer(layerName);
-              if (typeof layer.onClick === "function") {
-                layer.onClick(_chart, data, event.originalEvent);
-              }
-            });
-          });
-        }
-      });
-    });
-  };
-
-  _chart.setFilterBounds = function (bounds) {
-    if (!_useLonLat) {
-      _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
-      _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
-    } else {
-      _chart._minCoord = [bounds._sw.lng, bounds._sw.lat];
-      _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
-    }
-
-    _chart.getLayers().forEach(function (layer) {
-      if (typeof layer.xDim === "function" && typeof layer.yDim === "function") {
-        var xdim = layer.xDim();
-        var ydim = layer.yDim();
-        if (xdim !== null && ydim !== null) {
-          xdim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
-          ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
-        }
-      }
-    });
-  };
-
-  function boundsRoughlyEqual(a, b) {
-    return a.getSouthWest().lat === b.getSouthWest().lat || a.getSouthWest().lng === b.getSouthWest().lng || a.getNorthEast().lat === b.getNorthEast().lat || a.getNorthEast().lng === b.getNorthEast().lng;
-  }
-
-  _chart.geocoder = function (geocoder) {
-    if (!arguments.length) {
-      return _geocoder;
-    }
-    if (typeof geocoder.locate !== "function") {
-      throw new Error("Geocoder must have a location function");
-    }
-    _geocoder = geocoder;
-    return _chart;
-  };
-
-  function initGeocoder() {
-    _chart.root().append("input").attr("type", "text").attr("placeholder", "Zoom to").classed("geocoder-input", true).style("top", "5px").style("right", "5px").style("float", "right").style("position", "absolute").on("keydown", function () {
-      if (_d3.default.event.key === "Enter" || _d3.default.event.keyCode === 13) {
-        _geocoder.locate(this.value).then(_chart.zoomToLocation);
-      }
-    });
-  }
-
-  function validateBounds(data) {
-    var sw = data.bounds.sw;
-    var ne = data.bounds.ne;
-    /* eslint-disable operator-linebreak */
-    return !isNaN(sw[0]) && !isNaN(ne[0]) && !isNaN(sw[1]) && !isNaN(ne[1]) && sw[0] <= ne[0] && sw[1] < ne[1] && sw[0] >= LONMIN && sw[0] <= LONMAX && sw[1] >= LATMIN && sw[1] <= LATMAX && ne[0] >= LONMIN && ne[0] <= LONMAX && ne[1] >= LATMIN && ne[1] <= LATMAX;
-    /* eslint-enable operator-linebreak */
-  }
-
-  _chart.zoomToLocation = function (data) {
-    if (!_mapInitted) {
-      return _chart;
-    }
-    if (data.bounds) {
-      if (validateBounds(data)) {
-        _map.fitBounds([data.bounds.sw, data.bounds.ne], {
-          linear: true,
-          duration: EASE_DURATION_MS
-        });
-      }
-    } else {
-      var center = data.center;
-      _map.setCenter(center);
-      _map.setZoom(DEFAULT_ZOOM_LEVEL);
-    }
-    return _chart;
-  };
-
-  if (mixinDraw) {
-    _chart = (0, _rasterDrawMixin.rasterDrawMixin)(_chart);
-  }
-
-  return _chart;
-}
-
-/***/ }),
-/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -29856,7 +28173,1690 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17), __webpack_require__(32)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18), __webpack_require__(32)(module)))
+
+/***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(26);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(x) {
+  return x = Object(__WEBPACK_IMPORTED_MODULE_0__formatDecimal__["a" /* default */])(Math.abs(x)), x ? x[1] : NaN;
+});
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var logger = exports.logger = {};
+
+logger.enableDebugLog = false;
+
+/* istanbul ignore next */
+logger.warn = function (msg) {
+  if (console) {
+    if (console.warn) {
+      console.warn(msg);
+    } else if (console.log) {
+      console.log(msg);
+    }
+  }
+
+  return logger;
+};
+
+/* istanbul ignore next */
+logger.debug = function (msg) {
+  if (logger.enableDebugLog && console) {
+    if (console.debug) {
+      console.debug(msg);
+    } else if (console.log) {
+      console.log(msg);
+    }
+  }
+
+  return logger;
+};
+
+/* istanbul ignore next */
+logger.deprecate = function (fn, msg) {
+  // Allow logging of deprecation
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      logger.warn(msg);
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+  return deprecated;
+};
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.autoBinParams = autoBinParams;
+exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
+var SEC = 1;
+var MIN_IN_SECS = 60;
+var HOUR_IN_SECS = 3600;
+var DAY_IN_SECS = 86400;
+var WEEK_IN_SECS = 604800;
+var MONTH_IN_SECS = 2592000;
+var QUARTER_IN_SECS = 10368000;
+var YEAR_IN_SECS = 31536000;
+var DECADE_IN_SECS = 315360000;
+
+var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
+
+var TIME_LABELS = ["second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
+
+var TIME_LABEL_TO_SECS = exports.TIME_LABEL_TO_SECS = {
+  second: SEC,
+  minute: MIN_IN_SECS,
+  hour: HOUR_IN_SECS,
+  day: DAY_IN_SECS,
+  week: WEEK_IN_SECS,
+  month: MONTH_IN_SECS,
+  quarter: QUARTER_IN_SECS,
+  year: YEAR_IN_SECS,
+  decade: DECADE_IN_SECS
+};
+
+var TIME_SPANS = exports.TIME_SPANS = TIME_LABELS.map(function (label) {
+  return {
+    label: label,
+    numSeconds: TIME_LABEL_TO_SECS[label]
+  };
+});
+
+var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }];
+
+function autoBinParams(timeBounds, maxNumBins, reverse) {
+  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
+  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
+  var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
+  for (var s = 0; s < timeSpans.length; s++) {
+    if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
+      return timeSpans[s].label;
+    }
+  }
+  return "century"; // default;
+}
+
+function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
+  var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
+  var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
+  var timeLabelToSecs = TIME_LABEL_TO_SECS;
+  if (timeRange / timeLabelToSecs[timeBin] > maxNumBins) {
+    return autoBinParams(timeBounds, maxNumBins);
+  } else if (timeRange / timeLabelToSecs[timeBin] < 2) {
+    return autoBinParams(timeBounds, maxNumBins, true);
+  } else {
+    return timeBin;
+  }
+}
+
+var createBinParams = exports.createBinParams = function createBinParams(chart, binParams) {
+  if (!chart.group() || !chart.group().binParams) {
+    return;
+  }
+
+  binParams = Array.isArray(binParams) ? binParams : [binParams];
+
+  var parsedBinParams = binParams.map(function (param) {
+    if (param) {
+      var _param$timeBin = param.timeBin,
+          timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
+          binBounds = param.binBounds,
+          numBins = param.numBins;
+
+      var extract = param.extract || false;
+      var isDate = binBounds[0] instanceof Date;
+      if (isDate && timeBin === "auto") {
+        var bounds = binBounds.map(function (date) {
+          return date.getTime();
+        });
+        return Object.assign({}, param, {
+          extract: extract,
+          timeBin: extract ? DEFAULT_EXTRACT_INTERVAL : autoBinParams(bounds, numBins),
+          binBounds: binBounds.slice(),
+          auto: true // hightlights the "auto" UI button
+        });
+      } else {
+        return Object.assign({}, param, {
+          extract: extract,
+          timeBin: timeBin,
+          binBounds: binBounds.slice()
+        });
+      }
+    }
+    return param;
+  });
+
+  chart.group().binParams(parsedBinParams);
+  return chart;
+};
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = bubbleMixin;
+
+var _colorMixin = __webpack_require__(7);
+
+var _colorMixin2 = _interopRequireDefault(_colorMixin);
+
+var _d = __webpack_require__(1);
+
+var _d2 = _interopRequireDefault(_d);
+
+var _core = __webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * This Mixin provides reusable functionalities for any chart that needs to visualize data using bubbles.
+ * @name bubbleMixin
+ * @memberof dc
+ * @mixin
+ * @mixes dc.colorMixin
+ * @param {Object} _chart
+ * @return {dc.bubbleMixin}
+ */
+function bubbleMixin(_chart) {
+  var _maxBubbleRelativeSize = 0.3;
+
+  /* OVERRIDE ---------------------------------------------------------------- */
+  var _minRadiusWithLabel = 2;
+  /* ------------------------------------------------------------------------- */
+
+  _chart.BUBBLE_NODE_CLASS = "node";
+  _chart.BUBBLE_CLASS = "bubble";
+  _chart.MIN_RADIUS = 10;
+
+  /* OVERRIDE ---------------------------------------------------------------- */
+  _chart.accent = accentBubble;
+  _chart.unAccent = unAccentBubble;
+  /* ------------------------------------------------------------------------- */
+
+  _chart = (0, _colorMixin2.default)(_chart);
+
+  _chart.renderLabel(true);
+
+  /* OVERRIDE ---------------------------------------------------------------- */
+  _chart.setDataAsync(function (group, callbacks) {
+    if (_chart.cap() !== undefined) {
+      return group.topAsync(_chart.cap()).then(function (result) {
+        callbacks(null, result);
+      }).catch(function (error) {
+        callbacks(error);
+      });
+    } else {
+      group.allAsync(callbacks);
+    }
+  });
+  /* ------------------------------------------------------------------------- */
+
+  _chart.data(function (group) {
+    /* OVERRIDE ---------------------------------------------------------------- */
+    if (_chart.dataCache !== null) {
+      return _chart.dataCache;
+    } else {
+      return group.top(_chart.cap() !== undefined ? _chart.cap() : Infinity);
+    }
+    /* ------------------------------------------------------------------------- */
+  });
+
+  var _r = _d2.default.scale.linear().domain([0, 100]);
+
+  var _rValueAccessor = function _rValueAccessor(d) {
+    return d.r;
+  };
+
+  /**
+   * Get or set the bubble radius scale. By default the bubble chart uses
+   * {@link https://github.com/mbostock/d3/wiki/Quantitative-Scales#linear d3.scale.linear().domain([0, 100])}
+   * as its radius scale.
+   * @name r
+   * @memberof dc.bubbleMixin
+   * @instance
+   * @see {@link http://github.com/mbostock/d3/wiki/Scales d3.scale}
+   * @param {d3.scale} [bubbleRadiusScale=d3.scale.linear().domain([0, 100])]
+   * @return {d3.scale}
+   * @return {dc.bubbleMixin}
+   */
+  _chart.r = function (bubbleRadiusScale) {
+    if (!arguments.length) {
+      return _r;
+    }
+    _r = bubbleRadiusScale;
+    return _chart;
+  };
+
+  /**
+   * Get or set the radius value accessor function. If set, the radius value accessor function will
+   * be used to retrieve a data value for each bubble. The data retrieved then will be mapped using
+   * the r scale to the actual bubble radius. This allows you to encode a data dimension using bubble
+   * size.
+   * @name radiusValueAccessor
+   * @memberof dc.bubbleMixin
+   * @instance
+   * @param {Function} [radiusValueAccessor]
+   * @return {Function}
+   * @return {dc.bubbleMixin}
+   */
+  _chart.radiusValueAccessor = function (radiusValueAccessor) {
+    if (!arguments.length) {
+      return _rValueAccessor;
+    }
+    _rValueAccessor = radiusValueAccessor;
+    return _chart;
+  };
+
+  _chart.rMin = function () {
+    var min = _d2.default.min(_chart.data(), function (e) {
+      return _chart.radiusValueAccessor()(e);
+    });
+    return min;
+  };
+
+  _chart.rMax = function () {
+    var max = _d2.default.max(_chart.data(), function (e) {
+      return _chart.radiusValueAccessor()(e);
+    });
+    return max;
+  };
+
+  _chart.bubbleR = function (d) {
+    var value = _chart.radiusValueAccessor()(d);
+    var r = _chart.r()(value);
+    if (isNaN(r) || value <= 0) {
+      r = 0;
+    }
+    return r;
+  };
+
+  var labelFunction = function labelFunction(d) {
+    return _chart.label()(d);
+  };
+
+  var shouldLabel = function shouldLabel(d) {
+    return _chart.bubbleR(d) > _minRadiusWithLabel;
+  };
+
+  var labelOpacity = function labelOpacity(d) {
+    return shouldLabel(d) ? 1 : 0;
+  };
+
+  var labelPointerEvent = function labelPointerEvent(d) {
+    return shouldLabel(d) ? "all" : "none";
+  };
+
+  _chart._doRenderLabel = function (bubbleGEnter) {
+    if (_chart.renderLabel()) {
+      var label = bubbleGEnter.select("text");
+
+      if (label.empty()) {
+        label = bubbleGEnter.append("text").attr("text-anchor", "middle").attr("dy", ".3em").on("click", _chart.onClick);
+      }
+
+      label.attr("opacity", 0).attr("pointer-events", labelPointerEvent).html(labelFunction);
+
+      (0, _core.transition)(label, _chart.transitionDuration()).attr("opacity", 1);
+
+      _chart.hideOverlappedLabels();
+    }
+  };
+
+  _chart.doUpdateLabels = function (bubbleGEnter) {
+    _chart._doRenderLabel(bubbleGEnter);
+  };
+
+  var titleFunction = function titleFunction(d) {
+    return _chart.title()(d);
+  };
+
+  _chart._doRenderTitles = function (g) {
+    if (_chart.renderTitle()) {
+      var title = g.select("title");
+
+      if (title.empty()) {
+        g.append("title").text(titleFunction);
+      }
+    }
+  };
+
+  _chart.doUpdateTitles = function (g) {
+    if (_chart.renderTitle()) {
+      g.selectAll("title").text(titleFunction);
+    }
+  };
+
+  /**
+   * Get or set the minimum radius. This will be used to initialize the radius scale's range.
+   * @name minRadius
+   * @memberof dc.bubbleMixin
+   * @instance
+   * @param {Number} [radius=10]
+   * @return {Number}
+   * @return {dc.bubbleMixin}
+   */
+  _chart.minRadius = function (radius) {
+    if (!arguments.length) {
+      return _chart.MIN_RADIUS;
+    }
+    _chart.MIN_RADIUS = radius;
+    return _chart;
+  };
+
+  /**
+   * Get or set the minimum radius for label rendering. If a bubble's radius is less than this value
+   * then no label will be rendered.
+   * @name minRadiusWithLabel
+   * @memberof dc.bubbleMixin
+   * @instance
+   * @param {Number} [radius=10]
+   * @return {Number}
+   * @return {dc.bubbleMixin}
+   */
+
+  _chart.minRadiusWithLabel = function (radius) {
+    if (!arguments.length) {
+      return _minRadiusWithLabel;
+    }
+    _minRadiusWithLabel = radius;
+    return _chart;
+  };
+
+  /**
+   * Get or set the maximum relative size of a bubble to the length of x axis. This value is useful
+   * when the difference in radius between bubbles is too great.
+   * @name maxBubbleRelativeSize
+   * @memberof dc.bubbleMixin
+   * @instance
+   * @param {Number} [relativeSize=0.3]
+   * @return {Number}
+   * @return {dc.bubbleMixin}
+   */
+  _chart.maxBubbleRelativeSize = function (relativeSize) {
+    if (!arguments.length) {
+      return _maxBubbleRelativeSize;
+    }
+    _maxBubbleRelativeSize = relativeSize;
+    return _chart;
+  };
+
+  _chart.fadeDeselectedArea = function () {
+    if (_chart.hasFilter()) {
+      _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
+        if (_chart.isSelectedNode(d)) {
+          _chart.highlightSelected(this);
+        } else {
+          _chart.fadeDeselected(this);
+        }
+      });
+    } else {
+      _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function () {
+        _chart.resetHighlight(this);
+      });
+    }
+  };
+
+  _chart.isSelectedNode = function (d) {
+    /* OVERRIDE -----------------------------------------------------------------*/
+    return _chart.hasFilter(d.key0) ^ _chart.filtersInverse();
+    /* --------------------------------------------------------------------------*/
+  };
+
+  _chart.onClick = function (d) {
+    /* OVERRIDE -----------------------------------------------------------------*/
+    var filter = d.key0;
+    /* --------------------------------------------------------------------------*/
+    _chart.handleFilterClick(_d2.default.event, filter);
+    _chart.updatePopup(d);
+  };
+
+  /* OVERRIDE -----------------------------------------------------------------*/
+  function accentBubble(label) {
+    _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
+      if (d.key0 === label) {
+        _chart.accentSelected(this);
+      }
+    });
+  }
+
+  function unAccentBubble(label) {
+    _chart.selectAll("g." + _chart.BUBBLE_NODE_CLASS).each(function (d) {
+      if (d.key0 === label) {
+        _chart.unAccentSelected(this);
+      }
+    });
+  }
+  /* --------------------------------------------------------------------------*/
+
+  return _chart;
+}
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = stackMixin;
+
+var _binningHelpers = __webpack_require__(20);
+
+var _utils = __webpack_require__(3);
+
+var _d = __webpack_require__(1);
+
+var _d2 = _interopRequireDefault(_d);
+
+var _core = __webpack_require__(2);
+
+var _multipleKeyAccessors = __webpack_require__(163);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Stack Mixin is an mixin that provides cross-chart support of stackability using d3.layout.stack.
+ * @name stackMixin
+ * @memberof dc
+ * @mixin
+ * @param {Object} _chart
+ * @return {dc.stackMixin}
+ */
+
+function stackMixin(_chart) {
+  function prepareValues(layer, layerIdx) {
+    var valAccessor = layer.accessor || _chart.valueAccessor();
+    layer.name = String(layer.name || "series_" + (layerIdx + 1));
+    layer.layer = layer.name;
+    layer.idx = layerIdx;
+
+    /* OVERRIDE ---------------------------------------------------------------- */
+    // WARNING: probably destroys stack functionality: find workaround
+    var preValues = _chart.dataCache != null ? _chart.dataCache : layer.group.all();
+    // layer.values = layer.group.all().map(function (d, i) {
+    layer.values = preValues.map(function (d, i) {
+      return {
+        x: _chart.keyAccessor()(d, i),
+        y: layer.hidden ? null : valAccessor(d, i) || 0,
+        idx: layerIdx,
+        data: d,
+        layer: layer.name,
+        hidden: layer.hidden
+      };
+    });
+    /* ------------------------------------------------------------------------- */
+    layer.values = layer.values.filter(domainFilter());
+    return layer.values;
+  }
+
+  var _stackLayout = _d2.default.layout.stack().values(prepareValues);
+
+  var _stack = [];
+  var _titles = {};
+
+  var _hidableStacks = false;
+  var _colorByLayerId = false;
+
+  function domainFilter() {
+    if (!_chart.x()) {
+      return _d2.default.functor(true);
+    }
+    var xDomain = _chart.x().domain();
+    if (_chart.isOrdinal()) {
+      // TODO #416
+      // var domainSet = d3.set(xDomain);
+      return function () {
+        return true; // domainSet.has(p.x);
+      };
+    }
+    if (_chart.elasticX()) {
+      return function () {
+        return true;
+      };
+    }
+    return function (p) {
+      return true;
+    };
+  }
+
+  /**
+   * Stack a new crossfilter group onto this chart with an optional custom value accessor. All stacks
+   * in the same chart will share the same key accessor and therefore the same set of keys.
+   *
+   * For example, in a stacked bar chart, the bars of each stack will be positioned using the same set
+   * of keys on the x axis, while stacked vertically. If name is specified then it will be used to
+   * generate the legend label.
+   * @name stack
+   * @memberof dc.stackMixin
+   * @instance
+   * @see {@link https://github.com/square/crossfilter/wiki/API-Reference#group-map-reduce crossfilter.group}
+   * @example
+   * // stack group using default accessor
+   * chart.stack(valueSumGroup)
+   * // stack group using custom accessor
+   * .stack(avgByDayGroup, function(d){return d.value.avgByDay;});
+   * @param {crossfilter.group} group
+   * @param {String} [name]
+   * @param {Function} [accessor]
+   * @return {Array<{group: crossfilter.group, name: String, accessor: Function}>}
+   * @return {dc.stackMixin}
+   */
+  _chart.stack = function (group, name, accessor) {
+    if (!arguments.length) {
+      return _stack;
+    }
+
+    if (arguments.length <= 2) {
+      accessor = name;
+    }
+
+    var layer = { group: group };
+    if (typeof name === "string") {
+      layer.name = name;
+    }
+    if (typeof accessor === "function") {
+      layer.accessor = accessor;
+    }
+    _stack.push(layer);
+
+    return _chart;
+  };
+
+  (0, _core.override)(_chart, "group", function (g, n, f) {
+    if (!arguments.length) {
+      return _chart._group();
+    }
+    _stack = [];
+    _titles = {};
+    _chart.stack(g, n);
+    if (f) {
+      _chart.valueAccessor(f);
+    }
+    return _chart._group(g, n);
+  });
+
+  /**
+   * Allow named stacks to be hidden or shown by clicking on legend items.
+   * This does not affect the behavior of hideStack or showStack.
+   * @name hidableStacks
+   * @memberof dc.stackMixin
+   * @instance
+   * @param {Boolean} [hidableStacks=false]
+   * @return {Boolean}
+   * @return {dc.stackMixin}
+   */
+  _chart.hidableStacks = function (hidableStacks) {
+    if (!arguments.length) {
+      return _hidableStacks;
+    }
+    _hidableStacks = hidableStacks;
+    return _chart;
+  };
+
+  function findLayerByName(n) {
+    var i = _stack.map((0, _utils.pluck)("name")).indexOf(n);
+    return _stack[i];
+  }
+
+  /**
+   * Hide all stacks on the chart with the given name.
+   * The chart must be re-rendered for this change to appear.
+   * @name hideStack
+   * @memberof dc.stackMixin
+   * @instance
+   * @param {String} stackName
+   * @return {dc.stackMixin}
+   */
+  _chart.hideStack = function (stackName) {
+    var layer = findLayerByName(stackName);
+    if (layer) {
+      layer.hidden = true;
+    }
+    return _chart;
+  };
+
+  /**
+   * Show all stacks on the chart with the given name.
+   * The chart must be re-rendered for this change to appear.
+   * @name showStack
+   * @memberof dc.stackMixin
+   * @instance
+   * @param {String} stackName
+   * @return {dc.stackMixin}
+   */
+  _chart.showStack = function (stackName) {
+    var layer = findLayerByName(stackName);
+    if (layer) {
+      layer.hidden = false;
+    }
+    return _chart;
+  };
+
+  _chart.getValueAccessorByIndex = function (index) {
+    return _stack[index].accessor || _chart.valueAccessor();
+  };
+
+  _chart.yAxisMin = function () {
+    var min = _d2.default.min(flattenStack(), function (p) {
+      /* OVERRIDE ---------------------------------------------------------------- */
+      if (_chart.renderArea === undefined || _chart.renderArea()) {
+        return p.y + p.y0 < p.y0 ? p.y + p.y0 : p.y0;
+      } else {
+        return p.y;
+      }
+    });
+    /* ------------------------------------------------------------------------- */
+
+    return _utils.utils.subtract(min, _chart.yAxisPadding());
+  };
+
+  _chart.yAxisMax = function () {
+    var max = _d2.default.max(flattenStack(), function (p) {
+      /* OVERRIDE ---------------------------------------------------------------- */
+      if (_chart.renderArea === undefined || _chart.renderArea()) {
+        return p.y + p.y0;
+      } else {
+        return p.y;
+      }
+      /* ------------------------------------------------------------------------- */
+    });
+
+    return _utils.utils.add(max, _chart.yAxisPadding());
+  };
+
+  function flattenStack() {
+    var valueses = _chart.data().map(function (layer) {
+      return layer.values;
+    });
+    return Array.prototype.concat.apply([], valueses);
+  }
+
+  _chart.xAxisMin = function () {
+    var min = _d2.default.min(flattenStack(), (0, _utils.pluck)("x"));
+    return _utils.utils.subtract(min, _chart.xAxisPadding());
+  };
+
+  _chart.xAxisMax = function () {
+    var max = _d2.default.max(flattenStack(), (0, _utils.pluck)("x"));
+    return _utils.utils.add(max, _chart.xAxisPadding());
+  };
+
+  /**
+   * Set or get the title function. Chart class will use this function to render svg title (usually interpreted by
+   * browser as tooltips) for each child element in the chart, i.e. a slice in a pie chart or a bubble in a bubble chart.
+   * Almost every chart supports title function however in grid coordinate chart you need to turn off brush in order to
+   * use title otherwise the brush layer will block tooltip trigger.
+   *
+   * If the first argument is a stack name, the title function will get or set the title for that stack. If stackName
+   * is not provided, the first stack is implied.
+   * @name title
+   * @memberof dc.stackMixin
+   * @instance
+   * @example
+   * // set a title function on 'first stack'
+   * chart.title('first stack', function(d) { return d.key + ': ' + d.value; });
+   * // get a title function from 'second stack'
+   * var secondTitleFunction = chart.title('second stack');
+   * @param {String} [stackName]
+   * @param {Function} [titleAccessor]
+   * @return {String}
+   * @return {dc.stackMixin}
+   */
+  (0, _core.override)(_chart, "title", function (stackName, titleAccessor) {
+    if (!stackName) {
+      return _chart._title();
+    }
+
+    if (typeof stackName === "function") {
+      return _chart._title(stackName);
+    }
+    if (stackName === _chart._groupName && typeof titleAccessor === "function") {
+      return _chart._title(titleAccessor);
+    }
+
+    if (typeof titleAccessor !== "function") {
+      return _titles[stackName] || _chart._title();
+    }
+
+    _titles[stackName] = titleAccessor;
+
+    return _chart;
+  });
+
+  /**
+   * Gets or sets the stack layout algorithm, which computes a baseline for each stack and
+   * propagates it to the next
+   * @name stackLayout
+   * @memberof dc.stackMixin
+   * @instance
+   * @see {@link http://github.com/mbostock/d3/wiki/Stack-Layout d3.layout.stack}
+   * @param {Function} [stack=d3.layout.stack]
+   * @return {Function}
+   * @return {dc.stackMixin}
+   */
+  _chart.stackLayout = function (stack) {
+    if (!arguments.length) {
+      return _stackLayout;
+    }
+    _stackLayout = stack;
+    return _chart;
+  };
+
+  function visability(l) {
+    return !l.hidden;
+  }
+
+  _chart.data(function () {
+    var layers = _stack.filter(visability);
+    return layers.length ? _chart.stackLayout()(layers) : [];
+  });
+
+  _chart._ordinalXDomain = function () {
+    var flat = flattenStack().map((0, _utils.pluck)("data"));
+    var ordered = _chart._computeOrderedGroups(flat);
+    return ordered.map(_chart.keyAccessor());
+  };
+
+  _chart.colorByLayerId = function (_) {
+    if (!arguments.length) {
+      return _colorByLayerId;
+    }
+    _colorByLayerId = _;
+    return _chart;
+  };
+
+  _chart.colorAccessor(function (d) {
+    /* OVERRIDE ---------------------------------------------------------------- */
+    var layer = null;
+    if (_colorByLayerId) {
+      layer = this.idx;
+    } else {
+      layer = this.layer || this.name || d.name || d.layer;
+    }
+    /* ------------------------------------------------------------------------- */
+    return layer;
+  });
+
+  _chart.legendables = function () {
+    return _stack.map(function (layer, i) {
+      return {
+        chart: _chart,
+        name: layer.name,
+        hidden: layer.hidden || false,
+        color: _chart.getColor.call(layer, layer.values, i)
+      };
+    });
+  };
+
+  _chart.isLegendableHidden = function (d) {
+    var layer = findLayerByName(d.name);
+    return layer ? layer.hidden : false;
+  };
+
+  _chart.legendToggle = function (d) {
+    if (_hidableStacks) {
+      if (_chart.isLegendableHidden(d)) {
+        _chart.showStack(d.name);
+      } else {
+        _chart.hideStack(d.name);
+      }
+      _chart.renderGroup();
+    }
+  };
+
+  (0, _core.override)(_chart, "binParams", function (binParams) {
+    if (!arguments.length) {
+      return _chart.group().binParams();
+    }
+
+    binParams = Array.isArray(binParams) ? binParams : [binParams];
+
+    var parsedBinParams = binParams.map(function (param) {
+      if (param) {
+        var _param$timeBin = param.timeBin,
+            timeBin = _param$timeBin === undefined ? "auto" : _param$timeBin,
+            binBounds = param.binBounds,
+            numBins = param.numBins,
+            auto = param.auto;
+
+        var extract = param.extract || false;
+        var isDate = binBounds[0] instanceof Date;
+        if (isDate && timeBin && !extract) {
+          var bounds = binBounds.map(function (date) {
+            return date.getTime();
+          });
+          return Object.assign({}, param, {
+            extract: extract,
+            timeBin: (0, _binningHelpers.checkIfTimeBinInRange)(bounds, timeBin, numBins),
+            binBounds: binBounds.slice()
+          });
+        } else {
+          return param;
+        }
+      }
+      return null;
+    });
+
+    return (0, _binningHelpers.createBinParams)(_chart, parsedBinParams);
+  });
+
+  _chart.keyAccessor(_multipleKeyAccessors.multipleKeysAccessorForStack);
+
+  return _chart;
+}
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+exports.default = mapMixin;
+
+var _d2 = __webpack_require__(1);
+
+var _d3 = _interopRequireDefault(_d2);
+
+var _lodash = __webpack_require__(16);
+
+var _ = _interopRequireWildcard(_lodash);
+
+var _coreAsync = __webpack_require__(4);
+
+var _utils = __webpack_require__(3);
+
+var _mapDrawMixin = __webpack_require__(217);
+
+var _rasterDrawMixin = __webpack_require__(24);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function valuesOb(obj) {
+  return Object.keys(obj).map(function (key) {
+    return obj[key];
+  });
+}
+
+function mapMixin(_chart, chartDivId, _mapboxgl) {
+  var mixinDraw = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+
+  var DEFAULT_ZOOM_LEVEL = 15;
+  var EASE_DURATION_MS = 1500;
+  var SMALL_AMOUNT = 0.00001; // Mapbox doesn't like coords being exactly on the edge.
+  var LONMAX = 180 - SMALL_AMOUNT;
+  var LONMIN = -180 + SMALL_AMOUNT;
+  var LATMAX = 85 - SMALL_AMOUNT;
+  var LATMIN = -85 + SMALL_AMOUNT;
+
+  var _mapboxgl = typeof _mapboxgl === "undefined" ? mapboxgl : _mapboxgl;
+  var _map = null;
+  var _mapboxAccessToken = null;
+  var _lastWidth = null;
+  var _lastHeight = null;
+  var _mapId = chartDivId;
+
+  _chart._xDimName = null;
+  _chart._yDimName = null;
+  _chart._viewBoxDimName = null;
+  var hasAppliedInitialBounds = false;
+  var _hasRendered = false;
+  var _activeLayer = null;
+  var _mapInitted = false;
+  var _xDim = null;
+  var _yDim = null;
+  var _viewBoxDim = null;
+  var _lastMapMoveType = null;
+  var _lastMapUpdateTime = 0;
+  var _isFirstMoveEvent = true;
+  var _mapUpdateInterval = 100; // default
+  var _mapStyle = "mapbox://styles/mapbox/light-v8";
+  var _center = [0, 30];
+  var _zoom = 1;
+  var _attribLocation = "bottom-right";
+  var _popupFunction = null;
+  var _colorBy = null;
+  var _mouseLeave = false;
+  var _useLonLat = true;
+  _chart._minCoord = null;
+  _chart._maxCoord = null;
+  _chart._reProjMapbox = true;
+
+  var _clientClickX = null;
+  var _clientClickY = null;
+
+  var _arr = [[LONMIN, LATMIN], [LONMAX, LATMAX]];
+
+  var _llb = _mapboxgl.LngLatBounds.convert(_arr);
+
+  var _geocoder = null;
+
+  var _minMaxCache = {};
+  var _interactionsEnabled = true;
+
+  _chart.useLonLat = function (useLonLat) {
+    if (!arguments.length) {
+      return _useLonLat;
+    }
+    _useLonLat = useLonLat;
+    return _chart;
+  };
+  _chart.map = function () {
+    return _map;
+  };
+
+  _chart.lonMin = function () {
+    return LONMIN;
+  };
+
+  _chart.lonMax = function () {
+    return LONMAX;
+  };
+
+  _chart.latMin = function () {
+    return LATMIN;
+  };
+
+  _chart.latMax = function () {
+    return LATMAX;
+  };
+
+  function makeBoundsArrSafe(_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+        _ref2$ = _slicedToArray(_ref2[0], 2),
+        lowerLon = _ref2$[0],
+        lowerLat = _ref2$[1],
+        _ref2$2 = _slicedToArray(_ref2[1], 2),
+        upperLon = _ref2$2[0],
+        upperLat = _ref2$2[1];
+
+    return [[Math.max(LONMIN, lowerLon), Math.max(LATMIN, lowerLat)], [Math.min(LONMAX, upperLon), Math.min(LATMAX, upperLat)]];
+  }
+
+  _chart.convertBounds = function (arr) {
+    if (!_mapboxgl) {
+      throw new Error("Cannot convert bounds: mapboxgl uninitialized.");
+    }
+    return _mapboxgl.LngLatBounds.convert(makeBoundsArrSafe(arr));
+  };
+
+  _chart.enableInteractions = function (enableInteractions) {
+    var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    if (!arguments.length) {
+      return _interactionsEnabled;
+    }
+
+    var mapboxInteractionProps = ["scrollZoom", "boxZoom", "dragRotate", "dragPan", "keyboard", "doubleClickZoom", "touchZoomRotate"];
+    _interactionsEnabled = Boolean(enableInteractions);
+
+    if (_mapInitted) {
+      mapboxInteractionProps.forEach(function (prop) {
+        if (_map[prop]) {
+          var enable = typeof opts[prop] !== "undefined" ? Boolean(opts[prop]) : _interactionsEnabled;
+          if (enable) {
+            _map[prop].enable();
+          } else {
+            _map[prop].disable();
+
+            if (prop === "dragPan") {
+              // force a clear of the current event state on the map
+              // to fully disable pans
+              _map[prop]._onMouseUp({
+                button: 0
+              });
+            }
+          }
+        }
+      });
+    }
+    return _chart;
+  };
+
+  _chart.getDataRenderBounds = function () {
+    var bounds = _map.getBounds();
+
+    if (!hasAppliedInitialBounds) {
+      _chart.setFilterBounds(bounds);
+    }
+
+    var renderBounds = [valuesOb(bounds.getNorthWest()), valuesOb(bounds.getNorthEast()), valuesOb(bounds.getSouthEast()), valuesOb(bounds.getSouthWest())];
+
+    if (!_useLonLat) {
+      renderBounds = [_chart.conv4326To900913(renderBounds[0]), _chart.conv4326To900913(renderBounds[1]), _chart.conv4326To900913(renderBounds[2]), _chart.conv4326To900913(renderBounds[3])];
+    }
+    hasAppliedInitialBounds = true;
+    return renderBounds;
+  };
+
+  _chart.xDim = function (xDim) {
+    if (!arguments.length) {
+      return _xDim;
+    }
+    _xDim = xDim;
+    if (_xDim) {
+      _chart._xDimName = _xDim.value()[0];
+    }
+    return _chart;
+  };
+
+  _chart.yDim = function (yDim) {
+    if (!arguments.length) {
+      return _yDim;
+    }
+    _yDim = yDim;
+    if (_yDim) {
+      _chart._yDimName = _yDim.value()[0];
+    }
+    return _chart;
+  };
+
+  _chart.viewBoxDim = function (viewBoxDim) {
+    if (!arguments.length) {
+      return _viewBoxDim;
+    }
+    _viewBoxDim = viewBoxDim;
+    if (_viewBoxDim) {
+      _chart._viewBoxDimName = _viewBoxDim.value()[0];
+    }
+    return _chart;
+  };
+
+  _chart.resetLayer = function () {
+    if (typeof _chart._resetRenderBounds === "function") {
+      _chart._resetRenderBounds();
+    }
+
+    _activeLayer = null;
+  };
+
+  _chart.colorBy = function (_) {
+    if (!arguments.length) {
+      return _colorBy;
+    }
+    _colorBy = _;
+    return _chart;
+  };
+
+  _chart.mapUpdateInterval = function (mapUpdateInterval) {
+    if (!arguments.length) {
+      return _mapUpdateInterval;
+    }
+    _mapUpdateInterval = mapUpdateInterval;
+    return _chart;
+  };
+
+  _chart.conv900913To4326X = function (x) {
+    return x / 111319.490778;
+  };
+
+  _chart.conv900913To4326Y = function (y) {
+    return 57.295779513 * (2 * Math.atan(Math.exp(y / 6378136.99911)) - 1.570796327);
+  };
+
+  _chart.conv900913To4326 = function (coord) {
+    return [_chart.conv900913To4326X(coord[0]), _chart.conv900913To4326Y(coord[1])];
+  };
+
+  _chart.conv4326To900913X = function (x) {
+    return x * 111319.490778;
+  };
+
+  _chart.conv4326To900913Y = function (y) {
+    return 6378136.99911 * Math.log(Math.tan(0.00872664626 * y + 0.785398163397));
+  };
+
+  _chart.conv4326To900913 = function (coord) {
+    return [_chart.conv4326To900913X(coord[0]), _chart.conv4326To900913Y(coord[1])];
+  };
+
+  function onLoad(e) {
+    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation);
+
+    var mapboxlogo = document.createElement("a");
+    mapboxlogo.className = "mapbox-maplogo";
+    mapboxlogo.href = "http://mapbox.com/about/maps";
+    mapboxlogo.target = "_blank";
+    mapboxlogo.innerHTML = "Mapbox";
+
+    var existingLogo = _map && _map._container ? _map._container.querySelector('.mapbox-maplogo') : null;
+    if (!existingLogo) {
+      _chart.root()[0][0].appendChild(mapboxlogo);
+    }
+
+    if (_geocoder) {
+      initGeocoder();
+    }
+  }
+
+  function onMapMove(e) {
+    if (e.type === "moveend" && _lastMapMoveType === "moveend" || !_hasRendered || e.skipRedraw) {
+      return;
+    }
+
+    _lastMapMoveType = e.type;
+    var curTime = new Date().getTime();
+
+    var bounds = _map.getBounds();
+
+    if (!_useLonLat) {
+      _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+      _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+    } else {
+      _chart._minCoord = [bounds._sw.lng, bounds._sw.lat];
+      _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
+    }
+
+    if (e.type === "move") {
+      if (_isFirstMoveEvent) {
+        _lastMapUpdateTime = curTime;
+        _isFirstMoveEvent = false;
+      }
+      if (_mapUpdateInterval === Infinity || curTime - _lastMapUpdateTime < _mapUpdateInterval) {
+        return;
+      }
+    } else if (e.type === "moveend") {
+      _isFirstMoveEvent = true;
+    }
+    _lastMapUpdateTime = curTime;
+
+    var redrawall = false;
+    if (typeof _chart.getLayers === "function") {
+      _chart.getLayers().forEach(function (layer) {
+        if (typeof layer.xDim === "function" && typeof layer.yDim === "function") {
+          var xdim = layer.xDim();
+          var ydim = layer.yDim();
+          if (xdim !== null && ydim !== null) {
+            redrawall = true;
+            xdim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
+            ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
+          }
+        } else if (typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) {
+          // spatial filter on only single data source
+          var viewBoxDim = layer.viewBoxDim();
+          if (viewBoxDim !== null) {
+            redrawall = true;
+            viewBoxDim.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat });
+          }
+        }
+      });
+    }
+
+    if (_xDim !== null && _yDim !== null) {
+      _xDim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
+      _yDim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
+      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
+        (0, _coreAsync.resetRedrawStack)();
+        console.log("on move event redrawall error:", error);
+      });
+    } else if (redrawall) {
+      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
+        (0, _coreAsync.resetRedrawStack)();
+        console.log("on move event redrawall error:", error);
+      });
+    } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
+      // spatial filter on only single data source
+      _viewBoxDim.filterST_Min_ST_Max({ lonMin: _chart._minCoord[0], lonMax: _chart._maxCoord[0], latMin: _chart._minCoord[1], latMax: _chart._maxCoord[1] });
+      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
+        (0, _coreAsync.resetRedrawStack)();
+        console.log("on move event redrawall error:", error);
+      });
+    } else {
+      _chart._projectionFlag = true;
+      _chart.redrawAsync();
+    }
+  }
+
+  _chart.mapStyle = function (style) {
+    if (!arguments.length) {
+      return _mapStyle;
+    }
+    _mapStyle = style;
+    if (_map) {
+      _map.setStyle(_mapStyle);
+      if (typeof _chart.resetLayer !== "undefined") {
+        _chart.resetLayer();
+      }
+    }
+
+    return _chart;
+  };
+
+  _chart.mapboxToken = function (mapboxToken) {
+    if (!arguments.length) {
+      return _mapboxAccessToken;
+    }
+    _mapboxAccessToken = mapboxToken;
+    return _chart;
+  };
+
+  _chart.center = function (_) {
+    if (!arguments.length) {
+      _center = _map.getCenter();
+      return _center;
+    }
+    _center = _;
+    if (_mapInitted) {
+      _map.setCenter(_center);
+    }
+    return _chart;
+  };
+
+  _chart.zoom = function (_) {
+    if (!arguments.length) {
+      _zoom = _map.getZoom();
+      return _zoom;
+    }
+    _zoom = _;
+    if (_mapInitted) {
+      _map.setZoom(_zoom);
+    }
+    return _chart;
+  };
+
+  _chart.attribLocation = function (_) {
+    if (!arguments.length) {
+      return _attribLocation;
+    }
+    _attribLocation = _;
+    return _chart;
+  };
+
+  _chart.resetSvg = function () {
+    if (_chart.svg()) {
+      _chart.svg().remove();
+    }
+    var mapContainer = _d3.default.select(_chart.map().getCanvasContainer());
+    var svg = mapContainer.append("svg").attr("class", "poly-svg");
+    svg.attr("width", _chart.width()).attr("height", _chart.height());
+    _chart.svg(svg);
+  };
+
+  _chart.mapProject = function (input) {
+    // keep both methods before now until we can establish performance
+    // profiles of each - seem about equally fast at first glance
+    if (_chart._reProjMapbox == false) {
+      var xDiff = this._maxCoord[0] - this._minCoord[0];
+      var yDiff = this._maxCoord[1] - this._minCoord[1];
+      var projectedPoint = this.conv4326To900913(input);
+      return [(projectedPoint[0] - this._minCoord[0]) / xDiff * this.width(), (1.0 - (projectedPoint[1] - this._minCoord[1]) / yDiff) * this.height()];
+    } else {
+      var projectedPoint = this.map().project(input);
+      return [projectedPoint.x, projectedPoint.y];
+    }
+  };
+
+  _chart._setOverlay = function (data, bounds, browser, redraw) {
+    var map = _chart.map();
+
+    var allMapboxCanvasContainer = document.getElementsByClassName('mapboxgl-canvas-container');
+    var chartIdFromCanvasContainer = _chart.selectAll('.mapboxgl-canvas-container')[0].parentNode.id;
+
+    var chartMapboxCanvasContainer = _.filter(allMapboxCanvasContainer, function (mbcc) {
+      return mbcc.parentNode.id === chartIdFromCanvasContainer || mbcc.parentNode.parentNode.id === chartIdFromCanvasContainer;
+    });
+
+    var allMapboxCanvas = document.getElementsByClassName('mapboxgl-canvas');
+    var chartIdFromCanvas = _chart.selectAll('.mapboxgl-canvas')[0].parentNode.id;
+
+    var chartMapboxCanvas = _.filter(allMapboxCanvas, function (mbc) {
+      return mbc.parentNode.id === chartIdFromCanvas || mbc.parentNode.parentNode.id === chartIdFromCanvas;
+    });
+
+    if (chartMapboxCanvasContainer.length > 1) {
+      // we use only one canvas for the chart map, thus remove extra
+      chartMapboxCanvasContainer[0].remove();
+    }
+    if (chartMapboxCanvas.length > 1) {
+      chartMapboxCanvas[0].remove();
+    }
+
+    var boundsToUse = bounds;
+    if (boundsToUse === undefined) {
+      return;
+    } else if (!_useLonLat) {
+      boundsToUse = [_chart.conv900913To4326(bounds[0]), _chart.conv900913To4326(bounds[1]), _chart.conv900913To4326(bounds[2]), _chart.conv900913To4326(bounds[3])];
+    }
+
+    if (browser.isSafari || browser.isIE || browser.isEdge) {
+      var blob = utilss.b64toBlob(data, "image/png");
+      var blobUrl = URL.createObjectURL(blob);
+    } else {
+      var blobUrl = "data:image/png;base64," + data;
+    }
+
+    if (!_activeLayer) {
+      _activeLayer = "_points";
+      var toBeAddedOverlay = "overlay" + _activeLayer;
+      var firstSymbolLayerId = getFirstSymbolLayerId();
+
+      map.addSource(toBeAddedOverlay, {
+        type: "image",
+        url: blobUrl,
+        coordinates: boundsToUse
+      });
+
+      map.addLayer({
+        id: toBeAddedOverlay,
+        source: toBeAddedOverlay,
+        type: "raster",
+        paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
+      }, firstSymbolLayerId);
+    } else {
+      var overlayName = "overlay" + _activeLayer;
+      var imageSrc = map.getSource(overlayName);
+      imageSrc.updateImage({
+        url: blobUrl,
+        coordinates: boundsToUse
+      });
+    }
+  };
+
+  _chart._removeOverlay = function () {
+    var map = _chart.map();
+
+    var overlay = "overlay" + _activeLayer;
+    map.removeLayer(overlay);
+    map.removeSource(overlay);
+  };
+
+  _chart.isLoaded = function () {
+    return _map._loaded && _map.style && _map.style._loaded;
+  };
+
+  function initMap() {
+    if (_mapInitted) {
+      return;
+    }
+    _mapboxgl.accessToken = _mapboxAccessToken;
+
+    _chart.root().style("width", _chart.width() + "px").style("height", _chart.height() + "px");
+
+    _map = new _mapboxgl.Map({
+      container: _mapId, // container id
+      style: _mapStyle,
+      interactive: true,
+      center: _center, // starting position
+      zoom: _zoom, // starting zoom
+      maxBounds: _llb,
+      preserveDrawingBuffer: true,
+      attributionControl: false
+    });
+
+    _map.dragRotate.disable();
+    _map.touchZoomRotate.disableRotation();
+    _chart.addMapListeners();
+    _mapInitted = true;
+    _chart.enableInteractions(_interactionsEnabled);
+  }
+
+  _chart.addMapListeners = function () {
+    _map.on("move", onMapMove);
+    _map.on("moveend", onMapMove);
+  };
+
+  _chart.removeMapListeners = function () {
+    _map.off("move", onMapMove);
+    _map.off("moveend", onMapMove);
+  };
+
+  _chart.on("postRender", function () {
+    _hasRendered = true;
+  });
+
+  _chart.on("preRender", function (chart) {
+    var width = chart.width();
+    var height = chart.height();
+
+    if (width !== _lastWidth || height !== _lastHeight) {
+      _chart.root().select("#" + _mapId + " canvas").attr("width", width).attr("height", height);
+
+      _lastWidth = width;
+      _lastHeight = height;
+      _map.resize();
+    }
+  });
+
+  function getFirstSymbolLayerId() {
+    var firstSymbolId = null;
+    var layers = _map.getStyle().layers;
+    for (var i = 0; i < layers.length; ++i) {
+      if (layers[i].type === "symbol") {
+        firstSymbolId = layers[i].id;
+        break;
+      }
+    }
+    return firstSymbolId;
+  }
+
+  function getMinMax(value) {
+    return _chart.crossfilter().groupAll().reduce([{ expression: value, agg_mode: "min", name: "minimum" }, { expression: value, agg_mode: "max", name: "maximum" }]).valuesAsync(true, true).then(function (bounds) {
+      return [bounds.minimum, bounds.maximum];
+    });
+  }
+
+  function createRangeMinMaxPromises(promises, value) {
+    if (!_minMaxCache[value]) {
+      return promises.concat(getMinMax(value).then(function (bounds) {
+        _minMaxCache[value] = bounds;
+      }));
+    } else {
+      return promises;
+    }
+  }
+
+  var _fitInitialBounds = void 0;
+
+  _chart.fitInitialBounds = function (callback) {
+    if (!arguments.length) {
+      _fitInitialBounds();
+    }
+    _fitInitialBounds = callback;
+    return _chart;
+  };
+
+  function init(_bounds) {
+    return Promise.resolve();
+  }
+
+  _chart.init = function (bounds) {
+    if (_mapInitted) {
+      return;
+    }
+
+    var styleLoaded = false;
+    var loaded = false;
+
+    initMap();
+
+    return new Promise(function (resolve, reject) {
+      _map.on("load", function (e) {
+        onLoad(e);
+        loaded = true;
+        if (styleLoaded) {
+          init(bounds).then(function () {
+            resolve(_chart);
+          });
+        }
+      });
+
+      _map.on("style.load", function () {
+        styleLoaded = true;
+        if (loaded) {
+          init(bounds).then(function () {
+            resolve(_chart);
+          });
+        }
+      });
+
+      _map.on("mousedown", function (event) {
+        _clientClickX = event.point.x;
+        _clientClickY = event.point.y;
+      });
+
+      _map.on("mouseup", function (event) {
+        // Make sure that the user is clicking to filter, and not dragging or panning the map
+        if (_clientClickX === event.point.x && _clientClickY === event.point.y) {
+          _chart.getClosestResult(event.point, function (result) {
+            var data = result.row_set[0];
+            _chart.getLayerNames().forEach(function (layerName) {
+              var layer = _chart.getLayer(layerName);
+              if (typeof layer.onClick === "function") {
+                layer.onClick(_chart, data, event.originalEvent);
+              }
+            });
+          });
+        }
+      });
+    });
+  };
+
+  _chart.setFilterBounds = function (bounds) {
+    if (!_useLonLat) {
+      _chart._minCoord = _chart.conv4326To900913([bounds._sw.lng, bounds._sw.lat]);
+      _chart._maxCoord = _chart.conv4326To900913([bounds._ne.lng, bounds._ne.lat]);
+    } else {
+      _chart._minCoord = [bounds._sw.lng, bounds._sw.lat];
+      _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
+    }
+
+    _chart.getLayers().forEach(function (layer) {
+      if (typeof layer.xDim === "function" && typeof layer.yDim === "function") {
+        var xdim = layer.xDim();
+        var ydim = layer.yDim();
+        if (xdim !== null && ydim !== null) {
+          xdim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
+          ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
+        }
+      }
+    });
+  };
+
+  function boundsRoughlyEqual(a, b) {
+    return a.getSouthWest().lat === b.getSouthWest().lat || a.getSouthWest().lng === b.getSouthWest().lng || a.getNorthEast().lat === b.getNorthEast().lat || a.getNorthEast().lng === b.getNorthEast().lng;
+  }
+
+  _chart.geocoder = function (geocoder) {
+    if (!arguments.length) {
+      return _geocoder;
+    }
+    if (typeof geocoder.locate !== "function") {
+      throw new Error("Geocoder must have a location function");
+    }
+    _geocoder = geocoder;
+    return _chart;
+  };
+
+  function initGeocoder() {
+    _chart.root().append("input").attr("type", "text").attr("placeholder", "Zoom to").classed("geocoder-input", true).style("top", "5px").style("right", "5px").style("float", "right").style("position", "absolute").on("keydown", function () {
+      if (_d3.default.event.key === "Enter" || _d3.default.event.keyCode === 13) {
+        _geocoder.locate(this.value).then(_chart.zoomToLocation);
+      }
+    });
+  }
+
+  function validateBounds(data) {
+    var sw = data.bounds.sw;
+    var ne = data.bounds.ne;
+    /* eslint-disable operator-linebreak */
+    return !isNaN(sw[0]) && !isNaN(ne[0]) && !isNaN(sw[1]) && !isNaN(ne[1]) && sw[0] <= ne[0] && sw[1] < ne[1] && sw[0] >= LONMIN && sw[0] <= LONMAX && sw[1] >= LATMIN && sw[1] <= LATMAX && ne[0] >= LONMIN && ne[0] <= LONMAX && ne[1] >= LATMIN && ne[1] <= LATMAX;
+    /* eslint-enable operator-linebreak */
+  }
+
+  _chart.zoomToLocation = function (data) {
+    if (!_mapInitted) {
+      return _chart;
+    }
+    if (data.bounds) {
+      if (validateBounds(data)) {
+        _map.fitBounds([data.bounds.sw, data.bounds.ne], {
+          linear: true,
+          duration: EASE_DURATION_MS
+        });
+      }
+    } else {
+      var center = data.center;
+      _map.setCenter(center);
+      _map.setZoom(DEFAULT_ZOOM_LEVEL);
+    }
+    return _chart;
+  };
+
+  if (mixinDraw) {
+    _chart = (0, _rasterDrawMixin.rasterDrawMixin)(_chart);
+  }
+
+  return _chart;
+}
 
 /***/ }),
 /* 24 */
@@ -29881,6 +29881,10 @@ var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
 var _earcut = __webpack_require__(169);
 
 var _earcut2 = _interopRequireDefault(_earcut);
+
+var _lodash = __webpack_require__(16);
+
+var _ = _interopRequireWildcard(_lodash);
 
 var _mapdDraw = __webpack_require__(13);
 
@@ -30075,7 +30079,7 @@ function rasterDrawMixin(chart) {
                 coordFilter: _crossFilter
               };
               coordFilters.set(_crossFilter, _filterObj);
-              _filterObj.shapeFilters = {};
+              _filterObj.shapeFilters = [];
             }
 
             shapes.forEach(function (shape) {
@@ -30084,19 +30088,32 @@ function rasterDrawMixin(chart) {
                 // convert from mercator to lat-lon
                 LatLonUtils.conv900913To4326(pos, pos);
                 var radiusInKm = shape.radius;
-                _filterObj.shapeFilters = {
+                var shapeFilter = {
                   spatialRelAndMeas: "filterST_Distance",
                   filters: { point: [pos[0], pos[1]], distanceInKm: radiusInKm }
                 };
+
+                if (!_.find(_filterObj.shapeFilters, shapeFilter)) {
+                  _filterObj.shapeFilters.push(shapeFilter);
+                }
               } else if (shape instanceof MapdDraw.Poly) {
+                var p0 = [0, 0];
                 var convertedVerts = [];
+
                 var verts = shape.vertsRef;
+                var xform = shape.globalXform;
                 verts.forEach(function (vert) {
+                  MapdDraw.Point2d.transformMat2d(p0, vert, xform);
                   if (useLonLat) {
-                    convertedVerts.push(LatLonUtils.conv900913To4326([], vert));
+                    LatLonUtils.conv900913To4326(p0, p0);
                   }
+                  convertedVerts.push([p0[0], p0[1]]);
                 });
-                _filterObj.shapeFilters = { spatialRelAndMeas: "filterST_Contains", filters: convertedVerts };
+                var _shapeFilter = { spatialRelAndMeas: "filterST_Contains", filters: convertedVerts };
+
+                if (!_.find(_filterObj.shapeFilters, _shapeFilter)) {
+                  _filterObj.shapeFilters.push(_shapeFilter);
+                }
               }
             });
           }
@@ -30120,8 +30137,12 @@ function rasterDrawMixin(chart) {
         filterObj.px = [];
         filterObj.py = [];
         filterObj.shapeFilters = [];
-      } else if (filterObj.coordFilter && filterObj.shapeFilters && filterObj.shapeFilters.spatialRelAndMeas) {
-        filterObj.coordFilter.filterSpatial(filterObj.shapeFilters.spatialRelAndMeas, filterObj.shapeFilters.filters);
+      } else if (filterObj.coordFilter && filterObj.shapeFilters && filterObj.shapeFilters.length && filterObj.shapeFilters[0].spatialRelAndMeas) {
+        filterObj.coordFilter.filterSpatial();
+        filterObj.shapeFilters.forEach(function (sf) {
+          filterObj.coordFilter.filterSpatial(sf.spatialRelAndMeas, sf.filters);
+        });
+        filterObj.shapeFilters = [];
       } else {
         filterObj.coordFilter.filter();
       }
@@ -47054,7 +47075,7 @@ function h(sel, b, c) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(251);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(252);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(177);
@@ -48859,7 +48880,7 @@ __webpack_require__(183);
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(184);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
 /* 184 */
@@ -48933,7 +48954,7 @@ Object.keys(_utils).forEach(function (key) {
   });
 });
 
-var _logger = __webpack_require__(18);
+var _logger = __webpack_require__(19);
 
 Object.keys(_logger).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -49125,7 +49146,7 @@ Object.defineProperty(exports, "baseMixin", {
   }
 });
 
-var _bubbleMixin = __webpack_require__(20);
+var _bubbleMixin = __webpack_require__(21);
 
 Object.defineProperty(exports, "bubbleMixin", {
   enumerable: true,
@@ -49170,7 +49191,7 @@ Object.defineProperty(exports, "coordinateGridRasterMixin", {
   }
 });
 
-var _stackMixin = __webpack_require__(21);
+var _stackMixin = __webpack_require__(22);
 
 Object.defineProperty(exports, "stackMixin", {
   enumerable: true,
@@ -49188,7 +49209,7 @@ Object.defineProperty(exports, "marginMixin", {
   }
 });
 
-var _mapMixin = __webpack_require__(22);
+var _mapMixin = __webpack_require__(23);
 
 Object.defineProperty(exports, "mapMixin", {
   enumerable: true,
@@ -50718,7 +50739,7 @@ var _baseMixin = __webpack_require__(5);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _bubbleMixin = __webpack_require__(20);
+var _bubbleMixin = __webpack_require__(21);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
@@ -51611,7 +51632,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackMixin = __webpack_require__(21);
+var _stackMixin = __webpack_require__(22);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
@@ -60954,7 +60975,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.roundTimeBin = roundTimeBin;
 exports.default = binningMixin;
 
-var _binningHelpers = __webpack_require__(19);
+var _binningHelpers = __webpack_require__(20);
 
 var _d = __webpack_require__(1);
 
@@ -61151,7 +61172,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _bubbleMixin = __webpack_require__(20);
+var _bubbleMixin = __webpack_require__(21);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
@@ -62751,7 +62772,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _mapMixin = __webpack_require__(22);
+var _mapMixin = __webpack_require__(23);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -63597,7 +63618,7 @@ var _simplifyJs = __webpack_require__(220);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
-var _logger = __webpack_require__(18);
+var _logger = __webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -67985,7 +68006,7 @@ var _elasticDimensionMixin = __webpack_require__(166);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _stackMixin = __webpack_require__(21);
+var _stackMixin = __webpack_require__(22);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
@@ -68696,7 +68717,7 @@ var _coordinateGridRasterMixin = __webpack_require__(171);
 
 var _coordinateGridRasterMixin2 = _interopRequireDefault(_coordinateGridRasterMixin);
 
-var _mapMixin = __webpack_require__(22);
+var _mapMixin = __webpack_require__(23);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -68714,7 +68735,7 @@ var _coreAsync = __webpack_require__(4);
 
 var _legendables = __webpack_require__(233);
 
-var _lodash = __webpack_require__(23);
+var _lodash = __webpack_require__(16);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -69382,7 +69403,7 @@ exports.handleLegendLock = handleLegendLock;
 exports.handleLegendInput = handleLegendInput;
 exports.toLegendState = toLegendState;
 
-var _lodash = __webpack_require__(23);
+var _lodash = __webpack_require__(16);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -72177,7 +72198,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(17);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step) {
@@ -72190,7 +72211,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(17);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, value) {
@@ -72203,7 +72224,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(17);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, max) {
@@ -77037,7 +77058,7 @@ module.exports={"version":"0.28.0"}
 
 
 //# sourceMappingURL=mapbox-gl.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
 /* 278 */
