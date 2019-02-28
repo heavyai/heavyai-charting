@@ -264,11 +264,21 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     })
   }
 
-  _chart.setDataAsync((group, callback) => {
+  function getCountFromBoundingBox(chart, _layer) {
+    const mapBounds = chart.map().getBounds()
+    const geoTable = _layer.getState().encoding.geoTable
+    const geoCol = _layer.getState().encoding.geocol
+
+    const preflightQuery = `SELECT COUNT(*) as n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${ mapBounds._sw.lng } AND ST_XMin(${geoTable}.${geoCol}) <= ${ mapBounds._ne.lng } AND ST_YMax(${geoTable}.${geoCol}) >= ${ mapBounds._sw.lat } AND ST_YMin(${geoTable}.${geoCol}) <= ${ mapBounds._ne.lat }`
+
+    return chart.con().queryAsync(preflightQuery, {})
+  }
+
+  function handleRenderVega(callback) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
-    _chart._vegaSpec = genLayeredVega(_chart)
 
+    _chart._vegaSpec = genLayeredVega(_chart)
     _chart
       .con()
       .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
@@ -279,6 +289,23 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       .catch(error => {
         callback(error)
       })
+  }
+
+  _chart.setDataAsync((group, callback) => {
+    const layers = _chart.getAllLayers()
+    const polyLayers = layers.length ? _.filter(layers, (layer) => layer.getState().mark.type === "poly" ) : null
+
+    if (polyLayers && polyLayers.length) { // add bboxCount to poly layers run sample
+      polyLayers.forEach(polyLayer => {
+        getCountFromBoundingBox(_chart, polyLayer).then(res => {
+          const count = res && res[0] && res[0].n
+          polyLayer.setState({...polyLayer.getState(), bboxCount: count})
+          handleRenderVega(callback)
+        })
+      })
+    } else {
+      handleRenderVega(callback)
+    }
   })
 
   _chart.data(group => {
