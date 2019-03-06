@@ -94,7 +94,7 @@ export function rasterDrawMixin(chart) {
     const currentlayer = layer || layers[0] // we only get one layer from "Layer" tab, but get all layers from "Master" tab ?
     const layerState = currentlayer.getState()
 
-    if (layerState.currentLayer === "master") { // create shape from layer.filter
+    if (layer && layer.getState().master) { // create shape from layer.filter
       layerState.filters.forEach(filter => {
         const shapeCopy = createShape(filter)
         applyFilter(shapeCopy, currentlayer)
@@ -106,10 +106,10 @@ export function rasterDrawMixin(chart) {
         applyFilter(shape, currentlayer)
       })
     }
-    applyCoordFilter()
+    applyCoordFilter(currentlayer)
   }
 
-  function applyCoordFilter() {
+  function applyCoordFilter(currentLayer) {
     coordFilters.forEach(filterObj => {
       if (
         filterObj.px && filterObj.py &&
@@ -143,10 +143,7 @@ export function rasterDrawMixin(chart) {
         filterObj.shapeFilters.length &&
         filterObj.shapeFilters[0].spatialRelAndMeas
       ) {
-        filterObj.coordFilter.filterSpatial()
-        filterObj.shapeFilters.forEach(sf => {
-          filterObj.coordFilter.filterSpatial(sf.spatialRelAndMeas, sf.filters)
-        })
+        filterObj.coordFilter.filterSpatial(filterObj.shapeFilters, currentLayer.getState().currentLayer)
         filterObj.shapeFilters = []
       } else {
         filterObj.coordFilter.filter()
@@ -579,8 +576,10 @@ export function rasterDrawMixin(chart) {
 
     chart.filterAll = () => {
       origFilterAll()
-      chart.getLayerNames().forEach(layerName => {
+      let currentLayer = null
+      chart.getLayerNames().forEach((layerName) => {
         const layer = chart.getLayer(layerName)
+        currentLayer = layer.getState().currentLayer
         if (layer.hasOwnProperty("filterAll")) {
           layer.filterAll()
         }
@@ -590,7 +589,7 @@ export function rasterDrawMixin(chart) {
           if (filterObj.coordFilter && 'spatialRelAndMeas' in filterObj.shapeFilters) {
             filterObj.coordFilter.filterSpatial()
             const bounds = chart.map().getBounds()
-            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
+            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat}, currentLayer)
           } else {
             filterObj.coordFilter.filter()
           }

@@ -29445,7 +29445,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
           var viewBoxDim = layer.viewBoxDim();
           if (viewBoxDim !== null) {
             redrawall = true;
-            viewBoxDim.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat });
+            viewBoxDim.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat }, layer.getState().currentLayer);
           }
         }
       });
@@ -29978,7 +29978,7 @@ function rasterDrawMixin(chart) {
     var currentlayer = layer || layers[0]; // we only get one layer from "Layer" tab, but get all layers from "Master" tab ?
     var layerState = currentlayer.getState();
 
-    if (layerState.currentLayer === "master") {
+    if (layer && layer.getState().master) {
       // create shape from layer.filter
       layerState.filters.forEach(function (filter) {
         var shapeCopy = createShape(filter);
@@ -29990,10 +29990,10 @@ function rasterDrawMixin(chart) {
         applyFilter(shape, currentlayer);
       });
     }
-    applyCoordFilter();
+    applyCoordFilter(currentlayer);
   }
 
-  function applyCoordFilter() {
+  function applyCoordFilter(currentLayer) {
     coordFilters.forEach(function (filterObj) {
       if (filterObj.px && filterObj.py && filterObj.px.length && filterObj.py.length && filterObj.shapeFilters.length) {
         var shapeFilterStmt = filterObj.shapeFilters.join(" OR ");
@@ -30011,10 +30011,7 @@ function rasterDrawMixin(chart) {
         filterObj.py = [];
         filterObj.shapeFilters = [];
       } else if (filterObj.coordFilter && filterObj.shapeFilters && filterObj.shapeFilters.length && filterObj.shapeFilters[0].spatialRelAndMeas) {
-        filterObj.coordFilter.filterSpatial();
-        filterObj.shapeFilters.forEach(function (sf) {
-          filterObj.coordFilter.filterSpatial(sf.spatialRelAndMeas, sf.filters);
-        });
+        filterObj.coordFilter.filterSpatial(filterObj.shapeFilters, currentLayer.getState().currentLayer);
         filterObj.shapeFilters = [];
       } else {
         filterObj.coordFilter.filter();
@@ -30151,7 +30148,6 @@ function rasterDrawMixin(chart) {
               };
 
               if (!_.find(_filterObj.shapeFilters, shapeFilter)) {
-                debugger;
                 _filterObj.shapeFilters.push(shapeFilter);
               }
             } else if (shape instanceof MapdDraw.Poly) {
@@ -30170,7 +30166,6 @@ function rasterDrawMixin(chart) {
               var _shapeFilter = { spatialRelAndMeas: "filterST_Contains", filters: convertedVerts };
 
               if (!_.find(_filterObj.shapeFilters, _shapeFilter)) {
-                debugger;
                 _filterObj.shapeFilters.push(_shapeFilter);
               }
             }
@@ -30371,8 +30366,10 @@ function rasterDrawMixin(chart) {
 
     chart.filterAll = function () {
       origFilterAll();
+      var currentLayer = null;
       chart.getLayerNames().forEach(function (layerName) {
         var layer = chart.getLayer(layerName);
+        currentLayer = layer.getState().currentLayer;
         if (layer.hasOwnProperty("filterAll")) {
           layer.filterAll();
         }
@@ -30382,7 +30379,7 @@ function rasterDrawMixin(chart) {
           if (filterObj.coordFilter && 'spatialRelAndMeas' in filterObj.shapeFilters) {
             filterObj.coordFilter.filterSpatial();
             var bounds = chart.map().getBounds();
-            filterObj.coordFilter.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat });
+            filterObj.coordFilter.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat }, currentLayer);
           } else {
             filterObj.coordFilter.filter();
           }
@@ -45139,7 +45136,7 @@ function getLeftmost(start) {
     var p = start,
         leftmost = start;
     do {
-        if (p.x < leftmost.x) leftmost = p;
+        if (p.x < leftmost.x || (p.x === leftmost.x && p.y < leftmost.y)) leftmost = p;
         p = p.next;
     } while (p !== start);
 
@@ -49727,21 +49724,21 @@ var GOLDEN_RATIO = 2654435761;
 var THIRTY_TWO_BITS = 4294967296;
 
 function sample(sql, transform) {
-  /* istanbul ignore else */
-  if (transform.method === "multiplicative") {
-    var size = transform.size,
-        limit = transform.limit;
+  var size = transform.size,
+      limit = transform.limit;
 
-    var ratio = Math.min(limit / size, 1.0);
-    if (ratio < 1) {
-      var threshold = Math.floor(THIRTY_TWO_BITS * ratio);
-      // We are using simple modulo arithmetic expression conversion, 
-      // (A * B) mod C = (A mod C * B mod C) mod C, 
-      // to optimize the filter here. This helps  the overflow on the backend.
-      // We don't have the full modulo expression for golden ratio since 
-      // that is a constant expression and we can avoid that execution
-      sql.where.push("MOD( MOD (" + sql.from + ".rowid, " + THIRTY_TWO_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold);
-    }
+  var ratio = Math.min(limit / size, 1.0);
+  var threshold = Math.floor(THIRTY_TWO_BITS * ratio);
+
+  if (transform.method === "multiplicativeRowid" && ratio < 1) {
+    sql.where.push("((MOD( MOD (" + transform.field + ", " + THIRTY_TWO_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + transform.field + " IN (" + transform.expr.join(", ") + ")))");
+  } else if (transform.method === "multiplicative" && ratio < 1) {
+    // We are using simple modulo arithmetic expression conversion, 
+    // (A * B) mod C = (A mod C * B mod C) mod C, 
+    // to optimize the filter here. This helps  the overflow on the backend.
+    // We don't have the full modulo expression for golden ratio since 
+    // that is a constant expression and we can avoid that execution
+    sql.where.push("MOD( MOD (" + sql.from + ".rowid, " + THIRTY_TWO_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold);
   }
 
   return sql;

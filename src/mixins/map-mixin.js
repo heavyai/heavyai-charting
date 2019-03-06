@@ -350,7 +350,7 @@ export default function mapMixin(
           const viewBoxDim = layer.viewBoxDim()
           if(viewBoxDim !== null) {
             redrawall = true
-            viewBoxDim.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
+            viewBoxDim.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat}, layer.getState().currentLayer)
           }
         }
       })
