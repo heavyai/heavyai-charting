@@ -29443,9 +29443,9 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         } else if (typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) {
           // spatial filter on only single data source
           var viewBoxDim = layer.viewBoxDim();
-          if (viewBoxDim !== null) {
+          if (viewBoxDim !== null && layer.getState().filters.length < 1) {
             redrawall = true;
-            viewBoxDim.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat }, layer.getState().currentLayer);
+            viewBoxDim.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat }, layer.getState().cfDimIndex);
           }
         }
       });
@@ -29972,28 +29972,31 @@ function rasterDrawMixin(chart) {
      * could be a single shape in chart and drawEngine but can be used to query all selected layers
      * @param layer
      */
-  };function handleFilterLayerOnShape(layer) {
+  };function handleApplyFilterFromShape(layer) {
     // all shapes should be added to map by this time for the layer
     var layers = chart.getLayers && typeof chart.getLayers === "function" ? chart.getLayers() : [chart];
     var currentlayer = layer || layers[0]; // we only get one layer from "Layer" tab, but get all layers from "Master" tab ?
     var layerState = currentlayer.getState();
 
-    if (layer && layer.getState().master) {
-      // create shape from layer.filter
-      layerState.filters.forEach(function (filter) {
-        var shapeCopy = createShape(filter);
-        applyFilter(shapeCopy, currentlayer);
-      });
-    } else {
-      var shapes = drawEngine.sortedShapes;
-      shapes.forEach(function (shape) {
-        applyFilter(shape, currentlayer);
-      });
+    if (currentlayer) {
+      if (currentlayer.getState().master) {
+        // create shape from layer.filter
+        layerState.filters.forEach(function (filter) {
+          var shapeCopy = createShape(filter);
+          applyFilter(shapeCopy, currentlayer);
+        });
+      } else {
+        var shapes = drawEngine.sortedShapes;
+        shapes.forEach(function (shape) {
+          applyFilter(shape, currentlayer);
+        });
+      }
+      applyCoordFilter(currentlayer);
     }
-    applyCoordFilter(currentlayer);
   }
 
   function applyCoordFilter(currentLayer) {
+    // function to call crossfilter dimension filter methods
     coordFilters.forEach(function (filterObj) {
       if (filterObj.px && filterObj.py && filterObj.px.length && filterObj.py.length && filterObj.shapeFilters.length) {
         var shapeFilterStmt = filterObj.shapeFilters.join(" OR ");
@@ -30011,7 +30014,7 @@ function rasterDrawMixin(chart) {
         filterObj.py = [];
         filterObj.shapeFilters = [];
       } else if (filterObj.coordFilter && filterObj.shapeFilters && filterObj.shapeFilters.length && filterObj.shapeFilters[0].spatialRelAndMeas) {
-        filterObj.coordFilter.filterSpatial(filterObj.shapeFilters, currentLayer.getState().currentLayer);
+        filterObj.coordFilter.filterSpatial(filterObj.shapeFilters, currentLayer.getState().cfDimIndex);
         filterObj.shapeFilters = [];
       } else {
         filterObj.coordFilter.filter();
@@ -30176,7 +30179,7 @@ function rasterDrawMixin(chart) {
   }
 
   function drawEventHandler() {
-    handleFilterLayerOnShape();
+    handleApplyFilterFromShape();
     (0, _coreAsync.redrawAllAsync)(chart.chartGroup());
   }
 
@@ -30227,7 +30230,7 @@ function rasterDrawMixin(chart) {
         chart.addFilterShape(newShape);
       }
     });
-    handleFilterLayerOnShape(layer);
+    handleApplyFilterFromShape(layer);
   }
 
   function createShape(filter, layer) {
@@ -75329,6 +75332,10 @@ function rasterLayerLineMixin(_layer) {
 
       delete _scaledPopups[chart];
     }
+  };
+
+  _layer.filterAll = function () {
+    _layer.dimension().filterAll();
   };
 
   _layer._destroyLayer = function (chart) {

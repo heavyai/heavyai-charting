@@ -512,6 +512,10 @@ export default function rasterLayerLineMixin(_layer) {
     }
   }
 
+  _layer.filterAll = function() {
+    _layer.dimension().filterAll()
+  }
+
   _layer._destroyLayer = function(chart) {
     const viewBoxDim = _layer.viewBoxDim()
     if (viewBoxDim) {

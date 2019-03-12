@@ -86,7 +86,7 @@ export function rasterDrawMixin(chart) {
    * could be a single shape in chart and drawEngine but can be used to query all selected layers
    * @param layer
    */
-  function handleFilterLayerOnShape(layer) { // all shapes should be added to map by this time for the layer
+  function handleApplyFilterFromShape(layer) { // all shapes should be added to map by this time for the layer
     const layers =
       chart.getLayers && typeof chart.getLayers === "function"
         ? chart.getLayers()
@@ -94,22 +94,24 @@ export function rasterDrawMixin(chart) {
     const currentlayer = layer || layers[0] // we only get one layer from "Layer" tab, but get all layers from "Master" tab ?
     const layerState = currentlayer.getState()
 
-    if (layer && layer.getState().master) { // create shape from layer.filter
-      layerState.filters.forEach(filter => {
-        const shapeCopy = createShape(filter)
-        applyFilter(shapeCopy, currentlayer)
-      })
+    if (currentlayer) {
+      if (currentlayer.getState().master) { // create shape from layer.filter
+        layerState.filters.forEach(filter => {
+          const shapeCopy = createShape(filter)
+          applyFilter(shapeCopy, currentlayer)
+        })
+      }
+      else {
+        const shapes = drawEngine.sortedShapes
+        shapes.forEach(shape => {
+          applyFilter(shape, currentlayer)
+        })
+      }
+      applyCoordFilter(currentlayer)
     }
-    else {
-      const shapes = drawEngine.sortedShapes
-      shapes.forEach(shape => {
-        applyFilter(shape, currentlayer)
-      })
-    }
-    applyCoordFilter(currentlayer)
   }
 
-  function applyCoordFilter(currentLayer) {
+  function applyCoordFilter(currentLayer) { // function to call crossfilter dimension filter methods
     coordFilters.forEach(filterObj => {
       if (
         filterObj.px && filterObj.py &&
@@ -143,7 +145,7 @@ export function rasterDrawMixin(chart) {
         filterObj.shapeFilters.length &&
         filterObj.shapeFilters[0].spatialRelAndMeas
       ) {
-        filterObj.coordFilter.filterSpatial(filterObj.shapeFilters, currentLayer.getState().currentLayer)
+        filterObj.coordFilter.filterSpatial(filterObj.shapeFilters, currentLayer.getState().cfDimIndex)
         filterObj.shapeFilters = []
       } else {
         filterObj.coordFilter.filter()
@@ -359,7 +361,7 @@ export function rasterDrawMixin(chart) {
   }
 
   function drawEventHandler() {
-    handleFilterLayerOnShape()
+    handleApplyFilterFromShape()
     redrawAllAsync(chart.chartGroup())
   }
 
@@ -412,7 +414,7 @@ export function rasterDrawMixin(chart) {
         chart.addFilterShape(newShape)
       }
     })
-    handleFilterLayerOnShape(layer)
+    handleApplyFilterFromShape(layer)
   }
 
   function createShape(filter, layer) {
