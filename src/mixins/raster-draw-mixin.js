@@ -593,7 +593,7 @@ export function rasterDrawMixin(chart) {
             const bounds = chart.map().getBounds()
             filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat}, currentLayer)
           } else {
-            filterObj.coordFilter.filter()
+            filterObj.coordFilter.filterAll()
           }
           filterObj.shapeFilters = []
           filterObj.coordFilter = {}
