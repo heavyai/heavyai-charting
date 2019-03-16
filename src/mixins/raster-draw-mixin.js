@@ -578,22 +578,19 @@ export function rasterDrawMixin(chart) {
 
     chart.filterAll = () => {
       origFilterAll()
-      let currentLayer = null
+      let layerDimIndex = null
       chart.getLayerNames().forEach((layerName) => {
         const layer = chart.getLayer(layerName)
-        currentLayer = layer.getState().currentLayer
+        layerDimIndex = layer.getState().cfDimIndex
         if (layer.hasOwnProperty("filterAll")) {
-          layer.filterAll()
+          layer.filterAll(undefined, layerDimIndex)
         }
       })
       if (coordFilters) {
         coordFilters.forEach(filterObj => {
-          if (filterObj.coordFilter && 'spatialRelAndMeas' in filterObj.shapeFilters) {
-            filterObj.coordFilter.filterSpatial()
+          if (filterObj.coordFilter && !_.isEmpty(filterObj.coordFilter)) {
             const bounds = chart.map().getBounds()
-            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat}, currentLayer)
-          } else {
-            filterObj.coordFilter.filterAll()
+            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat}, layerDimIndex)
           }
           filterObj.shapeFilters = []
           filterObj.coordFilter = {}

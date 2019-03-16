@@ -30369,22 +30369,19 @@ function rasterDrawMixin(chart) {
 
     chart.filterAll = function () {
       origFilterAll();
-      var currentLayer = null;
+      var layerDimIndex = null;
       chart.getLayerNames().forEach(function (layerName) {
         var layer = chart.getLayer(layerName);
-        currentLayer = layer.getState().currentLayer;
+        layerDimIndex = layer.getState().cfDimIndex;
         if (layer.hasOwnProperty("filterAll")) {
-          layer.filterAll();
+          layer.filterAll(undefined, layerDimIndex);
         }
       });
       if (coordFilters) {
         coordFilters.forEach(function (filterObj) {
-          if (filterObj.coordFilter && 'spatialRelAndMeas' in filterObj.shapeFilters) {
-            filterObj.coordFilter.filterSpatial();
+          if (filterObj.coordFilter && !_.isEmpty(filterObj.coordFilter)) {
             var bounds = chart.map().getBounds();
-            filterObj.coordFilter.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat }, currentLayer);
-          } else {
-            filterObj.coordFilter.filterAll();
+            filterObj.coordFilter.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat }, layerDimIndex);
           }
           filterObj.shapeFilters = [];
           filterObj.coordFilter = {};
@@ -75334,14 +75331,18 @@ function rasterLayerLineMixin(_layer) {
     }
   };
 
-  _layer.filterAll = function () {
-    _layer.dimension().filterAll();
+  _layer.filterAll = function (softFilterClear, layerDimIndex) {
+    _layer.dimension().filterAll(softFilterClear, layerDimIndex);
+  };
+
+  _layer.filterST_Min_ST_Max = function (bounds, dimIndex) {
+    _layer.dimension().filterST_Min_ST_Max(bounds, dimIndex);
   };
 
   _layer._destroyLayer = function (chart) {
     var viewBoxDim = _layer.viewBoxDim();
     if (viewBoxDim) {
-      viewBoxDim.dispose();
+      viewBoxDim.dispose(_layer.getState().cfDimIndex);
     }
   };
 
