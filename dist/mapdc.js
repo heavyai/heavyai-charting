@@ -30016,7 +30016,7 @@ function rasterDrawMixin(chart) {
       } else if (filterObj.coordFilter && filterObj.shapeFilters && filterObj.shapeFilters.length && filterObj.shapeFilters[0].spatialRelAndMeas) {
         filterObj.coordFilter.filterSpatial(filterObj.shapeFilters, currentLayer.getState().cfDimIndex);
         filterObj.shapeFilters = [];
-      } else {
+      } else if (filterObj.coordFilter.filter) {
         filterObj.coordFilter.filter();
       }
     });
@@ -30377,16 +30377,6 @@ function rasterDrawMixin(chart) {
           layer.filterAll(undefined, layerDimIndex);
         }
       });
-      if (coordFilters) {
-        coordFilters.forEach(function (filterObj) {
-          if (filterObj.coordFilter && !_.isEmpty(filterObj.coordFilter)) {
-            var bounds = chart.map().getBounds();
-            filterObj.coordFilter.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat }, layerDimIndex);
-          }
-          filterObj.shapeFilters = [];
-          filterObj.coordFilter = {};
-        });
-      }
       var shapes = drawEngine.sortedShapes;
       drawEngine.deleteAllShapes();
 
@@ -30396,6 +30386,16 @@ function rasterDrawMixin(chart) {
         chart.deleteFilterShape(shape);
       });
 
+      if (coordFilters && shapes.length < 1) {
+        coordFilters.forEach(function (filterObj) {
+          if (filterObj.coordFilter && !_.isEmpty(filterObj.coordFilter)) {
+            var bounds = chart.map().getBounds();
+            filterObj.coordFilter.filterST_Min_ST_Max({ lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat }, layerDimIndex);
+          }
+          filterObj.shapeFilters = [];
+          filterObj.coordFilter = {};
+        });
+      }
       if (typeof chart.useLonLat === "function") {
         // pointmap should preserve the zoom filter
         chart.setFilterBounds(chart.map().getBounds());

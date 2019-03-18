@@ -147,7 +147,7 @@ export function rasterDrawMixin(chart) {
       ) {
         filterObj.coordFilter.filterSpatial(filterObj.shapeFilters, currentLayer.getState().cfDimIndex)
         filterObj.shapeFilters = []
-      } else {
+      } else if(filterObj.coordFilter.filter) {
         filterObj.coordFilter.filter()
       }
     })
@@ -586,16 +586,6 @@ export function rasterDrawMixin(chart) {
           layer.filterAll(undefined, layerDimIndex)
         }
       })
-      if (coordFilters) {
-        coordFilters.forEach(filterObj => {
-          if (filterObj.coordFilter && !_.isEmpty(filterObj.coordFilter)) {
-            const bounds = chart.map().getBounds()
-            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat}, layerDimIndex)
-          }
-          filterObj.shapeFilters = []
-          filterObj.coordFilter = {}
-        })
-      }
       const shapes = drawEngine.sortedShapes
       drawEngine.deleteAllShapes()
 
@@ -605,6 +595,16 @@ export function rasterDrawMixin(chart) {
         chart.deleteFilterShape(shape)
       })
 
+      if (coordFilters && shapes.length < 1) {
+        coordFilters.forEach(filterObj => {
+          if (filterObj.coordFilter && !_.isEmpty(filterObj.coordFilter)) {
+            const bounds = chart.map().getBounds()
+            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat}, layerDimIndex)
+          }
+          filterObj.shapeFilters = []
+          filterObj.coordFilter = {}
+        })
+      }
       if (typeof chart.useLonLat === "function") {
         // pointmap should preserve the zoom filter
         chart.setFilterBounds(chart.map().getBounds())
