@@ -29976,10 +29976,11 @@ function rasterDrawMixin(chart) {
     // all shapes should be added to map by this time for the layer
     var layers = chart.getLayers && typeof chart.getLayers === "function" ? chart.getLayers() : [chart];
     var currentlayer = layer || layers[0]; // we only get one layer from "Layer" tab, but get all layers from "Master" tab ?
-    var layerState = currentlayer.getState();
 
     if (currentlayer) {
-      if (currentlayer.getState().master) {
+      var layerState = currentlayer.getState();
+
+      if (layerState.master) {
         // create shape from layer.filter
         layerState.filters.forEach(function (filter) {
           var shapeCopy = createShape(filter);

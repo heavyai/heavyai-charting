@@ -92,10 +92,11 @@ export function rasterDrawMixin(chart) {
         ? chart.getLayers()
         : [chart]
     const currentlayer = layer || layers[0] // we only get one layer from "Layer" tab, but get all layers from "Master" tab ?
-    const layerState = currentlayer.getState()
 
     if (currentlayer) {
-      if (currentlayer.getState().master) { // create shape from layer.filter
+      const layerState = currentlayer.getState()
+
+      if (layerState.master) { // create shape from layer.filter
         layerState.filters.forEach(filter => {
           const shapeCopy = createShape(filter)
           applyFilter(shapeCopy, currentlayer)
