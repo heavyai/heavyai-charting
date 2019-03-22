@@ -512,10 +512,19 @@ export default function rasterLayerLineMixin(_layer) {
     }
   }
 
+  _layer.filterAll = function(softFilterClear, layerDimIndex) {
+    _layer.dimension().filterAll(softFilterClear, layerDimIndex)
+  }
+
+  _layer.filterST_Min_ST_Max = function(bounds, dimIndex) {
+    _layer.dimension().filterST_Min_ST_Max(bounds, dimIndex)
+  }
+
+
   _layer._destroyLayer = function(chart) {
     const viewBoxDim = _layer.viewBoxDim()
     if (viewBoxDim) {
-      viewBoxDim.dispose()
+      viewBoxDim.dispose(_layer.getState().cfDimIndex)
     }
   }
 

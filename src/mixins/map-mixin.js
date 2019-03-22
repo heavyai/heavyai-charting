@@ -348,9 +348,9 @@ export default function mapMixin(
         }
         else if(typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) { // spatial filter on only single data source
           const viewBoxDim = layer.viewBoxDim()
-          if(viewBoxDim !== null) {
+          if(viewBoxDim !== null && layer.getState().filters.length < 1) {
             redrawall = true
-            viewBoxDim.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
+            viewBoxDim.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat}, layer.getState().cfDimIndex)
           }
         }
       })

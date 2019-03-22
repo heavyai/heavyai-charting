@@ -58,7 +58,7 @@ export function rasterDrawMixin(chart) {
   let buttonController = null
   let currXRange = null
   let currYRange = null
-  const coordFilters = new Map()
+  let coordFilters = new Map()
   let origFilterFunc = null
   let origFilterAll = null
 
@@ -78,22 +78,103 @@ export function rasterDrawMixin(chart) {
     dashPattern: [8, 2]
   }
 
-  function applyFilter() {
+  /**
+   * main function to handle applying shape geom to layer crossfiltering
+   * for single layer, we assume shapes array in mapd-charting matches with currentLayer shapes
+   * for Master layer, we create new shape geom from each filter state of the layer then use that to apply crossfilter
+   * but we don't add it to the chart and drawEngine. Decided this way because we will have a Master layer only shape filter which
+   * could be a single shape in chart and drawEngine but can be used to query all selected layers
+   * @param layer
+   */
+  function handleApplyFilterFromShape(layer) { // all shapes should be added to map by this time for the layer
+    const layers =
+      chart.getLayers && typeof chart.getLayers === "function"
+        ? chart.getLayers()
+        : [chart]
+    const currentlayer = layer || layers[0] // we only get one layer from "Layer" tab, but get all layers from "Master" tab ?
+
+    if (currentlayer) {
+      const layerState = currentlayer.getState()
+
+      if (layerState.master) { // create shape from layer.filter
+        layerState.filters.forEach(filter => {
+          const shapeCopy = createShape(filter)
+          applyFilter(shapeCopy, currentlayer)
+        })
+      }
+      else {
+        const shapes = drawEngine.sortedShapes
+        shapes.forEach(shape => {
+          applyFilter(shape, currentlayer)
+        })
+      }
+      applyCoordFilter(currentlayer)
+    }
+  }
+
+  function applyCoordFilter(currentLayer) { // function to call crossfilter dimension filter methods
+    coordFilters.forEach(filterObj => {
+      if (
+        filterObj.px && filterObj.py &&
+        filterObj.px.length &&
+        filterObj.py.length &&
+        filterObj.shapeFilters.length
+      ) {
+        const shapeFilterStmt = filterObj.shapeFilters.join(" OR ")
+        const filterStmt = filterObj.px
+          .map((e, i) => ({ px: e, py: filterObj.py[i] }))
+          .reduce(
+            (acc, e) =>
+              acc.some(e1 => e1.px === e.px && e1.py === e.py)
+                ? acc
+                : [...acc, e],
+            []
+          )
+          .map(
+            (e, i) =>
+              `(${e.px} IS NOT NULL AND ${
+                e.py
+                } IS NOT NULL AND (${shapeFilterStmt}))`
+          )
+          .join(" AND ")
+        filterObj.coordFilter.filter([filterStmt])
+        filterObj.px = []
+        filterObj.py = []
+        filterObj.shapeFilters = []
+      } else if (filterObj.coordFilter &&
+        filterObj.shapeFilters &&
+        filterObj.shapeFilters.length &&
+        filterObj.shapeFilters[0].spatialRelAndMeas
+      ) {
+        filterObj.coordFilter.filterSpatial(filterObj.shapeFilters, currentLayer.getState().cfDimIndex)
+        filterObj.shapeFilters = []
+      } else if(filterObj.coordFilter.filter) {
+        filterObj.coordFilter.filter()
+      }
+    })
+
+    chart._invokeFilteredListener(chart.filters(), false) // this will handle updating immerse layer.filters state
+  }
+
+  function applyFilter(shape, l) {
     const NUM_SIDES = 3
     const useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat()
-    const shapes = drawEngine.sortedShapes
     const LatLonCircle = getLatLonCircleClass()
 
     const layers =
       chart.getLayers && typeof chart.getLayers === "function"
         ? chart.getLayers()
         : [chart]
-    layers.forEach(layer => {
+
+    const layer = l || layers[0]
+
+    if (shape) {
       if (
+        shape && (
         !layer.layerType ||
         typeof layer.layerType !== "function" ||
         layer.layerType() === "points" ||
-        layer.layerType() === "heat"
+        layer.layerType() === "heat")
       ) {
         let crossFilter = null
         let filterObj = null
@@ -127,99 +208,97 @@ export function rasterDrawMixin(chart) {
             const py = ydim.value()[0]
             filterObj.px.push(px)
             filterObj.py.push(py)
-            shapes.forEach(shape => {
-              if (shape instanceof LatLonCircle) {
-                const pos = shape.getWorldPosition()
-                // convert from mercator to lat-lon
-                LatLonUtils.conv900913To4326(pos, pos)
-                const meters = shape.radius * 1000
-                filterObj.shapeFilters.push(
-                  `DISTANCE_IN_METERS(${pos[0]}, ${
-                    pos[1]
+            if (shape instanceof LatLonCircle) {
+              const pos = shape.getWorldPosition()
+              // convert from mercator to lat-lon
+              LatLonUtils.conv900913To4326(pos, pos)
+              const meters = shape.radius * 1000
+              filterObj.shapeFilters.push(
+                `DISTANCE_IN_METERS(${pos[0]}, ${
+                  pos[1]
                   }, ${px}, ${py}) < ${meters}`
+              )
+            } else if (shape instanceof MapdDraw.Circle) {
+              const radsqr = Math.pow(shape.radius, 2)
+              const mat = MapdDraw.Mat2d.clone(shape.globalXform)
+              MapdDraw.Mat2d.invert(mat, mat)
+              filterObj.shapeFilters.push(
+                `${createUnlikelyStmtFromShape(
+                  shape,
+                  px,
+                  py,
+                  useLonLat
+                )} AND (POWER(${mat[0]} * CAST(${px} AS FLOAT) + ${
+                  mat[2]
+                  } * CAST(${py} AS FLOAT) + ${mat[4]}, 2.0) + POWER(${
+                  mat[1]
+                  } * CAST(${px} AS FLOAT) + ${
+                  mat[3]
+                  } * CAST(${py} AS FLOAT) + ${
+                  mat[5]
+                  }, 2.0)) / ${radsqr} <= 1.0`
+              )
+            } else if (shape instanceof MapdDraw.Poly) {
+              const p0 = [0, 0]
+              const p1 = [0, 0]
+              const p2 = [0, 0]
+              const earcutverts = []
+              const verts = shape.vertsRef
+              const xform = shape.globalXform
+              verts.forEach(vert => {
+                MapdDraw.Point2d.transformMat2d(p0, vert, xform)
+                if (useLonLat) {
+                  LatLonUtils.conv900913To4326(p0, p0)
+                }
+                earcutverts.push(p0[0], p0[1])
+              })
+
+              const triangles = earcut(earcutverts)
+              const triangleTests = []
+              let idx = 0
+              for (let j = 0; j < triangles.length; j = j + NUM_SIDES) {
+                idx = triangles[j] * 2
+                MapdDraw.Point2d.set(
+                  p0,
+                  earcutverts[idx],
+                  earcutverts[idx + 1]
                 )
-              } else if (shape instanceof MapdDraw.Circle) {
-                const radsqr = Math.pow(shape.radius, 2)
-                const mat = MapdDraw.Mat2d.clone(shape.globalXform)
-                MapdDraw.Mat2d.invert(mat, mat)
+
+                idx = triangles[j + 1] * 2
+                MapdDraw.Point2d.set(
+                  p1,
+                  earcutverts[idx],
+                  earcutverts[idx + 1]
+                )
+
+                idx = triangles[j + 2] * 2
+                MapdDraw.Point2d.set(
+                  p2,
+                  earcutverts[idx],
+                  earcutverts[idx + 1]
+                )
+
+                triangleTests.push(
+                  writePointInTriangleSqlTest(p0, p1, p2, px, py, !useLonLat)
+                )
+              }
+
+              if (triangleTests.length) {
                 filterObj.shapeFilters.push(
                   `${createUnlikelyStmtFromShape(
                     shape,
                     px,
                     py,
                     useLonLat
-                  )} AND (POWER(${mat[0]} * CAST(${px} AS FLOAT) + ${
-                    mat[2]
-                  } * CAST(${py} AS FLOAT) + ${mat[4]}, 2.0) + POWER(${
-                    mat[1]
-                  } * CAST(${px} AS FLOAT) + ${
-                    mat[3]
-                  } * CAST(${py} AS FLOAT) + ${
-                    mat[5]
-                  }, 2.0)) / ${radsqr} <= 1.0`
+                  )} AND (${triangleTests.join(" OR ")})`
                 )
-              } else if (shape instanceof MapdDraw.Poly) {
-                const p0 = [0, 0]
-                const p1 = [0, 0]
-                const p2 = [0, 0]
-                const earcutverts = []
-                const verts = shape.vertsRef
-                const xform = shape.globalXform
-                verts.forEach(vert => {
-                  MapdDraw.Point2d.transformMat2d(p0, vert, xform)
-                  if (useLonLat) {
-                    LatLonUtils.conv900913To4326(p0, p0)
-                  }
-                  earcutverts.push(p0[0], p0[1])
-                })
-
-                const triangles = earcut(earcutverts)
-                const triangleTests = []
-                let idx = 0
-                for (let j = 0; j < triangles.length; j = j + NUM_SIDES) {
-                  idx = triangles[j] * 2
-                  MapdDraw.Point2d.set(
-                    p0,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
-
-                  idx = triangles[j + 1] * 2
-                  MapdDraw.Point2d.set(
-                    p1,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
-
-                  idx = triangles[j + 2] * 2
-                  MapdDraw.Point2d.set(
-                    p2,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
-
-                  triangleTests.push(
-                    writePointInTriangleSqlTest(p0, p1, p2, px, py, !useLonLat)
-                  )
-                }
-
-                if (triangleTests.length) {
-                  filterObj.shapeFilters.push(
-                    `${createUnlikelyStmtFromShape(
-                      shape,
-                      px,
-                      py,
-                      useLonLat
-                    )} AND (${triangleTests.join(" OR ")})`
-                  )
-                }
               }
-            })
+            }
           }
         }
-      } else if (!layer.layerType ||
+      } else if (shape && (!layer.layerType ||
         typeof layer.layerType !== "function" ||
-        layer.layerType() === "lines") {
+        layer.layerType() === "lines")) {
         if (layer.getState().data.length < 2) {
           let crossFilter = null
           let filterObj = null
@@ -244,94 +323,46 @@ export function rasterDrawMixin(chart) {
               coordFilters.set(crossFilter, filterObj)
               filterObj.shapeFilters = []
             }
-
-            shapes.forEach(shape => {
-              if (shape instanceof LatLonCircle) {
-                const pos = shape.getWorldPosition()
-                // convert from mercator to lat-lon
-                LatLonUtils.conv900913To4326(pos, pos)
-                const radiusInKm = shape.radius
-                const shapeFilter = {
-                  spatialRelAndMeas: "filterST_Distance",
-                  filters: {point: [pos[0], pos[1]], distanceInKm: radiusInKm}
-                }
-                
-                if (!_.find(filterObj.shapeFilters, shapeFilter)) {
-                  filterObj.shapeFilters.push(shapeFilter)
-                }
-              } else if (shape instanceof MapdDraw.Poly) {
-                const p0 = [0, 0]
-                const convertedVerts = []
-
-                const verts = shape.vertsRef
-                const xform = shape.globalXform
-                verts.forEach(vert => {
-                  MapdDraw.Point2d.transformMat2d(p0, vert, xform)
-                  if (useLonLat) {
-                    LatLonUtils.conv900913To4326(p0, p0)
-                  }
-                  convertedVerts.push([p0[0], p0[1]])
-                })
-                const shapeFilter = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
-
-                if (!_.find(filterObj.shapeFilters, shapeFilter)) {
-                  filterObj.shapeFilters.push(shapeFilter)
-                }
+            if (shape instanceof LatLonCircle) {
+              const pos = shape.getWorldPosition()
+              // convert from mercator to lat-lon
+              LatLonUtils.conv900913To4326(pos, pos)
+              const radiusInKm = shape.radius
+              const shapeFilter = {
+                spatialRelAndMeas: "filterST_Distance",
+                filters: {point: [pos[0], pos[1]], distanceInKm: radiusInKm}
               }
-            })
+
+              if (!_.find(filterObj.shapeFilters, shapeFilter)) {
+                filterObj.shapeFilters.push(shapeFilter)
+              }
+            } else if (shape instanceof MapdDraw.Poly) {
+              const p0 = [0, 0]
+              const convertedVerts = []
+
+              const verts = shape.vertsRef
+              const xform = shape.globalXform
+              verts.forEach(vert => {
+                MapdDraw.Point2d.transformMat2d(p0, vert, xform)
+                if (useLonLat) {
+                  LatLonUtils.conv900913To4326(p0, p0)
+                }
+                convertedVerts.push([p0[0], p0[1]])
+              })
+              const shapeFilter = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
+
+              if (!_.find(filterObj.shapeFilters, shapeFilter)) {
+                filterObj.shapeFilters.push(shapeFilter)
+              }
+            }
           }
         }
       }
-    })
-
-    coordFilters.forEach(filterObj => {
-      if (
-        filterObj.px && filterObj.py &&
-        filterObj.px.length &&
-        filterObj.py.length &&
-        filterObj.shapeFilters.length
-      ) {
-        const shapeFilterStmt = filterObj.shapeFilters.join(" OR ")
-        const filterStmt = filterObj.px
-          .map((e, i) => ({ px: e, py: filterObj.py[i] }))
-          .reduce(
-            (acc, e) =>
-              acc.some(e1 => e1.px === e.px && e1.py === e.py)
-                ? acc
-                : [...acc, e],
-            []
-          )
-          .map(
-            (e, i) =>
-              `(${e.px} IS NOT NULL AND ${
-                e.py
-              } IS NOT NULL AND (${shapeFilterStmt}))`
-          )
-          .join(" AND ")
-        filterObj.coordFilter.filter([filterStmt])
-        filterObj.px = []
-        filterObj.py = []
-        filterObj.shapeFilters = []
-      } else if (filterObj.coordFilter &&
-        filterObj.shapeFilters &&
-        filterObj.shapeFilters.length &&
-        filterObj.shapeFilters[0].spatialRelAndMeas
-      ) {
-        filterObj.coordFilter.filterSpatial()
-        filterObj.shapeFilters.forEach(sf => {
-          filterObj.coordFilter.filterSpatial(sf.spatialRelAndMeas, sf.filters)
-        })
-        filterObj.shapeFilters = []
-      } else {
-        filterObj.coordFilter.filter()
-      }
-    })
-
-    chart._invokeFilteredListener(chart.filters(), false)
+    }
   }
 
   function drawEventHandler() {
-    applyFilter()
+    handleApplyFilterFromShape()
     redrawAllAsync(chart.chartGroup())
   }
 
@@ -364,40 +395,61 @@ export function rasterDrawMixin(chart) {
     return chart.nonDrawFilters()
   }
 
-  function filter(filterArg) {
+  /**
+   * creates a new shape from layer filter state when creating raster layer or combining raster layer functions from immerse
+   * @param layer
+   */
+  function addShapeFromLayerState(layer) {
+    layer.getState().filters.forEach(filter => {
+      const selectOpts = {}
+      if (filter.type === "LatLonCircle") {
+        selectOpts.uniformScaleOnly = true
+        selectOpts.centerScaleOnly = true
+        selectOpts.rotatable = false
+      }
+      const newShape = createShape(filter)
+      const shapes = drawEngine.getShapesAsJSON()
+
+      if (newShape && !_.find(shapes, filter)) { // this will prevent adding a shape that is already added by drawing a new shape on the map,
+        drawEngine.addShape(newShape, selectOpts)
+        chart.addFilterShape(newShape)
+      }
+    })
+    handleApplyFilterFromShape(layer)
+  }
+
+  function createShape(filter, layer) {
+    let newShape = null
+    if (filter.type === "LatLonCircle") {
+      const LatLonCircle = getLatLonCircleClass()
+      newShape = new LatLonCircle(filter)
+    } else if (typeof MapdDraw[filter.type] !== "undefined") {
+      newShape = new MapdDraw[filter.type](filter)
+    } else {
+      origFilterFunc(filter)
+    }
+    return newShape
+  }
+
+  function filter(filterArg) { // called from immerse when creating a new layer or combining layer
     if (!arguments.length) {
       return drawEngine.getShapesAsJSON()
     }
-
     if (filterArg === null) {
       drawEngine.deleteAllShapes()
       applyFilter()
-    } else if (typeof filterArg.type !== "undefined") {
-      let newShape = null
+    } else if (typeof filterArg.type !== "undefined" || filterArg === "master") {
       if (filterArg.type === "Feature") {
         console.log(
           "WARNING - trying to load an incompatible lasso dashboard. All filters will be cleared."
         )
         return
       }
-      const selectOpts = {}
-      if (filterArg.type === "LatLonCircle") {
-        const LatLonCircle = getLatLonCircleClass()
-        newShape = new LatLonCircle(filterArg)
-        selectOpts.uniformScaleOnly = true
-        selectOpts.centerScaleOnly = true
-        selectOpts.rotatable = false
-      } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
-        newShape = new MapdDraw[filterArg.type](filterArg)
-      } else {
-        origFilterFunc(filterArg)
-      }
-
-      if (newShape) {
-        drawEngine.addShape(newShape, selectOpts)
-        chart.addFilterShape(newShape)
-        applyFilter()
-      }
+      const layers = chart.getLayers()
+      layers.forEach(layer => {
+        addShapeFromLayerState(layer)
+        coordFilters = new Map()
+      })
     } else {
       origFilterFunc(filterArg)
     }
@@ -527,24 +579,14 @@ export function rasterDrawMixin(chart) {
 
     chart.filterAll = () => {
       origFilterAll()
-      chart.getLayerNames().forEach(layerName => {
+      let layerDimIndex = null
+      chart.getLayerNames().forEach((layerName) => {
         const layer = chart.getLayer(layerName)
+        layerDimIndex = layer.getState().cfDimIndex
         if (layer.hasOwnProperty("filterAll")) {
-          layer.filterAll()
+          layer.filterAll(undefined, layerDimIndex)
         }
       })
-      if (coordFilters) {
-        coordFilters.forEach(filterObj => {
-          if (filterObj.coordFilter && 'spatialRelAndMeas' in filterObj.shapeFilters) {
-            filterObj.coordFilter.filterSpatial()
-            const bounds = chart.map().getBounds()
-            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
-          } else {
-            filterObj.coordFilter.filter()
-          }
-          filterObj.shapeFilters = []
-        })
-      }
       const shapes = drawEngine.sortedShapes
       drawEngine.deleteAllShapes()
 
@@ -554,6 +596,16 @@ export function rasterDrawMixin(chart) {
         chart.deleteFilterShape(shape)
       })
 
+      if (coordFilters && shapes.length < 1) {
+        coordFilters.forEach(filterObj => {
+          if (filterObj.coordFilter && !_.isEmpty(filterObj.coordFilter)) {
+            const bounds = chart.map().getBounds()
+            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat}, layerDimIndex)
+          }
+          filterObj.shapeFilters = []
+          filterObj.coordFilter = {}
+        })
+      }
       if (typeof chart.useLonLat === "function") {
         // pointmap should preserve the zoom filter
         chart.setFilterBounds(chart.map().getBounds())
