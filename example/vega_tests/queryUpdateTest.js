@@ -632,6 +632,189 @@ document.addEventListener("DOMContentLoaded", function init() {
           }
         }
       ]
+    },
+    {
+      "width": 1062,
+      "height": 1073,
+      "data": [
+        {
+          "name": "brands_poi_1000",
+          "sql": "SELECT pickup_longitude AS x, pickup_latitude AS y, convert_meters_to_merc_pixel_width(2000, pickup_longitude, pickup_latitude, -74.08060703564206, -73.84964107807978, 1062, 0) AS pxwidth, convert_meters_to_merc_pixel_height(2000, pickup_longitude, pickup_latitude, 40.62751366168115, 40.804388026304196, 1073, 0) AS pxheight, rowid, payment_type AS color FROM nyc_yellow_taxi_2014 WHERE payment_type IN ('CSH') AND vendor_id like 'CMT' AND MOD(rowid * 2654435761, 4294967296) < 2564"
+        },
+        {
+          "name": "brands_poi_500",
+          "sql": "SELECT dropoff_longitude AS x, dropoff_latitude AS y, convert_meters_to_merc_pixel_width(1000, dropoff_longitude, dropoff_latitude, -74.08060703564206, -73.84964107807978, 1062, 0) AS pxwidth, convert_meters_to_merc_pixel_height(1000, dropoff_longitude, dropoff_latitude, 40.62751366168115, 40.804388026304196, 1073, 0) AS pxheight, rowid, payment_type AS color FROM nyc_yellow_taxi_2014 WHERE payment_type IN ('CSH') AND vendor_id like 'CMT' AND MOD(rowid * 2654435761, 4294967296) < 2564"
+        }
+      ],
+      "scales": [
+        {
+          "name": "brands_fill_color",
+          "type": "ordinal",
+          "domain": [
+            "CSH"
+          ],
+          "range": [
+            "#00AFD7"
+          ]
+        }
+      ],
+      "projections": [
+        {
+          "name": "merc",
+          "type": "mercator",
+          "bounds": {
+            "x": [
+              -74.08060703564206,
+              -73.84964107807978
+            ],
+            "y": [
+              40.62751366168115,
+              40.804388026304196
+            ]
+          }
+        }
+      ],
+      "marks": [
+        {
+          "type": "symbol",
+          "from": {
+            "data": "brands_poi_1000"
+          },
+          "properties": {
+            "xc": {
+              "field": "x"
+            },
+            "yc": {
+              "field": "y"
+            },
+            "fillColor": {
+              "scale": "brands_fill_color",
+              "field": "color"
+            },
+            "fillOpacity": 0.7,
+            "width": {
+              "field": "pxwidth"
+            },
+            "height": {
+              "field": "pxheight"
+            },
+            "shape": "circle",
+            "strokeColor": "#FFFFFF",
+            "strokeWidth": 1.5,
+            "lineJoin": "miter",
+            "miterLimit": 10
+          },
+          "transform": {
+            "projection": "merc"
+          }
+        },
+        {
+          "type": "symbol",
+          "from": {
+            "data": "brands_poi_500"
+          },
+          "properties": {
+            "xc": {
+              "field": "x"
+            },
+            "yc": {
+              "field": "y"
+            },
+            "fillColor": {
+              "scale": "brands_fill_color",
+              "field": "color"
+            },
+            "fillOpacity": 0.7,
+            "width": {
+              "field": "pxwidth"
+            },
+            "height": {
+              "field": "pxheight"
+            },
+            "shape": "circle",
+            "strokeColor": "#FFFFFF",
+            "strokeWidth": 1.5,
+            "lineJoin": "miter",
+            "miterLimit": 10
+          },
+          "transform": {
+            "projection": "merc"
+          }
+        }
+      ]
+    },
+    {
+      "width": 1062,
+      "height": 1073,
+      "data": [
+        {
+          "name": "brands_poi_500",
+          "sql": "SELECT dropoff_longitude AS x, dropoff_latitude AS y, convert_meters_to_merc_pixel_width(1000, dropoff_longitude, dropoff_latitude, -74.08060703564206, -73.84964107807978, 1062, 0) AS pxwidth, convert_meters_to_merc_pixel_height(1000, dropoff_longitude, dropoff_latitude, 40.62751366168115, 40.804388026304196, 1073, 0) AS pxheight, rowid, payment_type AS color FROM nyc_yellow_taxi_2014 WHERE payment_type IN ('CSH') AND vendor_id like 'CMT' AND MOD(rowid * 2654435761, 4294967296) < 2564"
+        }
+      ],
+      "scales": [
+        {
+          "name": "brands_fill_color",
+          "type": "ordinal",
+          "domain": [
+            "CSH"
+          ],
+          "range": [
+            "#00AFD7"
+          ]
+        }
+      ],
+      "projections": [
+        {
+          "name": "merc",
+          "type": "mercator",
+          "bounds": {
+            "x": [
+              -74.08060703564206,
+              -73.84964107807978
+            ],
+            "y": [
+              40.62751366168115,
+              40.804388026304196
+            ]
+          }
+        }
+      ],
+      "marks": [
+        {
+          "type": "symbol",
+          "from": {
+            "data": "brands_poi_500"
+          },
+          "properties": {
+            "xc": {
+              "field": "x"
+            },
+            "yc": {
+              "field": "y"
+            },
+            "fillColor": {
+              "scale": "brands_fill_color",
+              "field": "color"
+            },
+            "fillOpacity": 0.7,
+            "width": {
+              "field": "pxwidth"
+            },
+            "height": {
+              "field": "pxheight"
+            },
+            "shape": "circle",
+            "strokeColor": "#FFFFFF",
+            "strokeWidth": 1.5,
+            "lineJoin": "miter",
+            "miterLimit": 10
+          },
+          "transform": {
+            "projection": "merc"
+          }
+        }
+      ]
     }
   ]
 
