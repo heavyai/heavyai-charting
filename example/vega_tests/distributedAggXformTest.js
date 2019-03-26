@@ -2137,10 +2137,246 @@ document.addEventListener("DOMContentLoaded", () => {
     ]
   }
 
+  // Tests using an agg xform against a single aggregate query, which means it
+  // should be rendered on the aggregator, and then mimics a zoom in immerse.
+  // The xform should re-update.
+  const distrib_agg_xform_zoom = [
+    {
+      "width": 1199,
+      "height": 908,
+      "data": [
+        {
+          "name": "heatmap_querygeoheat",
+          "sql": "SELECT reg_hex_horiz_pixel_bin_x(conv_4326_900913_x(lon),-20037507.226845037,20037507.226845052,conv_4326_900913_y(lat),-11670809.257947173,18677908.94410769,9.991666666666667,11.537382879306023,0,0,1199,908) as x, reg_hex_horiz_pixel_bin_y(conv_4326_900913_x(lon),-20037507.226845037,20037507.226845052,conv_4326_900913_y(lat),-11670809.257947173,18677908.94410769,9.991666666666667,11.537382879306023,0,0,1199,908) as y, count(*) as color FROM contributions WHERE ((contributions.lon >= -179.99998999999949 AND contributions.lon <= 179.99998999999963) AND (contributions.lat >= -71.76992084395594 AND contributions.lat <= 83.87735090331185)) GROUP BY x, y"
+        },
+        {
+          "name": "heatmap_querygeoheat_stats",
+          "source": "heatmap_querygeoheat",
+          "transform": [
+            {
+              "type": "aggregate",
+              "fields": [
+                "color",
+                "color",
+                "color",
+                "color"
+              ],
+              "ops": [
+                "min",
+                "max",
+                "avg",
+                "stddev"
+              ],
+              "as": [
+                "minimum",
+                "maximum",
+                "mean",
+                "deviation"
+              ]
+            },
+            {
+              "type": "formula",
+              "expr": "max(minimum, mean-2*deviation)",
+              "as": "mincolor"
+            },
+            {
+              "type": "formula",
+              "expr": "min(maximum, mean+2*deviation)",
+              "as": "maxcolor"
+            }
+          ]
+        }
+      ],
+      "scales": [
+        {
+          "name": "x",
+          "type": "linear",
+          "domain": [
+            -20037507.226845037,
+            20037507.226845052
+          ],
+          "range": "width"
+        },
+        {
+          "name": "y",
+          "type": "linear",
+          "domain": [
+            -11670809.257947173,
+            18677908.94410769
+          ],
+          "range": "height"
+        },
+        {
+          "name": "heat_colorgeoheat",
+          "type": "quantize",
+          "domain": {
+            "data": "heatmap_querygeoheat_stats",
+            "fields": [
+              "mincolor",
+              "maxcolor"
+            ]
+          },
+          "range": [
+            "rgb(17,95,154)",
+            "rgb(25,132,197)",
+            "rgb(34,167,240)",
+            "rgb(72,181,196)",
+            "rgb(118,198,143)",
+            "rgb(166,215,91)",
+            "rgb(201,229,47)",
+            "rgb(208,238,17)",
+            "rgb(208,244,0)"
+          ],
+          "default": "rgb(13,8,135)",
+          "nullValue": "rgb(153,153,153)"
+        }
+      ],
+      "projections": [],
+      "marks": [
+        {
+          "type": "symbol",
+          "from": {
+            "data": "heatmap_querygeoheat"
+          },
+          "properties": {
+            "shape": "hexagon-horiz",
+            "xc": {
+              "field": "x"
+            },
+            "yc": {
+              "field": "y"
+            },
+            "width": 9.991666666666667,
+            "height": 11.537382879306023,
+            "fillColor": {
+              "scale": "heat_colorgeoheat",
+              "field": "color"
+            }
+          }
+        }
+      ]
+    }, 
+    {
+      "width": 1199,
+      "height": 908,
+      "data": [
+        {
+          "name": "heatmap_querygeoheat",
+          "sql": "SELECT reg_hex_horiz_pixel_bin_x(conv_4326_900913_x(lon),-13667548.744245768,-13580561.268111456,conv_4326_900913_y(lat),4512889.7083962625,4578765.128187847,9.991666666666667,11.537382879306023,0,0,1199,908) as x, reg_hex_horiz_pixel_bin_y(conv_4326_900913_x(lon),-13667548.744245768,-13580561.268111456,conv_4326_900913_y(lat),4512889.7083962625,4578765.128187847,9.991666666666667,11.537382879306023,0,0,1199,908) as y, count(*) as color FROM contributions WHERE ((contributions.lon >= -122.77767935089113 AND contributions.lon <= -121.99625755739959) AND (contributions.lat >= 37.527492437752855 AND contributions.lat <= 37.995322986692514)) GROUP BY x, y"
+        },
+        {
+          "name": "heatmap_querygeoheat_stats",
+          "source": "heatmap_querygeoheat",
+          "transform": [
+            {
+              "type": "aggregate",
+              "fields": [
+                "color",
+                "color",
+                "color",
+                "color"
+              ],
+              "ops": [
+                "min",
+                "max",
+                "avg",
+                "stddev"
+              ],
+              "as": [
+                "minimum",
+                "maximum",
+                "mean",
+                "deviation"
+              ]
+            },
+            {
+              "type": "formula",
+              "expr": "max(minimum, mean-2*deviation)",
+              "as": "mincolor"
+            },
+            {
+              "type": "formula",
+              "expr": "min(maximum, mean+2*deviation)",
+              "as": "maxcolor"
+            }
+          ]
+        }
+      ],
+      "scales": [
+        {
+          "name": "x",
+          "type": "linear",
+          "domain": [
+            -13667548.744245768,
+            -13580561.268111456
+          ],
+          "range": "width"
+        },
+        {
+          "name": "y",
+          "type": "linear",
+          "domain": [
+            4512889.7083962625,
+            4578765.128187847
+          ],
+          "range": "height"
+        },
+        {
+          "name": "heat_colorgeoheat",
+          "type": "quantize",
+          "domain": {
+            "data": "heatmap_querygeoheat_stats",
+            "fields": [
+              "mincolor",
+              "maxcolor"
+            ]
+          },
+          "range": [
+            "rgb(17,95,154)",
+            "rgb(25,132,197)",
+            "rgb(34,167,240)",
+            "rgb(72,181,196)",
+            "rgb(118,198,143)",
+            "rgb(166,215,91)",
+            "rgb(201,229,47)",
+            "rgb(208,238,17)",
+            "rgb(208,244,0)"
+          ],
+          "default": "rgb(13,8,135)",
+          "nullValue": "rgb(153,153,153)"
+        }
+      ],
+      "projections": [],
+      "marks": [
+        {
+          "type": "symbol",
+          "from": {
+            "data": "heatmap_querygeoheat"
+          },
+          "properties": {
+            "shape": "hexagon-horiz",
+            "xc": {
+              "field": "x"
+            },
+            "yc": {
+              "field": "y"
+            },
+            "width": 9.991666666666667,
+            "height": 11.537382879306023,
+            "fillColor": {
+              "scale": "heat_colorgeoheat",
+              "field": "color"
+            }
+          }
+        }
+      ]
+    }
+  ]
+
   new MapdCon()
     .protocol("http")
     .host("localhost")
-    .port("9090")
+    .port("6278")
     .dbName("mapd")
     .user("mapd")
     .password("HyperInteractive")
@@ -2237,5 +2473,12 @@ document.addEventListener("DOMContentLoaded", () => {
       results = con.renderVega(1, JSON.stringify(multi_layer_xform_agg_and_proj))
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+
+      distrib_agg_xform_zoom.forEach((vega) => {
+        results = con.renderVega(1, JSON.stringify(vega))
+        blobUrl = "data:image/png;base64," + results.image
+        w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+      })
+
     })
 })

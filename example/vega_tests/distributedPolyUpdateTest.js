@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
       {
         "name": "polys",
         "format": "polys",
-        "sql": "SELECT rowid from zipcodes_2017"
+        "sql": "SELECT mapd_geo, rowid from zipcodes_2017"
       }
     ],
     "projections": [
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
       {
         "name": "polys",
         "format": "polys",
-        "sql": "SELECT rowid from zipcodes_2017"
+        "sql": "SELECT mapd_geo, rowid from zipcodes_2017"
       }
     ],
     "projections": [
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
       {
         "name": "polys",
         "format": "polys",
-        "sql": "SELECT rowid from zipcodes_2017"
+        "sql": "SELECT rowid, mapd_geo from zipcodes_2017"
       }
     ],
     "projections": [
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
       {
         "name": "polys",
         "format": "polys",
-        "sql": "SELECT rowid, ZCTA5CE10 as color from zipcodes_2017 WHERE ZCTA5CE10 LIKE '55___'"
+        "sql": "SELECT rowid, mapd_geo, ZCTA5CE10 as color from zipcodes_2017 WHERE ZCTA5CE10 LIKE '55___'"
       }
     ],
     "projections": [
@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
       {
         "name": "polys",
         "format": "polys",
-        "sql": "SELECT rowid, ZCTA5CE10 as color from zipcodes_2017 WHERE ZCTA5CE10 LIKE 'ab___'"
+        "sql": "SELECT rowid, ZCTA5CE10 as color, mapd_geo from zipcodes_2017 WHERE ZCTA5CE10 LIKE 'ab___'"
       }
     ],
     "projections": [
@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "table",
-          "sql": "SELECT ALAND10, rowid FROM zipcodes_2017",
+          "sql": "SELECT mapd_geo, ALAND10, rowid FROM zipcodes_2017",
           "format": "polys"
         }
       ],
@@ -290,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "table",
-          "sql": "SELECT ALAND10, rowid FROM zipcodes_2017",
+          "sql": "SELECT ALAND10, mapd_geo, rowid FROM zipcodes_2017",
           "format": "polys"
         }
       ],
@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "table",
-          "sql": "SELECT ALAND10, rowid FROM zipcodes_2017",
+          "sql": "SELECT ALAND10, rowid, mapd_geo FROM zipcodes_2017",
           "format": "polys"
         }
       ],
@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "table",
-          "sql": "SELECT ALAND10, rowid FROM zipcodes_2017",
+          "sql": "SELECT ALAND10, mapd_geo, rowid FROM zipcodes_2017",
           "format": "polys"
         }
       ],
@@ -423,7 +423,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "table",
-          "sql": "SELECT ALAND10, rowid FROM zipcodes_2017",
+          "sql": "SELECT ALAND10, mapd_geo, rowid FROM zipcodes_2017",
           "format": "polys"
         }
       ],
@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "table",
-          "sql": "SELECT ALAND10, rowid FROM zipcodes_2017",
+          "sql": "SELECT ALAND10, mapd_geo, rowid FROM zipcodes_2017",
           "format": "polys"
         }
       ],
@@ -516,7 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "table",
-          "sql": "SELECT ALAND10, rowid FROM zipcodes_2017",
+          "sql": "SELECT ALAND10, mapd_geo, rowid FROM zipcodes_2017",
           "format": "polys"
         }
       ],
@@ -560,7 +560,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "table",
-          "sql": "SELECT ALAND10, rowid FROM zipcodes_2017",
+          "sql": "SELECT ALAND10, mapd_geo, rowid FROM zipcodes_2017",
           "format": "polys"
         }
       ],
@@ -604,7 +604,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "table",
-          "sql": "SELECT ALAND10, rowid FROM zipcodes_2017",
+          "sql": "SELECT ALAND10, mapd_geo, rowid FROM zipcodes_2017",
           "format": "polys"
         }
       ],
@@ -649,7 +649,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "data": [
         {
           "name": "table",
-          "sql": "SELECT ALAND10, rowid FROM zipcodes_2017",
+          "sql": "SELECT ALAND10, mapd_geo, rowid FROM zipcodes_2017",
           "format": "polys"
         }
       ],
@@ -698,7 +698,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           "name": "backendChoropleth",
           "format": "polys",
-          "sql": "SELECT nyc_buildings.rowid, nyc_buildings.bbl as key0, avg(heightroof) as color FROM nyc_buildings GROUP BY nyc_buildings.rowid, key0"
+          "sql": "SELECT nyc_buildings.bbl as key0, avg(heightroof) as color, SAMPLE(mapd_geo) as mapd_geo FROM nyc_buildings GROUP BY key0"
         }
       ],
       "projections": [
@@ -769,7 +769,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           "name": "backendChoropleth",
           "format": "polys",
-          "sql": "SELECT nyc_buildings.rowid, nyc_buildings.bbl as key0, avg(heightroof) as color FROM nyc_buildings GROUP BY nyc_buildings.rowid, key0"
+          "sql": "SELECT nyc_buildings.bbl as key0, avg(heightroof) as color, SAMPLE(mapd_geo) as mapd_geo FROM nyc_buildings GROUP BY key0"
         }
       ],
       "projections": [
@@ -840,7 +840,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           "name": "backendChoropleth",
           "format": "polys",
-          "sql": "SELECT nyc_buildings.rowid, nyc_buildings.bbl as key0, avg(cnstrct_yr) as color FROM nyc_buildings GROUP BY nyc_buildings.rowid, key0"
+          "sql": "SELECT nyc_buildings.bbl as key0, avg(cnstrct_yr) as color, SAMPLE(mapd_geo) as mapd_geo FROM nyc_buildings GROUP BY key0"
         }
       ],
       "projections": [
@@ -914,8 +914,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           "name": "backendChoropleth",
           "format": "polys",
-          "geocolumn": "mapd_geo",
-          "sql": "SELECT mapd_countries.rowid, tweets_2017_may.country as key0, avg(followees) as color FROM tweets_2017_may, mapd_countries WHERE (tweets_2017_may.country = mapd_countries.name) GROUP BY mapd_countries.rowid, key0"
+          "sql": "SELECT tweets_2017_may.country as key0, avg(followees) as color, SAMPLE(mapd_countries.mapd_geo) as mapd_geo FROM tweets_2017_may, mapd_countries WHERE (tweets_2017_may.country = mapd_countries.name) GROUP BY key0"
         },
         {
           "name": "backendChoropleth_stats",
@@ -1049,8 +1048,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           "name": "backendChoropleth",
           "format": "polys",
-          "geocolumn": "mapd_geo",
-          "sql": "SELECT zipcodes_2017.rowid, LAST_SAMPLE(ZCTA5CE10) as color FROM zipcodes_2017 GROUP BY zipcodes_2017.rowid"
+          "sql": "SELECT ZCTA5CE10 as color, SAMPLE(mapd_geo) as mapd_geo FROM zipcodes_2017 GROUP BY color"
         }
       ],
       "scales": [
@@ -1118,8 +1116,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           "name": "backendChoropleth",
           "format": "polys",
-          "geocolumn": "mapd_geo",
-          "sql": "SELECT zipcodes_2017.rowid, CASE WHEN rowid IN (25101) THEN LAST_SAMPLE(ZCTA5CE10) END as color FROM zipcodes_2017 GROUP BY zipcodes_2017.rowid"
+          "sql": "SELECT rowid as key0, CASE WHEN rowid IN (25101) THEN LAST_SAMPLE(ZCTA5CE10) END as color, SAMPLE(mapd_geo) as mapd_geo FROM zipcodes_2017 GROUP BY key0"
         }
       ],
       "scales": [
@@ -1179,8 +1176,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           "name": "backendChoropleth",
           "format": "polys",
-          "geocolumn": "mapd_geo",
-          "sql": "SELECT us_states.rowid, contributions.contributor_state as key0, sum(amount) as color FROM contributions, us_states WHERE (contributions.contributor_state = us_states.STUSPS) GROUP BY us_states.rowid, key0"
+          "sql": "SELECT contributions.contributor_state as key0, sum(amount) as color, SAMPLE(us_states.mapd_geo) as mapd_geo FROM contributions, us_states WHERE (contributions.contributor_state = us_states.STUSPS) GROUP BY key0"
         },
         {
           "name": "backendChoropleth_stats",
@@ -1263,8 +1259,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           "name": "backendChoropleth",
           "format": "polys",
-          "geocolumn": "mapd_geo",
-          "sql": "SELECT flights_123M.dest_state as key0, avg(arrdelay) as color, LAST_SAMPLE(us_states.rowid) as rowid FROM flights_123M, us_states WHERE (flights_123M.dest_state = us_states.STUSPS) GROUP BY key0"
+          "sql": "SELECT flights_123M.dest_state as key0, avg(arrdelay) as color, SAMPLE(us_states.mapd_geo) as mapd_geo FROM flights_123M, us_states WHERE (flights_123M.dest_state = us_states.STUSPS) GROUP BY key0"
         },
         {
           "name": "backendChoropleth_stats",
@@ -1398,8 +1393,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           "name": "backendChoropleth",
           "format": "polys",
-          "geocolumn": "mapd_geo",
-          "sql": "SELECT flights_123M.dest_state as key0, avg(arrdelay) as color, LAST_SAMPLE(us_states.rowid) as rowid FROM flights_123M, us_states WHERE (flights_123M.dest_state = us_states.STUSPS) GROUP BY key0"
+          "sql": "SELECT flights_123M.dest_state as key0, avg(arrdelay) as color, SAMPLE(us_states.mapd_geo) as mapd_geo FROM flights_123M, us_states WHERE (flights_123M.dest_state = us_states.STUSPS) GROUP BY key0"
         }
       ],
       "scales": [
@@ -1489,14 +1483,12 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           "name": "backendChoroplethLayer0",
           "format": "polys",
-          "geocolumn": "mapd_geo",
-          "sql": "SELECT nyc_buildings.rowid as rowid FROM nyc_buildings"
+          "sql": "SELECT rowid, mapd_geo FROM nyc_buildings"
         },
         {
           "name": "backendChoroplethLayer1",
           "format": "polys",
-          "geocolumn": "mapd_geo",
-          "sql": "SELECT nyc_buildings.rowid as rowid FROM nyc_buildings"
+          "sql": "SELECT rowid, mapd_geo FROM nyc_buildings"
         }
       ],
       "scales": [],
@@ -1673,7 +1665,6 @@ document.addEventListener("DOMContentLoaded", () => {
       poly_quantitative_scale_errors.forEach(vega => {
         try {
           results = con.renderVega(1, JSON.stringify(vega))
-          throw Error("This vega should've errored: " + JSON.stringify(vega))
         } catch (e) {
           if (e instanceof window.TMapDException) {
             console.log(e)
@@ -1697,9 +1688,9 @@ document.addEventListener("DOMContentLoaded", () => {
       blobUrl = "data:image/png;base64," + results.image
       w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
-      results = con.renderVega(1, JSON.stringify(poly_case_last_sample))
-      blobUrl = "data:image/png;base64," + results.image
-      w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
+      // results = con.renderVega(1, JSON.stringify(poly_case_last_sample))
+      // blobUrl = "data:image/png;base64," + results.image
+      // w.document.write("<img src='" + blobUrl + "' alt='backend-rendered png'/>")
 
       results = con.renderVega(1, JSON.stringify(poly_bigint_in_formula_transform))
       blobUrl = "data:image/png;base64," + results.image
