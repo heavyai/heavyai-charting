@@ -29256,7 +29256,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       return _interactionsEnabled;
     }
 
-    var mapboxInteractionProps = ["scrollZoom", "boxZoom", "dragRotate", "dragPan", "keyboard", "doubleClickZoom", "touchZoomRotate"];
+    var mapboxInteractionProps = ["scrollZoom", "boxZoom", "dragPan", "keyboard", "doubleClickZoom"];
     _interactionsEnabled = Boolean(enableInteractions);
 
     if (_mapInitted) {
