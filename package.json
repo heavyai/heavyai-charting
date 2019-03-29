@@ -98,7 +98,7 @@
     "jsdom": "^11.7.0",
     "lodash": "^4.17.5",
     "mapd3": "^0.15.3",
-    "mocha": "^3.3.0",
+    "mocha": "^6.0.0",
     "mocha-jenkins-reporter": "^0.1.9",
     "mocha-image-compare": "^1.0.3",
     "node-sass": "4.8.3",
