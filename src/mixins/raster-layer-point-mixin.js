@@ -96,11 +96,35 @@ function getColor(color, layerName) {
   }
 }
 
+function isValidPostFilter(postFilter) {
+  const {
+    operator,
+    min,
+    max,
+    aggType,
+    value,
+    table
+  } = postFilter
+  if (value && table && aggType) {
+    if ((operator === "not between" || operator === "between") && (typeof min === "number" && !isNaN(min)) && (typeof max === "number" && !isNaN(max))) {
+      return true
+    } else if ((operator === "equals" || operator === "greater than") && (typeof min === "number" && !isNaN(min))) {
+      return true
+    } else if (operator === "greater than" && typeof min === "number" && !isNaN(min)) {
+      return true
+    } else if (operator === "less than" && typeof max === "number" && !isNaN(max)) {
+      return true
+    } else {
+      return false
+    }
+  } else { return false}
+}
+
 function getTransforms(
   table,
   filter,
   globalFilter,
-  { transform, encoding: { x, y, size, color } },
+  { transform, encoding: { x, y, size, color }, postFilters },
   lastFilteredSize
 ) {
   const transforms = []
@@ -196,6 +220,18 @@ function getTransforms(
     transforms.push({
       type: "filter",
       expr: filter
+    })
+  }
+
+  const postFilter = postFilters[0] // may change to map when we have more than one postFilter
+  if (isValidPostFilter(postFilter)) {
+    transforms.push({
+      type: "postFilter",
+      aggType: postFilter.aggType,
+      fields: [`${postFilter.table}.${postFilter.value}`],
+      ops: postFilter.operator,
+      min: postFilter.min,
+      max: postFilter.max
     })
   }
 
