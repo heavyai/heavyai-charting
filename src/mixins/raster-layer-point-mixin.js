@@ -103,9 +103,10 @@ function isValidPostFilter(postFilter) {
     max,
     aggType,
     value,
-    table
+    table,
+    custom
   } = postFilter
-  if (value && table && aggType) {
+  if (value && table && (aggType || custom)) {
     if ((operator === "not between" || operator === "between") && (typeof min === "number" && !isNaN(min)) && (typeof max === "number" && !isNaN(max))) {
       return true
     } else if ((operator === "equals" || operator === "greater than") && (typeof min === "number" && !isNaN(min))) {
@@ -227,8 +228,10 @@ function getTransforms(
   if (isValidPostFilter(postFilter)) {
     transforms.push({
       type: "postFilter",
+      table: postFilter.table,
       aggType: postFilter.aggType,
-      fields: [`${postFilter.table}.${postFilter.value}`],
+      custom: postFilter.custom,
+      fields: [postFilter.value],
       ops: postFilter.operator,
       min: postFilter.min,
       max: postFilter.max
