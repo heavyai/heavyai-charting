@@ -42252,8 +42252,8 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
     });
   }
 
-  var postFilter = postFilters[0]; // may change to map when we have more than one postFilter
-  if (isValidPostFilter(postFilter)) {
+  var postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
+  if (postFilter && isValidPostFilter(postFilter)) {
     transforms.push({
       type: "postFilter",
       table: postFilter.table,
