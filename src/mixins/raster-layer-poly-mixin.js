@@ -640,6 +640,10 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer._destroyLayer = function(chart) {
     _layer.on("filtered", null)
+    const viewBoxDim = _layer.viewBoxDim()
+    if (viewBoxDim) {
+      viewBoxDim.dispose()
+    }
     // deleteCanvas(chart)
   }
 
