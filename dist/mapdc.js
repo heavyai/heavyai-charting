@@ -43289,8 +43289,12 @@ function rasterLayerPolyMixin(_layer) {
   _layer._destroyLayer = function (chart) {
     _layer.on("filtered", null);
     var viewBoxDim = _layer.viewBoxDim();
+    var dim = _layer.dimension();
     if (viewBoxDim) {
       viewBoxDim.dispose();
+    }
+    if (dim) {
+      dim.dispose();
     }
     // deleteCanvas(chart)
   };
@@ -44275,6 +44279,7 @@ function comparisonOperator(ops, min, max) {
       return "";
   }
 }
+
 function parsePostFilter(sql, transform) {
   switch (transform.type) {
     case "postFilter":
