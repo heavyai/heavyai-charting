@@ -57,15 +57,21 @@ export function heatMapValueAccesor({ key1 }) {
 
 export function heatMapRowsLabel(d) {
   let value = this.rowsMap.get(d) || d
+  let valueIsFormattableDate = false
 
   const customFormatter = this.dateFormatter()
   if (customFormatter && d && d instanceof Date) {
+    valueIsFormattableDate = true
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0]
     }
   }
 
-  return (customFormatter && customFormatter(value, this.yAxisLabel())) || formatDataValue(value)
+  return (
+      valueIsFormattableDate &&
+      customFormatter &&
+      customFormatter(value, this.yAxisLabel())
+    ) || formatDataValue(value)
 }
 
 export function heatMapColsLabel(d) {
