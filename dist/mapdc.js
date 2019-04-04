@@ -42138,7 +42138,8 @@ function isValidPostFilter(postFilter) {
       table = postFilter.table,
       custom = postFilter.custom;
 
-  if (value && table && (aggType || custom)) {
+
+  if (value && (aggType || custom)) {
     if ((operator === "not between" || operator === "between") && typeof min === "number" && !isNaN(min) && typeof max === "number" && !isNaN(max)) {
       return true;
     } else if ((operator === "equals" || operator === "greater than") && typeof min === "number" && !isNaN(min)) {
@@ -42256,7 +42257,7 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
   if (postFilter && isValidPostFilter(postFilter)) {
     transforms.push({
       type: "postFilter",
-      table: postFilter.table,
+      table: postFilter.table || null,
       aggType: postFilter.aggType,
       custom: postFilter.custom,
       fields: [postFilter.value],
@@ -44312,6 +44313,7 @@ function comparisonOperator(ops, min, max) {
       return "";
   }
 }
+
 function parsePostFilter(sql, transform) {
   switch (transform.type) {
     case "postFilter":
