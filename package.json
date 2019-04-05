@@ -110,7 +110,9 @@
     "style-loader": "^0.13.0",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.2.0",
-    "webpack-dev-server": "^2.5.1"
+    "webpack-dev-server": "^2.5.1",
+    "callsite": "^1.0.0",
+    "html-creator": "^0.4.3"
   },
   "nyc": {
     "check-coverage": false,

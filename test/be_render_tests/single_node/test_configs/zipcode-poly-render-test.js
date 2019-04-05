@@ -1,6 +1,4 @@
-const chai = require('chai');
-chai.use(require('../../utils/chai-golden-image-match')());
-const expect = chai.expect;
+let expect = null;
 
 const base_zipcode_vega = {
   "width": 793,
@@ -44,6 +42,10 @@ const base_zipcode_vega = {
   ]
 }
 
+function jsonCopy(src) {
+  return JSON.parse(JSON.stringify(src));
+}
+
 let curr_idx = 0
 const tests = [
   {
@@ -55,16 +57,54 @@ const tests = [
         widgetId: 1,
         vega: base_zipcode_vega
       },
-      expectation: (error, result) => {
-        expect(result).to.have.property('image').that.matchesGoldenImage('poly_render_test_1.png');
+      expectation: (result) => {
+        expect(result).to.have.image.that.matchesGoldenImage('poly_render_test_1.png');
       }
-    },
-  }
+    }
+  },
+  {
+    test_name: "poly_render_test_2",
+    test_desc: "Should render all zipcode polygons red with a blue stroke of width 1px",
+    test_endpoint: {
+      command: "renderVega",
+      args: {
+        widgetId: 1,
+        vega: (() => {
+          const stroke_vega = jsonCopy(base_zipcode_vega);
+          stroke_vega.width = 500;
+          stroke_vega.marks[0].properties.strokeColor = "blue";
+          stroke_vega.marks[0].properties.strokeWidth = 1;
+          return stroke_vega;
+        })()
+      },
+      expectation: (result) => {
+        expect(result).to.have.image.that.matchesGoldenImage('poly_render_test_2.png');
+      }
+    }
+  },
+  // {
+  //   test_name: "poly_render_test_3",
+  //   test_desc: "Should properly turn off stroking and re-render red polygons",
+  //   test_endpoint: {
+  //     command: "renderVega",
+  //     args: {
+  //       widgetId: 1,
+  //       vega: base_zipcode_vega
+  //     },
+  //     expectation: (error, result) => {
+  //       expect(error).to.be.null;
+  //       expect(result).to.have.property('image').that.matchesGoldenImage('poly_render_test_2.png');
+  //     }
+  //   }
+  // }
 ]
 
-module.exports = {
-  test_desc: "Tests a handful of vega renders against the zipcode poly table.",
-  getNextTest: () => tests[curr_idx++]
+module.exports = function(chai) {
+  expect = chai.expect;
+  return {
+    test_desc: "Tests a handful of vega renders against the zipcode poly table.",
+    getNextTest: () => tests[curr_idx++]
+  }
 }
 
 //   beforeEach(function() {
