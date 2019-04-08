@@ -112,7 +112,8 @@
     "webpack": "^3.2.0",
     "webpack-dev-server": "^2.5.1",
     "callsite": "^1.0.0",
-    "html-creator": "^0.4.3"
+    "html-creator": "^0.4.3",
+    "pixelmatch": "^4.0.2"
   },
   "nyc": {
     "check-coverage": false,

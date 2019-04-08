@@ -13,7 +13,7 @@ let conn = null;
 function omnisciConnect() {
   conn = new MapdCon()
     .protocol('http')
-    .host('localhost')
+    .host('10.1.0.12')
     .port('1024')
     .dbName('mapd')
     .user('mapd')
@@ -44,10 +44,14 @@ function embedCallerArgsToResult(result, command, args) {
 function handleRenderVega(test_name, args, expectation) {
   const { widgetId, vega, options } = args;
   return new Promise((resolve, reject) => {
-    conn.renderVega(widgetId, JSON.stringify(vega), options, (error, results) => {
-      const result = error ? null : new TRenderResult(test_name, "renderVega", args, results);
-      resolve(expectation(result));
-    });
+    if (conn) {
+      conn.renderVega(widgetId, JSON.stringify(vega), options, (error, results) => {
+        const result = error ? null : new TRenderResult(test_name, "renderVega", args, results);
+        resolve(expectation(result));
+      });
+    } else {
+      reject(new Error(`Cannot run renderVega - not connected to server`));
+    }
   });
 }
 

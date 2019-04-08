@@ -5,6 +5,8 @@ const extend = require('extend');
 const crypto = require('crypto');
 const path = require('path');
 const callsite = require('callsite');
+const PNG = require('pngjs').PNG;
+const pixelmatch = require('pixelmatch');
 const htmlCreator = require('html-creator');
 const TRenderResult = require('./TRenderResult-test-helper').TRenderResult;
 
@@ -145,30 +147,16 @@ function addErrorToRow(tr, error_info, base_dir, config_dir, config_prefix, idx)
 }
 
 
-function identifyImage(img) {
-  const cmd = 'gm';
-  const args = ['identify', '-ping', '-format', '"%m %wx%h"'];
-  const options = {};
+function readImage(img) {
+  let data = null;
   if (img instanceof Uint8Array) {
-    args.push('-');
-    options.input = Buffer.from(img, 'base64');
+    data = Buffer.from(img, 'base64');
   } else {
-    args.push(img);
+    data = fs.readFileSync(img);
   }
-
-  const result = child_process.spawnSync(cmd, args, options);
-  if (result.stderr && result.stderr.length) {
-    throw new Error(`Cannot identify image: ${result.stderr.toString()}`);
-  }
-
-  const output_regex = /(\w+) (\d+)x(\d+)/
-  const match = output_regex.exec(result.stdout.toString());
-  if (!match) {
-    throw new Error(
-        `Unable to parse output for command "${cmd + ' ' + args.join(' ')}"`)
-  }
-
-  return {format: match[1], width: parseInt(match[2]), height: parseInt(match[3])};
+  const image = PNG.sync.read(data);
+  image.format = 'png';
+  return image;
 }
 
 function copyImage(img, out_file) {
@@ -180,31 +168,18 @@ function copyImage(img, out_file) {
 }
 
 function compareImages(src_img, dst_img, options) {
-  const cmd = 'gm';
-  const args = ['compare', '-metric', 'mse', src_img, dst_img];
+  const diff_img = new PNG({width: src_img.width, height: src_img.height});
+  diff_img.format = 'png';
 
   let tolerance = 0.05;
+
   // outputting the diff image
   if (typeof options === 'object') {
-    if (options.highlightColor && options.highlightColor.indexOf('"') < 0) {
-      options.highlightColor = '"' + options.highlightColor + '"';
-    }
-
     if (options.file) {
       if (typeof options.file !== 'string') {
         throw new TypeError('The path for the diff output must be a string.');
       }
-      // graphicsmagick defaults to red
-      if (options.highlight_color) {
-        args.push('-highlight-color');
-        args.push(options.highlight_color);
-      }
-      if (options.highlight_style) {
-        args.push('-highlight-style')
-        args.push(options.highlight_style)
-      }
-      args.push('-file');
-      args.push(options.file);
+      diff_img.filename = options.file;
     }
 
     if (typeof options.threshold !== 'undefined') {
@@ -216,24 +191,16 @@ function compareImages(src_img, dst_img, options) {
     throw new TypeError('The tolerance value should be a number');
   }
 
-  const result = child_process.spawnSync(cmd, args);
-  if (result.stderr && result.stderr.length) {
-    throw new Error(`Cannot run image compare: ${result.stderr.toString()}`);
+  const total_img_diff = pixelmatch(src_img.data, dst_img.data, diff_img.data, diff_img.width, diff_img.height, {threshold: tolerance});
+
+  if (diff_img.filename) {
+    fs.writeFileSync(diff_img.filename, PNG.sync.write(diff_img));
   }
 
-  const output_str = result.stdout.toString();
-  const output_regex = /Total: (\d+\.?\d*)/m;
-  const match = output_regex.exec(output_str);
-  if (!match) {
-    throw new Error(`Unable to parse output for command "${cmd} ${
-        args.join(' ')}". Ouput received: ${output_str}.`);
-  }
-
-  const total_img_diff = parseFloat(match[1]);
   return {
-    is_equal: total_img_diff <= tolerance,
+    is_equal: total_img_diff === 0,
     total_img_diff,
-    raw_output: output_str
+    diff_img
   };
 }
 
@@ -401,8 +368,8 @@ class ImageCompareReporter {
       }
       const fileprefix = crypto.randomBytes(5).toString('hex');
 
-      const src = identifyImage(image);
-      const dst = identifyImage(golden_image_name);
+      const src = readImage(image);
+      const dst = readImage(golden_image_name);
 
       src.filename =
           path.join(image_dir, fileprefix + '-src.' + src.format.toLowerCase());
@@ -417,10 +384,8 @@ class ImageCompareReporter {
 
       const compare_config = {file: diff_file};
       extend(compare_config, config);
-      const compare_result = compareImages(src.filename, dst.filename, compare_config);
-
-      const diff = identifyImage(diff_file);
-      diff.filename = diff_file;
+      const compare_result = compareImages(src, dst, compare_config);
+      const diff = compare_result.diff_img;
 
       const is_equal = src.format === dst.format &&
           src.width === dst.width && src.height === dst.height && compare_result.is_equal;
@@ -440,13 +405,13 @@ class ImageCompareReporter {
       this.assert(
           is_equal,
           `Expected input image (${src.format} ${
-              src.dimensions}) to be equal to ${golden_image_name} (${
-              dst.format} ${dst.dimensions}) within a tolerance (${
-              compare_result.total_img_diff} > ${config.threshold}).`,
+              src.width}x${src.height}) to be equal to ${golden_image_name} (${
+              dst.format} ${dst.width}x${dst.height}) (${
+              compare_result.total_img_diff} pixels with difference > ${config.threshold}).`,
           `Did not expected input image (${src.format} ${
-              src.dimensions}) to be equal to ${golden_image_name} (${
-              dst.format} ${dst.dimensions}) within a tolerance (${
-              compare_result.total_img_diff} < ${config.threshold}).`);
+              src.width}x${src.height}) to be equal to ${golden_image_name} (${
+              dst.format} ${dst.width}x${dst.height}) (${
+              compare_result.total_img_diff} pixels with a difference < ${config.threshold}).`);
     }
 
     this._initialized = true;
