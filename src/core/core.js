@@ -47,14 +47,17 @@ export function refreshDisabled(_) {
   if (!arguments.length) {
     return _refreshDisabled
   }
+  console.debug(">>> Setting refresh disabled to:", _)
   _refreshDisabled = _
 }
 
 export function disableRefresh() {
+  console.debug(">>> Disabling refresh")
   _refreshDisabled = true
 }
 
 export function enableRefresh() {
+  console.debug(">>> Enabling refresh")
   _refreshDisabled = false
 }
 

@@ -64,10 +64,21 @@ export function isEqualToRenderCount(queryCount) {
 
 export function redrawAllAsync(group, allCharts) {
   if (refreshDisabled()) {
+    console.warn(`redrawAllAsync rejected call because refresh is disabled`, {
+      group,
+      allCharts
+    })
     return Promise.resolve()
   }
 
   if (!startRenderTime()) {
+    console.warn(
+      `redrawAllAsync rejected call because startRenderTime is false`,
+      {
+        group,
+        allCharts
+      }
+    )
     return Promise.reject(
       "redrawAllAsync() is called before renderAllAsync(), please call renderAllAsync() first."
     )
@@ -78,6 +89,11 @@ export function redrawAllAsync(group, allCharts) {
   _redrawIdStack = queryGroupId
 
   if (!stackEmpty) {
+    debugger
+    console.warn(`redrawAllAsync rejected call because stack is not empty`, {
+      group,
+      allCharts
+    })
     _redrawStackEmpty = false
     return Promise.resolve()
   }
@@ -119,6 +135,10 @@ export function redrawAllAsync(group, allCharts) {
 
 export function renderAllAsync(group, allCharts) {
   if (refreshDisabled()) {
+    console.warn(`renderAllAsync rejected call because refresh is disabled`, {
+      group,
+      allCharts
+    })
     return Promise.resolve()
   }
 
@@ -127,7 +147,17 @@ export function renderAllAsync(group, allCharts) {
   _renderIdStack = queryGroupId
 
   if (!stackEmpty) {
+    console.warn(
+      `I hate computers:`,
+      allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
+    )
+    // debugger
     _renderStackEmpty = false
+    console.warn(`renderAllAsync rejected call because stack is not empty`, {
+      group,
+      allCharts,
+      _renderIdStack: JSON.parse(JSON.stringify(_renderIdStack))
+    })
     return Promise.resolve()
   }
 

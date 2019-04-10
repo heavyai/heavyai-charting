@@ -4773,14 +4773,17 @@ function refreshDisabled(_) {
   if (!arguments.length) {
     return _refreshDisabled;
   }
+  console.debug(">>> Setting refresh disabled to:", _);
   _refreshDisabled = _;
 }
 
 function disableRefresh() {
+  console.debug(">>> Disabling refresh");
   _refreshDisabled = true;
 }
 
 function enableRefresh() {
+  console.debug(">>> Enabling refresh");
   _refreshDisabled = false;
 }
 
@@ -5677,10 +5680,18 @@ function isEqualToRenderCount(queryCount) {
 
 function redrawAllAsync(group, allCharts) {
   if ((0, _core.refreshDisabled)()) {
+    console.warn("redrawAllAsync rejected call because refresh is disabled", {
+      group: group,
+      allCharts: allCharts
+    });
     return Promise.resolve();
   }
 
   if (!startRenderTime()) {
+    console.warn("redrawAllAsync rejected call because startRenderTime is false", {
+      group: group,
+      allCharts: allCharts
+    });
     return Promise.reject("redrawAllAsync() is called before renderAllAsync(), please call renderAllAsync() first.");
   }
 
@@ -5689,6 +5700,11 @@ function redrawAllAsync(group, allCharts) {
   _redrawIdStack = queryGroupId;
 
   if (!stackEmpty) {
+    debugger;
+    console.warn("redrawAllAsync rejected call because stack is not empty", {
+      group: group,
+      allCharts: allCharts
+    });
     _redrawStackEmpty = false;
     return Promise.resolve();
   }
@@ -5731,6 +5747,10 @@ function redrawAllAsync(group, allCharts) {
 
 function renderAllAsync(group, allCharts) {
   if ((0, _core.refreshDisabled)()) {
+    console.warn("renderAllAsync rejected call because refresh is disabled", {
+      group: group,
+      allCharts: allCharts
+    });
     return Promise.resolve();
   }
 
@@ -5739,7 +5759,14 @@ function renderAllAsync(group, allCharts) {
   _renderIdStack = queryGroupId;
 
   if (!stackEmpty) {
+    console.warn("I hate computers:", allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group));
+    // debugger
     _renderStackEmpty = false;
+    console.warn("renderAllAsync rejected call because stack is not empty", {
+      group: group,
+      allCharts: allCharts,
+      _renderIdStack: JSON.parse(JSON.stringify(_renderIdStack))
+    });
     return Promise.resolve();
   }
 
@@ -43685,6 +43712,7 @@ function asyncMixin(_chart) {
 
   _chart.renderAsync = function (queryGroupId, queryCount) {
     if ((0, _core.refreshDisabled)()) {
+      console.warn("Rejected parallel renderAsync call:", queryGroupId, queryCount);
       return Promise.resolve();
     }
 
@@ -43717,7 +43745,10 @@ function asyncMixin(_chart) {
   };
 
   _chart.redrawAsync = function (queryGroupId, queryCount) {
+    // console.debug(`Calling redrawAsync:`, { queryGroupId, queryCount })
+    // debugger
     if ((0, _core.refreshDisabled)()) {
+      console.warn("Rejected parallel redrawAsync call:", queryGroupId, queryCount);
       return Promise.resolve();
     }
 

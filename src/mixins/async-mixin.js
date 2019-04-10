@@ -64,6 +64,11 @@ export default function asyncMixin(_chart) {
 
   _chart.renderAsync = function(queryGroupId, queryCount) {
     if (refreshDisabled()) {
+      console.warn(
+        `Rejected parallel renderAsync call:`,
+        queryGroupId,
+        queryCount
+      )
       return Promise.resolve()
     }
 
@@ -96,7 +101,14 @@ export default function asyncMixin(_chart) {
   }
 
   _chart.redrawAsync = function(queryGroupId, queryCount) {
+    // console.debug(`Calling redrawAsync:`, { queryGroupId, queryCount })
+    // debugger
     if (refreshDisabled()) {
+      console.warn(
+        `Rejected parallel redrawAsync call:`,
+        queryGroupId,
+        queryCount
+      )
       return Promise.resolve()
     }
 
