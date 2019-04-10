@@ -94,8 +94,8 @@ export function redrawAllAsync(group, allCharts) {
       group,
       allCharts
     })
-    _redrawStackEmpty = false
-    return Promise.resolve()
+    // _redrawStackEmpty = false
+    // return Promise.resolve()
   }
 
   _startRedrawTime = new Date()
@@ -151,14 +151,14 @@ export function renderAllAsync(group, allCharts) {
       `I hate computers:`,
       allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
     )
-    // debugger
-    _renderStackEmpty = false
     console.warn(`renderAllAsync rejected call because stack is not empty`, {
       group,
       allCharts,
       _renderIdStack: JSON.parse(JSON.stringify(_renderIdStack))
     })
-    return Promise.resolve()
+    // debugger
+    // _renderStackEmpty = false
+    // return Promise.resolve()
   }
 
   _startRenderTime = new Date()
