@@ -89,7 +89,7 @@ export function redrawAllAsync(group, allCharts) {
   _redrawIdStack = queryGroupId
 
   if (!stackEmpty) {
-    debugger
+    // debugger
     console.warn(`redrawAllAsync rejected call because stack is not empty`, {
       group,
       allCharts
