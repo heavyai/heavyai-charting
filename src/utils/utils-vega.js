@@ -160,6 +160,10 @@ export function createVegaAttrMixin(
         } else {
           quantScale.domain(domainVals).range(capAttrObj.range)
           rtnVal = quantScale(input)
+
+          if (typeof rtnVal === "undefined") {
+            rtnVal = layerObj[defaultFunc]()
+          }
         }
       }
     }
