@@ -5700,13 +5700,13 @@ function redrawAllAsync(group, allCharts) {
   _redrawIdStack = queryGroupId;
 
   if (!stackEmpty) {
-    debugger;
+    // debugger
     console.warn("redrawAllAsync rejected call because stack is not empty", {
       group: group,
       allCharts: allCharts
     });
-    _redrawStackEmpty = false;
-    return Promise.resolve();
+    // _redrawStackEmpty = false
+    // return Promise.resolve()
   }
 
   _startRedrawTime = new Date();
@@ -5760,14 +5760,14 @@ function renderAllAsync(group, allCharts) {
 
   if (!stackEmpty) {
     console.warn("I hate computers:", allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group));
-    // debugger
-    _renderStackEmpty = false;
     console.warn("renderAllAsync rejected call because stack is not empty", {
       group: group,
       allCharts: allCharts,
       _renderIdStack: JSON.parse(JSON.stringify(_renderIdStack))
     });
-    return Promise.resolve();
+    // debugger
+    // _renderStackEmpty = false
+    // return Promise.resolve()
   }
 
   _startRenderTime = new Date();
