@@ -5745,7 +5745,7 @@ function renderAllAsync(group, allCharts) {
 
   _startRenderTime = new Date();
 
-  var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
+  var charts = _core.chartRegistry.listAll();
 
   var createRenderPromises = function createRenderPromises() {
     return charts.map(function (chart) {
@@ -48902,6 +48902,14 @@ function rasterLayerPolyMixin(_layer) {
 
   _layer._destroyLayer = function (chart) {
     _layer.on("filtered", null);
+    var viewBoxDim = _layer.viewBoxDim();
+    var dim = _layer.dimension();
+    if (viewBoxDim) {
+      viewBoxDim.dispose();
+    }
+    if (dim) {
+      dim.dispose();
+    }
     // deleteCanvas(chart)
   };
 
@@ -66643,15 +66651,17 @@ function heatMapValueAccesor(_ref2) {
 
 function heatMapRowsLabel(d) {
   var value = this.rowsMap.get(d) || d;
+  var valueIsFormattableDate = false;
 
   var customFormatter = this.dateFormatter();
   if (customFormatter && d && d instanceof Date) {
+    valueIsFormattableDate = true;
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0];
     }
   }
 
-  return customFormatter && customFormatter(value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
+  return valueIsFormattableDate && customFormatter && customFormatter(value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function heatMapColsLabel(d) {

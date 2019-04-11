@@ -11,9 +11,9 @@
     script-loader "^0.7.0"
     thrift "^0.10.0"
 
-"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#9f57637":
+"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#0ffd6b4":
   version "1.0.0"
-  resolved "git://github.com/omnisci/mapd-crossfilter.git#9f57637ce31a247efc930bf503cbe8412e31db5c"
+  resolved "git://github.com/omnisci/mapd-crossfilter.git#0ffd6b436eeac1259bf725319410141ed324707b"
 
 "@mapd/mapd-draw@git://github.com/omnisci/mapd-draw.git":
   version "1.1.0"
