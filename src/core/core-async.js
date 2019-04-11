@@ -133,7 +133,7 @@ export function renderAllAsync(group, allCharts) {
 
   _startRenderTime = new Date()
 
-  const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
+  const charts = chartRegistry.listAll()
 
   const createRenderPromises = () =>
     charts.map(chart => {
