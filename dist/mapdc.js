@@ -49793,7 +49793,7 @@ function parsePostFilter(sql, transform) {
       } else {
         operatorExpr = comparisonOperator(operator[transform.ops], transform.min, transform.max);
       }
-      var expr = transform.custom ? transform.fields[0] + " " + operatorExpr : transform.aggType + "(" + transform.table + "." + transform.fields[0] + ") " + operatorExpr;
+      var expr = transform.custom ? transform.fields[0] + " " + operatorExpr : transform.aggType + "(" + transform.fields[0] + ") " + operatorExpr;
       sql.having.push(expr);
     default:
       return sql;
