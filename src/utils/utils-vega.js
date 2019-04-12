@@ -32,6 +32,7 @@ export function adjustRGBAOpacity(rgba, opacity) {
 
 const ordScale = d3.scale.ordinal()
 const quantScale = d3.scale.quantize()
+const linearScale = d3.scale.linear()
 
 const capAttrMap = {
   FillColor: "color",
@@ -108,7 +109,7 @@ export function createVegaAttrMixin(
         const colorScaleName = layerName + "_" + attrName,
           colorsToUse = layerObj.defaultFillColor(),
           domainInterval = 100 / (colorsToUse.length - 1),
-          linearScale = colorsToUse.map((color, i) => i * domainInterval / 100),
+          linearColorScale = colorsToUse.map((color, i) => i * domainInterval / 100),
           range = colorsToUse.map((color, i, colorArray) => {
             const normVal = i / (colorArray.length - 1)
             let interp = Math.min(normVal / 0.65, 1.0)
@@ -119,7 +120,7 @@ export function createVegaAttrMixin(
         const rtnObj = {
           name: colorScaleName,
           type: "linear",
-          domain: linearScale,
+          domain: linearColorScale,
           range,
           accumulator: "density",
           minDensityCnt: "-2ndStdDev",
@@ -156,7 +157,12 @@ export function createVegaAttrMixin(
         }
         if (capAttrObj.type === "ordinal") {
           ordScale.domain(domainVals).range(capAttrObj.range)
-          rtnVal = ordScale(input)
+          // if color range is not in domain, it's an Other item
+          rtnVal = domainVals.indexOf(input) === -1 ? ordScale("Other") : ordScale(input)
+        } else if (Array.isArray(domainVals) && domainVals[0] === domainVals[1]) {
+          // handling case where domain min/max are the same (FE-7408)
+          linearScale.domain(domainVals).range(capAttrObj.range)
+          rtnVal = Math.round(linearScale(input))
         } else {
           quantScale.domain(domainVals).range(capAttrObj.range)
           rtnVal = quantScale(input)
