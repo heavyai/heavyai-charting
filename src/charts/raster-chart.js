@@ -14,7 +14,7 @@ import scatterMixin from "../mixins/scatter-mixin"
 import { rasterDrawMixin } from "../mixins/raster-draw-mixin"
 import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
-import * as _ from "lodash";
+import * as _ from "lodash"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _chart = null
@@ -264,19 +264,48 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     })
   }
 
-  _chart.setDataAsync((group, callback) => {
+  function getCountFromBoundingBox(chart, _layer) {
+    const mapBounds = chart.map().getBounds()
+    const geoTable = _layer.getState().encoding.geoTable
+    const geoCol = _layer.getState().encoding.geocol
+
+    const preflightQuery = `SELECT COUNT(*) as n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${ mapBounds._sw.lng } AND ST_XMin(${geoTable}.${geoCol}) <= ${ mapBounds._ne.lng } AND ST_YMax(${geoTable}.${geoCol}) >= ${ mapBounds._sw.lat } AND ST_YMin(${geoTable}.${geoCol}) <= ${ mapBounds._ne.lat }`
+
+    return chart.con().queryAsync(preflightQuery, {})
+  }
+
+  function handleRenderVega(callback) {
     const bounds = _chart.getDataRenderBounds()
     _chart._updateXAndYScales(bounds)
+
     _chart._vegaSpec = genLayeredVega(_chart)
-    const nonce = _chart
+    _chart
       .con()
-      .renderVega(
-        _chart.__dcFlag__,
-        JSON.stringify(_chart._vegaSpec),
-        {},
-        callback
-      )
-    _renderBoundsMap[nonce] = bounds
+      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
+      .then(result => {
+        _renderBoundsMap[result.nonce] = bounds
+        callback(null, result)
+      })
+      .catch(error => {
+        callback(error)
+      })
+  }
+
+  _chart.setDataAsync((group, callback) => {
+    const layers = _chart.getAllLayers()
+    const polyLayers = layers.length ? _.filter(layers, (layer) => layer.getState().mark.type === "poly" ) : null
+
+    if (polyLayers && polyLayers.length) { // add bboxCount to poly layers run sample
+      polyLayers.forEach(polyLayer => {
+        getCountFromBoundingBox(_chart, polyLayer).then(res => {
+          const count = res && res[0] && res[0].n
+          polyLayer.setState({...polyLayer.getState(), bboxCount: count})
+          handleRenderVega(callback)
+        })
+      })
+    } else {
+      handleRenderVega(callback)
+    }
   })
 
   _chart.data(group => {
@@ -534,23 +563,20 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       return
     }
 
-    return _chart.con().getResultRowForPixel(
-      _chart.__dcFlag__,
-      pixel,
-      layerObj,
-      [
-        function(err, results) {
-          if (err) {
-            throw new Error(
-              `getResultRowForPixel failed with message: ${err.message}`
-            )
-          } else {
-            return callback(results[0])
-          }
-        }
-      ],
-      Math.ceil(_popupSearchRadius * pixelRatio)
-    )
+    _chart
+      .con()
+      .getResultRowForPixelAsync(
+        _chart.__dcFlag__,
+        pixel,
+        layerObj,
+        Math.ceil(_popupSearchRadius * pixelRatio)
+      )
+      .then(results => callback(results[0]))
+      .catch(error => {
+        throw new Error(
+          `getResultRowForPixel failed with message: ${error.message}`
+        )
+      })
   }
 
   _chart.measureValue = function(value, key) {
@@ -558,9 +584,12 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     // hack to undo the popup concatenation like "AVG(arrdelay)"
     let keyTrimmed = null
     if (key) {
-       keyTrimmed = key.replace(/.*\((.*)\).*/, "$1")
+      keyTrimmed = key.replace(/.*\((.*)\).*/, "$1")
     }
-    return (keyTrimmed && customFormatter && customFormatter(value, keyTrimmed)) || value
+    return (
+      (keyTrimmed && customFormatter && customFormatter(value, keyTrimmed)) ||
+      value
+    )
   }
 
   _chart.displayPopup = function displayPopup(result, animate) {
@@ -630,19 +659,29 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     return _legend
   }
 
-  _chart.deleteLayerLegend = function(currentLayerId, deleteLayerId, prevLayerId) {
+  _chart.deleteLayerLegend = function(
+    currentLayerId,
+    deleteLayerId,
+    prevLayerId
+  ) {
     if (currentLayerId !== "master") {
-      _chart.root().selectAll(".legend")
-        .filter((d, i) => i === deleteLayerId
-            && prevLayerId === "master"
-            || !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId)
+      _chart
+        .root()
+        .selectAll(".legend")
+        .filter(
+          (d, i) =>
+            (i === deleteLayerId && prevLayerId === "master") ||
+            !(currentLayerId !== deleteLayerId && prevLayerId < deleteLayerId)
         )
         .remove()
     }
   }
 
   _chart.destroyChartLegend = function() {
-    _chart.root().selectAll(".legend").remove()
+    _chart
+      .root()
+      .selectAll(".legend")
+      .remove()
   }
 
   return anchored

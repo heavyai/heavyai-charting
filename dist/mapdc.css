@@ -867,7 +867,7 @@ body {
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.4);
     pointer-events: none; }
   .dc-chart .map-polygon-shape {
-    pointer-events: auto; }
+    pointer-events: none; }
   .dc-chart .map-popup, .dc-chart .map-point-wrap {
     width: 100%;
     height: 100%;

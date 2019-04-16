@@ -52,7 +52,6 @@
 <script>
 
   function createCharts(crossFilter, dc, config, con) {
-    debugger
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100
 
@@ -137,7 +136,7 @@
         }
       })
       .viewBoxDim(viewBoxDim)
-      .popupColumns(["rowid", "FAULT_TYPE"])
+      .popupColumns(["FAULT_TYPE", "FAULT_LENGTH"])
       .popupColumnsMapped({})
 
 
