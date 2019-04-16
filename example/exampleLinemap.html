@@ -20,9 +20,6 @@
             font-weight: bold;
             color:  #45B1E8;
         }
-        .map {
-            width: 50%
-        }
     </style>
     <title>Document</title>
 </head>
@@ -37,9 +34,15 @@
         </div>
     </div>
 </nav>
-<div class="col-xs-12 map">
-    <div class="title">US Fault Lines</div>
-    <div id="linemap"></div>
+<div class="main-container">
+    <div class="col-xs-8">
+        <div class="title">LINEMAP CHART</div>
+        <div id="linemap"></div>
+    </div>
+    <div class="col-xs-4">
+        <div class="title">BAR CHART</div>
+        <div id="barChart"></div>
+    </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
@@ -48,9 +51,12 @@
 
 <script>
 
-  function createLinemapChart(crossFilter, dc, config, con) {
-    const w = document.documentElement.clientWidth - 30;
-    const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
+  function createCharts(crossFilter, dc, config, con) {
+    debugger
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100
+
+    // Linemap Chart
     const parent = document.getElementById("linemap");
     const mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
 
@@ -92,7 +98,7 @@
     const LinemapChart = dc.rasterChart(parent, true, null, mapboxgl)
       .con(con)
       .height(h)
-      .width(w)
+      .width(w*2/3)
       .mapUpdateInterval(750)
       .mapStyle('json/dark-v8.json')
       .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
@@ -154,25 +160,56 @@
       function displayPopupWithData (event) {
         LinemapChart.getClosestResult(event.point, LinemapChart.displayPopup)
       }
-      dc.renderAllAsync()
 
+      // Draw filter
+      LinemapChart
+        .addDrawControl()
+        .coordFilter(crossFilter.filter())
+
+      dc.renderAllAsync()
     })
+
+    // Bar Chart
+    var colorScheme = ["#ea5545", "#bdcf32", "#b33dc6", "#ef9b20", "#d4e666"]
+
+    var rowChartDimension = crossFilter.dimension("FAULT_TYPE");
+    var rowChartGroup = rowChartDimension.group().reduceCount();
+
+    var dcBarChart =  dc.rowChart('#barChart')
+      .height(h-30)
+      .width(w*1/3)
+      .elasticX(true)
+      .cap(20)
+      .othersGrouper(false)
+      .ordinalColors(colorScheme)
+      .measureLabelsOn(true)
+      .dimension(rowChartDimension)
+      .group(rowChartGroup)
+      .autoScroll(true);
+
+    dc.renderAllAsync()
 
     /*--------------------------RESIZE EVENT------------------------------*/
     /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
 
-    window.addEventListener("resize", _.debounce(reSizeAll, 500));
+    window.addEventListener("resize", _.debounce(reSizeAll, 100));
 
     function reSizeAll(){
-      const w = document.documentElement.clientWidth - 30;
-      const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+      var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100
 
       LinemapChart.map().resize();
       LinemapChart.isNodeAnimate = false;
       LinemapChart
-        .width(w)
+        .width(w*2/3)
         .height(h)
-        .render();
+        .render()
+
+      dcBarChart
+        .width(w*1/3)
+        .height(h*0/9)
+        .render()
+
 
       dc.redrawAllAsync();
     }
@@ -196,7 +233,7 @@
       .connect(function(error, con) {
         crossfilter.crossfilter(con, config.table)
           .then(function(cf) {
-            createLinemapChart(cf, dc, config, con)
+            createCharts(cf, dc, config, con)
           })
         ;
       });

@@ -423,7 +423,6 @@
           other: "All Others"
         }
         function customMultiLineAccessor(chart, color) {
-          debugger
           function aliasDefaultOtherDomain(defaultOtherDomain, numDomains, isMulti) {
             if (isMulti) {
               return CHARTS_DEFAULT_OTHER_ALIASES.other
@@ -433,7 +432,6 @@
               : defaultOtherDomain
           }
           return function colorAccessor(d) {
-            console.log(d)
             return chart.colorDomain().includes(chart.series().selected()[d.layer])
               ? chart.series().keys()[d.layer]
               : aliasDefaultOtherDomain(
@@ -443,7 +441,7 @@
               )
           }
         }
-        console.log('color Scale ', colorScale)
+
           var dcTimeChart = dc.lineChart('.chart3-example')
             .width(w)
             .height(h/2.5)
@@ -460,8 +458,6 @@
               });
 
           /* Set the x and y axis formatting with standard d3 functions */
-
-        debugger
 
         dcTimeChart.colorAccessor(customMultiLineAccessor(dcTimeChart, color)).colors(colorScale)
         // dcTimeChart.series().group(crossFilter.dimension("flight_month").group())
