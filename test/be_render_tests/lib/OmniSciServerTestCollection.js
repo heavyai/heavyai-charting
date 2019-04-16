@@ -7,10 +7,6 @@ const path = require('path');
 const prefix_mgr = new PrefixMgr();
 class OmniSciServerTestCollection {
   constructor(collection_desc, image_compare_reporter, server_config, options) {
-    const {
-      test_prefix = `${path.basename(PathUtils.getCallerFile(), '.js')}`
-    } = options;
-    this.test_prefix = prefix_mgr.getPrefix(test_prefix);
     this.desc = collection_desc;
 
     this.state = new OmniSciServerTestStateStack(
@@ -18,7 +14,7 @@ class OmniSciServerTestCollection {
       server_config,
       options
     );
-    this.test_groups = [];
+    this.test_groups = new Map();
 
     const that = this;
 
@@ -46,18 +42,22 @@ class OmniSciServerTestCollection {
     return this.state.timeout;
   }
 
-  addTestGroup(test_group) {
+  addTestGroup(test_name, test_group) {
+    if (!(test_name instanceof String) || typeof test_name !== 'string') {
+      test_group = test_name;
+      test_name = path.basename(PathUtils.getCallerFile(), '.js');
+    }
     if (!(test_group instanceof OmniSciServerTestGroup)) {
       throw new Error(
         `Only ${OmniSciServerTestGroup.name} classes are currently supported test groups. Test group is of type ${typeof test_group}`
       );
     }
-    this.test_groups.push(test_group);
+    this.test_groups.set(prefix_mgr.getPrefix(test_name), test_group);
   }
 
-  runMochaTests() {
+  runMochaTests(test_name) {
     const that = this;
-    describe(`${this.test_prefix}: ${this.desc}`, function() {
+    describe(`${test_name ? test_name + ": " : ""}${this.desc}`, function() {
       this.timeout(that.timeout);
       before(that.beforeCallback);
       after(that.afterCallback);
@@ -69,8 +69,9 @@ class OmniSciServerTestCollection {
         afterEach(that.afterEachCallback);
       }
 
-      for (let i = 0; i < that.test_groups.length; ++i) {
-        that.test_groups[i].runMochaTests(that.state);
+      const itr = that.test_groups[Symbol.iterator]();
+      for (const [ test_name, test_group ] of itr) {
+        test_group.runMochaTests(test_name, that.state);
       }
     });
   }

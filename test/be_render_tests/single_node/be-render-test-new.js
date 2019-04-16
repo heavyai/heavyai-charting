@@ -3,6 +3,8 @@ const chaiOmniSciServerTestPlugins = require('../chai_plugins/ChaiOmniSciServerT
 chaiOmniSciServerTestPlugins.addChaiPlugins(chai);
 const OmniSciServerTestCollection = require('../lib/OmniSciServerTestCollection');
 const ImageCompareReporter = require('../utils/ImageCompareReporter');
+const PathUtils = require('../utils/PathUtils');
+const path = require('path');
 
 const image_compare_reporter = new ImageCompareReporter(chai, {
   golden_img_dir: './golden_images'
@@ -22,7 +24,7 @@ const test_collection = new OmniSciServerTestCollection(
   image_compare_reporter,
   server_config,
   {
-    timeout: 5000
+    timeout: 8000
   }
 );
 
@@ -30,7 +32,10 @@ require('./poly_render_tests/zipcode_test')(test_collection, chai.expect);
 require('./poly_render_tests/nyc_buildings_test')(test_collection, chai.expect);
 require('./poly_render_tests/various_poly_tests')(test_collection, chai.expect);
 
-test_collection.runMochaTests();
+// passing 0 as the argument to getCallerFile() to get the filename of this file
+// whereas getCallerFile is intended to be used to get the filename of the caller of
+// this function.
+test_collection.runMochaTests(path.basename(PathUtils.getCallerFile(0), '.js'));
 
 after(function() {
   image_compare_reporter.reportErrors();
