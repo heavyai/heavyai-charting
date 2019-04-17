@@ -101,6 +101,7 @@ module.exports = function(test_collection, expect) {
     test_description: `Tests a handful of various poly renders testing different specializations`,
     golden_img_dir: `./golden_images`
   });
+  test_collection.addTestGroup(test_grp);
 
   test_grp.addTest(
     `Tests an empty geo-join query with a vega transform. Should render an empty ${vega.width}x${vega.height} image`,
@@ -471,5 +472,144 @@ module.exports = function(test_collection, expect) {
     })
   );
 
-  test_collection.addTestGroup(test_grp);
+  // Note that the following test is attempting to perform a test with certain server settings (i.e. render-poly-cache-bytes: 300MB).
+  // It'd be useful here to verify such settings somehow or enforce them.
+  // Verification/enforcement would be better done as part of a BE-test suite since launching the server from the client
+  // is not possible.
+  test_grp.addTest(
+    `Tests rendering multiple poly layers using the nyc_buildings table. By using the nyc_buildings table, both layers should use overflow buffers (requires render-poly-cache-bytes server setting to be < 300MB)`,
+    new RenderVegaTest({
+        "width": 1051,
+        "height": 1057,
+        "data": [
+          {
+            "name": "backendChoroplethLayer0",
+            "format": "polys",
+            "geocolumn": "mapd_geo",
+            "sql": "SELECT nyc_buildings.rowid as rowid FROM nyc_buildings"
+          },
+          {
+            "name": "backendChoroplethLayer1",
+            "format": "polys",
+            "geocolumn": "mapd_geo",
+            "sql": "SELECT nyc_buildings.rowid as rowid FROM nyc_buildings"
+          }
+        ],
+        "scales": [],
+        "projections": [
+          {
+            "name": "mercator_map_projection",
+            "type": "mercator",
+            "bounds": {
+              "x": [-74.01063572788345,-73.98152242299047],
+              "y": [40.73545650059788,40.75763878211973]
+            }
+          }
+        ],
+        "marks": [
+          {
+            "type": "polys",
+            "from": {
+              "data": "backendChoroplethLayer0"
+            },
+            "properties": {
+              "x": {
+                "field": "x"
+              },
+              "y": {
+                "field": "y"
+              },
+              "fillColor": {
+                "value": "rgba(234,85,69,0.0)"
+              },
+              "strokeColor": "red",
+              "strokeWidth": 4,
+              "lineJoin": "round"
+            },
+            "transform": {
+              "projection": "mercator_map_projection"
+            }
+          },
+          {
+            "type": "polys",
+            "from": {
+              "data": "backendChoroplethLayer1"
+            },
+            "properties": {
+              "x": {
+                "field": "x"
+              },
+              "y": {
+                "field": "y"
+              },
+              "fillColor": {
+                "value": "rgba(244,106,155,0.0)"
+              },
+              "strokeColor": "blue",
+              "strokeWidth": 2,
+              "lineJoin": "round"
+            },
+            "transform": {
+              "projection": "mercator_map_projection"
+            }
+          }
+        ]
+      }, (result) => expect(result).to.matchGoldenImage('various_poly_test_05.png')));
+
+  test_grp.addTest(`Validates that legacy in-situ poly rendering still works for backwards compatibility`, new RenderVegaTest({
+    "width": 1117,
+    "height": 1116,
+    "data": [
+      {
+        "name": "polys_projected3",
+        "format": "polys",
+        "sql": "SELECT rowid, mapd_geo, MapD_GeoPolyBoundsPtr(mapd_geo) AS mapd_geo_bounds, MapD_GeoPolyRenderGroup(mapd_geo) AS mapd_geo_render_group, NAME as color FROM mapd_states WHERE (ST_XMax(mapd_geo) >= -171.94850212956538 AND ST_XMin(mapd_geo) <= -64.23798693816666 AND ST_YMax(mapd_geo) >= 4.89805464614507 AND ST_YMin(mapd_geo) <= 74.02453067764594)",
+        "enableInSituPolys": true
+      }
+    ],
+    "projections": [
+      {
+        "name": "projection",
+        "type": "mercator",
+        "bounds": {
+          "x": [-171.94850212956538,-64.23798693816666],
+          "y": [4.89805464614507,74.02453067764594]
+        }
+      }
+    ],
+    "scales": [
+      {
+        "name": "polys_fillColor",
+        "type": "ordinal",
+        "domain": [
+          "California",
+          "Florida",
+          "Texas",
+          "Kentucky",
+          "Minnesota",
+          "Colorado"
+        ],
+        "range": ["blue","red","yellow","green","cyan","magenta"],
+        "default": "gray",
+        "nullValue": "#cacaca "
+      }
+    ],
+    "marks": [
+      {
+        "type": "polys",
+        "from": {"data": "polys_projected3"},
+        "properties": {
+          "x": {"field": "x"},
+          "y": {"field": "y"},
+          "fillOpacity": 0.8,
+          "fillColor": {"scale": "polys_fillColor","field": "color"},
+          "strokeColor": "green",
+          "strokeWidth": 1,
+          "lineJoin": "miter",
+          "miterLimit": 10
+        },
+        "transform": {"projection": "projection"}
+      }
+    ]
+  }, (result) => expect(result).to.matchGoldenImage('various_poly_test_06.png')));
 };

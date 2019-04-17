@@ -4,7 +4,6 @@ const TRenderResult = require('./TestResultWrapper').TRenderResult;
 
 class RenderVegaTest extends OmniSciServerTest {
   constructor(opts, expectation) {
-    super(expectation);
     if (opts instanceof String || typeof opts === 'string') {
       // a vega was passed
       opts = { vega: JSON.parse(opts) };
@@ -13,22 +12,28 @@ class RenderVegaTest extends OmniSciServerTest {
     }
 
     const { widget_id = 1, vega, compression_level = 3, query_id = null } = opts;
-    this._args = {
+    const args = {
       widget_id,
       vega: JsonUtils.jsonCopy(vega),
       options: { compression_level, query_id }
     };
+    super(args, expectation);
   }
 
+  get command() { return 'renderVega'; }
+  get widget_id() { return this.args.widget_id; }
+  get vega() { return this.args.vega; }
+  get options() { return this.args.options; }
+
   createResultWrapper(test_name, result) {
-    return new TRenderResult(test_name, 'renderVega', this._args, result);
+    return new TRenderResult(test_name, this.command, this._args, result);
   }
 
   executeTest(connection, callback) {
-    connection.renderVega(
-      this._args.widget_id,
-      JSON.stringify(this._args.vega),
-      this._args.options,
+    connection[this.command](
+      this.widget_id,
+      JSON.stringify(this.vega),
+      this.options,
       callback
     );
   }

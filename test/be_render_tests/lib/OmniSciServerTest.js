@@ -1,6 +1,17 @@
+const JsonUtils = require('../utils/JsonUtils');
+
 class OmniSciServerTest {
-  constructor(expectation_callback) {
+  constructor(args, expectation_callback) {
+    this._args = JsonUtils.jsonCopy(args);
     this.expectation = expectation_callback;
+  }
+
+  get command() {
+    throw new Error(`${this.command.name} must be overridden by derived class ${this.constructor.name}`)
+  }
+
+  get args() {
+    return this._args;
   }
 
   runMochaTest(test_name, test_state) {

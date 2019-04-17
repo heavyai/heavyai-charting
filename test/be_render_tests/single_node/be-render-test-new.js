@@ -32,6 +32,11 @@ require('./poly_render_tests/zipcode_test')(test_collection, chai.expect);
 require('./poly_render_tests/nyc_buildings_test')(test_collection, chai.expect);
 require('./poly_render_tests/various_poly_tests')(test_collection, chai.expect);
 
+require('./symbol_tests/symbol_update_fill_stroke_test')(test_collection, chai.expect);
+require('./symbol_tests/symbol_update_data_test')(test_collection, chai.expect);
+
+require('./query_update_tests/accum_update_data_test')(test_collection, chai.expect);
+
 // passing 0 as the argument to getCallerFile() to get the filename of this file
 // whereas getCallerFile is intended to be used to get the filename of the caller of
 // this function.
