@@ -2,9 +2,44 @@ const JsonUtils = require('../utils/JsonUtils');
 const OmniSciServerTest = require('./OmniSciServerTest');
 const TPixelTableRowResult = require('./TestResultWrapper').TPixelTableRowResult;
 
+function validate_pixel(pixel) {
+  if (!(pixel instanceof Object) || pixel.constructor !== Object) {
+    throw new Error(
+      `The pixel argument is not a valid pixel. Expecting an object with an x/y properties, but got a ${pixel.constructor
+        ? pixel.constructor.name
+        : typeof pixel}`
+    );
+  }
+
+  const check_dimension = (prop) => {
+    if (typeof pixel[prop] !== 'number') {
+      throw new Error(
+        `The pixel argument ${JSON.stringify(
+          pixel
+        )} must have a '${prop}' property and it must be a number.`
+      );
+    }
+  };
+
+  check_dimension('x');
+  check_dimension('y');
+}
+
+function validate_table_col_names(table_col_names) {
+  if (!(table_col_names instanceof Object) || table_col_names.constructor !== Object) {
+    throw new Error(
+      `The table_col_names argument is not a valid table_col_names. Expecting an object, but got a ${table_col_names.constructor
+        ? table_col_names.constructor.name
+        : typeof table_col_names}`
+    );
+  }
+}
+
 class GetResultRowForPixelTest extends OmniSciServerTest {
   constructor(opts, expectation) {
     const { widget_id = 1, pixel, table_col_names, pixel_radius = 2 } = opts;
+    validate_pixel(pixel);
+    validate_table_col_names(table_col_names);
     const args = {
       widget_id,
       pixel: JsonUtils.jsonCopy(pixel),
