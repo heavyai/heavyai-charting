@@ -20,13 +20,21 @@ class RenderVegaTest extends OmniSciServerTest {
     super(args, expectation);
   }
 
-  get command() { return 'renderVega'; }
-  get widget_id() { return this.args.widget_id; }
-  get vega() { return this.args.vega; }
-  get options() { return this.args.options; }
+  get command() {
+    return 'renderVega';
+  }
+  get widget_id() {
+    return this.args.widget_id;
+  }
+  get vega() {
+    return this.args.vega;
+  }
+  get options() {
+    return this.args.options;
+  }
 
   createResultWrapper(test_name, result) {
-    return new TRenderResult(test_name, this.command, this._args, result);
+    return new TRenderResult(test_name, this.command, this.args, result);
   }
 
   executeTest(connection, callback) {

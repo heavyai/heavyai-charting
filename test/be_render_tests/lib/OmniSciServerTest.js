@@ -1,4 +1,5 @@
 const JsonUtils = require('../utils/JsonUtils');
+const TMapDException = require('./TestResultWrapper').TMapDException;
 
 class OmniSciServerTest {
   constructor(args, expectation_callback) {
@@ -7,7 +8,9 @@ class OmniSciServerTest {
   }
 
   get command() {
-    throw new Error(`${this.command.name} must be overridden by derived class ${this.constructor.name}`)
+    throw new Error(
+      `${this.command.name} must be overridden by derived class ${this.constructor.name}`
+    );
   }
 
   get args() {
@@ -19,7 +22,11 @@ class OmniSciServerTest {
     return new Promise((resolve, reject) => {
       that.executeTest(test_state.server_connection, (error, result) => {
         if (error) {
-          resolve(that.expectation(new TMapDException(test_name)));
+          resolve(
+            that.expectation(
+              new TMapDException(test_name, that.command, that.args, error)
+            )
+          );
         } else {
           resolve(that.expectation(that.createResultWrapper(test_name, result)));
         }
