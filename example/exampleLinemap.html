@@ -36,11 +36,11 @@
 </nav>
 <div class="main-container">
     <div class="col-xs-8">
-        <div class="title">LINEMAP CHART</div>
+        <div class="title">LINEMAP CHART - TIGER National Roads</div>
         <div id="linemap"></div>
     </div>
     <div class="col-xs-4">
-        <div class="title">BAR CHART</div>
+        <div class="title">BAR CHART - TIGER Natioanal Roads</div>
         <div id="barChart"></div>
     </div>
 </div>
@@ -71,15 +71,15 @@
       "rgba(189,207,50,1)",
       "rgba(179,61,198,1)",
       "rgba(239,155,32,1)",
+      "rgba(135,188,69,1)",
+      "rgba(244,106,155,1)",
+      "rgba(172,229,199,1)",
+      "rgba(237,225,91,1)",
+      "rgba(131,109,197,1)",
+      "rgba(134,216,127,1)",
       "rgba(39,174,239,1)"
     ]
-    const colorDomain = [
-      "Fault",
-      "Normal Fault",
-      "Low Angle Detachment Fault",
-      "Fault Inferred",
-      "Other"
-    ]
+    const colorDomain = ["003","001","019","013","005","037","031","029","017","083","Other"]
 
     // map bounding box filtering dimension
     const viewBoxDim = crossFilter.dimension(config.geoMeasure)
@@ -115,7 +115,7 @@
         transform: {
           sample: true,
           limit: 100000,
-          tableSize: 1391
+          tableSize: 71215983
         },
         mark: {
           type: "lines",
@@ -136,7 +136,7 @@
         }
       })
       .viewBoxDim(viewBoxDim)
-      .popupColumns(["FAULT_TYPE", "FAULT_LENGTH"])
+      .popupColumns(["FULLNAME"])
       .popupColumnsMapped({})
 
 
@@ -144,8 +144,8 @@
       // This will zoom to data extent
       chart.zoomToLocation({
         bounds: {
-          sw: [-124.70126, 27.937431],
-          ne: [-66.82674, 49.467835]
+          sw: [-128.998369, 30.266939],
+          ne: [-98.891716, 39.736412]
         }
       })
       chart
@@ -171,7 +171,7 @@
     // Bar Chart
     var colorScheme = ["#ea5545", "#bdcf32", "#b33dc6", "#ef9b20", "#d4e666"]
 
-    var rowChartDimension = crossFilter.dimension("FAULT_TYPE");
+    var rowChartDimension = crossFilter.dimension("COUNTYFP");
     var rowChartGroup = rowChartDimension.group().reduceCount();
 
     var dcBarChart =  dc.rowChart('#barChart')
@@ -217,9 +217,9 @@
 
   function init() {
     const config = {
-      table: "us_faults",
+      table: "us_county_level_tiger_edges_2018",
       geoMeasure: "omnisci_geo",
-      colorMeasure: "FAULT_TYPE"
+      colorMeasure: "COUNTYFP"
     }
 
     const con = new MapdCon()
