@@ -117,11 +117,9 @@ export default function mapMixin(
     const mapboxInteractionProps = [
       "scrollZoom",
       "boxZoom",
-      "dragRotate",
       "dragPan",
       "keyboard",
       "doubleClickZoom",
-      "touchZoomRotate"
     ]
     _interactionsEnabled = Boolean(enableInteractions)
 
@@ -277,8 +275,8 @@ export default function mapMixin(
     mapboxlogo.target = "_blank"
     mapboxlogo.innerHTML = "Mapbox"
 
-    const existingLogo = document.getElementsByClassName('mapbox-maplogo')
-    if(existingLogo.length  ) {
+    const existingLogo = (_map && _map._container) ? _map._container.querySelector('.mapbox-maplogo') : null;
+    if(!existingLogo) {
       _chart.root()[0][0].appendChild(mapboxlogo)
     }
 

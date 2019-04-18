@@ -20,9 +20,6 @@
             font-weight: bold;
             color:  #45B1E8;
         }
-        .map {
-            width: 50%
-        }
     </style>
     <title>Document</title>
 </head>
@@ -37,9 +34,15 @@
         </div>
     </div>
 </nav>
-<div class="col-xs-12 map">
-    <div class="title">US Fault Lines</div>
-    <div id="linemap"></div>
+<div class="main-container">
+    <div class="col-xs-7">
+        <div class="title">LINEMAP CHART - TIGER California Roads</div>
+        <div id="linemap"></div>
+    </div>
+    <div class="col-xs-5">
+        <div class="title">BAR CHART - TIGER California Roads</div>
+        <div id="barChart"></div>
+    </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
@@ -48,9 +51,11 @@
 
 <script>
 
-  function createLinemapChart(crossFilter, dc, config, con) {
-    const w = document.documentElement.clientWidth - 30;
-    const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
+  function createCharts(crossFilter, dc, config, con) {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100
+
+    // Linemap Chart
     const parent = document.getElementById("linemap");
     const mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
 
@@ -62,28 +67,25 @@
 
 
     const colorRange = [
-      "rgba(234,85,69,1)",
-      "rgba(189,207,50,1)",
-      "rgba(179,61,198,1)",
-      "rgba(239,155,32,1)",
-      "rgba(39,174,239,1)"
-    ]
-    const colorDomain = [
-      "Fault",
-      "Normal Fault",
-      "Low Angle Detachment Fault",
-      "Fault Inferred",
-      "Other"
+      "#115f9a",
+      "#1984c5",
+      "#22a7f0",
+      "#48b5c4",
+      "#76c68f",
+      "#a6d75b",
+      "#c9e52f",
+      "#d0ee11",
+      "#d0f400"
     ]
 
     // map bounding box filtering dimension
     const viewBoxDim = crossFilter.dimension(config.geoMeasure)
 
     const bounds = {
-      lonMin: -124.70126,
-      lonMax: -66.82674,
-      latMin: 27.937431,
-      latMax: 49.467835
+      lonMin: -134.05007498694482,
+      lonMax: -104.56313893710016,
+      latMin: 32.52883199254458,
+      latMax: 48.000786965713246
     }
 
     // crossfilter method to count number of lines within the map bounding box
@@ -92,9 +94,9 @@
     const LinemapChart = dc.rasterChart(parent, true, null, mapboxgl)
       .con(con)
       .height(h)
-      .width(w)
+      .width(w*0.6)
       .mapUpdateInterval(750)
-      .mapStyle('json/dark-v8.json')
+      .mapStyle('mapbox://styles/mapbox/light-v8')
       .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
       .popupSearchRadius(2)
       .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
@@ -109,8 +111,8 @@
         }],
         transform: {
           sample: true,
-          limit: 100000,
-          tableSize: 1391
+          limit: 300000,
+          tableSize: 4289471
         },
         mark: {
           type: "lines",
@@ -119,10 +121,13 @@
         encoding: {
           size: "auto",
           color: {
-            type: "ordinal",
+            type: "quantitative",
             field: config.colorMeasure,
-            colorMeasureAggType: "# Unique",
-            domain: colorDomain,
+            aggregate: {
+              field: config.colorMeasure,
+              type: "average"},
+            colorMeasureAggType: "Avg",
+            domain: "auto",
             range: colorRange,
             legend: {title: config.colorMeasure + ' ['+config.table+']', open: true}
           },
@@ -131,7 +136,7 @@
         }
       })
       .viewBoxDim(viewBoxDim)
-      .popupColumns(["rowid", "FAULT_TYPE"])
+      .popupColumns(["FULLNAME", "ZIPL"])
       .popupColumnsMapped({})
 
 
@@ -139,8 +144,8 @@
       // This will zoom to data extent
       chart.zoomToLocation({
         bounds: {
-          sw: [-124.70126, 27.937431],
-          ne: [-66.82674, 49.467835]
+          sw: [-128.998369, 30.266939],
+          ne: [-98.891716, 39.736412]
         }
       })
       chart
@@ -154,25 +159,56 @@
       function displayPopupWithData (event) {
         LinemapChart.getClosestResult(event.point, LinemapChart.displayPopup)
       }
-      dc.renderAllAsync()
 
+      // Draw filter
+      LinemapChart
+        .addDrawControl()
+        .coordFilter(crossFilter.filter())
+
+      dc.renderAllAsync()
     })
+
+    // Bar Chart
+    var colorScheme = ["#ea5545", "#bdcf32", "#b33dc6", "#ef9b20", "#d4e666"]
+
+    var rowChartDimension = crossFilter.dimension("COUNTYFP");
+    var rowChartGroup = rowChartDimension.group().reduceCount();
+
+    var dcBarChart =  dc.rowChart('#barChart')
+      .height(h-30)
+      .width(w*0.4)
+      .elasticX(true)
+      .cap(20)
+      .othersGrouper(false)
+      .ordinalColors(colorScheme)
+      .measureLabelsOn(true)
+      .dimension(rowChartDimension)
+      .group(rowChartGroup)
+      .autoScroll(true);
+
+    dc.renderAllAsync()
 
     /*--------------------------RESIZE EVENT------------------------------*/
     /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
 
-    window.addEventListener("resize", _.debounce(reSizeAll, 500));
+    window.addEventListener("resize", _.debounce(reSizeAll, 100));
 
     function reSizeAll(){
-      const w = document.documentElement.clientWidth - 30;
-      const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+      var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 50
+      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100
 
       LinemapChart.map().resize();
       LinemapChart.isNodeAnimate = false;
       LinemapChart
-        .width(w)
+        .width(w*0.6)
         .height(h)
-        .render();
+        .render()
+
+      dcBarChart
+        .width(w*0.4)
+        .height(h-30)
+        .render()
+
 
       dc.redrawAllAsync();
     }
@@ -181,9 +217,9 @@
 
   function init() {
     const config = {
-      table: "us_faults",
+      table: "ca_roads_tiger",
       geoMeasure: "omnisci_geo",
-      colorMeasure: "FAULT_TYPE"
+      colorMeasure: "COUNTYFP"
     }
 
     const con = new MapdCon()
@@ -196,7 +232,7 @@
       .connect(function(error, con) {
         crossfilter.crossfilter(con, config.table)
           .then(function(cf) {
-            createLinemapChart(cf, dc, config, con)
+            createCharts(cf, dc, config, con)
           })
         ;
       });

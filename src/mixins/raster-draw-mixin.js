@@ -3,6 +3,7 @@ import LassoButtonGroupController, {
   getLatLonCircleClass
 } from "./ui/lasso-tool-ui"
 import earcut from "earcut"
+import * as _ from "lodash"
 import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 import { redrawAllAsync } from "../core/core-async"
 
@@ -97,6 +98,7 @@ export function rasterDrawMixin(chart) {
         let crossFilter = null
         let filterObj = null
         const group = layer.group()
+
         if (group) {
           crossFilter = group.getCrossfilter()
         } else {
@@ -215,11 +217,76 @@ export function rasterDrawMixin(chart) {
             })
           }
         }
+      } else if (!layer.layerType ||
+        typeof layer.layerType !== "function" ||
+        layer.layerType() === "lines") {
+        if (layer.getState().data.length < 2) {
+          let crossFilter = null
+          let filterObj = null
+          const group = layer.group()
+
+          if (group) {
+            crossFilter = group.getCrossfilter()
+          } else {
+            const dim = layer.viewBoxDim()
+            if (dim) {
+              crossFilter = dim
+            } else {
+              crossFilter = layer.crossfilter()
+            }
+          }
+          if (crossFilter) {
+            filterObj = coordFilters.get(crossFilter)
+            if (!filterObj) {
+              filterObj = {
+                coordFilter: crossFilter,
+              }
+              coordFilters.set(crossFilter, filterObj)
+              filterObj.shapeFilters = []
+            }
+
+            shapes.forEach(shape => {
+              if (shape instanceof LatLonCircle) {
+                const pos = shape.getWorldPosition()
+                // convert from mercator to lat-lon
+                LatLonUtils.conv900913To4326(pos, pos)
+                const radiusInKm = shape.radius
+                const shapeFilter = {
+                  spatialRelAndMeas: "filterST_Distance",
+                  filters: {point: [pos[0], pos[1]], distanceInKm: radiusInKm}
+                }
+                
+                if (!_.find(filterObj.shapeFilters, shapeFilter)) {
+                  filterObj.shapeFilters.push(shapeFilter)
+                }
+              } else if (shape instanceof MapdDraw.Poly) {
+                const p0 = [0, 0]
+                const convertedVerts = []
+
+                const verts = shape.vertsRef
+                const xform = shape.globalXform
+                verts.forEach(vert => {
+                  MapdDraw.Point2d.transformMat2d(p0, vert, xform)
+                  if (useLonLat) {
+                    LatLonUtils.conv900913To4326(p0, p0)
+                  }
+                  convertedVerts.push([p0[0], p0[1]])
+                })
+                const shapeFilter = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
+
+                if (!_.find(filterObj.shapeFilters, shapeFilter)) {
+                  filterObj.shapeFilters.push(shapeFilter)
+                }
+              }
+            })
+          }
+        }
       }
     })
 
     coordFilters.forEach(filterObj => {
       if (
+        filterObj.px && filterObj.py &&
         filterObj.px.length &&
         filterObj.py.length &&
         filterObj.shapeFilters.length
@@ -244,6 +311,16 @@ export function rasterDrawMixin(chart) {
         filterObj.coordFilter.filter([filterStmt])
         filterObj.px = []
         filterObj.py = []
+        filterObj.shapeFilters = []
+      } else if (filterObj.coordFilter &&
+        filterObj.shapeFilters &&
+        filterObj.shapeFilters.length &&
+        filterObj.shapeFilters[0].spatialRelAndMeas
+      ) {
+        filterObj.coordFilter.filterSpatial()
+        filterObj.shapeFilters.forEach(sf => {
+          filterObj.coordFilter.filterSpatial(sf.spatialRelAndMeas, sf.filters)
+        })
         filterObj.shapeFilters = []
       } else {
         filterObj.coordFilter.filter()
@@ -458,8 +535,14 @@ export function rasterDrawMixin(chart) {
       })
       if (coordFilters) {
         coordFilters.forEach(filterObj => {
+          if (filterObj.coordFilter && 'spatialRelAndMeas' in filterObj.shapeFilters) {
+            filterObj.coordFilter.filterSpatial()
+            const bounds = chart.map().getBounds()
+            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
+          } else {
+            filterObj.coordFilter.filter()
+          }
           filterObj.shapeFilters = []
-          filterObj.coordFilter.filter()
         })
       }
       const shapes = drawEngine.sortedShapes
