@@ -35,12 +35,12 @@
     </div>
 </nav>
 <div class="main-container">
-    <div class="col-xs-8">
-        <div class="title">LINEMAP CHART - TIGER National Roads</div>
+    <div class="col-xs-7">
+        <div class="title">LINEMAP CHART - TIGER California Roads</div>
         <div id="linemap"></div>
     </div>
-    <div class="col-xs-4">
-        <div class="title">BAR CHART - TIGER Natioanal Roads</div>
+    <div class="col-xs-5">
+        <div class="title">BAR CHART - TIGER California Roads</div>
         <div id="barChart"></div>
     </div>
 </div>
@@ -67,28 +67,25 @@
 
 
     const colorRange = [
-      "rgba(234,85,69,1)",
-      "rgba(189,207,50,1)",
-      "rgba(179,61,198,1)",
-      "rgba(239,155,32,1)",
-      "rgba(135,188,69,1)",
-      "rgba(244,106,155,1)",
-      "rgba(172,229,199,1)",
-      "rgba(237,225,91,1)",
-      "rgba(131,109,197,1)",
-      "rgba(134,216,127,1)",
-      "rgba(39,174,239,1)"
+      "#115f9a",
+      "#1984c5",
+      "#22a7f0",
+      "#48b5c4",
+      "#76c68f",
+      "#a6d75b",
+      "#c9e52f",
+      "#d0ee11",
+      "#d0f400"
     ]
-    const colorDomain = ["003","001","019","013","005","037","031","029","017","083","Other"]
 
     // map bounding box filtering dimension
     const viewBoxDim = crossFilter.dimension(config.geoMeasure)
 
     const bounds = {
-      lonMin: -124.70126,
-      lonMax: -66.82674,
-      latMin: 27.937431,
-      latMax: 49.467835
+      lonMin: -134.05007498694482,
+      lonMax: -104.56313893710016,
+      latMin: 32.52883199254458,
+      latMax: 48.000786965713246
     }
 
     // crossfilter method to count number of lines within the map bounding box
@@ -97,9 +94,9 @@
     const LinemapChart = dc.rasterChart(parent, true, null, mapboxgl)
       .con(con)
       .height(h)
-      .width(w*2/3)
+      .width(w*0.6)
       .mapUpdateInterval(750)
-      .mapStyle('json/dark-v8.json')
+      .mapStyle('mapbox://styles/mapbox/light-v8')
       .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
       .popupSearchRadius(2)
       .useGeoTypes(true) // need for projecting geo column using "mercator_map_projection"
@@ -114,8 +111,8 @@
         }],
         transform: {
           sample: true,
-          limit: 100000,
-          tableSize: 71215983
+          limit: 300000,
+          tableSize: 4289471
         },
         mark: {
           type: "lines",
@@ -124,10 +121,13 @@
         encoding: {
           size: "auto",
           color: {
-            type: "ordinal",
+            type: "quantitative",
             field: config.colorMeasure,
-            colorMeasureAggType: "# Unique",
-            domain: colorDomain,
+            aggregate: {
+              field: config.colorMeasure,
+              type: "average"},
+            colorMeasureAggType: "Avg",
+            domain: "auto",
             range: colorRange,
             legend: {title: config.colorMeasure + ' ['+config.table+']', open: true}
           },
@@ -136,7 +136,7 @@
         }
       })
       .viewBoxDim(viewBoxDim)
-      .popupColumns(["FULLNAME"])
+      .popupColumns(["FULLNAME", "ZIPL"])
       .popupColumnsMapped({})
 
 
@@ -176,7 +176,7 @@
 
     var dcBarChart =  dc.rowChart('#barChart')
       .height(h-30)
-      .width(w*1/3)
+      .width(w*0.4)
       .elasticX(true)
       .cap(20)
       .othersGrouper(false)
@@ -200,13 +200,13 @@
       LinemapChart.map().resize();
       LinemapChart.isNodeAnimate = false;
       LinemapChart
-        .width(w*2/3)
+        .width(w*0.6)
         .height(h)
         .render()
 
       dcBarChart
-        .width(w*1/3)
-        .height(h*0/9)
+        .width(w*0.4)
+        .height(h-30)
         .render()
 
 
@@ -217,7 +217,7 @@
 
   function init() {
     const config = {
-      table: "us_county_level_tiger_edges_2018",
+      table: "ca_roads_tiger",
       geoMeasure: "omnisci_geo",
       colorMeasure: "COUNTYFP"
     }
