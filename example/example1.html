@@ -401,6 +401,46 @@
            *  the rest of the data accordingly
            *
            */
+        var dep_city_domain = ["Feb", "Mar", "Apr", "May", "Jun"]
+        var dep_city_colors  = ["#bdcf32", "#ea5545", "#b33dc6", "#ef9b20", "#87bc45"]
+          const color = {
+            type: "custom",
+            key: "blue",
+            column: "dest_city",
+            customKey: "key1",
+            customDomain: ["Feb", "Mar", "Apr", "May", "Jun"],
+            customRange: ["#bdcf32", "#ea5545", "#b33dc6", "#ef9b20", "#87bc45"],
+            isCustom: true,
+            lineStyles: ["solid", "solid", "solid", "solid", "solid"]
+          }
+
+        const colorScale = d3.scale
+          .ordinal()
+          .domain(dep_city_domain)
+          .range(dep_city_colors)
+         const CHARTS_DEFAULT_OTHER_ALIASES = {
+          default: "Other",
+          other: "All Others"
+        }
+        function customMultiLineAccessor(chart, color) {
+          function aliasDefaultOtherDomain(defaultOtherDomain, numDomains, isMulti) {
+            if (isMulti) {
+              return CHARTS_DEFAULT_OTHER_ALIASES.other
+            }
+            return numDomains
+              ? CHARTS_DEFAULT_OTHER_ALIASES.default
+              : defaultOtherDomain
+          }
+          return function colorAccessor(d) {
+            return chart.colorDomain().includes(chart.series().selected()[d.layer])
+              ? chart.series().keys()[d.layer]
+              : aliasDefaultOtherDomain(
+                color.defaultOtherDomain,
+                color.customDomain.length,
+                chart.isMulti()
+              )
+          }
+        }
 
           var dcTimeChart = dc.lineChart('.chart3-example')
             .width(w)
@@ -419,6 +459,10 @@
 
           /* Set the x and y axis formatting with standard d3 functions */
 
+        dcTimeChart.colorAccessor(customMultiLineAccessor(dcTimeChart, color)).colors(colorScale)
+        // dcTimeChart.series().group(crossFilter.dimension("flight_month").group())
+        //
+        dcTimeChart.series().selected(dep_city_domain)
           dcTimeChart
             .x(d3.time.scale.utc().domain([timeChartBounds.minimum,timeChartBounds.maximum]))
             .yAxis().ticks(5);

@@ -10488,6 +10488,7 @@ function adjustRGBAOpacity(rgba, opacity) {
 
 var ordScale = _d3.default.scale.ordinal();
 var quantScale = _d3.default.scale.quantize();
+var linearScale = _d3.default.scale.linear();
 
 var capAttrMap = {
   FillColor: "color",
@@ -10531,7 +10532,7 @@ function createVegaAttrMixin(layerObj, attrName, defaultVal, nullVal, useScale, 
         var _colorScaleName = layerName + "_" + attrName,
             colorsToUse = layerObj.defaultFillColor(),
             domainInterval = 100 / (colorsToUse.length - 1),
-            linearScale = colorsToUse.map(function (color, i) {
+            linearColorScale = colorsToUse.map(function (color, i) {
           return i * domainInterval / 100;
         }),
             range = colorsToUse.map(function (color, i, colorArray) {
@@ -10544,7 +10545,7 @@ function createVegaAttrMixin(layerObj, attrName, defaultVal, nullVal, useScale, 
         var _rtnObj = {
           name: _colorScaleName,
           type: "linear",
-          domain: linearScale,
+          domain: linearColorScale,
           range: range,
           accumulator: "density",
           minDensityCnt: "-2ndStdDev",
@@ -10576,7 +10577,12 @@ function createVegaAttrMixin(layerObj, attrName, defaultVal, nullVal, useScale, 
         }
         if (capAttrObj.type === "ordinal") {
           ordScale.domain(domainVals).range(capAttrObj.range);
-          rtnVal = ordScale(input);
+          // if color range is not in domain, it's an Other item
+          rtnVal = domainVals.indexOf(input) === -1 ? ordScale("Other") : ordScale(input);
+        } else if (Array.isArray(domainVals) && domainVals[0] === domainVals[1]) {
+          // handling case where domain min/max are the same (FE-7408)
+          linearScale.domain(domainVals).range(capAttrObj.range);
+          rtnVal = Math.round(linearScale(input));
         } else {
           quantScale.domain(domainVals).range(capAttrObj.range);
           rtnVal = quantScale(input);
@@ -49799,7 +49805,7 @@ function parsePostFilter(sql, transform) {
       } else {
         operatorExpr = comparisonOperator(operator[transform.ops], transform.min, transform.max);
       }
-      var expr = transform.custom ? transform.fields[0] + " " + operatorExpr : transform.aggType + "(" + transform.table + "." + transform.fields[0] + ") " + operatorExpr;
+      var expr = transform.custom ? transform.fields[0] + " " + operatorExpr : transform.aggType + "(" + transform.fields[0] + ") " + operatorExpr;
       sql.having.push(expr);
     default:
       return sql;
