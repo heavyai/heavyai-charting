@@ -112,8 +112,6 @@ function isValidPostFilter(postFilter) {
       return true
     } else if ((operator === "equals" || operator === "greater than") && (typeof min === "number" && !isNaN(min))) {
       return true
-    } else if (operator === "greater than" && typeof min === "number" && !isNaN(min)) {
-      return true
     } else if (operator === "less than" && typeof max === "number" && !isNaN(max)) {
       return true
     } else {
