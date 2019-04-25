@@ -159,8 +159,8 @@ export default function rasterLayerPolyMixin(_layer) {
     if (doJoin()) {
       transforms.push({
         type: "project",
-        expr: `SAMPLE(${rowIdTable}.rowid)`,
-        as: "rowid"
+        expr: `SAMPLE(${geoTable}.${geocol})`,
+        as: geocol
       })
     } else {
       transforms.push({
