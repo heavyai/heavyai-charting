@@ -25,11 +25,12 @@ export class LockTracker {
   // Utility function to check if a render/redraw should start for the given
   // group or "all".
   shouldStart(group, all) {
+    // Conditions are checked in this order:
     // 1. If currently rendering/redrawing all, return false.
     // 2. If we're requesting a render/redraw all and *anything* is currently
     //    rendering/redrawing, return false.
-    // 3. Otherwise, if the requested group is rendering/redrawing, return
-    //    false.
+    // 3. If the requested group is rendering/redrawing, return false.
+    // 4. Otherwise, return true.
     return !this.all && (all ? this.groups.size === 0 : !this.groups.has(group))
   }
 
