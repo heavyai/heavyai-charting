@@ -47707,13 +47707,39 @@ function getColor(color, layerName) {
   }
 }
 
+function isValidPostFilter(postFilter) {
+  var operator = postFilter.operator,
+      min = postFilter.min,
+      max = postFilter.max,
+      aggType = postFilter.aggType,
+      value = postFilter.value,
+      table = postFilter.table,
+      custom = postFilter.custom;
+
+
+  if (value && (aggType || custom)) {
+    if ((operator === "not between" || operator === "between") && typeof min === "number" && !isNaN(min) && typeof max === "number" && !isNaN(max)) {
+      return true;
+    } else if ((operator === "equals" || operator === "greater than") && typeof min === "number" && !isNaN(min)) {
+      return true;
+    } else if (operator === "less than" && typeof max === "number" && !isNaN(max)) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
 function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
   var transform = _ref.transform,
       _ref$encoding = _ref.encoding,
       x = _ref$encoding.x,
       y = _ref$encoding.y,
       size = _ref$encoding.size,
-      color = _ref$encoding.color;
+      color = _ref$encoding.color,
+      postFilters = _ref.postFilters;
 
   var transforms = [];
 
@@ -47800,6 +47826,20 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
     transforms.push({
       type: "filter",
       expr: filter
+    });
+  }
+
+  var postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
+  if (postFilter && isValidPostFilter(postFilter)) {
+    transforms.push({
+      type: "postFilter",
+      table: postFilter.table || null,
+      aggType: postFilter.aggType,
+      custom: postFilter.custom,
+      fields: [postFilter.value],
+      ops: postFilter.operator,
+      min: postFilter.min,
+      max: postFilter.max
     });
   }
 
