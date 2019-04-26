@@ -49805,7 +49805,7 @@ function parsePostFilter(sql, transform) {
       } else {
         operatorExpr = comparisonOperator(operator[transform.ops], transform.min, transform.max);
       }
-      var expr = transform.custom ? transform.fields[0] + " " + operatorExpr : transform.aggType + "(" + transform.fields[0] + ") " + operatorExpr;
+      var expr = transform.custom ? transform.fields[0] + " " + operatorExpr : transform.aggType + "(" + transform.table + "." + transform.fields[0] + ") " + operatorExpr;
       sql.having.push(expr);
     default:
       return sql;
@@ -68783,10 +68783,12 @@ function numberChart(parent, chartGroup) {
 
     var wrapper = _chart.root().html("").append("div").attr("class", "number-chart-wrapper");
 
-    var TEXT_MARGINS = 64;
-    var chartWidth = _chart.width() - TEXT_MARGINS;
-    var chartHeight = _chart.height() - TEXT_MARGINS;
-    var fontSize = _utils.utils.getFontSizeFromWidth(formattedValue, chartWidth, chartHeight);
+    var TEXT_PADDING_RATIO = 5;
+    var chartWidth = _chart.width();
+    var chartHeight = _chart.height();
+    var wrapperWidth = chartWidth - chartWidth / 100 * TEXT_PADDING_RATIO;
+    var wrapperHeight = chartHeight - chartHeight / 100 * TEXT_PADDING_RATIO;
+    var fontSize = _utils.utils.getFontSizeFromWidth(formattedValue, wrapperWidth, wrapperHeight);
     wrapper.append("span").attr("class", "number-chart-number").style("color", _chart.getColor).style("font-size", fontSize + "px").html(formattedValue);
 
     return _chart;

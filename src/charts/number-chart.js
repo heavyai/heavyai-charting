@@ -70,10 +70,12 @@ export default function numberChart(parent, chartGroup) {
       .append("div")
       .attr("class", "number-chart-wrapper")
 
-    const TEXT_MARGINS = 64
-    const chartWidth = _chart.width() - TEXT_MARGINS
-    const chartHeight = _chart.height() - TEXT_MARGINS
-    const fontSize = utils.getFontSizeFromWidth(formattedValue, chartWidth, chartHeight)
+    const TEXT_PADDING_RATIO = 5
+    const chartWidth = _chart.width()
+    const chartHeight = _chart.height()
+    const wrapperWidth = chartWidth - chartWidth / 100 * TEXT_PADDING_RATIO
+    const wrapperHeight = chartHeight - chartHeight / 100 * TEXT_PADDING_RATIO
+    const fontSize = utils.getFontSizeFromWidth(formattedValue, wrapperWidth, wrapperHeight)
     wrapper
       .append("span")
       .attr("class", "number-chart-number")
