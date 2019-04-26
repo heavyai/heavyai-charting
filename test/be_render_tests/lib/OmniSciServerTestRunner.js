@@ -1,13 +1,15 @@
 const OmniSciServerTest = require('./OmniSciServerTest');
+const MochaOptions = require('./MochaOptions');
 
 class OmniSciServerTestRunner {
-  constructor(test_description, endpoints_to_test) {
+  constructor(test_description, endpoints_to_test, options) {
     this.desc = test_description;
     if (!Array.isArray(endpoints_to_test)) {
       endpoints_to_test = [ endpoints_to_test ];
     }
 
     this.endpoints = [];
+    this._mocha_opts = new MochaOptions(options);
 
     const that = this;
     endpoints_to_test.forEach((endpoint_to_test, idx) => {
@@ -18,6 +20,13 @@ class OmniSciServerTestRunner {
       }
       that.endpoints.push(endpoint_to_test);
     });
+
+    this._execute_endpoints = async function(test_name, test_state) {
+      const test_endpoints = that.endpoints;
+      for (let i = 0; i < test_endpoints.length; ++i) {
+        await test_endpoints[i].runMochaTest(test_name, test_state);
+      }
+    };
   }
 
   get description() {
@@ -26,11 +35,9 @@ class OmniSciServerTestRunner {
 
   runMochaTest(test_name, test_state) {
     const that = this;
-    it(`${test_name}: ${this.desc}`, async function() {
-      const test_endpoints = that.endpoints;
-      for (let i = 0; i < test_endpoints.length; ++i) {
-        await test_endpoints[i].runMochaTest(test_name, test_state);
-      }
+    it(`${test_name}: ${this.desc}`, function() {
+      that._mocha_opts.applyOptions(this);
+      return that._execute_endpoints(test_name, test_state);
     });
   }
 }

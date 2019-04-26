@@ -1,5 +1,6 @@
 const OmniSciServerTestStateStack = require('./OmniSciServerTestStateStack');
 const OmniSciServerTestGroup = require('./OmniSciServerTestGroup');
+const MochaOptions = require('./MochaOptions');
 const PathUtils = require('../utils/PathUtils');
 const PrefixMgr = require('./PrefixMgr');
 const path = require('path');
@@ -15,12 +16,12 @@ class OmniSciServerTestCollection {
       options
     );
     this.test_groups = new Map();
+    this._mocha_opts = new MochaOptions(options);
 
     const that = this;
 
     // before callback would be run before any of the tests in this collection are performed
     this.beforeCallback = async function() {
-      this.timeout(that.timeout);
       await that.state.server_connection.connectAsync();
     };
 
@@ -38,10 +39,6 @@ class OmniSciServerTestCollection {
     return this.state.server_connection;
   }
 
-  get timeout() {
-    return this.state.timeout;
-  }
-
   addTestGroup(test_name, test_group) {
     if (!(test_name instanceof String) || typeof test_name !== 'string') {
       test_group = test_name;
@@ -57,8 +54,9 @@ class OmniSciServerTestCollection {
 
   runMochaTests(test_name) {
     const that = this;
-    describe(`${test_name ? test_name + ": " : ""}${this.desc}`, function() {
-      this.timeout(that.timeout);
+    describe(`${test_name ? test_name + ': ' : ''}${this.desc}`, function() {
+      that._mocha_opts.applyOptions(this);
+
       before(that.beforeCallback);
       after(that.afterCallback);
 

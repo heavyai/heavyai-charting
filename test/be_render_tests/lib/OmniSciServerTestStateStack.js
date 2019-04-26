@@ -34,16 +34,9 @@ class OmniSciServerTestState {
       password: this._conn.password()[0]
     };
 
-    const { timeout = 5000 } = options;
-
-    this._timeout = timeout;
     this._image_compare_reporer_config = JsonUtils.jsonCopy(
       image_compare_reporter.config
     );
-  }
-
-  get timeout() {
-    return this._timeout;
   }
 
   get server_config() {
@@ -66,10 +59,6 @@ class OmniSciServerTestStateStack {
     ];
   }
 
-  get timeout() {
-    return this._state_stack[this._state_stack.length - 1].timeout;
-  }
-
   get server_config() {
     return this._state_stack[this._state_stack.length - 1].server_config;
   }
@@ -86,11 +75,10 @@ class OmniSciServerTestStateStack {
     return this._state_stack.length;
   }
 
-  pushState(mocha_state, options) {
+  pushState(options) {
     const {
       server_config = this.server_connection,
-      image_compare_reporter_config = this.image_compare_reporter.config,
-      timeout = 5000
+      image_compare_reporter_config = this.image_compare_reporter.config
     } = options;
 
     this._state_stack.push(
@@ -99,15 +87,12 @@ class OmniSciServerTestStateStack {
     // need to set the image reporter config after pushing the new state
     // as the prev config is stored in the state so it can be restored.
     this.image_compare_reporter.config = image_compare_reporter_config;
-
-    mocha_state.timeout(this.timeout);
     return this._state_stack[this._state_stack.length - 1];
   }
 
-  popState(mocha_state) {
+  popState() {
     const popped_state = this._state_stack.pop();
     this.image_compare_reporter.config = popped_state._image_compare_reporer_config;
-    mocha_state.timeout(this.timeout);
     return popped_state;
   }
 }
