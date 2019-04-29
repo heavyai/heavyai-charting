@@ -4,6 +4,8 @@ let _renderId = 0
 let _redrawId = 0
 let _renderCount = 0
 let _redrawCount = 0
+let _renderIdStack = null
+let _redrawIdStack = null
 let _renderStackEmpty = true
 let _redrawStackEmpty = true
 let _startRenderTime = null
@@ -11,82 +13,6 @@ let _startRedrawTime = null
 
 let _groupAll = {}
 let _lastFilteredSize = {}
-
-export class LockTracker {
-  all = false
-  groups = new Set()
-  pendingAll = false
-  pendingGroups = new Set()
-
-  constructor(renderOrRedrawFunc) {
-    this.renderOrRedrawFunc = renderOrRedrawFunc
-  }
-
-  // Utility function to check if a render/redraw should start for the given
-  // group or "all".
-  shouldStart(group, all) {
-    // Conditions are checked in this order:
-    // 1. If currently rendering/redrawing all, return false.
-    // 2. If we're requesting a render/redraw all and *anything* is currently
-    //    rendering/redrawing, return false.
-    // 3. If the requested group is rendering/redrawing, return false.
-    // 4. Otherwise, return true.
-    return !this.all && (all ? this.groups.size === 0 : !this.groups.has(group))
-  }
-
-  // Call at the start of the render/redraw function. Returns true if the
-  // render/redraw should happen, otherwise, false.
-  request(group, all) {
-    // If it's safe to start this render/redraw, do it and return true
-    if (this.shouldStart(group, all)) {
-      if (all) {
-        this.all = true
-      } else {
-        this.groups.add(group)
-      }
-      return true
-    }
-
-    // If we already have a pending render/redraw all, do nothing
-    if (!this.pendingAll) {
-      if (all) {
-        // record request to render/redraw everything
-        this.pendingAll = true
-        this.pendingGroups.clear()
-      } else {
-        // record request to render/redraw this group
-        this.pendingGroups.add(group)
-      }
-    }
-
-    // Return false: render/redraw should not happen
-    return false
-  }
-
-  // Call when the render/redraw finishes. Returns a function, which returns a
-  // Promise so it can be chained with the Promise returned by render/redraw.
-  finished(group, all) {
-    const that = this
-    return function() {
-      if (all) {
-        that.all = false
-      } else {
-        that.groups.delete(group)
-      }
-
-      if (that.pendingAll) {
-        that.pendingAll = false
-        return that.renderOrRedrawFunc(null, true)
-      } else if (that.pendingGroups.delete(group)) {
-        return that.renderOrRedrawFunc(group)
-      }
-      return Promise.resolve()
-    }
-  }
-}
-
-const renderAllTracker = new LockTracker(renderAllAsync)
-const redrawAllTracker = new LockTracker(redrawAllAsync)
 
 export function startRenderTime() {
   return _startRenderTime
@@ -98,6 +24,7 @@ export function startRedrawTime() {
 
 export function resetRedrawStack() {
   _redrawCount = 0
+  _redrawIdStack = null
 }
 
 export function redrawStackEmpty(isRedrawStackEmpty) {
@@ -122,11 +49,13 @@ export function isEqualToRedrawCount(queryCount) {
 
 export function incrementRenderStack() {
   const queryGroupId = _renderId++
+  _renderIdStack = queryGroupId
   return queryGroupId
 }
 
 export function resetRenderStack() {
   _renderCount = 0
+  _renderIdStack = null
 }
 
 export function isEqualToRenderCount(queryCount) {
@@ -144,12 +73,15 @@ export function redrawAllAsync(group, allCharts) {
     )
   }
 
-  if (!redrawAllTracker.request(group, allCharts)) {
+  const queryGroupId = _redrawId++
+  const stackEmpty = _redrawIdStack === null
+  _redrawIdStack = queryGroupId
+
+  if (!stackEmpty) {
     _redrawStackEmpty = false
     return Promise.resolve()
   }
 
-  const queryGroupId = _redrawId++
   _startRedrawTime = new Date()
 
   const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
@@ -171,20 +103,17 @@ export function redrawAllAsync(group, allCharts) {
   if (groupAll()) {
     return getLastFilteredSizeAsync()
       .then(() => Promise.all(createRedrawPromises()))
-      .then(redrawAllTracker.finished(group, allCharts))
       .catch(err => {
         console.log(err)
         resetRedrawStack()
         throw err
       })
   } else {
-    return Promise.all(createRedrawPromises())
-      .then(redrawAllTracker.finished(group, allCharts))
-      .catch(err => {
-        console.log(err)
-        resetRedrawStack()
-        throw err
-      })
+    return Promise.all(createRedrawPromises()).catch(err => {
+      console.log(err)
+      resetRedrawStack()
+      throw err
+    })
   }
 }
 
@@ -193,15 +122,18 @@ export function renderAllAsync(group, allCharts) {
     return Promise.resolve()
   }
 
-  if (!renderAllTracker.request(group, allCharts)) {
+  const queryGroupId = _renderId++
+  const stackEmpty = _renderIdStack === null
+  _renderIdStack = queryGroupId
+
+  if (!stackEmpty) {
     _renderStackEmpty = false
     return Promise.resolve()
   }
 
-  const queryGroupId = _renderId++
   _startRenderTime = new Date()
 
-  const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
+  const charts = chartRegistry.listAll()
 
   const createRenderPromises = () =>
     charts.map(chart => {
@@ -214,13 +146,11 @@ export function renderAllAsync(group, allCharts) {
   }
 
   if (groupAll()) {
-    return getLastFilteredSizeAsync()
-      .then(() => Promise.all(createRenderPromises()))
-      .then(renderAllTracker.finished(group, allCharts))
-  } else {
-    return Promise.all(createRenderPromises()).then(
-      renderAllTracker.finished(group, allCharts)
+    return getLastFilteredSizeAsync().then(() =>
+      Promise.all(createRenderPromises())
     )
+  } else {
+    return Promise.all(createRenderPromises())
   }
 }
 
