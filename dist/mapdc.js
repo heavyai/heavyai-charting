@@ -5591,8 +5591,11 @@ utils.nullsLast = function (sorting) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.LockTracker = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 exports.startRenderTime = startRenderTime;
 exports.startRedrawTime = startRedrawTime;
@@ -5613,19 +5616,176 @@ exports.resetState = resetState;
 
 var _core = __webpack_require__(2);
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var _renderId = 0;
 var _redrawId = 0;
 var _renderCount = 0;
 var _redrawCount = 0;
-var _renderIdStack = null;
-var _redrawIdStack = null;
-var _renderStackEmpty = true;
-var _redrawStackEmpty = true;
 var _startRenderTime = null;
 var _startRedrawTime = null;
 
 var _groupAll = {};
 var _lastFilteredSize = {};
+
+// NOTE: a "group" of null is valid!
+
+var LockTracker = exports.LockTracker = function () {
+  function LockTracker() {
+    _classCallCheck(this, LockTracker);
+
+    this.all = null;
+    this.groups = {};
+    this.pendingAll = null;
+    this.pendingGroups = {};
+  }
+
+  _createClass(LockTracker, [{
+    key: "shouldStart",
+
+
+    // Utility function to check if a render/redraw should start for the given
+    // group or "all".
+    value: function shouldStart(group, all) {
+      // Conditions are checked in this order:
+      // 1. If currently rendering/redrawing all, return false.
+      // 2. If we're requesting a render/redraw all and *anything* is currently
+      //    rendering/redrawing, return false.
+      // 3. If the requested group is rendering/redrawing, return false.
+      // 4. Otherwise, return true.
+      return !this.all && (all ? Object.keys(this.groups).length === 0 : !this.groups[group]);
+    }
+
+    // Returns true if nothing is currently rendering. If a "group" is given,
+    // returns true if neither "all" nor the group is rendering.
+
+  }, {
+    key: "isEmpty",
+    value: function isEmpty(group) {
+      if (typeof group !== "undefined") {
+        return this.shouldStart(group, false);
+      }
+      return this.shouldStart(null, true);
+    }
+  }, {
+    key: "start",
+    value: function start(group, all, runner) {
+      var _this = this;
+
+      // if we can safely start this group/all, go for it!
+      if (this.shouldStart(group, all)) {
+        return this._run(group, all, runner);
+      }
+
+      // otherwise, if we already have a pending promise, return it
+      if (this.pendingAll) {
+        return this.pendingAll;
+      } else if (this.pendingGroups[group]) {
+        return this.pendingGroups[group];
+      }
+
+      // Ok, we can't start running now, and we don't already have a pending
+      // promise. We need to create a new pending promise to run after the
+      // currently running promise is finished. If we got this far, one of the
+      // following states must be true, otherwise shouldStart would have returned
+      // true and we would have started running already:
+      // 1. this.all is not-null, which means we can wait on that promise
+      // 2. "all" is truthy, which means we need to wait on all of the groups
+      //    that are currently running to finish
+      // 3. "all" is not set, so we only need to wait on the group to finish
+      var promise = this.all || (all ? // Promise.all returns immediately if any of the promises reject - we
+      // want to wait on them all regardless if any reject, so we
+      // explicitly catch and return an empty array so that if the promise
+      // rejects, it'll end up resolving in this context
+      Promise.all(Object.values(this.groups).map(function (p) {
+        return p.catch(function () {
+          return [];
+        });
+      })) : this.groups[group]);
+
+      // Whether or not the running promise is resolved or rejected, we want to
+      // run the next promise. Maybe if the current promise failed, re-running it
+      // will succeed. We use then(nextRunner, nextRunner) in both blocks below
+      // instead of finally() because we need nextRunner to return a new promise.
+      // The return value from finally() is ignored. Not to mention, the
+      // es6/es2015 polyfill doesn't include finally() anyway =)
+      if (all) {
+        var nextRunner = function nextRunner() {
+          _this.pendingAll = null;
+          return _this._run(group, all, runner);
+        };
+        promise = promise.then(nextRunner, nextRunner);
+        this.pendingAll = promise;
+      } else {
+        var _nextRunner = function _nextRunner() {
+          delete _this.pendingGroups[group];
+
+          if (_this.pendingAll) {
+            // Group was queued before "all", so, we just return the pendingAll
+            // promise. When pendingAll is done, this group will technically
+            // have been run along with all the other groups, so there's no
+            // reason to handle the group individually.
+            return _this.pendingAll;
+          }
+
+          return _this._run(group, all, runner);
+        };
+        promise = promise.then(_nextRunner, _nextRunner);
+        this.pendingGroups[group] = promise;
+      }
+      return promise;
+    }
+
+    // private method to start a runner and save the promise
+
+  }, {
+    key: "_run",
+    value: function _run(group, all, runner) {
+      var _this2 = this;
+
+      var cleanup = function cleanup() {
+        if (all) {
+          _this2.all = null;
+        } else {
+          delete _this2.groups[group];
+        }
+      };
+
+      // Start the runner - whether it succeeds or not, cleanup.
+      // The es6/es2015 polyfill doesn't include .finally(), so we use .then()
+      // and make sure to pass the resolved/rejected state up the stack. If we
+      // ever upgrade to the es7 polyfill, this can be rewritten as:
+      // runner().finally(clean)
+      var promise = null;
+      try {
+        promise = runner();
+      } catch (err) {
+        promise = Promise.reject(err);
+      }
+      promise = promise.then(function (val) {
+        cleanup();
+        return val;
+      }, function (err) {
+        cleanup();
+        throw err;
+      });
+
+      // store a reference to the promise
+      if (all) {
+        this.all = promise;
+      } else {
+        this.groups[group] = promise;
+      }
+
+      return promise;
+    }
+  }]);
+
+  return LockTracker;
+}();
+
+var renderAllTracker = new LockTracker();
+var redrawAllTracker = new LockTracker();
 
 function startRenderTime() {
   return _startRenderTime;
@@ -5637,23 +5797,14 @@ function startRedrawTime() {
 
 function resetRedrawStack() {
   _redrawCount = 0;
-  _redrawIdStack = null;
 }
 
-function redrawStackEmpty(isRedrawStackEmpty) {
-  if (!arguments.length) {
-    return _redrawStackEmpty;
-  }
-  _redrawStackEmpty = isRedrawStackEmpty;
-  return _redrawStackEmpty;
+function redrawStackEmpty(group) {
+  return redrawAllTracker.isEmpty(group);
 }
 
-function renderStackEmpty(isRenderStackEmpty) {
-  if (!arguments.length) {
-    return _renderStackEmpty;
-  }
-  _renderStackEmpty = isRenderStackEmpty;
-  return _renderStackEmpty;
+function renderStackEmpty(group) {
+  return renderAllTracker.isEmpty(group);
 }
 
 function isEqualToRedrawCount(queryCount) {
@@ -5662,13 +5813,11 @@ function isEqualToRedrawCount(queryCount) {
 
 function incrementRenderStack() {
   var queryGroupId = _renderId++;
-  _renderIdStack = queryGroupId;
   return queryGroupId;
 }
 
 function resetRenderStack() {
   _renderCount = 0;
-  _renderIdStack = null;
 }
 
 function isEqualToRenderCount(queryCount) {
@@ -5676,95 +5825,83 @@ function isEqualToRenderCount(queryCount) {
 }
 
 function redrawAllAsync(group, allCharts) {
+  var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
+
   if ((0, _core.refreshDisabled)()) {
-    return Promise.resolve();
+    return Promise.resolve(charts);
   }
 
   if (!startRenderTime()) {
     return Promise.reject("redrawAllAsync() is called before renderAllAsync(), please call renderAllAsync() first.");
   }
 
-  var queryGroupId = _redrawId++;
-  var stackEmpty = _redrawIdStack === null;
-  _redrawIdStack = queryGroupId;
+  return redrawAllTracker.start(group, allCharts, function () {
+    var queryGroupId = _redrawId++;
+    _startRedrawTime = new Date();
 
-  if (!stackEmpty) {
-    _redrawStackEmpty = false;
-    return Promise.resolve();
-  }
-
-  _startRedrawTime = new Date();
-
-  var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
-
-  var createRedrawPromises = function createRedrawPromises() {
-    return charts.map(function (chart) {
-      chart.expireCache();
-      chart._invokeDataFetchListener();
-      return chart.redrawAsync(queryGroupId, charts.length).catch(function (e) {
-        chart._invokeDataErrorListener();
-        throw e;
+    var createRedrawPromises = function createRedrawPromises() {
+      return charts.map(function (chart) {
+        chart.expireCache();
+        chart._invokeDataFetchListener();
+        return chart.redrawAsync(queryGroupId, charts.length).catch(function (e) {
+          chart._invokeDataErrorListener();
+          throw e;
+        });
       });
-    });
-  };
+    };
 
-  if ((0, _core.renderlet)() !== null) {
-    (0, _core.renderlet)(group);
-  }
+    if ((0, _core.renderlet)() !== null) {
+      (0, _core.renderlet)(group);
+    }
 
-  if (groupAll()) {
-    return getLastFilteredSizeAsync().then(function () {
-      return Promise.all(createRedrawPromises());
-    }).catch(function (err) {
-      console.log(err);
-      resetRedrawStack();
-      throw err;
-    });
-  } else {
-    return Promise.all(createRedrawPromises()).catch(function (err) {
-      console.log(err);
-      resetRedrawStack();
-      throw err;
-    });
-  }
+    if (groupAll()) {
+      return getLastFilteredSizeAsync().then(function () {
+        return Promise.all(createRedrawPromises());
+      }).catch(function (err) {
+        console.log(err);
+        resetRedrawStack();
+        throw err;
+      });
+    } else {
+      return Promise.all(createRedrawPromises()).catch(function (err) {
+        console.log(err);
+        resetRedrawStack();
+        throw err;
+      });
+    }
+  });
 }
 
 function renderAllAsync(group, allCharts) {
+  var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
+
   if ((0, _core.refreshDisabled)()) {
-    return Promise.resolve();
+    return Promise.resolve(charts);
   }
 
-  var queryGroupId = _renderId++;
-  var stackEmpty = _renderIdStack === null;
-  _renderIdStack = queryGroupId;
+  return renderAllTracker.start(group, allCharts, function () {
+    var queryGroupId = _renderId++;
+    _startRenderTime = new Date();
 
-  if (!stackEmpty) {
-    _renderStackEmpty = false;
-    return Promise.resolve();
-  }
+    var createRenderPromises = function createRenderPromises() {
+      return charts.map(function (chart) {
+        chart.expireCache();
+        return chart.renderAsync(queryGroupId, charts.length);
+      });
+    };
 
-  _startRenderTime = new Date();
+    if ((0, _core.renderlet)() !== null) {
+      (0, _core.renderlet)(group);
+    }
 
-  var charts = _core.chartRegistry.listAll();
-
-  var createRenderPromises = function createRenderPromises() {
-    return charts.map(function (chart) {
-      chart.expireCache();
-      return chart.renderAsync(queryGroupId, charts.length);
-    });
-  };
-
-  if ((0, _core.renderlet)() !== null) {
-    (0, _core.renderlet)(group);
-  }
-
-  if (groupAll()) {
-    return getLastFilteredSizeAsync().then(function () {
+    if (groupAll()) {
+      return getLastFilteredSizeAsync().then(function () {
+        return Promise.all(createRenderPromises());
+      });
+    } else {
       return Promise.all(createRenderPromises());
-    });
-  } else {
-    return Promise.all(createRenderPromises());
-  }
+    }
+  });
 }
 
 function groupAll(group) {
@@ -5830,8 +5967,6 @@ function setLastFilteredSize(crossfilterId, value) {
 function resetState() {
   _groupAll = {};
   _lastFilteredSize = {};
-  resetRedrawStack();
-  resetRenderStack();
 }
 
 /***/ }),
@@ -6669,9 +6804,7 @@ function baseMixin(_chart) {
         (0, _core.globalTransitionDuration)(null);
         (0, _coreAsync.resetRenderStack)();
 
-        if (!(0, _coreAsync.renderStackEmpty)()) {
-          (0, _coreAsync.renderStackEmpty)(true);
-
+        if ((0, _coreAsync.renderStackEmpty)(null)) {
           return (0, _coreAsync.renderAllAsync)(null).then(function (result) {
             callback(null, result);
           }).catch(function (error) {
@@ -6750,10 +6883,9 @@ function baseMixin(_chart) {
         (0, _core.globalTransitionDuration)(null); // reset to null if was brush
         (0, _coreAsync.resetRedrawStack)();
 
-        if (!(0, _coreAsync.redrawStackEmpty)()) {
-          (0, _coreAsync.redrawStackEmpty)(true);
-
-          return (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function (result) {
+        var group = _chart.chartGroup();
+        if ((0, _coreAsync.redrawStackEmpty)(group)) {
+          return (0, _coreAsync.redrawAllAsync)(group).then(function (result) {
             callback(null, result);
           }).catch(function (error) {
             callback(error);
