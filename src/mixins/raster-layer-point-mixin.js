@@ -221,8 +221,8 @@ function getTransforms(
   }
 
   const postFilter = postFilters ? postFilters[0] : null // may change to map when we have more than one postFilter
-  const postFilterMin = parseFloat(postFilter.min)
-  const postFilterMax = parseFloat(postFilter.max)
+  const postFilterMin = postFilter && postFilter.min ? parseFloat(postFilter.min) : null
+  const postFilterMax = postFilter && postFilter.max ? parseFloat(postFilter.max) : null
   if (postFilter && isValidPostFilter(postFilter, postFilterMin, postFilterMax)) {
     transforms.push({
       type: "postFilter",
