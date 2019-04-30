@@ -96,14 +96,11 @@ function getColor(color, layerName) {
   }
 }
 
-function isValidPostFilter(postFilter) {
+function isValidPostFilter(postFilter, min, max) {
   const {
     operator,
-    min,
-    max,
     aggType,
     value,
-    table,
     custom
   } = postFilter
 
@@ -224,7 +221,9 @@ function getTransforms(
   }
 
   const postFilter = postFilters ? postFilters[0] : null // may change to map when we have more than one postFilter
-  if (postFilter && isValidPostFilter(postFilter)) {
+  const postFilterMin = parseFloat(postFilter.min)
+  const postFilterMax = parseFloat(postFilter.max)
+  if (postFilter && isValidPostFilter(postFilter, postFilterMin, postFilterMax)) {
     transforms.push({
       type: "postFilter",
       table: postFilter.table || null,
@@ -232,8 +231,8 @@ function getTransforms(
       custom: postFilter.custom,
       fields: [postFilter.value],
       ops: postFilter.operator,
-      min: postFilter.min,
-      max: postFilter.max
+      min: postFilterMin,
+      max: postFilterMax
     })
   }
 

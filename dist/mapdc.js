@@ -47707,13 +47707,10 @@ function getColor(color, layerName) {
   }
 }
 
-function isValidPostFilter(postFilter) {
+function isValidPostFilter(postFilter, min, max) {
   var operator = postFilter.operator,
-      min = postFilter.min,
-      max = postFilter.max,
       aggType = postFilter.aggType,
       value = postFilter.value,
-      table = postFilter.table,
       custom = postFilter.custom;
 
 
@@ -47830,7 +47827,9 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
   }
 
   var postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
-  if (postFilter && isValidPostFilter(postFilter)) {
+  var postFilterMin = parseFloat(postFilter.min);
+  var postFilterMax = parseFloat(postFilter.max);
+  if (postFilter && isValidPostFilter(postFilter, postFilterMin, postFilterMax)) {
     transforms.push({
       type: "postFilter",
       table: postFilter.table || null,
@@ -47838,8 +47837,8 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
       custom: postFilter.custom,
       fields: [postFilter.value],
       ops: postFilter.operator,
-      min: postFilter.min,
-      max: postFilter.max
+      min: postFilterMin,
+      max: postFilterMax
     });
   }
 
