@@ -1,13 +1,13 @@
-const fs = require('fs');
-const os = require('os');
-const extend = require('extend');
-const crypto = require('crypto');
-const path = require('path');
-const PNG = require('pngjs').PNG;
-const pixelmatch = require('pixelmatch');
-const htmlCreator = require('html-creator');
-const TRenderResult = require('../lib/TestResultWrapper').TRenderResult;
-const PathUtils = require('./PathUtils');
+const fs = require("fs");
+const os = require("os");
+const extend = require("extend");
+const crypto = require("crypto");
+const path = require("path");
+const PNG = require("pngjs").PNG;
+const pixelmatch = require("pixelmatch");
+const htmlCreator = require("html-creator");
+const TRenderResult = require("../lib/TestResultWrapper").TRenderResult;
+const PathUtils = require("./PathUtils");
 
 const error_report_html_style = `
 html {
@@ -68,43 +68,63 @@ tbody tr:nth-child(even) {
 img {
   box-sizing: content-box;
   background: white;
+}
+
+figcaption{
+  font-size: 12px;
 }`;
 
 function buildTableRow() {
-  return { type: 'tr', content: [] };
+  return { type: "tr", content: [] };
 }
 
 function addHeaderToRow(tr, header_name) {
-  tr.content.push({ type: 'th', content: header_name });
+  tr.content.push({ type: "th", content: header_name });
 }
 
-function addImageToRow(tr, base_dir, img_info) {
+function addImageToRow(tr, base_dir, img_info, base_goldenimg_dir) {
   const rel_img_file = path.relative(base_dir, img_info.filename);
+  const img_content = [
+    {
+      type: "img",
+      attributes: {
+        src: rel_img_file,
+        style: `${img_info.height > img_info.width ? "height" : "width"}: 150px`
+      }
+    }
+  ];
+  if (img_info.original_filename) {
+    img_content.push({
+      type: "figcaption",
+      content: path.basename(img_info.original_filename)
+    });
+  }
+
   tr.content.push({
-    type: 'td',
+    type: "td",
     content: [
       {
-        type: 'a',
+        type: "a",
         attributes: { href: rel_img_file },
-        content: [
-          {
-            type: 'img',
-            attributes: {
-              src: rel_img_file,
-              style: `${img_info.height > img_info.width ? 'height' : 'width'}: 150px`
-            }
-          }
-        ]
+        content: img_content
       }
     ]
   });
 }
 
-function addErrorToRow(tr, error_info, base_dir, config_dir, config_prefix, idx) {
-  const test_name_item = { type: 'td', content: error_info.test_name || ' ' };
+function addErrorToRow(
+  tr,
+  error_info,
+  base_dir,
+  config_dir,
+  golden_img_dir,
+  config_prefix,
+  idx
+) {
+  const test_name_item = { type: "td", content: error_info.test_name || " " };
   tr.content.push(test_name_item);
 
-  const test_config_item = { type: 'td' };
+  const test_config_item = { type: "td" };
   if (error_info.config) {
     const relpath = path.relative(base_dir, config_dir);
     const config_filename = config_prefix + `-${idx}.json`;
@@ -114,19 +134,19 @@ function addErrorToRow(tr, error_info, base_dir, config_dir, config_prefix, idx)
     );
     test_config_item.content = [
       {
-        type: 'a',
+        type: "a",
         attributes: { href: path.join(relpath, config_filename) },
         content: config_prefix + `.json`
       }
     ];
   } else {
-    test_config_item.content = ' ';
+    test_config_item.content = " ";
   }
   tr.content.push(test_config_item);
 
-  addImageToRow(tr, base_dir, error_info.expected);
-  addImageToRow(tr, base_dir, error_info.actual);
-  addImageToRow(tr, base_dir, error_info.diff);
+  addImageToRow(tr, base_dir, error_info.expected, golden_img_dir);
+  addImageToRow(tr, base_dir, error_info.actual, golden_img_dir);
+  addImageToRow(tr, base_dir, error_info.diff, golden_img_dir);
 }
 
 function readImage(img) {
@@ -136,25 +156,28 @@ function readImage(img) {
   }
 
   let image = null;
+  let orig_filename = null;
   if (!(img instanceof PNG)) {
     if (img instanceof Uint8Array) {
-      data = Buffer.from(img, 'base64');
+      data = Buffer.from(img, "base64");
     } else {
       data = fs.readFileSync(img);
+      orig_filename = img;
     }
     image = PNG.sync.read(data);
   } else {
     image = img;
   }
-  image.format = 'png';
+  image.format = "png";
+  image.original_filename = orig_filename;
   return image;
 }
 
 function copyImage(img, out_file) {
   if (img instanceof TRenderResult) {
-    fs.writeFileSync(out_file, Buffer.from(img.image, 'base64'));
+    fs.writeFileSync(out_file, Buffer.from(img.image, "base64"));
   } else if (img instanceof Uint8Array) {
-    fs.writeFileSync(out_file, Buffer.from(img, 'base64'));
+    fs.writeFileSync(out_file, Buffer.from(img, "base64"));
   } else if (img instanceof PNG) {
     fs.writeFileSync(out_file, PNG.sync.write(img));
   } else {
@@ -162,12 +185,12 @@ function copyImage(img, out_file) {
   }
 }
 
-const DEFAULT_GOLDEN_IMG_DIR = './';
+const DEFAULT_GOLDEN_IMG_DIR = "./";
 const DEFAULT_PIXEL_DIFF_THRESHOLD = 0.01;
 const DEFAULT_NUM_PIXELS_THRESHOLD = 0;
 function compareImages(src_img, dst_img, options) {
   const diff_img = new PNG({ width: src_img.width, height: src_img.height });
-  diff_img.format = 'png';
+  diff_img.format = "png";
 
   const {
     pixel_diff_threshold = DEFAULT_PIXEL_DIFF_THRESHOLD,
@@ -177,16 +200,16 @@ function compareImages(src_img, dst_img, options) {
 
   // outputting the diff image
   if (file !== null) {
-    if (typeof file !== 'string') {
-      throw new TypeError('The path for the diff output must be a string.');
+    if (typeof file !== "string") {
+      throw new TypeError("The path for the diff output must be a string.");
     }
     diff_img.filename = options.file;
   }
 
-  if (typeof pixel_diff_threshold !== 'number') {
+  if (typeof pixel_diff_threshold !== "number") {
     throw new TypeError(`The ${pixel_diff_threshold.name} value should be a number`);
   }
-  if (typeof num_pixels_threshold !== 'number') {
+  if (typeof num_pixels_threshold !== "number") {
     throw new TypeError(`The ${num_pixels_threshold.name} value should be a number`);
   }
 
@@ -233,7 +256,7 @@ class ImageCompareReporter {
       golden_img_dir = DEFAULT_GOLDEN_IMG_DIR,
       pixel_diff_threshold = DEFAULT_PIXEL_DIFF_THRESHOLD,
       num_pixels_threshold = DEFAULT_NUM_PIXELS_THRESHOLD,
-      report_dir = fs.mkdtempSync(path.join(os.tmpdir(), 'img-compare-report-'))
+      report_dir = fs.mkdtempSync(path.join(os.tmpdir(), "img-compare-report-"))
     } = config;
 
     golden_img_dir = build_abs_golden_img_dir(golden_img_dir);
@@ -245,20 +268,20 @@ class ImageCompareReporter {
     makeDirectory(report_dir);
 
     this._report_dir = report_dir;
-    this._image_dir = path.join(report_dir, 'images');
+    this._image_dir = path.join(report_dir, "images");
     makeDirectory(this._image_dir);
 
-    this._config_dir = path.join(report_dir, 'test-configs');
+    this._config_dir = path.join(report_dir, "test-configs");
     makeDirectory(this._config_dir);
 
     this._initialized = false;
     this._errors = [];
 
     if (
-      typeof assert_lib.assert === 'function' &&
-      typeof assert_lib.should === 'function' &&
-      typeof assert_lib.expect === 'function' &&
-      typeof assert_lib.use === 'function'
+      typeof assert_lib.assert === "function" &&
+      typeof assert_lib.should === "function" &&
+      typeof assert_lib.expect === "function" &&
+      typeof assert_lib.use === "function"
     ) {
       // The assert library is 'chai'. Is this good enough to check that it is
       // indeed the chai lib?
@@ -308,20 +331,20 @@ class ImageCompareReporter {
   _buildErrorReportHtml() {
     const html_creator = new htmlCreator();
     html_creator.document.setContent([
-      { type: 'head' },
-      { type: 'body', attributes: { align: 'center' } }
+      { type: "head" },
+      { type: "body", attributes: { align: "center" } }
     ]);
 
-    const html_head = html_creator.document.findElementByType('head');
-    html_head.content = [ { type: 'title', content: 'Image Comparison Report' } ];
-    html_head.content.push({ type: 'style', content: error_report_html_style });
+    const html_head = html_creator.document.findElementByType("head");
+    html_head.content = [ { type: "title", content: "Image Comparison Report" } ];
+    html_head.content.push({ type: "style", content: error_report_html_style });
 
-    const html_body = html_creator.document.findElementByType('body');
+    const html_body = html_creator.document.findElementByType("body");
     html_body.content = [
       {
-        type: 'h1',
-        attributes: { align: 'center' },
-        content: 'Image Comparison Report'
+        type: "h1",
+        attributes: { align: "center" },
+        content: "Image Comparison Report"
       }
     ];
 
@@ -329,23 +352,23 @@ class ImageCompareReporter {
 
     // build the table
     const html_table = {
-      type: 'table',
-      attributes: { align: 'center' },
+      type: "table",
+      attributes: { align: "center" },
       content: []
     };
 
     // build the table header
     const html_table_header_row = buildTableRow();
-    addHeaderToRow(html_table_header_row, 'Test Name');
-    addHeaderToRow(html_table_header_row, 'Config');
-    addHeaderToRow(html_table_header_row, 'Expected');
-    addHeaderToRow(html_table_header_row, 'Actual');
-    addHeaderToRow(html_table_header_row, 'Diff');
-    const html_table_header = { type: 'thead', content: [ html_table_header_row ] };
+    addHeaderToRow(html_table_header_row, "Test Name");
+    addHeaderToRow(html_table_header_row, "Config");
+    addHeaderToRow(html_table_header_row, "Expected");
+    addHeaderToRow(html_table_header_row, "Actual");
+    addHeaderToRow(html_table_header_row, "Diff");
+    const html_table_header = { type: "thead", content: [ html_table_header_row ] };
     html_table.content.push(html_table_header);
 
     // build table body
-    const html_table_body = { type: 'tbody', content: [] };
+    const html_table_body = { type: "tbody", content: [] };
     this._errors.forEach((error_info, idx) => {
       const html_table_body_row = buildTableRow();
       addErrorToRow(
@@ -353,7 +376,8 @@ class ImageCompareReporter {
         error_info,
         this._report_dir,
         this._config_dir,
-        error_info.test_name || 'img-compare-test',
+        this.golden_img_dir,
+        error_info.test_name || "img-compare-test",
         idx
       );
       html_table_body.content.push(html_table_body_row);
@@ -364,13 +388,13 @@ class ImageCompareReporter {
 
     html_body.content.push(html_table);
 
-    const report_filename = path.join(this._report_dir, 'index.html');
+    const report_filename = path.join(this._report_dir, "index.html");
     fs.writeFileSync(report_filename, html_creator.renderHTML());
 
     console.log(
       `Found ${this._errors.length} image compare error${this._errors.length > 1
-        ? 's'
-        : ''}. Report can be found here file://${report_filename}`
+        ? "s"
+        : ""}. Report can be found here file://${report_filename}`
     );
   }
 
@@ -400,10 +424,10 @@ class ImageCompareReporter {
       return;
     }
 
-    chai.Assertion.addMethod('matchGoldenImage', matchImage);
-    chai.Assertion.addMethod('matchesGoldenImage', matchImage);
-    chai.Assertion.addMethod('matchImage', matchImage);
-    chai.Assertion.addMethod('matchesImage', matchImage);
+    chai.Assertion.addMethod("matchGoldenImage", matchImage);
+    chai.Assertion.addMethod("matchesGoldenImage", matchImage);
+    chai.Assertion.addMethod("matchImage", matchImage);
+    chai.Assertion.addMethod("matchesImage", matchImage);
     // eslint-disable-next-line consistent-this
     const reporter = this;
 
@@ -412,12 +436,12 @@ class ImageCompareReporter {
       const image_dir = reporter.image_dir;
 
       if (options !== undefined && options !== null) {
-        chai.assert(options instanceof Object, 'matchImage options must be an object.');
+        chai.assert(options instanceof Object, "matchImage options must be an object.");
       }
 
       chai.assert(
         image instanceof Uint8Array ||
-          typeof image === 'string' ||
+          typeof image === "string" ||
           image instanceof String ||
           image instanceof TRenderResult,
         `Image must be a base-64 byte array or a filename. It is a ${image.constructor
@@ -425,7 +449,7 @@ class ImageCompareReporter {
           : typeof image}.`
       );
 
-      if (golden_image_name instanceof String || typeof golden_image_name === 'string') {
+      if (golden_image_name instanceof String || typeof golden_image_name === "string") {
         if (!path.isAbsolute(golden_image_name)) {
           golden_image_name = path.join(reporter.golden_img_dir, golden_image_name);
         }
@@ -437,26 +461,26 @@ class ImageCompareReporter {
           `Image to match must be a ${String.name} path, ${Uint8Array.name} buffer, ${TRenderResult.name}, or a ${PNG.name}. It is of type ${typeof golden_image_name}.`
         );
       }
-      const fileprefix = crypto.randomBytes(5).toString('hex');
+      const fileprefix = crypto.randomBytes(5).toString("hex");
 
       const src = readImage(image);
       const dst = readImage(golden_image_name);
 
       src.filename = path.join(
         image_dir,
-        fileprefix + '-src.' + src.format.toLowerCase()
+        fileprefix + "-src." + src.format.toLowerCase()
       );
       copyImage(image, src.filename);
 
       dst.filename = path.join(
         image_dir,
-        fileprefix + '-dst.' + dst.format.toLowerCase()
+        fileprefix + "-dst." + dst.format.toLowerCase()
       );
       copyImage(golden_image_name, dst.filename);
 
       const diff_file = path.join(
         image_dir,
-        fileprefix + '-diff.' + src.format.toLowerCase()
+        fileprefix + "-diff." + src.format.toLowerCase()
       );
 
       const compare_options = {};
@@ -474,12 +498,12 @@ class ImageCompareReporter {
         src.height === dst.height &&
         compare_result.is_equal;
 
-      const negate = Boolean(utils.flag(this, 'negate'));
+      const negate = Boolean(utils.flag(this, "negate"));
       if (negate === is_equal) {
         // attempting to catch errors thrown by the below assert. The 'negate'
         // flag negates the assertion check
         reporter._reportError(
-          image instanceof TRenderResult ? image : utils.flag(this, 'TRenderResult'),
+          image instanceof TRenderResult ? image : utils.flag(this, "TRenderResult"),
           src,
           dst,
           diff,

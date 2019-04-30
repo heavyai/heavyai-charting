@@ -228,12 +228,12 @@ module.exports = function(test_collection, expect) {
         expect(result).to.have.vega_metadata.with
           .scale("pointmap_fillColor")
           .with.property("minDensityCnt")
-          .to.equal(32430.31634346574);
+          .to.equal(32304.876147086965);
 
         expect(result).to.have.vega_metadata.with
           .scale("pointmap_fillColor")
           .with.property("maxDensityCnt")
-          .to.equal(32974.01790921274);
+          .to.equal(33073.04072281018);
       }
     )
   );
@@ -283,12 +283,12 @@ module.exports = function(test_collection, expect) {
         expect(result).to.have.vega_metadata.with
           .scale("pointmap_fillColor")
           .with.property("minDensityCnt")
-          .to.equal(32158.46556059224);
+          .to.equal(31920.793859225356);
 
         expect(result).to.have.vega_metadata.with
           .scale("pointmap_fillColor")
           .with.property("maxDensityCnt")
-          .to.equal(33245.86869208624);
+          .to.equal(33457.12301067179);
       }
     )
   );
@@ -387,8 +387,6 @@ module.exports = function(test_collection, expect) {
     new RenderVegaTest(vega, (result) => {
       expect(result).to.matchGoldenImage("accum_metadata_test_06.png");
 
-      // min/max density cnts should be exactly the same and should equal the number of LAX-dest flights
-      // Should equal: "SELECT count(*) FROM flights WHERE dest_name like 'Los Angeles International'"";
       expect(result).to.have.vega_metadata.with
         .scale("pointmap_fillColor")
         .with.property("minDensityCnt")
@@ -412,17 +410,15 @@ module.exports = function(test_collection, expect) {
       (result) => {
         expect(result).to.matchGoldenImage("accum_metadata_test_07.png");
 
-        // min/max density cnts should be exactly the same and should equal the number of LAX-dest flights
-        // Should equal: "SELECT count(*) FROM flights WHERE dest_name like 'Los Angeles International'"";
         expect(result).to.have.vega_metadata.with
           .scale("pointmap_fillColor")
           .with.property("minDensityCnt")
-          .to.equal(53347.32653927228);
+          .to.equal(52850.404102322995);
 
         expect(result).to.have.vega_metadata.with
           .scale("pointmap_fillColor")
           .with.property("maxDensityCnt")
-          .to.equal(53457.132540506034);
+          .to.equal(53557.109251554764);
       }
     )
   );
@@ -438,17 +434,15 @@ module.exports = function(test_collection, expect) {
       (result) => {
         expect(result).to.matchGoldenImage("accum_metadata_test_08.png");
 
-        // min/max density cnts should be exactly the same and should equal the number of LAX-dest flights
-        // Should equal: "SELECT count(*) FROM flights WHERE dest_name like 'Los Angeles International'"";
         expect(result).to.have.vega_metadata.with
           .scale("pointmap_fillColor")
           .with.property("minDensityCnt")
-          .to.equal(53292.42353865541);
+          .to.equal(52497.05152770711);
 
         expect(result).to.have.vega_metadata.with
           .scale("pointmap_fillColor")
           .with.property("maxDensityCnt")
-          .to.equal(53512.03554112291);
+          .to.equal(53910.46182617065);
       }
     )
   );

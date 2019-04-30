@@ -16,7 +16,7 @@ module.exports = function(test_collection, expect) {
     "data": [
       {
         "name": "pointmap",
-        "sql": "SELECT mapd_geo, rowid FROM north_america_rivers WHERE NOT(ST_XMin(mapd_geo) > -27.622867061127266 OR ST_XMax(mapd_geo) < -179.99999999999872 OR ST_YMin(mapd_geo) > 83.15921305514283 OR ST_YMax(mapd_geo) < 8.287980554435876)",
+        "sql": "SELECT omnisci_geo, rowid FROM north_america_rivers WHERE NOT(ST_XMin(omnisci_geo) > -27.622867061127266 OR ST_XMax(omnisci_geo) < -179.99999999999872 OR ST_YMin(omnisci_geo) > 83.15921305514283 OR ST_YMax(omnisci_geo) < 8.287980554435876)",
         "format": "lines"
       }
     ],
@@ -68,7 +68,7 @@ module.exports = function(test_collection, expect) {
     new RenderVegaTest(
       ((vega) => {
         vega.data[0].sql =
-          "SELECT mapd_geo, scalerank, rowid FROM north_america_rivers WHERE NOT(ST_XMin(mapd_geo) > -27.622867061127266 OR ST_XMax(mapd_geo) < -179.99999999999872 OR ST_YMin(mapd_geo) > 83.15921305514283 OR ST_YMax(mapd_geo) < 8.287980554435876)";
+          "SELECT omnisci_geo, scalerank, rowid FROM north_america_rivers WHERE NOT(ST_XMin(omnisci_geo) > -27.622867061127266 OR ST_XMax(omnisci_geo) < -179.99999999999872 OR ST_YMin(omnisci_geo) > 83.15921305514283 OR ST_YMax(omnisci_geo) < 8.287980554435876)";
 
         // prettier-ignore
         vega.scales[0] = {
@@ -213,10 +213,10 @@ module.exports = function(test_collection, expect) {
         "data": [
           {
             "name": "pointmap",
-            "sql": "SELECT mapd_geo, rowid FROM kaggle_taxi_waypoints WHERE NOT(ST_XMin(mapd_geo) > -8.58182575664381 OR ST_XMax(mapd_geo) < -8.657827016599725 OR ST_YMin(mapd_geo) > 41.18795342561697 OR ST_YMax(mapd_geo) < 41.130461364579475)",
+            "sql": "SELECT omnisci_geo, rowid FROM kaggle_taxi_waypoints WHERE NOT(ST_XMin(omnisci_geo) > -8.58182575664381 OR ST_XMax(omnisci_geo) < -8.657827016599725 OR ST_YMin(omnisci_geo) > 41.18795342561697 OR ST_YMax(omnisci_geo) < 41.130461364579475)",
             "format": {
               "type": "lines",
-              "coords": {"x": ["mapd_geo"],"y": [{"from": "mapd_geo"}]},
+              "coords": {"x": ["omnisci_geo"],"y": [{"from": "omnisci_geo"}]},
               "layout": "interleaved"
             }
           }

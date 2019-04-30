@@ -152,8 +152,8 @@ module.exports = function(test_collection, expect) {
     `Tests downsizes the points further from ${prev_test_name} so that there should be no overlapping points.`,
     new RenderVegaTest(
       ((vega) => {
-        vega.marks[0].properties.width = 20;
-        vega.marks[0].properties.height = 20;
+        vega.marks[0].properties.width = 15;
+        vega.marks[0].properties.height = 15;
         return vega;
       })(vega),
       (result) => expect(result).to.matchGoldenImage("density_accum_test_08.png")
@@ -235,7 +235,10 @@ module.exports = function(test_collection, expect) {
       vega.scales[0].maxDensityCnt = "1stStdDev";
       return vega;
     })(vega),
-    (result) => expect(result).to.matchGoldenImage("density_accum_test_11.png")
+    (result) =>
+      expect(result).to.matchGoldenImage("density_accum_test_11.png", {
+        pixel_diff_threshold: 0.1
+      })
   );
   prev_test_name = density_accum_test_grp.addTest(
     `Tests 1st stddev density renders using the same query from ${prev_test_name}.`,

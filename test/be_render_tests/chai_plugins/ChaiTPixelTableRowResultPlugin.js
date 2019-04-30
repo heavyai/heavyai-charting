@@ -1,32 +1,37 @@
-const wellknown = require('wellknown');
-const TPixelTableRowResult = require('../lib/TestResultWrapper').TPixelTableRowResult;
+const wellknown = require("wellknown");
+const TPixelTableRowResult = require("../lib/TestResultWrapper").TPixelTableRowResult;
 
 module.exports = function(chai, utils) {
-  chai.Assertion.addProperty('TPixelTableRowResult', function() {
+  chai.Assertion.addProperty("TPixelTableRowResult", function() {
     this.assert(
       this._obj instanceof TPixelTableRowResult,
-      'Expected #{this} to be a TPixelTableRowResult',
-      'Expected #{this} to not be a TPixelTableRowResult'
+      "Expected #{this} to be a TPixelTableRowResult",
+      "Expected #{this} to not be a TPixelTableRowResult"
     );
   });
 
-  chai.Assertion.addChainableMethod('numrows', null, function() {
+  chai.Assertion.addChainableMethod("numrows", null, function() {
     const obj = this._obj;
     if (obj instanceof TPixelTableRowResult) {
-      utils.flag(this, 'TPixelTableRowResult', this._obj);
+      utils.flag(this, "TPixelTableRowResult", this._obj);
       this._obj = obj.num_rows;
     } else {
       this.assert(false, `expected #{this} to have a numrows property.`);
     }
   });
 
-  chai.Assertion.addChainableMethod('column', function(column_name) {
+  chai.Assertion.addChainableMethod("column", function(column_name) {
     const obj = this._obj;
     if (obj instanceof TPixelTableRowResult) {
-      utils.flag(this, 'TPixelTableRowResult', this._obj);
+      utils.flag(this, "TPixelTableRowResult", this._obj);
       this._obj = obj.getColumn(column_name);
     } else {
-      this.assert(false, `expected #{this} to have a column() method`);
+      this.assert(
+        false,
+        `expected #{this} to have a column() method. Object is of type ${obj.constructor
+          ? obj.constructor.name
+          : typeof obj}`
+      );
     }
   });
 
@@ -41,8 +46,8 @@ module.exports = function(chai, utils) {
     if (arr1.length !== arr2.length) {
       throw new Error(
         `Expected array ${in_idx.length
-          ? 'at index (' + in_idx.join(',') + ')'
-          : ''} to have ${arr1.length} items but got ${arr2.length}`
+          ? "at index (" + in_idx.join(",") + ")"
+          : ""} to have ${arr1.length} items but got ${arr2.length}`
       );
     }
 
@@ -54,21 +59,21 @@ module.exports = function(chai, utils) {
 
       if (Math.abs(arr1[i] - arr2[i]) > tolerance) {
         throw new Error(
-          `Expected vertex coordinate at index (${in_idx.join(',')}) to be` +
-            `${tolerance ? ' within ' + tolerance + ' tolerance of' : ''}` +
+          `Expected vertex coordinate at index (${in_idx.join(",")}) to be` +
+            `${tolerance ? " within " + tolerance + " tolerance of" : ""}` +
             ` ${arr1[i]} but got ${arr2[i]}`
         );
       }
     }
   }
 
-  chai.Assertion.addChainableMethod('wktEquals', function(val, tolerance) {
+  chai.Assertion.addChainableMethod("wktEquals", function(val, tolerance) {
     const that = this;
     const obj = this._obj;
 
     function getGeoJsonFromWkt(wkt) {
       that.assert(
-        wkt instanceof String || typeof wkt === 'string',
+        wkt instanceof String || typeof wkt === "string",
         `#{this} must be a string for wellknown text comparisons.`
       );
 
@@ -86,7 +91,7 @@ module.exports = function(chai, utils) {
     const out_geojson = getGeoJsonFromWkt(val);
 
     let wkt_equal = in_geojson.type === out_geojson.type;
-    let err_str = '';
+    let err_str = "";
     if (wkt_equal) {
       try {
         arrayEqual(out_geojson.coordinates, in_geojson.coordinates, tolerance);

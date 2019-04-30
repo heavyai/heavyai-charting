@@ -162,7 +162,7 @@ module.exports = function(test_collection, expect) {
       {
         "name": "heat_color",
         "type": "quantize",
-        "domain": [ 1, 180759.03667167752 ],
+        "domain": [ 1, 180758.13110590022 ],
         "range": [
           "#115f9a",
           "#1984c5",
@@ -254,7 +254,7 @@ module.exports = function(test_collection, expect) {
       {
         "name": "heat_color",
         "type": "quantize",
-        "domain": [1, 8414.20442563621],
+        "domain": [1, 8414.175747978927],
         "range": [
           "#115f9a",
           "#1984c5",
@@ -272,14 +272,14 @@ module.exports = function(test_collection, expect) {
       {
         "name": "point_size",
         "type": "linear",
-        "domain": [-1, 48188.988314354494],
+        "domain": [-1, 48189.00022641456],
         "range": [1,20],
         "clamp": true
       },
       {
         "name": "point_color",
         "type": "linear",
-        "domain": [-1, 48188.988314354494],
+        "domain": [-1, 48189.00022641456], 
         "range": ["rgb(0,0,255)","rgb(255,0,0)"],
         "clamp": true
       }
@@ -371,7 +371,7 @@ module.exports = function(test_collection, expect) {
       {
         "name": "heat_color",
         "type": "quantize",
-        "domain": [1, 8414.20442563621],
+        "domain": [1, 8414.175747978927],
         "range": [
           "#115f9a",
           "#1984c5",
@@ -389,14 +389,14 @@ module.exports = function(test_collection, expect) {
       {
         "name": "point_size",
         "type": "linear",
-        "domain": [-1, 48188.988314354494],
+        "domain": [-1, 48189.00022641456], 
         "range": [1,20],
         "clamp": true
       },
       {
         "name": "point_color",
         "type": "linear",
-        "domain": [-1, 48188.988314354494],
+        "domain": [-1, 48189.00022641456], 
         "range": ["rgb(0,0,255)","rgb(255,0,0)"],
         "clamp": true
       }
@@ -472,14 +472,14 @@ module.exports = function(test_collection, expect) {
       {
         "name": "size",
         "type": "linear",
-        "domain": [-1,31091.858744392313],
+        "domain": [-1, 31091.84773868343],
         "range": [1,20],
         "clamp": true
       },
       {
         "name": "color",
         "type": "linear",
-        "domain": [-1,31091.858744392313],
+        "domain": [-1, 31091.84773868343], 
         "range": ["rgb(0,0,255)","rgb(255,0,0)"],
         "clamp": true
       }
@@ -565,14 +565,14 @@ module.exports = function(test_collection, expect) {
       {
         "name": "point_size",
         "type": "linear",
-        "domain": [-1, 32629.036376770488],
+        "domain": [-1, 32629.04152091595], 
         "range": [1,20],
         "clamp": true
       },
       {
         "name": "all_color",
         "type": "linear",
-        "domain": [-1, 32629.036376770488],
+        "domain": [-1, 32629.04152091595],
         "range": ["rgb(0,0,255)","rgb(255,0,0)"],
         "clamp": true
       }
@@ -659,14 +659,14 @@ module.exports = function(test_collection, expect) {
       {
         "name": "point_size",
         "type": "linear",
-        "domain": [0, 25993.818410887936],
+        "domain": [0,25993.8282470035],
         "range": [1,20],
         "clamp": true
       },
       {
         "name": "all_color",
         "type": "linear",
-        "domain": [0, 25993.818410887936],
+        "domain": [0,25993.8282470035],
         "range": ["rgb(0,0,255)","rgb(255,0,0)"],
         "clamp": true
       }
@@ -732,7 +732,7 @@ module.exports = function(test_collection, expect) {
       {
         "name": "color",
         "type": "ordinal",
-        "domain": ["pt", "en", "und", "ru", "es", "ar", "in", "sl", "tl", "et", "fr", "ht", "th", "cy", "ja", "tr", "ko", "no", "uk", "vi", "bs", "it", "sv", "sk", "hr", "de", "lv", "ro", "nl", "fi", "lt", "zh", "iw", "hu", "pl", "el", "is", "bg", "da", "hi", "fa", "ta", "ur", "ne", "kn", "sr", "si", "lo", "bn", "ka", "hy", "pa", "te", "iu", "gu", "sd", "ps", "chr", "ckb", "bo"],
+        "domain": ["pt", "en", "und", "ru", "es", "ar", "in", "sl", "tl", "et", "fr", "ht", "th", "cy", "ja", "tr", "ko", "no", "uk", "vi", "bs", "it", "sv", "sk", "hr", "de", "lv", "ro", "nl", "fi", "lt", "zh", "iw", "hu", "pl", "el", "is", "bg", "da", "hi", "fa", "ta", "ur", "ne", "kn", "sr", "si", "lo", "bn", "hy", "ka", "pa", "te", "iu", "sd", "gu", "ps", "chr", "ckb", "bo"],
         "range": [
           "blue",
           "red",

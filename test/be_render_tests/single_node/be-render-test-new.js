@@ -7,13 +7,16 @@ const PathUtils = require("../utils/PathUtils");
 const path = require("path");
 
 const image_compare_reporter = new ImageCompareReporter(chai, {
-  golden_img_dir: "./golden_images"
+  golden_img_dir: "./golden_images",
+  pixel_diff_threshold: 0.05,
+  num_pixels_threshold: 20
 });
 
 const server_config = {
   protocol: "http",
   host: "10.1.0.12",
-  port: 1024,
+  // port: 1024,
+  port: 9090,
   dbName: "mapd",
   user: "mapd",
   password: "HyperInteractive"
