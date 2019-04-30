@@ -22,7 +22,7 @@ const TIME_LABELS = [
   "decade"
 ]
 
-const DEFAULT_NULL_RANGE = "day";
+const DEFAULT_NULL_TIME_RANGE = "day";
 
 export const TIME_LABEL_TO_SECS = {
   second: SEC,
@@ -58,6 +58,9 @@ export const BIN_INPUT_OPTIONS = [
 export function autoBinParams(timeBounds, maxNumBins, reverse) {
   const epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001]
   const timeRange = epochTimeBounds[1] - epochTimeBounds[0] // in seconds
+  if (timeRange === 0) {
+    return DEFAULT_NULL_TIME_RANGE
+  }
   const timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS
   for (let s = 0; s < timeSpans.length; s++) {
     if (
@@ -73,9 +76,6 @@ export function autoBinParams(timeBounds, maxNumBins, reverse) {
 export function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
   const epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001]
   const timeRange = epochTimeBounds[1] - epochTimeBounds[0] // in seconds
-  if (timeRange === 0) {
-    return DEFAULT_NULL_RANGE
-  }
   const timeLabelToSecs = TIME_LABEL_TO_SECS
   if (timeRange / timeLabelToSecs[timeBin] > maxNumBins) {
     return autoBinParams(timeBounds, maxNumBins)
