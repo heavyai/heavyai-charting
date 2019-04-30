@@ -22,6 +22,8 @@ const TIME_LABELS = [
   "decade"
 ]
 
+const DEFAULT_NULL_RANGE = "day";
+
 export const TIME_LABEL_TO_SECS = {
   second: SEC,
   minute: MIN_IN_SECS,
@@ -71,6 +73,9 @@ export function autoBinParams(timeBounds, maxNumBins, reverse) {
 export function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
   const epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001]
   const timeRange = epochTimeBounds[1] - epochTimeBounds[0] // in seconds
+  if (timeRange === 0) {
+    return DEFAULT_NULL_RANGE
+  }
   const timeLabelToSecs = TIME_LABEL_TO_SECS
   if (timeRange / timeLabelToSecs[timeBin] > maxNumBins) {
     return autoBinParams(timeBounds, maxNumBins)
