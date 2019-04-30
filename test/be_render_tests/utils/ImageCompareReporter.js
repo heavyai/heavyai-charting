@@ -112,15 +112,7 @@ function addImageToRow(tr, base_dir, img_info, base_goldenimg_dir) {
   });
 }
 
-function addErrorToRow(
-  tr,
-  error_info,
-  base_dir,
-  config_dir,
-  golden_img_dir,
-  config_prefix,
-  idx
-) {
+function addErrorToRow(tr, error_info, base_dir, config_dir, golden_img_dir, config_prefix, idx) {
   const test_name_item = { type: "td", content: error_info.test_name || " " };
   tr.content.push(test_name_item);
 
@@ -128,10 +120,7 @@ function addErrorToRow(
   if (error_info.config) {
     const relpath = path.relative(base_dir, config_dir);
     const config_filename = config_prefix + `-${idx}.json`;
-    fs.writeFileSync(
-      path.join(config_dir, config_filename),
-      JSON.stringify(error_info.config, null, 2)
-    );
+    fs.writeFileSync(path.join(config_dir, config_filename), JSON.stringify(error_info.config, null, 2));
     test_config_item.content = [
       {
         type: "a",
@@ -213,14 +202,9 @@ function compareImages(src_img, dst_img, options) {
     throw new TypeError(`The ${num_pixels_threshold.name} value should be a number`);
   }
 
-  const total_img_diff = pixelmatch(
-    src_img.data,
-    dst_img.data,
-    diff_img.data,
-    diff_img.width,
-    diff_img.height,
-    { threshold: pixel_diff_threshold }
-  );
+  const total_img_diff = pixelmatch(src_img.data, dst_img.data, diff_img.data, diff_img.width, diff_img.height, {
+    threshold: pixel_diff_threshold
+  });
 
   if (diff_img.filename) {
     fs.writeFileSync(diff_img.filename, PNG.sync.write(diff_img));
@@ -330,10 +314,7 @@ class ImageCompareReporter {
 
   _buildErrorReportHtml() {
     const html_creator = new htmlCreator();
-    html_creator.document.setContent([
-      { type: "head" },
-      { type: "body", attributes: { align: "center" } }
-    ]);
+    html_creator.document.setContent([ { type: "head" }, { type: "body", attributes: { align: "center" } } ]);
 
     const html_head = html_creator.document.findElementByType("head");
     html_head.content = [ { type: "title", content: "Image Comparison Report" } ];
@@ -458,7 +439,9 @@ class ImageCompareReporter {
           golden_image_name instanceof Uint8Array ||
             golden_image_name instanceof TRenderResult ||
             golden_image_name instanceof PNG,
-          `Image to match must be a ${String.name} path, ${Uint8Array.name} buffer, ${TRenderResult.name}, or a ${PNG.name}. It is of type ${typeof golden_image_name}.`
+          `Image to match must be a ${String.name} path, ${Uint8Array.name} buffer, ${TRenderResult.name}, or a PNG. It is of type ${golden_image_name.constructor
+            ? golden_image_name.constructor.name
+            : typeof golden_image_name}.`
         );
       }
       const fileprefix = crypto.randomBytes(5).toString("hex");
@@ -466,22 +449,13 @@ class ImageCompareReporter {
       const src = readImage(image);
       const dst = readImage(golden_image_name);
 
-      src.filename = path.join(
-        image_dir,
-        fileprefix + "-src." + src.format.toLowerCase()
-      );
+      src.filename = path.join(image_dir, fileprefix + "-src." + src.format.toLowerCase());
       copyImage(image, src.filename);
 
-      dst.filename = path.join(
-        image_dir,
-        fileprefix + "-dst." + dst.format.toLowerCase()
-      );
+      dst.filename = path.join(image_dir, fileprefix + "-dst." + dst.format.toLowerCase());
       copyImage(golden_image_name, dst.filename);
 
-      const diff_file = path.join(
-        image_dir,
-        fileprefix + "-diff." + src.format.toLowerCase()
-      );
+      const diff_file = path.join(image_dir, fileprefix + "-diff." + src.format.toLowerCase());
 
       const compare_options = {};
       extend(compare_options, reporter.config);
@@ -493,10 +467,7 @@ class ImageCompareReporter {
       const diff = compare_result.diff_img;
 
       const is_equal =
-        src.format === dst.format &&
-        src.width === dst.width &&
-        src.height === dst.height &&
-        compare_result.is_equal;
+        src.format === dst.format && src.width === dst.width && src.height === dst.height && compare_result.is_equal;
 
       const negate = Boolean(utils.flag(this, "negate"));
       if (negate === is_equal) {
@@ -519,11 +490,9 @@ class ImageCompareReporter {
       this.assert(
         is_equal,
         `Expected input image (${src.format} ${src.width}x${src.height}) to be equal to ${golden_image_name} (${dst.format} ${dst.width}x${dst.height}) (${compare_result.total_img_diff} pixels with difference > ${compare_result
-          .options.pixel_diff_threshold}. Max num pixels threshold: ${compare_result
-          .options.num_pixels_threshold}).`,
+          .options.pixel_diff_threshold}. Max num pixels threshold: ${compare_result.options.num_pixels_threshold}).`,
         `Did not expected input image (${src.format} ${src.width}x${src.height}) to be equal to ${golden_image_name} (${dst.format} ${dst.width}x${dst.height}) (${compare_result.total_img_diff} pixels with a difference < ${compare_result
-          .options.pixel_diff_threshold}. Max num pixels threshold: ${compare_result
-          .options.num_pixels_threshold}).`
+          .options.pixel_diff_threshold}. Max num pixels threshold: ${compare_result.options.num_pixels_threshold}).`
       );
     }
 

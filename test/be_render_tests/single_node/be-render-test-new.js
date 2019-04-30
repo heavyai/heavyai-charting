@@ -27,8 +27,7 @@ const test_collection = new OmniSciServerTestCollection(
   image_compare_reporter,
   server_config,
   {
-    // timeout: 8000
-    timeout: 0
+    timeout: 60000
   }
 );
 
@@ -52,6 +51,9 @@ require("./accumulation_tests/density_accum_test")(test_collection, chai.expect)
 require("./accumulation_tests/line_accum_test")(test_collection, chai.expect);
 
 require("./transform_tests/various_xform_test")(test_collection, chai.expect);
+
+require("./types_tests/decimal_type_test")(test_collection, chai.expect);
+require("./types_tests/null_type_test")(test_collection, chai.expect);
 
 require("./hittest_tests/poly_hittest_test")(test_collection, chai.expect);
 

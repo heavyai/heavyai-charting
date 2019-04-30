@@ -300,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   new MapdCon()
     .protocol("http")
-    .host("localhost")
+    .host("10.1.0.12")
     .port("1024")
     .dbName("mapd")
     .user("mapd")
