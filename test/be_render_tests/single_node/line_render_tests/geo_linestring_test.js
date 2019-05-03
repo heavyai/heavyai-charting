@@ -3,11 +3,10 @@ const RenderVegaTest = require("../../lib/RenderVegaTest");
 const ImageUtils = require("../../utils/ImageUtils");
 
 module.exports = function(test_collection, expect) {
-  const line_test_grp = new OmniSciServerTestGroup({
+  const line_test_grp = test_collection.createTestGroup({
     test_description: `Tests various line renders that build the lines from LINESTRING geo columns`,
     golden_img_dir: `./golden_images`
   });
-  test_collection.addTestGroup(line_test_grp);
 
   // prettier-ignore
   let vega = {

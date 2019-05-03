@@ -3,11 +3,10 @@ const RenderVegaTest = require("../../lib/RenderVegaTest");
 const JsonUtils = require("../../utils/JsonUtils");
 
 module.exports = function(test_collection, expect) {
-  const pct_accum_test_grp = new OmniSciServerTestGroup({
+  const pct_accum_test_grp = test_collection.createTestGroup({
     test_description: `Tests pct accumulation renders`,
     golden_img_dir: `./golden_images`
   });
-  test_collection.addTestGroup(pct_accum_test_grp);
 
   // prettier-ignore
   let vega = {
@@ -261,6 +260,7 @@ module.exports = function(test_collection, expect) {
       }
     ]
   }
+
   pct_accum_test_grp.addTest(
     `Tests updating from a flat render to using pct accumulation`,
     [

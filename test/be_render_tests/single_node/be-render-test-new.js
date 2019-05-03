@@ -15,8 +15,8 @@ const image_compare_reporter = new ImageCompareReporter(chai, {
 const server_config = {
   protocol: "http",
   host: "10.1.0.12",
-  // port: 1024,
-  port: 9090,
+  port: 1024,
+  // port: 9090,
   dbName: "mapd",
   user: "mapd",
   password: "HyperInteractive"
@@ -27,7 +27,8 @@ const test_collection = new OmniSciServerTestCollection(
   image_compare_reporter,
   server_config,
   {
-    timeout: 60000
+    // timeout: 30000
+    timeout: 0
   }
 );
 
@@ -56,8 +57,6 @@ require("./types_tests/decimal_type_test")(test_collection, chai.expect);
 require("./types_tests/null_type_test")(test_collection, chai.expect);
 
 require("./hittest_tests/poly_hittest_test")(test_collection, chai.expect);
-
-// require('./debug_tests/CROOT_distrib_hitest_test')(test_collection, chai.expect);
 
 // passing 0 as the argument to getCallerFile() to get the filename of this file
 // whereas getCallerFile is intended to be used to get the filename of the caller of

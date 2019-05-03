@@ -1,13 +1,13 @@
-const OmniSciServerTestGroup = require('../../lib/OmniSciServerTestGroup');
-const RenderVegaTest = require('../../lib/RenderVegaTest');
+const OmniSciServerTestGroup = require("../../lib/OmniSciServerTestGroup");
+const RenderVegaTest = require("../../lib/RenderVegaTest");
 
 module.exports = function(test_collection, expect) {
-  const symbol_test_grp = new OmniSciServerTestGroup({
+  const symbol_test_grp = test_collection.createTestGroup({
     test_description: `Tests vega updates to the fill/stroke color of the 'symbol' mark type. These tests are meant to validate that any changes to these properties between successive renders work appropriately.`,
     golden_img_dir: `./golden_images`
   });
-  test_collection.addTestGroup(symbol_test_grp);
 
+  // prettier-ignore
   const vega = {
     "width": 800,
     "height": 560,
@@ -65,15 +65,19 @@ module.exports = function(test_collection, expect) {
     ]
   }
 
-  const first_test = new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage('symbol_update_fill_stroke_test_01.png'));
+  const first_test = new RenderVegaTest(vega, (result) =>
+    expect(result).to.matchGoldenImage("symbol_update_fill_stroke_test_01.png")
+  );
   const first_test_name = symbol_test_grp.addTest(
-    'Should render a horizontal hexagonal-binned heatmap of the US with a fillColor driven by # of contributions per bin',
+    "Should render a horizontal hexagonal-binned heatmap of the US with a fillColor driven by # of contributions per bin",
     first_test
   );
 
   vega.marks[0].properties.strokeColor = "black";
   vega.marks[0].properties.strokeWidth = 1;
-  const second_test = new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage('symbol_update_fill_stroke_test_02.png'));
+  const second_test = new RenderVegaTest(vega, (result) =>
+    expect(result).to.matchGoldenImage("symbol_update_fill_stroke_test_02.png")
+  );
   const second_test_name = symbol_test_grp.addTest(
     `Enables stroke rendering on the symbol. Should render the same horizontal hex-binned heatmap as ${first_test_name} with a black stroke of width 1 applied`,
     second_test
@@ -87,10 +91,11 @@ module.exports = function(test_collection, expect) {
   vega.marks[0].properties.strokeColor = "black";
   vega.marks[0].properties.strokeWidth = 1;
   const prev_color_prop = vega.marks[0].properties.fillColor;
-  vega.marks[0].properties.fillColor = 'rgba(0,0,0,0)';
+  vega.marks[0].properties.fillColor = "rgba(0,0,0,0)";
   const prev_color_scale = vega.scales.pop();
-  const black_stroke_only_test = 
-    new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage('symbol_update_fill_stroke_test_03.png'))
+  const black_stroke_only_test = new RenderVegaTest(vega, (result) =>
+    expect(result).to.matchGoldenImage("symbol_update_fill_stroke_test_03.png")
+  );
   const black_stroke_only_test_name = symbol_test_grp.addTest(
     `Enables stroking and disables fill on the symbol. Should render the same horizontal hex-binned heatmap as ${first_test_name} but with only stroking applied.`,
     black_stroke_only_test
@@ -100,7 +105,9 @@ module.exports = function(test_collection, expect) {
   vega.marks[0].properties.strokeColor = prev_color_prop;
   symbol_test_grp.addTest(
     `Now colors the strokes using the color scale applied the fillColor in ${first_test_name}`,
-    new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage('symbol_update_fill_stroke_test_04.png'))
+    new RenderVegaTest(vega, (result) =>
+      expect(result).to.matchGoldenImage("symbol_update_fill_stroke_test_04.png")
+    )
   );
 
   symbol_test_grp.addTest(
@@ -111,5 +118,5 @@ module.exports = function(test_collection, expect) {
   symbol_test_grp.addTest(
     `Enables stroke and disables fill on the symbol. Should render the same image as ${black_stroke_only_test_name}`,
     black_stroke_only_test
-  )
+  );
 };

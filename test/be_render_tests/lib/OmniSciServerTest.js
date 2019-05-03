@@ -1,5 +1,5 @@
-const JsonUtils = require('../utils/JsonUtils');
-const TMapDException = require('./TestResultWrapper').TMapDException;
+const JsonUtils = require("../utils/JsonUtils");
+const TMapDException = require("./TestResultWrapper").TMapDException;
 
 class OmniSciServerTest {
   constructor(args, expectation_callback) {
@@ -21,14 +21,18 @@ class OmniSciServerTest {
     const that = this;
     return new Promise((resolve, reject) => {
       that.executeTest(test_state.server_connection, (error, result) => {
-        if (error) {
-          resolve(
-            that.expectation(
-              new TMapDException(test_name, that.command, that.args, error)
-            )
-          );
-        } else {
-          resolve(that.expectation(that.createResultWrapper(test_name, result)));
+        try {
+          if (error) {
+            resolve(
+              that.expectation(
+                new TMapDException(test_name, that.command, that.args, error)
+              )
+            );
+          } else {
+            resolve(that.expectation(that.createResultWrapper(test_name, result)));
+          }
+        } catch (error) {
+          reject(error);
         }
       });
     });

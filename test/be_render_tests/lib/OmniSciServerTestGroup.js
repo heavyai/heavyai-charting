@@ -1,54 +1,22 @@
 const OmniSciServerTestRunner = require("./OmniSciServerTestRunner");
 const MochaOptions = require("./MochaOptions");
+const MochaCallback = require("./MochaCallback");
 const PathUtils = require("../utils/PathUtils");
 const PrefixMgr = require("./PrefixMgr");
 const path = require("path");
 
-function find_absolute_golden_img_dir_path(golden_img_dir) {
+function find_absolute_golden_img_dir_path(golden_img_dir, steps) {
   if (!path.isAbsolute(golden_img_dir)) {
     // getting the base path of the file whose code called this function
-    return path.join(PathUtils.getCallerPath(2), golden_img_dir);
+    return path.join(PathUtils.getCallerPath(steps + 1), golden_img_dir);
   }
   return golden_img_dir;
 }
 
-class MochaCallback {
-  constructor(callback, options) {
-    this.callback = callback;
-    this.mocha_options = new MochaOptions(options);
-  }
-
-  buildMochaCallback(test_state) {
-    const that = this;
-    return function() {
-      that.mocha_options.applyOptions(this);
-      return that.callback(test_state);
-    };
-  }
-}
-
-function unpack_callback_and_options(callback_opts) {
-  let opts = callback_opts;
-  if (typeof opts === "function") {
-    opts = { callback: opts };
-  }
-  if (typeof opts !== "object") {
-    throw new Error(
-      `Callback is invalid. It either needs to be a function taking a single test_state argument or an object with the following schema: ${JSON.stringify(
-        { callback: "function", options: { timeout: "number" } }
-      )}. The supplied object is of type ${callback_opts.constructor
-        ? callback_opts.constructor.name
-        : typeof callback_opts}.`
-    );
-  }
-  return opts;
-}
-
-const prefix_mgr = new PrefixMgr();
 class OmniSciServerTestGroup {
-  constructor(config) {
+  constructor(prefix_mgr, config, steps = 1) {
     const {
-      test_prefix = `${path.basename(PathUtils.getCallerFile(), ".js")}`,
+      test_prefix = `${path.basename(PathUtils.getCallerFile(steps), ".js")}`,
       test_description,
       golden_img_dir,
       before,
@@ -57,7 +25,8 @@ class OmniSciServerTestGroup {
       afterEach
     } = config;
 
-    this._prefix = prefix_mgr.getPrefix(test_prefix);
+    this._prefix_mgr = prefix_mgr;
+    this._prefix = test_prefix;
 
     if (!test_description) {
       throw new Error(
@@ -66,8 +35,14 @@ class OmniSciServerTestGroup {
     }
     this._desc = test_description;
 
-    this._golden_img_dir_override = find_absolute_golden_img_dir_path(golden_img_dir);
+    if (golden_img_dir) {
+      this._golden_img_dir_override = find_absolute_golden_img_dir_path(
+        golden_img_dir,
+        steps
+      );
+    }
 
+    this._sub_grps = new Map();
     this._tests = new Map();
     this._mocha_opts = new MochaOptions(config);
 
@@ -91,46 +66,46 @@ class OmniSciServerTestGroup {
       }
     };
 
-    const { callback: before_cb, options: before_opts } = unpack_callback_and_options(
-      before || {}
+    const {
+      callback: before_cb,
+      options: before_opts,
+      description: before_desc
+    } = MochaCallback.unpackCallbackAndOpts(before || {});
+    this._beforeCallback = new MochaCallback(
+      async function(test_state) {
+        await before_callback_internal(test_state);
+        if (before_cb) {
+          await before_cb(test_state);
+        }
+      },
+      before_opts,
+      before_desc
     );
-    this._beforeCallback = new MochaCallback(async function(test_state) {
-      await before_callback_internal(test_state);
-      if (before_cb) {
-        await before_cb(test_state);
-      }
-    }, before_opts);
 
-    const { callback: after_cb, options: after_opts } = unpack_callback_and_options(
-      after || {}
+    const {
+      callback: after_cb,
+      options: after_opts,
+      description: after_desc
+    } = MochaCallback.unpackCallbackAndOpts(after || {});
+    this._afterCallback = new MochaCallback(
+      async function(test_state) {
+        // need to be sure to do our internal teardown after the custom teardown
+        // teardown needs to be done in the reverse order of initialization
+        if (after_cb) {
+          await after_cb(test_state);
+        }
+        await after_callback_internal(test_state);
+      },
+      after_opts,
+      after_desc
     );
-    this._afterCallback = new MochaCallback(async function(test_state) {
-      // need to be sure to do our internal teardown after the custom teardown
-      // teardown needs to be done in the reverse order of initialization
-      if (after_cb) {
-        await after_cb(test_state);
-      }
-      await after_callback_internal(test_state);
-    }, after_opts);
 
     if (beforeEach) {
-      let {
-        callback: beforeEach_cb,
-        options: beforeEach_opts
-      } = unpack_callback_and_options(beforeEach);
-      this._beforeEachCallback = new MochaCallback(async function(test_state) {
-        await beforeEach_cb(test_state);
-      }, beforeEach_opts);
+      this._beforeEachCallback = MochaCallback.buildDefaultMochaCallback(beforeEach);
     }
 
     if (afterEach) {
-      let {
-        callback: afterEach_cb,
-        options: afterEach_opts
-      } = unpack_callback_and_options(afterEach);
-      this._afterEachCallback = new MochaCallback(async function(test_state) {
-        await afterEach_cb(test_state);
-      }, afterEach_opts);
+      this._afterEachCallback = MochaCallback.buildDefaultMochaCallback(afterEach);
     }
   }
 
@@ -151,22 +126,47 @@ class OmniSciServerTestGroup {
     return test_name;
   }
 
+  createTestSubGroup(sub_grp_name, sub_grp_config) {
+    if (!(sub_grp_name instanceof String) || typeof sub_grp_name !== "string") {
+      sub_grp_config = sub_grp_name;
+      sub_grp_name =
+        this._prefix + `_${String.fromCharCode("a".charCodeAt(0) + this._sub_grps.size)}`;
+    } else {
+      sub_grp_name = test._prefix_mgr.getPrefix(sub_grp_name);
+    }
+    if (!sub_grp_config.test_prefix) {
+      sub_grp_config.test_prefix = sub_grp_name;
+    } else {
+      sub_grp_config.test_prefix = this._prefix_mgr.getPrefix(sub_grp_config.test_prefix);
+    }
+    // using 2 here for the 'steps', as the test group needs to resolve any relative paths and
+    // such from 2 levels up the call stack
+    const test_group = new OmniSciServerTestGroup(this._prefix_mgr, sub_grp_config, 2);
+    this._sub_grps.set(sub_grp_name, test_group);
+    return test_group;
+  }
+
   runMochaTests(test_name, test_state) {
     const that = this;
     describe(`${test_name}: ${this._desc}`, function() {
       that._mocha_opts.applyOptions(this);
-      before(that._beforeCallback.buildMochaCallback(test_state));
-      after(that._afterCallback.buildMochaCallback(test_state));
+      before(...that._beforeCallback.buildMochaCallback(test_state));
+      after(...that._afterCallback.buildMochaCallback(test_state));
 
       if (that._beforeEachCallback instanceof MochaCallback) {
-        beforeEach(that._beforeEachCallback.buildMochaCallback(test_state));
+        beforeEach(...that._beforeEachCallback.buildMochaCallback(test_state));
       }
 
       if (that._afterEachCallback instanceof MochaCallback) {
-        afterEach(that._afterEachCallback.buildMochaCallback(test_state));
+        afterEach(...that._afterEachCallback.buildMochaCallback(test_state));
       }
 
-      const itr = that._tests[Symbol.iterator]();
+      let itr = that._sub_grps[Symbol.iterator]();
+      for (const [ grp_name, grp ] of itr) {
+        grp.runMochaTests(grp_name, test_state);
+      }
+
+      itr = that._tests[Symbol.iterator]();
       for (const [ test_name, test ] of itr) {
         test.runMochaTest(test_name, test_state);
       }

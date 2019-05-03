@@ -4,11 +4,10 @@ const JsonUtils = require("../../utils/JsonUtils");
 const ImageUtils = require("../../utils/ImageUtils");
 
 module.exports = function(test_collection, expect) {
-  const update_data_test_grp = new OmniSciServerTestGroup({
+  const update_data_test_grp = test_collection.createTestGroup({
     test_description: `Tests various vega renders against the flights dataset. These tests are meant to validate that different queries render appropriately using the flights dataset as the source.`,
     golden_img_dir: `./golden_images`
   });
-  test_collection.addTestGroup(update_data_test_grp);
 
   // prettier-ignore
   let vega = {
@@ -74,15 +73,19 @@ module.exports = function(test_collection, expect) {
     expect(result).to.matchGoldenImage("flights_query_test_01.png")
   );
   const proj_test_name = update_data_test_grp.addTest(
-    `Executes a density-accumulation render using legacy projection of an in-situ query. Sql: "${vega.data[0].sql}"`,
+    `Executes a density-accumulation render using legacy projection of an in-situ query. Sql: "${vega
+      .data[0].sql}"`,
     proj_test
   );
 
   vega.data[0].sql =
     "SELECT dest as key0, AVG(conv_4326_900913_x(dest_lon)) as x, AVG(conv_4326_900913_y(dest_lat)) as y FROM flights WHERE ((dest_lon >= -176.64601018675475 AND dest_lon <= 145.6212456623163) AND (dest_lat >= -50.09019104598998 AND dest_lat <= 83.97897167533588)) GROUP BY key0";
   update_data_test_grp.addTest(
-    `Tests density-accumulation render with a data update from an in-situ query in test ${proj_test_name} to a non-in-situ query.  Sql: ${vega.sql}`,
-    new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage("flights_query_test_02.png"))
+    `Tests density-accumulation render with a data update from an in-situ query in test ${proj_test_name} to a non-in-situ query.  Sql: ${vega
+      .data[0].sql}`,
+    new RenderVegaTest(vega, (result) =>
+      expect(result).to.matchGoldenImage("flights_query_test_02.png")
+    )
   );
 
   const prev_test_name = update_data_test_grp.addTest(
@@ -149,8 +152,11 @@ module.exports = function(test_collection, expect) {
   // TODO(croot): look at other means of making this deterministic: i.e. using z-index
   // (once we get around to supporting z-index)
   update_data_test_grp.addTest(
-    `Tests an ordinal scale colored by airline against using an in-situ projection query. Query: ${vega.data[0].sql}.`,
-    new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage("flights_query_test_03.png"))
+    `Tests an ordinal scale colored by airline against using an in-situ projection query. Query: ${vega
+      .data[0].sql}.`,
+    new RenderVegaTest(vega, (result) =>
+      expect(result).to.matchGoldenImage("flights_query_test_03.png")
+    )
   );
 
   vega.data[0].sql =
@@ -159,14 +165,26 @@ module.exports = function(test_collection, expect) {
     name: "pointmap_fillColor",
     type: "quantize",
     domain: [ 1, 17 ],
-    range: [ "#115f9a", "#1984c5", "#22a7f0", "#48b5c4", "#76c68f", "#a6d75b", "#c9e52f", "#d0ee11", "#d0f400" ],
+    range: [
+      "#115f9a",
+      "#1984c5",
+      "#22a7f0",
+      "#48b5c4",
+      "#76c68f",
+      "#a6d75b",
+      "#c9e52f",
+      "#d0ee11",
+      "#d0f400"
+    ],
     clamp: true
   };
 
   update_data_test_grp.addTest(
     `Tests using a quantize scale to color points by an APPROX_COUNT_DISTINCT on a dict-encoded str column. Query: ${vega
       .data[0].sql}.`,
-    new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage("flights_query_test_04.png"))
+    new RenderVegaTest(vega, (result) =>
+      expect(result).to.matchGoldenImage("flights_query_test_04.png")
+    )
   );
 
   vega.data[0].sql =
@@ -216,9 +234,11 @@ module.exports = function(test_collection, expect) {
   vega.marks[0].properties.height = vega.marks[0].properties.width;
 
   update_data_test_grp.addTest(
-    `Tests using a ordinal scale to color points by a dict-encoded str column in a group-by query. Query: ${vega.data[0]
-      .sql}.`,
-    new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage("flights_query_test_05.png"))
+    `Tests using a ordinal scale to color points by a dict-encoded str column in a group-by query. Query: ${vega
+      .data[0].sql}.`,
+    new RenderVegaTest(vega, (result) =>
+      expect(result).to.matchGoldenImage("flights_query_test_05.png")
+    )
   );
 
   // airtime/arrdelay columns are ints, but the x/y axes scales use

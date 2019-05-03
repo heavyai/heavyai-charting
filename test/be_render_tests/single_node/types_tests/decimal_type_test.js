@@ -2,39 +2,38 @@ const OmniSciServerTestGroup = require("../../lib/OmniSciServerTestGroup");
 const RenderVegaTest = require("../../lib/RenderVegaTest");
 
 module.exports = function(test_collection, expect) {
-  const decimal_type_test_grp = new OmniSciServerTestGroup({
+  const decimal_type_test_grp = test_collection.createTestGroup({
     test_description: `Tests pct accumulation renders`,
     golden_img_dir: `./golden_images`
   });
-  test_collection.addTestGroup(decimal_type_test_grp);
 
   // prettier-ignore
   const vega1 = {
-    "width": 1359,
-    "height": 895,
+    "width": 1334,
+    "height": 894,
     "data": [
       {
         "name": "pointmap",
-        "sql": "SELECT conv_4326_900913_x(Lon) as x, conv_4326_900913_y(Lat) as y, Speed as color, TrackAngle as size, airplanes_20161214.rowid FROM airplanes_20161214 WHERE MOD(airplanes_20161214.rowid * 265445761, 4294967296) < 292525826 AND ((Lon >= -124.38999999999945 AND Lon <= -66.9400000000007) AND (Lat >= 22.33928769805452 AND Lat <= 51.800212016720224))"
+        "sql": "SELECT conv_4326_900913_x(Lon) as x, conv_4326_900913_y(Lat) as y, Speed as color, TrackAngle as size, rowid FROM airplanes_20161214 WHERE (Lon >= -0.7532478324294232 AND Lon <= 33.75388153497627) AND (Lat >= 49.518975394967526 AND Lat <= 62.3295016748269)"
       }
     ],
     "scales": [
       {
         "name": "x",
         "type": "linear",
-        "domain": [ -13847031.45787536, -7451726.712679397 ],
+        "domain": [ -83851.16513550827, 3757464.904246995 ],
         "range": "width"
       },
       {
         "name": "y",
         "type": "linear",
-        "domain": [ 2552309.8200721354, 6764081.524974389 ],
+        "domain": [ 6363383.873211006, 8937699.140096156 ],
         "range": "height"
       },
       {
         "name": "pointmap_size",
         "type": "quantize",
-        "domain": [0, 359.9],
+        "domain": [ 0, 359.9 ],
         "range": [ 1, 2, 4, 8, 14, 20 ]
       }
     ],
@@ -42,24 +41,25 @@ module.exports = function(test_collection, expect) {
     "marks": [
       {
         "type": "symbol",
-        "from": {
-          "data": "pointmap"
-        },
+        "from": { "data": "pointmap" },
         "properties": {
           "xc": { "scale": "x", "field": "x" },
           "yc": { "scale": "y", "field": "y" },
           "fillColor": "blue",
           "shape": "circle",
           "width": { "scale": "pointmap_size", "field": "size" },
-          "height": { "scale": "pointmap_size", "field": "size" },
+          "height": { "scale": "pointmap_size", "field": "size" }
         }
       }
     ]
-  }
+  };
+
   // with the airplanes_20161214 table, the TrackAngle column is a DECIMAL(12,3) column
   decimal_type_test_grp.addTest(
     `Tests that a DECIMAL(12,3) column works in a quantize scale.`,
-    new RenderVegaTest(vega1, (result) => expect(result).to.matchGoldenImage("decimal_type_test_01.png"))
+    new RenderVegaTest(vega1, (result) =>
+      expect(result).to.matchGoldenImage("decimal_type_test_01.png")
+    )
   );
 
   // prettier-ignore
@@ -111,7 +111,9 @@ module.exports = function(test_collection, expect) {
   // with the nba table, the original_x/y are DECIMAL(14,7)
   decimal_type_test_grp.addTest(
     `Tests that a DECIMAL(14,7) column works in a linear scale.`,
-    new RenderVegaTest(vega2, (result) => expect(result).to.matchGoldenImage("decimal_type_test_02.png"))
+    new RenderVegaTest(vega2, (result) =>
+      expect(result).to.matchGoldenImage("decimal_type_test_02.png")
+    )
   );
 
   // prettier-ignore
@@ -162,6 +164,8 @@ module.exports = function(test_collection, expect) {
   // with the nba table, the original_x/y are DECIMAL(14,7)
   decimal_type_test_grp.addTest(
     `Tests that a DECIMAL(14,7) column works in a threshold scale with a point mark.`,
-    new RenderVegaTest(vega3, (result) => expect(result).to.matchGoldenImage("decimal_type_test_03.png"))
+    new RenderVegaTest(vega3, (result) =>
+      expect(result).to.matchGoldenImage("decimal_type_test_03.png")
+    )
   );
 };

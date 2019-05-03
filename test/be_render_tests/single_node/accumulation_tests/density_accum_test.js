@@ -3,11 +3,10 @@ const RenderVegaTest = require("../../lib/RenderVegaTest");
 const JsonUtils = require("../../utils/JsonUtils");
 
 module.exports = function(test_collection, expect) {
-  const density_accum_test_grp = new OmniSciServerTestGroup({
+  const density_accum_test_grp = test_collection.createTestGroup({
     test_description: `Tests density accumulation renders`,
     golden_img_dir: `./golden_images`
   });
-  test_collection.addTestGroup(density_accum_test_grp);
 
   // prettier-ignore
   let vega = {

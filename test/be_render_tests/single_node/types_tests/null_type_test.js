@@ -2,11 +2,10 @@ const OmniSciServerTestGroup = require("../../lib/OmniSciServerTestGroup");
 const RenderVegaTest = require("../../lib/RenderVegaTest");
 
 module.exports = function(test_collection, expect) {
-  const null_type_test_grp = new OmniSciServerTestGroup({
+  const null_type_test_grp = test_collection.createTestGroup({
     test_description: `Tests pct accumulation renders`,
     golden_img_dir: `./golden_images`
   });
-  test_collection.addTestGroup(null_type_test_grp);
 
   // prettier-ignore
   const vega1 = {
@@ -84,7 +83,9 @@ module.exports = function(test_collection, expect) {
   // with the airplanes_20161214 table, the TrackAngle column is a DECIMAL(12,3) column
   null_type_test_grp.addTest(
     `Tests that null values are properly caught in a quantize scale.`,
-    new RenderVegaTest(vega1, (result) => expect(result).to.matchGoldenImage("null_type_test_01.png"))
+    new RenderVegaTest(vega1, (result) =>
+      expect(result).to.matchGoldenImage("null_type_test_01.png")
+    )
   );
 
   // with the airplanes_20161214 table, the TrackAngle column is a DECIMAL(12,3) column
@@ -157,20 +158,20 @@ module.exports = function(test_collection, expect) {
     new RenderVegaTest(
       // prettier-ignore
       {
-        "width": 727,
-        "height": 909,
+        "width": 797,
+        "height": 923,
         "data": [
           {
             "name": "pointmap",
-            "sql": "SELECT lon as x, lat as y, location, rowid FROM tweets_2017_may WHERE location IS NOT NULL AND MOD(rowid * 2654435761, 4294967296) < 282311954" // renders approx 4M points
+            "sql": "SELECT lon as x, lat as y, location, rowid FROM tweets_2017_may WHERE location IS NOT NULL AND ((lon between 124.77186745875338 and 145.45132098360227) AND (lat between 28.388687236422726 and 47.13432800091127))"
           }
         ],
         "scales": [
           {
             "name": "null_size",
             "type": "ordinal",
-            "domain": ["United States", "London", "Brasil", "India"],
-            "range": [2, 4, 6, 8],
+            "domain": ["United States","London","Brasil","India"],
+            "range": [2,4,6,8],
             "nullValue": 20,
             "default": 1
           }
@@ -180,32 +181,24 @@ module.exports = function(test_collection, expect) {
             "name": "merc",
             "type": "mercator",
             "bounds": {
-              "x": [-127.79296874999972, 127.79296874999972],
-              "y": [-80.09909104616133, 84.99998999999994]
+              "x": [124.77186745875338,145.45132098360227],
+              "y": [28.388687236422726,47.13432800091127]
             }
           }
         ],
         "marks": [
           {
             "type": "symbol",
-            "from": {
-              "data": "pointmap"
-            },
+            "from": {"data": "pointmap"},
             "properties": {
-              "xc": {
-                "field": "x"
-              },
-              "yc": {
-                "field": "y"
-              },
-              "width": { "scale": "null_size", "field": "location" },
-              "height": { "scale": "null_size", "field": "location" },
+              "xc": {"field": "x"},
+              "yc": {"field": "y"},
+              "width": {"scale": "null_size","field": "location"},
+              "height": {"scale": "null_size","field": "location"},
               "fillColor": "red",
               "shape": "circle"
             },
-            "transform": {
-              "projection": "merc"
-            }
+            "transform": {"projection": "merc"}
           }
         ]
       },
@@ -540,7 +533,7 @@ module.exports = function(test_collection, expect) {
   );
 
   null_type_test_grp.addTest(
-    `Tests decimal column with nulls in a quantize scale..`,
+    `Tests decimal column with nulls in a quantize scale.`,
     new RenderVegaTest(
       // prettier-ignore
       {
@@ -549,7 +542,7 @@ module.exports = function(test_collection, expect) {
         "data": [
           {
             "name": "points",
-            "sql": "SELECT (-367.239050286676 + (CAST(rowid AS FLOAT) / 599482.0) * (336.23512241134455 - -367.239050286676)) as x, (-159.0039062616728 + (1.0 - CAST(rowid AS FLOAT) / 599482.0) * (1157.8997450290199 - -159.0039062616728)) as y, original_x, rowid FROM nba WHERE original_y IS NULL"
+            "sql": "SELECT (-367.239050286676 + (CAST(play_id AS FLOAT) / 821.0) * (336.23512241134455 - -367.239050286676)) as x, (-159.0039062616728 + (CAST(home_score as FLOAT) / 149.0) * (1157.8997450290199 - -159.0039062616728)) as y, original_x, rowid FROM nba WHERE original_y IS NULL"
           }
         ],
         "scales": [

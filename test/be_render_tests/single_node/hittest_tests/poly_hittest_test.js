@@ -3,11 +3,10 @@ const RenderVegaTest = require("../../lib/RenderVegaTest");
 const GetResultRowForPixelTest = require("../../lib/GetResultRowForPixelTest");
 
 module.exports = function(test_collection, expect) {
-  const zipcode_hittest_grp = new OmniSciServerTestGroup({
+  const zipcode_hittest_grp = test_collection.createTestGroup({
     test_description: `Tests a handful of vega renders and hit-testing against a zipcode poly table`,
     golden_img_dir: `./golden_images`
   });
-  test_collection.addTestGroup(zipcode_hittest_grp);
 
   // prettier-ignore
   const vega = {
@@ -63,7 +62,9 @@ module.exports = function(test_collection, expect) {
   let prev_test_name = zipcode_hittest_grp.addTest(
     `Should render all zipcode polygons red using a legacy poly cache render and successfully hit-test the zipcode '94117'.`,
     [
-      new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage("poly_hittest_test_01.png")),
+      new RenderVegaTest(vega, (result) =>
+        expect(result).to.matchGoldenImage("poly_hittest_test_01.png")
+      ),
       zipcode_getresultrow_test
     ]
   );

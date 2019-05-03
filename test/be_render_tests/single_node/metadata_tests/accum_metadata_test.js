@@ -2,11 +2,10 @@ const OmniSciServerTestGroup = require("../../lib/OmniSciServerTestGroup");
 const RenderVegaTest = require("../../lib/RenderVegaTest");
 
 module.exports = function(test_collection, expect) {
-  const accum_metadata_test_grp = new OmniSciServerTestGroup({
+  const accum_metadata_test_grp = test_collection.createTestGroup({
     test_description: `Tests a handful of vega renders to validate metadata returned from accumulation renders`,
     golden_img_dir: `./golden_images`
   });
-  test_collection.addTestGroup(accum_metadata_test_grp);
 
   accum_metadata_test_grp.addTest(
     `Tests vega metadata from a simple density accumulation render using min/max pixel count range`,

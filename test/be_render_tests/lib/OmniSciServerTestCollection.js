@@ -1,9 +1,9 @@
-const OmniSciServerTestStateStack = require('./OmniSciServerTestStateStack');
-const OmniSciServerTestGroup = require('./OmniSciServerTestGroup');
-const MochaOptions = require('./MochaOptions');
-const PathUtils = require('../utils/PathUtils');
-const PrefixMgr = require('./PrefixMgr');
-const path = require('path');
+const OmniSciServerTestStateStack = require("./OmniSciServerTestStateStack");
+const OmniSciServerTestGroup = require("./OmniSciServerTestGroup");
+const MochaOptions = require("./MochaOptions");
+const PathUtils = require("../utils/PathUtils");
+const PrefixMgr = require("./PrefixMgr");
+const path = require("path");
 
 const prefix_mgr = new PrefixMgr();
 class OmniSciServerTestCollection {
@@ -39,31 +39,30 @@ class OmniSciServerTestCollection {
     return this.state.server_connection;
   }
 
-  addTestGroup(test_name, test_group) {
-    if (!(test_name instanceof String) || typeof test_name !== 'string') {
-      test_group = test_name;
-      test_name = path.basename(PathUtils.getCallerFile(), '.js');
+  createTestGroup(test_name, test_config) {
+    if (!(test_name instanceof String) || typeof test_name !== "string") {
+      test_config = test_name;
+      test_name = path.basename(PathUtils.getCallerFile(), ".js");
     }
-    if (!(test_group instanceof OmniSciServerTestGroup)) {
-      throw new Error(
-        `Only ${OmniSciServerTestGroup.name} classes are currently supported test groups. Test group is of type ${typeof test_group}`
-      );
-    }
+    // using 2 here for the 'steps', as the test group needs to resolve any relative paths and
+    // such from 2 levels up the call stack
+    const test_group = new OmniSciServerTestGroup(prefix_mgr, test_config, 2);
     this.test_groups.set(prefix_mgr.getPrefix(test_name), test_group);
+    return test_group;
   }
 
   runMochaTests(test_name) {
     const that = this;
-    describe(`${test_name ? test_name + ': ' : ''}${this.desc}`, function() {
+    describe(`${test_name ? test_name + ": " : ""}${this.desc}`, function() {
       that._mocha_opts.applyOptions(this);
 
       before(that.beforeCallback);
       after(that.afterCallback);
 
-      if (that.beforeEachCallback === 'function') {
+      if (that.beforeEachCallback === "function") {
         beforeEach(that.beforeEachCallback);
       }
-      if (that.afterEachCallback === 'function') {
+      if (that.afterEachCallback === "function") {
         afterEach(that.afterEachCallback);
       }
 

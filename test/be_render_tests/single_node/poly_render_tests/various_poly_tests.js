@@ -1,9 +1,12 @@
-const OmniSciServerTestGroup = require("../../lib/OmniSciServerTestGroup");
 const RenderVegaTest = require("../../lib/RenderVegaTest");
-const SqlExecuteTest = require("../../lib/SqlExecuteTest");
 const ImageUtils = require("../../utils/ImageUtils");
 
 module.exports = function(test_collection, expect) {
+  const test_grp = test_collection.createTestGroup({
+    test_description: `Tests a handful of various poly renders testing different specializations`,
+    golden_img_dir: `./golden_images`
+  });
+
   // prettier-ignore
   let vega = {
     "width": 729,
@@ -96,12 +99,6 @@ module.exports = function(test_collection, expect) {
       }
     ]
   };
-
-  const test_grp = new OmniSciServerTestGroup({
-    test_description: `Tests a handful of various poly renders testing different specializations`,
-    golden_img_dir: `./golden_images`
-  });
-  test_collection.addTestGroup(test_grp);
 
   test_grp.addTest(
     `Tests an empty geo-join query with a vega transform. Should render an empty ${vega.width}x${vega.height} image`,

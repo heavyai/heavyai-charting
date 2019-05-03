@@ -1,10 +1,10 @@
-const JsonUtils = require('../utils/JsonUtils');
-const OmniSciServerTest = require('./OmniSciServerTest');
-const TRenderResult = require('./TestResultWrapper').TRenderResult;
+const JsonUtils = require("../utils/JsonUtils");
+const OmniSciServerTest = require("./OmniSciServerTest");
+const TRenderResult = require("./TestResultWrapper").TRenderResult;
 
 class RenderVegaTest extends OmniSciServerTest {
   constructor(opts, expectation) {
-    if (opts instanceof String || typeof opts === 'string') {
+    if (opts instanceof String || typeof opts === "string") {
       // a vega was passed
       opts = { vega: JSON.parse(opts) };
     } else if (opts instanceof Object && opts.vega === undefined) {
@@ -21,7 +21,7 @@ class RenderVegaTest extends OmniSciServerTest {
   }
 
   get command() {
-    return 'renderVega';
+    return "renderVega";
   }
   get widget_id() {
     return this.args.widget_id;
