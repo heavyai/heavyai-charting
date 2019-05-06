@@ -1,4 +1,5 @@
 const MochaOptions = require("./MochaOptions");
+const ObjUtils = require("../utils/ObjUtils");
 
 class MochaCallback {
   constructor(callback, options, description) {
@@ -34,18 +35,14 @@ class MochaCallback {
       throw new Error(
         `Callback is invalid. It either needs to be a function taking a single test_state argument or an object with the following schema: ${JSON.stringify(
           { callback: "function", options: { timeout: "number" } }
-        )}. The supplied object is of type ${callback_opts.constructor
-          ? callback_opts.constructor.name
-          : typeof callback_opts}.`
+        )}. The supplied object is of type ${ObjUtils.toString(callback_opts)}.`
       );
     }
     return opts;
   }
 
   static buildDefaultMochaCallback(callback_config) {
-    const { callback, options, description } = MochaCallback.unpackCallbackAndOpts(
-      callback_config
-    );
+    const { callback, options, description } = MochaCallback.unpackCallbackAndOpts(callback_config);
     return new MochaCallback(
       async function(test_state) {
         await before_cb(test_state);

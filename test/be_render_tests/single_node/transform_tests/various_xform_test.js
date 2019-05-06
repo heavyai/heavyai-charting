@@ -3,7 +3,7 @@ const RenderVegaTest = require("../../lib/RenderVegaTest");
 const JsonUtils = require("../../utils/JsonUtils");
 const ImageUtils = require("../../utils/ImageUtils");
 
-module.exports = function(test_collection, expect) {
+module.exports = function(test_collection, expect, is_distributed) {
   const various_xform_test_grp = test_collection.createTestGroup({
     test_description: `Tests pct accumulation renders`,
     golden_img_dir: `./golden_images`
@@ -310,36 +310,33 @@ module.exports = function(test_collection, expect) {
     ]
   }
 
-  various_xform_test_grp.addTest(
-    `Test a multilayer render using transforms for each layer`,
-    [
-      new RenderVegaTest(vega3, (result) => (prev_result = result)),
-      new RenderVegaTest(
-        // prettier-ignore
-        ((vega) => {
+  various_xform_test_grp.addTest(`Test a multilayer render using transforms for each layer`, [
+    new RenderVegaTest(vega3, (result) => (prev_result = result)),
+    new RenderVegaTest(
+      // prettier-ignore
+      ((vega) => {
           const new_vega = JsonUtils.jsonCopy(vega);
           add_stddev_xform_stats_to_vega(new_vega, "heatmap_query", "color", "heatstats", ["heat_color"]);
           add_stddev_xform_stats_to_vega(new_vega, "pointmap_query", "followers", "pointstats", ["point_size", "point_color"]);
           return new_vega;
         })(vega3),
-        (result) => {
-          expect(result).to.matchImage(prev_result);
-          expect(result).to.have.vega_metadata.with
-            .scale(vega3.scales[2].name)
-            .with.property("domain")
-            .that.is.closeTo(vega3.scales[2].domain, 0.000000001);
-          expect(result).to.have.vega_metadata.with
-            .scale(vega3.scales[3].name)
-            .with.property("domain")
-            .that.is.closeTo(vega3.scales[3].domain, 0.000000001);
-          expect(result).to.have.vega_metadata.with
-            .scale(vega3.scales[4].name)
-            .with.property("domain")
-            .that.is.closeTo(vega3.scales[4].domain, 0.000000001);
-        }
-      )
-    ]
-  );
+      (result) => {
+        expect(result).to.matchImage(prev_result);
+        expect(result).to.have.vega_metadata.with
+          .scale(vega3.scales[2].name)
+          .with.property("domain")
+          .that.is.closeTo(vega3.scales[2].domain, 0.000000001);
+        expect(result).to.have.vega_metadata.with
+          .scale(vega3.scales[3].name)
+          .with.property("domain")
+          .that.is.closeTo(vega3.scales[3].domain, 0.000000001);
+        expect(result).to.have.vega_metadata.with
+          .scale(vega3.scales[4].name)
+          .with.property("domain")
+          .that.is.closeTo(vega3.scales[4].domain, 0.000000001);
+      }
+    )
+  ]);
 
   // prettier-ignore
   const vega4 = {
@@ -427,36 +424,33 @@ module.exports = function(test_collection, expect) {
     ]
   }
 
-  various_xform_test_grp.addTest(
-    `Test a second multilayer render using transforms for each layer`,
-    [
-      new RenderVegaTest(vega4, (result) => (prev_result = result)),
-      new RenderVegaTest(
-        // prettier-ignore
-        ((vega) => {
+  various_xform_test_grp.addTest(`Test a second multilayer render using transforms for each layer`, [
+    new RenderVegaTest(vega4, (result) => (prev_result = result)),
+    new RenderVegaTest(
+      // prettier-ignore
+      ((vega) => {
           const new_vega = JsonUtils.jsonCopy(vega);
           add_stddev_xform_stats_to_vega(new_vega, "heatmap_query", "color", "heatstats", ["heat_color"]);
           add_stddev_xform_stats_to_vega(new_vega, "pointmap_query", "followers", "pointstats", ["point_size", "point_color"]);
           return new_vega;
         })(vega4),
-        (result) => {
-          expect(result).to.matchImage(prev_result);
-          expect(result).to.have.vega_metadata.with
-            .scale(vega4.scales[2].name)
-            .with.property("domain")
-            .that.is.closeTo(vega4.scales[2].domain, 0.000000001);
-          expect(result).to.have.vega_metadata.with
-            .scale(vega4.scales[3].name)
-            .with.property("domain")
-            .that.is.closeTo(vega4.scales[3].domain, 0.000000001);
-          expect(result).to.have.vega_metadata.with
-            .scale(vega4.scales[4].name)
-            .with.property("domain")
-            .that.is.closeTo(vega4.scales[4].domain, 0.000000001);
-        }
-      )
-    ]
-  );
+      (result) => {
+        expect(result).to.matchImage(prev_result);
+        expect(result).to.have.vega_metadata.with
+          .scale(vega4.scales[2].name)
+          .with.property("domain")
+          .that.is.closeTo(vega4.scales[2].domain, 0.000000001);
+        expect(result).to.have.vega_metadata.with
+          .scale(vega4.scales[3].name)
+          .with.property("domain")
+          .that.is.closeTo(vega4.scales[3].domain, 0.000000001);
+        expect(result).to.have.vega_metadata.with
+          .scale(vega4.scales[4].name)
+          .with.property("domain")
+          .that.is.closeTo(vega4.scales[4].domain, 0.000000001);
+      }
+    )
+  ]);
 
   // prettier-ignore
   const vega5 = {
@@ -509,31 +503,28 @@ module.exports = function(test_collection, expect) {
     ]
   }
 
-  various_xform_test_grp.addTest(
-    `Tests another stddev transform generated from immerse`,
-    [
-      new RenderVegaTest(vega5, (result) => (prev_result = result)),
-      new RenderVegaTest(
-        // prettier-ignore
-        ((vega) => {
+  various_xform_test_grp.addTest(`Tests another stddev transform generated from immerse`, [
+    new RenderVegaTest(vega5, (result) => (prev_result = result)),
+    new RenderVegaTest(
+      // prettier-ignore
+      ((vega) => {
           const new_vega = JsonUtils.jsonCopy(vega);
           add_stddev_xform_stats_to_vega(new_vega, "table", "followers", "xformtable", ["size", "color"]);
           return new_vega;
         })(vega5),
-        (result) => {
-          expect(result).to.matchImage(prev_result);
-          expect(result).to.have.vega_metadata.with
-            .scale(vega5.scales[0].name)
-            .with.property("domain")
-            .that.is.closeTo(vega5.scales[0].domain, 0.000000001);
-          expect(result).to.have.vega_metadata.with
-            .scale(vega5.scales[1].name)
-            .with.property("domain")
-            .that.is.closeTo(vega5.scales[1].domain, 0.000000001);
-        }
-      )
-    ]
-  );
+      (result) => {
+        expect(result).to.matchImage(prev_result);
+        expect(result).to.have.vega_metadata.with
+          .scale(vega5.scales[0].name)
+          .with.property("domain")
+          .that.is.closeTo(vega5.scales[0].domain, 0.000000001);
+        expect(result).to.have.vega_metadata.with
+          .scale(vega5.scales[1].name)
+          .with.property("domain")
+          .that.is.closeTo(vega5.scales[1].domain, 0.000000001);
+      }
+    )
+  ]);
 
   // prettier-ignore
   const vega6 = {
@@ -852,7 +843,7 @@ module.exports = function(test_collection, expect) {
       {
         "name": "choroplethLayer0_fillColor",
         "type": "linear",
-        "domain": [1, 6386.421462105914],
+        "domain": is_distributed ? [1, 6325.040297736357] : [1, 6386.421462105914],
         "range": [
           "#115f9a",
           "#d0f400"
@@ -891,7 +882,9 @@ module.exports = function(test_collection, expect) {
     `Tests typical stddev transform from immerse works with polys`,
     [
       new RenderVegaTest(vega9, (result) => {
-        expect(result).to.matchGoldenImage("various_xform_test_01.png");
+        expect(result).to.matchGoldenImage(
+          is_distributed ? "various_xform_test_distributed_01.png" : "various_xform_test_01.png"
+        );
         prev_result = result;
       }),
       new RenderVegaTest(
@@ -909,7 +902,12 @@ module.exports = function(test_collection, expect) {
             .that.is.closeTo(vega9.scales[0].domain, 0.000000001);
         }
       )
-    ]
+    ],
+    {
+      pending: is_distributed
+        ? "Pending some investigation into making this legacy poly query work in distributed"
+        : false
+    }
   );
 
   // prettier-ignore
@@ -969,17 +967,19 @@ module.exports = function(test_collection, expect) {
     ]
   };
 
-  various_xform_test_grp.addTest(`Tests vega median transform with polys`, [
-    new RenderVegaTest(vega10, (result) => {
-      expect(result).to.matchGoldenImage("various_xform_test_02.png");
-      prev_result = result;
-    }),
-    new RenderVegaTest(
-      ((vega) => {
-        const new_vega = JsonUtils.jsonCopy(vega);
-        new_vega.data.push(
-          // prettier-ignore
-          {
+  various_xform_test_grp.addTest(
+    `Tests vega median transform with polys`,
+    [
+      new RenderVegaTest(vega10, (result) => {
+        expect(result).to.matchGoldenImage("various_xform_test_02.png");
+        prev_result = result;
+      }),
+      new RenderVegaTest(
+        ((vega) => {
+          const new_vega = JsonUtils.jsonCopy(vega);
+          new_vega.data.push(
+            // prettier-ignore
+            {
             "name": "stats",
             "source": "choroplethLayer0",
             "transform": [
@@ -991,20 +991,26 @@ module.exports = function(test_collection, expect) {
               }
             ]
           }
-        );
-        // prettier-ignore
-        new_vega.scales[0].domain = {"data": "stats", "fields": ["medianval"]};
-        return new_vega;
-      })(vega10),
-      (result) => {
-        expect(result).to.matchImage(prev_result);
-        expect(result).to.have.vega_metadata.with
-          .scale(vega10.scales[0].name)
-          .with.property("domain")
-          .that.deep.equals(vega10.scales[0].domain);
-      }
-    )
-  ]);
+          );
+          // prettier-ignore
+          new_vega.scales[0].domain = {"data": "stats", "fields": ["medianval"]};
+          return new_vega;
+        })(vega10),
+        (result) => {
+          expect(result).to.matchImage(prev_result);
+          expect(result).to.have.vega_metadata.with
+            .scale(vega10.scales[0].name)
+            .with.property("domain")
+            .that.deep.equals(vega10.scales[0].domain);
+        }
+      )
+    ],
+    {
+      pending: is_distributed
+        ? "Pending some investigation into making this legacy poly query work in distributed"
+        : false
+    }
+  );
 
   // prettier-ignore
   const vega11 = {
@@ -1069,17 +1075,19 @@ module.exports = function(test_collection, expect) {
     ]
   };
 
-  various_xform_test_grp.addTest(`Tests vega quantile transform with polys`, [
-    new RenderVegaTest(vega11, (result) => {
-      expect(result).to.matchGoldenImage("various_xform_test_03.png");
-      prev_result = result;
-    }),
-    new RenderVegaTest(
-      ((vega) => {
-        const new_vega = JsonUtils.jsonCopy(vega);
-        new_vega.data.push(
-          // prettier-ignore
-          {
+  various_xform_test_grp.addTest(
+    `Tests vega quantile transform with polys`,
+    [
+      new RenderVegaTest(vega11, (result) => {
+        expect(result).to.matchGoldenImage("various_xform_test_03.png");
+        prev_result = result;
+      }),
+      new RenderVegaTest(
+        ((vega) => {
+          const new_vega = JsonUtils.jsonCopy(vega);
+          new_vega.data.push(
+            // prettier-ignore
+            {
             "name": "stats",
             "source": "choroplethLayer0",
             "transform": [
@@ -1091,20 +1099,26 @@ module.exports = function(test_collection, expect) {
               }
             ]
           }
-        );
-        // prettier-ignore
-        new_vega.scales[0].domain = {"data": "stats", "fields": ["quantileval"]};
-        return new_vega;
-      })(vega11),
-      (result) => {
-        expect(result).to.matchImage(prev_result);
-        expect(result).to.have.vega_metadata.with
-          .scale(vega11.scales[0].name)
-          .with.property("domain")
-          .that.deep.equals(vega11.scales[0].domain);
-      }
-    )
-  ]);
+          );
+          // prettier-ignore
+          new_vega.scales[0].domain = {"data": "stats", "fields": ["quantileval"]};
+          return new_vega;
+        })(vega11),
+        (result) => {
+          expect(result).to.matchImage(prev_result);
+          expect(result).to.have.vega_metadata.with
+            .scale(vega11.scales[0].name)
+            .with.property("domain")
+            .that.deep.equals(vega11.scales[0].domain);
+        }
+      )
+    ],
+    {
+      pending: is_distributed
+        ? "Pending some investigation into making this legacy poly query work in distributed"
+        : false
+    }
+  );
 
   // prettier-ignore
   const vega12 = {
@@ -1717,29 +1731,26 @@ module.exports = function(test_collection, expect) {
   };
 
   // with the nba table, the original_x/y & converted_x/y columns are DECIMAL(14,7)
-  various_xform_test_grp.addTest(
-    `Tests that typical stddev immerse vega transforms works with DECIMAL(14,7) columns`,
-    [
-      new RenderVegaTest(vega18, (result) => {
-        prev_result = result;
-      }),
-      new RenderVegaTest(
-        // prettier-ignore
-        ((vega) => {
+  various_xform_test_grp.addTest(`Tests that typical stddev immerse vega transforms works with DECIMAL(14,7) columns`, [
+    new RenderVegaTest(vega18, (result) => {
+      prev_result = result;
+    }),
+    new RenderVegaTest(
+      // prettier-ignore
+      ((vega) => {
           const new_vega = JsonUtils.jsonCopy(vega);
           add_stddev_xform_stats_to_vega(new_vega, new_vega.data[0].name, "x", "xformtable", new_vega.scales[2].name);
           return new_vega;
         })(vega18),
-        (result) => {
-          expect(result).to.matchImage(prev_result);
-          expect(result).to.have.vega_metadata.with
-            .scale(vega18.scales[2].name)
-            .with.property("domain")
-            .that.is.closeTo(vega18.scales[2].domain, 0.0000000001);
-        }
-      )
-    ]
-  );
+      (result) => {
+        expect(result).to.matchImage(prev_result);
+        expect(result).to.have.vega_metadata.with
+          .scale(vega18.scales[2].name)
+          .with.property("domain")
+          .that.is.closeTo(vega18.scales[2].domain, 0.0000000001);
+      }
+    )
+  ]);
 
   // prettier-ignore
   const vega19 = {
@@ -1787,18 +1798,16 @@ module.exports = function(test_collection, expect) {
     ]
   };
 
-  various_xform_test_grp.addTest(
-    `Tests that a quantile vega xform works with DECIMAL(14,7) columns`,
-    [
-      new RenderVegaTest(vega19, (result) => {
-        prev_result = result;
-      }),
-      new RenderVegaTest(
-        ((vega) => {
-          const new_vega = JsonUtils.jsonCopy(vega);
-          new_vega.data.push(
-            // prettier-ignore
-            {
+  various_xform_test_grp.addTest(`Tests that a quantile vega xform works with DECIMAL(14,7) columns`, [
+    new RenderVegaTest(vega19, (result) => {
+      prev_result = result;
+    }),
+    new RenderVegaTest(
+      ((vega) => {
+        const new_vega = JsonUtils.jsonCopy(vega);
+        new_vega.data.push(
+          // prettier-ignore
+          {
               "name": "points_stats",
               "source": "points",
               "transform": [
@@ -1810,21 +1819,20 @@ module.exports = function(test_collection, expect) {
                 }
               ]
             }
-          );
-          // prettier-ignore
-          new_vega.scales[2].domain = {"data": "points_stats", "fields": ["quantx"]}
-          return new_vega;
-        })(vega19),
-        (result) => {
-          expect(result).to.matchImage(prev_result);
-          expect(result).to.have.vega_metadata.with
-            .scale(vega19.scales[2].name)
-            .with.property("domain")
-            .that.deep.equals(vega19.scales[2].domain);
-        }
-      )
-    ]
-  );
+        );
+        // prettier-ignore
+        new_vega.scales[2].domain = {"data": "points_stats", "fields": ["quantx"]}
+        return new_vega;
+      })(vega19),
+      (result) => {
+        expect(result).to.matchImage(prev_result);
+        expect(result).to.have.vega_metadata.with
+          .scale(vega19.scales[2].name)
+          .with.property("domain")
+          .that.deep.equals(vega19.scales[2].domain);
+      }
+    )
+  ]);
 
   // prettier-ignore
   const vega20 = {

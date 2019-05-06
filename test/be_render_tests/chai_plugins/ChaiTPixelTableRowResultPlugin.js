@@ -1,5 +1,6 @@
 const wellknown = require("wellknown");
 const TPixelTableRowResult = require("../lib/TestResultWrapper").TPixelTableRowResult;
+const ObjUtils = require("../utils/ObjUtils");
 
 module.exports = function(chai, utils) {
   chai.Assertion.addProperty("TPixelTableRowResult", function() {
@@ -26,12 +27,7 @@ module.exports = function(chai, utils) {
       utils.flag(this, "TPixelTableRowResult", this._obj);
       this._obj = obj.getColumn(column_name);
     } else {
-      this.assert(
-        false,
-        `expected #{this} to have a column() method. Object is of type ${obj.constructor
-          ? obj.constructor.name
-          : typeof obj}`
-      );
+      this.assert(false, `expected #{this} to have a column() method. Object is of type ${ObjUtils.toString(obj)}`);
     }
   });
 
@@ -79,10 +75,7 @@ module.exports = function(chai, utils) {
 
       const geojson = wellknown.parse(wkt);
       const geojson_assert = new chai.Assertion(geojson);
-      geojson_assert.assert(
-        Boolean(geojson),
-        `Expected "${wkt}" to be valid wellknown text.`
-      );
+      geojson_assert.assert(Boolean(geojson), `Expected "${wkt}" to be valid wellknown text.`);
 
       return geojson;
     }

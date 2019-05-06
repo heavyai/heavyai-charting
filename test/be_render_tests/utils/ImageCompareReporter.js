@@ -8,6 +8,7 @@ const pixelmatch = require("pixelmatch");
 const htmlCreator = require("html-creator");
 const TRenderResult = require("../lib/TestResultWrapper").TRenderResult;
 const PathUtils = require("./PathUtils");
+const ObjUtils = require("./ObjUtils");
 
 const error_report_html_style = `
 html {
@@ -425,9 +426,7 @@ class ImageCompareReporter {
           typeof image === "string" ||
           image instanceof String ||
           image instanceof TRenderResult,
-        `Image must be a base-64 byte array or a filename. It is a ${image.constructor
-          ? image.constructor.name
-          : typeof image}.`
+        `Image must be a base-64 byte array or a filename. It is a ${ObjUtils.toString(image)}.`
       );
 
       if (golden_image_name instanceof String || typeof golden_image_name === "string") {
@@ -439,9 +438,9 @@ class ImageCompareReporter {
           golden_image_name instanceof Uint8Array ||
             golden_image_name instanceof TRenderResult ||
             golden_image_name instanceof PNG,
-          `Image to match must be a ${String.name} path, ${Uint8Array.name} buffer, ${TRenderResult.name}, or a PNG. It is of type ${golden_image_name.constructor
-            ? golden_image_name.constructor.name
-            : typeof golden_image_name}.`
+          `Image to match must be a ${String.name} path, ${Uint8Array.name} buffer, ${TRenderResult.name}, or a PNG. It is a ${ObjUtils.toString(
+            golden_image_name
+          )}.`
         );
       }
       const fileprefix = crypto.randomBytes(5).toString("hex");

@@ -15,12 +15,13 @@ const image_compare_reporter = new ImageCompareReporter(chai, {
 const server_config = {
   protocol: "http",
   host: "10.1.0.12",
-  port: 1024,
-  // port: 9090,
+  // port: 1024,
+  port: 9090,
   dbName: "mapd",
   user: "mapd",
   password: "HyperInteractive"
 };
+const is_distributed = server_config.port === 9090;
 
 const test_collection = new OmniSciServerTestCollection(
   "BE render vega single-node tests",
@@ -32,31 +33,31 @@ const test_collection = new OmniSciServerTestCollection(
   }
 );
 
-require("./poly_render_tests/zipcode_test")(test_collection, chai.expect);
-require("./poly_render_tests/nyc_buildings_test")(test_collection, chai.expect);
-require("./poly_render_tests/various_poly_tests")(test_collection, chai.expect);
+require("./poly_render_tests/zipcode_test")(test_collection, chai.expect, is_distributed);
+require("./poly_render_tests/nyc_buildings_test")(test_collection, chai.expect, is_distributed);
+require("./poly_render_tests/various_poly_tests")(test_collection, chai.expect, is_distributed);
 
-require("./symbol_tests/symbol_update_fill_stroke_test")(test_collection, chai.expect);
-require("./symbol_tests/symbol_update_data_test")(test_collection, chai.expect);
+require("./symbol_tests/symbol_update_fill_stroke_test")(test_collection, chai.expect, is_distributed);
+require("./symbol_tests/symbol_update_data_test")(test_collection, chai.expect, is_distributed);
 
-require("./query_update_tests/flights_query_test")(test_collection, chai.expect);
+require("./query_update_tests/flights_query_test")(test_collection, chai.expect, is_distributed);
 
-require("./line_render_tests/scalar_lines_test")(test_collection, chai.expect);
-require("./line_render_tests/geo_linestring_test")(test_collection, chai.expect);
+require("./line_render_tests/scalar_lines_test")(test_collection, chai.expect, is_distributed);
+require("./line_render_tests/geo_linestring_test")(test_collection, chai.expect, is_distributed);
 
-require("./metadata_tests/accum_metadata_test")(test_collection, chai.expect);
+require("./metadata_tests/accum_metadata_test")(test_collection, chai.expect, is_distributed);
 
-require("./accumulation_tests/pct_accum_test")(test_collection, chai.expect);
-require("./accumulation_tests/blend_accum_test")(test_collection, chai.expect);
-require("./accumulation_tests/density_accum_test")(test_collection, chai.expect);
-require("./accumulation_tests/line_accum_test")(test_collection, chai.expect);
+require("./accumulation_tests/pct_accum_test")(test_collection, chai.expect, is_distributed);
+require("./accumulation_tests/blend_accum_test")(test_collection, chai.expect, is_distributed);
+require("./accumulation_tests/density_accum_test")(test_collection, chai.expect, is_distributed);
+require("./accumulation_tests/line_accum_test")(test_collection, chai.expect, is_distributed);
 
-require("./transform_tests/various_xform_test")(test_collection, chai.expect);
+require("./transform_tests/various_xform_test")(test_collection, chai.expect, is_distributed);
 
-require("./types_tests/decimal_type_test")(test_collection, chai.expect);
-require("./types_tests/null_type_test")(test_collection, chai.expect);
+require("./types_tests/decimal_type_test")(test_collection, chai.expect, is_distributed);
+require("./types_tests/null_type_test")(test_collection, chai.expect, is_distributed);
 
-require("./hittest_tests/poly_hittest_test")(test_collection, chai.expect);
+require("./hittest_tests/poly_hittest_test")(test_collection, chai.expect, is_distributed);
 
 // passing 0 as the argument to getCallerFile() to get the filename of this file
 // whereas getCallerFile is intended to be used to get the filename of the caller of

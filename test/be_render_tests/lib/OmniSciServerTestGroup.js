@@ -36,10 +36,7 @@ class OmniSciServerTestGroup {
     this._desc = test_description;
 
     if (golden_img_dir) {
-      this._golden_img_dir_override = find_absolute_golden_img_dir_path(
-        golden_img_dir,
-        steps
-      );
+      this._golden_img_dir_override = find_absolute_golden_img_dir_path(golden_img_dir, steps);
     }
 
     this._sub_grps = new Map();
@@ -66,11 +63,9 @@ class OmniSciServerTestGroup {
       }
     };
 
-    const {
-      callback: before_cb,
-      options: before_opts,
-      description: before_desc
-    } = MochaCallback.unpackCallbackAndOpts(before || {});
+    const { callback: before_cb, options: before_opts, description: before_desc } = MochaCallback.unpackCallbackAndOpts(
+      before || {}
+    );
     this._beforeCallback = new MochaCallback(
       async function(test_state) {
         await before_callback_internal(test_state);
@@ -82,11 +77,9 @@ class OmniSciServerTestGroup {
       before_desc
     );
 
-    const {
-      callback: after_cb,
-      options: after_opts,
-      description: after_desc
-    } = MochaCallback.unpackCallbackAndOpts(after || {});
+    const { callback: after_cb, options: after_opts, description: after_desc } = MochaCallback.unpackCallbackAndOpts(
+      after || {}
+    );
     this._afterCallback = new MochaCallback(
       async function(test_state) {
         // need to be sure to do our internal teardown after the custom teardown
@@ -119,26 +112,23 @@ class OmniSciServerTestGroup {
 
   addTest(test_desc, endpoints_to_test, options) {
     const test_name = this._prefix + `_${this._tests.size}`;
-    this._tests.set(
-      test_name,
-      new OmniSciServerTestRunner(test_desc, endpoints_to_test, options)
-    );
+    this._tests.set(test_name, new OmniSciServerTestRunner(test_desc, endpoints_to_test, options));
     return test_name;
   }
 
   createTestSubGroup(sub_grp_name, sub_grp_config) {
-    if (!(sub_grp_name instanceof String) || typeof sub_grp_name !== "string") {
+    if (sub_grp_name && sub_grp_config && sub_grp_config.test_prefix) {
+      throw new Error(`SubGroup must define the sub_grp_name or the test_prefix. Not both.`);
+    }
+    if (!(sub_grp_name instanceof String) && typeof sub_grp_name !== "string") {
       sub_grp_config = sub_grp_name;
       sub_grp_name =
+        this._prefix_mgr.getPrefix(sub_grp_config.test_prefix) ||
         this._prefix + `_${String.fromCharCode("a".charCodeAt(0) + this._sub_grps.size)}`;
     } else {
-      sub_grp_name = test._prefix_mgr.getPrefix(sub_grp_name);
+      sub_grp_name = this._prefix_mgr.getPrefix(sub_grp_name);
     }
-    if (!sub_grp_config.test_prefix) {
-      sub_grp_config.test_prefix = sub_grp_name;
-    } else {
-      sub_grp_config.test_prefix = this._prefix_mgr.getPrefix(sub_grp_config.test_prefix);
-    }
+    sub_grp_config.test_prefix = sub_grp_name;
     // using 2 here for the 'steps', as the test group needs to resolve any relative paths and
     // such from 2 levels up the call stack
     const test_group = new OmniSciServerTestGroup(this._prefix_mgr, sub_grp_config, 2);

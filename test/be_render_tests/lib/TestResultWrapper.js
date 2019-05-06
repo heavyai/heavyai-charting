@@ -5,6 +5,10 @@ class TestResultWrapper {
     this.args = args;
     this.result = result;
   }
+
+  toString() {
+    return this.constructor.name;
+  }
 }
 
 class TRenderResult extends TestResultWrapper {
@@ -39,8 +43,8 @@ class TPixelTableRowResult extends TestResultWrapper {
 
     if (this.result.row_set.length > 1) {
       throw new Error(
-        `A ${TPixelTableRowResult.name} with more than one row is not supported. Number of result rows: ${this
-          .result.row_set.length}`
+        `A ${TPixelTableRowResult.name} with more than one row is not supported. Number of result rows: ${this.result
+          .row_set.length}`
       );
     }
   }
@@ -82,9 +86,7 @@ class TPixelTableRowResult extends TestResultWrapper {
 
   getColumn(column_name) {
     if (this.num_rows === 0) {
-      throw new Error(
-        `Cannot get column "${column_name}" from ${TPixelTableRowResult.name}. It has 0 rows.`
-      );
+      throw new Error(`Cannot get column "${column_name}" from ${TPixelTableRowResult.name}. It has 0 rows.`);
     }
     const row_data = this.result.row_set[0];
     const col_data = row_data[column_name];
@@ -92,7 +94,7 @@ class TPixelTableRowResult extends TestResultWrapper {
       throw new Error(
         `Column "${column_name}" does not exist in ${TPixelTableRowResult.name}. Existing columns: [${Object.keys(
           row_data
-        ).join(', ')}]`
+        ).join(", ")}]`
       );
     }
     return col_data;
@@ -112,6 +114,10 @@ class TMapDException extends TestResultWrapper {
 
   get error_msg() {
     return this.result.error_msg;
+  }
+
+  toString() {
+    return `${this.constructor.name}("${this.error_msg}")`;
   }
 }
 

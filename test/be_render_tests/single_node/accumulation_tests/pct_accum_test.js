@@ -2,7 +2,7 @@ const OmniSciServerTestGroup = require("../../lib/OmniSciServerTestGroup");
 const RenderVegaTest = require("../../lib/RenderVegaTest");
 const JsonUtils = require("../../utils/JsonUtils");
 
-module.exports = function(test_collection, expect) {
+module.exports = function(test_collection, expect, is_distributed) {
   const pct_accum_test_grp = test_collection.createTestGroup({
     test_description: `Tests pct accumulation renders`,
     golden_img_dir: `./golden_images`
@@ -67,9 +67,7 @@ module.exports = function(test_collection, expect) {
   };
   let prev_test_name = pct_accum_test_grp.addTest(
     `Tests pct accumulation against the contributions data`,
-    new RenderVegaTest(vega, (result) =>
-      expect(result).to.matchGoldenImage("pct_accum_test_01.png")
-    )
+    new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage("pct_accum_test_01.png"))
   );
 
   pct_accum_test_grp.addTest(
@@ -173,9 +171,7 @@ module.exports = function(test_collection, expect) {
   }
   pct_accum_test_grp.addTest(
     `Tests using numerical values for 'pctCategory'`,
-    new RenderVegaTest(vega, (result) =>
-      expect(result).to.matchGoldenImage("pct_accum_test_04.png")
-    )
+    new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage("pct_accum_test_04.png"))
   );
 
   pct_accum_test_grp.addTest(
@@ -264,9 +260,7 @@ module.exports = function(test_collection, expect) {
   pct_accum_test_grp.addTest(
     `Tests updating from a flat render to using pct accumulation`,
     [
-      new RenderVegaTest(vega, (result) =>
-        expect(result).to.matchGoldenImage("pct_accum_test_06.png")
-      ),
+      new RenderVegaTest(vega, (result) => expect(result).to.matchGoldenImage("pct_accum_test_06.png")),
       new RenderVegaTest(
         ((vega) => {
           // prettier-ignore
@@ -278,6 +272,9 @@ module.exports = function(test_collection, expect) {
         })(vega),
         (result) => expect(result).to.matchGoldenImage("pct_accum_test_07.png")
       )
-    ]
+    ],
+    {
+      pending: is_distributed ? "Pending https://jira.omnisci.com/browse/BE-3509" : false
+    }
   );
 };
