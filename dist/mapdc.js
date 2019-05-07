@@ -47718,16 +47718,17 @@ function isValidPostFilter(postFilter) {
       max = postFilter.max,
       aggType = postFilter.aggType,
       value = postFilter.value,
-      table = postFilter.table,
       custom = postFilter.custom;
 
 
   if (value && (aggType || custom)) {
     if ((operator === "not between" || operator === "between") && typeof min === "number" && !isNaN(min) && typeof max === "number" && !isNaN(max)) {
       return true;
-    } else if ((operator === "equals" || operator === "greater than") && typeof min === "number" && !isNaN(min)) {
+    } else if ((operator === "equals" || operator === "not equals" || operator === "greater than or equals") && typeof min === "number" && !isNaN(min)) {
       return true;
-    } else if (operator === "less than" && typeof max === "number" && !isNaN(max)) {
+    } else if (operator === "less than or equals" && typeof max === "number" && !isNaN(max)) {
+      return true;
+    } else if (operator === "null" || operator === "not null") {
       return true;
     } else {
       return false;
