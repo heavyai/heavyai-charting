@@ -22,6 +22,8 @@ const TIME_LABELS = [
   "decade"
 ]
 
+const DEFAULT_NULL_TIME_RANGE = "day";
+
 export const TIME_LABEL_TO_SECS = {
   second: SEC,
   minute: MIN_IN_SECS,
@@ -56,6 +58,9 @@ export const BIN_INPUT_OPTIONS = [
 export function autoBinParams(timeBounds, maxNumBins, reverse) {
   const epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001]
   const timeRange = epochTimeBounds[1] - epochTimeBounds[0] // in seconds
+  if (timeRange === 0) {
+    return DEFAULT_NULL_TIME_RANGE
+  }
   const timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS
   for (let s = 0; s < timeSpans.length; s++) {
     if (
