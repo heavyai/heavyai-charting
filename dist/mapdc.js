@@ -28301,6 +28301,8 @@ var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
 
 var TIME_LABELS = ["second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
 
+var DEFAULT_NULL_TIME_RANGE = "day";
+
 var TIME_LABEL_TO_SECS = exports.TIME_LABEL_TO_SECS = {
   second: SEC,
   minute: MIN_IN_SECS,
@@ -28325,6 +28327,9 @@ var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto
 function autoBinParams(timeBounds, maxNumBins, reverse) {
   var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
   var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
+  if (timeRange === 0) {
+    return DEFAULT_NULL_TIME_RANGE;
+  }
   var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
   for (var s = 0; s < timeSpans.length; s++) {
     if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
@@ -49807,8 +49812,10 @@ function parsePostFilter(sql, transform) {
         operatorExpr = transform.ops + " " + transform.min + " AND " + transform.max;
       } else if (transform.ops === "null" || transform.ops === "not null") {
         operatorExpr = "is " + transform.ops;
+      } else if (transform.aggType === "AVG" && (transform.ops === "equals" || transform.ops === "not equals")) {
+        operatorExpr = operator[transform.ops] + " cast(" + transform.min + " as DOUBLE)";
       } else {
-        operatorExpr = comparisonOperator(operator[transform.ops], transform.min, transform.max);
+        operatorExpr = comparisonOperator(operator[transform.ops], transform.min, transform.max, transform.aggType);
       }
       var expr = transform.custom ? transform.fields[0] + " " + operatorExpr : transform.aggType + "(" + transform.fields[0] + ") " + operatorExpr;
       sql.having.push(expr);
