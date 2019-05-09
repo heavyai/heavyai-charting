@@ -28287,6 +28287,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.autoBinParams = autoBinParams;
 exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
+var MS_IN_SECS = 0.001;
 var SEC = 1;
 var MIN_IN_SECS = 60;
 var HOUR_IN_SECS = 3600;
@@ -28299,9 +28300,12 @@ var DECADE_IN_SECS = 315360000;
 
 var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
 
-var TIME_LABELS = ["second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
+var TIME_LABELS = ["millisecond", "second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
+
+var DEFAULT_NULL_TIME_RANGE = "day";
 
 var TIME_LABEL_TO_SECS = exports.TIME_LABEL_TO_SECS = {
+  millisecond: MS_IN_SECS,
   second: SEC,
   minute: MIN_IN_SECS,
   hour: HOUR_IN_SECS,
@@ -28320,11 +28324,14 @@ var TIME_SPANS = exports.TIME_SPANS = TIME_LABELS.map(function (label) {
   };
 });
 
-var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }];
+var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }, { val: "millisecond", label: "1ms", numSeconds: 0.001 }];
 
 function autoBinParams(timeBounds, maxNumBins, reverse) {
   var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
   var timeRange = epochTimeBounds[1] - epochTimeBounds[0]; // in seconds
+  if (timeRange === 0) {
+    return DEFAULT_NULL_TIME_RANGE;
+  }
   var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
   for (var s = 0; s < timeSpans.length; s++) {
     if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
@@ -49805,7 +49812,7 @@ function parsePostFilter(sql, transform) {
       } else {
         operatorExpr = comparisonOperator(operator[transform.ops], transform.min, transform.max);
       }
-      var expr = transform.custom ? transform.fields[0] + " " + operatorExpr : transform.aggType + "(" + transform.table + "." + transform.fields[0] + ") " + operatorExpr;
+      var expr = transform.custom ? transform.fields[0] + " " + operatorExpr : transform.aggType + "(" + transform.fields[0] + ") " + operatorExpr;
       sql.having.push(expr);
     default:
       return sql;
@@ -73721,7 +73728,8 @@ function mapdTable(parent, chartGroup) {
     var type = columns[key].type;
 
     if (type === "TIMESTAMP") {
-      val = "TIMESTAMP(0) '" + val.toISOString().slice(0, 19).replace("T", " ") + "'";
+      val = "TIMESTAMP(3) '" + val.toISOString().slice(0, -1) // Slice off the 'Z' at the end
+      .replace("T", " ") + "'";
     } else if (type === "DATE") {
       var dateFormat = _d2.default.time.format.utc("%Y-%m-%d");
       val = "DATE '" + dateFormat(val) + "'";
