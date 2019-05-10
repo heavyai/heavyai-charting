@@ -52,7 +52,7 @@
     "test:unit": "find ./src -name '*.spec.js' | BABEL_ENV=test NODE_PATH=./src xargs nyc mocha --opts ./test/mocha.unit.opts"
   },
   "dependencies": {
-    "@mapd/mapd-draw": "git://github.com/omnisci/mapd-draw.git",
+    "@mapd/mapd-draw": "git://github.com/omnisci/mapd-draw.git#v1.1.2",
     "@turf/bbox": "^6.0.1",
     "@turf/bbox-clip": "^6.0.3",
     "d3": "^3.5.17",
