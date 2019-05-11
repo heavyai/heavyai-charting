@@ -125,14 +125,8 @@ export default function rasterLayerPolyMixin(_layer) {
     const { encoding: { color, geocol, geoTable } } = state
 
     const transforms = []
-
-    const groupby = doJoin()
-      ? {
-          type: "project",
-          expr: `${state.data[0].table}.${state.data[0].attr}`,
-          as: "key0"
-        }
-      : {}
+    const withAlias = "colors"
+    const groupby = {}
 
     const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
 
@@ -140,9 +134,20 @@ export default function rasterLayerPolyMixin(_layer) {
       // Join
       transforms.push({
         type: "filter",
-        expr: `${state.data[0].table}.${state.data[0].attr} = ${
-          state.data[1].table
-        }.${state.data[1].attr}`
+        expr: `${state.data[1].table}.${state.data[1].attr} = ${withAlias}.key0`
+      })
+      transforms.push({
+        type: "with",
+        expr: `${withAlias}`,
+        fields: {
+          source: `${state.data[0].table}`,
+          type: "root",
+          transform: [{
+            type: "project",
+            expr: `${state.data[0].table}.${state.data[0].attr}`,
+            as: "key0"
+          }]
+        }
       })
     }
 
@@ -159,8 +164,13 @@ export default function rasterLayerPolyMixin(_layer) {
     if (doJoin()) {
       transforms.push({
         type: "project",
-        expr: `SAMPLE(${geoTable}.${geocol})`,
+        expr: `${geoTable}.${geocol}`,
         as: geocol
+      })
+      transforms.push({
+        type: "project",
+        expr: `${withAlias}.key0`,
+        as: "key0"
       })
     } else {
       transforms.push({
@@ -322,9 +332,10 @@ export default function rasterLayerPolyMixin(_layer) {
         format: "polys",
         sql: parser.writeSQL({
           type: "root",
-          source: [...new Set(state.data.map(source => source.table))].join(
-            ", "
-          ),
+          source: `${state.data[1].table}, colors`,
+          // source: [...new Set(state.data.map(source => source.table))].join(
+          //   ", "
+          // ),
           transform: getTransforms({
             filter,
             globalFilter,
