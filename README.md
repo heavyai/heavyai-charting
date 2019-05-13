@@ -25,14 +25,14 @@ Visit our [examples page](https://omnisci.github.io/mapd-charting/example/) for 
 ##### Step 1: Install Dependencies
 
 ```bash
-yarn install #downloads all dependencies and devDependencies
+npm install #downloads all dependencies and devDependencies
 ```
 
 ##### Step 2: Run Start Script
 ```bash
-yarn run start
+npm run start
 or
-yarn run watch
+npm run watch
 ```
 
 # Synopsis
@@ -57,12 +57,12 @@ New components in MapD-Charting should be unit-tested and linted.  All tests wil
 
 The linter and all tests run on
 ```bash
-yarn run test
+npm run test
 ```
 
 To check only unit-tests run:
 ```bash
-yarn run test:unit
+npm run test:unit
 ```
 
 ### Linting
@@ -73,11 +73,11 @@ Please lint all your code in `mapd-charting/`. The lint config file can be found
 
 | Command        | Description  |
 --- | ---
-`yarn run start` | Copies files for examples and then serves the example
-`yarn run build` | Runs webpack and builds js and css in `/dist`
-`yarn run docs` | Creates and opens docs
-`yarn run test` | Runs both linting and unit tests
-`yarn run clean` | Removes node modules, dist, docs, and example files
+`npm run start` | Copies files for examples and then serves the example
+`npm run build` | Runs webpack and builds js and css in `/dist`
+`npm run docs` | Creates and opens docs
+`npm run test` | Runs both linting and unit tests
+`npm run clean` | Removes node modules, dist, docs, and example files
 
 # Documentation
 The charting library uses [documentation.js](https://github.com/documentationjs/documentation) for API documentation. Docs can be built and viewed locally with the `npm run docs` command.
