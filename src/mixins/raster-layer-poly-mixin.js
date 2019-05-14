@@ -53,7 +53,7 @@ export default function rasterLayerPolyMixin(_layer) {
   _layer.crossfilter = createRasterLayerGetterSetter(_layer, null)
   _layer.filtersInverse = createRasterLayerGetterSetter(_layer, false)
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
-  const withAlias = "colors"
+  const withAlias = "colors" // aliasing WITH clause for geo joined Choropleth
 
   createVegaAttrMixin(
     _layer,
@@ -128,7 +128,6 @@ export default function rasterLayerPolyMixin(_layer) {
     const { encoding: { color, geocol, geoTable } } = state
 
     const transforms = []
-    const groupby = {}
 
     const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
 
@@ -165,11 +164,13 @@ export default function rasterLayerPolyMixin(_layer) {
         {type: "project",
         expr: `${withAlias}.key0`,
         as: "key0"
-        },
-        {
-        type: "filter",
-        expr: bboxFilter
       })
+      if(typeof bboxFilter === "string" && bboxFilter.length) {
+        transforms.push({
+          type: "filter",
+          expr: bboxFilter
+        })
+      }
 
       if (color.type !== "solid") {
         withClauseTransforms.push(
@@ -220,14 +221,19 @@ export default function rasterLayerPolyMixin(_layer) {
           groupby: {}
         })
       }
-      if (typeof filter === "string" && filter.length && filter !== "") {
+      if (typeof filter === "string" && filter.length) {
         withClauseTransforms.push({
           type: "filter",
             expr: filter
         })
 
       }
-
+      if (typeof globalFilter === "string" && globalFilter.length) {
+        withClauseTransforms.push({
+          type: "filter",
+          expr: globalFilter
+        })
+      }
       transforms.push({
         type: "with",
         expr: `${withAlias}`,
@@ -280,6 +286,13 @@ export default function rasterLayerPolyMixin(_layer) {
           expr: filter !== "" ? `${bboxFilter} AND ${filter}` : bboxFilter
         })
       }
+
+      if (typeof globalFilter === "string" && globalFilter.length) {
+        transforms.push({
+          type: "filter",
+          expr: globalFilter
+        })
+      }
     }
 
     if (typeof state.transform.limit === "number") {
@@ -304,13 +317,6 @@ export default function rasterLayerPolyMixin(_layer) {
           limit: state.transform.limit
         })
       }
-    }
-
-    if (typeof globalFilter === "string" && globalFilter.length) {
-      transforms.push({
-        type: "filter",
-        expr: globalFilter
-      })
     }
 
     return transforms

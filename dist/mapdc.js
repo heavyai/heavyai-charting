@@ -48533,7 +48533,7 @@ function rasterLayerPolyMixin(_layer) {
   _layer.crossfilter = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
   _layer.filtersInverse = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, false);
   _layer.colorDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
-  var withAlias = "colors";
+  var withAlias = "colors"; // aliasing WITH clause for geo joined Choropleth
 
   (0, _utilsVega.createVegaAttrMixin)(_layer, "lineJoin", vegaLineJoinOptions[0], vegaLineJoinOptions[0], false, {
     preDefault: validateLineJoin,
@@ -48605,7 +48605,6 @@ function rasterLayerPolyMixin(_layer) {
 
 
     var transforms = [];
-    var groupby = {};
 
     var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
 
@@ -48623,7 +48622,7 @@ function rasterLayerPolyMixin(_layer) {
 
       var withClauseTransforms = [];
 
-      var _groupby = {
+      var groupby = {
         type: "project",
         expr: state.data[0].table + "." + state.data[0].attr,
         as: "key0"
@@ -48635,17 +48634,20 @@ function rasterLayerPolyMixin(_layer) {
       }, { type: "project",
         expr: withAlias + ".key0",
         as: "key0"
-      }, {
-        type: "filter",
-        expr: bboxFilter
       });
+      if (typeof bboxFilter === "string" && bboxFilter.length) {
+        transforms.push({
+          type: "filter",
+          expr: bboxFilter
+        });
+      }
 
       if (color.type !== "solid") {
         withClauseTransforms.push({ type: "aggregate",
           fields: [colorProjection],
           ops: [null],
           as: ["color"],
-          groupby: _groupby
+          groupby: groupby
         });
 
         if (!layerFilter.length) {
@@ -48661,7 +48663,7 @@ function rasterLayerPolyMixin(_layer) {
           fields: [],
           ops: [null],
           as: [],
-          groupby: _groupby
+          groupby: groupby
         });
       }
 
@@ -48683,13 +48685,18 @@ function rasterLayerPolyMixin(_layer) {
           groupby: {}
         });
       }
-      if (typeof filter === "string" && filter.length && filter !== "") {
+      if (typeof filter === "string" && filter.length) {
         withClauseTransforms.push({
           type: "filter",
           expr: filter
         });
       }
-
+      if (typeof globalFilter === "string" && globalFilter.length) {
+        withClauseTransforms.push({
+          type: "filter",
+          expr: globalFilter
+        });
+      }
       transforms.push({
         type: "with",
         expr: "" + withAlias,
@@ -48737,6 +48744,13 @@ function rasterLayerPolyMixin(_layer) {
           expr: filter !== "" ? bboxFilter + " AND " + filter : bboxFilter
         });
       }
+
+      if (typeof globalFilter === "string" && globalFilter.length) {
+        transforms.push({
+          type: "filter",
+          expr: globalFilter
+        });
+      }
     }
 
     if (typeof state.transform.limit === "number") {
@@ -48761,13 +48775,6 @@ function rasterLayerPolyMixin(_layer) {
           limit: state.transform.limit
         });
       }
-    }
-
-    if (typeof globalFilter === "string" && globalFilter.length) {
-      transforms.push({
-        type: "filter",
-        expr: globalFilter
-      });
     }
 
     return transforms;
@@ -50276,8 +50283,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function parseWith(sql, transform) {
   var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _createParser2.default;
 
-  var withClause = parser.write(parser.parseDataState(transform.fields));
-  sql.with.push(withClause ? withClause : "");
+  var subQuery = parser.write(parser.parseDataState(transform.fields));
+  // need to pass the name for the subquery from mapd-charting, so including with clause in the sql as an object
+  sql.with.push(subQuery ? { temp: transform.expr, subQuery: subQuery } : "");
   return sql;
 }
 
@@ -50334,7 +50342,8 @@ function writeOffset(offset) {
 }
 
 function writeWith(With) {
-  return With && With.length ? "WITH colors AS (" + With + ") " : "";
+  // with clause will get passed as obj in an array. Not expecting more than one WITH clause as of FE-8036
+  return With && With.length ? "WITH " + With[0].temp + " AS (" + With[0].subQuery + ") " : "";
 }
 
 /***/ }),
