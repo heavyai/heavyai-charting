@@ -207,11 +207,10 @@ export default function rasterLayerPolyMixin(_layer) {
               [
                 {
                   type: filtersInverse ? "not in" : "in",
-                  // expr: `${state.data[0].table}.${state.data[0].attr}`,
-                  expr: `colors.key0`,
+                  expr: `${withAlias}.key0`,
                   set: layerFilter
                 },
-                color.type === "solid" ? 1 : "colors.color"
+                color.type === "solid" ? 1 : `${withAlias}.color`
               ]
             ],
             else: null
