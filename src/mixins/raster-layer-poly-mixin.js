@@ -98,6 +98,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer.getProjections = function() {
     return getTransforms({
+      bboxFilter: "",
       filter: "",
       globalFilter: "",
       layerFilter: _layer.filters(),
@@ -117,6 +118,7 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   function getTransforms({
+    bboxFilter,
     filter,
     globalFilter,
     layerFilter,
@@ -148,6 +150,8 @@ export default function rasterLayerPolyMixin(_layer) {
 
     if (doJoin()) {
 
+      const withClauseTransforms = []
+
       const groupby = {
         type: "project",
         expr: `${state.data[0].table}.${state.data[0].attr}`,
@@ -161,24 +165,21 @@ export default function rasterLayerPolyMixin(_layer) {
         {type: "project",
         expr: `${withAlias}.key0`,
         as: "key0"
+        },
+        {
+        type: "filter",
+        expr: bboxFilter
       })
 
       if (color.type !== "solid") {
-        transforms.push({
-          type: "with",
-          expr: `${withAlias}`,
-          fields: {
-            source: `${state.data[0].table}`,
-            type: "root",
-            transform: [
-              {type: "aggregate",
-                fields: [colorProjection],
-                ops: [null],
-                as: ["color"],
-                groupby,
-              }]
-          }
+        withClauseTransforms.push(
+          {type: "aggregate",
+            fields: [colorProjection],
+            ops: [null],
+            as: ["color"],
+            groupby,
         })
+
         if(!layerFilter.length) {
           transforms.push({
             type: "project",
@@ -187,22 +188,15 @@ export default function rasterLayerPolyMixin(_layer) {
           })
         }
       } else {
-        transforms.push({
-          type: "with",
-          expr: `${withAlias}`,
-          fields: {
-            source: `${state.data[0].table}`,
-            type: "root",
-            transform: [
-              {type: "aggregate",
-                fields: [],
-                ops: [null],
-                as: [],
-                groupby,
-              }]
-          }
-        })
+        withClauseTransforms.push({
+          type: "aggregate",
+            fields: [],
+            ops: [null],
+            as: [],
+            groupby,
+          })
       }
+
       if(layerFilter.length) {
         transforms.push({
           type: "aggregate",
@@ -226,6 +220,24 @@ export default function rasterLayerPolyMixin(_layer) {
           groupby: {}
         })
       }
+      if (typeof filter === "string" && filter.length && filter !== "") {
+        withClauseTransforms.push({
+          type: "filter",
+            expr: filter
+        })
+
+      }
+
+      transforms.push({
+        type: "with",
+        expr: `${withAlias}`,
+        fields: {
+          source: `${state.data[0].table}`,
+          type: "root",
+          transform: withClauseTransforms
+        }
+      })
+
     } else {
       transforms.push({
         type: "project",
@@ -262,13 +274,12 @@ export default function rasterLayerPolyMixin(_layer) {
         as: "color"
       })
       }
-    }
-
-    if (typeof filter === "string" && filter.length) {
-      transforms.push({
-        type: "filter",
-        expr: filter
-      })
+      if (typeof filter === "string" && filter.length) {
+        transforms.push({
+          type: "filter",
+          expr: filter !== "" ? `${bboxFilter} AND ${filter}` : bboxFilter
+        })
+      }
     }
 
     if (typeof state.transform.limit === "number") {
@@ -325,6 +336,7 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.__genVega = function({
+    bboxFilter,
     filter,
     globalFilter,
     layerFilter = [],
@@ -344,6 +356,7 @@ export default function rasterLayerPolyMixin(_layer) {
           type: "root",
           source: doJoin() ? `${state.data[1].table}, ${withAlias}` : `${state.data[0].table}`,
           transform: getTransforms({
+            bboxFilter,
             filter,
             globalFilter,
             layerFilter,
@@ -515,7 +528,8 @@ export default function rasterLayerPolyMixin(_layer) {
 
     _vega = _layer.__genVega({
       layerName,
-      filter: polyFilterString !== "" ? `${bboxFilter} AND ${polyFilterString}` : bboxFilter,
+      bboxFilter,
+      filter: polyFilterString,
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
       lastFilteredSize: _layer.getState().bboxCount,
