@@ -8004,37 +8004,20 @@ function formatCache(_axis) {
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(186);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(187);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(188);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(199);
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.createParser = createParser;
 
-var _parseExpression = __webpack_require__(186);
 
-var _parseExpression2 = _interopRequireDefault(_parseExpression);
 
-var _parseDatastate = __webpack_require__(187);
-
-var _parseDatastate2 = _interopRequireDefault(_parseDatastate);
-
-var _parseTransform = __webpack_require__(188);
-
-var _parseTransform2 = _interopRequireDefault(_parseTransform);
-
-var _parseSource = __webpack_require__(29);
-
-var _parseSource2 = _interopRequireDefault(_parseSource);
-
-var _writeSql = __webpack_require__(199);
-
-var _writeSql2 = _interopRequireDefault(_writeSql);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Creates a parser than can parse expressions, transforms, and intermediary
@@ -8057,7 +8040,7 @@ function createParser() {
     parseDataState: parseDataState,
     parseSource: parseSource,
     writeSQL: writeSQL,
-    write: _writeSql.write,
+    write: __WEBPACK_IMPORTED_MODULE_4__write_sql__["b" /* write */],
     registerParser: registerParser
   };
 
@@ -8084,7 +8067,7 @@ function createParser() {
     if (expressionParsers[expression.type]) {
       return expressionParsers[expression.type](expression, parser);
     }
-    return (0, _parseExpression2.default)(expression, parser);
+    return Object(__WEBPACK_IMPORTED_MODULE_0__parse_expression__["a" /* default */])(expression, parser);
   }
 
   /**
@@ -8097,7 +8080,7 @@ function createParser() {
     if (transformParsers[transform.type]) {
       return transformParsers[transform.type](sql, transform, parser);
     }
-    return (0, _parseTransform2.default)(sql, transform, parser);
+    return Object(__WEBPACK_IMPORTED_MODULE_2__parse_transform__["a" /* default */])(sql, transform, parser);
   }
 
   /**
@@ -8106,7 +8089,7 @@ function createParser() {
    * @inner
    */
   function parseDataState(data, sql) {
-    return (0, _parseDatastate2.default)(data, parser, sql);
+    return Object(__WEBPACK_IMPORTED_MODULE_1__parse_datastate__["a" /* default */])(data, parser, sql);
   }
 
   /**
@@ -8115,7 +8098,7 @@ function createParser() {
    * @inner
    */
   function parseSource(sourceTransforms) {
-    return (0, _parseSource2.default)(sourceTransforms, parser);
+    return Object(__WEBPACK_IMPORTED_MODULE_3__parse_source__["a" /* default */])(sourceTransforms, parser);
   }
 
   /**
@@ -8124,13 +8107,13 @@ function createParser() {
    * @inner
    */
   function writeSQL(state) {
-    return (0, _writeSql2.default)(state, parser);
+    return Object(__WEBPACK_IMPORTED_MODULE_4__write_sql__["a" /* default */])(state, parser);
   }
 
   return parser;
 }
 
-exports.default = createParser();
+/* harmony default export */ __webpack_exports__["b"] = (createParser());
 
 /***/ }),
 /* 8 */
@@ -31286,29 +31269,18 @@ exports.convertDistance = convertDistance;
 
 /***/ }),
 /* 27 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.traverse = traverse;
-exports.reduceToSQL = reduceToSQL;
-exports.escapeQuotes = escapeQuotes;
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
+/* unused harmony export traverse */
+/* harmony export (immutable) */ __webpack_exports__["b"] = reduceToSQL;
+/* harmony export (immutable) */ __webpack_exports__["a"] = escapeQuotes;
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var identity = function identity(a) {
   return a;
 };
+
 
 function traverse(node, iterator, xform, accum) {
   accum = xform(accum, iterator(node));
@@ -31346,33 +31318,18 @@ function escapeQuotes(string) {
 
 /***/ }),
 /* 28 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseFilter;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(7);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.default = parseFilter;
-
-var _createParser = __webpack_require__(7);
-
-var _createParser2 = _interopRequireDefault(_createParser);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
 
 function parseFilter(sql, transform) {
-  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _createParser2.default;
+  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
 
   switch (transform.type) {
     case "filter":
@@ -31384,21 +31341,12 @@ function parseFilter(sql, transform) {
 
 /***/ }),
 /* 29 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseSource;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(7);
 
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = parseSource;
-
-var _createParser = __webpack_require__(7);
-
-var _createParser2 = _interopRequireDefault(_createParser);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function joinRelation(type) {
   switch (type) {
@@ -31415,7 +31363,7 @@ function joinRelation(type) {
 }
 
 function parseSource(transforms) {
-  var parser = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _createParser2.default;
+  var parser = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
 
   return transforms.reduce(function (stmt, transform, index) {
     if (typeof transform.table === "string" && transform.type === "scan") {
@@ -48674,10 +48622,9 @@ function rasterLayerPolyMixin(_layer) {
             type: "case",
             cond: [[{
               type: filtersInverse ? "not in" : "in",
-              // expr: `${state.data[0].table}.${state.data[0].attr}`,
-              expr: "colors.key0",
+              expr: withAlias + ".key0",
               set: layerFilter
-            }, color.type === "solid" ? 1 : "colors.color"]],
+            }, color.type === "solid" ? 1 : withAlias + ".color"]],
             else: null
           })],
           ops: [null],
@@ -49623,76 +49570,47 @@ var errors = exports.errors = {
 
 /***/ }),
 /* 185 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(7);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(200);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(202);
+/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(203);
+/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
+/**
+ * The exported `mapd-data-layer` module. Consists of a graph constructor and
+ * helper functions to build expressions and transforms and to parse them
+ * @namespace API
+ */
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.rel = exports.expr = exports.createDataGraph = exports.createParser = undefined;
 
-var _createParser = __webpack_require__(7);
 
-Object.defineProperty(exports, "createParser", {
-  enumerable: true,
-  get: function get() {
-    return _createParser.createParser;
-  }
-});
 
-var _createDataGraph2 = __webpack_require__(200);
 
-var _createDataGraph3 = _interopRequireDefault(_createDataGraph2);
 
-var _expressionBuilders = __webpack_require__(202);
 
-var _expr = _interopRequireWildcard(_expressionBuilders);
-
-var _transformBuilders = __webpack_require__(203);
-
-var _rel = _interopRequireWildcard(_transformBuilders);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.createDataGraph = _createDataGraph3.default;
-exports.expr = _expr;
-exports.rel = _rel;
 
 /***/ }),
 /* 186 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseExpression;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(27);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.default = parseExpression;
-
-var _createParser = __webpack_require__(7);
-
-var _createParser2 = _interopRequireDefault(_createParser);
-
-var _utils = __webpack_require__(27);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
 
 function parseExpression(expression) {
-  var parser = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _createParser2.default;
+  var parser = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
 
   if (typeof expression === "string" || !(typeof expression === "undefined" ? "undefined" : _typeof(expression)) === "object") {
     return expression;
@@ -49724,7 +49642,7 @@ function parseExpression(expression) {
     case "not in":
       if (Array.isArray(expression.set)) {
         return expression.expr + " " + expression.type.toUpperCase() + " (" + expression.set.map(function (field) {
-          return typeof field === "number" ? field : "'" + (0, _utils.escapeQuotes)(field) + "'";
+          return typeof field === "number" ? field : "'" + Object(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* escapeQuotes */])(field) + "'";
         }).join(", ") + ")";
       } else if (_typeof(expression.set) === "object" && (expression.set.type === "data" || expression.set.type === "root")) {
         return expression.expr + " " + expression.type.toUpperCase() + " (" + parser.writeSQL(expression.set) + ")";
@@ -49779,15 +49697,12 @@ function parseExpression(expression) {
 
 /***/ }),
 /* 187 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseDataState;
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = parseDataState;
 function parseDataState(state, parser) {
   var initialSQL = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
     select: [],
@@ -49820,90 +49735,59 @@ function parseDataState(state, parser) {
 
 /***/ }),
 /* 188 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseTransform;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(189);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(190);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(191);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(192);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(193);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(195);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(196);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(197);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__parse_source__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(198);
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = parseTransform;
 
-var _parseAggregate = __webpack_require__(189);
 
-var _parseAggregate2 = _interopRequireDefault(_parseAggregate);
 
-var _parseBin = __webpack_require__(190);
 
-var _parseBin2 = _interopRequireDefault(_parseBin);
 
-var _parseCrossfilter = __webpack_require__(191);
 
-var _parseCrossfilter2 = _interopRequireDefault(_parseCrossfilter);
 
-var _parseSort = __webpack_require__(192);
 
-var _parseSort2 = _interopRequireDefault(_parseSort);
 
-var _parseLimit = __webpack_require__(193);
 
-var _parseLimit2 = _interopRequireDefault(_parseLimit);
-
-var _parseFilter = __webpack_require__(28);
-
-var _parseFilter2 = _interopRequireDefault(_parseFilter);
-
-var _parsePostFilter = __webpack_require__(194);
-
-var _parsePostFilter2 = _interopRequireDefault(_parsePostFilter);
-
-var _parseProject = __webpack_require__(195);
-
-var _parseProject2 = _interopRequireDefault(_parseProject);
-
-var _parseResolvefilter = __webpack_require__(196);
-
-var _parseResolvefilter2 = _interopRequireDefault(_parseResolvefilter);
-
-var _parseSample = __webpack_require__(197);
-
-var _parseSample2 = _interopRequireDefault(_parseSample);
-
-var _parseSource = __webpack_require__(29);
-
-var _parseSource2 = _interopRequireDefault(_parseSource);
-
-var _parseWith = __webpack_require__(198);
-
-var _parseWith2 = _interopRequireDefault(_parseWith);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function parseTransform(sql, t, parser) {
   switch (t.type) {
     case "aggregate":
-      return (0, _parseAggregate2.default)(sql, t, parser);
+      return Object(__WEBPACK_IMPORTED_MODULE_0__parse_aggregate__["a" /* default */])(sql, t, parser);
     case "bin":
-      return (0, _parseBin2.default)(sql, t);
+      return Object(__WEBPACK_IMPORTED_MODULE_1__parse_bin__["a" /* default */])(sql, t);
     case "sort":
-      return (0, _parseSort2.default)(sql, t);
+      return Object(__WEBPACK_IMPORTED_MODULE_3__parse_sort__["a" /* default */])(sql, t);
     case "limit":
-      return (0, _parseLimit2.default)(sql, t);
+      return Object(__WEBPACK_IMPORTED_MODULE_4__parse_limit__["a" /* default */])(sql, t);
     case "filter":
-      return (0, _parseFilter2.default)(sql, t, parser);
+      return Object(__WEBPACK_IMPORTED_MODULE_5__parse_filter__["a" /* default */])(sql, t, parser);
     case "postFilter":
-      return (0, _parsePostFilter2.default)(sql, t, parser);
+      return Object(__WEBPACK_IMPORTED_MODULE_6__parse_postFilter__["a" /* default */])(sql, t, parser);
     case "project":
-      return (0, _parseProject2.default)(sql, t, parser);
+      return Object(__WEBPACK_IMPORTED_MODULE_7__parse_project__["a" /* default */])(sql, t, parser);
     case "sample":
-      return (0, _parseSample2.default)(sql, t);
+      return Object(__WEBPACK_IMPORTED_MODULE_9__parse_sample__["a" /* default */])(sql, t);
     case "resolvefilter":
-      return (0, _parseResolvefilter2.default)(sql, t);
+      return Object(__WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__["a" /* default */])(sql, t);
     case "crossfilter":
-      return (0, _parseCrossfilter2.default)(sql, t);
+      return Object(__WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__["a" /* default */])(sql, t);
     case "with":
-      return (0, _parseWith2.default)(sql, t, parser);
+      return Object(__WEBPACK_IMPORTED_MODULE_11__parse_with__["a" /* default */])(sql, t, parser);
     /* istanbul ignore next */
     default:
       return sql;
@@ -49912,21 +49796,12 @@ function parseTransform(sql, t, parser) {
 
 /***/ }),
 /* 189 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseAggregate;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(7);
 
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = parseAggregate;
-
-var _createParser = __webpack_require__(7);
-
-var _createParser2 = _interopRequireDefault(_createParser);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var AGGREGATES = {
   average: "AVG",
@@ -49937,7 +49812,7 @@ var AGGREGATES = {
 };
 
 function parseAggregate(sql, transform) {
-  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _createParser2.default;
+  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
 
   if (Array.isArray(transform.groupby)) {
     transform.groupby.forEach(function (group) {
@@ -49986,60 +49861,39 @@ function parseGroupBy(sql, groupby, parser) {
 
 /***/ }),
 /* 190 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseBin;
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = parseBin;
 function parseBin(sql, _ref) {
-    var field = _ref.field,
-        as = _ref.as,
-        extent = _ref.extent,
-        maxbins = _ref.maxbins;
+  var field = _ref.field,
+      as = _ref.as,
+      extent = _ref.extent,
+      maxbins = _ref.maxbins;
 
-    sql.select.push("cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int) as " + as);
-    sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
-    sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
-    return sql;
+  sql.select.push("cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int) as " + as);
+  sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
+  sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
+  return sql;
 }
 
 /***/ }),
 /* 191 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseCrossfilter;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(28);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.default = parseCrossfilter;
-
-var _createParser = __webpack_require__(7);
-
-var _createParser2 = _interopRequireDefault(_createParser);
-
-var _parseFilter = __webpack_require__(28);
-
-var _parseFilter2 = _interopRequireDefault(_parseFilter);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
 
 function parseCrossfilter(sql, transform) {
-  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _createParser2.default;
+  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
 
   switch (transform.type) {
     case "crossfilter":
@@ -50051,7 +49905,7 @@ function parseCrossfilter(sql, transform) {
               var ignore = sql.unresolved[transform.signal].ignore;
 
               if (Array.isArray(ignore) ? ignore.indexOf(key) === -1 : key !== ignore) {
-                (0, _parseFilter2.default)(sql, filter, parser);
+                Object(__WEBPACK_IMPORTED_MODULE_1__parse_filter__["a" /* default */])(sql, filter, parser);
               }
             }
           });
@@ -50064,21 +49918,17 @@ function parseCrossfilter(sql, transform) {
 
 /***/ }),
 /* 192 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = parseSort;
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseSort;
 
 
 var ORDERINGS = {
   ascending: "ASC",
   descending: "DESC"
 };
+
 
 function parseSort(sql, transform) {
   transform.field.forEach(function (field, index) {
@@ -50089,15 +49939,12 @@ function parseSort(sql, transform) {
 
 /***/ }),
 /* 193 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseLimit;
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = parseLimit;
 function parseLimit(sql, transform) {
   sql.limit += transform.row;
   sql.offset += transform.offset || sql.offset;
@@ -50106,15 +49953,10 @@ function parseLimit(sql, transform) {
 
 /***/ }),
 /* 194 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = parsePostFilter;
+/* harmony export (immutable) */ __webpack_exports__["a"] = parsePostFilter;
 
 
 var operator = {
@@ -50159,24 +50001,16 @@ function parsePostFilter(sql, transform) {
 
 /***/ }),
 /* 195 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseProject;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(7);
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = parseProject;
-
-var _createParser = __webpack_require__(7);
-
-var _createParser2 = _interopRequireDefault(_createParser);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function parseProject(sql, transform) {
-  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _createParser2.default;
+  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
 
   sql.select.push(parser.parseExpression(transform.expr) + (transform.as ? " as " + transform.as : ""));
   return sql;
@@ -50184,31 +50018,13 @@ function parseProject(sql, transform) {
 
 /***/ }),
 /* 196 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseResolvefilter;
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.default = parseResolvefilter;
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
-
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }return obj;
-}
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function parseResolvefilter(sql, transform) {
   switch (transform.type) {
@@ -50225,15 +50041,10 @@ function parseResolvefilter(sql, transform) {
 
 /***/ }),
 /* 197 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = sample;
+/* harmony export (immutable) */ __webpack_exports__["a"] = sample;
 
 
 var GOLDEN_RATIO = 2654435761;
@@ -50264,24 +50075,17 @@ function sample(sql, transform) {
 
 /***/ }),
 /* 198 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = parseWith;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(7);
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = parseWith;
 
-var _createParser = __webpack_require__(7);
-
-var _createParser2 = _interopRequireDefault(_createParser);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function parseWith(sql, transform) {
-  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _createParser2.default;
+  var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
 
   var subQuery = parser.write(parser.parseDataState(transform.fields));
   // need to pass the name for the subquery from mapd-charting, so including with clause in the sql as an object
@@ -50291,19 +50095,17 @@ function parseWith(sql, transform) {
 
 /***/ }),
 /* 199 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = writeSQL;
+/* harmony export (immutable) */ __webpack_exports__["b"] = write;
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = writeSQL;
-exports.write = write;
 function writeSQL(state, parser) {
   return write(parser.parseDataState(state));
 }
+
 
 function write(sql) {
   return writeWith(sql.with) + writeSelect(sql.select) + writeFrom(sql.from) + writeWhere(sql.where) + writeGroupby(sql.groupby) + writeHaving(sql.having) + writeOrderBy(sql.orderby) + writeLimit(sql.limit) + writeOffset(sql.offset);
@@ -50348,37 +50150,19 @@ function writeWith(With) {
 
 /***/ }),
 /* 200 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = createDataGraph;
 
-var _createDataNode = __webpack_require__(201);
 
-var _createDataNode2 = _interopRequireDefault(_createDataNode);
-
-var _createParser = __webpack_require__(7);
-
-var _invariant = __webpack_require__(30);
-
-var _invariant2 = _interopRequireDefault(_invariant);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
 
 /**
  * Creates a data graph instance. Must pass in a connector object that implements a query method.
@@ -50386,11 +50170,11 @@ var _extends = Object.assign || function (target) {
  * @memberof API
  */
 function createDataGraph(connector) {
-  (0, _invariant2.default)(typeof connector.query === "function", "invalid connector");
+  __WEBPACK_IMPORTED_MODULE_2_invariant___default()(typeof connector.query === "function", "invalid connector");
 
   var context = {
     connector: connector,
-    parser: (0, _createParser.createParser)()
+    parser: Object(__WEBPACK_IMPORTED_MODULE_1__parser_create_parser__["a" /* createParser */])()
   };
 
   var childNodes = [];
@@ -50435,7 +50219,7 @@ function createDataGraph(connector) {
    * @inner
    */
   function data(state) {
-    var dataNode = (0, _createDataNode2.default)(context, typeof state === "string" || Array.isArray(state) ? { source: state, type: "root" } : _extends({}, state, { type: "root" }));
+    var dataNode = Object(__WEBPACK_IMPORTED_MODULE_0__create_data_node__["a" /* default */])(context, typeof state === "string" || Array.isArray(state) ? { source: state, type: "root" } : _extends({}, state, { type: "root" }));
     childNodes.push(dataNode);
     return dataNode;
   }
@@ -50445,33 +50229,17 @@ function createDataGraph(connector) {
 
 /***/ }),
 /* 201 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createDataNode;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_invariant__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(27);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = createDataNode;
 
-var _invariant = __webpack_require__(30);
-
-var _invariant2 = _interopRequireDefault(_invariant);
-
-var _utils = __webpack_require__(27);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
 
 function createDataNode(context) {
   var initialState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -50523,7 +50291,7 @@ function createDataNode(context) {
    * @inner
    */
   function toSQL() {
-    return context.parser.write((0, _utils.reduceToSQL)(context, dataNodeAPI));
+    return context.parser.write(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["b" /* reduceToSQL */])(context, dataNodeAPI));
   }
 
   /**
@@ -50533,7 +50301,7 @@ function createDataNode(context) {
    * @inner
    */
   function values() {
-    return context.connector.query(context.parser.write((0, _utils.reduceToSQL)(context, dataNodeAPI)));
+    return context.connector.query(context.parser.write(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["b" /* reduceToSQL */])(context, dataNodeAPI)));
   }
 
   /**
@@ -50554,28 +50322,24 @@ function createDataNode(context) {
 
 /***/ }),
 /* 202 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.alias = alias;
-exports.avg = avg;
-exports.min = min;
-exports.max = max;
-exports.sum = sum;
-exports.count = count;
-exports.approxCount = approxCount;
-exports.countStar = countStar;
-exports.extract = extract;
-exports.dateTrunc = dateTrunc;
-exports.inExpr = inExpr;
-exports.not = not;
-exports.caseExpr = caseExpr;
-exports.between = between;
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["alias"] = alias;
+/* harmony export (immutable) */ __webpack_exports__["avg"] = avg;
+/* harmony export (immutable) */ __webpack_exports__["min"] = min;
+/* harmony export (immutable) */ __webpack_exports__["max"] = max;
+/* harmony export (immutable) */ __webpack_exports__["sum"] = sum;
+/* harmony export (immutable) */ __webpack_exports__["count"] = count;
+/* harmony export (immutable) */ __webpack_exports__["approxCount"] = approxCount;
+/* harmony export (immutable) */ __webpack_exports__["countStar"] = countStar;
+/* harmony export (immutable) */ __webpack_exports__["extract"] = extract;
+/* harmony export (immutable) */ __webpack_exports__["dateTrunc"] = dateTrunc;
+/* harmony export (immutable) */ __webpack_exports__["inExpr"] = inExpr;
+/* harmony export (immutable) */ __webpack_exports__["not"] = not;
+/* harmony export (immutable) */ __webpack_exports__["caseExpr"] = caseExpr;
+/* harmony export (immutable) */ __webpack_exports__["between"] = between;
 
 
 /**
@@ -50766,32 +50530,21 @@ function between(field, range) {
 
 /***/ }),
 /* 203 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.project = project;
-exports.aggregate = aggregate;
-exports.filter = filter;
-exports.filterRange = filterRange;
-exports.filterIn = filterIn;
-exports.bin = bin;
-exports.limit = limit;
-exports.sort = sort;
-exports.top = top;
-exports.bottom = bottom;
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["project"] = project;
+/* harmony export (immutable) */ __webpack_exports__["aggregate"] = aggregate;
+/* harmony export (immutable) */ __webpack_exports__["filter"] = filter;
+/* harmony export (immutable) */ __webpack_exports__["filterRange"] = filterRange;
+/* harmony export (immutable) */ __webpack_exports__["filterIn"] = filterIn;
+/* harmony export (immutable) */ __webpack_exports__["bin"] = bin;
+/* harmony export (immutable) */ __webpack_exports__["limit"] = limit;
+/* harmony export (immutable) */ __webpack_exports__["sort"] = sort;
+/* harmony export (immutable) */ __webpack_exports__["top"] = top;
+/* harmony export (immutable) */ __webpack_exports__["bottom"] = bottom;
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /**
  * Creates a Project transform
@@ -50817,6 +50570,7 @@ function project(expr) {
  * @name Transform
  * @see {@link https://github.com/mapd/mapd-data-layer/tree/master/src/types/transform-type.js|Transform Types}
  */
+
 
 function getAggs(agg) {
   if (Array.isArray(agg)) {
