@@ -53,6 +53,7 @@ export default function rasterLayerPolyMixin(_layer) {
   _layer.crossfilter = createRasterLayerGetterSetter(_layer, null)
   _layer.filtersInverse = createRasterLayerGetterSetter(_layer, false)
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
+  const withAlias = "colors" // aliasing WITH clause for geo joined Choropleth
 
   createVegaAttrMixin(
     _layer,
@@ -97,6 +98,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
   _layer.getProjections = function() {
     return getTransforms({
+      bboxFilter: "",
       filter: "",
       globalFilter: "",
       layerFilter: _layer.filters(),
@@ -105,7 +107,7 @@ export default function rasterLayerPolyMixin(_layer) {
     })
       .filter(
         transform =>
-          transform.type === "project" && transform.hasOwnProperty("as")
+          transform.type === "project" && transform.hasOwnProperty("as") && transform.as !== "key0" && transform.as !== "color"
       )
       .map(projection => parser.parseTransform({ select: [] }, projection))
       .map(sql => sql.select[0])
@@ -116,6 +118,7 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   function getTransforms({
+    bboxFilter,
     filter,
     globalFilter,
     layerFilter,
@@ -126,55 +129,76 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const transforms = []
 
-    const groupby = doJoin()
-      ? {
-          type: "project",
-          expr: `${state.data[0].table}.${state.data[0].attr}`,
-          as: "key0"
-        }
-      : {}
-
     const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
-
-    if (doJoin()) {
-      // Join
-      transforms.push({
-        type: "filter",
-        expr: `${state.data[0].table}.${state.data[0].attr} = ${
-          state.data[1].table
-        }.${state.data[1].attr}`
-      })
-    }
 
     const colorProjection =
       color.type === "quantitative"
         ? parser.parseExpression(color.aggregate)
-        : `LAST_SAMPLE(${color.field})`
+        : `SAMPLE(${color.field})`
 
     const colorField =
       color.type === "quantitative"
         ? (typeof color.aggregate === "string" ? color.aggregate : color.aggregate.field)
         : color.field
 
-    if (doJoin()) {
-      transforms.push({
-        type: "project",
-        expr: `SAMPLE(${rowIdTable}.rowid)`,
-        as: "rowid"
-      })
-    } else {
-      transforms.push({
-        type: "project",
-        expr: `${rowIdTable}.rowid`
-      })
-      transforms.push({
-        type: "project",
-        expr: `${geoTable}.${geocol}`
-      })
-    }
+    transforms.push({
+      type: "project",
+      expr: `${geoTable}.${geocol}`,
+      as: geocol
+    })
 
-    if (layerFilter.length) {
-      if (doJoin()) {
+    if (doJoin()) {
+
+      const withClauseTransforms = []
+
+      const groupby = {
+        type: "project",
+        expr: `${state.data[0].table}.${state.data[0].attr}`,
+        as: "key0",
+      }
+
+      transforms.push({
+        type: "filter",
+        expr: `${state.data[1].table}.${state.data[1].attr} = ${withAlias}.key0`
+        },
+        {type: "project",
+        expr: `${withAlias}.key0`,
+        as: "key0"
+      })
+      if(typeof bboxFilter === "string" && bboxFilter.length) {
+        transforms.push({
+          type: "filter",
+          expr: bboxFilter
+        })
+      }
+
+      if (color.type !== "solid") {
+        withClauseTransforms.push(
+          {type: "aggregate",
+            fields: [colorProjection],
+            ops: [null],
+            as: ["color"],
+            groupby,
+        })
+
+        if(!layerFilter.length) {
+          transforms.push({
+            type: "project",
+            expr: `${withAlias}.color`,
+            as: "color"
+          })
+        }
+      } else {
+        withClauseTransforms.push({
+          type: "aggregate",
+            fields: [],
+            ops: [null],
+            as: [],
+            groupby,
+          })
+      }
+
+      if(layerFilter.length) {
         transforms.push({
           type: "aggregate",
           fields: [parser.parseExpression({
@@ -183,72 +207,91 @@ export default function rasterLayerPolyMixin(_layer) {
               [
                 {
                   type: filtersInverse ? "not in" : "in",
-                  expr: `${state.data[0].table}.${state.data[0].attr}`,
+                  expr: `${withAlias}.key0`,
                   set: layerFilter
                 },
-                color.type === "solid" ? 1 : colorProjection
+                color.type === "solid" ? 1 : `${withAlias}.color`
               ]
             ],
             else: null
           })],
           ops: [null],
           as: ["color"],
-          groupby
-        })
-      } else {
-        transforms.push({
-          type: "project",
-          expr: parser.parseExpression({
-            type: "case",
-            cond: [
-              [
-                {
-                  type: filtersInverse ? "not in" : "in",
-                  expr: "rowid",
-                  set: layerFilter
-                },
-                // Note: When not performing a join, there is no dimension,
-                // and color measures do not have aggregates. Just grab the
-                // field.
-                color.type === "solid" ? 1 : colorField
-              ]
-            ],
-            else: null
-          }),
-          as: "color"
+          groupby: {}
         })
       }
-    } else if (doJoin()) {
-        if (color.type !== "solid") {
-          transforms.push({
-            type: "aggregate",
-            fields: [colorProjection],
-            ops: [null],
-            as: ["color"],
-            groupby
-          })
-        } else {
-          transforms.push({
-            type: "aggregate",
-            fields: [],
-            ops: [null],
-            as: [],
-            groupby
-          })
+      if (typeof filter === "string" && filter.length) {
+        withClauseTransforms.push({
+          type: "filter",
+            expr: filter
+        })
+
+      }
+      if (typeof globalFilter === "string" && globalFilter.length) {
+        withClauseTransforms.push({
+          type: "filter",
+          expr: globalFilter
+        })
+      }
+      transforms.push({
+        type: "with",
+        expr: `${withAlias}`,
+        fields: {
+          source: `${state.data[0].table}`,
+          type: "root",
+          transform: withClauseTransforms
         }
-      } else if (color.type !== "solid") {
+      })
+
+    } else {
+      transforms.push({
+        type: "project",
+        expr: `${rowIdTable}.rowid`
+      })
+
+      if (color.type !== "solid") {
         transforms.push({
           type: "project",
           expr: colorField,
           as: "color"
         })
       }
-
-    if (typeof filter === "string" && filter.length) {
+    if(layerFilter.length) {
       transforms.push({
-        type: "filter",
-        expr: filter
+        type: "project",
+        expr: parser.parseExpression({
+          type: "case",
+          cond: [
+            [
+              {
+                type: filtersInverse ? "not in" : "in",
+                expr: "rowid",
+                set: layerFilter
+              },
+              // Note: When not performing a join, there is no dimension,
+              // and color measures do not have aggregates. Just grab the
+              // field.
+              color.type === "solid" ? 1 : colorField
+            ]
+          ],
+          else: null
+        }),
+        as: "color"
       })
+      }
+      if (typeof filter === "string" && filter.length) {
+        transforms.push({
+          type: "filter",
+          expr: filter !== "" ? `${bboxFilter} AND ${filter}` : bboxFilter
+        })
+      }
+
+      if (typeof globalFilter === "string" && globalFilter.length) {
+        transforms.push({
+          type: "filter",
+          expr: globalFilter
+        })
+      }
     }
 
     if (typeof state.transform.limit === "number") {
@@ -275,13 +318,6 @@ export default function rasterLayerPolyMixin(_layer) {
       }
     }
 
-    if (typeof globalFilter === "string" && globalFilter.length) {
-      transforms.push({
-        type: "filter",
-        expr: globalFilter
-      })
-    }
-
     return transforms
   }
 
@@ -305,6 +341,7 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.__genVega = function({
+    bboxFilter,
     filter,
     globalFilter,
     layerFilter = [],
@@ -322,10 +359,9 @@ export default function rasterLayerPolyMixin(_layer) {
         format: "polys",
         sql: parser.writeSQL({
           type: "root",
-          source: [...new Set(state.data.map(source => source.table))].join(
-            ", "
-          ),
+          source: doJoin() ? `${state.data[1].table}, ${withAlias}` : `${state.data[0].table}`,
           transform: getTransforms({
+            bboxFilter,
             filter,
             globalFilter,
             layerFilter,
@@ -497,7 +533,8 @@ export default function rasterLayerPolyMixin(_layer) {
 
     _vega = _layer.__genVega({
       layerName,
-      filter: polyFilterString !== "" ? `${bboxFilter} AND ${polyFilterString}` : bboxFilter,
+      bboxFilter,
+      filter: polyFilterString,
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       layerFilter: _layer.filters(),
       lastFilteredSize: _layer.getState().bboxCount,
