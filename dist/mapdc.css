@@ -1638,6 +1638,25 @@ body {
   position: relative;
   background-size: 20px 20px; }
 
+.mapboxgl-ctrl-group {
+  position: absolute;
+  display: block;
+  left: 8px;
+  bottom: 8px;
+  z-index: 99999;
+  overflow: hidden;
+  box-shadow: none !important;
+  border: 1px solid #e2e2e2; }
+
+.mapboxgl-ctrl-compass {
+  display: none !important; }
+
+.mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-in {
+  opacity: 0.5; }
+
+.mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-out {
+  opacity: 0.5; }
+
 .mapd-draw-button-circle {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ4IDQ4OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6bm9uZTtzdHJva2U6I0E3QTdBNztzdHJva2Utd2lkdGg6NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjgsMzt9PC9zdHlsZT48Y2lyY2xlIGNsYXNzPSJzdDAiIGN4PSIyNCIgY3k9IjI0IiByPSIxNiIvPjwvc3ZnPg==); }
   .mapd-draw-button-circle:hover {
