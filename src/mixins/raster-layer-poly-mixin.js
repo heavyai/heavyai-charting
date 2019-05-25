@@ -295,7 +295,7 @@ export default function rasterLayerPolyMixin(_layer) {
     }
 
     if (typeof state.transform.limit === "number") {
-      const doSample = state.transform.sample && !doJoin()
+      const doSample = state.transform.sample
       const doRowid = layerFilter.length
 
       if (doSample && doRowid) {
@@ -303,9 +303,10 @@ export default function rasterLayerPolyMixin(_layer) {
           type: "sample",
           method: "multiplicativeRowid",
           expr: layerFilter,
-          field: `${state.data[0].table}.${state.data[0].attr}`,
+          field: doJoin() ? `${geoTable}.rowid` : `${state.data[0].table}.${state.data[0].attr}`,
           size: lastFilteredSize || state.transform.tableSize,
-          limit: state.transform.limit
+          limit: state.transform.limit,
+          sampleTable: geoTable
         })
       } else if (doSample) {
         transforms.push({
@@ -313,11 +314,11 @@ export default function rasterLayerPolyMixin(_layer) {
           method: "multiplicative",
           expr: layerFilter,
           size: lastFilteredSize || state.transform.tableSize,
-          limit: state.transform.limit
+          limit: state.transform.limit,
+          sampleTable: geoTable
         })
       }
     }
-
     return transforms
   }
 

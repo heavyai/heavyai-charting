@@ -15,7 +15,7 @@
   version "1.0.0"
   resolved "git://github.com/omnisci/mapd-crossfilter.git#0ffd6b436eeac1259bf725319410141ed324707b"
 
-"@mapd/mapd-draw@git://github.com/omnisci/mapd-draw.git":
+"@mapd/mapd-draw@git://github.com/omnisci/mapd-draw.git#fa59fbf68ded25619b5f71b3ee6a73cea9f8d149":
   version "1.1.0"
   resolved "git://github.com/omnisci/mapd-draw.git#fa59fbf68ded25619b5f71b3ee6a73cea9f8d149"
   dependencies:
@@ -6011,10 +6011,10 @@ mapbox-gl-supported@^1.2.0:
     webworkify "^1.4.0"
     whoots-js "^2.0.0"
 
-mapd-data-layer-2@0.0.17:
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.17.tgz#db05f6fb9b462e19f7c469f22841766a60c529ea"
-  integrity sha512-/Rb4u60tuQl87YD2Jo30pZNQDlplA9qkLkp3PaOvMhZwNj9df8afg/aSQhZsAVTEERDIT2EXv9h79g1hO7m8bA==
+mapd-data-layer-2@0.0.18:
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.18.tgz#c33a31042257f3c820e8df18abdbfc823c69ce09"
+  integrity sha512-GYNXspiNmAB6FYeBsKiwvYSO5LYGpxCjVM44Y8mie1rCt2TldgIw7mGST1Srg9/2XK2hbP7w/DMPUyRQcTNeUA==
   dependencies:
     invariant "^2.2.2"
 

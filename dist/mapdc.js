@@ -47933,7 +47933,8 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
           type: "sample",
           method: "multiplicative",
           size: lastFilteredSize || transform.tableSize,
-          limit: transform.limit
+          limit: transform.limit,
+          sampleTable: table
         });
       }
     }
@@ -48701,7 +48702,7 @@ function rasterLayerPolyMixin(_layer) {
     }
 
     if (typeof state.transform.limit === "number") {
-      var doSample = state.transform.sample && !doJoin();
+      var doSample = state.transform.sample;
       var doRowid = layerFilter.length;
 
       if (doSample && doRowid) {
@@ -48709,9 +48710,10 @@ function rasterLayerPolyMixin(_layer) {
           type: "sample",
           method: "multiplicativeRowid",
           expr: layerFilter,
-          field: state.data[0].table + "." + state.data[0].attr,
+          field: doJoin() ? geoTable + ".rowid" : state.data[0].table + "." + state.data[0].attr,
           size: lastFilteredSize || state.transform.tableSize,
-          limit: state.transform.limit
+          limit: state.transform.limit,
+          sampleTable: geoTable
         });
       } else if (doSample) {
         transforms.push({
@@ -48719,11 +48721,11 @@ function rasterLayerPolyMixin(_layer) {
           method: "multiplicative",
           expr: layerFilter,
           size: lastFilteredSize || state.transform.tableSize,
-          limit: state.transform.limit
+          limit: state.transform.limit,
+          sampleTable: geoTable
         });
       }
     }
-
     return transforms;
   }
 
@@ -50059,6 +50061,9 @@ function sample(sql, transform) {
   var ratio = Math.min(limit / size, 1.0);
   var threshold = Math.floor(THIRTY_TWO_BITS * ratio);
 
+  // sampleTable prop is in the transform from point, poly, linestring charts
+  var samplingTable = transform.sampleTable || sql.from;
+
   if (transform.method === "multiplicativeRowid" && ratio < 1) {
     sql.where.push("((MOD( MOD (" + transform.field + ", " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + transform.field + " IN (" + transform.expr.join(", ") + ")))");
   } else if (transform.method === "multiplicative" && ratio < 1) {
@@ -50067,7 +50072,7 @@ function sample(sql, transform) {
     // to optimize the filter here. This helps  the overflow on the backend.
     // We don't have the full modulo expression for golden ratio since 
     // that is a constant expression and we can avoid that execution
-    sql.where.push("MOD( MOD (" + sql.from + ".rowid, " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold);
+    sql.where.push("MOD( MOD (" + samplingTable + ".rowid, " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold);
   }
 
   return sql;
@@ -75416,7 +75421,8 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
         type: "sample",
         method: "multiplicative",
         size: lastFilteredSize || transform.tableSize,
-        limit: transform.limit
+        limit: transform.limit,
+        sampleTable: geoTable
       });
     } else {
       // when geo join is applied, we won't use Knuth's sampling but use LIMIT
