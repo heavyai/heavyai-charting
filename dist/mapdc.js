@@ -48686,7 +48686,7 @@ function rasterLayerPolyMixin(_layer) {
           as: "color"
         });
       }
-      if (typeof filter === "string" && filter.length) {
+      if (typeof filter === "string") {
         transforms.push({
           type: "filter",
           expr: filter !== "" ? bboxFilter + " AND " + filter : bboxFilter
