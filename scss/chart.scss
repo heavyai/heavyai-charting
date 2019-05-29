@@ -1955,6 +1955,14 @@ body {
     }
 }
 
+.mapboxgl-ctrl-top-right .mapboxgl-ctrl {
+  border-radius: 2px;
+
+  button:nth-child(2) {
+    border: none;
+  }
+}
+
 .mapbox-maplogo {
       position:absolute;
       display:block;
