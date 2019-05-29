@@ -211,7 +211,7 @@ export function redrawAllAsync(group, allCharts) {
         chart.expireCache()
         chart._invokeDataFetchListener()
         return chart.redrawAsync(queryGroupId, charts.length).catch(e => {
-          chart._invokeDataErrorListener()
+          chart._invokeDataErrorListener(e)
           throw e
         })
       })

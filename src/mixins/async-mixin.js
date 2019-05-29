@@ -36,8 +36,8 @@ export default function asyncMixin(_chart) {
     _listeners.dataFetch(_chart)
   }
 
-  _chart._invokeDataErrorListener = function() {
-    _listeners.dataError(_chart)
+  _chart._invokeDataErrorListener = function(error) {
+    _listeners.dataError(_chart, error)
   }
 
   _chart.dataAsync = function(callback) {
@@ -83,7 +83,7 @@ export default function asyncMixin(_chart) {
 
       const dataCallback = function(error, data) {
         if (error) {
-          _chart._invokeDataErrorListener()
+          _chart._invokeDataErrorListener(error)
           resetRenderStack()
           reject(error)
         } else {
@@ -116,7 +116,7 @@ export default function asyncMixin(_chart) {
 
       const dataCallback = function(error, data) {
         if (error) {
-          _chart._invokeDataErrorListener()
+          _chart._invokeDataErrorListener(error)
           resetRedrawStack()
           reject(error)
         } else {

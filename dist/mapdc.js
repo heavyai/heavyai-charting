@@ -5844,7 +5844,7 @@ function redrawAllAsync(group, allCharts) {
         chart.expireCache();
         chart._invokeDataFetchListener();
         return chart.redrawAsync(queryGroupId, charts.length).catch(function (e) {
-          chart._invokeDataErrorListener();
+          chart._invokeDataErrorListener(e);
           throw e;
         });
       });
@@ -43798,8 +43798,8 @@ function asyncMixin(_chart) {
     _listeners.dataFetch(_chart);
   };
 
-  _chart._invokeDataErrorListener = function () {
-    _listeners.dataError(_chart);
+  _chart._invokeDataErrorListener = function (error) {
+    _listeners.dataError(_chart, error);
   };
 
   _chart.dataAsync = function (callback) {
@@ -43847,7 +43847,7 @@ function asyncMixin(_chart) {
 
       var dataCallback = function dataCallback(error, data) {
         if (error) {
-          _chart._invokeDataErrorListener();
+          _chart._invokeDataErrorListener(error);
           (0, _coreAsync.resetRenderStack)();
           reject(error);
         } else {
@@ -43880,7 +43880,7 @@ function asyncMixin(_chart) {
 
       var dataCallback = function dataCallback(error, data) {
         if (error) {
-          _chart._invokeDataErrorListener();
+          _chart._invokeDataErrorListener(error);
           (0, _coreAsync.resetRedrawStack)();
           reject(error);
         } else {
@@ -48686,7 +48686,7 @@ function rasterLayerPolyMixin(_layer) {
           as: "color"
         });
       }
-      if (typeof filter === "string" && filter.length) {
+      if (typeof filter === "string") {
         transforms.push({
           type: "filter",
           expr: filter !== "" ? bboxFilter + " AND " + filter : bboxFilter
