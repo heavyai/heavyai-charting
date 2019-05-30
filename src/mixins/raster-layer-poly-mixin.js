@@ -249,7 +249,7 @@ export default function rasterLayerPolyMixin(_layer) {
         expr: `${rowIdTable}.rowid`
       })
 
-      if (color.type !== "solid") {
+      if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
           expr: colorField,
