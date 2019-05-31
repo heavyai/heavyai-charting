@@ -48660,7 +48660,7 @@ function rasterLayerPolyMixin(_layer) {
         expr: rowIdTable + ".rowid"
       });
 
-      if (color.type !== "solid") {
+      if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
           expr: colorField,
@@ -48710,7 +48710,7 @@ function rasterLayerPolyMixin(_layer) {
           type: "sample",
           method: "multiplicativeRowid",
           expr: layerFilter,
-          field: doJoin() ? geoTable + ".rowid" : state.data[0].table + "." + state.data[0].attr,
+          field: doJoin() ? withAlias + ".key0" : state.data[0].table + "." + state.data[0].attr,
           size: lastFilteredSize || state.transform.tableSize,
           limit: state.transform.limit,
           sampleTable: geoTable
@@ -50065,7 +50065,9 @@ function sample(sql, transform) {
   var samplingTable = transform.sampleTable || sql.from;
 
   if (transform.method === "multiplicativeRowid" && ratio < 1) {
-    sql.where.push("((MOD( MOD (" + transform.field + ", " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + transform.field + " IN (" + transform.expr.join(", ") + ")))");
+    sql.where.push("((MOD( MOD (" + samplingTable + ".rowid, " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + transform.field + " IN (" + transform.expr.map(function (e) {
+      return typeof e === "string" ? "'" + e + "'" : "" + e;
+    }).join(", ") + ")))");
   } else if (transform.method === "multiplicative" && ratio < 1) {
     // We are using simple modulo arithmetic expression conversion, 
     // (A * B) mod C = (A mod C * B mod C) mod C, 
