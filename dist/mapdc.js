@@ -49875,7 +49875,7 @@ function parseBin(sql, _ref) {
       extent = _ref.extent,
       maxbins = _ref.maxbins;
 
-  sql.select.push("cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int) as " + as);
+  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int)\n    end\n    as " + as);
   sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
   sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
   return sql;
@@ -50065,7 +50065,9 @@ function sample(sql, transform) {
   var samplingTable = transform.sampleTable || sql.from;
 
   if (transform.method === "multiplicativeRowid" && ratio < 1) {
-    sql.where.push("((MOD( MOD (" + transform.field + ", " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + transform.field + " IN (" + transform.expr.join(", ") + ")))");
+    sql.where.push("((MOD( MOD (" + samplingTable + ".rowid, " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + transform.field + " IN (" + transform.expr.map(function (e) {
+      return typeof e === "string" ? "'" + e + "'" : "" + e;
+    }).join(", ") + ")))");
   } else if (transform.method === "multiplicative" && ratio < 1) {
     // We are using simple modulo arithmetic expression conversion, 
     // (A * B) mod C = (A mod C * B mod C) mod C, 
