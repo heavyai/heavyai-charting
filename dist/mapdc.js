@@ -48660,7 +48660,7 @@ function rasterLayerPolyMixin(_layer) {
         expr: rowIdTable + ".rowid"
       });
 
-      if (color.type !== "solid") {
+      if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
           expr: colorField,
@@ -48710,7 +48710,7 @@ function rasterLayerPolyMixin(_layer) {
           type: "sample",
           method: "multiplicativeRowid",
           expr: layerFilter,
-          field: doJoin() ? geoTable + ".rowid" : state.data[0].table + "." + state.data[0].attr,
+          field: doJoin() ? withAlias + ".key0" : state.data[0].table + "." + state.data[0].attr,
           size: lastFilteredSize || state.transform.tableSize,
           limit: state.transform.limit,
           sampleTable: geoTable
