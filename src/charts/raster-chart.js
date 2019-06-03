@@ -294,14 +294,12 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart.setDataAsync((group, callback) => {
     const layers = _chart.getAllLayers()
     const polyLayers = layers.length ? _.filter(layers, (layer) => layer.getState().mark.type === "poly" ) : null
-
-    if (polyLayers && polyLayers.length) { // add bboxCount to poly layers run sample
-      polyLayers.forEach(polyLayer => {
-        getCountFromBoundingBox(_chart, polyLayer).then(res => {
-          const count = res && res[0] && res[0].n
-          polyLayer.setState({...polyLayer.getState(), bboxCount: count})
-          handleRenderVega(callback)
-        })
+    if (polyLayers && polyLayers.length && polyLayers[0].getState().currentLayer !== "master") { // add bboxCount to poly layers run sample
+      const currentLayer = polyLayers[0]
+      getCountFromBoundingBox(_chart, currentLayer).then(res => {
+        const count = res && res[0] && res[0].n
+        currentLayer.setState({...currentLayer.getState(), bboxCount: count})
+        handleRenderVega(callback)
       })
     } else {
       handleRenderVega(callback)

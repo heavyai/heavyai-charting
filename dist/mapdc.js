@@ -49875,7 +49875,7 @@ function parseBin(sql, _ref) {
       extent = _ref.extent,
       maxbins = _ref.maxbins;
 
-  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int)\n    end\n    as " + as);
+  sql.select.push("cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int) as " + as);
   sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
   sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
   return sql;
@@ -69337,15 +69337,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var polyLayers = layers.length ? _.filter(layers, function (layer) {
       return layer.getState().mark.type === "poly";
     }) : null;
-
-    if (polyLayers && polyLayers.length) {
+    if (polyLayers && polyLayers.length && polyLayers[0].getState().currentLayer !== "master") {
       // add bboxCount to poly layers run sample
-      polyLayers.forEach(function (polyLayer) {
-        getCountFromBoundingBox(_chart, polyLayer).then(function (res) {
-          var count = res && res[0] && res[0].n;
-          polyLayer.setState(_extends({}, polyLayer.getState(), { bboxCount: count }));
-          handleRenderVega(callback);
-        });
+      var currentLayer = polyLayers[0];
+      getCountFromBoundingBox(_chart, currentLayer).then(function (res) {
+        var count = res && res[0] && res[0].n;
+        currentLayer.setState(_extends({}, currentLayer.getState(), { bboxCount: count }));
+        handleRenderVega(callback);
       });
     } else {
       handleRenderVega(callback);
