@@ -628,6 +628,7 @@ export default function rasterLayerPolyMixin(_layer) {
     const geoCol = `${_layer.getState().encoding.geoTable}.${_layer.getState().encoding.geocol}`
     const viewboxdim = _layer.dimension().set(() => [geoCol])
     _layer.viewBoxDim(viewboxdim)
+    _listeners.filtered(_layer, _filtersArray)
   }
 
   _layer.on = function(event, listener) {
