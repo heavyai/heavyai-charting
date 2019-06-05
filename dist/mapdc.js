@@ -69352,12 +69352,19 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var polyLayers = layers.length ? _.filter(layers, function (layer) {
       return layer.getState().mark.type === "poly";
     }) : null;
-    if (polyLayers && polyLayers.length && polyLayers[0].getState().currentLayer !== "master") {
+    if (polyLayers && polyLayers.length) {
       // add bboxCount to poly layers run sample
-      var currentLayer = polyLayers[0];
-      getCountFromBoundingBox(_chart, currentLayer).then(function (res) {
-        var count = res && res[0] && res[0].n;
-        currentLayer.setState(_extends({}, currentLayer.getState(), { bboxCount: count }));
+
+      var countsPromise = polyLayers.map(function (currentLayer) {
+        return getCountFromBoundingBox(_chart, currentLayer);
+      });
+
+      Promise.all(countsPromise).then(function (resArr) {
+        resArr.forEach(function (res, index) {
+          var count = res && res[0] && res[0].n;
+          var currentLayer = polyLayers[index];
+          currentLayer.setState(_extends({}, currentLayer.getState(), { bboxCount: count }));
+        });
         handleRenderVega(callback);
       });
     } else {
