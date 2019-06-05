@@ -49031,6 +49031,7 @@ function rasterLayerPolyMixin(_layer) {
       return [geoCol];
     });
     _layer.viewBoxDim(viewboxdim);
+    _listeners.filtered(_layer, _filtersArray);
   };
 
   _layer.on = function (event, listener) {
@@ -49042,8 +49043,22 @@ function rasterLayerPolyMixin(_layer) {
     return (0, _utilsVega.__displayPopup)(_extends({}, svgProps, { _vega: _vega, _layer: _layer, state: state }));
   };
 
+  // We disabled polygon selection filter from Master layer if the chart has more than one poly layer in 4.7 release, FE-8685.
+  // Since we run rowid filter on poly selection filter, it is not correct to run same rowid filter for all overlapping poly layers.
+  // We need better UI/UX design for this
+  function chartHasMoreThanOnePolyLayers(chart) {
+    var polyLayers = chart && chart.getAllLayers().length ? chart.getAllLayers().filter(function (layer) {
+      return layer.layerType() === "polys";
+    }) : [];
+    return polyLayers.length > 1;
+  }
+
   _layer.onClick = function (chart, data, event) {
+
     if (!data) {
+      return;
+    } else if (_layer.getState().currentLayer === "master" && chartHasMoreThanOnePolyLayers(chart)) {
+      // don't filter from Master, FE-8685
       return;
     }
     var isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey));
@@ -49875,7 +49890,7 @@ function parseBin(sql, _ref) {
       extent = _ref.extent,
       maxbins = _ref.maxbins;
 
-  sql.select.push("cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int) as " + as);
+  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int)\n    end\n    as " + as);
   sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
   sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
   return sql;

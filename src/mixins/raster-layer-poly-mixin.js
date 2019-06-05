@@ -628,6 +628,7 @@ export default function rasterLayerPolyMixin(_layer) {
     const geoCol = `${_layer.getState().encoding.geoTable}.${_layer.getState().encoding.geocol}`
     const viewboxdim = _layer.dimension().set(() => [geoCol])
     _layer.viewBoxDim(viewboxdim)
+    _listeners.filtered(_layer, _filtersArray)
   }
 
   _layer.on = function(event, listener) {
@@ -639,8 +640,19 @@ export default function rasterLayerPolyMixin(_layer) {
     return __displayPopup({ ...svgProps, _vega, _layer, state})
   }
 
+  // We disabled polygon selection filter from Master layer if the chart has more than one poly layer in 4.7 release, FE-8685.
+  // Since we run rowid filter on poly selection filter, it is not correct to run same rowid filter for all overlapping poly layers.
+  // We need better UI/UX design for this
+  function chartHasMoreThanOnePolyLayers(chart) {
+    const polyLayers = (chart && chart.getAllLayers().length) ? chart.getAllLayers().filter(layer => layer.layerType() === "polys") : []
+    return polyLayers.length > 1
+  }
+
   _layer.onClick = function(chart, data, event) {
+
     if (!data) {
+      return
+    } else if (_layer.getState().currentLayer === "master" && chartHasMoreThanOnePolyLayers(chart)) { // don't filter from Master, FE-8685
       return
     }
     const isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey))
