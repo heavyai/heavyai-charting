@@ -2,18 +2,18 @@
 # yarn lockfile v1
 
 
-"@mapd/connector@git://github.com/omnisci/mapd-connector.git#d81908b":
-  version "4.4.0"
-  resolved "git://github.com/omnisci/mapd-connector.git#d81908b657c22f2166557c46350bd564742832aa"
+"@mapd/connector@git://github.com/omnisci/mapd-connector.git#acc845c501146a55aeffbe5f95ed3a2dd45bd4e7":
+  version "4.6.1"
+  resolved "git://github.com/omnisci/mapd-connector.git#acc845c501146a55aeffbe5f95ed3a2dd45bd4e7"
   dependencies:
     codecov "^2.2.0"
     eventemitter3 "^3.1.0"
     script-loader "^0.7.0"
     thrift "^0.10.0"
 
-"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#d029156e82c6e2786a11078864e17eb2dfafa4ff":
+"@mapd/crossfilter@git://github.com/omnisci/mapd-crossfilter.git#392403df13946e10e751ab7aeb6cb976fc5c694e":
   version "1.0.0"
-  resolved "git://github.com/omnisci/mapd-crossfilter.git#d029156e82c6e2786a11078864e17eb2dfafa4ff"
+  resolved "git://github.com/omnisci/mapd-crossfilter.git#392403df13946e10e751ab7aeb6cb976fc5c694e"
 
 "@mapd/mapd-draw@git://github.com/omnisci/mapd-draw.git#fa59fbf68ded25619b5f71b3ee6a73cea9f8d149":
   version "1.1.0"
