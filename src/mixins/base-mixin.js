@@ -874,9 +874,7 @@ export default function baseMixin(_chart) {
         globalTransitionDuration(null)
         resetRenderStack()
 
-        if (!renderStackEmpty()) {
-          renderStackEmpty(true)
-
+        if (renderStackEmpty(null)) {
           return renderAllAsync(null)
             .then(result => {
               callback(null, result)
@@ -961,10 +959,9 @@ export default function baseMixin(_chart) {
         globalTransitionDuration(null) // reset to null if was brush
         resetRedrawStack()
 
-        if (!redrawStackEmpty()) {
-          redrawStackEmpty(true)
-
-          return redrawAllAsync(_chart.chartGroup())
+        const group = _chart.chartGroup()
+        if (redrawStackEmpty(group)) {
+          return redrawAllAsync(group)
             .then(result => {
               callback(null, result)
             })
