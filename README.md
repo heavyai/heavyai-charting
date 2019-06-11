@@ -43,7 +43,7 @@ Our [Tweetmap Demo](https://www.mapd.com/demos/tweetmap/) was made only using Ma
 
 # Documentation
 
-Visit our [API Docs](http://mapd.github.io/mapd-charting/docs/) for additional information on MapD Charting
+Visit our [API Docs](https://omnisci.github.io/mapd-charting/docs/) for additional information on MapD Charting
 
 # Testing
 
