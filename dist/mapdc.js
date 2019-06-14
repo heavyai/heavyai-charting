@@ -5844,7 +5844,7 @@ function redrawAllAsync(group, allCharts) {
         chart.expireCache();
         chart._invokeDataFetchListener();
         return chart.redrawAsync(queryGroupId, charts.length).catch(function (e) {
-          chart._invokeDataErrorListener();
+          chart._invokeDataErrorListener(e);
           throw e;
         });
       });
@@ -43800,8 +43800,8 @@ function asyncMixin(_chart) {
     _listeners.dataFetch(_chart);
   };
 
-  _chart._invokeDataErrorListener = function () {
-    _listeners.dataError(_chart);
+  _chart._invokeDataErrorListener = function (error) {
+    _listeners.dataError(_chart, error);
   };
 
   _chart.dataAsync = function (callback) {
@@ -43849,7 +43849,7 @@ function asyncMixin(_chart) {
 
       var dataCallback = function dataCallback(error, data) {
         if (error) {
-          _chart._invokeDataErrorListener();
+          _chart._invokeDataErrorListener(error);
           (0, _coreAsync.resetRenderStack)();
           reject(error);
         } else {
@@ -43882,7 +43882,7 @@ function asyncMixin(_chart) {
 
       var dataCallback = function dataCallback(error, data) {
         if (error) {
-          _chart._invokeDataErrorListener();
+          _chart._invokeDataErrorListener(error);
           (0, _coreAsync.resetRedrawStack)();
           reject(error);
         } else {
@@ -47935,7 +47935,8 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
           type: "sample",
           method: "multiplicative",
           size: lastFilteredSize || transform.tableSize,
-          limit: transform.limit
+          limit: transform.limit,
+          sampleTable: table
         });
       }
     }
@@ -48661,7 +48662,7 @@ function rasterLayerPolyMixin(_layer) {
         expr: rowIdTable + ".rowid"
       });
 
-      if (color.type !== "solid") {
+      if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
           expr: colorField,
@@ -48687,7 +48688,7 @@ function rasterLayerPolyMixin(_layer) {
           as: "color"
         });
       }
-      if (typeof filter === "string" && filter.length) {
+      if (typeof filter === "string") {
         transforms.push({
           type: "filter",
           expr: filter !== "" ? bboxFilter + " AND " + filter : bboxFilter
@@ -48703,7 +48704,7 @@ function rasterLayerPolyMixin(_layer) {
     }
 
     if (typeof state.transform.limit === "number") {
-      var doSample = state.transform.sample && !doJoin();
+      var doSample = state.transform.sample;
       var doRowid = layerFilter.length;
 
       if (doSample && doRowid) {
@@ -48711,9 +48712,10 @@ function rasterLayerPolyMixin(_layer) {
           type: "sample",
           method: "multiplicativeRowid",
           expr: layerFilter,
-          field: state.data[0].table + "." + state.data[0].attr,
+          field: doJoin() ? withAlias + ".key0" : state.data[0].table + "." + state.data[0].attr,
           size: lastFilteredSize || state.transform.tableSize,
-          limit: state.transform.limit
+          limit: state.transform.limit,
+          sampleTable: geoTable
         });
       } else if (doSample) {
         transforms.push({
@@ -48721,11 +48723,11 @@ function rasterLayerPolyMixin(_layer) {
           method: "multiplicative",
           expr: layerFilter,
           size: lastFilteredSize || state.transform.tableSize,
-          limit: state.transform.limit
+          limit: state.transform.limit,
+          sampleTable: geoTable
         });
       }
     }
-
     return transforms;
   }
 
@@ -49031,6 +49033,7 @@ function rasterLayerPolyMixin(_layer) {
       return [geoCol];
     });
     _layer.viewBoxDim(viewboxdim);
+    _listeners.filtered(_layer, _filtersArray);
   };
 
   _layer.on = function (event, listener) {
@@ -49042,8 +49045,22 @@ function rasterLayerPolyMixin(_layer) {
     return (0, _utilsVega.__displayPopup)(_extends({}, svgProps, { _vega: _vega, _layer: _layer, state: state }));
   };
 
+  // We disabled polygon selection filter from Master layer if the chart has more than one poly layer in 4.7 release, FE-8685.
+  // Since we run rowid filter on poly selection filter, it is not correct to run same rowid filter for all overlapping poly layers.
+  // We need better UI/UX design for this
+  function chartHasMoreThanOnePolyLayers(chart) {
+    var polyLayers = chart && chart.getAllLayers().length ? chart.getAllLayers().filter(function (layer) {
+      return layer.layerType() === "polys";
+    }) : [];
+    return polyLayers.length > 1;
+  }
+
   _layer.onClick = function (chart, data, event) {
+
     if (!data) {
+      return;
+    } else if (_layer.getState().currentLayer === "master" && chartHasMoreThanOnePolyLayers(chart)) {
+      // don't filter from Master, FE-8685
       return;
     }
     var isInverseFilter = Boolean(event && (event.metaKey || event.ctrlKey));
@@ -49875,7 +49892,7 @@ function parseBin(sql, _ref) {
       extent = _ref.extent,
       maxbins = _ref.maxbins;
 
-  sql.select.push("cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int) as " + as);
+  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (extent[1] - extent[0]) + " as int)\n    end\n    as " + as);
   sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
   sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
   return sql;
@@ -50061,15 +50078,20 @@ function sample(sql, transform) {
   var ratio = Math.min(limit / size, 1.0);
   var threshold = Math.floor(THIRTY_TWO_BITS * ratio);
 
+  // sampleTable prop is in the transform from point, poly, linestring charts
+  var samplingTable = transform.sampleTable || sql.from;
+
   if (transform.method === "multiplicativeRowid" && ratio < 1) {
-    sql.where.push("((MOD( MOD (" + transform.field + ", " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + transform.field + " IN (" + transform.expr.join(", ") + ")))");
+    sql.where.push("((MOD( MOD (" + samplingTable + ".rowid, " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + transform.field + " IN (" + transform.expr.map(function (e) {
+      return typeof e === "string" ? "'" + e + "'" : "" + e;
+    }).join(", ") + ")))");
   } else if (transform.method === "multiplicative" && ratio < 1) {
     // We are using simple modulo arithmetic expression conversion, 
     // (A * B) mod C = (A mod C * B mod C) mod C, 
     // to optimize the filter here. This helps  the overflow on the backend.
     // We don't have the full modulo expression for golden ratio since 
     // that is a constant expression and we can avoid that execution
-    sql.where.push("MOD( MOD (" + sql.from + ".rowid, " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold);
+    sql.where.push("MOD( MOD (" + samplingTable + ".rowid, " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold);
   }
 
   return sql;
@@ -66847,7 +66869,8 @@ function heatMapKeyAccessor(_ref) {
   var key0 = _ref.key0;
 
   if (Array.isArray(key0)) {
-    var value = (0, _formattingHelpers.isArrayOfObjects)(key0) ? key0[0].value : key0[0];
+    var key0Val = (0, _formattingHelpers.isArrayOfObjects)(key0) ? key0[0].value : key0[0];
+    var value = key0Val instanceof Date ? (0, _formattingHelpers.formatDataValue)(key0Val) : key0Val;
     this.colsMap.set(value, key0);
     return value;
   } else {
@@ -66859,7 +66882,8 @@ function heatMapValueAccesor(_ref2) {
   var key1 = _ref2.key1;
 
   if (Array.isArray(key1)) {
-    var value = (0, _formattingHelpers.isArrayOfObjects)(key1) ? key1[0].value : key1[0];
+    var key1Val = (0, _formattingHelpers.isArrayOfObjects)(key1) ? key1[0].value : key1[0];
+    var value = key1Val instanceof Date ? (0, _formattingHelpers.formatDataValue)(key1Val) : key1Val;
     this.rowsMap.set(value, key1);
     return value;
   } else {
@@ -67036,10 +67060,11 @@ function heatMap(parent, chartGroup) {
   };
 
   function filterAxis(axis, value) {
+    var axisVal = value instanceof Date ? (0, _formattingHelpers.formatDataValue)(value) : value;
     var cellsOnAxis = _chart.selectAll(".box-group").filter(function (d) {
       return (
         /* OVERRIDE ---------------------------------------------------------------*/
-        (axis === 1 ? _chart.valueAccessor()(d) : _chart.keyAccessor()(d)) === value
+        (axis === 1 ? _chart.valueAccessor()(d) : _chart.keyAccessor()(d)) === axisVal
       );
     }
     /* --------------------------------------------------------------------------*/
@@ -69332,15 +69357,20 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var polyLayers = layers.length ? _.filter(layers, function (layer) {
       return layer.getState().mark.type === "poly";
     }) : null;
-
     if (polyLayers && polyLayers.length) {
       // add bboxCount to poly layers run sample
-      polyLayers.forEach(function (polyLayer) {
-        getCountFromBoundingBox(_chart, polyLayer).then(function (res) {
+
+      var countsPromise = polyLayers.map(function (currentLayer) {
+        return getCountFromBoundingBox(_chart, currentLayer);
+      });
+
+      Promise.all(countsPromise).then(function (resArr) {
+        resArr.forEach(function (res, index) {
           var count = res && res[0] && res[0].n;
-          polyLayer.setState(_extends({}, polyLayer.getState(), { bboxCount: count }));
-          handleRenderVega(callback);
+          var currentLayer = polyLayers[index];
+          currentLayer.setState(_extends({}, currentLayer.getState(), { bboxCount: count }));
         });
+        handleRenderVega(callback);
       });
     } else {
       handleRenderVega(callback);
@@ -75418,7 +75448,8 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
         type: "sample",
         method: "multiplicative",
         size: lastFilteredSize || transform.tableSize,
-        limit: transform.limit
+        limit: transform.limit,
+        sampleTable: geoTable
       });
     } else {
       // when geo join is applied, we won't use Knuth's sampling but use LIMIT

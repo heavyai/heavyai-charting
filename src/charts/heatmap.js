@@ -37,7 +37,8 @@ const MIN_AXIS_HEIGHT = 52
 
 export function heatMapKeyAccessor({ key0 }) {
   if (Array.isArray(key0)) {
-    const value = isArrayOfObjects(key0) ? key0[0].value : key0[0]
+    const key0Val = isArrayOfObjects(key0) ? key0[0].value : key0[0]
+    const value = key0Val instanceof Date ? formatDataValue(key0Val) : key0Val
     this.colsMap.set(value, key0)
     return value
   } else {
@@ -47,7 +48,8 @@ export function heatMapKeyAccessor({ key0 }) {
 
 export function heatMapValueAccesor({ key1 }) {
   if (Array.isArray(key1)) {
-    const value = isArrayOfObjects(key1) ? key1[0].value : key1[0]
+    const key1Val = isArrayOfObjects(key1) ? key1[0].value : key1[0]
+    const value = key1Val instanceof Date ? formatDataValue(key1Val) : key1Val
     this.rowsMap.set(value, key1)
     return value
   } else {
@@ -265,11 +267,12 @@ export default function heatMap(parent, chartGroup) {
   }
 
   function filterAxis(axis, value) {
+    const axisVal = value instanceof Date ? formatDataValue(value) : value
     const cellsOnAxis = _chart.selectAll(".box-group").filter(
       d =>
         /* OVERRIDE ---------------------------------------------------------------*/
         (axis === 1 ? _chart.valueAccessor()(d) : _chart.keyAccessor()(d)) ===
-        value
+        axisVal
       /* --------------------------------------------------------------------------*/
     )
 

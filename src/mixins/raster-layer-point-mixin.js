@@ -187,7 +187,8 @@ function getTransforms(
           type: "sample",
           method: "multiplicative",
           size: lastFilteredSize || transform.tableSize,
-          limit: transform.limit
+          limit: transform.limit,
+          sampleTable: table
         })
       }
     }
