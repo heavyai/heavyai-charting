@@ -1960,7 +1960,7 @@ body {
       display:block;
       height: 20px;
       width: 65px;
-      right:20px;
+      right: 80px !important;
       bottom: 20px;
       text-indent: -9999px;
       z-index:99999;
@@ -2008,8 +2008,8 @@ body {
 .mapboxgl-ctrl-group {
   position:absolute;
   display:block;
-  left: 8px;
-  bottom: 8px;
+  right: 0;
+  bottom: 24px;
   z-index:99999;
   overflow:hidden;
   box-shadow: none !important;
