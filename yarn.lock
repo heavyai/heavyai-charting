@@ -6011,10 +6011,10 @@ mapbox-gl-supported@^1.2.0:
     webworkify "^1.4.0"
     whoots-js "^2.0.0"
 
-mapd-data-layer-2@0.0.20:
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.20.tgz#e5b9b3b9e3a437ab7cd6db46d008a6c7f5400bdb"
-  integrity sha512-B/sQeuI+y+j6RHxXiArLQJIgpmEdvtKi8cTpTBv9/PphInPRCrz1cZOZbYdqyOiS23lVTR1QpUOSUpEzqOQxCg==
+mapd-data-layer-2@0.0.21:
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/mapd-data-layer-2/-/mapd-data-layer-2-0.0.21.tgz#8d63b164a10539392838e38a4447ce16e2afc473"
+  integrity sha512-loupAjDLEXFeHdDXJk9IqDwKQSp1OhLdIbSqIM0YRQJ5aeAK7ru3XQ5eHvy1LbhXaOEmYOmMKkQDkmrNX531Pg==
   dependencies:
     invariant "^2.2.2"
 
