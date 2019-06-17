@@ -569,6 +569,8 @@ export default function mapMixin(
 
     _map.dragRotate.disable()
     _map.touchZoomRotate.disableRotation()
+    _map.addControl(new _mapboxgl.NavigationControl())
+
     _chart.addMapListeners()
     _mapInitted = true
     _chart.enableInteractions(_interactionsEnabled)
