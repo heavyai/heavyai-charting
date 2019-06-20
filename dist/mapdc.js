@@ -7858,7 +7858,10 @@ var momentUTCFormat = exports.momentUTCFormat = function momentUTCFormat(d, f) {
   return _moment2.default.utc(d).locale("en").format(f);
 };
 var genericDateTimeFormat = exports.genericDateTimeFormat = function genericDateTimeFormat(d) {
-  return momentUTCFormat(d, "MMM D, YYYY") + " \u205F" + momentUTCFormat(d, "HH:mm:ss");
+  if (d.getMilliseconds() === 0) {
+    return momentUTCFormat(d, "MMM D, YYYY") + " \u205F" + momentUTCFormat(d, "HH:mm:ss");
+  }
+  return momentUTCFormat(d, "MMM D, YYYY") + " \u205F" + momentUTCFormat(d, "HH:mm:ss.SSS");
 };
 var isPlainObject = exports.isPlainObject = function isPlainObject(value) {
   return !Array.isArray(value) && (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" && !(value instanceof Date);
