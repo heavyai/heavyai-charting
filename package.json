@@ -68,8 +68,8 @@
     "wellknown": "^0.5.0"
   },
   "devDependencies": {
-    "@mapd/connector": "git://github.com/omnisci/mapd-connector.git#d81908b",
-    "@mapd/crossfilter": "git://github.com/omnisci/mapd-crossfilter.git#d029156e82c6e2786a11078864e17eb2dfafa4ff",
+    "@mapd/connector": "omnisci/mapd-connector#cbd4377",
+    "@mapd/crossfilter": "omnisci/mapd-crossfilter#02c82d2",
     "atob": "^2.0.3",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
