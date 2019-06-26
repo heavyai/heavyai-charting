@@ -35,12 +35,7 @@ export function addFilterHandler(filters, filter) {
 export function hasFilterHandler(filters, testValue) {
   if (typeof testValue === "undefined") {
     return filters.length > 0
-  } else {
-    return testIfValueWithinFilters(filters, testValue)
   }
-}
-
-function testIfValueWithinFilters(filters, testValue) {
   testValue = Array.isArray(testValue)
     ? testValue.map(normalizeArrayByValue)
     : testValue
