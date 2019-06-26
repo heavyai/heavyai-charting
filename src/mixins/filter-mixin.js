@@ -15,15 +15,54 @@ export function addFilterHandler(filters, filter) {
   return filters
 }
 
-export function hasFilterHandler(filters, filter) {
-  if (typeof filter === "undefined") {
+/**
+ * hasFilterHandler
+ * - if testValue is undefined, checks to see if the chart has any active filters
+ * - if testValue is defined, checks to see if that testValue passes the active filter
+ *
+ * @param {*} filters - the chart's current filter
+ * @param {*} testValue - a value being tested to see if it passes the filter
+ *
+ *  - If chart values are not binned:
+ *      - Params will be an array of values
+ *      - e.g. [4,22,100] - and values 4, 22, and 100 will be selected in table chart
+ *        with all other values deselected
+ *  - If chart values are binned, params will be an array of arrays
+ *      - Inner arrays will represent a range of values
+ *      - e.g. [[19,27]] - the bin with values from 19 to 27 will be selected, with
+ *        all others being deselected
+ */
+export function hasFilterHandler(filters, testValue) {
+  if (typeof testValue === "undefined") {
     return filters.length > 0
-  } else if (Array.isArray(filter)) {
-    filter = filter.map(normalizeArrayByValue)
-    return filters.some(f => filter <= f && filter >= f)
   } else {
-    return filters.some(f => filter <= f && filter >= f)
+    return testIfValueWithinFilters(filters, testValue)
   }
+}
+
+function testIfValueWithinFilters(filters, testValue) {
+  testValue = Array.isArray(testValue)
+    ? testValue.map(normalizeArrayByValue)
+    : testValue
+  const filtersWithIsoDates = convertAllDatesInArrayToISOString(filters)
+  const testValueWithISODates = convertAllDatesInArrayToISOString(testValue)
+  return filtersWithIsoDates.some(
+    f => testValueWithISODates <= f && testValueWithISODates >= f
+  )
+}
+
+// Assuming array can only have one level of nested arrays
+function convertAllDatesInArrayToISOString(a) {
+  return a.map(value => {
+    if (Array.isArray(value)) {
+      return value.map(v => {
+        if (v instanceof Date) {
+          return v.toISOString()
+        }
+      })
+    }
+    return value instanceof Date ? value.toISOString() : value
+  })
 }
 
 export function filterHandlerWithChartContext(_chart) {
