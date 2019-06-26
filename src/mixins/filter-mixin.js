@@ -24,10 +24,10 @@ export function addFilterHandler(filters, filter) {
  * @param {*} testValue - a value being tested to see if it passes the filter
  *
  *  - If chart values are not binned:
- *      - Params will be an array of values
+ *      - Params will most likely both be an array of values
  *      - e.g. [4,22,100] - and values 4, 22, and 100 will be selected in table chart
  *        with all other values deselected
- *  - If chart values are binned, params will be an array of arrays
+ *  - If chart values are binned, params will most likely both be an array of arrays
  *      - Inner arrays will represent a range of values
  *      - e.g. [[19,27]] - the bin with values from 19 to 27 will be selected, with
  *        all others being deselected
