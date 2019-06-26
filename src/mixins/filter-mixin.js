@@ -44,25 +44,28 @@ function testIfValueWithinFilters(filters, testValue) {
   testValue = Array.isArray(testValue)
     ? testValue.map(normalizeArrayByValue)
     : testValue
-  const filtersWithIsoDates = convertAllDatesInArrayToISOString(filters)
-  const testValueWithISODates = convertAllDatesInArrayToISOString(testValue)
+  const filtersWithIsoDates = convertAllDatesToISOString(filters)
+  const testValueWithISODates = convertAllDatesToISOString(testValue)
   return filtersWithIsoDates.some(
     f => testValueWithISODates <= f && testValueWithISODates >= f
   )
 }
 
-// Assuming array can only have one level of nested arrays
-function convertAllDatesInArrayToISOString(a) {
-  return a.map(value => {
-    if (Array.isArray(value)) {
-      return value.map(v => {
-        if (v instanceof Date) {
-          return v.toISOString()
-        }
-      })
-    }
-    return value instanceof Date ? value.toISOString() : value
-  })
+function convertAllDatesToISOString(a) {
+  if (Array.isArray(a)) {
+    // Assuming array can only have up to one level of nested arrays
+    return a.map(value => {
+      if (Array.isArray(value)) {
+        return value.map(v => {
+          if (v instanceof Date) {
+            return v.toISOString()
+          }
+        })
+      }
+      return value instanceof Date ? value.toISOString() : value
+    })
+  }
+  return a instanceof Date ? a.toISOString() : a
 }
 
 export function filterHandlerWithChartContext(_chart) {
