@@ -52014,7 +52014,8 @@ var TIME_UNIT_PER_SECONDS = {
   day: 86400,
   hour: 3600,
   minute: 60,
-  second: 1
+  second: 1,
+  millisecond: 0.001
 };
 
 var MILLISECONDS_IN_SECOND = 1000;
@@ -52260,7 +52261,9 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
       }
     }
 
-    var bars = layer.selectAll("rect.bar").data(d.values, (0, _utils.pluck)("x"));
+    var bars = layer.selectAll("rect.bar").data(d.values, function (d) {
+      return d.x instanceof Date ? d.x.getTime() : d.x;
+    });
 
     var enter = bars.enter().append("rect").attr("class", "bar").attr("fill", colors).attr("y", _chart.yAxisHeight()).attr("height", 0);
 
@@ -61344,7 +61347,8 @@ var _core = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function roundTimeBin(date, timeInterval, operation) {
-  if (!timeInterval) {
+  // Turn off brush snapping for milliseconds, as a design decision
+  if (!timeInterval || timeInterval === "millisecond") {
     return date;
   }
 
