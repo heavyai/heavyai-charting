@@ -66,7 +66,8 @@ export function autoBinParams(timeBounds, maxNumBins, reverse) {
     return DEFAULT_NULL_TIME_RANGE
   }
   const timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS
-  // Try to find a binning unit where the range is between 2 and the max bin #
+
+  // First try to find a binning unit where the range is between 2 and the max bin #
   for (let s = 0; s < timeSpans.length; s++) {
     if (
       timeRange / timeSpans[s].numSeconds < maxNumBins &&
@@ -77,7 +78,10 @@ export function autoBinParams(timeBounds, maxNumBins, reverse) {
   }
 
   // In cases where the above doesn't exist, just try to find a bin unit
-  // that is under the max # bins
+  // that is under the max # bins.
+  // This can occur with millisecond time ranges on the heat chart, where there
+  // can be greater than 50 bins (max for heat chart) when binning by
+  // millisecond, but less than 2 bins when binning by seconds.
   for (let s = 0; s < timeSpans.length; s++) {
     if (timeRange / timeSpans[s].numSeconds < maxNumBins) {
       return timeSpans[s].label
