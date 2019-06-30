@@ -28468,18 +28468,10 @@ function autoBinParams(timeBounds, maxNumBins, reverse) {
     return DEFAULT_NULL_TIME_RANGE;
   }
   var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
-  // Try to find a binning unit where the range is between 2 and the max bin #
-  for (var s = 0; s < timeSpans.length; s++) {
-    if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
-      return timeSpans[s].label;
-    }
-  }
 
-  // In cases where the above doesn't exist, just try to find a bin unit
-  // that is under the max # bins
-  for (var _s = 0; _s < timeSpans.length; _s++) {
-    if (timeRange / timeSpans[_s].numSeconds < maxNumBins) {
-      return timeSpans[_s].label;
+  for (var s = 0; s < timeSpans.length; s++) {
+    if (timeRange / timeSpans[s].numSeconds < maxNumBins) {
+      return timeSpans[s].label;
     }
   }
   return "century"; // default
