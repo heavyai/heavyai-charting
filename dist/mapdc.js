@@ -66905,30 +66905,48 @@ function heatMapValueAccesor(_ref2) {
 
 function heatMapRowsLabel(d) {
   var value = this.rowsMap.get(d) || d;
-  var valueIsFormattableDate = false;
 
+  // There will only return a value if we're displaying dates
   var customFormatter = this.dateFormatter();
+
+  // Possibly dead code, `d` should always be a string
   if (customFormatter && d && d instanceof Date) {
-    valueIsFormattableDate = true;
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0];
     }
   }
 
-  return valueIsFormattableDate && customFormatter && customFormatter(value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
+  // customFormatter is set to autoFormatter (mapd3), which processes raw values
+  // whereas formatDataValue expects an object / array of objects that contain
+  // additional information
+  var rawValues = Array.isArray(value) ? value.map(function (v) {
+    return v.value;
+  }) : null;
+
+  return customFormatter && customFormatter(rawValues || value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function heatMapColsLabel(d) {
   var value = this.colsMap.get(d) || d;
 
+  // There will only return a value if we're displaying dates
   var customFormatter = this.dateFormatter();
+
+  // Possibly dead code, `d` should always be a string
   if (customFormatter && d && d instanceof Date) {
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0];
     }
   }
 
-  return customFormatter && customFormatter(value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
+  // customFormatter is set to `autoFormatter` (mapd3), which processes raw values.
+  // Whereas formatDataValue expects an object / array of objects that contain
+  // additional information
+  var rawValues = Array.isArray(value) ? value.map(function (v) {
+    return v.value;
+  }) : null;
+
+  return customFormatter && customFormatter(rawValues || value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function isDescendingAppropriateData(_ref3) {
