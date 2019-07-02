@@ -24,7 +24,7 @@ const TIME_LABELS = [
   "decade"
 ]
 
-const DEFAULT_NULL_TIME_RANGE = "day";
+const DEFAULT_NULL_TIME_RANGE = "day"
 
 export const TIME_LABEL_TO_SECS = {
   millisecond: MS_IN_SECS,
@@ -66,15 +66,13 @@ export function autoBinParams(timeBounds, maxNumBins, reverse) {
     return DEFAULT_NULL_TIME_RANGE
   }
   const timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS
+
   for (let s = 0; s < timeSpans.length; s++) {
-    if (
-      timeRange / timeSpans[s].numSeconds < maxNumBins &&
-      timeRange / timeSpans[s].numSeconds > 2
-    ) {
+    if (timeRange / timeSpans[s].numSeconds < maxNumBins) {
       return timeSpans[s].label
     }
   }
-  return "century" // default;
+  return "century" // default
 }
 
 export function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
