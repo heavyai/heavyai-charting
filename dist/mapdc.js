@@ -68799,7 +68799,9 @@ function lineChart(parent, chartGroup) {
 
       createRefLines(g);
 
-      var dots = g.selectAll("circle." + DOT_CIRCLE_CLASS).data(points, (0, _utils.pluck)("x"));
+      var dots = g.selectAll("circle." + DOT_CIRCLE_CLASS).data(points, function (d) {
+        return d.x instanceof Date ? d.x.toISOString() : d.x;
+      });
 
       dots.enter().append("circle").attr("class", DOT_CIRCLE_CLASS).attr("r", getDotRadius()).style("fill-opacity", _dataPointFillOpacity).style("stroke-opacity", _dataPointStrokeOpacity).on("mousemove", function () {
         var dot = _d2.default.select(this);
