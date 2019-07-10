@@ -15,6 +15,16 @@ export function addFilterHandler(filters, filter) {
   return filters
 }
 
+const convertAllDatesToISOString = a => {
+  if (Array.isArray(a)) {
+    return a.map(convertAllDatesToISOString)
+  }
+  if (a instanceof Date) {
+    return a.toISOString()
+  }
+  return a
+}
+
 /**
  * hasFilterHandler
  * - if testValue is undefined, checks to see if the chart has any active filters
@@ -44,23 +54,6 @@ export function hasFilterHandler(filters, testValue) {
   return filtersWithIsoDates.some(
     f => testValueWithISODates <= f && testValueWithISODates >= f
   )
-}
-
-function convertAllDatesToISOString(a) {
-  if (Array.isArray(a)) {
-    // Assuming array can only have up to one level of nested arrays
-    return a.map(value => {
-      if (Array.isArray(value)) {
-        return value.map(v => {
-          if (v instanceof Date) {
-            return v.toISOString()
-          }
-        })
-      }
-      return value instanceof Date ? value.toISOString() : value
-    })
-  }
-  return a instanceof Date ? a.toISOString() : a
 }
 
 export function filterHandlerWithChartContext(_chart) {
@@ -181,10 +174,9 @@ export default function filterMixin(_chart) {
     if (Array.isArray(filter) && filter.length === 1) {
       filter = filter[0]
     } else if (Array.isArray(filter)) {
-      filter = filter.map(
-        filter =>
-          // eslint-disable-line no-shadow, arrow-body-style
-          Array.isArray(filter) && filter.length === 1 ? filter[0] : filter
+      filter = filter.map(filter =>
+        // eslint-disable-line no-shadow, arrow-body-style
+        Array.isArray(filter) && filter.length === 1 ? filter[0] : filter
       )
     }
 
