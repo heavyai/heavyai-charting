@@ -59,34 +59,52 @@ export function heatMapValueAccesor({ key1 }) {
 
 export function heatMapRowsLabel(d) {
   let value = this.rowsMap.get(d) || d
-  let valueIsFormattableDate = false
 
+  // There will only return a value if we're displaying dates
   const customFormatter = this.dateFormatter()
+
+  // Possibly dead code, `d` should always be a string
   if (customFormatter && d && d instanceof Date) {
-    valueIsFormattableDate = true
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0]
     }
   }
 
+  // customFormatter is set to autoFormatter (mapd3), which processes raw values
+  // whereas formatDataValue expects an object / array of objects that contain
+  // additional information
+  const rawValues = Array.isArray(value) ? value.map(v => v.value) : null
+
   return (
-      valueIsFormattableDate &&
-      customFormatter &&
-      customFormatter(value, this.yAxisLabel())
-    ) || formatDataValue(value)
+    (customFormatter &&
+      customFormatter(rawValues || value, this.yAxisLabel())) ||
+    formatDataValue(value)
+  )
 }
 
 export function heatMapColsLabel(d) {
   let value = this.colsMap.get(d) || d
 
+  // There will only return a value if we're displaying dates
   const customFormatter = this.dateFormatter()
+
+  // Possibly dead code, `d` should always be a string
   if (customFormatter && d && d instanceof Date) {
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0]
     }
   }
 
-  return (customFormatter && customFormatter(value, this.xAxisLabel())) || formatDataValue(value)
+  // customFormatter is set to `autoFormatter` (mapd3), which processes raw values.
+  // Whereas formatDataValue expects an object / array of objects that contain
+  // additional information
+  const rawValues = Array.isArray(value) ? value.map(v => v.value) : null
+
+  return (
+    (customFormatter &&
+      customFormatter(rawValues || value, this.xAxisLabel())) ||
+    formatDataValue(value)
+  )
 }
 
 export function isDescendingAppropriateData({ key1 }) {
