@@ -23,13 +23,13 @@ function hexBinSQL(sql, { width, height, mark, x, y, aggregate }, parser) {
   let hexmaxmercy = y.domain[1]
 
   if (hexoffsetx) {
-    const mercxdiff = hexoffsetx * (hexmaxmercx - hexminmercx) / heximgwidth
+    const mercxdiff = (hexoffsetx * (hexmaxmercx - hexminmercx)) / heximgwidth
     hexminmercx = hexminmercx - mercxdiff
     hexmaxmercx = hexmaxmercx - mercxdiff
   }
 
   if (hexoffsety) {
-    const mercydiff = hexoffsety * (hexmaxmercy - hexminmercy) / heximgheight
+    const mercydiff = (hexoffsety * (hexmaxmercy - hexminmercy)) / heximgheight
     hexminmercy = hexminmercy - mercydiff
     hexmaxmercy = hexmaxmercy - mercydiff
   }
@@ -48,9 +48,9 @@ function hexBinSQL(sql, { width, height, mark, x, y, aggregate }, parser) {
     `${width},` +
     `${height}`
 
-  sql.select.push(`reg_${mark.shape}_horiz_pixel_bin_x(${args}) as x`)
-  sql.select.push(`reg_${mark.shape}_horiz_pixel_bin_y(${args}) as y`)
-  sql.select.push(`${parser.parseExpression(aggregate)} as color`)
+  sql.select.push(`reg_${mark.shape}_horiz_pixel_bin_x(${args}) AS x`)
+  sql.select.push(`reg_${mark.shape}_horiz_pixel_bin_y(${args}) AS y`)
+  sql.select.push(`${parser.parseExpression(aggregate)} AS color`)
   sql.groupby.push("x")
   sql.groupby.push("y")
 
@@ -61,14 +61,14 @@ function rectBinSQL(sql, { width, height, mark, x, y, aggregate }, parser) {
   sql.select.push(
     `rect_pixel_bin_x(${parser.parseExpression(x.field)}, ${x.domain[0]}, ${
       x.domain[1]
-    }, ${mark.width}, 0, ${width}) as x`
+    }, ${mark.width}, 0, ${width}) AS x`
   )
   sql.select.push(
     `rect_pixel_bin_y(${parser.parseExpression(y.field)}, ${y.domain[0]}, ${
       y.domain[1]
-    }, ${mark.height}, 0, ${height}) as y`
+    }, ${mark.height}, 0, ${height}) AS y`
   )
-  sql.select.push(`${parser.parseExpression(aggregate)} as color`)
+  sql.select.push(`${parser.parseExpression(aggregate)} AS color`)
   sql.groupby.push("x")
   sql.groupby.push("y")
 
@@ -391,7 +391,9 @@ utils.b64toBlob = function(b64Data, contentType, sliceSize) {
 utils.getFontSizeFromWidth = function(text, chartWidth, chartHeight) {
   const BASE_FONT_SIZE = 12
   const MIN_FONT_SIZE = 4
-  const tmpText = d3.select("body").append("span")
+  const tmpText = d3
+    .select("body")
+    .append("span")
     .attr("class", "tmp-text")
     .style("font-size", BASE_FONT_SIZE + "px")
     .style("position", "absolute")
@@ -410,8 +412,8 @@ utils.getFontSizeFromWidth = function(text, chartWidth, chartHeight) {
 
   tmpText.remove()
 
-  const fontSizeWidth = BASE_FONT_SIZE * chartWidth / textWidth
-  const fontSizeHeight = BASE_FONT_SIZE * chartHeight / textHeight
+  const fontSizeWidth = (BASE_FONT_SIZE * chartWidth) / textWidth
+  const fontSizeHeight = (BASE_FONT_SIZE * chartHeight) / textHeight
 
   return Math.max(Math.min(fontSizeWidth, fontSizeHeight), MIN_FONT_SIZE)
 }
