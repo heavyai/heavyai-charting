@@ -51630,6 +51630,16 @@ function addFilterHandler(filters, filter) {
   return filters;
 }
 
+var convertAllDatesToISOString = function convertAllDatesToISOString(a) {
+  if (Array.isArray(a)) {
+    return a.map(convertAllDatesToISOString);
+  }
+  if (a instanceof Date) {
+    return a.toISOString();
+  }
+  return a;
+};
+
 /**
  * hasFilterHandler
  * - if testValue is undefined, checks to see if the chart has any active filters
@@ -51657,23 +51667,6 @@ function hasFilterHandler(filters, testValue) {
   return filtersWithIsoDates.some(function (f) {
     return testValueWithISODates <= f && testValueWithISODates >= f;
   });
-}
-
-function convertAllDatesToISOString(a) {
-  if (Array.isArray(a)) {
-    // Assuming array can only have up to one level of nested arrays
-    return a.map(function (value) {
-      if (Array.isArray(value)) {
-        return value.map(function (v) {
-          if (v instanceof Date) {
-            return v.toISOString();
-          }
-        });
-      }
-      return value instanceof Date ? value.toISOString() : value;
-    });
-  }
-  return a instanceof Date ? a.toISOString() : a;
 }
 
 function filterHandlerWithChartContext(_chart) {
