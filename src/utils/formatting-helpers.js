@@ -104,6 +104,10 @@ export function formatTimeBinValue(data) {
         startTime.value,
         "MMM D, YYYY"
       )} \u205F${momentUTCFormat(startTime.value, "HH:mm")}`
+    case "second":
+      return `${momentUTCFormat(startTime.value, "HH:mm:ss")}`
+    case "millisecond":
+      return `${momentUTCFormat(startTime.value, "HH:mm:ss.SSS")}`
     default:
       return genericDateTimeFormat(startTime.value)
   }
