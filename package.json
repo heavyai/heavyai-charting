@@ -68,7 +68,7 @@
     "wellknown": "^0.5.0"
   },
   "devDependencies": {
-    "@mapd/connector": "omnisci/mapd-connector#cbd4377",
+    "@mapd/connector": "omnisci/mapd-connector#d75148077a2a4b23d66d89c63d05c20e5735af2e",
     "@mapd/crossfilter": "omnisci/mapd-crossfilter#09d00eb4aefc1869c7da875a82b3c8838b75319d",
     "atob": "^2.0.3",
     "babel-cli": "^6.10.1",
