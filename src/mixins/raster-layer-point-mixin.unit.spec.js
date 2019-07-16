@@ -82,7 +82,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [],
@@ -136,8 +136,8 @@ describe("rasterLayerPointMixin", () => {
           pixelRatio: 1,
           layerName: "points"
         }).data[0].sql).to.equal(
-          "SELECT conv_4326_900913_x(lon) as x, "
-          + "conv_4326_900913_y(lat) as y, "
+          "SELECT conv_4326_900913_x(lon) AS x, "
+          + "conv_4326_900913_y(lat) AS y, "
           + "tweets_nov_feb.rowid FROM tweets_nov_feb "
           + "WHERE MOD( MOD (tweets_nov_feb.rowid, 2147483648) * 2654435761 , 4294967296) < 7222804 "
           + "AND (lon = 100) LIMIT 2000000"
@@ -167,7 +167,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [],
@@ -288,7 +288,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as size, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [
@@ -365,7 +365,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as size, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
             },
             {
               name: "points_stats",
@@ -463,7 +463,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [
@@ -553,7 +553,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, party AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [
@@ -624,7 +624,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, party AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [
@@ -694,7 +694,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
             },
             {
               name: "points_stats",
@@ -783,7 +783,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, party AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
             },
             {
               name: "points_stats",
@@ -870,7 +870,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as size, party as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size, party AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
             },
             {
               name: "points_stats",
@@ -981,7 +981,7 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) as x, conv_4326_900913_y(lat) as y, tweet_count as size, tweet_count as color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size, tweet_count AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
             },
             {
               name: "points_stats",
@@ -1108,9 +1108,9 @@ describe("rasterLayerPointMixin", () => {
       })
 
       expect(layer.getProjections()).to.deep.equal([
-        "conv_4326_900913_x(lon) as x",
-        "conv_4326_900913_y(lat) as y",
-        "party as color"
+        "conv_4326_900913_x(lon) AS x",
+        "conv_4326_900913_y(lat) AS y",
+        "party AS color"
       ])
     })
   })

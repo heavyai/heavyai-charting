@@ -13,8 +13,8 @@ const SCROLL_DIVISOR = 5
 
 export const splitStrOnLastAs = str => {
   const splitStr = []
-  splitStr[0] = str.substring(0, str.lastIndexOf("as") - 1)
-  splitStr[1] = str.substring(str.lastIndexOf("as") + 3, str.length)
+  splitStr[0] = str.substring(0, str.lastIndexOf("AS") - 1)
+  splitStr[1] = str.substring(str.lastIndexOf("AS") + 3, str.length)
   return splitStr
 }
 
@@ -344,8 +344,14 @@ export default function mapdTable(parent, chartGroup) {
             customFormatter = _chart.valueFormatter()
           }
 
-          const key = (val && val[0] && val[0].isExtract) ? null : col.measureName || col.expression
-          return customFormatter && customFormatter(val, key) || formatDataValue(val)
+          const key =
+            val && val[0] && val[0].isExtract
+              ? null
+              : col.measureName || col.expression
+          return (
+            (customFormatter && customFormatter(val, key)) ||
+            formatDataValue(val)
+          )
         })
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
