@@ -178,11 +178,6 @@ function getTransforms(
   } else {
     transforms.push({
       type: "project",
-      expr: `${rowIdTable}.rowid`,
-      as: "rowid"
-    })
-    transforms.push({
-      type: "project",
       expr: `${geoTable}.${geocol}`
     })
   }
@@ -350,7 +345,8 @@ export default function rasterLayerLineMixin(_layer) {
             state,
             lastFilteredSize
           )
-        })
+        }),
+        enableHitTesting: !(state.data.length > 1)
       }
     ]
 

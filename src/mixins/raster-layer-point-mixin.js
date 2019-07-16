@@ -211,11 +211,6 @@ function getTransforms(
         as: "color"
       })
     }
-
-    transforms.push({
-      type: "project",
-      expr: `${table}.rowid`
-    })
   }
 
   if (typeof filter === "string" && filter.length) {
@@ -399,7 +394,8 @@ export default function rasterLayerPointMixin(_layer) {
             state,
             lastFilteredSize
           )
-        })
+        }),
+        enableHitTesting: state.enableHitTesting
       }
     ]
 
