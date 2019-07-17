@@ -11212,7 +11212,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
  * @license
  * Lodash <https://lodash.com/>
- * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
+ * Copyright JS Foundation and other contributors <https://js.foundation/>
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -11223,7 +11223,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.14';
+  var VERSION = '4.17.11';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -13882,10 +13882,16 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
         value.forEach(function(subValue) {
           result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
         });
-      } else if (isMap(value)) {
+
+        return result;
+      }
+
+      if (isMap(value)) {
         value.forEach(function(subValue, key) {
           result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
         });
+
+        return result;
       }
 
       var keysFunc = isFull
@@ -14809,8 +14815,8 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
         return;
       }
       baseFor(source, function(srcValue, key) {
-        stack || (stack = new Stack);
         if (isObject(srcValue)) {
+          stack || (stack = new Stack);
           baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
         }
         else {
@@ -16627,7 +16633,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       return function(number, precision) {
         number = toNumber(number);
         precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
-        if (precision && nativeIsFinite(number)) {
+        if (precision) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
           var pair = (toString(number) + 'e').split('e'),
@@ -17810,7 +17816,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
     }
 
     /**
-     * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
+     * Gets the value at `key`, unless `key` is "__proto__".
      *
      * @private
      * @param {Object} object The object to query.
@@ -17818,10 +17824,6 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
      * @returns {*} Returns the property value.
      */
     function safeGet(object, key) {
-      if (key === 'constructor' && typeof object[key] === 'function') {
-        return;
-      }
-
       if (key == '__proto__') {
         return;
       }
@@ -21622,7 +21624,6 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
           }
           if (maxing) {
             // Handle invocations in a tight loop.
-            clearTimeout(timerId);
             timerId = setTimeout(timerExpired, wait);
             return invokeFunc(lastCallTime);
           }
@@ -26009,12 +26010,9 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       , 'g');
 
       // Use a sourceURL for easier debugging.
-      // The sourceURL gets injected into the source that's eval-ed, so be careful
-      // with lookup (in case of e.g. prototype pollution), and strip newlines if any.
-      // A newline wouldn't be a valid sourceURL anyway, and it'd enable code injection.
       var sourceURL = '//# sourceURL=' +
-        (hasOwnProperty.call(options, 'sourceURL')
-          ? (options.sourceURL + '').replace(/[\r\n]/g, ' ')
+        ('sourceURL' in options
+          ? options.sourceURL
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -26047,9 +26045,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      // Like with sourceURL, we take care to not check the option's prototype,
-      // as this configuration is a code injection vector.
-      var variable = hasOwnProperty.call(options, 'variable') && options.variable;
+      var variable = options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
@@ -28254,11 +28250,10 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
     baseForOwn(LazyWrapper.prototype, function(func, methodName) {
       var lodashFunc = lodash[methodName];
       if (lodashFunc) {
-        var key = lodashFunc.name + '';
-        if (!hasOwnProperty.call(realNames, key)) {
-          realNames[key] = [];
-        }
-        realNames[key].push({ 'name': methodName, 'func': lodashFunc });
+        var key = (lodashFunc.name + ''),
+            names = realNames[key] || (realNames[key] = []);
+
+        names.push({ 'name': methodName, 'func': lodashFunc });
       }
     });
 
@@ -31396,7 +31391,7 @@ function parseSource(transforms) {
       var joinType = typeof transform.type === "string" ? transform.type : "join";
       // $FlowFixMe
       var joinStmt = left + " " + joinRelation(joinType) + " " + right;
-      var aliasStmt = typeof transform.as === "string" ? " AS " + transform.as : "";
+      var aliasStmt = typeof transform.as === "string" ? " as " + transform.as : "";
       return stmt.concat(joinStmt + aliasStmt);
     } else if (transform.type === "data" || transform.type === "root") {
       // $FlowFixMe
@@ -47976,11 +47971,6 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
         as: "color"
       });
     }
-
-    transforms.push({
-      type: "project",
-      expr: table + ".rowid"
-    });
   }
 
   if (typeof filter === "string" && filter.length) {
@@ -48166,7 +48156,8 @@ function rasterLayerPointMixin(_layer) {
         type: "root",
         source: table,
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
-      })
+      }),
+      enableHitTesting: true // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
     }];
 
     var scaledomainfields = {};
@@ -48577,8 +48568,6 @@ function rasterLayerPolyMixin(_layer) {
 
     var transforms = [];
 
-    var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
-
     var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + color.field + ")";
 
     var colorField = color.type === "quantitative" ? typeof color.aggregate === "string" ? color.aggregate : color.aggregate.field : color.field;
@@ -48677,11 +48666,6 @@ function rasterLayerPolyMixin(_layer) {
         }
       });
     } else {
-      transforms.push({
-        type: "project",
-        expr: rowIdTable + ".rowid"
-      });
-
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
@@ -48823,7 +48807,8 @@ function rasterLayerPolyMixin(_layer) {
           filtersInverse: filtersInverse,
           lastFilteredSize: lastFilteredSize
         })
-      })
+      }),
+      enableHitTesting: !doJoin() // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
     }];
 
     if (autocolors) {
@@ -49879,7 +49864,7 @@ function aggregateField(op, field, as) {
     str += op + "(" + field + ")";
   }
 
-  return str + ("" + (as ? " AS " + as : ""));
+  return str + ("" + (as ? " as " + as : ""));
 }
 
 function parseGroupBy(sql, groupby, parser) {
@@ -49890,7 +49875,7 @@ function parseGroupBy(sql, groupby, parser) {
     sql = parser.parseTransform(sql, groupby);
     sql.groupby.push(groupby.as);
   } else if (groupby.type === "project") {
-    sql.select.push(parser.parseExpression(groupby.expr) + (groupby.as ? " AS " + groupby.as : ""));
+    sql.select.push(parser.parseExpression(groupby.expr) + (groupby.as ? " as " + groupby.as : ""));
     if (groupby.as) {
       sql.groupby.push(groupby.as);
     }
@@ -49924,7 +49909,7 @@ function parseBin(sql, _ref) {
   // The logic used by mapd-crossfilter's getBinnedDimExpression is completely different.
   var numBins = extent[1] - extent[0];
 
-  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (numBins === 0 ? 0 : maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (numBins || 1) + " as int)\n    end\n    AS " + as);
+  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (numBins === 0 ? 0 : maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (numBins || 1) + " as int)\n    end\n    as " + as);
   sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
   sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
   return sql;
@@ -50063,7 +50048,7 @@ function parsePostFilter(sql, transform) {
 function parseProject(sql, transform) {
   var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
 
-  sql.select.push(parser.parseExpression(transform.expr) + (transform.as ? " AS " + transform.as : ""));
+  sql.select.push(parser.parseExpression(transform.expr) + (transform.as ? " as " + transform.as : ""));
   return sql;
 }
 
@@ -75515,11 +75500,6 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   } else {
     transforms.push({
       type: "project",
-      expr: rowIdTable + ".rowid",
-      as: "rowid"
-    });
-    transforms.push({
-      type: "project",
       expr: geoTable + "." + geocol
     });
   }
@@ -75693,7 +75673,8 @@ function rasterLayerLineMixin(_layer) {
           return source.table;
         })))).join(", "),
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
-      })
+      }),
+      enableHitTesting: !(state.data.length > 1) // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
     }];
 
     var scaledomainfields = {};
