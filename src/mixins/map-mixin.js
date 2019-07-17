@@ -665,7 +665,12 @@ export default function mapMixin(
     let styleLoaded = false
     let loaded = false
 
-    initMap()
+    _mapboxgl.accessToken = _mapboxAccessToken
+    if (!_mapboxgl.supported()) {
+      throw {name: "WebGL", message: 'WebGL Not Enabled'}
+    } else {
+      initMap()
+    }
 
     return new Promise((resolve, reject) => {
       _map.on("load", e => {
