@@ -363,7 +363,7 @@ export default function rasterLayerPolyMixin(_layer) {
             lastFilteredSize
           })
         }),
-        enableHitTesting: !doJoin()
+        enableHitTesting: !doJoin() // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
       }
     ]
 
