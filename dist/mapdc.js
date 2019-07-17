@@ -29891,7 +29891,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     var styleLoaded = false;
     var loaded = false;
 
-    initMap();
+    _mapboxgl.accessToken = _mapboxAccessToken;
+    if (!_mapboxgl.supported()) {
+      throw new Error('WebGL Not Enabled');
+    } else {
+      initMap();
+    }
 
     return new Promise(function (resolve, reject) {
       _map.on("load", function (e) {
