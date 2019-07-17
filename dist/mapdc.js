@@ -5163,9 +5163,9 @@ function hexBinSQL(sql, _ref, parser) {
 
   var args = parser.parseExpression(x.field) + "," + (hexminmercx + ",") + (hexmaxmercx + ",") + (parser.parseExpression(y.field) + ",") + (hexminmercy + ",") + (hexmaxmercy + ",") + (mark.width + ",") + (mark.height + ",") + (hexoffsetx + ",") + (hexoffsety + ",") + (width + ",") + ("" + height);
 
-  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_x(" + args + ") as x");
-  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_y(" + args + ") as y");
-  sql.select.push(parser.parseExpression(aggregate) + " as color");
+  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_x(" + args + ") AS x");
+  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_y(" + args + ") AS y");
+  sql.select.push(parser.parseExpression(aggregate) + " AS color");
   sql.groupby.push("x");
   sql.groupby.push("y");
 
@@ -5180,9 +5180,9 @@ function rectBinSQL(sql, _ref2, parser) {
       y = _ref2.y,
       aggregate = _ref2.aggregate;
 
-  sql.select.push("rect_pixel_bin_x(" + parser.parseExpression(x.field) + ", " + x.domain[0] + ", " + x.domain[1] + ", " + mark.width + ", 0, " + width + ") as x");
-  sql.select.push("rect_pixel_bin_y(" + parser.parseExpression(y.field) + ", " + y.domain[0] + ", " + y.domain[1] + ", " + mark.height + ", 0, " + height + ") as y");
-  sql.select.push(parser.parseExpression(aggregate) + " as color");
+  sql.select.push("rect_pixel_bin_x(" + parser.parseExpression(x.field) + ", " + x.domain[0] + ", " + x.domain[1] + ", " + mark.width + ", 0, " + width + ") AS x");
+  sql.select.push("rect_pixel_bin_y(" + parser.parseExpression(y.field) + ", " + y.domain[0] + ", " + y.domain[1] + ", " + mark.height + ", 0, " + height + ") AS y");
+  sql.select.push(parser.parseExpression(aggregate) + " AS color");
   sql.groupby.push("x");
   sql.groupby.push("y");
 
@@ -7858,7 +7858,10 @@ var momentUTCFormat = exports.momentUTCFormat = function momentUTCFormat(d, f) {
   return _moment2.default.utc(d).locale("en").format(f);
 };
 var genericDateTimeFormat = exports.genericDateTimeFormat = function genericDateTimeFormat(d) {
-  return momentUTCFormat(d, "MMM D, YYYY") + " \u205F" + momentUTCFormat(d, "HH:mm:ss");
+  if (d.getMilliseconds() === 0) {
+    return momentUTCFormat(d, "MMM D, YYYY") + " \u205F" + momentUTCFormat(d, "HH:mm:ss");
+  }
+  return momentUTCFormat(d, "MMM D, YYYY") + " \u205F" + momentUTCFormat(d, "HH:mm:ss.SSS");
 };
 var isPlainObject = exports.isPlainObject = function isPlainObject(value) {
   return !Array.isArray(value) && (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" && !(value instanceof Date);
@@ -7939,6 +7942,10 @@ function formatTimeBinValue(data) {
     case "hour":
     case "minute":
       return momentUTCFormat(startTime.value, "MMM D, YYYY") + " \u205F" + momentUTCFormat(startTime.value, "HH:mm");
+    case "second":
+      return "" + momentUTCFormat(startTime.value, "HH:mm:ss");
+    case "millisecond":
+      return "" + momentUTCFormat(startTime.value, "HH:mm:ss.SSS");
     default:
       return genericDateTimeFormat(startTime.value);
   }
@@ -11205,7 +11212,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
  * @license
  * Lodash <https://lodash.com/>
- * Copyright JS Foundation and other contributors <https://js.foundation/>
+ * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -11216,7 +11223,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.11';
+  var VERSION = '4.17.14';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -13875,16 +13882,10 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
         value.forEach(function(subValue) {
           result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
         });
-
-        return result;
-      }
-
-      if (isMap(value)) {
+      } else if (isMap(value)) {
         value.forEach(function(subValue, key) {
           result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
         });
-
-        return result;
       }
 
       var keysFunc = isFull
@@ -14808,8 +14809,8 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
         return;
       }
       baseFor(source, function(srcValue, key) {
+        stack || (stack = new Stack);
         if (isObject(srcValue)) {
-          stack || (stack = new Stack);
           baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
         }
         else {
@@ -16626,7 +16627,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       return function(number, precision) {
         number = toNumber(number);
         precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
-        if (precision) {
+        if (precision && nativeIsFinite(number)) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
           var pair = (toString(number) + 'e').split('e'),
@@ -17809,7 +17810,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
     }
 
     /**
-     * Gets the value at `key`, unless `key` is "__proto__".
+     * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
      *
      * @private
      * @param {Object} object The object to query.
@@ -17817,6 +17818,10 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
      * @returns {*} Returns the property value.
      */
     function safeGet(object, key) {
+      if (key === 'constructor' && typeof object[key] === 'function') {
+        return;
+      }
+
       if (key == '__proto__') {
         return;
       }
@@ -21617,6 +21622,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
           }
           if (maxing) {
             // Handle invocations in a tight loop.
+            clearTimeout(timerId);
             timerId = setTimeout(timerExpired, wait);
             return invokeFunc(lastCallTime);
           }
@@ -26003,9 +26009,12 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       , 'g');
 
       // Use a sourceURL for easier debugging.
+      // The sourceURL gets injected into the source that's eval-ed, so be careful
+      // with lookup (in case of e.g. prototype pollution), and strip newlines if any.
+      // A newline wouldn't be a valid sourceURL anyway, and it'd enable code injection.
       var sourceURL = '//# sourceURL=' +
-        ('sourceURL' in options
-          ? options.sourceURL
+        (hasOwnProperty.call(options, 'sourceURL')
+          ? (options.sourceURL + '').replace(/[\r\n]/g, ' ')
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -26038,7 +26047,9 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      var variable = options.variable;
+      // Like with sourceURL, we take care to not check the option's prototype,
+      // as this configuration is a code injection vector.
+      var variable = hasOwnProperty.call(options, 'variable') && options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
@@ -28243,10 +28254,11 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
     baseForOwn(LazyWrapper.prototype, function(func, methodName) {
       var lodashFunc = lodash[methodName];
       if (lodashFunc) {
-        var key = (lodashFunc.name + ''),
-            names = realNames[key] || (realNames[key] = []);
-
-        names.push({ 'name': methodName, 'func': lodashFunc });
+        var key = lodashFunc.name + '';
+        if (!hasOwnProperty.call(realNames, key)) {
+          realNames[key] = [];
+        }
+        realNames[key].push({ 'name': methodName, 'func': lodashFunc });
       }
     });
 
@@ -28419,6 +28431,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.autoBinParams = autoBinParams;
 exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
+var MS_IN_SECS = 0.001;
 var SEC = 1;
 var MIN_IN_SECS = 60;
 var HOUR_IN_SECS = 3600;
@@ -28431,11 +28444,12 @@ var DECADE_IN_SECS = 315360000;
 
 var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
 
-var TIME_LABELS = ["second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
+var TIME_LABELS = ["millisecond", "second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
 
 var DEFAULT_NULL_TIME_RANGE = "day";
 
 var TIME_LABEL_TO_SECS = exports.TIME_LABEL_TO_SECS = {
+  millisecond: MS_IN_SECS,
   second: SEC,
   minute: MIN_IN_SECS,
   hour: HOUR_IN_SECS,
@@ -28454,7 +28468,7 @@ var TIME_SPANS = exports.TIME_SPANS = TIME_LABELS.map(function (label) {
   };
 });
 
-var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }];
+var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }, { val: "millisecond", label: "1ms", numSeconds: 0.001 }];
 
 function autoBinParams(timeBounds, maxNumBins, reverse) {
   var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
@@ -28463,12 +28477,13 @@ function autoBinParams(timeBounds, maxNumBins, reverse) {
     return DEFAULT_NULL_TIME_RANGE;
   }
   var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
+
   for (var s = 0; s < timeSpans.length; s++) {
-    if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
+    if (timeRange / timeSpans[s].numSeconds < maxNumBins) {
       return timeSpans[s].label;
     }
   }
-  return "century"; // default;
+  return "century"; // default
 }
 
 function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
@@ -29881,7 +29896,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     var styleLoaded = false;
     var loaded = false;
 
-    initMap();
+    _mapboxgl.accessToken = _mapboxAccessToken;
+    if (!_mapboxgl.supported()) {
+      throw { name: "WebGL", message: 'WebGL Not Enabled' };
+    } else {
+      initMap();
+    }
 
     return new Promise(function (resolve, reject) {
       _map.on("load", function (e) {
@@ -31376,7 +31396,7 @@ function parseSource(transforms) {
       var joinType = typeof transform.type === "string" ? transform.type : "join";
       // $FlowFixMe
       var joinStmt = left + " " + joinRelation(joinType) + " " + right;
-      var aliasStmt = typeof transform.as === "string" ? " as " + transform.as : "";
+      var aliasStmt = typeof transform.as === "string" ? " AS " + transform.as : "";
       return stmt.concat(joinStmt + aliasStmt);
     } else if (transform.type === "data" || transform.type === "root") {
       // $FlowFixMe
@@ -49859,7 +49879,7 @@ function aggregateField(op, field, as) {
     str += op + "(" + field + ")";
   }
 
-  return str + ("" + (as ? " as " + as : ""));
+  return str + ("" + (as ? " AS " + as : ""));
 }
 
 function parseGroupBy(sql, groupby, parser) {
@@ -49870,7 +49890,7 @@ function parseGroupBy(sql, groupby, parser) {
     sql = parser.parseTransform(sql, groupby);
     sql.groupby.push(groupby.as);
   } else if (groupby.type === "project") {
-    sql.select.push(parser.parseExpression(groupby.expr) + (groupby.as ? " as " + groupby.as : ""));
+    sql.select.push(parser.parseExpression(groupby.expr) + (groupby.as ? " AS " + groupby.as : ""));
     if (groupby.as) {
       sql.groupby.push(groupby.as);
     }
@@ -49904,7 +49924,7 @@ function parseBin(sql, _ref) {
   // The logic used by mapd-crossfilter's getBinnedDimExpression is completely different.
   var numBins = extent[1] - extent[0];
 
-  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (numBins === 0 ? 0 : maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (numBins || 1) + " as int)\n    end\n    as " + as);
+  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (numBins === 0 ? 0 : maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (numBins || 1) + " as int)\n    end\n    AS " + as);
   sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
   sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
   return sql;
@@ -50043,7 +50063,7 @@ function parsePostFilter(sql, transform) {
 function parseProject(sql, transform) {
   var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
 
-  sql.select.push(parser.parseExpression(transform.expr) + (transform.as ? " as " + transform.as : ""));
+  sql.select.push(parser.parseExpression(transform.expr) + (transform.as ? " AS " + transform.as : ""));
   return sql;
 }
 
@@ -51624,19 +51644,43 @@ function addFilterHandler(filters, filter) {
   return filters;
 }
 
-function hasFilterHandler(filters, filter) {
-  if (typeof filter === "undefined") {
-    return filters.length > 0;
-  } else if (Array.isArray(filter)) {
-    filter = filter.map(_formattingHelpers.normalizeArrayByValue);
-    return filters.some(function (f) {
-      return filter <= f && filter >= f;
-    });
-  } else {
-    return filters.some(function (f) {
-      return filter <= f && filter >= f;
-    });
+var convertAllDatesToISOString = function convertAllDatesToISOString(a) {
+  if (Array.isArray(a)) {
+    return a.map(convertAllDatesToISOString);
   }
+  if (a instanceof Date) {
+    return a.toISOString();
+  }
+  return a;
+};
+
+/**
+ * hasFilterHandler
+ * - if testValue is undefined, checks to see if the chart has any active filters
+ * - if testValue is defined, checks to see if that testValue passes the active filter
+ *
+ * @param {*} filters - the chart's current filter
+ * @param {*} testValue - a value being tested to see if it passes the filter
+ *
+ *  - If chart values are not binned:
+ *      - Params will most likely both be an array of values
+ *      - e.g. [4,22,100] - and values 4, 22, and 100 will be selected in table chart
+ *        with all other values deselected
+ *  - If chart values are binned, params will most likely both be an array of arrays
+ *      - Inner arrays will represent a range of values
+ *      - e.g. [[19,27]] - the bin with values from 19 to 27 will be selected, with
+ *        all others being deselected
+ */
+function hasFilterHandler(filters, testValue) {
+  if (typeof testValue === "undefined") {
+    return filters.length > 0;
+  }
+  testValue = Array.isArray(testValue) ? testValue.map(_formattingHelpers.normalizeArrayByValue) : testValue;
+  var filtersWithIsoDates = convertAllDatesToISOString(filters);
+  var testValueWithISODates = convertAllDatesToISOString(testValue);
+  return filtersWithIsoDates.some(function (f) {
+    return testValueWithISODates <= f && testValueWithISODates >= f;
+  });
 }
 
 function filterHandlerWithChartContext(_chart) {
@@ -52009,7 +52053,8 @@ var TIME_UNIT_PER_SECONDS = {
   day: 86400,
   hour: 3600,
   minute: 60,
-  second: 1
+  second: 1,
+  millisecond: 0.001
 };
 
 var MILLISECONDS_IN_SECOND = 1000;
@@ -52255,7 +52300,9 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
       }
     }
 
-    var bars = layer.selectAll("rect.bar").data(d.values, (0, _utils.pluck)("x"));
+    var bars = layer.selectAll("rect.bar").data(d.values, function (d) {
+      return d.x instanceof Date ? d.x.getTime() : d.x;
+    });
 
     var enter = bars.enter().append("rect").attr("class", "bar").attr("fill", colors).attr("y", _chart.yAxisHeight()).attr("height", 0);
 
@@ -61339,7 +61386,8 @@ var _core = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function roundTimeBin(date, timeInterval, operation) {
-  if (!timeInterval) {
+  // Turn off brush snapping for milliseconds, as a design decision
+  if (!timeInterval || timeInterval === "millisecond") {
     return date;
   }
 
@@ -66903,50 +66951,52 @@ function heatMapValueAccesor(_ref2) {
   }
 }
 
-function heatMapRowsLabel(d) {
-  var value = this.rowsMap.get(d) || d;
+function heatMapRowsLabel(key) {
+  // If the data is binned, this will be an array
+  var value = this.rowsMap.get(key) || key;
 
-  // There will only return a value if we're displaying dates
-  var customFormatter = this.dateFormatter();
+  var customDateFormatter = this.dateFormatter();
 
-  // Possibly dead code, `d` should always be a string
-  if (customFormatter && d && d instanceof Date) {
+  // Possibly dead code, `key` should always be a string or number
+  if (customDateFormatter && key && key instanceof Date) {
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0];
     }
   }
 
-  // customFormatter is set to autoFormatter (mapd3), which processes raw values
-  // whereas formatDataValue expects an object / array of objects that contain
-  // additional information
+  // For binned data:
+  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
+  // of objects with additional information (like timeBin info)
   var rawValues = Array.isArray(value) ? value.map(function (v) {
     return v.value;
   }) : null;
 
-  return customFormatter && customFormatter(rawValues || value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
+  return customDateFormatter && customDateFormatter(rawValues || value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
-function heatMapColsLabel(d) {
-  var value = this.colsMap.get(d) || d;
+function heatMapColsLabel(key) {
+  // If the data is binned, this will be an array
+  var value = this.colsMap.get(key) || key;
 
-  // There will only return a value if we're displaying dates
-  var customFormatter = this.dateFormatter();
+  var customDateFormatter = this.dateFormatter();
 
-  // Possibly dead code, `d` should always be a string
-  if (customFormatter && d && d instanceof Date) {
+  // Possibly dead code, `key` should always be a string or number
+  if (customDateFormatter && key && key instanceof Date) {
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0];
     }
   }
 
-  // customFormatter is set to `autoFormatter` (mapd3), which processes raw values.
-  // Whereas formatDataValue expects an object / array of objects that contain
-  // additional information
+  // For binned data:
+  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
+  // of objects with additional information (like timeBin info)
   var rawValues = Array.isArray(value) ? value.map(function (v) {
     return v.value;
   }) : null;
 
-  return customFormatter && customFormatter(rawValues || value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
+  return customDateFormatter && customDateFormatter(rawValues || value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function isDescendingAppropriateData(_ref3) {
@@ -68776,7 +68826,9 @@ function lineChart(parent, chartGroup) {
 
       createRefLines(g);
 
-      var dots = g.selectAll("circle." + DOT_CIRCLE_CLASS).data(points, (0, _utils.pluck)("x"));
+      var dots = g.selectAll("circle." + DOT_CIRCLE_CLASS).data(points, function (d) {
+        return d.x instanceof Date ? d.x.toISOString() : d.x;
+      });
 
       dots.enter().append("circle").attr("class", DOT_CIRCLE_CLASS).attr("r", getDotRadius()).style("fill-opacity", _dataPointFillOpacity).style("stroke-opacity", _dataPointStrokeOpacity).on("mousemove", function () {
         var dot = _d2.default.select(this);
@@ -69364,7 +69416,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var geoTable = _layer.getState().encoding.geoTable;
     var geoCol = _layer.getState().encoding.geocol;
 
-    var preflightQuery = "SELECT COUNT(*) as n FROM " + geoTable + " WHERE ST_XMax(" + geoTable + "." + geoCol + ") >= " + mapBounds._sw.lng + " AND ST_XMin(" + geoTable + "." + geoCol + ") <= " + mapBounds._ne.lng + " AND ST_YMax(" + geoTable + "." + geoCol + ") >= " + mapBounds._sw.lat + " AND ST_YMin(" + geoTable + "." + geoCol + ") <= " + mapBounds._ne.lat;
+    var preflightQuery = "SELECT COUNT(*) AS n FROM " + geoTable + " WHERE ST_XMax(" + geoTable + "." + geoCol + ") >= " + mapBounds._sw.lng + " AND ST_XMin(" + geoTable + "." + geoCol + ") <= " + mapBounds._ne.lng + " AND ST_YMax(" + geoTable + "." + geoCol + ") >= " + mapBounds._sw.lat + " AND ST_YMin(" + geoTable + "." + geoCol + ") <= " + mapBounds._ne.lat;
 
     return chart.con().queryAsync(preflightQuery, {});
   }
@@ -73617,8 +73669,8 @@ var SCROLL_DIVISOR = 5;
 
 var splitStrOnLastAs = exports.splitStrOnLastAs = function splitStrOnLastAs(str) {
   var splitStr = [];
-  splitStr[0] = str.substring(0, str.lastIndexOf("as") - 1);
-  splitStr[1] = str.substring(str.lastIndexOf("as") + 3, str.length);
+  splitStr[0] = str.substring(0, str.lastIndexOf("AS") - 1);
+  splitStr[1] = str.substring(str.lastIndexOf("AS") + 3, str.length);
   return splitStr;
 };
 
@@ -73995,7 +74047,8 @@ function mapdTable(parent, chartGroup) {
     var type = columns[key].type;
 
     if (type === "TIMESTAMP") {
-      val = "TIMESTAMP(0) '" + val.toISOString().slice(0, 19).replace("T", " ") + "'";
+      val = "TIMESTAMP(3) '" + val.toISOString().slice(0, -1) // Slice off the 'Z' at the end
+      .replace("T", " ") + "'";
     } else if (type === "DATE") {
       var dateFormat = _d2.default.time.format.utc("%Y-%m-%d");
       val = "DATE '" + dateFormat(val) + "'";
@@ -76153,11 +76206,11 @@ function rasterMixin(_chart) {
     var columns = _chart.popupColumns().slice();
 
     if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
-      columns.push("conv_4326_900913_x(" + _chart._xDimName + ") as xPoint");
-      columns.push("conv_4326_900913_y(" + _chart._yDimName + ") as yPoint");
+      columns.push("conv_4326_900913_x(" + _chart._xDimName + ") AS xPoint");
+      columns.push("conv_4326_900913_y(" + _chart._yDimName + ") AS yPoint");
     } else {
-      columns.push(_chart._xDimName + " as xPoint");
-      columns.push(_chart._yDimName + " as yPoint");
+      columns.push(_chart._xDimName + " AS xPoint");
+      columns.push(_chart._yDimName + " AS yPoint");
     }
 
     if (_chart.colorBy() && columns.indexOf(_chart.colorBy().value) === -1) {

@@ -5,7 +5,8 @@ import { filters } from "../core/filters"
 import { constants } from "../core/core"
 
 export function roundTimeBin(date, timeInterval, operation) {
-  if (!timeInterval) {
+  // Turn off brush snapping for milliseconds, as a design decision
+  if (!timeInterval || timeInterval === "millisecond") {
     return date
   }
 

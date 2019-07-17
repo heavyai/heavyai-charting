@@ -13,7 +13,7 @@ describe("MapD Table Chart", () => {
   describe("splitStrOnLastAs", () => {
     it("should properly split on last AS within SQL statement", () => {
       const sqlStatement =
-        "cast(SUM(CASE WHEN Shot_result = 'made' THEN 1 ELSE 0 END) as float)/(cast(SUM(CASE WHEN Shot_result = 'missed' THEN 1 ELSE 0 END) as float) + cast(SUM(CASE WHEN Shot_result = 'made' THEN 1 ELSE 0 END) as float)) as col3"
+        "cast(SUM(CASE WHEN Shot_result = 'made' THEN 1 ELSE 0 END) as float)/(cast(SUM(CASE WHEN Shot_result = 'missed' THEN 1 ELSE 0 END) as float) + cast(SUM(CASE WHEN Shot_result = 'made' THEN 1 ELSE 0 END) as float)) AS col3"
       const result = splitStrOnLastAs(sqlStatement)
       expect(result).to.deep.equal([
         "cast(SUM(CASE WHEN Shot_result = 'made' THEN 1 ELSE 0 END) as float)/(cast(SUM(CASE WHEN Shot_result = 'missed' THEN 1 ELSE 0 END) as float) + cast(SUM(CASE WHEN Shot_result = 'made' THEN 1 ELSE 0 END) as float))",

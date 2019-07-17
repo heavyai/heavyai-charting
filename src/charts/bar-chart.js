@@ -16,7 +16,8 @@ const TIME_UNIT_PER_SECONDS = {
   day: 86400,
   hour: 3600,
   minute: 60,
-  second: 1
+  second: 1,
+  millisecond: 0.001
 }
 
 const MILLISECONDS_IN_SECOND = 1000
@@ -307,7 +308,7 @@ export default function barChart(parent, chartGroup) {
       }
     }
 
-    const bars = layer.selectAll("rect.bar").data(d.values, pluck("x"))
+    const bars = layer.selectAll("rect.bar").data(d.values, (d) => (d.x instanceof Date) ? d.x.getTime() : d.x)
 
     const enter = bars
       .enter()

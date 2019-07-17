@@ -449,7 +449,7 @@ export default function lineChart(parent, chartGroup) {
 
       const dots = g
         .selectAll("circle." + DOT_CIRCLE_CLASS)
-        .data(points, pluck("x"))
+        .data(points, d => (d.x instanceof Date ? d.x.toISOString() : d.x))
 
       dots
         .enter()

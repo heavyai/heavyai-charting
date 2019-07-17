@@ -57,52 +57,54 @@ export function heatMapValueAccesor({ key1 }) {
   }
 }
 
-export function heatMapRowsLabel(d) {
-  let value = this.rowsMap.get(d) || d
+export function heatMapRowsLabel(key) {
+  // If the data is binned, this will be an array
+  let value = this.rowsMap.get(key) || key
 
-  // There will only return a value if we're displaying dates
-  const customFormatter = this.dateFormatter()
+  const customDateFormatter = this.dateFormatter()
 
-  // Possibly dead code, `d` should always be a string
-  if (customFormatter && d && d instanceof Date) {
+  // Possibly dead code, `key` should always be a string or number
+  if (customDateFormatter && key && key instanceof Date) {
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0]
     }
   }
 
-  // customFormatter is set to autoFormatter (mapd3), which processes raw values
-  // whereas formatDataValue expects an object / array of objects that contain
-  // additional information
+  // For binned data:
+  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
+  // of objects with additional information (like timeBin info)
   const rawValues = Array.isArray(value) ? value.map(v => v.value) : null
 
   return (
-    (customFormatter &&
-      customFormatter(rawValues || value, this.yAxisLabel())) ||
+    (customDateFormatter &&
+      customDateFormatter(rawValues || value, this.yAxisLabel())) ||
     formatDataValue(value)
   )
 }
 
-export function heatMapColsLabel(d) {
-  let value = this.colsMap.get(d) || d
+export function heatMapColsLabel(key) {
+  // If the data is binned, this will be an array
+  let value = this.colsMap.get(key) || key
 
-  // There will only return a value if we're displaying dates
-  const customFormatter = this.dateFormatter()
+  const customDateFormatter = this.dateFormatter()
 
-  // Possibly dead code, `d` should always be a string
-  if (customFormatter && d && d instanceof Date) {
+  // Possibly dead code, `key` should always be a string or number
+  if (customDateFormatter && key && key instanceof Date) {
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0]
     }
   }
 
-  // customFormatter is set to `autoFormatter` (mapd3), which processes raw values.
-  // Whereas formatDataValue expects an object / array of objects that contain
-  // additional information
+  // For binned data:
+  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
+  // of objects with additional information (like timeBin info)
   const rawValues = Array.isArray(value) ? value.map(v => v.value) : null
 
   return (
-    (customFormatter &&
-      customFormatter(rawValues || value, this.xAxisLabel())) ||
+    (customDateFormatter &&
+      customDateFormatter(rawValues || value, this.xAxisLabel())) ||
     formatDataValue(value)
   )
 }

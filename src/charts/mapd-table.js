@@ -13,8 +13,8 @@ const SCROLL_DIVISOR = 5
 
 export const splitStrOnLastAs = str => {
   const splitStr = []
-  splitStr[0] = str.substring(0, str.lastIndexOf("as") - 1)
-  splitStr[1] = str.substring(str.lastIndexOf("as") + 3, str.length)
+  splitStr[0] = str.substring(0, str.lastIndexOf("AS") - 1)
+  splitStr[1] = str.substring(str.lastIndexOf("AS") + 3, str.length)
   return splitStr
 }
 
@@ -344,8 +344,14 @@ export default function mapdTable(parent, chartGroup) {
             customFormatter = _chart.valueFormatter()
           }
 
-          const key = (val && val[0] && val[0].isExtract) ? null : col.measureName || col.expression
-          return customFormatter && customFormatter(val, key) || formatDataValue(val)
+          const key =
+            val && val[0] && val[0].isExtract
+              ? null
+              : col.measureName || col.expression
+          return (
+            (customFormatter && customFormatter(val, key)) ||
+            formatDataValue(val)
+          )
         })
         .classed("filtered", col.expression in _filteredColumns)
         .on("click", d => {
@@ -500,9 +506,9 @@ export default function mapdTable(parent, chartGroup) {
     const type = columns[key].type
 
     if (type === "TIMESTAMP") {
-      val = `TIMESTAMP(0) '${val
+      val = `TIMESTAMP(3) '${val
         .toISOString()
-        .slice(0, 19)
+        .slice(0, -1) // Slice off the 'Z' at the end
         .replace("T", " ")}'`
     } else if (type === "DATE") {
       const dateFormat = d3.time.format.utc("%Y-%m-%d")
