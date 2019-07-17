@@ -7858,7 +7858,10 @@ var momentUTCFormat = exports.momentUTCFormat = function momentUTCFormat(d, f) {
   return _moment2.default.utc(d).locale("en").format(f);
 };
 var genericDateTimeFormat = exports.genericDateTimeFormat = function genericDateTimeFormat(d) {
-  return momentUTCFormat(d, "MMM D, YYYY") + " \u205F" + momentUTCFormat(d, "HH:mm:ss");
+  if (d.getMilliseconds() === 0) {
+    return momentUTCFormat(d, "MMM D, YYYY") + " \u205F" + momentUTCFormat(d, "HH:mm:ss");
+  }
+  return momentUTCFormat(d, "MMM D, YYYY") + " \u205F" + momentUTCFormat(d, "HH:mm:ss.SSS");
 };
 var isPlainObject = exports.isPlainObject = function isPlainObject(value) {
   return !Array.isArray(value) && (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" && !(value instanceof Date);
@@ -7939,6 +7942,10 @@ function formatTimeBinValue(data) {
     case "hour":
     case "minute":
       return momentUTCFormat(startTime.value, "MMM D, YYYY") + " \u205F" + momentUTCFormat(startTime.value, "HH:mm");
+    case "second":
+      return "" + momentUTCFormat(startTime.value, "HH:mm:ss");
+    case "millisecond":
+      return "" + momentUTCFormat(startTime.value, "HH:mm:ss.SSS");
     default:
       return genericDateTimeFormat(startTime.value);
   }
@@ -28419,6 +28426,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.autoBinParams = autoBinParams;
 exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
+var MS_IN_SECS = 0.001;
 var SEC = 1;
 var MIN_IN_SECS = 60;
 var HOUR_IN_SECS = 3600;
@@ -28431,11 +28439,12 @@ var DECADE_IN_SECS = 315360000;
 
 var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
 
-var TIME_LABELS = ["second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
+var TIME_LABELS = ["millisecond", "second", "minute", "hour", "day", "week", "month", "quarter", "year", "decade"];
 
 var DEFAULT_NULL_TIME_RANGE = "day";
 
 var TIME_LABEL_TO_SECS = exports.TIME_LABEL_TO_SECS = {
+  millisecond: MS_IN_SECS,
   second: SEC,
   minute: MIN_IN_SECS,
   hour: HOUR_IN_SECS,
@@ -28454,7 +28463,7 @@ var TIME_SPANS = exports.TIME_SPANS = TIME_LABELS.map(function (label) {
   };
 });
 
-var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }];
+var BIN_INPUT_OPTIONS = exports.BIN_INPUT_OPTIONS = [{ val: "auto", label: "auto", numSeconds: null }, { val: "century", label: "1c", numSeconds: 3153600000 }, { val: "decade", label: "10y", numSeconds: 315360000 }, { val: "year", label: "1y", numSeconds: 31536000 }, { val: "quarter", label: "1q", numSeconds: 10368000 }, { val: "month", label: "1mo", numSeconds: 2592000 }, { val: "week", label: "1w", numSeconds: 604800 }, { val: "day", label: "1d", numSeconds: 86400 }, { val: "hour", label: "1h", numSeconds: 3600 }, { val: "minute", label: "1m", numSeconds: 60 }, { val: "second", label: "1s", numSeconds: 1 }, { val: "millisecond", label: "1ms", numSeconds: 0.001 }];
 
 function autoBinParams(timeBounds, maxNumBins, reverse) {
   var epochTimeBounds = [timeBounds[0] * 0.001, timeBounds[1] * 0.001];
@@ -28463,12 +28472,13 @@ function autoBinParams(timeBounds, maxNumBins, reverse) {
     return DEFAULT_NULL_TIME_RANGE;
   }
   var timeSpans = reverse ? TIME_SPANS.slice().reverse() : TIME_SPANS;
+
   for (var s = 0; s < timeSpans.length; s++) {
-    if (timeRange / timeSpans[s].numSeconds < maxNumBins && timeRange / timeSpans[s].numSeconds > 2) {
+    if (timeRange / timeSpans[s].numSeconds < maxNumBins) {
       return timeSpans[s].label;
     }
   }
-  return "century"; // default;
+  return "century"; // default
 }
 
 function checkIfTimeBinInRange(timeBounds, timeBin, maxNumBins) {
@@ -51629,19 +51639,43 @@ function addFilterHandler(filters, filter) {
   return filters;
 }
 
-function hasFilterHandler(filters, filter) {
-  if (typeof filter === "undefined") {
-    return filters.length > 0;
-  } else if (Array.isArray(filter)) {
-    filter = filter.map(_formattingHelpers.normalizeArrayByValue);
-    return filters.some(function (f) {
-      return filter <= f && filter >= f;
-    });
-  } else {
-    return filters.some(function (f) {
-      return filter <= f && filter >= f;
-    });
+var convertAllDatesToISOString = function convertAllDatesToISOString(a) {
+  if (Array.isArray(a)) {
+    return a.map(convertAllDatesToISOString);
   }
+  if (a instanceof Date) {
+    return a.toISOString();
+  }
+  return a;
+};
+
+/**
+ * hasFilterHandler
+ * - if testValue is undefined, checks to see if the chart has any active filters
+ * - if testValue is defined, checks to see if that testValue passes the active filter
+ *
+ * @param {*} filters - the chart's current filter
+ * @param {*} testValue - a value being tested to see if it passes the filter
+ *
+ *  - If chart values are not binned:
+ *      - Params will most likely both be an array of values
+ *      - e.g. [4,22,100] - and values 4, 22, and 100 will be selected in table chart
+ *        with all other values deselected
+ *  - If chart values are binned, params will most likely both be an array of arrays
+ *      - Inner arrays will represent a range of values
+ *      - e.g. [[19,27]] - the bin with values from 19 to 27 will be selected, with
+ *        all others being deselected
+ */
+function hasFilterHandler(filters, testValue) {
+  if (typeof testValue === "undefined") {
+    return filters.length > 0;
+  }
+  testValue = Array.isArray(testValue) ? testValue.map(_formattingHelpers.normalizeArrayByValue) : testValue;
+  var filtersWithIsoDates = convertAllDatesToISOString(filters);
+  var testValueWithISODates = convertAllDatesToISOString(testValue);
+  return filtersWithIsoDates.some(function (f) {
+    return testValueWithISODates <= f && testValueWithISODates >= f;
+  });
 }
 
 function filterHandlerWithChartContext(_chart) {
@@ -52014,7 +52048,8 @@ var TIME_UNIT_PER_SECONDS = {
   day: 86400,
   hour: 3600,
   minute: 60,
-  second: 1
+  second: 1,
+  millisecond: 0.001
 };
 
 var MILLISECONDS_IN_SECOND = 1000;
@@ -52260,7 +52295,9 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
       }
     }
 
-    var bars = layer.selectAll("rect.bar").data(d.values, (0, _utils.pluck)("x"));
+    var bars = layer.selectAll("rect.bar").data(d.values, function (d) {
+      return d.x instanceof Date ? d.x.getTime() : d.x;
+    });
 
     var enter = bars.enter().append("rect").attr("class", "bar").attr("fill", colors).attr("y", _chart.yAxisHeight()).attr("height", 0);
 
@@ -61344,7 +61381,8 @@ var _core = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function roundTimeBin(date, timeInterval, operation) {
-  if (!timeInterval) {
+  // Turn off brush snapping for milliseconds, as a design decision
+  if (!timeInterval || timeInterval === "millisecond") {
     return date;
   }
 
@@ -66908,50 +66946,52 @@ function heatMapValueAccesor(_ref2) {
   }
 }
 
-function heatMapRowsLabel(d) {
-  var value = this.rowsMap.get(d) || d;
+function heatMapRowsLabel(key) {
+  // If the data is binned, this will be an array
+  var value = this.rowsMap.get(key) || key;
 
-  // There will only return a value if we're displaying dates
-  var customFormatter = this.dateFormatter();
+  var customDateFormatter = this.dateFormatter();
 
-  // Possibly dead code, `d` should always be a string
-  if (customFormatter && d && d instanceof Date) {
+  // Possibly dead code, `key` should always be a string or number
+  if (customDateFormatter && key && key instanceof Date) {
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0];
     }
   }
 
-  // customFormatter is set to autoFormatter (mapd3), which processes raw values
-  // whereas formatDataValue expects an object / array of objects that contain
-  // additional information
+  // For binned data:
+  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
+  // of objects with additional information (like timeBin info)
   var rawValues = Array.isArray(value) ? value.map(function (v) {
     return v.value;
   }) : null;
 
-  return customFormatter && customFormatter(rawValues || value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
+  return customDateFormatter && customDateFormatter(rawValues || value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
-function heatMapColsLabel(d) {
-  var value = this.colsMap.get(d) || d;
+function heatMapColsLabel(key) {
+  // If the data is binned, this will be an array
+  var value = this.colsMap.get(key) || key;
 
-  // There will only return a value if we're displaying dates
-  var customFormatter = this.dateFormatter();
+  var customDateFormatter = this.dateFormatter();
 
-  // Possibly dead code, `d` should always be a string
-  if (customFormatter && d && d instanceof Date) {
+  // Possibly dead code, `key` should always be a string or number
+  if (customDateFormatter && key && key instanceof Date) {
     if (Array.isArray(value) && value[0]) {
       value = value[0].value || value[0];
     }
   }
 
-  // customFormatter is set to `autoFormatter` (mapd3), which processes raw values.
-  // Whereas formatDataValue expects an object / array of objects that contain
-  // additional information
+  // For binned data:
+  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
+  // of objects with additional information (like timeBin info)
   var rawValues = Array.isArray(value) ? value.map(function (v) {
     return v.value;
   }) : null;
 
-  return customFormatter && customFormatter(rawValues || value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
+  return customDateFormatter && customDateFormatter(rawValues || value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
 function isDescendingAppropriateData(_ref3) {
@@ -68781,7 +68821,9 @@ function lineChart(parent, chartGroup) {
 
       createRefLines(g);
 
-      var dots = g.selectAll("circle." + DOT_CIRCLE_CLASS).data(points, (0, _utils.pluck)("x"));
+      var dots = g.selectAll("circle." + DOT_CIRCLE_CLASS).data(points, function (d) {
+        return d.x instanceof Date ? d.x.toISOString() : d.x;
+      });
 
       dots.enter().append("circle").attr("class", DOT_CIRCLE_CLASS).attr("r", getDotRadius()).style("fill-opacity", _dataPointFillOpacity).style("stroke-opacity", _dataPointStrokeOpacity).on("mousemove", function () {
         var dot = _d2.default.select(this);
@@ -74000,7 +74042,8 @@ function mapdTable(parent, chartGroup) {
     var type = columns[key].type;
 
     if (type === "TIMESTAMP") {
-      val = "TIMESTAMP(0) '" + val.toISOString().slice(0, 19).replace("T", " ") + "'";
+      val = "TIMESTAMP(3) '" + val.toISOString().slice(0, -1) // Slice off the 'Z' at the end
+      .replace("T", " ") + "'";
     } else if (type === "DATE") {
       var dateFormat = _d2.default.time.format.utc("%Y-%m-%d");
       val = "DATE '" + dateFormat(val) + "'";

@@ -506,9 +506,9 @@ export default function mapdTable(parent, chartGroup) {
     const type = columns[key].type
 
     if (type === "TIMESTAMP") {
-      val = `TIMESTAMP(0) '${val
+      val = `TIMESTAMP(3) '${val
         .toISOString()
-        .slice(0, 19)
+        .slice(0, -1) // Slice off the 'Z' at the end
         .replace("T", " ")}'`
     } else if (type === "DATE") {
       const dateFormat = d3.time.format.utc("%Y-%m-%d")
