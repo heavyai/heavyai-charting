@@ -422,11 +422,11 @@ export default function rasterMixin(_chart) {
     const columns = _chart.popupColumns().slice()
 
     if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
-      columns.push("conv_4326_900913_x(" + _chart._xDimName + ") as xPoint")
-      columns.push("conv_4326_900913_y(" + _chart._yDimName + ") as yPoint")
+      columns.push("conv_4326_900913_x(" + _chart._xDimName + ") AS xPoint")
+      columns.push("conv_4326_900913_y(" + _chart._yDimName + ") AS yPoint")
     } else {
-      columns.push(_chart._xDimName + " as xPoint")
-      columns.push(_chart._yDimName + " as yPoint")
+      columns.push(_chart._xDimName + " AS xPoint")
+      columns.push(_chart._yDimName + " AS yPoint")
     }
 
     if (_chart.colorBy() && columns.indexOf(_chart.colorBy().value) === -1) {

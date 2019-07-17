@@ -13,8 +13,8 @@ const SCROLL_DIVISOR = 5
 
 export const splitStrOnLastAs = str => {
   const splitStr = []
-  splitStr[0] = str.substring(0, str.lastIndexOf("as") - 1)
-  splitStr[1] = str.substring(str.lastIndexOf("as") + 3, str.length)
+  splitStr[0] = str.substring(0, str.lastIndexOf("AS") - 1)
+  splitStr[1] = str.substring(str.lastIndexOf("AS") + 3, str.length)
   return splitStr
 }
 

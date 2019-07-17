@@ -5163,9 +5163,9 @@ function hexBinSQL(sql, _ref, parser) {
 
   var args = parser.parseExpression(x.field) + "," + (hexminmercx + ",") + (hexmaxmercx + ",") + (parser.parseExpression(y.field) + ",") + (hexminmercy + ",") + (hexmaxmercy + ",") + (mark.width + ",") + (mark.height + ",") + (hexoffsetx + ",") + (hexoffsety + ",") + (width + ",") + ("" + height);
 
-  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_x(" + args + ") as x");
-  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_y(" + args + ") as y");
-  sql.select.push(parser.parseExpression(aggregate) + " as color");
+  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_x(" + args + ") AS x");
+  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_y(" + args + ") AS y");
+  sql.select.push(parser.parseExpression(aggregate) + " AS color");
   sql.groupby.push("x");
   sql.groupby.push("y");
 
@@ -5180,9 +5180,9 @@ function rectBinSQL(sql, _ref2, parser) {
       y = _ref2.y,
       aggregate = _ref2.aggregate;
 
-  sql.select.push("rect_pixel_bin_x(" + parser.parseExpression(x.field) + ", " + x.domain[0] + ", " + x.domain[1] + ", " + mark.width + ", 0, " + width + ") as x");
-  sql.select.push("rect_pixel_bin_y(" + parser.parseExpression(y.field) + ", " + y.domain[0] + ", " + y.domain[1] + ", " + mark.height + ", 0, " + height + ") as y");
-  sql.select.push(parser.parseExpression(aggregate) + " as color");
+  sql.select.push("rect_pixel_bin_x(" + parser.parseExpression(x.field) + ", " + x.domain[0] + ", " + x.domain[1] + ", " + mark.width + ", 0, " + width + ") AS x");
+  sql.select.push("rect_pixel_bin_y(" + parser.parseExpression(y.field) + ", " + y.domain[0] + ", " + y.domain[1] + ", " + mark.height + ", 0, " + height + ") AS y");
+  sql.select.push(parser.parseExpression(aggregate) + " AS color");
   sql.groupby.push("x");
   sql.groupby.push("y");
 
@@ -31386,7 +31386,7 @@ function parseSource(transforms) {
       var joinType = typeof transform.type === "string" ? transform.type : "join";
       // $FlowFixMe
       var joinStmt = left + " " + joinRelation(joinType) + " " + right;
-      var aliasStmt = typeof transform.as === "string" ? " as " + transform.as : "";
+      var aliasStmt = typeof transform.as === "string" ? " AS " + transform.as : "";
       return stmt.concat(joinStmt + aliasStmt);
     } else if (transform.type === "data" || transform.type === "root") {
       // $FlowFixMe
@@ -49869,7 +49869,7 @@ function aggregateField(op, field, as) {
     str += op + "(" + field + ")";
   }
 
-  return str + ("" + (as ? " as " + as : ""));
+  return str + ("" + (as ? " AS " + as : ""));
 }
 
 function parseGroupBy(sql, groupby, parser) {
@@ -49880,7 +49880,7 @@ function parseGroupBy(sql, groupby, parser) {
     sql = parser.parseTransform(sql, groupby);
     sql.groupby.push(groupby.as);
   } else if (groupby.type === "project") {
-    sql.select.push(parser.parseExpression(groupby.expr) + (groupby.as ? " as " + groupby.as : ""));
+    sql.select.push(parser.parseExpression(groupby.expr) + (groupby.as ? " AS " + groupby.as : ""));
     if (groupby.as) {
       sql.groupby.push(groupby.as);
     }
@@ -49914,7 +49914,7 @@ function parseBin(sql, _ref) {
   // The logic used by mapd-crossfilter's getBinnedDimExpression is completely different.
   var numBins = extent[1] - extent[0];
 
-  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (numBins === 0 ? 0 : maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (numBins || 1) + " as int)\n    end\n    as " + as);
+  sql.select.push("case when\n      " + field + " >= " + extent[1] + "\n    then\n      " + (numBins === 0 ? 0 : maxbins - 1) + "\n    else\n      cast((cast(" + field + " as float) - " + extent[0] + ") * " + maxbins / (numBins || 1) + " as int)\n    end\n    AS " + as);
   sql.where.push("((" + field + " >= " + extent[0] + " AND " + field + " <= " + extent[1] + ") OR (" + field + " IS NULL))");
   sql.having.push("(" + as + " >= 0 AND " + as + " < " + maxbins + " OR " + as + " IS NULL)");
   return sql;
@@ -50053,7 +50053,7 @@ function parsePostFilter(sql, transform) {
 function parseProject(sql, transform) {
   var parser = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : __WEBPACK_IMPORTED_MODULE_0__create_parser__["b" /* default */];
 
-  sql.select.push(parser.parseExpression(transform.expr) + (transform.as ? " as " + transform.as : ""));
+  sql.select.push(parser.parseExpression(transform.expr) + (transform.as ? " AS " + transform.as : ""));
   return sql;
 }
 
@@ -69406,7 +69406,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var geoTable = _layer.getState().encoding.geoTable;
     var geoCol = _layer.getState().encoding.geocol;
 
-    var preflightQuery = "SELECT COUNT(*) as n FROM " + geoTable + " WHERE ST_XMax(" + geoTable + "." + geoCol + ") >= " + mapBounds._sw.lng + " AND ST_XMin(" + geoTable + "." + geoCol + ") <= " + mapBounds._ne.lng + " AND ST_YMax(" + geoTable + "." + geoCol + ") >= " + mapBounds._sw.lat + " AND ST_YMin(" + geoTable + "." + geoCol + ") <= " + mapBounds._ne.lat;
+    var preflightQuery = "SELECT COUNT(*) AS n FROM " + geoTable + " WHERE ST_XMax(" + geoTable + "." + geoCol + ") >= " + mapBounds._sw.lng + " AND ST_XMin(" + geoTable + "." + geoCol + ") <= " + mapBounds._ne.lng + " AND ST_YMax(" + geoTable + "." + geoCol + ") >= " + mapBounds._sw.lat + " AND ST_YMin(" + geoTable + "." + geoCol + ") <= " + mapBounds._ne.lat;
 
     return chart.con().queryAsync(preflightQuery, {});
   }
@@ -73659,8 +73659,8 @@ var SCROLL_DIVISOR = 5;
 
 var splitStrOnLastAs = exports.splitStrOnLastAs = function splitStrOnLastAs(str) {
   var splitStr = [];
-  splitStr[0] = str.substring(0, str.lastIndexOf("as") - 1);
-  splitStr[1] = str.substring(str.lastIndexOf("as") + 3, str.length);
+  splitStr[0] = str.substring(0, str.lastIndexOf("AS") - 1);
+  splitStr[1] = str.substring(str.lastIndexOf("AS") + 3, str.length);
   return splitStr;
 };
 
@@ -76196,11 +76196,11 @@ function rasterMixin(_chart) {
     var columns = _chart.popupColumns().slice();
 
     if (typeof _chart.useLonLat === "function" && _chart.useLonLat()) {
-      columns.push("conv_4326_900913_x(" + _chart._xDimName + ") as xPoint");
-      columns.push("conv_4326_900913_y(" + _chart._yDimName + ") as yPoint");
+      columns.push("conv_4326_900913_x(" + _chart._xDimName + ") AS xPoint");
+      columns.push("conv_4326_900913_y(" + _chart._yDimName + ") AS yPoint");
     } else {
-      columns.push(_chart._xDimName + " as xPoint");
-      columns.push(_chart._yDimName + " as yPoint");
+      columns.push(_chart._xDimName + " AS xPoint");
+      columns.push(_chart._yDimName + " AS yPoint");
     }
 
     if (_chart.colorBy() && columns.indexOf(_chart.colorBy().value) === -1) {
