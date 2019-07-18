@@ -48162,7 +48162,7 @@ function rasterLayerPointMixin(_layer) {
         source: table,
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
       }),
-      enableHitTesting: true // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+      enableHitTesting: state.enableHitTesting
     }];
 
     var scaledomainfields = {};
