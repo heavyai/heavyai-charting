@@ -395,7 +395,7 @@ export default function rasterLayerPointMixin(_layer) {
             lastFilteredSize
           )
         }),
-        enableHitTesting: state.enableHitTesting 
+        enableHitTesting: state.enableHitTesting
       }
     ]
 
