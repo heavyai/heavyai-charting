@@ -29693,10 +29693,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (_chart.svg()) {
       _chart.svg().remove();
     }
-    var mapContainer = _d3.default.select(_chart.map().getCanvasContainer());
-    var svg = mapContainer.append("svg").attr("class", "poly-svg");
-    svg.attr("width", _chart.width()).attr("height", _chart.height());
-    _chart.svg(svg);
+    if (_chart.map()) {
+      var mapContainer = _d3.default.select(_chart.map().getCanvasContainer());
+      var svg = mapContainer.append("svg").attr("class", "poly-svg");
+      svg.attr("width", _chart.width()).attr("height", _chart.height());
+      _chart.svg(svg);
+    }
   };
 
   _chart.mapProject = function (input) {
@@ -69364,7 +69366,9 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       _layer5.destroyLayer(_chart);
     }
 
-    _chart.map().remove();
+    if (_chart.map()) {
+      _chart.map().remove();
+    }
   };
 
   _chart.con = function (_) {
