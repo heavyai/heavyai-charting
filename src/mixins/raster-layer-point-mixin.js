@@ -395,7 +395,8 @@ export default function rasterLayerPointMixin(_layer) {
             lastFilteredSize
           )
         }),
-        enableHitTesting: true // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+        // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+        enableHitTesting: true
       }
     ]
 
