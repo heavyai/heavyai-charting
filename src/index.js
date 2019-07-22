@@ -1,8 +1,7 @@
 require("../mapdc.css")
 require("../scss/chart.scss")
-require("mapbox-gl/dist/styles.css")
+require("mapbox-gl/dist/mapbox-gl.css")
 require("legendables/src/styles.css")
-
 require("./mixins/d3.box.js")
 require("./polyfills/inner-svg")
 
