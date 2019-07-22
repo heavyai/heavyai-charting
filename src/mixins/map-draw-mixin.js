@@ -1,5 +1,6 @@
 import * as utils from "../utils/utils-lasso"
 import { redrawAllAsync } from "../core/core-async"
+import mapboxgl from "mapbox-gl"
 
 const DRAW_OPTIONS = {
   drawing: true,

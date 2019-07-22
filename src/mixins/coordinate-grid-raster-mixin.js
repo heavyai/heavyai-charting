@@ -4,6 +4,7 @@ import bindEventHandlers from "./ui/coordinate-grid-raster-mixin-ui"
 import colorMixin from "./color-mixin"
 import d3 from "d3"
 import marginMixin from "./margin-mixin"
+import mapboxgl from "mapbox-gl"
 
 /**
  * Coordinate Grid Raster is an abstract base chart designed to support coordinate grid based

@@ -1,5 +1,6 @@
 import { utils } from "../utils/utils"
 import { rasterDrawMixin } from "./raster-draw-mixin"
+import mapboxgl from "mapbox-gl"
 
 function extend(destination, source) {
   for (const k in source) {

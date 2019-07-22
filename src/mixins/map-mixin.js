@@ -4,6 +4,7 @@ import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
 import { mapDrawMixin } from "./map-draw-mixin"
 import { rasterDrawMixin } from "./raster-draw-mixin"
+import mapboxgl from "mapbox-gl"
 
 function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
