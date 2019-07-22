@@ -217,7 +217,9 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       layer.destroyLayer(_chart)
     }
 
-    _chart.map().remove()
+    if(_chart.map()) {
+      _chart.map().remove()
+    }
   }
 
   _chart.con = function(_) {
