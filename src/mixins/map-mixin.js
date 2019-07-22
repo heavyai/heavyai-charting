@@ -437,10 +437,12 @@ export default function mapMixin(
     if (_chart.svg()) {
       _chart.svg().remove()
     }
-    const mapContainer = d3.select(_chart.map().getCanvasContainer())
-    const svg = mapContainer.append("svg").attr("class", "poly-svg")
-    svg.attr("width", _chart.width()).attr("height", _chart.height())
-    _chart.svg(svg)
+    if(_chart.map()) {
+      const mapContainer = d3.select(_chart.map().getCanvasContainer())
+      const svg = mapContainer.append("svg").attr("class", "poly-svg")
+      svg.attr("width", _chart.width()).attr("height", _chart.height())
+      _chart.svg(svg)
+    }
   }
 
   _chart.mapProject = function(input) {
