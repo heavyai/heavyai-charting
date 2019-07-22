@@ -500,7 +500,7 @@ export default function mapMixin(
     }
 
     if (browser.isSafari || browser.isIE || browser.isEdge) {
-      const blob = utilss.b64toBlob(data, "image/png")
+      const blob = utils.b64toBlob(data, "image/png")
       var blobUrl = URL.createObjectURL(blob)
     } else {
       var blobUrl = "data:image/png;base64," + data
