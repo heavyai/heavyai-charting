@@ -4,7 +4,8 @@ import moment from "moment"
 
 const NUMBER_LENGTH = 4
 
-const numFormat = d3.format(".2s")
+const d3NumFormat = d3.format(".2s")
+const numFormat = value => Math.abs(value) < 2e-25 ? value.toPrecision(2) : d3NumFormat(value)
 const commafy = d3.format(",")
 
 export const nullLabelHtml = '<tspan class="null-value"> NULL </tspan>'
