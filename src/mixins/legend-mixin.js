@@ -14,6 +14,22 @@ function defaultFormatter (value) {
   return commafy(formattedValue)
 }
 
+// Finds the name of the color measure, so we can use it when finding the format of the color legend
+function getColorMeasureName(chart) {
+  const measures = chart.group().reduce()
+  if (!Array.isArray(measures)) {
+    return null
+  }
+
+  const colorMeasure = measures.filter(x => x.name === "color")
+  // This function should always return either a string or null, never "undefined", since an
+  // "undefined" key to the valueFormatter sends us down a weird code path.
+  return colorMeasure.length > 0 &&
+    typeof colorMeasure[0].measureName !== "undefined"
+    ? colorMeasure[0].measureName
+    : null
+}
+
 export default function legendMixin(chart) {
   chart.legendablesContinuous = function() {
     const legends = []
@@ -22,6 +38,7 @@ export default function legendMixin(chart) {
     const colorDomainSize = colorDomain[1] - colorDomain[0]
     const colorRange = chart.colors().range()
     const numColors = colorRange.length
+    const colorMeasureName = getColorMeasureName(chart)
 
     for (let c = 0; c < numColors; c++) {
       let startRange = c / numColors * colorDomainSize + colorDomain[0]
@@ -44,7 +61,9 @@ export default function legendMixin(chart) {
       const valueFormatter = chart.valueFormatter()
       let value = startRange
       if (!isNaN(value)) {
-        value = valueFormatter && valueFormatter(value) || defaultFormatter(value)
+        value =
+          (valueFormatter && valueFormatter(value, colorMeasureName)) ||
+          defaultFormatter(value)
       }
 
       legends.push({
