@@ -53,7 +53,11 @@ export function formatNumber(d) {
     return d
   }
 
-  return Math.abs(d) < 2e-2 ? d.toPrecision(2) : commafy(parseFloat(d.toFixed(2)))
+  if (d.toString().match(/e/)) {
+    return d.toPrecision(2)
+  } else {
+    return commafy(parseFloat(d.toFixed(2)))
+  }
 }
 
 export function formatArrayValue(data) {
