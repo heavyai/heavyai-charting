@@ -2,7 +2,6 @@ import { DAYS, HOURS, MONTHS, QUARTERS } from "../constants/dates-and-times"
 import d3 from "d3"
 import moment from "moment"
 
-const NUMBER_LENGTH = 4
 const commafy = d3.format(",")
 
 export const nullLabelHtml = '<tspan class="null-value"> NULL </tspan>'
@@ -54,7 +53,7 @@ export function formatNumber(d) {
     return d
   }
 
-  return Math.abs(d) < 2e-25 ? d.toPrecision(2) : commafy(parseFloat(d.toFixed(2)))
+  return Math.abs(d) < 2e-2 ? d.toPrecision(2) : commafy(parseFloat(d.toFixed(2)))
 }
 
 export function formatArrayValue(data) {
