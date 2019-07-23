@@ -48891,7 +48891,7 @@ function rasterLayerPolyMixin(_layer) {
           domain: state.encoding.color.domain,
           range: colorRange,
           nullValue: polyNullScaleColor,
-          default: polyDefaultScaleColor
+          default: state.encoding.color.default || polyDefaultScaleColor
         });
       }
 
