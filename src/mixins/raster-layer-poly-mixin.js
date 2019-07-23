@@ -129,8 +129,6 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const transforms = []
 
-    const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
-
     const colorProjection =
       color.type === "quantitative"
         ? parser.parseExpression(color.aggregate)
@@ -244,11 +242,6 @@ export default function rasterLayerPolyMixin(_layer) {
       })
 
     } else {
-      transforms.push({
-        type: "project",
-        expr: `${rowIdTable}.rowid`
-      })
-
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
@@ -369,7 +362,9 @@ export default function rasterLayerPolyMixin(_layer) {
             filtersInverse,
             lastFilteredSize
           })
-        })
+        }),
+        // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+        enableHitTesting: !doJoin()
       }
     ]
 
