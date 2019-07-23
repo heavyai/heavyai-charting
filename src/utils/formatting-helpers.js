@@ -3,9 +3,6 @@ import d3 from "d3"
 import moment from "moment"
 
 const NUMBER_LENGTH = 4
-
-const d3NumFormat = d3.format(".2s")
-const numFormat = value => Math.abs(value) < 2e-25 ? value.toPrecision(2) : d3NumFormat(value)
 const commafy = d3.format(",")
 
 export const nullLabelHtml = '<tspan class="null-value"> NULL </tspan>'
@@ -56,12 +53,8 @@ export function formatNumber(d) {
   if (typeof d !== "number") {
     return d
   }
-  const isLong = String(d).length > NUMBER_LENGTH
-  const formattedHasAlpha = numFormat(d).match(/[a-z]/i)
-  const isLargeNumber = isLong && formattedHasAlpha
-  return isLargeNumber
-    ? numFormat(d)
-    : commafy(parseFloat(d.toFixed(2)))
+
+  return Math.abs(d) < 2e-25 ? d.toPrecision(2) : commafy(parseFloat(d.toFixed(2)))
 }
 
 export function formatArrayValue(data) {
