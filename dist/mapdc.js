@@ -47981,11 +47981,6 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
         as: "color"
       });
     }
-
-    transforms.push({
-      type: "project",
-      expr: table + ".rowid"
-    });
   }
 
   if (typeof filter === "string" && filter.length) {
@@ -48171,7 +48166,9 @@ function rasterLayerPointMixin(_layer) {
         type: "root",
         source: table,
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
-      })
+      }),
+      // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+      enableHitTesting: true
     }];
 
     var scaledomainfields = {};
@@ -48582,8 +48579,6 @@ function rasterLayerPolyMixin(_layer) {
 
     var transforms = [];
 
-    var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
-
     var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + color.field + ")";
 
     var colorField = color.type === "quantitative" ? typeof color.aggregate === "string" ? color.aggregate : color.aggregate.field : color.field;
@@ -48682,11 +48677,6 @@ function rasterLayerPolyMixin(_layer) {
         }
       });
     } else {
-      transforms.push({
-        type: "project",
-        expr: rowIdTable + ".rowid"
-      });
-
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
@@ -48828,7 +48818,9 @@ function rasterLayerPolyMixin(_layer) {
           filtersInverse: filtersInverse,
           lastFilteredSize: lastFilteredSize
         })
-      })
+      }),
+      // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+      enableHitTesting: !doJoin()
     }];
 
     if (autocolors) {
@@ -75522,11 +75514,6 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   } else {
     transforms.push({
       type: "project",
-      expr: rowIdTable + ".rowid",
-      as: "rowid"
-    });
-    transforms.push({
-      type: "project",
       expr: geoTable + "." + geocol
     });
   }
@@ -75700,7 +75687,9 @@ function rasterLayerLineMixin(_layer) {
           return source.table;
         })))).join(", "),
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
-      })
+      }),
+      // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+      enableHitTesting: !(state.data.length > 1)
     }];
 
     var scaledomainfields = {};

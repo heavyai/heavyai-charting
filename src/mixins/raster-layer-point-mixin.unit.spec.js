@@ -82,7 +82,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [],
@@ -137,8 +138,8 @@ describe("rasterLayerPointMixin", () => {
           layerName: "points"
         }).data[0].sql).to.equal(
           "SELECT conv_4326_900913_x(lon) AS x, "
-          + "conv_4326_900913_y(lat) AS y, "
-          + "tweets_nov_feb.rowid FROM tweets_nov_feb "
+          + "conv_4326_900913_y(lat) AS y "
+          + "FROM tweets_nov_feb "
           + "WHERE MOD( MOD (tweets_nov_feb.rowid, 2147483648) * 2654435761 , 4294967296) < 7222804 "
           + "AND (lon = 100) LIMIT 2000000"
         )
@@ -167,7 +168,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [],
@@ -288,7 +290,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [
@@ -365,7 +368,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
             },
             {
               name: "points_stats",
@@ -463,7 +467,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [
@@ -553,7 +558,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, party AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, party AS color FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [
@@ -624,7 +630,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, party AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100)"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, party AS color FROM tweets_nov_feb WHERE (lon = 100)"
             }
           ],
           "scales": [
@@ -694,7 +701,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS color FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
             },
             {
               name: "points_stats",
@@ -783,7 +791,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, party AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, party AS color FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
             },
             {
               name: "points_stats",
@@ -870,7 +879,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size, party AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size, party AS color FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
             },
             {
               name: "points_stats",
@@ -981,7 +991,8 @@ describe("rasterLayerPointMixin", () => {
           data: [
             {
               name: "points",
-              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size, tweet_count AS color, tweets_nov_feb.rowid FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
+              enableHitTesting: true,
+              sql: "SELECT conv_4326_900913_x(lon) AS x, conv_4326_900913_y(lat) AS y, tweet_count AS size, tweet_count AS color FROM tweets_nov_feb WHERE (lon = 100) LIMIT 2000000"
             },
             {
               name: "points_stats",

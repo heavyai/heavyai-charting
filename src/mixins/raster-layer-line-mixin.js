@@ -178,11 +178,6 @@ function getTransforms(
   } else {
     transforms.push({
       type: "project",
-      expr: `${rowIdTable}.rowid`,
-      as: "rowid"
-    })
-    transforms.push({
-      type: "project",
       expr: `${geoTable}.${geocol}`
     })
   }
@@ -350,7 +345,9 @@ export default function rasterLayerLineMixin(_layer) {
             state,
             lastFilteredSize
           )
-        })
+        }),
+        // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+        enableHitTesting: !(state.data.length > 1)
       }
     ]
 
