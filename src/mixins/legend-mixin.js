@@ -4,7 +4,7 @@ import { override } from "../../src/core/core"
 const PERCENTAGE = 100.0
 const LOWER_THAN_START_RANGE = 1000
 
-function defaultFormatter (value) {
+function defaultFormatter(value) {
   const commafy = d3.format(",")
   let formattedValue = parseFloat(value).toFixed(2)
   if (value >= LOWER_THAN_START_RANGE) {
@@ -41,7 +41,7 @@ export default function legendMixin(chart) {
     const colorMeasureName = getColorMeasureName(chart)
 
     for (let c = 0; c < numColors; c++) {
-      let startRange = c / numColors * colorDomainSize + colorDomain[0]
+      let startRange = (c / numColors) * colorDomainSize + colorDomain[0]
       if (chart.isTargeting()) {
         startRange = "%" + (parseFloat(startRange) * PERCENTAGE).toFixed(2)
       } else if (chart.colorByExpr() === "count(*)") {
