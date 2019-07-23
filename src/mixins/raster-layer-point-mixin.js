@@ -211,11 +211,6 @@ function getTransforms(
         as: "color"
       })
     }
-
-    transforms.push({
-      type: "project",
-      expr: `${table}.rowid`
-    })
   }
 
   if (typeof filter === "string" && filter.length) {
@@ -399,7 +394,9 @@ export default function rasterLayerPointMixin(_layer) {
             state,
             lastFilteredSize
           )
-        })
+        }),
+        // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+        enableHitTesting: true
       }
     ]
 
