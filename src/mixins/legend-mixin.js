@@ -16,6 +16,10 @@ function defaultFormatter(value) {
 
 // Finds the name of the color measure, so we can use it when finding the format of the color legend
 function getColorMeasureName(chart) {
+  const groups = chart.group()
+  if (!(groups && groups.reduce)) {
+    return null
+  }
   const measures = chart.group().reduce()
   if (!Array.isArray(measures)) {
     return null
