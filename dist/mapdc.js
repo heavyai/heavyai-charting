@@ -51541,6 +51541,25 @@ function defaultFormatter(value) {
   return commafy(formattedValue);
 }
 
+// Finds the name of the color measure, so we can use it when finding the format of the color legend
+function getColorMeasureName(chart) {
+  var groups = chart.group();
+  if (!(groups && groups.reduce)) {
+    return null;
+  }
+  var measures = chart.group().reduce();
+  if (!Array.isArray(measures)) {
+    return null;
+  }
+
+  var colorMeasure = measures.filter(function (x) {
+    return x.name === "color";
+  });
+  // This function should always return either a string or null, never "undefined", since an
+  // "undefined" key to the valueFormatter sends us down a weird code path.
+  return colorMeasure.length > 0 && typeof colorMeasure[0].measureName !== "undefined" ? colorMeasure[0].measureName : null;
+}
+
 function legendMixin(chart) {
   chart.legendablesContinuous = function () {
     var legends = [];
@@ -51549,6 +51568,7 @@ function legendMixin(chart) {
     var colorDomainSize = colorDomain[1] - colorDomain[0];
     var colorRange = chart.colors().range();
     var numColors = colorRange.length;
+    var colorMeasureName = getColorMeasureName(chart);
 
     for (var c = 0; c < numColors; c++) {
       var startRange = c / numColors * colorDomainSize + colorDomain[0];
@@ -51571,7 +51591,7 @@ function legendMixin(chart) {
       var valueFormatter = chart.valueFormatter();
       var value = startRange;
       if (!isNaN(value)) {
-        value = valueFormatter && valueFormatter(value) || defaultFormatter(value);
+        value = valueFormatter && valueFormatter(value, colorMeasureName) || defaultFormatter(value);
       }
 
       legends.push({
@@ -72825,8 +72845,12 @@ function rowChart(parent, chartGroup) {
 
   function setXAxisFormat() {
     var numberFormatter = _chart.valueFormatter();
-    if (numberFormatter) {
-      var key = _chart.getMeasureName();
+    var key = _chart.getMeasureName();
+    // We have no good way of knowing if the valueFormatter has a formatter for the X axis in
+    // particular, since that code is a black box. So we run through a test value and if it returns
+    // `null`, we know it doesn't know how to format it. It's dumb, but it works.
+    var validFormatting = numberFormatter && numberFormatter(0, key) !== null;
+    if (validFormatting) {
       xFormatCache.setTickFormat(function (d) {
         return numberFormatter(d, key);
       });
