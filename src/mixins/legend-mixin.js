@@ -4,7 +4,7 @@ import { override } from "../../src/core/core"
 const PERCENTAGE = 100.0
 const LOWER_THAN_START_RANGE = 1000
 
-function defaultFormatter (value) {
+function defaultFormatter(value) {
   const commafy = d3.format(",")
   let formattedValue = parseFloat(value).toFixed(2)
   if (value >= LOWER_THAN_START_RANGE) {
@@ -12,6 +12,26 @@ function defaultFormatter (value) {
   }
 
   return commafy(formattedValue)
+}
+
+// Finds the name of the color measure, so we can use it when finding the format of the color legend
+function getColorMeasureName(chart) {
+  const groups = chart.group()
+  if (!(groups && groups.reduce)) {
+    return null
+  }
+  const measures = chart.group().reduce()
+  if (!Array.isArray(measures)) {
+    return null
+  }
+
+  const colorMeasure = measures.filter(x => x.name === "color")
+  // This function should always return either a string or null, never "undefined", since an
+  // "undefined" key to the valueFormatter sends us down a weird code path.
+  return colorMeasure.length > 0 &&
+    typeof colorMeasure[0].measureName !== "undefined"
+    ? colorMeasure[0].measureName
+    : null
 }
 
 export default function legendMixin(chart) {
@@ -22,9 +42,10 @@ export default function legendMixin(chart) {
     const colorDomainSize = colorDomain[1] - colorDomain[0]
     const colorRange = chart.colors().range()
     const numColors = colorRange.length
+    const colorMeasureName = getColorMeasureName(chart)
 
     for (let c = 0; c < numColors; c++) {
-      let startRange = c / numColors * colorDomainSize + colorDomain[0]
+      let startRange = (c / numColors) * colorDomainSize + colorDomain[0]
       if (chart.isTargeting()) {
         startRange = "%" + (parseFloat(startRange) * PERCENTAGE).toFixed(2)
       } else if (chart.colorByExpr() === "count(*)") {
@@ -44,7 +65,9 @@ export default function legendMixin(chart) {
       const valueFormatter = chart.valueFormatter()
       let value = startRange
       if (!isNaN(value)) {
-        value = valueFormatter && valueFormatter(value) || defaultFormatter(value)
+        value =
+          (valueFormatter && valueFormatter(value, colorMeasureName)) ||
+          defaultFormatter(value)
       }
 
       legends.push({
