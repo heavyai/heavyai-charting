@@ -7848,9 +7848,6 @@ var _moment2 = _interopRequireDefault(_moment);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var NUMBER_LENGTH = 4;
-
-var numFormat = _d2.default.format(".2s");
 var commafy = _d2.default.format(",");
 
 var nullLabelHtml = exports.nullLabelHtml = '<tspan class="null-value"> NULL </tspan>';
@@ -7880,9 +7877,9 @@ var normalizeArrayByValue = exports.normalizeArrayByValue = function normalizeAr
   }) : collection;
 };
 
-function formatDataValue(data, numAbbr) {
+function formatDataValue(data) {
   if (typeof data === "number") {
-    return formatNumber(data, numAbbr);
+    return formatNumber(data);
   } else if (Array.isArray(data)) {
     return formatArrayValue(data);
   } else if (data instanceof Date) {
@@ -7903,14 +7900,16 @@ function maybeFormatInfinity(data) {
   });
 }
 
-function formatNumber(d, abbr) {
+function formatNumber(d) {
   if (typeof d !== "number") {
     return d;
   }
-  var isLong = String(d).length > NUMBER_LENGTH;
-  var formattedHasAlpha = numFormat(d).match(/[a-z]/i);
-  var isLargeNumber = isLong && formattedHasAlpha;
-  return isLargeNumber && abbr ? numFormat(d) : commafy(parseFloat(d.toFixed(2)));
+
+  if (d.toString().match(/e/)) {
+    return d.toPrecision(2);
+  } else {
+    return commafy(parseFloat(d.toFixed(2)));
+  }
 }
 
 function formatArrayValue(data) {
