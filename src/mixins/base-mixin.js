@@ -93,7 +93,12 @@ export default function baseMixin(_chart) {
   let _renderLabel = false
 
   let _title = function(d) {
-    return _chart.keyAccessor()(d) + ": " + _chart.valueAccessor()(d)
+    const key = _chart.keyAccessor()(d)
+    const value = _chart.valueAccessor()(d)
+    // return _chart.keyAccessor()(d) + ": " + _chart.valueAccessor()(d)
+    return `${key instanceof Date ? key.toISOString() : key}: ${
+      value instanceof Date ? value.toISOString() : value
+    }`
   }
   let _renderTitle = true
   let _controlsUseVisibility = true
