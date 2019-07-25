@@ -1308,7 +1308,9 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     _chart._preprocessData()
 
-    drawChart(false, imgUrl, renderBounds, queryId)
+    if(_chartBody) {
+      drawChart(false, imgUrl, renderBounds, queryId)
+    }
 
     return _chart
   }
