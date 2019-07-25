@@ -6081,7 +6081,10 @@ function baseMixin(_chart) {
   var _renderLabel = false;
 
   var _title = function _title(d) {
-    return _chart.keyAccessor()(d) + ": " + _chart.valueAccessor()(d);
+    var key = _chart.keyAccessor()(d);
+    var value = _chart.valueAccessor()(d);
+    // return _chart.keyAccessor()(d) + ": " + _chart.valueAccessor()(d)
+    return (key instanceof Date ? key.toISOString() : key) + ": " + (value instanceof Date ? value.toISOString() : value);
   };
   var _renderTitle = true;
   var _controlsUseVisibility = true;
@@ -9123,7 +9126,9 @@ function coordinateGridMixin(_chart) {
 
   function compareDomains(d1, d2) {
     return !d1 || !d2 || d1.length !== d2.length || d1.some(function (elem, i) {
-      return elem && d2[i] ? elem.toString() !== d2[i].toString() : elem === d2[i];
+      var elemString = elem instanceof Date ? elem.toISOString() : elem.toString();
+      var d2String = d2[i] instanceof Date ? d2[i].toISOString() : d2[i].toString();
+      return elem && d2[i] ? elemString !== d2String : elem === d2[i];
     });
   }
 
@@ -44584,8 +44589,9 @@ function processMultiSeriesResults(results) {
     if (Array.isArray(key0)) {
       var isExtract = key0[0].isExtract;
 
-      var min = isExtract ? key0[0].value : key0[0].value || key0[0];
-      var alias = key0[0].alias || min;
+      var rawMin = isExtract ? key0[0].value : key0[0].value || key0[0];
+      var min = rawMin instanceof Date ? rawMin.toISOString() : rawMin;
+      var alias = key0[0].alias instanceof Date ? key0[0].alias.toISOString() : key0[0].alias || min;
 
       if (typeof accum.ranges[alias] !== "number") {
         // eslint-disable-line no-negated-condition
