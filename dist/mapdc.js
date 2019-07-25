@@ -6083,7 +6083,6 @@ function baseMixin(_chart) {
   var _title = function _title(d) {
     var key = _chart.keyAccessor()(d);
     var value = _chart.valueAccessor()(d);
-    // return _chart.keyAccessor()(d) + ": " + _chart.valueAccessor()(d)
     return (key instanceof Date ? key.toISOString() : key) + ": " + (value instanceof Date ? value.toISOString() : value);
   };
   var _renderTitle = true;

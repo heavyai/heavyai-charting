@@ -95,7 +95,6 @@ export default function baseMixin(_chart) {
   let _title = function(d) {
     const key = _chart.keyAccessor()(d)
     const value = _chart.valueAccessor()(d)
-    // return _chart.keyAccessor()(d) + ": " + _chart.valueAccessor()(d)
     return `${key instanceof Date ? key.toISOString() : key}: ${
       value instanceof Date ? value.toISOString() : value
     }`
