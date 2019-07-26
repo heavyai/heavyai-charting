@@ -4,7 +4,6 @@ import bindEventHandlers from "./ui/coordinate-grid-raster-mixin-ui"
 import colorMixin from "./color-mixin"
 import d3 from "d3"
 import marginMixin from "./margin-mixin"
-import mapboxgl from "mapbox-gl"
 import { getImage } from "../utils/mapbox-ported-functions"
 
 /**

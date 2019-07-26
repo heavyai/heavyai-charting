@@ -1,5 +1,3 @@
-import mapboxgl from "mapbox-gl"
-
 require("../mapdc.css")
 require("../scss/chart.scss")
 require("mapbox-gl/dist/mapbox-gl.css")
@@ -8,6 +6,7 @@ require("./mixins/d3.box.js")
 require("./polyfills/inner-svg")
 
 if (process.env.BABEL_ENV !== "test") {
+  const mapboxgl = require("mapbox-gl")
   window.mapboxgl = mapboxgl
 }
 
