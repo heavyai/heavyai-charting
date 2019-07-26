@@ -5825,9 +5825,9 @@ function isEqualToRenderCount(queryCount) {
 }
 
 function redrawAllAsync(group, allCharts) {
-  var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
 
   if ((0, _core.refreshDisabled)()) {
+    var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
     return Promise.resolve(charts);
   }
 
@@ -5840,6 +5840,7 @@ function redrawAllAsync(group, allCharts) {
     _startRedrawTime = new Date();
 
     var createRedrawPromises = function createRedrawPromises() {
+      var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
       return charts.map(function (chart) {
         chart.expireCache();
         chart._invokeDataFetchListener();
@@ -46866,9 +46867,7 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 
     _chart._preprocessData();
 
-    if (_chartBody) {
-      drawChart(false, imgUrl, renderBounds, queryId);
-    }
+    drawChart(false, imgUrl, renderBounds, queryId);
 
     return _chart;
   }
