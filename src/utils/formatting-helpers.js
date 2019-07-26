@@ -12,9 +12,15 @@ export const momentUTCFormat = (d, f) =>
     .format(f)
 export const genericDateTimeFormat = d => {
   if (d.getMilliseconds() === 0) {
-    return `${momentUTCFormat(d, "MMM D, YYYY")} \u205F${momentUTCFormat(d,"HH:mm:ss")}`
+    return `${momentUTCFormat(d, "MMM D, YYYY")} \u205F${momentUTCFormat(
+      d,
+      "HH:mm:ss"
+    )}`
   }
-  return `${momentUTCFormat(d, "MMM D, YYYY")} \u205F${momentUTCFormat(d,"HH:mm:ss.SSS")}`
+  return `${momentUTCFormat(d, "MMM D, YYYY")} \u205F${momentUTCFormat(
+    d,
+    "HH:mm:ss.SSS"
+  )}`
 }
 export const isPlainObject = value =>
   !Array.isArray(value) && typeof value === "object" && !(value instanceof Date)

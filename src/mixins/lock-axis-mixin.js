@@ -234,9 +234,8 @@ export default function lockAxisMixin(chart) {
     lockWrapper
       .append("div")
       .attr("class", `lock-toggle type-${type}`)
-      .classed(
-        "is-locked",
-        () => (type === "y" ? !chart.elasticY() : !chart.elasticX())
+      .classed("is-locked", () =>
+        type === "y" ? !chart.elasticY() : !chart.elasticX()
       )
       .style("top", iconPosition.top)
       .style("left", iconPosition.left)

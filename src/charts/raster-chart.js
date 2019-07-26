@@ -217,7 +217,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       layer.destroyLayer(_chart)
     }
 
-    if(_chart.map()) {
+    if (_chart.map()) {
       _chart.map().remove()
     }
   }
@@ -271,7 +271,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     const geoTable = _layer.getState().encoding.geoTable
     const geoCol = _layer.getState().encoding.geocol
 
-    const preflightQuery = `SELECT COUNT(*) AS n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${ mapBounds._sw.lng } AND ST_XMin(${geoTable}.${geoCol}) <= ${ mapBounds._ne.lng } AND ST_YMax(${geoTable}.${geoCol}) >= ${ mapBounds._sw.lat } AND ST_YMin(${geoTable}.${geoCol}) <= ${ mapBounds._ne.lat }`
+    const preflightQuery = `SELECT COUNT(*) AS n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lng} AND ST_XMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lng} AND ST_YMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lat} AND ST_YMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lat}`
 
     return chart.con().queryAsync(preflightQuery, {})
   }
@@ -295,16 +295,24 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.setDataAsync((group, callback) => {
     const layers = _chart.getAllLayers()
-    const polyLayers = layers.length ? _.filter(layers, (layer) => layer.getState().mark.type === "poly" ) : null
-    if (polyLayers && polyLayers.length) { // add bboxCount to poly layers run sample
+    const polyLayers = layers.length
+      ? _.filter(layers, layer => layer.getState().mark.type === "poly")
+      : null
+    if (polyLayers && polyLayers.length) {
+      // add bboxCount to poly layers run sample
 
-      const countsPromise = polyLayers.map(currentLayer => getCountFromBoundingBox(_chart, currentLayer))
+      const countsPromise = polyLayers.map(currentLayer =>
+        getCountFromBoundingBox(_chart, currentLayer)
+      )
 
       Promise.all(countsPromise).then(resArr => {
         resArr.forEach((res, index) => {
           const count = res && res[0] && res[0].n
           const currentLayer = polyLayers[index]
-          currentLayer.setState({...currentLayer.getState(), bboxCount: count})
+          currentLayer.setState({
+            ...currentLayer.getState(),
+            bboxCount: count
+          })
         })
         handleRenderVega(callback)
       })

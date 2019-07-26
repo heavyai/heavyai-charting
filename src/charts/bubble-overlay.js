@@ -141,9 +141,9 @@ export default function bubbleOverlay(parent, chartGroup) {
       return
     }
     const xPixelScale =
-      1.0 / (_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width()
+      (1.0 / (_chart.bounds[1][0] - _chart.bounds[0][0])) * _chart.width()
     const yPixelScale =
-      1.0 / (_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height()
+      (1.0 / (_chart.bounds[1][1] - _chart.bounds[0][1])) * _chart.height()
     const mapCoords = conv4326To900913([d.x, d.y])
     const pixelPos = {
       x: (mapCoords[0] - _chart.bounds[0][0]) * xPixelScale,
@@ -224,9 +224,9 @@ export default function bubbleOverlay(parent, chartGroup) {
       return
     }
     const xPixelScale =
-      1.0 / (_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width()
+      (1.0 / (_chart.bounds[1][0] - _chart.bounds[0][0])) * _chart.width()
     const yPixelScale =
-      1.0 / (_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height()
+      (1.0 / (_chart.bounds[1][1] - _chart.bounds[0][1])) * _chart.height()
     const numPoints = data.length
     for (let i = 0; i < numPoints; i++) {
       const coordTrans = conv4326To900913([data[i].x, data[i].y])
@@ -245,9 +245,9 @@ export default function bubbleOverlay(parent, chartGroup) {
       return
     }
     const xPixelScale =
-      1.0 / (_chart.bounds[1][0] - _chart.bounds[0][0]) * _chart.width()
+      (1.0 / (_chart.bounds[1][0] - _chart.bounds[0][0])) * _chart.width()
     const yPixelScale =
-      1.0 / (_chart.bounds[1][1] - _chart.bounds[0][1]) * _chart.height()
+      (1.0 / (_chart.bounds[1][1] - _chart.bounds[0][1])) * _chart.height()
     const numPoints = _chart.savedData.length
     for (let p = 0; p < numPoints; p++) {
       _chart.savedData[p].xPixel =
@@ -282,24 +282,16 @@ export default function bubbleOverlay(parent, chartGroup) {
       .attr("transform", d => "translate(" + d.xPixel + "," + d.yPixel + ")")
       .append("circle")
       .attr("class", _chart.BUBBLE_CLASS)
-      .attr(
-        "r",
-        d =>
-          _chart.scaleRadius
-            ? _chart.bubbleR(d)
-            : _chart.radiusValueAccessor()(d)
+      .attr("r", d =>
+        _chart.scaleRadius ? _chart.bubbleR(d) : _chart.radiusValueAccessor()(d)
       )
       .attr("fill", _chart.getColor)
       .on("click", _chart.onClick)
 
     bubbleG
       .attr("transform", d => "translate(" + d.xPixel + "," + d.yPixel + ")")
-      .attr(
-        "r",
-        d =>
-          _chart.scaleRadius
-            ? _chart.bubbleR(d)
-            : _chart.radiusValueAccessor()(d)
+      .attr("r", d =>
+        _chart.scaleRadius ? _chart.bubbleR(d) : _chart.radiusValueAccessor()(d)
       )
 
     bubbleG.exit().remove()

@@ -73,9 +73,13 @@ export default function numberChart(parent, chartGroup) {
     const TEXT_PADDING_RATIO = 5
     const chartWidth = _chart.width()
     const chartHeight = _chart.height()
-    const wrapperWidth = chartWidth - chartWidth / 100 * TEXT_PADDING_RATIO
-    const wrapperHeight = chartHeight - chartHeight / 100 * TEXT_PADDING_RATIO
-    const fontSize = utils.getFontSizeFromWidth(formattedValue, wrapperWidth, wrapperHeight)
+    const wrapperWidth = chartWidth - (chartWidth / 100) * TEXT_PADDING_RATIO
+    const wrapperHeight = chartHeight - (chartHeight / 100) * TEXT_PADDING_RATIO
+    const fontSize = utils.getFontSizeFromWidth(
+      formattedValue,
+      wrapperWidth,
+      wrapperHeight
+    )
     wrapper
       .append("span")
       .attr("class", "number-chart-number")

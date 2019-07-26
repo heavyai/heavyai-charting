@@ -24,11 +24,13 @@ function format(_value, _key, numberFormatter, dateFormatter) {
     customFormatter = numberFormatter
   }
 
-  return (!isExtract && customFormatter && customFormatter(value, key)) || formatDataValue(_value)
+  return (
+    (!isExtract && customFormatter && customFormatter(value, key)) ||
+    formatDataValue(_value)
+  )
 }
 
 export default function multipleKeysLabelMixin(_chart) {
-
   function label(d) {
     const numberFormatter = _chart && _chart.valueFormatter()
     const dateFormatter = _chart && _chart.dateFormatter()
@@ -42,7 +44,12 @@ export default function multipleKeysLabelMixin(_chart) {
     let i = 0
     for (const key in d) {
       if (d.hasOwnProperty(key) && key.indexOf("key") > INDEX_NONE) {
-        const formatted = format(d[key], dimensionNames[i], numberFormatter, dateFormatter)
+        const formatted = format(
+          d[key],
+          dimensionNames[i],
+          numberFormatter,
+          dateFormatter
+        )
         keysStr.push(formatted)
       }
       i++

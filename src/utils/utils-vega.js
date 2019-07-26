@@ -1,6 +1,6 @@
 import d3 from "d3"
-import wellknown from "wellknown";
-import {AABox2d, Point2d, PolyLine} from "@mapd/mapd-draw/dist/mapd-draw";
+import wellknown from "wellknown"
+import { AABox2d, Point2d, PolyLine } from "@mapd/mapd-draw/dist/mapd-draw"
 export function notNull(value) {
   return value != null /* double-equals also catches undefined */
 }
@@ -109,7 +109,9 @@ export function createVegaAttrMixin(
         const colorScaleName = layerName + "_" + attrName,
           colorsToUse = layerObj.defaultFillColor(),
           domainInterval = 100 / (colorsToUse.length - 1),
-          linearColorScale = colorsToUse.map((color, i) => i * domainInterval / 100),
+          linearColorScale = colorsToUse.map(
+            (color, i) => (i * domainInterval) / 100
+          ),
           range = colorsToUse.map((color, i, colorArray) => {
             const normVal = i / (colorArray.length - 1)
             let interp = Math.min(normVal / 0.65, 1.0)
@@ -151,15 +153,23 @@ export function createVegaAttrMixin(
         if (domainVals === "auto") {
           const domainGetterFunc = encodingAttrName + "Domain"
           if (typeof layerObj[domainGetterFunc] !== "function") {
-            throw new Error(`Looking for a ${domainGetterFunc} function on for attr ${attrName}`)
+            throw new Error(
+              `Looking for a ${domainGetterFunc} function on for attr ${attrName}`
+            )
           }
           domainVals = layerObj[domainGetterFunc]()
         }
         if (capAttrObj.type === "ordinal") {
           ordScale.domain(domainVals).range(capAttrObj.range)
           // if color range is not in domain, it's an Other item
-          rtnVal = domainVals.indexOf(input) === -1 ? ordScale("Other") : ordScale(input)
-        } else if (Array.isArray(domainVals) && domainVals[0] === domainVals[1]) {
+          rtnVal =
+            domainVals.indexOf(input) === -1
+              ? ordScale("Other")
+              : ordScale(input)
+        } else if (
+          Array.isArray(domainVals) &&
+          domainVals[0] === domainVals[1]
+        ) {
           // handling case where domain min/max are the same (FE-7408)
           linearScale.domain(domainVals).range(capAttrObj.range)
           rtnVal = Math.round(linearScale(input))
@@ -200,7 +210,6 @@ export function createRasterLayerGetterSetter(
     return layerObj
   }
 }
-
 
 // Polygon and line svg on hovering
 
@@ -358,11 +367,11 @@ function buildGeoProjection(
       const pt = [
         _scale * (xscale(projectedCoord[0]) + margins.left - _translation[0]),
         _scale *
-        (height -
-          yscale(projectedCoord[1]) -
-          1 +
-          margins.top -
-          _translation[1])
+          (height -
+            yscale(projectedCoord[1]) -
+            1 +
+            margins.top -
+            _translation[1])
       ]
       if (_clamp) {
         if (pt[0] >= 0 && pt[0] < width && pt[1] >= 0 && pt[1] < height) {
@@ -401,7 +410,7 @@ export class GeoSvgFormatter extends SvgFormatter {
       throw new Error(
         `Cannot create SVG from geo polygon column "${
           this._geocol
-          }". The data returned is not a WKT string. It is of type: ${typeof wkt}`
+        }". The data returned is not a WKT string. It is of type: ${typeof wkt}`
       )
     }
     this._geojson = wellknown.parse(wkt)
@@ -450,18 +459,18 @@ const _scaledPopups = {}
 export function __displayPopup(svgProps) {
   const {
     chart,
-      parentElem,
-      data,
-      width,
-      height,
-      margins,
-      xscale,
-      yscale,
-      minPopupArea,
-      animate,
-      _vega,
-      _layer,
-      state
+    parentElem,
+    data,
+    width,
+    height,
+    margins,
+    xscale,
+    yscale,
+    minPopupArea,
+    animate,
+    _vega,
+    _layer,
+    state
   } = svgProps
 
   const layerType = _layer.layerType()
@@ -477,9 +486,7 @@ export function __displayPopup(svgProps) {
   } else if (!chart._useGeoTypes && layerType === "polys") {
     geoPathFormatter = new LegacyPolySvgFormatter()
   } else {
-    throw new Error(
-      "Cannot build outline popup."
-    )
+    throw new Error("Cannot build outline popup.")
   }
 
   const bounds = geoPathFormatter.getBounds(
@@ -568,11 +575,11 @@ export function __displayPopup(svgProps) {
     .attr(
       "transform",
       "translate(" +
-      (scale * bounds[AABox2d.MINX] - (scale - 1) * boundsCtr[0]) +
-      ", " +
-      (scale * (bounds[AABox2d.MINY] + 1) -
-        (scale - 1) * (boundsCtr[1] + 1)) +
-      ")"
+        (scale * bounds[AABox2d.MINX] - (scale - 1) * boundsCtr[0]) +
+        ", " +
+        (scale * (bounds[AABox2d.MINY] + 1) -
+          (scale - 1) * (boundsCtr[1] + 1)) +
+        ")"
     )
 
   // now add a transform node that will be used to apply animated scales to
@@ -597,29 +604,31 @@ export function __displayPopup(svgProps) {
     group.style("stroke-width", strokeWidth)
   }
 
-  if(layerType === "lines") {
+  if (layerType === "lines") {
     // applying shadow
-    const defs = group
-    .append('defs')
+    const defs = group.append("defs")
 
-    const filter = defs.append("filter")
+    const filter = defs
+      .append("filter")
       .attr("id", "drop-shadow")
       .attr("width", "200%")
-      .attr("height", "200%");
+      .attr("height", "200%")
 
-    filter.append("feOffset")
+    filter
+      .append("feOffset")
       .attr("in", "SourceAlpha")
       .attr("result", "offOut")
       .attr("dx", "2")
-      .attr("dy", "2");
+      .attr("dy", "2")
 
-    filter.append("feGaussianBlur")
+    filter
+      .append("feGaussianBlur")
       .attr("in", "offOut")
       .attr("stdDeviation", 2)
-      .attr("result", "blurOut");
+      .attr("result", "blurOut")
 
-
-    filter.append("feBlend")
+    filter
+      .append("feBlend")
       .attr("in", "SourceGraphic")
       .attr("in2", "blurOut")
       .attr("mode", "normal")
@@ -634,19 +643,19 @@ export function __displayPopup(svgProps) {
         scale
       )
     )
-    .attr("class", layerType === "polys" ? "map-polygon-shape": "map-polyline")
+    .attr("class", layerType === "polys" ? "map-polygon-shape" : "map-polyline")
     .attr("fill", layerType === "polys" ? fillColor : "none")
     .attr("fill-rule", "evenodd")
     .attr("stroke-width", strokeWidth)
     .attr("stroke", strokeColor)
     .style("filter", layerType === "polys" ? "none" : "url(#drop-shadow)")
     .on("click", () => {
-      if(layerType === "polys") {
+      if (layerType === "polys") {
         return _layer.onClick(chart, data, d3.event)
       } else {
         return null
       }
-     })
+    })
 
   _scaledPopups[chart] = isScaled
 
@@ -654,7 +663,7 @@ export function __displayPopup(svgProps) {
 }
 
 export function getSizeScaleName(layerName) {
-  if(layerName === "linemap") {
+  if (layerName === "linemap") {
     return `${layerName}_strokeWidth`
   } else {
     return `${layerName}_size`
@@ -662,22 +671,32 @@ export function getSizeScaleName(layerName) {
 }
 
 export function getColorScaleName(layerName) {
-  if(layerName === "linemap") {
+  if (layerName === "linemap") {
     return `${layerName}_strokeColor`
   } else {
     return `${layerName}_fillColor`
   }
 }
 
-
-export function getScales({ size, color }, layerName, scaleDomainFields, xformDataSource) {
+export function getScales(
+  { size, color },
+  layerName,
+  scaleDomainFields,
+  xformDataSource
+) {
   const scales = []
 
-  if (typeof size === "object" && (size.type === "quantitative" || size.type === "custom")) {
+  if (
+    typeof size === "object" &&
+    (size.type === "quantitative" || size.type === "custom")
+  ) {
     scales.push({
       name: getSizeScaleName(layerName),
       type: "linear",
-      domain: (size.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.size} : size.domain),
+      domain:
+        size.domain === "auto"
+          ? { data: xformDataSource, fields: scaleDomainFields.size }
+          : size.domain,
       range: size.range,
       clamp: true
     })
@@ -688,7 +707,7 @@ export function getScales({ size, color }, layerName, scaleDomainFields, xformDa
       name: getColorScaleName(layerName),
       type: "linear",
       domain: color.range.map(
-        (c, i) => i * 100 / (color.range.length - 1) / 100
+        (c, i) => (i * 100) / (color.range.length - 1) / 100
       ),
       range: color.range
         .map(c => adjustOpacity(c, color.opacity))
@@ -709,7 +728,10 @@ export function getScales({ size, color }, layerName, scaleDomainFields, xformDa
     scales.push({
       name: getColorScaleName(layerName),
       type: "ordinal",
-      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
+      domain:
+        color.domain === "auto"
+          ? { data: xformDataSource, fields: scaleDomainFields.color }
+          : color.domain,
       range: color.range.map(c => adjustOpacity(c, color.opacity)),
       default: adjustOpacity(
         color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
@@ -723,7 +745,10 @@ export function getScales({ size, color }, layerName, scaleDomainFields, xformDa
     scales.push({
       name: getColorScaleName(layerName),
       type: "quantize",
-      domain: (color.domain === "auto" ? {data: xformDataSource, fields: scaleDomainFields.color} : color.domain),
+      domain:
+        color.domain === "auto"
+          ? { data: xformDataSource, fields: scaleDomainFields.color }
+          : color.domain,
       range: color.range.map(c => adjustOpacity(c, color.opacity))
     })
   }

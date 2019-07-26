@@ -10,7 +10,7 @@ import {
 } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
-import {AABox2d, Point2d} from "@mapd/mapd-draw/dist/mapd-draw"
+import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
@@ -97,28 +97,36 @@ function getColor(color, layerName) {
 }
 
 function isValidPostFilter(postFilter) {
-  const {
-    operator,
-    min,
-    max,
-    aggType,
-    value,
-    custom
-  } = postFilter
+  const { operator, min, max, aggType, value, custom } = postFilter
 
   if (value && (aggType || custom)) {
-    if ((operator === "not between" || operator === "between") && (typeof min === "number" && !isNaN(min)) && (typeof max === "number" && !isNaN(max))) {
+    if (
+      (operator === "not between" || operator === "between") &&
+      (typeof min === "number" && !isNaN(min)) &&
+      (typeof max === "number" && !isNaN(max))
+    ) {
       return true
-    } else if ((operator === "equals" || operator === "not equals" || operator === "greater than or equals") && (typeof min === "number" && !isNaN(min))) {
+    } else if (
+      (operator === "equals" ||
+        operator === "not equals" ||
+        operator === "greater than or equals") &&
+      (typeof min === "number" && !isNaN(min))
+    ) {
       return true
-    } else if (operator === "less than or equals" && typeof max === "number" && !isNaN(max)) {
+    } else if (
+      operator === "less than or equals" &&
+      typeof max === "number" &&
+      !isNaN(max)
+    ) {
       return true
     } else if (operator === "null" || operator === "not null") {
       return true
     } else {
       return false
     }
-  } else { return false}
+  } else {
+    return false
+  }
 }
 
 function getTransforms(
@@ -292,24 +300,40 @@ export default function rasterLayerPointMixin(_layer) {
   }
 
   function getAutoColorVegaTransforms(aggregateNode) {
-    const rtnobj = {transforms: [], fields: []}
+    const rtnobj = { transforms: [], fields: [] }
     if (state.encoding.color.type === "quantitative") {
-      const minoutput = "mincolor", maxoutput = "maxcolor"
-      aggregateNode.fields = aggregateNode.fields.concat(["color", "color", "color", "color"])
-      aggregateNode.ops = aggregateNode.ops.concat(["min", "max", "avg", "stddev"])
-      aggregateNode.as = aggregateNode.as.concat(["mincol", "maxcol", "avgcol", "stdcol"])
+      const minoutput = "mincolor",
+        maxoutput = "maxcolor"
+      aggregateNode.fields = aggregateNode.fields.concat([
+        "color",
+        "color",
+        "color",
+        "color"
+      ])
+      aggregateNode.ops = aggregateNode.ops.concat([
+        "min",
+        "max",
+        "avg",
+        "stddev"
+      ])
+      aggregateNode.as = aggregateNode.as.concat([
+        "mincol",
+        "maxcol",
+        "avgcol",
+        "stdcol"
+      ])
       rtnobj.transforms.push(
-          {
-            type: "formula",
-            expr: "max(mincol, avgcol-2*stdcol)",
-            as: minoutput
-          },
-          {
-            type: "formula",
-            expr: "min(maxcol, avgcol+2*stdcol)",
-            as: maxoutput
-          }
-        )
+        {
+          type: "formula",
+          expr: "max(mincol, avgcol-2*stdcol)",
+          as: minoutput
+        },
+        {
+          type: "formula",
+          expr: "min(maxcol, avgcol+2*stdcol)",
+          as: maxoutput
+        }
+      )
       rtnobj.fields = [minoutput, maxoutput]
     } else if (state.encoding.color.type === "ordinal") {
       const output = "distinctcolor"
@@ -322,7 +346,8 @@ export default function rasterLayerPointMixin(_layer) {
   }
 
   function getAutoSizeVegaTransforms(aggregateNode) {
-    const minoutput = "minsize", maxoutput = "maxsize"
+    const minoutput = "minsize",
+      maxoutput = "maxsize"
     aggregateNode.fields.push("size", "size", "size", "size")
     aggregateNode.ops.push("min", "max", "avg", "stddev")
     aggregateNode.as.push("minsz", "maxsz", "avgsz", "stdsz")
@@ -426,7 +451,12 @@ export default function rasterLayerPointMixin(_layer) {
       })
     }
 
-    const scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName())
+    const scales = getScales(
+      state.encoding,
+      layerName,
+      scaledomainfields,
+      getStatsLayerName()
+    )
 
     const marks = [
       {
@@ -527,14 +557,15 @@ export default function rasterLayerPointMixin(_layer) {
   }
 
   _layer._genVega = function(chart, layerName, group, query) {
-
     // needed to set LastFilteredSize when point map first initialized
-    if (
-      _layer.yDim()
-    ) {
-      _layer.yDim().groupAll().valueAsync().then(value => {
-        setLastFilteredSize(_layer.crossfilter().getId(), value)
-      })
+    if (_layer.yDim()) {
+      _layer
+        .yDim()
+        .groupAll()
+        .valueAsync()
+        .then(value => {
+          setLastFilteredSize(_layer.crossfilter().getId(), value)
+        })
     }
 
     _vega = _layer.__genVega({
@@ -549,13 +580,7 @@ export default function rasterLayerPointMixin(_layer) {
     return _vega
   }
 
-  const renderAttributes = [
-    "xc",
-    "yc",
-    "width",
-    "height",
-    "fillColor"
-  ]
+  const renderAttributes = ["xc", "yc", "width", "height", "fillColor"]
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
     if (
@@ -614,8 +639,10 @@ export default function rasterLayerPointMixin(_layer) {
       })
     }
 
-    const pixel = Point2d.create(xscale(data[rndrProps.xc || rndrProps.x]) + margins.left,
-                                 height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top)
+    const pixel = Point2d.create(
+      xscale(data[rndrProps.xc || rndrProps.x]) + margins.left,
+      height - yscale(data[rndrProps.yc || rndrProps.y]) + margins.top
+    )
 
     let sizeFromData =
       data[rndrProps.size || rndrProps.width || rndrProps.height]
@@ -671,7 +698,10 @@ export default function rasterLayerPointMixin(_layer) {
       gfxDiv.style("border-width", strokeWidth)
     }
 
-    return AABox2d.initCenterExtents(AABox2d.create(), pixel, [dotSize / 2, dotSize / 2])
+    return AABox2d.initCenterExtents(AABox2d.create(), pixel, [
+      dotSize / 2,
+      dotSize / 2
+    ])
   }
 
   _layer._hidePopup = function(chart, hideCallback) {
