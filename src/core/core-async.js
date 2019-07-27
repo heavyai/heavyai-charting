@@ -241,9 +241,9 @@ export function redrawAllAsync(group, allCharts) {
 }
 
 export function renderAllAsync(group, allCharts) {
-  const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
 
   if (refreshDisabled()) {
+    const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
     return Promise.resolve(charts)
   }
 
@@ -251,11 +251,13 @@ export function renderAllAsync(group, allCharts) {
     const queryGroupId = _renderId++
     _startRenderTime = new Date()
 
-    const createRenderPromises = () =>
-      charts.map(chart => {
+    const createRenderPromises = () => {
+      const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
+      return charts.map(chart => {
         chart.expireCache()
         return chart.renderAsync(queryGroupId, charts.length)
       })
+    }
 
     if (renderlet() !== null) {
       renderlet(group)

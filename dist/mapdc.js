@@ -5874,9 +5874,9 @@ function redrawAllAsync(group, allCharts) {
 }
 
 function renderAllAsync(group, allCharts) {
-  var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
 
   if ((0, _core.refreshDisabled)()) {
+    var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
     return Promise.resolve(charts);
   }
 
@@ -5885,6 +5885,7 @@ function renderAllAsync(group, allCharts) {
     _startRenderTime = new Date();
 
     var createRenderPromises = function createRenderPromises() {
+      var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
       return charts.map(function (chart) {
         chart.expireCache();
         return chart.renderAsync(queryGroupId, charts.length);
@@ -11227,7 +11228,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.14';
+  var VERSION = '4.17.15';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
