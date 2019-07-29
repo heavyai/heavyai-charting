@@ -503,8 +503,11 @@ export default function coordinateGridMixin (_chart) {
   function compareDomains (d1, d2) {
     return (
       !d1 || !d2 || d1.length !== d2.length || d1.some(
-        (elem, i) =>
-          elem && d2[i] ? elem.toString() !== d2[i].toString() : elem === d2[i]
+        (elem, i) => {
+          const elemString = elem instanceof Date ? elem.toISOString() : elem.toString()
+          const d2String = d2[i] instanceof Date ? d2[i].toISOString() : d2[i].toString()
+          return elem && d2[i] ? elemString !== d2String : elem === d2[i]
+        }
       )
     )
   }

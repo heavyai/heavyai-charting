@@ -275,6 +275,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     }
     _gl = canvas.getContext("webgl", webglAttrs) || canvas.getContext("experimental-webgl", webglAttrs)
 
+    if(!_gl) { throw {name: "WebGL", message: 'WebGL Not Enabled' }}
     const vertShaderSrc = "" + "precision mediump float;\n" + "attribute vec2 a_pos;\n" + "attribute vec2 a_texCoords;\n" + "\n" + "varying vec2 v_texCoords;\n" + "uniform vec2 u_texCoordsScale;\n" + "uniform vec2 u_texCoordsOffset;\n" + "\n" + "void main(void) {\n" + "    gl_Position = vec4(a_pos, 0, 1);\n" + "\n" + "    v_texCoords = u_texCoordsScale * a_texCoords + u_texCoordsOffset;\n" +
       // NOTE: right now it seems that unpacking the base64 array via the
       // createImageBitmap() call puts pixel 0,0 in the upper left-hand
@@ -1308,7 +1309,9 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     _chart._preprocessData()
 
-    drawChart(false, imgUrl, renderBounds, queryId)
+    if(_chartBody) {
+      drawChart(false, imgUrl, renderBounds, queryId)
+    }
 
     return _chart
   }

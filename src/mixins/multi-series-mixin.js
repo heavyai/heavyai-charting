@@ -18,8 +18,12 @@ function processMultiSeriesResults(results) {
 
       if (Array.isArray(key0)) {
         const { isExtract } = key0[0]
-        const min = isExtract ? key0[0].value : key0[0].value || key0[0]
-        const alias = key0[0].alias || min
+        const rawMin = isExtract ? key0[0].value : key0[0].value || key0[0]
+        const min = rawMin instanceof Date ? rawMin.toISOString() : rawMin
+        const alias =
+          key0[0].alias instanceof Date
+            ? key0[0].alias.toISOString()
+            : key0[0].alias || min
 
         if (typeof accum.ranges[alias] !== "number") {
           // eslint-disable-line no-negated-condition

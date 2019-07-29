@@ -6081,7 +6081,9 @@ function baseMixin(_chart) {
   var _renderLabel = false;
 
   var _title = function _title(d) {
-    return _chart.keyAccessor()(d) + ": " + _chart.valueAccessor()(d);
+    var key = _chart.keyAccessor()(d);
+    var value = _chart.valueAccessor()(d);
+    return (key instanceof Date ? key.toISOString() : key) + ": " + (value instanceof Date ? value.toISOString() : value);
   };
   var _renderTitle = true;
   var _controlsUseVisibility = true;
@@ -7848,9 +7850,6 @@ var _moment2 = _interopRequireDefault(_moment);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var NUMBER_LENGTH = 4;
-
-var numFormat = _d2.default.format(".2s");
 var commafy = _d2.default.format(",");
 
 var nullLabelHtml = exports.nullLabelHtml = '<tspan class="null-value"> NULL </tspan>';
@@ -7880,9 +7879,9 @@ var normalizeArrayByValue = exports.normalizeArrayByValue = function normalizeAr
   }) : collection;
 };
 
-function formatDataValue(data, numAbbr) {
+function formatDataValue(data) {
   if (typeof data === "number") {
-    return formatNumber(data, numAbbr);
+    return formatNumber(data);
   } else if (Array.isArray(data)) {
     return formatArrayValue(data);
   } else if (data instanceof Date) {
@@ -7903,14 +7902,16 @@ function maybeFormatInfinity(data) {
   });
 }
 
-function formatNumber(d, abbr) {
+function formatNumber(d) {
   if (typeof d !== "number") {
     return d;
   }
-  var isLong = String(d).length > NUMBER_LENGTH;
-  var formattedHasAlpha = numFormat(d).match(/[a-z]/i);
-  var isLargeNumber = isLong && formattedHasAlpha;
-  return isLargeNumber && abbr ? numFormat(d) : commafy(parseFloat(d.toFixed(2)));
+
+  if (d.toString().match(/e/)) {
+    return d.toPrecision(2);
+  } else {
+    return commafy(parseFloat(d.toFixed(2)));
+  }
 }
 
 function formatArrayValue(data) {
@@ -9124,7 +9125,9 @@ function coordinateGridMixin(_chart) {
 
   function compareDomains(d1, d2) {
     return !d1 || !d2 || d1.length !== d2.length || d1.some(function (elem, i) {
-      return elem && d2[i] ? elem.toString() !== d2[i].toString() : elem === d2[i];
+      var elemString = elem instanceof Date ? elem.toISOString() : elem.toString();
+      var d2String = d2[i] instanceof Date ? d2[i].toISOString() : d2[i].toString();
+      return elem && d2[i] ? elemString !== d2String : elem === d2[i];
     });
   }
 
@@ -44585,8 +44588,9 @@ function processMultiSeriesResults(results) {
     if (Array.isArray(key0)) {
       var isExtract = key0[0].isExtract;
 
-      var min = isExtract ? key0[0].value : key0[0].value || key0[0];
-      var alias = key0[0].alias || min;
+      var rawMin = isExtract ? key0[0].value : key0[0].value || key0[0];
+      var min = rawMin instanceof Date ? rawMin.toISOString() : rawMin;
+      var alias = key0[0].alias instanceof Date ? key0[0].alias.toISOString() : key0[0].alias || min;
 
       if (typeof accum.ranges[alias] !== "number") {
         // eslint-disable-line no-negated-condition
@@ -45865,6 +45869,9 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     };
     _gl = canvas.getContext("webgl", webglAttrs) || canvas.getContext("experimental-webgl", webglAttrs);
 
+    if (!_gl) {
+      throw { name: "WebGL", message: 'WebGL Not Enabled' };
+    }
     var vertShaderSrc = "" + "precision mediump float;\n" + "attribute vec2 a_pos;\n" + "attribute vec2 a_texCoords;\n" + "\n" + "varying vec2 v_texCoords;\n" + "uniform vec2 u_texCoordsScale;\n" + "uniform vec2 u_texCoordsOffset;\n" + "\n" + "void main(void) {\n" + "    gl_Position = vec4(a_pos, 0, 1);\n" + "\n" + "    v_texCoords = u_texCoordsScale * a_texCoords + u_texCoordsOffset;\n" +
     // NOTE: right now it seems that unpacking the base64 array via the
     // createImageBitmap() call puts pixel 0,0 in the upper left-hand
@@ -46861,7 +46868,9 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 
     _chart._preprocessData();
 
-    drawChart(false, imgUrl, renderBounds, queryId);
+    if (_chartBody) {
+      drawChart(false, imgUrl, renderBounds, queryId);
+    }
 
     return _chart;
   }
@@ -48101,11 +48110,6 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
         as: "color"
       });
     }
-
-    transforms.push({
-      type: "project",
-      expr: table + ".rowid"
-    });
   }
 
   if (typeof filter === "string" && filter.length) {
@@ -48291,7 +48295,9 @@ function rasterLayerPointMixin(_layer) {
         type: "root",
         source: table,
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
-      })
+      }),
+      // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+      enableHitTesting: true
     }];
 
     var scaledomainfields = {};
@@ -48702,8 +48708,6 @@ function rasterLayerPolyMixin(_layer) {
 
     var transforms = [];
 
-    var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
-
     var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + color.field + ")";
 
     var colorField = color.type === "quantitative" ? typeof color.aggregate === "string" ? color.aggregate : color.aggregate.field : color.field;
@@ -48802,11 +48806,6 @@ function rasterLayerPolyMixin(_layer) {
         }
       });
     } else {
-      transforms.push({
-        type: "project",
-        expr: rowIdTable + ".rowid"
-      });
-
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
@@ -48948,7 +48947,9 @@ function rasterLayerPolyMixin(_layer) {
           filtersInverse: filtersInverse,
           lastFilteredSize: lastFilteredSize
         })
-      })
+      }),
+      // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+      enableHitTesting: !doJoin()
     }];
 
     if (autocolors) {
@@ -49011,7 +49012,7 @@ function rasterLayerPolyMixin(_layer) {
           domain: state.encoding.color.domain,
           range: colorRange,
           nullValue: polyNullScaleColor,
-          default: polyDefaultScaleColor
+          default: state.encoding.color.default || polyDefaultScaleColor
         });
       }
 
@@ -51668,6 +51669,25 @@ function defaultFormatter(value) {
   return commafy(formattedValue);
 }
 
+// Finds the name of the color measure, so we can use it when finding the format of the color legend
+function getColorMeasureName(chart) {
+  var groups = chart.group();
+  if (!(groups && groups.reduce)) {
+    return null;
+  }
+  var measures = chart.group().reduce();
+  if (!Array.isArray(measures)) {
+    return null;
+  }
+
+  var colorMeasure = measures.filter(function (x) {
+    return x.name === "color";
+  });
+  // This function should always return either a string or null, never "undefined", since an
+  // "undefined" key to the valueFormatter sends us down a weird code path.
+  return colorMeasure.length > 0 && typeof colorMeasure[0].measureName !== "undefined" ? colorMeasure[0].measureName : null;
+}
+
 function legendMixin(chart) {
   chart.legendablesContinuous = function () {
     var legends = [];
@@ -51676,6 +51696,7 @@ function legendMixin(chart) {
     var colorDomainSize = colorDomain[1] - colorDomain[0];
     var colorRange = chart.colors().range();
     var numColors = colorRange.length;
+    var colorMeasureName = getColorMeasureName(chart);
 
     for (var c = 0; c < numColors; c++) {
       var startRange = c / numColors * colorDomainSize + colorDomain[0];
@@ -51698,7 +51719,7 @@ function legendMixin(chart) {
       var valueFormatter = chart.valueFormatter();
       var value = startRange;
       if (!isNaN(value)) {
-        value = valueFormatter && valueFormatter(value) || defaultFormatter(value);
+        value = valueFormatter && valueFormatter(value, colorMeasureName) || defaultFormatter(value);
       }
 
       legends.push({
@@ -72954,8 +72975,12 @@ function rowChart(parent, chartGroup) {
 
   function setXAxisFormat() {
     var numberFormatter = _chart.valueFormatter();
-    if (numberFormatter) {
-      var key = _chart.getMeasureName();
+    var key = _chart.getMeasureName();
+    // We have no good way of knowing if the valueFormatter has a formatter for the X axis in
+    // particular, since that code is a black box. So we run through a test value and if it returns
+    // `null`, we know it doesn't know how to format it. It's dumb, but it works.
+    var validFormatting = numberFormatter && numberFormatter(0, key) !== null;
+    if (validFormatting) {
       xFormatCache.setTickFormat(function (d) {
         return numberFormatter(d, key);
       });
@@ -75643,11 +75668,6 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   } else {
     transforms.push({
       type: "project",
-      expr: rowIdTable + ".rowid",
-      as: "rowid"
-    });
-    transforms.push({
-      type: "project",
       expr: geoTable + "." + geocol
     });
   }
@@ -75821,7 +75841,9 @@ function rasterLayerLineMixin(_layer) {
           return source.table;
         })))).join(", "),
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
-      })
+      }),
+      // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+      enableHitTesting: !(state.data.length > 1)
     }];
 
     var scaledomainfields = {};
