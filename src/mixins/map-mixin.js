@@ -516,7 +516,6 @@ export default function mapMixin(
         coordinates: boundsToUse
       })
 
-
       const mapLayers = _chart.getAllLayers()
       const chartType = Array.isArray(mapLayers) && mapLayers[0] && mapLayers[0].type
       const opacity = chartType === "heatmap" ? 0.5 : 0.85
