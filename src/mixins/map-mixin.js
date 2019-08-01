@@ -516,12 +516,17 @@ export default function mapMixin(
         coordinates: boundsToUse
       })
 
+
+      const mapLayers = _chart.getAllLayers()
+      const chartType = Array.isArray(mapLayers) && mapLayers[0] && mapLayers[0].type
+      const opacity = chartType === "heatmap" ? 0.5 : 0.85
+
       map.addLayer(
         {
           id: toBeAddedOverlay,
           source: toBeAddedOverlay,
           type: "raster",
-          paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
+          paint: { "raster-opacity": opacity, "raster-fade-duration": 0 }
         },
         firstSymbolLayerId
       )
