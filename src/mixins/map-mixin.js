@@ -267,7 +267,12 @@ export default function mapMixin(
   }
 
   function onLoad(e) {
-    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
+    _map.addControl(
+      new _mapboxgl.AttributionControl({
+        compact: true
+      }),
+      _attribLocation
+    )
 
     const mapboxlogo = document.createElement("a")
     mapboxlogo.className = "mapbox-maplogo"
@@ -575,7 +580,7 @@ export default function mapMixin(
 
     _map.dragRotate.disable()
     _map.touchZoomRotate.disableRotation()
-    _map.addControl(new _mapboxgl.NavigationControl())
+    _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right")
 
     _chart.addMapListeners()
     _mapInitted = true
