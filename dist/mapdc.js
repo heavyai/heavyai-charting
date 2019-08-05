@@ -29313,7 +29313,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   var _lastMapUpdateTime = 0;
   var _isFirstMoveEvent = true;
   var _mapUpdateInterval = 100; // default
-  var _mapStyle = "mapbox://styles/mapbox/light-v8";
+  var _mapStyle = "mapbox://styles/mapbox/light-v9";
   var _center = [0, 30];
   var _zoom = 1;
   var _attribLocation = "bottom-right";

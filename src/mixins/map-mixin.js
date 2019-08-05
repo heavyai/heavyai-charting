@@ -44,7 +44,7 @@ export default function mapMixin(
   let _lastMapUpdateTime = 0
   let _isFirstMoveEvent = true
   let _mapUpdateInterval = 100 // default
-  let _mapStyle = "mapbox://styles/mapbox/light-v8"
+  let _mapStyle = "mapbox://styles/mapbox/light-v9"
   let _center = [0, 30]
   let _zoom = 1
   let _attribLocation = "bottom-right"
