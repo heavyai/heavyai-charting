@@ -11100,7 +11100,7 @@ function __displayPopup(svgProps) {
 
   // now apply the styles
   if (typeof strokeWidth === "number") {
-    group.style("stroke-width", strokeWidth);
+    group.style("stroke-width", 10);
   }
 
   if (layerType === "lines") {
@@ -11116,7 +11116,7 @@ function __displayPopup(svgProps) {
     filter.append("feBlend").attr("in", "SourceGraphic").attr("in2", "blurOut").attr("mode", "normal");
   }
 
-  group.append("path").attr("d", geoPathFormatter.getSvgPath(_mapdDraw.Point2d.create(bounds[_mapdDraw.AABox2d.MINX], bounds[_mapdDraw.AABox2d.MINY]), scale)).attr("class", layerType === "polys" ? "map-polygon-shape" : "map-polyline").attr("fill", layerType === "polys" ? fillColor : "none").attr("fill-rule", "evenodd").attr("stroke-width", strokeWidth).attr("stroke", strokeColor).style("filter", layerType === "polys" ? "none" : "url(#drop-shadow)").on("click", function () {
+  group.append("path").attr("d", geoPathFormatter.getSvgPath(_mapdDraw.Point2d.create(bounds[_mapdDraw.AABox2d.MINX], bounds[_mapdDraw.AABox2d.MINY]), scale)).attr("class", layerType === "polys" ? "map-polygon-shape" : "map-polyline").attr("fill", layerType === "polys" ? fillColor : "none").attr("fill-rule", "evenodd").attr("stroke-width", 5).attr("stroke", strokeColor).style("filter", layerType === "polys" ? "none" : "url(#drop-shadow)").on("click", function () {
     if (layerType === "polys") {
       return _layer.onClick(chart, data, _d3.default.event);
     } else {
@@ -48920,7 +48920,7 @@ function rasterLayerPolyMixin(_layer) {
         },
         fillColor: fillColor,
         strokeColor: _typeof(state.mark) === "object" ? state.mark.strokeColor : "white",
-        strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 0.5,
+        strokeWidth: 12,
         lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
         miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
       }
@@ -74941,7 +74941,7 @@ function rasterLayer(layerType) {
 
   // NOTE: builds _layer.defaultStrokeWidth(), _layer.nullStrokeWidth(),
   //              _layer.strokeWidthScale(), & _layer.strokeWidthAttr()
-  (0, _utilsVega.createVegaAttrMixin)(_layer, "strokeWidth", 0, 0, true);
+  (0, _utilsVega.createVegaAttrMixin)(_layer, "strokeWidth", 10, 0, true);
 
   _layer.popupColumns = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, []);
   _layer.popupColumnsMapped = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, {});

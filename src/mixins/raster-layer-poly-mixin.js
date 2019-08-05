@@ -471,7 +471,7 @@ export default function rasterLayerPolyMixin(_layer) {
           },
           fillColor,
           strokeColor:
-            typeof state.mark === "object" ? state.mark.strokeColor : "white",
+            (typeof state.mark === "object" && state.mark.strokeColor) ? state.mark.strokeColor : fillColor,
           strokeWidth:
             typeof state.mark === "object" ? state.mark.strokeWidth : 0.5,
           lineJoin:
