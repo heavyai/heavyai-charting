@@ -1550,7 +1550,7 @@ body {
   margin: 10px 30px 0px 10px !important; }
 
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-group {
-  margin: 0 10px 0 0 !important; }
+  margin: 0 10px 10px 0 !important; }
 
 .mapboxgl-ctrl-top-left .mapboxgl-ctrl {
   margin: 8px 0 0 8px !important; }

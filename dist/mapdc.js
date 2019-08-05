@@ -29601,6 +29601,15 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     }
   }
 
+  // Force the map to display the mapbox logo
+  var showMapLogo = function showMapLogo() {
+    var logo = document.querySelector(".mapboxgl-ctrl-logo");
+    var logoParent = logo && logo.parentElement;
+    if (logoParent) {
+      logoParent.style.display = "block";
+    }
+  };
+
   _chart.mapStyle = function (style) {
     if (!arguments.length) {
       return _mapStyle;
@@ -29795,6 +29804,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   _chart.addMapListeners = function () {
     _map.on("move", onMapMove);
     _map.on("moveend", onMapMove);
+    _map.on('sourcedata', showMapLogo);
   };
 
   _chart.removeMapListeners = function () {
