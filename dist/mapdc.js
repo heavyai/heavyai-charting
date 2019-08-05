@@ -29514,18 +29514,9 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   };
 
   function onLoad(e) {
-    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation);
-
-    var mapboxlogo = document.createElement("a");
-    mapboxlogo.className = "mapbox-maplogo";
-    mapboxlogo.href = "http://mapbox.com/about/maps";
-    mapboxlogo.target = "_blank";
-    mapboxlogo.innerHTML = "Mapbox";
-
-    var existingLogo = _map && _map._container ? _map._container.querySelector('.mapbox-maplogo') : null;
-    if (!existingLogo) {
-      _chart.root()[0][0].appendChild(mapboxlogo);
-    }
+    _map.addControl(new _mapboxgl.AttributionControl({
+      compact: true
+    }), _attribLocation);
 
     if (_geocoder) {
       initGeocoder();
@@ -29694,18 +29685,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   _chart._setOverlay = function (data, bounds, browser, redraw) {
     var map = _chart.map();
 
-    var oldAddLayer = map.addLayer;
-    map.addLayer = function () {
-      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-
-      var ret = oldAddLayer.bind(map).apply(undefined, args);
-      console.warn("adding layer", args);
-      console.warn("getLayers", map.getStyle().layers);
-      return ret;
-    };
-
     var allMapboxCanvasContainer = document.getElementsByClassName('mapboxgl-canvas-container');
     var chartIdFromCanvasContainer = _chart.selectAll('.mapboxgl-canvas-container')[0].parentNode.id;
 
@@ -29806,7 +29785,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
     _map.dragRotate.disable();
     _map.touchZoomRotate.disableRotation();
-    _map.addControl(new _mapboxgl.NavigationControl());
+    _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right");
 
     _chart.addMapListeners();
     _mapInitted = true;
