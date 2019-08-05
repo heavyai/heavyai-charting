@@ -9127,8 +9127,11 @@ function coordinateGridMixin(_chart) {
 
   function compareDomains(d1, d2) {
     return !d1 || !d2 || d1.length !== d2.length || d1.some(function (elem, i) {
-      var elemString = elem instanceof Date ? elem.toISOString() : elem.toString();
-      var d2String = d2[i] instanceof Date ? d2[i].toISOString() : d2[i].toString();
+      // The date objects here may be invalid for some reason. We detect that by ensuring
+      // getTime() doesn't return NaN. If invalid, we use toString() instead of toISOString,
+      // since the former doesn't throw an exception with invalid dates.
+      var elemString = elem instanceof Date && !isNaN(elem.getTime()) ? elem.toISOString() : elem.toString();
+      var d2String = d2[i] instanceof Date && !isNaN(d2[i].getTime()) ? d2[i].toISOString() : d2[i].toString();
       return elem && d2[i] ? elemString !== d2String : elem === d2[i];
     });
   }
