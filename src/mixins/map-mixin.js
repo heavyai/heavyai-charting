@@ -372,6 +372,16 @@ export default function mapMixin(
     }
   }
 
+
+  // Force the map to display the mapbox logo
+  const showMapLogo = () => {
+    const logo = document.querySelector(".mapboxgl-ctrl-logo")
+    const logoParent = logo && logo.parentElement
+    if(logoParent) {
+      logoParent.style.display = "block"
+    }
+  }
+
   _chart.mapStyle = function(style) {
     if (!arguments.length) {
       return _mapStyle
@@ -579,6 +589,7 @@ export default function mapMixin(
   _chart.addMapListeners = function() {
     _map.on("move", onMapMove)
     _map.on("moveend", onMapMove)
+    _map.on('sourcedata', showMapLogo);
   }
 
   _chart.removeMapListeners = function() {
