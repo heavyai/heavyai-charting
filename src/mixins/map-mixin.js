@@ -274,17 +274,6 @@ export default function mapMixin(
       _attribLocation
     )
 
-    const mapboxlogo = document.createElement("a")
-    mapboxlogo.className = "mapbox-maplogo"
-    mapboxlogo.href = "http://mapbox.com/about/maps"
-    mapboxlogo.target = "_blank"
-    mapboxlogo.innerHTML = "Mapbox"
-
-    const existingLogo = (_map && _map._container) ? _map._container.querySelector('.mapbox-maplogo') : null;
-    if(!existingLogo) {
-      _chart.root()[0][0].appendChild(mapboxlogo)
-    }
-
     if (_geocoder) {
       initGeocoder()
     }
