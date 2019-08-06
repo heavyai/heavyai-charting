@@ -243,7 +243,7 @@ describe("Formatting Helpers", () => {
   })
 
   describe("format cache helper", () => {
-    const AxisMock = function () {
+    const AxisMock = function() {
       let cachedFormat = d => d + "foo"
       return {
         tickFormat: d => {
@@ -265,6 +265,5 @@ describe("Formatting Helpers", () => {
       formatCache.setTickFormatFromCache()
       expect(axisMock.tickFormat()("a")).to.equal("afoo")
     })
-
   })
 })

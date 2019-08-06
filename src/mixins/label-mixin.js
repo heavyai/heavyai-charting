@@ -161,8 +161,7 @@ export default function labelMixin(chart) {
         this.select()
       })
       .on("keyup", function() {
-        d3
-          .select(this.parentNode)
+        d3.select(this.parentNode)
           .select("span")
           .text(this.value)
         if (d3.event.keyCode === 13) {

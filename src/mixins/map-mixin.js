@@ -119,7 +119,7 @@ export default function mapMixin(
       "boxZoom",
       "dragPan",
       "keyboard",
-      "doubleClickZoom",
+      "doubleClickZoom"
     ]
     _interactionsEnabled = Boolean(enableInteractions)
 
@@ -275,8 +275,11 @@ export default function mapMixin(
     mapboxlogo.target = "_blank"
     mapboxlogo.innerHTML = "Mapbox"
 
-    const existingLogo = (_map && _map._container) ? _map._container.querySelector('.mapbox-maplogo') : null;
-    if(!existingLogo) {
+    const existingLogo =
+      _map && _map._container
+        ? _map._container.querySelector(".mapbox-maplogo")
+        : null
+    if (!existingLogo) {
       _chart.root()[0][0].appendChild(mapboxlogo)
     }
 
@@ -343,12 +346,20 @@ export default function mapMixin(
             xdim.filter([_chart._minCoord[0], _chart._maxCoord[0]])
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]])
           }
-        }
-        else if(typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) { // spatial filter on only single data source
+        } else if (
+          typeof layer.viewBoxDim === "function" &&
+          layer.getState().data.length < 2
+        ) {
+          // spatial filter on only single data source
           const viewBoxDim = layer.viewBoxDim()
-          if(viewBoxDim !== null) {
+          if (viewBoxDim !== null) {
             redrawall = true
-            viewBoxDim.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
+            viewBoxDim.filterST_Min_ST_Max({
+              lonMin: bounds._sw.lng,
+              lonMax: bounds._ne.lng,
+              latMin: bounds._sw.lat,
+              latMax: bounds._ne.lat
+            })
           }
         }
       })
@@ -366,8 +377,14 @@ export default function mapMixin(
         resetRedrawStack()
         console.log("on move event redrawall error:", error)
       })
-    } else if(_viewBoxDim !== null && layer.getState().data.length < 2) { // spatial filter on only single data source
-      _viewBoxDim.filterST_Min_ST_Max({lonMin: _chart._minCoord[0],lonMax: _chart._maxCoord[0], latMin: _chart._minCoord[1], latMax: _chart._maxCoord[1]})
+    } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
+      // spatial filter on only single data source
+      _viewBoxDim.filterST_Min_ST_Max({
+        lonMin: _chart._minCoord[0],
+        lonMax: _chart._maxCoord[0],
+        latMin: _chart._minCoord[1],
+        latMax: _chart._maxCoord[1]
+      })
       redrawAllAsync(_chart.chartGroup()).catch(error => {
         resetRedrawStack()
         console.log("on move event redrawall error:", error)
@@ -437,7 +454,7 @@ export default function mapMixin(
     if (_chart.svg()) {
       _chart.svg().remove()
     }
-    if(_chart.map()) {
+    if (_chart.map()) {
       const mapContainer = d3.select(_chart.map().getCanvasContainer())
       const svg = mapContainer.append("svg").attr("class", "poly-svg")
       svg.attr("width", _chart.width()).attr("height", _chart.height())
@@ -453,7 +470,7 @@ export default function mapMixin(
       const yDiff = this._maxCoord[1] - this._minCoord[1]
       var projectedPoint = this.conv4326To900913(input)
       return [
-        (projectedPoint[0] - this._minCoord[0]) / xDiff * this.width(),
+        ((projectedPoint[0] - this._minCoord[0]) / xDiff) * this.width(),
         (1.0 - (projectedPoint[1] - this._minCoord[1]) / yDiff) * this.height()
       ]
     } else {
@@ -465,24 +482,36 @@ export default function mapMixin(
   _chart._setOverlay = function(data, bounds, browser, redraw) {
     const map = _chart.map()
 
-    const allMapboxCanvasContainer = document.getElementsByClassName('mapboxgl-canvas-container')
-    const chartIdFromCanvasContainer = _chart.selectAll('.mapboxgl-canvas-container')[0].parentNode.id
+    const allMapboxCanvasContainer = document.getElementsByClassName(
+      "mapboxgl-canvas-container"
+    )
+    const chartIdFromCanvasContainer = _chart.selectAll(
+      ".mapboxgl-canvas-container"
+    )[0].parentNode.id
 
-    const chartMapboxCanvasContainer = _.filter(allMapboxCanvasContainer, (mbcc) =>
-      mbcc.parentNode.id === chartIdFromCanvasContainer || mbcc.parentNode.parentNode.id === chartIdFromCanvasContainer
+    const chartMapboxCanvasContainer = _.filter(
+      allMapboxCanvasContainer,
+      mbcc =>
+        mbcc.parentNode.id === chartIdFromCanvasContainer ||
+        mbcc.parentNode.parentNode.id === chartIdFromCanvasContainer
     )
 
-    const allMapboxCanvas = document.getElementsByClassName('mapboxgl-canvas')
-    const chartIdFromCanvas = _chart.selectAll('.mapboxgl-canvas')[0].parentNode.id
+    const allMapboxCanvas = document.getElementsByClassName("mapboxgl-canvas")
+    const chartIdFromCanvas = _chart.selectAll(".mapboxgl-canvas")[0].parentNode
+      .id
 
-    const chartMapboxCanvas = _.filter(allMapboxCanvas, (mbc) =>
-      mbc.parentNode.id === chartIdFromCanvas || mbc.parentNode.parentNode.id === chartIdFromCanvas
+    const chartMapboxCanvas = _.filter(
+      allMapboxCanvas,
+      mbc =>
+        mbc.parentNode.id === chartIdFromCanvas ||
+        mbc.parentNode.parentNode.id === chartIdFromCanvas
     )
 
-    if(chartMapboxCanvasContainer.length > 1) { // we use only one canvas for the chart map, thus remove extra
+    if (chartMapboxCanvasContainer.length > 1) {
+      // we use only one canvas for the chart map, thus remove extra
       chartMapboxCanvasContainer[0].remove()
     }
-    if(chartMapboxCanvas.length > 1){
+    if (chartMapboxCanvas.length > 1) {
       chartMapboxCanvas[0].remove()
     }
 
@@ -669,7 +698,7 @@ export default function mapMixin(
 
     _mapboxgl.accessToken = _mapboxAccessToken
     if (!_mapboxgl.supported()) {
-      throw {name: "WebGL", message: 'WebGL Not Enabled'}
+      throw { name: "WebGL", message: "WebGL Not Enabled" }
     } else {
       initMap()
     }

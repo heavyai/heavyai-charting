@@ -189,8 +189,7 @@ export default function boxPlot(parent, chartGroup) {
       .attr("transform", boxTransform)
       .call(_box)
       .each(function() {
-        d3
-          .select(this)
+        d3.select(this)
           .select("rect.box")
           .attr("fill", _chart.getColor)
       })
