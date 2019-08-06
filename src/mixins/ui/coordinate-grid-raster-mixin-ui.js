@@ -1,7 +1,7 @@
 "use strict"
 
 import { redrawAllAsync } from "../../core/core-async"
-import { timed } from "../../utils/mapbox-ported-functions"
+import { timed, bezier } from "../../utils/mapbox-ported-functions"
 
 /* istanbul ignore next */
 function bindAll(funcNames, thisArg) {
@@ -279,7 +279,7 @@ class BoxZoomHandler extends BaseHandler {
       const duration = 500
       this._active = true
 
-      const ease = this._mapboxglModule.util.bezier(0.25, 0.1, 0.25, 1)
+      const ease = bezier(0.25, 0.1, 0.25, 1)
 
       const abortFunc = timed(t => {
         this._perFrameFunc(

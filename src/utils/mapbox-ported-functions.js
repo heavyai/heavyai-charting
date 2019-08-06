@@ -5,6 +5,24 @@
  * - See [FE-8035]
  */
 
+import UnitBezier from "@mapbox/unitbezier"
+
+/**
+ * Given given (x, y), (x1, y1) control points for a bezier curve,
+ * return a function that interpolates along that curve.
+ *
+ * @param p1x control point 1 x coordinate
+ * @param p1y control point 1 y coordinate
+ * @param p2x control point 2 x coordinate
+ * @param p2y control point 2 y coordinate
+ * @private
+ */
+function bezier(p1x, p1y, p2x, p2y) {
+  const bezier = new UnitBezier(p1x, p1y, p2x, p2y)
+  return function(t) {
+    return bezier.solve(t)
+  }
+}
 /**
  * Provides a function that outputs milliseconds: either performance.now()
  * or a fallback to Date.now()
