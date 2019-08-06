@@ -1546,8 +1546,13 @@ body {
       left: 0;
       top: 0; }
 
-.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact {
-  margin: 10px 30px 0px 10px !important; }
+.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+  margin: 0 !important;
+  position: absolute;
+  white-space: nowrap;
+  right: 100px;
+  bottom: 7px;
+  font-size: 11px; }
 
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-group {
   margin: 0 10px 10px 0 !important; }

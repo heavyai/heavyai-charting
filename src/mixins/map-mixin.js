@@ -267,12 +267,7 @@ export default function mapMixin(
   }
 
   function onLoad(e) {
-    _map.addControl(
-      new _mapboxgl.AttributionControl({
-        compact: true
-      }),
-      _attribLocation
-    )
+
 
     if (_geocoder) {
       initGeocoder()
@@ -574,12 +569,14 @@ export default function mapMixin(
       zoom: _zoom, // starting zoom
       maxBounds: _llb,
       preserveDrawingBuffer: true,
-      attributionControl: false
+      attributionControl: false,
+      logoPosition: "bottom-right"
     })
 
     _map.dragRotate.disable()
     _map.touchZoomRotate.disableRotation()
     _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right")
+    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
 
     _chart.addMapListeners()
     _mapInitted = true
