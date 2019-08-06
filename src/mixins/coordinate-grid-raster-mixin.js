@@ -4,7 +4,6 @@ import bindEventHandlers from "./ui/coordinate-grid-raster-mixin-ui"
 import colorMixin from "./color-mixin"
 import d3 from "d3"
 import marginMixin from "./margin-mixin"
-import { getImage } from "mapbox-gl"
 
 /**
  * Coordinate Grid Raster is an abstract base chart designed to support coordinate grid based
@@ -686,7 +685,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     const gl = _gl
 
     if (imgUrl) { // should we check to see if the imgUrl is the same from the previous render?
-      getImage(imgUrl, (err, img) => {
+      _mapboxgl.util.getImage(imgUrl, (err, img) => {
         if (queryId === _queryId) {
           const xdom = _chart.x().domain()
           const ydom = _chart.y().domain()
