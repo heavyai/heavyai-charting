@@ -816,12 +816,6 @@ class DragPanHandler extends BaseHandler {
     }
 
     const inertiaLinearity = 0.3
-    const inertiaEasing = this._mapboxglModule.util.bezier(
-      0,
-      0,
-      inertiaLinearity,
-      1
-    )
     const inertiaMaxSpeed = 1400 // pixels/second
     const inertiaDeceleration = 2500 // pixels/second squared
 
