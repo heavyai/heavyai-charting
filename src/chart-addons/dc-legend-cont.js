@@ -121,9 +121,8 @@ export default function legendCont() {
       .append("div")
       .attr("class", "legend-input")
       .append("input")
-      .attr(
-        "value",
-        d => (typeof d === "object" && d.value !== "NaN" ? d.value : 0)
+      .attr("value", d =>
+        typeof d === "object" && d.value !== "NaN" ? d.value : 0
       ) // eslint-disable-line no-confusing-arrow
       .on("click", function() {
         this.select()

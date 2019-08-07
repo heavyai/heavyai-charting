@@ -1367,20 +1367,20 @@ export default function baseMixin(_chart) {
    * @instance
    * @param {*} datum
    */
-   _chart.onClick = function(datum) {
-     // filtering on dimension will have key, but for filtering on measures which is on column doesn't. Thus, the filter is the column value only
-     const values = _chart.keyAccessor()(datum);
-     let filter = null;
-     if (
-       (Array.isArray(values) && values.length) ||
-       (!Array.isArray(values) && values !== undefined)
-     ) {
-       filter = values;
-     } else {
-       filter = datum;
-     }
-     _chart.handleFilterClick(d3.event, filter);
-   };
+  _chart.onClick = function(datum) {
+    // filtering on dimension will have key, but for filtering on measures which is on column doesn't. Thus, the filter is the column value only
+    const values = _chart.keyAccessor()(datum)
+    let filter = null
+    if (
+      (Array.isArray(values) && values.length) ||
+      (!Array.isArray(values) && values !== undefined)
+    ) {
+      filter = values
+    } else {
+      filter = datum
+    }
+    _chart.handleFilterClick(d3.event, filter)
+  }
 
   /**
    * Set or get the filter handler. The filter handler is a function that performs the filter action
@@ -1899,7 +1899,7 @@ export default function baseMixin(_chart) {
 
   _chart.getMeasureName = function() {
     const measure = _chart.group().reduce()
-    return (measure && measure[0]) ? measure[0].measureName : null
+    return measure && measure[0] ? measure[0].measureName : null
   }
 
   _chart = chartLegendMixin(

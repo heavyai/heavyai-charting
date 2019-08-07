@@ -53,7 +53,7 @@ export function getLatLonCircleClass() {
           this._mercatorPts = []
           for (let index = 0; index < number_of_points; index = index + 1) {
             const degrees = index * degrees_between_points
-            const degree_radians = degrees * Math.PI / 180
+            const degree_radians = (degrees * Math.PI) / 180
             const point_lat_radians = Math.asin(
               Math.sin(center_lat_radians) * Math.cos(dist_radians) +
                 Math.cos(center_lat_radians) *
@@ -69,8 +69,8 @@ export function getLatLonCircleClass() {
                 Math.cos(dist_radians) -
                   Math.sin(center_lat_radians) * Math.sin(point_lat_radians)
               )
-            const point_lat = point_lat_radians * 180 / Math.PI
-            const point_lon = point_lon_radians * 180 / Math.PI
+            const point_lat = (point_lat_radians * 180) / Math.PI
+            const point_lon = (point_lon_radians * 180) / Math.PI
             const point = MapdDraw.Point2d.create(point_lon, point_lat)
 
             // convert from lon/lat to mercator

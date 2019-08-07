@@ -59,7 +59,10 @@ export default function bubbleChart(parent, chartGroup) {
   _chart.measureValue = function(value, key, type) {
     if (type === "measure") {
       const customFormatter = _chart.valueFormatter()
-      return customFormatter && customFormatter(value, key) || utils.formatValue(value)
+      return (
+        (customFormatter && customFormatter(value, key)) ||
+        utils.formatValue(value)
+      )
     } else {
       utils.formatValue(value)
     }
@@ -106,11 +109,11 @@ export default function bubbleChart(parent, chartGroup) {
             continue
           }
 
-          const aXmin = aX - String(aKey).length * letterWidth / 2
-          const aXmax = aX + String(aKey).length * letterWidth / 2
+          const aXmin = aX - (String(aKey).length * letterWidth) / 2
+          const aXmax = aX + (String(aKey).length * letterWidth) / 2
 
-          const bXmin = bX - String(bKey).length * letterWidth / 2
-          const bXmax = bX + String(bKey).length * letterWidth / 2
+          const bXmin = bX - (String(bKey).length * letterWidth) / 2
+          const bXmax = bX + (String(bKey).length * letterWidth) / 2
 
           const isLabelOverlapped =
             (aXmin >= bXmin && aXmin <= bXmax) ||
@@ -225,8 +228,7 @@ export default function bubbleChart(parent, chartGroup) {
         })
       })
       .on("mouseleave", function() {
-        d3
-          .select(this)
+        d3.select(this)
           .classed("scroll-text", false)
           .style("transform", "translateX(0)")
       })
@@ -281,8 +283,7 @@ export default function bubbleChart(parent, chartGroup) {
         .popup()
         .selectAll(".popup-row-item")
         .each(function(d) {
-          d3
-            .select(this)
+          d3.select(this)
             .classed("deselected", !_chart.isSelectedNode(d))
             .classed("selected", _chart.isSelectedNode(d))
         })
@@ -310,7 +311,11 @@ export default function bubbleChart(parent, chartGroup) {
     for (let i = 1; i < _popupHeader.length; i++) {
       if (_popupHeader[i].alias) {
         const value = _popupHeader[i]
-        str = str + ("<td>" + _chart.measureValue(d[value.alias], value.label, value.type) + "</td>")
+        str =
+          str +
+          ("<td>" +
+            _chart.measureValue(d[value.alias], value.label, value.type) +
+            "</td>")
       }
     }
     return str
@@ -341,15 +346,13 @@ export default function bubbleChart(parent, chartGroup) {
         x - popupWidth < 0
           ? popupWidth - x - 16
           : x + popupWidth > _chart.width()
-            ? _chart.width() - (x + popupWidth) + 16
-            : 0
+          ? _chart.width() - (x + popupWidth) + 16
+          : 0
 
-      d3
-        .select(this)
+      d3.select(this)
         .select(".popup-bridge")
-        .style(
-          "left",
-          () => (offsetX !== 0 ? popupWidth - offsetX + "px" : "50%")
+        .style("left", () =>
+          offsetX !== 0 ? popupWidth - offsetX + "px" : "50%"
         )
       return "translate(" + (x + offsetX) + "px," + y + "px)"
     })
@@ -367,15 +370,13 @@ export default function bubbleChart(parent, chartGroup) {
         )
       })
       .select(".popup-table-wrap")
-      .style(
-        "overflow-y",
-        () =>
-          popup
-            .select(".popup-table")
-            .node()
-            .getBoundingClientRect().height > 160
-            ? "scroll"
-            : "hidden"
+      .style("overflow-y", () =>
+        popup
+          .select(".popup-table")
+          .node()
+          .getBoundingClientRect().height > 160
+          ? "scroll"
+          : "hidden"
       )
   }
 

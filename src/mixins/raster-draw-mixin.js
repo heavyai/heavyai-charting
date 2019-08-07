@@ -134,9 +134,7 @@ export function rasterDrawMixin(chart) {
                 LatLonUtils.conv900913To4326(pos, pos)
                 const meters = shape.radius * 1000
                 filterObj.shapeFilters.push(
-                  `DISTANCE_IN_METERS(${pos[0]}, ${
-                    pos[1]
-                  }, ${px}, ${py}) < ${meters}`
+                  `DISTANCE_IN_METERS(${pos[0]}, ${pos[1]}, ${px}, ${py}) < ${meters}`
                 )
               } else if (shape instanceof MapdDraw.Circle) {
                 const radsqr = Math.pow(shape.radius, 2)
@@ -217,9 +215,11 @@ export function rasterDrawMixin(chart) {
             })
           }
         }
-      } else if (!layer.layerType ||
+      } else if (
+        !layer.layerType ||
         typeof layer.layerType !== "function" ||
-        layer.layerType() === "lines") {
+        layer.layerType() === "lines"
+      ) {
         if (layer.getState().data.length < 2) {
           let crossFilter = null
           let filterObj = null
@@ -239,7 +239,7 @@ export function rasterDrawMixin(chart) {
             filterObj = coordFilters.get(crossFilter)
             if (!filterObj) {
               filterObj = {
-                coordFilter: crossFilter,
+                coordFilter: crossFilter
               }
               coordFilters.set(crossFilter, filterObj)
               filterObj.shapeFilters = []
@@ -253,9 +253,9 @@ export function rasterDrawMixin(chart) {
                 const radiusInKm = shape.radius
                 const shapeFilter = {
                   spatialRelAndMeas: "filterST_Distance",
-                  filters: {point: [pos[0], pos[1]], distanceInKm: radiusInKm}
+                  filters: { point: [pos[0], pos[1]], distanceInKm: radiusInKm }
                 }
-                
+
                 if (!_.find(filterObj.shapeFilters, shapeFilter)) {
                   filterObj.shapeFilters.push(shapeFilter)
                 }
@@ -272,7 +272,10 @@ export function rasterDrawMixin(chart) {
                   }
                   convertedVerts.push([p0[0], p0[1]])
                 })
-                const shapeFilter = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
+                const shapeFilter = {
+                  spatialRelAndMeas: "filterST_Contains",
+                  filters: convertedVerts
+                }
 
                 if (!_.find(filterObj.shapeFilters, shapeFilter)) {
                   filterObj.shapeFilters.push(shapeFilter)
@@ -286,7 +289,8 @@ export function rasterDrawMixin(chart) {
 
     coordFilters.forEach(filterObj => {
       if (
-        filterObj.px && filterObj.py &&
+        filterObj.px &&
+        filterObj.py &&
         filterObj.px.length &&
         filterObj.py.length &&
         filterObj.shapeFilters.length
@@ -303,16 +307,15 @@ export function rasterDrawMixin(chart) {
           )
           .map(
             (e, i) =>
-              `(${e.px} IS NOT NULL AND ${
-                e.py
-              } IS NOT NULL AND (${shapeFilterStmt}))`
+              `(${e.px} IS NOT NULL AND ${e.py} IS NOT NULL AND (${shapeFilterStmt}))`
           )
           .join(" AND ")
         filterObj.coordFilter.filter([filterStmt])
         filterObj.px = []
         filterObj.py = []
         filterObj.shapeFilters = []
-      } else if (filterObj.coordFilter &&
+      } else if (
+        filterObj.coordFilter &&
         filterObj.shapeFilters &&
         filterObj.shapeFilters.length &&
         filterObj.shapeFilters[0].spatialRelAndMeas
@@ -535,10 +538,18 @@ export function rasterDrawMixin(chart) {
       })
       if (coordFilters) {
         coordFilters.forEach(filterObj => {
-          if (filterObj.coordFilter && 'spatialRelAndMeas' in filterObj.shapeFilters) {
+          if (
+            filterObj.coordFilter &&
+            "spatialRelAndMeas" in filterObj.shapeFilters
+          ) {
             filterObj.coordFilter.filterSpatial()
             const bounds = chart.map().getBounds()
-            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
+            filterObj.coordFilter.filterST_Min_ST_Max({
+              lonMin: bounds._sw.lng,
+              lonMax: bounds._ne.lng,
+              latMin: bounds._sw.lat,
+              latMax: bounds._ne.lat
+            })
           } else {
             filterObj.coordFilter.filter()
           }
@@ -549,7 +560,7 @@ export function rasterDrawMixin(chart) {
       drawEngine.deleteAllShapes()
 
       origFilterFunc(Symbol.for("clear"))
-      
+
       shapes.forEach(shape => {
         chart.deleteFilterShape(shape)
       })
