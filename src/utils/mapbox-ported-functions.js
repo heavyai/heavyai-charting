@@ -1,5 +1,5 @@
 /**
- * As part of the initiative to upggrade our Mapbox dependency, these
+ * As part of the initiative to upgrade our Mapbox dependency, these
  * functions have been copied from our forked version of Mapbox so that Mapbox
  * can be updated independently
  * - See [FE-8035]
