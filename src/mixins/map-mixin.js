@@ -2,7 +2,6 @@ import d3 from "d3"
 import * as _ from "lodash"
 import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
-import { mapDrawMixin } from "./map-draw-mixin"
 import { rasterDrawMixin } from "./raster-draw-mixin"
 
 function valuesOb(obj) {
