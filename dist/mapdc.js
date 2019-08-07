@@ -50487,8 +50487,7 @@ __webpack_require__(308);
 __webpack_require__(309);
 
 if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
-  var mapboxgl = __webpack_require__(310);
-  window.mapboxgl = mapboxgl;
+  window.mapboxgl = __webpack_require__(310);
 }
 
 exports.d3 = _d; // eslint-disable-line
@@ -72204,7 +72203,7 @@ function bezier(p1x, p1y, p2x, p2y) {
  * or a fallback to Date.now()
  */
 /**
- * As part of the initiative to upggrade our Mapbox dependency, these
+ * As part of the initiative to upgrade our Mapbox dependency, these
  * functions have been copied from our forked version of Mapbox so that Mapbox
  * can be updated independently
  * - See [FE-8035]

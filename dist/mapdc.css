@@ -1553,6 +1553,8 @@ body {
   right: 100px;
   bottom: 7px;
   font-size: 11px; }
+  .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact {
+    bottom: 5px; }
 
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-group {
   margin: 0 10px 10px 0 !important; }
