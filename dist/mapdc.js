@@ -29953,11 +29953,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   // Force the map to display the mapbox logo
   var showMapLogo = function showMapLogo() {
-    var logo = document.querySelector(".mapboxgl-ctrl-logo");
-    var logoParent = logo && logo.parentElement;
-    if (logoParent) {
-      logoParent.style.display = "block";
-    }
+    var logos = document.querySelectorAll(".mapboxgl-ctrl-logo");
+    logos.forEach(function (logo) {
+      if (logo.parentElement) {
+        logo.parentElement.style.display = "block";
+      }
+    });
   };
 
   _chart.mapStyle = function (style) {
