@@ -6,8 +6,7 @@ require("./mixins/d3.box.js")
 require("./polyfills/inner-svg")
 
 if (process.env.BABEL_ENV !== "test") {
-  const mapboxgl = require("mapbox-gl")
-  window.mapboxgl = mapboxgl
+  window.mapboxgl = require("mapbox-gl")
 }
 
 export * as d3 from "d3" // eslint-disable-line
