@@ -267,8 +267,6 @@ export default function mapMixin(
   }
 
   function onLoad(e) {
-
-
     if (_geocoder) {
       initGeocoder()
     }
@@ -381,12 +379,11 @@ export default function mapMixin(
     }
   }
 
-
   // Force the map to display the mapbox logo
   const showMapLogo = () => {
     const logo = document.querySelector(".mapboxgl-ctrl-logo")
     const logoParent = logo && logo.parentElement
-    if(logoParent) {
+    if (logoParent) {
       logoParent.style.display = "block"
     }
   }
@@ -542,7 +539,8 @@ export default function mapMixin(
       })
 
       const mapLayers = _chart.getAllLayers()
-      const chartType = Array.isArray(mapLayers) && mapLayers[0] && mapLayers[0].type
+      const chartType =
+        Array.isArray(mapLayers) && mapLayers[0] && mapLayers[0].type
       const opacity = chartType === "heatmap" ? 0.5 : 0.85
 
       map.addLayer(
@@ -612,7 +610,7 @@ export default function mapMixin(
   _chart.addMapListeners = function() {
     _map.on("move", onMapMove)
     _map.on("moveend", onMapMove)
-    _map.on('sourcedata', showMapLogo);
+    _map.on("sourcedata", showMapLogo)
   }
 
   _chart.removeMapListeners = function() {
