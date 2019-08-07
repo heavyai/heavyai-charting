@@ -1877,6 +1877,9 @@ body {
         right: 100px;
         bottom: 7px;
         font-size: 11px;
+        &.mapboxgl-compact {
+            bottom: 5px;
+        }
     }
     // Zoom
     .mapboxgl-ctrl.mapboxgl-ctrl-group {
