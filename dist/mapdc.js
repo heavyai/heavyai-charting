@@ -70979,7 +70979,6 @@ var DragPanHandler = function (_BaseHandler3) {
       }
 
       var inertiaLinearity = 0.3;
-      var inertiaEasing = this._mapboxglModule.util.bezier(0, 0, inertiaLinearity, 1);
       var inertiaMaxSpeed = 1400; // pixels/second
       var inertiaDeceleration = 2500; // pixels/second squared
 
@@ -71295,6 +71294,22 @@ Object.defineProperty(exports, "__esModule", {
  * - See [FE-8035]
  */
 
+/**
+ * Given given (x, y), (x1, y1) control points for a bezier curve,
+ * return a function that interpolates along that curve.
+ *
+ * @param p1x control point 1 x coordinate
+ * @param p1y control point 1 y coordinate
+ * @param p2x control point 2 x coordinate
+ * @param p2y control point 2 y coordinate
+ * @private
+ */
+function bezier(p1x, p1y, p2x, p2y) {
+  var bezier = new unitbezier(p1x, p1y, p2x, p2y);
+  return function (t) {
+    return bezier.solve(t);
+  };
+}
 /**
  * Provides a function that outputs milliseconds: either performance.now()
  * or a fallback to Date.now()
