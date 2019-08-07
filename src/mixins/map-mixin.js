@@ -381,11 +381,12 @@ export default function mapMixin(
 
   // Force the map to display the mapbox logo
   const showMapLogo = () => {
-    const logo = document.querySelector(".mapboxgl-ctrl-logo")
-    const logoParent = logo && logo.parentElement
-    if (logoParent) {
-      logoParent.style.display = "block"
-    }
+    const logos = document.querySelectorAll(".mapboxgl-ctrl-logo")
+    logos.forEach(logo => {
+      if (logo.parentElement) {
+        logo.parentElement.style.display = "block"
+      }
+    })
   }
 
   _chart.mapStyle = function(style) {
