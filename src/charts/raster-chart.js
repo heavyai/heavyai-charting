@@ -760,6 +760,9 @@ function genLayeredVega(chart) {
   const vegaSpec = {
     width: Math.round(width),
     height: Math.round(height),
+    viewRenderOptions: {
+      premultipliedAlpha: false
+    },
     data,
     scales,
     projections,

@@ -2,7 +2,6 @@ import d3 from "d3"
 import * as _ from "lodash"
 import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
-import { mapDrawMixin } from "./map-draw-mixin"
 import { rasterDrawMixin } from "./raster-draw-mixin"
 
 function valuesOb(obj) {
@@ -44,7 +43,7 @@ export default function mapMixin(
   let _lastMapUpdateTime = 0
   let _isFirstMoveEvent = true
   let _mapUpdateInterval = 100 // default
-  let _mapStyle = "mapbox://styles/mapbox/light-v8"
+  let _mapStyle = "mapbox://styles/mapbox/light-v9"
   let _center = [0, 30]
   let _zoom = 1
   let _attribLocation = "bottom-right"
@@ -267,22 +266,6 @@ export default function mapMixin(
   }
 
   function onLoad(e) {
-    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
-
-    const mapboxlogo = document.createElement("a")
-    mapboxlogo.className = "mapbox-maplogo"
-    mapboxlogo.href = "http://mapbox.com/about/maps"
-    mapboxlogo.target = "_blank"
-    mapboxlogo.innerHTML = "Mapbox"
-
-    const existingLogo =
-      _map && _map._container
-        ? _map._container.querySelector(".mapbox-maplogo")
-        : null
-    if (!existingLogo) {
-      _chart.root()[0][0].appendChild(mapboxlogo)
-    }
-
     if (_geocoder) {
       initGeocoder()
     }
@@ -393,6 +376,16 @@ export default function mapMixin(
       _chart._projectionFlag = true
       _chart.redrawAsync()
     }
+  }
+
+  // Force the map to display the mapbox logo
+  const showMapLogo = () => {
+    const logos = document.querySelectorAll(".mapboxgl-ctrl-logo")
+    logos.forEach(logo => {
+      if (logo.parentElement) {
+        logo.parentElement.style.display = "block"
+      }
+    })
   }
 
   _chart.mapStyle = function(style) {
@@ -528,7 +521,7 @@ export default function mapMixin(
     }
 
     if (browser.isSafari || browser.isIE || browser.isEdge) {
-      const blob = utilss.b64toBlob(data, "image/png")
+      const blob = utils.b64toBlob(data, "image/png")
       var blobUrl = URL.createObjectURL(blob)
     } else {
       var blobUrl = "data:image/png;base64," + data
@@ -595,12 +588,14 @@ export default function mapMixin(
       zoom: _zoom, // starting zoom
       maxBounds: _llb,
       preserveDrawingBuffer: true,
-      attributionControl: false
+      attributionControl: false,
+      logoPosition: "bottom-right"
     })
 
     _map.dragRotate.disable()
     _map.touchZoomRotate.disableRotation()
-    _map.addControl(new _mapboxgl.NavigationControl())
+    _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right")
+    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
 
     _chart.addMapListeners()
     _mapInitted = true
@@ -609,12 +604,17 @@ export default function mapMixin(
 
   _chart.addMapListeners = function() {
     _map.on("move", onMapMove)
+    _map.on("drag", onMapMove)
+    _map.on("wheel", onMapMove)
     _map.on("moveend", onMapMove)
+    _map.on("sourcedata", showMapLogo)
   }
 
   _chart.removeMapListeners = function() {
     _map.off("move", onMapMove)
     _map.off("moveend", onMapMove)
+    _map.off("drag", onMapMove)
+    _map.off("wheel", onMapMove)
   }
 
   _chart.on("postRender", () => {
