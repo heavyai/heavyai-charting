@@ -518,12 +518,11 @@ export function rasterDrawMixin(chart) {
       chart.map().on("wheel", updateDraw)
 
       // TODO need to find right original event listener to update
-      chart.map().on("move", (e) => {
-        if(e.target && e.target._zooming) {
+      chart.map().on("move", e => {
+        if (e.target && e.target._zooming) {
           updateDraw()
         }
       })
-
     } else {
       // using a dc coordinate grid, redraws work better
       // on the render event
