@@ -7,7 +7,7 @@ import {
   createRasterLayerGetterSetter,
   createVegaAttrMixin
 } from "../utils/utils-vega"
-import {AABox2d, Point2d} from "@mapd/mapd-draw/dist/mapd-draw"
+import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
 
 const validLayerTypes = ["points", "polys", "heat", "lines"]
 
@@ -224,9 +224,17 @@ export default function rasterLayer(layerType) {
     // data structure, but probably not an issue given the amount
     // of popup col attrs to iterate through is small
     const dim = _layer.group() || _layer.dimension()
-    if (dim || (_layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys")) {
+    if (
+      dim ||
+      (_layer.layerType() === "points" ||
+        _layer.layerType() === "lines" ||
+        _layer.layerType() === "polys")
+    ) {
       const projExprs =
-        _layer.layerType() === "points" || _layer.layerType() === "lines" ||  _layer.layerType() === "polys" ||  _layer.layerType() === ""
+        _layer.layerType() === "points" ||
+        _layer.layerType() === "lines" ||
+        _layer.layerType() === "polys" ||
+        _layer.layerType() === ""
           ? _layer.getProjections()
           : dim.getProjectOn(true) // handles the group and dimension case
       const regex = /^\s*(\S+)\s+as\s+(\S+)/i
@@ -304,7 +312,7 @@ export default function rasterLayer(layerType) {
         return
       }
 
-      const columnKey = (columnMap && columnMap[key]) ? columnMap[key] : key
+      const columnKey = columnMap && columnMap[key] ? columnMap[key] : key
       const columnKeyTrimmed = columnKey.replace(/.*\((.*)\).*/, "$1")
 
       html =
@@ -358,7 +366,8 @@ export default function rasterLayer(layerType) {
     xscale.range([0, width])
     yscale.range([0, height])
 
-    const hoverSvgProps = {chart,
+    const hoverSvgProps = {
+      chart,
       parentElem,
       data,
       width,
@@ -367,7 +376,8 @@ export default function rasterLayer(layerType) {
       xscale,
       yscale,
       minPopupArea,
-      animate}
+      animate
+    }
 
     const bounds = _layer._displayPopup(hoverSvgProps)
 
@@ -404,7 +414,12 @@ export default function rasterLayer(layerType) {
       .html(
         _layer.popupFunction()
           ? _layer.popupFunction(filteredData, popupColumns, mappedColumns)
-          : renderPopupHTML(filteredData, popupColumns, mappedColumns, chart.measureValue)
+          : renderPopupHTML(
+              filteredData,
+              popupColumns,
+              mappedColumns,
+              chart.measureValue
+            )
       )
       .style("left", function() {
         const rect = d3
@@ -423,7 +438,8 @@ export default function rasterLayer(layerType) {
 
         if (
           overlapSz[0] >= boxWidth ||
-          (boundsCtr[0] + halfBoxWidth < width && boundsCtr[0] - halfBoxWidth >= 0)
+          (boundsCtr[0] + halfBoxWidth < width &&
+            boundsCtr[0] - halfBoxWidth >= 0)
         ) {
           left = boundsCtr[0] - overlapCtr[0]
           hDiff = overlapBounds[AABox2d.MINY] - boxHeight
@@ -443,14 +459,18 @@ export default function rasterLayer(layerType) {
           if (hDiff < height) {
             // can fit on bottom and in the center of the shape horizontally
             topOffset =
-              overlapBounds[AABox2d.MAXY] - boundsCtr[1] + Math.min(padding, hDiff) + halfBoxHeight
+              overlapBounds[AABox2d.MAXY] -
+              boundsCtr[1] +
+              Math.min(padding, hDiff) +
+              halfBoxHeight
             return left + "px"
           }
         }
 
         if (
           overlapSz[1] >= boxHeight ||
-          (boundsCtr[1] + halfBoxHeight < height && boundsCtr[1] - halfBoxHeight >= 0)
+          (boundsCtr[1] + halfBoxHeight < height &&
+            boundsCtr[1] - halfBoxHeight >= 0)
         ) {
           topOffset = overlapCtr[1] - boundsCtr[1]
 
@@ -470,7 +490,10 @@ export default function rasterLayer(layerType) {
           if (wDiff < width) {
             // can fit on right in the center of the shape vertically
             left =
-              overlapBounds[AABox2d.MAXX] - boundsCtr[0] + Math.min(padding, wDiff) + halfBoxWidth
+              overlapBounds[AABox2d.MAXX] -
+              boundsCtr[0] +
+              Math.min(padding, wDiff) +
+              halfBoxWidth
             return left + "px"
           }
         }
@@ -486,8 +509,12 @@ export default function rasterLayer(layerType) {
             Math.abs(boxWidth - overlapSz[0])
           ) {
             hDiff = height - overlapSz[1] - boxHeight
-            if (overlapBounds[AABox2d.MINY] < height - overlapBounds[AABox2d.MAXY]) {
-              topOffset = Math.min(padding, hDiff) + halfBoxHeight - boundsCtr[1]
+            if (
+              overlapBounds[AABox2d.MINY] <
+              height - overlapBounds[AABox2d.MAXY]
+            ) {
+              topOffset =
+                Math.min(padding, hDiff) + halfBoxHeight - boundsCtr[1]
             } else {
               topOffset =
                 height - Math.min(padding, hDiff) - halfBoxHeight - boundsCtr[1]
@@ -514,10 +541,14 @@ export default function rasterLayer(layerType) {
             return left + "px"
           } else {
             wDiff = width - overlapSz[0] - boxWidth
-            if (overlapBounds[AABox2d.MINX] < width - overlapBounds[AABox2d.MAXX]) {
+            if (
+              overlapBounds[AABox2d.MINX] <
+              width - overlapBounds[AABox2d.MAXX]
+            ) {
               left = Math.min(padding, wDiff) + halfBoxWidth - boundsCtr[0]
             } else {
-              left = width - Math.min(padding, wDiff) - halfBoxWidth - boundsCtr[0]
+              left =
+                width - Math.min(padding, wDiff) - halfBoxWidth - boundsCtr[0]
             }
 
             hDiff = overlapBounds[AABox2d.MINY] - boxHeight

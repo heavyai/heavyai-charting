@@ -4,6 +4,7 @@ import bindEventHandlers from "./ui/coordinate-grid-raster-mixin-ui"
 import colorMixin from "./color-mixin"
 import d3 from "d3"
 import marginMixin from "./margin-mixin"
+import axios from "axios"
 
 /**
  * Coordinate Grid Raster is an abstract base chart designed to support coordinate grid based
@@ -681,54 +682,73 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     }
   }
 
+  const TRANSPARENT_PNG_URL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';
+
   function renderChart (imgUrl, renderBounds, queryId) {
     const gl = _gl
 
-    if (imgUrl) { // should we check to see if the imgUrl is the same from the previous render?
-      _mapboxgl.util.getImage(imgUrl, (err, img) => {
-        if (queryId === _queryId) {
-          const xdom = _chart.x().domain()
-          const ydom = _chart.y().domain()
+    const onImageLoad = (err, img) => {
+      if (err) {
+        throw err
+      }
+      if (queryId === _queryId) {
+        const xdom = _chart.x().domain()
+        const ydom = _chart.y().domain()
 
-          if (xdom[0] === renderBounds[0][0] && xdom[1] === renderBounds[1][0] && ydom[0] === renderBounds[2][1] && ydom[1] === renderBounds[0][1]) {
+        if (xdom[0] === renderBounds[0][0] && xdom[1] === renderBounds[1][0] && ydom[0] === renderBounds[2][1] && ydom[1] === renderBounds[0][1]) {
 
-            if (!_tex) {
-              createGLTexture()
-            }
-
-            if (!_img || img.width != _img.width || img.height != _img.height) {
-              // Image was updated and dimensions changed.
-              gl.bindTexture(gl.TEXTURE_2D, _tex)
-              gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
-
-              if (!_img) {
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-              }
-            } else {
-              // Image was updated but dimensions unchanged.
-              gl.bindTexture(gl.TEXTURE_2D, _tex)
-              gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, img)
-            }
-            _img = img
-
-            _scale[0] = 1
-            _scale[1] = 1
-            _offset[0] = 0
-            _offset[1] = 0
-            const xrange = _chart.xRange()
-            const yrange = _chart.yRange()
-            _currDataBounds[0][0] = xrange[0]
-            _currDataBounds[0][1] = xrange[1]
-            _currDataBounds[1][0] = yrange[0]
-            _currDataBounds[1][1] = yrange[1]
-
-            renderChart()
+          if (!_tex) {
+            createGLTexture()
           }
+
+          if (!_img || img.width != _img.width || img.height != _img.height) {
+            // Image was updated and dimensions changed.
+            gl.bindTexture(gl.TEXTURE_2D, _tex)
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
+
+            if (!_img) {
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+            }
+          } else {
+            // Image was updated but dimensions unchanged.
+            gl.bindTexture(gl.TEXTURE_2D, _tex)
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, img)
+          }
+          _img = img
+
+          _scale[0] = 1
+          _scale[1] = 1
+          _offset[0] = 0
+          _offset[1] = 0
+          const xrange = _chart.xRange()
+          const yrange = _chart.yRange()
+          _currDataBounds[0][0] = xrange[0]
+          _currDataBounds[0][1] = xrange[1]
+          _currDataBounds[1][0] = yrange[0]
+          _currDataBounds[1][1] = yrange[1]
+
+          renderChart()
         }
-      })
+      }
+    }
+
+    if (imgUrl) { // should we check to see if the imgUrl is the same from the previous render?
+      axios.get(imgUrl, {
+        responseType: 'arraybuffer'
+      }).then(({ data }) => {
+        const img = new window.Image();
+        const URL = window.URL || window.webkitURL;
+        img.onload = () => {
+            onImageLoad(null, img);
+            URL.revokeObjectURL(img.src);
+        };
+        img.onerror = () => onImageLoad(new Error('Could not load scatterplot image'));
+        const blob = new window.Blob([new Uint8Array(data)], { type: 'image/png' });
+        img.src = data.byteLength ? URL.createObjectURL(blob) : TRANSPARENT_PNG_URL;
+      }) 
     }
 
     if (queryId !== null && queryId !== undefined) { _queryId = queryId }

@@ -1,15 +1,13 @@
 require("../mapdc.css")
 require("../scss/chart.scss")
-require("mapbox-gl/dist/styles.css")
+require("mapbox-gl/dist/mapbox-gl.css")
 require("legendables/src/styles.css")
-
-if (process.env.BABEL_ENV !== "test") {
-  window.mapboxgl = require("mapbox-gl/dist/mapbox-gl.js")
-  require("mapbox-gl/dist/mapboxgl-overrides.js")
-}
-
 require("./mixins/d3.box.js")
 require("./polyfills/inner-svg")
+
+if (process.env.BABEL_ENV !== "test") {
+  window.mapboxgl = require("mapbox-gl")
+}
 
 export * as d3 from "d3" // eslint-disable-line
 export * from "./core/core"

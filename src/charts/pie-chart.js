@@ -87,7 +87,10 @@ export default function pieChart(parent, chartGroup) {
     const key = _chart.getMeasureName()
     const customFormatter = _chart.valueFormatter()
     const value = _chart.cappedValueAccessor(d)
-    return customFormatter && customFormatter(value, key) || utils.formatValue(value)
+    return (
+      (customFormatter && customFormatter(value, key)) ||
+      utils.formatValue(value)
+    )
   }
 
   _chart.redoSelect = highlightFilter
@@ -211,7 +214,7 @@ export default function pieChart(parent, chartGroup) {
         "deselected-label",
         d => _chart.hasFilter() && !isSelectedSlice(d)
       )
-      .html((d) => _chart.label()(d.data))
+      .html(d => _chart.label()(d.data))
       .html(function(d) {
         const availableLabelWidth = getAvailableLabelWidth(d)
         const width = d3
@@ -248,7 +251,7 @@ export default function pieChart(parent, chartGroup) {
         .text(function(d) {
           if (d3.select(this.parentNode).classed("hide-label")) {
             return ""
-          } 
+          }
           const availableLabelWidth = getAvailableLabelWidth(d)
           const width = d3
             .select(this)
@@ -334,9 +337,8 @@ export default function pieChart(parent, chartGroup) {
           return [arc.centroid(d2), arc2.centroid(d2)]
         }
       })
-      .style(
-        "visibility",
-        d => (d.endAngle - d.startAngle < 0.0001 ? "hidden" : "visible")
+      .style("visibility", d =>
+        d.endAngle - d.startAngle < 0.0001 ? "hidden" : "visible"
       )
   }
 
@@ -373,8 +375,7 @@ export default function pieChart(parent, chartGroup) {
 
   function updateTitles(pieData) {
     if (_chart.renderTitle()) {
-      _g
-        .selectAll("g." + _sliceCssClass)
+      _g.selectAll("g." + _sliceCssClass)
         .data(pieData)
         .select("title")
         .text(d => _chart.title()(d.data))
@@ -616,7 +617,9 @@ export default function pieChart(parent, chartGroup) {
   function truncateLabel(data, width, availableLabelWidth) {
     if (width > availableLabelWidth) {
       const APPROX_FONT_WIDTH = 9
-      return String(data).slice(0, availableLabelWidth / APPROX_FONT_WIDTH) + "…"
+      return (
+        String(data).slice(0, availableLabelWidth / APPROX_FONT_WIDTH) + "…"
+      )
     } else {
       String(data)
     }

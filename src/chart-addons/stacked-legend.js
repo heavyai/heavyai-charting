@@ -10,8 +10,15 @@ const handleColorLegendOpenUndefined = color =>
   typeof color.legend.open === "undefined" ? true : color.legend.open
 const handleNonStackedOpenState = state =>
   state.type === "gradient" ? Object.assign({}, state, { open: true }) : state
-const handleNonStackedNullLegend = state => // used for ["NULL", "NULL"} quantitative legend domain
-  Object.assign({}, state, { type: 'nominal', range: state.range, domain: state.domain.slice(1), open: true })
+const handleNonStackedNullLegend = (
+  state // used for ["NULL", "NULL"} quantitative legend domain
+) =>
+  Object.assign({}, state, {
+    type: "nominal",
+    range: state.range,
+    domain: state.domain.slice(1),
+    open: true
+  })
 
 const TOP_PADDING = 56
 const LASSO_TOOL_VERTICAL_SPACE = 120
@@ -83,7 +90,6 @@ function setColorScaleDomain_v1(domain) {
 }
 
 export function getLegendStateFromChart(chart, useMap, selectedLayer) {
-
   // the getLegendStateFromChart in _doRender gets called from few different options
   // and some of them are calling with all layers in chart.
   // As a result, a legend for each layer is rendered.
@@ -91,8 +97,14 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
   const legends = chart.root().selectAll(".legend")
   const layers = chart.getLayerNames()
 
-  if(legends.size() > layers.length && selectedLayer && selectedLayer.currentLayer !== "master") {
-    chart.root().selectAll(".legend")
+  if (
+    legends.size() > layers.length &&
+    selectedLayer &&
+    selectedLayer.currentLayer !== "master"
+  ) {
+    chart
+      .root()
+      .selectAll(".legend")
       .filter((d, i) => i !== selectedLayer.currentLayer)
       .remove()
   }
@@ -103,7 +115,7 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
       const layerState = layer.getState()
       const color = layer.getState().encoding.color
 
-      if(layers.length > 1 || _.isEqual(selectedLayer, layerState)) {
+      if (layers.length > 1 || _.isEqual(selectedLayer, layerState)) {
         if (typeof color.scale === "object" && color.scale.domain === "auto") {
           return {
             ...color,
@@ -184,7 +196,9 @@ export function handleLegendLock({ locked, index = 0 }) {
     }))
   )
 
-  const { encoding: { color } } = layer.getState()
+  const {
+    encoding: { color }
+  } = layer.getState()
   let redraw = false
   if (typeof color.scale === "object") {
     // this if or raster-layer-heatmap-mixin.js
@@ -218,7 +232,8 @@ export function handleLegendInput({ domain, index = 0 }) {
   const layer = this.getLayers()[index]
   const { scale } = layer.getState().encoding.color
 
-  const legendDomain = this.legend().state.domain || this.legend().state.list[index].domain
+  const legendDomain =
+    this.legend().state.domain || this.legend().state.list[index].domain
   if (_.difference(domain, legendDomain).length > 0) {
     // automatically lock color legend when min/max input changes
     layer.setState(
@@ -252,7 +267,12 @@ function legendState(state, useMap = true) {
       domain: state.domain,
       position: useMap ? "bottom-left" : "top-right"
     }
-  } else if(state.type === "quantitative" && state.domain && isNullLegend(state.domain)) { // handles quantitative legend for all null color measure column, ["NULL", "NULL"] domain
+  } else if (
+    state.type === "quantitative" &&
+    state.domain &&
+    isNullLegend(state.domain)
+  ) {
+    // handles quantitative legend for all null color measure column, ["NULL", "NULL"] domain
     return {
       type: "nominal", // show nominal legend with one "NULL" value when all null quantitavie color measure is selected
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
@@ -288,10 +308,14 @@ function legendState(state, useMap = true) {
 }
 
 export function toLegendState(states = [], chart, useMap) {
-  if(states.length === 1 && states[0].domain && isNullLegend(states[0].domain)) { // handles legend for all null color measure column, ["NULL", "NULL"] domain
+  if (
+    states.length === 1 &&
+    states[0].domain &&
+    isNullLegend(states[0].domain)
+  ) {
+    // handles legend for all null color measure column, ["NULL", "NULL"] domain
     return handleNonStackedNullLegend(states[0], useMap)
-  } else
-    if (states.length === 1) {
+  } else if (states.length === 1) {
     return handleNonStackedOpenState(legendState(states[0], useMap))
   } else if (states.length) {
     return {

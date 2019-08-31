@@ -86,9 +86,8 @@ export default function cloudChart(parent, chartGroup) {
       )
       .text(d => d.key0)
       .on("click", onClick)
-      .classed(
-        "deselected",
-        d => (_chart.hasFilter() ? !isSelectedTag(d) : false)
+      .classed("deselected", d =>
+        _chart.hasFilter() ? !isSelectedTag(d) : false
       )
       .classed("selected", d => (_chart.hasFilter() ? isSelectedTag(d) : false))
 
