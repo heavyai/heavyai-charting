@@ -78,40 +78,49 @@ export function rasterDrawMixin(chart) {
     dashPattern: [8, 2]
   }
 
+  // given a layer of this chart, and a bonkers boolean flag, will return the
+  // associated crossfilter object
+
   function getCrossfilter(layer, layerTypeIsPointsOrHeatOrUndefined) {
     const group = layer.group()
 
     if (group) {
       return group.getCrossfilter()
-    }
-    else {
+    } else {
       const dim = layerTypeIsPointsOrHeatOrUndefined
         ? layer.dimension()
         : layer.viewBoxDim()
       if (dim) {
-        return layerTypeIsPointsOrHeatOrUndefined
-          ? dim.getCrossfilter()
-          : dim
-      }
-      else {
+        return layerTypeIsPointsOrHeatOrUndefined ? dim.getCrossfilter() : dim
+      } else {
         return layer.crossfilter()
       }
     }
-
   }
 
+  // crossfilters and associated filter objects are stored in different places
+  // depending upon the type of chart. So we have this very stupidly named
+  // function that checks the magic conditions for one path vs the other.
   function isLayerTypePointsOrHeatOrUndefined(layer) {
-    return !layer.layerType ||
+    return (
+      !layer.layerType ||
       typeof layer.layerType !== "function" ||
       layer.layerType() === "points" ||
       layer.layerType() === "heat"
+    )
   }
 
+  // given a layer, returns the associated filter object for it. If no filterObj
+  // exists yet, it'll create one.
   function getRasterFilterObj(layer) {
+    const layerTypeIsPointsOrHeatOrUndefined = isLayerTypePointsOrHeatOrUndefined(
+      layer
+    )
 
-    const layerTypeIsPointsOrHeatOrUndefined = isLayerTypePointsOrHeatOrUndefined(layer)
-
-    const crossFilter = getCrossfilter(layer, layerTypeIsPointsOrHeatOrUndefined)
+    const crossFilter = getCrossfilter(
+      layer,
+      layerTypeIsPointsOrHeatOrUndefined
+    )
 
     if (crossFilter === undefined) {
       return undefined
@@ -121,8 +130,7 @@ export function rasterDrawMixin(chart) {
 
     if (filterObj) {
       return filterObj
-    }
-    else if (layerTypeIsPointsOrHeatOrUndefined) {
+    } else if (layerTypeIsPointsOrHeatOrUndefined) {
       filterObj = {
         coordFilter: crossFilter.filter(),
         px: [],
@@ -130,8 +138,7 @@ export function rasterDrawMixin(chart) {
       }
       coordFilters.set(crossFilter, filterObj)
       filterObj.shapeFilters = []
-    }
-    else {
+    } else {
       filterObj = {
         coordFilter: crossFilter
       }
@@ -155,9 +162,7 @@ export function rasterDrawMixin(chart) {
         ? chart.getLayers()
         : [chart]
     layers.forEach(layer => {
-
       if (isLayerTypePointsOrHeatOrUndefined(layer)) {
-
         const filterObj = getRasterFilterObj(layer)
 
         if (filterObj) {
@@ -265,7 +270,6 @@ export function rasterDrawMixin(chart) {
           const filterObj = getRasterFilterObj(layer)
 
           if (filterObj) {
-
             shapes.forEach(shape => {
               if (shape instanceof LatLonCircle) {
                 const pos = shape.getWorldPosition()

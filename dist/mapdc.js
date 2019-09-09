@@ -30462,9 +30462,11 @@ function rasterDrawMixin(chart) {
     strokeColor: "#ef9b20",
     strokeWidth: 2,
     dashPattern: [8, 2]
-  };
 
-  function getCrossfilter(layer, layerTypeIsPointsOrHeatOrUndefined) {
+    // given a layer of this chart, and a bonkers boolean flag, will return the
+    // associated crossfilter object
+
+  };function getCrossfilter(layer, layerTypeIsPointsOrHeatOrUndefined) {
     var group = layer.group();
 
     if (group) {
@@ -30479,12 +30481,16 @@ function rasterDrawMixin(chart) {
     }
   }
 
+  // crossfilters and associated filter objects are stored in different places
+  // depending upon the type of chart. So we have this very stupidly named
+  // function that checks the magic conditions for one path vs the other.
   function isLayerTypePointsOrHeatOrUndefined(layer) {
     return !layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points" || layer.layerType() === "heat";
   }
 
+  // given a layer, returns the associated filter object for it. If no filterObj
+  // exists yet, it'll create one.
   function getRasterFilterObj(layer) {
-
     var layerTypeIsPointsOrHeatOrUndefined = isLayerTypePointsOrHeatOrUndefined(layer);
 
     var crossFilter = getCrossfilter(layer, layerTypeIsPointsOrHeatOrUndefined);
@@ -30526,9 +30532,7 @@ function rasterDrawMixin(chart) {
 
     var layers = chart.getLayers && typeof chart.getLayers === "function" ? chart.getLayers() : [chart];
     layers.forEach(function (layer) {
-
       if (isLayerTypePointsOrHeatOrUndefined(layer)) {
-
         var filterObj = getRasterFilterObj(layer);
 
         if (filterObj) {
@@ -30594,7 +30598,6 @@ function rasterDrawMixin(chart) {
           var _filterObj = getRasterFilterObj(layer);
 
           if (_filterObj) {
-
             shapes.forEach(function (shape) {
               if (shape instanceof LatLonCircle) {
                 var pos = shape.getWorldPosition();
