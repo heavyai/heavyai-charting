@@ -78,6 +78,72 @@ export function rasterDrawMixin(chart) {
     dashPattern: [8, 2]
   }
 
+  function getCrossfilter(layer, layerTypeIsPointsOrHeatOrUndefined) {
+    const group = layer.group()
+
+    if (group) {
+      return group.getCrossfilter()
+    }
+    else {
+      const dim = layerTypeIsPointsOrHeatOrUndefined
+        ? layer.dimension()
+        : layer.viewBoxDim()
+      if (dim) {
+        return layerTypeIsPointsOrHeatOrUndefined
+          ? dim.getCrossfilter()
+          : dim
+      }
+      else {
+        return layer.crossfilter()
+      }
+    }
+
+  }
+
+  function isLayerTypePointsOrHeatOrUndefined(layer) {
+    return !layer.layerType ||
+      typeof layer.layerType !== "function" ||
+      layer.layerType() === "points" ||
+      layer.layerType() === "heat"
+  }
+
+  function getRasterFilterObj(layer) {
+
+    const layerTypeIsPointsOrHeatOrUndefined = isLayerTypePointsOrHeatOrUndefined(layer)
+
+    const crossFilter = getCrossfilter(layer, layerTypeIsPointsOrHeatOrUndefined)
+
+    if (crossFilter === undefined) {
+      return undefined
+    }
+
+    let filterObj = coordFilters.get(crossFilter)
+
+    if (filterObj) {
+      return filterObj
+    }
+    else if (layerTypeIsPointsOrHeatOrUndefined) {
+      filterObj = {
+        coordFilter: crossFilter.filter(),
+        px: [],
+        py: []
+      }
+      coordFilters.set(crossFilter, filterObj)
+      filterObj.shapeFilters = []
+    }
+    else {
+      filterObj = {
+        coordFilter: crossFilter
+      }
+      coordFilters.set(crossFilter, filterObj)
+      filterObj.shapeFilters = []
+    }
+
+    return filterObj
+  }
+
+  chart.getRasterFilterObj = getRasterFilterObj
+
   function applyFilter() {
     const NUM_SIDES = 3
     const useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat()
@@ -89,37 +155,12 @@ export function rasterDrawMixin(chart) {
         ? chart.getLayers()
         : [chart]
     layers.forEach(layer => {
-      if (
-        !layer.layerType ||
-        typeof layer.layerType !== "function" ||
-        layer.layerType() === "points" ||
-        layer.layerType() === "heat"
-      ) {
-        let crossFilter = null
-        let filterObj = null
-        const group = layer.group()
 
-        if (group) {
-          crossFilter = group.getCrossfilter()
-        } else {
-          const dim = layer.dimension()
-          if (dim) {
-            crossFilter = dim.getCrossfilter()
-          } else {
-            crossFilter = layer.crossfilter()
-          }
-        }
-        if (crossFilter) {
-          filterObj = coordFilters.get(crossFilter)
-          if (!filterObj) {
-            filterObj = {
-              coordFilter: crossFilter.filter(),
-              px: [],
-              py: []
-            }
-            coordFilters.set(crossFilter, filterObj)
-            filterObj.shapeFilters = []
-          }
+      if (isLayerTypePointsOrHeatOrUndefined(layer)) {
+
+        const filterObj = getRasterFilterObj(layer)
+
+        if (filterObj) {
           const xdim = layer.xDim()
           const ydim = layer.yDim()
           if (xdim && ydim) {
@@ -221,29 +262,9 @@ export function rasterDrawMixin(chart) {
         layer.layerType() === "lines"
       ) {
         if (layer.getState().data.length < 2) {
-          let crossFilter = null
-          let filterObj = null
-          const group = layer.group()
+          const filterObj = getRasterFilterObj(layer)
 
-          if (group) {
-            crossFilter = group.getCrossfilter()
-          } else {
-            const dim = layer.viewBoxDim()
-            if (dim) {
-              crossFilter = dim
-            } else {
-              crossFilter = layer.crossfilter()
-            }
-          }
-          if (crossFilter) {
-            filterObj = coordFilters.get(crossFilter)
-            if (!filterObj) {
-              filterObj = {
-                coordFilter: crossFilter
-              }
-              coordFilters.set(crossFilter, filterObj)
-              filterObj.shapeFilters = []
-            }
+          if (filterObj) {
 
             shapes.forEach(shape => {
               if (shape instanceof LatLonCircle) {
