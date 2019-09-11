@@ -81,7 +81,12 @@ export function rasterDrawMixin(chart) {
   // given a layer of this chart, and a bonkers boolean flag, will return the
   // associated crossfilter object
 
-  function getCrossfilter(layer, layerTypeIsPointsOrHeatOrUndefined) {
+  function getCrossfilter(layer) {
+
+    const layerTypeIsPointsOrHeatOrUndefined = isLayerTypePointsOrHeatOrUndefined(
+      layer
+    )
+
     const group = layer.group()
 
     if (group) {
@@ -117,10 +122,7 @@ export function rasterDrawMixin(chart) {
       layer
     )
 
-    const crossFilter = getCrossfilter(
-      layer,
-      layerTypeIsPointsOrHeatOrUndefined
-    )
+    const crossFilter = getCrossfilter(layer)
 
     if (crossFilter === undefined) {
       return undefined
