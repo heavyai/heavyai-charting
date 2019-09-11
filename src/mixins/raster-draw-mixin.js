@@ -82,7 +82,6 @@ export function rasterDrawMixin(chart) {
   // associated crossfilter object
 
   function getCrossfilter(layer) {
-
     const layerTypeIsPointsOrHeatOrUndefined = isLayerTypePointsOrHeatOrUndefined(
       layer
     )

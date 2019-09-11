@@ -30467,7 +30467,6 @@ function rasterDrawMixin(chart) {
     // associated crossfilter object
 
   };function getCrossfilter(layer) {
-
     var layerTypeIsPointsOrHeatOrUndefined = isLayerTypePointsOrHeatOrUndefined(layer);
 
     var group = layer.group();
