@@ -163,10 +163,37 @@ export function rasterDrawMixin(chart) {
         ? chart.getLayers()
         : [chart]
     layers.forEach(layer => {
-      if (isLayerTypePointsOrHeatOrUndefined(layer)) {
-        const filterObj = getRasterFilterObj(layer)
+      if (
+        !layer.layerType ||
+        typeof layer.layerType !== "function" ||
+        layer.layerType() === "points" ||
+        layer.layerType() === "heat"
+      ) {
+        let crossFilter = null
+        let filterObj = null
+        const group = layer.group()
 
-        if (filterObj) {
+        if (group) {
+          crossFilter = group.getCrossfilter()
+        } else {
+          const dim = layer.dimension()
+          if (dim) {
+            crossFilter = dim.getCrossfilter()
+          } else {
+            crossFilter = layer.crossfilter()
+          }
+        }
+        if (crossFilter) {
+          filterObj = coordFilters.get(crossFilter)
+          if (!filterObj) {
+            filterObj = {
+              coordFilter: crossFilter.filter(),
+              px: [],
+              py: []
+            }
+            coordFilters.set(crossFilter, filterObj)
+            filterObj.shapeFilters = []
+          }
           const xdim = layer.xDim()
           const ydim = layer.yDim()
           if (xdim && ydim) {
@@ -268,9 +295,30 @@ export function rasterDrawMixin(chart) {
         layer.layerType() === "lines"
       ) {
         if (layer.getState().data.length < 2) {
-          const filterObj = getRasterFilterObj(layer)
+          let crossFilter = null
+          let filterObj = null
+          const group = layer.group()
 
-          if (filterObj) {
+          if (group) {
+            crossFilter = group.getCrossfilter()
+          } else {
+            const dim = layer.viewBoxDim()
+            if (dim) {
+              crossFilter = dim
+            } else {
+              crossFilter = layer.crossfilter()
+            }
+          }
+          if (crossFilter) {
+            filterObj = coordFilters.get(crossFilter)
+            if (!filterObj) {
+              filterObj = {
+                coordFilter: crossFilter
+              }
+              coordFilters.set(crossFilter, filterObj)
+              filterObj.shapeFilters = []
+            }
+
             shapes.forEach(shape => {
               if (shape instanceof LatLonCircle) {
                 const pos = shape.getWorldPosition()

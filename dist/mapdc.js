@@ -30534,10 +30534,32 @@ function rasterDrawMixin(chart) {
 
     var layers = chart.getLayers && typeof chart.getLayers === "function" ? chart.getLayers() : [chart];
     layers.forEach(function (layer) {
-      if (isLayerTypePointsOrHeatOrUndefined(layer)) {
-        var filterObj = getRasterFilterObj(layer);
+      if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "points" || layer.layerType() === "heat") {
+        var crossFilter = null;
+        var filterObj = null;
+        var group = layer.group();
 
-        if (filterObj) {
+        if (group) {
+          crossFilter = group.getCrossfilter();
+        } else {
+          var dim = layer.dimension();
+          if (dim) {
+            crossFilter = dim.getCrossfilter();
+          } else {
+            crossFilter = layer.crossfilter();
+          }
+        }
+        if (crossFilter) {
+          filterObj = coordFilters.get(crossFilter);
+          if (!filterObj) {
+            filterObj = {
+              coordFilter: crossFilter.filter(),
+              px: [],
+              py: []
+            };
+            coordFilters.set(crossFilter, filterObj);
+            filterObj.shapeFilters = [];
+          }
           var xdim = layer.xDim();
           var ydim = layer.yDim();
           if (xdim && ydim) {
@@ -30597,9 +30619,30 @@ function rasterDrawMixin(chart) {
         }
       } else if (!layer.layerType || typeof layer.layerType !== "function" || layer.layerType() === "lines") {
         if (layer.getState().data.length < 2) {
-          var _filterObj = getRasterFilterObj(layer);
+          var _crossFilter = null;
+          var _filterObj = null;
+          var _group = layer.group();
 
-          if (_filterObj) {
+          if (_group) {
+            _crossFilter = _group.getCrossfilter();
+          } else {
+            var _dim = layer.viewBoxDim();
+            if (_dim) {
+              _crossFilter = _dim;
+            } else {
+              _crossFilter = layer.crossfilter();
+            }
+          }
+          if (_crossFilter) {
+            _filterObj = coordFilters.get(_crossFilter);
+            if (!_filterObj) {
+              _filterObj = {
+                coordFilter: _crossFilter
+              };
+              coordFilters.set(_crossFilter, _filterObj);
+              _filterObj.shapeFilters = [];
+            }
+
             shapes.forEach(function (shape) {
               if (shape instanceof LatLonCircle) {
                 var pos = shape.getWorldPosition();
