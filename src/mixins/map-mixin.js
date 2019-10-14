@@ -604,8 +604,6 @@ export default function mapMixin(
 
   _chart.addMapListeners = function() {
     _map.on("move", onMapMove)
-    _map.on("drag", onMapMove)
-    _map.on("wheel", onMapMove)
     _map.on("moveend", onMapMove)
     _map.on("sourcedata", showMapLogo)
   }

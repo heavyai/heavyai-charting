@@ -588,15 +588,7 @@ export function rasterDrawMixin(chart) {
     if (typeof chart.useLonLat === "function") {
       // using a mapbox map, it works better to rerender
       // on move here
-      chart.map().on("drag", updateDraw)
-      chart.map().on("wheel", updateDraw)
-
-      // TODO need to find right original event listener to update
-      chart.map().on("move", e => {
-        if (e.target && e.target._zooming) {
-          updateDraw()
-        }
-      })
+      chart.map().on("move", updateDraw)
     } else {
       // using a dc coordinate grid, redraws work better
       // on the render event
