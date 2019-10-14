@@ -9,6 +9,7 @@ import d3 from "d3"
 import { events } from "../core/events"
 import { parser } from "../utils/utils"
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
+import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
 
 const polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)"
 const polyNullScaleColor = "rgba(214, 215, 214, 0.65)"
@@ -121,6 +122,7 @@ export default function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1
   }
 
+  // eslint-disable-next-line complexity
   function getTransforms({
     bboxFilter,
     filter,
@@ -135,18 +137,6 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const transforms = []
 
-    const colorProjection =
-      color.type === "quantitative"
-        ? parser.parseExpression(color.aggregate)
-        : `SAMPLE(${color.field})`
-
-    const colorField =
-      color.type === "quantitative"
-        ? typeof color.aggregate === "string"
-          ? color.aggregate
-          : color.aggregate.field
-        : color.field
-
     transforms.push({
       type: "project",
       expr: `${geoTable}.${geocol}`,
@@ -154,6 +144,30 @@ export default function rasterLayerPolyMixin(_layer) {
     })
 
     if (doJoin()) {
+      let colorProjection = [
+        color.type === "quantitative"
+          ? parser.parseExpression(color.aggregate)
+          : `SAMPLE(${color.field})`
+      ]
+      let colorProjectionAs = ["color"]
+      let colorField = `${withAlias}.color`
+      if (typeof color.aggregate === "string") {
+        // Custom SQL may include references to both the base table and the
+        // geo-join table. The custom SQL is parsed to move references to the
+        // base table into the WITH clause, and everything else outside in the
+        // parent SELECT.
+        // eslint-disable-next-line no-extra-semi
+        ;({
+          factProjections: colorProjection,
+          factAliases: colorProjectionAs,
+          expression: colorField
+        } = parseFactsFromCustomSQL(
+          state.data[0].table,
+          withAlias,
+          color.aggregate
+        ))
+      }
+
       const withClauseTransforms = []
 
       const groupby = {
@@ -179,16 +193,16 @@ export default function rasterLayerPolyMixin(_layer) {
       if (color.type !== "solid") {
         withClauseTransforms.push({
           type: "aggregate",
-          fields: [colorProjection],
+          fields: colorProjection,
           ops: [null],
-          as: ["color"],
+          as: colorProjectionAs,
           groupby
         })
 
         if (!layerFilter.length) {
           transforms.push({
             type: "project",
-            expr: `${withAlias}.color`,
+            expr: colorField,
             as: "color"
           })
         }
@@ -248,6 +262,13 @@ export default function rasterLayerPolyMixin(_layer) {
         }
       })
     } else {
+      const colorField =
+        color.type === "quantitative"
+          ? typeof color.aggregate === "string"
+            ? color.aggregate
+            : color.aggregate.field
+          : color.field
+
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",

@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 190);
+/******/ 	return __webpack_require__(__webpack_require__.s = 217);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1929,7 +1929,7 @@ return /******/ (function(modules) { // webpackBootstrap
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(212)("./" + name);
+                __webpack_require__(239)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4680,7 +4680,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(33)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(51)(module)))
 
 /***/ }),
 /* 1 */
@@ -4690,6 +4690,483 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
 /***/ }),
 /* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["A"] = isEmpty;
+/* harmony export (immutable) */ __webpack_exports__["G"] = keys;
+/* harmony export (immutable) */ __webpack_exports__["U"] = values;
+/* harmony export (immutable) */ __webpack_exports__["J"] = mapValues;
+/* harmony export (immutable) */ __webpack_exports__["I"] = map;
+/* harmony export (immutable) */ __webpack_exports__["t"] = flatten;
+/* harmony export (immutable) */ __webpack_exports__["s"] = first;
+/* harmony export (immutable) */ __webpack_exports__["H"] = last;
+/* harmony export (immutable) */ __webpack_exports__["u"] = forEach;
+/* harmony export (immutable) */ __webpack_exports__["E"] = isString;
+/* harmony export (immutable) */ __webpack_exports__["F"] = isUndefined;
+/* harmony export (immutable) */ __webpack_exports__["B"] = isFunction;
+/* harmony export (immutable) */ __webpack_exports__["m"] = drop;
+/* harmony export (immutable) */ __webpack_exports__["n"] = dropRight;
+/* harmony export (immutable) */ __webpack_exports__["p"] = filter;
+/* harmony export (immutable) */ __webpack_exports__["P"] = reject;
+/* harmony export (immutable) */ __webpack_exports__["N"] = pick;
+/* harmony export (immutable) */ __webpack_exports__["w"] = has;
+/* harmony export (immutable) */ __webpack_exports__["j"] = contains;
+/* harmony export (immutable) */ __webpack_exports__["g"] = cloneArr;
+/* harmony export (immutable) */ __webpack_exports__["h"] = cloneObj;
+/* harmony export (immutable) */ __webpack_exports__["q"] = find;
+/* harmony export (immutable) */ __webpack_exports__["r"] = findAll;
+/* harmony export (immutable) */ __webpack_exports__["O"] = reduce;
+/* harmony export (immutable) */ __webpack_exports__["i"] = compact;
+/* harmony export (immutable) */ __webpack_exports__["T"] = uniq;
+/* unused harmony export partial */
+/* harmony export (immutable) */ __webpack_exports__["y"] = isArray;
+/* harmony export (immutable) */ __webpack_exports__["D"] = isRegExp;
+/* harmony export (immutable) */ __webpack_exports__["C"] = isObject;
+/* harmony export (immutable) */ __webpack_exports__["o"] = every;
+/* harmony export (immutable) */ __webpack_exports__["l"] = difference;
+/* harmony export (immutable) */ __webpack_exports__["Q"] = some;
+/* harmony export (immutable) */ __webpack_exports__["x"] = indexOf;
+/* unused harmony export sortBy */
+/* unused harmony export zipObject */
+/* harmony export (immutable) */ __webpack_exports__["f"] = assign;
+/* unused harmony export assignNoOverwrite */
+/* harmony export (immutable) */ __webpack_exports__["k"] = defaults;
+/* harmony export (immutable) */ __webpack_exports__["v"] = groupBy;
+/* harmony export (immutable) */ __webpack_exports__["K"] = merge;
+/* harmony export (immutable) */ __webpack_exports__["b"] = NOOP;
+/* harmony export (immutable) */ __webpack_exports__["a"] = IDENTITY;
+/* harmony export (immutable) */ __webpack_exports__["L"] = packArray;
+/* harmony export (immutable) */ __webpack_exports__["c"] = PRINT_ERROR;
+/* harmony export (immutable) */ __webpack_exports__["d"] = PRINT_WARNING;
+/* harmony export (immutable) */ __webpack_exports__["z"] = isES2015MapSupported;
+/* harmony export (immutable) */ __webpack_exports__["e"] = applyMixins;
+/* harmony export (immutable) */ __webpack_exports__["S"] = toFastProperties;
+/* harmony export (immutable) */ __webpack_exports__["M"] = peek;
+/* harmony export (immutable) */ __webpack_exports__["R"] = timer;
+/*
+ Utils using lodash style API. (not necessarily 100% compliant) for functional and other utils.
+ These utils should replace usage of lodash in the production code base. not because they are any better...
+ but for the purpose of being a dependency free library.
+
+ The hotspots in the code are already written in imperative style for performance reasons.
+ so writing several dozen utils which may be slower than the original lodash, does not matter as much
+ considering they will not be invoked in hotspots...
+ */
+function isEmpty(arr) {
+    return arr && arr.length === 0;
+}
+function keys(obj) {
+    if (obj === undefined || obj === null) {
+        return [];
+    }
+    return Object.keys(obj);
+}
+function values(obj) {
+    var vals = [];
+    var keys = Object.keys(obj);
+    for (var i = 0; i < keys.length; i++) {
+        vals.push(obj[keys[i]]);
+    }
+    return vals;
+}
+function mapValues(obj, callback) {
+    var result = [];
+    var objKeys = keys(obj);
+    for (var idx = 0; idx < objKeys.length; idx++) {
+        var currKey = objKeys[idx];
+        result.push(callback.call(null, obj[currKey], currKey));
+    }
+    return result;
+}
+function map(arr, callback) {
+    var result = [];
+    for (var idx = 0; idx < arr.length; idx++) {
+        result.push(callback.call(null, arr[idx], idx));
+    }
+    return result;
+}
+function flatten(arr) {
+    var result = [];
+    for (var idx = 0; idx < arr.length; idx++) {
+        var currItem = arr[idx];
+        if (Array.isArray(currItem)) {
+            result = result.concat(flatten(currItem));
+        }
+        else {
+            result.push(currItem);
+        }
+    }
+    return result;
+}
+function first(arr) {
+    return isEmpty(arr) ? undefined : arr[0];
+}
+function last(arr) {
+    var len = arr && arr.length;
+    return len ? arr[len - 1] : undefined;
+}
+function forEach(collection, iteratorCallback) {
+    /* istanbul ignore else */
+    if (Array.isArray(collection)) {
+        for (var i = 0; i < collection.length; i++) {
+            iteratorCallback.call(null, collection[i], i);
+        }
+    }
+    else if (isObject(collection)) {
+        var colKeys = keys(collection);
+        for (var i = 0; i < colKeys.length; i++) {
+            var key = colKeys[i];
+            var value = collection[key];
+            iteratorCallback.call(null, value, key);
+        }
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+function isString(item) {
+    return typeof item === "string";
+}
+function isUndefined(item) {
+    return item === undefined;
+}
+function isFunction(item) {
+    return item instanceof Function;
+}
+function drop(arr, howMuch) {
+    if (howMuch === void 0) { howMuch = 1; }
+    return arr.slice(howMuch, arr.length);
+}
+function dropRight(arr, howMuch) {
+    if (howMuch === void 0) { howMuch = 1; }
+    return arr.slice(0, arr.length - howMuch);
+}
+function filter(arr, predicate) {
+    var result = [];
+    if (Array.isArray(arr)) {
+        for (var i = 0; i < arr.length; i++) {
+            var item = arr[i];
+            if (predicate.call(null, item)) {
+                result.push(item);
+            }
+        }
+    }
+    return result;
+}
+function reject(arr, predicate) {
+    return filter(arr, function (item) { return !predicate(item); });
+}
+function pick(obj, predicate) {
+    var keys = Object.keys(obj);
+    var result = {};
+    for (var i = 0; i < keys.length; i++) {
+        var currKey = keys[i];
+        var currItem = obj[currKey];
+        if (predicate(currItem)) {
+            result[currKey] = currItem;
+        }
+    }
+    return result;
+}
+function has(obj, prop) {
+    if (isObject(obj)) {
+        return obj.hasOwnProperty(prop);
+    }
+    return false;
+}
+function contains(arr, item) {
+    return find(arr, function (currItem) { return currItem === item; }) !== undefined ? true : false;
+}
+/**
+ * shallow clone
+ */
+function cloneArr(arr) {
+    var newArr = [];
+    for (var i = 0; i < arr.length; i++) {
+        newArr.push(arr[i]);
+    }
+    return newArr;
+}
+/**
+ * shallow clone
+ */
+function cloneObj(obj) {
+    var clonedObj = {};
+    for (var key in obj) {
+        /* istanbul ignore else */
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            clonedObj[key] = obj[key];
+        }
+    }
+    return clonedObj;
+}
+function find(arr, predicate) {
+    for (var i = 0; i < arr.length; i++) {
+        var item = arr[i];
+        if (predicate.call(null, item)) {
+            return item;
+        }
+    }
+    return undefined;
+}
+function findAll(arr, predicate) {
+    var found = [];
+    for (var i = 0; i < arr.length; i++) {
+        var item = arr[i];
+        if (predicate.call(null, item)) {
+            found.push(item);
+        }
+    }
+    return found;
+}
+function reduce(arrOrObj, iterator, initial) {
+    var isArr = Array.isArray(arrOrObj);
+    var vals = isArr ? arrOrObj : values(arrOrObj);
+    var objKeys = isArr ? [] : keys(arrOrObj);
+    var accumulator = initial;
+    for (var i = 0; i < vals.length; i++) {
+        accumulator = iterator.call(null, accumulator, vals[i], isArr ? i : objKeys[i]);
+    }
+    return accumulator;
+}
+function compact(arr) {
+    return reject(arr, function (item) { return item === null || item === undefined; });
+}
+function uniq(arr, identity) {
+    if (identity === void 0) { identity = function (item) { return item; }; }
+    var identities = [];
+    return reduce(arr, function (result, currItem) {
+        var currIdentity = identity(currItem);
+        if (contains(identities, currIdentity)) {
+            return result;
+        }
+        else {
+            identities.push(currIdentity);
+            return result.concat(currItem);
+        }
+    }, []);
+}
+function partial(func) {
+    var restArgs = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        restArgs[_i - 1] = arguments[_i];
+    }
+    var firstArg = [null];
+    var allArgs = firstArg.concat(restArgs);
+    return Function.bind.apply(func, allArgs);
+}
+function isArray(obj) {
+    return Array.isArray(obj);
+}
+function isRegExp(obj) {
+    return obj instanceof RegExp;
+}
+function isObject(obj) {
+    return obj instanceof Object;
+}
+function every(arr, predicate) {
+    for (var i = 0; i < arr.length; i++) {
+        if (!predicate(arr[i], i)) {
+            return false;
+        }
+    }
+    return true;
+}
+function difference(arr, values) {
+    return reject(arr, function (item) { return contains(values, item); });
+}
+function some(arr, predicate) {
+    for (var i = 0; i < arr.length; i++) {
+        if (predicate(arr[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+function indexOf(arr, value) {
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] === value) {
+            return i;
+        }
+    }
+    return -1;
+}
+function sortBy(arr, orderFunc) {
+    var result = cloneArr(arr);
+    result.sort(function (a, b) { return orderFunc(a) - orderFunc(b); });
+    return result;
+}
+function zipObject(keys, values) {
+    if (keys.length !== values.length) {
+        throw Error("can't zipObject with different number of keys and values!");
+    }
+    var result = {};
+    for (var i = 0; i < keys.length; i++) {
+        result[keys[i]] = values[i];
+    }
+    return result;
+}
+/**
+ * mutates! (and returns) target
+ */
+function assign(target) {
+    var sources = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        sources[_i - 1] = arguments[_i];
+    }
+    for (var i = 0; i < sources.length; i++) {
+        var curSource = sources[i];
+        var currSourceKeys = keys(curSource);
+        for (var j = 0; j < currSourceKeys.length; j++) {
+            var currKey = currSourceKeys[j];
+            target[currKey] = curSource[currKey];
+        }
+    }
+    return target;
+}
+/**
+ * mutates! (and returns) target
+ */
+function assignNoOverwrite(target) {
+    var sources = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        sources[_i - 1] = arguments[_i];
+    }
+    for (var i = 0; i < sources.length; i++) {
+        var curSource = sources[i];
+        if (isUndefined(curSource)) {
+            continue;
+        }
+        var currSourceKeys = keys(curSource);
+        for (var j = 0; j < currSourceKeys.length; j++) {
+            var currKey = currSourceKeys[j];
+            if (!has(target, currKey)) {
+                target[currKey] = curSource[currKey];
+            }
+        }
+    }
+    return target;
+}
+function defaults() {
+    var sources = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        sources[_i] = arguments[_i];
+    }
+    return assignNoOverwrite.apply(null, [{}].concat(sources));
+}
+function groupBy(arr, groupKeyFunc) {
+    var result = {};
+    forEach(arr, function (item) {
+        var currGroupKey = groupKeyFunc(item);
+        var currGroupArr = result[currGroupKey];
+        if (currGroupArr) {
+            currGroupArr.push(item);
+        }
+        else {
+            result[currGroupKey] = [item];
+        }
+    });
+    return result;
+}
+/**
+ * Merge obj2 into obj1.
+ * Will overwrite existing properties with the same name
+ */
+function merge(obj1, obj2) {
+    var result = cloneObj(obj1);
+    var keys2 = keys(obj2);
+    for (var i = 0; i < keys2.length; i++) {
+        var key = keys2[i];
+        var value = obj2[key];
+        result[key] = value;
+    }
+    return result;
+}
+function NOOP() { }
+function IDENTITY(item) {
+    return item;
+}
+/**
+ * Will return a new packed array with same values.
+ */
+function packArray(holeyArr) {
+    var result = [];
+    for (var i = 0; i < holeyArr.length; i++) {
+        var orgValue = holeyArr[i];
+        result.push(orgValue !== undefined ? orgValue : undefined);
+    }
+    return result;
+}
+function PRINT_ERROR(msg) {
+    /* istanbul ignore else - can't override global.console in node.js */
+    if (console && console.error) {
+        console.error("Error: " + msg);
+    }
+}
+function PRINT_WARNING(msg) {
+    /* istanbul ignore else - can't override global.console in node.js*/
+    if (console && console.warn) {
+        // TODO: modify docs accordingly
+        console.warn("Warning: " + msg);
+    }
+}
+function isES2015MapSupported() {
+    return typeof Map === "function";
+}
+function applyMixins(derivedCtor, baseCtors) {
+    baseCtors.forEach(function (baseCtor) {
+        var baseProto = baseCtor.prototype;
+        Object.getOwnPropertyNames(baseProto).forEach(function (propName) {
+            if (propName === "constructor") {
+                return;
+            }
+            var basePropDescriptor = Object.getOwnPropertyDescriptor(baseProto, propName);
+            // Handle Accessors
+            if (basePropDescriptor &&
+                (basePropDescriptor.get || basePropDescriptor.set)) {
+                Object.defineProperty(derivedCtor.prototype, propName, basePropDescriptor);
+            }
+            else {
+                derivedCtor.prototype[propName] = baseCtor.prototype[propName];
+            }
+        });
+    });
+}
+// base on: https://github.com/petkaantonov/bluebird/blob/b97c0d2d487e8c5076e8bd897e0dcd4622d31846/src/util.js#L201-L216
+function toFastProperties(toBecomeFast) {
+    function FakeConstructor() { }
+    // If our object is used as a constructor it would receive
+    FakeConstructor.prototype = toBecomeFast;
+    var fakeInstance = new FakeConstructor();
+    function fakeAccess() {
+        return typeof fakeInstance.bar;
+    }
+    // help V8 understand this is a "real" prototype by actually using
+    // the fake instance.
+    fakeAccess();
+    fakeAccess();
+    return toBecomeFast;
+    // Eval prevents optimization of this method (even though this is dead code)
+    /* istanbul ignore next */
+    // tslint:disable-next-line
+    eval(toBecomeFast);
+}
+function peek(arr) {
+    return arr[arr.length - 1];
+}
+/* istanbul ignore next - for performance tracing*/
+function timer(func) {
+    var start = new Date().getTime();
+    var val = func();
+    var end = new Date().getTime();
+    var total = end - start;
+    return { time: total, value: val };
+}
+//# sourceMappingURL=utils.js.map
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4722,7 +5199,7 @@ exports.override = override;
 exports.renderlet = renderlet;
 exports.instanceOfChart = instanceOfChart;
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -5095,7 +5572,7 @@ function instanceOfChart(o) {
 }
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5110,13 +5587,13 @@ exports.xDomain = xDomain;
 exports.xScale = xScale;
 exports.xAxisTickFormat = xAxisTickFormat;
 
-var _mapdDataLayer = __webpack_require__(193);
+var _mapdDataLayer = __webpack_require__(220);
 
-var _formattingHelpers = __webpack_require__(7);
+var _formattingHelpers = __webpack_require__(10);
 
-var _datesAndTimes = __webpack_require__(32);
+var _datesAndTimes = __webpack_require__(50);
 
-var _fastDeepEqual = __webpack_require__(161);
+var _fastDeepEqual = __webpack_require__(179);
 
 var _fastDeepEqual2 = _interopRequireDefault(_fastDeepEqual);
 
@@ -5124,7 +5601,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5215,7 +5692,7 @@ parser.registerParser({
 
 var dateFormat = exports.dateFormat = _d2.default.time.format.utc("%m/%d/%Y");
 
-var deepEquals = exports.deepEquals = __webpack_require__(161); // eslint-disable-line global-require
+var deepEquals = exports.deepEquals = __webpack_require__(179); // eslint-disable-line global-require
 
 var deepClone = exports.deepClone = function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -5582,7 +6059,7 @@ utils.nullsLast = function (sorting) {
 };
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5614,7 +6091,7 @@ exports.lastFilteredSize = lastFilteredSize;
 exports.setLastFilteredSize = setLastFilteredSize;
 exports.resetState = resetState;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -5970,7 +6447,7 @@ function resetState() {
 }
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5981,47 +6458,47 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = baseMixin;
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _asyncMixin = __webpack_require__(162);
+var _asyncMixin = __webpack_require__(180);
 
 var _asyncMixin2 = _interopRequireDefault(_asyncMixin);
 
-var _legendMixin = __webpack_require__(214);
+var _legendMixin = __webpack_require__(241);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
-var _binningHelpers = __webpack_require__(20);
+var _binningHelpers = __webpack_require__(34);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _errors = __webpack_require__(163);
+var _errors = __webpack_require__(181);
 
 var errors = _interopRequireWildcard(_errors);
 
-var _filterMixin = __webpack_require__(215);
+var _filterMixin = __webpack_require__(242);
 
 var _filterMixin2 = _interopRequireDefault(_filterMixin);
 
-var _labelMixin = __webpack_require__(216);
+var _labelMixin = __webpack_require__(243);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
-var _logger = __webpack_require__(19);
+var _logger = __webpack_require__(33);
 
-var _multipleKeyAccessors = __webpack_require__(164);
+var _multipleKeyAccessors = __webpack_require__(182);
 
-var _multipleKeyLabelMixin = __webpack_require__(165);
+var _multipleKeyLabelMixin = __webpack_require__(183);
 
 var _multipleKeyLabelMixin2 = _interopRequireDefault(_multipleKeyLabelMixin);
 
-var _spinnerMixin = __webpack_require__(166);
+var _spinnerMixin = __webpack_require__(184);
 
 var _spinnerMixin2 = _interopRequireDefault(_spinnerMixin);
 
@@ -7816,14 +8293,293 @@ function baseMixin(_chart) {
 }
 
 /***/ }),
-/* 6 */
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AbstractProduction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return NonTerminal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return Rule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return Flat; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return Option; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return RepetitionMandatory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return RepetitionMandatoryWithSeparator; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return Repetition; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return RepetitionWithSeparator; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Alternation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return Terminal; });
+/* harmony export (immutable) */ __webpack_exports__["l"] = serializeGrammar;
+/* harmony export (immutable) */ __webpack_exports__["m"] = serializeProduction;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scan_tokens_public__ = __webpack_require__(16);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+var AbstractProduction = /** @class */ (function () {
+    function AbstractProduction(definition) {
+        this.definition = definition;
+    }
+    AbstractProduction.prototype.accept = function (visitor) {
+        visitor.visit(this);
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(this.definition, function (prod) {
+            prod.accept(visitor);
+        });
+    };
+    return AbstractProduction;
+}());
+
+var NonTerminal = /** @class */ (function (_super) {
+    __extends(NonTerminal, _super);
+    function NonTerminal(options) {
+        var _this = _super.call(this, []) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    Object.defineProperty(NonTerminal.prototype, "definition", {
+        get: function () {
+            if (this.referencedRule !== undefined) {
+                return this.referencedRule.definition;
+            }
+            return [];
+        },
+        set: function (definition) {
+            // immutable
+        },
+        enumerable: true,
+        configurable: true
+    });
+    NonTerminal.prototype.accept = function (visitor) {
+        visitor.visit(this);
+        // don't visit children of a reference, we will get cyclic infinite loops if we do so
+    };
+    return NonTerminal;
+}(AbstractProduction));
+
+var Rule = /** @class */ (function (_super) {
+    __extends(Rule, _super);
+    function Rule(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.orgText = "";
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Rule;
+}(AbstractProduction));
+
+// TODO: is this only used in an Alternation?
+//       Perhaps `Flat` should be renamed to `Alternative`?
+var Flat = /** @class */ (function (_super) {
+    __extends(Flat, _super);
+    // A named Flat production is used to indicate a Nested Rule in an alternation
+    function Flat(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.ignoreAmbiguities = false;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Flat;
+}(AbstractProduction));
+
+var Option = /** @class */ (function (_super) {
+    __extends(Option, _super);
+    function Option(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Option;
+}(AbstractProduction));
+
+var RepetitionMandatory = /** @class */ (function (_super) {
+    __extends(RepetitionMandatory, _super);
+    function RepetitionMandatory(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return RepetitionMandatory;
+}(AbstractProduction));
+
+var RepetitionMandatoryWithSeparator = /** @class */ (function (_super) {
+    __extends(RepetitionMandatoryWithSeparator, _super);
+    function RepetitionMandatoryWithSeparator(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return RepetitionMandatoryWithSeparator;
+}(AbstractProduction));
+
+var Repetition = /** @class */ (function (_super) {
+    __extends(Repetition, _super);
+    function Repetition(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Repetition;
+}(AbstractProduction));
+
+var RepetitionWithSeparator = /** @class */ (function (_super) {
+    __extends(RepetitionWithSeparator, _super);
+    function RepetitionWithSeparator(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return RepetitionWithSeparator;
+}(AbstractProduction));
+
+var Alternation = /** @class */ (function (_super) {
+    __extends(Alternation, _super);
+    function Alternation(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        _this.ignoreAmbiguities = false;
+        _this.hasPredicates = false;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Alternation;
+}(AbstractProduction));
+
+var Terminal = /** @class */ (function () {
+    function Terminal(options) {
+        this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+    }
+    Terminal.prototype.accept = function (visitor) {
+        visitor.visit(this);
+    };
+    return Terminal;
+}());
+
+function serializeGrammar(topRules) {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topRules, serializeProduction);
+}
+function serializeProduction(node) {
+    function convertDefinition(definition) {
+        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(definition, serializeProduction);
+    }
+    /* istanbul ignore else */
+    if (node instanceof NonTerminal) {
+        return {
+            type: "NonTerminal",
+            name: node.nonTerminalName,
+            idx: node.idx
+        };
+    }
+    else if (node instanceof Flat) {
+        return {
+            type: "Flat",
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Option) {
+        return {
+            type: "Option",
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionMandatory) {
+        return {
+            type: "RepetitionMandatory",
+            name: node.name,
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionMandatoryWithSeparator) {
+        return {
+            type: "RepetitionMandatoryWithSeparator",
+            name: node.name,
+            idx: node.idx,
+            separator: (serializeProduction(new Terminal({ terminalType: node.separator }))),
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionWithSeparator) {
+        return {
+            type: "RepetitionWithSeparator",
+            name: node.name,
+            idx: node.idx,
+            separator: (serializeProduction(new Terminal({ terminalType: node.separator }))),
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Repetition) {
+        return {
+            type: "Repetition",
+            name: node.name,
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Alternation) {
+        return {
+            type: "Alternation",
+            name: node.name,
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Terminal) {
+        var serializedTerminal = {
+            type: "Terminal",
+            name: node.terminalType.name,
+            label: Object(__WEBPACK_IMPORTED_MODULE_1__scan_tokens_public__["e" /* tokenLabel */])(node.terminalType),
+            idx: node.idx
+        };
+        var pattern = node.terminalType.PATTERN;
+        if (node.terminalType.PATTERN) {
+            serializedTerminal.pattern = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["D" /* isRegExp */])(pattern)
+                ? pattern.source
+                : pattern;
+        }
+        return serializedTerminal;
+    }
+    else if (node instanceof Rule) {
+        return {
+            type: "Rule",
+            name: node.name,
+            orgText: node.orgText,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+//# sourceMappingURL=gast_public.js.map
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var bind = __webpack_require__(172);
-var isBuffer = __webpack_require__(246);
+var bind = __webpack_require__(190);
+var isBuffer = __webpack_require__(273);
 
 /*global toString:true*/
 
@@ -8157,7 +8913,269 @@ module.exports = {
 
 
 /***/ }),
-/* 7 */
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return END_OF_FILE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return DEFAULT_PARSER_CONFIG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DEFAULT_RULE_CONFIG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return ParserDefinitionErrorType; });
+/* harmony export (immutable) */ __webpack_exports__["d"] = EMPTY_ALT;
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return Parser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CstParser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return EmbeddedActionsParser; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_follow__ = __webpack_require__(323);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cst_cst__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__errors_public__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__ = __webpack_require__(215);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__ = __webpack_require__(326);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__ = __webpack_require__(327);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__ = __webpack_require__(329);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__traits_recognizer_api__ = __webpack_require__(330);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__traits_recognizer_engine__ = __webpack_require__(331);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__traits_error_handler__ = __webpack_require__(332);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__traits_context_assist__ = __webpack_require__(333);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__traits_gast_recorder__ = __webpack_require__(334);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__traits_perf_tracer__ = __webpack_require__(335);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var END_OF_FILE = Object(__WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__["c" /* createTokenInstance */])(__WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__["a" /* EOF */], "", NaN, NaN, NaN, NaN, NaN, NaN);
+Object.freeze(END_OF_FILE);
+var DEFAULT_PARSER_CONFIG = Object.freeze({
+    recoveryEnabled: false,
+    maxLookahead: 4,
+    ignoredIssues: {},
+    dynamicTokensEnabled: false,
+    outputCst: true,
+    errorMessageProvider: __WEBPACK_IMPORTED_MODULE_4__errors_public__["c" /* defaultParserErrorProvider */],
+    nodeLocationTracking: "none",
+    traceInitPerf: false,
+    skipValidations: false
+});
+var DEFAULT_RULE_CONFIG = Object.freeze({
+    recoveryValueFunc: function () { return undefined; },
+    resyncEnabled: true
+});
+var ParserDefinitionErrorType;
+(function (ParserDefinitionErrorType) {
+    ParserDefinitionErrorType[ParserDefinitionErrorType["INVALID_RULE_NAME"] = 0] = "INVALID_RULE_NAME";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["DUPLICATE_RULE_NAME"] = 1] = "DUPLICATE_RULE_NAME";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["INVALID_RULE_OVERRIDE"] = 2] = "INVALID_RULE_OVERRIDE";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["DUPLICATE_PRODUCTIONS"] = 3] = "DUPLICATE_PRODUCTIONS";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["UNRESOLVED_SUBRULE_REF"] = 4] = "UNRESOLVED_SUBRULE_REF";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["LEFT_RECURSION"] = 5] = "LEFT_RECURSION";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["NONE_LAST_EMPTY_ALT"] = 6] = "NONE_LAST_EMPTY_ALT";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["AMBIGUOUS_ALTS"] = 7] = "AMBIGUOUS_ALTS";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["CONFLICT_TOKENS_RULES_NAMESPACE"] = 8] = "CONFLICT_TOKENS_RULES_NAMESPACE";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["INVALID_TOKEN_NAME"] = 9] = "INVALID_TOKEN_NAME";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["INVALID_NESTED_RULE_NAME"] = 10] = "INVALID_NESTED_RULE_NAME";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["DUPLICATE_NESTED_NAME"] = 11] = "DUPLICATE_NESTED_NAME";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["NO_NON_EMPTY_LOOKAHEAD"] = 12] = "NO_NON_EMPTY_LOOKAHEAD";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["AMBIGUOUS_PREFIX_ALTS"] = 13] = "AMBIGUOUS_PREFIX_ALTS";
+    ParserDefinitionErrorType[ParserDefinitionErrorType["TOO_MANY_ALTS"] = 14] = "TOO_MANY_ALTS";
+})(ParserDefinitionErrorType || (ParserDefinitionErrorType = {}));
+function EMPTY_ALT(value) {
+    if (value === void 0) { value = undefined; }
+    return function () {
+        return value;
+    };
+}
+var Parser = /** @class */ (function () {
+    function Parser(tokenVocabulary, config) {
+        if (config === void 0) { config = DEFAULT_PARSER_CONFIG; }
+        this.ignoredIssues = DEFAULT_PARSER_CONFIG.ignoredIssues;
+        this.definitionErrors = [];
+        this.selfAnalysisDone = false;
+        var that = this;
+        that.initErrorHandler(config);
+        that.initLexerAdapter();
+        that.initLooksAhead(config);
+        that.initRecognizerEngine(tokenVocabulary, config);
+        that.initRecoverable(config);
+        that.initTreeBuilder(config);
+        that.initContentAssist();
+        that.initGastRecorder(config);
+        that.initPerformanceTracer(config);
+        /* istanbul ignore if - complete over-kill to test this, we should only add a test when we actually hard deprecate it and throw an error... */
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "ignoredIssues") &&
+            config.ignoredIssues !== DEFAULT_PARSER_CONFIG.ignoredIssues) {
+            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["d" /* PRINT_WARNING */])("The <ignoredIssues> IParserConfig property is soft-deprecated and will be removed in future versions.\n\t" +
+                "Please use the <IGNORE_AMBIGUITIES> flag on the relevant DSL method instead.");
+        }
+        this.ignoredIssues = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "ignoredIssues")
+            ? config.ignoredIssues
+            : DEFAULT_PARSER_CONFIG.ignoredIssues;
+        this.skipValidations = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "skipValidations")
+            ? config.skipValidations
+            : DEFAULT_PARSER_CONFIG.skipValidations;
+    }
+    /**
+     *  @deprecated use the **instance** method with the same name instead
+     */
+    Parser.performSelfAnalysis = function (parserInstance) {
+        ;
+        parserInstance.performSelfAnalysis();
+    };
+    Parser.prototype.performSelfAnalysis = function () {
+        var _this = this;
+        this.TRACE_INIT("performSelfAnalysis", function () {
+            var defErrorsMsgs;
+            _this.selfAnalysisDone = true;
+            var className = _this.className;
+            _this.TRACE_INIT("toFastProps", function () {
+                // Without this voodoo magic the parser would be x3-x4 slower
+                // It seems it is better to invoke `toFastProperties` **before**
+                // Any manipulations of the `this` object done during the recording phase.
+                Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["S" /* toFastProperties */])(_this);
+            });
+            _this.TRACE_INIT("Grammar Recording", function () {
+                try {
+                    _this.enableRecording();
+                    // Building the GAST
+                    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(_this.definedRulesNames, function (currRuleName) {
+                        var wrappedRule = _this[currRuleName];
+                        var originalGrammarAction = wrappedRule["originalGrammarAction"];
+                        var recordedRuleGast = undefined;
+                        _this.TRACE_INIT(currRuleName + " Rule", function () {
+                            recordedRuleGast = _this.topLevelRuleRecord(currRuleName, originalGrammarAction);
+                        });
+                        _this.gastProductionsCache[currRuleName] = recordedRuleGast;
+                    });
+                }
+                finally {
+                    _this.disableRecording();
+                }
+            });
+            var resolverErrors = [];
+            _this.TRACE_INIT("Grammar Resolving", function () {
+                resolverErrors = Object(__WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__["b" /* resolveGrammar */])({
+                    rules: Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.gastProductionsCache)
+                });
+                _this.definitionErrors.push.apply(_this.definitionErrors, resolverErrors); // mutability for the win?
+            });
+            _this.TRACE_INIT("Grammar Validations", function () {
+                // only perform additional grammar validations IFF no resolving errors have occurred.
+                // as unresolved grammar may lead to unhandled runtime exceptions in the follow up validations.
+                if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(resolverErrors) && _this.skipValidations === false) {
+                    var validationErrors = Object(__WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__["c" /* validateGrammar */])({
+                        rules: Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.gastProductionsCache),
+                        maxLookahead: _this.maxLookahead,
+                        tokenTypes: Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.tokensMap),
+                        ignoredIssues: _this.ignoredIssues,
+                        errMsgProvider: __WEBPACK_IMPORTED_MODULE_4__errors_public__["b" /* defaultGrammarValidatorErrorProvider */],
+                        grammarName: className
+                    });
+                    _this.definitionErrors.push.apply(_this.definitionErrors, validationErrors); // mutability for the win?
+                }
+            });
+            // this analysis may fail if the grammar is not perfectly valid
+            if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(_this.definitionErrors)) {
+                // The results of these computations are not needed unless error recovery is enabled.
+                if (_this.recoveryEnabled) {
+                    _this.TRACE_INIT("computeAllProdsFollows", function () {
+                        var allFollows = Object(__WEBPACK_IMPORTED_MODULE_1__grammar_follow__["a" /* computeAllProdsFollows */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.gastProductionsCache));
+                        _this.resyncFollows = allFollows;
+                    });
+                }
+                _this.TRACE_INIT("ComputeLookaheadFunctions", function () {
+                    _this.preComputeLookaheadFunctions(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.gastProductionsCache));
+                });
+            }
+            _this.TRACE_INIT("expandAllNestedRuleNames", function () {
+                // TODO: is this needed for EmbeddedActionsParser?
+                var cstAnalysisResult = Object(__WEBPACK_IMPORTED_MODULE_3__cst_cst__["d" /* expandAllNestedRuleNames */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(_this.gastProductionsCache), _this.fullRuleNameToShort);
+                _this.allRuleNames = cstAnalysisResult.allRuleNames;
+            });
+            if (!Parser.DEFER_DEFINITION_ERRORS_HANDLING &&
+                !Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(_this.definitionErrors)) {
+                defErrorsMsgs = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(_this.definitionErrors, function (defError) { return defError.message; });
+                throw new Error("Parser Definition Errors detected:\n " + defErrorsMsgs.join("\n-------------------------------\n"));
+            }
+        });
+    };
+    // Set this flag to true if you don't want the Parser to throw error when problems in it's definition are detected.
+    // (normally during the parser's constructor).
+    // This is a design time flag, it will not affect the runtime error handling of the parser, just design time errors,
+    // for example: duplicate rule names, referencing an unresolved subrule, ect...
+    // This flag should not be enabled during normal usage, it is used in special situations, for example when
+    // needing to display the parser definition errors in some GUI(online playground).
+    Parser.DEFER_DEFINITION_ERRORS_HANDLING = false;
+    return Parser;
+}());
+
+Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["e" /* applyMixins */])(Parser, [
+    __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__["b" /* Recoverable */],
+    __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__["a" /* LooksAhead */],
+    __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__["a" /* TreeBuilder */],
+    __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__["a" /* LexerAdapter */],
+    __WEBPACK_IMPORTED_MODULE_11__traits_recognizer_engine__["a" /* RecognizerEngine */],
+    __WEBPACK_IMPORTED_MODULE_10__traits_recognizer_api__["a" /* RecognizerApi */],
+    __WEBPACK_IMPORTED_MODULE_12__traits_error_handler__["a" /* ErrorHandler */],
+    __WEBPACK_IMPORTED_MODULE_13__traits_context_assist__["a" /* ContentAssist */],
+    __WEBPACK_IMPORTED_MODULE_14__traits_gast_recorder__["a" /* GastRecorder */],
+    __WEBPACK_IMPORTED_MODULE_15__traits_perf_tracer__["a" /* PerformanceTracer */]
+]);
+var CstParser = /** @class */ (function (_super) {
+    __extends(CstParser, _super);
+    function CstParser(tokenVocabulary, config) {
+        if (config === void 0) { config = DEFAULT_PARSER_CONFIG; }
+        var _this = this;
+        var configClone = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["h" /* cloneObj */])(config);
+        configClone.outputCst = true;
+        _this = _super.call(this, tokenVocabulary, configClone) || this;
+        return _this;
+    }
+    return CstParser;
+}(Parser));
+
+var EmbeddedActionsParser = /** @class */ (function (_super) {
+    __extends(EmbeddedActionsParser, _super);
+    function EmbeddedActionsParser(tokenVocabulary, config) {
+        if (config === void 0) { config = DEFAULT_PARSER_CONFIG; }
+        var _this = this;
+        var configClone = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["h" /* cloneObj */])(config);
+        configClone.outputCst = false;
+        _this = _super.call(this, tokenVocabulary, configClone) || this;
+        return _this;
+    }
+    return EmbeddedActionsParser;
+}(Parser));
+
+//# sourceMappingURL=parser.js.map
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8179,7 +9197,7 @@ exports.formatExtractValue = formatExtractValue;
 exports.normalizeFiltersArray = normalizeFiltersArray;
 exports.formatCache = formatCache;
 
-var _datesAndTimes = __webpack_require__(32);
+var _datesAndTimes = __webpack_require__(50);
 
 var _d = __webpack_require__(1);
 
@@ -8352,16 +9370,16 @@ function formatCache(_axis) {
 }
 
 /***/ }),
-/* 8 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(194);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(195);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(196);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(207);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(221);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(222);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(223);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(234);
 
 
 
@@ -8465,7 +9483,7 @@ function createParser() {
 /* harmony default export */ __webpack_exports__["b"] = (createParser());
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8663,7 +9681,7 @@ function colorMixin(_chart) {
 }
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8710,7 +9728,7 @@ var events = exports.events = {
 };
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8725,7 +9743,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8948,7 +9966,7 @@ function capMixin(_chart) {
 }
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8959,17 +9977,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = coordinateGridMixin;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _binningMixin = __webpack_require__(220);
+var _binningMixin = __webpack_require__(247);
 
 var _binningMixin2 = _interopRequireDefault(_binningMixin);
 
-var _colorMixin = __webpack_require__(9);
+var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
@@ -8977,21 +9995,21 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(10);
+var _events = __webpack_require__(13);
 
-var _filters = __webpack_require__(15);
+var _filters = __webpack_require__(20);
 
-var _lockAxisMixin = __webpack_require__(168);
+var _lockAxisMixin = __webpack_require__(186);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(17);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10676,7 +11694,110 @@ function coordinateGridMixin(_chart) {
 }
 
 /***/ }),
-/* 13 */
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["e"] = tokenLabel;
+/* harmony export (immutable) */ __webpack_exports__["g"] = tokenName;
+/* harmony export (immutable) */ __webpack_exports__["d"] = hasTokenLabel;
+/* harmony export (immutable) */ __webpack_exports__["b"] = createToken;
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EOF; });
+/* harmony export (immutable) */ __webpack_exports__["c"] = createTokenInstance;
+/* harmony export (immutable) */ __webpack_exports__["f"] = tokenMatcher;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lexer_public__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(22);
+
+
+
+function tokenLabel(tokType) {
+    if (hasTokenLabel(tokType)) {
+        return tokType.LABEL;
+    }
+    else {
+        return tokType.name;
+    }
+}
+function tokenName(tokType) {
+    return tokType.name;
+}
+function hasTokenLabel(obj) {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["E" /* isString */])(obj.LABEL) && obj.LABEL !== "";
+}
+var PARENT = "parent";
+var CATEGORIES = "categories";
+var LABEL = "label";
+var GROUP = "group";
+var PUSH_MODE = "push_mode";
+var POP_MODE = "pop_mode";
+var LONGER_ALT = "longer_alt";
+var LINE_BREAKS = "line_breaks";
+var START_CHARS_HINT = "start_chars_hint";
+function createToken(config) {
+    return createTokenInternal(config);
+}
+function createTokenInternal(config) {
+    var pattern = config.pattern;
+    var tokenType = {};
+    tokenType.name = config.name;
+    if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["F" /* isUndefined */])(pattern)) {
+        tokenType.PATTERN = pattern;
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, PARENT)) {
+        throw "The parent property is no longer supported.\n" +
+            "See: https://github.com/SAP/chevrotain/issues/564#issuecomment-349062346 for details.";
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, CATEGORIES)) {
+        // casting to ANY as this will be fixed inside `augmentTokenTypes``
+        tokenType.CATEGORIES = config[CATEGORIES];
+    }
+    Object(__WEBPACK_IMPORTED_MODULE_2__tokens__["a" /* augmentTokenTypes */])([tokenType]);
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, LABEL)) {
+        tokenType.LABEL = config[LABEL];
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, GROUP)) {
+        tokenType.GROUP = config[GROUP];
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, POP_MODE)) {
+        tokenType.POP_MODE = config[POP_MODE];
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, PUSH_MODE)) {
+        tokenType.PUSH_MODE = config[PUSH_MODE];
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, LONGER_ALT)) {
+        tokenType.LONGER_ALT = config[LONGER_ALT];
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, LINE_BREAKS)) {
+        tokenType.LINE_BREAKS = config[LINE_BREAKS];
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, START_CHARS_HINT)) {
+        tokenType.START_CHARS_HINT = config[START_CHARS_HINT];
+    }
+    return tokenType;
+}
+var EOF = createToken({ name: "EOF", pattern: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA });
+Object(__WEBPACK_IMPORTED_MODULE_2__tokens__["a" /* augmentTokenTypes */])([EOF]);
+function createTokenInstance(tokType, image, startOffset, endOffset, startLine, endLine, startColumn, endColumn) {
+    return {
+        image: image,
+        startOffset: startOffset,
+        endOffset: endOffset,
+        startLine: startLine,
+        endLine: endLine,
+        startColumn: startColumn,
+        endColumn: endColumn,
+        tokenTypeIdx: tokType.tokenTypeIdx,
+        tokenType: tokType
+    };
+}
+function tokenMatcher(token, tokType) {
+    return Object(__WEBPACK_IMPORTED_MODULE_2__tokens__["d" /* tokenStructuredMatcher */])(token, tokType);
+}
+//# sourceMappingURL=tokens_public.js.map
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10734,7 +11855,7 @@ function marginMixin(_chart) {
 }
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 !function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.MapdDraw=e():t.MapdDraw=e()}(this,function(){return function(t){function e(n){if(r[n])return r[n].exports;var a=r[n]={exports:{},id:n,loaded:!1};return t[n].call(a.exports,a,a.exports,e),a.loaded=!0,a.exports}var r={};return e.m=t,e.c=r,e.p="",e(0)}([function(t,e,r){"use strict";function n(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function a(t){return t&&t.__esModule?t:{default:t}}Object.defineProperty(e,"__esModule",{value:!0}),e.simpleHull_2D=e.Math=e.Point=e.PolyLine=e.Poly=e.Rect=e.Circle=e.Vec2d=e.BasicStyle=e.Mat2=e.Point2d=e.Mat2d=e.AABox2d=e.DrawEngine=e.ShapeBuilder=e.version=void 0;var i=r(39);Object.defineProperty(e,"version",{enumerable:!0,get:function(){return i.version}});var o=r(1);Object.defineProperty(e,"Mat2",{enumerable:!0,get:function(){return o.mat2}});var s=r(15);Object.defineProperty(e,"simpleHull_2D",{enumerable:!0,get:function(){return s.simpleHull_2D}});var l=r(23),u=a(l),c=r(14),f=a(c),h=r(2),d=n(h),p=r(5),_=a(p),v=r(4),y=n(v),m=r(9),M=a(m),b=r(10),x=a(b),g=r(27),S=a(g),I=r(16),D=a(I),w=r(29),F=a(w),O=r(11),k=a(O),E=r(28),P=a(E),C=r(6),A=a(C);e.ShapeBuilder=u.default,e.DrawEngine=f.default,e.AABox2d=d,e.Mat2d=_.default,e.Point2d=y,e.BasicStyle=M.default,e.Vec2d=x.default,e.Circle=S.default,e.Rect=D.default,e.Poly=F.default,e.PolyLine=k.default,e.Point=P.default,e.Math=A.default},function(t,e,r){e.glMatrix=r(3),e.mat2=r(34),e.mat2d=r(35),e.mat3=r(20),e.mat4=r(36),e.quat=r(37),e.vec2=r(38),e.vec3=r(21),e.vec4=r(22)},function(t,e,r){"use strict";function n(t,e,r,n,a){return t[P]="number"==typeof e?e:1/0,t[C]="number"==typeof r?r:1/0,t[A]="number"==typeof n?n:-(1/0),t[j]="number"==typeof a?a:-(1/0),t}function a(t,e,r,a){var i=new E.glMatrix.ARRAY_TYPE(z.BOX_SIDES);return n(i,t,e,r,a)}function i(t){var e=new E.glMatrix.ARRAY_TYPE(z.BOX_SIDES);return e[P]=t[P],e[C]=t[C],e[A]=t[A],e[j]=t[j],e}function o(t,e){return t[P]=e[P],t[C]=e[C],t[A]=e[A],t[j]=e[j],t}function s(t){return t[P]=1/0,t[C]=1/0,t[A]=-(1/0),t[j]=-(1/0),t}function l(t){return t[P]=-(1/0),t[C]=-(1/0),t[A]=1/0,t[j]=1/0,t}function u(t,e){return e[0]<0?(t[P]=-e[0],t[A]=0):(t[P]=0,t[A]=e[0]),e[1]<0?(t[C]=-e[1],t[j]=0):(t[C]=0,t[j]=e[1]),t}function c(t,e,r){for(var n=0;n<2;n+=1)r[n]<0?(t[n]=e[n]-r[n],t[n+2]=e[n]):(t[n]=e[n],t[n+2]=e[n]+r[n]);return t}function f(t,e,r){for(var n=0;n<2;n+=1)r[n]<0?(t[n]=e[n]+r[n],t[n+2]=e[n]-r[n]):(t[n]=e[n]-r[n],t[n+2]=e[n]+r[n]);return t}function h(t){return t[P]>t[A]||t[C]>t[j]}function d(t){return!(isFinite(t[P])&&isFinite(t[C])&&isFinite(t[A])&&isFinite(t[j]))}function p(t,e){var r=t[0],n=t[1],a=t[2],i=t[3],o=e[0],s=e[1],l=e[2],u=e[3];return Math.abs(r-o)<=E.glMatrix.EPSILON&&Math.abs(n-s)<=E.glMatrix.EPSILON&&Math.abs(a-l)<=E.glMatrix.EPSILON&&Math.abs(i-u)<=E.glMatrix.EPSILON}function _(t,e){return E.vec2.set(t,e[A]-e[P],e[j]-e[C])}function v(t,e){return _(t,e),E.vec2.scale(t,t,.5)}function y(t,e){return v(t,e),t[P]+=e[P],t[C]+=e[C],t}function m(t,e,r){t[P]=e[P]-r[0],t[A]=e[A]+r[0],t[C]=e[C]-r[1],t[j]=e[j]+r[1]}function M(t){return(t[A]-t[P])*(t[j]-t[C])}function b(t,e,r){return a(Math.min(e[P],r[P]),Math.min(e[C],r[C]),Math.max(e[A],r[A]),Math.max(e[j],r[j]))}function x(t,e,r){var n=t;t===e&&(n=a());for(var i=P,l=A;i<=C&&!(e[l]<r[i]||e[i]>r[l]);i+=1,l+=1)n[i]=Math.max(e[i],r[i]),n[l]=Math.min(e[l],r[l]);return i!==C+1&&s(n),t===e&&o(t,n),t}function g(t,e){return!(t[A]<=e[P]||t[P]>=e[A]||t[j]<=e[C]||t[C]>=e[j])}function S(t,e){return!(e[P]<t[P]||e[A]>t[A]||e[C]<t[C]||e[j]>t[j])}function I(t,e){return e[P]>=t[P]&&e[P]<=t[A]&&e[C]>=t[C]&&e[C]<=t[j]}function D(t,e,r){return t!==e&&o(t,e),h(e)?(t[P]=r[P],t[A]=r[P],t[C]=r[C],t[j]=r[C]):(r[P]<t[P]?t[P]=r[P]:r[P]>t[A]&&(t[A]=r[P]),r[C]<t[C]?t[C]=r[C]:r[C]>t[j]&&(t[j]=r[C])),t}function w(t,e,r){t[P]=e[P]+r[0],t[C]=e[C]+r[1],t[A]=e[A]+r[0],t[j]=e[j]+r[1]}function F(t,e,r,n){var i=t;t===e&&(i=a()),s(i);var l=E.vec2.set(E.vec2.create(),e[P],e[C]),u=E.vec2.create();return n(u,l,r),D(i,i,u),l[P]=e[A],n(u,l,r),D(i,i,u),l[C]=e[j],n(u,l,r),D(i,i,u),l[P]=e[P],n(u,l,r),D(i,i,u),t===e&&o(t,i),t}function O(t,e,r){return F(t,e,r,E.vec2.transformMat2)}function k(t,e,r){return F(t,e,r,E.vec2.transformMat2d)}Object.defineProperty(e,"__esModule",{value:!0}),e.MAXY=e.MAXX=e.MINY=e.MINX=void 0,e.set=n,e.create=a,e.clone=i,e.copy=o,e.initEmpty=s,e.initInfinity=l,e.initSizeFromOrigin=u,e.initSizeFromLocation=c,e.initCenterExtents=f,e.isEmpty=h,e.isInfinite=d,e.equals=p,e.getSize=_,e.getExtents=v,e.getCenter=y,e.expand=m,e.area=M,e.hull=b,e.intersection=x,e.overlaps=g,e.contains=S,e.containsPt=I,e.encapsulatePt=D,e.translate=w,e.transformMat2=O,e.transformMat2d=k;var E=r(1),P=e.MINX=0,C=e.MINY=1,A=e.MAXX=2,j=e.MAXY=3,z={BOX_SIDES:4}},function(t,e){var r={};r.EPSILON=1e-6,r.ARRAY_TYPE="undefined"!=typeof Float32Array?Float32Array:Array,r.RANDOM=Math.random,r.ENABLE_SIMD=!1,r.SIMD_AVAILABLE=r.ARRAY_TYPE===Float32Array&&"SIMD"in this,r.USE_SIMD=r.ENABLE_SIMD&&r.SIMD_AVAILABLE,r.setMatrixArrayType=function(t){r.ARRAY_TYPE=t};var n=Math.PI/180;r.toRadian=function(t){return t*n},r.equals=function(t,e){return Math.abs(t-e)<=r.EPSILON*Math.max(1,Math.abs(t),Math.abs(e))},t.exports=r},function(t,e,r){"use strict";function n(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:0;return t[M]=e,t[b]=r,t}function a(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,r=new m.glMatrix.ARRAY_TYPE(2);return n(r,t,e)}function i(t){var e=new m.glMatrix.ARRAY_TYPE(2);return e[M]=t[M],e[b]=t[b],e}function o(t,e){return t[M]=e[M],t[b]=e[b],t}function s(t,e){return a(t,e)}function l(t,e,r){return m.vec2.add(t,e,r)}function u(t,e,r){return m.vec2.sub(t,e,r)}function c(t,e,r){return m.vec2.transformMat2(t,e,r)}function f(t,e,r){return m.vec2.transformMat2d(t,e,r)}function h(t){return"point2d("+t[0]+" , "+t[1]+")"}function d(t,e){return m.vec2.distance(t,e)}function p(t,e){return m.vec2.squaredDistance(t,e)}function _(t,e,r,n){return m.vec2.lerp(t,e,r,n)}function v(t,e){return m.vec2.equals(t,e)}function y(t,e){return m.vec2.exactEquals(t,e)}Object.defineProperty(e,"__esModule",{value:!0}),e.sqrDist=e.dist=void 0,e.set=n,e.create=a,e.clone=i,e.copy=o,e.initFromValues=s,e.addVec2=l,e.sub=u,e.transformMat2=c,e.transformMat2d=f,e.str=h,e.distance=d,e.squaredDistance=p,e.lerp=_,e.equals=v,e.exactEquals=y;var m=r(1),M=0,b=1;e.dist=d,e.sqrDist=p},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=r(1);n.mat2d.svd=function(t,e,r,n){if(t&&(t[0]=n[4],t[1]=n[5]),e||r){var a=(n[0]+n[3])/2,i=(n[0]-n[3])/2,o=(n[1]+n[2])/2,s=(n[1]-n[2])/2;if(e){var l=Math.sqrt(a*a+s*s),u=Math.sqrt(i*i+o*o);e[0]=l+u,e[1]=l-u}if(r){var c=Math.atan2(o,i),f=Math.atan2(s,a);r[0]=(f-c)/2,r[1]=(f+c)/2}}},e.default=n.mat2d},function(t,e){"use strict";function r(t,e,r){return t<e?e:t>r?r:t}function n(t){return t<0?0:t>1?1:t}function a(t,e,r){return t*(1-r)+e*r}Object.defineProperty(e,"__esModule",{value:!0});var i=1e-5,o=.25,s=.5,l=2;Math.QUATER_PI=o*Math.PI,Math.HALF_PI=s*Math.PI,Math.HALF_NPI=-s*Math.PI,Math.TWO_PI=l*Math.PI,Math.NPI=-Math.PI,Math.NQUATER_PI=o*Math.NPI,Math.NHALF_PI=s*Math.NPI,Math.NTWO_PI=l*Math.NPI,Math.INV_PI=1/Math.PI,Math.RAD_TO_DEG=180/Math.PI,Math.DEG_TO_RAD=Math.PI/180,Math.EPS=i,Math.clamp=r,Math.clamp01=n,Math.lerp=a,e.default=Math},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function s(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var l=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),u=r(2),c=a(u),f=r(18),h=n(f),d=r(19),p=n(d),_=r(12),v=n(_),y=r(8),m=n(y),M=r(9),b=n(M),x=r(13),g=n(x),S=r(1),I=function(t){function e(t){i(this,e);var r=o(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,["changed:xform","changed:style","changed:order","changed:visibility","changed:geom"]));return r._aabox=c.create(),r._zIndex=t&&t.zIndex?t.zIndex:0,r._visible=!0,r._geomDirty=!1,r._fullXform=S.mat2d.create(),r}return s(e,t),l(e,[{key:"zIndex",set:function(t){if(!Number.isInteger(t))throw new Error("zIndex must be an integer");if(t!==this._zIndex){var e=this._zIndex;this._zIndex=t,this.fire("changed:order",{attr:"zIndex",prevVal:e,currVal:this._zIndex})}return this},get:function(){return this._zIndex}},{key:"aabox",get:function(){return this._updateAABox(),this._aabox}},{key:"visible",set:function(t){if("boolean"!=typeof t)throw new Error("visible must be a boolean");return t!==this._visible&&(this._visible=t,this.fire("changed:visibility",{attr:"visible",prevVal:!this._visible,currVal:this._visible})),this},get:function(){return this._visible}}]),e}(g.default),D=function(t){function e(t){i(this,e);var r=o(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,t));return r._stateStack=[],r}return s(e,t),l(e,[{key:"save",value:function(){var t=new b.default;return b.default.copyBasicStyle(this,t),t.zIndex=this.zIndex,this._stateStack.push(t),this}},{key:"restore",value:function(){var t=this._stateStack.pop();return t&&(b.default.copyBasicStyle(t,this),this.zIndex=t.zIndex),this}},{key:"getGlobalDimensions",value:function(){var t=[0,0];return S.mat2d.svd(null,t,null,this.globalXform),t[0]*=this.width,t[1]*=this.height,t}},{key:"containsPoint",value:function(t,e,r,n){var a=!1,i=this.aabox;return this.visible&&c.containsPt(i,e)&&(n.save(),n.setTransform(this._fullXform[0],this._fullXform[1],this._fullXform[2],this._fullXform[3],this._fullXform[4],this._fullXform[5]),n.beginPath(),this._draw(n),n.strokeStyle="rgba(0,0,0,0)",n.lineWidth=this.strokeWidth+5,n.dashPattern=[],n.setTransform(1,0,0,1,0,0),n.stroke(),(this.isFillVisible()&&n.isPointInPath(t[0],t[1])||this.isStrokeVisible()&&n.isPointInStroke(t[0],t[1]))&&(a=!0),n.restore()),a}},{key:"renderBounds",value:function(t,e,r){t.save(),t.setTransform(e[0],e[1],e[2],e[3],e[4],e[5]),r.setStrokeCtx(t);var n=[0,0],a=[0,0],i=this.aabox;c.getCenter(n,i),c.getExtents(a,i),t.beginPath(),t.rect(n[0]-a[0],n[1]-a[1],2*a[0],2*a[1]),t.setTransform(1,0,0,1,0,0),t.stroke(),t.restore()}},{key:"_localXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"_globalXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"render",value:function(t,e,r){var n=arguments.length>3&&void 0!==arguments[3]?arguments[3]:null,a=arguments.length>4&&void 0!==arguments[4]?arguments[4]:null;this.transformCtx(t,this._fullXform,e),t.beginPath();var i=this._draw(t);(i||"undefined"==typeof i)&&(this.isFillVisible()&&(null===n||Boolean(n))&&(r.setFillStyle(t,this),t.fill()),this.isStrokeVisible()&&(null===a||Boolean(a))&&(r.setStrokeStyle(t,this),t.setTransform(1,0,0,1,0,0),t.stroke()))}},{key:"setStyle",value:function(t){return b.default.copyBasicStyle(t,this),this}},{key:"toJSON",value:function(){var t=this;return this._stateStack&&this._stateStack.length&&(t=this._stateStack[0]),Object.assign({visible:this.visible,zIndex:t.zIndex},b.default.toJSON(t),v.default.toJSON(this))}},{key:"visible",get:function(){return this._visible&&(this.isFillVisible()||this.isStrokeVisible())}}],[{key:"shapeCompare",value:function(t,e){var r=t.zIndex,n=e.zIndex;if(r<n)return-1;if(r>n)return 1;var a=h.default.compareFillStyle(t,e);return a||(a=p.default.compareStrokeStyle(t,e)),a}}]),e}((0,m.default)(I,(0,_.createEventedTransform2dMixin)("changed:xform"),(0,f.createEventedFillStyleMixin)("changed:style"),(0,d.createEventedStrokeStyleMixin)("changed:style")));e.default=D},function(t,e){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function n(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function a(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var i=function(t){for(var e=arguments.length,i=Array(e>1?e-1:0),o=1;o<e;o++)i[o-1]=arguments[o];var s=t?function(t){function e(){for(var t,a=arguments.length,o=Array(a),s=0;s<a;s++)o[s]=arguments[s];r(this,e);var l=n(this,(t=e.__proto__||Object.getPrototypeOf(e)).call.apply(t,[this].concat(o)));return i.forEach(function(t){if("function"==typeof t.prototype.initializer){var e;(e=t.prototype.initializer).call.apply(e,[l].concat(o))}}),l}return a(e,t),e}(t):function(){},l=function(e,r){Object.getOwnPropertyNames(r).concat(Object.getOwnPropertySymbols(r)).forEach(function(n){n.match(/^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)||t&&n.match(/^(?:initializer)$/)||Object.defineProperty(e,n,Object.getOwnPropertyDescriptor(r,n))})};return i.forEach(function(t){l(s.prototype,t.prototype),l(s,t)}),s};e.default=i},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function o(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}Object.defineProperty(e,"__esModule",{value:!0});var s=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),l=r(8),u=n(l),c=r(18),f=n(c),h=r(19),d=n(h),p=function(t){function e(){return a(this,e),i(this,(e.__proto__||Object.getPrototypeOf(e)).apply(this,arguments))}return o(e,t),s(e,null,[{key:"copyBasicStyle",value:function(t,e){f.default.copyFillStyle(t,e),d.default.copyStrokeStyle(t,e)}},{key:"toJSON",value:function(t){return Object.assign(f.default.toJSON(t),d.default.toJSON(t))}}]),e}((0,u.default)(function t(){a(this,t)},f.default,d.default));e.default=p},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=r(1);n.vec2.cross2d=function(t,e){return t[0]*e[1]-t[1]*e[0]},n.vec2.angleFast=function(t,e){return Math.acos(n.vec2.dot(t,e))},n.vec2.angle=function(t,e){var r=n.vec2.dot(t,e),a=n.vec2.cross2d(t,e),i=Math.atan2(a,r);return i},n.vec2.anglePosX=function(t){var e=Math.atan2(t[1],t[0]);return e<0&&(e*=-1),e},e.default=n.vec2},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function s(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}function l(t,e,r,n){p.isEmpty(t)?(t[0]=e[0],t[2]=e[0],n[0]=n[2]=r,t[1]=e[1],t[3]=e[1],n[1]=n[3]=r):(e[0]<t[0]?(t[0]=e[0],n[0]=r):e[0]>t[2]&&(t[2]=e[0],n[2]=r),e[1]<t[1]?(t[1]=e[1],n[1]=r):e[1]>t[3]&&(t[3]=e[1],n[3]=r))}function u(t,e,r){var n=e[0]*r[1]-r[0]*e[1];return t[0]+=(e[0]+r[0])*n,t[1]+=(e[1]+r[1])*n,n}function c(t){return Array.isArray(t)||ArrayBuffer&&ArrayBuffer.isView(t)}Object.defineProperty(e,"__esModule",{value:!0});var f=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),h=function t(e,r,n){null===e&&(e=Function.prototype);var a=Object.getOwnPropertyDescriptor(e,r);if(void 0===a){var i=Object.getPrototypeOf(e);return null===i?void 0:t(i,r,n)}if("value"in a)return a.value;var o=a.get;if(void 0!==o)return o.call(n)},d=r(2),p=a(d),_=r(4),v=a(_),y=r(7),m=n(y),M=r(1),b=r(6),x=n(b),g=r(15),S=M.mat2d.create(),I=function(t){function e(t){i(this,e);var r=t.verts||[],n=o(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,t));if(!c(r)||0===r.length||c(r[0])&&r.length<1||!c(r[0])&&(r.length<2||r.length%2!==0))throw new Error("PolyLine shapes must be initialized with an array of 2d points and contain at least 1 points");n._extentIndices=[-1,-1,-1,-1],n._localaabox=p.create(),n._verts=[],n._centroid=[0,0],p.initEmpty(n._aabox);var a=0,s=0;if(c(r[0])){for(s=0;s<r.length-1;s+=1)n._verts.push(v.clone(r[s])),l(n._aabox,r[s],s,n._extentIndices),a+=u(n._centroid,r[s],r[s+1]);n._verts.push(v.clone(r[s])),l(n._aabox,r[s],s,n._extentIndices),a+=u(n._centroid,r[s],r[0])}else{n._verts.push(v.create(r[0],r[1])),l(n._aabox,n._verts[0],0,n._extentIndices);var f=1;for(s=2;s<r.length-2;s+=2,f+=1)n._verts.push(v.create(r[s],r[s+1])),l(n._aabox,n._verts[f],f,n._extentIndices),a+=u(n._centroid,n._verts[f-1],n._verts[f]);n._verts.push(v.create(r[s],r[s+1])),l(n._aabox,n._verts[f],f,n._extentIndices),a+=u(n._centroid,n._verts[f],n._verts[0])}a*=.5,n._centroid[0]/=6*a,n._centroid[1]/=6*a;var h=v.create();return p.getCenter(h,n._aabox),n.pivot=h,n._verts.length<3?n._convexHull=n._verts.map(function(t,e){return e}):n._convexHull=(0,g.simpleHull_2D)(n._verts),n}return s(e,t),f(e,[{key:"getDimensions",value:function(){return[this.width,this.height]}},{key:"_collapseVerts",value:function(){var t=this;v.set(this._pivot,0,0);var e=this.localXform;if(M.mat2d.equals(e,S))return!1;p.initEmpty(this._aabox);for(var r=0;r<this._verts.length;r+=1)v.transformMat2d(this._verts[r],this._verts[r],e);return this._verts.length<3?this._convexHull=this._verts.map(function(t,e){return e}):this._convexHull=(0,g.simpleHull_2D)(this._verts),this._convexHull.forEach(function(e){l(t._aabox,t._verts[e],e,t._extentIndices)}),this.setTransformations(0,0,1,1,0),!0}},{key:"translateVert",value:function(t,e){if(t>=this._verts.length)throw new Error("Cannot translate vertex at index "+t+". There are only "+this._verts.length+" vertices in the polygon.");if(e[0]||e[1]){var r=v.clone(this._verts[t]),n=v.clone(this._verts[t]);v.addVec2(n,n,e),this._collapseVerts(),this._resetAABox=!0,this._geomDirty=!0,v.copy(n),this.fire("changed:geom",{attr:"verts["+t+"]",prevVal:r,currVal:n})}return this}},{key:"setVertPosition",value:function(t,e){if(t>=this._verts.length)throw new Error("Cannot translate vertex at index "+t+". There are only "+this._verts.length+" vertices in the polygon.");if(!v.equals(e,this._verts[t])){var r=v.clone(this._verts[t]);this._collapseVerts(),v.copy(this._verts[t],e),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom",{attr:"verts["+t+"]",prevVal:r,currVal:e})}}},{key:"insertVert",value:function(t,e){var r=x.default.min(x.default.max(t,0),this._verts.length);return this._collapseVerts(),t>=this._verts.length?(this._verts.push(v.clone(e)),r=this._verts.length-1):this._verts.splice(t,0,v.clone(e)),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom:addvert",{attr:"verts["+r+"]",currVal:e}),r}},{key:"appendVert",value:function(t){return this.insertVert(this._verts.length,t)}},{key:"removeVert",value:function(t){if(t>=this._verts.length||t<0)throw new Error("Cannot remove vertex "+t+". Invalid index. There are only "+this._verts.length+" vertices in the shape.");var e=this._verts[t];return this._verts.splice(t,1),this._collapseVerts(),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom:removevert",{attr:"verts["+t+"]",currVal:e}),t}},{key:"_rebuildAABox",value:function(){var t=this;p.initEmpty(this._aabox),this._verts.length<3?this._convexHull=this._verts.map(function(t,e){return e}):this._convexHull=(0,g.simpleHull_2D)(this._verts),this._convexHull.forEach(function(e){l(t._aabox,t._verts[e],e,t._extentIndices)});var e=v.create(0,0);p.getCenter(e,this._aabox),this.pivot=e}},{key:"_updateAABox",value:function(){var t=this;if(this._resetAABox&&(this._rebuildAABox(),this._resetAABox=!1),this._boundsOutOfDate||this._geomDirty){p.initEmpty(this._aabox);var e=[0,0],r=this.globalXform;if(this._convexHull.forEach(function(n){p.encapsulatePt(t._aabox,t._aabox,v.transformMat2d(e,t._verts[n],r))}),this._boundsOutOfDate=!1,this._geomDirty){var n=v.create();n[0]=this._verts[this._extentIndices[0]][0]+.5*(this._verts[this._extentIndices[2]][0]-this._verts[this._extentIndices[0]][0]),n[1]=this._verts[this._extentIndices[1]][1]+.5*(this._verts[this._extentIndices[3]][1]-this._verts[this._extentIndices[1]][1]),this.pivot=n,this._geomDirty=!1}}}},{key:"_draw",value:function(t){var e=!1;if(this._verts.length>=2){t.moveTo(this._verts[0][0],this._verts[0][1]);for(var r=1;r<this._verts.length;r+=1)t.lineTo(this._verts[r][0],this._verts[r][1]);e=!0}return e}},{key:"toJSON",value:function(){return Object.assign({type:"PolyLine",verts:this.vertsRef.map(function(t){return[t[0],t[1]]})},h(e.prototype.__proto__||Object.getPrototypeOf(e.prototype),"toJSON",this).call(this))}},{key:"width",get:function(){return this._updateAABox(),!this._verts.length||this._extentIndices[0]<0||this._extentIndices[2]<0?0:this._verts[this._extentIndices[2]][0]-this._verts[this._extentIndices[0]][0]}},{key:"height",get:function(){return this._updateAABox(),!this._verts.length||this._extentIndices[0]<0||this._extentIndices[2]<0?0:this._verts[this._extentIndices[3]][1]-this._verts[this._extentIndices[1]][1]}},{key:"vertsRef",get:function(){return this._verts}},{key:"numVerts",get:function(){return this._verts.length}}]),e}(m.default);e.default=I,I.aaboxEncapsulatePt=l},function(t,e,r){"use strict";function n(t){return t&&t.__esModule?t:{default:t}}function a(t){if(t&&t.__esModule)return t;var e={};if(null!=t)for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(e[r]=t[r]);return e.default=t,e}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e,r,n,a){return h.mat2d.identity(t),h.mat2d.translate(t,t,[n[0]+a[0],n[1]+a[1]]),h.mat2d.rotate(t,t,v.default.DEG_TO_RAD*e),h.mat2d.scale(t,t,r),h.mat2d.translate(t,t,[-a[0],-a[1]]),t}function s(t){t.forEach(function(t){t._xformDirty=!0,s(t._children)})}function l(t){return(0,p.default)(null,y,function(){function e(){i(this,e)}return u(e,[{key:"setPosition",value:function(e){if(!f.equals(e,this._pos)){var r=[this._pos[0],this._pos[1]];f.copy(this._pos,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"position",prevVal:r,currVal:e})}return this}},{key:"translate",value:function(e){if(e[0]||e[1]){var r=[this._pos[0],this._pos[1]];f.addVec2(this._pos,this._pos,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"position",prevVal:r,currVal:[this._pos[0],this._pos[1]]})}return this}},{key:"setScale",value:function(e){if(!h.vec2.equals(e,this._scale)){var r=[this._scale[0],this._scale[1]];h.vec2.copy(this._scale,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"size",prevVal:r,currVal:e})}return this}},{key:"scale",value:function(e){if(1!==e[0]||1!==e[1]){var r=[this._scale[0],this._scale[1]];h.vec2.multiply(this._scale,this._scale,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"size",prevVal:r,currVal:[this._scale[0],this._scale[1]]})}return this}},{key:"setRotation",value:function(e){var r=e%360;if(r!==this._rotDeg){var n=this._rotDeg;this._rotDeg=r,this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"orientation",prevVal:n,curral:this._rotDeg})}}},{key:"rotate",value:function(e){if(e){var r=this._rotDeg;this._rotDeg+=e,this._rotDeg%=360,this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"orientation",prevVal:r,curral:this._rotDeg})}return this}},{key:"setTransformations",value:function(e,r,n,a,i){var o=[],l=[],u=[];if(!("undefined"==typeof e||"undefined"==typeof r||h.glMatrix.equals(e,this._pos[0])&&h.glMatrix.equals(r,this._pos[1]))){var c=f.clone(this._pos);this._pos[0]=e,this._pos[1]=r,o.push("position"),l.push(c),u.push(f.clone(this._pos))}if(!("undefined"==typeof n||"undefined"==typeof a||h.glMatrix.equals(n,this._scale[0])&&h.glMatrix.equals(a,this._scale[1]))){var d=h.vec2.clone(this._scale);h.vec2.set(this._scale,n,a),o.push("size"),l.push(d),u.push(h.vec2.clone(this._scale))}if("undefined"!=typeof i){var p=i%360;if(!h.glMatrix.equals(p,this._rotDeg)){var _=this._rotDeg;this._rotDeg=p,o.push("orientation"),l.push(_),u.push(this._rotDeg)}}return o.length&&(this._lxformDirty=!0,s(this._children),this.fire(t,{attrs:o,prevVals:l,currVals:u})),this}},{key:"pivot",set:function(e){if(!f.equals(e,this._pivot)){var r=[this._pivot[0],this._pivot[1]];f.copy(this._pivot,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"pivot",prevVal:r,currVal:e})}return this},get:function(){return f.clone(this._pivot)}}]),e}())}Object.defineProperty(e,"__esModule",{value:!0});var u=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}();e.buildXformMatrix=o,e.createEventedTransform2dMixin=l;var c=r(4),f=a(c),h=r(1),d=r(8),p=n(d),_=r(6),v=n(_),y=function(){function t(e){i(this,t),this.initializer(e)}return u(t,[{key:"_initTransformFromOptions",value:function(t){t&&("undefined"!=typeof t.position&&this.setPosition(t.position),"undefined"!=typeof t.scale&&this.setScale(t.scale),"undefined"!=typeof t.rotation&&this.setRotation(t.rotation),"undefined"!=typeof t.pivot&&(this.pivot=t.pivot))}},{key:"initializer",value:function(t){this._localXform=h.mat2d.create(),this._lxformDirty=!1,this._pivot=f.create(0,0),this._pos=f.create(0,0),this._scale=h.vec2.fromValues(1,1),this._rotDeg=0,this._globalXform=h.mat2d.create(),this._xformDirty=!1,this._parent=null,this._children=new Set,this._initTransformFromOptions(t)}},{key:"addChildXform",value:function(t){this._children.has(t)||(this._children.add(t),t._parent&&t._parent.removeChild(t),t._parent=this,t._xformDirty=!0,s(t._children))}},{key:"removeChildXform",value:function(t){this._children.delete(t)}},{key:"unparentXform",value:function(){this._parent&&(this._parent.removeChild(this),this._parent=null,h.mat2d.copy(this._globalXform,this.localXform))}},{key:"getPosition",value:function(){return h.vec2.clone(this._pos)}},{key:"getPositionRef",value:function(){return this._pos}},{key:"getWorldPosition",value:function(){var t=this.globalXform;return f.create(t[4],t[5])}},{key:"setPosition",value:function(t){f.copy(this._pos,t),this._lxformDirty=!0,s(this._children)}},{key:"translate",value:function(t){return(t[0]||t[1])&&(f.addVec2(this._pos,this._pos,t),this._lxformDirty=!0,s(this._children)),this}},{key:"getScale",value:function(){return h.vec2.clone(this._scale)}},{key:"getScaleRef",value:function(){return this._scale}},{key:"setScale",value:function(t){return h.vec2.copy(this._scale,t),this._lxformDirty=!0,s(this._children),this}},{key:"scale",value:function(t){return 1===t[0]&&1===t[1]||(h.vec2.multiply(this._scale,this._scale,t),this._lxformDirty=!0,s(this._children)),this}},{key:"getRotation",value:function(){return this._rotDeg}},{key:"setRotation",value:function(t){return this._rotDeg=t,this._lxformDirty=!0,s(this._children),this}},{key:"rotate",value:function(t){return t&&(this._rotDeg+=t,this._lxformDirty=!0,s(this._children)),this}},{key:"_dirtyChildren",value:function(){s(this._children)}},{key:"_updatelocalxform",value:function(){this._lxformDirty&&(o(this._localXform,this._rotDeg,this._scale,this._pos,this._pivot),this._localXformUpdated&&this._localXformUpdated(),this._lxformDirty=!1)}},{key:"_updateglobalxform",value:function(){(this._lxformDirty||this._xformDirty)&&(this._updatelocalxform(),this._parent?h.mat2d.multiply(this._globalXform,this._parent.globalXform,this._localXform):h.mat2d.copy(this._globalXform,this._localXform),this._globalXformUpdated&&this._globalXformUpdated(),this._xformDirty=!1)}},{key:"transformCtx",value:function(t,e,r){h.mat2d.multiply(e,r,this.globalXform),t.setTransform(e[0],e[1],e[2],e[3],e[4],e[5])}},{key:"pivot",set:function(t){return f.copy(this._pivot,t),this._lxformDirty=!0,s(this._children),this},get:function(){return f.clone(this._pivot)}},{key:"pivotRef",get:function(){return this._pivot}},{key:"parent",get:function(){return this._parent}},{key:"localXform",get:function(){return this._updatelocalxform(),this._localXform}},{key:"globalXform",get:function(){return this._updateglobalxform(),this._globalXform}}],[{key:"toJSON",value:function(t){var e=t.getPositionRef(),r=t.getScaleRef(),n=t.pivotRef;return{position:[e[0],e[1]],scale:[r[0],r[1]],rotation:t.getRotation(),pivot:[n[0],n[1]]}}}]),t}();e.default=y},function(t,e){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function n(t,e,r,a){var i=this;if(r>=e.length)return 0;var o=0,s=null;return s=t.get(e[r]),s&&(o=n(s[0],e,r+1,a),s[1].forEach(function(t){return t.call(i,a)}),o+=s[1].length),o}function a(t,e){var r=-1,n=t[0],i=t[1];i.length&&e.forEach(function(t){(r=i.indexOf(t))>=0&&i.splice(r,1)}),n.forEach(function(t){a(t,e)})}function i(t){var e=t;if("string"==typeof t)e=[t];else if(!Array.isArray(t))throw new Error("Input must be an array of strings");return e}Object.defineProperty(e,"__esModule",{value:!0});var o=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}(),s=function(){function t(e){r(this,t),this.initializer(e)}return o(t,[{key:"initializer",value:function(t){this._listeners=new Map,this.registerEvents(t)}},{key:"registerEvents",value:function(t){var e=this;if(t){var r=i(t);if("string"==typeof t)r=[t];else if(!Array.isArray(t))throw new Error("Events must be an array of strings");r.forEach(function(t){for(var r=t.split(":"),n=e._listeners,a=0;a<r.length;a+=1){var i=n.get(r[a]);i||(i=[new Map,[]],n.set(r[a],i)),n=i[0]}})}}},{key:"on",value:function(t,e){var r=this,n=i(t);return n.forEach(function(t){var n=t.split(":"),a=r._listeners,i=null;n.forEach(function(e){if(i=a.get(e),!i){var r=[];throw a.forEach(function(t,e){return r.push(e)}),new Error(t+" is not a valid event type. The registered event types at this level are ["+r+"]")}a=i[0]}),i[1].indexOf(e)<0&&i[1].push(e);
@@ -10746,7 +11867,61 @@ s.normalize=o.normalize,s.fromMat3=function(t,e){var r,n=e[0]+e[4]+e[8];if(n>0)r
 //# sourceMappingURL=mapd-draw.js.map
 
 /***/ }),
-/* 15 */
+/* 19 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GAstVisitor; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gast_public__ = __webpack_require__(7);
+
+var GAstVisitor = /** @class */ (function () {
+    function GAstVisitor() {
+    }
+    GAstVisitor.prototype.visit = function (node) {
+        var nodeAny = node;
+        switch (nodeAny.constructor) {
+            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["d" /* NonTerminal */]:
+                return this.visitNonTerminal(nodeAny);
+            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["c" /* Flat */]:
+                return this.visitFlat(nodeAny);
+            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["e" /* Option */]:
+                return this.visitOption(nodeAny);
+            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["g" /* RepetitionMandatory */]:
+                return this.visitRepetitionMandatory(nodeAny);
+            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["h" /* RepetitionMandatoryWithSeparator */]:
+                return this.visitRepetitionMandatoryWithSeparator(nodeAny);
+            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["i" /* RepetitionWithSeparator */]:
+                return this.visitRepetitionWithSeparator(nodeAny);
+            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["f" /* Repetition */]:
+                return this.visitRepetition(nodeAny);
+            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["b" /* Alternation */]:
+                return this.visitAlternation(nodeAny);
+            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["k" /* Terminal */]:
+                return this.visitTerminal(nodeAny);
+            case __WEBPACK_IMPORTED_MODULE_0__gast_public__["j" /* Rule */]:
+                return this.visitRule(nodeAny);
+            /* istanbul ignore next */
+            default:
+                throw Error("non exhaustive match");
+        }
+    };
+    GAstVisitor.prototype.visitNonTerminal = function (node) { };
+    GAstVisitor.prototype.visitFlat = function (node) { };
+    GAstVisitor.prototype.visitOption = function (node) { };
+    GAstVisitor.prototype.visitRepetition = function (node) { };
+    GAstVisitor.prototype.visitRepetitionMandatory = function (node) { };
+    GAstVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) { };
+    GAstVisitor.prototype.visitRepetitionWithSeparator = function (node) { };
+    GAstVisitor.prototype.visitAlternation = function (node) { };
+    GAstVisitor.prototype.visitTerminal = function (node) { };
+    GAstVisitor.prototype.visitRule = function (node) { };
+    return GAstVisitor;
+}());
+
+//# sourceMappingURL=gast_visitor_public.js.map
+
+/***/ }),
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10757,7 +11932,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.filters = undefined;
 
-var _formattingHelpers = __webpack_require__(7);
+var _formattingHelpers = __webpack_require__(10);
 
 /**
  * The dc.js filters are functions which are passed into crossfilter to chose which records will be
@@ -10893,7 +12068,7 @@ filters.RangedTwoDimensionalFilter = function (filter) {
 };
 
 /***/ }),
-/* 16 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10924,11 +12099,11 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _wellknown = __webpack_require__(294);
+var _wellknown = __webpack_require__(321);
 
 var _wellknown2 = _interopRequireDefault(_wellknown);
 
-var _mapdDraw = __webpack_require__(14);
+var _mapdDraw = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11553,7 +12728,440 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
 }
 
 /***/ }),
-/* 17 */
+/* 22 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["d"] = tokenStructuredMatcher;
+/* harmony export (immutable) */ __webpack_exports__["e"] = tokenStructuredMatcherNoCategories;
+/* unused harmony export tokenShortNameIdx */
+/* unused harmony export tokenIdxToClass */
+/* harmony export (immutable) */ __webpack_exports__["a"] = augmentTokenTypes;
+/* unused harmony export expandCategories */
+/* unused harmony export assignTokenDefaultProps */
+/* unused harmony export assignCategoriesTokensProp */
+/* unused harmony export assignCategoriesMapProp */
+/* unused harmony export singleAssignCategoriesToksMap */
+/* harmony export (immutable) */ __webpack_exports__["b"] = hasShortKeyProperty;
+/* unused harmony export hasCategoriesProperty */
+/* unused harmony export hasExtendingTokensTypesProperty */
+/* unused harmony export hasExtendingTokensTypesMapProperty */
+/* harmony export (immutable) */ __webpack_exports__["c"] = isTokenType;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+
+function tokenStructuredMatcher(tokInstance, tokConstructor) {
+    var instanceType = tokInstance.tokenTypeIdx;
+    if (instanceType === tokConstructor.tokenTypeIdx) {
+        return true;
+    }
+    else {
+        return (tokConstructor.isParent === true &&
+            tokConstructor.categoryMatchesMap[instanceType] === true);
+    }
+}
+// Optimized tokenMatcher in case our grammar does not use token categories
+// Being so tiny it is much more likely to be in-lined and this avoid the function call overhead
+function tokenStructuredMatcherNoCategories(token, tokType) {
+    return token.tokenTypeIdx === tokType.tokenTypeIdx;
+}
+var tokenShortNameIdx = 1;
+var tokenIdxToClass = {};
+function augmentTokenTypes(tokenTypes) {
+    // collect the parent Token Types as well.
+    var tokenTypesAndParents = expandCategories(tokenTypes);
+    // add required tokenType and categoryMatches properties
+    assignTokenDefaultProps(tokenTypesAndParents);
+    // fill up the categoryMatches
+    assignCategoriesMapProp(tokenTypesAndParents);
+    assignCategoriesTokensProp(tokenTypesAndParents);
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(tokenTypesAndParents, function (tokType) {
+        tokType.isParent = tokType.categoryMatches.length > 0;
+    });
+}
+function expandCategories(tokenTypes) {
+    var result = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["g" /* cloneArr */])(tokenTypes);
+    var categories = tokenTypes;
+    var searching = true;
+    while (searching) {
+        categories = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["i" /* compact */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(categories, function (currTokType) { return currTokType.CATEGORIES; })));
+        var newCategories = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["l" /* difference */])(categories, result);
+        result = result.concat(newCategories);
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(newCategories)) {
+            searching = false;
+        }
+        else {
+            categories = newCategories;
+        }
+    }
+    return result;
+}
+function assignTokenDefaultProps(tokenTypes) {
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(tokenTypes, function (currTokType) {
+        if (!hasShortKeyProperty(currTokType)) {
+            tokenIdxToClass[tokenShortNameIdx] = currTokType;
+            currTokType.tokenTypeIdx = tokenShortNameIdx++;
+        }
+        // CATEGORIES? : TokenType | TokenType[]
+        if (hasCategoriesProperty(currTokType) &&
+            !Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(currTokType.CATEGORIES)
+        // &&
+        // !isUndefined(currTokType.CATEGORIES.PATTERN)
+        ) {
+            currTokType.CATEGORIES = [currTokType.CATEGORIES];
+        }
+        if (!hasCategoriesProperty(currTokType)) {
+            currTokType.CATEGORIES = [];
+        }
+        if (!hasExtendingTokensTypesProperty(currTokType)) {
+            currTokType.categoryMatches = [];
+        }
+        if (!hasExtendingTokensTypesMapProperty(currTokType)) {
+            currTokType.categoryMatchesMap = {};
+        }
+    });
+}
+function assignCategoriesTokensProp(tokenTypes) {
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(tokenTypes, function (currTokType) {
+        // avoid duplications
+        currTokType.categoryMatches = [];
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currTokType.categoryMatchesMap, function (val, key) {
+            currTokType.categoryMatches.push(tokenIdxToClass[key].tokenTypeIdx);
+        });
+    });
+}
+function assignCategoriesMapProp(tokenTypes) {
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(tokenTypes, function (currTokType) {
+        singleAssignCategoriesToksMap([], currTokType);
+    });
+}
+function singleAssignCategoriesToksMap(path, nextNode) {
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(path, function (pathNode) {
+        nextNode.categoryMatchesMap[pathNode.tokenTypeIdx] = true;
+    });
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(nextNode.CATEGORIES, function (nextCategory) {
+        var newPath = path.concat(nextNode);
+        // avoids infinite loops due to cyclic categories.
+        if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(newPath, nextCategory)) {
+            singleAssignCategoriesToksMap(newPath, nextCategory);
+        }
+    });
+}
+function hasShortKeyProperty(tokType) {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokType, "tokenTypeIdx");
+}
+function hasCategoriesProperty(tokType) {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokType, "CATEGORIES");
+}
+function hasExtendingTokensTypesProperty(tokType) {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokType, "categoryMatches");
+}
+function hasExtendingTokensTypesMapProperty(tokType) {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokType, "categoryMatchesMap");
+}
+function isTokenType(tokType) {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokType, "tokenTypeIdx");
+}
+//# sourceMappingURL=tokens.js.map
+
+/***/ }),
+/* 23 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["f"] = isSequenceProd;
+/* harmony export (immutable) */ __webpack_exports__["e"] = isOptionalProd;
+/* harmony export (immutable) */ __webpack_exports__["d"] = isBranchingProd;
+/* harmony export (immutable) */ __webpack_exports__["c"] = getProductionDslName;
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DslMethodsCollectorVisitor; });
+/* harmony export (immutable) */ __webpack_exports__["b"] = collectMethods;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_visitor_public__ = __webpack_require__(19);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+function isSequenceProd(prod) {
+    return (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["c" /* Flat */] ||
+        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["e" /* Option */] ||
+        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["f" /* Repetition */] ||
+        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["g" /* RepetitionMandatory */] ||
+        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["h" /* RepetitionMandatoryWithSeparator */] ||
+        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["i" /* RepetitionWithSeparator */] ||
+        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["k" /* Terminal */] ||
+        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["j" /* Rule */]);
+}
+function isOptionalProd(prod, alreadyVisited) {
+    if (alreadyVisited === void 0) { alreadyVisited = []; }
+    var isDirectlyOptional = prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["e" /* Option */] ||
+        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["f" /* Repetition */] ||
+        prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["i" /* RepetitionWithSeparator */];
+    if (isDirectlyOptional) {
+        return true;
+    }
+    // note that this can cause infinite loop if one optional empty TOP production has a cyclic dependency with another
+    // empty optional top rule
+    // may be indirectly optional ((A?B?C?) | (D?E?F?))
+    if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["b" /* Alternation */]) {
+        // for OR its enough for just one of the alternatives to be optional
+        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["Q" /* some */])(prod.definition, function (subProd) {
+            return isOptionalProd(subProd, alreadyVisited);
+        });
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["d" /* NonTerminal */] && Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(alreadyVisited, prod)) {
+        // avoiding stack overflow due to infinite recursion
+        return false;
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["a" /* AbstractProduction */]) {
+        if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["d" /* NonTerminal */]) {
+            alreadyVisited.push(prod);
+        }
+        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(prod.definition, function (subProd) {
+            return isOptionalProd(subProd, alreadyVisited);
+        });
+    }
+    else {
+        return false;
+    }
+}
+function isBranchingProd(prod) {
+    return prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["b" /* Alternation */];
+}
+function getProductionDslName(prod) {
+    /* istanbul ignore else */
+    if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["d" /* NonTerminal */]) {
+        return "SUBRULE";
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["e" /* Option */]) {
+        return "OPTION";
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["b" /* Alternation */]) {
+        return "OR";
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["g" /* RepetitionMandatory */]) {
+        return "AT_LEAST_ONE";
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
+        return "AT_LEAST_ONE_SEP";
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["i" /* RepetitionWithSeparator */]) {
+        return "MANY_SEP";
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["f" /* Repetition */]) {
+        return "MANY";
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_public__["k" /* Terminal */]) {
+        return "CONSUME";
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+var DslMethodsCollectorVisitor = /** @class */ (function (_super) {
+    __extends(DslMethodsCollectorVisitor, _super);
+    function DslMethodsCollectorVisitor() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        // A minus is never valid in an identifier name
+        _this.separator = "-";
+        _this.dslMethods = {
+            option: [],
+            alternation: [],
+            repetition: [],
+            repetitionWithSeparator: [],
+            repetitionMandatory: [],
+            repetitionMandatoryWithSeparator: []
+        };
+        return _this;
+    }
+    DslMethodsCollectorVisitor.prototype.reset = function () {
+        this.dslMethods = {
+            option: [],
+            alternation: [],
+            repetition: [],
+            repetitionWithSeparator: [],
+            repetitionMandatory: [],
+            repetitionMandatoryWithSeparator: []
+        };
+    };
+    DslMethodsCollectorVisitor.prototype.visitTerminal = function (terminal) {
+        var key = terminal.terminalType.name + this.separator + "Terminal";
+        if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(this.dslMethods, key)) {
+            this.dslMethods[key] = [];
+        }
+        this.dslMethods[key].push(terminal);
+    };
+    DslMethodsCollectorVisitor.prototype.visitNonTerminal = function (subrule) {
+        var key = subrule.nonTerminalName + this.separator + "Terminal";
+        if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(this.dslMethods, key)) {
+            this.dslMethods[key] = [];
+        }
+        this.dslMethods[key].push(subrule);
+    };
+    DslMethodsCollectorVisitor.prototype.visitOption = function (option) {
+        this.dslMethods.option.push(option);
+    };
+    DslMethodsCollectorVisitor.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.dslMethods.repetitionWithSeparator.push(manySep);
+    };
+    DslMethodsCollectorVisitor.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.dslMethods.repetitionMandatory.push(atLeastOne);
+    };
+    DslMethodsCollectorVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.dslMethods.repetitionMandatoryWithSeparator.push(atLeastOneSep);
+    };
+    DslMethodsCollectorVisitor.prototype.visitRepetition = function (many) {
+        this.dslMethods.repetition.push(many);
+    };
+    DslMethodsCollectorVisitor.prototype.visitAlternation = function (or) {
+        this.dslMethods.alternation.push(or);
+    };
+    return DslMethodsCollectorVisitor;
+}(__WEBPACK_IMPORTED_MODULE_2__gast_visitor_public__["a" /* GAstVisitor */]));
+
+var collectorVisitor = new DslMethodsCollectorVisitor();
+function collectMethods(rule) {
+    collectorVisitor.reset();
+    rule.accept(collectorVisitor);
+    var dslMethods = collectorVisitor.dslMethods;
+    // avoid uncleaned references
+    collectorVisitor.reset();
+    return dslMethods;
+}
+//# sourceMappingURL=gast.js.map
+
+/***/ }),
+/* 24 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return BITS_FOR_METHOD_TYPE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return BITS_FOR_OCCURRENCE_IDX; });
+/* unused harmony export BITS_FOR_RULE_IDX */
+/* unused harmony export BITS_FOR_ALT_IDX */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return OR_IDX; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return OPTION_IDX; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return MANY_IDX; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AT_LEAST_ONE_IDX; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return MANY_SEP_IDX; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return AT_LEAST_ONE_SEP_IDX; });
+/* harmony export (immutable) */ __webpack_exports__["j"] = getKeyForAutomaticLookahead;
+/* harmony export (immutable) */ __webpack_exports__["i"] = getKeyForAltIndex;
+// Lookahead keys are 32Bit integers in the form
+// TTTTTTTT-ZZZZZZZZZZZZ-YYYY-XXXXXXXX
+// XXXX -> Occurrence Index bitmap.
+// YYYY -> DSL Method Type bitmap.
+// ZZZZZZZZZZZZZZZ -> Rule short Index bitmap.
+// TTTTTTTTT -> alternation alternative index bitmap
+var BITS_FOR_METHOD_TYPE = 4;
+var BITS_FOR_OCCURRENCE_IDX = 8;
+var BITS_FOR_RULE_IDX = 12;
+// TODO: validation, this means that there may at most 2^8 --> 256 alternatives for an alternation.
+var BITS_FOR_ALT_IDX = 8;
+// short string used as part of mapping keys.
+// being short improves the performance when composing KEYS for maps out of these
+// The 5 - 8 bits (16 possible values, are reserved for the DSL method indices)
+/* tslint:disable */
+var OR_IDX = 1 << BITS_FOR_OCCURRENCE_IDX;
+var OPTION_IDX = 2 << BITS_FOR_OCCURRENCE_IDX;
+var MANY_IDX = 3 << BITS_FOR_OCCURRENCE_IDX;
+var AT_LEAST_ONE_IDX = 4 << BITS_FOR_OCCURRENCE_IDX;
+var MANY_SEP_IDX = 5 << BITS_FOR_OCCURRENCE_IDX;
+var AT_LEAST_ONE_SEP_IDX = 6 << BITS_FOR_OCCURRENCE_IDX;
+/* tslint:enable */
+// this actually returns a number, but it is always used as a string (object prop key)
+function getKeyForAutomaticLookahead(ruleIdx, dslMethodIdx, occurrence) {
+    /* tslint:disable */
+    return occurrence | dslMethodIdx | ruleIdx;
+    /* tslint:enable */
+}
+var BITS_START_FOR_ALT_IDX = 32 - BITS_FOR_ALT_IDX;
+function getKeyForAltIndex(ruleIdx, dslMethodIdx, occurrence, altIdx) {
+    /* tslint:disable */
+    // alternative indices are zero based, thus must always add one (turn on one bit) to guarantee uniqueness.
+    var altIdxBitMap = (altIdx + 1) << BITS_START_FOR_ALT_IDX;
+    return (getKeyForAutomaticLookahead(ruleIdx, dslMethodIdx, occurrence) |
+        altIdxBitMap);
+    /* tslint:enable */
+}
+//# sourceMappingURL=keys.js.map
+
+/***/ }),
+/* 25 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["e"] = isRecognitionException;
+/* harmony export (immutable) */ __webpack_exports__["b"] = MismatchedTokenException;
+/* harmony export (immutable) */ __webpack_exports__["c"] = NoViableAltException;
+/* harmony export (immutable) */ __webpack_exports__["d"] = NotAllInputParsedException;
+/* harmony export (immutable) */ __webpack_exports__["a"] = EarlyExitException;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+
+var MISMATCHED_TOKEN_EXCEPTION = "MismatchedTokenException";
+var NO_VIABLE_ALT_EXCEPTION = "NoViableAltException";
+var EARLY_EXIT_EXCEPTION = "EarlyExitException";
+var NOT_ALL_INPUT_PARSED_EXCEPTION = "NotAllInputParsedException";
+var RECOGNITION_EXCEPTION_NAMES = [
+    MISMATCHED_TOKEN_EXCEPTION,
+    NO_VIABLE_ALT_EXCEPTION,
+    EARLY_EXIT_EXCEPTION,
+    NOT_ALL_INPUT_PARSED_EXCEPTION
+];
+Object.freeze(RECOGNITION_EXCEPTION_NAMES);
+// hacks to bypass no support for custom Errors in javascript/typescript
+function isRecognitionException(error) {
+    // can't do instanceof on hacked custom js exceptions
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(RECOGNITION_EXCEPTION_NAMES, error.name);
+}
+function MismatchedTokenException(message, token, previousToken) {
+    this.name = MISMATCHED_TOKEN_EXCEPTION;
+    this.message = message;
+    this.token = token;
+    this.previousToken = previousToken;
+    this.resyncedTokens = [];
+}
+// must use the "Error.prototype" instead of "new Error"
+// because the stack trace points to where "new Error" was invoked"
+MismatchedTokenException.prototype = Error.prototype;
+function NoViableAltException(message, token, previousToken) {
+    this.name = NO_VIABLE_ALT_EXCEPTION;
+    this.message = message;
+    this.token = token;
+    this.previousToken = previousToken;
+    this.resyncedTokens = [];
+}
+NoViableAltException.prototype = Error.prototype;
+function NotAllInputParsedException(message, token) {
+    this.name = NOT_ALL_INPUT_PARSED_EXCEPTION;
+    this.message = message;
+    this.token = token;
+    this.resyncedTokens = [];
+}
+NotAllInputParsedException.prototype = Error.prototype;
+function EarlyExitException(message, token, previousToken) {
+    this.name = EARLY_EXIT_EXCEPTION;
+    this.message = message;
+    this.token = token;
+    this.previousToken = previousToken;
+    this.resyncedTokens = [];
+}
+EarlyExitException.prototype = Error.prototype;
+//# sourceMappingURL=exceptions_public.js.map
+
+/***/ }),
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -28670,14 +30278,14 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27), __webpack_require__(33)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45), __webpack_require__(51)(module)))
 
 /***/ }),
-/* 18 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(40);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x) {
@@ -28686,7 +30294,2591 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
 
 
 /***/ }),
-/* 19 */
+/* 28 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return LexerDefinitionErrorType; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Lexer; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lexer__ = __webpack_require__(210);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(43);
+
+
+
+
+
+var LexerDefinitionErrorType;
+(function (LexerDefinitionErrorType) {
+    LexerDefinitionErrorType[LexerDefinitionErrorType["MISSING_PATTERN"] = 0] = "MISSING_PATTERN";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["INVALID_PATTERN"] = 1] = "INVALID_PATTERN";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["EOI_ANCHOR_FOUND"] = 2] = "EOI_ANCHOR_FOUND";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["UNSUPPORTED_FLAGS_FOUND"] = 3] = "UNSUPPORTED_FLAGS_FOUND";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["DUPLICATE_PATTERNS_FOUND"] = 4] = "DUPLICATE_PATTERNS_FOUND";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["INVALID_GROUP_TYPE_FOUND"] = 5] = "INVALID_GROUP_TYPE_FOUND";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["PUSH_MODE_DOES_NOT_EXIST"] = 6] = "PUSH_MODE_DOES_NOT_EXIST";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["MULTI_MODE_LEXER_WITHOUT_DEFAULT_MODE"] = 7] = "MULTI_MODE_LEXER_WITHOUT_DEFAULT_MODE";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["MULTI_MODE_LEXER_WITHOUT_MODES_PROPERTY"] = 8] = "MULTI_MODE_LEXER_WITHOUT_MODES_PROPERTY";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["MULTI_MODE_LEXER_DEFAULT_MODE_VALUE_DOES_NOT_EXIST"] = 9] = "MULTI_MODE_LEXER_DEFAULT_MODE_VALUE_DOES_NOT_EXIST";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["LEXER_DEFINITION_CANNOT_CONTAIN_UNDEFINED"] = 10] = "LEXER_DEFINITION_CANNOT_CONTAIN_UNDEFINED";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["SOI_ANCHOR_FOUND"] = 11] = "SOI_ANCHOR_FOUND";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["EMPTY_MATCH_PATTERN"] = 12] = "EMPTY_MATCH_PATTERN";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["NO_LINE_BREAKS_FLAGS"] = 13] = "NO_LINE_BREAKS_FLAGS";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["UNREACHABLE_PATTERN"] = 14] = "UNREACHABLE_PATTERN";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["IDENTIFY_TERMINATOR"] = 15] = "IDENTIFY_TERMINATOR";
+    LexerDefinitionErrorType[LexerDefinitionErrorType["CUSTOM_LINE_BREAK"] = 16] = "CUSTOM_LINE_BREAK";
+})(LexerDefinitionErrorType || (LexerDefinitionErrorType = {}));
+var DEFAULT_LEXER_CONFIG = {
+    deferDefinitionErrorsHandling: false,
+    positionTracking: "full",
+    lineTerminatorsPattern: /\n|\r\n?/g,
+    lineTerminatorCharacters: ["\n", "\r"],
+    ensureOptimizations: false,
+    safeMode: false,
+    errorMessageProvider: __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__["a" /* defaultLexerErrorProvider */],
+    traceInitPerf: false,
+    skipValidations: false
+};
+Object.freeze(DEFAULT_LEXER_CONFIG);
+var Lexer = /** @class */ (function () {
+    function Lexer(lexerDefinition, config) {
+        var _this = this;
+        if (config === void 0) { config = DEFAULT_LEXER_CONFIG; }
+        this.lexerDefinition = lexerDefinition;
+        this.lexerDefinitionErrors = [];
+        this.lexerDefinitionWarning = [];
+        this.patternIdxToConfig = {};
+        this.charCodeToPatternIdxToConfig = {};
+        this.modes = [];
+        this.emptyGroups = {};
+        this.config = undefined;
+        this.trackStartLines = true;
+        this.trackEndLines = true;
+        this.hasCustom = false;
+        this.canModeBeOptimized = {};
+        if (typeof config === "boolean") {
+            throw Error("The second argument to the Lexer constructor is now an ILexerConfig Object.\n" +
+                "a boolean 2nd argument is no longer supported");
+        }
+        // todo: defaults func?
+        this.config = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["K" /* merge */])(DEFAULT_LEXER_CONFIG, config);
+        var traceInitVal = this.config.traceInitPerf;
+        if (traceInitVal === true) {
+            this.traceInitMaxIdent = Infinity;
+            this.traceInitPerf = true;
+        }
+        else if (typeof traceInitVal === "number") {
+            this.traceInitMaxIdent = traceInitVal;
+            this.traceInitPerf = true;
+        }
+        this.traceInitIndent = -1;
+        this.TRACE_INIT("Lexer Constructor", function () {
+            var actualDefinition;
+            var hasOnlySingleMode = true;
+            _this.TRACE_INIT("Lexer Config handling", function () {
+                if (_this.config.lineTerminatorsPattern ===
+                    DEFAULT_LEXER_CONFIG.lineTerminatorsPattern) {
+                    // optimized built-in implementation for the defaults definition of lineTerminators
+                    _this.config.lineTerminatorsPattern = __WEBPACK_IMPORTED_MODULE_0__lexer__["b" /* LineTerminatorOptimizedTester */];
+                }
+                else {
+                    if (_this.config.lineTerminatorCharacters ===
+                        DEFAULT_LEXER_CONFIG.lineTerminatorCharacters) {
+                        throw Error("Error: Missing <lineTerminatorCharacters> property on the Lexer config.\n" +
+                            "\tFor details See: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#MISSING_LINE_TERM_CHARS");
+                    }
+                }
+                if (config.safeMode && config.ensureOptimizations) {
+                    throw Error('"safeMode" and "ensureOptimizations" flags are mutually exclusive.');
+                }
+                _this.trackStartLines = /full|onlyStart/i.test(_this.config.positionTracking);
+                _this.trackEndLines = /full/i.test(_this.config.positionTracking);
+                // Convert SingleModeLexerDefinition into a IMultiModeLexerDefinition.
+                if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["y" /* isArray */])(lexerDefinition)) {
+                    actualDefinition = { modes: {} };
+                    actualDefinition.modes[__WEBPACK_IMPORTED_MODULE_0__lexer__["a" /* DEFAULT_MODE */]] = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(lexerDefinition);
+                    actualDefinition[__WEBPACK_IMPORTED_MODULE_0__lexer__["a" /* DEFAULT_MODE */]] = __WEBPACK_IMPORTED_MODULE_0__lexer__["a" /* DEFAULT_MODE */];
+                }
+                else {
+                    // no conversion needed, input should already be a IMultiModeLexerDefinition
+                    hasOnlySingleMode = false;
+                    actualDefinition = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["h" /* cloneObj */])((lexerDefinition));
+                }
+            });
+            if (_this.config.skipValidations === false) {
+                _this.TRACE_INIT("performRuntimeChecks", function () {
+                    _this.lexerDefinitionErrors = _this.lexerDefinitionErrors.concat(Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["h" /* performRuntimeChecks */])(actualDefinition, _this.trackStartLines, _this.config.lineTerminatorCharacters));
+                });
+                _this.TRACE_INIT("performWarningRuntimeChecks", function () {
+                    _this.lexerDefinitionWarning = _this.lexerDefinitionWarning.concat(Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["i" /* performWarningRuntimeChecks */])(actualDefinition, _this.trackStartLines, _this.config.lineTerminatorCharacters));
+                });
+            }
+            // for extra robustness to avoid throwing an none informative error message
+            actualDefinition.modes = actualDefinition.modes
+                ? actualDefinition.modes
+                : {};
+            // an error of undefined TokenTypes will be detected in "performRuntimeChecks" above.
+            // this transformation is to increase robustness in the case of partially invalid lexer definition.
+            Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(actualDefinition.modes, function (currModeValue, currModeName) {
+                actualDefinition.modes[currModeName] = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["P" /* reject */])(currModeValue, function (currTokType) { return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["F" /* isUndefined */])(currTokType); });
+            });
+            var allModeNames = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["G" /* keys */])(actualDefinition.modes);
+            Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(actualDefinition.modes, function (currModDef, currModName) {
+                _this.TRACE_INIT("Mode: <" + currModName + "> processing", function () {
+                    _this.modes.push(currModName);
+                    if (_this.config.skipValidations === false) {
+                        _this.TRACE_INIT("validatePatterns", function () {
+                            _this.lexerDefinitionErrors = _this.lexerDefinitionErrors.concat(Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["j" /* validatePatterns */])(currModDef, allModeNames));
+                        });
+                    }
+                    // If definition errors were encountered, the analysis phase may fail unexpectedly/
+                    // Considering a lexer with definition errors may never be used, there is no point
+                    // to performing the analysis anyhow...
+                    if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(_this.lexerDefinitionErrors)) {
+                        Object(__WEBPACK_IMPORTED_MODULE_2__tokens__["a" /* augmentTokenTypes */])(currModDef);
+                        var currAnalyzeResult_1;
+                        _this.TRACE_INIT("analyzeTokenTypes", function () {
+                            currAnalyzeResult_1 = Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["d" /* analyzeTokenTypes */])(currModDef, {
+                                lineTerminatorCharacters: _this.config
+                                    .lineTerminatorCharacters,
+                                positionTracking: config.positionTracking,
+                                ensureOptimizations: config.ensureOptimizations,
+                                safeMode: config.safeMode,
+                                tracer: _this.TRACE_INIT.bind(_this)
+                            });
+                        });
+                        _this.patternIdxToConfig[currModName] =
+                            currAnalyzeResult_1.patternIdxToConfig;
+                        _this.charCodeToPatternIdxToConfig[currModName] =
+                            currAnalyzeResult_1.charCodeToPatternIdxToConfig;
+                        _this.emptyGroups = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["K" /* merge */])(_this.emptyGroups, currAnalyzeResult_1.emptyGroups);
+                        _this.hasCustom =
+                            currAnalyzeResult_1.hasCustom || _this.hasCustom;
+                        _this.canModeBeOptimized[currModName] =
+                            currAnalyzeResult_1.canBeOptimized;
+                    }
+                });
+            });
+            _this.defaultMode = actualDefinition.defaultMode;
+            if (!Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(_this.lexerDefinitionErrors) &&
+                !_this.config.deferDefinitionErrorsHandling) {
+                var allErrMessages = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(_this.lexerDefinitionErrors, function (error) {
+                    return error.message;
+                });
+                var allErrMessagesString = allErrMessages.join("-----------------------\n");
+                throw new Error("Errors detected in definition of Lexer:\n" +
+                    allErrMessagesString);
+            }
+            // Only print warning if there are no errors, This will avoid pl
+            Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(_this.lexerDefinitionWarning, function (warningDescriptor) {
+                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["d" /* PRINT_WARNING */])(warningDescriptor.message);
+            });
+            _this.TRACE_INIT("Choosing sub-methods implementations", function () {
+                // Choose the relevant internal implementations for this specific parser.
+                // These implementations should be in-lined by the JavaScript engine
+                // to provide optimal performance in each scenario.
+                if (__WEBPACK_IMPORTED_MODULE_0__lexer__["c" /* SUPPORT_STICKY */]) {
+                    _this.chopInput = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["a" /* IDENTITY */];
+                    _this.match = _this.matchWithTest;
+                }
+                else {
+                    _this.updateLastIndex = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    _this.match = _this.matchWithExec;
+                }
+                if (hasOnlySingleMode) {
+                    _this.handleModes = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                }
+                if (_this.trackStartLines === false) {
+                    _this.computeNewColumn = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["a" /* IDENTITY */];
+                }
+                if (_this.trackEndLines === false) {
+                    _this.updateTokenEndLineColumnLocation = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                }
+                if (/full/i.test(_this.config.positionTracking)) {
+                    _this.createTokenInstance = _this.createFullToken;
+                }
+                else if (/onlyStart/i.test(_this.config.positionTracking)) {
+                    _this.createTokenInstance = _this.createStartOnlyToken;
+                }
+                else if (/onlyOffset/i.test(_this.config.positionTracking)) {
+                    _this.createTokenInstance = _this.createOffsetOnlyToken;
+                }
+                else {
+                    throw Error("Invalid <positionTracking> config option: \"" + _this.config.positionTracking + "\"");
+                }
+                if (_this.hasCustom) {
+                    _this.addToken = _this.addTokenUsingPush;
+                    _this.handlePayload = _this.handlePayloadWithCustom;
+                }
+                else {
+                    _this.addToken = _this.addTokenUsingMemberAccess;
+                    _this.handlePayload = _this.handlePayloadNoCustom;
+                }
+            });
+            _this.TRACE_INIT("Failed Optimization Warnings", function () {
+                var unOptimizedModes = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["O" /* reduce */])(_this.canModeBeOptimized, function (cannotBeOptimized, canBeOptimized, modeName) {
+                    if (canBeOptimized === false) {
+                        cannotBeOptimized.push(modeName);
+                    }
+                    return cannotBeOptimized;
+                }, []);
+                if (config.ensureOptimizations && !Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(unOptimizedModes)) {
+                    throw Error("Lexer Modes: < " + unOptimizedModes.join(", ") + " > cannot be optimized.\n" +
+                        '\t Disable the "ensureOptimizations" lexer config flag to silently ignore this and run the lexer in an un-optimized mode.\n' +
+                        "\t Or inspect the console log for details on how to resolve these issues.");
+                }
+            });
+            _this.TRACE_INIT("clearRegExpParserCache", function () {
+                Object(__WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__["a" /* clearRegExpParserCache */])();
+            });
+            _this.TRACE_INIT("toFastProperties", function () {
+                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["S" /* toFastProperties */])(_this);
+            });
+        });
+    }
+    Lexer.prototype.tokenize = function (text, initialMode) {
+        if (initialMode === void 0) { initialMode = this.defaultMode; }
+        if (!Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(this.lexerDefinitionErrors)) {
+            var allErrMessages = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.lexerDefinitionErrors, function (error) {
+                return error.message;
+            });
+            var allErrMessagesString = allErrMessages.join("-----------------------\n");
+            throw new Error("Unable to Tokenize because Errors detected in definition of Lexer:\n" +
+                allErrMessagesString);
+        }
+        var lexResult = this.tokenizeInternal(text, initialMode);
+        return lexResult;
+    };
+    // There is quite a bit of duplication between this and "tokenizeInternalLazy"
+    // This is intentional due to performance considerations.
+    Lexer.prototype.tokenizeInternal = function (text, initialMode) {
+        var _this = this;
+        var i, j, matchAltImage, longerAltIdx, matchedImage, payload, altPayload, imageLength, group, tokType, newToken, errLength, droppedChar, msg, match;
+        var orgText = text;
+        var orgLength = orgText.length;
+        var offset = 0;
+        var matchedTokensIndex = 0;
+        // initializing the tokensArray to the "guessed" size.
+        // guessing too little will still reduce the number of array re-sizes on pushes.
+        // guessing too large (Tested by guessing x4 too large) may cost a bit more of memory
+        // but would still have a faster runtime by avoiding (All but one) array resizing.
+        var guessedNumberOfTokens = this.hasCustom
+            ? 0 // will break custom token pattern APIs the matchedTokens array will contain undefined elements.
+            : Math.floor(text.length / 10);
+        var matchedTokens = new Array(guessedNumberOfTokens);
+        var errors = [];
+        var line = this.trackStartLines ? 1 : undefined;
+        var column = this.trackStartLines ? 1 : undefined;
+        var groups = Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["f" /* cloneEmptyGroups */])(this.emptyGroups);
+        var trackLines = this.trackStartLines;
+        var lineTerminatorPattern = this.config.lineTerminatorsPattern;
+        var currModePatternsLength = 0;
+        var patternIdxToConfig = [];
+        var currCharCodeToPatternIdxToConfig = [];
+        var modeStack = [];
+        var emptyArray = [];
+        Object.freeze(emptyArray);
+        var getPossiblePatterns = undefined;
+        function getPossiblePatternsSlow() {
+            return patternIdxToConfig;
+        }
+        function getPossiblePatternsOptimized(charCode) {
+            var optimizedCharIdx = Object(__WEBPACK_IMPORTED_MODULE_0__lexer__["e" /* charCodeToOptimizedIndex */])(charCode);
+            var possiblePatterns = currCharCodeToPatternIdxToConfig[optimizedCharIdx];
+            if (possiblePatterns === undefined) {
+                return emptyArray;
+            }
+            else {
+                return possiblePatterns;
+            }
+        }
+        var pop_mode = function (popToken) {
+            // TODO: perhaps avoid this error in the edge case there is no more input?
+            if (modeStack.length === 1 &&
+                // if we have both a POP_MODE and a PUSH_MODE this is in-fact a "transition"
+                // So no error should occur.
+                popToken.tokenType.PUSH_MODE === undefined) {
+                // if we try to pop the last mode there lexer will no longer have ANY mode.
+                // thus the pop is ignored, an error will be created and the lexer will continue parsing in the previous mode.
+                var msg_1 = _this.config.errorMessageProvider.buildUnableToPopLexerModeMessage(popToken);
+                errors.push({
+                    offset: popToken.startOffset,
+                    line: popToken.startLine !== undefined
+                        ? popToken.startLine
+                        : undefined,
+                    column: popToken.startColumn !== undefined
+                        ? popToken.startColumn
+                        : undefined,
+                    length: popToken.image.length,
+                    message: msg_1
+                });
+            }
+            else {
+                modeStack.pop();
+                var newMode = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["H" /* last */])(modeStack);
+                patternIdxToConfig = _this.patternIdxToConfig[newMode];
+                currCharCodeToPatternIdxToConfig = _this
+                    .charCodeToPatternIdxToConfig[newMode];
+                currModePatternsLength = patternIdxToConfig.length;
+                var modeCanBeOptimized = _this.canModeBeOptimized[newMode] &&
+                    _this.config.safeMode === false;
+                if (currCharCodeToPatternIdxToConfig && modeCanBeOptimized) {
+                    getPossiblePatterns = getPossiblePatternsOptimized;
+                }
+                else {
+                    getPossiblePatterns = getPossiblePatternsSlow;
+                }
+            }
+        };
+        function push_mode(newMode) {
+            modeStack.push(newMode);
+            currCharCodeToPatternIdxToConfig = this
+                .charCodeToPatternIdxToConfig[newMode];
+            patternIdxToConfig = this.patternIdxToConfig[newMode];
+            currModePatternsLength = patternIdxToConfig.length;
+            currModePatternsLength = patternIdxToConfig.length;
+            var modeCanBeOptimized = this.canModeBeOptimized[newMode] &&
+                this.config.safeMode === false;
+            if (currCharCodeToPatternIdxToConfig && modeCanBeOptimized) {
+                getPossiblePatterns = getPossiblePatternsOptimized;
+            }
+            else {
+                getPossiblePatterns = getPossiblePatternsSlow;
+            }
+        }
+        // this pattern seems to avoid a V8 de-optimization, although that de-optimization does not
+        // seem to matter performance wise.
+        push_mode.call(this, initialMode);
+        var currConfig;
+        while (offset < orgLength) {
+            matchedImage = null;
+            var nextCharCode = orgText.charCodeAt(offset);
+            var chosenPatternIdxToConfig = getPossiblePatterns(nextCharCode);
+            var chosenPatternsLength = chosenPatternIdxToConfig.length;
+            for (i = 0; i < chosenPatternsLength; i++) {
+                currConfig = chosenPatternIdxToConfig[i];
+                var currPattern = currConfig.pattern;
+                payload = null;
+                // manually in-lined because > 600 chars won't be in-lined in V8
+                var singleCharCode = currConfig.short;
+                if (singleCharCode !== false) {
+                    if (nextCharCode === singleCharCode) {
+                        // single character string
+                        matchedImage = currPattern;
+                    }
+                }
+                else if (currConfig.isCustom === true) {
+                    match = currPattern.exec(orgText, offset, matchedTokens, groups);
+                    if (match !== null) {
+                        matchedImage = match[0];
+                        if (match.payload !== undefined) {
+                            payload = match.payload;
+                        }
+                    }
+                    else {
+                        matchedImage = null;
+                    }
+                }
+                else {
+                    this.updateLastIndex(currPattern, offset);
+                    matchedImage = this.match(currPattern, text, offset);
+                }
+                if (matchedImage !== null) {
+                    // even though this pattern matched we must try a another longer alternative.
+                    // this can be used to prioritize keywords over identifiers
+                    longerAltIdx = currConfig.longerAlt;
+                    if (longerAltIdx !== undefined) {
+                        // TODO: micro optimize, avoid extra prop access
+                        // by saving/linking longerAlt on the original config?
+                        var longerAltConfig = patternIdxToConfig[longerAltIdx];
+                        var longerAltPattern = longerAltConfig.pattern;
+                        altPayload = null;
+                        // single Char can never be a longer alt so no need to test it.
+                        // manually in-lined because > 600 chars won't be in-lined in V8
+                        if (longerAltConfig.isCustom === true) {
+                            match = longerAltPattern.exec(orgText, offset, matchedTokens, groups);
+                            if (match !== null) {
+                                matchAltImage = match[0];
+                                if (match.payload !== undefined) {
+                                    altPayload = match.payload;
+                                }
+                            }
+                            else {
+                                matchAltImage = null;
+                            }
+                        }
+                        else {
+                            this.updateLastIndex(longerAltPattern, offset);
+                            matchAltImage = this.match(longerAltPattern, text, offset);
+                        }
+                        if (matchAltImage &&
+                            matchAltImage.length > matchedImage.length) {
+                            matchedImage = matchAltImage;
+                            payload = altPayload;
+                            currConfig = longerAltConfig;
+                        }
+                    }
+                    break;
+                }
+            }
+            // successful match
+            if (matchedImage !== null) {
+                imageLength = matchedImage.length;
+                group = currConfig.group;
+                if (group !== undefined) {
+                    tokType = currConfig.tokenTypeIdx;
+                    // TODO: "offset + imageLength" and the new column may be computed twice in case of "full" location information inside
+                    // createFullToken method
+                    newToken = this.createTokenInstance(matchedImage, offset, tokType, currConfig.tokenType, line, column, imageLength);
+                    this.handlePayload(newToken, payload);
+                    // TODO: optimize NOOP in case there are no special groups?
+                    if (group === false) {
+                        matchedTokensIndex = this.addToken(matchedTokens, matchedTokensIndex, newToken);
+                    }
+                    else {
+                        groups[group].push(newToken);
+                    }
+                }
+                text = this.chopInput(text, imageLength);
+                offset = offset + imageLength;
+                // TODO: with newlines the column may be assigned twice
+                column = this.computeNewColumn(column, imageLength);
+                if (trackLines === true &&
+                    currConfig.canLineTerminator === true) {
+                    var numOfLTsInMatch = 0;
+                    var foundTerminator = void 0;
+                    var lastLTEndOffset = void 0;
+                    lineTerminatorPattern.lastIndex = 0;
+                    do {
+                        foundTerminator = lineTerminatorPattern.test(matchedImage);
+                        if (foundTerminator === true) {
+                            lastLTEndOffset =
+                                lineTerminatorPattern.lastIndex - 1;
+                            numOfLTsInMatch++;
+                        }
+                    } while (foundTerminator === true);
+                    if (numOfLTsInMatch !== 0) {
+                        line = line + numOfLTsInMatch;
+                        column = imageLength - lastLTEndOffset;
+                        this.updateTokenEndLineColumnLocation(newToken, group, lastLTEndOffset, numOfLTsInMatch, line, column, imageLength);
+                    }
+                }
+                // will be NOOP if no modes present
+                this.handleModes(currConfig, pop_mode, push_mode, newToken);
+            }
+            else {
+                // error recovery, drop characters until we identify a valid token's start point
+                var errorStartOffset = offset;
+                var errorLine = line;
+                var errorColumn = column;
+                var foundResyncPoint = false;
+                while (!foundResyncPoint && offset < orgLength) {
+                    // drop chars until we succeed in matching something
+                    droppedChar = orgText.charCodeAt(offset);
+                    // Identity Func (when sticky flag is enabled)
+                    text = this.chopInput(text, 1);
+                    offset++;
+                    for (j = 0; j < currModePatternsLength; j++) {
+                        var currConfig_1 = patternIdxToConfig[j];
+                        var currPattern = currConfig_1.pattern;
+                        // manually in-lined because > 600 chars won't be in-lined in V8
+                        var singleCharCode = currConfig_1.short;
+                        if (singleCharCode !== false) {
+                            if (orgText.charCodeAt(offset) === singleCharCode) {
+                                // single character string
+                                foundResyncPoint = true;
+                            }
+                        }
+                        else if (currConfig_1.isCustom === true) {
+                            foundResyncPoint =
+                                currPattern.exec(orgText, offset, matchedTokens, groups) !== null;
+                        }
+                        else {
+                            this.updateLastIndex(currPattern, offset);
+                            foundResyncPoint = currPattern.exec(text) !== null;
+                        }
+                        if (foundResyncPoint === true) {
+                            break;
+                        }
+                    }
+                }
+                errLength = offset - errorStartOffset;
+                // at this point we either re-synced or reached the end of the input text
+                msg = this.config.errorMessageProvider.buildUnexpectedCharactersMessage(orgText, errorStartOffset, errLength, errorLine, errorColumn);
+                errors.push({
+                    offset: errorStartOffset,
+                    line: errorLine,
+                    column: errorColumn,
+                    length: errLength,
+                    message: msg
+                });
+            }
+        }
+        // if we do have custom patterns which push directly into the
+        // TODO: custom tokens should not push directly??
+        if (!this.hasCustom) {
+            // if we guessed a too large size for the tokens array this will shrink it to the right size.
+            matchedTokens.length = matchedTokensIndex;
+        }
+        return {
+            tokens: matchedTokens,
+            groups: groups,
+            errors: errors
+        };
+    };
+    Lexer.prototype.handleModes = function (config, pop_mode, push_mode, newToken) {
+        if (config.pop === true) {
+            // need to save the PUSH_MODE property as if the mode is popped
+            // patternIdxToPopMode is updated to reflect the new mode after popping the stack
+            var pushMode = config.push;
+            pop_mode(newToken);
+            if (pushMode !== undefined) {
+                push_mode.call(this, pushMode);
+            }
+        }
+        else if (config.push !== undefined) {
+            push_mode.call(this, config.push);
+        }
+    };
+    Lexer.prototype.chopInput = function (text, length) {
+        return text.substring(length);
+    };
+    Lexer.prototype.updateLastIndex = function (regExp, newLastIndex) {
+        regExp.lastIndex = newLastIndex;
+    };
+    // TODO: decrease this under 600 characters? inspect stripping comments option in TSC compiler
+    Lexer.prototype.updateTokenEndLineColumnLocation = function (newToken, group, lastLTIdx, numOfLTsInMatch, line, column, imageLength) {
+        var lastCharIsLT, fixForEndingInLT;
+        if (group !== undefined) {
+            // a none skipped multi line Token, need to update endLine/endColumn
+            lastCharIsLT = lastLTIdx === imageLength - 1;
+            fixForEndingInLT = lastCharIsLT ? -1 : 0;
+            if (!(numOfLTsInMatch === 1 && lastCharIsLT === true)) {
+                // if a token ends in a LT that last LT only affects the line numbering of following Tokens
+                newToken.endLine = line + fixForEndingInLT;
+                // the last LT in a token does not affect the endColumn either as the [columnStart ... columnEnd)
+                // inclusive to exclusive range.
+                newToken.endColumn = column - 1 + -fixForEndingInLT;
+            }
+            // else single LT in the last character of a token, no need to modify the endLine/EndColumn
+        }
+    };
+    Lexer.prototype.computeNewColumn = function (oldColumn, imageLength) {
+        return oldColumn + imageLength;
+    };
+    // Place holder, will be replaced by the correct variant according to the locationTracking option at runtime.
+    /* istanbul ignore next - place holder */
+    Lexer.prototype.createTokenInstance = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return null;
+    };
+    Lexer.prototype.createOffsetOnlyToken = function (image, startOffset, tokenTypeIdx, tokenType) {
+        return {
+            image: image,
+            startOffset: startOffset,
+            tokenTypeIdx: tokenTypeIdx,
+            tokenType: tokenType
+        };
+    };
+    Lexer.prototype.createStartOnlyToken = function (image, startOffset, tokenTypeIdx, tokenType, startLine, startColumn) {
+        return {
+            image: image,
+            startOffset: startOffset,
+            startLine: startLine,
+            startColumn: startColumn,
+            tokenTypeIdx: tokenTypeIdx,
+            tokenType: tokenType
+        };
+    };
+    Lexer.prototype.createFullToken = function (image, startOffset, tokenTypeIdx, tokenType, startLine, startColumn, imageLength) {
+        return {
+            image: image,
+            startOffset: startOffset,
+            endOffset: startOffset + imageLength - 1,
+            startLine: startLine,
+            endLine: startLine,
+            startColumn: startColumn,
+            endColumn: startColumn + imageLength - 1,
+            tokenTypeIdx: tokenTypeIdx,
+            tokenType: tokenType
+        };
+    };
+    // Place holder, will be replaced by the correct variant according to the locationTracking option at runtime.
+    /* istanbul ignore next - place holder */
+    Lexer.prototype.addToken = function (tokenVector, index, tokenToAdd) {
+        return 666;
+    };
+    Lexer.prototype.addTokenUsingPush = function (tokenVector, index, tokenToAdd) {
+        tokenVector.push(tokenToAdd);
+        return index;
+    };
+    Lexer.prototype.addTokenUsingMemberAccess = function (tokenVector, index, tokenToAdd) {
+        tokenVector[index] = tokenToAdd;
+        index++;
+        return index;
+    };
+    // Place holder, will be replaced by the correct variant according to the hasCustom flag option at runtime.
+    /* istanbul ignore next - place holder */
+    Lexer.prototype.handlePayload = function (token, payload) { };
+    Lexer.prototype.handlePayloadNoCustom = function (token, payload) { };
+    Lexer.prototype.handlePayloadWithCustom = function (token, payload) {
+        if (payload !== null) {
+            token.payload = payload;
+        }
+    };
+    /* istanbul ignore next - place holder to be replaced with chosen alternative at runtime */
+    Lexer.prototype.match = function (pattern, text, offset) {
+        return null;
+    };
+    Lexer.prototype.matchWithTest = function (pattern, text, offset) {
+        var found = pattern.test(text);
+        if (found === true) {
+            return text.substring(offset, pattern.lastIndex);
+        }
+        return null;
+    };
+    Lexer.prototype.matchWithExec = function (pattern, text) {
+        var regExpArray = pattern.exec(text);
+        return regExpArray !== null ? regExpArray[0] : regExpArray;
+    };
+    // Duplicated from the parser's perf trace trait to allow future extraction
+    // of the lexer to a separate package.
+    Lexer.prototype.TRACE_INIT = function (phaseDesc, phaseImpl) {
+        // No need to optimize this using NOOP pattern because
+        // It is not called in a hot spot...
+        if (this.traceInitPerf === true) {
+            this.traceInitIndent++;
+            var indent = new Array(this.traceInitIndent + 1).join("\t");
+            if (this.traceInitIndent < this.traceInitMaxIdent) {
+                console.log(indent + "--> <" + phaseDesc + ">");
+            }
+            var _a = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["R" /* timer */])(phaseImpl), time = _a.time, value = _a.value;
+            /* istanbul ignore next - Difficult to reproduce specific performance behavior (>10ms) in tests */
+            var traceMethod = time > 10 ? console.warn : console.log;
+            if (this.traceInitIndent < this.traceInitMaxIdent) {
+                traceMethod(indent + "<-- <" + phaseDesc + "> time: " + time + "ms");
+            }
+            this.traceInitIndent--;
+            return value;
+        }
+        else {
+            return phaseImpl();
+        }
+    };
+    Lexer.SKIPPED = "This marks a skipped Token pattern, this means each token identified by it will" +
+        "be consumed and then thrown into oblivion, this can be used to for example to completely ignore whitespace.";
+    Lexer.NA = /NOT_APPLICABLE/;
+    return Lexer;
+}());
+
+//# sourceMappingURL=lexer_public.js.map
+
+/***/ }),
+/* 29 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return defaultParserErrorProvider; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return defaultGrammarResolverErrorProvider; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return defaultGrammarValidatorErrorProvider; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_checks__ = __webpack_require__(30);
+
+
+
+
+
+
+var defaultParserErrorProvider = {
+    buildMismatchTokenMessage: function (_a) {
+        var expected = _a.expected, actual = _a.actual, previous = _a.previous, ruleName = _a.ruleName;
+        var hasLabel = Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["d" /* hasTokenLabel */])(expected);
+        var expectedMsg = hasLabel
+            ? "--> " + Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["e" /* tokenLabel */])(expected) + " <--"
+            : "token of type --> " + expected.name + " <--";
+        var msg = "Expecting " + expectedMsg + " but found --> '" + actual.image + "' <--";
+        return msg;
+    },
+    buildNotAllInputParsedMessage: function (_a) {
+        var firstRedundant = _a.firstRedundant, ruleName = _a.ruleName;
+        return ("Redundant input, expecting EOF but found: " + firstRedundant.image);
+    },
+    buildNoViableAltMessage: function (_a) {
+        var expectedPathsPerAlt = _a.expectedPathsPerAlt, actual = _a.actual, previous = _a.previous, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
+        var errPrefix = "Expecting: ";
+        // TODO: issue: No Viable Alternative Error may have incomplete details. #502
+        var actualText = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(actual).image;
+        var errSuffix = "\nbut found: '" + actualText + "'";
+        if (customUserDescription) {
+            return errPrefix + customUserDescription + errSuffix;
+        }
+        else {
+            var allLookAheadPaths = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["O" /* reduce */])(expectedPathsPerAlt, function (result, currAltPaths) { return result.concat(currAltPaths); }, []);
+            var nextValidTokenSequences = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(allLookAheadPaths, function (currPath) {
+                return "[" + Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(currPath, function (currTokenType) {
+                    return Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["e" /* tokenLabel */])(currTokenType);
+                }).join(", ") + "]";
+            });
+            var nextValidSequenceItems = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(nextValidTokenSequences, function (itemMsg, idx) { return "  " + (idx + 1) + ". " + itemMsg; });
+            var calculatedDescription = "one of these possible Token sequences:\n" + nextValidSequenceItems.join("\n");
+            return errPrefix + calculatedDescription + errSuffix;
+        }
+    },
+    buildEarlyExitMessage: function (_a) {
+        var expectedIterationPaths = _a.expectedIterationPaths, actual = _a.actual, customUserDescription = _a.customUserDescription, ruleName = _a.ruleName;
+        var errPrefix = "Expecting: ";
+        // TODO: issue: No Viable Alternative Error may have incomplete details. #502
+        var actualText = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(actual).image;
+        var errSuffix = "\nbut found: '" + actualText + "'";
+        if (customUserDescription) {
+            return errPrefix + customUserDescription + errSuffix;
+        }
+        else {
+            var nextValidTokenSequences = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(expectedIterationPaths, function (currPath) {
+                return "[" + Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(currPath, function (currTokenType) {
+                    return Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["e" /* tokenLabel */])(currTokenType);
+                }).join(",") + "]";
+            });
+            var calculatedDescription = "expecting at least one iteration which starts with one of these possible Token sequences::\n  " +
+                ("<" + nextValidTokenSequences.join(" ,") + ">");
+            return errPrefix + calculatedDescription + errSuffix;
+        }
+    }
+};
+Object.freeze(defaultParserErrorProvider);
+var defaultGrammarResolverErrorProvider = {
+    buildRuleNotFoundError: function (topLevelRule, undefinedRule) {
+        var msg = "Invalid grammar, reference to a rule which is not defined: ->" +
+            undefinedRule.nonTerminalName +
+            "<-\n" +
+            "inside top level rule: ->" +
+            topLevelRule.name +
+            "<-";
+        return msg;
+    }
+};
+var defaultGrammarValidatorErrorProvider = {
+    buildDuplicateFoundError: function (topLevelRule, duplicateProds) {
+        function getExtraProductionArgument(prod) {
+            if (prod instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["k" /* Terminal */]) {
+                return prod.terminalType.name;
+            }
+            else if (prod instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["d" /* NonTerminal */]) {
+                return prod.nonTerminalName;
+            }
+            else {
+                return "";
+            }
+        }
+        var topLevelName = topLevelRule.name;
+        var duplicateProd = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(duplicateProds);
+        var index = duplicateProd.idx;
+        var dslName = Object(__WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast__["c" /* getProductionDslName */])(duplicateProd);
+        var extraArgument = getExtraProductionArgument(duplicateProd);
+        var hasExplicitIndex = index > 0;
+        var msg = "->" + dslName + (hasExplicitIndex ? index : "") + "<- " + (extraArgument ? "with argument: ->" + extraArgument + "<-" : "") + "\n                  appears more than once (" + duplicateProds.length + " times) in the top level rule: ->" + topLevelName + "<-.                  \n                  For further details see: https://sap.github.io/chevrotain/docs/FAQ.html#NUMERICAL_SUFFIXES \n                  ";
+        // white space trimming time! better to trim afterwards as it allows to use WELL formatted multi line template strings...
+        msg = msg.replace(/[ \t]+/g, " ");
+        msg = msg.replace(/\s\s+/g, "\n");
+        return msg;
+    },
+    buildInvalidNestedRuleNameError: function (topLevelRule, nestedProd) {
+        var msg = "Invalid nested rule name: ->" + nestedProd.name + "<- inside rule: ->" + topLevelRule.name + "<-\n" +
+            ("it must match the pattern: ->" + __WEBPACK_IMPORTED_MODULE_4__grammar_checks__["a" /* validNestedRuleName */].toString() + "<-.\n") +
+            "Note that this means a nested rule name must start with the '$'(dollar) sign.";
+        return msg;
+    },
+    buildDuplicateNestedRuleNameError: function (topLevelRule, nestedProd) {
+        var duplicateName = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(nestedProd).name;
+        var errMsg = "Duplicate nested rule name: ->" + duplicateName + "<- inside rule: ->" + topLevelRule.name + "<-\n" +
+            "A nested name must be unique in the scope of a top level grammar rule.";
+        return errMsg;
+    },
+    buildNamespaceConflictError: function (rule) {
+        var errMsg = "Namespace conflict found in grammar.\n" +
+            ("The grammar has both a Terminal(Token) and a Non-Terminal(Rule) named: <" + rule.name + ">.\n") +
+            "To resolve this make sure each Terminal and Non-Terminal names are unique\n" +
+            "This is easy to accomplish by using the convention that Terminal names start with an uppercase letter\n" +
+            "and Non-Terminal names start with a lower case letter.";
+        return errMsg;
+    },
+    buildAlternationPrefixAmbiguityError: function (options) {
+        var pathMsg = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(options.prefixPath, function (currTok) {
+            return Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["e" /* tokenLabel */])(currTok);
+        }).join(", ");
+        var occurrence = options.alternation.idx === 0 ? "" : options.alternation.idx;
+        var errMsg = "Ambiguous alternatives: <" + options.ambiguityIndices.join(" ,") + "> due to common lookahead prefix\n" +
+            ("in <OR" + occurrence + "> inside <" + options.topLevelRule.name + "> Rule,\n") +
+            ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n") +
+            "See: https://sap.github.io/chevrotain/docs/guide/resolving_grammar_errors.html#COMMON_PREFIX\n" +
+            "For Further details.";
+        return errMsg;
+    },
+    buildAlternationAmbiguityError: function (options) {
+        var pathMsg = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(options.prefixPath, function (currtok) {
+            return Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["e" /* tokenLabel */])(currtok);
+        }).join(", ");
+        var occurrence = options.alternation.idx === 0 ? "" : options.alternation.idx;
+        var currMessage = "Ambiguous Alternatives Detected: <" + options.ambiguityIndices.join(" ,") + "> in <OR" + occurrence + ">" +
+            (" inside <" + options.topLevelRule.name + "> Rule,\n") +
+            ("<" + pathMsg + "> may appears as a prefix path in all these alternatives.\n");
+        currMessage =
+            currMessage +
+                "See: https://sap.github.io/chevrotain/docs/guide/resolving_grammar_errors.html#AMBIGUOUS_ALTERNATIVES\n" +
+                "For Further details.";
+        return currMessage;
+    },
+    buildEmptyRepetitionError: function (options) {
+        var dslName = Object(__WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast__["c" /* getProductionDslName */])(options.repetition);
+        if (options.repetition.idx !== 0) {
+            dslName += options.repetition.idx;
+        }
+        var errMsg = "The repetition <" + dslName + "> within Rule <" + options.topLevelRule.name + "> can never consume any tokens.\n" +
+            "This could lead to an infinite loop.";
+        return errMsg;
+    },
+    buildTokenNameError: function (options) {
+        var tokTypeName = options.tokenType.name;
+        var errMsg = "Invalid Grammar Token name: ->" + tokTypeName + "<- it must match the pattern: ->" + options.expectedPattern.toString() + "<-";
+        return errMsg;
+    },
+    buildEmptyAlternationError: function (options) {
+        var errMsg = "Ambiguous empty alternative: <" + (options.emptyChoiceIdx + 1) + ">" +
+            (" in <OR" + options.alternation.idx + "> inside <" + options.topLevelRule.name + "> Rule.\n") +
+            "Only the last alternative may be an empty alternative.";
+        return errMsg;
+    },
+    buildTooManyAlternativesError: function (options) {
+        var errMsg = "An Alternation cannot have more than 256 alternatives:\n" +
+            ("<OR" + options.alternation.idx + "> inside <" + options.topLevelRule.name + "> Rule.\n has " + (options.alternation.definition.length +
+                1) + " alternatives.");
+        return errMsg;
+    },
+    buildLeftRecursionError: function (options) {
+        var ruleName = options.topLevelRule.name;
+        var pathNames = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */](options.leftRecursionPath, function (currRule) { return currRule.name; });
+        var leftRecursivePath = ruleName + " --> " + pathNames
+            .concat([ruleName])
+            .join(" --> ");
+        var errMsg = "Left Recursion found in grammar.\n" +
+            ("rule: <" + ruleName + "> can be invoked from itself (directly or indirectly)\n") +
+            ("without consuming any Tokens. The grammar path that causes this is: \n " + leftRecursivePath + "\n") +
+            " To fix this refactor your grammar to remove the left recursion.\n" +
+            "see: https://en.wikipedia.org/wiki/LL_parser#Left_Factoring.";
+        return errMsg;
+    },
+    buildInvalidRuleNameError: function (options) {
+        var ruleName = options.topLevelRule.name;
+        var expectedPatternString = options.expectedPattern.toString();
+        var errMsg = "Invalid grammar rule name: ->" + ruleName + "<- it must match the pattern: ->" + expectedPatternString + "<-";
+        return errMsg;
+    },
+    buildDuplicateRuleNameError: function (options) {
+        var ruleName;
+        if (options.topLevelRule instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["j" /* Rule */]) {
+            ruleName = options.topLevelRule.name;
+        }
+        else {
+            ruleName = options.topLevelRule;
+        }
+        var errMsg = "Duplicate definition, rule: ->" + ruleName + "<- is already defined in the grammar: ->" + options.grammarName + "<-";
+        return errMsg;
+    }
+};
+//# sourceMappingURL=errors_public.js.map
+
+/***/ }),
+/* 30 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["c"] = validateGrammar;
+/* unused harmony export identifyProductionForDuplicates */
+/* unused harmony export OccurrenceValidationCollector */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return validTermsPattern; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return validNestedRuleName; });
+/* unused harmony export validateRuleName */
+/* unused harmony export validateNestedRuleName */
+/* unused harmony export validateTokenName */
+/* unused harmony export validateRuleDoesNotAlreadyExist */
+/* harmony export (immutable) */ __webpack_exports__["d"] = validateRuleIsOverridden;
+/* unused harmony export validateNoLeftRecursion */
+/* unused harmony export getFirstNoneTerminal */
+/* unused harmony export validateEmptyOrAlternative */
+/* unused harmony export validateAmbiguousAlternationAlternatives */
+/* unused harmony export RepetionCollector */
+/* unused harmony export validateTooManyAlts */
+/* unused harmony export validateSomeNonEmptyLookaheadPath */
+/* unused harmony export checkPrefixAlternativesAmbiguities */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_parser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lookahead__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cst_cst__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__interpreter__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__ = __webpack_require__(19);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+
+
+
+
+
+function validateGrammar(topLevels, globalMaxLookahead, tokenTypes, ignoredIssues, errMsgProvider, grammarName) {
+    var duplicateErrors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](topLevels, function (currTopLevel) {
+        return validateDuplicateProductions(currTopLevel, errMsgProvider);
+    });
+    var leftRecursionErrors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](topLevels, function (currTopRule) {
+        return validateNoLeftRecursion(currTopRule, currTopRule, errMsgProvider);
+    });
+    var emptyAltErrors = [];
+    var ambiguousAltsErrors = [];
+    var emptyRepetitionErrors = [];
+    // left recursion could cause infinite loops in the following validations.
+    // It is safest to first have the user fix the left recursion errors first and only then examine Further issues.
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(leftRecursionErrors, __WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])) {
+        emptyAltErrors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topLevels, function (currTopRule) {
+            return validateEmptyOrAlternative(currTopRule, errMsgProvider);
+        });
+        ambiguousAltsErrors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topLevels, function (currTopRule) {
+            return validateAmbiguousAlternationAlternatives(currTopRule, globalMaxLookahead, ignoredIssues, errMsgProvider);
+        });
+        emptyRepetitionErrors = validateSomeNonEmptyLookaheadPath(topLevels, globalMaxLookahead, errMsgProvider);
+    }
+    var termsNamespaceConflictErrors = checkTerminalAndNoneTerminalsNameSpace(topLevels, tokenTypes, errMsgProvider);
+    var tokenNameErrors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](tokenTypes, function (currTokType) {
+        return validateTokenName(currTokType, errMsgProvider);
+    });
+    var nestedRulesNameErrors = validateNestedRulesNames(topLevels, errMsgProvider);
+    var nestedRulesDuplicateErrors = validateDuplicateNestedRules(topLevels, errMsgProvider);
+    var tooManyAltsErrors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topLevels, function (curRule) {
+        return validateTooManyAlts(curRule, errMsgProvider);
+    });
+    var ruleNameErrors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topLevels, function (curRule) {
+        return validateRuleName(curRule, errMsgProvider);
+    });
+    var duplicateRulesError = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topLevels, function (curRule) {
+        return validateRuleDoesNotAlreadyExist(curRule, topLevels, grammarName, errMsgProvider);
+    });
+    return (__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */](duplicateErrors.concat(tokenNameErrors, nestedRulesNameErrors, nestedRulesDuplicateErrors, emptyRepetitionErrors, leftRecursionErrors, emptyAltErrors, ambiguousAltsErrors, termsNamespaceConflictErrors, tooManyAltsErrors, ruleNameErrors, duplicateRulesError)));
+}
+function validateNestedRulesNames(topLevels, errMsgProvider) {
+    var result = [];
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(topLevels, function (curTopLevel) {
+        var namedCollectorVisitor = new __WEBPACK_IMPORTED_MODULE_4__cst_cst__["a" /* NamedDSLMethodsCollectorVisitor */]("");
+        curTopLevel.accept(namedCollectorVisitor);
+        var nestedProds = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(namedCollectorVisitor.result, function (currItem) { return currItem.orgProd; });
+        result.push(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(nestedProds, function (currNestedProd) {
+            return validateNestedRuleName(curTopLevel, currNestedProd, errMsgProvider);
+        }));
+    });
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(result);
+}
+function validateDuplicateProductions(topLevelRule, errMsgProvider) {
+    var collectorVisitor = new OccurrenceValidationCollector();
+    topLevelRule.accept(collectorVisitor);
+    var allRuleProductions = collectorVisitor.allProductions;
+    var productionGroups = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["v" /* groupBy */](allRuleProductions, identifyProductionForDuplicates);
+    var duplicates = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */](productionGroups, function (currGroup) {
+        return currGroup.length > 1;
+    });
+    var errors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */](duplicates), function (currDuplicates) {
+        var firstProd = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["s" /* first */](currDuplicates);
+        var msg = errMsgProvider.buildDuplicateFoundError(topLevelRule, currDuplicates);
+        var dslName = Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["c" /* getProductionDslName */])(firstProd);
+        var defError = {
+            message: msg,
+            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].DUPLICATE_PRODUCTIONS,
+            ruleName: topLevelRule.name,
+            dslName: dslName,
+            occurrence: firstProd.idx
+        };
+        var param = getExtraProductionArgument(firstProd);
+        if (param) {
+            defError.parameter = param;
+        }
+        return defError;
+    });
+    return errors;
+}
+function identifyProductionForDuplicates(prod) {
+    return Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["c" /* getProductionDslName */])(prod) + "_#_" + prod.idx + "_#_" + getExtraProductionArgument(prod);
+}
+function getExtraProductionArgument(prod) {
+    if (prod instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["k" /* Terminal */]) {
+        return prod.terminalType.name;
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["d" /* NonTerminal */]) {
+        return prod.nonTerminalName;
+    }
+    else {
+        return "";
+    }
+}
+var OccurrenceValidationCollector = /** @class */ (function (_super) {
+    __extends(OccurrenceValidationCollector, _super);
+    function OccurrenceValidationCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.allProductions = [];
+        return _this;
+    }
+    OccurrenceValidationCollector.prototype.visitNonTerminal = function (subrule) {
+        this.allProductions.push(subrule);
+    };
+    OccurrenceValidationCollector.prototype.visitOption = function (option) {
+        this.allProductions.push(option);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.allProductions.push(manySep);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.allProductions.push(atLeastOne);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.allProductions.push(atLeastOneSep);
+    };
+    OccurrenceValidationCollector.prototype.visitRepetition = function (many) {
+        this.allProductions.push(many);
+    };
+    OccurrenceValidationCollector.prototype.visitAlternation = function (or) {
+        this.allProductions.push(or);
+    };
+    OccurrenceValidationCollector.prototype.visitTerminal = function (terminal) {
+        this.allProductions.push(terminal);
+    };
+    return OccurrenceValidationCollector;
+}(__WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__["a" /* GAstVisitor */]));
+
+var validTermsPattern = /^[a-zA-Z_]\w*$/;
+var validNestedRuleName = new RegExp(validTermsPattern.source.replace("^", "^\\$"));
+// TODO: remove this limitation now that we use recorders
+function validateRuleName(rule, errMsgProvider) {
+    var errors = [];
+    var ruleName = rule.name;
+    if (!ruleName.match(validTermsPattern)) {
+        errors.push({
+            message: errMsgProvider.buildInvalidRuleNameError({
+                topLevelRule: rule,
+                expectedPattern: validTermsPattern
+            }),
+            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].INVALID_RULE_NAME,
+            ruleName: ruleName
+        });
+    }
+    return errors;
+}
+// TODO: did the nested rule name regExp now change?
+function validateNestedRuleName(topLevel, nestedProd, errMsgProvider) {
+    var errors = [];
+    var errMsg;
+    if (!nestedProd.name.match(validNestedRuleName)) {
+        errMsg = errMsgProvider.buildInvalidNestedRuleNameError(topLevel, nestedProd);
+        errors.push({
+            message: errMsg,
+            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].INVALID_NESTED_RULE_NAME,
+            ruleName: topLevel.name
+        });
+    }
+    return errors;
+}
+// TODO: remove this limitation now that we use recorders
+function validateTokenName(tokenType, errMsgProvider) {
+    var errors = [];
+    var tokTypeName = tokenType.name;
+    if (!tokTypeName.match(validTermsPattern)) {
+        errors.push({
+            message: errMsgProvider.buildTokenNameError({
+                tokenType: tokenType,
+                expectedPattern: validTermsPattern
+            }),
+            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].INVALID_TOKEN_NAME
+        });
+    }
+    return errors;
+}
+function validateRuleDoesNotAlreadyExist(rule, allRules, className, errMsgProvider) {
+    var errors = [];
+    var occurrences = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(allRules, function (result, curRule) {
+        if (curRule.name === rule.name) {
+            return result + 1;
+        }
+        return result;
+    }, 0);
+    if (occurrences > 1) {
+        var errMsg = errMsgProvider.buildDuplicateRuleNameError({
+            topLevelRule: rule,
+            grammarName: className
+        });
+        errors.push({
+            message: errMsg,
+            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].DUPLICATE_RULE_NAME,
+            ruleName: rule.name
+        });
+    }
+    return errors;
+}
+// TODO: is there anyway to get only the rule names of rules inherited from the super grammars?
+// This is not part of the IGrammarErrorProvider because the validation cannot be performed on
+// The grammar structure, only at runtime.
+function validateRuleIsOverridden(ruleName, definedRulesNames, className) {
+    var errors = [];
+    var errMsg;
+    if (!__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */](definedRulesNames, ruleName)) {
+        errMsg =
+            "Invalid rule override, rule: ->" + ruleName + "<- cannot be overridden in the grammar: ->" + className + "<-" +
+                "as it is not defined in any of the super grammars ";
+        errors.push({
+            message: errMsg,
+            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].INVALID_RULE_OVERRIDE,
+            ruleName: ruleName
+        });
+    }
+    return errors;
+}
+function validateNoLeftRecursion(topRule, currRule, errMsgProvider, path) {
+    if (path === void 0) { path = []; }
+    var errors = [];
+    var nextNonTerminals = getFirstNoneTerminal(currRule.definition);
+    if (__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */](nextNonTerminals)) {
+        return [];
+    }
+    else {
+        var ruleName = topRule.name;
+        var foundLeftRecursion = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */](nextNonTerminals, topRule);
+        if (foundLeftRecursion) {
+            errors.push({
+                message: errMsgProvider.buildLeftRecursionError({
+                    topLevelRule: topRule,
+                    leftRecursionPath: path
+                }),
+                type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].LEFT_RECURSION,
+                ruleName: ruleName
+            });
+        }
+        // we are only looking for cyclic paths leading back to the specific topRule
+        // other cyclic paths are ignored, we still need this difference to avoid infinite loops...
+        var validNextSteps = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["l" /* difference */](nextNonTerminals, path.concat([topRule]));
+        var errorsFromNextSteps = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](validNextSteps, function (currRefRule) {
+            var newPath = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["g" /* cloneArr */](path);
+            newPath.push(currRefRule);
+            return validateNoLeftRecursion(topRule, currRefRule, errMsgProvider, newPath);
+        });
+        return errors.concat(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */](errorsFromNextSteps));
+    }
+}
+function getFirstNoneTerminal(definition) {
+    var result = [];
+    if (__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */](definition)) {
+        return result;
+    }
+    var firstProd = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["s" /* first */](definition);
+    /* istanbul ignore else */
+    if (firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["d" /* NonTerminal */]) {
+        result.push(firstProd.referencedRule);
+    }
+    else if (firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["c" /* Flat */] ||
+        firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["e" /* Option */] ||
+        firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["g" /* RepetitionMandatory */] ||
+        firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */] ||
+        firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["i" /* RepetitionWithSeparator */] ||
+        firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["f" /* Repetition */]) {
+        result = result.concat(getFirstNoneTerminal(firstProd.definition));
+    }
+    else if (firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["b" /* Alternation */]) {
+        // each sub definition in alternation is a FLAT
+        result = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */](__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](firstProd.definition, function (currSubDef) {
+            return getFirstNoneTerminal(currSubDef.definition);
+        }));
+    }
+    else if (firstProd instanceof __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__["k" /* Terminal */]) {
+        // nothing to see, move along
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+    var isFirstOptional = Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["e" /* isOptionalProd */])(firstProd);
+    var hasMore = definition.length > 1;
+    if (isFirstOptional && hasMore) {
+        var rest = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["m" /* drop */](definition);
+        return result.concat(getFirstNoneTerminal(rest));
+    }
+    else {
+        return result;
+    }
+}
+var OrCollector = /** @class */ (function (_super) {
+    __extends(OrCollector, _super);
+    function OrCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.alternations = [];
+        return _this;
+    }
+    OrCollector.prototype.visitAlternation = function (node) {
+        this.alternations.push(node);
+    };
+    return OrCollector;
+}(__WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__["a" /* GAstVisitor */]));
+function validateEmptyOrAlternative(topLevelRule, errMsgProvider) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    var errors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */](ors, function (errors, currOr) {
+        var exceptLast = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["n" /* dropRight */](currOr.definition);
+        var currErrors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](exceptLast, function (currAlternative, currAltIdx) {
+            var possibleFirstInAlt = Object(__WEBPACK_IMPORTED_MODULE_5__interpreter__["f" /* nextPossibleTokensAfter */])([currAlternative], [], null, 1);
+            if (__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */](possibleFirstInAlt)) {
+                return {
+                    message: errMsgProvider.buildEmptyAlternationError({
+                        topLevelRule: topLevelRule,
+                        alternation: currOr,
+                        emptyChoiceIdx: currAltIdx
+                    }),
+                    type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].NONE_LAST_EMPTY_ALT,
+                    ruleName: topLevelRule.name,
+                    occurrence: currOr.idx,
+                    alternative: currAltIdx + 1
+                };
+            }
+            else {
+                return null;
+            }
+        });
+        return errors.concat(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["i" /* compact */](currErrors));
+    }, []);
+    return errors;
+}
+function validateAmbiguousAlternationAlternatives(topLevelRule, globalMaxLookahead, ignoredIssues, errMsgProvider) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    // TODO: this filtering should be deprecated once we remove the ignoredIssues
+    //  IParserConfig property
+    var ignoredIssuesForCurrentRule = ignoredIssues[topLevelRule.name];
+    if (ignoredIssuesForCurrentRule) {
+        ors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["P" /* reject */])(ors, function (currOr) {
+            return ignoredIssuesForCurrentRule[Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["c" /* getProductionDslName */])(currOr) +
+                (currOr.idx === 0 ? "" : currOr.idx)];
+        });
+    }
+    // New Handling of ignoring ambiguities
+    // - https://github.com/SAP/chevrotain/issues/869
+    ors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["P" /* reject */])(ors, function (currOr) { return currOr.ignoreAmbiguities === true; });
+    var errors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */](ors, function (result, currOr) {
+        var currOccurrence = currOr.idx;
+        var actualMaxLookahead = currOr.maxLookahead || globalMaxLookahead;
+        var alternatives = Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["h" /* getLookaheadPathsForOr */])(currOccurrence, topLevelRule, actualMaxLookahead, currOr);
+        var altsAmbiguityErrors = checkAlternativesAmbiguities(alternatives, currOr, topLevelRule, errMsgProvider);
+        var altsPrefixAmbiguityErrors = checkPrefixAlternativesAmbiguities(alternatives, currOr, topLevelRule, errMsgProvider);
+        return result.concat(altsAmbiguityErrors, altsPrefixAmbiguityErrors);
+    }, []);
+    return errors;
+}
+var RepetionCollector = /** @class */ (function (_super) {
+    __extends(RepetionCollector, _super);
+    function RepetionCollector() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.allProductions = [];
+        return _this;
+    }
+    RepetionCollector.prototype.visitRepetitionWithSeparator = function (manySep) {
+        this.allProductions.push(manySep);
+    };
+    RepetionCollector.prototype.visitRepetitionMandatory = function (atLeastOne) {
+        this.allProductions.push(atLeastOne);
+    };
+    RepetionCollector.prototype.visitRepetitionMandatoryWithSeparator = function (atLeastOneSep) {
+        this.allProductions.push(atLeastOneSep);
+    };
+    RepetionCollector.prototype.visitRepetition = function (many) {
+        this.allProductions.push(many);
+    };
+    return RepetionCollector;
+}(__WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__["a" /* GAstVisitor */]));
+
+function validateTooManyAlts(topLevelRule, errMsgProvider) {
+    var orCollector = new OrCollector();
+    topLevelRule.accept(orCollector);
+    var ors = orCollector.alternations;
+    var errors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */](ors, function (errors, currOr) {
+        if (currOr.definition.length > 255) {
+            errors.push({
+                message: errMsgProvider.buildTooManyAlternativesError({
+                    topLevelRule: topLevelRule,
+                    alternation: currOr
+                }),
+                type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].TOO_MANY_ALTS,
+                ruleName: topLevelRule.name,
+                occurrence: currOr.idx
+            });
+        }
+        return errors;
+    }, []);
+    return errors;
+}
+function validateSomeNonEmptyLookaheadPath(topLevelRules, maxLookahead, errMsgProvider) {
+    var errors = [];
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(topLevelRules, function (currTopRule) {
+        var collectorVisitor = new RepetionCollector();
+        currTopRule.accept(collectorVisitor);
+        var allRuleProductions = collectorVisitor.allProductions;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(allRuleProductions, function (currProd) {
+            var prodType = Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["i" /* getProdType */])(currProd);
+            var actualMaxLookahead = currProd.maxLookahead || maxLookahead;
+            var currOccurrence = currProd.idx;
+            var paths = Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["g" /* getLookaheadPathsForOptionalProd */])(currOccurrence, currTopRule, prodType, actualMaxLookahead);
+            var pathsInsideProduction = paths[0];
+            if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(pathsInsideProduction))) {
+                var errMsg = errMsgProvider.buildEmptyRepetitionError({
+                    topLevelRule: currTopRule,
+                    repetition: currProd
+                });
+                errors.push({
+                    message: errMsg,
+                    type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].NO_NON_EMPTY_LOOKAHEAD,
+                    ruleName: currTopRule.name
+                });
+            }
+        });
+    });
+    return errors;
+}
+function checkAlternativesAmbiguities(alternatives, alternation, rule, errMsgProvider) {
+    var foundAmbiguousPaths = [];
+    var identicalAmbiguities = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(alternatives, function (result, currAlt, currAltIdx) {
+        // ignore (skip) ambiguities with this alternative
+        if (alternation.definition[currAltIdx].ignoreAmbiguities === true) {
+            return result;
+        }
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currAlt, function (currPath) {
+            var altsCurrPathAppearsIn = [currAltIdx];
+            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(alternatives, function (currOtherAlt, currOtherAltIdx) {
+                if (currAltIdx !== currOtherAltIdx &&
+                    Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["f" /* containsPath */])(currOtherAlt, currPath) &&
+                    // ignore (skip) ambiguities with this "other" alternative
+                    alternation.definition[currOtherAltIdx]
+                        .ignoreAmbiguities !== true) {
+                    altsCurrPathAppearsIn.push(currOtherAltIdx);
+                }
+            });
+            if (altsCurrPathAppearsIn.length > 1 &&
+                !Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["f" /* containsPath */])(foundAmbiguousPaths, currPath)) {
+                foundAmbiguousPaths.push(currPath);
+                result.push({
+                    alts: altsCurrPathAppearsIn,
+                    path: currPath
+                });
+            }
+        });
+        return result;
+    }, []);
+    var currErrors = __WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */](identicalAmbiguities, function (currAmbDescriptor) {
+        var ambgIndices = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(currAmbDescriptor.alts, function (currAltIdx) { return currAltIdx + 1; });
+        var currMessage = errMsgProvider.buildAlternationAmbiguityError({
+            topLevelRule: rule,
+            alternation: alternation,
+            ambiguityIndices: ambgIndices,
+            prefixPath: currAmbDescriptor.path
+        });
+        return {
+            message: currMessage,
+            type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].AMBIGUOUS_ALTS,
+            ruleName: rule.name,
+            occurrence: alternation.idx,
+            alternatives: [currAmbDescriptor.alts]
+        };
+    });
+    return currErrors;
+}
+function checkPrefixAlternativesAmbiguities(alternatives, alternation, rule, errMsgProvider) {
+    var errors = [];
+    // flatten
+    var pathsAndIndices = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(alternatives, function (result, currAlt, idx) {
+        var currPathsAndIdx = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(currAlt, function (currPath) {
+            return { idx: idx, path: currPath };
+        });
+        return result.concat(currPathsAndIdx);
+    }, []);
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(pathsAndIndices, function (currPathAndIdx) {
+        var alternativeGast = alternation.definition[currPathAndIdx.idx];
+        // ignore (skip) ambiguities with this alternative
+        if (alternativeGast.ignoreAmbiguities === true) {
+            return;
+        }
+        var targetIdx = currPathAndIdx.idx;
+        var targetPath = currPathAndIdx.path;
+        var prefixAmbiguitiesPathsAndIndices = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["r" /* findAll */])(pathsAndIndices, function (searchPathAndIdx) {
+            // prefix ambiguity can only be created from lower idx (higher priority) path
+            return (
+            // ignore (skip) ambiguities with this "other" alternative
+            alternation.definition[searchPathAndIdx.idx]
+                .ignoreAmbiguities !== true &&
+                searchPathAndIdx.idx < targetIdx &&
+                // checking for strict prefix because identical lookaheads
+                // will be be detected using a different validation.
+                Object(__WEBPACK_IMPORTED_MODULE_3__lookahead__["j" /* isStrictPrefixOfPath */])(searchPathAndIdx.path, targetPath));
+        });
+        var currPathPrefixErrors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(prefixAmbiguitiesPathsAndIndices, function (currAmbPathAndIdx) {
+            var ambgIndices = [currAmbPathAndIdx.idx + 1, targetIdx + 1];
+            var occurrence = alternation.idx === 0 ? "" : alternation.idx;
+            var message = errMsgProvider.buildAlternationPrefixAmbiguityError({
+                topLevelRule: rule,
+                alternation: alternation,
+                ambiguityIndices: ambgIndices,
+                prefixPath: currAmbPathAndIdx.path
+            });
+            return {
+                message: message,
+                type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].AMBIGUOUS_PREFIX_ALTS,
+                ruleName: rule.name,
+                occurrence: occurrence,
+                alternatives: ambgIndices
+            };
+        });
+        errors = errors.concat(currPathPrefixErrors);
+    });
+    return errors;
+}
+function checkTerminalAndNoneTerminalsNameSpace(topLevels, tokenTypes, errMsgProvider) {
+    var errors = [];
+    var tokenNames = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(tokenTypes, function (currToken) { return currToken.name; });
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(topLevels, function (currRule) {
+        var currRuleName = currRule.name;
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(tokenNames, currRuleName)) {
+            var errMsg = errMsgProvider.buildNamespaceConflictError(currRule);
+            errors.push({
+                message: errMsg,
+                type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].CONFLICT_TOKENS_RULES_NAMESPACE,
+                ruleName: currRuleName
+            });
+        }
+    });
+    return errors;
+}
+function validateDuplicateNestedRules(topLevelRules, errMsgProvider) {
+    var errors = [];
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(topLevelRules, function (currTopRule) {
+        var namedCollectorVisitor = new __WEBPACK_IMPORTED_MODULE_4__cst_cst__["a" /* NamedDSLMethodsCollectorVisitor */]("");
+        currTopRule.accept(namedCollectorVisitor);
+        var prodsByGroup = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["v" /* groupBy */])(namedCollectorVisitor.result, function (item) { return item.name; });
+        var duplicates = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(prodsByGroup, function (currGroup) {
+            return currGroup.length > 1;
+        });
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(duplicates), function (currDupGroup) {
+            var currDupProds = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(currDupGroup, function (dupGroup) { return dupGroup.orgProd; });
+            var errMsg = errMsgProvider.buildDuplicateNestedRuleNameError(currTopRule, currDupProds);
+            errors.push({
+                message: errMsg,
+                type: __WEBPACK_IMPORTED_MODULE_1__parser_parser__["h" /* ParserDefinitionErrorType */].DUPLICATE_NESTED_NAME,
+                ruleName: currTopRule.name
+            });
+        });
+    });
+    return errors;
+}
+//# sourceMappingURL=checks.js.map
+
+/***/ }),
+/* 31 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PROD_TYPE; });
+/* harmony export (immutable) */ __webpack_exports__["i"] = getProdType;
+/* harmony export (immutable) */ __webpack_exports__["d"] = buildLookaheadFuncForOr;
+/* harmony export (immutable) */ __webpack_exports__["c"] = buildLookaheadFuncForOptionalProd;
+/* harmony export (immutable) */ __webpack_exports__["b"] = buildAlternativesLookAheadFunc;
+/* harmony export (immutable) */ __webpack_exports__["e"] = buildSingleAlternativeLookaheadFunction;
+/* unused harmony export lookAheadSequenceFromAlternatives */
+/* harmony export (immutable) */ __webpack_exports__["h"] = getLookaheadPathsForOr;
+/* harmony export (immutable) */ __webpack_exports__["g"] = getLookaheadPathsForOptionalProd;
+/* harmony export (immutable) */ __webpack_exports__["f"] = containsPath;
+/* harmony export (immutable) */ __webpack_exports__["j"] = isStrictPrefixOfPath;
+/* unused harmony export areTokenCategoriesNotUsed */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__interpreter__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rest__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__gast_gast_visitor_public__ = __webpack_require__(19);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+
+
+var PROD_TYPE;
+(function (PROD_TYPE) {
+    PROD_TYPE[PROD_TYPE["OPTION"] = 0] = "OPTION";
+    PROD_TYPE[PROD_TYPE["REPETITION"] = 1] = "REPETITION";
+    PROD_TYPE[PROD_TYPE["REPETITION_MANDATORY"] = 2] = "REPETITION_MANDATORY";
+    PROD_TYPE[PROD_TYPE["REPETITION_MANDATORY_WITH_SEPARATOR"] = 3] = "REPETITION_MANDATORY_WITH_SEPARATOR";
+    PROD_TYPE[PROD_TYPE["REPETITION_WITH_SEPARATOR"] = 4] = "REPETITION_WITH_SEPARATOR";
+    PROD_TYPE[PROD_TYPE["ALTERNATION"] = 5] = "ALTERNATION";
+})(PROD_TYPE || (PROD_TYPE = {}));
+function getProdType(prod) {
+    /* istanbul ignore else */
+    if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["e" /* Option */]) {
+        return PROD_TYPE.OPTION;
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["f" /* Repetition */]) {
+        return PROD_TYPE.REPETITION;
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["g" /* RepetitionMandatory */]) {
+        return PROD_TYPE.REPETITION_MANDATORY;
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
+        return PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR;
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["i" /* RepetitionWithSeparator */]) {
+        return PROD_TYPE.REPETITION_WITH_SEPARATOR;
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["b" /* Alternation */]) {
+        return PROD_TYPE.ALTERNATION;
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+function buildLookaheadFuncForOr(occurrence, ruleGrammar, maxLookahead, hasPredicates, dynamicTokensEnabled, laFuncBuilder) {
+    var lookAheadPaths = getLookaheadPathsForOr(occurrence, ruleGrammar, maxLookahead);
+    var tokenMatcher = areTokenCategoriesNotUsed(lookAheadPaths)
+        ? __WEBPACK_IMPORTED_MODULE_3__scan_tokens__["e" /* tokenStructuredMatcherNoCategories */]
+        : __WEBPACK_IMPORTED_MODULE_3__scan_tokens__["d" /* tokenStructuredMatcher */];
+    return laFuncBuilder(lookAheadPaths, hasPredicates, tokenMatcher, dynamicTokensEnabled);
+}
+/**
+ *  When dealing with an Optional production (OPTION/MANY/2nd iteration of AT_LEAST_ONE/...) we need to compare
+ *  the lookahead "inside" the production and the lookahead immediately "after" it in the same top level rule (context free).
+ *
+ *  Example: given a production:
+ *  ABC(DE)?DF
+ *
+ *  The optional '(DE)?' should only be entered if we see 'DE'. a single Token 'D' is not sufficient to distinguish between the two
+ *  alternatives.
+ *
+ *  @returns A Lookahead function which will return true IFF the parser should parse the Optional production.
+ */
+function buildLookaheadFuncForOptionalProd(occurrence, ruleGrammar, k, dynamicTokensEnabled, prodType, lookaheadBuilder) {
+    var lookAheadPaths = getLookaheadPathsForOptionalProd(occurrence, ruleGrammar, prodType, k);
+    var tokenMatcher = areTokenCategoriesNotUsed(lookAheadPaths)
+        ? __WEBPACK_IMPORTED_MODULE_3__scan_tokens__["e" /* tokenStructuredMatcherNoCategories */]
+        : __WEBPACK_IMPORTED_MODULE_3__scan_tokens__["d" /* tokenStructuredMatcher */];
+    return lookaheadBuilder(lookAheadPaths[0], tokenMatcher, dynamicTokensEnabled);
+}
+function buildAlternativesLookAheadFunc(alts, hasPredicates, tokenMatcher, dynamicTokensEnabled) {
+    var numOfAlts = alts.length;
+    var areAllOneTokenLookahead = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(alts, function (currAlt) {
+        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(currAlt, function (currPath) {
+            return currPath.length === 1;
+        });
+    });
+    // This version takes into account the predicates as well.
+    if (hasPredicates) {
+        /**
+         * @returns {number} - The chosen alternative index
+         */
+        return function (orAlts) {
+            // unfortunately the predicates must be extracted every single time
+            // as they cannot be cached due to references to parameters(vars) which are no longer valid.
+            // note that in the common case of no predicates, no cpu time will be wasted on this (see else block)
+            var predicates = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(orAlts, function (currAlt) { return currAlt.GATE; });
+            for (var t = 0; t < numOfAlts; t++) {
+                var currAlt = alts[t];
+                var currNumOfPaths = currAlt.length;
+                var currPredicate = predicates[t];
+                if (currPredicate !== undefined &&
+                    currPredicate.call(this) === false) {
+                    // if the predicate does not match there is no point in checking the paths
+                    continue;
+                }
+                nextPath: for (var j = 0; j < currNumOfPaths; j++) {
+                    var currPath = currAlt[j];
+                    var currPathLength = currPath.length;
+                    for (var i = 0; i < currPathLength; i++) {
+                        var nextToken = this.LA(i + 1);
+                        if (tokenMatcher(nextToken, currPath[i]) === false) {
+                            // mismatch in current path
+                            // try the next pth
+                            continue nextPath;
+                        }
+                    }
+                    // found a full path that matches.
+                    // this will also work for an empty ALT as the loop will be skipped
+                    return t;
+                }
+                // none of the paths for the current alternative matched
+                // try the next alternative
+            }
+            // none of the alternatives could be matched
+            return undefined;
+        };
+    }
+    else if (areAllOneTokenLookahead && !dynamicTokensEnabled) {
+        // optimized (common) case of all the lookaheads paths requiring only
+        // a single token lookahead. These Optimizations cannot work if dynamically defined Tokens are used.
+        var singleTokenAlts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(alts, function (currAlt) {
+            return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(currAlt);
+        });
+        var choiceToAlt_1 = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(singleTokenAlts, function (result, currAlt, idx) {
+            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currAlt, function (currTokType) {
+                if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(result, currTokType.tokenTypeIdx)) {
+                    result[currTokType.tokenTypeIdx] = idx;
+                }
+                Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currTokType.categoryMatches, function (currExtendingType) {
+                    if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(result, currExtendingType)) {
+                        result[currExtendingType] = idx;
+                    }
+                });
+            });
+            return result;
+        }, []);
+        /**
+         * @returns {number} - The chosen alternative index
+         */
+        return function () {
+            var nextToken = this.LA(1);
+            return choiceToAlt_1[nextToken.tokenTypeIdx];
+        };
+    }
+    else {
+        // optimized lookahead without needing to check the predicates at all.
+        // this causes code duplication which is intentional to improve performance.
+        /**
+         * @returns {number} - The chosen alternative index
+         */
+        return function () {
+            for (var t = 0; t < numOfAlts; t++) {
+                var currAlt = alts[t];
+                var currNumOfPaths = currAlt.length;
+                nextPath: for (var j = 0; j < currNumOfPaths; j++) {
+                    var currPath = currAlt[j];
+                    var currPathLength = currPath.length;
+                    for (var i = 0; i < currPathLength; i++) {
+                        var nextToken = this.LA(i + 1);
+                        if (tokenMatcher(nextToken, currPath[i]) === false) {
+                            // mismatch in current path
+                            // try the next pth
+                            continue nextPath;
+                        }
+                    }
+                    // found a full path that matches.
+                    // this will also work for an empty ALT as the loop will be skipped
+                    return t;
+                }
+                // none of the paths for the current alternative matched
+                // try the next alternative
+            }
+            // none of the alternatives could be matched
+            return undefined;
+        };
+    }
+}
+function buildSingleAlternativeLookaheadFunction(alt, tokenMatcher, dynamicTokensEnabled) {
+    var areAllOneTokenLookahead = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(alt, function (currPath) {
+        return currPath.length === 1;
+    });
+    var numOfPaths = alt.length;
+    // optimized (common) case of all the lookaheads paths requiring only
+    // a single token lookahead.
+    if (areAllOneTokenLookahead && !dynamicTokensEnabled) {
+        var singleTokensTypes = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(alt);
+        if (singleTokensTypes.length === 1 &&
+            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(singleTokensTypes[0].categoryMatches)) {
+            var expectedTokenType = singleTokensTypes[0];
+            var expectedTokenUniqueKey_1 = expectedTokenType.tokenTypeIdx;
+            return function () {
+                return this.LA(1).tokenTypeIdx === expectedTokenUniqueKey_1;
+            };
+        }
+        else {
+            var choiceToAlt_2 = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(singleTokensTypes, function (result, currTokType, idx) {
+                result[currTokType.tokenTypeIdx] = true;
+                Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currTokType.categoryMatches, function (currExtendingType) {
+                    result[currExtendingType] = true;
+                });
+                return result;
+            }, []);
+            return function () {
+                var nextToken = this.LA(1);
+                return choiceToAlt_2[nextToken.tokenTypeIdx] === true;
+            };
+        }
+    }
+    else {
+        return function () {
+            nextPath: for (var j = 0; j < numOfPaths; j++) {
+                var currPath = alt[j];
+                var currPathLength = currPath.length;
+                for (var i = 0; i < currPathLength; i++) {
+                    var nextToken = this.LA(i + 1);
+                    if (tokenMatcher(nextToken, currPath[i]) === false) {
+                        // mismatch in current path
+                        // try the next pth
+                        continue nextPath;
+                    }
+                }
+                // found a full path that matches.
+                return true;
+            }
+            // none of the paths matched
+            return false;
+        };
+    }
+}
+var RestDefinitionFinderWalker = /** @class */ (function (_super) {
+    __extends(RestDefinitionFinderWalker, _super);
+    function RestDefinitionFinderWalker(topProd, targetOccurrence, targetProdType) {
+        var _this = _super.call(this) || this;
+        _this.topProd = topProd;
+        _this.targetOccurrence = targetOccurrence;
+        _this.targetProdType = targetProdType;
+        return _this;
+    }
+    RestDefinitionFinderWalker.prototype.startWalking = function () {
+        this.walk(this.topProd);
+        return this.restDef;
+    };
+    RestDefinitionFinderWalker.prototype.checkIsTarget = function (node, expectedProdType, currRest, prevRest) {
+        if (node.idx === this.targetOccurrence &&
+            this.targetProdType === expectedProdType) {
+            this.restDef = currRest.concat(prevRest);
+            return true;
+        }
+        // performance optimization, do not iterate over the entire Grammar ast after we have found the target
+        return false;
+    };
+    RestDefinitionFinderWalker.prototype.walkOption = function (optionProd, currRest, prevRest) {
+        if (!this.checkIsTarget(optionProd, PROD_TYPE.OPTION, currRest, prevRest)) {
+            _super.prototype.walkOption.call(this, optionProd, currRest, prevRest);
+        }
+    };
+    RestDefinitionFinderWalker.prototype.walkAtLeastOne = function (atLeastOneProd, currRest, prevRest) {
+        if (!this.checkIsTarget(atLeastOneProd, PROD_TYPE.REPETITION_MANDATORY, currRest, prevRest)) {
+            _super.prototype.walkOption.call(this, atLeastOneProd, currRest, prevRest);
+        }
+    };
+    RestDefinitionFinderWalker.prototype.walkAtLeastOneSep = function (atLeastOneSepProd, currRest, prevRest) {
+        if (!this.checkIsTarget(atLeastOneSepProd, PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR, currRest, prevRest)) {
+            _super.prototype.walkOption.call(this, atLeastOneSepProd, currRest, prevRest);
+        }
+    };
+    RestDefinitionFinderWalker.prototype.walkMany = function (manyProd, currRest, prevRest) {
+        if (!this.checkIsTarget(manyProd, PROD_TYPE.REPETITION, currRest, prevRest)) {
+            _super.prototype.walkOption.call(this, manyProd, currRest, prevRest);
+        }
+    };
+    RestDefinitionFinderWalker.prototype.walkManySep = function (manySepProd, currRest, prevRest) {
+        if (!this.checkIsTarget(manySepProd, PROD_TYPE.REPETITION_WITH_SEPARATOR, currRest, prevRest)) {
+            _super.prototype.walkOption.call(this, manySepProd, currRest, prevRest);
+        }
+    };
+    return RestDefinitionFinderWalker;
+}(__WEBPACK_IMPORTED_MODULE_2__rest__["a" /* RestWalker */]));
+/**
+ * Returns the definition of a target production in a top level level rule.
+ */
+var InsideDefinitionFinderVisitor = /** @class */ (function (_super) {
+    __extends(InsideDefinitionFinderVisitor, _super);
+    function InsideDefinitionFinderVisitor(targetOccurrence, targetProdType, targetRef) {
+        var _this = _super.call(this) || this;
+        _this.targetOccurrence = targetOccurrence;
+        _this.targetProdType = targetProdType;
+        _this.targetRef = targetRef;
+        _this.result = [];
+        return _this;
+    }
+    InsideDefinitionFinderVisitor.prototype.checkIsTarget = function (node, expectedProdName) {
+        if (node.idx === this.targetOccurrence &&
+            this.targetProdType === expectedProdName &&
+            (this.targetRef === undefined || node === this.targetRef)) {
+            this.result = node.definition;
+        }
+    };
+    InsideDefinitionFinderVisitor.prototype.visitOption = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.OPTION);
+    };
+    InsideDefinitionFinderVisitor.prototype.visitRepetition = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.REPETITION);
+    };
+    InsideDefinitionFinderVisitor.prototype.visitRepetitionMandatory = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.REPETITION_MANDATORY);
+    };
+    InsideDefinitionFinderVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.REPETITION_MANDATORY_WITH_SEPARATOR);
+    };
+    InsideDefinitionFinderVisitor.prototype.visitRepetitionWithSeparator = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.REPETITION_WITH_SEPARATOR);
+    };
+    InsideDefinitionFinderVisitor.prototype.visitAlternation = function (node) {
+        this.checkIsTarget(node, PROD_TYPE.ALTERNATION);
+    };
+    return InsideDefinitionFinderVisitor;
+}(__WEBPACK_IMPORTED_MODULE_5__gast_gast_visitor_public__["a" /* GAstVisitor */]));
+function initializeArrayOfArrays(size) {
+    var result = new Array(size);
+    for (var i = 0; i < size; i++) {
+        result[i] = [];
+    }
+    return result;
+}
+/**
+ * A sort of hash function between a Path in the grammar and a string.
+ * Note that this returns multiple "hashes" to support the scenario of token categories.
+ * -  A single path with categories may match multiple **actual** paths.
+ */
+function pathToHashKeys(path) {
+    var keys = [""];
+    for (var i = 0; i < path.length; i++) {
+        var tokType = path[i];
+        var longerKeys = [];
+        for (var j = 0; j < keys.length; j++) {
+            var currShorterKey = keys[j];
+            longerKeys.push(currShorterKey + "_" + tokType.tokenTypeIdx);
+            for (var t = 0; t < tokType.categoryMatches.length; t++) {
+                var categoriesKeySuffix = "_" + tokType.categoryMatches[t];
+                longerKeys.push(currShorterKey + categoriesKeySuffix);
+            }
+        }
+        keys = longerKeys;
+    }
+    return keys;
+}
+/**
+ * Imperative style due to being called from a hot spot
+ */
+function isUniquePrefixHash(altKnownPathsKeys, searchPathKeys, idx) {
+    for (var currAltIdx = 0; currAltIdx < altKnownPathsKeys.length; currAltIdx++) {
+        // We only want to test vs the other alternatives
+        if (currAltIdx === idx) {
+            continue;
+        }
+        var otherAltKnownPathsKeys = altKnownPathsKeys[currAltIdx];
+        for (var searchIdx = 0; searchIdx < searchPathKeys.length; searchIdx++) {
+            var searchKey = searchPathKeys[searchIdx];
+            if (otherAltKnownPathsKeys[searchKey] === true) {
+                return false;
+            }
+        }
+    }
+    // None of the SearchPathKeys were found in any of the other alternatives
+    return true;
+}
+function lookAheadSequenceFromAlternatives(altsDefs, k) {
+    var partialAlts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(altsDefs, function (currAlt) { return Object(__WEBPACK_IMPORTED_MODULE_1__interpreter__["g" /* possiblePathsFrom */])([currAlt], 1); });
+    var finalResult = initializeArrayOfArrays(partialAlts.length);
+    var altsHashes = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(partialAlts, function (currAltPaths) {
+        var dict = {};
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(currAltPaths, function (item) {
+            var keys = pathToHashKeys(item.partialPath);
+            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(keys, function (currKey) {
+                dict[currKey] = true;
+            });
+        });
+        return dict;
+    });
+    var newData = partialAlts;
+    // maxLookahead loop
+    for (var pathLength = 1; pathLength <= k; pathLength++) {
+        var currDataset = newData;
+        newData = initializeArrayOfArrays(currDataset.length);
+        var _loop_1 = function (altIdx) {
+            var currAltPathsAndSuffixes = currDataset[altIdx];
+            // paths in current alternative loop
+            for (var currPathIdx = 0; currPathIdx < currAltPathsAndSuffixes.length; currPathIdx++) {
+                var currPathPrefix = currAltPathsAndSuffixes[currPathIdx].partialPath;
+                var suffixDef = currAltPathsAndSuffixes[currPathIdx].suffixDef;
+                var prefixKeys = pathToHashKeys(currPathPrefix);
+                var isUnique = isUniquePrefixHash(altsHashes, prefixKeys, altIdx);
+                // End of the line for this path.
+                if (isUnique ||
+                    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(suffixDef) ||
+                    currPathPrefix.length === k) {
+                    var currAltResult = finalResult[altIdx];
+                    // TODO: Can we implement a containsPath using Maps/Dictionaries?
+                    if (containsPath(currAltResult, currPathPrefix) === false) {
+                        currAltResult.push(currPathPrefix);
+                        // Update all new  keys for the current path.
+                        for (var j = 0; j < prefixKeys.length; j++) {
+                            var currKey = prefixKeys[j];
+                            altsHashes[altIdx][currKey] = true;
+                        }
+                    }
+                }
+                // Expand longer paths
+                else {
+                    var newPartialPathsAndSuffixes = Object(__WEBPACK_IMPORTED_MODULE_1__interpreter__["g" /* possiblePathsFrom */])(suffixDef, pathLength + 1, currPathPrefix);
+                    newData[altIdx] = newData[altIdx].concat(newPartialPathsAndSuffixes);
+                    // Update keys for new known paths
+                    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(newPartialPathsAndSuffixes, function (item) {
+                        var prefixKeys = pathToHashKeys(item.partialPath);
+                        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(prefixKeys, function (key) {
+                            altsHashes[altIdx][key] = true;
+                        });
+                    });
+                }
+            }
+        };
+        // alternatives loop
+        for (var altIdx = 0; altIdx < currDataset.length; altIdx++) {
+            _loop_1(altIdx);
+        }
+    }
+    return finalResult;
+}
+function getLookaheadPathsForOr(occurrence, ruleGrammar, k, orProd) {
+    var visitor = new InsideDefinitionFinderVisitor(occurrence, PROD_TYPE.ALTERNATION, orProd);
+    ruleGrammar.accept(visitor);
+    return lookAheadSequenceFromAlternatives(visitor.result, k);
+}
+function getLookaheadPathsForOptionalProd(occurrence, ruleGrammar, prodType, k) {
+    var insideDefVisitor = new InsideDefinitionFinderVisitor(occurrence, prodType);
+    ruleGrammar.accept(insideDefVisitor);
+    var insideDef = insideDefVisitor.result;
+    var afterDefWalker = new RestDefinitionFinderWalker(ruleGrammar, occurrence, prodType);
+    var afterDef = afterDefWalker.startWalking();
+    var insideFlat = new __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["c" /* Flat */]({ definition: insideDef });
+    var afterFlat = new __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["c" /* Flat */]({ definition: afterDef });
+    return lookAheadSequenceFromAlternatives([insideFlat, afterFlat], k);
+}
+function containsPath(alternative, searchPath) {
+    compareOtherPath: for (var i = 0; i < alternative.length; i++) {
+        var otherPath = alternative[i];
+        if (otherPath.length !== searchPath.length) {
+            continue;
+        }
+        for (var j = 0; j < otherPath.length; j++) {
+            var searchTok = searchPath[j];
+            var otherTok = otherPath[j];
+            var matchingTokens = searchTok === otherTok ||
+                otherTok.categoryMatchesMap[searchTok.tokenTypeIdx] !==
+                    undefined;
+            if (matchingTokens === false) {
+                continue compareOtherPath;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+function isStrictPrefixOfPath(prefix, other) {
+    return (prefix.length < other.length &&
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(prefix, function (tokType, idx) {
+            var otherTokType = other[idx];
+            return (tokType === otherTokType ||
+                otherTokType.categoryMatchesMap[tokType.tokenTypeIdx]);
+        }));
+}
+function areTokenCategoriesNotUsed(lookAheadPaths) {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(lookAheadPaths, function (singleAltPaths) {
+        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(singleAltPaths, function (singlePath) {
+            return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(singlePath, function (token) { return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(token.categoryMatches); });
+        });
+    });
+}
+//# sourceMappingURL=lookahead.js.map
+
+/***/ }),
+/* 32 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export AbstractNextPossibleTokensWalker */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NextAfterTokenWalker; });
+/* unused harmony export AbstractNextTerminalAfterProductionWalker */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return NextTerminalAfterManyWalker; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return NextTerminalAfterManySepWalker; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return NextTerminalAfterAtLeastOneWalker; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return NextTerminalAfterAtLeastOneSepWalker; });
+/* harmony export (immutable) */ __webpack_exports__["g"] = possiblePathsFrom;
+/* harmony export (immutable) */ __webpack_exports__["f"] = nextPossibleTokensAfter;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__first__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__ = __webpack_require__(7);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+var AbstractNextPossibleTokensWalker = /** @class */ (function (_super) {
+    __extends(AbstractNextPossibleTokensWalker, _super);
+    function AbstractNextPossibleTokensWalker(topProd, path) {
+        var _this = _super.call(this) || this;
+        _this.topProd = topProd;
+        _this.path = path;
+        _this.possibleTokTypes = [];
+        _this.nextProductionName = "";
+        _this.nextProductionOccurrence = 0;
+        _this.found = false;
+        _this.isAtEndOfPath = false;
+        return _this;
+    }
+    AbstractNextPossibleTokensWalker.prototype.startWalking = function () {
+        this.found = false;
+        if (this.path.ruleStack[0] !== this.topProd.name) {
+            throw Error("The path does not start with the walker's top Rule!");
+        }
+        // immutable for the win
+        this.ruleStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(this.path.ruleStack).reverse(); // intelij bug requires assertion
+        this.occurrenceStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(this.path.occurrenceStack).reverse(); // intelij bug requires assertion
+        // already verified that the first production is valid, we now seek the 2nd production
+        this.ruleStack.pop();
+        this.occurrenceStack.pop();
+        this.updateExpectedNext();
+        this.walk(this.topProd);
+        return this.possibleTokTypes;
+    };
+    AbstractNextPossibleTokensWalker.prototype.walk = function (prod, prevRest) {
+        if (prevRest === void 0) { prevRest = []; }
+        // stop scanning once we found the path
+        if (!this.found) {
+            _super.prototype.walk.call(this, prod, prevRest);
+        }
+    };
+    AbstractNextPossibleTokensWalker.prototype.walkProdRef = function (refProd, currRest, prevRest) {
+        // found the next production, need to keep walking in it
+        if (refProd.referencedRule.name === this.nextProductionName &&
+            refProd.idx === this.nextProductionOccurrence) {
+            var fullRest = currRest.concat(prevRest);
+            this.updateExpectedNext();
+            this.walk(refProd.referencedRule, fullRest);
+        }
+    };
+    AbstractNextPossibleTokensWalker.prototype.updateExpectedNext = function () {
+        // need to consume the Terminal
+        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(this.ruleStack)) {
+            // must reset nextProductionXXX to avoid walking down another Top Level production while what we are
+            // really seeking is the last Terminal...
+            this.nextProductionName = "";
+            this.nextProductionOccurrence = 0;
+            this.isAtEndOfPath = true;
+        }
+        else {
+            this.nextProductionName = this.ruleStack.pop();
+            this.nextProductionOccurrence = this.occurrenceStack.pop();
+        }
+    };
+    return AbstractNextPossibleTokensWalker;
+}(__WEBPACK_IMPORTED_MODULE_0__rest__["a" /* RestWalker */]));
+
+var NextAfterTokenWalker = /** @class */ (function (_super) {
+    __extends(NextAfterTokenWalker, _super);
+    function NextAfterTokenWalker(topProd, path) {
+        var _this = _super.call(this, topProd, path) || this;
+        _this.path = path;
+        _this.nextTerminalName = "";
+        _this.nextTerminalOccurrence = 0;
+        _this.nextTerminalName = _this.path.lastTok.name;
+        _this.nextTerminalOccurrence = _this.path.lastTokOccurrence;
+        return _this;
+    }
+    NextAfterTokenWalker.prototype.walkTerminal = function (terminal, currRest, prevRest) {
+        if (this.isAtEndOfPath &&
+            terminal.terminalType.name === this.nextTerminalName &&
+            terminal.idx === this.nextTerminalOccurrence &&
+            !this.found) {
+            var fullRest = currRest.concat(prevRest);
+            var restProd = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["c" /* Flat */]({ definition: fullRest });
+            this.possibleTokTypes = Object(__WEBPACK_IMPORTED_MODULE_2__first__["a" /* first */])(restProd);
+            this.found = true;
+        }
+    };
+    return NextAfterTokenWalker;
+}(AbstractNextPossibleTokensWalker));
+
+/**
+ * This walker only "walks" a single "TOP" level in the Grammar Ast, this means
+ * it never "follows" production refs
+ */
+var AbstractNextTerminalAfterProductionWalker = /** @class */ (function (_super) {
+    __extends(AbstractNextTerminalAfterProductionWalker, _super);
+    function AbstractNextTerminalAfterProductionWalker(topRule, occurrence) {
+        var _this = _super.call(this) || this;
+        _this.topRule = topRule;
+        _this.occurrence = occurrence;
+        _this.result = {
+            token: undefined,
+            occurrence: undefined,
+            isEndOfRule: undefined
+        };
+        return _this;
+    }
+    AbstractNextTerminalAfterProductionWalker.prototype.startWalking = function () {
+        this.walk(this.topRule);
+        return this.result;
+    };
+    return AbstractNextTerminalAfterProductionWalker;
+}(__WEBPACK_IMPORTED_MODULE_0__rest__["a" /* RestWalker */]));
+
+var NextTerminalAfterManyWalker = /** @class */ (function (_super) {
+    __extends(NextTerminalAfterManyWalker, _super);
+    function NextTerminalAfterManyWalker() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    NextTerminalAfterManyWalker.prototype.walkMany = function (manyProd, currRest, prevRest) {
+        if (manyProd.idx === this.occurrence) {
+            var firstAfterMany = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(currRest.concat(prevRest));
+            this.result.isEndOfRule = firstAfterMany === undefined;
+            if (firstAfterMany instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+                this.result.token = firstAfterMany.terminalType;
+                this.result.occurrence = firstAfterMany.idx;
+            }
+        }
+        else {
+            _super.prototype.walkMany.call(this, manyProd, currRest, prevRest);
+        }
+    };
+    return NextTerminalAfterManyWalker;
+}(AbstractNextTerminalAfterProductionWalker));
+
+var NextTerminalAfterManySepWalker = /** @class */ (function (_super) {
+    __extends(NextTerminalAfterManySepWalker, _super);
+    function NextTerminalAfterManySepWalker() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    NextTerminalAfterManySepWalker.prototype.walkManySep = function (manySepProd, currRest, prevRest) {
+        if (manySepProd.idx === this.occurrence) {
+            var firstAfterManySep = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(currRest.concat(prevRest));
+            this.result.isEndOfRule = firstAfterManySep === undefined;
+            if (firstAfterManySep instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+                this.result.token = firstAfterManySep.terminalType;
+                this.result.occurrence = firstAfterManySep.idx;
+            }
+        }
+        else {
+            _super.prototype.walkManySep.call(this, manySepProd, currRest, prevRest);
+        }
+    };
+    return NextTerminalAfterManySepWalker;
+}(AbstractNextTerminalAfterProductionWalker));
+
+var NextTerminalAfterAtLeastOneWalker = /** @class */ (function (_super) {
+    __extends(NextTerminalAfterAtLeastOneWalker, _super);
+    function NextTerminalAfterAtLeastOneWalker() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    NextTerminalAfterAtLeastOneWalker.prototype.walkAtLeastOne = function (atLeastOneProd, currRest, prevRest) {
+        if (atLeastOneProd.idx === this.occurrence) {
+            var firstAfterAtLeastOne = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(currRest.concat(prevRest));
+            this.result.isEndOfRule = firstAfterAtLeastOne === undefined;
+            if (firstAfterAtLeastOne instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+                this.result.token = firstAfterAtLeastOne.terminalType;
+                this.result.occurrence = firstAfterAtLeastOne.idx;
+            }
+        }
+        else {
+            _super.prototype.walkAtLeastOne.call(this, atLeastOneProd, currRest, prevRest);
+        }
+    };
+    return NextTerminalAfterAtLeastOneWalker;
+}(AbstractNextTerminalAfterProductionWalker));
+
+// TODO: reduce code duplication in the AfterWalkers
+var NextTerminalAfterAtLeastOneSepWalker = /** @class */ (function (_super) {
+    __extends(NextTerminalAfterAtLeastOneSepWalker, _super);
+    function NextTerminalAfterAtLeastOneSepWalker() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    NextTerminalAfterAtLeastOneSepWalker.prototype.walkAtLeastOneSep = function (atleastOneSepProd, currRest, prevRest) {
+        if (atleastOneSepProd.idx === this.occurrence) {
+            var firstAfterfirstAfterAtLeastOneSep = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(currRest.concat(prevRest));
+            this.result.isEndOfRule =
+                firstAfterfirstAfterAtLeastOneSep === undefined;
+            if (firstAfterfirstAfterAtLeastOneSep instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+                this.result.token =
+                    firstAfterfirstAfterAtLeastOneSep.terminalType;
+                this.result.occurrence = firstAfterfirstAfterAtLeastOneSep.idx;
+            }
+        }
+        else {
+            _super.prototype.walkAtLeastOneSep.call(this, atleastOneSepProd, currRest, prevRest);
+        }
+    };
+    return NextTerminalAfterAtLeastOneSepWalker;
+}(AbstractNextTerminalAfterProductionWalker));
+
+function possiblePathsFrom(targetDef, maxLength, currPath) {
+    if (currPath === void 0) { currPath = []; }
+    // avoid side effects
+    currPath = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(currPath);
+    var result = [];
+    var i = 0;
+    // TODO: avoid inner funcs
+    function remainingPathWith(nextDef) {
+        return nextDef.concat(Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(targetDef, i + 1));
+    }
+    // TODO: avoid inner funcs
+    function getAlternativesForProd(definition) {
+        var alternatives = possiblePathsFrom(remainingPathWith(definition), maxLength, currPath);
+        return result.concat(alternatives);
+    }
+    /**
+     * Mandatory productions will halt the loop as the paths computed from their recursive calls will already contain the
+     * following (rest) of the targetDef.
+     *
+     * For optional productions (Option/Repetition/...) the loop will continue to represent the paths that do not include the
+     * the optional production.
+     */
+    while (currPath.length < maxLength && i < targetDef.length) {
+        var prod = targetDef[i];
+        /* istanbul ignore else */
+        if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["c" /* Flat */]) {
+            return getAlternativesForProd(prod.definition);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["d" /* NonTerminal */]) {
+            return getAlternativesForProd(prod.definition);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["e" /* Option */]) {
+            result = getAlternativesForProd(prod.definition);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["g" /* RepetitionMandatory */]) {
+            var newDef = prod.definition.concat([
+                new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+                    definition: prod.definition
+                })
+            ]);
+            return getAlternativesForProd(newDef);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
+            var newDef = [
+                new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["c" /* Flat */]({ definition: prod.definition }),
+                new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+                    definition: [
+                        new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]({ terminalType: prod.separator })
+                    ].concat(prod.definition)
+                })
+            ];
+            return getAlternativesForProd(newDef);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["i" /* RepetitionWithSeparator */]) {
+            var newDef = prod.definition.concat([
+                new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+                    definition: [
+                        new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]({ terminalType: prod.separator })
+                    ].concat(prod.definition)
+                })
+            ]);
+            result = getAlternativesForProd(newDef);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]) {
+            var newDef = prod.definition.concat([
+                new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+                    definition: prod.definition
+                })
+            ]);
+            result = getAlternativesForProd(newDef);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["b" /* Alternation */]) {
+            Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(prod.definition, function (currAlt) {
+                result = getAlternativesForProd(currAlt.definition);
+            });
+            return result;
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+            currPath.push(prod.terminalType);
+        }
+        else {
+            throw Error("non exhaustive match");
+        }
+        i++;
+    }
+    result.push({
+        partialPath: currPath,
+        suffixDef: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(targetDef, i)
+    });
+    return result;
+}
+function nextPossibleTokensAfter(initialDef, tokenVector, tokMatcher, maxLookAhead) {
+    var EXIT_NON_TERMINAL = "EXIT_NONE_TERMINAL";
+    // to avoid creating a new Array each time.
+    var EXIT_NON_TERMINAL_ARR = [EXIT_NON_TERMINAL];
+    var EXIT_ALTERNATIVE = "EXIT_ALTERNATIVE";
+    var foundCompletePath = false;
+    var tokenVectorLength = tokenVector.length;
+    var minimalAlternativesIndex = tokenVectorLength - maxLookAhead - 1;
+    var result = [];
+    var possiblePaths = [];
+    possiblePaths.push({
+        idx: -1,
+        def: initialDef,
+        ruleStack: [],
+        occurrenceStack: []
+    });
+    while (!Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(possiblePaths)) {
+        var currPath = possiblePaths.pop();
+        // skip alternatives if no more results can be found (assuming deterministic grammar with fixed lookahead)
+        if (currPath === EXIT_ALTERNATIVE) {
+            if (foundCompletePath &&
+                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["H" /* last */])(possiblePaths).idx <= minimalAlternativesIndex) {
+                // remove irrelevant alternative
+                possiblePaths.pop();
+            }
+            continue;
+        }
+        var currDef = currPath.def;
+        var currIdx = currPath.idx;
+        var currRuleStack = currPath.ruleStack;
+        var currOccurrenceStack = currPath.occurrenceStack;
+        // For Example: an empty path could exist in a valid grammar in the case of an EMPTY_ALT
+        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(currDef)) {
+            continue;
+        }
+        var prod = currDef[0];
+        /* istanbul ignore else */
+        if (prod === EXIT_NON_TERMINAL) {
+            var nextPath = {
+                idx: currIdx,
+                def: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef),
+                ruleStack: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["n" /* dropRight */])(currRuleStack),
+                occurrenceStack: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["n" /* dropRight */])(currOccurrenceStack)
+            };
+            possiblePaths.push(nextPath);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]) {
+            /* istanbul ignore else */
+            if (currIdx < tokenVectorLength - 1) {
+                var nextIdx = currIdx + 1;
+                var actualToken = tokenVector[nextIdx];
+                if (tokMatcher(actualToken, prod.terminalType)) {
+                    var nextPath = {
+                        idx: nextIdx,
+                        def: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef),
+                        ruleStack: currRuleStack,
+                        occurrenceStack: currOccurrenceStack
+                    };
+                    possiblePaths.push(nextPath);
+                }
+                // end of the line
+            }
+            else if (currIdx === tokenVectorLength - 1) {
+                // IGNORE ABOVE ELSE
+                result.push({
+                    nextTokenType: prod.terminalType,
+                    nextTokenOccurrence: prod.idx,
+                    ruleStack: currRuleStack,
+                    occurrenceStack: currOccurrenceStack
+                });
+                foundCompletePath = true;
+            }
+            else {
+                throw Error("non exhaustive match");
+            }
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["d" /* NonTerminal */]) {
+            var newRuleStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(currRuleStack);
+            newRuleStack.push(prod.nonTerminalName);
+            var newOccurrenceStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(currOccurrenceStack);
+            newOccurrenceStack.push(prod.idx);
+            var nextPath = {
+                idx: currIdx,
+                def: prod.definition.concat(EXIT_NON_TERMINAL_ARR, Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef)),
+                ruleStack: newRuleStack,
+                occurrenceStack: newOccurrenceStack
+            };
+            possiblePaths.push(nextPath);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["e" /* Option */]) {
+            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
+            var nextPathWithout = {
+                idx: currIdx,
+                def: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef),
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWithout);
+            // required marker to avoid backtracking paths whose higher priority alternatives already matched
+            possiblePaths.push(EXIT_ALTERNATIVE);
+            var nextPathWith = {
+                idx: currIdx,
+                def: prod.definition.concat(Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef)),
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWith);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["g" /* RepetitionMandatory */]) {
+            // TODO:(THE NEW operators here take a while...) (convert once?)
+            var secondIteration = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+                definition: prod.definition,
+                idx: prod.idx
+            });
+            var nextDef = prod.definition.concat([secondIteration], Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef));
+            var nextPath = {
+                idx: currIdx,
+                def: nextDef,
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPath);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
+            // TODO:(THE NEW operators here take a while...) (convert once?)
+            var separatorGast = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]({
+                terminalType: prod.separator
+            });
+            var secondIteration = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+                definition: [separatorGast].concat(prod.definition),
+                idx: prod.idx
+            });
+            var nextDef = prod.definition.concat([secondIteration], Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef));
+            var nextPath = {
+                idx: currIdx,
+                def: nextDef,
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPath);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["i" /* RepetitionWithSeparator */]) {
+            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
+            var nextPathWithout = {
+                idx: currIdx,
+                def: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef),
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWithout);
+            // required marker to avoid backtracking paths whose higher priority alternatives already matched
+            possiblePaths.push(EXIT_ALTERNATIVE);
+            var separatorGast = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["k" /* Terminal */]({
+                terminalType: prod.separator
+            });
+            var nthRepetition = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+                definition: [separatorGast].concat(prod.definition),
+                idx: prod.idx
+            });
+            var nextDef = prod.definition.concat([nthRepetition], Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef));
+            var nextPathWith = {
+                idx: currIdx,
+                def: nextDef,
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWith);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]) {
+            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
+            var nextPathWithout = {
+                idx: currIdx,
+                def: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef),
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWithout);
+            // required marker to avoid backtracking paths whose higher priority alternatives already matched
+            possiblePaths.push(EXIT_ALTERNATIVE);
+            // TODO: an empty repetition will cause infinite loops here, will the parser detect this in selfAnalysis?
+            var nthRepetition = new __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["f" /* Repetition */]({
+                definition: prod.definition,
+                idx: prod.idx
+            });
+            var nextDef = prod.definition.concat([nthRepetition], Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef));
+            var nextPathWith = {
+                idx: currIdx,
+                def: nextDef,
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            };
+            possiblePaths.push(nextPathWith);
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["b" /* Alternation */]) {
+            // the order of alternatives is meaningful, FILO (Last path will be traversed first).
+            for (var i = prod.definition.length - 1; i >= 0; i--) {
+                var currAlt = prod.definition[i];
+                var currAltPath = {
+                    idx: currIdx,
+                    def: currAlt.definition.concat(Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef)),
+                    ruleStack: currRuleStack,
+                    occurrenceStack: currOccurrenceStack
+                };
+                possiblePaths.push(currAltPath);
+                possiblePaths.push(EXIT_ALTERNATIVE);
+            }
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["c" /* Flat */]) {
+            possiblePaths.push({
+                idx: currIdx,
+                def: prod.definition.concat(Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["m" /* drop */])(currDef)),
+                ruleStack: currRuleStack,
+                occurrenceStack: currOccurrenceStack
+            });
+        }
+        else if (prod instanceof __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__["j" /* Rule */]) {
+            // last because we should only encounter at most a single one of these per invocation.
+            possiblePaths.push(expandTopLevelRule(prod, currIdx, currRuleStack, currOccurrenceStack));
+        }
+        else {
+            throw Error("non exhaustive match");
+        }
+    }
+    return result;
+}
+function expandTopLevelRule(topRule, currIdx, currRuleStack, currOccurrenceStack) {
+    var newRuleStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(currRuleStack);
+    newRuleStack.push(topRule.name);
+    var newCurrOccurrenceStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(currOccurrenceStack);
+    // top rule is always assumed to have been called with occurrence index 1
+    newCurrOccurrenceStack.push(1);
+    return {
+        idx: currIdx,
+        def: topRule.definition,
+        ruleStack: newRuleStack,
+        occurrenceStack: newCurrOccurrenceStack
+    };
+}
+//# sourceMappingURL=interpreter.js.map
+
+/***/ }),
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28740,7 +32932,7 @@ logger.deprecate = function (fn, msg) {
 };
 
 /***/ }),
-/* 20 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28861,7 +33053,7 @@ var createBinParams = exports.createBinParams = function createBinParams(chart, 
 };
 
 /***/ }),
-/* 21 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28872,7 +33064,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = bubbleMixin;
 
-var _colorMixin = __webpack_require__(9);
+var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
@@ -28880,7 +33072,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29168,7 +33360,7 @@ function bubbleMixin(_chart) {
 }
 
 /***/ }),
-/* 22 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29179,17 +33371,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = stackMixin;
 
-var _binningHelpers = __webpack_require__(20);
+var _binningHelpers = __webpack_require__(34);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _multipleKeyAccessors = __webpack_require__(164);
+var _multipleKeyAccessors = __webpack_require__(182);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29585,7 +33777,7 @@ function stackMixin(_chart) {
 }
 
 /***/ }),
-/* 23 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29603,15 +33795,15 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _lodash = __webpack_require__(17);
+var _lodash = __webpack_require__(26);
 
 var _ = _interopRequireWildcard(_lodash);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _rasterDrawMixin = __webpack_require__(24);
+var _rasterDrawMixin = __webpack_require__(38);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -30150,8 +34342,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   _chart.addMapListeners = function () {
     _map.on("move", onMapMove);
-    _map.on("drag", onMapMove);
-    _map.on("wheel", onMapMove);
     _map.on("moveend", onMapMove);
     _map.on("sourcedata", showMapLogo);
   };
@@ -30358,7 +34548,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 }
 
 /***/ }),
-/* 24 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30369,27 +34559,27 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.rasterDrawMixin = rasterDrawMixin;
 
-var _utilsLatlon = __webpack_require__(170);
+var _utilsLatlon = __webpack_require__(188);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _lassoToolUi = __webpack_require__(227);
+var _lassoToolUi = __webpack_require__(254);
 
 var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
 
-var _earcut = __webpack_require__(229);
+var _earcut = __webpack_require__(256);
 
 var _earcut2 = _interopRequireDefault(_earcut);
 
-var _lodash = __webpack_require__(17);
+var _lodash = __webpack_require__(26);
 
 var _ = _interopRequireWildcard(_lodash);
 
-var _mapdDraw = __webpack_require__(14);
+var _mapdDraw = __webpack_require__(18);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -30867,15 +35057,7 @@ function rasterDrawMixin(chart) {
     if (typeof chart.useLonLat === "function") {
       // using a mapbox map, it works better to rerender
       // on move here
-      chart.map().on("drag", updateDraw);
-      chart.map().on("wheel", updateDraw);
-
-      // TODO need to find right original event listener to update
-      chart.map().on("move", function (e) {
-        if (e.target && e.target._zooming) {
-          updateDraw();
-        }
-      });
+      chart.map().on("move", updateDraw);
     } else {
       // using a dc coordinate grid, redraws work better
       // on the render event
@@ -30941,7 +35123,7 @@ function rasterDrawMixin(chart) {
 }
 
 /***/ }),
-/* 25 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31681,7 +35863,7 @@ exports.convertDistance = convertDistance;
 
 
 /***/ }),
-/* 26 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -31702,7 +35884,1338 @@ exports.convertDistance = convertDistance;
 
 
 /***/ }),
-/* 27 */
+/* 41 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RestWalker; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__ = __webpack_require__(7);
+
+
+/**
+ *  A Grammar Walker that computes the "remaining" grammar "after" a productions in the grammar.
+ */
+var RestWalker = /** @class */ (function () {
+    function RestWalker() {
+    }
+    RestWalker.prototype.walk = function (prod, prevRest) {
+        var _this = this;
+        if (prevRest === void 0) { prevRest = []; }
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(prod.definition, function (subProd, index) {
+            var currRest = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["m" /* drop */])(prod.definition, index + 1);
+            /* istanbul ignore else */
+            if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["d" /* NonTerminal */]) {
+                _this.walkProdRef(subProd, currRest, prevRest);
+            }
+            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["k" /* Terminal */]) {
+                _this.walkTerminal(subProd, currRest, prevRest);
+            }
+            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["c" /* Flat */]) {
+                _this.walkFlat(subProd, currRest, prevRest);
+            }
+            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["e" /* Option */]) {
+                _this.walkOption(subProd, currRest, prevRest);
+            }
+            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["g" /* RepetitionMandatory */]) {
+                _this.walkAtLeastOne(subProd, currRest, prevRest);
+            }
+            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
+                _this.walkAtLeastOneSep(subProd, currRest, prevRest);
+            }
+            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["i" /* RepetitionWithSeparator */]) {
+                _this.walkManySep(subProd, currRest, prevRest);
+            }
+            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["f" /* Repetition */]) {
+                _this.walkMany(subProd, currRest, prevRest);
+            }
+            else if (subProd instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["b" /* Alternation */]) {
+                _this.walkOr(subProd, currRest, prevRest);
+            }
+            else {
+                throw Error("non exhaustive match");
+            }
+        });
+    };
+    RestWalker.prototype.walkTerminal = function (terminal, currRest, prevRest) { };
+    RestWalker.prototype.walkProdRef = function (refProd, currRest, prevRest) { };
+    RestWalker.prototype.walkFlat = function (flatProd, currRest, prevRest) {
+        // ABCDEF => after the D the rest is EF
+        var fullOrRest = currRest.concat(prevRest);
+        this.walk(flatProd, fullOrRest);
+    };
+    RestWalker.prototype.walkOption = function (optionProd, currRest, prevRest) {
+        // ABC(DE)?F => after the (DE)? the rest is F
+        var fullOrRest = currRest.concat(prevRest);
+        this.walk(optionProd, fullOrRest);
+    };
+    RestWalker.prototype.walkAtLeastOne = function (atLeastOneProd, currRest, prevRest) {
+        // ABC(DE)+F => after the (DE)+ the rest is (DE)?F
+        var fullAtLeastOneRest = [
+            new __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["e" /* Option */]({ definition: atLeastOneProd.definition })
+        ].concat(currRest, prevRest);
+        this.walk(atLeastOneProd, fullAtLeastOneRest);
+    };
+    RestWalker.prototype.walkAtLeastOneSep = function (atLeastOneSepProd, currRest, prevRest) {
+        // ABC DE(,DE)* F => after the (,DE)+ the rest is (,DE)?F
+        var fullAtLeastOneSepRest = restForRepetitionWithSeparator(atLeastOneSepProd, currRest, prevRest);
+        this.walk(atLeastOneSepProd, fullAtLeastOneSepRest);
+    };
+    RestWalker.prototype.walkMany = function (manyProd, currRest, prevRest) {
+        // ABC(DE)*F => after the (DE)* the rest is (DE)?F
+        var fullManyRest = [
+            new __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["e" /* Option */]({ definition: manyProd.definition })
+        ].concat(currRest, prevRest);
+        this.walk(manyProd, fullManyRest);
+    };
+    RestWalker.prototype.walkManySep = function (manySepProd, currRest, prevRest) {
+        // ABC (DE(,DE)*)? F => after the (,DE)* the rest is (,DE)?F
+        var fullManySepRest = restForRepetitionWithSeparator(manySepProd, currRest, prevRest);
+        this.walk(manySepProd, fullManySepRest);
+    };
+    RestWalker.prototype.walkOr = function (orProd, currRest, prevRest) {
+        var _this = this;
+        // ABC(D|E|F)G => when finding the (D|E|F) the rest is G
+        var fullOrRest = currRest.concat(prevRest);
+        // walk all different alternatives
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(orProd.definition, function (alt) {
+            // wrapping each alternative in a single definition wrapper
+            // to avoid errors in computing the rest of that alternative in the invocation to computeInProdFollows
+            // (otherwise for OR([alt1,alt2]) alt2 will be considered in 'rest' of alt1
+            var prodWrapper = new __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["c" /* Flat */]({ definition: [alt] });
+            _this.walk(prodWrapper, fullOrRest);
+        });
+    };
+    return RestWalker;
+}());
+
+function restForRepetitionWithSeparator(repSepProd, currRest, prevRest) {
+    var repSepRest = [
+        new __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["e" /* Option */]({
+            definition: [
+                new __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["k" /* Terminal */]({ terminalType: repSepProd.separator })
+            ].concat(repSepProd.definition)
+        })
+    ];
+    var fullRepSepRest = repSepRest.concat(currRest, prevRest);
+    return fullRepSepRest;
+}
+//# sourceMappingURL=rest.js.map
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;;(function(root, factory) {
+    // istanbul ignore next
+    if (true) {
+        // istanbul ignore next
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+    } else if (typeof module === "object" && module.exports) {
+        module.exports = factory()
+    } else {
+        // istanbul ignore next
+        root.regexpToAst = factory()
+    }
+})(
+    typeof self !== "undefined"
+        ? // istanbul ignore next
+          self
+        : this,
+    function() {
+        // references
+        // https://hackernoon.com/the-madness-of-parsing-real-world-javascript-regexps-d9ee336df983
+        // https://www.ecma-international.org/ecma-262/8.0/index.html#prod-Pattern
+        function RegExpParser() {}
+
+        RegExpParser.prototype.saveState = function() {
+            return {
+                idx: this.idx,
+                input: this.input,
+                groupIdx: this.groupIdx
+            }
+        }
+
+        RegExpParser.prototype.restoreState = function(newState) {
+            this.idx = newState.idx
+            this.input = newState.input
+            this.groupIdx = newState.groupIdx
+        }
+
+        RegExpParser.prototype.pattern = function(input) {
+            // parser state
+            this.idx = 0
+            this.input = input
+            this.groupIdx = 0
+
+            this.consumeChar("/")
+            var value = this.disjunction()
+            this.consumeChar("/")
+
+            var flags = {
+                type: "Flags",
+                global: false,
+                ignoreCase: false,
+                multiLine: false,
+                unicode: false,
+                sticky: false
+            }
+
+            while (this.isRegExpFlag()) {
+                switch (this.popChar()) {
+                    case "g":
+                        addFlag(flags, "global")
+                        break
+                    case "i":
+                        addFlag(flags, "ignoreCase")
+                        break
+                    case "m":
+                        addFlag(flags, "multiLine")
+                        break
+                    case "u":
+                        addFlag(flags, "unicode")
+                        break
+                    case "y":
+                        addFlag(flags, "sticky")
+                        break
+                }
+            }
+
+            if (this.idx !== this.input.length) {
+                throw Error(
+                    "Redundant input: " + this.input.substring(this.idx)
+                )
+            }
+            return { type: "Pattern", flags: flags, value: value }
+        }
+
+        RegExpParser.prototype.disjunction = function() {
+            var alts = []
+            alts.push(this.alternative())
+
+            while (this.peekChar() === "|") {
+                this.consumeChar("|")
+                alts.push(this.alternative())
+            }
+
+            return { type: "Disjunction", value: alts }
+        }
+
+        RegExpParser.prototype.alternative = function() {
+            var terms = []
+
+            while (this.isTerm()) {
+                terms.push(this.term())
+            }
+
+            return { type: "Alternative", value: terms }
+        }
+
+        RegExpParser.prototype.term = function() {
+            if (this.isAssertion()) {
+                return this.assertion()
+            } else {
+                return this.atom()
+            }
+        }
+
+        RegExpParser.prototype.assertion = function() {
+            switch (this.popChar()) {
+                case "^":
+                    return { type: "StartAnchor" }
+                case "$":
+                    return { type: "EndAnchor" }
+                // '\b' or '\B'
+                case "\\":
+                    switch (this.popChar()) {
+                        case "b":
+                            return { type: "WordBoundary" }
+                        case "B":
+                            return { type: "NonWordBoundary" }
+                    }
+                    // istanbul ignore next
+                    throw Error("Invalid Assertion Escape")
+                // '(?=' or '(?!'
+                case "(":
+                    this.consumeChar("?")
+
+                    var type
+                    switch (this.popChar()) {
+                        case "=":
+                            type = "Lookahead"
+                            break
+                        case "!":
+                            type = "NegativeLookahead"
+                            break
+                    }
+                    ASSERT_EXISTS(type)
+
+                    var disjunction = this.disjunction()
+
+                    this.consumeChar(")")
+
+                    return { type: type, value: disjunction }
+            }
+            // istanbul ignore next
+            ASSERT_NEVER_REACH_HERE()
+        }
+
+        RegExpParser.prototype.quantifier = function(isBacktracking) {
+            var range
+            switch (this.popChar()) {
+                case "*":
+                    range = {
+                        atLeast: 0,
+                        atMost: Infinity
+                    }
+                    break
+                case "+":
+                    range = {
+                        atLeast: 1,
+                        atMost: Infinity
+                    }
+                    break
+                case "?":
+                    range = {
+                        atLeast: 0,
+                        atMost: 1
+                    }
+                    break
+                case "{":
+                    var atLeast = this.integerIncludingZero()
+                    switch (this.popChar()) {
+                        case "}":
+                            range = {
+                                atLeast: atLeast,
+                                atMost: atLeast
+                            }
+                            break
+                        case ",":
+                            var atMost
+                            if (this.isDigit()) {
+                                atMost = this.integerIncludingZero()
+                                range = {
+                                    atLeast: atLeast,
+                                    atMost: atMost
+                                }
+                            } else {
+                                range = {
+                                    atLeast: atLeast,
+                                    atMost: Infinity
+                                }
+                            }
+                            this.consumeChar("}")
+                            break
+                    }
+                    // throwing exceptions from "ASSERT_EXISTS" during backtracking
+                    // causes severe performance degradations
+                    if (isBacktracking === true && range === undefined) {
+                        return undefined
+                    }
+                    ASSERT_EXISTS(range)
+                    break
+            }
+
+            // throwing exceptions from "ASSERT_EXISTS" during backtracking
+            // causes severe performance degradations
+            if (isBacktracking === true && range === undefined) {
+                return undefined
+            }
+
+            ASSERT_EXISTS(range)
+
+            if (this.peekChar(0) === "?") {
+                this.consumeChar("?")
+                range.greedy = false
+            } else {
+                range.greedy = true
+            }
+
+            range.type = "Quantifier"
+            return range
+        }
+
+        RegExpParser.prototype.atom = function() {
+            var atom
+            switch (this.peekChar()) {
+                case ".":
+                    atom = this.dotAll()
+                    break
+                case "\\":
+                    atom = this.atomEscape()
+                    break
+                case "[":
+                    atom = this.characterClass()
+                    break
+                case "(":
+                    atom = this.group()
+                    break
+            }
+
+            if (atom === undefined && this.isPatternCharacter()) {
+                atom = this.patternCharacter()
+            }
+
+            ASSERT_EXISTS(atom)
+
+            if (this.isQuantifier()) {
+                atom.quantifier = this.quantifier()
+            }
+
+            return atom
+        }
+
+        RegExpParser.prototype.dotAll = function() {
+            this.consumeChar(".")
+            return {
+                type: "Set",
+                complement: true,
+                value: [cc("\n"), cc("\r"), cc("\u2028"), cc("\u2029")]
+            }
+        }
+
+        RegExpParser.prototype.atomEscape = function() {
+            this.consumeChar("\\")
+
+            switch (this.peekChar()) {
+                case "1":
+                case "2":
+                case "3":
+                case "4":
+                case "5":
+                case "6":
+                case "7":
+                case "8":
+                case "9":
+                    return this.decimalEscapeAtom()
+                case "d":
+                case "D":
+                case "s":
+                case "S":
+                case "w":
+                case "W":
+                    return this.characterClassEscape()
+                case "f":
+                case "n":
+                case "r":
+                case "t":
+                case "v":
+                    return this.controlEscapeAtom()
+                case "c":
+                    return this.controlLetterEscapeAtom()
+                case "0":
+                    return this.nulCharacterAtom()
+                case "x":
+                    return this.hexEscapeSequenceAtom()
+                case "u":
+                    return this.regExpUnicodeEscapeSequenceAtom()
+                default:
+                    return this.identityEscapeAtom()
+            }
+        }
+
+        RegExpParser.prototype.decimalEscapeAtom = function() {
+            var value = this.positiveInteger()
+
+            return { type: "GroupBackReference", value: value }
+        }
+
+        RegExpParser.prototype.characterClassEscape = function() {
+            var set
+            var complement = false
+            switch (this.popChar()) {
+                case "d":
+                    set = digitsCharCodes
+                    break
+                case "D":
+                    set = digitsCharCodes
+                    complement = true
+                    break
+                case "s":
+                    set = whitespaceCodes
+                    break
+                case "S":
+                    set = whitespaceCodes
+                    complement = true
+                    break
+                case "w":
+                    set = wordCharCodes
+                    break
+                case "W":
+                    set = wordCharCodes
+                    complement = true
+                    break
+            }
+
+            ASSERT_EXISTS(set)
+
+            return { type: "Set", value: set, complement: complement }
+        }
+
+        RegExpParser.prototype.controlEscapeAtom = function() {
+            var escapeCode
+            switch (this.popChar()) {
+                case "f":
+                    escapeCode = cc("\f")
+                    break
+                case "n":
+                    escapeCode = cc("\n")
+                    break
+                case "r":
+                    escapeCode = cc("\r")
+                    break
+                case "t":
+                    escapeCode = cc("\t")
+                    break
+                case "v":
+                    escapeCode = cc("\v")
+                    break
+            }
+            ASSERT_EXISTS(escapeCode)
+
+            return { type: "Character", value: escapeCode }
+        }
+
+        RegExpParser.prototype.controlLetterEscapeAtom = function() {
+            this.consumeChar("c")
+            var letter = this.popChar()
+            if (/[a-zA-Z]/.test(letter) === false) {
+                throw Error("Invalid ")
+            }
+
+            var letterCode = letter.toUpperCase().charCodeAt(0) - 64
+            return { type: "Character", value: letterCode }
+        }
+
+        RegExpParser.prototype.nulCharacterAtom = function() {
+            // TODO implement '[lookahead ∉ DecimalDigit]'
+            // TODO: for the deprecated octal escape sequence
+            this.consumeChar("0")
+            return { type: "Character", value: cc("\0") }
+        }
+
+        RegExpParser.prototype.hexEscapeSequenceAtom = function() {
+            this.consumeChar("x")
+            return this.parseHexDigits(2)
+        }
+
+        RegExpParser.prototype.regExpUnicodeEscapeSequenceAtom = function() {
+            this.consumeChar("u")
+            return this.parseHexDigits(4)
+        }
+
+        RegExpParser.prototype.identityEscapeAtom = function() {
+            // TODO: implement "SourceCharacter but not UnicodeIDContinue"
+            // // http://unicode.org/reports/tr31/#Specific_Character_Adjustments
+            var escapedChar = this.popChar()
+            return { type: "Character", value: cc(escapedChar) }
+        }
+
+        RegExpParser.prototype.classPatternCharacterAtom = function() {
+            switch (this.peekChar()) {
+                // istanbul ignore next
+                case "\n":
+                // istanbul ignore next
+                case "\r":
+                // istanbul ignore next
+                case "\u2028":
+                // istanbul ignore next
+                case "\u2029":
+                // istanbul ignore next
+                case "\\":
+                // istanbul ignore next
+                case "]":
+                    throw Error("TBD")
+                default:
+                    var nextChar = this.popChar()
+                    return { type: "Character", value: cc(nextChar) }
+            }
+        }
+
+        RegExpParser.prototype.characterClass = function() {
+            var set = []
+            var complement = false
+            this.consumeChar("[")
+            if (this.peekChar(0) === "^") {
+                this.consumeChar("^")
+                complement = true
+            }
+
+            while (this.isClassAtom()) {
+                var from = this.classAtom()
+                var isFromSingleChar = from.type === "Character"
+                if (isFromSingleChar && this.isRangeDash()) {
+                    this.consumeChar("-")
+                    var to = this.classAtom()
+                    var isToSingleChar = to.type === "Character"
+
+                    // a range can only be used when both sides are single characters
+                    if (isToSingleChar) {
+                        if (to.value < from.value) {
+                            throw Error("Range out of order in character class")
+                        }
+                        set.push({ from: from.value, to: to.value })
+                    } else {
+                        // literal dash
+                        insertToSet(from.value, set)
+                        set.push(cc("-"))
+                        insertToSet(to.value, set)
+                    }
+                } else {
+                    insertToSet(from.value, set)
+                }
+            }
+
+            this.consumeChar("]")
+
+            return { type: "Set", complement: complement, value: set }
+        }
+
+        RegExpParser.prototype.classAtom = function() {
+            switch (this.peekChar()) {
+                // istanbul ignore next
+                case "]":
+                // istanbul ignore next
+                case "\n":
+                // istanbul ignore next
+                case "\r":
+                // istanbul ignore next
+                case "\u2028":
+                // istanbul ignore next
+                case "\u2029":
+                    throw Error("TBD")
+                case "\\":
+                    return this.classEscape()
+                default:
+                    return this.classPatternCharacterAtom()
+            }
+        }
+
+        RegExpParser.prototype.classEscape = function() {
+            this.consumeChar("\\")
+            switch (this.peekChar()) {
+                // Matches a backspace.
+                // (Not to be confused with \b word boundary outside characterClass)
+                case "b":
+                    this.consumeChar("b")
+                    return { type: "Character", value: cc("\u0008") }
+                case "d":
+                case "D":
+                case "s":
+                case "S":
+                case "w":
+                case "W":
+                    return this.characterClassEscape()
+                case "f":
+                case "n":
+                case "r":
+                case "t":
+                case "v":
+                    return this.controlEscapeAtom()
+                case "c":
+                    return this.controlLetterEscapeAtom()
+                case "0":
+                    return this.nulCharacterAtom()
+                case "x":
+                    return this.hexEscapeSequenceAtom()
+                case "u":
+                    return this.regExpUnicodeEscapeSequenceAtom()
+                default:
+                    return this.identityEscapeAtom()
+            }
+        }
+
+        RegExpParser.prototype.group = function() {
+            var capturing = true
+            this.consumeChar("(")
+            switch (this.peekChar(0)) {
+                case "?":
+                    this.consumeChar("?")
+                    this.consumeChar(":")
+                    capturing = false
+                    break
+                default:
+                    this.groupIdx++
+                    break
+            }
+            var value = this.disjunction()
+            this.consumeChar(")")
+
+            var groupAst = {
+                type: "Group",
+                capturing: capturing,
+                value: value
+            }
+
+            if (capturing) {
+                groupAst.idx = this.groupIdx
+            }
+
+            return groupAst
+        }
+
+        RegExpParser.prototype.positiveInteger = function() {
+            var number = this.popChar()
+
+            // istanbul ignore next - can't ever get here due to previous lookahead checks
+            // still implementing this error checking in case this ever changes.
+            if (decimalPatternNoZero.test(number) === false) {
+                throw Error("Expecting a positive integer")
+            }
+
+            while (decimalPattern.test(this.peekChar(0))) {
+                number += this.popChar()
+            }
+
+            return parseInt(number, 10)
+        }
+
+        RegExpParser.prototype.integerIncludingZero = function() {
+            var number = this.popChar()
+            if (decimalPattern.test(number) === false) {
+                throw Error("Expecting an integer")
+            }
+
+            while (decimalPattern.test(this.peekChar(0))) {
+                number += this.popChar()
+            }
+
+            return parseInt(number, 10)
+        }
+
+        RegExpParser.prototype.patternCharacter = function() {
+            var nextChar = this.popChar()
+            switch (nextChar) {
+                // istanbul ignore next
+                case "\n":
+                // istanbul ignore next
+                case "\r":
+                // istanbul ignore next
+                case "\u2028":
+                // istanbul ignore next
+                case "\u2029":
+                // istanbul ignore next
+                case "^":
+                // istanbul ignore next
+                case "$":
+                // istanbul ignore next
+                case "\\":
+                // istanbul ignore next
+                case ".":
+                // istanbul ignore next
+                case "*":
+                // istanbul ignore next
+                case "+":
+                // istanbul ignore next
+                case "?":
+                // istanbul ignore next
+                case "(":
+                // istanbul ignore next
+                case ")":
+                // istanbul ignore next
+                case "[":
+                // istanbul ignore next
+                case "|":
+                    // istanbul ignore next
+                    throw Error("TBD")
+                default:
+                    return { type: "Character", value: cc(nextChar) }
+            }
+        }
+        RegExpParser.prototype.isRegExpFlag = function() {
+            switch (this.peekChar(0)) {
+                case "g":
+                case "i":
+                case "m":
+                case "u":
+                case "y":
+                    return true
+                default:
+                    return false
+            }
+        }
+
+        RegExpParser.prototype.isRangeDash = function() {
+            return this.peekChar() === "-" && this.isClassAtom(1)
+        }
+
+        RegExpParser.prototype.isDigit = function() {
+            return decimalPattern.test(this.peekChar(0))
+        }
+
+        RegExpParser.prototype.isClassAtom = function(howMuch) {
+            if (howMuch === undefined) {
+                howMuch = 0
+            }
+
+            switch (this.peekChar(howMuch)) {
+                case "]":
+                case "\n":
+                case "\r":
+                case "\u2028":
+                case "\u2029":
+                    return false
+                default:
+                    return true
+            }
+        }
+
+        RegExpParser.prototype.isTerm = function() {
+            return this.isAtom() || this.isAssertion()
+        }
+
+        RegExpParser.prototype.isAtom = function() {
+            if (this.isPatternCharacter()) {
+                return true
+            }
+
+            switch (this.peekChar(0)) {
+                case ".":
+                case "\\": // atomEscape
+                case "[": // characterClass
+                // TODO: isAtom must be called before isAssertion - disambiguate
+                case "(": // group
+                    return true
+                default:
+                    return false
+            }
+        }
+
+        RegExpParser.prototype.isAssertion = function() {
+            switch (this.peekChar(0)) {
+                case "^":
+                case "$":
+                    return true
+                // '\b' or '\B'
+                case "\\":
+                    switch (this.peekChar(1)) {
+                        case "b":
+                        case "B":
+                            return true
+                        default:
+                            return false
+                    }
+                // '(?=' or '(?!'
+                case "(":
+                    return (
+                        this.peekChar(1) === "?" &&
+                        (this.peekChar(2) === "=" || this.peekChar(2) === "!")
+                    )
+                default:
+                    return false
+            }
+        }
+
+        RegExpParser.prototype.isQuantifier = function() {
+            var prevState = this.saveState()
+            try {
+                return this.quantifier(true) !== undefined
+            } catch (e) {
+                return false
+            } finally {
+                this.restoreState(prevState)
+            }
+        }
+
+        RegExpParser.prototype.isPatternCharacter = function() {
+            switch (this.peekChar()) {
+                case "^":
+                case "$":
+                case "\\":
+                case ".":
+                case "*":
+                case "+":
+                case "?":
+                case "(":
+                case ")":
+                case "[":
+                case "|":
+                case "/":
+                case "\n":
+                case "\r":
+                case "\u2028":
+                case "\u2029":
+                    return false
+                default:
+                    return true
+            }
+        }
+
+        RegExpParser.prototype.parseHexDigits = function(howMany) {
+            var hexString = ""
+            for (var i = 0; i < howMany; i++) {
+                var hexChar = this.popChar()
+                if (hexDigitPattern.test(hexChar) === false) {
+                    throw Error("Expecting a HexDecimal digits")
+                }
+                hexString += hexChar
+            }
+            var charCode = parseInt(hexString, 16)
+            return { type: "Character", value: charCode }
+        }
+
+        RegExpParser.prototype.peekChar = function(howMuch) {
+            if (howMuch === undefined) {
+                howMuch = 0
+            }
+            return this.input[this.idx + howMuch]
+        }
+
+        RegExpParser.prototype.popChar = function() {
+            var nextChar = this.peekChar(0)
+            this.consumeChar()
+            return nextChar
+        }
+
+        RegExpParser.prototype.consumeChar = function(char) {
+            if (char !== undefined && this.input[this.idx] !== char) {
+                throw Error(
+                    "Expected: '" +
+                        char +
+                        "' but found: '" +
+                        this.input[this.idx] +
+                        "' at offset: " +
+                        this.idx
+                )
+            }
+
+            if (this.idx >= this.input.length) {
+                throw Error("Unexpected end of input")
+            }
+            this.idx++
+        }
+
+        // consts and utilities
+        var hexDigitPattern = /[0-9a-fA-F]/
+        var decimalPattern = /[0-9]/
+        var decimalPatternNoZero = /[1-9]/
+
+        function cc(char) {
+            return char.charCodeAt(0)
+        }
+
+        function insertToSet(item, set) {
+            if (item.length !== undefined) {
+                item.forEach(function(subItem) {
+                    set.push(subItem)
+                })
+            } else {
+                set.push(item)
+            }
+        }
+
+        function addFlag(flagObj, flagKey) {
+            if (flagObj[flagKey] === true) {
+                throw "duplicate flag " + flagKey
+            }
+
+            flagObj[flagKey] = true
+        }
+
+        function ASSERT_EXISTS(obj) {
+            // istanbul ignore next
+            if (obj === undefined) {
+                throw Error("Internal Error - Should never get here!")
+            }
+        }
+
+        // istanbul ignore next
+        function ASSERT_NEVER_REACH_HERE() {
+            throw Error("Internal Error - Should never get here!")
+        }
+
+        var i
+        var digitsCharCodes = []
+        for (i = cc("0"); i <= cc("9"); i++) {
+            digitsCharCodes.push(i)
+        }
+
+        var wordCharCodes = [cc("_")].concat(digitsCharCodes)
+        for (i = cc("a"); i <= cc("z"); i++) {
+            wordCharCodes.push(i)
+        }
+
+        for (i = cc("A"); i <= cc("Z"); i++) {
+            wordCharCodes.push(i)
+        }
+
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp#character-classes
+        var whitespaceCodes = [
+            cc(" "),
+            cc("\f"),
+            cc("\n"),
+            cc("\r"),
+            cc("\t"),
+            cc("\v"),
+            cc("\t"),
+            cc("\u00a0"),
+            cc("\u1680"),
+            cc("\u2000"),
+            cc("\u2001"),
+            cc("\u2002"),
+            cc("\u2003"),
+            cc("\u2004"),
+            cc("\u2005"),
+            cc("\u2006"),
+            cc("\u2007"),
+            cc("\u2008"),
+            cc("\u2009"),
+            cc("\u200a"),
+            cc("\u2028"),
+            cc("\u2029"),
+            cc("\u202f"),
+            cc("\u205f"),
+            cc("\u3000"),
+            cc("\ufeff")
+        ]
+
+        function BaseRegExpVisitor() {}
+
+        BaseRegExpVisitor.prototype.visitChildren = function(node) {
+            for (var key in node) {
+                var child = node[key]
+                /* istanbul ignore else */
+                if (node.hasOwnProperty(key)) {
+                    if (child.type !== undefined) {
+                        this.visit(child)
+                    } else if (Array.isArray(child)) {
+                        child.forEach(function(subChild) {
+                            this.visit(subChild)
+                        }, this)
+                    }
+                }
+            }
+        }
+
+        BaseRegExpVisitor.prototype.visit = function(node) {
+            switch (node.type) {
+                case "Pattern":
+                    this.visitPattern(node)
+                    break
+                case "Flags":
+                    this.visitFlags(node)
+                    break
+                case "Disjunction":
+                    this.visitDisjunction(node)
+                    break
+                case "Alternative":
+                    this.visitAlternative(node)
+                    break
+                case "StartAnchor":
+                    this.visitStartAnchor(node)
+                    break
+                case "EndAnchor":
+                    this.visitEndAnchor(node)
+                    break
+                case "WordBoundary":
+                    this.visitWordBoundary(node)
+                    break
+                case "NonWordBoundary":
+                    this.visitNonWordBoundary(node)
+                    break
+                case "Lookahead":
+                    this.visitLookahead(node)
+                    break
+                case "NegativeLookahead":
+                    this.visitNegativeLookahead(node)
+                    break
+                case "Character":
+                    this.visitCharacter(node)
+                    break
+                case "Set":
+                    this.visitSet(node)
+                    break
+                case "Group":
+                    this.visitGroup(node)
+                    break
+                case "GroupBackReference":
+                    this.visitGroupBackReference(node)
+                    break
+                case "Quantifier":
+                    this.visitQuantifier(node)
+                    break
+            }
+
+            this.visitChildren(node)
+        }
+
+        BaseRegExpVisitor.prototype.visitPattern = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitFlags = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitDisjunction = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitAlternative = function(node) {}
+
+        // Assertion
+        BaseRegExpVisitor.prototype.visitStartAnchor = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitEndAnchor = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitWordBoundary = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitNonWordBoundary = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitLookahead = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitNegativeLookahead = function(node) {}
+
+        // atoms
+        BaseRegExpVisitor.prototype.visitCharacter = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitSet = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitGroup = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitGroupBackReference = function(node) {}
+
+        BaseRegExpVisitor.prototype.visitQuantifier = function(node) {}
+
+        return {
+            RegExpParser: RegExpParser,
+            BaseRegExpVisitor: BaseRegExpVisitor,
+            VERSION: "0.4.0"
+        }
+    }
+)
+
+
+/***/ }),
+/* 43 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = getRegExpAst;
+/* harmony export (immutable) */ __webpack_exports__["a"] = clearRegExpParserCache;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
+
+var regExpAstCache = {};
+var regExpParser = new __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__["RegExpParser"]();
+function getRegExpAst(regExp) {
+    var regExpStr = regExp.toString();
+    if (regExpAstCache.hasOwnProperty(regExpStr)) {
+        return regExpAstCache[regExpStr];
+    }
+    else {
+        var regExpAst = regExpParser.pattern(regExpStr);
+        regExpAstCache[regExpStr] = regExpAst;
+        return regExpAst;
+    }
+}
+function clearRegExpParserCache() {
+    regExpAstCache = {};
+}
+//# sourceMappingURL=reg_exp_parser.js.map
+
+/***/ }),
+/* 44 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["f"] = setNodeLocationOnlyOffset;
+/* harmony export (immutable) */ __webpack_exports__["e"] = setNodeLocationFull;
+/* harmony export (immutable) */ __webpack_exports__["c"] = addTerminalToCst;
+/* harmony export (immutable) */ __webpack_exports__["b"] = addNoneTerminalToCst;
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NamedDSLMethodsCollectorVisitor; });
+/* harmony export (immutable) */ __webpack_exports__["d"] = expandAllNestedRuleNames;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_keys__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast_visitor_public__ = __webpack_require__(19);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+/**
+ * This nodeLocation tracking is not efficient and should only be used
+ * when error recovery is enabled or the Token Vector contains virtual Tokens
+ * (e.g, Python Indent/Outdent)
+ * As it executes the calculation for every single terminal/nonTerminal
+ * and does not rely on the fact the token vector is **sorted**
+ */
+function setNodeLocationOnlyOffset(currNodeLocation, newLocationInfo) {
+    // First (valid) update for this cst node
+    if (isNaN(currNodeLocation.startOffset) === true) {
+        // assumption1: Token location information is either NaN or a valid number
+        // assumption2: Token location information is fully valid if it exist
+        // (both start/end offsets exist and are numbers).
+        currNodeLocation.startOffset = newLocationInfo.startOffset;
+        currNodeLocation.endOffset = newLocationInfo.endOffset;
+    }
+    // Once the startOffset has been updated with a valid number it should never receive
+    // any farther updates as the Token vector is sorted.
+    // We still have to check this this condition for every new possible location info
+    // because with error recovery enabled we may encounter invalid tokens (NaN location props)
+    else if (currNodeLocation.endOffset < newLocationInfo.endOffset === true) {
+        currNodeLocation.endOffset = newLocationInfo.endOffset;
+    }
+}
+/**
+ * This nodeLocation tracking is not efficient and should only be used
+ * when error recovery is enabled or the Token Vector contains virtual Tokens
+ * (e.g, Python Indent/Outdent)
+ * As it executes the calculation for every single terminal/nonTerminal
+ * and does not rely on the fact the token vector is **sorted**
+ */
+function setNodeLocationFull(currNodeLocation, newLocationInfo) {
+    // First (valid) update for this cst node
+    if (isNaN(currNodeLocation.startOffset) === true) {
+        // assumption1: Token location information is either NaN or a valid number
+        // assumption2: Token location information is fully valid if it exist
+        // (all start/end props exist and are numbers).
+        currNodeLocation.startOffset = newLocationInfo.startOffset;
+        currNodeLocation.startColumn = newLocationInfo.startColumn;
+        currNodeLocation.startLine = newLocationInfo.startLine;
+        currNodeLocation.endOffset = newLocationInfo.endOffset;
+        currNodeLocation.endColumn = newLocationInfo.endColumn;
+        currNodeLocation.endLine = newLocationInfo.endLine;
+    }
+    // Once the start props has been updated with a valid number it should never receive
+    // any farther updates as the Token vector is sorted.
+    // We still have to check this this condition for every new possible location info
+    // because with error recovery enabled we may encounter invalid tokens (NaN location props)
+    else if (currNodeLocation.endOffset < newLocationInfo.endOffset === true) {
+        currNodeLocation.endOffset = newLocationInfo.endOffset;
+        currNodeLocation.endColumn = newLocationInfo.endColumn;
+        currNodeLocation.endLine = newLocationInfo.endLine;
+    }
+}
+function addTerminalToCst(node, token, tokenTypeName) {
+    if (node.children[tokenTypeName] === undefined) {
+        node.children[tokenTypeName] = [token];
+    }
+    else {
+        node.children[tokenTypeName].push(token);
+    }
+}
+function addNoneTerminalToCst(node, ruleName, ruleResult) {
+    if (node.children[ruleName] === undefined) {
+        node.children[ruleName] = [ruleResult];
+    }
+    else {
+        node.children[ruleName].push(ruleResult);
+    }
+}
+var NamedDSLMethodsCollectorVisitor = /** @class */ (function (_super) {
+    __extends(NamedDSLMethodsCollectorVisitor, _super);
+    function NamedDSLMethodsCollectorVisitor(ruleIdx) {
+        var _this = _super.call(this) || this;
+        _this.result = [];
+        _this.ruleIdx = ruleIdx;
+        return _this;
+    }
+    NamedDSLMethodsCollectorVisitor.prototype.collectNamedDSLMethod = function (node, newNodeConstructor, methodIdx) {
+        // TODO: better hack to copy what we need here...
+        if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["F" /* isUndefined */])(node.name)) {
+            // copy without name so this will indeed be processed later.
+            var nameLessNode 
+            /* istanbul ignore else */
+            = void 0;
+            /* istanbul ignore else */
+            if (node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["e" /* Option */] ||
+                node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["f" /* Repetition */] ||
+                node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["g" /* RepetitionMandatory */] ||
+                node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["b" /* Alternation */]) {
+                nameLessNode = new newNodeConstructor({
+                    definition: node.definition,
+                    idx: node.idx
+                });
+            }
+            else if (node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */] ||
+                node instanceof __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["i" /* RepetitionWithSeparator */]) {
+                nameLessNode = new newNodeConstructor({
+                    definition: node.definition,
+                    idx: node.idx,
+                    separator: node.separator
+                });
+            }
+            else {
+                throw Error("non exhaustive match");
+            }
+            var def = [nameLessNode];
+            var key = Object(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["j" /* getKeyForAutomaticLookahead */])(this.ruleIdx, methodIdx, node.idx);
+            this.result.push({ def: def, key: key, name: node.name, orgProd: node });
+        }
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitOption = function (node) {
+        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["e" /* Option */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["g" /* OPTION_IDX */]);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetition = function (node) {
+        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["f" /* Repetition */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["e" /* MANY_IDX */]);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatory = function (node) {
+        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["g" /* RepetitionMandatory */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["a" /* AT_LEAST_ONE_IDX */]);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionMandatoryWithSeparator = function (node) {
+        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */]);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitRepetitionWithSeparator = function (node) {
+        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["i" /* RepetitionWithSeparator */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["f" /* MANY_SEP_IDX */]);
+    };
+    NamedDSLMethodsCollectorVisitor.prototype.visitAlternation = function (node) {
+        var _this = this;
+        this.collectNamedDSLMethod(node, __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["b" /* Alternation */], __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["h" /* OR_IDX */]);
+        var hasMoreThanOneAlternative = node.definition.length > 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(node.definition, function (currFlatAlt, altIdx) {
+            if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["F" /* isUndefined */])(currFlatAlt.name)) {
+                var def = currFlatAlt.definition;
+                if (hasMoreThanOneAlternative) {
+                    def = [new __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__["e" /* Option */]({ definition: currFlatAlt.definition })];
+                }
+                else {
+                    // mandatory
+                    def = currFlatAlt.definition;
+                }
+                var key = Object(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["i" /* getKeyForAltIndex */])(_this.ruleIdx, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["h" /* OR_IDX */], node.idx, altIdx);
+                _this.result.push({
+                    def: def,
+                    key: key,
+                    name: currFlatAlt.name,
+                    orgProd: currFlatAlt
+                });
+            }
+        });
+    };
+    return NamedDSLMethodsCollectorVisitor;
+}(__WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast_visitor_public__["a" /* GAstVisitor */]));
+
+function expandAllNestedRuleNames(topRules, fullToShortName) {
+    var result = {
+        allRuleNames: []
+    };
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(topRules, function (currTopRule) {
+        var currTopRuleShortName = fullToShortName[currTopRule.name];
+        result.allRuleNames.push(currTopRule.name);
+        var namedCollectorVisitor = new NamedDSLMethodsCollectorVisitor(currTopRuleShortName);
+        currTopRule.accept(namedCollectorVisitor);
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(namedCollectorVisitor.result, function (_a) {
+            var def = _a.def, key = _a.key, name = _a.name;
+            result.allRuleNames.push(currTopRule.name + name);
+        });
+    });
+    return result;
+}
+//# sourceMappingURL=cst.js.map
+
+/***/ }),
+/* 45 */
 /***/ (function(module, exports) {
 
 var g;
@@ -31729,7 +37242,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 28 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -31778,12 +37291,12 @@ function escapeQuotes(string) {
 }
 
 /***/ }),
-/* 29 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseFilter;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -31801,12 +37314,12 @@ function parseFilter(sql, transform) {
 }
 
 /***/ }),
-/* 30 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseSource;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
 
 
 function joinRelation(type) {
@@ -31848,7 +37361,7 @@ function parseSource(transforms) {
 }
 
 /***/ }),
-/* 31 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31904,7 +37417,7 @@ module.exports = invariant;
 
 
 /***/ }),
-/* 32 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31922,7 +37435,7 @@ var QUARTERS = exports.QUARTERS = ["Q1", "Q2", "Q3", "Q4"];
 var HOURS = exports.HOURS = ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM", "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM", "8PM", "9PM", "10PM", "11PM"];
 
 /***/ }),
-/* 33 */
+/* 51 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -31950,7 +37463,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 34 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32027,7 +37540,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 35 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32166,7 +37679,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 36 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32229,7 +37742,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 37 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32292,7 +37805,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 38 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32418,7 +37931,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 39 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32481,7 +37994,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 40 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32589,7 +38102,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 41 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32652,7 +38165,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 42 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32761,7 +38274,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 43 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32897,7 +38410,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 44 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -32991,7 +38504,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 45 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33053,7 +38566,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 46 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33176,7 +38689,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 47 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33299,7 +38812,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 48 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33411,7 +38924,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 49 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33566,7 +39079,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 50 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33658,7 +39171,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 51 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33834,7 +39347,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 52 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33901,7 +39414,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 53 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -33985,7 +39498,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 54 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34049,7 +39562,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 55 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34129,7 +39642,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 56 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34209,7 +39722,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 57 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34289,7 +39802,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 58 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34392,7 +39905,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 59 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34496,7 +40009,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 60 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34567,7 +40080,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 61 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34638,7 +40151,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 62 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34705,7 +40218,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 63 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34776,7 +40289,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 64 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34847,7 +40360,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 65 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34913,7 +40426,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 66 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -34984,7 +40497,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 67 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35059,7 +40572,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 68 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35155,7 +40668,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 69 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35251,7 +40764,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 70 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35347,7 +40860,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 71 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35431,7 +40944,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 72 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35501,7 +41014,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 73 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35611,7 +41124,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 74 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35724,7 +41237,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 75 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35788,7 +41301,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 76 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35875,7 +41388,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 77 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -35953,7 +41466,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 78 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -36035,7 +41548,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 79 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -36114,7 +41627,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 80 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -36195,7 +41708,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 81 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -36275,7 +41788,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 82 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -36356,7 +41869,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 83 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -36483,7 +41996,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 84 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -36611,7 +42124,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 85 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -36712,7 +42225,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 86 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -36840,7 +42353,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 87 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -36998,7 +42511,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 88 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37112,7 +42625,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 89 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37211,7 +42724,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 90 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37297,7 +42810,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 91 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37433,7 +42946,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 92 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37506,7 +43019,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 93 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37579,7 +43092,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 94 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37675,7 +43188,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 95 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37761,7 +43274,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 96 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37854,7 +43367,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 97 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37945,7 +43458,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 98 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38059,7 +43572,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 99 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38189,7 +43702,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 100 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38274,7 +43787,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 101 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38397,7 +43910,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 102 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38488,7 +44001,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 103 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38628,7 +44141,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 104 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38702,7 +44215,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 105 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38824,7 +44337,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 106 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38925,7 +44438,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 107 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39041,7 +44554,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 108 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39109,7 +44622,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 109 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39203,7 +44716,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 110 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39288,7 +44801,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 111 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39396,7 +44909,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 112 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39560,7 +45073,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 113 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39646,7 +45159,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 114 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39732,7 +45245,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 115 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39796,7 +45309,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 116 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39893,7 +45406,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 117 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39959,7 +45472,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 118 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40086,7 +45599,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 119 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40177,7 +45690,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 120 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40268,7 +45781,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 121 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40332,7 +45845,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 122 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40460,7 +45973,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 123 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40590,7 +46103,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 124 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40659,7 +46172,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 125 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40724,7 +46237,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 126 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40803,7 +46316,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 127 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40989,7 +46502,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 128 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41091,7 +46604,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 129 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41155,7 +46668,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 130 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41230,7 +46743,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 131 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41390,7 +46903,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 132 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41567,7 +47080,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 133 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41639,7 +47152,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 134 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41754,7 +47267,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 135 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41869,7 +47382,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 136 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41961,7 +47474,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 137 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42034,7 +47547,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 138 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42097,7 +47610,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 139 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42230,7 +47743,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 140 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42323,7 +47836,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 141 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42394,7 +47907,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 142 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42514,7 +48027,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 143 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42585,7 +48098,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 144 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42651,7 +48164,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 145 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42777,7 +48290,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 146 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -42875,7 +48388,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 147 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42970,7 +48483,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 148 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43032,7 +48545,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 149 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43094,7 +48607,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 150 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -43217,7 +48730,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 151 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43375,7 +48888,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 152 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43477,7 +48990,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 153 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43539,7 +49052,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 154 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43601,7 +49114,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 155 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43684,7 +49197,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 156 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43756,7 +49269,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 157 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43820,7 +49333,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 158 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43934,7 +49447,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 159 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44041,7 +49554,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 160 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44148,7 +49661,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 161 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44210,7 +49723,7 @@ module.exports = function equal(a, b) {
 
 
 /***/ }),
-/* 162 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44225,9 +49738,9 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44382,7 +49895,7 @@ function asyncMixin(_chart) {
 }
 
 /***/ }),
-/* 163 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44423,7 +49936,7 @@ BadArgumentException.prototype = Object.create(Exception.prototype);
 BadArgumentException.prototype.constructor = BadArgumentException;
 
 /***/ }),
-/* 164 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44434,7 +49947,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.multipleKeysAccessorForStack = exports.multipleKeysAccessorForCap = undefined;
 
-var _formattingHelpers = __webpack_require__(7);
+var _formattingHelpers = __webpack_require__(10);
 
 var INDEX_NONE = -1;
 var identity = function identity(a) {
@@ -44480,7 +49993,7 @@ var multipleKeysAccessorForCap = exports.multipleKeysAccessorForCap = createAcce
 var multipleKeysAccessorForStack = exports.multipleKeysAccessorForStack = createAccessor(getMinOfRange);
 
 /***/ }),
-/* 165 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44491,7 +50004,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = multipleKeysLabelMixin;
 
-var _formattingHelpers = __webpack_require__(7);
+var _formattingHelpers = __webpack_require__(10);
 
 var INDEX_NONE = -1;
 var SHOULD_RENDER_LABELS = true;
@@ -44547,7 +50060,7 @@ function multipleKeysLabelMixin(_chart) {
 }
 
 /***/ }),
-/* 166 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44559,13 +50072,13 @@ Object.defineProperty(exports, "__esModule", {
 exports.setCursorSpinner = exports.areAnySpinnersShowing = undefined;
 exports.default = spinnerMixin;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _dcConstants = __webpack_require__(217);
+var _dcConstants = __webpack_require__(244);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44677,7 +50190,7 @@ function spinnerMixin(_chart) {
 }
 
 /***/ }),
-/* 167 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44688,7 +50201,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = elasticDimensionMixin;
 
-var _ramda = __webpack_require__(219);
+var _ramda = __webpack_require__(246);
 
 var _d = __webpack_require__(1);
 
@@ -44753,7 +50266,7 @@ function elasticDimensionMixin(_chart) {
 }
 
 /***/ }),
-/* 168 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44768,7 +50281,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _formattingHelpers = __webpack_require__(7);
+var _formattingHelpers = __webpack_require__(10);
 
 var _moment = __webpack_require__(0);
 
@@ -44984,7 +50497,7 @@ function lockAxisMixin(chart) {
 }
 
 /***/ }),
-/* 169 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44995,7 +50508,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = multiSeriesMixin;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -45235,7 +50748,7 @@ function multiSeriesMixin(chart) {
 }
 
 /***/ }),
-/* 170 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45252,7 +50765,7 @@ exports.conv4326To900913X = conv4326To900913X;
 exports.conv4326To900913Y = conv4326To900913Y;
 exports.conv4326To900913 = conv4326To900913;
 
-var _mapdDraw = __webpack_require__(14);
+var _mapdDraw = __webpack_require__(18);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
@@ -45334,7 +50847,7 @@ function conv4326To900913(out, coord) {
 }
 
 /***/ }),
-/* 171 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45348,17 +50861,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = coordinateGridRasterMixin;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _coordinateGridRasterMixinUi = __webpack_require__(241);
+var _coordinateGridRasterMixinUi = __webpack_require__(268);
 
 var _coordinateGridRasterMixinUi2 = _interopRequireDefault(_coordinateGridRasterMixinUi);
 
-var _colorMixin = __webpack_require__(9);
+var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
@@ -45366,11 +50879,11 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(17);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _axios = __webpack_require__(244);
+var _axios = __webpack_require__(271);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -46727,7 +52240,7 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 }
 
 /***/ }),
-/* 172 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46745,13 +52258,13 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 173 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
+var utils = __webpack_require__(8);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -46823,7 +52336,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 174 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46835,14 +52348,14 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 175 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(6);
-var normalizeHeaderName = __webpack_require__(252);
+var utils = __webpack_require__(8);
+var normalizeHeaderName = __webpack_require__(279);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -46859,10 +52372,10 @@ function getDefaultAdapter() {
   // Only Node.JS has a process variable that is of [[Class]] process
   if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(176);
+    adapter = __webpack_require__(194);
   } else if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(176);
+    adapter = __webpack_require__(194);
   }
   return adapter;
 }
@@ -46938,21 +52451,21 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(251)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(278)))
 
 /***/ }),
-/* 176 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
-var settle = __webpack_require__(253);
-var buildURL = __webpack_require__(173);
-var parseHeaders = __webpack_require__(255);
-var isURLSameOrigin = __webpack_require__(256);
-var createError = __webpack_require__(177);
+var utils = __webpack_require__(8);
+var settle = __webpack_require__(280);
+var buildURL = __webpack_require__(191);
+var parseHeaders = __webpack_require__(282);
+var isURLSameOrigin = __webpack_require__(283);
+var createError = __webpack_require__(195);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -47044,7 +52557,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(257);
+      var cookies = __webpack_require__(284);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -47122,13 +52635,13 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 177 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(254);
+var enhanceError = __webpack_require__(281);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -47147,13 +52660,13 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 178 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
+var utils = __webpack_require__(8);
 
 /**
  * Config-specific merge-function which creates a new config-object
@@ -47205,7 +52718,7 @@ module.exports = function mergeConfig(config1, config2) {
 
 
 /***/ }),
-/* 179 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47231,7 +52744,7 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 180 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47242,9 +52755,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = scatterMixin;
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _rasterDrawMixin = __webpack_require__(24);
+var _rasterDrawMixin = __webpack_require__(38);
 
 function extend(destination, source) {
   for (var k in source) {
@@ -47462,7 +52975,7 @@ function scatterMixin(_chart, _mapboxgl) {
 }
 
 /***/ }),
-/* 181 */
+/* 199 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47476,7 +52989,7 @@ function vnode(sel, data, children, text, elm) {
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 182 */
+/* 200 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47489,13 +53002,13 @@ function primitive(s) {
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 183 */
+/* 201 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = h;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(181);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(182);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(199);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(200);
 
 
 function addNS(data, children, sel) {
@@ -47554,18 +53067,18 @@ function h(sel, b, c) {
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 184 */
+/* 202 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(280);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(281);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(185);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(282);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(283);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(186);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(285);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(307);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(308);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(309);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(310);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(312);
 
 
 
@@ -47711,7 +53224,7 @@ var prefixes = ["y","z","a","f","p","n","µ","m","","k","M","G","T","P","E","Z",
 
 
 /***/ }),
-/* 185 */
+/* 203 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47755,12 +53268,12 @@ FormatSpecifier.prototype.toString = function() {
 
 
 /***/ }),
-/* 186 */
+/* 204 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return prefixExponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(40);
 
 
 var prefixExponent;
@@ -47780,7 +53293,7 @@ var prefixExponent;
 
 
 /***/ }),
-/* 187 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47791,9 +53304,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rasterLayerHeatmapMixin;
 
-var _utilsVega = __webpack_require__(16);
+var _utilsVega = __webpack_require__(21);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 var MIN_AREA_IN_METERS = 30;
 var EARTH_DIAMETER = 40075000;
@@ -48083,7 +53596,7 @@ function rasterLayerHeatmapMixin(_layer) {
 }
 
 /***/ }),
-/* 188 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48097,17 +53610,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = rasterLayerPointMixin;
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _utilsVega = __webpack_require__(16);
+var _utilsVega = __webpack_require__(21);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 var _d = __webpack_require__(1);
 
 var d3 = _interopRequireWildcard(_d);
 
-var _mapdDraw = __webpack_require__(14);
+var _mapdDraw = __webpack_require__(18);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -48750,7 +54263,7 @@ function rasterLayerPointMixin(_layer) {
 }
 
 /***/ }),
-/* 189 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48766,17 +54279,21 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = rasterLayerPolyMixin;
 
-var _utilsVega = __webpack_require__(16);
+var _utilsVega = __webpack_require__(21);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(10);
+var _events = __webpack_require__(13);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
+
+var _customSqlParser = __webpack_require__(322);
+
+var _customSqlParser2 = _interopRequireDefault(_customSqlParser);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48875,6 +54392,7 @@ function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1;
   }
 
+  // eslint-disable-next-line complexity
   function getTransforms(_ref) {
     var bboxFilter = _ref.bboxFilter,
         filter = _ref.filter,
@@ -48891,10 +54409,6 @@ function rasterLayerPolyMixin(_layer) {
 
     var transforms = [];
 
-    var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + color.field + ")";
-
-    var colorField = color.type === "quantitative" ? typeof color.aggregate === "string" ? color.aggregate : color.aggregate.field : color.field;
-
     transforms.push({
       type: "project",
       expr: geoTable + "." + geocol,
@@ -48902,6 +54416,23 @@ function rasterLayerPolyMixin(_layer) {
     });
 
     if (doJoin()) {
+      var colorProjection = [color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + color.field + ")"];
+      var colorProjectionAs = ["color"];
+      var colorField = withAlias + ".color";
+      if (typeof color.aggregate === "string") {
+        // Custom SQL may include references to both the base table and the
+        // geo-join table. The custom SQL is parsed to move references to the
+        // base table into the WITH clause, and everything else outside in the
+        // parent SELECT.
+        // eslint-disable-next-line no-extra-semi
+        ;
+        var _parseFactsFromCustom = (0, _customSqlParser2.default)(state.data[0].table, withAlias, color.aggregate);
+
+        colorProjection = _parseFactsFromCustom.factProjections;
+        colorProjectionAs = _parseFactsFromCustom.factAliases;
+        colorField = _parseFactsFromCustom.expression;
+      }
+
       var withClauseTransforms = [];
 
       var groupby = {
@@ -48924,16 +54455,16 @@ function rasterLayerPolyMixin(_layer) {
       if (color.type !== "solid") {
         withClauseTransforms.push({
           type: "aggregate",
-          fields: [colorProjection],
+          fields: colorProjection,
           ops: [null],
-          as: ["color"],
+          as: colorProjectionAs,
           groupby: groupby
         });
 
         if (!layerFilter.length) {
           transforms.push({
             type: "project",
-            expr: withAlias + ".color",
+            expr: colorField,
             as: "color"
           });
         }
@@ -48986,10 +54517,12 @@ function rasterLayerPolyMixin(_layer) {
         }
       });
     } else {
+      var _colorField = color.type === "quantitative" ? typeof color.aggregate === "string" ? color.aggregate : color.aggregate.field : color.field;
+
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
-          expr: colorField,
+          expr: _colorField,
           as: "color"
         });
       }
@@ -49006,7 +54539,7 @@ function rasterLayerPolyMixin(_layer) {
             // Note: When not performing a join, there is no dimension,
             // and color measures do not have aggregates. Just grab the
             // field.
-            color.type === "solid" ? 1 : colorField]],
+            color.type === "solid" ? 1 : _colorField]],
             else: null
           }),
           as: "color"
@@ -49439,23 +54972,1559 @@ function rasterLayerPolyMixin(_layer) {
 }
 
 /***/ }),
-/* 190 */
+/* 208 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["clearCache"] = clearCache;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(209);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return __WEBPACK_IMPORTED_MODULE_0__version__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__ = __webpack_require__(9);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Parser", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["g"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CstParser", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EmbeddedActionsParser", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["f"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "ParserDefinitionErrorType", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["h"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EMPTY_ALT", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["d"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__ = __webpack_require__(28);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Lexer", function() { return __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "LexerDefinitionErrorType", function() { return __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__["b"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__ = __webpack_require__(16);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createToken", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createTokenInstance", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["c"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EOF", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "tokenLabel", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["e"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "tokenMatcher", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["f"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "tokenName", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["g"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__ = __webpack_require__(29);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultGrammarResolverErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultGrammarValidatorErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultParserErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__["c"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__ = __webpack_require__(25);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EarlyExitException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "isRecognitionException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["e"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MismatchedTokenException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NotAllInputParsedException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["d"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NoViableAltException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["c"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__ = __webpack_require__(211);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLexerErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__ = __webpack_require__(7);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Alternation", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Flat", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["c"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NonTerminal", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["d"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Option", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["e"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Repetition", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["f"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "RepetitionMandatory", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["g"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "RepetitionMandatoryWithSeparator", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["h"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "RepetitionWithSeparator", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["i"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Rule", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["j"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Terminal", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["k"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "serializeGrammar", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["l"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "serializeProduction", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["m"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__ = __webpack_require__(19);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "GAstVisitor", function() { return __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__ = __webpack_require__(214);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "assignOccurrenceIndices", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "resolveGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "validateGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["c"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__ = __webpack_require__(336);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createSyntaxDiagramsCode", function() { return __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__ = __webpack_require__(337);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "generateParserFactory", function() { return __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "generateParserModule", function() { return __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__["b"]; });
+// semantic version
+
+
+
+// Tokens utilities
+
+// Other Utilities
+
+
+
+// grammar reflection API
+
+// GAST Utilities
+
+
+
+/* istanbul ignore next */
+function clearCache() {
+    console.warn("The clearCache function was 'soft' removed from the Chevrotain API." +
+        "\n\t It performs no action other than printing this message." +
+        "\n\t Please avoid using it as it will be completely removed in the future");
+}
+
+
+//# sourceMappingURL=api.js.map
+
+/***/ }),
+/* 209 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return VERSION; });
+// needs a separate module as this is required inside chevrotain productive code
+// and also in the entry point for webpack(api.ts).
+// A separate file avoids cyclic dependencies and webpack errors.
+var VERSION = "6.5.0";
+//# sourceMappingURL=version.js.map
+
+/***/ }),
+/* 210 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DEFAULT_MODE; });
+/* unused harmony export MODES */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return SUPPORT_STICKY; });
+/* unused harmony export disableSticky */
+/* unused harmony export enableSticky */
+/* harmony export (immutable) */ __webpack_exports__["d"] = analyzeTokenTypes;
+/* harmony export (immutable) */ __webpack_exports__["j"] = validatePatterns;
+/* unused harmony export findMissingPatterns */
+/* unused harmony export findInvalidPatterns */
+/* unused harmony export findEndOfInputAnchor */
+/* unused harmony export findEmptyMatchRegExps */
+/* unused harmony export findStartOfInputAnchor */
+/* unused harmony export findUnsupportedFlags */
+/* unused harmony export findDuplicatePatterns */
+/* unused harmony export findInvalidGroupType */
+/* unused harmony export findModesThatDoNotExist */
+/* unused harmony export findUnreachablePatterns */
+/* unused harmony export addStartOfInput */
+/* unused harmony export addStickyFlag */
+/* harmony export (immutable) */ __webpack_exports__["h"] = performRuntimeChecks;
+/* harmony export (immutable) */ __webpack_exports__["i"] = performWarningRuntimeChecks;
+/* harmony export (immutable) */ __webpack_exports__["f"] = cloneEmptyGroups;
+/* unused harmony export isCustomPattern */
+/* unused harmony export isShortPattern */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return LineTerminatorOptimizedTester; });
+/* unused harmony export buildLineBreakIssueMessage */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return minOptimizationVal; });
+/* harmony export (immutable) */ __webpack_exports__["e"] = charCodeToOptimizedIndex;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lexer_public__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reg_exp__ = __webpack_require__(324);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(43);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+
+var PATTERN = "PATTERN";
+var DEFAULT_MODE = "defaultMode";
+var MODES = "modes";
+var SUPPORT_STICKY = typeof new RegExp("(?:)").sticky === "boolean";
+function disableSticky() {
+    SUPPORT_STICKY = false;
+}
+function enableSticky() {
+    SUPPORT_STICKY = true;
+}
+function analyzeTokenTypes(tokenTypes, options) {
+    options = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["k" /* defaults */])(options, {
+        useSticky: SUPPORT_STICKY,
+        debug: false,
+        safeMode: false,
+        positionTracking: "full",
+        lineTerminatorCharacters: ["\r", "\n"],
+        tracer: function (msg, action) { return action(); }
+    });
+    var tracer = options.tracer;
+    tracer("initCharCodeToOptimizedIndexMap", function () {
+        initCharCodeToOptimizedIndexMap();
+    });
+    var onlyRelevantTypes;
+    tracer("Reject Lexer.NA", function () {
+        onlyRelevantTypes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["P" /* reject */])(tokenTypes, function (currType) {
+            return currType[PATTERN] === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA;
+        });
+    });
+    var hasCustom = false;
+    var allTransformedPatterns;
+    tracer("Transform Patterns", function () {
+        hasCustom = false;
+        allTransformedPatterns = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (currType) {
+            var currPattern = currType[PATTERN];
+            /* istanbul ignore else */
+            if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(currPattern)) {
+                var regExpSource = currPattern.source;
+                if (regExpSource.length === 1 &&
+                    // only these regExp meta characters which can appear in a length one regExp
+                    regExpSource !== "^" &&
+                    regExpSource !== "$" &&
+                    regExpSource !== ".") {
+                    return regExpSource;
+                }
+                else if (regExpSource.length === 2 &&
+                    regExpSource[0] === "\\" &&
+                    // not a meta character
+                    !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["j" /* contains */])([
+                        "d",
+                        "D",
+                        "s",
+                        "S",
+                        "t",
+                        "r",
+                        "n",
+                        "t",
+                        "0",
+                        "c",
+                        "b",
+                        "B",
+                        "f",
+                        "v",
+                        "w",
+                        "W"
+                    ], regExpSource[1])) {
+                    // escaped meta Characters: /\+/ /\[/
+                    // or redundant escaping: /\a/
+                    // without the escaping "\"
+                    return regExpSource[1];
+                }
+                else {
+                    return options.useSticky
+                        ? addStickyFlag(currPattern)
+                        : addStartOfInput(currPattern);
+                }
+            }
+            else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["B" /* isFunction */])(currPattern)) {
+                hasCustom = true;
+                // CustomPatternMatcherFunc - custom patterns do not require any transformations, only wrapping in a RegExp Like object
+                return { exec: currPattern };
+            }
+            else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(currPattern, "exec")) {
+                hasCustom = true;
+                // ICustomPattern
+                return currPattern;
+            }
+            else if (typeof currPattern === "string") {
+                if (currPattern.length === 1) {
+                    return currPattern;
+                }
+                else {
+                    var escapedRegExpString = currPattern.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&");
+                    var wrappedRegExp = new RegExp(escapedRegExpString);
+                    return options.useSticky
+                        ? addStickyFlag(wrappedRegExp)
+                        : addStartOfInput(wrappedRegExp);
+                }
+            }
+            else {
+                throw Error("non exhaustive match");
+            }
+        });
+    });
+    var patternIdxToType;
+    var patternIdxToGroup;
+    var patternIdxToLongerAltIdx;
+    var patternIdxToPushMode;
+    var patternIdxToPopMode;
+    tracer("misc mapping", function () {
+        patternIdxToType = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (currType) { return currType.tokenTypeIdx; });
+        patternIdxToGroup = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (clazz) {
+            var groupName = clazz.GROUP;
+            /* istanbul ignore next */
+            if (groupName === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].SKIPPED) {
+                return undefined;
+            }
+            else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(groupName)) {
+                return groupName;
+            }
+            else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["F" /* isUndefined */])(groupName)) {
+                return false;
+            }
+            else {
+                throw Error("non exhaustive match");
+            }
+        });
+        patternIdxToLongerAltIdx = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (clazz) {
+            var longerAltType = clazz.LONGER_ALT;
+            if (longerAltType) {
+                var longerAltIdx = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["x" /* indexOf */])(onlyRelevantTypes, longerAltType);
+                return longerAltIdx;
+            }
+        });
+        patternIdxToPushMode = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (clazz) { return clazz.PUSH_MODE; });
+        patternIdxToPopMode = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (clazz) {
+            return Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(clazz, "POP_MODE");
+        });
+    });
+    var patternIdxToCanLineTerminator;
+    tracer("Line Terminator Handling", function () {
+        var lineTerminatorCharCodes = getCharCodes(options.lineTerminatorCharacters);
+        patternIdxToCanLineTerminator = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (tokType) { return false; });
+        if (options.positionTracking !== "onlyOffset") {
+            patternIdxToCanLineTerminator = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, function (tokType) {
+                if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(tokType, "LINE_BREAKS")) {
+                    return tokType.LINE_BREAKS;
+                }
+                else {
+                    if (checkLineBreaksIssues(tokType, lineTerminatorCharCodes) === false) {
+                        return Object(__WEBPACK_IMPORTED_MODULE_3__reg_exp__["a" /* canMatchCharCode */])(lineTerminatorCharCodes, tokType.PATTERN);
+                    }
+                }
+            });
+        }
+    });
+    var patternIdxToIsCustom;
+    var patternIdxToShort;
+    var emptyGroups;
+    var patternIdxToConfig;
+    tracer("Misc Mapping #2", function () {
+        patternIdxToIsCustom = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(onlyRelevantTypes, isCustomPattern);
+        patternIdxToShort = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(allTransformedPatterns, isShortPattern);
+        emptyGroups = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["O" /* reduce */])(onlyRelevantTypes, function (acc, clazz) {
+            var groupName = clazz.GROUP;
+            if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(groupName) && !(groupName === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].SKIPPED)) {
+                acc[groupName] = [];
+            }
+            return acc;
+        }, {});
+        patternIdxToConfig = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(allTransformedPatterns, function (x, idx) {
+            return {
+                pattern: allTransformedPatterns[idx],
+                longerAlt: patternIdxToLongerAltIdx[idx],
+                canLineTerminator: patternIdxToCanLineTerminator[idx],
+                isCustom: patternIdxToIsCustom[idx],
+                short: patternIdxToShort[idx],
+                group: patternIdxToGroup[idx],
+                push: patternIdxToPushMode[idx],
+                pop: patternIdxToPopMode[idx],
+                tokenTypeIdx: patternIdxToType[idx],
+                tokenType: onlyRelevantTypes[idx]
+            };
+        });
+    });
+    var canBeOptimized = true;
+    var charCodeToPatternIdxToConfig = [];
+    if (!options.safeMode) {
+        tracer("First Char Optimization", function () {
+            charCodeToPatternIdxToConfig = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["O" /* reduce */])(onlyRelevantTypes, function (result, currTokType, idx) {
+                if (typeof currTokType.PATTERN === "string") {
+                    var charCode = currTokType.PATTERN.charCodeAt(0);
+                    var optimizedIdx = charCodeToOptimizedIndex(charCode);
+                    addToMapOfArrays(result, optimizedIdx, patternIdxToConfig[idx]);
+                }
+                else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["y" /* isArray */])(currTokType.START_CHARS_HINT)) {
+                    var lastOptimizedIdx_1;
+                    Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(currTokType.START_CHARS_HINT, function (charOrInt) {
+                        var charCode = typeof charOrInt === "string"
+                            ? charOrInt.charCodeAt(0)
+                            : charOrInt;
+                        var currOptimizedIdx = charCodeToOptimizedIndex(charCode);
+                        // Avoid adding the config multiple times
+                        if (lastOptimizedIdx_1 !== currOptimizedIdx) {
+                            lastOptimizedIdx_1 = currOptimizedIdx;
+                            addToMapOfArrays(result, currOptimizedIdx, patternIdxToConfig[idx]);
+                        }
+                    });
+                }
+                else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(currTokType.PATTERN)) {
+                    if (currTokType.PATTERN.unicode) {
+                        canBeOptimized = false;
+                        if (options.ensureOptimizations) {
+                            Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["c" /* PRINT_ERROR */])("" + __WEBPACK_IMPORTED_MODULE_3__reg_exp__["b" /* failedOptimizationPrefixMsg */] +
+                                ("\tUnable to analyze < " + currTokType.PATTERN.toString() + " > pattern.\n") +
+                                "\tThe regexp unicode flag is not currently supported by the regexp-to-ast library.\n" +
+                                "\tThis will disable the lexer's first char optimizations.\n" +
+                                "\tFor details See: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#UNICODE_OPTIMIZE");
+                        }
+                    }
+                    else {
+                        var optimizedCodes = Object(__WEBPACK_IMPORTED_MODULE_3__reg_exp__["c" /* getOptimizedStartCodesIndices */])(currTokType.PATTERN, options.ensureOptimizations);
+                        /* istanbul ignore if */
+                        // start code will only be empty given an empty regExp or failure of regexp-to-ast library
+                        // the first should be a different validation and the second cannot be tested.
+                        if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["A" /* isEmpty */])(optimizedCodes)) {
+                            // we cannot understand what codes may start possible matches
+                            // The optimization correctness requires knowing start codes for ALL patterns.
+                            // Not actually sure this is an error, no debug message
+                            canBeOptimized = false;
+                        }
+                        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(optimizedCodes, function (code) {
+                            addToMapOfArrays(result, code, patternIdxToConfig[idx]);
+                        });
+                    }
+                }
+                else {
+                    if (options.ensureOptimizations) {
+                        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["c" /* PRINT_ERROR */])("" + __WEBPACK_IMPORTED_MODULE_3__reg_exp__["b" /* failedOptimizationPrefixMsg */] +
+                            ("\tTokenType: <" + currTokType.name + "> is using a custom token pattern without providing <start_chars_hint> parameter.\n") +
+                            "\tThis will disable the lexer's first char optimizations.\n" +
+                            "\tFor details See: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#CUSTOM_OPTIMIZE");
+                    }
+                    canBeOptimized = false;
+                }
+                return result;
+            }, []);
+        });
+    }
+    tracer("ArrayPacking", function () {
+        charCodeToPatternIdxToConfig = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["L" /* packArray */])(charCodeToPatternIdxToConfig);
+    });
+    return {
+        emptyGroups: emptyGroups,
+        patternIdxToConfig: patternIdxToConfig,
+        charCodeToPatternIdxToConfig: charCodeToPatternIdxToConfig,
+        hasCustom: hasCustom,
+        canBeOptimized: canBeOptimized
+    };
+}
+function validatePatterns(tokenTypes, validModesNames) {
+    var errors = [];
+    var missingResult = findMissingPatterns(tokenTypes);
+    errors = errors.concat(missingResult.errors);
+    var invalidResult = findInvalidPatterns(missingResult.valid);
+    var validTokenTypes = invalidResult.valid;
+    errors = errors.concat(invalidResult.errors);
+    errors = errors.concat(validateRegExpPattern(validTokenTypes));
+    errors = errors.concat(findInvalidGroupType(validTokenTypes));
+    errors = errors.concat(findModesThatDoNotExist(validTokenTypes, validModesNames));
+    errors = errors.concat(findUnreachablePatterns(validTokenTypes));
+    return errors;
+}
+function validateRegExpPattern(tokenTypes) {
+    var errors = [];
+    var withRegExpPatterns = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currTokType) {
+        return Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(currTokType[PATTERN]);
+    });
+    errors = errors.concat(findEndOfInputAnchor(withRegExpPatterns));
+    errors = errors.concat(findStartOfInputAnchor(withRegExpPatterns));
+    errors = errors.concat(findUnsupportedFlags(withRegExpPatterns));
+    errors = errors.concat(findDuplicatePatterns(withRegExpPatterns));
+    errors = errors.concat(findEmptyMatchRegExps(withRegExpPatterns));
+    return errors;
+}
+function findMissingPatterns(tokenTypes) {
+    var tokenTypesWithMissingPattern = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+        return !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(currType, PATTERN);
+    });
+    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(tokenTypesWithMissingPattern, function (currType) {
+        return {
+            message: "Token Type: ->" +
+                currType.name +
+                "<- missing static 'PATTERN' property",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].MISSING_PATTERN,
+            tokenTypes: [currType]
+        };
+    });
+    var valid = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["l" /* difference */])(tokenTypes, tokenTypesWithMissingPattern);
+    return { errors: errors, valid: valid };
+}
+function findInvalidPatterns(tokenTypes) {
+    var tokenTypesWithInvalidPattern = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+        var pattern = currType[PATTERN];
+        return (!Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(pattern) &&
+            !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["B" /* isFunction */])(pattern) &&
+            !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(pattern, "exec") &&
+            !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(pattern));
+    });
+    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(tokenTypesWithInvalidPattern, function (currType) {
+        return {
+            message: "Token Type: ->" +
+                currType.name +
+                "<- static 'PATTERN' can only be a RegExp, a" +
+                " Function matching the {CustomPatternMatcherFunc} type or an Object matching the {ICustomPattern} interface.",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].INVALID_PATTERN,
+            tokenTypes: [currType]
+        };
+    });
+    var valid = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["l" /* difference */])(tokenTypes, tokenTypesWithInvalidPattern);
+    return { errors: errors, valid: valid };
+}
+var end_of_input = /[^\\][\$]/;
+function findEndOfInputAnchor(tokenTypes) {
+    var EndAnchorFinder = /** @class */ (function (_super) {
+        __extends(EndAnchorFinder, _super);
+        function EndAnchorFinder() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.found = false;
+            return _this;
+        }
+        EndAnchorFinder.prototype.visitEndAnchor = function (node) {
+            this.found = true;
+        };
+        return EndAnchorFinder;
+    }(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__["BaseRegExpVisitor"]));
+    var invalidRegex = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+        var pattern = currType[PATTERN];
+        try {
+            var regexpAst = Object(__WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__["b" /* getRegExpAst */])(pattern);
+            var endAnchorVisitor = new EndAnchorFinder();
+            endAnchorVisitor.visit(regexpAst);
+            return endAnchorVisitor.found;
+        }
+        catch (e) {
+            // old behavior in case of runtime exceptions with regexp-to-ast.
+            /* istanbul ignore next - cannot ensure an error in regexp-to-ast*/
+            return end_of_input.test(pattern.source);
+        }
+    });
+    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(invalidRegex, function (currType) {
+        return {
+            message: "Unexpected RegExp Anchor Error:\n" +
+                "\tToken Type: ->" +
+                currType.name +
+                "<- static 'PATTERN' cannot contain end of input anchor '$'\n" +
+                "\tSee sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#ANCHORS" +
+                "\tfor details.",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].EOI_ANCHOR_FOUND,
+            tokenTypes: [currType]
+        };
+    });
+    return errors;
+}
+function findEmptyMatchRegExps(tokenTypes) {
+    var matchesEmptyString = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+        var pattern = currType[PATTERN];
+        return pattern.test("");
+    });
+    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(matchesEmptyString, function (currType) {
+        return {
+            message: "Token Type: ->" +
+                currType.name +
+                "<- static 'PATTERN' must not match an empty string",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].EMPTY_MATCH_PATTERN,
+            tokenTypes: [currType]
+        };
+    });
+    return errors;
+}
+var start_of_input = /[^\\[][\^]|^\^/;
+function findStartOfInputAnchor(tokenTypes) {
+    var StartAnchorFinder = /** @class */ (function (_super) {
+        __extends(StartAnchorFinder, _super);
+        function StartAnchorFinder() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.found = false;
+            return _this;
+        }
+        StartAnchorFinder.prototype.visitStartAnchor = function (node) {
+            this.found = true;
+        };
+        return StartAnchorFinder;
+    }(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__["BaseRegExpVisitor"]));
+    var invalidRegex = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+        var pattern = currType[PATTERN];
+        try {
+            var regexpAst = Object(__WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__["b" /* getRegExpAst */])(pattern);
+            var startAnchorVisitor = new StartAnchorFinder();
+            startAnchorVisitor.visit(regexpAst);
+            return startAnchorVisitor.found;
+        }
+        catch (e) {
+            // old behavior in case of runtime exceptions with regexp-to-ast.
+            /* istanbul ignore next - cannot ensure an error in regexp-to-ast*/
+            return start_of_input.test(pattern.source);
+        }
+    });
+    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(invalidRegex, function (currType) {
+        return {
+            message: "Unexpected RegExp Anchor Error:\n" +
+                "\tToken Type: ->" +
+                currType.name +
+                "<- static 'PATTERN' cannot contain start of input anchor '^'\n" +
+                "\tSee https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#ANCHORS" +
+                "\tfor details.",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].SOI_ANCHOR_FOUND,
+            tokenTypes: [currType]
+        };
+    });
+    return errors;
+}
+function findUnsupportedFlags(tokenTypes) {
+    var invalidFlags = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (currType) {
+        var pattern = currType[PATTERN];
+        return (pattern instanceof RegExp && (pattern.multiline || pattern.global));
+    });
+    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(invalidFlags, function (currType) {
+        return {
+            message: "Token Type: ->" +
+                currType.name +
+                "<- static 'PATTERN' may NOT contain global('g') or multiline('m')",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].UNSUPPORTED_FLAGS_FOUND,
+            tokenTypes: [currType]
+        };
+    });
+    return errors;
+}
+// This can only test for identical duplicate RegExps, not semantically equivalent ones.
+function findDuplicatePatterns(tokenTypes) {
+    var found = [];
+    var identicalPatterns = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(tokenTypes, function (outerType) {
+        return Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["O" /* reduce */])(tokenTypes, function (result, innerType) {
+            if (outerType.PATTERN.source === innerType.PATTERN.source &&
+                !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["j" /* contains */])(found, innerType) &&
+                innerType.PATTERN !== __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA) {
+                // this avoids duplicates in the result, each Token Type may only appear in one "set"
+                // in essence we are creating Equivalence classes on equality relation.
+                found.push(innerType);
+                result.push(innerType);
+                return result;
+            }
+            return result;
+        }, []);
+    });
+    identicalPatterns = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["i" /* compact */])(identicalPatterns);
+    var duplicatePatterns = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(identicalPatterns, function (currIdenticalSet) {
+        return currIdenticalSet.length > 1;
+    });
+    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(duplicatePatterns, function (setOfIdentical) {
+        var tokenTypeNames = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(setOfIdentical, function (currType) {
+            return currType.name;
+        });
+        var dupPatternSrc = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["s" /* first */])(setOfIdentical).PATTERN;
+        return {
+            message: "The same RegExp pattern ->" + dupPatternSrc + "<-" +
+                ("has been used in all of the following Token Types: " + tokenTypeNames.join(", ") + " <-"),
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].DUPLICATE_PATTERNS_FOUND,
+            tokenTypes: setOfIdentical
+        };
+    });
+    return errors;
+}
+function findInvalidGroupType(tokenTypes) {
+    var invalidTypes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (clazz) {
+        if (!Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(clazz, "GROUP")) {
+            return false;
+        }
+        var group = clazz.GROUP;
+        return group !== __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].SKIPPED && group !== __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA && !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(group);
+    });
+    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(invalidTypes, function (currType) {
+        return {
+            message: "Token Type: ->" +
+                currType.name +
+                "<- static 'GROUP' can only be Lexer.SKIPPED/Lexer.NA/A String",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].INVALID_GROUP_TYPE_FOUND,
+            tokenTypes: [currType]
+        };
+    });
+    return errors;
+}
+function findModesThatDoNotExist(tokenTypes, validModes) {
+    var invalidModes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["p" /* filter */])(tokenTypes, function (clazz) {
+        return (clazz.PUSH_MODE !== undefined &&
+            !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["j" /* contains */])(validModes, clazz.PUSH_MODE));
+    });
+    var errors = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(invalidModes, function (tokType) {
+        var msg = "Token Type: ->" + tokType.name + "<- static 'PUSH_MODE' value cannot refer to a Lexer Mode ->" + tokType.PUSH_MODE + "<-" +
+            "which does not exist";
+        return {
+            message: msg,
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].PUSH_MODE_DOES_NOT_EXIST,
+            tokenTypes: [tokType]
+        };
+    });
+    return errors;
+}
+function findUnreachablePatterns(tokenTypes) {
+    var errors = [];
+    var canBeTested = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["O" /* reduce */])(tokenTypes, function (result, tokType, idx) {
+        var pattern = tokType.PATTERN;
+        if (pattern === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA) {
+            return result;
+        }
+        // a more comprehensive validation for all forms of regExps would require
+        // deeper regExp analysis capabilities
+        if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(pattern)) {
+            result.push({ str: pattern, idx: idx, tokenType: tokType });
+        }
+        else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(pattern) && noMetaChar(pattern)) {
+            result.push({ str: pattern.source, idx: idx, tokenType: tokType });
+        }
+        return result;
+    }, []);
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(tokenTypes, function (tokType, testIdx) {
+        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(canBeTested, function (_a) {
+            var str = _a.str, idx = _a.idx, tokenType = _a.tokenType;
+            if (testIdx < idx && testTokenType(str, tokType.PATTERN)) {
+                var msg = "Token: ->" + tokenType.name + "<- can never be matched.\n" +
+                    ("Because it appears AFTER the Token Type ->" + tokType.name + "<-") +
+                    "in the lexer's definition.\n" +
+                    "See https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#UNREACHABLE";
+                errors.push({
+                    message: msg,
+                    type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].UNREACHABLE_PATTERN,
+                    tokenTypes: [tokType, tokenType]
+                });
+            }
+        });
+    });
+    return errors;
+}
+function testTokenType(str, pattern) {
+    /* istanbul ignore else */
+    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(pattern)) {
+        var regExpArray = pattern.exec(str);
+        return regExpArray !== null && regExpArray.index === 0;
+    }
+    else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["B" /* isFunction */])(pattern)) {
+        // maintain the API of custom patterns
+        return pattern(str, 0, [], {});
+    }
+    else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(pattern, "exec")) {
+        // maintain the API of custom patterns
+        return pattern.exec(str, 0, [], {});
+    }
+    else if (typeof pattern === "string") {
+        return pattern === str;
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+function noMetaChar(regExp) {
+    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
+    var metaChars = [
+        ".",
+        "\\",
+        "[",
+        "]",
+        "|",
+        "^",
+        "$",
+        "(",
+        ")",
+        "?",
+        "*",
+        "+",
+        "{"
+    ];
+    return (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["q" /* find */])(metaChars, function (char) { return regExp.source.indexOf(char) !== -1; }) ===
+        undefined);
+}
+function addStartOfInput(pattern) {
+    var flags = pattern.ignoreCase ? "i" : "";
+    // always wrapping in a none capturing group preceded by '^' to make sure matching can only work on start of input.
+    // duplicate/redundant start of input markers have no meaning (/^^^^A/ === /^A/)
+    return new RegExp("^(?:" + pattern.source + ")", flags);
+}
+function addStickyFlag(pattern) {
+    var flags = pattern.ignoreCase ? "iy" : "y";
+    // always wrapping in a none capturing group preceded by '^' to make sure matching can only work on start of input.
+    // duplicate/redundant start of input markers have no meaning (/^^^^A/ === /^A/)
+    return new RegExp("" + pattern.source, flags);
+}
+function performRuntimeChecks(lexerDefinition, trackLines, lineTerminatorCharacters) {
+    var errors = [];
+    // some run time checks to help the end users.
+    if (!Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition, DEFAULT_MODE)) {
+        errors.push({
+            message: "A MultiMode Lexer cannot be initialized without a <" +
+                DEFAULT_MODE +
+                "> property in its definition\n",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].MULTI_MODE_LEXER_WITHOUT_DEFAULT_MODE
+        });
+    }
+    if (!Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition, MODES)) {
+        errors.push({
+            message: "A MultiMode Lexer cannot be initialized without a <" +
+                MODES +
+                "> property in its definition\n",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].MULTI_MODE_LEXER_WITHOUT_MODES_PROPERTY
+        });
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition, MODES) &&
+        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition, DEFAULT_MODE) &&
+        !Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition.modes, lexerDefinition.defaultMode)) {
+        errors.push({
+            message: "A MultiMode Lexer cannot be initialized with a " + DEFAULT_MODE + ": <" + lexerDefinition.defaultMode + ">" +
+                "which does not exist\n",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].MULTI_MODE_LEXER_DEFAULT_MODE_VALUE_DOES_NOT_EXIST
+        });
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(lexerDefinition, MODES)) {
+        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(lexerDefinition.modes, function (currModeValue, currModeName) {
+            Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(currModeValue, function (currTokType, currIdx) {
+                if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["F" /* isUndefined */])(currTokType)) {
+                    errors.push({
+                        message: "A Lexer cannot be initialized using an undefined Token Type. Mode:" +
+                            ("<" + currModeName + "> at index: <" + currIdx + ">\n"),
+                        type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].LEXER_DEFINITION_CANNOT_CONTAIN_UNDEFINED
+                    });
+                }
+            });
+        });
+    }
+    return errors;
+}
+function performWarningRuntimeChecks(lexerDefinition, trackLines, lineTerminatorCharacters) {
+    var warnings = [];
+    var hasAnyLineBreak = false;
+    var allTokenTypes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["i" /* compact */])(Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["t" /* flatten */])(Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["J" /* mapValues */])(lexerDefinition.modes, function (tokTypes) { return tokTypes; })));
+    var concreteTokenTypes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["P" /* reject */])(allTokenTypes, function (currType) { return currType[PATTERN] === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["a" /* Lexer */].NA; });
+    var terminatorCharCodes = getCharCodes(lineTerminatorCharacters);
+    if (trackLines) {
+        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(concreteTokenTypes, function (tokType) {
+            var currIssue = checkLineBreaksIssues(tokType, terminatorCharCodes);
+            if (currIssue !== false) {
+                var message = buildLineBreakIssueMessage(tokType, currIssue);
+                var warningDescriptor = {
+                    message: message,
+                    type: currIssue.issue,
+                    tokenType: tokType
+                };
+                warnings.push(warningDescriptor);
+            }
+            else {
+                // we don't want to attempt to scan if the user explicitly specified the line_breaks option.
+                if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(tokType, "LINE_BREAKS")) {
+                    if (tokType.LINE_BREAKS === true) {
+                        hasAnyLineBreak = true;
+                    }
+                }
+                else {
+                    if (Object(__WEBPACK_IMPORTED_MODULE_3__reg_exp__["a" /* canMatchCharCode */])(terminatorCharCodes, tokType.PATTERN)) {
+                        hasAnyLineBreak = true;
+                    }
+                }
+            }
+        });
+    }
+    if (trackLines && !hasAnyLineBreak) {
+        warnings.push({
+            message: "Warning: No LINE_BREAKS Found.\n" +
+                "\tThis Lexer has been defined to track line and column information,\n" +
+                "\tBut none of the Token Types can be identified as matching a line terminator.\n" +
+                "\tSee https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#LINE_BREAKS \n" +
+                "\tfor details.",
+            type: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].NO_LINE_BREAKS_FLAGS
+        });
+    }
+    return warnings;
+}
+function cloneEmptyGroups(emptyGroups) {
+    var clonedResult = {};
+    var groupKeys = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["G" /* keys */])(emptyGroups);
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(groupKeys, function (currKey) {
+        var currGroupValue = emptyGroups[currKey];
+        /* istanbul ignore else */
+        if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["y" /* isArray */])(currGroupValue)) {
+            clonedResult[currKey] = [];
+        }
+        else {
+            throw Error("non exhaustive match");
+        }
+    });
+    return clonedResult;
+}
+// TODO: refactor to avoid duplication
+function isCustomPattern(tokenType) {
+    var pattern = tokenType.PATTERN;
+    /* istanbul ignore else */
+    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(pattern)) {
+        return false;
+    }
+    else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["B" /* isFunction */])(pattern)) {
+        // CustomPatternMatcherFunc - custom patterns do not require any transformations, only wrapping in a RegExp Like object
+        return true;
+    }
+    else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(pattern, "exec")) {
+        // ICustomPattern
+        return true;
+    }
+    else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(pattern)) {
+        return false;
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+function isShortPattern(pattern) {
+    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(pattern) && pattern.length === 1) {
+        return pattern.charCodeAt(0);
+    }
+    else {
+        return false;
+    }
+}
+/**
+ * Faster than using a RegExp for default newline detection during lexing.
+ */
+var LineTerminatorOptimizedTester = {
+    // implements /\n|\r\n?/g.test
+    test: function (text) {
+        var len = text.length;
+        for (var i = this.lastIndex; i < len; i++) {
+            var c = text.charCodeAt(i);
+            if (c === 10) {
+                this.lastIndex = i + 1;
+                return true;
+            }
+            else if (c === 13) {
+                if (text.charCodeAt(i + 1) === 10) {
+                    this.lastIndex = i + 2;
+                }
+                else {
+                    this.lastIndex = i + 1;
+                }
+                return true;
+            }
+        }
+        return false;
+    },
+    lastIndex: 0
+};
+function checkLineBreaksIssues(tokType, lineTerminatorCharCodes) {
+    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["w" /* has */])(tokType, "LINE_BREAKS")) {
+        // if the user explicitly declared the line_breaks option we will respect their choice
+        // and assume it is correct.
+        return false;
+    }
+    else {
+        /* istanbul ignore else */
+        if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["D" /* isRegExp */])(tokType.PATTERN)) {
+            try {
+                Object(__WEBPACK_IMPORTED_MODULE_3__reg_exp__["a" /* canMatchCharCode */])(lineTerminatorCharCodes, tokType.PATTERN);
+            }
+            catch (e) {
+                /* istanbul ignore next - to test this we would have to mock <canMatchCharCode> to throw an error */
+                return {
+                    issue: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].IDENTIFY_TERMINATOR,
+                    errMsg: e.message
+                };
+            }
+            return false;
+        }
+        else if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(tokType.PATTERN)) {
+            // string literal patterns can always be analyzed to detect line terminator usage
+            return false;
+        }
+        else if (isCustomPattern(tokType)) {
+            // custom token types
+            return { issue: __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].CUSTOM_LINE_BREAK };
+        }
+        else {
+            throw Error("non exhaustive match");
+        }
+    }
+}
+function buildLineBreakIssueMessage(tokType, details) {
+    /* istanbul ignore else */
+    if (details.issue === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].IDENTIFY_TERMINATOR) {
+        return ("Warning: unable to identify line terminator usage in pattern.\n" +
+            ("\tThe problem is in the <" + tokType.name + "> Token Type\n") +
+            ("\t Root cause: " + details.errMsg + ".\n") +
+            "\tFor details See: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#IDENTIFY_TERMINATOR");
+    }
+    else if (details.issue === __WEBPACK_IMPORTED_MODULE_1__lexer_public__["b" /* LexerDefinitionErrorType */].CUSTOM_LINE_BREAK) {
+        return ("Warning: A Custom Token Pattern should specify the <line_breaks> option.\n" +
+            ("\tThe problem is in the <" + tokType.name + "> Token Type\n") +
+            "\tFor details See: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#CUSTOM_LINE_BREAK");
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+function getCharCodes(charsOrCodes) {
+    var charCodes = Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["I" /* map */])(charsOrCodes, function (numOrString) {
+        if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["E" /* isString */])(numOrString) && numOrString.length > 0) {
+            return numOrString.charCodeAt(0);
+        }
+        else {
+            return numOrString;
+        }
+    });
+    return charCodes;
+}
+function addToMapOfArrays(map, key, value) {
+    if (map[key] === undefined) {
+        map[key] = [value];
+    }
+    else {
+        map[key].push(value);
+    }
+}
+var minOptimizationVal = 256;
+/**
+ * We ae mapping charCode above ASCI (256) into buckets each in the size of 256.
+ * This is because ASCI are the most common start chars so each one of those will get its own
+ * possible token configs vector.
+ *
+ * Tokens starting with charCodes "above" ASCI are uncommon, so we can "afford"
+ * to place these into buckets of possible token configs, What we gain from
+ * this is avoiding the case of creating an optimization 'charCodeToPatternIdxToConfig'
+ * which would contain 10,000+ arrays of small size (e.g unicode Identifiers scenario).
+ * Our 'charCodeToPatternIdxToConfig' max size will now be:
+ * 256 + (2^16 / 2^8) - 1 === 511
+ *
+ * note the hack for fast division integer part extraction
+ * See: https://stackoverflow.com/a/4228528
+ */
+function charCodeToOptimizedIndex(charCode) {
+    return charCode < minOptimizationVal
+        ? charCode
+        : charCodeToOptimizedIdxMap[charCode];
+}
+/**
+ * This is a compromise between cold start / hot running performance
+ * Creating this array takes ~3ms on a modern machine,
+ * But if we perform the computation at runtime as needed the CSS Lexer benchmark
+ * performance degrades by ~10%
+ *
+ * TODO: Perhaps it should be lazy initialized only if a charCode > 255 is used.
+ */
+var charCodeToOptimizedIdxMap = [];
+function initCharCodeToOptimizedIndexMap() {
+    if (Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["A" /* isEmpty */])(charCodeToOptimizedIdxMap)) {
+        charCodeToOptimizedIdxMap = new Array(65536);
+        for (var i = 0; i < 65536; i++) {
+            /* tslint:disable */
+            charCodeToOptimizedIdxMap[i] = i > 255 ? 255 + ~~(i / 255) : i;
+            /* tslint:enable */
+        }
+    }
+}
+//# sourceMappingURL=lexer.js.map
+
+/***/ }),
+/* 211 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return defaultLexerErrorProvider; });
+var defaultLexerErrorProvider = {
+    buildUnableToPopLexerModeMessage: function (token) {
+        return "Unable to pop Lexer Mode after encountering Token ->" + token.image + "<- The Mode Stack is empty";
+    },
+    buildUnexpectedCharactersMessage: function (fullText, startOffset, length, line, column) {
+        return ("unexpected character: ->" + fullText.charAt(startOffset) + "<- at offset: " + startOffset + "," + (" skipped " + length + " characters."));
+    }
+};
+//# sourceMappingURL=lexer_errors_public.js.map
+
+/***/ }),
+/* 212 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = first;
+/* unused harmony export firstForSequence */
+/* unused harmony export firstForBranching */
+/* unused harmony export firstForTerminal */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast__ = __webpack_require__(23);
+
+
+
+function first(prod) {
+    /* istanbul ignore else */
+    if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["d" /* NonTerminal */]) {
+        // this could in theory cause infinite loops if
+        // (1) prod A refs prod B.
+        // (2) prod B refs prod A
+        // (3) AB can match the empty set
+        // in other words a cycle where everything is optional so the first will keep
+        // looking ahead for the next optional part and will never exit
+        // currently there is no safeguard for this unique edge case because
+        // (1) not sure a grammar in which this can happen is useful for anything (productive)
+        return first(prod.referencedRule);
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__["k" /* Terminal */]) {
+        return firstForTerminal(prod);
+    }
+    else if (Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["f" /* isSequenceProd */])(prod)) {
+        return firstForSequence(prod);
+    }
+    else if (Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["d" /* isBranchingProd */])(prod)) {
+        return firstForBranching(prod);
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+function firstForSequence(prod) {
+    var firstSet = [];
+    var seq = prod.definition;
+    var nextSubProdIdx = 0;
+    var hasInnerProdsRemaining = seq.length > nextSubProdIdx;
+    var currSubProd;
+    // so we enter the loop at least once (if the definition is not empty
+    var isLastInnerProdOptional = true;
+    // scan a sequence until it's end or until we have found a NONE optional production in it
+    while (hasInnerProdsRemaining && isLastInnerProdOptional) {
+        currSubProd = seq[nextSubProdIdx];
+        isLastInnerProdOptional = Object(__WEBPACK_IMPORTED_MODULE_2__gast_gast__["e" /* isOptionalProd */])(currSubProd);
+        firstSet = firstSet.concat(first(currSubProd));
+        nextSubProdIdx = nextSubProdIdx + 1;
+        hasInnerProdsRemaining = seq.length > nextSubProdIdx;
+    }
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["T" /* uniq */])(firstSet);
+}
+function firstForBranching(prod) {
+    var allAlternativesFirsts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(prod.definition, function (innerProd) {
+        return first(innerProd);
+    });
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["T" /* uniq */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(allAlternativesFirsts));
+}
+function firstForTerminal(terminal) {
+    return [terminal.terminalType];
+}
+//# sourceMappingURL=first.js.map
+
+/***/ }),
+/* 213 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IN; });
+// TODO: can this be removed? where is it used?
+var IN = "_~IN~_";
+//# sourceMappingURL=constants.js.map
+
+/***/ }),
+/* 214 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = resolveGrammar;
+/* harmony export (immutable) */ __webpack_exports__["c"] = validateGrammar;
+/* harmony export (immutable) */ __webpack_exports__["a"] = assignOccurrenceIndices;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__resolver__ = __webpack_require__(325);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__checks__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast__ = __webpack_require__(23);
+
+
+
+
+
+function resolveGrammar(options) {
+    options = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["k" /* defaults */])(options, {
+        errMsgProvider: __WEBPACK_IMPORTED_MODULE_3__errors_public__["a" /* defaultGrammarResolverErrorProvider */]
+    });
+    var topRulesTable = {};
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(options.rules, function (rule) {
+        topRulesTable[rule.name] = rule;
+    });
+    return Object(__WEBPACK_IMPORTED_MODULE_1__resolver__["a" /* resolveGrammar */])(topRulesTable, options.errMsgProvider);
+}
+function validateGrammar(options) {
+    options = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["k" /* defaults */])(options, {
+        errMsgProvider: __WEBPACK_IMPORTED_MODULE_3__errors_public__["b" /* defaultGrammarValidatorErrorProvider */],
+        ignoredIssues: {}
+    });
+    return Object(__WEBPACK_IMPORTED_MODULE_2__checks__["c" /* validateGrammar */])(options.rules, options.maxLookahead, options.tokenTypes, options.ignoredIssues, options.errMsgProvider, options.grammarName);
+}
+function assignOccurrenceIndices(options) {
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(options.rules, function (currRule) {
+        var methodsCollector = new __WEBPACK_IMPORTED_MODULE_4__gast__["a" /* DslMethodsCollectorVisitor */]();
+        currRule.accept(methodsCollector);
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(methodsCollector.dslMethods, function (methods) {
+            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(methods, function (currMethod, arrIdx) {
+                currMethod.idx = arrIdx + 1;
+            });
+        });
+    });
+}
+//# sourceMappingURL=gast_resolver_public.js.map
+
+/***/ }),
+/* 215 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export EOF_FOLLOW_KEY */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IN_RULE_RECOVERY_EXCEPTION; });
+/* unused harmony export InRuleRecoveryException */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Recoverable; });
+/* unused harmony export attemptInRepetitionRecovery */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exceptions_public__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parser__ = __webpack_require__(9);
+
+
+
+
+
+var EOF_FOLLOW_KEY = {};
+var IN_RULE_RECOVERY_EXCEPTION = "InRuleRecoveryException";
+function InRuleRecoveryException(message) {
+    this.name = IN_RULE_RECOVERY_EXCEPTION;
+    this.message = message;
+}
+InRuleRecoveryException.prototype = Error.prototype;
+/**
+ * This trait is responsible for the error recovery and fault tolerant logic
+ */
+var Recoverable = /** @class */ (function () {
+    function Recoverable() {
+    }
+    Recoverable.prototype.initRecoverable = function (config) {
+        this.firstAfterRepMap = {};
+        this.resyncFollows = {};
+        this.recoveryEnabled = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["w" /* has */])(config, "recoveryEnabled")
+            ? config.recoveryEnabled
+            : __WEBPACK_IMPORTED_MODULE_4__parser__["b" /* DEFAULT_PARSER_CONFIG */].recoveryEnabled;
+        // performance optimization, NOOP will be inlined which
+        // effectively means that this optional feature does not exist
+        // when not used.
+        if (this.recoveryEnabled) {
+            this.attemptInRepetitionRecovery = attemptInRepetitionRecovery;
+        }
+    };
+    Recoverable.prototype.getTokenToInsert = function (tokType) {
+        var tokToInsert = Object(__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["c" /* createTokenInstance */])(tokType, "", NaN, NaN, NaN, NaN, NaN, NaN);
+        tokToInsert.isInsertedInRecovery = true;
+        return tokToInsert;
+    };
+    Recoverable.prototype.canTokenTypeBeInsertedInRecovery = function (tokType) {
+        return true;
+    };
+    Recoverable.prototype.tryInRepetitionRecovery = function (grammarRule, grammarRuleArgs, lookAheadFunc, expectedTokType) {
+        var _this = this;
+        // TODO: can the resyncTokenType be cached?
+        var reSyncTokType = this.findReSyncTokenType();
+        var savedLexerState = this.exportLexerState();
+        var resyncedTokens = [];
+        var passedResyncPoint = false;
+        var nextTokenWithoutResync = this.LA(1);
+        var currToken = this.LA(1);
+        var generateErrorMessage = function () {
+            var previousToken = _this.LA(0);
+            // we are preemptively re-syncing before an error has been detected, therefor we must reproduce
+            // the error that would have been thrown
+            var msg = _this.errorMessageProvider.buildMismatchTokenMessage({
+                expected: expectedTokType,
+                actual: nextTokenWithoutResync,
+                previous: previousToken,
+                ruleName: _this.getCurrRuleFullName()
+            });
+            var error = new __WEBPACK_IMPORTED_MODULE_2__exceptions_public__["b" /* MismatchedTokenException */](msg, nextTokenWithoutResync, _this.LA(0));
+            // the first token here will be the original cause of the error, this is not part of the resyncedTokens property.
+            error.resyncedTokens = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["n" /* dropRight */])(resyncedTokens);
+            _this.SAVE_ERROR(error);
+        };
+        while (!passedResyncPoint) {
+            // re-synced to a point where we can safely exit the repetition/
+            if (this.tokenMatcher(currToken, expectedTokType)) {
+                generateErrorMessage();
+                return; // must return here to avoid reverting the inputIdx
+            }
+            else if (lookAheadFunc.call(this)) {
+                // we skipped enough tokens so we can resync right back into another iteration of the repetition grammar rule
+                generateErrorMessage();
+                // recursive invocation in other to support multiple re-syncs in the same top level repetition grammar rule
+                grammarRule.apply(this, grammarRuleArgs);
+                return; // must return here to avoid reverting the inputIdx
+            }
+            else if (this.tokenMatcher(currToken, reSyncTokType)) {
+                passedResyncPoint = true;
+            }
+            else {
+                currToken = this.SKIP_TOKEN();
+                this.addToResyncTokens(currToken, resyncedTokens);
+            }
+        }
+        // we were unable to find a CLOSER point to resync inside the Repetition, reset the state.
+        // The parsing exception we were trying to prevent will happen in the NEXT parsing step. it may be handled by
+        // "between rules" resync recovery later in the flow.
+        this.importLexerState(savedLexerState);
+    };
+    Recoverable.prototype.shouldInRepetitionRecoveryBeTried = function (expectTokAfterLastMatch, nextTokIdx, notStuck) {
+        // Edge case of arriving from a MANY repetition which is stuck
+        // Attempting recovery in this case could cause an infinite loop
+        if (notStuck === false) {
+            return false;
+        }
+        // arguments to try and perform resync into the next iteration of the many are missing
+        if (expectTokAfterLastMatch === undefined || nextTokIdx === undefined) {
+            return false;
+        }
+        // no need to recover, next token is what we expect...
+        if (this.tokenMatcher(this.LA(1), expectTokAfterLastMatch)) {
+            return false;
+        }
+        // error recovery is disabled during backtracking as it can make the parser ignore a valid grammar path
+        // and prefer some backtracking path that includes recovered errors.
+        if (this.isBackTracking()) {
+            return false;
+        }
+        // if we can perform inRule recovery (single token insertion or deletion) we always prefer that recovery algorithm
+        // because if it works, it makes the least amount of changes to the input stream (greedy algorithm)
+        //noinspection RedundantIfStatementJS
+        if (this.canPerformInRuleRecovery(expectTokAfterLastMatch, this.getFollowsForInRuleRecovery(expectTokAfterLastMatch, nextTokIdx))) {
+            return false;
+        }
+        return true;
+    };
+    // Error Recovery functionality
+    Recoverable.prototype.getFollowsForInRuleRecovery = function (tokType, tokIdxInRule) {
+        var grammarPath = this.getCurrentGrammarPath(tokType, tokIdxInRule);
+        var follows = this.getNextPossibleTokenTypes(grammarPath);
+        return follows;
+    };
+    Recoverable.prototype.tryInRuleRecovery = function (expectedTokType, follows) {
+        if (this.canRecoverWithSingleTokenInsertion(expectedTokType, follows)) {
+            var tokToInsert = this.getTokenToInsert(expectedTokType);
+            return tokToInsert;
+        }
+        if (this.canRecoverWithSingleTokenDeletion(expectedTokType)) {
+            var nextTok = this.SKIP_TOKEN();
+            this.consumeToken();
+            return nextTok;
+        }
+        throw new InRuleRecoveryException("sad sad panda");
+    };
+    Recoverable.prototype.canPerformInRuleRecovery = function (expectedToken, follows) {
+        return (this.canRecoverWithSingleTokenInsertion(expectedToken, follows) ||
+            this.canRecoverWithSingleTokenDeletion(expectedToken));
+    };
+    Recoverable.prototype.canRecoverWithSingleTokenInsertion = function (expectedTokType, follows) {
+        var _this = this;
+        if (!this.canTokenTypeBeInsertedInRecovery(expectedTokType)) {
+            return false;
+        }
+        // must know the possible following tokens to perform single token insertion
+        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(follows)) {
+            return false;
+        }
+        var mismatchedTok = this.LA(1);
+        var isMisMatchedTokInFollows = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["q" /* find */])(follows, function (possibleFollowsTokType) {
+            return _this.tokenMatcher(mismatchedTok, possibleFollowsTokType);
+        }) !== undefined;
+        return isMisMatchedTokInFollows;
+    };
+    Recoverable.prototype.canRecoverWithSingleTokenDeletion = function (expectedTokType) {
+        var isNextTokenWhatIsExpected = this.tokenMatcher(this.LA(2), expectedTokType);
+        return isNextTokenWhatIsExpected;
+    };
+    Recoverable.prototype.isInCurrentRuleReSyncSet = function (tokenTypeIdx) {
+        var followKey = this.getCurrFollowKey();
+        var currentRuleReSyncSet = this.getFollowSetFromFollowKey(followKey);
+        return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["j" /* contains */])(currentRuleReSyncSet, tokenTypeIdx);
+    };
+    Recoverable.prototype.findReSyncTokenType = function () {
+        var allPossibleReSyncTokTypes = this.flattenFollowSet();
+        // this loop will always terminate as EOF is always in the follow stack and also always (virtually) in the input
+        var nextToken = this.LA(1);
+        var k = 2;
+        while (true) {
+            var nextTokenType = nextToken.tokenType;
+            if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["j" /* contains */])(allPossibleReSyncTokTypes, nextTokenType)) {
+                return nextTokenType;
+            }
+            nextToken = this.LA(k);
+            k++;
+        }
+    };
+    Recoverable.prototype.getCurrFollowKey = function () {
+        // the length is at least one as we always add the ruleName to the stack before invoking the rule.
+        if (this.RULE_STACK.length === 1) {
+            return EOF_FOLLOW_KEY;
+        }
+        var currRuleShortName = this.getLastExplicitRuleShortName();
+        var currRuleIdx = this.getLastExplicitRuleOccurrenceIndex();
+        var prevRuleShortName = this.getPreviousExplicitRuleShortName();
+        return {
+            ruleName: this.shortRuleNameToFullName(currRuleShortName),
+            idxInCallingRule: currRuleIdx,
+            inRule: this.shortRuleNameToFullName(prevRuleShortName)
+        };
+    };
+    Recoverable.prototype.buildFullFollowKeyStack = function () {
+        var _this = this;
+        var explicitRuleStack = this.RULE_STACK;
+        var explicitOccurrenceStack = this.RULE_OCCURRENCE_STACK;
+        if (!Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(this.LAST_EXPLICIT_RULE_STACK)) {
+            explicitRuleStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.LAST_EXPLICIT_RULE_STACK, function (idx) { return _this.RULE_STACK[idx]; });
+            explicitOccurrenceStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.LAST_EXPLICIT_RULE_STACK, function (idx) { return _this.RULE_OCCURRENCE_STACK[idx]; });
+        }
+        // TODO: only iterate over explicit rules here
+        return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(explicitRuleStack, function (ruleName, idx) {
+            if (idx === 0) {
+                return EOF_FOLLOW_KEY;
+            }
+            return {
+                ruleName: _this.shortRuleNameToFullName(ruleName),
+                idxInCallingRule: explicitOccurrenceStack[idx],
+                inRule: _this.shortRuleNameToFullName(explicitRuleStack[idx - 1])
+            };
+        });
+    };
+    Recoverable.prototype.flattenFollowSet = function () {
+        var _this = this;
+        var followStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.buildFullFollowKeyStack(), function (currKey) {
+            return _this.getFollowSetFromFollowKey(currKey);
+        });
+        return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["t" /* flatten */])(followStack);
+    };
+    Recoverable.prototype.getFollowSetFromFollowKey = function (followKey) {
+        if (followKey === EOF_FOLLOW_KEY) {
+            return [__WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["a" /* EOF */]];
+        }
+        var followName = followKey.ruleName +
+            followKey.idxInCallingRule +
+            __WEBPACK_IMPORTED_MODULE_3__constants__["a" /* IN */] +
+            followKey.inRule;
+        return this.resyncFollows[followName];
+    };
+    // It does not make any sense to include a virtual EOF token in the list of resynced tokens
+    // as EOF does not really exist and thus does not contain any useful information (line/column numbers)
+    Recoverable.prototype.addToResyncTokens = function (token, resyncTokens) {
+        if (!this.tokenMatcher(token, __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["a" /* EOF */])) {
+            resyncTokens.push(token);
+        }
+        return resyncTokens;
+    };
+    Recoverable.prototype.reSyncTo = function (tokType) {
+        var resyncedTokens = [];
+        var nextTok = this.LA(1);
+        while (this.tokenMatcher(nextTok, tokType) === false) {
+            nextTok = this.SKIP_TOKEN();
+            this.addToResyncTokens(nextTok, resyncedTokens);
+        }
+        // the last token is not part of the error.
+        return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["n" /* dropRight */])(resyncedTokens);
+    };
+    Recoverable.prototype.attemptInRepetitionRecovery = function (prodFunc, args, lookaheadFunc, dslMethodIdx, prodOccurrence, nextToksWalker, notStuck) {
+        // by default this is a NO-OP
+        // The actual implementation is with the function(not method) below
+    };
+    Recoverable.prototype.getCurrentGrammarPath = function (tokType, tokIdxInRule) {
+        var pathRuleStack = this.getHumanReadableRuleStack();
+        var pathOccurrenceStack = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(this.RULE_OCCURRENCE_STACK);
+        var grammarPath = {
+            ruleStack: pathRuleStack,
+            occurrenceStack: pathOccurrenceStack,
+            lastTok: tokType,
+            lastTokOccurrence: tokIdxInRule
+        };
+        return grammarPath;
+    };
+    Recoverable.prototype.getHumanReadableRuleStack = function () {
+        var _this = this;
+        if (!Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["A" /* isEmpty */])(this.LAST_EXPLICIT_RULE_STACK)) {
+            return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.LAST_EXPLICIT_RULE_STACK, function (currIdx) {
+                return _this.shortRuleNameToFullName(_this.RULE_STACK[currIdx]);
+            });
+        }
+        else {
+            return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["I" /* map */])(this.RULE_STACK, function (currShortName) {
+                return _this.shortRuleNameToFullName(currShortName);
+            });
+        }
+    };
+    return Recoverable;
+}());
+
+function attemptInRepetitionRecovery(prodFunc, args, lookaheadFunc, dslMethodIdx, prodOccurrence, nextToksWalker, notStuck) {
+    var key = this.getKeyForAutomaticLookahead(dslMethodIdx, prodOccurrence);
+    var firstAfterRepInfo = this.firstAfterRepMap[key];
+    if (firstAfterRepInfo === undefined) {
+        var currRuleName = this.getCurrRuleFullName();
+        var ruleGrammar = this.getGAstProductions()[currRuleName];
+        var walker = new nextToksWalker(ruleGrammar, prodOccurrence);
+        firstAfterRepInfo = walker.startWalking();
+        this.firstAfterRepMap[key] = firstAfterRepInfo;
+    }
+    var expectTokAfterLastMatch = firstAfterRepInfo.token;
+    var nextTokIdx = firstAfterRepInfo.occurrence;
+    var isEndOfRule = firstAfterRepInfo.isEndOfRule;
+    // special edge case of a TOP most repetition after which the input should END.
+    // this will force an attempt for inRule recovery in that scenario.
+    if (this.RULE_STACK.length === 1 &&
+        isEndOfRule &&
+        expectTokAfterLastMatch === undefined) {
+        expectTokAfterLastMatch = __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__["a" /* EOF */];
+        nextTokIdx = 1;
+    }
+    if (this.shouldInRepetitionRecoveryBeTried(expectTokAfterLastMatch, nextTokIdx, notStuck)) {
+        // TODO: performance optimization: instead of passing the original args here, we modify
+        // the args param (or create a new one) and make sure the lookahead func is explicitly provided
+        // to avoid searching the cache for it once more.
+        this.tryInRepetitionRecovery(prodFunc, args, lookaheadFunc, expectTokAfterLastMatch);
+    }
+}
+//# sourceMappingURL=recoverable.js.map
+
+/***/ }),
+/* 216 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = classNameFromInstance;
+/* harmony export (immutable) */ __webpack_exports__["c"] = functionName;
+/* harmony export (immutable) */ __webpack_exports__["b"] = defineNameProp;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+
+function classNameFromInstance(instance) {
+    return functionName(instance.constructor);
+}
+var FUNC_NAME_REGEXP = /^\s*function\s*(\S*)\s*\(/;
+var NAME = "name";
+/* istanbul ignore next too many hacks for IE/old versions of node.js here*/
+function functionName(func) {
+    // Engines that support Function.prototype.name OR the nth (n>1) time after
+    // the name has been computed in the following else block.
+    var existingNameProp = func.name;
+    if (existingNameProp) {
+        return existingNameProp;
+    }
+    // hack for IE and engines that do not support Object.defineProperty on function.name (Node.js 0.10 && 0.12)
+    var computedName = func.toString().match(FUNC_NAME_REGEXP)[1];
+    return computedName;
+}
+/**
+ * @returns {boolean} - has the property been successfully defined
+ */
+function defineNameProp(obj, nameValue) {
+    var namePropDescriptor = Object.getOwnPropertyDescriptor(obj, NAME);
+    /* istanbul ignore else -> will only run in old versions of node.js */
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["F" /* isUndefined */])(namePropDescriptor) || namePropDescriptor.configurable) {
+        Object.defineProperty(obj, NAME, {
+            enumerable: false,
+            configurable: true,
+            writable: false,
+            value: nameValue
+        });
+        return true;
+    }
+    /* istanbul ignore next -> will only run in old versions of node.js */
+    return false;
+}
+//# sourceMappingURL=lang_extensions.js.map
+
+/***/ }),
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(191);
+__webpack_require__(218);
 
 /***/ }),
-/* 191 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(192);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(219);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45)))
 
 /***/ }),
-/* 192 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49466,7 +56535,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.legendCont = exports.legend = exports.legendContinuous = exports.spinnerMixin = exports.scatterMixin = exports.rasterMixin = exports.rasterLayer = exports.rasterLayerPolyMixin = exports.rasterLayerPointMixin = exports.rasterLayerHeatmapMixin = exports.mapMixin = exports.marginMixin = exports.stackMixin = exports.coordinateGridRasterMixin = exports.coordinateGridMixin = exports.colorMixin = exports.capMixin = exports.bubbleMixin = exports.baseMixin = exports.asyncMixin = exports.countWidget = exports.boxPlot = exports.mapdTable = exports.scatterPlot = exports.rowChart = exports.rasterChart = exports.numberChart = exports.lineChart = exports.pieChart = exports.heatMap = exports.geoChoroplethChart = exports.dataGrid = exports.dataCount = exports.compositeChart = exports.cloudChart = exports.bubbleChart = exports.barChart = exports.bubbleOverlay = exports.errors = exports.d3 = undefined;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 Object.keys(_core).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -49478,7 +56547,7 @@ Object.keys(_core).forEach(function (key) {
   });
 });
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
 Object.keys(_coreAsync).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -49490,7 +56559,7 @@ Object.keys(_coreAsync).forEach(function (key) {
   });
 });
 
-var _events = __webpack_require__(10);
+var _events = __webpack_require__(13);
 
 Object.keys(_events).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -49502,7 +56571,7 @@ Object.keys(_events).forEach(function (key) {
   });
 });
 
-var _filters = __webpack_require__(15);
+var _filters = __webpack_require__(20);
 
 Object.keys(_filters).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -49514,7 +56583,7 @@ Object.keys(_filters).forEach(function (key) {
   });
 });
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 Object.keys(_utils).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -49526,7 +56595,7 @@ Object.keys(_utils).forEach(function (key) {
   });
 });
 
-var _logger = __webpack_require__(19);
+var _logger = __webpack_require__(33);
 
 Object.keys(_logger).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -49538,7 +56607,7 @@ Object.keys(_logger).forEach(function (key) {
   });
 });
 
-var _bubbleOverlay = __webpack_require__(213);
+var _bubbleOverlay = __webpack_require__(240);
 
 Object.defineProperty(exports, "bubbleOverlay", {
   enumerable: true,
@@ -49547,7 +56616,7 @@ Object.defineProperty(exports, "bubbleOverlay", {
   }
 });
 
-var _barChart = __webpack_require__(218);
+var _barChart = __webpack_require__(245);
 
 Object.defineProperty(exports, "barChart", {
   enumerable: true,
@@ -49556,7 +56625,7 @@ Object.defineProperty(exports, "barChart", {
   }
 });
 
-var _bubbleChart = __webpack_require__(221);
+var _bubbleChart = __webpack_require__(248);
 
 Object.defineProperty(exports, "bubbleChart", {
   enumerable: true,
@@ -49565,7 +56634,7 @@ Object.defineProperty(exports, "bubbleChart", {
   }
 });
 
-var _cloudChart = __webpack_require__(222);
+var _cloudChart = __webpack_require__(249);
 
 Object.defineProperty(exports, "cloudChart", {
   enumerable: true,
@@ -49574,7 +56643,7 @@ Object.defineProperty(exports, "cloudChart", {
   }
 });
 
-var _compositeChart = __webpack_require__(223);
+var _compositeChart = __webpack_require__(250);
 
 Object.defineProperty(exports, "compositeChart", {
   enumerable: true,
@@ -49583,7 +56652,7 @@ Object.defineProperty(exports, "compositeChart", {
   }
 });
 
-var _dataCount = __webpack_require__(224);
+var _dataCount = __webpack_require__(251);
 
 Object.defineProperty(exports, "dataCount", {
   enumerable: true,
@@ -49592,7 +56661,7 @@ Object.defineProperty(exports, "dataCount", {
   }
 });
 
-var _dataGrid = __webpack_require__(225);
+var _dataGrid = __webpack_require__(252);
 
 Object.defineProperty(exports, "dataGrid", {
   enumerable: true,
@@ -49601,7 +56670,7 @@ Object.defineProperty(exports, "dataGrid", {
   }
 });
 
-var _geoChoroplethChart = __webpack_require__(226);
+var _geoChoroplethChart = __webpack_require__(253);
 
 Object.defineProperty(exports, "geoChoroplethChart", {
   enumerable: true,
@@ -49610,7 +56679,7 @@ Object.defineProperty(exports, "geoChoroplethChart", {
   }
 });
 
-var _heatmap = __webpack_require__(235);
+var _heatmap = __webpack_require__(262);
 
 Object.defineProperty(exports, "heatMap", {
   enumerable: true,
@@ -49619,7 +56688,7 @@ Object.defineProperty(exports, "heatMap", {
   }
 });
 
-var _pieChart = __webpack_require__(236);
+var _pieChart = __webpack_require__(263);
 
 Object.defineProperty(exports, "pieChart", {
   enumerable: true,
@@ -49628,7 +56697,7 @@ Object.defineProperty(exports, "pieChart", {
   }
 });
 
-var _lineChart = __webpack_require__(237);
+var _lineChart = __webpack_require__(264);
 
 Object.defineProperty(exports, "lineChart", {
   enumerable: true,
@@ -49637,7 +56706,7 @@ Object.defineProperty(exports, "lineChart", {
   }
 });
 
-var _numberChart = __webpack_require__(238);
+var _numberChart = __webpack_require__(265);
 
 Object.defineProperty(exports, "numberChart", {
   enumerable: true,
@@ -49646,7 +56715,7 @@ Object.defineProperty(exports, "numberChart", {
   }
 });
 
-var _rasterChart = __webpack_require__(239);
+var _rasterChart = __webpack_require__(266);
 
 Object.defineProperty(exports, "rasterChart", {
   enumerable: true,
@@ -49655,7 +56724,7 @@ Object.defineProperty(exports, "rasterChart", {
   }
 });
 
-var _rowChart = __webpack_require__(289);
+var _rowChart = __webpack_require__(316);
 
 Object.defineProperty(exports, "rowChart", {
   enumerable: true,
@@ -49664,7 +56733,7 @@ Object.defineProperty(exports, "rowChart", {
   }
 });
 
-var _scatterPlot = __webpack_require__(290);
+var _scatterPlot = __webpack_require__(317);
 
 Object.defineProperty(exports, "scatterPlot", {
   enumerable: true,
@@ -49673,7 +56742,7 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _mapdTable = __webpack_require__(291);
+var _mapdTable = __webpack_require__(318);
 
 Object.defineProperty(exports, "mapdTable", {
   enumerable: true,
@@ -49682,7 +56751,7 @@ Object.defineProperty(exports, "mapdTable", {
   }
 });
 
-var _boxPlot = __webpack_require__(292);
+var _boxPlot = __webpack_require__(319);
 
 Object.defineProperty(exports, "boxPlot", {
   enumerable: true,
@@ -49691,7 +56760,7 @@ Object.defineProperty(exports, "boxPlot", {
   }
 });
 
-var _countWidget = __webpack_require__(293);
+var _countWidget = __webpack_require__(320);
 
 Object.defineProperty(exports, "countWidget", {
   enumerable: true,
@@ -49700,7 +56769,7 @@ Object.defineProperty(exports, "countWidget", {
   }
 });
 
-var _asyncMixin = __webpack_require__(162);
+var _asyncMixin = __webpack_require__(180);
 
 Object.defineProperty(exports, "asyncMixin", {
   enumerable: true,
@@ -49709,7 +56778,7 @@ Object.defineProperty(exports, "asyncMixin", {
   }
 });
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 Object.defineProperty(exports, "baseMixin", {
   enumerable: true,
@@ -49718,7 +56787,7 @@ Object.defineProperty(exports, "baseMixin", {
   }
 });
 
-var _bubbleMixin = __webpack_require__(21);
+var _bubbleMixin = __webpack_require__(35);
 
 Object.defineProperty(exports, "bubbleMixin", {
   enumerable: true,
@@ -49727,7 +56796,7 @@ Object.defineProperty(exports, "bubbleMixin", {
   }
 });
 
-var _capMixin = __webpack_require__(11);
+var _capMixin = __webpack_require__(14);
 
 Object.defineProperty(exports, "capMixin", {
   enumerable: true,
@@ -49736,7 +56805,7 @@ Object.defineProperty(exports, "capMixin", {
   }
 });
 
-var _colorMixin = __webpack_require__(9);
+var _colorMixin = __webpack_require__(12);
 
 Object.defineProperty(exports, "colorMixin", {
   enumerable: true,
@@ -49745,7 +56814,7 @@ Object.defineProperty(exports, "colorMixin", {
   }
 });
 
-var _coordinateGridMixin = __webpack_require__(12);
+var _coordinateGridMixin = __webpack_require__(15);
 
 Object.defineProperty(exports, "coordinateGridMixin", {
   enumerable: true,
@@ -49754,7 +56823,7 @@ Object.defineProperty(exports, "coordinateGridMixin", {
   }
 });
 
-var _coordinateGridRasterMixin = __webpack_require__(171);
+var _coordinateGridRasterMixin = __webpack_require__(189);
 
 Object.defineProperty(exports, "coordinateGridRasterMixin", {
   enumerable: true,
@@ -49763,7 +56832,7 @@ Object.defineProperty(exports, "coordinateGridRasterMixin", {
   }
 });
 
-var _stackMixin = __webpack_require__(22);
+var _stackMixin = __webpack_require__(36);
 
 Object.defineProperty(exports, "stackMixin", {
   enumerable: true,
@@ -49772,7 +56841,7 @@ Object.defineProperty(exports, "stackMixin", {
   }
 });
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(17);
 
 Object.defineProperty(exports, "marginMixin", {
   enumerable: true,
@@ -49781,7 +56850,7 @@ Object.defineProperty(exports, "marginMixin", {
   }
 });
 
-var _mapMixin = __webpack_require__(23);
+var _mapMixin = __webpack_require__(37);
 
 Object.defineProperty(exports, "mapMixin", {
   enumerable: true,
@@ -49790,7 +56859,7 @@ Object.defineProperty(exports, "mapMixin", {
   }
 });
 
-var _rasterLayerHeatmapMixin = __webpack_require__(187);
+var _rasterLayerHeatmapMixin = __webpack_require__(205);
 
 Object.defineProperty(exports, "rasterLayerHeatmapMixin", {
   enumerable: true,
@@ -49799,7 +56868,7 @@ Object.defineProperty(exports, "rasterLayerHeatmapMixin", {
   }
 });
 
-var _rasterLayerPointMixin = __webpack_require__(188);
+var _rasterLayerPointMixin = __webpack_require__(206);
 
 Object.defineProperty(exports, "rasterLayerPointMixin", {
   enumerable: true,
@@ -49808,7 +56877,7 @@ Object.defineProperty(exports, "rasterLayerPointMixin", {
   }
 });
 
-var _rasterLayerPolyMixin = __webpack_require__(189);
+var _rasterLayerPolyMixin = __webpack_require__(207);
 
 Object.defineProperty(exports, "rasterLayerPolyMixin", {
   enumerable: true,
@@ -49817,7 +56886,7 @@ Object.defineProperty(exports, "rasterLayerPolyMixin", {
   }
 });
 
-var _rasterLayer = __webpack_require__(295);
+var _rasterLayer = __webpack_require__(339);
 
 Object.defineProperty(exports, "rasterLayer", {
   enumerable: true,
@@ -49826,7 +56895,7 @@ Object.defineProperty(exports, "rasterLayer", {
   }
 });
 
-var _rasterMixin = __webpack_require__(297);
+var _rasterMixin = __webpack_require__(341);
 
 Object.defineProperty(exports, "rasterMixin", {
   enumerable: true,
@@ -49835,7 +56904,7 @@ Object.defineProperty(exports, "rasterMixin", {
   }
 });
 
-var _scatterMixin = __webpack_require__(180);
+var _scatterMixin = __webpack_require__(198);
 
 Object.defineProperty(exports, "scatterMixin", {
   enumerable: true,
@@ -49844,7 +56913,7 @@ Object.defineProperty(exports, "scatterMixin", {
   }
 });
 
-var _spinnerMixin = __webpack_require__(166);
+var _spinnerMixin = __webpack_require__(184);
 
 Object.defineProperty(exports, "spinnerMixin", {
   enumerable: true,
@@ -49853,7 +56922,7 @@ Object.defineProperty(exports, "spinnerMixin", {
   }
 });
 
-var _legendContinuous = __webpack_require__(298);
+var _legendContinuous = __webpack_require__(342);
 
 Object.defineProperty(exports, "legendContinuous", {
   enumerable: true,
@@ -49862,7 +56931,7 @@ Object.defineProperty(exports, "legendContinuous", {
   }
 });
 
-var _legend = __webpack_require__(299);
+var _legend = __webpack_require__(343);
 
 Object.defineProperty(exports, "legend", {
   enumerable: true,
@@ -49871,7 +56940,7 @@ Object.defineProperty(exports, "legend", {
   }
 });
 
-var _dcLegendCont = __webpack_require__(301);
+var _dcLegendCont = __webpack_require__(345);
 
 Object.defineProperty(exports, "legendCont", {
   enumerable: true,
@@ -49884,21 +56953,21 @@ var _d2 = __webpack_require__(1);
 
 var _d = _interopRequireWildcard(_d2);
 
-var _errors = __webpack_require__(163);
+var _errors = __webpack_require__(181);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(302);
-__webpack_require__(303);
-__webpack_require__(304);
-__webpack_require__(305);
-__webpack_require__(306);
-__webpack_require__(307);
+__webpack_require__(346);
+__webpack_require__(347);
+__webpack_require__(348);
+__webpack_require__(349);
+__webpack_require__(350);
+__webpack_require__(351);
 
 if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
-  window.mapboxgl = __webpack_require__(308);
+  window.mapboxgl = __webpack_require__(352);
 }
 
 exports.d3 = _d; // eslint-disable-line
@@ -49910,18 +56979,18 @@ var errors = exports.errors = {
 };
 
 /***/ }),
-/* 193 */
+/* 220 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(11);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(208);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(235);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(210);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(237);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(238);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
 /**
  * The exported `mapd-data-layer` module. Consists of a graph constructor and
@@ -49938,13 +57007,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 194 */
+/* 221 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseExpression;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(46);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -50037,7 +57106,7 @@ function parseExpression(expression) {
 }
 
 /***/ }),
-/* 195 */
+/* 222 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50075,23 +57144,23 @@ function parseDataState(state, parser) {
 }
 
 /***/ }),
-/* 196 */
+/* 223 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTransform;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(197);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(198);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(199);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(200);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(202);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(203);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(204);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(205);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__parse_source__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(206);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(224);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(225);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(226);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(227);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(230);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(232);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__parse_source__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(233);
 
 
 
@@ -50136,12 +57205,12 @@ function parseTransform(sql, t, parser) {
 }
 
 /***/ }),
-/* 197 */
+/* 224 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseAggregate;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
 
 
 var AGGREGATES = {
@@ -50201,7 +57270,7 @@ function parseGroupBy(sql, groupby, parser) {
 }
 
 /***/ }),
-/* 198 */
+/* 225 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50233,13 +57302,13 @@ function parseBin(sql, _ref) {
 }
 
 /***/ }),
-/* 199 */
+/* 226 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseCrossfilter;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(47);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -50270,7 +57339,7 @@ function parseCrossfilter(sql, transform) {
 }
 
 /***/ }),
-/* 200 */
+/* 227 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50291,7 +57360,7 @@ function parseSort(sql, transform) {
 }
 
 /***/ }),
-/* 201 */
+/* 228 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50305,7 +57374,7 @@ function parseLimit(sql, transform) {
 }
 
 /***/ }),
-/* 202 */
+/* 229 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50353,12 +57422,12 @@ function parsePostFilter(sql, transform) {
 }
 
 /***/ }),
-/* 203 */
+/* 230 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseProject;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
 
 
 
@@ -50370,7 +57439,7 @@ function parseProject(sql, transform) {
 }
 
 /***/ }),
-/* 204 */
+/* 231 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50393,7 +57462,7 @@ function parseResolvefilter(sql, transform) {
 }
 
 /***/ }),
-/* 205 */
+/* 232 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50432,12 +57501,12 @@ function sample(sql, transform) {
 }
 
 /***/ }),
-/* 206 */
+/* 233 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseWith;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
 
 
 
@@ -50452,7 +57521,7 @@ function parseWith(sql, transform) {
 }
 
 /***/ }),
-/* 207 */
+/* 234 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50507,14 +57576,14 @@ function writeWith(With) {
 }
 
 /***/ }),
-/* 208 */
+/* 235 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(209);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -50586,14 +57655,14 @@ function createDataGraph(connector) {
 }
 
 /***/ }),
-/* 209 */
+/* 236 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataNode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_invariant__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(46);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -50679,7 +57748,7 @@ function createDataNode(context) {
 }
 
 /***/ }),
-/* 210 */
+/* 237 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50887,7 +57956,7 @@ function between(field, range) {
 }
 
 /***/ }),
-/* 211 */
+/* 238 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -51115,264 +58184,264 @@ function bottom(field, limit, offset) {
 }
 
 /***/ }),
-/* 212 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 34,
-	"./af.js": 34,
-	"./ar": 35,
-	"./ar-dz": 36,
-	"./ar-dz.js": 36,
-	"./ar-kw": 37,
-	"./ar-kw.js": 37,
-	"./ar-ly": 38,
-	"./ar-ly.js": 38,
-	"./ar-ma": 39,
-	"./ar-ma.js": 39,
-	"./ar-sa": 40,
-	"./ar-sa.js": 40,
-	"./ar-tn": 41,
-	"./ar-tn.js": 41,
-	"./ar.js": 35,
-	"./az": 42,
-	"./az.js": 42,
-	"./be": 43,
-	"./be.js": 43,
-	"./bg": 44,
-	"./bg.js": 44,
-	"./bm": 45,
-	"./bm.js": 45,
-	"./bn": 46,
-	"./bn.js": 46,
-	"./bo": 47,
-	"./bo.js": 47,
-	"./br": 48,
-	"./br.js": 48,
-	"./bs": 49,
-	"./bs.js": 49,
-	"./ca": 50,
-	"./ca.js": 50,
-	"./cs": 51,
-	"./cs.js": 51,
-	"./cv": 52,
-	"./cv.js": 52,
-	"./cy": 53,
-	"./cy.js": 53,
-	"./da": 54,
-	"./da.js": 54,
-	"./de": 55,
-	"./de-at": 56,
-	"./de-at.js": 56,
-	"./de-ch": 57,
-	"./de-ch.js": 57,
-	"./de.js": 55,
-	"./dv": 58,
-	"./dv.js": 58,
-	"./el": 59,
-	"./el.js": 59,
-	"./en-SG": 60,
-	"./en-SG.js": 60,
-	"./en-au": 61,
-	"./en-au.js": 61,
-	"./en-ca": 62,
-	"./en-ca.js": 62,
-	"./en-gb": 63,
-	"./en-gb.js": 63,
-	"./en-ie": 64,
-	"./en-ie.js": 64,
-	"./en-il": 65,
-	"./en-il.js": 65,
-	"./en-nz": 66,
-	"./en-nz.js": 66,
-	"./eo": 67,
-	"./eo.js": 67,
-	"./es": 68,
-	"./es-do": 69,
-	"./es-do.js": 69,
-	"./es-us": 70,
-	"./es-us.js": 70,
-	"./es.js": 68,
-	"./et": 71,
-	"./et.js": 71,
-	"./eu": 72,
-	"./eu.js": 72,
-	"./fa": 73,
-	"./fa.js": 73,
-	"./fi": 74,
-	"./fi.js": 74,
-	"./fo": 75,
-	"./fo.js": 75,
-	"./fr": 76,
-	"./fr-ca": 77,
-	"./fr-ca.js": 77,
-	"./fr-ch": 78,
-	"./fr-ch.js": 78,
-	"./fr.js": 76,
-	"./fy": 79,
-	"./fy.js": 79,
-	"./ga": 80,
-	"./ga.js": 80,
-	"./gd": 81,
-	"./gd.js": 81,
-	"./gl": 82,
-	"./gl.js": 82,
-	"./gom-latn": 83,
-	"./gom-latn.js": 83,
-	"./gu": 84,
-	"./gu.js": 84,
-	"./he": 85,
-	"./he.js": 85,
-	"./hi": 86,
-	"./hi.js": 86,
-	"./hr": 87,
-	"./hr.js": 87,
-	"./hu": 88,
-	"./hu.js": 88,
-	"./hy-am": 89,
-	"./hy-am.js": 89,
-	"./id": 90,
-	"./id.js": 90,
-	"./is": 91,
-	"./is.js": 91,
-	"./it": 92,
-	"./it-ch": 93,
-	"./it-ch.js": 93,
-	"./it.js": 92,
-	"./ja": 94,
-	"./ja.js": 94,
-	"./jv": 95,
-	"./jv.js": 95,
-	"./ka": 96,
-	"./ka.js": 96,
-	"./kk": 97,
-	"./kk.js": 97,
-	"./km": 98,
-	"./km.js": 98,
-	"./kn": 99,
-	"./kn.js": 99,
-	"./ko": 100,
-	"./ko.js": 100,
-	"./ku": 101,
-	"./ku.js": 101,
-	"./ky": 102,
-	"./ky.js": 102,
-	"./lb": 103,
-	"./lb.js": 103,
-	"./lo": 104,
-	"./lo.js": 104,
-	"./lt": 105,
-	"./lt.js": 105,
-	"./lv": 106,
-	"./lv.js": 106,
-	"./me": 107,
-	"./me.js": 107,
-	"./mi": 108,
-	"./mi.js": 108,
-	"./mk": 109,
-	"./mk.js": 109,
-	"./ml": 110,
-	"./ml.js": 110,
-	"./mn": 111,
-	"./mn.js": 111,
-	"./mr": 112,
-	"./mr.js": 112,
-	"./ms": 113,
-	"./ms-my": 114,
-	"./ms-my.js": 114,
-	"./ms.js": 113,
-	"./mt": 115,
-	"./mt.js": 115,
-	"./my": 116,
-	"./my.js": 116,
-	"./nb": 117,
-	"./nb.js": 117,
-	"./ne": 118,
-	"./ne.js": 118,
-	"./nl": 119,
-	"./nl-be": 120,
-	"./nl-be.js": 120,
-	"./nl.js": 119,
-	"./nn": 121,
-	"./nn.js": 121,
-	"./pa-in": 122,
-	"./pa-in.js": 122,
-	"./pl": 123,
-	"./pl.js": 123,
-	"./pt": 124,
-	"./pt-br": 125,
-	"./pt-br.js": 125,
-	"./pt.js": 124,
-	"./ro": 126,
-	"./ro.js": 126,
-	"./ru": 127,
-	"./ru.js": 127,
-	"./sd": 128,
-	"./sd.js": 128,
-	"./se": 129,
-	"./se.js": 129,
-	"./si": 130,
-	"./si.js": 130,
-	"./sk": 131,
-	"./sk.js": 131,
-	"./sl": 132,
-	"./sl.js": 132,
-	"./sq": 133,
-	"./sq.js": 133,
-	"./sr": 134,
-	"./sr-cyrl": 135,
-	"./sr-cyrl.js": 135,
-	"./sr.js": 134,
-	"./ss": 136,
-	"./ss.js": 136,
-	"./sv": 137,
-	"./sv.js": 137,
-	"./sw": 138,
-	"./sw.js": 138,
-	"./ta": 139,
-	"./ta.js": 139,
-	"./te": 140,
-	"./te.js": 140,
-	"./tet": 141,
-	"./tet.js": 141,
-	"./tg": 142,
-	"./tg.js": 142,
-	"./th": 143,
-	"./th.js": 143,
-	"./tl-ph": 144,
-	"./tl-ph.js": 144,
-	"./tlh": 145,
-	"./tlh.js": 145,
-	"./tr": 146,
-	"./tr.js": 146,
-	"./tzl": 147,
-	"./tzl.js": 147,
-	"./tzm": 148,
-	"./tzm-latn": 149,
-	"./tzm-latn.js": 149,
-	"./tzm.js": 148,
-	"./ug-cn": 150,
-	"./ug-cn.js": 150,
-	"./uk": 151,
-	"./uk.js": 151,
-	"./ur": 152,
-	"./ur.js": 152,
-	"./uz": 153,
-	"./uz-latn": 154,
-	"./uz-latn.js": 154,
-	"./uz.js": 153,
-	"./vi": 155,
-	"./vi.js": 155,
-	"./x-pseudo": 156,
-	"./x-pseudo.js": 156,
-	"./yo": 157,
-	"./yo.js": 157,
-	"./zh-cn": 158,
-	"./zh-cn.js": 158,
-	"./zh-hk": 159,
-	"./zh-hk.js": 159,
-	"./zh-tw": 160,
-	"./zh-tw.js": 160
+	"./af": 52,
+	"./af.js": 52,
+	"./ar": 53,
+	"./ar-dz": 54,
+	"./ar-dz.js": 54,
+	"./ar-kw": 55,
+	"./ar-kw.js": 55,
+	"./ar-ly": 56,
+	"./ar-ly.js": 56,
+	"./ar-ma": 57,
+	"./ar-ma.js": 57,
+	"./ar-sa": 58,
+	"./ar-sa.js": 58,
+	"./ar-tn": 59,
+	"./ar-tn.js": 59,
+	"./ar.js": 53,
+	"./az": 60,
+	"./az.js": 60,
+	"./be": 61,
+	"./be.js": 61,
+	"./bg": 62,
+	"./bg.js": 62,
+	"./bm": 63,
+	"./bm.js": 63,
+	"./bn": 64,
+	"./bn.js": 64,
+	"./bo": 65,
+	"./bo.js": 65,
+	"./br": 66,
+	"./br.js": 66,
+	"./bs": 67,
+	"./bs.js": 67,
+	"./ca": 68,
+	"./ca.js": 68,
+	"./cs": 69,
+	"./cs.js": 69,
+	"./cv": 70,
+	"./cv.js": 70,
+	"./cy": 71,
+	"./cy.js": 71,
+	"./da": 72,
+	"./da.js": 72,
+	"./de": 73,
+	"./de-at": 74,
+	"./de-at.js": 74,
+	"./de-ch": 75,
+	"./de-ch.js": 75,
+	"./de.js": 73,
+	"./dv": 76,
+	"./dv.js": 76,
+	"./el": 77,
+	"./el.js": 77,
+	"./en-SG": 78,
+	"./en-SG.js": 78,
+	"./en-au": 79,
+	"./en-au.js": 79,
+	"./en-ca": 80,
+	"./en-ca.js": 80,
+	"./en-gb": 81,
+	"./en-gb.js": 81,
+	"./en-ie": 82,
+	"./en-ie.js": 82,
+	"./en-il": 83,
+	"./en-il.js": 83,
+	"./en-nz": 84,
+	"./en-nz.js": 84,
+	"./eo": 85,
+	"./eo.js": 85,
+	"./es": 86,
+	"./es-do": 87,
+	"./es-do.js": 87,
+	"./es-us": 88,
+	"./es-us.js": 88,
+	"./es.js": 86,
+	"./et": 89,
+	"./et.js": 89,
+	"./eu": 90,
+	"./eu.js": 90,
+	"./fa": 91,
+	"./fa.js": 91,
+	"./fi": 92,
+	"./fi.js": 92,
+	"./fo": 93,
+	"./fo.js": 93,
+	"./fr": 94,
+	"./fr-ca": 95,
+	"./fr-ca.js": 95,
+	"./fr-ch": 96,
+	"./fr-ch.js": 96,
+	"./fr.js": 94,
+	"./fy": 97,
+	"./fy.js": 97,
+	"./ga": 98,
+	"./ga.js": 98,
+	"./gd": 99,
+	"./gd.js": 99,
+	"./gl": 100,
+	"./gl.js": 100,
+	"./gom-latn": 101,
+	"./gom-latn.js": 101,
+	"./gu": 102,
+	"./gu.js": 102,
+	"./he": 103,
+	"./he.js": 103,
+	"./hi": 104,
+	"./hi.js": 104,
+	"./hr": 105,
+	"./hr.js": 105,
+	"./hu": 106,
+	"./hu.js": 106,
+	"./hy-am": 107,
+	"./hy-am.js": 107,
+	"./id": 108,
+	"./id.js": 108,
+	"./is": 109,
+	"./is.js": 109,
+	"./it": 110,
+	"./it-ch": 111,
+	"./it-ch.js": 111,
+	"./it.js": 110,
+	"./ja": 112,
+	"./ja.js": 112,
+	"./jv": 113,
+	"./jv.js": 113,
+	"./ka": 114,
+	"./ka.js": 114,
+	"./kk": 115,
+	"./kk.js": 115,
+	"./km": 116,
+	"./km.js": 116,
+	"./kn": 117,
+	"./kn.js": 117,
+	"./ko": 118,
+	"./ko.js": 118,
+	"./ku": 119,
+	"./ku.js": 119,
+	"./ky": 120,
+	"./ky.js": 120,
+	"./lb": 121,
+	"./lb.js": 121,
+	"./lo": 122,
+	"./lo.js": 122,
+	"./lt": 123,
+	"./lt.js": 123,
+	"./lv": 124,
+	"./lv.js": 124,
+	"./me": 125,
+	"./me.js": 125,
+	"./mi": 126,
+	"./mi.js": 126,
+	"./mk": 127,
+	"./mk.js": 127,
+	"./ml": 128,
+	"./ml.js": 128,
+	"./mn": 129,
+	"./mn.js": 129,
+	"./mr": 130,
+	"./mr.js": 130,
+	"./ms": 131,
+	"./ms-my": 132,
+	"./ms-my.js": 132,
+	"./ms.js": 131,
+	"./mt": 133,
+	"./mt.js": 133,
+	"./my": 134,
+	"./my.js": 134,
+	"./nb": 135,
+	"./nb.js": 135,
+	"./ne": 136,
+	"./ne.js": 136,
+	"./nl": 137,
+	"./nl-be": 138,
+	"./nl-be.js": 138,
+	"./nl.js": 137,
+	"./nn": 139,
+	"./nn.js": 139,
+	"./pa-in": 140,
+	"./pa-in.js": 140,
+	"./pl": 141,
+	"./pl.js": 141,
+	"./pt": 142,
+	"./pt-br": 143,
+	"./pt-br.js": 143,
+	"./pt.js": 142,
+	"./ro": 144,
+	"./ro.js": 144,
+	"./ru": 145,
+	"./ru.js": 145,
+	"./sd": 146,
+	"./sd.js": 146,
+	"./se": 147,
+	"./se.js": 147,
+	"./si": 148,
+	"./si.js": 148,
+	"./sk": 149,
+	"./sk.js": 149,
+	"./sl": 150,
+	"./sl.js": 150,
+	"./sq": 151,
+	"./sq.js": 151,
+	"./sr": 152,
+	"./sr-cyrl": 153,
+	"./sr-cyrl.js": 153,
+	"./sr.js": 152,
+	"./ss": 154,
+	"./ss.js": 154,
+	"./sv": 155,
+	"./sv.js": 155,
+	"./sw": 156,
+	"./sw.js": 156,
+	"./ta": 157,
+	"./ta.js": 157,
+	"./te": 158,
+	"./te.js": 158,
+	"./tet": 159,
+	"./tet.js": 159,
+	"./tg": 160,
+	"./tg.js": 160,
+	"./th": 161,
+	"./th.js": 161,
+	"./tl-ph": 162,
+	"./tl-ph.js": 162,
+	"./tlh": 163,
+	"./tlh.js": 163,
+	"./tr": 164,
+	"./tr.js": 164,
+	"./tzl": 165,
+	"./tzl.js": 165,
+	"./tzm": 166,
+	"./tzm-latn": 167,
+	"./tzm-latn.js": 167,
+	"./tzm.js": 166,
+	"./ug-cn": 168,
+	"./ug-cn.js": 168,
+	"./uk": 169,
+	"./uk.js": 169,
+	"./ur": 170,
+	"./ur.js": 170,
+	"./uz": 171,
+	"./uz-latn": 172,
+	"./uz-latn.js": 172,
+	"./uz.js": 171,
+	"./vi": 173,
+	"./vi.js": 173,
+	"./x-pseudo": 174,
+	"./x-pseudo.js": 174,
+	"./yo": 175,
+	"./yo.js": 175,
+	"./zh-cn": 176,
+	"./zh-cn.js": 176,
+	"./zh-hk": 177,
+	"./zh-hk.js": 177,
+	"./zh-tw": 178,
+	"./zh-tw.js": 178
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -51388,10 +58457,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 212;
+webpackContext.id = 239;
 
 /***/ }),
-/* 213 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51402,19 +58471,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = bubbleOverlay;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _bubbleMixin = __webpack_require__(21);
+var _bubbleMixin = __webpack_require__(35);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(11);
+var _capMixin = __webpack_require__(14);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -51422,7 +58491,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51814,7 +58883,7 @@ function bubbleOverlay(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 214 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51829,7 +58898,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51935,7 +59004,7 @@ function legendMixin(chart) {
 }
 
 /***/ }),
-/* 215 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51949,9 +59018,9 @@ exports.hasFilterHandler = hasFilterHandler;
 exports.filterHandlerWithChartContext = filterHandlerWithChartContext;
 exports.default = filterMixin;
 
-var _formattingHelpers = __webpack_require__(7);
+var _formattingHelpers = __webpack_require__(10);
 
-var _events = __webpack_require__(10);
+var _events = __webpack_require__(13);
 
 var noop = function noop() {}; // eslint-disable-line no-empty-function
 
@@ -52172,7 +59241,7 @@ function filterMixin(_chart) {
 }
 
 /***/ }),
-/* 216 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52316,7 +59385,7 @@ function labelMixin(chart) {
 }
 
 /***/ }),
-/* 217 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52328,7 +59397,7 @@ Object.defineProperty(exports, "__esModule", {
 var SPINNER_DELAY = exports.SPINNER_DELAY = 1000;
 
 /***/ }),
-/* 218 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52339,27 +59408,27 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = barChart;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackMixin = __webpack_require__(22);
+var _stackMixin = __webpack_require__(36);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
-var _elasticDimensionMixin = __webpack_require__(167);
+var _elasticDimensionMixin = __webpack_require__(185);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _coordinateGridMixin = __webpack_require__(12);
+var _coordinateGridMixin = __webpack_require__(15);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
-var _multiSeriesMixin = __webpack_require__(169);
+var _multiSeriesMixin = __webpack_require__(187);
 
 var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
 
@@ -52891,7 +59960,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 }
 
 /***/ }),
-/* 219 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //  Ramda v0.21.0
@@ -61681,7 +68750,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 
 
 /***/ }),
-/* 220 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61693,17 +68762,17 @@ Object.defineProperty(exports, "__esModule", {
 exports.roundTimeBin = roundTimeBin;
 exports.default = binningMixin;
 
-var _binningHelpers = __webpack_require__(20);
+var _binningHelpers = __webpack_require__(34);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(10);
+var _events = __webpack_require__(13);
 
-var _filters = __webpack_require__(15);
+var _filters = __webpack_require__(20);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -61876,7 +68945,7 @@ function binningMixin(chart) {
 }
 
 /***/ }),
-/* 221 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61891,21 +68960,21 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _bubbleMixin = __webpack_require__(21);
+var _bubbleMixin = __webpack_require__(35);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(11);
+var _capMixin = __webpack_require__(14);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _coordinateGridMixin = __webpack_require__(12);
+var _coordinateGridMixin = __webpack_require__(15);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -62323,7 +69392,7 @@ function bubbleChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 222 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62334,11 +69403,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = cloudChart;
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(11);
+var _capMixin = __webpack_require__(14);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -62346,11 +69415,11 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _colorMixin = __webpack_require__(9);
+var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(17);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
@@ -62473,7 +69542,7 @@ function cloudChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 223 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62484,7 +69553,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = compositeChart;
 
-var _coordinateGridMixin = __webpack_require__(12);
+var _coordinateGridMixin = __webpack_require__(15);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -62492,9 +69561,9 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -63041,7 +70110,7 @@ function compositeChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 224 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63052,7 +70121,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = dataCount;
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -63060,9 +70129,9 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -63210,7 +70279,7 @@ function dataCount(parent, chartGroup) {
 }
 
 /***/ }),
-/* 225 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63225,7 +70294,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -63465,7 +70534,7 @@ function dataGrid(parent, chartGroup) {
 }
 
 /***/ }),
-/* 226 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63479,11 +70548,11 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 exports.default = geoChoroplethChart;
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _colorMixin = __webpack_require__(9);
+var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
@@ -63491,19 +70560,19 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _mapMixin = __webpack_require__(23);
+var _mapMixin = __webpack_require__(37);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _bbox = __webpack_require__(230);
+var _bbox = __webpack_require__(257);
 
 var _bbox2 = _interopRequireDefault(_bbox);
 
-var _bboxClip = __webpack_require__(232);
+var _bboxClip = __webpack_require__(259);
 
 var _bboxClip2 = _interopRequireDefault(_bboxClip);
 
@@ -63921,7 +70990,7 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 }
 
 /***/ }),
-/* 227 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63937,19 +71006,19 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 exports.getLatLonCircleClass = getLatLonCircleClass;
 
-var _utilsLatlon = __webpack_require__(170);
+var _utilsLatlon = __webpack_require__(188);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _mapdDraw = __webpack_require__(14);
+var _mapdDraw = __webpack_require__(18);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _simplifyJs = __webpack_require__(228);
+var _simplifyJs = __webpack_require__(255);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
-var _logger = __webpack_require__(19);
+var _logger = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -65043,7 +72112,7 @@ var LassoButtonGroupController = function () {
 exports.default = LassoButtonGroupController;
 
 /***/ }),
-/* 228 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -65173,7 +72242,7 @@ else window.simplify = simplify;
 
 
 /***/ }),
-/* 229 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65830,13 +72899,13 @@ earcut.flatten = function (data) {
 
 
 /***/ }),
-/* 230 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var meta_1 = __webpack_require__(231);
+var meta_1 = __webpack_require__(258);
 /**
  * Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
  *
@@ -65873,7 +72942,7 @@ exports.default = bbox;
 
 
 /***/ }),
-/* 231 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65881,7 +72950,7 @@ exports.default = bbox;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var helpers = __webpack_require__(25);
+var helpers = __webpack_require__(39);
 
 /**
  * Callback for coordEach
@@ -67012,7 +74081,7 @@ exports.findPoint = findPoint;
 
 
 /***/ }),
-/* 232 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67025,9 +74094,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-var helpers_1 = __webpack_require__(25);
-var invariant_1 = __webpack_require__(233);
-var lineclip = __importStar(__webpack_require__(234));
+var helpers_1 = __webpack_require__(39);
+var invariant_1 = __webpack_require__(260);
+var lineclip = __importStar(__webpack_require__(261));
 /**
  * Takes a {@link Feature} and a bbox and clips the feature to the bbox using
  * [lineclip](https://github.com/mapbox/lineclip).
@@ -67095,13 +74164,13 @@ function clipPolygon(rings, bbox) {
 
 
 /***/ }),
-/* 233 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var helpers_1 = __webpack_require__(25);
+var helpers_1 = __webpack_require__(39);
 /**
  * Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
  *
@@ -67313,7 +74382,7 @@ exports.getType = getType;
 
 
 /***/ }),
-/* 234 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67445,7 +74514,7 @@ function bitCode(p, bbox) {
 
 
 /***/ }),
-/* 235 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67461,31 +74530,31 @@ exports.heatMapColsLabel = heatMapColsLabel;
 exports.isDescendingAppropriateData = isDescendingAppropriateData;
 exports.default = heatMap;
 
-var _formattingHelpers = __webpack_require__(7);
+var _formattingHelpers = __webpack_require__(10);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _colorMixin = __webpack_require__(9);
+var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(17);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _events = __webpack_require__(10);
+var _events = __webpack_require__(13);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _filters = __webpack_require__(15);
+var _filters = __webpack_require__(20);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68189,7 +75258,7 @@ function heatMap(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 236 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68200,15 +75269,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = pieChart;
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(11);
+var _capMixin = __webpack_require__(14);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _colorMixin = __webpack_require__(9);
+var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
@@ -68216,15 +75285,15 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _multipleKeyLabelMixin = __webpack_require__(165);
+var _multipleKeyLabelMixin = __webpack_require__(183);
 
 var _multipleKeyLabelMixin2 = _interopRequireDefault(_multipleKeyLabelMixin);
 
-var _formattingHelpers = __webpack_require__(7);
+var _formattingHelpers = __webpack_require__(10);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68992,7 +76061,7 @@ function pieChart(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 237 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69003,11 +76072,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = lineChart;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _coordinateGridMixin = __webpack_require__(12);
+var _coordinateGridMixin = __webpack_require__(15);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -69015,15 +76084,15 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _elasticDimensionMixin = __webpack_require__(167);
+var _elasticDimensionMixin = __webpack_require__(185);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _stackMixin = __webpack_require__(22);
+var _stackMixin = __webpack_require__(36);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
-var _multiSeriesMixin = __webpack_require__(169);
+var _multiSeriesMixin = __webpack_require__(187);
 
 var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
 
@@ -69615,7 +76684,7 @@ function lineChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 238 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69626,7 +76695,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = numberChart;
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -69634,9 +76703,9 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -69714,7 +76783,7 @@ function numberChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 239 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69728,31 +76797,31 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = rasterChart;
 
-var _stackedLegend = __webpack_require__(240);
+var _stackedLegend = __webpack_require__(267);
 
-var _coordinateGridRasterMixin = __webpack_require__(171);
+var _coordinateGridRasterMixin = __webpack_require__(189);
 
 var _coordinateGridRasterMixin2 = _interopRequireDefault(_coordinateGridRasterMixin);
 
-var _mapMixin = __webpack_require__(23);
+var _mapMixin = __webpack_require__(37);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _scatterMixin = __webpack_require__(180);
+var _scatterMixin = __webpack_require__(198);
 
 var _scatterMixin2 = _interopRequireDefault(_scatterMixin);
 
-var _rasterDrawMixin = __webpack_require__(24);
+var _rasterDrawMixin = __webpack_require__(38);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _legendables = __webpack_require__(262);
+var _legendables = __webpack_require__(289);
 
-var _lodash = __webpack_require__(17);
+var _lodash = __webpack_require__(26);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -70410,7 +77479,7 @@ function genLayeredVega(chart) {
 }
 
 /***/ }),
-/* 240 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70432,7 +77501,7 @@ exports.handleLegendLock = handleLegendLock;
 exports.handleLegendInput = handleLegendInput;
 exports.toLegendState = toLegendState;
 
-var _lodash = __webpack_require__(17);
+var _lodash = __webpack_require__(26);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -70744,7 +77813,7 @@ function isNullLegend(domain) {
 }
 
 /***/ }),
-/* 241 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70758,9 +77827,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 exports.default = bindEventHandlers;
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _mapboxPortedFunctions = __webpack_require__(242);
+var _mapboxPortedFunctions = __webpack_require__(269);
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -71848,7 +78917,7 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 }
 
 /***/ }),
-/* 242 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71859,7 +78928,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.timed = undefined;
 
-var _unitbezier = __webpack_require__(243);
+var _unitbezier = __webpack_require__(270);
 
 var _unitbezier2 = _interopRequireDefault(_unitbezier);
 
@@ -71936,7 +79005,7 @@ var timed = exports.timed = function timed(fn, dur, ctx) {
 };
 
 /***/ }),
-/* 243 */
+/* 270 */
 /***/ (function(module, exports) {
 
 /*
@@ -72047,23 +79116,23 @@ UnitBezier.prototype.solve = function(x, epsilon) {
 
 
 /***/ }),
-/* 244 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(245);
+module.exports = __webpack_require__(272);
 
 /***/ }),
-/* 245 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
-var bind = __webpack_require__(172);
-var Axios = __webpack_require__(247);
-var mergeConfig = __webpack_require__(178);
-var defaults = __webpack_require__(175);
+var utils = __webpack_require__(8);
+var bind = __webpack_require__(190);
+var Axios = __webpack_require__(274);
+var mergeConfig = __webpack_require__(196);
+var defaults = __webpack_require__(193);
 
 /**
  * Create an instance of Axios
@@ -72096,15 +79165,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(179);
-axios.CancelToken = __webpack_require__(260);
-axios.isCancel = __webpack_require__(174);
+axios.Cancel = __webpack_require__(197);
+axios.CancelToken = __webpack_require__(287);
+axios.isCancel = __webpack_require__(192);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(261);
+axios.spread = __webpack_require__(288);
 
 module.exports = axios;
 
@@ -72113,7 +79182,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 246 */
+/* 273 */
 /***/ (function(module, exports) {
 
 /*!
@@ -72130,17 +79199,17 @@ module.exports = function isBuffer (obj) {
 
 
 /***/ }),
-/* 247 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
-var buildURL = __webpack_require__(173);
-var InterceptorManager = __webpack_require__(248);
-var dispatchRequest = __webpack_require__(249);
-var mergeConfig = __webpack_require__(178);
+var utils = __webpack_require__(8);
+var buildURL = __webpack_require__(191);
+var InterceptorManager = __webpack_require__(275);
+var dispatchRequest = __webpack_require__(276);
+var mergeConfig = __webpack_require__(196);
 
 /**
  * Create a new instance of Axios
@@ -72223,13 +79292,13 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 248 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
+var utils = __webpack_require__(8);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -72282,18 +79351,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 249 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
-var transformData = __webpack_require__(250);
-var isCancel = __webpack_require__(174);
-var defaults = __webpack_require__(175);
-var isAbsoluteURL = __webpack_require__(258);
-var combineURLs = __webpack_require__(259);
+var utils = __webpack_require__(8);
+var transformData = __webpack_require__(277);
+var isCancel = __webpack_require__(192);
+var defaults = __webpack_require__(193);
+var isAbsoluteURL = __webpack_require__(285);
+var combineURLs = __webpack_require__(286);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -72375,13 +79444,13 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 250 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
+var utils = __webpack_require__(8);
 
 /**
  * Transform the data for a request or a response
@@ -72402,7 +79471,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 251 */
+/* 278 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -72592,13 +79661,13 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 252 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
+var utils = __webpack_require__(8);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -72611,13 +79680,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 253 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(177);
+var createError = __webpack_require__(195);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -72643,7 +79712,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 254 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72692,13 +79761,13 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 255 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
+var utils = __webpack_require__(8);
 
 // Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -72752,13 +79821,13 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 256 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
+var utils = __webpack_require__(8);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -72827,13 +79896,13 @@ module.exports = (
 
 
 /***/ }),
-/* 257 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(6);
+var utils = __webpack_require__(8);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -72887,7 +79956,7 @@ module.exports = (
 
 
 /***/ }),
-/* 258 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72908,7 +79977,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 259 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72929,13 +79998,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 260 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(179);
+var Cancel = __webpack_require__(197);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -72993,7 +80062,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 261 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73027,18 +80096,18 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 262 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var legend_1 = __webpack_require__(263);
+var legend_1 = __webpack_require__(290);
 exports.Legend = legend_1.default;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 263 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73052,10 +80121,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var h_1 = __webpack_require__(264);
-var vdom_1 = __webpack_require__(267);
-var d3_dispatch_1 = __webpack_require__(276);
-var d3_format_1 = __webpack_require__(278);
+var h_1 = __webpack_require__(291);
+var vdom_1 = __webpack_require__(294);
+var d3_dispatch_1 = __webpack_require__(303);
+var d3_format_1 = __webpack_require__(305);
 var commafy = function (d) { return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d; };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
@@ -73247,14 +80316,14 @@ exports.default = Legend;
 //# sourceMappingURL=legend.js.map
 
 /***/ }),
-/* 264 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var vnode_1 = __webpack_require__(265);
-var is = __webpack_require__(266);
+var vnode_1 = __webpack_require__(292);
+var is = __webpack_require__(293);
 function addNS(data, children, sel) {
     data.ns = 'http://www.w3.org/2000/svg';
     if (sel !== 'foreignObject' && children !== undefined) {
@@ -73312,7 +80381,7 @@ exports.default = h;
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 265 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73328,7 +80397,7 @@ exports.default = vnode;
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 266 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73342,18 +80411,18 @@ exports.primitive = primitive;
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 267 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var snabbdom_1 = __webpack_require__(268);
-var attributes_1 = __webpack_require__(271);
-var class_1 = __webpack_require__(272);
-var props_1 = __webpack_require__(273);
-var style_1 = __webpack_require__(274);
-var eventlisteners_1 = __webpack_require__(275);
+var snabbdom_1 = __webpack_require__(295);
+var attributes_1 = __webpack_require__(298);
+var class_1 = __webpack_require__(299);
+var props_1 = __webpack_require__(300);
+var style_1 = __webpack_require__(301);
+var eventlisteners_1 = __webpack_require__(302);
 exports.patch = snabbdom_1.init([
     class_1.default,
     props_1.default,
@@ -73364,18 +80433,18 @@ exports.patch = snabbdom_1.init([
 //# sourceMappingURL=vdom.js.map
 
 /***/ }),
-/* 268 */
+/* 295 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["init"] = init;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(181);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(182);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(269);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(183);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(199);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(200);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(296);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(201);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_3__h__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(270);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(297);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "thunk", function() { return __WEBPACK_IMPORTED_MODULE_4__thunk__["a"]; });
 
 
@@ -73683,7 +80752,7 @@ function init(modules, domApi) {
 //# sourceMappingURL=snabbdom.js.map
 
 /***/ }),
-/* 269 */
+/* 296 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -73754,12 +80823,12 @@ var htmlDomApi = {
 //# sourceMappingURL=htmldomapi.js.map
 
 /***/ }),
-/* 270 */
+/* 297 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return thunk; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__h__ = __webpack_require__(183);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__h__ = __webpack_require__(201);
 
 function copyToThunk(vnode, thunk) {
     thunk.elm = vnode.elm;
@@ -73807,7 +80876,7 @@ var thunk = function thunk(sel, key, fn, args) {
 //# sourceMappingURL=thunk.js.map
 
 /***/ }),
-/* 271 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73868,7 +80937,7 @@ exports.default = exports.attributesModule;
 //# sourceMappingURL=attributes.js.map
 
 /***/ }),
-/* 272 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73899,7 +80968,7 @@ exports.default = exports.classModule;
 //# sourceMappingURL=class.js.map
 
 /***/ }),
-/* 273 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73931,7 +81000,7 @@ exports.default = exports.propsModule;
 //# sourceMappingURL=props.js.map
 
 /***/ }),
-/* 274 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74032,7 +81101,7 @@ exports.default = exports.styleModule;
 //# sourceMappingURL=style.js.map
 
 /***/ }),
-/* 275 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74133,18 +81202,18 @@ exports.default = exports.eventListenersModule;
 //# sourceMappingURL=eventlisteners.js.map
 
 /***/ }),
-/* 276 */
+/* 303 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(277);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(304);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return __WEBPACK_IMPORTED_MODULE_0__dispatch__["a"]; });
 
 
 
 /***/ }),
-/* 277 */
+/* 304 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -74235,24 +81304,24 @@ function set(type, name, callback) {
 
 
 /***/ }),
-/* 278 */
+/* 305 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(279);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(306);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatDefaultLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "format", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatPrefix", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__locale__ = __webpack_require__(184);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__locale__ = __webpack_require__(202);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatLocale", function() { return __WEBPACK_IMPORTED_MODULE_1__locale__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(185);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(203);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatSpecifier", function() { return __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(286);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(313);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionFixed", function() { return __WEBPACK_IMPORTED_MODULE_3__precisionFixed__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(287);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(314);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionPrefix", function() { return __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(288);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(315);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionRound", function() { return __WEBPACK_IMPORTED_MODULE_5__precisionRound__["a"]; });
 
 
@@ -74263,14 +81332,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 279 */
+/* 306 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return format; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return formatPrefix; });
 /* harmony export (immutable) */ __webpack_exports__["a"] = defaultLocale;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__locale__ = __webpack_require__(184);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__locale__ = __webpack_require__(202);
 
 
 var locale;
@@ -74293,7 +81362,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 280 */
+/* 307 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -74318,7 +81387,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 281 */
+/* 308 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -74332,7 +81401,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 282 */
+/* 309 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -74350,12 +81419,12 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 283 */
+/* 310 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(186);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(284);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(311);
 
 
 
@@ -74377,11 +81446,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 284 */
+/* 311 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(40);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x, p) {
@@ -74396,7 +81465,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 285 */
+/* 312 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -74406,11 +81475,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 286 */
+/* 313 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(27);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step) {
@@ -74419,11 +81488,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 287 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(27);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, value) {
@@ -74432,11 +81501,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 288 */
+/* 315 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(27);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, max) {
@@ -74446,7 +81515,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 289 */
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74457,15 +81526,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rowChart;
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(11);
+var _capMixin = __webpack_require__(14);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _colorMixin = __webpack_require__(9);
+var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
@@ -74473,19 +81542,19 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _lockAxisMixin = __webpack_require__(168);
+var _lockAxisMixin = __webpack_require__(186);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
-var _marginMixin = __webpack_require__(13);
+var _marginMixin = __webpack_require__(17);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _formattingHelpers = __webpack_require__(7);
+var _formattingHelpers = __webpack_require__(10);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -75115,7 +82184,7 @@ function rowChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 290 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75126,7 +82195,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = scatterPlot;
 
-var _coordinateGridMixin = __webpack_require__(12);
+var _coordinateGridMixin = __webpack_require__(15);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -75134,11 +82203,11 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(10);
+var _events = __webpack_require__(13);
 
-var _filters = __webpack_require__(15);
+var _filters = __webpack_require__(20);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -75417,7 +82486,7 @@ function scatterPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 291 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75433,15 +82502,15 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _formattingHelpers = __webpack_require__(7);
+var _formattingHelpers = __webpack_require__(10);
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -75929,7 +82998,7 @@ function mapdTable(parent, chartGroup) {
 }
 
 /***/ }),
-/* 292 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75940,9 +83009,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = boxPlot;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _coordinateGridMixin = __webpack_require__(12);
+var _coordinateGridMixin = __webpack_require__(15);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -75950,7 +83019,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -76187,7 +83256,7 @@ function boxPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 293 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76202,11 +83271,11 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _baseMixin = __webpack_require__(5);
+var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -76316,7 +83385,7 @@ function countWidget(parent, chartGroup) {
 }
 
 /***/ }),
-/* 294 */
+/* 321 */
 /***/ (function(module, exports) {
 
 /*eslint-disable no-cond-assign */
@@ -76592,7 +83661,3487 @@ function stringify (gj) {
 
 
 /***/ }),
-/* 295 */
+/* 322 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.sqlVisitor = exports.sqlParser = exports.sqlLexer = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.buildAst = buildAst;
+exports.paintAst = paintAst;
+exports.extractFacts = extractFacts;
+exports.applyReplacements = applyReplacements;
+exports.default = parseFactsFromCustomSQL;
+
+var _chevrotain = __webpack_require__(208);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // This implements a simple parser for custom SQL expressions. It's mostly
+// based on the postgres documentation with notes about the bits that were
+// skipped. I'm not sure how much of the postgres spec core implements; it's
+// possible some of the skipped bits aren't even implemented in core anyway.
+// I've made an attempt to implement all of the SQL standard stuff.
+
+
+var Whitespace = (0, _chevrotain.createToken)({
+  name: "Whitespace",
+  pattern: /\s+/,
+  group: _chevrotain.Lexer.SKIPPED
+});
+
+// XXX:
+// Window functions (OVER, PARTITION BY, USING, NULLS, FIRST, LAST, etc)
+// Type casts (CAST ... AS ...)
+// COLLATE
+// Sub-queries (SELECT, et al)
+// ARRAY
+// ROW
+var Keyword = (0, _chevrotain.createToken)({ name: "Keyword", pattern: _chevrotain.Lexer.NA });
+var All = (0, _chevrotain.createToken)({ name: "All", pattern: /all/i, categories: [Keyword] });
+var Distinct = (0, _chevrotain.createToken)({
+  name: "Distinct",
+  pattern: /distinct/i,
+  categories: [Keyword]
+});
+var OrderBy = (0, _chevrotain.createToken)({
+  name: "OrderBy",
+  pattern: /order by/i,
+  categories: [Keyword]
+});
+var Asc = (0, _chevrotain.createToken)({
+  name: "Ascending",
+  pattern: /asc/i,
+  categories: [Keyword]
+});
+var Desc = (0, _chevrotain.createToken)({
+  name: "Descending",
+  pattern: /desc/i,
+  categories: [Keyword]
+});
+
+// XXX:
+// support for non-latin characters?
+// U&"..." identifiers?
+// U&"..." UESCAPE '?' identifiers?
+var Identifier = (0, _chevrotain.createToken)({ name: "Identifier", pattern: _chevrotain.Lexer.NA });
+var UnquotedIdentifier = (0, _chevrotain.createToken)({
+  name: "UnquotedIdentifier",
+  pattern: /[a-zA-Z_]\w*/,
+  categories: [Identifier]
+});
+var QuotedIdentifier = (0, _chevrotain.createToken)({
+  name: "QuotedIdentifier",
+  pattern: /"(?:[^"]|"")+"/,
+  categories: [Identifier]
+});
+
+// XXX:
+// E'...' string constants?
+// U&'...' string constants?
+// U&'...' UESCAPE '?' string constants?
+// $$...$$ string constants?
+// bit constants?
+var Constant = (0, _chevrotain.createToken)({ name: "Constant", pattern: _chevrotain.Lexer.NA });
+var StringConstant = (0, _chevrotain.createToken)({
+  name: "StringConstant",
+  pattern: /'(?:[^']|'')*'(?:\s*\n\s*'(?:[^']|'')*')*/,
+  categories: [Constant],
+  line_breaks: true
+});
+var NumericConstant = (0, _chevrotain.createToken)({
+  name: "NumericConstant",
+  pattern: /(?:[1-9]\d*(?:\.\d)?|0?\.\d)\d*(?:[eE][+-]?\d+)?/,
+  categories: [Constant]
+});
+var BooleanConstant = (0, _chevrotain.createToken)({
+  name: "BooleanConstant",
+  pattern: /(?:true|false)/i,
+  categories: [Constant]
+});
+
+// XXX:
+// IS
+// ISNULL
+// NOTNULL
+// IN
+// BETWEEN
+// OVERLAPS
+// LIKE/ILIKE/SIMILAR
+// < >
+// =
+// NOT
+// AND
+// OR
+var Operator = (0, _chevrotain.createToken)({ name: "Operator", pattern: _chevrotain.Lexer.NA });
+
+var AllColumns = (0, _chevrotain.createToken)({ name: "AllColumns", pattern: _chevrotain.Lexer.NA });
+var PrefixOperator = (0, _chevrotain.createToken)({
+  name: "PrefixOperator",
+  pattern: _chevrotain.Lexer.NA,
+  categories: [Operator]
+});
+var BinaryOperator = (0, _chevrotain.createToken)({
+  name: "BinaryOperator",
+  pattern: _chevrotain.Lexer.NA,
+  categories: [Operator]
+});
+
+var ExponentiationOperator = (0, _chevrotain.createToken)({
+  name: "ExponentOperator",
+  pattern: /\^/,
+  categories: [BinaryOperator]
+});
+
+var MultiplicativeOperator = (0, _chevrotain.createToken)({
+  name: "MultiplicativeOperator",
+  pattern: _chevrotain.Lexer.NA,
+  categories: [BinaryOperator]
+});
+var MultiplicationOperator = (0, _chevrotain.createToken)({
+  name: "MultiplicationOperator",
+  pattern: /\*/,
+  categories: [MultiplicativeOperator, AllColumns]
+});
+var DivisionOperator = (0, _chevrotain.createToken)({
+  name: "DivisionOperator",
+  pattern: /\//,
+  categories: [MultiplicativeOperator]
+});
+var ModuloOperator = (0, _chevrotain.createToken)({
+  name: "ModuloOperator",
+  pattern: /%/,
+  categories: [MultiplicativeOperator]
+});
+
+var AdditiveOperator = (0, _chevrotain.createToken)({
+  name: "AdditiveOperator",
+  pattern: _chevrotain.Lexer.NA,
+  categories: [BinaryOperator, PrefixOperator]
+});
+var AdditionOperator = (0, _chevrotain.createToken)({
+  name: "AdditionOperator",
+  pattern: /\+/,
+  categories: [AdditiveOperator]
+});
+var SubtractionOperator = (0, _chevrotain.createToken)({
+  name: "SubtractionOperator",
+  pattern: /-/,
+  categories: [AdditiveOperator]
+});
+
+// XXX:
+// Array elements with brackets ([])
+// Array slices with :
+// Type cast with ::
+var Punctuation = (0, _chevrotain.createToken)({ name: "Punctuation", pattern: _chevrotain.Lexer.NA });
+var OpenParen = (0, _chevrotain.createToken)({
+  name: "OpenParenthesis",
+  pattern: /\(/,
+  categories: [Punctuation]
+});
+var CloseParen = (0, _chevrotain.createToken)({
+  name: "CloseParenthesis",
+  pattern: /\)/,
+  categories: [Punctuation]
+});
+var Comma = (0, _chevrotain.createToken)({
+  name: "Comma",
+  pattern: /,/,
+  categories: [Punctuation]
+});
+var Dot = (0, _chevrotain.createToken)({
+  name: "Dot",
+  pattern: /\./,
+  categories: [Punctuation]
+});
+
+var allTokens = [Whitespace,
+
+// keywords must come before Identifiers
+All, Distinct, OrderBy, Asc, Desc,
+
+// Identifiers must come before anything else because a QuotedIdentifier can
+// technically contain anything
+Identifier, UnquotedIdentifier, QuotedIdentifier, Constant, StringConstant, NumericConstant, BooleanConstant, Operator, PrefixOperator, BinaryOperator, ExponentiationOperator, MultiplicativeOperator, MultiplicationOperator, DivisionOperator, ModuloOperator, AdditiveOperator, AdditionOperator, SubtractionOperator, OpenParen, CloseParen, Comma, Dot];
+
+var sqlLexer = exports.sqlLexer = new _chevrotain.Lexer(allTokens);
+
+var SQLParser = function (_CstParser) {
+  _inherits(SQLParser, _CstParser);
+
+  function SQLParser() {
+    _classCallCheck(this, SQLParser);
+
+    var _this = _possibleConstructorReturn(this, (SQLParser.__proto__ || Object.getPrototypeOf(SQLParser)).call(this, allTokens));
+
+    _this.RULE("expression", function () {
+      _this.SUBRULE(_this.additiveExpression);
+    });
+
+    _this.RULE("additiveExpression", function () {
+      _this.SUBRULE(_this.multiplicativeExpression, { LABEL: "lhs" });
+      _this.MANY(function () {
+        _this.CONSUME(AdditiveOperator, { LABEL: "operator" });
+        _this.SUBRULE2(_this.multiplicativeExpression, { LABEL: "rhs" });
+      });
+    });
+
+    _this.RULE("multiplicativeExpression", function () {
+      _this.SUBRULE(_this.exponentiationExpression, { LABEL: "lhs" });
+      _this.MANY(function () {
+        _this.CONSUME(MultiplicativeOperator, { LABEL: "operator" });
+        _this.SUBRULE2(_this.exponentiationExpression, { LABEL: "rhs" });
+      });
+    });
+
+    _this.RULE("exponentiationExpression", function () {
+      _this.SUBRULE(_this.atomicExpression, { LABEL: "lhs" });
+      _this.MANY(function () {
+        _this.CONSUME(ExponentiationOperator, { LABEL: "operator" });
+        _this.SUBRULE2(_this.atomicExpression, { LABEL: "rhs" });
+      });
+    });
+
+    _this.RULE("atomicExpression", function () {
+      _this.OR([{ ALT: function ALT() {
+          return _this.SUBRULE(_this.parenthesesExpression);
+        } }, { ALT: function ALT() {
+          return _this.SUBRULE(_this.functionExpression);
+        } }, { ALT: function ALT() {
+          return _this.SUBRULE(_this.prefixExpression);
+        } }, { ALT: function ALT() {
+          return _this.SUBRULE(_this.columnExpression);
+        } }, { ALT: function ALT() {
+          return _this.CONSUME(Constant);
+        } }]);
+    });
+
+    _this.RULE("columnExpression", function () {
+      _this.OPTION(function () {
+        _this.CONSUME1(Identifier, { LABEL: "table" });
+        _this.CONSUME(Dot);
+      });
+      _this.CONSUME2(Identifier, { LABEL: "column" });
+    });
+
+    _this.RULE("orderByExpression", function () {
+      _this.SUBRULE(_this.expression);
+      _this.OPTION(function () {
+        _this.OR([{ ALT: function ALT() {
+            return _this.CONSUME(Asc, { LABEL: "asc" });
+          } }, { ALT: function ALT() {
+            return _this.CONSUME(Desc, { LABEL: "desc" });
+          } }]);
+      });
+    });
+
+    _this.RULE("orderBy", function () {
+      _this.CONSUME(OrderBy);
+      _this.AT_LEAST_ONE_SEP({
+        SEP: Comma,
+        DEF: function DEF() {
+          _this.SUBRULE(_this.orderByExpression);
+        }
+      });
+    });
+
+    _this.RULE("functionExpression", function () {
+      _this.CONSUME(UnquotedIdentifier, { LABEL: "function" });
+      _this.CONSUME(OpenParen);
+      _this.OR1([{ ALT: function ALT() {
+          return _this.CONSUME(AllColumns);
+        } }, {
+        ALT: function ALT() {
+          _this.OPTION1(function () {
+            _this.OR2([{ ALT: function ALT() {
+                return _this.CONSUME(All);
+              } }, { ALT: function ALT() {
+                return _this.CONSUME(Distinct);
+              } }]);
+          });
+          _this.AT_LEAST_ONE_SEP({
+            SEP: Comma,
+            DEF: function DEF() {
+              _this.SUBRULE(_this.expression);
+            }
+          });
+          _this.OPTION2(function () {
+            _this.SUBRULE(_this.orderBy);
+          });
+        }
+      }]);
+      _this.CONSUME(CloseParen);
+    });
+
+    _this.RULE("prefixExpression", function () {
+      _this.CONSUME(PrefixOperator, { LABEL: "operator" });
+      _this.SUBRULE(_this.expression);
+    });
+
+    _this.RULE("parenthesesExpression", function () {
+      _this.CONSUME(OpenParen);
+      _this.SUBRULE(_this.expression);
+      _this.CONSUME(CloseParen);
+    });
+
+    _this.performSelfAnalysis();
+    return _this;
+  }
+
+  return SQLParser;
+}(_chevrotain.CstParser);
+
+var sqlParser = exports.sqlParser = new SQLParser();
+
+var SQLVisitor = function (_sqlParser$getBaseCst) {
+  _inherits(SQLVisitor, _sqlParser$getBaseCst);
+
+  function SQLVisitor() {
+    _classCallCheck(this, SQLVisitor);
+
+    var _this2 = _possibleConstructorReturn(this, (SQLVisitor.__proto__ || Object.getPrototypeOf(SQLVisitor)).call(this));
+
+    _this2.validateVisitor();
+    return _this2;
+  }
+
+  _createClass(SQLVisitor, [{
+    key: "expression",
+    value: function expression(ctx) {
+      return this.visit(ctx.additiveExpression);
+    }
+  }, {
+    key: "additiveExpression",
+    value: function additiveExpression(ctx) {
+      var _this3 = this;
+
+      var result = this.visit(ctx.lhs);
+      if (ctx.rhs) {
+        ctx.rhs.forEach(function (operand, idx) {
+          var rhs = _this3.visit(operand);
+          result = {
+            type: "BinaryExpression",
+            operator: ctx.operator[idx].image,
+            lhs: result,
+            rhs: rhs,
+            start: result.start,
+            end: rhs.end
+          };
+        });
+      }
+      return result;
+    }
+  }, {
+    key: "multiplicativeExpression",
+    value: function multiplicativeExpression(ctx) {
+      var _this4 = this;
+
+      var result = this.visit(ctx.lhs);
+      if (ctx.rhs) {
+        ctx.rhs.forEach(function (operand, idx) {
+          var rhs = _this4.visit(operand);
+          result = {
+            type: "BinaryExpression",
+            operator: ctx.operator[idx].image,
+            lhs: result,
+            rhs: rhs,
+            start: result.start,
+            end: rhs.end
+          };
+        });
+      }
+      return result;
+    }
+  }, {
+    key: "exponentiationExpression",
+    value: function exponentiationExpression(ctx) {
+      var _this5 = this;
+
+      var result = this.visit(ctx.lhs);
+      if (ctx.rhs) {
+        ctx.rhs.forEach(function (operand, idx) {
+          var rhs = _this5.visit(operand);
+          result = {
+            type: "BinaryExpression",
+            operator: ctx.operator[idx].image,
+            lhs: result,
+            rhs: rhs,
+            start: result.start,
+            end: rhs.end
+          };
+        });
+      }
+      return result;
+    }
+  }, {
+    key: "atomicExpression",
+    value: function atomicExpression(ctx) {
+      if (ctx.parenthesesExpression) {
+        return this.visit(ctx.parenthesesExpression);
+      } else if (ctx.functionExpression) {
+        return this.visit(ctx.functionExpression);
+      } else if (ctx.prefixExpression) {
+        return this.visit(ctx.prefixExpression);
+      } else if (ctx.columnExpression) {
+        return this.visit(ctx.columnExpression);
+      }
+
+      return {
+        type: "ConstantExpression",
+        value: ctx.Constant[0].image,
+        start: ctx.Constant[0].startOffset,
+        end: ctx.Constant[0].endOffset
+      };
+    }
+  }, {
+    key: "columnExpression",
+    value: function columnExpression(ctx) {
+      return {
+        type: "ColumnExpression",
+        table: ctx.table && ctx.table[0].image || null,
+        column: ctx.column[0].image,
+        start: ctx.table ? ctx.table[0].startOffset : ctx.column[0].startOffset,
+        end: ctx.column[0].endOffset
+      };
+    }
+  }, {
+    key: "orderByExpression",
+    value: function orderByExpression(ctx) {
+      var expression = this.visit(ctx.expression[0]);
+      var end = ctx.asc ? ctx.asc[0].endOffset : ctx.desc ? ctx.desc[0].endOffset : expression.end;
+      return {
+        type: "OrderByExpression",
+        expression: expression,
+        desc: Boolean(ctx.desc),
+        start: expression.start,
+        end: end
+      };
+    }
+  }, {
+    key: "orderBy",
+    value: function orderBy(ctx) {
+      var _this6 = this;
+
+      var expressions = ctx.orderByExpression.map(function (e) {
+        return _this6.visit(e);
+      });
+      return {
+        type: "OrderBy",
+        expressions: expressions,
+        start: ctx.OrderBy[0].startOffset,
+        end: expressions[expressions.length - 1].end
+      };
+    }
+  }, {
+    key: "functionExpression",
+    value: function functionExpression(ctx) {
+      var _this7 = this;
+
+      var result = {
+        type: "FunctionExpression",
+        function: ctx.function[0].image,
+        start: ctx.function[0].startOffset,
+        end: ctx.CloseParenthesis[0].endOffset
+      };
+
+      if (ctx.AllColumns) {
+        result.star = true;
+      } else {
+        if (ctx.All) {
+          result.all = true;
+        } else if (ctx.Distinct) {
+          result.distinct = true;
+        }
+        result.params = ctx.expression.map(function (e) {
+          return _this7.visit(e);
+        });
+        if (ctx.orderBy) {
+          result.orderBy = this.visit(ctx.orderBy);
+        }
+      }
+
+      return result;
+    }
+  }, {
+    key: "prefixExpression",
+    value: function prefixExpression(ctx) {
+      var expression = this.visit(ctx.expression);
+      return {
+        type: "PrefixExpression",
+        operator: ctx.operator[0].image,
+        expression: expression,
+        start: ctx.operator[0].startOffset,
+        end: expression.end
+      };
+    }
+  }, {
+    key: "parenthesesExpression",
+    value: function parenthesesExpression(ctx) {
+      return {
+        type: "ParenthesesExpression",
+        expression: this.visit(ctx.expression),
+        start: ctx.OpenParenthesis[0].startOffset,
+        end: ctx.CloseParenthesis[0].endOffset
+      };
+    }
+  }]);
+
+  return SQLVisitor;
+}(sqlParser.getBaseCstVisitorConstructor());
+
+var sqlVisitor = exports.sqlVisitor = new SQLVisitor();
+
+// Run the parser to build an AST
+function buildAst(sql) {
+  var lexResult = sqlLexer.tokenize(sql);
+  sqlParser.input = lexResult.tokens;
+
+  var cst = sqlParser.expression();
+  if (sqlParser.errors.length === 0) {
+    return sqlVisitor.visit(cst);
+  }
+  return null;
+}
+
+var SAFE = "safe";
+var UNSAFE = "unsafe";
+var NEUTRAL = "neutral";
+
+// "Paint" nodes of the AST as being safe to move into the fact query, or
+// unsafe. To be safe, the node and all children must be safe (ie, have no
+// references to other tables).
+function paintAst(factTable, node) {
+  var paint = NEUTRAL;
+  switch (node.type) {
+    case "BinaryExpression":
+      var lhsPaint = paintAst(factTable, node.lhs);
+      var rhsPaint = paintAst(factTable, node.rhs);
+      if (lhsPaint === UNSAFE || rhsPaint === UNSAFE) {
+        paint = UNSAFE;
+      } else if (lhsPaint === SAFE || rhsPaint === SAFE) {
+        paint = SAFE;
+      }
+      break;
+
+    case "ColumnExpression":
+      paint = node.table === null || node.table.toLowerCase() === factTable.toLowerCase() || node.table.toLowerCase() === "\"" + factTable.toLowerCase() + "\"" ? SAFE : UNSAFE;
+      break;
+
+    case "OrderBy":
+      paint = node.expressions.reduce(function (acc, expression) {
+        var childPaint = paintAst(factTable, expression);
+        if (childPaint === UNSAFE) {
+          return UNSAFE;
+        } else if (childPaint === SAFE && acc === NEUTRAL) {
+          return SAFE;
+        }
+        return acc;
+      }, NEUTRAL);
+      break;
+
+    case "FunctionExpression":
+      paint = node.params.reduce(function (acc, expression) {
+        var childPaint = paintAst(factTable, expression);
+        if (childPaint === UNSAFE) {
+          return UNSAFE;
+        } else if (childPaint === SAFE && acc === NEUTRAL) {
+          return SAFE;
+        }
+        return acc;
+      }, NEUTRAL);
+      break;
+
+    case "OrderByExpression":
+    case "PrefixExpression":
+    case "ParenthesesExpression":
+      // these nodes have an "expression" child
+      paint = paintAst(factTable, node.expression);
+      break;
+
+    default:
+  }
+
+  node.paint = paint;
+  return paint;
+}
+
+// Any nodes painted "SAFE" are extracted from the original SQL to be used in
+// the fact query. The "extraction" works by copying the substring from the
+// original SQL into a projection and giving it an alias. This function also
+// adds details about the replacement in the "replacements" variable which can
+// be used to strip it out of the originl sql and replace it with a reference
+// to the fact table projection.
+function extractFacts(node, projections, aliases, replacements, sql) {
+  if (node.paint === SAFE) {
+    // end + 1 because "end" is an inclusive offset,
+    // but substring excludes the end index
+    var alias = "color" + projections.length;
+    var start = node.start;
+    var end = node.end + 1;
+    projections.push(sql.substring(start, end));
+    aliases.push(alias);
+    replacements.push({
+      alias: alias,
+      start: start,
+      end: end
+    });
+    return;
+  }
+
+  switch (node.type) {
+    case "BinaryExpression":
+      extractFacts(node.lhs, projections, aliases, replacements, sql);
+      extractFacts(node.rhs, projections, aliases, replacements, sql);
+      break;
+
+    case "OrderBy":
+      node.expressions.forEach(function (expression) {
+        return extractFacts(expression, projections, aliases, replacements, sql);
+      });
+      break;
+
+    case "FunctionExpression":
+      node.params.forEach(function (expression) {
+        return extractFacts(expression, projections, aliases, replacements, sql);
+      });
+      break;
+
+    case "OrderByExpression":
+    case "PrefixExpression":
+    case "ParenthesesExpression":
+      extractFacts(node.expression, projections, aliases, replacements, sql);
+      break;
+
+    default:
+  }
+}
+
+// Applies the replacements from extractFacts to the original SQL
+function applyReplacements(sql, withAlias, replacements) {
+  // apply replacements starting at the end of the string so the indexes will
+  // line up correctly.
+  replacements.sort(function (a, b) {
+    return b.start - a.start;
+  }).forEach(function (replacement) {
+    sql = "" + sql.substring(0, replacement.start) + withAlias + "." + replacement.alias + sql.substring(replacement.end);
+  });
+  return sql;
+}
+
+function parseFactsFromCustomSQL(factTable, withAlias, sql) {
+  var factProjections = [];
+  var factAliases = [];
+  var expression = sql;
+
+  var ast = buildAst(sql);
+  if (ast) {
+    paintAst(factTable, ast);
+
+    var replacements = [];
+    extractFacts(ast, factProjections, factAliases, replacements, sql);
+    expression = applyReplacements(sql, withAlias, replacements);
+  }
+
+  return {
+    factProjections: factProjections,
+    factAliases: factAliases,
+    expression: expression
+  };
+}
+
+/***/ }),
+/* 323 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export ResyncFollowsWalker */
+/* harmony export (immutable) */ __webpack_exports__["a"] = computeAllProdsFollows;
+/* unused harmony export buildBetweenProdsFollowPrefix */
+/* unused harmony export buildInProdFollowPrefix */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__first__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(7);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+
+// This ResyncFollowsWalker computes all of the follows required for RESYNC
+// (skipping reference production).
+var ResyncFollowsWalker = /** @class */ (function (_super) {
+    __extends(ResyncFollowsWalker, _super);
+    function ResyncFollowsWalker(topProd) {
+        var _this = _super.call(this) || this;
+        _this.topProd = topProd;
+        _this.follows = {};
+        return _this;
+    }
+    ResyncFollowsWalker.prototype.startWalking = function () {
+        this.walk(this.topProd);
+        return this.follows;
+    };
+    ResyncFollowsWalker.prototype.walkTerminal = function (terminal, currRest, prevRest) {
+        // do nothing! just like in the public sector after 13:00
+    };
+    ResyncFollowsWalker.prototype.walkProdRef = function (refProd, currRest, prevRest) {
+        var followName = buildBetweenProdsFollowPrefix(refProd.referencedRule, refProd.idx) +
+            this.topProd.name;
+        var fullRest = currRest.concat(prevRest);
+        var restProd = new __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__["c" /* Flat */]({ definition: fullRest });
+        var t_in_topProd_follows = Object(__WEBPACK_IMPORTED_MODULE_1__first__["a" /* first */])(restProd);
+        this.follows[followName] = t_in_topProd_follows;
+    };
+    return ResyncFollowsWalker;
+}(__WEBPACK_IMPORTED_MODULE_0__rest__["a" /* RestWalker */]));
+
+function computeAllProdsFollows(topProductions) {
+    var reSyncFollows = {};
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["u" /* forEach */])(topProductions, function (topProd) {
+        var currRefsFollow = new ResyncFollowsWalker(topProd).startWalking();
+        Object(__WEBPACK_IMPORTED_MODULE_2__utils_utils__["f" /* assign */])(reSyncFollows, currRefsFollow);
+    });
+    return reSyncFollows;
+}
+function buildBetweenProdsFollowPrefix(inner, occurenceInParent) {
+    return inner.name + occurenceInParent + __WEBPACK_IMPORTED_MODULE_3__constants__["a" /* IN */];
+}
+function buildInProdFollowPrefix(terminal) {
+    var terminalName = terminal.terminalType.name;
+    return terminalName + terminal.idx + __WEBPACK_IMPORTED_MODULE_3__constants__["a" /* IN */];
+}
+//# sourceMappingURL=follow.js.map
+
+/***/ }),
+/* 324 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return failedOptimizationPrefixMsg; });
+/* harmony export (immutable) */ __webpack_exports__["c"] = getOptimizedStartCodesIndices;
+/* unused harmony export firstCharOptimizedIndices */
+/* harmony export (immutable) */ __webpack_exports__["a"] = canMatchCharCode;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lexer__ = __webpack_require__(210);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+var complementErrorMessage = "Complement Sets are not supported for first char optimization";
+var failedOptimizationPrefixMsg = 'Unable to use "first char" lexer optimizations:\n';
+function getOptimizedStartCodesIndices(regExp, ensureOptimizations) {
+    if (ensureOptimizations === void 0) { ensureOptimizations = false; }
+    try {
+        var ast = Object(__WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__["b" /* getRegExpAst */])(regExp);
+        var firstChars = firstCharOptimizedIndices(ast.value, {}, ast.flags.ignoreCase);
+        return firstChars;
+    }
+    catch (e) {
+        /* istanbul ignore next */
+        // Testing this relies on the regexp-to-ast library having a bug... */
+        // TODO: only the else branch needs to be ignored, try to fix with newer prettier / tsc
+        if (e.message === complementErrorMessage) {
+            if (ensureOptimizations) {
+                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["d" /* PRINT_WARNING */])("" + failedOptimizationPrefixMsg +
+                    ("\tUnable to optimize: < " + regExp.toString() + " >\n") +
+                    "\tComplement Sets cannot be automatically optimized.\n" +
+                    "\tThis will disable the lexer's first char optimizations.\n" +
+                    "\tSee: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#COMPLEMENT for details.");
+            }
+        }
+        else {
+            var msgSuffix = "";
+            if (ensureOptimizations) {
+                msgSuffix =
+                    "\n\tThis will disable the lexer's first char optimizations.\n" +
+                        "\tSee: https://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#REGEXP_PARSING for details.";
+            }
+            Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["c" /* PRINT_ERROR */])(failedOptimizationPrefixMsg + "\n" +
+                ("\tFailed parsing: < " + regExp.toString() + " >\n") +
+                ("\tUsing the regexp-to-ast library version: " + __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__["VERSION"] + "\n") +
+                "\tPlease open an issue at: https://github.com/bd82/regexp-to-ast/issues" +
+                msgSuffix);
+        }
+    }
+    return [];
+}
+function firstCharOptimizedIndices(ast, result, ignoreCase) {
+    switch (ast.type) {
+        case "Disjunction":
+            for (var i = 0; i < ast.value.length; i++) {
+                firstCharOptimizedIndices(ast.value[i], result, ignoreCase);
+            }
+            break;
+        case "Alternative":
+            var terms = ast.value;
+            for (var i = 0; i < terms.length; i++) {
+                var term = terms[i];
+                // skip terms that cannot effect the first char results
+                switch (term.type) {
+                    case "EndAnchor":
+                    // A group back reference cannot affect potential starting char.
+                    // because if a back reference is the first production than automatically
+                    // the group being referenced has had to come BEFORE so its codes have already been added
+                    case "GroupBackReference":
+                    // assertions do not affect potential starting codes
+                    case "Lookahead":
+                    case "NegativeLookahead":
+                    case "StartAnchor":
+                    case "WordBoundary":
+                    case "NonWordBoundary":
+                        continue;
+                }
+                var atom = term;
+                switch (atom.type) {
+                    case "Character":
+                        addOptimizedIdxToResult(atom.value, result, ignoreCase);
+                        break;
+                    case "Set":
+                        if (atom.complement === true) {
+                            throw Error(complementErrorMessage);
+                        }
+                        Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(atom.value, function (code) {
+                            if (typeof code === "number") {
+                                addOptimizedIdxToResult(code, result, ignoreCase);
+                            }
+                            else {
+                                // range
+                                var range = code;
+                                // cannot optimize when ignoreCase is
+                                if (ignoreCase === true) {
+                                    for (var rangeCode = range.from; rangeCode <= range.to; rangeCode++) {
+                                        addOptimizedIdxToResult(rangeCode, result, ignoreCase);
+                                    }
+                                }
+                                // Optimization (2 orders of magnitude less work for very large ranges)
+                                else {
+                                    // handle unoptimized values
+                                    for (var rangeCode = range.from; rangeCode <= range.to &&
+                                        rangeCode < __WEBPACK_IMPORTED_MODULE_3__lexer__["g" /* minOptimizationVal */]; rangeCode++) {
+                                        addOptimizedIdxToResult(rangeCode, result, ignoreCase);
+                                    }
+                                    // Less common charCode where we optimize for faster init time, by using larger "buckets"
+                                    if (range.to >= __WEBPACK_IMPORTED_MODULE_3__lexer__["g" /* minOptimizationVal */]) {
+                                        var minUnOptVal = range.from >= __WEBPACK_IMPORTED_MODULE_3__lexer__["g" /* minOptimizationVal */]
+                                            ? range.from
+                                            : __WEBPACK_IMPORTED_MODULE_3__lexer__["g" /* minOptimizationVal */];
+                                        var maxUnOptVal = range.to;
+                                        var minOptIdx = Object(__WEBPACK_IMPORTED_MODULE_3__lexer__["e" /* charCodeToOptimizedIndex */])(minUnOptVal);
+                                        var maxOptIdx = Object(__WEBPACK_IMPORTED_MODULE_3__lexer__["e" /* charCodeToOptimizedIndex */])(maxUnOptVal);
+                                        for (var currOptIdx = minOptIdx; currOptIdx <= maxOptIdx; currOptIdx++) {
+                                            result[currOptIdx] = currOptIdx;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        break;
+                    case "Group":
+                        firstCharOptimizedIndices(atom.value, result, ignoreCase);
+                        break;
+                    /* istanbul ignore next */
+                    default:
+                        throw Error("Non Exhaustive Match");
+                }
+                // reached a mandatory production, no more **start** codes can be found on this alternative
+                var isOptionalQuantifier = atom.quantifier !== undefined &&
+                    atom.quantifier.atLeast === 0;
+                if (
+                // A group may be optional due to empty contents /(?:)/
+                // or if everything inside it is optional /((a)?)/
+                (atom.type === "Group" &&
+                    isWholeOptional(atom) === false) ||
+                    // If this term is not a group it may only be optional if it has an optional quantifier
+                    (atom.type !== "Group" && isOptionalQuantifier === false)) {
+                    break;
+                }
+            }
+            break;
+        /* istanbul ignore next */
+        default:
+            throw Error("non exhaustive match!");
+    }
+    // console.log(Object.keys(result).length)
+    return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["U" /* values */])(result);
+}
+function addOptimizedIdxToResult(code, result, ignoreCase) {
+    var optimizedCharIdx = Object(__WEBPACK_IMPORTED_MODULE_3__lexer__["e" /* charCodeToOptimizedIndex */])(code);
+    result[optimizedCharIdx] = optimizedCharIdx;
+    if (ignoreCase === true) {
+        handleIgnoreCase(code, result);
+    }
+}
+function handleIgnoreCase(code, result) {
+    var char = String.fromCharCode(code);
+    var upperChar = char.toUpperCase();
+    /* istanbul ignore else */
+    if (upperChar !== char) {
+        var optimizedCharIdx = Object(__WEBPACK_IMPORTED_MODULE_3__lexer__["e" /* charCodeToOptimizedIndex */])(upperChar.charCodeAt(0));
+        result[optimizedCharIdx] = optimizedCharIdx;
+    }
+    else {
+        var lowerChar = char.toLowerCase();
+        if (lowerChar !== char) {
+            var optimizedCharIdx = Object(__WEBPACK_IMPORTED_MODULE_3__lexer__["e" /* charCodeToOptimizedIndex */])(lowerChar.charCodeAt(0));
+            result[optimizedCharIdx] = optimizedCharIdx;
+        }
+    }
+}
+function findCode(setNode, targetCharCodes) {
+    return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["q" /* find */])(setNode.value, function (codeOrRange) {
+        if (typeof codeOrRange === "number") {
+            return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["j" /* contains */])(targetCharCodes, codeOrRange);
+        }
+        else {
+            // range
+            var range_1 = codeOrRange;
+            return (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["q" /* find */])(targetCharCodes, function (targetCode) {
+                return range_1.from <= targetCode && targetCode <= range_1.to;
+            }) !== undefined);
+        }
+    });
+}
+function isWholeOptional(ast) {
+    if (ast.quantifier && ast.quantifier.atLeast === 0) {
+        return true;
+    }
+    if (!ast.value) {
+        return false;
+    }
+    return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["y" /* isArray */])(ast.value)
+        ? Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["o" /* every */])(ast.value, isWholeOptional)
+        : isWholeOptional(ast.value);
+}
+var CharCodeFinder = /** @class */ (function (_super) {
+    __extends(CharCodeFinder, _super);
+    function CharCodeFinder(targetCharCodes) {
+        var _this = _super.call(this) || this;
+        _this.targetCharCodes = targetCharCodes;
+        _this.found = false;
+        return _this;
+    }
+    CharCodeFinder.prototype.visitChildren = function (node) {
+        // No need to keep looking...
+        if (this.found === true) {
+            return;
+        }
+        // switch lookaheads as they do not actually consume any characters thus
+        // finding a charCode at lookahead context does not mean that regexp can actually contain it in a match.
+        switch (node.type) {
+            case "Lookahead":
+                this.visitLookahead(node);
+                return;
+            case "NegativeLookahead":
+                this.visitNegativeLookahead(node);
+                return;
+        }
+        _super.prototype.visitChildren.call(this, node);
+    };
+    CharCodeFinder.prototype.visitCharacter = function (node) {
+        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["j" /* contains */])(this.targetCharCodes, node.value)) {
+            this.found = true;
+        }
+    };
+    CharCodeFinder.prototype.visitSet = function (node) {
+        if (node.complement) {
+            if (findCode(node, this.targetCharCodes) === undefined) {
+                this.found = true;
+            }
+        }
+        else {
+            if (findCode(node, this.targetCharCodes) !== undefined) {
+                this.found = true;
+            }
+        }
+    };
+    return CharCodeFinder;
+}(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__["BaseRegExpVisitor"]));
+function canMatchCharCode(charCodes, pattern) {
+    if (pattern instanceof RegExp) {
+        var ast = Object(__WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__["b" /* getRegExpAst */])(pattern);
+        var charCodeFinder = new CharCodeFinder(charCodes);
+        charCodeFinder.visit(ast);
+        return charCodeFinder.found;
+    }
+    else {
+        return (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["q" /* find */])(pattern, function (char) {
+            return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["j" /* contains */])(charCodes, char.charCodeAt(0));
+        }) !== undefined);
+    }
+}
+//# sourceMappingURL=reg_exp.js.map
+
+/***/ }),
+/* 325 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = resolveGrammar;
+/* unused harmony export GastRefResolverVisitor */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_parser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast_visitor_public__ = __webpack_require__(19);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+function resolveGrammar(topLevels, errMsgProvider) {
+    var refResolver = new GastRefResolverVisitor(topLevels, errMsgProvider);
+    refResolver.resolveRefs();
+    return refResolver.errors;
+}
+var GastRefResolverVisitor = /** @class */ (function (_super) {
+    __extends(GastRefResolverVisitor, _super);
+    function GastRefResolverVisitor(nameToTopRule, errMsgProvider) {
+        var _this = _super.call(this) || this;
+        _this.nameToTopRule = nameToTopRule;
+        _this.errMsgProvider = errMsgProvider;
+        _this.errors = [];
+        return _this;
+    }
+    GastRefResolverVisitor.prototype.resolveRefs = function () {
+        var _this = this;
+        Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["U" /* values */])(this.nameToTopRule), function (prod) {
+            _this.currTopLevel = prod;
+            prod.accept(_this);
+        });
+    };
+    GastRefResolverVisitor.prototype.visitNonTerminal = function (node) {
+        var ref = this.nameToTopRule[node.nonTerminalName];
+        if (!ref) {
+            var msg = this.errMsgProvider.buildRuleNotFoundError(this.currTopLevel, node);
+            this.errors.push({
+                message: msg,
+                type: __WEBPACK_IMPORTED_MODULE_0__parser_parser__["h" /* ParserDefinitionErrorType */].UNRESOLVED_SUBRULE_REF,
+                ruleName: this.currTopLevel.name,
+                unresolvedRefName: node.nonTerminalName
+            });
+        }
+        else {
+            node.referencedRule = ref;
+        }
+    };
+    return GastRefResolverVisitor;
+}(__WEBPACK_IMPORTED_MODULE_2__gast_gast_visitor_public__["a" /* GAstVisitor */]));
+
+//# sourceMappingURL=resolver.js.map
+
+/***/ }),
+/* 326 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LooksAhead; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_keys__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__ = __webpack_require__(23);
+
+
+
+
+
+/**
+ * Trait responsible for the lookahead related utilities and optimizations.
+ */
+var LooksAhead = /** @class */ (function () {
+    function LooksAhead() {
+    }
+    LooksAhead.prototype.initLooksAhead = function (config) {
+        this.dynamicTokensEnabled = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["w" /* has */])(config, "dynamicTokensEnabled")
+            ? config.dynamicTokensEnabled
+            : __WEBPACK_IMPORTED_MODULE_2__parser__["b" /* DEFAULT_PARSER_CONFIG */].dynamicTokensEnabled;
+        this.maxLookahead = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["w" /* has */])(config, "maxLookahead")
+            ? config.maxLookahead
+            : __WEBPACK_IMPORTED_MODULE_2__parser__["b" /* DEFAULT_PARSER_CONFIG */].maxLookahead;
+        /* istanbul ignore next - Using plain array as dictionary will be tested on older node.js versions and IE11 */
+        this.lookAheadFuncsCache = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["z" /* isES2015MapSupported */])() ? new Map() : [];
+        // Performance optimization on newer engines that support ES6 Map
+        // For larger Maps this is slightly faster than using a plain object (array in our case).
+        /* istanbul ignore else - The else branch will be tested on older node.js versions and IE11 */
+        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["z" /* isES2015MapSupported */])()) {
+            this.getLaFuncFromCache = this.getLaFuncFromMap;
+            this.setLaFuncCache = this.setLaFuncCacheUsingMap;
+        }
+        else {
+            this.getLaFuncFromCache = this.getLaFuncFromObj;
+            this.setLaFuncCache = this.setLaFuncUsingObj;
+        }
+    };
+    LooksAhead.prototype.preComputeLookaheadFunctions = function (rules) {
+        var _this = this;
+        Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(rules, function (currRule) {
+            _this.TRACE_INIT(currRule.name + " Rule Lookahead", function () {
+                var _a = Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["b" /* collectMethods */])(currRule), alternation = _a.alternation, repetition = _a.repetition, option = _a.option, repetitionMandatory = _a.repetitionMandatory, repetitionMandatoryWithSeparator = _a.repetitionMandatoryWithSeparator, repetitionWithSeparator = _a.repetitionWithSeparator;
+                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(alternation, function (currProd) {
+                    var prodIdx = currProd.idx === 0 ? "" : currProd.idx;
+                    _this.TRACE_INIT("" + Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd) + prodIdx, function () {
+                        var laFunc = Object(__WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["d" /* buildLookaheadFuncForOr */])(currProd.idx, currRule, currProd.maxLookahead || _this.maxLookahead, currProd.hasPredicates, _this.dynamicTokensEnabled, _this.lookAheadBuilderForAlternatives);
+                        var key = Object(__WEBPACK_IMPORTED_MODULE_3__grammar_keys__["j" /* getKeyForAutomaticLookahead */])(_this.fullRuleNameToShort[currRule.name], __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["h" /* OR_IDX */], currProd.idx);
+                        _this.setLaFuncCache(key, laFunc);
+                    });
+                });
+                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(repetition, function (currProd) {
+                    _this.computeLookaheadFunc(currRule, currProd.idx, __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["e" /* MANY_IDX */], __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION, currProd.maxLookahead, Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd));
+                });
+                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(option, function (currProd) {
+                    _this.computeLookaheadFunc(currRule, currProd.idx, __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["g" /* OPTION_IDX */], __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["a" /* PROD_TYPE */].OPTION, currProd.maxLookahead, Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd));
+                });
+                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(repetitionMandatory, function (currProd) {
+                    _this.computeLookaheadFunc(currRule, currProd.idx, __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["a" /* AT_LEAST_ONE_IDX */], __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION_MANDATORY, currProd.maxLookahead, Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd));
+                });
+                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(repetitionMandatoryWithSeparator, function (currProd) {
+                    _this.computeLookaheadFunc(currRule, currProd.idx, __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */], __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION_MANDATORY_WITH_SEPARATOR, currProd.maxLookahead, Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd));
+                });
+                Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["u" /* forEach */])(repetitionWithSeparator, function (currProd) {
+                    _this.computeLookaheadFunc(currRule, currProd.idx, __WEBPACK_IMPORTED_MODULE_3__grammar_keys__["f" /* MANY_SEP_IDX */], __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION_WITH_SEPARATOR, currProd.maxLookahead, Object(__WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__["c" /* getProductionDslName */])(currProd));
+                });
+            });
+        });
+    };
+    LooksAhead.prototype.computeLookaheadFunc = function (rule, prodOccurrence, prodKey, prodType, prodMaxLookahead, dslMethodName) {
+        var _this = this;
+        this.TRACE_INIT("" + dslMethodName + (prodOccurrence === 0 ? "" : prodOccurrence), function () {
+            var laFunc = Object(__WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["c" /* buildLookaheadFuncForOptionalProd */])(prodOccurrence, rule, prodMaxLookahead || _this.maxLookahead, _this.dynamicTokensEnabled, prodType, _this.lookAheadBuilderForOptional);
+            var key = Object(__WEBPACK_IMPORTED_MODULE_3__grammar_keys__["j" /* getKeyForAutomaticLookahead */])(_this.fullRuleNameToShort[rule.name], prodKey, prodOccurrence);
+            _this.setLaFuncCache(key, laFunc);
+        });
+    };
+    LooksAhead.prototype.lookAheadBuilderForOptional = function (alt, tokenMatcher, dynamicTokensEnabled) {
+        return Object(__WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["e" /* buildSingleAlternativeLookaheadFunction */])(alt, tokenMatcher, dynamicTokensEnabled);
+    };
+    LooksAhead.prototype.lookAheadBuilderForAlternatives = function (alts, hasPredicates, tokenMatcher, dynamicTokensEnabled) {
+        return Object(__WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__["b" /* buildAlternativesLookAheadFunc */])(alts, hasPredicates, tokenMatcher, dynamicTokensEnabled);
+    };
+    // this actually returns a number, but it is always used as a string (object prop key)
+    LooksAhead.prototype.getKeyForAutomaticLookahead = function (dslMethodIdx, occurrence) {
+        var currRuleShortName = this.getLastExplicitRuleShortName();
+        return Object(__WEBPACK_IMPORTED_MODULE_3__grammar_keys__["j" /* getKeyForAutomaticLookahead */])(currRuleShortName, dslMethodIdx, occurrence);
+    };
+    /* istanbul ignore next */
+    LooksAhead.prototype.getLaFuncFromCache = function (key) {
+        return undefined;
+    };
+    LooksAhead.prototype.getLaFuncFromMap = function (key) {
+        return this.lookAheadFuncsCache.get(key);
+    };
+    /* istanbul ignore next - Using plain array as dictionary will be tested on older node.js versions and IE11 */
+    LooksAhead.prototype.getLaFuncFromObj = function (key) {
+        return this.lookAheadFuncsCache[key];
+    };
+    /* istanbul ignore next */
+    LooksAhead.prototype.setLaFuncCache = function (key, value) { };
+    LooksAhead.prototype.setLaFuncCacheUsingMap = function (key, value) {
+        this.lookAheadFuncsCache.set(key, value);
+    };
+    /* istanbul ignore next - Using plain array as dictionary will be tested on older node.js versions and IE11 */
+    LooksAhead.prototype.setLaFuncUsingObj = function (key, value) {
+        this.lookAheadFuncsCache[key] = value;
+    };
+    return LooksAhead;
+}());
+
+//# sourceMappingURL=looksahead.js.map
+
+/***/ }),
+/* 327 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TreeBuilder; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cst_cst__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__ = __webpack_require__(328);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_keys__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parser__ = __webpack_require__(9);
+
+
+
+
+
+/**
+ * This trait is responsible for the CST building logic.
+ */
+var TreeBuilder = /** @class */ (function () {
+    function TreeBuilder() {
+    }
+    TreeBuilder.prototype.initTreeBuilder = function (config) {
+        this.LAST_EXPLICIT_RULE_STACK = [];
+        this.CST_STACK = [];
+        this.outputCst = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["w" /* has */])(config, "outputCst")
+            ? config.outputCst
+            : __WEBPACK_IMPORTED_MODULE_4__parser__["b" /* DEFAULT_PARSER_CONFIG */].outputCst;
+        this.nodeLocationTracking = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["w" /* has */])(config, "nodeLocationTracking")
+            ? config.nodeLocationTracking
+            : __WEBPACK_IMPORTED_MODULE_4__parser__["b" /* DEFAULT_PARSER_CONFIG */].nodeLocationTracking;
+        if (!this.outputCst) {
+            this.cstInvocationStateUpdate = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+            this.cstFinallyStateUpdate = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+            this.cstPostTerminal = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+            this.cstPostNonTerminal = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+            this.cstPostRule = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+            this.getLastExplicitRuleShortName = this.getLastExplicitRuleShortNameNoCst;
+            this.getPreviousExplicitRuleShortName = this.getPreviousExplicitRuleShortNameNoCst;
+            this.getLastExplicitRuleOccurrenceIndex = this.getLastExplicitRuleOccurrenceIndexNoCst;
+            this.manyInternal = this.manyInternalNoCst;
+            this.orInternal = this.orInternalNoCst;
+            this.optionInternal = this.optionInternalNoCst;
+            this.atLeastOneInternal = this.atLeastOneInternalNoCst;
+            this.manySepFirstInternal = this.manySepFirstInternalNoCst;
+            this.atLeastOneSepFirstInternal = this.atLeastOneSepFirstInternalNoCst;
+        }
+        else {
+            if (/full/i.test(this.nodeLocationTracking)) {
+                if (this.recoveryEnabled) {
+                    this.setNodeLocationFromToken = __WEBPACK_IMPORTED_MODULE_0__cst_cst__["e" /* setNodeLocationFull */];
+                    this.setNodeLocationFromNode = __WEBPACK_IMPORTED_MODULE_0__cst_cst__["e" /* setNodeLocationFull */];
+                    this.cstPostRule = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    this.setInitialNodeLocation = this.setInitialNodeLocationFullRecovery;
+                }
+                else {
+                    this.setNodeLocationFromToken = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    this.setNodeLocationFromNode = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    this.cstPostRule = this.cstPostRuleFull;
+                    this.setInitialNodeLocation = this.setInitialNodeLocationFullRegular;
+                }
+            }
+            else if (/onlyOffset/i.test(this.nodeLocationTracking)) {
+                if (this.recoveryEnabled) {
+                    this.setNodeLocationFromToken = (__WEBPACK_IMPORTED_MODULE_0__cst_cst__["f" /* setNodeLocationOnlyOffset */]);
+                    this.setNodeLocationFromNode = (__WEBPACK_IMPORTED_MODULE_0__cst_cst__["f" /* setNodeLocationOnlyOffset */]);
+                    this.cstPostRule = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    this.setInitialNodeLocation = this.setInitialNodeLocationOnlyOffsetRecovery;
+                }
+                else {
+                    this.setNodeLocationFromToken = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    this.setNodeLocationFromNode = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                    this.cstPostRule = this.cstPostRuleOnlyOffset;
+                    this.setInitialNodeLocation = this.setInitialNodeLocationOnlyOffsetRegular;
+                }
+            }
+            else if (/none/i.test(this.nodeLocationTracking)) {
+                this.setNodeLocationFromToken = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                this.setNodeLocationFromNode = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                this.cstPostRule = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+                this.setInitialNodeLocation = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["b" /* NOOP */];
+            }
+            else {
+                throw Error("Invalid <nodeLocationTracking> config option: \"" + config.nodeLocationTracking + "\"");
+            }
+        }
+    };
+    TreeBuilder.prototype.setInitialNodeLocationOnlyOffsetRecovery = function (cstNode) {
+        cstNode.location = {
+            startOffset: NaN,
+            endOffset: NaN
+        };
+    };
+    TreeBuilder.prototype.setInitialNodeLocationOnlyOffsetRegular = function (cstNode) {
+        cstNode.location = {
+            // without error recovery the starting Location of a new CstNode is guaranteed
+            // To be the next Token's startOffset (for valid inputs).
+            // For invalid inputs there won't be any CSTOutput so this potential
+            // inaccuracy does not matter
+            startOffset: this.LA(1).startOffset,
+            endOffset: NaN
+        };
+    };
+    TreeBuilder.prototype.setInitialNodeLocationFullRecovery = function (cstNode) {
+        cstNode.location = {
+            startOffset: NaN,
+            startLine: NaN,
+            startColumn: NaN,
+            endOffset: NaN,
+            endLine: NaN,
+            endColumn: NaN
+        };
+    };
+    /**
+     *  @see setInitialNodeLocationOnlyOffsetRegular for explanation why this work
+
+     * @param cstNode
+     */
+    TreeBuilder.prototype.setInitialNodeLocationFullRegular = function (cstNode) {
+        var nextToken = this.LA(1);
+        cstNode.location = {
+            startOffset: nextToken.startOffset,
+            startLine: nextToken.startLine,
+            startColumn: nextToken.startColumn,
+            endOffset: NaN,
+            endLine: NaN,
+            endColumn: NaN
+        };
+    };
+    // CST
+    TreeBuilder.prototype.cstNestedInvocationStateUpdate = function (nestedName, shortName) {
+        var cstNode = {
+            name: nestedName,
+            fullName: this.shortRuleNameToFull[this.getLastExplicitRuleShortName()] +
+                nestedName,
+            children: {}
+        };
+        this.setInitialNodeLocation(cstNode);
+        this.CST_STACK.push(cstNode);
+    };
+    TreeBuilder.prototype.cstInvocationStateUpdate = function (fullRuleName, shortName) {
+        this.LAST_EXPLICIT_RULE_STACK.push(this.RULE_STACK.length - 1);
+        var cstNode = {
+            name: fullRuleName,
+            children: {}
+        };
+        this.setInitialNodeLocation(cstNode);
+        this.CST_STACK.push(cstNode);
+    };
+    TreeBuilder.prototype.cstFinallyStateUpdate = function () {
+        this.LAST_EXPLICIT_RULE_STACK.pop();
+        this.CST_STACK.pop();
+    };
+    TreeBuilder.prototype.cstNestedFinallyStateUpdate = function () {
+        var lastCstNode = this.CST_STACK.pop();
+        // TODO: the naming is bad, this should go directly to the
+        //       (correct) cstLocation update method
+        //       e.g if we put other logic in postRule...
+        this.cstPostRule(lastCstNode);
+    };
+    TreeBuilder.prototype.cstPostRuleFull = function (ruleCstNode) {
+        var prevToken = this.LA(0);
+        var loc = ruleCstNode.location;
+        // If this condition is true it means we consumed at least one Token
+        // In this CstNode or its nested children.
+        if (loc.startOffset <= prevToken.startOffset === true) {
+            loc.endOffset = prevToken.endOffset;
+            loc.endLine = prevToken.endLine;
+            loc.endColumn = prevToken.endColumn;
+        }
+        // "empty" CstNode edge case
+        else {
+            loc.startOffset = NaN;
+            loc.startLine = NaN;
+            loc.startColumn = NaN;
+        }
+    };
+    TreeBuilder.prototype.cstPostRuleOnlyOffset = function (ruleCstNode) {
+        var prevToken = this.LA(0);
+        var loc = ruleCstNode.location;
+        // If this condition is true it means we consumed at least one Token
+        // In this CstNode or its nested children.
+        if (loc.startOffset <= prevToken.startOffset === true) {
+            loc.endOffset = prevToken.endOffset;
+        }
+        // "empty" CstNode edge case
+        else {
+            loc.startOffset = NaN;
+        }
+    };
+    TreeBuilder.prototype.cstPostTerminal = function (key, consumedToken) {
+        var rootCst = this.CST_STACK[this.CST_STACK.length - 1];
+        Object(__WEBPACK_IMPORTED_MODULE_0__cst_cst__["c" /* addTerminalToCst */])(rootCst, consumedToken, key);
+        // This is only used when **both** error recovery and CST Output are enabled.
+        this.setNodeLocationFromToken(rootCst.location, consumedToken);
+    };
+    TreeBuilder.prototype.cstPostNonTerminal = function (ruleCstResult, ruleName) {
+        // Avoid side effects due to back tracking
+        // TODO: This costs a 2-3% in performance, A flag on IParserConfig
+        //   could be used to get rid of this conditional, but not sure its worth the effort
+        //   and API complexity.
+        if (this.isBackTracking() !== true) {
+            var preCstNode = this.CST_STACK[this.CST_STACK.length - 1];
+            Object(__WEBPACK_IMPORTED_MODULE_0__cst_cst__["b" /* addNoneTerminalToCst */])(preCstNode, ruleName, ruleCstResult);
+            // This is only used when **both** error recovery and CST Output are enabled.
+            this.setNodeLocationFromNode(preCstNode.location, ruleCstResult.location);
+        }
+    };
+    TreeBuilder.prototype.getBaseCstVisitorConstructor = function () {
+        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["F" /* isUndefined */])(this.baseCstVisitorConstructor)) {
+            var newBaseCstVisitorConstructor = Object(__WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__["a" /* createBaseSemanticVisitorConstructor */])(this.className, this.allRuleNames);
+            this.baseCstVisitorConstructor = newBaseCstVisitorConstructor;
+            return newBaseCstVisitorConstructor;
+        }
+        return this.baseCstVisitorConstructor;
+    };
+    TreeBuilder.prototype.getBaseCstVisitorConstructorWithDefaults = function () {
+        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["F" /* isUndefined */])(this.baseCstVisitorWithDefaultsConstructor)) {
+            var newConstructor = Object(__WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__["b" /* createBaseVisitorConstructorWithDefaults */])(this.className, this.allRuleNames, this.getBaseCstVisitorConstructor());
+            this.baseCstVisitorWithDefaultsConstructor = newConstructor;
+            return newConstructor;
+        }
+        return this.baseCstVisitorWithDefaultsConstructor;
+    };
+    TreeBuilder.prototype.nestedRuleBeforeClause = function (methodOpts, laKey) {
+        var nestedName;
+        if (methodOpts.NAME !== undefined) {
+            nestedName = methodOpts.NAME;
+            this.nestedRuleInvocationStateUpdate(nestedName, laKey);
+            return nestedName;
+        }
+        else {
+            return undefined;
+        }
+    };
+    TreeBuilder.prototype.nestedAltBeforeClause = function (methodOpts, occurrence, methodKeyIdx, altIdx) {
+        var ruleIdx = this.getLastExplicitRuleShortName();
+        var shortName = Object(__WEBPACK_IMPORTED_MODULE_3__grammar_keys__["i" /* getKeyForAltIndex */])(ruleIdx, methodKeyIdx, occurrence, altIdx);
+        var nestedName;
+        if (methodOpts.NAME !== undefined) {
+            nestedName = methodOpts.NAME;
+            this.nestedRuleInvocationStateUpdate(nestedName, shortName);
+            return {
+                shortName: shortName,
+                nestedName: nestedName
+            };
+        }
+        else {
+            return undefined;
+        }
+    };
+    TreeBuilder.prototype.nestedRuleFinallyClause = function (laKey, nestedName) {
+        var cstStack = this.CST_STACK;
+        var nestedRuleCst = cstStack[cstStack.length - 1];
+        this.nestedRuleFinallyStateUpdate();
+        // this return a different result than the previous invocation because "nestedRuleFinallyStateUpdate" pops the cst stack
+        var parentCstNode = cstStack[cstStack.length - 1];
+        Object(__WEBPACK_IMPORTED_MODULE_0__cst_cst__["b" /* addNoneTerminalToCst */])(parentCstNode, nestedName, nestedRuleCst);
+        this.setNodeLocationFromNode(parentCstNode.location, nestedRuleCst.location);
+    };
+    TreeBuilder.prototype.getLastExplicitRuleShortName = function () {
+        var lastExplictIndex = this.LAST_EXPLICIT_RULE_STACK[this.LAST_EXPLICIT_RULE_STACK.length - 1];
+        return this.RULE_STACK[lastExplictIndex];
+    };
+    TreeBuilder.prototype.getLastExplicitRuleShortNameNoCst = function () {
+        var ruleStack = this.RULE_STACK;
+        return ruleStack[ruleStack.length - 1];
+    };
+    TreeBuilder.prototype.getPreviousExplicitRuleShortName = function () {
+        var lastExplicitIndex = this.LAST_EXPLICIT_RULE_STACK[this.LAST_EXPLICIT_RULE_STACK.length - 2];
+        return this.RULE_STACK[lastExplicitIndex];
+    };
+    TreeBuilder.prototype.getPreviousExplicitRuleShortNameNoCst = function () {
+        var ruleStack = this.RULE_STACK;
+        return ruleStack[ruleStack.length - 2];
+    };
+    TreeBuilder.prototype.getLastExplicitRuleOccurrenceIndex = function () {
+        var lastExplicitIndex = this.LAST_EXPLICIT_RULE_STACK[this.LAST_EXPLICIT_RULE_STACK.length - 1];
+        return this.RULE_OCCURRENCE_STACK[lastExplicitIndex];
+    };
+    TreeBuilder.prototype.getLastExplicitRuleOccurrenceIndexNoCst = function () {
+        var occurrenceStack = this.RULE_OCCURRENCE_STACK;
+        return occurrenceStack[occurrenceStack.length - 1];
+    };
+    TreeBuilder.prototype.nestedRuleInvocationStateUpdate = function (nestedRuleName, shortNameKey) {
+        this.RULE_OCCURRENCE_STACK.push(1);
+        this.RULE_STACK.push(shortNameKey);
+        this.cstNestedInvocationStateUpdate(nestedRuleName, shortNameKey);
+    };
+    TreeBuilder.prototype.nestedRuleFinallyStateUpdate = function () {
+        this.RULE_STACK.pop();
+        this.RULE_OCCURRENCE_STACK.pop();
+        // NOOP when cst is disabled
+        this.cstNestedFinallyStateUpdate();
+    };
+    return TreeBuilder;
+}());
+
+//# sourceMappingURL=tree_builder.js.map
+
+/***/ }),
+/* 328 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export defaultVisit */
+/* harmony export (immutable) */ __webpack_exports__["a"] = createBaseSemanticVisitorConstructor;
+/* harmony export (immutable) */ __webpack_exports__["b"] = createBaseVisitorConstructorWithDefaults;
+/* unused harmony export CstVisitorDefinitionError */
+/* unused harmony export validateVisitor */
+/* unused harmony export validateMissingCstMethods */
+/* unused harmony export validateRedundantMethods */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__ = __webpack_require__(216);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_checks__ = __webpack_require__(30);
+
+
+
+function defaultVisit(ctx, param) {
+    var childrenNames = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["G" /* keys */])(ctx);
+    var childrenNamesLength = childrenNames.length;
+    for (var i = 0; i < childrenNamesLength; i++) {
+        var currChildName = childrenNames[i];
+        var currChildArray = ctx[currChildName];
+        var currChildArrayLength = currChildArray.length;
+        for (var j = 0; j < currChildArrayLength; j++) {
+            var currChild = currChildArray[j];
+            // distinction between Tokens Children and CstNode children
+            if (currChild.tokenTypeIdx === undefined) {
+                if (currChild.fullName !== undefined) {
+                    this[currChild.fullName](currChild.children, param);
+                }
+                else {
+                    this[currChild.name](currChild.children, param);
+                }
+            }
+        }
+    }
+    // defaultVisit does not support generic out param
+    return undefined;
+}
+function createBaseSemanticVisitorConstructor(grammarName, ruleNames) {
+    var derivedConstructor = function () { };
+    // can be overwritten according to:
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/
+    // name?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FFunction%2Fname
+    Object(__WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__["b" /* defineNameProp */])(derivedConstructor, grammarName + "BaseSemantics");
+    var semanticProto = {
+        visit: function (cstNode, param) {
+            // enables writing more concise visitor methods when CstNode has only a single child
+            if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(cstNode)) {
+                // A CST Node's children dictionary can never have empty arrays as values
+                // If a key is defined there will be at least one element in the corresponding value array.
+                cstNode = cstNode[0];
+            }
+            // enables passing optional CstNodes concisely.
+            if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["F" /* isUndefined */])(cstNode)) {
+                return undefined;
+            }
+            if (cstNode.fullName !== undefined) {
+                return this[cstNode.fullName](cstNode.children, param);
+            }
+            else {
+                return this[cstNode.name](cstNode.children, param);
+            }
+        },
+        validateVisitor: function () {
+            var semanticDefinitionErrors = validateVisitor(this, ruleNames);
+            if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(semanticDefinitionErrors)) {
+                var errorMessages = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(semanticDefinitionErrors, function (currDefError) { return currDefError.msg; });
+                throw Error("Errors Detected in CST Visitor <" + Object(__WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__["c" /* functionName */])(this.constructor) + ">:\n\t" +
+                    ("" + errorMessages.join("\n\n").replace(/\n/g, "\n\t")));
+            }
+        }
+    };
+    derivedConstructor.prototype = semanticProto;
+    derivedConstructor.prototype.constructor = derivedConstructor;
+    derivedConstructor._RULE_NAMES = ruleNames;
+    return derivedConstructor;
+}
+function createBaseVisitorConstructorWithDefaults(grammarName, ruleNames, baseConstructor) {
+    var derivedConstructor = function () { };
+    // can be overwritten according to:
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/
+    // name?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FFunction%2Fname
+    Object(__WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__["b" /* defineNameProp */])(derivedConstructor, grammarName + "BaseSemanticsWithDefaults");
+    var withDefaultsProto = Object.create(baseConstructor.prototype);
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(ruleNames, function (ruleName) {
+        withDefaultsProto[ruleName] = defaultVisit;
+    });
+    derivedConstructor.prototype = withDefaultsProto;
+    derivedConstructor.prototype.constructor = derivedConstructor;
+    return derivedConstructor;
+}
+var CstVisitorDefinitionError;
+(function (CstVisitorDefinitionError) {
+    CstVisitorDefinitionError[CstVisitorDefinitionError["REDUNDANT_METHOD"] = 0] = "REDUNDANT_METHOD";
+    CstVisitorDefinitionError[CstVisitorDefinitionError["MISSING_METHOD"] = 1] = "MISSING_METHOD";
+})(CstVisitorDefinitionError || (CstVisitorDefinitionError = {}));
+function validateVisitor(visitorInstance, ruleNames) {
+    var missingErrors = validateMissingCstMethods(visitorInstance, ruleNames);
+    var redundantErrors = validateRedundantMethods(visitorInstance, ruleNames);
+    return missingErrors.concat(redundantErrors);
+}
+function validateMissingCstMethods(visitorInstance, ruleNames) {
+    var errors = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(ruleNames, function (currRuleName) {
+        if (!Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["B" /* isFunction */])(visitorInstance[currRuleName])) {
+            return {
+                msg: "Missing visitor method: <" + currRuleName + "> on " + Object(__WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__["c" /* functionName */])(visitorInstance.constructor) + " CST Visitor.",
+                type: CstVisitorDefinitionError.MISSING_METHOD,
+                methodName: currRuleName
+            };
+        }
+    });
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["i" /* compact */])(errors);
+}
+var VALID_PROP_NAMES = ["constructor", "visit", "validateVisitor"];
+function validateRedundantMethods(visitorInstance, ruleNames) {
+    var errors = [];
+    for (var prop in visitorInstance) {
+        if (__WEBPACK_IMPORTED_MODULE_2__grammar_checks__["b" /* validTermsPattern */].test(prop) &&
+            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["B" /* isFunction */])(visitorInstance[prop]) &&
+            !Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(VALID_PROP_NAMES, prop) &&
+            !Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(ruleNames, prop)) {
+            errors.push({
+                msg: "Redundant visitor method: <" + prop + "> on " + Object(__WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__["c" /* functionName */])(visitorInstance.constructor) + " CST Visitor\n" +
+                    "There is no Grammar Rule corresponding to this method's name.\n" +
+                    ("For utility methods on visitor classes use methods names that do not match /" + __WEBPACK_IMPORTED_MODULE_2__grammar_checks__["b" /* validTermsPattern */].source + "/."),
+                type: CstVisitorDefinitionError.REDUNDANT_METHOD,
+                methodName: prop
+            });
+        }
+    }
+    return errors;
+}
+//# sourceMappingURL=cst_visitor.js.map
+
+/***/ }),
+/* 329 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LexerAdapter; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser__ = __webpack_require__(9);
+
+/**
+ * Trait responsible abstracting over the interaction with Lexer output (Token vector).
+ *
+ * This could be generalized to support other kinds of lexers, e.g.
+ * - Just in Time Lexing / Lexer-Less parsing.
+ * - Streaming Lexer.
+ */
+var LexerAdapter = /** @class */ (function () {
+    function LexerAdapter() {
+    }
+    LexerAdapter.prototype.initLexerAdapter = function () {
+        this.tokVector = [];
+        this.tokVectorLength = 0;
+        this.currIdx = -1;
+    };
+    Object.defineProperty(LexerAdapter.prototype, "input", {
+        get: function () {
+            return this.tokVector;
+        },
+        set: function (newInput) {
+            if (this.selfAnalysisDone !== true) {
+                throw Error("Missing <performSelfAnalysis> invocation at the end of the Parser's constructor.");
+            }
+            this.reset();
+            this.tokVector = newInput;
+            this.tokVectorLength = newInput.length;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    // skips a token and returns the next token
+    LexerAdapter.prototype.SKIP_TOKEN = function () {
+        if (this.currIdx <= this.tokVector.length - 2) {
+            this.consumeToken();
+            return this.LA(1);
+        }
+        else {
+            return __WEBPACK_IMPORTED_MODULE_0__parser__["e" /* END_OF_FILE */];
+        }
+    };
+    // Lexer (accessing Token vector) related methods which can be overridden to implement lazy lexers
+    // or lexers dependent on parser context.
+    LexerAdapter.prototype.LA = function (howMuch) {
+        var soughtIdx = this.currIdx + howMuch;
+        if (soughtIdx < 0 || this.tokVectorLength <= soughtIdx) {
+            return __WEBPACK_IMPORTED_MODULE_0__parser__["e" /* END_OF_FILE */];
+        }
+        else {
+            return this.tokVector[soughtIdx];
+        }
+    };
+    LexerAdapter.prototype.consumeToken = function () {
+        this.currIdx++;
+    };
+    LexerAdapter.prototype.exportLexerState = function () {
+        return this.currIdx;
+    };
+    LexerAdapter.prototype.importLexerState = function (newState) {
+        this.currIdx = newState;
+    };
+    LexerAdapter.prototype.resetLexerState = function () {
+        this.currIdx = -1;
+    };
+    LexerAdapter.prototype.moveToTerminatedState = function () {
+        this.currIdx = this.tokVector.length - 1;
+    };
+    LexerAdapter.prototype.getLexerPosition = function () {
+        return this.exportLexerState();
+    };
+    return LexerAdapter;
+}());
+
+//# sourceMappingURL=lexer_adapter.js.map
+
+/***/ }),
+/* 330 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RecognizerApi; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__exceptions_public__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_checks__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_public__ = __webpack_require__(7);
+
+
+
+
+
+
+/**
+ * This trait is responsible for implementing the public API
+ * for defining Chevrotain parsers, i.e:
+ * - CONSUME
+ * - RULE
+ * - OPTION
+ * - ...
+ */
+var RecognizerApi = /** @class */ (function () {
+    function RecognizerApi() {
+    }
+    RecognizerApi.prototype.ACTION = function (impl) {
+        return impl.call(this);
+    };
+    RecognizerApi.prototype.consume = function (idx, tokType, options) {
+        return this.consumeInternal(tokType, idx, options);
+    };
+    RecognizerApi.prototype.subrule = function (idx, ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, idx, options);
+    };
+    RecognizerApi.prototype.option = function (idx, actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, idx);
+    };
+    RecognizerApi.prototype.or = function (idx, altsOrOpts) {
+        return this.orInternal(altsOrOpts, idx);
+    };
+    RecognizerApi.prototype.many = function (idx, actionORMethodDef) {
+        return this.manyInternal(idx, actionORMethodDef);
+    };
+    RecognizerApi.prototype.atLeastOne = function (idx, actionORMethodDef) {
+        return this.atLeastOneInternal(idx, actionORMethodDef);
+    };
+    RecognizerApi.prototype.CONSUME = function (tokType, options) {
+        return this.consumeInternal(tokType, 0, options);
+    };
+    RecognizerApi.prototype.CONSUME1 = function (tokType, options) {
+        return this.consumeInternal(tokType, 1, options);
+    };
+    RecognizerApi.prototype.CONSUME2 = function (tokType, options) {
+        return this.consumeInternal(tokType, 2, options);
+    };
+    RecognizerApi.prototype.CONSUME3 = function (tokType, options) {
+        return this.consumeInternal(tokType, 3, options);
+    };
+    RecognizerApi.prototype.CONSUME4 = function (tokType, options) {
+        return this.consumeInternal(tokType, 4, options);
+    };
+    RecognizerApi.prototype.CONSUME5 = function (tokType, options) {
+        return this.consumeInternal(tokType, 5, options);
+    };
+    RecognizerApi.prototype.CONSUME6 = function (tokType, options) {
+        return this.consumeInternal(tokType, 6, options);
+    };
+    RecognizerApi.prototype.CONSUME7 = function (tokType, options) {
+        return this.consumeInternal(tokType, 7, options);
+    };
+    RecognizerApi.prototype.CONSUME8 = function (tokType, options) {
+        return this.consumeInternal(tokType, 8, options);
+    };
+    RecognizerApi.prototype.CONSUME9 = function (tokType, options) {
+        return this.consumeInternal(tokType, 9, options);
+    };
+    RecognizerApi.prototype.SUBRULE = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 0, options);
+    };
+    RecognizerApi.prototype.SUBRULE1 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 1, options);
+    };
+    RecognizerApi.prototype.SUBRULE2 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 2, options);
+    };
+    RecognizerApi.prototype.SUBRULE3 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 3, options);
+    };
+    RecognizerApi.prototype.SUBRULE4 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 4, options);
+    };
+    RecognizerApi.prototype.SUBRULE5 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 5, options);
+    };
+    RecognizerApi.prototype.SUBRULE6 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 6, options);
+    };
+    RecognizerApi.prototype.SUBRULE7 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 7, options);
+    };
+    RecognizerApi.prototype.SUBRULE8 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 8, options);
+    };
+    RecognizerApi.prototype.SUBRULE9 = function (ruleToCall, options) {
+        return this.subruleInternal(ruleToCall, 9, options);
+    };
+    RecognizerApi.prototype.OPTION = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 0);
+    };
+    RecognizerApi.prototype.OPTION1 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 1);
+    };
+    RecognizerApi.prototype.OPTION2 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 2);
+    };
+    RecognizerApi.prototype.OPTION3 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 3);
+    };
+    RecognizerApi.prototype.OPTION4 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 4);
+    };
+    RecognizerApi.prototype.OPTION5 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 5);
+    };
+    RecognizerApi.prototype.OPTION6 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 6);
+    };
+    RecognizerApi.prototype.OPTION7 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 7);
+    };
+    RecognizerApi.prototype.OPTION8 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 8);
+    };
+    RecognizerApi.prototype.OPTION9 = function (actionORMethodDef) {
+        return this.optionInternal(actionORMethodDef, 9);
+    };
+    RecognizerApi.prototype.OR = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 0);
+    };
+    RecognizerApi.prototype.OR1 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 1);
+    };
+    RecognizerApi.prototype.OR2 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 2);
+    };
+    RecognizerApi.prototype.OR3 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 3);
+    };
+    RecognizerApi.prototype.OR4 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 4);
+    };
+    RecognizerApi.prototype.OR5 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 5);
+    };
+    RecognizerApi.prototype.OR6 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 6);
+    };
+    RecognizerApi.prototype.OR7 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 7);
+    };
+    RecognizerApi.prototype.OR8 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 8);
+    };
+    RecognizerApi.prototype.OR9 = function (altsOrOpts) {
+        return this.orInternal(altsOrOpts, 9);
+    };
+    RecognizerApi.prototype.MANY = function (actionORMethodDef) {
+        this.manyInternal(0, actionORMethodDef);
+    };
+    RecognizerApi.prototype.MANY1 = function (actionORMethodDef) {
+        this.manyInternal(1, actionORMethodDef);
+    };
+    RecognizerApi.prototype.MANY2 = function (actionORMethodDef) {
+        this.manyInternal(2, actionORMethodDef);
+    };
+    RecognizerApi.prototype.MANY3 = function (actionORMethodDef) {
+        this.manyInternal(3, actionORMethodDef);
+    };
+    RecognizerApi.prototype.MANY4 = function (actionORMethodDef) {
+        this.manyInternal(4, actionORMethodDef);
+    };
+    RecognizerApi.prototype.MANY5 = function (actionORMethodDef) {
+        this.manyInternal(5, actionORMethodDef);
+    };
+    RecognizerApi.prototype.MANY6 = function (actionORMethodDef) {
+        this.manyInternal(6, actionORMethodDef);
+    };
+    RecognizerApi.prototype.MANY7 = function (actionORMethodDef) {
+        this.manyInternal(7, actionORMethodDef);
+    };
+    RecognizerApi.prototype.MANY8 = function (actionORMethodDef) {
+        this.manyInternal(8, actionORMethodDef);
+    };
+    RecognizerApi.prototype.MANY9 = function (actionORMethodDef) {
+        this.manyInternal(9, actionORMethodDef);
+    };
+    RecognizerApi.prototype.MANY_SEP = function (options) {
+        this.manySepFirstInternal(0, options);
+    };
+    RecognizerApi.prototype.MANY_SEP1 = function (options) {
+        this.manySepFirstInternal(1, options);
+    };
+    RecognizerApi.prototype.MANY_SEP2 = function (options) {
+        this.manySepFirstInternal(2, options);
+    };
+    RecognizerApi.prototype.MANY_SEP3 = function (options) {
+        this.manySepFirstInternal(3, options);
+    };
+    RecognizerApi.prototype.MANY_SEP4 = function (options) {
+        this.manySepFirstInternal(4, options);
+    };
+    RecognizerApi.prototype.MANY_SEP5 = function (options) {
+        this.manySepFirstInternal(5, options);
+    };
+    RecognizerApi.prototype.MANY_SEP6 = function (options) {
+        this.manySepFirstInternal(6, options);
+    };
+    RecognizerApi.prototype.MANY_SEP7 = function (options) {
+        this.manySepFirstInternal(7, options);
+    };
+    RecognizerApi.prototype.MANY_SEP8 = function (options) {
+        this.manySepFirstInternal(8, options);
+    };
+    RecognizerApi.prototype.MANY_SEP9 = function (options) {
+        this.manySepFirstInternal(9, options);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE = function (actionORMethodDef) {
+        this.atLeastOneInternal(0, actionORMethodDef);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE1 = function (actionORMethodDef) {
+        return this.atLeastOneInternal(1, actionORMethodDef);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE2 = function (actionORMethodDef) {
+        this.atLeastOneInternal(2, actionORMethodDef);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE3 = function (actionORMethodDef) {
+        this.atLeastOneInternal(3, actionORMethodDef);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE4 = function (actionORMethodDef) {
+        this.atLeastOneInternal(4, actionORMethodDef);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE5 = function (actionORMethodDef) {
+        this.atLeastOneInternal(5, actionORMethodDef);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE6 = function (actionORMethodDef) {
+        this.atLeastOneInternal(6, actionORMethodDef);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE7 = function (actionORMethodDef) {
+        this.atLeastOneInternal(7, actionORMethodDef);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE8 = function (actionORMethodDef) {
+        this.atLeastOneInternal(8, actionORMethodDef);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE9 = function (actionORMethodDef) {
+        this.atLeastOneInternal(9, actionORMethodDef);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE_SEP = function (options) {
+        this.atLeastOneSepFirstInternal(0, options);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE_SEP1 = function (options) {
+        this.atLeastOneSepFirstInternal(1, options);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE_SEP2 = function (options) {
+        this.atLeastOneSepFirstInternal(2, options);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE_SEP3 = function (options) {
+        this.atLeastOneSepFirstInternal(3, options);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE_SEP4 = function (options) {
+        this.atLeastOneSepFirstInternal(4, options);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE_SEP5 = function (options) {
+        this.atLeastOneSepFirstInternal(5, options);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE_SEP6 = function (options) {
+        this.atLeastOneSepFirstInternal(6, options);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE_SEP7 = function (options) {
+        this.atLeastOneSepFirstInternal(7, options);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE_SEP8 = function (options) {
+        this.atLeastOneSepFirstInternal(8, options);
+    };
+    RecognizerApi.prototype.AT_LEAST_ONE_SEP9 = function (options) {
+        this.atLeastOneSepFirstInternal(9, options);
+    };
+    RecognizerApi.prototype.RULE = function (name, implementation, config) {
+        if (config === void 0) { config = __WEBPACK_IMPORTED_MODULE_2__parser__["c" /* DEFAULT_RULE_CONFIG */]; }
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["j" /* contains */])(this.definedRulesNames, name)) {
+            var errMsg = __WEBPACK_IMPORTED_MODULE_3__errors_public__["b" /* defaultGrammarValidatorErrorProvider */].buildDuplicateRuleNameError({
+                topLevelRule: name,
+                grammarName: this.className
+            });
+            var error = {
+                message: errMsg,
+                type: __WEBPACK_IMPORTED_MODULE_2__parser__["h" /* ParserDefinitionErrorType */].DUPLICATE_RULE_NAME,
+                ruleName: name
+            };
+            this.definitionErrors.push(error);
+        }
+        this.definedRulesNames.push(name);
+        var ruleImplementation = this.defineRule(name, implementation, config);
+        this[name] = ruleImplementation;
+        return ruleImplementation;
+    };
+    RecognizerApi.prototype.OVERRIDE_RULE = function (name, impl, config) {
+        if (config === void 0) { config = __WEBPACK_IMPORTED_MODULE_2__parser__["c" /* DEFAULT_RULE_CONFIG */]; }
+        var ruleErrors = [];
+        ruleErrors = ruleErrors.concat(Object(__WEBPACK_IMPORTED_MODULE_4__grammar_checks__["d" /* validateRuleIsOverridden */])(name, this.definedRulesNames, this.className));
+        this.definitionErrors.push.apply(this.definitionErrors, ruleErrors); // mutability for the win
+        var ruleImplementation = this.defineRule(name, impl, config);
+        this[name] = ruleImplementation;
+        return ruleImplementation;
+    };
+    RecognizerApi.prototype.BACKTRACK = function (grammarRule, args) {
+        return function () {
+            // save org state
+            this.isBackTrackingStack.push(1);
+            var orgState = this.saveRecogState();
+            try {
+                grammarRule.apply(this, args);
+                // if no exception was thrown we have succeed parsing the rule.
+                return true;
+            }
+            catch (e) {
+                if (Object(__WEBPACK_IMPORTED_MODULE_1__exceptions_public__["e" /* isRecognitionException */])(e)) {
+                    return false;
+                }
+                else {
+                    throw e;
+                }
+            }
+            finally {
+                this.reloadRecogState(orgState);
+                this.isBackTrackingStack.pop();
+            }
+        };
+    };
+    // GAST export APIs
+    RecognizerApi.prototype.getGAstProductions = function () {
+        return this.gastProductionsCache;
+    };
+    RecognizerApi.prototype.getSerializedGastProductions = function () {
+        return Object(__WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_public__["l" /* serializeGrammar */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(this.gastProductionsCache));
+    };
+    return RecognizerApi;
+}());
+
+//# sourceMappingURL=recognizer_api.js.map
+
+/***/ }),
+/* 331 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RecognizerEngine; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_keys__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exceptions_public__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_lookahead__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__recoverable__ = __webpack_require__(215);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__scan_tokens_public__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__scan_tokens__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lang_lang_extensions__ = __webpack_require__(216);
+
+
+
+
+
+
+
+
+
+
+/**
+ * This trait is responsible for the runtime parsing engine
+ * Used by the official API (recognizer_api.ts)
+ */
+var RecognizerEngine = /** @class */ (function () {
+    function RecognizerEngine() {
+    }
+    RecognizerEngine.prototype.initRecognizerEngine = function (tokenVocabulary, config) {
+        this.className = Object(__WEBPACK_IMPORTED_MODULE_9__lang_lang_extensions__["a" /* classNameFromInstance */])(this);
+        // TODO: would using an ES6 Map or plain object be faster (CST building scenario)
+        this.shortRuleNameToFull = {};
+        this.fullRuleNameToShort = {};
+        this.ruleShortNameIdx = 256;
+        this.tokenMatcher = __WEBPACK_IMPORTED_MODULE_8__scan_tokens__["e" /* tokenStructuredMatcherNoCategories */];
+        this.definedRulesNames = [];
+        this.tokensMap = {};
+        this.allRuleNames = [];
+        this.isBackTrackingStack = [];
+        this.RULE_STACK = [];
+        this.RULE_OCCURRENCE_STACK = [];
+        this.gastProductionsCache = {};
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "serializedGrammar")) {
+            throw Error("The Parser's configuration can no longer contain a <serializedGrammar> property.\n" +
+                "\tSee: https://sap.github.io/chevrotain/docs/changes/BREAKING_CHANGES.html#_6-0-0\n" +
+                "\tFor Further details.");
+        }
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(tokenVocabulary)) {
+            // This only checks for Token vocabularies provided as arrays.
+            // That is good enough because the main objective is to detect users of pre-V4.0 APIs
+            // rather than all edge cases of empty Token vocabularies.
+            if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(tokenVocabulary)) {
+                throw Error("A Token Vocabulary cannot be empty.\n" +
+                    "\tNote that the first argument for the parser constructor\n" +
+                    "\tis no longer a Token vector (since v4.0).");
+            }
+            if (typeof tokenVocabulary[0].startOffset === "number") {
+                throw Error("The Parser constructor no longer accepts a token vector as the first argument.\n" +
+                    "\tSee: https://sap.github.io/chevrotain/docs/changes/BREAKING_CHANGES.html#_4-0-0\n" +
+                    "\tFor Further details.");
+            }
+        }
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(tokenVocabulary)) {
+            this.tokensMap = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(tokenVocabulary, function (acc, tokType) {
+                acc[tokType.name] = tokType;
+                return acc;
+            }, {});
+        }
+        else if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(tokenVocabulary, "modes") &&
+            Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(tokenVocabulary.modes)), __WEBPACK_IMPORTED_MODULE_8__scan_tokens__["c" /* isTokenType */])) {
+            var allTokenTypes = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["t" /* flatten */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(tokenVocabulary.modes));
+            var uniqueTokens = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["T" /* uniq */])(allTokenTypes);
+            this.tokensMap = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["O" /* reduce */])(uniqueTokens, function (acc, tokType) {
+                acc[tokType.name] = tokType;
+                return acc;
+            }, {});
+        }
+        else if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["C" /* isObject */])(tokenVocabulary)) {
+            this.tokensMap = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["h" /* cloneObj */])(tokenVocabulary);
+        }
+        else {
+            throw new Error("<tokensDictionary> argument must be An Array of Token constructors," +
+                " A dictionary of Token constructors or an IMultiModeLexerDefinition");
+        }
+        // always add EOF to the tokenNames -> constructors map. it is useful to assure all the input has been
+        // parsed with a clear error message ("expecting EOF but found ...")
+        /* tslint:disable */
+        this.tokensMap["EOF"] = __WEBPACK_IMPORTED_MODULE_7__scan_tokens_public__["a" /* EOF */];
+        // TODO: This check may not be accurate for multi mode lexers
+        var noTokenCategoriesUsed = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["o" /* every */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(tokenVocabulary), function (tokenConstructor) { return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["A" /* isEmpty */])(tokenConstructor.categoryMatches); });
+        this.tokenMatcher = noTokenCategoriesUsed
+            ? __WEBPACK_IMPORTED_MODULE_8__scan_tokens__["e" /* tokenStructuredMatcherNoCategories */]
+            : __WEBPACK_IMPORTED_MODULE_8__scan_tokens__["d" /* tokenStructuredMatcher */];
+        // Because ES2015+ syntax should be supported for creating Token classes
+        // We cannot assume that the Token classes were created using the "extendToken" utilities
+        // Therefore we must augment the Token classes both on Lexer initialization and on Parser initialization
+        Object(__WEBPACK_IMPORTED_MODULE_8__scan_tokens__["a" /* augmentTokenTypes */])(Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["U" /* values */])(this.tokensMap));
+    };
+    RecognizerEngine.prototype.defineRule = function (ruleName, impl, config) {
+        if (this.selfAnalysisDone) {
+            throw Error("Grammar rule <" + ruleName + "> may not be defined after the 'performSelfAnalysis' method has been called'\n" +
+                "Make sure that all grammar rule definitions are done before 'performSelfAnalysis' is called.");
+        }
+        var resyncEnabled = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "resyncEnabled")
+            ? config.resyncEnabled
+            : __WEBPACK_IMPORTED_MODULE_5__parser__["c" /* DEFAULT_RULE_CONFIG */].resyncEnabled;
+        var recoveryValueFunc = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "recoveryValueFunc")
+            ? config.recoveryValueFunc
+            : __WEBPACK_IMPORTED_MODULE_5__parser__["c" /* DEFAULT_RULE_CONFIG */].recoveryValueFunc;
+        // performance optimization: Use small integers as keys for the longer human readable "full" rule names.
+        // this greatly improves Map access time (as much as 8% for some performance benchmarks).
+        /* tslint:disable */
+        var shortName = this.ruleShortNameIdx <<
+            (__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["c" /* BITS_FOR_METHOD_TYPE */] + __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["d" /* BITS_FOR_OCCURRENCE_IDX */]);
+        /* tslint:enable */
+        this.ruleShortNameIdx++;
+        this.shortRuleNameToFull[shortName] = ruleName;
+        this.fullRuleNameToShort[ruleName] = shortName;
+        function invokeRuleWithTry(args) {
+            try {
+                if (this.outputCst === true) {
+                    impl.apply(this, args);
+                    var cst = this.CST_STACK[this.CST_STACK.length - 1];
+                    this.cstPostRule(cst);
+                    return cst;
+                }
+                else {
+                    return impl.apply(this, args);
+                }
+            }
+            catch (e) {
+                return this.invokeRuleCatch(e, resyncEnabled, recoveryValueFunc);
+            }
+            finally {
+                this.ruleFinallyStateUpdate();
+            }
+        }
+        var wrappedGrammarRule;
+        wrappedGrammarRule = function (idxInCallingRule, args) {
+            if (idxInCallingRule === void 0) { idxInCallingRule = 0; }
+            this.ruleInvocationStateUpdate(shortName, ruleName, idxInCallingRule);
+            return invokeRuleWithTry.call(this, args);
+        };
+        var ruleNamePropName = "ruleName";
+        wrappedGrammarRule[ruleNamePropName] = ruleName;
+        wrappedGrammarRule["originalGrammarAction"] = impl;
+        return wrappedGrammarRule;
+    };
+    RecognizerEngine.prototype.invokeRuleCatch = function (e, resyncEnabledConfig, recoveryValueFunc) {
+        var isFirstInvokedRule = this.RULE_STACK.length === 1;
+        // note the reSync is always enabled for the first rule invocation, because we must always be able to
+        // reSync with EOF and just output some INVALID ParseTree
+        // during backtracking reSync recovery is disabled, otherwise we can't be certain the backtracking
+        // path is really the most valid one
+        var reSyncEnabled = resyncEnabledConfig &&
+            !this.isBackTracking() &&
+            this.recoveryEnabled;
+        if (Object(__WEBPACK_IMPORTED_MODULE_2__exceptions_public__["e" /* isRecognitionException */])(e)) {
+            var recogError = e;
+            if (reSyncEnabled) {
+                var reSyncTokType = this.findReSyncTokenType();
+                if (this.isInCurrentRuleReSyncSet(reSyncTokType)) {
+                    recogError.resyncedTokens = this.reSyncTo(reSyncTokType);
+                    if (this.outputCst) {
+                        var partialCstResult = this.CST_STACK[this.CST_STACK.length - 1];
+                        partialCstResult.recoveredNode = true;
+                        return partialCstResult;
+                    }
+                    else {
+                        return recoveryValueFunc();
+                    }
+                }
+                else {
+                    if (this.outputCst) {
+                        var partialCstResult = this.CST_STACK[this.CST_STACK.length - 1];
+                        partialCstResult.recoveredNode = true;
+                        recogError.partialCstResult = partialCstResult;
+                    }
+                    // to be handled Further up the call stack
+                    throw recogError;
+                }
+            }
+            else if (isFirstInvokedRule) {
+                // otherwise a Redundant input error will be created as well and we cannot guarantee that this is indeed the case
+                this.moveToTerminatedState();
+                // the parser should never throw one of its own errors outside its flow.
+                // even if error recovery is disabled
+                return recoveryValueFunc();
+            }
+            else {
+                // to be recovered Further up the call stack
+                throw recogError;
+            }
+        }
+        else {
+            // some other Error type which we don't know how to handle (for example a built in JavaScript Error)
+            throw e;
+        }
+    };
+    // Implementation of parsing DSL
+    RecognizerEngine.prototype.optionInternal = function (actionORMethodDef, occurrence) {
+        var key = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["g" /* OPTION_IDX */], occurrence);
+        var nestedName = this.nestedRuleBeforeClause(actionORMethodDef, key);
+        try {
+            return this.optionInternalLogic(actionORMethodDef, occurrence, key);
+        }
+        finally {
+            if (nestedName !== undefined) {
+                this.nestedRuleFinallyClause(key, nestedName);
+            }
+        }
+    };
+    RecognizerEngine.prototype.optionInternalNoCst = function (actionORMethodDef, occurrence) {
+        var key = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["g" /* OPTION_IDX */], occurrence);
+        return this.optionInternalLogic(actionORMethodDef, occurrence, key);
+    };
+    RecognizerEngine.prototype.optionInternalLogic = function (actionORMethodDef, occurrence, key) {
+        var _this = this;
+        var lookAheadFunc = this.getLaFuncFromCache(key);
+        var action;
+        var predicate;
+        if (actionORMethodDef.DEF !== undefined) {
+            action = actionORMethodDef.DEF;
+            predicate = actionORMethodDef.GATE;
+            // predicate present
+            if (predicate !== undefined) {
+                var orgLookaheadFunction_1 = lookAheadFunc;
+                lookAheadFunc = function () {
+                    return (predicate.call(_this) && orgLookaheadFunction_1.call(_this));
+                };
+            }
+        }
+        else {
+            action = actionORMethodDef;
+        }
+        if (lookAheadFunc.call(this) === true) {
+            return action.call(this);
+        }
+        return undefined;
+    };
+    RecognizerEngine.prototype.atLeastOneInternal = function (prodOccurrence, actionORMethodDef) {
+        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["a" /* AT_LEAST_ONE_IDX */], prodOccurrence);
+        var nestedName = this.nestedRuleBeforeClause(actionORMethodDef, laKey);
+        try {
+            return this.atLeastOneInternalLogic(prodOccurrence, actionORMethodDef, laKey);
+        }
+        finally {
+            if (nestedName !== undefined) {
+                this.nestedRuleFinallyClause(laKey, nestedName);
+            }
+        }
+    };
+    RecognizerEngine.prototype.atLeastOneInternalNoCst = function (prodOccurrence, actionORMethodDef) {
+        var key = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["a" /* AT_LEAST_ONE_IDX */], prodOccurrence);
+        this.atLeastOneInternalLogic(prodOccurrence, actionORMethodDef, key);
+    };
+    RecognizerEngine.prototype.atLeastOneInternalLogic = function (prodOccurrence, actionORMethodDef, key) {
+        var _this = this;
+        var lookAheadFunc = this.getLaFuncFromCache(key);
+        var action;
+        var predicate;
+        if (actionORMethodDef.DEF !== undefined) {
+            action = actionORMethodDef.DEF;
+            predicate = actionORMethodDef.GATE;
+            // predicate present
+            if (predicate !== undefined) {
+                var orgLookaheadFunction_2 = lookAheadFunc;
+                lookAheadFunc = function () {
+                    return (predicate.call(_this) && orgLookaheadFunction_2.call(_this));
+                };
+            }
+        }
+        else {
+            action = actionORMethodDef;
+        }
+        if (lookAheadFunc.call(this) === true) {
+            var notStuck = this.doSingleRepetition(action);
+            while (lookAheadFunc.call(this) === true &&
+                notStuck === true) {
+                notStuck = this.doSingleRepetition(action);
+            }
+        }
+        else {
+            throw this.raiseEarlyExitException(prodOccurrence, __WEBPACK_IMPORTED_MODULE_3__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION_MANDATORY, actionORMethodDef.ERR_MSG);
+        }
+        // note that while it may seem that this can cause an error because by using a recursive call to
+        // AT_LEAST_ONE we change the grammar to AT_LEAST_TWO, AT_LEAST_THREE ... , the possible recursive call
+        // from the tryInRepetitionRecovery(...) will only happen IFF there really are TWO/THREE/.... items.
+        // Performance optimization: "attemptInRepetitionRecovery" will be defined as NOOP unless recovery is enabled
+        this.attemptInRepetitionRecovery(this.atLeastOneInternal, [prodOccurrence, actionORMethodDef], lookAheadFunc, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["a" /* AT_LEAST_ONE_IDX */], prodOccurrence, __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["c" /* NextTerminalAfterAtLeastOneWalker */]);
+    };
+    RecognizerEngine.prototype.atLeastOneSepFirstInternal = function (prodOccurrence, options) {
+        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */], prodOccurrence);
+        var nestedName = this.nestedRuleBeforeClause(options, laKey);
+        try {
+            this.atLeastOneSepFirstInternalLogic(prodOccurrence, options, laKey);
+        }
+        finally {
+            if (nestedName !== undefined) {
+                this.nestedRuleFinallyClause(laKey, nestedName);
+            }
+        }
+    };
+    RecognizerEngine.prototype.atLeastOneSepFirstInternalNoCst = function (prodOccurrence, options) {
+        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */], prodOccurrence);
+        this.atLeastOneSepFirstInternalLogic(prodOccurrence, options, laKey);
+    };
+    RecognizerEngine.prototype.atLeastOneSepFirstInternalLogic = function (prodOccurrence, options, key) {
+        var _this = this;
+        var action = options.DEF;
+        var separator = options.SEP;
+        var firstIterationLookaheadFunc = this.getLaFuncFromCache(key);
+        // 1st iteration
+        if (firstIterationLookaheadFunc.call(this) === true) {
+            ;
+            action.call(this);
+            //  TODO: Optimization can move this function construction into "attemptInRepetitionRecovery"
+            //  because it is only needed in error recovery scenarios.
+            var separatorLookAheadFunc = function () {
+                return _this.tokenMatcher(_this.LA(1), separator);
+            };
+            // 2nd..nth iterations
+            while (this.tokenMatcher(this.LA(1), separator) === true) {
+                // note that this CONSUME will never enter recovery because
+                // the separatorLookAheadFunc checks that the separator really does exist.
+                this.CONSUME(separator);
+                action.call(this);
+            }
+            // Performance optimization: "attemptInRepetitionRecovery" will be defined as NOOP unless recovery is enabled
+            this.attemptInRepetitionRecovery(this.repetitionSepSecondInternal, [
+                prodOccurrence,
+                separator,
+                separatorLookAheadFunc,
+                action,
+                __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["b" /* NextTerminalAfterAtLeastOneSepWalker */]
+            ], separatorLookAheadFunc, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */], prodOccurrence, __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["b" /* NextTerminalAfterAtLeastOneSepWalker */]);
+        }
+        else {
+            throw this.raiseEarlyExitException(prodOccurrence, __WEBPACK_IMPORTED_MODULE_3__grammar_lookahead__["a" /* PROD_TYPE */].REPETITION_MANDATORY_WITH_SEPARATOR, options.ERR_MSG);
+        }
+    };
+    RecognizerEngine.prototype.manyInternal = function (prodOccurrence, actionORMethodDef) {
+        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["e" /* MANY_IDX */], prodOccurrence);
+        var nestedName = this.nestedRuleBeforeClause(actionORMethodDef, laKey);
+        try {
+            return this.manyInternalLogic(prodOccurrence, actionORMethodDef, laKey);
+        }
+        finally {
+            if (nestedName !== undefined) {
+                this.nestedRuleFinallyClause(laKey, nestedName);
+            }
+        }
+    };
+    RecognizerEngine.prototype.manyInternalNoCst = function (prodOccurrence, actionORMethodDef) {
+        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["e" /* MANY_IDX */], prodOccurrence);
+        return this.manyInternalLogic(prodOccurrence, actionORMethodDef, laKey);
+    };
+    RecognizerEngine.prototype.manyInternalLogic = function (prodOccurrence, actionORMethodDef, key) {
+        var _this = this;
+        var lookaheadFunction = this.getLaFuncFromCache(key);
+        var action;
+        var predicate;
+        if (actionORMethodDef.DEF !== undefined) {
+            action = actionORMethodDef.DEF;
+            predicate = actionORMethodDef.GATE;
+            // predicate present
+            if (predicate !== undefined) {
+                var orgLookaheadFunction_3 = lookaheadFunction;
+                lookaheadFunction = function () {
+                    return (predicate.call(_this) && orgLookaheadFunction_3.call(_this));
+                };
+            }
+        }
+        else {
+            action = actionORMethodDef;
+        }
+        var notStuck = true;
+        while (lookaheadFunction.call(this) === true && notStuck === true) {
+            notStuck = this.doSingleRepetition(action);
+        }
+        // Performance optimization: "attemptInRepetitionRecovery" will be defined as NOOP unless recovery is enabled
+        this.attemptInRepetitionRecovery(this.manyInternal, [prodOccurrence, actionORMethodDef], lookaheadFunction, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["e" /* MANY_IDX */], prodOccurrence, __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["e" /* NextTerminalAfterManyWalker */], 
+        // The notStuck parameter is only relevant when "attemptInRepetitionRecovery"
+        // is invoked from manyInternal, in the MANY_SEP case and AT_LEAST_ONE[_SEP]
+        // An infinite loop cannot occur as:
+        // - Either the lookahead is guaranteed to consume something (Single Token Separator)
+        // - AT_LEAST_ONE by definition is guaranteed to consume something (or error out).
+        notStuck);
+    };
+    RecognizerEngine.prototype.manySepFirstInternal = function (prodOccurrence, options) {
+        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["f" /* MANY_SEP_IDX */], prodOccurrence);
+        var nestedName = this.nestedRuleBeforeClause(options, laKey);
+        try {
+            this.manySepFirstInternalLogic(prodOccurrence, options, laKey);
+        }
+        finally {
+            if (nestedName !== undefined) {
+                this.nestedRuleFinallyClause(laKey, nestedName);
+            }
+        }
+    };
+    RecognizerEngine.prototype.manySepFirstInternalNoCst = function (prodOccurrence, options) {
+        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["f" /* MANY_SEP_IDX */], prodOccurrence);
+        this.manySepFirstInternalLogic(prodOccurrence, options, laKey);
+    };
+    RecognizerEngine.prototype.manySepFirstInternalLogic = function (prodOccurrence, options, key) {
+        var _this = this;
+        var action = options.DEF;
+        var separator = options.SEP;
+        var firstIterationLaFunc = this.getLaFuncFromCache(key);
+        // 1st iteration
+        if (firstIterationLaFunc.call(this) === true) {
+            action.call(this);
+            var separatorLookAheadFunc = function () {
+                return _this.tokenMatcher(_this.LA(1), separator);
+            };
+            // 2nd..nth iterations
+            while (this.tokenMatcher(this.LA(1), separator) === true) {
+                // note that this CONSUME will never enter recovery because
+                // the separatorLookAheadFunc checks that the separator really does exist.
+                this.CONSUME(separator);
+                // No need for checking infinite loop here due to consuming the separator.
+                action.call(this);
+            }
+            // Performance optimization: "attemptInRepetitionRecovery" will be defined as NOOP unless recovery is enabled
+            this.attemptInRepetitionRecovery(this.repetitionSepSecondInternal, [
+                prodOccurrence,
+                separator,
+                separatorLookAheadFunc,
+                action,
+                __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["d" /* NextTerminalAfterManySepWalker */]
+            ], separatorLookAheadFunc, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["f" /* MANY_SEP_IDX */], prodOccurrence, __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__["d" /* NextTerminalAfterManySepWalker */]);
+        }
+    };
+    RecognizerEngine.prototype.repetitionSepSecondInternal = function (prodOccurrence, separator, separatorLookAheadFunc, action, nextTerminalAfterWalker) {
+        while (separatorLookAheadFunc()) {
+            // note that this CONSUME will never enter recovery because
+            // the separatorLookAheadFunc checks that the separator really does exist.
+            this.CONSUME(separator);
+            action.call(this);
+        }
+        // we can only arrive to this function after an error
+        // has occurred (hence the name 'second') so the following
+        // IF will always be entered, its possible to remove it...
+        // however it is kept to avoid confusion and be consistent.
+        // Performance optimization: "attemptInRepetitionRecovery" will be defined as NOOP unless recovery is enabled
+        /* istanbul ignore else */
+        this.attemptInRepetitionRecovery(this.repetitionSepSecondInternal, [
+            prodOccurrence,
+            separator,
+            separatorLookAheadFunc,
+            action,
+            nextTerminalAfterWalker
+        ], separatorLookAheadFunc, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["b" /* AT_LEAST_ONE_SEP_IDX */], prodOccurrence, nextTerminalAfterWalker);
+    };
+    RecognizerEngine.prototype.doSingleRepetition = function (action) {
+        var beforeIteration = this.getLexerPosition();
+        action.call(this);
+        var afterIteration = this.getLexerPosition();
+        // This boolean will indicate if this repetition progressed
+        // or if we are "stuck" (potential infinite loop in the repetition).
+        return afterIteration > beforeIteration;
+    };
+    RecognizerEngine.prototype.orInternalNoCst = function (altsOrOpts, occurrence) {
+        var alts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(altsOrOpts)
+            ? altsOrOpts
+            : altsOrOpts.DEF;
+        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["h" /* OR_IDX */], occurrence);
+        var laFunc = this.getLaFuncFromCache(laKey);
+        var altIdxToTake = laFunc.call(this, alts);
+        if (altIdxToTake !== undefined) {
+            var chosenAlternative = alts[altIdxToTake];
+            return chosenAlternative.ALT.call(this);
+        }
+        this.raiseNoAltException(occurrence, altsOrOpts.ERR_MSG);
+    };
+    RecognizerEngine.prototype.orInternal = function (altsOrOpts, occurrence) {
+        var laKey = this.getKeyForAutomaticLookahead(__WEBPACK_IMPORTED_MODULE_1__grammar_keys__["h" /* OR_IDX */], occurrence);
+        var nestedName = this.nestedRuleBeforeClause(altsOrOpts, laKey);
+        try {
+            var alts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(altsOrOpts)
+                ? altsOrOpts
+                : altsOrOpts.DEF;
+            var laFunc = this.getLaFuncFromCache(laKey);
+            var altIdxToTake = laFunc.call(this, alts);
+            if (altIdxToTake !== undefined) {
+                var chosenAlternative = alts[altIdxToTake];
+                var nestedAltBeforeClauseResult = this.nestedAltBeforeClause(chosenAlternative, occurrence, __WEBPACK_IMPORTED_MODULE_1__grammar_keys__["h" /* OR_IDX */], altIdxToTake);
+                try {
+                    return chosenAlternative.ALT.call(this);
+                }
+                finally {
+                    if (nestedAltBeforeClauseResult !== undefined) {
+                        this.nestedRuleFinallyClause(nestedAltBeforeClauseResult.shortName, nestedAltBeforeClauseResult.nestedName);
+                    }
+                }
+            }
+            this.raiseNoAltException(occurrence, altsOrOpts.ERR_MSG);
+        }
+        finally {
+            if (nestedName !== undefined) {
+                this.nestedRuleFinallyClause(laKey, nestedName);
+            }
+        }
+    };
+    RecognizerEngine.prototype.ruleFinallyStateUpdate = function () {
+        this.RULE_STACK.pop();
+        this.RULE_OCCURRENCE_STACK.pop();
+        // NOOP when cst is disabled
+        this.cstFinallyStateUpdate();
+        if (this.RULE_STACK.length === 0 && this.isAtEndOfInput() === false) {
+            var firstRedundantTok = this.LA(1);
+            var errMsg = this.errorMessageProvider.buildNotAllInputParsedMessage({
+                firstRedundant: firstRedundantTok,
+                ruleName: this.getCurrRuleFullName()
+            });
+            this.SAVE_ERROR(new __WEBPACK_IMPORTED_MODULE_2__exceptions_public__["d" /* NotAllInputParsedException */](errMsg, firstRedundantTok));
+        }
+    };
+    RecognizerEngine.prototype.subruleInternal = function (ruleToCall, idx, options) {
+        var ruleResult;
+        try {
+            var args = options !== undefined ? options.ARGS : undefined;
+            ruleResult = ruleToCall.call(this, idx, args);
+            this.cstPostNonTerminal(ruleResult, options !== undefined && options.LABEL !== undefined
+                ? options.LABEL
+                : ruleToCall.ruleName);
+            return ruleResult;
+        }
+        catch (e) {
+            this.subruleInternalError(e, options, ruleToCall.ruleName);
+        }
+    };
+    RecognizerEngine.prototype.subruleInternalError = function (e, options, ruleName) {
+        if (Object(__WEBPACK_IMPORTED_MODULE_2__exceptions_public__["e" /* isRecognitionException */])(e) && e.partialCstResult !== undefined) {
+            this.cstPostNonTerminal(e.partialCstResult, options !== undefined && options.LABEL !== undefined
+                ? options.LABEL
+                : ruleName);
+            delete e.partialCstResult;
+        }
+        throw e;
+    };
+    RecognizerEngine.prototype.consumeInternal = function (tokType, idx, options) {
+        var consumedToken;
+        try {
+            var nextToken = this.LA(1);
+            if (this.tokenMatcher(nextToken, tokType) === true) {
+                this.consumeToken();
+                consumedToken = nextToken;
+            }
+            else {
+                this.consumeInternalError(tokType, nextToken, options);
+            }
+        }
+        catch (eFromConsumption) {
+            consumedToken = this.consumeInternalRecovery(tokType, idx, eFromConsumption);
+        }
+        this.cstPostTerminal(options !== undefined && options.LABEL !== undefined
+            ? options.LABEL
+            : tokType.name, consumedToken);
+        return consumedToken;
+    };
+    RecognizerEngine.prototype.consumeInternalError = function (tokType, nextToken, options) {
+        var msg;
+        var previousToken = this.LA(0);
+        if (options !== undefined && options.ERR_MSG) {
+            msg = options.ERR_MSG;
+        }
+        else {
+            msg = this.errorMessageProvider.buildMismatchTokenMessage({
+                expected: tokType,
+                actual: nextToken,
+                previous: previousToken,
+                ruleName: this.getCurrRuleFullName()
+            });
+        }
+        throw this.SAVE_ERROR(new __WEBPACK_IMPORTED_MODULE_2__exceptions_public__["b" /* MismatchedTokenException */](msg, nextToken, previousToken));
+    };
+    RecognizerEngine.prototype.consumeInternalRecovery = function (tokType, idx, eFromConsumption) {
+        // no recovery allowed during backtracking, otherwise backtracking may recover invalid syntax and accept it
+        // but the original syntax could have been parsed successfully without any backtracking + recovery
+        if (this.recoveryEnabled &&
+            // TODO: more robust checking of the exception type. Perhaps Typescript extending expressions?
+            eFromConsumption.name === "MismatchedTokenException" &&
+            !this.isBackTracking()) {
+            var follows = this.getFollowsForInRuleRecovery(tokType, idx);
+            try {
+                return this.tryInRuleRecovery(tokType, follows);
+            }
+            catch (eFromInRuleRecovery) {
+                if (eFromInRuleRecovery.name === __WEBPACK_IMPORTED_MODULE_6__recoverable__["a" /* IN_RULE_RECOVERY_EXCEPTION */]) {
+                    // failed in RuleRecovery.
+                    // throw the original error in order to trigger reSync error recovery
+                    throw eFromConsumption;
+                }
+                else {
+                    throw eFromInRuleRecovery;
+                }
+            }
+        }
+        else {
+            throw eFromConsumption;
+        }
+    };
+    RecognizerEngine.prototype.saveRecogState = function () {
+        // errors is a getter which will clone the errors array
+        var savedErrors = this.errors;
+        var savedRuleStack = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["g" /* cloneArr */])(this.RULE_STACK);
+        return {
+            errors: savedErrors,
+            lexerState: this.exportLexerState(),
+            RULE_STACK: savedRuleStack,
+            CST_STACK: this.CST_STACK,
+            LAST_EXPLICIT_RULE_STACK: this.LAST_EXPLICIT_RULE_STACK
+        };
+    };
+    RecognizerEngine.prototype.reloadRecogState = function (newState) {
+        this.errors = newState.errors;
+        this.importLexerState(newState.lexerState);
+        this.RULE_STACK = newState.RULE_STACK;
+    };
+    RecognizerEngine.prototype.ruleInvocationStateUpdate = function (shortName, fullName, idxInCallingRule) {
+        this.RULE_OCCURRENCE_STACK.push(idxInCallingRule);
+        this.RULE_STACK.push(shortName);
+        // NOOP when cst is disabled
+        this.cstInvocationStateUpdate(fullName, shortName);
+    };
+    RecognizerEngine.prototype.isBackTracking = function () {
+        return this.isBackTrackingStack.length !== 0;
+    };
+    RecognizerEngine.prototype.getCurrRuleFullName = function () {
+        var shortName = this.getLastExplicitRuleShortName();
+        return this.shortRuleNameToFull[shortName];
+    };
+    RecognizerEngine.prototype.shortRuleNameToFullName = function (shortName) {
+        return this.shortRuleNameToFull[shortName];
+    };
+    RecognizerEngine.prototype.isAtEndOfInput = function () {
+        return this.tokenMatcher(this.LA(1), __WEBPACK_IMPORTED_MODULE_7__scan_tokens_public__["a" /* EOF */]);
+    };
+    RecognizerEngine.prototype.reset = function () {
+        this.resetLexerState();
+        this.isBackTrackingStack = [];
+        this.errors = [];
+        this.RULE_STACK = [];
+        this.LAST_EXPLICIT_RULE_STACK = [];
+        // TODO: extract a specific rest for TreeBuilder trait
+        this.CST_STACK = [];
+        this.RULE_OCCURRENCE_STACK = [];
+    };
+    return RecognizerEngine;
+}());
+
+//# sourceMappingURL=recognizer_engine.js.map
+
+/***/ }),
+/* 332 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ErrorHandler; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exceptions_public__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_lookahead__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parser__ = __webpack_require__(9);
+
+
+
+
+/**
+ * Trait responsible for runtime parsing errors.
+ */
+var ErrorHandler = /** @class */ (function () {
+    function ErrorHandler() {
+    }
+    ErrorHandler.prototype.initErrorHandler = function (config) {
+        this._errors = [];
+        this.errorMessageProvider = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["k" /* defaults */])(config.errorMessageProvider, __WEBPACK_IMPORTED_MODULE_3__parser__["b" /* DEFAULT_PARSER_CONFIG */].errorMessageProvider);
+    };
+    ErrorHandler.prototype.SAVE_ERROR = function (error) {
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__exceptions_public__["e" /* isRecognitionException */])(error)) {
+            error.context = {
+                ruleStack: this.getHumanReadableRuleStack(),
+                ruleOccurrenceStack: Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(this.RULE_OCCURRENCE_STACK)
+            };
+            this._errors.push(error);
+            return error;
+        }
+        else {
+            throw Error("Trying to save an Error which is not a RecognitionException");
+        }
+    };
+    Object.defineProperty(ErrorHandler.prototype, "errors", {
+        // TODO: extract these methods to ErrorHandler Trait?
+        get: function () {
+            return Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["g" /* cloneArr */])(this._errors);
+        },
+        set: function (newErrors) {
+            this._errors = newErrors;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    // TODO: consider caching the error message computed information
+    ErrorHandler.prototype.raiseEarlyExitException = function (occurrence, prodType, userDefinedErrMsg) {
+        var ruleName = this.getCurrRuleFullName();
+        var ruleGrammar = this.getGAstProductions()[ruleName];
+        var lookAheadPathsPerAlternative = Object(__WEBPACK_IMPORTED_MODULE_2__grammar_lookahead__["g" /* getLookaheadPathsForOptionalProd */])(occurrence, ruleGrammar, prodType, this.maxLookahead);
+        var insideProdPaths = lookAheadPathsPerAlternative[0];
+        var actualTokens = [];
+        for (var i = 1; i <= this.maxLookahead; i++) {
+            actualTokens.push(this.LA(i));
+        }
+        var msg = this.errorMessageProvider.buildEarlyExitMessage({
+            expectedIterationPaths: insideProdPaths,
+            actual: actualTokens,
+            previous: this.LA(0),
+            customUserDescription: userDefinedErrMsg,
+            ruleName: ruleName
+        });
+        throw this.SAVE_ERROR(new __WEBPACK_IMPORTED_MODULE_0__exceptions_public__["a" /* EarlyExitException */](msg, this.LA(1), this.LA(0)));
+    };
+    // TODO: consider caching the error message computed information
+    ErrorHandler.prototype.raiseNoAltException = function (occurrence, errMsgTypes) {
+        var ruleName = this.getCurrRuleFullName();
+        var ruleGrammar = this.getGAstProductions()[ruleName];
+        // TODO: getLookaheadPathsForOr can be slow for large enough maxLookahead and certain grammars, consider caching ?
+        var lookAheadPathsPerAlternative = Object(__WEBPACK_IMPORTED_MODULE_2__grammar_lookahead__["h" /* getLookaheadPathsForOr */])(occurrence, ruleGrammar, this.maxLookahead);
+        var actualTokens = [];
+        for (var i = 1; i <= this.maxLookahead; i++) {
+            actualTokens.push(this.LA(i));
+        }
+        var previousToken = this.LA(0);
+        var errMsg = this.errorMessageProvider.buildNoViableAltMessage({
+            expectedPathsPerAlt: lookAheadPathsPerAlternative,
+            actual: actualTokens,
+            previous: previousToken,
+            customUserDescription: errMsgTypes,
+            ruleName: this.getCurrRuleFullName()
+        });
+        throw this.SAVE_ERROR(new __WEBPACK_IMPORTED_MODULE_0__exceptions_public__["c" /* NoViableAltException */](errMsg, this.LA(1), previousToken));
+    };
+    return ErrorHandler;
+}());
+
+//# sourceMappingURL=error_handler.js.map
+
+/***/ }),
+/* 333 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ContentAssist; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grammar_interpreter__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+
+
+var ContentAssist = /** @class */ (function () {
+    function ContentAssist() {
+    }
+    ContentAssist.prototype.initContentAssist = function () { };
+    ContentAssist.prototype.computeContentAssist = function (startRuleName, precedingInput) {
+        var startRuleGast = this.gastProductionsCache[startRuleName];
+        if (Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["F" /* isUndefined */])(startRuleGast)) {
+            throw Error("Rule ->" + startRuleName + "<- does not exist in this grammar.");
+        }
+        return Object(__WEBPACK_IMPORTED_MODULE_0__grammar_interpreter__["f" /* nextPossibleTokensAfter */])([startRuleGast], precedingInput, this.tokenMatcher, this.maxLookahead);
+    };
+    // TODO: should this be a member method or a utility? it does not have any state or usage of 'this'...
+    // TODO: should this be more explicitly part of the public API?
+    ContentAssist.prototype.getNextPossibleTokenTypes = function (grammarPath) {
+        var topRuleName = Object(__WEBPACK_IMPORTED_MODULE_1__utils_utils__["s" /* first */])(grammarPath.ruleStack);
+        var gastProductions = this.getGAstProductions();
+        var topProduction = gastProductions[topRuleName];
+        var nextPossibleTokenTypes = new __WEBPACK_IMPORTED_MODULE_0__grammar_interpreter__["a" /* NextAfterTokenWalker */](topProduction, grammarPath).startWalking();
+        return nextPossibleTokenTypes;
+    };
+    return ContentAssist;
+}());
+
+//# sourceMappingURL=context_assist.js.map
+
+/***/ }),
+/* 334 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GastRecorder; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__scan_tokens_public__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__grammar_keys__ = __webpack_require__(24);
+
+
+
+
+
+
+
+var RECORDING_NULL_OBJECT = {
+    description: "This Object indicates the Parser is during Recording Phase"
+};
+Object.freeze(RECORDING_NULL_OBJECT);
+var HANDLE_SEPARATOR = true;
+var MAX_METHOD_IDX = Math.pow(2, __WEBPACK_IMPORTED_MODULE_6__grammar_keys__["d" /* BITS_FOR_OCCURRENCE_IDX */]) - 1;
+var RFT = Object(__WEBPACK_IMPORTED_MODULE_4__scan_tokens_public__["b" /* createToken */])({ name: "RECORDING_PHASE_TOKEN", pattern: __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__["a" /* Lexer */].NA });
+Object(__WEBPACK_IMPORTED_MODULE_3__scan_tokens__["a" /* augmentTokenTypes */])([RFT]);
+var RECORDING_PHASE_TOKEN = Object(__WEBPACK_IMPORTED_MODULE_4__scan_tokens_public__["c" /* createTokenInstance */])(RFT, "This IToken indicates the Parser is in Recording Phase\n\t" +
+    "" +
+    "See: https://sap.github.io/chevrotain/docs/guide/internals.html#grammar-recording for details", 
+// Using "-1" instead of NaN (as in EOF) because an actual number is less likely to
+// cause errors if the output of LA or CONSUME would be (incorrectly) used during the recording phase.
+-1, -1, -1, -1, -1, -1);
+Object.freeze(RECORDING_PHASE_TOKEN);
+var RECORDING_PHASE_CSTNODE = {
+    name: "This CSTNode indicates the Parser is in Recording Phase\n\t" +
+        "See: https://sap.github.io/chevrotain/docs/guide/internals.html#grammar-recording for details",
+    children: {}
+};
+/**
+ * This trait handles the creation of the GAST structure for Chevrotain Grammars
+ */
+var GastRecorder = /** @class */ (function () {
+    function GastRecorder() {
+    }
+    GastRecorder.prototype.initGastRecorder = function (config) {
+        this.recordingProdStack = [];
+        this.RECORDING_PHASE = false;
+    };
+    GastRecorder.prototype.enableRecording = function () {
+        var _this = this;
+        this.RECORDING_PHASE = true;
+        this.TRACE_INIT("Enable Recording", function () {
+            var _loop_1 = function (i) {
+                var idx = i > 0 ? i : "";
+                _this["CONSUME" + idx] = function (arg1, arg2) {
+                    return this.consumeInternalRecord(arg1, i, arg2);
+                };
+                _this["SUBRULE" + idx] = function (arg1, arg2) {
+                    return this.subruleInternalRecord(arg1, i, arg2);
+                };
+                _this["OPTION" + idx] = function (arg1) {
+                    return this.optionInternalRecord(arg1, i);
+                };
+                _this["OR" + idx] = function (arg1) {
+                    return this.orInternalRecord(arg1, i);
+                };
+                _this["MANY" + idx] = function (arg1) {
+                    this.manyInternalRecord(i, arg1);
+                };
+                _this["MANY_SEP" + idx] = function (arg1) {
+                    this.manySepFirstInternalRecord(i, arg1);
+                };
+                _this["AT_LEAST_ONE" + idx] = function (arg1) {
+                    this.atLeastOneInternalRecord(i, arg1);
+                };
+                _this["AT_LEAST_ONE_SEP" + idx] = function (arg1) {
+                    this.atLeastOneSepFirstInternalRecord(i, arg1);
+                };
+            };
+            /**
+             * Warning Dark Voodoo Magic upcoming!
+             * We are "replacing" the public parsing DSL methods API
+             * With **new** alternative implementations on the Parser **instance**
+             *
+             * So far this is the only way I've found to avoid performance regressions during parsing time.
+             * - Approx 30% performance regression was measured on Chrome 75 Canary when attempting to replace the "internal"
+             *   implementations directly instead.
+             */
+            for (var i = 0; i < 10; i++) {
+                _loop_1(i);
+            }
+            // DSL methods with the idx(suffix) as an argument
+            _this["consume"] = function (idx, arg1, arg2) {
+                return this.consumeInternalRecord(arg1, idx, arg2);
+            };
+            _this["subrule"] = function (idx, arg1, arg2) {
+                return this.subruleInternalRecord(arg1, idx, arg2);
+            };
+            _this["option"] = function (idx, arg1) {
+                return this.optionInternalRecord(arg1, idx);
+            };
+            _this["or"] = function (idx, arg1) {
+                return this.orInternalRecord(arg1, idx);
+            };
+            _this["many"] = function (idx, arg1) {
+                this.manyInternalRecord(idx, arg1);
+            };
+            _this["atLeastOne"] = function (idx, arg1) {
+                this.atLeastOneInternalRecord(idx, arg1);
+            };
+            _this.ACTION = _this.ACTION_RECORD;
+            _this.BACKTRACK = _this.BACKTRACK_RECORD;
+            _this.LA = _this.LA_RECORD;
+        });
+    };
+    GastRecorder.prototype.disableRecording = function () {
+        var _this = this;
+        this.RECORDING_PHASE = false;
+        // By deleting these **instance** properties, any future invocation
+        // will be deferred to the original methods on the **prototype** object
+        // This seems to get rid of any incorrect optimizations that V8 may
+        // do during the recording phase.
+        this.TRACE_INIT("Deleting Recording methods", function () {
+            for (var i = 0; i < 10; i++) {
+                var idx = i > 0 ? i : "";
+                delete _this["CONSUME" + idx];
+                delete _this["SUBRULE" + idx];
+                delete _this["OPTION" + idx];
+                delete _this["OR" + idx];
+                delete _this["MANY" + idx];
+                delete _this["MANY_SEP" + idx];
+                delete _this["AT_LEAST_ONE" + idx];
+                delete _this["AT_LEAST_ONE_SEP" + idx];
+            }
+            delete _this["consume"];
+            delete _this["subrule"];
+            delete _this["option"];
+            delete _this["or"];
+            delete _this["many"];
+            delete _this["atLeastOne"];
+            delete _this.ACTION;
+            delete _this.BACKTRACK;
+            delete _this.LA;
+        });
+    };
+    // TODO: is there any way to use this method to check no
+    //   Parser methods are called inside an ACTION?
+    //   Maybe try/catch/finally on ACTIONS while disabling the recorders state changes?
+    GastRecorder.prototype.ACTION_RECORD = function (impl) {
+        // NO-OP during recording
+        return;
+    };
+    // Executing backtracking logic will break our recording logic assumptions
+    GastRecorder.prototype.BACKTRACK_RECORD = function (grammarRule, args) {
+        return function () { return true; };
+    };
+    // LA is part of the official API and may be used for custom lookahead logic
+    // by end users who may forget to wrap it in ACTION or inside a GATE
+    GastRecorder.prototype.LA_RECORD = function (howMuch) {
+        // We cannot use the RECORD_PHASE_TOKEN here because someone may depend
+        // On LA return EOF at the end of the input so an infinite loop may occur.
+        return __WEBPACK_IMPORTED_MODULE_5__parser__["e" /* END_OF_FILE */];
+    };
+    GastRecorder.prototype.topLevelRuleRecord = function (name, def) {
+        try {
+            var newTopLevelRule = new __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["j" /* Rule */]({ definition: [], name: name });
+            newTopLevelRule.name = name;
+            this.recordingProdStack.push(newTopLevelRule);
+            def.call(this);
+            this.recordingProdStack.pop();
+            return newTopLevelRule;
+        }
+        catch (originalError) {
+            if (originalError.KNOWN_RECORDER_ERROR !== true) {
+                try {
+                    originalError.message =
+                        originalError.message +
+                            '\n\t This error was thrown during the "grammar recording phase" For more info see:\n\t' +
+                            "https://sap.github.io/chevrotain/docs/guide/internals.html#grammar-recording";
+                }
+                catch (mutabilityError) {
+                    // We may not be able to modify the original error object
+                    throw originalError;
+                }
+            }
+            throw originalError;
+        }
+    };
+    // Implementation of parsing DSL
+    GastRecorder.prototype.optionInternalRecord = function (actionORMethodDef, occurrence) {
+        return recordProd.call(this, __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["e" /* Option */], actionORMethodDef, occurrence);
+    };
+    GastRecorder.prototype.atLeastOneInternalRecord = function (occurrence, actionORMethodDef) {
+        recordProd.call(this, __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["g" /* RepetitionMandatory */], actionORMethodDef, occurrence);
+    };
+    GastRecorder.prototype.atLeastOneSepFirstInternalRecord = function (occurrence, options) {
+        recordProd.call(this, __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */], options, occurrence, HANDLE_SEPARATOR);
+    };
+    GastRecorder.prototype.manyInternalRecord = function (occurrence, actionORMethodDef) {
+        recordProd.call(this, __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["f" /* Repetition */], actionORMethodDef, occurrence);
+    };
+    GastRecorder.prototype.manySepFirstInternalRecord = function (occurrence, options) {
+        recordProd.call(this, __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["i" /* RepetitionWithSeparator */], options, occurrence, HANDLE_SEPARATOR);
+    };
+    GastRecorder.prototype.orInternalRecord = function (altsOrOpts, occurrence) {
+        return recordOrProd.call(this, altsOrOpts, occurrence);
+    };
+    GastRecorder.prototype.subruleInternalRecord = function (ruleToCall, occurrence, options) {
+        assertMethodIdxIsValid(occurrence);
+        if (!ruleToCall || Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(ruleToCall, "ruleName") === false) {
+            var error = new Error("<SUBRULE" + getIdxSuffix(occurrence) + "> argument is invalid" +
+                (" expecting a Parser method reference but got: <" + JSON.stringify(ruleToCall) + ">") +
+                ("\n inside top level rule: <" + this.recordingProdStack[0].name + ">"));
+            error.KNOWN_RECORDER_ERROR = true;
+            throw error;
+        }
+        var prevProd = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["M" /* peek */])(this.recordingProdStack);
+        var ruleName = ruleToCall["ruleName"];
+        var newNoneTerminal = new __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["d" /* NonTerminal */]({
+            idx: occurrence,
+            nonTerminalName: ruleName,
+            // The resolving of the `referencedRule` property will be done once all the Rule's GASTs have been created
+            referencedRule: undefined
+        });
+        prevProd.definition.push(newNoneTerminal);
+        return this.outputCst
+            ? RECORDING_PHASE_CSTNODE
+            : RECORDING_NULL_OBJECT;
+    };
+    GastRecorder.prototype.consumeInternalRecord = function (tokType, occurrence, options) {
+        assertMethodIdxIsValid(occurrence);
+        if (!Object(__WEBPACK_IMPORTED_MODULE_3__scan_tokens__["b" /* hasShortKeyProperty */])(tokType)) {
+            var error = new Error("<CONSUME" + getIdxSuffix(occurrence) + "> argument is invalid" +
+                (" expecting a TokenType reference but got: <" + JSON.stringify(tokType) + ">") +
+                ("\n inside top level rule: <" + this.recordingProdStack[0].name + ">"));
+            error.KNOWN_RECORDER_ERROR = true;
+            throw error;
+        }
+        var prevProd = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["M" /* peek */])(this.recordingProdStack);
+        var newNoneTerminal = new __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["k" /* Terminal */]({
+            idx: occurrence,
+            terminalType: tokType
+        });
+        prevProd.definition.push(newNoneTerminal);
+        return RECORDING_PHASE_TOKEN;
+    };
+    return GastRecorder;
+}());
+
+function recordProd(prodConstructor, mainProdArg, occurrence, handleSep) {
+    if (handleSep === void 0) { handleSep = false; }
+    assertMethodIdxIsValid(occurrence);
+    var prevProd = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["M" /* peek */])(this.recordingProdStack);
+    var grammarAction = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["B" /* isFunction */])(mainProdArg)
+        ? mainProdArg
+        : mainProdArg.DEF;
+    var newProd = new prodConstructor({ definition: [], idx: occurrence });
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(mainProdArg, "NAME")) {
+        newProd.name = mainProdArg.NAME;
+    }
+    if (handleSep) {
+        newProd.separator = mainProdArg.SEP;
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(mainProdArg, "MAX_LOOKAHEAD")) {
+        newProd.maxLookahead = mainProdArg.MAX_LOOKAHEAD;
+    }
+    this.recordingProdStack.push(newProd);
+    grammarAction.call(this);
+    prevProd.definition.push(newProd);
+    this.recordingProdStack.pop();
+    return RECORDING_NULL_OBJECT;
+}
+function recordOrProd(mainProdArg, occurrence) {
+    var _this = this;
+    assertMethodIdxIsValid(occurrence);
+    var prevProd = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["M" /* peek */])(this.recordingProdStack);
+    // Only an array of alternatives
+    var hasOptions = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["y" /* isArray */])(mainProdArg) === false;
+    var alts = hasOptions === false ? mainProdArg : mainProdArg.DEF;
+    var newOrProd = new __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["b" /* Alternation */]({
+        definition: [],
+        idx: occurrence,
+        ignoreAmbiguities: hasOptions && mainProdArg.IGNORE_AMBIGUITIES === true
+    });
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(mainProdArg, "NAME")) {
+        newOrProd.name = mainProdArg.NAME;
+    }
+    if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(mainProdArg, "MAX_LOOKAHEAD")) {
+        newOrProd.maxLookahead = mainProdArg.MAX_LOOKAHEAD;
+    }
+    var hasPredicates = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["Q" /* some */])(alts, function (currAlt) { return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["B" /* isFunction */])(currAlt.GATE); });
+    newOrProd.hasPredicates = hasPredicates;
+    prevProd.definition.push(newOrProd);
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(alts, function (currAlt) {
+        var currAltFlat = new __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__["c" /* Flat */]({ definition: [] });
+        newOrProd.definition.push(currAltFlat);
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(currAlt, "NAME")) {
+            currAltFlat.name = currAlt.NAME;
+        }
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(currAlt, "IGNORE_AMBIGUITIES")) {
+            currAltFlat.ignoreAmbiguities = currAlt.IGNORE_AMBIGUITIES;
+        }
+        // **implicit** ignoreAmbiguities due to usage of gate
+        else if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(currAlt, "GATE")) {
+            currAltFlat.ignoreAmbiguities = true;
+        }
+        _this.recordingProdStack.push(currAltFlat);
+        currAlt.ALT.call(_this);
+        _this.recordingProdStack.pop();
+    });
+    return RECORDING_NULL_OBJECT;
+}
+function getIdxSuffix(idx) {
+    return idx === 0 ? "" : "" + idx;
+}
+function assertMethodIdxIsValid(idx) {
+    if (idx < 0 || idx > MAX_METHOD_IDX) {
+        var error = new Error(
+        // The stack trace will contain all the needed details
+        "Invalid DSL Method idx value: <" + idx + ">\n\t" +
+            ("Idx value must be a none negative value smaller than " + (MAX_METHOD_IDX +
+                1)));
+        error.KNOWN_RECORDER_ERROR = true;
+        throw error;
+    }
+}
+//# sourceMappingURL=gast_recorder.js.map
+
+/***/ }),
+/* 335 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PerformanceTracer; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser__ = __webpack_require__(9);
+
+
+/**
+ * Trait responsible for runtime parsing errors.
+ */
+var PerformanceTracer = /** @class */ (function () {
+    function PerformanceTracer() {
+    }
+    PerformanceTracer.prototype.initPerformanceTracer = function (config) {
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["w" /* has */])(config, "traceInitPerf")) {
+            var userTraceInitPerf = config.traceInitPerf;
+            var traceIsNumber = typeof userTraceInitPerf === "number";
+            this.traceInitMaxIdent = traceIsNumber
+                ? userTraceInitPerf
+                : Infinity;
+            this.traceInitPerf = traceIsNumber
+                ? userTraceInitPerf > 0
+                : userTraceInitPerf;
+        }
+        else {
+            this.traceInitMaxIdent = 0;
+            this.traceInitPerf = __WEBPACK_IMPORTED_MODULE_1__parser__["b" /* DEFAULT_PARSER_CONFIG */].traceInitPerf;
+        }
+        this.traceInitIndent = -1;
+    };
+    PerformanceTracer.prototype.TRACE_INIT = function (phaseDesc, phaseImpl) {
+        // No need to optimize this using NOOP pattern because
+        // It is not called in a hot spot...
+        if (this.traceInitPerf === true) {
+            this.traceInitIndent++;
+            var indent = new Array(this.traceInitIndent + 1).join("\t");
+            if (this.traceInitIndent < this.traceInitMaxIdent) {
+                console.log(indent + "--> <" + phaseDesc + ">");
+            }
+            var _a = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["R" /* timer */])(phaseImpl), time = _a.time, value = _a.value;
+            /* istanbul ignore next - Difficult to reproduce specific performance behavior (>10ms) in tests */
+            var traceMethod = time > 10 ? console.warn : console.log;
+            if (this.traceInitIndent < this.traceInitMaxIdent) {
+                traceMethod(indent + "<-- <" + phaseDesc + "> time: " + time + "ms");
+            }
+            this.traceInitIndent--;
+            return value;
+        }
+        else {
+            return phaseImpl();
+        }
+    };
+    return PerformanceTracer;
+}());
+
+//# sourceMappingURL=perf_tracer.js.map
+
+/***/ }),
+/* 336 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createSyntaxDiagramsCode;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(209);
+
+function createSyntaxDiagramsCode(grammar, _a) {
+    var _b = _a === void 0 ? {} : _a, _c = _b.resourceBase, resourceBase = _c === void 0 ? "https://unpkg.com/chevrotain@" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* VERSION */] + "/diagrams/" : _c, _d = _b.css, css = _d === void 0 ? "https://unpkg.com/chevrotain@" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* VERSION */] + "/diagrams/diagrams.css" : _d;
+    var header = "\n<!-- This is a generated file -->\n<!DOCTYPE html>\n<meta charset=\"utf-8\">\n<style>\n  body {\n    background-color: hsl(30, 20%, 95%)\n  }\n</style>\n\n";
+    var cssHtml = "\n<link rel='stylesheet' href='" + css + "'>\n";
+    var scripts = "\n<script src='" + resourceBase + "vendor/railroad-diagrams.js'></script>\n<script src='" + resourceBase + "src/diagrams_builder.js'></script>\n<script src='" + resourceBase + "src/diagrams_behavior.js'></script>\n<script src='" + resourceBase + "src/main.js'></script>\n";
+    var diagramsDiv = "\n<div id=\"diagrams\" align=\"center\"></div>    \n";
+    var serializedGrammar = "\n<script>\n    window.serializedGrammar = " + JSON.stringify(grammar, null, "  ") + ";\n</script>\n";
+    var initLogic = "\n<script>\n    var diagramsDiv = document.getElementById(\"diagrams\");\n    main.drawDiagramsFromSerializedGrammar(serializedGrammar, diagramsDiv);\n</script>\n";
+    return (header + cssHtml + scripts + diagramsDiv + serializedGrammar + initLogic);
+}
+//# sourceMappingURL=render_public.js.map
+
+/***/ }),
+/* 337 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = generateParserFactory;
+/* harmony export (immutable) */ __webpack_exports__["b"] = generateParserModule;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generate__ = __webpack_require__(338);
+
+function generateParserFactory(options) {
+    var wrapperText = Object(__WEBPACK_IMPORTED_MODULE_0__generate__["b" /* genWrapperFunction */])({
+        name: options.name,
+        rules: options.rules
+    });
+    var constructorWrapper = new Function("tokenVocabulary", "config", "chevrotain", wrapperText);
+    return function (config) {
+        return constructorWrapper(options.tokenVocabulary, config, 
+        // TODO: check how the require is transpiled/webpacked
+        __webpack_require__(208));
+    };
+}
+function generateParserModule(options) {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__generate__["a" /* genUmdModule */])({ name: options.name, rules: options.rules });
+}
+//# sourceMappingURL=generate_public.js.map
+
+/***/ }),
+/* 338 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = genUmdModule;
+/* harmony export (immutable) */ __webpack_exports__["b"] = genWrapperFunction;
+/* unused harmony export genClass */
+/* unused harmony export genAllRules */
+/* unused harmony export genRule */
+/* unused harmony export genTerminal */
+/* unused harmony export genNonTerminal */
+/* unused harmony export genAlternation */
+/* unused harmony export genSingleAlt */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__ = __webpack_require__(7);
+
+
+/**
+ * Missing features
+ * 1. Rule arguments
+ * 2. Gates
+ * 3. embedded actions
+ */
+var NL = "\n";
+function genUmdModule(options) {
+    return "\n(function (root, factory) {\n    if (typeof define === 'function' && define.amd) {\n        // AMD. Register as an anonymous module.\n        define(['chevrotain'], factory);\n    } else if (typeof module === 'object' && module.exports) {\n        // Node. Does not work with strict CommonJS, but\n        // only CommonJS-like environments that support module.exports,\n        // like Node.\n        module.exports = factory(require('chevrotain'));\n    } else {\n        // Browser globals (root is window)\n        root.returnExports = factory(root.b);\n    }\n}(typeof self !== 'undefined' ? self : this, function (chevrotain) {\n\n" + genClass(options) + "\n    \nreturn {\n    " + options.name + ": " + options.name + " \n}\n}));\n";
+}
+function genWrapperFunction(options) {
+    return "    \n" + genClass(options) + "\nreturn new " + options.name + "(tokenVocabulary, config)    \n";
+}
+function genClass(options) {
+    // TODO: how to pass the token vocabulary? Constructor? other?
+    var result = "\nfunction " + options.name + "(tokenVocabulary, config) {\n    // invoke super constructor\n    // No support for embedded actions currently, so we can 'hardcode'\n    // The use of CstParser.\n    chevrotain.CstParser.call(this, tokenVocabulary, config)\n\n    const $ = this\n\n    " + genAllRules(options.rules) + "\n\n    // very important to call this after all the rules have been defined.\n    // otherwise the parser may not work correctly as it will lack information\n    // derived during the self analysis phase.\n    this.performSelfAnalysis(this)\n}\n\n// inheritance as implemented in javascript in the previous decade... :(\n" + options.name + ".prototype = Object.create(chevrotain.CstParser.prototype)\n" + options.name + ".prototype.constructor = " + options.name + "    \n    ";
+    return result;
+}
+function genAllRules(rules) {
+    var rulesText = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(rules, function (currRule) {
+        return genRule(currRule, 1);
+    });
+    return rulesText.join("\n");
+}
+function genRule(prod, n) {
+    var result = indent(n, "$.RULE(\"" + prod.name + "\", function() {") + NL;
+    result += genDefinition(prod.definition, n + 1);
+    result += indent(n + 1, "})") + NL;
+    return result;
+}
+function genTerminal(prod, n) {
+    var name = prod.terminalType.name;
+    // TODO: potential performance optimization, avoid tokenMap Dictionary access
+    return indent(n, "$.CONSUME" + prod.idx + "(this.tokensMap." + name + ")" + NL);
+}
+function genNonTerminal(prod, n) {
+    return indent(n, "$.SUBRULE" + prod.idx + "($." + prod.nonTerminalName + ")" + NL);
+}
+function genAlternation(prod, n) {
+    var result = indent(n, "$.OR" + prod.idx + "([") + NL;
+    var alts = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(prod.definition, function (altDef) { return genSingleAlt(altDef, n + 1); });
+    result += alts.join("," + NL);
+    result += NL + indent(n, "])" + NL);
+    return result;
+}
+function genSingleAlt(prod, n) {
+    var result = indent(n, "{") + NL;
+    if (prod.name) {
+        result += indent(n + 1, "NAME: \"" + prod.name + "\",") + NL;
+    }
+    result += indent(n + 1, "ALT: function() {") + NL;
+    result += genDefinition(prod.definition, n + 1);
+    result += indent(n + 1, "}") + NL;
+    result += indent(n, "}");
+    return result;
+}
+function genProd(prod, n) {
+    /* istanbul ignore else */
+    if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["d" /* NonTerminal */]) {
+        return genNonTerminal(prod, n);
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["e" /* Option */]) {
+        return genDSLRule("OPTION", prod, n);
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["g" /* RepetitionMandatory */]) {
+        return genDSLRule("AT_LEAST_ONE", prod, n);
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["h" /* RepetitionMandatoryWithSeparator */]) {
+        return genDSLRule("AT_LEAST_ONE_SEP", prod, n);
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["i" /* RepetitionWithSeparator */]) {
+        return genDSLRule("MANY_SEP", prod, n);
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["f" /* Repetition */]) {
+        return genDSLRule("MANY", prod, n);
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["b" /* Alternation */]) {
+        return genAlternation(prod, n);
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["k" /* Terminal */]) {
+        return genTerminal(prod, n);
+    }
+    else if (prod instanceof __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__["c" /* Flat */]) {
+        return genDefinition(prod.definition, n);
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+function genDSLRule(dslName, prod, n) {
+    var result = indent(n, "$." + (dslName + prod.idx) + "(");
+    if (prod.name || prod.separator) {
+        result += "{" + NL;
+        if (prod.name) {
+            result += indent(n + 1, "NAME: \"" + prod.name + "\"") + "," + NL;
+        }
+        if (prod.separator) {
+            result +=
+                indent(n + 1, "SEP: this.tokensMap." + prod.separator.name) +
+                    "," +
+                    NL;
+        }
+        result += "DEF: " + genDefFunction(prod.definition, n + 2) + NL;
+        result += indent(n, "}") + NL;
+    }
+    else {
+        result += genDefFunction(prod.definition, n + 1);
+    }
+    result += indent(n, ")") + NL;
+    return result;
+}
+function genDefFunction(definition, n) {
+    var def = "function() {" + NL;
+    def += genDefinition(definition, n);
+    def += indent(n, "}") + NL;
+    return def;
+}
+function genDefinition(def, n) {
+    var result = "";
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(def, function (prod) {
+        result += genProd(prod, n + 1);
+    });
+    return result;
+}
+function indent(howMuch, text) {
+    var spaces = Array(howMuch * 4 + 1).join(" ");
+    return spaces + text;
+}
+//# sourceMappingURL=generate.js.map
+
+/***/ }),
+/* 339 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76608,29 +87157,29 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = rasterLayer;
 
-var _capMixin = __webpack_require__(11);
+var _capMixin = __webpack_require__(14);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _rasterLayerPointMixin = __webpack_require__(188);
+var _rasterLayerPointMixin = __webpack_require__(206);
 
 var _rasterLayerPointMixin2 = _interopRequireDefault(_rasterLayerPointMixin);
 
-var _rasterLayerPolyMixin = __webpack_require__(189);
+var _rasterLayerPolyMixin = __webpack_require__(207);
 
 var _rasterLayerPolyMixin2 = _interopRequireDefault(_rasterLayerPolyMixin);
 
-var _rasterLayerHeatmapMixin = __webpack_require__(187);
+var _rasterLayerHeatmapMixin = __webpack_require__(205);
 
 var _rasterLayerHeatmapMixin2 = _interopRequireDefault(_rasterLayerHeatmapMixin);
 
-var _rasterLayerLineMixin = __webpack_require__(296);
+var _rasterLayerLineMixin = __webpack_require__(340);
 
 var _rasterLayerLineMixin2 = _interopRequireDefault(_rasterLayerLineMixin);
 
-var _utilsVega = __webpack_require__(16);
+var _utilsVega = __webpack_require__(21);
 
-var _mapdDraw = __webpack_require__(14);
+var _mapdDraw = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -77129,7 +87678,7 @@ function rasterLayer(layerType) {
 }
 
 /***/ }),
-/* 296 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77145,11 +87694,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = rasterLayerLineMixin;
 
-var _utilsVega = __webpack_require__(16);
+var _utilsVega = __webpack_require__(21);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 var _d = __webpack_require__(1);
 
@@ -77631,7 +88180,7 @@ function rasterLayerLineMixin(_layer) {
 }
 
 /***/ }),
-/* 297 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77642,11 +88191,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rasterMixin;
 
-var _core = __webpack_require__(2);
+var _core = __webpack_require__(3);
 
-var _coreAsync = __webpack_require__(4);
+var _coreAsync = __webpack_require__(5);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 var _d = __webpack_require__(1);
 
@@ -78038,7 +88587,7 @@ function rasterMixin(_chart) {
 }
 
 /***/ }),
-/* 298 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78233,7 +88782,7 @@ function legendContinuous() {
 }
 
 /***/ }),
-/* 299 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78248,9 +88797,9 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _dcLegendMixin = __webpack_require__(300);
+var _dcLegendMixin = __webpack_require__(344);
 
 var _dcLegendMixin2 = _interopRequireDefault(_dcLegendMixin);
 
@@ -78507,7 +89056,7 @@ function legend() {
 }
 
 /***/ }),
-/* 300 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78606,7 +89155,7 @@ function legendMixin(legend) {
 }
 
 /***/ }),
-/* 301 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78803,31 +89352,31 @@ function legendCont() {
 }
 
 /***/ }),
-/* 302 */
+/* 346 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 303 */
+/* 347 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 304 */
+/* 348 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 305 */
+/* 349 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 306 */
+/* 350 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79071,7 +89620,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })();
 
 /***/ }),
-/* 307 */
+/* 351 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79169,7 +89718,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })();
 
 /***/ }),
-/* 308 */
+/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.1.1/LICENSE.txt */
