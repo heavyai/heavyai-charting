@@ -589,7 +589,6 @@ export function rasterDrawMixin(chart) {
       // using a mapbox map, it works better to rerender
       // on move here
       chart.map().on("move", updateDraw)
-
     } else {
       // using a dc coordinate grid, redraws work better
       // on the render event
