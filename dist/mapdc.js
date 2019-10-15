@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 217);
+/******/ 	return __webpack_require__(__webpack_require__.s = 218);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1929,7 +1929,7 @@ return /******/ (function(modules) { // webpackBootstrap
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(239)("./" + name);
+                __webpack_require__(240)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -5587,7 +5587,7 @@ exports.xDomain = xDomain;
 exports.xScale = xScale;
 exports.xAxisTickFormat = xAxisTickFormat;
 
-var _mapdDataLayer = __webpack_require__(220);
+var _mapdDataLayer = __webpack_require__(221);
 
 var _formattingHelpers = __webpack_require__(10);
 
@@ -6468,7 +6468,7 @@ var _asyncMixin = __webpack_require__(180);
 
 var _asyncMixin2 = _interopRequireDefault(_asyncMixin);
 
-var _legendMixin = __webpack_require__(241);
+var _legendMixin = __webpack_require__(242);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
@@ -6482,11 +6482,11 @@ var _errors = __webpack_require__(181);
 
 var errors = _interopRequireWildcard(_errors);
 
-var _filterMixin = __webpack_require__(242);
+var _filterMixin = __webpack_require__(243);
 
 var _filterMixin2 = _interopRequireDefault(_filterMixin);
 
-var _labelMixin = __webpack_require__(243);
+var _labelMixin = __webpack_require__(244);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
@@ -8579,7 +8579,7 @@ function serializeProduction(node) {
 
 
 var bind = __webpack_require__(190);
-var isBuffer = __webpack_require__(273);
+var isBuffer = __webpack_require__(274);
 
 /*global toString:true*/
 
@@ -8930,8 +8930,8 @@ module.exports = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cst_cst__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__errors_public__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__ = __webpack_require__(214);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__ = __webpack_require__(215);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__ = __webpack_require__(215);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__ = __webpack_require__(216);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__ = __webpack_require__(326);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__ = __webpack_require__(327);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__ = __webpack_require__(329);
@@ -9375,11 +9375,11 @@ function formatCache(_axis) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(221);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(222);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(223);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(222);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(223);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(224);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(234);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(235);
 
 
 
@@ -9983,7 +9983,7 @@ var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _binningMixin = __webpack_require__(247);
+var _binningMixin = __webpack_require__(248);
 
 var _binningMixin2 = _interopRequireDefault(_binningMixin);
 
@@ -12099,7 +12099,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _wellknown = __webpack_require__(321);
+var _wellknown = __webpack_require__(322);
 
 var _wellknown2 = _interopRequireDefault(_wellknown);
 
@@ -30300,10 +30300,10 @@ EarlyExitException.prototype = Error.prototype;
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return LexerDefinitionErrorType; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Lexer; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lexer__ = __webpack_require__(210);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lexer__ = __webpack_require__(211);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__ = __webpack_require__(212);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(43);
 
 
@@ -32330,7 +32330,7 @@ function areTokenCategoriesNotUsed(lookAheadPaths) {
 /* harmony export (immutable) */ __webpack_exports__["f"] = nextPossibleTokensAfter;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__first__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__first__ = __webpack_require__(213);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__ = __webpack_require__(7);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -34563,11 +34563,11 @@ var _utilsLatlon = __webpack_require__(188);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _lassoToolUi = __webpack_require__(254);
+var _lassoToolUi = __webpack_require__(255);
 
 var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
 
-var _earcut = __webpack_require__(256);
+var _earcut = __webpack_require__(257);
 
 var _earcut2 = _interopRequireDefault(_earcut);
 
@@ -50078,7 +50078,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _dcConstants = __webpack_require__(244);
+var _dcConstants = __webpack_require__(245);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50201,7 +50201,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = elasticDimensionMixin;
 
-var _ramda = __webpack_require__(246);
+var _ramda = __webpack_require__(247);
 
 var _d = __webpack_require__(1);
 
@@ -50867,7 +50867,7 @@ var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _coordinateGridRasterMixinUi = __webpack_require__(268);
+var _coordinateGridRasterMixinUi = __webpack_require__(269);
 
 var _coordinateGridRasterMixinUi2 = _interopRequireDefault(_coordinateGridRasterMixinUi);
 
@@ -50883,7 +50883,7 @@ var _marginMixin = __webpack_require__(17);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _axios = __webpack_require__(271);
+var _axios = __webpack_require__(272);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -52355,7 +52355,7 @@ module.exports = function isCancel(value) {
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(8);
-var normalizeHeaderName = __webpack_require__(279);
+var normalizeHeaderName = __webpack_require__(280);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -52451,7 +52451,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(278)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(279)))
 
 /***/ }),
 /* 194 */
@@ -52461,10 +52461,10 @@ module.exports = defaults;
 
 
 var utils = __webpack_require__(8);
-var settle = __webpack_require__(280);
+var settle = __webpack_require__(281);
 var buildURL = __webpack_require__(191);
-var parseHeaders = __webpack_require__(282);
-var isURLSameOrigin = __webpack_require__(283);
+var parseHeaders = __webpack_require__(283);
+var isURLSameOrigin = __webpack_require__(284);
 var createError = __webpack_require__(195);
 
 module.exports = function xhrAdapter(config) {
@@ -52557,7 +52557,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(284);
+      var cookies = __webpack_require__(285);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -52641,7 +52641,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(281);
+var enhanceError = __webpack_require__(282);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -53072,13 +53072,13 @@ function h(sel, b, c) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(307);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(308);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(308);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(309);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(203);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(309);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(310);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(310);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(311);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(204);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(312);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(313);
 
 
 
@@ -54291,7 +54291,7 @@ var _utils = __webpack_require__(4);
 
 var _coreAsync = __webpack_require__(5);
 
-var _customSqlParser = __webpack_require__(322);
+var _customSqlParser = __webpack_require__(208);
 
 var _customSqlParser2 = _interopRequireDefault(_customSqlParser);
 
@@ -54973,12 +54973,742 @@ function rasterLayerPolyMixin(_layer) {
 
 /***/ }),
 /* 208 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.default = parseFactsFromCustomSQL;
+
+var _chevrotain = __webpack_require__(209);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // This implements a simple parser for custom SQL expressions. It's mostly
+// based on the postgres documentation with notes about the bits that were
+// skipped. I'm not sure how much of the postgres spec core implements; it's
+// possible some of the skipped bits aren't even implemented in core anyway.
+// I've made an attempt to implement all of the SQL standard stuff.
+
+
+var Whitespace = (0, _chevrotain.createToken)({
+  name: "Whitespace",
+  pattern: /\s+/,
+  group: _chevrotain.Lexer.SKIPPED
+});
+
+// XXX:
+// Window functions (OVER, PARTITION BY, USING, NULLS, FIRST, LAST, etc)
+// Type casts (CAST ... AS ...)
+// COLLATE
+// Sub-queries (SELECT, et al)
+// ARRAY
+// ROW
+var Keyword = (0, _chevrotain.createToken)({ name: "Keyword", pattern: _chevrotain.Lexer.NA });
+var All = (0, _chevrotain.createToken)({ name: "All", pattern: /all/i, categories: [Keyword] });
+var Distinct = (0, _chevrotain.createToken)({
+  name: "Distinct",
+  pattern: /distinct/i,
+  categories: [Keyword]
+});
+var OrderBy = (0, _chevrotain.createToken)({
+  name: "OrderBy",
+  pattern: /order by/i,
+  categories: [Keyword]
+});
+var Asc = (0, _chevrotain.createToken)({
+  name: "Ascending",
+  pattern: /asc/i,
+  categories: [Keyword]
+});
+var Desc = (0, _chevrotain.createToken)({
+  name: "Descending",
+  pattern: /desc/i,
+  categories: [Keyword]
+});
+var Cast = (0, _chevrotain.createToken)({
+  name: "Cast",
+  pattern: /cast/i,
+  categories: [Keyword]
+});
+var As = (0, _chevrotain.createToken)({
+  name: "As",
+  pattern: /as/i,
+  categories: [Keyword]
+});
+
+// XXX:
+// support for non-latin characters?
+// U&"..." identifiers?
+// U&"..." UESCAPE '?' identifiers?
+var Identifier = (0, _chevrotain.createToken)({ name: "Identifier", pattern: _chevrotain.Lexer.NA });
+var UnquotedIdentifier = (0, _chevrotain.createToken)({
+  name: "UnquotedIdentifier",
+  pattern: /[a-zA-Z_]\w*/,
+  categories: [Identifier]
+});
+var QuotedIdentifier = (0, _chevrotain.createToken)({
+  name: "QuotedIdentifier",
+  pattern: /"(?:[^"]|"")+"/,
+  categories: [Identifier]
+});
+
+// XXX:
+// E'...' string constants?
+// U&'...' string constants?
+// U&'...' UESCAPE '?' string constants?
+// $$...$$ string constants?
+// bit constants?
+var Constant = (0, _chevrotain.createToken)({ name: "Constant", pattern: _chevrotain.Lexer.NA });
+var StringConstant = (0, _chevrotain.createToken)({
+  name: "StringConstant",
+  pattern: /'(?:[^']|'')*'(?:\s*\n\s*'(?:[^']|'')*')*/,
+  categories: [Constant],
+  line_breaks: true
+});
+var NumericConstant = (0, _chevrotain.createToken)({
+  name: "NumericConstant",
+  pattern: /(?:[1-9]\d*(?:\.\d)?|0?\.\d)\d*(?:[eE][+-]?\d+)?/,
+  categories: [Constant]
+});
+var BooleanConstant = (0, _chevrotain.createToken)({
+  name: "BooleanConstant",
+  pattern: /(?:true|false)/i,
+  categories: [Constant]
+});
+
+// XXX:
+// IS
+// ISNULL
+// NOTNULL
+// IN
+// BETWEEN
+// OVERLAPS
+// LIKE/ILIKE/SIMILAR
+// < >
+// =
+// NOT
+// AND
+// OR
+var Operator = (0, _chevrotain.createToken)({ name: "Operator", pattern: _chevrotain.Lexer.NA });
+
+var AllColumns = (0, _chevrotain.createToken)({ name: "AllColumns", pattern: _chevrotain.Lexer.NA });
+var PrefixOperator = (0, _chevrotain.createToken)({
+  name: "PrefixOperator",
+  pattern: _chevrotain.Lexer.NA,
+  categories: [Operator]
+});
+var BinaryOperator = (0, _chevrotain.createToken)({
+  name: "BinaryOperator",
+  pattern: _chevrotain.Lexer.NA,
+  categories: [Operator]
+});
+
+var ExponentiationOperator = (0, _chevrotain.createToken)({
+  name: "ExponentOperator",
+  pattern: /\^/,
+  categories: [BinaryOperator]
+});
+
+var MultiplicativeOperator = (0, _chevrotain.createToken)({
+  name: "MultiplicativeOperator",
+  pattern: _chevrotain.Lexer.NA,
+  categories: [BinaryOperator]
+});
+var MultiplicationOperator = (0, _chevrotain.createToken)({
+  name: "MultiplicationOperator",
+  pattern: /\*/,
+  categories: [MultiplicativeOperator, AllColumns]
+});
+var DivisionOperator = (0, _chevrotain.createToken)({
+  name: "DivisionOperator",
+  pattern: /\//,
+  categories: [MultiplicativeOperator]
+});
+var ModuloOperator = (0, _chevrotain.createToken)({
+  name: "ModuloOperator",
+  pattern: /%/,
+  categories: [MultiplicativeOperator]
+});
+
+var AdditiveOperator = (0, _chevrotain.createToken)({
+  name: "AdditiveOperator",
+  pattern: _chevrotain.Lexer.NA,
+  categories: [BinaryOperator, PrefixOperator]
+});
+var AdditionOperator = (0, _chevrotain.createToken)({
+  name: "AdditionOperator",
+  pattern: /\+/,
+  categories: [AdditiveOperator]
+});
+var SubtractionOperator = (0, _chevrotain.createToken)({
+  name: "SubtractionOperator",
+  pattern: /-/,
+  categories: [AdditiveOperator]
+});
+
+// XXX:
+// Array elements with brackets ([])
+// Array slices with :
+// Type cast with ::
+var Punctuation = (0, _chevrotain.createToken)({ name: "Punctuation", pattern: _chevrotain.Lexer.NA });
+var OpenParen = (0, _chevrotain.createToken)({
+  name: "OpenParenthesis",
+  pattern: /\(/,
+  categories: [Punctuation]
+});
+var CloseParen = (0, _chevrotain.createToken)({
+  name: "CloseParenthesis",
+  pattern: /\)/,
+  categories: [Punctuation]
+});
+var Comma = (0, _chevrotain.createToken)({
+  name: "Comma",
+  pattern: /,/,
+  categories: [Punctuation]
+});
+var Dot = (0, _chevrotain.createToken)({
+  name: "Dot",
+  pattern: /\./,
+  categories: [Punctuation]
+});
+
+var allTokens = [Whitespace,
+
+// keywords must come before Identifiers
+All, Distinct, OrderBy, Asc, Desc, Cast, As,
+
+// Identifiers must come before anything else because a QuotedIdentifier can
+// technically contain anything
+Identifier, UnquotedIdentifier, QuotedIdentifier, Constant, StringConstant, NumericConstant, BooleanConstant, Operator, PrefixOperator, BinaryOperator, ExponentiationOperator, MultiplicativeOperator, MultiplicationOperator, DivisionOperator, ModuloOperator, AdditiveOperator, AdditionOperator, SubtractionOperator, OpenParen, CloseParen, Comma, Dot];
+
+var sqlLexer = new _chevrotain.Lexer(allTokens);
+
+var SQLParser = function (_CstParser) {
+  _inherits(SQLParser, _CstParser);
+
+  function SQLParser() {
+    _classCallCheck(this, SQLParser);
+
+    var _this = _possibleConstructorReturn(this, (SQLParser.__proto__ || Object.getPrototypeOf(SQLParser)).call(this, allTokens));
+
+    _this.RULE("expression", function () {
+      _this.SUBRULE(_this.additiveExpression);
+    });
+
+    _this.RULE("additiveExpression", function () {
+      _this.SUBRULE(_this.multiplicativeExpression, { LABEL: "lhs" });
+      _this.MANY(function () {
+        _this.CONSUME(AdditiveOperator, { LABEL: "operator" });
+        _this.SUBRULE2(_this.multiplicativeExpression, { LABEL: "rhs" });
+      });
+    });
+
+    _this.RULE("multiplicativeExpression", function () {
+      _this.SUBRULE(_this.exponentiationExpression, { LABEL: "lhs" });
+      _this.MANY(function () {
+        _this.CONSUME(MultiplicativeOperator, { LABEL: "operator" });
+        _this.SUBRULE2(_this.exponentiationExpression, { LABEL: "rhs" });
+      });
+    });
+
+    _this.RULE("exponentiationExpression", function () {
+      _this.SUBRULE(_this.atomicExpression, { LABEL: "lhs" });
+      _this.MANY(function () {
+        _this.CONSUME(ExponentiationOperator, { LABEL: "operator" });
+        _this.SUBRULE2(_this.atomicExpression, { LABEL: "rhs" });
+      });
+    });
+
+    _this.RULE("atomicExpression", function () {
+      _this.OR([{ ALT: function ALT() {
+          return _this.SUBRULE(_this.parenthesesExpression);
+        } }, { ALT: function ALT() {
+          return _this.SUBRULE(_this.castExpression);
+        } }, { ALT: function ALT() {
+          return _this.SUBRULE(_this.functionExpression);
+        } }, { ALT: function ALT() {
+          return _this.SUBRULE(_this.prefixExpression);
+        } }, { ALT: function ALT() {
+          return _this.SUBRULE(_this.columnExpression);
+        } }, { ALT: function ALT() {
+          return _this.CONSUME(Constant);
+        } }]);
+    });
+
+    _this.RULE("parenthesesExpression", function () {
+      _this.CONSUME(OpenParen);
+      _this.SUBRULE(_this.expression);
+      _this.CONSUME(CloseParen);
+    });
+
+    _this.RULE("castExpression", function () {
+      _this.CONSUME(Cast);
+      _this.CONSUME(OpenParen);
+      _this.SUBRULE(_this.expression);
+      _this.CONSUME(As);
+      _this.CONSUME(UnquotedIdentifier, { LABEL: "castTo" });
+      _this.CONSUME(CloseParen);
+    });
+
+    _this.RULE("orderByExpression", function () {
+      _this.SUBRULE(_this.expression);
+      _this.OPTION(function () {
+        _this.OR([{ ALT: function ALT() {
+            return _this.CONSUME(Asc, { LABEL: "asc" });
+          } }, { ALT: function ALT() {
+            return _this.CONSUME(Desc, { LABEL: "desc" });
+          } }]);
+      });
+    });
+
+    _this.RULE("orderBy", function () {
+      _this.CONSUME(OrderBy);
+      _this.AT_LEAST_ONE_SEP({
+        SEP: Comma,
+        DEF: function DEF() {
+          _this.SUBRULE(_this.orderByExpression);
+        }
+      });
+    });
+
+    _this.RULE("functionExpression", function () {
+      _this.CONSUME(UnquotedIdentifier, { LABEL: "function" });
+      _this.CONSUME(OpenParen);
+      _this.OR1([{ ALT: function ALT() {
+          return _this.CONSUME(AllColumns);
+        } }, {
+        ALT: function ALT() {
+          _this.OPTION1(function () {
+            _this.OR2([{ ALT: function ALT() {
+                return _this.CONSUME(All);
+              } }, { ALT: function ALT() {
+                return _this.CONSUME(Distinct);
+              } }]);
+          });
+          _this.AT_LEAST_ONE_SEP({
+            SEP: Comma,
+            DEF: function DEF() {
+              _this.SUBRULE(_this.expression);
+            }
+          });
+          _this.OPTION2(function () {
+            _this.SUBRULE(_this.orderBy);
+          });
+        }
+      }]);
+      _this.CONSUME(CloseParen);
+    });
+
+    _this.RULE("prefixExpression", function () {
+      _this.CONSUME(PrefixOperator, { LABEL: "operator" });
+      _this.SUBRULE(_this.expression);
+    });
+
+    _this.RULE("columnExpression", function () {
+      _this.OPTION(function () {
+        _this.CONSUME1(Identifier, { LABEL: "table" });
+        _this.CONSUME(Dot);
+      });
+      _this.CONSUME2(Identifier, { LABEL: "column" });
+    });
+
+    _this.performSelfAnalysis();
+    return _this;
+  }
+
+  return SQLParser;
+}(_chevrotain.CstParser);
+
+var sqlParser = new SQLParser();
+
+var SQLVisitor = function (_sqlParser$getBaseCst) {
+  _inherits(SQLVisitor, _sqlParser$getBaseCst);
+
+  function SQLVisitor() {
+    _classCallCheck(this, SQLVisitor);
+
+    var _this2 = _possibleConstructorReturn(this, (SQLVisitor.__proto__ || Object.getPrototypeOf(SQLVisitor)).call(this));
+
+    _this2.validateVisitor();
+    return _this2;
+  }
+
+  _createClass(SQLVisitor, [{
+    key: "expression",
+    value: function expression(ctx) {
+      return this.visit(ctx.additiveExpression);
+    }
+  }, {
+    key: "additiveExpression",
+    value: function additiveExpression(ctx) {
+      var _this3 = this;
+
+      var result = this.visit(ctx.lhs);
+      if (ctx.rhs) {
+        ctx.rhs.forEach(function (operand, idx) {
+          var rhs = _this3.visit(operand);
+          result = {
+            type: "BinaryExpression",
+            operator: ctx.operator[idx].image,
+            lhs: result,
+            rhs: rhs,
+            start: result.start,
+            end: rhs.end
+          };
+        });
+      }
+      return result;
+    }
+  }, {
+    key: "multiplicativeExpression",
+    value: function multiplicativeExpression(ctx) {
+      var _this4 = this;
+
+      var result = this.visit(ctx.lhs);
+      if (ctx.rhs) {
+        ctx.rhs.forEach(function (operand, idx) {
+          var rhs = _this4.visit(operand);
+          result = {
+            type: "BinaryExpression",
+            operator: ctx.operator[idx].image,
+            lhs: result,
+            rhs: rhs,
+            start: result.start,
+            end: rhs.end
+          };
+        });
+      }
+      return result;
+    }
+  }, {
+    key: "exponentiationExpression",
+    value: function exponentiationExpression(ctx) {
+      var _this5 = this;
+
+      var result = this.visit(ctx.lhs);
+      if (ctx.rhs) {
+        ctx.rhs.forEach(function (operand, idx) {
+          var rhs = _this5.visit(operand);
+          result = {
+            type: "BinaryExpression",
+            operator: ctx.operator[idx].image,
+            lhs: result,
+            rhs: rhs,
+            start: result.start,
+            end: rhs.end
+          };
+        });
+      }
+      return result;
+    }
+  }, {
+    key: "atomicExpression",
+    value: function atomicExpression(ctx) {
+      if (ctx.parenthesesExpression) {
+        return this.visit(ctx.parenthesesExpression);
+      } else if (ctx.castExpression) {
+        return this.visit(ctx.castExpression);
+      } else if (ctx.functionExpression) {
+        return this.visit(ctx.functionExpression);
+      } else if (ctx.prefixExpression) {
+        return this.visit(ctx.prefixExpression);
+      } else if (ctx.columnExpression) {
+        return this.visit(ctx.columnExpression);
+      }
+
+      return {
+        type: "ConstantExpression",
+        value: ctx.Constant[0].image,
+        start: ctx.Constant[0].startOffset,
+        end: ctx.Constant[0].endOffset
+      };
+    }
+  }, {
+    key: "parenthesesExpression",
+    value: function parenthesesExpression(ctx) {
+      return {
+        type: "ParenthesesExpression",
+        expression: this.visit(ctx.expression),
+        start: ctx.OpenParenthesis[0].startOffset,
+        end: ctx.CloseParenthesis[0].endOffset
+      };
+    }
+  }, {
+    key: "castExpression",
+    value: function castExpression(ctx) {
+      return {
+        type: "CastExpression",
+        expression: this.visit(ctx.expression),
+        castTo: ctx.castTo[0].image,
+        start: ctx.Cast[0].startOffset,
+        end: ctx.CloseParenthesis[0].endOffset
+      };
+    }
+  }, {
+    key: "orderByExpression",
+    value: function orderByExpression(ctx) {
+      var expression = this.visit(ctx.expression[0]);
+      var end = ctx.asc ? ctx.asc[0].endOffset : ctx.desc ? ctx.desc[0].endOffset : expression.end;
+      return {
+        type: "OrderByExpression",
+        expression: expression,
+        desc: Boolean(ctx.desc),
+        start: expression.start,
+        end: end
+      };
+    }
+  }, {
+    key: "orderBy",
+    value: function orderBy(ctx) {
+      var _this6 = this;
+
+      var expressions = ctx.orderByExpression.map(function (e) {
+        return _this6.visit(e);
+      });
+      return {
+        type: "OrderBy",
+        expressions: expressions,
+        start: ctx.OrderBy[0].startOffset,
+        end: expressions[expressions.length - 1].end
+      };
+    }
+  }, {
+    key: "functionExpression",
+    value: function functionExpression(ctx) {
+      var _this7 = this;
+
+      var result = {
+        type: "FunctionExpression",
+        function: ctx.function[0].image,
+        start: ctx.function[0].startOffset,
+        end: ctx.CloseParenthesis[0].endOffset
+      };
+
+      if (ctx.AllColumns) {
+        result.star = true;
+      } else {
+        if (ctx.All) {
+          result.all = true;
+        } else if (ctx.Distinct) {
+          result.distinct = true;
+        }
+        result.params = ctx.expression.map(function (e) {
+          return _this7.visit(e);
+        });
+        if (ctx.orderBy) {
+          result.orderBy = this.visit(ctx.orderBy);
+        }
+      }
+
+      return result;
+    }
+  }, {
+    key: "prefixExpression",
+    value: function prefixExpression(ctx) {
+      var expression = this.visit(ctx.expression);
+      return {
+        type: "PrefixExpression",
+        operator: ctx.operator[0].image,
+        expression: expression,
+        start: ctx.operator[0].startOffset,
+        end: expression.end
+      };
+    }
+  }, {
+    key: "columnExpression",
+    value: function columnExpression(ctx) {
+      return {
+        type: "ColumnExpression",
+        table: ctx.table && ctx.table[0].image || null,
+        column: ctx.column[0].image,
+        start: ctx.table ? ctx.table[0].startOffset : ctx.column[0].startOffset,
+        end: ctx.column[0].endOffset
+      };
+    }
+  }]);
+
+  return SQLVisitor;
+}(sqlParser.getBaseCstVisitorConstructor());
+
+var sqlVisitor = new SQLVisitor();
+
+// Run the parser to build an AST
+function buildAst(sql) {
+  var lexResult = sqlLexer.tokenize(sql);
+  sqlParser.input = lexResult.tokens;
+
+  var cst = sqlParser.expression();
+  if (sqlParser.errors.length === 0) {
+    return sqlVisitor.visit(cst);
+  }
+  return null;
+}
+
+var SAFE = "safe";
+var UNSAFE = "unsafe";
+var NEUTRAL = "neutral";
+
+// "Paint" nodes of the AST as being safe to move into the fact query, or
+// unsafe. To be safe, the node and all children must be safe (ie, have no
+// references to other tables).
+function paintAst(factTable, node) {
+  var paint = NEUTRAL;
+  switch (node.type) {
+    case "BinaryExpression":
+      var lhsPaint = paintAst(factTable, node.lhs);
+      var rhsPaint = paintAst(factTable, node.rhs);
+      if (lhsPaint === UNSAFE || rhsPaint === UNSAFE) {
+        paint = UNSAFE;
+      } else if (lhsPaint === SAFE || rhsPaint === SAFE) {
+        paint = SAFE;
+      }
+      break;
+
+    case "ColumnExpression":
+      paint = node.table === null || node.table.toLowerCase() === factTable.toLowerCase() || node.table.toLowerCase() === "\"" + factTable.toLowerCase() + "\"" ? SAFE : UNSAFE;
+      break;
+
+    case "OrderBy":
+      paint = node.expressions.reduce(function (acc, expression) {
+        var childPaint = paintAst(factTable, expression);
+        if (childPaint === UNSAFE) {
+          return UNSAFE;
+        } else if (childPaint === SAFE && acc === NEUTRAL) {
+          return SAFE;
+        }
+        return acc;
+      }, NEUTRAL);
+      break;
+
+    case "FunctionExpression":
+      paint = node.params.reduce(function (acc, expression) {
+        var childPaint = paintAst(factTable, expression);
+        if (childPaint === UNSAFE) {
+          return UNSAFE;
+        } else if (childPaint === SAFE && acc === NEUTRAL) {
+          return SAFE;
+        }
+        return acc;
+      }, NEUTRAL);
+      break;
+
+    case "CastExpression":
+    case "OrderByExpression":
+    case "PrefixExpression":
+    case "ParenthesesExpression":
+      // these nodes have an "expression" child
+      paint = paintAst(factTable, node.expression);
+      break;
+
+    default:
+  }
+
+  node.paint = paint;
+  return paint;
+}
+
+// Any nodes painted "SAFE" are extracted from the original SQL to be used in
+// the fact query. The "extraction" works by copying the substring from the
+// original SQL into a projection and giving it an alias. This function also
+// adds details about the replacement in the "replacements" variable which can
+// be used to strip it out of the originl sql and replace it with a reference
+// to the fact table projection.
+function extractFacts(node, projections, aliases, replacements, sql) {
+  if (node.paint === SAFE) {
+    // end + 1 because "end" is an inclusive offset,
+    // but substring excludes the end index
+    var alias = "color" + projections.length;
+    var start = node.start;
+    var end = node.end + 1;
+    projections.push(sql.substring(start, end));
+    aliases.push(alias);
+    replacements.push({
+      alias: alias,
+      start: start,
+      end: end
+    });
+    return;
+  }
+
+  switch (node.type) {
+    case "BinaryExpression":
+      extractFacts(node.lhs, projections, aliases, replacements, sql);
+      extractFacts(node.rhs, projections, aliases, replacements, sql);
+      break;
+
+    case "OrderBy":
+      node.expressions.forEach(function (expression) {
+        return extractFacts(expression, projections, aliases, replacements, sql);
+      });
+      break;
+
+    case "FunctionExpression":
+      node.params.forEach(function (expression) {
+        return extractFacts(expression, projections, aliases, replacements, sql);
+      });
+      break;
+
+    case "CastExpression":
+    case "OrderByExpression":
+    case "PrefixExpression":
+    case "ParenthesesExpression":
+      extractFacts(node.expression, projections, aliases, replacements, sql);
+      break;
+
+    default:
+  }
+}
+
+// Applies the replacements from extractFacts to the original SQL
+function applyReplacements(sql, withAlias, replacements) {
+  // apply replacements starting at the end of the string so the indexes will
+  // line up correctly.
+  replacements.sort(function (a, b) {
+    return b.start - a.start;
+  }).forEach(function (replacement) {
+    sql = "" + sql.substring(0, replacement.start) + withAlias + "." + replacement.alias + sql.substring(replacement.end);
+  });
+  return sql;
+}
+
+function parseFactsFromCustomSQL(factTable, withAlias, sql) {
+  var factProjections = [];
+  var factAliases = [];
+  var expression = sql;
+
+  var ast = buildAst(sql);
+  if (ast) {
+    paintAst(factTable, ast);
+
+    var replacements = [];
+    extractFacts(ast, factProjections, factAliases, replacements, sql);
+    expression = applyReplacements(sql, withAlias, replacements);
+  }
+
+  return {
+    factProjections: factProjections,
+    factAliases: factAliases,
+    expression: expression
+  };
+}
+
+/***/ }),
+/* 209 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["clearCache"] = clearCache;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(209);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(210);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return __WEBPACK_IMPORTED_MODULE_0__version__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__ = __webpack_require__(9);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Parser", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["g"]; });
@@ -55006,7 +55736,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MismatchedTokenException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NotAllInputParsedException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["d"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NoViableAltException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__ = __webpack_require__(212);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLexerErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__ = __webpack_require__(7);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Alternation", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["b"]; });
@@ -55023,7 +55753,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "serializeProduction", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["m"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__ = __webpack_require__(19);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "GAstVisitor", function() { return __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__ = __webpack_require__(215);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "assignOccurrenceIndices", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "resolveGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "validateGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["c"]; });
@@ -55059,7 +55789,7 @@ function clearCache() {
 //# sourceMappingURL=api.js.map
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55071,7 +55801,7 @@ var VERSION = "6.5.0";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55996,7 +56726,7 @@ function initCharCodeToOptimizedIndexMap() {
 //# sourceMappingURL=lexer.js.map
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56012,7 +56742,7 @@ var defaultLexerErrorProvider = {
 //# sourceMappingURL=lexer_errors_public.js.map
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56082,7 +56812,7 @@ function firstForTerminal(terminal) {
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56092,7 +56822,7 @@ var IN = "_~IN~_";
 //# sourceMappingURL=constants.js.map
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56140,7 +56870,7 @@ function assignOccurrenceIndices(options) {
 //# sourceMappingURL=gast_resolver_public.js.map
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56152,7 +56882,7 @@ function assignOccurrenceIndices(options) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exceptions_public__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(214);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parser__ = __webpack_require__(9);
 
 
@@ -56461,7 +57191,7 @@ function attemptInRepetitionRecovery(prodFunc, args, lookaheadFunc, dslMethodIdx
 //# sourceMappingURL=recoverable.js.map
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56508,23 +57238,23 @@ function defineNameProp(obj, nameValue) {
 //# sourceMappingURL=lang_extensions.js.map
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(218);
-
-/***/ }),
-/* 218 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(219);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45)))
+__webpack_require__(219);
 
 /***/ }),
 /* 219 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(220);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45)))
+
+/***/ }),
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56533,7 +57263,7 @@ __webpack_require__(218);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.legendCont = exports.legend = exports.legendContinuous = exports.spinnerMixin = exports.scatterMixin = exports.rasterMixin = exports.rasterLayer = exports.rasterLayerPolyMixin = exports.rasterLayerPointMixin = exports.rasterLayerHeatmapMixin = exports.mapMixin = exports.marginMixin = exports.stackMixin = exports.coordinateGridRasterMixin = exports.coordinateGridMixin = exports.colorMixin = exports.capMixin = exports.bubbleMixin = exports.baseMixin = exports.asyncMixin = exports.countWidget = exports.boxPlot = exports.mapdTable = exports.scatterPlot = exports.rowChart = exports.rasterChart = exports.numberChart = exports.lineChart = exports.pieChart = exports.heatMap = exports.geoChoroplethChart = exports.dataGrid = exports.dataCount = exports.compositeChart = exports.cloudChart = exports.bubbleChart = exports.barChart = exports.bubbleOverlay = exports.errors = exports.d3 = undefined;
+exports.parseFactsFromCustomSQL = exports.legendCont = exports.legend = exports.legendContinuous = exports.spinnerMixin = exports.scatterMixin = exports.rasterMixin = exports.rasterLayer = exports.rasterLayerPolyMixin = exports.rasterLayerPointMixin = exports.rasterLayerHeatmapMixin = exports.mapMixin = exports.marginMixin = exports.stackMixin = exports.coordinateGridRasterMixin = exports.coordinateGridMixin = exports.colorMixin = exports.capMixin = exports.bubbleMixin = exports.baseMixin = exports.asyncMixin = exports.countWidget = exports.boxPlot = exports.mapdTable = exports.scatterPlot = exports.rowChart = exports.rasterChart = exports.numberChart = exports.lineChart = exports.pieChart = exports.heatMap = exports.geoChoroplethChart = exports.dataGrid = exports.dataCount = exports.compositeChart = exports.cloudChart = exports.bubbleChart = exports.barChart = exports.bubbleOverlay = exports.errors = exports.d3 = undefined;
 
 var _core = __webpack_require__(3);
 
@@ -56607,7 +57337,7 @@ Object.keys(_logger).forEach(function (key) {
   });
 });
 
-var _bubbleOverlay = __webpack_require__(240);
+var _bubbleOverlay = __webpack_require__(241);
 
 Object.defineProperty(exports, "bubbleOverlay", {
   enumerable: true,
@@ -56616,7 +57346,7 @@ Object.defineProperty(exports, "bubbleOverlay", {
   }
 });
 
-var _barChart = __webpack_require__(245);
+var _barChart = __webpack_require__(246);
 
 Object.defineProperty(exports, "barChart", {
   enumerable: true,
@@ -56625,7 +57355,7 @@ Object.defineProperty(exports, "barChart", {
   }
 });
 
-var _bubbleChart = __webpack_require__(248);
+var _bubbleChart = __webpack_require__(249);
 
 Object.defineProperty(exports, "bubbleChart", {
   enumerable: true,
@@ -56634,7 +57364,7 @@ Object.defineProperty(exports, "bubbleChart", {
   }
 });
 
-var _cloudChart = __webpack_require__(249);
+var _cloudChart = __webpack_require__(250);
 
 Object.defineProperty(exports, "cloudChart", {
   enumerable: true,
@@ -56643,7 +57373,7 @@ Object.defineProperty(exports, "cloudChart", {
   }
 });
 
-var _compositeChart = __webpack_require__(250);
+var _compositeChart = __webpack_require__(251);
 
 Object.defineProperty(exports, "compositeChart", {
   enumerable: true,
@@ -56652,7 +57382,7 @@ Object.defineProperty(exports, "compositeChart", {
   }
 });
 
-var _dataCount = __webpack_require__(251);
+var _dataCount = __webpack_require__(252);
 
 Object.defineProperty(exports, "dataCount", {
   enumerable: true,
@@ -56661,7 +57391,7 @@ Object.defineProperty(exports, "dataCount", {
   }
 });
 
-var _dataGrid = __webpack_require__(252);
+var _dataGrid = __webpack_require__(253);
 
 Object.defineProperty(exports, "dataGrid", {
   enumerable: true,
@@ -56670,7 +57400,7 @@ Object.defineProperty(exports, "dataGrid", {
   }
 });
 
-var _geoChoroplethChart = __webpack_require__(253);
+var _geoChoroplethChart = __webpack_require__(254);
 
 Object.defineProperty(exports, "geoChoroplethChart", {
   enumerable: true,
@@ -56679,7 +57409,7 @@ Object.defineProperty(exports, "geoChoroplethChart", {
   }
 });
 
-var _heatmap = __webpack_require__(262);
+var _heatmap = __webpack_require__(263);
 
 Object.defineProperty(exports, "heatMap", {
   enumerable: true,
@@ -56688,7 +57418,7 @@ Object.defineProperty(exports, "heatMap", {
   }
 });
 
-var _pieChart = __webpack_require__(263);
+var _pieChart = __webpack_require__(264);
 
 Object.defineProperty(exports, "pieChart", {
   enumerable: true,
@@ -56697,7 +57427,7 @@ Object.defineProperty(exports, "pieChart", {
   }
 });
 
-var _lineChart = __webpack_require__(264);
+var _lineChart = __webpack_require__(265);
 
 Object.defineProperty(exports, "lineChart", {
   enumerable: true,
@@ -56706,7 +57436,7 @@ Object.defineProperty(exports, "lineChart", {
   }
 });
 
-var _numberChart = __webpack_require__(265);
+var _numberChart = __webpack_require__(266);
 
 Object.defineProperty(exports, "numberChart", {
   enumerable: true,
@@ -56715,7 +57445,7 @@ Object.defineProperty(exports, "numberChart", {
   }
 });
 
-var _rasterChart = __webpack_require__(266);
+var _rasterChart = __webpack_require__(267);
 
 Object.defineProperty(exports, "rasterChart", {
   enumerable: true,
@@ -56724,7 +57454,7 @@ Object.defineProperty(exports, "rasterChart", {
   }
 });
 
-var _rowChart = __webpack_require__(316);
+var _rowChart = __webpack_require__(317);
 
 Object.defineProperty(exports, "rowChart", {
   enumerable: true,
@@ -56733,7 +57463,7 @@ Object.defineProperty(exports, "rowChart", {
   }
 });
 
-var _scatterPlot = __webpack_require__(317);
+var _scatterPlot = __webpack_require__(318);
 
 Object.defineProperty(exports, "scatterPlot", {
   enumerable: true,
@@ -56742,7 +57472,7 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _mapdTable = __webpack_require__(318);
+var _mapdTable = __webpack_require__(319);
 
 Object.defineProperty(exports, "mapdTable", {
   enumerable: true,
@@ -56751,7 +57481,7 @@ Object.defineProperty(exports, "mapdTable", {
   }
 });
 
-var _boxPlot = __webpack_require__(319);
+var _boxPlot = __webpack_require__(320);
 
 Object.defineProperty(exports, "boxPlot", {
   enumerable: true,
@@ -56760,7 +57490,7 @@ Object.defineProperty(exports, "boxPlot", {
   }
 });
 
-var _countWidget = __webpack_require__(320);
+var _countWidget = __webpack_require__(321);
 
 Object.defineProperty(exports, "countWidget", {
   enumerable: true,
@@ -56949,6 +57679,15 @@ Object.defineProperty(exports, "legendCont", {
   }
 });
 
+var _customSqlParser = __webpack_require__(208);
+
+Object.defineProperty(exports, "parseFactsFromCustomSQL", {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_customSqlParser).default;
+  }
+});
+
 var _d2 = __webpack_require__(1);
 
 var _d = _interopRequireWildcard(_d2);
@@ -56979,18 +57718,18 @@ var errors = exports.errors = {
 };
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(11);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(235);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(236);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(238);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(238);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(239);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
 /**
  * The exported `mapd-data-layer` module. Consists of a graph constructor and
@@ -57007,7 +57746,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57106,7 +57845,7 @@ function parseExpression(expression) {
 }
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57144,23 +57883,23 @@ function parseDataState(state, parser) {
 }
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTransform;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(224);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(225);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(226);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(227);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(225);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(226);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(227);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(229);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(229);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(230);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(231);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(232);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(230);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(232);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(233);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__parse_source__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(233);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(234);
 
 
 
@@ -57205,7 +57944,7 @@ function parseTransform(sql, t, parser) {
 }
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57270,7 +58009,7 @@ function parseGroupBy(sql, groupby, parser) {
 }
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57302,7 +58041,7 @@ function parseBin(sql, _ref) {
 }
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57339,7 +58078,7 @@ function parseCrossfilter(sql, transform) {
 }
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57360,7 +58099,7 @@ function parseSort(sql, transform) {
 }
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57374,7 +58113,7 @@ function parseLimit(sql, transform) {
 }
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57422,7 +58161,7 @@ function parsePostFilter(sql, transform) {
 }
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57439,7 +58178,7 @@ function parseProject(sql, transform) {
 }
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57462,7 +58201,7 @@ function parseResolvefilter(sql, transform) {
 }
 
 /***/ }),
-/* 232 */
+/* 233 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57501,7 +58240,7 @@ function sample(sql, transform) {
 }
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57521,7 +58260,7 @@ function parseWith(sql, transform) {
 }
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57576,12 +58315,12 @@ function writeWith(With) {
 }
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(237);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
@@ -57655,7 +58394,7 @@ function createDataGraph(connector) {
 }
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57748,7 +58487,7 @@ function createDataNode(context) {
 }
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57956,7 +58695,7 @@ function between(field, range) {
 }
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58184,7 +58923,7 @@ function bottom(field, limit, offset) {
 }
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -58457,10 +59196,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 239;
+webpackContext.id = 240;
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58883,7 +59622,7 @@ function bubbleOverlay(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59004,7 +59743,7 @@ function legendMixin(chart) {
 }
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59241,7 +59980,7 @@ function filterMixin(_chart) {
 }
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59385,7 +60124,7 @@ function labelMixin(chart) {
 }
 
 /***/ }),
-/* 244 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59397,7 +60136,7 @@ Object.defineProperty(exports, "__esModule", {
 var SPINNER_DELAY = exports.SPINNER_DELAY = 1000;
 
 /***/ }),
-/* 245 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59960,7 +60699,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 }
 
 /***/ }),
-/* 246 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //  Ramda v0.21.0
@@ -68750,7 +69489,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 
 
 /***/ }),
-/* 247 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68945,7 +69684,7 @@ function binningMixin(chart) {
 }
 
 /***/ }),
-/* 248 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69392,7 +70131,7 @@ function bubbleChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 249 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69542,7 +70281,7 @@ function cloudChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 250 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70110,7 +70849,7 @@ function compositeChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 251 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70279,7 +71018,7 @@ function dataCount(parent, chartGroup) {
 }
 
 /***/ }),
-/* 252 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70534,7 +71273,7 @@ function dataGrid(parent, chartGroup) {
 }
 
 /***/ }),
-/* 253 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70568,11 +71307,11 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _bbox = __webpack_require__(257);
+var _bbox = __webpack_require__(258);
 
 var _bbox2 = _interopRequireDefault(_bbox);
 
-var _bboxClip = __webpack_require__(259);
+var _bboxClip = __webpack_require__(260);
 
 var _bboxClip2 = _interopRequireDefault(_bboxClip);
 
@@ -70990,7 +71729,7 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 }
 
 /***/ }),
-/* 254 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71014,7 +71753,7 @@ var _mapdDraw = __webpack_require__(18);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _simplifyJs = __webpack_require__(255);
+var _simplifyJs = __webpack_require__(256);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
@@ -72112,7 +72851,7 @@ var LassoButtonGroupController = function () {
 exports.default = LassoButtonGroupController;
 
 /***/ }),
-/* 255 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -72242,7 +72981,7 @@ else window.simplify = simplify;
 
 
 /***/ }),
-/* 256 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72899,13 +73638,13 @@ earcut.flatten = function (data) {
 
 
 /***/ }),
-/* 257 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var meta_1 = __webpack_require__(258);
+var meta_1 = __webpack_require__(259);
 /**
  * Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
  *
@@ -72942,7 +73681,7 @@ exports.default = bbox;
 
 
 /***/ }),
-/* 258 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74081,7 +74820,7 @@ exports.findPoint = findPoint;
 
 
 /***/ }),
-/* 259 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74095,8 +74834,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 var helpers_1 = __webpack_require__(39);
-var invariant_1 = __webpack_require__(260);
-var lineclip = __importStar(__webpack_require__(261));
+var invariant_1 = __webpack_require__(261);
+var lineclip = __importStar(__webpack_require__(262));
 /**
  * Takes a {@link Feature} and a bbox and clips the feature to the bbox using
  * [lineclip](https://github.com/mapbox/lineclip).
@@ -74164,7 +74903,7 @@ function clipPolygon(rings, bbox) {
 
 
 /***/ }),
-/* 260 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74382,7 +75121,7 @@ exports.getType = getType;
 
 
 /***/ }),
-/* 261 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74514,7 +75253,7 @@ function bitCode(p, bbox) {
 
 
 /***/ }),
-/* 262 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75258,7 +75997,7 @@ function heatMap(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 263 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76061,7 +76800,7 @@ function pieChart(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 264 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76684,7 +77423,7 @@ function lineChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 265 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76783,7 +77522,7 @@ function numberChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 266 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76797,7 +77536,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = rasterChart;
 
-var _stackedLegend = __webpack_require__(267);
+var _stackedLegend = __webpack_require__(268);
 
 var _coordinateGridRasterMixin = __webpack_require__(189);
 
@@ -76819,7 +77558,7 @@ var _rasterDrawMixin = __webpack_require__(38);
 
 var _coreAsync = __webpack_require__(5);
 
-var _legendables = __webpack_require__(289);
+var _legendables = __webpack_require__(290);
 
 var _lodash = __webpack_require__(26);
 
@@ -77479,7 +78218,7 @@ function genLayeredVega(chart) {
 }
 
 /***/ }),
-/* 267 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77813,7 +78552,7 @@ function isNullLegend(domain) {
 }
 
 /***/ }),
-/* 268 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77829,7 +78568,7 @@ exports.default = bindEventHandlers;
 
 var _coreAsync = __webpack_require__(5);
 
-var _mapboxPortedFunctions = __webpack_require__(269);
+var _mapboxPortedFunctions = __webpack_require__(270);
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -78917,7 +79656,7 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 }
 
 /***/ }),
-/* 269 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78928,7 +79667,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.timed = undefined;
 
-var _unitbezier = __webpack_require__(270);
+var _unitbezier = __webpack_require__(271);
 
 var _unitbezier2 = _interopRequireDefault(_unitbezier);
 
@@ -79005,7 +79744,7 @@ var timed = exports.timed = function timed(fn, dur, ctx) {
 };
 
 /***/ }),
-/* 270 */
+/* 271 */
 /***/ (function(module, exports) {
 
 /*
@@ -79116,13 +79855,13 @@ UnitBezier.prototype.solve = function(x, epsilon) {
 
 
 /***/ }),
-/* 271 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(272);
+module.exports = __webpack_require__(273);
 
 /***/ }),
-/* 272 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79130,7 +79869,7 @@ module.exports = __webpack_require__(272);
 
 var utils = __webpack_require__(8);
 var bind = __webpack_require__(190);
-var Axios = __webpack_require__(274);
+var Axios = __webpack_require__(275);
 var mergeConfig = __webpack_require__(196);
 var defaults = __webpack_require__(193);
 
@@ -79166,14 +79905,14 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(197);
-axios.CancelToken = __webpack_require__(287);
+axios.CancelToken = __webpack_require__(288);
 axios.isCancel = __webpack_require__(192);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(288);
+axios.spread = __webpack_require__(289);
 
 module.exports = axios;
 
@@ -79182,7 +79921,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 273 */
+/* 274 */
 /***/ (function(module, exports) {
 
 /*!
@@ -79199,7 +79938,7 @@ module.exports = function isBuffer (obj) {
 
 
 /***/ }),
-/* 274 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79207,8 +79946,8 @@ module.exports = function isBuffer (obj) {
 
 var utils = __webpack_require__(8);
 var buildURL = __webpack_require__(191);
-var InterceptorManager = __webpack_require__(275);
-var dispatchRequest = __webpack_require__(276);
+var InterceptorManager = __webpack_require__(276);
+var dispatchRequest = __webpack_require__(277);
 var mergeConfig = __webpack_require__(196);
 
 /**
@@ -79292,7 +80031,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 275 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79351,18 +80090,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 276 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(8);
-var transformData = __webpack_require__(277);
+var transformData = __webpack_require__(278);
 var isCancel = __webpack_require__(192);
 var defaults = __webpack_require__(193);
-var isAbsoluteURL = __webpack_require__(285);
-var combineURLs = __webpack_require__(286);
+var isAbsoluteURL = __webpack_require__(286);
+var combineURLs = __webpack_require__(287);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -79444,7 +80183,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 277 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79471,7 +80210,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 278 */
+/* 279 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -79661,7 +80400,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 279 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79680,7 +80419,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 280 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79712,7 +80451,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 281 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79761,7 +80500,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 282 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79821,7 +80560,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 283 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79896,7 +80635,7 @@ module.exports = (
 
 
 /***/ }),
-/* 284 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79956,7 +80695,7 @@ module.exports = (
 
 
 /***/ }),
-/* 285 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79977,7 +80716,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79998,7 +80737,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80062,7 +80801,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80096,18 +80835,18 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var legend_1 = __webpack_require__(290);
+var legend_1 = __webpack_require__(291);
 exports.Legend = legend_1.default;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80121,10 +80860,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var h_1 = __webpack_require__(291);
-var vdom_1 = __webpack_require__(294);
-var d3_dispatch_1 = __webpack_require__(303);
-var d3_format_1 = __webpack_require__(305);
+var h_1 = __webpack_require__(292);
+var vdom_1 = __webpack_require__(295);
+var d3_dispatch_1 = __webpack_require__(304);
+var d3_format_1 = __webpack_require__(306);
 var commafy = function (d) { return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d; };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
@@ -80316,14 +81055,14 @@ exports.default = Legend;
 //# sourceMappingURL=legend.js.map
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var vnode_1 = __webpack_require__(292);
-var is = __webpack_require__(293);
+var vnode_1 = __webpack_require__(293);
+var is = __webpack_require__(294);
 function addNS(data, children, sel) {
     data.ns = 'http://www.w3.org/2000/svg';
     if (sel !== 'foreignObject' && children !== undefined) {
@@ -80381,7 +81120,7 @@ exports.default = h;
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 292 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80397,7 +81136,7 @@ exports.default = vnode;
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 293 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80411,18 +81150,18 @@ exports.primitive = primitive;
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 294 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var snabbdom_1 = __webpack_require__(295);
-var attributes_1 = __webpack_require__(298);
-var class_1 = __webpack_require__(299);
-var props_1 = __webpack_require__(300);
-var style_1 = __webpack_require__(301);
-var eventlisteners_1 = __webpack_require__(302);
+var snabbdom_1 = __webpack_require__(296);
+var attributes_1 = __webpack_require__(299);
+var class_1 = __webpack_require__(300);
+var props_1 = __webpack_require__(301);
+var style_1 = __webpack_require__(302);
+var eventlisteners_1 = __webpack_require__(303);
 exports.patch = snabbdom_1.init([
     class_1.default,
     props_1.default,
@@ -80433,7 +81172,7 @@ exports.patch = snabbdom_1.init([
 //# sourceMappingURL=vdom.js.map
 
 /***/ }),
-/* 295 */
+/* 296 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -80441,10 +81180,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["init"] = init;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(199);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(200);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(296);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(297);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(201);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_3__h__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(297);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(298);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "thunk", function() { return __WEBPACK_IMPORTED_MODULE_4__thunk__["a"]; });
 
 
@@ -80752,7 +81491,7 @@ function init(modules, domApi) {
 //# sourceMappingURL=snabbdom.js.map
 
 /***/ }),
-/* 296 */
+/* 297 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -80823,7 +81562,7 @@ var htmlDomApi = {
 //# sourceMappingURL=htmldomapi.js.map
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -80876,7 +81615,7 @@ var thunk = function thunk(sel, key, fn, args) {
 //# sourceMappingURL=thunk.js.map
 
 /***/ }),
-/* 298 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80937,7 +81676,7 @@ exports.default = exports.attributesModule;
 //# sourceMappingURL=attributes.js.map
 
 /***/ }),
-/* 299 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80968,7 +81707,7 @@ exports.default = exports.classModule;
 //# sourceMappingURL=class.js.map
 
 /***/ }),
-/* 300 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81000,7 +81739,7 @@ exports.default = exports.propsModule;
 //# sourceMappingURL=props.js.map
 
 /***/ }),
-/* 301 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81101,7 +81840,7 @@ exports.default = exports.styleModule;
 //# sourceMappingURL=style.js.map
 
 /***/ }),
-/* 302 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81202,18 +81941,18 @@ exports.default = exports.eventListenersModule;
 //# sourceMappingURL=eventlisteners.js.map
 
 /***/ }),
-/* 303 */
+/* 304 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(304);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(305);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return __WEBPACK_IMPORTED_MODULE_0__dispatch__["a"]; });
 
 
 
 /***/ }),
-/* 304 */
+/* 305 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -81304,12 +82043,12 @@ function set(type, name, callback) {
 
 
 /***/ }),
-/* 305 */
+/* 306 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(306);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(307);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatDefaultLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "format", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatPrefix", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["c"]; });
@@ -81317,11 +82056,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatLocale", function() { return __WEBPACK_IMPORTED_MODULE_1__locale__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(203);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatSpecifier", function() { return __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(313);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(314);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionFixed", function() { return __WEBPACK_IMPORTED_MODULE_3__precisionFixed__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(314);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(315);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionPrefix", function() { return __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(315);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(316);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionRound", function() { return __WEBPACK_IMPORTED_MODULE_5__precisionRound__["a"]; });
 
 
@@ -81332,7 +82071,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 306 */
+/* 307 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -81362,7 +82101,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 307 */
+/* 308 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -81387,7 +82126,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 308 */
+/* 309 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -81401,7 +82140,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 309 */
+/* 310 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -81419,12 +82158,12 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 310 */
+/* 311 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(204);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(311);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(312);
 
 
 
@@ -81446,7 +82185,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 311 */
+/* 312 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -81465,7 +82204,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -81475,7 +82214,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -81488,7 +82227,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -81501,7 +82240,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 315 */
+/* 316 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -81515,7 +82254,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 316 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82184,7 +82923,7 @@ function rowChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 317 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82486,7 +83225,7 @@ function scatterPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 318 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82998,7 +83737,7 @@ function mapdTable(parent, chartGroup) {
 }
 
 /***/ }),
-/* 319 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83256,7 +83995,7 @@ function boxPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 320 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83385,7 +84124,7 @@ function countWidget(parent, chartGroup) {
 }
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports) {
 
 /*eslint-disable no-cond-assign */
@@ -83661,705 +84400,6 @@ function stringify (gj) {
 
 
 /***/ }),
-/* 322 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.sqlVisitor = exports.sqlParser = exports.sqlLexer = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-exports.buildAst = buildAst;
-exports.paintAst = paintAst;
-exports.extractFacts = extractFacts;
-exports.applyReplacements = applyReplacements;
-exports.default = parseFactsFromCustomSQL;
-
-var _chevrotain = __webpack_require__(208);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // This implements a simple parser for custom SQL expressions. It's mostly
-// based on the postgres documentation with notes about the bits that were
-// skipped. I'm not sure how much of the postgres spec core implements; it's
-// possible some of the skipped bits aren't even implemented in core anyway.
-// I've made an attempt to implement all of the SQL standard stuff.
-
-
-var Whitespace = (0, _chevrotain.createToken)({
-  name: "Whitespace",
-  pattern: /\s+/,
-  group: _chevrotain.Lexer.SKIPPED
-});
-
-// XXX:
-// Window functions (OVER, PARTITION BY, USING, NULLS, FIRST, LAST, etc)
-// Type casts (CAST ... AS ...)
-// COLLATE
-// Sub-queries (SELECT, et al)
-// ARRAY
-// ROW
-var Keyword = (0, _chevrotain.createToken)({ name: "Keyword", pattern: _chevrotain.Lexer.NA });
-var All = (0, _chevrotain.createToken)({ name: "All", pattern: /all/i, categories: [Keyword] });
-var Distinct = (0, _chevrotain.createToken)({
-  name: "Distinct",
-  pattern: /distinct/i,
-  categories: [Keyword]
-});
-var OrderBy = (0, _chevrotain.createToken)({
-  name: "OrderBy",
-  pattern: /order by/i,
-  categories: [Keyword]
-});
-var Asc = (0, _chevrotain.createToken)({
-  name: "Ascending",
-  pattern: /asc/i,
-  categories: [Keyword]
-});
-var Desc = (0, _chevrotain.createToken)({
-  name: "Descending",
-  pattern: /desc/i,
-  categories: [Keyword]
-});
-
-// XXX:
-// support for non-latin characters?
-// U&"..." identifiers?
-// U&"..." UESCAPE '?' identifiers?
-var Identifier = (0, _chevrotain.createToken)({ name: "Identifier", pattern: _chevrotain.Lexer.NA });
-var UnquotedIdentifier = (0, _chevrotain.createToken)({
-  name: "UnquotedIdentifier",
-  pattern: /[a-zA-Z_]\w*/,
-  categories: [Identifier]
-});
-var QuotedIdentifier = (0, _chevrotain.createToken)({
-  name: "QuotedIdentifier",
-  pattern: /"(?:[^"]|"")+"/,
-  categories: [Identifier]
-});
-
-// XXX:
-// E'...' string constants?
-// U&'...' string constants?
-// U&'...' UESCAPE '?' string constants?
-// $$...$$ string constants?
-// bit constants?
-var Constant = (0, _chevrotain.createToken)({ name: "Constant", pattern: _chevrotain.Lexer.NA });
-var StringConstant = (0, _chevrotain.createToken)({
-  name: "StringConstant",
-  pattern: /'(?:[^']|'')*'(?:\s*\n\s*'(?:[^']|'')*')*/,
-  categories: [Constant],
-  line_breaks: true
-});
-var NumericConstant = (0, _chevrotain.createToken)({
-  name: "NumericConstant",
-  pattern: /(?:[1-9]\d*(?:\.\d)?|0?\.\d)\d*(?:[eE][+-]?\d+)?/,
-  categories: [Constant]
-});
-var BooleanConstant = (0, _chevrotain.createToken)({
-  name: "BooleanConstant",
-  pattern: /(?:true|false)/i,
-  categories: [Constant]
-});
-
-// XXX:
-// IS
-// ISNULL
-// NOTNULL
-// IN
-// BETWEEN
-// OVERLAPS
-// LIKE/ILIKE/SIMILAR
-// < >
-// =
-// NOT
-// AND
-// OR
-var Operator = (0, _chevrotain.createToken)({ name: "Operator", pattern: _chevrotain.Lexer.NA });
-
-var AllColumns = (0, _chevrotain.createToken)({ name: "AllColumns", pattern: _chevrotain.Lexer.NA });
-var PrefixOperator = (0, _chevrotain.createToken)({
-  name: "PrefixOperator",
-  pattern: _chevrotain.Lexer.NA,
-  categories: [Operator]
-});
-var BinaryOperator = (0, _chevrotain.createToken)({
-  name: "BinaryOperator",
-  pattern: _chevrotain.Lexer.NA,
-  categories: [Operator]
-});
-
-var ExponentiationOperator = (0, _chevrotain.createToken)({
-  name: "ExponentOperator",
-  pattern: /\^/,
-  categories: [BinaryOperator]
-});
-
-var MultiplicativeOperator = (0, _chevrotain.createToken)({
-  name: "MultiplicativeOperator",
-  pattern: _chevrotain.Lexer.NA,
-  categories: [BinaryOperator]
-});
-var MultiplicationOperator = (0, _chevrotain.createToken)({
-  name: "MultiplicationOperator",
-  pattern: /\*/,
-  categories: [MultiplicativeOperator, AllColumns]
-});
-var DivisionOperator = (0, _chevrotain.createToken)({
-  name: "DivisionOperator",
-  pattern: /\//,
-  categories: [MultiplicativeOperator]
-});
-var ModuloOperator = (0, _chevrotain.createToken)({
-  name: "ModuloOperator",
-  pattern: /%/,
-  categories: [MultiplicativeOperator]
-});
-
-var AdditiveOperator = (0, _chevrotain.createToken)({
-  name: "AdditiveOperator",
-  pattern: _chevrotain.Lexer.NA,
-  categories: [BinaryOperator, PrefixOperator]
-});
-var AdditionOperator = (0, _chevrotain.createToken)({
-  name: "AdditionOperator",
-  pattern: /\+/,
-  categories: [AdditiveOperator]
-});
-var SubtractionOperator = (0, _chevrotain.createToken)({
-  name: "SubtractionOperator",
-  pattern: /-/,
-  categories: [AdditiveOperator]
-});
-
-// XXX:
-// Array elements with brackets ([])
-// Array slices with :
-// Type cast with ::
-var Punctuation = (0, _chevrotain.createToken)({ name: "Punctuation", pattern: _chevrotain.Lexer.NA });
-var OpenParen = (0, _chevrotain.createToken)({
-  name: "OpenParenthesis",
-  pattern: /\(/,
-  categories: [Punctuation]
-});
-var CloseParen = (0, _chevrotain.createToken)({
-  name: "CloseParenthesis",
-  pattern: /\)/,
-  categories: [Punctuation]
-});
-var Comma = (0, _chevrotain.createToken)({
-  name: "Comma",
-  pattern: /,/,
-  categories: [Punctuation]
-});
-var Dot = (0, _chevrotain.createToken)({
-  name: "Dot",
-  pattern: /\./,
-  categories: [Punctuation]
-});
-
-var allTokens = [Whitespace,
-
-// keywords must come before Identifiers
-All, Distinct, OrderBy, Asc, Desc,
-
-// Identifiers must come before anything else because a QuotedIdentifier can
-// technically contain anything
-Identifier, UnquotedIdentifier, QuotedIdentifier, Constant, StringConstant, NumericConstant, BooleanConstant, Operator, PrefixOperator, BinaryOperator, ExponentiationOperator, MultiplicativeOperator, MultiplicationOperator, DivisionOperator, ModuloOperator, AdditiveOperator, AdditionOperator, SubtractionOperator, OpenParen, CloseParen, Comma, Dot];
-
-var sqlLexer = exports.sqlLexer = new _chevrotain.Lexer(allTokens);
-
-var SQLParser = function (_CstParser) {
-  _inherits(SQLParser, _CstParser);
-
-  function SQLParser() {
-    _classCallCheck(this, SQLParser);
-
-    var _this = _possibleConstructorReturn(this, (SQLParser.__proto__ || Object.getPrototypeOf(SQLParser)).call(this, allTokens));
-
-    _this.RULE("expression", function () {
-      _this.SUBRULE(_this.additiveExpression);
-    });
-
-    _this.RULE("additiveExpression", function () {
-      _this.SUBRULE(_this.multiplicativeExpression, { LABEL: "lhs" });
-      _this.MANY(function () {
-        _this.CONSUME(AdditiveOperator, { LABEL: "operator" });
-        _this.SUBRULE2(_this.multiplicativeExpression, { LABEL: "rhs" });
-      });
-    });
-
-    _this.RULE("multiplicativeExpression", function () {
-      _this.SUBRULE(_this.exponentiationExpression, { LABEL: "lhs" });
-      _this.MANY(function () {
-        _this.CONSUME(MultiplicativeOperator, { LABEL: "operator" });
-        _this.SUBRULE2(_this.exponentiationExpression, { LABEL: "rhs" });
-      });
-    });
-
-    _this.RULE("exponentiationExpression", function () {
-      _this.SUBRULE(_this.atomicExpression, { LABEL: "lhs" });
-      _this.MANY(function () {
-        _this.CONSUME(ExponentiationOperator, { LABEL: "operator" });
-        _this.SUBRULE2(_this.atomicExpression, { LABEL: "rhs" });
-      });
-    });
-
-    _this.RULE("atomicExpression", function () {
-      _this.OR([{ ALT: function ALT() {
-          return _this.SUBRULE(_this.parenthesesExpression);
-        } }, { ALT: function ALT() {
-          return _this.SUBRULE(_this.functionExpression);
-        } }, { ALT: function ALT() {
-          return _this.SUBRULE(_this.prefixExpression);
-        } }, { ALT: function ALT() {
-          return _this.SUBRULE(_this.columnExpression);
-        } }, { ALT: function ALT() {
-          return _this.CONSUME(Constant);
-        } }]);
-    });
-
-    _this.RULE("columnExpression", function () {
-      _this.OPTION(function () {
-        _this.CONSUME1(Identifier, { LABEL: "table" });
-        _this.CONSUME(Dot);
-      });
-      _this.CONSUME2(Identifier, { LABEL: "column" });
-    });
-
-    _this.RULE("orderByExpression", function () {
-      _this.SUBRULE(_this.expression);
-      _this.OPTION(function () {
-        _this.OR([{ ALT: function ALT() {
-            return _this.CONSUME(Asc, { LABEL: "asc" });
-          } }, { ALT: function ALT() {
-            return _this.CONSUME(Desc, { LABEL: "desc" });
-          } }]);
-      });
-    });
-
-    _this.RULE("orderBy", function () {
-      _this.CONSUME(OrderBy);
-      _this.AT_LEAST_ONE_SEP({
-        SEP: Comma,
-        DEF: function DEF() {
-          _this.SUBRULE(_this.orderByExpression);
-        }
-      });
-    });
-
-    _this.RULE("functionExpression", function () {
-      _this.CONSUME(UnquotedIdentifier, { LABEL: "function" });
-      _this.CONSUME(OpenParen);
-      _this.OR1([{ ALT: function ALT() {
-          return _this.CONSUME(AllColumns);
-        } }, {
-        ALT: function ALT() {
-          _this.OPTION1(function () {
-            _this.OR2([{ ALT: function ALT() {
-                return _this.CONSUME(All);
-              } }, { ALT: function ALT() {
-                return _this.CONSUME(Distinct);
-              } }]);
-          });
-          _this.AT_LEAST_ONE_SEP({
-            SEP: Comma,
-            DEF: function DEF() {
-              _this.SUBRULE(_this.expression);
-            }
-          });
-          _this.OPTION2(function () {
-            _this.SUBRULE(_this.orderBy);
-          });
-        }
-      }]);
-      _this.CONSUME(CloseParen);
-    });
-
-    _this.RULE("prefixExpression", function () {
-      _this.CONSUME(PrefixOperator, { LABEL: "operator" });
-      _this.SUBRULE(_this.expression);
-    });
-
-    _this.RULE("parenthesesExpression", function () {
-      _this.CONSUME(OpenParen);
-      _this.SUBRULE(_this.expression);
-      _this.CONSUME(CloseParen);
-    });
-
-    _this.performSelfAnalysis();
-    return _this;
-  }
-
-  return SQLParser;
-}(_chevrotain.CstParser);
-
-var sqlParser = exports.sqlParser = new SQLParser();
-
-var SQLVisitor = function (_sqlParser$getBaseCst) {
-  _inherits(SQLVisitor, _sqlParser$getBaseCst);
-
-  function SQLVisitor() {
-    _classCallCheck(this, SQLVisitor);
-
-    var _this2 = _possibleConstructorReturn(this, (SQLVisitor.__proto__ || Object.getPrototypeOf(SQLVisitor)).call(this));
-
-    _this2.validateVisitor();
-    return _this2;
-  }
-
-  _createClass(SQLVisitor, [{
-    key: "expression",
-    value: function expression(ctx) {
-      return this.visit(ctx.additiveExpression);
-    }
-  }, {
-    key: "additiveExpression",
-    value: function additiveExpression(ctx) {
-      var _this3 = this;
-
-      var result = this.visit(ctx.lhs);
-      if (ctx.rhs) {
-        ctx.rhs.forEach(function (operand, idx) {
-          var rhs = _this3.visit(operand);
-          result = {
-            type: "BinaryExpression",
-            operator: ctx.operator[idx].image,
-            lhs: result,
-            rhs: rhs,
-            start: result.start,
-            end: rhs.end
-          };
-        });
-      }
-      return result;
-    }
-  }, {
-    key: "multiplicativeExpression",
-    value: function multiplicativeExpression(ctx) {
-      var _this4 = this;
-
-      var result = this.visit(ctx.lhs);
-      if (ctx.rhs) {
-        ctx.rhs.forEach(function (operand, idx) {
-          var rhs = _this4.visit(operand);
-          result = {
-            type: "BinaryExpression",
-            operator: ctx.operator[idx].image,
-            lhs: result,
-            rhs: rhs,
-            start: result.start,
-            end: rhs.end
-          };
-        });
-      }
-      return result;
-    }
-  }, {
-    key: "exponentiationExpression",
-    value: function exponentiationExpression(ctx) {
-      var _this5 = this;
-
-      var result = this.visit(ctx.lhs);
-      if (ctx.rhs) {
-        ctx.rhs.forEach(function (operand, idx) {
-          var rhs = _this5.visit(operand);
-          result = {
-            type: "BinaryExpression",
-            operator: ctx.operator[idx].image,
-            lhs: result,
-            rhs: rhs,
-            start: result.start,
-            end: rhs.end
-          };
-        });
-      }
-      return result;
-    }
-  }, {
-    key: "atomicExpression",
-    value: function atomicExpression(ctx) {
-      if (ctx.parenthesesExpression) {
-        return this.visit(ctx.parenthesesExpression);
-      } else if (ctx.functionExpression) {
-        return this.visit(ctx.functionExpression);
-      } else if (ctx.prefixExpression) {
-        return this.visit(ctx.prefixExpression);
-      } else if (ctx.columnExpression) {
-        return this.visit(ctx.columnExpression);
-      }
-
-      return {
-        type: "ConstantExpression",
-        value: ctx.Constant[0].image,
-        start: ctx.Constant[0].startOffset,
-        end: ctx.Constant[0].endOffset
-      };
-    }
-  }, {
-    key: "columnExpression",
-    value: function columnExpression(ctx) {
-      return {
-        type: "ColumnExpression",
-        table: ctx.table && ctx.table[0].image || null,
-        column: ctx.column[0].image,
-        start: ctx.table ? ctx.table[0].startOffset : ctx.column[0].startOffset,
-        end: ctx.column[0].endOffset
-      };
-    }
-  }, {
-    key: "orderByExpression",
-    value: function orderByExpression(ctx) {
-      var expression = this.visit(ctx.expression[0]);
-      var end = ctx.asc ? ctx.asc[0].endOffset : ctx.desc ? ctx.desc[0].endOffset : expression.end;
-      return {
-        type: "OrderByExpression",
-        expression: expression,
-        desc: Boolean(ctx.desc),
-        start: expression.start,
-        end: end
-      };
-    }
-  }, {
-    key: "orderBy",
-    value: function orderBy(ctx) {
-      var _this6 = this;
-
-      var expressions = ctx.orderByExpression.map(function (e) {
-        return _this6.visit(e);
-      });
-      return {
-        type: "OrderBy",
-        expressions: expressions,
-        start: ctx.OrderBy[0].startOffset,
-        end: expressions[expressions.length - 1].end
-      };
-    }
-  }, {
-    key: "functionExpression",
-    value: function functionExpression(ctx) {
-      var _this7 = this;
-
-      var result = {
-        type: "FunctionExpression",
-        function: ctx.function[0].image,
-        start: ctx.function[0].startOffset,
-        end: ctx.CloseParenthesis[0].endOffset
-      };
-
-      if (ctx.AllColumns) {
-        result.star = true;
-      } else {
-        if (ctx.All) {
-          result.all = true;
-        } else if (ctx.Distinct) {
-          result.distinct = true;
-        }
-        result.params = ctx.expression.map(function (e) {
-          return _this7.visit(e);
-        });
-        if (ctx.orderBy) {
-          result.orderBy = this.visit(ctx.orderBy);
-        }
-      }
-
-      return result;
-    }
-  }, {
-    key: "prefixExpression",
-    value: function prefixExpression(ctx) {
-      var expression = this.visit(ctx.expression);
-      return {
-        type: "PrefixExpression",
-        operator: ctx.operator[0].image,
-        expression: expression,
-        start: ctx.operator[0].startOffset,
-        end: expression.end
-      };
-    }
-  }, {
-    key: "parenthesesExpression",
-    value: function parenthesesExpression(ctx) {
-      return {
-        type: "ParenthesesExpression",
-        expression: this.visit(ctx.expression),
-        start: ctx.OpenParenthesis[0].startOffset,
-        end: ctx.CloseParenthesis[0].endOffset
-      };
-    }
-  }]);
-
-  return SQLVisitor;
-}(sqlParser.getBaseCstVisitorConstructor());
-
-var sqlVisitor = exports.sqlVisitor = new SQLVisitor();
-
-// Run the parser to build an AST
-function buildAst(sql) {
-  var lexResult = sqlLexer.tokenize(sql);
-  sqlParser.input = lexResult.tokens;
-
-  var cst = sqlParser.expression();
-  if (sqlParser.errors.length === 0) {
-    return sqlVisitor.visit(cst);
-  }
-  return null;
-}
-
-var SAFE = "safe";
-var UNSAFE = "unsafe";
-var NEUTRAL = "neutral";
-
-// "Paint" nodes of the AST as being safe to move into the fact query, or
-// unsafe. To be safe, the node and all children must be safe (ie, have no
-// references to other tables).
-function paintAst(factTable, node) {
-  var paint = NEUTRAL;
-  switch (node.type) {
-    case "BinaryExpression":
-      var lhsPaint = paintAst(factTable, node.lhs);
-      var rhsPaint = paintAst(factTable, node.rhs);
-      if (lhsPaint === UNSAFE || rhsPaint === UNSAFE) {
-        paint = UNSAFE;
-      } else if (lhsPaint === SAFE || rhsPaint === SAFE) {
-        paint = SAFE;
-      }
-      break;
-
-    case "ColumnExpression":
-      paint = node.table === null || node.table.toLowerCase() === factTable.toLowerCase() || node.table.toLowerCase() === "\"" + factTable.toLowerCase() + "\"" ? SAFE : UNSAFE;
-      break;
-
-    case "OrderBy":
-      paint = node.expressions.reduce(function (acc, expression) {
-        var childPaint = paintAst(factTable, expression);
-        if (childPaint === UNSAFE) {
-          return UNSAFE;
-        } else if (childPaint === SAFE && acc === NEUTRAL) {
-          return SAFE;
-        }
-        return acc;
-      }, NEUTRAL);
-      break;
-
-    case "FunctionExpression":
-      paint = node.params.reduce(function (acc, expression) {
-        var childPaint = paintAst(factTable, expression);
-        if (childPaint === UNSAFE) {
-          return UNSAFE;
-        } else if (childPaint === SAFE && acc === NEUTRAL) {
-          return SAFE;
-        }
-        return acc;
-      }, NEUTRAL);
-      break;
-
-    case "OrderByExpression":
-    case "PrefixExpression":
-    case "ParenthesesExpression":
-      // these nodes have an "expression" child
-      paint = paintAst(factTable, node.expression);
-      break;
-
-    default:
-  }
-
-  node.paint = paint;
-  return paint;
-}
-
-// Any nodes painted "SAFE" are extracted from the original SQL to be used in
-// the fact query. The "extraction" works by copying the substring from the
-// original SQL into a projection and giving it an alias. This function also
-// adds details about the replacement in the "replacements" variable which can
-// be used to strip it out of the originl sql and replace it with a reference
-// to the fact table projection.
-function extractFacts(node, projections, aliases, replacements, sql) {
-  if (node.paint === SAFE) {
-    // end + 1 because "end" is an inclusive offset,
-    // but substring excludes the end index
-    var alias = "color" + projections.length;
-    var start = node.start;
-    var end = node.end + 1;
-    projections.push(sql.substring(start, end));
-    aliases.push(alias);
-    replacements.push({
-      alias: alias,
-      start: start,
-      end: end
-    });
-    return;
-  }
-
-  switch (node.type) {
-    case "BinaryExpression":
-      extractFacts(node.lhs, projections, aliases, replacements, sql);
-      extractFacts(node.rhs, projections, aliases, replacements, sql);
-      break;
-
-    case "OrderBy":
-      node.expressions.forEach(function (expression) {
-        return extractFacts(expression, projections, aliases, replacements, sql);
-      });
-      break;
-
-    case "FunctionExpression":
-      node.params.forEach(function (expression) {
-        return extractFacts(expression, projections, aliases, replacements, sql);
-      });
-      break;
-
-    case "OrderByExpression":
-    case "PrefixExpression":
-    case "ParenthesesExpression":
-      extractFacts(node.expression, projections, aliases, replacements, sql);
-      break;
-
-    default:
-  }
-}
-
-// Applies the replacements from extractFacts to the original SQL
-function applyReplacements(sql, withAlias, replacements) {
-  // apply replacements starting at the end of the string so the indexes will
-  // line up correctly.
-  replacements.sort(function (a, b) {
-    return b.start - a.start;
-  }).forEach(function (replacement) {
-    sql = "" + sql.substring(0, replacement.start) + withAlias + "." + replacement.alias + sql.substring(replacement.end);
-  });
-  return sql;
-}
-
-function parseFactsFromCustomSQL(factTable, withAlias, sql) {
-  var factProjections = [];
-  var factAliases = [];
-  var expression = sql;
-
-  var ast = buildAst(sql);
-  if (ast) {
-    paintAst(factTable, ast);
-
-    var replacements = [];
-    extractFacts(ast, factProjections, factAliases, replacements, sql);
-    expression = applyReplacements(sql, withAlias, replacements);
-  }
-
-  return {
-    factProjections: factProjections,
-    factAliases: factAliases,
-    expression: expression
-  };
-}
-
-/***/ }),
 /* 323 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -84369,9 +84409,9 @@ function parseFactsFromCustomSQL(factTable, withAlias, sql) {
 /* unused harmony export buildBetweenProdsFollowPrefix */
 /* unused harmony export buildInProdFollowPrefix */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__first__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__first__ = __webpack_require__(213);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(214);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(7);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -84449,7 +84489,7 @@ function buildInProdFollowPrefix(terminal) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lexer__ = __webpack_require__(210);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lexer__ = __webpack_require__(211);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -85209,7 +85249,7 @@ var TreeBuilder = /** @class */ (function () {
 /* unused harmony export validateMissingCstMethods */
 /* unused harmony export validateRedundantMethods */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__ = __webpack_require__(216);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__ = __webpack_require__(217);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_checks__ = __webpack_require__(30);
 
 
@@ -85781,10 +85821,10 @@ var RecognizerApi = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_lookahead__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__recoverable__ = __webpack_require__(215);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__recoverable__ = __webpack_require__(216);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__scan_tokens_public__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__scan_tokens__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lang_lang_extensions__ = __webpack_require__(216);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lang_lang_extensions__ = __webpack_require__(217);
 
 
 
@@ -86952,7 +86992,7 @@ var PerformanceTracer = /** @class */ (function () {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createSyntaxDiagramsCode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(209);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(210);
 
 function createSyntaxDiagramsCode(grammar, _a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.resourceBase, resourceBase = _c === void 0 ? "https://unpkg.com/chevrotain@" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* VERSION */] + "/diagrams/" : _c, _d = _b.css, css = _d === void 0 ? "https://unpkg.com/chevrotain@" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* VERSION */] + "/diagrams/diagrams.css" : _d;
@@ -86984,7 +87024,7 @@ function generateParserFactory(options) {
     return function (config) {
         return constructorWrapper(options.tokenVocabulary, config, 
         // TODO: check how the require is transpiled/webpacked
-        __webpack_require__(208));
+        __webpack_require__(209));
     };
 }
 function generateParserModule(options) {

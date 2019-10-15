@@ -117,4 +117,34 @@ describe.only("parseFactsFromCustomSQL", () => {
       )
     })
   })
+
+  describe("cast(approx_count_distinct(caid) as float) / acs_bg_age_education_income_shapefile_ca.B00001_001_totalpop", () => {
+    const {
+      factProjections,
+      factAliases,
+      expression
+    } = parseFactsFromCustomSQL(
+      "fact",
+      "color",
+      "cast(approx_count_distinct(caid) as float) / acs_bg_age_education_income_shapefile_ca.B00001_001_totalpop"
+    )
+
+    it("should project the cast", () => {
+      expect(factProjections).to.have.lengthOf(1)
+      expect(factProjections[0]).to.equal(
+        "cast(approx_count_distinct(caid) as float)"
+      )
+    })
+
+    it("should have one alias", () => {
+      expect(factAliases).to.have.lengthOf(1)
+      expect(factAliases[0]).to.equal("color0")
+    })
+
+    it("should have replaced the fact projections", () => {
+      expect(expression).to.equal(
+        "color.color0 / acs_bg_age_education_income_shapefile_ca.B00001_001_totalpop"
+      )
+    })
+  })
 })

@@ -40,6 +40,16 @@ const Desc = createToken({
   pattern: /desc/i,
   categories: [Keyword]
 })
+const Cast = createToken({
+  name: "Cast",
+  pattern: /cast/i,
+  categories: [Keyword]
+})
+const As = createToken({
+  name: "As",
+  pattern: /as/i,
+  categories: [Keyword]
+})
 
 // XXX:
 // support for non-latin characters?
@@ -186,6 +196,8 @@ const allTokens = [
   OrderBy,
   Asc,
   Desc,
+  Cast,
+  As,
 
   // Identifiers must come before anything else because a QuotedIdentifier can
   // technically contain anything
@@ -216,7 +228,7 @@ const allTokens = [
   Dot
 ]
 
-export const sqlLexer = new Lexer(allTokens)
+const sqlLexer = new Lexer(allTokens)
 
 class SQLParser extends CstParser {
   constructor() {
@@ -253,6 +265,7 @@ class SQLParser extends CstParser {
     this.RULE("atomicExpression", () => {
       this.OR([
         { ALT: () => this.SUBRULE(this.parenthesesExpression) },
+        { ALT: () => this.SUBRULE(this.castExpression) },
         { ALT: () => this.SUBRULE(this.functionExpression) },
         { ALT: () => this.SUBRULE(this.prefixExpression) },
         { ALT: () => this.SUBRULE(this.columnExpression) },
@@ -260,12 +273,19 @@ class SQLParser extends CstParser {
       ])
     })
 
-    this.RULE("columnExpression", () => {
-      this.OPTION(() => {
-        this.CONSUME1(Identifier, { LABEL: "table" })
-        this.CONSUME(Dot)
-      })
-      this.CONSUME2(Identifier, { LABEL: "column" })
+    this.RULE("parenthesesExpression", () => {
+      this.CONSUME(OpenParen)
+      this.SUBRULE(this.expression)
+      this.CONSUME(CloseParen)
+    })
+
+    this.RULE("castExpression", () => {
+      this.CONSUME(Cast)
+      this.CONSUME(OpenParen)
+      this.SUBRULE(this.expression)
+      this.CONSUME(As)
+      this.CONSUME(UnquotedIdentifier, { LABEL: "castTo" })
+      this.CONSUME(CloseParen)
     })
 
     this.RULE("orderByExpression", () => {
@@ -321,17 +341,19 @@ class SQLParser extends CstParser {
       this.SUBRULE(this.expression)
     })
 
-    this.RULE("parenthesesExpression", () => {
-      this.CONSUME(OpenParen)
-      this.SUBRULE(this.expression)
-      this.CONSUME(CloseParen)
+    this.RULE("columnExpression", () => {
+      this.OPTION(() => {
+        this.CONSUME1(Identifier, { LABEL: "table" })
+        this.CONSUME(Dot)
+      })
+      this.CONSUME2(Identifier, { LABEL: "column" })
     })
 
     this.performSelfAnalysis()
   }
 }
 
-export const sqlParser = new SQLParser()
+const sqlParser = new SQLParser()
 
 class SQLVisitor extends sqlParser.getBaseCstVisitorConstructor() {
   constructor() {
@@ -400,6 +422,8 @@ class SQLVisitor extends sqlParser.getBaseCstVisitorConstructor() {
   atomicExpression(ctx) {
     if (ctx.parenthesesExpression) {
       return this.visit(ctx.parenthesesExpression)
+    } else if (ctx.castExpression) {
+      return this.visit(ctx.castExpression)
     } else if (ctx.functionExpression) {
       return this.visit(ctx.functionExpression)
     } else if (ctx.prefixExpression) {
@@ -416,13 +440,22 @@ class SQLVisitor extends sqlParser.getBaseCstVisitorConstructor() {
     }
   }
 
-  columnExpression(ctx) {
+  parenthesesExpression(ctx) {
     return {
-      type: "ColumnExpression",
-      table: (ctx.table && ctx.table[0].image) || null,
-      column: ctx.column[0].image,
-      start: ctx.table ? ctx.table[0].startOffset : ctx.column[0].startOffset,
-      end: ctx.column[0].endOffset
+      type: "ParenthesesExpression",
+      expression: this.visit(ctx.expression),
+      start: ctx.OpenParenthesis[0].startOffset,
+      end: ctx.CloseParenthesis[0].endOffset
+    }
+  }
+
+  castExpression(ctx) {
+    return {
+      type: "CastExpression",
+      expression: this.visit(ctx.expression),
+      castTo: ctx.castTo[0].image,
+      start: ctx.Cast[0].startOffset,
+      end: ctx.CloseParenthesis[0].endOffset
     }
   }
 
@@ -488,20 +521,21 @@ class SQLVisitor extends sqlParser.getBaseCstVisitorConstructor() {
     }
   }
 
-  parenthesesExpression(ctx) {
+  columnExpression(ctx) {
     return {
-      type: "ParenthesesExpression",
-      expression: this.visit(ctx.expression),
-      start: ctx.OpenParenthesis[0].startOffset,
-      end: ctx.CloseParenthesis[0].endOffset
+      type: "ColumnExpression",
+      table: (ctx.table && ctx.table[0].image) || null,
+      column: ctx.column[0].image,
+      start: ctx.table ? ctx.table[0].startOffset : ctx.column[0].startOffset,
+      end: ctx.column[0].endOffset
     }
   }
 }
 
-export const sqlVisitor = new SQLVisitor()
+const sqlVisitor = new SQLVisitor()
 
 // Run the parser to build an AST
-export function buildAst(sql) {
+function buildAst(sql) {
   const lexResult = sqlLexer.tokenize(sql)
   sqlParser.input = lexResult.tokens
 
@@ -519,7 +553,7 @@ const NEUTRAL = "neutral"
 // "Paint" nodes of the AST as being safe to move into the fact query, or
 // unsafe. To be safe, the node and all children must be safe (ie, have no
 // references to other tables).
-export function paintAst(factTable, node) {
+function paintAst(factTable, node) {
   let paint = NEUTRAL
   switch (node.type) {
     case "BinaryExpression":
@@ -565,6 +599,7 @@ export function paintAst(factTable, node) {
       }, NEUTRAL)
       break
 
+    case "CastExpression":
     case "OrderByExpression":
     case "PrefixExpression":
     case "ParenthesesExpression":
@@ -585,7 +620,7 @@ export function paintAst(factTable, node) {
 // adds details about the replacement in the "replacements" variable which can
 // be used to strip it out of the originl sql and replace it with a reference
 // to the fact table projection.
-export function extractFacts(node, projections, aliases, replacements, sql) {
+function extractFacts(node, projections, aliases, replacements, sql) {
   if (node.paint === SAFE) {
     // end + 1 because "end" is an inclusive offset,
     // but substring excludes the end index
@@ -620,6 +655,7 @@ export function extractFacts(node, projections, aliases, replacements, sql) {
       )
       break
 
+    case "CastExpression":
     case "OrderByExpression":
     case "PrefixExpression":
     case "ParenthesesExpression":
@@ -631,7 +667,7 @@ export function extractFacts(node, projections, aliases, replacements, sql) {
 }
 
 // Applies the replacements from extractFacts to the original SQL
-export function applyReplacements(sql, withAlias, replacements) {
+function applyReplacements(sql, withAlias, replacements) {
   // apply replacements starting at the end of the string so the indexes will
   // line up correctly.
   replacements
