@@ -1887,6 +1887,15 @@ body {
     }
 }
 
+.mapboxgl-ctrl-bottom-left  {
+
+  .mapboxgl-ctrl.mapboxgl-ctrl-scale {
+    border-color: #868686;
+    border-width: thin;
+    color: #888;
+  }
+}
+
 .mapboxgl-ctrl-top-left {
     .mapboxgl-ctrl {
         margin: 8px 0 0 8px !important;
