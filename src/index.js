@@ -77,3 +77,5 @@ export { default as spinnerMixin } from "./mixins/spinner-mixin"
 export { default as legendContinuous } from "./chart-addons/legend-continuous"
 export { default as legend } from "./chart-addons/legend"
 export { default as legendCont } from "./chart-addons/dc-legend-cont"
+
+export { default as parseFactsFromCustomSQL } from "./utils/custom-sql-parser"
