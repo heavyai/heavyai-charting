@@ -34334,7 +34334,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     _map.touchZoomRotate.disableRotation();
     _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right");
     _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation);
-
+    _map.addControl(new _mapboxgl.ScaleControl({ maxWidth: 80, unit: "metric" }));
     _chart.addMapListeners();
     _mapInitted = true;
     _chart.enableInteractions(_interactionsEnabled);
