@@ -229,7 +229,7 @@ export default function rasterLayerPolyMixin(_layer) {
                     expr: `${withAlias}.key0`,
                     set: layerFilter
                   },
-                  color.type === "solid" ? 1 : `${withAlias}.color`
+                  color.type === "solid" ? 1 : colorField
                 ]
               ],
               else: null

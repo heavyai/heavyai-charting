@@ -54487,7 +54487,7 @@ function rasterLayerPolyMixin(_layer) {
               type: filtersInverse ? "not in" : "in",
               expr: withAlias + ".key0",
               set: layerFilter
-            }, color.type === "solid" ? 1 : withAlias + ".color"]],
+            }, color.type === "solid" ? 1 : colorField]],
             else: null
           })],
           ops: [null],
