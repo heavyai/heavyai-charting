@@ -597,7 +597,8 @@ export default function mapMixin(
     _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right")
     _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
     _map.addControl(
-      new _mapboxgl.ScaleControl({ maxWidth: 80, unit: "metric" })
+      new _mapboxgl.ScaleControl({ maxWidth: 80, unit: "metric" }),
+      "bottom-right"
     )
     _chart.addMapListeners()
     _mapInitted = true
