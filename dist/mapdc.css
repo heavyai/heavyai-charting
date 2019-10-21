@@ -1559,10 +1559,13 @@ body {
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-group {
   margin: 0 10px 10px 0 !important; }
 
-.mapboxgl-ctrl-bottom-left .mapboxgl-ctrl.mapboxgl-ctrl-scale {
+.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-scale {
   border-color: #868686;
   border-width: thin;
-  color: #888; }
+  color: #888;
+  position: relative;
+  right: 35px;
+  top: 3px; }
 
 .mapboxgl-ctrl-top-left .mapboxgl-ctrl {
   margin: 8px 0 0 8px !important; }
