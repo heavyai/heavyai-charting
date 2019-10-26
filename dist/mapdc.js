@@ -34375,7 +34375,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     var layers = _map.getStyle().layers;
     for (var i = 0; i < layers.length; ++i) {
       if (layers[i].type === "symbol") {
-        firstSymbolId = layers[i].id;
+        // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of omnisci layer
+        if (layers[i].id === "tunnel-oneway-arrows-blue-major" || layers[i].id === "tunnel-oneway-arrows-blue-minor") {
+          firstSymbolId = "road-label-large";
+        } else {
+          firstSymbolId = layers[i].id;
+        }
         break;
       }
     }
