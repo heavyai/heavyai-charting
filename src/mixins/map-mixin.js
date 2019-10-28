@@ -641,13 +641,24 @@ export default function mapMixin(
 
   function getFirstSymbolLayerId() {
     let firstSymbolId = null
-    const layers = _map.getStyle().layers
-    for (let i = 0; i < layers.length; ++i) {
-      if (layers[i].type === "symbol") {
-        firstSymbolId = layers[i].id
-        break
+    const currentStyle = _map.getStyle()
+
+    // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of omnisci layer
+    if (
+      currentStyle.name === "Mapbox Outdoors" ||
+      currentStyle.name === "Mapbox Streets"
+    ) {
+      firstSymbolId = "road-label-large"
+    } else {
+      const layers = currentStyle.layers
+      for (let i = 0; i < layers.length; ++i) {
+        if (layers[i].type === "symbol") {
+          firstSymbolId = layers[i].id
+          break
+        }
       }
     }
+
     return firstSymbolId
   }
 
