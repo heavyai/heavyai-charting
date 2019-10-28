@@ -34372,18 +34372,21 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   function getFirstSymbolLayerId() {
     var firstSymbolId = null;
-    var layers = _map.getStyle().layers;
-    for (var i = 0; i < layers.length; ++i) {
-      if (layers[i].type === "symbol") {
-        // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of omnisci layer
-        if (layers[i].id === "tunnel-oneway-arrows-blue-major" || layers[i].id === "tunnel-oneway-arrows-blue-minor") {
-          firstSymbolId = "road-label-large";
-        } else {
+    var currentStyle = _map.getStyle();
+
+    // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of omnisci layer
+    if (currentStyle.name === "Mapbox Outdoors" || currentStyle.name === "Mapbox Streets") {
+      firstSymbolId = "road-label-large";
+    } else {
+      var layers = currentStyle.layers;
+      for (var i = 0; i < layers.length; ++i) {
+        if (layers[i].type === "symbol") {
           firstSymbolId = layers[i].id;
+          break;
         }
-        break;
       }
     }
+
     return firstSymbolId;
   }
 
