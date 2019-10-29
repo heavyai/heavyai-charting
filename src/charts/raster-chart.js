@@ -203,7 +203,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
       if (typeof layer.filterAll === "function") {
-        layer.filterAll()
+        layer.filterAll(_chart)
       }
     }
   }
