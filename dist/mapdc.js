@@ -54859,9 +54859,9 @@ function rasterLayerPolyMixin(_layer) {
   var polyLayerEvents = ["filtered"];
   var _listeners = _d2.default.dispatch.apply(_d2.default, polyLayerEvents);
 
-  _layer.filter = function (key, isInverseFilter, filterCol) {
+  _layer.filter = function (key, isInverseFilter, filterCol, chart) {
     if (isInverseFilter !== _layer.filtersInverse()) {
-      _layer.filterAll();
+      _layer.filterAll(chart);
       _layer.filtersInverse(isInverseFilter);
     }
     if (_filtersArray.includes(key)) {
@@ -54884,21 +54884,30 @@ function rasterLayerPolyMixin(_layer) {
       _layer.viewBoxDim(null);
     }
 
-    _filtersArray.length && filterCol ? _layer.dimension().filterMulti(_filtersArray, undefined, isInverseFilter) : _layer.filterAll();
+    _filtersArray.length && filterCol ? _layer.dimension().filterMulti(_filtersArray, undefined, isInverseFilter) : _layer.filterAll(chart);
   };
 
   _layer.filters = function () {
     return _filtersArray;
   };
 
-  _layer.filterAll = function () {
+  _layer.filterAll = function (chart) {
     _filtersArray = [];
     _layer.dimension().filterAll();
     var geoCol = _layer.getState().encoding.geoTable + "." + _layer.getState().encoding.geocol;
+
+    // when poly selection filter cleared, we reapply the bbox filter
     var viewboxdim = _layer.dimension().set(function () {
       return [geoCol];
     });
+    var mapBounds = chart.map().getBounds();
     _layer.viewBoxDim(viewboxdim);
+    _layer.viewBoxDim().filterST_Min_ST_Max({
+      lonMin: mapBounds._sw.lng,
+      lonMax: mapBounds._ne.lng,
+      latMin: mapBounds._sw.lat,
+      latMax: mapBounds._ne.lat
+    });
     _listeners.filtered(_layer, _filtersArray);
   };
 
@@ -77757,7 +77766,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     for (var layerName in _layerNames) {
       var _layer4 = _layerNames[layerName];
       if (typeof _layer4.filterAll === "function") {
-        _layer4.filterAll();
+        _layer4.filterAll(_chart);
       }
     }
   };
