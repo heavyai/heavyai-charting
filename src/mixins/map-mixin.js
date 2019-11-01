@@ -8,9 +8,6 @@ function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
 }
 
-const bboxChangeEvents = eventType =>
-  eventType === "move" || eventType === "wheel" || eventType === "drag"
-
 export default function mapMixin(
   _chart,
   chartDivId,
@@ -302,7 +299,7 @@ export default function mapMixin(
       _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat]
     }
 
-    if (bboxChangeEvents(e.type)) {
+    if (e.type === "move") {
       if (_isFirstMoveEvent) {
         _lastMapUpdateTime = curTime
         _isFirstMoveEvent = false
@@ -610,8 +607,6 @@ export default function mapMixin(
 
   _chart.addMapListeners = function() {
     _map.on("move", onMapMove)
-    _map.on("drag", onMapMove)
-    _map.on("wheel", onMapMove)
     _map.on("moveend", onMapMove)
     _map.on("sourcedata", showMapLogo)
   }
@@ -619,8 +614,6 @@ export default function mapMixin(
   _chart.removeMapListeners = function() {
     _map.off("move", onMapMove)
     _map.off("moveend", onMapMove)
-    _map.off("drag", onMapMove)
-    _map.off("wheel", onMapMove)
   }
 
   _chart.on("postRender", () => {
