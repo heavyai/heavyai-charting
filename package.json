@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@mapbox/unitbezier": "0.0.0",
-    "@mapd/mapd-draw": "git://github.com/omnisci/mapd-draw.git#fa59fbf68ded25619b5f71b3ee6a73cea9f8d149",
+    "@mapd/mapd-draw": "git://github.com/omnisci/mapd-draw.git#f2e2ded6fc293ba8344ec62836ceba7942b9edb0",
     "@turf/bbox": "^6.0.1",
     "@turf/bbox-clip": "^6.0.3",
     "axios": "^0.19.0",

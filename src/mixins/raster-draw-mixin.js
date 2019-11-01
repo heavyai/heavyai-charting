@@ -585,24 +585,8 @@ export function rasterDrawMixin(chart) {
       updateDraw()
     }
 
-    if (typeof chart.useLonLat === "function") {
-      // using a mapbox map, it works better to rerender
-      // on move here
-      chart.map().on("wheel", updateDraw)
-      chart.map().on("drag", updateDraw)
+    chart.map().on("render", updateDraw)
 
-      // TODO need to find right original event listener for zoom button events.
-      //  The zoom events are registered as Original Events in Mapbox-gl v1.3.0
-      chart.map().on("move", e => {
-        if (e.target && e.target._zooming) {
-          updateDraw()
-        }
-      })
-    } else {
-      // using a dc coordinate grid, redraws work better
-      // on the render event
-      chart.map().on("render", updateDraw)
-    }
     chart.map().on("resize", updateDrawResize)
 
     origFilterFunc = chart.filter
