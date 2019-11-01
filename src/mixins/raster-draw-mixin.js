@@ -585,15 +585,8 @@ export function rasterDrawMixin(chart) {
       updateDraw()
     }
 
-    if (typeof chart.useLonLat === "function") {
-      // using a mapbox map, it works better to rerender
-      // on move here
-      chart.map().on("move", updateDraw)
-    } else {
-      // using a dc coordinate grid, redraws work better
-      // on the render event
-      chart.map().on("render", updateDraw)
-    }
+    chart.map().on("render", updateDraw)
+
     chart.map().on("resize", updateDrawResize)
 
     origFilterFunc = chart.filter

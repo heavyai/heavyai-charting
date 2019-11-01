@@ -614,8 +614,6 @@ export default function mapMixin(
   _chart.removeMapListeners = function() {
     _map.off("move", onMapMove)
     _map.off("moveend", onMapMove)
-    _map.off("drag", onMapMove)
-    _map.off("wheel", onMapMove)
   }
 
   _chart.on("postRender", () => {
