@@ -17,7 +17,7 @@ import UnitBezier from "@mapbox/unitbezier"
  * @param p2y control point 2 y coordinate
  * @private
  */
-function bezier(p1x, p1y, p2x, p2y) {
+export function bezier(p1x, p1y, p2x, p2y) {
   const bezier = new UnitBezier(p1x, p1y, p2x, p2y)
   return function(t) {
     return bezier.solve(t)
@@ -27,7 +27,7 @@ function bezier(p1x, p1y, p2x, p2y) {
  * Provides a function that outputs milliseconds: either performance.now()
  * or a fallback to Date.now()
  */
-const now = (function() {
+const Now = (function() {
   if (window.performance && window.performance.now) {
     return window.performance.now.bind(window.performance)
   } else {
@@ -51,13 +51,13 @@ export const timed = function(fn, dur, ctx) {
   }
 
   let abort = false
-  const start = now()
+  const start = Now()
 
   function tick(now) {
     if (abort) {
       return
     }
-    now = now()
+    now = Now()
 
     if (now >= start + dur) {
       fn.call(ctx, 1)

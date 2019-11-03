@@ -79668,6 +79668,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.timed = undefined;
+exports.bezier = bezier;
 
 var _unitbezier = __webpack_require__(271);
 
@@ -79702,7 +79703,7 @@ function bezier(p1x, p1y, p2x, p2y) {
  * - See [FE-8035]
  */
 
-var now = function () {
+var Now = function () {
   if (window.performance && window.performance.now) {
     return window.performance.now.bind(window.performance);
   } else {
@@ -79722,13 +79723,13 @@ var timed = exports.timed = function timed(fn, dur, ctx) {
   }
 
   var abort = false;
-  var start = now();
+  var start = Now();
 
   function tick(now) {
     if (abort) {
       return;
     }
-    now = now();
+    now = Now();
 
     if (now >= start + dur) {
       fn.call(ctx, 1);
