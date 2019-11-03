@@ -34270,25 +34270,28 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       var toBeAddedOverlay = "overlay" + _activeLayer;
       var firstSymbolLayerId = getFirstSymbolLayerId();
 
-      map.addSource(toBeAddedOverlay, {
-        type: "image",
-        url: blobUrl,
-        coordinates: boundsToUse
-      });
-
-      map.addLayer({
-        id: toBeAddedOverlay,
-        source: toBeAddedOverlay,
-        type: "raster",
-        paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
-      }, firstSymbolLayerId);
+      if (!map.getSource(toBeAddedOverlay)) {
+        map.addSource(toBeAddedOverlay, {
+          type: "image",
+          url: blobUrl,
+          coordinates: boundsToUse
+        });
+        map.addLayer({
+          id: toBeAddedOverlay,
+          source: toBeAddedOverlay,
+          type: "raster",
+          paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
+        }, firstSymbolLayerId);
+      }
     } else {
       var overlayName = "overlay" + _activeLayer;
       var imageSrc = map.getSource(overlayName);
-      imageSrc.updateImage({
-        url: blobUrl,
-        coordinates: boundsToUse
-      });
+      if (imageSrc) {
+        imageSrc.updateImage({
+          url: blobUrl,
+          coordinates: boundsToUse
+        });
+      }
     }
   };
 
