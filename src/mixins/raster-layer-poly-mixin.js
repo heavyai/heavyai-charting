@@ -621,9 +621,9 @@ export default function rasterLayerPolyMixin(_layer) {
   const polyLayerEvents = ["filtered"]
   const _listeners = d3.dispatch.apply(d3, polyLayerEvents)
 
-  _layer.filter = function(key, isInverseFilter, filterCol) {
+  _layer.filter = function(key, isInverseFilter, filterCol, chart) {
     if (isInverseFilter !== _layer.filtersInverse()) {
-      _layer.filterAll()
+      _layer.filterAll(chart)
       _layer.filtersInverse(isInverseFilter)
     }
     if (_filtersArray.includes(key)) {
@@ -648,21 +648,30 @@ export default function rasterLayerPolyMixin(_layer) {
       ? _layer
           .dimension()
           .filterMulti(_filtersArray, undefined, isInverseFilter)
-      : _layer.filterAll()
+      : _layer.filterAll(chart)
   }
 
   _layer.filters = function() {
     return _filtersArray
   }
 
-  _layer.filterAll = function() {
+  _layer.filterAll = function(chart) {
     _filtersArray = []
     _layer.dimension().filterAll()
     const geoCol = `${_layer.getState().encoding.geoTable}.${
       _layer.getState().encoding.geocol
     }`
+
+    // when poly selection filter cleared, we reapply the bbox filter
     const viewboxdim = _layer.dimension().set(() => [geoCol])
+    const mapBounds = chart.map().getBounds()
     _layer.viewBoxDim(viewboxdim)
+    _layer.viewBoxDim().filterST_Min_ST_Max({
+      lonMin: mapBounds._sw.lng,
+      lonMax: mapBounds._ne.lng,
+      latMin: mapBounds._sw.lat,
+      latMax: mapBounds._ne.lat
+    })
     _listeners.filtered(_layer, _filtersArray)
   }
 
