@@ -532,28 +532,31 @@ export default function mapMixin(
       const toBeAddedOverlay = "overlay" + _activeLayer
       const firstSymbolLayerId = getFirstSymbolLayerId()
 
-      map.addSource(toBeAddedOverlay, {
-        type: "image",
-        url: blobUrl,
-        coordinates: boundsToUse
-      })
-
-      map.addLayer(
-        {
-          id: toBeAddedOverlay,
-          source: toBeAddedOverlay,
-          type: "raster",
-          paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
-        },
-        firstSymbolLayerId
-      )
+      if (!map.getSource(toBeAddedOverlay)) {
+        map.addSource(toBeAddedOverlay, {
+          type: "image",
+          url: blobUrl,
+          coordinates: boundsToUse
+        })
+        map.addLayer(
+          {
+            id: toBeAddedOverlay,
+            source: toBeAddedOverlay,
+            type: "raster",
+            paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
+          },
+          firstSymbolLayerId
+        )
+      }
     } else {
       const overlayName = "overlay" + _activeLayer
       const imageSrc = map.getSource(overlayName)
-      imageSrc.updateImage({
-        url: blobUrl,
-        coordinates: boundsToUse
-      })
+      if (imageSrc) {
+        imageSrc.updateImage({
+          url: blobUrl,
+          coordinates: boundsToUse
+        })
+      }
     }
   }
 
