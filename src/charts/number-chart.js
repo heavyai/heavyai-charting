@@ -25,26 +25,6 @@ export default function numberChart(parent, chartGroup) {
     group
       .valueAsync()
       .then(data => {
-        if (group.getReduceExpression() === "COUNT(*) AS val") {
-          const id = group.getCrossfilterId()
-          const filterSize = lastFilteredSize(id)
-          if (filterSize !== undefined) {
-            return Promise.resolve(filterSize)
-          } else {
-            return _chart
-              .dimension()
-              .sizeAsync()
-              .then(group.valueAsync)
-              .then(value => {
-                setLastFilteredSize(id, value)
-                return value
-              })
-          }
-        } else {
-          return data
-        }
-      })
-      .then(data => {
         callbacks(null, data)
       })
       .catch(error => {
