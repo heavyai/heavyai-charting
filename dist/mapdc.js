@@ -59689,7 +59689,7 @@ function legendMixin(chart) {
     var colorMeasureName = getColorMeasureName(chart);
 
     for (var c = 0; c < numColors; c++) {
-      var startRange = c / numColors * colorDomainSize + colorDomain[0];
+      var startRange = c / (numColors - 1) * colorDomainSize + colorDomain[0];
       if (chart.isTargeting()) {
         startRange = "%" + (parseFloat(startRange) * PERCENTAGE).toFixed(2);
       } else if (chart.colorByExpr() === "count(*)") {
