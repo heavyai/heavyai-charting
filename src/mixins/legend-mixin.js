@@ -45,7 +45,7 @@ export default function legendMixin(chart) {
     const colorMeasureName = getColorMeasureName(chart)
 
     for (let c = 0; c < numColors; c++) {
-      let startRange = (c / numColors) * colorDomainSize + colorDomain[0]
+      let startRange = (c / (numColors - 1)) * colorDomainSize + colorDomain[0]
       if (chart.isTargeting()) {
         startRange = "%" + (parseFloat(startRange) * PERCENTAGE).toFixed(2)
       } else if (chart.colorByExpr() === "count(*)") {
