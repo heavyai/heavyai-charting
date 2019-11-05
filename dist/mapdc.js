@@ -77473,21 +77473,6 @@ function numberChart(parent, chartGroup) {
 
   _chart.setDataAsync(function (group, callbacks) {
     return group.valueAsync().then(function (data) {
-      if (group.getReduceExpression() === "COUNT(*) AS val") {
-        var id = group.getCrossfilterId();
-        var filterSize = (0, _coreAsync.lastFilteredSize)(id);
-        if (filterSize !== undefined) {
-          return Promise.resolve(filterSize);
-        } else {
-          return _chart.dimension().sizeAsync().then(group.valueAsync).then(function (value) {
-            (0, _coreAsync.setLastFilteredSize)(id, value);
-            return value;
-          });
-        }
-      } else {
-        return data;
-      }
-    }).then(function (data) {
       callbacks(null, data);
     }).catch(function (error) {
       callbacks(error);
