@@ -78211,7 +78211,8 @@ function genLayeredVega(chart) {
     width: Math.round(width),
     height: Math.round(height),
     viewRenderOptions: {
-      premultipliedAlpha: false
+      // BE scatterplot does not use mapbox, and the scatterplot renderer needs to be changed to work with unpremultiplied images
+      premultipliedAlpha: chart.getLayerNames().length > 0 && chart.getLayerNames()[0] === "backendScatter"
     },
     data: data,
     scales: scales,
