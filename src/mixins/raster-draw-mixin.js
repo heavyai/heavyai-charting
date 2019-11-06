@@ -600,7 +600,7 @@ export function rasterDrawMixin(chart) {
       chart.getLayerNames().forEach(layerName => {
         const layer = chart.getLayer(layerName)
         if (layer.hasOwnProperty("filterAll")) {
-          layer.filterAll()
+          layer.filterAll(chart)
         }
       })
       if (coordFilters) {
