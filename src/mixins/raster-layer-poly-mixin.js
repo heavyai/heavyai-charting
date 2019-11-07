@@ -662,16 +662,20 @@ export default function rasterLayerPolyMixin(_layer) {
       _layer.getState().encoding.geocol
     }`
 
-    // when poly selection filter cleared, we reapply the bbox filter
-    const viewboxdim = _layer.dimension().set(() => [geoCol])
-    const mapBounds = chart.map().getBounds()
-    _layer.viewBoxDim(viewboxdim)
-    _layer.viewBoxDim().filterST_Min_ST_Max({
-      lonMin: mapBounds._sw.lng,
-      lonMax: mapBounds._ne.lng,
-      latMin: mapBounds._sw.lat,
-      latMax: mapBounds._ne.lat
-    })
+    // when poly selection filter cleared, we reapply the bbox filter for the NON geo joined poly
+    // For geo joined poly, we don't run crossfilter
+    if (_layer && _layer.getState().data && _layer.getState().data.length < 2) {
+      const viewboxdim = _layer.dimension().set(() => [geoCol])
+      const mapBounds = chart.map().getBounds()
+      _layer.viewBoxDim(viewboxdim)
+      _layer.viewBoxDim().filterST_Min_ST_Max({
+        lonMin: mapBounds._sw.lng,
+        lonMax: mapBounds._ne.lng,
+        latMin: mapBounds._sw.lat,
+        latMax: mapBounds._ne.lat
+      })
+    }
+
     _listeners.filtered(_layer, _filtersArray)
   }
 
