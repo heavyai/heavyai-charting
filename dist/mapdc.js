@@ -34265,23 +34265,26 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       var blobUrl = "data:image/png;base64," + data;
     }
 
+    function setSourceAndAddLayer(toBeAddedOverlay) {
+      var firstSymbolLayerId = getFirstSymbolLayerId();
+      map.addSource(toBeAddedOverlay, {
+        type: "image",
+        url: blobUrl,
+        coordinates: boundsToUse
+      });
+      map.addLayer({
+        id: toBeAddedOverlay,
+        source: toBeAddedOverlay,
+        type: "raster",
+        paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
+      }, firstSymbolLayerId);
+    }
+
     if (!_activeLayer) {
       _activeLayer = "_points";
       var toBeAddedOverlay = "overlay" + _activeLayer;
-      var firstSymbolLayerId = getFirstSymbolLayerId();
-
       if (!map.getSource(toBeAddedOverlay)) {
-        map.addSource(toBeAddedOverlay, {
-          type: "image",
-          url: blobUrl,
-          coordinates: boundsToUse
-        });
-        map.addLayer({
-          id: toBeAddedOverlay,
-          source: toBeAddedOverlay,
-          type: "raster",
-          paint: { "raster-opacity": 1, "raster-fade-duration": 0 }
-        }, firstSymbolLayerId);
+        setSourceAndAddLayer(toBeAddedOverlay);
       }
     } else {
       var overlayName = "overlay" + _activeLayer;
@@ -34291,6 +34294,9 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
           url: blobUrl,
           coordinates: boundsToUse
         });
+      } else {
+        // for some reason, the source is lost some of the time, so adding it again FE-9833
+        setSourceAndAddLayer(overlayName);
       }
     }
   };
