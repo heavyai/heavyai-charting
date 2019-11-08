@@ -35078,7 +35078,7 @@ function rasterDrawMixin(chart) {
       chart.getLayerNames().forEach(function (layerName) {
         var layer = chart.getLayer(layerName);
         if (layer.hasOwnProperty("filterAll")) {
-          layer.filterAll();
+          layer.filterAll(chart);
         }
       });
       if (coordFilters) {
