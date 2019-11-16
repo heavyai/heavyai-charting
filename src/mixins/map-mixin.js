@@ -3,6 +3,8 @@ import * as _ from "lodash"
 import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
 import { rasterDrawMixin } from "./raster-draw-mixin"
+import {initMapboxMap} from "./mapbox-map";
+import {initOpenlayersMap} from "./openlayers-map";
 
 function valuesOb(obj) {
   return Object.keys(obj).map(key => obj[key])
@@ -22,9 +24,9 @@ export default function mapMixin(
   const LATMAX = 85 - SMALL_AMOUNT
   const LATMIN = -85 + SMALL_AMOUNT
 
-  var _mapboxgl = typeof _mapboxgl === "undefined" ? mapboxgl : _mapboxgl
+  // var _mapboxgl = typeof _mapboxgl === "undefined" ? mapboxgl : _mapboxgl
   let _map = null
-  let _mapboxAccessToken = null
+  // let _mapboxAccessToken = null
   let _lastWidth = null
   let _lastHeight = null
   const _mapId = chartDivId
@@ -707,64 +709,77 @@ export default function mapMixin(
     return Promise.resolve()
   }
 
-  _chart.init = function(bounds) {
+  _chart.init = function(bounds, mappingLibrary) {
     if (_mapInitted) {
       return
     }
 
     let styleLoaded = false
     let loaded = false
+    if (_mapInitted) {
+      return
+    }
+    if (!mappingLibrary) {
+      _map = initOpenlayersMap(_chart)
+      _mapInitted = true
 
-    _mapboxgl.accessToken = _mapboxAccessToken
-    if (!_mapboxgl.supported()) {
-      throw { name: "WebGL", message: "WebGL Not Enabled" }
     } else {
-      initMap()
+      debugger
+      _mapboxgl.accessToken = _mapboxAccessToken
+
+      if (!_mapboxgl.supported()) {
+        throw { name: "WebGL", message: "WebGL Not Enabled" }
+      } else {
+        _map = initMapboxMap(_chart, _mapboxAccessToken, _mapboxgl)
+        _mapInitted = true
+        _chart.enableInteractions(_interactionsEnabled)
+      }
+
+      return new Promise((resolve, reject) => {
+        _map.on("load", e => {
+          onLoad(e)
+          loaded = true
+          if (styleLoaded) {
+            init(bounds).then(() => {
+              resolve(_chart)
+            })
+          }
+        })
+
+        _map.on("style.load", () => {
+          styleLoaded = true
+          if (loaded) {
+            init(bounds).then(() => {
+              resolve(_chart)
+            })
+          }
+        })
+
+        _map.on("mousedown", event => {
+          _clientClickX = event.point.x
+          _clientClickY = event.point.y
+        })
+
+        _map.on("mouseup", event => {
+          // Make sure that the user is clicking to filter, and not dragging or panning the map
+          if (
+            _clientClickX === event.point.x &&
+            _clientClickY === event.point.y
+          ) {
+            _chart.getClosestResult(event.point, result => {
+              const data = result.row_set[0]
+              _chart.getLayerNames().forEach(layerName => {
+                const layer = _chart.getLayer(layerName)
+                if (typeof layer.onClick === "function") {
+                  layer.onClick(_chart, data, event.originalEvent)
+                }
+              })
+            })
+          }
+        })
+      })
     }
 
-    return new Promise((resolve, reject) => {
-      _map.on("load", e => {
-        onLoad(e)
-        loaded = true
-        if (styleLoaded) {
-          init(bounds).then(() => {
-            resolve(_chart)
-          })
-        }
-      })
-
-      _map.on("style.load", () => {
-        styleLoaded = true
-        if (loaded) {
-          init(bounds).then(() => {
-            resolve(_chart)
-          })
-        }
-      })
-
-      _map.on("mousedown", event => {
-        _clientClickX = event.point.x
-        _clientClickY = event.point.y
-      })
-
-      _map.on("mouseup", event => {
-        // Make sure that the user is clicking to filter, and not dragging or panning the map
-        if (
-          _clientClickX === event.point.x &&
-          _clientClickY === event.point.y
-        ) {
-          _chart.getClosestResult(event.point, result => {
-            const data = result.row_set[0]
-            _chart.getLayerNames().forEach(layerName => {
-              const layer = _chart.getLayer(layerName)
-              if (typeof layer.onClick === "function") {
-                layer.onClick(_chart, data, event.originalEvent)
-              }
-            })
-          })
-        }
-      })
-    })
   }
 
   _chart.setFilterBounds = function(bounds) {
