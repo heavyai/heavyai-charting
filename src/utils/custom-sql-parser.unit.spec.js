@@ -1,7 +1,7 @@
 import parseFactsFromCustomSQL from "./custom-sql-parser"
 import { expect } from "chai"
 
-describe.only("parseFactsFromCustomSQL", () => {
+describe("parseFactsFromCustomSQL", () => {
   describe("approx_count_distinct(caid) / us_census_block_groups_ca_2017.population", () => {
     const {
       factProjections,
