@@ -87888,7 +87888,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
     transforms.push({
       type: "project",
       expr: "SAMPLE(" + geoTable + "." + geocol + ")",
-      as: geocol
+      as: "sampled_geo"
     });
   } else {
     transforms.push({
