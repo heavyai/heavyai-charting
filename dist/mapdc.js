@@ -50186,6 +50186,8 @@ function spinnerMixin(_chart) {
 
   _chart.on("dataError.spinner", function () {
     console.log(_chart.__dcFlag__, ": error");
+
+    tearDownSpinner();
   });
 
   return _chart;
