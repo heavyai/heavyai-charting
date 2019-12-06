@@ -57720,10 +57720,9 @@ __webpack_require__(347);
 __webpack_require__(348);
 __webpack_require__(349);
 __webpack_require__(350);
-__webpack_require__(351);
 
 if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
-  window.mapboxgl = __webpack_require__(352);
+  window.mapboxgl = __webpack_require__(351);
 }
 
 exports.d3 = _d; // eslint-disable-line
@@ -89665,104 +89664,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /***/ }),
 /* 351 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-(function () {
-  /* istanbul ignore next */
-  if (window.SVGElement) {
-    var serializeXML = function serializeXML(node, output) {
-      var nodeType = node.nodeType;
-      if (nodeType == 3) {
-        // TEXT nodes.
-        // Replace special XML characters with their entities.
-        output.push(node.textContent.replace(/&/, "&amp;").replace(/</, "&lt;").replace(">", "&gt;"));
-      } else if (nodeType == 1) {
-        // ELEMENT nodes.
-        // Serialize Element nodes.
-        output.push("<", node.tagName);
-        if (node.hasAttributes()) {
-          var attrMap = node.attributes;
-          for (var i = 0, len = attrMap.length; i < len; ++i) {
-            var attrNode = attrMap.item(i);
-            output.push(" ", attrNode.name, "='", attrNode.value, "'");
-          }
-        }
-        if (node.hasChildNodes()) {
-          output.push(">");
-          var childNodes = node.childNodes;
-          for (var i = 0, len = childNodes.length; i < len; ++i) {
-            serializeXML(childNodes.item(i), output);
-          }
-          output.push("</", node.tagName, ">");
-        } else {
-          output.push("/>");
-        }
-      } else if (nodeType == 8) {
-        // TODO(codedread): Replace special characters with XML entities?
-        output.push("<!--", node.nodeValue, "-->");
-      } else {
-        // TODO: Handle CDATA nodes.
-        // TODO: Handle ENTITY nodes.
-        // TODO: Handle DOCUMENT nodes.
-        throw "Error serializing XML. Unhandled node of type: " + nodeType;
-      }
-    };
-    // The innerHTML DOM property for SVGElement.
-    Object.defineProperty(window.SVGElement.prototype, "innerHTML", {
-      get: function get() {
-        var output = [];
-        var childNode = this.firstChild;
-        while (childNode) {
-          serializeXML(childNode, output);
-          childNode = childNode.nextSibling;
-        }
-        return output.join("");
-      },
-      set: function set(markupText) {
-        // Wipe out the current contents of the element.
-        while (this.firstChild) {
-          this.removeChild(this.firstChild);
-        }
-
-        try {
-          // Parse the markup into valid nodes.
-          // var dXML = new DOMParser();
-          // dXML.async = false;
-          // Wrap the markup into a SVG node to ensure parsing works.
-          markupText = "<svg xmlns='http://www.w3.org/2000/svg'>" + markupText + "</svg>";
-
-          var divContainer = document.createElement("div");
-          divContainer.innerHTML = markupText;
-          var svgDocElement = divContainer.querySelector("svg");
-          // Now take each node, import it and append to this element.
-          var childNode = svgDocElement.firstChild;
-          while (childNode) {
-            this.appendChild(this.ownerDocument.importNode(childNode, true));
-            childNode = childNode.nextSibling;
-          }
-        } catch (e) {
-          throw e;
-        }
-      }
-    });
-
-    // The innerSVG DOM property for SVGElement.
-    Object.defineProperty(window.SVGElement.prototype, "innerSVG", {
-      get: function get() {
-        return this.innerHTML;
-      },
-      set: function set(markupText) {
-        this.innerHTML = markupText;
-      }
-    });
-  }
-})();
-
-/***/ }),
-/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.4.1/LICENSE.txt */
