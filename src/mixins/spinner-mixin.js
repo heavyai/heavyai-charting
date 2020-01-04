@@ -100,6 +100,8 @@ export default function spinnerMixin(_chart) {
 
   _chart.on("dataError.spinner", () => {
     console.log(_chart.__dcFlag__, ": error")
+
+    tearDownSpinner()
   })
 
   return _chart

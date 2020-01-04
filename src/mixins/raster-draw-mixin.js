@@ -78,6 +78,80 @@ export function rasterDrawMixin(chart) {
     dashPattern: [8, 2]
   }
 
+  // given a layer of this chart, and a bonkers boolean flag, will return the
+  // associated crossfilter object
+
+  function getCrossfilter(layer) {
+    const layerTypeIsPointsOrHeatOrUndefined = isLayerTypePointsOrHeatOrUndefined(
+      layer
+    )
+
+    const group = layer.group()
+
+    if (group) {
+      return group.getCrossfilter()
+    } else {
+      const dim = layerTypeIsPointsOrHeatOrUndefined
+        ? layer.dimension()
+        : layer.viewBoxDim()
+      if (dim) {
+        return layerTypeIsPointsOrHeatOrUndefined ? dim.getCrossfilter() : dim
+      } else {
+        return layer.crossfilter()
+      }
+    }
+  }
+
+  // crossfilters and associated filter objects are stored in different places
+  // depending upon the type of chart. So we have this very stupidly named
+  // function that checks the magic conditions for one path vs the other.
+  function isLayerTypePointsOrHeatOrUndefined(layer) {
+    return (
+      !layer.layerType ||
+      typeof layer.layerType !== "function" ||
+      layer.layerType() === "points" ||
+      layer.layerType() === "heat"
+    )
+  }
+
+  // given a layer, returns the associated filter object for it. If no filterObj
+  // exists yet, it'll create one.
+  function getRasterFilterObj(layer) {
+    const layerTypeIsPointsOrHeatOrUndefined = isLayerTypePointsOrHeatOrUndefined(
+      layer
+    )
+
+    const crossFilter = getCrossfilter(layer)
+
+    if (crossFilter === undefined) {
+      return undefined
+    }
+
+    let filterObj = coordFilters.get(crossFilter)
+
+    if (filterObj) {
+      return filterObj
+    } else if (layerTypeIsPointsOrHeatOrUndefined) {
+      filterObj = {
+        coordFilter: crossFilter.filter(),
+        px: [],
+        py: []
+      }
+      coordFilters.set(crossFilter, filterObj)
+      filterObj.shapeFilters = []
+    } else {
+      filterObj = {
+        coordFilter: crossFilter
+      }
+      coordFilters.set(crossFilter, filterObj)
+      filterObj.shapeFilters = []
+    }
+
+    return filterObj
+  }
+
+  chart.getRasterFilterObj = getRasterFilterObj
+
   function applyFilter() {
     const NUM_SIDES = 3
     const useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat()
@@ -134,9 +208,7 @@ export function rasterDrawMixin(chart) {
                 LatLonUtils.conv900913To4326(pos, pos)
                 const meters = shape.radius * 1000
                 filterObj.shapeFilters.push(
-                  `DISTANCE_IN_METERS(${pos[0]}, ${
-                    pos[1]
-                  }, ${px}, ${py}) < ${meters}`
+                  `DISTANCE_IN_METERS(${pos[0]}, ${pos[1]}, ${px}, ${py}) < ${meters}`
                 )
               } else if (shape instanceof MapdDraw.Circle) {
                 const radsqr = Math.pow(shape.radius, 2)
@@ -217,9 +289,11 @@ export function rasterDrawMixin(chart) {
             })
           }
         }
-      } else if (!layer.layerType ||
+      } else if (
+        !layer.layerType ||
         typeof layer.layerType !== "function" ||
-        layer.layerType() === "lines") {
+        layer.layerType() === "lines"
+      ) {
         if (layer.getState().data.length < 2) {
           let crossFilter = null
           let filterObj = null
@@ -239,7 +313,7 @@ export function rasterDrawMixin(chart) {
             filterObj = coordFilters.get(crossFilter)
             if (!filterObj) {
               filterObj = {
-                coordFilter: crossFilter,
+                coordFilter: crossFilter
               }
               coordFilters.set(crossFilter, filterObj)
               filterObj.shapeFilters = []
@@ -253,9 +327,9 @@ export function rasterDrawMixin(chart) {
                 const radiusInKm = shape.radius
                 const shapeFilter = {
                   spatialRelAndMeas: "filterST_Distance",
-                  filters: {point: [pos[0], pos[1]], distanceInKm: radiusInKm}
+                  filters: { point: [pos[0], pos[1]], distanceInKm: radiusInKm }
                 }
-                
+
                 if (!_.find(filterObj.shapeFilters, shapeFilter)) {
                   filterObj.shapeFilters.push(shapeFilter)
                 }
@@ -272,7 +346,10 @@ export function rasterDrawMixin(chart) {
                   }
                   convertedVerts.push([p0[0], p0[1]])
                 })
-                const shapeFilter = {spatialRelAndMeas: "filterST_Contains", filters: convertedVerts}
+                const shapeFilter = {
+                  spatialRelAndMeas: "filterST_Contains",
+                  filters: convertedVerts
+                }
 
                 if (!_.find(filterObj.shapeFilters, shapeFilter)) {
                   filterObj.shapeFilters.push(shapeFilter)
@@ -286,7 +363,8 @@ export function rasterDrawMixin(chart) {
 
     coordFilters.forEach(filterObj => {
       if (
-        filterObj.px && filterObj.py &&
+        filterObj.px &&
+        filterObj.py &&
         filterObj.px.length &&
         filterObj.py.length &&
         filterObj.shapeFilters.length
@@ -303,16 +381,15 @@ export function rasterDrawMixin(chart) {
           )
           .map(
             (e, i) =>
-              `(${e.px} IS NOT NULL AND ${
-                e.py
-              } IS NOT NULL AND (${shapeFilterStmt}))`
+              `(${e.px} IS NOT NULL AND ${e.py} IS NOT NULL AND (${shapeFilterStmt}))`
           )
           .join(" AND ")
         filterObj.coordFilter.filter([filterStmt])
         filterObj.px = []
         filterObj.py = []
         filterObj.shapeFilters = []
-      } else if (filterObj.coordFilter &&
+      } else if (
+        filterObj.coordFilter &&
         filterObj.shapeFilters &&
         filterObj.shapeFilters.length &&
         filterObj.shapeFilters[0].spatialRelAndMeas
@@ -508,15 +585,8 @@ export function rasterDrawMixin(chart) {
       updateDraw()
     }
 
-    if (typeof chart.useLonLat === "function") {
-      // using a mapbox map, it works better to rerender
-      // on move here
-      chart.map().on("move", updateDraw)
-    } else {
-      // using a dc coordinate grid, redraws work better
-      // on the render event
-      chart.map().on("render", updateDraw)
-    }
+    chart.map().on("render", updateDraw)
+
     chart.map().on("resize", updateDrawResize)
 
     origFilterFunc = chart.filter
@@ -530,15 +600,23 @@ export function rasterDrawMixin(chart) {
       chart.getLayerNames().forEach(layerName => {
         const layer = chart.getLayer(layerName)
         if (layer.hasOwnProperty("filterAll")) {
-          layer.filterAll()
+          layer.filterAll(chart)
         }
       })
       if (coordFilters) {
         coordFilters.forEach(filterObj => {
-          if (filterObj.coordFilter && 'spatialRelAndMeas' in filterObj.shapeFilters) {
+          if (
+            filterObj.coordFilter &&
+            "spatialRelAndMeas" in filterObj.shapeFilters
+          ) {
             filterObj.coordFilter.filterSpatial()
             const bounds = chart.map().getBounds()
-            filterObj.coordFilter.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
+            filterObj.coordFilter.filterST_Min_ST_Max({
+              lonMin: bounds._sw.lng,
+              lonMax: bounds._ne.lng,
+              latMin: bounds._sw.lat,
+              latMax: bounds._ne.lat
+            })
           } else {
             filterObj.coordFilter.filter()
           }
@@ -549,7 +627,7 @@ export function rasterDrawMixin(chart) {
       drawEngine.deleteAllShapes()
 
       origFilterFunc(Symbol.for("clear"))
-      
+
       shapes.forEach(shape => {
         chart.deleteFilterShape(shape)
       })

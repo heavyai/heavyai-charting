@@ -129,10 +129,14 @@ export default function rowChart(parent, chartGroup) {
     _chart.xAxis().ticks(_chart.getNumTicksForXAxis())
   }
 
-  function setXAxisFormat () {
+  function setXAxisFormat() {
     const numberFormatter = _chart.valueFormatter()
-    if (numberFormatter) {
-      const key = _chart.getMeasureName()
+    const key = _chart.getMeasureName()
+    // We have no good way of knowing if the valueFormatter has a formatter for the X axis in
+    // particular, since that code is a black box. So we run through a test value and if it returns
+    // `null`, we know it doesn't know how to format it. It's dumb, but it works.
+    const validFormatting = numberFormatter && numberFormatter(0, key) !== null
+    if (validFormatting) {
       xFormatCache.setTickFormat(d => numberFormatter(d, key))
     } else {
       xFormatCache.setTickFormatFromCache()
@@ -230,7 +234,10 @@ export default function rowChart(parent, chartGroup) {
     const key = _chart.getMeasureName()
     const customFormatter = _chart.valueFormatter()
     const value = _chart.cappedValueAccessor(d)
-    return customFormatter && customFormatter(value, key) || utils.formatValue(value)
+    return (
+      (customFormatter && customFormatter(value, key)) ||
+      utils.formatValue(value)
+    )
   }
   /* ------------------------------------------------------------------------- */
 
@@ -254,13 +261,11 @@ export default function rowChart(parent, chartGroup) {
   }
 
   function drawGridLines() {
-    _g
-      .selectAll("g.tick")
+    _g.selectAll("g.tick")
       .select("line.grid-line")
       .remove()
 
-    _g
-      .selectAll("g.tick")
+    _g.selectAll("g.tick")
       .append("line")
       .attr("class", "grid-line")
       .attr("x1", 0)
@@ -365,9 +370,8 @@ export default function rowChart(parent, chartGroup) {
       .attr("height", height)
       .attr("fill", _chart.getColor)
       .on("click", onClick)
-      .classed(
-        "deselected",
-        d => (_chart.hasFilter() ? !isSelectedRow(d) : false)
+      .classed("deselected", d =>
+        _chart.hasFilter() ? !isSelectedRow(d) : false
       )
       .classed("selected", d => (_chart.hasFilter() ? isSelectedRow(d) : false))
 

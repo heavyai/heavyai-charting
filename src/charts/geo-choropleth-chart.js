@@ -85,7 +85,8 @@ export default function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
     this.map().remove()
   }
 
-  _chart.getClosestResult = function() { // don't use logic in mouseup event in map-mixin.js
+  _chart.getClosestResult = function() {
+    // don't use logic in mouseup event in map-mixin.js
     return
   }
 

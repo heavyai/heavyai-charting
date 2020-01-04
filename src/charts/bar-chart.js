@@ -83,7 +83,9 @@ export default function barChart(parent, chartGroup) {
 
   _chart.measureValue = function(value) {
     const customFormatter = _chart.valueFormatter()
-    return customFormatter && customFormatter(value) || utils.formatValue(value)
+    return (
+      (customFormatter && customFormatter(value)) || utils.formatValue(value)
+    )
   }
 
   _chart.plotData = function() {
@@ -308,7 +310,9 @@ export default function barChart(parent, chartGroup) {
       }
     }
 
-    const bars = layer.selectAll("rect.bar").data(d.values, (d) => (d.x instanceof Date) ? d.x.getTime() : d.x)
+    const bars = layer
+      .selectAll("rect.bar")
+      .data(d.values, d => (d.x instanceof Date ? d.x.getTime() : d.x))
 
     const enter = bars
       .enter()

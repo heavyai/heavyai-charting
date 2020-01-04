@@ -25,26 +25,6 @@ export default function numberChart(parent, chartGroup) {
     group
       .valueAsync()
       .then(data => {
-        if (group.getReduceExpression() === "COUNT(*) AS val") {
-          const id = group.getCrossfilterId()
-          const filterSize = lastFilteredSize(id)
-          if (filterSize !== undefined) {
-            return Promise.resolve(filterSize)
-          } else {
-            return _chart
-              .dimension()
-              .sizeAsync()
-              .then(group.valueAsync)
-              .then(value => {
-                setLastFilteredSize(id, value)
-                return value
-              })
-          }
-        } else {
-          return data
-        }
-      })
-      .then(data => {
         callbacks(null, data)
       })
       .catch(error => {
@@ -73,9 +53,13 @@ export default function numberChart(parent, chartGroup) {
     const TEXT_PADDING_RATIO = 5
     const chartWidth = _chart.width()
     const chartHeight = _chart.height()
-    const wrapperWidth = chartWidth - chartWidth / 100 * TEXT_PADDING_RATIO
-    const wrapperHeight = chartHeight - chartHeight / 100 * TEXT_PADDING_RATIO
-    const fontSize = utils.getFontSizeFromWidth(formattedValue, wrapperWidth, wrapperHeight)
+    const wrapperWidth = chartWidth - (chartWidth / 100) * TEXT_PADDING_RATIO
+    const wrapperHeight = chartHeight - (chartHeight / 100) * TEXT_PADDING_RATIO
+    const fontSize = utils.getFontSizeFromWidth(
+      formattedValue,
+      wrapperWidth,
+      wrapperHeight
+    )
     wrapper
       .append("span")
       .attr("class", "number-chart-number")

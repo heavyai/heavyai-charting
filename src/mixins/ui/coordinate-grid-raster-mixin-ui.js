@@ -1,6 +1,7 @@
 "use strict"
 
 import { redrawAllAsync } from "../../core/core-async"
+import { timed, bezier } from "../../utils/mapbox-ported-functions"
 
 /* istanbul ignore next */
 function bindAll(funcNames, thisArg) {
@@ -278,9 +279,9 @@ class BoxZoomHandler extends BaseHandler {
       const duration = 500
       this._active = true
 
-      const ease = this._mapboxglModule.util.bezier(0.25, 0.1, 0.25, 1)
+      const ease = bezier(0.25, 0.1, 0.25, 1)
 
-      const abortFunc = this._mapboxglModule.util.browser.timed(t => {
+      const abortFunc = timed(t => {
         this._perFrameFunc(
           e,
           ease(t),
@@ -815,12 +816,6 @@ class DragPanHandler extends BaseHandler {
     }
 
     const inertiaLinearity = 0.3
-    const inertiaEasing = this._mapboxglModule.util.bezier(
-      0,
-      0,
-      inertiaLinearity,
-      1
-    )
     const inertiaMaxSpeed = 1400 // pixels/second
     const inertiaDeceleration = 2500 // pixels/second squared
 

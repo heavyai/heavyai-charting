@@ -170,12 +170,16 @@ export default function lineChart(parent, chartGroup) {
 
   _chart.measureValue = function(value) {
     const customFormatter = _chart.valueFormatter()
-    return (customFormatter && customFormatter(value)) || utils.formatValue(value)
+    return (
+      (customFormatter && customFormatter(value)) || utils.formatValue(value)
+    )
   }
 
   _chart.dimensionValue = function(value) {
     const customFormatter = _chart.dateFormatter()
-    return (customFormatter && customFormatter(value)) || utils.formatValue(value)
+    return (
+      (customFormatter && customFormatter(value)) || utils.formatValue(value)
+    )
   }
   /**
    * Get or set render area flag. If the flag is set to true then the chart will render the area
@@ -362,11 +366,10 @@ export default function lineChart(parent, chartGroup) {
     const popupItems = popupBox
       .selectAll(".popup-item")
       .data(
-        arr.sort(
-          (a, b) =>
-            _renderArea
-              ? b.datum.y + b.datum.y0 - (a.datum.y + a.datum.y0)
-              : b.datum.y - a.datum.y
+        arr.sort((a, b) =>
+          _renderArea
+            ? b.datum.y + b.datum.y0 - (a.datum.y + a.datum.y0)
+            : b.datum.y - a.datum.y
         )
       )
       .enter()
@@ -521,12 +524,10 @@ export default function lineChart(parent, chartGroup) {
     const yAxisRefPathD = "M" + yAxisX + " " + y + "L" + x + " " + y
     const xAxisRefPathD =
       "M" + x + " " + _chart.yAxisHeight() + "L" + x + " " + y
-    g
-      .select("path." + Y_AXIS_REF_LINE_CLASS)
+    g.select("path." + Y_AXIS_REF_LINE_CLASS)
       .style("display", "")
       .attr("d", yAxisRefPathD)
-    g
-      .select("path." + X_AXIS_REF_LINE_CLASS)
+    g.select("path." + X_AXIS_REF_LINE_CLASS)
       .style("display", "")
       .attr("d", xAxisRefPathD)
   }

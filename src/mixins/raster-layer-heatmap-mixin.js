@@ -10,8 +10,7 @@ const EARTH_DIAMETER = 40075000
 function getPixelSize(neLat, width, zoom) {
   return Math.max(
     MIN_AREA_IN_METERS /
-      (EARTH_DIAMETER *
-        Math.cos(neLat * Math.PI / 180) /
+      ((EARTH_DIAMETER * Math.cos((neLat * Math.PI) / 180)) /
         (width * Math.pow(2, zoom))),
     1.0
   )
@@ -20,7 +19,7 @@ function getPixelSize(neLat, width, zoom) {
 function getMarkHeight(type, width) {
   switch (type) {
     case "hex":
-      return 2 * width / Math.sqrt(3.0)
+      return (2 * width) / Math.sqrt(3.0)
     default:
       return width
   }
@@ -181,20 +180,22 @@ export default function rasterLayerHeatmapMixin(_layer) {
       height
     }
 
-    vega.data = [{
-      name: datalayerName,
-      sql: _layer.genSQL({
-        table,
-        width,
-        height,
-        min,
-        max,
-        filter,
-        globalFilter,
-        neLat,
-        zoom
-      })
-    }]
+    vega.data = [
+      {
+        name: datalayerName,
+        sql: _layer.genSQL({
+          table,
+          width,
+          height,
+          min,
+          max,
+          filter,
+          globalFilter,
+          neLat,
+          zoom
+        })
+      }
+    ]
 
     if (autocolors) {
       vega.data.push({
@@ -202,10 +203,10 @@ export default function rasterLayerHeatmapMixin(_layer) {
         source: datalayerName,
         transform: [
           {
-            type:   "aggregate",
+            type: "aggregate",
             fields: ["color", "color", "color", "color"],
-            ops:    ["min", "max", "avg", "stddev"],
-            as:     ["minimum", "maximum", "mean", "deviation"]
+            ops: ["min", "max", "avg", "stddev"],
+            as: ["minimum", "maximum", "mean", "deviation"]
           },
           {
             type: "formula",
@@ -226,10 +227,9 @@ export default function rasterLayerHeatmapMixin(_layer) {
       {
         name: colorScaleName,
         type: state.encoding.color.type,
-        domain:
-          autocolors 
-            ? {data: getStatsLayerName(), fields: ["mincolor", "maxcolor"]}
-            : state.encoding.color.scale.domain,
+        domain: autocolors
+          ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] }
+          : state.encoding.color.scale.domain,
         range: state.encoding.color.scale.range.map(c =>
           adjustOpacity(c, state.encoding.color.scale.opacity)
         ),

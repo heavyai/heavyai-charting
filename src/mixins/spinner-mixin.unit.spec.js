@@ -108,4 +108,10 @@ describe("Spinner Mixin", () => {
       done()
     }, chart.spinnerDelay() + 5)
   })
+
+  it("should clear the spinner if there is an error", () => {
+    chart._invokeDataErrorListener()
+
+    expect(chart.isSpinnerShowing()).to.equal(false)
+  })
 })

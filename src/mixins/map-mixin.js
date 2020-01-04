@@ -2,7 +2,6 @@ import d3 from "d3"
 import * as _ from "lodash"
 import { redrawAllAsync, resetRedrawStack } from "../core/core-async"
 import { utils } from "../utils/utils"
-import { mapDrawMixin } from "./map-draw-mixin"
 import { rasterDrawMixin } from "./raster-draw-mixin"
 
 function valuesOb(obj) {
@@ -44,7 +43,7 @@ export default function mapMixin(
   let _lastMapUpdateTime = 0
   let _isFirstMoveEvent = true
   let _mapUpdateInterval = 100 // default
-  let _mapStyle = "mapbox://styles/mapbox/light-v8"
+  let _mapStyle = "mapbox://styles/mapbox/light-v9"
   let _center = [0, 30]
   let _zoom = 1
   let _attribLocation = "bottom-right"
@@ -119,7 +118,7 @@ export default function mapMixin(
       "boxZoom",
       "dragPan",
       "keyboard",
-      "doubleClickZoom",
+      "doubleClickZoom"
     ]
     _interactionsEnabled = Boolean(enableInteractions)
 
@@ -267,19 +266,6 @@ export default function mapMixin(
   }
 
   function onLoad(e) {
-    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
-
-    const mapboxlogo = document.createElement("a")
-    mapboxlogo.className = "mapbox-maplogo"
-    mapboxlogo.href = "http://mapbox.com/about/maps"
-    mapboxlogo.target = "_blank"
-    mapboxlogo.innerHTML = "Mapbox"
-
-    const existingLogo = (_map && _map._container) ? _map._container.querySelector('.mapbox-maplogo') : null;
-    if(!existingLogo) {
-      _chart.root()[0][0].appendChild(mapboxlogo)
-    }
-
     if (_geocoder) {
       initGeocoder()
     }
@@ -343,12 +329,20 @@ export default function mapMixin(
             xdim.filter([_chart._minCoord[0], _chart._maxCoord[0]])
             ydim.filter([_chart._minCoord[1], _chart._maxCoord[1]])
           }
-        }
-        else if(typeof layer.viewBoxDim === "function" && layer.getState().data.length < 2) { // spatial filter on only single data source
+        } else if (
+          typeof layer.viewBoxDim === "function" &&
+          layer.getState().data.length < 2
+        ) {
+          // spatial filter on only single data source
           const viewBoxDim = layer.viewBoxDim()
-          if(viewBoxDim !== null) {
+          if (viewBoxDim !== null) {
             redrawall = true
-            viewBoxDim.filterST_Min_ST_Max({lonMin: bounds._sw.lng, lonMax: bounds._ne.lng, latMin: bounds._sw.lat, latMax: bounds._ne.lat})
+            viewBoxDim.filterST_Min_ST_Max({
+              lonMin: bounds._sw.lng,
+              lonMax: bounds._ne.lng,
+              latMin: bounds._sw.lat,
+              latMax: bounds._ne.lat
+            })
           }
         }
       })
@@ -366,8 +360,14 @@ export default function mapMixin(
         resetRedrawStack()
         console.log("on move event redrawall error:", error)
       })
-    } else if(_viewBoxDim !== null && layer.getState().data.length < 2) { // spatial filter on only single data source
-      _viewBoxDim.filterST_Min_ST_Max({lonMin: _chart._minCoord[0],lonMax: _chart._maxCoord[0], latMin: _chart._minCoord[1], latMax: _chart._maxCoord[1]})
+    } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
+      // spatial filter on only single data source
+      _viewBoxDim.filterST_Min_ST_Max({
+        lonMin: _chart._minCoord[0],
+        lonMax: _chart._maxCoord[0],
+        latMin: _chart._minCoord[1],
+        latMax: _chart._maxCoord[1]
+      })
       redrawAllAsync(_chart.chartGroup()).catch(error => {
         resetRedrawStack()
         console.log("on move event redrawall error:", error)
@@ -376,6 +376,16 @@ export default function mapMixin(
       _chart._projectionFlag = true
       _chart.redrawAsync()
     }
+  }
+
+  // Force the map to display the mapbox logo
+  const showMapLogo = () => {
+    const logos = document.querySelectorAll(".mapboxgl-ctrl-logo")
+    logos.forEach(logo => {
+      if (logo.parentElement) {
+        logo.parentElement.style.display = "block"
+      }
+    })
   }
 
   _chart.mapStyle = function(style) {
@@ -437,10 +447,12 @@ export default function mapMixin(
     if (_chart.svg()) {
       _chart.svg().remove()
     }
-    const mapContainer = d3.select(_chart.map().getCanvasContainer())
-    const svg = mapContainer.append("svg").attr("class", "poly-svg")
-    svg.attr("width", _chart.width()).attr("height", _chart.height())
-    _chart.svg(svg)
+    if (_chart.map()) {
+      const mapContainer = d3.select(_chart.map().getCanvasContainer())
+      const svg = mapContainer.append("svg").attr("class", "poly-svg")
+      svg.attr("width", _chart.width()).attr("height", _chart.height())
+      _chart.svg(svg)
+    }
   }
 
   _chart.mapProject = function(input) {
@@ -451,7 +463,7 @@ export default function mapMixin(
       const yDiff = this._maxCoord[1] - this._minCoord[1]
       var projectedPoint = this.conv4326To900913(input)
       return [
-        (projectedPoint[0] - this._minCoord[0]) / xDiff * this.width(),
+        ((projectedPoint[0] - this._minCoord[0]) / xDiff) * this.width(),
         (1.0 - (projectedPoint[1] - this._minCoord[1]) / yDiff) * this.height()
       ]
     } else {
@@ -463,24 +475,36 @@ export default function mapMixin(
   _chart._setOverlay = function(data, bounds, browser, redraw) {
     const map = _chart.map()
 
-    const allMapboxCanvasContainer = document.getElementsByClassName('mapboxgl-canvas-container')
-    const chartIdFromCanvasContainer = _chart.selectAll('.mapboxgl-canvas-container')[0].parentNode.id
+    const allMapboxCanvasContainer = document.getElementsByClassName(
+      "mapboxgl-canvas-container"
+    )
+    const chartIdFromCanvasContainer = _chart.selectAll(
+      ".mapboxgl-canvas-container"
+    )[0].parentNode.id
 
-    const chartMapboxCanvasContainer = _.filter(allMapboxCanvasContainer, (mbcc) =>
-      mbcc.parentNode.id === chartIdFromCanvasContainer || mbcc.parentNode.parentNode.id === chartIdFromCanvasContainer
+    const chartMapboxCanvasContainer = _.filter(
+      allMapboxCanvasContainer,
+      mbcc =>
+        mbcc.parentNode.id === chartIdFromCanvasContainer ||
+        mbcc.parentNode.parentNode.id === chartIdFromCanvasContainer
     )
 
-    const allMapboxCanvas = document.getElementsByClassName('mapboxgl-canvas')
-    const chartIdFromCanvas = _chart.selectAll('.mapboxgl-canvas')[0].parentNode.id
+    const allMapboxCanvas = document.getElementsByClassName("mapboxgl-canvas")
+    const chartIdFromCanvas = _chart.selectAll(".mapboxgl-canvas")[0].parentNode
+      .id
 
-    const chartMapboxCanvas = _.filter(allMapboxCanvas, (mbc) =>
-      mbc.parentNode.id === chartIdFromCanvas || mbc.parentNode.parentNode.id === chartIdFromCanvas
+    const chartMapboxCanvas = _.filter(
+      allMapboxCanvas,
+      mbc =>
+        mbc.parentNode.id === chartIdFromCanvas ||
+        mbc.parentNode.parentNode.id === chartIdFromCanvas
     )
 
-    if(chartMapboxCanvasContainer.length > 1) { // we use only one canvas for the chart map, thus remove extra
+    if (chartMapboxCanvasContainer.length > 1) {
+      // we use only one canvas for the chart map, thus remove extra
       chartMapboxCanvasContainer[0].remove()
     }
-    if(chartMapboxCanvas.length > 1){
+    if (chartMapboxCanvas.length > 1) {
       chartMapboxCanvas[0].remove()
     }
 
@@ -497,23 +521,19 @@ export default function mapMixin(
     }
 
     if (browser.isSafari || browser.isIE || browser.isEdge) {
-      const blob = utilss.b64toBlob(data, "image/png")
+      const blob = utils.b64toBlob(data, "image/png")
       var blobUrl = URL.createObjectURL(blob)
     } else {
       var blobUrl = "data:image/png;base64," + data
     }
 
-    if (!_activeLayer) {
-      _activeLayer = "_points"
-      const toBeAddedOverlay = "overlay" + _activeLayer
+    function setSourceAndAddLayer(toBeAddedOverlay) {
       const firstSymbolLayerId = getFirstSymbolLayerId()
-
       map.addSource(toBeAddedOverlay, {
         type: "image",
         url: blobUrl,
         coordinates: boundsToUse
       })
-
       map.addLayer(
         {
           id: toBeAddedOverlay,
@@ -523,13 +543,26 @@ export default function mapMixin(
         },
         firstSymbolLayerId
       )
+    }
+
+    if (!_activeLayer) {
+      _activeLayer = "_points"
+      const toBeAddedOverlay = "overlay" + _activeLayer
+      if (!map.getSource(toBeAddedOverlay)) {
+        setSourceAndAddLayer(toBeAddedOverlay)
+      }
     } else {
       const overlayName = "overlay" + _activeLayer
       const imageSrc = map.getSource(overlayName)
-      imageSrc.updateImage({
-        url: blobUrl,
-        coordinates: boundsToUse
-      })
+      if (imageSrc) {
+        imageSrc.updateImage({
+          url: blobUrl,
+          coordinates: boundsToUse
+        })
+      } else {
+        // for some reason, the source is lost some of the time, so adding it again FE-9833
+        setSourceAndAddLayer(overlayName)
+      }
     }
   }
 
@@ -564,13 +597,18 @@ export default function mapMixin(
       zoom: _zoom, // starting zoom
       maxBounds: _llb,
       preserveDrawingBuffer: true,
-      attributionControl: false
+      attributionControl: false,
+      logoPosition: "bottom-right"
     })
 
     _map.dragRotate.disable()
     _map.touchZoomRotate.disableRotation()
-    _map.addControl(new _mapboxgl.NavigationControl())
-
+    _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right")
+    _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
+    _map.addControl(
+      new _mapboxgl.ScaleControl({ maxWidth: 80, unit: "metric" }),
+      "bottom-right"
+    )
     _chart.addMapListeners()
     _mapInitted = true
     _chart.enableInteractions(_interactionsEnabled)
@@ -579,6 +617,7 @@ export default function mapMixin(
   _chart.addMapListeners = function() {
     _map.on("move", onMapMove)
     _map.on("moveend", onMapMove)
+    _map.on("sourcedata", showMapLogo)
   }
 
   _chart.removeMapListeners = function() {
@@ -609,13 +648,24 @@ export default function mapMixin(
 
   function getFirstSymbolLayerId() {
     let firstSymbolId = null
-    const layers = _map.getStyle().layers
-    for (let i = 0; i < layers.length; ++i) {
-      if (layers[i].type === "symbol") {
-        firstSymbolId = layers[i].id
-        break
+    const currentStyle = _map.getStyle()
+
+    // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of omnisci layer
+    if (
+      currentStyle.name === "Mapbox Outdoors" ||
+      currentStyle.name === "Mapbox Streets"
+    ) {
+      firstSymbolId = "road-label-large"
+    } else {
+      const layers = currentStyle.layers
+      for (let i = 0; i < layers.length; ++i) {
+        if (layers[i].type === "symbol") {
+          firstSymbolId = layers[i].id
+          break
+        }
       }
     }
+
     return firstSymbolId
   }
 
@@ -667,7 +717,7 @@ export default function mapMixin(
 
     _mapboxgl.accessToken = _mapboxAccessToken
     if (!_mapboxgl.supported()) {
-      throw {name: "WebGL", message: 'WebGL Not Enabled'}
+      throw { name: "WebGL", message: "WebGL Not Enabled" }
     } else {
       initMap()
     }

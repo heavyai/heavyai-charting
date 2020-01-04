@@ -92,7 +92,7 @@ describe("rasterLayerPolyMixin", () => {
             name: "polys",
             format: "polys",
             sql:
-              "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)",
+              "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color0 FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color0 AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)",
             enableHitTesting: false
           }
         ],
@@ -195,7 +195,7 @@ describe("rasterLayerPolyMixin", () => {
             name: "polys",
             format: "polys",
             sql:
-              "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)",
+              "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color0 FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color0 AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)",
             enableHitTesting: false
           }
         ],
@@ -298,7 +298,7 @@ describe("rasterLayerPolyMixin", () => {
             format: "polys",
             enableHitTesting: false,
             sql:
-              "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)"
+              "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color0 FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color0 AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)"
           }
         ],
         scales: [
@@ -395,7 +395,8 @@ describe("rasterLayerPolyMixin", () => {
           {
             name: "polys",
             format: "polys",
-            sql: "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)",
+            sql:
+              "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color0 FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color0 AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)",
             enableHitTesting: false
           },
           {

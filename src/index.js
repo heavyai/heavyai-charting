@@ -1,15 +1,12 @@
 require("../mapdc.css")
 require("../scss/chart.scss")
-require("mapbox-gl/dist/styles.css")
+require("mapbox-gl/dist/mapbox-gl.css")
 require("legendables/src/styles.css")
+require("./mixins/d3.box.js")
 
 if (process.env.BABEL_ENV !== "test") {
-  window.mapboxgl = require("mapbox-gl/dist/mapbox-gl.js")
-  require("mapbox-gl/dist/mapboxgl-overrides.js")
+  window.mapboxgl = require("mapbox-gl")
 }
-
-require("./mixins/d3.box.js")
-require("./polyfills/inner-svg")
 
 export * as d3 from "d3" // eslint-disable-line
 export * from "./core/core"
@@ -79,3 +76,5 @@ export { default as spinnerMixin } from "./mixins/spinner-mixin"
 export { default as legendContinuous } from "./chart-addons/legend-continuous"
 export { default as legend } from "./chart-addons/legend"
 export { default as legendCont } from "./chart-addons/dc-legend-cont"
+
+export { default as parseFactsFromCustomSQL } from "./utils/custom-sql-parser"

@@ -5,11 +5,12 @@ import {
   renderAttributes,
   getScales,
   getSizeScaleName,
-  getColorScaleName, adjustOpacity
-} from "../utils/utils-vega";
-import {lastFilteredSize, setLastFilteredSize} from "../core/core-async";
-import {parser} from "../utils/utils";
-import * as d3 from "d3";
+  getColorScaleName,
+  adjustOpacity
+} from "../utils/utils-vega"
+import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
+import { parser } from "../utils/utils"
+import * as d3 from "d3"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 1000]
 const AUTOSIZE_RANGE_DEFAULTS = [1.0, 3.0]
@@ -25,7 +26,10 @@ function getSizing(
 ) {
   if (typeof sizeAttr === "number") {
     return sizeAttr
-  } else if (typeof sizeAttr === "object" && (sizeAttr.type === "quantitative" || sizeAttr.type === "custom")) {
+  } else if (
+    typeof sizeAttr === "object" &&
+    (sizeAttr.type === "quantitative" || sizeAttr.type === "custom")
+  ) {
     return {
       scale: getSizeScaleName(layerName),
       field: "strokeWidth"
@@ -63,19 +67,12 @@ function getColor(color, layerName) {
     }
   } else if (typeof color === "object") {
     return adjustOpacity(color.value, color.opacity)
-  }
-  else {
+  } else {
     return color
   }
 }
 
-function getTransforms(
-  table,
-  filter,
-  globalFilter,
-  state,
-  lastFilteredSize
-) {
+function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   const transforms = []
   const { transform } = state
   const { size, color, geocol, geoTable } = state.encoding
@@ -94,22 +91,29 @@ function getTransforms(
     return state.data.length > 1
   }
 
-  const groupbyDim = state.transform.groupby ? state.transform.groupby.map((g, i) => ({
-    type: "project",
-    expr: `${state.data[0].table}.${g}`,
-    as: `key${i}`
-  })) : []
+  const groupbyDim = state.transform.groupby
+    ? state.transform.groupby.map((g, i) => ({
+        type: "project",
+        expr: `${state.data[0].table}.${g}`,
+        as: `key${i}`
+      }))
+    : []
 
   const groupby = doJoin()
-    ? [{
-      type: "project",
-      expr: `${state.data[0].table}.${state.data[0].attr}`,
-      as: "key0"
-    }]
+    ? [
+        {
+          type: "project",
+          expr: `${state.data[0].table}.${state.data[0].attr}`,
+          as: "key0"
+        }
+      ]
     : groupbyDim
 
-  if (typeof size === "object" && (size.type === "quantitative" || size.type === "custom")) {
-    if(groupby.length > 0 && size.type === "quantitative") {
+  if (
+    typeof size === "object" &&
+    (size.type === "quantitative" || size.type === "custom")
+  ) {
+    if (groupby.length > 0 && size.type === "quantitative") {
       fields.push(`${state.data[0].table}.${size.field}`)
       alias.push("strokeWidth")
       ops.push(size.aggregate)
@@ -126,13 +130,13 @@ function getTransforms(
     typeof color === "object" &&
     (color.type === "quantitative" || color.type === "ordinal")
   ) {
-    if(groupby.length > 0 && color.colorMeasureAggType !== "Custom") {
+    if (groupby.length > 0 && color.colorMeasureAggType !== "Custom") {
       fields.push(colorProjection)
       alias.push("strokeColor")
       ops.push(null)
     } else {
       let expression = null
-      if(color.colorMeasureAggType === "Custom") {
+      if (color.colorMeasureAggType === "Custom") {
         expression = color.field ? color.field : color.aggregate
       } else if (color.type === "quantitative") {
         expression = color.aggregate.field
@@ -150,14 +154,11 @@ function getTransforms(
   if (doJoin()) {
     transforms.push({
       type: "filter",
-      expr: `${state.data[0].table}.${state.data[0].attr} = ${
-        state.data[1].table
-        }.${state.data[1].attr}`
+      expr: `${state.data[0].table}.${state.data[0].attr} = ${state.data[1].table}.${state.data[1].attr}`
     })
   }
 
-
-  if(groupby.length > 0) {
+  if (groupby.length > 0) {
     transforms.push({
       type: "aggregate",
       fields,
@@ -173,7 +174,7 @@ function getTransforms(
     transforms.push({
       type: "project",
       expr: `SAMPLE(${geoTable}.${geocol})`,
-      as: geocol
+      as: "sampled_geo"
     })
   } else {
     transforms.push({
@@ -183,7 +184,8 @@ function getTransforms(
   }
 
   if (typeof transform.limit === "number") {
-    if (transform.sample && !doJoin()) { // use Knuth's hash sampling on single data source chart
+    if (transform.sample && !doJoin()) {
+      // use Knuth's hash sampling on single data source chart
       transforms.push({
         type: "sample",
         method: "multiplicative",
@@ -191,7 +193,8 @@ function getTransforms(
         limit: transform.limit,
         sampleTable: geoTable
       })
-    } else { // when geo join is applied, we won't use Knuth's sampling but use LIMIT
+    } else {
+      // when geo join is applied, we won't use Knuth's sampling but use LIMIT
       transforms.push({
         type: "limit",
         row: transform.limit
@@ -256,7 +259,6 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   function getAutoColorVegaTransforms(data, layerName, statsLayerName) {
-
     const aggregateNode = {
       type: "aggregate",
       fields: [],
@@ -266,14 +268,29 @@ export default function rasterLayerLineMixin(_layer) {
 
     const transforms = [aggregateNode]
     if (state.encoding.color.type === "quantitative") {
-      aggregateNode.fields = aggregateNode.fields.concat(["strokeColor", "strokeColor", "strokeColor", "strokeColor"])
-      aggregateNode.ops = aggregateNode.ops.concat(["min", "max", "avg", "stddev"])
-      aggregateNode.as = aggregateNode.as.concat(["mincol", "maxcol", "avgcol", "stdcol"])
+      aggregateNode.fields = aggregateNode.fields.concat([
+        "strokeColor",
+        "strokeColor",
+        "strokeColor",
+        "strokeColor"
+      ])
+      aggregateNode.ops = aggregateNode.ops.concat([
+        "min",
+        "max",
+        "avg",
+        "stddev"
+      ])
+      aggregateNode.as = aggregateNode.as.concat([
+        "mincol",
+        "maxcol",
+        "avgcol",
+        "stdcol"
+      ])
       transforms.push(
         {
           type: "formula",
           expr: "max(mincol, avgcol-2*stdcol)",
-          as:  "mincolor"
+          as: "mincolor"
         },
         {
           type: "formula",
@@ -281,7 +298,8 @@ export default function rasterLayerLineMixin(_layer) {
           as: "maxcolor"
         }
       )
-    } else if (state.encoding.color.type === "ordinal") { // will be used when we support auto for ordinal color type
+    } else if (state.encoding.color.type === "ordinal") {
+      // will be used when we support auto for ordinal color type
       aggregateNode.fields.push("color")
       aggregateNode.ops.push("distinct")
       aggregateNode.as.push("distinctcolor")
@@ -310,14 +328,14 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer.__genVega = function({
-                                table,
-                                filter,
-                                lastFilteredSize,
-                                globalFilter,
-                                pixelRatio,
-                                layerName,
-                                useProjection
-                              }) {
+    table,
+    filter,
+    lastFilteredSize,
+    globalFilter,
+    pixelRatio,
+    layerName,
+    useProjection
+  }) {
     const autocolors = usesAutoColors()
     const getStatsLayerName = () => layerName + "_stats"
 
@@ -355,14 +373,20 @@ export default function rasterLayerLineMixin(_layer) {
     if (autocolors) {
       getAutoColorVegaTransforms(data, layerName, getStatsLayerName())
 
-      if(state.encoding.color.type === "quantitative") {
+      if (state.encoding.color.type === "quantitative") {
         scaledomainfields.color = ["mincolor", "maxcolor"]
-      } else if(state.encoding.color.type === "ordinal") { // will be used when we support auto for ordinal color type
+      } else if (state.encoding.color.type === "ordinal") {
+        // will be used when we support auto for ordinal color type
         scaledomainfields.color = ["distinctcolor"]
       }
     }
 
-    const scales = getScales(state.encoding, layerName, scaledomainfields, getStatsLayerName())
+    const scales = getScales(
+      state.encoding,
+      layerName,
+      scaledomainfields,
+      getStatsLayerName()
+    )
 
     const marks = [
       {
@@ -425,14 +449,15 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer._genVega = function(chart, layerName, group, query) {
-
     // needed to set LastFilteredSize when linemap map first initialized
-    if (
-      _layer.viewBoxDim()
-    ) {
-      _layer.viewBoxDim().groupAll().valueAsync().then(value => {
-        setLastFilteredSize(_layer.crossfilter().getId(), value)
-      })
+    if (_layer.viewBoxDim()) {
+      _layer
+        .viewBoxDim()
+        .groupAll()
+        .valueAsync()
+        .then(value => {
+          setLastFilteredSize(_layer.crossfilter().getId(), value)
+        })
     }
 
     _vega = _layer.__genVega({
@@ -447,7 +472,6 @@ export default function rasterLayerLineMixin(_layer) {
 
     return _vega
   }
-
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
     // add the poly geometry to the query
@@ -484,7 +508,7 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer._displayPopup = function(svgProps) {
-    return __displayPopup({ ...svgProps, _vega, _layer, state})
+    return __displayPopup({ ...svgProps, _vega, _layer, state })
   }
 
   const _scaledPopups = {}

@@ -503,8 +503,14 @@ export default function coordinateGridMixin (_chart) {
   function compareDomains (d1, d2) {
     return (
       !d1 || !d2 || d1.length !== d2.length || d1.some(
-        (elem, i) =>
-          elem && d2[i] ? elem.toString() !== d2[i].toString() : elem === d2[i]
+        (elem, i) => {
+          // The date objects here may be invalid for some reason. We detect that by ensuring
+          // getTime() doesn't return NaN. If invalid, we use toString() instead of toISOString,
+          // since the former doesn't throw an exception with invalid dates.
+          const elemString = elem instanceof Date && !isNaN(elem.getTime()) ? elem.toISOString() : elem.toString()
+          const d2String = d2[i] instanceof Date && !isNaN(d2[i].getTime()) ? d2[i].toISOString() : d2[i].toString()
+          return elem && d2[i] ? elemString !== d2String : elem === d2[i]
+        }
       )
     )
   }

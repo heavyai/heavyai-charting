@@ -63,9 +63,9 @@ export default function legend() {
         d.chart.legendToggle(d)
       })
 
-    _g
-      .selectAll("g.dc-legend-item")
-      .classed("fadeout", d => d.chart.isLegendableHidden(d))
+    _g.selectAll("g.dc-legend-item").classed("fadeout", d =>
+      d.chart.isLegendableHidden(d)
+    )
 
     if (legendables.some(pluck("dashstyle"))) {
       itemEnter

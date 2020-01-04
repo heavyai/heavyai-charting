@@ -2,9 +2,6 @@ import { DAYS, HOURS, MONTHS, QUARTERS } from "../constants/dates-and-times"
 import d3 from "d3"
 import moment from "moment"
 
-const NUMBER_LENGTH = 4
-
-const numFormat = d3.format(".2s")
 const commafy = d3.format(",")
 
 export const nullLabelHtml = '<tspan class="null-value"> NULL </tspan>'
@@ -15,9 +12,15 @@ export const momentUTCFormat = (d, f) =>
     .format(f)
 export const genericDateTimeFormat = d => {
   if (d.getMilliseconds() === 0) {
-    return `${momentUTCFormat(d, "MMM D, YYYY")} \u205F${momentUTCFormat(d,"HH:mm:ss")}`
+    return `${momentUTCFormat(d, "MMM D, YYYY")} \u205F${momentUTCFormat(
+      d,
+      "HH:mm:ss"
+    )}`
   }
-  return `${momentUTCFormat(d, "MMM D, YYYY")} \u205F${momentUTCFormat(d,"HH:mm:ss.SSS")}`
+  return `${momentUTCFormat(d, "MMM D, YYYY")} \u205F${momentUTCFormat(
+    d,
+    "HH:mm:ss.SSS"
+  )}`
 }
 export const isPlainObject = value =>
   !Array.isArray(value) && typeof value === "object" && !(value instanceof Date)
@@ -28,9 +31,9 @@ export const isArrayOfObjects = value =>
 export const normalizeArrayByValue = collection =>
   isArrayOfObjects(collection) ? collection.map(data => data.value) : collection
 
-export function formatDataValue(data, numAbbr) {
+export function formatDataValue(data) {
   if (typeof data === "number") {
-    return formatNumber(data, numAbbr)
+    return formatNumber(data)
   } else if (Array.isArray(data)) {
     return formatArrayValue(data)
   } else if (data instanceof Date) {
@@ -51,16 +54,16 @@ export function maybeFormatInfinity(data) {
   })
 }
 
-export function formatNumber(d, abbr) {
+export function formatNumber(d) {
   if (typeof d !== "number") {
     return d
   }
-  const isLong = String(d).length > NUMBER_LENGTH
-  const formattedHasAlpha = numFormat(d).match(/[a-z]/i)
-  const isLargeNumber = isLong && formattedHasAlpha
-  return isLargeNumber && abbr
-    ? numFormat(d)
-    : commafy(parseFloat(d.toFixed(2)))
+
+  if (d.toString().match(/e/)) {
+    return d.toPrecision(2)
+  } else {
+    return commafy(parseFloat(d.toFixed(2)))
+  }
 }
 
 export function formatArrayValue(data) {
