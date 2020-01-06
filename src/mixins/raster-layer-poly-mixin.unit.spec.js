@@ -73,7 +73,8 @@ describe("rasterLayerPolyMixin", () => {
           },
           geocol: "mapd_geo",
           geoTable: "zipcodes"
-        }
+        },
+        enableHitTesting: false
       })
       layer.crossfilter({
         getId: () => 1
@@ -176,7 +177,8 @@ describe("rasterLayerPolyMixin", () => {
           },
           geocol: "mapd_geo",
           geoTable: "zipcodes"
-        }
+        },
+        enableHitTesting: false
       })
       layer.crossfilter({
         getId: () => 1
@@ -278,7 +280,8 @@ describe("rasterLayerPolyMixin", () => {
           },
           geocol: "mapd_geo",
           geoTable: "zipcodes"
-        }
+        },
+        enableHitTesting: false
       })
       layer.crossfilter({
         getId: () => 1
@@ -378,7 +381,8 @@ describe("rasterLayerPolyMixin", () => {
           },
           geocol: "mapd_geo",
           geoTable: "zipcodes"
-        }
+        },
+        enableHitTesting: false
       })
       layer.crossfilter({
         getId: () => 1
