@@ -54664,7 +54664,7 @@ function rasterLayerPolyMixin(_layer) {
           lastFilteredSize: lastFilteredSize
         })
       }),
-      enableHitTesting: !doJoin() // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+      enableHitTesting: state.enableHitTesting
     }];
 
     if (autocolors) {
@@ -88065,7 +88065,7 @@ function rasterLayerLineMixin(_layer) {
         })))).join(", "),
         transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
       }),
-      enableHitTesting: !(state.data.length > 1) // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
+      enableHitTesting: state.enableHitTesting
     }];
 
     var scaledomainfields = {};
