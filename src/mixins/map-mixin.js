@@ -527,17 +527,13 @@ export default function mapMixin(
       var blobUrl = "data:image/png;base64," + data
     }
 
-    if (!_activeLayer) {
-      _activeLayer = "_points"
-      const toBeAddedOverlay = "overlay" + _activeLayer
+    function setSourceAndAddLayer(toBeAddedOverlay) {
       const firstSymbolLayerId = getFirstSymbolLayerId()
-
       map.addSource(toBeAddedOverlay, {
         type: "image",
         url: blobUrl,
         coordinates: boundsToUse
       })
-
       map.addLayer(
         {
           id: toBeAddedOverlay,
@@ -547,13 +543,26 @@ export default function mapMixin(
         },
         firstSymbolLayerId
       )
+    }
+
+    if (!_activeLayer) {
+      _activeLayer = "_points"
+      const toBeAddedOverlay = "overlay" + _activeLayer
+      if (!map.getSource(toBeAddedOverlay)) {
+        setSourceAndAddLayer(toBeAddedOverlay)
+      }
     } else {
       const overlayName = "overlay" + _activeLayer
       const imageSrc = map.getSource(overlayName)
-      imageSrc.updateImage({
-        url: blobUrl,
-        coordinates: boundsToUse
-      })
+      if (imageSrc) {
+        imageSrc.updateImage({
+          url: blobUrl,
+          coordinates: boundsToUse
+        })
+      } else {
+        // for some reason, the source is lost some of the time, so adding it again FE-9833
+        setSourceAndAddLayer(overlayName)
+      }
     }
   }
 
@@ -596,7 +605,10 @@ export default function mapMixin(
     _map.touchZoomRotate.disableRotation()
     _map.addControl(new _mapboxgl.NavigationControl(), "bottom-right")
     _map.addControl(new _mapboxgl.AttributionControl(), _attribLocation)
-
+    _map.addControl(
+      new _mapboxgl.ScaleControl({ maxWidth: 80, unit: "metric" }),
+      "bottom-right"
+    )
     _chart.addMapListeners()
     _mapInitted = true
     _chart.enableInteractions(_interactionsEnabled)
@@ -604,8 +616,6 @@ export default function mapMixin(
 
   _chart.addMapListeners = function() {
     _map.on("move", onMapMove)
-    _map.on("drag", onMapMove)
-    _map.on("wheel", onMapMove)
     _map.on("moveend", onMapMove)
     _map.on("sourcedata", showMapLogo)
   }
@@ -613,8 +623,6 @@ export default function mapMixin(
   _chart.removeMapListeners = function() {
     _map.off("move", onMapMove)
     _map.off("moveend", onMapMove)
-    _map.off("drag", onMapMove)
-    _map.off("wheel", onMapMove)
   }
 
   _chart.on("postRender", () => {
@@ -640,13 +648,24 @@ export default function mapMixin(
 
   function getFirstSymbolLayerId() {
     let firstSymbolId = null
-    const layers = _map.getStyle().layers
-    for (let i = 0; i < layers.length; ++i) {
-      if (layers[i].type === "symbol") {
-        firstSymbolId = layers[i].id
-        break
+    const currentStyle = _map.getStyle()
+
+    // Streets and Outdoors styles are sets of layers thus only need to make the street label layer on top of omnisci layer
+    if (
+      currentStyle.name === "Mapbox Outdoors" ||
+      currentStyle.name === "Mapbox Streets"
+    ) {
+      firstSymbolId = "road-label-large"
+    } else {
+      const layers = currentStyle.layers
+      for (let i = 0; i < layers.length; ++i) {
+        if (layers[i].type === "symbol") {
+          firstSymbolId = layers[i].id
+          break
+        }
       }
     }
+
     return firstSymbolId
   }
 

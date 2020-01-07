@@ -203,7 +203,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
       if (typeof layer.filterAll === "function") {
-        layer.filterAll()
+        layer.filterAll(_chart)
       }
     }
   }
@@ -761,7 +761,10 @@ function genLayeredVega(chart) {
     width: Math.round(width),
     height: Math.round(height),
     viewRenderOptions: {
-      premultipliedAlpha: false
+      // BE scatterplot does not use mapbox, and the scatterplot renderer needs to be changed to work with unpremultiplied images
+      premultipliedAlpha:
+        chart.getLayerNames().length > 0 &&
+        chart.getLayerNames()[0] === "backendScatter"
     },
     data,
     scales,

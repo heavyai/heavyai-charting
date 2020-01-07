@@ -1879,11 +1879,23 @@ body {
         font-size: 11px;
         &.mapboxgl-compact {
             bottom: 5px;
+            &::after {
+                opacity: 0.5
+            }
         }
     }
     // Zoom
     .mapboxgl-ctrl.mapboxgl-ctrl-group {
         margin: 0 10px 10px 0 !important;
+    }
+
+    .mapboxgl-ctrl.mapboxgl-ctrl-scale {
+      border-color: #868686;
+      border-width: thin;
+      color: #888;
+      position: relative;
+      right: 35px;
+      top: 3px;
     }
 }
 
@@ -2031,11 +2043,10 @@ body {
   display: none !important;
 }
 
-.mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-in {
-  opacity: 0.5;
-}
-
-.mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-out {
+.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon,
+.mapboxgl-ctrl-zoom-in.mapboxgl-ctrl-icon,
+.mapboxgl-ctrl-zoom-out .mapboxgl-ctrl-icon,
+.mapboxgl-ctrl-zoom-out.mapboxgl-ctrl-icon {
   opacity: 0.5;
 }
 

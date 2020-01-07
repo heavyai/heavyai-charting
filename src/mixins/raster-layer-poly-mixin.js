@@ -9,6 +9,7 @@ import d3 from "d3"
 import { events } from "../core/events"
 import { parser } from "../utils/utils"
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
+import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
 
 const polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)"
 const polyNullScaleColor = "rgba(214, 215, 214, 0.65)"
@@ -121,6 +122,7 @@ export default function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1
   }
 
+  // eslint-disable-next-line complexity
   function getTransforms({
     bboxFilter,
     filter,
@@ -135,18 +137,6 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const transforms = []
 
-    const colorProjection =
-      color.type === "quantitative"
-        ? parser.parseExpression(color.aggregate)
-        : `SAMPLE(${color.field})`
-
-    const colorField =
-      color.type === "quantitative"
-        ? typeof color.aggregate === "string"
-          ? color.aggregate
-          : color.aggregate.field
-        : color.field
-
     transforms.push({
       type: "project",
       expr: `${geoTable}.${geocol}`,
@@ -154,6 +144,30 @@ export default function rasterLayerPolyMixin(_layer) {
     })
 
     if (doJoin()) {
+      let colorProjection = [
+        color.type === "quantitative"
+          ? parser.parseExpression(color.aggregate)
+          : `SAMPLE(${color.field})`
+      ]
+      let colorProjectionAs = ["color"]
+      let colorField = `${withAlias}.color`
+      if (typeof color.aggregate === "string") {
+        // Custom SQL may include references to both the base table and the
+        // geo-join table. The custom SQL is parsed to move references to the
+        // base table into the WITH clause, and everything else outside in the
+        // parent SELECT.
+        // eslint-disable-next-line no-extra-semi
+        ;({
+          factProjections: colorProjection,
+          factAliases: colorProjectionAs,
+          expression: colorField
+        } = parseFactsFromCustomSQL(
+          state.data[0].table,
+          withAlias,
+          color.aggregate
+        ))
+      }
+
       const withClauseTransforms = []
 
       const groupby = {
@@ -179,16 +193,16 @@ export default function rasterLayerPolyMixin(_layer) {
       if (color.type !== "solid") {
         withClauseTransforms.push({
           type: "aggregate",
-          fields: [colorProjection],
+          fields: colorProjection,
           ops: [null],
-          as: ["color"],
+          as: colorProjectionAs,
           groupby
         })
 
         if (!layerFilter.length) {
           transforms.push({
             type: "project",
-            expr: `${withAlias}.color`,
+            expr: colorField,
             as: "color"
           })
         }
@@ -215,7 +229,7 @@ export default function rasterLayerPolyMixin(_layer) {
                     expr: `${withAlias}.key0`,
                     set: layerFilter
                   },
-                  color.type === "solid" ? 1 : `${withAlias}.color`
+                  color.type === "solid" ? 1 : colorField
                 ]
               ],
               else: null
@@ -248,6 +262,13 @@ export default function rasterLayerPolyMixin(_layer) {
         }
       })
     } else {
+      const colorField =
+        color.type === "quantitative"
+          ? typeof color.aggregate === "string"
+            ? color.aggregate
+            : color.aggregate.field
+          : color.field
+
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
           type: "project",
@@ -600,9 +621,9 @@ export default function rasterLayerPolyMixin(_layer) {
   const polyLayerEvents = ["filtered"]
   const _listeners = d3.dispatch.apply(d3, polyLayerEvents)
 
-  _layer.filter = function(key, isInverseFilter, filterCol) {
+  _layer.filter = function(key, isInverseFilter, filterCol, chart) {
     if (isInverseFilter !== _layer.filtersInverse()) {
-      _layer.filterAll()
+      _layer.filterAll(chart)
       _layer.filtersInverse(isInverseFilter)
     }
     if (_filtersArray.includes(key)) {
@@ -627,21 +648,34 @@ export default function rasterLayerPolyMixin(_layer) {
       ? _layer
           .dimension()
           .filterMulti(_filtersArray, undefined, isInverseFilter)
-      : _layer.filterAll()
+      : _layer.filterAll(chart)
   }
 
   _layer.filters = function() {
     return _filtersArray
   }
 
-  _layer.filterAll = function() {
+  _layer.filterAll = function(chart) {
     _filtersArray = []
     _layer.dimension().filterAll()
     const geoCol = `${_layer.getState().encoding.geoTable}.${
       _layer.getState().encoding.geocol
     }`
-    const viewboxdim = _layer.dimension().set(() => [geoCol])
-    _layer.viewBoxDim(viewboxdim)
+
+    // when poly selection filter cleared, we reapply the bbox filter for the NON geo joined poly
+    // For geo joined poly, we don't run crossfilter
+    if (_layer && _layer.getState().data && _layer.getState().data.length < 2) {
+      const viewboxdim = _layer.dimension().set(() => [geoCol])
+      const mapBounds = chart.map().getBounds()
+      _layer.viewBoxDim(viewboxdim)
+      _layer.viewBoxDim().filterST_Min_ST_Max({
+        lonMin: mapBounds._sw.lng,
+        lonMax: mapBounds._ne.lng,
+        latMin: mapBounds._sw.lat,
+        latMax: mapBounds._ne.lat
+      })
+    }
+
     _listeners.filtered(_layer, _filtersArray)
   }
 

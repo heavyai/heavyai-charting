@@ -61,8 +61,8 @@ describe("dc legend cont", () => {
       parent.colors().range(["red", "blue", "green"])
       expect(parent.legendablesContinuous()).to.deep.equal([
         { color: "red", value: "5.5" },
-        { color: "blue", value: "8.92" },
-        { color: "green", value: "12.33" }
+        { color: "blue", value: "10.63" },
+        { color: "green", value: "15.75" }
       ])
     })
     it("should round value of legendables for start value over 1000", () => {
@@ -72,8 +72,8 @@ describe("dc legend cont", () => {
       parent.colors().range(["red", "blue", "green"])
       expect(parent.legendablesContinuous()).to.deep.equal([
         { color: "red", value: "1,225" },
-        { color: "blue", value: "1,317" },
-        { color: "green", value: "1,409" }
+        { color: "blue", value: "1,363" },
+        { color: "green", value: "1,501" }
       ])
     })
   })
