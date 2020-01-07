@@ -190,9 +190,10 @@ export function isEqualToRenderCount(queryCount) {
 }
 
 export function redrawAllAsync(group, allCharts) {
-
   if (refreshDisabled()) {
-    const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
+    const charts = allCharts
+      ? chartRegistry.listAll()
+      : chartRegistry.list(group)
     return Promise.resolve(charts)
   }
 
@@ -207,7 +208,9 @@ export function redrawAllAsync(group, allCharts) {
     _startRedrawTime = new Date()
 
     const createRedrawPromises = () => {
-      const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
+      const charts = allCharts
+        ? chartRegistry.listAll()
+        : chartRegistry.list(group)
       return charts.map(chart => {
         chart.expireCache()
         chart._invokeDataFetchListener()
@@ -241,9 +244,10 @@ export function redrawAllAsync(group, allCharts) {
 }
 
 export function renderAllAsync(group, allCharts) {
-
   if (refreshDisabled()) {
-    const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
+    const charts = allCharts
+      ? chartRegistry.listAll()
+      : chartRegistry.list(group)
     return Promise.resolve(charts)
   }
 
@@ -252,7 +256,9 @@ export function renderAllAsync(group, allCharts) {
     _startRenderTime = new Date()
 
     const createRenderPromises = () => {
-      const charts = allCharts ? chartRegistry.listAll() : chartRegistry.list(group)
+      const charts = allCharts
+        ? chartRegistry.listAll()
+        : chartRegistry.list(group)
       return charts.map(chart => {
         chart.expireCache()
         return chart.renderAsync(queryGroupId, charts.length)
