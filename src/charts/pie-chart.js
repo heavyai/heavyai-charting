@@ -5,6 +5,7 @@ import d3 from "d3"
 import multipleKeysLabelMixin from "../mixins/multiple-key-label-mixin"
 import { formatPercentage, nullLabelHtml } from "../utils/formatting-helpers"
 import { transition } from "../core/core"
+import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { utils } from "../utils/utils"
 
 /**
@@ -98,6 +99,45 @@ export default function pieChart(parent, chartGroup) {
   _chart.redoSelect = highlightFilter
   _chart.accent = accentSlice
   _chart.unAccent = unAccentSlice
+
+  const originalDataAsync = _chart.getDataAsync()
+  _chart.setDataAsync((group, callback) => {
+    originalDataAsync(group, (err, result) => {
+      if (err || !ENABLE_ALL_OTHERS_LABELS || !result) {
+        callback(err, result)
+        return
+      }
+
+      // data is cached during redraw/render, so it's possible that it was
+      // cached with the all other row already included
+      if (result.some(({ key0 }) => key0 === "All Others")) {
+        callback(null, result)
+        return
+      }
+
+      const id = group.getCrossfilterId()
+      const filterSize = new Promise((resolve, reject) => {
+        const filterSize = lastFilteredSize(id)
+        if (filterSize === undefined) {
+          group.getCrossfilter().groupAll().valueAsync().then((value) => {
+            setLastFilteredSize(id, value)
+            resolve(value)
+          }).catch((err) => {
+            reject(err)
+          })
+        } else {
+          resolve(filterSize)
+        }
+      })
+      filterSize.then((filterSize) => {
+        const val = filterSize - d3.sum(result, _chart.valueAccessor())
+        result.push({ key0: "All Others", val })
+        callback(null, result)
+      }).catch((err) => {
+        callback(err)
+      })
+    })
+  })
   /* ------------------------------------------------------------------------- */
 
   _chart._doRender = function() {
@@ -1006,7 +1046,8 @@ export default function pieChart(parent, chartGroup) {
     ENABLE_ALL_OTHERS_LABELS = showAllOthers
 
     if (_hasBeenRendered) {
-      _chart._doRender()
+      _chart.expireCache()
+      _chart.renderAsync()
     }
     return _chart
   }
