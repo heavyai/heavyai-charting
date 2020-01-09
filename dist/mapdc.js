@@ -76063,9 +76063,6 @@ var _utils = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ENABLE_ABSOLUTE_LABELS = true;
-var ENABLE_PERCENTAGE_LABELS = true;
-
 /**
  * The pie chart implementation is usually used to visualize a small categorical distribution.  The pie
  * chart uses keyAccessor to determine the slices, and valueAccessor to calculate the size of each
@@ -76109,7 +76106,9 @@ function pieChart(parent, chartGroup) {
   var _externalLabelRadius = void 0;
   var _drawPaths = false;
   var _chart = (0, _capMixin2.default)((0, _colorMixin2.default)((0, _baseMixin2.default)({})));
-
+  var ENABLE_ABSOLUTE_LABELS = void 0;
+  var ENABLE_PERCENTAGE_LABELS = void 0;
+  var ENABLE_ALL_OTHERS_LABELS = void 0;
   /* OVERRIDE ---------------------------------------------------------------- */
   var _pieStyle = void 0; // "pie" or "donut"
   var _pieSizeThreshold = 480;
@@ -76851,6 +76850,45 @@ function pieChart(parent, chartGroup) {
   }
 
   _chart = (0, _multipleKeyLabelMixin2.default)(_chart);
+
+  /**
+   * Controls Absolute values toggle from immerse
+   * @param showAbsoluteValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAbsoluteValues = function (showAbsoluteValues) {
+    if (!arguments.length) {
+      return ENABLE_ABSOLUTE_LABELS;
+    }
+    ENABLE_ABSOLUTE_LABELS = showAbsoluteValues;
+    return _chart;
+  };
+
+  /**
+   * Controls Percent values toggle from immerse
+   * @param showPercentValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showPercentValues = function (showPercentValues) {
+    if (!arguments.length) {
+      return ENABLE_PERCENTAGE_LABELS;
+    }
+    ENABLE_PERCENTAGE_LABELS = showPercentValues;
+    return _chart;
+  };
+
+  /**
+   * Controls All Others value toggle from immerse
+   * @param showAllOthers
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAllOthers = function (showAllOthers) {
+    if (!arguments.length) {
+      return ENABLE_ALL_OTHERS_LABELS;
+    }
+    ENABLE_ALL_OTHERS_LABELS = showAllOthers;
+    return _chart;
+  };
 
   return _chart.anchor(parent, chartGroup);
 }

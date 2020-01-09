@@ -7,9 +7,6 @@ import { formatPercentage, nullLabelHtml } from "../utils/formatting-helpers"
 import { transition } from "../core/core"
 import { utils } from "../utils/utils"
 
-const ENABLE_ABSOLUTE_LABELS = true
-const ENABLE_PERCENTAGE_LABELS = true
-
 /**
  * The pie chart implementation is usually used to visualize a small categorical distribution.  The pie
  * chart uses keyAccessor to determine the slices, and valueAccessor to calculate the size of each
@@ -52,7 +49,9 @@ export default function pieChart(parent, chartGroup) {
   let _externalLabelRadius
   let _drawPaths = false
   let _chart = capMixin(colorMixin(baseMixin({})))
-
+  let ENABLE_ABSOLUTE_LABELS
+  let ENABLE_PERCENTAGE_LABELS
+  let ENABLE_ALL_OTHERS_LABELS
   /* OVERRIDE ---------------------------------------------------------------- */
   let _pieStyle // "pie" or "donut"
   const _pieSizeThreshold = 480
@@ -960,6 +959,45 @@ export default function pieChart(parent, chartGroup) {
   }
 
   _chart = multipleKeysLabelMixin(_chart)
+
+  /**
+   * Controls Absolute values toggle from immerse
+   * @param showAbsoluteValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAbsoluteValues = function(showAbsoluteValues) {
+    if (!arguments.length) {
+      return ENABLE_ABSOLUTE_LABELS
+    }
+    ENABLE_ABSOLUTE_LABELS = showAbsoluteValues
+    return _chart
+  }
+
+  /**
+   * Controls Percent values toggle from immerse
+   * @param showPercentValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showPercentValues = function(showPercentValues) {
+    if (!arguments.length) {
+      return ENABLE_PERCENTAGE_LABELS
+    }
+    ENABLE_PERCENTAGE_LABELS = showPercentValues
+    return _chart
+  }
+
+  /**
+   * Controls All Others value toggle from immerse
+   * @param showAllOthers
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAllOthers = function(showAllOthers) {
+    if (!arguments.length) {
+      return ENABLE_ALL_OTHERS_LABELS
+    }
+    ENABLE_ALL_OTHERS_LABELS = showAllOthers
+    return _chart
+  }
 
   return _chart.anchor(parent, chartGroup)
 }
