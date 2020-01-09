@@ -46,6 +46,9 @@ art {
 .dc-chart .pie-slice {
     fill: white;
     font-size: 12px;
+}
+
+.dc-chart .pie-slice:not(.all-others) {
     cursor: pointer;
 }
 
@@ -53,7 +56,7 @@ art {
     fill: black;
 }
 
-.dc-chart .pie-slice :hover {
+.dc-chart .pie-slice:not(.all-others) :hover {
     fill-opacity: .8;
 }
 

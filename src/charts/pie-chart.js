@@ -4,7 +4,7 @@ import colorMixin from "../mixins/color-mixin"
 import d3 from "d3"
 import multipleKeysLabelMixin from "../mixins/multiple-key-label-mixin"
 import { formatPercentage, nullLabelHtml } from "../utils/formatting-helpers"
-import { transition } from "../core/core"
+import { override, transition } from "../core/core"
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { utils } from "../utils/utils"
 
@@ -131,12 +131,19 @@ export default function pieChart(parent, chartGroup) {
       })
       filterSize.then((filterSize) => {
         const val = filterSize - d3.sum(result, _chart.valueAccessor())
-        result.push({ key0: "All Others", val })
+        result.push({ key0: "All Others", val, isAllOthers: true })
         callback(null, result)
       }).catch((err) => {
         callback(err)
       })
     })
+  })
+
+  override(_chart, "getColor", (data, index) => {
+    if (data.isAllOthers) {
+      return "#aaaaaa"
+    }
+    return _chart._getColor(data, index)
   })
   /* ------------------------------------------------------------------------- */
 
@@ -445,6 +452,7 @@ export default function pieChart(parent, chartGroup) {
     const slicePaths = _g
       .selectAll("g." + _sliceCssClass)
       .data(pieData)
+      .classed("all-others", (d) => d.data.isAllOthers)
       .select("path")
       .attr("d", (d, i) => safeArc(d, i, arc))
     transition(slicePaths, _chart.transitionDuration(), s => {
@@ -765,7 +773,7 @@ export default function pieChart(parent, chartGroup) {
   }
 
   function onClick(d, i) {
-    if (_g.attr("class") !== _emptyCssClass) {
+    if (_g.attr("class") !== _emptyCssClass && !d.data.isAllOthers) {
       _chart.onClick(d.data, i)
     }
   }

@@ -76059,6 +76059,8 @@ var _formattingHelpers = __webpack_require__(10);
 
 var _core = __webpack_require__(3);
 
+var _coreAsync = __webpack_require__(5);
+
 var _utils = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -76152,6 +76154,55 @@ function pieChart(parent, chartGroup) {
   _chart.redoSelect = highlightFilter;
   _chart.accent = accentSlice;
   _chart.unAccent = unAccentSlice;
+
+  var originalDataAsync = _chart.getDataAsync();
+  _chart.setDataAsync(function (group, callback) {
+    originalDataAsync(group, function (err, result) {
+      if (err || !ENABLE_ALL_OTHERS_LABELS || !result) {
+        callback(err, result);
+        return;
+      }
+
+      // data is cached during redraw/render, so it's possible that it was
+      // cached with the all other row already included
+      if (result.some(function (_ref) {
+        var key0 = _ref.key0;
+        return key0 === "All Others";
+      })) {
+        callback(null, result);
+        return;
+      }
+
+      var id = group.getCrossfilterId();
+      var filterSize = new Promise(function (resolve, reject) {
+        var filterSize = (0, _coreAsync.lastFilteredSize)(id);
+        if (filterSize === undefined) {
+          group.getCrossfilter().groupAll().valueAsync().then(function (value) {
+            (0, _coreAsync.setLastFilteredSize)(id, value);
+            resolve(value);
+          }).catch(function (err) {
+            reject(err);
+          });
+        } else {
+          resolve(filterSize);
+        }
+      });
+      filterSize.then(function (filterSize) {
+        var val = filterSize - _d2.default.sum(result, _chart.valueAccessor());
+        result.push({ key0: "All Others", val: val, isAllOthers: true });
+        callback(null, result);
+      }).catch(function (err) {
+        callback(err);
+      });
+    });
+  });
+
+  (0, _core.override)(_chart, "getColor", function (data, index) {
+    if (data.isAllOthers) {
+      return "#aaaaaa";
+    }
+    return _chart._getColor(data, index);
+  });
   /* ------------------------------------------------------------------------- */
 
   _chart._doRender = function () {
@@ -76385,7 +76436,9 @@ function pieChart(parent, chartGroup) {
   }
 
   function updateSlicePaths(pieData, arc) {
-    var slicePaths = _g.selectAll("g." + _sliceCssClass).data(pieData).select("path").attr("d", function (d, i) {
+    var slicePaths = _g.selectAll("g." + _sliceCssClass).data(pieData).classed("all-others", function (d) {
+      return d.data.isAllOthers;
+    }).select("path").attr("d", function (d, i) {
       return safeArc(d, i, arc);
     });
     (0, _core.transition)(slicePaths, _chart.transitionDuration(), function (s) {
@@ -76674,7 +76727,7 @@ function pieChart(parent, chartGroup) {
   }
 
   function onClick(d, i) {
-    if (_g.attr("class") !== _emptyCssClass) {
+    if (_g.attr("class") !== _emptyCssClass && !d.data.isAllOthers) {
       _chart.onClick(d.data, i);
     }
   }
@@ -76897,7 +76950,8 @@ function pieChart(parent, chartGroup) {
     ENABLE_ALL_OTHERS_LABELS = showAllOthers;
 
     if (_hasBeenRendered) {
-      _chart._doRender();
+      _chart.expireCache();
+      _chart.renderAsync();
     }
     return _chart;
   };
