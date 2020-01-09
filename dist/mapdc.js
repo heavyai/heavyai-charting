@@ -76861,6 +76861,10 @@ function pieChart(parent, chartGroup) {
       return ENABLE_ABSOLUTE_LABELS;
     }
     ENABLE_ABSOLUTE_LABELS = showAbsoluteValues;
+
+    if (_hasBeenRendered) {
+      _chart._doRender();
+    }
     return _chart;
   };
 
@@ -76874,6 +76878,10 @@ function pieChart(parent, chartGroup) {
       return ENABLE_PERCENTAGE_LABELS;
     }
     ENABLE_PERCENTAGE_LABELS = showPercentValues;
+
+    if (_hasBeenRendered) {
+      _chart._doRender();
+    }
     return _chart;
   };
 
@@ -76887,6 +76895,10 @@ function pieChart(parent, chartGroup) {
       return ENABLE_ALL_OTHERS_LABELS;
     }
     ENABLE_ALL_OTHERS_LABELS = showAllOthers;
+
+    if (_hasBeenRendered) {
+      _chart._doRender();
+    }
     return _chart;
   };
 
