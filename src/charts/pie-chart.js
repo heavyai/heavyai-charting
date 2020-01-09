@@ -141,7 +141,7 @@ export default function pieChart(parent, chartGroup) {
 
   override(_chart, "getColor", (data, index) => {
     if (data.isAllOthers) {
-      return "#aaaaaa"
+      return "#888888"
     }
     return _chart._getColor(data, index)
   })

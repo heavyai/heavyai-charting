@@ -76199,7 +76199,7 @@ function pieChart(parent, chartGroup) {
 
   (0, _core.override)(_chart, "getColor", function (data, index) {
     if (data.isAllOthers) {
-      return "#aaaaaa";
+      return "#888888";
     }
     return _chart._getColor(data, index);
   });
