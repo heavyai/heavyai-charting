@@ -66,6 +66,18 @@ export function formatNumber(d) {
   }
 }
 
+const percentify = d3.format(".0%")
+const percentifyLow = d3.format(".1%")
+
+export function formatPercentage(d, total) {
+  const percentage = d / total
+  if (percentage < 0.01) {
+    return percentifyLow(percentage)
+  } else {
+    return percentify(percentage)
+  }
+}
+
 export function formatArrayValue(data) {
   if (typeof data[0] === "object" && !(data[0] instanceof Date)) {
     return data[0].isExtract

@@ -3,9 +3,12 @@ import capMixin from "../mixins/cap-mixin"
 import colorMixin from "../mixins/color-mixin"
 import d3 from "d3"
 import multipleKeysLabelMixin from "../mixins/multiple-key-label-mixin"
-import { nullLabelHtml } from "../utils/formatting-helpers"
+import { formatPercentage, nullLabelHtml } from "../utils/formatting-helpers"
 import { transition } from "../core/core"
 import { utils } from "../utils/utils"
+
+const ENABLE_ABSOLUTE_LABELS = true
+const ENABLE_PERCENTAGE_LABELS = true
 
 /**
  * The pie chart implementation is usually used to visualize a small categorical distribution.  The pie
@@ -199,7 +202,7 @@ export default function pieChart(parent, chartGroup) {
     }
   }
 
-  function positionLabels(labelsEnter, arc) {
+  function positionLabels(labelsEnter, arc, pieData) {
     transition(labelsEnter, _chart.transitionDuration()).attr("transform", d =>
       labelPosition(d, arc)
     )
@@ -266,6 +269,27 @@ export default function pieChart(parent, chartGroup) {
               )
             : _chart.measureValue(d.data)
         })
+
+      if (ENABLE_PERCENTAGE_LABELS) {
+        let total = 0
+        for (let i = 0; i < pieData.length; i += 1) {
+          total += pieData[i].value
+        }
+
+        labelsEnter
+          .select(".value-percentage")
+          .classed(
+            "deselected-label",
+            d => _chart.hasFilter() && !isSelectedSlice(d)
+          )
+          .text(function(d) {
+            if (d3.select(this.parentNode).classed("hide-label")) {
+              return ""
+            } else {
+              return formatPercentage(d.value, total)
+            }
+          })
+      }
     }
     /* ------------------------------------------------------------------------- */
   }
@@ -292,20 +316,50 @@ export default function pieChart(parent, chartGroup) {
         .on("click", onClick)
 
       /* OVERRIDE ---------------------------------------------------------------- */
-      labelsEnter
-        .append("text")
-        .attr("class", "value-dim")
-        .attr("dy", _chart.measureLabelsOn() ? "0" : ".4em")
+      if (ENABLE_ABSOLUTE_LABELS && ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", "-0.8em")
 
-      if (_chart.measureLabelsOn()) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-measure")
+          .attr("dy", ".4em")
+
+        labelsEnter
+          .append("text")
+          .attr("class", "value-percentage")
+          .attr("dy", "1.6em")
+      } else if (ENABLE_ABSOLUTE_LABELS) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", "0")
+
         labelsEnter
           .append("text")
           .attr("class", "value-measure")
           .attr("dy", "1.2em")
+      } else if (ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", "0")
+
+        labelsEnter
+          .append("text")
+          .attr("class", "value-percentage")
+          .attr("dy", "1.2em")
+      } else {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", ".4em")
       }
       /* ------------------------------------------------------------------------- */
 
-      positionLabels(labelsEnter, arc)
+      positionLabels(labelsEnter, arc, pieData)
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc)
       }
@@ -366,7 +420,7 @@ export default function pieChart(parent, chartGroup) {
         .selectAll("g.pie-label")
         /* ------------------------------------------------------------------------- */
         .data(pieData)
-      positionLabels(labels, arc)
+      positionLabels(labels, arc, pieData)
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc)
       }
