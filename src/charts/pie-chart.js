@@ -325,7 +325,17 @@ export default function pieChart(parent, chartGroup) {
             if (d3.select(this.parentNode).classed("hide-label")) {
               return ""
             } else {
-              return formatPercentage(d.value, total)
+              const availableLabelWidth = getAvailableLabelWidth(d)
+              const width = d3
+                .select(this)
+                .node()
+                .getBoundingClientRect().width
+
+              const percentage = formatPercentage(d.value, total)
+
+              return width > availableLabelWidth
+                ? truncateLabel(percentage, width, availableLabelWidth)
+                : percentage
             }
           })
       }

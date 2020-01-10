@@ -76340,7 +76340,12 @@ function pieChart(parent, chartGroup) {
           if (_d2.default.select(this.parentNode).classed("hide-label")) {
             return "";
           } else {
-            return (0, _formattingHelpers.formatPercentage)(d.value, total);
+            var availableLabelWidth = getAvailableLabelWidth(d);
+            var width = _d2.default.select(this).node().getBoundingClientRect().width;
+
+            var percentage = (0, _formattingHelpers.formatPercentage)(d.value, total);
+
+            return width > availableLabelWidth ? truncateLabel(percentage, width, availableLabelWidth) : percentage;
           }
         });
       }
