@@ -115,27 +115,20 @@ export default function pieChart(parent, chartGroup) {
         return
       }
 
-      const id = group.getCrossfilterId()
-      const filterSize = new Promise((resolve, reject) => {
-        const filterSize = lastFilteredSize(id)
-        if (filterSize === undefined) {
-          group.getCrossfilter().groupAll().valueAsync().then((value) => {
-            setLastFilteredSize(id, value)
-            resolve(value)
-          }).catch((err) => {
-            reject(err)
-          })
-        } else {
-          resolve(filterSize)
-        }
-      })
-      filterSize.then((filterSize) => {
-        const val = filterSize - d3.sum(result, _chart.valueAccessor())
-        result.push({ key0: "All Others", val, isAllOthers: true })
-        callback(null, result)
-      }).catch((err) => {
-        callback(err)
-      })
+      group
+        .getCrossfilter()
+        .groupAll()
+        .valueAsync(false, false, group.dimension().getDimensionIndex())
+        .then(filterSize => {
+          const val = filterSize - d3.sum(result, _chart.valueAccessor())
+          if (val > 0) {
+            result.push({ key0: "All Others", val, isAllOthers: true })
+          }
+          callback(null, result)
+        })
+        .catch(err => {
+          callback(err)
+        })
     })
   })
 
@@ -452,7 +445,7 @@ export default function pieChart(parent, chartGroup) {
     const slicePaths = _g
       .selectAll("g." + _sliceCssClass)
       .data(pieData)
-      .classed("all-others", (d) => d.data.isAllOthers)
+      .classed("all-others", d => d.data.isAllOthers)
       .select("path")
       .attr("d", (d, i) => safeArc(d, i, arc))
     transition(slicePaths, _chart.transitionDuration(), s => {

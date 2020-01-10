@@ -76173,23 +76173,11 @@ function pieChart(parent, chartGroup) {
         return;
       }
 
-      var id = group.getCrossfilterId();
-      var filterSize = new Promise(function (resolve, reject) {
-        var filterSize = (0, _coreAsync.lastFilteredSize)(id);
-        if (filterSize === undefined) {
-          group.getCrossfilter().groupAll().valueAsync().then(function (value) {
-            (0, _coreAsync.setLastFilteredSize)(id, value);
-            resolve(value);
-          }).catch(function (err) {
-            reject(err);
-          });
-        } else {
-          resolve(filterSize);
-        }
-      });
-      filterSize.then(function (filterSize) {
+      group.getCrossfilter().groupAll().valueAsync(false, false, group.dimension().getDimensionIndex()).then(function (filterSize) {
         var val = filterSize - _d2.default.sum(result, _chart.valueAccessor());
-        result.push({ key0: "All Others", val: val, isAllOthers: true });
+        if (val > 0) {
+          result.push({ key0: "All Others", val: val, isAllOthers: true });
+        }
         callback(null, result);
       }).catch(function (err) {
         callback(err);
