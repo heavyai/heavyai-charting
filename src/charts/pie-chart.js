@@ -3,8 +3,9 @@ import capMixin from "../mixins/cap-mixin"
 import colorMixin from "../mixins/color-mixin"
 import d3 from "d3"
 import multipleKeysLabelMixin from "../mixins/multiple-key-label-mixin"
-import { nullLabelHtml } from "../utils/formatting-helpers"
-import { transition } from "../core/core"
+import { formatPercentage, nullLabelHtml } from "../utils/formatting-helpers"
+import { override, transition } from "../core/core"
+import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { utils } from "../utils/utils"
 
 /**
@@ -49,7 +50,9 @@ export default function pieChart(parent, chartGroup) {
   let _externalLabelRadius
   let _drawPaths = false
   let _chart = capMixin(colorMixin(baseMixin({})))
-
+  let ENABLE_ABSOLUTE_LABELS
+  let ENABLE_PERCENTAGE_LABELS
+  let ENABLE_ALL_OTHERS_LABELS
   /* OVERRIDE ---------------------------------------------------------------- */
   let _pieStyle // "pie" or "donut"
   const _pieSizeThreshold = 480
@@ -96,6 +99,45 @@ export default function pieChart(parent, chartGroup) {
   _chart.redoSelect = highlightFilter
   _chart.accent = accentSlice
   _chart.unAccent = unAccentSlice
+
+  const originalDataAsync = _chart.getDataAsync()
+  _chart.setDataAsync((group, callback) => {
+    originalDataAsync(group, (err, result) => {
+      if (err || !ENABLE_ALL_OTHERS_LABELS || !result) {
+        callback(err, result)
+        return
+      }
+
+      // data is cached during redraw/render, so it's possible that it was
+      // cached with the all other row already included
+      if (result.some(({ key0 }) => key0 === "All Others")) {
+        callback(null, result)
+        return
+      }
+
+      group
+        .getCrossfilter()
+        .groupAll()
+        .valueAsync(false, false, group.dimension().getDimensionIndex())
+        .then(filterSize => {
+          const val = filterSize - d3.sum(result, _chart.valueAccessor())
+          if (val > 0) {
+            result.push({ key0: "All Others", val, isAllOthers: true })
+          }
+          callback(null, result)
+        })
+        .catch(err => {
+          callback(err)
+        })
+    })
+  })
+
+  override(_chart, "getColor", (data, index) => {
+    if (data.isAllOthers) {
+      return "#888888"
+    }
+    return _chart._getColor(data, index)
+  })
   /* ------------------------------------------------------------------------- */
 
   _chart._doRender = function() {
@@ -199,7 +241,7 @@ export default function pieChart(parent, chartGroup) {
     }
   }
 
-  function positionLabels(labelsEnter, arc) {
+  function positionLabels(labelsEnter, arc, pieData) {
     transition(labelsEnter, _chart.transitionDuration()).attr("transform", d =>
       labelPosition(d, arc)
     )
@@ -266,6 +308,37 @@ export default function pieChart(parent, chartGroup) {
               )
             : _chart.measureValue(d.data)
         })
+
+      if (ENABLE_PERCENTAGE_LABELS) {
+        let total = 0
+        for (let i = 0; i < pieData.length; i += 1) {
+          total += pieData[i].value
+        }
+
+        labelsEnter
+          .select(".value-percentage")
+          .classed(
+            "deselected-label",
+            d => _chart.hasFilter() && !isSelectedSlice(d)
+          )
+          .text(function(d) {
+            if (d3.select(this.parentNode).classed("hide-label")) {
+              return ""
+            } else {
+              const availableLabelWidth = getAvailableLabelWidth(d)
+              const width = d3
+                .select(this)
+                .node()
+                .getBoundingClientRect().width
+
+              const percentage = formatPercentage(d.value, total)
+
+              return width > availableLabelWidth
+                ? truncateLabel(percentage, width, availableLabelWidth)
+                : percentage
+            }
+          })
+      }
     }
     /* ------------------------------------------------------------------------- */
   }
@@ -292,20 +365,50 @@ export default function pieChart(parent, chartGroup) {
         .on("click", onClick)
 
       /* OVERRIDE ---------------------------------------------------------------- */
-      labelsEnter
-        .append("text")
-        .attr("class", "value-dim")
-        .attr("dy", _chart.measureLabelsOn() ? "0" : ".4em")
+      if (ENABLE_ABSOLUTE_LABELS && ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", "-0.8em")
 
-      if (_chart.measureLabelsOn()) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-measure")
+          .attr("dy", ".4em")
+
+        labelsEnter
+          .append("text")
+          .attr("class", "value-percentage")
+          .attr("dy", "1.6em")
+      } else if (ENABLE_ABSOLUTE_LABELS) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", "0")
+
         labelsEnter
           .append("text")
           .attr("class", "value-measure")
           .attr("dy", "1.2em")
+      } else if (ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", "0")
+
+        labelsEnter
+          .append("text")
+          .attr("class", "value-percentage")
+          .attr("dy", "1.2em")
+      } else {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", ".4em")
       }
       /* ------------------------------------------------------------------------- */
 
-      positionLabels(labelsEnter, arc)
+      positionLabels(labelsEnter, arc, pieData)
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc)
       }
@@ -352,6 +455,7 @@ export default function pieChart(parent, chartGroup) {
     const slicePaths = _g
       .selectAll("g." + _sliceCssClass)
       .data(pieData)
+      .classed("all-others", d => d.data.isAllOthers)
       .select("path")
       .attr("d", (d, i) => safeArc(d, i, arc))
     transition(slicePaths, _chart.transitionDuration(), s => {
@@ -366,7 +470,7 @@ export default function pieChart(parent, chartGroup) {
         .selectAll("g.pie-label")
         /* ------------------------------------------------------------------------- */
         .data(pieData)
-      positionLabels(labels, arc)
+      positionLabels(labels, arc, pieData)
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc)
       }
@@ -672,7 +776,7 @@ export default function pieChart(parent, chartGroup) {
   }
 
   function onClick(d, i) {
-    if (_g.attr("class") !== _emptyCssClass) {
+    if (_g.attr("class") !== _emptyCssClass && !d.data.isAllOthers) {
       _chart.onClick(d.data, i)
     }
   }
@@ -906,6 +1010,58 @@ export default function pieChart(parent, chartGroup) {
   }
 
   _chart = multipleKeysLabelMixin(_chart)
+
+  /**
+   * Controls Absolute values toggle from immerse
+   * @param showAbsoluteValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAbsoluteValues = function(showAbsoluteValues) {
+    if (!arguments.length) {
+      return ENABLE_ABSOLUTE_LABELS
+    }
+    ENABLE_ABSOLUTE_LABELS = showAbsoluteValues
+
+    if (_hasBeenRendered) {
+      _chart._doRender()
+    }
+    return _chart
+  }
+
+  /**
+   * Controls Percent values toggle from immerse
+   * @param showPercentValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showPercentValues = function(showPercentValues) {
+    if (!arguments.length) {
+      return ENABLE_PERCENTAGE_LABELS
+    }
+    ENABLE_PERCENTAGE_LABELS = showPercentValues
+
+    if (_hasBeenRendered) {
+      _chart._doRender()
+    }
+    return _chart
+  }
+
+  /**
+   * Controls All Others value toggle from immerse
+   * @param showAllOthers
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAllOthers = function(showAllOthers) {
+    if (!arguments.length) {
+      return ENABLE_ALL_OTHERS_LABELS
+    }
+    ENABLE_ALL_OTHERS_LABELS = showAllOthers
+
+    if (_hasBeenRendered) {
+      _chart.expireCache()
+      _chart.renderAsync()
+    }
+    return _chart
+  }
 
   return _chart.anchor(parent, chartGroup)
 }

@@ -395,7 +395,7 @@ body {
         }
     }
 
-    g.deselected path {
+    g.deselected:not(.pie-slice.all-others) path {
         fill: $gray3;
 
         &:hover {

@@ -6302,7 +6302,6 @@ function isEqualToRenderCount(queryCount) {
 }
 
 function redrawAllAsync(group, allCharts) {
-
   if ((0, _core.refreshDisabled)()) {
     var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
     return Promise.resolve(charts);
@@ -6351,7 +6350,6 @@ function redrawAllAsync(group, allCharts) {
 }
 
 function renderAllAsync(group, allCharts) {
-
   if ((0, _core.refreshDisabled)()) {
     var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
     return Promise.resolve(charts);
@@ -9193,6 +9191,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 exports.formatDataValue = formatDataValue;
 exports.maybeFormatInfinity = maybeFormatInfinity;
 exports.formatNumber = formatNumber;
+exports.formatPercentage = formatPercentage;
 exports.formatArrayValue = formatArrayValue;
 exports.formatTimeBinValue = formatTimeBinValue;
 exports.formatExtractValue = formatExtractValue;
@@ -9272,6 +9271,18 @@ function formatNumber(d) {
     return d.toPrecision(2);
   } else {
     return commafy(parseFloat(d.toFixed(2)));
+  }
+}
+
+var percentify = _d2.default.format(".0%");
+var percentifyLow = _d2.default.format(".1%");
+
+function formatPercentage(d, total) {
+  var percentage = d / total;
+  if (percentage < 0.01) {
+    return percentifyLow(percentage);
+  } else {
+    return percentify(percentage);
   }
 }
 
@@ -76048,6 +76059,8 @@ var _formattingHelpers = __webpack_require__(10);
 
 var _core = __webpack_require__(3);
 
+var _coreAsync = __webpack_require__(5);
+
 var _utils = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -76095,7 +76108,9 @@ function pieChart(parent, chartGroup) {
   var _externalLabelRadius = void 0;
   var _drawPaths = false;
   var _chart = (0, _capMixin2.default)((0, _colorMixin2.default)((0, _baseMixin2.default)({})));
-
+  var ENABLE_ABSOLUTE_LABELS = void 0;
+  var ENABLE_PERCENTAGE_LABELS = void 0;
+  var ENABLE_ALL_OTHERS_LABELS = void 0;
   /* OVERRIDE ---------------------------------------------------------------- */
   var _pieStyle = void 0; // "pie" or "donut"
   var _pieSizeThreshold = 480;
@@ -76139,6 +76154,43 @@ function pieChart(parent, chartGroup) {
   _chart.redoSelect = highlightFilter;
   _chart.accent = accentSlice;
   _chart.unAccent = unAccentSlice;
+
+  var originalDataAsync = _chart.getDataAsync();
+  _chart.setDataAsync(function (group, callback) {
+    originalDataAsync(group, function (err, result) {
+      if (err || !ENABLE_ALL_OTHERS_LABELS || !result) {
+        callback(err, result);
+        return;
+      }
+
+      // data is cached during redraw/render, so it's possible that it was
+      // cached with the all other row already included
+      if (result.some(function (_ref) {
+        var key0 = _ref.key0;
+        return key0 === "All Others";
+      })) {
+        callback(null, result);
+        return;
+      }
+
+      group.getCrossfilter().groupAll().valueAsync(false, false, group.dimension().getDimensionIndex()).then(function (filterSize) {
+        var val = filterSize - _d2.default.sum(result, _chart.valueAccessor());
+        if (val > 0) {
+          result.push({ key0: "All Others", val: val, isAllOthers: true });
+        }
+        callback(null, result);
+      }).catch(function (err) {
+        callback(err);
+      });
+    });
+  });
+
+  (0, _core.override)(_chart, "getColor", function (data, index) {
+    if (data.isAllOthers) {
+      return "#888888";
+    }
+    return _chart._getColor(data, index);
+  });
   /* ------------------------------------------------------------------------- */
 
   _chart._doRender = function () {
@@ -76231,7 +76283,7 @@ function pieChart(parent, chartGroup) {
     }
   }
 
-  function positionLabels(labelsEnter, arc) {
+  function positionLabels(labelsEnter, arc, pieData) {
     (0, _core.transition)(labelsEnter, _chart.transitionDuration()).attr("transform", function (d) {
       return labelPosition(d, arc);
     });
@@ -76275,6 +76327,28 @@ function pieChart(parent, chartGroup) {
 
         return width > availableLabelWidth ? truncateLabel(_chart.measureValue(d.data), width, availableLabelWidth) : _chart.measureValue(d.data);
       });
+
+      if (ENABLE_PERCENTAGE_LABELS) {
+        var total = 0;
+        for (var i = 0; i < pieData.length; i += 1) {
+          total += pieData[i].value;
+        }
+
+        labelsEnter.select(".value-percentage").classed("deselected-label", function (d) {
+          return _chart.hasFilter() && !isSelectedSlice(d);
+        }).text(function (d) {
+          if (_d2.default.select(this.parentNode).classed("hide-label")) {
+            return "";
+          } else {
+            var availableLabelWidth = getAvailableLabelWidth(d);
+            var width = _d2.default.select(this).node().getBoundingClientRect().width;
+
+            var percentage = (0, _formattingHelpers.formatPercentage)(d.value, total);
+
+            return width > availableLabelWidth ? truncateLabel(percentage, width, availableLabelWidth) : percentage;
+          }
+        });
+      }
     }
     /* ------------------------------------------------------------------------- */
   }
@@ -76300,14 +76374,26 @@ function pieChart(parent, chartGroup) {
       .on("click", onClick);
 
       /* OVERRIDE ---------------------------------------------------------------- */
-      labelsEnter.append("text").attr("class", "value-dim").attr("dy", _chart.measureLabelsOn() ? "0" : ".4em");
+      if (ENABLE_ABSOLUTE_LABELS && ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter.append("text").attr("class", "value-dim").attr("dy", "-0.8em");
 
-      if (_chart.measureLabelsOn()) {
+        labelsEnter.append("text").attr("class", "value-measure").attr("dy", ".4em");
+
+        labelsEnter.append("text").attr("class", "value-percentage").attr("dy", "1.6em");
+      } else if (ENABLE_ABSOLUTE_LABELS) {
+        labelsEnter.append("text").attr("class", "value-dim").attr("dy", "0");
+
         labelsEnter.append("text").attr("class", "value-measure").attr("dy", "1.2em");
+      } else if (ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter.append("text").attr("class", "value-dim").attr("dy", "0");
+
+        labelsEnter.append("text").attr("class", "value-percentage").attr("dy", "1.2em");
+      } else {
+        labelsEnter.append("text").attr("class", "value-dim").attr("dy", ".4em");
       }
       /* ------------------------------------------------------------------------- */
 
-      positionLabels(labelsEnter, arc);
+      positionLabels(labelsEnter, arc, pieData);
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc);
       }
@@ -76343,7 +76429,9 @@ function pieChart(parent, chartGroup) {
   }
 
   function updateSlicePaths(pieData, arc) {
-    var slicePaths = _g.selectAll("g." + _sliceCssClass).data(pieData).select("path").attr("d", function (d, i) {
+    var slicePaths = _g.selectAll("g." + _sliceCssClass).data(pieData).classed("all-others", function (d) {
+      return d.data.isAllOthers;
+    }).select("path").attr("d", function (d, i) {
       return safeArc(d, i, arc);
     });
     (0, _core.transition)(slicePaths, _chart.transitionDuration(), function (s) {
@@ -76357,7 +76445,7 @@ function pieChart(parent, chartGroup) {
       var labels = _g.selectAll("g.pie-label")
       /* ------------------------------------------------------------------------- */
       .data(pieData);
-      positionLabels(labels, arc);
+      positionLabels(labels, arc, pieData);
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc);
       }
@@ -76632,7 +76720,7 @@ function pieChart(parent, chartGroup) {
   }
 
   function onClick(d, i) {
-    if (_g.attr("class") !== _emptyCssClass) {
+    if (_g.attr("class") !== _emptyCssClass && !d.data.isAllOthers) {
       _chart.onClick(d.data, i);
     }
   }
@@ -76808,6 +76896,58 @@ function pieChart(parent, chartGroup) {
   }
 
   _chart = (0, _multipleKeyLabelMixin2.default)(_chart);
+
+  /**
+   * Controls Absolute values toggle from immerse
+   * @param showAbsoluteValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAbsoluteValues = function (showAbsoluteValues) {
+    if (!arguments.length) {
+      return ENABLE_ABSOLUTE_LABELS;
+    }
+    ENABLE_ABSOLUTE_LABELS = showAbsoluteValues;
+
+    if (_hasBeenRendered) {
+      _chart._doRender();
+    }
+    return _chart;
+  };
+
+  /**
+   * Controls Percent values toggle from immerse
+   * @param showPercentValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showPercentValues = function (showPercentValues) {
+    if (!arguments.length) {
+      return ENABLE_PERCENTAGE_LABELS;
+    }
+    ENABLE_PERCENTAGE_LABELS = showPercentValues;
+
+    if (_hasBeenRendered) {
+      _chart._doRender();
+    }
+    return _chart;
+  };
+
+  /**
+   * Controls All Others value toggle from immerse
+   * @param showAllOthers
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAllOthers = function (showAllOthers) {
+    if (!arguments.length) {
+      return ENABLE_ALL_OTHERS_LABELS;
+    }
+    ENABLE_ALL_OTHERS_LABELS = showAllOthers;
+
+    if (_hasBeenRendered) {
+      _chart.expireCache();
+      _chart.renderAsync();
+    }
+    return _chart;
+  };
 
   return _chart.anchor(parent, chartGroup);
 }

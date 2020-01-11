@@ -46,6 +46,9 @@ art {
 .dc-chart .pie-slice {
     fill: white;
     font-size: 12px;
+}
+
+.dc-chart .pie-slice:not(.all-others) {
     cursor: pointer;
 }
 
@@ -53,7 +56,7 @@ art {
     fill: black;
 }
 
-.dc-chart .pie-slice :hover {
+.dc-chart .pie-slice:not(.all-others) :hover {
     fill-opacity: .8;
 }
 
@@ -601,11 +604,11 @@ body {
     font-weight: bold; }
   .dc-chart .row text {
     fill: #404040 !important; }
-  .dc-chart g.deselected path {
+  .dc-chart g.deselected:not(.pie-slice.all-others) path {
     fill: #c7c7c7; }
-    .dc-chart g.deselected path:hover {
+    .dc-chart g.deselected:not(.pie-slice.all-others) path:hover {
       fill: #e2e2e2; }
-    .dc-chart g.deselected path text {
+    .dc-chart g.deselected:not(.pie-slice.all-others) path text {
       fill-opacity: #a7a7a7; }
   .dc-chart text.deselected-label {
     fill: #868686 !important; }
@@ -1555,6 +1558,8 @@ body {
   font-size: 11px; }
   .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact {
     bottom: 5px; }
+    .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact::after {
+      opacity: 0.5; }
 
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl.mapboxgl-ctrl-group {
   margin: 0 10px 10px 0 !important; }
@@ -1662,10 +1667,10 @@ body {
 .mapboxgl-ctrl-compass {
   display: none !important; }
 
-.mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-in {
-  opacity: 0.5; }
-
-.mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-out {
+.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon,
+.mapboxgl-ctrl-zoom-in.mapboxgl-ctrl-icon,
+.mapboxgl-ctrl-zoom-out .mapboxgl-ctrl-icon,
+.mapboxgl-ctrl-zoom-out.mapboxgl-ctrl-icon {
   opacity: 0.5; }
 
 .mapd-draw-button-circle {
