@@ -1579,13 +1579,14 @@ export default function coordinateGridMixin (_chart) {
     const timeBinParam = _chart.group().binParams()[
       DEFAULT_TIME_DIMENSION_INDEX
     ]
-    if (timeBinParam && timeBinParam.extract) {
-      return xDomain[xDomain.length - 1] - xDomain[0]
-    } else {
-      const effectiveWidth = _chart.effectiveWidth()
-      const numTicks = _chart.xAxis().scale().ticks().length
-      return effectiveWidth / numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : DEFAULT_NUM_TICKS
-    }
+    
+    const numTicks = timeBinParam && timeBinParam.extract
+      ? xDomain[xDomain.length - 1] - xDomain[0]
+      : _chart.xAxis().scale().ticks().length
+
+    const effectiveWidth = _chart.effectiveWidth()
+
+    return effectiveWidth / numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : DEFAULT_NUM_TICKS
   }
 
   _chart.rangeFocused = function (_) {
