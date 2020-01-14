@@ -76246,6 +76246,9 @@ function pieChart(parent, chartGroup) {
 
       (0, _core.transition)(_g, _chart.transitionDuration()).attr("transform", "translate(" + _chart.cx() + "," + _chart.cy() + ")");
     }
+
+    // Recreate the popup in case the chart changed data during redraw
+    _chart.generatePopup();
   }
 
   function createElements(slices, arc, pieData) {

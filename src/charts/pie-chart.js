@@ -200,6 +200,9 @@ export default function pieChart(parent, chartGroup) {
         "translate(" + _chart.cx() + "," + _chart.cy() + ")"
       )
     }
+
+    // Recreate the popup in case the chart changed data during redraw
+    _chart.generatePopup()
   }
 
   function createElements(slices, arc, pieData) {
