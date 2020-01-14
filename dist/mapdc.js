@@ -76218,9 +76218,12 @@ function pieChart(parent, chartGroup) {
     var arc = buildArcs();
 
     var pie = pieLayout();
+
+    var chartData = _chart.data();
+
     var pieData = void 0;
     // if we have data...
-    if (_d2.default.sum(_chart.data(), _chart.valueAccessor())) {
+    if (chartData && _d2.default.sum(chartData, _chart.valueAccessor())) {
       pieData = pie(_utils.utils.maybeFormatInfinity(_chart.data()));
       _g.classed(_emptyCssClass, false);
     } else {
