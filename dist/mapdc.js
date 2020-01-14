@@ -11491,12 +11491,14 @@ function coordinateGridMixin(_chart) {
   _chart.getNumTicksForXAxis = function () {
     var xDomain = _chart.x().domain();
     var timeBinParam = _chart.group().binParams()[DEFAULT_TIME_DIMENSION_INDEX];
+    var effectiveWidth = _chart.effectiveWidth();
+
     if (timeBinParam && timeBinParam.extract) {
-      return xDomain[xDomain.length - 1] - xDomain[0];
+      var numTicks = xDomain[xDomain.length - 1] - xDomain[0];
+      return effectiveWidth / numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : numTicks;
     } else {
-      var effectiveWidth = _chart.effectiveWidth();
-      var numTicks = _chart.xAxis().scale().ticks().length;
-      return effectiveWidth / numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : DEFAULT_NUM_TICKS;
+      var _numTicks = _chart.xAxis().scale().ticks().length;
+      return effectiveWidth / _numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : DEFAULT_NUM_TICKS;
     }
   };
 

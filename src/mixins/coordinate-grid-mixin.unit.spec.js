@@ -30,6 +30,7 @@ describe("coordinateGridMixin", () => {
       })
     })
     it("should handle extract case", () => {
+      chart.effectiveWidth = () => 150
       expect(chart.getNumTicksForXAxis()).to.equal(3)
     })
     it("should handle non-extract case", () => {
