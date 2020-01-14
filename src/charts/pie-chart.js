@@ -169,9 +169,12 @@ export default function pieChart(parent, chartGroup) {
     const arc = buildArcs()
 
     const pie = pieLayout()
+
+    const chartData = _chart.data()
+
     let pieData
     // if we have data...
-    if (d3.sum(_chart.data(), _chart.valueAccessor())) {
+    if (chartData && d3.sum(chartData, _chart.valueAccessor())) {
       pieData = pie(utils.maybeFormatInfinity(_chart.data()))
       _g.classed(_emptyCssClass, false)
     } else {
