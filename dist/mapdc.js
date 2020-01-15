@@ -76112,6 +76112,7 @@ function pieChart(parent, chartGroup) {
   var _chart = (0, _capMixin2.default)((0, _colorMixin2.default)((0, _baseMixin2.default)({})));
   var ENABLE_ABSOLUTE_LABELS = void 0;
   var ENABLE_PERCENTAGE_LABELS = void 0;
+  var ENABLE_PERCENTAGE_LABELS_IN_POPUP = void 0;
   var ENABLE_ALL_OTHERS_LABELS = void 0;
   /* OVERRIDE ---------------------------------------------------------------- */
   var _pieStyle = void 0; // "pie" or "donut"
@@ -76233,6 +76234,59 @@ function pieChart(parent, chartGroup) {
       _g.classed(_emptyCssClass, true);
     }
 
+    if (ENABLE_PERCENTAGE_LABELS_IN_POPUP) {
+      var total = 0;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = pieData[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var datum = _step.value;
+
+          total += datum.value;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = pieData[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var _datum = _step2.value;
+
+          _datum.percentage = (0, _formattingHelpers.formatPercentage)(_datum.value, total);
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+    }
+
     if (_g) {
       var slices = _g.selectAll("g." + _sliceCssClass).data(pieData);
 
@@ -76291,7 +76345,7 @@ function pieChart(parent, chartGroup) {
     }
   }
 
-  function positionLabels(labelsEnter, arc, pieData) {
+  function positionLabels(labelsEnter, arc) {
     (0, _core.transition)(labelsEnter, _chart.transitionDuration()).attr("transform", function (d) {
       return labelPosition(d, arc);
     });
@@ -76337,11 +76391,6 @@ function pieChart(parent, chartGroup) {
       });
 
       if (ENABLE_PERCENTAGE_LABELS) {
-        var total = 0;
-        for (var i = 0; i < pieData.length; i += 1) {
-          total += pieData[i].value;
-        }
-
         labelsEnter.select(".value-percentage").classed("deselected-label", function (d) {
           return _chart.hasFilter() && !isSelectedSlice(d);
         }).text(function (d) {
@@ -76351,9 +76400,7 @@ function pieChart(parent, chartGroup) {
             var availableLabelWidth = getAvailableLabelWidth(d);
             var width = _d2.default.select(this).node().getBoundingClientRect().width;
 
-            var percentage = (0, _formattingHelpers.formatPercentage)(d.value, total);
-
-            return width > availableLabelWidth ? truncateLabel(percentage, width, availableLabelWidth) : percentage;
+            return width > availableLabelWidth ? truncateLabel(d.percentage, width, availableLabelWidth) : d.percentage;
           }
         });
       }
@@ -76401,7 +76448,7 @@ function pieChart(parent, chartGroup) {
       }
       /* ------------------------------------------------------------------------- */
 
-      positionLabels(labelsEnter, arc, pieData);
+      positionLabels(labelsEnter, arc);
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc);
       }
@@ -76453,7 +76500,7 @@ function pieChart(parent, chartGroup) {
       var labels = _g.selectAll("g.pie-label")
       /* ------------------------------------------------------------------------- */
       .data(pieData);
-      positionLabels(labels, arc, pieData);
+      positionLabels(labels, arc);
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc);
       }
@@ -76741,7 +76788,7 @@ function pieChart(parent, chartGroup) {
     popupBox.append("div").attr("class", "popup-legend").style("background-color", fill(d, i));
 
     popupBox.append("div").attr("class", "popup-value").html(function () {
-      return "\n                    <div class=\"popup-value-dim\">\n                        " + _chart.label()(d.data) + "\n                    </div>\n                    <div class=\"popup-value-measure\">\n                        " + _chart.measureValue(d.data) + "\n                    </div>";
+      return "<div class=\"popup-value-dim\">" + _chart.label()(d.data) + "</div><div class=\"popup-value-measure\">" + _chart.measureValue(d.data) + "</div>" + (ENABLE_PERCENTAGE_LABELS_IN_POPUP ? "<div class=\"popup-value-measure\">" + d.percentage + "</div>" : "");
     });
 
     popup.classed("js-showPopup", true);
@@ -76953,6 +77000,23 @@ function pieChart(parent, chartGroup) {
     if (_hasBeenRendered) {
       _chart.expireCache();
       _chart.renderAsync();
+    }
+    return _chart;
+  };
+
+  /**
+   * Whether chart should show percentage values in popup
+   * @param showPercentValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showPercentValuesInPopup = function (showPercentValuesInPopup) {
+    if (!arguments.length) {
+      return ENABLE_PERCENTAGE_LABELS_IN_POPUP;
+    }
+    ENABLE_PERCENTAGE_LABELS_IN_POPUP = showPercentValuesInPopup;
+
+    if (_hasBeenRendered) {
+      _chart.generatePopup();
     }
     return _chart;
   };

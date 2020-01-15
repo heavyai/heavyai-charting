@@ -52,6 +52,7 @@ export default function pieChart(parent, chartGroup) {
   let _chart = capMixin(colorMixin(baseMixin({})))
   let ENABLE_ABSOLUTE_LABELS
   let ENABLE_PERCENTAGE_LABELS
+  let ENABLE_PERCENTAGE_LABELS_IN_POPUP
   let ENABLE_ALL_OTHERS_LABELS
   /* OVERRIDE ---------------------------------------------------------------- */
   let _pieStyle // "pie" or "donut"
@@ -184,6 +185,16 @@ export default function pieChart(parent, chartGroup) {
       _g.classed(_emptyCssClass, true)
     }
 
+    if (ENABLE_PERCENTAGE_LABELS_IN_POPUP) {
+      let total = 0
+      for (const datum of pieData) {
+        total += datum.value
+      }
+      for (const datum of pieData) {
+        datum.percentage = formatPercentage(datum.value, total)
+      }
+    }
+
     if (_g) {
       const slices = _g.selectAll("g." + _sliceCssClass).data(pieData)
 
@@ -247,7 +258,7 @@ export default function pieChart(parent, chartGroup) {
     }
   }
 
-  function positionLabels(labelsEnter, arc, pieData) {
+  function positionLabels(labelsEnter, arc) {
     transition(labelsEnter, _chart.transitionDuration()).attr("transform", d =>
       labelPosition(d, arc)
     )
@@ -316,11 +327,6 @@ export default function pieChart(parent, chartGroup) {
         })
 
       if (ENABLE_PERCENTAGE_LABELS) {
-        let total = 0
-        for (let i = 0; i < pieData.length; i += 1) {
-          total += pieData[i].value
-        }
-
         labelsEnter
           .select(".value-percentage")
           .classed(
@@ -337,11 +343,9 @@ export default function pieChart(parent, chartGroup) {
                 .node()
                 .getBoundingClientRect().width
 
-              const percentage = formatPercentage(d.value, total)
-
               return width > availableLabelWidth
-                ? truncateLabel(percentage, width, availableLabelWidth)
-                : percentage
+                ? truncateLabel(d.percentage, width, availableLabelWidth)
+                : d.percentage
             }
           })
       }
@@ -414,7 +418,7 @@ export default function pieChart(parent, chartGroup) {
       }
       /* ------------------------------------------------------------------------- */
 
-      positionLabels(labelsEnter, arc, pieData)
+      positionLabels(labelsEnter, arc)
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc)
       }
@@ -476,7 +480,7 @@ export default function pieChart(parent, chartGroup) {
         .selectAll("g.pie-label")
         /* ------------------------------------------------------------------------- */
         .data(pieData)
-      positionLabels(labels, arc, pieData)
+      positionLabels(labels, arc)
       if (_externalLabelRadius && _drawPaths) {
         updateLabelPaths(pieData, arc)
       }
@@ -801,13 +805,16 @@ export default function pieChart(parent, chartGroup) {
       .append("div")
       .attr("class", "popup-value")
       .html(
-        () => `
-                    <div class="popup-value-dim">
-                        ${_chart.label()(d.data)}
-                    </div>
-                    <div class="popup-value-measure">
-                        ${_chart.measureValue(d.data)}
-                    </div>`
+        () =>
+          `<div class="popup-value-dim">${_chart.label()(
+            d.data
+          )}</div><div class="popup-value-measure">${_chart.measureValue(
+            d.data
+          )}</div>${
+            ENABLE_PERCENTAGE_LABELS_IN_POPUP
+              ? `<div class="popup-value-measure">${d.percentage}</div>`
+              : ""
+          }`
       )
 
     popup.classed("js-showPopup", true)
@@ -1065,6 +1072,23 @@ export default function pieChart(parent, chartGroup) {
     if (_hasBeenRendered) {
       _chart.expireCache()
       _chart.renderAsync()
+    }
+    return _chart
+  }
+
+  /**
+   * Whether chart should show percentage values in popup
+   * @param showPercentValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showPercentValuesInPopup = function(showPercentValuesInPopup) {
+    if (!arguments.length) {
+      return ENABLE_PERCENTAGE_LABELS_IN_POPUP
+    }
+    ENABLE_PERCENTAGE_LABELS_IN_POPUP = showPercentValuesInPopup
+
+    if (_hasBeenRendered) {
+      _chart.generatePopup()
     }
     return _chart
   }
