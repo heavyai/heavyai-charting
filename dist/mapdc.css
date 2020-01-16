@@ -46,6 +46,9 @@ art {
 .dc-chart .pie-slice {
     fill: white;
     font-size: 12px;
+}
+
+.dc-chart .pie-slice:not(.all-others) {
     cursor: pointer;
 }
 
@@ -53,7 +56,7 @@ art {
     fill: black;
 }
 
-.dc-chart .pie-slice :hover {
+.dc-chart .pie-slice:not(.all-others) :hover {
     fill-opacity: .8;
 }
 
@@ -601,11 +604,11 @@ body {
     font-weight: bold; }
   .dc-chart .row text {
     fill: #404040 !important; }
-  .dc-chart g.deselected path {
+  .dc-chart g.deselected:not(.pie-slice.all-others) path {
     fill: #c7c7c7; }
-    .dc-chart g.deselected path:hover {
+    .dc-chart g.deselected:not(.pie-slice.all-others) path:hover {
       fill: #e2e2e2; }
-    .dc-chart g.deselected path text {
+    .dc-chart g.deselected:not(.pie-slice.all-others) path text {
       fill-opacity: #a7a7a7; }
   .dc-chart text.deselected-label {
     fill: #868686 !important; }

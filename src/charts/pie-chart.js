@@ -3,8 +3,9 @@ import capMixin from "../mixins/cap-mixin"
 import colorMixin from "../mixins/color-mixin"
 import d3 from "d3"
 import multipleKeysLabelMixin from "../mixins/multiple-key-label-mixin"
-import { nullLabelHtml } from "../utils/formatting-helpers"
-import { transition } from "../core/core"
+import { formatPercentage, nullLabelHtml } from "../utils/formatting-helpers"
+import { override, transition } from "../core/core"
+import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import { utils } from "../utils/utils"
 
 /**
@@ -49,7 +50,10 @@ export default function pieChart(parent, chartGroup) {
   let _externalLabelRadius
   let _drawPaths = false
   let _chart = capMixin(colorMixin(baseMixin({})))
-
+  let ENABLE_ABSOLUTE_LABELS
+  let ENABLE_PERCENTAGE_LABELS
+  let ENABLE_PERCENTAGE_LABELS_IN_POPUP
+  let ENABLE_ALL_OTHERS_LABELS
   /* OVERRIDE ---------------------------------------------------------------- */
   let _pieStyle // "pie" or "donut"
   const _pieSizeThreshold = 480
@@ -96,6 +100,45 @@ export default function pieChart(parent, chartGroup) {
   _chart.redoSelect = highlightFilter
   _chart.accent = accentSlice
   _chart.unAccent = unAccentSlice
+
+  const originalDataAsync = _chart.getDataAsync()
+  _chart.setDataAsync((group, callback) => {
+    originalDataAsync(group, (err, result) => {
+      if (err || !ENABLE_ALL_OTHERS_LABELS || !result) {
+        callback(err, result)
+        return
+      }
+
+      // data is cached during redraw/render, so it's possible that it was
+      // cached with the all other row already included
+      if (result.some(({ key0 }) => key0 === "All Others")) {
+        callback(null, result)
+        return
+      }
+
+      group
+        .getCrossfilter()
+        .groupAll()
+        .valueAsync(false, false, group.dimension().getDimensionIndex())
+        .then(filterSize => {
+          const val = filterSize - d3.sum(result, _chart.valueAccessor())
+          if (val > 0) {
+            result.push({ key0: "All Others", val, isAllOthers: true })
+          }
+          callback(null, result)
+        })
+        .catch(err => {
+          callback(err)
+        })
+    })
+  })
+
+  override(_chart, "getColor", (data, index) => {
+    if (data.isAllOthers) {
+      return "#888888"
+    }
+    return _chart._getColor(data, index)
+  })
   /* ------------------------------------------------------------------------- */
 
   _chart._doRender = function() {
@@ -127,9 +170,12 @@ export default function pieChart(parent, chartGroup) {
     const arc = buildArcs()
 
     const pie = pieLayout()
+
+    const chartData = _chart.data()
+
     let pieData
     // if we have data...
-    if (d3.sum(_chart.data(), _chart.valueAccessor())) {
+    if (chartData && d3.sum(chartData, _chart.valueAccessor())) {
       pieData = pie(utils.maybeFormatInfinity(_chart.data()))
       _g.classed(_emptyCssClass, false)
     } else {
@@ -137,6 +183,16 @@ export default function pieChart(parent, chartGroup) {
       // note: abuse others for its ignoring the value accessor
       pieData = pie([{ key: _emptyTitle, value: 1, others: [_emptyTitle] }])
       _g.classed(_emptyCssClass, true)
+    }
+
+    if (ENABLE_PERCENTAGE_LABELS_IN_POPUP) {
+      let total = 0
+      for (const datum of pieData) {
+        total += datum.value
+      }
+      for (const datum of pieData) {
+        datum.percentage = formatPercentage(datum.value, total)
+      }
     }
 
     if (_g) {
@@ -155,6 +211,9 @@ export default function pieChart(parent, chartGroup) {
         "translate(" + _chart.cx() + "," + _chart.cy() + ")"
       )
     }
+
+    // Recreate the popup in case the chart changed data during redraw
+    _chart.generatePopup()
   }
 
   function createElements(slices, arc, pieData) {
@@ -266,6 +325,30 @@ export default function pieChart(parent, chartGroup) {
               )
             : _chart.measureValue(d.data)
         })
+
+      if (ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter
+          .select(".value-percentage")
+          .classed(
+            "deselected-label",
+            d => _chart.hasFilter() && !isSelectedSlice(d)
+          )
+          .text(function(d) {
+            if (d3.select(this.parentNode).classed("hide-label")) {
+              return ""
+            } else {
+              const availableLabelWidth = getAvailableLabelWidth(d)
+              const width = d3
+                .select(this)
+                .node()
+                .getBoundingClientRect().width
+
+              return width > availableLabelWidth
+                ? truncateLabel(d.percentage, width, availableLabelWidth)
+                : d.percentage
+            }
+          })
+      }
     }
     /* ------------------------------------------------------------------------- */
   }
@@ -292,16 +375,46 @@ export default function pieChart(parent, chartGroup) {
         .on("click", onClick)
 
       /* OVERRIDE ---------------------------------------------------------------- */
-      labelsEnter
-        .append("text")
-        .attr("class", "value-dim")
-        .attr("dy", _chart.measureLabelsOn() ? "0" : ".4em")
+      if (ENABLE_ABSOLUTE_LABELS && ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", "-0.8em")
 
-      if (_chart.measureLabelsOn()) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-measure")
+          .attr("dy", ".4em")
+
+        labelsEnter
+          .append("text")
+          .attr("class", "value-percentage")
+          .attr("dy", "1.6em")
+      } else if (ENABLE_ABSOLUTE_LABELS) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", "0")
+
         labelsEnter
           .append("text")
           .attr("class", "value-measure")
           .attr("dy", "1.2em")
+      } else if (ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", "0")
+
+        labelsEnter
+          .append("text")
+          .attr("class", "value-percentage")
+          .attr("dy", "1.2em")
+      } else {
+        labelsEnter
+          .append("text")
+          .attr("class", "value-dim")
+          .attr("dy", ".4em")
       }
       /* ------------------------------------------------------------------------- */
 
@@ -352,6 +465,7 @@ export default function pieChart(parent, chartGroup) {
     const slicePaths = _g
       .selectAll("g." + _sliceCssClass)
       .data(pieData)
+      .classed("all-others", d => d.data.isAllOthers)
       .select("path")
       .attr("d", (d, i) => safeArc(d, i, arc))
     transition(slicePaths, _chart.transitionDuration(), s => {
@@ -672,7 +786,7 @@ export default function pieChart(parent, chartGroup) {
   }
 
   function onClick(d, i) {
-    if (_g.attr("class") !== _emptyCssClass) {
+    if (_g.attr("class") !== _emptyCssClass && !d.data.isAllOthers) {
       _chart.onClick(d.data, i)
     }
   }
@@ -691,13 +805,16 @@ export default function pieChart(parent, chartGroup) {
       .append("div")
       .attr("class", "popup-value")
       .html(
-        () => `
-                    <div class="popup-value-dim">
-                        ${_chart.label()(d.data)}
-                    </div>
-                    <div class="popup-value-measure">
-                        ${_chart.measureValue(d.data)}
-                    </div>`
+        () =>
+          `<div class="popup-value-dim">${_chart.label()(
+            d.data
+          )}</div><div class="popup-value-measure">${_chart.measureValue(
+            d.data
+          )}</div>${
+            ENABLE_PERCENTAGE_LABELS_IN_POPUP
+              ? `<div class="popup-value-measure">${d.percentage}</div>`
+              : ""
+          }`
       )
 
     popup.classed("js-showPopup", true)
@@ -906,6 +1023,75 @@ export default function pieChart(parent, chartGroup) {
   }
 
   _chart = multipleKeysLabelMixin(_chart)
+
+  /**
+   * Controls Absolute values toggle from immerse
+   * @param showAbsoluteValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAbsoluteValues = function(showAbsoluteValues) {
+    if (!arguments.length) {
+      return ENABLE_ABSOLUTE_LABELS
+    }
+    ENABLE_ABSOLUTE_LABELS = showAbsoluteValues
+
+    if (_hasBeenRendered) {
+      _chart._doRender()
+    }
+    return _chart
+  }
+
+  /**
+   * Controls Percent values toggle from immerse
+   * @param showPercentValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showPercentValues = function(showPercentValues) {
+    if (!arguments.length) {
+      return ENABLE_PERCENTAGE_LABELS
+    }
+    ENABLE_PERCENTAGE_LABELS = showPercentValues
+
+    if (_hasBeenRendered) {
+      _chart._doRender()
+    }
+    return _chart
+  }
+
+  /**
+   * Controls All Others value toggle from immerse
+   * @param showAllOthers
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAllOthers = function(showAllOthers) {
+    if (!arguments.length) {
+      return ENABLE_ALL_OTHERS_LABELS
+    }
+    ENABLE_ALL_OTHERS_LABELS = showAllOthers
+
+    if (_hasBeenRendered) {
+      _chart.expireCache()
+      _chart.renderAsync()
+    }
+    return _chart
+  }
+
+  /**
+   * Whether chart should show percentage values in popup
+   * @param showPercentValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showPercentValuesInPopup = function(showPercentValuesInPopup) {
+    if (!arguments.length) {
+      return ENABLE_PERCENTAGE_LABELS_IN_POPUP
+    }
+    ENABLE_PERCENTAGE_LABELS_IN_POPUP = showPercentValuesInPopup
+
+    if (_hasBeenRendered) {
+      _chart.generatePopup()
+    }
+    return _chart
+  }
 
   return _chart.anchor(parent, chartGroup)
 }

@@ -1579,10 +1579,12 @@ export default function coordinateGridMixin (_chart) {
     const timeBinParam = _chart.group().binParams()[
       DEFAULT_TIME_DIMENSION_INDEX
     ]
+    const effectiveWidth = _chart.effectiveWidth()
+
     if (timeBinParam && timeBinParam.extract) {
-      return xDomain[xDomain.length - 1] - xDomain[0]
+      const numTicks = xDomain[xDomain.length - 1] - xDomain[0]
+      return effectiveWidth / numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : numTicks
     } else {
-      const effectiveWidth = _chart.effectiveWidth()
       const numTicks = _chart.xAxis().scale().ticks().length
       return effectiveWidth / numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : DEFAULT_NUM_TICKS
     }

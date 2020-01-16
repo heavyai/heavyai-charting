@@ -6302,9 +6302,8 @@ function isEqualToRenderCount(queryCount) {
 }
 
 function redrawAllAsync(group, allCharts) {
-  var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
-
   if ((0, _core.refreshDisabled)()) {
+    var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
     return Promise.resolve(charts);
   }
 
@@ -6317,6 +6316,7 @@ function redrawAllAsync(group, allCharts) {
     _startRedrawTime = new Date();
 
     var createRedrawPromises = function createRedrawPromises() {
+      var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
       return charts.map(function (chart) {
         chart.expireCache();
         chart._invokeDataFetchListener();
@@ -6350,9 +6350,8 @@ function redrawAllAsync(group, allCharts) {
 }
 
 function renderAllAsync(group, allCharts) {
-  var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
-
   if ((0, _core.refreshDisabled)()) {
+    var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
     return Promise.resolve(charts);
   }
 
@@ -6361,6 +6360,7 @@ function renderAllAsync(group, allCharts) {
     _startRenderTime = new Date();
 
     var createRenderPromises = function createRenderPromises() {
+      var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
       return charts.map(function (chart) {
         chart.expireCache();
         return chart.renderAsync(queryGroupId, charts.length);
@@ -9191,6 +9191,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 exports.formatDataValue = formatDataValue;
 exports.maybeFormatInfinity = maybeFormatInfinity;
 exports.formatNumber = formatNumber;
+exports.formatPercentage = formatPercentage;
 exports.formatArrayValue = formatArrayValue;
 exports.formatTimeBinValue = formatTimeBinValue;
 exports.formatExtractValue = formatExtractValue;
@@ -9270,6 +9271,18 @@ function formatNumber(d) {
     return d.toPrecision(2);
   } else {
     return commafy(parseFloat(d.toFixed(2)));
+  }
+}
+
+var percentify = _d2.default.format(".0%");
+var percentifyLow = _d2.default.format(".1%");
+
+function formatPercentage(d, total) {
+  var percentage = d / total;
+  if (percentage < 0.01) {
+    return percentifyLow(percentage);
+  } else {
+    return percentify(percentage);
   }
 }
 
@@ -11478,12 +11491,14 @@ function coordinateGridMixin(_chart) {
   _chart.getNumTicksForXAxis = function () {
     var xDomain = _chart.x().domain();
     var timeBinParam = _chart.group().binParams()[DEFAULT_TIME_DIMENSION_INDEX];
+    var effectiveWidth = _chart.effectiveWidth();
+
     if (timeBinParam && timeBinParam.extract) {
-      return xDomain[xDomain.length - 1] - xDomain[0];
+      var numTicks = xDomain[xDomain.length - 1] - xDomain[0];
+      return effectiveWidth / numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : numTicks;
     } else {
-      var effectiveWidth = _chart.effectiveWidth();
-      var numTicks = _chart.xAxis().scale().ticks().length;
-      return effectiveWidth / numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : DEFAULT_NUM_TICKS;
+      var _numTicks = _chart.xAxis().scale().ticks().length;
+      return effectiveWidth / _numTicks < MAX_TICK_WIDTH ? Math.ceil(effectiveWidth / MAX_TICK_WIDTH) : DEFAULT_NUM_TICKS;
     }
   };
 
@@ -52186,9 +52201,7 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 
     _chart._preprocessData();
 
-    if (_chartBody) {
-      drawChart(false, imgUrl, renderBounds, queryId);
-    }
+    drawChart(false, imgUrl, renderBounds, queryId);
 
     return _chart;
   }
@@ -76046,6 +76059,8 @@ var _formattingHelpers = __webpack_require__(10);
 
 var _core = __webpack_require__(3);
 
+var _coreAsync = __webpack_require__(5);
+
 var _utils = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -76093,7 +76108,10 @@ function pieChart(parent, chartGroup) {
   var _externalLabelRadius = void 0;
   var _drawPaths = false;
   var _chart = (0, _capMixin2.default)((0, _colorMixin2.default)((0, _baseMixin2.default)({})));
-
+  var ENABLE_ABSOLUTE_LABELS = void 0;
+  var ENABLE_PERCENTAGE_LABELS = void 0;
+  var ENABLE_PERCENTAGE_LABELS_IN_POPUP = void 0;
+  var ENABLE_ALL_OTHERS_LABELS = void 0;
   /* OVERRIDE ---------------------------------------------------------------- */
   var _pieStyle = void 0; // "pie" or "donut"
   var _pieSizeThreshold = 480;
@@ -76137,6 +76155,43 @@ function pieChart(parent, chartGroup) {
   _chart.redoSelect = highlightFilter;
   _chart.accent = accentSlice;
   _chart.unAccent = unAccentSlice;
+
+  var originalDataAsync = _chart.getDataAsync();
+  _chart.setDataAsync(function (group, callback) {
+    originalDataAsync(group, function (err, result) {
+      if (err || !ENABLE_ALL_OTHERS_LABELS || !result) {
+        callback(err, result);
+        return;
+      }
+
+      // data is cached during redraw/render, so it's possible that it was
+      // cached with the all other row already included
+      if (result.some(function (_ref) {
+        var key0 = _ref.key0;
+        return key0 === "All Others";
+      })) {
+        callback(null, result);
+        return;
+      }
+
+      group.getCrossfilter().groupAll().valueAsync(false, false, group.dimension().getDimensionIndex()).then(function (filterSize) {
+        var val = filterSize - _d2.default.sum(result, _chart.valueAccessor());
+        if (val > 0) {
+          result.push({ key0: "All Others", val: val, isAllOthers: true });
+        }
+        callback(null, result);
+      }).catch(function (err) {
+        callback(err);
+      });
+    });
+  });
+
+  (0, _core.override)(_chart, "getColor", function (data, index) {
+    if (data.isAllOthers) {
+      return "#888888";
+    }
+    return _chart._getColor(data, index);
+  });
   /* ------------------------------------------------------------------------- */
 
   _chart._doRender = function () {
@@ -76162,9 +76217,12 @@ function pieChart(parent, chartGroup) {
     var arc = buildArcs();
 
     var pie = pieLayout();
+
+    var chartData = _chart.data();
+
     var pieData = void 0;
     // if we have data...
-    if (_d2.default.sum(_chart.data(), _chart.valueAccessor())) {
+    if (chartData && _d2.default.sum(chartData, _chart.valueAccessor())) {
       pieData = pie(_utils.utils.maybeFormatInfinity(_chart.data()));
       _g.classed(_emptyCssClass, false);
     } else {
@@ -76172,6 +76230,59 @@ function pieChart(parent, chartGroup) {
       // note: abuse others for its ignoring the value accessor
       pieData = pie([{ key: _emptyTitle, value: 1, others: [_emptyTitle] }]);
       _g.classed(_emptyCssClass, true);
+    }
+
+    if (ENABLE_PERCENTAGE_LABELS_IN_POPUP) {
+      var total = 0;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = pieData[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var datum = _step.value;
+
+          total += datum.value;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = pieData[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var _datum = _step2.value;
+
+          _datum.percentage = (0, _formattingHelpers.formatPercentage)(_datum.value, total);
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
     }
 
     if (_g) {
@@ -76187,6 +76298,9 @@ function pieChart(parent, chartGroup) {
 
       (0, _core.transition)(_g, _chart.transitionDuration()).attr("transform", "translate(" + _chart.cx() + "," + _chart.cy() + ")");
     }
+
+    // Recreate the popup in case the chart changed data during redraw
+    _chart.generatePopup();
   }
 
   function createElements(slices, arc, pieData) {
@@ -76273,6 +76387,21 @@ function pieChart(parent, chartGroup) {
 
         return width > availableLabelWidth ? truncateLabel(_chart.measureValue(d.data), width, availableLabelWidth) : _chart.measureValue(d.data);
       });
+
+      if (ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter.select(".value-percentage").classed("deselected-label", function (d) {
+          return _chart.hasFilter() && !isSelectedSlice(d);
+        }).text(function (d) {
+          if (_d2.default.select(this.parentNode).classed("hide-label")) {
+            return "";
+          } else {
+            var availableLabelWidth = getAvailableLabelWidth(d);
+            var width = _d2.default.select(this).node().getBoundingClientRect().width;
+
+            return width > availableLabelWidth ? truncateLabel(d.percentage, width, availableLabelWidth) : d.percentage;
+          }
+        });
+      }
     }
     /* ------------------------------------------------------------------------- */
   }
@@ -76298,10 +76427,22 @@ function pieChart(parent, chartGroup) {
       .on("click", onClick);
 
       /* OVERRIDE ---------------------------------------------------------------- */
-      labelsEnter.append("text").attr("class", "value-dim").attr("dy", _chart.measureLabelsOn() ? "0" : ".4em");
+      if (ENABLE_ABSOLUTE_LABELS && ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter.append("text").attr("class", "value-dim").attr("dy", "-0.8em");
 
-      if (_chart.measureLabelsOn()) {
+        labelsEnter.append("text").attr("class", "value-measure").attr("dy", ".4em");
+
+        labelsEnter.append("text").attr("class", "value-percentage").attr("dy", "1.6em");
+      } else if (ENABLE_ABSOLUTE_LABELS) {
+        labelsEnter.append("text").attr("class", "value-dim").attr("dy", "0");
+
         labelsEnter.append("text").attr("class", "value-measure").attr("dy", "1.2em");
+      } else if (ENABLE_PERCENTAGE_LABELS) {
+        labelsEnter.append("text").attr("class", "value-dim").attr("dy", "0");
+
+        labelsEnter.append("text").attr("class", "value-percentage").attr("dy", "1.2em");
+      } else {
+        labelsEnter.append("text").attr("class", "value-dim").attr("dy", ".4em");
       }
       /* ------------------------------------------------------------------------- */
 
@@ -76341,7 +76482,9 @@ function pieChart(parent, chartGroup) {
   }
 
   function updateSlicePaths(pieData, arc) {
-    var slicePaths = _g.selectAll("g." + _sliceCssClass).data(pieData).select("path").attr("d", function (d, i) {
+    var slicePaths = _g.selectAll("g." + _sliceCssClass).data(pieData).classed("all-others", function (d) {
+      return d.data.isAllOthers;
+    }).select("path").attr("d", function (d, i) {
       return safeArc(d, i, arc);
     });
     (0, _core.transition)(slicePaths, _chart.transitionDuration(), function (s) {
@@ -76630,7 +76773,7 @@ function pieChart(parent, chartGroup) {
   }
 
   function onClick(d, i) {
-    if (_g.attr("class") !== _emptyCssClass) {
+    if (_g.attr("class") !== _emptyCssClass && !d.data.isAllOthers) {
       _chart.onClick(d.data, i);
     }
   }
@@ -76643,7 +76786,7 @@ function pieChart(parent, chartGroup) {
     popupBox.append("div").attr("class", "popup-legend").style("background-color", fill(d, i));
 
     popupBox.append("div").attr("class", "popup-value").html(function () {
-      return "\n                    <div class=\"popup-value-dim\">\n                        " + _chart.label()(d.data) + "\n                    </div>\n                    <div class=\"popup-value-measure\">\n                        " + _chart.measureValue(d.data) + "\n                    </div>";
+      return "<div class=\"popup-value-dim\">" + _chart.label()(d.data) + "</div><div class=\"popup-value-measure\">" + _chart.measureValue(d.data) + "</div>" + (ENABLE_PERCENTAGE_LABELS_IN_POPUP ? "<div class=\"popup-value-measure\">" + d.percentage + "</div>" : "");
     });
 
     popup.classed("js-showPopup", true);
@@ -76806,6 +76949,75 @@ function pieChart(parent, chartGroup) {
   }
 
   _chart = (0, _multipleKeyLabelMixin2.default)(_chart);
+
+  /**
+   * Controls Absolute values toggle from immerse
+   * @param showAbsoluteValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAbsoluteValues = function (showAbsoluteValues) {
+    if (!arguments.length) {
+      return ENABLE_ABSOLUTE_LABELS;
+    }
+    ENABLE_ABSOLUTE_LABELS = showAbsoluteValues;
+
+    if (_hasBeenRendered) {
+      _chart._doRender();
+    }
+    return _chart;
+  };
+
+  /**
+   * Controls Percent values toggle from immerse
+   * @param showPercentValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showPercentValues = function (showPercentValues) {
+    if (!arguments.length) {
+      return ENABLE_PERCENTAGE_LABELS;
+    }
+    ENABLE_PERCENTAGE_LABELS = showPercentValues;
+
+    if (_hasBeenRendered) {
+      _chart._doRender();
+    }
+    return _chart;
+  };
+
+  /**
+   * Controls All Others value toggle from immerse
+   * @param showAllOthers
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showAllOthers = function (showAllOthers) {
+    if (!arguments.length) {
+      return ENABLE_ALL_OTHERS_LABELS;
+    }
+    ENABLE_ALL_OTHERS_LABELS = showAllOthers;
+
+    if (_hasBeenRendered) {
+      _chart.expireCache();
+      _chart.renderAsync();
+    }
+    return _chart;
+  };
+
+  /**
+   * Whether chart should show percentage values in popup
+   * @param showPercentValues
+   * @returns {dc.pieChart|*}
+   */
+  _chart.showPercentValuesInPopup = function (showPercentValuesInPopup) {
+    if (!arguments.length) {
+      return ENABLE_PERCENTAGE_LABELS_IN_POPUP;
+    }
+    ENABLE_PERCENTAGE_LABELS_IN_POPUP = showPercentValuesInPopup;
+
+    if (_hasBeenRendered) {
+      _chart.generatePopup();
+    }
+    return _chart;
+  };
 
   return _chart.anchor(parent, chartGroup);
 }
