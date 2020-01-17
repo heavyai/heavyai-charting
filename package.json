@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@mapd/connector": "omnisci/mapd-connector#d75148077a2a4b23d66d89c63d05c20e5735af2e",
-    "@mapd/crossfilter": "omnisci/mapd-crossfilter#d66b00c",
+    "@mapd/crossfilter": "omnisci/mapd-crossfilter#6f291ac",
     "atob": "^2.0.3",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
