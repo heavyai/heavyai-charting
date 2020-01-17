@@ -486,6 +486,8 @@ export default function rasterLayerPolyMixin(_layer) {
       }
     }
 
+    const mark = state.mark || {}
+
     const marks = [
       {
         type: "polys",
@@ -500,14 +502,14 @@ export default function rasterLayerPolyMixin(_layer) {
             field: "y"
           },
           fillColor,
-          strokeColor:
-            typeof state.mark === "object" ? state.mark.strokeColor : "white",
-          strokeWidth:
-            typeof state.mark === "object" ? state.mark.strokeWidth : 0.5,
-          lineJoin:
-            typeof state.mark === "object" ? state.mark.lineJoin : "miter",
-          miterLimit:
-            typeof state.mark === "object" ? state.mark.miterLimit : 10
+          /* 
+            "fillColor" is a special keyword to set strokeColor the same as fillColor
+            otherwise it will be strokeColor or white
+          */
+          strokeColor:  mark.strokeColor === "fillColor" ? fillColor : (mark.strokeColor || "white"),
+          strokeWidth: state.mark.strokeWidth || 0.5,
+          lineJoin: state.mark.lineJoin || "miter",
+          miterLimit: state.mark.miterLimit || 10
         }
       }
     ]
