@@ -76176,7 +76176,15 @@ function pieChart(parent, chartGroup) {
         return;
       }
 
-      group.getCrossfilter().groupAll().valueAsync(false, false, group.dimension().getDimensionIndex()).then(function (filterSize) {
+      // Get the total value (across the whole table, no groups) for the current
+      // size measure and incoming crossfilters
+      group.getCrossfilter().groupAll()
+
+      // Include the size measure
+      .reduce([group.reduce()[0]])
+
+      // Add the chart's own dimension index which excludes its filters
+      .valueAsync(false, false, group.dimension().getDimensionIndex()).then(function (filterSize) {
         var val = filterSize - _d2.default.sum(result, _chart.valueAccessor());
         if (val > 0) {
           result.push({ key0: "All Others", val: val, isAllOthers: true });
