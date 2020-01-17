@@ -364,8 +364,7 @@ export default function rasterLayerLineMixin(_layer) {
             lastFilteredSize
           )
         }),
-        // will toggle based on 1.popup box column selection or 2. dimension selection after [BE-3851] is resolved.
-        enableHitTesting: !(state.data.length > 1)
+        enableHitTesting: state.enableHitTesting
       }
     ]
 
@@ -475,10 +474,14 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColsSet) {
-    // add the poly geometry to the query
-
     if (chart._useGeoTypes) {
-      if (state.encoding.geocol) {
+      if (
+        state.encoding.geocol &&
+        state.transform.groupby &&
+        state.transform.groupby.length
+      ) {
+        popupColsSet.add("sampled_geo")
+      } else {
         popupColsSet.add(state.encoding.geocol)
       }
     }
@@ -502,10 +505,10 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer._areResultsValidForPopup = function(results) {
-    if (state.encoding.geocol && results[state.encoding.geocol]) {
-      return true
-    }
-    return false
+    return Boolean(
+      state.encoding.geocol &&
+        (results[state.encoding.geocol] || results.sampled_geo)
+    )
   }
 
   _layer._displayPopup = function(svgProps) {

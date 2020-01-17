@@ -71,7 +71,8 @@ describe("rasterLayerPointMixin", () => {
             point: {
               shape: "cross"
             }
-          }
+          },
+          enableHitTesting: true
         })
 
         expect(layer.__genVega({
@@ -157,6 +158,7 @@ describe("rasterLayerPointMixin", () => {
               shape: "cross"
             }
           },
+          enableHitTesting: true,
           encoding: baseEncoding
         })
 
@@ -272,6 +274,7 @@ describe("rasterLayerPointMixin", () => {
               shape: "cross"
             }
           },
+          enableHitTesting: true,
           encoding: Object.assign({}, baseEncoding, {
             size: {
               type: "quantitative",
@@ -350,6 +353,7 @@ describe("rasterLayerPointMixin", () => {
               shape: "cross"
             }
           },
+          enableHitTesting: true,
           encoding: Object.assign({}, baseEncoding, {
             size: {
               type: "quantitative",
@@ -451,6 +455,7 @@ describe("rasterLayerPointMixin", () => {
               shape: "cross"
             }
           },
+          enableHitTesting: true,
           encoding: Object.assign({}, baseEncoding, {
             color: {
               type: "density",
@@ -540,6 +545,7 @@ describe("rasterLayerPointMixin", () => {
               shape: "cross"
             }
           },
+          enableHitTesting: true,
           encoding: Object.assign({}, baseEncoding, {
             color: {
               type: "ordinal",
@@ -611,6 +617,7 @@ describe("rasterLayerPointMixin", () => {
               shape: "cross"
             }
           },
+          enableHitTesting: true,
           encoding: Object.assign({}, baseEncoding, {
             color: {
               type: "ordinal",
@@ -683,6 +690,7 @@ describe("rasterLayerPointMixin", () => {
               shape: "cross"
             }
           },
+          enableHitTesting: true,
           encoding: Object.assign({}, baseEncoding, {
             color: {
               type: "quantitative",
@@ -773,6 +781,7 @@ describe("rasterLayerPointMixin", () => {
               shape: "cross"
             }
           },
+          enableHitTesting: true,
           encoding: Object.assign({}, baseEncoding, {
             color: {
               type: "ordinal",
@@ -855,6 +864,7 @@ describe("rasterLayerPointMixin", () => {
               shape: "cross"
             }
           },
+          enableHitTesting: true,
           encoding: Object.assign({}, baseEncoding, {
             size: {
               type: "quantitative",
@@ -967,6 +977,7 @@ describe("rasterLayerPointMixin", () => {
               shape: "cross"
             }
           },
+          enableHitTesting: true,
           encoding: Object.assign({}, baseEncoding, {
             size: {
               type: "quantitative",
