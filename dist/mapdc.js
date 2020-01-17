@@ -88399,7 +88399,7 @@ function rasterLayerLineMixin(_layer) {
   };
 
   _layer._areResultsValidForPopup = function (results) {
-    return Boolean(state.encoding.geocol && (results[state.encoding.geocol] || results["sampled_geo"]));
+    return Boolean(state.encoding.geocol && (results[state.encoding.geocol] || results.sampled_geo));
   };
 
   _layer._displayPopup = function (svgProps) {
