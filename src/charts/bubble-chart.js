@@ -40,6 +40,8 @@ export default function bubbleChart(parent, chartGroup) {
 
   let _elasticRadius = false
   let _sortBubbleSize = false
+  let _hasSizeMeasure = false
+  const SMALLEST_SIZED_BUBBLE_RADIUS = 2
 
   _chart.transitionDuration(750)
 
@@ -400,6 +402,14 @@ export default function bubbleChart(parent, chartGroup) {
     return _chart
   }
 
+  _chart.hasSizeMeasure = function(hasSizeMeasure) {
+    if (!arguments.length) {
+      return _hasSizeMeasure
+    }
+    _hasSizeMeasure = hasSizeMeasure
+    return _chart
+  }
+
   /**
    * Turn on or off the bubble sorting feature, or return the value of the flag. If enabled,
    * bubbles will be sorted by their radius, with smaller bubbles in front.
@@ -423,12 +433,30 @@ export default function bubbleChart(parent, chartGroup) {
       _chart.r().domain([_chart.rMin(), _chart.rMax()])
     }
 
-    _chart
-      .r()
-      .range([
-        _chart.MIN_RADIUS,
-        _chart.xAxisLength() * _chart.maxBubbleRelativeSize()
-      ])
+    // If the chart has a size measure, we're going to render bubbles
+    // differently than if the chart doesn't have a size measure
+    if (_hasSizeMeasure) {
+      // If it has a size measure, we're going to scale the bubbles. This scale
+      // is a function of a multiplier and the chart width. We allow the user to
+      // select the multiplier for the lower and upper bounds of bubble radii.
+      // However, we want to enforce an absolute minimum radius of 2px on
+      // rendered bubbles.
+      const minimumBubbleSizeInPixels = Math.max(
+        SMALLEST_SIZED_BUBBLE_RADIUS,
+        _chart.xAxisLength() * _chart.minBubbleRelativeSize()
+      )
+      _chart
+        .r()
+        .range([
+          minimumBubbleSizeInPixels,
+          _chart.xAxisLength() * _chart.maxBubbleRelativeSize()
+        ])
+    } else {
+      // If we have a size measure, the bubble size will be a fixed radius
+      // determined by the user and stored in _chart.MIN_RADIUS. This fixed with
+      // is not responsive and will not vary with screen size.
+      _chart.r().range([_chart.MIN_RADIUS, _chart.MIN_RADIUS])
+    }
 
     const data = _chart.data()
     if (_sortBubbleSize) {
