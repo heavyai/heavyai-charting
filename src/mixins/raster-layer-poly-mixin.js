@@ -394,7 +394,7 @@ export default function rasterLayerPolyMixin(_layer) {
             lastFilteredSize
           })
         }),
-        enableHitTesting: state.enableHitTesting
+        enableHitTesting: true // poly enableHitTesting will be always true to support 1. Hittesting 2. poly selection filter
       }
     ]
 
