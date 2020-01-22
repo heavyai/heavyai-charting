@@ -116,10 +116,18 @@ export default function pieChart(parent, chartGroup) {
         return
       }
 
+      // Get the total value (across the whole table, no groups) for the current
+      // size measure and incoming crossfilters
       group
         .getCrossfilter()
         .groupAll()
+
+        // Include the size measure
+        .reduce([group.reduce()[0]])
+
+        // Add the chart's own dimension index which excludes its filters
         .valueAsync(false, false, group.dimension().getDimensionIndex())
+
         .then(filterSize => {
           const val = filterSize - d3.sum(result, _chart.valueAccessor())
           if (val > 0) {

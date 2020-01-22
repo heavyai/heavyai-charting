@@ -73,7 +73,8 @@ describe("rasterLayerPolyMixin", () => {
           },
           geocol: "mapd_geo",
           geoTable: "zipcodes"
-        }
+        },
+        enableHitTesting: true
       })
       layer.crossfilter({
         getId: () => 1
@@ -93,7 +94,7 @@ describe("rasterLayerPolyMixin", () => {
             format: "polys",
             sql:
               "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color0 FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color0 AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)",
-            enableHitTesting: false
+            enableHitTesting: true
           }
         ],
         scales: [
@@ -176,7 +177,8 @@ describe("rasterLayerPolyMixin", () => {
           },
           geocol: "mapd_geo",
           geoTable: "zipcodes"
-        }
+        },
+        enableHitTesting: true
       })
       layer.crossfilter({
         getId: () => 1
@@ -196,7 +198,7 @@ describe("rasterLayerPolyMixin", () => {
             format: "polys",
             sql:
               "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color0 FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color0 AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)",
-            enableHitTesting: false
+            enableHitTesting: true
           }
         ],
         scales: [
@@ -278,7 +280,8 @@ describe("rasterLayerPolyMixin", () => {
           },
           geocol: "mapd_geo",
           geoTable: "zipcodes"
-        }
+        },
+        enableHitTesting: true
       })
       layer.crossfilter({
         getId: () => 1
@@ -296,7 +299,7 @@ describe("rasterLayerPolyMixin", () => {
           {
             name: "polys",
             format: "polys",
-            enableHitTesting: false,
+            enableHitTesting: true,
             sql:
               "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color0 FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color0 AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)"
           }
@@ -378,7 +381,8 @@ describe("rasterLayerPolyMixin", () => {
           },
           geocol: "mapd_geo",
           geoTable: "zipcodes"
-        }
+        },
+        enableHitTesting: true
       })
       layer.crossfilter({
         getId: () => 1
@@ -397,7 +401,7 @@ describe("rasterLayerPolyMixin", () => {
             format: "polys",
             sql:
               "WITH colors AS (SELECT contributions_donotmodify.contributor_zipcode AS key0, AVG(contributions_donotmodify.amount) AS color0 FROM contributions_donotmodify WHERE (amount=0) GROUP BY key0) SELECT zipcodes.mapd_geo AS mapd_geo, colors.key0 AS key0, colors.color0 AS color FROM zipcodes, colors WHERE (zipcodes.ZCTA5CE10 = colors.key0)",
-            enableHitTesting: false
+            enableHitTesting: true
           },
           {
             name: "polys_stats",

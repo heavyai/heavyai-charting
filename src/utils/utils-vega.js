@@ -482,7 +482,14 @@ export function __displayPopup(svgProps) {
         "No poly/multipolygon column specified. Cannot build poly outline popup."
       )
     }
-    geoPathFormatter = new GeoSvgFormatter(state.encoding.geocol)
+    // For linemap dimension selection, we are using alias "sampled_geo"
+    const geoCol =
+      state.transform.groupby &&
+      state.transform.groupby.length &&
+      state.mark.type === "lines"
+        ? "sampled_geo"
+        : state.encoding.geocol
+    geoPathFormatter = new GeoSvgFormatter(geoCol)
   } else if (!chart._useGeoTypes && layerType === "polys") {
     geoPathFormatter = new LegacyPolySvgFormatter()
   } else {
