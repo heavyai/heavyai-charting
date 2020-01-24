@@ -9703,53 +9703,6 @@ function colorMixin(_chart) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var events = exports.events = {
-  current: null
-
-  /**
-   * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
-   * that are triggered repetitively due to user interaction such brush dragging might flood the library
-   * and invoke more renders than can be executed in time. Using this function to wrap your event
-   * function allows the library to smooth out the rendering by throttling events and only responding to
-   * the most recent event.
-   * @name events.trigger
-   * @memberof dc
-   * @example
-   * chart.on('renderlet', function(chart) {
-   *     // smooth the rendering through event throttling
-   *     dc.events.trigger(function(){
-   *         // focus some other chart to the range selected by user on this chart
-   *         someOtherChart.focus(chart.filter());
-   *     });
-   * })
-   * @param {Function} closure
-   * @param {Number} [delay]
-   */
-};events.trigger = function (closure, delay) {
-  if (!delay) {
-    closure();
-    return;
-  }
-
-  events.current = closure;
-
-  setTimeout(function () {
-    if (closure === events.current) {
-      closure();
-    }
-  }, delay);
-};
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 exports.default = capMixin;
 
 var _d = __webpack_require__(1);
@@ -9979,6 +9932,53 @@ function capMixin(_chart) {
 }
 
 /***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var events = exports.events = {
+  current: null
+
+  /**
+   * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
+   * that are triggered repetitively due to user interaction such brush dragging might flood the library
+   * and invoke more renders than can be executed in time. Using this function to wrap your event
+   * function allows the library to smooth out the rendering by throttling events and only responding to
+   * the most recent event.
+   * @name events.trigger
+   * @memberof dc
+   * @example
+   * chart.on('renderlet', function(chart) {
+   *     // smooth the rendering through event throttling
+   *     dc.events.trigger(function(){
+   *         // focus some other chart to the range selected by user on this chart
+   *         someOtherChart.focus(chart.filter());
+   *     });
+   * })
+   * @param {Function} closure
+   * @param {Number} [delay]
+   */
+};events.trigger = function (closure, delay) {
+  if (!delay) {
+    closure();
+    return;
+  }
+
+  events.current = closure;
+
+  setTimeout(function () {
+    if (closure === events.current) {
+      closure();
+    }
+  }, delay);
+};
+
+/***/ }),
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10008,7 +10008,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var _filters = __webpack_require__(20);
 
@@ -54303,7 +54303,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var _utils = __webpack_require__(4);
 
@@ -57319,7 +57319,7 @@ Object.keys(_coreAsync).forEach(function (key) {
   });
 });
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 Object.keys(_events).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -57556,7 +57556,7 @@ Object.defineProperty(exports, "bubbleMixin", {
   }
 });
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(13);
 
 Object.defineProperty(exports, "capMixin", {
   enumerable: true,
@@ -59251,7 +59251,7 @@ var _bubbleMixin = __webpack_require__(35);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(13);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -59788,7 +59788,7 @@ exports.default = filterMixin;
 
 var _formattingHelpers = __webpack_require__(10);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var noop = function noop() {}; // eslint-disable-line no-empty-function
 
@@ -69536,7 +69536,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var _filters = __webpack_require__(20);
 
@@ -69732,7 +69732,7 @@ var _bubbleMixin = __webpack_require__(35);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(13);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -70175,7 +70175,7 @@ var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(13);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -75316,13 +75316,17 @@ var _marginMixin = __webpack_require__(17);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
 var _filters = __webpack_require__(20);
+
+var _capMixin = __webpack_require__(13);
+
+var _capMixin2 = _interopRequireDefault(_capMixin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -75473,9 +75477,10 @@ function heatMap(parent, chartGroup) {
   };var _xBorderRadius = DEFAULT_BORDER_RADIUS;
   var _yBorderRadius = DEFAULT_BORDER_RADIUS;
 
-  var _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _baseMixin2.default)({})));
+  var _chart = (0, _colorMixin2.default)((0, _capMixin2.default)((0, _marginMixin2.default)((0, _baseMixin2.default)({}))));
   _chart._mandatoryAttributes(["group"]);
   _chart.title(_chart.colorAccessor());
+  _chart.boxCap = _chart.cap;
 
   var _colsLabel = function _colsLabel(d) {
     return d;
@@ -76041,7 +76046,7 @@ var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(13);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -82492,7 +82497,7 @@ var _baseMixin = __webpack_require__(6);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(13);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -83165,7 +83170,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var _filters = __webpack_require__(20);
 
@@ -87420,7 +87425,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = rasterLayer;
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(13);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 

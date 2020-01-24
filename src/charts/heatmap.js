@@ -7,6 +7,7 @@ import { events } from "../core/events"
 import { override, transition } from "../core/core"
 import { utils } from "../utils/utils"
 import { filters } from "../core/filters"
+import capMixin from "../mixins/cap-mixin"
 
 /** ***************************************************************************
  * OVERRIDE: dc.heatMap                                                       *
@@ -192,9 +193,10 @@ export default function heatMap(parent, chartGroup) {
   var _xBorderRadius = DEFAULT_BORDER_RADIUS
   var _yBorderRadius = DEFAULT_BORDER_RADIUS
 
-  const _chart = colorMixin(marginMixin(baseMixin({})))
+  const _chart = colorMixin(capMixin(marginMixin(baseMixin({}))))
   _chart._mandatoryAttributes(["group"])
   _chart.title(_chart.colorAccessor())
+  _chart.boxCap = _chart.cap
 
   let _colsLabel = function(d) {
     return d
