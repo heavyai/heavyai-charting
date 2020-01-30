@@ -12,6 +12,7 @@ import { transition } from "../core/core"
  */
 export default function bubbleMixin(_chart) {
   let _maxBubbleRelativeSize = 0.3
+  let _minBubbleRelativeSize = 0.004
 
   /* OVERRIDE ---------------------------------------------------------------- */
   let _minRadiusWithLabel = 2
@@ -236,6 +237,14 @@ export default function bubbleMixin(_chart) {
       return _maxBubbleRelativeSize
     }
     _maxBubbleRelativeSize = relativeSize
+    return _chart
+  }
+
+  _chart.minBubbleRelativeSize = function(relativeSize) {
+    if (!arguments.length) {
+      return _minBubbleRelativeSize
+    }
+    _minBubbleRelativeSize = relativeSize
     return _chart
   }
 
