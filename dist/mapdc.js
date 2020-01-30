@@ -33352,7 +33352,10 @@ function bubbleMixin(_chart) {
 
   _chart.onClick = function (d) {
     /* OVERRIDE -----------------------------------------------------------------*/
-    var filter = d.key0;
+    // need to match with the new filter structure
+    var filter = Array.isArray(d.key0) ? d.key0.map(function (k) {
+      return k.hasOwnProperty("value") ? k.value : k;
+    }) : d.key0;
     /* --------------------------------------------------------------------------*/
     _chart.handleFilterClick(_d2.default.event, filter);
     _chart.updatePopup(d);

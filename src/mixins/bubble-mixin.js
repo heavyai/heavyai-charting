@@ -272,7 +272,10 @@ export default function bubbleMixin(_chart) {
 
   _chart.onClick = function(d) {
     /* OVERRIDE -----------------------------------------------------------------*/
-    const filter = d.key0
+    // need to match with the new filter structure
+    const filter = Array.isArray(d.key0)
+      ? d.key0.map(k => (k.hasOwnProperty("value") ? k.value : k))
+      : d.key0
     /* --------------------------------------------------------------------------*/
     _chart.handleFilterClick(d3.event, filter)
     _chart.updatePopup(d)
