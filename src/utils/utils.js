@@ -4,6 +4,7 @@ import { formatDataValue, maybeFormatInfinity } from "./formatting-helpers"
 import { DAYS, HOURS, MONTHS, QUARTERS } from "../constants/dates-and-times"
 
 import deepEqual from "fast-deep-equal"
+import moment from "moment"
 
 import d3 from "d3"
 import { constants } from "../core/core"
@@ -481,6 +482,19 @@ utils.nullsLast = function(sorting) {
       return 1
     } else if (b === null) {
       return -1
+    }
+
+    return sorting(a, b)
+  }
+}
+
+utils.compareDates = function(sorting) {
+  return (a, b) => {
+    const defaultDateFormat = "mm, dd, YYYY  hh:mm:ss"
+    const compareA = moment(a, defaultDateFormat, true).toDate()
+    const compareB = moment(b, defaultDateFormat, true).toDate()
+    if (compareA !== "Invalid date" && compareB !== "Invalid date") {
+      return sorting(compareA.getTime(), compareB.getTime())
     }
 
     return sorting(a, b)
