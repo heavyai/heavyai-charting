@@ -5597,6 +5597,10 @@ var _fastDeepEqual = __webpack_require__(179);
 
 var _fastDeepEqual2 = _interopRequireDefault(_fastDeepEqual);
 
+var _moment = __webpack_require__(0);
+
+var _moment2 = _interopRequireDefault(_moment);
+
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
@@ -6052,6 +6056,19 @@ utils.nullsLast = function (sorting) {
       return 1;
     } else if (b === null) {
       return -1;
+    }
+
+    return sorting(a, b);
+  };
+};
+
+utils.compareDates = function (sorting) {
+  return function (a, b) {
+    var defaultDateFormat = "mm, dd, YYYY  hh:mm:ss";
+    var compareA = (0, _moment2.default)(a, defaultDateFormat, true).toDate();
+    var compareB = (0, _moment2.default)(b, defaultDateFormat, true).toDate();
+    if (compareA !== "Invalid date" && compareB !== "Invalid date") {
+      return sorting(compareA.getTime(), compareB.getTime());
     }
 
     return sorting(a, b);
@@ -75489,8 +75506,8 @@ function heatMap(parent, chartGroup) {
   var _cols = void 0;
   var _rows = void 0;
 
-  var _colOrdering = _utils.utils.nullsFirst(_d2.default.ascending);
-  var _rowOrdering = _utils.utils.nullsFirst(_d2.default.ascending);
+  var _colOrdering = _utils.utils.nullsFirst(_utils.utils.compareDates(_d2.default.ascending));
+  var _rowOrdering = _utils.utils.nullsFirst(_utils.utils.compareDates(_d2.default.ascending));
   var _colScale = _d2.default.scale.ordinal();
   var _rowScale = _d2.default.scale.ordinal();
 
@@ -75732,7 +75749,6 @@ function heatMap(parent, chartGroup) {
     }
 
     var data = _chart.data(),
-        cols = _chart.cols(),
         rows = _chart.rows() || data.map(_chart.valueAccessor()),
         cols = _chart.cols() || data.map(_chart.keyAccessor());
 
@@ -75743,6 +75759,7 @@ function heatMap(parent, chartGroup) {
     if (_colOrdering) {
       cols = cols.sort(_colOrdering);
     }
+
     rows = _rowScale.domain(rows);
     cols = _colScale.domain(cols);
 
