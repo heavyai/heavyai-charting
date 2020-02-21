@@ -486,7 +486,14 @@ export default function rasterLayerPolyMixin(_layer) {
       }
     }
 
-    const mark = state.mark || {}
+    const defaultMarkOptions = {
+      strokeColor: "white",
+      lineJoin: "miter",
+      miterLimit: 10,
+      strokeWidth: 0
+    }
+    const mark =
+      typeof state.mark === "object" ? state.mark : defaultMarkOptions
 
     const marks = [
       {
@@ -507,12 +514,10 @@ export default function rasterLayerPolyMixin(_layer) {
             otherwise it will be strokeColor or white
           */
           strokeColor:
-            mark.strokeColor === "fillColor"
-              ? fillColor
-              : mark.strokeColor || "white",
-          strokeWidth: mark.strokeWidth || 0,
-          lineJoin: mark.lineJoin || "miter",
-          miterLimit: mark.miterLimit || 10
+            mark.strokeColor === "fillColor" ? fillColor : mark.strokeColor,
+          strokeWidth: mark.strokeWidth,
+          lineJoin: mark.lineJoin,
+          miterLimit: mark.miterLimit
         }
       }
     ]
