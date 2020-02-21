@@ -507,9 +507,9 @@ export default function rasterLayerPolyMixin(_layer) {
             otherwise it will be strokeColor or white
           */
           strokeColor:  mark.strokeColor === "fillColor" ? fillColor : (mark.strokeColor || "white"),
-          strokeWidth: state.mark.strokeWidth || 0.5,
-          lineJoin: state.mark.lineJoin || "miter",
-          miterLimit: state.mark.miterLimit || 10
+          strokeWidth: mark.strokeWidth || 0,
+          lineJoin: mark.lineJoin || "miter",
+          miterLimit: mark.miterLimit || 10
         }
       }
     ]
