@@ -506,7 +506,10 @@ export default function rasterLayerPolyMixin(_layer) {
             "fillColor" is a special keyword to set strokeColor the same as fillColor
             otherwise it will be strokeColor or white
           */
-          strokeColor:  mark.strokeColor === "fillColor" ? fillColor : (mark.strokeColor || "white"),
+          strokeColor:
+            mark.strokeColor === "fillColor"
+              ? fillColor
+              : mark.strokeColor || "white",
           strokeWidth: mark.strokeWidth || 0,
           lineJoin: mark.lineJoin || "miter",
           miterLimit: mark.miterLimit || 10
