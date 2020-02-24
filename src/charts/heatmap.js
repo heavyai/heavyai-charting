@@ -172,8 +172,8 @@ export default function heatMap(parent, chartGroup) {
   let _cols
   let _rows
 
-  let _colOrdering = utils.nullsFirst(d3.ascending)
-  let _rowOrdering = utils.nullsFirst(d3.ascending)
+  let _colOrdering = utils.nullsFirst(utils.compareDates(d3.ascending))
+  let _rowOrdering = utils.nullsFirst(utils.compareDates(d3.ascending))
   const _colScale = d3.scale.ordinal()
   const _rowScale = d3.scale.ordinal()
 
@@ -423,7 +423,6 @@ export default function heatMap(parent, chartGroup) {
     }
 
     var data = _chart.data(),
-      cols = _chart.cols(),
       rows = _chart.rows() || data.map(_chart.valueAccessor()),
       cols = _chart.cols() || data.map(_chart.keyAccessor())
 
@@ -436,6 +435,7 @@ export default function heatMap(parent, chartGroup) {
     if (_colOrdering) {
       cols = cols.sort(_colOrdering)
     }
+
     rows = _rowScale.domain(rows)
     cols = _colScale.domain(cols)
 
