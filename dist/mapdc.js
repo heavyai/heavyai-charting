@@ -54785,6 +54785,14 @@ function rasterLayerPolyMixin(_layer) {
       };
     }
 
+    var defaultMarkOptions = {
+      strokeColor: "white",
+      lineJoin: "miter",
+      miterLimit: 10,
+      strokeWidth: 0
+    };
+    var mark = _typeof(state.mark) === "object" ? state.mark : defaultMarkOptions;
+
     var marks = [{
       type: "polys",
       from: {
@@ -54798,10 +54806,14 @@ function rasterLayerPolyMixin(_layer) {
           field: "y"
         },
         fillColor: fillColor,
-        strokeColor: _typeof(state.mark) === "object" ? state.mark.strokeColor : "white",
-        strokeWidth: _typeof(state.mark) === "object" ? state.mark.strokeWidth : 0.5,
-        lineJoin: _typeof(state.mark) === "object" ? state.mark.lineJoin : "miter",
-        miterLimit: _typeof(state.mark) === "object" ? state.mark.miterLimit : 10
+        /* 
+          "fillColor" is a special keyword to set strokeColor the same as fillColor
+          otherwise it will be strokeColor or white
+        */
+        strokeColor: mark.strokeColor === "fillColor" ? fillColor : mark.strokeColor,
+        strokeWidth: mark.strokeWidth,
+        lineJoin: mark.lineJoin,
+        miterLimit: mark.miterLimit
       }
     }];
 
@@ -55041,6 +55053,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 exports.default = parseFactsFromCustomSQL;
@@ -55103,6 +55117,31 @@ var As = (0, _chevrotain.createToken)({
   pattern: /as/i,
   categories: [Keyword]
 });
+var Case = (0, _chevrotain.createToken)({
+  name: "Case",
+  pattern: /case/i,
+  categories: [Keyword]
+});
+var When = (0, _chevrotain.createToken)({
+  name: "When",
+  pattern: /when/i,
+  categories: [Keyword]
+});
+var Then = (0, _chevrotain.createToken)({
+  name: "Then",
+  pattern: /then/i,
+  categories: [Keyword]
+});
+var Else = (0, _chevrotain.createToken)({
+  name: "Else",
+  pattern: /else/i,
+  categories: [Keyword]
+});
+var End = (0, _chevrotain.createToken)({
+  name: "End",
+  pattern: /end/i,
+  categories: [Keyword]
+});
 
 // XXX:
 // support for non-latin characters?
@@ -55135,7 +55174,7 @@ var StringConstant = (0, _chevrotain.createToken)({
 });
 var NumericConstant = (0, _chevrotain.createToken)({
   name: "NumericConstant",
-  pattern: /(?:[1-9]\d*(?:\.\d)?|0?\.\d)\d*(?:[eE][+-]?\d+)?/,
+  pattern: /(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?/,
   categories: [Constant]
 });
 var BooleanConstant = (0, _chevrotain.createToken)({
@@ -55145,18 +55184,13 @@ var BooleanConstant = (0, _chevrotain.createToken)({
 });
 
 // XXX:
-// IS
+// OVERLAPS
+// SIMILAR
+// BETWEEN SYMMETRIC
+// DISTINCT FROM
 // ISNULL
 // NOTNULL
-// IN
-// BETWEEN
-// OVERLAPS
-// LIKE/ILIKE/SIMILAR
-// < >
-// =
-// NOT
-// AND
-// OR
+// IS UNKNOWN
 var Operator = (0, _chevrotain.createToken)({ name: "Operator", pattern: _chevrotain.Lexer.NA });
 
 var AllColumns = (0, _chevrotain.createToken)({ name: "AllColumns", pattern: _chevrotain.Lexer.NA });
@@ -55214,6 +55248,104 @@ var SubtractionOperator = (0, _chevrotain.createToken)({
   categories: [AdditiveOperator]
 });
 
+var MembershipOperator = (0, _chevrotain.createToken)({
+  name: "MembershipOperator",
+  pattern: _chevrotain.Lexer.NA,
+  categories: [BinaryOperator]
+});
+var BetweenOperator = (0, _chevrotain.createToken)({
+  name: "BetweenOperator",
+  pattern: /between/i,
+  categories: [MembershipOperator]
+});
+var InOperator = (0, _chevrotain.createToken)({
+  name: "InOperator",
+  pattern: /in/i,
+  categories: [MembershipOperator]
+});
+var LikeOperator = (0, _chevrotain.createToken)({
+  name: "LikeOperator",
+  pattern: /i?like/i,
+  categories: [MembershipOperator]
+});
+
+var ComparisonOperator = (0, _chevrotain.createToken)({
+  name: "ComparisonOperator",
+  pattern: _chevrotain.Lexer.NA,
+  categories: [BinaryOperator]
+});
+var EqualityOperator = (0, _chevrotain.createToken)({
+  name: "EqualityOperator",
+  pattern: "=",
+  categories: [ComparisonOperator]
+});
+var InequalityOperator = (0, _chevrotain.createToken)({
+  name: "InequalityOperator",
+  pattern: /(?:<>|!=)/,
+  categories: [ComparisonOperator]
+});
+var LessThanOperator = (0, _chevrotain.createToken)({
+  name: "LessThanOperator",
+  pattern: "<",
+  categories: [ComparisonOperator]
+});
+var LessThanEqualOperator = (0, _chevrotain.createToken)({
+  name: "LessThanEqualOperator",
+  pattern: "<=",
+  categories: [ComparisonOperator]
+});
+var GreaterThanOperator = (0, _chevrotain.createToken)({
+  name: "GreaterThanOperator",
+  pattern: ">",
+  categories: [ComparisonOperator]
+});
+var GreaterThanEqualOperator = (0, _chevrotain.createToken)({
+  name: "GreaterThanEqualOperator",
+  pattern: ">=",
+  categories: [ComparisonOperator]
+});
+
+var IsOperator = (0, _chevrotain.createToken)({
+  name: "IsOperator",
+  pattern: /is/i,
+  categories: [BinaryOperator]
+});
+var IsPredicate = (0, _chevrotain.createToken)({
+  name: "IsPredicate",
+  pattern: _chevrotain.Lexer.NA
+});
+
+var Not = (0, _chevrotain.createToken)({
+  name: "Not",
+  pattern: /not/i,
+  categories: [PrefixOperator, Keyword]
+});
+var Null = (0, _chevrotain.createToken)({
+  name: "Null",
+  pattern: /null/i,
+  categories: [IsPredicate, Keyword]
+});
+var True = (0, _chevrotain.createToken)({
+  name: "True",
+  pattern: /true/i,
+  categories: [IsPredicate, Keyword]
+});
+var False = (0, _chevrotain.createToken)({
+  name: "False",
+  pattern: /false/i,
+  categories: [IsPredicate, Keyword]
+});
+var And = (0, _chevrotain.createToken)({
+  name: "And",
+  pattern: /and/i,
+  categories: [BinaryOperator, Keyword]
+});
+var Or = (0, _chevrotain.createToken)({
+  name: "Or",
+  pattern: /or/i,
+  categories: [BinaryOperator, Keyword]
+});
+
 // XXX:
 // Array elements with brackets ([])
 // Array slices with :
@@ -55243,11 +55375,12 @@ var Dot = (0, _chevrotain.createToken)({
 var allTokens = [Whitespace,
 
 // keywords must come before Identifiers
-All, Distinct, OrderBy, Asc, Desc, Cast, As,
+All, Distinct, OrderBy, Asc, Desc, Cast, As, Case, When, Then, Else, End, MembershipOperator, BetweenOperator, InOperator, LikeOperator, IsOperator, IsPredicate, Not, Null, True, False, And, Or,
 
-// Identifiers must come before anything else because a QuotedIdentifier can
+// Identifiers must come after any keywords because UnquotedIdentifier would
+// match them, but before any symbols because a QuotedIdentifier can
 // technically contain anything
-Identifier, UnquotedIdentifier, QuotedIdentifier, Constant, StringConstant, NumericConstant, BooleanConstant, Operator, PrefixOperator, BinaryOperator, ExponentiationOperator, MultiplicativeOperator, MultiplicationOperator, DivisionOperator, ModuloOperator, AdditiveOperator, AdditionOperator, SubtractionOperator, OpenParen, CloseParen, Comma, Dot];
+Identifier, UnquotedIdentifier, QuotedIdentifier, Constant, StringConstant, NumericConstant, BooleanConstant, Operator, PrefixOperator, BinaryOperator, ExponentiationOperator, MultiplicativeOperator, MultiplicationOperator, DivisionOperator, ModuloOperator, AdditiveOperator, AdditionOperator, SubtractionOperator, ComparisonOperator, EqualityOperator, InequalityOperator, LessThanOperator, LessThanEqualOperator, GreaterThanOperator, GreaterThanEqualOperator, OpenParen, CloseParen, Comma, Dot];
 
 var sqlLexer = new _chevrotain.Lexer(allTokens);
 
@@ -55260,7 +55393,83 @@ var SQLParser = function (_CstParser) {
     var _this = _possibleConstructorReturn(this, (SQLParser.__proto__ || Object.getPrototypeOf(SQLParser)).call(this, allTokens));
 
     _this.RULE("expression", function () {
-      _this.SUBRULE(_this.additiveExpression);
+      _this.SUBRULE(_this.disjunctiveExpression);
+    });
+
+    _this.RULE("disjunctiveExpression", function () {
+      _this.SUBRULE(_this.conjunctiveExpression, { LABEL: "lhs" });
+      _this.MANY(function () {
+        _this.CONSUME(Or, { LABEL: "operator" });
+        _this.SUBRULE2(_this.conjunctiveExpression, { LABEL: "rhs" });
+      });
+    });
+
+    _this.RULE("conjunctiveExpression", function () {
+      _this.SUBRULE(_this.negationExpression, { LABEL: "lhs" });
+      _this.MANY(function () {
+        _this.CONSUME(And, { LABEL: "operator" });
+        _this.SUBRULE2(_this.negationExpression, { LABEL: "rhs" });
+      });
+    });
+
+    _this.RULE("negationExpression", function () {
+      _this.OPTION(function () {
+        return _this.CONSUME(Not);
+      });
+      _this.SUBRULE(_this.isExpression);
+    });
+
+    _this.RULE("isExpression", function () {
+      _this.SUBRULE(_this.comparisonExpression, { LABEL: "expression" });
+      _this.OPTION(function () {
+        _this.CONSUME(IsOperator);
+        _this.OPTION2(function () {
+          return _this.CONSUME(Not);
+        });
+        _this.CONSUME(IsPredicate);
+      });
+    });
+
+    _this.RULE("comparisonExpression", function () {
+      _this.SUBRULE(_this.membershipExpression, { LABEL: "lhs" });
+      _this.OPTION(function () {
+        _this.CONSUME(ComparisonOperator, { LABEL: "operator" });
+        _this.SUBRULE2(_this.membershipExpression, { LABEL: "rhs" });
+      });
+    });
+
+    _this.RULE("membershipExpression", function () {
+      _this.SUBRULE(_this.additiveExpression, { LABEL: "lhs" });
+      _this.OPTION(function () {
+        _this.OPTION2(function () {
+          return _this.CONSUME(Not);
+        });
+        _this.OR([{
+          ALT: function ALT() {
+            _this.CONSUME(BetweenOperator, { LABEL: "betweenOperator" });
+            _this.SUBRULE2(_this.additiveExpression, { LABEL: "lowerBound" });
+            _this.CONSUME(And);
+            _this.SUBRULE3(_this.additiveExpression, { LABEL: "upperBound" });
+          }
+        }, {
+          ALT: function ALT() {
+            _this.CONSUME(InOperator, { LABEL: "inOperator" });
+            _this.CONSUME(OpenParen);
+            _this.AT_LEAST_ONE_SEP({
+              SEP: Comma,
+              DEF: function DEF() {
+                return _this.SUBRULE(_this.expression, { LABEL: "set" });
+              }
+            });
+            _this.CONSUME(CloseParen);
+          }
+        }, {
+          ALT: function ALT() {
+            _this.CONSUME(LikeOperator, { LABEL: "likeOperator" });
+            _this.SUBRULE4(_this.additiveExpression, { LABEL: "rhs" });
+          }
+        }]);
+      });
     });
 
     _this.RULE("additiveExpression", function () {
@@ -55291,6 +55500,8 @@ var SQLParser = function (_CstParser) {
       _this.OR([{ ALT: function ALT() {
           return _this.SUBRULE(_this.parenthesesExpression);
         } }, { ALT: function ALT() {
+          return _this.SUBRULE(_this.caseExpression);
+        } }, { ALT: function ALT() {
           return _this.SUBRULE(_this.castExpression);
         } }, { ALT: function ALT() {
           return _this.SUBRULE(_this.functionExpression);
@@ -55307,6 +55518,24 @@ var SQLParser = function (_CstParser) {
       _this.CONSUME(OpenParen);
       _this.SUBRULE(_this.expression);
       _this.CONSUME(CloseParen);
+    });
+
+    _this.RULE("caseExpression", function () {
+      _this.CONSUME(Case);
+      _this.OPTION(function () {
+        return _this.SUBRULE(_this.expression);
+      });
+      _this.AT_LEAST_ONE(function () {
+        _this.CONSUME(When);
+        _this.SUBRULE2(_this.expression, { LABEL: "condition" });
+        _this.CONSUME(Then);
+        _this.SUBRULE3(_this.expression, { LABEL: "result" });
+      });
+      _this.OPTION2(function () {
+        _this.CONSUME(Else);
+        _this.SUBRULE4(_this.expression, { LABEL: "else" });
+      });
+      _this.CONSUME(End);
     });
 
     _this.RULE("castExpression", function () {
@@ -55404,11 +55633,11 @@ var SQLVisitor = function (_sqlParser$getBaseCst) {
   _createClass(SQLVisitor, [{
     key: "expression",
     value: function expression(ctx) {
-      return this.visit(ctx.additiveExpression);
+      return this.visit(ctx.disjunctiveExpression);
     }
   }, {
-    key: "additiveExpression",
-    value: function additiveExpression(ctx) {
+    key: "disjunctiveExpression",
+    value: function disjunctiveExpression(ctx) {
       var _this3 = this;
 
       var result = this.visit(ctx.lhs);
@@ -55428,8 +55657,8 @@ var SQLVisitor = function (_sqlParser$getBaseCst) {
       return result;
     }
   }, {
-    key: "multiplicativeExpression",
-    value: function multiplicativeExpression(ctx) {
+    key: "conjunctiveExpression",
+    value: function conjunctiveExpression(ctx) {
       var _this4 = this;
 
       var result = this.visit(ctx.lhs);
@@ -55449,14 +55678,144 @@ var SQLVisitor = function (_sqlParser$getBaseCst) {
       return result;
     }
   }, {
-    key: "exponentiationExpression",
-    value: function exponentiationExpression(ctx) {
+    key: "negationExpression",
+    value: function negationExpression(ctx) {
+      var result = this.visit(ctx.isExpression);
+      if (ctx.Not) {
+        result = _extends({}, result, {
+          negated: !result.negated,
+          start: ctx.Not[0].startOffset
+        });
+      }
+      return result;
+    }
+  }, {
+    key: "isExpression",
+    value: function isExpression(ctx) {
+      var result = this.visit(ctx.expression);
+      if (ctx.IsOperator) {
+        result = {
+          type: "IsExpression",
+          expression: result,
+          negated: Boolean(ctx.Not),
+          is: ctx.IsPredicate[0].image,
+          start: result.start,
+          end: ctx.IsPredicate[0].endOffset
+        };
+      }
+      return result;
+    }
+  }, {
+    key: "comparisonExpression",
+    value: function comparisonExpression(ctx) {
+      var result = this.visit(ctx.lhs);
+      if (ctx.rhs) {
+        var rhs = this.visit(ctx.rhs);
+        result = {
+          type: "BinaryExpression",
+          operator: ctx.operator[0].image,
+          lhs: result,
+          rhs: rhs,
+          start: result.start,
+          end: rhs.end
+        };
+      }
+      return result;
+    }
+  }, {
+    key: "membershipExpression",
+    value: function membershipExpression(ctx) {
       var _this5 = this;
+
+      var result = this.visit(ctx.lhs);
+      var negated = Boolean(ctx.Not);
+      if (ctx.betweenOperator) {
+        var lowerBound = this.visit(ctx.lowerBound);
+        var upperBound = this.visit(ctx.upperBound);
+        result = {
+          type: "BetweenExpression",
+          lhs: result,
+          lowerBound: lowerBound,
+          upperBound: upperBound,
+          negated: negated,
+          start: result.start,
+          end: upperBound.end
+        };
+      } else if (ctx.inOperator) {
+        result = {
+          type: "InExpression",
+          lhs: result,
+          in: ctx.set.map(function (expression) {
+            return _this5.visit(expression);
+          }),
+          negated: negated,
+          start: result.start,
+          end: ctx.CloseParen[0].endOffset
+        };
+      } else if (ctx.likeOperator) {
+        var rhs = this.visit(ctx.rhs);
+        result = {
+          type: "BinaryExpression",
+          lhs: result,
+          rhs: rhs,
+          negated: negated,
+          start: result.start,
+          end: rhs.end
+        };
+      }
+      return result;
+    }
+  }, {
+    key: "additiveExpression",
+    value: function additiveExpression(ctx) {
+      var _this6 = this;
 
       var result = this.visit(ctx.lhs);
       if (ctx.rhs) {
         ctx.rhs.forEach(function (operand, idx) {
-          var rhs = _this5.visit(operand);
+          var rhs = _this6.visit(operand);
+          result = {
+            type: "BinaryExpression",
+            operator: ctx.operator[idx].image,
+            lhs: result,
+            rhs: rhs,
+            start: result.start,
+            end: rhs.end
+          };
+        });
+      }
+      return result;
+    }
+  }, {
+    key: "multiplicativeExpression",
+    value: function multiplicativeExpression(ctx) {
+      var _this7 = this;
+
+      var result = this.visit(ctx.lhs);
+      if (ctx.rhs) {
+        ctx.rhs.forEach(function (operand, idx) {
+          var rhs = _this7.visit(operand);
+          result = {
+            type: "BinaryExpression",
+            operator: ctx.operator[idx].image,
+            lhs: result,
+            rhs: rhs,
+            start: result.start,
+            end: rhs.end
+          };
+        });
+      }
+      return result;
+    }
+  }, {
+    key: "exponentiationExpression",
+    value: function exponentiationExpression(ctx) {
+      var _this8 = this;
+
+      var result = this.visit(ctx.lhs);
+      if (ctx.rhs) {
+        ctx.rhs.forEach(function (operand, idx) {
+          var rhs = _this8.visit(operand);
           result = {
             type: "BinaryExpression",
             operator: ctx.operator[idx].image,
@@ -55474,6 +55833,8 @@ var SQLVisitor = function (_sqlParser$getBaseCst) {
     value: function atomicExpression(ctx) {
       if (ctx.parenthesesExpression) {
         return this.visit(ctx.parenthesesExpression);
+      } else if (ctx.caseExpression) {
+        return this.visit(ctx.caseExpression);
       } else if (ctx.castExpression) {
         return this.visit(ctx.castExpression);
       } else if (ctx.functionExpression) {
@@ -55502,6 +55863,25 @@ var SQLVisitor = function (_sqlParser$getBaseCst) {
       };
     }
   }, {
+    key: "caseExpression",
+    value: function caseExpression(ctx) {
+      var _this9 = this;
+
+      return {
+        type: "CaseExpression",
+        expression: ctx.expression && this.visit(ctx.expression) || null,
+        branches: ctx.condition.map(function (condition, idx) {
+          return {
+            condition: _this9.visit(condition),
+            result: _this9.visit(ctx.result[idx])
+          };
+        }),
+        else: ctx.else && this.visit(ctx.else) || null,
+        start: ctx.Case[0].startOffset,
+        end: ctx.End[0].endOffset
+      };
+    }
+  }, {
     key: "castExpression",
     value: function castExpression(ctx) {
       return {
@@ -55516,7 +55896,10 @@ var SQLVisitor = function (_sqlParser$getBaseCst) {
     key: "orderByExpression",
     value: function orderByExpression(ctx) {
       var expression = this.visit(ctx.expression[0]);
+
+      // eslint-disable-next-line no-nested-ternary
       var end = ctx.asc ? ctx.asc[0].endOffset : ctx.desc ? ctx.desc[0].endOffset : expression.end;
+
       return {
         type: "OrderByExpression",
         expression: expression,
@@ -55528,10 +55911,10 @@ var SQLVisitor = function (_sqlParser$getBaseCst) {
   }, {
     key: "orderBy",
     value: function orderBy(ctx) {
-      var _this6 = this;
+      var _this10 = this;
 
       var expressions = ctx.orderByExpression.map(function (e) {
-        return _this6.visit(e);
+        return _this10.visit(e);
       });
       return {
         type: "OrderBy",
@@ -55543,7 +55926,7 @@ var SQLVisitor = function (_sqlParser$getBaseCst) {
   }, {
     key: "functionExpression",
     value: function functionExpression(ctx) {
-      var _this7 = this;
+      var _this11 = this;
 
       var result = {
         type: "FunctionExpression",
@@ -55561,7 +55944,7 @@ var SQLVisitor = function (_sqlParser$getBaseCst) {
           result.distinct = true;
         }
         result.params = ctx.expression.map(function (e) {
-          return _this7.visit(e);
+          return _this11.visit(e);
         });
         if (ctx.orderBy) {
           result.orderBy = this.visit(ctx.orderBy);
@@ -55619,6 +56002,7 @@ var NEUTRAL = "neutral";
 // "Paint" nodes of the AST as being safe to move into the fact query, or
 // unsafe. To be safe, the node and all children must be safe (ie, have no
 // references to other tables).
+// eslint-disable-next-line complexity
 function paintAst(factTable, node) {
   var paint = NEUTRAL;
   switch (node.type) {
@@ -55660,6 +56044,53 @@ function paintAst(factTable, node) {
       }, NEUTRAL);
       break;
 
+    case "CaseExpression":
+      var expressionPaint = node.expression ? paintAst(factTable, node.expression) : NEUTRAL;
+      var branchesPaint = node.branches.reduce(function (acc, _ref) {
+        var condition = _ref.condition,
+            result = _ref.result;
+
+        var conditionPaint = paintAst(factTable, condition);
+        var resultPaint = paintAst(factTable, result);
+        if (conditionPaint === UNSAFE || resultPaint === UNSAFE) {
+          return UNSAFE;
+        } else if (acc === NEUTRAL && (conditionPaint === SAFE || resultPaint === SAFE)) {
+          return SAFE;
+        }
+        return acc;
+      }, NEUTRAL);
+      var elsePaint = node.else ? paintAst(factTable, node.else) : NEUTRAL;
+      if (expressionPaint === UNSAFE || branchesPaint === UNSAFE || elsePaint === UNSAFE) {
+        paint = UNSAFE;
+      } else if (expressionPaint === SAFE || branchesPaint === SAFE || elsePaint === SAFE) {
+        paint = SAFE;
+      }
+      break;
+
+    case "BetweenExpression":
+      var lhs = paintAst(factTable, node.lhs);
+      var lowerBound = paintAst(factTable, node.lowerBound);
+      var upperBound = paintAst(factTable, node.upperBound);
+      if (lhs === UNSAFE || lowerBound === UNSAFE || upperBound === UNSAFE) {
+        paint = UNSAFE;
+      } else if (lhs === SAFE || lowerBound === SAFE || upperBound === SAFE) {
+        paint = SAFE;
+      }
+      break;
+
+    case "InExpression":
+      paint = node.in.reduce(function (acc, expression) {
+        var childPaint = paintAst(factTable, expression);
+        if (childPaint === UNSAFE) {
+          return UNSAFE;
+        } else if (childPaint === SAFE && acc === NEUTRAL) {
+          return SAFE;
+        }
+        return acc;
+      }, paintAst(factTable, node.expression));
+      break;
+
+    case "IsExpression":
     case "CastExpression":
     case "OrderByExpression":
     case "PrefixExpression":
@@ -55716,6 +56147,36 @@ function extractFacts(node, projections, aliases, replacements, sql) {
       });
       break;
 
+    case "CaseExpression":
+      if (node.expression) {
+        extractFacts(node.expression, projections, aliases, replacements, sql);
+      }
+      node.branches.forEach(function (_ref2) {
+        var condition = _ref2.condition,
+            result = _ref2.result;
+
+        extractFacts(condition, projections, aliases, replacements, sql);
+        extractFacts(result, projections, aliases, replacements, sql);
+      });
+      if (node.else) {
+        extractFacts(node.else, projections, aliases, replacements, sql);
+      }
+      break;
+
+    case "BetweenExpression":
+      extractFacts(node.lhs, projections, aliases, replacements, sql);
+      extractFacts(node.lowerBound, projections, aliases, replacements, sql);
+      extractFacts(node.upperBound, projections, aliases, replacements, sql);
+      break;
+
+    case "InExpression":
+      extractFacts(node.expression, projections, aliases, replacements, sql);
+      node.in.forEach(function (expression) {
+        return extractFacts(expression, projections, aliases, replacements, sql);
+      });
+      break;
+
+    case "IsExpression":
     case "CastExpression":
     case "OrderByExpression":
     case "PrefixExpression":

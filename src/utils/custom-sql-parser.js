@@ -50,6 +50,31 @@ const As = createToken({
   pattern: /as/i,
   categories: [Keyword]
 })
+const Case = createToken({
+  name: "Case",
+  pattern: /case/i,
+  categories: [Keyword]
+})
+const When = createToken({
+  name: "When",
+  pattern: /when/i,
+  categories: [Keyword]
+})
+const Then = createToken({
+  name: "Then",
+  pattern: /then/i,
+  categories: [Keyword]
+})
+const Else = createToken({
+  name: "Else",
+  pattern: /else/i,
+  categories: [Keyword]
+})
+const End = createToken({
+  name: "End",
+  pattern: /end/i,
+  categories: [Keyword]
+})
 
 // XXX:
 // support for non-latin characters?
@@ -82,7 +107,7 @@ const StringConstant = createToken({
 })
 const NumericConstant = createToken({
   name: "NumericConstant",
-  pattern: /(?:[1-9]\d*(?:\.\d)?|0?\.\d)\d*(?:[eE][+-]?\d+)?/,
+  pattern: /(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?/,
   categories: [Constant]
 })
 const BooleanConstant = createToken({
@@ -92,18 +117,13 @@ const BooleanConstant = createToken({
 })
 
 // XXX:
-// IS
+// OVERLAPS
+// SIMILAR
+// BETWEEN SYMMETRIC
+// DISTINCT FROM
 // ISNULL
 // NOTNULL
-// IN
-// BETWEEN
-// OVERLAPS
-// LIKE/ILIKE/SIMILAR
-// < >
-// =
-// NOT
-// AND
-// OR
+// IS UNKNOWN
 const Operator = createToken({ name: "Operator", pattern: Lexer.NA })
 
 const AllColumns = createToken({ name: "AllColumns", pattern: Lexer.NA })
@@ -161,6 +181,104 @@ const SubtractionOperator = createToken({
   categories: [AdditiveOperator]
 })
 
+const MembershipOperator = createToken({
+  name: "MembershipOperator",
+  pattern: Lexer.NA,
+  categories: [BinaryOperator]
+})
+const BetweenOperator = createToken({
+  name: "BetweenOperator",
+  pattern: /between/i,
+  categories: [MembershipOperator]
+})
+const InOperator = createToken({
+  name: "InOperator",
+  pattern: /in/i,
+  categories: [MembershipOperator]
+})
+const LikeOperator = createToken({
+  name: "LikeOperator",
+  pattern: /i?like/i,
+  categories: [MembershipOperator]
+})
+
+const ComparisonOperator = createToken({
+  name: "ComparisonOperator",
+  pattern: Lexer.NA,
+  categories: [BinaryOperator]
+})
+const EqualityOperator = createToken({
+  name: "EqualityOperator",
+  pattern: "=",
+  categories: [ComparisonOperator]
+})
+const InequalityOperator = createToken({
+  name: "InequalityOperator",
+  pattern: /(?:<>|!=)/,
+  categories: [ComparisonOperator]
+})
+const LessThanOperator = createToken({
+  name: "LessThanOperator",
+  pattern: "<",
+  categories: [ComparisonOperator]
+})
+const LessThanEqualOperator = createToken({
+  name: "LessThanEqualOperator",
+  pattern: "<=",
+  categories: [ComparisonOperator]
+})
+const GreaterThanOperator = createToken({
+  name: "GreaterThanOperator",
+  pattern: ">",
+  categories: [ComparisonOperator]
+})
+const GreaterThanEqualOperator = createToken({
+  name: "GreaterThanEqualOperator",
+  pattern: ">=",
+  categories: [ComparisonOperator]
+})
+
+const IsOperator = createToken({
+  name: "IsOperator",
+  pattern: /is/i,
+  categories: [BinaryOperator]
+})
+const IsPredicate = createToken({
+  name: "IsPredicate",
+  pattern: Lexer.NA
+})
+
+const Not = createToken({
+  name: "Not",
+  pattern: /not/i,
+  categories: [PrefixOperator, Keyword]
+})
+const Null = createToken({
+  name: "Null",
+  pattern: /null/i,
+  categories: [IsPredicate, Keyword]
+})
+const True = createToken({
+  name: "True",
+  pattern: /true/i,
+  categories: [IsPredicate, Keyword]
+})
+const False = createToken({
+  name: "False",
+  pattern: /false/i,
+  categories: [IsPredicate, Keyword]
+})
+const And = createToken({
+  name: "And",
+  pattern: /and/i,
+  categories: [BinaryOperator, Keyword]
+})
+const Or = createToken({
+  name: "Or",
+  pattern: /or/i,
+  categories: [BinaryOperator, Keyword]
+})
+
 // XXX:
 // Array elements with brackets ([])
 // Array slices with :
@@ -198,8 +316,29 @@ const allTokens = [
   Desc,
   Cast,
   As,
+  Case,
+  When,
+  Then,
+  Else,
+  End,
 
-  // Identifiers must come before anything else because a QuotedIdentifier can
+  MembershipOperator,
+  BetweenOperator,
+  InOperator,
+  LikeOperator,
+
+  IsOperator,
+  IsPredicate,
+
+  Not,
+  Null,
+  True,
+  False,
+  And,
+  Or,
+
+  // Identifiers must come after any keywords because UnquotedIdentifier would
+  // match them, but before any symbols because a QuotedIdentifier can
   // technically contain anything
   Identifier,
   UnquotedIdentifier,
@@ -221,6 +360,13 @@ const allTokens = [
   AdditiveOperator,
   AdditionOperator,
   SubtractionOperator,
+  ComparisonOperator,
+  EqualityOperator,
+  InequalityOperator,
+  LessThanOperator,
+  LessThanEqualOperator,
+  GreaterThanOperator,
+  GreaterThanEqualOperator,
 
   OpenParen,
   CloseParen,
@@ -235,7 +381,79 @@ class SQLParser extends CstParser {
     super(allTokens)
 
     this.RULE("expression", () => {
-      this.SUBRULE(this.additiveExpression)
+      this.SUBRULE(this.disjunctiveExpression)
+    })
+
+    this.RULE("disjunctiveExpression", () => {
+      this.SUBRULE(this.conjunctiveExpression, { LABEL: "lhs" })
+      this.MANY(() => {
+        this.CONSUME(Or, { LABEL: "operator" })
+        this.SUBRULE2(this.conjunctiveExpression, { LABEL: "rhs" })
+      })
+    })
+
+    this.RULE("conjunctiveExpression", () => {
+      this.SUBRULE(this.negationExpression, { LABEL: "lhs" })
+      this.MANY(() => {
+        this.CONSUME(And, { LABEL: "operator" })
+        this.SUBRULE2(this.negationExpression, { LABEL: "rhs" })
+      })
+    })
+
+    this.RULE("negationExpression", () => {
+      this.OPTION(() => this.CONSUME(Not))
+      this.SUBRULE(this.isExpression)
+    })
+
+    this.RULE("isExpression", () => {
+      this.SUBRULE(this.comparisonExpression, { LABEL: "expression" })
+      this.OPTION(() => {
+        this.CONSUME(IsOperator)
+        this.OPTION2(() => this.CONSUME(Not))
+        this.CONSUME(IsPredicate)
+      })
+    })
+
+    this.RULE("comparisonExpression", () => {
+      this.SUBRULE(this.membershipExpression, { LABEL: "lhs" })
+      this.OPTION(() => {
+        this.CONSUME(ComparisonOperator, { LABEL: "operator" })
+        this.SUBRULE2(this.membershipExpression, { LABEL: "rhs" })
+      })
+    })
+
+    this.RULE("membershipExpression", () => {
+      this.SUBRULE(this.additiveExpression, { LABEL: "lhs" })
+      this.OPTION(() => {
+        this.OPTION2(() => this.CONSUME(Not))
+        this.OR([
+          {
+            ALT: () => {
+              this.CONSUME(BetweenOperator, { LABEL: "betweenOperator" })
+              this.SUBRULE2(this.additiveExpression, { LABEL: "lowerBound" })
+              this.CONSUME(And)
+              this.SUBRULE3(this.additiveExpression, { LABEL: "upperBound" })
+            }
+          },
+          {
+            ALT: () => {
+              this.CONSUME(InOperator, { LABEL: "inOperator" })
+              this.CONSUME(OpenParen)
+              this.AT_LEAST_ONE_SEP({
+                SEP: Comma,
+                DEF: () => this.SUBRULE(this.expression, { LABEL: "set" })
+              })
+              this.CONSUME(CloseParen)
+            }
+          },
+          {
+            ALT: () => {
+              this.CONSUME(LikeOperator, { LABEL: "likeOperator" })
+              this.SUBRULE4(this.additiveExpression, { LABEL: "rhs" })
+            }
+          }
+        ])
+      })
     })
 
     this.RULE("additiveExpression", () => {
@@ -265,6 +483,7 @@ class SQLParser extends CstParser {
     this.RULE("atomicExpression", () => {
       this.OR([
         { ALT: () => this.SUBRULE(this.parenthesesExpression) },
+        { ALT: () => this.SUBRULE(this.caseExpression) },
         { ALT: () => this.SUBRULE(this.castExpression) },
         { ALT: () => this.SUBRULE(this.functionExpression) },
         { ALT: () => this.SUBRULE(this.prefixExpression) },
@@ -277,6 +496,22 @@ class SQLParser extends CstParser {
       this.CONSUME(OpenParen)
       this.SUBRULE(this.expression)
       this.CONSUME(CloseParen)
+    })
+
+    this.RULE("caseExpression", () => {
+      this.CONSUME(Case)
+      this.OPTION(() => this.SUBRULE(this.expression))
+      this.AT_LEAST_ONE(() => {
+        this.CONSUME(When)
+        this.SUBRULE2(this.expression, { LABEL: "condition" })
+        this.CONSUME(Then)
+        this.SUBRULE3(this.expression, { LABEL: "result" })
+      })
+      this.OPTION2(() => {
+        this.CONSUME(Else)
+        this.SUBRULE4(this.expression, { LABEL: "else" })
+      })
+      this.CONSUME(End)
     })
 
     this.RULE("castExpression", () => {
@@ -362,7 +597,124 @@ class SQLVisitor extends sqlParser.getBaseCstVisitorConstructor() {
   }
 
   expression(ctx) {
-    return this.visit(ctx.additiveExpression)
+    return this.visit(ctx.disjunctiveExpression)
+  }
+
+  disjunctiveExpression(ctx) {
+    let result = this.visit(ctx.lhs)
+    if (ctx.rhs) {
+      ctx.rhs.forEach((operand, idx) => {
+        const rhs = this.visit(operand)
+        result = {
+          type: "BinaryExpression",
+          operator: ctx.operator[idx].image,
+          lhs: result,
+          rhs,
+          start: result.start,
+          end: rhs.end
+        }
+      })
+    }
+    return result
+  }
+
+  conjunctiveExpression(ctx) {
+    let result = this.visit(ctx.lhs)
+    if (ctx.rhs) {
+      ctx.rhs.forEach((operand, idx) => {
+        const rhs = this.visit(operand)
+        result = {
+          type: "BinaryExpression",
+          operator: ctx.operator[idx].image,
+          lhs: result,
+          rhs,
+          start: result.start,
+          end: rhs.end
+        }
+      })
+    }
+    return result
+  }
+
+  negationExpression(ctx) {
+    let result = this.visit(ctx.isExpression)
+    if (ctx.Not) {
+      result = {
+        ...result,
+        negated: !result.negated,
+        start: ctx.Not[0].startOffset
+      }
+    }
+    return result
+  }
+
+  isExpression(ctx) {
+    let result = this.visit(ctx.expression)
+    if (ctx.IsOperator) {
+      result = {
+        type: "IsExpression",
+        expression: result,
+        negated: Boolean(ctx.Not),
+        is: ctx.IsPredicate[0].image,
+        start: result.start,
+        end: ctx.IsPredicate[0].endOffset
+      }
+    }
+    return result
+  }
+
+  comparisonExpression(ctx) {
+    let result = this.visit(ctx.lhs)
+    if (ctx.rhs) {
+      const rhs = this.visit(ctx.rhs)
+      result = {
+        type: "BinaryExpression",
+        operator: ctx.operator[0].image,
+        lhs: result,
+        rhs,
+        start: result.start,
+        end: rhs.end
+      }
+    }
+    return result
+  }
+
+  membershipExpression(ctx) {
+    let result = this.visit(ctx.lhs)
+    const negated = Boolean(ctx.Not)
+    if (ctx.betweenOperator) {
+      const lowerBound = this.visit(ctx.lowerBound)
+      const upperBound = this.visit(ctx.upperBound)
+      result = {
+        type: "BetweenExpression",
+        lhs: result,
+        lowerBound,
+        upperBound,
+        negated,
+        start: result.start,
+        end: upperBound.end
+      }
+    } else if (ctx.inOperator) {
+      result = {
+        type: "InExpression",
+        lhs: result,
+        in: ctx.set.map(expression => this.visit(expression)),
+        negated,
+        start: result.start,
+        end: ctx.CloseParen[0].endOffset
+      }
+    } else if (ctx.likeOperator) {
+      const rhs = this.visit(ctx.rhs)
+      result = {
+        type: "BinaryExpression",
+        lhs: result,
+        rhs,
+        negated,
+        start: result.start,
+        end: rhs.end
+      }
+    }
+    return result
   }
 
   additiveExpression(ctx) {
@@ -422,6 +774,8 @@ class SQLVisitor extends sqlParser.getBaseCstVisitorConstructor() {
   atomicExpression(ctx) {
     if (ctx.parenthesesExpression) {
       return this.visit(ctx.parenthesesExpression)
+    } else if (ctx.caseExpression) {
+      return this.visit(ctx.caseExpression)
     } else if (ctx.castExpression) {
       return this.visit(ctx.castExpression)
     } else if (ctx.functionExpression) {
@@ -449,6 +803,20 @@ class SQLVisitor extends sqlParser.getBaseCstVisitorConstructor() {
     }
   }
 
+  caseExpression(ctx) {
+    return {
+      type: "CaseExpression",
+      expression: (ctx.expression && this.visit(ctx.expression)) || null,
+      branches: ctx.condition.map((condition, idx) => ({
+        condition: this.visit(condition),
+        result: this.visit(ctx.result[idx])
+      })),
+      else: (ctx.else && this.visit(ctx.else)) || null,
+      start: ctx.Case[0].startOffset,
+      end: ctx.End[0].endOffset
+    }
+  }
+
   castExpression(ctx) {
     return {
       type: "CastExpression",
@@ -461,11 +829,14 @@ class SQLVisitor extends sqlParser.getBaseCstVisitorConstructor() {
 
   orderByExpression(ctx) {
     const expression = this.visit(ctx.expression[0])
+
+    // eslint-disable-next-line no-nested-ternary
     const end = ctx.asc
       ? ctx.asc[0].endOffset
       : ctx.desc
       ? ctx.desc[0].endOffset
       : expression.end
+
     return {
       type: "OrderByExpression",
       expression,
@@ -553,6 +924,7 @@ const NEUTRAL = "neutral"
 // "Paint" nodes of the AST as being safe to move into the fact query, or
 // unsafe. To be safe, the node and all children must be safe (ie, have no
 // references to other tables).
+// eslint-disable-next-line complexity
 function paintAst(factTable, node) {
   let paint = NEUTRAL
   switch (node.type) {
@@ -599,6 +971,66 @@ function paintAst(factTable, node) {
       }, NEUTRAL)
       break
 
+    case "CaseExpression":
+      const expressionPaint = node.expression
+        ? paintAst(factTable, node.expression)
+        : NEUTRAL
+      const branchesPaint = node.branches.reduce(
+        (acc, { condition, result }) => {
+          const conditionPaint = paintAst(factTable, condition)
+          const resultPaint = paintAst(factTable, result)
+          if (conditionPaint === UNSAFE || resultPaint === UNSAFE) {
+            return UNSAFE
+          } else if (
+            acc === NEUTRAL &&
+            (conditionPaint === SAFE || resultPaint === SAFE)
+          ) {
+            return SAFE
+          }
+          return acc
+        },
+        NEUTRAL
+      )
+      const elsePaint = node.else ? paintAst(factTable, node.else) : NEUTRAL
+      if (
+        expressionPaint === UNSAFE ||
+        branchesPaint === UNSAFE ||
+        elsePaint === UNSAFE
+      ) {
+        paint = UNSAFE
+      } else if (
+        expressionPaint === SAFE ||
+        branchesPaint === SAFE ||
+        elsePaint === SAFE
+      ) {
+        paint = SAFE
+      }
+      break
+
+    case "BetweenExpression":
+      const lhs = paintAst(factTable, node.lhs)
+      const lowerBound = paintAst(factTable, node.lowerBound)
+      const upperBound = paintAst(factTable, node.upperBound)
+      if (lhs === UNSAFE || lowerBound === UNSAFE || upperBound === UNSAFE) {
+        paint = UNSAFE
+      } else if (lhs === SAFE || lowerBound === SAFE || upperBound === SAFE) {
+        paint = SAFE
+      }
+      break
+
+    case "InExpression":
+      paint = node.in.reduce((acc, expression) => {
+        const childPaint = paintAst(factTable, expression)
+        if (childPaint === UNSAFE) {
+          return UNSAFE
+        } else if (childPaint === SAFE && acc === NEUTRAL) {
+          return SAFE
+        }
+        return acc
+      }, paintAst(factTable, node.expression))
+      break
+
+    case "IsExpression":
     case "CastExpression":
     case "OrderByExpression":
     case "PrefixExpression":
@@ -655,6 +1087,33 @@ function extractFacts(node, projections, aliases, replacements, sql) {
       )
       break
 
+    case "CaseExpression":
+      if (node.expression) {
+        extractFacts(node.expression, projections, aliases, replacements, sql)
+      }
+      node.branches.forEach(({ condition, result }) => {
+        extractFacts(condition, projections, aliases, replacements, sql)
+        extractFacts(result, projections, aliases, replacements, sql)
+      })
+      if (node.else) {
+        extractFacts(node.else, projections, aliases, replacements, sql)
+      }
+      break
+
+    case "BetweenExpression":
+      extractFacts(node.lhs, projections, aliases, replacements, sql)
+      extractFacts(node.lowerBound, projections, aliases, replacements, sql)
+      extractFacts(node.upperBound, projections, aliases, replacements, sql)
+      break
+
+    case "InExpression":
+      extractFacts(node.expression, projections, aliases, replacements, sql)
+      node.in.forEach(expression =>
+        extractFacts(expression, projections, aliases, replacements, sql)
+      )
+      break
+
+    case "IsExpression":
     case "CastExpression":
     case "OrderByExpression":
     case "PrefixExpression":
