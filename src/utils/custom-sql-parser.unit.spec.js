@@ -147,4 +147,32 @@ describe("parseFactsFromCustomSQL", () => {
       )
     })
   })
+
+  describe("avg(case when id='48' then 0 else omnisci_states.rid end)", () => {
+    const {
+      factProjections,
+      factAliases,
+      expression
+    } = parseFactsFromCustomSQL(
+      "fact",
+      "color",
+      "avg(case when id='48' then 0 else omnisci_states.rid end)"
+    )
+
+    it("should project the first condition", () => {
+      expect(factProjections).to.have.lengthOf(1)
+      expect(factProjections[0]).to.equal("id='48'")
+    })
+
+    it("should have one alias", () => {
+      expect(factAliases).to.have.lengthOf(1)
+      expect(factAliases[0]).to.equal("color0")
+    })
+
+    it("should have replaced the fact projections", () => {
+      expect(expression).to.equal(
+        "avg(case when color.color0 then 0 else omnisci_states.rid end)"
+      )
+    })
+  })
 })
