@@ -72359,7 +72359,8 @@ function getLatLonCircleClass() {
             // radius is stored in kilometers, so convert kilometers to radians.
             // See: https://stackoverflow.com/questions/12180290/convert-kilometers-to-radians
             // for a discussion.
-            // 6371 is the earth's radius in kilometers
+            // The 6372.79756 number is the earth's radius in kilometers and aligns with the
+            // earth radius used in distance_in_meters in utils-latlon
             var dist_radians = this._radius / 6372.797560856;
 
             // convert from mercator to lat/lon
