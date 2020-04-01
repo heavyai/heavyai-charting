@@ -72355,7 +72355,13 @@ function getLatLonCircleClass() {
 
             var degrees_between_points = 6.0;
             var number_of_points = Math.floor(360 / degrees_between_points);
-            var dist_radians = this._radius / 6250;
+
+            // radius is stored in kilometers, so convert kilometers to radians.
+            // See: https://stackoverflow.com/questions/12180290/convert-kilometers-to-radians
+            // for a discussion.
+            // The 6372.79756 number is the earth's radius in kilometers and aligns with the
+            // earth radius used in distance_in_meters in utils-latlon
+            var dist_radians = this._radius / 6372.797560856;
 
             // convert from mercator to lat/lon
             LatLonUtils.conv900913To4326(centerLatLon, centerMerc);
@@ -72367,6 +72373,8 @@ function getLatLonCircleClass() {
             for (var index = 0; index < number_of_points; index = index + 1) {
               var degrees = index * degrees_between_points;
               var degree_radians = degrees * Math.PI / 180;
+
+              // rotate the sample point around the circle center using the radius distance in radians
               var point_lat_radians = Math.asin(Math.sin(center_lat_radians) * Math.cos(dist_radians) + Math.cos(center_lat_radians) * Math.sin(dist_radians) * Math.cos(degree_radians));
               var point_lon_radians = center_lon_radians + Math.atan2(Math.sin(degree_radians) * Math.sin(dist_radians) * Math.cos(center_lat_radians), Math.cos(dist_radians) - Math.sin(center_lat_radians) * Math.sin(point_lat_radians));
               var point_lat = point_lat_radians * 180 / Math.PI;
