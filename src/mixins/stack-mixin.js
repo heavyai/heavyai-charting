@@ -2,7 +2,12 @@ import {
   checkIfTimeBinInRange,
   createBinParams
 } from "../utils/binning-helpers"
-import { pluck, utils } from "../utils/utils"
+import {
+  pluck,
+  utils,
+  minVal,
+  maxVal
+} from "../utils/utils"
 import d3 from "d3"
 import { override } from "../core/core"
 import { multipleKeysAccessorForStack } from "../utils/multiple-key-accessors"
@@ -221,15 +226,9 @@ export default function stackMixin(_chart) {
     return Array.prototype.concat.apply([], valueses)
   }
 
-  _chart.xAxisMin = function() {
-    const min = d3.min(flattenStack(), pluck("x"))
-    return utils.subtract(min, _chart.xAxisPadding())
-  }
+  _chart.xAxisMin = () => utils.subtract(d3.min(flattenStack(), minVal), _chart.xAxisPadding())
 
-  _chart.xAxisMax = function() {
-    const max = d3.max(flattenStack(), pluck("x"))
-    return utils.add(max, _chart.xAxisPadding())
-  }
+  _chart.xAxisMax = ()=> utils.add(d3.max(flattenStack(), maxVal), _chart.xAxisPadding())
 
   /**
    * Set or get the title function. Chart class will use this function to render svg title (usually interpreted by

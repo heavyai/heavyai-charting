@@ -420,7 +420,7 @@ export default function heatMap(parent, chartGroup) {
       return _chart._doRender()
     }
 
-    var data = _chart.data(),
+    let data = _chart.data(),
       rows = _chart.rows() || data.map(_chart.valueAccessor()),
       cols = _chart.cols() || data.map(_chart.keyAccessor())
 

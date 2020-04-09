@@ -5581,7 +5581,7 @@ function instanceOfChart(o) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.utils = exports.pluck = exports.printers = exports.customTimeFormat = exports.TIME_UNITS = exports.deepClone = exports.deepEquals = exports.dateFormat = exports.parser = undefined;
+exports.utils = exports.pluck = exports.maxVal = exports.minVal = exports.printers = exports.customTimeFormat = exports.TIME_UNITS = exports.deepClone = exports.deepEquals = exports.dateFormat = exports.parser = undefined;
 exports.extractTickFormat = extractTickFormat;
 exports.xDomain = xDomain;
 exports.xScale = xScale;
@@ -5829,6 +5829,28 @@ printers.filter = function (filter) {
   }
 
   return s;
+};
+
+var getKeyValues = function getKeyValues(data) {
+  var keys = Object.keys(data).filter(function (k) {
+    return k.indexOf('key') === 0;
+  });
+  return keys.reduce(function (aggregate, k) {
+    return aggregate.concat(data[k].map(function (_ref4) {
+      var value = _ref4.value;
+      return value;
+    }));
+  }, []);
+};
+
+var minVal = exports.minVal = function minVal(_ref5) {
+  var data = _ref5.data;
+  return _d2.default.min(getKeyValues(data));
+};
+
+var maxVal = exports.maxVal = function maxVal(_ref6) {
+  var data = _ref6.data;
+  return _d2.default.max(getKeyValues(data));
 };
 
 var pluck = exports.pluck = function pluck(n, f) {
@@ -33643,13 +33665,11 @@ function stackMixin(_chart) {
   }
 
   _chart.xAxisMin = function () {
-    var min = _d2.default.min(flattenStack(), (0, _utils.pluck)("x"));
-    return _utils.utils.subtract(min, _chart.xAxisPadding());
+    return _utils.utils.subtract(_d2.default.min(flattenStack(), _utils.minVal), _chart.xAxisPadding());
   };
 
   _chart.xAxisMax = function () {
-    var max = _d2.default.max(flattenStack(), (0, _utils.pluck)("x"));
-    return _utils.utils.add(max, _chart.xAxisPadding());
+    return _utils.utils.add(_d2.default.max(flattenStack(), _utils.maxVal), _chart.xAxisPadding());
   };
 
   /**
@@ -49873,6 +49893,7 @@ function asyncMixin(_chart) {
           (0, _coreAsync.resetRenderStack)();
           reject(error);
         } else {
+          console.log("before data => ", data);
           _chart.render(id, queryGroupId, queryCount, data, renderCallback);
         }
       };

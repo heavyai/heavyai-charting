@@ -235,6 +235,19 @@ printers.filter = function(filter) {
   return s
 }
 
+const getKeyValues = data => {
+  const keys = Object.keys(data).filter(k => k.indexOf('key') === 0)
+  return keys.reduce(
+    (aggregate, k) =>
+      aggregate.concat(data[k].map(({value}) => value)),
+    []
+  )
+}
+
+export const minVal = ({data}) => d3.min(getKeyValues(data))
+
+export const maxVal = ({data}) => d3.max(getKeyValues(data))
+
 export const pluck = (n, f) => {
   if (!f) {
     return function(d) {
