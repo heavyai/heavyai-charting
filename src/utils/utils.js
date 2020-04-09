@@ -345,9 +345,8 @@ utils.clamp = function(val, min, max) {
   return val < min ? min : val > max ? max : val
 }
 
-let _idCounter = 0
 utils.uniqueId = function() {
-  return ++_idCounter
+  return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
 }
 
 utils.nameToId = function(name) {
