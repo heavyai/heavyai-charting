@@ -87,7 +87,6 @@ export default function asyncMixin(_chart) {
           resetRenderStack()
           reject(error)
         } else {
-          console.log(`before data => `, data)
           _chart.render(id, queryGroupId, queryCount, data, renderCallback)
         }
       }

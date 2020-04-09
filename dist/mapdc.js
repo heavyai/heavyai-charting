@@ -5833,7 +5833,7 @@ printers.filter = function (filter) {
 
 var getKeyValues = function getKeyValues(data) {
   var keys = Object.keys(data).filter(function (k) {
-    return k.indexOf('key') === 0;
+    return k.indexOf("key") === 0;
   });
   return keys.reduce(function (aggregate, k) {
     return aggregate.concat(data[k].map(function (_ref4) {
@@ -49899,7 +49899,6 @@ function asyncMixin(_chart) {
           (0, _coreAsync.resetRenderStack)();
           reject(error);
         } else {
-          console.log("before data => ", data);
           _chart.render(id, queryGroupId, queryCount, data, renderCallback);
         }
       };
