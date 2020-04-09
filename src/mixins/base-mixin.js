@@ -46,7 +46,6 @@ import spinnerMixin from "../mixins/spinner-mixin"
  * @return {dc.baseMixin}
  */
 export default function baseMixin(_chart) {
-  
   // This is intended to be random every time a chart is created, but then to
   // stay that same random number for as long as the chart exists in memory.
   //
