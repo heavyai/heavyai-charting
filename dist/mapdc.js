@@ -6555,6 +6555,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {dc.baseMixin}
  */
 function baseMixin(_chart) {
+  // This is intended to be random every time a chart is created, but then to
+  // stay that same random number for as long as the chart exists in memory.
+  //
+  // The main reason for this is to support the raster chart and mixins, where
+  // the renderVega and getResultRowForPixel methods to mapd-connector (.con())
+  // expect to get a integer id unique to a given active rendered chart, and
+  // the same for that chart across its active lifetime.
   _chart.__dcFlag__ = _utils.utils.uniqueId();
 
   var _dimension = void 0;
