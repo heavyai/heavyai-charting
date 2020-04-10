@@ -238,7 +238,8 @@ printers.filter = function(filter) {
 const getKeyValues = data => {
   const keys = Object.keys(data).filter(k => k.indexOf("key") === 0)
   return keys.reduce(
-    (aggregate, k) => aggregate.concat(data[k].map(({ value }) => value)),
+    (aggregate, k) =>
+      aggregate.concat(data[k].map(v => (typeof v === "number" ? v : v.value))),
     []
   )
 }

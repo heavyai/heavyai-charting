@@ -5836,20 +5836,19 @@ var getKeyValues = function getKeyValues(data) {
     return k.indexOf("key") === 0;
   });
   return keys.reduce(function (aggregate, k) {
-    return aggregate.concat(data[k].map(function (_ref4) {
-      var value = _ref4.value;
-      return value;
+    return aggregate.concat(data[k].map(function (v) {
+      return typeof v === "number" ? v : v.value;
     }));
   }, []);
 };
 
-var minVal = exports.minVal = function minVal(_ref5) {
-  var data = _ref5.data;
+var minVal = exports.minVal = function minVal(_ref4) {
+  var data = _ref4.data;
   return _d2.default.min(getKeyValues(data));
 };
 
-var maxVal = exports.maxVal = function maxVal(_ref6) {
-  var data = _ref6.data;
+var maxVal = exports.maxVal = function maxVal(_ref5) {
+  var data = _ref5.data;
   return _d2.default.max(getKeyValues(data));
 };
 
