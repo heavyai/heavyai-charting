@@ -5836,9 +5836,9 @@ var getKeyValues = function getKeyValues(data) {
     return k.indexOf("key") === 0;
   });
   return keys.reduce(function (aggregate, k) {
-    return aggregate.concat(data[k].map(function (v) {
+    return aggregate.concat(Array.isArray(data[k]) ? data[k].map(function (v) {
       return typeof v === "number" ? v : v.value;
-    }));
+    }) : [data[k]]);
   }, []);
 };
 
