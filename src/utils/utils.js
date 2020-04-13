@@ -239,7 +239,11 @@ const getKeyValues = data => {
   const keys = Object.keys(data).filter(k => k.indexOf("key") === 0)
   return keys.reduce(
     (aggregate, k) =>
-      aggregate.concat(data[k].map(v => (typeof v === "number" ? v : v.value))),
+      aggregate.concat(
+        Array.isArray(data[k])
+          ? data[k].map(v => (typeof v === "number" ? v : v.value))
+          : [data[k]]
+      ),
     []
   )
 }
