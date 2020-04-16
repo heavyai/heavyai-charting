@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function init() {
 
   new MapdCon()
     .protocol("https")
-    .host("metis.mapd.com")
+    .host("metis.omnisci.com")
     .port("443")
     .dbName("mapd")
     .user("mapd")
