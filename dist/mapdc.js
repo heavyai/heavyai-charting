@@ -78448,7 +78448,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   _chart.pushLayer = function (layerName, layer) {
     if (_layerNames[layerName]) {
-      throw new Error('A layer with name "' + layerName + '" already exists.');
+      return;
     } else if (!layerName.match(/^\w+$/)) {
       throw new Error("A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)");
     }
