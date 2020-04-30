@@ -5581,7 +5581,7 @@ function instanceOfChart(o) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.utils = exports.pluck = exports.printers = exports.customTimeFormat = exports.TIME_UNITS = exports.deepClone = exports.deepEquals = exports.dateFormat = exports.parser = undefined;
+exports.utils = exports.pluck = exports.maxVal = exports.minVal = exports.printers = exports.customTimeFormat = exports.TIME_UNITS = exports.deepClone = exports.deepEquals = exports.dateFormat = exports.parser = undefined;
 exports.extractTickFormat = extractTickFormat;
 exports.xDomain = xDomain;
 exports.xScale = xScale;
@@ -5831,6 +5831,27 @@ printers.filter = function (filter) {
   return s;
 };
 
+var getKeyValues = function getKeyValues(data) {
+  var keys = Object.keys(data).filter(function (k) {
+    return k.indexOf("key") === 0;
+  });
+  return keys.reduce(function (aggregate, k) {
+    return aggregate.concat(Array.isArray(data[k]) ? data[k].map(function (v) {
+      return typeof v === "number" ? v : v.value;
+    }) : [data[k]]);
+  }, []);
+};
+
+var minVal = exports.minVal = function minVal(_ref4) {
+  var data = _ref4.data;
+  return _d2.default.min(getKeyValues(data));
+};
+
+var maxVal = exports.maxVal = function maxVal(_ref5) {
+  var data = _ref5.data;
+  return _d2.default.max(getKeyValues(data));
+};
+
 var pluck = exports.pluck = function pluck(n, f) {
   if (!f) {
     return function (d) {
@@ -5925,9 +5946,8 @@ utils.clamp = function (val, min, max) {
   return val < min ? min : val > max ? max : val;
 };
 
-var _idCounter = 0;
 utils.uniqueId = function () {
-  return ++_idCounter;
+  return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
 };
 
 utils.nameToId = function (name) {
@@ -6534,6 +6554,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {dc.baseMixin}
  */
 function baseMixin(_chart) {
+  // This is intended to be random every time a chart is created, but then to
+  // stay that same random number for as long as the chart exists in memory.
+  //
+  // The main reason for this is to support the raster chart and mixins, where
+  // the renderVega and getResultRowForPixel methods to mapd-connector (.con())
+  // expect to get a integer id unique to a given active rendered chart, and
+  // the same for that chart across its active lifetime.
   _chart.__dcFlag__ = _utils.utils.uniqueId();
 
   var _dimension = void 0;
@@ -33643,13 +33670,11 @@ function stackMixin(_chart) {
   }
 
   _chart.xAxisMin = function () {
-    var min = _d2.default.min(flattenStack(), (0, _utils.pluck)("x"));
-    return _utils.utils.subtract(min, _chart.xAxisPadding());
+    return _utils.utils.subtract(_d2.default.min(flattenStack(), _utils.minVal), _chart.xAxisPadding());
   };
 
   _chart.xAxisMax = function () {
-    var max = _d2.default.max(flattenStack(), (0, _utils.pluck)("x"));
-    return _utils.utils.add(max, _chart.xAxisPadding());
+    return _utils.utils.add(_d2.default.max(flattenStack(), _utils.maxVal), _chart.xAxisPadding());
   };
 
   /**

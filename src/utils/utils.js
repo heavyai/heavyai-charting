@@ -235,6 +235,23 @@ printers.filter = function(filter) {
   return s
 }
 
+const getKeyValues = data => {
+  const keys = Object.keys(data).filter(k => k.indexOf("key") === 0)
+  return keys.reduce(
+    (aggregate, k) =>
+      aggregate.concat(
+        Array.isArray(data[k])
+          ? data[k].map(v => (typeof v === "number" ? v : v.value))
+          : [data[k]]
+      ),
+    []
+  )
+}
+
+export const minVal = ({ data }) => d3.min(getKeyValues(data))
+
+export const maxVal = ({ data }) => d3.max(getKeyValues(data))
+
 export const pluck = (n, f) => {
   if (!f) {
     return function(d) {
@@ -332,9 +349,8 @@ utils.clamp = function(val, min, max) {
   return val < min ? min : val > max ? max : val
 }
 
-let _idCounter = 0
 utils.uniqueId = function() {
-  return ++_idCounter
+  return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
 }
 
 utils.nameToId = function(name) {
