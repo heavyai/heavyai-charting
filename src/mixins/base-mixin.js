@@ -125,7 +125,8 @@ export default function baseMixin(_chart) {
     "filtered",
     "zoomed",
     "renderlet",
-    "pretransition"
+    "pretransition",
+    "bboxFiltered"
   )
 
   let _legend
@@ -1065,6 +1066,15 @@ export default function baseMixin(_chart) {
 
   _chart._invokeZoomedListener = function() {
     _listeners.zoomed(_chart)
+  }
+
+  /**
+   * listener used for immerse to decide if bbox from originating raster chart can be applied to others
+   * if the other raster charts have linked-zoom enabled
+   * @private
+   */
+  _chart._invokeBboxFilteredListener = function() {
+      _listeners.bboxFiltered(_chart)
   }
 
   let _hasFilterHandler = function(filters, filter) {
