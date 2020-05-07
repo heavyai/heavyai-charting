@@ -353,17 +353,21 @@ export default function mapMixin(
       _yDim.filter([_chart._minCoord[1], _chart._maxCoord[1]])
       // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
       // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      redrawAllAsync(_chart.chartGroup()).then(() => _chart._invokeBboxFilteredListener()).catch(error => {
-        resetRedrawStack()
-        console.log("on move event redrawall error:", error)
-      })
+      redrawAllAsync(_chart.chartGroup())
+        .then(() => _chart._invokeBboxFilteredListener())
+        .catch(error => {
+          resetRedrawStack()
+          console.log("on move event redrawall error:", error)
+        })
     } else if (redrawall) {
       // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
       // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      redrawAllAsync(_chart.chartGroup()).then(() => _chart._invokeBboxFilteredListener()).catch(error => {
-        resetRedrawStack()
-        console.log("on move event redrawall error:", error)
-      })
+      redrawAllAsync(_chart.chartGroup())
+        .then(() => _chart._invokeBboxFilteredListener())
+        .catch(error => {
+          resetRedrawStack()
+          console.log("on move event redrawall error:", error)
+        })
     } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
       // spatial filter on only single data source
       _viewBoxDim.filterST_Min_ST_Max({
@@ -374,10 +378,12 @@ export default function mapMixin(
       })
       // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
       // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      redrawAllAsync(_chart.chartGroup()).then(() => _chart._invokeBboxFilteredListener()).catch(error => {
-        resetRedrawStack()
-        console.log("on move event redrawall error:", error)
-      })
+      redrawAllAsync(_chart.chartGroup())
+        .then(() => _chart._invokeBboxFilteredListener())
+        .catch(error => {
+          resetRedrawStack()
+          console.log("on move event redrawall error:", error)
+        })
     } else {
       _chart._projectionFlag = true
       _chart.redrawAsync()
