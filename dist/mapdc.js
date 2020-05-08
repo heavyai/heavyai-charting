@@ -6617,7 +6617,7 @@ function baseMixin(_chart) {
 
   var _chartGroup = _core.constants.DEFAULT_CHART_GROUP;
 
-  var _listeners = _d2.default.dispatch("preRender", "postRender", "preRedraw", "postRedraw", "filtered", "zoomed", "renderlet", "pretransition");
+  var _listeners = _d2.default.dispatch("preRender", "postRender", "preRedraw", "postRedraw", "filtered", "zoomed", "renderlet", "pretransition", "bboxFiltered");
 
   var _legend = void 0;
   var _commitHandler = void 0;
@@ -7499,6 +7499,15 @@ function baseMixin(_chart) {
 
   _chart._invokeZoomedListener = function () {
     _listeners.zoomed(_chart);
+  };
+
+  /**
+   * listener used for immerse to decide if bbox from originating raster chart can be applied to others
+   * if the other raster charts have linked-zoom enabled
+   * @private
+   */
+  _chart._invokeBboxFilteredListener = function () {
+    _listeners.bboxFiltered(_chart);
   };
 
   var _hasFilterHandler = function _hasFilterHandler(filters, filter) {
@@ -34179,12 +34188,20 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (_xDim !== null && _yDim !== null) {
       _xDim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
       _yDim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
+      // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
+      // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
+      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function () {
+        return _chart._invokeBboxFilteredListener();
+      }).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
       });
     } else if (redrawall) {
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
+      // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
+      // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
+      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function () {
+        return _chart._invokeBboxFilteredListener();
+      }).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
       });
@@ -34196,7 +34213,11 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         latMin: _chart._minCoord[1],
         latMax: _chart._maxCoord[1]
       });
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
+      // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
+      // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
+      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function () {
+        return _chart._invokeBboxFilteredListener();
+      }).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
       });
