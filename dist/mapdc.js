@@ -78897,7 +78897,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       for (var i = 0; i < _layers.length; ++i) {
         var layerName = _layers[i];
         var _layer7 = _layerNames[layerName];
-        if (_layer7 && _layer7.isPopupDisplayed(_chart)) {
+        if (_layer7) {
           // TODO(croot): can this be improved? I presume only
           // one popup can be shown at a time
           if (animate) {
