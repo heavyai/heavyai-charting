@@ -224,6 +224,19 @@ export default function filterMixin(_chart) {
     if (event.defaultPrevented) {
       return
     }
+
+    window.dispatchEvent(
+      new CustomEvent("omni", {
+        detail: {
+          type: "filter-click",
+          chartId: _chart.id,
+          queryId: _chart.queryId,
+          dcFlag: _chart.__dcFlag__,
+          filter
+        }
+      })
+    )
+
     const isInverseFilter = event.metaKey || event.ctrlKey
     events.trigger(() => {
       _chart.filter(filter, isInverseFilter)

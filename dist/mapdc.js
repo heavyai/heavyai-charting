@@ -49923,7 +49923,25 @@ function asyncMixin(_chart) {
         }
       };
       _chart._invokeDataFetchListener();
-      return _chart.dataAsync(dataCallback);
+      window.dispatchEvent(new CustomEvent("omni", {
+        detail: {
+          type: "chart-data-request",
+          source: "mapd-charting async-mixin#renderAsync",
+          chartId: _chart.id,
+          queryId: _chart.queryId,
+          dcFlag: _chart.__dcFlag__,
+          queryGroupId: queryGroupId,
+          asyncMixinId: id,
+          queryCount: queryCount
+        }
+      }));
+
+      window.currentQueryChartId = _chart.id || window.currentQueryChartId;
+      window.currentQueryDcFlag = _chart.__dcFlag__;
+      var ret = _chart.dataAsync(dataCallback);
+      window.currentQueryChartId = null;
+      window.currentQueryDcFlag = null;
+      return ret;
     });
   };
 
@@ -49956,7 +49974,24 @@ function asyncMixin(_chart) {
         }
       };
       _chart._invokeDataFetchListener();
+      window.dispatchEvent(new CustomEvent("omni", {
+        detail: {
+          type: "chart-data-request",
+          source: "mapd-charting async-mixin#redrawAsync",
+          chartId: _chart.id,
+          queryId: _chart.queryId,
+          dcFlag: _chart.__dcFlag__,
+          queryGroupId: queryGroupId,
+          asyncMixinId: id,
+          queryCount: queryCount
+        }
+      }));
+
+      window.currentQueryChartId = _chart.id || window.currentQueryChartId;
+      window.currentQueryDcFlag = _chart.__dcFlag__;
       _chart.dataAsync(dataCallback);
+      window.currentQueryChartId = null;
+      window.currentQueryDcFlag = null;
     });
   };
 
@@ -60534,6 +60569,17 @@ function filterMixin(_chart) {
     if (event.defaultPrevented) {
       return;
     }
+
+    window.dispatchEvent(new CustomEvent("omni", {
+      detail: {
+        type: "filter-click",
+        chartId: _chart.id,
+        queryId: _chart.queryId,
+        dcFlag: _chart.__dcFlag__,
+        filter: filter
+      }
+    }));
+
     var isInverseFilter = event.metaKey || event.ctrlKey;
     _events.events.trigger(function () {
       _chart.filter(filter, isInverseFilter);
@@ -76745,6 +76791,10 @@ function pieChart(parent, chartGroup) {
         return;
       }
 
+      if (!window.currentQueryDcFlag) {
+        window.currentQueryDcFlag = _chart.__dcFlag__;
+      }
+
       // Get the total value (across the whole table, no groups) for the current
       // size measure and incoming crossfilters
       group.getCrossfilter().groupAll()
@@ -76762,6 +76812,8 @@ function pieChart(parent, chartGroup) {
       }).catch(function (err) {
         callback(err);
       });
+
+      window.currentQueryDcFlag = null;
     });
   });
 

@@ -116,6 +116,10 @@ export default function pieChart(parent, chartGroup) {
         return
       }
 
+      if (!window.currentQueryDcFlag) {
+        window.currentQueryDcFlag = _chart.__dcFlag__
+      }
+
       // Get the total value (across the whole table, no groups) for the current
       // size measure and incoming crossfilters
       group
@@ -138,6 +142,8 @@ export default function pieChart(parent, chartGroup) {
         .catch(err => {
           callback(err)
         })
+
+      window.currentQueryDcFlag = null
     })
   })
 

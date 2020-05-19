@@ -91,7 +91,27 @@ export default function asyncMixin(_chart) {
         }
       }
       _chart._invokeDataFetchListener()
-      return _chart.dataAsync(dataCallback)
+      window.dispatchEvent(
+        new CustomEvent("omni", {
+          detail: {
+            type: "chart-data-request",
+            source: "mapd-charting async-mixin#renderAsync",
+            chartId: _chart.id,
+            queryId: _chart.queryId,
+            dcFlag: _chart.__dcFlag__,
+            queryGroupId,
+            asyncMixinId: id,
+            queryCount
+          }
+        })
+      )
+
+      window.currentQueryChartId = _chart.id || window.currentQueryChartId
+      window.currentQueryDcFlag = _chart.__dcFlag__
+      const ret = _chart.dataAsync(dataCallback)
+      window.currentQueryChartId = null
+      window.currentQueryDcFlag = null
+      return ret
     })
   }
 
@@ -124,7 +144,26 @@ export default function asyncMixin(_chart) {
         }
       }
       _chart._invokeDataFetchListener()
+      window.dispatchEvent(
+        new CustomEvent("omni", {
+          detail: {
+            type: "chart-data-request",
+            source: "mapd-charting async-mixin#redrawAsync",
+            chartId: _chart.id,
+            queryId: _chart.queryId,
+            dcFlag: _chart.__dcFlag__,
+            queryGroupId,
+            asyncMixinId: id,
+            queryCount
+          }
+        })
+      )
+
+      window.currentQueryChartId = _chart.id || window.currentQueryChartId
+      window.currentQueryDcFlag = _chart.__dcFlag__
       _chart.dataAsync(dataCallback)
+      window.currentQueryChartId = null
+      window.currentQueryDcFlag = null
     })
   }
 
