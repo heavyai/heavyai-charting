@@ -54849,7 +54849,7 @@ function rasterLayerPolyMixin(_layer) {
           field: "y"
         },
         fillColor: fillColor,
-        /* 
+        /*
           "fillColor" is a special keyword to set strokeColor the same as fillColor
           otherwise it will be strokeColor or white
         */
@@ -55043,8 +55043,8 @@ function rasterLayerPolyMixin(_layer) {
     chart.hidePopup();
     _events.events.trigger(function () {
       _layer.filter(data[filterKey], isInverseFilter, filterKey, chart);
-      chart.filter(data[filterKey], isInverseFilter);
       _listeners.filtered(_layer, _filtersArray);
+      chart.filter(data[filterKey], isInverseFilter);
       chart.redrawGroup();
     });
   };
