@@ -253,10 +253,10 @@ export default function rasterLayerHeatmapMixin(_layer) {
         properties: {
           shape: getMarkType(state.mark),
           xc: {
-            field: "xy"
+            field: "x"
           },
           yc: {
-            field: "xy"
+            field: "y"
           },
           width: markWidth,
           height: markHeight,
