@@ -76,8 +76,9 @@ describe("rasterLayerHeatmapMixin", () => {
           {
             name: "heatmap_query",
             sql:
-              "SELECT rect_pixel_bin_packed(conv_4326_900913_x(lon), -50, -50, conv_4326_900913_y(lat), 50, 50, 1, 1, 0, 0, 100, 100) AS xy, " +
-              "count(*) AS color FROM tweets_nov_feb WHERE (lon = 100) GROUP BY xy"
+              "SELECT rect_pixel_bin_x(conv_4326_900913_x(lon), -50, -50, 1, 0, 100) AS x, " +
+              "rect_pixel_bin_y(conv_4326_900913_y(lat), 50, 50, 1, 0, 100) AS y, " +
+              "count(*) AS color FROM tweets_nov_feb WHERE (lon = 100) GROUP BY x, y"
           }
         ],
         scales: [
@@ -103,10 +104,10 @@ describe("rasterLayerHeatmapMixin", () => {
             properties: {
               shape: "square",
               xc: {
-                field: "xy"
+                field: "x"
               },
               yc: {
-                field: "xy"
+                field: "y"
               },
               width: 1,
               height: 1,
@@ -137,8 +138,9 @@ describe("rasterLayerHeatmapMixin", () => {
           {
             name: "heatmap_query",
             sql:
-              "SELECT reg_hex_horiz_pixel_bin_packed(conv_4326_900913_x(lon),-50,-50,conv_4326_900913_y(lat),50,50,1,1.1547005383792517,0,0,100,100) AS xy, " +
-              "count(*) AS color FROM tweets_nov_feb WHERE (lon = 100) GROUP BY xy"
+              "SELECT reg_hex_horiz_pixel_bin_x(conv_4326_900913_x(lon),-50,-50,conv_4326_900913_y(lat),50,50,1,1.1547005383792517,0,0,100,100) AS x, " +
+              "reg_hex_horiz_pixel_bin_y(conv_4326_900913_x(lon),-50,-50,conv_4326_900913_y(lat),50,50,1,1.1547005383792517,0,0,100,100) AS y, " +
+              "count(*) AS color FROM tweets_nov_feb WHERE (lon = 100) GROUP BY x, y"
           }
         ],
         width: 100,
@@ -166,10 +168,10 @@ describe("rasterLayerHeatmapMixin", () => {
             properties: {
               shape: "hexagon-horiz",
               xc: {
-                field: "xy"
+                field: "x"
               },
               yc: {
-                field: "xy"
+                field: "y"
               },
               width: 1,
               height: 1.1547005383792517,

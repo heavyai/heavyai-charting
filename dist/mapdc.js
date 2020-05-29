@@ -5644,9 +5644,11 @@ function hexBinSQL(sql, _ref, parser) {
 
   var args = parser.parseExpression(x.field) + "," + (hexminmercx + ",") + (hexmaxmercx + ",") + (parser.parseExpression(y.field) + ",") + (hexminmercy + ",") + (hexmaxmercy + ",") + (mark.width + ",") + (mark.height + ",") + (hexoffsetx + ",") + (hexoffsety + ",") + (width + ",") + ("" + height);
 
-  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_packed(" + args + ") AS xy");
+  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_x(" + args + ") AS x");
+  sql.select.push("reg_" + mark.shape + "_horiz_pixel_bin_y(" + args + ") AS y");
   sql.select.push(parser.parseExpression(aggregate) + " AS color");
-  sql.groupby.push("xy");
+  sql.groupby.push("x");
+  sql.groupby.push("y");
 
   return sql;
 }
@@ -5659,10 +5661,11 @@ function rectBinSQL(sql, _ref2, parser) {
       y = _ref2.y,
       aggregate = _ref2.aggregate;
 
-  sql.select.push("rect_pixel_bin_packed(" + parser.parseExpression(x.field) + ", " + x.domain[0] + ", " + x.domain[1] + ", " + parser.parseExpression(y.field) + ", " + y.domain[0] + ", " + y.domain[1] + ", " + mark.width + ", " + mark.height + ", 0, 0, " + width + ", " + height + ") AS xy");
-
+  sql.select.push("rect_pixel_bin_x(" + parser.parseExpression(x.field) + ", " + x.domain[0] + ", " + x.domain[1] + ", " + mark.width + ", 0, " + width + ") AS x");
+  sql.select.push("rect_pixel_bin_y(" + parser.parseExpression(y.field) + ", " + y.domain[0] + ", " + y.domain[1] + ", " + mark.height + ", 0, " + height + ") AS y");
   sql.select.push(parser.parseExpression(aggregate) + " AS color");
-  sql.groupby.push("xy");
+  sql.groupby.push("x");
+  sql.groupby.push("y");
 
   return sql;
 }
@@ -53654,10 +53657,10 @@ function rasterLayerHeatmapMixin(_layer) {
       properties: {
         shape: getMarkType(state.mark),
         xc: {
-          field: "xy"
+          field: "x"
         },
         yc: {
-          field: "xy"
+          field: "y"
         },
         width: markWidth,
         height: markHeight,
