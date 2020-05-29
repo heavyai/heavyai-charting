@@ -54221,7 +54221,7 @@ function rasterLayerPointMixin(_layer) {
     _vega = _layer.__genVega({
       layerName: layerName,
       table: _layer.crossfilter().getTable()[0],
-      filter: _layer.crossfilter().getFilterString(),
+      filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio()
@@ -88939,7 +88939,7 @@ function rasterLayerLineMixin(_layer) {
     _vega = _layer.__genVega({
       layerName: layerName,
       table: _layer.crossfilter().getTable()[0],
-      filter: _layer.crossfilter().getFilterString(),
+      filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio(),
