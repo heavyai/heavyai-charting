@@ -561,7 +561,7 @@ export default function rasterLayerPointMixin(_layer) {
       _layer
         .yDim()
         .groupAll()
-        .valueAsync()
+        .valueAsync(false, false, false, layerName)
         .then(value => {
           setLastFilteredSize(_layer.crossfilter().getId(), value)
         })
