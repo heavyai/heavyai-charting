@@ -211,7 +211,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _chart.destroyChart = function() {
     _legend.setState({})
 
-    // _chart.filterAll()
+    _chart.filterAll()
     for (const layerName in _layerNames) {
       const layer = _layerNames[layerName]
       layer.destroyLayer(_chart)
