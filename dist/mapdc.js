@@ -60572,7 +60572,7 @@ function filterMixin(_chart) {
     var isInverseFilter = event.metaKey || event.ctrlKey;
     _events.events.trigger(function () {
       _chart.filter(filter, isInverseFilter);
-      _chart.redrawGroup();
+      // _chart.redrawGroup()
     });
   };
 
