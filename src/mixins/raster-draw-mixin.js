@@ -404,11 +404,11 @@ export function rasterDrawMixin(chart) {
       }
     })
 
-    chart._invokeFilteredListener(chart.filters(), false)
+    return chart._invokeFilteredListener(chart.filters(), false)
   }
 
-  function drawEventHandler() {
-    applyFilter()
+  async function drawEventHandler() {
+    await applyFilter()
     redrawAllAsync(chart.chartGroup())
   }
 

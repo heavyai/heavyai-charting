@@ -353,8 +353,11 @@ export default function mapMixin(
       _yDim.filter([_chart._minCoord[1], _chart._maxCoord[1]])
       // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
       // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      redrawAllAsync(_chart.chartGroup())
-        .then(() => _chart._invokeBboxFilteredListener())
+      new Promise(resolve => {
+        _chart._invokeBboxFilteredListener()
+        resolve("filtered bbox")
+      })
+        .then(() => redrawAllAsync(_chart.chartGroup()))
         .catch(error => {
           resetRedrawStack()
           console.log("on move event redrawall error:", error)
@@ -362,8 +365,11 @@ export default function mapMixin(
     } else if (redrawall) {
       // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
       // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      redrawAllAsync(_chart.chartGroup())
-        .then(() => _chart._invokeBboxFilteredListener())
+      new Promise(resolve => {
+        _chart._invokeBboxFilteredListener()
+        resolve("filtered bbox")
+      })
+        .then(() => redrawAllAsync(_chart.chartGroup()))
         .catch(error => {
           resetRedrawStack()
           console.log("on move event redrawall error:", error)
@@ -378,8 +384,11 @@ export default function mapMixin(
       })
       // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
       // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      redrawAllAsync(_chart.chartGroup())
-        .then(() => _chart._invokeBboxFilteredListener())
+      new Promise(resolve => {
+        _chart._invokeBboxFilteredListener()
+        resolve("filtered bbox")
+      })
+        .then(() => redrawAllAsync(_chart.chartGroup()))
         .catch(error => {
           resetRedrawStack()
           console.log("on move event redrawall error:", error)

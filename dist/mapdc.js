@@ -7507,7 +7507,7 @@ function baseMixin(_chart) {
    * @private
    */
   _chart._invokeBboxFilteredListener = function () {
-    _listeners.bboxFiltered(_chart);
+    return _listeners.bboxFiltered(_chart);
   };
 
   var _hasFilterHandler = function _hasFilterHandler(filters, filter) {
@@ -34190,8 +34190,11 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       _yDim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
       // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
       // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function () {
-        return _chart._invokeBboxFilteredListener();
+      new Promise(function (resolve) {
+        _chart._invokeBboxFilteredListener();
+        resolve("filtered bbox");
+      }).then(function () {
+        return (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
       }).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
@@ -34199,8 +34202,11 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     } else if (redrawall) {
       // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
       // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function () {
-        return _chart._invokeBboxFilteredListener();
+      new Promise(function (resolve) {
+        _chart._invokeBboxFilteredListener();
+        resolve("filtered bbox");
+      }).then(function () {
+        return (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
       }).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
@@ -34215,8 +34221,11 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       });
       // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
       // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function () {
-        return _chart._invokeBboxFilteredListener();
+      new Promise(function (resolve) {
+        _chart._invokeBboxFilteredListener();
+        resolve("filtered bbox");
+      }).then(function () {
+        return (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
       }).catch(function (error) {
         (0, _coreAsync.resetRedrawStack)();
         console.log("on move event redrawall error:", error);
@@ -34686,6 +34695,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 /* istanbul ignore next */
@@ -34731,6 +34742,31 @@ function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
 
 /* istanbul ignore next */
 function rasterDrawMixin(chart) {
+  var drawEventHandler = function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return applyFilter();
+
+            case 2:
+              (0, _coreAsync.redrawAllAsync)(chart.chartGroup());
+
+            case 3:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    }));
+
+    return function drawEventHandler() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
   var drawEngine = null;
   var buttonController = null;
   var currXRange = null;
@@ -35003,12 +35039,7 @@ function rasterDrawMixin(chart) {
       }
     });
 
-    chart._invokeFilteredListener(chart.filters(), false);
-  }
-
-  function drawEventHandler() {
-    applyFilter();
-    (0, _coreAsync.redrawAllAsync)(chart.chartGroup());
+    return chart._invokeFilteredListener(chart.filters(), false);
   }
 
   var debounceRedraw = chart.debounce(function () {
@@ -54213,7 +54244,7 @@ function rasterLayerPointMixin(_layer) {
   _layer._genVega = function (chart, layerName, group, query) {
     // needed to set LastFilteredSize when point map first initialized
     if (_layer.yDim()) {
-      _layer.yDim().groupAll().valueAsync().then(function (value) {
+      _layer.yDim().groupAll().valueAsync(false, false, false, layerName).then(function (value) {
         (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
       });
     }
@@ -55045,10 +55076,14 @@ function rasterLayerPolyMixin(_layer) {
 
     chart.hidePopup();
     _events.events.trigger(function () {
-      _layer.filter(data[filterKey], isInverseFilter, filterKey, chart);
-      _listeners.filtered(_layer, _filtersArray);
-      chart.filter(data[filterKey], isInverseFilter);
-      chart.redrawGroup();
+      new Promise(function (resolve) {
+        _layer.filter(data[filterKey], isInverseFilter, filterKey, chart);
+        _listeners.filtered(_layer, _filtersArray);
+        chart.filter(data[filterKey], isInverseFilter);
+        resolve("filtered");
+      }).then(function () {
+        chart.redrawGroup();
+      });
     });
   };
 
@@ -88163,14 +88198,14 @@ function rasterLayer(layerType) {
     return _layer;
   };
 
-  function genHeatConfigFromChart(chart) {
+  function genHeatConfigFromChart(chart, layerName) {
     return {
       table: _layer.crossfilter().getTable()[0],
       width: Math.round(chart.width() * chart._getPixelRatio()),
       height: Math.round(chart.height() * chart._getPixelRatio()),
       min: chart.conv4326To900913(chart._minCoord),
       max: chart.conv4326To900913(chart._maxCoord),
-      filter: _layer.crossfilter().getFilterString(),
+      filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       neLat: chart._maxCoord[1],
       zoom: chart.zoom()
@@ -88192,7 +88227,7 @@ function rasterLayer(layerType) {
     }
 
     if (_layer.type === "heatmap") {
-      var vega = _layer._genVega(_extends({}, genHeatConfigFromChart(chart), {
+      var vega = _layer._genVega(_extends({}, genHeatConfigFromChart(chart, layerName), {
         layerName: layerName
       }));
       return vega;

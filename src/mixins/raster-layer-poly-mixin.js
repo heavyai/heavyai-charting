@@ -724,10 +724,14 @@ export default function rasterLayerPolyMixin(_layer) {
 
     chart.hidePopup()
     events.trigger(() => {
-      _layer.filter(data[filterKey], isInverseFilter, filterKey, chart)
-      _listeners.filtered(_layer, _filtersArray)
-      chart.filter(data[filterKey], isInverseFilter)
-      chart.redrawGroup()
+      new Promise(resolve => {
+        _layer.filter(data[filterKey], isInverseFilter, filterKey, chart)
+        _listeners.filtered(_layer, _filtersArray)
+        chart.filter(data[filterKey], isInverseFilter)
+        resolve("filtered")
+      }).then(() => {
+        chart.redrawGroup()
+      })
     })
   }
 
