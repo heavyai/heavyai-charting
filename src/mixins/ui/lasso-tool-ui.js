@@ -8,6 +8,34 @@ import { logger } from "../../utils/logger"
 /* istanbul ignore next */
 let LatLonCircleClass = null
 
+const styleMap = new Map()
+const colors = [
+  "#FF0000",
+  "#00FF00",
+  "#0000FF",
+  "#FFFF00",
+  "#FF00FF",
+  "#00FFFF",
+  "#FFFFFF"
+]
+
+function getStyleForLayer(style, layers) {
+  if (layers.length > 1) {
+    return style
+  }
+
+  if (!styleMap.has(layers[0])) {
+    const color = colors.shift()
+    styleMap.set(layers[0], {
+      ...style,
+      fillColor: color,
+      strokeColor: color
+    })
+  }
+
+  return styleMap.get(layers[0])
+}
+
 /* istanbul ignore next */
 export function getLatLonCircleClass() {
   if (!LatLonCircleClass) {
@@ -857,7 +885,7 @@ class LassoShapeHandler extends ShapeHandler {
             {
               verts: newverts
             },
-            this.defaultStyle
+            getStyleForLayer(this.defaultStyle, this.chart.getLayers())
           )
         )
         this.drawEngine.deleteShape(this.activeShape)
