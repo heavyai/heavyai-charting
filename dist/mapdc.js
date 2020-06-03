@@ -54213,7 +54213,7 @@ function rasterLayerPointMixin(_layer) {
   _layer._genVega = function (chart, layerName, group, query) {
     // needed to set LastFilteredSize when point map first initialized
     if (_layer.yDim()) {
-      _layer.yDim().groupAll().valueAsync().then(function (value) {
+      _layer.yDim().groupAll().valueAsync(false, false, false, layerName).then(function (value) {
         (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
       });
     }
@@ -72333,6 +72333,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 exports.getLatLonCircleClass = getLatLonCircleClass;
 
 var _utilsLatlon = __webpack_require__(188);
@@ -72361,6 +72363,25 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /* istanbul ignore next */
 var LatLonCircleClass = null;
+
+var styleMap = new Map();
+var colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#FFFFFF"];
+
+function getStyleForLayer(style, layers) {
+  if (layers.length > 1) {
+    return style;
+  }
+
+  if (!styleMap.has(layers[0])) {
+    var color = colors.shift();
+    styleMap.set(layers[0], _extends({}, style, {
+      fillColor: color,
+      strokeColor: color
+    }));
+  }
+
+  return styleMap.get(layers[0]);
+}
 
 /* istanbul ignore next */
 function getLatLonCircleClass() {
@@ -73146,7 +73167,7 @@ var LassoShapeHandler = function (_ShapeHandler3) {
         } else {
           var poly = new MapdDraw.Poly(Object.assign({
             verts: newverts
-          }, this.defaultStyle));
+          }, getStyleForLayer(this.defaultStyle, this.chart.getLayers())));
           this.drawEngine.deleteShape(this.activeShape);
           this.setupFinalShape(poly);
           event.preventDefault();
@@ -88163,14 +88184,14 @@ function rasterLayer(layerType) {
     return _layer;
   };
 
-  function genHeatConfigFromChart(chart) {
+  function genHeatConfigFromChart(chart, layerName) {
     return {
       table: _layer.crossfilter().getTable()[0],
       width: Math.round(chart.width() * chart._getPixelRatio()),
       height: Math.round(chart.height() * chart._getPixelRatio()),
       min: chart.conv4326To900913(chart._minCoord),
       max: chart.conv4326To900913(chart._maxCoord),
-      filter: _layer.crossfilter().getFilterString(),
+      filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       neLat: chart._maxCoord[1],
       zoom: chart.zoom()
@@ -88192,7 +88213,7 @@ function rasterLayer(layerType) {
     }
 
     if (_layer.type === "heatmap") {
-      var vega = _layer._genVega(_extends({}, genHeatConfigFromChart(chart), {
+      var vega = _layer._genVega(_extends({}, genHeatConfigFromChart(chart, layerName), {
         layerName: layerName
       }));
       return vega;
