@@ -409,7 +409,7 @@ export function rasterDrawMixin(chart) {
 
   function drawEventHandler() {
     applyFilter()
-    redrawAllAsync(chart.chartGroup())
+    setTimeout(() => redrawAllAsync(chart.chartGroup()))
   }
 
   const debounceRedraw = chart.debounce(() => {
