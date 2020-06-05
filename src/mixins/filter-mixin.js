@@ -227,7 +227,7 @@ export default function filterMixin(_chart) {
     const isInverseFilter = event.metaKey || event.ctrlKey
     events.trigger(() => {
       _chart.filter(filter, isInverseFilter)
-      _chart.redrawGroup()
+      // _chart.redrawGroup()
     })
   }
 

@@ -1074,7 +1074,7 @@ export default function baseMixin(_chart) {
    * @private
    */
   _chart._invokeBboxFilteredListener = function() {
-    _listeners.bboxFiltered(_chart)
+    return _listeners.bboxFiltered(_chart)
   }
 
   let _hasFilterHandler = function(filters, filter) {
