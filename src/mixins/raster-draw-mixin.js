@@ -407,9 +407,8 @@ export function rasterDrawMixin(chart) {
     return chart._invokeFilteredListener(chart.filters(), false)
   }
 
-  async function drawEventHandler() {
-    await applyFilter()
-    redrawAllAsync(chart.chartGroup())
+  function drawEventHandler() {
+    applyFilter().then(() => redrawAllAsync(chart.chartGroup()))
   }
 
   const debounceRedraw = chart.debounce(() => {
