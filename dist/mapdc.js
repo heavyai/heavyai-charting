@@ -34283,6 +34283,20 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     return _chart;
   };
 
+  _chart.flyTo = function (zoom, center) {
+    if (!arguments.length) {
+      _center = _map.getCenter();
+      return _center;
+    }
+
+    _zoom = zoom;
+    _center = center;
+    if (_mapInitted) {
+      _map.flyTo({ center: _center, zoom: _zoom });
+    }
+    return _chart;
+  };
+
   _chart.attribLocation = function (_) {
     if (!arguments.length) {
       return _attribLocation;
