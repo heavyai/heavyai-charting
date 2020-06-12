@@ -67,26 +67,12 @@ export function filterHandlerWithChartContext(_chart) {
       if (_chart.clearTableFilter) {
         _chart.clearTableFilter() // global filter also will clear all the columns filters on the table
       }
-    } else if (_chart.hasOwnProperty("rangeFocused")) {
-      dimension.filterMulti(
-        filters,
-        _chart.rangeFocused(),
-        _chart.filtersInverse(),
-        _chart.group().binParams()
-      )
     } else if (
       _chart.getFilteredColumns &&
       Object.keys(_chart.getFilteredColumns()).length > 0
     ) {
       // case for column filtering on measures
       return filters
-    } else {
-      dimension.filterMulti(
-        filters,
-        undefined,
-        _chart.filtersInverse(),
-        _chart.group().binParams()
-      ) // eslint-disable-line no-undefined
     }
     return filters
   }

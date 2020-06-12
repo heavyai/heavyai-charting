@@ -60394,13 +60394,9 @@ function filterHandlerWithChartContext(_chart) {
       if (_chart.clearTableFilter) {
         _chart.clearTableFilter(); // global filter also will clear all the columns filters on the table
       }
-    } else if (_chart.hasOwnProperty("rangeFocused")) {
-      dimension.filterMulti(filters, _chart.rangeFocused(), _chart.filtersInverse(), _chart.group().binParams());
     } else if (_chart.getFilteredColumns && Object.keys(_chart.getFilteredColumns()).length > 0) {
       // case for column filtering on measures
       return filters;
-    } else {
-      dimension.filterMulti(filters, undefined, _chart.filtersInverse(), _chart.group().binParams()); // eslint-disable-line no-undefined
     }
     return filters;
   };
@@ -84368,10 +84364,25 @@ function mapdTable(parent, chartGroup) {
         if (_isGroupedData) {
           _chart.onClick(d);
         } else if (col.expression in _filteredColumns) {
-          clearColFilter(col.expression);
+          delete _columnFilterMap[col.expression];
+          // this doesn't work. It ~never~ worked.
+          // const filterArray = cols.map(c => _columnFilterMap[c.expression])
+          var filterArray = [];
+          _chart.removeFilteredColumn(col.expression);
+          if (filterArray.some(function (f) {
+            return f !== undefined && f !== null;
+          })) {
+            _chart.onClick(filterArray); // will update global filter Clear icon
+          } else {
+            _chart.filterAll();
+          }
+          (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
         } else {
           filterCol(col.expression, d[col.name]);
-          _chart.onClick(d[col.name]); // will update global filter Clear icon
+          var _filterArray = cols.map(function (c) {
+            return _columnFilterMap[c.expression];
+          });
+          _chart.onClick(_filterArray); // will update global filter Clear icon
         }
       });
     });
@@ -84442,8 +84453,6 @@ function mapdTable(parent, chartGroup) {
     } else if (type === "DATE") {
       var dateFormat = _d2.default.time.format.utc("%Y-%m-%d");
       val = "DATE '" + dateFormat(val) + "'";
-    } else if (val && typeof val === "string") {
-      val = "'" + val.replace(/'/g, "''") + "'";
     }
 
     _chart.addFilteredColumn(expr);

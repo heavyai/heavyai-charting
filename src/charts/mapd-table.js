@@ -364,10 +364,21 @@ export default function mapdTable(parent, chartGroup) {
           if (_isGroupedData) {
             _chart.onClick(d)
           } else if (col.expression in _filteredColumns) {
-            clearColFilter(col.expression)
+            delete _columnFilterMap[col.expression]
+            // this doesn't work. It ~never~ worked.
+            // const filterArray = cols.map(c => _columnFilterMap[c.expression])
+            const filterArray = []
+            _chart.removeFilteredColumn(col.expression)
+            if (filterArray.some(f => f !== undefined && f !== null)) {
+              _chart.onClick(filterArray) // will update global filter Clear icon
+            } else {
+              _chart.filterAll()
+            }
+            redrawAllAsync(_chart.chartGroup())
           } else {
             filterCol(col.expression, d[col.name])
-            _chart.onClick(d[col.name]) // will update global filter Clear icon
+            const filterArray = cols.map(c => _columnFilterMap[c.expression])
+            _chart.onClick(filterArray) // will update global filter Clear icon
           }
         })
     })
@@ -513,8 +524,6 @@ export default function mapdTable(parent, chartGroup) {
     } else if (type === "DATE") {
       const dateFormat = d3.time.format.utc("%Y-%m-%d")
       val = "DATE '" + dateFormat(val) + "'"
-    } else if (val && typeof val === "string") {
-      val = "'" + val.replace(/'/g, "''") + "'"
     }
 
     _chart.addFilteredColumn(expr)
