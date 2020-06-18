@@ -509,7 +509,7 @@ export default function rasterLayerPolyMixin(_layer) {
             field: "y"
           },
           fillColor,
-          /* 
+          /*
             "fillColor" is a special keyword to set strokeColor the same as fillColor
             otherwise it will be strokeColor or white
           */
@@ -724,10 +724,14 @@ export default function rasterLayerPolyMixin(_layer) {
 
     chart.hidePopup()
     events.trigger(() => {
-      _layer.filter(data[filterKey], isInverseFilter, filterKey, chart)
-      chart.filter(data[filterKey], isInverseFilter)
-      _listeners.filtered(_layer, _filtersArray)
-      chart.redrawGroup()
+      new Promise(resolve => {
+        _layer.filter(data[filterKey], isInverseFilter, filterKey, chart)
+        _listeners.filtered(_layer, _filtersArray)
+        chart.filter(data[filterKey], isInverseFilter)
+        resolve("filtered")
+      }).then(() => {
+        chart.redrawGroup()
+      })
     })
   }
 

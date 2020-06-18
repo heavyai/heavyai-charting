@@ -561,7 +561,7 @@ export default function rasterLayerPointMixin(_layer) {
       _layer
         .yDim()
         .groupAll()
-        .valueAsync()
+        .valueAsync(false, false, false, layerName)
         .then(value => {
           setLastFilteredSize(_layer.crossfilter().getId(), value)
         })
@@ -570,7 +570,7 @@ export default function rasterLayerPointMixin(_layer) {
     _vega = _layer.__genVega({
       layerName,
       table: _layer.crossfilter().getTable()[0],
-      filter: _layer.crossfilter().getFilterString(),
+      filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio()

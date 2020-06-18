@@ -7504,7 +7504,7 @@ function baseMixin(_chart) {
    * @private
    */
   _chart._invokeBboxFilteredListener = function () {
-    _listeners.bboxFiltered(_chart);
+    return _listeners.bboxFiltered(_chart);
   };
 
   var _hasFilterHandler = function _hasFilterHandler(filters, filter) {
@@ -34182,46 +34182,45 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       });
     }
 
-    if (_xDim !== null && _yDim !== null) {
-      _xDim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
-      _yDim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
-      // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
-      // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function () {
-        return _chart._invokeBboxFilteredListener();
-      }).catch(function (error) {
-        (0, _coreAsync.resetRedrawStack)();
-        console.log("on move event redrawall error:", error);
-      });
-    } else if (redrawall) {
-      // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
-      // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function () {
-        return _chart._invokeBboxFilteredListener();
-      }).catch(function (error) {
-        (0, _coreAsync.resetRedrawStack)();
-        console.log("on move event redrawall error:", error);
-      });
-    } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
-      // spatial filter on only single data source
-      _viewBoxDim.filterST_Min_ST_Max({
-        lonMin: _chart._minCoord[0],
-        lonMax: _chart._maxCoord[0],
-        latMin: _chart._minCoord[1],
-        latMax: _chart._maxCoord[1]
-      });
-      // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
-      // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
-      (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).then(function () {
-        return _chart._invokeBboxFilteredListener();
-      }).catch(function (error) {
-        (0, _coreAsync.resetRedrawStack)();
-        console.log("on move event redrawall error:", error);
-      });
-    } else {
-      _chart._projectionFlag = true;
-      _chart.redrawAsync();
-    }
+    // when in doubt, setTimeout
+    // defer the redraw calls to the next tick of the event loop, so that the drag handler has woken up and updated the filters.
+    // this is a band-aid and should be fixed in the future.
+    setTimeout(function () {
+      if (_xDim !== null && _yDim !== null) {
+        _xDim.filter([_chart._minCoord[0], _chart._maxCoord[0]]);
+        _yDim.filter([_chart._minCoord[1], _chart._maxCoord[1]]);
+        // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
+        // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
+        (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
+          (0, _coreAsync.resetRedrawStack)();
+          console.log("on move event redrawall error:", error);
+        });
+      } else if (redrawall) {
+        // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
+        // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
+        (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
+          (0, _coreAsync.resetRedrawStack)();
+          console.log("on move event redrawall error:", error);
+        });
+      } else if (_viewBoxDim !== null && layer.getState().data.length < 2) {
+        // spatial filter on only single data source
+        _viewBoxDim.filterST_Min_ST_Max({
+          lonMin: _chart._minCoord[0],
+          lonMax: _chart._maxCoord[0],
+          latMin: _chart._minCoord[1],
+          latMax: _chart._maxCoord[1]
+        });
+        // when bbox changes, we send bbox filter change event to the event listener in immerse where we decide whether or not
+        // to update other charts bbox filter and their map extent based on their linkedZoomEnabled flag
+        (0, _coreAsync.redrawAllAsync)(_chart.chartGroup()).catch(function (error) {
+          (0, _coreAsync.resetRedrawStack)();
+          console.log("on move event redrawall error:", error);
+        });
+      } else {
+        _chart._projectionFlag = true;
+        _chart.redrawAsync();
+      }
+    }, 0);
   }
 
   // Force the map to display the mapbox logo
@@ -35000,12 +34999,14 @@ function rasterDrawMixin(chart) {
       }
     });
 
-    chart._invokeFilteredListener(chart.filters(), false);
+    return chart._invokeFilteredListener(chart.filters(), false);
   }
 
   function drawEventHandler() {
     applyFilter();
-    (0, _coreAsync.redrawAllAsync)(chart.chartGroup());
+    setTimeout(function () {
+      return (0, _coreAsync.redrawAllAsync)(chart.chartGroup());
+    });
   }
 
   var debounceRedraw = chart.debounce(function () {
@@ -54210,7 +54211,7 @@ function rasterLayerPointMixin(_layer) {
   _layer._genVega = function (chart, layerName, group, query) {
     // needed to set LastFilteredSize when point map first initialized
     if (_layer.yDim()) {
-      _layer.yDim().groupAll().valueAsync().then(function (value) {
+      _layer.yDim().groupAll().valueAsync(false, false, false, layerName).then(function (value) {
         (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
       });
     }
@@ -54218,7 +54219,7 @@ function rasterLayerPointMixin(_layer) {
     _vega = _layer.__genVega({
       layerName: layerName,
       table: _layer.crossfilter().getTable()[0],
-      filter: _layer.crossfilter().getFilterString(),
+      filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio()
@@ -54849,7 +54850,7 @@ function rasterLayerPolyMixin(_layer) {
           field: "y"
         },
         fillColor: fillColor,
-        /* 
+        /*
           "fillColor" is a special keyword to set strokeColor the same as fillColor
           otherwise it will be strokeColor or white
         */
@@ -55042,10 +55043,14 @@ function rasterLayerPolyMixin(_layer) {
 
     chart.hidePopup();
     _events.events.trigger(function () {
-      _layer.filter(data[filterKey], isInverseFilter, filterKey, chart);
-      chart.filter(data[filterKey], isInverseFilter);
-      _listeners.filtered(_layer, _filtersArray);
-      chart.redrawGroup();
+      new Promise(function (resolve) {
+        _layer.filter(data[filterKey], isInverseFilter, filterKey, chart);
+        _listeners.filtered(_layer, _filtersArray);
+        chart.filter(data[filterKey], isInverseFilter);
+        resolve("filtered");
+      }).then(function () {
+        chart.redrawGroup();
+      });
     });
   };
 
@@ -60386,13 +60391,9 @@ function filterHandlerWithChartContext(_chart) {
       if (_chart.clearTableFilter) {
         _chart.clearTableFilter(); // global filter also will clear all the columns filters on the table
       }
-    } else if (_chart.hasOwnProperty("rangeFocused")) {
-      dimension.filterMulti(filters, _chart.rangeFocused(), _chart.filtersInverse(), _chart.group().binParams());
     } else if (_chart.getFilteredColumns && Object.keys(_chart.getFilteredColumns()).length > 0) {
       // case for column filtering on measures
       return filters;
-    } else {
-      dimension.filterMulti(filters, undefined, _chart.filtersInverse(), _chart.group().binParams()); // eslint-disable-line no-undefined
     }
     return filters;
   };
@@ -60534,7 +60535,7 @@ function filterMixin(_chart) {
     var isInverseFilter = event.metaKey || event.ctrlKey;
     _events.events.trigger(function () {
       _chart.filter(filter, isInverseFilter);
-      _chart.redrawGroup();
+      // _chart.redrawGroup()
     });
   };
 
@@ -84360,10 +84361,25 @@ function mapdTable(parent, chartGroup) {
         if (_isGroupedData) {
           _chart.onClick(d);
         } else if (col.expression in _filteredColumns) {
-          clearColFilter(col.expression);
+          delete _columnFilterMap[col.expression];
+          // this doesn't work. It ~never~ worked.
+          // const filterArray = cols.map(c => _columnFilterMap[c.expression])
+          var filterArray = [];
+          _chart.removeFilteredColumn(col.expression);
+          if (filterArray.some(function (f) {
+            return f !== undefined && f !== null;
+          })) {
+            _chart.onClick(filterArray); // will update global filter Clear icon
+          } else {
+            _chart.filterAll();
+          }
+          (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
         } else {
           filterCol(col.expression, d[col.name]);
-          _chart.onClick(d[col.name]); // will update global filter Clear icon
+          var _filterArray = cols.map(function (c) {
+            return _columnFilterMap[c.expression];
+          });
+          _chart.onClick(_filterArray); // will update global filter Clear icon
         }
       });
     });
@@ -84434,8 +84450,6 @@ function mapdTable(parent, chartGroup) {
     } else if (type === "DATE") {
       var dateFormat = _d2.default.time.format.utc("%Y-%m-%d");
       val = "DATE '" + dateFormat(val) + "'";
-    } else if (val && typeof val === "string") {
-      val = "'" + val.replace(/'/g, "''") + "'";
     }
 
     _chart.addFilteredColumn(expr);
@@ -88160,14 +88174,14 @@ function rasterLayer(layerType) {
     return _layer;
   };
 
-  function genHeatConfigFromChart(chart) {
+  function genHeatConfigFromChart(chart, layerName) {
     return {
       table: _layer.crossfilter().getTable()[0],
       width: Math.round(chart.width() * chart._getPixelRatio()),
       height: Math.round(chart.height() * chart._getPixelRatio()),
       min: chart.conv4326To900913(chart._minCoord),
       max: chart.conv4326To900913(chart._maxCoord),
-      filter: _layer.crossfilter().getFilterString(),
+      filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       neLat: chart._maxCoord[1],
       zoom: chart.zoom()
@@ -88189,7 +88203,7 @@ function rasterLayer(layerType) {
     }
 
     if (_layer.type === "heatmap") {
-      var vega = _layer._genVega(_extends({}, genHeatConfigFromChart(chart), {
+      var vega = _layer._genVega(_extends({}, genHeatConfigFromChart(chart, layerName), {
         layerName: layerName
       }));
       return vega;
@@ -88936,7 +88950,7 @@ function rasterLayerLineMixin(_layer) {
     _vega = _layer.__genVega({
       layerName: layerName,
       table: _layer.crossfilter().getTable()[0],
-      filter: _layer.crossfilter().getFilterString(),
+      filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio(),

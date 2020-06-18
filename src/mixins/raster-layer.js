@@ -168,14 +168,14 @@ export default function rasterLayer(layerType) {
     return _layer
   }
 
-  function genHeatConfigFromChart(chart) {
+  function genHeatConfigFromChart(chart, layerName) {
     return {
       table: _layer.crossfilter().getTable()[0],
       width: Math.round(chart.width() * chart._getPixelRatio()),
       height: Math.round(chart.height() * chart._getPixelRatio()),
       min: chart.conv4326To900913(chart._minCoord),
       max: chart.conv4326To900913(chart._maxCoord),
-      filter: _layer.crossfilter().getFilterString(),
+      filter: _layer.crossfilter().getFilterString(layerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       neLat: chart._maxCoord[1],
       zoom: chart.zoom()
@@ -198,7 +198,7 @@ export default function rasterLayer(layerType) {
 
     if (_layer.type === "heatmap") {
       const vega = _layer._genVega({
-        ...genHeatConfigFromChart(chart),
+        ...genHeatConfigFromChart(chart, layerName),
         layerName
       })
       return vega
