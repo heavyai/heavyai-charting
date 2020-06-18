@@ -1,5 +1,4 @@
 import { createParser } from "mapd-data-layer-2"
-import R from "ramda"
 
 const TABLE = "tweets_nov_feb"
 const MAP_STYLE = "mapbox://styles/mapbox/light-v8"

@@ -1,4 +1,3 @@
-import { adjust, lensProp, set } from "ramda"
 import d3 from "d3"
 
 export default function elasticDimensionMixin(_chart) {
@@ -41,13 +40,14 @@ export default function elasticDimensionMixin(_chart) {
         if (!bounds) {
           return _dataAsync(group, callback)
         }
-
+        
+        const newBinParams = Array.from(_chart.binParams())
+        newBinParams[0] = {
+          ...newBinParams[0],
+          binBounds: [bounds.min_val, bounds.max_val]
+        }
         _chart.binParams(
-          adjust(
-            set(lensProp("binBounds"), [bounds.min_val, bounds.max_val]),
-            0,
-            _chart.binParams()
-          )
+          newBinParams
         )
 
         if (_chart.focusChart() && _chart.filter()) {
