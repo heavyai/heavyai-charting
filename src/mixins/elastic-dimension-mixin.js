@@ -40,15 +40,13 @@ export default function elasticDimensionMixin(_chart) {
         if (!bounds) {
           return _dataAsync(group, callback)
         }
-        
+
         const newBinParams = Array.from(_chart.binParams())
         newBinParams[0] = {
           ...newBinParams[0],
           binBounds: [bounds.min_val, bounds.max_val]
         }
-        _chart.binParams(
-          newBinParams
-        )
+        _chart.binParams(newBinParams)
 
         if (_chart.focusChart() && _chart.filter()) {
           _chart
