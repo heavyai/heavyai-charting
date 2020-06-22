@@ -268,12 +268,32 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   function getCountFromBoundingBox(chart, _layer) {
     const mapBounds = chart.map().getBounds()
-    const geoTable = _layer.getState().encoding.geoTable
-    const geoCol = _layer.getState().encoding.geocol
+
+    const layerState = _layer.getState()
+
+    const geoTable = layerState.encoding.geoTable
+    const geoCol = layerState.encoding.geocol
+
+    const dataTables = layerState.data
+      .map(({ table }) => table)
+      .filter(table => table !== geoTable)
 
     const preflightQuery = `SELECT COUNT(*) AS n FROM ${geoTable} WHERE ST_XMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lng} AND ST_XMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lng} AND ST_YMax(${geoTable}.${geoCol}) >= ${mapBounds._sw.lat} AND ST_YMin(${geoTable}.${geoCol}) <= ${mapBounds._ne.lat}`
 
-    return chart.con().queryAsync(preflightQuery, {})
+    const neon = {
+      type: "chart",
+      reason: "bbox count",
+      dcFlag: chart.__dcFlag__,
+      layerId: layerState.currentLayer,
+      table: geoTable,
+      ...(dataTables.length > 0
+        ? {
+            factTable: dataTables[0]
+          }
+        : {})
+    }
+
+    return chart.con().queryAsync(preflightQuery, { neon })
   }
 
   function handleRenderVega(callback) {
@@ -281,9 +301,18 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart._updateXAndYScales(bounds)
 
     _chart._vegaSpec = genLayeredVega(_chart)
+
+    const neon = {
+      type: "render",
+      dcFlag: _chart.__dcFlag__,
+      vegaSpec: _chart._vegaSpec
+    }
+
     _chart
       .con()
-      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
+      .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {
+        neon
+      })
       .then(result => {
         _renderBoundsMap[result.nonce] = bounds
         callback(null, result)
