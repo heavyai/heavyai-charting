@@ -78689,7 +78689,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     _chart._vegaSpec = genLayeredVega(_chart, group, (0, _coreAsync.lastFilteredSize)(group.getCrossfilterId()));
 
-    var result = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec));
+    var neon = {
+      type: "render",
+      dcFlag: _chart.__dcFlag__,
+      vegaSpec: _chart._vegaSpec
+    };
+
+    var result = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), { neon: neon });
 
     _renderBoundsMap[result.nonce] = bounds;
     return result;

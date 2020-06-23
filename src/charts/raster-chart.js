@@ -364,9 +364,15 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       lastFilteredSize(group.getCrossfilterId())
     )
 
+    const neon = {
+      type: "render",
+      dcFlag: _chart.__dcFlag__,
+      vegaSpec: _chart._vegaSpec
+    }
+
     const result = _chart
       .con()
-      .renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec))
+      .renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), { neon })
 
     _renderBoundsMap[result.nonce] = bounds
     return result
