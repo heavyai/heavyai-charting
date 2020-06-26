@@ -50,6 +50,7 @@ export default function lockAxisMixin(chart) {
     _listeners.elasticX(chart)
   }
   chart._invokeXDomainListener = function(minMax) {
+    console.log(`minMax => `, minMax)
     _listeners.xDomain(chart, minMax)
   }
 
@@ -68,10 +69,13 @@ export default function lockAxisMixin(chart) {
   }
 
   function setAxis(type, minMax) {
+    console.log(`chart => `, chart)
+    console.log(`type, minMax => `, type, minMax)
     if (type === "y") {
       chart.elasticY(false)
       chart._invokeelasticYListener()
       chart.y().domain(minMax)
+      console.log(`chart.y().domain() => `, chart.y().domain())
       chart._invokeYDomainListener(minMax)
     } else {
       if (chart.rangeChart && chart.rangeChart()) {
@@ -96,6 +100,9 @@ export default function lockAxisMixin(chart) {
         chart.focusChart().renderAsync()
       }
     }
+    console.log('wtf 2? calling renderAsync()', chart)
+    console.log(`chart.elasticY() => `, chart.elasticY())
+    console.log(`chart.y().domain().slice() => `, chart.y().domain().slice())
     chart.renderAsync()
   }
 
@@ -146,6 +153,7 @@ export default function lockAxisMixin(chart) {
   }
 
   function updateMinMax(type, value) {
+    console.log(`updateMinMax => `, { type, value })
     if (
       value.some(isNaN) ||
       value[1] <= value[0] ||
@@ -170,6 +178,8 @@ export default function lockAxisMixin(chart) {
   }
 
   chart.prepareLockAxis = function(type = "y") {
+    console.log(`type => `, type)
+    console.log(`chart.focusChart && chart.focusChart() => `, chart.focusChart && chart.focusChart())
     if (chart.focusChart && chart.focusChart() && type === "y") {
       return
     }
@@ -213,6 +223,8 @@ export default function lockAxisMixin(chart) {
       .domain()
       .slice()
 
+    console.log(`HUH??!?! minMax => `, minMax)
+
     chart
       .root()
       .selectAll(`.axis-lock.type-${type}`)
@@ -231,6 +243,7 @@ export default function lockAxisMixin(chart) {
       .style("top", hitBoxDim.top)
       .style("left", hitBoxDim.left)
 
+    console.log(`wtf?? chart.elasticY() => `, chart.elasticY())
     lockWrapper
       .append("div")
       .attr("class", `lock-toggle type-${type}`)
@@ -263,6 +276,7 @@ export default function lockAxisMixin(chart) {
           minMax[1] instanceof Date
             ? moment(this.value, DATE_FORMAT).toDate()
             : parseFloatStrict(this.value.replace(/,/g, ""))
+        console.log(`type, [minMax[0], val] => `, type, [minMax[0], val])
         updateMinMax(type, [minMax[0], val])
       })
       .on("keyup", function() {
@@ -271,7 +285,9 @@ export default function lockAxisMixin(chart) {
         }
       })
 
-    axisMax.append("div").text(formatVal(minMax[1]))
+    const maxVal = formatVal(minMax[1])
+    console.log(`maxVal => `, maxVal)
+    axisMax.append("div").text(maxVal)
 
     const axisMin = lockWrapper
       .append("div")

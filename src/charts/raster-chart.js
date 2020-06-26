@@ -17,6 +17,7 @@ import { Legend } from "legendables"
 import * as _ from "lodash"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
+  console.log(`parent, useMap, chartGroup, _mapboxgl => `, parent, useMap, chartGroup, _mapboxgl)
   let _chart = null
   let _legend = null
 
