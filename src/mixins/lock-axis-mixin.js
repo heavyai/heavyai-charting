@@ -100,9 +100,8 @@ export default function lockAxisMixin(chart) {
         chart.focusChart().renderAsync()
       }
     }
-    console.log('wtf 2? calling renderAsync()', chart)
-    console.log(`chart.elasticY() => `, chart.elasticY())
-    console.log(`chart.y().domain().slice() => `, chart.y().domain().slice())
+    console.log(`chart.elasticY() => `, JSON.parse(JSON.stringify(chart.elasticY())))
+    console.log(`chart.y().domain().slice() => `, JSON.parse(JSON.stringify(chart.y().domain().slice())))
     chart.renderAsync()
   }
 
@@ -171,8 +170,13 @@ export default function lockAxisMixin(chart) {
               .x()
               .domain()[1]))
     ) {
+      console.log('are we getting in here??', type)
+      console.log(`value => `, value)
+      console.log(`value.some(isNaN) => `, value.some(isNaN))
+      console.log(`value[1] <= value[0] => `, value[1] <= value[0])
       chart.prepareLockAxis(type)
     } else {
+      console.log('calling setAxis => ', {type, value})
       setAxis(type, value)
     }
   }

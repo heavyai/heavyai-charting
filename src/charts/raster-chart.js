@@ -278,7 +278,9 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   }
 
   function handleRenderVega(callback) {
+    console.log(`handleRenderVega => `)
     const bounds = _chart.getDataRenderBounds()
+    console.log(`bounds => `, JSON.parse(JSON.stringify(bounds)))
     _chart._updateXAndYScales(bounds)
 
     _chart._vegaSpec = genLayeredVega(_chart)
@@ -323,6 +325,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   })
 
   _chart.data(group => {
+    console.log(`_chart.data =>`)
     if (_chart.dataCache !== null) {
       return _chart.dataCache
     }
@@ -719,6 +722,7 @@ function genLayeredVega(chart) {
   const xdom = chart.x().domain()
   const ydom = chart.y().domain()
 
+  console.log(`ydom => `, JSON.parse(JSON.stringify(ydom)))
   const data = []
 
   const scales = [
