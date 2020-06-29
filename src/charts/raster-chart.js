@@ -5,19 +5,16 @@ import {
   handleLegendLock,
   handleLegendOpen,
   handleLegendToggle,
-  toLegendState
 } from "../chart-addons/stacked-legend"
 import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
 import baseMixin from "../mixins/base-mixin"
 import scatterMixin from "../mixins/scatter-mixin"
-import { rasterDrawMixin } from "../mixins/raster-draw-mixin"
 import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
 import * as _ from "lodash"
 
 export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
-  console.log(`parent, useMap, chartGroup, _mapboxgl => `, parent, useMap, chartGroup, _mapboxgl)
   let _chart = null
   let _legend = null
 
@@ -278,9 +275,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   }
 
   function handleRenderVega(callback) {
-    console.log(`handleRenderVega => `)
     const bounds = _chart.getDataRenderBounds()
-    console.log(`bounds => `, JSON.parse(JSON.stringify(bounds)))
     _chart._updateXAndYScales(bounds)
 
     _chart._vegaSpec = genLayeredVega(_chart)
@@ -325,7 +320,6 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   })
 
   _chart.data(group => {
-    console.log(`_chart.data =>`)
     if (_chart.dataCache !== null) {
       return _chart.dataCache
     }
@@ -719,10 +713,6 @@ function genLayeredVega(chart) {
       ? chart.effectiveHeight()
       : chart.height()) * pixelRatio
 
-  const xdom = chart.x().domain()
-  const ydom = chart.y().domain()
-
-  console.log(`ydom => `, JSON.parse(JSON.stringify(ydom)))
   const data = []
 
   const scales = [

@@ -1361,7 +1361,6 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     const transitionDuration = (render ? _chart.transitionDuration() : 10)
 
     prepareXAxis(_chart.g(), _chart.x(), render, transitionDuration)
-    console.log(`drawChart => `, _chart.y().domain())
     _chart._prepareYAxis(_chart.g(), _chart.y(), transitionDuration)
 
     if (_chart.elasticX() || _resizing || render) {

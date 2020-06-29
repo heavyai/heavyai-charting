@@ -76,17 +76,21 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
       })
     }
 
+    // If the chart already has a manually-set domain on either axis, use that
+    //  instead of anything coming out of dimensions.
+    //  https://omnisci.atlassian.net/browse/FE-11696
     const yDomain = chart.y && chart.y() && chart.y().domain()
-    console.log(`yDomain && yDomain.length && !yDomain.some(v => v === null) => `, JSON.parse(JSON.stringify(yDomain && yDomain.length && !yDomain.some(v => v === null))))
-    console.log(`yRanges => `, JSON.parse(JSON.stringify(yRanges)))
+    const xDomain = chart.x && chart.x() && chart.x().domain()
     const actualYRanges =
       yDomain && yDomain.length && !yDomain.some(v => v === null) ?
         [yDomain] : yRanges
-    console.log(`actualYRanges => `, JSON.parse(JSON.stringify(actualYRanges)))
+    const actualXRanges =
+      xDomain && xDomain.length && !xDomain.some(v => v === null) ?
+        [xDomain] : xRanges
     return {
       xDims,
       yDims,
-      xRanges,
+      xRanges: actualXRanges,
       yRanges: actualYRanges
     }
   }
