@@ -62,7 +62,6 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
 
     addDimAndRange(chart.xDim(), xDims, xRanges)
     addDimAndRange(chart.yDim(), yDims, yRanges)
-    chart.y && chart.y() && console.log(`chart.y().domain() => `, JSON.parse(JSON.stringify(chart.y().domain())))
 
     if (typeof chart.getLayers === "function") {
       _chart.getLayers().forEach(layer => {
@@ -99,7 +98,6 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
     const dimRangeData = initializeXYDimsAndRanges(_chart)
     const xRanges = dimRangeData.xRanges
     const yRanges = dimRangeData.yRanges
-    console.log(`yRanges => `, JSON.parse(JSON.stringify(yRanges)))
 
     if (!xRanges.length) {
       // default to a 0-1 range
