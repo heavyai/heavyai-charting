@@ -213,7 +213,6 @@ export default function lockAxisMixin(chart) {
       .domain()
       .slice()
 
-
     chart
       .root()
       .selectAll(`.axis-lock.type-${type}`)

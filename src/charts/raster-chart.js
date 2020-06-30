@@ -4,7 +4,7 @@ import {
   handleLegendInput,
   handleLegendLock,
   handleLegendOpen,
-  handleLegendToggle,
+  handleLegendToggle
 } from "../chart-addons/stacked-legend"
 import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
