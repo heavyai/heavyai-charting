@@ -616,7 +616,6 @@ body {
     position: absolute;
     font-size: 13px !important;
     color: #a7a7a7;
-    font-weight: bold;
     z-index: 2;
     pointer-events: none;
     height: 18px;
@@ -658,7 +657,6 @@ body {
       cursor: text;
       width: 100%;
       color: #a7a7a7;
-      font-weight: bold;
       outline: none;
       text-align: center;
       opacity: 0;

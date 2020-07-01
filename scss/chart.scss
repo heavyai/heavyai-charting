@@ -415,7 +415,6 @@ body {
         position: absolute;
         font-size: 13px !important;
         color: $gray4;
-        font-weight: bold;
         z-index: 2;
         pointer-events: none;
         height: 18px;
@@ -469,7 +468,6 @@ body {
             cursor: text;
             width: 100%;
             color: $gray4;
-            font-weight: bold;
             outline: none;
             text-align: center;
             opacity: 0;
