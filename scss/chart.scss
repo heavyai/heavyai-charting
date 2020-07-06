@@ -31,6 +31,10 @@ body {
 
 .nominal-legend.legendables {
     border: 1px solid $gray2 !important;
+
+    .header {
+        font-weight: normal;
+    }
 }
 
 .anim-button-play, .anim-button-stop {
@@ -1634,7 +1638,7 @@ body {
         max-height: 120px;
         overflow-y: auto;
         padding: 0 4px 4px 4px;
-        font-size: 0.84em;
+        font-size: 1em;
 
         &::-webkit-scrollbar {
             -webkit-appearance: none;
