@@ -226,7 +226,6 @@ body {
         transform: translateX(16px);
         color: $gray5;
         span {
-            font-weight: bold;
             margin-right: 4px;
         }
     }
@@ -283,7 +282,6 @@ body {
 
             &.range-day {
                 width: 70px;
-                font-weight: bold;
             }
 
             &.range-time {
@@ -681,7 +679,6 @@ body {
         color: $gray5;
         font-size: 13px;
         padding: 4px 24px 4px 20px;
-        font-weight: bold;
         background: white;
         position: relative;
         cursor: text;

@@ -513,7 +513,6 @@ body {
     transform: translateX(16px);
     color: #868686; }
     .dc-chart .bin-row span {
-      font-weight: bold;
       margin-right: 4px; }
   .dc-chart .bin-row-item {
     padding: 0 4px;
@@ -548,8 +547,7 @@ body {
       .dc-chart .range-display input.active {
         border: 1px solid #c7c7c7; }
       .dc-chart .range-display input.range-day {
-        width: 70px;
-        font-weight: bold; }
+        width: 70px; }
       .dc-chart .range-display input.range-time {
         width: 48px;
         border-left: 0; }
@@ -790,7 +788,6 @@ body {
     color: #868686;
     font-size: 13px;
     padding: 4px 24px 4px 20px;
-    font-weight: bold;
     background: white;
     position: relative;
     cursor: text; }
