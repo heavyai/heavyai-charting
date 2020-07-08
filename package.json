@@ -66,7 +66,6 @@
     "mapbox-gl": "1.9.1",
     "mapd-data-layer-2": "0.0.22",
     "moment": "^2.19.3",
-    "ramda": "0.21.0",
     "simplify-js": "^1.2.1",
     "wellknown": "^0.5.0"
   },
