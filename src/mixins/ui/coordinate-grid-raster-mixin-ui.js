@@ -616,10 +616,6 @@ class ScrollZoomHandler extends BaseHandler {
       this._fireEvent("move", e)
     }
 
-    // upon zoom, elasticity is turned off
-    this._chart.elasticX(false)
-    this._chart.elasticY(false)
-
     if (doFullRender) {
       redrawAllAsync(this._chart.chartGroup())
     } else {

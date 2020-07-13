@@ -481,7 +481,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart._removeOverlay(overlay)
   }
 
-  _chart._doRender = function(data, redraw, doNotForceData) {
+  // We need to default to redraw = true here since base-mixin (in _chart.render())
+  //  calls this, w/o any interface to set the redraw boolean, and for
+  //  backendScatter, we need to take the image from the data and swap it out.
+  _chart._doRender = function(data, redraw = true, doNotForceData) {
     if (!data && Boolean(!doNotForceData)) {
       data = _chart.data()
     }
@@ -520,8 +523,8 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart._doRedraw = function() {
-    _chart._doRender(null, true)
+  _chart._doRedraw = function(data) {
+    _chart._doRender(data || null, true)
   }
 
   _chart.minPopupShapeBoundsArea = function(minPopupShapeBoundsArea) {
