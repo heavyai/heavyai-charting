@@ -714,7 +714,8 @@ class DragPanHandler extends BaseHandler {
 
     const pos = new this._mapboxglModule.Point(0, 0)
     if (
-      (!this._chart.elasticX() || !this._chart.elasticY()) ||
+      !this._chart.elasticX() ||
+      !this._chart.elasticY() ||
       (!isInChart(this._chart, this._container, e, pos) && !this._active)
     ) {
       return

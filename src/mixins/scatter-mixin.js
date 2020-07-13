@@ -77,14 +77,18 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
 
     const yDomain = chart.y && chart.y() && chart.y().domain()
     const xDomain = chart.x && chart.x() && chart.x().domain()
-    const actualYRanges = chart.elasticY() && yRanges.length ?
-      yRanges :
-      yDomain && yDomain.length && !yDomain.some(v => v === null) ?
-        [yDomain] : []
-    const actualXRanges = chart.elasticX() && xRanges.length ?
-      xRanges :
-      xDomain && xDomain.length && !xDomain.some(v => v === null) ?
-        [xDomain] : []
+    const actualYRanges =
+      chart.elasticY() && yRanges.length
+        ? yRanges
+        : yDomain && yDomain.length && !yDomain.some(v => v === null)
+        ? [yDomain]
+        : []
+    const actualXRanges =
+      chart.elasticX() && xRanges.length
+        ? xRanges
+        : xDomain && xDomain.length && !xDomain.some(v => v === null)
+        ? [xDomain]
+        : []
     return {
       xDims,
       yDims,
