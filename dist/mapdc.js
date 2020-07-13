@@ -52928,17 +52928,14 @@ function scatterMixin(_chart, _mapboxgl) {
       });
     }
 
-    // If the chart already has a manually-set domain on either axis, use that
-    //  instead of anything coming out of dimensions.
-    //  https://omnisci.atlassian.net/browse/FE-11696
     var yDomain = chart.y && chart.y() && chart.y().domain();
     var xDomain = chart.x && chart.x() && chart.x().domain();
-    var actualYRanges = yDomain && yDomain.length && !yDomain.some(function (v) {
+    var actualYRanges = chart.elasticY() && yRanges.length ? yRanges : yDomain && yDomain.length && !yDomain.some(function (v) {
       return v === null;
-    }) ? [yDomain] : yRanges;
-    var actualXRanges = xDomain && xDomain.length && !xDomain.some(function (v) {
+    }) ? [yDomain] : [];
+    var actualXRanges = chart.elasticX() && xRanges.length ? xRanges : xDomain && xDomain.length && !xDomain.some(function (v) {
       return v === null;
-    }) ? [xDomain] : xRanges;
+    }) ? [xDomain] : [];
     return {
       xDims: xDims,
       yDims: yDims,
@@ -78788,7 +78785,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart._removeOverlay(overlay);
   }
 
-  _chart._doRender = function (data, redraw, doNotForceData) {
+  // We need to default to redraw = true here since base-mixin (in _chart.render())
+  //  calls this, w/o any interface to set the redraw boolean, and for
+  //  backendScatter, we need to take the image from the data and swap it out.
+  _chart._doRender = function (data) {
+    var redraw = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+    var doNotForceData = arguments[2];
+
     if (!data && Boolean(!doNotForceData)) {
       data = _chart.data();
     }
@@ -78821,8 +78824,8 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   };
 
-  _chart._doRedraw = function () {
-    _chart._doRender(null, true);
+  _chart._doRedraw = function (data) {
+    _chart._doRender(data || null, true);
   };
 
   _chart.minPopupShapeBoundsArea = function (minPopupShapeBoundsArea) {
@@ -79883,7 +79886,7 @@ var ScrollZoomHandler = function (_BaseHandler2) {
   }, {
     key: "_wheelZoom",
     value: function _wheelZoom(doFullRender, delta, e) {
-      if (!doFullRender && delta === 0) {
+      if (!doFullRender && delta === 0 || !this._chart.elasticX() || !this._chart.elasticY()) {
         return;
       }
 
@@ -79954,10 +79957,6 @@ var ScrollZoomHandler = function (_BaseHandler2) {
         this._fireEvent("zoom", e);
         this._fireEvent("move", e);
       }
-
-      // upon zoom, elasticity is turned off
-      this._chart.elasticX(false);
-      this._chart.elasticY(false);
 
       if (doFullRender) {
         (0, _coreAsync.redrawAllAsync)(this._chart.chartGroup());
@@ -80051,7 +80050,7 @@ var DragPanHandler = function (_BaseHandler3) {
       }
 
       var pos = new this._mapboxglModule.Point(0, 0);
-      if (!isInChart(this._chart, this._container, e, pos) && !this._active) {
+      if (!this._chart.elasticX() || !this._chart.elasticY() || !isInChart(this._chart, this._container, e, pos) && !this._active) {
         return;
       }
 
@@ -80103,10 +80102,6 @@ var DragPanHandler = function (_BaseHandler3) {
       this._offset[1] -= deltaY / yBoundsDiff;
 
       this._filterDimensionCB([xmin, xmax], [ymin, ymax]);
-
-      // upon pan, elasticity is turned off
-      this._chart.elasticX(false);
-      this._chart.elasticY(false);
 
       this._chart._updateXAndYScales(this._chart.getDataRenderBounds());
       this._chartRedrawCB();
