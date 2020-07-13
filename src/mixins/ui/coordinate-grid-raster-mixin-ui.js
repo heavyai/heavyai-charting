@@ -538,7 +538,10 @@ class ScrollZoomHandler extends BaseHandler {
   }
 
   _wheelZoom(doFullRender, delta, e) {
-    if (!doFullRender && delta === 0) {
+    if (
+      (!doFullRender && delta === 0) ||
+      (!this._chart.elasticX() || !this._chart.elasticY())
+    ) {
       return
     }
 
@@ -710,7 +713,10 @@ class DragPanHandler extends BaseHandler {
     }
 
     const pos = new this._mapboxglModule.Point(0, 0)
-    if (!isInChart(this._chart, this._container, e, pos) && !this._active) {
+    if (
+      (!this._chart.elasticX() || !this._chart.elasticY()) ||
+      (!isInChart(this._chart, this._container, e, pos) && !this._active)
+    ) {
       return
     }
 
@@ -765,10 +771,6 @@ class DragPanHandler extends BaseHandler {
     this._offset[1] -= deltaY / yBoundsDiff
 
     this._filterDimensionCB([xmin, xmax], [ymin, ymax])
-
-    // upon pan, elasticity is turned off
-    this._chart.elasticX(false)
-    this._chart.elasticY(false)
 
     this._chart._updateXAndYScales(this._chart.getDataRenderBounds())
     this._chartRedrawCB()
