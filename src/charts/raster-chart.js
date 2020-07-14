@@ -4,14 +4,12 @@ import {
   handleLegendInput,
   handleLegendLock,
   handleLegendOpen,
-  handleLegendToggle,
-  toLegendState
+  handleLegendToggle
 } from "../chart-addons/stacked-legend"
 import coordinateGridRasterMixin from "../mixins/coordinate-grid-raster-mixin"
 import mapMixin from "../mixins/map-mixin"
 import baseMixin from "../mixins/base-mixin"
 import scatterMixin from "../mixins/scatter-mixin"
-import { rasterDrawMixin } from "../mixins/raster-draw-mixin"
 import { lastFilteredSize } from "../core/core-async"
 import { Legend } from "legendables"
 import * as _ from "lodash"
@@ -483,7 +481,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart._removeOverlay(overlay)
   }
 
-  _chart._doRender = function(data, redraw, doNotForceData) {
+  // We need to default to redraw = true here since base-mixin (in _chart.render())
+  //  calls this, w/o any interface to set the redraw boolean, and for
+  //  backendScatter, we need to take the image from the data and swap it out.
+  _chart._doRender = function(data, redraw = true, doNotForceData) {
     if (!data && Boolean(!doNotForceData)) {
       data = _chart.data()
     }
@@ -522,8 +523,8 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
   }
 
-  _chart._doRedraw = function() {
-    _chart._doRender(null, true)
+  _chart._doRedraw = function(data) {
+    _chart._doRender(data || null, true)
   }
 
   _chart.minPopupShapeBoundsArea = function(minPopupShapeBoundsArea) {
@@ -714,9 +715,6 @@ function genLayeredVega(chart) {
     (typeof chart.effectiveHeight === "function"
       ? chart.effectiveHeight()
       : chart.height()) * pixelRatio
-
-  const xdom = chart.x().domain()
-  const ydom = chart.y().domain()
 
   const data = []
 

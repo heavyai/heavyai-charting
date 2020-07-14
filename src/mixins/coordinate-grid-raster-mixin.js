@@ -5,6 +5,7 @@ import colorMixin from "./color-mixin"
 import d3 from "d3"
 import marginMixin from "./margin-mixin"
 import axios from "axios"
+import lockAxisMixin from "./lock-axis-mixin"
 
 /**
  * Coordinate Grid Raster is an abstract base chart designed to support coordinate grid based
@@ -42,7 +43,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   let cachedXTickFormat = NO_CACHE
   let cachedYTickFormat = NO_CACHE
 
-  _chart = colorMixin(marginMixin(baseMixin(_chart)))
+  _chart = lockAxisMixin(colorMixin(marginMixin(baseMixin(_chart))))
   _chart._mandatoryAttributes().push("x", "y")
 
   _chart.resetSvg = function () {
@@ -748,7 +749,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
         img.onerror = () => onImageLoad(new Error('Could not load scatterplot image'));
         const blob = new window.Blob([new Uint8Array(data)], { type: 'image/png' });
         img.src = data.byteLength ? URL.createObjectURL(blob) : TRANSPARENT_PNG_URL;
-      }) 
+      })
     }
 
     if (queryId !== null && queryId !== undefined) { _queryId = queryId }
@@ -853,6 +854,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     _xAxis.ticks(_chart.effectiveWidth() / _xAxis.scale().ticks().length < 64 ? Math.ceil(_chart.effectiveWidth() / 64) : 10)
 
     _chart.prepareLabelEdit("x")
+    _chart.prepareLockAxis("x")
 
     renderVerticalGridLines(g, x, transitionDuration)
   }
@@ -1005,6 +1007,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
     _chart._renderHorizontalGridLinesForAxis(g, y, _yAxis, transitionDuration)
     _chart.prepareLabelEdit("y")
+    _chart.prepareLockAxis("y")
   }
 
   _chart.renderYAxisLabel = function (axisClass, text, rotation, labelXPosition) {

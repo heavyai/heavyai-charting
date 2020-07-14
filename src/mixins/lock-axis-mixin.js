@@ -103,29 +103,19 @@ export default function lockAxisMixin(chart) {
     if (type === "y") {
       chart.elasticY(!chart.elasticY())
       chart._invokeelasticYListener()
-      if (chart.elasticY()) {
-        chart._invokeYDomainListener(null)
-      } else {
-        chart._invokeYDomainListener(
-          chart
-            .y()
-            .domain()
-            .slice(0)
-        )
-      }
+      const yDomain = chart
+        .y()
+        .domain()
+        .slice(0)
+      chart._invokeYDomainListener(chart.originalYMinMax || yDomain)
     } else {
       chart.elasticX(!chart.elasticX())
       chart._invokeelasticXListener()
-      if (chart.elasticX()) {
-        chart._invokeXDomainListener(null)
-      } else {
-        chart._invokeXDomainListener(
-          chart
-            .x()
-            .domain()
-            .slice()
-        )
-      }
+      const xDomain = chart
+        .x()
+        .domain()
+        .slice()
+      chart._invokeXDomainListener(chart.originalXMinMax || xDomain)
       if (chart.focusChart && chart.focusChart()) {
         chart.focusChart().elasticX(!chart.focusChart().elasticX())
         chart.focusChart()._invokeelasticXListener()
@@ -271,7 +261,8 @@ export default function lockAxisMixin(chart) {
         }
       })
 
-    axisMax.append("div").text(formatVal(minMax[1]))
+    const maxVal = formatVal(minMax[1])
+    axisMax.append("div").text(maxVal)
 
     const axisMin = lockWrapper
       .append("div")
