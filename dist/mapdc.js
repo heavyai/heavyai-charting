@@ -33905,8 +33905,8 @@ function lockAxisMixin(chart) {
   };
 
   chart._invokeelasticYListener = function () {
-    if (chart.elasticY()) {
-      var scatterLayer = chart.getLayer("backendScatter");
+    var scatterLayer = chart.getLayer("backendScatter");
+    if (chart.elasticY() && scatterLayer) {
       scatterLayer.yDim().filter([chart.originalYMinMax]);
       chart.y().domain(chart.originalYMinMax);
     }
@@ -33917,10 +33917,10 @@ function lockAxisMixin(chart) {
   };
 
   chart._invokeelasticXListener = function () {
-    if (chart.elasticX()) {
-      var scatterLayer = chart.getLayer("backendScatter");
+    var scatterLayer = chart.getLayer("backendScatter");
+    if (chart.elasticX() && scatterLayer) {
       scatterLayer.xDim().filter([chart.originalXMinMax]);
-      chart.y().domain(chart.originalXMinMax);
+      chart.x().domain(chart.originalXMinMax);
     }
     _listeners.elasticX(chart);
   };
