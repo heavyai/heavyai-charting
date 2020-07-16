@@ -270,6 +270,7 @@ export default function lockAxisMixin(chart) {
           this.blur()
         }
       })
+
     const maxVal = formatVal(minMax[1])
     axisMax.append("div").text(maxVal)
 

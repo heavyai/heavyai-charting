@@ -34060,6 +34060,7 @@ function lockAxisMixin(chart) {
         this.blur();
       }
     });
+
     var maxVal = formatVal(minMax[1]);
     axisMax.append("div").text(maxVal);
 
@@ -52943,9 +52944,11 @@ function scatterMixin(_chart, _mapboxgl) {
     var actualYRanges = chart.elasticY() && yRanges.length ? yRanges : yDomain && yDomain.length && !yDomain.some(function (v) {
       return v === null;
     }) ? [yDomain] : yRanges;
+
     var actualXRanges = chart.elasticX() && xRanges.length ? xRanges : xDomain && xDomain.length && !xDomain.some(function (v) {
       return v === null;
     }) ? [xDomain] : xRanges;
+
     return {
       xDims: xDims,
       yDims: yDims,
