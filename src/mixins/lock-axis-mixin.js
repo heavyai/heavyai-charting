@@ -40,6 +40,11 @@ export default function lockAxisMixin(chart) {
   }
 
   chart._invokeelasticYListener = function() {
+    if (chart.elasticY()) {
+      const scatterLayer = chart.getLayer("backendScatter")
+      scatterLayer.yDim().filter([chart.originalYMinMax])
+      chart.y().domain(chart.originalYMinMax)
+    }
     _listeners.elasticY(chart)
   }
   chart._invokeYDomainListener = function(minMax) {
@@ -47,6 +52,11 @@ export default function lockAxisMixin(chart) {
   }
 
   chart._invokeelasticXListener = function() {
+    if (chart.elasticX()) {
+      const scatterLayer = chart.getLayer("backendScatter")
+      scatterLayer.xDim().filter([chart.originalXMinMax])
+      chart.y().domain(chart.originalXMinMax)
+    }
     _listeners.elasticX(chart)
   }
   chart._invokeXDomainListener = function(minMax) {
@@ -260,7 +270,6 @@ export default function lockAxisMixin(chart) {
           this.blur()
         }
       })
-
     const maxVal = formatVal(minMax[1])
     axisMax.append("div").text(maxVal)
 
