@@ -33905,6 +33905,11 @@ function lockAxisMixin(chart) {
   };
 
   chart._invokeelasticYListener = function () {
+    var scatterLayer = chart.getLayer("backendScatter");
+    if (chart.elasticY() && scatterLayer) {
+      scatterLayer.yDim().filter([chart.originalYMinMax]);
+      chart.y().domain(chart.originalYMinMax);
+    }
     _listeners.elasticY(chart);
   };
   chart._invokeYDomainListener = function (minMax) {
@@ -33912,6 +33917,11 @@ function lockAxisMixin(chart) {
   };
 
   chart._invokeelasticXListener = function () {
+    var scatterLayer = chart.getLayer("backendScatter");
+    if (chart.elasticX() && scatterLayer) {
+      scatterLayer.xDim().filter([chart.originalXMinMax]);
+      chart.x().domain(chart.originalXMinMax);
+    }
     _listeners.elasticX(chart);
   };
   chart._invokeXDomainListener = function (minMax) {
@@ -52930,12 +52940,15 @@ function scatterMixin(_chart, _mapboxgl) {
 
     var yDomain = chart.y && chart.y() && chart.y().domain();
     var xDomain = chart.x && chart.x() && chart.x().domain();
+
     var actualYRanges = chart.elasticY() && yRanges.length ? yRanges : yDomain && yDomain.length && !yDomain.some(function (v) {
       return v === null;
-    }) ? [yDomain] : [];
+    }) ? [yDomain] : yRanges;
+
     var actualXRanges = chart.elasticX() && xRanges.length ? xRanges : xDomain && xDomain.length && !xDomain.some(function (v) {
       return v === null;
-    }) ? [xDomain] : [];
+    }) ? [xDomain] : xRanges;
+
     return {
       xDims: xDims,
       yDims: yDims,
@@ -78788,10 +78801,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   // We need to default to redraw = true here since base-mixin (in _chart.render())
   //  calls this, w/o any interface to set the redraw boolean, and for
   //  backendScatter, we need to take the image from the data and swap it out.
-  _chart._doRender = function (data) {
-    var redraw = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-    var doNotForceData = arguments[2];
-
+  _chart._doRender = function (data, redraw, doNotForceData) {
     if (!data && Boolean(!doNotForceData)) {
       data = _chart.data();
     }

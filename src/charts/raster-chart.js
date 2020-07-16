@@ -484,7 +484,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   // We need to default to redraw = true here since base-mixin (in _chart.render())
   //  calls this, w/o any interface to set the redraw boolean, and for
   //  backendScatter, we need to take the image from the data and swap it out.
-  _chart._doRender = function(data, redraw = true, doNotForceData) {
+  _chart._doRender = function(data, redraw, doNotForceData) {
     if (!data && Boolean(!doNotForceData)) {
       data = _chart.data()
     }
