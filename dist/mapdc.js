@@ -89955,7 +89955,7 @@ function legendMixin(legend) {
       var itemEnter = body.selectAll(".dc-legend-item").data(legendables).enter().append("div").attr("class", "dc-legend-item");
 
       itemEnter.append("div").attr("class", "legend-item-color").style("background", function (d) {
-        return d ? d.color : "#a7a7a7";
+        return d ? d.color : "#868686";
       });
 
       itemEnter.append("div").attr("class", "legend-item-text").text(function (d) {
