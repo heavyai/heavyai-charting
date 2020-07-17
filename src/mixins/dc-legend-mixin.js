@@ -63,7 +63,7 @@ export default function legendMixin(legend) {
       itemEnter
         .append("div")
         .attr("class", "legend-item-color")
-        .style("background", d => (d ? d.color : "#a7a7a7"))
+        .style("background", d => (d ? d.color : "#868686"))
 
       itemEnter
         .append("div")
