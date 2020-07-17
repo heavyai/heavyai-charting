@@ -396,10 +396,11 @@ body {
 .open-toggle {
   cursor: pointer; }
 
-.nominal-legend.legendables {
+.legendables.nominal-legend {
   border: 1px solid #e2e2e2 !important; }
-  .nominal-legend.legendables .header {
-    font-weight: normal; }
+
+.legendables .header {
+  font-weight: normal; }
 
 .anim-button-play, .anim-button-stop {
   z-index: 2;

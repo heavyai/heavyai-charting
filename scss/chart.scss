@@ -29,8 +29,10 @@ body {
     cursor: pointer;
 }
 
-.nominal-legend.legendables {
-    border: 1px solid $gray2 !important;
+.legendables {
+    &.nominal-legend {
+        border: 1px solid $gray2 !important;
+    }
 
     .header {
         font-weight: normal;
