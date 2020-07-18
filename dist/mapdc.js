@@ -33905,8 +33905,8 @@ function lockAxisMixin(chart) {
   };
 
   chart._invokeelasticYListener = function () {
-    var scatterLayer = chart.getLayer("backendScatter");
-    if (chart.elasticY() && scatterLayer) {
+    var scatterLayer = chart.getLayer && chart.getLayer("backendScatter");
+    if (chart.elasticY && chart.elasticY() && scatterLayer) {
       scatterLayer.yDim().filter([chart.originalYMinMax]);
       chart.y().domain(chart.originalYMinMax);
     }
@@ -33917,8 +33917,8 @@ function lockAxisMixin(chart) {
   };
 
   chart._invokeelasticXListener = function () {
-    var scatterLayer = chart.getLayer("backendScatter");
-    if (chart.elasticX() && scatterLayer) {
+    var scatterLayer = chart.getLayer && chart.getLayer("backendScatter");
+    if (chart.elasticX && chart.elasticX() && scatterLayer) {
       scatterLayer.xDim().filter([chart.originalXMinMax]);
       chart.x().domain(chart.originalXMinMax);
     }
@@ -34358,6 +34358,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (_geocoder) {
       initGeocoder();
     }
+    initMouseLatLonCoordinate();
   }
 
   function onMapMove(e) {
@@ -34799,6 +34800,19 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
           });
         }
       });
+      _map.on("mousemove", function (e) {
+        // Show mouse position (lat and lon) on the map
+        var lon = e.lngLat.lng.toFixed(8);
+        var lat = e.lngLat.lat.toFixed(8);
+        var latLonContainer = _map.getContainer().getElementsByClassName("latLonCoordinate")[0];
+        latLonContainer.classList.add("visible");
+        latLonContainer.innerHTML = "Lon: " + lon + ", Lat: " + lat;
+      });
+
+      // remove the mouse lat lon container from map when mouse is out
+      _map.on("mouseout", function (e) {
+        _map.getContainer().getElementsByClassName("latLonCoordinate")[0].classList.remove("visible");
+      });
     });
   };
 
@@ -34844,6 +34858,11 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         _geocoder.locate(this.value).then(_chart.zoomToLocation);
       }
     });
+  }
+
+  // Mouse position (lat and lon) container
+  function initMouseLatLonCoordinate() {
+    _chart.root().append("div").classed("latLonCoordinate", true);
   }
 
   function validateBounds(data) {
