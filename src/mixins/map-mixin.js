@@ -780,16 +780,17 @@ export default function mapMixin(
         // Show mouse position (lat and lon) on the map
         const lon = e.lngLat.lng.toFixed(8)
         const lat = e.lngLat.lat.toFixed(8)
-        const latLonContainer = document.getElementsByClassName(
-          "latLonCoordinate"
-        )[0]
+        const latLonContainer = _map
+          .getContainer()
+          .getElementsByClassName("latLonCoordinate")[0]
         latLonContainer.classList.add("visible")
         latLonContainer.innerHTML = `Lon: ${lon}, Lat: ${lat}`
       })
 
       // remove the mouse lat lon container from map when mouse is out
       _map.on("mouseout", e => {
-        document
+        _map
+          .getContainer()
           .getElementsByClassName("latLonCoordinate")[0]
           .classList.remove("visible")
       })

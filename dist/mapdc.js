@@ -34804,14 +34804,14 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         // Show mouse position (lat and lon) on the map
         var lon = e.lngLat.lng.toFixed(8);
         var lat = e.lngLat.lat.toFixed(8);
-        var latLonContainer = document.getElementsByClassName("latLonCoordinate")[0];
+        var latLonContainer = _map.getContainer().getElementsByClassName("latLonCoordinate")[0];
         latLonContainer.classList.add("visible");
         latLonContainer.innerHTML = "Lon: " + lon + ", Lat: " + lat;
       });
 
       // remove the mouse lat lon container from map when mouse is out
       _map.on("mouseout", function (e) {
-        document.getElementsByClassName("latLonCoordinate")[0].classList.remove("visible");
+        _map.getContainer().getElementsByClassName("latLonCoordinate")[0].classList.remove("visible");
       });
     });
   };
