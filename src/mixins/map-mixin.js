@@ -269,6 +269,7 @@ export default function mapMixin(
     if (_geocoder) {
       initGeocoder()
     }
+    initMouseLatLonCoordinate()
   }
 
   function onMapMove(e) {
@@ -775,6 +776,23 @@ export default function mapMixin(
           })
         }
       })
+      _map.on("mousemove", e => {
+        // Show mouse position (lat and lon) on the map
+        const lon = e.lngLat.lng.toFixed(8)
+        const lat = e.lngLat.lat.toFixed(8)
+        const latLonContainer = document.getElementsByClassName(
+          "latLonCoordinate"
+        )[0]
+        latLonContainer.classList.add("visible")
+        latLonContainer.innerHTML = `Lon: ${lon}, Lat: ${lat}`
+      })
+
+      // remove the mouse lat lon container from map when mouse is out
+      _map.on("mouseout", e => {
+        document
+          .getElementsByClassName("latLonCoordinate")[0]
+          .classList.remove("visible")
+      })
     })
   }
 
@@ -844,6 +862,14 @@ export default function mapMixin(
           _geocoder.locate(this.value).then(_chart.zoomToLocation)
         }
       })
+  }
+
+  // Mouse position (lat and lon) container
+  function initMouseLatLonCoordinate() {
+    _chart
+      .root()
+      .append("div")
+      .classed("latLonCoordinate", true)
   }
 
   function validateBounds(data) {

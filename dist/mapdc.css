@@ -584,6 +584,23 @@ body {
     border-radius: 0;
     z-index: 10;
     outline: none; }
+  .dc-chart .latLonCoordinate {
+    width: 245px;
+    height: 22px;
+    padding: 0 0 0 8px;
+    font-size: 13px;
+    position: absolute;
+    z-index: 10;
+    border: 1px solid #868686;
+    outline: none;
+    border-radius: 0;
+    bottom: 36px;
+    right: 125px;
+    color: #888;
+    background: #ffffff;
+    display: none; }
+    .dc-chart .latLonCoordinate.visible {
+      display: block; }
   .dc-chart .mapboxgl-canvas-container {
     position: relative;
     top: auto; }
