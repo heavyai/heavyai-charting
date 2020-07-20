@@ -784,7 +784,7 @@ export default function mapMixin(
           .getContainer()
           .getElementsByClassName("latLonCoordinate")[0]
         latLonContainer.classList.add("visible")
-        latLonContainer.innerHTML = `Lon: ${lon}, Lat: ${lat}`
+        latLonContainer.innerHTML = `Lon: ${lon} </br> Lat: ${lat}`
       })
 
       // remove the mouse lat lon container from map when mouse is out
