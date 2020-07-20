@@ -352,13 +352,14 @@ body {
     }
 
     .latLonCoordinate {
-      width: 245px;
-      height: 22px;
-      padding: 0 0 0 8px;
-      font-size: 13px;
+      width: 110px;
+      height: 36px;
+      padding: 2px 4px;
+      font-size: 10px;
+      line-height: 14px;
       position: absolute;
       z-index: 10;
-      border: 1px solid $gray5;
+      border: 1px solid #868686;
       outline: none;
       border-radius: 0;
       bottom: 36px;
