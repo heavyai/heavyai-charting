@@ -29,8 +29,10 @@ body {
     cursor: pointer;
 }
 
-.nominal-legend.legendables {
-    border: 1px solid $gray2 !important;
+.legendables {
+    &.nominal-legend {
+        border: 1px solid $gray2 !important;
+    }
 
     .header {
         font-weight: normal;
@@ -53,7 +55,7 @@ body {
 
     .fa {
         font-size: 13px !important;
-        color: $gray4 !important;
+        color: $text-gray !important;
         position: relative;
         top: -1px;
     }
@@ -304,7 +306,7 @@ body {
 
     .axis {
 
-        fill: $gray4;
+        fill: $text-gray;
 
         text {
             font-family: "Roboto";
@@ -347,6 +349,28 @@ body {
         border-radius: 0;
         z-index: 10;
         outline: none;
+    }
+
+    .latLonCoordinate {
+      width: 110px;
+      height: 36px;
+      padding: 2px 4px;
+      font-size: 10px;
+      line-height: 14px;
+      position: absolute;
+      z-index: 10;
+      border: 1px solid $gray5;
+      outline: none;
+      border-radius: 0;
+      bottom: 36px;
+      right: 125px;
+      color: #888;
+      background: $white;
+      display: none;
+
+      &.visible {
+        display: block;
+      }
     }
 
     .mapboxgl-canvas-container {
@@ -405,7 +429,7 @@ body {
         }
 
         text {
-            fill-opacity: $gray4;
+            fill-opacity: $text-gray;
         }
     }
 
@@ -416,7 +440,7 @@ body {
     div.x-axis-label, div.y-axis-label, div.axis-label-edit {
         position: absolute;
         font-size: 13px !important;
-        color: $gray4;
+        color: $text-gray;
         z-index: 2;
         pointer-events: none;
         height: 18px;
@@ -469,7 +493,7 @@ body {
             left: 0;
             cursor: text;
             width: 100%;
-            color: $gray4;
+            color: $text-gray;
             outline: none;
             text-align: center;
             opacity: 0;
@@ -543,7 +567,7 @@ body {
             }
 
             text {
-                fill: $gray4 !important;
+                fill: $text-gray !important;
             }
         }
     }
@@ -597,7 +621,7 @@ body {
             &.deselected {
                 background: $gray1;
                 td {
-                    color: $gray4;
+                    color: $text-gray;
                 }
             }
 
@@ -1134,7 +1158,7 @@ body {
 
     th {
         border-bottom: 1px solid $gray2;
-        color: $gray4;
+        color: $text-gray;
         font-size: 0.84em;
         font-weight: normal;
         background: white;
@@ -1317,7 +1341,7 @@ body {
 
     .popup-header {
         border-bottom: 1px solid $gray2;
-        color: $gray4;
+        color: $text-gray;
         font-size: 0.77em;
         white-space: nowrap;
         padding: 4px 4px 2px 4px;
@@ -1487,7 +1511,7 @@ body {
 
     .legend-title {
         font-size: 12px;
-        color: $gray4;
+        color: $text-gray;
         font-weight: bold;
         text-align: center;
         position: absolute;
@@ -1540,7 +1564,7 @@ body {
 }
 
 .svg-icon {
-    fill: $gray4;
+    fill: $text-gray;
 }
 
 .map-svg {
@@ -1576,7 +1600,7 @@ body {
 
     .dc-legend-header {
         border-bottom: 1px solid $gray2;
-        color: $gray4;
+        color: $text-gray;
         font-size: 0.84em;
         margin: 4px 4px 0 4px;
         position: relative;
@@ -1606,7 +1630,7 @@ body {
             left: 50%;
             width: 4px;
             height: 24px;
-            background: $gray4;
+            background: $text-gray;
         }
 
         &:before {
@@ -1615,8 +1639,8 @@ body {
             bottom: 0;
             left: 0;
             border: 8px solid transparent;
-            border-left-color: $gray4;
-            border-bottom-color: $gray4;
+            border-left-color: $text-gray;
+            border-bottom-color: $text-gray;
         }
 
         &:hover {
@@ -1774,7 +1798,7 @@ body {
 
             &:after {
                 border: 6px solid transparent;
-                border-left-color: $gray4;
+                border-left-color: $text-gray;
                 position: absolute;
                 content: "";
                 left: -8px;
@@ -1818,7 +1842,7 @@ body {
         position: absolute;
         line-height: 1;
         font-size: 10px;
-        color: $gray4;
+        color: $text-gray;
         white-space: nowrap;
         padding: 4px;
         pointer-events: auto;
