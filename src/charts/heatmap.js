@@ -1,12 +1,12 @@
 import { formatDataValue, isArrayOfObjects } from "../utils/formatting-helpers"
 import d3 from "d3"
-import baseMixin from "../mixins/base-mixin"
 import colorMixin from "../mixins/color-mixin"
 import marginMixin from "../mixins/margin-mixin"
 import { events } from "../core/events"
 import { override, transition } from "../core/core"
 import { utils } from "../utils/utils"
 import { filters } from "../core/filters"
+import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
 
 /** ***************************************************************************
  * OVERRIDE: dc.heatMap                                                       *
@@ -192,7 +192,7 @@ export default function heatMap(parent, chartGroup) {
   var _xBorderRadius = DEFAULT_BORDER_RADIUS
   var _yBorderRadius = DEFAULT_BORDER_RADIUS
 
-  const _chart = colorMixin(marginMixin(baseMixin({})))
+  const _chart = colorMixin(marginMixin(coordinateGridMixin({})))
   _chart._mandatoryAttributes(["group"])
   _chart.title(_chart.colorAccessor())
 
@@ -320,14 +320,13 @@ export default function heatMap(parent, chartGroup) {
       _chart.redrawGroup()
     })
   }
-
-  override(_chart, "filter", function(filter, isInverseFilter) {
+  _chart.filter = function(filter, isInverseFilter) {
     if (!arguments.length) {
       return _chart._filter()
     }
 
     return _chart._filter(filters.TwoDimensionalFilter(filter), isInverseFilter)
-  })
+  }
 
   function uniq(d, i, a) {
     return !i || a[i - 1] !== d
@@ -394,9 +393,10 @@ export default function heatMap(parent, chartGroup) {
     _chart.margins({ top: 8, right: 16, bottom: 0, left: 0 })
     /* --------------------------------------------------------------------------*/
 
-    _chartBody = _chart
-      .svg()
+    const parent = _chart.svg()
+    const g = parent
       .append("g")
+    _chartBody = g
       .attr("class", "heatmap")
       .attr(
         "transform",
@@ -405,6 +405,7 @@ export default function heatMap(parent, chartGroup) {
 
     /* OVERRIDE -----------------------------------------------------------------*/
     _chartBody.append("g").attr("class", "box-wrapper")
+    _chart._generateG(g, _chartBody)
     _hasBeenRendered = true
 
     _dockedAxes = _chart
@@ -412,6 +413,9 @@ export default function heatMap(parent, chartGroup) {
       .append("div")
       .attr("class", "docked-axis-wrapper")
     /* --------------------------------------------------------------------------*/
+
+    _chart._prepareXAxis(_chart.g(), true)
+    _chart._prepareYAxis(_chart.g())
     return _chart._doRedraw()
   }
 

@@ -212,7 +212,12 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-  _chart._generateG = function (parent) {
+  _chart._generateG = function (parent, g, chartBodyG) {
+    if (g) {
+      _g = g
+      _chartBodyG = chartBodyG
+      return _g
+    }
     if (parent === undefined) {
       _parent = _chart.svg()
     } else {
@@ -708,6 +713,8 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
+  _chart._prepareXAxis = prepareXAxis
+
   _chart._prepareYAxis = function (g) {
     if (_y === undefined || _chart.elasticY()) {
       if (_y === undefined) {
@@ -780,10 +787,10 @@ export default function coordinateGridMixin (_chart) {
     const dateFormatExistsForThisKey = Boolean(dateFormatter && dateFormatter(new Date(), _chart.xAxisLabel()))
     const numberFormatExistsForThisKey = Boolean(numberFormatter && numberFormatter(null, _chart.xAxisLabel()))
 
-    if (domain && 
-      domain[0] && 
-      domain[0] instanceof Date && 
-      !timeBinParam.extract && 
+    if (domain &&
+      domain[0] &&
+      domain[0] instanceof Date &&
+      !timeBinParam.extract &&
       dateFormatExistsForThisKey
     ) {
       setXTickFormat(d => dateFormatter(d, _chart.xAxisLabel()), {toCache: true})
