@@ -331,5 +331,6 @@ export function toLegendState(states = [], chart, useMap) {
 }
 
 function isNullLegend(domain) {
-  return _.includes(domain, "NULL")
+  // only return true if there is more than one "NULL" value
+  return domain.reduce((cnt, d) => (d === "NULL" ? cnt + 1 : cnt), 0) > 1
 }

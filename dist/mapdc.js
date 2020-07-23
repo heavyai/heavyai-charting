@@ -79337,7 +79337,10 @@ function toLegendState() {
 }
 
 function isNullLegend(domain) {
-  return _.includes(domain, "NULL");
+  // only return true if there is more than one "NULL" value
+  return domain.reduce(function (cnt, d) {
+    return d === "NULL" ? cnt + 1 : cnt;
+  }, 0) > 1;
 }
 
 /***/ }),
