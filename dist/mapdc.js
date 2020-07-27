@@ -6482,6 +6482,285 @@ function resetState() {
 
 /***/ }),
 /* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AbstractProduction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return NonTerminal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return Rule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return Flat; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return Option; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return RepetitionMandatory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return RepetitionMandatoryWithSeparator; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return Repetition; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return RepetitionWithSeparator; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Alternation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return Terminal; });
+/* harmony export (immutable) */ __webpack_exports__["l"] = serializeGrammar;
+/* harmony export (immutable) */ __webpack_exports__["m"] = serializeProduction;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scan_tokens_public__ = __webpack_require__(16);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+var AbstractProduction = /** @class */ (function () {
+    function AbstractProduction(definition) {
+        this.definition = definition;
+    }
+    AbstractProduction.prototype.accept = function (visitor) {
+        visitor.visit(this);
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(this.definition, function (prod) {
+            prod.accept(visitor);
+        });
+    };
+    return AbstractProduction;
+}());
+
+var NonTerminal = /** @class */ (function (_super) {
+    __extends(NonTerminal, _super);
+    function NonTerminal(options) {
+        var _this = _super.call(this, []) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    Object.defineProperty(NonTerminal.prototype, "definition", {
+        get: function () {
+            if (this.referencedRule !== undefined) {
+                return this.referencedRule.definition;
+            }
+            return [];
+        },
+        set: function (definition) {
+            // immutable
+        },
+        enumerable: true,
+        configurable: true
+    });
+    NonTerminal.prototype.accept = function (visitor) {
+        visitor.visit(this);
+        // don't visit children of a reference, we will get cyclic infinite loops if we do so
+    };
+    return NonTerminal;
+}(AbstractProduction));
+
+var Rule = /** @class */ (function (_super) {
+    __extends(Rule, _super);
+    function Rule(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.orgText = "";
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Rule;
+}(AbstractProduction));
+
+// TODO: is this only used in an Alternation?
+//       Perhaps `Flat` should be renamed to `Alternative`?
+var Flat = /** @class */ (function (_super) {
+    __extends(Flat, _super);
+    // A named Flat production is used to indicate a Nested Rule in an alternation
+    function Flat(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.ignoreAmbiguities = false;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Flat;
+}(AbstractProduction));
+
+var Option = /** @class */ (function (_super) {
+    __extends(Option, _super);
+    function Option(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Option;
+}(AbstractProduction));
+
+var RepetitionMandatory = /** @class */ (function (_super) {
+    __extends(RepetitionMandatory, _super);
+    function RepetitionMandatory(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return RepetitionMandatory;
+}(AbstractProduction));
+
+var RepetitionMandatoryWithSeparator = /** @class */ (function (_super) {
+    __extends(RepetitionMandatoryWithSeparator, _super);
+    function RepetitionMandatoryWithSeparator(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return RepetitionMandatoryWithSeparator;
+}(AbstractProduction));
+
+var Repetition = /** @class */ (function (_super) {
+    __extends(Repetition, _super);
+    function Repetition(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Repetition;
+}(AbstractProduction));
+
+var RepetitionWithSeparator = /** @class */ (function (_super) {
+    __extends(RepetitionWithSeparator, _super);
+    function RepetitionWithSeparator(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return RepetitionWithSeparator;
+}(AbstractProduction));
+
+var Alternation = /** @class */ (function (_super) {
+    __extends(Alternation, _super);
+    function Alternation(options) {
+        var _this = _super.call(this, options.definition) || this;
+        _this.idx = 1;
+        _this.ignoreAmbiguities = false;
+        _this.hasPredicates = false;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+        return _this;
+    }
+    return Alternation;
+}(AbstractProduction));
+
+var Terminal = /** @class */ (function () {
+    function Terminal(options) {
+        this.idx = 1;
+        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
+    }
+    Terminal.prototype.accept = function (visitor) {
+        visitor.visit(this);
+    };
+    return Terminal;
+}());
+
+function serializeGrammar(topRules) {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topRules, serializeProduction);
+}
+function serializeProduction(node) {
+    function convertDefinition(definition) {
+        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(definition, serializeProduction);
+    }
+    /* istanbul ignore else */
+    if (node instanceof NonTerminal) {
+        return {
+            type: "NonTerminal",
+            name: node.nonTerminalName,
+            idx: node.idx
+        };
+    }
+    else if (node instanceof Flat) {
+        return {
+            type: "Flat",
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Option) {
+        return {
+            type: "Option",
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionMandatory) {
+        return {
+            type: "RepetitionMandatory",
+            name: node.name,
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionMandatoryWithSeparator) {
+        return {
+            type: "RepetitionMandatoryWithSeparator",
+            name: node.name,
+            idx: node.idx,
+            separator: (serializeProduction(new Terminal({ terminalType: node.separator }))),
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof RepetitionWithSeparator) {
+        return {
+            type: "RepetitionWithSeparator",
+            name: node.name,
+            idx: node.idx,
+            separator: (serializeProduction(new Terminal({ terminalType: node.separator }))),
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Repetition) {
+        return {
+            type: "Repetition",
+            name: node.name,
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Alternation) {
+        return {
+            type: "Alternation",
+            name: node.name,
+            idx: node.idx,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else if (node instanceof Terminal) {
+        var serializedTerminal = {
+            type: "Terminal",
+            name: node.terminalType.name,
+            label: Object(__WEBPACK_IMPORTED_MODULE_1__scan_tokens_public__["e" /* tokenLabel */])(node.terminalType),
+            idx: node.idx
+        };
+        var pattern = node.terminalType.PATTERN;
+        if (node.terminalType.PATTERN) {
+            serializedTerminal.pattern = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["D" /* isRegExp */])(pattern)
+                ? pattern.source
+                : pattern;
+        }
+        return serializedTerminal;
+    }
+    else if (node instanceof Rule) {
+        return {
+            type: "Rule",
+            name: node.name,
+            orgText: node.orgText,
+            definition: convertDefinition(node.definition)
+        };
+    }
+    else {
+        throw Error("non exhaustive match");
+    }
+}
+//# sourceMappingURL=gast_public.js.map
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8343,285 +8622,6 @@ function baseMixin(_chart) {
 }
 
 /***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AbstractProduction; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return NonTerminal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return Rule; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return Flat; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return Option; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return RepetitionMandatory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return RepetitionMandatoryWithSeparator; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return Repetition; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return RepetitionWithSeparator; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Alternation; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return Terminal; });
-/* harmony export (immutable) */ __webpack_exports__["l"] = serializeGrammar;
-/* harmony export (immutable) */ __webpack_exports__["m"] = serializeProduction;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scan_tokens_public__ = __webpack_require__(16);
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-
-
-var AbstractProduction = /** @class */ (function () {
-    function AbstractProduction(definition) {
-        this.definition = definition;
-    }
-    AbstractProduction.prototype.accept = function (visitor) {
-        visitor.visit(this);
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["u" /* forEach */])(this.definition, function (prod) {
-            prod.accept(visitor);
-        });
-    };
-    return AbstractProduction;
-}());
-
-var NonTerminal = /** @class */ (function (_super) {
-    __extends(NonTerminal, _super);
-    function NonTerminal(options) {
-        var _this = _super.call(this, []) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    Object.defineProperty(NonTerminal.prototype, "definition", {
-        get: function () {
-            if (this.referencedRule !== undefined) {
-                return this.referencedRule.definition;
-            }
-            return [];
-        },
-        set: function (definition) {
-            // immutable
-        },
-        enumerable: true,
-        configurable: true
-    });
-    NonTerminal.prototype.accept = function (visitor) {
-        visitor.visit(this);
-        // don't visit children of a reference, we will get cyclic infinite loops if we do so
-    };
-    return NonTerminal;
-}(AbstractProduction));
-
-var Rule = /** @class */ (function (_super) {
-    __extends(Rule, _super);
-    function Rule(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.orgText = "";
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return Rule;
-}(AbstractProduction));
-
-// TODO: is this only used in an Alternation?
-//       Perhaps `Flat` should be renamed to `Alternative`?
-var Flat = /** @class */ (function (_super) {
-    __extends(Flat, _super);
-    // A named Flat production is used to indicate a Nested Rule in an alternation
-    function Flat(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.ignoreAmbiguities = false;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return Flat;
-}(AbstractProduction));
-
-var Option = /** @class */ (function (_super) {
-    __extends(Option, _super);
-    function Option(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return Option;
-}(AbstractProduction));
-
-var RepetitionMandatory = /** @class */ (function (_super) {
-    __extends(RepetitionMandatory, _super);
-    function RepetitionMandatory(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return RepetitionMandatory;
-}(AbstractProduction));
-
-var RepetitionMandatoryWithSeparator = /** @class */ (function (_super) {
-    __extends(RepetitionMandatoryWithSeparator, _super);
-    function RepetitionMandatoryWithSeparator(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return RepetitionMandatoryWithSeparator;
-}(AbstractProduction));
-
-var Repetition = /** @class */ (function (_super) {
-    __extends(Repetition, _super);
-    function Repetition(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return Repetition;
-}(AbstractProduction));
-
-var RepetitionWithSeparator = /** @class */ (function (_super) {
-    __extends(RepetitionWithSeparator, _super);
-    function RepetitionWithSeparator(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return RepetitionWithSeparator;
-}(AbstractProduction));
-
-var Alternation = /** @class */ (function (_super) {
-    __extends(Alternation, _super);
-    function Alternation(options) {
-        var _this = _super.call(this, options.definition) || this;
-        _this.idx = 1;
-        _this.ignoreAmbiguities = false;
-        _this.hasPredicates = false;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(_this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-        return _this;
-    }
-    return Alternation;
-}(AbstractProduction));
-
-var Terminal = /** @class */ (function () {
-    function Terminal(options) {
-        this.idx = 1;
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["f" /* assign */])(this, Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["N" /* pick */])(options, function (v) { return v !== undefined; }));
-    }
-    Terminal.prototype.accept = function (visitor) {
-        visitor.visit(this);
-    };
-    return Terminal;
-}());
-
-function serializeGrammar(topRules) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(topRules, serializeProduction);
-}
-function serializeProduction(node) {
-    function convertDefinition(definition) {
-        return Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["I" /* map */])(definition, serializeProduction);
-    }
-    /* istanbul ignore else */
-    if (node instanceof NonTerminal) {
-        return {
-            type: "NonTerminal",
-            name: node.nonTerminalName,
-            idx: node.idx
-        };
-    }
-    else if (node instanceof Flat) {
-        return {
-            type: "Flat",
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof Option) {
-        return {
-            type: "Option",
-            idx: node.idx,
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof RepetitionMandatory) {
-        return {
-            type: "RepetitionMandatory",
-            name: node.name,
-            idx: node.idx,
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof RepetitionMandatoryWithSeparator) {
-        return {
-            type: "RepetitionMandatoryWithSeparator",
-            name: node.name,
-            idx: node.idx,
-            separator: (serializeProduction(new Terminal({ terminalType: node.separator }))),
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof RepetitionWithSeparator) {
-        return {
-            type: "RepetitionWithSeparator",
-            name: node.name,
-            idx: node.idx,
-            separator: (serializeProduction(new Terminal({ terminalType: node.separator }))),
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof Repetition) {
-        return {
-            type: "Repetition",
-            name: node.name,
-            idx: node.idx,
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof Alternation) {
-        return {
-            type: "Alternation",
-            name: node.name,
-            idx: node.idx,
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else if (node instanceof Terminal) {
-        var serializedTerminal = {
-            type: "Terminal",
-            name: node.terminalType.name,
-            label: Object(__WEBPACK_IMPORTED_MODULE_1__scan_tokens_public__["e" /* tokenLabel */])(node.terminalType),
-            idx: node.idx
-        };
-        var pattern = node.terminalType.PATTERN;
-        if (node.terminalType.PATTERN) {
-            serializedTerminal.pattern = Object(__WEBPACK_IMPORTED_MODULE_0__utils_utils__["D" /* isRegExp */])(pattern)
-                ? pattern.source
-                : pattern;
-        }
-        return serializedTerminal;
-    }
-    else if (node instanceof Rule) {
-        return {
-            type: "Rule",
-            name: node.name,
-            orgText: node.orgText,
-            definition: convertDefinition(node.definition)
-        };
-    }
-    else {
-        throw Error("non exhaustive match");
-    }
-}
-//# sourceMappingURL=gast_public.js.map
-
-/***/ }),
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9753,296 +9753,11 @@ function colorMixin(_chart) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var events = exports.events = {
-  current: null
-
-  /**
-   * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
-   * that are triggered repetitively due to user interaction such brush dragging might flood the library
-   * and invoke more renders than can be executed in time. Using this function to wrap your event
-   * function allows the library to smooth out the rendering by throttling events and only responding to
-   * the most recent event.
-   * @name events.trigger
-   * @memberof dc
-   * @example
-   * chart.on('renderlet', function(chart) {
-   *     // smooth the rendering through event throttling
-   *     dc.events.trigger(function(){
-   *         // focus some other chart to the range selected by user on this chart
-   *         someOtherChart.focus(chart.filter());
-   *     });
-   * })
-   * @param {Function} closure
-   * @param {Number} [delay]
-   */
-};events.trigger = function (closure, delay) {
-  if (!delay) {
-    closure();
-    return;
-  }
-
-  events.current = closure;
-
-  setTimeout(function () {
-    if (closure === events.current) {
-      closure();
-    }
-  }, delay);
-};
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = capMixin;
-
-var _d = __webpack_require__(1);
-
-var _d2 = _interopRequireDefault(_d);
-
-var _core = __webpack_require__(3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Cap is a mixin that groups small data elements below a _cap_ into an *others* grouping for both the
- * Row and Pie Charts.
- *
- * The top ordered elements in the group up to the cap amount will be kept in the chart, and the rest
- * will be replaced with an *others* element, with value equal to the sum of the replaced values. The
- * keys of the elements below the cap limit are recorded in order to filter by those keys when the
- * others* element is clicked.
- * @name capMixin
- * @memberof dc
- * @mixin
- * @param {Object} _chart
- * @return {dc.capMixin}
- */
-function capMixin(_chart) {
-  var _cap = void 0;
-  var _ordering = "desc";
-
-  var _othersLabel = "Others";
-
-  var _othersGrouper = function _othersGrouper(topRows) {
-    var topRowsSum = _d2.default.sum(topRows, _chart.valueAccessor()),
-        allRows = _chart.group().all(),
-        allRowsSum = _d2.default.sum(allRows, _chart.valueAccessor()),
-        topKeys = topRows.map(_chart.keyAccessor()),
-        allKeys = allRows.map(_chart.keyAccessor()),
-        topSet = _d2.default.set(topKeys),
-        others = allKeys.filter(function (d) {
-      return !topSet.has(d);
-    });
-    if (allRowsSum > topRowsSum) {
-      return topRows.concat([{ others: others, key: _othersLabel, value: allRowsSum - topRowsSum }]);
-    }
-    return topRows;
-  };
-
-  _chart._mandatoryAttributes().push("cap");
-
-  _chart.cappedKeyAccessor = function (d, i) {
-    if (d.others) {
-      /* OVERRIDE ---------------------------------------------------------------- */
-      return d.key0;
-      /* ------------------------------------------------------------------------- */
-    }
-    return _chart.keyAccessor()(d, i);
-  };
-
-  _chart.cappedValueAccessor = function (d, i) {
-    if (d.others) {
-      return d.value;
-    }
-    return _chart.valueAccessor()(d, i);
-  };
-
-  /* OVERRIDE EXTEND --------------------------------------------------------- */
-  _chart.ordering = function (order) {
-    _chart.expireCache();
-    if (!order) {
-      return _ordering;
-    }
-    _ordering = order;
-    return _chart;
-  };
-
-  _chart.setDataAsync(function (group, callback) {
-    function resultCallback(error, result) {
-      if (error) {
-        callback(error);
-        return;
-      }
-      var rows = _chart._computeOrderedGroups(result);
-      if (_othersGrouper) {
-        callback(null, _othersGrouper(rows));
-      } else {
-        callback(null, rows);
-      }
-    }
-
-    if (_cap === undefined) {
-      if (_chart.dataCache != null) {
-        callback(null, _chart._computeOrderedGroups(_chart.dataCache));
-      } else {
-        group.allAsync(function (error, result) {
-          if (error) {
-            callback(error);
-            return;
-          }
-          callback(null, _chart._computeOrderedGroups(result));
-        });
-      }
-    } else if (_chart.dataCache != null) {
-      resultCallback(null, _chart.dataCache);
-    } else if (_ordering === "desc") {
-      return group.topAsync(_cap).then(function (result) {
-        resultCallback(null, result);
-      }).catch(function (error) {
-        resultCallback(error);
-      });
-    } else if (_ordering === "asc") {
-      group.bottomAsync(_cap, undefined, undefined, resultCallback); // ordered by crossfilter group order (default value)
-    }
-  });
-
-  _chart.expireCache = function () {
-    _chart.dataCache = null;
-  };
-
-  _chart.data(function (group) {
-    if (!_chart.dataCache) {
-      console.warn("Empty dataCache. Please fetch new data");
-    }
-    if (_cap === undefined) {
-      return _chart._computeOrderedGroups(_chart.dataCache);
-    } else {
-      var rows = _chart.dataCache;
-      if (_othersGrouper) {
-        return _othersGrouper(rows);
-      }
-      return rows;
-    }
-  });
-
-  /* ------------------------------------------------------------------------- */
-
-  /**
-   * Get or set the count of elements to that will be included in the cap.
-   * @name cap
-   * @memberof dc.capMixin
-   * @instance
-   * @param {Number} [count=Infinity]
-   * @return {Number}
-   * @return {dc.capMixin}
-   */
-  _chart.cap = function (count) {
-    if (!arguments.length) {
-      return _cap;
-    }
-    _cap = count;
-    _chart.expireCache();
-    return _chart;
-  };
-
-  /**
-   * Get or set the label for *Others* slice when slices cap is specified
-   * @name othersLabel
-   * @memberof dc.capMixin
-   * @instance
-   * @param {String} [label="Others"]
-   * @return {String}
-   * @return {dc.capMixin}
-   */
-  _chart.othersLabel = function (label) {
-    if (!arguments.length) {
-      return _othersLabel;
-    }
-    _othersLabel = label;
-    return _chart;
-  };
-
-  /**
-   * Get or set the grouper function that will perform the insertion of data for the *Others* slice
-   * if the slices cap is specified. If set to a falsy value, no others will be added. By default the
-   * grouper function computes the sum of all values below the cap.
-   * @name othersGrouper
-   * @memberof dc.capMixin
-   * @instance
-   * @example
-   * // Default others grouper
-   * chart.othersGrouper(function (topRows) {
-   *    var topRowsSum = d3.sum(topRows, _chart.valueAccessor()),
-   *        allRows = _chart.group().all(),
-   *        allRowsSum = d3.sum(allRows, _chart.valueAccessor()),
-   *        topKeys = topRows.map(_chart.keyAccessor()),
-   *        allKeys = allRows.map(_chart.keyAccessor()),
-   *        topSet = d3.set(topKeys),
-   *        others = allKeys.filter(function (d) {return !topSet.has(d);});
-   *    if (allRowsSum > topRowsSum) {
-   *        return topRows.concat([{'others': others, 'key': _othersLabel, 'value': allRowsSum - topRowsSum}]);
-   *    }
-   *    return topRows;
-   * });
-   * // Custom others grouper
-   * chart.othersGrouper(function (data) {
-   *     // compute the value for others, presumably the sum of all values below the cap
-   *     var othersSum  = yourComputeOthersValueLogic(data)
-   *
-   *     // the keys are needed to properly filter when the others element is clicked
-   *     var othersKeys = yourComputeOthersKeysArrayLogic(data);
-   *
-   *     // add the others row to the dataset
-   *     data.push({'key': 'Others', 'value': othersSum, 'others': othersKeys });
-   *
-   *     return data;
-   * });
-   * @param {Function} [grouperFunction]
-   * @return {Function}
-   * @return {dc.capMixin}
-   */
-  _chart.othersGrouper = function (grouperFunction) {
-    if (!arguments.length) {
-      return _othersGrouper;
-    }
-    _othersGrouper = grouperFunction;
-    return _chart;
-  };
-
-  (0, _core.override)(_chart, "onClick", function (d) {
-    if (d.others) {
-      _chart.filter([d.others]);
-    }
-    if (_chart._onClick) {
-      _chart._onClick(d);
-    }
-  });
-
-  return _chart;
-}
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 exports.default = coordinateGridMixin;
 
 var _core = __webpack_require__(3);
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -10058,7 +9773,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var _filters = __webpack_require__(20);
 
@@ -10268,7 +9983,12 @@ function coordinateGridMixin(_chart) {
     return _chart;
   };
 
-  _chart._generateG = function (parent) {
+  _chart._generateG = function (parent, g, chartBodyG) {
+    if (g) {
+      _g = g;
+      _chartBodyG = chartBodyG;
+      return _g;
+    }
     if (parent === undefined) {
       _parent = _chart.svg();
     } else {
@@ -10708,6 +10428,8 @@ function coordinateGridMixin(_chart) {
     _chart.margins().bottom += _xAxisLabelPadding;
     return _chart;
   };
+
+  _chart._prepareXAxis = prepareXAxis;
 
   _chart._prepareYAxis = function (g) {
     if (_y === undefined || _chart.elasticY()) {
@@ -11759,6 +11481,291 @@ function coordinateGridMixin(_chart) {
 }
 
 /***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var events = exports.events = {
+  current: null
+
+  /**
+   * This function triggers a throttled event function with a specified delay (in milli-seconds).  Events
+   * that are triggered repetitively due to user interaction such brush dragging might flood the library
+   * and invoke more renders than can be executed in time. Using this function to wrap your event
+   * function allows the library to smooth out the rendering by throttling events and only responding to
+   * the most recent event.
+   * @name events.trigger
+   * @memberof dc
+   * @example
+   * chart.on('renderlet', function(chart) {
+   *     // smooth the rendering through event throttling
+   *     dc.events.trigger(function(){
+   *         // focus some other chart to the range selected by user on this chart
+   *         someOtherChart.focus(chart.filter());
+   *     });
+   * })
+   * @param {Function} closure
+   * @param {Number} [delay]
+   */
+};events.trigger = function (closure, delay) {
+  if (!delay) {
+    closure();
+    return;
+  }
+
+  events.current = closure;
+
+  setTimeout(function () {
+    if (closure === events.current) {
+      closure();
+    }
+  }, delay);
+};
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = capMixin;
+
+var _d = __webpack_require__(1);
+
+var _d2 = _interopRequireDefault(_d);
+
+var _core = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Cap is a mixin that groups small data elements below a _cap_ into an *others* grouping for both the
+ * Row and Pie Charts.
+ *
+ * The top ordered elements in the group up to the cap amount will be kept in the chart, and the rest
+ * will be replaced with an *others* element, with value equal to the sum of the replaced values. The
+ * keys of the elements below the cap limit are recorded in order to filter by those keys when the
+ * others* element is clicked.
+ * @name capMixin
+ * @memberof dc
+ * @mixin
+ * @param {Object} _chart
+ * @return {dc.capMixin}
+ */
+function capMixin(_chart) {
+  var _cap = void 0;
+  var _ordering = "desc";
+
+  var _othersLabel = "Others";
+
+  var _othersGrouper = function _othersGrouper(topRows) {
+    var topRowsSum = _d2.default.sum(topRows, _chart.valueAccessor()),
+        allRows = _chart.group().all(),
+        allRowsSum = _d2.default.sum(allRows, _chart.valueAccessor()),
+        topKeys = topRows.map(_chart.keyAccessor()),
+        allKeys = allRows.map(_chart.keyAccessor()),
+        topSet = _d2.default.set(topKeys),
+        others = allKeys.filter(function (d) {
+      return !topSet.has(d);
+    });
+    if (allRowsSum > topRowsSum) {
+      return topRows.concat([{ others: others, key: _othersLabel, value: allRowsSum - topRowsSum }]);
+    }
+    return topRows;
+  };
+
+  _chart._mandatoryAttributes().push("cap");
+
+  _chart.cappedKeyAccessor = function (d, i) {
+    if (d.others) {
+      /* OVERRIDE ---------------------------------------------------------------- */
+      return d.key0;
+      /* ------------------------------------------------------------------------- */
+    }
+    return _chart.keyAccessor()(d, i);
+  };
+
+  _chart.cappedValueAccessor = function (d, i) {
+    if (d.others) {
+      return d.value;
+    }
+    return _chart.valueAccessor()(d, i);
+  };
+
+  /* OVERRIDE EXTEND --------------------------------------------------------- */
+  _chart.ordering = function (order) {
+    _chart.expireCache();
+    if (!order) {
+      return _ordering;
+    }
+    _ordering = order;
+    return _chart;
+  };
+
+  _chart.setDataAsync(function (group, callback) {
+    function resultCallback(error, result) {
+      if (error) {
+        callback(error);
+        return;
+      }
+      var rows = _chart._computeOrderedGroups(result);
+      if (_othersGrouper) {
+        callback(null, _othersGrouper(rows));
+      } else {
+        callback(null, rows);
+      }
+    }
+
+    if (_cap === undefined) {
+      if (_chart.dataCache != null) {
+        callback(null, _chart._computeOrderedGroups(_chart.dataCache));
+      } else {
+        group.allAsync(function (error, result) {
+          if (error) {
+            callback(error);
+            return;
+          }
+          callback(null, _chart._computeOrderedGroups(result));
+        });
+      }
+    } else if (_chart.dataCache != null) {
+      resultCallback(null, _chart.dataCache);
+    } else if (_ordering === "desc") {
+      return group.topAsync(_cap).then(function (result) {
+        resultCallback(null, result);
+      }).catch(function (error) {
+        resultCallback(error);
+      });
+    } else if (_ordering === "asc") {
+      group.bottomAsync(_cap, undefined, undefined, resultCallback); // ordered by crossfilter group order (default value)
+    }
+  });
+
+  _chart.expireCache = function () {
+    _chart.dataCache = null;
+  };
+
+  _chart.data(function (group) {
+    if (!_chart.dataCache) {
+      console.warn("Empty dataCache. Please fetch new data");
+    }
+    if (_cap === undefined) {
+      return _chart._computeOrderedGroups(_chart.dataCache);
+    } else {
+      var rows = _chart.dataCache;
+      if (_othersGrouper) {
+        return _othersGrouper(rows);
+      }
+      return rows;
+    }
+  });
+
+  /* ------------------------------------------------------------------------- */
+
+  /**
+   * Get or set the count of elements to that will be included in the cap.
+   * @name cap
+   * @memberof dc.capMixin
+   * @instance
+   * @param {Number} [count=Infinity]
+   * @return {Number}
+   * @return {dc.capMixin}
+   */
+  _chart.cap = function (count) {
+    if (!arguments.length) {
+      return _cap;
+    }
+    _cap = count;
+    _chart.expireCache();
+    return _chart;
+  };
+
+  /**
+   * Get or set the label for *Others* slice when slices cap is specified
+   * @name othersLabel
+   * @memberof dc.capMixin
+   * @instance
+   * @param {String} [label="Others"]
+   * @return {String}
+   * @return {dc.capMixin}
+   */
+  _chart.othersLabel = function (label) {
+    if (!arguments.length) {
+      return _othersLabel;
+    }
+    _othersLabel = label;
+    return _chart;
+  };
+
+  /**
+   * Get or set the grouper function that will perform the insertion of data for the *Others* slice
+   * if the slices cap is specified. If set to a falsy value, no others will be added. By default the
+   * grouper function computes the sum of all values below the cap.
+   * @name othersGrouper
+   * @memberof dc.capMixin
+   * @instance
+   * @example
+   * // Default others grouper
+   * chart.othersGrouper(function (topRows) {
+   *    var topRowsSum = d3.sum(topRows, _chart.valueAccessor()),
+   *        allRows = _chart.group().all(),
+   *        allRowsSum = d3.sum(allRows, _chart.valueAccessor()),
+   *        topKeys = topRows.map(_chart.keyAccessor()),
+   *        allKeys = allRows.map(_chart.keyAccessor()),
+   *        topSet = d3.set(topKeys),
+   *        others = allKeys.filter(function (d) {return !topSet.has(d);});
+   *    if (allRowsSum > topRowsSum) {
+   *        return topRows.concat([{'others': others, 'key': _othersLabel, 'value': allRowsSum - topRowsSum}]);
+   *    }
+   *    return topRows;
+   * });
+   * // Custom others grouper
+   * chart.othersGrouper(function (data) {
+   *     // compute the value for others, presumably the sum of all values below the cap
+   *     var othersSum  = yourComputeOthersValueLogic(data)
+   *
+   *     // the keys are needed to properly filter when the others element is clicked
+   *     var othersKeys = yourComputeOthersKeysArrayLogic(data);
+   *
+   *     // add the others row to the dataset
+   *     data.push({'key': 'Others', 'value': othersSum, 'others': othersKeys });
+   *
+   *     return data;
+   * });
+   * @param {Function} [grouperFunction]
+   * @return {Function}
+   * @return {dc.capMixin}
+   */
+  _chart.othersGrouper = function (grouperFunction) {
+    if (!arguments.length) {
+      return _othersGrouper;
+    }
+    _othersGrouper = grouperFunction;
+    return _chart;
+  };
+
+  (0, _core.override)(_chart, "onClick", function (d) {
+    if (d.others) {
+      _chart.filter([d.others]);
+    }
+    if (_chart._onClick) {
+      _chart._onClick(d);
+    }
+  });
+
+  return _chart;
+}
+
+/***/ }),
 /* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -11931,7 +11938,7 @@ function marginMixin(_chart) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GAstVisitor; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gast_public__ = __webpack_require__(6);
 
 var GAstVisitor = /** @class */ (function () {
     function GAstVisitor() {
@@ -12936,7 +12943,7 @@ function isTokenType(tokType) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DslMethodsCollectorVisitor; });
 /* harmony export (immutable) */ __webpack_exports__["b"] = collectMethods;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_visitor_public__ = __webpack_require__(19);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -31049,7 +31056,7 @@ var Lexer = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return defaultGrammarValidatorErrorProvider; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_checks__ = __webpack_require__(30);
 
@@ -31285,7 +31292,7 @@ var defaultGrammarValidatorErrorProvider = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lookahead__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cst_cst__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__interpreter__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__ = __webpack_require__(19);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -31883,7 +31890,7 @@ function validateDuplicateNestedRules(topLevelRules, errMsgProvider) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__interpreter__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rest__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__gast_gast_visitor_public__ = __webpack_require__(19);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -32392,7 +32399,7 @@ function areTokenCategoriesNotUsed(lookAheadPaths) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__first__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__ = __webpack_require__(6);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -35667,7 +35674,7 @@ exports.convertDistance = convertDistance;
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RestWalker; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__ = __webpack_require__(6);
 
 
 /**
@@ -36801,7 +36808,7 @@ function clearRegExpParserCache() {
 /* harmony export (immutable) */ __webpack_exports__["d"] = expandAllNestedRuleNames;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_keys__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast_visitor_public__ = __webpack_require__(19);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -50981,7 +50988,7 @@ exports.default = coordinateGridRasterMixin;
 
 var _core = __webpack_require__(3);
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -54417,7 +54424,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var _utils = __webpack_require__(4);
 
@@ -56347,7 +56354,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NoViableAltException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["c"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__ = __webpack_require__(212);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLexerErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__ = __webpack_require__(6);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Alternation", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Flat", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["c"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NonTerminal", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["d"]; });
@@ -57360,7 +57367,7 @@ var defaultLexerErrorProvider = {
 /* unused harmony export firstForBranching */
 /* unused harmony export firstForTerminal */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast__ = __webpack_require__(23);
 
 
@@ -57898,7 +57905,7 @@ Object.keys(_coreAsync).forEach(function (key) {
   });
 });
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 Object.keys(_events).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -58117,7 +58124,7 @@ Object.defineProperty(exports, "asyncMixin", {
   }
 });
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 Object.defineProperty(exports, "baseMixin", {
   enumerable: true,
@@ -58135,7 +58142,7 @@ Object.defineProperty(exports, "bubbleMixin", {
   }
 });
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(15);
 
 Object.defineProperty(exports, "capMixin", {
   enumerable: true,
@@ -58153,7 +58160,7 @@ Object.defineProperty(exports, "colorMixin", {
   }
 });
 
-var _coordinateGridMixin = __webpack_require__(15);
+var _coordinateGridMixin = __webpack_require__(13);
 
 Object.defineProperty(exports, "coordinateGridMixin", {
   enumerable: true,
@@ -59822,7 +59829,7 @@ var _core = __webpack_require__(3);
 
 var _coreAsync = __webpack_require__(5);
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -59830,7 +59837,7 @@ var _bubbleMixin = __webpack_require__(35);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(15);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -60367,7 +60374,7 @@ exports.default = filterMixin;
 
 var _formattingHelpers = __webpack_require__(10);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var noop = function noop() {}; // eslint-disable-line no-empty-function
 
@@ -60767,7 +60774,7 @@ var _elasticDimensionMixin = __webpack_require__(185);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _coordinateGridMixin = __webpack_require__(15);
+var _coordinateGridMixin = __webpack_require__(13);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -70111,7 +70118,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var _filters = __webpack_require__(20);
 
@@ -70307,11 +70314,11 @@ var _bubbleMixin = __webpack_require__(35);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(15);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _coordinateGridMixin = __webpack_require__(15);
+var _coordinateGridMixin = __webpack_require__(13);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -70771,11 +70778,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = cloudChart;
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(15);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -70921,7 +70928,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = compositeChart;
 
-var _coordinateGridMixin = __webpack_require__(15);
+var _coordinateGridMixin = __webpack_require__(13);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -71489,7 +71496,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = dataCount;
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -71662,7 +71669,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -71916,7 +71923,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 exports.default = geoChoroplethChart;
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -75912,10 +75919,6 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _baseMixin = __webpack_require__(6);
-
-var _baseMixin2 = _interopRequireDefault(_baseMixin);
-
 var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
@@ -75924,13 +75927,17 @@ var _marginMixin = __webpack_require__(17);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
 var _filters = __webpack_require__(20);
+
+var _coordinateGridMixin = __webpack_require__(13);
+
+var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -76081,7 +76088,7 @@ function heatMap(parent, chartGroup) {
   };var _xBorderRadius = DEFAULT_BORDER_RADIUS;
   var _yBorderRadius = DEFAULT_BORDER_RADIUS;
 
-  var _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _baseMixin2.default)({})));
+  var _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _coordinateGridMixin2.default)({})));
   _chart._mandatoryAttributes(["group"]);
   _chart.title(_chart.colorAccessor());
 
@@ -76212,14 +76219,13 @@ function heatMap(parent, chartGroup) {
       _chart.redrawGroup();
     });
   }
-
-  (0, _core.override)(_chart, "filter", function (filter, isInverseFilter) {
+  _chart.filter = function (filter, isInverseFilter) {
     if (!arguments.length) {
       return _chart._filter();
     }
 
     return _chart._filter(_filters.filters.TwoDimensionalFilter(filter), isInverseFilter);
-  });
+  };
 
   function uniq(d, i, a) {
     return !i || a[i - 1] !== d;
@@ -76286,14 +76292,20 @@ function heatMap(parent, chartGroup) {
     _chart.margins({ top: 8, right: 16, bottom: 0, left: 0 });
     /* --------------------------------------------------------------------------*/
 
-    _chartBody = _chart.svg().append("g").attr("class", "heatmap").attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")");
+    var parent = _chart.svg();
+    var g = parent.append("g");
+    _chartBody = g.attr("class", "heatmap").attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")");
 
     /* OVERRIDE -----------------------------------------------------------------*/
     _chartBody.append("g").attr("class", "box-wrapper");
+    _chart._generateG(g, _chartBody);
     _hasBeenRendered = true;
 
     _dockedAxes = _chart.root().append("div").attr("class", "docked-axis-wrapper");
     /* --------------------------------------------------------------------------*/
+
+    _chart._prepareXAxis(_chart.g(), true);
+    _chart._prepareYAxis(_chart.g());
     return _chart._doRedraw();
   };
 
@@ -76645,11 +76657,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = pieChart;
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(15);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -77659,7 +77671,7 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _coordinateGridMixin = __webpack_require__(15);
+var _coordinateGridMixin = __webpack_require__(13);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -78278,7 +78290,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = numberChart;
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -78375,7 +78387,7 @@ var _mapMixin = __webpack_require__(38);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -83089,11 +83101,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rowChart;
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(15);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -83758,7 +83770,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = scatterPlot;
 
-var _coordinateGridMixin = __webpack_require__(15);
+var _coordinateGridMixin = __webpack_require__(13);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -83766,7 +83778,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(13);
+var _events = __webpack_require__(14);
 
 var _filters = __webpack_require__(20);
 
@@ -84067,7 +84079,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _formattingHelpers = __webpack_require__(10);
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -84587,7 +84599,7 @@ exports.default = boxPlot;
 
 var _core = __webpack_require__(3);
 
-var _coordinateGridMixin = __webpack_require__(15);
+var _coordinateGridMixin = __webpack_require__(13);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -84851,7 +84863,7 @@ var _core = __webpack_require__(3);
 
 var _coreAsync = __webpack_require__(5);
 
-var _baseMixin = __webpack_require__(6);
+var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
@@ -85249,7 +85261,7 @@ function stringify (gj) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__first__ = __webpack_require__(213);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(214);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(6);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -86303,7 +86315,7 @@ var LexerAdapter = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_checks__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_public__ = __webpack_require__(6);
 
 
 
@@ -87440,7 +87452,7 @@ var ContentAssist = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GastRecorder; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__scan_tokens_public__ = __webpack_require__(16);
@@ -87884,7 +87896,7 @@ function generateParserModule(options) {
 /* unused harmony export genAlternation */
 /* unused harmony export genSingleAlt */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_grammar_gast_gast_public__ = __webpack_require__(6);
 
 
 /**
@@ -88034,7 +88046,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = rasterLayer;
 
-var _capMixin = __webpack_require__(14);
+var _capMixin = __webpack_require__(15);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
