@@ -389,10 +389,14 @@ export default function heatMap(parent, chartGroup) {
   _chart._doRender = function() {
     _chart.resetSvg()
 
-    /* OVERRIDE -----------------------------------------------------------------*/
-    _chart.margins({ top: 8, right: 16, bottom: 0, left: 0 })
-    /* --------------------------------------------------------------------------*/
-
+    _chart.margins({ ..._chart.margins(), top: 16, right: 16, bottom: 0 })
+    // Sorry. Hacks to make room for placement of axises extent controls 🤷‍
+    _chart.leftAxisLockBump = 52
+    _chart.leftMinInputBump = -117
+    _chart.bottomAxisLockBump = -106
+    _chart.bottomAxisMaxTopBump = -120
+    _chart.bottomAxisMaxLeftBump = -20
+    _chart.bottomAxisMinLeftBump = 62
     const parent = _chart.svg()
     const g = parent
       .append("g")
@@ -400,7 +404,7 @@ export default function heatMap(parent, chartGroup) {
       .attr("class", "heatmap")
       .attr(
         "transform",
-        "translate(" + _chart.margins().left + "," + _chart.margins().top + ")"
+        "translate(0, 16)"
       )
 
     /* OVERRIDE -----------------------------------------------------------------*/
@@ -414,8 +418,12 @@ export default function heatMap(parent, chartGroup) {
       .attr("class", "docked-axis-wrapper")
     /* --------------------------------------------------------------------------*/
 
-    _chart._prepareXAxis(_chart.g(), true)
-    _chart._prepareYAxis(_chart.g())
+    if (_chart.x()) {
+      _chart._prepareXAxis(_chart.g(), true)
+    }
+    if (_chart.y()) {
+      _chart._prepareYAxis(_chart.g())
+    }
     return _chart._doRedraw()
   }
 
@@ -562,6 +570,26 @@ export default function heatMap(parent, chartGroup) {
     if (YAxis.empty()) {
       YAxis = _dockedAxes.append("div").attr("class", "docked-y-axis")
     }
+
+    const showInputs = inputs => () => inputs.style("opacity", 1)
+    const hideInputs = inputs => () => inputs.style("opacity", 0)
+
+
+    const xAxisInputs =  _chart
+      .root()
+      .selectAll(".axis-lock.type-x .axis-input")
+    XAxis.on("mouseover", showInputs(xAxisInputs))
+    xAxisInputs.on("mouseover", showInputs(xAxisInputs))
+    XAxis.on("mouseout", hideInputs(xAxisInputs))
+    xAxisInputs.on("mouseout", hideInputs(xAxisInputs))
+
+    const yAxisInputs =  _chart
+      .root()
+      .selectAll(".axis-lock.type-y .axis-input")
+    YAxis.on("mouseover", showInputs(yAxisInputs))
+    yAxisInputs.on("mouseover", showInputs(yAxisInputs))
+    YAxis.on("mouseout", hideInputs(yAxisInputs))
+    yAxisInputs.on("mouseout", hideInputs(yAxisInputs))
 
     const rowsText = YAxis.style("width", _dockedAxesSize.left + "px")
       .style("left", _dockedAxesSize.left + "px")

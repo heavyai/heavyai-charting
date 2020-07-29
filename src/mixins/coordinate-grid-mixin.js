@@ -531,7 +531,7 @@ export default function coordinateGridMixin (_chart) {
       _x.domain(_chart._ordinalXDomain())
     }
 
-    const xdom = _x.domain()
+    const xdom = _x ? _x.domain() : []
     if (render || compareDomains(_lastXDomain, xdom)) {
       _chart.rescale()
     }

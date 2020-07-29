@@ -177,25 +177,26 @@ export default function lockAxisMixin(chart) {
     const iconPosition = {
       left:
         type === "y"
-          ? `${chart.margins().left - TOGGLE_SIZE / 2}px`
+          ? `${chart.margins().left - TOGGLE_SIZE / 2 + (chart.leftAxisLockBump || 0)}px`
           : `${chart.width() - chart.margins().right}px`,
       top:
         type === "y"
           ? `${chart.margins().top - TOGGLE_SIZE}px`
-          : `${chart.height() - chart.margins().bottom}px`
+          : `${chart.height() - chart.margins().bottom + (chart.bottomAxisLockBump || 0)}px`
     }
 
     const inputsPosition = {
-      minLeft: `${chart.margins().left}px`,
-      minTop: `${chart.height() - chart.margins().bottom}px`,
+      minLeft: type === "y" ? `${chart.margins().left + (chart.leftAxisLockBump || 0)}px` :
+        `${chart.margins().left + (chart.bottomAxisMinLeftBump || 0)}px`,
+      minTop: `${chart.height() - chart.margins().bottom + (chart.leftMinInputBump || 0)}px`,
       maxLeft:
         type === "y"
-          ? `${chart.margins().left}px`
-          : `${chart.width() - chart.margins().right}px`,
+          ? `${chart.margins().left + (chart.leftAxisLockBump || 0)}px`
+          : `${chart.width() - chart.margins().right + (chart.bottomAxisMaxLeftBump || 0)}px`,
       maxTop:
         type === "y"
           ? `${chart.margins().top}px`
-          : `${chart.height() - chart.margins().bottom}px`
+          : `${chart.height() - chart.margins().bottom + (chart.bottomAxisMaxTopBump || 0)}px`
     }
 
     const hitBoxDim = {
