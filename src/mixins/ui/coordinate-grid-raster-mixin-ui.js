@@ -538,6 +538,10 @@ class ScrollZoomHandler extends BaseHandler {
   }
 
   _wheelZoom(doFullRender, delta, e) {
+    if (this._chart.shiftToZoom() && e && !e.shiftKey) {
+      return
+    }
+
     if (
       (!doFullRender && delta === 0) ||
       (!this._chart.elasticX() || !this._chart.elasticY())
@@ -857,6 +861,9 @@ class DragPanHandler extends BaseHandler {
   }
 
   _ignoreEvent(e) {
+    if (this._chart.shiftToZoom() && e && !e.shiftKey) {
+      return true
+    }
     const map = this._chart.map()
     if (map.boxZoom && map.boxZoom.isActive()) {
       return true
@@ -1122,9 +1129,11 @@ export default function bindEventHandlers(
     })
   }
 
-  function enableInteractionsInternal() {
+  function enableInteractionsInternal(shiftToZoom) {
     map.scrollZoom.enable()
-    map.boxZoom.enable()
+    if (!shiftToZoom) {
+      map.boxZoom.enable()
+    }
     // NOTE: box zoom must be enabled before dragPan
     map.dragPan.enable()
   }
@@ -1136,8 +1145,8 @@ export default function bindEventHandlers(
   }
 
   const rtn = {
-    enableInteractions: () => {
-      enableInteractionsInternal()
+    enableInteractions: shiftToZoom => {
+      enableInteractionsInternal(shiftToZoom)
     },
 
     disableInteractions: () => {
@@ -1153,7 +1162,7 @@ export default function bindEventHandlers(
   }
 
   if (enableInteractions) {
-    rtn.enableInteractions()
+    rtn.enableInteractions(chart.shiftToZoom())
   }
 
   return rtn

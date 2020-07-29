@@ -78,6 +78,8 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _popupDisplayable = true
   let _legendOpen = true
 
+  let _shiftToZoom = false
+
   _chart.legendOpen = function(_) {
     if (!arguments.length) {
       return _legendOpen
@@ -262,6 +264,13 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         layer.setSample()
       }
     })
+  }
+
+  _chart.shiftToZoom = function(shiftToZoom) {
+    if (shiftToZoom !== undefined) {
+      _shiftToZoom = shiftToZoom
+    }
+    return _shiftToZoom
   }
 
   function getCountFromBoundingBox(chart, _layer) {
