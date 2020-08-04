@@ -117,7 +117,9 @@ export default function lockAxisMixin(chart) {
         .y()
         .domain()
         .slice(0)
-      chart._invokeYDomainListener(chart.originalYMinMax || yDomain)
+      chart._invokeYDomainListener(
+        chart.elasticY() ? chart.originalYMinMax || yDomain : yDomain
+      )
     } else {
       chart.elasticX(!chart.elasticX())
       chart._invokeelasticXListener()
@@ -125,7 +127,9 @@ export default function lockAxisMixin(chart) {
         .x()
         .domain()
         .slice()
-      chart._invokeXDomainListener(chart.originalXMinMax || xDomain)
+      chart._invokeXDomainListener(
+        chart.elasticX() ? chart.originalXMinMax || xDomain : xDomain
+      )
       if (chart.focusChart && chart.focusChart()) {
         chart.focusChart().elasticX(!chart.focusChart().elasticX())
         chart.focusChart()._invokeelasticXListener()
@@ -177,26 +181,38 @@ export default function lockAxisMixin(chart) {
     const iconPosition = {
       left:
         type === "y"
-          ? `${chart.margins().left - TOGGLE_SIZE / 2 + (chart.leftAxisLockBump || 0)}px`
+          ? `${chart.margins().left -
+              TOGGLE_SIZE / 2 +
+              (chart.leftAxisLockBump || 0)}px`
           : `${chart.width() - chart.margins().right}px`,
       top:
         type === "y"
           ? `${chart.margins().top - TOGGLE_SIZE}px`
-          : `${chart.height() - chart.margins().bottom + (chart.bottomAxisLockBump || 0)}px`
+          : `${chart.height() -
+              chart.margins().bottom +
+              (chart.bottomAxisLockBump || 0)}px`
     }
 
     const inputsPosition = {
-      minLeft: type === "y" ? `${chart.margins().left + (chart.leftAxisLockBump || 0)}px` :
-        `${chart.margins().left + (chart.bottomAxisMinLeftBump || 0)}px`,
-      minTop: `${chart.height() - chart.margins().bottom + (chart.leftMinInputBump || 0)}px`,
+      minLeft:
+        type === "y"
+          ? `${chart.margins().left + (chart.leftAxisLockBump || 0)}px`
+          : `${chart.margins().left + (chart.bottomAxisMinLeftBump || 0)}px`,
+      minTop: `${chart.height() -
+        chart.margins().bottom +
+        (chart.leftMinInputBump || 0)}px`,
       maxLeft:
         type === "y"
           ? `${chart.margins().left + (chart.leftAxisLockBump || 0)}px`
-          : `${chart.width() - chart.margins().right + (chart.bottomAxisMaxLeftBump || 0)}px`,
+          : `${chart.width() -
+              chart.margins().right +
+              (chart.bottomAxisMaxLeftBump || 0)}px`,
       maxTop:
         type === "y"
           ? `${chart.margins().top}px`
-          : `${chart.height() - chart.margins().bottom + (chart.bottomAxisMaxTopBump || 0)}px`
+          : `${chart.height() -
+              chart.margins().bottom +
+              (chart.bottomAxisMaxTopBump || 0)}px`
     }
 
     const hitBoxDim = {
