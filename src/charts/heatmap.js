@@ -549,7 +549,6 @@ export default function heatMap(parent, chartGroup) {
     if (YAxis.empty()) {
       YAxis = _dockedAxes.append("div").attr("class", "docked-y-axis")
     }
-
     const rowsText = YAxis.style("width", _dockedAxesSize.left + "px")
       .style("left", _dockedAxesSize.left + "px")
       .html("")
@@ -596,7 +595,6 @@ export default function heatMap(parent, chartGroup) {
       _chart._prepareYAxis(_chart.g())
       yAxisInputs = _chart.root().selectAll(".axis-lock.type-y .axis-input")
     }
-
     // const xAxisInputs = _chart.root().selectAll(".axis-lock.type-x .axis-input")
     XAxis.on("mouseover", showInputs(xAxisInputs))
     xAxisInputs.on("mouseover", showInputs(xAxisInputs))
@@ -606,7 +604,6 @@ export default function heatMap(parent, chartGroup) {
     yAxisInputs.on("mouseover", showInputs(yAxisInputs))
     YAxis.on("mouseout", hideInputs(yAxisInputs))
     yAxisInputs.on("mouseout", hideInputs(yAxisInputs))
-
     return _chart
   }
   /**
@@ -718,8 +715,7 @@ export default function heatMap(parent, chartGroup) {
    * @param  {Number} [yBorderRadius=6.75]
    * @return {Number}
    * @return {dc.heatMap}
-   */
-  /* --------------------------------------------------------------------------*/ _chart.yBorderRadius = function(
+   */ /* --------------------------------------------------------------------------*/ _chart.yBorderRadius = function(
     yBorderRadius
   ) {
     if (!arguments.length) {
