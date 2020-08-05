@@ -76085,10 +76085,12 @@ function heatMap(parent, chartGroup) {
   var _minBoxSize = 16;
   var _scrollPos = { top: null, left: 0 };
   var _dockedAxes = void 0;
-  var _dockedAxesSize = { left: 48, bottom: 56
-    /* --------------------------------------------------------------------------*/
+  var _dockedAxesSize = { left: 48, bottom: 56 };
+  var xAxisInputs = void 0;
+  var yAxisInputs = void 0;
+  /* --------------------------------------------------------------------------*/
 
-  };var _xBorderRadius = DEFAULT_BORDER_RADIUS;
+  var _xBorderRadius = DEFAULT_BORDER_RADIUS;
   var _yBorderRadius = DEFAULT_BORDER_RADIUS;
 
   var _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _coordinateGridMixin2.default)({})));
@@ -76183,6 +76185,17 @@ function heatMap(parent, chartGroup) {
     var filter = [d.key0, d.key1];
     /* --------------------------------------------------------------------------*/
     _chart.handleFilterClick(_d2.default.event, filter);
+  };
+
+  var showInputs = function showInputs(inputs) {
+    return function () {
+      return inputs.style("opacity", 1);
+    };
+  };
+  var hideInputs = function hideInputs(inputs) {
+    return function () {
+      return inputs.style("opacity", 0);
+    };
   };
 
   function filterAxis(axis, value) {
@@ -76315,12 +76328,9 @@ function heatMap(parent, chartGroup) {
     return _chart._doRedraw();
   };
   _chart._doRedraw = function () {
-    console.log("_hasBeenRendered => ", _hasBeenRendered);
     if (!_hasBeenRendered) {
       return _chart._doRender();
     }
-    console.log("_chart.__dcFlag__ => ", _chart.__dcFlag__);
-    console.log("_chart.x && _chart.x().domain() => ", _chart.x && _chart.x().domain());
     var data = _chart.data(),
         rows = _chart.rows() || data.map(_chart.valueAccessor()),
         cols = _chart.cols() || data.map(_chart.keyAccessor());
@@ -76384,26 +76394,6 @@ function heatMap(parent, chartGroup) {
     if (YAxis.empty()) {
       YAxis = _dockedAxes.append("div").attr("class", "docked-y-axis");
     }
-    var showInputs = function showInputs(inputs) {
-      return function () {
-        return inputs.style("opacity", 1);
-      };
-    };
-    var hideInputs = function hideInputs(inputs) {
-      return function () {
-        return inputs.style("opacity", 0);
-      };
-    };
-    var xAxisInputs = _chart.root().selectAll(".axis-lock.type-x .axis-input");
-    XAxis.on("mouseover", showInputs(xAxisInputs));
-    xAxisInputs.on("mouseover", showInputs(xAxisInputs));
-    XAxis.on("mouseout", hideInputs(xAxisInputs));
-    xAxisInputs.on("mouseout", hideInputs(xAxisInputs));
-    var yAxisInputs = _chart.root().selectAll(".axis-lock.type-y .axis-input");
-    YAxis.on("mouseover", showInputs(yAxisInputs));
-    yAxisInputs.on("mouseover", showInputs(yAxisInputs));
-    YAxis.on("mouseout", hideInputs(yAxisInputs));
-    yAxisInputs.on("mouseout", hideInputs(yAxisInputs));
     var rowsText = YAxis.style("width", _dockedAxesSize.left + "px").style("left", _dockedAxesSize.left + "px").html("").selectAll("div.text").data(rows.domain());
     rowsText.enter().append("div").attr("class", "text").style("top", function (d) {
       return rows(d) + boxHeight / 2 + _chart.margins().top + "px";
@@ -76433,10 +76423,21 @@ function heatMap(parent, chartGroup) {
     _chart.renderAxisLabels();
     if (_chart.x()) {
       _chart._prepareXAxis(_chart.g(), true);
+      xAxisInputs = _chart.root().selectAll(".axis-lock.type-x .axis-input");
     }
     if (_chart.y()) {
       _chart._prepareYAxis(_chart.g());
+      yAxisInputs = _chart.root().selectAll(".axis-lock.type-y .axis-input");
     }
+    // const xAxisInputs = _chart.root().selectAll(".axis-lock.type-x .axis-input")
+    XAxis.on("mouseover", showInputs(xAxisInputs));
+    xAxisInputs.on("mouseover", showInputs(xAxisInputs));
+    XAxis.on("mouseout", hideInputs(xAxisInputs));
+    xAxisInputs.on("mouseout", hideInputs(xAxisInputs));
+    YAxis.on("mouseover", showInputs(yAxisInputs));
+    yAxisInputs.on("mouseover", showInputs(yAxisInputs));
+    YAxis.on("mouseout", hideInputs(yAxisInputs));
+    yAxisInputs.on("mouseout", hideInputs(yAxisInputs));
     return _chart;
   };
   /**
@@ -76536,8 +76537,7 @@ function heatMap(parent, chartGroup) {
    * @param  {Number} [yBorderRadius=6.75]
    * @return {Number}
    * @return {dc.heatMap}
-   */
-  /* --------------------------------------------------------------------------*/_chart.yBorderRadius = function (yBorderRadius) {
+   */ /* --------------------------------------------------------------------------*/_chart.yBorderRadius = function (yBorderRadius) {
     if (!arguments.length) {
       return _yBorderRadius;
     }
