@@ -34368,7 +34368,33 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     initMouseLatLonCoordinate();
   }
 
+  // if shiftToZoom is enabled, then we've added an event handler on mouseDown.
+  // if we click while holding shift, then enable the zoom/pan handlers. And if not,
+  // disable them.
+  //
+  // and why don't we just do it in the move handler? Because once we've disabled drag, we need
+  // a way to re-enable it. Ideally, we'd just stop the event from firing the default actions, but
+  // that doesn't seem to handle it. So here we are.
+  function onMouseDownCheckForShiftToZoom(e) {
+    if (!e.originalEvent.shiftKey) {
+      _map.scrollZoom.disable();
+      _map.dragPan.disable();
+    } else {
+      _map.scrollZoom.enable();
+      _map.dragPan.enable();
+    }
+  }
+
   function onMapMove(e) {
+    if (_chart.shiftToZoom() && (e.originalEvent && !e.originalEvent.shiftKey || e.type === "moveend")) {
+      _map.scrollZoom.disable();
+      _map.dragPan.disable();
+      return;
+    } else {
+      _map.dragPan.enable();
+      _map.scrollZoom.enable();
+    }
+
     if (e.type === "moveend" && _lastMapMoveType === "moveend" || !_hasRendered || e.skipRedraw) {
       return;
     }
@@ -34386,7 +34412,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat];
     }
 
-    if (e.type === "move") {
+    if (e.type !== "moveend") {
       if (_isFirstMoveEvent) {
         _lastMapUpdateTime = curTime;
         _isFirstMoveEvent = false;
@@ -34673,12 +34699,25 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     _chart.addMapListeners();
     _mapInitted = true;
     _chart.enableInteractions(_interactionsEnabled);
+    if (_chart.shiftToZoom()) {
+      _map.on("mousedown", onMouseDownCheckForShiftToZoom);
+      _map.boxZoom.disable();
+    }
   }
 
   _chart.addMapListeners = function () {
-    _map.on("move", onMapMove);
     _map.on("moveend", onMapMove);
     _map.on("sourcedata", showMapLogo);
+    // if we're using shiftToZoom, then add on explicit drag/wheel events.
+    // otherwise, do it as we did before with a single "move"
+    //
+    // we need the separate wheel event so we can hop in and disable it from within the handler
+    if (_chart.shiftToZoom()) {
+      _map.on("drag", onMapMove);
+      _map.on("wheel", onMapMove);
+    } else {
+      _map.on("move", onMapMove);
+    }
   };
 
   _chart.removeMapListeners = function () {
@@ -78426,6 +78465,8 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   var _popupDisplayable = true;
   var _legendOpen = true;
 
+  var _shiftToZoom = false;
+
   _chart.legendOpen = function (_) {
     if (!arguments.length) {
       return _legendOpen;
@@ -78612,6 +78653,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         layer.setSample();
       }
     });
+  };
+
+  _chart.shiftToZoom = function (shiftToZoom) {
+    if (shiftToZoom !== undefined) {
+      _shiftToZoom = shiftToZoom;
+    }
+    return _shiftToZoom;
   };
 
   function getCountFromBoundingBox(chart, _layer) {
@@ -79893,6 +79941,10 @@ var ScrollZoomHandler = function (_BaseHandler2) {
   }, {
     key: "_wheelZoom",
     value: function _wheelZoom(doFullRender, delta, e) {
+      if (this._chart.shiftToZoom() && e && !e.shiftKey) {
+        return;
+      }
+
       if (!doFullRender && delta === 0 || !this._chart.elasticX() || !this._chart.elasticY()) {
         return;
       }
@@ -80200,6 +80252,9 @@ var DragPanHandler = function (_BaseHandler3) {
   }, {
     key: "_ignoreEvent",
     value: function _ignoreEvent(e) {
+      if (this._chart.shiftToZoom() && e && !e.shiftKey) {
+        return true;
+      }
       var map = this._chart.map();
       if (map.boxZoom && map.boxZoom.isActive()) {
         return true;
@@ -80414,9 +80469,11 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
     });
   }
 
-  function enableInteractionsInternal() {
+  function enableInteractionsInternal(shiftToZoom) {
     map.scrollZoom.enable();
-    map.boxZoom.enable();
+    if (!shiftToZoom) {
+      map.boxZoom.enable();
+    }
     // NOTE: box zoom must be enabled before dragPan
     map.dragPan.enable();
   }
@@ -80428,8 +80485,8 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
   }
 
   var rtn = {
-    enableInteractions: function enableInteractions() {
-      enableInteractionsInternal();
+    enableInteractions: function enableInteractions(shiftToZoom) {
+      enableInteractionsInternal(shiftToZoom);
     },
 
     disableInteractions: function disableInteractions() {
@@ -80447,7 +80504,7 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
   };
 
   if (enableInteractions) {
-    rtn.enableInteractions();
+    rtn.enableInteractions(chart.shiftToZoom());
   }
 
   return rtn;

@@ -272,7 +272,36 @@ export default function mapMixin(
     initMouseLatLonCoordinate()
   }
 
+  // if shiftToZoom is enabled, then we've added an event handler on mouseDown.
+  // if we click while holding shift, then enable the zoom/pan handlers. And if not,
+  // disable them.
+  //
+  // and why don't we just do it in the move handler? Because once we've disabled drag, we need
+  // a way to re-enable it. Ideally, we'd just stop the event from firing the default actions, but
+  // that doesn't seem to handle it. So here we are.
+  function onMouseDownCheckForShiftToZoom(e) {
+    if (!e.originalEvent.shiftKey) {
+      _map.scrollZoom.disable()
+      _map.dragPan.disable()
+    } else {
+      _map.scrollZoom.enable()
+      _map.dragPan.enable()
+    }
+  }
+
   function onMapMove(e) {
+    if (
+      _chart.shiftToZoom() &&
+      ((e.originalEvent && !e.originalEvent.shiftKey) || e.type === "moveend")
+    ) {
+      _map.scrollZoom.disable()
+      _map.dragPan.disable()
+      return
+    } else {
+      _map.dragPan.enable()
+      _map.scrollZoom.enable()
+    }
+
     if (
       (e.type === "moveend" && _lastMapMoveType === "moveend") ||
       !_hasRendered ||
@@ -300,7 +329,7 @@ export default function mapMixin(
       _chart._maxCoord = [bounds._ne.lng, bounds._ne.lat]
     }
 
-    if (e.type === "move") {
+    if (e.type !== "moveend") {
       if (_isFirstMoveEvent) {
         _lastMapUpdateTime = curTime
         _isFirstMoveEvent = false
@@ -624,12 +653,25 @@ export default function mapMixin(
     _chart.addMapListeners()
     _mapInitted = true
     _chart.enableInteractions(_interactionsEnabled)
+    if (_chart.shiftToZoom()) {
+      _map.on("mousedown", onMouseDownCheckForShiftToZoom)
+      _map.boxZoom.disable()
+    }
   }
 
   _chart.addMapListeners = function() {
-    _map.on("move", onMapMove)
     _map.on("moveend", onMapMove)
     _map.on("sourcedata", showMapLogo)
+    // if we're using shiftToZoom, then add on explicit drag/wheel events.
+    // otherwise, do it as we did before with a single "move"
+    //
+    // we need the separate wheel event so we can hop in and disable it from within the handler
+    if (_chart.shiftToZoom()) {
+      _map.on("drag", onMapMove)
+      _map.on("wheel", onMapMove)
+    } else {
+      _map.on("move", onMapMove)
+    }
   }
 
   _chart.removeMapListeners = function() {
