@@ -46,12 +46,32 @@ export function heatMapKeyAccessor({ key0 }) {
   }
 }
 
+export const heatMapKeyAccessorNoFormat = function ({ key0 }) {
+  if (Array.isArray(key0)) {
+    const key0Val = isArrayOfObjects(key0) ? key0[0].value : key0[0]
+    this.colsMap.set(key0Val, key0)
+    return key0Val
+  } else {
+    return key0
+  }
+}
+
 export function heatMapValueAccesor({ key1 }) {
   if (Array.isArray(key1)) {
     const key1Val = isArrayOfObjects(key1) ? key1[0].value : key1[0]
     const value = key1Val instanceof Date ? formatDataValue(key1Val) : key1Val
     this.rowsMap.set(value, key1)
     return value
+  } else {
+    return key1
+  }
+}
+
+export function heatMapValueAccesorNoFormat({ key1 }) {
+  if (Array.isArray(key1)) {
+    const key1Val = isArrayOfObjects(key1) ? key1[0].value : key1[0]
+    this.rowsMap.set(key1Val, key1)
+    return key1Val
   } else {
     return key1
   }
@@ -195,6 +215,7 @@ export default function heatMap(parent, chartGroup) {
   var _yBorderRadius = DEFAULT_BORDER_RADIUS
 
   const _chart = colorMixin(marginMixin(coordinateGridMixin({})))
+  _chart.isHeatMap = true
   _chart._mandatoryAttributes(["group"])
   _chart.title(_chart.colorAccessor())
 
@@ -821,6 +842,10 @@ export default function heatMap(parent, chartGroup) {
     .colorAccessor(d => d.value)
     .rowsLabel(heatMapRowsLabel.bind(_chart))
     .colsLabel(heatMapColsLabel.bind(_chart))
+  const keyAccessorNoFormat = heatMapKeyAccessorNoFormat.bind(_chart)
+  _chart.keyAccessorNoFormat = () => keyAccessorNoFormat
+  const valueAccessorNoFormat = heatMapValueAccesorNoFormat.bind(_chart)
+  _chart.valueAccessorNoFormat = () => valueAccessorNoFormat
   return _chart.anchor(parent, chartGroup)
 }
 /** ***************************************************************************
