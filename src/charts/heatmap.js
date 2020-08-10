@@ -46,7 +46,7 @@ export function heatMapKeyAccessor({ key0 }) {
   }
 }
 
-export const heatMapKeyAccessorNoFormat = function ({ key0 }) {
+export const heatMapKeyAccessorNoFormat = function({ key0 }) {
   if (Array.isArray(key0)) {
     const key0Val = isArrayOfObjects(key0) ? key0[0].value : key0[0]
     this.colsMap.set(key0Val, key0)
@@ -727,7 +727,7 @@ export default function heatMap(parent, chartGroup) {
       _chart.effectiveWidth() / 2 + _chart.margins().left + "px"
     )
     _chart.prepareLabelEdit("x")
-  }
+  } /* --------------------------------------------------------------------------*/
   /**
    * Gets or sets the Y border radius.  Set to 0 to get full rectangles.
    * @name yBorderRadius
@@ -736,9 +736,7 @@ export default function heatMap(parent, chartGroup) {
    * @param  {Number} [yBorderRadius=6.75]
    * @return {Number}
    * @return {dc.heatMap}
-   */ /* --------------------------------------------------------------------------*/ _chart.yBorderRadius = function(
-    yBorderRadius
-  ) {
+   */ _chart.yBorderRadius = function(yBorderRadius) {
     if (!arguments.length) {
       return _yBorderRadius
     }
