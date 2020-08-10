@@ -538,7 +538,7 @@ class ScrollZoomHandler extends BaseHandler {
   }
 
   _wheelZoom(doFullRender, delta, e) {
-    if (this._chart.shiftToZoom() && e && !e.shiftKey) {
+    if (this._chart.shiftToZoom() && (!e || !e.shiftKey)) {
       return
     }
 
