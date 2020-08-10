@@ -280,6 +280,7 @@ export default function mapMixin(
   // a way to re-enable it. Ideally, we'd just stop the event from firing the default actions, but
   // that doesn't seem to handle it. So here we are.
   function onMouseDownCheckForShiftToZoom(e) {
+    _map.boxZoom.disable()
     if (!e.originalEvent.shiftKey) {
       _map.scrollZoom.disable()
       _map.dragPan.disable()
@@ -655,7 +656,6 @@ export default function mapMixin(
     _chart.enableInteractions(_interactionsEnabled)
     if (_chart.shiftToZoom()) {
       _map.on("mousedown", onMouseDownCheckForShiftToZoom)
-      _map.boxZoom.disable()
     }
   }
 

@@ -34376,6 +34376,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   // a way to re-enable it. Ideally, we'd just stop the event from firing the default actions, but
   // that doesn't seem to handle it. So here we are.
   function onMouseDownCheckForShiftToZoom(e) {
+    _map.boxZoom.disable();
     if (!e.originalEvent.shiftKey) {
       _map.scrollZoom.disable();
       _map.dragPan.disable();
@@ -34701,7 +34702,6 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     _chart.enableInteractions(_interactionsEnabled);
     if (_chart.shiftToZoom()) {
       _map.on("mousedown", onMouseDownCheckForShiftToZoom);
-      _map.boxZoom.disable();
     }
   }
 
@@ -79941,7 +79941,7 @@ var ScrollZoomHandler = function (_BaseHandler2) {
   }, {
     key: "_wheelZoom",
     value: function _wheelZoom(doFullRender, delta, e) {
-      if (this._chart.shiftToZoom() && e && !e.shiftKey) {
+      if (this._chart.shiftToZoom() && (!e || !e.shiftKey)) {
         return;
       }
 
