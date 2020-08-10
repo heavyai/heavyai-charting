@@ -10688,6 +10688,14 @@ function coordinateGridMixin(_chart) {
     return _chart;
   };
 
+  var chooseKeyAccessor = function chooseKeyAccessor(dataPoint) {
+    return _chart.isHeatMap ? _chart.keyAccessorNoFormat()(dataPoint) : _chart.keyAccessor()(dataPoint);
+  };
+
+  var chooseValueAccessor = function chooseValueAccessor(dataPoint) {
+    return _chart.isHeatMap ? _chart.valueAccessorNoFormat()(dataPoint) : _chart.valueAccessor()(dataPoint);
+  };
+
   /**
       * Calculates the minimum x value to display in the chart. Includes xAxisPadding if set.
       * @name xAxisMin
@@ -10696,13 +10704,12 @@ function coordinateGridMixin(_chart) {
       * @return {*}
       */
   _chart.xAxisMin = function () {
-    var min = _d2.default.min(_chart.data(), function (e) {
-      return _chart.keyAccessor()(e);
-    });
-    var max = _d2.default.max(_chart.data(), function (e) {
-      return _chart.keyAccessor()(e);
-    });
-    return _utils.utils.subtract(min, _xAxisPadding, max - min);
+    // TODO: This is formatting min/max BEFORE doing arithmetic
+
+    var min = _d2.default.min(_chart.data(), chooseKeyAccessor);
+    var max = _d2.default.max(_chart.data(), chooseKeyAccessor);
+    var result = _utils.utils.subtract(min, _xAxisPadding, max - min);
+    return min instanceof Date ? new Date(result) : result;
   };
 
   /**
@@ -10713,13 +10720,10 @@ function coordinateGridMixin(_chart) {
       * @return {*}
       */
   _chart.xAxisMax = function () {
-    var max = _d2.default.max(_chart.data(), function (e) {
-      return _chart.keyAccessor()(e);
-    });
-    var min = _d2.default.min(_chart.data(), function (e) {
-      return _chart.keyAccessor()(e);
-    });
-    return _utils.utils.add(max, _xAxisPadding, max - min);
+    var max = _d2.default.max(_chart.data(), chooseKeyAccessor);
+    var min = _d2.default.min(_chart.data(), chooseKeyAccessor);
+    var result = _utils.utils.add(max, _xAxisPadding, max - min);
+    return max instanceof Date ? new Date(result) : result;
   };
 
   /**
@@ -10730,13 +10734,10 @@ function coordinateGridMixin(_chart) {
       * @return {*}
       */
   _chart.yAxisMin = function () {
-    var min = _d2.default.min(_chart.data(), function (e) {
-      return _chart.valueAccessor()(e);
-    });
-    var max = _d2.default.max(_chart.data(), function (e) {
-      return _chart.valueAccessor()(e);
-    });
-    return _utils.utils.subtract(min, _yAxisPadding, max - min);
+    var min = _d2.default.min(_chart.data(), chooseValueAccessor);
+    var max = _d2.default.max(_chart.data(), chooseValueAccessor);
+    var result = _utils.utils.subtract(min, _yAxisPadding, max - min);
+    return min instanceof Date ? new Date(result) : result;
   };
 
   /**
@@ -10747,13 +10748,10 @@ function coordinateGridMixin(_chart) {
       * @return {*}
       */
   _chart.yAxisMax = function () {
-    var max = _d2.default.max(_chart.data(), function (e) {
-      return _chart.valueAccessor()(e);
-    });
-    var min = _d2.default.min(_chart.data(), function (e) {
-      return _chart.valueAccessor()(e);
-    });
-    return _utils.utils.add(max, _yAxisPadding, max - min);
+    var max = _d2.default.max(_chart.data(), chooseValueAccessor);
+    var min = _d2.default.min(_chart.data(), chooseValueAccessor);
+    var result = _utils.utils.add(max, _yAxisPadding, max - min);
+    return max instanceof Date ? new Date(result) : result;
   };
 
   /**
@@ -75945,11 +75943,13 @@ function bitCode(p, bbox) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.heatMapKeyAccessorNoFormat = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 exports.heatMapKeyAccessor = heatMapKeyAccessor;
 exports.heatMapValueAccesor = heatMapValueAccesor;
+exports.heatMapValueAccesorNoFormat = heatMapValueAccesorNoFormat;
 exports.heatMapRowsLabel = heatMapRowsLabel;
 exports.heatMapColsLabel = heatMapColsLabel;
 exports.isDescendingAppropriateData = isDescendingAppropriateData;
@@ -76023,14 +76023,38 @@ function heatMapKeyAccessor(_ref) {
   }
 }
 
-function heatMapValueAccesor(_ref2) {
-  var key1 = _ref2.key1;
+var heatMapKeyAccessorNoFormat = exports.heatMapKeyAccessorNoFormat = function heatMapKeyAccessorNoFormat(_ref2) {
+  var key0 = _ref2.key0;
+
+  if (Array.isArray(key0)) {
+    var key0Val = (0, _formattingHelpers.isArrayOfObjects)(key0) ? key0[0].value : key0[0];
+    this.colsMap.set(key0Val, key0);
+    return key0Val;
+  } else {
+    return key0;
+  }
+};
+
+function heatMapValueAccesor(_ref3) {
+  var key1 = _ref3.key1;
 
   if (Array.isArray(key1)) {
     var key1Val = (0, _formattingHelpers.isArrayOfObjects)(key1) ? key1[0].value : key1[0];
     var value = key1Val instanceof Date ? (0, _formattingHelpers.formatDataValue)(key1Val) : key1Val;
     this.rowsMap.set(value, key1);
     return value;
+  } else {
+    return key1;
+  }
+}
+
+function heatMapValueAccesorNoFormat(_ref4) {
+  var key1 = _ref4.key1;
+
+  if (Array.isArray(key1)) {
+    var key1Val = (0, _formattingHelpers.isArrayOfObjects)(key1) ? key1[0].value : key1[0];
+    this.rowsMap.set(key1Val, key1);
+    return key1Val;
   } else {
     return key1;
   }
@@ -76084,8 +76108,8 @@ function heatMapColsLabel(key) {
   return customDateFormatter && customDateFormatter(rawValues || value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
-function isDescendingAppropriateData(_ref3) {
-  var key1 = _ref3.key1;
+function isDescendingAppropriateData(_ref5) {
+  var key1 = _ref5.key1;
 
   var value = Array.isArray(key1) ? key1[0] : key1;
   return typeof value !== "number";
@@ -76133,6 +76157,7 @@ function heatMap(parent, chartGroup) {
   var _yBorderRadius = DEFAULT_BORDER_RADIUS;
 
   var _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _coordinateGridMixin2.default)({})));
+  _chart.isHeatMap = true;
   _chart._mandatoryAttributes(["group"]);
   _chart.title(_chart.colorAccessor());
 
@@ -76567,7 +76592,7 @@ function heatMap(parent, chartGroup) {
     }
     xLabel.style("left", _chart.effectiveWidth() / 2 + _chart.margins().left + "px");
     _chart.prepareLabelEdit("x");
-  };
+  }; /* --------------------------------------------------------------------------*/
   /**
    * Gets or sets the Y border radius.  Set to 0 to get full rectangles.
    * @name yBorderRadius
@@ -76576,7 +76601,7 @@ function heatMap(parent, chartGroup) {
    * @param  {Number} [yBorderRadius=6.75]
    * @return {Number}
    * @return {dc.heatMap}
-   */ /* --------------------------------------------------------------------------*/_chart.yBorderRadius = function (yBorderRadius) {
+   */_chart.yBorderRadius = function (yBorderRadius) {
     if (!arguments.length) {
       return _yBorderRadius;
     }
@@ -76641,6 +76666,14 @@ function heatMap(parent, chartGroup) {
   _chart.keyAccessor(heatMapKeyAccessor.bind(_chart)).valueAccessor(heatMapValueAccesor.bind(_chart)).colorAccessor(function (d) {
     return d.value;
   }).rowsLabel(heatMapRowsLabel.bind(_chart)).colsLabel(heatMapColsLabel.bind(_chart));
+  var keyAccessorNoFormat = heatMapKeyAccessorNoFormat.bind(_chart);
+  _chart.keyAccessorNoFormat = function () {
+    return keyAccessorNoFormat;
+  };
+  var valueAccessorNoFormat = heatMapValueAccesorNoFormat.bind(_chart);
+  _chart.valueAccessorNoFormat = function () {
+    return valueAccessorNoFormat;
+  };
   return _chart.anchor(parent, chartGroup);
 }
 /** ***************************************************************************
