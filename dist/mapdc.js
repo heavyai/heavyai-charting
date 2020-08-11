@@ -72069,6 +72069,14 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
     }
   };
 
+  var _shiftToZoom = false;
+  _chart.shiftToZoom = function (shiftToZoom) {
+    if (shiftToZoom !== undefined) {
+      _shiftToZoom = shiftToZoom;
+    }
+    return _shiftToZoom;
+  };
+
   _chart.destroyChart = function () {
     this.map().remove();
   };
