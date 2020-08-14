@@ -82,7 +82,24 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   const alias = []
   const ops = []
 
-  const colorProjection =
+  const groupbyDim = state.transform.groupby
+    ? state.transform.groupby.map((g, i) => ({
+      type: "project",
+      expr: `${state.data[0].table}.${g}`,
+      as: `key${i}`
+    }))
+    : []
+  const groupby = doJoin()
+    ? [
+      {
+        type: "project",
+        expr: `${state.data[0].table}.${state.data[0].attr}`,
+        as: "key0"
+      }
+    ]
+    : groupbyDim
+
+  const colorProjection = groupby.length &&
     color.type === "quantitative"
       ? parser.parseExpression(color.aggregate)
       : `SAMPLE(${rowIdTable}.${color.field})`
@@ -90,24 +107,6 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   function doJoin() {
     return state.data.length > 1
   }
-
-  const groupbyDim = state.transform.groupby
-    ? state.transform.groupby.map((g, i) => ({
-        type: "project",
-        expr: `${state.data[0].table}.${g}`,
-        as: `key${i}`
-      }))
-    : []
-
-  const groupby = doJoin()
-    ? [
-        {
-          type: "project",
-          expr: `${state.data[0].table}.${state.data[0].attr}`,
-          as: "key0"
-        }
-      ]
-    : groupbyDim
 
   if (
     typeof size === "object" &&
@@ -139,7 +138,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       if (color.colorMeasureAggType === "Custom") {
         expression = color.field ? color.field : color.aggregate
       } else if (color.type === "quantitative") {
-        expression = color.aggregate.field
+        expression = color.field
       } else {
         expression = color.field
       }
