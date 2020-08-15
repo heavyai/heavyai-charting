@@ -96,39 +96,6 @@ function getColor(color, layerName) {
   }
 }
 
-function isValidPostFilter(postFilter) {
-  const { operator, min, max, aggType, value, custom } = postFilter
-
-  if (value && (aggType || custom)) {
-    if (
-      (operator === "not between" || operator === "between") &&
-      (typeof min === "number" && !isNaN(min)) &&
-      (typeof max === "number" && !isNaN(max))
-    ) {
-      return true
-    } else if (
-      (operator === "equals" ||
-        operator === "not equals" ||
-        operator === "greater than or equals") &&
-      (typeof min === "number" && !isNaN(min))
-    ) {
-      return true
-    } else if (
-      operator === "less than or equals" &&
-      typeof max === "number" &&
-      !isNaN(max)
-    ) {
-      return true
-    } else if (operator === "null" || operator === "not null") {
-      return true
-    } else {
-      return false
-    }
-  } else {
-    return false
-  }
-}
-
 function getTransforms(
   table,
   filter,
@@ -186,10 +153,6 @@ function getTransforms(
     })
 
     if (typeof transform.limit === "number") {
-      transforms.push({
-        type: "limit",
-        row: transform.limit
-      })
       if (transform.sample) {
         transforms.push({
           type: "sample",
@@ -197,6 +160,11 @@ function getTransforms(
           size: lastFilteredSize || transform.tableSize,
           limit: transform.limit,
           sampleTable: table
+        })
+      } else {
+        transforms.push({
+          type: "limit",
+          row: transform.limit
         })
       }
     }
@@ -228,8 +196,8 @@ function getTransforms(
     })
   }
 
-  const postFilter = postFilters ? postFilters[0] : null // may change to map when we have more than one postFilter
-  if (postFilter && isValidPostFilter(postFilter)) {
+  const postFilter = postFilters && postFilters.length ? postFilters[0] : null // may change to map when we have more than one postFilter
+  if (postFilter) {
     transforms.push({
       type: "postFilter",
       table: postFilter.table || null,
