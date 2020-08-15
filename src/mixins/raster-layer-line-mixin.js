@@ -84,23 +84,23 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
 
   const groupbyDim = state.transform.groupby
     ? state.transform.groupby.map((g, i) => ({
-      type: "project",
-      expr: `${state.data[0].table}.${g}`,
-      as: `key${i}`
-    }))
+        type: "project",
+        expr: `${state.data[0].table}.${g}`,
+        as: `key${i}`
+      }))
     : []
   const groupby = doJoin()
     ? [
-      {
-        type: "project",
-        expr: `${state.data[0].table}.${state.data[0].attr}`,
-        as: "key0"
-      }
-    ]
+        {
+          type: "project",
+          expr: `${state.data[0].table}.${state.data[0].attr}`,
+          as: "key0"
+        }
+      ]
     : groupbyDim
 
-  const colorProjection = groupby.length &&
-    color.type === "quantitative"
+  const colorProjection =
+    groupby.length && color.type === "quantitative"
       ? parser.parseExpression(color.aggregate)
       : `SAMPLE(${rowIdTable}.${color.field})`
 

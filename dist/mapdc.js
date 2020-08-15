@@ -53869,32 +53869,6 @@ function getColor(color, layerName) {
   }
 }
 
-function isValidPostFilter(postFilter) {
-  var operator = postFilter.operator,
-      min = postFilter.min,
-      max = postFilter.max,
-      aggType = postFilter.aggType,
-      value = postFilter.value,
-      custom = postFilter.custom;
-
-
-  if (value && (aggType || custom)) {
-    if ((operator === "not between" || operator === "between") && typeof min === "number" && !isNaN(min) && typeof max === "number" && !isNaN(max)) {
-      return true;
-    } else if ((operator === "equals" || operator === "not equals" || operator === "greater than or equals") && typeof min === "number" && !isNaN(min)) {
-      return true;
-    } else if (operator === "less than or equals" && typeof max === "number" && !isNaN(max)) {
-      return true;
-    } else if (operator === "null" || operator === "not null") {
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    return false;
-  }
-}
-
 function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
   var transform = _ref.transform,
       _ref$encoding = _ref.encoding,
@@ -53949,10 +53923,6 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
     });
 
     if (typeof transform.limit === "number") {
-      transforms.push({
-        type: "limit",
-        row: transform.limit
-      });
       if (transform.sample) {
         transforms.push({
           type: "sample",
@@ -53960,6 +53930,11 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
           size: lastFilteredSize || transform.tableSize,
           limit: transform.limit,
           sampleTable: table
+        });
+      } else {
+        transforms.push({
+          type: "limit",
+          row: transform.limit
         });
       }
     }
@@ -53988,8 +53963,8 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
     });
   }
 
-  var postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
-  if (postFilter && isValidPostFilter(postFilter)) {
+  var postFilter = postFilters && postFilters.length ? postFilters[0] : null; // may change to map when we have more than one postFilter
+  if (postFilter) {
     transforms.push({
       type: "postFilter",
       table: postFilter.table || null,
@@ -54688,7 +54663,7 @@ function rasterLayerPolyMixin(_layer) {
         }
       });
     } else {
-      var _colorField = color.type === "quantitative" ? typeof color.aggregate === "string" ? color.aggregate : color.aggregate.field : color.field;
+      var _colorField = color.type === "quantitative" && typeof color.aggregate === "string" ? color.aggregate : color.field;
 
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
@@ -88701,12 +88676,6 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
   var alias = [];
   var ops = [];
 
-  var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + rowIdTable + "." + color.field + ")";
-
-  function doJoin() {
-    return state.data.length > 1;
-  }
-
   var groupbyDim = state.transform.groupby ? state.transform.groupby.map(function (g, i) {
     return {
       type: "project",
@@ -88714,12 +88683,17 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       as: "key" + i
     };
   }) : [];
-
   var groupby = doJoin() ? [{
     type: "project",
     expr: state.data[0].table + "." + state.data[0].attr,
     as: "key0"
   }] : groupbyDim;
+
+  var colorProjection = groupby.length && color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + rowIdTable + "." + color.field + ")";
+
+  function doJoin() {
+    return state.data.length > 1;
+  }
 
   if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && (size.type === "quantitative" || size.type === "custom")) {
     if (groupby.length > 0 && size.type === "quantitative") {
@@ -88745,7 +88719,7 @@ function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
       if (color.colorMeasureAggType === "Custom") {
         expression = color.field ? color.field : color.aggregate;
       } else if (color.type === "quantitative") {
-        expression = color.aggregate.field;
+        expression = color.field;
       } else {
         expression = color.field;
       }
