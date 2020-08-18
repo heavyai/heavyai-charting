@@ -176,6 +176,10 @@ export default function rasterLayerPointMixin(_layer) {
       })
 
       if (typeof transform.limit === "number") {
+        transforms.push({
+          type: "limit",
+          row: transform.limit
+        })
         if (transform.sample) {
           transforms.push({
             type: "sample",
@@ -183,11 +187,6 @@ export default function rasterLayerPointMixin(_layer) {
             size: lastFilteredSize || transform.tableSize,
             limit: transform.limit,
             sampleTable: table
-          })
-        } else {
-          transforms.push({
-            type: "limit",
-            row: transform.limit
           })
         }
       }
