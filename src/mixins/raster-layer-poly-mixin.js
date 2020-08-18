@@ -97,12 +97,13 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.getProjections = function() {
-    return getTransforms({
+    return _layer.getTransforms({
       bboxFilter: "",
       filter: "",
       globalFilter: "",
       layerFilter: _layer.filters(),
       filtersInverse: _layer.filtersInverse(),
+      state,
       lastFilteredSize: _layer.filters().length
         ? _layer.getState().bboxCount
         : lastFilteredSize(_layer.crossfilter().getId())
@@ -122,15 +123,15 @@ export default function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1
   }
 
-  // eslint-disable-next-line complexity
-  function getTransforms({
-    bboxFilter,
-    filter,
-    globalFilter,
-    layerFilter,
-    filtersInverse,
-    lastFilteredSize
-  }) {
+  _layer.getTransforms = function({
+                                   bboxFilter,
+                                   filter,
+                                   globalFilter,
+                                   layerFilter,
+                                   filtersInverse,
+    state,
+                                   lastFilteredSize
+                                 }) {
     const {
       encoding: { color, geocol, geoTable }
     } = state
@@ -383,12 +384,13 @@ export default function rasterLayerPolyMixin(_layer) {
           source: doJoin()
             ? `${state.data[1].table}, ${withAlias}`
             : `${state.data[0].table}`,
-          transform: getTransforms({
+          transform: _layer.getTransforms({
             bboxFilter,
             filter,
             globalFilter,
             layerFilter,
             filtersInverse,
+            state,
             lastFilteredSize
           })
         }),
