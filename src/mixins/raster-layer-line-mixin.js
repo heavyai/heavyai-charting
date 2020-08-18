@@ -95,7 +95,13 @@ export default function rasterLayerLineMixin(_layer) {
     return state
   }
 
-  _layer.getTransforms = function(table, filter, globalFilter, state, lastFilteredSize) {
+  _layer.getTransforms = function(
+    table,
+    filter,
+    globalFilter,
+    state,
+    lastFilteredSize
+  ) {
     const transforms = []
     const { transform } = state
     const { size, color, geocol, geoTable } = state.encoding
@@ -107,19 +113,19 @@ export default function rasterLayerLineMixin(_layer) {
 
     const groupbyDim = state.transform.groupby
       ? state.transform.groupby.map((g, i) => ({
-        type: "project",
-        expr: `${state.data[0].table}.${g}`,
-        as: `key${i}`
-      }))
+          type: "project",
+          expr: `${state.data[0].table}.${g}`,
+          as: `key${i}`
+        }))
       : []
     const groupby = doJoin()
       ? [
-        {
-          type: "project",
-          expr: `${state.data[0].table}.${state.data[0].attr}`,
-          as: "key0"
-        }
-      ]
+          {
+            type: "project",
+            expr: `${state.data[0].table}.${state.data[0].attr}`,
+            as: "key0"
+          }
+        ]
       : groupbyDim
 
     const colorProjection =
@@ -242,13 +248,14 @@ export default function rasterLayerLineMixin(_layer) {
   }
 
   _layer.getProjections = function() {
-    return _layer.getTransforms(
-      "",
-      "",
-      "",
-      state,
-      lastFilteredSize(_layer.crossfilter().getId())
-    )
+    return _layer
+      .getTransforms(
+        "",
+        "",
+        "",
+        state,
+        lastFilteredSize(_layer.crossfilter().getId())
+      )
       .filter(
         transform =>
           transform.type === "project" && transform.hasOwnProperty("as")

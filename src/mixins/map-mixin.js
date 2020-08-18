@@ -838,7 +838,7 @@ export default function mapMixin(
           .getElementsByClassName("latLonCoordinate")[0]
 
         if (latLonContainer) {
-            latLonContainer.classList.remove("visible")
+          latLonContainer.classList.remove("visible")
         }
       })
     })

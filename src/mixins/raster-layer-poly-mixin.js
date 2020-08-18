@@ -97,17 +97,18 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.getProjections = function() {
-    return _layer.getTransforms({
-      bboxFilter: "",
-      filter: "",
-      globalFilter: "",
-      layerFilter: _layer.filters(),
-      filtersInverse: _layer.filtersInverse(),
-      state,
-      lastFilteredSize: _layer.filters().length
-        ? _layer.getState().bboxCount
-        : lastFilteredSize(_layer.crossfilter().getId())
-    })
+    return _layer
+      .getTransforms({
+        bboxFilter: "",
+        filter: "",
+        globalFilter: "",
+        layerFilter: _layer.filters(),
+        filtersInverse: _layer.filtersInverse(),
+        state,
+        lastFilteredSize: _layer.filters().length
+          ? _layer.getState().bboxCount
+          : lastFilteredSize(_layer.crossfilter().getId())
+      })
       .filter(
         transform =>
           transform.type === "project" &&
@@ -124,14 +125,14 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.getTransforms = function({
-                                   bboxFilter,
-                                   filter,
-                                   globalFilter,
-                                   layerFilter,
-                                   filtersInverse,
+    bboxFilter,
+    filter,
+    globalFilter,
+    layerFilter,
+    filtersInverse,
     state,
-                                   lastFilteredSize
-                                 }) {
+    lastFilteredSize
+  }) {
     const {
       encoding: { color, geocol, geoTable }
     } = state

@@ -126,7 +126,6 @@ export default function rasterLayerPointMixin(_layer) {
     { transform, encoding: { x, y, size, color }, postFilters },
     lastFilteredSize
   ) {
-
     const transforms = []
 
     if (
@@ -245,13 +244,14 @@ export default function rasterLayerPointMixin(_layer) {
   }
 
   _layer.getProjections = function() {
-    return _layer.getTransforms(
-      "",
-      "",
-      "",
-      state,
-      lastFilteredSize(_layer.crossfilter().getId())
-    )
+    return _layer
+      .getTransforms(
+        "",
+        "",
+        "",
+        state,
+        lastFilteredSize(_layer.crossfilter().getId())
+      )
       .filter(
         transform =>
           transform.type === "project" && transform.hasOwnProperty("as")
