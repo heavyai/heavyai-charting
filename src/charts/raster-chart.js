@@ -292,7 +292,9 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       .con()
       .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
       .then(result => {
-        _renderBoundsMap[result.nonce] = bounds
+        if (!window || !window.paused) {
+          _renderBoundsMap[result.nonce] = bounds
+        }
         callback(null, result)
       })
       .catch(error => {

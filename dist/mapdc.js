@@ -78711,7 +78711,9 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     _chart._vegaSpec = genLayeredVega(_chart);
     _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
-      _renderBoundsMap[result.nonce] = bounds;
+      if (!window || !window.paused) {
+        _renderBoundsMap[result.nonce] = bounds;
+      }
       callback(null, result);
     }).catch(function (error) {
       callback(error);
