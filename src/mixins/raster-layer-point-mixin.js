@@ -96,6 +96,39 @@ function getColor(color, layerName) {
   }
 }
 
+function isValidPostFilter(postFilter) {
+  const { operator, min, max, aggType, value, custom } = postFilter
+
+  if (value && (aggType || custom)) {
+    if (
+      (operator === "not between" || operator === "between") &&
+      (typeof min === "number" && !isNaN(min)) &&
+      (typeof max === "number" && !isNaN(max))
+    ) {
+      return true
+    } else if (
+      (operator === "equals" ||
+        operator === "not equals" ||
+        operator === "greater than or equals") &&
+      (typeof min === "number" && !isNaN(min))
+    ) {
+      return true
+    } else if (
+      operator === "less than or equals" &&
+      typeof max === "number" &&
+      !isNaN(max)
+    ) {
+      return true
+    } else if (operator === "null" || operator === "not null") {
+      return true
+    } else {
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
 export default function rasterLayerPointMixin(_layer) {
   let state = null
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
@@ -218,19 +251,19 @@ export default function rasterLayerPointMixin(_layer) {
       })
     }
 
-    const postFilter = postFilters && postFilters.length ? postFilters[0] : null // may change to map when we have more than one postFilter
-    if (postFilter) {
-      transforms.push({
-        type: "postFilter",
-        table: postFilter.table || null,
-        aggType: postFilter.aggType,
-        custom: postFilter.custom,
-        fields: [postFilter.value],
-        ops: postFilter.operator,
-        min: postFilter.min,
-        max: postFilter.max
-      })
-    }
+  const postFilter = postFilters ? postFilters[0] : null // may change to map when we have more than one postFilter
+  if (postFilter && isValidPostFilter(postFilter)) {
+    transforms.push({
+      type: "postFilter",
+      table: postFilter.table || null,
+      aggType: postFilter.aggType,
+      custom: postFilter.custom,
+      fields: [postFilter.value],
+      ops: postFilter.operator,
+      min: postFilter.min,
+      max: postFilter.max
+    })
+  }
 
     if (typeof globalFilter === "string" && globalFilter.length) {
       transforms.push({
