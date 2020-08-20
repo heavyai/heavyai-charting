@@ -460,7 +460,7 @@ class ScrollZoomHandler extends BaseHandler {
     if (e.type === "wheel") {
       // Pressing the shift key causes some mouse wheels to scroll horizontally.
       // This ensures we capture the scroll difference regardless of direction
-      value = e.deltaX ? e.deltaX : e.deltaY
+      value = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY
       // Firefox doubles the values on retina screens...
       if (
         this._browser.isFirefox &&
@@ -473,7 +473,11 @@ class ScrollZoomHandler extends BaseHandler {
         value = value * 40
       }
     } else if (e.type === "mousewheel") {
-      value = -(e.wheelDeltaX ? e.wheelDeltaX : e.wheelDeltaY)
+      value = -(
+        Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY)
+          ? e.wheelDeltaX
+          : e.wheelDeltaY
+      )
       if (this._browser.isSafari) {
         value = value / 3
       }
