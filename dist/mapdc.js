@@ -80325,6 +80325,8 @@ var DragPanHandler = function (_BaseHandler3) {
 
 
 function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, browser, mapboxglModule, enableInteractions) {
+  var _this6 = this;
+
   var map = chart.map();
   var startPos = null;
   var tapped = null;
@@ -80532,7 +80534,7 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
     },
 
     getInteractionPropNames: function getInteractionPropNames() {
-      return ["scrollZoom", "boxZoom", "dragPan"];
+      return _this6.shiftToZoom() ? ["scrollZoom", "boxZoom", "dragPan"] : ["scrollZoom", "dragPan"];
     }
   };
 
