@@ -53875,6 +53875,32 @@ function getColor(color, layerName) {
   }
 }
 
+function isValidPostFilter(postFilter) {
+  var operator = postFilter.operator,
+      min = postFilter.min,
+      max = postFilter.max,
+      aggType = postFilter.aggType,
+      value = postFilter.value,
+      custom = postFilter.custom;
+
+
+  if (value && (aggType || custom)) {
+    if ((operator === "not between" || operator === "between") && typeof min === "number" && !isNaN(min) && typeof max === "number" && !isNaN(max)) {
+      return true;
+    } else if ((operator === "equals" || operator === "not equals" || operator === "greater than or equals") && typeof min === "number" && !isNaN(min)) {
+      return true;
+    } else if (operator === "less than or equals" && typeof max === "number" && !isNaN(max)) {
+      return true;
+    } else if (operator === "null" || operator === "not null") {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
 function rasterLayerPointMixin(_layer) {
   var state = null;
   _layer.colorDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
@@ -53991,8 +54017,8 @@ function rasterLayerPointMixin(_layer) {
       });
     }
 
-    var postFilter = postFilters && postFilters.length ? postFilters[0] : null; // may change to map when we have more than one postFilter
-    if (postFilter) {
+    var postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
+    if (postFilter && isValidPostFilter(postFilter)) {
       transforms.push({
         type: "postFilter",
         table: postFilter.table || null,

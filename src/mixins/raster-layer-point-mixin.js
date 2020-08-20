@@ -251,19 +251,19 @@ export default function rasterLayerPointMixin(_layer) {
       })
     }
 
-  const postFilter = postFilters ? postFilters[0] : null // may change to map when we have more than one postFilter
-  if (postFilter && isValidPostFilter(postFilter)) {
-    transforms.push({
-      type: "postFilter",
-      table: postFilter.table || null,
-      aggType: postFilter.aggType,
-      custom: postFilter.custom,
-      fields: [postFilter.value],
-      ops: postFilter.operator,
-      min: postFilter.min,
-      max: postFilter.max
-    })
-  }
+    const postFilter = postFilters ? postFilters[0] : null // may change to map when we have more than one postFilter
+    if (postFilter && isValidPostFilter(postFilter)) {
+      transforms.push({
+        type: "postFilter",
+        table: postFilter.table || null,
+        aggType: postFilter.aggType,
+        custom: postFilter.custom,
+        fields: [postFilter.value],
+        ops: postFilter.operator,
+        min: postFilter.min,
+        max: postFilter.max
+      })
+    }
 
     if (typeof globalFilter === "string" && globalFilter.length) {
       transforms.push({
