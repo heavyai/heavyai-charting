@@ -51266,7 +51266,7 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
     _interactionsEnabled = Boolean(enableInteractions);
     if (_eventHandler) {
       var map = _chart.map();
-      _eventHandler.getInteractionPropNames().forEach(function (prop) {
+      _eventHandler.getInteractionPropNames(_chart).forEach(function (prop) {
         if (map[prop]) {
           var enable = typeof opts[prop] === "undefined" ? _interactionsEnabled : Boolean(opts[prop]);
           if (enable) {
@@ -80325,8 +80325,6 @@ var DragPanHandler = function (_BaseHandler3) {
 
 
 function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, filterDimensionsCB, chartRedrawCB, browser, mapboxglModule, enableInteractions) {
-  var _this6 = this;
-
   var map = chart.map();
   var startPos = null;
   var tapped = null;
@@ -80533,8 +80531,8 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
       disableInteractionsInternal();
     },
 
-    getInteractionPropNames: function getInteractionPropNames() {
-      return _this6.shiftToZoom() ? ["scrollZoom", "boxZoom", "dragPan"] : ["scrollZoom", "dragPan"];
+    getInteractionPropNames: function getInteractionPropNames(chart) {
+      return chart.shiftToZoom() ? ["scrollZoom", "dragPan"] : ["scrollZoom", "boxZoom", "dragPan"];
     }
   };
 
