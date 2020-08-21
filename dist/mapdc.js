@@ -34844,13 +34844,19 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         var lon = e.lngLat.lng.toFixed(8);
         var lat = e.lngLat.lat.toFixed(8);
         var latLonContainer = _map.getContainer().getElementsByClassName("latLonCoordinate")[0];
-        latLonContainer.classList.add("visible");
-        latLonContainer.innerHTML = "Lon: " + lon + " </br> Lat: " + lat;
+        if (latLonContainer) {
+          latLonContainer.classList.add("visible");
+          latLonContainer.innerHTML = "Lon: " + lon + " </br> Lat: " + lat;
+        }
       });
 
       // remove the mouse lat lon container from map when mouse is out
       _map.on("mouseout", function (e) {
-        _map.getContainer().getElementsByClassName("latLonCoordinate")[0].classList.remove("visible");
+        var latLonContainer = _map.getContainer().getElementsByClassName("latLonCoordinate")[0];
+
+        if (latLonContainer) {
+          latLonContainer.classList.remove("visible");
+        }
       });
     });
   };
@@ -53895,123 +53901,6 @@ function isValidPostFilter(postFilter) {
   }
 }
 
-function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
-  var transform = _ref.transform,
-      _ref$encoding = _ref.encoding,
-      x = _ref$encoding.x,
-      y = _ref$encoding.y,
-      size = _ref$encoding.size,
-      color = _ref$encoding.color,
-      postFilters = _ref.postFilters;
-
-  var transforms = [];
-
-  if ((typeof transform === "undefined" ? "undefined" : _typeof(transform)) === "object" && _typeof(transform.groupby) === "object" && transform.groupby.length) {
-    var fields = [x.field, y.field];
-    var alias = ["x", "y"];
-    var ops = [x.aggregate, y.aggregate];
-
-    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-      fields.push(size.field);
-      alias.push("size");
-      ops.push(size.aggregate);
-    }
-
-    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-      fields.push(color.field);
-      alias.push("color");
-      ops.push(color.aggregate);
-    }
-
-    transforms.push({
-      type: "aggregate",
-      fields: fields,
-      ops: ops,
-      as: alias,
-      groupby: transform.groupby.map(function (g, i) {
-        return {
-          type: "project",
-          expr: g,
-          as: "key" + i
-        };
-      })
-    });
-  } else {
-    transforms.push({
-      type: "project",
-      expr: x.field,
-      as: "x"
-    });
-    transforms.push({
-      type: "project",
-      expr: y.field,
-      as: "y"
-    });
-
-    if (typeof transform.limit === "number") {
-      transforms.push({
-        type: "limit",
-        row: transform.limit
-      });
-      if (transform.sample) {
-        transforms.push({
-          type: "sample",
-          method: "multiplicative",
-          size: lastFilteredSize || transform.tableSize,
-          limit: transform.limit,
-          sampleTable: table
-        });
-      }
-    }
-
-    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
-      transforms.push({
-        type: "project",
-        expr: size.field,
-        as: "size"
-      });
-    }
-
-    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-      transforms.push({
-        type: "project",
-        expr: color.field,
-        as: "color"
-      });
-    }
-  }
-
-  if (typeof filter === "string" && filter.length) {
-    transforms.push({
-      type: "filter",
-      expr: filter
-    });
-  }
-
-  var postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
-  if (postFilter && isValidPostFilter(postFilter)) {
-    transforms.push({
-      type: "postFilter",
-      table: postFilter.table || null,
-      aggType: postFilter.aggType,
-      custom: postFilter.custom,
-      fields: [postFilter.value],
-      ops: postFilter.operator,
-      min: postFilter.min,
-      max: postFilter.max
-    });
-  }
-
-  if (typeof globalFilter === "string" && globalFilter.length) {
-    transforms.push({
-      type: "filter",
-      expr: globalFilter
-    });
-  }
-
-  return transforms;
-}
-
 function rasterLayerPointMixin(_layer) {
   var state = null;
   _layer.colorDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
@@ -54035,8 +53924,125 @@ function rasterLayerPointMixin(_layer) {
     return state;
   };
 
+  _layer.getTransforms = function (table, filter, globalFilter, _ref, lastFilteredSize) {
+    var transform = _ref.transform,
+        _ref$encoding = _ref.encoding,
+        x = _ref$encoding.x,
+        y = _ref$encoding.y,
+        size = _ref$encoding.size,
+        color = _ref$encoding.color,
+        postFilters = _ref.postFilters;
+
+    var transforms = [];
+
+    if ((typeof transform === "undefined" ? "undefined" : _typeof(transform)) === "object" && _typeof(transform.groupby) === "object" && transform.groupby.length) {
+      var fields = [x.field, y.field];
+      var alias = ["x", "y"];
+      var ops = [x.aggregate, y.aggregate];
+
+      if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
+        fields.push(size.field);
+        alias.push("size");
+        ops.push(size.aggregate);
+      }
+
+      if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
+        fields.push(color.field);
+        alias.push("color");
+        ops.push(color.aggregate);
+      }
+
+      transforms.push({
+        type: "aggregate",
+        fields: fields,
+        ops: ops,
+        as: alias,
+        groupby: transform.groupby.map(function (g, i) {
+          return {
+            type: "project",
+            expr: g,
+            as: "key" + i
+          };
+        })
+      });
+    } else {
+      transforms.push({
+        type: "project",
+        expr: x.field,
+        as: "x"
+      });
+      transforms.push({
+        type: "project",
+        expr: y.field,
+        as: "y"
+      });
+
+      if (typeof transform.limit === "number") {
+        transforms.push({
+          type: "limit",
+          row: transform.limit
+        });
+        if (transform.sample) {
+          transforms.push({
+            type: "sample",
+            method: "multiplicative",
+            size: lastFilteredSize || transform.tableSize,
+            limit: transform.limit,
+            sampleTable: table
+          });
+        }
+      }
+
+      if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
+        transforms.push({
+          type: "project",
+          expr: size.field,
+          as: "size"
+        });
+      }
+
+      if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
+        transforms.push({
+          type: "project",
+          expr: color.field,
+          as: "color"
+        });
+      }
+    }
+
+    if (typeof filter === "string" && filter.length) {
+      transforms.push({
+        type: "filter",
+        expr: filter
+      });
+    }
+
+    var postFilter = postFilters ? postFilters[0] : null; // may change to map when we have more than one postFilter
+    if (postFilter && isValidPostFilter(postFilter)) {
+      transforms.push({
+        type: "postFilter",
+        table: postFilter.table || null,
+        aggType: postFilter.aggType,
+        custom: postFilter.custom,
+        fields: [postFilter.value],
+        ops: postFilter.operator,
+        min: postFilter.min,
+        max: postFilter.max
+      });
+    }
+
+    if (typeof globalFilter === "string" && globalFilter.length) {
+      transforms.push({
+        type: "filter",
+        expr: globalFilter
+      });
+    }
+
+    return transforms;
+  };
+
   _layer.getProjections = function () {
-    return getTransforms("", "", "", state, (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())).filter(function (transform) {
+    return _layer.getTransforms("", "", "", state, (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())).filter(function (transform) {
       return transform.type === "project" && transform.hasOwnProperty("as");
     }).map(function (projection) {
       return _utils.parser.parseTransform({ select: [] }, projection);
@@ -54163,7 +54169,7 @@ function rasterLayerPointMixin(_layer) {
       sql: _utils.parser.writeSQL({
         type: "root",
         source: table,
-        transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+        transform: _layer.getTransforms(table, filter, globalFilter, state, lastFilteredSize)
       }),
       enableHitTesting: state.enableHitTesting
     }];
@@ -54543,12 +54549,13 @@ function rasterLayerPolyMixin(_layer) {
   };
 
   _layer.getProjections = function () {
-    return getTransforms({
+    return _layer.getTransforms({
       bboxFilter: "",
       filter: "",
       globalFilter: "",
       layerFilter: _layer.filters(),
       filtersInverse: _layer.filtersInverse(),
+      state: state,
       lastFilteredSize: _layer.filters().length ? _layer.getState().bboxCount : (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())
     }).filter(function (transform) {
       return transform.type === "project" && transform.hasOwnProperty("as") && transform.as !== "key0" && transform.as !== "color";
@@ -54563,16 +54570,15 @@ function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1;
   }
 
-  // eslint-disable-next-line complexity
-  function getTransforms(_ref) {
+  _layer.getTransforms = function (_ref) {
     var bboxFilter = _ref.bboxFilter,
         filter = _ref.filter,
         globalFilter = _ref.globalFilter,
         layerFilter = _ref.layerFilter,
         filtersInverse = _ref.filtersInverse,
+        state = _ref.state,
         lastFilteredSize = _ref.lastFilteredSize;
-    var _state = state,
-        _state$encoding = _state.encoding,
+    var _state$encoding = state.encoding,
         color = _state$encoding.color,
         geocol = _state$encoding.geocol,
         geoTable = _state$encoding.geoTable;
@@ -54688,7 +54694,7 @@ function rasterLayerPolyMixin(_layer) {
         }
       });
     } else {
-      var _colorField = color.type === "quantitative" ? typeof color.aggregate === "string" ? color.aggregate : color.aggregate.field : color.field;
+      var _colorField = color.type === "quantitative" ? color.aggregate.field || color.aggregate : color.field;
 
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
@@ -54757,7 +54763,7 @@ function rasterLayerPolyMixin(_layer) {
       }
     }
     return transforms;
-  }
+  };
 
   function getColorScaleName(layerName) {
     return layerName + "_fillColor";
@@ -54823,12 +54829,13 @@ function rasterLayerPolyMixin(_layer) {
       sql: _utils.parser.writeSQL({
         type: "root",
         source: doJoin() ? state.data[1].table + ", " + withAlias : "" + state.data[0].table,
-        transform: getTransforms({
+        transform: _layer.getTransforms({
           bboxFilter: bboxFilter,
           filter: filter,
           globalFilter: globalFilter,
           layerFilter: layerFilter,
           filtersInverse: filtersInverse,
+          state: state,
           lastFilteredSize: lastFilteredSize
         })
       }),
@@ -88694,145 +88701,6 @@ function getColor(color, layerName) {
   }
 }
 
-function getTransforms(table, filter, globalFilter, state, lastFilteredSize) {
-  var transforms = [];
-  var transform = state.transform;
-  var _state$encoding = state.encoding,
-      size = _state$encoding.size,
-      color = _state$encoding.color,
-      geocol = _state$encoding.geocol,
-      geoTable = _state$encoding.geoTable;
-
-  var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
-
-  var fields = [];
-  var alias = [];
-  var ops = [];
-
-  var colorProjection = color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + rowIdTable + "." + color.field + ")";
-
-  function doJoin() {
-    return state.data.length > 1;
-  }
-
-  var groupbyDim = state.transform.groupby ? state.transform.groupby.map(function (g, i) {
-    return {
-      type: "project",
-      expr: state.data[0].table + "." + g,
-      as: "key" + i
-    };
-  }) : [];
-
-  var groupby = doJoin() ? [{
-    type: "project",
-    expr: state.data[0].table + "." + state.data[0].attr,
-    as: "key0"
-  }] : groupbyDim;
-
-  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && (size.type === "quantitative" || size.type === "custom")) {
-    if (groupby.length > 0 && size.type === "quantitative") {
-      fields.push(state.data[0].table + "." + size.field);
-      alias.push("strokeWidth");
-      ops.push(size.aggregate);
-    } else {
-      transforms.push({
-        type: "project",
-        expr: size.field,
-        as: "strokeWidth"
-      });
-    }
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-    if (groupby.length > 0 && color.colorMeasureAggType !== "Custom") {
-      fields.push(colorProjection);
-      alias.push("strokeColor");
-      ops.push(null);
-    } else {
-      var expression = null;
-      if (color.colorMeasureAggType === "Custom") {
-        expression = color.field ? color.field : color.aggregate;
-      } else if (color.type === "quantitative") {
-        expression = color.aggregate.field;
-      } else {
-        expression = color.field;
-      }
-      transforms.push({
-        type: "project",
-        expr: expression,
-        as: "strokeColor"
-      });
-    }
-  }
-
-  if (doJoin()) {
-    transforms.push({
-      type: "filter",
-      expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
-    });
-  }
-
-  if (groupby.length > 0) {
-    transforms.push({
-      type: "aggregate",
-      fields: fields,
-      ops: ops,
-      as: alias,
-      groupby: groupby
-    });
-    transforms.push({
-      type: "project",
-      expr: "LAST_SAMPLE(" + rowIdTable + ".rowid)",
-      as: "rowid"
-    });
-    transforms.push({
-      type: "project",
-      expr: "SAMPLE(" + geoTable + "." + geocol + ")",
-      as: "sampled_geo"
-    });
-  } else {
-    transforms.push({
-      type: "project",
-      expr: geoTable + "." + geocol
-    });
-  }
-
-  if (typeof transform.limit === "number") {
-    if (transform.sample && !doJoin()) {
-      // use Knuth's hash sampling on single data source chart
-      transforms.push({
-        type: "sample",
-        method: "multiplicative",
-        size: lastFilteredSize || transform.tableSize,
-        limit: transform.limit,
-        sampleTable: geoTable
-      });
-    } else {
-      // when geo join is applied, we won't use Knuth's sampling but use LIMIT
-      transforms.push({
-        type: "limit",
-        row: transform.limit
-      });
-    }
-  }
-
-  if (typeof filter === "string" && filter.length) {
-    transforms.push({
-      type: "filter",
-      expr: filter
-    });
-  }
-
-  if (typeof globalFilter === "string" && globalFilter.length) {
-    transforms.push({
-      type: "filter",
-      expr: globalFilter
-    });
-  }
-
-  return transforms;
-}
-
 function rasterLayerLineMixin(_layer) {
   var state = null;
   _layer.colorDomain = (0, _utilsVega.createRasterLayerGetterSetter)(_layer, null);
@@ -88856,8 +88724,146 @@ function rasterLayerLineMixin(_layer) {
     return state;
   };
 
+  _layer.getTransforms = function (table, filter, globalFilter, state, lastFilteredSize) {
+    var transforms = [];
+    var transform = state.transform;
+    var _state$encoding = state.encoding,
+        size = _state$encoding.size,
+        color = _state$encoding.color,
+        geocol = _state$encoding.geocol,
+        geoTable = _state$encoding.geoTable;
+
+    var rowIdTable = doJoin() ? state.data[1].table : state.data[0].table;
+
+    var fields = [];
+    var alias = [];
+    var ops = [];
+
+    var groupbyDim = state.transform.groupby ? state.transform.groupby.map(function (g, i) {
+      return {
+        type: "project",
+        expr: state.data[0].table + "." + g,
+        as: "key" + i
+      };
+    }) : [];
+    var groupby = doJoin() ? [{
+      type: "project",
+      expr: state.data[0].table + "." + state.data[0].attr,
+      as: "key0"
+    }] : groupbyDim;
+
+    var colorProjection = groupby.length && color.type === "quantitative" ? _utils.parser.parseExpression(color.aggregate) : "SAMPLE(" + rowIdTable + "." + color.field + ")";
+
+    function doJoin() {
+      return state.data.length > 1;
+    }
+
+    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && (size.type === "quantitative" || size.type === "custom")) {
+      if (groupby.length > 0 && size.type === "quantitative") {
+        fields.push(state.data[0].table + "." + size.field);
+        alias.push("strokeWidth");
+        ops.push(size.aggregate);
+      } else {
+        transforms.push({
+          type: "project",
+          expr: size.field,
+          as: "strokeWidth"
+        });
+      }
+    }
+
+    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
+      if (groupby.length > 0 && color.colorMeasureAggType !== "Custom") {
+        fields.push(colorProjection);
+        alias.push("strokeColor");
+        ops.push(null);
+      } else {
+        var expression = null;
+        if (color.colorMeasureAggType === "Custom") {
+          expression = color.field ? color.field : color.aggregate;
+        } else if (color.type === "quantitative") {
+          expression = color.aggregate.field;
+        } else {
+          expression = color.field;
+        }
+        transforms.push({
+          type: "project",
+          expr: expression,
+          as: "strokeColor"
+        });
+      }
+    }
+
+    if (doJoin()) {
+      transforms.push({
+        type: "filter",
+        expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
+      });
+    }
+
+    if (groupby.length > 0) {
+      transforms.push({
+        type: "aggregate",
+        fields: fields,
+        ops: ops,
+        as: alias,
+        groupby: groupby
+      });
+      transforms.push({
+        type: "project",
+        expr: "LAST_SAMPLE(" + rowIdTable + ".rowid)",
+        as: "rowid"
+      });
+      transforms.push({
+        type: "project",
+        expr: "SAMPLE(" + geoTable + "." + geocol + ")",
+        as: "sampled_geo"
+      });
+    } else {
+      transforms.push({
+        type: "project",
+        expr: geoTable + "." + geocol
+      });
+    }
+
+    if (typeof transform.limit === "number") {
+      if (transform.sample && !doJoin()) {
+        // use Knuth's hash sampling on single data source chart
+        transforms.push({
+          type: "sample",
+          method: "multiplicative",
+          size: lastFilteredSize || transform.tableSize,
+          limit: transform.limit,
+          sampleTable: geoTable
+        });
+      } else {
+        // when geo join is applied, we won't use Knuth's sampling but use LIMIT
+        transforms.push({
+          type: "limit",
+          row: transform.limit
+        });
+      }
+    }
+
+    if (typeof filter === "string" && filter.length) {
+      transforms.push({
+        type: "filter",
+        expr: filter
+      });
+    }
+
+    if (typeof globalFilter === "string" && globalFilter.length) {
+      transforms.push({
+        type: "filter",
+        expr: globalFilter
+      });
+    }
+
+    return transforms;
+  };
+
   _layer.getProjections = function () {
-    return getTransforms("", "", "", state, (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())).filter(function (transform) {
+    return _layer.getTransforms("", "", "", state, (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())).filter(function (transform) {
       return transform.type === "project" && transform.hasOwnProperty("as");
     }).map(function (projection) {
       return _utils.parser.parseTransform({ select: [] }, projection);
@@ -88964,7 +88970,7 @@ function rasterLayerLineMixin(_layer) {
         source: [].concat(_toConsumableArray(new Set(state.data.map(function (source) {
           return source.table;
         })))).join(", "),
-        transform: getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+        transform: _layer.getTransforms(table, filter, globalFilter, state, lastFilteredSize)
       }),
       enableHitTesting: state.enableHitTesting
     }];
