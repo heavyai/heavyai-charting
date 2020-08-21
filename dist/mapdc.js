@@ -54694,7 +54694,7 @@ function rasterLayerPolyMixin(_layer) {
         }
       });
     } else {
-      var _colorField = color.type === "quantitative" && typeof color.aggregate === "string" ? color.aggregate : color.field;
+      var _colorField = color.type === "quantitative" ? color.aggregate.field || color.aggregate : color.field;
 
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
@@ -88782,7 +88782,7 @@ function rasterLayerLineMixin(_layer) {
         if (color.colorMeasureAggType === "Custom") {
           expression = color.field ? color.field : color.aggregate;
         } else if (color.type === "quantitative") {
-          expression = color.field;
+          expression = color.aggregate.field;
         } else {
           expression = color.field;
         }
