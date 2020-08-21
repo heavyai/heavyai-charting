@@ -1490,7 +1490,7 @@ body {
         pointer-events: auto;
 
         input {
-            height: 16px;
+            height: auto;
             width: 32px;
             min-width: 32px;
             border: 1px solid $gray3;
