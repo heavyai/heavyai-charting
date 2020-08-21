@@ -266,8 +266,8 @@ export default function rasterLayerPolyMixin(_layer) {
       })
     } else {
       const colorField =
-        color.type === "quantitative" && typeof color.aggregate === "string"
-          ? color.aggregate
+        color.type === "quantitative"
+          ? color.aggregate.field || color.aggregate
           : color.field
 
       if (color.type !== "solid" && !layerFilter.length) {

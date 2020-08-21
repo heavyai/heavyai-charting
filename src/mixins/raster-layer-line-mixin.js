@@ -196,7 +196,7 @@ debugger
         if (color.colorMeasureAggType === "Custom") {
           expression = color.field ? color.field : color.aggregate
         } else if (color.type === "quantitative") {
-          expression = color.field
+          expression = color.aggregate.field
         } else {
           expression = color.field
         }
