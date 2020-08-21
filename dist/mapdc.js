@@ -79896,7 +79896,9 @@ var ScrollZoomHandler = function (_BaseHandler2) {
       }
 
       if (e.type === "wheel") {
-        value = e.deltaY;
+        // Pressing the shift key causes some mouse wheels to scroll horizontally.
+        // This ensures we capture the scroll difference regardless of direction
+        value = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
         // Firefox doubles the values on retina screens...
         if (this._browser.isFirefox && e.deltaMode === window.WheelEvent.DOM_DELTA_PIXEL) {
           value = value / (window.devicePixelRatio || 1);
@@ -79906,7 +79908,7 @@ var ScrollZoomHandler = function (_BaseHandler2) {
           value = value * 40;
         }
       } else if (e.type === "mousewheel") {
-        value = -e.wheelDeltaY;
+        value = -(Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY) ? e.wheelDeltaX : e.wheelDeltaY);
         if (this._browser.isSafari) {
           value = value / 3;
         }
