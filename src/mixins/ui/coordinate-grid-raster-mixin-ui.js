@@ -473,11 +473,9 @@ class ScrollZoomHandler extends BaseHandler {
         value = value * 40
       }
     } else if (e.type === "mousewheel") {
-      value = -(
-        Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY)
-          ? e.wheelDeltaX
-          : e.wheelDeltaY
-      )
+      value = -(Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY)
+        ? e.wheelDeltaX
+        : e.wheelDeltaY)
       if (this._browser.isSafari) {
         value = value / 3
       }
