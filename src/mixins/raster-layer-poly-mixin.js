@@ -131,7 +131,8 @@ export default function rasterLayerPolyMixin(_layer) {
     layerFilter,
     filtersInverse,
     state,
-    lastFilteredSize
+    lastFilteredSize,
+    isDataExport
   }) {
     const {
       encoding: { color, geocol, geoTable }
@@ -141,7 +142,7 @@ export default function rasterLayerPolyMixin(_layer) {
 
     transforms.push({
       type: "project",
-      expr: `${geoTable}.${geocol}`,
+      expr: `${isDataExport ? "/*+ cpu_mode */ " : ""}${geoTable}.${geocol}`,
       as: geocol
     })
 
@@ -341,6 +342,7 @@ export default function rasterLayerPolyMixin(_layer) {
         })
       }
     }
+    console.log('transform ', transforms)
     return transforms
   }
 

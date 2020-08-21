@@ -157,7 +157,8 @@ export default function rasterLayerPointMixin(_layer) {
     filter,
     globalFilter,
     { transform, encoding: { x, y, size, color }, postFilters },
-    lastFilteredSize
+    lastFilteredSize,
+    isDataExport
   ) {
     const transforms = []
 
@@ -197,16 +198,23 @@ export default function rasterLayerPointMixin(_layer) {
         }))
       })
     } else {
-      transforms.push({
-        type: "project",
-        expr: x.field,
-        as: "x"
-      })
-      transforms.push({
-        type: "project",
-        expr: y.field,
-        as: "y"
-      })
+      if (isDataExport) {
+        transforms.push({
+          type: "project",
+          expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 900913)`
+        })
+      } else {
+        transforms.push({
+          type: "project",
+          expr: x.field,
+          as: "x"
+        })
+        transforms.push({
+          type: "project",
+          expr: y.field,
+          as: "y"
+        })
+      }
 
       if (typeof transform.limit === "number") {
         transforms.push({

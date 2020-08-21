@@ -100,12 +100,16 @@ export default function rasterLayerLineMixin(_layer) {
     filter,
     globalFilter,
     state,
-    lastFilteredSize
+    lastFilteredSize,
+    isDataExport
   ) {
     const transforms = []
     const { transform } = state
     const { size, color, geocol, geoTable } = state.encoding
     const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
+
+    // For raster chart data export sql query, we include this
+debugger
 
     const fields = []
     const alias = []
@@ -114,7 +118,7 @@ export default function rasterLayerLineMixin(_layer) {
     const groupbyDim = state.transform.groupby
       ? state.transform.groupby.map((g, i) => ({
           type: "project",
-          expr: `${state.data[0].table}.${g}`,
+          expr: `${isDataExport ? "/*+ cpu_mode */ " : ""}${state.data[0].table}.${g}`,
           as: `key${i}`
         }))
       : []
@@ -135,6 +139,31 @@ export default function rasterLayerLineMixin(_layer) {
 
     function doJoin() {
       return state.data.length > 1
+    }
+
+    if (groupby.length > 0) {
+      transforms.push({
+        type: "aggregate",
+        fields,
+        ops,
+        as: alias,
+        groupby
+      })
+      transforms.push({
+        type: "project",
+        expr: `LAST_SAMPLE(${rowIdTable}.rowid)`,
+        as: "rowid"
+      })
+      transforms.push({
+        type: "project",
+        expr: `SAMPLE(${geoTable}.${geocol})`,
+        as: "sampled_geo"
+      })
+    } else {
+      transforms.push({
+        type: "project",
+        expr: `${isDataExport ? "/*+ cpu_mode */ " : ""}${geoTable}.${geocol}`
+      })
     }
 
     if (
@@ -186,30 +215,6 @@ export default function rasterLayerLineMixin(_layer) {
       })
     }
 
-    if (groupby.length > 0) {
-      transforms.push({
-        type: "aggregate",
-        fields,
-        ops,
-        as: alias,
-        groupby
-      })
-      transforms.push({
-        type: "project",
-        expr: `LAST_SAMPLE(${rowIdTable}.rowid)`,
-        as: "rowid"
-      })
-      transforms.push({
-        type: "project",
-        expr: `SAMPLE(${geoTable}.${geocol})`,
-        as: "sampled_geo"
-      })
-    } else {
-      transforms.push({
-        type: "project",
-        expr: `${geoTable}.${geocol}`
-      })
-    }
 
     if (typeof transform.limit === "number") {
       if (transform.sample && !doJoin()) {
