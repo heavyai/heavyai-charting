@@ -1162,7 +1162,10 @@ export default function bindEventHandlers(
       disableInteractionsInternal()
     },
 
-    getInteractionPropNames: () => ["scrollZoom", "boxZoom", "dragPan"]
+    getInteractionPropNames: chart =>
+      chart.shiftToZoom()
+        ? ["scrollZoom", "dragPan"]
+        : ["scrollZoom", "boxZoom", "dragPan"]
   }
 
   if (enableInteractions) {
