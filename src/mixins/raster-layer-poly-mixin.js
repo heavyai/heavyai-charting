@@ -97,16 +97,18 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.getProjections = function() {
-    return getTransforms({
-      bboxFilter: "",
-      filter: "",
-      globalFilter: "",
-      layerFilter: _layer.filters(),
-      filtersInverse: _layer.filtersInverse(),
-      lastFilteredSize: _layer.filters().length
-        ? _layer.getState().bboxCount
-        : lastFilteredSize(_layer.crossfilter().getId())
-    })
+    return _layer
+      .getTransforms({
+        bboxFilter: "",
+        filter: "",
+        globalFilter: "",
+        layerFilter: _layer.filters(),
+        filtersInverse: _layer.filtersInverse(),
+        state,
+        lastFilteredSize: _layer.filters().length
+          ? _layer.getState().bboxCount
+          : lastFilteredSize(_layer.crossfilter().getId())
+      })
       .filter(
         transform =>
           transform.type === "project" &&
@@ -122,13 +124,13 @@ export default function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1
   }
 
-  // eslint-disable-next-line complexity
-  function getTransforms({
+  _layer.getTransforms = function({
     bboxFilter,
     filter,
     globalFilter,
     layerFilter,
     filtersInverse,
+    state,
     lastFilteredSize
   }) {
     const {
@@ -263,10 +265,8 @@ export default function rasterLayerPolyMixin(_layer) {
       })
     } else {
       const colorField =
-        color.type === "quantitative"
-          ? typeof color.aggregate === "string"
-            ? color.aggregate
-            : color.aggregate.field
+        color.type === "quantitative" && typeof color.aggregate === "string"
+          ? color.aggregate
           : color.field
 
       if (color.type !== "solid" && !layerFilter.length) {
@@ -385,12 +385,13 @@ export default function rasterLayerPolyMixin(_layer) {
           source: doJoin()
             ? `${state.data[1].table}, ${withAlias}`
             : `${state.data[0].table}`,
-          transform: getTransforms({
+          transform: _layer.getTransforms({
             bboxFilter,
             filter,
             globalFilter,
             layerFilter,
             filtersInverse,
+            state,
             lastFilteredSize
           })
         }),
