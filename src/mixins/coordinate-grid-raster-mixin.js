@@ -221,7 +221,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     _interactionsEnabled = Boolean(enableInteractions)
     if (_eventHandler) {
       const map = _chart.map()
-      _eventHandler.getInteractionPropNames().forEach(prop => {
+      _eventHandler.getInteractionPropNames(_chart).forEach(prop => {
         if (map[prop]) {
           const enable = (typeof opts[prop] === "undefined" ? _interactionsEnabled : Boolean(opts[prop]))
           if (enable) {
