@@ -16,6 +16,13 @@ const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
+const AGGREGATES = {
+  average: "AVG",
+  count: "COUNT",
+  min: "MIN",
+  max: "MAX",
+  sum: "SUM"
+}
 
 function validSymbol(type) {
   switch (type) {
@@ -167,9 +174,9 @@ export default function rasterLayerPointMixin(_layer) {
       typeof transform.groupby === "object" &&
       transform.groupby.length
     ) {
-      const fields = [x.field, y.field]
-      const alias = ["x", "y"]
-      const ops = [x.aggregate, y.aggregate]
+      const fields = isDataExport ? [] : [x.field, y.field]
+      const alias = isDataExport ? [] : ["x", "y"]
+      const ops = isDataExport ? [] : [x.aggregate, y.aggregate]
 
       if (typeof size === "object" && size.type === "quantitative") {
         fields.push(size.field)
@@ -185,7 +192,8 @@ export default function rasterLayerPointMixin(_layer) {
         alias.push("color")
         ops.push(color.aggregate)
       }
-
+      // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
+      // The reason is ST_Point projections need buffer allocation to hold the coords and thus require cpu execution
       transforms.push({
         type: "aggregate",
         fields,
@@ -193,10 +201,18 @@ export default function rasterLayerPointMixin(_layer) {
         as: alias,
         groupby: transform.groupby.map((g, i) => ({
           type: "project",
-          expr: g,
+          expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
           as: `key${i}`
         }))
       })
+      if (isDataExport) {
+        transforms.push({
+          type: "project",
+          expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
+            AGGREGATES[y.aggregate]
+          }(${y.field})), 900913)`
+        })
+      }
     } else {
       if (isDataExport) {
         transforms.push({

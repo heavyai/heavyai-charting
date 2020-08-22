@@ -108,20 +108,21 @@ export default function rasterLayerLineMixin(_layer) {
     const { size, color, geocol, geoTable } = state.encoding
     const rowIdTable = doJoin() ? state.data[1].table : state.data[0].table
 
-    // For raster chart data export sql query, we include this
-debugger
-
     const fields = []
     const alias = []
     const ops = []
 
+    // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
     const groupbyDim = state.transform.groupby
       ? state.transform.groupby.map((g, i) => ({
           type: "project",
-          expr: `${isDataExport ? "/*+ cpu_mode */ " : ""}${state.data[0].table}.${g}`,
+          expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${
+            state.data[0].table
+          }.${g}`, // For raster chart data export sql query, we include this
           as: `key${i}`
         }))
       : []
+
     const groupby = doJoin()
       ? [
           {
@@ -192,14 +193,8 @@ debugger
         alias.push("strokeColor")
         ops.push(null)
       } else {
-        let expression = null
-        if (color.colorMeasureAggType === "Custom") {
-          expression = color.field ? color.field : color.aggregate
-        } else if (color.type === "quantitative") {
-          expression = color.aggregate.field
-        } else {
-          expression = color.field
-        }
+        const expression = color.field || color.aggregate
+
         transforms.push({
           type: "project",
           expr: expression,
@@ -214,7 +209,6 @@ debugger
         expr: `${state.data[0].table}.${state.data[0].attr} = ${state.data[1].table}.${state.data[1].attr}`
       })
     }
-
 
     if (typeof transform.limit === "number") {
       if (transform.sample && !doJoin()) {

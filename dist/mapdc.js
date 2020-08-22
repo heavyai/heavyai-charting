@@ -53806,6 +53806,13 @@ var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
 var AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0];
 var AUTOSIZE_RANGE_MININUM = [1, 1];
 var SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000;
+var AGGREGATES = {
+  average: "AVG",
+  count: "COUNT",
+  min: "MIN",
+  max: "MAX",
+  sum: "SUM"
+};
 
 function validSymbol(type) {
   switch (type) {
@@ -53924,7 +53931,7 @@ function rasterLayerPointMixin(_layer) {
     return state;
   };
 
-  _layer.getTransforms = function (table, filter, globalFilter, _ref, lastFilteredSize) {
+  _layer.getTransforms = function (table, filter, globalFilter, _ref, lastFilteredSize, isDataExport) {
     var transform = _ref.transform,
         _ref$encoding = _ref.encoding,
         x = _ref$encoding.x,
@@ -53936,9 +53943,9 @@ function rasterLayerPointMixin(_layer) {
     var transforms = [];
 
     if ((typeof transform === "undefined" ? "undefined" : _typeof(transform)) === "object" && _typeof(transform.groupby) === "object" && transform.groupby.length) {
-      var fields = [x.field, y.field];
-      var alias = ["x", "y"];
-      var ops = [x.aggregate, y.aggregate];
+      var fields = isDataExport ? [] : [x.field, y.field];
+      var alias = isDataExport ? [] : ["x", "y"];
+      var ops = isDataExport ? [] : [x.aggregate, y.aggregate];
 
       if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && size.type === "quantitative") {
         fields.push(size.field);
@@ -53951,7 +53958,8 @@ function rasterLayerPointMixin(_layer) {
         alias.push("color");
         ops.push(color.aggregate);
       }
-
+      // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
+      // The reason is ST_Point projections need buffer allocation to hold the coords and thus require cpu execution
       transforms.push({
         type: "aggregate",
         fields: fields,
@@ -53960,22 +53968,35 @@ function rasterLayerPointMixin(_layer) {
         groupby: transform.groupby.map(function (g, i) {
           return {
             type: "project",
-            expr: g,
+            expr: "" + (isDataExport && i === 0 ? "/*+ cpu_mode */ " : "") + g,
             as: "key" + i
           };
         })
       });
+      if (isDataExport) {
+        transforms.push({
+          type: "project",
+          expr: "ST_SetSRID(ST_Point(" + AGGREGATES[x.aggregate] + "(" + x.field + "), " + AGGREGATES[y.aggregate] + "(" + y.field + ")), 900913)"
+        });
+      }
     } else {
-      transforms.push({
-        type: "project",
-        expr: x.field,
-        as: "x"
-      });
-      transforms.push({
-        type: "project",
-        expr: y.field,
-        as: "y"
-      });
+      if (isDataExport) {
+        transforms.push({
+          type: "project",
+          expr: "/*+ cpu_mode */ ST_SetSRID(ST_Point(" + x.field + ", " + y.field + "), 900913)"
+        });
+      } else {
+        transforms.push({
+          type: "project",
+          expr: x.field,
+          as: "x"
+        });
+        transforms.push({
+          type: "project",
+          expr: y.field,
+          as: "y"
+        });
+      }
 
       if (typeof transform.limit === "number") {
         transforms.push({
@@ -54577,7 +54598,8 @@ function rasterLayerPolyMixin(_layer) {
         layerFilter = _ref.layerFilter,
         filtersInverse = _ref.filtersInverse,
         state = _ref.state,
-        lastFilteredSize = _ref.lastFilteredSize;
+        lastFilteredSize = _ref.lastFilteredSize,
+        isDataExport = _ref.isDataExport;
     var _state$encoding = state.encoding,
         color = _state$encoding.color,
         geocol = _state$encoding.geocol,
@@ -54586,9 +54608,10 @@ function rasterLayerPolyMixin(_layer) {
 
     var transforms = [];
 
+    // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
     transforms.push({
       type: "project",
-      expr: geoTable + "." + geocol,
+      expr: "" + (isDataExport && !doJoin() ? "/*+ cpu_mode */ " : "") + geoTable + "." + geocol,
       as: geocol
     });
 
@@ -54694,7 +54717,7 @@ function rasterLayerPolyMixin(_layer) {
         }
       });
     } else {
-      var _colorField = color.type === "quantitative" ? color.aggregate.field || color.aggregate : color.field;
+      var _colorField = color.type === "quantitative" && typeof color.aggregate === "string" ? color.aggregate : color.field;
 
       if (color.type !== "solid" && !layerFilter.length) {
         transforms.push({
@@ -54762,6 +54785,7 @@ function rasterLayerPolyMixin(_layer) {
         });
       }
     }
+
     return transforms;
   };
 
@@ -88726,7 +88750,7 @@ function rasterLayerLineMixin(_layer) {
     return state;
   };
 
-  _layer.getTransforms = function (table, filter, globalFilter, state, lastFilteredSize) {
+  _layer.getTransforms = function (table, filter, globalFilter, state, lastFilteredSize, isDataExport) {
     var transforms = [];
     var transform = state.transform;
     var _state$encoding = state.encoding,
@@ -88741,13 +88765,15 @@ function rasterLayerLineMixin(_layer) {
     var alias = [];
     var ops = [];
 
+    // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
     var groupbyDim = state.transform.groupby ? state.transform.groupby.map(function (g, i) {
       return {
         type: "project",
-        expr: state.data[0].table + "." + g,
+        expr: "" + (isDataExport && i === 0 ? "/*+ cpu_mode */ " : "") + state.data[0].table + "." + g, // For raster chart data export sql query, we include this
         as: "key" + i
       };
     }) : [];
+
     var groupby = doJoin() ? [{
       type: "project",
       expr: state.data[0].table + "." + state.data[0].attr,
@@ -88758,49 +88784,6 @@ function rasterLayerLineMixin(_layer) {
 
     function doJoin() {
       return state.data.length > 1;
-    }
-
-    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && (size.type === "quantitative" || size.type === "custom")) {
-      if (groupby.length > 0 && size.type === "quantitative") {
-        fields.push(state.data[0].table + "." + size.field);
-        alias.push("strokeWidth");
-        ops.push(size.aggregate);
-      } else {
-        transforms.push({
-          type: "project",
-          expr: size.field,
-          as: "strokeWidth"
-        });
-      }
-    }
-
-    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
-      if (groupby.length > 0 && color.colorMeasureAggType !== "Custom") {
-        fields.push(colorProjection);
-        alias.push("strokeColor");
-        ops.push(null);
-      } else {
-        var expression = null;
-        if (color.colorMeasureAggType === "Custom") {
-          expression = color.field ? color.field : color.aggregate;
-        } else if (color.type === "quantitative") {
-          expression = color.aggregate.field;
-        } else {
-          expression = color.field;
-        }
-        transforms.push({
-          type: "project",
-          expr: expression,
-          as: "strokeColor"
-        });
-      }
-    }
-
-    if (doJoin()) {
-      transforms.push({
-        type: "filter",
-        expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
-      });
     }
 
     if (groupby.length > 0) {
@@ -88824,7 +88807,44 @@ function rasterLayerLineMixin(_layer) {
     } else {
       transforms.push({
         type: "project",
-        expr: geoTable + "." + geocol
+        expr: "" + (isDataExport ? "/*+ cpu_mode */ " : "") + geoTable + "." + geocol
+      });
+    }
+
+    if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && (size.type === "quantitative" || size.type === "custom")) {
+      if (groupby.length > 0 && size.type === "quantitative") {
+        fields.push(state.data[0].table + "." + size.field);
+        alias.push("strokeWidth");
+        ops.push(size.aggregate);
+      } else {
+        transforms.push({
+          type: "project",
+          expr: size.field,
+          as: "strokeWidth"
+        });
+      }
+    }
+
+    if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && (color.type === "quantitative" || color.type === "ordinal")) {
+      if (groupby.length > 0 && color.colorMeasureAggType !== "Custom") {
+        fields.push(colorProjection);
+        alias.push("strokeColor");
+        ops.push(null);
+      } else {
+        var expression = color.field || color.aggregate;
+
+        transforms.push({
+          type: "project",
+          expr: expression,
+          as: "strokeColor"
+        });
+      }
+    }
+
+    if (doJoin()) {
+      transforms.push({
+        type: "filter",
+        expr: state.data[0].table + "." + state.data[0].attr + " = " + state.data[1].table + "." + state.data[1].attr
       });
     }
 
