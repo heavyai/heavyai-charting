@@ -112,13 +112,13 @@ export default function rasterLayerLineMixin(_layer) {
     const alias = []
     const ops = []
 
-    // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
+    // Adds /*+ cpu_mode */ in data export query since we are limiting to some number of rows.
     const groupbyDim = state.transform.groupby
       ? state.transform.groupby.map((g, i) => ({
           type: "project",
           expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${
             state.data[0].table
-          }.${g}`, // For raster chart data export sql query, we include this
+          }.${g}`,
           as: `key${i}`
         }))
       : []
