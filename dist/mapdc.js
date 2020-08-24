@@ -88765,11 +88765,11 @@ function rasterLayerLineMixin(_layer) {
     var alias = [];
     var ops = [];
 
-    // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
+    // Adds /*+ cpu_mode */ in data export query since we are limiting to some number of rows.
     var groupbyDim = state.transform.groupby ? state.transform.groupby.map(function (g, i) {
       return {
         type: "project",
-        expr: "" + (isDataExport && i === 0 ? "/*+ cpu_mode */ " : "") + state.data[0].table + "." + g, // For raster chart data export sql query, we include this
+        expr: "" + (isDataExport && i === 0 ? "/*+ cpu_mode */ " : "") + state.data[0].table + "." + g,
         as: "key" + i
       };
     }) : [];
