@@ -222,7 +222,7 @@ export default function rasterLayerPolyMixin(_layer) {
         })
       }
 
-      if (layerFilter.length) {
+      if (layerFilter.length && !isDataExport) {
         transforms.push({
           type: "aggregate",
           fields: [
@@ -244,6 +244,15 @@ export default function rasterLayerPolyMixin(_layer) {
           ops: [null],
           as: ["color"],
           groupby: {}
+        })
+      } else if (layerFilter.length && isDataExport) {
+        transforms.push({
+          type: "filter",
+          expr: parser.parseExpression({
+            type: filtersInverse ? "not in" : "in",
+            expr: `${withAlias}.key0`,
+            set: layerFilter
+          })
         })
       }
       if (typeof filter === "string" && filter.length) {
@@ -280,7 +289,7 @@ export default function rasterLayerPolyMixin(_layer) {
           as: "color"
         })
       }
-      if (layerFilter.length) {
+      if (layerFilter.length && !isDataExport) {
         transforms.push({
           type: "project",
           expr: parser.parseExpression({
@@ -301,6 +310,17 @@ export default function rasterLayerPolyMixin(_layer) {
             else: null
           }),
           as: "color"
+        })
+      } else if (layerFilter.length && isDataExport) {
+        // For Choropleth Data Export, if we have poly selection filter, we don't need to gray out unfiltered polygons
+        // Thus, no CASE statement necessary, and we need to include the selected rowid in WHERE clause
+        transforms.push({
+          type: "filter",
+          expr: parser.parseExpression({
+            type: filtersInverse ? "not in" : "in",
+            expr: "rowid",
+            set: layerFilter
+          })
         })
       }
       if (typeof filter === "string") {
