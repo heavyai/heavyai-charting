@@ -100,7 +100,8 @@ export default function rasterLayerLineMixin(_layer) {
     filter,
     globalFilter,
     state,
-    lastFilteredSize
+    lastFilteredSize,
+    isDataExport
   ) {
     const transforms = []
     const { transform } = state
@@ -111,13 +112,17 @@ export default function rasterLayerLineMixin(_layer) {
     const alias = []
     const ops = []
 
+    // Adds /*+ cpu_mode */ in data export query since we are limiting to some number of rows.
     const groupbyDim = state.transform.groupby
       ? state.transform.groupby.map((g, i) => ({
           type: "project",
-          expr: `${state.data[0].table}.${g}`,
+          expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${
+            state.data[0].table
+          }.${g}`,
           as: `key${i}`
         }))
       : []
+
     const groupby = doJoin()
       ? [
           {
@@ -135,6 +140,31 @@ export default function rasterLayerLineMixin(_layer) {
 
     function doJoin() {
       return state.data.length > 1
+    }
+
+    if (groupby.length > 0) {
+      transforms.push({
+        type: "aggregate",
+        fields,
+        ops,
+        as: alias,
+        groupby
+      })
+      transforms.push({
+        type: "project",
+        expr: `LAST_SAMPLE(${rowIdTable}.rowid)`,
+        as: "rowid"
+      })
+      transforms.push({
+        type: "project",
+        expr: `SAMPLE(${geoTable}.${geocol})`,
+        as: "sampled_geo"
+      })
+    } else {
+      transforms.push({
+        type: "project",
+        expr: `${isDataExport ? "/*+ cpu_mode */ " : ""}${geoTable}.${geocol}`
+      })
     }
 
     if (
@@ -163,14 +193,8 @@ export default function rasterLayerLineMixin(_layer) {
         alias.push("strokeColor")
         ops.push(null)
       } else {
-        let expression = null
-        if (color.colorMeasureAggType === "Custom") {
-          expression = color.field ? color.field : color.aggregate
-        } else if (color.type === "quantitative") {
-          expression = color.aggregate.field
-        } else {
-          expression = color.field
-        }
+        const expression = color.field || color.aggregate
+
         transforms.push({
           type: "project",
           expr: expression,
@@ -183,31 +207,6 @@ export default function rasterLayerLineMixin(_layer) {
       transforms.push({
         type: "filter",
         expr: `${state.data[0].table}.${state.data[0].attr} = ${state.data[1].table}.${state.data[1].attr}`
-      })
-    }
-
-    if (groupby.length > 0) {
-      transforms.push({
-        type: "aggregate",
-        fields,
-        ops,
-        as: alias,
-        groupby
-      })
-      transforms.push({
-        type: "project",
-        expr: `LAST_SAMPLE(${rowIdTable}.rowid)`,
-        as: "rowid"
-      })
-      transforms.push({
-        type: "project",
-        expr: `SAMPLE(${geoTable}.${geocol})`,
-        as: "sampled_geo"
-      })
-    } else {
-      transforms.push({
-        type: "project",
-        expr: `${geoTable}.${geocol}`
       })
     }
 

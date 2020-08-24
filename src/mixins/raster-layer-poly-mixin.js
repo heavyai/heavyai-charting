@@ -131,7 +131,8 @@ export default function rasterLayerPolyMixin(_layer) {
     layerFilter,
     filtersInverse,
     state,
-    lastFilteredSize
+    lastFilteredSize,
+    isDataExport
   }) {
     const {
       encoding: { color, geocol, geoTable }
@@ -139,9 +140,12 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const transforms = []
 
+    // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
     transforms.push({
       type: "project",
-      expr: `${geoTable}.${geocol}`,
+      expr: `${
+        isDataExport && !doJoin() ? "/*+ cpu_mode */ " : ""
+      }${geoTable}.${geocol}`,
       as: geocol
     })
 
@@ -265,8 +269,8 @@ export default function rasterLayerPolyMixin(_layer) {
       })
     } else {
       const colorField =
-        color.type === "quantitative"
-          ? color.aggregate.field || color.aggregate
+        color.type === "quantitative" && typeof color.aggregate === "string"
+          ? color.aggregate
           : color.field
 
       if (color.type !== "solid" && !layerFilter.length) {
@@ -341,6 +345,7 @@ export default function rasterLayerPolyMixin(_layer) {
         })
       }
     }
+
     return transforms
   }
 
