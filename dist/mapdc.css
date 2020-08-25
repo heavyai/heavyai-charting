@@ -1285,7 +1285,7 @@ body {
     display: none;
     pointer-events: auto; }
     .legend-cont .legend-input input {
-      height: 16px;
+      height: auto;
       width: 32px;
       min-width: 32px;
       border: 1px solid #c7c7c7;

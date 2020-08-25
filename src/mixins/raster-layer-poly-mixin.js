@@ -97,16 +97,18 @@ export default function rasterLayerPolyMixin(_layer) {
   }
 
   _layer.getProjections = function() {
-    return getTransforms({
-      bboxFilter: "",
-      filter: "",
-      globalFilter: "",
-      layerFilter: _layer.filters(),
-      filtersInverse: _layer.filtersInverse(),
-      lastFilteredSize: _layer.filters().length
-        ? _layer.getState().bboxCount
-        : lastFilteredSize(_layer.crossfilter().getId())
-    })
+    return _layer
+      .getTransforms({
+        bboxFilter: "",
+        filter: "",
+        globalFilter: "",
+        layerFilter: _layer.filters(),
+        filtersInverse: _layer.filtersInverse(),
+        state,
+        lastFilteredSize: _layer.filters().length
+          ? _layer.getState().bboxCount
+          : lastFilteredSize(_layer.crossfilter().getId())
+      })
       .filter(
         transform =>
           transform.type === "project" &&
@@ -122,14 +124,15 @@ export default function rasterLayerPolyMixin(_layer) {
     return state.data.length > 1
   }
 
-  // eslint-disable-next-line complexity
-  function getTransforms({
+  _layer.getTransforms = function({
     bboxFilter,
     filter,
     globalFilter,
     layerFilter,
     filtersInverse,
-    lastFilteredSize
+    state,
+    lastFilteredSize,
+    isDataExport
   }) {
     const {
       encoding: { color, geocol, geoTable }
@@ -137,9 +140,12 @@ export default function rasterLayerPolyMixin(_layer) {
 
     const transforms = []
 
+    // Adds *+ cpu_mode */ in data export query since we are limiting to some number of rows.
     transforms.push({
       type: "project",
-      expr: `${geoTable}.${geocol}`,
+      expr: `${
+        isDataExport && !doJoin() ? "/*+ cpu_mode */ " : ""
+      }${geoTable}.${geocol}`,
       as: geocol
     })
 
@@ -216,7 +222,7 @@ export default function rasterLayerPolyMixin(_layer) {
         })
       }
 
-      if (layerFilter.length) {
+      if (layerFilter.length && !isDataExport) {
         transforms.push({
           type: "aggregate",
           fields: [
@@ -238,6 +244,15 @@ export default function rasterLayerPolyMixin(_layer) {
           ops: [null],
           as: ["color"],
           groupby: {}
+        })
+      } else if (layerFilter.length && isDataExport) {
+        transforms.push({
+          type: "filter",
+          expr: parser.parseExpression({
+            type: filtersInverse ? "not in" : "in",
+            expr: `${withAlias}.key0`,
+            set: layerFilter
+          })
         })
       }
       if (typeof filter === "string" && filter.length) {
@@ -263,10 +278,8 @@ export default function rasterLayerPolyMixin(_layer) {
       })
     } else {
       const colorField =
-        color.type === "quantitative"
-          ? typeof color.aggregate === "string"
-            ? color.aggregate
-            : color.aggregate.field
+        color.type === "quantitative" && typeof color.aggregate === "string"
+          ? color.aggregate
           : color.field
 
       if (color.type !== "solid" && !layerFilter.length) {
@@ -276,7 +289,7 @@ export default function rasterLayerPolyMixin(_layer) {
           as: "color"
         })
       }
-      if (layerFilter.length) {
+      if (layerFilter.length && !isDataExport) {
         transforms.push({
           type: "project",
           expr: parser.parseExpression({
@@ -297,6 +310,17 @@ export default function rasterLayerPolyMixin(_layer) {
             else: null
           }),
           as: "color"
+        })
+      } else if (layerFilter.length && isDataExport) {
+        // For Choropleth Data Export, if we have poly selection filter, we don't need to gray out unfiltered polygons
+        // Thus, no CASE statement necessary, and we need to include the selected rowid in WHERE clause
+        transforms.push({
+          type: "filter",
+          expr: parser.parseExpression({
+            type: filtersInverse ? "not in" : "in",
+            expr: "rowid",
+            set: layerFilter
+          })
         })
       }
       if (typeof filter === "string") {
@@ -341,6 +365,7 @@ export default function rasterLayerPolyMixin(_layer) {
         })
       }
     }
+
     return transforms
   }
 
@@ -385,12 +410,13 @@ export default function rasterLayerPolyMixin(_layer) {
           source: doJoin()
             ? `${state.data[1].table}, ${withAlias}`
             : `${state.data[0].table}`,
-          transform: getTransforms({
+          transform: _layer.getTransforms({
             bboxFilter,
             filter,
             globalFilter,
             layerFilter,
             filtersInverse,
+            state,
             lastFilteredSize
           })
         }),
