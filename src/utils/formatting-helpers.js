@@ -91,6 +91,7 @@ export function formatArrayValue(data) {
 export function formatTimeBinValue(data) {
   const startTime = data[0]
   const endTime = data[1]
+  console.log('startTime.timeBin => ', startTime.timeBin) // Why is this changing to "quarter" from "year"????
   switch (startTime.timeBin) {
     case "decade":
       return `${momentUTCFormat(

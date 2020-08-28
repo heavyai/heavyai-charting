@@ -230,6 +230,12 @@ export default function lockAxisMixin(chart) {
       .domain()
       .slice()
 
+    const shouldFlip = chart.isHeatMap && type === "y"
+
+    if (shouldFlip) {
+      minMax.reverse()
+    }
+
     chart
       .root()
       .selectAll(`.axis-lock.type-${type}`)
@@ -276,11 +282,13 @@ export default function lockAxisMixin(chart) {
         this.select()
       })
       .on("change", function() {
+        const max = minMax[1]
+        const min = minMax[0]
         const val =
-          minMax[1] instanceof Date
+          max instanceof Date
             ? moment(this.value, DATE_FORMAT).toDate()
             : parseFloatStrict(this.value.replace(/,/g, ""))
-        updateMinMax(type, [minMax[0], val])
+        updateMinMax(type, shouldFlip ? [val, min] : [min, val])
       })
       .on("keyup", function() {
         if (d3.event.keyCode === RETURN_KEY) {
@@ -304,11 +312,13 @@ export default function lockAxisMixin(chart) {
         this.select()
       })
       .on("change", function() {
+        const max = minMax[1]
+        const min = minMax[0]
         const val =
-          minMax[0] instanceof Date
+          min instanceof Date
             ? moment(this.value, DATE_FORMAT).toDate()
             : parseFloatStrict(this.value.replace(/,/g, ""))
-        updateMinMax(type, [val, minMax[1]])
+        updateMinMax(type, shouldFlip ? [max, val] : [val, max])
       })
       .on("keyup", function() {
         if (d3.event.keyCode === RETURN_KEY) {
