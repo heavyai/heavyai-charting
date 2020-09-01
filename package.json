@@ -64,7 +64,7 @@
     "fast-deep-equal": "^2.0.1",
     "legendables": "git://github.com/omnisci/legendables.git#63e2ad9a8375a11e5510a5dadf0b7a4326fae888",
     "mapbox-gl": "1.9.1",
-    "mapd-data-layer-2": "0.0.22",
+    "mapd-data-layer-2": "0.0.23",
     "moment": "^2.19.3",
     "ramda": "0.21.0",
     "simplify-js": "^1.2.1",
