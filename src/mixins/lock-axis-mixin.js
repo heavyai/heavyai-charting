@@ -216,9 +216,9 @@ export default function lockAxisMixin(chart) {
         type === "y"
           ? 0
           : `${
-              chart.height() - chartBottomPixels /*chart.margins().bottom*/
+              chart.height() - chartBottomPixels /* chart.margins().bottom*/
             }px`,
-      left: type === "y" ? 0 : `${chartLeftPixels /*chart.margins().left*/}px`,
+      left: type === "y" ? 0 : `${chartLeftPixels /* chart.margins().left*/}px`,
       width:
         type === "y"
           ? `${chartLeftPixels}px`
@@ -226,7 +226,7 @@ export default function lockAxisMixin(chart) {
       height:
         type === "y"
           ? `${chart.height()}px`
-          : `${chartBottomPixels /*chart.margins().bottom*/}px`
+          : `${chartBottomPixels /* chart.margins().bottom*/}px`
     }
 
     const minMax = chart[type]()

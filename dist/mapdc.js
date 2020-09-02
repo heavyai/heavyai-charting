@@ -34032,10 +34032,11 @@ function lockAxisMixin(chart) {
     };
 
     var hitBoxDim = {
-      top: type === "y" ? 0 : chart.height() - chartBottomPixels /*chart.margins().bottom*/ + "px",
-      left: type === "y" ? 0 : chartLeftPixels /*chart.margins().left*/ + "px",
+      top: type === "y" ? 0 : chart.height() - chartBottomPixels /* chart.margins().bottom*/
+      + "px",
+      left: type === "y" ? 0 : chartLeftPixels /* chart.margins().left*/ + "px",
       width: type === "y" ? chartLeftPixels + "px" : chart.width() - chartLeftPixels + "px",
-      height: type === "y" ? chart.height() + "px" : chartBottomPixels /*chart.margins().bottom*/ + "px"
+      height: type === "y" ? chart.height() + "px" : chartBottomPixels /* chart.margins().bottom*/ + "px"
     };
 
     var minMax = chart[type]().domain().slice();
