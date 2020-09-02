@@ -58906,23 +58906,14 @@ function parseResolvefilter(sql, transform) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = sample;
 
 
-var GOLDEN_RATIO = 2654435761;
-
-var THIRTY_ONE_BITS = 2147483648;
-var THIRTY_TWO_BITS = 4294967296;
-
 function sample(sql, transform) {
   var size = transform.size,
       limit = transform.limit;
 
   var ratio = Math.min(limit / size, 1.0);
-  var threshold = Math.floor(THIRTY_TWO_BITS * ratio);
-
-  // sampleTable prop is in the transform from point, poly, linestring charts
-  var samplingTable = transform.sampleTable || sql.from;
 
   if (transform.method === "multiplicativeRowid" && ratio < 1) {
-    sql.where.push("((MOD( MOD (" + samplingTable + ".rowid, " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold + ") OR (" + transform.field + " IN (" + transform.expr.map(function (e) {
+    sql.where.push("(SAMPLE_RATIO(" + ratio + ") OR (" + transform.field + " IN (" + transform.expr.map(function (e) {
       return typeof e === "string" ? "'" + e + "'" : "" + e;
     }).join(", ") + ")))");
   } else if (transform.method === "multiplicative" && ratio < 1) {
@@ -58931,7 +58922,7 @@ function sample(sql, transform) {
     // to optimize the filter here. This helps  the overflow on the backend.
     // We don't have the full modulo expression for golden ratio since 
     // that is a constant expression and we can avoid that execution
-    sql.where.push("MOD( MOD (" + samplingTable + ".rowid, " + THIRTY_ONE_BITS + ") * " + GOLDEN_RATIO + " , " + THIRTY_TWO_BITS + ") < " + threshold);
+    sql.where.push("SAMPLE_RATIO(" + ratio + ")");
   }
 
   return sql;
