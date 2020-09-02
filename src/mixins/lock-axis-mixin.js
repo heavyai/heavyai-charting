@@ -178,52 +178,47 @@ export default function lockAxisMixin(chart) {
       return
     }
 
+    const chartLeftPixels = chart.dockedAxesSize && chart.dockedAxesSize() ? chart.dockedAxesSize().left : chart.margins().left
+    const chartBottomPixels = chart.dockedAxesSize && chart.dockedAxesSize() ? chart.dockedAxesSize().bottom : chart.margins().bottom
+
     const iconPosition = {
       left:
         type === "y"
-          ? `${chart.margins().left -
-              TOGGLE_SIZE / 2 +
-              (chart.leftAxisLockBump || 0)}px`
+          ? `${chartLeftPixels -
+              TOGGLE_SIZE / 2}px`
           : `${chart.width() - chart.margins().right}px`,
       top:
         type === "y"
           ? `${chart.margins().top - TOGGLE_SIZE}px`
-          : `${chart.height() -
-              chart.margins().bottom +
-              (chart.bottomAxisLockBump || 0)}px`
+          : `${chart.height() - chartBottomPixels}px`
     }
 
     const inputsPosition = {
       minLeft:
         type === "y"
-          ? `${chart.margins().left + (chart.leftAxisLockBump || 0)}px`
-          : `${chart.margins().left + (chart.bottomAxisMinLeftBump || 0)}px`,
-      minTop: `${chart.height() -
-        chart.margins().bottom +
-        (chart.leftMinInputBump || 0)}px`,
+          ? `${chartLeftPixels}px`
+          : `${chartLeftPixels}px`,
+      minTop: `${chart.height() - chartBottomPixels}px`,
       maxLeft:
         type === "y"
-          ? `${chart.margins().left + (chart.leftAxisLockBump || 0)}px`
+          ? `${chartLeftPixels}px`
           : `${chart.width() -
-              chart.margins().right +
-              (chart.bottomAxisMaxLeftBump || 0)}px`,
+              chart.margins().right}px`,
       maxTop:
         type === "y"
           ? `${chart.margins().top}px`
-          : `${chart.height() -
-              chart.margins().bottom +
-              (chart.bottomAxisMaxTopBump || 0)}px`
+          : `${chart.height() - chartBottomPixels}px`
     }
 
     const hitBoxDim = {
-      top: type === "y" ? 0 : `${chart.height() - chart.margins().bottom}px`,
-      left: type === "y" ? 0 : `${chart.margins().left}px`,
+      top: type === "y" ? 0 : `${chart.height() - chartBottomPixels /*chart.margins().bottom*/}px`,
+      left: type === "y" ? 0 : `${chartLeftPixels /*chart.margins().left*/}px`,
       width:
         type === "y"
-          ? `${chart.margins().left}px`
-          : `${chart.width() - chart.margins().left}px`,
+          ? `${chartLeftPixels}px`
+          : `${chart.width() - chartLeftPixels}px`,
       height:
-        type === "y" ? `${chart.height()}px` : `${chart.margins().bottom}px`
+        type === "y" ? `${chart.height()}px` : `${chartBottomPixels/*chart.margins().bottom*/}px`
     }
 
     const minMax = chart[type]()

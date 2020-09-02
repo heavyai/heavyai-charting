@@ -310,7 +310,7 @@ export default function heatMap(parent, chartGroup) {
   }
 
   const showInputs = inputs => () => inputs.style("opacity", 1)
-  const hideInputs = inputs => () => inputs.style("opacity", 0)
+  const hideInputs = inputs => () => inputs.style("opacity", null)
 
   function filterAxis(axis, value) {
     const axisVal = value instanceof Date ? formatDataValue(value) : value
@@ -416,13 +416,7 @@ export default function heatMap(parent, chartGroup) {
     _chart.resetSvg()
 
     _chart.margins({ ..._chart.margins(), top: 16, right: 16, bottom: 0 })
-    // Sorry. Hacks to make room for placement of axises extent controls 🤷‍
-    _chart.leftAxisLockBump = 52
-    _chart.leftMinInputBump = -117
-    _chart.bottomAxisLockBump = -106
-    _chart.bottomAxisMaxTopBump = -120
-    _chart.bottomAxisMaxLeftBump = -20
-    _chart.bottomAxisMinLeftBump = 62
+
     const parent = _chart.svg()
     const g = parent.append("g")
     _chartBody = g
@@ -616,15 +610,10 @@ export default function heatMap(parent, chartGroup) {
       _chart._prepareYAxis(_chart.g())
       yAxisInputs = _chart.root().selectAll(".axis-lock.type-y .axis-input")
     }
-    // const xAxisInputs = _chart.root().selectAll(".axis-lock.type-x .axis-input")
     XAxis.on("mouseover", showInputs(xAxisInputs))
-    xAxisInputs.on("mouseover", showInputs(xAxisInputs))
     XAxis.on("mouseout", hideInputs(xAxisInputs))
-    xAxisInputs.on("mouseout", hideInputs(xAxisInputs))
     YAxis.on("mouseover", showInputs(yAxisInputs))
-    yAxisInputs.on("mouseover", showInputs(yAxisInputs))
     YAxis.on("mouseout", hideInputs(yAxisInputs))
-    yAxisInputs.on("mouseout", hideInputs(yAxisInputs))
     return _chart
   }
   /**
