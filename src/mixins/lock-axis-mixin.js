@@ -178,14 +178,19 @@ export default function lockAxisMixin(chart) {
       return
     }
 
-    const chartLeftPixels = chart.dockedAxesSize && chart.dockedAxesSize() ? chart.dockedAxesSize().left : chart.margins().left
-    const chartBottomPixels = chart.dockedAxesSize && chart.dockedAxesSize() ? chart.dockedAxesSize().bottom : chart.margins().bottom
+    const chartLeftPixels =
+      chart.dockedAxesSize && chart.dockedAxesSize()
+        ? chart.dockedAxesSize().left
+        : chart.margins().left
+    const chartBottomPixels =
+      chart.dockedAxesSize && chart.dockedAxesSize()
+        ? chart.dockedAxesSize().bottom
+        : chart.margins().bottom
 
     const iconPosition = {
       left:
         type === "y"
-          ? `${chartLeftPixels -
-              TOGGLE_SIZE / 2}px`
+          ? `${chartLeftPixels - TOGGLE_SIZE / 2}px`
           : `${chart.width() - chart.margins().right}px`,
       top:
         type === "y"
@@ -194,16 +199,12 @@ export default function lockAxisMixin(chart) {
     }
 
     const inputsPosition = {
-      minLeft:
-        type === "y"
-          ? `${chartLeftPixels}px`
-          : `${chartLeftPixels}px`,
+      minLeft: type === "y" ? `${chartLeftPixels}px` : `${chartLeftPixels}px`,
       minTop: `${chart.height() - chartBottomPixels}px`,
       maxLeft:
         type === "y"
           ? `${chartLeftPixels}px`
-          : `${chart.width() -
-              chart.margins().right}px`,
+          : `${chart.width() - chart.margins().right}px`,
       maxTop:
         type === "y"
           ? `${chart.margins().top}px`
@@ -211,14 +212,21 @@ export default function lockAxisMixin(chart) {
     }
 
     const hitBoxDim = {
-      top: type === "y" ? 0 : `${chart.height() - chartBottomPixels /*chart.margins().bottom*/}px`,
+      top:
+        type === "y"
+          ? 0
+          : `${
+              chart.height() - chartBottomPixels /*chart.margins().bottom*/
+            }px`,
       left: type === "y" ? 0 : `${chartLeftPixels /*chart.margins().left*/}px`,
       width:
         type === "y"
           ? `${chartLeftPixels}px`
           : `${chart.width() - chartLeftPixels}px`,
       height:
-        type === "y" ? `${chart.height()}px` : `${chartBottomPixels/*chart.margins().bottom*/}px`
+        type === "y"
+          ? `${chart.height()}px`
+          : `${chartBottomPixels /*chart.margins().bottom*/}px`
     }
 
     const minMax = chart[type]()

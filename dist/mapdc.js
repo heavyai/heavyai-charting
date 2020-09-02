@@ -34016,26 +34016,35 @@ function lockAxisMixin(chart) {
       return;
     }
 
+    var chartLeftPixels = chart.dockedAxesSize && chart.dockedAxesSize() ? chart.dockedAxesSize().left : chart.margins().left;
+    var chartBottomPixels = chart.dockedAxesSize && chart.dockedAxesSize() ? chart.dockedAxesSize().bottom : chart.margins().bottom;
+
     var iconPosition = {
-      left: type === "y" ? chart.margins().left - TOGGLE_SIZE / 2 + (chart.leftAxisLockBump || 0) + "px" : chart.width() - chart.margins().right + "px",
-      top: type === "y" ? chart.margins().top - TOGGLE_SIZE + "px" : chart.height() - chart.margins().bottom + (chart.bottomAxisLockBump || 0) + "px"
+      left: type === "y" ? chartLeftPixels - TOGGLE_SIZE / 2 + "px" : chart.width() - chart.margins().right + "px",
+      top: type === "y" ? chart.margins().top - TOGGLE_SIZE + "px" : chart.height() - chartBottomPixels + "px"
     };
 
     var inputsPosition = {
-      minLeft: type === "y" ? chart.margins().left + (chart.leftAxisLockBump || 0) + "px" : chart.margins().left + (chart.bottomAxisMinLeftBump || 0) + "px",
-      minTop: chart.height() - chart.margins().bottom + (chart.leftMinInputBump || 0) + "px",
-      maxLeft: type === "y" ? chart.margins().left + (chart.leftAxisLockBump || 0) + "px" : chart.width() - chart.margins().right + (chart.bottomAxisMaxLeftBump || 0) + "px",
-      maxTop: type === "y" ? chart.margins().top + "px" : chart.height() - chart.margins().bottom + (chart.bottomAxisMaxTopBump || 0) + "px"
+      minLeft: type === "y" ? chartLeftPixels + "px" : chartLeftPixels + "px",
+      minTop: chart.height() - chartBottomPixels + "px",
+      maxLeft: type === "y" ? chartLeftPixels + "px" : chart.width() - chart.margins().right + "px",
+      maxTop: type === "y" ? chart.margins().top + "px" : chart.height() - chartBottomPixels + "px"
     };
 
     var hitBoxDim = {
-      top: type === "y" ? 0 : chart.height() - chart.margins().bottom + "px",
-      left: type === "y" ? 0 : chart.margins().left + "px",
-      width: type === "y" ? chart.margins().left + "px" : chart.width() - chart.margins().left + "px",
-      height: type === "y" ? chart.height() + "px" : chart.margins().bottom + "px"
+      top: type === "y" ? 0 : chart.height() - chartBottomPixels /*chart.margins().bottom*/ + "px",
+      left: type === "y" ? 0 : chartLeftPixels /*chart.margins().left*/ + "px",
+      width: type === "y" ? chartLeftPixels + "px" : chart.width() - chartLeftPixels + "px",
+      height: type === "y" ? chart.height() + "px" : chartBottomPixels /*chart.margins().bottom*/ + "px"
     };
 
     var minMax = chart[type]().domain().slice();
+
+    var shouldFlip = chart.isHeatMap && type === "y";
+
+    if (shouldFlip) {
+      minMax.reverse();
+    }
 
     chart.root().selectAll(".axis-lock.type-" + type).remove();
 
@@ -34058,8 +34067,10 @@ function lockAxisMixin(chart) {
     axisMax.append("input").attr("pattern", "[0-9-]").attr("value", formatVal(minMax[1])).on("focus", function () {
       this.select();
     }).on("change", function () {
-      var val = minMax[1] instanceof Date ? (0, _moment2.default)(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""));
-      updateMinMax(type, [minMax[0], val]);
+      var max = minMax[1];
+      var min = minMax[0];
+      var val = max instanceof Date ? (0, _moment2.default)(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""));
+      updateMinMax(type, shouldFlip ? [val, min] : [min, val]);
     }).on("keyup", function () {
       if (_d2.default.event.keyCode === RETURN_KEY) {
         this.blur();
@@ -34074,8 +34085,10 @@ function lockAxisMixin(chart) {
     axisMin.append("input").attr("value", formatVal(minMax[0])).on("focus", function () {
       this.select();
     }).on("change", function () {
-      var val = minMax[0] instanceof Date ? (0, _moment2.default)(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""));
-      updateMinMax(type, [val, minMax[1]]);
+      var max = minMax[1];
+      var min = minMax[0];
+      var val = min instanceof Date ? (0, _moment2.default)(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""));
+      updateMinMax(type, shouldFlip ? [max, val] : [val, max]);
     }).on("keyup", function () {
       if (_d2.default.event.keyCode === RETURN_KEY) {
         this.blur();
@@ -76258,7 +76271,7 @@ function heatMap(parent, chartGroup) {
   };
   var hideInputs = function hideInputs(inputs) {
     return function () {
-      return inputs.style("opacity", 0);
+      return inputs.style("opacity", null);
     };
   };
 
@@ -76369,13 +76382,7 @@ function heatMap(parent, chartGroup) {
     _chart.resetSvg();
 
     _chart.margins(_extends({}, _chart.margins(), { top: 16, right: 16, bottom: 0 }));
-    // Sorry. Hacks to make room for placement of axises extent controls 🤷‍
-    _chart.leftAxisLockBump = 52;
-    _chart.leftMinInputBump = -117;
-    _chart.bottomAxisLockBump = -106;
-    _chart.bottomAxisMaxTopBump = -120;
-    _chart.bottomAxisMaxLeftBump = -20;
-    _chart.bottomAxisMinLeftBump = 62;
+
     var parent = _chart.svg();
     var g = parent.append("g");
     _chartBody = g.attr("class", "heatmap").attr("transform", "translate(0, 16)");
@@ -76493,15 +76500,10 @@ function heatMap(parent, chartGroup) {
       _chart._prepareYAxis(_chart.g());
       yAxisInputs = _chart.root().selectAll(".axis-lock.type-y .axis-input");
     }
-    // const xAxisInputs = _chart.root().selectAll(".axis-lock.type-x .axis-input")
     XAxis.on("mouseover", showInputs(xAxisInputs));
-    xAxisInputs.on("mouseover", showInputs(xAxisInputs));
     XAxis.on("mouseout", hideInputs(xAxisInputs));
-    xAxisInputs.on("mouseout", hideInputs(xAxisInputs));
     YAxis.on("mouseover", showInputs(yAxisInputs));
-    yAxisInputs.on("mouseover", showInputs(yAxisInputs));
     YAxis.on("mouseout", hideInputs(yAxisInputs));
-    yAxisInputs.on("mouseout", hideInputs(yAxisInputs));
     return _chart;
   };
   /**
