@@ -3,7 +3,8 @@ require("../scss/chart.scss")
 require("mapbox-gl/dist/mapbox-gl.css")
 require("legendables/src/styles.css")
 require("./mixins/d3.box.js")
-
+// dirka dirka 
+window.WTF = true
 if (process.env.BABEL_ENV !== "test") {
   window.mapboxgl = require("mapbox-gl")
 }
