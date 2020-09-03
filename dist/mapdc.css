@@ -679,7 +679,7 @@ body {
       outline: none;
       text-align: center;
       opacity: 0;
-      height: 20px; }
+      height: auto; }
       .dc-chart div.axis-label-edit input:focus {
         opacity: 1; }
       .dc-chart div.axis-label-edit input:placeholder {
@@ -1285,7 +1285,7 @@ body {
     display: none;
     pointer-events: auto; }
     .legend-cont .legend-input input {
-      height: 16px;
+      height: auto;
       width: 32px;
       min-width: 32px;
       border: 1px solid #c7c7c7;
@@ -1745,7 +1745,7 @@ body {
     transform: translateY(-50%); }
   .axis-lock input {
     display: block;
-    height: 14px;
+    height: auto;
     font-size: 10px;
     padding: 0;
     position: absolute;
@@ -1755,7 +1755,7 @@ body {
     z-index: 1;
     outline: none; }
     .axis-lock input:focus {
-      height: 24px;
+      height: auto;
       font-size: 12px; }
       .axis-lock input:focus + div {
         font-size: 12px;

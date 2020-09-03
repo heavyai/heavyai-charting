@@ -16,6 +16,13 @@ const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
+const AGGREGATES = {
+  average: "AVG",
+  count: "COUNT",
+  min: "MIN",
+  max: "MAX",
+  sum: "SUM"
+}
 
 function validSymbol(type) {
   switch (type) {
@@ -129,129 +136,6 @@ function isValidPostFilter(postFilter) {
   }
 }
 
-function getTransforms(
-  table,
-  filter,
-  globalFilter,
-  { transform, encoding: { x, y, size, color }, postFilters },
-  lastFilteredSize
-) {
-  const transforms = []
-
-  if (
-    typeof transform === "object" &&
-    typeof transform.groupby === "object" &&
-    transform.groupby.length
-  ) {
-    const fields = [x.field, y.field]
-    const alias = ["x", "y"]
-    const ops = [x.aggregate, y.aggregate]
-
-    if (typeof size === "object" && size.type === "quantitative") {
-      fields.push(size.field)
-      alias.push("size")
-      ops.push(size.aggregate)
-    }
-
-    if (
-      typeof color === "object" &&
-      (color.type === "quantitative" || color.type === "ordinal")
-    ) {
-      fields.push(color.field)
-      alias.push("color")
-      ops.push(color.aggregate)
-    }
-
-    transforms.push({
-      type: "aggregate",
-      fields,
-      ops,
-      as: alias,
-      groupby: transform.groupby.map((g, i) => ({
-        type: "project",
-        expr: g,
-        as: `key${i}`
-      }))
-    })
-  } else {
-    transforms.push({
-      type: "project",
-      expr: x.field,
-      as: "x"
-    })
-    transforms.push({
-      type: "project",
-      expr: y.field,
-      as: "y"
-    })
-
-    if (typeof transform.limit === "number") {
-      transforms.push({
-        type: "limit",
-        row: transform.limit
-      })
-      if (transform.sample) {
-        transforms.push({
-          type: "sample",
-          method: "multiplicative",
-          size: lastFilteredSize || transform.tableSize,
-          limit: transform.limit,
-          sampleTable: table
-        })
-      }
-    }
-
-    if (typeof size === "object" && size.type === "quantitative") {
-      transforms.push({
-        type: "project",
-        expr: size.field,
-        as: "size"
-      })
-    }
-
-    if (
-      typeof color === "object" &&
-      (color.type === "quantitative" || color.type === "ordinal")
-    ) {
-      transforms.push({
-        type: "project",
-        expr: color.field,
-        as: "color"
-      })
-    }
-  }
-
-  if (typeof filter === "string" && filter.length) {
-    transforms.push({
-      type: "filter",
-      expr: filter
-    })
-  }
-
-  const postFilter = postFilters ? postFilters[0] : null // may change to map when we have more than one postFilter
-  if (postFilter && isValidPostFilter(postFilter)) {
-    transforms.push({
-      type: "postFilter",
-      table: postFilter.table || null,
-      aggType: postFilter.aggType,
-      custom: postFilter.custom,
-      fields: [postFilter.value],
-      ops: postFilter.operator,
-      min: postFilter.min,
-      max: postFilter.max
-    })
-  }
-
-  if (typeof globalFilter === "string" && globalFilter.length) {
-    transforms.push({
-      type: "filter",
-      expr: globalFilter
-    })
-  }
-
-  return transforms
-}
-
 export default function rasterLayerPointMixin(_layer) {
   let state = null
   _layer.colorDomain = createRasterLayerGetterSetter(_layer, null)
@@ -275,14 +159,155 @@ export default function rasterLayerPointMixin(_layer) {
     return state
   }
 
+  _layer.getTransforms = function(
+    table,
+    filter,
+    globalFilter,
+    { transform, encoding: { x, y, size, color }, postFilters },
+    lastFilteredSize,
+    isDataExport
+  ) {
+    const transforms = []
+
+    if (
+      typeof transform === "object" &&
+      typeof transform.groupby === "object" &&
+      transform.groupby.length
+    ) {
+      const fields = isDataExport ? [] : [x.field, y.field]
+      const alias = isDataExport ? [] : ["x", "y"]
+      const ops = isDataExport ? [] : [x.aggregate, y.aggregate]
+
+      if (typeof size === "object" && size.type === "quantitative") {
+        fields.push(size.field)
+        alias.push("size")
+        ops.push(size.aggregate)
+      }
+
+      if (
+        typeof color === "object" &&
+        (color.type === "quantitative" || color.type === "ordinal")
+      ) {
+        fields.push(color.field)
+        alias.push("color")
+        ops.push(color.aggregate)
+      }
+      // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
+      // The reason is ST_Point projections need buffer allocation to hold the coords and thus require cpu execution
+      transforms.push({
+        type: "aggregate",
+        fields,
+        ops,
+        as: alias,
+        groupby: transform.groupby.map((g, i) => ({
+          type: "project",
+          expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
+          as: `key${i}`
+        }))
+      })
+      if (isDataExport) {
+        transforms.push({
+          type: "project",
+          expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
+            AGGREGATES[y.aggregate]
+          }(${y.field})), 900913)`
+        })
+      }
+    } else {
+      if (isDataExport) {
+        transforms.push({
+          type: "project",
+          expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 900913)`
+        })
+      } else {
+        transforms.push({
+          type: "project",
+          expr: x.field,
+          as: "x"
+        })
+        transforms.push({
+          type: "project",
+          expr: y.field,
+          as: "y"
+        })
+      }
+
+      if (typeof transform.limit === "number") {
+        transforms.push({
+          type: "limit",
+          row: transform.limit
+        })
+        if (transform.sample) {
+          transforms.push({
+            type: "sample",
+            method: "multiplicative",
+            size: lastFilteredSize || transform.tableSize,
+            limit: transform.limit,
+            sampleTable: table
+          })
+        }
+      }
+
+      if (typeof size === "object" && size.type === "quantitative") {
+        transforms.push({
+          type: "project",
+          expr: size.field,
+          as: "size"
+        })
+      }
+
+      if (
+        typeof color === "object" &&
+        (color.type === "quantitative" || color.type === "ordinal")
+      ) {
+        transforms.push({
+          type: "project",
+          expr: color.field,
+          as: "color"
+        })
+      }
+    }
+
+    if (typeof filter === "string" && filter.length) {
+      transforms.push({
+        type: "filter",
+        expr: filter
+      })
+    }
+
+    const postFilter = postFilters ? postFilters[0] : null // may change to map when we have more than one postFilter
+    if (postFilter && isValidPostFilter(postFilter)) {
+      transforms.push({
+        type: "postFilter",
+        table: postFilter.table || null,
+        aggType: postFilter.aggType,
+        custom: postFilter.custom,
+        fields: [postFilter.value],
+        ops: postFilter.operator,
+        min: postFilter.min,
+        max: postFilter.max
+      })
+    }
+
+    if (typeof globalFilter === "string" && globalFilter.length) {
+      transforms.push({
+        type: "filter",
+        expr: globalFilter
+      })
+    }
+
+    return transforms
+  }
+
   _layer.getProjections = function() {
-    return getTransforms(
-      "",
-      "",
-      "",
-      state,
-      lastFilteredSize(_layer.crossfilter().getId())
-    )
+    return _layer
+      .getTransforms(
+        "",
+        "",
+        "",
+        state,
+        lastFilteredSize(_layer.crossfilter().getId())
+      )
       .filter(
         transform =>
           transform.type === "project" && transform.hasOwnProperty("as")
@@ -412,7 +437,7 @@ export default function rasterLayerPointMixin(_layer) {
         sql: parser.writeSQL({
           type: "root",
           source: table,
-          transform: getTransforms(
+          transform: _layer.getTransforms(
             table,
             filter,
             globalFilter,
