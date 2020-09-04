@@ -210,14 +210,14 @@ export default function rasterLayerPointMixin(_layer) {
           type: "project",
           expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
             AGGREGATES[y.aggregate]
-          }(${y.field})), 900913)`
+          }(${y.field})), 4326)`
         })
       }
     } else {
       if (isDataExport) {
         transforms.push({
           type: "project",
-          expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 900913)`
+          expr: `/*+ cpu_mode */ ST_SetSRID(ST_Point(${x.field}, ${y.field}), 4326)`
         })
       } else {
         transforms.push({
