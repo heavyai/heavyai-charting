@@ -53995,14 +53995,14 @@ function rasterLayerPointMixin(_layer) {
       if (isDataExport) {
         transforms.push({
           type: "project",
-          expr: "ST_SetSRID(ST_Point(" + AGGREGATES[x.aggregate] + "(" + x.field + "), " + AGGREGATES[y.aggregate] + "(" + y.field + ")), 900913)"
+          expr: "ST_SetSRID(ST_Point(" + AGGREGATES[x.aggregate] + "(" + x.field + "), " + AGGREGATES[y.aggregate] + "(" + y.field + ")), 4326)"
         });
       }
     } else {
       if (isDataExport) {
         transforms.push({
           type: "project",
-          expr: "/*+ cpu_mode */ ST_SetSRID(ST_Point(" + x.field + ", " + y.field + "), 900913)"
+          expr: "/*+ cpu_mode */ ST_SetSRID(ST_Point(" + x.field + ", " + y.field + "), 4326)"
         });
       } else {
         transforms.push({
