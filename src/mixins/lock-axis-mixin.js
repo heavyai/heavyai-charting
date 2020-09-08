@@ -1,6 +1,7 @@
 import d3 from "d3"
 import { formatDataValue } from "../utils/formatting-helpers"
 import moment from "moment"
+import { utils } from "../utils/utils"
 
 const CHART_HEIGHT = 0.75
 const TOGGLE_SIZE = 24
@@ -233,10 +234,31 @@ export default function lockAxisMixin(chart) {
       .domain()
       .slice()
 
-    const shouldFlip = chart.isHeatMap && type === "y"
-
-    if (shouldFlip) {
-      minMax.reverse()
+    // Horrible hack to ensure the inputs aren't inverted from whatever order
+    //  the Y axis decides to display.  Mea culpa.
+    let shouldFlipYMinMax = false
+    const isHeatY = chart.isHeatMap && type === "y"
+    if (isHeatY) {
+      const data = chart.data && chart.data()
+      const rowOrdering = chart.shouldSortYAxisDescending(data)
+        ? utils.nullsLast(d3.descending)
+        : utils.nullsFirst(d3.ascending)
+      let rows = chart.rows() || data.map(chart.valueAccessor())
+      rows = rows.sort(rowOrdering)
+      const firstRowValue = rows.find(r => r !== null)
+      let lastRowValue = null
+      for (let i = rows.length - 1; i >= 0; i--) {
+        if (rows[i] !== null) {
+          lastRowValue = rows[i]
+          break
+        }
+      }
+      const minMaxIsAscending = minMax[0] < minMax[1]
+      const rowsAreAscending = firstRowValue < lastRowValue
+      shouldFlipYMinMax = !minMaxIsAscending === rowsAreAscending
+      if (shouldFlipYMinMax) {
+        minMax.reverse()
+      }
     }
 
     chart
@@ -291,7 +313,7 @@ export default function lockAxisMixin(chart) {
           max instanceof Date
             ? moment(this.value, DATE_FORMAT).toDate()
             : parseFloatStrict(this.value.replace(/,/g, ""))
-        updateMinMax(type, shouldFlip ? [val, min] : [min, val])
+        updateMinMax(type, shouldFlipYMinMax ? [val, min] : [min, val])
       })
       .on("keyup", function() {
         if (d3.event.keyCode === RETURN_KEY) {
@@ -321,7 +343,7 @@ export default function lockAxisMixin(chart) {
           min instanceof Date
             ? moment(this.value, DATE_FORMAT).toDate()
             : parseFloatStrict(this.value.replace(/,/g, ""))
-        updateMinMax(type, shouldFlip ? [max, val] : [val, max])
+        updateMinMax(type, shouldFlipYMinMax ? [max, val] : [val, max])
       })
       .on("keyup", function() {
         if (d3.event.keyCode === RETURN_KEY) {
