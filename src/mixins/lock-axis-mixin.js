@@ -2,6 +2,7 @@ import d3 from "d3"
 import { formatDataValue } from "../utils/formatting-helpers"
 import moment from "moment"
 import { utils } from "../utils/utils"
+import { xAxisDataIsNonNumerical, yAxisDataIsNonNumerical } from "../charts/heatmap"
 
 const CHART_HEIGHT = 0.75
 const TOGGLE_SIZE = 24
@@ -175,7 +176,19 @@ export default function lockAxisMixin(chart) {
   }
 
   chart.prepareLockAxis = function(type = "y") {
-    if (chart.focusChart && chart.focusChart() && type === "y") {
+    const data = chart.data && chart.data()
+    const heatDataIncompatible = (
+      chart.isHeatMap &&
+      data && Array.isArray(data) &&
+      (
+        yAxisDataIsNonNumerical(data[0]) || xAxisDataIsNonNumerical(data[0])
+      )
+    )
+
+    if (
+      (chart.focusChart && chart.focusChart() && type === "y") ||
+      heatDataIncompatible
+    ) {
       return
     }
 

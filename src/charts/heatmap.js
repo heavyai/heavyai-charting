@@ -129,8 +129,13 @@ export function heatMapColsLabel(key) {
   )
 }
 
-export function isDescendingAppropriateData({ key1 }) {
+export function yAxisDataIsNonNumerical({ key1 }) {
   const value = Array.isArray(key1) ? key1[0] : key1
+  return typeof value !== "number"
+}
+
+export function xAxisDataIsNonNumerical({ key0 }) {
+  const value = Array.isArray(key0) ? key0[0] : key0
   return typeof value !== "number"
 }
 
@@ -822,7 +827,7 @@ export default function heatMap(parent, chartGroup) {
     )
   })
   _chart.shouldSortYAxisDescending = data =>
-    data && data.length && isDescendingAppropriateData(data[0])
+    data && data.length && yAxisDataIsNonNumerical(data[0])
   _chart
     .keyAccessor(heatMapKeyAccessor.bind(_chart))
     .valueAccessor(heatMapValueAccesor.bind(_chart))
