@@ -33874,6 +33874,8 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
+var _utils = __webpack_require__(4);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var CHART_HEIGHT = 0.75;
@@ -34041,10 +34043,31 @@ function lockAxisMixin(chart) {
 
     var minMax = chart[type]().domain().slice();
 
-    var shouldFlip = chart.isHeatMap && type === "y";
-
-    if (shouldFlip) {
-      minMax.reverse();
+    // Horrible hack to ensure the inputs aren't inverted from whatever order
+    //  the Y axis decides to display.  Mea culpa.
+    var shouldFlipYMinMax = false;
+    var isHeatY = chart.isHeatMap && type === "y";
+    if (isHeatY) {
+      var data = chart.data && chart.data();
+      var rowOrdering = chart.shouldSortYAxisDescending(data) ? _utils.utils.nullsLast(_d2.default.descending) : _utils.utils.nullsFirst(_d2.default.ascending);
+      var rows = chart.rows() || data.map(chart.valueAccessor());
+      rows = rows.sort(rowOrdering);
+      var firstRowValue = rows.find(function (r) {
+        return r !== null;
+      });
+      var lastRowValue = null;
+      for (var i = rows.length - 1; i >= 0; i--) {
+        if (rows[i] !== null) {
+          lastRowValue = rows[i];
+          break;
+        }
+      }
+      var minMaxIsAscending = minMax[0] < minMax[1];
+      var rowsAreAscending = firstRowValue < lastRowValue;
+      shouldFlipYMinMax = !minMaxIsAscending === rowsAreAscending;
+      if (shouldFlipYMinMax) {
+        minMax.reverse();
+      }
     }
 
     chart.root().selectAll(".axis-lock.type-" + type).remove();
@@ -34071,7 +34094,7 @@ function lockAxisMixin(chart) {
       var max = minMax[1];
       var min = minMax[0];
       var val = max instanceof Date ? (0, _moment2.default)(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""));
-      updateMinMax(type, shouldFlip ? [val, min] : [min, val]);
+      updateMinMax(type, shouldFlipYMinMax ? [val, min] : [min, val]);
     }).on("keyup", function () {
       if (_d2.default.event.keyCode === RETURN_KEY) {
         this.blur();
@@ -34089,7 +34112,7 @@ function lockAxisMixin(chart) {
       var max = minMax[1];
       var min = minMax[0];
       var val = min instanceof Date ? (0, _moment2.default)(this.value, DATE_FORMAT).toDate() : parseFloatStrict(this.value.replace(/,/g, ""));
-      updateMinMax(type, shouldFlip ? [max, val] : [val, max]);
+      updateMinMax(type, shouldFlipYMinMax ? [max, val] : [val, max]);
     }).on("keyup", function () {
       if (_d2.default.event.keyCode === RETURN_KEY) {
         this.blur();
