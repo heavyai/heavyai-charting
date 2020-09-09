@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 218);
+/******/ 	return __webpack_require__(__webpack_require__.s = 219);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1929,7 +1929,7 @@ return /******/ (function(modules) { // webpackBootstrap
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(240)("./" + name);
+                __webpack_require__(241)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -5587,7 +5587,7 @@ exports.xDomain = xDomain;
 exports.xScale = xScale;
 exports.xAxisTickFormat = xAxisTickFormat;
 
-var _mapdDataLayer = __webpack_require__(221);
+var _mapdDataLayer = __webpack_require__(222);
 
 var _formattingHelpers = __webpack_require__(10);
 
@@ -6781,7 +6781,7 @@ var _asyncMixin = __webpack_require__(180);
 
 var _asyncMixin2 = _interopRequireDefault(_asyncMixin);
 
-var _legendMixin = __webpack_require__(242);
+var _legendMixin = __webpack_require__(243);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
@@ -6795,11 +6795,11 @@ var _errors = __webpack_require__(181);
 
 var errors = _interopRequireWildcard(_errors);
 
-var _filterMixin = __webpack_require__(243);
+var _filterMixin = __webpack_require__(244);
 
 var _filterMixin2 = _interopRequireDefault(_filterMixin);
 
-var _labelMixin = __webpack_require__(244);
+var _labelMixin = __webpack_require__(245);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
@@ -8628,7 +8628,7 @@ function baseMixin(_chart) {
 "use strict";
 
 
-var bind = __webpack_require__(190);
+var bind = __webpack_require__(191);
 var isBuffer = __webpack_require__(274);
 
 /*global toString:true*/
@@ -8980,8 +8980,8 @@ module.exports = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cst_cst__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__errors_public__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__ = __webpack_require__(215);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__ = __webpack_require__(216);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__ = __webpack_require__(216);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__ = __webpack_require__(217);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__ = __webpack_require__(326);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__ = __webpack_require__(327);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__ = __webpack_require__(329);
@@ -9438,11 +9438,11 @@ function formatCache(_axis) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(222);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(223);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(224);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(223);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(224);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(225);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(235);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(236);
 
 
 
@@ -9761,7 +9761,7 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _binningMixin = __webpack_require__(248);
+var _binningMixin = __webpack_require__(249);
 
 var _binningMixin2 = _interopRequireDefault(_binningMixin);
 
@@ -30366,10 +30366,10 @@ EarlyExitException.prototype = Error.prototype;
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return LexerDefinitionErrorType; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Lexer; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lexer__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lexer__ = __webpack_require__(212);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__ = __webpack_require__(213);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(43);
 
 
@@ -32396,7 +32396,7 @@ function areTokenCategoriesNotUsed(lookAheadPaths) {
 /* harmony export (immutable) */ __webpack_exports__["f"] = nextPossibleTokensAfter;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__first__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__first__ = __webpack_require__(214);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__ = __webpack_require__(6);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -33876,6 +33876,8 @@ var _moment2 = _interopRequireDefault(_moment);
 
 var _utils = __webpack_require__(4);
 
+var _heatmap = __webpack_require__(186);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var CHART_HEIGHT = 0.75;
@@ -34014,7 +34016,10 @@ function lockAxisMixin(chart) {
   chart.prepareLockAxis = function () {
     var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "y";
 
-    if (chart.focusChart && chart.focusChart() && type === "y") {
+    var data = chart.data && chart.data();
+    var heatDataIncompatible = chart.isHeatMap && data && Array.isArray(data) && (type === "y" ? (0, _heatmap.yAxisDataIsNonNumerical)(data[0]) : (0, _heatmap.xAxisDataIsNonNumerical)(data[0]));
+
+    if (chart.focusChart && chart.focusChart() && type === "y" || heatDataIncompatible) {
       return;
     }
 
@@ -34048,9 +34053,9 @@ function lockAxisMixin(chart) {
     var shouldFlipYMinMax = false;
     var isHeatY = chart.isHeatMap && type === "y";
     if (isHeatY) {
-      var data = chart.data && chart.data();
-      var rowOrdering = chart.shouldSortYAxisDescending(data) ? _utils.utils.nullsLast(_d2.default.descending) : _utils.utils.nullsFirst(_d2.default.ascending);
-      var rows = chart.rows() || data.map(chart.valueAccessor());
+      var _data = chart.data && chart.data();
+      var rowOrdering = chart.shouldSortYAxisDescending(_data) ? _utils.utils.nullsLast(_d2.default.descending) : _utils.utils.nullsFirst(_d2.default.ascending);
+      var rows = chart.rows() || _data.map(chart.valueAccessor());
       rows = rows.sort(rowOrdering);
       var firstRowValue = rows.find(function (r) {
         return r !== null;
@@ -34152,7 +34157,7 @@ var _coreAsync = __webpack_require__(5);
 
 var _utils = __webpack_require__(4);
 
-var _rasterDrawMixin = __webpack_require__(187);
+var _rasterDrawMixin = __webpack_require__(188);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -49942,7 +49947,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _dcConstants = __webpack_require__(245);
+var _dcConstants = __webpack_require__(246);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50067,7 +50072,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = elasticDimensionMixin;
 
-var _ramda = __webpack_require__(247);
+var _ramda = __webpack_require__(248);
 
 var _d = __webpack_require__(1);
 
@@ -50133,6 +50138,750 @@ function elasticDimensionMixin(_chart) {
 
 /***/ }),
 /* 186 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.heatMapKeyAccessorNoFormat = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+exports.heatMapKeyAccessor = heatMapKeyAccessor;
+exports.heatMapValueAccesor = heatMapValueAccesor;
+exports.heatMapValueAccesorNoFormat = heatMapValueAccesorNoFormat;
+exports.heatMapRowsLabel = heatMapRowsLabel;
+exports.heatMapColsLabel = heatMapColsLabel;
+exports.yAxisDataIsNonNumerical = yAxisDataIsNonNumerical;
+exports.xAxisDataIsNonNumerical = xAxisDataIsNonNumerical;
+exports.default = heatMap;
+
+var _formattingHelpers = __webpack_require__(10);
+
+var _d = __webpack_require__(1);
+
+var _d2 = _interopRequireDefault(_d);
+
+var _colorMixin = __webpack_require__(12);
+
+var _colorMixin2 = _interopRequireDefault(_colorMixin);
+
+var _marginMixin = __webpack_require__(17);
+
+var _marginMixin2 = _interopRequireDefault(_marginMixin);
+
+var _events = __webpack_require__(14);
+
+var _core = __webpack_require__(3);
+
+var _utils = __webpack_require__(4);
+
+var _filters = __webpack_require__(20);
+
+var _coordinateGridMixin = __webpack_require__(13);
+
+var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/** ***************************************************************************
+ * OVERRIDE: dc.heatMap                                                       *
+ * ***************************************************************************/
+/**
+ * A heat map is matrix that represents the values of two dimensions of data using colors.
+ * @name heatMap
+ * @memberof dc
+ * @mixes dc.colorMixin
+ * @mixes dc.marginMixin
+ * @mixes dc.baseMixin
+ * @example
+ * // create a heat map under #chart-container1 element using the default global chart group
+ * var heatMap1 = dc.heatMap('#chart-container1');
+ * // create a heat map under #chart-container2 element using chart group A
+ * var heatMap2 = dc.heatMap('#chart-container2', 'chartGroupA');
+ * @param {String|node|d3.selection} parent - Any valid
+ * {@link https://github.com/mbostock/d3/wiki/Selections#selecting-elements d3 single selector} specifying
+ * a dom block element such as a div; or a dom element or d3 selection.
+ * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
+ * Interaction with a chart will only trigger events and redraws within the chart's group.
+ * @return {dc.heatMap}
+ */
+
+var MAX_LABEL_WIDTH = 72;
+var CHAR_WIDTH = 5;
+var MIN_AXIS_HEIGHT = 52;
+
+function heatMapKeyAccessor(_ref) {
+  var key0 = _ref.key0;
+
+  if (Array.isArray(key0)) {
+    var key0Val = (0, _formattingHelpers.isArrayOfObjects)(key0) ? key0[0].value : key0[0];
+    var value = key0Val instanceof Date ? (0, _formattingHelpers.formatDataValue)(key0Val) : key0Val;
+    this.colsMap.set(value, key0);
+    return value;
+  } else {
+    return key0;
+  }
+}
+
+var heatMapKeyAccessorNoFormat = exports.heatMapKeyAccessorNoFormat = function heatMapKeyAccessorNoFormat(_ref2) {
+  var key0 = _ref2.key0;
+
+  if (Array.isArray(key0)) {
+    var key0Val = (0, _formattingHelpers.isArrayOfObjects)(key0) ? key0[0].value : key0[0];
+    this.colsMap.set(key0Val, key0);
+    return key0Val;
+  } else {
+    return key0;
+  }
+};
+
+function heatMapValueAccesor(_ref3) {
+  var key1 = _ref3.key1;
+
+  if (Array.isArray(key1)) {
+    var key1Val = (0, _formattingHelpers.isArrayOfObjects)(key1) ? key1[0].value : key1[0];
+    var value = key1Val instanceof Date ? (0, _formattingHelpers.formatDataValue)(key1Val) : key1Val;
+    this.rowsMap.set(value, key1);
+    return value;
+  } else {
+    return key1;
+  }
+}
+
+function heatMapValueAccesorNoFormat(_ref4) {
+  var key1 = _ref4.key1;
+
+  if (Array.isArray(key1)) {
+    var key1Val = (0, _formattingHelpers.isArrayOfObjects)(key1) ? key1[0].value : key1[0];
+    this.rowsMap.set(key1Val, key1);
+    return key1Val;
+  } else {
+    return key1;
+  }
+}
+
+function heatMapRowsLabel(key) {
+  // If the data is binned, this will be an array
+  var value = this.rowsMap.get(key) || key;
+
+  var customDateFormatter = this.dateFormatter();
+
+  // Possibly dead code, `key` should always be a string or number
+  if (customDateFormatter && key && key instanceof Date) {
+    if (Array.isArray(value) && value[0]) {
+      value = value[0].value || value[0];
+    }
+  }
+
+  // For binned data:
+  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
+  // of objects with additional information (like timeBin info)
+  var rawValues = Array.isArray(value) ? value.map(function (v) {
+    return v.value;
+  }) : null;
+
+  return customDateFormatter && customDateFormatter(rawValues || value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
+}
+
+function heatMapColsLabel(key) {
+  // If the data is binned, this will be an array
+  var value = this.colsMap.get(key) || key;
+
+  var customDateFormatter = this.dateFormatter();
+
+  // Possibly dead code, `key` should always be a string or number
+  if (customDateFormatter && key && key instanceof Date) {
+    if (Array.isArray(value) && value[0]) {
+      value = value[0].value || value[0];
+    }
+  }
+
+  // For binned data:
+  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
+  // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
+  // of objects with additional information (like timeBin info)
+  var rawValues = Array.isArray(value) ? value.map(function (v) {
+    return v.value;
+  }) : null;
+
+  return customDateFormatter && customDateFormatter(rawValues || value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
+}
+
+function yAxisDataIsNonNumerical(_ref5) {
+  var key1 = _ref5.key1;
+
+  var value = Array.isArray(key1) ? key1[0] : key1;
+  return typeof value !== "number";
+}
+
+function xAxisDataIsNonNumerical(_ref6) {
+  var key0 = _ref6.key0;
+
+  var value = Array.isArray(key0) ? key0[0] : key0;
+  return typeof value !== "number";
+}
+
+function heatMap(parent, chartGroup) {
+  var INTERVAL_LABELS = {
+    // ISO DOW starts at 1, set null at 0 index
+    DAY_OF_WEEK: [null, "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+
+    // Months start at 1, set null at 0 index
+    MONTH: [null, "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+
+    HOUR_OF_DAY: ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM", "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM", "8PM", "9PM", "10PM", "11PM"]
+  };
+
+  var DEFAULT_BORDER_RADIUS = 6.75;
+
+  var _chartBody = void 0;
+
+  var _cols = void 0;
+  var _rows = void 0;
+
+  var _colOrdering = _utils.utils.nullsFirst(_utils.utils.compareDates(_d2.default.ascending));
+  var _rowOrdering = _utils.utils.nullsFirst(_utils.utils.compareDates(_d2.default.ascending));
+  var _colScale = _d2.default.scale.ordinal();
+  var _rowScale = _d2.default.scale.ordinal();
+
+  var _xBorderRadius = DEFAULT_BORDER_RADIUS;
+  var _yBorderRadius = DEFAULT_BORDER_RADIUS;
+
+  /* OVERRIDE EXTEND ----------------------------------------------------------*/
+  var _yLabel = void 0;
+  var _xLabel = void 0;
+  var _hasBeenRendered = false;
+  var _minBoxSize = 16;
+  var _scrollPos = { top: null, left: 0 };
+  var _dockedAxes = void 0;
+  var _dockedAxesSize = { left: 48, bottom: 56 };
+  var xAxisInputs = void 0;
+  var yAxisInputs = void 0;
+  /* --------------------------------------------------------------------------*/
+
+  var _xBorderRadius = DEFAULT_BORDER_RADIUS;
+  var _yBorderRadius = DEFAULT_BORDER_RADIUS;
+
+  var _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _coordinateGridMixin2.default)({})));
+  _chart.isHeatMap = true;
+  _chart._mandatoryAttributes(["group"]);
+  _chart.title(_chart.colorAccessor());
+
+  var _colsLabel = function _colsLabel(d) {
+    return d;
+  };
+  var _rowsLabel = function _rowsLabel(d) {
+    return d;
+  };
+
+  _chart.dockedAxesSize = function (_) {
+    if (!arguments.length) {
+      return _dockedAxesSize;
+    }
+    _dockedAxesSize = _;
+    return _chart;
+  };
+
+  /**
+   * Set or get the column label function. The chart class uses this function to render
+   * column labels on the X axis. It is passed the column name.
+   * @name colsLabel
+   * @memberof dc.heatMap
+   * @instance
+   * @example
+   * // the default label function just returns the name
+   * chart.colsLabel(function(d) { return d; });
+   * @param  {Function} [labelFunction=function(d) { return d; }]
+   * @return {Function}
+   * @return {dc.heatMap}
+   */
+  _chart.colsLabel = function (labelFunction) {
+    if (!arguments.length) {
+      return _colsLabel;
+    }
+    _colsLabel = labelFunction;
+    return _chart;
+  };
+
+  /**
+   * Set or get the row label function. The chart class uses this function to render
+   * row labels on the Y axis. It is passed the row name.
+   * @name rowsLabel
+   * @memberof dc.heatMap
+   * @instance
+   * @example
+   * // the default label function just returns the name
+   * chart.rowsLabel(function(d) { return d; });
+   * @param  {Function} [labelFunction=function(d) { return d; }]
+   * @return {Function}
+   * @return {dc.heatMap}
+   */
+  _chart.rowsLabel = function (labelFunction) {
+    if (!arguments.length) {
+      return _rowsLabel;
+    }
+    _rowsLabel = labelFunction;
+    return _chart;
+  };
+
+  /* OVERRIDE EXTEND ----------------------------------------------------------*/
+  _chart.xAxisLabel = function (xLabel) {
+    if (!arguments.length) {
+      return _xLabel;
+    }
+    _xLabel = xLabel;
+    return _chart;
+  };
+
+  _chart.yAxisLabel = function (yLabel) {
+    if (!arguments.length) {
+      return _yLabel;
+    }
+    _yLabel = yLabel;
+    return _chart;
+  };
+
+  var _xAxisOnClick = function _xAxisOnClick(d) {
+    filterAxis(0, d);
+  };
+
+  var _yAxisOnClick = function _yAxisOnClick(d) {
+    filterAxis(1, d);
+  };
+  /* --------------------------------------------------------------------------*/
+
+  var _boxOnClick = function _boxOnClick(d) {
+    /* OVERRIDE -----------------------------------------------------------------*/
+    var filter = [d.key0, d.key1];
+    /* --------------------------------------------------------------------------*/
+    _chart.handleFilterClick(_d2.default.event, filter);
+  };
+
+  var showInputs = function showInputs(inputs) {
+    return function () {
+      return inputs.style("opacity", 1);
+    };
+  };
+  var hideInputs = function hideInputs(inputs) {
+    return function () {
+      return inputs.style("opacity", null);
+    };
+  };
+
+  function filterAxis(axis, value) {
+    var axisVal = value instanceof Date ? (0, _formattingHelpers.formatDataValue)(value) : value;
+    var cellsOnAxis = _chart.selectAll(".box-group").filter(function (d) {
+      return (
+        /* OVERRIDE ---------------------------------------------------------------*/
+        (axis === 1 ? _chart.valueAccessor()(d) : _chart.keyAccessor()(d)) === axisVal
+      );
+    }
+    /* --------------------------------------------------------------------------*/
+    );
+
+    var unfilteredCellsOnAxis = cellsOnAxis.filter(function (d) {
+      return (
+        /* OVERRIDE -----------------------------------------------------------------*/
+        !_chart.hasFilter([d.key0, d.key1])
+      );
+    }
+    /* --------------------------------------------------------------------------*/
+    );
+    _events.events.trigger(function () {
+      if (unfilteredCellsOnAxis.empty()) {
+        cellsOnAxis.each(function (d) {
+          /* OVERRIDE -----------------------------------------------------------------*/
+          _chart.filter([d.key0, d.key1]);
+          /* --------------------------------------------------------------------------*/
+        });
+      } else {
+        unfilteredCellsOnAxis.each(function (d) {
+          /* OVERRIDE -----------------------------------------------------------------*/
+          _chart.filter([d.key0, d.key1]);
+          /* --------------------------------------------------------------------------*/
+        });
+      }
+
+      _chart.redrawGroup();
+    });
+  }
+  _chart.filter = function (filter, isInverseFilter) {
+    if (!arguments.length) {
+      return _chart._filter();
+    }
+
+    return _chart._filter(_filters.filters.TwoDimensionalFilter(filter), isInverseFilter);
+  };
+
+  function uniq(d, i, a) {
+    return !i || a[i - 1] !== d;
+  }
+
+  /**
+   * Gets or sets the values used to create the rows of the heatmap, as an array. By default, all
+   * the values will be fetched from the data using the value accessor, and they will be sorted in
+   * ascending order.
+   * @name rows
+   * @memberof dc.heatMap
+   * @instance
+   * @param  {Array<String|Number>} [rows]
+   * @return {Array<String|Number>}
+   * @return {dc.heatMap}
+   */
+  _chart.rows = function (rows) {
+    if (arguments.length) {
+      _rows = rows;
+      return _chart;
+    }
+    return _rows;
+  };
+
+  _chart.rowOrdering = function (_) {
+    if (!arguments.length) {
+      return _rowOrdering;
+    }
+    _rowOrdering = _;
+    return _chart;
+  };
+
+  /**
+   * Gets or sets the keys used to create the columns of the heatmap, as an array. By default, all
+   * the values will be fetched from the data using the key accessor, and they will be sorted in
+   * ascending order.
+   * @name cols
+   * @memberof dc.heatMap
+   * @instance
+   * @param  {Array<String|Number>} [cols]
+   * @return {Array<String|Number>}
+   * @return {dc.heatMap}
+   */
+  _chart.cols = function (cols) {
+    if (arguments.length) {
+      _cols = cols;
+      return _chart;
+    }
+    return _cols;
+  };
+
+  _chart.colOrdering = function (_) {
+    if (!arguments.length) {
+      return _colOrdering;
+    }
+    _colOrdering = _;
+    return _chart;
+  };
+
+  _chart._doRender = function () {
+    _chart.resetSvg();
+
+    _chart.margins(_extends({}, _chart.margins(), { top: 16, right: 16, bottom: 0 }));
+
+    var parent = _chart.svg();
+    var g = parent.append("g");
+    _chartBody = g.attr("class", "heatmap").attr("transform", "translate(0, 16)");
+    /* OVERRIDE -----------------------------------------------------------------*/_chartBody.append("g").attr("class", "box-wrapper");
+    _chart._generateG(g, _chartBody);
+    _hasBeenRendered = true;
+    _dockedAxes = _chart.root().append("div").attr("class", "docked-axis-wrapper");
+    /* --------------------------------------------------------------------------*/if (_chart.x()) {
+      _chart._prepareXAxis(_chart.g(), true);
+    }
+    if (_chart.y()) {
+      _chart._prepareYAxis(_chart.g());
+    }
+    return _chart._doRedraw();
+  };
+  _chart._doRedraw = function () {
+    if (!_hasBeenRendered) {
+      return _chart._doRender();
+    }
+    var data = _chart.data(),
+        rows = _chart.rows() || data.map(_chart.valueAccessor()),
+        cols = _chart.cols() || data.map(_chart.keyAccessor());
+    if (_rowOrdering) {
+      _rowOrdering = _chart.shouldSortYAxisDescending(data) ? _utils.utils.nullsLast(_d2.default.descending) : _utils.utils.nullsFirst(_d2.default.ascending);
+      rows = rows.sort(_rowOrdering);
+    }
+    if (_colOrdering) {
+      cols = cols.sort(_colOrdering);
+    }
+    rows = _rowScale.domain(rows);
+    cols = _colScale.domain(cols);
+    _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()));
+    var rowCount = rows.domain().length,
+        colCount = cols.domain().length,
+        availWidth = _chart.width() - _dockedAxesSize.left,
+        availHeight = _chart.height() - _dockedAxesSize.bottom,
+        boxWidth = Math.max((availWidth - _chart.margins().right) / colCount, _minBoxSize),
+        boxHeight = Math.max((availHeight - _chart.margins().top) / rowCount, _minBoxSize),
+        svgWidth = boxWidth * colCount + _chart.margins().right,
+        svgHeight = boxHeight * rowCount + _chart.margins().top;
+    cols.rangeBands([0, boxWidth * colCount]);
+    rows.rangeBands([boxHeight * rowCount, 0]);
+    _chart.svg().attr("width", svgWidth).attr("height", svgHeight);
+    var scrollNode = _chart.root().classed("heatmap-scroll", true).select(".svg-wrapper").style("width", _chart.width() - _dockedAxesSize.left + "px").style("height", _chart.height() - _dockedAxesSize.bottom + "px").style("left", _dockedAxesSize.left + "px").on("scroll", function () {
+      _scrollPos = {
+        top: _d2.default.select(this).node().scrollTop,
+        left: _d2.default.select(this).node().scrollLeft
+      };
+      _chart.root().select(".docked-x-axis").style("left", -_scrollPos.left + "px");
+      _chart.root().select(".docked-y-axis").style("top", -_scrollPos.top + "px");
+    }).node();
+    scrollNode.scrollLeft = _scrollPos.left;
+    scrollNode.scrollTop = _scrollPos.top === null && _rowOrdering === _d2.default.ascending ? svgHeight : _scrollPos.top || 0;
+    var boxes = _chartBody.select(".box-wrapper").selectAll("g.box-group").data(_chart.data(), function (d, i) {
+      return _chart.keyAccessor()(d, i) + "\0" + _chart.valueAccessor()(d, i);
+    });
+    var gEnter = boxes.enter().append("g").attr("class", "box-group");
+    gEnter.append("rect").attr("class", "heat-box").attr("fill", "white").on("mouseenter", showPopup).on("mousemove", positionPopup).on("mouseleave", hidePopup).on("click", _chart.boxOnClick());
+    (0, _core.transition)(boxes.select("rect"), _chart.transitionDuration()).attr("x", function (d, i) {
+      return cols(_chart.keyAccessor()(d, i));
+    }).attr("y", function (d, i) {
+      return rows(_chart.valueAccessor()(d, i));
+    }).attr("rx", _xBorderRadius).attr("ry", _yBorderRadius).attr("fill", _chart.getColor).attr("width", boxWidth).attr("height", boxHeight);
+    boxes.exit().remove();
+    var XAxis = _dockedAxes.selectAll(".docked-x-axis");
+    if (XAxis.empty()) {
+      XAxis = _dockedAxes.append("div").attr("class", "docked-x-axis");
+    }
+    var colsText = XAxis.style("height", _dockedAxesSize.bottom + "px").html("").selectAll("div.text").data(cols.domain());
+    colsText.enter().append("div").attr("class", function () {
+      return "text " + (_dockedAxesSize.bottom > 52 ? "rotate-down" : "center");
+    }).style("left", function (d) {
+      return cols(d) + boxWidth / 2 + _dockedAxesSize.left + "px";
+    }).on("click", _chart.xAxisOnClick()).append("span").html(_chart.colsLabel()).attr("title", function (d) {
+      // detect if a value is null or has the string "null"
+      var val = "" + _chart.colsLabel()(d);
+      return val.match(/null/gi) ? "NULL" : val;
+    });
+    var YAxis = _dockedAxes.selectAll(".docked-y-axis");
+    if (YAxis.empty()) {
+      YAxis = _dockedAxes.append("div").attr("class", "docked-y-axis");
+    }
+    var rowsText = YAxis.style("width", _dockedAxesSize.left + "px").style("left", _dockedAxesSize.left + "px").html("").selectAll("div.text").data(rows.domain());
+    rowsText.enter().append("div").attr("class", "text").style("top", function (d) {
+      return rows(d) + boxHeight / 2 + _chart.margins().top + "px";
+    }).on("click", _chart.yAxisOnClick()).html(_chart.rowsLabel()).attr("title", function (d) {
+      // detect if a value is null or has the string "null"
+      var val = "" + _chart.rowsLabel()(d);
+      return val.match(/null/gi) ? "NULL" : val;
+    });
+    var axesMask = _dockedAxes.selectAll(".axes-mask");
+    if (axesMask.empty()) {
+      axesMask = _dockedAxes.append("div").attr("class", "axes-mask");
+    }
+    axesMask.style("width", _dockedAxesSize.left + "px").style("height", _dockedAxesSize.bottom + "px");
+    if (_chart.hasFilter()) {
+      _chart.selectAll("g.box-group").each(function (d) {
+        if (_chart.isSelectedNode(d)) {
+          _chart.highlightSelected(this);
+        } else {
+          _chart.fadeDeselected(this);
+        }
+      });
+    } else {
+      _chart.selectAll("g.box-group").each(function () {
+        _chart.resetHighlight(this);
+      });
+    }
+    _chart.renderAxisLabels();
+    if (_chart.x()) {
+      _chart._prepareXAxis(_chart.g(), true);
+      xAxisInputs = _chart.root().selectAll(".axis-lock.type-x .axis-input");
+    }
+    if (_chart.y()) {
+      _chart._prepareYAxis(_chart.g());
+      yAxisInputs = _chart.root().selectAll(".axis-lock.type-y .axis-input");
+    }
+    XAxis.on("mouseover", showInputs(xAxisInputs));
+    XAxis.on("mouseout", hideInputs(xAxisInputs));
+    YAxis.on("mouseover", showInputs(yAxisInputs));
+    YAxis.on("mouseout", hideInputs(yAxisInputs));
+    return _chart;
+  };
+  /**
+   * Gets or sets the handler that fires when an individual cell is clicked in the heatmap.
+   * By default, filtering of the cell will be toggled.
+   * @name boxOnClick
+   * @memberof dc.heatMap
+   * @instance
+   * @example
+   * // default box on click handler
+   * chart.boxOnClick(function (d) {
+   *     var filter = d.key;
+   *     events.trigger(function () {
+   *         _chart.filter(filter);
+   *         _chart.redrawGroup();
+   *     });
+   * });
+   * @param  {Function} [handler]
+   * @return {Function}
+   * @return {dc.heatMap}
+   */_chart.boxOnClick = function (handler) {
+    if (!arguments.length) {
+      return _boxOnClick;
+    }
+    _boxOnClick = handler;
+    return _chart;
+  };
+  /**
+   * Gets or sets the handler that fires when a column tick is clicked in the x axis.
+   * By default, if any cells in the column are unselected, the whole column will be selected,
+   * otherwise the whole column will be unselected.
+   * @name xAxisOnClick
+   * @memberof dc.heatMap
+   * @instance
+   * @param  {Function} [handler]
+   * @return {Function}
+   * @return {dc.heatMap}
+   */_chart.xAxisOnClick = function (handler) {
+    if (!arguments.length) {
+      return _xAxisOnClick;
+    }
+    _xAxisOnClick = handler;
+    return _chart;
+  };
+  /**
+   * Gets or sets the handler that fires when a row tick is clicked in the y axis.
+   * By default, if any cells in the row are unselected, the whole row will be selected,
+   * otherwise the whole row will be unselected.
+   * @name yAxisOnClick
+   * @memberof dc.heatMap
+   * @instance
+   * @param  {Function} [handler]
+   * @return {Function}
+   * @return {dc.heatMap}
+   */_chart.yAxisOnClick = function (handler) {
+    if (!arguments.length) {
+      return _yAxisOnClick;
+    }
+    _yAxisOnClick = handler;
+    return _chart;
+  };
+  /**
+   * Gets or sets the X border radius.  Set to 0 to get full rectangles.
+   * @name xBorderRadius
+   * @memberof dc.heatMap
+   * @instance
+   * @param  {Number} [xBorderRadius=6.75]
+   * @return {Number}
+   * @return {dc.heatMap}
+   */_chart.xBorderRadius = function (xBorderRadius) {
+    if (!arguments.length) {
+      return _xBorderRadius;
+    }
+    _xBorderRadius = xBorderRadius;
+    return _chart;
+  };
+  /* OVERRIDE -----------------------------------------------------------------*/_chart.renderAxisLabels = function () {
+    var root = _chart.root();
+    var yLabel = root.selectAll(".y-axis-label");
+    if (yLabel.empty()) {
+      yLabel = root.append("div").attr("class", "y-axis-label").text(_yLabel);
+    }
+    yLabel.style("top", _chart.effectiveHeight() / 2 + _chart.margins().top + "px");
+    _chart.prepareLabelEdit("y");
+    var xLabel = root.selectAll(".x-axis-label");
+    if (xLabel.empty()) {
+      xLabel = root.append("div").attr("class", "x-axis-label").text(_xLabel);
+    }
+    xLabel.style("left", _chart.effectiveWidth() / 2 + _chart.margins().left + "px");
+    _chart.prepareLabelEdit("x");
+  }; /* --------------------------------------------------------------------------*/
+  /**
+   * Gets or sets the Y border radius.  Set to 0 to get full rectangles.
+   * @name yBorderRadius
+   * @memberof dc.heatMap
+   * @instance
+   * @param  {Number} [yBorderRadius=6.75]
+   * @return {Number}
+   * @return {dc.heatMap}
+   */_chart.yBorderRadius = function (yBorderRadius) {
+    if (!arguments.length) {
+      return _yBorderRadius;
+    }
+    _yBorderRadius = yBorderRadius;
+    return _chart;
+  };
+  _chart.isSelectedNode = function (d) {
+    /* OVERRIDE -----------------------------------------------------------------*/return _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse();
+    /* --------------------------------------------------------------------------*/
+  };
+  /* OVERRIDE ---------------------------------------------------------------- */function showPopup(d, i) {
+    var popup = _chart.popup();
+    var popupBox = popup.select(".chart-popup-content").html("").classed("popup-list", true);
+    popupBox.append("div").attr("class", "popup-header").html(function () {
+      return _colsLabel(_chart.keyAccessor()(d, i)) + " x " + _rowsLabel(_chart.valueAccessor()(d, i));
+    });
+    var popupItem = popupBox.append("div").attr("class", "popup-item");
+    popupItem.append("div").attr("class", "popup-legend").style("background-color", _chart.getColor(d, i));
+    popupItem.append("div").attr("class", "popup-item-value").html(function () {
+      var customFormatter = _chart.valueFormatter();
+      return customFormatter && customFormatter(d.color) || _utils.utils.formatValue(d.color);
+    });
+    popup.classed("js-showPopup", true);
+  }
+  function hidePopup() {
+    _chart.popup().classed("js-showPopup", false);
+  }
+  function positionPopup() {
+    var coordinates = [0, 0];
+    coordinates = _chart.popupCoordinates(_d2.default.mouse(this));
+    var scrollNode = _chart.root().select(".svg-wrapper").node();
+    var x = coordinates[0] + _dockedAxesSize.left - scrollNode.scrollLeft;
+    var y = coordinates[1] + _chart.margins().top - scrollNode.scrollTop;
+    var popup = _chart.popup().attr("style", function () {
+      return "transform:translate(" + x + "px," + y + "px)";
+    });
+    popup.select(".chart-popup-box").classed("align-right", function () {
+      return x + _d2.default.select(this).node().getBoundingClientRect().width > _chart.width();
+    });
+  }
+  /* ------------------------------------------------------------------------- */_chart.colsMap = new Map();
+  _chart.rowsMap = new Map();
+  _chart._axisPadding = { left: 36, bottom: 42 };
+  var getMaxChars = function getMaxChars(domain, getLabel) {
+    return domain.map(function (d) {
+      return d === null ? "NULL" : d;
+    }).map(function (d) {
+      return getLabel(d) ? getLabel(d).toString().length : 0;
+    }).reduce(function (prev, curr) {
+      return Math.max(prev, curr);
+    }, null);
+  };
+  _chart.getAxisSizes = function (colsDomain, rowsDomain) {
+    return {
+      left: Math.min(getMaxChars(rowsDomain, _chart.rowsLabel()) * CHAR_WIDTH, MAX_LABEL_WIDTH) + _chart._axisPadding.left,
+      bottom: Math.max(Math.min(getMaxChars(colsDomain, _chart.colsLabel()) * CHAR_WIDTH, MAX_LABEL_WIDTH) + _chart._axisPadding.bottom, MIN_AXIS_HEIGHT)
+    };
+  };
+  _chart.shouldSortYAxisDescending = function (data) {
+    return data && data.length && yAxisDataIsNonNumerical(data[0]);
+  };
+  _chart.keyAccessor(heatMapKeyAccessor.bind(_chart)).valueAccessor(heatMapValueAccesor.bind(_chart)).colorAccessor(function (d) {
+    return d.value;
+  }).rowsLabel(heatMapRowsLabel.bind(_chart)).colsLabel(heatMapColsLabel.bind(_chart));
+  var keyAccessorNoFormat = heatMapKeyAccessorNoFormat.bind(_chart);
+  _chart.keyAccessorNoFormat = function () {
+    return keyAccessorNoFormat;
+  };
+  var valueAccessorNoFormat = heatMapValueAccesorNoFormat.bind(_chart);
+  _chart.valueAccessorNoFormat = function () {
+    return valueAccessorNoFormat;
+  };
+  return _chart.anchor(parent, chartGroup);
+}
+/** ***************************************************************************
+ * END OVERRIDE: dc.heatMap                                                   *
+ * ***************************************************************************/
+
+/***/ }),
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50383,7 +51132,7 @@ function multiSeriesMixin(chart) {
 }
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50394,15 +51143,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.rasterDrawMixin = rasterDrawMixin;
 
-var _utilsLatlon = __webpack_require__(188);
+var _utilsLatlon = __webpack_require__(189);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _lassoToolUi = __webpack_require__(255);
+var _lassoToolUi = __webpack_require__(256);
 
 var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
 
-var _earcut = __webpack_require__(257);
+var _earcut = __webpack_require__(258);
 
 var _earcut2 = _interopRequireDefault(_earcut);
 
@@ -50953,7 +51702,7 @@ function rasterDrawMixin(chart) {
 }
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51052,7 +51801,7 @@ function conv4326To900913(out, coord) {
 }
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52449,7 +53198,7 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 }
 
 /***/ }),
-/* 190 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52467,7 +53216,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 191 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52545,7 +53294,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 192 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52557,7 +53306,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 193 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52581,10 +53330,10 @@ function getDefaultAdapter() {
   // Only Node.JS has a process variable that is of [[Class]] process
   if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(194);
+    adapter = __webpack_require__(195);
   } else if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(194);
+    adapter = __webpack_require__(195);
   }
   return adapter;
 }
@@ -52663,7 +53412,7 @@ module.exports = defaults;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(279)))
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52671,10 +53420,10 @@ module.exports = defaults;
 
 var utils = __webpack_require__(8);
 var settle = __webpack_require__(281);
-var buildURL = __webpack_require__(191);
+var buildURL = __webpack_require__(192);
 var parseHeaders = __webpack_require__(283);
 var isURLSameOrigin = __webpack_require__(284);
-var createError = __webpack_require__(195);
+var createError = __webpack_require__(196);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -52844,7 +53593,7 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52869,7 +53618,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52927,7 +53676,7 @@ module.exports = function mergeConfig(config1, config2) {
 
 
 /***/ }),
-/* 197 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52953,7 +53702,7 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 198 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52966,7 +53715,7 @@ exports.default = scatterMixin;
 
 var _utils = __webpack_require__(4);
 
-var _rasterDrawMixin = __webpack_require__(187);
+var _rasterDrawMixin = __webpack_require__(188);
 
 function extend(destination, source) {
   for (var k in source) {
@@ -53195,7 +53944,7 @@ function scatterMixin(_chart, _mapboxgl) {
 }
 
 /***/ }),
-/* 199 */
+/* 200 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53209,7 +53958,7 @@ function vnode(sel, data, children, text, elm) {
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 200 */
+/* 201 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53222,13 +53971,13 @@ function primitive(s) {
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 201 */
+/* 202 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = h;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(199);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(200);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(200);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(201);
 
 
 function addNS(data, children, sel) {
@@ -53287,17 +54036,17 @@ function h(sel, b, c) {
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 202 */
+/* 203 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(308);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(309);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(204);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(310);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(311);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(205);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(313);
 
 
@@ -53444,7 +54193,7 @@ var prefixes = ["y","z","a","f","p","n","µ","m","","k","M","G","T","P","E","Z",
 
 
 /***/ }),
-/* 203 */
+/* 204 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53488,7 +54237,7 @@ FormatSpecifier.prototype.toString = function() {
 
 
 /***/ }),
-/* 204 */
+/* 205 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53513,7 +54262,7 @@ var prefixExponent;
 
 
 /***/ }),
-/* 205 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53816,7 +54565,7 @@ function rasterLayerHeatmapMixin(_layer) {
 }
 
 /***/ }),
-/* 206 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54503,7 +55252,7 @@ function rasterLayerPointMixin(_layer) {
 }
 
 /***/ }),
-/* 207 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54531,7 +55280,7 @@ var _utils = __webpack_require__(4);
 
 var _coreAsync = __webpack_require__(5);
 
-var _customSqlParser = __webpack_require__(208);
+var _customSqlParser = __webpack_require__(209);
 
 var _customSqlParser2 = _interopRequireDefault(_customSqlParser);
 
@@ -55264,7 +56013,7 @@ function rasterLayerPolyMixin(_layer) {
 }
 
 /***/ }),
-/* 208 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55280,7 +56029,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 exports.default = parseFactsFromCustomSQL;
 
-var _chevrotain = __webpack_require__(209);
+var _chevrotain = __webpack_require__(210);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -56443,13 +57192,13 @@ function parseFactsFromCustomSQL(factTable, withAlias, sql) {
 }
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["clearCache"] = clearCache;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(210);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(211);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return __WEBPACK_IMPORTED_MODULE_0__version__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__ = __webpack_require__(9);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Parser", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["g"]; });
@@ -56477,7 +57226,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MismatchedTokenException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NotAllInputParsedException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["d"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NoViableAltException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__ = __webpack_require__(213);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLexerErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__ = __webpack_require__(6);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Alternation", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["b"]; });
@@ -56494,7 +57243,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "serializeProduction", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["m"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__ = __webpack_require__(19);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "GAstVisitor", function() { return __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__ = __webpack_require__(215);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__ = __webpack_require__(216);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "assignOccurrenceIndices", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "resolveGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "validateGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["c"]; });
@@ -56530,7 +57279,7 @@ function clearCache() {
 //# sourceMappingURL=api.js.map
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56542,7 +57291,7 @@ var VERSION = "6.5.0";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57467,7 +58216,7 @@ function initCharCodeToOptimizedIndexMap() {
 //# sourceMappingURL=lexer.js.map
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57483,7 +58232,7 @@ var defaultLexerErrorProvider = {
 //# sourceMappingURL=lexer_errors_public.js.map
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57553,7 +58302,7 @@ function firstForTerminal(terminal) {
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57563,7 +58312,7 @@ var IN = "_~IN~_";
 //# sourceMappingURL=constants.js.map
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57611,7 +58360,7 @@ function assignOccurrenceIndices(options) {
 //# sourceMappingURL=gast_resolver_public.js.map
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57623,7 +58372,7 @@ function assignOccurrenceIndices(options) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exceptions_public__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(215);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parser__ = __webpack_require__(9);
 
 
@@ -57932,7 +58681,7 @@ function attemptInRepetitionRecovery(prodFunc, args, lookaheadFunc, dslMethodIdx
 //# sourceMappingURL=recoverable.js.map
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57979,23 +58728,23 @@ function defineNameProp(obj, nameValue) {
 //# sourceMappingURL=lang_extensions.js.map
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(219);
-
-/***/ }),
-/* 219 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(220);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45)))
+__webpack_require__(220);
 
 /***/ }),
 /* 220 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(221);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45)))
+
+/***/ }),
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58078,7 +58827,7 @@ Object.keys(_logger).forEach(function (key) {
   });
 });
 
-var _bubbleOverlay = __webpack_require__(241);
+var _bubbleOverlay = __webpack_require__(242);
 
 Object.defineProperty(exports, "bubbleOverlay", {
   enumerable: true,
@@ -58087,7 +58836,7 @@ Object.defineProperty(exports, "bubbleOverlay", {
   }
 });
 
-var _barChart = __webpack_require__(246);
+var _barChart = __webpack_require__(247);
 
 Object.defineProperty(exports, "barChart", {
   enumerable: true,
@@ -58096,7 +58845,7 @@ Object.defineProperty(exports, "barChart", {
   }
 });
 
-var _bubbleChart = __webpack_require__(249);
+var _bubbleChart = __webpack_require__(250);
 
 Object.defineProperty(exports, "bubbleChart", {
   enumerable: true,
@@ -58105,7 +58854,7 @@ Object.defineProperty(exports, "bubbleChart", {
   }
 });
 
-var _cloudChart = __webpack_require__(250);
+var _cloudChart = __webpack_require__(251);
 
 Object.defineProperty(exports, "cloudChart", {
   enumerable: true,
@@ -58114,7 +58863,7 @@ Object.defineProperty(exports, "cloudChart", {
   }
 });
 
-var _compositeChart = __webpack_require__(251);
+var _compositeChart = __webpack_require__(252);
 
 Object.defineProperty(exports, "compositeChart", {
   enumerable: true,
@@ -58123,7 +58872,7 @@ Object.defineProperty(exports, "compositeChart", {
   }
 });
 
-var _dataCount = __webpack_require__(252);
+var _dataCount = __webpack_require__(253);
 
 Object.defineProperty(exports, "dataCount", {
   enumerable: true,
@@ -58132,7 +58881,7 @@ Object.defineProperty(exports, "dataCount", {
   }
 });
 
-var _dataGrid = __webpack_require__(253);
+var _dataGrid = __webpack_require__(254);
 
 Object.defineProperty(exports, "dataGrid", {
   enumerable: true,
@@ -58141,7 +58890,7 @@ Object.defineProperty(exports, "dataGrid", {
   }
 });
 
-var _geoChoroplethChart = __webpack_require__(254);
+var _geoChoroplethChart = __webpack_require__(255);
 
 Object.defineProperty(exports, "geoChoroplethChart", {
   enumerable: true,
@@ -58150,7 +58899,7 @@ Object.defineProperty(exports, "geoChoroplethChart", {
   }
 });
 
-var _heatmap = __webpack_require__(263);
+var _heatmap = __webpack_require__(186);
 
 Object.defineProperty(exports, "heatMap", {
   enumerable: true,
@@ -58294,7 +59043,7 @@ Object.defineProperty(exports, "coordinateGridMixin", {
   }
 });
 
-var _coordinateGridRasterMixin = __webpack_require__(189);
+var _coordinateGridRasterMixin = __webpack_require__(190);
 
 Object.defineProperty(exports, "coordinateGridRasterMixin", {
   enumerable: true,
@@ -58330,7 +59079,7 @@ Object.defineProperty(exports, "mapMixin", {
   }
 });
 
-var _rasterLayerHeatmapMixin = __webpack_require__(205);
+var _rasterLayerHeatmapMixin = __webpack_require__(206);
 
 Object.defineProperty(exports, "rasterLayerHeatmapMixin", {
   enumerable: true,
@@ -58339,7 +59088,7 @@ Object.defineProperty(exports, "rasterLayerHeatmapMixin", {
   }
 });
 
-var _rasterLayerPointMixin = __webpack_require__(206);
+var _rasterLayerPointMixin = __webpack_require__(207);
 
 Object.defineProperty(exports, "rasterLayerPointMixin", {
   enumerable: true,
@@ -58348,7 +59097,7 @@ Object.defineProperty(exports, "rasterLayerPointMixin", {
   }
 });
 
-var _rasterLayerPolyMixin = __webpack_require__(207);
+var _rasterLayerPolyMixin = __webpack_require__(208);
 
 Object.defineProperty(exports, "rasterLayerPolyMixin", {
   enumerable: true,
@@ -58375,7 +59124,7 @@ Object.defineProperty(exports, "rasterMixin", {
   }
 });
 
-var _scatterMixin = __webpack_require__(198);
+var _scatterMixin = __webpack_require__(199);
 
 Object.defineProperty(exports, "scatterMixin", {
   enumerable: true,
@@ -58420,7 +59169,7 @@ Object.defineProperty(exports, "legendCont", {
   }
 });
 
-var _customSqlParser = __webpack_require__(208);
+var _customSqlParser = __webpack_require__(209);
 
 Object.defineProperty(exports, "parseFactsFromCustomSQL", {
   enumerable: true,
@@ -58458,18 +59207,18 @@ var errors = exports.errors = {
 };
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(11);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(237);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(238);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(239);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(239);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(240);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
 /**
  * The exported `mapd-data-layer` module. Consists of a graph constructor and
@@ -58486,7 +59235,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58585,7 +59334,7 @@ function parseExpression(expression) {
 }
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58623,23 +59372,23 @@ function parseDataState(state, parser) {
 }
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTransform;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(225);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(226);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(227);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(228);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(226);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(227);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(230);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(230);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(231);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(232);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(233);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(232);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(233);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(234);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__parse_source__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(234);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(235);
 
 
 
@@ -58684,7 +59433,7 @@ function parseTransform(sql, t, parser) {
 }
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58749,7 +59498,7 @@ function parseGroupBy(sql, groupby, parser) {
 }
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58781,7 +59530,7 @@ function parseBin(sql, _ref) {
 }
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58818,7 +59567,7 @@ function parseCrossfilter(sql, transform) {
 }
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58839,7 +59588,7 @@ function parseSort(sql, transform) {
 }
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58853,7 +59602,7 @@ function parseLimit(sql, transform) {
 }
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58901,7 +59650,7 @@ function parsePostFilter(sql, transform) {
 }
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58918,7 +59667,7 @@ function parseProject(sql, transform) {
 }
 
 /***/ }),
-/* 232 */
+/* 233 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58941,7 +59690,7 @@ function parseResolvefilter(sql, transform) {
 }
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58971,7 +59720,7 @@ function sample(sql, transform) {
 }
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58991,7 +59740,7 @@ function parseWith(sql, transform) {
 }
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -59046,12 +59795,12 @@ function writeWith(With) {
 }
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(238);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
@@ -59125,7 +59874,7 @@ function createDataGraph(connector) {
 }
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -59218,7 +59967,7 @@ function createDataNode(context) {
 }
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -59426,7 +60175,7 @@ function between(field, range) {
 }
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -59654,7 +60403,7 @@ function bottom(field, limit, offset) {
 }
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -59927,10 +60676,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 240;
+webpackContext.id = 241;
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60353,7 +61102,7 @@ function bubbleOverlay(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60474,7 +61223,7 @@ function legendMixin(chart) {
 }
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60707,7 +61456,7 @@ function filterMixin(_chart) {
 }
 
 /***/ }),
-/* 244 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60851,7 +61600,7 @@ function labelMixin(chart) {
 }
 
 /***/ }),
-/* 245 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60863,7 +61612,7 @@ Object.defineProperty(exports, "__esModule", {
 var SPINNER_DELAY = exports.SPINNER_DELAY = 1000;
 
 /***/ }),
-/* 246 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60894,7 +61643,7 @@ var _coordinateGridMixin = __webpack_require__(13);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
-var _multiSeriesMixin = __webpack_require__(186);
+var _multiSeriesMixin = __webpack_require__(187);
 
 var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
 
@@ -61426,7 +62175,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 }
 
 /***/ }),
-/* 247 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //  Ramda v0.21.0
@@ -70216,7 +70965,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 
 
 /***/ }),
-/* 248 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70411,7 +71160,7 @@ function binningMixin(chart) {
 }
 
 /***/ }),
-/* 249 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70883,7 +71632,7 @@ function bubbleChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 250 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71033,7 +71782,7 @@ function cloudChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 251 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71601,7 +72350,7 @@ function compositeChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 252 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71770,7 +72519,7 @@ function dataCount(parent, chartGroup) {
 }
 
 /***/ }),
-/* 253 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72025,7 +72774,7 @@ function dataGrid(parent, chartGroup) {
 }
 
 /***/ }),
-/* 254 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72059,11 +72808,11 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _bbox = __webpack_require__(258);
+var _bbox = __webpack_require__(259);
 
 var _bbox2 = _interopRequireDefault(_bbox);
 
-var _bboxClip = __webpack_require__(260);
+var _bboxClip = __webpack_require__(261);
 
 var _bboxClip2 = _interopRequireDefault(_bboxClip);
 
@@ -72489,7 +73238,7 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 }
 
 /***/ }),
-/* 255 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72505,7 +73254,7 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 exports.getLatLonCircleClass = getLatLonCircleClass;
 
-var _utilsLatlon = __webpack_require__(188);
+var _utilsLatlon = __webpack_require__(189);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
@@ -72513,7 +73262,7 @@ var _mapdDraw = __webpack_require__(18);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _simplifyJs = __webpack_require__(256);
+var _simplifyJs = __webpack_require__(257);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
@@ -73619,7 +74368,7 @@ var LassoButtonGroupController = function () {
 exports.default = LassoButtonGroupController;
 
 /***/ }),
-/* 256 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -73749,7 +74498,7 @@ else window.simplify = simplify;
 
 
 /***/ }),
-/* 257 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74406,13 +75155,13 @@ earcut.flatten = function (data) {
 
 
 /***/ }),
-/* 258 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var meta_1 = __webpack_require__(259);
+var meta_1 = __webpack_require__(260);
 /**
  * Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
  *
@@ -74449,7 +75198,7 @@ exports.default = bbox;
 
 
 /***/ }),
-/* 259 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75588,7 +76337,7 @@ exports.findPoint = findPoint;
 
 
 /***/ }),
-/* 260 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75602,8 +76351,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 var helpers_1 = __webpack_require__(39);
-var invariant_1 = __webpack_require__(261);
-var lineclip = __importStar(__webpack_require__(262));
+var invariant_1 = __webpack_require__(262);
+var lineclip = __importStar(__webpack_require__(263));
 /**
  * Takes a {@link Feature} and a bbox and clips the feature to the bbox using
  * [lineclip](https://github.com/mapbox/lineclip).
@@ -75671,7 +76420,7 @@ function clipPolygon(rings, bbox) {
 
 
 /***/ }),
-/* 261 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75889,7 +76638,7 @@ exports.getType = getType;
 
 
 /***/ }),
-/* 262 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76019,742 +76768,6 @@ function bitCode(p, bbox) {
     return code;
 }
 
-
-/***/ }),
-/* 263 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.heatMapKeyAccessorNoFormat = undefined;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-exports.heatMapKeyAccessor = heatMapKeyAccessor;
-exports.heatMapValueAccesor = heatMapValueAccesor;
-exports.heatMapValueAccesorNoFormat = heatMapValueAccesorNoFormat;
-exports.heatMapRowsLabel = heatMapRowsLabel;
-exports.heatMapColsLabel = heatMapColsLabel;
-exports.isDescendingAppropriateData = isDescendingAppropriateData;
-exports.default = heatMap;
-
-var _formattingHelpers = __webpack_require__(10);
-
-var _d = __webpack_require__(1);
-
-var _d2 = _interopRequireDefault(_d);
-
-var _colorMixin = __webpack_require__(12);
-
-var _colorMixin2 = _interopRequireDefault(_colorMixin);
-
-var _marginMixin = __webpack_require__(17);
-
-var _marginMixin2 = _interopRequireDefault(_marginMixin);
-
-var _events = __webpack_require__(14);
-
-var _core = __webpack_require__(3);
-
-var _utils = __webpack_require__(4);
-
-var _filters = __webpack_require__(20);
-
-var _coordinateGridMixin = __webpack_require__(13);
-
-var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/** ***************************************************************************
- * OVERRIDE: dc.heatMap                                                       *
- * ***************************************************************************/
-/**
- * A heat map is matrix that represents the values of two dimensions of data using colors.
- * @name heatMap
- * @memberof dc
- * @mixes dc.colorMixin
- * @mixes dc.marginMixin
- * @mixes dc.baseMixin
- * @example
- * // create a heat map under #chart-container1 element using the default global chart group
- * var heatMap1 = dc.heatMap('#chart-container1');
- * // create a heat map under #chart-container2 element using chart group A
- * var heatMap2 = dc.heatMap('#chart-container2', 'chartGroupA');
- * @param {String|node|d3.selection} parent - Any valid
- * {@link https://github.com/mbostock/d3/wiki/Selections#selecting-elements d3 single selector} specifying
- * a dom block element such as a div; or a dom element or d3 selection.
- * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
- * Interaction with a chart will only trigger events and redraws within the chart's group.
- * @return {dc.heatMap}
- */
-
-var MAX_LABEL_WIDTH = 72;
-var CHAR_WIDTH = 5;
-var MIN_AXIS_HEIGHT = 52;
-
-function heatMapKeyAccessor(_ref) {
-  var key0 = _ref.key0;
-
-  if (Array.isArray(key0)) {
-    var key0Val = (0, _formattingHelpers.isArrayOfObjects)(key0) ? key0[0].value : key0[0];
-    var value = key0Val instanceof Date ? (0, _formattingHelpers.formatDataValue)(key0Val) : key0Val;
-    this.colsMap.set(value, key0);
-    return value;
-  } else {
-    return key0;
-  }
-}
-
-var heatMapKeyAccessorNoFormat = exports.heatMapKeyAccessorNoFormat = function heatMapKeyAccessorNoFormat(_ref2) {
-  var key0 = _ref2.key0;
-
-  if (Array.isArray(key0)) {
-    var key0Val = (0, _formattingHelpers.isArrayOfObjects)(key0) ? key0[0].value : key0[0];
-    this.colsMap.set(key0Val, key0);
-    return key0Val;
-  } else {
-    return key0;
-  }
-};
-
-function heatMapValueAccesor(_ref3) {
-  var key1 = _ref3.key1;
-
-  if (Array.isArray(key1)) {
-    var key1Val = (0, _formattingHelpers.isArrayOfObjects)(key1) ? key1[0].value : key1[0];
-    var value = key1Val instanceof Date ? (0, _formattingHelpers.formatDataValue)(key1Val) : key1Val;
-    this.rowsMap.set(value, key1);
-    return value;
-  } else {
-    return key1;
-  }
-}
-
-function heatMapValueAccesorNoFormat(_ref4) {
-  var key1 = _ref4.key1;
-
-  if (Array.isArray(key1)) {
-    var key1Val = (0, _formattingHelpers.isArrayOfObjects)(key1) ? key1[0].value : key1[0];
-    this.rowsMap.set(key1Val, key1);
-    return key1Val;
-  } else {
-    return key1;
-  }
-}
-
-function heatMapRowsLabel(key) {
-  // If the data is binned, this will be an array
-  var value = this.rowsMap.get(key) || key;
-
-  var customDateFormatter = this.dateFormatter();
-
-  // Possibly dead code, `key` should always be a string or number
-  if (customDateFormatter && key && key instanceof Date) {
-    if (Array.isArray(value) && value[0]) {
-      value = value[0].value || value[0];
-    }
-  }
-
-  // For binned data:
-  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
-  // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
-  // of objects with additional information (like timeBin info)
-  var rawValues = Array.isArray(value) ? value.map(function (v) {
-    return v.value;
-  }) : null;
-
-  return customDateFormatter && customDateFormatter(rawValues || value, this.yAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
-}
-
-function heatMapColsLabel(key) {
-  // If the data is binned, this will be an array
-  var value = this.colsMap.get(key) || key;
-
-  var customDateFormatter = this.dateFormatter();
-
-  // Possibly dead code, `key` should always be a string or number
-  if (customDateFormatter && key && key instanceof Date) {
-    if (Array.isArray(value) && value[0]) {
-      value = value[0].value || value[0];
-    }
-  }
-
-  // For binned data:
-  // customDateFormatter is set to `autoFormatter` (mapd3), which processes raw values in an array
-  // Whereas formatDataValue passes the data to `formatTimeBinValue`, which expects an array
-  // of objects with additional information (like timeBin info)
-  var rawValues = Array.isArray(value) ? value.map(function (v) {
-    return v.value;
-  }) : null;
-
-  return customDateFormatter && customDateFormatter(rawValues || value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
-}
-
-function isDescendingAppropriateData(_ref5) {
-  var key1 = _ref5.key1;
-
-  var value = Array.isArray(key1) ? key1[0] : key1;
-  return typeof value !== "number";
-}
-
-function heatMap(parent, chartGroup) {
-  var INTERVAL_LABELS = {
-    // ISO DOW starts at 1, set null at 0 index
-    DAY_OF_WEEK: [null, "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-
-    // Months start at 1, set null at 0 index
-    MONTH: [null, "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-
-    HOUR_OF_DAY: ["12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM", "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM", "8PM", "9PM", "10PM", "11PM"]
-  };
-
-  var DEFAULT_BORDER_RADIUS = 6.75;
-
-  var _chartBody = void 0;
-
-  var _cols = void 0;
-  var _rows = void 0;
-
-  var _colOrdering = _utils.utils.nullsFirst(_utils.utils.compareDates(_d2.default.ascending));
-  var _rowOrdering = _utils.utils.nullsFirst(_utils.utils.compareDates(_d2.default.ascending));
-  var _colScale = _d2.default.scale.ordinal();
-  var _rowScale = _d2.default.scale.ordinal();
-
-  var _xBorderRadius = DEFAULT_BORDER_RADIUS;
-  var _yBorderRadius = DEFAULT_BORDER_RADIUS;
-
-  /* OVERRIDE EXTEND ----------------------------------------------------------*/
-  var _yLabel = void 0;
-  var _xLabel = void 0;
-  var _hasBeenRendered = false;
-  var _minBoxSize = 16;
-  var _scrollPos = { top: null, left: 0 };
-  var _dockedAxes = void 0;
-  var _dockedAxesSize = { left: 48, bottom: 56 };
-  var xAxisInputs = void 0;
-  var yAxisInputs = void 0;
-  /* --------------------------------------------------------------------------*/
-
-  var _xBorderRadius = DEFAULT_BORDER_RADIUS;
-  var _yBorderRadius = DEFAULT_BORDER_RADIUS;
-
-  var _chart = (0, _colorMixin2.default)((0, _marginMixin2.default)((0, _coordinateGridMixin2.default)({})));
-  _chart.isHeatMap = true;
-  _chart._mandatoryAttributes(["group"]);
-  _chart.title(_chart.colorAccessor());
-
-  var _colsLabel = function _colsLabel(d) {
-    return d;
-  };
-  var _rowsLabel = function _rowsLabel(d) {
-    return d;
-  };
-
-  _chart.dockedAxesSize = function (_) {
-    if (!arguments.length) {
-      return _dockedAxesSize;
-    }
-    _dockedAxesSize = _;
-    return _chart;
-  };
-
-  /**
-   * Set or get the column label function. The chart class uses this function to render
-   * column labels on the X axis. It is passed the column name.
-   * @name colsLabel
-   * @memberof dc.heatMap
-   * @instance
-   * @example
-   * // the default label function just returns the name
-   * chart.colsLabel(function(d) { return d; });
-   * @param  {Function} [labelFunction=function(d) { return d; }]
-   * @return {Function}
-   * @return {dc.heatMap}
-   */
-  _chart.colsLabel = function (labelFunction) {
-    if (!arguments.length) {
-      return _colsLabel;
-    }
-    _colsLabel = labelFunction;
-    return _chart;
-  };
-
-  /**
-   * Set or get the row label function. The chart class uses this function to render
-   * row labels on the Y axis. It is passed the row name.
-   * @name rowsLabel
-   * @memberof dc.heatMap
-   * @instance
-   * @example
-   * // the default label function just returns the name
-   * chart.rowsLabel(function(d) { return d; });
-   * @param  {Function} [labelFunction=function(d) { return d; }]
-   * @return {Function}
-   * @return {dc.heatMap}
-   */
-  _chart.rowsLabel = function (labelFunction) {
-    if (!arguments.length) {
-      return _rowsLabel;
-    }
-    _rowsLabel = labelFunction;
-    return _chart;
-  };
-
-  /* OVERRIDE EXTEND ----------------------------------------------------------*/
-  _chart.xAxisLabel = function (xLabel) {
-    if (!arguments.length) {
-      return _xLabel;
-    }
-    _xLabel = xLabel;
-    return _chart;
-  };
-
-  _chart.yAxisLabel = function (yLabel) {
-    if (!arguments.length) {
-      return _yLabel;
-    }
-    _yLabel = yLabel;
-    return _chart;
-  };
-
-  var _xAxisOnClick = function _xAxisOnClick(d) {
-    filterAxis(0, d);
-  };
-
-  var _yAxisOnClick = function _yAxisOnClick(d) {
-    filterAxis(1, d);
-  };
-  /* --------------------------------------------------------------------------*/
-
-  var _boxOnClick = function _boxOnClick(d) {
-    /* OVERRIDE -----------------------------------------------------------------*/
-    var filter = [d.key0, d.key1];
-    /* --------------------------------------------------------------------------*/
-    _chart.handleFilterClick(_d2.default.event, filter);
-  };
-
-  var showInputs = function showInputs(inputs) {
-    return function () {
-      return inputs.style("opacity", 1);
-    };
-  };
-  var hideInputs = function hideInputs(inputs) {
-    return function () {
-      return inputs.style("opacity", null);
-    };
-  };
-
-  function filterAxis(axis, value) {
-    var axisVal = value instanceof Date ? (0, _formattingHelpers.formatDataValue)(value) : value;
-    var cellsOnAxis = _chart.selectAll(".box-group").filter(function (d) {
-      return (
-        /* OVERRIDE ---------------------------------------------------------------*/
-        (axis === 1 ? _chart.valueAccessor()(d) : _chart.keyAccessor()(d)) === axisVal
-      );
-    }
-    /* --------------------------------------------------------------------------*/
-    );
-
-    var unfilteredCellsOnAxis = cellsOnAxis.filter(function (d) {
-      return (
-        /* OVERRIDE -----------------------------------------------------------------*/
-        !_chart.hasFilter([d.key0, d.key1])
-      );
-    }
-    /* --------------------------------------------------------------------------*/
-    );
-    _events.events.trigger(function () {
-      if (unfilteredCellsOnAxis.empty()) {
-        cellsOnAxis.each(function (d) {
-          /* OVERRIDE -----------------------------------------------------------------*/
-          _chart.filter([d.key0, d.key1]);
-          /* --------------------------------------------------------------------------*/
-        });
-      } else {
-        unfilteredCellsOnAxis.each(function (d) {
-          /* OVERRIDE -----------------------------------------------------------------*/
-          _chart.filter([d.key0, d.key1]);
-          /* --------------------------------------------------------------------------*/
-        });
-      }
-
-      _chart.redrawGroup();
-    });
-  }
-  _chart.filter = function (filter, isInverseFilter) {
-    if (!arguments.length) {
-      return _chart._filter();
-    }
-
-    return _chart._filter(_filters.filters.TwoDimensionalFilter(filter), isInverseFilter);
-  };
-
-  function uniq(d, i, a) {
-    return !i || a[i - 1] !== d;
-  }
-
-  /**
-   * Gets or sets the values used to create the rows of the heatmap, as an array. By default, all
-   * the values will be fetched from the data using the value accessor, and they will be sorted in
-   * ascending order.
-   * @name rows
-   * @memberof dc.heatMap
-   * @instance
-   * @param  {Array<String|Number>} [rows]
-   * @return {Array<String|Number>}
-   * @return {dc.heatMap}
-   */
-  _chart.rows = function (rows) {
-    if (arguments.length) {
-      _rows = rows;
-      return _chart;
-    }
-    return _rows;
-  };
-
-  _chart.rowOrdering = function (_) {
-    if (!arguments.length) {
-      return _rowOrdering;
-    }
-    _rowOrdering = _;
-    return _chart;
-  };
-
-  /**
-   * Gets or sets the keys used to create the columns of the heatmap, as an array. By default, all
-   * the values will be fetched from the data using the key accessor, and they will be sorted in
-   * ascending order.
-   * @name cols
-   * @memberof dc.heatMap
-   * @instance
-   * @param  {Array<String|Number>} [cols]
-   * @return {Array<String|Number>}
-   * @return {dc.heatMap}
-   */
-  _chart.cols = function (cols) {
-    if (arguments.length) {
-      _cols = cols;
-      return _chart;
-    }
-    return _cols;
-  };
-
-  _chart.colOrdering = function (_) {
-    if (!arguments.length) {
-      return _colOrdering;
-    }
-    _colOrdering = _;
-    return _chart;
-  };
-
-  _chart._doRender = function () {
-    _chart.resetSvg();
-
-    _chart.margins(_extends({}, _chart.margins(), { top: 16, right: 16, bottom: 0 }));
-
-    var parent = _chart.svg();
-    var g = parent.append("g");
-    _chartBody = g.attr("class", "heatmap").attr("transform", "translate(0, 16)");
-    /* OVERRIDE -----------------------------------------------------------------*/_chartBody.append("g").attr("class", "box-wrapper");
-    _chart._generateG(g, _chartBody);
-    _hasBeenRendered = true;
-    _dockedAxes = _chart.root().append("div").attr("class", "docked-axis-wrapper");
-    /* --------------------------------------------------------------------------*/if (_chart.x()) {
-      _chart._prepareXAxis(_chart.g(), true);
-    }
-    if (_chart.y()) {
-      _chart._prepareYAxis(_chart.g());
-    }
-    return _chart._doRedraw();
-  };
-  _chart._doRedraw = function () {
-    if (!_hasBeenRendered) {
-      return _chart._doRender();
-    }
-    var data = _chart.data(),
-        rows = _chart.rows() || data.map(_chart.valueAccessor()),
-        cols = _chart.cols() || data.map(_chart.keyAccessor());
-    if (_rowOrdering) {
-      _rowOrdering = _chart.shouldSortYAxisDescending(data) ? _utils.utils.nullsLast(_d2.default.descending) : _utils.utils.nullsFirst(_d2.default.ascending);
-      rows = rows.sort(_rowOrdering);
-    }
-    if (_colOrdering) {
-      cols = cols.sort(_colOrdering);
-    }
-    rows = _rowScale.domain(rows);
-    cols = _colScale.domain(cols);
-    _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()));
-    var rowCount = rows.domain().length,
-        colCount = cols.domain().length,
-        availWidth = _chart.width() - _dockedAxesSize.left,
-        availHeight = _chart.height() - _dockedAxesSize.bottom,
-        boxWidth = Math.max((availWidth - _chart.margins().right) / colCount, _minBoxSize),
-        boxHeight = Math.max((availHeight - _chart.margins().top) / rowCount, _minBoxSize),
-        svgWidth = boxWidth * colCount + _chart.margins().right,
-        svgHeight = boxHeight * rowCount + _chart.margins().top;
-    cols.rangeBands([0, boxWidth * colCount]);
-    rows.rangeBands([boxHeight * rowCount, 0]);
-    _chart.svg().attr("width", svgWidth).attr("height", svgHeight);
-    var scrollNode = _chart.root().classed("heatmap-scroll", true).select(".svg-wrapper").style("width", _chart.width() - _dockedAxesSize.left + "px").style("height", _chart.height() - _dockedAxesSize.bottom + "px").style("left", _dockedAxesSize.left + "px").on("scroll", function () {
-      _scrollPos = {
-        top: _d2.default.select(this).node().scrollTop,
-        left: _d2.default.select(this).node().scrollLeft
-      };
-      _chart.root().select(".docked-x-axis").style("left", -_scrollPos.left + "px");
-      _chart.root().select(".docked-y-axis").style("top", -_scrollPos.top + "px");
-    }).node();
-    scrollNode.scrollLeft = _scrollPos.left;
-    scrollNode.scrollTop = _scrollPos.top === null && _rowOrdering === _d2.default.ascending ? svgHeight : _scrollPos.top || 0;
-    var boxes = _chartBody.select(".box-wrapper").selectAll("g.box-group").data(_chart.data(), function (d, i) {
-      return _chart.keyAccessor()(d, i) + "\0" + _chart.valueAccessor()(d, i);
-    });
-    var gEnter = boxes.enter().append("g").attr("class", "box-group");
-    gEnter.append("rect").attr("class", "heat-box").attr("fill", "white").on("mouseenter", showPopup).on("mousemove", positionPopup).on("mouseleave", hidePopup).on("click", _chart.boxOnClick());
-    (0, _core.transition)(boxes.select("rect"), _chart.transitionDuration()).attr("x", function (d, i) {
-      return cols(_chart.keyAccessor()(d, i));
-    }).attr("y", function (d, i) {
-      return rows(_chart.valueAccessor()(d, i));
-    }).attr("rx", _xBorderRadius).attr("ry", _yBorderRadius).attr("fill", _chart.getColor).attr("width", boxWidth).attr("height", boxHeight);
-    boxes.exit().remove();
-    var XAxis = _dockedAxes.selectAll(".docked-x-axis");
-    if (XAxis.empty()) {
-      XAxis = _dockedAxes.append("div").attr("class", "docked-x-axis");
-    }
-    var colsText = XAxis.style("height", _dockedAxesSize.bottom + "px").html("").selectAll("div.text").data(cols.domain());
-    colsText.enter().append("div").attr("class", function () {
-      return "text " + (_dockedAxesSize.bottom > 52 ? "rotate-down" : "center");
-    }).style("left", function (d) {
-      return cols(d) + boxWidth / 2 + _dockedAxesSize.left + "px";
-    }).on("click", _chart.xAxisOnClick()).append("span").html(_chart.colsLabel()).attr("title", function (d) {
-      // detect if a value is null or has the string "null"
-      var val = "" + _chart.colsLabel()(d);
-      return val.match(/null/gi) ? "NULL" : val;
-    });
-    var YAxis = _dockedAxes.selectAll(".docked-y-axis");
-    if (YAxis.empty()) {
-      YAxis = _dockedAxes.append("div").attr("class", "docked-y-axis");
-    }
-    var rowsText = YAxis.style("width", _dockedAxesSize.left + "px").style("left", _dockedAxesSize.left + "px").html("").selectAll("div.text").data(rows.domain());
-    rowsText.enter().append("div").attr("class", "text").style("top", function (d) {
-      return rows(d) + boxHeight / 2 + _chart.margins().top + "px";
-    }).on("click", _chart.yAxisOnClick()).html(_chart.rowsLabel()).attr("title", function (d) {
-      // detect if a value is null or has the string "null"
-      var val = "" + _chart.rowsLabel()(d);
-      return val.match(/null/gi) ? "NULL" : val;
-    });
-    var axesMask = _dockedAxes.selectAll(".axes-mask");
-    if (axesMask.empty()) {
-      axesMask = _dockedAxes.append("div").attr("class", "axes-mask");
-    }
-    axesMask.style("width", _dockedAxesSize.left + "px").style("height", _dockedAxesSize.bottom + "px");
-    if (_chart.hasFilter()) {
-      _chart.selectAll("g.box-group").each(function (d) {
-        if (_chart.isSelectedNode(d)) {
-          _chart.highlightSelected(this);
-        } else {
-          _chart.fadeDeselected(this);
-        }
-      });
-    } else {
-      _chart.selectAll("g.box-group").each(function () {
-        _chart.resetHighlight(this);
-      });
-    }
-    _chart.renderAxisLabels();
-    if (_chart.x()) {
-      _chart._prepareXAxis(_chart.g(), true);
-      xAxisInputs = _chart.root().selectAll(".axis-lock.type-x .axis-input");
-    }
-    if (_chart.y()) {
-      _chart._prepareYAxis(_chart.g());
-      yAxisInputs = _chart.root().selectAll(".axis-lock.type-y .axis-input");
-    }
-    XAxis.on("mouseover", showInputs(xAxisInputs));
-    XAxis.on("mouseout", hideInputs(xAxisInputs));
-    YAxis.on("mouseover", showInputs(yAxisInputs));
-    YAxis.on("mouseout", hideInputs(yAxisInputs));
-    return _chart;
-  };
-  /**
-   * Gets or sets the handler that fires when an individual cell is clicked in the heatmap.
-   * By default, filtering of the cell will be toggled.
-   * @name boxOnClick
-   * @memberof dc.heatMap
-   * @instance
-   * @example
-   * // default box on click handler
-   * chart.boxOnClick(function (d) {
-   *     var filter = d.key;
-   *     events.trigger(function () {
-   *         _chart.filter(filter);
-   *         _chart.redrawGroup();
-   *     });
-   * });
-   * @param  {Function} [handler]
-   * @return {Function}
-   * @return {dc.heatMap}
-   */_chart.boxOnClick = function (handler) {
-    if (!arguments.length) {
-      return _boxOnClick;
-    }
-    _boxOnClick = handler;
-    return _chart;
-  };
-  /**
-   * Gets or sets the handler that fires when a column tick is clicked in the x axis.
-   * By default, if any cells in the column are unselected, the whole column will be selected,
-   * otherwise the whole column will be unselected.
-   * @name xAxisOnClick
-   * @memberof dc.heatMap
-   * @instance
-   * @param  {Function} [handler]
-   * @return {Function}
-   * @return {dc.heatMap}
-   */_chart.xAxisOnClick = function (handler) {
-    if (!arguments.length) {
-      return _xAxisOnClick;
-    }
-    _xAxisOnClick = handler;
-    return _chart;
-  };
-  /**
-   * Gets or sets the handler that fires when a row tick is clicked in the y axis.
-   * By default, if any cells in the row are unselected, the whole row will be selected,
-   * otherwise the whole row will be unselected.
-   * @name yAxisOnClick
-   * @memberof dc.heatMap
-   * @instance
-   * @param  {Function} [handler]
-   * @return {Function}
-   * @return {dc.heatMap}
-   */_chart.yAxisOnClick = function (handler) {
-    if (!arguments.length) {
-      return _yAxisOnClick;
-    }
-    _yAxisOnClick = handler;
-    return _chart;
-  };
-  /**
-   * Gets or sets the X border radius.  Set to 0 to get full rectangles.
-   * @name xBorderRadius
-   * @memberof dc.heatMap
-   * @instance
-   * @param  {Number} [xBorderRadius=6.75]
-   * @return {Number}
-   * @return {dc.heatMap}
-   */_chart.xBorderRadius = function (xBorderRadius) {
-    if (!arguments.length) {
-      return _xBorderRadius;
-    }
-    _xBorderRadius = xBorderRadius;
-    return _chart;
-  };
-  /* OVERRIDE -----------------------------------------------------------------*/_chart.renderAxisLabels = function () {
-    var root = _chart.root();
-    var yLabel = root.selectAll(".y-axis-label");
-    if (yLabel.empty()) {
-      yLabel = root.append("div").attr("class", "y-axis-label").text(_yLabel);
-    }
-    yLabel.style("top", _chart.effectiveHeight() / 2 + _chart.margins().top + "px");
-    _chart.prepareLabelEdit("y");
-    var xLabel = root.selectAll(".x-axis-label");
-    if (xLabel.empty()) {
-      xLabel = root.append("div").attr("class", "x-axis-label").text(_xLabel);
-    }
-    xLabel.style("left", _chart.effectiveWidth() / 2 + _chart.margins().left + "px");
-    _chart.prepareLabelEdit("x");
-  }; /* --------------------------------------------------------------------------*/
-  /**
-   * Gets or sets the Y border radius.  Set to 0 to get full rectangles.
-   * @name yBorderRadius
-   * @memberof dc.heatMap
-   * @instance
-   * @param  {Number} [yBorderRadius=6.75]
-   * @return {Number}
-   * @return {dc.heatMap}
-   */_chart.yBorderRadius = function (yBorderRadius) {
-    if (!arguments.length) {
-      return _yBorderRadius;
-    }
-    _yBorderRadius = yBorderRadius;
-    return _chart;
-  };
-  _chart.isSelectedNode = function (d) {
-    /* OVERRIDE -----------------------------------------------------------------*/return _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse();
-    /* --------------------------------------------------------------------------*/
-  };
-  /* OVERRIDE ---------------------------------------------------------------- */function showPopup(d, i) {
-    var popup = _chart.popup();
-    var popupBox = popup.select(".chart-popup-content").html("").classed("popup-list", true);
-    popupBox.append("div").attr("class", "popup-header").html(function () {
-      return _colsLabel(_chart.keyAccessor()(d, i)) + " x " + _rowsLabel(_chart.valueAccessor()(d, i));
-    });
-    var popupItem = popupBox.append("div").attr("class", "popup-item");
-    popupItem.append("div").attr("class", "popup-legend").style("background-color", _chart.getColor(d, i));
-    popupItem.append("div").attr("class", "popup-item-value").html(function () {
-      var customFormatter = _chart.valueFormatter();
-      return customFormatter && customFormatter(d.color) || _utils.utils.formatValue(d.color);
-    });
-    popup.classed("js-showPopup", true);
-  }
-  function hidePopup() {
-    _chart.popup().classed("js-showPopup", false);
-  }
-  function positionPopup() {
-    var coordinates = [0, 0];
-    coordinates = _chart.popupCoordinates(_d2.default.mouse(this));
-    var scrollNode = _chart.root().select(".svg-wrapper").node();
-    var x = coordinates[0] + _dockedAxesSize.left - scrollNode.scrollLeft;
-    var y = coordinates[1] + _chart.margins().top - scrollNode.scrollTop;
-    var popup = _chart.popup().attr("style", function () {
-      return "transform:translate(" + x + "px," + y + "px)";
-    });
-    popup.select(".chart-popup-box").classed("align-right", function () {
-      return x + _d2.default.select(this).node().getBoundingClientRect().width > _chart.width();
-    });
-  }
-  /* ------------------------------------------------------------------------- */_chart.colsMap = new Map();
-  _chart.rowsMap = new Map();
-  _chart._axisPadding = { left: 36, bottom: 42 };
-  var getMaxChars = function getMaxChars(domain, getLabel) {
-    return domain.map(function (d) {
-      return d === null ? "NULL" : d;
-    }).map(function (d) {
-      return getLabel(d) ? getLabel(d).toString().length : 0;
-    }).reduce(function (prev, curr) {
-      return Math.max(prev, curr);
-    }, null);
-  };
-  _chart.getAxisSizes = function (colsDomain, rowsDomain) {
-    return {
-      left: Math.min(getMaxChars(rowsDomain, _chart.rowsLabel()) * CHAR_WIDTH, MAX_LABEL_WIDTH) + _chart._axisPadding.left,
-      bottom: Math.max(Math.min(getMaxChars(colsDomain, _chart.colsLabel()) * CHAR_WIDTH, MAX_LABEL_WIDTH) + _chart._axisPadding.bottom, MIN_AXIS_HEIGHT)
-    };
-  };
-  _chart.shouldSortYAxisDescending = function (data) {
-    return data && data.length && isDescendingAppropriateData(data[0]);
-  };
-  _chart.keyAccessor(heatMapKeyAccessor.bind(_chart)).valueAccessor(heatMapValueAccesor.bind(_chart)).colorAccessor(function (d) {
-    return d.value;
-  }).rowsLabel(heatMapRowsLabel.bind(_chart)).colsLabel(heatMapColsLabel.bind(_chart));
-  var keyAccessorNoFormat = heatMapKeyAccessorNoFormat.bind(_chart);
-  _chart.keyAccessorNoFormat = function () {
-    return keyAccessorNoFormat;
-  };
-  var valueAccessorNoFormat = heatMapValueAccesorNoFormat.bind(_chart);
-  _chart.valueAccessorNoFormat = function () {
-    return valueAccessorNoFormat;
-  };
-  return _chart.anchor(parent, chartGroup);
-}
-/** ***************************************************************************
- * END OVERRIDE: dc.heatMap                                                   *
- * ***************************************************************************/
 
 /***/ }),
 /* 264 */
@@ -77798,7 +77811,7 @@ var _stackMixin = __webpack_require__(36);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
-var _multiSeriesMixin = __webpack_require__(186);
+var _multiSeriesMixin = __webpack_require__(187);
 
 var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
 
@@ -78490,7 +78503,7 @@ exports.default = rasterChart;
 
 var _stackedLegend = __webpack_require__(268);
 
-var _coordinateGridRasterMixin = __webpack_require__(189);
+var _coordinateGridRasterMixin = __webpack_require__(190);
 
 var _coordinateGridRasterMixin2 = _interopRequireDefault(_coordinateGridRasterMixin);
 
@@ -78502,7 +78515,7 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _scatterMixin = __webpack_require__(198);
+var _scatterMixin = __webpack_require__(199);
 
 var _scatterMixin2 = _interopRequireDefault(_scatterMixin);
 
@@ -80835,10 +80848,10 @@ module.exports = __webpack_require__(273);
 
 
 var utils = __webpack_require__(8);
-var bind = __webpack_require__(190);
+var bind = __webpack_require__(191);
 var Axios = __webpack_require__(275);
-var mergeConfig = __webpack_require__(196);
-var defaults = __webpack_require__(193);
+var mergeConfig = __webpack_require__(197);
+var defaults = __webpack_require__(194);
 
 /**
  * Create an instance of Axios
@@ -80871,9 +80884,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(197);
+axios.Cancel = __webpack_require__(198);
 axios.CancelToken = __webpack_require__(288);
-axios.isCancel = __webpack_require__(192);
+axios.isCancel = __webpack_require__(193);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -80912,10 +80925,10 @@ module.exports = function isBuffer (obj) {
 
 
 var utils = __webpack_require__(8);
-var buildURL = __webpack_require__(191);
+var buildURL = __webpack_require__(192);
 var InterceptorManager = __webpack_require__(276);
 var dispatchRequest = __webpack_require__(277);
-var mergeConfig = __webpack_require__(196);
+var mergeConfig = __webpack_require__(197);
 
 /**
  * Create a new instance of Axios
@@ -81065,8 +81078,8 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(8);
 var transformData = __webpack_require__(278);
-var isCancel = __webpack_require__(192);
-var defaults = __webpack_require__(193);
+var isCancel = __webpack_require__(193);
+var defaults = __webpack_require__(194);
 var isAbsoluteURL = __webpack_require__(286);
 var combineURLs = __webpack_require__(287);
 
@@ -81392,7 +81405,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(195);
+var createError = __webpack_require__(196);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -81710,7 +81723,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(197);
+var Cancel = __webpack_require__(198);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -82145,10 +82158,10 @@ exports.patch = snabbdom_1.init([
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["init"] = init;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(199);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(200);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(200);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(201);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(297);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(202);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_3__h__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(298);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "thunk", function() { return __WEBPACK_IMPORTED_MODULE_4__thunk__["a"]; });
@@ -82534,7 +82547,7 @@ var htmlDomApi = {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return thunk; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__h__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__h__ = __webpack_require__(202);
 
 function copyToThunk(vnode, thunk) {
     thunk.elm = vnode.elm;
@@ -83019,9 +83032,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatDefaultLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "format", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatPrefix", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__locale__ = __webpack_require__(202);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__locale__ = __webpack_require__(203);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatLocale", function() { return __WEBPACK_IMPORTED_MODULE_1__locale__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(204);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatSpecifier", function() { return __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(314);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionFixed", function() { return __WEBPACK_IMPORTED_MODULE_3__precisionFixed__["a"]; });
@@ -83045,7 +83058,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return format; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return formatPrefix; });
 /* harmony export (immutable) */ __webpack_exports__["a"] = defaultLocale;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__locale__ = __webpack_require__(202);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__locale__ = __webpack_require__(203);
 
 
 var locale;
@@ -83129,7 +83142,7 @@ function defaultLocale(definition) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(205);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(312);
 
 
@@ -85389,9 +85402,9 @@ function stringify (gj) {
 /* unused harmony export buildBetweenProdsFollowPrefix */
 /* unused harmony export buildInProdFollowPrefix */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__first__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__first__ = __webpack_require__(214);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(215);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(6);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -85469,7 +85482,7 @@ function buildInProdFollowPrefix(terminal) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lexer__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lexer__ = __webpack_require__(212);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -86229,7 +86242,7 @@ var TreeBuilder = /** @class */ (function () {
 /* unused harmony export validateMissingCstMethods */
 /* unused harmony export validateRedundantMethods */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__ = __webpack_require__(217);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__ = __webpack_require__(218);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_checks__ = __webpack_require__(30);
 
 
@@ -86801,10 +86814,10 @@ var RecognizerApi = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_lookahead__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__recoverable__ = __webpack_require__(216);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__recoverable__ = __webpack_require__(217);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__scan_tokens_public__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__scan_tokens__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lang_lang_extensions__ = __webpack_require__(217);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lang_lang_extensions__ = __webpack_require__(218);
 
 
 
@@ -87972,7 +87985,7 @@ var PerformanceTracer = /** @class */ (function () {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createSyntaxDiagramsCode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(210);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(211);
 
 function createSyntaxDiagramsCode(grammar, _a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.resourceBase, resourceBase = _c === void 0 ? "https://unpkg.com/chevrotain@" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* VERSION */] + "/diagrams/" : _c, _d = _b.css, css = _d === void 0 ? "https://unpkg.com/chevrotain@" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* VERSION */] + "/diagrams/diagrams.css" : _d;
@@ -88004,7 +88017,7 @@ function generateParserFactory(options) {
     return function (config) {
         return constructorWrapper(options.tokenVocabulary, config, 
         // TODO: check how the require is transpiled/webpacked
-        __webpack_require__(209));
+        __webpack_require__(210));
     };
 }
 function generateParserModule(options) {
@@ -88181,15 +88194,15 @@ var _capMixin = __webpack_require__(15);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _rasterLayerPointMixin = __webpack_require__(206);
+var _rasterLayerPointMixin = __webpack_require__(207);
 
 var _rasterLayerPointMixin2 = _interopRequireDefault(_rasterLayerPointMixin);
 
-var _rasterLayerPolyMixin = __webpack_require__(207);
+var _rasterLayerPolyMixin = __webpack_require__(208);
 
 var _rasterLayerPolyMixin2 = _interopRequireDefault(_rasterLayerPolyMixin);
 
-var _rasterLayerHeatmapMixin = __webpack_require__(205);
+var _rasterLayerHeatmapMixin = __webpack_require__(206);
 
 var _rasterLayerHeatmapMixin2 = _interopRequireDefault(_rasterLayerHeatmapMixin);
 
