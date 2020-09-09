@@ -184,7 +184,7 @@ export default function lockAxisMixin(chart) {
       chart.isHeatMap &&
       data &&
       Array.isArray(data) &&
-      (yAxisDataIsNonNumerical(data[0]) || xAxisDataIsNonNumerical(data[0]))
+      (type === "y" ? yAxisDataIsNonNumerical(data[0]) : xAxisDataIsNonNumerical(data[0]))
 
     if (
       (chart.focusChart && chart.focusChart() && type === "y") ||
