@@ -6,6 +6,7 @@ import d3 from "d3"
 import marginMixin from "./margin-mixin"
 import axios from "axios"
 import lockAxisMixin from "./lock-axis-mixin"
+import { DestroyedChartError } from "../core/errors"
 
 /**
  * Coordinate Grid Raster is an abstract base chart designed to support coordinate grid based
@@ -339,6 +340,8 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   function destroy () {
+    _chart.destroyed = true
+
     destroyWebGL()
 
     if (_eventHandler) {
@@ -645,6 +648,10 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   function prepareChartBody () {
+    if (_chart.destroyed) {
+      return
+    }
+
     const width = _chart.effectiveWidth()
     const height = _chart.effectiveHeight()
     const margins = _chart.margins()
@@ -689,9 +696,14 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     const gl = _gl
 
     const onImageLoad = (err, img) => {
+      if (_chart.destroyed) {
+        return
+      }
+
       if (err) {
         throw err
       }
+
       if (queryId === _queryId) {
         const xdom = _chart.x().domain()
         const ydom = _chart.y().domain()

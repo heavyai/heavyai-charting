@@ -5,6 +5,7 @@ import {
   resetRenderStack
 } from "../../src/core/core-async"
 import { logging, refreshDisabled } from "../../src/core/core"
+import { DestroyedChartError } from "../../src/core/errors"
 
 const NON_INDEX = -1
 
@@ -87,7 +88,12 @@ export default function asyncMixin(_chart) {
           resetRenderStack()
           reject(error)
         } else {
-          _chart.render(id, queryGroupId, queryCount, data, renderCallback)
+          if (_chart.destroyed) {
+            reject(new DestroyedChartError())
+          } else {
+
+            _chart.render(id, queryGroupId, queryCount, data, renderCallback)
+          }
         }
       }
       _chart._invokeDataFetchListener()
@@ -120,7 +126,11 @@ export default function asyncMixin(_chart) {
           resetRedrawStack()
           reject(error)
         } else {
-          _chart.redraw(id, queryGroupId, queryCount, data, redrawCallback)
+          if (!_chart.destroyed) {
+            _chart.redraw(id, queryGroupId, queryCount, data, redrawCallback)
+          } else {
+            reject(new DestroyedChartError())
+          }
         }
       }
       _chart._invokeDataFetchListener()

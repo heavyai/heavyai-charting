@@ -25,3 +25,13 @@ export function BadArgumentException() {
 
 BadArgumentException.prototype = Object.create(Exception.prototype)
 BadArgumentException.prototype.constructor = BadArgumentException
+
+// Used to cancel async operations that could resolve after a chart has been
+// destroyed
+export class DestroyedChartError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "DestroyedChartError"
+    this.message = message || "Chart was destroyed before operation completed"
+  }
+}
