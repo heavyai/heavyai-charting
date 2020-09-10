@@ -1,6 +1,11 @@
 import d3 from "d3"
 import { formatDataValue } from "../utils/formatting-helpers"
 import moment from "moment"
+import { utils } from "../utils/utils"
+import {
+  xAxisDataIsNonNumerical,
+  yAxisDataIsNonNumerical
+} from "../charts/heatmap"
 
 const CHART_HEIGHT = 0.75
 const TOGGLE_SIZE = 24
@@ -117,7 +122,9 @@ export default function lockAxisMixin(chart) {
         .y()
         .domain()
         .slice(0)
-      chart._invokeYDomainListener(chart.originalYMinMax || yDomain)
+      chart._invokeYDomainListener(
+        chart.elasticY() ? chart.originalYMinMax || yDomain : yDomain
+      )
     } else {
       chart.elasticX(!chart.elasticX())
       chart._invokeelasticXListener()
@@ -125,7 +132,9 @@ export default function lockAxisMixin(chart) {
         .x()
         .domain()
         .slice()
-      chart._invokeXDomainListener(chart.originalXMinMax || xDomain)
+      chart._invokeXDomainListener(
+        chart.elasticX() ? chart.originalXMinMax || xDomain : xDomain
+      )
       if (chart.focusChart && chart.focusChart()) {
         chart.focusChart().elasticX(!chart.focusChart().elasticX())
         chart.focusChart()._invokeelasticXListener()
@@ -170,48 +179,103 @@ export default function lockAxisMixin(chart) {
   }
 
   chart.prepareLockAxis = function(type = "y") {
-    if (chart.focusChart && chart.focusChart() && type === "y") {
+    const data = chart.data && chart.data()
+    const heatDataIncompatible =
+      chart.isHeatMap &&
+      data &&
+      Array.isArray(data) &&
+      (type === "y"
+        ? yAxisDataIsNonNumerical(data[0])
+        : xAxisDataIsNonNumerical(data[0]))
+
+    if (
+      (chart.focusChart && chart.focusChart() && type === "y") ||
+      heatDataIncompatible
+    ) {
       return
     }
+
+    const chartLeftPixels =
+      chart.dockedAxesSize && chart.dockedAxesSize()
+        ? chart.dockedAxesSize().left
+        : chart.margins().left
+    const chartBottomPixels =
+      chart.dockedAxesSize && chart.dockedAxesSize()
+        ? chart.dockedAxesSize().bottom
+        : chart.margins().bottom
 
     const iconPosition = {
       left:
         type === "y"
-          ? `${chart.margins().left - TOGGLE_SIZE / 2}px`
+          ? `${chartLeftPixels - TOGGLE_SIZE / 2}px`
           : `${chart.width() - chart.margins().right}px`,
       top:
         type === "y"
           ? `${chart.margins().top - TOGGLE_SIZE}px`
-          : `${chart.height() - chart.margins().bottom}px`
+          : `${chart.height() - chartBottomPixels}px`
     }
 
     const inputsPosition = {
-      minLeft: `${chart.margins().left}px`,
-      minTop: `${chart.height() - chart.margins().bottom}px`,
+      minLeft: type === "y" ? `${chartLeftPixels}px` : `${chartLeftPixels}px`,
+      minTop: `${chart.height() - chartBottomPixels}px`,
       maxLeft:
         type === "y"
-          ? `${chart.margins().left}px`
+          ? `${chartLeftPixels}px`
           : `${chart.width() - chart.margins().right}px`,
       maxTop:
         type === "y"
           ? `${chart.margins().top}px`
-          : `${chart.height() - chart.margins().bottom}px`
+          : `${chart.height() - chartBottomPixels}px`
     }
 
     const hitBoxDim = {
-      top: type === "y" ? 0 : `${chart.height() - chart.margins().bottom}px`,
-      left: type === "y" ? 0 : `${chart.margins().left}px`,
+      top:
+        type === "y"
+          ? 0
+          : `${
+              chart.height() - chartBottomPixels /* chart.margins().bottom*/
+            }px`,
+      left: type === "y" ? 0 : `${chartLeftPixels /* chart.margins().left*/}px`,
       width:
         type === "y"
-          ? `${chart.margins().left}px`
-          : `${chart.width() - chart.margins().left}px`,
+          ? `${chartLeftPixels}px`
+          : `${chart.width() - chartLeftPixels}px`,
       height:
-        type === "y" ? `${chart.height()}px` : `${chart.margins().bottom}px`
+        type === "y"
+          ? `${chart.height()}px`
+          : `${chartBottomPixels /* chart.margins().bottom*/}px`
     }
 
     const minMax = chart[type]()
       .domain()
       .slice()
+
+    // Horrible hack to ensure the inputs aren't inverted from whatever order
+    //  the Y axis decides to display.  Mea culpa.
+    let shouldFlipYMinMax = false
+    const isHeatY = chart.isHeatMap && type === "y"
+    if (isHeatY) {
+      const data = chart.data && chart.data()
+      const rowOrdering = chart.shouldSortYAxisDescending(data)
+        ? utils.nullsLast(d3.descending)
+        : utils.nullsFirst(d3.ascending)
+      let rows = chart.rows() || data.map(chart.valueAccessor())
+      rows = rows.sort(rowOrdering)
+      const firstRowValue = rows.find(r => r !== null)
+      let lastRowValue = null
+      for (let i = rows.length - 1; i >= 0; i--) {
+        if (rows[i] !== null) {
+          lastRowValue = rows[i]
+          break
+        }
+      }
+      const minMaxIsAscending = minMax[0] < minMax[1]
+      const rowsAreAscending = firstRowValue < lastRowValue
+      shouldFlipYMinMax = !minMaxIsAscending === rowsAreAscending
+      if (shouldFlipYMinMax) {
+        minMax.reverse()
+      }
+    }
 
     chart
       .root()
@@ -259,11 +323,13 @@ export default function lockAxisMixin(chart) {
         this.select()
       })
       .on("change", function() {
+        const max = minMax[1]
+        const min = minMax[0]
         const val =
-          minMax[1] instanceof Date
+          max instanceof Date
             ? moment(this.value, DATE_FORMAT).toDate()
             : parseFloatStrict(this.value.replace(/,/g, ""))
-        updateMinMax(type, [minMax[0], val])
+        updateMinMax(type, shouldFlipYMinMax ? [val, min] : [min, val])
       })
       .on("keyup", function() {
         if (d3.event.keyCode === RETURN_KEY) {
@@ -287,11 +353,13 @@ export default function lockAxisMixin(chart) {
         this.select()
       })
       .on("change", function() {
+        const max = minMax[1]
+        const min = minMax[0]
         const val =
-          minMax[0] instanceof Date
+          min instanceof Date
             ? moment(this.value, DATE_FORMAT).toDate()
             : parseFloatStrict(this.value.replace(/,/g, ""))
-        updateMinMax(type, [val, minMax[1]])
+        updateMinMax(type, shouldFlipYMinMax ? [max, val] : [val, max])
       })
       .on("keyup", function() {
         if (d3.event.keyCode === RETURN_KEY) {

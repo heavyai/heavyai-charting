@@ -212,7 +212,12 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
-  _chart._generateG = function (parent) {
+  _chart._generateG = function (parent, g, chartBodyG) {
+    if (g) {
+      _g = g
+      _chartBodyG = chartBodyG
+      return _g
+    }
     if (parent === undefined) {
       _parent = _chart.svg()
     } else {
@@ -526,7 +531,7 @@ export default function coordinateGridMixin (_chart) {
       _x.domain(_chart._ordinalXDomain())
     }
 
-    const xdom = _x.domain()
+    const xdom = _x ? _x.domain() : []
     if (render || compareDomains(_lastXDomain, xdom)) {
       _chart.rescale()
     }
@@ -708,6 +713,8 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
+  _chart._prepareXAxis = prepareXAxis
+
   _chart._prepareYAxis = function (g) {
     if (_y === undefined || _chart.elasticY()) {
       if (_y === undefined) {
@@ -780,10 +787,10 @@ export default function coordinateGridMixin (_chart) {
     const dateFormatExistsForThisKey = Boolean(dateFormatter && dateFormatter(new Date(), _chart.xAxisLabel()))
     const numberFormatExistsForThisKey = Boolean(numberFormatter && numberFormatter(null, _chart.xAxisLabel()))
 
-    if (domain && 
-      domain[0] && 
-      domain[0] instanceof Date && 
-      !timeBinParam.extract && 
+    if (domain &&
+      domain[0] &&
+      domain[0] instanceof Date &&
+      !timeBinParam.extract &&
       dateFormatExistsForThisKey
     ) {
       setXTickFormat(d => dateFormatter(d, _chart.xAxisLabel()), {toCache: true})
@@ -989,6 +996,12 @@ export default function coordinateGridMixin (_chart) {
     return _chart
   }
 
+  const chooseKeyAccessor = dataPoint => _chart.isHeatMap ?
+    _chart.keyAccessorNoFormat()(dataPoint) :
+    _chart.keyAccessor()(dataPoint)
+
+  const chooseValueAccessor = dataPoint => _chart.isHeatMap ? _chart.valueAccessorNoFormat()(dataPoint) : _chart.valueAccessor()(dataPoint)
+
   /**
       * Calculates the minimum x value to display in the chart. Includes xAxisPadding if set.
       * @name xAxisMin
@@ -997,9 +1010,17 @@ export default function coordinateGridMixin (_chart) {
       * @return {*}
       */
   _chart.xAxisMin = function () {
-    const min = d3.min(_chart.data(), e => _chart.keyAccessor()(e))
-    const max = d3.max(_chart.data(), e => _chart.keyAccessor()(e))
-    return utils.subtract(min, _xAxisPadding, max - min)
+    // TODO: This is formatting min/max BEFORE doing arithmetic
+
+    const min = d3.min(
+      _chart.data(),
+      chooseKeyAccessor
+    )
+    const max = d3.max(
+      _chart.data(),
+      chooseKeyAccessor)
+    const result = utils.subtract(min, _xAxisPadding, max - min)
+    return min instanceof Date ? new Date(result) : result
   }
 
   /**
@@ -1010,9 +1031,10 @@ export default function coordinateGridMixin (_chart) {
       * @return {*}
       */
   _chart.xAxisMax = function () {
-    const max = d3.max(_chart.data(), e => _chart.keyAccessor()(e))
-    const min = d3.min(_chart.data(), e => _chart.keyAccessor()(e))
-    return utils.add(max, _xAxisPadding, max - min)
+    const max = d3.max(_chart.data(), chooseKeyAccessor)
+    const min = d3.min(_chart.data(), chooseKeyAccessor)
+    const result = utils.add(max, _xAxisPadding, max - min)
+    return max instanceof Date ? new Date(result) : result
   }
 
   /**
@@ -1023,9 +1045,10 @@ export default function coordinateGridMixin (_chart) {
       * @return {*}
       */
   _chart.yAxisMin = function () {
-    const min = d3.min(_chart.data(), e => _chart.valueAccessor()(e))
-    const max = d3.max(_chart.data(), e => _chart.valueAccessor()(e))
-    return utils.subtract(min, _yAxisPadding, max - min)
+    const min = d3.min(_chart.data(), chooseValueAccessor)
+    const max = d3.max(_chart.data(), chooseValueAccessor)
+    const result = utils.subtract(min, _yAxisPadding, max - min)
+    return min instanceof Date ? new Date(result) : result
   }
 
   /**
@@ -1036,9 +1059,10 @@ export default function coordinateGridMixin (_chart) {
       * @return {*}
       */
   _chart.yAxisMax = function () {
-    const max = d3.max(_chart.data(), e => _chart.valueAccessor()(e))
-    const min = d3.min(_chart.data(), e => _chart.valueAccessor()(e))
-    return utils.add(max, _yAxisPadding, max - min)
+    const max = d3.max(_chart.data(), chooseValueAccessor)
+    const min = d3.min(_chart.data(), chooseValueAccessor)
+    const result =  utils.add(max, _yAxisPadding, max - min)
+    return max instanceof Date ? new Date(result) : result
   }
 
   /**

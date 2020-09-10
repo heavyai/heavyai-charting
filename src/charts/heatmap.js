@@ -1,12 +1,12 @@
 import { formatDataValue, isArrayOfObjects } from "../utils/formatting-helpers"
 import d3 from "d3"
-import baseMixin from "../mixins/base-mixin"
 import colorMixin from "../mixins/color-mixin"
 import marginMixin from "../mixins/margin-mixin"
 import { events } from "../core/events"
 import { override, transition } from "../core/core"
 import { utils } from "../utils/utils"
 import { filters } from "../core/filters"
+import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
 
 /** ***************************************************************************
  * OVERRIDE: dc.heatMap                                                       *
@@ -46,12 +46,32 @@ export function heatMapKeyAccessor({ key0 }) {
   }
 }
 
+export const heatMapKeyAccessorNoFormat = function({ key0 }) {
+  if (Array.isArray(key0)) {
+    const key0Val = isArrayOfObjects(key0) ? key0[0].value : key0[0]
+    this.colsMap.set(key0Val, key0)
+    return key0Val
+  } else {
+    return key0
+  }
+}
+
 export function heatMapValueAccesor({ key1 }) {
   if (Array.isArray(key1)) {
     const key1Val = isArrayOfObjects(key1) ? key1[0].value : key1[0]
     const value = key1Val instanceof Date ? formatDataValue(key1Val) : key1Val
     this.rowsMap.set(value, key1)
     return value
+  } else {
+    return key1
+  }
+}
+
+export function heatMapValueAccesorNoFormat({ key1 }) {
+  if (Array.isArray(key1)) {
+    const key1Val = isArrayOfObjects(key1) ? key1[0].value : key1[0]
+    this.rowsMap.set(key1Val, key1)
+    return key1Val
   } else {
     return key1
   }
@@ -109,8 +129,13 @@ export function heatMapColsLabel(key) {
   )
 }
 
-export function isDescendingAppropriateData({ key1 }) {
+export function yAxisDataIsNonNumerical({ key1 }) {
   const value = Array.isArray(key1) ? key1[0] : key1
+  return typeof value !== "number"
+}
+
+export function xAxisDataIsNonNumerical({ key0 }) {
+  const value = Array.isArray(key0) ? key0[0] : key0
   return typeof value !== "number"
 }
 
@@ -187,12 +212,15 @@ export default function heatMap(parent, chartGroup) {
   let _scrollPos = { top: null, left: 0 }
   let _dockedAxes
   let _dockedAxesSize = { left: 48, bottom: 56 }
+  let xAxisInputs
+  let yAxisInputs
   /* --------------------------------------------------------------------------*/
 
   var _xBorderRadius = DEFAULT_BORDER_RADIUS
   var _yBorderRadius = DEFAULT_BORDER_RADIUS
 
-  const _chart = colorMixin(marginMixin(baseMixin({})))
+  const _chart = colorMixin(marginMixin(coordinateGridMixin({})))
+  _chart.isHeatMap = true
   _chart._mandatoryAttributes(["group"])
   _chart.title(_chart.colorAccessor())
 
@@ -286,6 +314,9 @@ export default function heatMap(parent, chartGroup) {
     _chart.handleFilterClick(d3.event, filter)
   }
 
+  const showInputs = inputs => () => inputs.style("opacity", 1)
+  const hideInputs = inputs => () => inputs.style("opacity", null)
+
   function filterAxis(axis, value) {
     const axisVal = value instanceof Date ? formatDataValue(value) : value
     const cellsOnAxis = _chart.selectAll(".box-group").filter(
@@ -320,14 +351,13 @@ export default function heatMap(parent, chartGroup) {
       _chart.redrawGroup()
     })
   }
-
-  override(_chart, "filter", function(filter, isInverseFilter) {
+  _chart.filter = function(filter, isInverseFilter) {
     if (!arguments.length) {
       return _chart._filter()
     }
 
     return _chart._filter(filters.TwoDimensionalFilter(filter), isInverseFilter)
-  })
+  }
 
   function uniq(d, i, a) {
     return !i || a[i - 1] !== d
@@ -390,40 +420,39 @@ export default function heatMap(parent, chartGroup) {
   _chart._doRender = function() {
     _chart.resetSvg()
 
-    /* OVERRIDE -----------------------------------------------------------------*/
-    _chart.margins({ top: 8, right: 16, bottom: 0, left: 0 })
-    /* --------------------------------------------------------------------------*/
+    _chart.margins({ ..._chart.margins(), top: 16, right: 16, bottom: 0 })
 
-    _chartBody = _chart
-      .svg()
-      .append("g")
+    const parent = _chart.svg()
+    const g = parent.append("g")
+    _chartBody = g
       .attr("class", "heatmap")
-      .attr(
-        "transform",
-        "translate(" + _chart.margins().left + "," + _chart.margins().top + ")"
-      )
-
-    /* OVERRIDE -----------------------------------------------------------------*/
-    _chartBody.append("g").attr("class", "box-wrapper")
+      .attr("transform", "translate(0, 16)")
+    /* OVERRIDE -----------------------------------------------------------------*/ _chartBody
+      .append("g")
+      .attr("class", "box-wrapper")
+    _chart._generateG(g, _chartBody)
     _hasBeenRendered = true
-
     _dockedAxes = _chart
       .root()
       .append("div")
       .attr("class", "docked-axis-wrapper")
-    /* --------------------------------------------------------------------------*/
+    /* --------------------------------------------------------------------------*/ if (
+      _chart.x()
+    ) {
+      _chart._prepareXAxis(_chart.g(), true)
+    }
+    if (_chart.y()) {
+      _chart._prepareYAxis(_chart.g())
+    }
     return _chart._doRedraw()
   }
-
   _chart._doRedraw = function() {
     if (!_hasBeenRendered) {
       return _chart._doRender()
     }
-
     let data = _chart.data(),
       rows = _chart.rows() || data.map(_chart.valueAccessor()),
       cols = _chart.cols() || data.map(_chart.keyAccessor())
-
     if (_rowOrdering) {
       _rowOrdering = _chart.shouldSortYAxisDescending(data)
         ? utils.nullsLast(d3.descending)
@@ -433,12 +462,9 @@ export default function heatMap(parent, chartGroup) {
     if (_colOrdering) {
       cols = cols.sort(_colOrdering)
     }
-
     rows = _rowScale.domain(rows)
     cols = _colScale.domain(cols)
-
     _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()))
-
     let rowCount = rows.domain().length,
       colCount = cols.domain().length,
       availWidth = _chart.width() - _dockedAxesSize.left,
@@ -453,15 +479,12 @@ export default function heatMap(parent, chartGroup) {
       ),
       svgWidth = boxWidth * colCount + _chart.margins().right,
       svgHeight = boxHeight * rowCount + _chart.margins().top
-
     cols.rangeBands([0, boxWidth * colCount])
     rows.rangeBands([boxHeight * rowCount, 0])
-
     _chart
       .svg()
       .attr("width", svgWidth)
       .attr("height", svgHeight)
-
     const scrollNode = _chart
       .root()
       .classed("heatmap-scroll", true)
@@ -484,13 +507,11 @@ export default function heatMap(parent, chartGroup) {
           .style("top", -_scrollPos.top + "px")
       })
       .node()
-
     scrollNode.scrollLeft = _scrollPos.left
     scrollNode.scrollTop =
       _scrollPos.top === null && _rowOrdering === d3.ascending
         ? svgHeight
         : _scrollPos.top || 0
-
     const boxes = _chartBody
       .select(".box-wrapper")
       .selectAll("g.box-group")
@@ -499,12 +520,10 @@ export default function heatMap(parent, chartGroup) {
         (d, i) =>
           _chart.keyAccessor()(d, i) + "\0" + _chart.valueAccessor()(d, i)
       )
-
     const gEnter = boxes
       .enter()
       .append("g")
       .attr("class", "box-group")
-
     gEnter
       .append("rect")
       .attr("class", "heat-box")
@@ -513,7 +532,6 @@ export default function heatMap(parent, chartGroup) {
       .on("mousemove", positionPopup)
       .on("mouseleave", hidePopup)
       .on("click", _chart.boxOnClick())
-
     transition(boxes.select("rect"), _chart.transitionDuration())
       .attr("x", (d, i) => cols(_chart.keyAccessor()(d, i)))
       .attr("y", (d, i) => rows(_chart.valueAccessor()(d, i)))
@@ -522,20 +540,15 @@ export default function heatMap(parent, chartGroup) {
       .attr("fill", _chart.getColor)
       .attr("width", boxWidth)
       .attr("height", boxHeight)
-
     boxes.exit().remove()
-
     let XAxis = _dockedAxes.selectAll(".docked-x-axis")
-
     if (XAxis.empty()) {
       XAxis = _dockedAxes.append("div").attr("class", "docked-x-axis")
     }
-
     const colsText = XAxis.style("height", _dockedAxesSize.bottom + "px")
       .html("")
       .selectAll("div.text")
       .data(cols.domain())
-
     colsText
       .enter()
       .append("div")
@@ -552,19 +565,15 @@ export default function heatMap(parent, chartGroup) {
         const val = `${_chart.colsLabel()(d)}`
         return val.match(/null/gi) ? "NULL" : val
       })
-
     let YAxis = _dockedAxes.selectAll(".docked-y-axis")
-
     if (YAxis.empty()) {
       YAxis = _dockedAxes.append("div").attr("class", "docked-y-axis")
     }
-
     const rowsText = YAxis.style("width", _dockedAxesSize.left + "px")
       .style("left", _dockedAxesSize.left + "px")
       .html("")
       .selectAll("div.text")
       .data(rows.domain())
-
     rowsText
       .enter()
       .append("div")
@@ -577,17 +586,13 @@ export default function heatMap(parent, chartGroup) {
         const val = `${_chart.rowsLabel()(d)}`
         return val.match(/null/gi) ? "NULL" : val
       })
-
     let axesMask = _dockedAxes.selectAll(".axes-mask")
-
     if (axesMask.empty()) {
       axesMask = _dockedAxes.append("div").attr("class", "axes-mask")
     }
-
     axesMask
       .style("width", _dockedAxesSize.left + "px")
       .style("height", _dockedAxesSize.bottom + "px")
-
     if (_chart.hasFilter()) {
       _chart.selectAll("g.box-group").each(function(d) {
         if (_chart.isSelectedNode(d)) {
@@ -601,12 +606,21 @@ export default function heatMap(parent, chartGroup) {
         _chart.resetHighlight(this)
       })
     }
-
     _chart.renderAxisLabels()
-
+    if (_chart.x()) {
+      _chart._prepareXAxis(_chart.g(), true)
+      xAxisInputs = _chart.root().selectAll(".axis-lock.type-x .axis-input")
+    }
+    if (_chart.y()) {
+      _chart._prepareYAxis(_chart.g())
+      yAxisInputs = _chart.root().selectAll(".axis-lock.type-y .axis-input")
+    }
+    XAxis.on("mouseover", showInputs(xAxisInputs))
+    XAxis.on("mouseout", hideInputs(xAxisInputs))
+    YAxis.on("mouseover", showInputs(yAxisInputs))
+    YAxis.on("mouseout", hideInputs(yAxisInputs))
     return _chart
   }
-
   /**
    * Gets or sets the handler that fires when an individual cell is clicked in the heatmap.
    * By default, filtering of the cell will be toggled.
@@ -625,15 +639,13 @@ export default function heatMap(parent, chartGroup) {
    * @param  {Function} [handler]
    * @return {Function}
    * @return {dc.heatMap}
-   */
-  _chart.boxOnClick = function(handler) {
+   */ _chart.boxOnClick = function(handler) {
     if (!arguments.length) {
       return _boxOnClick
     }
     _boxOnClick = handler
     return _chart
   }
-
   /**
    * Gets or sets the handler that fires when a column tick is clicked in the x axis.
    * By default, if any cells in the column are unselected, the whole column will be selected,
@@ -644,15 +656,13 @@ export default function heatMap(parent, chartGroup) {
    * @param  {Function} [handler]
    * @return {Function}
    * @return {dc.heatMap}
-   */
-  _chart.xAxisOnClick = function(handler) {
+   */ _chart.xAxisOnClick = function(handler) {
     if (!arguments.length) {
       return _xAxisOnClick
     }
     _xAxisOnClick = handler
     return _chart
   }
-
   /**
    * Gets or sets the handler that fires when a row tick is clicked in the y axis.
    * By default, if any cells in the row are unselected, the whole row will be selected,
@@ -663,15 +673,13 @@ export default function heatMap(parent, chartGroup) {
    * @param  {Function} [handler]
    * @return {Function}
    * @return {dc.heatMap}
-   */
-  _chart.yAxisOnClick = function(handler) {
+   */ _chart.yAxisOnClick = function(handler) {
     if (!arguments.length) {
       return _yAxisOnClick
     }
     _yAxisOnClick = handler
     return _chart
   }
-
   /**
    * Gets or sets the X border radius.  Set to 0 to get full rectangles.
    * @name xBorderRadius
@@ -680,54 +688,40 @@ export default function heatMap(parent, chartGroup) {
    * @param  {Number} [xBorderRadius=6.75]
    * @return {Number}
    * @return {dc.heatMap}
-   */
-  _chart.xBorderRadius = function(xBorderRadius) {
+   */ _chart.xBorderRadius = function(xBorderRadius) {
     if (!arguments.length) {
       return _xBorderRadius
     }
     _xBorderRadius = xBorderRadius
     return _chart
   }
-
-  /* OVERRIDE -----------------------------------------------------------------*/
-  _chart.renderAxisLabels = function() {
+  /* OVERRIDE -----------------------------------------------------------------*/ _chart.renderAxisLabels = function() {
     const root = _chart.root()
-
     let yLabel = root.selectAll(".y-axis-label")
-
     if (yLabel.empty()) {
       yLabel = root
         .append("div")
         .attr("class", "y-axis-label")
         .text(_yLabel)
     }
-
     yLabel.style(
       "top",
       _chart.effectiveHeight() / 2 + _chart.margins().top + "px"
     )
-
     _chart.prepareLabelEdit("y")
-
     let xLabel = root.selectAll(".x-axis-label")
-
     if (xLabel.empty()) {
       xLabel = root
         .append("div")
         .attr("class", "x-axis-label")
         .text(_xLabel)
     }
-
     xLabel.style(
       "left",
       _chart.effectiveWidth() / 2 + _chart.margins().left + "px"
     )
-
     _chart.prepareLabelEdit("x")
-  }
-
-  /* --------------------------------------------------------------------------*/
-
+  } /* --------------------------------------------------------------------------*/
   /**
    * Gets or sets the Y border radius.  Set to 0 to get full rectangles.
    * @name yBorderRadius
@@ -736,30 +730,28 @@ export default function heatMap(parent, chartGroup) {
    * @param  {Number} [yBorderRadius=6.75]
    * @return {Number}
    * @return {dc.heatMap}
-   */
-  _chart.yBorderRadius = function(yBorderRadius) {
+   */ _chart.yBorderRadius = function(yBorderRadius) {
     if (!arguments.length) {
       return _yBorderRadius
     }
     _yBorderRadius = yBorderRadius
     return _chart
   }
-
   _chart.isSelectedNode = function(d) {
-    /* OVERRIDE -----------------------------------------------------------------*/
-    return _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse()
+    /* OVERRIDE -----------------------------------------------------------------*/ return (
+      _chart.hasFilter([d.key0, d.key1]) ^ _chart.filtersInverse()
+    )
     /* --------------------------------------------------------------------------*/
   }
-
-  /* OVERRIDE ---------------------------------------------------------------- */
-  function showPopup(d, i) {
+  /* OVERRIDE ---------------------------------------------------------------- */ function showPopup(
+    d,
+    i
+  ) {
     const popup = _chart.popup()
-
     const popupBox = popup
       .select(".chart-popup-content")
       .html("")
       .classed("popup-list", true)
-
     popupBox
       .append("div")
       .attr("class", "popup-header")
@@ -769,14 +761,11 @@ export default function heatMap(parent, chartGroup) {
           " x " +
           _rowsLabel(_chart.valueAccessor()(d, i))
       )
-
     const popupItem = popupBox.append("div").attr("class", "popup-item")
-
     popupItem
       .append("div")
       .attr("class", "popup-legend")
       .style("background-color", _chart.getColor(d, i))
-
     popupItem
       .append("div")
       .attr("class", "popup-item-value")
@@ -787,29 +776,23 @@ export default function heatMap(parent, chartGroup) {
           utils.formatValue(d.color)
         )
       })
-
     popup.classed("js-showPopup", true)
   }
-
   function hidePopup() {
     _chart.popup().classed("js-showPopup", false)
   }
-
   function positionPopup() {
     let coordinates = [0, 0]
     coordinates = _chart.popupCoordinates(d3.mouse(this))
-
     const scrollNode = _chart
       .root()
       .select(".svg-wrapper")
       .node()
     const x = coordinates[0] + _dockedAxesSize.left - scrollNode.scrollLeft
     const y = coordinates[1] + _chart.margins().top - scrollNode.scrollTop
-
     const popup = _chart
       .popup()
       .attr("style", () => "transform:translate(" + x + "px," + y + "px)")
-
     popup.select(".chart-popup-box").classed("align-right", function() {
       return (
         x +
@@ -821,18 +804,14 @@ export default function heatMap(parent, chartGroup) {
       )
     })
   }
-  /* ------------------------------------------------------------------------- */
-
-  _chart.colsMap = new Map()
+  /* ------------------------------------------------------------------------- */ _chart.colsMap = new Map()
   _chart.rowsMap = new Map()
   _chart._axisPadding = { left: 36, bottom: 42 }
-
   const getMaxChars = (domain, getLabel) =>
     domain
       .map(d => (d === null ? "NULL" : d))
       .map(d => (getLabel(d) ? getLabel(d).toString().length : 0))
       .reduce((prev, curr) => Math.max(prev, curr), null)
-
   _chart.getAxisSizes = (colsDomain, rowsDomain) => ({
     left:
       Math.min(
@@ -847,17 +826,18 @@ export default function heatMap(parent, chartGroup) {
       MIN_AXIS_HEIGHT
     )
   })
-
   _chart.shouldSortYAxisDescending = data =>
-    data && data.length && isDescendingAppropriateData(data[0])
-
+    data && data.length && yAxisDataIsNonNumerical(data[0])
   _chart
     .keyAccessor(heatMapKeyAccessor.bind(_chart))
     .valueAccessor(heatMapValueAccesor.bind(_chart))
     .colorAccessor(d => d.value)
     .rowsLabel(heatMapRowsLabel.bind(_chart))
     .colsLabel(heatMapColsLabel.bind(_chart))
-
+  const keyAccessorNoFormat = heatMapKeyAccessorNoFormat.bind(_chart)
+  _chart.keyAccessorNoFormat = () => keyAccessorNoFormat
+  const valueAccessorNoFormat = heatMapValueAccesorNoFormat.bind(_chart)
+  _chart.valueAccessorNoFormat = () => valueAccessorNoFormat
   return _chart.anchor(parent, chartGroup)
 }
 /** ***************************************************************************
