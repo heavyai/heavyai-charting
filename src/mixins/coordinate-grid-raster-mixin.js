@@ -39,6 +39,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   let _filters = []
   let _initialFilters = null
   let _gridInitted = false
+  let _destroyed = false
 
   const NO_CACHE = false
   let cachedXTickFormat = NO_CACHE
@@ -340,7 +341,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   function destroy () {
-    _chart.destroyed = true
+    _destroyed = true
 
     destroyWebGL()
 
@@ -648,7 +649,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   function prepareChartBody () {
-    if (_chart.destroyed) {
+    if (_destroyed) {
       return
     }
 
@@ -696,7 +697,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     const gl = _gl
 
     const onImageLoad = (err, img) => {
-      if (_chart.destroyed) {
+      if (_destroyed) {
         return
       }
 
@@ -1326,6 +1327,9 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
 
   function doChartRender (imgUrl, renderBounds, queryId) {
+    if (_destroyed) {
+      throw new DestroyedChartError()
+    }
     initGrid()
     _chart._preprocessData()
     drawChart(true, imgUrl, renderBounds, queryId)
@@ -1338,6 +1342,10 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   function doChartRedraw (imgUrl, renderBounds, queryId) {
+    if (_destroyed) {
+      throw new DestroyedChartError()
+    }
+
     if (!_hasBeenRendered) // guard to prevent a redraw before a render
       { return doChartRender(imgUrl, renderBounds, queryId) }
 

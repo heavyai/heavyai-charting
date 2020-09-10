@@ -30,7 +30,7 @@ BadArgumentException.prototype.constructor = BadArgumentException
 // destroyed
 export class DestroyedChartError extends Error {
   constructor(message) {
-    super(message);
+    super(message)
     this.name = "DestroyedChartError"
     this.message = message || "Chart was destroyed before operation completed"
   }
