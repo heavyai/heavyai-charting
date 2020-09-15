@@ -34006,7 +34006,8 @@ function lockAxisMixin(chart) {
   }
 
   function updateMinMax(type, value) {
-    if (value.some(isNaN) || value[1] <= value[0] || type === "x" && chart.rangeChart && chart.rangeChart() && (value[0] < chart.rangeChart().x().domain()[0] || value[1] > chart.rangeChart().x().domain()[1])) {
+    var valOutOfBounds = type === "x" && chart.originalXMinMax && (value[0] < chart.originalXMinMax[0] || value[1] < chart.originalXMinMax[0] || value[0] > chart.originalXMinMax[1] || value[1] > chart.originalXMinMax[1]);
+    if (valOutOfBounds || value.some(isNaN) || value[1] <= value[0] || type === "x" && chart.rangeChart && chart.rangeChart() && (value[0] < chart.rangeChart().x().domain()[0] || value[1] > chart.rangeChart().x().domain()[1])) {
       chart.prepareLockAxis(type);
     } else {
       setAxis(type, value);
@@ -50312,15 +50313,17 @@ function heatMapColsLabel(key) {
   return customDateFormatter && customDateFormatter(rawValues || value, this.xAxisLabel()) || (0, _formattingHelpers.formatDataValue)(value);
 }
 
-function yAxisDataIsNonNumerical(_ref5) {
-  var key1 = _ref5.key1;
+function yAxisDataIsNonNumerical(datum) {
+  var _ref5 = datum || {},
+      key1 = _ref5.key1;
 
   var value = Array.isArray(key1) ? key1[0] : key1;
   return typeof value !== "number";
 }
 
-function xAxisDataIsNonNumerical(_ref6) {
-  var key0 = _ref6.key0;
+function xAxisDataIsNonNumerical(datum) {
+  var _ref6 = datum || {},
+      key0 = _ref6.key0;
 
   var value = Array.isArray(key0) ? key0[0] : key0;
   return typeof value !== "number";

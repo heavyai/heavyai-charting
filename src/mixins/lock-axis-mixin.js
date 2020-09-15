@@ -155,7 +155,15 @@ export default function lockAxisMixin(chart) {
   }
 
   function updateMinMax(type, value) {
+    const valOutOfBounds =
+      type === "x" &&
+      chart.originalXMinMax &&
+      (value[0] < chart.originalXMinMax[0] ||
+        value[1] < chart.originalXMinMax[0] ||
+        value[0] > chart.originalXMinMax[1] ||
+        value[1] > chart.originalXMinMax[1])
     if (
+      valOutOfBounds ||
       value.some(isNaN) ||
       value[1] <= value[0] ||
       (type === "x" &&
