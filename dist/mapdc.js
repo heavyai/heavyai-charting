@@ -88217,8 +88217,6 @@ var _utilsVega = __webpack_require__(21);
 
 var _mapdDraw = __webpack_require__(18);
 
-var _utils = __webpack_require__(4);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var validLayerTypes = ["points", "polys", "heat", "lines"];

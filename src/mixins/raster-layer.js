@@ -8,7 +8,7 @@ import {
   createVegaAttrMixin
 } from "../utils/utils-vega"
 import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
-import { TIME_UNITS } from "../utils/utils"
+
 const validLayerTypes = ["points", "polys", "heat", "lines"]
 
 export default function rasterLayer(layerType) {
