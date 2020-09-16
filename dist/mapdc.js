@@ -88217,6 +88217,8 @@ var _utilsVega = __webpack_require__(21);
 
 var _mapdDraw = __webpack_require__(18);
 
+var _utils = __webpack_require__(4);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var validLayerTypes = ["points", "polys", "heat", "lines"];
@@ -88469,7 +88471,7 @@ function rasterLayer(layerType) {
     var columnSet = new Set(popupColumns);
     for (var key in data) {
       if (columnSet.has(key)) {
-        newData[key] = data[key];
+        newData[key] = data[key] instanceof Date ? data[key].toUTCString() : data[key];
         if (typeof chart.useLonLat === "function" && chart.useLonLat()) {
           if (key === "x") {
             newData[key] = chart.conv900913To4326X(data[key]);

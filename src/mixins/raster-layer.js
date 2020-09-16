@@ -8,7 +8,7 @@ import {
   createVegaAttrMixin
 } from "../utils/utils-vega"
 import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
-
+import { TIME_UNITS } from "../utils/utils"
 const validLayerTypes = ["points", "polys", "heat", "lines"]
 
 export default function rasterLayer(layerType) {
@@ -285,7 +285,8 @@ export default function rasterLayer(layerType) {
     const columnSet = new Set(popupColumns)
     for (const key in data) {
       if (columnSet.has(key)) {
-        newData[key] = data[key]
+        newData[key] =
+          data[key] instanceof Date ? data[key].toUTCString() : data[key]
         if (typeof chart.useLonLat === "function" && chart.useLonLat()) {
           if (key === "x") {
             newData[key] = chart.conv900913To4326X(data[key])
