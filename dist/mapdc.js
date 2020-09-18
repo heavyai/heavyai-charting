@@ -88471,7 +88471,7 @@ function rasterLayer(layerType) {
     var columnSet = new Set(popupColumns);
     for (var key in data) {
       if (columnSet.has(key)) {
-        newData[key] = data[key];
+        newData[key] = data[key] instanceof Date ? data[key].toUTCString() : data[key];
         if (typeof chart.useLonLat === "function" && chart.useLonLat()) {
           if (key === "x") {
             newData[key] = chart.conv900913To4326X(data[key]);
