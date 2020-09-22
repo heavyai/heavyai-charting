@@ -303,6 +303,25 @@ export default function lockAxisMixin(chart) {
       .style("top", hitBoxDim.top)
       .style("left", hitBoxDim.left)
 
+    // Occasionally, the x-axis domain of a chart can be empty due to a global
+    // or chart filter. mapd-charting will see the domain extent as [NaN, NaN],
+    // and we don't want the user to lock the chart with this faulty extent. So,
+    // we're going to use this funciton to see if we should disable the axis
+    // lock feature. Conditions:
+    //  1. Only the x-axis lock togggle can be disabled (for now?)
+    //  2. We only want to prevent the user from locking the x-axis, not unlocking it
+    //  3. We want to disable it if any value in the extent === NaN
+    const shouldDisableAxisLock = () => {
+      if (type === "x" && chart.elasticX()) {
+        let xDomain = chart
+          .x()
+          .domain()
+          .slice()
+        return isNaN(xDomain[0]) || isNaN(xDomain[1])
+      }
+      return false
+    }
+
     lockWrapper
       .append("div")
       .attr("class", `lock-toggle type-${type}`)
@@ -311,7 +330,11 @@ export default function lockAxisMixin(chart) {
       )
       .style("top", iconPosition.top)
       .style("left", iconPosition.left)
-      .on("click", () => toggleLock(type))
+      .on("click", () => {
+        if (!shouldDisableAxisLock()) {
+          toggleLock(type)
+        }
+      })
 
     if (chart.rangeChart && chart.rangeChart() && type === "x") {
       lockWrapper.selectAll(".lock-toggle.type-x").remove()
