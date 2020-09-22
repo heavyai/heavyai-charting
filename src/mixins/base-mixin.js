@@ -852,6 +852,7 @@ export default function baseMixin(_chart) {
     if (refreshDisabled()) {
       return
     }
+    console.log(`data => `, data)
     _chart.dataCache =
       typeof data !== "undefined" && data !== null ? data : null
 

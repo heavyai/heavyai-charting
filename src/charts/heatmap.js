@@ -452,9 +452,11 @@ export default function heatMap(parent, chartGroup) {
     if (!_hasBeenRendered) {
       return _chart._doRender()
     }
+
     let data = _chart.data(),
       rows = _chart.rows() || data.map(_chart.valueAccessor()),
       cols = _chart.cols() || data.map(_chart.keyAccessor())
+
     if (_rowOrdering) {
       _rowOrdering = _chart.shouldSortYAxisDescending(data)
         ? utils.nullsLast(d3.descending)
@@ -464,6 +466,15 @@ export default function heatMap(parent, chartGroup) {
     if (_colOrdering) {
       cols = cols.sort(_colOrdering)
     }
+
+    // Apply manual min/max extents if their set.
+    const filterMinMax = domain => d =>
+        !domain ||
+        (d >= domain[0] && d <= domain[1]) ||
+        d === null && _chart.showNullDimensions()
+    cols = cols.filter(filterMinMax(_chart.x() && _chart.x().domain()))
+    rows = rows.filter(filterMinMax(_chart.y() && _chart.y().domain()))
+
     rows = _rowScale.domain(rows)
     cols = _colScale.domain(cols)
     _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()))
