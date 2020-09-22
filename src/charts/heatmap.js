@@ -468,17 +468,14 @@ export default function heatMap(parent, chartGroup) {
     }
 
     // Apply manual min/max extents if their set.
-    const filterMinMax = domain => d => {
-      return !domain ||
-        (d >= domain[0] && d <= domain[1]) ||
-        d === null && _chart.showNullDimensions()
-    }
+    const filterMinMax = domain => d =>
+      !domain ||
+      (d >= domain[0] && d <= domain[1]) ||
+      (d === null && _chart.showNullDimensions())
 
     cols = cols
       .filter(filterMinMax(_chart.x() && _chart.x().domain()))
-      .map(
-        d => d instanceof Date ? formatDataValue(d) : d
-      )
+      .map(d => (d instanceof Date ? formatDataValue(d) : d))
 
     rows = rows.filter(filterMinMax(_chart.y() && _chart.y().domain()))
 
