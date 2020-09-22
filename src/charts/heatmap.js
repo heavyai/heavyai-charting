@@ -455,7 +455,7 @@ export default function heatMap(parent, chartGroup) {
 
     let data = _chart.data(),
       rows = _chart.rows() || data.map(_chart.valueAccessor()),
-      cols = _chart.cols() || data.map(_chart.keyAccessor())
+      cols = _chart.cols() || data.map(heatMapKeyAccessorNoFormat.bind(_chart))
 
     if (_rowOrdering) {
       _rowOrdering = _chart.shouldSortYAxisDescending(data)
@@ -468,11 +468,18 @@ export default function heatMap(parent, chartGroup) {
     }
 
     // Apply manual min/max extents if their set.
-    const filterMinMax = domain => d =>
-        !domain ||
+    const filterMinMax = domain => d => {
+      return !domain ||
         (d >= domain[0] && d <= domain[1]) ||
         d === null && _chart.showNullDimensions()
-    cols = cols.filter(filterMinMax(_chart.x() && _chart.x().domain()))
+    }
+
+    cols = cols
+      .filter(filterMinMax(_chart.x() && _chart.x().domain()))
+      .map(
+        d => d instanceof Date ? formatDataValue(d) : d
+      )
+
     rows = rows.filter(filterMinMax(_chart.y() && _chart.y().domain()))
 
     rows = _rowScale.domain(rows)
@@ -817,7 +824,7 @@ export default function heatMap(parent, chartGroup) {
       )
     })
   }
-  /* ------------------------------------------------------------------------- */ _chart.colsMap = new Map()
+  _chart.colsMap = new Map()
   _chart.rowsMap = new Map()
   _chart._axisPadding = { left: 36, bottom: 42 }
   const getMaxChars = (domain, getLabel) =>
