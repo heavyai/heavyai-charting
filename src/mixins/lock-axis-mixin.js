@@ -328,6 +328,7 @@ export default function lockAxisMixin(chart) {
       .classed("is-locked", () =>
         type === "y" ? !chart.elasticY() : !chart.elasticX()
       )
+      .classed("disabled", shouldDisableAxisLock)
       .style("top", iconPosition.top)
       .style("left", iconPosition.left)
       .on("click", () => {
