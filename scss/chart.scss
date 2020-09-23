@@ -2123,7 +2123,7 @@ body {
     top: 0;
     left: 0;
 
-    .lock-toggle {
+    .lock-toggle:not(.disabled) {
         z-index: 1;
         opacity: 0;
         transition: opacity .25s;
