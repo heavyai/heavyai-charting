@@ -50623,7 +50623,9 @@ function heatMap(parent, chartGroup) {
       return d instanceof Date ? (0, _formattingHelpers.formatDataValue)(d) : d;
     });
 
-    rows = rows.filter(filterMinMax(_chart.y() && _chart.y().domain()));
+    rows = rows.filter(filterMinMax(_chart.y() && _chart.y().domain())).map(function (d) {
+      return d instanceof Date ? (0, _formattingHelpers.formatDataValue)(d) : d;
+    });
 
     rows = _rowScale.domain(rows);
     cols = _colScale.domain(cols);
