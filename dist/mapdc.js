@@ -50615,7 +50615,7 @@ function heatMap(parent, chartGroup) {
     // Apply manual min/max extents if their set.
     var filterMinMax = function filterMinMax(domain) {
       return function (d) {
-        return !domain || d >= domain[0] && d <= domain[1] || d === null && _chart.showNullDimensions();
+        return typeof d === "string" || !domain || d >= domain[0] && d <= domain[1] || d === null && _chart.showNullDimensions();
       };
     };
 
