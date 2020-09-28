@@ -454,7 +454,7 @@ export default function heatMap(parent, chartGroup) {
     }
 
     let data = _chart.data(),
-      rows = _chart.rows() || data.map(_chart.valueAccessor()),
+      rows = _chart.rows() || data.map(heatMapValueAccesorNoFormat.bind(_chart)),
       cols = _chart.cols() || data.map(heatMapKeyAccessorNoFormat.bind(_chart))
 
     if (_rowOrdering) {
