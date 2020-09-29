@@ -195,7 +195,6 @@ export default function lockAxisMixin(chart) {
       (type === "y"
         ? yAxisDataIsNonNumerical(data[0])
         : xAxisDataIsNonNumerical(data[0]))
-
     if (
       (chart.focusChart && chart.focusChart() && type === "y") ||
       heatDataIncompatible
