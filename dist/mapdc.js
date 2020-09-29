@@ -34096,7 +34096,7 @@ function lockAxisMixin(chart) {
 
     lockWrapper.append("div").attr("class", "lock-toggle type-" + type).classed("is-locked", function () {
       return type === "y" ? !chart.elasticY() : !chart.elasticX();
-    }).style("top", iconPosition.top).style("left", iconPosition.left).on("click", function () {
+    }).classed("disabled", shouldDisableAxisLock).style("top", iconPosition.top).style("left", iconPosition.left).on("click", function () {
       if (!shouldDisableAxisLock()) {
         toggleLock(type);
       }
