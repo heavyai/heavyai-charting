@@ -10277,10 +10277,8 @@ function coordinateGridMixin(_chart) {
   }
 
   function prepareXAxis(g, render) {
-    if (!_chart.isOrdinal()) {
-      if (_chart.elasticX() && (!_chart.rangeChart() || _chart.rangeChart() && !_chart.rangeChart().filters().length)) {
-        _x.domain([_chart.xAxisMin(), _chart.xAxisMax()]);
-      }
+    if (!_chart.isOrdinal() && _chart.elasticX() && (!_chart.rangeChart() || _chart.rangeChart() && !_chart.rangeChart().filters().length)) {
+      _x.domain([_chart.xAxisMin(), _chart.xAxisMax()]);
     } else if (_chart.elasticX() || _x.domain().length === 0) {
       _x.domain(_chart._ordinalXDomain());
     }
@@ -33510,7 +33508,6 @@ function stackMixin(_chart) {
     if (!_chart.x()) {
       return _d2.default.functor(true);
     }
-    var xDomain = _chart.x().domain();
     if (_chart.isOrdinal()) {
       // TODO #416
       // var domainSet = d3.set(xDomain);
@@ -34019,7 +34016,6 @@ function lockAxisMixin(chart) {
 
     var data = chart.data && chart.data();
     var heatDataIncompatible = chart.isHeatMap && data && Array.isArray(data) && (type === "y" ? (0, _heatmap.yAxisDataIsNonNumerical)(data[0]) : (0, _heatmap.xAxisDataIsNonNumerical)(data[0]));
-
     if (chart.focusChart && chart.focusChart() && type === "y" || heatDataIncompatible) {
       return;
     }
@@ -50621,9 +50617,11 @@ function heatMap(parent, chartGroup) {
     if (!_hasBeenRendered) {
       return _chart._doRender();
     }
+
     var data = _chart.data(),
-        rows = _chart.rows() || data.map(_chart.valueAccessor()),
-        cols = _chart.cols() || data.map(_chart.keyAccessor());
+        rows = _chart.rows() || data.map(heatMapValueAccesorNoFormat.bind(_chart)),
+        cols = _chart.cols() || data.map(heatMapKeyAccessorNoFormat.bind(_chart));
+
     if (_rowOrdering) {
       _rowOrdering = _chart.shouldSortYAxisDescending(data) ? _utils.utils.nullsLast(_d2.default.descending) : _utils.utils.nullsFirst(_d2.default.ascending);
       rows = rows.sort(_rowOrdering);
@@ -50631,6 +50629,22 @@ function heatMap(parent, chartGroup) {
     if (_colOrdering) {
       cols = cols.sort(_colOrdering);
     }
+
+    // Apply manual min/max extents if their set.
+    var filterMinMax = function filterMinMax(domain) {
+      return function (d) {
+        return typeof d === "string" || !domain || d >= domain[0] && d <= domain[1] || d === null && _chart.showNullDimensions();
+      };
+    };
+
+    cols = cols.filter(filterMinMax(_chart.x() && _chart.x().domain())).map(function (d) {
+      return d instanceof Date ? (0, _formattingHelpers.formatDataValue)(d) : d;
+    });
+
+    rows = rows.filter(filterMinMax(_chart.y() && _chart.y().domain())).map(function (d) {
+      return d instanceof Date ? (0, _formattingHelpers.formatDataValue)(d) : d;
+    });
+
     rows = _rowScale.domain(rows);
     cols = _colScale.domain(cols);
     _chart.dockedAxesSize(_chart.getAxisSizes(cols.domain(), rows.domain()));
@@ -50863,7 +50877,7 @@ function heatMap(parent, chartGroup) {
       return x + _d2.default.select(this).node().getBoundingClientRect().width > _chart.width();
     });
   }
-  /* ------------------------------------------------------------------------- */_chart.colsMap = new Map();
+  _chart.colsMap = new Map();
   _chart.rowsMap = new Map();
   _chart._axisPadding = { left: 36, bottom: 42 };
   var getMaxChars = function getMaxChars(domain, getLabel) {

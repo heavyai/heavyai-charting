@@ -521,12 +521,15 @@ export default function coordinateGridMixin (_chart) {
   }
 
   function prepareXAxis (g, render) {
-    if (!_chart.isOrdinal()) {
-      if (
-        _chart.elasticX() && (!_chart.rangeChart() || (_chart.rangeChart() && !_chart.rangeChart().filters().length))
-      ) {
+    if (
+      !_chart.isOrdinal() &&
+      _chart.elasticX() &&
+      (
+        !_chart.rangeChart() ||
+        (_chart.rangeChart() && !_chart.rangeChart().filters().length)
+      )
+    ) {
         _x.domain([_chart.xAxisMin(), _chart.xAxisMax()])
-      }
     } else if (_chart.elasticX() || _x.domain().length === 0) {
       _x.domain(_chart._ordinalXDomain())
     }

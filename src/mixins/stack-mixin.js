@@ -53,7 +53,6 @@ export default function stackMixin(_chart) {
     if (!_chart.x()) {
       return d3.functor(true)
     }
-    const xDomain = _chart.x().domain()
     if (_chart.isOrdinal()) {
       // TODO #416
       // var domainSet = d3.set(xDomain);
