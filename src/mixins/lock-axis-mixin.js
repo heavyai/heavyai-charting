@@ -154,16 +154,18 @@ export default function lockAxisMixin(chart) {
     chart.redrawAsync()
   }
 
-  const valueOutOfBounds = (value, originalMinMax) => (
+  const valueOutOfBounds = (value, originalMinMax) =>
     originalMinMax &&
     (value[0] < originalMinMax[0] ||
       value[1] < originalMinMax[0] ||
       value[0] > originalMinMax[1] ||
       value[1] > originalMinMax[1])
-  )
 
   function updateMinMax(type, value) {
-    const valOutOfBounds = valueOutOfBounds(value, type === "x" ? chart.originalXMinMax : chart.originalYMinMax)
+    const valOutOfBounds = valueOutOfBounds(
+      value,
+      type === "x" ? chart.originalXMinMax : chart.originalYMinMax
+    )
     if (
       valOutOfBounds ||
       value.some(isNaN) ||
@@ -314,7 +316,7 @@ export default function lockAxisMixin(chart) {
     //  3. We want to disable it if any value in the extent === NaN
     const shouldDisableAxisLock = () => {
       if (type === "x" && chart.elasticX()) {
-        let xDomain = chart
+        const xDomain = chart
           .x()
           .domain()
           .slice()
