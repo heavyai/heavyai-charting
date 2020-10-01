@@ -34002,8 +34002,12 @@ function lockAxisMixin(chart) {
     chart.redrawAsync();
   }
 
+  var valueOutOfBounds = function valueOutOfBounds(value, originalMinMax) {
+    return originalMinMax && (value[0] < originalMinMax[0] || value[1] < originalMinMax[0] || value[0] > originalMinMax[1] || value[1] > originalMinMax[1]);
+  };
+
   function updateMinMax(type, value) {
-    var valOutOfBounds = type === "x" && chart.originalXMinMax && (value[0] < chart.originalXMinMax[0] || value[1] < chart.originalXMinMax[0] || value[0] > chart.originalXMinMax[1] || value[1] > chart.originalXMinMax[1]);
+    var valOutOfBounds = valueOutOfBounds(value, type === "x" ? chart.originalXMinMax : chart.originalYMinMax);
     if (valOutOfBounds || value.some(isNaN) || value[1] <= value[0] || type === "x" && chart.rangeChart && chart.rangeChart() && (value[0] < chart.rangeChart().x().domain()[0] || value[1] > chart.rangeChart().x().domain()[1])) {
       chart.prepareLockAxis(type);
     } else {
