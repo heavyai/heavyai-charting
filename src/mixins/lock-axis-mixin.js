@@ -154,14 +154,16 @@ export default function lockAxisMixin(chart) {
     chart.redrawAsync()
   }
 
+  const valueOutOfBounds = (value, originalMinMax) => (
+    originalMinMax &&
+    (value[0] < originalMinMax[0] ||
+      value[1] < originalMinMax[0] ||
+      value[0] > originalMinMax[1] ||
+      value[1] > originalMinMax[1])
+  )
+
   function updateMinMax(type, value) {
-    const valOutOfBounds =
-      type === "x" &&
-      chart.originalXMinMax &&
-      (value[0] < chart.originalXMinMax[0] ||
-        value[1] < chart.originalXMinMax[0] ||
-        value[0] > chart.originalXMinMax[1] ||
-        value[1] > chart.originalXMinMax[1])
+    const valOutOfBounds = valueOutOfBounds(value, type === "x" ? chart.originalXMinMax : chart.originalYMinMax)
     if (
       valOutOfBounds ||
       value.some(isNaN) ||
