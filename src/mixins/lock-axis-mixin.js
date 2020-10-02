@@ -3,8 +3,8 @@ import { formatDataValue } from "../utils/formatting-helpers"
 import moment from "moment"
 import { utils } from "../utils/utils"
 import {
-  xAxisDataIsNonNumerical,
-  yAxisDataIsNonNumerical
+  xAxisDataIsNonNumerical, xDatumValueIsNonNull,
+  yAxisDataIsNonNumerical, yDatumValueIsNonNull
 } from "../charts/heatmap"
 
 const CHART_HEIGHT = 0.75
@@ -197,8 +197,8 @@ export default function lockAxisMixin(chart) {
       data &&
       Array.isArray(data) &&
       (type === "y"
-        ? yAxisDataIsNonNumerical(data[0])
-        : xAxisDataIsNonNumerical(data[0]))
+        ? yAxisDataIsNonNumerical(data.find(yDatumValueIsNonNull))
+        : xAxisDataIsNonNumerical(data.find(xDatumValueIsNonNull)))
     if (
       (chart.focusChart && chart.focusChart() && type === "y") ||
       heatDataIncompatible

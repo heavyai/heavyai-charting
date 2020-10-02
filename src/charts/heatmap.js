@@ -129,13 +129,23 @@ export function heatMapColsLabel(key) {
   )
 }
 
-export function yAxisDataIsNonNumerical(datum) {
+export const yDatumValueIsNonNull = datum => {
+  const { key1 } = datum || {}
+  return (Array.isArray(key1) ? key1[0] : key1) !== null
+}
+
+export const xDatumValueIsNonNull = datum => {
+  const { key0 } = datum || {}
+  return (Array.isArray(key0) ? key0[0] : key0) !== null
+}
+
+export const yAxisDataIsNonNumerical = (datum) => {
   const { key1 } = datum || {}
   const value = Array.isArray(key1) ? key1[0] : key1
   return typeof value !== "number"
 }
 
-export function xAxisDataIsNonNumerical(datum) {
+export const xAxisDataIsNonNumerical = (datum) => {
   const { key0 } = datum || {}
   const value = Array.isArray(key0) ? key0[0] : key0
   return typeof value !== "number"
