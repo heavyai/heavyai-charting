@@ -517,15 +517,21 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     if (_chart.isLoaded()) {
       if (Object.keys(data).length) {
         _chart._setOverlay({
-          data : data.image,
-          bounds : _renderBoundsMap[data.nonce],
-          nonse : data.nonce,
+          data: data.image,
+          bounds: _renderBoundsMap[data.nonce],
+          nonse: data.nonce,
           browser,
-          redraw : Boolean(redraw)
+          redraw: Boolean(redraw)
         })
         _hasBeenRendered = true
       } else {
-        _chart._setOverlay({data : null, bounds : null, nonse : null, browser, redraw: Boolean(redraw)})
+        _chart._setOverlay({
+          data: null,
+          bounds: null,
+          nonse: null,
+          browser,
+          redraw: Boolean(redraw)
+        })
       }
     } else {
       _chart.map().once("style.load", () => {

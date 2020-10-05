@@ -214,7 +214,7 @@ export default function scatterMixin(_chart, _mapboxgl, mixinDraw = true) {
     return _chart
   }
 
-  _chart._setOverlay = function({data, bounds, nonce, browser, redraw}) {
+  _chart._setOverlay = function({ data, bounds, nonce, browser, redraw }) {
     if (bounds === undefined) {
       return
     }
