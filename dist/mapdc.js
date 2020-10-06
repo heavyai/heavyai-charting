@@ -34015,11 +34015,23 @@ function lockAxisMixin(chart) {
     }
   }
 
+  var getFirstNonNullDatumForAxis = function getFirstNonNullDatumForAxis(data, axisType) {
+    var keyName = "key" + (axisType === "x" ? "0" : "1");
+    return data && Array.isArray(data) && data.find(function () {
+      var datum = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var keyVal = datum[keyName];
+      var value = Array.isArray(keyVal) ? keyVal[0] : keyVal;
+      return value !== null;
+    });
+  };
+
   chart.prepareLockAxis = function () {
     var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "y";
 
     var data = chart.data && chart.data();
-    var heatDataIncompatible = chart.isHeatMap && data && Array.isArray(data) && (type === "y" ? (0, _heatmap.yAxisDataIsNonNumerical)(data[0]) : (0, _heatmap.xAxisDataIsNonNumerical)(data[0]));
+    var firstNonNullDatum = getFirstNonNullDatumForAxis(data, type);
+    var heatDataIncompatible = chart.isHeatMap && data && Array.isArray(data) && firstNonNullDatum && (type === "y" ? (0, _heatmap.yAxisDataIsNonNumerical)(firstNonNullDatum) : (0, _heatmap.xAxisDataIsNonNumerical)(firstNonNullDatum));
     if (chart.focusChart && chart.focusChart() && type === "y" || heatDataIncompatible) {
       return;
     }
