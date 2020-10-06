@@ -78837,12 +78837,32 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
   function getCountFromBoundingBox(chart, _layer) {
     var mapBounds = chart.map().getBounds();
-    var geoTable = _layer.getState().encoding.geoTable;
-    var geoCol = _layer.getState().encoding.geocol;
+
+    var layerState = _layer.getState();
+
+    var geoTable = layerState.encoding.geoTable;
+    var geoCol = layerState.encoding.geocol;
+
+    var dataTables = layerState.data.map(function (_ref) {
+      var table = _ref.table;
+      return table;
+    }).filter(function (table) {
+      return table !== geoTable;
+    });
 
     var preflightQuery = "SELECT COUNT(*) AS n FROM " + geoTable + " WHERE ST_XMax(" + geoTable + "." + geoCol + ") >= " + mapBounds._sw.lng + " AND ST_XMin(" + geoTable + "." + geoCol + ") <= " + mapBounds._ne.lng + " AND ST_YMax(" + geoTable + "." + geoCol + ") >= " + mapBounds._sw.lat + " AND ST_YMin(" + geoTable + "." + geoCol + ") <= " + mapBounds._ne.lat;
 
-    return chart.con().queryAsync(preflightQuery, {});
+    var neon = _extends({
+      type: "chart",
+      reason: "bbox count",
+      dcFlag: chart.__dcFlag__,
+      layerId: layerState.currentLayer,
+      table: geoTable
+    }, dataTables.length > 0 ? {
+      factTable: dataTables[0]
+    } : {});
+
+    return chart.con().queryAsync(preflightQuery, { neon: neon });
   }
 
   function handleRenderVega(callback) {
@@ -78850,7 +78870,16 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart._updateXAndYScales(bounds);
 
     _chart._vegaSpec = genLayeredVega(_chart);
-    _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
+
+    var neon = {
+      type: "render",
+      dcFlag: _chart.__dcFlag__,
+      vegaSpec: _chart._vegaSpec
+    };
+
+    _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {
+      neon: neon
+    }).then(function (result) {
       _renderBoundsMap[result.nonce] = bounds;
       callback(null, result);
     }).catch(function (error) {
@@ -78895,7 +78924,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     _chart._vegaSpec = genLayeredVega(_chart, group, (0, _coreAsync.lastFilteredSize)(group.getCrossfilterId()));
 
-    var result = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec));
+    var neon = {
+      type: "render",
+      dcFlag: _chart.__dcFlag__,
+      vegaSpec: _chart._vegaSpec
+    };
+
+    var result = _chart.con().renderVega(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), { neon: neon });
 
     _renderBoundsMap[result.nonce] = bounds;
     return result;
