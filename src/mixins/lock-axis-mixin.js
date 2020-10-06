@@ -192,12 +192,15 @@ export default function lockAxisMixin(chart) {
 
   const getFirstNonNullDatumForAxis = (data, axisType) => {
     const keyName = `key${axisType === "x" ? "0" : "1"}`
-    return data &&
-      Array.isArray(data) && data.find((datum = {}) => {
+    return (
+      data &&
+      Array.isArray(data) &&
+      data.find((datum = {}) => {
         const keyVal = datum[keyName]
         const value = Array.isArray(keyVal) ? keyVal[0] : keyVal
         return value !== null
       })
+    )
   }
 
   chart.prepareLockAxis = function(type = "y") {
