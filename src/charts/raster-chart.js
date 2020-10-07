@@ -292,7 +292,9 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       .con()
       .renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {})
       .then(result => {
-        _renderBoundsMap[result.nonce] = bounds
+        if (!window || !window.paused) {
+          _renderBoundsMap[result.nonce] = bounds
+        }
         callback(null, result)
       })
       .catch(error => {
@@ -514,16 +516,22 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     if (_chart.isLoaded()) {
       if (Object.keys(data).length) {
-        _chart._setOverlay(
-          data.image,
-          _renderBoundsMap[data.nonce],
-          data.nonce,
+        _chart._setOverlay({
+          data: data.image,
+          bounds: _renderBoundsMap[data.nonce],
+          nonse: data.nonce,
           browser,
-          Boolean(redraw)
-        )
+          redraw: Boolean(redraw)
+        })
         _hasBeenRendered = true
       } else {
-        _chart._setOverlay(null, null, null, browser, Boolean(redraw))
+        _chart._setOverlay({
+          data: null,
+          bounds: null,
+          nonse: null,
+          browser,
+          redraw: Boolean(redraw)
+        })
       }
     } else {
       _chart.map().once("style.load", () => {

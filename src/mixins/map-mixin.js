@@ -514,7 +514,7 @@ export default function mapMixin(
     }
   }
 
-  _chart._setOverlay = function(data, bounds, browser, redraw) {
+  _chart._setOverlay = function({ data, bounds, browser, redraw }) {
     const map = _chart.map()
 
     const allMapboxCanvasContainer = document.getElementsByClassName(
