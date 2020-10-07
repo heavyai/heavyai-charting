@@ -79059,7 +79059,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         });
         _hasBeenRendered = true;
       } else {
-        _chart._setOverlay({ data: null, bounds: null, nonse: null, browser: browser, redraw: Boolean(redraw) });
+        _chart._setOverlay({
+          data: null,
+          bounds: null,
+          nonse: null,
+          browser: browser,
+          redraw: Boolean(redraw)
+        });
       }
     } else {
       _chart.map().once("style.load", function () {
