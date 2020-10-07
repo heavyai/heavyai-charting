@@ -849,7 +849,10 @@ export default function heatMap(parent, chartGroup) {
     )
   })
 
-  _chart.shouldSortYAxisDescending = data => data && data.length && yAxisDataIsNonNumerical(getFirstNonNullDatumForAxis(data, "y"))
+  _chart.shouldSortYAxisDescending = data =>
+    data &&
+    data.length &&
+    yAxisDataIsNonNumerical(getFirstNonNullDatumForAxis(data, "y"))
 
   _chart
     .keyAccessor(heatMapKeyAccessor.bind(_chart))

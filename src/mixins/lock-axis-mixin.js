@@ -285,7 +285,9 @@ export default function lockAxisMixin(chart) {
       }
       const minMaxIsAscending = minMax[0] < minMax[1]
       const rowsAreAscending = firstRowValue < lastRowValue
-      shouldFlipYMinMax = firstRowValue !== lastRowValue && !minMaxIsAscending === rowsAreAscending
+      shouldFlipYMinMax =
+        firstRowValue !== lastRowValue &&
+        !minMaxIsAscending === rowsAreAscending
       if (shouldFlipYMinMax) {
         minMax.reverse()
       }
