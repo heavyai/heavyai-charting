@@ -34656,7 +34656,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     }
   };
 
-  _chart._setOverlay = function (data, bounds, browser, redraw) {
+  _chart._setOverlay = function (_ref3) {
+    var data = _ref3.data,
+        bounds = _ref3.bounds,
+        browser = _ref3.browser,
+        redraw = _ref3.redraw;
+
     var map = _chart.map();
 
     var allMapboxCanvasContainer = document.getElementsByClassName("mapboxgl-canvas-container");
@@ -53964,7 +53969,13 @@ function scatterMixin(_chart, _mapboxgl) {
     return _chart;
   };
 
-  _chart._setOverlay = function (data, bounds, nonce, browser, redraw) {
+  _chart._setOverlay = function (_ref) {
+    var data = _ref.data,
+        bounds = _ref.bounds,
+        nonce = _ref.nonce,
+        browser = _ref.browser,
+        redraw = _ref.redraw;
+
     if (bounds === undefined) {
       return;
     }
@@ -78851,7 +78862,9 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     _chart._vegaSpec = genLayeredVega(_chart);
     _chart.con().renderVegaAsync(_chart.__dcFlag__, JSON.stringify(_chart._vegaSpec), {}).then(function (result) {
-      _renderBoundsMap[result.nonce] = bounds;
+      if (!window || !window.paused) {
+        _renderBoundsMap[result.nonce] = bounds;
+      }
       callback(null, result);
     }).catch(function (error) {
       callback(error);
@@ -79037,10 +79050,22 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
 
     if (_chart.isLoaded()) {
       if (Object.keys(data).length) {
-        _chart._setOverlay(data.image, _renderBoundsMap[data.nonce], data.nonce, browser, Boolean(redraw));
+        _chart._setOverlay({
+          data: data.image,
+          bounds: _renderBoundsMap[data.nonce],
+          nonse: data.nonce,
+          browser: browser,
+          redraw: Boolean(redraw)
+        });
         _hasBeenRendered = true;
       } else {
-        _chart._setOverlay(null, null, null, browser, Boolean(redraw));
+        _chart._setOverlay({
+          data: null,
+          bounds: null,
+          nonse: null,
+          browser: browser,
+          redraw: Boolean(redraw)
+        });
       }
     } else {
       _chart.map().once("style.load", function () {
