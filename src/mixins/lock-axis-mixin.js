@@ -190,15 +190,30 @@ export default function lockAxisMixin(chart) {
     }
   }
 
+  const getFirstNonNullDatumForAxis = (data, axisType) => {
+    const keyName = `key${axisType === "x" ? "0" : "1"}`
+    return (
+      data &&
+      Array.isArray(data) &&
+      data.find((datum = {}) => {
+        const keyVal = datum[keyName]
+        const value = Array.isArray(keyVal) ? keyVal[0] : keyVal
+        return value !== null
+      })
+    )
+  }
+
   chart.prepareLockAxis = function(type = "y") {
     const data = chart.data && chart.data()
+    const firstNonNullDatum = getFirstNonNullDatumForAxis(data, type)
     const heatDataIncompatible =
       chart.isHeatMap &&
       data &&
       Array.isArray(data) &&
+      firstNonNullDatum &&
       (type === "y"
-        ? yAxisDataIsNonNumerical(data[0])
-        : xAxisDataIsNonNumerical(data[0]))
+        ? yAxisDataIsNonNumerical(firstNonNullDatum)
+        : xAxisDataIsNonNumerical(firstNonNullDatum))
     if (
       (chart.focusChart && chart.focusChart() && type === "y") ||
       heatDataIncompatible
