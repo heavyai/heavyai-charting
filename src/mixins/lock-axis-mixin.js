@@ -6,6 +6,7 @@ import {
   xAxisDataIsNonNumerical,
   yAxisDataIsNonNumerical
 } from "../charts/heatmap"
+import { getFirstNonNullDatumForAxis } from "../utils/binning-helpers"
 
 const CHART_HEIGHT = 0.75
 const TOGGLE_SIZE = 24
@@ -190,19 +191,6 @@ export default function lockAxisMixin(chart) {
     }
   }
 
-  const getFirstNonNullDatumForAxis = (data, axisType) => {
-    const keyName = `key${axisType === "x" ? "0" : "1"}`
-    return (
-      data &&
-      Array.isArray(data) &&
-      data.find((datum = {}) => {
-        const keyVal = datum[keyName]
-        const value = Array.isArray(keyVal) ? keyVal[0] : keyVal
-        return value !== null
-      })
-    )
-  }
-
   chart.prepareLockAxis = function(type = "y") {
     const data = chart.data && chart.data()
     const firstNonNullDatum = getFirstNonNullDatumForAxis(data, type)
@@ -297,7 +285,9 @@ export default function lockAxisMixin(chart) {
       }
       const minMaxIsAscending = minMax[0] < minMax[1]
       const rowsAreAscending = firstRowValue < lastRowValue
-      shouldFlipYMinMax = !minMaxIsAscending === rowsAreAscending
+      shouldFlipYMinMax =
+        firstRowValue !== lastRowValue &&
+        !minMaxIsAscending === rowsAreAscending
       if (shouldFlipYMinMax) {
         minMax.reverse()
       }

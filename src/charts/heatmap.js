@@ -7,6 +7,7 @@ import { override, transition } from "../core/core"
 import { utils } from "../utils/utils"
 import { filters } from "../core/filters"
 import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
+import { getFirstNonNullDatumForAxis } from "../utils/binning-helpers"
 
 /** ***************************************************************************
  * OVERRIDE: dc.heatMap                                                       *
@@ -847,8 +848,12 @@ export default function heatMap(parent, chartGroup) {
       MIN_AXIS_HEIGHT
     )
   })
+
   _chart.shouldSortYAxisDescending = data =>
-    data && data.length && yAxisDataIsNonNumerical(data[0])
+    data &&
+    data.length &&
+    yAxisDataIsNonNumerical(getFirstNonNullDatumForAxis(data, "y"))
+
   _chart
     .keyAccessor(heatMapKeyAccessor.bind(_chart))
     .valueAccessor(heatMapValueAccesor.bind(_chart))
