@@ -47,9 +47,10 @@ export function heatMapKeyAccessor({ key0 }) {
   }
 }
 
-export const heatMapKeyAccessorNoFormat = function({ key0 }) {
+export const heatMapKeyAccessorNoFormat = function({ key0 }, forceMax) {
   if (Array.isArray(key0)) {
-    const key0Val = isArrayOfObjects(key0) ? key0[0].value : key0[0]
+    const keyIndex = forceMax ? 1 : 0
+    const key0Val = isArrayOfObjects(key0) ? key0[keyIndex].value : key0[keyIndex]
     this.colsMap.set(key0Val, key0)
     return key0Val
   } else {
@@ -68,9 +69,10 @@ export function heatMapValueAccesor({ key1 }) {
   }
 }
 
-export function heatMapValueAccesorNoFormat({ key1 }) {
+export function heatMapValueAccesorNoFormat({ key1 }, forceMax) {
   if (Array.isArray(key1)) {
-    const key1Val = isArrayOfObjects(key1) ? key1[0].value : key1[0]
+    const valueIndex = forceMax ? 1 : 0
+    const key1Val = isArrayOfObjects(key1) ? key1[valueIndex].value : key1[valueIndex]
     this.rowsMap.set(key1Val, key1)
     return key1Val
   } else {
@@ -453,11 +455,10 @@ export default function heatMap(parent, chartGroup) {
     if (!_hasBeenRendered) {
       return _chart._doRender()
     }
-
     let data = _chart.data(),
       rows =
-        _chart.rows() || data.map(heatMapValueAccesorNoFormat.bind(_chart)),
-      cols = _chart.cols() || data.map(heatMapKeyAccessorNoFormat.bind(_chart))
+        _chart.rows() || data.map(_chart.valueAccessorNoFormat()),
+      cols = _chart.cols() || data.map(_chart.keyAccessorNoFormat())
 
     if (_rowOrdering) {
       _rowOrdering = _chart.shouldSortYAxisDescending(data)
@@ -861,9 +862,9 @@ export default function heatMap(parent, chartGroup) {
     .rowsLabel(heatMapRowsLabel.bind(_chart))
     .colsLabel(heatMapColsLabel.bind(_chart))
   const keyAccessorNoFormat = heatMapKeyAccessorNoFormat.bind(_chart)
-  _chart.keyAccessorNoFormat = () => keyAccessorNoFormat
+  _chart.keyAccessorNoFormat = (forceMax = false) => datum => keyAccessorNoFormat(datum, forceMax)
   const valueAccessorNoFormat = heatMapValueAccesorNoFormat.bind(_chart)
-  _chart.valueAccessorNoFormat = () => valueAccessorNoFormat
+  _chart.valueAccessorNoFormat = (forceMax = false) => datum => valueAccessorNoFormat(datum, forceMax)
   return _chart.anchor(parent, chartGroup)
 }
 /** ***************************************************************************
