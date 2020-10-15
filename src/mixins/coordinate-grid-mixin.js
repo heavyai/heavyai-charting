@@ -1032,7 +1032,6 @@ export default function coordinateGridMixin (_chart) {
       * @return {*}
       */
   _chart.xAxisMax = function () {
-    console.log(`d3.max(_chart.data(), chooseKeyAccessor) => `, d3.max(_chart.data(), chooseKeyAccessor(true)))
     const max = d3.max(_chart.data(), chooseKeyAccessor(true))
     const min = d3.min(_chart.data(), chooseKeyAccessor())
     const result = utils.add(max, _xAxisPadding, max - min)

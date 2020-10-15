@@ -47,7 +47,7 @@ export function heatMapKeyAccessor({ key0 }) {
   }
 }
 
-export const heatMapKeyAccessorNoFormat = function({ key0 }, forceMax) {
+export const heatMapKeyAccessorNoFormat = function({ key0 }, forceMax = false) {
   if (Array.isArray(key0)) {
     const keyIndex = forceMax ? 1 : 0
     const key0Val = isArrayOfObjects(key0)
@@ -71,7 +71,7 @@ export function heatMapValueAccesor({ key1 }) {
   }
 }
 
-export function heatMapValueAccesorNoFormat({ key1 }, forceMax) {
+export function heatMapValueAccesorNoFormat({ key1 }, forceMax = false) {
   if (Array.isArray(key1)) {
     const valueIndex = forceMax ? 1 : 0
     const key1Val = isArrayOfObjects(key1)
