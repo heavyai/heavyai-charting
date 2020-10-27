@@ -189,7 +189,7 @@ export function isEqualToRenderCount(queryCount) {
   return ++_renderCount === queryCount
 }
 
-export function redrawAllAsync(group, allCharts) {
+export function redrawAllAsync(group, allCharts, excludeChart) {
   if (refreshDisabled()) {
     const charts = allCharts
       ? chartRegistry.listAll()
@@ -208,16 +208,26 @@ export function redrawAllAsync(group, allCharts) {
     _startRedrawTime = new Date()
 
     const createRedrawPromises = () => {
-      const charts = allCharts
+      let charts = allCharts
         ? chartRegistry.listAll()
         : chartRegistry.list(group)
+      if (excludeChart) {
+        charts = charts.filter(c => c.__dcFlag__ !== excludeChart.__dcFlag__)
+      }
       return charts.map(chart => {
         chart.expireCache()
         chart._invokeDataFetchListener()
-        return chart.redrawAsync(queryGroupId, charts.length).catch(e => {
-          chart._invokeDataErrorListener(e)
-          throw e
-        })
+        // We have to force a render for HEATMAP, not redraw for crossfilters to
+        //  work properly.  Mea culpa, mea culpa.
+        return chart.isHeatMap
+          ? chart.renderAsync(queryGroupId, charts.length).catch(e => {
+              chart._invokeDataErrorListener(e)
+              throw e
+            })
+          : chart.redrawAsync(queryGroupId, charts.length).catch(e => {
+              chart._invokeDataErrorListener(e)
+              throw e
+            })
       })
     }
 
