@@ -79079,7 +79079,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         _chart._setOverlay({
           data: data.image,
           bounds: _renderBoundsMap[data.nonce],
-          nonse: data.nonce,
+          nonce: data.nonce,
           browser: browser,
           redraw: Boolean(redraw)
         });
@@ -79088,7 +79088,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         _chart._setOverlay({
           data: null,
           bounds: null,
-          nonse: null,
+          nonce: null,
           browser: browser,
           redraw: Boolean(redraw)
         });

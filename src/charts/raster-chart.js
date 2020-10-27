@@ -519,7 +519,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         _chart._setOverlay({
           data: data.image,
           bounds: _renderBoundsMap[data.nonce],
-          nonse: data.nonce,
+          nonce: data.nonce,
           browser,
           redraw: Boolean(redraw)
         })
@@ -528,7 +528,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         _chart._setOverlay({
           data: null,
           bounds: null,
-          nonse: null,
+          nonce: null,
           browser,
           redraw: Boolean(redraw)
         })
