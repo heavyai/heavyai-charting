@@ -6335,7 +6335,7 @@ function isEqualToRenderCount(queryCount) {
   return ++_renderCount === queryCount;
 }
 
-function redrawAllAsync(group, allCharts) {
+function redrawAllAsync(group, allCharts, excludeChart) {
   if ((0, _core.refreshDisabled)()) {
     var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
     return Promise.resolve(charts);
@@ -6351,10 +6351,20 @@ function redrawAllAsync(group, allCharts) {
 
     var createRedrawPromises = function createRedrawPromises() {
       var charts = allCharts ? _core.chartRegistry.listAll() : _core.chartRegistry.list(group);
+      if (excludeChart) {
+        charts = charts.filter(function (c) {
+          return c.__dcFlag__ !== excludeChart.__dcFlag__;
+        });
+      }
       return charts.map(function (chart) {
         chart.expireCache();
         chart._invokeDataFetchListener();
-        return chart.redrawAsync(queryGroupId, charts.length).catch(function (e) {
+        // We have to force a render for HEATMAP, not redraw for crossfilters to
+        //  work properly.  Mea culpa, mea culpa.
+        return chart.isHeatMap ? chart.renderAsync(queryGroupId, charts.length).catch(function (e) {
+          chart._invokeDataErrorListener(e);
+          throw e;
+        }) : chart.redrawAsync(queryGroupId, charts.length).catch(function (e) {
           chart._invokeDataErrorListener(e);
           throw e;
         });
@@ -10720,7 +10730,6 @@ function coordinateGridMixin(_chart) {
       * @return {*}
       */
   _chart.xAxisMax = function () {
-    console.log("d3.max(_chart.data(), chooseKeyAccessor) => ", _d2.default.max(_chart.data(), chooseKeyAccessor(true)));
     var max = _d2.default.max(_chart.data(), chooseKeyAccessor(true));
     var min = _d2.default.min(_chart.data(), chooseKeyAccessor());
     var result = _utils.utils.add(max, _xAxisPadding, max - min);
@@ -12254,11 +12263,10 @@ var createBinParams = exports.createBinParams = function createBinParams(chart, 
 };
 
 var getFirstNonNullDatumForAxis = exports.getFirstNonNullDatumForAxis = function getFirstNonNullDatumForAxis(data, axisType) {
-  var keyName = "key" + (axisType === "x" ? "0" : "1");
   return data && Array.isArray(data) && data.find(function () {
     var datum = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-    var keyVal = datum[keyName];
+    var keyVal = datum["key" + (axisType === "x" ? "0" : "1")];
     var value = Array.isArray(keyVal) ? keyVal[0] : keyVal;
     return value !== null;
   });
@@ -50270,8 +50278,9 @@ function heatMapKeyAccessor(_ref) {
   }
 }
 
-var heatMapKeyAccessorNoFormat = exports.heatMapKeyAccessorNoFormat = function heatMapKeyAccessorNoFormat(_ref2, forceMax) {
+var heatMapKeyAccessorNoFormat = exports.heatMapKeyAccessorNoFormat = function heatMapKeyAccessorNoFormat(_ref2) {
   var key0 = _ref2.key0;
+  var forceMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
   if (Array.isArray(key0)) {
     var keyIndex = forceMax ? 1 : 0;
@@ -50296,8 +50305,9 @@ function heatMapValueAccesor(_ref3) {
   }
 }
 
-function heatMapValueAccesorNoFormat(_ref4, forceMax) {
+function heatMapValueAccesorNoFormat(_ref4) {
   var key1 = _ref4.key1;
+  var forceMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
   if (Array.isArray(key1)) {
     var valueIndex = forceMax ? 1 : 0;
