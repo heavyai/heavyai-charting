@@ -47,6 +47,7 @@ export function heatMapKeyAccessor({ key0 }) {
   }
 }
 
+// TODO - remove me. Trying to get TravisCI to work
 export const heatMapKeyAccessorNoFormat = function({ key0 }, forceMax = false) {
   if (Array.isArray(key0)) {
     const keyIndex = forceMax && key0[1] ? 1 : 0
