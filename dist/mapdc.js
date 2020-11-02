@@ -34249,6 +34249,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   var _center = [0, 30];
   var _zoom = 1;
   var _attribLocation = "bottom-right";
+
   var _popupFunction = null;
   var _colorBy = null;
   var _mouseLeave = false;
@@ -34263,6 +34264,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
   var _arr = [[LONMIN, LATMIN], [LONMAX, LATMAX]];
 
   var _llb = _mapboxgl.LngLatBounds.convert(_arr);
+  var _initialBounds = _llb;
 
   var _geocoder = null;
 
@@ -34294,6 +34296,10 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 
   _chart.latMax = function () {
     return LATMAX;
+  };
+
+  _chart.setInitialBounds = function (newBounds) {
+    _initialBounds = newBounds;
   };
 
   function makeBoundsArrSafe(_ref) {
@@ -34776,6 +34782,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       center: _center, // starting position
       zoom: _zoom, // starting zoom
       maxBounds: _llb,
+      fitBounds: _initialBounds,
       preserveDrawingBuffer: true,
       attributionControl: false,
       logoPosition: "bottom-right"
