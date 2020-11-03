@@ -34782,10 +34782,12 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
       center: _center, // starting position
       zoom: _zoom, // starting zoom
       maxBounds: _llb,
-      fitBounds: _initialBounds,
       preserveDrawingBuffer: true,
       attributionControl: false,
       logoPosition: "bottom-right"
+    }).fitBounds([_initialBounds._sw, _initialBounds._ne], {
+      linear: true,
+      duration: 0
     });
 
     _map.dragRotate.disable();
