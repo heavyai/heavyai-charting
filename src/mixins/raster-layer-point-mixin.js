@@ -195,11 +195,20 @@ export default function rasterLayerPointMixin(_layer) {
       }
 
       if (hoverSelectedColumns && hoverSelectedColumns.length) {
-        hoverSelectedColumns.filter(hoverColumn => hoverColumn !== "x" && hoverColumn !== "y" && hoverColumn !== "key0" && hoverColumn !== "size" && hoverColumn !== "color").forEach(hoverColumn => {
-          fields.push(hoverColumn)
-          alias.push(hoverColumn)
-          ops.push("MIN")
-        })
+        hoverSelectedColumns
+          .filter(
+            hoverColumn =>
+              hoverColumn !== "x" &&
+              hoverColumn !== "y" &&
+              hoverColumn !== "key0" &&
+              hoverColumn !== "size" &&
+              hoverColumn !== "color"
+          )
+          .forEach(hoverColumn => {
+            fields.push(hoverColumn)
+            alias.push(hoverColumn)
+            ops.push("MIN")
+          })
       }
 
       // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
