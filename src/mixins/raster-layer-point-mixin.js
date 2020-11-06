@@ -168,6 +168,7 @@ export default function rasterLayerPointMixin(_layer) {
     isDataExport
   ) {
     const transforms = []
+    const hoverSelectedColumns = _layer.popupColumns()
 
     if (
       typeof transform === "object" &&
@@ -192,6 +193,15 @@ export default function rasterLayerPointMixin(_layer) {
         alias.push("color")
         ops.push(color.aggregate)
       }
+
+      if (hoverSelectedColumns && hoverSelectedColumns.length) {
+        hoverSelectedColumns.filter(hoverColumn => hoverColumn !== "x" && hoverColumn !== "y" && hoverColumn !== "key0" && hoverColumn !== "size" && hoverColumn !== "color").forEach(hoverColumn => {
+          fields.push(hoverColumn)
+          alias.push(hoverColumn)
+          ops.push("MIN")
+        })
+      }
+
       // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
       // The reason is ST_Point projections need buffer allocation to hold the coords and thus require cpu execution
       transforms.push({
