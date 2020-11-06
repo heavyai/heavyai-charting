@@ -47,6 +47,7 @@ export default function mapMixin(
   let _center = [0, 30]
   let _zoom = 1
   let _attribLocation = "bottom-right"
+
   const _popupFunction = null
   let _colorBy = null
   const _mouseLeave = false
@@ -61,6 +62,7 @@ export default function mapMixin(
   const _arr = [[LONMIN, LATMIN], [LONMAX, LATMAX]]
 
   const _llb = _mapboxgl.LngLatBounds.convert(_arr)
+  let _initialBounds = _llb
 
   let _geocoder = null
 
@@ -92,6 +94,10 @@ export default function mapMixin(
 
   _chart.latMax = function() {
     return LATMAX
+  }
+
+  _chart.setInitialBounds = function(newBounds) {
+    _initialBounds = newBounds
   }
 
   function makeBoundsArrSafe([[lowerLon, lowerLat], [upperLon, upperLat]]) {
@@ -641,6 +647,9 @@ export default function mapMixin(
       preserveDrawingBuffer: true,
       attributionControl: false,
       logoPosition: "bottom-right"
+    }).fitBounds([_initialBounds._sw, _initialBounds._ne], {
+      linear: true,
+      duration: 0
     })
 
     _map.dragRotate.disable()
