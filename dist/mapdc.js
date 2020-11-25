@@ -79160,7 +79160,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart.con().getResultRowForPixelAsync(_chart.__dcFlag__, pixel, layerObj, Math.ceil(_popupSearchRadius * pixelRatio)).then(function (results) {
       return callback(results[0]);
     }).catch(function (error) {
-      throw new Error("getResultRowForPixel failed with message: " + error.message);
+      throw new Error("getResultRowForPixel failed with message: " + error.error_msg);
     });
   };
 
@@ -88537,15 +88537,19 @@ function rasterLayer(layerType) {
     var dim = _layer.group() || _layer.dimension();
     if (dim || _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys") {
       var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys" || _layer.layerType() === "" ? _layer.getProjections() : dim.getProjectOn(true); // handles the group and dimension case
-      var regex = /^\s*(\S+)\s+as\s+(\S+)/i;
+      var regex = /^\s*(.*?)\s+as\s+(\S+)/i;
       var funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i;
       for (var i = 0; i < projExprs.length; ++i) {
         var projExpr = projExprs[i];
         var regexRtn = projExpr.match(regex);
         if (regexRtn) {
           if (regexRtn[2] === colAttr) {
-            popupColSet.delete(colAttr);
-            colAttr = projExpr;
+            if (colAttr === "color" || colAttr === "size") {
+              popupColSet.delete(regexRtn[1]);
+            } else {
+              popupColSet.delete(colAttr);
+            }
+            colAttr = colAttr === "color" || colAttr === "size" ? colAttr : projExpr;
             break;
           }
         } else if ((regexRtn = projExpr.match(funcRegex)) && regexRtn[2] === colAttr) {
@@ -88577,6 +88581,7 @@ function rasterLayer(layerType) {
     return rtnArray;
   };
 
+  // this function maps hit testing response to popupColumns items
   function mapDataViaColumns(data, popupColumns, chart) {
     var newData = {};
     var columnSet = new Set(popupColumns);
@@ -88590,6 +88595,20 @@ function rasterLayer(layerType) {
             newData[key] = chart.conv900913To4326X(data[key]);
           } else if (key === "y") {
             newData[key] = chart.conv900913To4326Y(data[key]);
+          }
+        }
+      } else {
+        // check response key is size or measure column which is in popupColumns
+        var dim = _layer.group() || _layer.dimension();
+        var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys" || _layer.layerType() === "" ? _layer.getProjections() : dim.getProjectOn(true);
+
+        var regex = /^\s*(.*?)\s+as\s+(\S+)/i;
+        for (var i = 0; i < projExprs.length; ++i) {
+          var projExpr = projExprs[i];
+          var regexRtn = projExpr.match(regex);
+          if (columnSet.has(regexRtn[1])) {
+            // should be column value
+            newData[regexRtn[1]] = data[regexRtn[2]];
           }
         }
       }
@@ -88620,7 +88639,10 @@ function rasterLayer(layerType) {
   }
 
   _layer.displayPopup = function (chart, parentElem, result, minPopupArea, animate) {
+    // hit testing response includes color or size measures result as color or size
     var data = result.row_set[0];
+
+    // popupColumns have color or size measure value
     var popupColumns = _layer.popupColumns();
     var mappedColumns = _layer.popupColumnsMapped();
     var filteredData = mapDataViaColumns(data, popupColumns, chart);

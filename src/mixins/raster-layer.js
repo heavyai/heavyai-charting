@@ -238,15 +238,20 @@ export default function rasterLayer(layerType) {
         _layer.layerType() === ""
           ? _layer.getProjections()
           : dim.getProjectOn(true) // handles the group and dimension case
-      const regex = /^\s*(\S+)\s+as\s+(\S+)/i
+      const regex = /^\s*(.*?)\s+as\s+(\S+)/i
       const funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i
       for (let i = 0; i < projExprs.length; ++i) {
         const projExpr = projExprs[i]
         let regexRtn = projExpr.match(regex)
         if (regexRtn) {
           if (regexRtn[2] === colAttr) {
-            popupColSet.delete(colAttr)
-            colAttr = projExpr
+            if (colAttr === "color" || colAttr === "size") {
+              popupColSet.delete(regexRtn[1])
+            } else {
+              popupColSet.delete(colAttr)
+            }
+            colAttr =
+              colAttr === "color" || colAttr === "size" ? colAttr : projExpr
             break
           }
         } else if (
@@ -281,6 +286,7 @@ export default function rasterLayer(layerType) {
     return rtnArray
   }
 
+  // this function maps hit testing response to popupColumns items
   function mapDataViaColumns(data, popupColumns, chart) {
     const newData = {}
     const columnSet = new Set(popupColumns)
@@ -294,6 +300,26 @@ export default function rasterLayer(layerType) {
             newData[key] = chart.conv900913To4326X(data[key])
           } else if (key === "y") {
             newData[key] = chart.conv900913To4326Y(data[key])
+          }
+        }
+      } else {
+        // check response key is size or measure column which is in popupColumns
+        const dim = _layer.group() || _layer.dimension()
+        const projExprs =
+          _layer.layerType() === "points" ||
+          _layer.layerType() === "lines" ||
+          _layer.layerType() === "polys" ||
+          _layer.layerType() === ""
+            ? _layer.getProjections()
+            : dim.getProjectOn(true)
+
+        const regex = /^\s*(.*?)\s+as\s+(\S+)/i
+        for (let i = 0; i < projExprs.length; ++i) {
+          const projExpr = projExprs[i]
+          const regexRtn = projExpr.match(regex)
+          if (columnSet.has(regexRtn[1])) {
+            // should be column value
+            newData[regexRtn[1]] = data[regexRtn[2]]
           }
         }
       }
@@ -342,7 +368,10 @@ export default function rasterLayer(layerType) {
     minPopupArea,
     animate
   ) {
+    // hit testing response includes color or size measures result as color or size
     const data = result.row_set[0]
+
+    // popupColumns have color or size measure value
     const popupColumns = _layer.popupColumns()
     const mappedColumns = _layer.popupColumnsMapped()
     const filteredData = mapDataViaColumns(data, popupColumns, chart)
