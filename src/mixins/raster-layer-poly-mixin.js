@@ -113,8 +113,7 @@ export default function rasterLayerPolyMixin(_layer) {
         transform =>
           transform.type === "project" &&
           transform.hasOwnProperty("as") &&
-          transform.as !== "key0" &&
-          transform.as !== "color"
+          transform.as !== "key0"
       )
       .map(projection => parser.parseTransform({ select: [] }, projection))
       .map(sql => sql.select[0])
