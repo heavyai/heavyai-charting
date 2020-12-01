@@ -214,6 +214,32 @@ export default function rasterLayer(layerType) {
     return Boolean(popCols && popCols instanceof Array && popCols.length > 0)
   }
 
+  // A Utility function to map size or color measure label for custom measure popup
+  // Label is the same as field most of the case but for custom measures, it could be different
+  _layer.getMeasureLabel = function(measureRegex) {
+    let measureBlock = null
+    if (measureRegex[2] === "color" || measureRegex[2] === "strokeColor") {
+      measureBlock = _layer.getState().encoding.color
+    } else if (
+      measureRegex[2] === "size" ||
+      measureRegex[2] === "strokeWidth"
+    ) {
+      measureBlock = _layer.getState().encoding.size
+    }
+    if (measureBlock && measureBlock.field === measureRegex[1]) {
+      return measureBlock.label
+    }
+  }
+
+  function isMeasureCol(colAttr) {
+    return (
+      colAttr === "color" ||
+      colAttr === "size" ||
+      colAttr === "strokeColor" ||
+      colAttr === "strokeWidth"
+    )
+  }
+
   function addPopupColumnToSet(colAttr, popupColSet) {
     // TODO(croot): getProjectOn for groups requires the two arguments,
     // dimension.getProjectOn() doesn't have any args.
@@ -238,15 +264,24 @@ export default function rasterLayer(layerType) {
         _layer.layerType() === ""
           ? _layer.getProjections()
           : dim.getProjectOn(true) // handles the group and dimension case
-      const regex = /^\s*(\S+)\s+as\s+(\S+)/i
+      const regex = /^\s*(.*?)\s+as\s+(\S+)/i
       const funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i
       for (let i = 0; i < projExprs.length; ++i) {
         const projExpr = projExprs[i]
         let regexRtn = projExpr.match(regex)
         if (regexRtn) {
           if (regexRtn[2] === colAttr) {
-            popupColSet.delete(colAttr)
-            colAttr = projExpr
+            if (isMeasureCol(colAttr)) {
+              // column selector label is used for layer.popupColumns(), so we need to remove it from popupColSet for color/size measures
+              const label = _layer.getMeasureLabel(regexRtn)
+              popupColSet.delete(regexRtn[1])
+              popupColSet.delete(label)
+            } else {
+              popupColSet.delete(colAttr)
+            }
+
+            // include color/size measure in hit testing as "color"/"size" or "strokeColor"/"strokeWidth" not by their column value
+            colAttr = isMeasureCol(colAttr) ? colAttr : projExpr
             break
           }
         } else if (
@@ -281,6 +316,7 @@ export default function rasterLayer(layerType) {
     return rtnArray
   }
 
+  // this function maps hit testing response to popupColumns items
   function mapDataViaColumns(data, popupColumns, chart) {
     const newData = {}
     const columnSet = new Set(popupColumns)
@@ -294,6 +330,28 @@ export default function rasterLayer(layerType) {
             newData[key] = chart.conv900913To4326X(data[key])
           } else if (key === "y") {
             newData[key] = chart.conv900913To4326Y(data[key])
+          }
+        }
+      } else {
+        // check response key is size or measure column which is in popupColumns
+        const dim = _layer.group() || _layer.dimension()
+        const projExprs =
+          _layer.layerType() === "points" ||
+          _layer.layerType() === "lines" ||
+          _layer.layerType() === "polys" ||
+          _layer.layerType() === ""
+            ? _layer.getProjections()
+            : dim.getProjectOn(true)
+
+        const regex = /^\s*(.*?)\s+as\s+(\S+)/i
+        for (let i = 0; i < projExprs.length; ++i) {
+          const projExpr = projExprs[i]
+          const regexRtn = projExpr.match(regex)
+          // for custom columns, the column label is different than the column value,
+          // so need to access the measure column label that is passed from immerse here
+          const label = _layer.getMeasureLabel(regexRtn)
+          if (columnSet.has(label)) {
+            newData[label] = data[regexRtn[2]]
           }
         }
       }
@@ -342,7 +400,10 @@ export default function rasterLayer(layerType) {
     minPopupArea,
     animate
   ) {
+    // hit testing response includes color or size measure's result as "color" or "size"
     const data = result.row_set[0]
+
+    // popupColumns have color or size measure label
     const popupColumns = _layer.popupColumns()
     const mappedColumns = _layer.popupColumnsMapped()
     const filteredData = mapDataViaColumns(data, popupColumns, chart)

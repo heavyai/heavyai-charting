@@ -605,7 +605,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       .then(results => callback(results[0]))
       .catch(error => {
         throw new Error(
-          `getResultRowForPixel failed with message: ${error.message}`
+          `getResultRowForPixel failed with message: ${error.error_msg}`
         )
       })
   }

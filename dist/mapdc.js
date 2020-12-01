@@ -55468,7 +55468,7 @@ function rasterLayerPolyMixin(_layer) {
       state: state,
       lastFilteredSize: _layer.filters().length ? _layer.getState().bboxCount : (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId())
     }).filter(function (transform) {
-      return transform.type === "project" && transform.hasOwnProperty("as") && transform.as !== "key0" && transform.as !== "color";
+      return transform.type === "project" && transform.hasOwnProperty("as") && transform.as !== "key0";
     }).map(function (projection) {
       return _utils.parser.parseTransform({ select: [] }, projection);
     }).map(function (sql) {
@@ -79160,7 +79160,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     _chart.con().getResultRowForPixelAsync(_chart.__dcFlag__, pixel, layerObj, Math.ceil(_popupSearchRadius * pixelRatio)).then(function (results) {
       return callback(results[0]);
     }).catch(function (error) {
-      throw new Error("getResultRowForPixel failed with message: " + error.message);
+      throw new Error("getResultRowForPixel failed with message: " + error.error_msg);
     });
   };
 
@@ -88524,6 +88524,24 @@ function rasterLayer(layerType) {
     return Boolean(popCols && popCols instanceof Array && popCols.length > 0);
   };
 
+  // A Utility function to map size or color measure label for custom measure popup
+  // Label is the same as field most of the case but for custom measures, it could be different
+  _layer.getMeasureLabel = function (measureRegex) {
+    var measureBlock = null;
+    if (measureRegex[2] === "color" || measureRegex[2] === "strokeColor") {
+      measureBlock = _layer.getState().encoding.color;
+    } else if (measureRegex[2] === "size" || measureRegex[2] === "strokeWidth") {
+      measureBlock = _layer.getState().encoding.size;
+    }
+    if (measureBlock && measureBlock.field === measureRegex[1]) {
+      return measureBlock.label;
+    }
+  };
+
+  function isMeasureCol(colAttr) {
+    return colAttr === "color" || colAttr === "size" || colAttr === "strokeColor" || colAttr === "strokeWidth";
+  }
+
   function addPopupColumnToSet(colAttr, popupColSet) {
     // TODO(croot): getProjectOn for groups requires the two arguments,
     // dimension.getProjectOn() doesn't have any args.
@@ -88537,15 +88555,24 @@ function rasterLayer(layerType) {
     var dim = _layer.group() || _layer.dimension();
     if (dim || _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys") {
       var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys" || _layer.layerType() === "" ? _layer.getProjections() : dim.getProjectOn(true); // handles the group and dimension case
-      var regex = /^\s*(\S+)\s+as\s+(\S+)/i;
+      var regex = /^\s*(.*?)\s+as\s+(\S+)/i;
       var funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i;
       for (var i = 0; i < projExprs.length; ++i) {
         var projExpr = projExprs[i];
         var regexRtn = projExpr.match(regex);
         if (regexRtn) {
           if (regexRtn[2] === colAttr) {
-            popupColSet.delete(colAttr);
-            colAttr = projExpr;
+            if (isMeasureCol(colAttr)) {
+              // column selector label is used for layer.popupColumns(), so we need to remove it from popupColSet for color/size measures
+              var label = _layer.getMeasureLabel(regexRtn);
+              popupColSet.delete(regexRtn[1]);
+              popupColSet.delete(label);
+            } else {
+              popupColSet.delete(colAttr);
+            }
+
+            // include color/size measure in hit testing as "color"/"size" or "strokeColor"/"strokeWidth" not by their column value
+            colAttr = isMeasureCol(colAttr) ? colAttr : projExpr;
             break;
           }
         } else if ((regexRtn = projExpr.match(funcRegex)) && regexRtn[2] === colAttr) {
@@ -88577,6 +88604,7 @@ function rasterLayer(layerType) {
     return rtnArray;
   };
 
+  // this function maps hit testing response to popupColumns items
   function mapDataViaColumns(data, popupColumns, chart) {
     var newData = {};
     var columnSet = new Set(popupColumns);
@@ -88590,6 +88618,22 @@ function rasterLayer(layerType) {
             newData[key] = chart.conv900913To4326X(data[key]);
           } else if (key === "y") {
             newData[key] = chart.conv900913To4326Y(data[key]);
+          }
+        }
+      } else {
+        // check response key is size or measure column which is in popupColumns
+        var dim = _layer.group() || _layer.dimension();
+        var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys" || _layer.layerType() === "" ? _layer.getProjections() : dim.getProjectOn(true);
+
+        var regex = /^\s*(.*?)\s+as\s+(\S+)/i;
+        for (var i = 0; i < projExprs.length; ++i) {
+          var projExpr = projExprs[i];
+          var regexRtn = projExpr.match(regex);
+          // for custom columns, the column label is different than the column value,
+          // so need to access the measure column label that is passed from immerse here
+          var label = _layer.getMeasureLabel(regexRtn);
+          if (columnSet.has(label)) {
+            newData[label] = data[regexRtn[2]];
           }
         }
       }
@@ -88620,7 +88664,10 @@ function rasterLayer(layerType) {
   }
 
   _layer.displayPopup = function (chart, parentElem, result, minPopupArea, animate) {
+    // hit testing response includes color or size measure's result as "color" or "size"
     var data = result.row_set[0];
+
+    // popupColumns have color or size measure label
     var popupColumns = _layer.popupColumns();
     var mappedColumns = _layer.popupColumnsMapped();
     var filteredData = mapDataViaColumns(data, popupColumns, chart);
