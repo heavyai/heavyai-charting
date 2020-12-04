@@ -214,6 +214,32 @@ export default function rasterLayer(layerType) {
     return Boolean(popCols && popCols instanceof Array && popCols.length > 0)
   }
 
+  // A Utility function to map size or color measure label for custom measure popup
+  // Label is the same as field most of the case but for custom measures, it could be different
+  _layer.getMeasureLabel = function(measureRegex) {
+    let measureBlock = null
+    if (measureRegex[2] === "color" || measureRegex[2] === "strokeColor") {
+      measureBlock = _layer.getState().encoding.color
+    } else if (
+      measureRegex[2] === "size" ||
+      measureRegex[2] === "strokeWidth"
+    ) {
+      measureBlock = _layer.getState().encoding.size
+    }
+    if (measureBlock && measureBlock.field === measureRegex[1]) {
+      return measureBlock.label
+    }
+  }
+
+  function isMeasureCol(colAttr) {
+    return (
+      colAttr === "color" ||
+      colAttr === "size" ||
+      colAttr === "strokeColor" ||
+      colAttr === "strokeWidth"
+    )
+  }
+
   function addPopupColumnToSet(colAttr, popupColSet) {
     // TODO(croot): getProjectOn for groups requires the two arguments,
     // dimension.getProjectOn() doesn't have any args.
@@ -245,13 +271,17 @@ export default function rasterLayer(layerType) {
         let regexRtn = projExpr.match(regex)
         if (regexRtn) {
           if (regexRtn[2] === colAttr) {
-            if (colAttr === "color" || colAttr === "size") {
+            if (isMeasureCol(colAttr)) {
+              // column selector label is used for layer.popupColumns(), so we need to remove it from popupColSet for color/size measures
+              const label = _layer.getMeasureLabel(regexRtn)
               popupColSet.delete(regexRtn[1])
+              popupColSet.delete(label)
             } else {
               popupColSet.delete(colAttr)
             }
-            colAttr =
-              colAttr === "color" || colAttr === "size" ? colAttr : projExpr
+
+            // include color/size measure in hit testing as "color"/"size" or "strokeColor"/"strokeWidth" not by their column value
+            colAttr = isMeasureCol(colAttr) ? colAttr : projExpr
             break
           }
         } else if (
@@ -317,9 +347,11 @@ export default function rasterLayer(layerType) {
         for (let i = 0; i < projExprs.length; ++i) {
           const projExpr = projExprs[i]
           const regexRtn = projExpr.match(regex)
-          if (columnSet.has(regexRtn[1])) {
-            // should be column value
-            newData[regexRtn[1]] = data[regexRtn[2]]
+          // for custom columns, the column label is different than the column value,
+          // so need to access the measure column label that is passed from immerse here
+          const label = _layer.getMeasureLabel(regexRtn)
+          if (columnSet.has(label)) {
+            newData[label] = data[regexRtn[2]]
           }
         }
       }
