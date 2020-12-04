@@ -6,6 +6,7 @@ import d3 from "d3"
 import marginMixin from "./margin-mixin"
 import axios from "axios"
 import lockAxisMixin from "./lock-axis-mixin"
+import { DestroyedChartError } from "../core/errors"
 
 /**
  * Coordinate Grid Raster is an abstract base chart designed to support coordinate grid based
@@ -38,6 +39,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   let _filters = []
   let _initialFilters = null
   let _gridInitted = false
+  let _destroyed = false
 
   const NO_CACHE = false
   let cachedXTickFormat = NO_CACHE
@@ -339,6 +341,8 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   function destroy () {
+    _destroyed = true
+
     destroyWebGL()
 
     if (_eventHandler) {
@@ -645,6 +649,10 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   function prepareChartBody () {
+    if (_destroyed) {
+      return
+    }
+
     const width = _chart.effectiveWidth()
     const height = _chart.effectiveHeight()
     const margins = _chart.margins()
@@ -689,9 +697,14 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
     const gl = _gl
 
     const onImageLoad = (err, img) => {
+      if (_destroyed) {
+        return
+      }
+
       if (err) {
         throw err
       }
+
       if (queryId === _queryId) {
         const xdom = _chart.x().domain()
         const ydom = _chart.y().domain()
@@ -1314,6 +1327,9 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
 
 
   function doChartRender (imgUrl, renderBounds, queryId) {
+    if (_destroyed) {
+      throw new DestroyedChartError()
+    }
     initGrid()
     _chart._preprocessData()
     drawChart(true, imgUrl, renderBounds, queryId)
@@ -1326,6 +1342,10 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
   }
 
   function doChartRedraw (imgUrl, renderBounds, queryId) {
+    if (_destroyed) {
+      throw new DestroyedChartError()
+    }
+
     if (!_hasBeenRendered) // guard to prevent a redraw before a render
       { return doChartRender(imgUrl, renderBounds, queryId) }
 
