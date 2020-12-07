@@ -88707,10 +88707,10 @@ function rasterLayer(layerType) {
   }
 
   _layer.displayPopup = function (chart, parentElem, result, minPopupArea, animate) {
-    // hit testing response includes color or size measures result as color or size
+    // hit testing response includes color or size measure's result as "color" or "size"
     var data = result.row_set[0];
 
-    // popupColumns have color or size measure value
+    // popupColumns have color or size measure label
     var popupColumns = _layer.popupColumns();
     var mappedColumns = _layer.popupColumnsMapped();
     var filteredData = mapDataViaColumns(data, popupColumns, chart);
