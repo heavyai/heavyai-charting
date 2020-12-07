@@ -80010,10 +80010,6 @@ var BoxZoomHandler = function (_BaseHandler) {
 
       this._filterDimensionCB([xmin, xmax], [ymin, ymax]);
 
-      // upon box zoom, elasticity is turned off
-      this._chart.elasticX(false);
-      this._chart.elasticY(false);
-
       var bounds = [[xmin, ymax], [xmax, ymax], [xmax, ymin], [xmin, ymin]];
 
       (0, _coreAsync.redrawAllAsync)(this._chart.chartGroup());
