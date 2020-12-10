@@ -55881,8 +55881,8 @@ function rasterLayerPolyMixin(_layer) {
           type: "ordinal",
           domain: state.encoding.color.domain,
           range: colorRange,
-          nullValue: polyNullScaleColor,
-          default: state.encoding.color.default || polyDefaultScaleColor
+          nullValue: colorRange[colorRange.length - 1] || polyNullScaleColor, // Other category is concatenated to the main range, so it should be always at the end
+          default: colorRange[colorRange.length - 1] || state.encoding.color.default
         });
       }
 
@@ -88605,14 +88605,6 @@ function rasterLayer(layerType) {
         var regexRtn = projExpr.match(regex);
         if (regexRtn) {
           if (regexRtn[2] === colAttr) {
-<<<<<<< HEAD
-            if (colAttr === "color" || colAttr === "size") {
-              popupColSet.delete(regexRtn[1]);
-            } else {
-              popupColSet.delete(colAttr);
-            }
-            colAttr = colAttr === "color" || colAttr === "size" ? colAttr : projExpr;
-=======
             if (isMeasureCol(colAttr)) {
               // column selector label is used for layer.popupColumns(), so we need to remove it from popupColSet for color/size measures
               var label = _layer.getMeasureLabel(regexRtn);
@@ -88624,7 +88616,6 @@ function rasterLayer(layerType) {
 
             // include color/size measure in hit testing as "color"/"size" or "strokeColor"/"strokeWidth" not by their column value
             colAttr = isMeasureCol(colAttr) ? colAttr : projExpr;
->>>>>>> d466610a71a2c6112d4fddba8268da4b0bd68dd4
             break;
           }
         } else if ((regexRtn = projExpr.match(funcRegex)) && regexRtn[2] === colAttr) {
@@ -88681,17 +88672,11 @@ function rasterLayer(layerType) {
         for (var i = 0; i < projExprs.length; ++i) {
           var projExpr = projExprs[i];
           var regexRtn = projExpr.match(regex);
-<<<<<<< HEAD
-          if (columnSet.has(regexRtn[1])) {
-            // should be column value
-            newData[regexRtn[1]] = data[regexRtn[2]];
-=======
           // for custom columns, the column label is different than the column value,
           // so need to access the measure column label that is passed from immerse here
           var label = _layer.getMeasureLabel(regexRtn);
           if (columnSet.has(label)) {
             newData[label] = data[regexRtn[2]];
->>>>>>> d466610a71a2c6112d4fddba8268da4b0bd68dd4
           }
         }
       }
@@ -88722,17 +88707,10 @@ function rasterLayer(layerType) {
   }
 
   _layer.displayPopup = function (chart, parentElem, result, minPopupArea, animate) {
-<<<<<<< HEAD
     // hit testing response includes color or size measures result as color or size
     var data = result.row_set[0];
 
     // popupColumns have color or size measure value
-=======
-    // hit testing response includes color or size measure's result as "color" or "size"
-    var data = result.row_set[0];
-
-    // popupColumns have color or size measure label
->>>>>>> d466610a71a2c6112d4fddba8268da4b0bd68dd4
     var popupColumns = _layer.popupColumns();
     var mappedColumns = _layer.popupColumnsMapped();
     var filteredData = mapDataViaColumns(data, popupColumns, chart);
