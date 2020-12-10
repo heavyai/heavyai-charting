@@ -400,10 +400,10 @@ export default function rasterLayer(layerType) {
     minPopupArea,
     animate
   ) {
-    // hit testing response includes color or size measures result as color or size
+    // hit testing response includes color or size measure's result as "color" or "size"
     const data = result.row_set[0]
 
-    // popupColumns have color or size measure value
+    // popupColumns have color or size measure label
     const popupColumns = _layer.popupColumns()
     const mappedColumns = _layer.popupColumnsMapped()
     const filteredData = mapDataViaColumns(data, popupColumns, chart)
