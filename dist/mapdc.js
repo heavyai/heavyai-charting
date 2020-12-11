@@ -88575,14 +88575,17 @@ function rasterLayer(layerType) {
       measureBlock = _layer.getState().encoding.color;
     } else if (measureRegex[2] === "size" || measureRegex[2] === "strokeWidth") {
       measureBlock = _layer.getState().encoding.size;
+    } else if (measureRegex[2] === "x" || measureRegex[2] === "y") {
+      measureBlock = _layer.getState().encoding[measureRegex[2]];
     }
     if (measureBlock && measureBlock.field === measureRegex[1]) {
       return measureBlock.label;
     }
+    return measureBlock;
   };
 
   function isMeasureCol(colAttr) {
-    return colAttr === "color" || colAttr === "size" || colAttr === "strokeColor" || colAttr === "strokeWidth";
+    return colAttr === "x" || colAttr === "y" || colAttr === "color" || colAttr === "size" || colAttr === "strokeColor" || colAttr === "strokeWidth";
   }
 
   function addPopupColumnToSet(colAttr, popupColSet) {
@@ -88606,7 +88609,7 @@ function rasterLayer(layerType) {
         if (regexRtn) {
           if (regexRtn[2] === colAttr) {
             if (isMeasureCol(colAttr)) {
-              // column selector label is used for layer.popupColumns(), so we need to remove it from popupColSet for color/size measures
+              // column selector label is used for layer.popupColumns(), so we need to remove it from popupColSet for color/size or x/y measures
               var label = _layer.getMeasureLabel(regexRtn);
               popupColSet.delete(regexRtn[1]);
               popupColSet.delete(label);
@@ -88614,7 +88617,7 @@ function rasterLayer(layerType) {
               popupColSet.delete(colAttr);
             }
 
-            // include color/size measure in hit testing as "color"/"size" or "strokeColor"/"strokeWidth" not by their column value
+            // include color/size measure in hit testing as "color"/"size" or "strokeColor"/"strokeWidth" not by their column
             colAttr = isMeasureCol(colAttr) ? colAttr : projExpr;
             break;
           }
