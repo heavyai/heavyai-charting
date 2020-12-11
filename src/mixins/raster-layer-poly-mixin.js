@@ -493,8 +493,9 @@ export default function rasterLayerPolyMixin(_layer) {
           type: "ordinal",
           domain: state.encoding.color.domain,
           range: colorRange,
-          nullValue: polyNullScaleColor,
-          default: state.encoding.color.default || polyDefaultScaleColor
+          nullValue: colorRange[colorRange.length - 1] || polyNullScaleColor, // Other category is concatenated to the main range, so it should be always at the end
+          default:
+            colorRange[colorRange.length - 1] || state.encoding.color.default
         })
       }
 
