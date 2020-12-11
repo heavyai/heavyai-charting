@@ -55958,7 +55958,7 @@ function rasterLayerPolyMixin(_layer) {
 
     var bboxFilter = "ST_XMax(" + columnExpr + ") >= " + mapBounds._sw.lng + " AND ST_XMin(" + columnExpr + ") <= " + mapBounds._ne.lng + " AND ST_YMax(" + columnExpr + ") >= " + mapBounds._sw.lat + " AND ST_YMin(" + columnExpr + ") <= " + mapBounds._ne.lat;
 
-    var allFilters = _layer.crossfilter().getFilter();
+    var allFilters = _layer.crossfilter().getFilter(layerName);
     var otherChartFilters = allFilters.filter(function (f, i) {
       return i !== _layer.dimension().getDimensionIndex() && f !== "" && f != null;
     });
