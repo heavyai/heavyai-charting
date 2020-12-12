@@ -55434,7 +55434,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)";
-var polyNullScaleColor = "rgba(214, 215, 214, 0.65)";
+var polyNullScaleColor = "#d6d7d6";
 
 var vegaLineJoinOptions = ["miter", "round", "bevel"];
 var polyTableGeomColumns = {
@@ -55854,7 +55854,7 @@ function rasterLayerPolyMixin(_layer) {
         type: "ordinal",
         domain: [1],
         range: [(0, _utilsVega.adjustOpacity)(state.encoding.color.value, state.encoding.color.opacity)],
-        nullValue: polyNullScaleColor,
+        nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity),
         default: polyDefaultScaleColor
       });
       fillColor = {
@@ -55865,6 +55865,7 @@ function rasterLayerPolyMixin(_layer) {
       var colorRange = state.encoding.color.range.map(function (c) {
         return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
       });
+      debugger;
       var _colorScaleName = getColorScaleName(layerName);
       if (state.encoding.color.type === "quantitative") {
         scales.push({
@@ -55872,7 +55873,7 @@ function rasterLayerPolyMixin(_layer) {
           type: "quantize",
           domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.domain,
           range: colorRange,
-          nullValue: polyNullScaleColor,
+          nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity),
           default: polyDefaultScaleColor
         });
       } else {
@@ -55881,8 +55882,8 @@ function rasterLayerPolyMixin(_layer) {
           type: "ordinal",
           domain: state.encoding.color.domain,
           range: colorRange,
-          nullValue: colorRange[colorRange.length - 1] || polyNullScaleColor, // Other category is concatenated to the main range, so it should be always at the end
-          default: colorRange[colorRange.length - 1] || state.encoding.color.default
+          nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity),
+          default: colorRange[colorRange.length - 1] || state.encoding.color.default // Other category is concatenated to the main range, so it should be always at the end
         });
       }
 
