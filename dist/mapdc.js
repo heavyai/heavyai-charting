@@ -55865,7 +55865,6 @@ function rasterLayerPolyMixin(_layer) {
       var colorRange = state.encoding.color.range.map(function (c) {
         return (0, _utilsVega.adjustOpacity)(c, state.encoding.color.opacity);
       });
-      debugger;
       var _colorScaleName = getColorScaleName(layerName);
       if (state.encoding.color.type === "quantitative") {
         scales.push({

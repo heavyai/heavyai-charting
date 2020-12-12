@@ -478,7 +478,6 @@ export default function rasterLayerPolyMixin(_layer) {
       const colorRange = state.encoding.color.range.map(c =>
         adjustOpacity(c, state.encoding.color.opacity)
       )
-      debugger
       const colorScaleName = getColorScaleName(layerName)
       if (state.encoding.color.type === "quantitative") {
         scales.push({
