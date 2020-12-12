@@ -466,7 +466,7 @@ export default function rasterLayerPolyMixin(_layer) {
         ],
         nullValue: adjustOpacity(
           polyNullScaleColor,
-          state.encoding.color.opacity
+          state.encoding.color.opacity || 0.65
         ),
         default: polyDefaultScaleColor
       })
@@ -489,7 +489,7 @@ export default function rasterLayerPolyMixin(_layer) {
           range: colorRange,
           nullValue: adjustOpacity(
             polyNullScaleColor,
-            state.encoding.color.opacity
+            state.encoding.color.opacity || 0.65
           ),
           default: polyDefaultScaleColor
         })
@@ -501,7 +501,7 @@ export default function rasterLayerPolyMixin(_layer) {
           range: colorRange,
           nullValue: adjustOpacity(
             polyNullScaleColor,
-            state.encoding.color.opacity
+            state.encoding.color.opacity || 0.65
           ),
           default:
             colorRange[colorRange.length - 1] || state.encoding.color.default // Other category is concatenated to the main range, so it should be always at the end

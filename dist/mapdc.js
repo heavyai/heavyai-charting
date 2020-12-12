@@ -55854,7 +55854,7 @@ function rasterLayerPolyMixin(_layer) {
         type: "ordinal",
         domain: [1],
         range: [(0, _utilsVega.adjustOpacity)(state.encoding.color.value, state.encoding.color.opacity)],
-        nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity),
+        nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity || 0.65),
         default: polyDefaultScaleColor
       });
       fillColor = {
@@ -55872,7 +55872,7 @@ function rasterLayerPolyMixin(_layer) {
           type: "quantize",
           domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.domain,
           range: colorRange,
-          nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity),
+          nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity || 0.65),
           default: polyDefaultScaleColor
         });
       } else {
@@ -55881,7 +55881,7 @@ function rasterLayerPolyMixin(_layer) {
           type: "ordinal",
           domain: state.encoding.color.domain,
           range: colorRange,
-          nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity),
+          nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity || 0.65),
           default: colorRange[colorRange.length - 1] || state.encoding.color.default // Other category is concatenated to the main range, so it should be always at the end
         });
       }
