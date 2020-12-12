@@ -12,7 +12,7 @@ import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
 
 const polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)"
-const polyNullScaleColor = "rgba(214, 215, 214, 0.65)"
+const polyNullScaleColor = "#d6d7d6"
 
 const vegaLineJoinOptions = ["miter", "round", "bevel"]
 const polyTableGeomColumns = {
@@ -464,7 +464,10 @@ export default function rasterLayerPolyMixin(_layer) {
             state.encoding.color.opacity
           )
         ],
-        nullValue: polyNullScaleColor,
+        nullValue: adjustOpacity(
+          polyNullScaleColor,
+          state.encoding.color.opacity || 0.65
+        ),
         default: polyDefaultScaleColor
       })
       fillColor = {
@@ -484,7 +487,10 @@ export default function rasterLayerPolyMixin(_layer) {
             ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] }
             : state.encoding.color.domain,
           range: colorRange,
-          nullValue: polyNullScaleColor,
+          nullValue: adjustOpacity(
+            polyNullScaleColor,
+            state.encoding.color.opacity || 0.65
+          ),
           default: polyDefaultScaleColor
         })
       } else {
@@ -493,9 +499,12 @@ export default function rasterLayerPolyMixin(_layer) {
           type: "ordinal",
           domain: state.encoding.color.domain,
           range: colorRange,
-          nullValue: colorRange[colorRange.length - 1] || polyNullScaleColor, // Other category is concatenated to the main range, so it should be always at the end
+          nullValue: adjustOpacity(
+            polyNullScaleColor,
+            state.encoding.color.opacity || 0.65
+          ),
           default:
-            colorRange[colorRange.length - 1] || state.encoding.color.default
+            colorRange[colorRange.length - 1] || state.encoding.color.default // Other category is concatenated to the main range, so it should be always at the end
         })
       }
 

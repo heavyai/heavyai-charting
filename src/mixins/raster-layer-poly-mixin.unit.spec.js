@@ -103,7 +103,7 @@ describe("rasterLayerPolyMixin", () => {
             type: "quantize",
             domain: [0, 100],
             range: ["black", "blue"],
-            nullValue: "rgba(214, 215, 214, 0.65)",
+            nullValue: "rgba(214,215,214,0.65)",
             default: "rgba(214, 215, 214, 0.65)"
           }
         ],
@@ -207,7 +207,7 @@ describe("rasterLayerPolyMixin", () => {
             type: "quantize",
             domain: [0, 100],
             range: ["black", "blue"],
-            nullValue: "rgba(214, 215, 214, 0.65)",
+            nullValue: "rgba(214,215,214,0.65)",
             default: "rgba(214, 215, 214, 0.65)"
           }
         ],
@@ -310,7 +310,7 @@ describe("rasterLayerPolyMixin", () => {
             type: "quantize",
             domain: [0, 100],
             range: ["black", "blue"],
-            nullValue: "rgba(214, 215, 214, 0.65)",
+            nullValue: "rgba(214,215,214,0.65)",
             default: "rgba(214, 215, 214, 0.65)"
           }
         ],
@@ -432,7 +432,7 @@ describe("rasterLayerPolyMixin", () => {
             type: "quantize",
             domain: { data: "polys_stats", fields: ["mincolor", "maxcolor"] },
             range: ["black", "blue"],
-            nullValue: "rgba(214, 215, 214, 0.65)",
+            nullValue: "rgba(214,215,214,0.65)",
             default: "rgba(214, 215, 214, 0.65)"
           }
         ],
