@@ -831,20 +831,22 @@ export default function mapMixin(
           init(bounds).then(() => {
             resolve(_chart)
           })
+        }
+      })
 
-          // reapplying the previous style's render layer to the new style layer when basemap gets changed
-          if (savedLayers.length) {
-            Object.entries(savedSources).forEach(([id, source]) => {
-              if (!_map.getSource(source)) {
-                _map.addSource(id, source)
-                savedLayers.forEach(layer => {
-                  _map.addLayer(layer)
-                })
-                savedLayers = []
-                savedSources = {}
-              }
-            })
-          }
+      _map.on("styledata", () => {
+        // reapplying the previous style's render layer to the new style layer when basemap gets changed
+        if (savedLayers.length) {
+          Object.entries(savedSources).forEach(([id, source]) => {
+            if (!_map.getSource(source)) {
+              _map.addSource(id, source)
+              savedLayers.forEach(layer => {
+                _map.addLayer(layer)
+              })
+              savedLayers = []
+              savedSources = {}
+            }
+          })
         }
       })
 
