@@ -436,12 +436,41 @@ export default function mapMixin(
     })
   }
 
+  // Finds rendered layer from the given map style layers
+  function getRenderLayer(activeLayer, cb) {
+    _map.getStyle().layers.forEach(layer => {
+      if (!layer.id.includes(activeLayer)) {
+        return
+      }
+
+      cb(layer)
+    })
+  }
+
+  // When mapbox map basemap gets changed, basically changes the style of the map (_map.setStyle(_mapStyle)),
+  // the render layer is deleted, so we need to save the render layer source and layer from the old style
+  // in savedLayers and savedSource and reapply to the newly styled map in _map.on("style.load", ...)
+  let savedLayers = []
+  let savedSources = {}
+
   _chart.mapStyle = function(style) {
     if (!arguments.length) {
       return _mapStyle
     }
     _mapStyle = style
     if (_map) {
+      if (!_activeLayer) {
+        _activeLayer = "_points"
+      }
+      const toBeAddedOverlay = "overlay" + _activeLayer
+
+      getRenderLayer(toBeAddedOverlay, layer => {
+        if (!savedSources[layer.source]) {
+          savedSources[layer.source] = _map.getSource(layer.source).serialize()
+          savedLayers.push(layer)
+        }
+      })
+
       _map.setStyle(_mapStyle)
       if (typeof _chart.resetLayer !== "undefined") {
         _chart.resetLayer()
@@ -802,6 +831,20 @@ export default function mapMixin(
           init(bounds).then(() => {
             resolve(_chart)
           })
+
+          // reapplying the previous style's render layer to the new style layer when basemap gets changed
+          if (savedLayers.length) {
+            Object.entries(savedSources).forEach(([id, source]) => {
+              if (!_map.getSource(source)) {
+                _map.addSource(id, source)
+                savedLayers.forEach(layer => {
+                  _map.addLayer(layer)
+                })
+                savedLayers = []
+                savedSources = {}
+              }
+            })
+          }
         }
       })
 

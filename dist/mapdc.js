@@ -34661,12 +34661,41 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     });
   };
 
+  // Finds rendered layer from the given map style layers
+  function getRenderLayer(activeLayer, cb) {
+    _map.getStyle().layers.forEach(function (layer) {
+      if (!layer.id.includes(activeLayer)) {
+        return;
+      }
+
+      cb(layer);
+    });
+  }
+
+  // When mapbox map basemap gets changed, basically changes the style of the map (_map.setStyle(_mapStyle)),
+  // the render layer is deleted, so we need to save the render layer source and layer from the old style
+  // in savedLayers and savedSource and reapply to the newly styled map in _map.on("style.load", ...)
+  var savedLayers = [];
+  var savedSources = {};
+
   _chart.mapStyle = function (style) {
     if (!arguments.length) {
       return _mapStyle;
     }
     _mapStyle = style;
     if (_map) {
+      if (!_activeLayer) {
+        _activeLayer = "_points";
+      }
+      var toBeAddedOverlay = "overlay" + _activeLayer;
+
+      getRenderLayer(toBeAddedOverlay, function (layer) {
+        if (!savedSources[layer.source]) {
+          savedSources[layer.source] = _map.getSource(layer.source).serialize();
+          savedLayers.push(layer);
+        }
+      });
+
       _map.setStyle(_mapStyle);
       if (typeof _chart.resetLayer !== "undefined") {
         _chart.resetLayer();
@@ -34989,6 +35018,24 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
           init(bounds).then(function () {
             resolve(_chart);
           });
+
+          // reapplying the previous style's render layer to the new style layer when basemap gets changed
+          if (savedLayers.length) {
+            Object.entries(savedSources).forEach(function (_ref4) {
+              var _ref5 = _slicedToArray(_ref4, 2),
+                  id = _ref5[0],
+                  source = _ref5[1];
+
+              if (!_map.getSource(source)) {
+                _map.addSource(id, source);
+                savedLayers.forEach(function (layer) {
+                  _map.addLayer(layer);
+                });
+                savedLayers = [];
+                savedSources = {};
+              }
+            });
+          }
         }
       });
 
