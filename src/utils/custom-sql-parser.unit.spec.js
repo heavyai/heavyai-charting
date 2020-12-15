@@ -175,4 +175,32 @@ describe("parseFactsFromCustomSQL", () => {
       )
     })
   })
+
+  describe("sum(case when flight_year > 20.0 then origin_lat end)", () => {
+    const {
+      factProjections,
+      factAliases,
+      expression
+    } = parseFactsFromCustomSQL(
+      "fact",
+      "color",
+      "sum(case when flight_year > 20.0 then origin_lat end)"
+    )
+
+    it("should project the first condition", () => {
+      expect(factProjections).to.have.lengthOf(1)
+      expect(factProjections[0]).to.equal(
+        "sum(case when flight_year > 20.0 then origin_lat end)"
+      )
+    })
+
+    it("should have one alias", () => {
+      expect(factAliases).to.have.lengthOf(1)
+      expect(factAliases[0]).to.equal("color0")
+    })
+
+    it("should have replaced the fact projections", () => {
+      expect(expression).to.equal("color.color0")
+    })
+  })
 })

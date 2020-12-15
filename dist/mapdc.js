@@ -56242,71 +56242,9 @@ var Whitespace = (0, _chevrotain.createToken)({
   group: _chevrotain.Lexer.SKIPPED
 });
 
-// XXX:
-// Window functions (OVER, PARTITION BY, USING, NULLS, FIRST, LAST, etc)
-// Type casts (CAST ... AS ...)
-// COLLATE
-// Sub-queries (SELECT, et al)
-// ARRAY
-// ROW
-var Keyword = (0, _chevrotain.createToken)({ name: "Keyword", pattern: _chevrotain.Lexer.NA });
-var All = (0, _chevrotain.createToken)({ name: "All", pattern: /all/i, categories: [Keyword] });
-var Distinct = (0, _chevrotain.createToken)({
-  name: "Distinct",
-  pattern: /distinct/i,
-  categories: [Keyword]
-});
-var OrderBy = (0, _chevrotain.createToken)({
-  name: "OrderBy",
-  pattern: /order by/i,
-  categories: [Keyword]
-});
-var Asc = (0, _chevrotain.createToken)({
-  name: "Ascending",
-  pattern: /asc/i,
-  categories: [Keyword]
-});
-var Desc = (0, _chevrotain.createToken)({
-  name: "Descending",
-  pattern: /desc/i,
-  categories: [Keyword]
-});
-var Cast = (0, _chevrotain.createToken)({
-  name: "Cast",
-  pattern: /cast/i,
-  categories: [Keyword]
-});
-var As = (0, _chevrotain.createToken)({
-  name: "As",
-  pattern: /as/i,
-  categories: [Keyword]
-});
-var Case = (0, _chevrotain.createToken)({
-  name: "Case",
-  pattern: /case/i,
-  categories: [Keyword]
-});
-var When = (0, _chevrotain.createToken)({
-  name: "When",
-  pattern: /when/i,
-  categories: [Keyword]
-});
-var Then = (0, _chevrotain.createToken)({
-  name: "Then",
-  pattern: /then/i,
-  categories: [Keyword]
-});
-var Else = (0, _chevrotain.createToken)({
-  name: "Else",
-  pattern: /else/i,
-  categories: [Keyword]
-});
-var End = (0, _chevrotain.createToken)({
-  name: "End",
-  pattern: /end/i,
-  categories: [Keyword]
-});
-
+// We need to define the Identifier here, to use as a "longer_alt" for all
+// keywords. But it'll appear after keywords in the tokenizer.
+//
 // XXX:
 // support for non-latin characters?
 // U&"..." identifiers?
@@ -56321,6 +56259,86 @@ var QuotedIdentifier = (0, _chevrotain.createToken)({
   name: "QuotedIdentifier",
   pattern: /"(?:[^"]|"")+"/,
   categories: [Identifier]
+});
+
+// XXX:
+// Window functions (OVER, PARTITION BY, USING, NULLS, FIRST, LAST, etc)
+// Type casts (CAST ... AS ...)
+// COLLATE
+// Sub-queries (SELECT, et al)
+// ARRAY
+// ROW
+var Keyword = (0, _chevrotain.createToken)({ name: "Keyword", pattern: _chevrotain.Lexer.NA });
+var All = (0, _chevrotain.createToken)({
+  name: "All",
+  pattern: /all/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+});
+var Distinct = (0, _chevrotain.createToken)({
+  name: "Distinct",
+  pattern: /distinct/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+});
+var OrderBy = (0, _chevrotain.createToken)({
+  name: "OrderBy",
+  pattern: /order by/i,
+  categories: [Keyword]
+});
+var Asc = (0, _chevrotain.createToken)({
+  name: "Ascending",
+  pattern: /asc/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+});
+var Desc = (0, _chevrotain.createToken)({
+  name: "Descending",
+  pattern: /desc/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+});
+var Cast = (0, _chevrotain.createToken)({
+  name: "Cast",
+  pattern: /cast/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+});
+var As = (0, _chevrotain.createToken)({
+  name: "As",
+  pattern: /as/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+});
+var Case = (0, _chevrotain.createToken)({
+  name: "Case",
+  pattern: /case/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+});
+var When = (0, _chevrotain.createToken)({
+  name: "When",
+  pattern: /when/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+});
+var Then = (0, _chevrotain.createToken)({
+  name: "Then",
+  pattern: /then/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+});
+var Else = (0, _chevrotain.createToken)({
+  name: "Else",
+  pattern: /else/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+});
+var End = (0, _chevrotain.createToken)({
+  name: "End",
+  pattern: /end/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
 });
 
 // XXX:
@@ -56420,17 +56438,20 @@ var MembershipOperator = (0, _chevrotain.createToken)({
 var BetweenOperator = (0, _chevrotain.createToken)({
   name: "BetweenOperator",
   pattern: /between/i,
-  categories: [MembershipOperator]
+  categories: [MembershipOperator],
+  longer_alt: UnquotedIdentifier
 });
 var InOperator = (0, _chevrotain.createToken)({
   name: "InOperator",
   pattern: /in/i,
-  categories: [MembershipOperator]
+  categories: [MembershipOperator],
+  longer_alt: UnquotedIdentifier
 });
 var LikeOperator = (0, _chevrotain.createToken)({
   name: "LikeOperator",
   pattern: /i?like/i,
-  categories: [MembershipOperator]
+  categories: [MembershipOperator],
+  longer_alt: UnquotedIdentifier
 });
 
 var ComparisonOperator = (0, _chevrotain.createToken)({
@@ -56472,7 +56493,8 @@ var GreaterThanEqualOperator = (0, _chevrotain.createToken)({
 var IsOperator = (0, _chevrotain.createToken)({
   name: "IsOperator",
   pattern: /is/i,
-  categories: [BinaryOperator]
+  categories: [BinaryOperator],
+  longer_alt: UnquotedIdentifier
 });
 var IsPredicate = (0, _chevrotain.createToken)({
   name: "IsPredicate",
@@ -56482,32 +56504,38 @@ var IsPredicate = (0, _chevrotain.createToken)({
 var Not = (0, _chevrotain.createToken)({
   name: "Not",
   pattern: /not/i,
-  categories: [PrefixOperator, Keyword]
+  categories: [PrefixOperator, Keyword],
+  longer_alt: UnquotedIdentifier
 });
 var Null = (0, _chevrotain.createToken)({
   name: "Null",
   pattern: /null/i,
-  categories: [IsPredicate, Keyword]
+  categories: [IsPredicate, Keyword],
+  longer_alt: UnquotedIdentifier
 });
 var True = (0, _chevrotain.createToken)({
   name: "True",
   pattern: /true/i,
-  categories: [IsPredicate, Keyword]
+  categories: [IsPredicate, Keyword],
+  longer_alt: UnquotedIdentifier
 });
 var False = (0, _chevrotain.createToken)({
   name: "False",
   pattern: /false/i,
-  categories: [IsPredicate, Keyword]
+  categories: [IsPredicate, Keyword],
+  longer_alt: UnquotedIdentifier
 });
 var And = (0, _chevrotain.createToken)({
   name: "And",
   pattern: /and/i,
-  categories: [BinaryOperator, Keyword]
+  categories: [BinaryOperator, Keyword],
+  longer_alt: UnquotedIdentifier
 });
 var Or = (0, _chevrotain.createToken)({
   name: "Or",
   pattern: /or/i,
-  categories: [BinaryOperator, Keyword]
+  categories: [BinaryOperator, Keyword],
+  longer_alt: UnquotedIdentifier
 });
 
 // XXX:

@@ -11,71 +11,9 @@ const Whitespace = createToken({
   group: Lexer.SKIPPED
 })
 
-// XXX:
-// Window functions (OVER, PARTITION BY, USING, NULLS, FIRST, LAST, etc)
-// Type casts (CAST ... AS ...)
-// COLLATE
-// Sub-queries (SELECT, et al)
-// ARRAY
-// ROW
-const Keyword = createToken({ name: "Keyword", pattern: Lexer.NA })
-const All = createToken({ name: "All", pattern: /all/i, categories: [Keyword] })
-const Distinct = createToken({
-  name: "Distinct",
-  pattern: /distinct/i,
-  categories: [Keyword]
-})
-const OrderBy = createToken({
-  name: "OrderBy",
-  pattern: /order by/i,
-  categories: [Keyword]
-})
-const Asc = createToken({
-  name: "Ascending",
-  pattern: /asc/i,
-  categories: [Keyword]
-})
-const Desc = createToken({
-  name: "Descending",
-  pattern: /desc/i,
-  categories: [Keyword]
-})
-const Cast = createToken({
-  name: "Cast",
-  pattern: /cast/i,
-  categories: [Keyword]
-})
-const As = createToken({
-  name: "As",
-  pattern: /as/i,
-  categories: [Keyword]
-})
-const Case = createToken({
-  name: "Case",
-  pattern: /case/i,
-  categories: [Keyword]
-})
-const When = createToken({
-  name: "When",
-  pattern: /when/i,
-  categories: [Keyword]
-})
-const Then = createToken({
-  name: "Then",
-  pattern: /then/i,
-  categories: [Keyword]
-})
-const Else = createToken({
-  name: "Else",
-  pattern: /else/i,
-  categories: [Keyword]
-})
-const End = createToken({
-  name: "End",
-  pattern: /end/i,
-  categories: [Keyword]
-})
-
+// We need to define the Identifier here, to use as a "longer_alt" for all
+// keywords. But it'll appear after keywords in the tokenizer.
+//
 // XXX:
 // support for non-latin characters?
 // U&"..." identifiers?
@@ -90,6 +28,86 @@ const QuotedIdentifier = createToken({
   name: "QuotedIdentifier",
   pattern: /"(?:[^"]|"")+"/,
   categories: [Identifier]
+})
+
+// XXX:
+// Window functions (OVER, PARTITION BY, USING, NULLS, FIRST, LAST, etc)
+// Type casts (CAST ... AS ...)
+// COLLATE
+// Sub-queries (SELECT, et al)
+// ARRAY
+// ROW
+const Keyword = createToken({ name: "Keyword", pattern: Lexer.NA })
+const All = createToken({
+  name: "All",
+  pattern: /all/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+})
+const Distinct = createToken({
+  name: "Distinct",
+  pattern: /distinct/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+})
+const OrderBy = createToken({
+  name: "OrderBy",
+  pattern: /order by/i,
+  categories: [Keyword]
+})
+const Asc = createToken({
+  name: "Ascending",
+  pattern: /asc/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+})
+const Desc = createToken({
+  name: "Descending",
+  pattern: /desc/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+})
+const Cast = createToken({
+  name: "Cast",
+  pattern: /cast/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+})
+const As = createToken({
+  name: "As",
+  pattern: /as/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+})
+const Case = createToken({
+  name: "Case",
+  pattern: /case/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+})
+const When = createToken({
+  name: "When",
+  pattern: /when/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+})
+const Then = createToken({
+  name: "Then",
+  pattern: /then/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+})
+const Else = createToken({
+  name: "Else",
+  pattern: /else/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
+})
+const End = createToken({
+  name: "End",
+  pattern: /end/i,
+  categories: [Keyword],
+  longer_alt: UnquotedIdentifier
 })
 
 // XXX:
@@ -189,17 +207,20 @@ const MembershipOperator = createToken({
 const BetweenOperator = createToken({
   name: "BetweenOperator",
   pattern: /between/i,
-  categories: [MembershipOperator]
+  categories: [MembershipOperator],
+  longer_alt: UnquotedIdentifier
 })
 const InOperator = createToken({
   name: "InOperator",
   pattern: /in/i,
-  categories: [MembershipOperator]
+  categories: [MembershipOperator],
+  longer_alt: UnquotedIdentifier
 })
 const LikeOperator = createToken({
   name: "LikeOperator",
   pattern: /i?like/i,
-  categories: [MembershipOperator]
+  categories: [MembershipOperator],
+  longer_alt: UnquotedIdentifier
 })
 
 const ComparisonOperator = createToken({
@@ -241,7 +262,8 @@ const GreaterThanEqualOperator = createToken({
 const IsOperator = createToken({
   name: "IsOperator",
   pattern: /is/i,
-  categories: [BinaryOperator]
+  categories: [BinaryOperator],
+  longer_alt: UnquotedIdentifier
 })
 const IsPredicate = createToken({
   name: "IsPredicate",
@@ -251,32 +273,38 @@ const IsPredicate = createToken({
 const Not = createToken({
   name: "Not",
   pattern: /not/i,
-  categories: [PrefixOperator, Keyword]
+  categories: [PrefixOperator, Keyword],
+  longer_alt: UnquotedIdentifier
 })
 const Null = createToken({
   name: "Null",
   pattern: /null/i,
-  categories: [IsPredicate, Keyword]
+  categories: [IsPredicate, Keyword],
+  longer_alt: UnquotedIdentifier
 })
 const True = createToken({
   name: "True",
   pattern: /true/i,
-  categories: [IsPredicate, Keyword]
+  categories: [IsPredicate, Keyword],
+  longer_alt: UnquotedIdentifier
 })
 const False = createToken({
   name: "False",
   pattern: /false/i,
-  categories: [IsPredicate, Keyword]
+  categories: [IsPredicate, Keyword],
+  longer_alt: UnquotedIdentifier
 })
 const And = createToken({
   name: "And",
   pattern: /and/i,
-  categories: [BinaryOperator, Keyword]
+  categories: [BinaryOperator, Keyword],
+  longer_alt: UnquotedIdentifier
 })
 const Or = createToken({
   name: "Or",
   pattern: /or/i,
-  categories: [BinaryOperator, Keyword]
+  categories: [BinaryOperator, Keyword],
+  longer_alt: UnquotedIdentifier
 })
 
 // XXX:
