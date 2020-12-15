@@ -35018,24 +35018,26 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
           init(bounds).then(function () {
             resolve(_chart);
           });
+        }
+      });
 
-          // reapplying the previous style's render layer to the new style layer when basemap gets changed
-          if (savedLayers.length) {
-            Object.entries(savedSources).forEach(function (_ref4) {
-              var _ref5 = _slicedToArray(_ref4, 2),
-                  id = _ref5[0],
-                  source = _ref5[1];
+      _map.on("styledata", function () {
+        // reapplying the previous style's render layer to the new style layer when basemap gets changed
+        if (savedLayers.length) {
+          Object.entries(savedSources).forEach(function (_ref4) {
+            var _ref5 = _slicedToArray(_ref4, 2),
+                id = _ref5[0],
+                source = _ref5[1];
 
-              if (!_map.getSource(source)) {
-                _map.addSource(id, source);
-                savedLayers.forEach(function (layer) {
-                  _map.addLayer(layer);
-                });
-                savedLayers = [];
-                savedSources = {};
-              }
-            });
-          }
+            if (!_map.getSource(source)) {
+              _map.addSource(id, source);
+              savedLayers.forEach(function (layer) {
+                _map.addLayer(layer);
+              });
+              savedLayers = [];
+              savedSources = {};
+            }
+          });
         }
       });
 
