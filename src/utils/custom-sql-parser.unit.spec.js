@@ -189,7 +189,9 @@ describe("parseFactsFromCustomSQL", () => {
 
     it("should project the first condition", () => {
       expect(factProjections).to.have.lengthOf(1)
-      expect(factProjections[0]).to.equal("sum(case when flight_year > 20.0 then origin_lat end)")
+      expect(factProjections[0]).to.equal(
+        "sum(case when flight_year > 20.0 then origin_lat end)"
+      )
     })
 
     it("should have one alias", () => {
@@ -198,9 +200,7 @@ describe("parseFactsFromCustomSQL", () => {
     })
 
     it("should have replaced the fact projections", () => {
-      expect(expression).to.equal(
-        "color.color0"
-      )
+      expect(expression).to.equal("color.color0")
     })
   })
 })
