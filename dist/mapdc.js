@@ -88774,7 +88774,7 @@ function rasterLayer(layerType) {
   function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
     var html = "";
     columnOrder.forEach(function (key) {
-      if (typeof data[key] === "undefined" || data[key] === null) {
+      if (typeof data[key] === "undefined") {
         return;
       }
 
