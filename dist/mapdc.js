@@ -88694,8 +88694,7 @@ function rasterLayer(layerType) {
               popupColSet.delete(colAttr);
             }
 
-            // include color/size measure in hit testing as "color"/"size" or "strokeColor"/"strokeWidth" not by their column
-            colAttr = isMeasureCol(colAttr) ? colAttr : projExpr;
+            colAttr = projExpr;
             break;
           }
         } else if ((regexRtn = projExpr.match(funcRegex)) && regexRtn[2] === colAttr) {
