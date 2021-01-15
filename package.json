@@ -62,7 +62,7 @@
     "d3": "^3.5.17",
     "earcut": "^2.1.1",
     "fast-deep-equal": "^2.0.1",
-    "legendables": "git://github.com/omnisci/legendables.git#ae5831919970c4241c1c48d06a1e8e8e55e93ae0",
+    "legendables": "git://github.com/omnisci/legendables.git#4de5dd71cdc857d06c9a226facf3c35a20d8aff9",
     "mapbox-gl": "1.9.1",
     "mapd-data-layer-2": "0.0.23",
     "moment": "^2.19.3",
