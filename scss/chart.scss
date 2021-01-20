@@ -1606,6 +1606,7 @@ body {
         position: relative;
         padding-right: 20px;
         padding-bottom: 2px;
+        word-break: break-word;
     }
 
     .toggle-btn {
@@ -1695,6 +1696,7 @@ body {
         flex-grow: 1;
         padding: 4px;
         line-height: 1;
+        word-break: break-word;
     }
 
     .dc-legend-item {
