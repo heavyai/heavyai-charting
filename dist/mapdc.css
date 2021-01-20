@@ -1425,7 +1425,8 @@ body {
   .dc-legend .legend-item-text {
     flex-grow: 1;
     padding: 4px;
-    line-height: 1; }
+    line-height: 1;
+    word-break: break-word; }
   .dc-legend .dc-legend-item {
     display: flex;
     align-items: center;
