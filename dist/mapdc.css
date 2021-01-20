@@ -1364,7 +1364,8 @@ body {
     margin: 4px 4px 0 4px;
     position: relative;
     padding-right: 20px;
-    padding-bottom: 2px; }
+    padding-bottom: 2px;
+    word-break: break-word; }
   .dc-legend .toggle-btn {
     width: 24px;
     height: 24px;
@@ -1988,6 +1989,7 @@ body {
 .nominal-legend .legend-row .text {
   flex-grow: 1;
   padding: 4px;
+  word-break: break-word;
   line-height: 1; }
 
 .gradient-legend .range {
