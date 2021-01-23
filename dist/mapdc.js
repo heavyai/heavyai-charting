@@ -12915,7 +12915,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
         return adjustOpacity(c, color.opacity);
       }),
       default: adjustOpacity(color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
-      color.opacity),
+      color.showOther ? color.opacity : 0),
       nullValue: adjustOpacity("#CACACA", color.opacity)
     });
   }
@@ -79693,7 +79693,7 @@ function legendState(state) {
       type: "nominal",
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
       open: hasLegendOpenProp(state) ? state.legend.open : true,
-      range: state.range,
+      range: state.hasOwnProperty("showOther") && state.showOther === false ? state.range.slice(0, state.range.length - 1) : state.range,
       domain: state.domain,
       position: useMap ? "bottom-left" : "top-right"
     };
