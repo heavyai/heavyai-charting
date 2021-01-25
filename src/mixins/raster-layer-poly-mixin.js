@@ -11,7 +11,7 @@ import { parser } from "../utils/utils"
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import parseFactsFromCustomSQL from "../utils/custom-sql-parser"
 
-const polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)"
+const polyDefaultScaleColor = "#d6d7d6"
 const polyNullScaleColor = "#d6d7d6"
 
 const vegaLineJoinOptions = ["miter", "round", "bevel"]
@@ -468,7 +468,13 @@ export default function rasterLayerPolyMixin(_layer) {
           polyNullScaleColor,
           state.encoding.color.opacity || 0.65
         ),
-        default: polyDefaultScaleColor
+        default: adjustOpacity(
+          polyDefaultScaleColor,
+          state.encoding.color.hasOwnProperty("showOther") &&
+            !state.encoding.color.showOther
+            ? 0
+            : 0.65
+        )
       })
       fillColor = {
         scale: colorScaleName,
@@ -491,7 +497,10 @@ export default function rasterLayerPolyMixin(_layer) {
             polyNullScaleColor,
             state.encoding.color.opacity || 0.65
           ),
-          default: polyDefaultScaleColor
+          default: adjustOpacity(
+            polyDefaultScaleColor,
+            state.encoding.color.opacity || 0.65
+          )
         })
       } else {
         scales.push({
@@ -503,8 +512,15 @@ export default function rasterLayerPolyMixin(_layer) {
             polyNullScaleColor,
             state.encoding.color.opacity || 0.65
           ),
-          default:
-            colorRange[colorRange.length - 1] || state.encoding.color.default // Other category is concatenated to the main range, so it should be always at the end
+          default: adjustOpacity(
+            // Other category is concatenated to the main range, so it should be always at the end
+            state.encoding.color.range[state.encoding.color.range.length - 1] ||
+              state.encoding.color.default,
+            state.encoding.color.hasOwnProperty("showOther") &&
+              !state.encoding.color.showOther
+              ? 0
+              : 0.65
+          )
         })
       }
 
