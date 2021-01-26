@@ -1,15 +1,16 @@
 var webpack = require("webpack");
 var path = require("path");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   context: __dirname,
   entry: {
-    "mapdc": "./index.js"
+    "mapdc": path.resolve(__dirname, './src/index.js')
   },
   output: {
-    path: __dirname + "/dist",
+    path: path.resolve(__dirname, './dist'),
     filename: "[name].js",
     libraryTarget: "umd",
     library: "mapdc"
@@ -23,7 +24,7 @@ module.exports = {
     }
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js?$/,
         exclude: /node_modules/,
@@ -31,17 +32,19 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: "css-loader"
-        })
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+        // use: ExtractTextPlugin.extract({
+        //   fallback: "style-loader",
+        //   use: "css-loader"
+        // })
       },
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: ["css-loader", "sass-loader"]
-        })
+        use: [MiniCssExtractPlugin.loader, 'css-loader', "sass-loader"]
+        // use: ExtractTextPlugin.extract({
+        //   fallback: "style-loader",
+        //   use: ["css-loader", "sass-loader"]
+        // })
       }
     ]
   },
@@ -51,7 +54,8 @@ module.exports = {
         NODE_ENV: JSON.stringify("production")
       }
     }),
-    new ExtractTextPlugin("mapdc.css"),
+    // new ExtractTextPlugin("mapdc.css"),
+    new MiniCssExtractPlugin()
     // new UglifyJSPlugin()
   ]
 };
