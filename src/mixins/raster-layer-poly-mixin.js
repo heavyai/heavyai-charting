@@ -518,7 +518,7 @@ export default function rasterLayerPolyMixin(_layer) {
               state.encoding.color.default,
             state.encoding.color.hasOwnProperty("showOther") &&
               !state.encoding.color.showOther
-              ? 0
+              ? 0 // When Other is toggled OFF, we make the Other category transparent
               : 0.65
           )
         })

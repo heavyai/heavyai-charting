@@ -12915,7 +12915,8 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
         return adjustOpacity(c, color.opacity);
       }),
       default: adjustOpacity(color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
-      color.hasOwnProperty("showOther") && !color.showOther ? 0 : color.opacity),
+      color.hasOwnProperty("showOther") && !color.showOther ? 0 // When Other is toggled OFF, we make the Other category transparent
+      : color.opacity),
       nullValue: adjustOpacity("#CACACA", color.opacity)
     });
   }
@@ -55933,7 +55934,8 @@ function rasterLayerPolyMixin(_layer) {
           nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity || 0.65),
           default: (0, _utilsVega.adjustOpacity)(
           // Other category is concatenated to the main range, so it should be always at the end
-          state.encoding.color.range[state.encoding.color.range.length - 1] || state.encoding.color.default, state.encoding.color.hasOwnProperty("showOther") && !state.encoding.color.showOther ? 0 : 0.65)
+          state.encoding.color.range[state.encoding.color.range.length - 1] || state.encoding.color.default, state.encoding.color.hasOwnProperty("showOther") && !state.encoding.color.showOther ? 0 // When Other is toggled OFF, we make the Other category transparent
+          : 0.65)
         });
       }
 
@@ -79695,7 +79697,8 @@ function legendState(state) {
       type: "nominal",
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
       open: hasLegendOpenProp(state) ? state.legend.open : true,
-      range: state.hasOwnProperty("showOther") && state.showOther === false ? state.range.slice(0, state.range.length - 1) : state.range,
+      range: state.hasOwnProperty("showOther") && state.showOther === false ? state.range.slice(0, state.range.length - 1) // When Other is toggled OFF, don't show color swatch in legend
+      : state.range,
       domain: state.domain,
       position: useMap ? "bottom-left" : "top-right"
     };

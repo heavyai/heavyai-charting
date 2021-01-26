@@ -265,7 +265,7 @@ function legendState(state, useMap = true) {
       open: hasLegendOpenProp(state) ? state.legend.open : true,
       range:
         state.hasOwnProperty("showOther") && state.showOther === false
-          ? state.range.slice(0, state.range.length - 1)
+          ? state.range.slice(0, state.range.length - 1) // When Other is toggled OFF, don't show color swatch in legend
           : state.range,
       domain: state.domain,
       position: useMap ? "bottom-left" : "top-right"
