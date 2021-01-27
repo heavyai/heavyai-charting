@@ -12915,7 +12915,8 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
         return adjustOpacity(c, color.opacity);
       }),
       default: adjustOpacity(color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
-      color.opacity),
+      color.hasOwnProperty("showOther") && !color.showOther ? 0 // When Other is toggled OFF, we make the Other category transparent
+      : color.opacity),
       nullValue: adjustOpacity("#CACACA", color.opacity)
     });
   }
@@ -55482,7 +55483,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var polyDefaultScaleColor = "rgba(214, 215, 214, 0.65)";
+var polyDefaultScaleColor = "#d6d7d6";
 var polyNullScaleColor = "#d6d7d6";
 
 var vegaLineJoinOptions = ["miter", "round", "bevel"];
@@ -55904,7 +55905,7 @@ function rasterLayerPolyMixin(_layer) {
         domain: [1],
         range: [(0, _utilsVega.adjustOpacity)(state.encoding.color.value, state.encoding.color.opacity)],
         nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity || 0.65),
-        default: polyDefaultScaleColor
+        default: (0, _utilsVega.adjustOpacity)(polyDefaultScaleColor, state.encoding.color.hasOwnProperty("showOther") && !state.encoding.color.showOther ? 0 : 0.65)
       });
       fillColor = {
         scale: colorScaleName,
@@ -55922,7 +55923,7 @@ function rasterLayerPolyMixin(_layer) {
           domain: autocolors ? { data: getStatsLayerName(), fields: ["mincolor", "maxcolor"] } : state.encoding.color.domain,
           range: colorRange,
           nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity || 0.65),
-          default: polyDefaultScaleColor
+          default: (0, _utilsVega.adjustOpacity)(polyDefaultScaleColor, state.encoding.color.opacity || 0.65)
         });
       } else {
         scales.push({
@@ -55931,7 +55932,10 @@ function rasterLayerPolyMixin(_layer) {
           domain: state.encoding.color.domain,
           range: colorRange,
           nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity || 0.65),
-          default: colorRange[colorRange.length - 1] || state.encoding.color.default // Other category is concatenated to the main range, so it should be always at the end
+          default: (0, _utilsVega.adjustOpacity)(
+          // Other category is concatenated to the main range, so it should be always at the end
+          state.encoding.color.range[state.encoding.color.range.length - 1] || state.encoding.color.default, state.encoding.color.hasOwnProperty("showOther") && !state.encoding.color.showOther ? 0 // When Other is toggled OFF, we make the Other category transparent
+          : 0.65)
         });
       }
 
@@ -79693,7 +79697,8 @@ function legendState(state) {
       type: "nominal",
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
       open: hasLegendOpenProp(state) ? state.legend.open : true,
-      range: state.range,
+      range: state.hasOwnProperty("showOther") && state.showOther === false ? state.range.slice(0, state.range.length - 1) // When Other is toggled OFF, don't show color swatch in legend
+      : state.range,
       domain: state.domain,
       position: useMap ? "bottom-left" : "top-right"
     };

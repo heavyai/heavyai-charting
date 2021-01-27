@@ -742,7 +742,9 @@ export function getScales(
       range: color.range.map(c => adjustOpacity(c, color.opacity)),
       default: adjustOpacity(
         color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
-        color.opacity
+        color.hasOwnProperty("showOther") && !color.showOther
+          ? 0 // When Other is toggled OFF, we make the Other category transparent
+          : color.opacity
       ),
       nullValue: adjustOpacity("#CACACA", color.opacity)
     })
