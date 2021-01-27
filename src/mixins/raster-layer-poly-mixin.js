@@ -514,7 +514,7 @@ export default function rasterLayerPolyMixin(_layer) {
           ),
           default: adjustOpacity(
             // Other category is concatenated to the main range, so it should be always at the end
-            state.encoding.color.range[state.encoding.color.range.length - 1] ||
+            state.encoding.color.defaultOtherRange ||
               state.encoding.color.default,
             state.encoding.color.hasOwnProperty("showOther") &&
               !state.encoding.color.showOther

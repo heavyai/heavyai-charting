@@ -12914,7 +12914,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       range: color.range.map(function (c) {
         return adjustOpacity(c, color.opacity);
       }),
-      default: adjustOpacity(color.range[color.range.length - 1], // in current implementation 'Other' is always added as last element in the array
+      default: adjustOpacity(color.defaultOtherRange, // color passed from immerse color palette for 'Other' category
       color.hasOwnProperty("showOther") && !color.showOther ? 0 // When Other is toggled OFF, we make the Other category transparent
       : color.opacity),
       nullValue: adjustOpacity("#CACACA", color.opacity)
@@ -55934,7 +55934,7 @@ function rasterLayerPolyMixin(_layer) {
           nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity || 0.65),
           default: (0, _utilsVega.adjustOpacity)(
           // Other category is concatenated to the main range, so it should be always at the end
-          state.encoding.color.range[state.encoding.color.range.length - 1] || state.encoding.color.default, state.encoding.color.hasOwnProperty("showOther") && !state.encoding.color.showOther ? 0 // When Other is toggled OFF, we make the Other category transparent
+          state.encoding.color.defaultOtherRange || state.encoding.color.default, state.encoding.color.hasOwnProperty("showOther") && !state.encoding.color.showOther ? 0 // When Other is toggled OFF, we make the Other category transparent
           : 0.65)
         });
       }
@@ -79697,9 +79697,15 @@ function legendState(state) {
       type: "nominal",
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
       open: hasLegendOpenProp(state) ? state.legend.open : true,
-      range: state.hasOwnProperty("showOther") && state.showOther === false ? state.range.slice(0, state.range.length - 1) // When Other is toggled OFF, don't show color swatch in legend
+      // When there is Other category (categories besides topN), we show it in the Color Palette in chart editor.
+      // We also need to include the Other category in legend. Thus, when there is Other category exist in result
+      // where hideOther is false we include Other in domain.
+      // For it's color swatch, we have two options:
+      // 1. When the Other toggle is enabled, we show color swatch (color defined from color palette in chart editor) for the Other category range,
+      // 2. If the Other toggle is disabled, we don't include color swatch for the Other domain
+      range: !state.hideOther && state.hasOwnProperty("showOther") && state.showOther === true ? state.range.concat([state.defaultOtherRange]) // When Other is toggled OFF, don't show color swatch in legend
       : state.range,
-      domain: state.domain,
+      domain: state.hideOther ? state.domain : state.domain.concat(["Other"]),
       position: useMap ? "bottom-left" : "top-right"
     };
   } else if (state.type === "quantitative" && state.domain && isNullLegend(state.domain)) {

@@ -551,7 +551,10 @@ describe("rasterLayerPointMixin", () => {
               type: "ordinal",
               field: "party",
               domain: ["D", "R", "I"],
-              range: ["red", "green", "blue"]
+              range: ["red", "green", "blue"],
+              showOther: true,
+              defaultOtherRange: "blue",
+              hideOther: true
             }
           })
         })
@@ -624,6 +627,9 @@ describe("rasterLayerPointMixin", () => {
               field: "party",
               domain: ["D", "R", "I"],
               range: ["#115f9a", "#1984c5", "#22a7f0"],
+              showOther: true,
+              defaultOtherRange: "#22a7f0",
+              hideOther: true,
               opacity: 0.2
             }
           })
@@ -787,7 +793,11 @@ describe("rasterLayerPointMixin", () => {
               type: "ordinal",
               field: "party",
               domain: "auto",
-              range: ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"]
+              range: ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"],
+              showOther: true,
+              defaultOtherRange: "#22a7f0",
+              hideOther: true,
+              opacity: 0.2
             }
           })
         })
@@ -823,7 +833,7 @@ describe("rasterLayerPointMixin", () => {
              "domain": {data: "points_stats", fields: ["distinctcolor"]},
              "range": ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"],
              "default": "rgba(34,167,240,0.2)",
-             "nullValue": "rgba(202,202,202,1)"
+             "nullValue": "rgba(202,202,202,0.2)"
            }
           ],
           "marks": [
@@ -876,7 +886,11 @@ describe("rasterLayerPointMixin", () => {
               type: "ordinal",
               field: "party",
               domain: "auto",
-              range: ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"]
+              range: ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"],
+              showOther: true,
+              defaultOtherRange: "#22a7f0",
+              hideOther: true,
+              opacity: 0.2
             }
           })
         })
@@ -934,7 +948,7 @@ describe("rasterLayerPointMixin", () => {
               "domain": {data: "points_stats", fields: ["distinctcolor"]},
               "range": ["rgba(17,95,154,0.2)", "rgba(25,132,197,0.2)", "rgba(34,167,240,0.2)"],
               "default": "rgba(34,167,240,0.2)",
-              "nullValue": "rgba(202,202,202,1)"
+              "nullValue": "rgba(202,202,202,0.2)"
             }
           ],
           "marks": [
@@ -1124,7 +1138,10 @@ describe("rasterLayerPointMixin", () => {
             type: "ordinal",
             field: "party",
             domain: ["D", "R", "I"],
-            range: ["#115f9a", "#1984c5", "#22a7f0"]
+            range: ["#115f9a", "#1984c5", "#22a7f0"],
+            showOther: true,
+            defaultOtherRange: "#22a7f0",
+            hideOther: true
           }
         }
       })
@@ -1177,7 +1194,10 @@ describe("rasterLayerPointMixin", () => {
             type: "ordinal",
             field: "lang",
             domain: ["d", "r"],
-            range: ["red", "blue"]
+            range: ["red", "blue"],
+            showOther: false,
+            defaultOtherRange: "#22a7f0",
+            hideOther: true
           }
         }
       })

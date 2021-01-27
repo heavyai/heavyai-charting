@@ -263,11 +263,19 @@ function legendState(state, useMap = true) {
       type: "nominal",
       title: hasLegendTitleProp(state) ? state.legend.title : "Legend",
       open: hasLegendOpenProp(state) ? state.legend.open : true,
+      // When there is Other category (categories besides topN), we show it in the Color Palette in chart editor.
+      // We also need to include the Other category in legend. Thus, when there is Other category exist in result
+      // where hideOther is false we include Other in domain.
+      // For it's color swatch, we have two options:
+      // 1. When the Other toggle is enabled, we show color swatch (color defined from color palette in chart editor) for the Other category range,
+      // 2. If the Other toggle is disabled, we don't include color swatch for the Other domain
       range:
-        state.hasOwnProperty("showOther") && state.showOther === false
-          ? state.range.slice(0, state.range.length - 1) // When Other is toggled OFF, don't show color swatch in legend
+        !state.hideOther &&
+        state.hasOwnProperty("showOther") &&
+        state.showOther === true
+          ? state.range.concat([state.defaultOtherRange]) // When Other is toggled OFF, don't show color swatch in legend
           : state.range,
-      domain: state.domain,
+      domain: state.hideOther ? state.domain : state.domain.concat(["Other"]),
       position: useMap ? "bottom-left" : "top-right"
     }
   } else if (
