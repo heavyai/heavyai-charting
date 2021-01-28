@@ -16,7 +16,9 @@ describe("Stacked Legend", () => {
               "#b33dc6",
               "#f46a9b",
               "#ede15b"
-            ]
+            ],
+            hideOther: true,
+            showOther: false
           }
         ])
       ).to.deep.equal({
