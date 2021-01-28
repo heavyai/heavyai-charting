@@ -10,12 +10,12 @@ if [ "$TRAVIS_BRANCH" = "master" ]
   git config --global user.email "${COMMIT_EMAIL}"
   rm -rf ${DOWNLOAD_PATH}
   git clone "${REPO_PATH}" ${DOWNLOAD_PATH}
-  
+
   cd ${DOWNLOAD_PATH}
     npm install
     git fetch --all
     git checkout gh-pages
-    git pull --rebase origin master
+    git reset --hard origin/master
     npm run clean:docs
     npm run build:docs
     npm run build:example
@@ -23,7 +23,7 @@ if [ "$TRAVIS_BRANCH" = "master" ]
     git add example -f
     CHANGESET=$(git rev-parse --verify HEAD)
     git commit -m "Automated documentation/example build for changeset ${CHANGESET}."
-    git push origin gh-pages
+    git push -f origin gh-pages
   cd ..
   rm -rf ${DOWNLOAD_PATH}
 fi
