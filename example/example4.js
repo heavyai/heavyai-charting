@@ -139,7 +139,8 @@ document.addEventListener("DOMContentLoaded", function init() {
                             point: {
                               shape: "circle"
                             }
-                          }
+                          },
+                          enableHitTesting: true
                         })
                         .popupColumns(['tweet_text', 'sender_name', 'tweet_time', 'lang', 'origin', 'followers'])
 

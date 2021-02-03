@@ -109,7 +109,8 @@ document.addEventListener("DOMContentLoaded", function init() {
               domain: colorDomain,
               range: colorRange
             }
-          }
+          },
+          enableHitTesting: true
         })
 
       polyLayer.popupColumns(["key0", "color"])
