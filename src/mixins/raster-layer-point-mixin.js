@@ -30,6 +30,8 @@ function validSymbol(type) {
     case "triangle-up":
     case "hexagon-vert":
     case "hexagon-horiz":
+    case "wedge":
+    case "arrow":
       return true
     default:
       return false
@@ -133,7 +135,7 @@ function getTransforms(
   table,
   filter,
   globalFilter,
-  { transform, encoding: { x, y, size, color }, postFilters },
+  { transform, encoding: { x, y, size, color, orientation }, postFilters },
   lastFilteredSize
 ) {
   const transforms = []
@@ -217,6 +219,13 @@ function getTransforms(
         type: "project",
         expr: color.field,
         as: "color"
+      })
+    }
+    if (orientation) {
+      transforms.push({
+        type: "project",
+        expr: orientation.field,
+        as: "angleField"
       })
     }
   }
@@ -478,6 +487,7 @@ export default function rasterLayerPointMixin(_layer) {
           },
           {
             shape: markType,
+            ...(state.encoding.orientation && {angle: {scale: state.encoding.orientation.scale, field: "angleField"}}),
             width: size,
             height: size
           }
@@ -550,6 +560,7 @@ export default function rasterLayerPointMixin(_layer) {
     if (!arguments.length) {
       return _minMaxCache[yValue]
     }
+
 
     _minMaxCache[yValue] = range
     return _layer

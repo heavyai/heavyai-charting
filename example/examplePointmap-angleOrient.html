@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MapD</title>
+    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <style>
+        .title {
+            font-weight: bold;
+            text-align:center;
+        }
+        .mapd {
+            position: relative;
+            top: 2px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header" style="margin-top:10px">
+            <img alt="Brand" src="images/favicon.png" height="30" width="30">
+            <span class="mapd">MapD Demo</span>
+        </div>
+    </div>
+</nav>
+
+<div class="main-container">
+    <div class="col-xs-12">
+        <div class="title">Point Map with angle orientation</div>
+        <div id="chart1-example"></div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="assets/app.bundle.js"></script>
+<script>
+  /*
+   * This is example code that shows how to make 3 cross-filtered charts with the
+   * mapdc.js API. This example is not meant to be a replacement for dc.js
+   * documentation.  For the dc.js API docs, see here
+   * - https://github.com/dc-js/dc.js/blob/master/web/docs/api-latest.md.
+   *   For an annotated example of using dc.js - see here:
+   *   https://dc-js.github.io/dc.js/docs/stock.html.
+   */
+  var globalGeocoder = null;
+
+  function createCharts(crossFilter, con, tableName) {
+
+
+
+    var w = document.documentElement.clientWidth - 30;
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+
+
+    /*----------------BACKEND RENDERED POINT MAP EXAMPLE-----------------------*/
+    var vesselTypeDomain = ['Tug', 'Cargo', '0', 'Passenger', 'Tanker', 'Fishing', 'Dredger', 'Pleasure Craft', 'Pilot Vessel', 'Reserved', 'Military Ops'];
+    var vesselTypeOriginColors = ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b", "#bdcf32", "#ef9b20", "#4db6ac", "#edbf33", "#7c4dff"]
+    var vesselTypeColors = []
+
+
+    function mapColors(n) {
+      vesselTypeDomain = vesselTypeDomain.slice(0, n);
+      for (var i = 0; i < vesselTypeDomain.length; i++) {
+        vesselTypeColors.push(vesselTypeOriginColors[i%vesselTypeOriginColors.length]);
+      }
+    }
+
+    var xDim = crossFilter.dimension("Longitude");
+    var yDim = crossFilter.dimension("Latitude");
+    var parent = document.getElementById("chart1-example");
+    mapColors(40);
+    var mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
+    /* Point Map Radius Size:
+     * in order to calculate the radius size.  We use d3 scale and pass in a
+     * domain and range.
+
+     To learn more about d3 scales, please read this:
+     https://github.com/d3/d3-scale
+
+     We then pass this scale into the r function within bubbleRasterChart
+    */
+    var sizeScale = d3.scale.linear().domain([0,5000]).range([1,5]);
+
+    var pointMapChart = dc
+      .rasterChart(parent, true)
+      .con(con)
+      .height(h)
+      .width(w)
+      .mapUpdateInterval(750)
+      .mapStyle('json/dark-v8.json')
+      .mapboxToken(mapboxToken) // need a mapbox accessToken for loading the tiles
+
+    var pointLayer = dc
+      .rasterLayer("points")
+      .crossfilter(crossFilter)
+      .setState({
+        transform: {
+          sample: true,
+          limit: 500000
+        },
+        mark: "point",
+        encoding: {
+          x: {
+            type: "quantitative",
+            field: "conv_4326_900913_x(Longitude)"
+          },
+          y: {
+            type: "quantitative",
+            field: "conv_4326_900913_y(Latitude)"
+          },
+          size: 11,
+          color: {
+            type: "ordinal",
+            field: "VesselType",
+            domain: vesselTypeDomain,
+            range: vesselTypeColors
+          },
+          // angle can be rotation with a scale. Assign a column name for `field` property
+          orientation: {field: "Heading", scale: "x"}
+        },
+        config: {
+          point: {
+            shape: "wedge"
+          }
+        },
+        enableHitTesting: true
+      })
+      .xDim(xDim)
+      .yDim(yDim)
+      .popupColumns(['MMSI', 'Latitude', 'Longitude', 'BaseDateTime', 'VesselType', 'VesselLength', 'Status', 'SOG', 'Heading'])
+
+
+    pointMapChart.pushLayer("points", pointLayer).init().then((chart) => {
+      // This will zoom to data extent
+      chart.zoomToLocation({
+        bounds: {
+          sw: [-135.970872122, 0.171378257],
+          ne: [-59.679891426, 59.876694451]
+        }
+      })
+      chart
+        .viewBoxDim(crossFilter.filterST_Intersects)
+
+      // custom click handler with just event data (no network calls)
+      pointMapChart.map().on('mouseup', logClick)
+      function logClick (result) {
+        console.log("clicked!", result)
+      }
+      // disable with pointMapChart.map().off('mouseup', logClick)
+
+      // custom click handler with event and nearest row data
+      pointMapChart.map().on('mouseup', logClickWithData)
+      function logClickWithData (event) {
+        pointMapChart.getClosestResult(event.point, function(result){
+          console.log(result && result.row_set[0])
+        })
+      }
+
+      // hover effect with popup
+      var debouncedPopup = _.debounce(displayPopupWithData, 250)
+      pointMapChart.map().on('mousewheel', pointMapChart.hidePopup);
+      pointMapChart.map().on('mousemove', pointMapChart.hidePopup)
+      pointMapChart.map().on('mousemove', debouncedPopup)
+      function displayPopupWithData (event) {
+        pointMapChart.getClosestResult(event.point, pointMapChart.displayPopup)
+      }
+
+      initGeocoder(pointMapChart);
+
+      /* Find additional mapbox styles here:
+       *
+       * https://github.com/mapbox/mapbox-gl-styles/tree/master/styles
+       */
+
+      /*
+       * Callback used for JSONP request for Google's Geocoder
+       */
+      function mapApiLoaded() {
+        globalGeocoder = new google.maps.Geocoder();
+        geocoderObject.geocoder = globalGeocoder;
+      }
+
+      /*
+       * Style and position your geocoder textbox here using standard jQuery
+       * Also, set any event listeners you'd like.
+       */
+      function initGeocoder (chart) {
+        this.geocoder = new Geocoder(chart);
+        this.geocoder.init(chart.map());
+        this.geocoderInput = $('<input class="geocoder-input" type="text" placeholder="Zoom to"></input>').appendTo($("#chart1-example"));
+        this.geocoderInput.css({ top: '5px', right: '5px', float: 'right', position: 'absolute'});
+
+        // set a key-up event handler for the enter key
+        this.geocoderInput.keyup(function(e) {
+          if(e.keyCode == 13) { this.geocoder.geocode(this.geocoderInput.val()); }
+        }.bind(this));
+      }
+
+      /*
+       * The Geocoder wrapper for Google Maps' geocoder.
+       * Has an ultra-small API that simply allows for geocoding a placeName.
+       */
+      function Geocoder(chart) {
+        this.geocoder = null;
+
+        this.geocode = function(placeName) {
+          this.geocoder.geocode({ 'address': placeName }, this._onResult);
+        }
+
+        this._onResult = function(data, status) {
+          if (status != google.maps.GeocoderStatus.OK) {
+            //throw "Geocoder error";
+            return null;
+          }
+          var viewport = data[0].geometry.viewport;
+          var sw = viewport.getSouthWest();
+          var ne = viewport.getNorthEast();
+
+          chart.map().fitBounds([ // api specifies lng/lat pairs
+            [sw.lng(), sw.lat()],
+            [ne.lng(), ne.lat()]
+          ], { animate: false }); // set animate to true if you want to pan-and-zoom to the location
+
+        }
+
+        this.init = function() {
+          if (globalGeocoder == null) { // have to give global callback for when the loaded google js is executed
+            geocoderObject = this;
+            $.getScript("https://maps.google.com/maps/api/js?sensor=false&async=2&callback=mapApiLoaded", function() {});
+          }
+          else {
+            this.geocoder = globalGeocoder;
+          }
+        }
+      };
+
+        // Calling dc.renderAll() will render all of the charts we set up.
+
+        dc.renderAllAsync()
+
+        /*--------------------------RESIZE EVENT------------------------------*/
+
+        /* Here we listen to any resizes of the main window.  On resize we resize the corresponding widgets and call dc.renderAll() to refresh everything */
+
+        window.addEventListener("resize", _.debounce(reSizeAll, 500));
+
+        function reSizeAll(){
+
+          var w = document.documentElement.clientWidth - 30;
+          var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
+
+          pointMapChart.map().resize();
+          pointMapChart.isNodeAnimate = false;
+          pointMapChart
+            .width(w)
+            .height(h/1.5)
+            .render();
+
+          dc.redrawAllAsync();
+        }
+
+    })
+  }
+
+  function init() {
+    // A MapdCon instance is used for performing raw queries on a MapD GPU database.
+    new MapdCon()
+      .protocol("https")
+      .host("metis.mapd.com")
+      .port("443")
+      .dbName("mapd")
+      .user("mapd")
+      .password("HyperInteractive")
+      .connect(function(error, con) {
+        con.logging(true)
+        // Get a table from the database
+        var tableName = 'ships_ais';
+        // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
+        var crossFilter = crossfilter.crossfilter(con, tableName)
+            .then(function(cf) {
+              createCharts(cf, con, tableName)
+            })
+          // Pass instance of crossfilter into our CreateCharts.
+        ;
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', init, false);
+
+  function mapApiLoaded() {
+    globalGeocoder = new google.maps.Geocoder();
+    geocoderObject.geocoder = globalGeocoder;
+  }
+</script>
+</body>
+</html>
+
