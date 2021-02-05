@@ -37,6 +37,8 @@ function validSymbol(type) {
     case "triangle-up":
     case "hexagon-vert":
     case "hexagon-horiz":
+    case "wedge":
+    case "arrow":
       return true
     default:
       return false
@@ -163,7 +165,7 @@ export default function rasterLayerPointMixin(_layer) {
     table,
     filter,
     globalFilter,
-    { transform, encoding: { x, y, size, color }, postFilters },
+    { transform, encoding: { x, y, size, color, orientation }, postFilters },
     lastFilteredSize,
     isDataExport
   ) {
@@ -192,6 +194,15 @@ export default function rasterLayerPointMixin(_layer) {
         alias.push("color")
         ops.push(color.aggregate)
       }
+
+      if (
+        orientation
+      ) {
+        fields.push(orientation.field)
+        alias.push("angleField")
+        ops.push(orientation.aggregate)
+      }
+
       // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
       // The reason is ST_Point projections need buffer allocation to hold the coords and thus require cpu execution
       transforms.push({
@@ -264,6 +275,14 @@ export default function rasterLayerPointMixin(_layer) {
           type: "project",
           expr: color.field,
           as: "color"
+        })
+      }
+
+      if (orientation) {
+        transforms.push({
+          type: "project",
+          expr: orientation.field,
+          as: "angleField"
         })
       }
     }
@@ -503,6 +522,7 @@ export default function rasterLayerPointMixin(_layer) {
           },
           {
             shape: markType,
+            ...(state.encoding.orientation && {angle: {scale: state.encoding.orientation.scale, field: "angleField"}}),
             width: size,
             height: size
           }
