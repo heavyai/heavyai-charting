@@ -106,7 +106,7 @@ function getColor(color, layerName) {
 }
 
 function getOrientation(orientation) {
-  if (typeof orientation === "object" && orientatison.type === "quantitative") {
+  if (typeof orientation === "object" && orientation.type === "quantitative") {
     return {
       scale: "symbolAngle",
       field: "angleField"
@@ -209,7 +209,9 @@ export default function rasterLayerPointMixin(_layer) {
         ops.push(color.aggregate)
       }
 
-      if (orientation) {
+      if (
+        orientation
+      ) {
         fields.push(orientation.field)
         alias.push("angleField")
         ops.push(orientation.aggregate)
@@ -534,9 +536,7 @@ export default function rasterLayerPointMixin(_layer) {
           },
           {
             shape: markType,
-            ...(state.encoding.orientation && {
-              angle: getOrientation(state.encoding.orientation)
-            }),
+            ...(state.encoding.orientation && {angle: getOrientation(state.encoding.orientation)}),
             width: size,
             height: size
           }

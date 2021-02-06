@@ -54884,7 +54884,7 @@ function getColor(color, layerName) {
 }
 
 function getOrientation(orientation) {
-  if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientatison.type === "quantitative") {
+  if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientation.type === "quantitative") {
     return {
       scale: "symbolAngle",
       field: "angleField"
@@ -55271,9 +55271,7 @@ function rasterLayerPointMixin(_layer) {
         fillColor: getColor(state.encoding.color, layerName)
       }, _extends({
         shape: markType
-      }, state.encoding.orientation && {
-        angle: getOrientation(state.encoding.orientation)
-      }, {
+      }, state.encoding.orientation && { angle: getOrientation(state.encoding.orientation) }, {
         width: size,
         height: size
       }))
