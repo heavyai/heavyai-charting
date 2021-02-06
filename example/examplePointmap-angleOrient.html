@@ -54,9 +54,12 @@
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 200;
 
 
-    /*----------------BACKEND RENDERED POINT MAP EXAMPLE-----------------------*/
-    var vesselTypeDomain = ['Tug', 'Cargo', '0', 'Passenger', 'Tanker', 'Fishing', 'Dredger', 'Pleasure Craft', 'Pilot Vessel', 'Reserved', 'Military Ops'];
-    var vesselTypeOriginColors = ["#27aeef", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b", "#bdcf32", "#ef9b20", "#4db6ac", "#edbf33", "#7c4dff"]
+    /*----------------BACKEND RENDERED POINT MAP EXAMPLE WITH ANGLE/ORIENTATION-----------------------*/
+
+    // TopN - top 10 categories from "VesselType" column for coloring.
+    // Any category that is not included in the top 10 considered "Other" category
+    var vesselTypeDomain = ['Tug', 'Cargo', '0', 'Passenger', 'Tanker', 'Fishing', 'Dredger', 'Pleasure Craft', 'Pilot Vessel', 'Reserved', 'Other'];
+    var vesselTypeOriginColors = ["#1fef20", "#ea5545", "#87bc45", "#b33dc6", "#f46a9b", "#ede15b", "#bdcf32", "#ef9b20", "#4db6ac", "#edbf33", "#27AEEF"]
     var vesselTypeColors = []
 
 
@@ -72,16 +75,6 @@
     var parent = document.getElementById("chart1-example");
     mapColors(40);
     var mapboxToken = "pk.eyJ1IjoibWFwZCIsImEiOiJjaWV1a3NqanYwajVsbmdtMDZzc2pneDVpIn0.cJnk8c2AxdNiRNZWtx5A9g";
-    /* Point Map Radius Size:
-     * in order to calculate the radius size.  We use d3 scale and pass in a
-     * domain and range.
-
-     To learn more about d3 scales, please read this:
-     https://github.com/d3/d3-scale
-
-     We then pass this scale into the r function within bubbleRasterChart
-    */
-    var sizeScale = d3.scale.linear().domain([0,5000]).range([1,5]);
 
     var pointMapChart = dc
       .rasterChart(parent, true)
@@ -117,8 +110,10 @@
             domain: vesselTypeDomain,
             range: vesselTypeColors
           },
-          // angle can be rotation with a scale. Assign a column name for `field` property
-          orientation: {field: "Heading", scale: "x"}
+          // Angle can be rotation with a scale. Assign a column name for `field` property.
+          // "quantitative" type is used for numerical type column, Heading. The min and max of the column is 0 and 511
+          // Thus, use the min max values for domain, and range would be 0 to 360 degrees.
+          orientation: {field: "Heading", label: "Heading", type: "quantitative", domain: [0, 511], range: [0, 360]}
         },
         config: {
           point: {
