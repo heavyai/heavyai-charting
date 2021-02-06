@@ -105,6 +105,20 @@ function getColor(color, layerName) {
   }
 }
 
+function getOrientation(orientation) {
+  if (typeof orientation === "object" && orientatison.type === "quantitative") {
+    return {
+      scale: "symbolAngle",
+      field: "angleField"
+    }
+  } else {
+    return {
+      scale: "x",
+      field: "angleField"
+    }
+  }
+}
+
 function isValidPostFilter(postFilter) {
   const { operator, min, max, aggType, value, custom } = postFilter
 
@@ -195,9 +209,7 @@ export default function rasterLayerPointMixin(_layer) {
         ops.push(color.aggregate)
       }
 
-      if (
-        orientation
-      ) {
+      if (orientation) {
         fields.push(orientation.field)
         alias.push("angleField")
         ops.push(orientation.aggregate)
@@ -522,7 +534,9 @@ export default function rasterLayerPointMixin(_layer) {
           },
           {
             shape: markType,
-            ...(state.encoding.orientation && {angle: {scale: state.encoding.orientation.scale, field: "angleField"}}),
+            ...(state.encoding.orientation && {
+              angle: getOrientation(state.encoding.orientation)
+            }),
             width: size,
             height: size
           }
