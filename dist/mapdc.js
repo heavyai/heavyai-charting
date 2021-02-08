@@ -12870,7 +12870,8 @@ function getColorScaleName(layerName) {
 
 function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
   var size = _ref.size,
-      color = _ref.color;
+      color = _ref.color,
+      orientation = _ref.orientation;
 
   var scales = [];
 
@@ -12929,6 +12930,16 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       range: color.range.map(function (c) {
         return adjustOpacity(c, color.opacity);
       })
+    });
+  }
+
+  if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientation.type === "quantitative") {
+    scales.push({
+      name: "symbolAngle",
+      type: "linear",
+      domain: orientation.domain,
+      range: orientation.range,
+      clamp: true
     });
   }
 
@@ -54770,6 +54781,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 exports.default = rasterLayerPointMixin;
@@ -54813,6 +54826,8 @@ function validSymbol(type) {
     case "triangle-up":
     case "hexagon-vert":
     case "hexagon-horiz":
+    case "wedge":
+    case "arrow":
       return true;
     default:
       return false;
@@ -54865,6 +54880,20 @@ function getColor(color, layerName) {
     return (0, _utilsVega.adjustOpacity)(color.value, color.opacity);
   } else {
     return color;
+  }
+}
+
+function getOrientation(orientation) {
+  if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientation.type === "quantitative") {
+    return {
+      scale: "symbolAngle",
+      field: "angleField"
+    };
+  } else {
+    return {
+      scale: "x",
+      field: "angleField"
+    };
   }
 }
 
@@ -54924,6 +54953,7 @@ function rasterLayerPointMixin(_layer) {
         y = _ref$encoding.y,
         size = _ref$encoding.size,
         color = _ref$encoding.color,
+        orientation = _ref$encoding.orientation,
         postFilters = _ref.postFilters;
 
     var transforms = [];
@@ -54944,6 +54974,13 @@ function rasterLayerPointMixin(_layer) {
         alias.push("color");
         ops.push(color.aggregate);
       }
+
+      if (orientation) {
+        fields.push(orientation.field);
+        alias.push("angleField");
+        ops.push(orientation.aggregate);
+      }
+
       // Since we use ST_POINT for pointmap data export, we need to include /*+ cpu_mode */ in pointmap chart data export queries.
       // The reason is ST_Point projections need buffer allocation to hold the coords and thus require cpu execution
       transforms.push({
@@ -55013,6 +55050,14 @@ function rasterLayerPointMixin(_layer) {
           type: "project",
           expr: color.field,
           as: "color"
+        });
+      }
+
+      if (orientation) {
+        transforms.push({
+          type: "project",
+          expr: orientation.field,
+          as: "angleField"
         });
       }
     }
@@ -55224,11 +55269,12 @@ function rasterLayerPointMixin(_layer) {
           field: "y"
         },
         fillColor: getColor(state.encoding.color, layerName)
-      }, {
-        shape: markType,
+      }, _extends({
+        shape: markType
+      }, state.encoding.orientation && { angle: getOrientation(state.encoding.orientation) }, {
         width: size,
         height: size
-      })
+      }))
     }];
 
     return {
@@ -59537,6 +59583,8 @@ function parseExpression(expression) {
       } else {
         return "count(" + expression.field + ")";
       }
+    case "median":
+      return "approx_median(" + expression.x + ")";
     case "stddev":
     case "stddev_pop":
     case "stddev_samp":
