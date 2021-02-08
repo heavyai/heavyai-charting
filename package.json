@@ -1,6 +1,6 @@
 {
   "name": "mapd-charting",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "Apache-2.0",
   "copyright": "2017",
   "description": "A multi-dimensional charting library built to work natively with crossfilter and rendered using d3.js.",
@@ -64,7 +64,7 @@
     "fast-deep-equal": "^2.0.1",
     "http-server": "^0.11.1",
     "legendables": "git://github.com/omnisci/legendables.git#63e2ad9a8375a11e5510a5dadf0b7a4326fae888",
-    "mapbox-gl": "^1.1.1",
+    "mapbox-gl": "1.9.1",
     "mapd-data-layer-2": "0.0.22",
     "moment": "^2.19.3",
     "ramda": "0.21.0",
