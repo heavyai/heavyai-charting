@@ -12727,7 +12727,8 @@ function getColorScaleName(layerName) {
 
 function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
   var size = _ref.size,
-      color = _ref.color;
+      color = _ref.color,
+      orientation = _ref.orientation;
 
   var scales = [];
 
@@ -12785,6 +12786,16 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       range: color.range.map(function (c) {
         return adjustOpacity(c, color.opacity);
       })
+    });
+  }
+
+  if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientation.type === "quantitative") {
+    scales.push({
+      name: "symbolAngle",
+      type: "linear",
+      domain: orientation.domain,
+      range: orientation.range,
+      clamp: true
     });
   }
 
@@ -53700,6 +53711,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 exports.default = rasterLayerPointMixin;
@@ -53736,6 +53749,8 @@ function validSymbol(type) {
     case "triangle-up":
     case "hexagon-vert":
     case "hexagon-horiz":
+    case "wedge":
+    case "arrow":
       return true;
     default:
       return false;
@@ -53791,6 +53806,20 @@ function getColor(color, layerName) {
   }
 }
 
+function getOrientation(orientation) {
+  if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientation.type === "quantitative") {
+    return {
+      scale: "symbolAngle",
+      field: "angleField"
+    };
+  } else {
+    return {
+      scale: "x",
+      field: "angleField"
+    };
+  }
+}
+
 function isValidPostFilter(postFilter) {
   var operator = postFilter.operator,
       min = postFilter.min,
@@ -53824,6 +53853,7 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
       y = _ref$encoding.y,
       size = _ref$encoding.size,
       color = _ref$encoding.color,
+      orientation = _ref$encoding.orientation,
       postFilters = _ref.postFilters;
 
   var transforms = [];
@@ -53843,6 +53873,12 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
       fields.push(color.field);
       alias.push("color");
       ops.push(color.aggregate);
+    }
+
+    if (orientation) {
+      fields.push(orientation.field);
+      alias.push("angleField");
+      ops.push(orientation.aggregate);
     }
 
     transforms.push({
@@ -53899,6 +53935,13 @@ function getTransforms(table, filter, globalFilter, _ref, lastFilteredSize) {
         type: "project",
         expr: color.field,
         as: "color"
+      });
+    }
+    if (orientation) {
+      transforms.push({
+        type: "project",
+        expr: orientation.field,
+        as: "angleField"
       });
     }
   }
@@ -54133,11 +54176,14 @@ function rasterLayerPointMixin(_layer) {
           field: "y"
         },
         fillColor: getColor(state.encoding.color, layerName)
+      }, _extends({
+        shape: markType
+      }, state.encoding.orientation && {
+        angle: getOrientation(state.encoding.orientation)
       }, {
-        shape: markType,
         width: size,
         height: size
-      })
+      }))
     }];
 
     return {

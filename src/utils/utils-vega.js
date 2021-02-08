@@ -686,7 +686,7 @@ export function getColorScaleName(layerName) {
 }
 
 export function getScales(
-  { size, color },
+  { size, color, orientation },
   layerName,
   scaleDomainFields,
   xformDataSource
@@ -757,6 +757,16 @@ export function getScales(
           ? { data: xformDataSource, fields: scaleDomainFields.color }
           : color.domain,
       range: color.range.map(c => adjustOpacity(c, color.opacity))
+    })
+  }
+
+  if (typeof orientation === "object" && orientation.type === "quantitative") {
+    scales.push({
+      name: "symbolAngle",
+      type: "linear",
+      domain: orientation.domain,
+      range: orientation.range,
+      clamp: true
     })
   }
 
