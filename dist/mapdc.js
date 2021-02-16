@@ -54887,12 +54887,12 @@ function getOrientation(orientation, layerName) {
   if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientation.type === "quantitative") {
     return {
       scale: layerName + "_symbolAngle",
-      field: "angleField"
+      field: "orientation"
     };
   } else {
     return {
       scale: "x",
-      field: "angleField"
+      field: "orientation"
     };
   }
 }
@@ -54977,7 +54977,7 @@ function rasterLayerPointMixin(_layer) {
 
       if (orientation) {
         fields.push(orientation.field);
-        alias.push("angleField");
+        alias.push("orientation");
         ops.push(orientation.aggregate);
       }
 
@@ -55057,7 +55057,7 @@ function rasterLayerPointMixin(_layer) {
         transforms.push({
           type: "project",
           expr: orientation.field,
-          as: "angleField"
+          as: "orientation"
         });
       }
     }
