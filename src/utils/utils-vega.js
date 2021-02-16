@@ -764,7 +764,7 @@ export function getScales(
 
   if (typeof orientation === "object" && orientation.type === "quantitative") {
     scales.push({
-      name: "symbolAngle",
+      name: `${layerName}_symbolAngle`,
       type: "linear",
       domain: orientation.domain,
       range: orientation.range,
