@@ -12935,7 +12935,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
 
   if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientation.type === "quantitative") {
     scales.push({
-      name: "symbolAngle",
+      name: layerName + "_symbolAngle",
       type: "linear",
       domain: orientation.domain,
       range: orientation.range,
@@ -54883,10 +54883,10 @@ function getColor(color, layerName) {
   }
 }
 
-function getOrientation(orientation) {
+function getOrientation(orientation, layerName) {
   if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientation.type === "quantitative") {
     return {
-      scale: "symbolAngle",
+      scale: layerName + "_symbolAngle",
       field: "angleField"
     };
   } else {
@@ -55271,7 +55271,9 @@ function rasterLayerPointMixin(_layer) {
         fillColor: getColor(state.encoding.color, layerName)
       }, _extends({
         shape: markType
-      }, state.encoding.orientation && { angle: getOrientation(state.encoding.orientation) }, {
+      }, state.encoding.orientation && {
+        angle: getOrientation(state.encoding.orientation, layerName)
+      }, {
         width: size,
         height: size
       }))
