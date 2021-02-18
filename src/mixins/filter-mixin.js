@@ -1,3 +1,5 @@
+import { isEqual } from "lodash"
+
 import {
   isArrayOfObjects,
   normalizeArrayByValue
@@ -51,9 +53,17 @@ export function hasFilterHandler(filters, testValue) {
     : testValue
   const filtersWithIsoDates = convertAllDatesToISOString(filters)
   const testValueWithISODates = convertAllDatesToISOString(testValue)
-  return filtersWithIsoDates.some(
-    f => testValueWithISODates <= f && testValueWithISODates >= f
-  )
+  return filtersWithIsoDates.some(f => {
+    if (Array.isArray(f)) {
+      if (Array.isArray(testValueWithISODates)) {
+        return isEqual(f, testValueWithISODates)
+      }
+      return f.every(f2 => f2 === testValueWithISODates)
+    } else if (Array.isArray(testValueWithISODates)) {
+      return testValueWithISODates.every(f2 => f2 === f)
+    }
+    return testValueWithISODates <= f && testValueWithISODates >= f
+  })
 }
 
 export function filterHandlerWithChartContext(_chart) {
