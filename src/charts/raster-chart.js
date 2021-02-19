@@ -1,3 +1,4 @@
+import d3 from "d3"
 import {
   getLegendStateFromChart,
   handleLegendDoneRender,
@@ -60,6 +61,10 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _layers = []
   let _hasBeenRendered = false
 
+  const _events = ["vegaSpec"]
+  const _listeners = d3.dispatch.apply(d3, _events)
+  const _on = _chart.on.bind(_chart)
+
   let _x = null
   let _y = null
   const _xScaleName = "x"
@@ -79,6 +84,19 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   let _legendOpen = true
 
   let _shiftToZoom = false
+
+  _chart.on = function(event, listener) {
+    if (_events.indexOf(event) === -1) {
+      _on(event, listener)
+    } else {
+      _listeners.on(event, listener)
+    }
+    return _chart
+  }
+
+  _chart._invokeVegaSpecListener = function(spec) {
+    _listeners.vegaSpec(_chart, spec)
+  }
 
   _chart.legendOpen = function(_) {
     if (!arguments.length) {
@@ -786,6 +804,8 @@ function genLayeredVega(chart) {
     projections,
     marks
   }
+
+  chart._invokeVegaSpecListener(vegaSpec)
 
   return vegaSpec
 }
