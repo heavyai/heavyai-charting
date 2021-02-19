@@ -78791,6 +78791,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = rasterChart;
 
+var _d = __webpack_require__(1);
+
+var _d2 = _interopRequireDefault(_d);
+
 var _stackedLegend = __webpack_require__(268);
 
 var _coordinateGridRasterMixin = __webpack_require__(190);
@@ -78859,6 +78863,10 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   var _layers = [];
   var _hasBeenRendered = false;
 
+  var _events = ["vegaSpec"];
+  var _listeners = _d2.default.dispatch.apply(_d2.default, _events);
+  var _on = _chart.on.bind(_chart);
+
   var _x = null;
   var _y = null;
   var _xScaleName = "x";
@@ -78878,6 +78886,19 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   var _legendOpen = true;
 
   var _shiftToZoom = false;
+
+  _chart.on = function (event, listener) {
+    if (_events.indexOf(event) === -1) {
+      _on(event, listener);
+    } else {
+      _listeners.on(event, listener);
+    }
+    return _chart;
+  };
+
+  _chart._invokeVegaSpecListener = function (spec) {
+    _listeners.vegaSpec(_chart, spec);
+  };
 
   _chart.legendOpen = function (_) {
     if (!arguments.length) {
@@ -79155,11 +79176,11 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     var useRenderBounds = renderBounds && renderBounds.length === 4 && renderBounds[0] instanceof Array && renderBounds[0].length === 2;
 
     if (_x === null) {
-      _x = d3.scale.linear();
+      _x = _d2.default.scale.linear();
     }
 
     if (_y === null) {
-      _y = d3.scale.linear();
+      _y = _d2.default.scale.linear();
     }
 
     // if _chart.useLonLat() is not true, the chart bounds have already been projected into mercator space
@@ -79490,6 +79511,8 @@ function genLayeredVega(chart) {
     projections: projections,
     marks: marks
   };
+
+  chart._invokeVegaSpecListener(vegaSpec);
 
   return vegaSpec;
 }
