@@ -312,15 +312,10 @@ export default function mapdTable(parent, chartGroup) {
         tableRowCls = tableRowCls + "grouped-data "
 
         if (_chart.hasFilter()) {
-          const keyArray = []
-          for (const key in d) {
-            if (d.hasOwnProperty(key) && key.includes("key")) {
-              keyArray.push(d[key])
-            }
-          }
+          const key = _chart.keyAccessor()(d)
           tableRowCls =
             tableRowCls +
-            (!_chart.hasFilter(keyArray) ^ _chart.filtersInverse()
+            (!_chart.hasFilter(key) ^ _chart.filtersInverse()
               ? "deselected"
               : "selected")
         }
