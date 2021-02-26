@@ -55953,7 +55953,7 @@ function rasterLayerPolyMixin(_layer) {
         domain: [1],
         range: [(0, _utilsVega.adjustOpacity)(state.encoding.color.value, state.encoding.color.opacity)],
         nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity || 0.65),
-        default: (0, _utilsVega.adjustOpacity)(polyDefaultScaleColor, state.encoding.color.hasOwnProperty("showOther") && !state.encoding.color.showOther ? 0 : 0.65)
+        default: (0, _utilsVega.adjustOpacity)(polyDefaultScaleColor, state.encoding.color.hasOwnProperty("showOther") && state.encoding.color.showOther === false ? 0 : state.encoding.color.opacity ? state.encoding.color.opacity : 0.65)
       });
       fillColor = {
         scale: colorScaleName,
@@ -55980,10 +55980,8 @@ function rasterLayerPolyMixin(_layer) {
           domain: state.encoding.color.domain,
           range: colorRange,
           nullValue: (0, _utilsVega.adjustOpacity)(polyNullScaleColor, state.encoding.color.opacity || 0.65),
-          default: (0, _utilsVega.adjustOpacity)(
-          // Other category is concatenated to the main range, so it should be always at the end
-          state.encoding.color.defaultOtherRange || state.encoding.color.default, state.encoding.color.hasOwnProperty("showOther") && !state.encoding.color.showOther ? 0 // When Other is toggled OFF, we make the Other category transparent
-          : 0.65)
+          default: (0, _utilsVega.adjustOpacity)(state.encoding.color.defaultOtherRange || state.encoding.color.default, state.encoding.color.hasOwnProperty("showOther") && state.encoding.color.showOther === false ? 0 // When Other is toggled OFF, we make the Other category transparent
+          : state.encoding.color.opacity ? state.encoding.color.opacity : 0.65)
         });
       }
 
