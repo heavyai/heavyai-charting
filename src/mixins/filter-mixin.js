@@ -58,11 +58,15 @@ export function hasFilterHandler(filters, testValue) {
       if (Array.isArray(testValueWithISODates)) {
         return isEqual(f, testValueWithISODates)
       }
-      return f.every(f2 => f2 === testValueWithISODates)
+      return f.length === 1 && f[0] === testValueWithISODates
     } else if (Array.isArray(testValueWithISODates)) {
       return testValueWithISODates.every(f2 => f2 === f)
     }
-    return testValueWithISODates <= f && testValueWithISODates >= f
+    return (
+      typeof f === typeof testValueWithISODates &&
+      testValueWithISODates <= f &&
+      testValueWithISODates >= f
+    )
   })
 }
 

@@ -61506,6 +61506,9 @@ function legendMixin(chart) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 exports.addFilterHandler = addFilterHandler;
 exports.hasFilterHandler = hasFilterHandler;
 exports.filterHandlerWithChartContext = filterHandlerWithChartContext;
@@ -61569,15 +61572,13 @@ function hasFilterHandler(filters, testValue) {
       if (Array.isArray(testValueWithISODates)) {
         return (0, _lodash.isEqual)(f, testValueWithISODates);
       }
-      return f.every(function (f2) {
-        return f2 === testValueWithISODates;
-      });
+      return f.length === 1 && f[0] === testValueWithISODates;
     } else if (Array.isArray(testValueWithISODates)) {
       return testValueWithISODates.every(function (f2) {
         return f2 === f;
       });
     }
-    return testValueWithISODates <= f && testValueWithISODates >= f;
+    return (typeof f === "undefined" ? "undefined" : _typeof(f)) === (typeof testValueWithISODates === "undefined" ? "undefined" : _typeof(testValueWithISODates)) && testValueWithISODates <= f && testValueWithISODates >= f;
   });
 }
 
@@ -84841,13 +84842,8 @@ function mapdTable(parent, chartGroup) {
         tableRowCls = tableRowCls + "grouped-data ";
 
         if (_chart.hasFilter()) {
-          var keyArray = [];
-          for (var key in d) {
-            if (d.hasOwnProperty(key) && key.includes("key")) {
-              keyArray.push(d[key]);
-            }
-          }
-          tableRowCls = tableRowCls + (!_chart.hasFilter(keyArray) ^ _chart.filtersInverse() ? "deselected" : "selected");
+          var key = _chart.keyAccessor()(d);
+          tableRowCls = tableRowCls + (!_chart.hasFilter(key) ^ _chart.filtersInverse() ? "deselected" : "selected");
         }
       }
       return tableRowCls;
