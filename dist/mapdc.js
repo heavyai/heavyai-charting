@@ -79468,12 +79468,14 @@ function genLayeredVega(chart) {
     name: chart._getXScaleName(),
     type: chart._determineScaleType(chart.x()),
     domain: chart.x().domain(),
-    range: "width"
+    range: "width",
+    nullValue: -100
   }, {
     name: chart._getYScaleName(),
     type: chart._determineScaleType(chart.y()),
     domain: chart.y().domain(),
-    range: "height"
+    range: "height",
+    nullValue: -100
   }];
 
   // NOTE(adb): When geo types are enabled, vega spatial projections are applied and the scales for the x and y properties are not being used. However, we still need the legacy scaling terms to properly size poly popups on hover, which is why _xLatLngBnds, etc are separate scales

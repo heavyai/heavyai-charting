@@ -758,13 +758,15 @@ function genLayeredVega(chart) {
       name: chart._getXScaleName(),
       type: chart._determineScaleType(chart.x()),
       domain: chart.x().domain(),
-      range: "width"
+      range: "width",
+      nullValue: -100
     },
     {
       name: chart._getYScaleName(),
       type: chart._determineScaleType(chart.y()),
       domain: chart.y().domain(),
-      range: "height"
+      range: "height",
+      nullValue: -100
     }
   ]
 
