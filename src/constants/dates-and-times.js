@@ -82,4 +82,3 @@ export const TIME_LABEL_TO_SECONDS = {
   second: SECOND,
   millisecond: MS_IN_SECONDS
 }
-

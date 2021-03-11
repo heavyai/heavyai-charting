@@ -30,7 +30,7 @@ describe("Binning Helpers", () => {
     })
 
     it("should select quarter as time bin", () => {
-      const timeBounds = [new Date("Jan 01 1917"), new Date("Jan 01 2017")]
+      const timeBounds = [new Date("Jan 01 1917"), new Date("Jan 01 2007")]
       const result = autoBinParams(timeBounds, DEFAULT_BINS)
       expect(result).to.equal("quarter")
     })
