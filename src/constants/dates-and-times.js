@@ -43,3 +43,42 @@ export const HOURS = [
   "10PM",
   "11PM"
 ]
+
+export const MS_IN_SECONDS = 0.001
+export const SECOND = 1
+export const MIN_IN_SECONDS = 60
+export const HOUR_IN_SECONDS = 60 * MIN_IN_SECONDS
+export const DAY_IN_SECONDS = 24 * HOUR_IN_SECONDS
+export const WEEK_IN_SECONDS = 7 * DAY_IN_SECONDS
+export const MONTH_IN_SECONDS = 30 * DAY_IN_SECONDS
+export const QUARTER_IN_SECONDS = 3 * MONTH_IN_SECONDS
+export const YEAR_IN_SECONDS = 365 * DAY_IN_SECONDS
+export const DECADE_IN_SECONDS = 10 * YEAR_IN_SECONDS
+export const CENTURY_IN_SECONDS = 10 * DECADE_IN_SECONDS
+
+export const TIME_LABELS = [
+  "millisecond",
+  "second",
+  "minute",
+  "hour",
+  "day",
+  "week",
+  "month",
+  "quarter",
+  "year",
+  "decade"
+]
+
+export const TIME_LABEL_TO_SECONDS = {
+  century: CENTURY_IN_SECONDS,
+  decade: DECADE_IN_SECONDS,
+  year: YEAR_IN_SECONDS,
+  quarter: QUARTER_IN_SECONDS,
+  month: MONTH_IN_SECONDS,
+  week: WEEK_IN_SECONDS,
+  day: DAY_IN_SECONDS,
+  hour: HOUR_IN_SECONDS,
+  minute: MIN_IN_SECONDS,
+  second: SECOND,
+  millisecond: MS_IN_SECONDS
+}

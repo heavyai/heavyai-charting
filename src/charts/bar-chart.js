@@ -1,24 +1,11 @@
 import { constants, deregisterChart, override, transition } from "../core/core"
 import { pluck, utils } from "../utils/utils"
+import { TIME_LABEL_TO_SECONDS } from "../constants/dates-and-times"
 import d3 from "d3"
 import stackMixin from "../mixins/stack-mixin"
 import elasticDimensionMixin from "../mixins/elastic-dimension-mixin"
 import coordinateGridMixin from "../mixins/coordinate-grid-mixin"
 import multiSeriesMixin from "../mixins/multi-series-mixin"
-
-const TIME_UNIT_PER_SECONDS = {
-  century: 3153600000,
-  decade: 315360000,
-  year: 31536000,
-  quarter: 10368000,
-  month: 2592000,
-  week: 604800,
-  day: 86400,
-  hour: 3600,
-  minute: 60,
-  second: 1,
-  millisecond: 0.001
-}
 
 const MILLISECONDS_IN_SECOND = 1000
 
@@ -572,7 +559,7 @@ export default function barChart(parent, chartGroup) {
   })
 
   const getConservativeDateTruncBucket = binUnit =>
-    TIME_UNIT_PER_SECONDS[binUnit] * MILLISECONDS_IN_SECOND
+    TIME_LABEL_TO_SECONDS[binUnit] * MILLISECONDS_IN_SECOND
 
   const getDateExtractBucket = binUnit => EXTRACT_UNIT_NUM_BUCKETS[binUnit]
 
