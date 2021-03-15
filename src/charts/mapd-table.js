@@ -342,7 +342,7 @@ export default function mapdTable(parent, chartGroup) {
           const key =
             val && val[0] && val[0].isExtract
               ? null
-              : col.measureName || col.expression
+              : col.measureName || col.label
           return (
             (customFormatter && customFormatter(val, key)) ||
             formatDataValue(val)

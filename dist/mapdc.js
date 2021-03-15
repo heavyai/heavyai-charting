@@ -84859,7 +84859,7 @@ function mapdTable(parent, chartGroup) {
           customFormatter = _chart.valueFormatter();
         }
 
-        var key = val && val[0] && val[0].isExtract ? null : col.measureName || col.expression;
+        var key = val && val[0] && val[0].isExtract ? null : col.measureName || col.label;
         return customFormatter && customFormatter(val, key) || (0, _formattingHelpers.formatDataValue)(val);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
