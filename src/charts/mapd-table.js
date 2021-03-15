@@ -257,7 +257,8 @@ export default function mapdTable(parent, chartGroup) {
             name: "key" + i,
             label: _colAliases ? _colAliases[i] : d,
             type: "dimension",
-            measureName: d.measureName
+            measureName: d.measureName,
+            formatKey: d.measureName || d
           })
         })
       _chart
@@ -265,15 +266,17 @@ export default function mapdTable(parent, chartGroup) {
         .reduce()
         .forEach((d, i) => {
           if (d.expression) {
+            const label = _colAliases
+              ? _colAliases[_chart.dimension().value().length + i]
+              : getMeasureColHeaderLabel(d)
             cols.push({
               expression: d.expression,
               name: d.name,
               agg_mode: d.agg_mode,
-              label: _colAliases
-                ? _colAliases[_chart.dimension().value().length + i]
-                : getMeasureColHeaderLabel(d),
+              label,
               type: "measure",
-              measureName: d.measureName
+              measureName: d.measureName,
+              formatKey: d.measureName || label
             })
           }
         })
@@ -283,12 +286,14 @@ export default function mapdTable(parent, chartGroup) {
         .getProjectOn()
         .map((d, i) => {
           const splitStr = splitStrOnLastAs(d)
+          const label = _colAliases ? _colAliases[i] : splitStr[0]
           return {
             expression: splitStr[0],
             name: splitStr[1],
-            label: _colAliases ? _colAliases[i] : splitStr[0],
+            label,
             type: "project",
-            measureName: d.measureName
+            measureName: d.measureName,
+            formatKey: d.measureName || label
           }
         })
     }
@@ -339,10 +344,7 @@ export default function mapdTable(parent, chartGroup) {
             customFormatter = _chart.valueFormatter()
           }
 
-          const key =
-            val && val[0] && val[0].isExtract
-              ? null
-              : col.measureName || col.label
+          const key = val && val[0] && val[0].isExtract ? null : col.formatKey
           return (
             (customFormatter && customFormatter(val, key)) ||
             formatDataValue(val)

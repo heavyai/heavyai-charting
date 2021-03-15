@@ -84796,30 +84796,35 @@ function mapdTable(parent, chartGroup) {
           name: "key" + i,
           label: _colAliases ? _colAliases[i] : d,
           type: "dimension",
-          measureName: d.measureName
+          measureName: d.measureName,
+          formatKey: d.measureName || d
         });
       });
       _chart.group().reduce().forEach(function (d, i) {
         if (d.expression) {
+          var label = _colAliases ? _colAliases[_chart.dimension().value().length + i] : getMeasureColHeaderLabel(d);
           cols.push({
             expression: d.expression,
             name: d.name,
             agg_mode: d.agg_mode,
-            label: _colAliases ? _colAliases[_chart.dimension().value().length + i] : getMeasureColHeaderLabel(d),
+            label: label,
             type: "measure",
-            measureName: d.measureName
+            measureName: d.measureName,
+            formatKey: d.measureName || label
           });
         }
       });
     } else {
       cols = _chart.dimension().getProjectOn().map(function (d, i) {
         var splitStr = splitStrOnLastAs(d);
+        var label = _colAliases ? _colAliases[i] : splitStr[0];
         return {
           expression: splitStr[0],
           name: splitStr[1],
-          label: _colAliases ? _colAliases[i] : splitStr[0],
+          label: label,
           type: "project",
-          measureName: d.measureName
+          measureName: d.measureName,
+          formatKey: d.measureName || label
         };
       });
     }
@@ -84859,7 +84864,7 @@ function mapdTable(parent, chartGroup) {
           customFormatter = _chart.valueFormatter();
         }
 
-        var key = val && val[0] && val[0].isExtract ? null : col.measureName || col.label;
+        var key = val && val[0] && val[0].isExtract ? null : col.formatKey;
         return customFormatter && customFormatter(val, key) || (0, _formattingHelpers.formatDataValue)(val);
       }).classed("filtered", col.expression in _filteredColumns).on("click", function (d) {
         // detect if user is selecting text or clicking a value, if so don't filter data
