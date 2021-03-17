@@ -55,13 +55,20 @@ export function hasFilterHandler(filters, testValue) {
   const testValueWithISODates = convertAllDatesToISOString(testValue)
   return filtersWithIsoDates.some(f => {
     if (Array.isArray(f)) {
-      if (Array.isArray(testValueWithISODates)) {
+      // testValueWithISODates can be array of arrays, so in that case, use loose equality comparison in line 74
+      if (
+        Array.isArray(testValueWithISODates) &&
+        !Array.isArray(testValueWithISODates[0])
+      ) {
         return isEqual(f, testValueWithISODates)
+      } else if (!Array.isArray(testValueWithISODates)) {
+        return f.length === 1 && f[0] === testValueWithISODates
       }
-      return f.length === 1 && f[0] === testValueWithISODates
     } else if (Array.isArray(testValueWithISODates)) {
       return testValueWithISODates.every(f2 => f2 === f)
     }
+
+    // since below comparison is using loose equality comparisons, 9 <= [9] would be true
     return (
       typeof f === typeof testValueWithISODates &&
       testValueWithISODates <= f &&
