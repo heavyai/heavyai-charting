@@ -10901,7 +10901,7 @@ function coordinateGridMixin(_chart) {
     if (_brushOn) {
       var gBrush = g.select("g.brush").empty() ? g.append("g") : g.select("g.brush");
 
-      gBrush.attr("class", "brush").attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")").call(_brush.x(_chart.x()));
+      gBrush.attr("class", "brush").attr("transform", "translate(" + _chart.margins().left + "," + _chart.margins().top + ")").call(_brush.x(_chart.x()).clamp(false));
 
       gBrush.select("rect.extent").attr("clip-path", "url(#" + getClipPathId() + ")");
 
@@ -10961,7 +10961,42 @@ function coordinateGridMixin(_chart) {
     return _brush.empty() || !extent || extent[1] <= extent[0];
   };
 
+  _chart._clampBrush = function () {
+    if (!_d2.default.event.mode) {
+      return;
+    }
+
+    // We need to "bin" the domain because that affects the actual brushable
+    // min/max.
+    var domain = _chart._binBrushExtent(_brush.x().domain());
+    var extent = _brush.extent();
+    if (extent[0] < domain[0] || extent[1] > domain[1]) {
+      if (_d2.default.event.mode === "move") {
+        var offset = extent[0] < domain[0] ? domain[0] - extent[0] : domain[1] - extent[1];
+        if (extent[0].getTime) {
+          extent = extent.map(function (e) {
+            return new Date(e.getTime() + offset);
+          });
+        } else {
+          extent = extent.map(function (e) {
+            return e + offset;
+          });
+        }
+      } else if (extent[0].getTime) {
+        extent = extent.map(function (e) {
+          return new Date(Math.max(domain[0], Math.min(domain[1], e.getTime())));
+        });
+      } else {
+        extent = extent.map(function (e) {
+          return Math.max(domain[0], Math.min(domain[1], e));
+        });
+      }
+      _g.select(".brush").call(_brush.extent(extent));
+    }
+  };
+
   _chart._brushing = function () {
+    _chart._clampBrush();
     _chart.brushSnap();
     var extent = _chart.extendBrush();
 
@@ -71345,16 +71380,13 @@ function binningMixin(chart) {
     return chart;
   };
 
-  chart.binBrush = function (isRangeChart) {
-    var rangeChartBrush = isRangeChart ? chart.rangeChart().extendBrush() : null;
-    var extent0 = isRangeChart ? rangeChartBrush : chart.extendBrush();
-
+  chart._binBrushExtent = function (extent0, isRangeChart) {
     var bin_bounds = chart.group().binParams()[0] ? chart.group().binParams()[0].binBounds : null;
 
-    var chartBounds = isRangeChart ? rangeChartBrush : bin_bounds;
+    var chartBounds = isRangeChart ? chart.rangeChart().extendBrush() : bin_bounds;
 
     if (!extent0[0].getTime || extent0[0].getTime() === extent0[1].getTime()) {
-      return;
+      return extent0;
     }
 
     var timeInterval = chart.group().binParams()[0].timeBin;
@@ -71396,8 +71428,17 @@ function binningMixin(chart) {
       extent1[1] = roundTimeBin(extent1[1], timeInterval, "round");
     }
 
-    var rangedFilter = _filters.filters.RangedFilter(extent1[0], extent1[1]);
+    return extent1;
+  };
 
+  chart.binBrush = function (isRangeChart) {
+    var extent0 = isRangeChart ? chart.rangeChart().extendBrush() : chart.extendBrush();
+    if (!extent0[0].getTime || extent0[0].getTime() === extent0[1].getTime()) {
+      return;
+    }
+
+    var extent1 = chart._binBrushExtent(extent0, isRangeChart);
+    var rangedFilter = _filters.filters.RangedFilter(extent1[0], extent1[1]);
     _events.events.trigger(function () {
       chart.replaceFilter(rangedFilter);
     }, _core.constants.EVENT_DELAY);
