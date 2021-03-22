@@ -73,20 +73,17 @@ export default function binningMixin(chart) {
     return chart
   }
 
-  chart.binBrush = isRangeChart => {
-    const rangeChartBrush = isRangeChart
-      ? chart.rangeChart().extendBrush()
-      : null
-    const extent0 = isRangeChart ? rangeChartBrush : chart.extendBrush()
-
+  chart._binBrushExtent = (extent0, isRangeChart) => {
     const bin_bounds = chart.group().binParams()[0]
       ? chart.group().binParams()[0].binBounds
       : null
 
-    const chartBounds = isRangeChart ? rangeChartBrush : bin_bounds
+    const chartBounds = isRangeChart
+      ? chart.rangeChart().extendBrush()
+      : bin_bounds
 
     if (!extent0[0].getTime || extent0[0].getTime() === extent0[1].getTime()) {
-      return
+      return extent0
     }
 
     const timeInterval = chart.group().binParams()[0].timeBin
@@ -136,8 +133,19 @@ export default function binningMixin(chart) {
       extent1[1] = roundTimeBin(extent1[1], timeInterval, "round")
     }
 
-    const rangedFilter = filters.RangedFilter(extent1[0], extent1[1])
+    return extent1
+  }
 
+  chart.binBrush = isRangeChart => {
+    const extent0 = isRangeChart
+      ? chart.rangeChart().extendBrush()
+      : chart.extendBrush()
+    if (!extent0[0].getTime || extent0[0].getTime() === extent0[1].getTime()) {
+      return
+    }
+
+    const extent1 = chart._binBrushExtent(extent0, isRangeChart)
+    const rangedFilter = filters.RangedFilter(extent1[0], extent1[1])
     events.trigger(() => {
       chart.replaceFilter(rangedFilter)
     }, constants.EVENT_DELAY)

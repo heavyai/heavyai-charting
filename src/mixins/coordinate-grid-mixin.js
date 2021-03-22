@@ -1207,7 +1207,7 @@ export default function coordinateGridMixin (_chart) {
           "transform",
           "translate(" + _chart.margins().left + "," + _chart.margins().top + ")"
         )
-        .call(_brush.x(_chart.x()))
+        .call(_brush.x(_chart.x()).clamp(false))
 
       gBrush
         .select("rect.extent")
@@ -1272,7 +1272,36 @@ export default function coordinateGridMixin (_chart) {
     return _brush.empty() || !extent || extent[1] <= extent[0]
   }
 
+  _chart._clampBrush = function () {
+    if (!d3.event.mode) {
+      return
+    }
+
+    // We need to "bin" the domain because that affects the actual brushable
+    // min/max.
+    const domain = _chart._binBrushExtent(_brush.x().domain())
+    let extent = _brush.extent()
+    if (extent[0] < domain[0] || extent[1] > domain[1]) {
+      if (d3.event.mode === "move") {
+        const offset = extent[0] < domain[0]
+          ? domain[0] - extent[0]
+          : domain[1] - extent[1]
+        if (extent[0].getTime) {
+          extent = extent.map((e) => new Date(e.getTime() + offset))
+        } else {
+          extent = extent.map((e) => e + offset)
+        }
+      } else if (extent[0].getTime) {
+        extent = extent.map((e) => new Date(Math.max(domain[0], Math.min(domain[1], e.getTime()))))
+      } else {
+        extent = extent.map((e) => Math.max(domain[0], Math.min(domain[1], e)))
+      }
+      _g.select(".brush").call(_brush.extent(extent))
+    }
+  }
+
   _chart._brushing = function () {
+    _chart._clampBrush()
     _chart.brushSnap()
     const extent = _chart.extendBrush()
 
