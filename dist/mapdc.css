@@ -960,10 +960,17 @@ body {
     word-wrap: break-word;
     transform: translate(-50%, -50%);
     pointer-events: auto; }
+    .dc-chart .map-popup-box-new:hover .popup-item-copy {
+      visibility: visible; }
     .dc-chart .map-popup-box-new .map-popup-item {
       font-size: 12px;
       line-height: 1.2;
       margin-bottom: 4px; }
+    .dc-chart .map-popup-box-new .popup-item-copy {
+      display: flex;
+      cursor: pointer;
+      justify-content: flex-end;
+      visibility: hidden; }
     .dc-chart .map-popup-box-new .popup-item-key {
       font-weight: bold; }
   .dc-chart .map-poly {

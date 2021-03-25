@@ -88660,6 +88660,8 @@ function rasterLayer(layerType) {
 
   var _popup_wrap_class = "map-popup-wrap-new";
   var _popup_box_class = "map-popup-box-new";
+  var _popup_item_copy_class = "popup-item-copy";
+  var _popup_box_item_wrap_class = "map-popup-item-wrap";
   var _popup_box_item_class = "map-popup-item";
   var _popup_item_key_class = "popup-item-key";
   var _popup_item_val_class = "popup-item-val";
@@ -88909,7 +88911,10 @@ function rasterLayer(layerType) {
   };
 
   function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
-    var html = "";
+    var html = '<div class="' + _popup_item_copy_class + '">' + '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' + '<path d="M10.6668 0.666748H2.66683C1.9335 0.666748 1.3335 1.26675 1.3335 2.00008V11.3334H2.66683V2.00008H10.6668V0.666748ZM10.0002 3.33341L14.0002 7.33341V14.0001C14.0002 14.7334 13.4002 15.3334 12.6668 15.3334H5.32683C4.5935 15.3334 4.00016 14.7334 4.00016 14.0001L4.00683 4.66675C4.00683 3.93341 4.60016 3.33341 5.3335 3.33341H10.0002ZM9.3335 8.00008H13.0002L9.3335 4.33341V8.00008Z" fill="#0089D1"/>' + "</svg>" + "</div>";
+
+    html += '<div class="' + _popup_box_item_wrap_class + '">';
+
     columnOrder.forEach(function (key) {
       if (typeof data[key] === "undefined") {
         return;
@@ -88920,6 +88925,7 @@ function rasterLayer(layerType) {
 
       html = html + ('<div class="' + _popup_box_item_class + '"><span class="' + _popup_item_key_class + '">' + columnKey + ':</span><span class="' + _popup_item_val_class + '"> ' + formatMeasureValue(data[key], columnKeyTrimmed) + "</span></div>");
     });
+    html += "</div>";
     return html;
   }
 
@@ -89085,6 +89091,22 @@ function rasterLayer(layerType) {
       return left + "px";
     }).style("top", function () {
       return topOffset + "px";
+    });
+
+    // Copy from popup content
+    var copyPopupContent = function copyPopupContent() {
+      var copyRange = document.createRange();
+      copyRange.selectNodeContents(document.getElementsByClassName(_popup_box_item_wrap_class).item(0));
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(copyRange);
+      document.execCommand("copy");
+      window.getSelection().removeAllRanges();
+    };
+
+    var popupCopyIcon = document.getElementsByClassName(_popup_item_copy_class).item(0);
+
+    popupCopyIcon.addEventListener("click", function () {
+      copyPopupContent();
     });
 
     _layerPopups[chart] = popupBox;

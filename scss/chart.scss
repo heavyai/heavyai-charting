@@ -950,15 +950,27 @@ body {
         transform: translate(-50%, -50%);
         pointer-events: auto;
 
+        &:hover {
+          .popup-item-copy {
+            visibility: visible;
+          }
+        }
+
         .map-popup-item{
             font-size: 12px;
             line-height: 1.2;
 
             margin-bottom: 4px;
         }
+        .popup-item-copy {
+          display: flex;
+          cursor: pointer;
+          justify-content: flex-end;
+          visibility: hidden;
+        }
 
         .popup-item-key {
-            font-weight: bold;
+          font-weight: bold;
         }
     }
 
