@@ -88816,7 +88816,7 @@ function rasterLayer(layerType) {
     var dim = _layer.group() || _layer.dimension();
     if (dim || _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys") {
       var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys" || _layer.layerType() === "" ? _layer.getProjections() : dim.getProjectOn(true); // handles the group and dimension case
-      var regex = /^\s*(.*?[\s\S].+)\s+as\s+(\S+)/i;
+      var regex = /^\s*([\s\S]+)\s+as\s+(\S+)/i;
       var funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i;
       for (var i = 0; i < projExprs.length; ++i) {
         var projExpr = projExprs[i];

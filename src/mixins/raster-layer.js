@@ -269,7 +269,7 @@ export default function rasterLayer(layerType) {
         _layer.layerType() === ""
           ? _layer.getProjections()
           : dim.getProjectOn(true) // handles the group and dimension case
-      const regex = /^\s*(.*?[\s\S].+)\s+as\s+(\S+)/i
+      const regex = /^\s*([\s\S]+)\s+as\s+(\S+)/i
       const funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i
       for (let i = 0; i < projExprs.length; ++i) {
         const projExpr = projExprs[i]
