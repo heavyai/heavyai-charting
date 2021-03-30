@@ -88795,7 +88795,7 @@ function rasterLayer(layerType) {
     } else if (measureRegex[2] === "x" || measureRegex[2] === "y") {
       measureBlock = _layer.getState().encoding[measureRegex[2]];
     }
-    if (measureBlock && measureBlock.field === measureRegex[1]) {
+    if (measureBlock && measureBlock.label) {
       return measureBlock.label;
     }
     return measureBlock;
@@ -88818,7 +88818,7 @@ function rasterLayer(layerType) {
     var dim = _layer.group() || _layer.dimension();
     if (dim || _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys") {
       var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys" || _layer.layerType() === "" ? _layer.getProjections() : dim.getProjectOn(true); // handles the group and dimension case
-      var regex = /^\s*(.*?)\s+as\s+(\S+)/i;
+      var regex = /^\s*([\s\S]+)\s+as\s+(\S+)/i;
       var funcRegex = /^\s*(\S+\s*\(.*\))\s+as\s+(\S+)/i;
       for (var i = 0; i < projExprs.length; ++i) {
         var projExpr = projExprs[i];
@@ -88887,7 +88887,7 @@ function rasterLayer(layerType) {
         var dim = _layer.group() || _layer.dimension();
         var projExprs = _layer.layerType() === "points" || _layer.layerType() === "lines" || _layer.layerType() === "polys" || _layer.layerType() === "" ? _layer.getProjections() : dim.getProjectOn(true);
 
-        var regex = /^\s*(.*?)\s+as\s+(\S+)/i;
+        var regex = /^\s*(.*?[\s\S].+)\s+as\s+(\S+)/i;
         for (var i = 0; i < projExprs.length; ++i) {
           var projExpr = projExprs[i];
           var regexRtn = projExpr.match(regex);
