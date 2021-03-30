@@ -941,7 +941,7 @@ body {
         flex-shrink: 0;
         min-width: 120px;
         max-width: 240px;
-        padding: 8px 8px 4px 8px;
+        padding: 8px 12px 4px 8px;
         background: white;
         border-radius: 4px;
         border: 1px solid $gray3;
@@ -950,15 +950,30 @@ body {
         transform: translate(-50%, -50%);
         pointer-events: auto;
 
+        &:hover {
+          .popup-item-copy {
+            visibility: visible;
+          }
+        }
+
         .map-popup-item{
             font-size: 12px;
             line-height: 1.2;
 
             margin-bottom: 4px;
         }
+        .popup-item-copy {
+          display: inline-block;
+          position: absolute;
+          top: 0;
+          right: 0;
+          cursor: pointer;
+          justify-content: flex-end;
+          visibility: hidden;
+        }
 
         .popup-item-key {
-            font-weight: bold;
+          font-weight: bold;
         }
     }
 
