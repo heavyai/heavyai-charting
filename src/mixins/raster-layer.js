@@ -229,6 +229,8 @@ export default function rasterLayer(layerType) {
       measureBlock = _layer.getState().encoding.size
     } else if (measureRegex[2] === "x" || measureRegex[2] === "y") {
       measureBlock = _layer.getState().encoding[measureRegex[2]]
+    } else if (measureRegex[2] === "orientation") {
+      measureBlock = _layer.getState().encoding.orientation
     }
     if (measureBlock && measureBlock.label) {
       return measureBlock.label
@@ -243,7 +245,8 @@ export default function rasterLayer(layerType) {
       colAttr === "color" ||
       colAttr === "size" ||
       colAttr === "strokeColor" ||
-      colAttr === "strokeWidth"
+      colAttr === "strokeWidth" ||
+      colAttr === "orientation"
     )
   }
 

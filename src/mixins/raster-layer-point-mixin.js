@@ -638,7 +638,7 @@ export default function rasterLayerPointMixin(_layer) {
     return _vega
   }
 
-  const renderAttributes = ["xc", "yc", "width", "height", "fillColor"]
+  const renderAttributes = ["xc", "yc", "width", "height", "fillColor", "angle"]
 
   _layer._addRenderAttrsToPopupColumnSet = function(chart, popupColumnsSet) {
     if (
