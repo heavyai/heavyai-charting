@@ -55410,7 +55410,7 @@ function rasterLayerPointMixin(_layer) {
     return _vega;
   };
 
-  var renderAttributes = ["xc", "yc", "width", "height", "fillColor"];
+  var renderAttributes = ["xc", "yc", "width", "height", "fillColor", "angle"];
 
   _layer._addRenderAttrsToPopupColumnSet = function (chart, popupColumnsSet) {
     if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
@@ -88794,6 +88794,8 @@ function rasterLayer(layerType) {
       measureBlock = _layer.getState().encoding.size;
     } else if (measureRegex[2] === "x" || measureRegex[2] === "y") {
       measureBlock = _layer.getState().encoding[measureRegex[2]];
+    } else if (measureRegex[2] === "orientation") {
+      measureBlock = _layer.getState().encoding.orientation;
     }
     if (measureBlock && measureBlock.label) {
       return measureBlock.label;
@@ -88802,7 +88804,7 @@ function rasterLayer(layerType) {
   };
 
   function isMeasureCol(colAttr) {
-    return colAttr === "x" || colAttr === "y" || colAttr === "color" || colAttr === "size" || colAttr === "strokeColor" || colAttr === "strokeWidth";
+    return colAttr === "x" || colAttr === "y" || colAttr === "color" || colAttr === "size" || colAttr === "strokeColor" || colAttr === "strokeWidth" || colAttr === "orientation";
   }
 
   function addPopupColumnToSet(colAttr, popupColSet) {
