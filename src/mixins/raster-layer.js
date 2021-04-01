@@ -9,6 +9,7 @@ import {
 } from "../utils/utils-vega"
 import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
 import moment from "moment"
+import url from "url"
 
 const validLayerTypes = ["points", "polys", "heat", "lines"]
 
@@ -92,6 +93,7 @@ export default function rasterLayer(layerType) {
   const _popup_wrap_class = "map-popup-wrap-new"
   const _popup_box_class = "map-popup-box-new"
   const _popup_item_copy_class = "popup-item-copy"
+  const _popup_item_url_class = "popup-item-url"
   const _popup_box_item_wrap_class = "map-popup-item-wrap"
   const _popup_box_item_class = "map-popup-item"
   const _popup_item_key_class = "popup-item-key"
@@ -375,6 +377,31 @@ export default function rasterLayer(layerType) {
     return _layer._areResultsValidForPopup(results[0])
   }
 
+  function isValidUrl(str) {
+    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port
+      '(\\?[;&amp;a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i');
+
+    return pattern.test(str)
+  }
+
+  function appendUrlIcon(colVal) {
+    if (typeof colVal === "string" && isValidUrl(colVal)) {
+      return '<div class="' +
+        _popup_item_url_class +
+        '">' +
+        '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+
+        '<path d="M12.6667 12.6667H3.33333V3.33333H8V2H3.33333C2.59333 2 2 2.6 2 3.33333V12.6667C2 13.4 2.59333 14 3.33333 14H12.6667C13.4 14 14 13.4 14 12.6667V8H12.6667V12.6667ZM9.33333 2V3.33333H11.7267L5.17333 9.88667L6.11333 10.8267L12.6667 4.27333V6.66667H14V2H9.33333Z"/>'+
+        '</svg>' +
+        "</div>"
+    } else {
+      return ""
+    }
+  }
+
   function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
     let html =
       '<div class="' +
@@ -407,7 +434,9 @@ export default function rasterLayer(layerType) {
           _popup_item_val_class +
           '"> ' +
           formatMeasureValue(data[key], columnKeyTrimmed) +
-          "</span></div>")
+          "</span>" +
+          appendUrlIcon(data[key]) +
+          "</div>")
     })
     html += "</div>"
     return html
@@ -689,6 +718,22 @@ export default function rasterLayer(layerType) {
 
     popupCopyIcon.addEventListener("click", () => {
       copyPopupContent()
+    })
+
+    const popupUrl = (url) => {
+      window.open(url, '_blank');
+    }
+
+    const popupUrlIcon = document
+      .getElementsByClassName(_popup_item_url_class)
+      .item(0)
+
+    popupUrlIcon.addEventListener("click", (e) => {
+      const parent = e.currentTarget.parentNode
+      const url = parent.getElementsByClassName(_popup_item_val_class).item(0).textContent
+      if (url) {
+        popupUrl(url)
+      }
     })
 
     _layerPopups[chart] = popupBox

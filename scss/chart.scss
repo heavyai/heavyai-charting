@@ -959,8 +959,15 @@ body {
         .map-popup-item{
             font-size: 12px;
             line-height: 1.2;
-
             margin-bottom: 4px;
+            display: flex;
+            align-content: center;
+
+          &:hover {
+            .popup-item-url {
+              visibility: visible;
+            }
+          }
         }
         .popup-item-copy {
           display: inline-block;
@@ -970,6 +977,13 @@ body {
           cursor: pointer;
           justify-content: flex-end;
           visibility: hidden;
+        }
+
+        .popup-item-url {
+          display: inline-block;
+          cursor: pointer;
+          visibility: hidden;
+          margin-left: 5px;
         }
 
         .popup-item-key {
