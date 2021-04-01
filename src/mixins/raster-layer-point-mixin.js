@@ -16,6 +16,8 @@ const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
 const AUTOSIZE_RANGE_MININUM = [1, 1]
 const SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000
+const ANGLE_SHAPE_SIZE_MULTIPLIER = 2.5
+
 const AGGREGATES = {
   average: "AVG",
   count: "COUNT",
@@ -58,10 +60,13 @@ function getSizing(
   cap,
   lastFilteredSize = cap,
   pixelRatio,
-  layerName
+  layerName,
+  markType
 ) {
   if (typeof sizeAttr === "number") {
-    return sizeAttr
+    return markType === "wedge" || markType === "arrow"
+      ? sizeAttr * ANGLE_SHAPE_SIZE_MULTIPLIER
+      : sizeAttr
   } else if (typeof sizeAttr === "object" && sizeAttr.type === "quantitative") {
     return {
       scale: getSizeScaleName(layerName),
@@ -78,7 +83,10 @@ function getSizing(
           : AUTOSIZE_RANGE_DEFAULTS
       )
       .clamp(true)
-    return Math.round(dynamicRScale(size) * pixelRatio)
+    const sizeRounded = Math.round(dynamicRScale(size) * pixelRatio)
+    return markType === "wedge" || markType === "arrow"
+      ? sizeRounded * ANGLE_SHAPE_SIZE_MULTIPLIER
+      : sizeRounded
   } else {
     return null
   }
@@ -452,15 +460,16 @@ export default function rasterLayerPointMixin(_layer) {
     const autosize = usesAutoSize()
     const getStatsLayerName = () => layerName + "_stats"
 
+    const markType = getMarkType(state.config)
+
     const size = getSizing(
       state.encoding.size,
       state.transform && state.transform.limit,
       lastFilteredSize,
       pixelRatio,
-      layerName
+      layerName,
+      markType
     )
-
-    const markType = getMarkType(state.config)
 
     const data = [
       {
