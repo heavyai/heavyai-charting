@@ -30072,7 +30072,7 @@ function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
       type: "linear",
       domain: orientation.domain,
       range: orientation.range,
-      clamp: true
+      clamp: false
     });
   }
 
