@@ -54846,6 +54846,8 @@ var AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0];
 var AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0];
 var AUTOSIZE_RANGE_MININUM = [1, 1];
 var SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM = 1500000;
+var ANGLE_SHAPE_SIZE_MULTIPLIER = 2.5;
+
 var AGGREGATES = {
   average: "AVG",
   count: "COUNT",
@@ -54889,9 +54891,10 @@ function getSizing(sizeAttr, cap) {
   var lastFilteredSize = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : cap;
   var pixelRatio = arguments[3];
   var layerName = arguments[4];
+  var markType = arguments[5];
 
   if (typeof sizeAttr === "number") {
-    return sizeAttr;
+    return markType === "wedge" || markType === "arrow" ? sizeAttr * ANGLE_SHAPE_SIZE_MULTIPLIER : sizeAttr;
   } else if ((typeof sizeAttr === "undefined" ? "undefined" : _typeof(sizeAttr)) === "object" && sizeAttr.type === "quantitative") {
     return {
       scale: (0, _utilsVega.getSizeScaleName)(layerName),
@@ -54900,7 +54903,8 @@ function getSizing(sizeAttr, cap) {
   } else if (sizeAttr === "auto") {
     var size = Math.min(lastFilteredSize, cap);
     var dynamicRScale = d3.scale.sqrt().domain(AUTOSIZE_DOMAIN_DEFAULTS).range(size > SIZING_THRESHOLD_FOR_AUTOSIZE_RANGE_MININUM ? AUTOSIZE_RANGE_MININUM : AUTOSIZE_RANGE_DEFAULTS).clamp(true);
-    return Math.round(dynamicRScale(size) * pixelRatio);
+    var sizeRounded = Math.round(dynamicRScale(size) * pixelRatio);
+    return markType === "wedge" || markType === "arrow" ? sizeRounded * ANGLE_SHAPE_SIZE_MULTIPLIER : sizeRounded;
   } else {
     return null;
   }
@@ -55253,9 +55257,9 @@ function rasterLayerPointMixin(_layer) {
       return layerName + "_stats";
     };
 
-    var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName);
-
     var markType = getMarkType(state.config);
+
+    var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName, markType);
 
     var data = [{
       name: layerName,
