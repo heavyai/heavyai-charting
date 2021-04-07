@@ -9,7 +9,6 @@ import {
 } from "../utils/utils-vega"
 import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
 import moment from "moment"
-import url from "url"
 
 const validLayerTypes = ["points", "polys", "heat", "lines"]
 
@@ -93,7 +92,6 @@ export default function rasterLayer(layerType) {
   const _popup_wrap_class = "map-popup-wrap-new"
   const _popup_box_class = "map-popup-box-new"
   const _popup_item_copy_class = "popup-item-copy"
-  const _popup_item_url_class = "popup-item-url"
   const _popup_box_item_wrap_class = "map-popup-item-wrap"
   const _popup_box_item_class = "map-popup-item"
   const _popup_item_key_class = "popup-item-key"
@@ -430,8 +428,7 @@ export default function rasterLayer(layerType) {
           _popup_item_val_class +
           '"> ' +
           replaceURL(formatMeasureValue(data[key], columnKeyTrimmed)) +
-          "</span>" +
-          "</div>")
+          "</span></div>")
     })
     html += "</div>"
     return html
@@ -713,23 +710,6 @@ export default function rasterLayer(layerType) {
 
     popupCopyIcon.addEventListener("click", () => {
       copyPopupContent()
-    })
-
-    const popupUrl = url => {
-      window.open(url, "_blank")
-    }
-
-    const popupUrlIcon = document
-      .getElementsByClassName(_popup_item_url_class)
-      .item(0)
-
-    popupUrlIcon.addEventListener("click", e => {
-      const parent = e.currentTarget.parentNode
-      const url = parent.getElementsByClassName(_popup_item_val_class).item(0)
-        .textContent
-      if (url) {
-        popupUrl(url)
-      }
     })
 
     _layerPopups[chart] = popupBox
