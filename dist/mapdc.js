@@ -79407,7 +79407,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     if (!cnt) {
       return;
     }
-    console.log("layer Obj ---------", layerObj);
+
     _chart.con().getResultRowForPixelAsync(_chart.__dcFlag__, pixel, layerObj, Math.ceil(_popupSearchRadius * pixelRatio)).then(function (results) {
       return callback(results[0]);
     }).catch(function (error) {

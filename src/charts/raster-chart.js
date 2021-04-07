@@ -611,7 +611,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     if (!cnt) {
       return
     }
-    console.log("layer Obj ---------", layerObj)
+
     _chart
       .con()
       .getResultRowForPixelAsync(
