@@ -377,28 +377,24 @@ export default function rasterLayer(layerType) {
     return _layer._areResultsValidForPopup(results[0])
   }
 
-  function isValidUrl(str) {
-    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port
-      '(\\?[;&amp;a-z\\d%_.~+=-]*)?'+ // query string
-      '(\\#[-a-z\\d_]*)?$','i');
-
-    return pattern.test(str)
-  }
-
-  function appendUrlIcon(colVal) {
-    if (typeof colVal === "string" && isValidUrl(colVal)) {
-      return '<div class="' +
-        _popup_item_url_class +
-        '">' +
-        '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+
-        '<path d="M12.6667 12.6667H3.33333V3.33333H8V2H3.33333C2.59333 2 2 2.6 2 3.33333V12.6667C2 13.4 2.59333 14 3.33333 14H12.6667C13.4 14 14 13.4 14 12.6667V8H12.6667V12.6667ZM9.33333 2V3.33333H11.7267L5.17333 9.88667L6.11333 10.8267L12.6667 4.27333V6.66667H14V2H9.33333Z"/>'+
-        '</svg>' +
-        "</div>"
+  function replaceURL(colVal) {
+    if (typeof colVal === "string") {
+      const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s]+)/g
+      return colVal.replace(urlRegExpr, url => {
+        let hyperlink = url
+        if (!hyperlink.match("^https?://")) {
+          hyperlink = "http://" + hyperlink
+        }
+        return (
+          '<a href="' +
+          hyperlink +
+          '" target="_blank" rel="noopener noreferrer">' +
+          url +
+          "</a>"
+        )
+      })
     } else {
-      return ""
+      return colVal
     }
   }
 
@@ -433,9 +429,8 @@ export default function rasterLayer(layerType) {
           ':</span><span class="' +
           _popup_item_val_class +
           '"> ' +
-          formatMeasureValue(data[key], columnKeyTrimmed) +
+          replaceURL(formatMeasureValue(data[key], columnKeyTrimmed)) +
           "</span>" +
-          appendUrlIcon(data[key]) +
           "</div>")
     })
     html += "</div>"
@@ -720,17 +715,18 @@ export default function rasterLayer(layerType) {
       copyPopupContent()
     })
 
-    const popupUrl = (url) => {
-      window.open(url, '_blank');
+    const popupUrl = url => {
+      window.open(url, "_blank")
     }
 
     const popupUrlIcon = document
       .getElementsByClassName(_popup_item_url_class)
       .item(0)
 
-    popupUrlIcon.addEventListener("click", (e) => {
+    popupUrlIcon.addEventListener("click", e => {
       const parent = e.currentTarget.parentNode
-      const url = parent.getElementsByClassName(_popup_item_val_class).item(0).textContent
+      const url = parent.getElementsByClassName(_popup_item_val_class).item(0)
+        .textContent
       if (url) {
         popupUrl(url)
       }

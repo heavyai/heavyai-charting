@@ -965,7 +965,11 @@ body {
     .dc-chart .map-popup-box-new .map-popup-item {
       font-size: 12px;
       line-height: 1.2;
-      margin-bottom: 4px; }
+      margin-bottom: 4px;
+      display: flex;
+      align-content: center; }
+      .dc-chart .map-popup-box-new .map-popup-item:hover .popup-item-url {
+        visibility: visible; }
     .dc-chart .map-popup-box-new .popup-item-copy {
       display: inline-block;
       position: absolute;
