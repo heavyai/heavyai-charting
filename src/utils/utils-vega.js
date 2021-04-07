@@ -768,7 +768,7 @@ export function getScales(
       type: "linear",
       domain: orientation.domain,
       range: orientation.range,
-      clamp: true
+      clamp: false
     })
   }
 
