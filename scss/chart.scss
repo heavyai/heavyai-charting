@@ -961,6 +961,10 @@ body {
             line-height: 1.2;
 
             margin-bottom: 4px;
+
+          .popup-item-val a:visited {
+            color: inherit;
+          }
         }
         .popup-item-copy {
           display: inline-block;

@@ -966,6 +966,8 @@ body {
       font-size: 12px;
       line-height: 1.2;
       margin-bottom: 4px; }
+      .dc-chart .map-popup-box-new .map-popup-item .popup-item-val a:visited {
+        color: inherit; }
     .dc-chart .map-popup-box-new .popup-item-copy {
       display: inline-block;
       position: absolute;
