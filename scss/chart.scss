@@ -962,8 +962,12 @@ body {
 
             margin-bottom: 4px;
 
-          .popup-item-val a:visited {
-            color: inherit;
+          .popup-item-val a {
+            text-decoration: none;
+          }
+          .popup-item-val a:hover {
+            border-bottom: 1px solid;
+            color: #0000EE;
           }
         }
         .popup-item-copy {

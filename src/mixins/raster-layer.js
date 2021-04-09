@@ -377,7 +377,7 @@ export default function rasterLayer(layerType) {
 
   function replaceURL(colVal) {
     if (typeof colVal === "string") {
-      const urlRegExpr = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
+      const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g
       return colVal.replace(urlRegExpr, url => {
         let hyperlink = url
         if (!hyperlink.match("^https?://")) {
