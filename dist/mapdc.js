@@ -55261,15 +55261,37 @@ function rasterLayerPointMixin(_layer) {
 
     var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName, markType);
 
-    var data = [{
-      name: layerName,
-      sql: _utils.parser.writeSQL({
-        type: "root",
-        source: table,
-        transform: _layer.getTransforms(table, filter, globalFilter, state, lastFilteredSize)
-      }),
-      enableHitTesting: state.enableHitTesting
-    }];
+    var data = [];
+    if (state.encoding.color.prioritizedColor && layerName !== "backendScatter") {
+      data.push({
+        name: layerName + "_z0",
+        sql: _utils.parser.writeSQL({
+          type: "root",
+          source: table,
+          transform: _layer.getTransforms(table, filter + (" AND " + state.encoding.color.field + " != '" + state.encoding.color.prioritizedColor + "'"), globalFilter, state, lastFilteredSize)
+        }),
+        enableHitTesting: state.enableHitTesting
+      });
+      data.push({
+        name: layerName + "_z1",
+        sql: _utils.parser.writeSQL({
+          type: "root",
+          source: table,
+          transform: _layer.getTransforms(table, filter + (" AND " + state.encoding.color.field + " = '" + state.encoding.color.prioritizedColor + "'"), globalFilter, state, lastFilteredSize)
+        }),
+        enableHitTesting: state.enableHitTesting
+      });
+    } else {
+      data.push({
+        name: layerName,
+        sql: _utils.parser.writeSQL({
+          type: "root",
+          source: table,
+          transform: _layer.getTransforms(table, filter, globalFilter, state, lastFilteredSize)
+        }),
+        enableHitTesting: state.enableHitTesting
+      });
+    }
 
     var scaledomainfields = {};
     if (autocolors || autosize) {
@@ -55299,30 +55321,82 @@ function rasterLayerPointMixin(_layer) {
 
     var scales = (0, _utilsVega.getScales)(state.encoding, layerName, scaledomainfields, getStatsLayerName());
 
-    var marks = [{
-      type: "symbol",
-      from: {
-        data: layerName
-      },
-      properties: Object.assign({}, {
-        xc: {
-          scale: "x",
-          field: "x"
+    var marks = [];
+
+    if (state.encoding.color.prioritizedColor && layerName !== "backendScatter") {
+      marks.push({
+        type: "symbol",
+        from: {
+          data: layerName + "_z0"
         },
-        yc: {
-          scale: "y",
-          field: "y"
-        },
-        fillColor: getColor(state.encoding.color, layerName)
-      }, _extends({
-        shape: markType
-      }, state.encoding.orientation && {
-        angle: getOrientation(state.encoding.orientation, layerName)
+        properties: Object.assign({}, {
+          xc: {
+            scale: "x",
+            field: "x"
+          },
+          yc: {
+            scale: "y",
+            field: "y"
+          },
+          fillColor: getColor(state.encoding.color, layerName)
+        }, _extends({
+          shape: markType
+        }, state.encoding.orientation && {
+          angle: getOrientation(state.encoding.orientation, layerName)
+        }, {
+          width: size,
+          height: size
+        }))
       }, {
-        width: size,
-        height: size
-      }))
-    }];
+        type: "symbol",
+        from: {
+          data: layerName + "_z1"
+        },
+        properties: Object.assign({}, {
+          xc: {
+            scale: "x",
+            field: "x"
+          },
+          yc: {
+            scale: "y",
+            field: "y"
+          },
+          fillColor: getColor(state.encoding.color, layerName)
+        }, _extends({
+          shape: markType
+        }, state.encoding.orientation && {
+          angle: getOrientation(state.encoding.orientation, layerName)
+        }, {
+          width: size,
+          height: size
+        }))
+      });
+    } else {
+      marks.push({
+        type: "symbol",
+        from: {
+          data: layerName
+        },
+        properties: Object.assign({}, {
+          xc: {
+            scale: "x",
+            field: "x"
+          },
+          yc: {
+            scale: "y",
+            field: "y"
+          },
+          fillColor: getColor(state.encoding.color, layerName)
+        }, _extends({
+          shape: markType
+        }, state.encoding.orientation && {
+          angle: getOrientation(state.encoding.orientation, layerName)
+        }, {
+          width: size,
+          height: size
+        }))
+      });
+    }
 
     return {
       data: data,
