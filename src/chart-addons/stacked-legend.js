@@ -1,4 +1,5 @@
 import * as _ from "lodash"
+import {getRealLayers} from "../utils/utils-vega";
 
 const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")
@@ -110,7 +111,7 @@ export function getLegendStateFromChart(chart, useMap, selectedLayer) {
   }
 
   return toLegendState(
-    chart.getLayerNames().map(layerName => {
+    getRealLayers(chart.getLayerNames()).map(layerName => {
       const layer = chart.getLayer(layerName)
       const layerState = layer.getState()
       const color = layer.getState().encoding.color

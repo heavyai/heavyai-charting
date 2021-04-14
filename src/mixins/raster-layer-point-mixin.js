@@ -476,38 +476,41 @@ export default function rasterLayerPointMixin(_layer) {
       state.encoding.color.prioritizedColor &&
       layerName !== "backendScatter"
     ) {
-      data.push({
-        name: `${layerName}_z0`,
-        sql: parser.writeSQL({
-          type: "root",
-          source: table,
-          transform: _layer.getTransforms(
-            table,
-            filter +
+      if(layerName.includes("_z0")) {
+        data.push({
+          name: layerName,
+          sql: parser.writeSQL({
+            type: "root",
+            source: table,
+            transform: _layer.getTransforms(
+              table,
+              filter +
               ` AND ${state.encoding.color.field} != '${state.encoding.color.prioritizedColor}'`,
-            globalFilter,
-            state,
-            lastFilteredSize
-          )
-        }),
-        enableHitTesting: state.enableHitTesting
-      })
-      data.push({
-        name: `${layerName}_z1`,
-        sql: parser.writeSQL({
-          type: "root",
-          source: table,
-          transform: _layer.getTransforms(
-            table,
-            filter +
+              globalFilter,
+              state,
+              lastFilteredSize
+            )
+          }),
+          enableHitTesting: state.enableHitTesting
+        })
+      } else if (layerName.includes("_z1")) {
+        data.push({
+          name: layerName,
+          sql: parser.writeSQL({
+            type: "root",
+            source: table,
+            transform: _layer.getTransforms(
+              table,
+              filter +
               ` AND ${state.encoding.color.field} = '${state.encoding.color.prioritizedColor}'`,
-            globalFilter,
-            state,
-            lastFilteredSize
-          )
-        }),
-        enableHitTesting: state.enableHitTesting
-      })
+              globalFilter,
+              state,
+              lastFilteredSize
+            )
+          }),
+          enableHitTesting: state.enableHitTesting
+        })
+      }
     } else {
       data.push({
         name: layerName,
@@ -561,98 +564,34 @@ export default function rasterLayerPointMixin(_layer) {
 
     const marks = []
 
-    if (
-      state.encoding.color.prioritizedColor &&
-      layerName !== "backendScatter"
-    ) {
-      marks.push(
+    marks.push({
+      type: "symbol",
+      from: {
+        data: layerName
+      },
+      properties: Object.assign(
+        {},
         {
-          type: "symbol",
-          from: {
-            data: `${layerName}_z0`
+          xc: {
+            scale: "x",
+            field: "x"
           },
-          properties: Object.assign(
-            {},
-            {
-              xc: {
-                scale: "x",
-                field: "x"
-              },
-              yc: {
-                scale: "y",
-                field: "y"
-              },
-              fillColor: getColor(state.encoding.color, layerName)
-            },
-            {
-              shape: markType,
-              ...(state.encoding.orientation && {
-                angle: getOrientation(state.encoding.orientation, layerName)
-              }),
-              width: size,
-              height: size
-            }
-          )
+          yc: {
+            scale: "y",
+            field: "y"
+          },
+          fillColor: getColor(state.encoding.color, layerName)
         },
         {
-          type: "symbol",
-          from: {
-            data: `${layerName}_z1`
-          },
-          properties: Object.assign(
-            {},
-            {
-              xc: {
-                scale: "x",
-                field: "x"
-              },
-              yc: {
-                scale: "y",
-                field: "y"
-              },
-              fillColor: getColor(state.encoding.color, layerName)
-            },
-            {
-              shape: markType,
-              ...(state.encoding.orientation && {
-                angle: getOrientation(state.encoding.orientation, layerName)
-              }),
-              width: size,
-              height: size
-            }
-          )
+          shape: markType,
+          ...(state.encoding.orientation && {
+            angle: getOrientation(state.encoding.orientation, layerName)
+          }),
+          width: size,
+          height: size
         }
       )
-    } else {
-      marks.push({
-        type: "symbol",
-        from: {
-          data: layerName
-        },
-        properties: Object.assign(
-          {},
-          {
-            xc: {
-              scale: "x",
-              field: "x"
-            },
-            yc: {
-              scale: "y",
-              field: "y"
-            },
-            fillColor: getColor(state.encoding.color, layerName)
-          },
-          {
-            shape: markType,
-            ...(state.encoding.orientation && {
-              angle: getOrientation(state.encoding.orientation, layerName)
-            }),
-            width: size,
-            height: size
-          }
-        )
-      })
-    }
+    })
 
     return {
       data,

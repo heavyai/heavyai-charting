@@ -159,9 +159,17 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         "A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)"
       )
     }
+    // TODO can change for multiple prioritized colors
+    if(layer.getState().mark === "point" && layerName !== "backendScatter" && layer.getState().encoding.color.prioritizedColor) { // pointmap priorized color hack
+      _layers.push(`${layerName}_z0`)
+      _layerNames[`${layerName}_z0`] = layer
+      _layerNames[`${layerName}_z1`] = layer
+      _layers.push(`${layerName}_z1`)
+    } else {
+      _layers.push(layerName)
+      _layerNames[layerName] = layer
+    }
 
-    _layers.push(layerName)
-    _layerNames[layerName] = layer
     return _chart
   }
 
@@ -528,7 +536,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         }
       }
     }
-
+debugger
     const state = getLegendStateFromChart(_chart, useMap, selectedLayer)
     _legend.setState(state)
 
@@ -602,11 +610,18 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         layer.hasPopupColumns &&
         layer.hasPopupColumns()
       ) {
-        layerObj[layerName] = layer.getPopupAndRenderColumns(_chart)
+
+        const layerState = layer.getState()
+        // if (layerState.encoding.color.prioritizedColor) {
+        //   // layerObj[`${layerName}_z0`] = layer.getPopupAndRenderColumns(_chart)
+        //   layerObj[`${layerName}_z1`] = layer.getPopupAndRenderColumns(_chart)
+        // } else {
+          layerObj[layerName] = layer.getPopupAndRenderColumns(_chart)
+        // }
         ++cnt
       }
     })
-
+    console.log('layerObj ', layerObj)
     // TODO best to fail, skip cb, or call cb wo args?
     if (!cnt) {
       return
@@ -620,7 +635,12 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         layerObj,
         Math.ceil(_popupSearchRadius * pixelRatio)
       )
-      .then(results => callback(results[0]))
+      .then(results => {
+        console.log('hit testing request result ', results[0].row_set)
+        debugger
+        callback(results[0])
+      }
+     )
       .catch(error => {
         throw new Error(
           `getResultRowForPixel failed with message: ${error.error_msg}`
