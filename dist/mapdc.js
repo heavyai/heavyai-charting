@@ -55356,9 +55356,7 @@ function rasterLayerPointMixin(_layer) {
 
     var scales = (0, _utilsVega.getScales)(state.encoding, layerName, scaledomainfields, getStatsLayerName());
 
-    var marks = [];
-
-    marks.push({
+    var marks = [{
       type: "symbol",
       from: {
         data: layerName
@@ -55381,7 +55379,7 @@ function rasterLayerPointMixin(_layer) {
         width: size,
         height: size
       }))
-    });
+    }];
 
     return {
       data: data,
@@ -79082,8 +79080,9 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       throw new Error("A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)");
     }
 
-    if (layer.getState().mark === "point" && layerName !== "backendScatter" && layer.getState().encoding.color.prioritizedColor && layer.getState().encoding.color.prioritizedColor.length > 0) {
-      // pointmap priorized color hack
+    if (
+    // pointmap priorized color hack
+    layer.getState().mark === "point" && layerName !== "backendScatter" && layer.getState().encoding.color.prioritizedColor && layer.getState().encoding.color.prioritizedColor.length > 0) {
       for (var i = 0; i < layer.getState().encoding.color.prioritizedColor.length; i++) {
         // Currently only one priority color is supported for Pointmap, so we create two z indexed layers, z_0 and z_1 for it
         // Not clear how multiple priority color would be supported later, so making an assumption here to be be z_2 and z_3 for second priority color and so on
@@ -79499,13 +79498,14 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         ++cnt;
       }
     });
+
     // TODO best to fail, skip cb, or call cb wo args?
     if (!cnt) {
       return;
     }
 
     _chart.con().getResultRowForPixelAsync(_chart.__dcFlag__, pixel, layerObj, Math.ceil(_popupSearchRadius * pixelRatio)).then(function (results) {
-      callback(results[0]);
+      return callback(results[0]);
     }).catch(function (error) {
       throw new Error("getResultRowForPixel failed with message: " + error.error_msg);
     });

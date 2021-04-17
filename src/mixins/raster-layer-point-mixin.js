@@ -565,36 +565,36 @@ export default function rasterLayerPointMixin(_layer) {
       getStatsLayerName()
     )
 
-    const marks = []
-
-    marks.push({
-      type: "symbol",
-      from: {
-        data: layerName
-      },
-      properties: Object.assign(
-        {},
-        {
-          xc: {
-            scale: "x",
-            field: "x"
-          },
-          yc: {
-            scale: "y",
-            field: "y"
-          },
-          fillColor: getColor(state.encoding.color, layerName)
+    const marks = [
+      {
+        type: "symbol",
+        from: {
+          data: layerName
         },
-        {
-          shape: markType,
-          ...(state.encoding.orientation && {
-            angle: getOrientation(state.encoding.orientation, layerName)
-          }),
-          width: size,
-          height: size
-        }
-      )
-    })
+        properties: Object.assign(
+          {},
+          {
+            xc: {
+              scale: "x",
+              field: "x"
+            },
+            yc: {
+              scale: "y",
+              field: "y"
+            },
+            fillColor: getColor(state.encoding.color, layerName)
+          },
+          {
+            shape: markType,
+            ...(state.encoding.orientation && {
+              angle: getOrientation(state.encoding.orientation, layerName)
+            }),
+            width: size,
+            height: size
+          }
+        )
+      }
+    ]
 
     return {
       data,
@@ -863,8 +863,8 @@ export default function rasterLayerPointMixin(_layer) {
     const layerNames = chart.getLayerNames()
     if (
       layers.length === 2 &&
-      layerNames[0].includes(`_z`) &&
-      layerNames[1].includes(`_z`)
+      layerNames[0].includes("_z") &&
+      layerNames[1].includes("_z")
     ) {
       chart.popAllLayers()
       chart.pushLayer("pointmap", _layer)

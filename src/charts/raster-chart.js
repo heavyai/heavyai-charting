@@ -161,12 +161,12 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     if (
+      // pointmap priorized color hack
       layer.getState().mark === "point" &&
       layerName !== "backendScatter" &&
       layer.getState().encoding.color.prioritizedColor &&
       layer.getState().encoding.color.prioritizedColor.length > 0
     ) {
-      // pointmap priorized color hack
       for (
         let i = 0;
         i < layer.getState().encoding.color.prioritizedColor.length;
@@ -628,6 +628,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         ++cnt
       }
     })
+
     // TODO best to fail, skip cb, or call cb wo args?
     if (!cnt) {
       return
@@ -641,9 +642,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         layerObj,
         Math.ceil(_popupSearchRadius * pixelRatio)
       )
-      .then(results => {
-        callback(results[0])
-      })
+      .then(results => callback(results[0]))
       .catch(error => {
         throw new Error(
           `getResultRowForPixel failed with message: ${error.error_msg}`
