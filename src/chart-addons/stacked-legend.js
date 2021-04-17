@@ -1,5 +1,5 @@
 import * as _ from "lodash"
-import {getRealLayers} from "../utils/utils-vega";
+import { getRealLayers } from "../utils/utils-vega"
 
 const hasLegendOpenProp = color =>
   typeof color.legend === "object" && color.legend.hasOwnProperty("open")

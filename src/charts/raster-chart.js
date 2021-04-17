@@ -159,12 +159,26 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         "A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)"
       )
     }
-    // TODO can change for multiple prioritized colors
-    if(layer.getState().mark === "point" && layerName !== "backendScatter" && layer.getState().encoding.color.prioritizedColor) { // pointmap priorized color hack
-      _layers.push(`${layerName}_z0`)
-      _layerNames[`${layerName}_z0`] = layer
-      _layerNames[`${layerName}_z1`] = layer
-      _layers.push(`${layerName}_z1`)
+
+    if (
+      layer.getState().mark === "point" &&
+      layerName !== "backendScatter" &&
+      layer.getState().encoding.color.prioritizedColor &&
+      layer.getState().encoding.color.prioritizedColor.length > 0
+    ) {
+      // pointmap priorized color hack
+      for (
+        let i = 0;
+        i < layer.getState().encoding.color.prioritizedColor.length;
+        i++
+      ) {
+        // Currently only one priority color is supported for Pointmap, so we create two z indexed layers, z_0 and z_1 for it
+        // Not clear how multiple priority color would be supported later, so making an assumption here to be be z_2 and z_3 for second priority color and so on
+        _layers.push(`${layerName}_z${i * 2}`)
+        _layerNames[`${layerName}_z${i * 2}`] = layer
+        _layers.push(`${layerName}_z${i * 2 + 1}`)
+        _layerNames[`${layerName}_z${i * 2 + 1}`] = layer
+      }
     } else {
       _layers.push(layerName)
       _layerNames[layerName] = layer
@@ -536,7 +550,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         }
       }
     }
-debugger
+
     const state = getLegendStateFromChart(_chart, useMap, selectedLayer)
     _legend.setState(state)
 
@@ -610,18 +624,10 @@ debugger
         layer.hasPopupColumns &&
         layer.hasPopupColumns()
       ) {
-
-        const layerState = layer.getState()
-        // if (layerState.encoding.color.prioritizedColor) {
-        //   // layerObj[`${layerName}_z0`] = layer.getPopupAndRenderColumns(_chart)
-        //   layerObj[`${layerName}_z1`] = layer.getPopupAndRenderColumns(_chart)
-        // } else {
-          layerObj[layerName] = layer.getPopupAndRenderColumns(_chart)
-        // }
+        layerObj[layerName] = layer.getPopupAndRenderColumns(_chart)
         ++cnt
       }
     })
-    console.log('layerObj ', layerObj)
     // TODO best to fail, skip cb, or call cb wo args?
     if (!cnt) {
       return
@@ -636,11 +642,8 @@ debugger
         Math.ceil(_popupSearchRadius * pixelRatio)
       )
       .then(results => {
-        console.log('hit testing request result ', results[0].row_set)
-        debugger
         callback(results[0])
-      }
-     )
+      })
       .catch(error => {
         throw new Error(
           `getResultRowForPixel failed with message: ${error.error_msg}`

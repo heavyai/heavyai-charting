@@ -788,9 +788,9 @@ export function getRealLayers(layers) {
   layers.forEach(layerName => {
     if (layerName.includes("_z")) {
       for (let i = 0; i < layerName.length; i++) {
-        if(layerName[i] === "_" && layerName[i+1] === "z") {
+        if (layerName[i] === "_" && layerName[i + 1] === "z") {
           const realLayerName = layerName.substring(0, i) // real layer name is substring up to _z...
-          if(!visited[realLayerName]) {
+          if (!visited[realLayerName]) {
             visited[realLayerName] = layerName // can use only the first z-index layerName
             filteredLayers.push(layerName)
           }

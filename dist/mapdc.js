@@ -6795,7 +6795,7 @@ var _legendMixin = __webpack_require__(243);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
-var _binningHelpers = __webpack_require__(21);
+var _binningHelpers = __webpack_require__(22);
 
 var _d = __webpack_require__(1);
 
@@ -8639,7 +8639,7 @@ function baseMixin(_chart) {
 
 
 var bind = __webpack_require__(191);
-var isBuffer = __webpack_require__(274);
+var isBuffer = __webpack_require__(275);
 
 /*global toString:true*/
 
@@ -9785,7 +9785,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _events = __webpack_require__(14);
 
-var _filters = __webpack_require__(20);
+var _filters = __webpack_require__(21);
 
 var _lockAxisMixin = __webpack_require__(39);
 
@@ -11977,6 +11977,709 @@ function marginMixin(_chart) {
 
 /***/ }),
 /* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.renderAttributes = exports.GeoSvgFormatter = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+exports.notNull = notNull;
+exports.adjustOpacity = adjustOpacity;
+exports.adjustRGBAOpacity = adjustRGBAOpacity;
+exports.createVegaAttrMixin = createVegaAttrMixin;
+exports.createRasterLayerGetterSetter = createRasterLayerGetterSetter;
+exports.__displayPopup = __displayPopup;
+exports.getSizeScaleName = getSizeScaleName;
+exports.getColorScaleName = getColorScaleName;
+exports.getScales = getScales;
+exports.getRealLayers = getRealLayers;
+
+var _d2 = __webpack_require__(1);
+
+var _d3 = _interopRequireDefault(_d2);
+
+var _wellknown = __webpack_require__(269);
+
+var _wellknown2 = _interopRequireDefault(_wellknown);
+
+var _mapdDraw = __webpack_require__(18);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function notNull(value) {
+  return value != null; /* double-equals also catches undefined */
+}
+
+function adjustOpacity(color) {
+  var opacity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
+  if (!/#/.test(color)) {
+    return color;
+  }
+  var hex = color.replace("#", "");
+  var r = parseInt(hex.substring(0, 2), 16);
+  var g = parseInt(hex.substring(2, 4), 16);
+  var b = parseInt(hex.substring(4, 6), 16);
+  return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
+}
+
+function adjustRGBAOpacity(rgba, opacity) {
+  var _rgba$split$1$split$ = rgba.split("(")[1].split(")")[0].split(","),
+      _rgba$split$1$split$2 = _slicedToArray(_rgba$split$1$split$, 4),
+      r = _rgba$split$1$split$2[0],
+      g = _rgba$split$1$split$2[1],
+      b = _rgba$split$1$split$2[2],
+      a = _rgba$split$1$split$2[3];
+
+  if (a) {
+    var relativeOpacity = parseFloat(a) - (1 - opacity);
+    a = "" + (relativeOpacity > 0 ? relativeOpacity : 0.01);
+  } else {
+    a = opacity;
+  }
+  return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+}
+
+var ordScale = _d3.default.scale.ordinal();
+var quantScale = _d3.default.scale.quantize();
+var linearScale = _d3.default.scale.linear();
+
+var capAttrMap = {
+  FillColor: "color",
+  Size: "size"
+};
+
+function createVegaAttrMixin(layerObj, attrName, defaultVal, nullVal, useScale, prePostFuncs) {
+  var scaleFunc = "",
+      fieldAttrFunc = "";
+  var capAttrName = attrName.charAt(0).toUpperCase() + attrName.slice(1);
+  var defaultFunc = "default" + capAttrName;
+  var nullFunc = "null" + capAttrName;
+  layerObj[defaultFunc] = createRasterLayerGetterSetter(layerObj, defaultVal, prePostFuncs ? prePostFuncs.preDefault : null, prePostFuncs ? prePostFuncs.postDefault : null);
+  layerObj[nullFunc] = createRasterLayerGetterSetter(layerObj, nullVal, prePostFuncs ? prePostFuncs.preNull : null, prePostFuncs ? prePostFuncs.postNull : null);
+
+  if (useScale) {
+    scaleFunc = attrName + "Scale";
+    fieldAttrFunc = attrName + "Attr";
+    layerObj[scaleFunc] = createRasterLayerGetterSetter(layerObj, null, prePostFuncs ? prePostFuncs.preScale : null, prePostFuncs ? prePostFuncs.postScale : null);
+    layerObj[fieldAttrFunc] = createRasterLayerGetterSetter(layerObj, null, prePostFuncs ? prePostFuncs.preField : null, prePostFuncs ? prePostFuncs.postField : null);
+
+    layerObj["_build" + capAttrName + "Scale"] = function (chart, layerName) {
+      var scale = layerObj[scaleFunc]();
+      if (scale && scale.domain && scale.domain().length && scale.range().length && scaleFunc === "fillColorScale") {
+        var colorScaleName = layerName + "_" + attrName;
+        var rtnObj = {
+          name: colorScaleName,
+          type: chart._determineScaleType(scale),
+          domain: scale.domain().filter(notNull),
+          range: scale.range(),
+          default: layerObj[defaultFunc](),
+          nullValue: layerObj[nullFunc]()
+        };
+
+        if (scale.clamp) {
+          rtnObj.clamp = scale.clamp();
+        }
+
+        return rtnObj;
+      } else if (layerObj.densityAccumulatorEnabled()) {
+        var _colorScaleName = layerName + "_" + attrName,
+            colorsToUse = layerObj.defaultFillColor(),
+            domainInterval = 100 / (colorsToUse.length - 1),
+            linearColorScale = colorsToUse.map(function (color, i) {
+          return i * domainInterval / 100;
+        }),
+            range = colorsToUse.map(function (color, i, colorArray) {
+          var normVal = i / (colorArray.length - 1);
+          var interp = Math.min(normVal / 0.65, 1.0);
+          interp = interp * 0.375 + 0.625;
+          return convertHexToRGBA(color, interp * 100);
+        });
+
+        var _rtnObj = {
+          name: _colorScaleName,
+          type: "linear",
+          domain: linearColorScale,
+          range: range,
+          accumulator: "density",
+          minDensityCnt: "-2ndStdDev",
+          maxDensityCnt: "2ndStdDev",
+          clamp: true
+        };
+
+        return _rtnObj;
+      }
+    };
+  }
+
+  var getValFunc = "get" + capAttrName + "Val";
+  layerObj[getValFunc] = function (input) {
+    var rtnVal = layerObj[defaultFunc]();
+    if (input === null) {
+      rtnVal = layerObj[nullFunc]();
+    } else if (input !== undefined && useScale) {
+      var encodingAttrName = capAttrMap[capAttrName];
+      var capAttrObj = layerObj.getState().encoding[encodingAttrName];
+      if (capAttrObj && capAttrObj.domain && capAttrObj.domain.length && capAttrObj.range.length) {
+        var domainVals = capAttrObj.domain;
+        if (domainVals === "auto") {
+          var domainGetterFunc = encodingAttrName + "Domain";
+          if (typeof layerObj[domainGetterFunc] !== "function") {
+            throw new Error("Looking for a " + domainGetterFunc + " function on for attr " + attrName);
+          }
+          domainVals = layerObj[domainGetterFunc]();
+        }
+        if (capAttrObj.type === "ordinal") {
+          ordScale.domain(domainVals).range(capAttrObj.range);
+          // if color range is not in domain, it's an Other item
+          rtnVal = domainVals.indexOf(input) === -1 ? ordScale("Other") : ordScale(input);
+        } else if (Array.isArray(domainVals) && domainVals[0] === domainVals[1]) {
+          // handling case where domain min/max are the same (FE-7408)
+          linearScale.domain(domainVals).range(capAttrObj.range);
+          rtnVal = Math.round(linearScale(input));
+        } else {
+          quantScale.domain(domainVals).range(capAttrObj.range);
+          rtnVal = quantScale(input);
+        }
+      }
+    }
+
+    return rtnVal;
+  };
+}
+
+function createRasterLayerGetterSetter(layerObj, attrVal, preSetFunc, postSetFunc) {
+  return function (newVal) {
+    if (!arguments.length) {
+      return attrVal;
+    }
+    if (preSetFunc) {
+      var rtnVal = preSetFunc(newVal, attrVal);
+      if (rtnVal !== undefined) {
+        newVal = rtnVal;
+      }
+    }
+    attrVal = newVal;
+    if (postSetFunc) {
+      var rtnVal = postSetFunc(attrVal);
+      if (rtnVal !== undefined) {
+        attrVal = rtnVal;
+      }
+    }
+    return layerObj;
+  };
+}
+
+// Polygon and line svg on hovering
+
+// NOTE: Reqd until ST_Transform supported on projection columns
+function conv4326To900913(x, y) {
+  var transCoord = [0.0, 0.0];
+  transCoord[0] = x * 111319.49077777777778;
+  transCoord[1] = Math.log(Math.tan((90.0 + y) * 0.00872664625997)) * 6378136.99911215736947;
+  return transCoord;
+}
+
+var SvgFormatter = function () {
+  function SvgFormatter() {
+    _classCallCheck(this, SvgFormatter);
+  }
+
+  _createClass(SvgFormatter, [{
+    key: "getBounds",
+
+    /**
+     * Builds the bounds from the incoming poly data
+     * @param {AABox2d} out AABox2d to return
+     * @param {object} data Object with return data from getResultRowForPixel()
+     * @param {Number} width Width of the visualization div
+     * @param {Number} height Height of the visualization div
+     * @param {object} margin Margins of the visualization div
+     * @param {Function} xscale d3 scale in x dimension from world space to pixel space (i.e. mercatorx-to-pixel)
+     * @param {Function} yscale d3 scale in y dimension from world space to pixel space (i.e. mercatory-to-pixel)
+     */
+    value: function getBounds(data, width, height, margins, xscale, yscale) {
+      throw new Error("This must be overridden");
+    }
+
+    /**
+     * Builds the svg path string to use with the d svg attr:
+     * https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
+     * This function should be called after the getBounds().
+     * The t/s arguments are the transformations to properly place the points underneath
+     * a parent SVG group node. That node is what ultimately handles animations and such
+     * so we need to transform all the points into local space. t is the translation
+     * and s is the scale to transform the points from pixel space to model/object space.
+     * @param {string} out Returns the svg path string
+     * @param {Point2d} t Translation from world to object space.
+     * @param {Number} s Scale from world to object space.
+     */
+
+  }, {
+    key: "getSvgPath",
+    value: function getSvgPath(t, s) {
+      throw new Error("This must be overridden");
+    }
+  }]);
+
+  return SvgFormatter;
+}();
+
+var LegacyPolySvgFormatter = function (_SvgFormatter) {
+  _inherits(LegacyPolySvgFormatter, _SvgFormatter);
+
+  function LegacyPolySvgFormatter() {
+    _classCallCheck(this, LegacyPolySvgFormatter);
+
+    var _this = _possibleConstructorReturn(this, (LegacyPolySvgFormatter.__proto__ || Object.getPrototypeOf(LegacyPolySvgFormatter)).call(this));
+
+    _this._polys = [];
+    return _this;
+  }
+
+  _createClass(LegacyPolySvgFormatter, [{
+    key: "getBounds",
+    value: function getBounds(data, width, height, margins, xscale, yscale) {
+      // NOTE: this is handling legacy poly storage for backwards compatibility.
+      // Once we've put everything post 4.0 behind us, this can be fully deprecated.
+      //
+      // verts and drawinfo should be valid as the _resultsAreValidForPopup()
+      // method should've been called beforehand
+      var verts = data[polyTableGeomColumns.verts_LEGACY];
+      var drawinfo = data[polyTableGeomColumns.linedrawinfo_LEGACY];
+
+      var startIdxDiff = drawinfo.length ? drawinfo[2] : 0;
+      var FLT_MAX = 1e37;
+
+      var bounds = _mapdDraw.AABox2d.create();
+      var screenPt = _mapdDraw.Point2d.create();
+      for (var i = 0; i < drawinfo.length; i = i + 4) {
+        // Draw info struct:
+        //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
+        //     1: instanceCount, // should always be 1
+        //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
+        //     3: baseInstance   // irrelevant for our purposes -- should always be 0
+        var polypts = [];
+        var count = (drawinfo[i] - 3) * 2; // include x&y, and drop 3 duplicated pts at the end
+        var startIdx = (drawinfo[i + 2] - startIdxDiff) * 2; // include x&y
+        var endIdx = startIdx + count; // remove the 3 duplicate pts at the end
+        for (var idx = startIdx; idx < endIdx; idx = idx + 2) {
+          if (verts[idx] <= -FLT_MAX) {
+            // -FLT_MAX is a separator for multi-polygons (like Hawaii,
+            // where there would be a polygon per island), so when we hit a separator,
+            // remove the 3 duplicate points that would end the polygon prior to the separator
+            // and start a new polygon
+            polypts.pop();
+            polypts.pop();
+            polypts.pop();
+            this._polys.push(polypts);
+            polypts = [];
+          } else {
+            _mapdDraw.Point2d.set(screenPt, xscale(verts[idx]) + margins.left, height - yscale(verts[idx + 1]) - 1 + margins.top);
+
+            if (screenPt[0] >= 0 && screenPt[0] <= width && screenPt[1] >= 0 && screenPt[1] <= height) {
+              _mapdDraw.AABox2d.encapsulatePt(bounds, bounds, screenPt);
+            }
+            polypts.push(screenPt[0]);
+            polypts.push(screenPt[1]);
+          }
+        }
+
+        this._polys.push(polypts);
+      }
+
+      return bounds;
+    }
+  }, {
+    key: "getSvgPath",
+    value: function getSvgPath(t, s) {
+      var rtnPointStr = "";
+      this._polys.forEach(function (pts) {
+        if (!pts) {
+          return;
+        }
+
+        var pointStr = "";
+        for (var i = 0; i < pts.length; i = i + 2) {
+          if (!isNaN(pts[i]) && !isNaN(pts[i + 1])) {
+            pointStr += (pointStr.length ? "L" : "M") + s * (pts[i] - t[0]) + "," + s * (pts[i + 1] - t[1]);
+          }
+        }
+        if (pointStr.length) {
+          pointStr += "Z";
+        }
+        rtnPointStr += pointStr;
+      });
+      return rtnPointStr;
+    }
+  }]);
+
+  return LegacyPolySvgFormatter;
+}(SvgFormatter);
+
+function buildGeoProjection(width, height, margins, xscale, yscale) {
+  var clamp = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
+  var t = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : [0, 0];
+  var s = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 1;
+
+  var _translation = t,
+      _scale = s,
+      _clamp = clamp;
+
+  var project = _d3.default.geo.transform({
+    point: function point(lon, lat) {
+      var projectedCoord = conv4326To900913(lon, lat);
+      var pt = [_scale * (xscale(projectedCoord[0]) + margins.left - _translation[0]), _scale * (height - yscale(projectedCoord[1]) - 1 + margins.top - _translation[1])];
+      if (_clamp) {
+        if (pt[0] >= 0 && pt[0] < width && pt[1] >= 0 && pt[1] < height) {
+          return this.stream.point(pt[0], pt[1]);
+        }
+      } else {
+        return this.stream.point(pt[0], pt[1]);
+      }
+    }
+  });
+
+  project.setTransforms = function (t, s) {
+    _translation = t;
+    _scale = s;
+  };
+
+  project.setClamp = function (clamp) {
+    _clamp = Boolean(clamp);
+  };
+
+  return project;
+}
+
+var GeoSvgFormatter = exports.GeoSvgFormatter = function (_SvgFormatter2) {
+  _inherits(GeoSvgFormatter, _SvgFormatter2);
+
+  function GeoSvgFormatter(geocol) {
+    _classCallCheck(this, GeoSvgFormatter);
+
+    var _this2 = _possibleConstructorReturn(this, (GeoSvgFormatter.__proto__ || Object.getPrototypeOf(GeoSvgFormatter)).call(this));
+
+    _this2._geojson = null;
+    _this2._projector = null;
+    _this2._d3projector = null;
+    _this2._geocol = geocol;
+    return _this2;
+  }
+
+  _createClass(GeoSvgFormatter, [{
+    key: "getBounds",
+    value: function getBounds(data, width, height, margins, xscale, yscale) {
+      var wkt = data[this._geocol];
+      if (typeof wkt !== "string") {
+        throw new Error("Cannot create SVG from geo polygon column \"" + this._geocol + "\". The data returned is not a WKT string. It is of type: " + (typeof wkt === "undefined" ? "undefined" : _typeof(wkt)));
+      }
+      this._geojson = _wellknown2.default.parse(wkt);
+      this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true);
+
+      // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
+      // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
+      // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
+      this._d3projector = _d3.default.geo.path().projection(this._projector);
+      var d3bounds = this._d3projector.bounds(this._geojson);
+      return _mapdDraw.AABox2d.create(d3bounds[0][0], d3bounds[0][1], d3bounds[1][0], d3bounds[1][1]);
+    }
+  }, {
+    key: "getSvgPath",
+    value: function getSvgPath(t, s) {
+      this._projector.setTransforms(t, s);
+      this._projector.setClamp(false);
+      return this._d3projector(this._geojson);
+    }
+  }]);
+
+  return GeoSvgFormatter;
+}(SvgFormatter);
+
+var renderAttributes = exports.renderAttributes = ["x", "y", "fillColor", "strokeColor", "strokeWidth", "lineJoin", "miterLimit", "opacity"];
+
+var _scaledPopups = {};
+
+function __displayPopup(svgProps) {
+  var chart = svgProps.chart,
+      parentElem = svgProps.parentElem,
+      data = svgProps.data,
+      width = svgProps.width,
+      height = svgProps.height,
+      margins = svgProps.margins,
+      xscale = svgProps.xscale,
+      yscale = svgProps.yscale,
+      minPopupArea = svgProps.minPopupArea,
+      animate = svgProps.animate,
+      _vega = svgProps._vega,
+      _layer = svgProps._layer,
+      state = svgProps.state;
+
+
+  var layerType = _layer.layerType();
+
+  var geoPathFormatter = null;
+  if (chart._useGeoTypes) {
+    if (!state.encoding.geocol) {
+      throw new Error("No poly/multipolygon column specified. Cannot build poly outline popup.");
+    }
+    // For linemap dimension selection, we are using alias "sampled_geo"
+    var geoCol = state.transform.groupby && state.transform.groupby.length && state.mark.type === "lines" ? "sampled_geo" : state.encoding.geocol;
+    geoPathFormatter = new GeoSvgFormatter(geoCol);
+  } else if (!chart._useGeoTypes && layerType === "polys") {
+    geoPathFormatter = new LegacyPolySvgFormatter();
+  } else {
+    throw new Error("Cannot build outline popup.");
+  }
+
+  var bounds = geoPathFormatter.getBounds(data, width, height, margins, xscale, yscale);
+
+  // Check for 2 special cases:
+  // 1) zoomed in so far in that the poly encompasses the entire view, so all points are
+  //    outside the view
+  // 2) the poly only has 1 point in view.
+  // Both cases can be handled by checking whether the bounds is empty (infinite) in
+  // either x/y or the bounds size is 0 in x/y.
+  var boundsSz = _mapdDraw.AABox2d.getSize(_mapdDraw.Point2d.create(), bounds);
+  if (!isFinite(boundsSz[0]) || boundsSz[0] === 0) {
+    bounds[_mapdDraw.AABox2d.MINX] = 0;
+    bounds[_mapdDraw.AABox2d.MAXX] = width;
+    boundsSz[0] = width;
+  }
+  if (!isFinite(boundsSz[1]) || boundsSz[1] === 0) {
+    bounds[_mapdDraw.AABox2d.MINY] = 0;
+    bounds[_mapdDraw.AABox2d.MAXY] = height;
+    boundsSz[1] = height;
+  }
+
+  // Get the data from the hit-test object used to drive render properties
+  // These will be used to properly style the svg popup object
+  var rndrProps = {};
+  if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
+    var propObj = _vega.marks[0].properties;
+
+    renderAttributes.forEach(function (prop) {
+      if (_typeof(propObj[prop]) === "object" && propObj[prop].field && typeof propObj[prop].field === "string") {
+        rndrProps[prop] = propObj[prop].field;
+      }
+    });
+  }
+
+  // If the poly we hit-test is small, we'll scale it so that it
+  // can be seen. The minPopupArea is the minimum area of the popup
+  // poly, so if the poly's bounds is < minPopupArea, we'll scale it
+  // up to that size.
+  var scale = 1;
+  var scaleRatio = minPopupArea / _mapdDraw.AABox2d.area(bounds);
+  var isScaled = scaleRatio > 1;
+  if (isScaled) {
+    scale = Math.sqrt(scaleRatio);
+  }
+
+  // Now grab the style properties for the svg calculated from the vega
+  var popupStyle = _layer.popupStyle();
+  var fillColor = _layer.getFillColorVal(data[rndrProps.fillColor]);
+  var strokeColor = _layer.getStrokeColorVal(data[rndrProps.strokeColor]);
+  var strokeWidth = 1;
+  if ((typeof popupStyle === "undefined" ? "undefined" : _typeof(popupStyle)) === "object" && !isScaled) {
+    fillColor = popupStyle.fillColor || fillColor;
+    strokeColor = popupStyle.strokeColor || strokeColor;
+    strokeWidth = popupStyle.strokeWidth;
+  }
+
+  // build out the svg
+  var svg = parentElem.append("svg").attr("width", width).attr("height", height);
+
+  // transform svg node. This node will position the svg appropriately. Need
+  // to offset according to the scale above (scale >= 1)
+  var boundsCtr = _mapdDraw.AABox2d.getCenter(_mapdDraw.Point2d.create(), bounds);
+  var xform = svg.append("g").attr("class", layerType === "polys" ? "map-poly-xform" : "map-polyline").attr("transform", "translate(" + (scale * bounds[_mapdDraw.AABox2d.MINX] - (scale - 1) * boundsCtr[0]) + ", " + (scale * (bounds[_mapdDraw.AABox2d.MINY] + 1) - (scale - 1) * (boundsCtr[1] + 1)) + ")");
+
+  // now add a transform node that will be used to apply animated scales to
+  // We want the animation to happen from the center of the bounds, so we
+  // place the transform origin there.
+  var group = xform.append("g").attr("class", layerType === "polys" ? "map-poly" : "map-polyline").attr("transform-origin", boundsSz[0] / 2 + " " + boundsSz[1] / 2);
+
+  // inherited animation classes from css
+  if (animate) {
+    if (isScaled) {
+      group.classed("popupPoly", true);
+    } else {
+      group.classed("fadeInPoly", true);
+    }
+  }
+
+  // now apply the styles
+  if (typeof strokeWidth === "number") {
+    group.style("stroke-width", strokeWidth);
+  }
+
+  if (layerType === "lines") {
+    // applying shadow
+    var defs = group.append("defs");
+
+    var filter = defs.append("filter").attr("id", "drop-shadow").attr("width", "200%").attr("height", "200%");
+
+    filter.append("feOffset").attr("in", "SourceAlpha").attr("result", "offOut").attr("dx", "2").attr("dy", "2");
+
+    filter.append("feGaussianBlur").attr("in", "offOut").attr("stdDeviation", 2).attr("result", "blurOut");
+
+    filter.append("feBlend").attr("in", "SourceGraphic").attr("in2", "blurOut").attr("mode", "normal");
+  }
+
+  group.append("path").attr("d", geoPathFormatter.getSvgPath(_mapdDraw.Point2d.create(bounds[_mapdDraw.AABox2d.MINX], bounds[_mapdDraw.AABox2d.MINY]), scale)).attr("class", layerType === "polys" ? "map-polygon-shape" : "map-polyline").attr("fill", layerType === "polys" ? fillColor : "none").attr("fill-rule", "evenodd").attr("stroke-width", strokeWidth).attr("stroke", strokeColor).style("filter", layerType === "polys" ? "none" : "url(#drop-shadow)").on("click", function () {
+    if (layerType === "polys") {
+      return _layer.onClick(chart, data, _d3.default.event);
+    } else {
+      return null;
+    }
+  });
+
+  _scaledPopups[chart] = isScaled;
+
+  return bounds;
+}
+
+function getSizeScaleName(layerName) {
+  if (layerName === "linemap") {
+    return layerName + "_strokeWidth";
+  } else {
+    return layerName + "_size";
+  }
+}
+
+function getColorScaleName(layerName) {
+  if (layerName === "linemap") {
+    return layerName + "_strokeColor";
+  } else {
+    return layerName + "_fillColor";
+  }
+}
+
+function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
+  var size = _ref.size,
+      color = _ref.color,
+      orientation = _ref.orientation;
+
+  var scales = [];
+
+  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && (size.type === "quantitative" || size.type === "custom")) {
+    scales.push({
+      name: getSizeScaleName(layerName),
+      type: "linear",
+      domain: size.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.size } : size.domain,
+      range: size.range,
+      clamp: true
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "linear",
+      domain: color.range.map(function (c, i) {
+        return i * 100 / (color.range.length - 1) / 100;
+      }),
+      range: color.range.map(function (c) {
+        return adjustOpacity(c, color.opacity);
+      }).map(function (c, i, colorArray) {
+        var normVal = i / (colorArray.length - 1);
+        var interp = Math.min(normVal / 0.65, 1.0);
+        interp = interp * 0.375 + 0.625;
+        return adjustRGBAOpacity(c, interp);
+      }),
+      accumulator: "density",
+      minDensityCnt: "-2ndStdDev",
+      maxDensityCnt: "2ndStdDev",
+      clamp: true
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "ordinal") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "ordinal",
+      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
+      range: color.range.map(function (c) {
+        return adjustOpacity(c, color.opacity);
+      }),
+      default: adjustOpacity(color.defaultOtherRange, // color passed from immerse color palette for 'Other' category
+      color.hasOwnProperty("showOther") && !color.showOther ? 0 // When Other is toggled OFF, we make the Other category transparent
+      : color.opacity),
+      nullValue: adjustOpacity("#CACACA", color.opacity)
+    });
+  }
+
+  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "quantitative") {
+    scales.push({
+      name: getColorScaleName(layerName),
+      type: "quantize",
+      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
+      range: color.range.map(function (c) {
+        return adjustOpacity(c, color.opacity);
+      })
+    });
+  }
+
+  if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientation.type === "quantitative") {
+    scales.push({
+      name: layerName + "_symbolAngle",
+      type: "linear",
+      domain: orientation.domain,
+      range: orientation.range,
+      clamp: false
+    });
+  }
+
+  return scales;
+}
+
+/**
+ * Filters z-indexed layers and returns non duplicate layer. Z-indexed layers is for temporary hack FE-13136
+ * For z-indexed layer (layer that has top color category applied), only returns the first z-index, z_0
+ * @param layers
+ * @returns {[]}
+ */
+function getRealLayers(layers) {
+  var filteredLayers = [];
+  var visited = {};
+
+  layers.forEach(function (layerName) {
+    if (layerName.includes("_z")) {
+      for (var i = 0; i < layerName.length; i++) {
+        if (layerName[i] === "_" && layerName[i + 1] === "z") {
+          var realLayerName = layerName.substring(0, i); // real layer name is substring up to _z...
+          if (!visited[realLayerName]) {
+            visited[realLayerName] = layerName; // can use only the first z-index layerName
+            filteredLayers.push(layerName);
+          }
+        }
+      }
+    } else {
+      filteredLayers.push(layerName);
+    }
+  });
+  return filteredLayers;
+}
+
+/***/ }),
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12030,7 +12733,7 @@ var GAstVisitor = /** @class */ (function () {
 //# sourceMappingURL=gast_visitor_public.js.map
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12177,7 +12880,7 @@ filters.RangedTwoDimensionalFilter = function (filter) {
 };
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12286,7 +12989,7 @@ var getFirstNonNullDatumForAxis = exports.getFirstNonNullDatumForAxis = function
 };
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -29406,680 +30109,6 @@ var getFirstNonNullDatumForAxis = exports.getFirstNonNullDatumForAxis = function
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(47), __webpack_require__(52)(module)))
 
 /***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.renderAttributes = exports.GeoSvgFormatter = undefined;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-exports.notNull = notNull;
-exports.adjustOpacity = adjustOpacity;
-exports.adjustRGBAOpacity = adjustRGBAOpacity;
-exports.createVegaAttrMixin = createVegaAttrMixin;
-exports.createRasterLayerGetterSetter = createRasterLayerGetterSetter;
-exports.__displayPopup = __displayPopup;
-exports.getSizeScaleName = getSizeScaleName;
-exports.getColorScaleName = getColorScaleName;
-exports.getScales = getScales;
-
-var _d2 = __webpack_require__(1);
-
-var _d3 = _interopRequireDefault(_d2);
-
-var _wellknown = __webpack_require__(322);
-
-var _wellknown2 = _interopRequireDefault(_wellknown);
-
-var _mapdDraw = __webpack_require__(18);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function notNull(value) {
-  return value != null; /* double-equals also catches undefined */
-}
-
-function adjustOpacity(color) {
-  var opacity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-
-  if (!/#/.test(color)) {
-    return color;
-  }
-  var hex = color.replace("#", "");
-  var r = parseInt(hex.substring(0, 2), 16);
-  var g = parseInt(hex.substring(2, 4), 16);
-  var b = parseInt(hex.substring(4, 6), 16);
-  return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
-}
-
-function adjustRGBAOpacity(rgba, opacity) {
-  var _rgba$split$1$split$ = rgba.split("(")[1].split(")")[0].split(","),
-      _rgba$split$1$split$2 = _slicedToArray(_rgba$split$1$split$, 4),
-      r = _rgba$split$1$split$2[0],
-      g = _rgba$split$1$split$2[1],
-      b = _rgba$split$1$split$2[2],
-      a = _rgba$split$1$split$2[3];
-
-  if (a) {
-    var relativeOpacity = parseFloat(a) - (1 - opacity);
-    a = "" + (relativeOpacity > 0 ? relativeOpacity : 0.01);
-  } else {
-    a = opacity;
-  }
-  return "rgba(" + r + "," + g + "," + b + "," + a + ")";
-}
-
-var ordScale = _d3.default.scale.ordinal();
-var quantScale = _d3.default.scale.quantize();
-var linearScale = _d3.default.scale.linear();
-
-var capAttrMap = {
-  FillColor: "color",
-  Size: "size"
-};
-
-function createVegaAttrMixin(layerObj, attrName, defaultVal, nullVal, useScale, prePostFuncs) {
-  var scaleFunc = "",
-      fieldAttrFunc = "";
-  var capAttrName = attrName.charAt(0).toUpperCase() + attrName.slice(1);
-  var defaultFunc = "default" + capAttrName;
-  var nullFunc = "null" + capAttrName;
-  layerObj[defaultFunc] = createRasterLayerGetterSetter(layerObj, defaultVal, prePostFuncs ? prePostFuncs.preDefault : null, prePostFuncs ? prePostFuncs.postDefault : null);
-  layerObj[nullFunc] = createRasterLayerGetterSetter(layerObj, nullVal, prePostFuncs ? prePostFuncs.preNull : null, prePostFuncs ? prePostFuncs.postNull : null);
-
-  if (useScale) {
-    scaleFunc = attrName + "Scale";
-    fieldAttrFunc = attrName + "Attr";
-    layerObj[scaleFunc] = createRasterLayerGetterSetter(layerObj, null, prePostFuncs ? prePostFuncs.preScale : null, prePostFuncs ? prePostFuncs.postScale : null);
-    layerObj[fieldAttrFunc] = createRasterLayerGetterSetter(layerObj, null, prePostFuncs ? prePostFuncs.preField : null, prePostFuncs ? prePostFuncs.postField : null);
-
-    layerObj["_build" + capAttrName + "Scale"] = function (chart, layerName) {
-      var scale = layerObj[scaleFunc]();
-      if (scale && scale.domain && scale.domain().length && scale.range().length && scaleFunc === "fillColorScale") {
-        var colorScaleName = layerName + "_" + attrName;
-        var rtnObj = {
-          name: colorScaleName,
-          type: chart._determineScaleType(scale),
-          domain: scale.domain().filter(notNull),
-          range: scale.range(),
-          default: layerObj[defaultFunc](),
-          nullValue: layerObj[nullFunc]()
-        };
-
-        if (scale.clamp) {
-          rtnObj.clamp = scale.clamp();
-        }
-
-        return rtnObj;
-      } else if (layerObj.densityAccumulatorEnabled()) {
-        var _colorScaleName = layerName + "_" + attrName,
-            colorsToUse = layerObj.defaultFillColor(),
-            domainInterval = 100 / (colorsToUse.length - 1),
-            linearColorScale = colorsToUse.map(function (color, i) {
-          return i * domainInterval / 100;
-        }),
-            range = colorsToUse.map(function (color, i, colorArray) {
-          var normVal = i / (colorArray.length - 1);
-          var interp = Math.min(normVal / 0.65, 1.0);
-          interp = interp * 0.375 + 0.625;
-          return convertHexToRGBA(color, interp * 100);
-        });
-
-        var _rtnObj = {
-          name: _colorScaleName,
-          type: "linear",
-          domain: linearColorScale,
-          range: range,
-          accumulator: "density",
-          minDensityCnt: "-2ndStdDev",
-          maxDensityCnt: "2ndStdDev",
-          clamp: true
-        };
-
-        return _rtnObj;
-      }
-    };
-  }
-
-  var getValFunc = "get" + capAttrName + "Val";
-  layerObj[getValFunc] = function (input) {
-    var rtnVal = layerObj[defaultFunc]();
-    if (input === null) {
-      rtnVal = layerObj[nullFunc]();
-    } else if (input !== undefined && useScale) {
-      var encodingAttrName = capAttrMap[capAttrName];
-      var capAttrObj = layerObj.getState().encoding[encodingAttrName];
-      if (capAttrObj && capAttrObj.domain && capAttrObj.domain.length && capAttrObj.range.length) {
-        var domainVals = capAttrObj.domain;
-        if (domainVals === "auto") {
-          var domainGetterFunc = encodingAttrName + "Domain";
-          if (typeof layerObj[domainGetterFunc] !== "function") {
-            throw new Error("Looking for a " + domainGetterFunc + " function on for attr " + attrName);
-          }
-          domainVals = layerObj[domainGetterFunc]();
-        }
-        if (capAttrObj.type === "ordinal") {
-          ordScale.domain(domainVals).range(capAttrObj.range);
-          // if color range is not in domain, it's an Other item
-          rtnVal = domainVals.indexOf(input) === -1 ? ordScale("Other") : ordScale(input);
-        } else if (Array.isArray(domainVals) && domainVals[0] === domainVals[1]) {
-          // handling case where domain min/max are the same (FE-7408)
-          linearScale.domain(domainVals).range(capAttrObj.range);
-          rtnVal = Math.round(linearScale(input));
-        } else {
-          quantScale.domain(domainVals).range(capAttrObj.range);
-          rtnVal = quantScale(input);
-        }
-      }
-    }
-
-    return rtnVal;
-  };
-}
-
-function createRasterLayerGetterSetter(layerObj, attrVal, preSetFunc, postSetFunc) {
-  return function (newVal) {
-    if (!arguments.length) {
-      return attrVal;
-    }
-    if (preSetFunc) {
-      var rtnVal = preSetFunc(newVal, attrVal);
-      if (rtnVal !== undefined) {
-        newVal = rtnVal;
-      }
-    }
-    attrVal = newVal;
-    if (postSetFunc) {
-      var rtnVal = postSetFunc(attrVal);
-      if (rtnVal !== undefined) {
-        attrVal = rtnVal;
-      }
-    }
-    return layerObj;
-  };
-}
-
-// Polygon and line svg on hovering
-
-// NOTE: Reqd until ST_Transform supported on projection columns
-function conv4326To900913(x, y) {
-  var transCoord = [0.0, 0.0];
-  transCoord[0] = x * 111319.49077777777778;
-  transCoord[1] = Math.log(Math.tan((90.0 + y) * 0.00872664625997)) * 6378136.99911215736947;
-  return transCoord;
-}
-
-var SvgFormatter = function () {
-  function SvgFormatter() {
-    _classCallCheck(this, SvgFormatter);
-  }
-
-  _createClass(SvgFormatter, [{
-    key: "getBounds",
-
-    /**
-     * Builds the bounds from the incoming poly data
-     * @param {AABox2d} out AABox2d to return
-     * @param {object} data Object with return data from getResultRowForPixel()
-     * @param {Number} width Width of the visualization div
-     * @param {Number} height Height of the visualization div
-     * @param {object} margin Margins of the visualization div
-     * @param {Function} xscale d3 scale in x dimension from world space to pixel space (i.e. mercatorx-to-pixel)
-     * @param {Function} yscale d3 scale in y dimension from world space to pixel space (i.e. mercatory-to-pixel)
-     */
-    value: function getBounds(data, width, height, margins, xscale, yscale) {
-      throw new Error("This must be overridden");
-    }
-
-    /**
-     * Builds the svg path string to use with the d svg attr:
-     * https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
-     * This function should be called after the getBounds().
-     * The t/s arguments are the transformations to properly place the points underneath
-     * a parent SVG group node. That node is what ultimately handles animations and such
-     * so we need to transform all the points into local space. t is the translation
-     * and s is the scale to transform the points from pixel space to model/object space.
-     * @param {string} out Returns the svg path string
-     * @param {Point2d} t Translation from world to object space.
-     * @param {Number} s Scale from world to object space.
-     */
-
-  }, {
-    key: "getSvgPath",
-    value: function getSvgPath(t, s) {
-      throw new Error("This must be overridden");
-    }
-  }]);
-
-  return SvgFormatter;
-}();
-
-var LegacyPolySvgFormatter = function (_SvgFormatter) {
-  _inherits(LegacyPolySvgFormatter, _SvgFormatter);
-
-  function LegacyPolySvgFormatter() {
-    _classCallCheck(this, LegacyPolySvgFormatter);
-
-    var _this = _possibleConstructorReturn(this, (LegacyPolySvgFormatter.__proto__ || Object.getPrototypeOf(LegacyPolySvgFormatter)).call(this));
-
-    _this._polys = [];
-    return _this;
-  }
-
-  _createClass(LegacyPolySvgFormatter, [{
-    key: "getBounds",
-    value: function getBounds(data, width, height, margins, xscale, yscale) {
-      // NOTE: this is handling legacy poly storage for backwards compatibility.
-      // Once we've put everything post 4.0 behind us, this can be fully deprecated.
-      //
-      // verts and drawinfo should be valid as the _resultsAreValidForPopup()
-      // method should've been called beforehand
-      var verts = data[polyTableGeomColumns.verts_LEGACY];
-      var drawinfo = data[polyTableGeomColumns.linedrawinfo_LEGACY];
-
-      var startIdxDiff = drawinfo.length ? drawinfo[2] : 0;
-      var FLT_MAX = 1e37;
-
-      var bounds = _mapdDraw.AABox2d.create();
-      var screenPt = _mapdDraw.Point2d.create();
-      for (var i = 0; i < drawinfo.length; i = i + 4) {
-        // Draw info struct:
-        //     0: count,         // number of verts in loop -- might include 3 duplicate verts at end for closure
-        //     1: instanceCount, // should always be 1
-        //     2: firstIndex,    // the start index (includes x & y) where the verts for the loop start
-        //     3: baseInstance   // irrelevant for our purposes -- should always be 0
-        var polypts = [];
-        var count = (drawinfo[i] - 3) * 2; // include x&y, and drop 3 duplicated pts at the end
-        var startIdx = (drawinfo[i + 2] - startIdxDiff) * 2; // include x&y
-        var endIdx = startIdx + count; // remove the 3 duplicate pts at the end
-        for (var idx = startIdx; idx < endIdx; idx = idx + 2) {
-          if (verts[idx] <= -FLT_MAX) {
-            // -FLT_MAX is a separator for multi-polygons (like Hawaii,
-            // where there would be a polygon per island), so when we hit a separator,
-            // remove the 3 duplicate points that would end the polygon prior to the separator
-            // and start a new polygon
-            polypts.pop();
-            polypts.pop();
-            polypts.pop();
-            this._polys.push(polypts);
-            polypts = [];
-          } else {
-            _mapdDraw.Point2d.set(screenPt, xscale(verts[idx]) + margins.left, height - yscale(verts[idx + 1]) - 1 + margins.top);
-
-            if (screenPt[0] >= 0 && screenPt[0] <= width && screenPt[1] >= 0 && screenPt[1] <= height) {
-              _mapdDraw.AABox2d.encapsulatePt(bounds, bounds, screenPt);
-            }
-            polypts.push(screenPt[0]);
-            polypts.push(screenPt[1]);
-          }
-        }
-
-        this._polys.push(polypts);
-      }
-
-      return bounds;
-    }
-  }, {
-    key: "getSvgPath",
-    value: function getSvgPath(t, s) {
-      var rtnPointStr = "";
-      this._polys.forEach(function (pts) {
-        if (!pts) {
-          return;
-        }
-
-        var pointStr = "";
-        for (var i = 0; i < pts.length; i = i + 2) {
-          if (!isNaN(pts[i]) && !isNaN(pts[i + 1])) {
-            pointStr += (pointStr.length ? "L" : "M") + s * (pts[i] - t[0]) + "," + s * (pts[i + 1] - t[1]);
-          }
-        }
-        if (pointStr.length) {
-          pointStr += "Z";
-        }
-        rtnPointStr += pointStr;
-      });
-      return rtnPointStr;
-    }
-  }]);
-
-  return LegacyPolySvgFormatter;
-}(SvgFormatter);
-
-function buildGeoProjection(width, height, margins, xscale, yscale) {
-  var clamp = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
-  var t = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : [0, 0];
-  var s = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 1;
-
-  var _translation = t,
-      _scale = s,
-      _clamp = clamp;
-
-  var project = _d3.default.geo.transform({
-    point: function point(lon, lat) {
-      var projectedCoord = conv4326To900913(lon, lat);
-      var pt = [_scale * (xscale(projectedCoord[0]) + margins.left - _translation[0]), _scale * (height - yscale(projectedCoord[1]) - 1 + margins.top - _translation[1])];
-      if (_clamp) {
-        if (pt[0] >= 0 && pt[0] < width && pt[1] >= 0 && pt[1] < height) {
-          return this.stream.point(pt[0], pt[1]);
-        }
-      } else {
-        return this.stream.point(pt[0], pt[1]);
-      }
-    }
-  });
-
-  project.setTransforms = function (t, s) {
-    _translation = t;
-    _scale = s;
-  };
-
-  project.setClamp = function (clamp) {
-    _clamp = Boolean(clamp);
-  };
-
-  return project;
-}
-
-var GeoSvgFormatter = exports.GeoSvgFormatter = function (_SvgFormatter2) {
-  _inherits(GeoSvgFormatter, _SvgFormatter2);
-
-  function GeoSvgFormatter(geocol) {
-    _classCallCheck(this, GeoSvgFormatter);
-
-    var _this2 = _possibleConstructorReturn(this, (GeoSvgFormatter.__proto__ || Object.getPrototypeOf(GeoSvgFormatter)).call(this));
-
-    _this2._geojson = null;
-    _this2._projector = null;
-    _this2._d3projector = null;
-    _this2._geocol = geocol;
-    return _this2;
-  }
-
-  _createClass(GeoSvgFormatter, [{
-    key: "getBounds",
-    value: function getBounds(data, width, height, margins, xscale, yscale) {
-      var wkt = data[this._geocol];
-      if (typeof wkt !== "string") {
-        throw new Error("Cannot create SVG from geo polygon column \"" + this._geocol + "\". The data returned is not a WKT string. It is of type: " + (typeof wkt === "undefined" ? "undefined" : _typeof(wkt)));
-      }
-      this._geojson = _wellknown2.default.parse(wkt);
-      this._projector = buildGeoProjection(width, height, margins, xscale, yscale, true);
-
-      // NOTE: d3.geo.path() streaming requires polygons to duplicate the first vertex in the last slot
-      // to complete a full loop. If the first vertex is not duplicated, the last vertex can be dropped.
-      // This is currently a requirement for the incoming WKT string, but is not error checked by d3.
-      this._d3projector = _d3.default.geo.path().projection(this._projector);
-      var d3bounds = this._d3projector.bounds(this._geojson);
-      return _mapdDraw.AABox2d.create(d3bounds[0][0], d3bounds[0][1], d3bounds[1][0], d3bounds[1][1]);
-    }
-  }, {
-    key: "getSvgPath",
-    value: function getSvgPath(t, s) {
-      this._projector.setTransforms(t, s);
-      this._projector.setClamp(false);
-      return this._d3projector(this._geojson);
-    }
-  }]);
-
-  return GeoSvgFormatter;
-}(SvgFormatter);
-
-var renderAttributes = exports.renderAttributes = ["x", "y", "fillColor", "strokeColor", "strokeWidth", "lineJoin", "miterLimit", "opacity"];
-
-var _scaledPopups = {};
-
-function __displayPopup(svgProps) {
-  var chart = svgProps.chart,
-      parentElem = svgProps.parentElem,
-      data = svgProps.data,
-      width = svgProps.width,
-      height = svgProps.height,
-      margins = svgProps.margins,
-      xscale = svgProps.xscale,
-      yscale = svgProps.yscale,
-      minPopupArea = svgProps.minPopupArea,
-      animate = svgProps.animate,
-      _vega = svgProps._vega,
-      _layer = svgProps._layer,
-      state = svgProps.state;
-
-
-  var layerType = _layer.layerType();
-
-  var geoPathFormatter = null;
-  if (chart._useGeoTypes) {
-    if (!state.encoding.geocol) {
-      throw new Error("No poly/multipolygon column specified. Cannot build poly outline popup.");
-    }
-    // For linemap dimension selection, we are using alias "sampled_geo"
-    var geoCol = state.transform.groupby && state.transform.groupby.length && state.mark.type === "lines" ? "sampled_geo" : state.encoding.geocol;
-    geoPathFormatter = new GeoSvgFormatter(geoCol);
-  } else if (!chart._useGeoTypes && layerType === "polys") {
-    geoPathFormatter = new LegacyPolySvgFormatter();
-  } else {
-    throw new Error("Cannot build outline popup.");
-  }
-
-  var bounds = geoPathFormatter.getBounds(data, width, height, margins, xscale, yscale);
-
-  // Check for 2 special cases:
-  // 1) zoomed in so far in that the poly encompasses the entire view, so all points are
-  //    outside the view
-  // 2) the poly only has 1 point in view.
-  // Both cases can be handled by checking whether the bounds is empty (infinite) in
-  // either x/y or the bounds size is 0 in x/y.
-  var boundsSz = _mapdDraw.AABox2d.getSize(_mapdDraw.Point2d.create(), bounds);
-  if (!isFinite(boundsSz[0]) || boundsSz[0] === 0) {
-    bounds[_mapdDraw.AABox2d.MINX] = 0;
-    bounds[_mapdDraw.AABox2d.MAXX] = width;
-    boundsSz[0] = width;
-  }
-  if (!isFinite(boundsSz[1]) || boundsSz[1] === 0) {
-    bounds[_mapdDraw.AABox2d.MINY] = 0;
-    bounds[_mapdDraw.AABox2d.MAXY] = height;
-    boundsSz[1] = height;
-  }
-
-  // Get the data from the hit-test object used to drive render properties
-  // These will be used to properly style the svg popup object
-  var rndrProps = {};
-  if (_vega && Array.isArray(_vega.marks) && _vega.marks.length > 0 && _vega.marks[0].properties) {
-    var propObj = _vega.marks[0].properties;
-
-    renderAttributes.forEach(function (prop) {
-      if (_typeof(propObj[prop]) === "object" && propObj[prop].field && typeof propObj[prop].field === "string") {
-        rndrProps[prop] = propObj[prop].field;
-      }
-    });
-  }
-
-  // If the poly we hit-test is small, we'll scale it so that it
-  // can be seen. The minPopupArea is the minimum area of the popup
-  // poly, so if the poly's bounds is < minPopupArea, we'll scale it
-  // up to that size.
-  var scale = 1;
-  var scaleRatio = minPopupArea / _mapdDraw.AABox2d.area(bounds);
-  var isScaled = scaleRatio > 1;
-  if (isScaled) {
-    scale = Math.sqrt(scaleRatio);
-  }
-
-  // Now grab the style properties for the svg calculated from the vega
-  var popupStyle = _layer.popupStyle();
-  var fillColor = _layer.getFillColorVal(data[rndrProps.fillColor]);
-  var strokeColor = _layer.getStrokeColorVal(data[rndrProps.strokeColor]);
-  var strokeWidth = 1;
-  if ((typeof popupStyle === "undefined" ? "undefined" : _typeof(popupStyle)) === "object" && !isScaled) {
-    fillColor = popupStyle.fillColor || fillColor;
-    strokeColor = popupStyle.strokeColor || strokeColor;
-    strokeWidth = popupStyle.strokeWidth;
-  }
-
-  // build out the svg
-  var svg = parentElem.append("svg").attr("width", width).attr("height", height);
-
-  // transform svg node. This node will position the svg appropriately. Need
-  // to offset according to the scale above (scale >= 1)
-  var boundsCtr = _mapdDraw.AABox2d.getCenter(_mapdDraw.Point2d.create(), bounds);
-  var xform = svg.append("g").attr("class", layerType === "polys" ? "map-poly-xform" : "map-polyline").attr("transform", "translate(" + (scale * bounds[_mapdDraw.AABox2d.MINX] - (scale - 1) * boundsCtr[0]) + ", " + (scale * (bounds[_mapdDraw.AABox2d.MINY] + 1) - (scale - 1) * (boundsCtr[1] + 1)) + ")");
-
-  // now add a transform node that will be used to apply animated scales to
-  // We want the animation to happen from the center of the bounds, so we
-  // place the transform origin there.
-  var group = xform.append("g").attr("class", layerType === "polys" ? "map-poly" : "map-polyline").attr("transform-origin", boundsSz[0] / 2 + " " + boundsSz[1] / 2);
-
-  // inherited animation classes from css
-  if (animate) {
-    if (isScaled) {
-      group.classed("popupPoly", true);
-    } else {
-      group.classed("fadeInPoly", true);
-    }
-  }
-
-  // now apply the styles
-  if (typeof strokeWidth === "number") {
-    group.style("stroke-width", strokeWidth);
-  }
-
-  if (layerType === "lines") {
-    // applying shadow
-    var defs = group.append("defs");
-
-    var filter = defs.append("filter").attr("id", "drop-shadow").attr("width", "200%").attr("height", "200%");
-
-    filter.append("feOffset").attr("in", "SourceAlpha").attr("result", "offOut").attr("dx", "2").attr("dy", "2");
-
-    filter.append("feGaussianBlur").attr("in", "offOut").attr("stdDeviation", 2).attr("result", "blurOut");
-
-    filter.append("feBlend").attr("in", "SourceGraphic").attr("in2", "blurOut").attr("mode", "normal");
-  }
-
-  group.append("path").attr("d", geoPathFormatter.getSvgPath(_mapdDraw.Point2d.create(bounds[_mapdDraw.AABox2d.MINX], bounds[_mapdDraw.AABox2d.MINY]), scale)).attr("class", layerType === "polys" ? "map-polygon-shape" : "map-polyline").attr("fill", layerType === "polys" ? fillColor : "none").attr("fill-rule", "evenodd").attr("stroke-width", strokeWidth).attr("stroke", strokeColor).style("filter", layerType === "polys" ? "none" : "url(#drop-shadow)").on("click", function () {
-    if (layerType === "polys") {
-      return _layer.onClick(chart, data, _d3.default.event);
-    } else {
-      return null;
-    }
-  });
-
-  _scaledPopups[chart] = isScaled;
-
-  return bounds;
-}
-
-function getSizeScaleName(layerName) {
-  if (layerName === "linemap") {
-    return layerName + "_strokeWidth";
-  } else {
-    return layerName + "_size";
-  }
-}
-
-function getColorScaleName(layerName) {
-  if (layerName === "linemap") {
-    return layerName + "_strokeColor";
-  } else {
-    return layerName + "_fillColor";
-  }
-}
-
-function getScales(_ref, layerName, scaleDomainFields, xformDataSource) {
-  var size = _ref.size,
-      color = _ref.color,
-      orientation = _ref.orientation;
-
-  var scales = [];
-
-  if ((typeof size === "undefined" ? "undefined" : _typeof(size)) === "object" && (size.type === "quantitative" || size.type === "custom")) {
-    scales.push({
-      name: getSizeScaleName(layerName),
-      type: "linear",
-      domain: size.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.size } : size.domain,
-      range: size.range,
-      clamp: true
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "density") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "linear",
-      domain: color.range.map(function (c, i) {
-        return i * 100 / (color.range.length - 1) / 100;
-      }),
-      range: color.range.map(function (c) {
-        return adjustOpacity(c, color.opacity);
-      }).map(function (c, i, colorArray) {
-        var normVal = i / (colorArray.length - 1);
-        var interp = Math.min(normVal / 0.65, 1.0);
-        interp = interp * 0.375 + 0.625;
-        return adjustRGBAOpacity(c, interp);
-      }),
-      accumulator: "density",
-      minDensityCnt: "-2ndStdDev",
-      maxDensityCnt: "2ndStdDev",
-      clamp: true
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "ordinal") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "ordinal",
-      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
-      range: color.range.map(function (c) {
-        return adjustOpacity(c, color.opacity);
-      }),
-      default: adjustOpacity(color.defaultOtherRange, // color passed from immerse color palette for 'Other' category
-      color.hasOwnProperty("showOther") && !color.showOther ? 0 // When Other is toggled OFF, we make the Other category transparent
-      : color.opacity),
-      nullValue: adjustOpacity("#CACACA", color.opacity)
-    });
-  }
-
-  if ((typeof color === "undefined" ? "undefined" : _typeof(color)) === "object" && color.type === "quantitative") {
-    scales.push({
-      name: getColorScaleName(layerName),
-      type: "quantize",
-      domain: color.domain === "auto" ? { data: xformDataSource, fields: scaleDomainFields.color } : color.domain,
-      range: color.range.map(function (c) {
-        return adjustOpacity(c, color.opacity);
-      })
-    });
-  }
-
-  if ((typeof orientation === "undefined" ? "undefined" : _typeof(orientation)) === "object" && orientation.type === "quantitative") {
-    scales.push({
-      name: layerName + "_symbolAngle",
-      type: "linear",
-      domain: orientation.domain,
-      range: orientation.range,
-      clamp: false
-    });
-  }
-
-  return scales;
-}
-
-/***/ }),
 /* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -30228,7 +30257,7 @@ function isTokenType(tokType) {
 /* harmony export (immutable) */ __webpack_exports__["b"] = collectMethods;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_visitor_public__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_visitor_public__ = __webpack_require__(20);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -31503,7 +31532,7 @@ var defaultGrammarValidatorErrorProvider = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cst_cst__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__interpreter__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__ = __webpack_require__(20);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -32101,7 +32130,7 @@ function validateDuplicateNestedRules(topLevelRules, errMsgProvider) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rest__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__gast_gast_visitor_public__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__gast_gast_visitor_public__ = __webpack_require__(20);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -33607,7 +33636,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = stackMixin;
 
-var _binningHelpers = __webpack_require__(21);
+var _binningHelpers = __webpack_require__(22);
 
 var _utils = __webpack_require__(4);
 
@@ -34035,7 +34064,7 @@ var _utils = __webpack_require__(4);
 
 var _heatmap = __webpack_require__(186);
 
-var _binningHelpers = __webpack_require__(21);
+var _binningHelpers = __webpack_require__(22);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34331,7 +34360,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _lodash = __webpack_require__(22);
+var _lodash = __webpack_require__(23);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -37139,7 +37168,7 @@ function clearRegExpParserCache() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_keys__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast_visitor_public__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast_visitor_public__ = __webpack_require__(20);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -50365,13 +50394,13 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _filters = __webpack_require__(20);
+var _filters = __webpack_require__(21);
 
 var _coordinateGridMixin = __webpack_require__(13);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
-var _binningHelpers = __webpack_require__(21);
+var _binningHelpers = __webpack_require__(22);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51375,7 +51404,7 @@ var _earcut = __webpack_require__(258);
 
 var _earcut2 = _interopRequireDefault(_earcut);
 
-var _lodash = __webpack_require__(22);
+var _lodash = __webpack_require__(23);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -52041,7 +52070,7 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _coordinateGridRasterMixinUi = __webpack_require__(269);
+var _coordinateGridRasterMixinUi = __webpack_require__(270);
 
 var _coordinateGridRasterMixinUi2 = _interopRequireDefault(_coordinateGridRasterMixinUi);
 
@@ -52057,7 +52086,7 @@ var _marginMixin = __webpack_require__(17);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _axios = __webpack_require__(272);
+var _axios = __webpack_require__(273);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -53554,7 +53583,7 @@ module.exports = function isCancel(value) {
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(8);
-var normalizeHeaderName = __webpack_require__(280);
+var normalizeHeaderName = __webpack_require__(281);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -53650,7 +53679,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(279)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(280)))
 
 /***/ }),
 /* 195 */
@@ -53660,10 +53689,10 @@ module.exports = defaults;
 
 
 var utils = __webpack_require__(8);
-var settle = __webpack_require__(281);
+var settle = __webpack_require__(282);
 var buildURL = __webpack_require__(192);
-var parseHeaders = __webpack_require__(283);
-var isURLSameOrigin = __webpack_require__(284);
+var parseHeaders = __webpack_require__(284);
+var isURLSameOrigin = __webpack_require__(285);
 var createError = __webpack_require__(196);
 
 module.exports = function xhrAdapter(config) {
@@ -53756,7 +53785,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(285);
+      var cookies = __webpack_require__(286);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -53840,7 +53869,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(282);
+var enhanceError = __webpack_require__(283);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -54288,13 +54317,13 @@ function h(sel, b, c) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(308);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(309);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(309);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(310);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(204);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(310);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(311);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(311);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(312);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(205);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(313);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(314);
 
 
 
@@ -54520,7 +54549,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = rasterLayerHeatmapMixin;
 
-var _utilsVega = __webpack_require__(23);
+var _utilsVega = __webpack_require__(19);
 
 var _utils = __webpack_require__(4);
 
@@ -54830,7 +54859,7 @@ exports.default = rasterLayerPointMixin;
 
 var _coreAsync = __webpack_require__(5);
 
-var _utilsVega = __webpack_require__(23);
+var _utilsVega = __webpack_require__(19);
 
 var _utils = __webpack_require__(4);
 
@@ -55262,25 +55291,31 @@ function rasterLayerPointMixin(_layer) {
     var size = getSizing(state.encoding.size, state.transform && state.transform.limit, lastFilteredSize, pixelRatio, layerName, markType);
 
     var data = [];
-    if (state.encoding.color.prioritizedColor && layerName !== "backendScatter") {
-      data.push({
-        name: layerName + "_z0",
-        sql: _utils.parser.writeSQL({
-          type: "root",
-          source: table,
-          transform: _layer.getTransforms(table, filter + (" AND " + state.encoding.color.field + " != '" + state.encoding.color.prioritizedColor + "'"), globalFilter, state, lastFilteredSize)
-        }),
-        enableHitTesting: state.enableHitTesting
-      });
-      data.push({
-        name: layerName + "_z1",
-        sql: _utils.parser.writeSQL({
-          type: "root",
-          source: table,
-          transform: _layer.getTransforms(table, filter + (" AND " + state.encoding.color.field + " = '" + state.encoding.color.prioritizedColor + "'"), globalFilter, state, lastFilteredSize)
-        }),
-        enableHitTesting: state.enableHitTesting
-      });
+
+    if (state.encoding.color.prioritizedColor && state.encoding.color.prioritizedColor.length > 0 && layerName !== "backendScatter") {
+      for (var i = 0; i < state.encoding.color.prioritizedColor.length; i++) {
+        if (layerName.includes("_z" + i * 2)) {
+          data.push({
+            name: layerName,
+            sql: _utils.parser.writeSQL({
+              type: "root",
+              source: table,
+              transform: _layer.getTransforms(table, filter + (" AND " + state.encoding.color.field + " != '" + state.encoding.color.prioritizedColor[i].value + "'"), globalFilter, state, lastFilteredSize)
+            }),
+            enableHitTesting: state.enableHitTesting
+          });
+        } else if (layerName.includes("_z" + (i * 2 + 1))) {
+          data.push({
+            name: layerName,
+            sql: _utils.parser.writeSQL({
+              type: "root",
+              source: table,
+              transform: _layer.getTransforms(table, filter + (" AND " + state.encoding.color.field + " = '" + state.encoding.color.prioritizedColor[i].value + "'"), globalFilter, state, lastFilteredSize)
+            }),
+            enableHitTesting: state.enableHitTesting
+          });
+        }
+      }
     } else {
       data.push({
         name: layerName,
@@ -55323,80 +55358,30 @@ function rasterLayerPointMixin(_layer) {
 
     var marks = [];
 
-    if (state.encoding.color.prioritizedColor && layerName !== "backendScatter") {
-      marks.push({
-        type: "symbol",
-        from: {
-          data: layerName + "_z0"
+    marks.push({
+      type: "symbol",
+      from: {
+        data: layerName
+      },
+      properties: Object.assign({}, {
+        xc: {
+          scale: "x",
+          field: "x"
         },
-        properties: Object.assign({}, {
-          xc: {
-            scale: "x",
-            field: "x"
-          },
-          yc: {
-            scale: "y",
-            field: "y"
-          },
-          fillColor: getColor(state.encoding.color, layerName)
-        }, _extends({
-          shape: markType
-        }, state.encoding.orientation && {
-          angle: getOrientation(state.encoding.orientation, layerName)
-        }, {
-          width: size,
-          height: size
-        }))
+        yc: {
+          scale: "y",
+          field: "y"
+        },
+        fillColor: getColor(state.encoding.color, layerName)
+      }, _extends({
+        shape: markType
+      }, state.encoding.orientation && {
+        angle: getOrientation(state.encoding.orientation, layerName)
       }, {
-        type: "symbol",
-        from: {
-          data: layerName + "_z1"
-        },
-        properties: Object.assign({}, {
-          xc: {
-            scale: "x",
-            field: "x"
-          },
-          yc: {
-            scale: "y",
-            field: "y"
-          },
-          fillColor: getColor(state.encoding.color, layerName)
-        }, _extends({
-          shape: markType
-        }, state.encoding.orientation && {
-          angle: getOrientation(state.encoding.orientation, layerName)
-        }, {
-          width: size,
-          height: size
-        }))
-      });
-    } else {
-      marks.push({
-        type: "symbol",
-        from: {
-          data: layerName
-        },
-        properties: Object.assign({}, {
-          xc: {
-            scale: "x",
-            field: "x"
-          },
-          yc: {
-            scale: "y",
-            field: "y"
-          },
-          fillColor: getColor(state.encoding.color, layerName)
-        }, _extends({
-          shape: markType
-        }, state.encoding.orientation && {
-          angle: getOrientation(state.encoding.orientation, layerName)
-        }, {
-          width: size,
-          height: size
-        }))
-      });
-    }
+        width: size,
+        height: size
+      }))
+    });
 
     return {
       data: data,
@@ -55610,6 +55595,27 @@ function rasterLayerPointMixin(_layer) {
     }
   };
 
+  _layer.setZIndexedLayers = function (chart, prioritizedColors) {
+    var layers = chart.getLayers();
+    var layerNames = chart.getLayerNames();
+    if (layers.length === 1 && layerNames[0] === "pointmap" && prioritizedColors.length) {
+      chart.popLayer();
+      chart.pushLayer("pointmap", _layer);
+    }
+  };
+
+  _layer.removeZIndexedLayers = function (chart) {
+    var layers = chart.getLayers();
+    var layerNames = chart.getLayerNames();
+    if (layers.length === 2 && layerNames[0].includes("_z") && layerNames[1].includes("_z")) {
+      chart.popAllLayers();
+      chart.pushLayer("pointmap", _layer);
+    }
+  };
+
+  _layer.getLayerNames = function (chart) {
+    return chart.getLayerNames();
+  };
   return _layer;
 }
 
@@ -55630,7 +55636,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = rasterLayerPolyMixin;
 
-var _utilsVega = __webpack_require__(23);
+var _utilsVega = __webpack_require__(19);
 
 var _d = __webpack_require__(1);
 
@@ -57632,7 +57638,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Terminal", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["k"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "serializeGrammar", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["l"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "serializeProduction", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["m"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__ = __webpack_require__(20);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "GAstVisitor", function() { return __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__ = __webpack_require__(216);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "assignOccurrenceIndices", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["a"]; });
@@ -59182,7 +59188,7 @@ Object.keys(_events).forEach(function (key) {
   });
 });
 
-var _filters = __webpack_require__(20);
+var _filters = __webpack_require__(21);
 
 Object.keys(_filters).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -59335,7 +59341,7 @@ Object.defineProperty(exports, "rasterChart", {
   }
 });
 
-var _rowChart = __webpack_require__(317);
+var _rowChart = __webpack_require__(318);
 
 Object.defineProperty(exports, "rowChart", {
   enumerable: true,
@@ -59344,7 +59350,7 @@ Object.defineProperty(exports, "rowChart", {
   }
 });
 
-var _scatterPlot = __webpack_require__(318);
+var _scatterPlot = __webpack_require__(319);
 
 Object.defineProperty(exports, "scatterPlot", {
   enumerable: true,
@@ -59353,7 +59359,7 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _mapdTable = __webpack_require__(319);
+var _mapdTable = __webpack_require__(320);
 
 Object.defineProperty(exports, "mapdTable", {
   enumerable: true,
@@ -59362,7 +59368,7 @@ Object.defineProperty(exports, "mapdTable", {
   }
 });
 
-var _boxPlot = __webpack_require__(320);
+var _boxPlot = __webpack_require__(321);
 
 Object.defineProperty(exports, "boxPlot", {
   enumerable: true,
@@ -59371,7 +59377,7 @@ Object.defineProperty(exports, "boxPlot", {
   }
 });
 
-var _countWidget = __webpack_require__(321);
+var _countWidget = __webpack_require__(322);
 
 Object.defineProperty(exports, "countWidget", {
   enumerable: true,
@@ -61633,7 +61639,7 @@ exports.hasFilterHandler = hasFilterHandler;
 exports.filterHandlerWithChartContext = filterHandlerWithChartContext;
 exports.default = filterMixin;
 
-var _lodash = __webpack_require__(22);
+var _lodash = __webpack_require__(23);
 
 var _formattingHelpers = __webpack_require__(10);
 
@@ -71377,7 +71383,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.roundTimeBin = roundTimeBin;
 exports.default = binningMixin;
 
-var _binningHelpers = __webpack_require__(21);
+var _binningHelpers = __webpack_require__(22);
 
 var _d = __webpack_require__(1);
 
@@ -71385,7 +71391,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _events = __webpack_require__(14);
 
-var _filters = __webpack_require__(20);
+var _filters = __webpack_require__(21);
 
 var _core = __webpack_require__(3);
 
@@ -78931,9 +78937,9 @@ var _scatterMixin2 = _interopRequireDefault(_scatterMixin);
 
 var _coreAsync = __webpack_require__(5);
 
-var _legendables = __webpack_require__(290);
+var _legendables = __webpack_require__(291);
 
-var _lodash = __webpack_require__(22);
+var _lodash = __webpack_require__(23);
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -79076,8 +79082,21 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       throw new Error("A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)");
     }
 
-    _layers.push(layerName);
-    _layerNames[layerName] = layer;
+    if (layer.getState().mark === "point" && layerName !== "backendScatter" && layer.getState().encoding.color.prioritizedColor && layer.getState().encoding.color.prioritizedColor.length > 0) {
+      // pointmap priorized color hack
+      for (var i = 0; i < layer.getState().encoding.color.prioritizedColor.length; i++) {
+        // Currently only one priority color is supported for Pointmap, so we create two z indexed layers, z_0 and z_1 for it
+        // Not clear how multiple priority color would be supported later, so making an assumption here to be be z_2 and z_3 for second priority color and so on
+        _layers.push(layerName + "_z" + i * 2);
+        _layerNames[layerName + "_z" + i * 2] = layer;
+        _layers.push(layerName + "_z" + (i * 2 + 1));
+        _layerNames[layerName + "_z" + (i * 2 + 1)] = layer;
+      }
+    } else {
+      _layers.push(layerName);
+      _layerNames[layerName] = layer;
+    }
+
     return _chart;
   };
 
@@ -79480,14 +79499,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         ++cnt;
       }
     });
-
     // TODO best to fail, skip cb, or call cb wo args?
     if (!cnt) {
       return;
     }
 
     _chart.con().getResultRowForPixelAsync(_chart.__dcFlag__, pixel, layerObj, Math.ceil(_popupSearchRadius * pixelRatio)).then(function (results) {
-      return callback(results[0]);
+      callback(results[0]);
     }).catch(function (error) {
       throw new Error("getResultRowForPixel failed with message: " + error.error_msg);
     });
@@ -79658,9 +79676,11 @@ exports.handleLegendLock = handleLegendLock;
 exports.handleLegendInput = handleLegendInput;
 exports.toLegendState = toLegendState;
 
-var _lodash = __webpack_require__(22);
+var _lodash = __webpack_require__(23);
 
 var _ = _interopRequireWildcard(_lodash);
+
+var _utilsVega = __webpack_require__(19);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -79754,7 +79774,7 @@ function getLegendStateFromChart(chart, useMap, selectedLayer) {
     }).remove();
   }
 
-  return toLegendState(chart.getLayerNames().map(function (layerName) {
+  return toLegendState((0, _utilsVega.getRealLayers)(chart.getLayerNames()).map(function (layerName) {
     var layer = chart.getLayer(layerName);
     var layerState = layer.getState();
     var color = layer.getState().encoding.color;
@@ -79981,6 +80001,282 @@ function isNullLegend(domain) {
 
 /***/ }),
 /* 269 */
+/***/ (function(module, exports) {
+
+/*eslint-disable no-cond-assign */
+module.exports = parse;
+module.exports.parse = parse;
+module.exports.stringify = stringify;
+
+var numberRegexp = /[-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?/;
+// Matches sequences like '100 100' or '100 100 100'.
+var tuples = new RegExp('^' + numberRegexp.source + '(\\s' + numberRegexp.source + '){1,}');
+
+/*
+ * Parse WKT and return GeoJSON.
+ *
+ * @param {string} _ A WKT geometry
+ * @return {?Object} A GeoJSON geometry object
+ */
+function parse (input) {
+  var parts = input.split(';');
+  var _ = parts.pop();
+  var srid = (parts.shift() || '').split('=').pop();
+
+  var i = 0;
+
+  function $ (re) {
+    var match = _.substring(i).match(re);
+    if (!match) return null;
+    else {
+      i += match[0].length;
+      return match[0];
+    }
+  }
+
+  function crs (obj) {
+    if (obj && srid.match(/\d+/)) {
+      obj.crs = {
+        type: 'name',
+        properties: {
+          name: 'urn:ogc:def:crs:EPSG::' + srid
+        }
+      };
+    }
+
+    return obj;
+  }
+
+  function white () { $(/^\s*/); }
+
+  function multicoords () {
+    white();
+    var depth = 0;
+    var rings = [];
+    var stack = [rings];
+    var pointer = rings;
+    var elem;
+
+    while (elem =
+           $(/^(\()/) ||
+             $(/^(\))/) ||
+               $(/^(,)/) ||
+                 $(tuples)) {
+      if (elem === '(') {
+        stack.push(pointer);
+        pointer = [];
+        stack[stack.length - 1].push(pointer);
+        depth++;
+      } else if (elem === ')') {
+        // For the case: Polygon(), ...
+        if (pointer.length === 0) return null;
+
+        pointer = stack.pop();
+        // the stack was empty, input was malformed
+        if (!pointer) return null;
+        depth--;
+        if (depth === 0) break;
+      } else if (elem === ',') {
+        pointer = [];
+        stack[stack.length - 1].push(pointer);
+      } else if (!elem.split(/\s/g).some(isNaN)) {
+        Array.prototype.push.apply(pointer, elem.split(/\s/g).map(parseFloat));
+      } else {
+        return null;
+      }
+      white();
+    }
+
+    if (depth !== 0) return null;
+
+    return rings;
+  }
+
+  function coords () {
+    var list = [];
+    var item;
+    var pt;
+    while (pt =
+           $(tuples) ||
+             $(/^(,)/)) {
+      if (pt === ',') {
+        list.push(item);
+        item = [];
+      } else if (!pt.split(/\s/g).some(isNaN)) {
+        if (!item) item = [];
+        Array.prototype.push.apply(item, pt.split(/\s/g).map(parseFloat));
+      }
+      white();
+    }
+
+    if (item) list.push(item);
+    else return null;
+
+    return list.length ? list : null;
+  }
+
+  function point () {
+    if (!$(/^(point(\sz)?)/i)) return null;
+    white();
+    if (!$(/^(\()/)) return null;
+    var c = coords();
+    if (!c) return null;
+    white();
+    if (!$(/^(\))/)) return null;
+    return {
+      type: 'Point',
+      coordinates: c[0]
+    };
+  }
+
+  function multipoint () {
+    if (!$(/^(multipoint)/i)) return null;
+    white();
+    var newCoordsFormat = _
+      .substring(_.indexOf('(') + 1, _.length - 1)
+      .replace(/\(/g, '')
+      .replace(/\)/g, '');
+    _ = 'MULTIPOINT (' + newCoordsFormat + ')';
+    var c = multicoords();
+    if (!c) return null;
+    white();
+    return {
+      type: 'MultiPoint',
+      coordinates: c
+    };
+  }
+
+  function multilinestring () {
+    if (!$(/^(multilinestring)/i)) return null;
+    white();
+    var c = multicoords();
+    if (!c) return null;
+    white();
+    return {
+      type: 'MultiLineString',
+      coordinates: c
+    };
+  }
+
+  function linestring () {
+    if (!$(/^(linestring(\sz)?)/i)) return null;
+    white();
+    if (!$(/^(\()/)) return null;
+    var c = coords();
+    if (!c) return null;
+    if (!$(/^(\))/)) return null;
+    return {
+      type: 'LineString',
+      coordinates: c
+    };
+  }
+
+  function polygon () {
+    if (!$(/^(polygon(\sz)?)/i)) return null;
+    white();
+    var c = multicoords();
+    if (!c) return null;
+    return {
+      type: 'Polygon',
+      coordinates: c
+    };
+  }
+
+  function multipolygon () {
+    if (!$(/^(multipolygon)/i)) return null;
+    white();
+    var c = multicoords();
+    if (!c) return null;
+    return {
+      type: 'MultiPolygon',
+      coordinates: c
+    };
+  }
+
+  function geometrycollection () {
+    var geometries = [];
+    var geometry;
+
+    if (!$(/^(geometrycollection)/i)) return null;
+    white();
+
+    if (!$(/^(\()/)) return null;
+    while (geometry = root()) {
+      geometries.push(geometry);
+      white();
+      $(/^(,)/);
+      white();
+    }
+    if (!$(/^(\))/)) return null;
+
+    return {
+      type: 'GeometryCollection',
+      geometries: geometries
+    };
+  }
+
+  function root () {
+    return point() ||
+      linestring() ||
+      polygon() ||
+      multipoint() ||
+      multilinestring() ||
+      multipolygon() ||
+      geometrycollection();
+  }
+
+  return crs(root());
+}
+
+/**
+ * Stringifies a GeoJSON object into WKT
+ */
+function stringify (gj) {
+  if (gj.type === 'Feature') {
+    gj = gj.geometry;
+  }
+
+  function pairWKT (c) {
+    return c.join(' ');
+  }
+
+  function ringWKT (r) {
+    return r.map(pairWKT).join(', ');
+  }
+
+  function ringsWKT (r) {
+    return r.map(ringWKT).map(wrapParens).join(', ');
+  }
+
+  function multiRingsWKT (r) {
+    return r.map(ringsWKT).map(wrapParens).join(', ');
+  }
+
+  function wrapParens (s) { return '(' + s + ')'; }
+
+  switch (gj.type) {
+    case 'Point':
+      return 'POINT (' + pairWKT(gj.coordinates) + ')';
+    case 'LineString':
+      return 'LINESTRING (' + ringWKT(gj.coordinates) + ')';
+    case 'Polygon':
+      return 'POLYGON (' + ringsWKT(gj.coordinates) + ')';
+    case 'MultiPoint':
+      return 'MULTIPOINT (' + ringWKT(gj.coordinates) + ')';
+    case 'MultiPolygon':
+      return 'MULTIPOLYGON (' + multiRingsWKT(gj.coordinates) + ')';
+    case 'MultiLineString':
+      return 'MULTILINESTRING (' + ringsWKT(gj.coordinates) + ')';
+    case 'GeometryCollection':
+      return 'GEOMETRYCOLLECTION (' + gj.geometries.map(stringify).join(', ') + ')';
+    default:
+      throw new Error('stringify requires a valid GeoJSON Feature or geometry object as input');
+  }
+}
+
+
+/***/ }),
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79996,7 +80292,7 @@ exports.default = bindEventHandlers;
 
 var _coreAsync = __webpack_require__(5);
 
-var _mapboxPortedFunctions = __webpack_require__(270);
+var _mapboxPortedFunctions = __webpack_require__(271);
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -81083,7 +81379,7 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 }
 
 /***/ }),
-/* 270 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81095,7 +81391,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.timed = undefined;
 exports.bezier = bezier;
 
-var _unitbezier = __webpack_require__(271);
+var _unitbezier = __webpack_require__(272);
 
 var _unitbezier2 = _interopRequireDefault(_unitbezier);
 
@@ -81172,7 +81468,7 @@ var timed = exports.timed = function timed(fn, dur, ctx) {
 };
 
 /***/ }),
-/* 271 */
+/* 272 */
 /***/ (function(module, exports) {
 
 /*
@@ -81283,13 +81579,13 @@ UnitBezier.prototype.solve = function(x, epsilon) {
 
 
 /***/ }),
-/* 272 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(273);
+module.exports = __webpack_require__(274);
 
 /***/ }),
-/* 273 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81297,7 +81593,7 @@ module.exports = __webpack_require__(273);
 
 var utils = __webpack_require__(8);
 var bind = __webpack_require__(191);
-var Axios = __webpack_require__(275);
+var Axios = __webpack_require__(276);
 var mergeConfig = __webpack_require__(197);
 var defaults = __webpack_require__(194);
 
@@ -81333,14 +81629,14 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(198);
-axios.CancelToken = __webpack_require__(288);
+axios.CancelToken = __webpack_require__(289);
 axios.isCancel = __webpack_require__(193);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(289);
+axios.spread = __webpack_require__(290);
 
 module.exports = axios;
 
@@ -81349,7 +81645,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 274 */
+/* 275 */
 /***/ (function(module, exports) {
 
 /*!
@@ -81366,7 +81662,7 @@ module.exports = function isBuffer (obj) {
 
 
 /***/ }),
-/* 275 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81374,8 +81670,8 @@ module.exports = function isBuffer (obj) {
 
 var utils = __webpack_require__(8);
 var buildURL = __webpack_require__(192);
-var InterceptorManager = __webpack_require__(276);
-var dispatchRequest = __webpack_require__(277);
+var InterceptorManager = __webpack_require__(277);
+var dispatchRequest = __webpack_require__(278);
 var mergeConfig = __webpack_require__(197);
 
 /**
@@ -81459,7 +81755,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 276 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81518,18 +81814,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 277 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(8);
-var transformData = __webpack_require__(278);
+var transformData = __webpack_require__(279);
 var isCancel = __webpack_require__(193);
 var defaults = __webpack_require__(194);
-var isAbsoluteURL = __webpack_require__(286);
-var combineURLs = __webpack_require__(287);
+var isAbsoluteURL = __webpack_require__(287);
+var combineURLs = __webpack_require__(288);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -81611,7 +81907,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 278 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81638,7 +81934,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 279 */
+/* 280 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -81828,7 +82124,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 280 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81847,7 +82143,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 281 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81879,7 +82175,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 282 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81928,7 +82224,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 283 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81988,7 +82284,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 284 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82063,7 +82359,7 @@ module.exports = (
 
 
 /***/ }),
-/* 285 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82123,7 +82419,7 @@ module.exports = (
 
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82144,7 +82440,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82165,7 +82461,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82229,7 +82525,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82263,18 +82559,18 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var legend_1 = __webpack_require__(291);
+var legend_1 = __webpack_require__(292);
 exports.Legend = legend_1.default;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82288,10 +82584,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var h_1 = __webpack_require__(292);
-var vdom_1 = __webpack_require__(295);
-var d3_dispatch_1 = __webpack_require__(304);
-var d3_format_1 = __webpack_require__(306);
+var h_1 = __webpack_require__(293);
+var vdom_1 = __webpack_require__(296);
+var d3_dispatch_1 = __webpack_require__(305);
+var d3_format_1 = __webpack_require__(307);
 var commafy = function (d) { return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d; };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
@@ -82483,14 +82779,14 @@ exports.default = Legend;
 //# sourceMappingURL=legend.js.map
 
 /***/ }),
-/* 292 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var vnode_1 = __webpack_require__(293);
-var is = __webpack_require__(294);
+var vnode_1 = __webpack_require__(294);
+var is = __webpack_require__(295);
 function addNS(data, children, sel) {
     data.ns = 'http://www.w3.org/2000/svg';
     if (sel !== 'foreignObject' && children !== undefined) {
@@ -82548,7 +82844,7 @@ exports.default = h;
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 293 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82564,7 +82860,7 @@ exports.default = vnode;
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 294 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82578,18 +82874,18 @@ exports.primitive = primitive;
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 295 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var snabbdom_1 = __webpack_require__(296);
-var attributes_1 = __webpack_require__(299);
-var class_1 = __webpack_require__(300);
-var props_1 = __webpack_require__(301);
-var style_1 = __webpack_require__(302);
-var eventlisteners_1 = __webpack_require__(303);
+var snabbdom_1 = __webpack_require__(297);
+var attributes_1 = __webpack_require__(300);
+var class_1 = __webpack_require__(301);
+var props_1 = __webpack_require__(302);
+var style_1 = __webpack_require__(303);
+var eventlisteners_1 = __webpack_require__(304);
 exports.patch = snabbdom_1.init([
     class_1.default,
     props_1.default,
@@ -82600,7 +82896,7 @@ exports.patch = snabbdom_1.init([
 //# sourceMappingURL=vdom.js.map
 
 /***/ }),
-/* 296 */
+/* 297 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -82608,10 +82904,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["init"] = init;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(200);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(297);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(298);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(202);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_3__h__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(298);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(299);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "thunk", function() { return __WEBPACK_IMPORTED_MODULE_4__thunk__["a"]; });
 
 
@@ -82919,7 +83215,7 @@ function init(modules, domApi) {
 //# sourceMappingURL=snabbdom.js.map
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -82990,7 +83286,7 @@ var htmlDomApi = {
 //# sourceMappingURL=htmldomapi.js.map
 
 /***/ }),
-/* 298 */
+/* 299 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83043,7 +83339,7 @@ var thunk = function thunk(sel, key, fn, args) {
 //# sourceMappingURL=thunk.js.map
 
 /***/ }),
-/* 299 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83104,7 +83400,7 @@ exports.default = exports.attributesModule;
 //# sourceMappingURL=attributes.js.map
 
 /***/ }),
-/* 300 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83135,7 +83431,7 @@ exports.default = exports.classModule;
 //# sourceMappingURL=class.js.map
 
 /***/ }),
-/* 301 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83167,7 +83463,7 @@ exports.default = exports.propsModule;
 //# sourceMappingURL=props.js.map
 
 /***/ }),
-/* 302 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83268,7 +83564,7 @@ exports.default = exports.styleModule;
 //# sourceMappingURL=style.js.map
 
 /***/ }),
-/* 303 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83369,18 +83665,18 @@ exports.default = exports.eventListenersModule;
 //# sourceMappingURL=eventlisteners.js.map
 
 /***/ }),
-/* 304 */
+/* 305 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(305);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(306);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return __WEBPACK_IMPORTED_MODULE_0__dispatch__["a"]; });
 
 
 
 /***/ }),
-/* 305 */
+/* 306 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83471,12 +83767,12 @@ function set(type, name, callback) {
 
 
 /***/ }),
-/* 306 */
+/* 307 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(307);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(308);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatDefaultLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "format", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatPrefix", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["c"]; });
@@ -83484,11 +83780,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatLocale", function() { return __WEBPACK_IMPORTED_MODULE_1__locale__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(204);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatSpecifier", function() { return __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(314);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(315);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionFixed", function() { return __WEBPACK_IMPORTED_MODULE_3__precisionFixed__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(315);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(316);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionPrefix", function() { return __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(316);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(317);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionRound", function() { return __WEBPACK_IMPORTED_MODULE_5__precisionRound__["a"]; });
 
 
@@ -83499,7 +83795,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 307 */
+/* 308 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83529,7 +83825,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 308 */
+/* 309 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83554,7 +83850,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 309 */
+/* 310 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83568,7 +83864,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 310 */
+/* 311 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83586,12 +83882,12 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 311 */
+/* 312 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(205);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(312);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(313);
 
 
 
@@ -83613,7 +83909,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83632,7 +83928,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83642,7 +83938,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83655,7 +83951,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 315 */
+/* 316 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83668,7 +83964,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 316 */
+/* 317 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83682,7 +83978,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 317 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84351,7 +84647,7 @@ function rowChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 318 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84372,7 +84668,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _events = __webpack_require__(14);
 
-var _filters = __webpack_require__(20);
+var _filters = __webpack_require__(21);
 
 var _core = __webpack_require__(3);
 
@@ -84653,7 +84949,7 @@ function scatterPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 319 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85178,7 +85474,7 @@ function mapdTable(parent, chartGroup) {
 }
 
 /***/ }),
-/* 320 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85436,7 +85732,7 @@ function boxPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85563,282 +85859,6 @@ function countWidget(parent, chartGroup) {
 
   return _chart.anchor(parent, chartGroup);
 }
-
-/***/ }),
-/* 322 */
-/***/ (function(module, exports) {
-
-/*eslint-disable no-cond-assign */
-module.exports = parse;
-module.exports.parse = parse;
-module.exports.stringify = stringify;
-
-var numberRegexp = /[-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?/;
-// Matches sequences like '100 100' or '100 100 100'.
-var tuples = new RegExp('^' + numberRegexp.source + '(\\s' + numberRegexp.source + '){1,}');
-
-/*
- * Parse WKT and return GeoJSON.
- *
- * @param {string} _ A WKT geometry
- * @return {?Object} A GeoJSON geometry object
- */
-function parse (input) {
-  var parts = input.split(';');
-  var _ = parts.pop();
-  var srid = (parts.shift() || '').split('=').pop();
-
-  var i = 0;
-
-  function $ (re) {
-    var match = _.substring(i).match(re);
-    if (!match) return null;
-    else {
-      i += match[0].length;
-      return match[0];
-    }
-  }
-
-  function crs (obj) {
-    if (obj && srid.match(/\d+/)) {
-      obj.crs = {
-        type: 'name',
-        properties: {
-          name: 'urn:ogc:def:crs:EPSG::' + srid
-        }
-      };
-    }
-
-    return obj;
-  }
-
-  function white () { $(/^\s*/); }
-
-  function multicoords () {
-    white();
-    var depth = 0;
-    var rings = [];
-    var stack = [rings];
-    var pointer = rings;
-    var elem;
-
-    while (elem =
-           $(/^(\()/) ||
-             $(/^(\))/) ||
-               $(/^(,)/) ||
-                 $(tuples)) {
-      if (elem === '(') {
-        stack.push(pointer);
-        pointer = [];
-        stack[stack.length - 1].push(pointer);
-        depth++;
-      } else if (elem === ')') {
-        // For the case: Polygon(), ...
-        if (pointer.length === 0) return null;
-
-        pointer = stack.pop();
-        // the stack was empty, input was malformed
-        if (!pointer) return null;
-        depth--;
-        if (depth === 0) break;
-      } else if (elem === ',') {
-        pointer = [];
-        stack[stack.length - 1].push(pointer);
-      } else if (!elem.split(/\s/g).some(isNaN)) {
-        Array.prototype.push.apply(pointer, elem.split(/\s/g).map(parseFloat));
-      } else {
-        return null;
-      }
-      white();
-    }
-
-    if (depth !== 0) return null;
-
-    return rings;
-  }
-
-  function coords () {
-    var list = [];
-    var item;
-    var pt;
-    while (pt =
-           $(tuples) ||
-             $(/^(,)/)) {
-      if (pt === ',') {
-        list.push(item);
-        item = [];
-      } else if (!pt.split(/\s/g).some(isNaN)) {
-        if (!item) item = [];
-        Array.prototype.push.apply(item, pt.split(/\s/g).map(parseFloat));
-      }
-      white();
-    }
-
-    if (item) list.push(item);
-    else return null;
-
-    return list.length ? list : null;
-  }
-
-  function point () {
-    if (!$(/^(point(\sz)?)/i)) return null;
-    white();
-    if (!$(/^(\()/)) return null;
-    var c = coords();
-    if (!c) return null;
-    white();
-    if (!$(/^(\))/)) return null;
-    return {
-      type: 'Point',
-      coordinates: c[0]
-    };
-  }
-
-  function multipoint () {
-    if (!$(/^(multipoint)/i)) return null;
-    white();
-    var newCoordsFormat = _
-      .substring(_.indexOf('(') + 1, _.length - 1)
-      .replace(/\(/g, '')
-      .replace(/\)/g, '');
-    _ = 'MULTIPOINT (' + newCoordsFormat + ')';
-    var c = multicoords();
-    if (!c) return null;
-    white();
-    return {
-      type: 'MultiPoint',
-      coordinates: c
-    };
-  }
-
-  function multilinestring () {
-    if (!$(/^(multilinestring)/i)) return null;
-    white();
-    var c = multicoords();
-    if (!c) return null;
-    white();
-    return {
-      type: 'MultiLineString',
-      coordinates: c
-    };
-  }
-
-  function linestring () {
-    if (!$(/^(linestring(\sz)?)/i)) return null;
-    white();
-    if (!$(/^(\()/)) return null;
-    var c = coords();
-    if (!c) return null;
-    if (!$(/^(\))/)) return null;
-    return {
-      type: 'LineString',
-      coordinates: c
-    };
-  }
-
-  function polygon () {
-    if (!$(/^(polygon(\sz)?)/i)) return null;
-    white();
-    var c = multicoords();
-    if (!c) return null;
-    return {
-      type: 'Polygon',
-      coordinates: c
-    };
-  }
-
-  function multipolygon () {
-    if (!$(/^(multipolygon)/i)) return null;
-    white();
-    var c = multicoords();
-    if (!c) return null;
-    return {
-      type: 'MultiPolygon',
-      coordinates: c
-    };
-  }
-
-  function geometrycollection () {
-    var geometries = [];
-    var geometry;
-
-    if (!$(/^(geometrycollection)/i)) return null;
-    white();
-
-    if (!$(/^(\()/)) return null;
-    while (geometry = root()) {
-      geometries.push(geometry);
-      white();
-      $(/^(,)/);
-      white();
-    }
-    if (!$(/^(\))/)) return null;
-
-    return {
-      type: 'GeometryCollection',
-      geometries: geometries
-    };
-  }
-
-  function root () {
-    return point() ||
-      linestring() ||
-      polygon() ||
-      multipoint() ||
-      multilinestring() ||
-      multipolygon() ||
-      geometrycollection();
-  }
-
-  return crs(root());
-}
-
-/**
- * Stringifies a GeoJSON object into WKT
- */
-function stringify (gj) {
-  if (gj.type === 'Feature') {
-    gj = gj.geometry;
-  }
-
-  function pairWKT (c) {
-    return c.join(' ');
-  }
-
-  function ringWKT (r) {
-    return r.map(pairWKT).join(', ');
-  }
-
-  function ringsWKT (r) {
-    return r.map(ringWKT).map(wrapParens).join(', ');
-  }
-
-  function multiRingsWKT (r) {
-    return r.map(ringsWKT).map(wrapParens).join(', ');
-  }
-
-  function wrapParens (s) { return '(' + s + ')'; }
-
-  switch (gj.type) {
-    case 'Point':
-      return 'POINT (' + pairWKT(gj.coordinates) + ')';
-    case 'LineString':
-      return 'LINESTRING (' + ringWKT(gj.coordinates) + ')';
-    case 'Polygon':
-      return 'POLYGON (' + ringsWKT(gj.coordinates) + ')';
-    case 'MultiPoint':
-      return 'MULTIPOINT (' + ringWKT(gj.coordinates) + ')';
-    case 'MultiPolygon':
-      return 'MULTIPOLYGON (' + multiRingsWKT(gj.coordinates) + ')';
-    case 'MultiLineString':
-      return 'MULTILINESTRING (' + ringsWKT(gj.coordinates) + ')';
-    case 'GeometryCollection':
-      return 'GEOMETRYCOLLECTION (' + gj.geometries.map(stringify).join(', ') + ')';
-    default:
-      throw new Error('stringify requires a valid GeoJSON Feature or geometry object as input');
-  }
-}
-
 
 /***/ }),
 /* 323 */
@@ -86201,7 +86221,7 @@ function canMatchCharCode(charCodes, pattern) {
 /* unused harmony export GastRefResolverVisitor */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_parser__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast_visitor_public__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast_visitor_public__ = __webpack_require__(20);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -88658,7 +88678,7 @@ var _rasterLayerLineMixin = __webpack_require__(340);
 
 var _rasterLayerLineMixin2 = _interopRequireDefault(_rasterLayerLineMixin);
 
-var _utilsVega = __webpack_require__(23);
+var _utilsVega = __webpack_require__(19);
 
 var _mapdDraw = __webpack_require__(18);
 
@@ -89254,7 +89274,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = rasterLayerLineMixin;
 
-var _utilsVega = __webpack_require__(23);
+var _utilsVega = __webpack_require__(19);
 
 var _coreAsync = __webpack_require__(5);
 
