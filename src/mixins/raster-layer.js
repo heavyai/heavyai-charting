@@ -375,6 +375,27 @@ export default function rasterLayer(layerType) {
     return _layer._areResultsValidForPopup(results[0])
   }
 
+  function replaceURL(colVal) {
+    if (typeof colVal === "string") {
+      const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g
+      return colVal.replace(urlRegExpr, url => {
+        let hyperlink = url
+        if (!hyperlink.match("^https?://")) {
+          hyperlink = "http://" + hyperlink
+        }
+        return (
+          '<a href="' +
+          hyperlink +
+          '" target="_blank" rel="noopener noreferrer">' +
+          url +
+          "</a>"
+        )
+      })
+    } else {
+      return colVal
+    }
+  }
+
   function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
     let html =
       '<div class="' +
@@ -406,7 +427,7 @@ export default function rasterLayer(layerType) {
           ':</span><span class="' +
           _popup_item_val_class +
           '"> ' +
-          formatMeasureValue(data[key], columnKeyTrimmed) +
+          replaceURL(formatMeasureValue(data[key], columnKeyTrimmed)) +
           "</span></div>")
     })
     html += "</div>"

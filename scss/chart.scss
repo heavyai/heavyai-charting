@@ -961,6 +961,14 @@ body {
             line-height: 1.2;
 
             margin-bottom: 4px;
+
+          .popup-item-val a {
+            text-decoration: none;
+          }
+          .popup-item-val a:hover {
+            border-bottom: 1px solid;
+            color: $blue-main;
+          }
         }
         .popup-item-copy {
           display: inline-block;

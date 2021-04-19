@@ -89007,6 +89007,21 @@ function rasterLayer(layerType) {
     return _layer._areResultsValidForPopup(results[0]);
   };
 
+  function replaceURL(colVal) {
+    if (typeof colVal === "string") {
+      var urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g;
+      return colVal.replace(urlRegExpr, function (url) {
+        var hyperlink = url;
+        if (!hyperlink.match("^https?://")) {
+          hyperlink = "http://" + hyperlink;
+        }
+        return '<a href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + url + "</a>";
+      });
+    } else {
+      return colVal;
+    }
+  }
+
   function renderPopupHTML(data, columnOrder, columnMap, formatMeasureValue) {
     var html = '<div class="' + _popup_item_copy_class + '">' + '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">' + '<path d="M10.6668 0.666748H2.66683C1.9335 0.666748 1.3335 1.26675 1.3335 2.00008V11.3334H2.66683V2.00008H10.6668V0.666748ZM10.0002 3.33341L14.0002 7.33341V14.0001C14.0002 14.7334 13.4002 15.3334 12.6668 15.3334H5.32683C4.5935 15.3334 4.00016 14.7334 4.00016 14.0001L4.00683 4.66675C4.00683 3.93341 4.60016 3.33341 5.3335 3.33341H10.0002ZM9.3335 8.00008H13.0002L9.3335 4.33341V8.00008Z"/>' + "</svg>" + "</div>";
 
@@ -89020,7 +89035,7 @@ function rasterLayer(layerType) {
       var columnKey = columnMap && columnMap[key] ? columnMap[key] : key;
       var columnKeyTrimmed = columnKey.replace(/.*\((.*)\).*/, "$1");
 
-      html = html + ('<div class="' + _popup_box_item_class + '"><span class="' + _popup_item_key_class + '">' + columnKey + ':</span><span class="' + _popup_item_val_class + '"> ' + formatMeasureValue(data[key], columnKeyTrimmed) + "</span></div>");
+      html = html + ('<div class="' + _popup_box_item_class + '"><span class="' + _popup_item_key_class + '">' + columnKey + ':</span><span class="' + _popup_item_val_class + '"> ' + replaceURL(formatMeasureValue(data[key], columnKeyTrimmed)) + "</span></div>");
     });
     html += "</div>";
     return html;
