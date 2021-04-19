@@ -12662,14 +12662,11 @@ function getRealLayers(layers) {
 
   layers.forEach(function (layerName) {
     if (layerName.includes("_z")) {
-      for (var i = 0; i < layerName.length; i++) {
-        if (layerName[i] === "_" && layerName[i + 1] === "z") {
-          var realLayerName = layerName.substring(0, i); // real layer name is substring up to _z...
-          if (!visited[realLayerName]) {
-            visited[realLayerName] = layerName; // can use only the first z-index layerName
-            filteredLayers.push(layerName);
-          }
-        }
+      var idx = layerName.indexOf("_z");
+      var realLayerName = layerName.substring(0, idx); // real layer name is substring up to _z...
+      if (!visited[realLayerName]) {
+        visited[realLayerName] = layerName; // can use only the first z-index layerName
+        filteredLayers.push(layerName);
       }
     } else {
       filteredLayers.push(layerName);
