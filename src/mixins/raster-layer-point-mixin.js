@@ -1,12 +1,11 @@
 import { lastFilteredSize, setLastFilteredSize } from "../core/core-async"
 import {
   adjustOpacity,
-  adjustRGBAOpacity,
   createRasterLayerGetterSetter,
   createVegaAttrMixin,
+  getColorScaleName,
   getScales,
-  getSizeScaleName,
-  getColorScaleName
+  getSizeScaleName
 } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
@@ -471,8 +470,52 @@ export default function rasterLayerPointMixin(_layer) {
       markType
     )
 
-    const data = [
-      {
+    const data = []
+
+    if (
+      state.encoding.color.prioritizedColor &&
+      state.encoding.color.prioritizedColor.length > 0 &&
+      layerName !== "backendScatter"
+    ) {
+      for (let i = 0; i < state.encoding.color.prioritizedColor.length; i++) {
+        if (layerName.includes(`_z${i * 2}`)) {
+          data.push({
+            name: layerName,
+            sql: parser.writeSQL({
+              type: "root",
+              source: table,
+              transform: _layer.getTransforms(
+                table,
+                filter +
+                  ` AND ${state.encoding.color.field} != '${state.encoding.color.prioritizedColor[i].value}'`,
+                globalFilter,
+                state,
+                lastFilteredSize
+              )
+            }),
+            enableHitTesting: state.enableHitTesting
+          })
+        } else if (layerName.includes(`_z${i * 2 + 1}`)) {
+          data.push({
+            name: layerName,
+            sql: parser.writeSQL({
+              type: "root",
+              source: table,
+              transform: _layer.getTransforms(
+                table,
+                filter +
+                  ` AND ${state.encoding.color.field} = '${state.encoding.color.prioritizedColor[i].value}'`,
+                globalFilter,
+                state,
+                lastFilteredSize
+              )
+            }),
+            enableHitTesting: state.enableHitTesting
+          })
+        }
+      }
+    } else {
+      data.push({
         name: layerName,
         sql: parser.writeSQL({
           type: "root",
@@ -486,8 +529,8 @@ export default function rasterLayerPointMixin(_layer) {
           )
         }),
         enableHitTesting: state.enableHitTesting
-      }
-    ]
+      })
+    }
 
     const scaledomainfields = {}
     if (autocolors || autosize) {
@@ -802,5 +845,34 @@ export default function rasterLayerPointMixin(_layer) {
     }
   }
 
+  _layer.setZIndexedLayers = function(chart, prioritizedColors) {
+    const layers = chart.getLayers()
+    const layerNames = chart.getLayerNames()
+    if (
+      layers.length === 1 &&
+      layerNames[0] === "pointmap" &&
+      prioritizedColors.length
+    ) {
+      chart.popLayer()
+      chart.pushLayer("pointmap", _layer)
+    }
+  }
+
+  _layer.removeZIndexedLayers = function(chart) {
+    const layers = chart.getLayers()
+    const layerNames = chart.getLayerNames()
+    if (
+      layers.length === 2 &&
+      layerNames[0].includes("_z") &&
+      layerNames[1].includes("_z")
+    ) {
+      chart.popAllLayers()
+      chart.pushLayer("pointmap", _layer)
+    }
+  }
+
+  _layer.getLayerNames = function(chart) {
+    return chart.getLayerNames()
+  }
   return _layer
 }

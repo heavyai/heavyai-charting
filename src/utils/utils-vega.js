@@ -774,3 +774,28 @@ export function getScales(
 
   return scales
 }
+
+/**
+ * Filters z-indexed layers and returns non duplicate layer. Z-indexed layers is for temporary hack FE-13136
+ * For z-indexed layer (layer that has top color category applied), only returns the first z-index, z_0
+ * @param layers
+ * @returns {[]}
+ */
+export function getRealLayers(layers) {
+  const filteredLayers = []
+  const visited = {}
+
+  layers.forEach(layerName => {
+    if (layerName.includes("_z")) {
+      const idx = layerName.indexOf("_z")
+      const realLayerName = layerName.substring(0, idx) // real layer name is substring up to _z...
+      if (!visited[realLayerName]) {
+        visited[realLayerName] = layerName // can use only the first z-index layerName
+        filteredLayers.push(layerName)
+      }
+    } else {
+      filteredLayers.push(layerName)
+    }
+  })
+  return filteredLayers
+}

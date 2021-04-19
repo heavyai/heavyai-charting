@@ -160,8 +160,30 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
       )
     }
 
-    _layers.push(layerName)
-    _layerNames[layerName] = layer
+    if (
+      // pointmap priorized color hack
+      layer.getState().mark === "point" &&
+      layerName !== "backendScatter" &&
+      layer.getState().encoding.color.prioritizedColor &&
+      layer.getState().encoding.color.prioritizedColor.length > 0
+    ) {
+      for (
+        let i = 0;
+        i < layer.getState().encoding.color.prioritizedColor.length;
+        i++
+      ) {
+        // Currently only one priority color is supported for Pointmap, so we create two z indexed layers, z_0 and z_1 for it
+        // Not clear how multiple priority color would be supported later, so making an assumption here to be be z_2 and z_3 for second priority color and so on
+        _layers.push(`${layerName}_z${i * 2}`)
+        _layerNames[`${layerName}_z${i * 2}`] = layer
+        _layers.push(`${layerName}_z${i * 2 + 1}`)
+        _layerNames[`${layerName}_z${i * 2 + 1}`] = layer
+      }
+    } else {
+      _layers.push(layerName)
+      _layerNames[layerName] = layer
+    }
+
     return _chart
   }
 
