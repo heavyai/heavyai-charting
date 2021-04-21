@@ -172,6 +172,21 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
         i < layer.getState().encoding.color.prioritizedColor.length;
         i++
       ) {
+        // Prevent adding the same layer multiple times
+        if (
+          _layerNames[`${layerName}_z${i * 2}`] ||
+          _layerNames[`${layerName}_z${i * 2 + 1}`]
+        ) {
+          return
+        } else if (
+          !`${layerName}_z${i * 2}`.match(/^\w+$/) ||
+          !`${layerName}_z${i * 2 + 1}`.match(/^\w+$/)
+        ) {
+          throw new Error(
+            "A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)"
+          )
+        }
+
         // Currently only one priority color is supported for Pointmap, so we create two z indexed layers, z_0 and z_1 for it
         // Not clear how multiple priority color would be supported later, so making an assumption here to be be z_2 and z_3 for second priority color and so on
         _layers.push(`${layerName}_z${i * 2}`)

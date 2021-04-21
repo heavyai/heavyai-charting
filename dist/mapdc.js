@@ -55292,7 +55292,7 @@ function rasterLayerPointMixin(_layer) {
     if (state.encoding.color.prioritizedColor && state.encoding.color.prioritizedColor.length > 0 && layerName !== "backendScatter") {
       for (var i = 0; i < state.encoding.color.prioritizedColor.length; i++) {
         if (layerName.includes("_z" + i * 2)) {
-          data.push({
+          data = [{
             name: layerName,
             sql: _utils.parser.writeSQL({
               type: "root",
@@ -55300,9 +55300,9 @@ function rasterLayerPointMixin(_layer) {
               transform: _layer.getTransforms(table, filter + (" AND " + state.encoding.color.field + " != '" + state.encoding.color.prioritizedColor[i].value + "'"), globalFilter, state, lastFilteredSize)
             }),
             enableHitTesting: state.enableHitTesting
-          });
+          }];
         } else if (layerName.includes("_z" + (i * 2 + 1))) {
-          data.push({
+          data = [{
             name: layerName,
             sql: _utils.parser.writeSQL({
               type: "root",
@@ -55310,11 +55310,11 @@ function rasterLayerPointMixin(_layer) {
               transform: _layer.getTransforms(table, filter + (" AND " + state.encoding.color.field + " = '" + state.encoding.color.prioritizedColor[i].value + "'"), globalFilter, state, lastFilteredSize)
             }),
             enableHitTesting: state.enableHitTesting
-          });
+          }];
         }
       }
     } else {
-      data.push({
+      data = [{
         name: layerName,
         sql: _utils.parser.writeSQL({
           type: "root",
@@ -55322,7 +55322,7 @@ function rasterLayerPointMixin(_layer) {
           transform: _layer.getTransforms(table, filter, globalFilter, state, lastFilteredSize)
         }),
         enableHitTesting: state.enableHitTesting
-      });
+      }];
     }
 
     var scaledomainfields = {};
@@ -79081,6 +79081,13 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     // pointmap priorized color hack
     layer.getState().mark === "point" && layerName !== "backendScatter" && layer.getState().encoding.color.prioritizedColor && layer.getState().encoding.color.prioritizedColor.length > 0) {
       for (var i = 0; i < layer.getState().encoding.color.prioritizedColor.length; i++) {
+        // Prevent adding the same layer multiple times
+        if (_layerNames[layerName + "_z" + i * 2] || _layerNames[layerName + "_z" + (i * 2 + 1)]) {
+          return;
+        } else if (!(layerName + "_z" + i * 2).match(/^\w+$/) || !(layerName + "_z" + (i * 2 + 1)).match(/^\w+$/)) {
+          throw new Error("A layer name can only have alpha numeric characters (A-Z, a-z, 0-9, or _)");
+        }
+
         // Currently only one priority color is supported for Pointmap, so we create two z indexed layers, z_0 and z_1 for it
         // Not clear how multiple priority color would be supported later, so making an assumption here to be be z_2 and z_3 for second priority color and so on
         _layers.push(layerName + "_z" + i * 2);
