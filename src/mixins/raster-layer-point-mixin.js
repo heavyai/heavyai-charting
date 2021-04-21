@@ -470,7 +470,7 @@ export default function rasterLayerPointMixin(_layer) {
       markType
     )
 
-    const data = []
+    let data = []
 
     if (
       state.encoding.color.prioritizedColor &&
@@ -479,57 +479,63 @@ export default function rasterLayerPointMixin(_layer) {
     ) {
       for (let i = 0; i < state.encoding.color.prioritizedColor.length; i++) {
         if (layerName.includes(`_z${i * 2}`)) {
-          data.push({
-            name: layerName,
-            sql: parser.writeSQL({
-              type: "root",
-              source: table,
-              transform: _layer.getTransforms(
-                table,
-                filter +
-                  ` AND ${state.encoding.color.field} != '${state.encoding.color.prioritizedColor[i].value}'`,
-                globalFilter,
-                state,
-                lastFilteredSize
-              )
-            }),
-            enableHitTesting: state.enableHitTesting
-          })
+          data = [
+            {
+              name: layerName,
+              sql: parser.writeSQL({
+                type: "root",
+                source: table,
+                transform: _layer.getTransforms(
+                  table,
+                  filter +
+                    ` AND ${state.encoding.color.field} != '${state.encoding.color.prioritizedColor[i].value}'`,
+                  globalFilter,
+                  state,
+                  lastFilteredSize
+                )
+              }),
+              enableHitTesting: state.enableHitTesting
+            }
+          ]
         } else if (layerName.includes(`_z${i * 2 + 1}`)) {
-          data.push({
-            name: layerName,
-            sql: parser.writeSQL({
-              type: "root",
-              source: table,
-              transform: _layer.getTransforms(
-                table,
-                filter +
-                  ` AND ${state.encoding.color.field} = '${state.encoding.color.prioritizedColor[i].value}'`,
-                globalFilter,
-                state,
-                lastFilteredSize
-              )
-            }),
-            enableHitTesting: state.enableHitTesting
-          })
+          data = [
+            {
+              name: layerName,
+              sql: parser.writeSQL({
+                type: "root",
+                source: table,
+                transform: _layer.getTransforms(
+                  table,
+                  filter +
+                    ` AND ${state.encoding.color.field} = '${state.encoding.color.prioritizedColor[i].value}'`,
+                  globalFilter,
+                  state,
+                  lastFilteredSize
+                )
+              }),
+              enableHitTesting: state.enableHitTesting
+            }
+          ]
         }
       }
     } else {
-      data.push({
-        name: layerName,
-        sql: parser.writeSQL({
-          type: "root",
-          source: table,
-          transform: _layer.getTransforms(
-            table,
-            filter,
-            globalFilter,
-            state,
-            lastFilteredSize
-          )
-        }),
-        enableHitTesting: state.enableHitTesting
-      })
+      data = [
+        {
+          name: layerName,
+          sql: parser.writeSQL({
+            type: "root",
+            source: table,
+            transform: _layer.getTransforms(
+              table,
+              filter,
+              globalFilter,
+              state,
+              lastFilteredSize
+            )
+          }),
+          enableHitTesting: state.enableHitTesting
+        }
+      ]
     }
 
     const scaledomainfields = {}
