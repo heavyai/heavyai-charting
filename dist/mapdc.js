@@ -55451,7 +55451,7 @@ function rasterLayerPointMixin(_layer) {
   _layer._genVega = function (chart, layerName, group, query) {
     // Pointmap prioritized color hack. Need to use the real layer name for crossfilter
     var realLayerName = layerName;
-    if (layerName !== "backendScatter" && layerName.includes("_z")) {
+    if (layerName && layerName !== "backendScatter" && layerName.includes("_z")) {
       var idx = layerName.indexOf("_z");
       realLayerName = layerName.substring(0, idx);
     }
