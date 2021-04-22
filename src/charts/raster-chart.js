@@ -161,7 +161,7 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     if (
-      // pointmap priorized color hack
+      // pointmap prioritized color hack
       layer.getState().mark === "point" &&
       layerName !== "backendScatter" &&
       layer.getState().encoding.color.prioritizedColor &&

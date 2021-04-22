@@ -55449,9 +55449,16 @@ function rasterLayerPointMixin(_layer) {
   };
 
   _layer._genVega = function (chart, layerName, group, query) {
+    // Pointmap prioritized color hack. Need to use the real layer name for crossfilter
+    var realLayerName = layerName;
+    if (layerName && layerName !== "backendScatter" && layerName.includes("_z")) {
+      var idx = layerName.indexOf("_z");
+      realLayerName = layerName.substring(0, idx);
+    }
+
     // needed to set LastFilteredSize when point map first initialized
     if (_layer.yDim()) {
-      _layer.yDim().groupAll().valueAsync(false, false, false, layerName).then(function (value) {
+      _layer.yDim().groupAll().valueAsync(false, false, false, realLayerName).then(function (value) {
         (0, _coreAsync.setLastFilteredSize)(_layer.crossfilter().getId(), value);
       });
     }
@@ -55459,7 +55466,7 @@ function rasterLayerPointMixin(_layer) {
     _vega = _layer.__genVega({
       layerName: layerName,
       table: _layer.crossfilter().getTable()[0],
-      filter: _layer.crossfilter().getFilterString(layerName),
+      filter: _layer.crossfilter().getFilterString(realLayerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: (0, _coreAsync.lastFilteredSize)(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio()
@@ -79078,7 +79085,7 @@ function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
     }
 
     if (
-    // pointmap priorized color hack
+    // pointmap prioritized color hack
     layer.getState().mark === "point" && layerName !== "backendScatter" && layer.getState().encoding.color.prioritizedColor && layer.getState().encoding.color.prioritizedColor.length > 0) {
       for (var i = 0; i < layer.getState().encoding.color.prioritizedColor.length; i++) {
         // Prevent adding the same layer multiple times

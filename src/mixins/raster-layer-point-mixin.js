@@ -673,12 +673,23 @@ export default function rasterLayerPointMixin(_layer) {
   }
 
   _layer._genVega = function(chart, layerName, group, query) {
+    // Pointmap prioritized color hack. Need to use the real layer name for crossfilter
+    let realLayerName = layerName
+    if (
+      layerName &&
+      layerName !== "backendScatter" &&
+      layerName.includes("_z")
+    ) {
+      const idx = layerName.indexOf("_z")
+      realLayerName = layerName.substring(0, idx)
+    }
+
     // needed to set LastFilteredSize when point map first initialized
     if (_layer.yDim()) {
       _layer
         .yDim()
         .groupAll()
-        .valueAsync(false, false, false, layerName)
+        .valueAsync(false, false, false, realLayerName)
         .then(value => {
           setLastFilteredSize(_layer.crossfilter().getId(), value)
         })
@@ -687,7 +698,7 @@ export default function rasterLayerPointMixin(_layer) {
     _vega = _layer.__genVega({
       layerName,
       table: _layer.crossfilter().getTable()[0],
-      filter: _layer.crossfilter().getFilterString(layerName),
+      filter: _layer.crossfilter().getFilterString(realLayerName),
       globalFilter: _layer.crossfilter().getGlobalFilterString(),
       lastFilteredSize: lastFilteredSize(_layer.crossfilter().getId()),
       pixelRatio: chart._getPixelRatio()
