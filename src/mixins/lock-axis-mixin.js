@@ -118,7 +118,6 @@ export default function lockAxisMixin(chart) {
   function toggleLock(type) {
     if (type === "y") {
       chart.elasticY(!chart.elasticY())
-      chart._invokeelasticYListener()
       const yDomain = chart
         .y()
         .domain()
@@ -126,9 +125,9 @@ export default function lockAxisMixin(chart) {
       chart._invokeYDomainListener(
         chart.elasticY() ? chart.originalYMinMax || yDomain : yDomain
       )
+      chart._invokeelasticYListener()
     } else {
       chart.elasticX(!chart.elasticX())
-      chart._invokeelasticXListener()
       const xDomain = chart
         .x()
         .domain()
@@ -136,9 +135,9 @@ export default function lockAxisMixin(chart) {
       chart._invokeXDomainListener(
         chart.elasticX() ? chart.originalXMinMax || xDomain : xDomain
       )
+      chart._invokeelasticXListener()
       if (chart.focusChart && chart.focusChart()) {
         chart.focusChart().elasticX(!chart.focusChart().elasticX())
-        chart.focusChart()._invokeelasticXListener()
         if (chart.elasticX()) {
           chart.focusChart()._invokeXDomainListener(null)
         } else {
@@ -149,6 +148,7 @@ export default function lockAxisMixin(chart) {
               .slice()
           )
         }
+        chart.focusChart()._invokeelasticXListener()
         chart.focusChart().redrawAsync()
       }
     }

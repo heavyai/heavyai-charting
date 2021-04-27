@@ -34168,22 +34168,22 @@ function lockAxisMixin(chart) {
   function toggleLock(type) {
     if (type === "y") {
       chart.elasticY(!chart.elasticY());
-      chart._invokeelasticYListener();
       var yDomain = chart.y().domain().slice(0);
       chart._invokeYDomainListener(chart.elasticY() ? chart.originalYMinMax || yDomain : yDomain);
+      chart._invokeelasticYListener();
     } else {
       chart.elasticX(!chart.elasticX());
-      chart._invokeelasticXListener();
       var xDomain = chart.x().domain().slice();
       chart._invokeXDomainListener(chart.elasticX() ? chart.originalXMinMax || xDomain : xDomain);
+      chart._invokeelasticXListener();
       if (chart.focusChart && chart.focusChart()) {
         chart.focusChart().elasticX(!chart.focusChart().elasticX());
-        chart.focusChart()._invokeelasticXListener();
         if (chart.elasticX()) {
           chart.focusChart()._invokeXDomainListener(null);
         } else {
           chart.focusChart()._invokeXDomainListener(chart.x().domain().slice());
         }
+        chart.focusChart()._invokeelasticXListener();
         chart.focusChart().redrawAsync();
       }
     }
