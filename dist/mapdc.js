@@ -84453,22 +84453,34 @@ function mapdTable(parent, chartGroup) {
         _tableWrapper.selectAll(".table-sort").classed("active asc desc", false);
 
         if (_sortColumn && _sortColumn.index === i) {
-          _sortColumn = _sortColumn.order === "desc" ? { index: i, col: d, order: "asc" } : null;
+          _sortColumn = _sortColumn.order === "desc" ? {
+            index: i,
+            col: d,
+            order: "asc"
+          } : null;
         } else {
-          _sortColumn = { index: i, col: d, order: "desc" };
+          _sortColumn = {
+            index: i,
+            col: d,
+            order: "desc"
+          };
         }
 
         _chart._invokeSortListener(_sortColumn);
         (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
       });
 
-      sortButton.append("svg").attr("class", "svg-icon").classed("icon-sort", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-sort");
+      var sortIcon = sortButton.append("svg").attr("class", "svg-icon").classed("icon-sort", true).attr("viewBox", "0 0 48 48");
 
-      sortButton.append("svg").attr("class", "svg-icon").classed("icon-sort-arrow", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-arrow1");
+      // Adds ^ and v arrows seperately to avoid nesting
+      sortIcon.append("polygon").attr("points", "24,40 36,28 12,28");
+      sortIcon.append("polygon").attr("points", "24,8 12,20 36,20");
+
+      sortButton.append("svg").attr("class", "svg-icon").classed("icon-sort-arrow", true).attr("viewBox", "0 0 48 48").append("polygon").attr("points", "24,40 36,28 12,28").attr("points", "24,8 12,20 36,20");
 
       headerItem.append("div").attr("class", "unfilter-btn").attr("data-expr", d.expression).on("click", function () {
         clearColFilter(_d2.default.select(this).attr("data-expr"));
-      }).style("left", textSpan.node().getBoundingClientRect().width + GROUP_DATA_WIDTH + "px").append("svg").attr("class", "svg-icon").classed("icon-unfilter", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-unfilter");
+      }).style("left", textSpan.node().getBoundingClientRect().width + GROUP_DATA_WIDTH + "px").append("svg").attr("class", "svg-icon").classed("icon-unfilter", true).attr("viewBox", "0 0 48 48").append("polygon").attr("points", "4,8 20,24 20,40 28,44 28,24 44,8").attr("points", "45.1,29.1 42.9,26.9 38,31.9 33.1,26.9 30.9,29.1 35.9,34 30.9,38.9 33.1,41.1 38,36.1 42.9,41.1 45.1,38.940.1,34");
     });
   }
 
