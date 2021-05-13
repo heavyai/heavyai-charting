@@ -1001,7 +1001,7 @@ export default function mapMixin(
     if (!_mapInitted) {
       return _chart
     }
-    if (data.bounds) {
+    if (data.bounds && data.zoom === undefined) {
       if (validateBounds(data)) {
         _map.fitBounds([data.bounds.sw, data.bounds.ne], {
           linear: true,
@@ -1009,9 +1009,9 @@ export default function mapMixin(
         })
       }
     } else {
+      _map.setZoom(data.zoom || DEFAULT_ZOOM_LEVEL)
       const center = data.center
       _map.setCenter(center)
-      _map.setZoom(DEFAULT_ZOOM_LEVEL)
     }
     return _chart
   }

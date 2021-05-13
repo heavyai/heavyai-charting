@@ -35240,7 +35240,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
     if (!_mapInitted) {
       return _chart;
     }
-    if (data.bounds) {
+    if (data.bounds && data.zoom === undefined) {
       if (validateBounds(data)) {
         _map.fitBounds([data.bounds.sw, data.bounds.ne], {
           linear: true,
@@ -35248,9 +35248,9 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
         });
       }
     } else {
+      _map.setZoom(data.zoom || DEFAULT_ZOOM_LEVEL);
       var center = data.center;
       _map.setCenter(center);
-      _map.setZoom(DEFAULT_ZOOM_LEVEL);
     }
     return _chart;
   };
