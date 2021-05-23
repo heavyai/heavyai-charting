@@ -88771,6 +88771,8 @@ function rasterLayer(layerType) {
   var _popup_box_class = "map-popup-box-new";
   var _popup_item_copy_class = "popup-item-copy";
   var _popup_box_item_wrap_class = "map-popup-item-wrap";
+  var _popup_box_image_link_class = "map-popup-image-link";
+  var _popup_box_image_class = "map-popup-image";
   var _popup_box_item_class = "map-popup-item";
   var _popup_item_key_class = "popup-item-key";
   var _popup_item_val_class = "popup-item-val";
@@ -89021,6 +89023,12 @@ function rasterLayer(layerType) {
     return _layer._areResultsValidForPopup(results[0]);
   };
 
+  function filenameHasExtension(filename, extensions) {
+    return extensions.some(function (element) {
+      return filename.endsWith(element);
+    });
+  }
+
   function replaceURL(colVal) {
     if (typeof colVal === "string") {
       var urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g;
@@ -89029,7 +89037,12 @@ function rasterLayer(layerType) {
         if (!hyperlink.match("^https?://")) {
           hyperlink = "http://" + hyperlink;
         }
-        return '<a href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + url + "</a>";
+        var imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg"];
+        if (filenameHasExtension(hyperlink, imageExtensions)) {
+          return '<a class="' + _popup_box_image_link_class + '" href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + '<img class="' + _popup_box_image_class + '" src="' + hyperlink + '" alt="Image Preview">' + "</a>";
+        } else {
+          return '<a href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + url + "</a>";
+        }
       });
     } else {
       return colVal;

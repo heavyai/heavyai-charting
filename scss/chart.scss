@@ -878,7 +878,6 @@ body {
 
     .map-popup-wrap-new {
         position: absolute;
-        z-index: 11;
         width: 0;
         display: flex;
 
@@ -968,6 +967,12 @@ body {
           .popup-item-val a:hover {
             border-bottom: 1px solid;
             color: $blue-main;
+          }
+
+          .map-popup-image {
+            width: 95%;
+            height: 200px;
+            object-fit: contain;
           }
         }
         .popup-item-copy {
