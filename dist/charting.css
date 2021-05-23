@@ -928,7 +928,6 @@ body {
       animation: hideMapPopup .25s; }
   .dc-chart .map-popup-wrap-new {
     position: absolute;
-    z-index: 11;
     width: 0;
     display: flex; }
     .dc-chart .map-popup-wrap-new.showPopup {
@@ -992,6 +991,10 @@ body {
       .dc-chart .map-popup-box-new .map-popup-item .popup-item-val a:hover {
         border-bottom: 1px solid;
         color: #22A7F0; }
+      .dc-chart .map-popup-box-new .map-popup-item .map-popup-image {
+        width: 95%;
+        height: 200px;
+        object-fit: contain; }
     .dc-chart .map-popup-box-new .popup-item-copy {
       display: inline-block;
       position: absolute;

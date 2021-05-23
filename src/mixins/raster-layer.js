@@ -93,6 +93,8 @@ export default function rasterLayer(layerType) {
   const _popup_box_class = "map-popup-box-new"
   const _popup_item_copy_class = "popup-item-copy"
   const _popup_box_item_wrap_class = "map-popup-item-wrap"
+  const _popup_box_image_link_class = "map-popup-image-link"
+  const _popup_box_image_class = "map-popup-image"
   const _popup_box_item_class = "map-popup-item"
   const _popup_item_key_class = "popup-item-key"
   const _popup_item_val_class = "popup-item-val"
@@ -375,6 +377,12 @@ export default function rasterLayer(layerType) {
     return _layer._areResultsValidForPopup(results[0])
   }
 
+  function filenameHasExtension(filename, extensions) {
+    return extensions.some(element => {
+        return filename.endsWith(element);
+    });
+  }
+
   function replaceURL(colVal) {
     if (typeof colVal === "string") {
       const urlRegExpr = /(((https?:\/\/)|(www\.))[^\s^<>'"”`]+)/g
@@ -383,13 +391,31 @@ export default function rasterLayer(layerType) {
         if (!hyperlink.match("^https?://")) {
           hyperlink = "http://" + hyperlink
         }
-        return (
-          '<a href="' +
-          hyperlink +
-          '" target="_blank" rel="noopener noreferrer">' +
-          url +
-          "</a>"
-        )
+        const imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg"]
+        if (filenameHasExtension(hyperlink, imageExtensions)) {
+          return (
+            '<a class="' +
+            _popup_box_image_link_class + 
+            '" href="' +
+            hyperlink +
+            '" target="_blank" rel="noopener noreferrer">' +
+            '<img class="' +
+            _popup_box_image_class + 
+            '" src="' +
+            hyperlink +
+            '" alt="Image Preview">' +
+            "</a>"
+          )
+        }
+        else {
+          return (
+            '<a href="' +
+            hyperlink +
+            '" target="_blank" rel="noopener noreferrer">' +
+            url +
+            "</a>"
+          )
+        }
       })
     } else {
       return colVal
