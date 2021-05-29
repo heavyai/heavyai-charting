@@ -89839,7 +89839,6 @@ function rasterLayer(layerType) {
   var _popup_box_class = "map-popup-box-new";
   var _popup_item_copy_class = "popup-item-copy";
   var _popup_box_item_wrap_class = "map-popup-item-wrap";
-  var _popup_box_image_link_class = "map-popup-image-link";
   var _popup_box_image_class = "map-popup-image";
   var _popup_box_item_class = "map-popup-item";
   var _popup_item_key_class = "popup-item-key";
@@ -90106,11 +90105,11 @@ function rasterLayer(layerType) {
           hyperlink = "http://" + hyperlink;
         }
         var imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg"];
+        var urlContent = url;
         if (filenameHasExtension(hyperlink, imageExtensions)) {
-          return '<a class="' + _popup_box_image_link_class + '" href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + '<img class="' + _popup_box_image_class + '" src="' + hyperlink + '" alt="Image Preview">' + "</a>";
-        } else {
-          return '<a href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + url + "</a>";
+          urlContent = '<img class="' + _popup_box_image_class + '" src="' + hyperlink + '" alt="Image Preview">';
         }
+        return '<a href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + urlContent + "</a>";
       });
     } else {
       return colVal;
@@ -90304,6 +90303,8 @@ function rasterLayer(layerType) {
     var copyPopupContent = function copyPopupContent() {
       var copyRange = document.createRange();
       copyRange.selectNodeContents(document.getElementsByClassName(_popup_box_item_wrap_class).item(0));
+      debugger;
+      console.log(copyRange);
       window.getSelection().removeAllRanges();
       window.getSelection().addRange(copyRange);
       document.execCommand("copy");

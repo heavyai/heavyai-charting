@@ -93,7 +93,6 @@ export default function rasterLayer(layerType) {
   const _popup_box_class = "map-popup-box-new"
   const _popup_item_copy_class = "popup-item-copy"
   const _popup_box_item_wrap_class = "map-popup-item-wrap"
-  const _popup_box_image_link_class = "map-popup-image-link"
   const _popup_box_image_class = "map-popup-image"
   const _popup_box_item_class = "map-popup-item"
   const _popup_item_key_class = "popup-item-key"
@@ -379,8 +378,8 @@ export default function rasterLayer(layerType) {
 
   function filenameHasExtension(filename, extensions) {
     return extensions.some(element => {
-        return filename.endsWith(element);
-    });
+      return filename.endsWith(element)
+    })
   }
 
   function replaceURL(colVal) {
@@ -392,30 +391,21 @@ export default function rasterLayer(layerType) {
           hyperlink = "http://" + hyperlink
         }
         const imageExtensions = [".jp2", ".tif", ".png", ".gif", ".jpeg", "jpg"]
+        let urlContent = url
         if (filenameHasExtension(hyperlink, imageExtensions)) {
-          return (
-            '<a class="' +
-            _popup_box_image_link_class + 
-            '" href="' +
-            hyperlink +
-            '" target="_blank" rel="noopener noreferrer">' +
-            '<img class="' +
-            _popup_box_image_class + 
+          urlContent = '<img class="' +
+            _popup_box_image_class +
             '" src="' +
             hyperlink +
-            '" alt="Image Preview">' +
-            "</a>"
-          )
+            '" alt="Image Preview">'
         }
-        else {
-          return (
-            '<a href="' +
-            hyperlink +
-            '" target="_blank" rel="noopener noreferrer">' +
-            url +
-            "</a>"
-          )
-        }
+        return (
+          '<a href="' +
+          hyperlink +
+          '" target="_blank" rel="noopener noreferrer">' +
+          urlContent +
+          "</a>"
+        )
       })
     } else {
       return colVal
@@ -724,6 +714,8 @@ export default function rasterLayer(layerType) {
       copyRange.selectNodeContents(
         document.getElementsByClassName(_popup_box_item_wrap_class).item(0)
       )
+      debugger;
+      console.log(copyRange)
       window.getSelection().removeAllRanges()
       window.getSelection().addRange(copyRange)
       document.execCommand("copy")
