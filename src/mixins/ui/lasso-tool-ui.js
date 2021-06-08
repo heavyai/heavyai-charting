@@ -1,7 +1,7 @@
 "use strict"
 
 import * as LatLonUtils from "../../utils/utils-latlon"
-import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
+import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw-dev"
 import simplify from "simplify-js"
 import { logger } from "../../utils/logger"
 

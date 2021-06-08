@@ -1,6 +1,6 @@
 "use strict"
 
-import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
+import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw-dev"
 
 /**
  * Calculates the distance in meters between two lon/lat coordinates
@@ -31,7 +31,11 @@ export function distance_in_meters(fromlon, fromlat, tolon, tolat) {
  * @return {number}   Longitude
  */
 export function conv900913To4326X(x) {
-  return x / 111319.490778
+  const TILE_SIZE = 512
+  const lambda2 = (x / TILE_SIZE) * (2 * Math.PI) - Math.PI
+  return lambda2 * (180 / Math.PI)
+
+  // return x / 111319.490778
 }
 
 /**
@@ -40,9 +44,15 @@ export function conv900913To4326X(x) {
  * @return {number}   Latitude
  */
 export function conv900913To4326Y(y) {
-  return (
-    57.295779513 * (2 * Math.atan(Math.exp(y / 6378136.99911)) - 1.570796327)
-  )
+  const TILE_SIZE = 512
+  const phi2 =
+    2 *
+    (Math.atan(Math.exp((y / TILE_SIZE) * (2 * Math.PI) - Math.PI)) -
+      Math.PI / 4)
+  return phi2 * (180 / Math.PI)
+  // return (
+  //   57.295779513 * (2 * Math.atan(Math.exp(y / 6378136.99911)) - 1.570796327)
+  // )
 }
 
 /**
@@ -65,7 +75,13 @@ export function conv900913To4326(out, coord) {
  * @return {number}   X coordinate in mercator projected space
  */
 export function conv4326To900913X(x) {
-  return x * 111319.490778
+  const lambda2 = x * (Math.PI / 180.0)
+  const TILE_SIZE = 512
+  return (TILE_SIZE * (lambda2 + Math.PI)) / (2 * Math.PI)
+
+  // return x * (20037508.34 / 180.0)
+
+  // return x * 111319.490778
 }
 
 /**
@@ -74,7 +90,14 @@ export function conv4326To900913X(x) {
  * @return {number}   Y coordinate in mercator projected space
  */
 export function conv4326To900913Y(y) {
-  return 6378136.99911 * Math.log(Math.tan(0.00872664626 * y + 0.785398163397))
+  const phi2 = y * (Math.PI / 180)
+  const TILE_SIZE = 512
+  return (
+    (TILE_SIZE * (Math.PI + Math.log(Math.tan(Math.PI / 4 + phi2 * 0.5)))) /
+    (2 * Math.PI)
+  )
+  // return (Math.log(Math.tan((90.0 + y) * (Math.PI / 360.0))) / (Math.PI / 180.0)) * (20037508.34 / 180.0);
+  // return 6378136.99911 * Math.log(Math.tan(0.00872664626 * y + 0.785398163397))
 }
 
 /**

@@ -2,32 +2,15 @@ import * as LatLonUtils from "../utils/utils-latlon"
 import LassoButtonGroupController, {
   getLatLonCircleClass
 } from "./ui/lasso-tool-ui"
-import earcut from "earcut"
 import * as _ from "lodash"
-import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
+import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw-dev"
 import { redrawAllAsync } from "../core/core-async"
 
-/* istanbul ignore next */
-function writePointInTriangleSqlTest(p0, p1, p2, px, py, cast = false) {
-  function writeSign(p0, p1) {
-    if (cast) {
-      return (
-        `((CAST(${px} AS FLOAT)-(${p1[0]}))*(${p0[1] - p1[1]}) - ` +
-        `(${p0[0] - p1[0]})*(CAST(${py} AS FLOAT)-(${p1[1]})) < 0.0)`
-      )
-    } else {
-      return (
-        `((${px}-(${p1[0]}))*(${p0[1] - p1[1]}) - ` +
-        `(${p0[0] - p1[0]})*(${py}-(${p1[1]})) < 0.0)`
-      )
-    }
-  }
-
-  const b1 = writeSign(p0, p1)
-  const b2 = writeSign(p1, p2)
-  const b3 = writeSign(p2, p0)
-  return `(${b1} = ${b2}) AND (${b2} = ${b3})`
-}
+// make sure we add 64-bits of precision for map projections
+MapdDraw.glMatrix.setMatrixArrayType(
+  typeof Float64Array !== "undefined" ? Float64Array : Array
+)
+MapdDraw.glMatrix.setEpsilon(0.00000000000001)
 
 /* istanbul ignore next */
 function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
@@ -153,7 +136,6 @@ export function rasterDrawMixin(chart) {
   chart.getRasterFilterObj = getRasterFilterObj
 
   function applyFilter() {
-    const NUM_SIDES = 3
     const useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat()
     const shapes = drawEngine.sortedShapes
     const LatLonCircle = getLatLonCircleClass()
@@ -231,58 +213,35 @@ export function rasterDrawMixin(chart) {
                   }, 2.0)) / ${radsqr} <= 1.0`
                 )
               } else if (shape instanceof MapdDraw.Poly) {
-                const p0 = [0, 0]
-                const p1 = [0, 0]
-                const p2 = [0, 0]
-                const earcutverts = []
+                const first_point = [0, 0]
+                const point = [0, 0]
                 const verts = shape.vertsRef
                 const xform = shape.globalXform
-                verts.forEach(vert => {
-                  MapdDraw.Point2d.transformMat2d(p0, vert, xform)
-                  if (useLonLat) {
-                    LatLonUtils.conv900913To4326(p0, p0)
-                  }
-                  earcutverts.push(p0[0], p0[1])
-                })
 
-                const triangles = earcut(earcutverts)
-                const triangleTests = []
-                let idx = 0
-                for (let j = 0; j < triangles.length; j = j + NUM_SIDES) {
-                  idx = triangles[j] * 2
-                  MapdDraw.Point2d.set(
-                    p0,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
+                if (verts.length) {
+                  let wkt_str = "POLYGON(("
+                  verts.forEach((vert, curr_idx) => {
+                    MapdDraw.Point2d.transformMat2d(point, vert, xform)
+                    if (useLonLat) {
+                      LatLonUtils.conv900913To4326(point, point)
+                    }
+                    wkt_str += `${point[0]} ${point[1]},`
 
-                  idx = triangles[j + 1] * 2
-                  MapdDraw.Point2d.set(
-                    p1,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
+                    if (curr_idx === 0) {
+                      MapdDraw.Point2d.copy(first_point, point)
+                    }
+                  })
+                  wkt_str += `${first_point[0]} ${first_point[1]}))`
 
-                  idx = triangles[j + 2] * 2
-                  MapdDraw.Point2d.set(
-                    p2,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
+                  const contains_str = `ST_Contains(ST_GeomFromText('${wkt_str}', 4326), ST_SetSRID(ST_Point(${px}, ${py}), 4326))`
 
-                  triangleTests.push(
-                    writePointInTriangleSqlTest(p0, p1, p2, px, py, !useLonLat)
-                  )
-                }
-
-                if (triangleTests.length) {
                   filterObj.shapeFilters.push(
                     `${createUnlikelyStmtFromShape(
                       shape,
                       px,
                       py,
                       useLonLat
-                    )} AND (${triangleTests.join(" OR ")})`
+                    )} AND (${contains_str})`
                   )
                 }
               }

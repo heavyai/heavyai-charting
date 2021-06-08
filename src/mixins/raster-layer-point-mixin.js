@@ -9,7 +9,7 @@ import {
 } from "../utils/utils-vega"
 import { parser } from "../utils/utils"
 import * as d3 from "d3"
-import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
+import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw-dev"
 
 const AUTOSIZE_DOMAIN_DEFAULTS = [100000, 0]
 const AUTOSIZE_RANGE_DEFAULTS = [2.0, 5.0]
@@ -132,15 +132,15 @@ function isValidPostFilter(postFilter) {
   if (value && (aggType || custom)) {
     if (
       (operator === "not between" || operator === "between") &&
-      (typeof min === "number" && !isNaN(min)) &&
-      (typeof max === "number" && !isNaN(max))
+      typeof min === "number" && !isNaN(min) &&
+      typeof max === "number" && !isNaN(max)
     ) {
       return true
     } else if (
       (operator === "equals" ||
         operator === "not equals" ||
         operator === "greater than or equals") &&
-      (typeof min === "number" && !isNaN(min))
+      typeof min === "number" && !isNaN(min)
     ) {
       return true
     } else if (

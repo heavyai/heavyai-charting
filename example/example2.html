@@ -430,16 +430,16 @@
   function init() {
     // A MapdCon instance is used for performing raw queries on a MapD GPU database.
     new MapdCon()
-      .protocol("https")
-      .host("metis.mapd.com")
-      .port("443")
-      .dbName("mapd")
-      .user("mapd")
+      .protocol("http")
+      .host("10.2.1.12")
+      .port("6278")
+      .dbName("omnisci")
+      .user("admin")
       .password("HyperInteractive")
       .connect(function(error, con) {
         con.logging(true)
         // Get a table from the database
-        var tableName = 'tweets_nov_feb';
+        var tableName = 'tweets_2017_may';
         // A CrossFilter instance is used for generating the raw query strings for your MapdCon.
         var crossFilter = crossfilter.crossfilter(con, tableName)
           .then(function(cf) {

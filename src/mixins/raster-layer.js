@@ -7,7 +7,7 @@ import {
   createRasterLayerGetterSetter,
   createVegaAttrMixin
 } from "../utils/utils-vega"
-import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw"
+import { AABox2d, Point2d } from "@mapd/mapd-draw/dist/mapd-draw-dev"
 import moment from "moment"
 
 const validLayerTypes = ["points", "polys", "heat", "lines"]
@@ -263,9 +263,9 @@ export default function rasterLayer(layerType) {
     const dim = _layer.group() || _layer.dimension()
     if (
       dim ||
-      (_layer.layerType() === "points" ||
+      _layer.layerType() === "points" ||
         _layer.layerType() === "lines" ||
-        _layer.layerType() === "polys")
+        _layer.layerType() === "polys"
     ) {
       const projExprs =
         _layer.layerType() === "points" ||
