@@ -53751,6 +53751,7 @@ function validSymbol(type) {
     case "hexagon-horiz":
     case "wedge":
     case "arrow":
+    case "airplane":
       return true;
     default:
       return false;
@@ -54162,7 +54163,7 @@ function rasterLayerPointMixin(_layer) {
     var scales = (0, _utilsVega.getScales)(state.encoding, layerName, scaledomainfields, getStatsLayerName());
 
     var marks = [{
-      type: "symbol",
+      type: markType === "airplane" ? "legacysymbol" : "symbol",
       from: {
         data: layerName
       },
