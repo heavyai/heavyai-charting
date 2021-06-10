@@ -32,6 +32,7 @@ function validSymbol(type) {
     case "hexagon-horiz":
     case "wedge":
     case "arrow":
+    case "airplane":
       return true
     default:
       return false
@@ -118,15 +119,18 @@ function isValidPostFilter(postFilter) {
   if (value && (aggType || custom)) {
     if (
       (operator === "not between" || operator === "between") &&
-      (typeof min === "number" && !isNaN(min)) &&
-      (typeof max === "number" && !isNaN(max))
+      typeof min === "number" &&
+      !isNaN(min) &&
+      typeof max === "number" &&
+      !isNaN(max)
     ) {
       return true
     } else if (
       (operator === "equals" ||
         operator === "not equals" ||
         operator === "greater than or equals") &&
-      (typeof min === "number" && !isNaN(min))
+      typeof min === "number" &&
+      !isNaN(min)
     ) {
       return true
     } else if (
@@ -488,7 +492,7 @@ export default function rasterLayerPointMixin(_layer) {
 
     const marks = [
       {
-        type: "symbol",
+        type: markType === "airplane" ? "legacysymbol" : "symbol",
         from: {
           data: layerName
         },
