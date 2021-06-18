@@ -165,14 +165,14 @@
 
   function init() {
     var con = new MapdCon()
-      .protocol("https")
-      .host("metis.mapd.com")
-      .port("443")
-      .dbName("mapd")
-      .user("mapd")
+      .protocol("http")
+      .host("10.2.1.12")
+      .port("6278")
+      .dbName("omnisci")
+      .user("admin")
       .password("HyperInteractive")
       .connect(function(error, con) {
-        var tableName = 'tweets_nov_feb';
+        var tableName = 'tweets_2017_may';
         var crossFilter = crossfilter.crossfilter(con, tableName)
           .then(function(cf) {
             createCharts(cf, con, tableName)
