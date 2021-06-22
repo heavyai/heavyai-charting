@@ -6,6 +6,17 @@ import * as _ from "lodash"
 import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 import { redrawAllAsync } from "../core/core-async"
 
+/** Configure MapD Draw */
+MapdDraw.Configure.setMatrixArrayType(Float64Array)
+
+// set a very low epsilon to account for the large precision provided us
+// with 64-bit floating pt. If we left this at the default, if you made a lasso
+// shape at a tight zoom (i.e. a shape with that was 100 meters^2 in area), 
+// the shape wouldn't align right because the camera would not be considered dirty
+// even tho the map was moving slightly in world space.
+MapdDraw.Configure.setEpsilon(0.00000000000001)
+/** Done configuring MapdDraw */
+
 /* istanbul ignore next */
 function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
   const aabox = shape.aabox
