@@ -34,9 +34,9 @@ export function getLatLonCircleClass() {
 
       _updateGeom() {
         if (this._geomDirty || this._boundsOutOfDate) {
-          const centerMerc = [0, 0]
-          const centerLatLon = [0, 0]
-          const scale = [0, 0]
+          const centerMerc = MapdDraw.Point2d.create()
+          const centerLatLon = MapdDraw.Point2d.create()
+          const scale = MapdDraw.Vec2d.create()
           const xform = this.globalXform
           MapdDraw.Mat2d.svd(centerMerc, scale, null, xform)
 
@@ -122,21 +122,17 @@ export function getLatLonCircleClass() {
         const xform = MapdDraw.Mat2d.clone(this.globalXform)
         MapdDraw.Mat2d.invert(xform, xform)
         MapdDraw.Mat2d.multiply(xform, this._fullXform, xform)
-        ctx.setTransform(
-          xform[0],
-          xform[1],
-          xform[2],
-          xform[3],
-          xform[4],
-          xform[5]
-        )
+        ctx.setTransform(1, 0, 0, 1, 0, 0)
 
         this._updateGeom()
 
         if (this._mercatorPts.length) {
-          ctx.moveTo(this._mercatorPts[0][0], this._mercatorPts[0][1])
-          for (let i = 1; i < this._mercatorPts.length; i = i + 1) {
-            ctx.lineTo(this._mercatorPts[i][0], this._mercatorPts[i][1])
+          const proj_pt = MapdDraw.Point2d.create()
+          MapdDraw.Point2d.transformMat2d(proj_pt, this._mercatorPts[0], xform)
+          ctx.moveTo(proj_pt[0], proj_pt[1])
+          for (let i = 1; i < this._mercatorPts.length; i += 1) {
+            MapdDraw.Point2d.transformMat2d(proj_pt, this._mercatorPts[i], xform)
+            ctx.lineTo(proj_pt[0], proj_pt[1])
           }
           ctx.closePath()
         }
@@ -656,8 +652,8 @@ class PolylineShapeHandler extends ShapeHandler {
 
       if (event.shiftKey) {
         if (this.activeIdx === 1) {
-          const diff = [0, 0]
-          const prevmousepos = [0, 0]
+          const diff = MapdDraw.Vec2d.create()
+          const prevmousepos = MapdDraw.Point2d.create()
           const verts = this.lineShape.vertsRef
           this.drawEngine.unproject(prevmousepos, verts[0])
           MapdDraw.Point2d.sub(diff, mousepos, prevmousepos)
@@ -675,11 +671,11 @@ class PolylineShapeHandler extends ShapeHandler {
           this.drawEngine.project(mouseworldpos, mousepos)
         } else if (this.activeIdx > 1) {
           const verts = this.lineShape.vertsRef
-          const pt1 = [0, 0]
+          const pt1 = MapdDraw.Point2d.create()
           this.drawEngine.unproject(pt1, verts[this.activeIdx - 2])
-          const pt2 = [0, 0]
+          const pt2 = MapdDraw.Point2d.create()
           this.drawEngine.unproject(pt2, verts[this.activeIdx - 1])
-          const dir1 = [0, 0]
+          const dir1 = MapdDraw.Vec2d.create()
           MapdDraw.Point2d.sub(dir1, pt2, pt1)
           MapdDraw.Vec2d.normalize(dir1, dir1)
           const dir2 = [0, 0]
