@@ -122,21 +122,17 @@ export function getLatLonCircleClass() {
         const xform = MapdDraw.Mat2d.clone(this.globalXform)
         MapdDraw.Mat2d.invert(xform, xform)
         MapdDraw.Mat2d.multiply(xform, this._fullXform, xform)
-        ctx.setTransform(
-          xform[0],
-          xform[1],
-          xform[2],
-          xform[3],
-          xform[4],
-          xform[5]
-        )
+        ctx.setTransform(1, 0, 0, 1, 0, 0)
 
         this._updateGeom()
 
         if (this._mercatorPts.length) {
-          ctx.moveTo(this._mercatorPts[0][0], this._mercatorPts[0][1])
-          for (let i = 1; i < this._mercatorPts.length; i = i + 1) {
-            ctx.lineTo(this._mercatorPts[i][0], this._mercatorPts[i][1])
+          const proj_pt = MapdDraw.Point2d.create()
+          MapdDraw.Point2d.transformMat2d(proj_pt, this._mercatorPts[0], xform)
+          ctx.moveTo(proj_pt[0], proj_pt[1])
+          for (let i = 1; i < this._mercatorPts.length; i += 1) {
+            MapdDraw.Point2d.transformMat2d(proj_pt, this._mercatorPts[i], xform)
+            ctx.lineTo(proj_pt[0], proj_pt[1])
           }
           ctx.closePath()
         }
