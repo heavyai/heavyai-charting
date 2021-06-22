@@ -218,8 +218,8 @@ export function rasterDrawMixin(chart) {
                   }, 2.0)) / ${radsqr} <= 1.0`
                 )
               } else if (shape instanceof MapdDraw.Poly) {
-                const first_point = [0, 0]
-                const point = [0, 0]
+                const first_point = MapdDraw.Point2d.create()
+                const point = MapdDraw.Point2d.create()
                 const verts = shape.vertsRef
                 const xform = shape.globalXform
 
@@ -298,7 +298,7 @@ export function rasterDrawMixin(chart) {
                   filterObj.shapeFilters.push(shapeFilter)
                 }
               } else if (shape instanceof MapdDraw.Poly) {
-                const p0 = [0, 0]
+                const p0 = MapdDraw.Point2d.create()
                 const convertedVerts = []
 
                 const verts = shape.vertsRef
