@@ -102,7 +102,7 @@
     "mapd3": "^0.15.3",
     "mocha": "^2.5.3",
     "mocha-jenkins-reporter": "^0.1.9",
-    "node-sass": "^4.12",
+    "node-sass": "^4.14.1",
     "nyc": "^10.3.0",
     "prettier": "^1.5.2",
     "proxyquire": "1.7.4",

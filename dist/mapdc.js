@@ -52827,8 +52827,8 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
       }
     };
 
-    if (imgUrl) {
-      // should we check to see if the imgUrl is the same from the previous render?
+    if (imgUrl && imgUrl !== _chart.lastImgUrl) {
+      _chart.lastImgUrl = imgUrl;
       _axios2.default.get(imgUrl, {
         responseType: 'arraybuffer'
       }).then(function (_ref) {
