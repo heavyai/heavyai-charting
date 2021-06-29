@@ -1,6 +1,7 @@
 import * as LatLonUtils from "../utils/utils-latlon"
 import LassoButtonGroupController, {
-  getLatLonCircleClass
+  getLatLonCircleClass,
+  getLatLonPolyClass
 } from "./ui/lasso-tool-ui"
 import * as _ from "lodash"
 import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
@@ -11,7 +12,7 @@ MapdDraw.Configure.setMatrixArrayType(Float64Array)
 
 // set a very low epsilon to account for the large precision provided us
 // with 64-bit floating pt. If we left this at the default, if you made a lasso
-// shape at a tight zoom (i.e. a shape with that was 100 meters^2 in area), 
+// shape at a tight zoom (i.e. a shape with that was 100 meters^2 in area),
 // the shape wouldn't align right because the camera would not be considered dirty
 // even tho the map was moving slightly in world space.
 MapdDraw.Configure.setEpsilon(0.00000000000001)
@@ -144,6 +145,7 @@ export function rasterDrawMixin(chart) {
     const useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat()
     const shapes = drawEngine.sortedShapes
     const LatLonCircle = getLatLonCircleClass()
+    const LatLonPoly = getLatLonPolyClass()
 
     const layers =
       chart.getLayers && typeof chart.getLayers === "function"
@@ -217,7 +219,7 @@ export function rasterDrawMixin(chart) {
                     mat[5]
                   }, 2.0)) / ${radsqr} <= 1.0`
                 )
-              } else if (shape instanceof MapdDraw.Poly) {
+              } else if (shape instanceof LatLonPoly) {
                 const first_point = MapdDraw.Point2d.create()
                 const point = MapdDraw.Point2d.create()
                 const verts = shape.vertsRef
@@ -297,7 +299,7 @@ export function rasterDrawMixin(chart) {
                 if (!_.find(filterObj.shapeFilters, shapeFilter)) {
                   filterObj.shapeFilters.push(shapeFilter)
                 }
-              } else if (shape instanceof MapdDraw.Poly) {
+              } else if (shape instanceof LatLonPoly) {
                 const p0 = MapdDraw.Point2d.create()
                 const convertedVerts = []
 
@@ -425,6 +427,15 @@ export function rasterDrawMixin(chart) {
       if (filterArg.type === "LatLonCircle") {
         const LatLonCircle = getLatLonCircleClass()
         newShape = new LatLonCircle(filterArg)
+        selectOpts.uniformScaleOnly = true
+        selectOpts.centerScaleOnly = true
+        selectOpts.rotatable = false
+      } else if (filterArg.type === "LatLonPoly") {
+        const LatLonPoly = getLatLonPolyClass()
+        newShape = new LatLonPoly(chart, filterArg)
+
+        // TODO(croot): need to determine what xform limits to apply here..
+        // May not need any if the points are subdivided at draw time appropriately
         selectOpts.uniformScaleOnly = true
         selectOpts.centerScaleOnly = true
         selectOpts.rotatable = false

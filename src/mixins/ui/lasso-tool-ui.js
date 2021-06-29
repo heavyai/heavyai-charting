@@ -7,6 +7,7 @@ import { logger } from "../../utils/logger"
 
 /* istanbul ignore next */
 let LatLonCircleClass = null
+let LatLonPolyClass = null
 
 /* istanbul ignore next */
 export function getLatLonCircleClass() {
@@ -131,7 +132,11 @@ export function getLatLonCircleClass() {
           MapdDraw.Point2d.transformMat2d(proj_pt, this._mercatorPts[0], xform)
           ctx.moveTo(proj_pt[0], proj_pt[1])
           for (let i = 1; i < this._mercatorPts.length; i += 1) {
-            MapdDraw.Point2d.transformMat2d(proj_pt, this._mercatorPts[i], xform)
+            MapdDraw.Point2d.transformMat2d(
+              proj_pt,
+              this._mercatorPts[i],
+              xform
+            )
             ctx.lineTo(proj_pt[0], proj_pt[1])
           }
           ctx.closePath()
@@ -146,6 +151,470 @@ export function getLatLonCircleClass() {
     }
   }
   return LatLonCircleClass
+}
+
+/* istanbul ignore next */
+export function getLatLonPolyClass() {
+  if (!LatLonPolyClass) {
+    LatLonPolyClass = class LatLonPoly extends MapdDraw.Poly {
+      constructor(chart, opts) {
+        super(opts)
+        this._chart = chart
+        this._screenPts = []
+        this._geomDirty = true
+
+        // maximum length of subdivided line segment in pixels
+        this._maxSegmentPixelDistance = 40
+      }
+
+      static buildProjectedPointData() {
+        return {
+          merc_point: MapdDraw.Point2d.create(),
+          screen_point: MapdDraw.Point2d.create(),
+          lonlat_point: MapdDraw.Point2d.create()
+        }
+      }
+
+      static projectPoint(
+        initial_merc_point,
+        out_point_data,
+        model_matrix,
+        worldToScreenMatrix
+      ) {
+        MapdDraw.Point2d.transformMat2d(
+          out_point_data.merc_point,
+          initial_merc_point,
+          model_matrix
+        )
+
+        MapdDraw.Point2d.transformMat2d(
+          out_point_data.screen_point,
+          out_point_data.merc_point,
+          worldToScreenMatrix
+        )
+
+        LatLonUtils.conv900913To4326(
+          out_point_data.lonlat_point,
+          out_point_data.merc_point
+        )
+
+        return out_point_data
+      }
+
+      _intersect() {}
+
+      _intersectViewBounds(
+        start_point_data,
+        end_point_data,
+        worldToScreenMatrix
+      ) {
+        // doing a simplified version of a bezier-based line segment intersection formula:
+        // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
+        // This formula can be slightly simplified due to the bounds being axis-aligned - ultimately you can
+        // eliminate some operations knowing that coordinate differences will be 0
+
+        // get the bounds of the chart first
+        const bounds = this._chart.getDataRenderBounds()
+
+        const view_aabox = MapdDraw.AABox2d.create()
+        MapdDraw.AABox2d.encapsulatePt(view_aabox, view_aabox, bounds[0])
+        MapdDraw.AABox2d.encapsulatePt(view_aabox, view_aabox, bounds[2])
+
+        const x1 = start_point_data.lonlat_point[0]
+        const y1 = start_point_data.lonlat_point[1]
+        const x2 = end_point_data.lonlat_point[0]
+        const y2 = end_point_data.lonlat_point[1]
+
+        const line_aabox = MapdDraw.AABox2d.create()
+        MapdDraw.AABox2d.encapsulatePt(
+          line_aabox,
+          line_aabox,
+          start_point_data.lonlat_point
+        )
+        MapdDraw.AABox2d.encapsulatePt(
+          line_aabox,
+          line_aabox,
+          end_point_data.lonlat_point
+        )
+
+        const intersect_aabox = MapdDraw.AABox2d.create()
+        MapdDraw.AABox2d.intersection(intersect_aabox, view_aabox, line_aabox)
+
+        const rtn_obj = {
+          latlon_pts: [],
+          screen_pts: [],
+          subdivide: false
+        }
+        if (MapdDraw.AABox2d.isEmpty(intersect_aabox)) {
+          return rtn_obj
+        }
+
+        const delta_x = x1 - x2
+        const delta_y = y1 - y2
+
+        if (delta_x === 0 || delta_y === 0) {
+          // this line lies on a line of latitude or longitude
+          // Such lines do not need to be subdivided in web-mercator-projected
+          // space because they will be vertical/horizontal when projected
+          // TODO(croot): support other projections?
+          return rtn_obj
+        }
+
+        if (MapdDraw.AABox2d.equals(intersect_aabox, line_aabox)) {
+          rtn_obj.latlon_pts.push(start_point_data.lonlat_point)
+          rtn_obj.screen_pts.push(start_point_data.screen_point)
+          rtn_obj.latlon_pts.push(end_point_data.lonlat_point)
+          rtn_obj.screen_pts.push(end_point_data.screen_point)
+          rtn_obj.subdivide = true
+        } else {
+          // need to do intersection checks against the intersection bounds.
+          // There will be exactly 2 intersections.
+
+          const x3 = intersect_aabox[MapdDraw.AABox2d.MINX]
+          const x4 = intersect_aabox[MapdDraw.AABox2d.MAXX]
+          const y3 = intersect_aabox[MapdDraw.AABox2d.MINY]
+          const y4 = intersect_aabox[MapdDraw.AABox2d.MAXY]
+
+          const check_intersect = (numerator, denominator) => {
+            if (denominator > 0) {
+              if (numerator >= 0 && numerator <= denominator) {
+                return true
+              }
+            } else if (numerator <= 0 && numerator >= denominator) {
+              return true
+            }
+            return false
+          }
+
+          let current_t = 2.0
+          const check_full_intersect = (
+            numerator_t_functor,
+            denominator_t_functor,
+            numerator_u_functor,
+            denominator_u_functor
+          ) => {
+            const denominator_t = denominator_t_functor()
+            if (denominator_t === 0) {
+              // colinear
+              // TODO(croot): this needs filling out in the general case
+              // NOTE: this should never be hit in the LonLatPoly case because of
+              // the delta_x/delta_y === 0 check.
+              console.assert(
+                false,
+                `Collinear intersection needs filling out for ${this.constructor.name}`
+              )
+              return true
+            }
+            const numerator_t = numerator_t_functor()
+            if (
+              check_intersect(numerator_t, denominator_t) &&
+              check_intersect(numerator_u_functor(), denominator_u_functor())
+            ) {
+              const t = numerator_t / denominator_t
+              if (MapdDraw.Math.floatingPtEquals(t, current_t)) {
+                return false
+              }
+
+              let lonlat_pt = null
+              let screen_pt = null
+              if (MapdDraw.Math.floatingPtEquals(t, 0)) {
+                lonlat_pt = start_point_data.lonlat_point
+                screen_pt = start_point_data.screen_point
+              } else if (MapdDraw.Math.floatingPtEquals(t, 1)) {
+                lonlat_pt = end_point_data.lonlat_point
+                screen_pt = end_point_data.screen_point
+              } else {
+                const new_latlon_pt = MapdDraw.Point2d.create(
+                  -delta_x * t,
+                  -delta_y * t
+                )
+                MapdDraw.Point2d.addVec2(
+                  new_latlon_pt,
+                  start_point_data.lonlat_point,
+                  new_latlon_pt
+                )
+                lonlat_pt = new_latlon_pt
+
+                const new_screen_pt = MapdDraw.Point2d.clone(new_latlon_pt)
+                // conver the new segment point back to mercator for drawing
+                LatLonUtils.conv4326To900913(new_screen_pt, new_screen_pt)
+
+                // now convert to screen space
+                MapdDraw.Point2d.transformMat2d(
+                  new_screen_pt,
+                  new_screen_pt,
+                  worldToScreenMatrix
+                )
+                screen_pt = new_screen_pt
+              }
+              rtn_obj.subdivide = true
+              if (t < current_t) {
+                rtn_obj.latlon_pts.splice(0, 0, lonlat_pt)
+                rtn_obj.screen_pts.splice(0, 0, screen_pt)
+              } else {
+                rtn_obj.latlon_pts.push(lonlat_pt)
+                rtn_obj.screen_pts.push(screen_pt)
+              }
+              current_t = t
+              return true
+            }
+            return false
+          }
+
+          // check left-edge of the bounds first, we know that delta_x = 0 for the points defining the left edge
+          let delta_edge = x1 - x3
+          if (
+            check_full_intersect(
+              () => delta_edge,
+              () => delta_x,
+              () => -delta_x * (y1 - y3) - -delta_y * delta_edge,
+              () => delta_x * (y3 - y4)
+            )
+          ) {
+            console.log(`CROOT - intersect left: ${rtn_obj.latlon_pts}`)
+          }
+
+          // bounds top-edge
+          delta_edge = y1 - y3
+          if (
+            check_full_intersect(
+              () => -delta_edge,
+              () => -delta_y,
+              () => -delta_x * delta_edge - -delta_y * (x1 - x3),
+              () => -delta_y * (x3 - x4)
+            )
+          ) {
+            console.log(`CROOT - intersect top: ${rtn_obj.latlon_pts}`)
+            if (rtn_obj.latlon_pts.length === 2) {
+              return rtn_obj
+            }
+          }
+
+          // bounds right-edge, we know that delta_x = 0 for the points defining the right edge
+          delta_edge = x1 - x4
+          if (
+            check_full_intersect(
+              () => delta_edge,
+              () => delta_x,
+              () => -delta_x * (y1 - y3) - -delta_y * delta_edge,
+              () => delta_x * (y3 - y4)
+            )
+          ) {
+            console.log(`CROOT - intersect right: ${rtn_obj.latlon_pts}`)
+            if (rtn_obj.latlon_pts.length === 2) {
+              return rtn_obj
+            }
+          }
+
+          // bounds top edge
+          delta_edge = y1 - y4
+          if (
+            check_full_intersect(
+              () => -delta_edge,
+              () => -delta_y,
+              () => -delta_x * delta_edge - -delta_y * (x1 - x3),
+              () => -delta_y * (x3 - x4)
+            )
+          ) {
+            console.log(`CROOT - intersect bottom: ${rtn_obj.latlon_pts}`)
+          }
+        }
+
+        return rtn_obj
+      }
+
+      _subdivideLineSegment(
+        start_point_data,
+        end_point_data,
+        new_segment_point,
+        worldToScreenMatrix
+      ) {
+        const view_intersect_data = this._intersectViewBounds(
+          start_point_data,
+          end_point_data,
+          worldToScreenMatrix
+        )
+
+        if (!view_intersect_data.subdivide) {
+          return
+        }
+
+        console.assert(view_intersect_data.latlon_pts.length === 2)
+
+        const start_latlon_pt = view_intersect_data.latlon_pts[0]
+        const end_latlon_pt = view_intersect_data.latlon_pts[1]
+        const start_screen_pt = view_intersect_data.screen_pts[0]
+        const end_screen_pt = view_intersect_data.screen_pts[1]
+
+        const distance = MapdDraw.Point2d.distance(
+          start_screen_pt,
+          end_screen_pt
+        )
+        if (distance > this._maxSegmentPixelDistance) {
+          // do subdivisions in a cartesian space using lon/lat
+          // This is how ST_Contains behaves in the server right now
+          const num_subdivisions = Math.ceil(
+            distance / this._maxSegmentPixelDistance
+          )
+          for (let i = 1; i < num_subdivisions; i += 1) {
+            MapdDraw.Point2d.lerp(
+              new_segment_point,
+              start_latlon_pt,
+              end_latlon_pt,
+              i / num_subdivisions
+            )
+            // conver the new segment point back to mercator for drawing
+            LatLonUtils.conv4326To900913(new_segment_point, new_segment_point)
+
+            // now convert to screen space
+            MapdDraw.Point2d.transformMat2d(
+              new_segment_point,
+              new_segment_point,
+              worldToScreenMatrix
+            )
+            this._screenPts.push(MapdDraw.Point2d.clone(new_segment_point))
+          }
+        }
+      }
+
+      _updateGeom(worldToScreenMatrix) {
+        // if (this._geomDirty || this._boundsOutOfDate) {
+        const initial_point_data = LatLonPoly.buildProjectedPointData()
+        let start_point_data = LatLonPoly.buildProjectedPointData()
+        let end_point_data = LatLonPoly.buildProjectedPointData()
+        const new_segment_point = MapdDraw.Point2d.create()
+
+        const model_xform = this.globalXform
+        const mvp_xform = this._fullXform
+
+        this._screenPts = []
+
+        if (this._verts.length === 0) {
+          return
+        }
+
+        LatLonPoly.projectPoint(
+          this._verts[0],
+          initial_point_data,
+          model_xform,
+          worldToScreenMatrix
+        )
+
+        MapdDraw.Point2d.copy(
+          start_point_data.merc_point,
+          initial_point_data.merc_point
+        )
+        MapdDraw.Point2d.copy(
+          start_point_data.screen_point,
+          initial_point_data.screen_point
+        )
+        MapdDraw.Point2d.copy(
+          start_point_data.lonlat_point,
+          initial_point_data.lonlat_point
+        )
+
+        this._screenPts.push(
+          MapdDraw.Point2d.clone(start_point_data.screen_point)
+        )
+
+        console.log(
+          `CROOT: start point: [${start_point_data.screen_point[0]}, ${start_point_data.screen_point[1]}]`
+        )
+
+        let swap_tmp = null
+        for (let i = 1; i < this._verts.length; i += 1) {
+          LatLonPoly.projectPoint(
+            this._verts[i],
+            end_point_data,
+            model_xform,
+            worldToScreenMatrix
+          )
+          const CROOT_start_cnt = this._screenPts.length
+          this._subdivideLineSegment(
+            start_point_data,
+            end_point_data,
+            new_segment_point,
+            worldToScreenMatrix
+          )
+          console.log(
+            `CROOT: ${i} - num subdivisions: ${this._screenPts.length -
+              CROOT_start_cnt}`
+          )
+          this._screenPts.push(
+            MapdDraw.Point2d.clone(end_point_data.screen_point)
+          )
+
+          // now swap the endpoints
+          swap_tmp = start_point_data
+          start_point_data = end_point_data
+          end_point_data = swap_tmp
+        }
+
+        const CROOT_start_cnt = this._screenPts.length
+        this._subdivideLineSegment(
+          start_point_data,
+          initial_point_data,
+          new_segment_point,
+          worldToScreenMatrix
+        )
+        console.log(
+          `CROOT: ${this._verts.length} - num subdivisions: ${this._screenPts
+            .length - CROOT_start_cnt}`
+        )
+
+        // NOTE: we are not re-adding the first point as the draw call will close the loop
+
+        this._geomDirty = true
+        this._boundsOutOfDate = true
+        // }
+      }
+
+      // getDimensions() {
+      //   return [this.width, this.height]
+      // }
+
+      // get width() {
+      //   this._updateAABox()
+      //   return this._aabox[2] - this._aabox[0]
+      // }
+
+      // get height() {
+      //   this._updateAABox()
+      //   return this._aabox[3] - this._aabox[1]
+      // }
+
+      // _updateAABox() {
+      //   this._updateGeom()
+      // }
+
+      _draw(ctx) {
+        // separate the model-view-matrix into the model (globalXform) matrix
+        // and the view-projection matrix for separable components and to minimize
+        // the amount of math applied.
+        const xform = MapdDraw.Mat2d.clone(this.globalXform)
+        MapdDraw.Mat2d.invert(xform, xform)
+        MapdDraw.Mat2d.multiply(xform, this._fullXform, xform)
+        ctx.setTransform(1, 0, 0, 1, 0, 0)
+
+        this._updateGeom(xform)
+
+        if (this._screenPts.length) {
+          ctx.moveTo(this._screenPts[0][0], this._screenPts[0][1])
+          for (let i = 1; i < this._screenPts.length; i += 1) {
+            ctx.lineTo(this._screenPts[i][0], this._screenPts[i][1])
+          }
+          ctx.closePath()
+        }
+      }
+
+      toJSON() {
+        return Object.assign(super.toJSON(), {
+          type: "LatLonPoly" // this must match the name of the class
+        })
+      }
+    }
+  }
+  return LatLonPolyClass
 }
 
 /* istanbul ignore next */
@@ -547,7 +1016,9 @@ class PolylineShapeHandler extends ShapeHandler {
         verts.pop()
       }
 
-      const poly = new MapdDraw.Poly(
+      const PolyClass = getLatLonPolyClass()
+      const poly = new PolyClass(
+        this.chart,
         Object.assign(
           {
             verts
@@ -848,7 +1319,9 @@ class LassoShapeHandler extends ShapeHandler {
         this.drawEngine.deleteShape(this.activeShape)
         this.activeShape = null
       } else {
-        const poly = new MapdDraw.Poly(
+        const PolyClass = getLatLonPolyClass()
+        const poly = new PolyClass(
+          this.chart,
           Object.assign(
             {
               verts: newverts
