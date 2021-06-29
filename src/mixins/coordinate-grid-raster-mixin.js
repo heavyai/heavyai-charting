@@ -749,7 +749,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       }
     }
 
-    if (imgUrl && imgUrl !== _chart.lastImgUrl) { // should we check to see if the imgUrl is the same from the previous render?
+    if (imgUrl && imgUrl !== _chart.lastImgUrl) {
       _chart.lastImgUrl = imgUrl
       axios.get(imgUrl, {
         responseType: 'arraybuffer'
