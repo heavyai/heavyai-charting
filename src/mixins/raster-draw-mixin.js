@@ -18,6 +18,10 @@ MapdDraw.Configure.setMatrixArrayType(Float64Array)
 MapdDraw.Configure.setEpsilon(0.00000000000001)
 /** Done configuring MapdDraw */
 
+function chartUsesLonLat(chart) {
+  return typeof chart.useLonLat === "function" && chart.useLonLat()
+}
+
 /* istanbul ignore next */
 function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
   const aabox = shape.aabox
@@ -87,6 +91,7 @@ export function rasterDrawMixin(chart) {
   const coordFilters = new Map()
   let origFilterFunc = null
   let origFilterAll = null
+  const useLonLat = chartUsesLonLat(chart)
 
   const defaultStyle = {
     fillColor: "#22a7f0",
@@ -179,7 +184,6 @@ export function rasterDrawMixin(chart) {
   chart.getRasterFilterObj = getRasterFilterObj
 
   function applyFilter() {
-    const useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat()
     const shapes = drawEngine.sortedShapes
     const LatLonCircle = getLatLonCircleClass()
     const LatLonPoly = getLatLonPolyClass()
@@ -465,9 +469,17 @@ export function rasterDrawMixin(chart) {
         selectOpts.uniformScaleOnly = true
         selectOpts.centerScaleOnly = true
         selectOpts.rotatable = false
-      } else if (filterArg.type === "LatLonPoly") {
-        const LatLonPoly = getLatLonPolyClass()
-        newShape = new LatLonPoly(chart, filterArg)
+      } else if (filterArg.type === "LatLonPoly" || filterArg.type === "Poly") {
+        const args = []
+        let PolyClass = null
+        if (useLonLat) {
+          PolyClass = getLatLonPolyClass()
+          args.push(chart)
+        } else {
+          PolyClass = MapdDraw.Poly
+        }
+        args.push(filterArg)
+        newShape = new PolyClass(...args)
       } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
         newShape = new MapdDraw[filterArg.type](filterArg)
       } else {
@@ -545,7 +557,7 @@ export function rasterDrawMixin(chart) {
       const bounds = chart.getDataRenderBounds()
       currXRange = [bounds[0][0], bounds[1][0]]
       currYRange = [bounds[0][1], bounds[2][1]]
-      if (typeof chart.useLonLat === "function" && chart.useLonLat()) {
+      if (chartUsesLonLat(chart)) {
         currXRange[0] = LatLonUtils.conv4326To900913X(currXRange[0])
         currXRange[1] = LatLonUtils.conv4326To900913X(currXRange[1])
         currYRange[0] = LatLonUtils.conv4326To900913Y(currYRange[0])
