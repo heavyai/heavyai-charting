@@ -740,6 +740,9 @@ class ShapeHandler {
     this.dblclickCB = this.dblclickCB.bind(this)
     this.keydownCB = this.keydownCB.bind(this)
     this.active = false
+
+    this.useLonLat =
+      typeof this.chart.useLonLat === "function" && this.chart.useLonLat()
   }
 
   disableBasemapEvents(options = {}) {
@@ -864,10 +867,6 @@ class CircleShapeHandler extends ShapeHandler {
     )
     this.startmousepos = MapdDraw.Point2d.create(0, 0)
     this.startmouseworldpos = MapdDraw.Point2d.create(0, 0)
-
-    this.useLonLat =
-      typeof this.chart.useLonLat === "function" && this.chart.useLonLat()
-
     if (this.useLonLat) {
       this.startmouselatlonpos = MapdDraw.Point2d.create(0, 0)
     }
@@ -1057,6 +1056,7 @@ class PolylineShapeHandler extends ShapeHandler {
     this.activeIdx = -1
     this.startPosAABox = MapdDraw.AABox2d.create()
     this.timer = null
+
     this.enableBasemapDebounceFunc = chart.debounce(() => {
       if (this.active) {
         this.enableBasemapEvents()
@@ -1111,9 +1111,15 @@ class PolylineShapeHandler extends ShapeHandler {
         verts.pop()
       }
 
-      const PolyClass = getLatLonPolyClass()
-      const poly = new PolyClass(
-        this.chart,
+      const args = []
+      let PolyClass = null
+      if (this.useLonLat) {
+        PolyClass = getLatLonPolyClass()
+        args.push(this.chart)
+      } else {
+        PolyClass = MapdDraw.Poly
+      }
+      args.push(
         Object.assign(
           {
             verts
@@ -1121,6 +1127,7 @@ class PolylineShapeHandler extends ShapeHandler {
           this.defaultStyle
         )
       )
+      const poly = new PolyClass(...args)
       this.setupFinalShape(poly)
 
       // clear out all other shapes using our destroy method
@@ -1414,9 +1421,15 @@ class LassoShapeHandler extends ShapeHandler {
         this.drawEngine.deleteShape(this.activeShape)
         this.activeShape = null
       } else {
-        const PolyClass = getLatLonPolyClass()
-        const poly = new PolyClass(
-          this.chart,
+        const args = []
+        let PolyClass = null
+        if (this.useLonLat) {
+          PolyClass = getLatLonPolyClass()
+          args.push(this.chart)
+        } else {
+          PolyClass = MapdDraw.Poly
+        }
+        args.push(
           Object.assign(
             {
               verts: newverts
@@ -1424,6 +1437,7 @@ class LassoShapeHandler extends ShapeHandler {
             this.defaultStyle
           )
         )
+        const poly = new PolyClass(...args)
         this.drawEngine.deleteShape(this.activeShape)
         this.setupFinalShape(poly)
         event.preventDefault()
