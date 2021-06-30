@@ -157,11 +157,19 @@ export function getLatLonCircleClass() {
 export function getLatLonPolyClass() {
   if (!LatLonPolyClass) {
     LatLonPolyClass = class LatLonPoly extends MapdDraw.Poly {
-      constructor(chart, opts) {
+      constructor(chart, draw_engine, opts) {
         super(opts)
         this._chart = chart
+        this._draw_engine = draw_engine
+
         this._screenPts = []
         this._geomDirty = true
+        this._viewDirty = true
+
+        const that = this
+        this._draw_engine.camera.on("changed", event => {
+          that._viewDirty = true
+        })
 
         // maximum length of subdivided line segment in pixels
         this._maxSegmentPixelDistance = 40
@@ -587,96 +595,86 @@ export function getLatLonPolyClass() {
       }
 
       _updateGeom(worldToScreenMatrix) {
-        // if (this._geomDirty || this._boundsOutOfDate) {
-        const initial_point_data = LatLonPoly.buildProjectedPointData()
-        let start_point_data = LatLonPoly.buildProjectedPointData()
-        let end_point_data = LatLonPoly.buildProjectedPointData()
-        const new_segment_point = MapdDraw.Point2d.create()
+        if (this._viewDirty || this._geomDirty || this._boundsOutOfDate) {
+          console.log(
+            `CROOT - updating geom, view: ${this._viewDirty}, geom: ${this._geomDirty}, bounds: ${this._boundsOutOfDate}`
+          )
+          const initial_point_data = LatLonPoly.buildProjectedPointData()
+          let start_point_data = LatLonPoly.buildProjectedPointData()
+          let end_point_data = LatLonPoly.buildProjectedPointData()
+          const new_segment_point = MapdDraw.Point2d.create()
 
-        const model_xform = this.globalXform
-        const mvp_xform = this._fullXform
+          const model_xform = this.globalXform
+          const mvp_xform = this._fullXform
 
-        this._screenPts = []
+          this._screenPts = []
 
-        if (this._verts.length === 0) {
-          return
-        }
+          if (this._verts.length === 0) {
+            return
+          }
 
-        LatLonPoly.projectPoint(
-          this._verts[0],
-          initial_point_data,
-          model_xform,
-          worldToScreenMatrix
-        )
-
-        MapdDraw.Point2d.copy(
-          start_point_data.merc_point,
-          initial_point_data.merc_point
-        )
-        MapdDraw.Point2d.copy(
-          start_point_data.screen_point,
-          initial_point_data.screen_point
-        )
-        MapdDraw.Point2d.copy(
-          start_point_data.lonlat_point,
-          initial_point_data.lonlat_point
-        )
-
-        this._screenPts.push(
-          MapdDraw.Point2d.clone(start_point_data.screen_point)
-        )
-
-        let swap_tmp = null
-        for (let i = 1; i < this._verts.length; i += 1) {
           LatLonPoly.projectPoint(
-            this._verts[i],
-            end_point_data,
+            this._verts[0],
+            initial_point_data,
             model_xform,
             worldToScreenMatrix
           )
+
+          MapdDraw.Point2d.copy(
+            start_point_data.merc_point,
+            initial_point_data.merc_point
+          )
+          MapdDraw.Point2d.copy(
+            start_point_data.screen_point,
+            initial_point_data.screen_point
+          )
+          MapdDraw.Point2d.copy(
+            start_point_data.lonlat_point,
+            initial_point_data.lonlat_point
+          )
+
+          this._screenPts.push(
+            MapdDraw.Point2d.clone(start_point_data.screen_point)
+          )
+
+          let swap_tmp = null
+          for (let i = 1; i < this._verts.length; i += 1) {
+            LatLonPoly.projectPoint(
+              this._verts[i],
+              end_point_data,
+              model_xform,
+              worldToScreenMatrix
+            )
+            this._subdivideLineSegment(
+              start_point_data,
+              end_point_data,
+              new_segment_point,
+              worldToScreenMatrix
+            )
+            this._screenPts.push(
+              MapdDraw.Point2d.clone(end_point_data.screen_point)
+            )
+
+            // now swap the endpoints
+            swap_tmp = start_point_data
+            start_point_data = end_point_data
+            end_point_data = swap_tmp
+          }
+
           this._subdivideLineSegment(
             start_point_data,
-            end_point_data,
+            initial_point_data,
             new_segment_point,
             worldToScreenMatrix
           )
-          this._screenPts.push(
-            MapdDraw.Point2d.clone(end_point_data.screen_point)
-          )
 
-          // now swap the endpoints
-          swap_tmp = start_point_data
-          start_point_data = end_point_data
-          end_point_data = swap_tmp
+          // NOTE: we are not re-adding the first point as the draw call will close the loop
+
+          this._geomDirty = false
+          this._boundsOutOfDate = false
+          this._viewDirty = false
         }
-
-        this._subdivideLineSegment(
-          start_point_data,
-          initial_point_data,
-          new_segment_point,
-          worldToScreenMatrix
-        )
-
-        // NOTE: we are not re-adding the first point as the draw call will close the loop
-
-        this._geomDirty = true
-        this._boundsOutOfDate = true
-        // }
       }
-
-      // getDimensions() {
-      //   return [this.width, this.height]
-      // }
-
-      // get width() {
-      //   this._updateAABox()
-      //   return this._aabox[2] - this._aabox[0]
-      // }
-
-      // get height() {
-      //   this._updateAABox()
-      //   return this._aabox[3] - this._aabox[1]
-      // }
 
       // _updateAABox() {
       //   this._updateGeom()
@@ -1115,7 +1113,7 @@ class PolylineShapeHandler extends ShapeHandler {
       let PolyClass = null
       if (this.useLonLat) {
         PolyClass = getLatLonPolyClass()
-        args.push(this.chart)
+        args.push(this.chart, this.drawEngine)
       } else {
         PolyClass = MapdDraw.Poly
       }
@@ -1425,7 +1423,7 @@ class LassoShapeHandler extends ShapeHandler {
         let PolyClass = null
         if (this.useLonLat) {
           PolyClass = getLatLonPolyClass()
-          args.push(this.chart)
+          args.push(this.chart, this.drawEngine)
         } else {
           PolyClass = MapdDraw.Poly
         }
