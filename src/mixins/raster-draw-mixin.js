@@ -474,7 +474,7 @@ export function rasterDrawMixin(chart) {
         let PolyClass = null
         if (useLonLat) {
           PolyClass = getLatLonPolyClass()
-          args.push(chart)
+          args.push(drawEngine)
         } else {
           PolyClass = MapdDraw.Poly
         }
