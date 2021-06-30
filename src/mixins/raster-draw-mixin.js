@@ -41,6 +41,43 @@ function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
   }
 }
 
+function createSTContainsStatementFromShape(px, py, shape, srid) {
+  const first_point = MapdDraw.Point2d.create()
+  const point = MapdDraw.Point2d.create()
+  const verts = shape.vertsRef
+  const xform = shape.globalXform
+
+  let contains_str = ""
+  if (verts.length) {
+    let wkt_str = "POLYGON(("
+    if (srid === 4326) {
+      verts.forEach((vert, curr_idx) => {
+        MapdDraw.Point2d.transformMat2d(point, vert, xform)
+        LatLonUtils.conv900913To4326(point, point)
+        wkt_str += `${point[0]} ${point[1]},`
+
+        if (curr_idx === 0) {
+          MapdDraw.Point2d.copy(first_point, point)
+        }
+      })
+    } else {
+      verts.forEach((vert, curr_idx) => {
+        MapdDraw.Point2d.transformMat2d(point, vert, xform)
+        wkt_str += `${point[0]} ${point[1]},`
+
+        if (curr_idx === 0) {
+          MapdDraw.Point2d.copy(first_point, point)
+        }
+      })
+    }
+
+    wkt_str += `${first_point[0]} ${first_point[1]}))`
+
+    contains_str = `ST_Contains(ST_GeomFromText('${wkt_str}', ${srid}), ST_SetSRID(ST_Point(${px}, ${py}), ${srid}))`
+  }
+  return contains_str
+}
+
 /* istanbul ignore next */
 export function rasterDrawMixin(chart) {
   let drawEngine = null
@@ -219,29 +256,24 @@ export function rasterDrawMixin(chart) {
                     mat[5]
                   }, 2.0)) / ${radsqr} <= 1.0`
                 )
-              } else if (shape instanceof LatLonPoly) {
-                const first_point = MapdDraw.Point2d.create()
-                const point = MapdDraw.Point2d.create()
-                const verts = shape.vertsRef
-                const xform = shape.globalXform
-
-                if (verts.length) {
-                  let wkt_str = "POLYGON(("
-                  verts.forEach((vert, curr_idx) => {
-                    MapdDraw.Point2d.transformMat2d(point, vert, xform)
-                    if (useLonLat) {
-                      LatLonUtils.conv900913To4326(point, point)
-                    }
-                    wkt_str += `${point[0]} ${point[1]},`
-
-                    if (curr_idx === 0) {
-                      MapdDraw.Point2d.copy(first_point, point)
-                    }
-                  })
-                  wkt_str += `${first_point[0]} ${first_point[1]}))`
-
-                  const contains_str = `ST_Contains(ST_GeomFromText('${wkt_str}', 4326), ST_SetSRID(ST_Point(${px}, ${py}), 4326))`
-
+              } else if (
+                shape instanceof LatLonPoly ||
+                shape instanceof MapdDraw.Poly
+              ) {
+                let srid = 0
+                if (shape instanceof LatLonPoly) {
+                  console.assert(useLonLat)
+                  srid = 4326
+                } else {
+                  console.assert(!useLonLat)
+                }
+                const contains_str = createSTContainsStatementFromShape(
+                  px,
+                  py,
+                  shape,
+                  srid
+                )
+                if (contains_str.length) {
                   filterObj.shapeFilters.push(
                     `${createUnlikelyStmtFromShape(
                       shape,
@@ -299,7 +331,10 @@ export function rasterDrawMixin(chart) {
                 if (!_.find(filterObj.shapeFilters, shapeFilter)) {
                   filterObj.shapeFilters.push(shapeFilter)
                 }
-              } else if (shape instanceof LatLonPoly) {
+              } else if (
+                shape instanceof LatLonPoly ||
+                shape instanceof MapdDraw.Poly
+              ) {
                 const p0 = MapdDraw.Point2d.create()
                 const convertedVerts = []
 
@@ -433,12 +468,6 @@ export function rasterDrawMixin(chart) {
       } else if (filterArg.type === "LatLonPoly") {
         const LatLonPoly = getLatLonPolyClass()
         newShape = new LatLonPoly(chart, filterArg)
-
-        // TODO(croot): need to determine what xform limits to apply here..
-        // May not need any if the points are subdivided at draw time appropriately
-        selectOpts.uniformScaleOnly = true
-        selectOpts.centerScaleOnly = true
-        selectOpts.rotatable = false
       } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
         newShape = new MapdDraw[filterArg.type](filterArg)
       } else {
