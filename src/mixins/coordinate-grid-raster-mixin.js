@@ -750,7 +750,7 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       }
     }
 
-    if (imgUrl && imgUrl !== _chart.lastImgUrl && !utils.deepEquals(renderBounds, _chart.lastRenderBounds)) {
+    if (imgUrl && imgUrl !== _chart.lastImgUrl || !utils.deepEquals(renderBounds, _chart.lastRenderBounds)) {
       _chart.lastImgUrl = imgUrl
       _chart.lastRenderBounds = renderBounds
       axios.get(imgUrl, {
