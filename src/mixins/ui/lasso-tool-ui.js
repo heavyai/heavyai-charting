@@ -281,21 +281,18 @@ export function getLatLonPolyClass() {
        * points should be subdivided for draw.
        * @param {ProjectedPointData} start_point_data The start point of the line segment
        * @param {ProjectedPointData} end_point_data The end point of the line segment
+       * @param {MapdDraw.AABox2d} view_aabox Axis-aligned bounding box describing the
+       *                                      intersection between the aabox of the current shape
+       *                                      and the current view
        * @param {MapdDraw.Mat2d} worldToScreenMatrix The world-to-screen transformation matrix
        * @returns {ViewBoundsIntersectData}
        */
       _intersectViewBounds(
         start_point_data,
         end_point_data,
+        view_aabox,
         worldToScreenMatrix
       ) {
-        // get the bounds of the chart first
-        const bounds = this._chart.getDataRenderBounds()
-
-        const view_aabox = MapdDraw.AABox2d.create()
-        MapdDraw.AABox2d.encapsulatePt(view_aabox, view_aabox, bounds[0])
-        MapdDraw.AABox2d.encapsulatePt(view_aabox, view_aabox, bounds[2])
-
         const x1 = start_point_data.lonlat_point[0]
         const y1 = start_point_data.lonlat_point[1]
         const x2 = end_point_data.lonlat_point[0]
@@ -536,19 +533,22 @@ export function getLatLonPolyClass() {
        * to draw.
        * @param {ProjectedPointData} start_point_data Start point of the line segment
        * @param {ProjectedPointData} end_point_data End point of the line segment
-       * @param {MapdDraw.Point2d} new_segment_point Temporary storage for calculating subdivided point positions in screen space
+       * @param {MapdDraw.AABox2d} view_aabox Axis-aligned bounding box describing the
+       *                                      intersection between the shape and the current view
+       *                                      in WGS84 lat/lon coords
        * @param {MapdDraw.Mat2d} worldToScreenMatrix Matrix defining world-to-screen transformation
        * @returns
        */
       _subdivideLineSegment(
         start_point_data,
         end_point_data,
-        new_segment_point,
+        view_aabox,
         worldToScreenMatrix
       ) {
         const view_intersect_data = this._intersectViewBounds(
           start_point_data,
           end_point_data,
+          view_aabox,
           worldToScreenMatrix
         )
 
@@ -574,6 +574,7 @@ export function getLatLonPolyClass() {
             distance / this._maxSegmentPixelDistance
           )
           for (let i = 1; i < num_subdivisions; i += 1) {
+            const new_segment_point = MapdDraw.Point2d.create()
             MapdDraw.Point2d.lerp(
               new_segment_point,
               start_latlon_pt,
@@ -596,22 +597,40 @@ export function getLatLonPolyClass() {
 
       _updateGeom(worldToScreenMatrix) {
         if (this._viewDirty || this._geomDirty || this._boundsOutOfDate) {
-          console.log(
-            `CROOT - updating geom, view: ${this._viewDirty}, geom: ${this._geomDirty}, bounds: ${this._boundsOutOfDate}`
-          )
-          const initial_point_data = LatLonPoly.buildProjectedPointData()
-          let start_point_data = LatLonPoly.buildProjectedPointData()
-          let end_point_data = LatLonPoly.buildProjectedPointData()
-          const new_segment_point = MapdDraw.Point2d.create()
-
-          const model_xform = this.globalXform
-          const mvp_xform = this._fullXform
-
           this._screenPts = []
-
           if (this._verts.length === 0) {
             return
           }
+
+          // calculate the bounds intersection between the current view bounds
+          // and the bounds of this shape
+          const world_bounds = this._draw_engine.camera.worldViewBounds
+          const aabox = this.aabox
+          MapdDraw.AABox2d.intersection(world_bounds, aabox, world_bounds)
+          if (MapdDraw.AABox2d.isEmpty(aabox)) {
+            return
+          }
+
+          // convert our intersection bounds to WGS84 lon/lat
+          world_bounds[MapdDraw.AABox2d.MINX] = LatLonUtils.conv900913To4326X(
+            world_bounds[MapdDraw.AABox2d.MINX]
+          )
+          world_bounds[MapdDraw.AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
+            world_bounds[MapdDraw.AABox2d.MAXX]
+          )
+          world_bounds[MapdDraw.AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
+            world_bounds[MapdDraw.AABox2d.MINY]
+          )
+          world_bounds[MapdDraw.AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
+            world_bounds[MapdDraw.AABox2d.MAXY]
+          )
+
+          const initial_point_data = LatLonPoly.buildProjectedPointData()
+          let start_point_data = LatLonPoly.buildProjectedPointData()
+          let end_point_data = LatLonPoly.buildProjectedPointData()
+
+          const model_xform = this.globalXform
+          const mvp_xform = this._fullXform
 
           LatLonPoly.projectPoint(
             this._verts[0],
@@ -648,7 +667,7 @@ export function getLatLonPolyClass() {
             this._subdivideLineSegment(
               start_point_data,
               end_point_data,
-              new_segment_point,
+              world_bounds,
               worldToScreenMatrix
             )
             this._screenPts.push(
@@ -664,7 +683,7 @@ export function getLatLonPolyClass() {
           this._subdivideLineSegment(
             start_point_data,
             initial_point_data,
-            new_segment_point,
+            world_bounds,
             worldToScreenMatrix
           )
 
@@ -676,16 +695,18 @@ export function getLatLonPolyClass() {
         }
       }
 
-      // _updateAABox() {
-      //   this._updateGeom()
-      // }
-
       _draw(ctx) {
-        // separate the model-view-matrix into the model (globalXform) matrix
+        // separate the model-view-matrix (this._fullXform) into the model matrix (globalXform)
         // and the view-projection matrix for separable components and to minimize
         // the amount of math applied.
+
+        // invert the model matrix
         const xform = MapdDraw.Mat2d.clone(this.globalXform)
         MapdDraw.Mat2d.invert(xform, xform)
+
+        // and multiply w/ model-view-projection matrix resulting in just the
+        // view-projection matrix, or, in other words, the world-space-to-screen-space
+        // transformation matrix
         MapdDraw.Mat2d.multiply(xform, this._fullXform, xform)
         ctx.setTransform(1, 0, 0, 1, 0, 0)
 
