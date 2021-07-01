@@ -52827,8 +52827,9 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
       }
     };
 
-    if (imgUrl && imgUrl !== _chart.lastImgUrl) {
+    if (imgUrl && imgUrl !== _chart.lastImgUrl && !utils.deepEquals(renderBounds, _chart.lastRenderBounds)) {
       _chart.lastImgUrl = imgUrl;
+      _chart.lastRenderBounds = renderBounds;
       _axios2.default.get(imgUrl, {
         responseType: 'arraybuffer'
       }).then(function (_ref) {
