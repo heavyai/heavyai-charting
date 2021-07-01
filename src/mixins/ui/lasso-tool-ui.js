@@ -157,9 +157,8 @@ export function getLatLonCircleClass() {
 export function getLatLonPolyClass() {
   if (!LatLonPolyClass) {
     LatLonPolyClass = class LatLonPoly extends MapdDraw.Poly {
-      constructor(chart, draw_engine, opts) {
+      constructor(draw_engine, opts) {
         super(opts)
-        this._chart = chart
         this._draw_engine = draw_engine
 
         this._screenPts = []
@@ -1134,7 +1133,7 @@ class PolylineShapeHandler extends ShapeHandler {
       let PolyClass = null
       if (this.useLonLat) {
         PolyClass = getLatLonPolyClass()
-        args.push(this.chart, this.drawEngine)
+        args.push(this.drawEngine)
       } else {
         PolyClass = MapdDraw.Poly
       }
@@ -1444,7 +1443,7 @@ class LassoShapeHandler extends ShapeHandler {
         let PolyClass = null
         if (this.useLonLat) {
           PolyClass = getLatLonPolyClass()
-          args.push(this.chart, this.drawEngine)
+          args.push(this.drawEngine)
         } else {
           PolyClass = MapdDraw.Poly
         }
