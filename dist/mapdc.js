@@ -52093,6 +52093,8 @@ var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
 var _errors = __webpack_require__(36);
 
+var _utils = __webpack_require__(4);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -52827,7 +52829,7 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
       }
     };
 
-    if (imgUrl && imgUrl !== _chart.lastImgUrl && !utils.deepEquals(renderBounds, _chart.lastRenderBounds)) {
+    if (imgUrl && imgUrl !== _chart.lastImgUrl && !_utils.utils.deepEquals(renderBounds, _chart.lastRenderBounds)) {
       _chart.lastImgUrl = imgUrl;
       _chart.lastRenderBounds = renderBounds;
       _axios2.default.get(imgUrl, {

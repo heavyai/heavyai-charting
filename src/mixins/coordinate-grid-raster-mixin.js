@@ -7,6 +7,7 @@ import marginMixin from "./margin-mixin"
 import axios from "axios"
 import lockAxisMixin from "./lock-axis-mixin"
 import { DestroyedChartError } from "../core/errors"
+import { utils } from "../utils/utils"
 
 /**
  * Coordinate Grid Raster is an abstract base chart designed to support coordinate grid based
