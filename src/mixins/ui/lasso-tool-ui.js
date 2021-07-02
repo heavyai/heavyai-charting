@@ -50,11 +50,15 @@ const LatLonViewIntersectUtils = {
     model_matrix,
     worldToScreenMatrix
   ) => {
-    MapdDraw.Point2d.transformMat2d(
-      out_point_data.merc_point,
-      initial_merc_point,
-      model_matrix
-    )
+    if (model_matrix === null) {
+      MapdDraw.Point2d.copy(out_point_data.merc_point, initial_merc_point)
+    } else {
+      MapdDraw.Point2d.transformMat2d(
+        out_point_data.merc_point,
+        initial_merc_point,
+        model_matrix
+      )
+    }
 
     MapdDraw.Point2d.transformMat2d(
       out_point_data.screen_point,
@@ -104,6 +108,10 @@ const LatLonViewIntersectUtils = {
    * @property {MapdDraw.Point2d[]} latlon_pts Array of points defined in WGS84 lat/lon space that either intersect or are contained by a view
    * @property {MapdDraw.Point2d[]} screen_pts Array of points defined in screen space that either intersect or are contained by a view
    *                                           This is the same set of points as latlon_pts above, but transformed into screen space.
+   * @property {number[]} pts_t Array of real numbers between [0-1] indicating the normalized distance of the intersection pts relative to
+   *                            the original line segment. For example, if t=0, the intersection point is the starting point of the line
+   *                            segment. If t=1, it is the end point of the line segment, and if t=0.5, it is the midpoint of the
+   *                            line segment. This will be in ascending sorted order.
    * @property {boolean} subdivide Set to true if the caller should subdivide the insection points found here.
    *                               For instance, We may not want to subdivide if the intersection line segment is completely horizontal or vertical
    */
@@ -148,13 +156,13 @@ const LatLonViewIntersectUtils = {
     const intersect_aabox = MapdDraw.AABox2d.create()
     MapdDraw.AABox2d.intersection(intersect_aabox, view_aabox, line_aabox)
 
-    // keeping a tally of the currently stored t value for bounds intersection
-    // points. The max t for intersection points will be 1, so setting this to
-    // 2 as an initial value has no merit. Reminder we will return with
-    // 2 points, and those 2 points should be returned in t ascending order
-    // to be continuous with the start-point/end-point arguments passed. So when the
-    // 2nd intersect point has been found, the comparison of the t for that
-    // intersection and current_t (which would be associated with the first interesection
+    // The current stored t value for bounds intersection points.
+    // The max t for intersection points will be 1, so setting this to
+    // 2 as an initial value. Reminder we will return with 2 points, and
+    // those 2 points should be returned in t ascending order to be continuous
+    // with the start-point/end-point arguments passed. So when the 2nd intersect
+    // point has been found, the comparison of the t for that intersection and
+    // current_t (which would be associated with the first interesection
     // point) will determine whether to insert the new intersection point to the
     // front or the back of the array
     let current_t = 2.0
@@ -169,6 +177,10 @@ const LatLonViewIntersectUtils = {
 
       /** intersect points in screen space */
       screen_pts: [],
+
+      // the normalized distance of each intersection point relative to the original
+      // line segment. This will be in ascending sorted order.
+      pts_t: [],
 
       /** whether the caller should subdivide the line segments between the
        * intersection points found here */
@@ -202,8 +214,10 @@ const LatLonViewIntersectUtils = {
       // points and mark the segment as needing subdividing.
       rtn_obj.latlon_pts.push(start_point_data.lonlat_point)
       rtn_obj.screen_pts.push(start_point_data.screen_point)
+      rtn_obj.pts_t.push(0)
       rtn_obj.latlon_pts.push(end_point_data.lonlat_point)
       rtn_obj.screen_pts.push(end_point_data.screen_point)
+      rtn_obj.pts_t.push(1)
       rtn_obj.subdivide = true
     } else {
       // need to do intersection checks against the side of the intersection bounds. There will be
@@ -304,9 +318,11 @@ const LatLonViewIntersectUtils = {
           if (t < current_t) {
             rtn_obj.latlon_pts.splice(0, 0, lonlat_pt)
             rtn_obj.screen_pts.splice(0, 0, screen_pt)
+            rtn_obj.pts_t.splice(0, 0, t)
           } else {
             rtn_obj.latlon_pts.push(lonlat_pt)
             rtn_obj.screen_pts.push(screen_pt)
+            rtn_obj.pts_t.push(t)
           }
           current_t = t
           return true
@@ -363,11 +379,29 @@ const LatLonViewIntersectUtils = {
 export function getLatLonCircleClass() {
   if (!LatLonCircleClass) {
     LatLonCircleClass = class LatLonCircle extends MapdDraw.Circle {
-      constructor(opts) {
+      constructor(draw_engine, opts) {
         super(opts)
+
+        this._draw_engine = draw_engine
+
         this._mercatorPts = []
+        this._screenPts = []
         this._geomDirty = true
+        this._viewDirty = true
+
+        const that = this
+        this._draw_engine.camera.on("changed", event => {
+          that._viewDirty = true
+        })
+
+        // maximum length of subdivided line segment in pixels
+        this._maxSegmentPixelDistance = 40
+
         this._initialRadius = this._radius
+
+        // degrees between successive points in the drawn
+        // segmented circle
+        this._degrees_between_points = 6.0
       }
 
       setScale(scale) {
@@ -383,54 +417,115 @@ export function getLatLonCircleClass() {
         this._initialRadius = this.radius
       }
 
+      /**
+       * Creates a new 2d lat/lon point that is a specific distance away from
+       * a center point at an specific angle around that point
+       * @param {MapdDraw.Point2d} center_radians The center point of a LatLonCircle in radians
+       * @param {number} dist_radians The distance to protrude the point in radians
+       * @param {number} angle_radians The angle about the center point to protrude the new point in radians
+       * @returns {MapdDraw.Point2d} A new lon/lat point that is protruded a specific distance away from a center point at the specified angle
+       */
+      static createPointDistanceFromCenter(
+        center_radians,
+        dist_radians,
+        angle_radians
+      ) {
+        const center_lat_radians = center_radians[1]
+        const center_lon_radians = center_radians[0]
+
+        const point_lat_radians = Math.asin(
+          Math.sin(center_lat_radians) * Math.cos(dist_radians) +
+            Math.cos(center_lat_radians) *
+              Math.sin(dist_radians) *
+              Math.cos(angle_radians)
+        )
+        const point_lon_radians =
+          center_lon_radians +
+          Math.atan2(
+            Math.sin(angle_radians) *
+              Math.sin(dist_radians) *
+              Math.cos(center_lat_radians),
+            Math.cos(dist_radians) -
+              Math.sin(center_lat_radians) * Math.sin(point_lat_radians)
+          )
+
+        // convert back to degrees
+        const point = MapdDraw.Point2d.create(
+          point_lon_radians,
+          point_lat_radians
+        )
+        MapdDraw.Vec2d.scale(point, point, MapdDraw.Math.RAD_TO_DEG)
+        return point
+      }
+
+      _getCenterInMeractor() {
+        const center_point = MapdDraw.Point2d.create()
+        const xform = this.globalXform
+        MapdDraw.Mat2d.svd(center_point, null, null, xform)
+        return center_point
+      }
+
+      /**
+       * @returns {MapdDraw.Point2d} Center point of the circle in radians
+       */
+      _getCenterPointInRadians(center_in_mercator = null) {
+        let center_point = null
+        if (center_in_mercator === null) {
+          center_point = this._getCenterInMeractor()
+        } else {
+          center_point = MapdDraw.Point2d.clone(center_in_mercator)
+        }
+
+        // convert from mercator to lat/lon
+        LatLonUtils.conv900913To4326(center_point, center_point)
+
+        // now convert to radians
+        MapdDraw.Vec2d.scale(
+          center_point,
+          center_point,
+          MapdDraw.Math.DEG_TO_RAD
+        )
+
+        return center_point
+      }
+
+      /**
+       * Returns a given distance in kilometers in radians
+       * @param {number} distance Distance in kilometers
+       * @returns {number} the distance in radians around the globe
+       */
+      static getDistanceInRadians(distance) {
+        // radius is stored in kilometers, so convert kilometers to radians.
+        // See: https://stackoverflow.com/questions/12180290/convert-kilometers-to-radians
+        // for a discussion.
+        // The 6372.79756 number is the earth's radius in kilometers and aligns with the
+        // earth radius used in distance_in_meters in utils-latlon
+        return distance / 6372.797560856
+      }
+
       _updateGeom() {
         if (this._geomDirty || this._boundsOutOfDate) {
-          const centerMerc = MapdDraw.Point2d.create()
-          const centerLatLon = MapdDraw.Point2d.create()
-          const scale = MapdDraw.Vec2d.create()
-          const xform = this.globalXform
-          MapdDraw.Mat2d.svd(centerMerc, scale, null, xform)
+          const number_of_points = Math.floor(
+            360 / this._degrees_between_points
+          )
 
-          const degrees_between_points = 6.0
-          const number_of_points = Math.floor(360 / degrees_between_points)
-
-          // radius is stored in kilometers, so convert kilometers to radians.
-          // See: https://stackoverflow.com/questions/12180290/convert-kilometers-to-radians
-          // for a discussion.
-          // The 6372.79756 number is the earth's radius in kilometers and aligns with the
-          // earth radius used in distance_in_meters in utils-latlon
-          const dist_radians = this._radius / 6372.797560856
-
-          // convert from mercator to lat/lon
-          LatLonUtils.conv900913To4326(centerLatLon, centerMerc)
-          const center_lat_radians = centerLatLon[1] * MapdDraw.Math.DEG_TO_RAD
-          const center_lon_radians = centerLatLon[0] * MapdDraw.Math.DEG_TO_RAD
+          const center_mercator = this._getCenterInMeractor()
+          const center_radians = this._getCenterPointInRadians(center_mercator)
+          const dist_radians = LatLonCircle.getDistanceInRadians(this._radius)
 
           MapdDraw.AABox2d.initEmpty(this._aabox)
           this._mercatorPts = []
+
           for (let index = 0; index < number_of_points; index = index + 1) {
-            const degrees = index * degrees_between_points
-            const degree_radians = (degrees * Math.PI) / 180
+            const angle_degrees = index * this._degrees_between_points
+            const angle_radians = (angle_degrees * Math.PI) / 180
 
             // rotate the sample point around the circle center using the radius distance in radians
-            const point_lat_radians = Math.asin(
-              Math.sin(center_lat_radians) * Math.cos(dist_radians) +
-                Math.cos(center_lat_radians) *
-                  Math.sin(dist_radians) *
-                  Math.cos(degree_radians)
+            const point = LatLonCircle.createPointDistanceFromCenter(
+              center_radians,
+              dist_radians,
+              angle_radians
             )
-            const point_lon_radians =
-              center_lon_radians +
-              Math.atan2(
-                Math.sin(degree_radians) *
-                  Math.sin(dist_radians) *
-                  Math.cos(center_lat_radians),
-                Math.cos(dist_radians) -
-                  Math.sin(center_lat_radians) * Math.sin(point_lat_radians)
-              )
-            const point_lat = (point_lat_radians * 180) / Math.PI
-            const point_lon = (point_lon_radians * 180) / Math.PI
-            const point = MapdDraw.Point2d.create(point_lon, point_lat)
 
             // convert from lon/lat to mercator
             LatLonUtils.conv4326To900913(point, point)
@@ -441,11 +536,205 @@ export function getLatLonCircleClass() {
 
           const pivot = MapdDraw.Point2d.create(0, 0)
           MapdDraw.AABox2d.getCenter(pivot, this._aabox)
-          MapdDraw.Point2d.sub(pivot, pivot, centerMerc)
+          MapdDraw.Point2d.sub(pivot, pivot, center_mercator)
           this.pivot = pivot
 
           this._geomDirty = false
           this._boundsOutOfDate = false
+        }
+      }
+
+      /**
+       * Determines whether a line segment that represents an arc of a circle defined
+       * by a start/end point should be further subdivided for drawing.
+       * If the segment should be subdivided, will append subdivided points representing
+       * the subdivided arc into the array of screen-projected points for drawing.
+       * @param {number} start_index The index of the point defined by the start_point_data argument in the original
+       *                             array of mercator points representing the segmented circle.
+       * @param {ProjectedPointData} start_point_data Start point of the line segment
+       * @param {ProjectedPointData} end_point_data End point of the line segment
+       * @param {MapdDraw.AABox2d} view_aabox Axis-aligned bounding box describing the
+       *                                      intersection between the shape and the current view
+       *                                      in WGS84 lat/lon coords
+       * @param {MapdDraw.Mat2d} worldToScreenMatrix Matrix defining world-to-screen transformation
+       * @returns
+       */
+      _subdivideArc(
+        start_index,
+        start_point_data,
+        end_point_data,
+        view_aabox,
+        worldToScreenMatrix
+      ) {
+        const view_intersect_data = LatLonViewIntersectUtils.intersectViewBounds(
+          start_point_data,
+          end_point_data,
+          view_aabox,
+          worldToScreenMatrix
+        )
+
+        if (!view_intersect_data.subdivide) {
+          return
+        }
+
+        console.assert(view_intersect_data.latlon_pts.length === 2)
+
+        const start_screen_pt = view_intersect_data.screen_pts[0]
+        const end_screen_pt = view_intersect_data.screen_pts[1]
+
+        const distance = MapdDraw.Point2d.distance(
+          start_screen_pt,
+          end_screen_pt
+        )
+        if (distance > this._maxSegmentPixelDistance) {
+          const center_radians = this._getCenterPointInRadians()
+          const dist_radians = LatLonCircle.getDistanceInRadians(this._radius)
+
+          const num_subdivisions = Math.ceil(
+            distance / this._maxSegmentPixelDistance
+          )
+          const start_angle = start_index * this._degrees_between_points
+          const start_t = view_intersect_data.pts_t[0]
+          const end_t = view_intersect_data.pts_t[1]
+          const t_diff = (end_t - start_t) / num_subdivisions
+          for (
+            let current_t = start_t;
+            current_t <= end_t;
+            current_t += t_diff
+          ) {
+            if (current_t === 0.0 || current_t === 1.0) {
+              // skip the endpoints
+              continue
+            }
+
+            const current_angle =
+              start_angle + current_t * this._degrees_between_points
+            const current_angle_radians =
+              current_angle * MapdDraw.Math.DEG_TO_RAD
+
+            // create a new subdivided point rotated around the circle center using the radius distance in radians
+            const new_point = LatLonCircle.createPointDistanceFromCenter(
+              center_radians,
+              dist_radians,
+              current_angle_radians
+            )
+
+            // convert from lon/lat to mercator
+            LatLonUtils.conv4326To900913(new_point, new_point)
+
+            // now convert to screen space
+            MapdDraw.Point2d.transformMat2d(
+              new_point,
+              new_point,
+              worldToScreenMatrix
+            )
+            this._screenPts.push(new_point)
+          }
+        }
+      }
+
+      _updateGeomForView(worldToScreenMatrix) {
+        if (this._viewDirty || this._geomDirty || this._boundsOutOfDate) {
+          this._updateGeom()
+
+          this._screenPts = []
+          if (this._mercatorPts.length === 0) {
+            return
+          }
+
+          // calculate the bounds intersection between the current view bounds
+          // and the bounds of this shape
+          const world_bounds = this._draw_engine.camera.worldViewBounds
+
+          // NOTE: this._aabox would have already been updated in the above _updateGeom()
+          // call, so can go directly to the _aabox member rather than throw the this.aabox
+          // getter
+          MapdDraw.AABox2d.intersection(world_bounds, this._aabox, world_bounds)
+          if (MapdDraw.AABox2d.isEmpty(world_bounds)) {
+            return
+          }
+
+          // convert our intersection bounds to WGS84 lon/lat
+          world_bounds[MapdDraw.AABox2d.MINX] = LatLonUtils.conv900913To4326X(
+            world_bounds[MapdDraw.AABox2d.MINX]
+          )
+          world_bounds[MapdDraw.AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
+            world_bounds[MapdDraw.AABox2d.MAXX]
+          )
+          world_bounds[MapdDraw.AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
+            world_bounds[MapdDraw.AABox2d.MINY]
+          )
+          world_bounds[MapdDraw.AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
+            world_bounds[MapdDraw.AABox2d.MAXY]
+          )
+
+          const initial_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
+          let start_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
+          let end_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
+
+          LatLonViewIntersectUtils.projectPoint(
+            this._mercatorPts[0],
+            initial_point_data,
+            null,
+            worldToScreenMatrix
+          )
+
+          MapdDraw.Point2d.copy(
+            start_point_data.merc_point,
+            initial_point_data.merc_point
+          )
+          MapdDraw.Point2d.copy(
+            start_point_data.screen_point,
+            initial_point_data.screen_point
+          )
+          MapdDraw.Point2d.copy(
+            start_point_data.lonlat_point,
+            initial_point_data.lonlat_point
+          )
+
+          this._screenPts.push(
+            MapdDraw.Point2d.clone(start_point_data.screen_point)
+          )
+
+          let swap_tmp = null
+          let i = 1
+          for (; i < this._mercatorPts.length; i += 1) {
+            LatLonViewIntersectUtils.projectPoint(
+              this._mercatorPts[i],
+              end_point_data,
+              null,
+              worldToScreenMatrix
+            )
+            this._subdivideArc(
+              i - 1,
+              start_point_data,
+              end_point_data,
+              world_bounds,
+              worldToScreenMatrix
+            )
+            this._screenPts.push(
+              MapdDraw.Point2d.clone(end_point_data.screen_point)
+            )
+
+            // now swap the endpoints
+            swap_tmp = start_point_data
+            start_point_data = end_point_data
+            end_point_data = swap_tmp
+          }
+
+          this._subdivideArc(
+            i,
+            start_point_data,
+            initial_point_data,
+            world_bounds,
+            worldToScreenMatrix
+          )
+
+          // NOTE: we are not re-adding the first point as the draw call will close the loop
+
+          console.assert(!this._geomDirty)
+          // console.assert(!this._boundsOutOfDate)
+          this._viewDirty = false
         }
       }
 
@@ -468,26 +757,27 @@ export function getLatLonCircleClass() {
       }
 
       _draw(ctx) {
-        // only need the mercator to screen projection -- pull out any
-        // local transforms here
+        // separate the model-view-matrix (this._fullXform) into the model matrix (globalXform)
+        // and the view-projection matrix for separable components and to minimize
+        // the amount of math applied.
+
+        // invert the model matrix
         const xform = MapdDraw.Mat2d.clone(this.globalXform)
         MapdDraw.Mat2d.invert(xform, xform)
+
+        // and multiply w/ model-view-projection matrix resulting in just the
+        // view-projection matrix, or, in other words, the world-space-to-screen-space
+        // transformation matrix
         MapdDraw.Mat2d.multiply(xform, this._fullXform, xform)
+
         ctx.setTransform(1, 0, 0, 1, 0, 0)
 
-        this._updateGeom()
+        this._updateGeomForView(xform)
 
-        if (this._mercatorPts.length) {
-          const proj_pt = MapdDraw.Point2d.create()
-          MapdDraw.Point2d.transformMat2d(proj_pt, this._mercatorPts[0], xform)
-          ctx.moveTo(proj_pt[0], proj_pt[1])
-          for (let i = 1; i < this._mercatorPts.length; i += 1) {
-            MapdDraw.Point2d.transformMat2d(
-              proj_pt,
-              this._mercatorPts[i],
-              xform
-            )
-            ctx.lineTo(proj_pt[0], proj_pt[1])
+        if (this._screenPts.length) {
+          ctx.moveTo(this._screenPts[0][0], this._screenPts[0][1])
+          for (let i = 1; i < this._screenPts.length; i += 1) {
+            ctx.lineTo(this._screenPts[i][0], this._screenPts[i][1])
           }
           ctx.closePath()
         }
@@ -628,7 +918,6 @@ export function getLatLonPolyClass() {
           let end_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
 
           const model_xform = this.globalXform
-          const mvp_xform = this._fullXform
 
           LatLonViewIntersectUtils.projectPoint(
             this._verts[0],
