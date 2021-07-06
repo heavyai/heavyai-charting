@@ -49956,15 +49956,15 @@ function asyncMixin(_chart) {
   };
 
   var _chartRedrawEnabled = true;
-
-  var enableChartRedraw = function enableChartRedraw() {
-    _chartRedrawEnabled = true;
-  };
-  var disableChartRedraw = function disableChartRedraw() {
-    _chartRedrawEnabled = false;
-  };
   var chartRedrawEnabled = function chartRedrawEnabled() {
     return _chartRedrawEnabled;
+  };
+
+  _chart.enableChartRedraw = function () {
+    _chartRedrawEnabled = true;
+  };
+  _chart.disableChartRedraw = function () {
+    _chartRedrawEnabled = false;
   };
 
   _chart.redrawAsync = function (queryGroupId, queryCount) {

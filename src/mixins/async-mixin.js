@@ -96,14 +96,14 @@ export default function asyncMixin(_chart) {
   }
 
   let _chartRedrawEnabled = true
+  const chartRedrawEnabled = () => _chartRedrawEnabled
 
-  const enableChartRedraw = function() {
+  _chart.enableChartRedraw = function() {
     _chartRedrawEnabled = true
   }
-  const disableChartRedraw = function() {
+  _chart.disableChartRedraw = function() {
     _chartRedrawEnabled = false
   }
-  const chartRedrawEnabled = () => _chartRedrawEnabled
 
   _chart.redrawAsync = function(queryGroupId, queryCount) {
     if (refreshDisabled() || !chartRedrawEnabled()) {
