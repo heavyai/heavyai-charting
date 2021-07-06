@@ -95,8 +95,18 @@ export default function asyncMixin(_chart) {
     })
   }
 
+  let _chartRedrawEnabled = true
+
+  const enableChartRedraw = function() {
+    _chartRedrawEnabled = true
+  }
+  const disableChartRedraw = function() {
+    _chartRedrawEnabled = false
+  }
+  const chartRedrawEnabled = () => _chartRedrawEnabled
+
   _chart.redrawAsync = function(queryGroupId, queryCount) {
-    if (refreshDisabled()) {
+    if (refreshDisabled() || !chartRedrawEnabled()) {
       return Promise.resolve()
     }
 

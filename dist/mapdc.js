@@ -49955,8 +49955,20 @@ function asyncMixin(_chart) {
     });
   };
 
+  var _chartRedrawEnabled = true;
+
+  var enableChartRedraw = function enableChartRedraw() {
+    _chartRedrawEnabled = true;
+  };
+  var disableChartRedraw = function disableChartRedraw() {
+    _chartRedrawEnabled = false;
+  };
+  var chartRedrawEnabled = function chartRedrawEnabled() {
+    return _chartRedrawEnabled;
+  };
+
   _chart.redrawAsync = function (queryGroupId, queryCount) {
-    if ((0, _core.refreshDisabled)()) {
+    if ((0, _core.refreshDisabled)() || !chartRedrawEnabled()) {
       return Promise.resolve();
     }
 
@@ -54897,6 +54909,7 @@ function validSymbol(type) {
     case "hexagon-horiz":
     case "wedge":
     case "arrow":
+    case "airplane":
       return true;
     default:
       return false;
@@ -55354,7 +55367,7 @@ function rasterLayerPointMixin(_layer) {
     var scales = (0, _utilsVega.getScales)(state.encoding, layerName, scaledomainfields, getStatsLayerName());
 
     var marks = [{
-      type: "symbol",
+      type: markType === "airplane" ? "legacysymbol" : "symbol",
       from: {
         data: layerName
       },
