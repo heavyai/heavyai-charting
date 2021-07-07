@@ -60,11 +60,13 @@ const LatLonViewIntersectUtils = {
       )
     }
 
-    MapdDraw.Point2d.transformMat2d(
-      out_point_data.screen_point,
-      out_point_data.merc_point,
-      worldToScreenMatrix
-    )
+    if (worldToScreenMatrix !== null) {
+      MapdDraw.Point2d.transformMat2d(
+        out_point_data.screen_point,
+        out_point_data.merc_point,
+        worldToScreenMatrix
+      )
+    }
 
     LatLonUtils.conv900913To4326(
       out_point_data.lonlat_point,
@@ -87,10 +89,18 @@ const LatLonViewIntersectUtils = {
    */
   canIntersect: (numerator, denominator) => {
     if (denominator > 0) {
-      if (numerator >= 0 && numerator <= denominator) {
+      if (
+        numerator >= 0 &&
+        (numerator < denominator ||
+          MapdDraw.Math.floatingPtEquals(numerator, denominator))
+      ) {
         return true
       }
-    } else if (numerator <= 0 && numerator >= denominator) {
+    } else if (
+      numerator <= 0 &&
+      (numerator > denominator ||
+        MapdDraw.Math.floatingPtEquals(numerator, denominator))
+    ) {
       return true
     }
     return false
@@ -384,8 +394,6 @@ export function getLatLonCircleClass() {
 
         this._draw_engine = draw_engine
 
-        this._mercatorPts = []
-        this._screenPts = []
         this._geomDirty = true
         this._viewDirty = true
 
@@ -402,6 +410,32 @@ export function getLatLonCircleClass() {
         // degrees between successive points in the drawn
         // segmented circle
         this._degrees_between_points = 6.0
+
+        // Now calculate a baseline axis-aligned bounding box area based on the
+        // max segment distance for subdividing. This will be used to do quick
+        // checks on whether subdivision is needed or not.
+
+        // obviously this circumferences is just an estimate, but good enough
+        const base_screen_space_circumference =
+          (360.0 / this._degrees_between_points) * this._maxSegmentPixelDistance
+
+        const base_screen_space_diameter =
+          base_screen_space_circumference / Math.PI
+
+        // w * h
+        this._base_screen_area =
+          base_screen_space_diameter * base_screen_space_diameter
+
+        this._segmented_circle_points = []
+        this._subdivided_screen_points = []
+
+        const number_of_points = Math.floor(360 / this._degrees_between_points)
+
+        for (let i = 0; i < number_of_points; ++i) {
+          this._segmented_circle_points.push(
+            LatLonViewIntersectUtils.buildProjectedPointData()
+          )
+        }
       }
 
       setScale(scale) {
@@ -420,12 +454,14 @@ export function getLatLonCircleClass() {
       /**
        * Creates a new 2d lat/lon point that is a specific distance away from
        * a center point at an specific angle around that point
+       * @param {MapdDraw.Point2d} output_point The coordinates of the new point will be stored in this object
        * @param {MapdDraw.Point2d} center_radians The center point of a LatLonCircle in radians
        * @param {number} dist_radians The distance to protrude the point in radians
        * @param {number} angle_radians The angle about the center point to protrude the new point in radians
        * @returns {MapdDraw.Point2d} A new lon/lat point that is protruded a specific distance away from a center point at the specified angle
        */
-      static createPointDistanceFromCenter(
+      static initializePointDistanceFromCenter(
+        output_point,
         center_radians,
         dist_radians,
         angle_radians
@@ -450,15 +486,56 @@ export function getLatLonCircleClass() {
           )
 
         // convert back to degrees
-        const point = MapdDraw.Point2d.create(
-          point_lon_radians,
-          point_lat_radians
+        MapdDraw.Point2d.set(output_point, point_lon_radians, point_lat_radians)
+        MapdDraw.Vec2d.scale(
+          output_point,
+          output_point,
+          MapdDraw.Math.RAD_TO_DEG
         )
-        MapdDraw.Vec2d.scale(point, point, MapdDraw.Math.RAD_TO_DEG)
-        return point
       }
 
-      _getCenterInMeractor() {
+      static getAngleBetweenTwoPoints(
+        center_lonlat,
+        center_radians,
+        point_lonlat,
+        point_radians
+      ) {
+        // distance between the points in kilometers using haversine
+        const distance =
+          LatLonUtils.distance_in_meters(
+            center_lonlat[0],
+            center_lonlat[1],
+            point_lonlat[0],
+            point_lonlat[1]
+          ) / 1000.0
+
+        // get the distance between the points in radians
+        const dist_radians = LatLonCircle.getDistanceInRadians(distance)
+
+        // solve for the new angle in radians, which is the inverse of finding the latitude in
+        // initializePointDistanceFromCenter() method above
+        const numerator =
+          Math.sin(point_radians[1]) -
+          Math.sin(center_radians[1]) * Math.cos(dist_radians)
+        const denominator = Math.cos(center_radians[1]) * Math.sin(dist_radians)
+        console.assert(
+          denominator !== 0,
+          `${center_lonlat}, ${center_radians}, ${point_lonlat}, ${point_radians}, ${distance}`
+        )
+
+        // make sure to return in a range of [-PI, PI], to do that, just check which side of the
+        // center point the point to check falls.
+        const angle = Math.acos(numerator / denominator)
+        if (point_lonlat[0] - center_lonlat[0] >= 0) {
+          return angle
+        }
+        return MapdDraw.Math.TWO_PI - angle
+      }
+
+      /**
+       * @returns {MapdDraw.Point2d} Center point of the circle in web-mercator projected space
+       */
+      _getMercatorCenterPoint() {
         const center_point = MapdDraw.Point2d.create()
         const xform = this.globalXform
         MapdDraw.Mat2d.svd(center_point, null, null, xform)
@@ -466,18 +543,37 @@ export function getLatLonCircleClass() {
       }
 
       /**
-       * @returns {MapdDraw.Point2d} Center point of the circle in radians
+       * @returns {MapdDraw.Point2d} Center point of the circle in WGS84 space
        */
-      _getCenterPointInRadians(center_in_mercator = null) {
+      _getLatLonCenterPoint(center_in_mercator = null) {
         let center_point = null
         if (center_in_mercator === null) {
-          center_point = this._getCenterInMeractor()
+          center_point = this._getMercatorCenterPoint()
         } else {
           center_point = MapdDraw.Point2d.clone(center_in_mercator)
         }
 
         // convert from mercator to lat/lon
         LatLonUtils.conv900913To4326(center_point, center_point)
+
+        return center_point
+      }
+
+      /**
+       * @returns {MapdDraw.Point2d} Center point of the circle in WGS84 space, with lon/lat converted to radians
+       */
+      _getRadiansCenterPoint(
+        center_in_mercator = null,
+        center_in_lonlat = null
+      ) {
+        console.assert(center_in_mercator === null || center_in_lonlat === null)
+
+        let center_point = null
+        if (center_in_lonlat === null) {
+          center_point = this._getLatLonCenterPoint(center_in_mercator)
+        } else {
+          center_point = MapdDraw.Point2d.clone(center_in_lonlat)
+        }
 
         // now convert to radians
         MapdDraw.Vec2d.scale(
@@ -503,35 +599,43 @@ export function getLatLonCircleClass() {
         return distance / 6372.797560856
       }
 
-      _updateGeom() {
+      _updateGeom(center_mercator = null, center_radians = null) {
         if (this._geomDirty || this._boundsOutOfDate) {
-          const number_of_points = Math.floor(
-            360 / this._degrees_between_points
-          )
+          if (center_mercator === null) {
+            console.assert(center_radians === null)
+            center_mercator = this._getMercatorCenterPoint()
+            center_radians = this._getRadiansCenterPoint(center_mercator)
+          }
 
-          const center_mercator = this._getCenterInMeractor()
-          const center_radians = this._getCenterPointInRadians(center_mercator)
           const dist_radians = LatLonCircle.getDistanceInRadians(this._radius)
 
           MapdDraw.AABox2d.initEmpty(this._aabox)
-          this._mercatorPts = []
 
-          for (let index = 0; index < number_of_points; index = index + 1) {
+          for (
+            let index = 0;
+            index < this._segmented_circle_points.length;
+            ++index
+          ) {
+            const point_data = this._segmented_circle_points[index]
+            const { lonlat_point, merc_point } = point_data
             const angle_degrees = index * this._degrees_between_points
-            const angle_radians = (angle_degrees * Math.PI) / 180
+            const angle_radians = angle_degrees * MapdDraw.Math.DEG_TO_RAD
+
+            // store the angle for later validation
+            point_data.angle_degrees = angle_degrees
 
             // rotate the sample point around the circle center using the radius distance in radians
-            const point = LatLonCircle.createPointDistanceFromCenter(
+            LatLonCircle.initializePointDistanceFromCenter(
+              lonlat_point,
               center_radians,
               dist_radians,
               angle_radians
             )
 
             // convert from lon/lat to mercator
-            LatLonUtils.conv4326To900913(point, point)
+            LatLonUtils.conv4326To900913(merc_point, lonlat_point)
 
-            MapdDraw.AABox2d.encapsulatePt(this._aabox, this._aabox, point)
-            this._mercatorPts.push(point)
+            MapdDraw.AABox2d.encapsulatePt(this._aabox, this._aabox, merc_point)
           }
 
           const pivot = MapdDraw.Point2d.create(0, 0)
@@ -549,10 +653,14 @@ export function getLatLonCircleClass() {
        * by a start/end point should be further subdivided for drawing.
        * If the segment should be subdivided, will append subdivided points representing
        * the subdivided arc into the array of screen-projected points for drawing.
-       * @param {number} start_index The index of the point defined by the start_point_data argument in the original
-       *                             array of mercator points representing the segmented circle.
+       * @param {MapdDraw.Point2d[]} subdivided_points_array array to append the subdivided points to
+       * @param {MapdDraw.Point2d} Center point of circle in lon/lat radians
        * @param {ProjectedPointData} start_point_data Start point of the line segment
        * @param {ProjectedPointData} end_point_data End point of the line segment
+       * @param {number} start_angle The angle about the center of the circle for the starting point of
+       *                             this segment. In degrees.
+       * @param {number} angle_diff The angle difference between the start point and the end point of this
+       *                            segment. In degrees.
        * @param {MapdDraw.AABox2d} view_aabox Axis-aligned bounding box describing the
        *                                      intersection between the shape and the current view
        *                                      in WGS84 lat/lon coords
@@ -560,9 +668,13 @@ export function getLatLonCircleClass() {
        * @returns
        */
       _subdivideArc(
-        start_index,
+        subdivided_points_array,
+        center_latlon,
+        center_radians,
         start_point_data,
         end_point_data,
+        start_angle,
+        angle_diff,
         view_aabox,
         worldToScreenMatrix
       ) {
@@ -577,46 +689,64 @@ export function getLatLonCircleClass() {
           return
         }
 
-        console.assert(view_intersect_data.latlon_pts.length === 2)
+        console.assert(
+          view_intersect_data.latlon_pts.length === 2,
+          `start_point: [${start_point_data.merc_point[0]}, ${start_point_data.merc_point[1]}], end_point: [${end_point_data.merc_point[0]}, ${end_point_data.merc_point[1]}], view_aabox: [${view_aabox[0]}, ${view_aabox[1]}, ${view_aabox[2]}, ${view_aabox[3]}], worldToScreenMatrix: [${worldToScreenMatrix[0]}, ${worldToScreenMatrix[1]}, ${worldToScreenMatrix[2]}, ${worldToScreenMatrix[3]}, ${worldToScreenMatrix[4]}, ${worldToScreenMatrix[5]}]`
+        )
 
         const start_screen_pt = view_intersect_data.screen_pts[0]
+        const start_latlon_pt = view_intersect_data.latlon_pts[0]
         const end_screen_pt = view_intersect_data.screen_pts[1]
+        const end_latlon_pt = view_intersect_data.latlon_pts[1]
 
         const distance = MapdDraw.Point2d.distance(
           start_screen_pt,
           end_screen_pt
         )
         if (distance > this._maxSegmentPixelDistance) {
-          const center_radians = this._getCenterPointInRadians()
           const dist_radians = LatLonCircle.getDistanceInRadians(this._radius)
 
           const num_subdivisions = Math.ceil(
             distance / this._maxSegmentPixelDistance
           )
-          const start_angle = start_index * this._degrees_between_points
-          const start_t = view_intersect_data.pts_t[0]
-          const end_t = view_intersect_data.pts_t[1]
-          const t_diff = (end_t - start_t) / num_subdivisions
+
+          const point_radians = MapdDraw.Point2d.clone(start_latlon_pt)
+          MapdDraw.Vec2d.scale(
+            point_radians,
+            point_radians,
+            MapdDraw.Math.DEG_TO_RAD
+          )
+          const start_angle = LatLonCircle.getAngleBetweenTwoPoints(
+            center_latlon,
+            center_radians,
+            start_latlon_pt,
+            point_radians
+          )
+          MapdDraw.Point2d.copy(point_radians, end_latlon_pt)
+          MapdDraw.Vec2d.scale(
+            point_radians,
+            point_radians,
+            MapdDraw.Math.DEG_TO_RAD
+          )
+          const end_angle = LatLonCircle.getAngleBetweenTwoPoints(
+            center_latlon,
+            center_radians,
+            start_latlon_pt,
+            point_radians
+          )
+          const angle_diff = (end_angle - start_angle) / num_subdivisions
           for (
-            let current_t = start_t;
-            current_t <= end_t;
-            current_t += t_diff
+            let current_angle = start_angle;
+            current_angle <= end_angle;
+            current_angle += angle_diff
           ) {
-            if (current_t === 0.0 || current_t === 1.0) {
-              // skip the endpoints
-              continue
-            }
-
-            const current_angle =
-              start_angle + current_t * this._degrees_between_points
-            const current_angle_radians =
-              current_angle * MapdDraw.Math.DEG_TO_RAD
-
             // create a new subdivided point rotated around the circle center using the radius distance in radians
-            const new_point = LatLonCircle.createPointDistanceFromCenter(
+            const new_point = MapdDraw.Point2d.create()
+            LatLonCircle.initializePointDistanceFromCenter(
+              new_point,
               center_radians,
               dist_radians,
-              current_angle_radians
+              current_angle
             )
 
             // convert from lon/lat to mercator
@@ -628,17 +758,23 @@ export function getLatLonCircleClass() {
               new_point,
               worldToScreenMatrix
             )
-            this._screenPts.push(new_point)
+            subdivided_points_array.push(new_point)
           }
         }
       }
 
       _updateGeomForView(worldToScreenMatrix) {
         if (this._viewDirty || this._geomDirty || this._boundsOutOfDate) {
-          this._updateGeom()
+          const center_mercator = this._getMercatorCenterPoint()
+          const center_lonlat = this._getLatLonCenterPoint(center_mercator)
+          const center_radians = this._getRadiansCenterPoint(
+            null,
+            center_lonlat
+          )
+          this._updateGeom(center_mercator, center_radians)
 
-          this._screenPts = []
-          if (this._mercatorPts.length === 0) {
+          this._subdivided_screen_points = []
+          if (this._segmented_circle_points.length === 0) {
             return
           }
 
@@ -654,6 +790,24 @@ export function getLatLonCircleClass() {
             return
           }
 
+          const screen_aabox = MapdDraw.AABox2d.clone(this._aabox)
+          MapdDraw.AABox2d.transformMat2d(
+            screen_aabox,
+            screen_aabox,
+            worldToScreenMatrix
+          )
+          const shape_screen_area = MapdDraw.AABox2d.area(screen_aabox)
+
+          const screen_intersect_box = MapdDraw.AABox2d.clone(world_bounds)
+          MapdDraw.AABox2d.transformMat2d(
+            screen_intersect_box,
+            screen_intersect_box,
+            worldToScreenMatrix
+          )
+          const screen_intersect_area = MapdDraw.AABox2d.area(
+            screen_intersect_box
+          )
+
           // convert our intersection bounds to WGS84 lon/lat
           world_bounds[MapdDraw.AABox2d.MINX] = LatLonUtils.conv900913To4326X(
             world_bounds[MapdDraw.AABox2d.MINX]
@@ -668,67 +822,211 @@ export function getLatLonCircleClass() {
             world_bounds[MapdDraw.AABox2d.MAXY]
           )
 
-          const initial_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
-          let start_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
-          let end_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
+          let subdivide = shape_screen_area > this._base_screen_area
 
-          LatLonViewIntersectUtils.projectPoint(
-            this._mercatorPts[0],
-            initial_point_data,
-            null,
+          let start_point_data = this._segmented_circle_points[0]
+          let end_point_data = null
+
+          MapdDraw.Point2d.transformMat2d(
+            start_point_data.screen_point,
+            start_point_data.merc_point,
             worldToScreenMatrix
           )
 
-          MapdDraw.Point2d.copy(
-            start_point_data.merc_point,
-            initial_point_data.merc_point
-          )
-          MapdDraw.Point2d.copy(
-            start_point_data.screen_point,
-            initial_point_data.screen_point
-          )
-          MapdDraw.Point2d.copy(
-            start_point_data.lonlat_point,
-            initial_point_data.lonlat_point
-          )
-
-          this._screenPts.push(
+          this._subdivided_screen_points.push(
             MapdDraw.Point2d.clone(start_point_data.screen_point)
           )
 
-          let swap_tmp = null
-          let i = 1
-          for (; i < this._mercatorPts.length; i += 1) {
-            LatLonViewIntersectUtils.projectPoint(
-              this._mercatorPts[i],
-              end_point_data,
-              null,
-              worldToScreenMatrix
-            )
+          // console.log(`CROOT: subdivide ${subdivide}`)
+          if (subdivide) {
+            const initial_point_data = start_point_data
+            for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
+              end_point_data = this._segmented_circle_points[i]
+              MapdDraw.Point2d.transformMat2d(
+                end_point_data.screen_point,
+                end_point_data.merc_point,
+                worldToScreenMatrix
+              )
+
+              this._subdivideArc(
+                this._subdivided_screen_points,
+                center_lonlat,
+                center_radians,
+                start_point_data,
+                end_point_data,
+                start_point_data.angle_degrees,
+                this._degrees_between_points,
+                world_bounds,
+                worldToScreenMatrix
+              )
+              this._subdivided_screen_points.push(
+                MapdDraw.Point2d.clone(end_point_data.screen_point)
+              )
+
+              start_point_data = end_point_data
+            }
+
+            end_point_data = initial_point_data
             this._subdivideArc(
-              i - 1,
+              this._subdivided_screen_points,
+              center_lonlat,
+              center_radians,
               start_point_data,
-              end_point_data,
+              initial_point_data,
+              start_point_data.angle_degrees,
+              this._degrees_between_points,
               world_bounds,
               worldToScreenMatrix
             )
-            this._screenPts.push(
-              MapdDraw.Point2d.clone(end_point_data.screen_point)
-            )
 
-            // now swap the endpoints
-            swap_tmp = start_point_data
-            start_point_data = end_point_data
-            end_point_data = swap_tmp
+            if (
+              this._subdivided_screen_points.length ===
+              this._segmented_circle_points.length
+            ) {
+              // this means no subdivision was actually performed. We need to double check the edge case where you
+              // are zoomed in far enough where the line segment for the circle doesn't cross the view bounds, but
+              // its arc would
+
+              let min_bounds_dist = Infinity
+              let max_bounds_dist = -Infinity
+              for (let i = 0; i < 4; ++i) {
+                let bounds_lon =
+                  i & 1
+                    ? world_bounds[MapdDraw.AABox2d.MAXX]
+                    : world_bounds[MapdDraw.AABox2d.MINX]
+                let bounds_lat =
+                  i > 1
+                    ? world_bounds[MapdDraw.AABox2d.MAXY]
+                    : world_bounds[MapdDraw.AABox2d.MINY]
+                // distance from center to corner of bounds in kilometers
+                let distance =
+                  LatLonUtils.distance_in_meters(
+                    center_lonlat[0],
+                    center_lonlat[1],
+                    bounds_lon,
+                    bounds_lat
+                  ) / 1000.0
+                min_bounds_dist = Math.min(distance, min_bounds_dist)
+                max_bounds_dist = Math.max(distance, max_bounds_dist)
+              }
+
+              if (
+                this._radius >= min_bounds_dist &&
+                this._radius <= max_bounds_dist
+              ) {
+                // The arc of the circle actually crosses the view. We need to add a new point to the original list of
+                // segmented circle points to give more precision in the area we are zoomed in on. To do this we will
+                // get the angle between the center of the circle and the center of the bounds. This will tell us which
+                // two original segmented points are its neighbors, and then subdivide with the two new line segments.
+                const bounds_center = MapdDraw.Point2d.create()
+                MapdDraw.AABox2d.getCenter(bounds_center, world_bounds)
+                const bounds_center_radians = MapdDraw.Point2d.clone(
+                  bounds_center
+                )
+                MapdDraw.Vec2d.scale(
+                  bounds_center_radians,
+                  bounds_center_radians,
+                  MapdDraw.Math.DEG_TO_RAD
+                )
+
+                // get the angle from the center of the circle to the center of the bounds
+                let angle_radians = LatLonCircle.getAngleBetweenTwoPoints(
+                  center_lonlat,
+                  center_radians,
+                  bounds_center,
+                  bounds_center_radians
+                )
+                const angle_degrees = angle_radians * MapdDraw.Math.RAD_TO_DEG
+
+                // console.log(`CROOT - angle to bounds center: ${angle_degrees}`)
+
+                const new_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
+                new_point_data.angle_degrees = angle_degrees
+                LatLonCircle.initializePointDistanceFromCenter(
+                  new_point_data.lonlat_point,
+                  center_radians,
+                  LatLonCircle.getDistanceInRadians(this._radius),
+                  angle_radians
+                )
+                // convert from lon/lat to mercator
+                LatLonUtils.conv4326To900913(
+                  new_point_data.merc_point,
+                  new_point_data.lonlat_point
+                )
+                MapdDraw.Point2d.transformMat2d(
+                  new_point_data.screen_point,
+                  new_point_data.merc_point,
+                  worldToScreenMatrix
+                )
+
+                const start_segment_idx = Math.floor(
+                  angle_degrees / this._degrees_between_points
+                )
+                const start_point = this._segmented_circle_points[
+                  start_segment_idx
+                ]
+                const start_angle = start_point.angle_degrees
+                const end_angle = start_angle + this._degrees_between_points
+                const end_segment_idx =
+                  start_segment_idx === this._segmented_circle_points.length - 1
+                    ? 0
+                    : start_segment_idx + 1
+                const end_point = this._segmented_circle_points[end_segment_idx]
+
+                const new_subdivided_points = []
+                this._subdivideArc(
+                  new_subdivided_points,
+                  center_lonlat,
+                  center_radians,
+                  start_point,
+                  new_point_data,
+                  start_angle,
+                  angle_degrees - start_angle,
+                  world_bounds,
+                  worldToScreenMatrix
+                )
+
+                new_subdivided_points.push(
+                  MapdDraw.Point2d.clone(new_point_data.screen_point)
+                )
+
+                this._subdivideArc(
+                  new_subdivided_points,
+                  center_lonlat,
+                  center_radians,
+                  new_point_data,
+                  end_point,
+                  angle_degrees,
+                  end_angle - angle_degrees,
+                  world_bounds,
+                  worldToScreenMatrix
+                )
+
+                this._subdivided_screen_points.splice(
+                  start_segment_idx + 1,
+                  0,
+                  ...new_subdivided_points
+                )
+
+                // const start_idx = console.log(
+                //   `CROOT - need an extra subdivision check in: ${min_bounds_dist}, ${max_bounds_dist}, ${this._radius}, angle: ${angle_radians}, ${angle_degrees}, new_subdivided: ${new_subdivided_points.length}`
+                // )
+              }
+            }
+          } else {
+            for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
+              const point_data = this._segmented_circle_points[i]
+              MapdDraw.Point2d.transformMat2d(
+                point_data.screen_point,
+                point_data.merc_point,
+                worldToScreenMatrix
+              )
+
+              this._subdivided_screen_points.push(
+                MapdDraw.Point2d.clone(point_data.screen_point)
+              )
+            }
           }
-
-          this._subdivideArc(
-            i,
-            start_point_data,
-            initial_point_data,
-            world_bounds,
-            worldToScreenMatrix
-          )
 
           // NOTE: we are not re-adding the first point as the draw call will close the loop
 
@@ -774,10 +1072,16 @@ export function getLatLonCircleClass() {
 
         this._updateGeomForView(xform)
 
-        if (this._screenPts.length) {
-          ctx.moveTo(this._screenPts[0][0], this._screenPts[0][1])
-          for (let i = 1; i < this._screenPts.length; i += 1) {
-            ctx.lineTo(this._screenPts[i][0], this._screenPts[i][1])
+        if (this._subdivided_screen_points.length) {
+          ctx.moveTo(
+            this._subdivided_screen_points[0][0],
+            this._subdivided_screen_points[0][1]
+          )
+          for (let i = 1; i < this._subdivided_screen_points.length; i += 1) {
+            ctx.lineTo(
+              this._subdivided_screen_points[i][0],
+              this._subdivided_screen_points[i][1]
+            )
           }
           ctx.closePath()
         }
