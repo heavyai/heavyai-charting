@@ -376,7 +376,9 @@ export default function rowChart(parent, chartGroup) {
       .classed("selected", d => (_chart.hasFilter() ? isSelectedRow(d) : false))
 
     transition(rect, _chart.transitionDuration())
-      .attr("width", d => Math.abs(rootValue() - _x(_chart.valueAccessor()(d))))
+      .attr("width", d =>
+        Math.abs(rootValue() - _x(_chart.cappedValueAccessor(d)))
+      )
       .attr("transform", translateX)
 
     if (!_chart.measureLabelsOn()) {
@@ -438,7 +440,7 @@ export default function rowChart(parent, chartGroup) {
           d => _chart.hasFilter() && !isSelectedRow(d)
         )
         /* --------------------------------------------------------------------------*/
-        .html(_chart.label())
+        .html(_chart.cappedLabel)
       transition(lab, _chart.transitionDuration()).attr("transform", translateX)
     }
 
@@ -468,7 +470,9 @@ export default function rowChart(parent, chartGroup) {
 
           const thisLabel = d3.select(this)
 
-          const width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)))
+          const width = Math.abs(
+            rootValue() - _x(_chart.cappedValueAccessor(d))
+          )
 
           //
           // handle Firefox getBBox bug
