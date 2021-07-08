@@ -522,6 +522,20 @@ export function getLatLonCircleClass() {
           denominator !== 0,
           `${center_lonlat}, ${center_radians}, ${point_lonlat}, ${point_radians}, ${distance}`
         )
+        let divide = numerator / denominator
+        if (divide > 1) {
+          console.assert(
+            MapdDraw.Math.floatingPtEquals(divide, 1),
+            `${center_lonlat}, ${center_radians}, ${point_lonlat}, ${point_radians}, ${distance}`
+          )
+          divide = 1
+        } else if (divide < -1) {
+          console.assert(
+            MapdDraw.Math.floatingPtEquals(divide, -1),
+            `${center_lonlat}, ${center_radians}, ${point_lonlat}, ${point_radians}, ${distance}`
+          )
+          divide = -1
+        }
 
         // make sure to return in a range of [-PI, PI], to do that, just check which side of the
         // center point the point to check falls.
@@ -704,6 +718,11 @@ export function getLatLonCircleClass() {
           end_screen_pt
         )
         if (distance > this._maxSegmentPixelDistance) {
+          // console.log(
+          //   `T range: ${view_intersect_data.pts_t[1]} - ${
+          //     view_intersect_data.pts_t[0]
+          //   } = ${view_intersect_data.pts_t[1] - view_intersect_data.pts_t[0]}`
+          // )
           const dist_radians = LatLonCircle.getDistanceInRadians(this._radius)
 
           const num_subdivisions = Math.ceil(
@@ -731,7 +750,7 @@ export function getLatLonCircleClass() {
           const end_angle = LatLonCircle.getAngleBetweenTwoPoints(
             center_latlon,
             center_radians,
-            start_latlon_pt,
+            end_latlon_pt,
             point_radians
           )
           const angle_diff = (end_angle - start_angle) / num_subdivisions
@@ -763,6 +782,56 @@ export function getLatLonCircleClass() {
         }
       }
 
+      static getBoundsDistanceData(center_lonlat, view_bounds_lonlat) {
+        let min_bounds_dist = Infinity
+        let max_bounds_dist = -Infinity
+        const view_bounds_distances = MapdDraw.AABox2d.create()
+        for (let i = 0; i < 4; ++i) {
+          let bounds_lon =
+            i & 1
+              ? view_bounds_lonlat[MapdDraw.AABox2d.MAXX]
+              : view_bounds_lonlat[MapdDraw.AABox2d.MINX]
+          let bounds_lat =
+            i > 1
+              ? view_bounds_lonlat[MapdDraw.AABox2d.MAXY]
+              : view_bounds_lonlat[MapdDraw.AABox2d.MINY]
+          // distance from center to corner of bounds in kilometers
+          let distance =
+            LatLonUtils.distance_in_meters(
+              center_lonlat[0],
+              center_lonlat[1],
+              bounds_lon,
+              bounds_lat
+            ) / 1000.0
+          min_bounds_dist = Math.min(distance, min_bounds_dist)
+          max_bounds_dist = Math.max(distance, max_bounds_dist)
+          view_bounds_distances[i] = distance
+        }
+
+        return {
+          min_bounds_dist,
+          max_bounds_dist,
+          view_bounds_distances
+        }
+      }
+
+      static boundsConv900913to4326(output_bounds, input_bounds) {
+        output_bounds[MapdDraw.AABox2d.MINX] = LatLonUtils.conv900913To4326X(
+          input_bounds[MapdDraw.AABox2d.MINX]
+        )
+        output_bounds[MapdDraw.AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
+          input_bounds[MapdDraw.AABox2d.MAXX]
+        )
+        output_bounds[MapdDraw.AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
+          input_bounds[MapdDraw.AABox2d.MINY]
+        )
+        output_bounds[MapdDraw.AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
+          input_bounds[MapdDraw.AABox2d.MAXY]
+        )
+
+        return output_bounds
+      }
+
       _updateGeomForView(worldToScreenMatrix) {
         if (this._viewDirty || this._geomDirty || this._boundsOutOfDate) {
           const center_mercator = this._getMercatorCenterPoint()
@@ -781,12 +850,17 @@ export function getLatLonCircleClass() {
           // calculate the bounds intersection between the current view bounds
           // and the bounds of this shape
           const world_bounds = this._draw_engine.camera.worldViewBounds
+          const world_intersect_bounds = MapdDraw.AABox2d.create()
 
           // NOTE: this._aabox would have already been updated in the above _updateGeom()
           // call, so can go directly to the _aabox member rather than throw the this.aabox
           // getter
-          MapdDraw.AABox2d.intersection(world_bounds, this._aabox, world_bounds)
-          if (MapdDraw.AABox2d.isEmpty(world_bounds)) {
+          MapdDraw.AABox2d.intersection(
+            world_intersect_bounds,
+            this._aabox,
+            world_bounds
+          )
+          if (MapdDraw.AABox2d.isEmpty(world_intersect_bounds)) {
             return
           }
 
@@ -798,7 +872,9 @@ export function getLatLonCircleClass() {
           )
           const shape_screen_area = MapdDraw.AABox2d.area(screen_aabox)
 
-          const screen_intersect_box = MapdDraw.AABox2d.clone(world_bounds)
+          const screen_intersect_box = MapdDraw.AABox2d.clone(
+            world_intersect_bounds
+          )
           MapdDraw.AABox2d.transformMat2d(
             screen_intersect_box,
             screen_intersect_box,
@@ -809,17 +885,10 @@ export function getLatLonCircleClass() {
           )
 
           // convert our intersection bounds to WGS84 lon/lat
-          world_bounds[MapdDraw.AABox2d.MINX] = LatLonUtils.conv900913To4326X(
-            world_bounds[MapdDraw.AABox2d.MINX]
-          )
-          world_bounds[MapdDraw.AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
-            world_bounds[MapdDraw.AABox2d.MAXX]
-          )
-          world_bounds[MapdDraw.AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
-            world_bounds[MapdDraw.AABox2d.MINY]
-          )
-          world_bounds[MapdDraw.AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
-            world_bounds[MapdDraw.AABox2d.MAXY]
+          LatLonCircle.boundsConv900913to4326(world_bounds, world_bounds)
+          LatLonCircle.boundsConv900913to4326(
+            world_intersect_bounds,
+            world_intersect_bounds
           )
 
           let subdivide = shape_screen_area > this._base_screen_area
@@ -856,7 +925,7 @@ export function getLatLonCircleClass() {
                 end_point_data,
                 start_point_data.angle_degrees,
                 this._degrees_between_points,
-                world_bounds,
+                world_intersect_bounds,
                 worldToScreenMatrix
               )
               this._subdivided_screen_points.push(
@@ -875,7 +944,7 @@ export function getLatLonCircleClass() {
               initial_point_data,
               start_point_data.angle_degrees,
               this._degrees_between_points,
-              world_bounds,
+              world_intersect_bounds,
               worldToScreenMatrix
             )
 
@@ -886,29 +955,13 @@ export function getLatLonCircleClass() {
               // this means no subdivision was actually performed. We need to double check the edge case where you
               // are zoomed in far enough where the line segment for the circle doesn't cross the view bounds, but
               // its arc would
-
-              let min_bounds_dist = Infinity
-              let max_bounds_dist = -Infinity
-              for (let i = 0; i < 4; ++i) {
-                let bounds_lon =
-                  i & 1
-                    ? world_bounds[MapdDraw.AABox2d.MAXX]
-                    : world_bounds[MapdDraw.AABox2d.MINX]
-                let bounds_lat =
-                  i > 1
-                    ? world_bounds[MapdDraw.AABox2d.MAXY]
-                    : world_bounds[MapdDraw.AABox2d.MINY]
-                // distance from center to corner of bounds in kilometers
-                let distance =
-                  LatLonUtils.distance_in_meters(
-                    center_lonlat[0],
-                    center_lonlat[1],
-                    bounds_lon,
-                    bounds_lat
-                  ) / 1000.0
-                min_bounds_dist = Math.min(distance, min_bounds_dist)
-                max_bounds_dist = Math.max(distance, max_bounds_dist)
-              }
+              const {
+                min_bounds_dist,
+                max_bounds_dist
+              } = LatLonCircle.getBoundsDistanceData(
+                center_lonlat,
+                world_bounds
+              )
 
               if (
                 this._radius >= min_bounds_dist &&
@@ -1084,6 +1137,46 @@ export function getLatLonCircleClass() {
             )
           }
           ctx.closePath()
+        }
+      }
+
+      _drawDebug(ctx) {
+        if (this._segmented_circle_points.length) {
+          ctx.save()
+
+          ctx.strokeStyle = "white"
+          ctx.beginPath()
+          let curr_pt = this._segmented_circle_points[0]
+          ctx.moveTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
+          for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
+            curr_pt = this._segmented_circle_points[i]
+            ctx.lineTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
+          }
+          ctx.closePath()
+          ctx.stroke()
+
+          ctx.fillStyle = "orange"
+          this._subdivided_screen_points.forEach(point => {
+            ctx.beginPath()
+            ctx.arc(point[0], point[1], 3, 0, MapdDraw.Math.TWO_PI, false)
+            ctx.fill()
+          })
+
+          ctx.fillStyle = "red"
+          this._segmented_circle_points.forEach(point_data => {
+            ctx.beginPath()
+            ctx.arc(
+              point_data.screen_point[0],
+              point_data.screen_point[1],
+              5,
+              0,
+              MapdDraw.Math.TWO_PI,
+              false
+            )
+            ctx.fill()
+          })
+
+          ctx.restore()
         }
       }
 
