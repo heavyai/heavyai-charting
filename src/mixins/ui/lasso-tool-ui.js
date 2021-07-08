@@ -662,14 +662,12 @@ export function getLatLonCircleClass() {
         }
       }
 
-      _subdivideArcAtPoint(
+      _projectPointOntoCircleArc(
         center_lonlat,
         center_radians,
         point_lonlat,
         point_radians,
-        world_bounds,
-        worldToScreenMatrix,
-        get_endpoints_functor
+        worldToScreenMatrix
       ) {
         // get the angle from the center of the circle to the potential subdivide point
         let angle_radians = LatLonCircle.getAngleBetweenTwoPoints(
@@ -679,8 +677,6 @@ export function getLatLonCircleClass() {
           point_radians
         )
         const angle_degrees = angle_radians * MapdDraw.Math.RAD_TO_DEG
-
-        // console.log(`CROOT - angle to bounds center: ${angle_degrees}`)
 
         const new_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
         new_point_data.angle_degrees = angle_degrees
@@ -698,6 +694,32 @@ export function getLatLonCircleClass() {
         MapdDraw.Point2d.transformMat2d(
           new_point_data.screen_point,
           new_point_data.merc_point,
+          worldToScreenMatrix
+        )
+
+        return {
+          angle_degrees,
+          new_point_data
+        }
+      }
+
+      _subdivideArcAtPoint(
+        center_lonlat,
+        center_radians,
+        point_lonlat,
+        point_radians,
+        world_bounds,
+        worldToScreenMatrix,
+        get_endpoints_functor
+      ) {
+        const {
+          angle_degrees,
+          new_point_data
+        } = this._projectPointOntoCircleArc(
+          center_lonlat,
+          center_radians,
+          point_lonlat,
+          point_radians,
           worldToScreenMatrix
         )
 
@@ -928,9 +950,7 @@ export function getLatLonCircleClass() {
       }
 
       static getBoundsDistanceData(center_lonlat, view_bounds_lonlat) {
-        let min_bounds_dist = Infinity
-        let max_bounds_dist = -Infinity
-        const view_bounds_distances = MapdDraw.AABox2d.create()
+        const view_bounds_distances = new Array(4)
         for (let i = 0; i < 4; ++i) {
           let bounds_lon =
             i & 1
@@ -940,6 +960,7 @@ export function getLatLonCircleClass() {
             i > 1
               ? view_bounds_lonlat[MapdDraw.AABox2d.MAXY]
               : view_bounds_lonlat[MapdDraw.AABox2d.MINY]
+          const point = MapdDraw.Point2d.create(bounds_lon, bounds_lat)
           // distance from center to corner of bounds in kilometers
           let distance =
             LatLonUtils.distance_in_meters(
@@ -948,14 +969,19 @@ export function getLatLonCircleClass() {
               bounds_lon,
               bounds_lat
             ) / 1000.0
-          min_bounds_dist = Math.min(distance, min_bounds_dist)
-          max_bounds_dist = Math.max(distance, max_bounds_dist)
-          view_bounds_distances[i] = distance
+          view_bounds_distances[i] = {
+            distance,
+            point
+          }
         }
 
+        view_bounds_distances.sort((a, b) => {
+          return a.distance - b.distance
+        })
+
         return {
-          min_bounds_dist,
-          max_bounds_dist,
+          min_bounds_dist: view_bounds_distances[0].distance,
+          max_bounds_dist: view_bounds_distances[3].distance,
           view_bounds_distances
         }
       }
@@ -1051,7 +1077,6 @@ export function getLatLonCircleClass() {
             MapdDraw.Point2d.clone(start_point_data.screen_point)
           )
 
-          // console.log(`CROOT: subdivide ${subdivide}`)
           if (subdivide) {
             const initial_point_data = start_point_data
             for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
@@ -1104,7 +1129,8 @@ export function getLatLonCircleClass() {
               // its arc would
               const {
                 min_bounds_dist,
-                max_bounds_dist
+                max_bounds_dist,
+                view_bounds_distances
               } = LatLonCircle.getBoundsDistanceData(
                 center_lonlat,
                 world_bounds
@@ -1162,10 +1188,45 @@ export function getLatLonCircleClass() {
                   0,
                   ...new_subdivided_points
                 )
+              } else if (this._radius > max_bounds_dist) {
+                // hit an edge case here where you zoomed in far enough that both the original circle line segment and its respective arc
+                // are not visible in the view but end up on opposite sides of the view bounds. In other words,
+                // the original line-segmented circle does not overlap the view but the real circle does. So you've zoomed in
+                // far enough to be completely inside that gap. To handle this case, we just need to add new points
+                // so that the view is fully covered.
 
-                // const start_idx = console.log(
-                //   `CROOT - need an extra subdivision check in: ${min_bounds_dist}, ${max_bounds_dist}, ${this._radius}, angle: ${angle_radians}, ${angle_degrees}, new_subdivided: ${new_subdivided_points.length}`
-                // )
+                // the last element in the view_bounds_distance array will have the max distance
+                const bounds_point_lonlat =
+                  view_bounds_distances[view_bounds_distances.length - 1].point
+                const bounds_point_radians = MapdDraw.Point2d.clone(
+                  bounds_point_lonlat
+                )
+                MapdDraw.Vec2d.scale(
+                  bounds_point_radians,
+                  bounds_point_radians,
+                  MapdDraw.Math.DEG_TO_RAD
+                )
+
+                const {
+                  angle_degrees,
+                  new_point_data
+                } = this._projectPointOntoCircleArc(
+                  center_lonlat,
+                  center_radians,
+                  bounds_point_lonlat,
+                  bounds_point_radians,
+                  worldToScreenMatrix
+                )
+
+                const start_segment_idx = Math.floor(
+                  angle_degrees / this._degrees_between_points
+                )
+
+                this._subdivided_screen_points.splice(
+                  start_segment_idx + 1,
+                  0,
+                  new_point_data.screen_point
+                )
               }
             }
           } else {
@@ -1242,45 +1303,45 @@ export function getLatLonCircleClass() {
         }
       }
 
-      _drawDebug(ctx) {
-        if (this._segmented_circle_points.length) {
-          ctx.save()
+      // _drawDebug(ctx) {
+      //   if (this._segmented_circle_points.length) {
+      //     ctx.save()
 
-          ctx.strokeStyle = "white"
-          ctx.beginPath()
-          let curr_pt = this._segmented_circle_points[0]
-          ctx.moveTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
-          for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
-            curr_pt = this._segmented_circle_points[i]
-            ctx.lineTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
-          }
-          ctx.closePath()
-          ctx.stroke()
+      //     ctx.strokeStyle = "white"
+      //     ctx.beginPath()
+      //     let curr_pt = this._segmented_circle_points[0]
+      //     ctx.moveTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
+      //     for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
+      //       curr_pt = this._segmented_circle_points[i]
+      //       ctx.lineTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
+      //     }
+      //     ctx.closePath()
+      //     ctx.stroke()
 
-          ctx.fillStyle = "orange"
-          this._subdivided_screen_points.forEach(point => {
-            ctx.beginPath()
-            ctx.arc(point[0], point[1], 3, 0, MapdDraw.Math.TWO_PI, false)
-            ctx.fill()
-          })
+      //     ctx.fillStyle = "orange"
+      //     this._subdivided_screen_points.forEach(point => {
+      //       ctx.beginPath()
+      //       ctx.arc(point[0], point[1], 3, 0, MapdDraw.Math.TWO_PI, false)
+      //       ctx.fill()
+      //     })
 
-          ctx.fillStyle = "red"
-          this._segmented_circle_points.forEach(point_data => {
-            ctx.beginPath()
-            ctx.arc(
-              point_data.screen_point[0],
-              point_data.screen_point[1],
-              5,
-              0,
-              MapdDraw.Math.TWO_PI,
-              false
-            )
-            ctx.fill()
-          })
+      //     ctx.fillStyle = "red"
+      //     this._segmented_circle_points.forEach(point_data => {
+      //       ctx.beginPath()
+      //       ctx.arc(
+      //         point_data.screen_point[0],
+      //         point_data.screen_point[1],
+      //         5,
+      //         0,
+      //         MapdDraw.Math.TWO_PI,
+      //         false
+      //       )
+      //       ctx.fill()
+      //     })
 
-          ctx.restore()
-        }
-      }
+      //     ctx.restore()
+      //   }
+      // }
 
       toJSON() {
         return Object.assign(super.toJSON(), {
@@ -1506,6 +1567,21 @@ export function getLatLonPolyClass() {
           ctx.closePath()
         }
       }
+
+      // _drawDebug(ctx) {
+      //   if (this._screenPts.length) {
+      //     ctx.save()
+
+      //     ctx.fillStyle = "orange"
+      //     this._screenPts.forEach(point => {
+      //       ctx.beginPath()
+      //       ctx.arc(point[0], point[1], 3, 0, MapdDraw.Math.TWO_PI, false)
+      //       ctx.fill()
+      //     })
+
+      //     ctx.restore()
+      //   }
+      // }
 
       toJSON() {
         return Object.assign(super.toJSON(), {
