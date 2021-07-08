@@ -5,6 +5,9 @@ import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 import simplify from "simplify-js"
 import { logger } from "../../utils/logger"
 
+const { AABox2d, Mat2, Mat2d, Point2d, Vec2d } = MapdDraw
+const MathExt = MapdDraw.Math
+
 /* istanbul ignore next */
 let LatLonCircleClass = null
 let LatLonPolyClass = null
@@ -14,9 +17,9 @@ const LatLonViewIntersectUtils = {
    * @typedef {object} ProjectedPointData
    * Maintains the various projection states for a specific point
    *
-   * @property {MapdDraw.Point2d} merc_point 2D point defined in web-mercator projected space
-   * @property {MapdDraw.Point2d} screen_point 2D point defined in screen space
-   * @property {MapdDraw.Point2d} lonlat_point 2D point defined in lat/lon WGS84 space
+   * @property {Point2d} merc_point 2D point defined in web-mercator projected space
+   * @property {Point2d} screen_point 2D point defined in screen space
+   * @property {Point2d} lonlat_point 2D point defined in lat/lon WGS84 space
    */
 
   /**
@@ -29,19 +32,19 @@ const LatLonViewIntersectUtils = {
    */
   buildProjectedPointData: () => {
     return {
-      merc_point: MapdDraw.Point2d.create(),
-      screen_point: MapdDraw.Point2d.create(),
-      lonlat_point: MapdDraw.Point2d.create()
+      merc_point: Point2d.create(),
+      screen_point: Point2d.create(),
+      lonlat_point: Point2d.create()
     }
   },
 
   /**
    * Using a point defined in web-mercator space as input, initializes a ProjectedPointData struct
    * by transforming that merc point into lat/lon WGS84 and screen space.
-   * @param {MapdDraw.Point2d} initial_merc_point Initial web-mercator projected point to transform
+   * @param {Point2d} initial_merc_point Initial web-mercator projected point to transform
    * @param {ProjectedPointData} out_point_data Struct to be initialized with the various projections of the input point
-   * @param {MapdDraw.Mat2d} model_matrix The affine transformation matrix of the parent of the initial mercator point
-   * @param {MapdDraw.Mat2d} worldToScreenMatrix The transformation matrix defining the world-to-screen space transformation
+   * @param {Mat2d} model_matrix The affine transformation matrix of the parent of the initial mercator point
+   * @param {Mat2d} worldToScreenMatrix The transformation matrix defining the world-to-screen space transformation
    * @returns {ProjectedPointData} returns the input out_point_data argument after it has been initialized
    */
   projectPoint: (
@@ -51,9 +54,9 @@ const LatLonViewIntersectUtils = {
     worldToScreenMatrix
   ) => {
     if (model_matrix === null) {
-      MapdDraw.Point2d.copy(out_point_data.merc_point, initial_merc_point)
+      Point2d.copy(out_point_data.merc_point, initial_merc_point)
     } else {
-      MapdDraw.Point2d.transformMat2d(
+      Point2d.transformMat2d(
         out_point_data.merc_point,
         initial_merc_point,
         model_matrix
@@ -61,7 +64,7 @@ const LatLonViewIntersectUtils = {
     }
 
     if (worldToScreenMatrix !== null) {
-      MapdDraw.Point2d.transformMat2d(
+      Point2d.transformMat2d(
         out_point_data.screen_point,
         out_point_data.merc_point,
         worldToScreenMatrix
@@ -92,14 +95,14 @@ const LatLonViewIntersectUtils = {
       if (
         numerator >= 0 &&
         (numerator < denominator ||
-          MapdDraw.Math.floatingPtEquals(numerator, denominator))
+          MathExt.floatingPtEquals(numerator, denominator))
       ) {
         return true
       }
     } else if (
       numerator <= 0 &&
       (numerator > denominator ||
-        MapdDraw.Math.floatingPtEquals(numerator, denominator))
+        MathExt.floatingPtEquals(numerator, denominator))
     ) {
       return true
     }
@@ -115,8 +118,8 @@ const LatLonViewIntersectUtils = {
    * either be of size 2 (line segment intersects or is contained by a view) or
    * be size 0 (line segment does not intersect or is not contained by a view)
    *
-   * @property {MapdDraw.Point2d[]} latlon_pts Array of points defined in WGS84 lat/lon space that either intersect or are contained by a view
-   * @property {MapdDraw.Point2d[]} screen_pts Array of points defined in screen space that either intersect or are contained by a view
+   * @property {Point2d[]} latlon_pts Array of points defined in WGS84 lat/lon space that either intersect or are contained by a view
+   * @property {Point2d[]} screen_pts Array of points defined in screen space that either intersect or are contained by a view
    *                                           This is the same set of points as latlon_pts above, but transformed into screen space.
    * @property {number[]} pts_t Array of real numbers between [0-1] indicating the normalized distance of the intersection pts relative to
    *                            the original line segment. For example, if t=0, the intersection point is the starting point of the line
@@ -134,10 +137,10 @@ const LatLonViewIntersectUtils = {
    * points should be subdivided for draw.
    * @param {ProjectedPointData} start_point_data The start point of the line segment
    * @param {ProjectedPointData} end_point_data The end point of the line segment
-   * @param {MapdDraw.AABox2d} view_aabox Axis-aligned bounding box describing the
+   * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
    *                                      intersection between the aabox of the current shape
    *                                      and the current view
-   * @param {MapdDraw.Mat2d} worldToScreenMatrix The world-to-screen transformation matrix
+   * @param {Mat2d} worldToScreenMatrix The world-to-screen transformation matrix
    * @returns {ViewBoundsIntersectData}
    */
   intersectViewBounds: (
@@ -151,20 +154,12 @@ const LatLonViewIntersectUtils = {
     const x2 = end_point_data.lonlat_point[0]
     const y2 = end_point_data.lonlat_point[1]
 
-    const line_aabox = MapdDraw.AABox2d.create()
-    MapdDraw.AABox2d.encapsulatePt(
-      line_aabox,
-      line_aabox,
-      start_point_data.lonlat_point
-    )
-    MapdDraw.AABox2d.encapsulatePt(
-      line_aabox,
-      line_aabox,
-      end_point_data.lonlat_point
-    )
+    const line_aabox = AABox2d.create()
+    AABox2d.encapsulatePt(line_aabox, line_aabox, start_point_data.lonlat_point)
+    AABox2d.encapsulatePt(line_aabox, line_aabox, end_point_data.lonlat_point)
 
-    const intersect_aabox = MapdDraw.AABox2d.create()
-    MapdDraw.AABox2d.intersection(intersect_aabox, view_aabox, line_aabox)
+    const intersect_aabox = AABox2d.create()
+    AABox2d.intersection(intersect_aabox, view_aabox, line_aabox)
 
     // The current stored t value for bounds intersection points.
     // The max t for intersection points will be 1, so setting this to
@@ -197,7 +192,7 @@ const LatLonViewIntersectUtils = {
       subdivide: false
     }
 
-    if (MapdDraw.AABox2d.isEmpty(intersect_aabox)) {
+    if (AABox2d.isEmpty(intersect_aabox)) {
       // no intersection with the view bounds
       // return empty intersection object
       return rtn_obj
@@ -217,7 +212,7 @@ const LatLonViewIntersectUtils = {
       return rtn_obj
     }
 
-    if (MapdDraw.AABox2d.equals(intersect_aabox, line_aabox)) {
+    if (AABox2d.equals(intersect_aabox, line_aabox)) {
       // Early out: the intersection bounding box equals the
       // line segment's bounding box, meaning the entire line
       // segment is in view. Add the start/end points as intersection
@@ -237,10 +232,10 @@ const LatLonViewIntersectUtils = {
       // This formula can be slightly simplified due to the intersection bounds being axis-aligned.
       // Ultimately you can eliminate some operations knowing that coordinate differences will be 0
 
-      const x3 = intersect_aabox[MapdDraw.AABox2d.MINX]
-      const x4 = intersect_aabox[MapdDraw.AABox2d.MAXX]
-      const y3 = intersect_aabox[MapdDraw.AABox2d.MINY]
-      const y4 = intersect_aabox[MapdDraw.AABox2d.MAXY]
+      const x3 = intersect_aabox[AABox2d.MINX]
+      const x4 = intersect_aabox[AABox2d.MAXX]
+      const y3 = intersect_aabox[AABox2d.MINY]
+      const y4 = intersect_aabox[AABox2d.MAXY]
 
       const check_full_intersect = (
         numerator_t_functor,
@@ -269,7 +264,7 @@ const LatLonViewIntersectUtils = {
           // that case.
           const t = numerator_t / denominator_t
 
-          if (MapdDraw.Math.floatingPtEquals(t, current_t)) {
+          if (MathExt.floatingPtEquals(t, current_t)) {
             // already found this specific interesection, so don't re-add
             // In this specific use case, since we're doing intersection tests
             // against each wall of an axis-aligned bounding box, the original
@@ -283,12 +278,12 @@ const LatLonViewIntersectUtils = {
 
           let lonlat_pt = null
           let screen_pt = null
-          if (MapdDraw.Math.floatingPtEquals(t, 0)) {
+          if (MathExt.floatingPtEquals(t, 0)) {
             // the intersection point is the start point of the original segment, so
             // just re-use the start coord
             lonlat_pt = start_point_data.lonlat_point
             screen_pt = start_point_data.screen_point
-          } else if (MapdDraw.Math.floatingPtEquals(t, 1)) {
+          } else if (MathExt.floatingPtEquals(t, 1)) {
             // the intersection point is the end point of the original segment, so
             // just re-use the end coord
             lonlat_pt = end_point_data.lonlat_point
@@ -296,23 +291,20 @@ const LatLonViewIntersectUtils = {
           } else {
             // calculate the lon/lat and screen point for the
             // intersection point given t
-            const new_latlon_pt = MapdDraw.Point2d.create(
-              -delta_x * t,
-              -delta_y * t
-            )
-            MapdDraw.Point2d.addVec2(
+            const new_latlon_pt = Point2d.create(-delta_x * t, -delta_y * t)
+            Point2d.addVec2(
               new_latlon_pt,
               start_point_data.lonlat_point,
               new_latlon_pt
             )
             lonlat_pt = new_latlon_pt
 
-            const new_screen_pt = MapdDraw.Point2d.clone(new_latlon_pt)
+            const new_screen_pt = Point2d.clone(new_latlon_pt)
             // conver the new segment point back to mercator for drawing
             LatLonUtils.conv4326To900913(new_screen_pt, new_screen_pt)
 
             // now convert to screen space
-            MapdDraw.Point2d.transformMat2d(
+            Point2d.transformMat2d(
               new_screen_pt,
               new_screen_pt,
               worldToScreenMatrix
@@ -454,11 +446,11 @@ export function getLatLonCircleClass() {
       /**
        * Creates a new 2d lat/lon point that is a specific distance away from
        * a center point at an specific angle around that point
-       * @param {MapdDraw.Point2d} output_point The coordinates of the new point will be stored in this object
-       * @param {MapdDraw.Point2d} center_radians The center point of a LatLonCircle in radians
+       * @param {Point2d} output_point The coordinates of the new point will be stored in this object
+       * @param {Point2d} center_radians The center point of a LatLonCircle in radians
        * @param {number} dist_radians The distance to protrude the point in radians
        * @param {number} angle_radians The angle about the center point to protrude the new point in radians
-       * @returns {MapdDraw.Point2d} A new lon/lat point that is protruded a specific distance away from a center point at the specified angle
+       * @returns {Point2d} A new lon/lat point that is protruded a specific distance away from a center point at the specified angle
        */
       static initializePointDistanceFromCenter(
         output_point,
@@ -486,12 +478,8 @@ export function getLatLonCircleClass() {
           )
 
         // convert back to degrees
-        MapdDraw.Point2d.set(output_point, point_lon_radians, point_lat_radians)
-        MapdDraw.Vec2d.scale(
-          output_point,
-          output_point,
-          MapdDraw.Math.RAD_TO_DEG
-        )
+        Point2d.set(output_point, point_lon_radians, point_lat_radians)
+        Vec2d.scale(output_point, output_point, MathExt.RAD_TO_DEG)
       }
 
       static getAngleBetweenTwoPoints(
@@ -525,13 +513,13 @@ export function getLatLonCircleClass() {
         let divide = numerator / denominator
         if (divide > 1) {
           console.assert(
-            MapdDraw.Math.floatingPtEquals(divide, 1),
+            MathExt.floatingPtEquals(divide, 1),
             `${center_lonlat}, ${center_radians}, ${point_lonlat}, ${point_radians}, ${distance}`
           )
           divide = 1
         } else if (divide < -1) {
           console.assert(
-            MapdDraw.Math.floatingPtEquals(divide, -1),
+            MathExt.floatingPtEquals(divide, -1),
             `${center_lonlat}, ${center_radians}, ${point_lonlat}, ${point_radians}, ${distance}`
           )
           divide = -1
@@ -543,28 +531,28 @@ export function getLatLonCircleClass() {
         if (point_lonlat[0] - center_lonlat[0] >= 0) {
           return angle
         }
-        return MapdDraw.Math.TWO_PI - angle
+        return MathExt.TWO_PI - angle
       }
 
       /**
-       * @returns {MapdDraw.Point2d} Center point of the circle in web-mercator projected space
+       * @returns {Point2d} Center point of the circle in web-mercator projected space
        */
       _getMercatorCenterPoint() {
-        const center_point = MapdDraw.Point2d.create()
+        const center_point = Point2d.create()
         const xform = this.globalXform
-        MapdDraw.Mat2d.svd(center_point, null, null, xform)
+        Mat2d.svd(center_point, null, null, xform)
         return center_point
       }
 
       /**
-       * @returns {MapdDraw.Point2d} Center point of the circle in WGS84 space
+       * @returns {Point2d} Center point of the circle in WGS84 space
        */
       _getLatLonCenterPoint(center_in_mercator = null) {
         let center_point = null
         if (center_in_mercator === null) {
           center_point = this._getMercatorCenterPoint()
         } else {
-          center_point = MapdDraw.Point2d.clone(center_in_mercator)
+          center_point = Point2d.clone(center_in_mercator)
         }
 
         // convert from mercator to lat/lon
@@ -574,7 +562,7 @@ export function getLatLonCircleClass() {
       }
 
       /**
-       * @returns {MapdDraw.Point2d} Center point of the circle in WGS84 space, with lon/lat converted to radians
+       * @returns {Point2d} Center point of the circle in WGS84 space, with lon/lat converted to radians
        */
       _getRadiansCenterPoint(
         center_in_mercator = null,
@@ -586,15 +574,11 @@ export function getLatLonCircleClass() {
         if (center_in_lonlat === null) {
           center_point = this._getLatLonCenterPoint(center_in_mercator)
         } else {
-          center_point = MapdDraw.Point2d.clone(center_in_lonlat)
+          center_point = Point2d.clone(center_in_lonlat)
         }
 
         // now convert to radians
-        MapdDraw.Vec2d.scale(
-          center_point,
-          center_point,
-          MapdDraw.Math.DEG_TO_RAD
-        )
+        Vec2d.scale(center_point, center_point, MathExt.DEG_TO_RAD)
 
         return center_point
       }
@@ -623,7 +607,7 @@ export function getLatLonCircleClass() {
 
           const dist_radians = LatLonCircle.getDistanceInRadians(this._radius)
 
-          MapdDraw.AABox2d.initEmpty(this._aabox)
+          AABox2d.initEmpty(this._aabox)
 
           for (
             let index = 0;
@@ -633,7 +617,7 @@ export function getLatLonCircleClass() {
             const point_data = this._segmented_circle_points[index]
             const { lonlat_point, merc_point } = point_data
             const angle_degrees = index * this._degrees_between_points
-            const angle_radians = angle_degrees * MapdDraw.Math.DEG_TO_RAD
+            const angle_radians = angle_degrees * MathExt.DEG_TO_RAD
 
             // store the angle for later validation
             point_data.angle_degrees = angle_degrees
@@ -649,12 +633,12 @@ export function getLatLonCircleClass() {
             // convert from lon/lat to mercator
             LatLonUtils.conv4326To900913(merc_point, lonlat_point)
 
-            MapdDraw.AABox2d.encapsulatePt(this._aabox, this._aabox, merc_point)
+            AABox2d.encapsulatePt(this._aabox, this._aabox, merc_point)
           }
 
-          const pivot = MapdDraw.Point2d.create(0, 0)
-          MapdDraw.AABox2d.getCenter(pivot, this._aabox)
-          MapdDraw.Point2d.sub(pivot, pivot, center_mercator)
+          const pivot = Point2d.create(0, 0)
+          AABox2d.getCenter(pivot, this._aabox)
+          Point2d.sub(pivot, pivot, center_mercator)
           this.pivot = pivot
 
           this._geomDirty = false
@@ -676,7 +660,7 @@ export function getLatLonCircleClass() {
           point_lonlat,
           point_radians
         )
-        const angle_degrees = angle_radians * MapdDraw.Math.RAD_TO_DEG
+        const angle_degrees = angle_radians * MathExt.RAD_TO_DEG
 
         const new_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
         new_point_data.angle_degrees = angle_degrees
@@ -691,7 +675,7 @@ export function getLatLonCircleClass() {
           new_point_data.merc_point,
           new_point_data.lonlat_point
         )
-        MapdDraw.Point2d.transformMat2d(
+        Point2d.transformMat2d(
           new_point_data.screen_point,
           new_point_data.merc_point,
           worldToScreenMatrix
@@ -743,9 +727,7 @@ export function getLatLonCircleClass() {
           worldToScreenMatrix
         )
 
-        new_subdivided_points.push(
-          MapdDraw.Point2d.clone(new_point_data.screen_point)
-        )
+        new_subdivided_points.push(Point2d.clone(new_point_data.screen_point))
 
         this._subdivideArc(
           new_subdivided_points,
@@ -767,19 +749,19 @@ export function getLatLonCircleClass() {
        * by a start/end point should be further subdivided for drawing.
        * If the segment should be subdivided, will append subdivided points representing
        * the subdivided arc into the array of screen-projected points for drawing.
-       * @param {MapdDraw.Point2d[]} subdivided_points_array Array to append the subdivided points to
-       * @param {MapdDraw.Point2d} center_latlon Center of circle in WGS84 lon/lat coords
-       * @param {MapdDraw.Point2d} center_radians Center of the circle in lon/lat coords converted to radians
+       * @param {Point2d[]} subdivided_points_array Array to append the subdivided points to
+       * @param {Point2d} center_latlon Center of circle in WGS84 lon/lat coords
+       * @param {Point2d} center_radians Center of the circle in lon/lat coords converted to radians
        * @param {ProjectedPointData} start_point_data Start point of the line segment
        * @param {ProjectedPointData} end_point_data End point of the line segment
        * @param {number} start_angle The angle about the center of the circle for the starting point of
        *                             this segment. In degrees.
        * @param {number} angle_diff The angle difference between the start point and the end point of this
        *                            segment. In degrees.
-       * @param {MapdDraw.AABox2d} view_aabox Axis-aligned bounding box describing the
+       * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
        *                                      intersection between the shape and the current view
        *                                      in WGS84 lat/lon coords
-       * @param {MapdDraw.Mat2d} worldToScreenMatrix Matrix defining world-to-screen transformation
+       * @param {Mat2d} worldToScreenMatrix Matrix defining world-to-screen transformation
        * @returns
        */
       _subdivideArc(
@@ -814,10 +796,7 @@ export function getLatLonCircleClass() {
         const [start_latlon_pt, end_latlon_pt] = view_intersect_data.latlon_pts
         const [start_t, end_t] = view_intersect_data.pts_t
 
-        const distance = MapdDraw.Point2d.distance(
-          start_screen_pt,
-          end_screen_pt
-        )
+        const distance = Point2d.distance(start_screen_pt, end_screen_pt)
         if (distance > this._maxSegmentPixelDistance) {
           const dist_radians = LatLonCircle.getDistanceInRadians(this._radius)
 
@@ -825,46 +804,32 @@ export function getLatLonCircleClass() {
           // metric could be used
           if (
             do_extra_subdivide &&
-            !MapdDraw.Math.floatingPtEquals(start_t, 0) &&
-            !MapdDraw.Math.floatingPtEquals(end_t, 1) &&
+            !MathExt.floatingPtEquals(start_t, 0) &&
+            !MathExt.floatingPtEquals(end_t, 1) &&
             end_t - start_t < 0.25
           ) {
-            const line_aabox = MapdDraw.AABox2d.create()
-            MapdDraw.AABox2d.encapsulatePt(
-              line_aabox,
-              line_aabox,
-              start_latlon_pt
-            )
-            MapdDraw.AABox2d.encapsulatePt(
-              line_aabox,
-              line_aabox,
-              end_latlon_pt
-            )
+            const line_aabox = AABox2d.create()
+            AABox2d.encapsulatePt(line_aabox, line_aabox, start_latlon_pt)
+            AABox2d.encapsulatePt(line_aabox, line_aabox, end_latlon_pt)
 
             if (
-              (line_aabox[MapdDraw.AABox2d.MINX] !==
-                view_aabox[MapdDraw.AABox2d.MINX] ||
-                line_aabox[MapdDraw.AABox2d.MAXX] !==
-                  view_aabox[MapdDraw.AABox2d.MAXX]) &&
-              (line_aabox[MapdDraw.AABox2d.MINY] !==
-                view_aabox[MapdDraw.AABox2d.MINY] ||
-                line_aabox[MapdDraw.AABox2d.MAXY] !==
-                  view_aabox[MapdDraw.AABox2d.MAXY])
+              (line_aabox[AABox2d.MINX] !== view_aabox[AABox2d.MINX] ||
+                line_aabox[AABox2d.MAXX] !== view_aabox[AABox2d.MAXX]) &&
+              (line_aabox[AABox2d.MINY] !== view_aabox[AABox2d.MINY] ||
+                line_aabox[AABox2d.MAXY] !== view_aabox[AABox2d.MAXY])
             ) {
-              const line_center_lonlat = MapdDraw.Point2d.create()
-              MapdDraw.Point2d.lerp(
+              const line_center_lonlat = Point2d.create()
+              Point2d.lerp(
                 line_center_lonlat,
                 start_latlon_pt,
                 end_latlon_pt,
                 0.5
               )
-              const line_center_radians = MapdDraw.Point2d.clone(
-                line_center_lonlat
-              )
-              MapdDraw.Vec2d.scale(
+              const line_center_radians = Point2d.clone(line_center_lonlat)
+              Vec2d.scale(
                 line_center_radians,
                 line_center_radians,
-                MapdDraw.Math.DEG_TO_RAD
+                MathExt.DEG_TO_RAD
               )
 
               const that = this
@@ -896,24 +861,16 @@ export function getLatLonCircleClass() {
             distance / this._maxSegmentPixelDistance
           )
 
-          const point_radians = MapdDraw.Point2d.clone(start_latlon_pt)
-          MapdDraw.Vec2d.scale(
-            point_radians,
-            point_radians,
-            MapdDraw.Math.DEG_TO_RAD
-          )
+          const point_radians = Point2d.clone(start_latlon_pt)
+          Vec2d.scale(point_radians, point_radians, MathExt.DEG_TO_RAD)
           const start_angle = LatLonCircle.getAngleBetweenTwoPoints(
             center_latlon,
             center_radians,
             start_latlon_pt,
             point_radians
           )
-          MapdDraw.Point2d.copy(point_radians, end_latlon_pt)
-          MapdDraw.Vec2d.scale(
-            point_radians,
-            point_radians,
-            MapdDraw.Math.DEG_TO_RAD
-          )
+          Point2d.copy(point_radians, end_latlon_pt)
+          Vec2d.scale(point_radians, point_radians, MathExt.DEG_TO_RAD)
           const end_angle = LatLonCircle.getAngleBetweenTwoPoints(
             center_latlon,
             center_radians,
@@ -927,7 +884,7 @@ export function getLatLonCircleClass() {
             current_angle += angle_diff
           ) {
             // create a new subdivided point rotated around the circle center using the radius distance in radians
-            const new_point = MapdDraw.Point2d.create()
+            const new_point = Point2d.create()
             LatLonCircle.initializePointDistanceFromCenter(
               new_point,
               center_radians,
@@ -939,11 +896,7 @@ export function getLatLonCircleClass() {
             LatLonUtils.conv4326To900913(new_point, new_point)
 
             // now convert to screen space
-            MapdDraw.Point2d.transformMat2d(
-              new_point,
-              new_point,
-              worldToScreenMatrix
-            )
+            Point2d.transformMat2d(new_point, new_point, worldToScreenMatrix)
             subdivided_points_array.push(new_point)
           }
         }
@@ -954,13 +907,13 @@ export function getLatLonCircleClass() {
         for (let i = 0; i < 4; ++i) {
           let bounds_lon =
             i & 1
-              ? view_bounds_lonlat[MapdDraw.AABox2d.MAXX]
-              : view_bounds_lonlat[MapdDraw.AABox2d.MINX]
+              ? view_bounds_lonlat[AABox2d.MAXX]
+              : view_bounds_lonlat[AABox2d.MINX]
           let bounds_lat =
             i > 1
-              ? view_bounds_lonlat[MapdDraw.AABox2d.MAXY]
-              : view_bounds_lonlat[MapdDraw.AABox2d.MINY]
-          const point = MapdDraw.Point2d.create(bounds_lon, bounds_lat)
+              ? view_bounds_lonlat[AABox2d.MAXY]
+              : view_bounds_lonlat[AABox2d.MINY]
+          const point = Point2d.create(bounds_lon, bounds_lat)
           // distance from center to corner of bounds in kilometers
           let distance =
             LatLonUtils.distance_in_meters(
@@ -987,17 +940,17 @@ export function getLatLonCircleClass() {
       }
 
       static boundsConv900913to4326(output_bounds, input_bounds) {
-        output_bounds[MapdDraw.AABox2d.MINX] = LatLonUtils.conv900913To4326X(
-          input_bounds[MapdDraw.AABox2d.MINX]
+        output_bounds[AABox2d.MINX] = LatLonUtils.conv900913To4326X(
+          input_bounds[AABox2d.MINX]
         )
-        output_bounds[MapdDraw.AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
-          input_bounds[MapdDraw.AABox2d.MAXX]
+        output_bounds[AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
+          input_bounds[AABox2d.MAXX]
         )
-        output_bounds[MapdDraw.AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
-          input_bounds[MapdDraw.AABox2d.MINY]
+        output_bounds[AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
+          input_bounds[AABox2d.MINY]
         )
-        output_bounds[MapdDraw.AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
-          input_bounds[MapdDraw.AABox2d.MAXY]
+        output_bounds[AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
+          input_bounds[AABox2d.MAXY]
         )
 
         return output_bounds
@@ -1021,39 +974,35 @@ export function getLatLonCircleClass() {
           // calculate the bounds intersection between the current view bounds
           // and the bounds of this shape
           const world_bounds = this._draw_engine.camera.worldViewBounds
-          const world_intersect_bounds = MapdDraw.AABox2d.create()
+          const world_intersect_bounds = AABox2d.create()
 
           // NOTE: this._aabox would have already been updated in the above _updateGeom()
           // call, so can go directly to the _aabox member rather than throw the this.aabox
           // getter
-          MapdDraw.AABox2d.intersection(
+          AABox2d.intersection(
             world_intersect_bounds,
             this._aabox,
             world_bounds
           )
-          if (MapdDraw.AABox2d.isEmpty(world_intersect_bounds)) {
+          if (AABox2d.isEmpty(world_intersect_bounds)) {
             return
           }
 
-          const screen_aabox = MapdDraw.AABox2d.clone(this._aabox)
-          MapdDraw.AABox2d.transformMat2d(
+          const screen_aabox = AABox2d.clone(this._aabox)
+          AABox2d.transformMat2d(
             screen_aabox,
             screen_aabox,
             worldToScreenMatrix
           )
-          const shape_screen_area = MapdDraw.AABox2d.area(screen_aabox)
+          const shape_screen_area = AABox2d.area(screen_aabox)
 
-          const screen_intersect_box = MapdDraw.AABox2d.clone(
-            world_intersect_bounds
-          )
-          MapdDraw.AABox2d.transformMat2d(
+          const screen_intersect_box = AABox2d.clone(world_intersect_bounds)
+          AABox2d.transformMat2d(
             screen_intersect_box,
             screen_intersect_box,
             worldToScreenMatrix
           )
-          const screen_intersect_area = MapdDraw.AABox2d.area(
-            screen_intersect_box
-          )
+          const screen_intersect_area = AABox2d.area(screen_intersect_box)
 
           // convert our intersection bounds to WGS84 lon/lat
           LatLonCircle.boundsConv900913to4326(world_bounds, world_bounds)
@@ -1067,21 +1016,21 @@ export function getLatLonCircleClass() {
           let start_point_data = this._segmented_circle_points[0]
           let end_point_data = null
 
-          MapdDraw.Point2d.transformMat2d(
+          Point2d.transformMat2d(
             start_point_data.screen_point,
             start_point_data.merc_point,
             worldToScreenMatrix
           )
 
           this._subdivided_screen_points.push(
-            MapdDraw.Point2d.clone(start_point_data.screen_point)
+            Point2d.clone(start_point_data.screen_point)
           )
 
           if (subdivide) {
             const initial_point_data = start_point_data
             for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
               end_point_data = this._segmented_circle_points[i]
-              MapdDraw.Point2d.transformMat2d(
+              Point2d.transformMat2d(
                 end_point_data.screen_point,
                 end_point_data.merc_point,
                 worldToScreenMatrix
@@ -1100,7 +1049,7 @@ export function getLatLonCircleClass() {
                 true
               )
               this._subdivided_screen_points.push(
-                MapdDraw.Point2d.clone(end_point_data.screen_point)
+                Point2d.clone(end_point_data.screen_point)
               )
 
               start_point_data = end_point_data
@@ -1144,15 +1093,13 @@ export function getLatLonCircleClass() {
                 // segmented circle points to give more precision in the area we are zoomed in on. To do this we will
                 // get the angle between the center of the circle and the center of the bounds. This will tell us which
                 // two original segmented points are its neighbors, and then subdivide with the two new line segments.
-                const bounds_center = MapdDraw.Point2d.create()
-                MapdDraw.AABox2d.getCenter(bounds_center, world_bounds)
-                const bounds_center_radians = MapdDraw.Point2d.clone(
-                  bounds_center
-                )
-                MapdDraw.Vec2d.scale(
+                const bounds_center = Point2d.create()
+                AABox2d.getCenter(bounds_center, world_bounds)
+                const bounds_center_radians = Point2d.clone(bounds_center)
+                Vec2d.scale(
                   bounds_center_radians,
                   bounds_center_radians,
-                  MapdDraw.Math.DEG_TO_RAD
+                  MathExt.DEG_TO_RAD
                 )
 
                 const that = this
@@ -1198,13 +1145,11 @@ export function getLatLonCircleClass() {
                 // the last element in the view_bounds_distance array will have the max distance
                 const bounds_point_lonlat =
                   view_bounds_distances[view_bounds_distances.length - 1].point
-                const bounds_point_radians = MapdDraw.Point2d.clone(
-                  bounds_point_lonlat
-                )
-                MapdDraw.Vec2d.scale(
+                const bounds_point_radians = Point2d.clone(bounds_point_lonlat)
+                Vec2d.scale(
                   bounds_point_radians,
                   bounds_point_radians,
-                  MapdDraw.Math.DEG_TO_RAD
+                  MathExt.DEG_TO_RAD
                 )
 
                 const {
@@ -1232,14 +1177,14 @@ export function getLatLonCircleClass() {
           } else {
             for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
               const point_data = this._segmented_circle_points[i]
-              MapdDraw.Point2d.transformMat2d(
+              Point2d.transformMat2d(
                 point_data.screen_point,
                 point_data.merc_point,
                 worldToScreenMatrix
               )
 
               this._subdivided_screen_points.push(
-                MapdDraw.Point2d.clone(point_data.screen_point)
+                Point2d.clone(point_data.screen_point)
               )
             }
           }
@@ -1276,13 +1221,13 @@ export function getLatLonCircleClass() {
         // the amount of math applied.
 
         // invert the model matrix
-        const xform = MapdDraw.Mat2d.clone(this.globalXform)
-        MapdDraw.Mat2d.invert(xform, xform)
+        const xform = Mat2d.clone(this.globalXform)
+        Mat2d.invert(xform, xform)
 
         // and multiply w/ model-view-projection matrix resulting in just the
         // view-projection matrix, or, in other words, the world-space-to-screen-space
         // transformation matrix
-        MapdDraw.Mat2d.multiply(xform, this._fullXform, xform)
+        Mat2d.multiply(xform, this._fullXform, xform)
 
         ctx.setTransform(1, 0, 0, 1, 0, 0)
 
@@ -1321,7 +1266,7 @@ export function getLatLonCircleClass() {
       //     ctx.fillStyle = "orange"
       //     this._subdivided_screen_points.forEach(point => {
       //       ctx.beginPath()
-      //       ctx.arc(point[0], point[1], 3, 0, MapdDraw.Math.TWO_PI, false)
+      //       ctx.arc(point[0], point[1], 3, 0, MathExt.TWO_PI, false)
       //       ctx.fill()
       //     })
 
@@ -1333,7 +1278,7 @@ export function getLatLonCircleClass() {
       //         point_data.screen_point[1],
       //         5,
       //         0,
-      //         MapdDraw.Math.TWO_PI,
+      //         MathExt.TWO_PI,
       //         false
       //       )
       //       ctx.fill()
@@ -1381,10 +1326,10 @@ export function getLatLonPolyClass() {
        * to draw.
        * @param {ProjectedPointData} start_point_data Start point of the line segment
        * @param {ProjectedPointData} end_point_data End point of the line segment
-       * @param {MapdDraw.AABox2d} view_aabox Axis-aligned bounding box describing the
+       * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
        *                                      intersection between the shape and the current view
        *                                      in WGS84 lat/lon coords
-       * @param {MapdDraw.Mat2d} worldToScreenMatrix Matrix defining world-to-screen transformation
+       * @param {Mat2d} worldToScreenMatrix Matrix defining world-to-screen transformation
        * @returns
        */
       _subdivideLineSegment(
@@ -1411,10 +1356,7 @@ export function getLatLonPolyClass() {
         const start_screen_pt = view_intersect_data.screen_pts[0]
         const end_screen_pt = view_intersect_data.screen_pts[1]
 
-        const distance = MapdDraw.Point2d.distance(
-          start_screen_pt,
-          end_screen_pt
-        )
+        const distance = Point2d.distance(start_screen_pt, end_screen_pt)
         if (distance > this._maxSegmentPixelDistance) {
           // do subdivisions in a cartesian space using lon/lat
           // This is how ST_Contains behaves in the server right now
@@ -1422,8 +1364,8 @@ export function getLatLonPolyClass() {
             distance / this._maxSegmentPixelDistance
           )
           for (let i = 1; i < num_subdivisions; i += 1) {
-            const new_segment_point = MapdDraw.Point2d.create()
-            MapdDraw.Point2d.lerp(
+            const new_segment_point = Point2d.create()
+            Point2d.lerp(
               new_segment_point,
               start_latlon_pt,
               end_latlon_pt,
@@ -1433,12 +1375,12 @@ export function getLatLonPolyClass() {
             LatLonUtils.conv4326To900913(new_segment_point, new_segment_point)
 
             // now convert to screen space
-            MapdDraw.Point2d.transformMat2d(
+            Point2d.transformMat2d(
               new_segment_point,
               new_segment_point,
               worldToScreenMatrix
             )
-            this._screenPts.push(MapdDraw.Point2d.clone(new_segment_point))
+            this._screenPts.push(Point2d.clone(new_segment_point))
           }
         }
       }
@@ -1454,23 +1396,23 @@ export function getLatLonPolyClass() {
           // and the bounds of this shape
           const world_bounds = this._draw_engine.camera.worldViewBounds
           const aabox = this.aabox
-          MapdDraw.AABox2d.intersection(world_bounds, aabox, world_bounds)
-          if (MapdDraw.AABox2d.isEmpty(aabox)) {
+          AABox2d.intersection(world_bounds, aabox, world_bounds)
+          if (AABox2d.isEmpty(aabox)) {
             return
           }
 
           // convert our intersection bounds to WGS84 lon/lat
-          world_bounds[MapdDraw.AABox2d.MINX] = LatLonUtils.conv900913To4326X(
-            world_bounds[MapdDraw.AABox2d.MINX]
+          world_bounds[AABox2d.MINX] = LatLonUtils.conv900913To4326X(
+            world_bounds[AABox2d.MINX]
           )
-          world_bounds[MapdDraw.AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
-            world_bounds[MapdDraw.AABox2d.MAXX]
+          world_bounds[AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
+            world_bounds[AABox2d.MAXX]
           )
-          world_bounds[MapdDraw.AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
-            world_bounds[MapdDraw.AABox2d.MINY]
+          world_bounds[AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
+            world_bounds[AABox2d.MINY]
           )
-          world_bounds[MapdDraw.AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
-            world_bounds[MapdDraw.AABox2d.MAXY]
+          world_bounds[AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
+            world_bounds[AABox2d.MAXY]
           )
 
           const initial_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
@@ -1486,22 +1428,20 @@ export function getLatLonPolyClass() {
             worldToScreenMatrix
           )
 
-          MapdDraw.Point2d.copy(
+          Point2d.copy(
             start_point_data.merc_point,
             initial_point_data.merc_point
           )
-          MapdDraw.Point2d.copy(
+          Point2d.copy(
             start_point_data.screen_point,
             initial_point_data.screen_point
           )
-          MapdDraw.Point2d.copy(
+          Point2d.copy(
             start_point_data.lonlat_point,
             initial_point_data.lonlat_point
           )
 
-          this._screenPts.push(
-            MapdDraw.Point2d.clone(start_point_data.screen_point)
-          )
+          this._screenPts.push(Point2d.clone(start_point_data.screen_point))
 
           let swap_tmp = null
           for (let i = 1; i < this._verts.length; i += 1) {
@@ -1517,9 +1457,7 @@ export function getLatLonPolyClass() {
               world_bounds,
               worldToScreenMatrix
             )
-            this._screenPts.push(
-              MapdDraw.Point2d.clone(end_point_data.screen_point)
-            )
+            this._screenPts.push(Point2d.clone(end_point_data.screen_point))
 
             // now swap the endpoints
             swap_tmp = start_point_data
@@ -1548,13 +1486,13 @@ export function getLatLonPolyClass() {
         // the amount of math applied.
 
         // invert the model matrix
-        const xform = MapdDraw.Mat2d.clone(this.globalXform)
-        MapdDraw.Mat2d.invert(xform, xform)
+        const xform = Mat2d.clone(this.globalXform)
+        Mat2d.invert(xform, xform)
 
         // and multiply w/ model-view-projection matrix resulting in just the
         // view-projection matrix, or, in other words, the world-space-to-screen-space
         // transformation matrix
-        MapdDraw.Mat2d.multiply(xform, this._fullXform, xform)
+        Mat2d.multiply(xform, this._fullXform, xform)
         ctx.setTransform(1, 0, 0, 1, 0, 0)
 
         this._updateGeom(xform)
@@ -1575,7 +1513,7 @@ export function getLatLonPolyClass() {
       //     ctx.fillStyle = "orange"
       //     this._screenPts.forEach(point => {
       //       ctx.beginPath()
-      //       ctx.arc(point[0], point[1], 3, 0, MapdDraw.Math.TWO_PI, false)
+      //       ctx.arc(point[0], point[1], 3, 0, MathExt.TWO_PI, false)
       //       ctx.fill()
       //     })
 
@@ -1684,7 +1622,7 @@ class ShapeHandler {
 
     const diffX = mouseEvent.clientX - rect.left - this.canvas.clientLeft
     const diffY = mouseEvent.clientY - rect.top - this.canvas.clientTop
-    const mousepos = MapdDraw.Point2d.create(diffX, diffY)
+    const mousepos = Point2d.create(diffX, diffY)
 
     return mousepos
   }
@@ -1746,10 +1684,10 @@ class CircleShapeHandler extends ShapeHandler {
       defaultStyle,
       defaultSelectStyle
     )
-    this.startmousepos = MapdDraw.Point2d.create(0, 0)
-    this.startmouseworldpos = MapdDraw.Point2d.create(0, 0)
+    this.startmousepos = Point2d.create(0, 0)
+    this.startmouseworldpos = Point2d.create(0, 0)
     if (this.useLonLat) {
-      this.startmouselatlonpos = MapdDraw.Point2d.create(0, 0)
+      this.startmouselatlonpos = Point2d.create(0, 0)
     }
     this.activeshape = null
     this.timer = null
@@ -1813,10 +1751,7 @@ class CircleShapeHandler extends ShapeHandler {
     }
 
     this.disableBasemapEvents()
-    MapdDraw.Point2d.copy(
-      this.startmousepos,
-      this.getRelativeMousePosFromEvent(event)
-    )
+    Point2d.copy(this.startmousepos, this.getRelativeMousePosFromEvent(event))
     this.drawEngine.project(this.startmouseworldpos, this.startmousepos)
     this.timer = performance.now()
 
@@ -1867,7 +1802,7 @@ class CircleShapeHandler extends ShapeHandler {
   mousemoveCB(event) {
     if (this.activeShape) {
       const mousepos = this.getRelativeMousePosFromEvent(event)
-      const mousescreenpos = MapdDraw.Point2d.create(0, 0)
+      const mousescreenpos = Point2d.create(0, 0)
       this.drawEngine.project(mousescreenpos, mousepos)
 
       if (this.useLonLat) {
@@ -1881,10 +1816,7 @@ class CircleShapeHandler extends ShapeHandler {
         )
         this.activeShape.initialRadius = radius / 1000
       } else {
-        const radius = MapdDraw.Point2d.distance(
-          this.startmouseworldpos,
-          mousescreenpos
-        )
+        const radius = Point2d.distance(this.startmouseworldpos, mousescreenpos)
         this.activeShape.radius = radius
       }
 
@@ -1936,7 +1868,7 @@ class PolylineShapeHandler extends ShapeHandler {
     this.lineShape = null
     this.prevVertPos = null
     this.activeIdx = -1
-    this.startPosAABox = MapdDraw.AABox2d.create()
+    this.startPosAABox = AABox2d.create()
     this.timer = null
 
     this.enableBasemapDebounceFunc = chart.debounce(() => {
@@ -1958,7 +1890,7 @@ class PolylineShapeHandler extends ShapeHandler {
     }
 
     this.startVert = this.lastVert = this.lineShape = this.activeShape = this.prevVertPos = null
-    MapdDraw.AABox2d.initEmpty(this.startPosAABox)
+    AABox2d.initEmpty(this.startPosAABox)
     this.activeIdx = -1
   }
 
@@ -1980,12 +1912,9 @@ class PolylineShapeHandler extends ShapeHandler {
     const verts = this.lineShape ? this.lineShape.vertsRef : []
     const removeLastVert =
       verts.length > 1 &&
-      !MapdDraw.Point2d.equals(verts[0], verts[verts.length - 1]) &&
+      !Point2d.equals(verts[0], verts[verts.length - 1]) &&
       this.lastVert &&
-      !MapdDraw.Point2d.equals(
-        verts[verts.length - 1],
-        this.lastVert.getPositionRef()
-      )
+      !Point2d.equals(verts[verts.length - 1], this.lastVert.getPositionRef())
     if (verts.length > 2 && (!removeLastVert || verts.length > 3)) {
       // Check if there is a loop in the current verts, remove the last point
       // if so
@@ -2035,7 +1964,7 @@ class PolylineShapeHandler extends ShapeHandler {
 
       let shapeBuilt = false
       const mousepos = this.getRelativeMousePosFromEvent(event)
-      const mouseworldpos = MapdDraw.Point2d.create(0, 0)
+      const mouseworldpos = Point2d.create(0, 0)
       this.drawEngine.project(mouseworldpos, mousepos)
 
       if (!this.startVert) {
@@ -2068,11 +1997,8 @@ class PolylineShapeHandler extends ShapeHandler {
       } else if (this.lastVert) {
         const startpos = this.startVert.getPosition()
         this.drawEngine.unproject(startpos, startpos)
-        MapdDraw.AABox2d.initCenterExtents(this.startPosAABox, startpos, [
-          10,
-          10
-        ])
-        if (MapdDraw.AABox2d.containsPt(this.startPosAABox, mousepos)) {
+        AABox2d.initCenterExtents(this.startPosAABox, startpos, [10, 10])
+        if (AABox2d.containsPt(this.startPosAABox, mousepos)) {
           this.finishShape()
           shapeBuilt = true
         } else {
@@ -2095,61 +2021,49 @@ class PolylineShapeHandler extends ShapeHandler {
   mousemoveCB(event) {
     if (this.startVert && this.lineShape && this.activeIdx < 0) {
       const mousepos = this.getRelativeMousePosFromEvent(event)
-      const mouseworldpos = MapdDraw.Point2d.create(0, 0)
+      const mouseworldpos = Point2d.create(0, 0)
       this.drawEngine.project(mouseworldpos, mousepos)
       this.activeIdx = this.appendVertex(mousepos, mouseworldpos)
     }
 
     if (this.activeShape || this.activeIdx >= 0) {
       const mousepos = this.getRelativeMousePosFromEvent(event)
-      const mouseworldpos = MapdDraw.Point2d.create(0, 0)
+      const mouseworldpos = Point2d.create(0, 0)
       this.drawEngine.project(mouseworldpos, mousepos)
 
       if (event.shiftKey) {
         if (this.activeIdx === 1) {
-          const diff = MapdDraw.Vec2d.create()
-          const prevmousepos = MapdDraw.Point2d.create()
+          const diff = Vec2d.create()
+          const prevmousepos = Point2d.create()
           const verts = this.lineShape.vertsRef
           this.drawEngine.unproject(prevmousepos, verts[0])
-          MapdDraw.Point2d.sub(diff, mousepos, prevmousepos)
+          Point2d.sub(diff, mousepos, prevmousepos)
           let angle = Math.atan2(diff[1], diff[0])
-          angle =
-            MapdDraw.Math.round(angle / MapdDraw.Math.QUATER_PI) *
-            MapdDraw.Math.QUATER_PI
+          angle = MathExt.round(angle / MathExt.QUATER_PI) * MathExt.QUATER_PI
           const transformDir = [Math.cos(angle), Math.sin(angle)]
-          MapdDraw.Vec2d.scale(
-            diff,
-            transformDir,
-            MapdDraw.Vec2d.dot(diff, transformDir)
-          )
-          MapdDraw.Point2d.addVec2(mousepos, prevmousepos, diff)
+          Vec2d.scale(diff, transformDir, Vec2d.dot(diff, transformDir))
+          Point2d.addVec2(mousepos, prevmousepos, diff)
           this.drawEngine.project(mouseworldpos, mousepos)
         } else if (this.activeIdx > 1) {
           const verts = this.lineShape.vertsRef
-          const pt1 = MapdDraw.Point2d.create()
+          const pt1 = Point2d.create()
           this.drawEngine.unproject(pt1, verts[this.activeIdx - 2])
-          const pt2 = MapdDraw.Point2d.create()
+          const pt2 = Point2d.create()
           this.drawEngine.unproject(pt2, verts[this.activeIdx - 1])
-          const dir1 = MapdDraw.Vec2d.create()
-          MapdDraw.Point2d.sub(dir1, pt2, pt1)
-          MapdDraw.Vec2d.normalize(dir1, dir1)
+          const dir1 = Vec2d.create()
+          Point2d.sub(dir1, pt2, pt1)
+          Vec2d.normalize(dir1, dir1)
           const dir2 = [0, 0]
-          MapdDraw.Point2d.sub(dir2, mousepos, pt2)
-          // MapdDraw.Vec2d.normalize(dir2, dir2)
-          let angle = MapdDraw.Vec2d.angle(dir1, dir2)
-          angle =
-            MapdDraw.Math.round(angle / MapdDraw.Math.QUATER_PI) *
-            MapdDraw.Math.QUATER_PI
-          const matrix = MapdDraw.Mat2.create()
-          MapdDraw.Mat2.fromRotation(matrix, angle)
+          Point2d.sub(dir2, mousepos, pt2)
+          // Vec2d.normalize(dir2, dir2)
+          let angle = Vec2d.angle(dir1, dir2)
+          angle = MathExt.round(angle / MathExt.QUATER_PI) * MathExt.QUATER_PI
+          const matrix = Mat2.create()
+          Mat2.fromRotation(matrix, angle)
           const transformDir = [0, 0]
-          MapdDraw.Vec2d.transformMat2(transformDir, dir1, matrix)
-          MapdDraw.Vec2d.scale(
-            transformDir,
-            transformDir,
-            MapdDraw.Vec2d.dot(dir2, transformDir)
-          )
-          MapdDraw.Point2d.addVec2(mousepos, pt2, transformDir)
+          Vec2d.transformMat2(transformDir, dir1, matrix)
+          Vec2d.scale(transformDir, transformDir, Vec2d.dot(dir2, transformDir))
+          Point2d.addVec2(mousepos, pt2, transformDir)
           this.drawEngine.project(mouseworldpos, mousepos)
         }
       }
@@ -2234,7 +2148,7 @@ class LassoShapeHandler extends ShapeHandler {
     this.disableBasemapEvents()
     this.activeShape = null
     this.lastPos = this.getRelativeMousePosFromEvent(event)
-    this.lastWorldPos = MapdDraw.Point2d.create(0, 0)
+    this.lastWorldPos = Point2d.create(0, 0)
     this.drawEngine.project(this.lastWorldPos, this.lastPos)
     event.preventDefault()
   }
@@ -2253,9 +2167,9 @@ class LassoShapeHandler extends ShapeHandler {
 
     if (this.lastPos) {
       const currPos = this.getRelativeMousePosFromEvent(event)
-      const currWorldPos = MapdDraw.Point2d.create(0, 0)
+      const currWorldPos = Point2d.create(0, 0)
       this.drawEngine.project(currWorldPos, currPos)
-      if (!MapdDraw.Point2d.equals(currPos, this.lastPos)) {
+      if (!Point2d.equals(currPos, this.lastPos)) {
         if (!this.activeShape) {
           this.activeShape = new MapdDraw.PolyLine(
             Object.assign(
@@ -2269,8 +2183,8 @@ class LassoShapeHandler extends ShapeHandler {
         } else {
           this.activeShape.appendVert(currWorldPos)
         }
-        MapdDraw.Point2d.copy(this.lastPos, currPos)
-        MapdDraw.Point2d.copy(this.lastWorldPos, currWorldPos)
+        Point2d.copy(this.lastPos, currPos)
+        Point2d.copy(this.lastWorldPos, currWorldPos)
         this.canvas.focus()
       }
       event.preventDefault()
@@ -2280,8 +2194,8 @@ class LassoShapeHandler extends ShapeHandler {
   mouseupCB(event) {
     if (this.activeShape) {
       const verts = this.activeShape.vertsRef
-      const screenVert = MapdDraw.Point2d.create(0, 0)
-      const worldVert = MapdDraw.Point2d.create(0, 0)
+      const screenVert = Point2d.create(0, 0)
+      const worldVert = Point2d.create(0, 0)
       let simpleVerts = verts.map(vert => {
         this.drawEngine.unproject(screenVert, vert)
         return {
@@ -2291,9 +2205,9 @@ class LassoShapeHandler extends ShapeHandler {
       })
       simpleVerts = simplify(simpleVerts, 4, true)
       const newverts = simpleVerts.map(vert => {
-        MapdDraw.Point2d.set(screenVert, vert.x, vert.y)
+        Point2d.set(screenVert, vert.x, vert.y)
         this.drawEngine.project(worldVert, screenVert)
-        return MapdDraw.Point2d.clone(worldVert)
+        return Point2d.clone(worldVert)
       })
 
       if (newverts.length < 3) {
