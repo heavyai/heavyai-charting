@@ -41,7 +41,7 @@ export default function capMixin(_chart) {
   _chart.cappedKeyAccessor = function(d, i) {
     if (d.others) {
       /* OVERRIDE ---------------------------------------------------------------- */
-      return d.key0
+      return d.key
       /* ------------------------------------------------------------------------- */
     }
     return _chart.keyAccessor()(d, i)
@@ -52,6 +52,13 @@ export default function capMixin(_chart) {
       return d.value
     }
     return _chart.valueAccessor()(d, i)
+  }
+
+  _chart.cappedLabel = function(d) {
+    if (d.others) {
+      return _chart.othersLabel()
+    }
+    return _chart.label()(d)
   }
 
   /* OVERRIDE EXTEND --------------------------------------------------------- */

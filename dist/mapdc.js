@@ -11631,7 +11631,7 @@ function capMixin(_chart) {
   _chart.cappedKeyAccessor = function (d, i) {
     if (d.others) {
       /* OVERRIDE ---------------------------------------------------------------- */
-      return d.key0;
+      return d.key;
       /* ------------------------------------------------------------------------- */
     }
     return _chart.keyAccessor()(d, i);
@@ -11642,6 +11642,13 @@ function capMixin(_chart) {
       return d.value;
     }
     return _chart.valueAccessor()(d, i);
+  };
+
+  _chart.cappedLabel = function (d) {
+    if (d.others) {
+      return _chart.othersLabel();
+    }
+    return _chart.label()(d);
   };
 
   /* OVERRIDE EXTEND --------------------------------------------------------- */
@@ -54897,6 +54904,7 @@ function validSymbol(type) {
     case "hexagon-horiz":
     case "wedge":
     case "arrow":
+    case "airplane":
       return true;
     default:
       return false;
@@ -55354,7 +55362,7 @@ function rasterLayerPointMixin(_layer) {
     var scales = (0, _utilsVega.getScales)(state.encoding, layerName, scaledomainfields, getStatsLayerName());
 
     var marks = [{
-      type: "symbol",
+      type: markType === "airplane" ? "legacysymbol" : "symbol",
       from: {
         data: layerName
       },
@@ -84342,7 +84350,7 @@ function rowChart(parent, chartGroup) {
     });
 
     (0, _core.transition)(rect, _chart.transitionDuration()).attr("width", function (d) {
-      return Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
+      return Math.abs(rootValue() - _x(_chart.cappedValueAccessor(d)));
     }).attr("transform", translateX);
 
     if (!_chart.measureLabelsOn()) {
@@ -84393,7 +84401,7 @@ function rowChart(parent, chartGroup) {
         return _chart.hasFilter() && !isSelectedRow(d);
       })
       /* --------------------------------------------------------------------------*/
-      .html(_chart.label());
+      .html(_chart.cappedLabel);
       (0, _core.transition)(lab, _chart.transitionDuration()).attr("transform", translateX);
     }
 
@@ -84414,7 +84422,7 @@ function rowChart(parent, chartGroup) {
 
         var thisLabel = _d2.default.select(this);
 
-        var width = Math.abs(rootValue() - _x(_chart.valueAccessor()(d)));
+        var width = Math.abs(rootValue() - _x(_chart.cappedValueAccessor(d)));
 
         //
         // handle Firefox getBBox bug
