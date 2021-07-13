@@ -597,15 +597,18 @@ export function getLatLonCircleClass() {
         return distance / 6372.797560856
       }
 
-      _updateGeom(center_mercator = null, center_radians = null) {
+      _updateGeom(
+        center_mercator = null,
+        center_radians = null,
+        radius_radians = null
+      ) {
         if (this._geomDirty || this._boundsOutOfDate) {
           if (center_mercator === null) {
             console.assert(center_radians === null)
             center_mercator = this._getMercatorCenterPoint()
             center_radians = this._getRadiansCenterPoint(center_mercator)
+            radius_radians = LatLonCircle.getDistanceInRadians(this._radius)
           }
-
-          const dist_radians = LatLonCircle.getDistanceInRadians(this._radius)
 
           AABox2d.initEmpty(this._aabox)
 
@@ -626,7 +629,7 @@ export function getLatLonCircleClass() {
             LatLonCircle.initializePointDistanceFromCenter(
               lonlat_point,
               center_radians,
-              dist_radians,
+              radius_radians,
               angle_radians
             )
 
@@ -649,6 +652,7 @@ export function getLatLonCircleClass() {
       _projectPointOntoCircleArc(
         center_lonlat,
         center_radians,
+        radius_radians,
         point_lonlat,
         point_radians,
         worldToScreenMatrix
@@ -667,7 +671,7 @@ export function getLatLonCircleClass() {
         LatLonCircle.initializePointDistanceFromCenter(
           new_point_data.lonlat_point,
           center_radians,
-          LatLonCircle.getDistanceInRadians(this._radius),
+          radius_radians,
           angle_radians
         )
         // convert from lon/lat to mercator
@@ -690,6 +694,7 @@ export function getLatLonCircleClass() {
       _subdivideArcAtPoint(
         center_lonlat,
         center_radians,
+        radius_radians,
         point_lonlat,
         point_radians,
         world_bounds,
@@ -702,6 +707,7 @@ export function getLatLonCircleClass() {
         } = this._projectPointOntoCircleArc(
           center_lonlat,
           center_radians,
+          radius_radians,
           point_lonlat,
           point_radians,
           worldToScreenMatrix
@@ -719,6 +725,7 @@ export function getLatLonCircleClass() {
           new_subdivided_points,
           center_lonlat,
           center_radians,
+          radius_radians,
           start_point,
           new_point_data,
           start_angle,
@@ -733,6 +740,7 @@ export function getLatLonCircleClass() {
           new_subdivided_points,
           center_lonlat,
           center_radians,
+          radius_radians,
           new_point_data,
           end_point,
           angle_degrees,
@@ -768,6 +776,7 @@ export function getLatLonCircleClass() {
         subdivided_points_array,
         center_latlon,
         center_radians,
+        radius_radians,
         start_point_data,
         end_point_data,
         start_angle,
@@ -798,8 +807,6 @@ export function getLatLonCircleClass() {
 
         const distance = Point2d.distance(start_screen_pt, end_screen_pt)
         if (distance > this._maxSegmentPixelDistance) {
-          const dist_radians = LatLonCircle.getDistanceInRadians(this._radius)
-
           // TODO(croot); the 0.25 threshold is just an empirical "good enough". A more clever
           // metric could be used
           if (
@@ -808,17 +815,25 @@ export function getLatLonCircleClass() {
             !MathExt.floatingPtEquals(end_t, 1) &&
             end_t - start_t < 0.25
           ) {
-            const line_aabox = AABox2d.create()
-            AABox2d.encapsulatePt(line_aabox, line_aabox, start_latlon_pt)
-            AABox2d.encapsulatePt(line_aabox, line_aabox, end_latlon_pt)
+            // get the angle from the center of the circle to the potential subdivide point
+            const tmp_point = Point2d.clone(start_latlon_pt)
+            const start_radians_pt = tmp_point
+            Vec2d.scale(start_radians_pt, start_radians_pt, MathExt.DEG_TO_RAD)
+
+            const { new_point_data } = this._projectPointOntoCircleArc(
+              center_latlon,
+              center_radians,
+              radius_radians,
+              start_latlon_pt,
+              start_radians_pt,
+              worldToScreenMatrix
+            )
 
             if (
-              (line_aabox[AABox2d.MINX] !== view_aabox[AABox2d.MINX] ||
-                line_aabox[AABox2d.MAXX] !== view_aabox[AABox2d.MAXX]) &&
-              (line_aabox[AABox2d.MINY] !== view_aabox[AABox2d.MINY] ||
-                line_aabox[AABox2d.MAXY] !== view_aabox[AABox2d.MAXY])
+              Point2d.distance(start_screen_pt, new_point_data.screen_point) >
+              this._maxSegmentPixelDistance
             ) {
-              const line_center_lonlat = Point2d.create()
+              const line_center_lonlat = tmp_point
               Point2d.lerp(
                 line_center_lonlat,
                 start_latlon_pt,
@@ -832,13 +847,23 @@ export function getLatLonCircleClass() {
                 MathExt.DEG_TO_RAD
               )
 
+              // Be sure that the view bounding box includes the new subdivided point
+              // But keep the original view bounding box untouched, so clone first
+              const new_view_bounds = AABox2d.clone(view_aabox)
+              AABox2d.encapsulatePt(
+                new_view_bounds,
+                new_view_bounds,
+                line_center_lonlat
+              )
+
               const that = this
               const new_subdivided_points = this._subdivideArcAtPoint(
                 center_latlon,
                 center_radians,
+                radius_radians,
                 line_center_lonlat,
                 line_center_radians,
-                view_aabox,
+                new_view_bounds,
                 worldToScreenMatrix,
                 (angle_degrees, new_point_data) => {
                   const start_angle = start_point_data.angle_degrees
@@ -888,7 +913,7 @@ export function getLatLonCircleClass() {
             LatLonCircle.initializePointDistanceFromCenter(
               new_point,
               center_radians,
-              dist_radians,
+              radius_radians,
               current_angle
             )
 
@@ -964,7 +989,8 @@ export function getLatLonCircleClass() {
             null,
             center_lonlat
           )
-          this._updateGeom(center_mercator, center_radians)
+          const radius_radians = LatLonCircle.getDistanceInRadians(this._radius)
+          this._updateGeom(center_mercator, center_radians, radius_radians)
 
           this._subdivided_screen_points = []
           if (this._segmented_circle_points.length === 0) {
@@ -1040,6 +1066,7 @@ export function getLatLonCircleClass() {
                 this._subdivided_screen_points,
                 center_lonlat,
                 center_radians,
+                radius_radians,
                 start_point_data,
                 end_point_data,
                 start_point_data.angle_degrees,
@@ -1060,6 +1087,7 @@ export function getLatLonCircleClass() {
               this._subdivided_screen_points,
               center_lonlat,
               center_radians,
+              radius_radians,
               start_point_data,
               initial_point_data,
               start_point_data.angle_degrees,
@@ -1107,6 +1135,7 @@ export function getLatLonCircleClass() {
                 const new_subdivided_points = this._subdivideArcAtPoint(
                   center_lonlat,
                   center_radians,
+                  radius_radians,
                   bounds_center,
                   bounds_center_radians,
                   world_bounds,
@@ -1158,6 +1187,7 @@ export function getLatLonCircleClass() {
                 } = this._projectPointOntoCircleArc(
                   center_lonlat,
                   center_radians,
+                  radius_radians,
                   bounds_point_lonlat,
                   bounds_point_radians,
                   worldToScreenMatrix
