@@ -408,6 +408,11 @@ export function getLatLonCircleClass() {
   if (!LatLonCircleClass) {
     LatLonCircleClass = class LatLonCircle extends MapdDraw.Circle {
       constructor(draw_engine, opts) {
+        if (opts.debug === undefined) {
+          // if true, will activate the use of the _drawDebug method for drawing
+          // extra debug info on top of the original shape draw.
+          opts.debug = false
+        }
         super(opts)
 
         this._draw_engine = draw_engine
@@ -1339,45 +1344,45 @@ export function getLatLonCircleClass() {
         }
       }
 
-      // _drawDebug(ctx) {
-      //   if (this._segmented_circle_points.length) {
-      //     ctx.save()
+      _drawDebug(ctx) {
+        if (this._segmented_circle_points.length) {
+          ctx.save()
 
-      //     ctx.strokeStyle = "white"
-      //     ctx.beginPath()
-      //     let curr_pt = this._segmented_circle_points[0]
-      //     ctx.moveTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
-      //     for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
-      //       curr_pt = this._segmented_circle_points[i]
-      //       ctx.lineTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
-      //     }
-      //     ctx.closePath()
-      //     ctx.stroke()
+          ctx.strokeStyle = "white"
+          ctx.beginPath()
+          let curr_pt = this._segmented_circle_points[0]
+          ctx.moveTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
+          for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
+            curr_pt = this._segmented_circle_points[i]
+            ctx.lineTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
+          }
+          ctx.closePath()
+          ctx.stroke()
 
-      //     ctx.fillStyle = "orange"
-      //     this._subdivided_screen_points.forEach(point => {
-      //       ctx.beginPath()
-      //       ctx.arc(point[0], point[1], 3, 0, MathExt.TWO_PI, false)
-      //       ctx.fill()
-      //     })
+          ctx.fillStyle = "orange"
+          this._subdivided_screen_points.forEach(point => {
+            ctx.beginPath()
+            ctx.arc(point[0], point[1], 3, 0, MathExt.TWO_PI, false)
+            ctx.fill()
+          })
 
-      //     ctx.fillStyle = "red"
-      //     this._segmented_circle_points.forEach(point_data => {
-      //       ctx.beginPath()
-      //       ctx.arc(
-      //         point_data.screen_point[0],
-      //         point_data.screen_point[1],
-      //         5,
-      //         0,
-      //         MathExt.TWO_PI,
-      //         false
-      //       )
-      //       ctx.fill()
-      //     })
+          ctx.fillStyle = "red"
+          this._segmented_circle_points.forEach(point_data => {
+            ctx.beginPath()
+            ctx.arc(
+              point_data.screen_point[0],
+              point_data.screen_point[1],
+              5,
+              0,
+              MathExt.TWO_PI,
+              false
+            )
+            ctx.fill()
+          })
 
-      //     ctx.restore()
-      //   }
-      // }
+          ctx.restore()
+        }
+      }
 
       toJSON() {
         return Object.assign(super.toJSON(), {
@@ -1394,6 +1399,11 @@ export function getLatLonPolyClass() {
   if (!LatLonPolyClass) {
     LatLonPolyClass = class LatLonPoly extends MapdDraw.Poly {
       constructor(draw_engine, opts) {
+        if (opts.debug === undefined) {
+          // if true, will activate the use of the _drawDebug method for drawing
+          // extra debug info on top of the original shape draw.
+          opts.debug = false
+        }
         super(opts)
         this._draw_engine = draw_engine
 
@@ -1597,20 +1607,20 @@ export function getLatLonPolyClass() {
         }
       }
 
-      // _drawDebug(ctx) {
-      //   if (this._screenPts.length) {
-      //     ctx.save()
+      _drawDebug(ctx) {
+        if (this._screenPts.length) {
+          ctx.save()
 
-      //     ctx.fillStyle = "orange"
-      //     this._screenPts.forEach(point => {
-      //       ctx.beginPath()
-      //       ctx.arc(point[0], point[1], 3, 0, MathExt.TWO_PI, false)
-      //       ctx.fill()
-      //     })
+          ctx.fillStyle = "orange"
+          this._screenPts.forEach(point => {
+            ctx.beginPath()
+            ctx.arc(point[0], point[1], 3, 0, MathExt.TWO_PI, false)
+            ctx.fill()
+          })
 
-      //     ctx.restore()
-      //   }
-      // }
+          ctx.restore()
+        }
+      }
 
       toJSON() {
         return Object.assign(super.toJSON(), {
