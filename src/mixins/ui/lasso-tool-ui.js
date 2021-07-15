@@ -246,6 +246,18 @@ const LatLonViewIntersectUtils = {
       // This formula can be slightly simplified due to the intersection bounds being axis-aligned.
       // Ultimately you can eliminate some operations knowing that coordinate differences will be 0
 
+      if (
+        intersect_aabox[AABox2d.MINX] === intersect_aabox[AABox2d.MAXX] ||
+        intersect_aabox[AABox2d.MINY] === intersect_aabox[AABox2d.MAXY]
+      ) {
+        // early out: there's no intersection with the view bounds
+        // if the intersection aabox has no size in either dimension
+        // by the time we reach here. The case where the line is horizontal/vertical
+        // or the line is fully contained by the view should already be handled.
+        // return empty intersection object
+        return rtn_obj
+      }
+
       const x3 = intersect_aabox[AABox2d.MINX]
       const x4 = intersect_aabox[AABox2d.MAXX]
       const y3 = intersect_aabox[AABox2d.MINY]
@@ -700,7 +712,9 @@ export function getLatLonCircleClass() {
        * @param {CircleDescriptor} circle_descriptor Describes various geometric/geographic states of a LatLonCircle
        * @param {Point2d} point_lonlat Point in lon/lat WGS84 to drive the subdivision, in degrees.
        * @param {Point2d} point_radians The same point as point_lonlat, but in radians rather than degrees.
-       * @param {AABox2d} world_bounds The current view bounds in world-space coordinates.
+       * @param {AABox2d} shape_view_intersect_aabox Axis-aligned bounding box describing the
+       *                                             intersection between the shape and the current view
+       *                                             in WGS84 lat/lon coords
        * @param {Mat2d} worldToScreenMatrix 2D matrix describing the web-mercator to screen space transform.
        * @param {GetEndpointsFunctor} get_endpoints_functor
        * @returns
@@ -709,7 +723,7 @@ export function getLatLonCircleClass() {
         circle_descriptor,
         point_lonlat,
         point_radians,
-        world_bounds,
+        shape_view_intersect_aabox,
         worldToScreenMatrix,
         get_endpoints_functor
       ) {
@@ -721,6 +735,26 @@ export function getLatLonCircleClass() {
           point_lonlat,
           point_radians,
           worldToScreenMatrix
+        )
+
+        // Be sure that the view bounding box includes the closest point found on the circle.
+        // But keep the original view bounding box untouched
+        // NOTE: if zoomed in tight enough, the closest point on the circle here could end up off-screen,
+        // and therefore cause the new bounds calculated here to not be fully contained by the original
+        // view bounds.  Keep in mind that the 'shape_view_interseect_aabox' argument represents the
+        // bounds intersection between the view bounds and the shape's bounding box. As a result this
+        // may create unnecessary points that end up being drawn off-screen, but that's generally not
+        // be a big deal as it should only generate a handful of points. And in fact, those extra points
+        // may keep the circle arc protruded enough to prevent an unwanted jump in the render of the shape.
+        // For example, if the closest point on the circle calculated here were off screen, the line segment
+        // between this extra point and the original line segment points could still intersect the view, but
+        // the arc of the circle may not. We want to prevent this. The potential extra points can prevent
+        // this.
+        const new_intersect_bounds = AABox2d.clone(shape_view_intersect_aabox)
+        AABox2d.encapsulatePt(
+          new_intersect_bounds,
+          new_intersect_bounds,
+          closest_point_data.lonlat_point
         )
 
         const {
@@ -738,7 +772,7 @@ export function getLatLonCircleClass() {
           closest_point_data,
           start_angle,
           angle_degrees - start_angle,
-          world_bounds,
+          new_intersect_bounds,
           worldToScreenMatrix
         )
 
@@ -753,7 +787,7 @@ export function getLatLonCircleClass() {
           end_point,
           angle_degrees,
           end_angle - angle_degrees,
-          world_bounds,
+          new_intersect_bounds,
           worldToScreenMatrix
         )
 
@@ -774,9 +808,9 @@ export function getLatLonCircleClass() {
        *                             this segment. In degrees.
        * @param {number} angle_diff The angle difference between the start point and the end point of this
        *                            segment. In degrees.
-       * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
-       *                                      intersection between the shape and the current view
-       *                                      in WGS84 lat/lon coords
+       * @param {AABox2d} shape_view_intersect_aabox Axis-aligned bounding box describing the
+       *                                             intersection between the shape and the current view
+       *                                             in WGS84 lat/lon coords
        * @param {Mat2d} worldToScreenMatrix Matrix defining world-to-screen transformation
        * @returns
        */
@@ -787,14 +821,14 @@ export function getLatLonCircleClass() {
         end_point_data,
         start_angle,
         angle_diff,
-        view_aabox,
+        shape_view_intersect_aabox,
         worldToScreenMatrix,
         do_extra_subdivide = false
       ) {
         const view_intersect_data = LatLonViewIntersectUtils.intersectViewBounds(
           start_point_data,
           end_point_data,
-          view_aabox,
+          shape_view_intersect_aabox,
           worldToScreenMatrix
         )
 
@@ -804,7 +838,7 @@ export function getLatLonCircleClass() {
 
         console.assert(
           view_intersect_data.latlon_pts.length === 2,
-          `start_point: [${start_point_data.merc_point[0]}, ${start_point_data.merc_point[1]}], end_point: [${end_point_data.merc_point[0]}, ${end_point_data.merc_point[1]}], view_aabox: [${view_aabox[0]}, ${view_aabox[1]}, ${view_aabox[2]}, ${view_aabox[3]}], worldToScreenMatrix: [${worldToScreenMatrix[0]}, ${worldToScreenMatrix[1]}, ${worldToScreenMatrix[2]}, ${worldToScreenMatrix[3]}, ${worldToScreenMatrix[4]}, ${worldToScreenMatrix[5]}]`
+          `start_point: [${start_point_data.lonlat_point[0]}, ${start_point_data.lonlat_point[1]}], end_point: [${end_point_data.lonlat_point[0]}, ${end_point_data.lonlat_point[1]}], view_aabox: [${shape_view_intersect_aabox[0]}, ${shape_view_intersect_aabox[1]}, ${shape_view_intersect_aabox[2]}, ${shape_view_intersect_aabox[3]}], worldToScreenMatrix: [${worldToScreenMatrix[0]}, ${worldToScreenMatrix[1]}, ${worldToScreenMatrix[2]}, ${worldToScreenMatrix[3]}, ${worldToScreenMatrix[4]}, ${worldToScreenMatrix[5]}]`
         )
 
         const [start_screen_pt, end_screen_pt] = view_intersect_data.screen_pts
@@ -855,21 +889,12 @@ export function getLatLonCircleClass() {
                 MathExt.DEG_TO_RAD
               )
 
-              // Be sure that the view bounding box includes the new subdivided point
-              // But keep the original view bounding box untouched, so clone first
-              const new_view_bounds = AABox2d.clone(view_aabox)
-              AABox2d.encapsulatePt(
-                new_view_bounds,
-                new_view_bounds,
-                line_center_lonlat
-              )
-
               const that = this
               const new_subdivided_points = this._subdivideCircleArcAtPoint(
                 circle_descriptor,
                 line_center_lonlat,
                 line_center_radians,
-                new_view_bounds,
+                shape_view_intersect_aabox,
                 worldToScreenMatrix,
                 (angle_degrees, new_point_data) => {
                   const start_angle = start_point_data.angle_degrees
@@ -1314,45 +1339,45 @@ export function getLatLonCircleClass() {
         }
       }
 
-      _drawDebug(ctx) {
-        if (this._segmented_circle_points.length) {
-          ctx.save()
+      // _drawDebug(ctx) {
+      //   if (this._segmented_circle_points.length) {
+      //     ctx.save()
 
-          ctx.strokeStyle = "white"
-          ctx.beginPath()
-          let curr_pt = this._segmented_circle_points[0]
-          ctx.moveTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
-          for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
-            curr_pt = this._segmented_circle_points[i]
-            ctx.lineTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
-          }
-          ctx.closePath()
-          ctx.stroke()
+      //     ctx.strokeStyle = "white"
+      //     ctx.beginPath()
+      //     let curr_pt = this._segmented_circle_points[0]
+      //     ctx.moveTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
+      //     for (let i = 1; i < this._segmented_circle_points.length; i += 1) {
+      //       curr_pt = this._segmented_circle_points[i]
+      //       ctx.lineTo(curr_pt.screen_point[0], curr_pt.screen_point[1])
+      //     }
+      //     ctx.closePath()
+      //     ctx.stroke()
 
-          ctx.fillStyle = "orange"
-          this._subdivided_screen_points.forEach(point => {
-            ctx.beginPath()
-            ctx.arc(point[0], point[1], 3, 0, MathExt.TWO_PI, false)
-            ctx.fill()
-          })
+      //     ctx.fillStyle = "orange"
+      //     this._subdivided_screen_points.forEach(point => {
+      //       ctx.beginPath()
+      //       ctx.arc(point[0], point[1], 3, 0, MathExt.TWO_PI, false)
+      //       ctx.fill()
+      //     })
 
-          ctx.fillStyle = "red"
-          this._segmented_circle_points.forEach(point_data => {
-            ctx.beginPath()
-            ctx.arc(
-              point_data.screen_point[0],
-              point_data.screen_point[1],
-              5,
-              0,
-              MathExt.TWO_PI,
-              false
-            )
-            ctx.fill()
-          })
+      //     ctx.fillStyle = "red"
+      //     this._segmented_circle_points.forEach(point_data => {
+      //       ctx.beginPath()
+      //       ctx.arc(
+      //         point_data.screen_point[0],
+      //         point_data.screen_point[1],
+      //         5,
+      //         0,
+      //         MathExt.TWO_PI,
+      //         false
+      //       )
+      //       ctx.fill()
+      //     })
 
-          ctx.restore()
-        }
-      }
+      //     ctx.restore()
+      //   }
+      // }
 
       toJSON() {
         return Object.assign(super.toJSON(), {
