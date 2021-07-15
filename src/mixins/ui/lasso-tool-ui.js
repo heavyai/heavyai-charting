@@ -50,14 +50,14 @@ const LatLonViewIntersectUtils = {
    * @param {Point2d} initial_merc_point Initial web-mercator projected point to transform
    * @param {ProjectedPointData} out_point_data Struct to be initialized with the various projections of the input point
    * @param {Mat2d} model_matrix The affine transformation matrix of the parent of the initial mercator point
-   * @param {Mat2d} worldToScreenMatrix The transformation matrix defining the world-to-screen space transformation
+   * @param {Mat2d} world_to_screen_matrix The transformation matrix defining the world-to-screen space transformation
    * @returns {ProjectedPointData} returns the input out_point_data argument after it has been initialized
    */
   projectPoint: (
     initial_merc_point,
     out_point_data,
     model_matrix,
-    worldToScreenMatrix
+    world_to_screen_matrix
   ) => {
     if (model_matrix === null) {
       Point2d.copy(out_point_data.merc_point, initial_merc_point)
@@ -69,11 +69,11 @@ const LatLonViewIntersectUtils = {
       )
     }
 
-    if (worldToScreenMatrix !== null) {
+    if (world_to_screen_matrix !== null) {
       Point2d.transformMat2d(
         out_point_data.screen_point,
         out_point_data.merc_point,
-        worldToScreenMatrix
+        world_to_screen_matrix
       )
     }
 
@@ -132,9 +132,9 @@ const LatLonViewIntersectUtils = {
    * either be of size 2 (line segment intersects or is contained by a view) or
    * be size 0 (line segment does not intersect or is not contained by a view)
    *
-   * @property {Point2d[]} latlon_pts Array of points defined in WGS84 lat/lon space that either intersect or are contained by a view
+   * @property {Point2d[]} lonlat_pts Array of points defined in WGS84 lat/lon space that either intersect or are contained by a view
    * @property {Point2d[]} screen_pts Array of points defined in screen space that either intersect or are contained by a view
-   *                                           This is the same set of points as latlon_pts above, but transformed into screen space.
+   *                                           This is the same set of points as lonlat_pts above, but transformed into screen space.
    * @property {number[]} pts_t Array of real numbers between [0-1] indicating the normalized distance of the intersection pts relative to
    *                            the original line segment. For example, if t=0, the intersection point is the starting point of the line
    *                            segment. If t=1, it is the end point of the line segment, and if t=0.5, it is the midpoint of the
@@ -154,14 +154,14 @@ const LatLonViewIntersectUtils = {
    * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
    *                                      intersection between the aabox of the current shape
    *                                      and the current view
-   * @param {Mat2d} worldToScreenMatrix The world-to-screen transformation matrix
+   * @param {Mat2d} world_to_screen_matrix The world-to-screen transformation matrix
    * @returns {ViewBoundsIntersectData}
    */
   intersectViewBounds: (
     start_point_data,
     end_point_data,
     view_aabox,
-    worldToScreenMatrix
+    world_to_screen_matrix
   ) => {
     const x1 = start_point_data.lonlat_point[0]
     const y1 = start_point_data.lonlat_point[1]
@@ -192,7 +192,7 @@ const LatLonViewIntersectUtils = {
      */
     const rtn_obj = {
       /** intersect points in lat/lon space */
-      latlon_pts: [],
+      lonlat_pts: [],
 
       /** intersect points in screen space */
       screen_pts: [],
@@ -231,10 +231,10 @@ const LatLonViewIntersectUtils = {
       // line segment's bounding box, meaning the entire line
       // segment is in view. Add the start/end points as intersection
       // points and mark the segment as needing subdividing.
-      rtn_obj.latlon_pts.push(start_point_data.lonlat_point)
+      rtn_obj.lonlat_pts.push(start_point_data.lonlat_point)
       rtn_obj.screen_pts.push(start_point_data.screen_point)
       rtn_obj.pts_t.push(0)
-      rtn_obj.latlon_pts.push(end_point_data.lonlat_point)
+      rtn_obj.lonlat_pts.push(end_point_data.lonlat_point)
       rtn_obj.screen_pts.push(end_point_data.screen_point)
       rtn_obj.pts_t.push(1)
       rtn_obj.subdivide = true
@@ -317,15 +317,15 @@ const LatLonViewIntersectUtils = {
           } else {
             // calculate the lon/lat and screen point for the
             // intersection point given t
-            const new_latlon_pt = Point2d.create(-delta_x * t, -delta_y * t)
+            const new_lonlat_pt = Point2d.create(-delta_x * t, -delta_y * t)
             Point2d.addVec2(
-              new_latlon_pt,
+              new_lonlat_pt,
               start_point_data.lonlat_point,
-              new_latlon_pt
+              new_lonlat_pt
             )
-            lonlat_pt = new_latlon_pt
+            lonlat_pt = new_lonlat_pt
 
-            const new_screen_pt = Point2d.clone(new_latlon_pt)
+            const new_screen_pt = Point2d.clone(new_lonlat_pt)
             // conver the new segment point back to mercator for drawing
             LatLonUtils.conv4326To900913(new_screen_pt, new_screen_pt)
 
@@ -333,7 +333,7 @@ const LatLonViewIntersectUtils = {
             Point2d.transformMat2d(
               new_screen_pt,
               new_screen_pt,
-              worldToScreenMatrix
+              world_to_screen_matrix
             )
             screen_pt = new_screen_pt
           }
@@ -344,11 +344,11 @@ const LatLonViewIntersectUtils = {
           // whether to insert this new intersection point at the front or back
           // of the returned point array
           if (t < current_t) {
-            rtn_obj.latlon_pts.splice(0, 0, lonlat_pt)
+            rtn_obj.lonlat_pts.splice(0, 0, lonlat_pt)
             rtn_obj.screen_pts.splice(0, 0, screen_pt)
             rtn_obj.pts_t.splice(0, 0, t)
           } else {
-            rtn_obj.latlon_pts.push(lonlat_pt)
+            rtn_obj.lonlat_pts.push(lonlat_pt)
             rtn_obj.screen_pts.push(screen_pt)
             rtn_obj.pts_t.push(t)
           }
@@ -376,7 +376,7 @@ const LatLonViewIntersectUtils = {
         () => -delta_y * (x3 - x4)
       )
 
-      if (rtn_obj.latlon_pts.length < 2) {
+      if (rtn_obj.lonlat_pts.length < 2) {
         // bounds right-edge, we know that delta_x = 0 for the points defining the right edge
         delta_edge = x1 - x4
         check_full_intersect(
@@ -386,7 +386,7 @@ const LatLonViewIntersectUtils = {
           () => delta_x * (y3 - y4)
         )
 
-        if (rtn_obj.latlon_pts.length < 2) {
+        if (rtn_obj.lonlat_pts.length < 2) {
           // bounds top edge
           delta_edge = y1 - y4
           check_full_intersect(
@@ -426,9 +426,9 @@ export function getLatLonCircleClass() {
         })
 
         // maximum length of subdivided line segment in pixels
-        this._maxSegmentPixelDistance = 40
+        this._max_segment_pixel_distance = 40
 
-        this._initialRadius = this._radius
+        this._initial_radius = this._radius
 
         // degrees between successive points in the drawn
         // segmented circle
@@ -440,7 +440,8 @@ export function getLatLonCircleClass() {
 
         // obviously this circumferences is just an estimate, but good enough
         const base_screen_space_circumference =
-          (360.0 / this._degrees_between_points) * this._maxSegmentPixelDistance
+          (360.0 / this._degrees_between_points) *
+          this._max_segment_pixel_distance
 
         const base_screen_space_diameter =
           base_screen_space_circumference / Math.PI
@@ -462,16 +463,16 @@ export function getLatLonCircleClass() {
       }
 
       setScale(scale) {
-        this.radius = this._initialRadius * Math.min(scale[0], scale[1])
+        this.radius = this._initial_radius * Math.min(scale[0], scale[1])
       }
 
       set initialRadius(radius) {
         this.radius = radius
-        this._initialRadius = radius
+        this._initial_radius = radius
       }
 
       resetInitialRadius() {
-        this._initialRadius = this.radius
+        this._initial_radius = this.radius
       }
 
       /**
@@ -589,15 +590,15 @@ export function getLatLonCircleClass() {
        * @param {CircleDescriptor} circle_descriptor A descriptor of varions geometric/geographic properties of a LatLonCircle
        * @param {Point2d} point_lonlat A point in lon/lat WGS84 space to find the closest point to, in degrees
        * @param {Point2d} point_radians The same point as point_lonlat, but in radians rather than degrees
-       * @param {Mat2d} worldToScreenMatrix Matrix describing the projection from web-mercator world space
-       *                                    to screen space.
+       * @param {Mat2d} world_to_screen_matrix Matrix describing the projection from web-mercator world space
+       *                                       to screen space.
        * @returns {ClosestCirclePointData}
        */
       static getClosestPointOnCircleArc(
         circle_descriptor,
         point_lonlat,
         point_radians,
-        worldToScreenMatrix
+        world_to_screen_matrix
       ) {
         // get the angle from the center of the circle to the potential subdivide point
         let angle_radians = LatLonCircle.getAngleOfPointAboutCircle(
@@ -622,7 +623,7 @@ export function getLatLonCircleClass() {
         Point2d.transformMat2d(
           closest_point_data.screen_point,
           closest_point_data.merc_point,
-          worldToScreenMatrix
+          world_to_screen_matrix
         )
 
         return {
@@ -645,13 +646,421 @@ export function getLatLonCircleClass() {
         return distance / 6372.797560856
       }
 
+      /**
+       * @typedef LatLonCircleSegmentEndpoints
+       * Object describing the endpoints of a LatLonCircle line segment defining an
+       * arc.
+       * @param {number} start_angle Angle about the center of a LatLonCircle for the start point of the segment
+       * @param {ProjectedPointData} start_point The start point of the LatLonCircle segment
+       * @param {number} end_angle Angle about the center of a LatLonCircle for the end point of the segment
+       * @param {ProjectedPointData} end_point The end point of the LatLonCircle segment
+       */
+
+      /**
+       * Callback to retrieve the two endpoints of a LonLatCircle segment.
+       *
+       * @callback GetEndpointsFunctor
+       * @param {ClosestCirclePointData} closest_point_data The point on a LatLonCircle arc used to determine the segment
+       *                                                    of the LatLonCircle that defines that arc.
+       * @returns {LatLonCircleSegmentEndpoints}
+       */
+
+      /**
+       * Subdivides a line-segment of a LatLonCircle arc at the closest point on the circle to a
+       * specific point in 2D space.
+       * @param {CircleDescriptor} circle_descriptor Describes various geometric/geographic states of a LatLonCircle
+       * @param {Point2d} point_lonlat Point in lon/lat WGS84 to drive the subdivision, in degrees.
+       * @param {Point2d} point_radians The same point as point_lonlat, but in radians rather than degrees.
+       * @param {AABox2d} shape_view_intersect_aabox Axis-aligned bounding box describing the
+       *                                             intersection between the shape and the current view
+       *                                             in WGS84 lat/lon coords
+       * @param {Mat2d} world_to_screen_matrix 2D matrix describing the web-mercator to screen space transform.
+       * @param {GetEndpointsFunctor} get_endpoints_functor
+       * @returns
+       */
+      static subdivideCircleArcAtPoint(
+        circle_descriptor,
+        point_lonlat,
+        point_radians,
+        shape_view_intersect_aabox,
+        world_to_screen_matrix,
+        get_endpoints_functor
+      ) {
+        const {
+          angle_degrees,
+          closest_point_data
+        } = LatLonCircle.getClosestPointOnCircleArc(
+          circle_descriptor,
+          point_lonlat,
+          point_radians,
+          world_to_screen_matrix
+        )
+
+        // Be sure that the view bounding box includes the closest point found on the circle.
+        // But keep the original view bounding box untouched
+        // NOTE: if zoomed in tight enough, the closest point on the circle here could end up off-screen,
+        // and therefore cause the new bounds calculated here to not be fully contained by the original
+        // view bounds.  Keep in mind that the 'shape_view_interseect_aabox' argument represents the
+        // bounds intersection between the view bounds and the shape's bounding box. As a result this
+        // may create unnecessary points that end up being drawn off-screen, but that's generally not
+        // be a big deal as it should only generate a handful of points. And in fact, those extra points
+        // may keep the circle arc protruded enough to prevent an unwanted jump in the render of the shape.
+        // For example, if the closest point on the circle calculated here were off screen, the line segment
+        // between this extra point and the original line segment points could still intersect the view, but
+        // the arc of the circle may not. We want to prevent this. The potential extra points can prevent
+        // this.
+        const new_intersect_bounds = AABox2d.clone(shape_view_intersect_aabox)
+        AABox2d.encapsulatePt(
+          new_intersect_bounds,
+          new_intersect_bounds,
+          closest_point_data.lonlat_point
+        )
+
+        const {
+          start_angle,
+          start_point,
+          end_angle,
+          end_point
+        } = get_endpoints_functor(angle_degrees, closest_point_data)
+
+        const new_subdivided_points = []
+        LatLonCircle.subdivideArc(
+          new_subdivided_points,
+          circle_descriptor,
+          start_point,
+          closest_point_data,
+          start_angle,
+          angle_degrees - start_angle,
+          new_intersect_bounds,
+          world_to_screen_matrix,
+          false
+        )
+
+        new_subdivided_points.push(
+          Point2d.clone(closest_point_data.screen_point)
+        )
+
+        LatLonCircle.subdivideArc(
+          new_subdivided_points,
+          circle_descriptor,
+          closest_point_data,
+          end_point,
+          angle_degrees,
+          end_angle - angle_degrees,
+          new_intersect_bounds,
+          world_to_screen_matrix,
+          false
+        )
+
+        return new_subdivided_points
+      }
+
+      /**
+       * Determines whether a line segment that represents an arc of a circle defined
+       * by a start/end point should be further subdivided for drawing.
+       * If the segment should be subdivided, will append subdivided points representing
+       * the subdivided arc into the array of screen-projected points for drawing.
+       * @param {Point2d[]} subdivided_points_array Array to append the subdivided points to
+       * @param {CircleDescriptor} circle_descriptor An object describing the various geometric/geographic properties and states
+       *                                             of a LatLonCircle instance.
+       * @param {ProjectedPointData} start_point_data Start point of the line segment
+       * @param {ProjectedPointData} end_point_data End point of the line segment
+       * @param {number} start_angle The angle about the center of the circle for the starting point of
+       *                             this segment. In degrees.
+       * @param {number} angle_diff The angle difference between the start point and the end point of this
+       *                            segment. In degrees.
+       * @param {AABox2d} shape_view_intersect_aabox Axis-aligned bounding box describing the
+       *                                             intersection between the shape and the current view
+       *                                             in WGS84 lat/lon coords
+       * @param {Mat2d} world_to_screen_matrix Matrix defining world-to-screen transformation
+       * @param {boolean} do_extra_subdivide If true, an extra subdivision point will be added to break up
+       *                                     the original line segment in order to give enough extra detail
+       *                                     to build out the circle arc with respect to the current view.
+       *                                     This is used to differentiate between an outside call, and a recursive
+       *                                     call. This should be true for an outside call and false for recursive.
+       * @returns
+       */
+      static subdivideArc(
+        subdivided_points_array,
+        circle_descriptor,
+        start_point_data,
+        end_point_data,
+        start_angle,
+        angle_diff,
+        shape_view_intersect_aabox,
+        world_to_screen_matrix,
+        do_extra_subdivide = true
+      ) {
+        const view_intersect_data = LatLonViewIntersectUtils.intersectViewBounds(
+          start_point_data,
+          end_point_data,
+          shape_view_intersect_aabox,
+          world_to_screen_matrix
+        )
+
+        if (!view_intersect_data.subdivide) {
+          return
+        }
+
+        console.assert(
+          view_intersect_data.lonlat_pts.length === 2,
+          `start_point: [${start_point_data.lonlat_point[0]}, ${start_point_data.lonlat_point[1]}], end_point: [${end_point_data.lonlat_point[0]}, ${end_point_data.lonlat_point[1]}], view_aabox: [${shape_view_intersect_aabox[0]}, ${shape_view_intersect_aabox[1]}, ${shape_view_intersect_aabox[2]}, ${shape_view_intersect_aabox[3]}], worldToScreenMatrix: [${world_to_screen_matrix[0]}, ${world_to_screen_matrix[1]}, ${world_to_screen_matrix[2]}, ${world_to_screen_matrix[3]}, ${world_to_screen_matrix[4]}, ${world_to_screen_matrix[5]}]`
+        )
+
+        const [start_screen_pt, end_screen_pt] = view_intersect_data.screen_pts
+        const [start_lonlat_pt, end_lonlat_pt] = view_intersect_data.lonlat_pts
+        const [start_t, end_t] = view_intersect_data.pts_t
+
+        const distance = Point2d.distance(start_screen_pt, end_screen_pt)
+        if (distance > circle_descriptor.max_segment_pixel_distance) {
+          // TODO(croot); the 0.25 threshold is just an empirical "good enough". A more clever
+          // metric could be used
+          if (
+            do_extra_subdivide &&
+            !MathExt.floatingPtEquals(start_t, 0) &&
+            !MathExt.floatingPtEquals(end_t, 1) &&
+            end_t - start_t < 0.25
+          ) {
+            // get the angle from the center of the circle to the potential subdivide point
+            const tmp_point = Point2d.clone(start_lonlat_pt)
+            const start_radians_pt = tmp_point
+            Vec2d.scale(start_radians_pt, start_radians_pt, MathExt.DEG_TO_RAD)
+
+            const {
+              closest_point_data
+            } = LatLonCircle.getClosestPointOnCircleArc(
+              circle_descriptor,
+              start_lonlat_pt,
+              start_radians_pt,
+              world_to_screen_matrix
+            )
+
+            if (
+              Point2d.distance(
+                start_screen_pt,
+                closest_point_data.screen_point
+              ) > circle_descriptor.max_segment_pixel_distance
+            ) {
+              const line_center_lonlat = tmp_point
+              Point2d.lerp(
+                line_center_lonlat,
+                start_lonlat_pt,
+                end_lonlat_pt,
+                0.5
+              )
+              const line_center_radians = Point2d.clone(line_center_lonlat)
+              Vec2d.scale(
+                line_center_radians,
+                line_center_radians,
+                MathExt.DEG_TO_RAD
+              )
+
+              const new_subdivided_points = LatLonCircle.subdivideCircleArcAtPoint(
+                circle_descriptor,
+                line_center_lonlat,
+                line_center_radians,
+                shape_view_intersect_aabox,
+                world_to_screen_matrix,
+                (angle_degrees, new_point_data) => {
+                  const start_angle = start_point_data.angle_degrees
+                  const end_angle =
+                    start_angle + circle_descriptor.degrees_between_points
+                  return {
+                    start_angle,
+                    start_point: start_point_data,
+                    end_angle,
+                    end_point: end_point_data
+                  }
+                }
+              )
+
+              subdivided_points_array.push(...new_subdivided_points)
+              return
+            }
+          }
+
+          const num_subdivisions = Math.ceil(
+            distance / circle_descriptor.max_segment_pixel_distance
+          )
+
+          const point_radians = Point2d.clone(start_lonlat_pt)
+          Vec2d.scale(point_radians, point_radians, MathExt.DEG_TO_RAD)
+          const start_angle = LatLonCircle.getAngleOfPointAboutCircle(
+            circle_descriptor,
+            start_lonlat_pt,
+            point_radians
+          )
+          Point2d.copy(point_radians, end_lonlat_pt)
+          Vec2d.scale(point_radians, point_radians, MathExt.DEG_TO_RAD)
+          const end_angle = LatLonCircle.getAngleOfPointAboutCircle(
+            circle_descriptor,
+            end_lonlat_pt,
+            point_radians
+          )
+          const angle_diff = (end_angle - start_angle) / num_subdivisions
+          for (
+            let current_angle = start_angle;
+            current_angle <= end_angle;
+            current_angle += angle_diff
+          ) {
+            // create a new subdivided point rotated around the circle center using the radius distance in radians
+            const new_point = Point2d.create()
+            LatLonCircle.initializePointOnCircle(
+              circle_descriptor,
+              new_point,
+              current_angle
+            )
+
+            // convert from lon/lat to mercator
+            LatLonUtils.conv4326To900913(new_point, new_point)
+
+            // now convert to screen space
+            Point2d.transformMat2d(new_point, new_point, world_to_screen_matrix)
+            subdivided_points_array.push(new_point)
+          }
+        }
+      }
+
+      /**
+       * @typedef PointDistanceFromCircle
+       * Describes a point in 2D WGS84 lon/lat degree coordinates with a distance from the
+       * center of a LatLonCircle instance.
+       * @param {number} distance Distance of this point to the center of a LatLonCircle instance.
+       * @param {Point2d} point 2d point in WGS84 lon/lat degree coordinates.
+       */
+
+      /**
+       * @typedef BoundsDistanceFromCircle
+       * @param {number} min_bounds_dist Minimum distance to the 4 corners of an axis-aligned bounding box
+       *                                 from the center of a LatLonCircle.
+       * @param {number} max_bounds_dist Maximum distance to the 4 cornders of an axis-aligned bounding box
+       *                                 from the center of a LatLonCircle.
+       * @param {PointDistanceFromCircle[]} bounds_distances Array of points & distances of the 4 corners of the
+       *                                                     input bounding box. The distance is the distance to
+       *                                                     the center of a LatLonCircle instance. The array is
+       *                                                     sorted by distance in ascending order.
+       */
+
+      /**
+       * Returns a data structure object that represents a list of the corners
+       * of a WGS84 lon/lat axis-aligned bounding box sorted by distance from
+       * the center of a LatLonCircle.
+       * @param {Point2d} center_lonlat The center of a LatLonCircle in WGS84 lon/lat degree coordinates.
+       * @param {AABox2d} bounds_lonlat An axis-aligned bounding box in WGS84 lon/lat degree coordinates.
+       * @returns {BoundsDistanceFromCircle}
+       */
+      static getBoundsDistanceData(center_lonlat, bounds_lonlat) {
+        const bounds_distances = new Array(4)
+        for (let i = 0; i < 4; ++i) {
+          let bounds_lon =
+            i & 1 ? bounds_lonlat[AABox2d.MAXX] : bounds_lonlat[AABox2d.MINX]
+          let bounds_lat =
+            i > 1 ? bounds_lonlat[AABox2d.MAXY] : bounds_lonlat[AABox2d.MINY]
+          const point = Point2d.create(bounds_lon, bounds_lat)
+          // distance from center to corner of bounds in kilometers
+          let distance =
+            LatLonUtils.distance_in_meters(
+              center_lonlat[0],
+              center_lonlat[1],
+              bounds_lon,
+              bounds_lat
+            ) / 1000.0
+          bounds_distances[i] = {
+            distance,
+            point
+          }
+        }
+
+        bounds_distances.sort((a, b) => {
+          return a.distance - b.distance
+        })
+
+        return {
+          min_bounds_dist: bounds_distances[0].distance,
+          max_bounds_dist: bounds_distances[3].distance,
+          bounds_distances
+        }
+      }
+
+      /**
+       * Converts an axis-aligned bounding box in web-mercator (srid 900913) coordinates
+       * to WGS84 (srid: 4326) coordinates.
+       * @param {AABox2d} output_bounds The bounds to store the results of the 900913->4326 conversion
+       * @param {AABox2d} input_bounds The bounds in 900913 coordinate to convert to 4326
+       * @returns {AABox2d} Returns output_bounds. The return can be useful for chaining.
+       */
+      static boundsConv900913to4326(output_bounds, input_bounds) {
+        output_bounds[AABox2d.MINX] = LatLonUtils.conv900913To4326X(
+          input_bounds[AABox2d.MINX]
+        )
+        output_bounds[AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
+          input_bounds[AABox2d.MAXX]
+        )
+        output_bounds[AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
+          input_bounds[AABox2d.MINY]
+        )
+        output_bounds[AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
+          input_bounds[AABox2d.MAXY]
+        )
+
+        return output_bounds
+      }
+
+      /**
+       * @typedef CircleDescriptor
+       * An object describing various geometric/geographic states of a LatLonCircle that is a
+       * simplified form of the LatLonCircle class that can be passed around to various static
+       * methods
+       *
+       * @param {Point2d} center_mercator The center of the circle in web-mercator coordinates
+       * @param {Point2d} center_lonlat The center of the circle in lon/lat WGS84 coordinates, in degrees
+       * @param {Point2d} center_radians The same point as center_lonlat but in radians, not degrees
+       * @param {number} radius_radians The radius of the circle in radians
+       * @param {number} max_segment_pixel_distance The max distance in pixels of line segments representing
+       *                                            the circle when drawing.
+       * @param {number} degrees_between_points The angle difference in degrees between consecutive points of
+       *                                        a LatLonCircle
+       * @returns
+       */
+
+      /**
+       * Creates a descriptor of a LatLonCircle instance
+       * @param {LatLonCircle} latlon_circle An instance of the LatLonCircle class to build a descriptor for.
+       * @returns {CircleDescriptor}
+       */
+      static createCircleDescriptor(latlon_circle) {
+        const center_mercator = Point2d.create()
+        Mat2d.svd(center_mercator, null, null, latlon_circle.globalXform)
+
+        // the 'true' argument below indicates to include the lonlat point defined
+        // in radians as well as degrees
+        const point_data = LatLonViewIntersectUtils.buildProjectedPointData(
+          true
+        )
+        LatLonViewIntersectUtils.projectPoint(
+          center_mercator,
+          point_data,
+          null,
+          null
+        )
+
+        // convert to a circle-centeric descriptor form
+        return {
+          center_mercator: point_data.merc_point,
+          center_lonlat: point_data.lonlat_point,
+          center_radians: point_data.radians_point,
+          radius_radians: LatLonCircle.getDistanceInRadians(
+            latlon_circle.radius
+          ),
+          max_segment_pixel_distance: latlon_circle._max_segment_pixel_distance,
+          degrees_between_points: latlon_circle._degrees_between_points
+        }
+      }
+
       _updateGeom(circle_descriptor = null) {
         if (this._geomDirty || this._boundsOutOfDate) {
           if (circle_descriptor === null) {
-            circle_descriptor = LatLonCircle.createCircleDescriptor(
-              this.globalXform,
-              this._radius
-            )
+            circle_descriptor = LatLonCircle.createCircleDescriptor(this)
           }
 
           AABox2d.initEmpty(this._aabox)
@@ -692,378 +1101,9 @@ export function getLatLonCircleClass() {
         }
       }
 
-      /**
-       * @typedef LatLonCircleSegmentEndpoints
-       * Object describing the endpoints of a LatLonCircle line segment defining an
-       * arc.
-       * @param {number} start_angle Angle about the center of a LatLonCircle for the start point of the segment
-       * @param {ProjectedPointData} start_point The start point of the LatLonCircle segment
-       * @param {number} end_angle Angle about the center of a LatLonCircle for the end point of the segment
-       * @param {ProjectedPointData} end_point The end point of the LatLonCircle segment
-       */
-
-      /**
-       * Callback to retrieve the two endpoints of a LonLatCircle segment.
-       *
-       * @callback GetEndpointsFunctor
-       * @param {ClosestCirclePointData} closest_point_data The point on a LatLonCircle arc used to determine the segment
-       *                                                    of the LatLonCircle that defines that arc.
-       * @returns {LatLonCircleSegmentEndpoints}
-       */
-
-      /**
-       * Subdivides a line-segment of a LatLonCircle arc at the closest point on the circle to a
-       * specific point in 2D space.
-       * @param {CircleDescriptor} circle_descriptor Describes various geometric/geographic states of a LatLonCircle
-       * @param {Point2d} point_lonlat Point in lon/lat WGS84 to drive the subdivision, in degrees.
-       * @param {Point2d} point_radians The same point as point_lonlat, but in radians rather than degrees.
-       * @param {AABox2d} shape_view_intersect_aabox Axis-aligned bounding box describing the
-       *                                             intersection between the shape and the current view
-       *                                             in WGS84 lat/lon coords
-       * @param {Mat2d} worldToScreenMatrix 2D matrix describing the web-mercator to screen space transform.
-       * @param {GetEndpointsFunctor} get_endpoints_functor
-       * @returns
-       */
-      _subdivideCircleArcAtPoint(
-        circle_descriptor,
-        point_lonlat,
-        point_radians,
-        shape_view_intersect_aabox,
-        worldToScreenMatrix,
-        get_endpoints_functor
-      ) {
-        const {
-          angle_degrees,
-          closest_point_data
-        } = LatLonCircle.getClosestPointOnCircleArc(
-          circle_descriptor,
-          point_lonlat,
-          point_radians,
-          worldToScreenMatrix
-        )
-
-        // Be sure that the view bounding box includes the closest point found on the circle.
-        // But keep the original view bounding box untouched
-        // NOTE: if zoomed in tight enough, the closest point on the circle here could end up off-screen,
-        // and therefore cause the new bounds calculated here to not be fully contained by the original
-        // view bounds.  Keep in mind that the 'shape_view_interseect_aabox' argument represents the
-        // bounds intersection between the view bounds and the shape's bounding box. As a result this
-        // may create unnecessary points that end up being drawn off-screen, but that's generally not
-        // be a big deal as it should only generate a handful of points. And in fact, those extra points
-        // may keep the circle arc protruded enough to prevent an unwanted jump in the render of the shape.
-        // For example, if the closest point on the circle calculated here were off screen, the line segment
-        // between this extra point and the original line segment points could still intersect the view, but
-        // the arc of the circle may not. We want to prevent this. The potential extra points can prevent
-        // this.
-        const new_intersect_bounds = AABox2d.clone(shape_view_intersect_aabox)
-        AABox2d.encapsulatePt(
-          new_intersect_bounds,
-          new_intersect_bounds,
-          closest_point_data.lonlat_point
-        )
-
-        const {
-          start_angle,
-          start_point,
-          end_angle,
-          end_point
-        } = get_endpoints_functor(angle_degrees, closest_point_data)
-
-        const new_subdivided_points = []
-        this._subdivideArc(
-          new_subdivided_points,
-          circle_descriptor,
-          start_point,
-          closest_point_data,
-          start_angle,
-          angle_degrees - start_angle,
-          new_intersect_bounds,
-          worldToScreenMatrix
-        )
-
-        new_subdivided_points.push(
-          Point2d.clone(closest_point_data.screen_point)
-        )
-
-        this._subdivideArc(
-          new_subdivided_points,
-          circle_descriptor,
-          closest_point_data,
-          end_point,
-          angle_degrees,
-          end_angle - angle_degrees,
-          new_intersect_bounds,
-          worldToScreenMatrix
-        )
-
-        return new_subdivided_points
-      }
-
-      /**
-       * Determines whether a line segment that represents an arc of a circle defined
-       * by a start/end point should be further subdivided for drawing.
-       * If the segment should be subdivided, will append subdivided points representing
-       * the subdivided arc into the array of screen-projected points for drawing.
-       * @param {Point2d[]} subdivided_points_array Array to append the subdivided points to
-       * @param {Point2d} center_latlon Center of circle in WGS84 lon/lat coords
-       * @param {Point2d} center_radians Center of the circle in lon/lat coords converted to radians
-       * @param {ProjectedPointData} start_point_data Start point of the line segment
-       * @param {ProjectedPointData} end_point_data End point of the line segment
-       * @param {number} start_angle The angle about the center of the circle for the starting point of
-       *                             this segment. In degrees.
-       * @param {number} angle_diff The angle difference between the start point and the end point of this
-       *                            segment. In degrees.
-       * @param {AABox2d} shape_view_intersect_aabox Axis-aligned bounding box describing the
-       *                                             intersection between the shape and the current view
-       *                                             in WGS84 lat/lon coords
-       * @param {Mat2d} worldToScreenMatrix Matrix defining world-to-screen transformation
-       * @returns
-       */
-      _subdivideArc(
-        subdivided_points_array,
-        circle_descriptor,
-        start_point_data,
-        end_point_data,
-        start_angle,
-        angle_diff,
-        shape_view_intersect_aabox,
-        worldToScreenMatrix,
-        do_extra_subdivide = false
-      ) {
-        const view_intersect_data = LatLonViewIntersectUtils.intersectViewBounds(
-          start_point_data,
-          end_point_data,
-          shape_view_intersect_aabox,
-          worldToScreenMatrix
-        )
-
-        if (!view_intersect_data.subdivide) {
-          return
-        }
-
-        console.assert(
-          view_intersect_data.latlon_pts.length === 2,
-          `start_point: [${start_point_data.lonlat_point[0]}, ${start_point_data.lonlat_point[1]}], end_point: [${end_point_data.lonlat_point[0]}, ${end_point_data.lonlat_point[1]}], view_aabox: [${shape_view_intersect_aabox[0]}, ${shape_view_intersect_aabox[1]}, ${shape_view_intersect_aabox[2]}, ${shape_view_intersect_aabox[3]}], worldToScreenMatrix: [${worldToScreenMatrix[0]}, ${worldToScreenMatrix[1]}, ${worldToScreenMatrix[2]}, ${worldToScreenMatrix[3]}, ${worldToScreenMatrix[4]}, ${worldToScreenMatrix[5]}]`
-        )
-
-        const [start_screen_pt, end_screen_pt] = view_intersect_data.screen_pts
-        const [start_latlon_pt, end_latlon_pt] = view_intersect_data.latlon_pts
-        const [start_t, end_t] = view_intersect_data.pts_t
-
-        const distance = Point2d.distance(start_screen_pt, end_screen_pt)
-        if (distance > this._maxSegmentPixelDistance) {
-          // TODO(croot); the 0.25 threshold is just an empirical "good enough". A more clever
-          // metric could be used
-          if (
-            do_extra_subdivide &&
-            !MathExt.floatingPtEquals(start_t, 0) &&
-            !MathExt.floatingPtEquals(end_t, 1) &&
-            end_t - start_t < 0.25
-          ) {
-            // get the angle from the center of the circle to the potential subdivide point
-            const tmp_point = Point2d.clone(start_latlon_pt)
-            const start_radians_pt = tmp_point
-            Vec2d.scale(start_radians_pt, start_radians_pt, MathExt.DEG_TO_RAD)
-
-            const {
-              closest_point_data
-            } = LatLonCircle.getClosestPointOnCircleArc(
-              circle_descriptor,
-              start_latlon_pt,
-              start_radians_pt,
-              worldToScreenMatrix
-            )
-
-            if (
-              Point2d.distance(
-                start_screen_pt,
-                closest_point_data.screen_point
-              ) > this._maxSegmentPixelDistance
-            ) {
-              const line_center_lonlat = tmp_point
-              Point2d.lerp(
-                line_center_lonlat,
-                start_latlon_pt,
-                end_latlon_pt,
-                0.5
-              )
-              const line_center_radians = Point2d.clone(line_center_lonlat)
-              Vec2d.scale(
-                line_center_radians,
-                line_center_radians,
-                MathExt.DEG_TO_RAD
-              )
-
-              const that = this
-              const new_subdivided_points = this._subdivideCircleArcAtPoint(
-                circle_descriptor,
-                line_center_lonlat,
-                line_center_radians,
-                shape_view_intersect_aabox,
-                worldToScreenMatrix,
-                (angle_degrees, new_point_data) => {
-                  const start_angle = start_point_data.angle_degrees
-                  const end_angle = start_angle + that._degrees_between_points
-                  return {
-                    start_angle,
-                    start_point: start_point_data,
-                    end_angle,
-                    end_point: end_point_data
-                  }
-                }
-              )
-
-              subdivided_points_array.push(...new_subdivided_points)
-              return
-            }
-          }
-
-          const num_subdivisions = Math.ceil(
-            distance / this._maxSegmentPixelDistance
-          )
-
-          const point_radians = Point2d.clone(start_latlon_pt)
-          Vec2d.scale(point_radians, point_radians, MathExt.DEG_TO_RAD)
-          const start_angle = LatLonCircle.getAngleOfPointAboutCircle(
-            circle_descriptor,
-            start_latlon_pt,
-            point_radians
-          )
-          Point2d.copy(point_radians, end_latlon_pt)
-          Vec2d.scale(point_radians, point_radians, MathExt.DEG_TO_RAD)
-          const end_angle = LatLonCircle.getAngleOfPointAboutCircle(
-            circle_descriptor,
-            end_latlon_pt,
-            point_radians
-          )
-          const angle_diff = (end_angle - start_angle) / num_subdivisions
-          for (
-            let current_angle = start_angle;
-            current_angle <= end_angle;
-            current_angle += angle_diff
-          ) {
-            // create a new subdivided point rotated around the circle center using the radius distance in radians
-            const new_point = Point2d.create()
-            LatLonCircle.initializePointOnCircle(
-              circle_descriptor,
-              new_point,
-              current_angle
-            )
-
-            // convert from lon/lat to mercator
-            LatLonUtils.conv4326To900913(new_point, new_point)
-
-            // now convert to screen space
-            Point2d.transformMat2d(new_point, new_point, worldToScreenMatrix)
-            subdivided_points_array.push(new_point)
-          }
-        }
-      }
-
-      static getBoundsDistanceData(center_lonlat, view_bounds_lonlat) {
-        const view_bounds_distances = new Array(4)
-        for (let i = 0; i < 4; ++i) {
-          let bounds_lon =
-            i & 1
-              ? view_bounds_lonlat[AABox2d.MAXX]
-              : view_bounds_lonlat[AABox2d.MINX]
-          let bounds_lat =
-            i > 1
-              ? view_bounds_lonlat[AABox2d.MAXY]
-              : view_bounds_lonlat[AABox2d.MINY]
-          const point = Point2d.create(bounds_lon, bounds_lat)
-          // distance from center to corner of bounds in kilometers
-          let distance =
-            LatLonUtils.distance_in_meters(
-              center_lonlat[0],
-              center_lonlat[1],
-              bounds_lon,
-              bounds_lat
-            ) / 1000.0
-          view_bounds_distances[i] = {
-            distance,
-            point
-          }
-        }
-
-        view_bounds_distances.sort((a, b) => {
-          return a.distance - b.distance
-        })
-
-        return {
-          min_bounds_dist: view_bounds_distances[0].distance,
-          max_bounds_dist: view_bounds_distances[3].distance,
-          view_bounds_distances
-        }
-      }
-
-      static boundsConv900913to4326(output_bounds, input_bounds) {
-        output_bounds[AABox2d.MINX] = LatLonUtils.conv900913To4326X(
-          input_bounds[AABox2d.MINX]
-        )
-        output_bounds[AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
-          input_bounds[AABox2d.MAXX]
-        )
-        output_bounds[AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
-          input_bounds[AABox2d.MINY]
-        )
-        output_bounds[AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
-          input_bounds[AABox2d.MAXY]
-        )
-
-        return output_bounds
-      }
-
-      /**
-       * @typedef CircleDescriptor
-       * An object describing various geometric/geographic states of a LatLonCircle that is a
-       * simplified form of the LatLonCircle class that can be passed around to various static
-       * methods
-       *
-       * @param {Point2d} center_mercator The center of the circle in web-mercator coordinates
-       * @param {Point2d} center_lonlat The center of the circle in lon/lat WGS84 coordinates, in degrees
-       * @param {Point2d} center_radians The same point as center_lonlat but in radians, not degrees
-       * @param {number} radius_radians The radius of the circle in radians
-       * @returns
-       */
-
-      /**
-       * Creates a descriptor of a LatLonCircle instance
-       * @param {Mat2d} xform Matrix describing the transformation from object-local space to web-mercator world space.
-       * @param {number} radius The radius of the circle in kilometers
-       * @returns {CircleDescriptor}
-       */
-      static createCircleDescriptor(xform, radius) {
-        const center_mercator = Point2d.create()
-        Mat2d.svd(center_mercator, null, null, xform)
-
-        // the 'true' argument below indicates to include the lonlat point defined
-        // in radians as well as degrees
-        const point_data = LatLonViewIntersectUtils.buildProjectedPointData(
-          true
-        )
-        LatLonViewIntersectUtils.projectPoint(
-          center_mercator,
-          point_data,
-          null,
-          null
-        )
-
-        // convert to a circle-centeric descriptor form
-        return {
-          center_mercator: point_data.merc_point,
-          center_lonlat: point_data.lonlat_point,
-          center_radians: point_data.radians_point,
-          radius_radians: LatLonCircle.getDistanceInRadians(radius)
-        }
-      }
-
       _updateGeomForView(worldToScreenMatrix) {
         if (this._viewDirty || this._geomDirty || this._boundsOutOfDate) {
-          const circle_descriptor = LatLonCircle.createCircleDescriptor(
-            this.globalXform,
-            this._radius
-          )
+          const circle_descriptor = LatLonCircle.createCircleDescriptor(this)
           this._updateGeom(circle_descriptor)
 
           this._subdivided_screen_points = []
@@ -1136,7 +1176,7 @@ export function getLatLonCircleClass() {
                 worldToScreenMatrix
               )
 
-              this._subdivideArc(
+              LatLonCircle.subdivideArc(
                 this._subdivided_screen_points,
                 circle_descriptor,
                 start_point_data,
@@ -1144,8 +1184,7 @@ export function getLatLonCircleClass() {
                 start_point_data.angle_degrees,
                 this._degrees_between_points,
                 world_intersect_bounds,
-                worldToScreenMatrix,
-                true
+                worldToScreenMatrix
               )
               this._subdivided_screen_points.push(
                 Point2d.clone(end_point_data.screen_point)
@@ -1155,7 +1194,7 @@ export function getLatLonCircleClass() {
             }
 
             end_point_data = initial_point_data
-            this._subdivideArc(
+            LatLonCircle.subdivideArc(
               this._subdivided_screen_points,
               circle_descriptor,
               start_point_data,
@@ -1163,8 +1202,7 @@ export function getLatLonCircleClass() {
               start_point_data.angle_degrees,
               this._degrees_between_points,
               world_intersect_bounds,
-              worldToScreenMatrix,
-              true
+              worldToScreenMatrix
             )
 
             if (
@@ -1177,7 +1215,7 @@ export function getLatLonCircleClass() {
               const {
                 min_bounds_dist,
                 max_bounds_dist,
-                view_bounds_distances
+                bounds_distances
               } = LatLonCircle.getBoundsDistanceData(
                 circle_descriptor.center_lonlat,
                 world_bounds
@@ -1202,7 +1240,7 @@ export function getLatLonCircleClass() {
 
                 const that = this
                 let start_segment_idx = -1
-                const new_subdivided_points = this._subdivideCircleArcAtPoint(
+                const new_subdivided_points = LatLonCircle.subdivideCircleArcAtPoint(
                   circle_descriptor,
                   bounds_center,
                   bounds_center_radians,
@@ -1241,7 +1279,7 @@ export function getLatLonCircleClass() {
 
                 // the last element in the view_bounds_distance array will have the max distance
                 const bounds_point_lonlat =
-                  view_bounds_distances[view_bounds_distances.length - 1].point
+                  bounds_distances[bounds_distances.length - 1].point
                 const bounds_point_radians = Point2d.clone(bounds_point_lonlat)
                 Vec2d.scale(
                   bounds_point_radians,
@@ -1450,10 +1488,10 @@ export function getLatLonPolyClass() {
           return
         }
 
-        console.assert(view_intersect_data.latlon_pts.length === 2)
+        console.assert(view_intersect_data.lonlat_pts.length === 2)
 
-        const start_latlon_pt = view_intersect_data.latlon_pts[0]
-        const end_latlon_pt = view_intersect_data.latlon_pts[1]
+        const start_lonlat_pt = view_intersect_data.lonlat_pts[0]
+        const end_lonlat_pt = view_intersect_data.lonlat_pts[1]
         const start_screen_pt = view_intersect_data.screen_pts[0]
         const end_screen_pt = view_intersect_data.screen_pts[1]
 
@@ -1468,8 +1506,8 @@ export function getLatLonPolyClass() {
             const new_segment_point = Point2d.create()
             Point2d.lerp(
               new_segment_point,
-              start_latlon_pt,
-              end_latlon_pt,
+              start_lonlat_pt,
+              end_lonlat_pt,
               i / num_subdivisions
             )
             // conver the new segment point back to mercator for drawing
