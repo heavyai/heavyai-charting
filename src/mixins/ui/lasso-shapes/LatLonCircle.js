@@ -564,7 +564,7 @@ export default class LatLonCircle extends MapdDraw.Circle {
     if (opts.debug === undefined) {
       // if true, will activate the use of the _drawDebug method for drawing
       // extra debug info on top of the original shape draw.
-      opts.debug = true
+      opts.debug = false
     }
     super(opts)
 
