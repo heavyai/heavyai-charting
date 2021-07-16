@@ -67,6 +67,22 @@ export default {
   },
 
   /**
+   * Copies projected point data.
+   * @param {ProjectedPointData} out_point_data The data to be copied to
+   * @param {ProjectedPointData} in_point_data  The data to be copied from
+   */
+  copyProjectedPoint: (out_point_data, in_point_data) => {
+    Point2d.copy(out_point_data.merc_point, in_point_data.merc_point)
+    Point2d.copy(out_point_data.screen_point, in_point_data.screen_point)
+    Point2d.copy(out_point_data.lonlat_point, in_point_data.lonlat_point)
+    if (in_point_data.include_radians !== undefined) {
+      Point2d.copy(out_point_data.radians_point, in_point_data.radians_point)
+    } else {
+      delete out_point_data.radians_point
+    }
+  },
+
+  /**
    * Using a point defined in web-mercator space as input, initializes a ProjectedPointData struct
    * by transforming that merc point into lat/lon WGS84 (in degrees and optionally radians) and screen space.
    * @param {Point2d} initial_merc_point Initial web-mercator projected point to transform
@@ -389,5 +405,29 @@ export default {
     }
 
     return rtn_obj
+  },
+
+  /**
+   * Converts an axis-aligned bounding box in web-mercator (srid 900913) coordinates
+   * to WGS84 (srid: 4326) coordinates.
+   * @param {AABox2d} output_bounds The bounds to store the results of the 900913->4326 conversion
+   * @param {AABox2d} input_bounds The bounds in 900913 coordinate to convert to 4326
+   * @returns {AABox2d} Returns output_bounds. The return can be useful for chaining.
+   */
+  boundsConv900913to4326(output_bounds, input_bounds) {
+    output_bounds[AABox2d.MINX] = LatLonUtils.conv900913To4326X(
+      input_bounds[AABox2d.MINX]
+    )
+    output_bounds[AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
+      input_bounds[AABox2d.MAXX]
+    )
+    output_bounds[AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
+      input_bounds[AABox2d.MINY]
+    )
+    output_bounds[AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
+      input_bounds[AABox2d.MAXY]
+    )
+
+    return output_bounds
   }
 }
