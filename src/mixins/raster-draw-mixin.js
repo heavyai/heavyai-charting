@@ -1,11 +1,10 @@
 import * as LatLonUtils from "../utils/utils-latlon"
-import LassoButtonGroupController, {
-  getLatLonCircleClass,
-  getLatLonPolyClass
-} from "./ui/lasso-tool-ui"
+import LassoButtonGroupController from "./ui/lasso-tool-ui"
 import * as _ from "lodash"
 import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 import { redrawAllAsync } from "../core/core-async"
+import LatLonCircle from "./ui/lasso-shapes/LatLonCircle"
+import LatLonPoly from "./ui/lasso-shapes/LatLonPoly"
 
 /** Configure MapD Draw */
 MapdDraw.Configure.setMatrixArrayType(Float64Array)
@@ -185,8 +184,6 @@ export function rasterDrawMixin(chart) {
 
   function applyFilter() {
     const shapes = drawEngine.sortedShapes
-    const LatLonCircle = getLatLonCircleClass()
-    const LatLonPoly = getLatLonPolyClass()
 
     const layers =
       chart.getLayers && typeof chart.getLayers === "function"
@@ -464,7 +461,6 @@ export function rasterDrawMixin(chart) {
       }
       const selectOpts = {}
       if (filterArg.type === "LatLonCircle") {
-        const LatLonCircle = getLatLonCircleClass()
         newShape = new LatLonCircle(filterArg)
         selectOpts.uniformScaleOnly = true
         selectOpts.centerScaleOnly = true
@@ -473,7 +469,7 @@ export function rasterDrawMixin(chart) {
         const args = []
         let PolyClass = null
         if (useLonLat) {
-          PolyClass = getLatLonPolyClass()
+          PolyClass = LatLonPoly
           args.push(drawEngine)
         } else {
           PolyClass = MapdDraw.Poly
