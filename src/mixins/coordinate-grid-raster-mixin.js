@@ -7,6 +7,7 @@ import marginMixin from "./margin-mixin"
 import axios from "axios"
 import lockAxisMixin from "./lock-axis-mixin"
 import { DestroyedChartError } from "../core/errors"
+import { utils } from "../utils/utils"
 
 /**
  * Coordinate Grid Raster is an abstract base chart designed to support coordinate grid based
@@ -749,7 +750,9 @@ export default function coordinateGridRasterMixin (_chart, _mapboxgl, browser) {
       }
     }
 
-    if (imgUrl) { // should we check to see if the imgUrl is the same from the previous render?
+    if (imgUrl && imgUrl !== _chart.lastImgUrl || !utils.deepEquals(renderBounds, _chart.lastRenderBounds)) {
+      _chart.lastImgUrl = imgUrl
+      _chart.lastRenderBounds = renderBounds
       axios.get(imgUrl, {
         responseType: 'arraybuffer'
       }).then(({ data }) => {
