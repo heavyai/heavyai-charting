@@ -10,7 +10,7 @@ export default class LatLonPoly extends MapdDraw.Poly {
     if (opts.debug === undefined) {
       // if true, will activate the use of the _drawDebug method for drawing
       // extra debug info on top of the original shape draw.
-      opts.debug = false
+      opts.debug = true
     }
     super(opts)
     this._draw_engine = draw_engine
@@ -19,13 +19,16 @@ export default class LatLonPoly extends MapdDraw.Poly {
     this._geomDirty = true
     this._viewDirty = true
 
+    // set the viewDirty flag to force a rebuild of the drawn vertices when
+    // the camera changes. This is required because we are doing a screen-space-based
+    // line subdivision that is obviously dependent on the view.
     const that = this
     this._draw_engine.camera.on("changed", event => {
       that._viewDirty = true
     })
 
     // maximum length of subdivided line segment in pixels
-    this._maxSegmentPixelDistance = 40
+    this._max_segment_pixel_distance = 40
   }
 
   /**
@@ -38,20 +41,20 @@ export default class LatLonPoly extends MapdDraw.Poly {
    * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
    *                                      intersection between the shape and the current view
    *                                      in WGS84 lat/lon coords
-   * @param {Mat2d} worldToScreenMatrix Matrix defining world-to-screen transformation
+   * @param {Mat2d} world_to_screen_matrix Matrix defining world-to-screen transformation
    * @returns
    */
   _subdivideLineSegment(
     start_point_data,
     end_point_data,
     view_aabox,
-    worldToScreenMatrix
+    world_to_screen_matrix
   ) {
     const view_intersect_data = LatLonViewIntersectUtils.intersectViewBounds(
       start_point_data,
       end_point_data,
       view_aabox,
-      worldToScreenMatrix
+      world_to_screen_matrix
     )
 
     if (!view_intersect_data.subdivide) {
@@ -60,17 +63,15 @@ export default class LatLonPoly extends MapdDraw.Poly {
 
     console.assert(view_intersect_data.lonlat_pts.length === 2)
 
-    const start_lonlat_pt = view_intersect_data.lonlat_pts[0]
-    const end_lonlat_pt = view_intersect_data.lonlat_pts[1]
-    const start_screen_pt = view_intersect_data.screen_pts[0]
-    const end_screen_pt = view_intersect_data.screen_pts[1]
+    const [start_lonlat_pt, end_lonlat_pt] = view_intersect_data.lonlat_pts
+    const [start_screen_pt, end_screen_pt] = view_intersect_data.screen_pts
 
     const distance = Point2d.distance(start_screen_pt, end_screen_pt)
-    if (distance > this._maxSegmentPixelDistance) {
+    if (distance > this._max_segment_pixel_distance) {
       // do subdivisions in a cartesian space using lon/lat
       // This is how ST_Contains behaves in the server right now
       const num_subdivisions = Math.ceil(
-        distance / this._maxSegmentPixelDistance
+        distance / this._max_segment_pixel_distance
       )
       for (let i = 1; i < num_subdivisions; i += 1) {
         const new_segment_point = Point2d.create()
@@ -87,14 +88,20 @@ export default class LatLonPoly extends MapdDraw.Poly {
         Point2d.transformMat2d(
           new_segment_point,
           new_segment_point,
-          worldToScreenMatrix
+          world_to_screen_matrix
         )
         this._screenPts.push(Point2d.clone(new_segment_point))
       }
     }
   }
 
-  _updateGeom(worldToScreenMatrix) {
+  /**
+   * Updates the internal geometry representation of the polygon for drawing.
+   * This means auto-subdividing line segments that are in view and are larger
+   * than the max screen-space distance threshold.
+   * @param {Mat2d} world_to_screen_matrix web-mercator-to-pixel transformation matrix
+   */
+  _updateGeom(world_to_screen_matrix) {
     if (this._viewDirty || this._geomDirty || this._boundsOutOfDate) {
       this._screenPts = []
       if (this._verts.length === 0) {
@@ -107,44 +114,36 @@ export default class LatLonPoly extends MapdDraw.Poly {
       const aabox = this.aabox
       AABox2d.intersection(world_bounds, aabox, world_bounds)
       if (AABox2d.isEmpty(aabox)) {
+        // Early out. Shape is not in view
         return
       }
 
       // convert our intersection bounds to WGS84 lon/lat
-      world_bounds[AABox2d.MINX] = LatLonUtils.conv900913To4326X(
-        world_bounds[AABox2d.MINX]
-      )
-      world_bounds[AABox2d.MAXX] = LatLonUtils.conv900913To4326X(
-        world_bounds[AABox2d.MAXX]
-      )
-      world_bounds[AABox2d.MINY] = LatLonUtils.conv900913To4326Y(
-        world_bounds[AABox2d.MINY]
-      )
-      world_bounds[AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(
-        world_bounds[AABox2d.MAXY]
+      LatLonViewIntersectUtils.boundsConv900913to4326(
+        world_bounds,
+        world_bounds
       )
 
-      const initial_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
+      // Work on 2 points at a time, swapping as we interate.
+      // Keep the first point around to close the polygon loop as the final iteration
+      const first_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
       let start_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
       let end_point_data = LatLonViewIntersectUtils.buildProjectedPointData()
 
       const model_xform = this.globalXform
 
+      // projected point data for the first vert. The point data includes the point in
+      // web-mercator, wgs84 lon/lat, and screen space coordinates
       LatLonViewIntersectUtils.projectPoint(
         this._verts[0],
-        initial_point_data,
+        first_point_data,
         model_xform,
-        worldToScreenMatrix
+        world_to_screen_matrix
       )
 
-      Point2d.copy(start_point_data.merc_point, initial_point_data.merc_point)
-      Point2d.copy(
-        start_point_data.screen_point,
-        initial_point_data.screen_point
-      )
-      Point2d.copy(
-        start_point_data.lonlat_point,
-        initial_point_data.lonlat_point
+      LatLonViewIntersectUtils.copyProjectedPoint(
+        start_point_data,
+        first_point_data
       )
 
       this._screenPts.push(Point2d.clone(start_point_data.screen_point))
@@ -155,13 +154,15 @@ export default class LatLonPoly extends MapdDraw.Poly {
           this._verts[i],
           end_point_data,
           model_xform,
-          worldToScreenMatrix
+          world_to_screen_matrix
         )
+
+        // check if this line segment needs subdividing
         this._subdivideLineSegment(
           start_point_data,
           end_point_data,
           world_bounds,
-          worldToScreenMatrix
+          world_to_screen_matrix
         )
         this._screenPts.push(Point2d.clone(end_point_data.screen_point))
 
@@ -171,11 +172,12 @@ export default class LatLonPoly extends MapdDraw.Poly {
         end_point_data = swap_tmp
       }
 
+      // check if the final line segment that closes the loop needs subdividing
       this._subdivideLineSegment(
         start_point_data,
-        initial_point_data,
+        first_point_data,
         world_bounds,
-        worldToScreenMatrix
+        world_to_screen_matrix
       )
 
       // NOTE: we are not re-adding the first point as the draw call will close the loop
@@ -212,6 +214,11 @@ export default class LatLonPoly extends MapdDraw.Poly {
     }
   }
 
+  /**
+   * Debug draw routine that visualizes the subdivided verts that are auto-generated.
+   * Only works if the 'debug' option is set to true in the constructor
+   * @param {CanvasRenderingContext2D} ctx
+   */
   _drawDebug(ctx) {
     if (this._screenPts.length) {
       ctx.save()
