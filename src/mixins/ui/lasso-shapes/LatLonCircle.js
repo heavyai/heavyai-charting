@@ -174,7 +174,7 @@ function getClosestPointOnCircleArc(
   world_to_screen_matrix
 ) {
   // get the angle from the center of the circle to the potential subdivide point
-  let angle_radians = getAngleOfPointAboutCircle(
+  const angle_radians = getAngleOfPointAboutCircle(
     circle_descriptor,
     point_lonlat,
     point_radians
@@ -540,13 +540,13 @@ function subdivideArc(
 function getBoundsDistanceData(center_lonlat, bounds_lonlat) {
   const bounds_distances = new Array(4)
   for (let i = 0; i < 4; ++i) {
-    let bounds_lon =
+    const bounds_lon =
       i & 1 ? bounds_lonlat[AABox2d.MAXX] : bounds_lonlat[AABox2d.MINX]
-    let bounds_lat =
+    const bounds_lat =
       i > 1 ? bounds_lonlat[AABox2d.MAXY] : bounds_lonlat[AABox2d.MINY]
     const point = Point2d.create(bounds_lon, bounds_lat)
     // distance from center to corner of bounds in kilometers
-    let distance =
+    const distance =
       LatLonUtils.distance_in_meters(
         center_lonlat[0],
         center_lonlat[1],
@@ -559,9 +559,7 @@ function getBoundsDistanceData(center_lonlat, bounds_lonlat) {
     }
   }
 
-  bounds_distances.sort((a, b) => {
-    return a.distance - b.distance
-  })
+  bounds_distances.sort((a, b) => a.distance - b.distance)
 
   return {
     min_bounds_dist: bounds_distances[0].distance,

@@ -37,7 +37,7 @@ export function convertGeojsonToSql(features, px, py) {
   const polyStmts = []
   const circleStmts = []
 
-  features.foreach(feature => {
+  features.forEach(feature => {
     if (feature.properties.circle) {
       circleStmts.push(convertFeatureToCircleStmt(feature, px, py))
     } else {
