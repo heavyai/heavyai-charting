@@ -29,7 +29,9 @@ function convertFeatureToCircleStmt({ geometry: { radius, center } }, px, py) {
 }
 
 function convertFeatureToContainsStmt({ geometry }, px, py) {
-  return `ST_Contains(${wellknown.stringify(geometry)}, ST_Point(${px}, ${py}))`
+  return `ST_Contains('${wellknown.stringify(
+    geometry
+  )}', ST_Point(${px}, ${py}))`
 }
 
 export function convertGeojsonToSql(features, px, py) {
