@@ -1,3 +1,5 @@
+"use strict"
+
 import * as LatLonUtils from "../../../utils/utils-latlon"
 import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 import LatLonViewIntersectUtils from "./LatLonViewIntersectUtils"
