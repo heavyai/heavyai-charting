@@ -12,7 +12,7 @@ export default class LatLonPoly extends MapdDraw.Poly {
     if (opts.debug === undefined) {
       // if true, will activate the use of the _drawDebug method for drawing
       // extra debug info on top of the original shape draw.
-      opts.debug = true
+      opts.debug = false
     }
     super(opts)
     this._draw_engine = draw_engine
