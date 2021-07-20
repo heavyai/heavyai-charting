@@ -461,7 +461,7 @@ export function rasterDrawMixin(chart) {
       }
       const selectOpts = {}
       if (filterArg.type === "LatLonCircle") {
-        newShape = new LatLonCircle(filterArg)
+        newShape = new LatLonCircle(drawEngine, filterArg)
         selectOpts.uniformScaleOnly = true
         selectOpts.centerScaleOnly = true
         selectOpts.rotatable = false
