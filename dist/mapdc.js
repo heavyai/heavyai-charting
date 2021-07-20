@@ -51916,7 +51916,7 @@ function rasterDrawMixin(chart) {
       }
       var selectOpts = {};
       if (filterArg.type === "LatLonCircle") {
-        newShape = new _LatLonCircle2.default(filterArg);
+        newShape = new _LatLonCircle2.default(drawEngine, filterArg);
         selectOpts.uniformScaleOnly = true;
         selectOpts.centerScaleOnly = true;
         selectOpts.rotatable = false;
@@ -53425,7 +53425,7 @@ var LatLonPoly = function (_MapdDraw$Poly) {
     if (opts.debug === undefined) {
       // if true, will activate the use of the _drawDebug method for drawing
       // extra debug info on top of the original shape draw.
-      opts.debug = true;
+      opts.debug = false;
     }
 
     var _this = _possibleConstructorReturn(this, (LatLonPoly.__proto__ || Object.getPrototypeOf(LatLonPoly)).call(this, opts));
