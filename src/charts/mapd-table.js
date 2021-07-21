@@ -524,6 +524,10 @@ export default function mapdTable(parent, chartGroup) {
       columns: _crossfilter.getColumns()
     })
 
+    if (!type) {
+      return
+    }
+
     if (type === "TIMESTAMP") {
       val = `TIMESTAMP(3) '${val
         .toISOString()

@@ -85412,6 +85412,10 @@ function mapdTable(parent, chartGroup) {
       columns: _crossfilter.getColumns()
     });
 
+    if (!type) {
+      return;
+    }
+
     if (type === "TIMESTAMP") {
       val = "TIMESTAMP(3) '" + val.toISOString().slice(0, -1) // Slice off the 'Z' at the end
       .replace("T", " ") + "'";
