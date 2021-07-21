@@ -85398,7 +85398,7 @@ function mapdTable(parent, chartGroup) {
         columns = _ref.columns;
 
     var key = table + "." + expr;
-    return columns[key].type;
+    return columns[key] ? columns[key].type : undefined;
   };
 
   _chart.setCustomRetrieveFilterColType = function (func) {

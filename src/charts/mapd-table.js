@@ -510,7 +510,7 @@ export default function mapdTable(parent, chartGroup) {
 
   let _retrieveFilterColType = ({ expr, table, columns }) => {
     const key = `${table}.${expr}`
-    return columns[key].type
+    return columns[key] ? columns[key].type : undefined
   }
 
   _chart.setCustomRetrieveFilterColType = function(func) {
