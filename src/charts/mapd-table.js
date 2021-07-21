@@ -508,10 +508,21 @@ export default function mapdTable(parent, chartGroup) {
     })
   }
 
+  let _retrieveFilterColType = ({ expr, table, columns }) => {
+    const key = `${table}.${expr}`
+    return columns[key].type
+  }
+
+  _chart.setCustomRetrieveFilterColType = function(func) {
+    _retrieveFilterColType = func
+  }
+
   function filterCol(expr, val) {
-    const key = _crossfilter.getTable()[0] + "." + expr
-    const columns = _crossfilter.getColumns()
-    const type = columns[key].type
+    const type = _retrieveFilterColType({
+      expr,
+      table: _crossfilter.getTable()[0],
+      columns: _crossfilter.getColumns()
+    })
 
     if (type === "TIMESTAMP") {
       val = `TIMESTAMP(3) '${val

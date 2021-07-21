@@ -85392,10 +85392,25 @@ function mapdTable(parent, chartGroup) {
     });
   }
 
+  var _retrieveFilterColType = function _retrieveFilterColType(_ref) {
+    var expr = _ref.expr,
+        table = _ref.table,
+        columns = _ref.columns;
+
+    var key = table + "." + expr;
+    return columns[key].type;
+  };
+
+  _chart.setCustomRetrieveFilterColType = function (func) {
+    _retrieveFilterColType = func;
+  };
+
   function filterCol(expr, val) {
-    var key = _crossfilter.getTable()[0] + "." + expr;
-    var columns = _crossfilter.getColumns();
-    var type = columns[key].type;
+    var type = _retrieveFilterColType({
+      expr: expr,
+      table: _crossfilter.getTable()[0],
+      columns: _crossfilter.getColumns()
+    });
 
     if (type === "TIMESTAMP") {
       val = "TIMESTAMP(3) '" + val.toISOString().slice(0, -1) // Slice off the 'Z' at the end
