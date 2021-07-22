@@ -85392,10 +85392,34 @@ function mapdTable(parent, chartGroup) {
     });
   }
 
+  // our default retriever just takes the expr (column), sticks the column on it, then snags
+  // the type from the columns list. Being careful not to blow up if it doesn't exist.
+  var _retrieveFilterColType = function _retrieveFilterColType(_ref) {
+    var expr = _ref.expr,
+        table = _ref.table,
+        columns = _ref.columns;
+
+    var key = table + "." + expr;
+    return columns[key] ? columns[key].type : undefined;
+  };
+
+  // but we can also change the type via a custom accessor, if necesary
+  _chart.setCustomRetrieveFilterColType = function (func) {
+    _retrieveFilterColType = func;
+  };
+
   function filterCol(expr, val) {
-    var key = _crossfilter.getTable()[0] + "." + expr;
-    var columns = _crossfilter.getColumns();
-    var type = columns[key].type;
+    var type = _retrieveFilterColType({
+      expr: expr,
+      table: _crossfilter.getTable()[0],
+      columns: _crossfilter.getColumns()
+    });
+
+    // escape clause - certain values cannot be filtered upon, so if there's no type
+    // we escape. By default, we won't filter on anything that isn't a column in the table.
+    if (!type) {
+      return;
+    }
 
     if (type === "TIMESTAMP") {
       val = "TIMESTAMP(3) '" + val.toISOString().slice(0, -1) // Slice off the 'Z' at the end
