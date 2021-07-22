@@ -85392,6 +85392,8 @@ function mapdTable(parent, chartGroup) {
     });
   }
 
+  // our default retriever just takes the expr (column), sticks the column on it, then snags
+  // the type from the columns list. Being careful not to blow up if it doesn't exist.
   var _retrieveFilterColType = function _retrieveFilterColType(_ref) {
     var expr = _ref.expr,
         table = _ref.table,
@@ -85401,6 +85403,7 @@ function mapdTable(parent, chartGroup) {
     return columns[key] ? columns[key].type : undefined;
   };
 
+  // but we can also change the type via a custom accessor, if necesary
   _chart.setCustomRetrieveFilterColType = function (func) {
     _retrieveFilterColType = func;
   };
@@ -85412,6 +85415,8 @@ function mapdTable(parent, chartGroup) {
       columns: _crossfilter.getColumns()
     });
 
+    // escape clause - certain values cannot be filtered upon, so if there's no type
+    // we escape. By default, we won't filter on anything that isn't a column in the table.
     if (!type) {
       return;
     }

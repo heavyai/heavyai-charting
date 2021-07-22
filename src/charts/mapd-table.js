@@ -508,11 +508,14 @@ export default function mapdTable(parent, chartGroup) {
     })
   }
 
+  // our default retriever just takes the expr (column), sticks the column on it, then snags
+  // the type from the columns list. Being careful not to blow up if it doesn't exist.
   let _retrieveFilterColType = ({ expr, table, columns }) => {
     const key = `${table}.${expr}`
     return columns[key] ? columns[key].type : undefined
   }
 
+  // but we can also change the type via a custom accessor, if necesary
   _chart.setCustomRetrieveFilterColType = function(func) {
     _retrieveFilterColType = func
   }
@@ -524,6 +527,8 @@ export default function mapdTable(parent, chartGroup) {
       columns: _crossfilter.getColumns()
     })
 
+    // escape clause - certain values cannot be filtered upon, so if there's no type
+    // we escape. By default, we won't filter on anything that isn't a column in the table.
     if (!type) {
       return
     }
