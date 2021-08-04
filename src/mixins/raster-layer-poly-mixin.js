@@ -78,10 +78,17 @@ export default function rasterLayerPolyMixin(_layer) {
 
   const _scaledPopups = {}
 
-  let _customFetchColorAggregate = aggregate => aggregates
+  let _customFetchColorAggregate = aggregate => aggregate
 
   _layer.setCustomFetchColorAggregate = function(func) {
     _customFetchColorAggregate = func
+  }
+
+  let _customColorProjectionPostProcessor = (aggregate, projections) =>
+    projections
+
+  _layer.setCustomColorProjectionPostProcessor = function(func) {
+    _customColorProjectionPostProcessor = func
   }
 
   _layer.setState = function(setter) {
@@ -178,6 +185,16 @@ export default function rasterLayerPolyMixin(_layer) {
           _customFetchColorAggregate(color.aggregate)
         ))
       }
+
+      ({
+        colorProjection,
+        colorProjectionAs,
+        colorField
+      } = _customColorProjectionPostProcessor(color.aggregate, {
+        colorProjection,
+        colorProjectionAs,
+        colorField
+      }))
 
       const withClauseTransforms = []
 
