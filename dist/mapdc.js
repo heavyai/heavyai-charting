@@ -55721,11 +55721,19 @@ function rasterLayerPolyMixin(_layer) {
   var _scaledPopups = {};
 
   var _customFetchColorAggregate = function _customFetchColorAggregate(aggregate) {
-    return aggregates;
+    return aggregate;
   };
 
   _layer.setCustomFetchColorAggregate = function (func) {
     _customFetchColorAggregate = func;
+  };
+
+  var _customColorProjectionPostProcessor = function _customColorProjectionPostProcessor(aggregate, projections) {
+    return projections;
+  };
+
+  _layer.setCustomColorProjectionPostProcessor = function (func) {
+    _customColorProjectionPostProcessor = func;
   };
 
   _layer.setState = function (setter) {
@@ -55809,6 +55817,17 @@ function rasterLayerPolyMixin(_layer) {
         colorProjectionAs = _parseFactsFromCustom.factAliases;
         colorField = _parseFactsFromCustom.expression;
       }
+
+      var _customColorProjectio = _customColorProjectionPostProcessor(color.aggregate, {
+        colorProjection: colorProjection,
+        colorProjectionAs: colorProjectionAs,
+        colorField: colorField
+      });
+
+      colorProjection = _customColorProjectio.colorProjection;
+      colorProjectionAs = _customColorProjectio.colorProjectionAs;
+      colorField = _customColorProjectio.colorField;
+
 
       var withClauseTransforms = [];
 
@@ -57586,6 +57605,14 @@ function applyReplacements(sql, withAlias, replacements) {
 }
 
 function parseFactsFromCustomSQL(factTable, withAlias, sql) {
+  // okay, if our sql has -any- parameters, just bomb out. We don't know how to deal with those yet
+  if (sql.includes("${")) {
+    return {
+      factProjections: [sql],
+      factAliases: [withAlias],
+      expression: sql
+    };
+  }
   var factProjections = [];
   var factAliases = [];
   var expression = sql;
