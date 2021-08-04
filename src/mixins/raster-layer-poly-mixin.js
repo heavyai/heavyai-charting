@@ -78,6 +78,12 @@ export default function rasterLayerPolyMixin(_layer) {
 
   const _scaledPopups = {}
 
+  let _customFetchColorAggregate = aggregate => aggregates
+
+  _layer.setCustomFetchColorAggregate = function(func) {
+    _customFetchColorAggregate = func
+  }
+
   _layer.setState = function(setter) {
     if (typeof setter === "function") {
       state = setter(state)
@@ -169,7 +175,7 @@ export default function rasterLayerPolyMixin(_layer) {
         } = parseFactsFromCustomSQL(
           state.data[0].table,
           withAlias,
-          color.aggregate
+          _customFetchColorAggregate(color.aggregate)
         ))
       }
 

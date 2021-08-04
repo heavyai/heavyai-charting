@@ -55720,6 +55720,14 @@ function rasterLayerPolyMixin(_layer) {
 
   var _scaledPopups = {};
 
+  var _customFetchColorAggregate = function _customFetchColorAggregate(aggregate) {
+    return aggregates;
+  };
+
+  _layer.setCustomFetchColorAggregate = function (func) {
+    _customFetchColorAggregate = func;
+  };
+
   _layer.setState = function (setter) {
     if (typeof setter === "function") {
       state = setter(state);
@@ -55795,7 +55803,7 @@ function rasterLayerPolyMixin(_layer) {
         // parent SELECT.
         // eslint-disable-next-line no-extra-semi
         ;
-        var _parseFactsFromCustom = (0, _customSqlParser2.default)(state.data[0].table, withAlias, color.aggregate);
+        var _parseFactsFromCustom = (0, _customSqlParser2.default)(state.data[0].table, withAlias, _customFetchColorAggregate(color.aggregate));
 
         colorProjection = _parseFactsFromCustom.factProjections;
         colorProjectionAs = _parseFactsFromCustom.factAliases;
