@@ -55818,6 +55818,7 @@ function rasterLayerPolyMixin(_layer) {
         colorField = _parseFactsFromCustom.expression;
       }
 
+      ;
       var _customColorProjectio = _customColorProjectionPostProcessor(color.aggregate, {
         colorProjection: colorProjection,
         colorProjectionAs: colorProjectionAs,
