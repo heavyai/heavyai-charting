@@ -186,7 +186,7 @@ export default function rasterLayerPolyMixin(_layer) {
         ))
       }
 
-      ({
+      ;({
         colorProjection,
         colorProjectionAs,
         colorField
