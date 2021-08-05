@@ -55818,6 +55818,7 @@ function rasterLayerPolyMixin(_layer) {
         colorField = _parseFactsFromCustom.expression;
       }
 
+      // eslint-disable-next-line no-extra-semi
       ;
       var _customColorProjectio = _customColorProjectionPostProcessor(color.aggregate, {
         colorProjection: colorProjection,

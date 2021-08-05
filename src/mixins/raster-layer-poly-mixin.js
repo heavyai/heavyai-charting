@@ -186,6 +186,7 @@ export default function rasterLayerPolyMixin(_layer) {
         ))
       }
 
+      // eslint-disable-next-line no-extra-semi
       ;({
         colorProjection,
         colorProjectionAs,
