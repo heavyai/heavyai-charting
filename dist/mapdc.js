@@ -55785,6 +55785,8 @@ function rasterLayerPolyMixin(_layer) {
         state = _ref.state,
         lastFilteredSize = _ref.lastFilteredSize,
         isDataExport = _ref.isDataExport;
+
+    /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
     var _state$encoding = state.encoding,
         color = _state$encoding.color,
         geocol = _state$encoding.geocol,

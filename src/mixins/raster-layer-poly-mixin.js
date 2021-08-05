@@ -146,6 +146,7 @@ export default function rasterLayerPolyMixin(_layer) {
     lastFilteredSize,
     isDataExport
   }) {
+    /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
     const {
       encoding: { color, geocol, geoTable }
     } = state
