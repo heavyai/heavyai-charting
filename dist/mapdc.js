@@ -55720,6 +55720,22 @@ function rasterLayerPolyMixin(_layer) {
 
   var _scaledPopups = {};
 
+  var _customFetchColorAggregate = function _customFetchColorAggregate(aggregate) {
+    return aggregate;
+  };
+
+  _layer.setCustomFetchColorAggregate = function (func) {
+    _customFetchColorAggregate = func;
+  };
+
+  var _customColorProjectionPostProcessor = function _customColorProjectionPostProcessor(aggregate, projections) {
+    return projections;
+  };
+
+  _layer.setCustomColorProjectionPostProcessor = function (func) {
+    _customColorProjectionPostProcessor = func;
+  };
+
   _layer.setState = function (setter) {
     if (typeof setter === "function") {
       state = setter(state);
@@ -55769,6 +55785,8 @@ function rasterLayerPolyMixin(_layer) {
         state = _ref.state,
         lastFilteredSize = _ref.lastFilteredSize,
         isDataExport = _ref.isDataExport;
+
+    /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
     var _state$encoding = state.encoding,
         color = _state$encoding.color,
         geocol = _state$encoding.geocol,
@@ -55795,12 +55813,25 @@ function rasterLayerPolyMixin(_layer) {
         // parent SELECT.
         // eslint-disable-next-line no-extra-semi
         ;
-        var _parseFactsFromCustom = (0, _customSqlParser2.default)(state.data[0].table, withAlias, color.aggregate);
+        var _parseFactsFromCustom = (0, _customSqlParser2.default)(state.data[0].table, withAlias, _customFetchColorAggregate(color.aggregate));
 
         colorProjection = _parseFactsFromCustom.factProjections;
         colorProjectionAs = _parseFactsFromCustom.factAliases;
         colorField = _parseFactsFromCustom.expression;
       }
+
+      // eslint-disable-next-line no-extra-semi
+      ;
+      var _customColorProjectio = _customColorProjectionPostProcessor(color.aggregate, {
+        colorProjection: colorProjection,
+        colorProjectionAs: colorProjectionAs,
+        colorField: colorField
+      });
+
+      colorProjection = _customColorProjectio.colorProjection;
+      colorProjectionAs = _customColorProjectio.colorProjectionAs;
+      colorField = _customColorProjectio.colorField;
+
 
       var withClauseTransforms = [];
 
@@ -57578,6 +57609,14 @@ function applyReplacements(sql, withAlias, replacements) {
 }
 
 function parseFactsFromCustomSQL(factTable, withAlias, sql) {
+  // okay, if our sql has -any- parameters, just bomb out. We don't know how to deal with those yet
+  if (sql.includes("${")) {
+    return {
+      factProjections: [sql],
+      factAliases: [withAlias],
+      expression: sql
+    };
+  }
   var factProjections = [];
   var factAliases = [];
   var expression = sql;

@@ -78,6 +78,19 @@ export default function rasterLayerPolyMixin(_layer) {
 
   const _scaledPopups = {}
 
+  let _customFetchColorAggregate = aggregate => aggregate
+
+  _layer.setCustomFetchColorAggregate = function(func) {
+    _customFetchColorAggregate = func
+  }
+
+  let _customColorProjectionPostProcessor = (aggregate, projections) =>
+    projections
+
+  _layer.setCustomColorProjectionPostProcessor = function(func) {
+    _customColorProjectionPostProcessor = func
+  }
+
   _layer.setState = function(setter) {
     if (typeof setter === "function") {
       state = setter(state)
@@ -133,6 +146,7 @@ export default function rasterLayerPolyMixin(_layer) {
     lastFilteredSize,
     isDataExport
   }) {
+    /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
     const {
       encoding: { color, geocol, geoTable }
     } = state
@@ -169,9 +183,20 @@ export default function rasterLayerPolyMixin(_layer) {
         } = parseFactsFromCustomSQL(
           state.data[0].table,
           withAlias,
-          color.aggregate
+          _customFetchColorAggregate(color.aggregate)
         ))
       }
+
+      // eslint-disable-next-line no-extra-semi
+      ;({
+        colorProjection,
+        colorProjectionAs,
+        colorField
+      } = _customColorProjectionPostProcessor(color.aggregate, {
+        colorProjection,
+        colorProjectionAs,
+        colorField
+      }))
 
       const withClauseTransforms = []
 
