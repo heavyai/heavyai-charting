@@ -4,153 +4,11 @@ import * as LatLonUtils from "../../utils/utils-latlon"
 import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 import simplify from "simplify-js"
 import { logger } from "../../utils/logger"
+import LatLonCircle from "./lasso-shapes/LatLonCircle"
+import LatLonPoly from "./lasso-shapes/LatLonPoly"
 
-/* istanbul ignore next */
-let LatLonCircleClass = null
-
-/* istanbul ignore next */
-export function getLatLonCircleClass() {
-  if (!LatLonCircleClass) {
-    LatLonCircleClass = class LatLonCircle extends MapdDraw.Circle {
-      constructor(opts) {
-        super(opts)
-        this._mercatorPts = []
-        this._geomDirty = true
-        this._initialRadius = this._radius
-      }
-
-      setScale(scale) {
-        this.radius = this._initialRadius * Math.min(scale[0], scale[1])
-      }
-
-      set initialRadius(radius) {
-        this.radius = radius
-        this._initialRadius = radius
-      }
-
-      resetInitialRadius() {
-        this._initialRadius = this.radius
-      }
-
-      _updateGeom() {
-        if (this._geomDirty || this._boundsOutOfDate) {
-          const centerMerc = [0, 0]
-          const centerLatLon = [0, 0]
-          const scale = [0, 0]
-          const xform = this.globalXform
-          MapdDraw.Mat2d.svd(centerMerc, scale, null, xform)
-
-          const degrees_between_points = 6.0
-          const number_of_points = Math.floor(360 / degrees_between_points)
-
-          // radius is stored in kilometers, so convert kilometers to radians.
-          // See: https://stackoverflow.com/questions/12180290/convert-kilometers-to-radians
-          // for a discussion.
-          // The 6372.79756 number is the earth's radius in kilometers and aligns with the
-          // earth radius used in distance_in_meters in utils-latlon
-          const dist_radians = this._radius / 6372.797560856
-
-          // convert from mercator to lat/lon
-          LatLonUtils.conv900913To4326(centerLatLon, centerMerc)
-          const center_lat_radians = centerLatLon[1] * MapdDraw.Math.DEG_TO_RAD
-          const center_lon_radians = centerLatLon[0] * MapdDraw.Math.DEG_TO_RAD
-
-          MapdDraw.AABox2d.initEmpty(this._aabox)
-          this._mercatorPts = []
-          for (let index = 0; index < number_of_points; index = index + 1) {
-            const degrees = index * degrees_between_points
-            const degree_radians = (degrees * Math.PI) / 180
-
-            // rotate the sample point around the circle center using the radius distance in radians
-            const point_lat_radians = Math.asin(
-              Math.sin(center_lat_radians) * Math.cos(dist_radians) +
-                Math.cos(center_lat_radians) *
-                  Math.sin(dist_radians) *
-                  Math.cos(degree_radians)
-            )
-            const point_lon_radians =
-              center_lon_radians +
-              Math.atan2(
-                Math.sin(degree_radians) *
-                  Math.sin(dist_radians) *
-                  Math.cos(center_lat_radians),
-                Math.cos(dist_radians) -
-                  Math.sin(center_lat_radians) * Math.sin(point_lat_radians)
-              )
-            const point_lat = (point_lat_radians * 180) / Math.PI
-            const point_lon = (point_lon_radians * 180) / Math.PI
-            const point = MapdDraw.Point2d.create(point_lon, point_lat)
-
-            // convert from lon/lat to mercator
-            LatLonUtils.conv4326To900913(point, point)
-
-            MapdDraw.AABox2d.encapsulatePt(this._aabox, this._aabox, point)
-            this._mercatorPts.push(point)
-          }
-
-          const pivot = MapdDraw.Point2d.create(0, 0)
-          MapdDraw.AABox2d.getCenter(pivot, this._aabox)
-          MapdDraw.Point2d.sub(pivot, pivot, centerMerc)
-          this.pivot = pivot
-
-          this._geomDirty = false
-          this._boundsOutOfDate = false
-        }
-      }
-
-      getDimensions() {
-        return [this.width, this.height]
-      }
-
-      get width() {
-        this._updateAABox()
-        return this._aabox[2] - this._aabox[0]
-      }
-
-      get height() {
-        this._updateAABox()
-        return this._aabox[3] - this._aabox[1]
-      }
-
-      _updateAABox() {
-        this._updateGeom()
-      }
-
-      _draw(ctx) {
-        // only need the mercator to screen projection -- pull out any
-        // local transforms here
-        const xform = MapdDraw.Mat2d.clone(this.globalXform)
-        MapdDraw.Mat2d.invert(xform, xform)
-        MapdDraw.Mat2d.multiply(xform, this._fullXform, xform)
-        ctx.setTransform(
-          xform[0],
-          xform[1],
-          xform[2],
-          xform[3],
-          xform[4],
-          xform[5]
-        )
-
-        this._updateGeom()
-
-        if (this._mercatorPts.length) {
-          ctx.moveTo(this._mercatorPts[0][0], this._mercatorPts[0][1])
-          for (let i = 1; i < this._mercatorPts.length; i = i + 1) {
-            ctx.lineTo(this._mercatorPts[i][0], this._mercatorPts[i][1])
-          }
-          ctx.closePath()
-        }
-      }
-
-      toJSON() {
-        return Object.assign(super.toJSON(), {
-          type: "LatLonCircle" // this must match the name of the class
-        })
-      }
-    }
-  }
-  return LatLonCircleClass
-}
+const { AABox2d, Mat2, Point2d, Vec2d } = MapdDraw
+const MathExt = MapdDraw.Math
 
 /* istanbul ignore next */
 class ShapeHandler {
@@ -180,6 +38,9 @@ class ShapeHandler {
     this.dblclickCB = this.dblclickCB.bind(this)
     this.keydownCB = this.keydownCB.bind(this)
     this.active = false
+
+    this.useLonLat =
+      typeof this.chart.useLonLat === "function" && this.chart.useLonLat()
   }
 
   disableBasemapEvents(options = {}) {
@@ -240,7 +101,7 @@ class ShapeHandler {
 
     const diffX = mouseEvent.clientX - rect.left - this.canvas.clientLeft
     const diffY = mouseEvent.clientY - rect.top - this.canvas.clientTop
-    const mousepos = MapdDraw.Point2d.create(diffX, diffY)
+    const mousepos = Point2d.create(diffX, diffY)
 
     return mousepos
   }
@@ -302,14 +163,10 @@ class CircleShapeHandler extends ShapeHandler {
       defaultStyle,
       defaultSelectStyle
     )
-    this.startmousepos = MapdDraw.Point2d.create(0, 0)
-    this.startmouseworldpos = MapdDraw.Point2d.create(0, 0)
-
-    this.useLonLat =
-      typeof this.chart.useLonLat === "function" && this.chart.useLonLat()
-
+    this.startmousepos = Point2d.create(0, 0)
+    this.startmouseworldpos = Point2d.create(0, 0)
     if (this.useLonLat) {
-      this.startmouselatlonpos = MapdDraw.Point2d.create(0, 0)
+      this.startmouselatlonpos = Point2d.create(0, 0)
     }
     this.activeshape = null
     this.timer = null
@@ -373,10 +230,7 @@ class CircleShapeHandler extends ShapeHandler {
     }
 
     this.disableBasemapEvents()
-    MapdDraw.Point2d.copy(
-      this.startmousepos,
-      this.getRelativeMousePosFromEvent(event)
-    )
+    Point2d.copy(this.startmousepos, this.getRelativeMousePosFromEvent(event))
     this.drawEngine.project(this.startmouseworldpos, this.startmousepos)
     this.timer = performance.now()
 
@@ -388,8 +242,8 @@ class CircleShapeHandler extends ShapeHandler {
         this.startmouseworldpos
       )
 
-      const CircleClass = getLatLonCircleClass()
-      this.activeShape = new CircleClass(
+      this.activeShape = new LatLonCircle(
+        this.drawEngine,
         Object.assign(
           {
             position: this.startmouseworldpos,
@@ -426,7 +280,7 @@ class CircleShapeHandler extends ShapeHandler {
   mousemoveCB(event) {
     if (this.activeShape) {
       const mousepos = this.getRelativeMousePosFromEvent(event)
-      const mousescreenpos = MapdDraw.Point2d.create(0, 0)
+      const mousescreenpos = Point2d.create(0, 0)
       this.drawEngine.project(mousescreenpos, mousepos)
 
       if (this.useLonLat) {
@@ -440,10 +294,7 @@ class CircleShapeHandler extends ShapeHandler {
         )
         this.activeShape.initialRadius = radius / 1000
       } else {
-        const radius = MapdDraw.Point2d.distance(
-          this.startmouseworldpos,
-          mousescreenpos
-        )
+        const radius = Point2d.distance(this.startmouseworldpos, mousescreenpos)
         this.activeShape.radius = radius
       }
 
@@ -495,8 +346,9 @@ class PolylineShapeHandler extends ShapeHandler {
     this.lineShape = null
     this.prevVertPos = null
     this.activeIdx = -1
-    this.startPosAABox = MapdDraw.AABox2d.create()
+    this.startPosAABox = AABox2d.create()
     this.timer = null
+
     this.enableBasemapDebounceFunc = chart.debounce(() => {
       if (this.active) {
         this.enableBasemapEvents()
@@ -516,7 +368,7 @@ class PolylineShapeHandler extends ShapeHandler {
     }
 
     this.startVert = this.lastVert = this.lineShape = this.activeShape = this.prevVertPos = null
-    MapdDraw.AABox2d.initEmpty(this.startPosAABox)
+    AABox2d.initEmpty(this.startPosAABox)
     this.activeIdx = -1
   }
 
@@ -538,12 +390,9 @@ class PolylineShapeHandler extends ShapeHandler {
     const verts = this.lineShape ? this.lineShape.vertsRef : []
     const removeLastVert =
       verts.length > 1 &&
-      !MapdDraw.Point2d.equals(verts[0], verts[verts.length - 1]) &&
+      !Point2d.equals(verts[0], verts[verts.length - 1]) &&
       this.lastVert &&
-      !MapdDraw.Point2d.equals(
-        verts[verts.length - 1],
-        this.lastVert.getPositionRef()
-      )
+      !Point2d.equals(verts[verts.length - 1], this.lastVert.getPositionRef())
     if (verts.length > 2 && (!removeLastVert || verts.length > 3)) {
       // Check if there is a loop in the current verts, remove the last point
       // if so
@@ -551,7 +400,15 @@ class PolylineShapeHandler extends ShapeHandler {
         verts.pop()
       }
 
-      const poly = new MapdDraw.Poly(
+      const args = []
+      let PolyClass = null
+      if (this.useLonLat) {
+        PolyClass = LatLonPoly
+        args.push(this.drawEngine)
+      } else {
+        PolyClass = MapdDraw.Poly
+      }
+      args.push(
         Object.assign(
           {
             verts
@@ -559,6 +416,7 @@ class PolylineShapeHandler extends ShapeHandler {
           this.defaultStyle
         )
       )
+      const poly = new PolyClass(...args)
       this.setupFinalShape(poly)
 
       // clear out all other shapes using our destroy method
@@ -584,7 +442,7 @@ class PolylineShapeHandler extends ShapeHandler {
 
       let shapeBuilt = false
       const mousepos = this.getRelativeMousePosFromEvent(event)
-      const mouseworldpos = MapdDraw.Point2d.create(0, 0)
+      const mouseworldpos = Point2d.create(0, 0)
       this.drawEngine.project(mouseworldpos, mousepos)
 
       if (!this.startVert) {
@@ -617,11 +475,8 @@ class PolylineShapeHandler extends ShapeHandler {
       } else if (this.lastVert) {
         const startpos = this.startVert.getPosition()
         this.drawEngine.unproject(startpos, startpos)
-        MapdDraw.AABox2d.initCenterExtents(this.startPosAABox, startpos, [
-          10,
-          10
-        ])
-        if (MapdDraw.AABox2d.containsPt(this.startPosAABox, mousepos)) {
+        AABox2d.initCenterExtents(this.startPosAABox, startpos, [10, 10])
+        if (AABox2d.containsPt(this.startPosAABox, mousepos)) {
           this.finishShape()
           shapeBuilt = true
         } else {
@@ -644,61 +499,49 @@ class PolylineShapeHandler extends ShapeHandler {
   mousemoveCB(event) {
     if (this.startVert && this.lineShape && this.activeIdx < 0) {
       const mousepos = this.getRelativeMousePosFromEvent(event)
-      const mouseworldpos = MapdDraw.Point2d.create(0, 0)
+      const mouseworldpos = Point2d.create(0, 0)
       this.drawEngine.project(mouseworldpos, mousepos)
       this.activeIdx = this.appendVertex(mousepos, mouseworldpos)
     }
 
     if (this.activeShape || this.activeIdx >= 0) {
       const mousepos = this.getRelativeMousePosFromEvent(event)
-      const mouseworldpos = MapdDraw.Point2d.create(0, 0)
+      const mouseworldpos = Point2d.create(0, 0)
       this.drawEngine.project(mouseworldpos, mousepos)
 
       if (event.shiftKey) {
         if (this.activeIdx === 1) {
-          const diff = [0, 0]
-          const prevmousepos = [0, 0]
+          const diff = Vec2d.create()
+          const prevmousepos = Point2d.create()
           const verts = this.lineShape.vertsRef
           this.drawEngine.unproject(prevmousepos, verts[0])
-          MapdDraw.Point2d.sub(diff, mousepos, prevmousepos)
+          Point2d.sub(diff, mousepos, prevmousepos)
           let angle = Math.atan2(diff[1], diff[0])
-          angle =
-            MapdDraw.Math.round(angle / MapdDraw.Math.QUATER_PI) *
-            MapdDraw.Math.QUATER_PI
+          angle = MathExt.round(angle / MathExt.QUATER_PI) * MathExt.QUATER_PI
           const transformDir = [Math.cos(angle), Math.sin(angle)]
-          MapdDraw.Vec2d.scale(
-            diff,
-            transformDir,
-            MapdDraw.Vec2d.dot(diff, transformDir)
-          )
-          MapdDraw.Point2d.addVec2(mousepos, prevmousepos, diff)
+          Vec2d.scale(diff, transformDir, Vec2d.dot(diff, transformDir))
+          Point2d.addVec2(mousepos, prevmousepos, diff)
           this.drawEngine.project(mouseworldpos, mousepos)
         } else if (this.activeIdx > 1) {
           const verts = this.lineShape.vertsRef
-          const pt1 = [0, 0]
+          const pt1 = Point2d.create()
           this.drawEngine.unproject(pt1, verts[this.activeIdx - 2])
-          const pt2 = [0, 0]
+          const pt2 = Point2d.create()
           this.drawEngine.unproject(pt2, verts[this.activeIdx - 1])
-          const dir1 = [0, 0]
-          MapdDraw.Point2d.sub(dir1, pt2, pt1)
-          MapdDraw.Vec2d.normalize(dir1, dir1)
+          const dir1 = Vec2d.create()
+          Point2d.sub(dir1, pt2, pt1)
+          Vec2d.normalize(dir1, dir1)
           const dir2 = [0, 0]
-          MapdDraw.Point2d.sub(dir2, mousepos, pt2)
-          // MapdDraw.Vec2d.normalize(dir2, dir2)
-          let angle = MapdDraw.Vec2d.angle(dir1, dir2)
-          angle =
-            MapdDraw.Math.round(angle / MapdDraw.Math.QUATER_PI) *
-            MapdDraw.Math.QUATER_PI
-          const matrix = MapdDraw.Mat2.create()
-          MapdDraw.Mat2.fromRotation(matrix, angle)
+          Point2d.sub(dir2, mousepos, pt2)
+          // Vec2d.normalize(dir2, dir2)
+          let angle = Vec2d.angle(dir1, dir2)
+          angle = MathExt.round(angle / MathExt.QUATER_PI) * MathExt.QUATER_PI
+          const matrix = Mat2.create()
+          Mat2.fromRotation(matrix, angle)
           const transformDir = [0, 0]
-          MapdDraw.Vec2d.transformMat2(transformDir, dir1, matrix)
-          MapdDraw.Vec2d.scale(
-            transformDir,
-            transformDir,
-            MapdDraw.Vec2d.dot(dir2, transformDir)
-          )
-          MapdDraw.Point2d.addVec2(mousepos, pt2, transformDir)
+          Vec2d.transformMat2(transformDir, dir1, matrix)
+          Vec2d.scale(transformDir, transformDir, Vec2d.dot(dir2, transformDir))
+          Point2d.addVec2(mousepos, pt2, transformDir)
           this.drawEngine.project(mouseworldpos, mousepos)
         }
       }
@@ -783,7 +626,7 @@ class LassoShapeHandler extends ShapeHandler {
     this.disableBasemapEvents()
     this.activeShape = null
     this.lastPos = this.getRelativeMousePosFromEvent(event)
-    this.lastWorldPos = MapdDraw.Point2d.create(0, 0)
+    this.lastWorldPos = Point2d.create(0, 0)
     this.drawEngine.project(this.lastWorldPos, this.lastPos)
     event.preventDefault()
   }
@@ -802,9 +645,9 @@ class LassoShapeHandler extends ShapeHandler {
 
     if (this.lastPos) {
       const currPos = this.getRelativeMousePosFromEvent(event)
-      const currWorldPos = MapdDraw.Point2d.create(0, 0)
+      const currWorldPos = Point2d.create(0, 0)
       this.drawEngine.project(currWorldPos, currPos)
-      if (!MapdDraw.Point2d.equals(currPos, this.lastPos)) {
+      if (!Point2d.equals(currPos, this.lastPos)) {
         if (!this.activeShape) {
           this.activeShape = new MapdDraw.PolyLine(
             Object.assign(
@@ -818,8 +661,8 @@ class LassoShapeHandler extends ShapeHandler {
         } else {
           this.activeShape.appendVert(currWorldPos)
         }
-        MapdDraw.Point2d.copy(this.lastPos, currPos)
-        MapdDraw.Point2d.copy(this.lastWorldPos, currWorldPos)
+        Point2d.copy(this.lastPos, currPos)
+        Point2d.copy(this.lastWorldPos, currWorldPos)
         this.canvas.focus()
       }
       event.preventDefault()
@@ -829,8 +672,8 @@ class LassoShapeHandler extends ShapeHandler {
   mouseupCB(event) {
     if (this.activeShape) {
       const verts = this.activeShape.vertsRef
-      const screenVert = MapdDraw.Point2d.create(0, 0)
-      const worldVert = MapdDraw.Point2d.create(0, 0)
+      const screenVert = Point2d.create(0, 0)
+      const worldVert = Point2d.create(0, 0)
       let simpleVerts = verts.map(vert => {
         this.drawEngine.unproject(screenVert, vert)
         return {
@@ -840,9 +683,9 @@ class LassoShapeHandler extends ShapeHandler {
       })
       simpleVerts = simplify(simpleVerts, 4, true)
       const newverts = simpleVerts.map(vert => {
-        MapdDraw.Point2d.set(screenVert, vert.x, vert.y)
+        Point2d.set(screenVert, vert.x, vert.y)
         this.drawEngine.project(worldVert, screenVert)
-        return MapdDraw.Point2d.clone(worldVert)
+        return Point2d.clone(worldVert)
       })
 
       if (newverts.length < 3) {
@@ -852,7 +695,15 @@ class LassoShapeHandler extends ShapeHandler {
         this.drawEngine.deleteShape(this.activeShape)
         this.activeShape = null
       } else {
-        const poly = new MapdDraw.Poly(
+        const args = []
+        let PolyClass = null
+        if (this.useLonLat) {
+          PolyClass = LatLonPoly
+          args.push(this.drawEngine)
+        } else {
+          PolyClass = MapdDraw.Poly
+        }
+        args.push(
           Object.assign(
             {
               verts: newverts
@@ -860,6 +711,7 @@ class LassoShapeHandler extends ShapeHandler {
             this.defaultStyle
           )
         )
+        const poly = new PolyClass(...args)
         this.drawEngine.deleteShape(this.activeShape)
         this.setupFinalShape(poly)
         event.preventDefault()
@@ -1104,9 +956,8 @@ export default class LassoButtonGroupController {
   }
 
   _dragendCB(event) {
-    const CircleClass = getLatLonCircleClass()
     event.shapes.forEach(shape => {
-      if (shape instanceof CircleClass) {
+      if (shape instanceof LatLonCircle) {
         // need to reset the inital radius of the latlon circle
         // so that any rescaling is done relative to this
         // new radius
