@@ -467,7 +467,7 @@ export default function mapdTable(parent, chartGroup) {
           }
 
           _chart._invokeSortListener(_sortColumn)
-          _chart.redrawAsync()
+          redrawAllAsync(_chart.chartGroup())
         })
 
       sortButton
