@@ -1,32 +1,24 @@
 import * as LatLonUtils from "../utils/utils-latlon"
-import LassoButtonGroupController, {
-  getLatLonCircleClass
-} from "./ui/lasso-tool-ui"
-import earcut from "earcut"
+import LassoButtonGroupController from "./ui/lasso-tool-ui"
 import * as _ from "lodash"
 import * as MapdDraw from "@mapd/mapd-draw/dist/mapd-draw"
 import { redrawAllAsync } from "../core/core-async"
+import LatLonCircle from "./ui/lasso-shapes/LatLonCircle"
+import LatLonPoly from "./ui/lasso-shapes/LatLonPoly"
 
-/* istanbul ignore next */
-function writePointInTriangleSqlTest(p0, p1, p2, px, py, cast = false) {
-  function writeSign(p0, p1) {
-    if (cast) {
-      return (
-        `((CAST(${px} AS FLOAT)-(${p1[0]}))*(${p0[1] - p1[1]}) - ` +
-        `(${p0[0] - p1[0]})*(CAST(${py} AS FLOAT)-(${p1[1]})) < 0.0)`
-      )
-    } else {
-      return (
-        `((${px}-(${p1[0]}))*(${p0[1] - p1[1]}) - ` +
-        `(${p0[0] - p1[0]})*(${py}-(${p1[1]})) < 0.0)`
-      )
-    }
-  }
+/** Configure MapD Draw */
+MapdDraw.Configure.setMatrixArrayType(Float64Array)
 
-  const b1 = writeSign(p0, p1)
-  const b2 = writeSign(p1, p2)
-  const b3 = writeSign(p2, p0)
-  return `(${b1} = ${b2}) AND (${b2} = ${b3})`
+// set a very low epsilon to account for the large precision provided us
+// with 64-bit floating pt. If we left this at the default, if you made a lasso
+// shape at a tight zoom (i.e. a shape with that was 100 meters^2 in area),
+// the shape wouldn't align right because the camera would not be considered dirty
+// even tho the map was moving slightly in world space.
+MapdDraw.Configure.setEpsilon(0.00000000000001)
+/** Done configuring MapdDraw */
+
+function chartUsesLonLat(chart) {
+  return typeof chart.useLonLat === "function" && chart.useLonLat()
 }
 
 /* istanbul ignore next */
@@ -52,6 +44,43 @@ function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
   }
 }
 
+function createSTContainsStatementFromShape(px, py, shape, srid) {
+  const first_point = MapdDraw.Point2d.create()
+  const point = MapdDraw.Point2d.create()
+  const verts = shape.vertsRef
+  const xform = shape.globalXform
+
+  let contains_str = ""
+  if (verts.length) {
+    let wkt_str = "POLYGON(("
+    if (srid === 4326) {
+      verts.forEach((vert, curr_idx) => {
+        MapdDraw.Point2d.transformMat2d(point, vert, xform)
+        LatLonUtils.conv900913To4326(point, point)
+        wkt_str += `${point[0]} ${point[1]},`
+
+        if (curr_idx === 0) {
+          MapdDraw.Point2d.copy(first_point, point)
+        }
+      })
+    } else {
+      verts.forEach((vert, curr_idx) => {
+        MapdDraw.Point2d.transformMat2d(point, vert, xform)
+        wkt_str += `${point[0]} ${point[1]},`
+
+        if (curr_idx === 0) {
+          MapdDraw.Point2d.copy(first_point, point)
+        }
+      })
+    }
+
+    wkt_str += `${first_point[0]} ${first_point[1]}))`
+
+    contains_str = `ST_Contains(ST_GeomFromText('${wkt_str}', ${srid}), ST_SetSRID(ST_Point(${px}, ${py}), ${srid}))`
+  }
+  return contains_str
+}
+
 /* istanbul ignore next */
 export function rasterDrawMixin(chart) {
   let drawEngine = null
@@ -61,6 +90,7 @@ export function rasterDrawMixin(chart) {
   const coordFilters = new Map()
   let origFilterFunc = null
   let origFilterAll = null
+  const useLonLat = chartUsesLonLat(chart)
 
   const defaultStyle = {
     fillColor: "#22a7f0",
@@ -153,10 +183,7 @@ export function rasterDrawMixin(chart) {
   chart.getRasterFilterObj = getRasterFilterObj
 
   function applyFilter() {
-    const NUM_SIDES = 3
-    const useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat()
     const shapes = drawEngine.sortedShapes
-    const LatLonCircle = getLatLonCircleClass()
 
     const layers =
       chart.getLayers && typeof chart.getLayers === "function"
@@ -230,59 +257,31 @@ export function rasterDrawMixin(chart) {
                     mat[5]
                   }, 2.0)) / ${radsqr} <= 1.0`
                 )
-              } else if (shape instanceof MapdDraw.Poly) {
-                const p0 = [0, 0]
-                const p1 = [0, 0]
-                const p2 = [0, 0]
-                const earcutverts = []
-                const verts = shape.vertsRef
-                const xform = shape.globalXform
-                verts.forEach(vert => {
-                  MapdDraw.Point2d.transformMat2d(p0, vert, xform)
-                  if (useLonLat) {
-                    LatLonUtils.conv900913To4326(p0, p0)
-                  }
-                  earcutverts.push(p0[0], p0[1])
-                })
-
-                const triangles = earcut(earcutverts)
-                const triangleTests = []
-                let idx = 0
-                for (let j = 0; j < triangles.length; j = j + NUM_SIDES) {
-                  idx = triangles[j] * 2
-                  MapdDraw.Point2d.set(
-                    p0,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
-
-                  idx = triangles[j + 1] * 2
-                  MapdDraw.Point2d.set(
-                    p1,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
-
-                  idx = triangles[j + 2] * 2
-                  MapdDraw.Point2d.set(
-                    p2,
-                    earcutverts[idx],
-                    earcutverts[idx + 1]
-                  )
-
-                  triangleTests.push(
-                    writePointInTriangleSqlTest(p0, p1, p2, px, py, !useLonLat)
-                  )
+              } else if (
+                shape instanceof LatLonPoly ||
+                shape instanceof MapdDraw.Poly
+              ) {
+                let srid = 0
+                if (shape instanceof LatLonPoly) {
+                  console.assert(useLonLat)
+                  srid = 4326
+                } else {
+                  console.assert(!useLonLat)
                 }
-
-                if (triangleTests.length) {
+                const contains_str = createSTContainsStatementFromShape(
+                  px,
+                  py,
+                  shape,
+                  srid
+                )
+                if (contains_str.length) {
                   filterObj.shapeFilters.push(
                     `${createUnlikelyStmtFromShape(
                       shape,
                       px,
                       py,
                       useLonLat
-                    )} AND (${triangleTests.join(" OR ")})`
+                    )} AND (${contains_str})`
                   )
                 }
               }
@@ -333,8 +332,11 @@ export function rasterDrawMixin(chart) {
                 if (!_.find(filterObj.shapeFilters, shapeFilter)) {
                   filterObj.shapeFilters.push(shapeFilter)
                 }
-              } else if (shape instanceof MapdDraw.Poly) {
-                const p0 = [0, 0]
+              } else if (
+                shape instanceof LatLonPoly ||
+                shape instanceof MapdDraw.Poly
+              ) {
+                const p0 = MapdDraw.Point2d.create()
                 const convertedVerts = []
 
                 const verts = shape.vertsRef
@@ -459,11 +461,21 @@ export function rasterDrawMixin(chart) {
       }
       const selectOpts = {}
       if (filterArg.type === "LatLonCircle") {
-        const LatLonCircle = getLatLonCircleClass()
-        newShape = new LatLonCircle(filterArg)
+        newShape = new LatLonCircle(drawEngine, filterArg)
         selectOpts.uniformScaleOnly = true
         selectOpts.centerScaleOnly = true
         selectOpts.rotatable = false
+      } else if (filterArg.type === "LatLonPoly" || filterArg.type === "Poly") {
+        const args = []
+        let PolyClass = null
+        if (useLonLat) {
+          PolyClass = LatLonPoly
+          args.push(drawEngine)
+        } else {
+          PolyClass = MapdDraw.Poly
+        }
+        args.push(filterArg)
+        newShape = new PolyClass(...args)
       } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
         newShape = new MapdDraw[filterArg.type](filterArg)
       } else {
@@ -541,7 +553,7 @@ export function rasterDrawMixin(chart) {
       const bounds = chart.getDataRenderBounds()
       currXRange = [bounds[0][0], bounds[1][0]]
       currYRange = [bounds[0][1], bounds[2][1]]
-      if (typeof chart.useLonLat === "function" && chart.useLonLat()) {
+      if (chartUsesLonLat(chart)) {
         currXRange[0] = LatLonUtils.conv4326To900913X(currXRange[0])
         currXRange[1] = LatLonUtils.conv4326To900913X(currXRange[1])
         currYRange[0] = LatLonUtils.conv4326To900913Y(currYRange[0])

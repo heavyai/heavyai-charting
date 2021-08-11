@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 219);
+/******/ 	return __webpack_require__(__webpack_require__.s = 222);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1929,7 +1929,7 @@ return /******/ (function(modules) { // webpackBootstrap
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(241)("./" + name);
+                __webpack_require__(244)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4680,7 +4680,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(52)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53)(module)))
 
 /***/ }),
 /* 1 */
@@ -5587,13 +5587,13 @@ exports.xDomain = xDomain;
 exports.xScale = xScale;
 exports.xAxisTickFormat = xAxisTickFormat;
 
-var _mapdDataLayer = __webpack_require__(222);
+var _mapdDataLayer = __webpack_require__(225);
 
 var _formattingHelpers = __webpack_require__(10);
 
-var _datesAndTimes = __webpack_require__(28);
+var _datesAndTimes = __webpack_require__(29);
 
-var _fastDeepEqual = __webpack_require__(180);
+var _fastDeepEqual = __webpack_require__(181);
 
 var _fastDeepEqual2 = _interopRequireDefault(_fastDeepEqual);
 
@@ -5693,7 +5693,7 @@ parser.registerParser({
 
 var dateFormat = exports.dateFormat = _d2.default.time.format.utc("%m/%d/%Y");
 
-var deepEquals = exports.deepEquals = __webpack_require__(180); // eslint-disable-line global-require
+var deepEquals = exports.deepEquals = __webpack_require__(181); // eslint-disable-line global-require
 
 var deepClone = exports.deepClone = function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -6509,7 +6509,7 @@ function resetState() {
 /* harmony export (immutable) */ __webpack_exports__["l"] = serializeGrammar;
 /* harmony export (immutable) */ __webpack_exports__["m"] = serializeProduction;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scan_tokens_public__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__scan_tokens_public__ = __webpack_require__(17);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -6787,11 +6787,11 @@ var _core = __webpack_require__(3);
 
 var _coreAsync = __webpack_require__(5);
 
-var _asyncMixin = __webpack_require__(181);
+var _asyncMixin = __webpack_require__(182);
 
 var _asyncMixin2 = _interopRequireDefault(_asyncMixin);
 
-var _legendMixin = __webpack_require__(243);
+var _legendMixin = __webpack_require__(246);
 
 var _legendMixin2 = _interopRequireDefault(_legendMixin);
 
@@ -6801,27 +6801,27 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _errors = __webpack_require__(36);
+var _errors = __webpack_require__(37);
 
 var errors = _interopRequireWildcard(_errors);
 
-var _filterMixin = __webpack_require__(244);
+var _filterMixin = __webpack_require__(247);
 
 var _filterMixin2 = _interopRequireDefault(_filterMixin);
 
-var _labelMixin = __webpack_require__(245);
+var _labelMixin = __webpack_require__(248);
 
 var _labelMixin2 = _interopRequireDefault(_labelMixin);
 
-var _logger = __webpack_require__(35);
+var _logger = __webpack_require__(36);
 
-var _multipleKeyAccessors = __webpack_require__(182);
+var _multipleKeyAccessors = __webpack_require__(183);
 
-var _multipleKeyLabelMixin = __webpack_require__(183);
+var _multipleKeyLabelMixin = __webpack_require__(184);
 
 var _multipleKeyLabelMixin2 = _interopRequireDefault(_multipleKeyLabelMixin);
 
-var _spinnerMixin = __webpack_require__(184);
+var _spinnerMixin = __webpack_require__(185);
 
 var _spinnerMixin2 = _interopRequireDefault(_spinnerMixin);
 
@@ -8638,8 +8638,8 @@ function baseMixin(_chart) {
 "use strict";
 
 
-var bind = __webpack_require__(191);
-var isBuffer = __webpack_require__(275);
+var bind = __webpack_require__(194);
+var isBuffer = __webpack_require__(277);
 
 /*global toString:true*/
 
@@ -8986,21 +8986,21 @@ module.exports = {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CstParser; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return EmbeddedActionsParser; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_follow__ = __webpack_require__(323);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cst_cst__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__errors_public__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__ = __webpack_require__(216);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__ = __webpack_require__(326);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__ = __webpack_require__(327);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__ = __webpack_require__(329);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__traits_recognizer_api__ = __webpack_require__(330);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__traits_recognizer_engine__ = __webpack_require__(331);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__traits_error_handler__ = __webpack_require__(332);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__traits_context_assist__ = __webpack_require__(333);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__traits_gast_recorder__ = __webpack_require__(334);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__traits_perf_tracer__ = __webpack_require__(335);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_follow__ = __webpack_require__(325);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_tokens_public__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cst_cst__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__errors_public__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_resolver_public__ = __webpack_require__(219);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__traits_recoverable__ = __webpack_require__(220);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__traits_looksahead__ = __webpack_require__(328);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__traits_tree_builder__ = __webpack_require__(329);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__traits_lexer_adapter__ = __webpack_require__(331);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__traits_recognizer_api__ = __webpack_require__(332);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__traits_recognizer_engine__ = __webpack_require__(333);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__traits_error_handler__ = __webpack_require__(334);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__traits_context_assist__ = __webpack_require__(335);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__traits_gast_recorder__ = __webpack_require__(336);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__traits_perf_tracer__ = __webpack_require__(337);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -9258,7 +9258,7 @@ exports.formatExtractValue = formatExtractValue;
 exports.normalizeFiltersArray = normalizeFiltersArray;
 exports.formatCache = formatCache;
 
-var _datesAndTimes = __webpack_require__(28);
+var _datesAndTimes = __webpack_require__(29);
 
 var _d = __webpack_require__(1);
 
@@ -9448,11 +9448,11 @@ function formatCache(_axis) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createParser;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(223);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(224);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(225);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_expression__ = __webpack_require__(226);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_datastate__ = __webpack_require__(227);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_transform__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_source__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__write_sql__ = __webpack_require__(239);
 
 
 
@@ -9757,6 +9757,12 @@ function colorMixin(_chart) {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
+!function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.MapdDraw=e():t.MapdDraw=e()}("undefined"!=typeof self?self:this,function(){return function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l:!1,exports:{}};return t[n].call(i.exports,i,i.exports,e),i.l=!0,i.exports}var r={};return e.m=t,e.c=r,e.d=function(t,r,n){e.o(t,r)||Object.defineProperty(t,r,{configurable:!1,enumerable:!0,get:n})},e.n=function(t){var r=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(r,"a",r),r},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=24)}([function(t,e,r){"use strict";var n=r(1),i=r(28),o=r(29),a=(r(13),r(14),r(15),r(30),r(31));r(16),r(17);r.d(e,"a",function(){return n}),r.d(e,"b",function(){return i}),r.d(e,"c",function(){return o}),r.d(e,"d",function(){return a})},function(t,e,r){"use strict";function n(t){s=t}function i(t){return t*l}function o(t,e){return Math.abs(t-e)<=a*Math.max(1,Math.abs(t),Math.abs(e))}Object.defineProperty(e,"__esModule",{value:!0}),r.d(e,"EPSILON",function(){return a}),r.d(e,"ARRAY_TYPE",function(){return s}),r.d(e,"RANDOM",function(){return c}),e.setMatrixArrayType=n,e.toRadian=i,e.equals=o;var a=1e-6,s="undefined"!=typeof Float32Array?Float32Array:Array,c=Math.random,l=Math.PI/180},function(t,e,r){"use strict";function n(t,e,r,n,i){return t[A]="number"==typeof e?e:1/0,t[I]="number"==typeof r?r:1/0,t[F]="number"==typeof n?n:-1/0,t[D]="number"==typeof i?i:-1/0,t}function i(t,e,r,i){return n(new j.a.ARRAY_TYPE(T.BOX_SIDES),t,e,r,i)}function o(t){var e=new j.a.ARRAY_TYPE(T.BOX_SIDES);return e[A]=t[A],e[I]=t[I],e[F]=t[F],e[D]=t[D],e}function a(t,e){return t[A]=e[A],t[I]=e[I],t[F]=e[F],t[D]=e[D],t}function s(t){return t[A]=1/0,t[I]=1/0,t[F]=-1/0,t[D]=-1/0,t}function c(t){return t[A]=-1/0,t[I]=-1/0,t[F]=1/0,t[D]=1/0,t}function l(t,e){return e[0]<0?(t[A]=-e[0],t[F]=0):(t[A]=0,t[F]=e[0]),e[1]<0?(t[I]=-e[1],t[D]=0):(t[I]=0,t[D]=e[1]),t}function u(t,e,r){for(var n=0;n<2;n+=1)r[n]<0?(t[n]=e[n]-r[n],t[n+2]=e[n]):(t[n]=e[n],t[n+2]=e[n]+r[n]);return t}function h(t,e,r){for(var n=0;n<2;n+=1)r[n]<0?(t[n]=e[n]+r[n],t[n+2]=e[n]-r[n]):(t[n]=e[n]-r[n],t[n+2]=e[n]+r[n]);return t}function f(t){return t[A]>t[F]||t[I]>t[D]}function d(t){return!(isFinite(t[A])&&isFinite(t[I])&&isFinite(t[F])&&isFinite(t[D]))}function p(t,e){var r=t[0],n=t[1],i=t[2],o=t[3],a=e[0],s=e[1],c=e[2],l=e[3];return Math.abs(r-a)<=j.a.EPSILON&&Math.abs(n-s)<=j.a.EPSILON&&Math.abs(i-c)<=j.a.EPSILON&&Math.abs(o-l)<=j.a.EPSILON}function _(t,e){return j.d.set(t,e[F]-e[A],e[D]-e[I])}function v(t,e){return _(t,e),j.d.scale(t,t,.5)}function y(t,e){return v(t,e),t[A]+=e[A],t[I]+=e[I],t}function b(t,e,r){t[A]=e[A]-r[0],t[F]=e[F]+r[0],t[I]=e[I]-r[1],t[D]=e[D]+r[1]}function m(t){return(t[F]-t[A])*(t[D]-t[I])}function g(t,e,r){return i(Math.min(e[A],r[A]),Math.min(e[I],r[I]),Math.max(e[F],r[F]),Math.max(e[D],r[D]))}function w(t,e,r){var n=t;t===e&&(n=i());for(var o=A,c=F;o<=I&&!(e[c]<r[o]||e[o]>r[c]);o+=1,c+=1)n[o]=Math.max(e[o],r[o]),n[c]=Math.min(e[c],r[c]);return o!==I+1&&s(n),t===e&&a(t,n),t}function k(t,e){return!(t[F]<=e[A]||t[A]>=e[F]||t[D]<=e[I]||t[I]>=e[D])}function x(t,e){return!(e[A]<t[A]||e[F]>t[F]||e[I]<t[I]||e[D]>t[D])}function S(t,e){return e[A]>=t[A]&&e[A]<=t[F]&&e[I]>=t[I]&&e[I]<=t[D]}function O(t,e,r){return t!==e&&a(t,e),f(e)?(t[A]=r[A],t[F]=r[A],t[I]=r[I],t[D]=r[I]):(r[A]<t[A]?t[A]=r[A]:r[A]>t[F]&&(t[F]=r[A]),r[I]<t[I]?t[I]=r[I]:r[I]>t[D]&&(t[D]=r[I])),t}function E(t,e,r){t[A]=e[A]+r[0],t[I]=e[I]+r[1],t[F]=e[F]+r[0],t[D]=e[D]+r[1]}function C(t,e,r,n){var o=t;t===e&&(o=i()),s(o);var c=j.d.set(j.d.create(),e[A],e[I]),l=j.d.create();return n(l,c,r),O(o,o,l),c[A]=e[F],n(l,c,r),O(o,o,l),c[I]=e[D],n(l,c,r),O(o,o,l),c[A]=e[A],n(l,c,r),O(o,o,l),t===e&&a(t,o),t}function M(t,e,r){return C(t,e,r,j.d.transformMat2)}function P(t,e,r){return C(t,e,r,j.d.transformMat2d)}Object.defineProperty(e,"__esModule",{value:!0}),r.d(e,"MINX",function(){return A}),r.d(e,"MINY",function(){return I}),r.d(e,"MAXX",function(){return F}),r.d(e,"MAXY",function(){return D}),e.set=n,e.create=i,e.clone=o,e.copy=a,e.initEmpty=s,e.initInfinity=c,e.initSizeFromOrigin=l,e.initSizeFromLocation=u,e.initCenterExtents=h,e.isEmpty=f,e.isInfinite=d,e.equals=p,e.getSize=_,e.getExtents=v,e.getCenter=y,e.expand=b,e.area=m,e.hull=g,e.intersection=w,e.overlaps=k,e.contains=x,e.containsPt=S,e.encapsulatePt=O,e.translate=E,e.transformMat2=M,e.transformMat2d=P;var j=r(0),A=0,I=1,F=2,D=3,T={BOX_SIDES:4}},function(t,e,r){"use strict";function n(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:0;return t[m]=e,t[g]=r,t}function i(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0;return n(new b.a.ARRAY_TYPE(2),t,e)}function o(t){var e=new b.a.ARRAY_TYPE(2);return e[m]=t[m],e[g]=t[g],e}function a(t,e){return t[m]=e[m],t[g]=e[g],t}function s(t,e){return i(t,e)}function c(t,e,r){return b.d.add(t,e,r)}function l(t,e,r){return b.d.sub(t,e,r)}function u(t,e,r){return b.d.transformMat2(t,e,r)}function h(t,e,r){return b.d.transformMat2d(t,e,r)}function f(t){return"point2d(".concat(t[0]," , ").concat(t[1],")")}function d(t,e){return b.d.distance(t,e)}function p(t,e){return b.d.squaredDistance(t,e)}function _(t,e,r,n){return b.d.lerp(t,e,r,n)}function v(t,e){return b.d.equals(t,e)}function y(t,e){return b.d.exactEquals(t,e)}Object.defineProperty(e,"__esModule",{value:!0}),e.set=n,e.create=i,e.clone=o,e.copy=a,e.initFromValues=s,e.addVec2=c,e.sub=l,e.transformMat2=u,e.transformMat2d=h,e.str=f,e.distance=d,r.d(e,"dist",function(){return w}),e.squaredDistance=p,r.d(e,"sqrDist",function(){return k}),e.lerp=_,e.equals=v,e.exactEquals=y;var b=r(0),m=0,g=1,w=d,k=p},function(t,e,r){"use strict";var n=r(0);n.c.svd=function(t,e,r,n){if(t&&(t[0]=n[4],t[1]=n[5]),e||r){var i=(n[0]+n[3])/2,o=(n[0]-n[3])/2,a=(n[1]+n[2])/2,s=(n[1]-n[2])/2;if(e){var c=Math.sqrt(i*i+s*s),l=Math.sqrt(o*o+a*a);e[0]=c+l,e[1]=c-l}if(r){var u=Math.atan2(a,o),h=Math.atan2(s,i);r[0]=(h-u)/2,r[1]=(h+u)/2}}},e.a=n.c},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?s(t):e}function a(t){return(a=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function s(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function c(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&l(t,e)}function l(t,e){return(l=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}var u=function(t){for(var e=arguments.length,r=new Array(e>1?e-1:0),n=1;n<e;n++)r[n-1]=arguments[n];var l=t?function(t){function e(){for(var t,n,c=arguments.length,l=new Array(c),u=0;u<c;u++)l[u]=arguments[u];return i(this,e),n=o(this,(t=a(e)).call.apply(t,[this].concat(l))),r.forEach(function(t){if("function"==typeof t.prototype.initializer){var e;(e=t.prototype.initializer).call.apply(e,[s(n)].concat(l))}}),n}return c(e,t),e}(t):function(){},u=function(e,r){Object.getOwnPropertyNames(r).concat(Object.getOwnPropertySymbols(r)).forEach(function(n){n.match(/^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)||t&&n.match(/^(?:initializer)$/)||Object.defineProperty(e,n,Object.getOwnPropertyDescriptor(r,n))})};return r.forEach(function(t){u(l.prototype,t.prototype),u(l,t)}),l};e.a=u},function(t,e,r){"use strict";function n(t,e,r){return t<e?e:t>r?r:t}function i(t){return t<0?0:t>1?1:t}function o(t,e,r){return t*(1-r)+e*r}Math.QUATER_PI=.25*Math.PI,Math.HALF_PI=.5*Math.PI,Math.HALF_NPI=-.5*Math.PI,Math.TWO_PI=2*Math.PI,Math.NPI=-Math.PI,Math.NQUATER_PI=.25*Math.NPI,Math.NHALF_PI=.5*Math.NPI,Math.NTWO_PI=2*Math.NPI,Math.INV_PI=1/Math.PI,Math.RAD_TO_DEG=180/Math.PI,Math.DEG_TO_RAD=Math.PI/180,Math.EPS=1e-5,Math.clamp=n,Math.clamp01=i,Math.lerp=o,e.a=Math},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t){return(l=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function u(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&h(t,e)}function h(t,e){return(h=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return w});var f=r(2),d=r(18),p=r(20),_=r(10),v=r(5),y=r(8),b=r(11),m=r(0),g=function(t){function e(t){var r;return i(this,e),r=s(this,l(e).call(this,["changed:xform","changed:style","changed:order","changed:visibility","changed:geom"])),r._aabox=f.create(),r._zIndex=t&&t.zIndex?t.zIndex:0,r._visible=!0,r._geomDirty=!1,r._fullXform=m.c.create(),r}return u(e,t),a(e,[{key:"zIndex",set:function(t){if(!Number.isInteger(t))throw new Error("zIndex must be an integer");if(t!==this._zIndex){var e=this._zIndex;this._zIndex=t,this.fire("changed:order",{attr:"zIndex",prevVal:e,currVal:this._zIndex})}return this},get:function(){return this._zIndex}},{key:"aabox",get:function(){return this._updateAABox(),this._aabox}},{key:"visible",set:function(t){if("boolean"!=typeof t)throw new Error("visible must be a boolean");return t!==this._visible&&(this._visible=t,this.fire("changed:visibility",{attr:"visible",prevVal:!this._visible,currVal:this._visible})),this},get:function(){return this._visible}}]),e}(b.a),w=function(t){function e(t){var r;return i(this,e),r=s(this,l(e).call(this,t)),r._stateStack=[],r}return u(e,t),a(e,[{key:"save",value:function(){var t=new y.a;return y.a.copyBasicStyle(this,t),t.zIndex=this.zIndex,this._stateStack.push(t),this}},{key:"restore",value:function(){var t=this._stateStack.pop();return t&&(y.a.copyBasicStyle(t,this),this.zIndex=t.zIndex),this}},{key:"getGlobalDimensions",value:function(){var t=[0,0];return m.c.svd(null,t,null,this.globalXform),t[0]*=this.width,t[1]*=this.height,t}},{key:"containsPoint",value:function(t,e,r,n){var i=!1,o=this.aabox;return this.visible&&f.containsPt(o,e)&&(n.save(),n.setTransform(this._fullXform[0],this._fullXform[1],this._fullXform[2],this._fullXform[3],this._fullXform[4],this._fullXform[5]),n.beginPath(),this._draw(n),n.strokeStyle="rgba(0,0,0,0)",n.lineWidth=this.strokeWidth+5,n.dashPattern=[],n.setTransform(1,0,0,1,0,0),n.stroke(),(this.isFillVisible()&&n.isPointInPath(t[0],t[1])||this.isStrokeVisible()&&n.isPointInStroke(t[0],t[1]))&&(i=!0),n.restore()),i}},{key:"renderBounds",value:function(t,e,r){t.save(),t.setTransform(e[0],e[1],e[2],e[3],e[4],e[5]),r.setStrokeCtx(t);var n=[0,0],i=[0,0],o=this.aabox;f.getCenter(n,o),f.getExtents(i,o),t.beginPath(),t.rect(n[0]-i[0],n[1]-i[1],2*i[0],2*i[1]),t.setTransform(1,0,0,1,0,0),t.stroke(),t.restore()}},{key:"_localXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"_globalXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"render",value:function(t,e,r){var n=arguments.length>3&&void 0!==arguments[3]?arguments[3]:null,i=arguments.length>4&&void 0!==arguments[4]?arguments[4]:null;this.transformCtx(t,this._fullXform,e),t.beginPath();var o=this._draw(t);(o||void 0===o)&&(this.isFillVisible()&&(null===n||Boolean(n))&&(r.setFillStyle(t,this),t.fill()),this.isStrokeVisible()&&(null===i||Boolean(i))&&(r.setStrokeStyle(t,this),t.setTransform(1,0,0,1,0,0),t.stroke()))}},{key:"setStyle",value:function(t){return y.a.copyBasicStyle(t,this),this}},{key:"toJSON",value:function(){var t=this;return this._stateStack&&this._stateStack.length&&(t=this._stateStack[0]),Object.assign({visible:this.visible,zIndex:t.zIndex},y.a.toJSON(t),_.c.toJSON(this))}},{key:"visible",get:function(){return this._visible&&(this.isFillVisible()||this.isStrokeVisible())}}],[{key:"shapeCompare",value:function(t,e){var r=t.zIndex,n=e.zIndex;if(r<n)return-1;if(r>n)return 1;var i=d.b.compareFillStyle(t,e);return i||(i=p.b.compareStrokeStyle(t,e)),i}}]),e}(Object(v.a)(g,Object(_.b)("changed:xform"),Object(d.a)("changed:style"),Object(p.a)("changed:style")))},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t){return(l=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function u(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&h(t,e)}function h(t,e){return(h=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return _});var f=r(5),d=r(18),p=r(20),_=function(t){function e(){return i(this,e),s(this,l(e).apply(this,arguments))}return u(e,t),a(e,null,[{key:"copyBasicStyle",value:function(t,e){d.b.copyFillStyle(t,e),p.b.copyStrokeStyle(t,e)}},{key:"toJSON",value:function(t){return Object.assign(d.b.toJSON(t),p.b.toJSON(t))}}]),e}(Object(f.a)(function t(){i(this,t)},d.b,p.b))},function(t,e,r){"use strict";var n=r(0);n.d.cross2d=function(t,e){return t[0]*e[1]-t[1]*e[0]},n.d.angleFast=function(t,e){return Math.acos(n.d.dot(t,e))},n.d.angle=function(t,e){var r=n.d.dot(t,e),i=n.d.cross2d(t,e);return Math.atan2(i,r)},n.d.anglePosX=function(t){var e=Math.atan2(t[1],t[0]);return e<0&&(e*=-1),e},e.a=n.d},function(t,e,r){"use strict";function n(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function o(t,e,r){return e&&i(t.prototype,e),r&&i(t,r),t}function a(t,e,r,n,i){return u.c.identity(t),u.c.translate(t,t,[n[0]+i[0],n[1]+i[1]]),u.c.rotate(t,t,f.a.DEG_TO_RAD*e),u.c.scale(t,t,r),u.c.translate(t,t,[-i[0],-i[1]]),t}function s(t){t.forEach(function(t){t._xformDirty=!0,s(t._children)})}function c(t){return Object(h.a)(null,d,function(){function e(){n(this,e)}return o(e,[{key:"setPosition",value:function(e){if(!l.equals(e,this._pos)){var r=[this._pos[0],this._pos[1]];l.copy(this._pos,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"position",prevVal:r,currVal:e})}return this}},{key:"translate",value:function(e){if(e[0]||e[1]){var r=[this._pos[0],this._pos[1]];l.addVec2(this._pos,this._pos,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"position",prevVal:r,currVal:[this._pos[0],this._pos[1]]})}return this}},{key:"setScale",value:function(e){if(!u.d.equals(e,this._scale)){var r=[this._scale[0],this._scale[1]];u.d.copy(this._scale,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"size",prevVal:r,currVal:e})}return this}},{key:"scale",value:function(e){if(1!==e[0]||1!==e[1]){var r=[this._scale[0],this._scale[1]];u.d.multiply(this._scale,this._scale,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"size",prevVal:r,currVal:[this._scale[0],this._scale[1]]})}return this}},{key:"setRotation",value:function(e){var r=e%360;if(r!==this._rotDeg){var n=this._rotDeg;this._rotDeg=r,this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"orientation",prevVal:n,curral:this._rotDeg})}}},{key:"rotate",value:function(e){if(e){var r=this._rotDeg;this._rotDeg+=e,this._rotDeg%=360,this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"orientation",prevVal:r,curral:this._rotDeg})}return this}},{key:"setTransformations",value:function(e,r,n,i,o){var a=[],c=[],h=[];if(!(void 0===e||void 0===r||u.a.equals(e,this._pos[0])&&u.a.equals(r,this._pos[1]))){var f=l.clone(this._pos);this._pos[0]=e,this._pos[1]=r,a.push("position"),c.push(f),h.push(l.clone(this._pos))}if(!(void 0===n||void 0===i||u.a.equals(n,this._scale[0])&&u.a.equals(i,this._scale[1]))){var d=u.d.clone(this._scale);u.d.set(this._scale,n,i),a.push("size"),c.push(d),h.push(u.d.clone(this._scale))}if(void 0!==o){var p=o%360;if(!u.a.equals(p,this._rotDeg)){var _=this._rotDeg;this._rotDeg=p,a.push("orientation"),c.push(_),h.push(this._rotDeg)}}return a.length&&(this._lxformDirty=!0,s(this._children),this.fire(t,{attrs:a,prevVals:c,currVals:h})),this}},{key:"pivot",set:function(e){if(!l.equals(e,this._pivot)){var r=[this._pivot[0],this._pivot[1]];l.copy(this._pivot,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"pivot",prevVal:r,currVal:e})}return this},get:function(){return l.clone(this._pivot)}}]),e}())}e.a=a,r.d(e,"c",function(){return d}),e.b=c;var l=r(3),u=r(0),h=r(5),f=r(6),d=function(){function t(e){n(this,t),this.initializer(e)}return o(t,[{key:"_initTransformFromOptions",value:function(t){t&&(void 0!==t.position&&this.setPosition(t.position),void 0!==t.scale&&this.setScale(t.scale),void 0!==t.rotation&&this.setRotation(t.rotation),void 0!==t.pivot&&(this.pivot=t.pivot))}},{key:"initializer",value:function(t){this._localXform=u.c.create(),this._lxformDirty=!1,this._pivot=l.create(0,0),this._pos=l.create(0,0),this._scale=u.d.fromValues(1,1),this._rotDeg=0,this._globalXform=u.c.create(),this._xformDirty=!1,this._parent=null,this._children=new Set,this._initTransformFromOptions(t)}},{key:"addChildXform",value:function(t){this._children.has(t)||(this._children.add(t),t._parent&&t._parent.removeChild(t),t._parent=this,t._xformDirty=!0,s(t._children))}},{key:"removeChildXform",value:function(t){this._children.delete(t)}},{key:"unparentXform",value:function(){this._parent&&(this._parent.removeChild(this),this._parent=null,u.c.copy(this._globalXform,this.localXform))}},{key:"getPosition",value:function(){return u.d.clone(this._pos)}},{key:"getPositionRef",value:function(){return this._pos}},{key:"getWorldPosition",value:function(){var t=this.globalXform;return l.create(t[4],t[5])}},{key:"setPosition",value:function(t){l.copy(this._pos,t),this._lxformDirty=!0,s(this._children)}},{key:"translate",value:function(t){return(t[0]||t[1])&&(l.addVec2(this._pos,this._pos,t),this._lxformDirty=!0,s(this._children)),this}},{key:"getScale",value:function(){return u.d.clone(this._scale)}},{key:"getScaleRef",value:function(){return this._scale}},{key:"setScale",value:function(t){return u.d.copy(this._scale,t),this._lxformDirty=!0,s(this._children),this}},{key:"scale",value:function(t){return 1===t[0]&&1===t[1]||(u.d.multiply(this._scale,this._scale,t),this._lxformDirty=!0,s(this._children)),this}},{key:"getRotation",value:function(){return this._rotDeg}},{key:"setRotation",value:function(t){return this._rotDeg=t,this._lxformDirty=!0,s(this._children),this}},{key:"rotate",value:function(t){return t&&(this._rotDeg+=t,this._lxformDirty=!0,s(this._children)),this}},{key:"_dirtyChildren",value:function(){s(this._children)}},{key:"_updatelocalxform",value:function(){this._lxformDirty&&(a(this._localXform,this._rotDeg,this._scale,this._pos,this._pivot),this._localXformUpdated&&this._localXformUpdated(),this._lxformDirty=!1)}},{key:"_updateglobalxform",value:function(){(this._lxformDirty||this._xformDirty)&&(this._updatelocalxform(),this._parent?u.c.multiply(this._globalXform,this._parent.globalXform,this._localXform):u.c.copy(this._globalXform,this._localXform),this._globalXformUpdated&&this._globalXformUpdated(),this._xformDirty=!1)}},{key:"transformCtx",value:function(t,e,r){u.c.multiply(e,r,this.globalXform),t.setTransform(e[0],e[1],e[2],e[3],e[4],e[5])}},{key:"pivot",set:function(t){return l.copy(this._pivot,t),this._lxformDirty=!0,s(this._children),this},get:function(){return l.clone(this._pivot)}},{key:"pivotRef",get:function(){return this._pivot}},{key:"parent",get:function(){return this._parent}},{key:"localXform",get:function(){return this._updatelocalxform(),this._localXform}},{key:"globalXform",get:function(){return this._updateglobalxform(),this._globalXform}}],[{key:"toJSON",value:function(t){var e=t.getPositionRef(),r=t.getScaleRef(),n=t.pivotRef;return{position:[e[0],e[1]],scale:[r[0],r[1]],rotation:t.getRotation(),pivot:[n[0],n[1]]}}}]),t}()},function(t,e,r){"use strict";function n(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function o(t,e,r){return e&&i(t.prototype,e),r&&i(t,r),t}function a(t,e,r,n){var i=this;if(r>=e.length)return 0;var o=0,s=null;return s=t.get(e[r]),s&&(o=a(s[0],e,r+1,n),s[1].forEach(function(t){return t.call(i,n)}),o+=s[1].length),o}function s(t,e){var r=-1,n=t[0],i=t[1];i.length&&e.forEach(function(t){(r=i.indexOf(t))>=0&&i.splice(r,1)}),n.forEach(function(t){s(t,e)})}function c(t){var e=t;if("string"==typeof t)e=[t];else if(!Array.isArray(t))throw new Error("Input must be an array of strings");return e}r.d(e,"a",function(){return l});var l=function(){function t(e){n(this,t),this.initializer(e)}return o(t,[{key:"initializer",value:function(t){this._listeners=new Map,this.registerEvents(t)}},{key:"registerEvents",value:function(t){var e=this;if(t){var r=c(t);if("string"==typeof t)r=[t];else if(!Array.isArray(t))throw new Error("Events must be an array of strings");r.forEach(function(t){for(var r=t.split(":"),n=e._listeners,i=0;i<r.length;i+=1){var o=n.get(r[i]);o||(o=[new Map,[]],n.set(r[i],o)),n=o[0]}})}}},{key:"on",value:function(t,e){var r=this;return c(t).forEach(function(t){var n=t.split(":"),i=r._listeners,o=null;n.forEach(function(e){if(!(o=i.get(e))){var r=[];throw i.forEach(function(t,e){return r.push(e)}),new Error("".concat(t," is not a valid event type. The registered event types at this level are [").concat(r,"]"))}i=o[0]}),o[1].indexOf(e)<0&&o[1].push(e)}),this}},{key:"off",value:function(t,e){var r=this,n=c(t),i=e;return Array.isArray(i)||(i=[e]),n.forEach(function(t){var e=t.split(":"),n=r._listeners,o=null,a=0;for(a=0;a<e.length&&(o=n.get(e[a]));a+=1)n=o[0];o&&s(o,i)}),this}},{key:"once",value:function(t,e){var r=this,n=function n(i){r.off(t,n),e.call(r,i)};return this.on(t,n),this}},{key:"fire",value:function(t,e){var r=t.split(":"),n={type:t,target:this};return Object.assign(n,e),a(this._listeners,r,0,n),this._eventParent&&(n={},Object.getOwnPropertyNames(e).forEach(function(t){n[t]=e[t]}),this._eventParent.fire(t,n)),this}},{key:"listens",value:function(t){for(var e=t.split(":"),r=this._listeners,n=null,i=0;i<e.length&&(n=r.get(e[i]));i+=1)r=n[0];return n||this._eventParent&&this._eventParent.listens(t)}},{key:"setEventedParent",value:function(t,e){return this._eventParent=t,this._eventParentData=e,this}}]),t}()},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}function p(t,e,r,n){y.isEmpty(t)?(t[0]=e[0],t[2]=e[0],n[0]=n[2]=r,t[1]=e[1],t[3]=e[1],n[1]=n[3]=r):(e[0]<t[0]?(t[0]=e[0],n[0]=r):e[0]>t[2]&&(t[2]=e[0],n[2]=r),e[1]<t[1]?(t[1]=e[1],n[1]=r):e[1]>t[3]&&(t[3]=e[1],n[3]=r))}function _(t,e,r){var n=e[0]*r[1]-r[0]*e[1];return t[0]+=(e[0]+r[0])*n,t[1]+=(e[1]+r[1])*n,n}function v(t){return Array.isArray(t)||ArrayBuffer&&ArrayBuffer.isView(t)}r.d(e,"a",function(){return S});var y=r(2),b=r(3),m=r(7),g=r(0),w=r(6),k=r(22),x=g.c.create(),S=function(t){function e(t){var r;i(this,e);var n=t.verts||[];if(r=s(this,h(e).call(this,t)),!v(n)||0===n.length||v(n[0])&&n.length<1||!v(n[0])&&(n.length<2||n.length%2!=0))throw new Error("PolyLine shapes must be initialized with an array of 2d points and contain at least 1 points");r._extentIndices=[-1,-1,-1,-1],r._localaabox=y.create(),r._verts=[],r._centroid=[0,0],y.initEmpty(r._aabox);var o=0,a=0;if(v(n[0])){for(a=0;a<n.length-1;a+=1)r._verts.push(b.clone(n[a])),p(r._aabox,n[a],a,r._extentIndices),o+=_(r._centroid,n[a],n[a+1]);r._verts.push(b.clone(n[a])),p(r._aabox,n[a],a,r._extentIndices),o+=_(r._centroid,n[a],n[0])}else{r._verts.push(b.create(n[0],n[1])),p(r._aabox,r._verts[0],0,r._extentIndices);var c=1;for(a=2;a<n.length-2;a+=2,c+=1)r._verts.push(b.create(n[a],n[a+1])),p(r._aabox,r._verts[c],c,r._extentIndices),o+=_(r._centroid,r._verts[c-1],r._verts[c]);r._verts.push(b.create(n[a],n[a+1])),p(r._aabox,r._verts[c],c,r._extentIndices),o+=_(r._centroid,r._verts[c],r._verts[0])}o*=.5,r._centroid[0]/=6*o,r._centroid[1]/=6*o;var l=b.create();return y.getCenter(l,r._aabox),r.pivot=l,r._verts.length<3?r._convexHull=r._verts.map(function(t,e){return e}):r._convexHull=Object(k.a)(r._verts),r}return f(e,t),a(e,[{key:"getDimensions",value:function(){return[this.width,this.height]}},{key:"_collapseVerts",value:function(){var t=this;b.set(this._pivot,0,0);var e=this.localXform;if(g.c.equals(e,x))return!1;y.initEmpty(this._aabox);for(var r=0;r<this._verts.length;r+=1)b.transformMat2d(this._verts[r],this._verts[r],e);return this._verts.length<3?this._convexHull=this._verts.map(function(t,e){return e}):this._convexHull=Object(k.a)(this._verts),this._convexHull.forEach(function(e){p(t._aabox,t._verts[e],e,t._extentIndices)}),this.setTransformations(0,0,1,1,0),!0}},{key:"translateVert",value:function(t,e){if(t>=this._verts.length)throw new Error("Cannot translate vertex at index ".concat(t,". There are only ").concat(this._verts.length," vertices in the polygon."));if(e[0]||e[1]){var r=b.clone(this._verts[t]),n=b.clone(this._verts[t]);b.addVec2(n,n,e),this._collapseVerts(),this._resetAABox=!0,this._geomDirty=!0,b.copy(n),this.fire("changed:geom",{attr:"verts[".concat(t,"]"),prevVal:r,currVal:n})}return this}},{key:"setVertPosition",value:function(t,e){if(t>=this._verts.length)throw new Error("Cannot translate vertex at index ".concat(t,". There are only ").concat(this._verts.length," vertices in the polygon."));if(!b.equals(e,this._verts[t])){var r=b.clone(this._verts[t]);this._collapseVerts(),b.copy(this._verts[t],e),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom",{attr:"verts[".concat(t,"]"),prevVal:r,currVal:e})}}},{key:"insertVert",value:function(t,e){var r=w.a.min(w.a.max(t,0),this._verts.length);return this._collapseVerts(),t>=this._verts.length?(this._verts.push(b.clone(e)),r=this._verts.length-1):this._verts.splice(t,0,b.clone(e)),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom:addvert",{attr:"verts[".concat(r,"]"),currVal:e}),r}},{key:"appendVert",value:function(t){return this.insertVert(this._verts.length,t)}},{key:"removeVert",value:function(t){if(t>=this._verts.length||t<0)throw new Error("Cannot remove vertex ".concat(t,". Invalid index. There are only ").concat(this._verts.length," vertices in the shape."));var e=this._verts[t];return this._verts.splice(t,1),this._collapseVerts(),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom:removevert",{attr:"verts[".concat(t,"]"),currVal:e}),t}},{key:"_rebuildAABox",value:function(){var t=this;y.initEmpty(this._aabox),this._verts.length<3?this._convexHull=this._verts.map(function(t,e){return e}):this._convexHull=Object(k.a)(this._verts),this._convexHull.forEach(function(e){p(t._aabox,t._verts[e],e,t._extentIndices)});var e=b.create(0,0);y.getCenter(e,this._aabox),this.pivot=e}},{key:"_updateAABox",value:function(){var t=this;if(this._resetAABox&&(this._rebuildAABox(),this._resetAABox=!1),this._boundsOutOfDate||this._geomDirty){y.initEmpty(this._aabox);var e=[0,0],r=this.globalXform;if(this._convexHull.forEach(function(n){y.encapsulatePt(t._aabox,t._aabox,b.transformMat2d(e,t._verts[n],r))}),this._boundsOutOfDate=!1,this._geomDirty){var n=b.create();n[0]=this._verts[this._extentIndices[0]][0]+.5*(this._verts[this._extentIndices[2]][0]-this._verts[this._extentIndices[0]][0]),n[1]=this._verts[this._extentIndices[1]][1]+.5*(this._verts[this._extentIndices[3]][1]-this._verts[this._extentIndices[1]][1]),this.pivot=n,this._geomDirty=!1}}}},{key:"_draw",value:function(t){var e=!1;if(this._verts.length>=2){t.moveTo(this._verts[0][0],this._verts[0][1]);for(var r=1;r<this._verts.length;r+=1)t.lineTo(this._verts[r][0],this._verts[r][1]);e=!0}return e}},{key:"toJSON",value:function(){return Object.assign({type:"PolyLine",verts:this.vertsRef.map(function(t){return[t[0],t[1]]})},l(h(e.prototype),"toJSON",this).call(this))}},{key:"width",get:function(){return this._updateAABox(),!this._verts.length||this._extentIndices[0]<0||this._extentIndices[2]<0?0:this._verts[this._extentIndices[2]][0]-this._verts[this._extentIndices[0]][0]}},{key:"height",get:function(){return this._updateAABox(),!this._verts.length||this._extentIndices[0]<0||this._extentIndices[2]<0?0:this._verts[this._extentIndices[3]][1]-this._verts[this._extentIndices[1]][1]}},{key:"vertsRef",get:function(){return this._verts}},{key:"numVerts",get:function(){return this._verts.length}}]),e}(m.a);S.aaboxEncapsulatePt=p},function(t,e,r){"use strict";function n(){var t=new i.ARRAY_TYPE(9);return i.ARRAY_TYPE!=Float32Array&&(t[1]=0,t[2]=0,t[3]=0,t[5]=0,t[6]=0,t[7]=0),t[0]=1,t[4]=1,t[8]=1,t}e.a=n;var i=r(1)},function(t,e,r){"use strict";function n(t,e){return t[0]=e[12],t[1]=e[13],t[2]=e[14],t}function i(t,e){var r=e[0]+e[5]+e[10],n=0;return r>0?(n=2*Math.sqrt(r+1),t[3]=.25*n,t[0]=(e[6]-e[9])/n,t[1]=(e[8]-e[2])/n,t[2]=(e[1]-e[4])/n):e[0]>e[5]&&e[0]>e[10]?(n=2*Math.sqrt(1+e[0]-e[5]-e[10]),t[3]=(e[6]-e[9])/n,t[0]=.25*n,t[1]=(e[1]+e[4])/n,t[2]=(e[8]+e[2])/n):e[5]>e[10]?(n=2*Math.sqrt(1+e[5]-e[0]-e[10]),t[3]=(e[8]-e[2])/n,t[0]=(e[1]+e[4])/n,t[1]=.25*n,t[2]=(e[6]+e[9])/n):(n=2*Math.sqrt(1+e[10]-e[0]-e[5]),t[3]=(e[1]-e[4])/n,t[0]=(e[8]+e[2])/n,t[1]=(e[6]+e[9])/n,t[2]=.25*n),t}e.b=n,e.a=i;r(1)},function(t,e,r){"use strict";function n(){var t=new u.ARRAY_TYPE(4);return u.ARRAY_TYPE!=Float32Array&&(t[0]=0,t[1]=0,t[2]=0),t[3]=1,t}function i(t,e,r){r*=.5;var n=Math.sin(r);return t[0]=n*e[0],t[1]=n*e[1],t[2]=n*e[2],t[3]=Math.cos(r),t}function o(t,e,r){r*=.5;var n=e[0],i=e[1],o=e[2],a=e[3],s=Math.sin(r),c=Math.cos(r);return t[0]=n*c+a*s,t[1]=i*c+o*s,t[2]=o*c-i*s,t[3]=a*c-n*s,t}function a(t,e,r){r*=.5;var n=e[0],i=e[1],o=e[2],a=e[3],s=Math.sin(r),c=Math.cos(r);return t[0]=n*c-o*s,t[1]=i*c+a*s,t[2]=o*c+n*s,t[3]=a*c-i*s,t}function s(t,e,r){r*=.5;var n=e[0],i=e[1],o=e[2],a=e[3],s=Math.sin(r),c=Math.cos(r);return t[0]=n*c+i*s,t[1]=i*c-n*s,t[2]=o*c+a*s,t[3]=a*c-o*s,t}function c(t,e,r,n){var i=e[0],o=e[1],a=e[2],s=e[3],c=r[0],l=r[1],h=r[2],f=r[3],d=void 0,p=void 0,_=void 0,v=void 0,y=void 0;return p=i*c+o*l+a*h+s*f,p<0&&(p=-p,c=-c,l=-l,h=-h,f=-f),1-p>u.EPSILON?(d=Math.acos(p),_=Math.sin(d),v=Math.sin((1-n)*d)/_,y=Math.sin(n*d)/_):(v=1-n,y=n),t[0]=v*i+y*c,t[1]=v*o+y*l,t[2]=v*a+y*h,t[3]=v*s+y*f,t}function l(t,e){var r=e[0]+e[4]+e[8],n=void 0;if(r>0)n=Math.sqrt(r+1),t[3]=.5*n,n=.5/n,t[0]=(e[5]-e[7])*n,t[1]=(e[6]-e[2])*n,t[2]=(e[1]-e[3])*n;else{var i=0;e[4]>e[0]&&(i=1),e[8]>e[3*i+i]&&(i=2);var o=(i+1)%3,a=(i+2)%3;n=Math.sqrt(e[3*i+i]-e[3*o+o]-e[3*a+a]+1),t[i]=.5*n,n=.5/n,t[3]=(e[3*o+a]-e[3*a+o])*n,t[o]=(e[3*o+i]+e[3*i+o])*n,t[a]=(e[3*a+i]+e[3*i+a])*n}return t}e.b=n,e.e=o,e.f=a,e.g=s,r.d(e,"a",function(){return p}),r.d(e,"c",function(){return _}),r.d(e,"d",function(){return v}),r.d(e,"h",function(){return y});var u=r(1),h=r(13),f=r(16),d=r(17),p=(d.b,d.g,d.c),_=(d.l,d.a,d.k,d.d),v=(d.i,d.h),y=d.m,b=d.j;d.f,d.e,function(){var t=f.a(),e=f.d(1,0,0),r=f.d(0,1,0)}(),function(){var t=n(),e=n()}(),function(){var t=h.a()}()},function(t,e,r){"use strict";function n(){var t=new l.ARRAY_TYPE(3);return l.ARRAY_TYPE!=Float32Array&&(t[0]=0,t[1]=0,t[2]=0),t}function i(t){var e=t[0],r=t[1],n=t[2];return Math.sqrt(e*e+r*r+n*n)}function o(t,e,r){var n=new l.ARRAY_TYPE(3);return n[0]=t,n[1]=e,n[2]=r,n}function a(t,e){var r=e[0],n=e[1],i=e[2],o=r*r+n*n+i*i;return o>0&&(o=1/Math.sqrt(o),t[0]=e[0]*o,t[1]=e[1]*o,t[2]=e[2]*o),t}function s(t,e){return t[0]*e[0]+t[1]*e[1]+t[2]*e[2]}function c(t,e,r){var n=e[0],i=e[1],o=e[2],a=r[0],s=r[1],c=r[2];return t[0]=i*c-o*s,t[1]=o*a-n*c,t[2]=n*s-i*a,t}e.a=n,e.d=o,e.f=a,e.c=s,e.b=c,r.d(e,"e",function(){return u});var l=r(1),u=i;!function(){var t=n()}()},function(t,e,r){"use strict";function n(){var t=new y.ARRAY_TYPE(4);return y.ARRAY_TYPE!=Float32Array&&(t[0]=0,t[1]=0,t[2]=0,t[3]=0),t}function i(t){var e=new y.ARRAY_TYPE(4);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e}function o(t,e,r,n){var i=new y.ARRAY_TYPE(4);return i[0]=t,i[1]=e,i[2]=r,i[3]=n,i}function a(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t}function s(t,e,r,n,i){return t[0]=e,t[1]=r,t[2]=n,t[3]=i,t}function c(t,e,r){return t[0]=e[0]+r[0],t[1]=e[1]+r[1],t[2]=e[2]+r[2],t[3]=e[3]+r[3],t}function l(t,e,r){return t[0]=e[0]*r,t[1]=e[1]*r,t[2]=e[2]*r,t[3]=e[3]*r,t}function u(t){var e=t[0],r=t[1],n=t[2],i=t[3];return Math.sqrt(e*e+r*r+n*n+i*i)}function h(t){var e=t[0],r=t[1],n=t[2],i=t[3];return e*e+r*r+n*n+i*i}function f(t,e){var r=e[0],n=e[1],i=e[2],o=e[3],a=r*r+n*n+i*i+o*o;return a>0&&(a=1/Math.sqrt(a),t[0]=r*a,t[1]=n*a,t[2]=i*a,t[3]=o*a),t}function d(t,e){return t[0]*e[0]+t[1]*e[1]+t[2]*e[2]+t[3]*e[3]}function p(t,e,r,n){var i=e[0],o=e[1],a=e[2],s=e[3];return t[0]=i+n*(r[0]-i),t[1]=o+n*(r[1]-o),t[2]=a+n*(r[2]-a),t[3]=s+n*(r[3]-s),t}function _(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3]}function v(t,e){var r=t[0],n=t[1],i=t[2],o=t[3],a=e[0],s=e[1],c=e[2],l=e[3];return Math.abs(r-a)<=y.EPSILON*Math.max(1,Math.abs(r),Math.abs(a))&&Math.abs(n-s)<=y.EPSILON*Math.max(1,Math.abs(n),Math.abs(s))&&Math.abs(i-c)<=y.EPSILON*Math.max(1,Math.abs(i),Math.abs(c))&&Math.abs(o-l)<=y.EPSILON*Math.max(1,Math.abs(o),Math.abs(l))}e.b=i,e.g=o,e.c=a,e.l=s,e.a=c,e.k=l,e.h=u,e.m=h,e.j=f,e.d=d,e.i=p,e.f=_,e.e=v;var y=r(1);!function(){var t=n()}()},function(t,e,r){"use strict";function n(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function o(t,e,r){return e&&i(t.prototype,e),r&&i(t,r),t}function a(t){var e=Object(s.a)(t,"fillColor");return Object(c.a)(null,l,function(){function t(){n(this,t)}return o(t,[{key:"initializer",value:function(t){this._fillColor=new e("red",this),this._initFillStyleFromOptions(t)}}]),t}())}r.d(e,"b",function(){return l}),e.a=a;var s=r(19),c=r(5),l=function(){function t(e){n(this,t),this.initializer(e)}return o(t,[{key:"_initFillStyleFromOptions",value:function(t){t&&(void 0!==t.fillColor&&(this.fillColor=t.fillColor),void 0!==t.fillOpacity&&(this.fillOpacity=t.fillOpacity))}},{key:"initializer",value:function(t){this._fillColor=new s.b("black"),this._initFillStyleFromOptions(t)}},{key:"isFillVisible",value:function(){return this._fillColor.opacity>0}},{key:"isTransparent",value:function(){return this._fillColor.isTransparent()}},{key:"setFillCtx",value:function(t){t.fillStyle=this.fillColor}},{key:"fillColor",set:function(t){return this._fillColor.value=t,this},get:function(){return this._fillColor.value}},{key:"fillOpacity",set:function(t){return this._fillColor.opacity=t,this},get:function(){return this._fillColor.opacity}},{key:"packedFillColor",set:function(t){return this._fillColor.packedValue=t,this},get:function(){return this._fillColor.packedValue}}],[{key:"copyFillStyle",value:function(t,e){void 0===t.packedFillColor?(void 0!==t.fillColor&&(e.fillColor=t.fillColor),void 0!==t.fillOpacity&&(e.fillOpacity=t.fillOpacity)):e.packedFillColor=t.packedFillColor}},{key:"compareFillStyle",value:function(t,e){var r=t.isFillVisible(),n=e.isFillVisible();return r!==n?r-n:t.packedFillColor-e.packedFillColor}},{key:"toJSON",value:function(t){return{fillColor:t.fillColor}}}]),t}()},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?o(t):e}function o(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function a(t,e,r){return(a="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=s(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function s(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=c(t)););return t}function c(t){return(c=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function l(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&u(t,e)}function u(t,e){return(u=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}function h(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function f(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function d(t,e,r){return e&&f(t.prototype,e),r&&f(t,r),t}function p(t){return(255&t)/255}function _(t){return m.a.floor(255*m.a.clamp01(t))}function v(t){return"rgba(".concat(t>>>24,", ").concat((16711680&t)>>16,", ").concat((65280&t)>>8,", ").concat(p(t),")")}function y(t){if("string"!=typeof t)throw new Error("".concat(t," is not a valid color string"));var e=0,r=null;if(r=t.match(w))e=255,e|=m.a.clamp(Number.parseInt(r[3],10),0,255)<<8,e|=m.a.clamp(Number.parseInt(r[2],10),0,255)<<16,e|=m.a.clamp(Number.parseInt(r[1],10),0,255)<<24;else if(r=t.match(k))e=_(Number.parseFloat(r[4],10)),e|=m.a.clamp(Number.parseInt(r[3],10),0,255)<<8,e|=m.a.clamp(Number.parseInt(r[2],10),0,255)<<16,e|=m.a.clamp(Number.parseInt(r[1],10),0,255)<<24;else if(r=t.match(x))e=255,e|=m.a.clamp(Number.parseInt(r[3],16),0,255)<<8,e|=m.a.clamp(Number.parseInt(r[2],16),0,255)<<16,e|=m.a.clamp(Number.parseInt(r[1],16),0,255)<<24;else{if(!g.has(t))throw new Error("".concat(t," is not a valid color string"));r=g.get(t).match(x),e=255,e|=m.a.clamp(Number.parseInt(r[3],16),0,255)<<8,e|=m.a.clamp(Number.parseInt(r[2],16),0,255)<<16,e|=m.a.clamp(Number.parseInt(r[1],16),0,255)<<24}return e}function b(t,e){return function(r){function n(){return h(this,n),i(this,c(n).apply(this,arguments))}return l(n,r),d(n,[{key:"initializer",value:function(t,e){this._eventHandler=e,a(c(n.prototype),"initializer",this).call(this,t)}},{key:"_checkPackedColorChanged",value:function(r){if(r!==this._color){var n=this._color,i=p(n),o=p(r);this._color=r,this._eventHandler.fire(t,{attr:e,prevVal:v(n),currVal:v(this._color)}),o!==i&&this._eventHandler.fire(t,{attr:"opacity",prevVal:i,currVal:o})}}},{key:"value",set:function(t){var e=y(t);return this._checkPackedColorChanged(e),this},get:function(){return v(this._color)}},{key:"packedValue",set:function(t){var e=0;return e|=t,this._checkPackedColorChanged(e),this},get:function(){return this._color}},{key:"opacity",set:function(e){if("number"!=typeof e)throw new Error("Opacity must be a number between 0-1");var r=255&this._color,n=_(e);return n!==r&&(this._color&=4294967040,this._color|=n,this._eventHandler.fire(t,{attr:"opacity",prevVal:r/255,currVal:n/255})),this},get:function(){return p(this._color)}}]),n}(S)}r.d(e,"b",function(){return S}),e.a=b;var m=r(6),g=new Map([["aliceblue","#F0F8FF"],["antiquewhite","#FAEBD7"],["aqua","#00FFFF"],["aquamarine","#7FFFD4"],["azure","#F0FFFF"],["beige","#F5F5DC"],["bisque","#FFE4C4"],["black","#000000"],["blanchedalmond","#FFEBCD"],["blue","#0000FF"],["blueviolet","#8A2BE2"],["brown","#A52A2A"],["burlywood","#DEB887"],["cadetblue","#5F9EA0"],["chartreuse","#7FFF00"],["chocolate","#D2691E"],["coral","#FF7F50"],["cornflowerblue","#6495ED"],["cornsilk","#FFF8DC"],["crimson","#DC143C"],["cyan","#00FFFF"],["darkblue","#00008B"],["darkcyan","#008B8B"],["darkgoldenrod","#B8860B"],["darkgray","#A9A9A9"],["darkgreen","#006400"],["darkkhaki","#BDB76B"],["darkmagenta","#8B008B"],["darkolivegreen","#556B2F"],["darkorange","#FF8C00"],["darkorchid","#9932CC"],["darkred","#8B0000"],["darksalmon","#E9967A"],["darkseagreen","#8FBC8F"],["darkslateblue","#483D8B"],["darkslategray","#2F4F4F"],["darkturquoise","#00CED1"],["darkviolet","#9400D3"],["deeppink","#FF1493"],["deepskyblue","#00BFFF"],["dimgray","#696969"],["dodgerblue","#1E90FF"],["firebrick","#B22222"],["floralwhite","#FFFAF0"],["forestgreen","#228B22"],["fuchsia","#FF00FF"],["gainsboro","#DCDCDC"],["ghostwhite","#F8F8FF"],["gold","#FFD700"],["goldenrod","#DAA520"],["gray","#808080"],["green","#008000"],["greenyellow","#ADFF2F"],["honeydew","#F0FFF0"],["hotpink","#FF69B4"],["indianred","#CD5C5C"],["indigo","#4B0082"],["ivory","#FFFFF0"],["khaki","#F0E68C"],["lavender","#E6E6FA"],["lavenderblush","#FFF0F5"],["lawngreen","#7CFC00"],["lemonchiffon","#FFFACD"],["lightblue","#ADD8E6"],["lightcoral","#F08080"],["lightcyan","#E0FFFF"],["lightgoldenrodyellow","#FAFAD2"],["lightgray","#D3D3D3"],["lightgreen","#90EE90"],["lightpink","#FFB6C1"],["lightsalmon","#FFA07A"],["lightseagreen","#20B2AA"],["lightskyblue","#87CEFA"],["lightslategray","#778899"],["lightsteelblue","#B0C4DE"],["lightyellow","#FFFFE0"],["lime","#00FF00"],["limegreen","#32CD32"],["linen","#FAF0E6"],["magenta","#FF00FF"],["maroon","#800000"],["mediumaquamarine","#66CDAA"],["mediumblue","#0000CD"],["mediumorchid","#BA55D3"],["mediumpurple","#9370DB"],["mediumseagreen","#3CB371"],["mediumslateblue","#7B68EE"],["mediumspringgreen","#00FA9A"],["mediumturquoise","#48D1CC"],["mediumvioletred","#C71585"],["midnightblue","#191970"],["mintcream","#F5FFFA"],["mistyrose","#FFE4E1"],["moccasin","#FFE4B5"],["navajowhite","#FFDEAD"],["navy","#000080"],["oldlace","#FDF5E6"],["olive","#808000"],["olivedrab","#6B8E23"],["orange","#FFA500"],["orangered","#FF4500"],["orchid","#DA70D6"],["palegoldenrod","#EEE8AA"],["palegreen","#98FB98"],["paleturquoise","#AFEEEE"],["palevioletred","#DB7093"],["papayawhip","#FFEFD5"],["peachpuff","#FFDAB9"],["peru","#CD853F"],["pink","#FFC0CB"],["plum","#DDA0DD"],["powderblue","#B0E0E6"],["purple","#800080"],["rebeccapurple","#663399"],["red","#FF0000"],["rosybrown","#BC8F8F"],["royalblue","#4169E1"],["saddlebrown","#8B4513"],["salmon","#FA8072"],["sandybrown","#F4A460"],["seagreen","#2E8B57"],["seashell","#FFF5EE"],["sienna","#A0522D"],["silver","#C0C0C0"],["skyblue","#87CEEB"],["slateblue","#6A5ACD"],["slategray","#708090"],["snow","#FFFAFA"],["springgreen","#00FF7F"],["steelblue","#4682B4"],["tan","#D2B48C"],["teal","#008080"],["thistle","#D8BFD8"],["tomato","#FF6347"],["turquoise","#40E0D0"],["violet","#EE82EE"],["wheat","#F5DEB3"],["white","#FFFFFF"],["whitesmoke","#F5F5F5"],["yellow","#FFFF00"],["yellowgreen","#9ACD32"]]),w=/^rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$/i,k=/^rgba\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*([0,1](?:\.\d*)?)\s*\)\s*$/i,x=/^#([0-9,a-f,A-F]{2})([0-9,a-f,A-F]{2})([0-9,a-f,A-F]{2})\s*$/i,S=function(){function t(e){h(this,t);for(var r=arguments.length,n=new Array(r>1?r-1:0),i=1;i<r;i++)n[i-1]=arguments[i];this.initializer.apply(this,[e].concat(n))}return d(t,[{key:"initializer",value:function(t){this._color=0,t&&(this.value=t)}},{key:"isTransparent",value:function(){return p(this._color)<1}},{key:"value",set:function(t){return this._color=y(t),this},get:function(){return v(this._color)}},{key:"packedValue",set:function(t){return this._color=0,this._color|=t,this},get:function(){return this._color}},{key:"opacity",set:function(t){if("number"!=typeof t)throw new Error("Opacity must be a number between 0-1");var e=255&this._color,r=_(t);return r!==e&&(this._color&=4294967040,this._color|=r),this},get:function(){return p(this._color)}}]),t}()},function(t,e,r){"use strict";function n(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function o(t,e,r){return e&&i(t.prototype,e),r&&i(t,r),t}function a(t){if("number"!=typeof t)throw new Error("Stroke width must be a number")}function s(t){var e=-1;if("string"!=typeof t||(e=_.indexOf(t.toLowerCase()))<0)throw new Error("Line join must be a string and must be one of [".concat(_.join(", "),"]"));return e}function c(t){var e=-1;if("string"!=typeof t||(e=y.indexOf(t.toLowerCase()))<0)throw new Error("Line cap must be a string and must be one of [".concat(y.join(", "),"]"));return e}function l(t){if(!t||!Array.isArray(t)||t.length%2!=0)throw new Error("The dash pattern must be an array with an even number of numbers (or an empty array)")}function u(t){if("number"!=typeof t)throw new Error("The dash offset must be a number")}function h(t){var e=Object(f.a)(t,"strokeColor");return Object(d.a)(null,b,function(){function r(){n(this,r)}return o(r,[{key:"initializer",value:function(t){this._strokeColor=new e("black",this),this._strokeWidth=0,this._lineJoin=p.MITER,this._lineCap=v.BUTT,this._dashPattern=[],this._dashOffset=0,this._initStrokeStyleFromOptions(t)}},{key:"strokeWidth",set:function(e){if(a(e),e!==this._strokeWidth){var r=this._strokeWidth;this._strokeWidth=e,this.fire(t,{attr:"strokeWidth",prevVal:r,curral:this._strokeWidth})}return this},get:function(){return this._strokeWidth}},{key:"lineJoin",set:function(e){var r=s(e);if(r!==this._lineJoin){var n=this._lineJoin;this._lineJoin=r,this.fire(t,{attr:"lineJoin",prevVal:n,curral:this._lineJoin})}return this},get:function(){return _[this._lineJoin]}},{key:"lineCap",set:function(e){var r=c(e);if(r!==this._lineCap){var n=this._lineCap;this._lineCap=r,this.fire(t,{attr:"lineCap",prevVal:n,curral:this._lineCap})}return this},get:function(){return y[this._lineCap]}},{key:"dashPattern",set:function(e){l(e);var r=!1;if(e.length===this._dashPattern.length){for(var n=0;n<e.length;n+=1)if(e[n]!==this._dashPattern[n]){r=!0;break}}else r=!0;if(r){var i=this._dashPattern;this._dashPattern=e.slice(),this.fire(t,{attr:"dashPattern",prevVal:i,curral:this._dashPattern.slice()})}return this},get:function(){return this._dashPattern.slice()}},{key:"dashOffset",set:function(e){if(u(e),e!==this._dashOffset){var r=this._dashOffset;this._dashOffset=e,this._dashPattern.length&&this.fire(t,{attr:"dashOffset",prevVal:r,curral:this._dashOffset})}return this},get:function(){return this._dashOffset}}]),r}())}r.d(e,"b",function(){return b}),e.a=h;var f=r(19),d=r(5),p={MITER:0,BEVEL:1,ROUND:2},_=["miter","bevel","round"],v={BUTT:0,SQUARE:1,ROUND:2},y=["butt","square","round"],b=function(){function t(e){n(this,t),this.initializer(e)}return o(t,[{key:"_initStrokeStyleFromOptions",value:function(t){t&&(void 0!==t.strokeColor&&(this.strokeColor=t.strokeColor),void 0!==t.strokeOpacity&&(this.strokeOpacity=t.strokeOpacity),void 0!==t.strokeWidth&&(this.strokeWidth=t.strokeWidth),void 0!==t.lineMiter&&(this.lineJoin=t.lineMiter),void 0!==t.lineCap&&(this.lineCap=t.lineCap),void 0!==t.dashPattern&&(this.dashPattern=t.dashPattern),void 0!==t.dashOffset&&(this.dashOffset=t.dashOffset))}},{key:"initializer",value:function(t){this._strokeColor=new f.b("black"),this._strokeWidth=0,this._lineJoin=p.MITER,this._lineCap=v.BUTT,this._dashPattern=[],this._dashOffset=0,this._initStrokeStyleFromOptions(t)}},{key:"isStrokeVisible",value:function(){return this._strokeColor.opacity>0&&this._strokeWidth>0}},{key:"isTransparent",value:function(){return this._strokeColor.isTransparent()}},{key:"setStrokeCtx",value:function(t){t.strokeStyle=this.strokeColor,t.lineWidth=this._strokeWidth,t.lineJoin=this._lineJoin,t.lineCap=this._lineCap,t.setLineDash(this._dashPattern),t.lineDashOffset=this._dashOffset}},{key:"strokeColor",set:function(t){return this._strokeColor.value=t,this},get:function(){return this._strokeColor.value}},{key:"strokeOpacity",set:function(t){this._strokeColor.opacity=t},get:function(){return this._strokeColor.opacity}},{key:"packedStrokeColor",set:function(t){this._strokeColor.packedValue=t},get:function(){return this._strokeColor.packedValue}},{key:"strokeWidth",set:function(t){return a(t),this._strokeWidth=t,this},get:function(){return this._strokeWidth}},{key:"lineJoin",set:function(t){var e=s(t);return this._lineJoin=e,this},get:function(){return _[this._lineJoin]}},{key:"lineCap",set:function(t){var e=c(t);return this._lineCap=e,this},get:function(){return y[this._lineJoin]}},{key:"dashPattern",set:function(t){return l(t),this._dashPattern=t.slice(),this},get:function(){return this._dashPattern.slice()}},{key:"dashOffset",set:function(t){return u(t),this._dashOffset=t,this},get:function(){return this._dashOffset}}],[{key:"copyStrokeStyle",value:function(t,e){void 0===t.packedStrokeColor?(void 0!==t.strokeColor&&(e.strokeColor=t.strokeColor),void 0!==t.strokeOpacity&&(e.strokeOpacity=t.strokeOpacity)):e.packedStrokeColor=t.packedStrokeColor,void 0!==t.strokeWidth&&(e.strokeWidth=t.strokeWidth),void 0!==t.lineJoin&&(e.lineJoin=t.lineJoin),void 0!==t.lineCap&&(e.lineCap=t.lineCap),void 0!==t.dashPattern&&(e.dashPattern=t.dashPattern),void 0!==t.dashOffset&&(e.dashOffset=t.dashOffset)}},{key:"compareStrokeStyle",value:function(t,e){var r=t.isStrokeVisible(),n=e.isStrokeVisible();if(r!==n)return r-n;if(r=t.packedStrokeColor,n=e.packedStrokeColor,r!==n)return r-n;if(r=t.strokeWidth,n=e.strokeWidth,r!==n)return r-n;if(r=t._lineJoin,n=e._lineJoin,r!==n)return r-n;if(r=t._lineCap,n=e._lineCap,r!==n)return r-n;if(r=t._dashPattern,n=e._dashPattern,r.length===n.length&&r.length>0){for(var i=0;i<r.length;i+=1)if(r[i]!==n[i])return r[i]-n[i];return t.dashOffset-e.dashOffset}return r.length-n.length}},{key:"toJSON",value:function(t){return{strokeColor:t.strokeColor,strokeWidth:t.strokeWidth,lineJoin:t.lineJoin,lineCap:t.lineCap,dashPattern:t.dashPattern,dashOffset:t.dashOffset}}}]),t}()},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t){return(l=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function u(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&h(t,e)}function h(t,e){return(h=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}function f(t,e){t&&" ".concat(t.className," ").indexOf(" ".concat(e," "))<0&&(t.className+=(t.className?" ":"")+e)}function d(t){var e=document.createElement("div");f(e,"mapd-draw-canvas-container");var r=document.createElement("canvas"),n=r.getContext("2d"),i=v.a(n);return f(r,"mapd-draw-canvas"),r.style.position="absolute",r.style.pointerEvents="none",e.appendChild(r),t.appendChild(e),{canvasContainer:e,canvas:r,canvasContext:n,ratio:i}}function p(t,e,r,n,i){t.forEach(function(t){e.set(t,{shapeObj:t,shapeId:r.shapeId,shapeIdx:-1}),t.on(["changed:order","changed:visibility","changed:style"],n),t.on(["changed:geom","changed:visibility","changed:xform"],i),r.shapeId+=1})}function _(t,e,r,n){var i=[];return t.forEach(function(t){var o=e.get(t);o&&i.push(o.shapeIdx),e.delete(t),t.off(["changed"],[r,n])}),i}r.d(e,"a",function(){return P});var v=r(32),y=r(3),b=r(7),m=r(8),g=r(33),w=r(34),k=r(11),x=r(35),S=r.n(x),O=["mousedown","mouseup","mousemove","click","dblclick","mouseover","mouseout"],E=["top","bottom","left","right"],C={MOUSEDOWN:"mousedown",MOUSEUP:"mouseup",MOUSEMOVE:"mousemove",CLICK:"click",DBLCLICK:"dblclick",MOUSEOVER:"mouseover",MOUSEOUT:"mouseout",SHAPE_ADD:"shape:add",SHAPE_DELETE:"shape:delete"},M=function(t){function e(){var t,r;i(this,e);for(var n=arguments.length,o=new Array(n),a=0;a<n;a++)o[a]=arguments[a];return r=s(this,(t=l(e)).call.apply(t,[this].concat(o))),r._defaults={packedFillColor:r.packedFillColor,packedStrokeColor:r.packedStrokeColor,strokeWidth:r.strokeWidth,lineJoin:r.lineJoin,lineCap:r.lineCap,dashPattern:r.dashPattern,dashOffset:r.dashOffset},r}return u(e,t),a(e,[{key:"setFillStyle",value:function(t,e){e.packedFillColor!==this.packedFillColor&&(this.packedFillColor=e.packedFillColor,t.fillStyle=this.fillColor)}},{key:"setStrokeStyle",value:function(t,e){e.packedStrokeColor!==this.packedStrokeColor&&(this.packedStrokeColor=e.packedStrokeColor,t.strokeStyle=this.strokeColor),e.strokeWidth!==this._strokeWidth&&(this.strokeWidth=e.strokeWidth,t.lineWidth=this._strokeWidth),e.lineJoin!==this._lineJoin&&(this.lineJoin=e.lineJoin,t.lineJoin=this._lineJoin),e.lineCap!==this._lineCap&&(this.lineCap=e.lineCap,t.lineCap=this._lineCap);var r=e._dashPattern,n=!1;if(r.length===this._dashPattern.length){for(var i=0;i<r.length;i+=1)if(r[i]!==this._dashPattern[i]){n=!0;break}}else n=!0;n&&(this.dashPattern=r,t.setLineDash(this._dashPattern)),e.dashOffset!==this._dashOffset&&(this.dashOffset=e.dashOffset,t.lineDashOffset=this._dashOffset)}},{key:"applyDefaults",value:function(t){var e=this;Object.getOwnPropertyNames(this._defaults).forEach(function(t){e[t]=e._defaults[t]}),this.setFillCtx(t),this.setStrokeCtx(t)}}]),e}(m.a),P=function(t){function e(t,r){var n;return i(this,e),n=s(this,l(e).call(this)),n._init(t,r),n}return u(e,t),a(e,[{key:"destroy",value:function(){var t=this;this._destroyCanvas(),this._objects&&(this._objects.forEach(function(e,r){r.off("changed",[t._reorderCb,t._redrawCb])}),this._objects.clear(),this._sortedObjs=[],this._reorderedObjIdxs.clear())}},{key:"_resize",value:function(t){var e=0;this._parent.offsetWidth&&(e=Math.max(e,this._parent.offsetWidth-this._margins.left-this._margins.right));var r=0;if(this._parent.offsetHeight&&(r=Math.max(r,this._parent.offsetHeight-this._margins.top-this._margins.bottom)),this._drawCanvas.width=e*this._pixelRatio,this._drawCanvas.height=r*this._pixelRatio,this._drawCanvas.style.left="".concat(this._margins.left,"px"),this._drawCanvas.style.top="".concat(this._margins.top,"px"),this._drawCanvas.style.width="".concat(e,"px"),this._drawCanvas.style.height="".concat(r,"px"),this._camera);else{var n=t&&t.projectionDimensions?t.projectionDimensions:[e,r];this._camera=new w.a([0,0,e,r],n,!!t.flipY&&Boolean(t.flipY)),this._camera.setPosition(t&&t.cameraPosition?t.cameraPosition:[e/2,r/2]),this._camera.on("changed",this._rerenderCb)}this._rerenderCb()}},{key:"_mousedownCB",value:function(t){t.target===this._parent&&this.fire("mousedown",{originalEvent:t})}},{key:"_mouseupCB",value:function(t){t.target===this._parent&&this.fire("mouseup",{originalEvent:t})}},{key:"_mousemoveCB",value:function(t){t.target===this._parent&&this.fire("mousemove",{originalEvent:t})}},{key:"_clickCB",value:function(t){t.target===this._parent&&this.fire("click",{originalEvent:t})}},{key:"_dblclickCB",value:function(t){t.target===this._parent&&this.fire("dblclick",{originalEvent:t})}},{key:"_mouseoverCB",value:function(t){t.target===this._parent&&this.fire("mouseover",{originalEvent:t})}},{key:"_mouseoutCB",value:function(t){t.target===this._parent&&this.fire("mouseout",{originalEvent:t})}},{key:"_enableEvents",value:function(){this.registerEvents(O);for(var t=O.map(function(t){return"_".concat(t,"CB")}),e=0;e<O.length;e+=1)document.addEventListener(O[e],this[t[e]],!0)}},{key:"_disableEvents",value:function(){for(var t=O.map(function(t){return"_".concat(t,"CB")}),e=0;e<O.length;e+=1)document.removeEventListener(O[e],this[t[e]],!0)}},{key:"_initCanvas",value:function(t,e){var r=this,n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:null;this._margins=e&&e.margins?Object.assign({},e.margins):{},E.forEach(function(t){"number"!=typeof r._margins[t]&&(r._margins[t]=0)});var i=d(t),o=i.canvasContainer,a=i.canvas,s=i.canvasContext,c=i.ratio;this._container=o,this._drawCanvas=a,this._drawCtx=s,this._pixelRatio=c,this._parent=t,Object(g.a)(["_resize"],this),this._resize(e),this._resizeSensor=new S.a(t,this._resize),(n||null===n&&e&&e.enableEvents)&&this._enableEvents()}},{key:"_destroyCanvas",value:function(){this._drawCanvas&&this._disableEvents(),this._parent&&(this._parent.removeChild(this._drawCanvas),this._resizeSensor&&this._resizeSensor.detach(this._parent,this._resize)),this._drawCanvas=null,this._drawCtx=null,this._parent=null}},{key:"_init",value:function(t,e){var r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:null;this.registerEvents([C.SHAPE_ADD,C.SHAPE_DELETE]),Object(g.a)(["_reorderCb","_rerenderCb"],this),Object(g.a)(["_mousedownCB","_mouseupCB","_mousemoveCB","_clickCB","_dblclickCB","_mouseoverCB","_mouseoutCB"],this),this._renderFrameCb=this.renderAll.bind(this),this._renderRequestTime=0,this._ids={shapeId:1},this._objects=new Map,this._sortedObjs=[],this._reorderedObjIdxs=new Set,this._initCanvas(t,e,r),this._styleState=new M({fillColor:"red"})}},{key:"getContainer",value:function(){return this._parent}},{key:"getCanvasContainer",value:function(){return this._container}},{key:"getCanvas",value:function(){return this._drawCanvas}},{key:"project",value:function(t,e){var r=this._camera.screenToWorldMatrix;return y.transformMat2d(t,e,r)}},{key:"unproject",value:function(t,e){var r=this._camera.worldToScreenMatrix;return y.transformMat2d(t,e,r)}},{key:"hasShape",value:function(t){return this._objects.has(t)}},{key:"addShape",value:function(t){var e=t;Array.isArray(e)||(e=[t]),p(e,this._objects,this._ids,this._reorderCb,this._rerenderCb),this.fire("shape:add",{shape:e});var r={target:e};return this._reorderCb(r),this}},{key:"deleteShape",value:function(t){var e=t;Array.isArray(e)||(e=[t]);for(var r=_(e,this._objects,this._reorderCb,this._rerenderCb),n=-1,i=0;i<e.length;i+=1)(n=this._sortedObjs.indexOf(e[i]))>=0&&this._sortedObjs.splice(n,1),this._reorderedObjIdxs.add(r[i]);return this._rerenderCb(),this.fire("shape:delete",{shape:e}),this}},{key:"deleteAllShapes",value:function(){return this.deleteShape(this.sortedShapes.slice()),this}},{key:"moveShapeToTop",value:function(t){if(this._objects.has(t)){var e=this.sortedShapes,r=e[e.length-1].zIndex;t.zIndex=r+1}}},{key:"moveShapeToBack",value:function(t){if(this._objects.has(t)){var e=this.sortedShapes,r=e[0].zIndex;t.zIndex=r}}},{key:"getShapesAsJSON",value:function(){return this.sortedShapes.map(function(t){return t.toJSON()})}},{key:"_rerenderCb",value:function(){window.requestAnimationFrame(this._renderFrameCb)}},{key:"_reorderCb",value:function(t){var e=this,r=t.target;Array.isArray(r)||(r=[t.target]),r.forEach(function(t){console.assert(t,"A changed event doesn't have an object");var r=e._objects.get(t);console.assert(r,"A changed event target isn't in the list of shapes ".concat(t)),r.shapeIdx<0&&(r.shapeIdx=e._sortedObjs.push(t)-1),e._reorderedObjIdxs.add(r.shapeIdx)}),this._rerenderCb()}},{key:"_renderShapes",value:function(t,e,r){var n=this,i=r.worldToScreenMatrix;e.forEach(function(e){e.visible&&e.render(t,i,n._styleState)})}},{key:"renderAll",value:function(t){if(t){if(t<=this._renderRequestTime)return;this._renderRequestTime=t}else this._renderRequestTime=performance.now();var e=this._drawCtx;if(e.clearRect(0,0,this._drawCanvas.offsetWidth,this._drawCanvas.offsetHeight),this._objects.size){e.save();var r=this.sortedShapes;this._styleState.applyDefaults(e),this._renderShapes(e,r,this._camera),e.restore()}}},{key:"sortedShapes",get:function(){return this._reorderedObjIdxs.size&&(console.assert(this._sortedObjs.length===this._objects.size,"Size mismatch when rendering objets. Something got out of sync - sorted objs length: ".concat(this._sortedObjs.length,", objects length: ").concat(this._objects.size)),this._sortedObjs.sort(b.a.shapeCompare),this._reorderedObjIdxs.clear()),this._sortedObjs}},{key:"margins",get:function(){var t=this,e={};return E.forEach(function(r){e[r]=t._margins[r]}),e},set:function(t){var e=this;E.forEach(function(r){"number"==typeof t[r]&&t[r]!==e._margins[r]&&(e._margins[r]=t.prop)}),this._resize()}},{key:"viewport",get:function(){return this._camera.viewport},set:function(t){this._camera.viewport=t}},{key:"projectionDimensions",get:function(){return this._camera.projectionDimensions},set:function(t){return this._camera.projectionDimensions=t,this}},{key:"cameraPosition",get:function(){return this._camera.getPosition()},set:function(t){return this._camera.setPosition(t),this}}]),e}(k.a);P.EventConstants=C},function(t,e,r){"use strict";function n(t,e,r){return(e[o]-t[o])*(r[a]-t[a])-(r[o]-t[o])*(e[a]-t[a])}function i(t){var e=[],r=t.length;if(r<3){for(var i=0;i<r;i+=1)e[i]=i;return e}var o=new Array(2*r+1);o.fill(-1);var a=r-2,s=a+3;o[a]=o[s]=2,n(t[0],t[1],t[2])>0?(o[a+1]=0,o[a+2]=1):(o[a+1]=1,o[a+2]=0);for(var c=3;c<r;c+=1)if(n(t[o[a]],t[o[a+1]],t[c])<=0||n(t[o[s-1]],t[o[s]],t[c])<=0){for(;o[a]>=0&&o[a+1]>=0&&n(t[o[a]],t[o[a+1]],t[c])<=0;)a+=1;for(a-=1,o[a]=c;o[s]>=0&&o[s+1]>=0&&n(t[o[s-1]],t[o[s]],t[c])<=0;)s-=1;s+=1,o[s]=c}var l=0;for(l=0;l<=s-a-1;l+=1)e[l]=o[a+l];return o[a+l]!==e[0]&&(e[l]=o[a+l]),e}e.a=i;var o=0,a=1},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return v});var p=r(2),_=r(7),v=function(t){function e(t){var r;return i(this,e),r=s(this,h(e).call(this,t)),r._width=0,r._height=0,void 0!==t.width&&(r.width=t.width),void 0!==t.height&&(r.height=t.height),r}return f(e,t),a(e,[{key:"getDimensions",value:function(){return[this._width,this._height]}},{key:"_updateAABox",value:function(){(this._geomDirty||this._boundsOutOfDate)&&(p.initCenterExtents(this._aabox,[0,0],[this._width/2,this._height/2]),p.transformMat2d(this._aabox,this._aabox,this.globalXform),this._geomDirty=this._boundsOutOfDate=!1)}},{key:"_draw",value:function(t){t.rect(0-this.width/2,0-this.height/2,this.width,this.height)}},{key:"toJSON",value:function(){return Object.assign({type:"Rect",width:this.width,height:this.height},l(h(e.prototype),"toJSON",this).call(this))}},{key:"width",set:function(t){if("number"!=typeof t)throw new Error("Width must be a number");if(t!==this._width){var e=this._width;this._width=t,this._geomDirty=!0,this.fire("changed:geom",{attr:"width",prevVal:e,currVal:this._width})}return this},get:function(){return this._width}},{key:"height",set:function(t){if("number"!=typeof t)throw new Error("Height must be a number");if(t!==this._height){var e=this._height;this._height=t,this._geomDirty=!0,this.fire("changed:geom",{attr:"height",prevVal:e,currVal:this._height})}return this},get:function(){return this._height}}]),e}(_.a)},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=r(25);r.n(n);r.o(n,"version")&&r.d(e,"version",function(){return n.version});var i=r(26);r.d(e,"ShapeBuilder",function(){return i.a});var o=r(21);r.d(e,"DrawEngine",function(){return o.a});var a=r(2);r.d(e,"AABox2d",function(){return a});var s=r(4);r.d(e,"Mat2d",function(){return s.a});var c=r(3);r.d(e,"Point2d",function(){return c});var l=r(0);r.d(e,"Mat2",function(){return l.b});var u=r(8);r.d(e,"BasicStyle",function(){return u.a});var h=r(9);r.d(e,"Vec2d",function(){return h.a});var f=r(38);r.d(e,"Circle",function(){return f.a});var d=r(23);r.d(e,"Rect",function(){return d.a});var p=r(39);r.d(e,"Poly",function(){return p.a});var _=r(12);r.d(e,"PolyLine",function(){return _.a});var v=r(40);r.d(e,"Point",function(){return v.a});var y=r(6);r.d(e,"Math",function(){return y.a});var b=r(22);r.d(e,"simpleHull_2D",function(){return b.a})},function(t,e){t.exports={name:"@mapd/mapd-draw",description:"A Utility Library for drawing and interacting with shapes using canvas",version:"1.1.0",homepage:"https://omnisci.com",bugs:"https://github.com/omnisci/mapd-draw/issues",main:"dist/mapd-draw.js",author:"MapD Technologies",license:"MIT",engines:{node:">=4.0.0"},repository:{type:"git",url:"git+https://github.com/omnisci/mapd-draw.git"},dependencies:{"css-element-queries":"^0.4.0","gl-matrix":"^2.3.2"},devDependencies:{"@babel/core":"^7.0.0","@babel/plugin-proposal-class-properties":"^7.0.0","@babel/plugin-proposal-decorators":"^7.0.0","@babel/plugin-proposal-do-expressions":"^7.0.0","@babel/plugin-proposal-export-default-from":"^7.0.0","@babel/plugin-proposal-export-namespace-from":"^7.0.0","@babel/plugin-proposal-function-bind":"^7.0.0","@babel/plugin-proposal-function-sent":"^7.0.0","@babel/plugin-proposal-json-strings":"^7.0.0","@babel/plugin-proposal-logical-assignment-operators":"^7.0.0","@babel/plugin-proposal-nullish-coalescing-operator":"^7.0.0","@babel/plugin-proposal-numeric-separator":"^7.0.0","@babel/plugin-proposal-optional-chaining":"^7.0.0","@babel/plugin-proposal-pipeline-operator":"^7.0.0","@babel/plugin-proposal-throw-expressions":"^7.0.0","@babel/plugin-syntax-dynamic-import":"^7.0.0","@babel/plugin-syntax-import-meta":"^7.0.0","@babel/preset-env":"^7.0.0","@babel/register":"^7.0.0","babel-eslint":"^10.0.1","babel-loader":"^8.0.0",chai:"^3.5.0",eslint:"^6.0.0","eslint-config-prettier":"^6.5.0","eslint-plugin-prettier":"^3.1.1","http-server":"^0.11.1","json-loader":"0.5.4",mocha:"^6.2.1","pre-commit":"^1.2.2",prettier:"1.18.2",webpack:"^3.12.0"},scripts:{build:"npm run build:prod; npm run build:dev","build:prod":"npm run webpack","build:dev":"npm run webpack:dev",clean:"bash scripts/clean.sh","lint:fix":"eslint --rule 'prettier/prettier: 0' --fix $(find src -name \"*.js\" ! -name '*.spec.js'); prettier --write $(find src -name \"*.js\" ! -name '*.spec.js')",lint:"eslint $(find src -name \"*.js\" ! -name '*.spec.js')",start:"npm run build; http-server -p 8080 -o;","watch:dev":"node node_modules/webpack/bin/webpack.js --progress --colors --watch --config webpack.dev.config.js",webpack:"node node_modules/webpack/bin/webpack.js","webpack:dev":"node node_modules/webpack/bin/webpack.js --config webpack.dev.config.js",test:"mocha --recursive --require @babel/register"},"pre-commit":["lint","test"]}},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}function p(t,e,r){var n=t.getBoundingClientRect(),i=0,o=0;return(i=e-n.left-t.clientLeft)>=0&&i<=t.clientWidth&&(o=r-n.top-t.clientTop)>=0&&o<=t.clientHeight}function _(t,e,r){var n=e.getBoundingClientRect();t[0]=r.clientX-n.left-e.clientLeft,t[1]=r.clientY-n.top-e.clientTop}function v(t,e,r,n){_(z,t,e),M.transformMat2d(N,z,n.screenToWorldMatrix);var i=r.shape;i instanceof D.a?C.a(i,r,z,N,n):i instanceof F.a?C.c(i,r,z,N,n):C.b(i,r,z,N,n)}function y(t,e){e.keys={altKey:t.altKey,ctrlKey:t.ctrlKey,shiftKey:t.shiftKey,metaKey:t.metaKey}}function b(t){var e=[];return t.forEach(function(t,r){e.push(r)}),e}function m(t,e,r,n,i,o){var a={unselectedShapes:b(r)};g(r),t.save();var s=e[e.length-1].zIndex;t.zIndex=s+1,P.a.copyBasicStyle(n,t),t.selected=!0;var c=null;return(o.scalable||o.rotatable)&&(c=new D.a(i||L,o),t.addChildXform(c)),r.set(t,c),a.selectedShapes=[t],a}function g(t){t.forEach(function(t,e){e.restore(),e.selected=!1,e.removeChildXform(t)}),t.clear()}function w(t,e){var r=[];return e.forEach(function(e){var n=t.get(e);e.restore(),e.selected=!1,e.removeChildXform(n),t.delete(e),r.push(e)}),r}function k(t,e){var r=document.querySelector("".concat("#".concat(e.id," canvas")));return{x:t.offsetX+r.offsetLeft,y:t.offsetY+r.offsetTop}}function x(t,e,r){var n=arguments.length>3&&void 0!==arguments[3]?arguments[3]:V.SVG_OFFSET,i=arguments.length>4&&void 0!==arguments[4]?arguments[4]:V.SVG_OFFSET,o=document.getElementById("cursor"),a=k(t,e);if(null===o){var s=document.createElement("span");s.setAttribute("id","cursor"),s.setAttribute("style","position: absolute; top: ".concat("".concat(a.y,"px"),"; left: ","".concat(a.x,"px"),"; width: 28px; height: 28px; background: ",r,"; cursor: none; z-index: 10; pointer-events: none; transform: translate(").concat(n,"px, ").concat(i,"px)")),e.appendChild(s)}else o.style.background===r?E(t,e):(o.style.background=r,E(t,e))}function S(){var t=document.getElementById("cursor");null!==t&&t.parentNode.removeChild(t)}function O(t,e,r){var n=arguments.length>3&&void 0!==arguments[3]&&arguments[3];t.style.cursor=e;for(var i=0;i<t.childNodes.length;i+=1)t.childNodes[i].style.cursor=e,null===r||!n&&"canvas"===t.childNodes[i].nodeName.toLowerCase()||(t.childNodes[i].style.pointerEvents=r)}function E(t,e){var r=document.getElementById("cursor"),n=k(t,e);null!==r&&(r.style.top="".concat("".concat(n.y,"px")),r.style.left="".concat("".concat(n.x,"px")))}r.d(e,"a",function(){return H});var C=r(27),M=r(3),P=r(8),j=r(21),A=r(4),I=r(12),F=r(36),D=r(37),T="url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cg transform='rotate(<degrees>,24,24)'%3E%3Cpolygon style='fill:%23ffffff;' points='16,20 16,12 4,24 16,36 16,28 32,28 32,36 44,24 32,12 32,20 '/%3E%3Cpolygon points='14,22 14,17 7,24 14,31 14,26 34,26 34,31 41,24 34,17 34,22 '/%3E%3C/g%3E%3C/svg%3E\") no-repeat",R="url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cg transform='rotate(<degrees>,24,24)'%3E%3Cpath style='fill:%23ffffff;' d='M25.9,4C16.6,4,8.8,11.2,7.4,20.8H6.7H3.3l1.6,2.9l3.8,7.1l1.8,3.3l1.8-3.3l3.8-7.1l1.6-2.9h-3.3h-0.1 c1.3-5.7,6.1-9.9,11.7-9.9c8,0,12.1,4.4,12.1,13.1c0,7.2-5.4,13.1-12.1,13.1h-2v2V42v2h2c10.4,0,18.8-9,18.8-20 C44.7,11.7,37.5,4,25.9,4L25.9,4z'/%3E%3Cpath d='M25.9,6c10.5,0,16.8,6.7,16.8,18c0,9.9-7.5,18-16.8,18v-2.9c7.8,0,14.1-6.8,14.1-15.1c0-5.6-1.8-15.1-14.1-15.1 c-7.4,0-13.4,6.1-14,13.9h2.4l-3.8,7.1l-3.8-7.1h2.5C9.7,13.4,17,6,25.9,6'/%3E%3C/g%3E%3C/svg%3E\") no-repeat",B={SELECTION_CHANGED:"draw:selectionChanged",DRAG_BEGIN:"draw:drag:begin",DRAG_END:"draw:drag:end"},V={SVG_OFFSET:-14,QUICK_CLICK_TIME:500,RIGHT_ANGLE:90,STRAIGHT_ANGLE:180,FORTY_FIVE_ANGLE:45},z=M.create(0,0),N=M.create(0,0),L={fillColor:"white",strokeColor:"black",strokeWidth:2},W=function(){var t=document.getElementById("cursor");null!==t&&(t.style.display="none")},X=function(){var t=document.getElementById("cursor");null!==t&&(t.style.display="block")},q=function(t){t.target.parentNode.style.cursor="default",W()},Y=function(t){t.target.parentNode.style.cursor="none",X()},H=function(t){function e(){return i(this,e),s(this,h(e).apply(this,arguments))}return f(e,t),a(e,[{key:"_mousedownCB",value:function(t){if(p(this._drawCanvas,t.clientX,t.clientY)){this.timer=performance.now(),M.set(z,t.offsetX,t.offsetY),M.transformMat2d(N,z,this._camera.screenToWorldMatrix);var e=this._camera.worldToScreenMatrix,r=this.sortedShapes,n=-1,i=null,o=null;for(n=r.length-1;n>=0;n-=1){var a=this._objects.get(r[n]);if(r[n].selected){i=this._selectedShapes.get(r[n]),o=a;var s=null;if(i&&(s=i.containsPoint(z,N,e,this._drawCtx)).hit){if(i instanceof F.a&&t.altKey&&s.controlIndex<r[n].numVerts)r[n].removeVert(s.controlIndex),i=null;else{var c=i.parent.localXform,l=A.a.clone(c);A.a.invert(l,l);var u=M.clone(N);M.transformMat2d(u,u,l),this._dragInfo=Object.assign({rotate:Boolean(s.rotate),controlIndex:s.controlIndex,startObjectPos:u,worldToObjectMatrix:l,startLocalPos:i.parent.getPosition(),startLocalScale:i.parent.getScale(),startLocalRot:i.parent.getRotation(),shapeWidth:i.parent.width,shapeHeight:i.parent.height},o)}break}if(r[n].containsPoint(z,N,e,this._drawCtx)){i=r[n];break}}}if(n<0&&this._selectedShapes.size)this._selectedShapes.size&&this.fire(B.SELECTION_CHANGED,{unselectedShapes:b(this._selectedShapes),selectedShapes:[]}),this._dragInfo=null,g(this._selectedShapes);else if(i&&o&&(o.movable||o.rotatable||o.scalable)){var h=document.querySelector("".concat("#".concat(this._parent.id," > canvas")));null===h?(this._parent.addEventListener("mouseout",W),this._parent.addEventListener("mouseover",X)):(h.addEventListener("mouseout",q),h.addEventListener("mouseover",Y)),!this._dragInfo&&o.movable&&(this._dragInfo={startLocalPos:i.getPosition()}),this._dragInfo&&(this._dragInfo.shape=i,this._dragInfo.startPos=M.clone(z),this._dragInfo.startWorldPos=M.clone(N),this._dragInfo.objectToWorldMatrix=A.a.clone(i.globalXform),y(t,this._dragInfo),t.stopImmediatePropagation(),this.fire(B.DRAG_BEGIN,{shapes:b(this._selectedShapes)})),t.preventDefault()}}}},{key:"_mouseupCB",value:function(t){if(this._dragInfo&&this._dragInfo.shape){t.stopImmediatePropagation(),t.preventDefault();var e=document.querySelector("".concat("#".concat(this._parent.id," > canvas")));null===e?(this._parent.removeEventListener("mouseout",W),this._parent.removeEventListener("mouseover",X)):(e.removeEventListener("mouseout",q),e.removeEventListener("mouseover",Y)),this._dragInfo=null,this.fire(B.DRAG_END,{shapes:b(this._selectedShapes)})}else if(performance.now()-this.timer<V.QUICK_CLICK_TIME){M.set(z,t.offsetX,t.offsetY),M.transformMat2d(N,z,this._camera.screenToWorldMatrix);for(var r=this._camera.worldToScreenMatrix,n=this.sortedShapes,i=null,o=null,a=n.length-1;a>=0;a-=1)if(o=this._objects.get(n[a]),o.selectable&&n[a].containsPoint(z,N,r,this._drawCtx)){i=n[a];break}if(i&&!i.selected){var s=m(i,n,this._selectedShapes,this._selectStyle,this._xformStyle,o);this.fire(B.SELECTION_CHANGED,s)}}}},{key:"_mousemoveCB",value:function(t){if(p(this._drawCanvas,t.clientX,t.clientY)||this._dragInfo)if(this._dragInfo&&this._dragInfo.shape)E(t,this._parent),y(t,this._dragInfo),v(this._drawCanvas,t,this._dragInfo,this._camera),t.stopImmediatePropagation(),t.preventDefault();else if(!t.buttons&&this._selectedShapes.size){M.set(z,t.offsetX,t.offsetY),M.transformMat2d(N,z,this._camera.screenToWorldMatrix);var e=this._camera.worldToScreenMatrix,r=this.sortedShapes,n=0,i=this._camera.isYFlipped();for(n=r.length-1;n>=0;n-=1)if(r[n].selected){var o=this._objects.get(r[n]),a=this._selectedShapes.get(r[n]),s=null;if(O(this._parent,"none","none",!1),a&&(s=a.containsPoint(z,N,e,this._drawCtx)).hit){if(a instanceof D.a)if(s.rotate){var c=r[n].getRotation();i?(c*=-1,1===s.controlIndex?c-=V.RIGHT_ANGLE:0===s.controlIndex?c+=V.STRAIGHT_ANGLE:2===s.controlIndex&&(c+=V.RIGHT_ANGLE)):0===s.controlIndex?c-=V.RIGHT_ANGLE:1===s.controlIndex?c+=V.STRAIGHT_ANGLE:3===s.controlIndex&&(c+=V.RIGHT_ANGLE),x(t,this._parent,"".concat(R.replace(/<degrees>/g,"".concat(c))))}else s.controlIndex<4?0===s.controlIndex||3===s.controlIndex?x(t,this._parent,"".concat(T.replace(/<degrees>/g,"".concat(-r[n].getRotation()-V.FORTY_FIVE_ANGLE)))):1!==s.controlIndex&&2!==s.controlIndex||x(t,this._parent,"".concat(T.replace(/<degrees>/g,"".concat(-r[n].getRotation()+V.FORTY_FIVE_ANGLE)))):s.controlIndex%2==0?x(t,this._parent,"".concat(T.replace(/<degrees>/g,"".concat(-r[n].getRotation())))):x(t,this._parent,"".concat(T.replace(/<degrees>/g,"".concat(-r[n].getRotation()+V.RIGHT_ANGLE))));else a instanceof F.a&&(O(this._parent,"none","none",!1),s.controlIndex>=r[n].numVerts?x(t,this._parent,"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpolygon style='fill:%23ffffff;' points='31.2,28 24.8,28 24.8,32.8 20,32.8 20,39.2 24.8,39.2 24.8,44 31.2,44 31.2,39.2 36,39.2 36,32.8 31.2,32.8 '/%3E %3Cpolygon style='fill:%23ffffff' points='12,32 12,4 32.3,24.3 20,24.3 19.7,24.6 '/%3E%3Cpolygon points='13.8,8.2 13.8,27.8 19,22.8 19.2,22.5 28,22.5 '/%3E%3Cpolyline points='29.6,29.6 29.6,34.4 34.4,34.4 34.4,37.6 29.6,37.6 29.6,42.4 26.4,42.4 26.4,37.6 21.6,37.6 21.6,34.4 26.4,34.4 26.4,29.6 29.6,29.6  '/%3E%3C/svg%3E\") no-repeat",-8,-6):t.altKey?x(t,this._parent,"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect style='fill:%23ffffff;' x='20' y='32.8' width='16' height='6.4'/%3E%3Cpolygon  style='fill:%23ffffff;' points='12,32 12,4 32.3,24.3 20,24.3 19.7,24.6 '/%3E%3Cpolygon points='13.8,8.2 13.8,27.8 19,22.8 19.2,22.5 28,22.5 '/%3E%3Cpolyline points='34.4,34.4 34.4,37.6 21.6,37.6 21.6,34.4 '/%3E%3C/svg%3E\") no-repeat",-8,-6):x(t,this._parent,"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath style='fill:%23ffffff;' d='M24,17.5c-3.6,0-6.5,2.9-6.5,6.5s2.9,6.5,6.5,6.5s6.5-2.9,6.5-6.5S27.6,17.5,24,17.5L24,17.5z'/%3E%3Cpath style='fill:%23ffffff;' d='M24,4L4,24l20,20l20-20L24,4z M31.5,31.5h-15v-15h15V31.5z'/%3E%3Cpolygon points='17,34 24,40.5 31,34  '/%3E%3Cpolygon points='31,14 24,7.5 17,14     '/%3E%3Cpolygon points='14,17 7.5,24 14,31   '/%3E%3Cpolygon points='34,31 40.5,24 34,17    '/%3E%3Cpath d='M24,20c2.2,0,4,1.8,4,4s-1.8,4-4,4s-4-1.8-4-4S21.8,20,24,20'/%3E%3C/svg%3E\") no-repeat",V.SVG_OFFSET,V.SVG_OFFSET));t.stopImmediatePropagation(),t.preventDefault();break}if(r[n].containsPoint(z,N,e,this._drawCtx)){if(o&&o.movable){var l=document.getElementById("cursor");null!==l&&l.parentNode.removeChild(l),O(this._parent,"move",null),t.stopImmediatePropagation(),t.preventDefault()}break}}n<0&&(S(),O(this._parent,"default","auto",!1))}}},{key:"_clickCB",value:function(){}},{key:"_dblclickCB",value:function(t){if(p(this._drawCanvas,t.clientX,t.clientY)){M.set(z,t.offsetX,t.offsetY),M.transformMat2d(N,z,this._camera.screenToWorldMatrix);var e=this._camera.worldToScreenMatrix,r=this.sortedShapes,n=-1;for(n=r.length-1;n>=0;n-=1){var i=this._objects.get(r[n]);if(i.selectable&&r[n].containsPoint(z,N,e,this._drawCtx)){if(i.editable&&r[n]instanceof I.a){var o=r[n],a=!1;if(r[n].selected){var s=this._selectedShapes.get(r[n]);s&&(o.restore(),o.removeChildXform(s),a=!(s instanceof D.a))}o.selected=!0,o.save();var c=r[r.length-1].zIndex;o.zIndex=c+1,P.a.copyBasicStyle(this._selectStyle,o);var l=null;a?(i.rotatable||i.scalable)&&(l=new D.a(this._xformStyle||L,i),o.addChildXform(l)):(l=new F.a(o,this._xformStyle),o.addChildXform(l)),this._selectedShapes.set(o,l)}else if(!r[n].selected){var u=m(r[n],r,this._selectedShapes,this._selectStyle,this._xformStyle,i);this.fire(B.SELECTION_CHANGED,u)}break}}n<0&&this._selectedShapes.size?(this._selectedShapes.size&&this.fire(B.SELECTION_CHANGED,{unselectedShapes:b(this._selectedShapes),selectedShapes:[]}),this._dragInfo=null,g(this._selectedShapes),S(),O(this._parent,"default","auto",!1)):t.stopImmediatePropagation(),t.preventDefault()}}},{key:"_mouseoverCB",value:function(){}},{key:"_mouseoutCB",value:function(){}},{key:"_init",value:function(t,r){this._activated=r&&r.enableInteractions,l(h(e.prototype),"_init",this).call(this,t,r,this._activated);var n=Object.getOwnPropertyNames(B).map(function(t){return B[t]});this.registerEvents(n),this._dragInfo=null,this._selectedShapes=new Map,this._selectStyle=new P.a(r&&r.selectStyle?r.selectStyle:{fillColor:"orange"}),this._xformStyle=new P.a(r&&r.xformStyle?r.xformStyle:{fillColor:"white",strokeColor:"black",strokeWidth:2}),this.timer=0}},{key:"_renderShapes",value:function(t,e,r){var n=this,i=r.worldToScreenMatrix;e.forEach(function(e){if(e.visible&&(e.render(t,i,n._styleState),e.selected)){var r=n._selectedShapes.get(e);r&&r.render(t,i,n._styleState)}})}},{key:"selectShape",value:function(t){var e=this._objects.get(t);if(e&&e.selectable){var r=m(t,this.sortedShapes,this._selectedShapes,this._selectStyle,this._xformStyle,e);this.fire(B.SELECTION_CHANGED,r)}}},{key:"clearSelection",value:function(){if(this._selectedShapes.size){var t=b(this._selectedShapes);g(this._selectedShapes),this.fire(B.SELECTION_CHANGED,{unselectedShapes:t,selectedShapes:[]}),this._rerenderCb()}}},{key:"addShape",value:function(t){var r=this,n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:null,i=arguments.length>2&&void 0!==arguments[2]&&arguments[2],o=t;if(Array.isArray(o)||(o=[t]),l(h(e.prototype),"addShape",this).call(this,o),o.forEach(function(t){var e=r._objects.get(t);e&&(e.selectable=!n||void 0===n.selectable||Boolean(n.selectable),e.movable=!n||void 0===n.movable||Boolean(n.movable),e.rotatable=!n||void 0===n.rotatable||Boolean(n.rotatable),e.scalable=!n||void 0===n.scalable||Boolean(n.scalable),e.uniformScaleOnly=!(!n||void 0===n.uniformScaleOnly)&&Boolean(n.uniformScaleOnly),e.centerScaleOnly=!(!n||void 0===n.centerScaleOnly)&&Boolean(n.centerScaleOnly),e.editable=!n||void 0===n.editable||Boolean(n.editable))}),i){var a={unselectedShapes:b(this._selectedShapes)},s=[];o.forEach(function(t){var e=r._objects.get(t);e.selectable&&(m(t,r.sortedShapes,r._selectedShapes,r._selectStyle,r._xformStyle,e),s.push(t))}),s.length&&(a.selectedShapes=s,this.fire(B.SELECTION_CHANGED,a))}return this}},{key:"deleteShape",value:function(t){var r=t;Array.isArray(r)||(r=[t]);var n=w(this._selectedShapes,r);return this.fire(B.SELECTION_CHANGED,{unselectedShapes:n,selectedShapes:b(this._selectedShapes)}),S(),O(this._parent,"default","auto",!0),l(h(e.prototype),"deleteShape",this).call(this,r)}},{key:"deleteSelectedShapes",value:function(){var t=b(this._selectedShapes);return g(this._selectedShapes),this.fire(B.SELECTION_CHANGED,{unselectedShapes:t,selectedShapes:[]}),S(),O(this._parent,"default","auto",!0),l(h(e.prototype),"deleteShape",this).call(this,t)}},{key:"enableInteractions",value:function(){return this._enableEvents(),this._activated=!0,this}},{key:"disableInteractions",value:function(){return(!(arguments.length>0&&void 0!==arguments[0])||arguments[0])&&this.clearSelection(),this._disableEvents(),this._activated=!1,this}},{key:"selectStyle",set:function(t){P.a.copyBasicStyle(t,this._selectStyle)},get:function(){return this._selectStyle}},{key:"selectedShapes",get:function(){return b(this._selectedShapes)}},{key:"interactionsEnabled",get:function(){return this._activated}}]),e}(j.a);Object.assign(B,j.a.EventConstants),H.EventConstants=B},function(t,e,r){"use strict";function n(t,e,r,n,i){var o=[0,0],a=[0,0];c.a.svd(o,a,null,r.objectToWorldMatrix);var u=[0,0];s.sub(u,r.startWorldPos,o),l.a.normalize(u,u);var h=o;s.sub(h,i,o),l.a.normalize(h,h);var f=l.a.angle(u,h);r.keys.shiftKey&&(f=Math.round(f/Math.QUATER_PI)*Math.QUATER_PI),e.setRotation(r.startLocalRot+Math.RAD_TO_DEG*f)}function i(t,e,r,i,o){var a=t.parent,u=[0,0],h=[0,0],f=[0,0];if(e.rotate)return void n(t,a,e,r,i,o);var d=e.keys.shiftKey||e.uniformScaleOnly,p=e.keys.altKey||e.centerScaleOnly,_=[0,0];if(c.a.svd(_,null,null,e.objectToWorldMatrix),l.a.sub(h,i,e.startWorldPos),d&&e.controlIndex<4){var v=[e.objectToWorldMatrix[0],e.objectToWorldMatrix[1]],y=[e.objectToWorldMatrix[2],e.objectToWorldMatrix[3]],b=[0,0];e.controlIndex<2&&l.a.negate(v,v),e.controlIndex%2==0&&l.a.negate(y,y),l.a.normalize(v,v),l.a.normalize(y,y),l.a.add(b,v,y),l.a.normalize(b,b);var m=l.a.cross2d(h,b),g=null;0===e.controlIndex||3===e.controlIndex?(g=y,m<0&&(g=v)):(g=v,m<0&&(g=y));var w=l.a.dot(h,g);w=Math.sign(w)*Math.sqrt(2*w*w),l.a.scale(h,b,w),s.addVec2(i,e.startWorldPos,h)}s.copy(u,i),s.transformMat2d(u,u,e.worldToObjectMatrix),l.a.sub(f,u,e.startObjectPos),s.copy(_,e.startLocalPos);var k=0,x=0;if(e.controlIndex<4)k=e.controlIndex<2?-1:1,x=e.controlIndex%2==0?-1:1,p||s.addVec2(_,_,l.a.scale(h,h,.5)),a.setPosition(_);else{var S=e.controlIndex-4,O=[0,0];S%2==0?(l.a.set(O,e.objectToWorldMatrix[0],e.objectToWorldMatrix[1]),x=0,k=S<2?-1:1,d&&(x=k,f[1]=f[0])):(l.a.set(O,e.objectToWorldMatrix[2],e.objectToWorldMatrix[3]),k=0,x=S<2?-1:1,d&&(k=x,f[0]=f[1])),p||(l.a.normalize(O,O),l.a.scale(O,O,l.a.dot(h,O)),s.addVec2(_,_,l.a.scale(O,O,.5))),a.setPosition(_)}p&&(k*=2,x*=2),a.setScale([e.startLocalScale[0]*(1+k*f[0]/e.shapeWidth),e.startLocalScale[1]*(1+x*f[1]/e.shapeHeight)])}function o(t,e,r,n,i){var o=[0,0],a=[0,0];if(c.a.svd(a,null,null,e.objectToWorldMatrix),e.keys.shiftKey){s.sub(o,r,e.startPos);var u=Math.atan2(o[1],o[0]);u=Math.round(u/Math.QUATER_PI)*Math.QUATER_PI;var h=[Math.cos(u),Math.sin(u)];l.a.scale(o,h,l.a.dot(o,h)),l.a.transformMat2(o,o,i.screenToWorldMatrix)}else l.a.sub(o,n,e.startWorldPos);s.addVec2(a,e.startLocalPos,o),t.setPosition(a)}function a(t,e,r,n){var i=t.parent,o=i.numVerts;if(e.controlIndex>=o){var a=Math.min(e.controlIndex-o,o-1),c=a===o-1?0:a+1,u=[0,0],h=[0,0],f=[0,0],d=[0,0],p=i.vertsRef,_=i.globalXform;s.transformMat2d(h,p[a],_),s.transformMat2d(f,p[c],_),s.sub(d,f,h),l.a.scale(d,d,.5),s.addVec2(u,h,d),e.controlIndex=i.insertVert(a+1,u)}else i.setVertPosition(e.controlIndex,n)}e.a=i,e.b=o,e.c=a;var s=r(3),c=r(4),l=r(9)},function(t,e,r){"use strict";function n(){var t=new C.ARRAY_TYPE(4);return C.ARRAY_TYPE!=Float32Array&&(t[1]=0,t[2]=0),t[0]=1,t[3]=1,t}function i(t){var e=new C.ARRAY_TYPE(4);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e}function o(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t}function a(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t}function s(t,e,r,n){var i=new C.ARRAY_TYPE(4);return i[0]=t,i[1]=e,i[2]=r,i[3]=n,i}function c(t,e,r,n,i){return t[0]=e,t[1]=r,t[2]=n,t[3]=i,t}function l(t,e){if(t===e){var r=e[1];t[1]=e[2],t[2]=r}else t[0]=e[0],t[1]=e[2],t[2]=e[1],t[3]=e[3];return t}function u(t,e){var r=e[0],n=e[1],i=e[2],o=e[3],a=r*o-i*n;return a?(a=1/a,t[0]=o*a,t[1]=-n*a,t[2]=-i*a,t[3]=r*a,t):null}function h(t,e){var r=e[0];return t[0]=e[3],t[1]=-e[1],t[2]=-e[2],t[3]=r,t}function f(t){return t[0]*t[3]-t[2]*t[1]}function d(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=r[0],c=r[1],l=r[2],u=r[3];return t[0]=n*s+o*c,t[1]=i*s+a*c,t[2]=n*l+o*u,t[3]=i*l+a*u,t}function p(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=Math.sin(r),c=Math.cos(r);return t[0]=n*c+o*s,t[1]=i*c+a*s,t[2]=n*-s+o*c,t[3]=i*-s+a*c,t}function _(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=r[0],c=r[1];return t[0]=n*s,t[1]=i*s,t[2]=o*c,t[3]=a*c,t}function v(t,e){var r=Math.sin(e),n=Math.cos(e);return t[0]=n,t[1]=r,t[2]=-r,t[3]=n,t}function y(t,e){return t[0]=e[0],t[1]=0,t[2]=0,t[3]=e[1],t}function b(t){return"mat2("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+")"}function m(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2))}function g(t,e,r,n){return t[2]=n[2]/n[0],r[0]=n[0],r[1]=n[1],r[3]=n[3]-t[2]*r[1],[t,e,r]}function w(t,e,r){return t[0]=e[0]+r[0],t[1]=e[1]+r[1],t[2]=e[2]+r[2],t[3]=e[3]+r[3],t}function k(t,e,r){return t[0]=e[0]-r[0],t[1]=e[1]-r[1],t[2]=e[2]-r[2],t[3]=e[3]-r[3],t}function x(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3]}function S(t,e){var r=t[0],n=t[1],i=t[2],o=t[3],a=e[0],s=e[1],c=e[2],l=e[3];return Math.abs(r-a)<=C.EPSILON*Math.max(1,Math.abs(r),Math.abs(a))&&Math.abs(n-s)<=C.EPSILON*Math.max(1,Math.abs(n),Math.abs(s))&&Math.abs(i-c)<=C.EPSILON*Math.max(1,Math.abs(i),Math.abs(c))&&Math.abs(o-l)<=C.EPSILON*Math.max(1,Math.abs(o),Math.abs(l))}function O(t,e,r){return t[0]=e[0]*r,t[1]=e[1]*r,t[2]=e[2]*r,t[3]=e[3]*r,t}function E(t,e,r,n){return t[0]=e[0]+r[0]*n,t[1]=e[1]+r[1]*n,t[2]=e[2]+r[2]*n,t[3]=e[3]+r[3]*n,t}Object.defineProperty(e,"__esModule",{value:!0}),e.create=n,e.clone=i,e.copy=o,e.identity=a,e.fromValues=s,e.set=c,e.transpose=l,e.invert=u,e.adjoint=h,e.determinant=f,e.multiply=d,e.rotate=p,e.scale=_,e.fromRotation=v,e.fromScaling=y,e.str=b,e.frob=m,e.LDU=g,e.add=w,e.subtract=k,e.exactEquals=x,e.equals=S,e.multiplyScalar=O,e.multiplyScalarAndAdd=E,r.d(e,"mul",function(){return M}),r.d(e,"sub",function(){return P});var C=r(1),M=d,P=k},function(t,e,r){"use strict";function n(){var t=new E.ARRAY_TYPE(6);return E.ARRAY_TYPE!=Float32Array&&(t[1]=0,t[2]=0,t[4]=0,t[5]=0),t[0]=1,t[3]=1,t}function i(t){var e=new E.ARRAY_TYPE(6);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e[4]=t[4],e[5]=t[5],e}function o(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t[4]=e[4],t[5]=e[5],t}function a(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t[4]=0,t[5]=0,t}function s(t,e,r,n,i,o){var a=new E.ARRAY_TYPE(6);return a[0]=t,a[1]=e,a[2]=r,a[3]=n,a[4]=i,a[5]=o,a}function c(t,e,r,n,i,o,a){return t[0]=e,t[1]=r,t[2]=n,t[3]=i,t[4]=o,t[5]=a,t}function l(t,e){var r=e[0],n=e[1],i=e[2],o=e[3],a=e[4],s=e[5],c=r*o-n*i;return c?(c=1/c,t[0]=o*c,t[1]=-n*c,t[2]=-i*c,t[3]=r*c,t[4]=(i*s-o*a)*c,t[5]=(n*a-r*s)*c,t):null}function u(t){return t[0]*t[3]-t[1]*t[2]}function h(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=e[4],c=e[5],l=r[0],u=r[1],h=r[2],f=r[3],d=r[4],p=r[5];return t[0]=n*l+o*u,t[1]=i*l+a*u,t[2]=n*h+o*f,t[3]=i*h+a*f,t[4]=n*d+o*p+s,t[5]=i*d+a*p+c,t}function f(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=e[4],c=e[5],l=Math.sin(r),u=Math.cos(r);return t[0]=n*u+o*l,t[1]=i*u+a*l,t[2]=n*-l+o*u,t[3]=i*-l+a*u,t[4]=s,t[5]=c,t}function d(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=e[4],c=e[5],l=r[0],u=r[1];return t[0]=n*l,t[1]=i*l,t[2]=o*u,t[3]=a*u,t[4]=s,t[5]=c,t}function p(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=e[4],c=e[5],l=r[0],u=r[1];return t[0]=n,t[1]=i,t[2]=o,t[3]=a,t[4]=n*l+o*u+s,t[5]=i*l+a*u+c,t}function _(t,e){var r=Math.sin(e),n=Math.cos(e);return t[0]=n,t[1]=r,t[2]=-r,t[3]=n,t[4]=0,t[5]=0,t}function v(t,e){return t[0]=e[0],t[1]=0,t[2]=0,t[3]=e[1],t[4]=0,t[5]=0,t}function y(t,e){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t[4]=e[0],t[5]=e[1],t}function b(t){return"mat2d("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+", "+t[4]+", "+t[5]+")"}function m(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2)+Math.pow(t[4],2)+Math.pow(t[5],2)+1)}function g(t,e,r){return t[0]=e[0]+r[0],t[1]=e[1]+r[1],t[2]=e[2]+r[2],t[3]=e[3]+r[3],t[4]=e[4]+r[4],t[5]=e[5]+r[5],t}function w(t,e,r){return t[0]=e[0]-r[0],t[1]=e[1]-r[1],t[2]=e[2]-r[2],t[3]=e[3]-r[3],t[4]=e[4]-r[4],t[5]=e[5]-r[5],t}function k(t,e,r){return t[0]=e[0]*r,t[1]=e[1]*r,t[2]=e[2]*r,t[3]=e[3]*r,t[4]=e[4]*r,t[5]=e[5]*r,t}function x(t,e,r,n){return t[0]=e[0]+r[0]*n,t[1]=e[1]+r[1]*n,t[2]=e[2]+r[2]*n,t[3]=e[3]+r[3]*n,t[4]=e[4]+r[4]*n,t[5]=e[5]+r[5]*n,t}function S(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3]&&t[4]===e[4]&&t[5]===e[5]}function O(t,e){var r=t[0],n=t[1],i=t[2],o=t[3],a=t[4],s=t[5],c=e[0],l=e[1],u=e[2],h=e[3],f=e[4],d=e[5];return Math.abs(r-c)<=E.EPSILON*Math.max(1,Math.abs(r),Math.abs(c))&&Math.abs(n-l)<=E.EPSILON*Math.max(1,Math.abs(n),Math.abs(l))&&Math.abs(i-u)<=E.EPSILON*Math.max(1,Math.abs(i),Math.abs(u))&&Math.abs(o-h)<=E.EPSILON*Math.max(1,Math.abs(o),Math.abs(h))&&Math.abs(a-f)<=E.EPSILON*Math.max(1,Math.abs(a),Math.abs(f))&&Math.abs(s-d)<=E.EPSILON*Math.max(1,Math.abs(s),Math.abs(d))}Object.defineProperty(e,"__esModule",{value:!0}),e.create=n,e.clone=i,e.copy=o,e.identity=a,e.fromValues=s,e.set=c,e.invert=l,e.determinant=u,e.multiply=h,e.rotate=f,e.scale=d,e.translate=p,e.fromRotation=_,e.fromScaling=v,e.fromTranslation=y,e.str=b,e.frob=m,e.add=g,e.subtract=w,e.multiplyScalar=k,e.multiplyScalarAndAdd=x,e.exactEquals=S,e.equals=O,r.d(e,"mul",function(){return C}),r.d(e,"sub",function(){return M});var E=r(1),C=h,M=w},function(t,e,r){"use strict";var n=(r(1),r(15));r(14),n.a,n.a,n.c,n.d,n.h},function(t,e,r){"use strict";function n(){var t=new z.ARRAY_TYPE(2);return z.ARRAY_TYPE!=Float32Array&&(t[0]=0,t[1]=0),t}function i(t){var e=new z.ARRAY_TYPE(2);return e[0]=t[0],e[1]=t[1],e}function o(t,e){var r=new z.ARRAY_TYPE(2);return r[0]=t,r[1]=e,r}function a(t,e){return t[0]=e[0],t[1]=e[1],t}function s(t,e,r){return t[0]=e,t[1]=r,t}function c(t,e,r){return t[0]=e[0]+r[0],t[1]=e[1]+r[1],t}function l(t,e,r){return t[0]=e[0]-r[0],t[1]=e[1]-r[1],t}function u(t,e,r){return t[0]=e[0]*r[0],t[1]=e[1]*r[1],t}function h(t,e,r){return t[0]=e[0]/r[0],t[1]=e[1]/r[1],t}function f(t,e){return t[0]=Math.ceil(e[0]),t[1]=Math.ceil(e[1]),t}function d(t,e){return t[0]=Math.floor(e[0]),t[1]=Math.floor(e[1]),t}function p(t,e,r){return t[0]=Math.min(e[0],r[0]),t[1]=Math.min(e[1],r[1]),t}function _(t,e,r){return t[0]=Math.max(e[0],r[0]),t[1]=Math.max(e[1],r[1]),t}function v(t,e){return t[0]=Math.round(e[0]),t[1]=Math.round(e[1]),t}function y(t,e,r){return t[0]=e[0]*r,t[1]=e[1]*r,t}function b(t,e,r,n){return t[0]=e[0]+r[0]*n,t[1]=e[1]+r[1]*n,t}function m(t,e){var r=e[0]-t[0],n=e[1]-t[1];return Math.sqrt(r*r+n*n)}function g(t,e){var r=e[0]-t[0],n=e[1]-t[1];return r*r+n*n}function w(t){var e=t[0],r=t[1];return Math.sqrt(e*e+r*r)}function k(t){var e=t[0],r=t[1];return e*e+r*r}function x(t,e){return t[0]=-e[0],t[1]=-e[1],t}function S(t,e){return t[0]=1/e[0],t[1]=1/e[1],t}function O(t,e){var r=e[0],n=e[1],i=r*r+n*n;return i>0&&(i=1/Math.sqrt(i),t[0]=e[0]*i,t[1]=e[1]*i),t}function E(t,e){return t[0]*e[0]+t[1]*e[1]}function C(t,e,r){var n=e[0]*r[1]-e[1]*r[0];return t[0]=t[1]=0,t[2]=n,t}function M(t,e,r,n){var i=e[0],o=e[1];return t[0]=i+n*(r[0]-i),t[1]=o+n*(r[1]-o),t}function P(t,e){e=e||1;var r=2*z.RANDOM()*Math.PI;return t[0]=Math.cos(r)*e,t[1]=Math.sin(r)*e,t}function j(t,e,r){var n=e[0],i=e[1];return t[0]=r[0]*n+r[2]*i,t[1]=r[1]*n+r[3]*i,t}function A(t,e,r){var n=e[0],i=e[1];return t[0]=r[0]*n+r[2]*i+r[4],t[1]=r[1]*n+r[3]*i+r[5],t}function I(t,e,r){var n=e[0],i=e[1];return t[0]=r[0]*n+r[3]*i+r[6],t[1]=r[1]*n+r[4]*i+r[7],t}function F(t,e,r){var n=e[0],i=e[1];return t[0]=r[0]*n+r[4]*i+r[12],t[1]=r[1]*n+r[5]*i+r[13],t}function D(t,e,r,n){var i=e[0]-r[0],o=e[1]-r[1],a=Math.sin(n),s=Math.cos(n);return t[0]=i*s-o*a+r[0],t[1]=i*a+o*s+r[1],t}function T(t,e){var r=t[0],n=t[1],i=e[0],o=e[1],a=r*r+n*n;a>0&&(a=1/Math.sqrt(a));var s=i*i+o*o;s>0&&(s=1/Math.sqrt(s));var c=(r*i+n*o)*a*s;return c>1?0:c<-1?Math.PI:Math.acos(c)}function R(t){return"vec2("+t[0]+", "+t[1]+")"}function B(t,e){return t[0]===e[0]&&t[1]===e[1]}function V(t,e){var r=t[0],n=t[1],i=e[0],o=e[1];return Math.abs(r-i)<=z.EPSILON*Math.max(1,Math.abs(r),Math.abs(i))&&Math.abs(n-o)<=z.EPSILON*Math.max(1,Math.abs(n),Math.abs(o))}Object.defineProperty(e,"__esModule",{value:!0}),e.create=n,e.clone=i,e.fromValues=o,e.copy=a,e.set=s,e.add=c,e.subtract=l,e.multiply=u,e.divide=h,e.ceil=f,e.floor=d,e.min=p,e.max=_,e.round=v,e.scale=y,e.scaleAndAdd=b,e.distance=m,e.squaredDistance=g,e.length=w,e.squaredLength=k,e.negate=x,e.inverse=S,e.normalize=O,e.dot=E,e.cross=C,e.lerp=M,e.random=P,e.transformMat2=j,e.transformMat2d=A,e.transformMat3=I,e.transformMat4=F,e.rotate=D,e.angle=T,e.str=R,e.exactEquals=B,e.equals=V,r.d(e,"len",function(){return N}),r.d(e,"sub",function(){return L}),r.d(e,"mul",function(){return W}),r.d(e,"div",function(){return X}),r.d(e,"dist",function(){return q}),r.d(e,"sqrDist",function(){return Y}),r.d(e,"sqrLen",function(){return H}),r.d(e,"forEach",function(){return J});var z=r(1),N=w,L=l,W=u,X=h,q=m,Y=g,H=k,J=function(){var t=n();return function(e,r,n,i,o,a){var s=void 0,c=void 0;for(r||(r=2),n||(n=0),c=i?Math.min(i*r+n,e.length):e.length,s=n;s<c;s+=r)t[0]=e[s],t[1]=e[s+1],o(t,t,a),e[s]=t[0],e[s+1]=t[1];return e}}()},function(t,e,r){"use strict";function n(t){var e=t.backingStorePixelRatio||t.webkitBackingStorePixelRatio||t.mozBackingStorePixelRatio||t.msBackingStorePixelRatio||t.oBackingStorePixelRatio||t.backingStorePixelRatio||1;return(window.devicePixelRatio||1)/e}function i(t){var e=n(t);if(1===e)return 1;["fillRect","clearRect","strokeRect","isPointInPath","isPointInStroke"].forEach(function(r){t[r]=function(t){return function(){for(var r=arguments.length,n=new Array(r),i=0;i<r;i++)n[i]=arguments[i];return n=n.map(function(t){return t*e}),t.apply(this,n)}}(t[r])});var r=[e,0,0,e,0,0];return t.setTransform=function(t){return function(){t.apply(this,r),this.transform.apply(this,arguments)}}(t.setTransform),e}e.a=i},function(t,e,r){"use strict";function n(t,e){t.forEach(function(t){e[t]&&(e[t]=e[t].bind(e))})}e.a=n},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t){return(l=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function u(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&h(t,e)}function h(t,e){return(h=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return m});var f=r(2),d=r(5),p=r(10),_=r(11),v=r(4),y=r(0),b=function(t){function e(t,r){var n,o=arguments.length>2&&void 0!==arguments[2]&&arguments[2];return i(this,e),n=s(this,l(e).call(this,["changed","changed:xform"])),n._viewport=f.clone(t),n._projectionDimensions=y.d.clone(r),n._yflip=o,n._screenMatrix=v.a.create(),n._screenDirty=!0,n}return u(e,t),a(e,[{key:"isYFlipped",value:function(){return this._yflip}},{key:"viewport",set:function(t){if(!f.equals(t,this._viewport)){var e=f.clone(this._viewport);f.copy(this._viewport,t),this._screenDirty=!0,this._worldToScreenOutdated=!0,this.fire("changed",{attr:"viewport",prevVal:e,currVal:t})}return this},get:function(){return f.clone(this._viewport)}},{key:"viewportRef",get:function(){return this._viewport}},{key:"screenMatrix",get:function(){if(this._screenDirty){var t=[0,0],e=[0,0];f.getCenter(t,this._viewport),f.getExtents(e,this._viewport),v.a.set(this._screenMatrix,e[0],0,0,e[1],t[0],t[1]),this._worldToScreenOutdated=!0,this._screenDirty=!1}return this._screenMatrix}}]),e}(_.a),m=function(t){function e(t,r,n){var o;return i(this,e),o=s(this,l(e).call(this,t,r,n)),o._viewMatrix=v.a.create(),o._viewDirty=!0,o._projMatrix=v.a.create(),o._projDirty=!0,o}return u(e,t),a(e,[{key:"_localXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"_globalXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"_matricesDirty",value:function(){return this._boundsOutOfDate||this._lxformDirty||this._xformDirty||this._viewDirty||this._projDirty||this._screenDirty}},{key:"projectionDimensions",set:function(t){if(!y.d.equals(t,this._projectionDimensions)){var e=y.d.clone(this._projectionDimensions);f.copy(this._projectionDimensions,t),this._viewDirty=!0,this._projDirty=!0,this.fire("changed",{attr:"projectionDimensions",prevVal:e,currVal:t})}return this},get:function(){return y.d.clone(this._projectionDimensions)}},{key:"projectionDimensionsRef",get:function(){return this._projectionDimensions}},{key:"viewMatrix",get:function(){if(this._viewDirty||this._boundsOutOfDate||this._xformDirty||this._lxformDirty){var t=[0,0],e=[0,0],r=[0,0],n=this.globalXform;v.a.svd(t,e,r,n),v.a.fromTranslation(this._viewMatrix,y.d.negate(t,t)),v.a.rotate(this._viewMatrix,this._viewMatrix,-r[0]),v.a.scale(this._viewMatrix,this._viewMatrix,e),v.a.rotate(this._viewMatrix,this._viewMatrix,-r[1]),this._worldToScreenOutdated=!0,this._viewDirty=!1}return this._viewMatrix}},{key:"projMatrix",get:function(){if(this._projDirty){var t=this._yflip?-1:1;v.a.set(this._projMatrix,2/this._projectionDimensions[0],0,0,2*t/this._projectionDimensions[1],0,0),this._worldToScreenOutdated=!0,this._projDirty=!1}return this._projMatrix}},{key:"worldToScreenMatrix",get:function(){return(!this._worldToScreenMatrix||this._worldToScreenOutdated||this._matricesDirty())&&(this._worldToScreenMatrix||(this._worldToScreenMatrix=v.a.create()),v.a.copy(this._worldToScreenMatrix,this.viewMatrix),v.a.multiply(this._worldToScreenMatrix,this.projMatrix,this._worldToScreenMatrix),v.a.multiply(this._worldToScreenMatrix,this.screenMatrix,this._worldToScreenMatrix),this._worldToScreenOutdated=!1,this._screenToWorldOutdated=!0),this._worldToScreenMatrix}},{key:"screenToWorldMatrix",get:function(){return(!this._screenToWorld||this._screenToWorldOutdated||this._matricesDirty())&&(this._screenToWorld||(this._screenToWorld=v.a.create()),v.a.copy(this._screenToWorld,this.worldToScreenMatrix),v.a.invert(this._screenToWorld,this._screenToWorld),this._screenToWorldOutdated=!1),this._screenToWorld}}]),e}(Object(d.a)(b,Object(p.b)("changed:xform")))},function(t,e,r){var n,i;!function(o,a){n=a,void 0!==(i="function"==typeof n?n.call(e,r,e,t):n)&&(t.exports=i)}(0,function(){function t(t,e){var r=Object.prototype.toString.call(t),n="[object Array]"===r||"[object NodeList]"===r||"[object HTMLCollection]"===r||"[object Object]"===r||"undefined"!=typeof jQuery&&t instanceof jQuery||"undefined"!=typeof Elements&&t instanceof Elements,i=0,o=t.length;if(n)for(;i<o;i++)e(t[i]);else e(t)}if("undefined"==typeof window)return null;var e=window.requestAnimationFrame||window.mozRequestAnimationFrame||window.webkitRequestAnimationFrame||function(t){return window.setTimeout(t,20)},r=function(n,i){function o(){var t=[];this.add=function(e){t.push(e)};var e,r;this.call=function(){for(e=0,r=t.length;e<r;e++)t[e].call()},this.remove=function(n){var i=[];for(e=0,r=t.length;e<r;e++)t[e]!==n&&i.push(t[e]);t=i},this.length=function(){return t.length}}function a(t,e){return t.currentStyle?t.currentStyle[e]:window.getComputedStyle?window.getComputedStyle(t,null).getPropertyValue(e):t.style[e]}function s(t,r){if(t.resizedAttached){if(t.resizedAttached)return void t.resizedAttached.add(r)}else t.resizedAttached=new o,t.resizedAttached.add(r);t.resizeSensor=document.createElement("div"),t.resizeSensor.className="resize-sensor";var n="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;",i="position: absolute; left: 0; top: 0; transition: 0s;";t.resizeSensor.style.cssText=n,t.resizeSensor.innerHTML='<div class="resize-sensor-expand" style="'+n+'"><div style="'+i+'"></div></div><div class="resize-sensor-shrink" style="'+n+'"><div style="'+i+' width: 200%; height: 200%"></div></div>',t.appendChild(t.resizeSensor),"static"==a(t,"position")&&(t.style.position="relative");var s,c,l,u,h=t.resizeSensor.childNodes[0],f=h.childNodes[0],d=t.resizeSensor.childNodes[1],p=t.offsetWidth,_=t.offsetHeight,v=function(){f.style.width="100000px",f.style.height="100000px",h.scrollLeft=1e5,h.scrollTop=1e5,d.scrollLeft=1e5,d.scrollTop=1e5};v();var y=function(){c=0,s&&(p=l,_=u,t.resizedAttached&&t.resizedAttached.call())},b=function(){l=t.offsetWidth,u=t.offsetHeight,s=l!=p||u!=_,s&&!c&&(c=e(y)),v()},m=function(t,e,r){t.attachEvent?t.attachEvent("on"+e,r):t.addEventListener(e,r)};m(h,"scroll",b),m(d,"scroll",b)}t(n,function(t){s(t,i)}),this.detach=function(t){r.detach(n,t)}};return r.detach=function(e,r){t(e,function(t){t.resizedAttached&&"function"==typeof r&&(t.resizedAttached.remove(r),t.resizedAttached.length())||t.resizeSensor&&(t.contains(t.resizeSensor)&&t.removeChild(t.resizeSensor),delete t.resizeSensor,delete t.resizedAttached)})},r})},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t){return(l=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function u(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&h(t,e)}function h(t,e){return(h=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return v});var f=r(2),d=r(3),p=r(0),_=r(7),v=function(t){function e(t,r){var n;return i(this,e),n=s(this,l(e).call(this,r)),n._baseVertShape=t,n._vertRadius=4,n._transformedVerts=[],n._baseaabox=f.create(),n._worldToScreenMatrix=p.c.create(),n}return u(e,t),a(e,[{key:"_updateAABox",value:function(t){var e=this._baseVertShape.aabox;if(!f.equals(e,this._baseaabox)||!p.c.equals(t,this._worldToScreenMatrix)){f.copy(this._baseaabox,e),p.c.copy(this._worldToScreenMatrix,t),f.transformMat2d(this._aabox,this._baseaabox,this._worldToScreenMatrix);var r=this._vertRadius+this.strokeWidth;f.expand(this._aabox,this._aabox,[r,r])}}},{key:"containsPoint",value:function(t,e,r,n){var i={hit:!1,controlIndex:-1};if(this._updateAABox(r),this.visible&&f.containsPt(this._aabox,t)){var o=f.create(),a=this._vertRadius+this.strokeWidth/2,s=[a,a],c=0;for(c=0;c<this._transformedVerts.length;c+=1)if(f.initCenterExtents(o,this._transformedVerts[c],s),f.containsPt(o,t)){i.hit=!0,i.controlIndex=c;break}if(!i.hit){var l=[0,0],u=[0,0],h=1.5*n.lineWidth;for(p.d.set(s,h,h),c=0;c<this._transformedVerts.length-1;c+=1)if(d.sub(u,this._transformedVerts[c+1],this._transformedVerts[c]),p.d.scale(u,u,.5),d.addVec2(l,this._transformedVerts[c],u),f.initCenterExtents(o,l,s),f.containsPt(o,t)){i.hit=!0,i.controlIndex=this._transformedVerts.length+c;break}c>0&&c===this._transformedVerts.length-1&&(d.sub(u,this._transformedVerts[0],this._transformedVerts[c]),p.d.scale(u,u,.5),d.addVec2(l,this._transformedVerts[c],u),f.initCenterExtents(o,l,s),f.containsPt(o,t)&&(i.hit=!0,i.controlIndex=this._transformedVerts.length+c))}}return i}},{key:"renderBounds",value:function(t,e,r){this._updateAABox(e),t.save(),t.setTransform(1,0,0,1,0,0),r.setStrokeCtx(t);var n=[0,0],i=[0,0];f.getCenter(n,this._aabox),f.getExtents(i,this._aabox),t.beginPath(),t.rect(n[0]-i[0],n[1]-i[1],2*i[0],2*i[1]),t.stroke(),t.restore()}},{key:"render",value:function(t){var e=this;t.save(),t.setTransform(1,0,0,1,0,0);var r=this._baseVertShape._fullXform,n=this._baseVertShape.vertsRef;this._transformedVerts=new Array(n.length);var i=[0,0],o=[0,0];t.beginPath();var a=0;this._transformedVerts[a]=[0,0],d.transformMat2d(this._transformedVerts[a],n[a],r);var s=Math.max(1.5*t.lineWidth,2.5);for(a=0;a<n.length-1;a+=1)this._transformedVerts[a+1]=[0,0],d.transformMat2d(this._transformedVerts[a+1],n[a+1],r),d.sub(o,this._transformedVerts[a+1],this._transformedVerts[a]),p.d.scale(o,o,.5),d.addVec2(i,this._transformedVerts[a],o),t.moveTo(i[0]+s,i[1]),t.arc(i[0],i[1],s,0,Math.TWO_PI);a>0&&(d.sub(o,this._transformedVerts[0],this._transformedVerts[a]),p.d.scale(o,o,.5),d.addVec2(i,this._transformedVerts[a],o),t.moveTo(i[0]+s,i[1]),t.arc(i[0],i[1],s,0,Math.TWO_PI),t.fillStyle=t.strokeStyle,t.fill()),t.beginPath(),this._transformedVerts.forEach(function(r){t.moveTo(r[0]+e._vertRadius,r[1]),t.arc(r[0],r[1],e._vertRadius,0,Math.TWO_PI)}),this.isFillVisible()&&(this.setFillCtx(t),t.fill()),this.isStrokeVisible()&&(this.setStrokeCtx(t),t.stroke()),t.restore()}}]),e}(_.a)},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}function p(t,e,r,n,i,o,a){y.transformMat2d(e,e,r),t.setTransform(1,0,0,1,0,0),t.translate(e[0],e[1]),t.rotate(o[1]),t.scale(a[0],a[1]),t.rotate(o[0]),t.translate(-e[0],-e[1]),t.rect(e[0]-i,e[1]-i,n,n)}function _(t,e,r,n,i,o,a,s,c,l){var u=!1,h=!1;if(y.transformMat2d(e,e,r),y.distance(e,t)<=s){w.a.negate(e,e),n[4]=n[0]*e[0]+n[2]*e[1],n[5]=n[1]*e[0]+n[3]*e[1];var f=0,d=0;y.transformMat2d(e,t,n),(Math.abs(e[0])<=i&&Math.abs(e[1])<=i||Boolean(c)&&Boolean(l)&&(h=(f=c*e[0])>-i&&f<=a&&(d=l*e[1])>-i&&d<=a))&&(u=!0)}return{hit:u,rotate:h}}r.d(e,"a",function(){return x});var v=r(2),y=r(3),b=r(10),m=r(4),g=r(23),w=r(9),k={SIDES:4},x=function(t){function e(t){var r,n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{scalable:!0,rotatable:!0};return i(this,e),r=s(this,h(e).call(this,t)),r._interactiveBoxSize=8,r._interactiveBoxPadding=10,t&&void 0!==t.vertexSize&&(r._interactiveBoxSize=t.vertexSize),r._scalable=!0,r._rotatable=!0,n&&(void 0!==n.scalable&&(r._scalable=Boolean(n.scalable)),void 0!==n.rotatable&&(r._rotatable=Boolean(n.rotatable))),r}return f(e,t),a(e,[{key:"containsPoint",value:function(t){var e={hit:!1,rotate:!1,controlIndex:-1},r=this.aabox;if((this._rotatable||this._scalable)&&this.visible&&v.containsPt(r,t)){var n=[0,0],i=[0,0];m.a.svd(null,n,i,this._fullXform);var o=m.a.create();n[0]=n[0]<0?-1:1,n[1]=n[1]<0?-1:1,n[0]*n[1]>0&&w.a.negate(i,i),m.a.rotate(o,o,i[1]),m.a.scale(o,o,n),m.a.rotate(o,o,i[0]);for(var a=this._rotatable?this._interactiveBoxPadding:0,s=this._interactiveBoxSize/2,c=this.width/2,l=this.height/2,u=[0,0],h=s+a,f=Math.sqrt(2*h*h),d=0,p=0,b=0;b<k.SIDES;b+=1)if(d=b<2?-1:1,p=b%2==0?-1:1,y.set(u,d*c,p*l),e=_(t,u,this._fullXform,o,s,this._interactiveBoxSize,h,f,d,p),e.hit){e.controlIndex=b;break}if(!e.hit&&this._scalable)for(var g=0;g<k.SIDES;g+=1)if(d=g%2==0?g<2?-1:1:0,p=g%2==0?0:g<2?-1:1,y.set(u,d*c,p*l),e=_(t,u,this._fullXform,o,s,this._interactiveBoxSize,h,f,d,p),e.hit){e.controlIndex=g+k.SIDES;break}e.rotate&&!this._rotatable?e.rotate=!1:e.rotate||this._scalable||(e.rotate=!0)}return e}},{key:"_updatelocalxform",value:function(t){if(this._lxformDirty||t){var e=y.clone(this._pos);y.addVec2(e,e,this._parent.pivotRef),Object(b.a)(this._localXform,this._rotDeg,this._scale,e,this._pivot),this._localXformUpdated&&this._localXformUpdated(),this._lxformDirty=!1}}},{key:"_updateglobalxform",value:function(){(this._lxformDirty||this._xformDirty)&&(this._updatelocalxform(!0),this._parent?m.a.multiply(this._globalXform,this._parent.globalXform,this._localXform):m.a.copy(this._globalXform,this._localXform),this._globalXformUpdated&&this._globalXformUpdated(),this._xformDirty=!1)}},{key:"_updateAABox",value:function(){if(arguments.length>0&&void 0!==arguments[0]&&arguments[0]||this._geomDirty||this._boundsOutOfDate){var t=this._rotatable?this._interactiveBoxPadding:0,e=t+this._interactiveBoxSize/2;v.initCenterExtents(this._aabox,[0,0],[this.width/2,this.height/2]),v.transformMat2d(this._aabox,this._aabox,this._fullXform),v.expand(this._aabox,this._aabox,[e,e]),this._aaboxUpdated=!0,this._geomDirty=this._boundsOutOfDate=!1}}},{key:"renderBounds",value:function(t,e,r){var n=this.aabox;t.save(),t.setTransform(1,0,0,1,0,0),r.setStrokeCtx(t);var i=[0,0],o=[0,0];v.getCenter(i,n),v.getExtents(o,n),t.beginPath(),t.rect(i[0]-o[0],i[1]-o[1],2*o[0],2*o[1]),t.stroke(),t.restore()}},{key:"render",value:function(t,r,n){if(this.parent&&void 0!==this.parent.width&&"undefined"!==this.parent.height){this._aaboxUpdated=!1,l(h(e.prototype),"render",this).call(this,t,r,n,!1),this._aaboxUpdated||this._updateAABox(!0);var i=[0,0],o=[0,0];m.a.svd(null,i,o,this._fullXform),i[0]=i[0]<0?-1:1,i[1]=i[1]<0?-1:1;var a=this._interactiveBoxSize/2,s=this.width/2,c=this.height/2,u=[s,c];t.save(),t.beginPath(),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,s,-c),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,-s,-c),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,-s,c),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),this._scalable&&(y.set(u,0,c),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,0,-c),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,s,0),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,-s,0),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i)),this.isFillVisible()&&(n.setFillStyle(t,this),t.fill()),this.isStrokeVisible()&&(n.setStrokeStyle(t,this),t.setTransform(1,0,0,1,0,0),t.stroke()),t.restore()}}},{key:"width",get:function(){return this.parent&&"undefined"!==this.parent.width?this.parent.width:0}},{key:"height",get:function(){return this.parent&&"undefined"!==this.parent.height?this.parent.height:0}}]),e}(g.a)},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return y});var p=r(2),_=r(7),v=r(6),y=function(t){function e(t){var r;return i(this,e),r=s(this,h(e).call(this,t)),r._radius=10,void 0!==t.radius&&(r.radius=t.radius),p.initCenterExtents(r._aabox,[0,0],[r._radius,r._radius]),r}return f(e,t),a(e,[{key:"getDimensions",value:function(){var t=2*this.radius;return[t,t]}},{key:"_updateAABox",value:function(){if(this._geomDirty||this._boundsOutOfDate){var t=this._pos,e=this._scale,r=v.a.DEG_TO_RAD*this._rotDeg,n=v.a.pow(v.a.cos(r),2),i=v.a.pow(v.a.sin(r),2),o=v.a.pow(e[0]*this._radius,2),a=v.a.pow(e[1]*this._radius,2),s=v.a.sqrt(a*i+o*n),c=v.a.sqrt(o*i+a*n);p.initCenterExtents(this._aabox,t,[s,c]),this._geomDirty=!1,this._boundsOutOfDate=!1}}},{key:"_draw",value:function(t){t.arc(0,0,this._radius,0,v.a.TWO_PI,!1)}},{key:"toJSON",value:function(){return Object.assign({type:"Circle",radius:this.radius},l(h(e.prototype),"toJSON",this).call(this))}},{key:"radius",set:function(t){if("number"!=typeof t)throw new Error("Radius must be a number");if(t!==this._radius){var e=this._radius;this._radius=t,this._geomDirty=!0,this.fire("changed:geom",{attr:"radius",prevVal:e,currVal:this._radius})}return this},get:function(){return this._radius}},{key:"width",get:function(){return 2*this.radius}},{key:"height",get:function(){return 2*this.radius}}]),e}(_.a)},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return v});var p=r(12),_={MINIMUM_POINTS:3},v=function(t){function e(t){var r;if(i(this,e),r=s(this,h(e).call(this,t)),r._verts.length<_.MINIMUM_POINTS)throw new Error("Poly shapes must be initialized with an array of 2d points and contain at least 3 points");return r}return f(e,t),a(e,[{key:"removeVert",value:function(t){if(this._verts.length<_.MINIMUM_POINTS)throw new Error("Cannot remove vertex ".concat(t,". It would result in a poly with < 3 points. A poly must contain at least 3 points."));l(h(e.prototype),"removeVert",this).call(this,t)}},{key:"_draw",value:function(t){var e=!1;if(this._verts.length>=_.MINIMUM_POINTS){t.moveTo(this._verts[0][0],this._verts[0][1]);for(var r=1;r<this._verts.length;r+=1)t.lineTo(this._verts[r][0],this._verts[r][1]);t.closePath(),e=!0}return e}},{key:"toJSON",value:function(){return Object.assign(l(h(e.prototype),"toJSON",this).call(this),{type:"Poly"})}}]),e}(p.a)},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return b});var p=r(2),_=r(7),v=r(4),y=r(6),b=function(t){function e(t){var r;return i(this,e),r=s(this,h(e).call(this,t)),r._size=5,void 0!==t.size&&(r.size=t.size),p.initCenterExtents(r._aabox,[0,0],[r._radius,r._radius]),r.translate(t.x||0,t.y||0),r}return f(e,t),a(e,[{key:"_updateAABox",value:function(){if(this._geomDirty||this._boundsOutOfDate){var t=this._pos,e=this._scale,r=y.a.DEG_TO_RAD*this._rotDeg,n=y.a.pow(y.a.cos(r),2),i=y.a.pow(y.a.sin(r),2),o=y.a.pow(e[0]*this._size,2),a=y.a.pow(e[1]*this._size,2),s=y.a.sqrt(a*i+o*n),c=y.a.sqrt(o*i+a*n);p.initCenterExtents(this._aabox,t,[s,c]),this._geomDirty=!1,this._boundsOutOfDate=!1}}},{key:"_draw",value:function(t){t.setTransform(1,0,0,1,0,0);var e=[0,0];v.a.svd(e,null,null,this._fullXform),t.arc(e[0],e[1],this._size,0,y.a.TWO_PI,!1)}},{key:"toJSON",value:function(){return Object.assign({type:"Point",size:this.size},l(h(e.prototype),"toJSON",this).call(this))}},{key:"size",set:function(t){if("number"!=typeof t)throw new Error("Radius must be a number");if(t!==this._size){var e=this._size;this._size=t,this._geomDirty=!0,this.fire("changed:geom",{attr:"size",prevVal:e,currVal:this._size})}},get:function(){return this._size}}]),e}(_.a)}])});
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -9771,7 +9777,7 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _binningMixin = __webpack_require__(249);
+var _binningMixin = __webpack_require__(252);
 
 var _binningMixin2 = _interopRequireDefault(_binningMixin);
 
@@ -9783,15 +9789,15 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(14);
+var _events = __webpack_require__(15);
 
 var _filters = __webpack_require__(21);
 
-var _lockAxisMixin = __webpack_require__(39);
+var _lockAxisMixin = __webpack_require__(40);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
-var _marginMixin = __webpack_require__(17);
+var _marginMixin = __webpack_require__(18);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
@@ -11524,7 +11530,7 @@ function coordinateGridMixin(_chart) {
 }
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11571,7 +11577,7 @@ var events = exports.events = {
 };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11816,7 +11822,7 @@ function capMixin(_chart) {
 }
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11828,8 +11834,8 @@ function capMixin(_chart) {
 /* harmony export (immutable) */ __webpack_exports__["c"] = createTokenInstance;
 /* harmony export (immutable) */ __webpack_exports__["f"] = tokenMatcher;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lexer_public__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lexer_public__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(25);
 
 
 
@@ -11919,7 +11925,7 @@ function tokenMatcher(token, tokType) {
 //# sourceMappingURL=tokens_public.js.map
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11977,12 +11983,6 @@ function marginMixin(_chart) {
 }
 
 /***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-!function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.MapdDraw=e():t.MapdDraw=e()}("undefined"!=typeof self?self:this,function(){return function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l:!1,exports:{}};return t[n].call(i.exports,i,i.exports,e),i.l=!0,i.exports}var r={};return e.m=t,e.c=r,e.d=function(t,r,n){e.o(t,r)||Object.defineProperty(t,r,{configurable:!1,enumerable:!0,get:n})},e.n=function(t){var r=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(r,"a",r),r},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=24)}([function(t,e,r){"use strict";var n=r(1),i=r(28),o=r(29),a=(r(13),r(14),r(15),r(30),r(31));r(16),r(17);r.d(e,"a",function(){return n}),r.d(e,"b",function(){return i}),r.d(e,"c",function(){return o}),r.d(e,"d",function(){return a})},function(t,e,r){"use strict";function n(t){s=t}function i(t){return t*l}function o(t,e){return Math.abs(t-e)<=a*Math.max(1,Math.abs(t),Math.abs(e))}Object.defineProperty(e,"__esModule",{value:!0}),r.d(e,"EPSILON",function(){return a}),r.d(e,"ARRAY_TYPE",function(){return s}),r.d(e,"RANDOM",function(){return c}),e.setMatrixArrayType=n,e.toRadian=i,e.equals=o;var a=1e-6,s="undefined"!=typeof Float32Array?Float32Array:Array,c=Math.random,l=Math.PI/180},function(t,e,r){"use strict";function n(t,e,r,n,i){return t[A]="number"==typeof e?e:1/0,t[I]="number"==typeof r?r:1/0,t[F]="number"==typeof n?n:-1/0,t[D]="number"==typeof i?i:-1/0,t}function i(t,e,r,i){return n(new j.a.ARRAY_TYPE(T.BOX_SIDES),t,e,r,i)}function o(t){var e=new j.a.ARRAY_TYPE(T.BOX_SIDES);return e[A]=t[A],e[I]=t[I],e[F]=t[F],e[D]=t[D],e}function a(t,e){return t[A]=e[A],t[I]=e[I],t[F]=e[F],t[D]=e[D],t}function s(t){return t[A]=1/0,t[I]=1/0,t[F]=-1/0,t[D]=-1/0,t}function c(t){return t[A]=-1/0,t[I]=-1/0,t[F]=1/0,t[D]=1/0,t}function l(t,e){return e[0]<0?(t[A]=-e[0],t[F]=0):(t[A]=0,t[F]=e[0]),e[1]<0?(t[I]=-e[1],t[D]=0):(t[I]=0,t[D]=e[1]),t}function u(t,e,r){for(var n=0;n<2;n+=1)r[n]<0?(t[n]=e[n]-r[n],t[n+2]=e[n]):(t[n]=e[n],t[n+2]=e[n]+r[n]);return t}function h(t,e,r){for(var n=0;n<2;n+=1)r[n]<0?(t[n]=e[n]+r[n],t[n+2]=e[n]-r[n]):(t[n]=e[n]-r[n],t[n+2]=e[n]+r[n]);return t}function f(t){return t[A]>t[F]||t[I]>t[D]}function d(t){return!(isFinite(t[A])&&isFinite(t[I])&&isFinite(t[F])&&isFinite(t[D]))}function p(t,e){var r=t[0],n=t[1],i=t[2],o=t[3],a=e[0],s=e[1],c=e[2],l=e[3];return Math.abs(r-a)<=j.a.EPSILON&&Math.abs(n-s)<=j.a.EPSILON&&Math.abs(i-c)<=j.a.EPSILON&&Math.abs(o-l)<=j.a.EPSILON}function _(t,e){return j.d.set(t,e[F]-e[A],e[D]-e[I])}function v(t,e){return _(t,e),j.d.scale(t,t,.5)}function y(t,e){return v(t,e),t[A]+=e[A],t[I]+=e[I],t}function b(t,e,r){t[A]=e[A]-r[0],t[F]=e[F]+r[0],t[I]=e[I]-r[1],t[D]=e[D]+r[1]}function m(t){return(t[F]-t[A])*(t[D]-t[I])}function g(t,e,r){return i(Math.min(e[A],r[A]),Math.min(e[I],r[I]),Math.max(e[F],r[F]),Math.max(e[D],r[D]))}function w(t,e,r){var n=t;t===e&&(n=i());for(var o=A,c=F;o<=I&&!(e[c]<r[o]||e[o]>r[c]);o+=1,c+=1)n[o]=Math.max(e[o],r[o]),n[c]=Math.min(e[c],r[c]);return o!==I+1&&s(n),t===e&&a(t,n),t}function k(t,e){return!(t[F]<=e[A]||t[A]>=e[F]||t[D]<=e[I]||t[I]>=e[D])}function x(t,e){return!(e[A]<t[A]||e[F]>t[F]||e[I]<t[I]||e[D]>t[D])}function S(t,e){return e[A]>=t[A]&&e[A]<=t[F]&&e[I]>=t[I]&&e[I]<=t[D]}function O(t,e,r){return t!==e&&a(t,e),f(e)?(t[A]=r[A],t[F]=r[A],t[I]=r[I],t[D]=r[I]):(r[A]<t[A]?t[A]=r[A]:r[A]>t[F]&&(t[F]=r[A]),r[I]<t[I]?t[I]=r[I]:r[I]>t[D]&&(t[D]=r[I])),t}function E(t,e,r){t[A]=e[A]+r[0],t[I]=e[I]+r[1],t[F]=e[F]+r[0],t[D]=e[D]+r[1]}function C(t,e,r,n){var o=t;t===e&&(o=i()),s(o);var c=j.d.set(j.d.create(),e[A],e[I]),l=j.d.create();return n(l,c,r),O(o,o,l),c[A]=e[F],n(l,c,r),O(o,o,l),c[I]=e[D],n(l,c,r),O(o,o,l),c[A]=e[A],n(l,c,r),O(o,o,l),t===e&&a(t,o),t}function M(t,e,r){return C(t,e,r,j.d.transformMat2)}function P(t,e,r){return C(t,e,r,j.d.transformMat2d)}Object.defineProperty(e,"__esModule",{value:!0}),r.d(e,"MINX",function(){return A}),r.d(e,"MINY",function(){return I}),r.d(e,"MAXX",function(){return F}),r.d(e,"MAXY",function(){return D}),e.set=n,e.create=i,e.clone=o,e.copy=a,e.initEmpty=s,e.initInfinity=c,e.initSizeFromOrigin=l,e.initSizeFromLocation=u,e.initCenterExtents=h,e.isEmpty=f,e.isInfinite=d,e.equals=p,e.getSize=_,e.getExtents=v,e.getCenter=y,e.expand=b,e.area=m,e.hull=g,e.intersection=w,e.overlaps=k,e.contains=x,e.containsPt=S,e.encapsulatePt=O,e.translate=E,e.transformMat2=M,e.transformMat2d=P;var j=r(0),A=0,I=1,F=2,D=3,T={BOX_SIDES:4}},function(t,e,r){"use strict";function n(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:0;return t[m]=e,t[g]=r,t}function i(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0;return n(new b.a.ARRAY_TYPE(2),t,e)}function o(t){var e=new b.a.ARRAY_TYPE(2);return e[m]=t[m],e[g]=t[g],e}function a(t,e){return t[m]=e[m],t[g]=e[g],t}function s(t,e){return i(t,e)}function c(t,e,r){return b.d.add(t,e,r)}function l(t,e,r){return b.d.sub(t,e,r)}function u(t,e,r){return b.d.transformMat2(t,e,r)}function h(t,e,r){return b.d.transformMat2d(t,e,r)}function f(t){return"point2d(".concat(t[0]," , ").concat(t[1],")")}function d(t,e){return b.d.distance(t,e)}function p(t,e){return b.d.squaredDistance(t,e)}function _(t,e,r,n){return b.d.lerp(t,e,r,n)}function v(t,e){return b.d.equals(t,e)}function y(t,e){return b.d.exactEquals(t,e)}Object.defineProperty(e,"__esModule",{value:!0}),e.set=n,e.create=i,e.clone=o,e.copy=a,e.initFromValues=s,e.addVec2=c,e.sub=l,e.transformMat2=u,e.transformMat2d=h,e.str=f,e.distance=d,r.d(e,"dist",function(){return w}),e.squaredDistance=p,r.d(e,"sqrDist",function(){return k}),e.lerp=_,e.equals=v,e.exactEquals=y;var b=r(0),m=0,g=1,w=d,k=p},function(t,e,r){"use strict";var n=r(0);n.c.svd=function(t,e,r,n){if(t&&(t[0]=n[4],t[1]=n[5]),e||r){var i=(n[0]+n[3])/2,o=(n[0]-n[3])/2,a=(n[1]+n[2])/2,s=(n[1]-n[2])/2;if(e){var c=Math.sqrt(i*i+s*s),l=Math.sqrt(o*o+a*a);e[0]=c+l,e[1]=c-l}if(r){var u=Math.atan2(a,o),h=Math.atan2(s,i);r[0]=(h-u)/2,r[1]=(h+u)/2}}},e.a=n.c},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?s(t):e}function a(t){return(a=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function s(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function c(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&l(t,e)}function l(t,e){return(l=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}var u=function(t){for(var e=arguments.length,r=new Array(e>1?e-1:0),n=1;n<e;n++)r[n-1]=arguments[n];var l=t?function(t){function e(){for(var t,n,c=arguments.length,l=new Array(c),u=0;u<c;u++)l[u]=arguments[u];return i(this,e),n=o(this,(t=a(e)).call.apply(t,[this].concat(l))),r.forEach(function(t){if("function"==typeof t.prototype.initializer){var e;(e=t.prototype.initializer).call.apply(e,[s(n)].concat(l))}}),n}return c(e,t),e}(t):function(){},u=function(e,r){Object.getOwnPropertyNames(r).concat(Object.getOwnPropertySymbols(r)).forEach(function(n){n.match(/^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)||t&&n.match(/^(?:initializer)$/)||Object.defineProperty(e,n,Object.getOwnPropertyDescriptor(r,n))})};return r.forEach(function(t){u(l.prototype,t.prototype),u(l,t)}),l};e.a=u},function(t,e,r){"use strict";function n(t,e,r){return t<e?e:t>r?r:t}function i(t){return t<0?0:t>1?1:t}function o(t,e,r){return t*(1-r)+e*r}Math.QUATER_PI=.25*Math.PI,Math.HALF_PI=.5*Math.PI,Math.HALF_NPI=-.5*Math.PI,Math.TWO_PI=2*Math.PI,Math.NPI=-Math.PI,Math.NQUATER_PI=.25*Math.NPI,Math.NHALF_PI=.5*Math.NPI,Math.NTWO_PI=2*Math.NPI,Math.INV_PI=1/Math.PI,Math.RAD_TO_DEG=180/Math.PI,Math.DEG_TO_RAD=Math.PI/180,Math.EPS=1e-5,Math.clamp=n,Math.clamp01=i,Math.lerp=o,e.a=Math},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t){return(l=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function u(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&h(t,e)}function h(t,e){return(h=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return w});var f=r(2),d=r(18),p=r(20),_=r(10),v=r(5),y=r(8),b=r(11),m=r(0),g=function(t){function e(t){var r;return i(this,e),r=s(this,l(e).call(this,["changed:xform","changed:style","changed:order","changed:visibility","changed:geom"])),r._aabox=f.create(),r._zIndex=t&&t.zIndex?t.zIndex:0,r._visible=!0,r._geomDirty=!1,r._fullXform=m.c.create(),r}return u(e,t),a(e,[{key:"zIndex",set:function(t){if(!Number.isInteger(t))throw new Error("zIndex must be an integer");if(t!==this._zIndex){var e=this._zIndex;this._zIndex=t,this.fire("changed:order",{attr:"zIndex",prevVal:e,currVal:this._zIndex})}return this},get:function(){return this._zIndex}},{key:"aabox",get:function(){return this._updateAABox(),this._aabox}},{key:"visible",set:function(t){if("boolean"!=typeof t)throw new Error("visible must be a boolean");return t!==this._visible&&(this._visible=t,this.fire("changed:visibility",{attr:"visible",prevVal:!this._visible,currVal:this._visible})),this},get:function(){return this._visible}}]),e}(b.a),w=function(t){function e(t){var r;return i(this,e),r=s(this,l(e).call(this,t)),r._stateStack=[],r}return u(e,t),a(e,[{key:"save",value:function(){var t=new y.a;return y.a.copyBasicStyle(this,t),t.zIndex=this.zIndex,this._stateStack.push(t),this}},{key:"restore",value:function(){var t=this._stateStack.pop();return t&&(y.a.copyBasicStyle(t,this),this.zIndex=t.zIndex),this}},{key:"getGlobalDimensions",value:function(){var t=[0,0];return m.c.svd(null,t,null,this.globalXform),t[0]*=this.width,t[1]*=this.height,t}},{key:"containsPoint",value:function(t,e,r,n){var i=!1,o=this.aabox;return this.visible&&f.containsPt(o,e)&&(n.save(),n.setTransform(this._fullXform[0],this._fullXform[1],this._fullXform[2],this._fullXform[3],this._fullXform[4],this._fullXform[5]),n.beginPath(),this._draw(n),n.strokeStyle="rgba(0,0,0,0)",n.lineWidth=this.strokeWidth+5,n.dashPattern=[],n.setTransform(1,0,0,1,0,0),n.stroke(),(this.isFillVisible()&&n.isPointInPath(t[0],t[1])||this.isStrokeVisible()&&n.isPointInStroke(t[0],t[1]))&&(i=!0),n.restore()),i}},{key:"renderBounds",value:function(t,e,r){t.save(),t.setTransform(e[0],e[1],e[2],e[3],e[4],e[5]),r.setStrokeCtx(t);var n=[0,0],i=[0,0],o=this.aabox;f.getCenter(n,o),f.getExtents(i,o),t.beginPath(),t.rect(n[0]-i[0],n[1]-i[1],2*i[0],2*i[1]),t.setTransform(1,0,0,1,0,0),t.stroke(),t.restore()}},{key:"_localXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"_globalXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"render",value:function(t,e,r){var n=arguments.length>3&&void 0!==arguments[3]?arguments[3]:null,i=arguments.length>4&&void 0!==arguments[4]?arguments[4]:null;this.transformCtx(t,this._fullXform,e),t.beginPath();var o=this._draw(t);(o||void 0===o)&&(this.isFillVisible()&&(null===n||Boolean(n))&&(r.setFillStyle(t,this),t.fill()),this.isStrokeVisible()&&(null===i||Boolean(i))&&(r.setStrokeStyle(t,this),t.setTransform(1,0,0,1,0,0),t.stroke()))}},{key:"setStyle",value:function(t){return y.a.copyBasicStyle(t,this),this}},{key:"toJSON",value:function(){var t=this;return this._stateStack&&this._stateStack.length&&(t=this._stateStack[0]),Object.assign({visible:this.visible,zIndex:t.zIndex},y.a.toJSON(t),_.c.toJSON(this))}},{key:"visible",get:function(){return this._visible&&(this.isFillVisible()||this.isStrokeVisible())}}],[{key:"shapeCompare",value:function(t,e){var r=t.zIndex,n=e.zIndex;if(r<n)return-1;if(r>n)return 1;var i=d.b.compareFillStyle(t,e);return i||(i=p.b.compareStrokeStyle(t,e)),i}}]),e}(Object(v.a)(g,Object(_.b)("changed:xform"),Object(d.a)("changed:style"),Object(p.a)("changed:style")))},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t){return(l=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function u(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&h(t,e)}function h(t,e){return(h=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return _});var f=r(5),d=r(18),p=r(20),_=function(t){function e(){return i(this,e),s(this,l(e).apply(this,arguments))}return u(e,t),a(e,null,[{key:"copyBasicStyle",value:function(t,e){d.b.copyFillStyle(t,e),p.b.copyStrokeStyle(t,e)}},{key:"toJSON",value:function(t){return Object.assign(d.b.toJSON(t),p.b.toJSON(t))}}]),e}(Object(f.a)(function t(){i(this,t)},d.b,p.b))},function(t,e,r){"use strict";var n=r(0);n.d.cross2d=function(t,e){return t[0]*e[1]-t[1]*e[0]},n.d.angleFast=function(t,e){return Math.acos(n.d.dot(t,e))},n.d.angle=function(t,e){var r=n.d.dot(t,e),i=n.d.cross2d(t,e);return Math.atan2(i,r)},n.d.anglePosX=function(t){var e=Math.atan2(t[1],t[0]);return e<0&&(e*=-1),e},e.a=n.d},function(t,e,r){"use strict";function n(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function o(t,e,r){return e&&i(t.prototype,e),r&&i(t,r),t}function a(t,e,r,n,i){return u.c.identity(t),u.c.translate(t,t,[n[0]+i[0],n[1]+i[1]]),u.c.rotate(t,t,f.a.DEG_TO_RAD*e),u.c.scale(t,t,r),u.c.translate(t,t,[-i[0],-i[1]]),t}function s(t){t.forEach(function(t){t._xformDirty=!0,s(t._children)})}function c(t){return Object(h.a)(null,d,function(){function e(){n(this,e)}return o(e,[{key:"setPosition",value:function(e){if(!l.equals(e,this._pos)){var r=[this._pos[0],this._pos[1]];l.copy(this._pos,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"position",prevVal:r,currVal:e})}return this}},{key:"translate",value:function(e){if(e[0]||e[1]){var r=[this._pos[0],this._pos[1]];l.addVec2(this._pos,this._pos,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"position",prevVal:r,currVal:[this._pos[0],this._pos[1]]})}return this}},{key:"setScale",value:function(e){if(!u.d.equals(e,this._scale)){var r=[this._scale[0],this._scale[1]];u.d.copy(this._scale,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"size",prevVal:r,currVal:e})}return this}},{key:"scale",value:function(e){if(1!==e[0]||1!==e[1]){var r=[this._scale[0],this._scale[1]];u.d.multiply(this._scale,this._scale,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"size",prevVal:r,currVal:[this._scale[0],this._scale[1]]})}return this}},{key:"setRotation",value:function(e){var r=e%360;if(r!==this._rotDeg){var n=this._rotDeg;this._rotDeg=r,this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"orientation",prevVal:n,curral:this._rotDeg})}}},{key:"rotate",value:function(e){if(e){var r=this._rotDeg;this._rotDeg+=e,this._rotDeg%=360,this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"orientation",prevVal:r,curral:this._rotDeg})}return this}},{key:"setTransformations",value:function(e,r,n,i,o){var a=[],c=[],h=[];if(!(void 0===e||void 0===r||u.a.equals(e,this._pos[0])&&u.a.equals(r,this._pos[1]))){var f=l.clone(this._pos);this._pos[0]=e,this._pos[1]=r,a.push("position"),c.push(f),h.push(l.clone(this._pos))}if(!(void 0===n||void 0===i||u.a.equals(n,this._scale[0])&&u.a.equals(i,this._scale[1]))){var d=u.d.clone(this._scale);u.d.set(this._scale,n,i),a.push("size"),c.push(d),h.push(u.d.clone(this._scale))}if(void 0!==o){var p=o%360;if(!u.a.equals(p,this._rotDeg)){var _=this._rotDeg;this._rotDeg=p,a.push("orientation"),c.push(_),h.push(this._rotDeg)}}return a.length&&(this._lxformDirty=!0,s(this._children),this.fire(t,{attrs:a,prevVals:c,currVals:h})),this}},{key:"pivot",set:function(e){if(!l.equals(e,this._pivot)){var r=[this._pivot[0],this._pivot[1]];l.copy(this._pivot,e),this._lxformDirty=!0,s(this._children),this.fire(t,{attr:"pivot",prevVal:r,currVal:e})}return this},get:function(){return l.clone(this._pivot)}}]),e}())}e.a=a,r.d(e,"c",function(){return d}),e.b=c;var l=r(3),u=r(0),h=r(5),f=r(6),d=function(){function t(e){n(this,t),this.initializer(e)}return o(t,[{key:"_initTransformFromOptions",value:function(t){t&&(void 0!==t.position&&this.setPosition(t.position),void 0!==t.scale&&this.setScale(t.scale),void 0!==t.rotation&&this.setRotation(t.rotation),void 0!==t.pivot&&(this.pivot=t.pivot))}},{key:"initializer",value:function(t){this._localXform=u.c.create(),this._lxformDirty=!1,this._pivot=l.create(0,0),this._pos=l.create(0,0),this._scale=u.d.fromValues(1,1),this._rotDeg=0,this._globalXform=u.c.create(),this._xformDirty=!1,this._parent=null,this._children=new Set,this._initTransformFromOptions(t)}},{key:"addChildXform",value:function(t){this._children.has(t)||(this._children.add(t),t._parent&&t._parent.removeChild(t),t._parent=this,t._xformDirty=!0,s(t._children))}},{key:"removeChildXform",value:function(t){this._children.delete(t)}},{key:"unparentXform",value:function(){this._parent&&(this._parent.removeChild(this),this._parent=null,u.c.copy(this._globalXform,this.localXform))}},{key:"getPosition",value:function(){return u.d.clone(this._pos)}},{key:"getPositionRef",value:function(){return this._pos}},{key:"getWorldPosition",value:function(){var t=this.globalXform;return l.create(t[4],t[5])}},{key:"setPosition",value:function(t){l.copy(this._pos,t),this._lxformDirty=!0,s(this._children)}},{key:"translate",value:function(t){return(t[0]||t[1])&&(l.addVec2(this._pos,this._pos,t),this._lxformDirty=!0,s(this._children)),this}},{key:"getScale",value:function(){return u.d.clone(this._scale)}},{key:"getScaleRef",value:function(){return this._scale}},{key:"setScale",value:function(t){return u.d.copy(this._scale,t),this._lxformDirty=!0,s(this._children),this}},{key:"scale",value:function(t){return 1===t[0]&&1===t[1]||(u.d.multiply(this._scale,this._scale,t),this._lxformDirty=!0,s(this._children)),this}},{key:"getRotation",value:function(){return this._rotDeg}},{key:"setRotation",value:function(t){return this._rotDeg=t,this._lxformDirty=!0,s(this._children),this}},{key:"rotate",value:function(t){return t&&(this._rotDeg+=t,this._lxformDirty=!0,s(this._children)),this}},{key:"_dirtyChildren",value:function(){s(this._children)}},{key:"_updatelocalxform",value:function(){this._lxformDirty&&(a(this._localXform,this._rotDeg,this._scale,this._pos,this._pivot),this._localXformUpdated&&this._localXformUpdated(),this._lxformDirty=!1)}},{key:"_updateglobalxform",value:function(){(this._lxformDirty||this._xformDirty)&&(this._updatelocalxform(),this._parent?u.c.multiply(this._globalXform,this._parent.globalXform,this._localXform):u.c.copy(this._globalXform,this._localXform),this._globalXformUpdated&&this._globalXformUpdated(),this._xformDirty=!1)}},{key:"transformCtx",value:function(t,e,r){u.c.multiply(e,r,this.globalXform),t.setTransform(e[0],e[1],e[2],e[3],e[4],e[5])}},{key:"pivot",set:function(t){return l.copy(this._pivot,t),this._lxformDirty=!0,s(this._children),this},get:function(){return l.clone(this._pivot)}},{key:"pivotRef",get:function(){return this._pivot}},{key:"parent",get:function(){return this._parent}},{key:"localXform",get:function(){return this._updatelocalxform(),this._localXform}},{key:"globalXform",get:function(){return this._updateglobalxform(),this._globalXform}}],[{key:"toJSON",value:function(t){var e=t.getPositionRef(),r=t.getScaleRef(),n=t.pivotRef;return{position:[e[0],e[1]],scale:[r[0],r[1]],rotation:t.getRotation(),pivot:[n[0],n[1]]}}}]),t}()},function(t,e,r){"use strict";function n(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function o(t,e,r){return e&&i(t.prototype,e),r&&i(t,r),t}function a(t,e,r,n){var i=this;if(r>=e.length)return 0;var o=0,s=null;return s=t.get(e[r]),s&&(o=a(s[0],e,r+1,n),s[1].forEach(function(t){return t.call(i,n)}),o+=s[1].length),o}function s(t,e){var r=-1,n=t[0],i=t[1];i.length&&e.forEach(function(t){(r=i.indexOf(t))>=0&&i.splice(r,1)}),n.forEach(function(t){s(t,e)})}function c(t){var e=t;if("string"==typeof t)e=[t];else if(!Array.isArray(t))throw new Error("Input must be an array of strings");return e}r.d(e,"a",function(){return l});var l=function(){function t(e){n(this,t),this.initializer(e)}return o(t,[{key:"initializer",value:function(t){this._listeners=new Map,this.registerEvents(t)}},{key:"registerEvents",value:function(t){var e=this;if(t){var r=c(t);if("string"==typeof t)r=[t];else if(!Array.isArray(t))throw new Error("Events must be an array of strings");r.forEach(function(t){for(var r=t.split(":"),n=e._listeners,i=0;i<r.length;i+=1){var o=n.get(r[i]);o||(o=[new Map,[]],n.set(r[i],o)),n=o[0]}})}}},{key:"on",value:function(t,e){var r=this;return c(t).forEach(function(t){var n=t.split(":"),i=r._listeners,o=null;n.forEach(function(e){if(!(o=i.get(e))){var r=[];throw i.forEach(function(t,e){return r.push(e)}),new Error("".concat(t," is not a valid event type. The registered event types at this level are [").concat(r,"]"))}i=o[0]}),o[1].indexOf(e)<0&&o[1].push(e)}),this}},{key:"off",value:function(t,e){var r=this,n=c(t),i=e;return Array.isArray(i)||(i=[e]),n.forEach(function(t){var e=t.split(":"),n=r._listeners,o=null,a=0;for(a=0;a<e.length&&(o=n.get(e[a]));a+=1)n=o[0];o&&s(o,i)}),this}},{key:"once",value:function(t,e){var r=this,n=function n(i){r.off(t,n),e.call(r,i)};return this.on(t,n),this}},{key:"fire",value:function(t,e){var r=t.split(":"),n={type:t,target:this};return Object.assign(n,e),a(this._listeners,r,0,n),this._eventParent&&(n={},Object.getOwnPropertyNames(e).forEach(function(t){n[t]=e[t]}),this._eventParent.fire(t,n)),this}},{key:"listens",value:function(t){for(var e=t.split(":"),r=this._listeners,n=null,i=0;i<e.length&&(n=r.get(e[i]));i+=1)r=n[0];return n||this._eventParent&&this._eventParent.listens(t)}},{key:"setEventedParent",value:function(t,e){return this._eventParent=t,this._eventParentData=e,this}}]),t}()},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}function p(t,e,r,n){y.isEmpty(t)?(t[0]=e[0],t[2]=e[0],n[0]=n[2]=r,t[1]=e[1],t[3]=e[1],n[1]=n[3]=r):(e[0]<t[0]?(t[0]=e[0],n[0]=r):e[0]>t[2]&&(t[2]=e[0],n[2]=r),e[1]<t[1]?(t[1]=e[1],n[1]=r):e[1]>t[3]&&(t[3]=e[1],n[3]=r))}function _(t,e,r){var n=e[0]*r[1]-r[0]*e[1];return t[0]+=(e[0]+r[0])*n,t[1]+=(e[1]+r[1])*n,n}function v(t){return Array.isArray(t)||ArrayBuffer&&ArrayBuffer.isView(t)}r.d(e,"a",function(){return S});var y=r(2),b=r(3),m=r(7),g=r(0),w=r(6),k=r(22),x=g.c.create(),S=function(t){function e(t){var r;i(this,e);var n=t.verts||[];if(r=s(this,h(e).call(this,t)),!v(n)||0===n.length||v(n[0])&&n.length<1||!v(n[0])&&(n.length<2||n.length%2!=0))throw new Error("PolyLine shapes must be initialized with an array of 2d points and contain at least 1 points");r._extentIndices=[-1,-1,-1,-1],r._localaabox=y.create(),r._verts=[],r._centroid=[0,0],y.initEmpty(r._aabox);var o=0,a=0;if(v(n[0])){for(a=0;a<n.length-1;a+=1)r._verts.push(b.clone(n[a])),p(r._aabox,n[a],a,r._extentIndices),o+=_(r._centroid,n[a],n[a+1]);r._verts.push(b.clone(n[a])),p(r._aabox,n[a],a,r._extentIndices),o+=_(r._centroid,n[a],n[0])}else{r._verts.push(b.create(n[0],n[1])),p(r._aabox,r._verts[0],0,r._extentIndices);var c=1;for(a=2;a<n.length-2;a+=2,c+=1)r._verts.push(b.create(n[a],n[a+1])),p(r._aabox,r._verts[c],c,r._extentIndices),o+=_(r._centroid,r._verts[c-1],r._verts[c]);r._verts.push(b.create(n[a],n[a+1])),p(r._aabox,r._verts[c],c,r._extentIndices),o+=_(r._centroid,r._verts[c],r._verts[0])}o*=.5,r._centroid[0]/=6*o,r._centroid[1]/=6*o;var l=b.create();return y.getCenter(l,r._aabox),r.pivot=l,r._verts.length<3?r._convexHull=r._verts.map(function(t,e){return e}):r._convexHull=Object(k.a)(r._verts),r}return f(e,t),a(e,[{key:"getDimensions",value:function(){return[this.width,this.height]}},{key:"_collapseVerts",value:function(){var t=this;b.set(this._pivot,0,0);var e=this.localXform;if(g.c.equals(e,x))return!1;y.initEmpty(this._aabox);for(var r=0;r<this._verts.length;r+=1)b.transformMat2d(this._verts[r],this._verts[r],e);return this._verts.length<3?this._convexHull=this._verts.map(function(t,e){return e}):this._convexHull=Object(k.a)(this._verts),this._convexHull.forEach(function(e){p(t._aabox,t._verts[e],e,t._extentIndices)}),this.setTransformations(0,0,1,1,0),!0}},{key:"translateVert",value:function(t,e){if(t>=this._verts.length)throw new Error("Cannot translate vertex at index ".concat(t,". There are only ").concat(this._verts.length," vertices in the polygon."));if(e[0]||e[1]){var r=b.clone(this._verts[t]),n=b.clone(this._verts[t]);b.addVec2(n,n,e),this._collapseVerts(),this._resetAABox=!0,this._geomDirty=!0,b.copy(n),this.fire("changed:geom",{attr:"verts[".concat(t,"]"),prevVal:r,currVal:n})}return this}},{key:"setVertPosition",value:function(t,e){if(t>=this._verts.length)throw new Error("Cannot translate vertex at index ".concat(t,". There are only ").concat(this._verts.length," vertices in the polygon."));if(!b.equals(e,this._verts[t])){var r=b.clone(this._verts[t]);this._collapseVerts(),b.copy(this._verts[t],e),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom",{attr:"verts[".concat(t,"]"),prevVal:r,currVal:e})}}},{key:"insertVert",value:function(t,e){var r=w.a.min(w.a.max(t,0),this._verts.length);return this._collapseVerts(),t>=this._verts.length?(this._verts.push(b.clone(e)),r=this._verts.length-1):this._verts.splice(t,0,b.clone(e)),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom:addvert",{attr:"verts[".concat(r,"]"),currVal:e}),r}},{key:"appendVert",value:function(t){return this.insertVert(this._verts.length,t)}},{key:"removeVert",value:function(t){if(t>=this._verts.length||t<0)throw new Error("Cannot remove vertex ".concat(t,". Invalid index. There are only ").concat(this._verts.length," vertices in the shape."));var e=this._verts[t];return this._verts.splice(t,1),this._collapseVerts(),this._resetAABox=!0,this._geomDirty=!0,this.fire("changed:geom:removevert",{attr:"verts[".concat(t,"]"),currVal:e}),t}},{key:"_rebuildAABox",value:function(){var t=this;y.initEmpty(this._aabox),this._verts.length<3?this._convexHull=this._verts.map(function(t,e){return e}):this._convexHull=Object(k.a)(this._verts),this._convexHull.forEach(function(e){p(t._aabox,t._verts[e],e,t._extentIndices)});var e=b.create(0,0);y.getCenter(e,this._aabox),this.pivot=e}},{key:"_updateAABox",value:function(){var t=this;if(this._resetAABox&&(this._rebuildAABox(),this._resetAABox=!1),this._boundsOutOfDate||this._geomDirty){y.initEmpty(this._aabox);var e=[0,0],r=this.globalXform;if(this._convexHull.forEach(function(n){y.encapsulatePt(t._aabox,t._aabox,b.transformMat2d(e,t._verts[n],r))}),this._boundsOutOfDate=!1,this._geomDirty){var n=b.create();n[0]=this._verts[this._extentIndices[0]][0]+.5*(this._verts[this._extentIndices[2]][0]-this._verts[this._extentIndices[0]][0]),n[1]=this._verts[this._extentIndices[1]][1]+.5*(this._verts[this._extentIndices[3]][1]-this._verts[this._extentIndices[1]][1]),this.pivot=n,this._geomDirty=!1}}}},{key:"_draw",value:function(t){var e=!1;if(this._verts.length>=2){t.moveTo(this._verts[0][0],this._verts[0][1]);for(var r=1;r<this._verts.length;r+=1)t.lineTo(this._verts[r][0],this._verts[r][1]);e=!0}return e}},{key:"toJSON",value:function(){return Object.assign({type:"PolyLine",verts:this.vertsRef.map(function(t){return[t[0],t[1]]})},l(h(e.prototype),"toJSON",this).call(this))}},{key:"width",get:function(){return this._updateAABox(),!this._verts.length||this._extentIndices[0]<0||this._extentIndices[2]<0?0:this._verts[this._extentIndices[2]][0]-this._verts[this._extentIndices[0]][0]}},{key:"height",get:function(){return this._updateAABox(),!this._verts.length||this._extentIndices[0]<0||this._extentIndices[2]<0?0:this._verts[this._extentIndices[3]][1]-this._verts[this._extentIndices[1]][1]}},{key:"vertsRef",get:function(){return this._verts}},{key:"numVerts",get:function(){return this._verts.length}}]),e}(m.a);S.aaboxEncapsulatePt=p},function(t,e,r){"use strict";function n(){var t=new i.ARRAY_TYPE(9);return i.ARRAY_TYPE!=Float32Array&&(t[1]=0,t[2]=0,t[3]=0,t[5]=0,t[6]=0,t[7]=0),t[0]=1,t[4]=1,t[8]=1,t}e.a=n;var i=r(1)},function(t,e,r){"use strict";function n(t,e){return t[0]=e[12],t[1]=e[13],t[2]=e[14],t}function i(t,e){var r=e[0]+e[5]+e[10],n=0;return r>0?(n=2*Math.sqrt(r+1),t[3]=.25*n,t[0]=(e[6]-e[9])/n,t[1]=(e[8]-e[2])/n,t[2]=(e[1]-e[4])/n):e[0]>e[5]&&e[0]>e[10]?(n=2*Math.sqrt(1+e[0]-e[5]-e[10]),t[3]=(e[6]-e[9])/n,t[0]=.25*n,t[1]=(e[1]+e[4])/n,t[2]=(e[8]+e[2])/n):e[5]>e[10]?(n=2*Math.sqrt(1+e[5]-e[0]-e[10]),t[3]=(e[8]-e[2])/n,t[0]=(e[1]+e[4])/n,t[1]=.25*n,t[2]=(e[6]+e[9])/n):(n=2*Math.sqrt(1+e[10]-e[0]-e[5]),t[3]=(e[1]-e[4])/n,t[0]=(e[8]+e[2])/n,t[1]=(e[6]+e[9])/n,t[2]=.25*n),t}e.b=n,e.a=i;r(1)},function(t,e,r){"use strict";function n(){var t=new u.ARRAY_TYPE(4);return u.ARRAY_TYPE!=Float32Array&&(t[0]=0,t[1]=0,t[2]=0),t[3]=1,t}function i(t,e,r){r*=.5;var n=Math.sin(r);return t[0]=n*e[0],t[1]=n*e[1],t[2]=n*e[2],t[3]=Math.cos(r),t}function o(t,e,r){r*=.5;var n=e[0],i=e[1],o=e[2],a=e[3],s=Math.sin(r),c=Math.cos(r);return t[0]=n*c+a*s,t[1]=i*c+o*s,t[2]=o*c-i*s,t[3]=a*c-n*s,t}function a(t,e,r){r*=.5;var n=e[0],i=e[1],o=e[2],a=e[3],s=Math.sin(r),c=Math.cos(r);return t[0]=n*c-o*s,t[1]=i*c+a*s,t[2]=o*c+n*s,t[3]=a*c-i*s,t}function s(t,e,r){r*=.5;var n=e[0],i=e[1],o=e[2],a=e[3],s=Math.sin(r),c=Math.cos(r);return t[0]=n*c+i*s,t[1]=i*c-n*s,t[2]=o*c+a*s,t[3]=a*c-o*s,t}function c(t,e,r,n){var i=e[0],o=e[1],a=e[2],s=e[3],c=r[0],l=r[1],h=r[2],f=r[3],d=void 0,p=void 0,_=void 0,v=void 0,y=void 0;return p=i*c+o*l+a*h+s*f,p<0&&(p=-p,c=-c,l=-l,h=-h,f=-f),1-p>u.EPSILON?(d=Math.acos(p),_=Math.sin(d),v=Math.sin((1-n)*d)/_,y=Math.sin(n*d)/_):(v=1-n,y=n),t[0]=v*i+y*c,t[1]=v*o+y*l,t[2]=v*a+y*h,t[3]=v*s+y*f,t}function l(t,e){var r=e[0]+e[4]+e[8],n=void 0;if(r>0)n=Math.sqrt(r+1),t[3]=.5*n,n=.5/n,t[0]=(e[5]-e[7])*n,t[1]=(e[6]-e[2])*n,t[2]=(e[1]-e[3])*n;else{var i=0;e[4]>e[0]&&(i=1),e[8]>e[3*i+i]&&(i=2);var o=(i+1)%3,a=(i+2)%3;n=Math.sqrt(e[3*i+i]-e[3*o+o]-e[3*a+a]+1),t[i]=.5*n,n=.5/n,t[3]=(e[3*o+a]-e[3*a+o])*n,t[o]=(e[3*o+i]+e[3*i+o])*n,t[a]=(e[3*a+i]+e[3*i+a])*n}return t}e.b=n,e.e=o,e.f=a,e.g=s,r.d(e,"a",function(){return p}),r.d(e,"c",function(){return _}),r.d(e,"d",function(){return v}),r.d(e,"h",function(){return y});var u=r(1),h=r(13),f=r(16),d=r(17),p=(d.b,d.g,d.c),_=(d.l,d.a,d.k,d.d),v=(d.i,d.h),y=d.m,b=d.j;d.f,d.e,function(){var t=f.a(),e=f.d(1,0,0),r=f.d(0,1,0)}(),function(){var t=n(),e=n()}(),function(){var t=h.a()}()},function(t,e,r){"use strict";function n(){var t=new l.ARRAY_TYPE(3);return l.ARRAY_TYPE!=Float32Array&&(t[0]=0,t[1]=0,t[2]=0),t}function i(t){var e=t[0],r=t[1],n=t[2];return Math.sqrt(e*e+r*r+n*n)}function o(t,e,r){var n=new l.ARRAY_TYPE(3);return n[0]=t,n[1]=e,n[2]=r,n}function a(t,e){var r=e[0],n=e[1],i=e[2],o=r*r+n*n+i*i;return o>0&&(o=1/Math.sqrt(o),t[0]=e[0]*o,t[1]=e[1]*o,t[2]=e[2]*o),t}function s(t,e){return t[0]*e[0]+t[1]*e[1]+t[2]*e[2]}function c(t,e,r){var n=e[0],i=e[1],o=e[2],a=r[0],s=r[1],c=r[2];return t[0]=i*c-o*s,t[1]=o*a-n*c,t[2]=n*s-i*a,t}e.a=n,e.d=o,e.f=a,e.c=s,e.b=c,r.d(e,"e",function(){return u});var l=r(1),u=i;!function(){var t=n()}()},function(t,e,r){"use strict";function n(){var t=new y.ARRAY_TYPE(4);return y.ARRAY_TYPE!=Float32Array&&(t[0]=0,t[1]=0,t[2]=0,t[3]=0),t}function i(t){var e=new y.ARRAY_TYPE(4);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e}function o(t,e,r,n){var i=new y.ARRAY_TYPE(4);return i[0]=t,i[1]=e,i[2]=r,i[3]=n,i}function a(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t}function s(t,e,r,n,i){return t[0]=e,t[1]=r,t[2]=n,t[3]=i,t}function c(t,e,r){return t[0]=e[0]+r[0],t[1]=e[1]+r[1],t[2]=e[2]+r[2],t[3]=e[3]+r[3],t}function l(t,e,r){return t[0]=e[0]*r,t[1]=e[1]*r,t[2]=e[2]*r,t[3]=e[3]*r,t}function u(t){var e=t[0],r=t[1],n=t[2],i=t[3];return Math.sqrt(e*e+r*r+n*n+i*i)}function h(t){var e=t[0],r=t[1],n=t[2],i=t[3];return e*e+r*r+n*n+i*i}function f(t,e){var r=e[0],n=e[1],i=e[2],o=e[3],a=r*r+n*n+i*i+o*o;return a>0&&(a=1/Math.sqrt(a),t[0]=r*a,t[1]=n*a,t[2]=i*a,t[3]=o*a),t}function d(t,e){return t[0]*e[0]+t[1]*e[1]+t[2]*e[2]+t[3]*e[3]}function p(t,e,r,n){var i=e[0],o=e[1],a=e[2],s=e[3];return t[0]=i+n*(r[0]-i),t[1]=o+n*(r[1]-o),t[2]=a+n*(r[2]-a),t[3]=s+n*(r[3]-s),t}function _(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3]}function v(t,e){var r=t[0],n=t[1],i=t[2],o=t[3],a=e[0],s=e[1],c=e[2],l=e[3];return Math.abs(r-a)<=y.EPSILON*Math.max(1,Math.abs(r),Math.abs(a))&&Math.abs(n-s)<=y.EPSILON*Math.max(1,Math.abs(n),Math.abs(s))&&Math.abs(i-c)<=y.EPSILON*Math.max(1,Math.abs(i),Math.abs(c))&&Math.abs(o-l)<=y.EPSILON*Math.max(1,Math.abs(o),Math.abs(l))}e.b=i,e.g=o,e.c=a,e.l=s,e.a=c,e.k=l,e.h=u,e.m=h,e.j=f,e.d=d,e.i=p,e.f=_,e.e=v;var y=r(1);!function(){var t=n()}()},function(t,e,r){"use strict";function n(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function o(t,e,r){return e&&i(t.prototype,e),r&&i(t,r),t}function a(t){var e=Object(s.a)(t,"fillColor");return Object(c.a)(null,l,function(){function t(){n(this,t)}return o(t,[{key:"initializer",value:function(t){this._fillColor=new e("red",this),this._initFillStyleFromOptions(t)}}]),t}())}r.d(e,"b",function(){return l}),e.a=a;var s=r(19),c=r(5),l=function(){function t(e){n(this,t),this.initializer(e)}return o(t,[{key:"_initFillStyleFromOptions",value:function(t){t&&(void 0!==t.fillColor&&(this.fillColor=t.fillColor),void 0!==t.fillOpacity&&(this.fillOpacity=t.fillOpacity))}},{key:"initializer",value:function(t){this._fillColor=new s.b("black"),this._initFillStyleFromOptions(t)}},{key:"isFillVisible",value:function(){return this._fillColor.opacity>0}},{key:"isTransparent",value:function(){return this._fillColor.isTransparent()}},{key:"setFillCtx",value:function(t){t.fillStyle=this.fillColor}},{key:"fillColor",set:function(t){return this._fillColor.value=t,this},get:function(){return this._fillColor.value}},{key:"fillOpacity",set:function(t){return this._fillColor.opacity=t,this},get:function(){return this._fillColor.opacity}},{key:"packedFillColor",set:function(t){return this._fillColor.packedValue=t,this},get:function(){return this._fillColor.packedValue}}],[{key:"copyFillStyle",value:function(t,e){void 0===t.packedFillColor?(void 0!==t.fillColor&&(e.fillColor=t.fillColor),void 0!==t.fillOpacity&&(e.fillOpacity=t.fillOpacity)):e.packedFillColor=t.packedFillColor}},{key:"compareFillStyle",value:function(t,e){var r=t.isFillVisible(),n=e.isFillVisible();return r!==n?r-n:t.packedFillColor-e.packedFillColor}},{key:"toJSON",value:function(t){return{fillColor:t.fillColor}}}]),t}()},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?o(t):e}function o(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function a(t,e,r){return(a="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=s(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function s(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=c(t)););return t}function c(t){return(c=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function l(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&u(t,e)}function u(t,e){return(u=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}function h(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function f(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function d(t,e,r){return e&&f(t.prototype,e),r&&f(t,r),t}function p(t){return(255&t)/255}function _(t){return m.a.floor(255*m.a.clamp01(t))}function v(t){return"rgba(".concat(t>>>24,", ").concat((16711680&t)>>16,", ").concat((65280&t)>>8,", ").concat(p(t),")")}function y(t){if("string"!=typeof t)throw new Error("".concat(t," is not a valid color string"));var e=0,r=null;if(r=t.match(w))e=255,e|=m.a.clamp(Number.parseInt(r[3],10),0,255)<<8,e|=m.a.clamp(Number.parseInt(r[2],10),0,255)<<16,e|=m.a.clamp(Number.parseInt(r[1],10),0,255)<<24;else if(r=t.match(k))e=_(Number.parseFloat(r[4],10)),e|=m.a.clamp(Number.parseInt(r[3],10),0,255)<<8,e|=m.a.clamp(Number.parseInt(r[2],10),0,255)<<16,e|=m.a.clamp(Number.parseInt(r[1],10),0,255)<<24;else if(r=t.match(x))e=255,e|=m.a.clamp(Number.parseInt(r[3],16),0,255)<<8,e|=m.a.clamp(Number.parseInt(r[2],16),0,255)<<16,e|=m.a.clamp(Number.parseInt(r[1],16),0,255)<<24;else{if(!g.has(t))throw new Error("".concat(t," is not a valid color string"));r=g.get(t).match(x),e=255,e|=m.a.clamp(Number.parseInt(r[3],16),0,255)<<8,e|=m.a.clamp(Number.parseInt(r[2],16),0,255)<<16,e|=m.a.clamp(Number.parseInt(r[1],16),0,255)<<24}return e}function b(t,e){return function(r){function n(){return h(this,n),i(this,c(n).apply(this,arguments))}return l(n,r),d(n,[{key:"initializer",value:function(t,e){this._eventHandler=e,a(c(n.prototype),"initializer",this).call(this,t)}},{key:"_checkPackedColorChanged",value:function(r){if(r!==this._color){var n=this._color,i=p(n),o=p(r);this._color=r,this._eventHandler.fire(t,{attr:e,prevVal:v(n),currVal:v(this._color)}),o!==i&&this._eventHandler.fire(t,{attr:"opacity",prevVal:i,currVal:o})}}},{key:"value",set:function(t){var e=y(t);return this._checkPackedColorChanged(e),this},get:function(){return v(this._color)}},{key:"packedValue",set:function(t){var e=0;return e|=t,this._checkPackedColorChanged(e),this},get:function(){return this._color}},{key:"opacity",set:function(e){if("number"!=typeof e)throw new Error("Opacity must be a number between 0-1");var r=255&this._color,n=_(e);return n!==r&&(this._color&=4294967040,this._color|=n,this._eventHandler.fire(t,{attr:"opacity",prevVal:r/255,currVal:n/255})),this},get:function(){return p(this._color)}}]),n}(S)}r.d(e,"b",function(){return S}),e.a=b;var m=r(6),g=new Map([["aliceblue","#F0F8FF"],["antiquewhite","#FAEBD7"],["aqua","#00FFFF"],["aquamarine","#7FFFD4"],["azure","#F0FFFF"],["beige","#F5F5DC"],["bisque","#FFE4C4"],["black","#000000"],["blanchedalmond","#FFEBCD"],["blue","#0000FF"],["blueviolet","#8A2BE2"],["brown","#A52A2A"],["burlywood","#DEB887"],["cadetblue","#5F9EA0"],["chartreuse","#7FFF00"],["chocolate","#D2691E"],["coral","#FF7F50"],["cornflowerblue","#6495ED"],["cornsilk","#FFF8DC"],["crimson","#DC143C"],["cyan","#00FFFF"],["darkblue","#00008B"],["darkcyan","#008B8B"],["darkgoldenrod","#B8860B"],["darkgray","#A9A9A9"],["darkgreen","#006400"],["darkkhaki","#BDB76B"],["darkmagenta","#8B008B"],["darkolivegreen","#556B2F"],["darkorange","#FF8C00"],["darkorchid","#9932CC"],["darkred","#8B0000"],["darksalmon","#E9967A"],["darkseagreen","#8FBC8F"],["darkslateblue","#483D8B"],["darkslategray","#2F4F4F"],["darkturquoise","#00CED1"],["darkviolet","#9400D3"],["deeppink","#FF1493"],["deepskyblue","#00BFFF"],["dimgray","#696969"],["dodgerblue","#1E90FF"],["firebrick","#B22222"],["floralwhite","#FFFAF0"],["forestgreen","#228B22"],["fuchsia","#FF00FF"],["gainsboro","#DCDCDC"],["ghostwhite","#F8F8FF"],["gold","#FFD700"],["goldenrod","#DAA520"],["gray","#808080"],["green","#008000"],["greenyellow","#ADFF2F"],["honeydew","#F0FFF0"],["hotpink","#FF69B4"],["indianred","#CD5C5C"],["indigo","#4B0082"],["ivory","#FFFFF0"],["khaki","#F0E68C"],["lavender","#E6E6FA"],["lavenderblush","#FFF0F5"],["lawngreen","#7CFC00"],["lemonchiffon","#FFFACD"],["lightblue","#ADD8E6"],["lightcoral","#F08080"],["lightcyan","#E0FFFF"],["lightgoldenrodyellow","#FAFAD2"],["lightgray","#D3D3D3"],["lightgreen","#90EE90"],["lightpink","#FFB6C1"],["lightsalmon","#FFA07A"],["lightseagreen","#20B2AA"],["lightskyblue","#87CEFA"],["lightslategray","#778899"],["lightsteelblue","#B0C4DE"],["lightyellow","#FFFFE0"],["lime","#00FF00"],["limegreen","#32CD32"],["linen","#FAF0E6"],["magenta","#FF00FF"],["maroon","#800000"],["mediumaquamarine","#66CDAA"],["mediumblue","#0000CD"],["mediumorchid","#BA55D3"],["mediumpurple","#9370DB"],["mediumseagreen","#3CB371"],["mediumslateblue","#7B68EE"],["mediumspringgreen","#00FA9A"],["mediumturquoise","#48D1CC"],["mediumvioletred","#C71585"],["midnightblue","#191970"],["mintcream","#F5FFFA"],["mistyrose","#FFE4E1"],["moccasin","#FFE4B5"],["navajowhite","#FFDEAD"],["navy","#000080"],["oldlace","#FDF5E6"],["olive","#808000"],["olivedrab","#6B8E23"],["orange","#FFA500"],["orangered","#FF4500"],["orchid","#DA70D6"],["palegoldenrod","#EEE8AA"],["palegreen","#98FB98"],["paleturquoise","#AFEEEE"],["palevioletred","#DB7093"],["papayawhip","#FFEFD5"],["peachpuff","#FFDAB9"],["peru","#CD853F"],["pink","#FFC0CB"],["plum","#DDA0DD"],["powderblue","#B0E0E6"],["purple","#800080"],["rebeccapurple","#663399"],["red","#FF0000"],["rosybrown","#BC8F8F"],["royalblue","#4169E1"],["saddlebrown","#8B4513"],["salmon","#FA8072"],["sandybrown","#F4A460"],["seagreen","#2E8B57"],["seashell","#FFF5EE"],["sienna","#A0522D"],["silver","#C0C0C0"],["skyblue","#87CEEB"],["slateblue","#6A5ACD"],["slategray","#708090"],["snow","#FFFAFA"],["springgreen","#00FF7F"],["steelblue","#4682B4"],["tan","#D2B48C"],["teal","#008080"],["thistle","#D8BFD8"],["tomato","#FF6347"],["turquoise","#40E0D0"],["violet","#EE82EE"],["wheat","#F5DEB3"],["white","#FFFFFF"],["whitesmoke","#F5F5F5"],["yellow","#FFFF00"],["yellowgreen","#9ACD32"]]),w=/^rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$/i,k=/^rgba\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*([0,1](?:\.\d*)?)\s*\)\s*$/i,x=/^#([0-9,a-f,A-F]{2})([0-9,a-f,A-F]{2})([0-9,a-f,A-F]{2})\s*$/i,S=function(){function t(e){h(this,t);for(var r=arguments.length,n=new Array(r>1?r-1:0),i=1;i<r;i++)n[i-1]=arguments[i];this.initializer.apply(this,[e].concat(n))}return d(t,[{key:"initializer",value:function(t){this._color=0,t&&(this.value=t)}},{key:"isTransparent",value:function(){return p(this._color)<1}},{key:"value",set:function(t){return this._color=y(t),this},get:function(){return v(this._color)}},{key:"packedValue",set:function(t){return this._color=0,this._color|=t,this},get:function(){return this._color}},{key:"opacity",set:function(t){if("number"!=typeof t)throw new Error("Opacity must be a number between 0-1");var e=255&this._color,r=_(t);return r!==e&&(this._color&=4294967040,this._color|=r),this},get:function(){return p(this._color)}}]),t}()},function(t,e,r){"use strict";function n(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function i(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function o(t,e,r){return e&&i(t.prototype,e),r&&i(t,r),t}function a(t){if("number"!=typeof t)throw new Error("Stroke width must be a number")}function s(t){var e=-1;if("string"!=typeof t||(e=_.indexOf(t.toLowerCase()))<0)throw new Error("Line join must be a string and must be one of [".concat(_.join(", "),"]"));return e}function c(t){var e=-1;if("string"!=typeof t||(e=y.indexOf(t.toLowerCase()))<0)throw new Error("Line cap must be a string and must be one of [".concat(y.join(", "),"]"));return e}function l(t){if(!t||!Array.isArray(t)||t.length%2!=0)throw new Error("The dash pattern must be an array with an even number of numbers (or an empty array)")}function u(t){if("number"!=typeof t)throw new Error("The dash offset must be a number")}function h(t){var e=Object(f.a)(t,"strokeColor");return Object(d.a)(null,b,function(){function r(){n(this,r)}return o(r,[{key:"initializer",value:function(t){this._strokeColor=new e("black",this),this._strokeWidth=0,this._lineJoin=p.MITER,this._lineCap=v.BUTT,this._dashPattern=[],this._dashOffset=0,this._initStrokeStyleFromOptions(t)}},{key:"strokeWidth",set:function(e){if(a(e),e!==this._strokeWidth){var r=this._strokeWidth;this._strokeWidth=e,this.fire(t,{attr:"strokeWidth",prevVal:r,curral:this._strokeWidth})}return this},get:function(){return this._strokeWidth}},{key:"lineJoin",set:function(e){var r=s(e);if(r!==this._lineJoin){var n=this._lineJoin;this._lineJoin=r,this.fire(t,{attr:"lineJoin",prevVal:n,curral:this._lineJoin})}return this},get:function(){return _[this._lineJoin]}},{key:"lineCap",set:function(e){var r=c(e);if(r!==this._lineCap){var n=this._lineCap;this._lineCap=r,this.fire(t,{attr:"lineCap",prevVal:n,curral:this._lineCap})}return this},get:function(){return y[this._lineCap]}},{key:"dashPattern",set:function(e){l(e);var r=!1;if(e.length===this._dashPattern.length){for(var n=0;n<e.length;n+=1)if(e[n]!==this._dashPattern[n]){r=!0;break}}else r=!0;if(r){var i=this._dashPattern;this._dashPattern=e.slice(),this.fire(t,{attr:"dashPattern",prevVal:i,curral:this._dashPattern.slice()})}return this},get:function(){return this._dashPattern.slice()}},{key:"dashOffset",set:function(e){if(u(e),e!==this._dashOffset){var r=this._dashOffset;this._dashOffset=e,this._dashPattern.length&&this.fire(t,{attr:"dashOffset",prevVal:r,curral:this._dashOffset})}return this},get:function(){return this._dashOffset}}]),r}())}r.d(e,"b",function(){return b}),e.a=h;var f=r(19),d=r(5),p={MITER:0,BEVEL:1,ROUND:2},_=["miter","bevel","round"],v={BUTT:0,SQUARE:1,ROUND:2},y=["butt","square","round"],b=function(){function t(e){n(this,t),this.initializer(e)}return o(t,[{key:"_initStrokeStyleFromOptions",value:function(t){t&&(void 0!==t.strokeColor&&(this.strokeColor=t.strokeColor),void 0!==t.strokeOpacity&&(this.strokeOpacity=t.strokeOpacity),void 0!==t.strokeWidth&&(this.strokeWidth=t.strokeWidth),void 0!==t.lineMiter&&(this.lineJoin=t.lineMiter),void 0!==t.lineCap&&(this.lineCap=t.lineCap),void 0!==t.dashPattern&&(this.dashPattern=t.dashPattern),void 0!==t.dashOffset&&(this.dashOffset=t.dashOffset))}},{key:"initializer",value:function(t){this._strokeColor=new f.b("black"),this._strokeWidth=0,this._lineJoin=p.MITER,this._lineCap=v.BUTT,this._dashPattern=[],this._dashOffset=0,this._initStrokeStyleFromOptions(t)}},{key:"isStrokeVisible",value:function(){return this._strokeColor.opacity>0&&this._strokeWidth>0}},{key:"isTransparent",value:function(){return this._strokeColor.isTransparent()}},{key:"setStrokeCtx",value:function(t){t.strokeStyle=this.strokeColor,t.lineWidth=this._strokeWidth,t.lineJoin=this._lineJoin,t.lineCap=this._lineCap,t.setLineDash(this._dashPattern),t.lineDashOffset=this._dashOffset}},{key:"strokeColor",set:function(t){return this._strokeColor.value=t,this},get:function(){return this._strokeColor.value}},{key:"strokeOpacity",set:function(t){this._strokeColor.opacity=t},get:function(){return this._strokeColor.opacity}},{key:"packedStrokeColor",set:function(t){this._strokeColor.packedValue=t},get:function(){return this._strokeColor.packedValue}},{key:"strokeWidth",set:function(t){return a(t),this._strokeWidth=t,this},get:function(){return this._strokeWidth}},{key:"lineJoin",set:function(t){var e=s(t);return this._lineJoin=e,this},get:function(){return _[this._lineJoin]}},{key:"lineCap",set:function(t){var e=c(t);return this._lineCap=e,this},get:function(){return y[this._lineJoin]}},{key:"dashPattern",set:function(t){return l(t),this._dashPattern=t.slice(),this},get:function(){return this._dashPattern.slice()}},{key:"dashOffset",set:function(t){return u(t),this._dashOffset=t,this},get:function(){return this._dashOffset}}],[{key:"copyStrokeStyle",value:function(t,e){void 0===t.packedStrokeColor?(void 0!==t.strokeColor&&(e.strokeColor=t.strokeColor),void 0!==t.strokeOpacity&&(e.strokeOpacity=t.strokeOpacity)):e.packedStrokeColor=t.packedStrokeColor,void 0!==t.strokeWidth&&(e.strokeWidth=t.strokeWidth),void 0!==t.lineJoin&&(e.lineJoin=t.lineJoin),void 0!==t.lineCap&&(e.lineCap=t.lineCap),void 0!==t.dashPattern&&(e.dashPattern=t.dashPattern),void 0!==t.dashOffset&&(e.dashOffset=t.dashOffset)}},{key:"compareStrokeStyle",value:function(t,e){var r=t.isStrokeVisible(),n=e.isStrokeVisible();if(r!==n)return r-n;if(r=t.packedStrokeColor,n=e.packedStrokeColor,r!==n)return r-n;if(r=t.strokeWidth,n=e.strokeWidth,r!==n)return r-n;if(r=t._lineJoin,n=e._lineJoin,r!==n)return r-n;if(r=t._lineCap,n=e._lineCap,r!==n)return r-n;if(r=t._dashPattern,n=e._dashPattern,r.length===n.length&&r.length>0){for(var i=0;i<r.length;i+=1)if(r[i]!==n[i])return r[i]-n[i];return t.dashOffset-e.dashOffset}return r.length-n.length}},{key:"toJSON",value:function(t){return{strokeColor:t.strokeColor,strokeWidth:t.strokeWidth,lineJoin:t.lineJoin,lineCap:t.lineCap,dashPattern:t.dashPattern,dashOffset:t.dashOffset}}}]),t}()},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t){return(l=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function u(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&h(t,e)}function h(t,e){return(h=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}function f(t,e){t&&" ".concat(t.className," ").indexOf(" ".concat(e," "))<0&&(t.className+=(t.className?" ":"")+e)}function d(t){var e=document.createElement("div");f(e,"mapd-draw-canvas-container");var r=document.createElement("canvas"),n=r.getContext("2d"),i=v.a(n);return f(r,"mapd-draw-canvas"),r.style.position="absolute",r.style.pointerEvents="none",e.appendChild(r),t.appendChild(e),{canvasContainer:e,canvas:r,canvasContext:n,ratio:i}}function p(t,e,r,n,i){t.forEach(function(t){e.set(t,{shapeObj:t,shapeId:r.shapeId,shapeIdx:-1}),t.on(["changed:order","changed:visibility","changed:style"],n),t.on(["changed:geom","changed:visibility","changed:xform"],i),r.shapeId+=1})}function _(t,e,r,n){var i=[];return t.forEach(function(t){var o=e.get(t);o&&i.push(o.shapeIdx),e.delete(t),t.off(["changed"],[r,n])}),i}r.d(e,"a",function(){return P});var v=r(32),y=r(3),b=r(7),m=r(8),g=r(33),w=r(34),k=r(11),x=r(35),S=r.n(x),O=["mousedown","mouseup","mousemove","click","dblclick","mouseover","mouseout"],E=["top","bottom","left","right"],C={MOUSEDOWN:"mousedown",MOUSEUP:"mouseup",MOUSEMOVE:"mousemove",CLICK:"click",DBLCLICK:"dblclick",MOUSEOVER:"mouseover",MOUSEOUT:"mouseout",SHAPE_ADD:"shape:add",SHAPE_DELETE:"shape:delete"},M=function(t){function e(){var t,r;i(this,e);for(var n=arguments.length,o=new Array(n),a=0;a<n;a++)o[a]=arguments[a];return r=s(this,(t=l(e)).call.apply(t,[this].concat(o))),r._defaults={packedFillColor:r.packedFillColor,packedStrokeColor:r.packedStrokeColor,strokeWidth:r.strokeWidth,lineJoin:r.lineJoin,lineCap:r.lineCap,dashPattern:r.dashPattern,dashOffset:r.dashOffset},r}return u(e,t),a(e,[{key:"setFillStyle",value:function(t,e){e.packedFillColor!==this.packedFillColor&&(this.packedFillColor=e.packedFillColor,t.fillStyle=this.fillColor)}},{key:"setStrokeStyle",value:function(t,e){e.packedStrokeColor!==this.packedStrokeColor&&(this.packedStrokeColor=e.packedStrokeColor,t.strokeStyle=this.strokeColor),e.strokeWidth!==this._strokeWidth&&(this.strokeWidth=e.strokeWidth,t.lineWidth=this._strokeWidth),e.lineJoin!==this._lineJoin&&(this.lineJoin=e.lineJoin,t.lineJoin=this._lineJoin),e.lineCap!==this._lineCap&&(this.lineCap=e.lineCap,t.lineCap=this._lineCap);var r=e._dashPattern,n=!1;if(r.length===this._dashPattern.length){for(var i=0;i<r.length;i+=1)if(r[i]!==this._dashPattern[i]){n=!0;break}}else n=!0;n&&(this.dashPattern=r,t.setLineDash(this._dashPattern)),e.dashOffset!==this._dashOffset&&(this.dashOffset=e.dashOffset,t.lineDashOffset=this._dashOffset)}},{key:"applyDefaults",value:function(t){var e=this;Object.getOwnPropertyNames(this._defaults).forEach(function(t){e[t]=e._defaults[t]}),this.setFillCtx(t),this.setStrokeCtx(t)}}]),e}(m.a),P=function(t){function e(t,r){var n;return i(this,e),n=s(this,l(e).call(this)),n._init(t,r),n}return u(e,t),a(e,[{key:"destroy",value:function(){var t=this;this._destroyCanvas(),this._objects&&(this._objects.forEach(function(e,r){r.off("changed",[t._reorderCb,t._redrawCb])}),this._objects.clear(),this._sortedObjs=[],this._reorderedObjIdxs.clear())}},{key:"_resize",value:function(t){var e=0;this._parent.offsetWidth&&(e=Math.max(e,this._parent.offsetWidth-this._margins.left-this._margins.right));var r=0;if(this._parent.offsetHeight&&(r=Math.max(r,this._parent.offsetHeight-this._margins.top-this._margins.bottom)),this._drawCanvas.width=e*this._pixelRatio,this._drawCanvas.height=r*this._pixelRatio,this._drawCanvas.style.left="".concat(this._margins.left,"px"),this._drawCanvas.style.top="".concat(this._margins.top,"px"),this._drawCanvas.style.width="".concat(e,"px"),this._drawCanvas.style.height="".concat(r,"px"),this._camera);else{var n=t&&t.projectionDimensions?t.projectionDimensions:[e,r];this._camera=new w.a([0,0,e,r],n,!!t.flipY&&Boolean(t.flipY)),this._camera.setPosition(t&&t.cameraPosition?t.cameraPosition:[e/2,r/2]),this._camera.on("changed",this._rerenderCb)}this._rerenderCb()}},{key:"_mousedownCB",value:function(t){t.target===this._parent&&this.fire("mousedown",{originalEvent:t})}},{key:"_mouseupCB",value:function(t){t.target===this._parent&&this.fire("mouseup",{originalEvent:t})}},{key:"_mousemoveCB",value:function(t){t.target===this._parent&&this.fire("mousemove",{originalEvent:t})}},{key:"_clickCB",value:function(t){t.target===this._parent&&this.fire("click",{originalEvent:t})}},{key:"_dblclickCB",value:function(t){t.target===this._parent&&this.fire("dblclick",{originalEvent:t})}},{key:"_mouseoverCB",value:function(t){t.target===this._parent&&this.fire("mouseover",{originalEvent:t})}},{key:"_mouseoutCB",value:function(t){t.target===this._parent&&this.fire("mouseout",{originalEvent:t})}},{key:"_enableEvents",value:function(){this.registerEvents(O);for(var t=O.map(function(t){return"_".concat(t,"CB")}),e=0;e<O.length;e+=1)document.addEventListener(O[e],this[t[e]],!0)}},{key:"_disableEvents",value:function(){for(var t=O.map(function(t){return"_".concat(t,"CB")}),e=0;e<O.length;e+=1)document.removeEventListener(O[e],this[t[e]],!0)}},{key:"_initCanvas",value:function(t,e){var r=this,n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:null;this._margins=e&&e.margins?Object.assign({},e.margins):{},E.forEach(function(t){"number"!=typeof r._margins[t]&&(r._margins[t]=0)});var i=d(t),o=i.canvasContainer,a=i.canvas,s=i.canvasContext,c=i.ratio;this._container=o,this._drawCanvas=a,this._drawCtx=s,this._pixelRatio=c,this._parent=t,Object(g.a)(["_resize"],this),this._resize(e),this._resizeSensor=new S.a(t,this._resize),(n||null===n&&e&&e.enableEvents)&&this._enableEvents()}},{key:"_destroyCanvas",value:function(){this._drawCanvas&&this._disableEvents(),this._parent&&(this._parent.removeChild(this._drawCanvas),this._resizeSensor&&this._resizeSensor.detach(this._parent,this._resize)),this._drawCanvas=null,this._drawCtx=null,this._parent=null}},{key:"_init",value:function(t,e){var r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:null;this.registerEvents([C.SHAPE_ADD,C.SHAPE_DELETE]),Object(g.a)(["_reorderCb","_rerenderCb"],this),Object(g.a)(["_mousedownCB","_mouseupCB","_mousemoveCB","_clickCB","_dblclickCB","_mouseoverCB","_mouseoutCB"],this),this._renderFrameCb=this.renderAll.bind(this),this._renderRequestTime=0,this._ids={shapeId:1},this._objects=new Map,this._sortedObjs=[],this._reorderedObjIdxs=new Set,this._initCanvas(t,e,r),this._styleState=new M({fillColor:"red"})}},{key:"getContainer",value:function(){return this._parent}},{key:"getCanvasContainer",value:function(){return this._container}},{key:"getCanvas",value:function(){return this._drawCanvas}},{key:"project",value:function(t,e){var r=this._camera.screenToWorldMatrix;return y.transformMat2d(t,e,r)}},{key:"unproject",value:function(t,e){var r=this._camera.worldToScreenMatrix;return y.transformMat2d(t,e,r)}},{key:"hasShape",value:function(t){return this._objects.has(t)}},{key:"addShape",value:function(t){var e=t;Array.isArray(e)||(e=[t]),p(e,this._objects,this._ids,this._reorderCb,this._rerenderCb),this.fire("shape:add",{shape:e});var r={target:e};return this._reorderCb(r),this}},{key:"deleteShape",value:function(t){var e=t;Array.isArray(e)||(e=[t]);for(var r=_(e,this._objects,this._reorderCb,this._rerenderCb),n=-1,i=0;i<e.length;i+=1)(n=this._sortedObjs.indexOf(e[i]))>=0&&this._sortedObjs.splice(n,1),this._reorderedObjIdxs.add(r[i]);return this._rerenderCb(),this.fire("shape:delete",{shape:e}),this}},{key:"deleteAllShapes",value:function(){return this.deleteShape(this.sortedShapes.slice()),this}},{key:"moveShapeToTop",value:function(t){if(this._objects.has(t)){var e=this.sortedShapes,r=e[e.length-1].zIndex;t.zIndex=r+1}}},{key:"moveShapeToBack",value:function(t){if(this._objects.has(t)){var e=this.sortedShapes,r=e[0].zIndex;t.zIndex=r}}},{key:"getShapesAsJSON",value:function(){return this.sortedShapes.map(function(t){return t.toJSON()})}},{key:"_rerenderCb",value:function(){window.requestAnimationFrame(this._renderFrameCb)}},{key:"_reorderCb",value:function(t){var e=this,r=t.target;Array.isArray(r)||(r=[t.target]),r.forEach(function(t){console.assert(t,"A changed event doesn't have an object");var r=e._objects.get(t);console.assert(r,"A changed event target isn't in the list of shapes ".concat(t)),r.shapeIdx<0&&(r.shapeIdx=e._sortedObjs.push(t)-1),e._reorderedObjIdxs.add(r.shapeIdx)}),this._rerenderCb()}},{key:"_renderShapes",value:function(t,e,r){var n=this,i=r.worldToScreenMatrix;e.forEach(function(e){e.visible&&e.render(t,i,n._styleState)})}},{key:"renderAll",value:function(t){if(t){if(t<=this._renderRequestTime)return;this._renderRequestTime=t}else this._renderRequestTime=performance.now();var e=this._drawCtx;if(e.clearRect(0,0,this._drawCanvas.offsetWidth,this._drawCanvas.offsetHeight),this._objects.size){e.save();var r=this.sortedShapes;this._styleState.applyDefaults(e),this._renderShapes(e,r,this._camera),e.restore()}}},{key:"sortedShapes",get:function(){return this._reorderedObjIdxs.size&&(console.assert(this._sortedObjs.length===this._objects.size,"Size mismatch when rendering objets. Something got out of sync - sorted objs length: ".concat(this._sortedObjs.length,", objects length: ").concat(this._objects.size)),this._sortedObjs.sort(b.a.shapeCompare),this._reorderedObjIdxs.clear()),this._sortedObjs}},{key:"margins",get:function(){var t=this,e={};return E.forEach(function(r){e[r]=t._margins[r]}),e},set:function(t){var e=this;E.forEach(function(r){"number"==typeof t[r]&&t[r]!==e._margins[r]&&(e._margins[r]=t.prop)}),this._resize()}},{key:"viewport",get:function(){return this._camera.viewport},set:function(t){this._camera.viewport=t}},{key:"projectionDimensions",get:function(){return this._camera.projectionDimensions},set:function(t){return this._camera.projectionDimensions=t,this}},{key:"cameraPosition",get:function(){return this._camera.getPosition()},set:function(t){return this._camera.setPosition(t),this}}]),e}(k.a);P.EventConstants=C},function(t,e,r){"use strict";function n(t,e,r){return(e[o]-t[o])*(r[a]-t[a])-(r[o]-t[o])*(e[a]-t[a])}function i(t){var e=[],r=t.length;if(r<3){for(var i=0;i<r;i+=1)e[i]=i;return e}var o=new Array(2*r+1);o.fill(-1);var a=r-2,s=a+3;o[a]=o[s]=2,n(t[0],t[1],t[2])>0?(o[a+1]=0,o[a+2]=1):(o[a+1]=1,o[a+2]=0);for(var c=3;c<r;c+=1)if(n(t[o[a]],t[o[a+1]],t[c])<=0||n(t[o[s-1]],t[o[s]],t[c])<=0){for(;o[a]>=0&&o[a+1]>=0&&n(t[o[a]],t[o[a+1]],t[c])<=0;)a+=1;for(a-=1,o[a]=c;o[s]>=0&&o[s+1]>=0&&n(t[o[s-1]],t[o[s]],t[c])<=0;)s-=1;s+=1,o[s]=c}var l=0;for(l=0;l<=s-a-1;l+=1)e[l]=o[a+l];return o[a+l]!==e[0]&&(e[l]=o[a+l]),e}e.a=i;var o=0,a=1},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return v});var p=r(2),_=r(7),v=function(t){function e(t){var r;return i(this,e),r=s(this,h(e).call(this,t)),r._width=0,r._height=0,void 0!==t.width&&(r.width=t.width),void 0!==t.height&&(r.height=t.height),r}return f(e,t),a(e,[{key:"getDimensions",value:function(){return[this._width,this._height]}},{key:"_updateAABox",value:function(){(this._geomDirty||this._boundsOutOfDate)&&(p.initCenterExtents(this._aabox,[0,0],[this._width/2,this._height/2]),p.transformMat2d(this._aabox,this._aabox,this.globalXform),this._geomDirty=this._boundsOutOfDate=!1)}},{key:"_draw",value:function(t){t.rect(0-this.width/2,0-this.height/2,this.width,this.height)}},{key:"toJSON",value:function(){return Object.assign({type:"Rect",width:this.width,height:this.height},l(h(e.prototype),"toJSON",this).call(this))}},{key:"width",set:function(t){if("number"!=typeof t)throw new Error("Width must be a number");if(t!==this._width){var e=this._width;this._width=t,this._geomDirty=!0,this.fire("changed:geom",{attr:"width",prevVal:e,currVal:this._width})}return this},get:function(){return this._width}},{key:"height",set:function(t){if("number"!=typeof t)throw new Error("Height must be a number");if(t!==this._height){var e=this._height;this._height=t,this._geomDirty=!0,this.fire("changed:geom",{attr:"height",prevVal:e,currVal:this._height})}return this},get:function(){return this._height}}]),e}(_.a)},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=r(25);r.n(n);r.o(n,"version")&&r.d(e,"version",function(){return n.version});var i=r(26);r.d(e,"ShapeBuilder",function(){return i.a});var o=r(21);r.d(e,"DrawEngine",function(){return o.a});var a=r(2);r.d(e,"AABox2d",function(){return a});var s=r(4);r.d(e,"Mat2d",function(){return s.a});var c=r(3);r.d(e,"Point2d",function(){return c});var l=r(0);r.d(e,"Mat2",function(){return l.b});var u=r(8);r.d(e,"BasicStyle",function(){return u.a});var h=r(9);r.d(e,"Vec2d",function(){return h.a});var f=r(38);r.d(e,"Circle",function(){return f.a});var d=r(23);r.d(e,"Rect",function(){return d.a});var p=r(39);r.d(e,"Poly",function(){return p.a});var _=r(12);r.d(e,"PolyLine",function(){return _.a});var v=r(40);r.d(e,"Point",function(){return v.a});var y=r(6);r.d(e,"Math",function(){return y.a});var b=r(22);r.d(e,"simpleHull_2D",function(){return b.a})},function(t,e){t.exports={name:"@mapd/mapd-draw",description:"A Utility Library for drawing and interacting with shapes using canvas",version:"1.1.0",homepage:"https://omnisci.com",bugs:"https://github.com/omnisci/mapd-draw/issues",main:"dist/mapd-draw.js",author:"MapD Technologies",license:"MIT",engines:{node:">=4.0.0"},repository:{type:"git",url:"git+https://github.com/omnisci/mapd-draw.git"},dependencies:{"css-element-queries":"^0.4.0","gl-matrix":"^2.3.2"},devDependencies:{"@babel/core":"^7.0.0","@babel/plugin-proposal-class-properties":"^7.0.0","@babel/plugin-proposal-decorators":"^7.0.0","@babel/plugin-proposal-do-expressions":"^7.0.0","@babel/plugin-proposal-export-default-from":"^7.0.0","@babel/plugin-proposal-export-namespace-from":"^7.0.0","@babel/plugin-proposal-function-bind":"^7.0.0","@babel/plugin-proposal-function-sent":"^7.0.0","@babel/plugin-proposal-json-strings":"^7.0.0","@babel/plugin-proposal-logical-assignment-operators":"^7.0.0","@babel/plugin-proposal-nullish-coalescing-operator":"^7.0.0","@babel/plugin-proposal-numeric-separator":"^7.0.0","@babel/plugin-proposal-optional-chaining":"^7.0.0","@babel/plugin-proposal-pipeline-operator":"^7.0.0","@babel/plugin-proposal-throw-expressions":"^7.0.0","@babel/plugin-syntax-dynamic-import":"^7.0.0","@babel/plugin-syntax-import-meta":"^7.0.0","@babel/preset-env":"^7.0.0","@babel/register":"^7.0.0","babel-eslint":"^10.0.1","babel-loader":"^8.0.0",chai:"^3.5.0",eslint:"^6.0.0","eslint-config-prettier":"^6.5.0","eslint-plugin-prettier":"^3.1.1","http-server":"^0.11.1","json-loader":"0.5.4",mocha:"^6.2.1","pre-commit":"^1.2.2",prettier:"1.18.2",webpack:"^3.12.0"},scripts:{build:"npm run build:prod; npm run build:dev","build:prod":"npm run webpack","build:dev":"npm run webpack:dev",clean:"bash scripts/clean.sh","lint:fix":"eslint --rule 'prettier/prettier: 0' --fix $(find src -name \"*.js\" ! -name '*.spec.js'); prettier --write $(find src -name \"*.js\" ! -name '*.spec.js')",lint:"eslint $(find src -name \"*.js\" ! -name '*.spec.js')",start:"npm run build; http-server -p 8080 -o;","watch:dev":"node node_modules/webpack/bin/webpack.js --progress --colors --watch --config webpack.dev.config.js",webpack:"node node_modules/webpack/bin/webpack.js","webpack:dev":"node node_modules/webpack/bin/webpack.js --config webpack.dev.config.js",test:"mocha --recursive --require @babel/register"},"pre-commit":["lint","test"]}},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}function p(t,e,r){var n=t.getBoundingClientRect(),i=0,o=0;return(i=e-n.left-t.clientLeft)>=0&&i<=t.clientWidth&&(o=r-n.top-t.clientTop)>=0&&o<=t.clientHeight}function _(t,e,r){var n=e.getBoundingClientRect();t[0]=r.clientX-n.left-e.clientLeft,t[1]=r.clientY-n.top-e.clientTop}function v(t,e,r,n){_(z,t,e),M.transformMat2d(N,z,n.screenToWorldMatrix);var i=r.shape;i instanceof D.a?C.a(i,r,z,N,n):i instanceof F.a?C.c(i,r,z,N,n):C.b(i,r,z,N,n)}function y(t,e){e.keys={altKey:t.altKey,ctrlKey:t.ctrlKey,shiftKey:t.shiftKey,metaKey:t.metaKey}}function b(t){var e=[];return t.forEach(function(t,r){e.push(r)}),e}function m(t,e,r,n,i,o){var a={unselectedShapes:b(r)};g(r),t.save();var s=e[e.length-1].zIndex;t.zIndex=s+1,P.a.copyBasicStyle(n,t),t.selected=!0;var c=null;return(o.scalable||o.rotatable)&&(c=new D.a(i||L,o),t.addChildXform(c)),r.set(t,c),a.selectedShapes=[t],a}function g(t){t.forEach(function(t,e){e.restore(),e.selected=!1,e.removeChildXform(t)}),t.clear()}function w(t,e){var r=[];return e.forEach(function(e){var n=t.get(e);e.restore(),e.selected=!1,e.removeChildXform(n),t.delete(e),r.push(e)}),r}function k(t,e){var r=document.querySelector("".concat("#".concat(e.id," canvas")));return{x:t.offsetX+r.offsetLeft,y:t.offsetY+r.offsetTop}}function x(t,e,r){var n=arguments.length>3&&void 0!==arguments[3]?arguments[3]:V.SVG_OFFSET,i=arguments.length>4&&void 0!==arguments[4]?arguments[4]:V.SVG_OFFSET,o=document.getElementById("cursor"),a=k(t,e);if(null===o){var s=document.createElement("span");s.setAttribute("id","cursor"),s.setAttribute("style","position: absolute; top: ".concat("".concat(a.y,"px"),"; left: ","".concat(a.x,"px"),"; width: 28px; height: 28px; background: ",r,"; cursor: none; z-index: 10; pointer-events: none; transform: translate(").concat(n,"px, ").concat(i,"px)")),e.appendChild(s)}else o.style.background===r?E(t,e):(o.style.background=r,E(t,e))}function S(){var t=document.getElementById("cursor");null!==t&&t.parentNode.removeChild(t)}function O(t,e,r){var n=arguments.length>3&&void 0!==arguments[3]&&arguments[3];t.style.cursor=e;for(var i=0;i<t.childNodes.length;i+=1)t.childNodes[i].style.cursor=e,null===r||!n&&"canvas"===t.childNodes[i].nodeName.toLowerCase()||(t.childNodes[i].style.pointerEvents=r)}function E(t,e){var r=document.getElementById("cursor"),n=k(t,e);null!==r&&(r.style.top="".concat("".concat(n.y,"px")),r.style.left="".concat("".concat(n.x,"px")))}r.d(e,"a",function(){return H});var C=r(27),M=r(3),P=r(8),j=r(21),A=r(4),I=r(12),F=r(36),D=r(37),T="url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cg transform='rotate(<degrees>,24,24)'%3E%3Cpolygon style='fill:%23ffffff;' points='16,20 16,12 4,24 16,36 16,28 32,28 32,36 44,24 32,12 32,20 '/%3E%3Cpolygon points='14,22 14,17 7,24 14,31 14,26 34,26 34,31 41,24 34,17 34,22 '/%3E%3C/g%3E%3C/svg%3E\") no-repeat",R="url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cg transform='rotate(<degrees>,24,24)'%3E%3Cpath style='fill:%23ffffff;' d='M25.9,4C16.6,4,8.8,11.2,7.4,20.8H6.7H3.3l1.6,2.9l3.8,7.1l1.8,3.3l1.8-3.3l3.8-7.1l1.6-2.9h-3.3h-0.1 c1.3-5.7,6.1-9.9,11.7-9.9c8,0,12.1,4.4,12.1,13.1c0,7.2-5.4,13.1-12.1,13.1h-2v2V42v2h2c10.4,0,18.8-9,18.8-20 C44.7,11.7,37.5,4,25.9,4L25.9,4z'/%3E%3Cpath d='M25.9,6c10.5,0,16.8,6.7,16.8,18c0,9.9-7.5,18-16.8,18v-2.9c7.8,0,14.1-6.8,14.1-15.1c0-5.6-1.8-15.1-14.1-15.1 c-7.4,0-13.4,6.1-14,13.9h2.4l-3.8,7.1l-3.8-7.1h2.5C9.7,13.4,17,6,25.9,6'/%3E%3C/g%3E%3C/svg%3E\") no-repeat",B={SELECTION_CHANGED:"draw:selectionChanged",DRAG_BEGIN:"draw:drag:begin",DRAG_END:"draw:drag:end"},V={SVG_OFFSET:-14,QUICK_CLICK_TIME:500,RIGHT_ANGLE:90,STRAIGHT_ANGLE:180,FORTY_FIVE_ANGLE:45},z=M.create(0,0),N=M.create(0,0),L={fillColor:"white",strokeColor:"black",strokeWidth:2},W=function(){var t=document.getElementById("cursor");null!==t&&(t.style.display="none")},X=function(){var t=document.getElementById("cursor");null!==t&&(t.style.display="block")},q=function(t){t.target.parentNode.style.cursor="default",W()},Y=function(t){t.target.parentNode.style.cursor="none",X()},H=function(t){function e(){return i(this,e),s(this,h(e).apply(this,arguments))}return f(e,t),a(e,[{key:"_mousedownCB",value:function(t){if(p(this._drawCanvas,t.clientX,t.clientY)){this.timer=performance.now(),M.set(z,t.offsetX,t.offsetY),M.transformMat2d(N,z,this._camera.screenToWorldMatrix);var e=this._camera.worldToScreenMatrix,r=this.sortedShapes,n=-1,i=null,o=null;for(n=r.length-1;n>=0;n-=1){var a=this._objects.get(r[n]);if(r[n].selected){i=this._selectedShapes.get(r[n]),o=a;var s=null;if(i&&(s=i.containsPoint(z,N,e,this._drawCtx)).hit){if(i instanceof F.a&&t.altKey&&s.controlIndex<r[n].numVerts)r[n].removeVert(s.controlIndex),i=null;else{var c=i.parent.localXform,l=A.a.clone(c);A.a.invert(l,l);var u=M.clone(N);M.transformMat2d(u,u,l),this._dragInfo=Object.assign({rotate:Boolean(s.rotate),controlIndex:s.controlIndex,startObjectPos:u,worldToObjectMatrix:l,startLocalPos:i.parent.getPosition(),startLocalScale:i.parent.getScale(),startLocalRot:i.parent.getRotation(),shapeWidth:i.parent.width,shapeHeight:i.parent.height},o)}break}if(r[n].containsPoint(z,N,e,this._drawCtx)){i=r[n];break}}}if(n<0&&this._selectedShapes.size)this._selectedShapes.size&&this.fire(B.SELECTION_CHANGED,{unselectedShapes:b(this._selectedShapes),selectedShapes:[]}),this._dragInfo=null,g(this._selectedShapes);else if(i&&o&&(o.movable||o.rotatable||o.scalable)){var h=document.querySelector("".concat("#".concat(this._parent.id," > canvas")));null===h?(this._parent.addEventListener("mouseout",W),this._parent.addEventListener("mouseover",X)):(h.addEventListener("mouseout",q),h.addEventListener("mouseover",Y)),!this._dragInfo&&o.movable&&(this._dragInfo={startLocalPos:i.getPosition()}),this._dragInfo&&(this._dragInfo.shape=i,this._dragInfo.startPos=M.clone(z),this._dragInfo.startWorldPos=M.clone(N),this._dragInfo.objectToWorldMatrix=A.a.clone(i.globalXform),y(t,this._dragInfo),t.stopImmediatePropagation(),this.fire(B.DRAG_BEGIN,{shapes:b(this._selectedShapes)})),t.preventDefault()}}}},{key:"_mouseupCB",value:function(t){if(this._dragInfo&&this._dragInfo.shape){t.stopImmediatePropagation(),t.preventDefault();var e=document.querySelector("".concat("#".concat(this._parent.id," > canvas")));null===e?(this._parent.removeEventListener("mouseout",W),this._parent.removeEventListener("mouseover",X)):(e.removeEventListener("mouseout",q),e.removeEventListener("mouseover",Y)),this._dragInfo=null,this.fire(B.DRAG_END,{shapes:b(this._selectedShapes)})}else if(performance.now()-this.timer<V.QUICK_CLICK_TIME){M.set(z,t.offsetX,t.offsetY),M.transformMat2d(N,z,this._camera.screenToWorldMatrix);for(var r=this._camera.worldToScreenMatrix,n=this.sortedShapes,i=null,o=null,a=n.length-1;a>=0;a-=1)if(o=this._objects.get(n[a]),o.selectable&&n[a].containsPoint(z,N,r,this._drawCtx)){i=n[a];break}if(i&&!i.selected){var s=m(i,n,this._selectedShapes,this._selectStyle,this._xformStyle,o);this.fire(B.SELECTION_CHANGED,s)}}}},{key:"_mousemoveCB",value:function(t){if(p(this._drawCanvas,t.clientX,t.clientY)||this._dragInfo)if(this._dragInfo&&this._dragInfo.shape)E(t,this._parent),y(t,this._dragInfo),v(this._drawCanvas,t,this._dragInfo,this._camera),t.stopImmediatePropagation(),t.preventDefault();else if(!t.buttons&&this._selectedShapes.size){M.set(z,t.offsetX,t.offsetY),M.transformMat2d(N,z,this._camera.screenToWorldMatrix);var e=this._camera.worldToScreenMatrix,r=this.sortedShapes,n=0,i=this._camera.isYFlipped();for(n=r.length-1;n>=0;n-=1)if(r[n].selected){var o=this._objects.get(r[n]),a=this._selectedShapes.get(r[n]),s=null;if(O(this._parent,"none","none",!1),a&&(s=a.containsPoint(z,N,e,this._drawCtx)).hit){if(a instanceof D.a)if(s.rotate){var c=r[n].getRotation();i?(c*=-1,1===s.controlIndex?c-=V.RIGHT_ANGLE:0===s.controlIndex?c+=V.STRAIGHT_ANGLE:2===s.controlIndex&&(c+=V.RIGHT_ANGLE)):0===s.controlIndex?c-=V.RIGHT_ANGLE:1===s.controlIndex?c+=V.STRAIGHT_ANGLE:3===s.controlIndex&&(c+=V.RIGHT_ANGLE),x(t,this._parent,"".concat(R.replace(/<degrees>/g,"".concat(c))))}else s.controlIndex<4?0===s.controlIndex||3===s.controlIndex?x(t,this._parent,"".concat(T.replace(/<degrees>/g,"".concat(-r[n].getRotation()-V.FORTY_FIVE_ANGLE)))):1!==s.controlIndex&&2!==s.controlIndex||x(t,this._parent,"".concat(T.replace(/<degrees>/g,"".concat(-r[n].getRotation()+V.FORTY_FIVE_ANGLE)))):s.controlIndex%2==0?x(t,this._parent,"".concat(T.replace(/<degrees>/g,"".concat(-r[n].getRotation())))):x(t,this._parent,"".concat(T.replace(/<degrees>/g,"".concat(-r[n].getRotation()+V.RIGHT_ANGLE))));else a instanceof F.a&&(O(this._parent,"none","none",!1),s.controlIndex>=r[n].numVerts?x(t,this._parent,"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpolygon style='fill:%23ffffff;' points='31.2,28 24.8,28 24.8,32.8 20,32.8 20,39.2 24.8,39.2 24.8,44 31.2,44 31.2,39.2 36,39.2 36,32.8 31.2,32.8 '/%3E %3Cpolygon style='fill:%23ffffff' points='12,32 12,4 32.3,24.3 20,24.3 19.7,24.6 '/%3E%3Cpolygon points='13.8,8.2 13.8,27.8 19,22.8 19.2,22.5 28,22.5 '/%3E%3Cpolyline points='29.6,29.6 29.6,34.4 34.4,34.4 34.4,37.6 29.6,37.6 29.6,42.4 26.4,42.4 26.4,37.6 21.6,37.6 21.6,34.4 26.4,34.4 26.4,29.6 29.6,29.6  '/%3E%3C/svg%3E\") no-repeat",-8,-6):t.altKey?x(t,this._parent,"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect style='fill:%23ffffff;' x='20' y='32.8' width='16' height='6.4'/%3E%3Cpolygon  style='fill:%23ffffff;' points='12,32 12,4 32.3,24.3 20,24.3 19.7,24.6 '/%3E%3Cpolygon points='13.8,8.2 13.8,27.8 19,22.8 19.2,22.5 28,22.5 '/%3E%3Cpolyline points='34.4,34.4 34.4,37.6 21.6,37.6 21.6,34.4 '/%3E%3C/svg%3E\") no-repeat",-8,-6):x(t,this._parent,"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath style='fill:%23ffffff;' d='M24,17.5c-3.6,0-6.5,2.9-6.5,6.5s2.9,6.5,6.5,6.5s6.5-2.9,6.5-6.5S27.6,17.5,24,17.5L24,17.5z'/%3E%3Cpath style='fill:%23ffffff;' d='M24,4L4,24l20,20l20-20L24,4z M31.5,31.5h-15v-15h15V31.5z'/%3E%3Cpolygon points='17,34 24,40.5 31,34  '/%3E%3Cpolygon points='31,14 24,7.5 17,14     '/%3E%3Cpolygon points='14,17 7.5,24 14,31   '/%3E%3Cpolygon points='34,31 40.5,24 34,17    '/%3E%3Cpath d='M24,20c2.2,0,4,1.8,4,4s-1.8,4-4,4s-4-1.8-4-4S21.8,20,24,20'/%3E%3C/svg%3E\") no-repeat",V.SVG_OFFSET,V.SVG_OFFSET));t.stopImmediatePropagation(),t.preventDefault();break}if(r[n].containsPoint(z,N,e,this._drawCtx)){if(o&&o.movable){var l=document.getElementById("cursor");null!==l&&l.parentNode.removeChild(l),O(this._parent,"move",null),t.stopImmediatePropagation(),t.preventDefault()}break}}n<0&&(S(),O(this._parent,"default","auto",!1))}}},{key:"_clickCB",value:function(){}},{key:"_dblclickCB",value:function(t){if(p(this._drawCanvas,t.clientX,t.clientY)){M.set(z,t.offsetX,t.offsetY),M.transformMat2d(N,z,this._camera.screenToWorldMatrix);var e=this._camera.worldToScreenMatrix,r=this.sortedShapes,n=-1;for(n=r.length-1;n>=0;n-=1){var i=this._objects.get(r[n]);if(i.selectable&&r[n].containsPoint(z,N,e,this._drawCtx)){if(i.editable&&r[n]instanceof I.a){var o=r[n],a=!1;if(r[n].selected){var s=this._selectedShapes.get(r[n]);s&&(o.restore(),o.removeChildXform(s),a=!(s instanceof D.a))}o.selected=!0,o.save();var c=r[r.length-1].zIndex;o.zIndex=c+1,P.a.copyBasicStyle(this._selectStyle,o);var l=null;a?(i.rotatable||i.scalable)&&(l=new D.a(this._xformStyle||L,i),o.addChildXform(l)):(l=new F.a(o,this._xformStyle),o.addChildXform(l)),this._selectedShapes.set(o,l)}else if(!r[n].selected){var u=m(r[n],r,this._selectedShapes,this._selectStyle,this._xformStyle,i);this.fire(B.SELECTION_CHANGED,u)}break}}n<0&&this._selectedShapes.size?(this._selectedShapes.size&&this.fire(B.SELECTION_CHANGED,{unselectedShapes:b(this._selectedShapes),selectedShapes:[]}),this._dragInfo=null,g(this._selectedShapes),S(),O(this._parent,"default","auto",!1)):t.stopImmediatePropagation(),t.preventDefault()}}},{key:"_mouseoverCB",value:function(){}},{key:"_mouseoutCB",value:function(){}},{key:"_init",value:function(t,r){this._activated=r&&r.enableInteractions,l(h(e.prototype),"_init",this).call(this,t,r,this._activated);var n=Object.getOwnPropertyNames(B).map(function(t){return B[t]});this.registerEvents(n),this._dragInfo=null,this._selectedShapes=new Map,this._selectStyle=new P.a(r&&r.selectStyle?r.selectStyle:{fillColor:"orange"}),this._xformStyle=new P.a(r&&r.xformStyle?r.xformStyle:{fillColor:"white",strokeColor:"black",strokeWidth:2}),this.timer=0}},{key:"_renderShapes",value:function(t,e,r){var n=this,i=r.worldToScreenMatrix;e.forEach(function(e){if(e.visible&&(e.render(t,i,n._styleState),e.selected)){var r=n._selectedShapes.get(e);r&&r.render(t,i,n._styleState)}})}},{key:"selectShape",value:function(t){var e=this._objects.get(t);if(e&&e.selectable){var r=m(t,this.sortedShapes,this._selectedShapes,this._selectStyle,this._xformStyle,e);this.fire(B.SELECTION_CHANGED,r)}}},{key:"clearSelection",value:function(){if(this._selectedShapes.size){var t=b(this._selectedShapes);g(this._selectedShapes),this.fire(B.SELECTION_CHANGED,{unselectedShapes:t,selectedShapes:[]}),this._rerenderCb()}}},{key:"addShape",value:function(t){var r=this,n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:null,i=arguments.length>2&&void 0!==arguments[2]&&arguments[2],o=t;if(Array.isArray(o)||(o=[t]),l(h(e.prototype),"addShape",this).call(this,o),o.forEach(function(t){var e=r._objects.get(t);e&&(e.selectable=!n||void 0===n.selectable||Boolean(n.selectable),e.movable=!n||void 0===n.movable||Boolean(n.movable),e.rotatable=!n||void 0===n.rotatable||Boolean(n.rotatable),e.scalable=!n||void 0===n.scalable||Boolean(n.scalable),e.uniformScaleOnly=!(!n||void 0===n.uniformScaleOnly)&&Boolean(n.uniformScaleOnly),e.centerScaleOnly=!(!n||void 0===n.centerScaleOnly)&&Boolean(n.centerScaleOnly),e.editable=!n||void 0===n.editable||Boolean(n.editable))}),i){var a={unselectedShapes:b(this._selectedShapes)},s=[];o.forEach(function(t){var e=r._objects.get(t);e.selectable&&(m(t,r.sortedShapes,r._selectedShapes,r._selectStyle,r._xformStyle,e),s.push(t))}),s.length&&(a.selectedShapes=s,this.fire(B.SELECTION_CHANGED,a))}return this}},{key:"deleteShape",value:function(t){var r=t;Array.isArray(r)||(r=[t]);var n=w(this._selectedShapes,r);return this.fire(B.SELECTION_CHANGED,{unselectedShapes:n,selectedShapes:b(this._selectedShapes)}),S(),O(this._parent,"default","auto",!0),l(h(e.prototype),"deleteShape",this).call(this,r)}},{key:"deleteSelectedShapes",value:function(){var t=b(this._selectedShapes);return g(this._selectedShapes),this.fire(B.SELECTION_CHANGED,{unselectedShapes:t,selectedShapes:[]}),S(),O(this._parent,"default","auto",!0),l(h(e.prototype),"deleteShape",this).call(this,t)}},{key:"enableInteractions",value:function(){return this._enableEvents(),this._activated=!0,this}},{key:"disableInteractions",value:function(){return(!(arguments.length>0&&void 0!==arguments[0])||arguments[0])&&this.clearSelection(),this._disableEvents(),this._activated=!1,this}},{key:"selectStyle",set:function(t){P.a.copyBasicStyle(t,this._selectStyle)},get:function(){return this._selectStyle}},{key:"selectedShapes",get:function(){return b(this._selectedShapes)}},{key:"interactionsEnabled",get:function(){return this._activated}}]),e}(j.a);Object.assign(B,j.a.EventConstants),H.EventConstants=B},function(t,e,r){"use strict";function n(t,e,r,n,i){var o=[0,0],a=[0,0];c.a.svd(o,a,null,r.objectToWorldMatrix);var u=[0,0];s.sub(u,r.startWorldPos,o),l.a.normalize(u,u);var h=o;s.sub(h,i,o),l.a.normalize(h,h);var f=l.a.angle(u,h);r.keys.shiftKey&&(f=Math.round(f/Math.QUATER_PI)*Math.QUATER_PI),e.setRotation(r.startLocalRot+Math.RAD_TO_DEG*f)}function i(t,e,r,i,o){var a=t.parent,u=[0,0],h=[0,0],f=[0,0];if(e.rotate)return void n(t,a,e,r,i,o);var d=e.keys.shiftKey||e.uniformScaleOnly,p=e.keys.altKey||e.centerScaleOnly,_=[0,0];if(c.a.svd(_,null,null,e.objectToWorldMatrix),l.a.sub(h,i,e.startWorldPos),d&&e.controlIndex<4){var v=[e.objectToWorldMatrix[0],e.objectToWorldMatrix[1]],y=[e.objectToWorldMatrix[2],e.objectToWorldMatrix[3]],b=[0,0];e.controlIndex<2&&l.a.negate(v,v),e.controlIndex%2==0&&l.a.negate(y,y),l.a.normalize(v,v),l.a.normalize(y,y),l.a.add(b,v,y),l.a.normalize(b,b);var m=l.a.cross2d(h,b),g=null;0===e.controlIndex||3===e.controlIndex?(g=y,m<0&&(g=v)):(g=v,m<0&&(g=y));var w=l.a.dot(h,g);w=Math.sign(w)*Math.sqrt(2*w*w),l.a.scale(h,b,w),s.addVec2(i,e.startWorldPos,h)}s.copy(u,i),s.transformMat2d(u,u,e.worldToObjectMatrix),l.a.sub(f,u,e.startObjectPos),s.copy(_,e.startLocalPos);var k=0,x=0;if(e.controlIndex<4)k=e.controlIndex<2?-1:1,x=e.controlIndex%2==0?-1:1,p||s.addVec2(_,_,l.a.scale(h,h,.5)),a.setPosition(_);else{var S=e.controlIndex-4,O=[0,0];S%2==0?(l.a.set(O,e.objectToWorldMatrix[0],e.objectToWorldMatrix[1]),x=0,k=S<2?-1:1,d&&(x=k,f[1]=f[0])):(l.a.set(O,e.objectToWorldMatrix[2],e.objectToWorldMatrix[3]),k=0,x=S<2?-1:1,d&&(k=x,f[0]=f[1])),p||(l.a.normalize(O,O),l.a.scale(O,O,l.a.dot(h,O)),s.addVec2(_,_,l.a.scale(O,O,.5))),a.setPosition(_)}p&&(k*=2,x*=2),a.setScale([e.startLocalScale[0]*(1+k*f[0]/e.shapeWidth),e.startLocalScale[1]*(1+x*f[1]/e.shapeHeight)])}function o(t,e,r,n,i){var o=[0,0],a=[0,0];if(c.a.svd(a,null,null,e.objectToWorldMatrix),e.keys.shiftKey){s.sub(o,r,e.startPos);var u=Math.atan2(o[1],o[0]);u=Math.round(u/Math.QUATER_PI)*Math.QUATER_PI;var h=[Math.cos(u),Math.sin(u)];l.a.scale(o,h,l.a.dot(o,h)),l.a.transformMat2(o,o,i.screenToWorldMatrix)}else l.a.sub(o,n,e.startWorldPos);s.addVec2(a,e.startLocalPos,o),t.setPosition(a)}function a(t,e,r,n){var i=t.parent,o=i.numVerts;if(e.controlIndex>=o){var a=Math.min(e.controlIndex-o,o-1),c=a===o-1?0:a+1,u=[0,0],h=[0,0],f=[0,0],d=[0,0],p=i.vertsRef,_=i.globalXform;s.transformMat2d(h,p[a],_),s.transformMat2d(f,p[c],_),s.sub(d,f,h),l.a.scale(d,d,.5),s.addVec2(u,h,d),e.controlIndex=i.insertVert(a+1,u)}else i.setVertPosition(e.controlIndex,n)}e.a=i,e.b=o,e.c=a;var s=r(3),c=r(4),l=r(9)},function(t,e,r){"use strict";function n(){var t=new C.ARRAY_TYPE(4);return C.ARRAY_TYPE!=Float32Array&&(t[1]=0,t[2]=0),t[0]=1,t[3]=1,t}function i(t){var e=new C.ARRAY_TYPE(4);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e}function o(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t}function a(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t}function s(t,e,r,n){var i=new C.ARRAY_TYPE(4);return i[0]=t,i[1]=e,i[2]=r,i[3]=n,i}function c(t,e,r,n,i){return t[0]=e,t[1]=r,t[2]=n,t[3]=i,t}function l(t,e){if(t===e){var r=e[1];t[1]=e[2],t[2]=r}else t[0]=e[0],t[1]=e[2],t[2]=e[1],t[3]=e[3];return t}function u(t,e){var r=e[0],n=e[1],i=e[2],o=e[3],a=r*o-i*n;return a?(a=1/a,t[0]=o*a,t[1]=-n*a,t[2]=-i*a,t[3]=r*a,t):null}function h(t,e){var r=e[0];return t[0]=e[3],t[1]=-e[1],t[2]=-e[2],t[3]=r,t}function f(t){return t[0]*t[3]-t[2]*t[1]}function d(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=r[0],c=r[1],l=r[2],u=r[3];return t[0]=n*s+o*c,t[1]=i*s+a*c,t[2]=n*l+o*u,t[3]=i*l+a*u,t}function p(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=Math.sin(r),c=Math.cos(r);return t[0]=n*c+o*s,t[1]=i*c+a*s,t[2]=n*-s+o*c,t[3]=i*-s+a*c,t}function _(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=r[0],c=r[1];return t[0]=n*s,t[1]=i*s,t[2]=o*c,t[3]=a*c,t}function v(t,e){var r=Math.sin(e),n=Math.cos(e);return t[0]=n,t[1]=r,t[2]=-r,t[3]=n,t}function y(t,e){return t[0]=e[0],t[1]=0,t[2]=0,t[3]=e[1],t}function b(t){return"mat2("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+")"}function m(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2))}function g(t,e,r,n){return t[2]=n[2]/n[0],r[0]=n[0],r[1]=n[1],r[3]=n[3]-t[2]*r[1],[t,e,r]}function w(t,e,r){return t[0]=e[0]+r[0],t[1]=e[1]+r[1],t[2]=e[2]+r[2],t[3]=e[3]+r[3],t}function k(t,e,r){return t[0]=e[0]-r[0],t[1]=e[1]-r[1],t[2]=e[2]-r[2],t[3]=e[3]-r[3],t}function x(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3]}function S(t,e){var r=t[0],n=t[1],i=t[2],o=t[3],a=e[0],s=e[1],c=e[2],l=e[3];return Math.abs(r-a)<=C.EPSILON*Math.max(1,Math.abs(r),Math.abs(a))&&Math.abs(n-s)<=C.EPSILON*Math.max(1,Math.abs(n),Math.abs(s))&&Math.abs(i-c)<=C.EPSILON*Math.max(1,Math.abs(i),Math.abs(c))&&Math.abs(o-l)<=C.EPSILON*Math.max(1,Math.abs(o),Math.abs(l))}function O(t,e,r){return t[0]=e[0]*r,t[1]=e[1]*r,t[2]=e[2]*r,t[3]=e[3]*r,t}function E(t,e,r,n){return t[0]=e[0]+r[0]*n,t[1]=e[1]+r[1]*n,t[2]=e[2]+r[2]*n,t[3]=e[3]+r[3]*n,t}Object.defineProperty(e,"__esModule",{value:!0}),e.create=n,e.clone=i,e.copy=o,e.identity=a,e.fromValues=s,e.set=c,e.transpose=l,e.invert=u,e.adjoint=h,e.determinant=f,e.multiply=d,e.rotate=p,e.scale=_,e.fromRotation=v,e.fromScaling=y,e.str=b,e.frob=m,e.LDU=g,e.add=w,e.subtract=k,e.exactEquals=x,e.equals=S,e.multiplyScalar=O,e.multiplyScalarAndAdd=E,r.d(e,"mul",function(){return M}),r.d(e,"sub",function(){return P});var C=r(1),M=d,P=k},function(t,e,r){"use strict";function n(){var t=new E.ARRAY_TYPE(6);return E.ARRAY_TYPE!=Float32Array&&(t[1]=0,t[2]=0,t[4]=0,t[5]=0),t[0]=1,t[3]=1,t}function i(t){var e=new E.ARRAY_TYPE(6);return e[0]=t[0],e[1]=t[1],e[2]=t[2],e[3]=t[3],e[4]=t[4],e[5]=t[5],e}function o(t,e){return t[0]=e[0],t[1]=e[1],t[2]=e[2],t[3]=e[3],t[4]=e[4],t[5]=e[5],t}function a(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t[4]=0,t[5]=0,t}function s(t,e,r,n,i,o){var a=new E.ARRAY_TYPE(6);return a[0]=t,a[1]=e,a[2]=r,a[3]=n,a[4]=i,a[5]=o,a}function c(t,e,r,n,i,o,a){return t[0]=e,t[1]=r,t[2]=n,t[3]=i,t[4]=o,t[5]=a,t}function l(t,e){var r=e[0],n=e[1],i=e[2],o=e[3],a=e[4],s=e[5],c=r*o-n*i;return c?(c=1/c,t[0]=o*c,t[1]=-n*c,t[2]=-i*c,t[3]=r*c,t[4]=(i*s-o*a)*c,t[5]=(n*a-r*s)*c,t):null}function u(t){return t[0]*t[3]-t[1]*t[2]}function h(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=e[4],c=e[5],l=r[0],u=r[1],h=r[2],f=r[3],d=r[4],p=r[5];return t[0]=n*l+o*u,t[1]=i*l+a*u,t[2]=n*h+o*f,t[3]=i*h+a*f,t[4]=n*d+o*p+s,t[5]=i*d+a*p+c,t}function f(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=e[4],c=e[5],l=Math.sin(r),u=Math.cos(r);return t[0]=n*u+o*l,t[1]=i*u+a*l,t[2]=n*-l+o*u,t[3]=i*-l+a*u,t[4]=s,t[5]=c,t}function d(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=e[4],c=e[5],l=r[0],u=r[1];return t[0]=n*l,t[1]=i*l,t[2]=o*u,t[3]=a*u,t[4]=s,t[5]=c,t}function p(t,e,r){var n=e[0],i=e[1],o=e[2],a=e[3],s=e[4],c=e[5],l=r[0],u=r[1];return t[0]=n,t[1]=i,t[2]=o,t[3]=a,t[4]=n*l+o*u+s,t[5]=i*l+a*u+c,t}function _(t,e){var r=Math.sin(e),n=Math.cos(e);return t[0]=n,t[1]=r,t[2]=-r,t[3]=n,t[4]=0,t[5]=0,t}function v(t,e){return t[0]=e[0],t[1]=0,t[2]=0,t[3]=e[1],t[4]=0,t[5]=0,t}function y(t,e){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t[4]=e[0],t[5]=e[1],t}function b(t){return"mat2d("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+", "+t[4]+", "+t[5]+")"}function m(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2)+Math.pow(t[4],2)+Math.pow(t[5],2)+1)}function g(t,e,r){return t[0]=e[0]+r[0],t[1]=e[1]+r[1],t[2]=e[2]+r[2],t[3]=e[3]+r[3],t[4]=e[4]+r[4],t[5]=e[5]+r[5],t}function w(t,e,r){return t[0]=e[0]-r[0],t[1]=e[1]-r[1],t[2]=e[2]-r[2],t[3]=e[3]-r[3],t[4]=e[4]-r[4],t[5]=e[5]-r[5],t}function k(t,e,r){return t[0]=e[0]*r,t[1]=e[1]*r,t[2]=e[2]*r,t[3]=e[3]*r,t[4]=e[4]*r,t[5]=e[5]*r,t}function x(t,e,r,n){return t[0]=e[0]+r[0]*n,t[1]=e[1]+r[1]*n,t[2]=e[2]+r[2]*n,t[3]=e[3]+r[3]*n,t[4]=e[4]+r[4]*n,t[5]=e[5]+r[5]*n,t}function S(t,e){return t[0]===e[0]&&t[1]===e[1]&&t[2]===e[2]&&t[3]===e[3]&&t[4]===e[4]&&t[5]===e[5]}function O(t,e){var r=t[0],n=t[1],i=t[2],o=t[3],a=t[4],s=t[5],c=e[0],l=e[1],u=e[2],h=e[3],f=e[4],d=e[5];return Math.abs(r-c)<=E.EPSILON*Math.max(1,Math.abs(r),Math.abs(c))&&Math.abs(n-l)<=E.EPSILON*Math.max(1,Math.abs(n),Math.abs(l))&&Math.abs(i-u)<=E.EPSILON*Math.max(1,Math.abs(i),Math.abs(u))&&Math.abs(o-h)<=E.EPSILON*Math.max(1,Math.abs(o),Math.abs(h))&&Math.abs(a-f)<=E.EPSILON*Math.max(1,Math.abs(a),Math.abs(f))&&Math.abs(s-d)<=E.EPSILON*Math.max(1,Math.abs(s),Math.abs(d))}Object.defineProperty(e,"__esModule",{value:!0}),e.create=n,e.clone=i,e.copy=o,e.identity=a,e.fromValues=s,e.set=c,e.invert=l,e.determinant=u,e.multiply=h,e.rotate=f,e.scale=d,e.translate=p,e.fromRotation=_,e.fromScaling=v,e.fromTranslation=y,e.str=b,e.frob=m,e.add=g,e.subtract=w,e.multiplyScalar=k,e.multiplyScalarAndAdd=x,e.exactEquals=S,e.equals=O,r.d(e,"mul",function(){return C}),r.d(e,"sub",function(){return M});var E=r(1),C=h,M=w},function(t,e,r){"use strict";var n=(r(1),r(15));r(14),n.a,n.a,n.c,n.d,n.h},function(t,e,r){"use strict";function n(){var t=new z.ARRAY_TYPE(2);return z.ARRAY_TYPE!=Float32Array&&(t[0]=0,t[1]=0),t}function i(t){var e=new z.ARRAY_TYPE(2);return e[0]=t[0],e[1]=t[1],e}function o(t,e){var r=new z.ARRAY_TYPE(2);return r[0]=t,r[1]=e,r}function a(t,e){return t[0]=e[0],t[1]=e[1],t}function s(t,e,r){return t[0]=e,t[1]=r,t}function c(t,e,r){return t[0]=e[0]+r[0],t[1]=e[1]+r[1],t}function l(t,e,r){return t[0]=e[0]-r[0],t[1]=e[1]-r[1],t}function u(t,e,r){return t[0]=e[0]*r[0],t[1]=e[1]*r[1],t}function h(t,e,r){return t[0]=e[0]/r[0],t[1]=e[1]/r[1],t}function f(t,e){return t[0]=Math.ceil(e[0]),t[1]=Math.ceil(e[1]),t}function d(t,e){return t[0]=Math.floor(e[0]),t[1]=Math.floor(e[1]),t}function p(t,e,r){return t[0]=Math.min(e[0],r[0]),t[1]=Math.min(e[1],r[1]),t}function _(t,e,r){return t[0]=Math.max(e[0],r[0]),t[1]=Math.max(e[1],r[1]),t}function v(t,e){return t[0]=Math.round(e[0]),t[1]=Math.round(e[1]),t}function y(t,e,r){return t[0]=e[0]*r,t[1]=e[1]*r,t}function b(t,e,r,n){return t[0]=e[0]+r[0]*n,t[1]=e[1]+r[1]*n,t}function m(t,e){var r=e[0]-t[0],n=e[1]-t[1];return Math.sqrt(r*r+n*n)}function g(t,e){var r=e[0]-t[0],n=e[1]-t[1];return r*r+n*n}function w(t){var e=t[0],r=t[1];return Math.sqrt(e*e+r*r)}function k(t){var e=t[0],r=t[1];return e*e+r*r}function x(t,e){return t[0]=-e[0],t[1]=-e[1],t}function S(t,e){return t[0]=1/e[0],t[1]=1/e[1],t}function O(t,e){var r=e[0],n=e[1],i=r*r+n*n;return i>0&&(i=1/Math.sqrt(i),t[0]=e[0]*i,t[1]=e[1]*i),t}function E(t,e){return t[0]*e[0]+t[1]*e[1]}function C(t,e,r){var n=e[0]*r[1]-e[1]*r[0];return t[0]=t[1]=0,t[2]=n,t}function M(t,e,r,n){var i=e[0],o=e[1];return t[0]=i+n*(r[0]-i),t[1]=o+n*(r[1]-o),t}function P(t,e){e=e||1;var r=2*z.RANDOM()*Math.PI;return t[0]=Math.cos(r)*e,t[1]=Math.sin(r)*e,t}function j(t,e,r){var n=e[0],i=e[1];return t[0]=r[0]*n+r[2]*i,t[1]=r[1]*n+r[3]*i,t}function A(t,e,r){var n=e[0],i=e[1];return t[0]=r[0]*n+r[2]*i+r[4],t[1]=r[1]*n+r[3]*i+r[5],t}function I(t,e,r){var n=e[0],i=e[1];return t[0]=r[0]*n+r[3]*i+r[6],t[1]=r[1]*n+r[4]*i+r[7],t}function F(t,e,r){var n=e[0],i=e[1];return t[0]=r[0]*n+r[4]*i+r[12],t[1]=r[1]*n+r[5]*i+r[13],t}function D(t,e,r,n){var i=e[0]-r[0],o=e[1]-r[1],a=Math.sin(n),s=Math.cos(n);return t[0]=i*s-o*a+r[0],t[1]=i*a+o*s+r[1],t}function T(t,e){var r=t[0],n=t[1],i=e[0],o=e[1],a=r*r+n*n;a>0&&(a=1/Math.sqrt(a));var s=i*i+o*o;s>0&&(s=1/Math.sqrt(s));var c=(r*i+n*o)*a*s;return c>1?0:c<-1?Math.PI:Math.acos(c)}function R(t){return"vec2("+t[0]+", "+t[1]+")"}function B(t,e){return t[0]===e[0]&&t[1]===e[1]}function V(t,e){var r=t[0],n=t[1],i=e[0],o=e[1];return Math.abs(r-i)<=z.EPSILON*Math.max(1,Math.abs(r),Math.abs(i))&&Math.abs(n-o)<=z.EPSILON*Math.max(1,Math.abs(n),Math.abs(o))}Object.defineProperty(e,"__esModule",{value:!0}),e.create=n,e.clone=i,e.fromValues=o,e.copy=a,e.set=s,e.add=c,e.subtract=l,e.multiply=u,e.divide=h,e.ceil=f,e.floor=d,e.min=p,e.max=_,e.round=v,e.scale=y,e.scaleAndAdd=b,e.distance=m,e.squaredDistance=g,e.length=w,e.squaredLength=k,e.negate=x,e.inverse=S,e.normalize=O,e.dot=E,e.cross=C,e.lerp=M,e.random=P,e.transformMat2=j,e.transformMat2d=A,e.transformMat3=I,e.transformMat4=F,e.rotate=D,e.angle=T,e.str=R,e.exactEquals=B,e.equals=V,r.d(e,"len",function(){return N}),r.d(e,"sub",function(){return L}),r.d(e,"mul",function(){return W}),r.d(e,"div",function(){return X}),r.d(e,"dist",function(){return q}),r.d(e,"sqrDist",function(){return Y}),r.d(e,"sqrLen",function(){return H}),r.d(e,"forEach",function(){return J});var z=r(1),N=w,L=l,W=u,X=h,q=m,Y=g,H=k,J=function(){var t=n();return function(e,r,n,i,o,a){var s=void 0,c=void 0;for(r||(r=2),n||(n=0),c=i?Math.min(i*r+n,e.length):e.length,s=n;s<c;s+=r)t[0]=e[s],t[1]=e[s+1],o(t,t,a),e[s]=t[0],e[s+1]=t[1];return e}}()},function(t,e,r){"use strict";function n(t){var e=t.backingStorePixelRatio||t.webkitBackingStorePixelRatio||t.mozBackingStorePixelRatio||t.msBackingStorePixelRatio||t.oBackingStorePixelRatio||t.backingStorePixelRatio||1;return(window.devicePixelRatio||1)/e}function i(t){var e=n(t);if(1===e)return 1;["fillRect","clearRect","strokeRect","isPointInPath","isPointInStroke"].forEach(function(r){t[r]=function(t){return function(){for(var r=arguments.length,n=new Array(r),i=0;i<r;i++)n[i]=arguments[i];return n=n.map(function(t){return t*e}),t.apply(this,n)}}(t[r])});var r=[e,0,0,e,0,0];return t.setTransform=function(t){return function(){t.apply(this,r),this.transform.apply(this,arguments)}}(t.setTransform),e}e.a=i},function(t,e,r){"use strict";function n(t,e){t.forEach(function(t){e[t]&&(e[t]=e[t].bind(e))})}e.a=n},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t){return(l=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function u(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&h(t,e)}function h(t,e){return(h=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return m});var f=r(2),d=r(5),p=r(10),_=r(11),v=r(4),y=r(0),b=function(t){function e(t,r){var n,o=arguments.length>2&&void 0!==arguments[2]&&arguments[2];return i(this,e),n=s(this,l(e).call(this,["changed","changed:xform"])),n._viewport=f.clone(t),n._projectionDimensions=y.d.clone(r),n._yflip=o,n._screenMatrix=v.a.create(),n._screenDirty=!0,n}return u(e,t),a(e,[{key:"isYFlipped",value:function(){return this._yflip}},{key:"viewport",set:function(t){if(!f.equals(t,this._viewport)){var e=f.clone(this._viewport);f.copy(this._viewport,t),this._screenDirty=!0,this._worldToScreenOutdated=!0,this.fire("changed",{attr:"viewport",prevVal:e,currVal:t})}return this},get:function(){return f.clone(this._viewport)}},{key:"viewportRef",get:function(){return this._viewport}},{key:"screenMatrix",get:function(){if(this._screenDirty){var t=[0,0],e=[0,0];f.getCenter(t,this._viewport),f.getExtents(e,this._viewport),v.a.set(this._screenMatrix,e[0],0,0,e[1],t[0],t[1]),this._worldToScreenOutdated=!0,this._screenDirty=!1}return this._screenMatrix}}]),e}(_.a),m=function(t){function e(t,r,n){var o;return i(this,e),o=s(this,l(e).call(this,t,r,n)),o._viewMatrix=v.a.create(),o._viewDirty=!0,o._projMatrix=v.a.create(),o._projDirty=!0,o}return u(e,t),a(e,[{key:"_localXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"_globalXformUpdated",value:function(){this._boundsOutOfDate=!0}},{key:"_matricesDirty",value:function(){return this._boundsOutOfDate||this._lxformDirty||this._xformDirty||this._viewDirty||this._projDirty||this._screenDirty}},{key:"projectionDimensions",set:function(t){if(!y.d.equals(t,this._projectionDimensions)){var e=y.d.clone(this._projectionDimensions);f.copy(this._projectionDimensions,t),this._viewDirty=!0,this._projDirty=!0,this.fire("changed",{attr:"projectionDimensions",prevVal:e,currVal:t})}return this},get:function(){return y.d.clone(this._projectionDimensions)}},{key:"projectionDimensionsRef",get:function(){return this._projectionDimensions}},{key:"viewMatrix",get:function(){if(this._viewDirty||this._boundsOutOfDate||this._xformDirty||this._lxformDirty){var t=[0,0],e=[0,0],r=[0,0],n=this.globalXform;v.a.svd(t,e,r,n),v.a.fromTranslation(this._viewMatrix,y.d.negate(t,t)),v.a.rotate(this._viewMatrix,this._viewMatrix,-r[0]),v.a.scale(this._viewMatrix,this._viewMatrix,e),v.a.rotate(this._viewMatrix,this._viewMatrix,-r[1]),this._worldToScreenOutdated=!0,this._viewDirty=!1}return this._viewMatrix}},{key:"projMatrix",get:function(){if(this._projDirty){var t=this._yflip?-1:1;v.a.set(this._projMatrix,2/this._projectionDimensions[0],0,0,2*t/this._projectionDimensions[1],0,0),this._worldToScreenOutdated=!0,this._projDirty=!1}return this._projMatrix}},{key:"worldToScreenMatrix",get:function(){return(!this._worldToScreenMatrix||this._worldToScreenOutdated||this._matricesDirty())&&(this._worldToScreenMatrix||(this._worldToScreenMatrix=v.a.create()),v.a.copy(this._worldToScreenMatrix,this.viewMatrix),v.a.multiply(this._worldToScreenMatrix,this.projMatrix,this._worldToScreenMatrix),v.a.multiply(this._worldToScreenMatrix,this.screenMatrix,this._worldToScreenMatrix),this._worldToScreenOutdated=!1,this._screenToWorldOutdated=!0),this._worldToScreenMatrix}},{key:"screenToWorldMatrix",get:function(){return(!this._screenToWorld||this._screenToWorldOutdated||this._matricesDirty())&&(this._screenToWorld||(this._screenToWorld=v.a.create()),v.a.copy(this._screenToWorld,this.worldToScreenMatrix),v.a.invert(this._screenToWorld,this._screenToWorld),this._screenToWorldOutdated=!1),this._screenToWorld}}]),e}(Object(d.a)(b,Object(p.b)("changed:xform")))},function(t,e,r){var n,i;!function(o,a){n=a,void 0!==(i="function"==typeof n?n.call(e,r,e,t):n)&&(t.exports=i)}(0,function(){function t(t,e){var r=Object.prototype.toString.call(t),n="[object Array]"===r||"[object NodeList]"===r||"[object HTMLCollection]"===r||"[object Object]"===r||"undefined"!=typeof jQuery&&t instanceof jQuery||"undefined"!=typeof Elements&&t instanceof Elements,i=0,o=t.length;if(n)for(;i<o;i++)e(t[i]);else e(t)}if("undefined"==typeof window)return null;var e=window.requestAnimationFrame||window.mozRequestAnimationFrame||window.webkitRequestAnimationFrame||function(t){return window.setTimeout(t,20)},r=function(n,i){function o(){var t=[];this.add=function(e){t.push(e)};var e,r;this.call=function(){for(e=0,r=t.length;e<r;e++)t[e].call()},this.remove=function(n){var i=[];for(e=0,r=t.length;e<r;e++)t[e]!==n&&i.push(t[e]);t=i},this.length=function(){return t.length}}function a(t,e){return t.currentStyle?t.currentStyle[e]:window.getComputedStyle?window.getComputedStyle(t,null).getPropertyValue(e):t.style[e]}function s(t,r){if(t.resizedAttached){if(t.resizedAttached)return void t.resizedAttached.add(r)}else t.resizedAttached=new o,t.resizedAttached.add(r);t.resizeSensor=document.createElement("div"),t.resizeSensor.className="resize-sensor";var n="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;",i="position: absolute; left: 0; top: 0; transition: 0s;";t.resizeSensor.style.cssText=n,t.resizeSensor.innerHTML='<div class="resize-sensor-expand" style="'+n+'"><div style="'+i+'"></div></div><div class="resize-sensor-shrink" style="'+n+'"><div style="'+i+' width: 200%; height: 200%"></div></div>',t.appendChild(t.resizeSensor),"static"==a(t,"position")&&(t.style.position="relative");var s,c,l,u,h=t.resizeSensor.childNodes[0],f=h.childNodes[0],d=t.resizeSensor.childNodes[1],p=t.offsetWidth,_=t.offsetHeight,v=function(){f.style.width="100000px",f.style.height="100000px",h.scrollLeft=1e5,h.scrollTop=1e5,d.scrollLeft=1e5,d.scrollTop=1e5};v();var y=function(){c=0,s&&(p=l,_=u,t.resizedAttached&&t.resizedAttached.call())},b=function(){l=t.offsetWidth,u=t.offsetHeight,s=l!=p||u!=_,s&&!c&&(c=e(y)),v()},m=function(t,e,r){t.attachEvent?t.attachEvent("on"+e,r):t.addEventListener(e,r)};m(h,"scroll",b),m(d,"scroll",b)}t(n,function(t){s(t,i)}),this.detach=function(t){r.detach(n,t)}};return r.detach=function(e,r){t(e,function(t){t.resizedAttached&&"function"==typeof r&&(t.resizedAttached.remove(r),t.resizedAttached.length())||t.resizeSensor&&(t.contains(t.resizeSensor)&&t.removeChild(t.resizeSensor),delete t.resizeSensor,delete t.resizedAttached)})},r})},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t){return(l=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function u(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&h(t,e)}function h(t,e){return(h=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return v});var f=r(2),d=r(3),p=r(0),_=r(7),v=function(t){function e(t,r){var n;return i(this,e),n=s(this,l(e).call(this,r)),n._baseVertShape=t,n._vertRadius=4,n._transformedVerts=[],n._baseaabox=f.create(),n._worldToScreenMatrix=p.c.create(),n}return u(e,t),a(e,[{key:"_updateAABox",value:function(t){var e=this._baseVertShape.aabox;if(!f.equals(e,this._baseaabox)||!p.c.equals(t,this._worldToScreenMatrix)){f.copy(this._baseaabox,e),p.c.copy(this._worldToScreenMatrix,t),f.transformMat2d(this._aabox,this._baseaabox,this._worldToScreenMatrix);var r=this._vertRadius+this.strokeWidth;f.expand(this._aabox,this._aabox,[r,r])}}},{key:"containsPoint",value:function(t,e,r,n){var i={hit:!1,controlIndex:-1};if(this._updateAABox(r),this.visible&&f.containsPt(this._aabox,t)){var o=f.create(),a=this._vertRadius+this.strokeWidth/2,s=[a,a],c=0;for(c=0;c<this._transformedVerts.length;c+=1)if(f.initCenterExtents(o,this._transformedVerts[c],s),f.containsPt(o,t)){i.hit=!0,i.controlIndex=c;break}if(!i.hit){var l=[0,0],u=[0,0],h=1.5*n.lineWidth;for(p.d.set(s,h,h),c=0;c<this._transformedVerts.length-1;c+=1)if(d.sub(u,this._transformedVerts[c+1],this._transformedVerts[c]),p.d.scale(u,u,.5),d.addVec2(l,this._transformedVerts[c],u),f.initCenterExtents(o,l,s),f.containsPt(o,t)){i.hit=!0,i.controlIndex=this._transformedVerts.length+c;break}c>0&&c===this._transformedVerts.length-1&&(d.sub(u,this._transformedVerts[0],this._transformedVerts[c]),p.d.scale(u,u,.5),d.addVec2(l,this._transformedVerts[c],u),f.initCenterExtents(o,l,s),f.containsPt(o,t)&&(i.hit=!0,i.controlIndex=this._transformedVerts.length+c))}}return i}},{key:"renderBounds",value:function(t,e,r){this._updateAABox(e),t.save(),t.setTransform(1,0,0,1,0,0),r.setStrokeCtx(t);var n=[0,0],i=[0,0];f.getCenter(n,this._aabox),f.getExtents(i,this._aabox),t.beginPath(),t.rect(n[0]-i[0],n[1]-i[1],2*i[0],2*i[1]),t.stroke(),t.restore()}},{key:"render",value:function(t){var e=this;t.save(),t.setTransform(1,0,0,1,0,0);var r=this._baseVertShape._fullXform,n=this._baseVertShape.vertsRef;this._transformedVerts=new Array(n.length);var i=[0,0],o=[0,0];t.beginPath();var a=0;this._transformedVerts[a]=[0,0],d.transformMat2d(this._transformedVerts[a],n[a],r);var s=Math.max(1.5*t.lineWidth,2.5);for(a=0;a<n.length-1;a+=1)this._transformedVerts[a+1]=[0,0],d.transformMat2d(this._transformedVerts[a+1],n[a+1],r),d.sub(o,this._transformedVerts[a+1],this._transformedVerts[a]),p.d.scale(o,o,.5),d.addVec2(i,this._transformedVerts[a],o),t.moveTo(i[0]+s,i[1]),t.arc(i[0],i[1],s,0,Math.TWO_PI);a>0&&(d.sub(o,this._transformedVerts[0],this._transformedVerts[a]),p.d.scale(o,o,.5),d.addVec2(i,this._transformedVerts[a],o),t.moveTo(i[0]+s,i[1]),t.arc(i[0],i[1],s,0,Math.TWO_PI),t.fillStyle=t.strokeStyle,t.fill()),t.beginPath(),this._transformedVerts.forEach(function(r){t.moveTo(r[0]+e._vertRadius,r[1]),t.arc(r[0],r[1],e._vertRadius,0,Math.TWO_PI)}),this.isFillVisible()&&(this.setFillCtx(t),t.fill()),this.isStrokeVisible()&&(this.setStrokeCtx(t),t.stroke()),t.restore()}}]),e}(_.a)},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}function p(t,e,r,n,i,o,a){y.transformMat2d(e,e,r),t.setTransform(1,0,0,1,0,0),t.translate(e[0],e[1]),t.rotate(o[1]),t.scale(a[0],a[1]),t.rotate(o[0]),t.translate(-e[0],-e[1]),t.rect(e[0]-i,e[1]-i,n,n)}function _(t,e,r,n,i,o,a,s,c,l){var u=!1,h=!1;if(y.transformMat2d(e,e,r),y.distance(e,t)<=s){w.a.negate(e,e),n[4]=n[0]*e[0]+n[2]*e[1],n[5]=n[1]*e[0]+n[3]*e[1];var f=0,d=0;y.transformMat2d(e,t,n),(Math.abs(e[0])<=i&&Math.abs(e[1])<=i||Boolean(c)&&Boolean(l)&&(h=(f=c*e[0])>-i&&f<=a&&(d=l*e[1])>-i&&d<=a))&&(u=!0)}return{hit:u,rotate:h}}r.d(e,"a",function(){return x});var v=r(2),y=r(3),b=r(10),m=r(4),g=r(23),w=r(9),k={SIDES:4},x=function(t){function e(t){var r,n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{scalable:!0,rotatable:!0};return i(this,e),r=s(this,h(e).call(this,t)),r._interactiveBoxSize=8,r._interactiveBoxPadding=10,t&&void 0!==t.vertexSize&&(r._interactiveBoxSize=t.vertexSize),r._scalable=!0,r._rotatable=!0,n&&(void 0!==n.scalable&&(r._scalable=Boolean(n.scalable)),void 0!==n.rotatable&&(r._rotatable=Boolean(n.rotatable))),r}return f(e,t),a(e,[{key:"containsPoint",value:function(t){var e={hit:!1,rotate:!1,controlIndex:-1},r=this.aabox;if((this._rotatable||this._scalable)&&this.visible&&v.containsPt(r,t)){var n=[0,0],i=[0,0];m.a.svd(null,n,i,this._fullXform);var o=m.a.create();n[0]=n[0]<0?-1:1,n[1]=n[1]<0?-1:1,n[0]*n[1]>0&&w.a.negate(i,i),m.a.rotate(o,o,i[1]),m.a.scale(o,o,n),m.a.rotate(o,o,i[0]);for(var a=this._rotatable?this._interactiveBoxPadding:0,s=this._interactiveBoxSize/2,c=this.width/2,l=this.height/2,u=[0,0],h=s+a,f=Math.sqrt(2*h*h),d=0,p=0,b=0;b<k.SIDES;b+=1)if(d=b<2?-1:1,p=b%2==0?-1:1,y.set(u,d*c,p*l),e=_(t,u,this._fullXform,o,s,this._interactiveBoxSize,h,f,d,p),e.hit){e.controlIndex=b;break}if(!e.hit&&this._scalable)for(var g=0;g<k.SIDES;g+=1)if(d=g%2==0?g<2?-1:1:0,p=g%2==0?0:g<2?-1:1,y.set(u,d*c,p*l),e=_(t,u,this._fullXform,o,s,this._interactiveBoxSize,h,f,d,p),e.hit){e.controlIndex=g+k.SIDES;break}e.rotate&&!this._rotatable?e.rotate=!1:e.rotate||this._scalable||(e.rotate=!0)}return e}},{key:"_updatelocalxform",value:function(t){if(this._lxformDirty||t){var e=y.clone(this._pos);y.addVec2(e,e,this._parent.pivotRef),Object(b.a)(this._localXform,this._rotDeg,this._scale,e,this._pivot),this._localXformUpdated&&this._localXformUpdated(),this._lxformDirty=!1}}},{key:"_updateglobalxform",value:function(){(this._lxformDirty||this._xformDirty)&&(this._updatelocalxform(!0),this._parent?m.a.multiply(this._globalXform,this._parent.globalXform,this._localXform):m.a.copy(this._globalXform,this._localXform),this._globalXformUpdated&&this._globalXformUpdated(),this._xformDirty=!1)}},{key:"_updateAABox",value:function(){if(arguments.length>0&&void 0!==arguments[0]&&arguments[0]||this._geomDirty||this._boundsOutOfDate){var t=this._rotatable?this._interactiveBoxPadding:0,e=t+this._interactiveBoxSize/2;v.initCenterExtents(this._aabox,[0,0],[this.width/2,this.height/2]),v.transformMat2d(this._aabox,this._aabox,this._fullXform),v.expand(this._aabox,this._aabox,[e,e]),this._aaboxUpdated=!0,this._geomDirty=this._boundsOutOfDate=!1}}},{key:"renderBounds",value:function(t,e,r){var n=this.aabox;t.save(),t.setTransform(1,0,0,1,0,0),r.setStrokeCtx(t);var i=[0,0],o=[0,0];v.getCenter(i,n),v.getExtents(o,n),t.beginPath(),t.rect(i[0]-o[0],i[1]-o[1],2*o[0],2*o[1]),t.stroke(),t.restore()}},{key:"render",value:function(t,r,n){if(this.parent&&void 0!==this.parent.width&&"undefined"!==this.parent.height){this._aaboxUpdated=!1,l(h(e.prototype),"render",this).call(this,t,r,n,!1),this._aaboxUpdated||this._updateAABox(!0);var i=[0,0],o=[0,0];m.a.svd(null,i,o,this._fullXform),i[0]=i[0]<0?-1:1,i[1]=i[1]<0?-1:1;var a=this._interactiveBoxSize/2,s=this.width/2,c=this.height/2,u=[s,c];t.save(),t.beginPath(),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,s,-c),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,-s,-c),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,-s,c),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),this._scalable&&(y.set(u,0,c),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,0,-c),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,s,0),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i),y.set(u,-s,0),p(t,u,this._fullXform,this._interactiveBoxSize,a,o,i)),this.isFillVisible()&&(n.setFillStyle(t,this),t.fill()),this.isStrokeVisible()&&(n.setStrokeStyle(t,this),t.setTransform(1,0,0,1,0,0),t.stroke()),t.restore()}}},{key:"width",get:function(){return this.parent&&"undefined"!==this.parent.width?this.parent.width:0}},{key:"height",get:function(){return this.parent&&"undefined"!==this.parent.height?this.parent.height:0}}]),e}(g.a)},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return y});var p=r(2),_=r(7),v=r(6),y=function(t){function e(t){var r;return i(this,e),r=s(this,h(e).call(this,t)),r._radius=10,void 0!==t.radius&&(r.radius=t.radius),p.initCenterExtents(r._aabox,[0,0],[r._radius,r._radius]),r}return f(e,t),a(e,[{key:"getDimensions",value:function(){var t=2*this.radius;return[t,t]}},{key:"_updateAABox",value:function(){if(this._geomDirty||this._boundsOutOfDate){var t=this._pos,e=this._scale,r=v.a.DEG_TO_RAD*this._rotDeg,n=v.a.pow(v.a.cos(r),2),i=v.a.pow(v.a.sin(r),2),o=v.a.pow(e[0]*this._radius,2),a=v.a.pow(e[1]*this._radius,2),s=v.a.sqrt(a*i+o*n),c=v.a.sqrt(o*i+a*n);p.initCenterExtents(this._aabox,t,[s,c]),this._geomDirty=!1,this._boundsOutOfDate=!1}}},{key:"_draw",value:function(t){t.arc(0,0,this._radius,0,v.a.TWO_PI,!1)}},{key:"toJSON",value:function(){return Object.assign({type:"Circle",radius:this.radius},l(h(e.prototype),"toJSON",this).call(this))}},{key:"radius",set:function(t){if("number"!=typeof t)throw new Error("Radius must be a number");if(t!==this._radius){var e=this._radius;this._radius=t,this._geomDirty=!0,this.fire("changed:geom",{attr:"radius",prevVal:e,currVal:this._radius})}return this},get:function(){return this._radius}},{key:"width",get:function(){return 2*this.radius}},{key:"height",get:function(){return 2*this.radius}}]),e}(_.a)},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return v});var p=r(12),_={MINIMUM_POINTS:3},v=function(t){function e(t){var r;if(i(this,e),r=s(this,h(e).call(this,t)),r._verts.length<_.MINIMUM_POINTS)throw new Error("Poly shapes must be initialized with an array of 2d points and contain at least 3 points");return r}return f(e,t),a(e,[{key:"removeVert",value:function(t){if(this._verts.length<_.MINIMUM_POINTS)throw new Error("Cannot remove vertex ".concat(t,". It would result in a poly with < 3 points. A poly must contain at least 3 points."));l(h(e.prototype),"removeVert",this).call(this,t)}},{key:"_draw",value:function(t){var e=!1;if(this._verts.length>=_.MINIMUM_POINTS){t.moveTo(this._verts[0][0],this._verts[0][1]);for(var r=1;r<this._verts.length;r+=1)t.lineTo(this._verts[r][0],this._verts[r][1]);t.closePath(),e=!0}return e}},{key:"toJSON",value:function(){return Object.assign(l(h(e.prototype),"toJSON",this).call(this),{type:"Poly"})}}]),e}(p.a)},function(t,e,r){"use strict";function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function i(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function o(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}function a(t,e,r){return e&&o(t.prototype,e),r&&o(t,r),t}function s(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?c(t):e}function c(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function l(t,e,r){return(l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(t,e,r){var n=u(t,e);if(n){var i=Object.getOwnPropertyDescriptor(n,e);return i.get?i.get.call(r):i.value}})(t,e,r||t)}function u(t,e){for(;!Object.prototype.hasOwnProperty.call(t,e)&&null!==(t=h(t)););return t}function h(t){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)})(t)}function f(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&d(t,e)}function d(t,e){return(d=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t})(t,e)}r.d(e,"a",function(){return b});var p=r(2),_=r(7),v=r(4),y=r(6),b=function(t){function e(t){var r;return i(this,e),r=s(this,h(e).call(this,t)),r._size=5,void 0!==t.size&&(r.size=t.size),p.initCenterExtents(r._aabox,[0,0],[r._radius,r._radius]),r.translate(t.x||0,t.y||0),r}return f(e,t),a(e,[{key:"_updateAABox",value:function(){if(this._geomDirty||this._boundsOutOfDate){var t=this._pos,e=this._scale,r=y.a.DEG_TO_RAD*this._rotDeg,n=y.a.pow(y.a.cos(r),2),i=y.a.pow(y.a.sin(r),2),o=y.a.pow(e[0]*this._size,2),a=y.a.pow(e[1]*this._size,2),s=y.a.sqrt(a*i+o*n),c=y.a.sqrt(o*i+a*n);p.initCenterExtents(this._aabox,t,[s,c]),this._geomDirty=!1,this._boundsOutOfDate=!1}}},{key:"_draw",value:function(t){t.setTransform(1,0,0,1,0,0);var e=[0,0];v.a.svd(e,null,null,this._fullXform),t.arc(e[0],e[1],this._size,0,y.a.TWO_PI,!1)}},{key:"toJSON",value:function(){return Object.assign({type:"Point",size:this.size},l(h(e.prototype),"toJSON",this).call(this))}},{key:"size",set:function(t){if("number"!=typeof t)throw new Error("Radius must be a number");if(t!==this._size){var e=this._size;this._size=t,this._geomDirty=!0,this.fire("changed:geom",{attr:"size",prevVal:e,currVal:this._size})}},get:function(){return this._size}}]),e}(_.a)}])});
-
-/***/ }),
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12015,11 +12015,11 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _wellknown = __webpack_require__(269);
+var _wellknown = __webpack_require__(271);
 
 var _wellknown2 = _interopRequireDefault(_wellknown);
 
-var _mapdDraw = __webpack_require__(18);
+var _mapdDraw = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12897,7 +12897,7 @@ exports.getFirstNonNullDatumForAxis = exports.createBinParams = exports.BIN_INPU
 exports.autoBinParams = autoBinParams;
 exports.checkIfTimeBinInRange = checkIfTimeBinInRange;
 
-var _datesAndTimes = __webpack_require__(28);
+var _datesAndTimes = __webpack_require__(29);
 
 var DEFAULT_EXTRACT_INTERVAL = exports.DEFAULT_EXTRACT_INTERVAL = "isodow";
 
@@ -30110,10 +30110,109 @@ var getFirstNonNullDatumForAxis = exports.getFirstNonNullDatumForAxis = function
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(47), __webpack_require__(52)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(48), __webpack_require__(53)(module)))
 
 /***/ }),
 /* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.distance_in_meters = distance_in_meters;
+exports.conv900913To4326X = conv900913To4326X;
+exports.conv900913To4326Y = conv900913To4326Y;
+exports.conv900913To4326 = conv900913To4326;
+exports.conv4326To900913X = conv4326To900913X;
+exports.conv4326To900913Y = conv4326To900913Y;
+exports.conv4326To900913 = conv4326To900913;
+
+var _mapdDraw = __webpack_require__(13);
+
+var MapdDraw = _interopRequireWildcard(_mapdDraw);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+/**
+ * Calculates the distance in meters between two lon/lat coordinates
+ * @param  {number} fromlon Longitude to start from
+ * @param  {number} fromlat Latitude to start from
+ * @param  {number} tolon   Longitude to end at
+ * @param  {number} tolat   Latitude to end at
+ * @return {number}         Distance in meters from two lon/lat coords
+ */
+function distance_in_meters(fromlon, fromlat, tolon, tolat) {
+  var latitudeArc = (fromlat - tolat) * MapdDraw.Math.DEG_TO_RAD;
+  var longitudeArc = (fromlon - tolon) * MapdDraw.Math.DEG_TO_RAD;
+  var latitudeH = Math.sin(latitudeArc * 0.5);
+  latitudeH = latitudeH * latitudeH;
+  var lontitudeH = Math.sin(longitudeArc * 0.5);
+  lontitudeH = lontitudeH * lontitudeH;
+  var tmp = Math.cos(fromlat * MapdDraw.Math.DEG_TO_RAD) * Math.cos(tolat * MapdDraw.Math.DEG_TO_RAD);
+  return 6372797.560856 * (2.0 * Math.asin(Math.sqrt(latitudeH + tmp * lontitudeH)));
+}
+
+/**
+ * Converts mercator x coordinate to longitude
+ * @param  {number} x X coordinate in mercator projected space
+ * @return {number}   Longitude
+ */
+function conv900913To4326X(x) {
+  return x / 111319.490778;
+}
+
+/**
+ * Converts mercator y coordinate to latitude
+ * @param  {number} y Y coordinate in mercator projected space
+ * @return {number}   Latitude
+ */
+function conv900913To4326Y(y) {
+  return 57.295779513 * (2 * Math.atan(Math.exp(y / 6378136.99911)) - 1.570796327);
+}
+
+/**
+ * Converts 2d point in mercator projected space to a lon/lat coordinate
+ * @param  {Point2d} out   2d point to store the converted lat/lon coordinate
+ * @param  {Point2d} coord 2d point in mercator projected space to convert
+ * @return {Point2d}       Point referred to by the out arg
+ */
+function conv900913To4326(out, coord) {
+  return MapdDraw.Point2d.set(out, conv900913To4326X(coord[0]), conv900913To4326Y(coord[1]));
+}
+
+/**
+ * Converts a longitude coordinate to an x coordinate in mercator projected space
+ * @param  {number} x Longitude
+ * @return {number}   X coordinate in mercator projected space
+ */
+function conv4326To900913X(x) {
+  return x * 111319.490778;
+}
+
+/**
+ * Converts a latitude coordinate to a y coordinate in mercator projected space
+ * @param  {number} x Latitude
+ * @return {number}   Y coordinate in mercator projected space
+ */
+function conv4326To900913Y(y) {
+  return 6378136.99911 * Math.log(Math.tan(0.00872664626 * y + 0.785398163397));
+}
+
+/**
+ * Converts 2d lon/lat point to a point in mercator projected space
+ * @param  {Point2d} out   2d point to store the converted mercator coordinate
+ * @param  {Point2d} coord 2d point in lon/lat to convert
+ * @return {Point2d}       Point referred to by the out arg
+ */
+function conv4326To900913(out, coord) {
+  return MapdDraw.Point2d.set(out, conv4326To900913X(coord[0]), conv4326To900913Y(coord[1]));
+}
+
+/***/ }),
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30249,7 +30348,7 @@ function isTokenType(tokType) {
 //# sourceMappingURL=tokens.js.map
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30427,7 +30526,7 @@ function collectMethods(rule) {
 //# sourceMappingURL=gast.js.map
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30483,7 +30582,7 @@ function getKeyForAltIndex(ruleIdx, dslMethodIdx, occurrence, altIdx) {
 //# sourceMappingURL=keys.js.map
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30546,7 +30645,7 @@ EarlyExitException.prototype = Error.prototype;
 //# sourceMappingURL=exceptions_public.js.map
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30592,11 +30691,11 @@ var TIME_LABEL_TO_SECONDS = exports.TIME_LABEL_TO_SECONDS = {
 };
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(43);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x) {
@@ -30605,17 +30704,17 @@ var TIME_LABEL_TO_SECONDS = exports.TIME_LABEL_TO_SECONDS = {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return LexerDefinitionErrorType; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Lexer; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lexer__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lexer__ = __webpack_require__(215);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tokens__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_lexer_errors_public__ = __webpack_require__(216);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(46);
 
 
 
@@ -31290,18 +31389,18 @@ var Lexer = /** @class */ (function () {
 //# sourceMappingURL=lexer_public.js.map
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return defaultParserErrorProvider; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return defaultGrammarResolverErrorProvider; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return defaultGrammarValidatorErrorProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_checks__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_checks__ = __webpack_require__(33);
 
 
 
@@ -31507,7 +31606,7 @@ var defaultGrammarValidatorErrorProvider = {
 //# sourceMappingURL=errors_public.js.map
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -31531,10 +31630,10 @@ var defaultGrammarValidatorErrorProvider = {
 /* unused harmony export checkPrefixAlternativesAmbiguities */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lookahead__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cst_cst__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__interpreter__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lookahead__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cst_cst__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__interpreter__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__gast_gast_visitor_public__ = __webpack_require__(20);
 var __extends = (this && this.__extends) || (function () {
@@ -32113,7 +32212,7 @@ function validateDuplicateNestedRules(topLevelRules, errMsgProvider) {
 //# sourceMappingURL=checks.js.map
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32130,9 +32229,9 @@ function validateDuplicateNestedRules(topLevelRules, errMsgProvider) {
 /* harmony export (immutable) */ __webpack_exports__["j"] = isStrictPrefixOfPath;
 /* unused harmony export areTokenCategoriesNotUsed */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__interpreter__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rest__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__interpreter__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rest__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__gast_gast_visitor_public__ = __webpack_require__(20);
 var __extends = (this && this.__extends) || (function () {
@@ -32626,7 +32725,7 @@ function areTokenCategoriesNotUsed(lookAheadPaths) {
 //# sourceMappingURL=lookahead.js.map
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32639,9 +32738,9 @@ function areTokenCategoriesNotUsed(lookAheadPaths) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return NextTerminalAfterAtLeastOneSepWalker; });
 /* harmony export (immutable) */ __webpack_exports__["g"] = possiblePathsFrom;
 /* harmony export (immutable) */ __webpack_exports__["f"] = nextPossibleTokensAfter;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__first__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__first__ = __webpack_require__(217);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gast_gast_public__ = __webpack_require__(6);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -33189,7 +33288,7 @@ function expandTopLevelRule(topRule, currIdx, currRuleStack, currOccurrenceStack
 //# sourceMappingURL=interpreter.js.map
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33243,7 +33342,7 @@ logger.deprecate = function (fn, msg) {
 };
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33310,7 +33409,7 @@ var DestroyedChartError = exports.DestroyedChartError = function (_Error) {
 }(Error);
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33629,7 +33728,7 @@ function bubbleMixin(_chart) {
 }
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33650,7 +33749,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _core = __webpack_require__(3);
 
-var _multipleKeyAccessors = __webpack_require__(182);
+var _multipleKeyAccessors = __webpack_require__(183);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34043,7 +34142,7 @@ function stackMixin(_chart) {
 }
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34066,7 +34165,7 @@ var _moment2 = _interopRequireDefault(_moment);
 
 var _utils = __webpack_require__(4);
 
-var _heatmap = __webpack_require__(186);
+var _heatmap = __webpack_require__(187);
 
 var _binningHelpers = __webpack_require__(22);
 
@@ -34346,7 +34445,7 @@ function lockAxisMixin(chart) {
 }
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34372,7 +34471,7 @@ var _coreAsync = __webpack_require__(5);
 
 var _utils = __webpack_require__(4);
 
-var _rasterDrawMixin = __webpack_require__(188);
+var _rasterDrawMixin = __webpack_require__(189);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -35270,7 +35369,7 @@ function mapMixin(_chart, chartDivId, _mapboxgl) {
 }
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36010,7 +36109,7 @@ exports.convertDistance = convertDistance;
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -36031,7 +36130,7 @@ exports.convertDistance = convertDistance;
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -36150,7 +36249,7 @@ function restForRepetitionWithSeparator(repSepProd, currRest, prevRest) {
 //# sourceMappingURL=rest.js.map
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;;(function(root, factory) {
@@ -37131,13 +37230,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = getRegExpAst;
 /* harmony export (immutable) */ __webpack_exports__["a"] = clearRegExpParserCache;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
 
 var regExpAstCache = {};
@@ -37159,7 +37258,7 @@ function clearRegExpParserCache() {
 //# sourceMappingURL=reg_exp_parser.js.map
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37170,7 +37269,7 @@ function clearRegExpParserCache() {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NamedDSLMethodsCollectorVisitor; });
 /* harmony export (immutable) */ __webpack_exports__["d"] = expandAllNestedRuleNames;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_keys__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_keys__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_gast_gast_public__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_gast_gast_visitor_public__ = __webpack_require__(20);
 var __extends = (this && this.__extends) || (function () {
@@ -37362,7 +37461,7 @@ function expandAllNestedRuleNames(topRules, fullToShortName) {
 //# sourceMappingURL=cst.js.map
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports) {
 
 var g;
@@ -37389,7 +37488,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37438,7 +37537,7 @@ function escapeQuotes(string) {
 }
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37461,7 +37560,7 @@ function parseFilter(sql, transform) {
 }
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37508,7 +37607,7 @@ function parseSource(transforms) {
 }
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37564,7 +37663,7 @@ module.exports = invariant;
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -37592,7 +37691,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37669,7 +37768,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37808,7 +37907,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37871,7 +37970,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37934,7 +38033,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38060,7 +38159,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38123,7 +38222,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38231,7 +38330,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38294,7 +38393,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38403,7 +38502,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38539,7 +38638,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38633,7 +38732,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38695,7 +38794,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38818,7 +38917,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -38941,7 +39040,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39053,7 +39152,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39208,7 +39307,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39300,7 +39399,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39476,7 +39575,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39543,7 +39642,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39627,7 +39726,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39691,7 +39790,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39771,7 +39870,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39851,7 +39950,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -39931,7 +40030,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40034,7 +40133,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40138,7 +40237,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40209,7 +40308,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40280,7 +40379,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40347,7 +40446,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40418,7 +40517,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40489,7 +40588,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40555,7 +40654,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40626,7 +40725,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40701,7 +40800,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40797,7 +40896,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40893,7 +40992,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -40989,7 +41088,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41073,7 +41172,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41143,7 +41242,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41253,7 +41352,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41366,7 +41465,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41430,7 +41529,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41517,7 +41616,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41595,7 +41694,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41677,7 +41776,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41756,7 +41855,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41837,7 +41936,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41917,7 +42016,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -41998,7 +42097,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42125,7 +42224,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42253,7 +42352,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42354,7 +42453,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42482,7 +42581,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42640,7 +42739,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42754,7 +42853,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42853,7 +42952,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -42939,7 +43038,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43075,7 +43174,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43148,7 +43247,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43221,7 +43320,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43317,7 +43416,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43403,7 +43502,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43496,7 +43595,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43587,7 +43686,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43701,7 +43800,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43831,7 +43930,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -43916,7 +44015,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44039,7 +44138,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44130,7 +44229,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44270,7 +44369,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44344,7 +44443,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44466,7 +44565,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 125 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44567,7 +44666,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 126 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44683,7 +44782,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 127 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44751,7 +44850,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 128 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44845,7 +44944,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 129 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -44930,7 +45029,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 130 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45038,7 +45137,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 131 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45202,7 +45301,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 132 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45288,7 +45387,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 133 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45374,7 +45473,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 134 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45438,7 +45537,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 135 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45535,7 +45634,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 136 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45601,7 +45700,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 137 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45728,7 +45827,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 138 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45819,7 +45918,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 139 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45910,7 +46009,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 140 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -45974,7 +46073,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 141 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46102,7 +46201,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46232,7 +46331,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 143 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46301,7 +46400,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 144 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46366,7 +46465,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46445,7 +46544,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46631,7 +46730,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46733,7 +46832,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46797,7 +46896,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 149 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -46872,7 +46971,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 150 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47032,7 +47131,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47209,7 +47308,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47281,7 +47380,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47396,7 +47495,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47511,7 +47610,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 155 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47603,7 +47702,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 156 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47676,7 +47775,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 157 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47739,7 +47838,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 158 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47872,7 +47971,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 159 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -47965,7 +48064,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 160 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48036,7 +48135,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 161 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48156,7 +48255,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 162 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48227,7 +48326,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 163 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48293,7 +48392,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 164 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48419,7 +48518,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 165 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -48517,7 +48616,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 166 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48612,7 +48711,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 167 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48674,7 +48773,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 168 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -48736,7 +48835,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 169 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -48859,7 +48958,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 170 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49017,7 +49116,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 171 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49119,7 +49218,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 172 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49181,7 +49280,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49243,7 +49342,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 174 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49326,7 +49425,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 175 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49398,7 +49497,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49462,7 +49561,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 177 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49576,7 +49675,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 178 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49683,7 +49782,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -49790,7 +49889,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49852,7 +49951,7 @@ module.exports = function equal(a, b) {
 
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50024,7 +50123,7 @@ function asyncMixin(_chart) {
 }
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50081,7 +50180,7 @@ var multipleKeysAccessorForCap = exports.multipleKeysAccessorForCap = createAcce
 var multipleKeysAccessorForStack = exports.multipleKeysAccessorForStack = createAccessor(getMinOfRange);
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50148,7 +50247,7 @@ function multipleKeysLabelMixin(_chart) {
 }
 
 /***/ }),
-/* 184 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50166,7 +50265,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _dcConstants = __webpack_require__(246);
+var _dcConstants = __webpack_require__(249);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50280,7 +50379,7 @@ function spinnerMixin(_chart) {
 }
 
 /***/ }),
-/* 185 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50291,7 +50390,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = elasticDimensionMixin;
 
-var _ramda = __webpack_require__(248);
+var _ramda = __webpack_require__(251);
 
 var _d = __webpack_require__(1);
 
@@ -50356,7 +50455,7 @@ function elasticDimensionMixin(_chart) {
 }
 
 /***/ }),
-/* 186 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50388,11 +50487,11 @@ var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
-var _marginMixin = __webpack_require__(17);
+var _marginMixin = __webpack_require__(18);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _events = __webpack_require__(14);
+var _events = __webpack_require__(15);
 
 var _core = __webpack_require__(3);
 
@@ -50400,7 +50499,7 @@ var _utils = __webpack_require__(4);
 
 var _filters = __webpack_require__(21);
 
-var _coordinateGridMixin = __webpack_require__(13);
+var _coordinateGridMixin = __webpack_require__(14);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -51134,7 +51233,7 @@ function heatMap(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51385,7 +51484,7 @@ function multiSeriesMixin(chart) {
 }
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51396,27 +51495,31 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.rasterDrawMixin = rasterDrawMixin;
 
-var _utilsLatlon = __webpack_require__(189);
+var _utilsLatlon = __webpack_require__(24);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _lassoToolUi = __webpack_require__(256);
+var _lassoToolUi = __webpack_require__(259);
 
 var _lassoToolUi2 = _interopRequireDefault(_lassoToolUi);
-
-var _earcut = __webpack_require__(258);
-
-var _earcut2 = _interopRequireDefault(_earcut);
 
 var _lodash = __webpack_require__(23);
 
 var _ = _interopRequireWildcard(_lodash);
 
-var _mapdDraw = __webpack_require__(18);
+var _mapdDraw = __webpack_require__(13);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
 var _coreAsync = __webpack_require__(5);
+
+var _LatLonCircle = __webpack_require__(190);
+
+var _LatLonCircle2 = _interopRequireDefault(_LatLonCircle);
+
+var _LatLonPoly = __webpack_require__(192);
+
+var _LatLonPoly2 = _interopRequireDefault(_LatLonPoly);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51424,22 +51527,19 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-/* istanbul ignore next */
-function writePointInTriangleSqlTest(p0, p1, p2, px, py) {
-  var cast = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
+/** Configure MapD Draw */
+MapdDraw.Configure.setMatrixArrayType(Float64Array);
 
-  function writeSign(p0, p1) {
-    if (cast) {
-      return "((CAST(" + px + " AS FLOAT)-(" + p1[0] + "))*(" + (p0[1] - p1[1]) + ") - " + ("(" + (p0[0] - p1[0]) + ")*(CAST(" + py + " AS FLOAT)-(" + p1[1] + ")) < 0.0)");
-    } else {
-      return "((" + px + "-(" + p1[0] + "))*(" + (p0[1] - p1[1]) + ") - " + ("(" + (p0[0] - p1[0]) + ")*(" + py + "-(" + p1[1] + ")) < 0.0)");
-    }
-  }
+// set a very low epsilon to account for the large precision provided us
+// with 64-bit floating pt. If we left this at the default, if you made a lasso
+// shape at a tight zoom (i.e. a shape with that was 100 meters^2 in area),
+// the shape wouldn't align right because the camera would not be considered dirty
+// even tho the map was moving slightly in world space.
+MapdDraw.Configure.setEpsilon(0.00000000000001);
+/** Done configuring MapdDraw */
 
-  var b1 = writeSign(p0, p1);
-  var b2 = writeSign(p1, p2);
-  var b3 = writeSign(p2, p0);
-  return "(" + b1 + " = " + b2 + ") AND (" + b2 + " = " + b3 + ")";
+function chartUsesLonLat(chart) {
+  return typeof chart.useLonLat === "function" && chart.useLonLat();
 }
 
 /* istanbul ignore next */
@@ -51465,6 +51565,43 @@ function createUnlikelyStmtFromShape(shape, xAttr, yAttr, useLonLat) {
   }
 }
 
+function createSTContainsStatementFromShape(px, py, shape, srid) {
+  var first_point = MapdDraw.Point2d.create();
+  var point = MapdDraw.Point2d.create();
+  var verts = shape.vertsRef;
+  var xform = shape.globalXform;
+
+  var contains_str = "";
+  if (verts.length) {
+    var wkt_str = "POLYGON((";
+    if (srid === 4326) {
+      verts.forEach(function (vert, curr_idx) {
+        MapdDraw.Point2d.transformMat2d(point, vert, xform);
+        LatLonUtils.conv900913To4326(point, point);
+        wkt_str += point[0] + " " + point[1] + ",";
+
+        if (curr_idx === 0) {
+          MapdDraw.Point2d.copy(first_point, point);
+        }
+      });
+    } else {
+      verts.forEach(function (vert, curr_idx) {
+        MapdDraw.Point2d.transformMat2d(point, vert, xform);
+        wkt_str += point[0] + " " + point[1] + ",";
+
+        if (curr_idx === 0) {
+          MapdDraw.Point2d.copy(first_point, point);
+        }
+      });
+    }
+
+    wkt_str += first_point[0] + " " + first_point[1] + "))";
+
+    contains_str = "ST_Contains(ST_GeomFromText('" + wkt_str + "', " + srid + "), ST_SetSRID(ST_Point(" + px + ", " + py + "), " + srid + "))";
+  }
+  return contains_str;
+}
+
 /* istanbul ignore next */
 function rasterDrawMixin(chart) {
   var drawEngine = null;
@@ -51474,6 +51611,7 @@ function rasterDrawMixin(chart) {
   var coordFilters = new Map();
   var origFilterFunc = null;
   var origFilterAll = null;
+  var useLonLat = chartUsesLonLat(chart);
 
   var defaultStyle = {
     fillColor: "#22a7f0",
@@ -51554,10 +51692,7 @@ function rasterDrawMixin(chart) {
   chart.getRasterFilterObj = getRasterFilterObj;
 
   function applyFilter() {
-    var NUM_SIDES = 3;
-    var useLonLat = typeof chart.useLonLat === "function" && chart.useLonLat();
     var shapes = drawEngine.sortedShapes;
-    var LatLonCircle = (0, _lassoToolUi.getLatLonCircleClass)();
 
     var layers = chart.getLayers && typeof chart.getLayers === "function" ? chart.getLayers() : [chart];
     layers.forEach(function (layer) {
@@ -51595,7 +51730,7 @@ function rasterDrawMixin(chart) {
             filterObj.px.push(px);
             filterObj.py.push(py);
             shapes.forEach(function (shape) {
-              if (shape instanceof LatLonCircle) {
+              if (shape instanceof _LatLonCircle2.default) {
                 var pos = shape.getWorldPosition();
                 // convert from mercator to lat-lon
                 LatLonUtils.conv900913To4326(pos, pos);
@@ -51606,39 +51741,17 @@ function rasterDrawMixin(chart) {
                 var mat = MapdDraw.Mat2d.clone(shape.globalXform);
                 MapdDraw.Mat2d.invert(mat, mat);
                 filterObj.shapeFilters.push(createUnlikelyStmtFromShape(shape, px, py, useLonLat) + " AND (POWER(" + mat[0] + " * CAST(" + px + " AS FLOAT) + " + mat[2] + " * CAST(" + py + " AS FLOAT) + " + mat[4] + ", 2.0) + POWER(" + mat[1] + " * CAST(" + px + " AS FLOAT) + " + mat[3] + " * CAST(" + py + " AS FLOAT) + " + mat[5] + ", 2.0)) / " + radsqr + " <= 1.0");
-              } else if (shape instanceof MapdDraw.Poly) {
-                var p0 = [0, 0];
-                var p1 = [0, 0];
-                var p2 = [0, 0];
-                var earcutverts = [];
-                var verts = shape.vertsRef;
-                var xform = shape.globalXform;
-                verts.forEach(function (vert) {
-                  MapdDraw.Point2d.transformMat2d(p0, vert, xform);
-                  if (useLonLat) {
-                    LatLonUtils.conv900913To4326(p0, p0);
-                  }
-                  earcutverts.push(p0[0], p0[1]);
-                });
-
-                var triangles = (0, _earcut2.default)(earcutverts);
-                var triangleTests = [];
-                var idx = 0;
-                for (var j = 0; j < triangles.length; j = j + NUM_SIDES) {
-                  idx = triangles[j] * 2;
-                  MapdDraw.Point2d.set(p0, earcutverts[idx], earcutverts[idx + 1]);
-
-                  idx = triangles[j + 1] * 2;
-                  MapdDraw.Point2d.set(p1, earcutverts[idx], earcutverts[idx + 1]);
-
-                  idx = triangles[j + 2] * 2;
-                  MapdDraw.Point2d.set(p2, earcutverts[idx], earcutverts[idx + 1]);
-
-                  triangleTests.push(writePointInTriangleSqlTest(p0, p1, p2, px, py, !useLonLat));
+              } else if (shape instanceof _LatLonPoly2.default || shape instanceof MapdDraw.Poly) {
+                var srid = 0;
+                if (shape instanceof _LatLonPoly2.default) {
+                  console.assert(useLonLat);
+                  srid = 4326;
+                } else {
+                  console.assert(!useLonLat);
                 }
-
-                if (triangleTests.length) {
-                  filterObj.shapeFilters.push(createUnlikelyStmtFromShape(shape, px, py, useLonLat) + " AND (" + triangleTests.join(" OR ") + ")");
+                var contains_str = createSTContainsStatementFromShape(px, py, shape, srid);
+                if (contains_str.length) {
+                  filterObj.shapeFilters.push(createUnlikelyStmtFromShape(shape, px, py, useLonLat) + " AND (" + contains_str + ")");
                 }
               }
             });
@@ -51671,7 +51784,7 @@ function rasterDrawMixin(chart) {
             }
 
             shapes.forEach(function (shape) {
-              if (shape instanceof LatLonCircle) {
+              if (shape instanceof _LatLonCircle2.default) {
                 var pos = shape.getWorldPosition();
                 // convert from mercator to lat-lon
                 LatLonUtils.conv900913To4326(pos, pos);
@@ -51684,8 +51797,8 @@ function rasterDrawMixin(chart) {
                 if (!_.find(_filterObj.shapeFilters, shapeFilter)) {
                   _filterObj.shapeFilters.push(shapeFilter);
                 }
-              } else if (shape instanceof MapdDraw.Poly) {
-                var p0 = [0, 0];
+              } else if (shape instanceof _LatLonPoly2.default || shape instanceof MapdDraw.Poly) {
+                var p0 = MapdDraw.Point2d.create();
                 var convertedVerts = [];
 
                 var verts = shape.vertsRef;
@@ -51791,11 +51904,21 @@ function rasterDrawMixin(chart) {
       }
       var selectOpts = {};
       if (filterArg.type === "LatLonCircle") {
-        var LatLonCircle = (0, _lassoToolUi.getLatLonCircleClass)();
-        newShape = new LatLonCircle(filterArg);
+        newShape = new _LatLonCircle2.default(drawEngine, filterArg);
         selectOpts.uniformScaleOnly = true;
         selectOpts.centerScaleOnly = true;
         selectOpts.rotatable = false;
+      } else if (filterArg.type === "LatLonPoly" || filterArg.type === "Poly") {
+        var args = [];
+        var PolyClass = null;
+        if (useLonLat) {
+          PolyClass = _LatLonPoly2.default;
+          args.push(drawEngine);
+        } else {
+          PolyClass = MapdDraw.Poly;
+        }
+        args.push(filterArg);
+        newShape = new (Function.prototype.bind.apply(PolyClass, [null].concat(args)))();
       } else if (typeof MapdDraw[filterArg.type] !== "undefined") {
         newShape = new MapdDraw[filterArg.type](filterArg);
       } else {
@@ -51861,7 +51984,7 @@ function rasterDrawMixin(chart) {
       var bounds = chart.getDataRenderBounds();
       currXRange = [bounds[0][0], bounds[1][0]];
       currYRange = [bounds[0][1], bounds[2][1]];
-      if (typeof chart.useLonLat === "function" && chart.useLonLat()) {
+      if (chartUsesLonLat(chart)) {
         currXRange[0] = LatLonUtils.conv4326To900913X(currXRange[0]);
         currXRange[1] = LatLonUtils.conv4326To900913X(currXRange[1]);
         currYRange[0] = LatLonUtils.conv4326To900913Y(currYRange[0]);
@@ -51955,7 +52078,7 @@ function rasterDrawMixin(chart) {
 }
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51964,97 +52087,1543 @@ function rasterDrawMixin(chart) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.distance_in_meters = distance_in_meters;
-exports.conv900913To4326X = conv900913To4326X;
-exports.conv900913To4326Y = conv900913To4326Y;
-exports.conv900913To4326 = conv900913To4326;
-exports.conv4326To900913X = conv4326To900913X;
-exports.conv4326To900913Y = conv4326To900913Y;
-exports.conv4326To900913 = conv4326To900913;
 
-var _mapdDraw = __webpack_require__(18);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _utilsLatlon = __webpack_require__(24);
+
+var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
+
+var _mapdDraw = __webpack_require__(13);
+
+var MapdDraw = _interopRequireWildcard(_mapdDraw);
+
+var _LatLonViewIntersectUtils = __webpack_require__(191);
+
+var _LatLonViewIntersectUtils2 = _interopRequireDefault(_LatLonViewIntersectUtils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var AABox2d = MapdDraw.AABox2d,
+    Mat2d = MapdDraw.Mat2d,
+    Point2d = MapdDraw.Point2d,
+    Vec2d = MapdDraw.Vec2d;
+
+var MathExt = MapdDraw.Math;
+
+/**
+ * @typedef CircleDescriptor
+ * An object describing various geometric/geographic states of a LatLonCircle that is a
+ * simplified form of the LatLonCircle class that can be passed around to various static
+ * methods
+ *
+ * @param {Point2d} center_mercator The center of the circle in web-mercator coordinates
+ * @param {Point2d} center_lonlat The center of the circle in lon/lat WGS84 coordinates, in degrees
+ * @param {Point2d} center_radians The same point as center_lonlat but in radians, not degrees
+ * @param {number} radius_radians The radius of the circle in radians
+ * @param {number} max_segment_pixel_distance The max distance in pixels of line segments representing
+ *                                            the circle when drawing.
+ * @param {number} degrees_between_points The angle difference in degrees between consecutive points of
+ *                                        a LatLonCircle
+ * @returns
+ */
+
+/**
+ * Creates a descriptor of a LatLonCircle instance
+ * @param {LatLonCircle} latlon_circle An instance of the LatLonCircle class to build a descriptor for.
+ * @returns {CircleDescriptor}
+ */
+function createCircleDescriptor(latlon_circle) {
+  var center_mercator = Point2d.create();
+  Mat2d.svd(center_mercator, null, null, latlon_circle.globalXform);
+
+  // the 'true' argument below indicates to include the lonlat point defined
+  // in radians as well as degrees
+  var point_data = _LatLonViewIntersectUtils2.default.buildProjectedPointData(true);
+  _LatLonViewIntersectUtils2.default.projectPoint(center_mercator, point_data, null, null);
+
+  // convert to a circle-centeric descriptor form
+  return {
+    center_mercator: point_data.merc_point,
+    center_lonlat: point_data.lonlat_point,
+    center_radians: point_data.radians_point,
+    radius_radians: getDistanceInRadians(latlon_circle.radius),
+    max_segment_pixel_distance: latlon_circle._max_segment_pixel_distance,
+    degrees_between_points: latlon_circle._degrees_between_points
+  };
+}
+
+/**
+ * Creates a new 2d lat/lon point that lies on a LatLonCircle at a specific angle about
+ * the center of the circle.
+ * @param {CircleDescriptor} circle_descriptor An object describing the various geometric/geographic states of a lon/lat-defined circle.
+ * @param {Point2d} output_point The coordinates of the new point will be stored in this object
+ * @param {number} angle_radians The angle about the center point to position the new point in radians
+ * @returns {Point2d} A new lon/lat point that is protruded a specific distance away from a center point at the specified angle
+ */
+function initializePointOnCircle(circle_descriptor, output_point, angle_radians) {
+  // essentially the inverse of LatLonUtils.distance_in_meters
+  var center_radians = circle_descriptor.center_radians,
+      radius_radians = circle_descriptor.radius_radians;
+
+  var cos_radius = Math.cos(radius_radians);
+  var sin_radius = Math.sin(radius_radians);
+
+  var _center_radians = _slicedToArray(center_radians, 2),
+      center_lon_radians = _center_radians[0],
+      center_lat_radians = _center_radians[1];
+
+  var cos_lat = Math.cos(center_lat_radians);
+  var sin_lat = Math.sin(center_lat_radians);
+
+  var point_lat_radians = Math.asin(sin_lat * cos_radius + cos_lat * sin_radius * Math.cos(angle_radians));
+  var point_lon_radians = center_lon_radians + Math.atan2(Math.sin(angle_radians) * sin_radius * cos_lat, cos_radius - sin_lat * Math.sin(point_lat_radians));
+
+  // convert back to degrees
+  Point2d.set(output_point, point_lon_radians, point_lat_radians);
+  Vec2d.scale(output_point, output_point, MathExt.RAD_TO_DEG);
+}
+
+/**
+ * Gets the angle of a specific point about the center of a circle.
+ * @param {CircleDescriptor} circle_descriptor An object describing the various geometry/geography states of a LatLonCircle
+ * @param {Point2d} point_lonlat The position of the point in lon/lat WGS84 coords in degrees
+ * @param {Point2d} point_radians The position of the same point as point_lonlat but in radians instead of degrees
+ * @returns {number} The angle of the point about the circle's center, in radians, in the range of [-PI, PI]
+ */
+function getAngleOfPointAboutCircle(circle_descriptor, point_lonlat, point_radians) {
+  var center_lonlat = circle_descriptor.center_lonlat,
+      center_radians = circle_descriptor.center_radians;
+
+  // distance between the points in kilometers using haversine
+
+  var distance = LatLonUtils.distance_in_meters(center_lonlat[0], center_lonlat[1], point_lonlat[0], point_lonlat[1]) / 1000.0;
+
+  // get the distance between the points in radians
+  var dist_radians = getDistanceInRadians(distance);
+
+  // solve for the new angle in radians, which is the inverse of finding the latitude in
+  // initializePointOnCircle() method
+  var numerator = Math.sin(point_radians[1]) - Math.sin(center_radians[1]) * Math.cos(dist_radians);
+  var denominator = Math.cos(center_radians[1]) * Math.sin(dist_radians);
+  console.assert(denominator !== 0, center_lonlat + ", " + center_radians + ", " + point_lonlat + ", " + point_radians + ", " + distance);
+  var divide = numerator / denominator;
+  if (divide > 1) {
+    // should never get a ratio > 1, but if we do, check that it is approximately 1
+    // and clamp
+    console.assert(MathExt.floatingPtEquals(divide, 1), center_lonlat + ", " + center_radians + ", " + point_lonlat + ", " + point_radians + ", " + distance);
+    divide = 1;
+  } else if (divide < -1) {
+    // should never get a ratio < -1, but if we do, check that it is approximately -1
+    // and clamp
+    console.assert(MathExt.floatingPtEquals(divide, -1), center_lonlat + ", " + center_radians + ", " + point_lonlat + ", " + point_radians + ", " + distance);
+    divide = -1;
+  }
+
+  // make sure to return in a range of [-PI, PI], to do that, just check which side of the
+  // center point the point to check falls.
+  var angle = Math.acos(divide);
+  if (point_lonlat[0] - center_lonlat[0] >= 0) {
+    return angle;
+  }
+  return MathExt.TWO_PI - angle;
+}
+
+/**
+ * @typedef ClosestCirclePointData
+ * Data describing the closest point on a LatLonCircle
+ *
+ * @property {number} angle_degrees The angle of the closest point on the circle arc
+ *                                  about the center of the circle.
+ * @property {ProjectedPointData} closest_point_data The various projection/conversion states of the
+ *                                                   closest point on a LatLonCircle
+ */
+
+/**
+ * Calculates the closest point on a circle's arc from a specific point in 2D space
+ * @param {CircleDescriptor} circle_descriptor A descriptor of varions geometric/geographic properties of a LatLonCircle
+ * @param {Point2d} point_lonlat A point in lon/lat WGS84 space to find the closest point to, in degrees
+ * @param {Point2d} point_radians The same point as point_lonlat, but in radians rather than degrees
+ * @param {Mat2d} world_to_screen_matrix Matrix describing the projection from web-mercator world space
+ *                                       to screen space.
+ * @returns {ClosestCirclePointData}
+ */
+function getClosestPointOnCircleArc(circle_descriptor, point_lonlat, point_radians, world_to_screen_matrix) {
+  // get the angle from the center of the circle to the potential subdivide point
+  var angle_radians = getAngleOfPointAboutCircle(circle_descriptor, point_lonlat, point_radians);
+  var angle_degrees = angle_radians * MathExt.RAD_TO_DEG;
+
+  // get the closest point on the circle's arc in lon/lat
+  var closest_point_data = _LatLonViewIntersectUtils2.default.buildProjectedPointData();
+  closest_point_data.angle_degrees = angle_degrees;
+  initializePointOnCircle(circle_descriptor, closest_point_data.lonlat_point, angle_radians);
+
+  // convert from lon/lat to mercator
+  LatLonUtils.conv4326To900913(closest_point_data.merc_point, closest_point_data.lonlat_point);
+
+  // get the point in screen space
+  Point2d.transformMat2d(closest_point_data.screen_point, closest_point_data.merc_point, world_to_screen_matrix);
+
+  return {
+    angle_degrees: angle_degrees,
+    closest_point_data: closest_point_data
+  };
+}
+
+/**
+ * Returns a given distance in kilometers in radians
+ * @param {number} distance Distance in kilometers
+ * @returns {number} the distance in radians around the globe
+ */
+function getDistanceInRadians(distance) {
+  // radius is stored in kilometers, so convert kilometers to radians.
+  // See: https://stackoverflow.com/questions/12180290/convert-kilometers-to-radians
+  // for a discussion.
+  // The 6372.79756 number is the earth's radius in kilometers and aligns with the
+  // earth radius used in distance_in_meters in utils-latlon
+  return distance / 6372.797560856;
+}
+
+/**
+ * @typedef LatLonCircleSegmentEndpoints
+ * Object describing the endpoints of a LatLonCircle line segment defining an
+ * arc.
+ * @param {number} start_angle Angle about the center of a LatLonCircle for the start point of the segment
+ * @param {ProjectedPointData} start_point The start point of the LatLonCircle segment
+ * @param {number} end_angle Angle about the center of a LatLonCircle for the end point of the segment
+ * @param {ProjectedPointData} end_point The end point of the LatLonCircle segment
+ */
+
+/**
+ * Callback to retrieve the two endpoints of a LonLatCircle segment.
+ *
+ * @callback GetEndpointsFunctor
+ * @param {ClosestCirclePointData} closest_point_data The point on a LatLonCircle arc used to determine the segment
+ *                                                    of the LatLonCircle that defines that arc.
+ * @returns {LatLonCircleSegmentEndpoints}
+ */
+
+/**
+ * Subdivides a line-segment of a LatLonCircle arc at the closest point on the circle to a
+ * specific point in 2D space.
+ * @param {CircleDescriptor} circle_descriptor Describes various geometric/geographic states of a LatLonCircle
+ * @param {Point2d} point_lonlat Point in lon/lat WGS84 to drive the subdivision, in degrees.
+ * @param {Point2d} point_radians The same point as point_lonlat, but in radians rather than degrees.
+ * @param {AABox2d} shape_view_intersect_aabox Axis-aligned bounding box describing the
+ *                                             intersection between the shape and the current view
+ *                                             in WGS84 lat/lon coords
+ * @param {Mat2d} world_to_screen_matrix 2D matrix describing the web-mercator to screen space transform.
+ * @param {GetEndpointsFunctor} get_endpoints_functor
+ * @returns
+ */
+function subdivideCircleArcAtPoint(circle_descriptor, point_lonlat, point_radians, shape_view_intersect_aabox, world_to_screen_matrix, get_endpoints_functor) {
+  // Calculate the closest point on the circle arc to a point.
+  // This will be used as a new line break.
+  var _getClosestPointOnCir = getClosestPointOnCircleArc(circle_descriptor, point_lonlat, point_radians, world_to_screen_matrix),
+      angle_degrees = _getClosestPointOnCir.angle_degrees,
+      closest_point_data = _getClosestPointOnCir.closest_point_data;
+
+  // Be sure that the view bounding box includes the closest point found on the circle.
+  // But keep the original view bounding box untouched
+  // NOTE: if zoomed in tight enough, the closest point on the circle here could end up off-screen,
+  // and therefore cause the new bounds calculated here to not be fully contained by the original
+  // view bounds.  Keep in mind that the 'shape_view_interseect_aabox' argument represents the
+  // bounds intersection between the view bounds and the shape's bounding box. As a result this
+  // may create unnecessary points that end up being drawn off-screen, but that's generally not
+  // be a big deal as it should only generate a handful of points. And in fact, those extra points
+  // may keep the circle arc protruded enough to prevent an unwanted jump in the render of the shape.
+  // For example, if the closest point on the circle calculated here were off screen, the line segment
+  // between this extra point and the original line segment points could still intersect the view, but
+  // the arc of the circle may not. We want to prevent this. The potential extra points can prevent
+  // this.
+
+
+  var new_intersect_bounds = AABox2d.clone(shape_view_intersect_aabox);
+  AABox2d.encapsulatePt(new_intersect_bounds, new_intersect_bounds, closest_point_data.lonlat_point);
+
+  // get the endpoints and respective angles of the line segment we're subdividing
+
+  var _get_endpoints_functo = get_endpoints_functor(angle_degrees, closest_point_data),
+      start_angle = _get_endpoints_functo.start_angle,
+      start_point = _get_endpoints_functo.start_point,
+      end_angle = _get_endpoints_functo.end_angle,
+      end_point = _get_endpoints_functo.end_point;
+
+  // create the new subdivided points with the new point break
+
+
+  var new_subdivided_points = [];
+  subdivideArc(new_subdivided_points, circle_descriptor, start_point, closest_point_data, start_angle, angle_degrees - start_angle, new_intersect_bounds, world_to_screen_matrix, false);
+
+  new_subdivided_points.push(Point2d.clone(closest_point_data.screen_point));
+
+  subdivideArc(new_subdivided_points, circle_descriptor, closest_point_data, end_point, angle_degrees, end_angle - angle_degrees, new_intersect_bounds, world_to_screen_matrix, false);
+
+  return new_subdivided_points;
+}
+
+/**
+ * Determines whether a line segment that represents an arc of a circle defined
+ * by a start/end point should be further subdivided for drawing.
+ * If the segment should be subdivided, will append subdivided points representing
+ * the subdivided arc into the array of screen-projected points for drawing.
+ * @param {Point2d[]} subdivided_points_array Array to append the subdivided points to
+ * @param {CircleDescriptor} circle_descriptor An object describing the various geometric/geographic properties and states
+ *                                             of a LatLonCircle instance.
+ * @param {ProjectedPointData} start_point_data Start point of the line segment
+ * @param {ProjectedPointData} end_point_data End point of the line segment
+ * @param {number} start_angle The angle about the center of the circle for the starting point of
+ *                             this segment. In degrees.
+ * @param {number} angle_diff The angle difference between the start point and the end point of this
+ *                            segment. In degrees.
+ * @param {AABox2d} shape_view_intersect_aabox Axis-aligned bounding box describing the
+ *                                             intersection between the shape and the current view
+ *                                             in WGS84 lat/lon coords
+ * @param {Mat2d} world_to_screen_matrix Matrix defining world-to-screen transformation
+ * @param {boolean} do_extra_subdivide If true, an extra subdivision point will be added to break up
+ *                                     the original line segment in order to give enough extra detail
+ *                                     to build out the circle arc with respect to the current view.
+ *                                     This is used to differentiate between an outside call, and a recursive
+ *                                     call. This should be true for an outside call and false for recursive.
+ * @returns
+ */
+function subdivideArc(subdivided_points_array, circle_descriptor, start_point_data, end_point_data, start_angle, angle_diff, shape_view_intersect_aabox, world_to_screen_matrix) {
+  var do_extra_subdivide = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : true;
+
+  // get any intersection info for the intersection between a line segment defined by
+  // start/end_point_data and the current view.
+  var view_intersect_data = _LatLonViewIntersectUtils2.default.intersectViewBounds(start_point_data, end_point_data, shape_view_intersect_aabox, world_to_screen_matrix);
+
+  if (!view_intersect_data.subdivide) {
+    // early out. It is determined no subdivision is required.
+    return;
+  }
+
+  console.assert(view_intersect_data.lonlat_pts.length === 2, "start_point: [" + start_point_data.lonlat_point[0] + ", " + start_point_data.lonlat_point[1] + "], end_point: [" + end_point_data.lonlat_point[0] + ", " + end_point_data.lonlat_point[1] + "], view_aabox: [" + shape_view_intersect_aabox[0] + ", " + shape_view_intersect_aabox[1] + ", " + shape_view_intersect_aabox[2] + ", " + shape_view_intersect_aabox[3] + "], worldToScreenMatrix: [" + world_to_screen_matrix[0] + ", " + world_to_screen_matrix[1] + ", " + world_to_screen_matrix[2] + ", " + world_to_screen_matrix[3] + ", " + world_to_screen_matrix[4] + ", " + world_to_screen_matrix[5] + "]");
+
+  var _view_intersect_data$ = _slicedToArray(view_intersect_data.screen_pts, 2),
+      start_screen_pt = _view_intersect_data$[0],
+      end_screen_pt = _view_intersect_data$[1];
+
+  var _view_intersect_data$2 = _slicedToArray(view_intersect_data.lonlat_pts, 2),
+      start_lonlat_pt = _view_intersect_data$2[0],
+      end_lonlat_pt = _view_intersect_data$2[1];
+
+  var _view_intersect_data$3 = _slicedToArray(view_intersect_data.pts_t, 2),
+      start_t = _view_intersect_data$3[0],
+      end_t = _view_intersect_data$3[1];
+
+  var distance = Point2d.distance(start_screen_pt, end_screen_pt);
+  if (distance > circle_descriptor.max_segment_pixel_distance) {
+    // This segment should be subdivided. But first check whether we should add a point
+    // break to add more detail to this line segment before further subdivision. For example,
+    // if at the right zoom, the endpoints of a line could be way off screen, but a small sliver
+    // of the line could cross the view, but the arc of the circle represented by that line
+    // segment could be quite a distance away in pixels and cover a larger area of screen.
+    // Or, in other words, the pixel coverage for the line segment/view intersection may be small
+    // compared to the arc that is represented, leading to an undersampling of points for the arc.
+    // To fix this, subdivide the line segment at a point that is in/near the view bounds so we
+    // get two new line segments that are more appropriately sampled, therefore not leading to
+    // an undersampled arc.
+
+    // TODO(croot); the 0.25 threshold is just an empirical "good enough" for the ratio
+    // of the full line segment length and it's view-intersection length. A more clever
+    // metric could be used
+    if (do_extra_subdivide && !MathExt.floatingPtEquals(start_t, 0) && !MathExt.floatingPtEquals(end_t, 1) && end_t - start_t < 0.25) {
+      // get the angle from the center of the circle to the potential subdivide point
+      var tmp_point = Point2d.clone(start_lonlat_pt);
+      var start_radians_pt = tmp_point;
+      Vec2d.scale(start_radians_pt, start_radians_pt, MathExt.DEG_TO_RAD);
+
+      var _getClosestPointOnCir2 = getClosestPointOnCircleArc(circle_descriptor, start_lonlat_pt, start_radians_pt, world_to_screen_matrix),
+          closest_point_data = _getClosestPointOnCir2.closest_point_data;
+
+      // If the distance between the line segment and the circle arc it represents
+      // is greater than the set threshold, than add the new point break for better
+      // sampling.
+
+
+      if (Point2d.distance(start_screen_pt, closest_point_data.screen_point) > circle_descriptor.max_segment_pixel_distance) {
+        // subdivde the line segment at the midpoint of the in-view line segment
+        // TODO(croot): This seems to work 99.5% of the time but could see a jump in the rare case that
+        // the line segment crosses very close to a corner.
+        var line_center_lonlat = tmp_point;
+        Point2d.lerp(line_center_lonlat, start_lonlat_pt, end_lonlat_pt, 0.5);
+        var line_center_radians = Point2d.clone(line_center_lonlat);
+        Vec2d.scale(line_center_radians, line_center_radians, MathExt.DEG_TO_RAD);
+
+        var new_subdivided_points = subdivideCircleArcAtPoint(circle_descriptor, line_center_lonlat, line_center_radians, shape_view_intersect_aabox, world_to_screen_matrix, function (angle_degrees, new_point_data) {
+          var start_angle = start_point_data.angle_degrees;
+          var end_angle = start_angle + circle_descriptor.degrees_between_points;
+          return {
+            start_angle: start_angle,
+            start_point: start_point_data,
+            end_angle: end_angle,
+            end_point: end_point_data
+          };
+        });
+
+        subdivided_points_array.push.apply(subdivided_points_array, _toConsumableArray(new_subdivided_points));
+        return;
+      }
+    }
+
+    // number of subdivisions determined for this line segment.
+    var num_subdivisions = Math.ceil(distance / circle_descriptor.max_segment_pixel_distance);
+
+    // start iterating over the number of subdivided points,
+    // and reprojecting each one
+
+    var point_radians = Point2d.clone(start_lonlat_pt);
+    Vec2d.scale(point_radians, point_radians, MathExt.DEG_TO_RAD);
+    var _start_angle = getAngleOfPointAboutCircle(circle_descriptor, start_lonlat_pt, point_radians);
+    Point2d.copy(point_radians, end_lonlat_pt);
+    Vec2d.scale(point_radians, point_radians, MathExt.DEG_TO_RAD);
+    var end_angle = getAngleOfPointAboutCircle(circle_descriptor, end_lonlat_pt, point_radians);
+    var _angle_diff = (end_angle - _start_angle) / num_subdivisions;
+    for (var current_angle = _start_angle; current_angle <= end_angle; current_angle += _angle_diff) {
+      // create a new subdivided point rotated around the circle center using the radius distance in radians
+      var new_point = Point2d.create();
+      initializePointOnCircle(circle_descriptor, new_point, current_angle);
+
+      // convert from lon/lat to mercator
+      LatLonUtils.conv4326To900913(new_point, new_point);
+
+      // now convert to screen space
+      Point2d.transformMat2d(new_point, new_point, world_to_screen_matrix);
+      subdivided_points_array.push(new_point);
+    }
+  }
+}
+
+/**
+ * @typedef PointDistanceFromCircle
+ * Describes a point in 2D WGS84 lon/lat degree coordinates with a distance from the
+ * center of a LatLonCircle instance.
+ * @param {number} distance Distance of this point to the center of a LatLonCircle instance.
+ * @param {Point2d} point 2d point in WGS84 lon/lat degree coordinates.
+ */
+
+/**
+ * @typedef BoundsDistanceFromCircle
+ * @param {number} min_bounds_dist Minimum distance to the 4 corners of an axis-aligned bounding box
+ *                                 from the center of a LatLonCircle.
+ * @param {number} max_bounds_dist Maximum distance to the 4 cornders of an axis-aligned bounding box
+ *                                 from the center of a LatLonCircle.
+ * @param {PointDistanceFromCircle[]} bounds_distances Array of points & distances of the 4 corners of the
+ *                                                     input bounding box. The distance is the distance to
+ *                                                     the center of a LatLonCircle instance. The array is
+ *                                                     sorted by distance in ascending order.
+ */
+
+/**
+ * Returns a data structure object that represents a list of the corners
+ * of a WGS84 lon/lat axis-aligned bounding box sorted by distance from
+ * the center of a LatLonCircle.
+ * @param {Point2d} center_lonlat The center of a LatLonCircle in WGS84 lon/lat degree coordinates.
+ * @param {AABox2d} bounds_lonlat An axis-aligned bounding box in WGS84 lon/lat degree coordinates.
+ * @returns {BoundsDistanceFromCircle}
+ */
+function getBoundsDistanceData(center_lonlat, bounds_lonlat) {
+  var bounds_distances = new Array(4);
+  for (var i = 0; i < 4; ++i) {
+    var bounds_lon = i & 1 ? bounds_lonlat[AABox2d.MAXX] : bounds_lonlat[AABox2d.MINX];
+    var bounds_lat = i > 1 ? bounds_lonlat[AABox2d.MAXY] : bounds_lonlat[AABox2d.MINY];
+    var point = Point2d.create(bounds_lon, bounds_lat);
+    // distance from center to corner of bounds in kilometers
+    var distance = LatLonUtils.distance_in_meters(center_lonlat[0], center_lonlat[1], bounds_lon, bounds_lat) / 1000.0;
+    bounds_distances[i] = {
+      distance: distance,
+      point: point
+    };
+  }
+
+  bounds_distances.sort(function (a, b) {
+    return a.distance - b.distance;
+  });
+
+  return {
+    min_bounds_dist: bounds_distances[0].distance,
+    max_bounds_dist: bounds_distances[3].distance,
+    bounds_distances: bounds_distances
+  };
+}
+
+var LatLonCircle = function (_MapdDraw$Circle) {
+  _inherits(LatLonCircle, _MapdDraw$Circle);
+
+  function LatLonCircle(draw_engine, opts) {
+    _classCallCheck(this, LatLonCircle);
+
+    if (opts.debug === undefined) {
+      // if true, will activate the use of the _drawDebug method for drawing
+      // extra debug info on top of the original shape draw.
+      opts.debug = false;
+    }
+
+    var _this = _possibleConstructorReturn(this, (LatLonCircle.__proto__ || Object.getPrototypeOf(LatLonCircle)).call(this, opts));
+
+    _this._draw_engine = draw_engine;
+
+    _this._geomDirty = true;
+    _this._viewDirty = true;
+
+    var that = _this;
+    _this._draw_engine.camera.on("changed", function (event) {
+      that._viewDirty = true;
+    });
+
+    // maximum length of subdivided line segment in pixels
+    _this._max_segment_pixel_distance = 40;
+
+    _this._initial_radius = _this._radius;
+
+    // degrees between successive points in the drawn
+    // segmented circle
+    _this._degrees_between_points = 6.0;
+
+    // Now calculate a baseline axis-aligned bounding box area based on the
+    // max segment distance for subdividing. This will be used to do quick
+    // checks on whether subdivision is needed or not.
+
+    // obviously this circumferences is just an estimate, but good enough
+    var base_screen_space_circumference = 360.0 / _this._degrees_between_points * _this._max_segment_pixel_distance;
+
+    var base_screen_space_diameter = base_screen_space_circumference / Math.PI;
+
+    // w * h
+    _this._base_screen_area = base_screen_space_diameter * base_screen_space_diameter;
+
+    _this._segmented_circle_points = [];
+    _this._subdivided_screen_points = [];
+
+    var number_of_points = Math.floor(360 / _this._degrees_between_points);
+
+    for (var i = 0; i < number_of_points; ++i) {
+      _this._segmented_circle_points.push(_LatLonViewIntersectUtils2.default.buildProjectedPointData());
+    }
+    return _this;
+  }
+
+  _createClass(LatLonCircle, [{
+    key: "setScale",
+    value: function setScale(scale) {
+      this.radius = this._initial_radius * Math.min(scale[0], scale[1]);
+    }
+  }, {
+    key: "resetInitialRadius",
+    value: function resetInitialRadius() {
+      this._initial_radius = this.radius;
+    }
+
+    /**
+     * Updates the static points initially approximating the full circle arc
+     * @param {CircleDescriptor} [circle_descriptor] Optional circle descriptor for this LatLonCircle instance used
+     *                                               as input for point-on-circle initialization routines
+     */
+
+  }, {
+    key: "_updateGeom",
+    value: function _updateGeom() {
+      var circle_descriptor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (this._geomDirty || this._boundsOutOfDate) {
+        if (circle_descriptor === null) {
+          circle_descriptor = createCircleDescriptor(this);
+        }
+
+        AABox2d.initEmpty(this._aabox);
+
+        for (var index = 0; index < this._segmented_circle_points.length; ++index) {
+          var point_data = this._segmented_circle_points[index];
+          var lonlat_point = point_data.lonlat_point,
+              merc_point = point_data.merc_point;
+
+          var angle_degrees = index * this._degrees_between_points;
+          var angle_radians = angle_degrees * MathExt.DEG_TO_RAD;
+
+          // store the angle for later validation
+          point_data.angle_degrees = angle_degrees;
+
+          // rotate the sample point around the circle center using the radius distance in radians
+          initializePointOnCircle(circle_descriptor, lonlat_point, angle_radians);
+
+          // convert from lon/lat to mercator
+          LatLonUtils.conv4326To900913(merc_point, lonlat_point);
+
+          // update the bounds
+          AABox2d.encapsulatePt(this._aabox, this._aabox, merc_point);
+        }
+
+        // re-adjust the pivot as it's not necessarily right in the center of the bounds.
+        var pivot = Point2d.create(0, 0);
+        AABox2d.getCenter(pivot, this._aabox);
+        Point2d.sub(pivot, pivot, circle_descriptor.center_mercator);
+        this.pivot = pivot;
+
+        this._geomDirty = false;
+        this._boundsOutOfDate = false;
+      }
+    }
+
+    /**
+     * Updates the internal subdivided geometry representation of the circle for drawing.
+     * This method will auto-subdivide the initial set of line segments approximating the
+     * circle where appropriate.
+     *
+     * @param {Mat2d} world_to_screen_matrix web-mercator-to-pixel transformation matrix for the current view
+     * @returns
+     */
+
+  }, {
+    key: "_updateGeomForView",
+    value: function _updateGeomForView(world_to_screen_matrix) {
+      if (this._viewDirty || this._geomDirty || this._boundsOutOfDate) {
+        var circle_descriptor = createCircleDescriptor(this);
+
+        // update the initial set of line segments to start with
+        this._updateGeom(circle_descriptor);
+
+        this._subdivided_screen_points = [];
+        if (this._segmented_circle_points.length === 0) {
+          return;
+        }
+
+        // calculate the bounds intersection between the current view bounds
+        // and the bounds of this shape
+        var world_bounds = this._draw_engine.camera.worldViewBounds;
+        var world_intersect_bounds = AABox2d.create();
+
+        // NOTE: this._aabox would have already been updated in the above _updateGeom()
+        // call, so can go directly to the _aabox member rather than throw the this.aabox
+        // getter
+        AABox2d.intersection(world_intersect_bounds, this._aabox, world_bounds);
+        if (AABox2d.isEmpty(world_intersect_bounds)) {
+          // Early out, can skip any subdivision checks if the circle is out-of-view.
+          // This is guaranteed to work as long as the _degrees_between_points is a
+          // a divisor of 90 degrees.
+          return;
+        }
+
+        // calculate the screen area of the circle. If it's small in screen space, we
+        // know we don't have to subdivide and can skip the more costly per-line-segment
+        // subdivision checks.
+        var screen_aabox = AABox2d.clone(this._aabox);
+        AABox2d.transformMat2d(screen_aabox, screen_aabox, world_to_screen_matrix);
+        var shape_screen_area = AABox2d.area(screen_aabox);
+        var subdivide = shape_screen_area > this._base_screen_area;
+
+        // convert our intersection bounds to WGS84 lon/lat
+        _LatLonViewIntersectUtils2.default.boundsConv900913to4326(world_bounds, world_bounds);
+        _LatLonViewIntersectUtils2.default.boundsConv900913to4326(world_intersect_bounds, world_intersect_bounds);
+
+        var start_point_data = this._segmented_circle_points[0];
+        var end_point_data = null;
+
+        // update the screen-space projection of the point. Note: this is not done in _updateGeom.
+        // Only the mercator/WGS84 coords are updated there.
+        Point2d.transformMat2d(start_point_data.screen_point, start_point_data.merc_point, world_to_screen_matrix);
+
+        this._subdivided_screen_points.push(Point2d.clone(start_point_data.screen_point));
+
+        if (subdivide) {
+          var initial_point_data = start_point_data;
+          for (var i = 1; i < this._segmented_circle_points.length; i += 1) {
+            end_point_data = this._segmented_circle_points[i];
+            Point2d.transformMat2d(end_point_data.screen_point, end_point_data.merc_point, world_to_screen_matrix);
+
+            // subdivide this line segment if necessary
+            subdivideArc(this._subdivided_screen_points, circle_descriptor, start_point_data, end_point_data, start_point_data.angle_degrees, this._degrees_between_points, world_intersect_bounds, world_to_screen_matrix);
+            this._subdivided_screen_points.push(Point2d.clone(end_point_data.screen_point));
+
+            start_point_data = end_point_data;
+          }
+
+          end_point_data = initial_point_data;
+
+          // subdivide the line segment that closes the circle loop
+          subdivideArc(this._subdivided_screen_points, circle_descriptor, start_point_data, initial_point_data, start_point_data.angle_degrees, this._degrees_between_points, world_intersect_bounds, world_to_screen_matrix);
+
+          if (this._subdivided_screen_points.length === this._segmented_circle_points.length) {
+            // this means no subdivision was actually performed. We need to double check the edge case where you
+            // are zoomed in far enough where there are no line segments for the circle that intersect the view bounds,
+            // but its arc does
+
+            // So first calculate real distances for each corner of the bounds.
+            var _getBoundsDistanceDat = getBoundsDistanceData(circle_descriptor.center_lonlat, world_bounds),
+                min_bounds_dist = _getBoundsDistanceDat.min_bounds_dist,
+                max_bounds_dist = _getBoundsDistanceDat.max_bounds_dist,
+                bounds_distances = _getBoundsDistanceDat.bounds_distances;
+
+            if (this._radius >= min_bounds_dist && this._radius <= max_bounds_dist) {
+              var _subdivided_screen_po;
+
+              // The arc of the circle actually crosses the view. We need to add a new point to the original list of
+              // segmented circle points to give more precision in the area we are zoomed in on. To do this we will
+              // get the angle between the center of the circle and the center of the bounds. This will tell us which
+              // two original segmented points are its neighbors, and then subdivide with the two new line segments.
+              var bounds_center = Point2d.create();
+              AABox2d.getCenter(bounds_center, world_bounds);
+              var bounds_center_radians = Point2d.clone(bounds_center);
+              Vec2d.scale(bounds_center_radians, bounds_center_radians, MathExt.DEG_TO_RAD);
+
+              var that = this;
+              var start_segment_idx = -1;
+              var new_subdivided_points = subdivideCircleArcAtPoint(circle_descriptor, bounds_center, bounds_center_radians, world_bounds, world_to_screen_matrix, function (angle_degrees, new_point_data) {
+                // we now know the angle to the center of the view bounds.
+                // We can then easily determine which two original static
+                // points would represent the circle arc that covers that
+                // angle.
+                start_segment_idx = Math.floor(angle_degrees / that._degrees_between_points);
+                var start_point = that._segmented_circle_points[start_segment_idx];
+                var start_angle = start_point.angle_degrees;
+                var end_angle = start_angle + that._degrees_between_points;
+                var end_segment_idx = start_segment_idx === that._segmented_circle_points.length - 1 ? 0 : start_segment_idx + 1;
+                var end_point = that._segmented_circle_points[end_segment_idx];
+                return { start_angle: start_angle, start_point: start_point, end_angle: end_angle, end_point: end_point };
+              });
+
+              // insert the new subdivided points in the appropriate place
+              (_subdivided_screen_po = this._subdivided_screen_points).splice.apply(_subdivided_screen_po, [start_segment_idx + 1, 0].concat(_toConsumableArray(new_subdivided_points)));
+            } else if (this._radius > max_bounds_dist) {
+              // hit an edge case here where you zoomed in far enough that both the original circle line segment and its respective arc
+              // are not visible in the view but end up on opposite sides of the view bounds. In other words,
+              // the original line-segmented circle does not overlap the view but the real circle does. So you've zoomed in
+              // far enough to be completely inside that gap. To handle this case, we just need to add new points
+              // so that the view is fully covered.
+
+              // the last element in the view_bounds_distance array will have the max distance
+              var bounds_point_lonlat = bounds_distances[bounds_distances.length - 1].point;
+              var bounds_point_radians = Point2d.clone(bounds_point_lonlat);
+              Vec2d.scale(bounds_point_radians, bounds_point_radians, MathExt.DEG_TO_RAD);
+
+              var _getClosestPointOnCir3 = getClosestPointOnCircleArc(circle_descriptor, bounds_point_lonlat, bounds_point_radians, world_to_screen_matrix),
+                  angle_degrees = _getClosestPointOnCir3.angle_degrees,
+                  closest_point_data = _getClosestPointOnCir3.closest_point_data;
+
+              var _start_segment_idx = Math.floor(angle_degrees / this._degrees_between_points);
+
+              this._subdivided_screen_points.splice(_start_segment_idx + 1, 0, closest_point_data.screen_point);
+            }
+          }
+        } else {
+          // no subdivision, so just carry on transforming the rest of the static points
+          // to screen space.
+          for (var _i = 1; _i < this._segmented_circle_points.length; _i += 1) {
+            var point_data = this._segmented_circle_points[_i];
+            Point2d.transformMat2d(point_data.screen_point, point_data.merc_point, world_to_screen_matrix);
+
+            this._subdivided_screen_points.push(Point2d.clone(point_data.screen_point));
+          }
+        }
+
+        // NOTE: we are not re-adding the first point as the draw call will close the loop
+
+        console.assert(!this._geomDirty);
+        // console.assert(!this._boundsOutOfDate)
+        this._viewDirty = false;
+      }
+    }
+  }, {
+    key: "getDimensions",
+    value: function getDimensions() {
+      return [this.width, this.height];
+    }
+  }, {
+    key: "_updateAABox",
+    value: function _updateAABox() {
+      this._updateGeom();
+    }
+  }, {
+    key: "_draw",
+    value: function _draw(ctx) {
+      // separate the model-view-matrix (this._fullXform) into the model matrix (globalXform)
+      // and the view-projection matrix for separable components and to minimize
+      // the amount of math applied.
+
+      // invert the model matrix
+      var xform = Mat2d.clone(this.globalXform);
+      Mat2d.invert(xform, xform);
+
+      // and multiply w/ model-view-projection matrix resulting in just the
+      // view-projection matrix, or, in other words, the world-space-to-screen-space
+      // transformation matrix
+      Mat2d.multiply(xform, this._fullXform, xform);
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+      this._updateGeomForView(xform);
+
+      if (this._subdivided_screen_points.length) {
+        ctx.moveTo(this._subdivided_screen_points[0][0], this._subdivided_screen_points[0][1]);
+        for (var i = 1; i < this._subdivided_screen_points.length; i += 1) {
+          ctx.lineTo(this._subdivided_screen_points[i][0], this._subdivided_screen_points[i][1]);
+        }
+        ctx.closePath();
+      }
+    }
+
+    /**
+     * Extra debug draw function to visualize the extra subdivided points and the original
+     * line segments.
+     * @param {CanvasRenderingContext2d} ctx
+     */
+
+  }, {
+    key: "_drawDebug",
+    value: function _drawDebug(ctx) {
+      if (this._segmented_circle_points.length) {
+        ctx.save();
+
+        ctx.strokeStyle = "white";
+        ctx.beginPath();
+        var curr_pt = this._segmented_circle_points[0];
+        ctx.moveTo(curr_pt.screen_point[0], curr_pt.screen_point[1]);
+        for (var i = 1; i < this._segmented_circle_points.length; i += 1) {
+          curr_pt = this._segmented_circle_points[i];
+          ctx.lineTo(curr_pt.screen_point[0], curr_pt.screen_point[1]);
+        }
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.fillStyle = "orange";
+        this._subdivided_screen_points.forEach(function (point) {
+          ctx.beginPath();
+          ctx.arc(point[0], point[1], 3, 0, MathExt.TWO_PI, false);
+          ctx.fill();
+        });
+
+        ctx.fillStyle = "red";
+        this._segmented_circle_points.forEach(function (point_data) {
+          ctx.beginPath();
+          ctx.arc(point_data.screen_point[0], point_data.screen_point[1], 5, 0, MathExt.TWO_PI, false);
+          ctx.fill();
+        });
+
+        ctx.restore();
+      }
+    }
+  }, {
+    key: "toJSON",
+    value: function toJSON() {
+      return Object.assign(_get(LatLonCircle.prototype.__proto__ || Object.getPrototypeOf(LatLonCircle.prototype), "toJSON", this).call(this), {
+        type: "LatLonCircle" // this must match the name of the class
+      });
+    }
+  }, {
+    key: "initialRadius",
+    set: function set(radius) {
+      this.radius = radius;
+      this._initial_radius = radius;
+    }
+  }, {
+    key: "width",
+    get: function get() {
+      this._updateAABox();
+      return this._aabox[2] - this._aabox[0];
+    }
+  }, {
+    key: "height",
+    get: function get() {
+      this._updateAABox();
+      return this._aabox[3] - this._aabox[1];
+    }
+  }]);
+
+  return LatLonCircle;
+}(MapdDraw.Circle);
+
+exports.default = LatLonCircle;
+
+/***/ }),
+/* 191 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utilsLatlon = __webpack_require__(24);
+
+var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
+
+var _mapdDraw = __webpack_require__(13);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-/**
- * Calculates the distance in meters between two lon/lat coordinates
- * @param  {number} fromlon Longitude to start from
- * @param  {number} fromlat Latitude to start from
- * @param  {number} tolon   Longitude to end at
- * @param  {number} tolat   Latitude to end at
- * @return {number}         Distance in meters from two lon/lat coords
- */
-function distance_in_meters(fromlon, fromlat, tolon, tolat) {
-  var latitudeArc = (fromlat - tolat) * MapdDraw.Math.DEG_TO_RAD;
-  var longitudeArc = (fromlon - tolon) * MapdDraw.Math.DEG_TO_RAD;
-  var latitudeH = Math.sin(latitudeArc * 0.5);
-  latitudeH = latitudeH * latitudeH;
-  var lontitudeH = Math.sin(longitudeArc * 0.5);
-  lontitudeH = lontitudeH * lontitudeH;
-  var tmp = Math.cos(fromlat * MapdDraw.Math.DEG_TO_RAD) * Math.cos(tolat * MapdDraw.Math.DEG_TO_RAD);
-  return 6372797.560856 * (2.0 * Math.asin(Math.sqrt(latitudeH + tmp * lontitudeH)));
-}
+var AABox2d = MapdDraw.AABox2d,
+    Mat2d = MapdDraw.Mat2d,
+    Point2d = MapdDraw.Point2d,
+    Vec2d = MapdDraw.Vec2d;
+
+var MathExt = MapdDraw.Math;
 
 /**
- * Converts mercator x coordinate to longitude
- * @param  {number} x X coordinate in mercator projected space
- * @return {number}   Longitude
+ * Does an initial check to see if two line segments might intersect. The numerator/denominator
+ * arguments refer to the numerator/denominator of using a bezier form for describing the line intersection:
+ * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
+ * This can check the numerator/denominator of the linear system of equations to determine if
+ * they can intersect, avoiding the actual division. This is further detailed in "Chapter IV.6: Faster Line Segment Intersection"
+ * of the book Graphics Gems III. Academic Press, Inc. pp. 199–202.
+ * @param {number} numerator Numerator of the linear system of equations for bezier-based line segment intersections
+ * @param {number} denominator Denominator of the linear system of equations for basier-based line segment intersections
+ * @returns {boolean}
  */
-function conv900913To4326X(x) {
-  return x / 111319.490778;
+function canIntersect(numerator, denominator) {
+  if (denominator > 0) {
+    if (numerator >= 0 && (numerator < denominator || MathExt.floatingPtEquals(numerator, denominator))) {
+      return true;
+    }
+  } else if (numerator <= 0 && (numerator > denominator || MathExt.floatingPtEquals(numerator, denominator))) {
+    return true;
+  }
+  return false;
 }
 
-/**
- * Converts mercator y coordinate to latitude
- * @param  {number} y Y coordinate in mercator projected space
- * @return {number}   Latitude
- */
-function conv900913To4326Y(y) {
-  return 57.295779513 * (2 * Math.atan(Math.exp(y / 6378136.99911)) - 1.570796327);
-}
+exports.default = {
+  /**
+   * @typedef {object} ProjectedPointData
+   * Maintains the various projection states for a specific point
+   *
+   * @property {Point2d} merc_point 2D point defined in web-mercator projected space
+   * @property {Point2d} screen_point 2D point defined in screen space
+   * @property {Point2d} lonlat_point 2D point defined in lat/lon WGS84 space
+   * @property {Point2d} [radians_point] Optional 2D point that is a copy of the lonlat_point,
+   *                                     but defined in radians rather than degrees
+   */
 
-/**
- * Converts 2d point in mercator projected space to a lon/lat coordinate
- * @param  {Point2d} out   2d point to store the converted lat/lon coordinate
- * @param  {Point2d} coord 2d point in mercator projected space to convert
- * @return {Point2d}       Point referred to by the out arg
- */
-function conv900913To4326(out, coord) {
-  return MapdDraw.Point2d.set(out, conv900913To4326X(coord[0]), conv900913To4326Y(coord[1]));
-}
+  /**
+   * Initializes a structure that is meant to define a point/vertex projected
+   * in 3-different spaces, lat/lon WGS84, web-mercator-projected, and screen-space
+   * coordinates. This only builds struct. The point has not been defined or projected
+   * yet.
+   *
+   * @returns {ProjectedPointData}
+   */
+  buildProjectedPointData: function buildProjectedPointData() {
+    var include_radians = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-/**
- * Converts a longitude coordinate to an x coordinate in mercator projected space
- * @param  {number} x Longitude
- * @return {number}   X coordinate in mercator projected space
- */
-function conv4326To900913X(x) {
-  return x * 111319.490778;
-}
+    var rtn_obj = {
+      merc_point: Point2d.create(),
+      screen_point: Point2d.create(),
+      lonlat_point: Point2d.create()
+    };
+    if (include_radians) {
+      rtn_obj.radians_point = Point2d.create();
+    }
+    return rtn_obj;
+  },
 
-/**
- * Converts a latitude coordinate to a y coordinate in mercator projected space
- * @param  {number} x Latitude
- * @return {number}   Y coordinate in mercator projected space
- */
-function conv4326To900913Y(y) {
-  return 6378136.99911 * Math.log(Math.tan(0.00872664626 * y + 0.785398163397));
-}
+  /**
+   * Copies projected point data.
+   * @param {ProjectedPointData} out_point_data The data to be copied to
+   * @param {ProjectedPointData} in_point_data  The data to be copied from
+   */
+  copyProjectedPoint: function copyProjectedPoint(out_point_data, in_point_data) {
+    Point2d.copy(out_point_data.merc_point, in_point_data.merc_point);
+    Point2d.copy(out_point_data.screen_point, in_point_data.screen_point);
+    Point2d.copy(out_point_data.lonlat_point, in_point_data.lonlat_point);
+    if (in_point_data.include_radians !== undefined) {
+      Point2d.copy(out_point_data.radians_point, in_point_data.radians_point);
+    } else {
+      delete out_point_data.radians_point;
+    }
+  },
 
-/**
- * Converts 2d lon/lat point to a point in mercator projected space
- * @param  {Point2d} out   2d point to store the converted mercator coordinate
- * @param  {Point2d} coord 2d point in lon/lat to convert
- * @return {Point2d}       Point referred to by the out arg
- */
-function conv4326To900913(out, coord) {
-  return MapdDraw.Point2d.set(out, conv4326To900913X(coord[0]), conv4326To900913Y(coord[1]));
-}
+  /**
+   * Using a point defined in web-mercator space as input, initializes a ProjectedPointData struct
+   * by transforming that merc point into lat/lon WGS84 (in degrees and optionally radians) and screen space.
+   * @param {Point2d} initial_merc_point Initial web-mercator projected point to transform
+   * @param {ProjectedPointData} out_point_data Struct to be initialized with the various projections of the input point
+   * @param {Mat2d} model_matrix The affine transformation matrix of the parent of the initial mercator point
+   * @param {Mat2d} world_to_screen_matrix The transformation matrix defining the world-to-screen space transformation
+   * @returns {ProjectedPointData} returns the input out_point_data argument after it has been initialized
+   */
+  projectPoint: function projectPoint(initial_merc_point, out_point_data, model_matrix, world_to_screen_matrix) {
+    if (model_matrix === null) {
+      Point2d.copy(out_point_data.merc_point, initial_merc_point);
+    } else {
+      Point2d.transformMat2d(out_point_data.merc_point, initial_merc_point, model_matrix);
+    }
+
+    if (world_to_screen_matrix !== null) {
+      Point2d.transformMat2d(out_point_data.screen_point, out_point_data.merc_point, world_to_screen_matrix);
+    }
+
+    LatLonUtils.conv900913To4326(out_point_data.lonlat_point, out_point_data.merc_point);
+
+    if (out_point_data.radians_point !== undefined) {
+      Vec2d.scale(out_point_data.radians_point, out_point_data.lonlat_point, MathExt.DEG_TO_RAD);
+    }
+
+    return out_point_data;
+  },
+
+  /**
+   * @typedef {object} ViewBoundsIntersectData
+   *
+   * Describes intersection data defined by intersecting a specific line segment
+   * against a view. This intersection data will include points that either
+   * intersect or is contained by a view. The arrays of intersection points will
+   * either be of size 2 (line segment intersects or is contained by a view) or
+   * be size 0 (line segment does not intersect or is not contained by a view)
+   *
+   * @property {Point2d[]} lonlat_pts Array of points defined in WGS84 lat/lon space that either intersect or are contained by a view
+   * @property {Point2d[]} screen_pts Array of points defined in screen space that either intersect or are contained by a view
+   *                                           This is the same set of points as lonlat_pts above, but transformed into screen space.
+   * @property {number[]} pts_t Array of real numbers between [0-1] indicating the normalized distance of the intersection pts relative to
+   *                            the original line segment. For example, if t=0, the intersection point is the starting point of the line
+   *                            segment. If t=1, it is the end point of the line segment, and if t=0.5, it is the midpoint of the
+   *                            line segment. This will be in ascending sorted order.
+   * @property {boolean} subdivide Set to true if the caller should subdivide the insection points found here.
+   *                               For instance, We may not want to subdivide if the intersection line segment is completely horizontal or vertical
+   */
+
+  /**
+   * Determines the intersect/contained points of a line segment
+   * defined by a start/end point against the bounds of a view
+   * Returns a struct describing any intersection points (will either be 2 or 0 points)
+   * as well as a flag indicating whether the line segment defined by the intersection
+   * points should be subdivided for draw.
+   * @param {ProjectedPointData} start_point_data The start point of the line segment
+   * @param {ProjectedPointData} end_point_data The end point of the line segment
+   * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
+   *                                      intersection between the aabox of the current shape
+   *                                      and the current view
+   * @param {Mat2d} world_to_screen_matrix The world-to-screen transformation matrix
+   * @returns {ViewBoundsIntersectData}
+   */
+  intersectViewBounds: function intersectViewBounds(start_point_data, end_point_data, view_aabox, world_to_screen_matrix) {
+    var x1 = start_point_data.lonlat_point[0];
+    var y1 = start_point_data.lonlat_point[1];
+    var x2 = end_point_data.lonlat_point[0];
+    var y2 = end_point_data.lonlat_point[1];
+
+    var line_aabox = AABox2d.create();
+    AABox2d.encapsulatePt(line_aabox, line_aabox, start_point_data.lonlat_point);
+    AABox2d.encapsulatePt(line_aabox, line_aabox, end_point_data.lonlat_point);
+
+    var intersect_aabox = AABox2d.create();
+    AABox2d.intersection(intersect_aabox, view_aabox, line_aabox);
+
+    // The current stored t value for bounds intersection points.
+    // The max t for intersection points will be 1, so setting this to
+    // 2 as an initial value. Reminder we will return with 2 points, and
+    // those 2 points should be returned in t ascending order to be continuous
+    // with the start-point/end-point arguments passed. So when the 2nd intersect
+    // point has been found, the comparison of the t for that intersection and
+    // current_t (which would be associated with the first interesection
+    // point) will determine whether to insert the new intersection point to the
+    // front or the back of the array
+    var current_t = 2.0;
+
+    /**
+     * The returned object. It will either be empty (no interesections with the
+     * view bounds) or it will have exactly 2 intersection points.
+     */
+    var rtn_obj = {
+      /** intersect points in lat/lon space */
+      lonlat_pts: [],
+
+      /** intersect points in screen space */
+      screen_pts: [],
+
+      // the normalized distance of each intersection point relative to the original
+      // line segment. This will be in ascending sorted order.
+      pts_t: [],
+
+      /** whether the caller should subdivide the line segments between the
+       * intersection points found here */
+      subdivide: false
+    };
+
+    if (AABox2d.isEmpty(intersect_aabox)) {
+      // no intersection with the view bounds
+      // return empty intersection object
+      return rtn_obj;
+    }
+
+    var delta_x = x1 - x2;
+    var delta_y = y1 - y2;
+
+    if (delta_x === 0 || delta_y === 0) {
+      // Early out:
+      // The line segment lies on a line of latitude or longitude
+      // Such lines do not need to be subdivided in web-mercator-projected
+      // space because they will be vertical/horizontal when projected (i.e.
+      // they will not exhibit any curvature)
+      // Return empty object.
+      // TODO(croot): support other projections?
+      return rtn_obj;
+    }
+
+    if (AABox2d.equals(intersect_aabox, line_aabox)) {
+      // Early out: the intersection bounding box equals the
+      // line segment's bounding box, meaning the entire line
+      // segment is in view. Add the start/end points as intersection
+      // points and mark the segment as needing subdividing.
+      rtn_obj.lonlat_pts.push(start_point_data.lonlat_point);
+      rtn_obj.screen_pts.push(start_point_data.screen_point);
+      rtn_obj.pts_t.push(0);
+      rtn_obj.lonlat_pts.push(end_point_data.lonlat_point);
+      rtn_obj.screen_pts.push(end_point_data.screen_point);
+      rtn_obj.pts_t.push(1);
+      rtn_obj.subdivide = true;
+    } else {
+      // need to do intersection checks against the side of the intersection bounds. There will be
+      // exactly 2 intersections. The intersection check is a slightly simplified version of a
+      // bezier-based line segment intersection formula:
+      // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
+      // This formula can be slightly simplified due to the intersection bounds being axis-aligned.
+      // Ultimately you can eliminate some operations knowing that coordinate differences will be 0
+
+      if (intersect_aabox[AABox2d.MINX] === intersect_aabox[AABox2d.MAXX] || intersect_aabox[AABox2d.MINY] === intersect_aabox[AABox2d.MAXY]) {
+        // early out: there's no intersection with the view bounds
+        // if the intersection aabox has no size in either dimension
+        // by the time we reach here. The case where the line is horizontal/vertical
+        // or the line is fully contained by the view should already be handled.
+        // return empty intersection object
+        return rtn_obj;
+      }
+
+      var x3 = intersect_aabox[AABox2d.MINX];
+      var x4 = intersect_aabox[AABox2d.MAXX];
+      var y3 = intersect_aabox[AABox2d.MINY];
+      var y4 = intersect_aabox[AABox2d.MAXY];
+
+      var check_full_intersect = function check_full_intersect(numerator_t_functor, denominator_t_functor, numerator_u_functor, denominator_u_functor) {
+        var denominator_t = denominator_t_functor();
+        if (denominator_t === 0) {
+          // colinear
+          // TODO(croot): this needs filling out in the general case
+          // NOTE: this should never be hit in the LonLatPoly case because of
+          // the delta_x/delta_y === 0 check.
+          console.assert(false, "Collinear intersection needs completing");
+          return true;
+        }
+        var numerator_t = numerator_t_functor();
+        if (canIntersect(numerator_t, denominator_t) && canIntersect(numerator_u_functor(), denominator_u_functor())) {
+          // NOTE: denominator_t should never be zero. There's an early out for
+          // that case.
+          var t = numerator_t / denominator_t;
+
+          if (MathExt.floatingPtEquals(t, current_t)) {
+            // already found this specific interesection, so don't re-add
+            // In this specific use case, since we're doing intersection tests
+            // against each wall of an axis-aligned bounding box, the original
+            // line-segment can intersect two walls that meet at a corner. In
+            // that case one of the endpoitns of the original line defines the
+            // bounds at that corner. That can result in recalculating the same
+            // t at the corner for the two separate walls, so avoiding adding
+            // a duplicate intersection point with this test.
+            return false;
+          }
+
+          var lonlat_pt = null;
+          var screen_pt = null;
+          if (MathExt.floatingPtEquals(t, 0)) {
+            // the intersection point is the start point of the original segment, so
+            // just re-use the start coord
+            lonlat_pt = start_point_data.lonlat_point;
+            screen_pt = start_point_data.screen_point;
+          } else if (MathExt.floatingPtEquals(t, 1)) {
+            // the intersection point is the end point of the original segment, so
+            // just re-use the end coord
+            lonlat_pt = end_point_data.lonlat_point;
+            screen_pt = end_point_data.screen_point;
+          } else {
+            // calculate the lon/lat and screen point for the
+            // intersection point given t
+            var new_lonlat_pt = Point2d.create(-delta_x * t, -delta_y * t);
+            Point2d.addVec2(new_lonlat_pt, start_point_data.lonlat_point, new_lonlat_pt);
+            lonlat_pt = new_lonlat_pt;
+
+            var new_screen_pt = Point2d.clone(new_lonlat_pt);
+            // conver the new segment point back to mercator for drawing
+            LatLonUtils.conv4326To900913(new_screen_pt, new_screen_pt);
+
+            // now convert to screen space
+            Point2d.transformMat2d(new_screen_pt, new_screen_pt, world_to_screen_matrix);
+            screen_pt = new_screen_pt;
+          }
+          rtn_obj.subdivide = true;
+
+          // insersection points must be stored by t in ascending order.
+          // There will be exactly 2 points in the end, so just need to check
+          // whether to insert this new intersection point at the front or back
+          // of the returned point array
+          if (t < current_t) {
+            rtn_obj.lonlat_pts.splice(0, 0, lonlat_pt);
+            rtn_obj.screen_pts.splice(0, 0, screen_pt);
+            rtn_obj.pts_t.splice(0, 0, t);
+          } else {
+            rtn_obj.lonlat_pts.push(lonlat_pt);
+            rtn_obj.screen_pts.push(screen_pt);
+            rtn_obj.pts_t.push(t);
+          }
+          current_t = t;
+          return true;
+        }
+        return false;
+      };
+
+      // check left-edge of the bounds first, we know that delta_x = 0 for the points defining the left edge
+      var delta_edge = x1 - x3;
+      check_full_intersect(function () {
+        return delta_edge;
+      }, function () {
+        return delta_x;
+      }, function () {
+        return -delta_x * (y1 - y3) - -delta_y * delta_edge;
+      }, function () {
+        return delta_x * (y3 - y4);
+      });
+
+      // bounds top-edge
+      delta_edge = y1 - y3;
+      check_full_intersect(function () {
+        return -delta_edge;
+      }, function () {
+        return -delta_y;
+      }, function () {
+        return -delta_x * delta_edge - -delta_y * (x1 - x3);
+      }, function () {
+        return -delta_y * (x3 - x4);
+      });
+
+      if (rtn_obj.lonlat_pts.length < 2) {
+        // bounds right-edge, we know that delta_x = 0 for the points defining the right edge
+        delta_edge = x1 - x4;
+        check_full_intersect(function () {
+          return delta_edge;
+        }, function () {
+          return delta_x;
+        }, function () {
+          return -delta_x * (y1 - y3) - -delta_y * delta_edge;
+        }, function () {
+          return delta_x * (y3 - y4);
+        });
+
+        if (rtn_obj.lonlat_pts.length < 2) {
+          // bounds top edge
+          delta_edge = y1 - y4;
+          check_full_intersect(function () {
+            return -delta_edge;
+          }, function () {
+            return -delta_y;
+          }, function () {
+            return -delta_x * delta_edge - -delta_y * (x1 - x3);
+          }, function () {
+            return -delta_y * (x3 - x4);
+          });
+        }
+      }
+    }
+
+    return rtn_obj;
+  },
+
+  /**
+   * Converts an axis-aligned bounding box in web-mercator (srid 900913) coordinates
+   * to WGS84 (srid: 4326) coordinates.
+   * @param {AABox2d} output_bounds The bounds to store the results of the 900913->4326 conversion
+   * @param {AABox2d} input_bounds The bounds in 900913 coordinate to convert to 4326
+   * @returns {AABox2d} Returns output_bounds. The return can be useful for chaining.
+   */
+  boundsConv900913to4326: function boundsConv900913to4326(output_bounds, input_bounds) {
+    output_bounds[AABox2d.MINX] = LatLonUtils.conv900913To4326X(input_bounds[AABox2d.MINX]);
+    output_bounds[AABox2d.MAXX] = LatLonUtils.conv900913To4326X(input_bounds[AABox2d.MAXX]);
+    output_bounds[AABox2d.MINY] = LatLonUtils.conv900913To4326Y(input_bounds[AABox2d.MINY]);
+    output_bounds[AABox2d.MAXY] = LatLonUtils.conv900913To4326Y(input_bounds[AABox2d.MAXY]);
+
+    return output_bounds;
+  }
+};
 
 /***/ }),
-/* 190 */
+/* 192 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _utilsLatlon = __webpack_require__(24);
+
+var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
+
+var _mapdDraw = __webpack_require__(13);
+
+var MapdDraw = _interopRequireWildcard(_mapdDraw);
+
+var _LatLonViewIntersectUtils = __webpack_require__(191);
+
+var _LatLonViewIntersectUtils2 = _interopRequireDefault(_LatLonViewIntersectUtils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AABox2d = MapdDraw.AABox2d,
+    Mat2d = MapdDraw.Mat2d,
+    Point2d = MapdDraw.Point2d;
+
+var MathExt = MapdDraw.Math;
+
+var LatLonPoly = function (_MapdDraw$Poly) {
+  _inherits(LatLonPoly, _MapdDraw$Poly);
+
+  function LatLonPoly(draw_engine, opts) {
+    _classCallCheck(this, LatLonPoly);
+
+    if (opts.debug === undefined) {
+      // if true, will activate the use of the _drawDebug method for drawing
+      // extra debug info on top of the original shape draw.
+      opts.debug = false;
+    }
+
+    var _this = _possibleConstructorReturn(this, (LatLonPoly.__proto__ || Object.getPrototypeOf(LatLonPoly)).call(this, opts));
+
+    _this._draw_engine = draw_engine;
+
+    _this._screenPts = [];
+    _this._geomDirty = true;
+    _this._viewDirty = true;
+
+    // set the viewDirty flag to force a rebuild of the drawn vertices when
+    // the camera changes. This is required because we are doing a screen-space-based
+    // line subdivision that is obviously dependent on the view.
+    var that = _this;
+    _this._draw_engine.camera.on("changed", function (event) {
+      that._viewDirty = true;
+    });
+
+    // maximum length of subdivided line segment in pixels
+    _this._max_segment_pixel_distance = 40;
+    return _this;
+  }
+
+  /**
+   * Determines whether a line segment defined by a start/end point
+   * should be subdivided for drawing. If the segment should be subdivided,
+   * will append subdivided points the array of screen-projected points
+   * to draw.
+   * @param {ProjectedPointData} start_point_data Start point of the line segment
+   * @param {ProjectedPointData} end_point_data End point of the line segment
+   * @param {AABox2d} view_aabox Axis-aligned bounding box describing the
+   *                                      intersection between the shape and the current view
+   *                                      in WGS84 lat/lon coords
+   * @param {Mat2d} world_to_screen_matrix Matrix defining world-to-screen transformation
+   * @returns
+   */
+
+
+  _createClass(LatLonPoly, [{
+    key: "_subdivideLineSegment",
+    value: function _subdivideLineSegment(start_point_data, end_point_data, view_aabox, world_to_screen_matrix) {
+      var view_intersect_data = _LatLonViewIntersectUtils2.default.intersectViewBounds(start_point_data, end_point_data, view_aabox, world_to_screen_matrix);
+
+      if (!view_intersect_data.subdivide) {
+        return;
+      }
+
+      console.assert(view_intersect_data.lonlat_pts.length === 2);
+
+      var _view_intersect_data$ = _slicedToArray(view_intersect_data.lonlat_pts, 2),
+          start_lonlat_pt = _view_intersect_data$[0],
+          end_lonlat_pt = _view_intersect_data$[1];
+
+      var _view_intersect_data$2 = _slicedToArray(view_intersect_data.screen_pts, 2),
+          start_screen_pt = _view_intersect_data$2[0],
+          end_screen_pt = _view_intersect_data$2[1];
+
+      var distance = Point2d.distance(start_screen_pt, end_screen_pt);
+      if (distance > this._max_segment_pixel_distance) {
+        // do subdivisions in a cartesian space using lon/lat
+        // This is how ST_Contains behaves in the server right now
+        var num_subdivisions = Math.ceil(distance / this._max_segment_pixel_distance);
+        for (var i = 1; i < num_subdivisions; i += 1) {
+          var new_segment_point = Point2d.create();
+          Point2d.lerp(new_segment_point, start_lonlat_pt, end_lonlat_pt, i / num_subdivisions);
+          // conver the new segment point back to mercator for drawing
+          LatLonUtils.conv4326To900913(new_segment_point, new_segment_point);
+
+          // now convert to screen space
+          Point2d.transformMat2d(new_segment_point, new_segment_point, world_to_screen_matrix);
+          this._screenPts.push(Point2d.clone(new_segment_point));
+        }
+      }
+    }
+
+    /**
+     * Updates the internal geometry representation of the polygon for drawing.
+     * This means auto-subdividing line segments that are in view and are larger
+     * than the max screen-space distance threshold.
+     * @param {Mat2d} world_to_screen_matrix web-mercator-to-pixel transformation matrix
+     */
+
+  }, {
+    key: "_updateGeom",
+    value: function _updateGeom(world_to_screen_matrix) {
+      if (this._viewDirty || this._geomDirty || this._boundsOutOfDate) {
+        this._screenPts = [];
+        if (this._verts.length === 0) {
+          return;
+        }
+
+        // calculate the bounds intersection between the current view bounds
+        // and the bounds of this shape
+        var world_bounds = this._draw_engine.camera.worldViewBounds;
+        var aabox = this.aabox;
+        AABox2d.intersection(world_bounds, aabox, world_bounds);
+        if (AABox2d.isEmpty(aabox)) {
+          // Early out. Shape is not in view
+          return;
+        }
+
+        // convert our intersection bounds to WGS84 lon/lat
+        _LatLonViewIntersectUtils2.default.boundsConv900913to4326(world_bounds, world_bounds);
+
+        // Work on 2 points at a time, swapping as we interate.
+        // Keep the first point around to close the polygon loop as the final iteration
+        var first_point_data = _LatLonViewIntersectUtils2.default.buildProjectedPointData();
+        var start_point_data = _LatLonViewIntersectUtils2.default.buildProjectedPointData();
+        var end_point_data = _LatLonViewIntersectUtils2.default.buildProjectedPointData();
+
+        var model_xform = this.globalXform;
+
+        // projected point data for the first vert. The point data includes the point in
+        // web-mercator, wgs84 lon/lat, and screen space coordinates
+        _LatLonViewIntersectUtils2.default.projectPoint(this._verts[0], first_point_data, model_xform, world_to_screen_matrix);
+
+        _LatLonViewIntersectUtils2.default.copyProjectedPoint(start_point_data, first_point_data);
+
+        this._screenPts.push(Point2d.clone(start_point_data.screen_point));
+
+        var swap_tmp = null;
+        for (var i = 1; i < this._verts.length; i += 1) {
+          _LatLonViewIntersectUtils2.default.projectPoint(this._verts[i], end_point_data, model_xform, world_to_screen_matrix);
+
+          // check if this line segment needs subdividing
+          this._subdivideLineSegment(start_point_data, end_point_data, world_bounds, world_to_screen_matrix);
+          this._screenPts.push(Point2d.clone(end_point_data.screen_point));
+
+          // now swap the endpoints
+          swap_tmp = start_point_data;
+          start_point_data = end_point_data;
+          end_point_data = swap_tmp;
+        }
+
+        // check if the final line segment that closes the loop needs subdividing
+        this._subdivideLineSegment(start_point_data, first_point_data, world_bounds, world_to_screen_matrix);
+
+        // NOTE: we are not re-adding the first point as the draw call will close the loop
+
+        this._geomDirty = false;
+        this._boundsOutOfDate = false;
+        this._viewDirty = false;
+      }
+    }
+  }, {
+    key: "_draw",
+    value: function _draw(ctx) {
+      // separate the model-view-matrix (this._fullXform) into the model matrix (globalXform)
+      // and the view-projection matrix for separable components and to minimize
+      // the amount of math applied.
+
+      // invert the model matrix
+      var xform = Mat2d.clone(this.globalXform);
+      Mat2d.invert(xform, xform);
+
+      // and multiply w/ model-view-projection matrix resulting in just the
+      // view-projection matrix, or, in other words, the world-space-to-screen-space
+      // transformation matrix
+      Mat2d.multiply(xform, this._fullXform, xform);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+      this._updateGeom(xform);
+
+      if (this._screenPts.length) {
+        ctx.moveTo(this._screenPts[0][0], this._screenPts[0][1]);
+        for (var i = 1; i < this._screenPts.length; i += 1) {
+          ctx.lineTo(this._screenPts[i][0], this._screenPts[i][1]);
+        }
+        ctx.closePath();
+      }
+    }
+
+    /**
+     * Debug draw routine that visualizes the subdivided verts that are auto-generated.
+     * Only works if the 'debug' option is set to true in the constructor
+     * @param {CanvasRenderingContext2D} ctx
+     */
+
+  }, {
+    key: "_drawDebug",
+    value: function _drawDebug(ctx) {
+      if (this._screenPts.length) {
+        ctx.save();
+
+        ctx.fillStyle = "orange";
+        this._screenPts.forEach(function (point) {
+          ctx.beginPath();
+          ctx.arc(point[0], point[1], 3, 0, MathExt.TWO_PI, false);
+          ctx.fill();
+        });
+
+        ctx.restore();
+      }
+    }
+  }, {
+    key: "toJSON",
+    value: function toJSON() {
+      return Object.assign(_get(LatLonPoly.prototype.__proto__ || Object.getPrototypeOf(LatLonPoly.prototype), "toJSON", this).call(this), {
+        type: "LatLonPoly" // this must match the name of the class
+      });
+    }
+  }]);
+
+  return LatLonPoly;
+}(MapdDraw.Poly);
+
+exports.default = LatLonPoly;
+
+/***/ }),
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52074,7 +53643,7 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _coordinateGridRasterMixinUi = __webpack_require__(270);
+var _coordinateGridRasterMixinUi = __webpack_require__(272);
 
 var _coordinateGridRasterMixinUi2 = _interopRequireDefault(_coordinateGridRasterMixinUi);
 
@@ -52086,19 +53655,19 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _marginMixin = __webpack_require__(17);
+var _marginMixin = __webpack_require__(18);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
-var _axios = __webpack_require__(273);
+var _axios = __webpack_require__(275);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _lockAxisMixin = __webpack_require__(39);
+var _lockAxisMixin = __webpack_require__(40);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
-var _errors = __webpack_require__(36);
+var _errors = __webpack_require__(37);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53472,7 +55041,7 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
 }
 
 /***/ }),
-/* 191 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53490,7 +55059,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 192 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53568,7 +55137,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 193 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53580,14 +55149,14 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 194 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(8);
-var normalizeHeaderName = __webpack_require__(281);
+var normalizeHeaderName = __webpack_require__(283);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -53604,10 +55173,10 @@ function getDefaultAdapter() {
   // Only Node.JS has a process variable that is of [[Class]] process
   if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(195);
+    adapter = __webpack_require__(198);
   } else if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(195);
+    adapter = __webpack_require__(198);
   }
   return adapter;
 }
@@ -53683,21 +55252,21 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(280)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(282)))
 
 /***/ }),
-/* 195 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(8);
-var settle = __webpack_require__(282);
-var buildURL = __webpack_require__(192);
-var parseHeaders = __webpack_require__(284);
-var isURLSameOrigin = __webpack_require__(285);
-var createError = __webpack_require__(196);
+var settle = __webpack_require__(284);
+var buildURL = __webpack_require__(195);
+var parseHeaders = __webpack_require__(286);
+var isURLSameOrigin = __webpack_require__(287);
+var createError = __webpack_require__(199);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -53789,7 +55358,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(286);
+      var cookies = __webpack_require__(288);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -53867,13 +55436,13 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 196 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(283);
+var enhanceError = __webpack_require__(285);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -53892,7 +55461,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 197 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53950,7 +55519,7 @@ module.exports = function mergeConfig(config1, config2) {
 
 
 /***/ }),
-/* 198 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53976,7 +55545,7 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 199 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53989,7 +55558,7 @@ exports.default = scatterMixin;
 
 var _utils = __webpack_require__(4);
 
-var _rasterDrawMixin = __webpack_require__(188);
+var _rasterDrawMixin = __webpack_require__(189);
 
 function extend(destination, source) {
   for (var k in source) {
@@ -54224,7 +55793,7 @@ function scatterMixin(_chart, _mapboxgl) {
 }
 
 /***/ }),
-/* 200 */
+/* 203 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -54238,7 +55807,7 @@ function vnode(sel, data, children, text, elm) {
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 201 */
+/* 204 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -54251,13 +55820,13 @@ function primitive(s) {
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 202 */
+/* 205 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = h;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(200);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(204);
 
 
 function addNS(data, children, sel) {
@@ -54316,18 +55885,18 @@ function h(sel, b, c) {
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 203 */
+/* 206 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(309);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(310);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(204);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(311);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(312);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(205);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(314);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatGroup__ = __webpack_require__(311);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatNumerals__ = __webpack_require__(312);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formatSpecifier__ = __webpack_require__(207);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__formatTrim__ = __webpack_require__(313);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formatTypes__ = __webpack_require__(314);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formatPrefixAuto__ = __webpack_require__(208);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__identity__ = __webpack_require__(316);
 
 
 
@@ -54473,7 +56042,7 @@ var prefixes = ["y","z","a","f","p","n","µ","m","","k","M","G","T","P","E","Z",
 
 
 /***/ }),
-/* 204 */
+/* 207 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -54517,12 +56086,12 @@ FormatSpecifier.prototype.toString = function() {
 
 
 /***/ }),
-/* 205 */
+/* 208 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return prefixExponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(43);
 
 
 var prefixExponent;
@@ -54542,7 +56111,7 @@ var prefixExponent;
 
 
 /***/ }),
-/* 206 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54845,7 +56414,7 @@ function rasterLayerHeatmapMixin(_layer) {
 }
 
 /***/ }),
-/* 207 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54871,7 +56440,7 @@ var _d = __webpack_require__(1);
 
 var d3 = _interopRequireWildcard(_d);
 
-var _mapdDraw = __webpack_require__(18);
+var _mapdDraw = __webpack_require__(13);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -55630,7 +57199,7 @@ function rasterLayerPointMixin(_layer) {
 }
 
 /***/ }),
-/* 208 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55652,13 +57221,13 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(14);
+var _events = __webpack_require__(15);
 
 var _utils = __webpack_require__(4);
 
 var _coreAsync = __webpack_require__(5);
 
-var _customSqlParser = __webpack_require__(209);
+var _customSqlParser = __webpack_require__(212);
 
 var _customSqlParser2 = _interopRequireDefault(_customSqlParser);
 
@@ -56423,7 +57992,7 @@ function rasterLayerPolyMixin(_layer) {
 }
 
 /***/ }),
-/* 209 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56439,7 +58008,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 exports.default = parseFactsFromCustomSQL;
 
-var _chevrotain = __webpack_require__(210);
+var _chevrotain = __webpack_require__(213);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -57638,13 +59207,13 @@ function parseFactsFromCustomSQL(factTable, withAlias, sql) {
 }
 
 /***/ }),
-/* 210 */
+/* 213 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["clearCache"] = clearCache;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(214);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return __WEBPACK_IMPORTED_MODULE_0__version__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__ = __webpack_require__(9);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Parser", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["g"]; });
@@ -57652,27 +59221,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EmbeddedActionsParser", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["f"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "ParserDefinitionErrorType", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["h"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EMPTY_ALT", function() { return __WEBPACK_IMPORTED_MODULE_1__parse_parser_parser__["d"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__ = __webpack_require__(31);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Lexer", function() { return __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "LexerDefinitionErrorType", function() { return __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__["b"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__ = __webpack_require__(17);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createToken", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createTokenInstance", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["c"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EOF", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "tokenLabel", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["e"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "tokenMatcher", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["f"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "tokenName", function() { return __WEBPACK_IMPORTED_MODULE_3__scan_tokens_public__["g"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__ = __webpack_require__(32);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultGrammarResolverErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultGrammarValidatorErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultParserErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_4__parse_errors_public__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__ = __webpack_require__(28);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "EarlyExitException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "isRecognitionException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["e"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MismatchedTokenException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NotAllInputParsedException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["d"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NoViableAltException", function() { return __WEBPACK_IMPORTED_MODULE_5__parse_exceptions_public__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__ = __webpack_require__(216);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "defaultLexerErrorProvider", function() { return __WEBPACK_IMPORTED_MODULE_6__scan_lexer_errors_public__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__ = __webpack_require__(6);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Alternation", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["b"]; });
@@ -57689,13 +59258,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "serializeProduction", function() { return __WEBPACK_IMPORTED_MODULE_7__parse_grammar_gast_gast_public__["m"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__ = __webpack_require__(20);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "GAstVisitor", function() { return __WEBPACK_IMPORTED_MODULE_8__parse_grammar_gast_gast_visitor_public__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__ = __webpack_require__(216);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__ = __webpack_require__(219);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "assignOccurrenceIndices", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "resolveGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "validateGrammar", function() { return __WEBPACK_IMPORTED_MODULE_9__parse_grammar_gast_gast_resolver_public__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__ = __webpack_require__(336);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__ = __webpack_require__(338);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createSyntaxDiagramsCode", function() { return __WEBPACK_IMPORTED_MODULE_10__diagrams_render_public__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__ = __webpack_require__(337);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__ = __webpack_require__(339);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "generateParserFactory", function() { return __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "generateParserModule", function() { return __WEBPACK_IMPORTED_MODULE_11__generate_generate_public__["b"]; });
 // semantic version
@@ -57725,7 +59294,7 @@ function clearCache() {
 //# sourceMappingURL=api.js.map
 
 /***/ }),
-/* 211 */
+/* 214 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57737,7 +59306,7 @@ var VERSION = "6.5.0";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
-/* 212 */
+/* 215 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57769,12 +59338,12 @@ var VERSION = "6.5.0";
 /* unused harmony export buildLineBreakIssueMessage */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return minOptimizationVal; });
 /* harmony export (immutable) */ __webpack_exports__["e"] = charCodeToOptimizedIndex;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lexer_public__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lexer_public__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reg_exp__ = __webpack_require__(324);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reg_exp__ = __webpack_require__(326);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__reg_exp_parser__ = __webpack_require__(46);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -58662,7 +60231,7 @@ function initCharCodeToOptimizedIndexMap() {
 //# sourceMappingURL=lexer.js.map
 
 /***/ }),
-/* 213 */
+/* 216 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58678,7 +60247,7 @@ var defaultLexerErrorProvider = {
 //# sourceMappingURL=lexer_errors_public.js.map
 
 /***/ }),
-/* 214 */
+/* 217 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58688,7 +60257,7 @@ var defaultLexerErrorProvider = {
 /* unused harmony export firstForTerminal */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gast_gast__ = __webpack_require__(26);
 
 
 
@@ -58748,7 +60317,7 @@ function firstForTerminal(terminal) {
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-/* 215 */
+/* 218 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58758,7 +60327,7 @@ var IN = "_~IN~_";
 //# sourceMappingURL=constants.js.map
 
 /***/ }),
-/* 216 */
+/* 219 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58766,10 +60335,10 @@ var IN = "_~IN~_";
 /* harmony export (immutable) */ __webpack_exports__["c"] = validateGrammar;
 /* harmony export (immutable) */ __webpack_exports__["a"] = assignOccurrenceIndices;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__resolver__ = __webpack_require__(325);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__checks__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__resolver__ = __webpack_require__(327);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__checks__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast__ = __webpack_require__(26);
 
 
 
@@ -58806,7 +60375,7 @@ function assignOccurrenceIndices(options) {
 //# sourceMappingURL=gast_resolver_public.js.map
 
 /***/ }),
-/* 217 */
+/* 220 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58815,10 +60384,10 @@ function assignOccurrenceIndices(options) {
 /* unused harmony export InRuleRecoveryException */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Recoverable; });
 /* unused harmony export attemptInRepetitionRecovery */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scan_tokens_public__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exceptions_public__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(215);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exceptions_public__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(218);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parser__ = __webpack_require__(9);
 
 
@@ -59127,7 +60696,7 @@ function attemptInRepetitionRecovery(prodFunc, args, lookaheadFunc, dslMethodIdx
 //# sourceMappingURL=recoverable.js.map
 
 /***/ }),
-/* 218 */
+/* 221 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -59174,23 +60743,23 @@ function defineNameProp(obj, nameValue) {
 //# sourceMappingURL=lang_extensions.js.map
 
 /***/ }),
-/* 219 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(220);
+__webpack_require__(223);
 
 /***/ }),
-/* 220 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(221);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(47)))
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["dc"] = __webpack_require__(224);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(48)))
 
 /***/ }),
-/* 221 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59225,7 +60794,7 @@ Object.keys(_coreAsync).forEach(function (key) {
   });
 });
 
-var _events = __webpack_require__(14);
+var _events = __webpack_require__(15);
 
 Object.keys(_events).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -59261,7 +60830,7 @@ Object.keys(_utils).forEach(function (key) {
   });
 });
 
-var _logger = __webpack_require__(35);
+var _logger = __webpack_require__(36);
 
 Object.keys(_logger).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -59273,7 +60842,7 @@ Object.keys(_logger).forEach(function (key) {
   });
 });
 
-var _bubbleOverlay = __webpack_require__(242);
+var _bubbleOverlay = __webpack_require__(245);
 
 Object.defineProperty(exports, "bubbleOverlay", {
   enumerable: true,
@@ -59282,7 +60851,7 @@ Object.defineProperty(exports, "bubbleOverlay", {
   }
 });
 
-var _barChart = __webpack_require__(247);
+var _barChart = __webpack_require__(250);
 
 Object.defineProperty(exports, "barChart", {
   enumerable: true,
@@ -59291,7 +60860,7 @@ Object.defineProperty(exports, "barChart", {
   }
 });
 
-var _bubbleChart = __webpack_require__(250);
+var _bubbleChart = __webpack_require__(253);
 
 Object.defineProperty(exports, "bubbleChart", {
   enumerable: true,
@@ -59300,7 +60869,7 @@ Object.defineProperty(exports, "bubbleChart", {
   }
 });
 
-var _cloudChart = __webpack_require__(251);
+var _cloudChart = __webpack_require__(254);
 
 Object.defineProperty(exports, "cloudChart", {
   enumerable: true,
@@ -59309,7 +60878,7 @@ Object.defineProperty(exports, "cloudChart", {
   }
 });
 
-var _compositeChart = __webpack_require__(252);
+var _compositeChart = __webpack_require__(255);
 
 Object.defineProperty(exports, "compositeChart", {
   enumerable: true,
@@ -59318,7 +60887,7 @@ Object.defineProperty(exports, "compositeChart", {
   }
 });
 
-var _dataCount = __webpack_require__(253);
+var _dataCount = __webpack_require__(256);
 
 Object.defineProperty(exports, "dataCount", {
   enumerable: true,
@@ -59327,7 +60896,7 @@ Object.defineProperty(exports, "dataCount", {
   }
 });
 
-var _dataGrid = __webpack_require__(254);
+var _dataGrid = __webpack_require__(257);
 
 Object.defineProperty(exports, "dataGrid", {
   enumerable: true,
@@ -59336,7 +60905,7 @@ Object.defineProperty(exports, "dataGrid", {
   }
 });
 
-var _geoChoroplethChart = __webpack_require__(255);
+var _geoChoroplethChart = __webpack_require__(258);
 
 Object.defineProperty(exports, "geoChoroplethChart", {
   enumerable: true,
@@ -59345,7 +60914,7 @@ Object.defineProperty(exports, "geoChoroplethChart", {
   }
 });
 
-var _heatmap = __webpack_require__(186);
+var _heatmap = __webpack_require__(187);
 
 Object.defineProperty(exports, "heatMap", {
   enumerable: true,
@@ -59354,7 +60923,7 @@ Object.defineProperty(exports, "heatMap", {
   }
 });
 
-var _pieChart = __webpack_require__(264);
+var _pieChart = __webpack_require__(266);
 
 Object.defineProperty(exports, "pieChart", {
   enumerable: true,
@@ -59363,7 +60932,7 @@ Object.defineProperty(exports, "pieChart", {
   }
 });
 
-var _lineChart = __webpack_require__(265);
+var _lineChart = __webpack_require__(267);
 
 Object.defineProperty(exports, "lineChart", {
   enumerable: true,
@@ -59372,7 +60941,7 @@ Object.defineProperty(exports, "lineChart", {
   }
 });
 
-var _numberChart = __webpack_require__(266);
+var _numberChart = __webpack_require__(268);
 
 Object.defineProperty(exports, "numberChart", {
   enumerable: true,
@@ -59381,7 +60950,7 @@ Object.defineProperty(exports, "numberChart", {
   }
 });
 
-var _rasterChart = __webpack_require__(267);
+var _rasterChart = __webpack_require__(269);
 
 Object.defineProperty(exports, "rasterChart", {
   enumerable: true,
@@ -59390,7 +60959,7 @@ Object.defineProperty(exports, "rasterChart", {
   }
 });
 
-var _rowChart = __webpack_require__(318);
+var _rowChart = __webpack_require__(320);
 
 Object.defineProperty(exports, "rowChart", {
   enumerable: true,
@@ -59399,7 +60968,7 @@ Object.defineProperty(exports, "rowChart", {
   }
 });
 
-var _scatterPlot = __webpack_require__(319);
+var _scatterPlot = __webpack_require__(321);
 
 Object.defineProperty(exports, "scatterPlot", {
   enumerable: true,
@@ -59408,7 +60977,7 @@ Object.defineProperty(exports, "scatterPlot", {
   }
 });
 
-var _mapdTable = __webpack_require__(320);
+var _mapdTable = __webpack_require__(322);
 
 Object.defineProperty(exports, "mapdTable", {
   enumerable: true,
@@ -59417,7 +60986,7 @@ Object.defineProperty(exports, "mapdTable", {
   }
 });
 
-var _boxPlot = __webpack_require__(321);
+var _boxPlot = __webpack_require__(323);
 
 Object.defineProperty(exports, "boxPlot", {
   enumerable: true,
@@ -59426,7 +60995,7 @@ Object.defineProperty(exports, "boxPlot", {
   }
 });
 
-var _countWidget = __webpack_require__(322);
+var _countWidget = __webpack_require__(324);
 
 Object.defineProperty(exports, "countWidget", {
   enumerable: true,
@@ -59435,7 +61004,7 @@ Object.defineProperty(exports, "countWidget", {
   }
 });
 
-var _asyncMixin = __webpack_require__(181);
+var _asyncMixin = __webpack_require__(182);
 
 Object.defineProperty(exports, "asyncMixin", {
   enumerable: true,
@@ -59453,7 +61022,7 @@ Object.defineProperty(exports, "baseMixin", {
   }
 });
 
-var _bubbleMixin = __webpack_require__(37);
+var _bubbleMixin = __webpack_require__(38);
 
 Object.defineProperty(exports, "bubbleMixin", {
   enumerable: true,
@@ -59462,7 +61031,7 @@ Object.defineProperty(exports, "bubbleMixin", {
   }
 });
 
-var _capMixin = __webpack_require__(15);
+var _capMixin = __webpack_require__(16);
 
 Object.defineProperty(exports, "capMixin", {
   enumerable: true,
@@ -59480,7 +61049,7 @@ Object.defineProperty(exports, "colorMixin", {
   }
 });
 
-var _coordinateGridMixin = __webpack_require__(13);
+var _coordinateGridMixin = __webpack_require__(14);
 
 Object.defineProperty(exports, "coordinateGridMixin", {
   enumerable: true,
@@ -59489,7 +61058,7 @@ Object.defineProperty(exports, "coordinateGridMixin", {
   }
 });
 
-var _coordinateGridRasterMixin = __webpack_require__(190);
+var _coordinateGridRasterMixin = __webpack_require__(193);
 
 Object.defineProperty(exports, "coordinateGridRasterMixin", {
   enumerable: true,
@@ -59498,7 +61067,7 @@ Object.defineProperty(exports, "coordinateGridRasterMixin", {
   }
 });
 
-var _stackMixin = __webpack_require__(38);
+var _stackMixin = __webpack_require__(39);
 
 Object.defineProperty(exports, "stackMixin", {
   enumerable: true,
@@ -59507,7 +61076,7 @@ Object.defineProperty(exports, "stackMixin", {
   }
 });
 
-var _marginMixin = __webpack_require__(17);
+var _marginMixin = __webpack_require__(18);
 
 Object.defineProperty(exports, "marginMixin", {
   enumerable: true,
@@ -59516,7 +61085,7 @@ Object.defineProperty(exports, "marginMixin", {
   }
 });
 
-var _mapMixin = __webpack_require__(40);
+var _mapMixin = __webpack_require__(41);
 
 Object.defineProperty(exports, "mapMixin", {
   enumerable: true,
@@ -59525,7 +61094,7 @@ Object.defineProperty(exports, "mapMixin", {
   }
 });
 
-var _rasterLayerHeatmapMixin = __webpack_require__(206);
+var _rasterLayerHeatmapMixin = __webpack_require__(209);
 
 Object.defineProperty(exports, "rasterLayerHeatmapMixin", {
   enumerable: true,
@@ -59534,7 +61103,7 @@ Object.defineProperty(exports, "rasterLayerHeatmapMixin", {
   }
 });
 
-var _rasterLayerPointMixin = __webpack_require__(207);
+var _rasterLayerPointMixin = __webpack_require__(210);
 
 Object.defineProperty(exports, "rasterLayerPointMixin", {
   enumerable: true,
@@ -59543,7 +61112,7 @@ Object.defineProperty(exports, "rasterLayerPointMixin", {
   }
 });
 
-var _rasterLayerPolyMixin = __webpack_require__(208);
+var _rasterLayerPolyMixin = __webpack_require__(211);
 
 Object.defineProperty(exports, "rasterLayerPolyMixin", {
   enumerable: true,
@@ -59552,7 +61121,7 @@ Object.defineProperty(exports, "rasterLayerPolyMixin", {
   }
 });
 
-var _rasterLayer = __webpack_require__(339);
+var _rasterLayer = __webpack_require__(341);
 
 Object.defineProperty(exports, "rasterLayer", {
   enumerable: true,
@@ -59561,7 +61130,7 @@ Object.defineProperty(exports, "rasterLayer", {
   }
 });
 
-var _rasterMixin = __webpack_require__(341);
+var _rasterMixin = __webpack_require__(343);
 
 Object.defineProperty(exports, "rasterMixin", {
   enumerable: true,
@@ -59570,7 +61139,7 @@ Object.defineProperty(exports, "rasterMixin", {
   }
 });
 
-var _scatterMixin = __webpack_require__(199);
+var _scatterMixin = __webpack_require__(202);
 
 Object.defineProperty(exports, "scatterMixin", {
   enumerable: true,
@@ -59579,7 +61148,7 @@ Object.defineProperty(exports, "scatterMixin", {
   }
 });
 
-var _spinnerMixin = __webpack_require__(184);
+var _spinnerMixin = __webpack_require__(185);
 
 Object.defineProperty(exports, "spinnerMixin", {
   enumerable: true,
@@ -59588,7 +61157,7 @@ Object.defineProperty(exports, "spinnerMixin", {
   }
 });
 
-var _legendContinuous = __webpack_require__(342);
+var _legendContinuous = __webpack_require__(344);
 
 Object.defineProperty(exports, "legendContinuous", {
   enumerable: true,
@@ -59597,7 +61166,7 @@ Object.defineProperty(exports, "legendContinuous", {
   }
 });
 
-var _legend = __webpack_require__(343);
+var _legend = __webpack_require__(345);
 
 Object.defineProperty(exports, "legend", {
   enumerable: true,
@@ -59606,7 +61175,7 @@ Object.defineProperty(exports, "legend", {
   }
 });
 
-var _dcLegendCont = __webpack_require__(345);
+var _dcLegendCont = __webpack_require__(347);
 
 Object.defineProperty(exports, "legendCont", {
   enumerable: true,
@@ -59615,7 +61184,7 @@ Object.defineProperty(exports, "legendCont", {
   }
 });
 
-var _customSqlParser = __webpack_require__(209);
+var _customSqlParser = __webpack_require__(212);
 
 Object.defineProperty(exports, "parseFactsFromCustomSQL", {
   enumerable: true,
@@ -59628,20 +61197,20 @@ var _d2 = __webpack_require__(1);
 
 var _d = _interopRequireWildcard(_d2);
 
-var _errors = __webpack_require__(36);
+var _errors = __webpack_require__(37);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(346);
-__webpack_require__(347);
 __webpack_require__(348);
 __webpack_require__(349);
 __webpack_require__(350);
+__webpack_require__(351);
+__webpack_require__(352);
 
 if (Object({"NODE_ENV":"production"}).BABEL_ENV !== "test") {
-  window.mapboxgl = __webpack_require__(351);
+  window.mapboxgl = __webpack_require__(353);
 }
 
 exports.d3 = _d; // eslint-disable-line
@@ -59653,18 +61222,18 @@ var errors = exports.errors = {
 };
 
 /***/ }),
-/* 222 */
+/* 225 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__ = __webpack_require__(11);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createParser", function() { return __WEBPACK_IMPORTED_MODULE_0__parser_create_parser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create_data_graph__ = __webpack_require__(240);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createDataGraph", function() { return __WEBPACK_IMPORTED_MODULE_1__create_data_graph__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(239);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__ = __webpack_require__(242);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "expr", function() { return __WEBPACK_IMPORTED_MODULE_2__helpers_expression_builders__; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(240);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__ = __webpack_require__(243);
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "rel", function() { return __WEBPACK_IMPORTED_MODULE_3__helpers_transform_builders__; });
 /**
  * The exported `mapd-data-layer` module. Consists of a graph constructor and
@@ -59681,13 +61250,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 223 */
+/* 226 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseExpression;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(49);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -59782,7 +61351,7 @@ function parseExpression(expression) {
 }
 
 /***/ }),
-/* 224 */
+/* 227 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -59820,23 +61389,23 @@ function parseDataState(state, parser) {
 }
 
 /***/ }),
-/* 225 */
+/* 228 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseTransform;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(226);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(227);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(228);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(229);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(230);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(49);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(231);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(232);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(233);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(234);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__parse_source__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(235);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parse_aggregate__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_bin__ = __webpack_require__(230);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parse_crossfilter__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parse_sort__ = __webpack_require__(232);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parse_limit__ = __webpack_require__(233);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parse_filter__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parse_postFilter__ = __webpack_require__(234);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__parse_project__ = __webpack_require__(235);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__parse_resolvefilter__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__parse_sample__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__parse_source__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__parse_with__ = __webpack_require__(238);
 
 
 
@@ -59881,7 +61450,7 @@ function parseTransform(sql, t, parser) {
 }
 
 /***/ }),
-/* 226 */
+/* 229 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -59946,7 +61515,7 @@ function parseGroupBy(sql, groupby, parser) {
 }
 
 /***/ }),
-/* 227 */
+/* 230 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -59978,13 +61547,13 @@ function parseBin(sql, _ref) {
 }
 
 /***/ }),
-/* 228 */
+/* 231 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = parseCrossfilter;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_parser__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parse_filter__ = __webpack_require__(50);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -60015,7 +61584,7 @@ function parseCrossfilter(sql, transform) {
 }
 
 /***/ }),
-/* 229 */
+/* 232 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60036,7 +61605,7 @@ function parseSort(sql, transform) {
 }
 
 /***/ }),
-/* 230 */
+/* 233 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60050,7 +61619,7 @@ function parseLimit(sql, transform) {
 }
 
 /***/ }),
-/* 231 */
+/* 234 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60098,7 +61667,7 @@ function parsePostFilter(sql, transform) {
 }
 
 /***/ }),
-/* 232 */
+/* 235 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60115,7 +61684,7 @@ function parseProject(sql, transform) {
 }
 
 /***/ }),
-/* 233 */
+/* 236 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60138,7 +61707,7 @@ function parseResolvefilter(sql, transform) {
 }
 
 /***/ }),
-/* 234 */
+/* 237 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60168,7 +61737,7 @@ function sample(sql, transform) {
 }
 
 /***/ }),
-/* 235 */
+/* 238 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60188,7 +61757,7 @@ function parseWith(sql, transform) {
 }
 
 /***/ }),
-/* 236 */
+/* 239 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60243,14 +61812,14 @@ function writeWith(With) {
 }
 
 /***/ }),
-/* 237 */
+/* 240 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataGraph;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(238);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__create_data_node__ = __webpack_require__(241);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parser_create_parser__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -60322,14 +61891,14 @@ function createDataGraph(connector) {
 }
 
 /***/ }),
-/* 238 */
+/* 241 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createDataNode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_invariant__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(49);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -60415,7 +61984,7 @@ function createDataNode(context) {
 }
 
 /***/ }),
-/* 239 */
+/* 242 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60623,7 +62192,7 @@ function between(field, range) {
 }
 
 /***/ }),
-/* 240 */
+/* 243 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60851,264 +62420,264 @@ function bottom(field, limit, offset) {
 }
 
 /***/ }),
-/* 241 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 53,
-	"./af.js": 53,
-	"./ar": 54,
-	"./ar-dz": 55,
-	"./ar-dz.js": 55,
-	"./ar-kw": 56,
-	"./ar-kw.js": 56,
-	"./ar-ly": 57,
-	"./ar-ly.js": 57,
-	"./ar-ma": 58,
-	"./ar-ma.js": 58,
-	"./ar-sa": 59,
-	"./ar-sa.js": 59,
-	"./ar-tn": 60,
-	"./ar-tn.js": 60,
-	"./ar.js": 54,
-	"./az": 61,
-	"./az.js": 61,
-	"./be": 62,
-	"./be.js": 62,
-	"./bg": 63,
-	"./bg.js": 63,
-	"./bm": 64,
-	"./bm.js": 64,
-	"./bn": 65,
-	"./bn.js": 65,
-	"./bo": 66,
-	"./bo.js": 66,
-	"./br": 67,
-	"./br.js": 67,
-	"./bs": 68,
-	"./bs.js": 68,
-	"./ca": 69,
-	"./ca.js": 69,
-	"./cs": 70,
-	"./cs.js": 70,
-	"./cv": 71,
-	"./cv.js": 71,
-	"./cy": 72,
-	"./cy.js": 72,
-	"./da": 73,
-	"./da.js": 73,
-	"./de": 74,
-	"./de-at": 75,
-	"./de-at.js": 75,
-	"./de-ch": 76,
-	"./de-ch.js": 76,
-	"./de.js": 74,
-	"./dv": 77,
-	"./dv.js": 77,
-	"./el": 78,
-	"./el.js": 78,
-	"./en-SG": 79,
-	"./en-SG.js": 79,
-	"./en-au": 80,
-	"./en-au.js": 80,
-	"./en-ca": 81,
-	"./en-ca.js": 81,
-	"./en-gb": 82,
-	"./en-gb.js": 82,
-	"./en-ie": 83,
-	"./en-ie.js": 83,
-	"./en-il": 84,
-	"./en-il.js": 84,
-	"./en-nz": 85,
-	"./en-nz.js": 85,
-	"./eo": 86,
-	"./eo.js": 86,
-	"./es": 87,
-	"./es-do": 88,
-	"./es-do.js": 88,
-	"./es-us": 89,
-	"./es-us.js": 89,
-	"./es.js": 87,
-	"./et": 90,
-	"./et.js": 90,
-	"./eu": 91,
-	"./eu.js": 91,
-	"./fa": 92,
-	"./fa.js": 92,
-	"./fi": 93,
-	"./fi.js": 93,
-	"./fo": 94,
-	"./fo.js": 94,
-	"./fr": 95,
-	"./fr-ca": 96,
-	"./fr-ca.js": 96,
-	"./fr-ch": 97,
-	"./fr-ch.js": 97,
-	"./fr.js": 95,
-	"./fy": 98,
-	"./fy.js": 98,
-	"./ga": 99,
-	"./ga.js": 99,
-	"./gd": 100,
-	"./gd.js": 100,
-	"./gl": 101,
-	"./gl.js": 101,
-	"./gom-latn": 102,
-	"./gom-latn.js": 102,
-	"./gu": 103,
-	"./gu.js": 103,
-	"./he": 104,
-	"./he.js": 104,
-	"./hi": 105,
-	"./hi.js": 105,
-	"./hr": 106,
-	"./hr.js": 106,
-	"./hu": 107,
-	"./hu.js": 107,
-	"./hy-am": 108,
-	"./hy-am.js": 108,
-	"./id": 109,
-	"./id.js": 109,
-	"./is": 110,
-	"./is.js": 110,
-	"./it": 111,
-	"./it-ch": 112,
-	"./it-ch.js": 112,
-	"./it.js": 111,
-	"./ja": 113,
-	"./ja.js": 113,
-	"./jv": 114,
-	"./jv.js": 114,
-	"./ka": 115,
-	"./ka.js": 115,
-	"./kk": 116,
-	"./kk.js": 116,
-	"./km": 117,
-	"./km.js": 117,
-	"./kn": 118,
-	"./kn.js": 118,
-	"./ko": 119,
-	"./ko.js": 119,
-	"./ku": 120,
-	"./ku.js": 120,
-	"./ky": 121,
-	"./ky.js": 121,
-	"./lb": 122,
-	"./lb.js": 122,
-	"./lo": 123,
-	"./lo.js": 123,
-	"./lt": 124,
-	"./lt.js": 124,
-	"./lv": 125,
-	"./lv.js": 125,
-	"./me": 126,
-	"./me.js": 126,
-	"./mi": 127,
-	"./mi.js": 127,
-	"./mk": 128,
-	"./mk.js": 128,
-	"./ml": 129,
-	"./ml.js": 129,
-	"./mn": 130,
-	"./mn.js": 130,
-	"./mr": 131,
-	"./mr.js": 131,
-	"./ms": 132,
-	"./ms-my": 133,
-	"./ms-my.js": 133,
-	"./ms.js": 132,
-	"./mt": 134,
-	"./mt.js": 134,
-	"./my": 135,
-	"./my.js": 135,
-	"./nb": 136,
-	"./nb.js": 136,
-	"./ne": 137,
-	"./ne.js": 137,
-	"./nl": 138,
-	"./nl-be": 139,
-	"./nl-be.js": 139,
-	"./nl.js": 138,
-	"./nn": 140,
-	"./nn.js": 140,
-	"./pa-in": 141,
-	"./pa-in.js": 141,
-	"./pl": 142,
-	"./pl.js": 142,
-	"./pt": 143,
-	"./pt-br": 144,
-	"./pt-br.js": 144,
-	"./pt.js": 143,
-	"./ro": 145,
-	"./ro.js": 145,
-	"./ru": 146,
-	"./ru.js": 146,
-	"./sd": 147,
-	"./sd.js": 147,
-	"./se": 148,
-	"./se.js": 148,
-	"./si": 149,
-	"./si.js": 149,
-	"./sk": 150,
-	"./sk.js": 150,
-	"./sl": 151,
-	"./sl.js": 151,
-	"./sq": 152,
-	"./sq.js": 152,
-	"./sr": 153,
-	"./sr-cyrl": 154,
-	"./sr-cyrl.js": 154,
-	"./sr.js": 153,
-	"./ss": 155,
-	"./ss.js": 155,
-	"./sv": 156,
-	"./sv.js": 156,
-	"./sw": 157,
-	"./sw.js": 157,
-	"./ta": 158,
-	"./ta.js": 158,
-	"./te": 159,
-	"./te.js": 159,
-	"./tet": 160,
-	"./tet.js": 160,
-	"./tg": 161,
-	"./tg.js": 161,
-	"./th": 162,
-	"./th.js": 162,
-	"./tl-ph": 163,
-	"./tl-ph.js": 163,
-	"./tlh": 164,
-	"./tlh.js": 164,
-	"./tr": 165,
-	"./tr.js": 165,
-	"./tzl": 166,
-	"./tzl.js": 166,
-	"./tzm": 167,
-	"./tzm-latn": 168,
-	"./tzm-latn.js": 168,
-	"./tzm.js": 167,
-	"./ug-cn": 169,
-	"./ug-cn.js": 169,
-	"./uk": 170,
-	"./uk.js": 170,
-	"./ur": 171,
-	"./ur.js": 171,
-	"./uz": 172,
-	"./uz-latn": 173,
-	"./uz-latn.js": 173,
-	"./uz.js": 172,
-	"./vi": 174,
-	"./vi.js": 174,
-	"./x-pseudo": 175,
-	"./x-pseudo.js": 175,
-	"./yo": 176,
-	"./yo.js": 176,
-	"./zh-cn": 177,
-	"./zh-cn.js": 177,
-	"./zh-hk": 178,
-	"./zh-hk.js": 178,
-	"./zh-tw": 179,
-	"./zh-tw.js": 179
+	"./af": 54,
+	"./af.js": 54,
+	"./ar": 55,
+	"./ar-dz": 56,
+	"./ar-dz.js": 56,
+	"./ar-kw": 57,
+	"./ar-kw.js": 57,
+	"./ar-ly": 58,
+	"./ar-ly.js": 58,
+	"./ar-ma": 59,
+	"./ar-ma.js": 59,
+	"./ar-sa": 60,
+	"./ar-sa.js": 60,
+	"./ar-tn": 61,
+	"./ar-tn.js": 61,
+	"./ar.js": 55,
+	"./az": 62,
+	"./az.js": 62,
+	"./be": 63,
+	"./be.js": 63,
+	"./bg": 64,
+	"./bg.js": 64,
+	"./bm": 65,
+	"./bm.js": 65,
+	"./bn": 66,
+	"./bn.js": 66,
+	"./bo": 67,
+	"./bo.js": 67,
+	"./br": 68,
+	"./br.js": 68,
+	"./bs": 69,
+	"./bs.js": 69,
+	"./ca": 70,
+	"./ca.js": 70,
+	"./cs": 71,
+	"./cs.js": 71,
+	"./cv": 72,
+	"./cv.js": 72,
+	"./cy": 73,
+	"./cy.js": 73,
+	"./da": 74,
+	"./da.js": 74,
+	"./de": 75,
+	"./de-at": 76,
+	"./de-at.js": 76,
+	"./de-ch": 77,
+	"./de-ch.js": 77,
+	"./de.js": 75,
+	"./dv": 78,
+	"./dv.js": 78,
+	"./el": 79,
+	"./el.js": 79,
+	"./en-SG": 80,
+	"./en-SG.js": 80,
+	"./en-au": 81,
+	"./en-au.js": 81,
+	"./en-ca": 82,
+	"./en-ca.js": 82,
+	"./en-gb": 83,
+	"./en-gb.js": 83,
+	"./en-ie": 84,
+	"./en-ie.js": 84,
+	"./en-il": 85,
+	"./en-il.js": 85,
+	"./en-nz": 86,
+	"./en-nz.js": 86,
+	"./eo": 87,
+	"./eo.js": 87,
+	"./es": 88,
+	"./es-do": 89,
+	"./es-do.js": 89,
+	"./es-us": 90,
+	"./es-us.js": 90,
+	"./es.js": 88,
+	"./et": 91,
+	"./et.js": 91,
+	"./eu": 92,
+	"./eu.js": 92,
+	"./fa": 93,
+	"./fa.js": 93,
+	"./fi": 94,
+	"./fi.js": 94,
+	"./fo": 95,
+	"./fo.js": 95,
+	"./fr": 96,
+	"./fr-ca": 97,
+	"./fr-ca.js": 97,
+	"./fr-ch": 98,
+	"./fr-ch.js": 98,
+	"./fr.js": 96,
+	"./fy": 99,
+	"./fy.js": 99,
+	"./ga": 100,
+	"./ga.js": 100,
+	"./gd": 101,
+	"./gd.js": 101,
+	"./gl": 102,
+	"./gl.js": 102,
+	"./gom-latn": 103,
+	"./gom-latn.js": 103,
+	"./gu": 104,
+	"./gu.js": 104,
+	"./he": 105,
+	"./he.js": 105,
+	"./hi": 106,
+	"./hi.js": 106,
+	"./hr": 107,
+	"./hr.js": 107,
+	"./hu": 108,
+	"./hu.js": 108,
+	"./hy-am": 109,
+	"./hy-am.js": 109,
+	"./id": 110,
+	"./id.js": 110,
+	"./is": 111,
+	"./is.js": 111,
+	"./it": 112,
+	"./it-ch": 113,
+	"./it-ch.js": 113,
+	"./it.js": 112,
+	"./ja": 114,
+	"./ja.js": 114,
+	"./jv": 115,
+	"./jv.js": 115,
+	"./ka": 116,
+	"./ka.js": 116,
+	"./kk": 117,
+	"./kk.js": 117,
+	"./km": 118,
+	"./km.js": 118,
+	"./kn": 119,
+	"./kn.js": 119,
+	"./ko": 120,
+	"./ko.js": 120,
+	"./ku": 121,
+	"./ku.js": 121,
+	"./ky": 122,
+	"./ky.js": 122,
+	"./lb": 123,
+	"./lb.js": 123,
+	"./lo": 124,
+	"./lo.js": 124,
+	"./lt": 125,
+	"./lt.js": 125,
+	"./lv": 126,
+	"./lv.js": 126,
+	"./me": 127,
+	"./me.js": 127,
+	"./mi": 128,
+	"./mi.js": 128,
+	"./mk": 129,
+	"./mk.js": 129,
+	"./ml": 130,
+	"./ml.js": 130,
+	"./mn": 131,
+	"./mn.js": 131,
+	"./mr": 132,
+	"./mr.js": 132,
+	"./ms": 133,
+	"./ms-my": 134,
+	"./ms-my.js": 134,
+	"./ms.js": 133,
+	"./mt": 135,
+	"./mt.js": 135,
+	"./my": 136,
+	"./my.js": 136,
+	"./nb": 137,
+	"./nb.js": 137,
+	"./ne": 138,
+	"./ne.js": 138,
+	"./nl": 139,
+	"./nl-be": 140,
+	"./nl-be.js": 140,
+	"./nl.js": 139,
+	"./nn": 141,
+	"./nn.js": 141,
+	"./pa-in": 142,
+	"./pa-in.js": 142,
+	"./pl": 143,
+	"./pl.js": 143,
+	"./pt": 144,
+	"./pt-br": 145,
+	"./pt-br.js": 145,
+	"./pt.js": 144,
+	"./ro": 146,
+	"./ro.js": 146,
+	"./ru": 147,
+	"./ru.js": 147,
+	"./sd": 148,
+	"./sd.js": 148,
+	"./se": 149,
+	"./se.js": 149,
+	"./si": 150,
+	"./si.js": 150,
+	"./sk": 151,
+	"./sk.js": 151,
+	"./sl": 152,
+	"./sl.js": 152,
+	"./sq": 153,
+	"./sq.js": 153,
+	"./sr": 154,
+	"./sr-cyrl": 155,
+	"./sr-cyrl.js": 155,
+	"./sr.js": 154,
+	"./ss": 156,
+	"./ss.js": 156,
+	"./sv": 157,
+	"./sv.js": 157,
+	"./sw": 158,
+	"./sw.js": 158,
+	"./ta": 159,
+	"./ta.js": 159,
+	"./te": 160,
+	"./te.js": 160,
+	"./tet": 161,
+	"./tet.js": 161,
+	"./tg": 162,
+	"./tg.js": 162,
+	"./th": 163,
+	"./th.js": 163,
+	"./tl-ph": 164,
+	"./tl-ph.js": 164,
+	"./tlh": 165,
+	"./tlh.js": 165,
+	"./tr": 166,
+	"./tr.js": 166,
+	"./tzl": 167,
+	"./tzl.js": 167,
+	"./tzm": 168,
+	"./tzm-latn": 169,
+	"./tzm-latn.js": 169,
+	"./tzm.js": 168,
+	"./ug-cn": 170,
+	"./ug-cn.js": 170,
+	"./uk": 171,
+	"./uk.js": 171,
+	"./ur": 172,
+	"./ur.js": 172,
+	"./uz": 173,
+	"./uz-latn": 174,
+	"./uz-latn.js": 174,
+	"./uz.js": 173,
+	"./vi": 175,
+	"./vi.js": 175,
+	"./x-pseudo": 176,
+	"./x-pseudo.js": 176,
+	"./yo": 177,
+	"./yo.js": 177,
+	"./zh-cn": 178,
+	"./zh-cn.js": 178,
+	"./zh-hk": 179,
+	"./zh-hk.js": 179,
+	"./zh-tw": 180,
+	"./zh-tw.js": 180
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -61124,10 +62693,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 241;
+webpackContext.id = 244;
 
 /***/ }),
-/* 242 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61146,11 +62715,11 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _bubbleMixin = __webpack_require__(37);
+var _bubbleMixin = __webpack_require__(38);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(15);
+var _capMixin = __webpack_require__(16);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -61550,7 +63119,7 @@ function bubbleOverlay(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 243 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61671,7 +63240,7 @@ function legendMixin(chart) {
 }
 
 /***/ }),
-/* 244 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61692,7 +63261,7 @@ var _lodash = __webpack_require__(23);
 
 var _formattingHelpers = __webpack_require__(10);
 
-var _events = __webpack_require__(14);
+var _events = __webpack_require__(15);
 
 var noop = function noop() {}; // eslint-disable-line no-empty-function
 
@@ -61923,7 +63492,7 @@ function filterMixin(_chart) {
 }
 
 /***/ }),
-/* 245 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62067,7 +63636,7 @@ function labelMixin(chart) {
 }
 
 /***/ }),
-/* 246 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62079,7 +63648,7 @@ Object.defineProperty(exports, "__esModule", {
 var SPINNER_DELAY = exports.SPINNER_DELAY = 1000;
 
 /***/ }),
-/* 247 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62094,25 +63663,25 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _datesAndTimes = __webpack_require__(28);
+var _datesAndTimes = __webpack_require__(29);
 
 var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackMixin = __webpack_require__(38);
+var _stackMixin = __webpack_require__(39);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
-var _elasticDimensionMixin = __webpack_require__(185);
+var _elasticDimensionMixin = __webpack_require__(186);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _coordinateGridMixin = __webpack_require__(13);
+var _coordinateGridMixin = __webpack_require__(14);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
-var _multiSeriesMixin = __webpack_require__(187);
+var _multiSeriesMixin = __webpack_require__(188);
 
 var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
 
@@ -62630,7 +64199,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 }
 
 /***/ }),
-/* 248 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //  Ramda v0.21.0
@@ -71420,7 +72989,7 @@ var EXTRACT_UNIT_NUM_BUCKETS = {
 
 
 /***/ }),
-/* 249 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71438,7 +73007,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(14);
+var _events = __webpack_require__(15);
 
 var _filters = __webpack_require__(21);
 
@@ -71621,7 +73190,7 @@ function binningMixin(chart) {
 }
 
 /***/ }),
-/* 250 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71636,15 +73205,15 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _bubbleMixin = __webpack_require__(37);
+var _bubbleMixin = __webpack_require__(38);
 
 var _bubbleMixin2 = _interopRequireDefault(_bubbleMixin);
 
-var _capMixin = __webpack_require__(15);
+var _capMixin = __webpack_require__(16);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _coordinateGridMixin = __webpack_require__(13);
+var _coordinateGridMixin = __webpack_require__(14);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -72093,7 +73662,7 @@ function bubbleChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 251 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72108,7 +73677,7 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(15);
+var _capMixin = __webpack_require__(16);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -72120,7 +73689,7 @@ var _colorMixin = __webpack_require__(12);
 
 var _colorMixin2 = _interopRequireDefault(_colorMixin);
 
-var _marginMixin = __webpack_require__(17);
+var _marginMixin = __webpack_require__(18);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
@@ -72243,7 +73812,7 @@ function cloudChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 252 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72254,7 +73823,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = compositeChart;
 
-var _coordinateGridMixin = __webpack_require__(13);
+var _coordinateGridMixin = __webpack_require__(14);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -72811,7 +74380,7 @@ function compositeChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 253 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72980,7 +74549,7 @@ function dataCount(parent, chartGroup) {
 }
 
 /***/ }),
-/* 254 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73235,7 +74804,7 @@ function dataGrid(parent, chartGroup) {
 }
 
 /***/ }),
-/* 255 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73261,7 +74830,7 @@ var _d2 = __webpack_require__(1);
 
 var _d3 = _interopRequireDefault(_d2);
 
-var _mapMixin = __webpack_require__(40);
+var _mapMixin = __webpack_require__(41);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -73269,11 +74838,11 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _bbox = __webpack_require__(259);
+var _bbox = __webpack_require__(261);
 
 var _bbox2 = _interopRequireDefault(_bbox);
 
-var _bboxClip = __webpack_require__(261);
+var _bboxClip = __webpack_require__(263);
 
 var _bboxClip2 = _interopRequireDefault(_bboxClip);
 
@@ -73699,7 +75268,7 @@ function geoChoroplethChart(parent, useMap, chartGroup, mapbox) {
 }
 
 /***/ }),
-/* 256 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73711,180 +75280,44 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-exports.getLatLonCircleClass = getLatLonCircleClass;
-
-var _utilsLatlon = __webpack_require__(189);
+var _utilsLatlon = __webpack_require__(24);
 
 var LatLonUtils = _interopRequireWildcard(_utilsLatlon);
 
-var _mapdDraw = __webpack_require__(18);
+var _mapdDraw = __webpack_require__(13);
 
 var MapdDraw = _interopRequireWildcard(_mapdDraw);
 
-var _simplifyJs = __webpack_require__(257);
+var _simplifyJs = __webpack_require__(260);
 
 var _simplifyJs2 = _interopRequireDefault(_simplifyJs);
 
-var _logger = __webpack_require__(35);
+var _logger = __webpack_require__(36);
+
+var _LatLonCircle = __webpack_require__(190);
+
+var _LatLonCircle2 = _interopRequireDefault(_LatLonCircle);
+
+var _LatLonPoly = __webpack_require__(192);
+
+var _LatLonPoly2 = _interopRequireDefault(_LatLonPoly);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-/* istanbul ignore next */
-var LatLonCircleClass = null;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/* istanbul ignore next */
-function getLatLonCircleClass() {
-  if (!LatLonCircleClass) {
-    LatLonCircleClass = function (_MapdDraw$Circle) {
-      _inherits(LatLonCircle, _MapdDraw$Circle);
+var AABox2d = MapdDraw.AABox2d,
+    Mat2 = MapdDraw.Mat2,
+    Point2d = MapdDraw.Point2d,
+    Vec2d = MapdDraw.Vec2d;
 
-      function LatLonCircle(opts) {
-        _classCallCheck(this, LatLonCircle);
-
-        var _this = _possibleConstructorReturn(this, (LatLonCircle.__proto__ || Object.getPrototypeOf(LatLonCircle)).call(this, opts));
-
-        _this._mercatorPts = [];
-        _this._geomDirty = true;
-        _this._initialRadius = _this._radius;
-        return _this;
-      }
-
-      _createClass(LatLonCircle, [{
-        key: "setScale",
-        value: function setScale(scale) {
-          this.radius = this._initialRadius * Math.min(scale[0], scale[1]);
-        }
-      }, {
-        key: "resetInitialRadius",
-        value: function resetInitialRadius() {
-          this._initialRadius = this.radius;
-        }
-      }, {
-        key: "_updateGeom",
-        value: function _updateGeom() {
-          if (this._geomDirty || this._boundsOutOfDate) {
-            var centerMerc = [0, 0];
-            var centerLatLon = [0, 0];
-            var scale = [0, 0];
-            var xform = this.globalXform;
-            MapdDraw.Mat2d.svd(centerMerc, scale, null, xform);
-
-            var degrees_between_points = 6.0;
-            var number_of_points = Math.floor(360 / degrees_between_points);
-
-            // radius is stored in kilometers, so convert kilometers to radians.
-            // See: https://stackoverflow.com/questions/12180290/convert-kilometers-to-radians
-            // for a discussion.
-            // The 6372.79756 number is the earth's radius in kilometers and aligns with the
-            // earth radius used in distance_in_meters in utils-latlon
-            var dist_radians = this._radius / 6372.797560856;
-
-            // convert from mercator to lat/lon
-            LatLonUtils.conv900913To4326(centerLatLon, centerMerc);
-            var center_lat_radians = centerLatLon[1] * MapdDraw.Math.DEG_TO_RAD;
-            var center_lon_radians = centerLatLon[0] * MapdDraw.Math.DEG_TO_RAD;
-
-            MapdDraw.AABox2d.initEmpty(this._aabox);
-            this._mercatorPts = [];
-            for (var index = 0; index < number_of_points; index = index + 1) {
-              var degrees = index * degrees_between_points;
-              var degree_radians = degrees * Math.PI / 180;
-
-              // rotate the sample point around the circle center using the radius distance in radians
-              var point_lat_radians = Math.asin(Math.sin(center_lat_radians) * Math.cos(dist_radians) + Math.cos(center_lat_radians) * Math.sin(dist_radians) * Math.cos(degree_radians));
-              var point_lon_radians = center_lon_radians + Math.atan2(Math.sin(degree_radians) * Math.sin(dist_radians) * Math.cos(center_lat_radians), Math.cos(dist_radians) - Math.sin(center_lat_radians) * Math.sin(point_lat_radians));
-              var point_lat = point_lat_radians * 180 / Math.PI;
-              var point_lon = point_lon_radians * 180 / Math.PI;
-              var point = MapdDraw.Point2d.create(point_lon, point_lat);
-
-              // convert from lon/lat to mercator
-              LatLonUtils.conv4326To900913(point, point);
-
-              MapdDraw.AABox2d.encapsulatePt(this._aabox, this._aabox, point);
-              this._mercatorPts.push(point);
-            }
-
-            var pivot = MapdDraw.Point2d.create(0, 0);
-            MapdDraw.AABox2d.getCenter(pivot, this._aabox);
-            MapdDraw.Point2d.sub(pivot, pivot, centerMerc);
-            this.pivot = pivot;
-
-            this._geomDirty = false;
-            this._boundsOutOfDate = false;
-          }
-        }
-      }, {
-        key: "getDimensions",
-        value: function getDimensions() {
-          return [this.width, this.height];
-        }
-      }, {
-        key: "_updateAABox",
-        value: function _updateAABox() {
-          this._updateGeom();
-        }
-      }, {
-        key: "_draw",
-        value: function _draw(ctx) {
-          // only need the mercator to screen projection -- pull out any
-          // local transforms here
-          var xform = MapdDraw.Mat2d.clone(this.globalXform);
-          MapdDraw.Mat2d.invert(xform, xform);
-          MapdDraw.Mat2d.multiply(xform, this._fullXform, xform);
-          ctx.setTransform(xform[0], xform[1], xform[2], xform[3], xform[4], xform[5]);
-
-          this._updateGeom();
-
-          if (this._mercatorPts.length) {
-            ctx.moveTo(this._mercatorPts[0][0], this._mercatorPts[0][1]);
-            for (var i = 1; i < this._mercatorPts.length; i = i + 1) {
-              ctx.lineTo(this._mercatorPts[i][0], this._mercatorPts[i][1]);
-            }
-            ctx.closePath();
-          }
-        }
-      }, {
-        key: "toJSON",
-        value: function toJSON() {
-          return Object.assign(_get(LatLonCircle.prototype.__proto__ || Object.getPrototypeOf(LatLonCircle.prototype), "toJSON", this).call(this), {
-            type: "LatLonCircle" // this must match the name of the class
-          });
-        }
-      }, {
-        key: "initialRadius",
-        set: function set(radius) {
-          this.radius = radius;
-          this._initialRadius = radius;
-        }
-      }, {
-        key: "width",
-        get: function get() {
-          this._updateAABox();
-          return this._aabox[2] - this._aabox[0];
-        }
-      }, {
-        key: "height",
-        get: function get() {
-          this._updateAABox();
-          return this._aabox[3] - this._aabox[1];
-        }
-      }]);
-
-      return LatLonCircle;
-    }(MapdDraw.Circle);
-  }
-  return LatLonCircleClass;
-}
+var MathExt = MapdDraw.Math;
 
 /* istanbul ignore next */
 
@@ -73909,6 +75342,8 @@ var ShapeHandler = function () {
     this.dblclickCB = this.dblclickCB.bind(this);
     this.keydownCB = this.keydownCB.bind(this);
     this.active = false;
+
+    this.useLonLat = typeof this.chart.useLonLat === "function" && this.chart.useLonLat();
   }
 
   _createClass(ShapeHandler, [{
@@ -73997,7 +75432,7 @@ var ShapeHandler = function () {
 
       var diffX = mouseEvent.clientX - rect.left - this.canvas.clientLeft;
       var diffY = mouseEvent.clientY - rect.top - this.canvas.clientTop;
-      var mousepos = MapdDraw.Point2d.create(diffX, diffY);
+      var mousepos = Point2d.create(diffX, diffY);
 
       return mousepos;
     }
@@ -74053,19 +75488,16 @@ var CircleShapeHandler = function (_ShapeHandler) {
   function CircleShapeHandler(parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
     _classCallCheck(this, CircleShapeHandler);
 
-    var _this2 = _possibleConstructorReturn(this, (CircleShapeHandler.__proto__ || Object.getPrototypeOf(CircleShapeHandler)).call(this, parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle));
+    var _this = _possibleConstructorReturn(this, (CircleShapeHandler.__proto__ || Object.getPrototypeOf(CircleShapeHandler)).call(this, parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle));
 
-    _this2.startmousepos = MapdDraw.Point2d.create(0, 0);
-    _this2.startmouseworldpos = MapdDraw.Point2d.create(0, 0);
-
-    _this2.useLonLat = typeof _this2.chart.useLonLat === "function" && _this2.chart.useLonLat();
-
-    if (_this2.useLonLat) {
-      _this2.startmouselatlonpos = MapdDraw.Point2d.create(0, 0);
+    _this.startmousepos = Point2d.create(0, 0);
+    _this.startmouseworldpos = Point2d.create(0, 0);
+    if (_this.useLonLat) {
+      _this.startmouselatlonpos = Point2d.create(0, 0);
     }
-    _this2.activeshape = null;
-    _this2.timer = null;
-    return _this2;
+    _this.activeshape = null;
+    _this.timer = null;
+    return _this;
   }
 
   _createClass(CircleShapeHandler, [{
@@ -74115,7 +75547,7 @@ var CircleShapeHandler = function (_ShapeHandler) {
       }
 
       this.disableBasemapEvents();
-      MapdDraw.Point2d.copy(this.startmousepos, this.getRelativeMousePosFromEvent(event));
+      Point2d.copy(this.startmousepos, this.getRelativeMousePosFromEvent(event));
       this.drawEngine.project(this.startmouseworldpos, this.startmousepos);
       this.timer = performance.now();
 
@@ -74124,8 +75556,7 @@ var CircleShapeHandler = function (_ShapeHandler) {
       if (this.useLonLat) {
         LatLonUtils.conv900913To4326(this.startmouselatlonpos, this.startmouseworldpos);
 
-        var CircleClass = getLatLonCircleClass();
-        this.activeShape = new CircleClass(Object.assign({
+        this.activeShape = new _LatLonCircle2.default(this.drawEngine, Object.assign({
           position: this.startmouseworldpos,
           radius: 0
         }, this.defaultSelectStyle));
@@ -74154,7 +75585,7 @@ var CircleShapeHandler = function (_ShapeHandler) {
     value: function mousemoveCB(event) {
       if (this.activeShape) {
         var mousepos = this.getRelativeMousePosFromEvent(event);
-        var mousescreenpos = MapdDraw.Point2d.create(0, 0);
+        var mousescreenpos = Point2d.create(0, 0);
         this.drawEngine.project(mousescreenpos, mousepos);
 
         if (this.useLonLat) {
@@ -74163,7 +75594,7 @@ var CircleShapeHandler = function (_ShapeHandler) {
           var radius = LatLonUtils.distance_in_meters(this.startmouselatlonpos[0], this.startmouselatlonpos[1], mousescreenpos[0], mousescreenpos[1]);
           this.activeShape.initialRadius = radius / 1000;
         } else {
-          var _radius = MapdDraw.Point2d.distance(this.startmouseworldpos, mousescreenpos);
+          var _radius = Point2d.distance(this.startmouseworldpos, mousescreenpos);
           this.activeShape.radius = _radius;
         }
 
@@ -74199,22 +75630,23 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
   function PolylineShapeHandler(parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
     _classCallCheck(this, PolylineShapeHandler);
 
-    var _this3 = _possibleConstructorReturn(this, (PolylineShapeHandler.__proto__ || Object.getPrototypeOf(PolylineShapeHandler)).call(this, parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle));
+    var _this2 = _possibleConstructorReturn(this, (PolylineShapeHandler.__proto__ || Object.getPrototypeOf(PolylineShapeHandler)).call(this, parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle));
 
-    _this3.activeShape = null;
-    _this3.startVert = null;
-    _this3.lastVert = null;
-    _this3.lineShape = null;
-    _this3.prevVertPos = null;
-    _this3.activeIdx = -1;
-    _this3.startPosAABox = MapdDraw.AABox2d.create();
-    _this3.timer = null;
-    _this3.enableBasemapDebounceFunc = chart.debounce(function () {
-      if (_this3.active) {
-        _this3.enableBasemapEvents();
+    _this2.activeShape = null;
+    _this2.startVert = null;
+    _this2.lastVert = null;
+    _this2.lineShape = null;
+    _this2.prevVertPos = null;
+    _this2.activeIdx = -1;
+    _this2.startPosAABox = AABox2d.create();
+    _this2.timer = null;
+
+    _this2.enableBasemapDebounceFunc = chart.debounce(function () {
+      if (_this2.active) {
+        _this2.enableBasemapEvents();
       }
     }, 100);
-    return _this3;
+    return _this2;
   }
 
   _createClass(PolylineShapeHandler, [{
@@ -74231,7 +75663,7 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
       }
 
       this.startVert = this.lastVert = this.lineShape = this.activeShape = this.prevVertPos = null;
-      MapdDraw.AABox2d.initEmpty(this.startPosAABox);
+      AABox2d.initEmpty(this.startPosAABox);
       this.activeIdx = -1;
     }
   }, {
@@ -74249,7 +75681,7 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
     key: "finishShape",
     value: function finishShape() {
       var verts = this.lineShape ? this.lineShape.vertsRef : [];
-      var removeLastVert = verts.length > 1 && !MapdDraw.Point2d.equals(verts[0], verts[verts.length - 1]) && this.lastVert && !MapdDraw.Point2d.equals(verts[verts.length - 1], this.lastVert.getPositionRef());
+      var removeLastVert = verts.length > 1 && !Point2d.equals(verts[0], verts[verts.length - 1]) && this.lastVert && !Point2d.equals(verts[verts.length - 1], this.lastVert.getPositionRef());
       if (verts.length > 2 && (!removeLastVert || verts.length > 3)) {
         // Check if there is a loop in the current verts, remove the last point
         // if so
@@ -74257,9 +75689,18 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
           verts.pop();
         }
 
-        var poly = new MapdDraw.Poly(Object.assign({
+        var args = [];
+        var PolyClass = null;
+        if (this.useLonLat) {
+          PolyClass = _LatLonPoly2.default;
+          args.push(this.drawEngine);
+        } else {
+          PolyClass = MapdDraw.Poly;
+        }
+        args.push(Object.assign({
           verts: verts
         }, this.defaultStyle));
+        var poly = new (Function.prototype.bind.apply(PolyClass, [null].concat(args)))();
         this.setupFinalShape(poly);
 
         // clear out all other shapes using our destroy method
@@ -74287,7 +75728,7 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
 
         var shapeBuilt = false;
         var mousepos = this.getRelativeMousePosFromEvent(event);
-        var mouseworldpos = MapdDraw.Point2d.create(0, 0);
+        var mouseworldpos = Point2d.create(0, 0);
         this.drawEngine.project(mouseworldpos, mousepos);
 
         if (!this.startVert) {
@@ -74315,8 +75756,8 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
         } else if (this.lastVert) {
           var startpos = this.startVert.getPosition();
           this.drawEngine.unproject(startpos, startpos);
-          MapdDraw.AABox2d.initCenterExtents(this.startPosAABox, startpos, [10, 10]);
-          if (MapdDraw.AABox2d.containsPt(this.startPosAABox, mousepos)) {
+          AABox2d.initCenterExtents(this.startPosAABox, startpos, [10, 10]);
+          if (AABox2d.containsPt(this.startPosAABox, mousepos)) {
             this.finishShape();
             shapeBuilt = true;
           } else {
@@ -74340,49 +75781,49 @@ var PolylineShapeHandler = function (_ShapeHandler2) {
     value: function mousemoveCB(event) {
       if (this.startVert && this.lineShape && this.activeIdx < 0) {
         var mousepos = this.getRelativeMousePosFromEvent(event);
-        var mouseworldpos = MapdDraw.Point2d.create(0, 0);
+        var mouseworldpos = Point2d.create(0, 0);
         this.drawEngine.project(mouseworldpos, mousepos);
         this.activeIdx = this.appendVertex(mousepos, mouseworldpos);
       }
 
       if (this.activeShape || this.activeIdx >= 0) {
         var _mousepos = this.getRelativeMousePosFromEvent(event);
-        var _mouseworldpos = MapdDraw.Point2d.create(0, 0);
+        var _mouseworldpos = Point2d.create(0, 0);
         this.drawEngine.project(_mouseworldpos, _mousepos);
 
         if (event.shiftKey) {
           if (this.activeIdx === 1) {
-            var diff = [0, 0];
-            var prevmousepos = [0, 0];
+            var diff = Vec2d.create();
+            var prevmousepos = Point2d.create();
             var verts = this.lineShape.vertsRef;
             this.drawEngine.unproject(prevmousepos, verts[0]);
-            MapdDraw.Point2d.sub(diff, _mousepos, prevmousepos);
+            Point2d.sub(diff, _mousepos, prevmousepos);
             var angle = Math.atan2(diff[1], diff[0]);
-            angle = MapdDraw.Math.round(angle / MapdDraw.Math.QUATER_PI) * MapdDraw.Math.QUATER_PI;
+            angle = MathExt.round(angle / MathExt.QUATER_PI) * MathExt.QUATER_PI;
             var transformDir = [Math.cos(angle), Math.sin(angle)];
-            MapdDraw.Vec2d.scale(diff, transformDir, MapdDraw.Vec2d.dot(diff, transformDir));
-            MapdDraw.Point2d.addVec2(_mousepos, prevmousepos, diff);
+            Vec2d.scale(diff, transformDir, Vec2d.dot(diff, transformDir));
+            Point2d.addVec2(_mousepos, prevmousepos, diff);
             this.drawEngine.project(_mouseworldpos, _mousepos);
           } else if (this.activeIdx > 1) {
             var _verts2 = this.lineShape.vertsRef;
-            var pt1 = [0, 0];
+            var pt1 = Point2d.create();
             this.drawEngine.unproject(pt1, _verts2[this.activeIdx - 2]);
-            var pt2 = [0, 0];
+            var pt2 = Point2d.create();
             this.drawEngine.unproject(pt2, _verts2[this.activeIdx - 1]);
-            var dir1 = [0, 0];
-            MapdDraw.Point2d.sub(dir1, pt2, pt1);
-            MapdDraw.Vec2d.normalize(dir1, dir1);
+            var dir1 = Vec2d.create();
+            Point2d.sub(dir1, pt2, pt1);
+            Vec2d.normalize(dir1, dir1);
             var dir2 = [0, 0];
-            MapdDraw.Point2d.sub(dir2, _mousepos, pt2);
-            // MapdDraw.Vec2d.normalize(dir2, dir2)
-            var _angle = MapdDraw.Vec2d.angle(dir1, dir2);
-            _angle = MapdDraw.Math.round(_angle / MapdDraw.Math.QUATER_PI) * MapdDraw.Math.QUATER_PI;
-            var matrix = MapdDraw.Mat2.create();
-            MapdDraw.Mat2.fromRotation(matrix, _angle);
+            Point2d.sub(dir2, _mousepos, pt2);
+            // Vec2d.normalize(dir2, dir2)
+            var _angle = Vec2d.angle(dir1, dir2);
+            _angle = MathExt.round(_angle / MathExt.QUATER_PI) * MathExt.QUATER_PI;
+            var matrix = Mat2.create();
+            Mat2.fromRotation(matrix, _angle);
             var _transformDir = [0, 0];
-            MapdDraw.Vec2d.transformMat2(_transformDir, dir1, matrix);
-            MapdDraw.Vec2d.scale(_transformDir, _transformDir, MapdDraw.Vec2d.dot(dir2, _transformDir));
-            MapdDraw.Point2d.addVec2(_mousepos, pt2, _transformDir);
+            Vec2d.transformMat2(_transformDir, dir1, matrix);
+            Vec2d.scale(_transformDir, _transformDir, Vec2d.dot(dir2, _transformDir));
+            Point2d.addVec2(_mousepos, pt2, _transformDir);
             this.drawEngine.project(_mouseworldpos, _mousepos);
           }
         }
@@ -74431,12 +75872,12 @@ var LassoShapeHandler = function (_ShapeHandler3) {
   function LassoShapeHandler(parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle) {
     _classCallCheck(this, LassoShapeHandler);
 
-    var _this4 = _possibleConstructorReturn(this, (LassoShapeHandler.__proto__ || Object.getPrototypeOf(LassoShapeHandler)).call(this, parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle));
+    var _this3 = _possibleConstructorReturn(this, (LassoShapeHandler.__proto__ || Object.getPrototypeOf(LassoShapeHandler)).call(this, parent, drawEngine, chart, buttonGroup, buttonId, defaultStyle, defaultSelectStyle));
 
-    _this4.activeShape = null;
-    _this4.lastPos = null;
-    _this4.lastWorldPos = null;
-    return _this4;
+    _this3.activeShape = null;
+    _this3.lastPos = null;
+    _this3.lastWorldPos = null;
+    return _this3;
   }
 
   _createClass(LassoShapeHandler, [{
@@ -74458,7 +75899,7 @@ var LassoShapeHandler = function (_ShapeHandler3) {
       this.disableBasemapEvents();
       this.activeShape = null;
       this.lastPos = this.getRelativeMousePosFromEvent(event);
-      this.lastWorldPos = MapdDraw.Point2d.create(0, 0);
+      this.lastWorldPos = Point2d.create(0, 0);
       this.drawEngine.project(this.lastWorldPos, this.lastPos);
       event.preventDefault();
     }
@@ -74478,9 +75919,9 @@ var LassoShapeHandler = function (_ShapeHandler3) {
 
       if (this.lastPos) {
         var currPos = this.getRelativeMousePosFromEvent(event);
-        var currWorldPos = MapdDraw.Point2d.create(0, 0);
+        var currWorldPos = Point2d.create(0, 0);
         this.drawEngine.project(currWorldPos, currPos);
-        if (!MapdDraw.Point2d.equals(currPos, this.lastPos)) {
+        if (!Point2d.equals(currPos, this.lastPos)) {
           if (!this.activeShape) {
             this.activeShape = new MapdDraw.PolyLine(Object.assign({
               verts: [this.lastWorldPos, currWorldPos]
@@ -74489,8 +75930,8 @@ var LassoShapeHandler = function (_ShapeHandler3) {
           } else {
             this.activeShape.appendVert(currWorldPos);
           }
-          MapdDraw.Point2d.copy(this.lastPos, currPos);
-          MapdDraw.Point2d.copy(this.lastWorldPos, currWorldPos);
+          Point2d.copy(this.lastPos, currPos);
+          Point2d.copy(this.lastWorldPos, currWorldPos);
           this.canvas.focus();
         }
         event.preventDefault();
@@ -74499,14 +75940,14 @@ var LassoShapeHandler = function (_ShapeHandler3) {
   }, {
     key: "mouseupCB",
     value: function mouseupCB(event) {
-      var _this5 = this;
+      var _this4 = this;
 
       if (this.activeShape) {
         var verts = this.activeShape.vertsRef;
-        var screenVert = MapdDraw.Point2d.create(0, 0);
-        var worldVert = MapdDraw.Point2d.create(0, 0);
+        var screenVert = Point2d.create(0, 0);
+        var worldVert = Point2d.create(0, 0);
         var simpleVerts = verts.map(function (vert) {
-          _this5.drawEngine.unproject(screenVert, vert);
+          _this4.drawEngine.unproject(screenVert, vert);
           return {
             x: screenVert[0],
             y: screenVert[1]
@@ -74514,9 +75955,9 @@ var LassoShapeHandler = function (_ShapeHandler3) {
         });
         simpleVerts = (0, _simplifyJs2.default)(simpleVerts, 4, true);
         var newverts = simpleVerts.map(function (vert) {
-          MapdDraw.Point2d.set(screenVert, vert.x, vert.y);
-          _this5.drawEngine.project(worldVert, screenVert);
-          return MapdDraw.Point2d.clone(worldVert);
+          Point2d.set(screenVert, vert.x, vert.y);
+          _this4.drawEngine.project(worldVert, screenVert);
+          return Point2d.clone(worldVert);
         });
 
         if (newverts.length < 3) {
@@ -74524,9 +75965,18 @@ var LassoShapeHandler = function (_ShapeHandler3) {
           this.drawEngine.deleteShape(this.activeShape);
           this.activeShape = null;
         } else {
-          var poly = new MapdDraw.Poly(Object.assign({
+          var args = [];
+          var PolyClass = null;
+          if (this.useLonLat) {
+            PolyClass = _LatLonPoly2.default;
+            args.push(this.drawEngine);
+          } else {
+            PolyClass = MapdDraw.Poly;
+          }
+          args.push(Object.assign({
             verts: newverts
           }, this.defaultStyle));
+          var poly = new (Function.prototype.bind.apply(PolyClass, [null].concat(args)))();
           this.drawEngine.deleteShape(this.activeShape);
           this.setupFinalShape(poly);
           event.preventDefault();
@@ -74591,7 +76041,7 @@ var LassoButtonGroupController = function () {
   }, {
     key: "_createControlButton",
     value: function _createControlButton(id) {
-      var _this6 = this;
+      var _this5 = this;
 
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
@@ -74605,34 +76055,34 @@ var LassoButtonGroupController = function () {
         e.stopPropagation();
 
         var clickedButton = e.target;
-        if (_this6._activeButton && _this6._activeButton.button === clickedButton) {
-          _this6.deactivateButtons();
+        if (_this5._activeButton && _this5._activeButton.button === clickedButton) {
+          _this5.deactivateButtons();
           if (options.onDeactivate) {
             options.onDeactivate();
           }
           return;
         }
 
-        _this6.setActiveButton(id, options);
+        _this5.setActiveButton(id, options);
         options.onActivate();
       }, true);
 
       button.addEventListener("mousedown", function (e) {
-        _this6._chart.hidePopup(true);
+        _this5._chart.hidePopup(true);
         e.stopPropagation();
         e.preventDefault();
       });
 
       button.addEventListener("mouseover", function (e) {
-        _this6._chart.hidePopup(true);
-        _this6._chart.popupDisplayable(false);
-        _this6._drawEngine.disableInteractions(false);
+        _this5._chart.hidePopup(true);
+        _this5._chart.popupDisplayable(false);
+        _this5._drawEngine.disableInteractions(false);
       });
 
       button.addEventListener("mouseout", function (e) {
-        if (!_this6._activeShape && !_this6._activeButton) {
-          _this6._chart.popupDisplayable(true);
-          _this6._drawEngine.enableInteractions();
+        if (!_this5._activeShape && !_this5._activeButton) {
+          _this5._chart.popupDisplayable(true);
+          _this5._drawEngine.enableInteractions();
         }
       });
 
@@ -74646,7 +76096,7 @@ var LassoButtonGroupController = function () {
   }, {
     key: "_createButtonControl",
     value: function _createButtonControl(id, ShapeHandlerClass, defaultStyle, defaultSelectStyle) {
-      var _this7 = this;
+      var _this6 = this;
 
       var keybindingStr = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "";
 
@@ -74655,12 +76105,12 @@ var LassoButtonGroupController = function () {
         className: "mapd-draw-button-" + id,
         title: "Create a " + id + (keybindingStr ? " [" + keybindingStr + "]" : ""),
         onActivate: function onActivate() {
-          _this7._drawEngine.disableInteractions();
-          _this7._activeShape = shapeHandler;
-          _this7._activeShape.activate();
+          _this6._drawEngine.disableInteractions();
+          _this6._activeShape = shapeHandler;
+          _this6._activeShape.activate();
         },
         onDeactivate: function onDeactivate() {
-          _this7._drawEngine.enableInteractions();
+          _this6._drawEngine.enableInteractions();
         }
       });
       return shapeHandler;
@@ -74755,9 +76205,8 @@ var LassoButtonGroupController = function () {
   }, {
     key: "_dragendCB",
     value: function _dragendCB(event) {
-      var CircleClass = getLatLonCircleClass();
       event.shapes.forEach(function (shape) {
-        if (shape instanceof CircleClass) {
+        if (shape instanceof _LatLonCircle2.default) {
           // need to reset the inital radius of the latlon circle
           // so that any rescaling is done relative to this
           // new radius
@@ -74768,14 +76217,14 @@ var LassoButtonGroupController = function () {
   }, {
     key: "_keyboardCB",
     value: function _keyboardCB(event) {
-      var _this8 = this;
+      var _this7 = this;
 
       if ((event.key === "Backspace" || event.code === "Backspace" || event.keyCode === 8) && this._drawEngine) {
         var selectedShapes = this._drawEngine.selectedShapes;
         if (selectedShapes.length) {
           this._drawEngine.deleteSelectedShapes();
           selectedShapes.forEach(function (shape) {
-            _this8._chart.deleteFilterShape(shape);
+            _this7._chart.deleteFilterShape(shape);
           });
         }
         event.preventDefault();
@@ -74829,7 +76278,7 @@ var LassoButtonGroupController = function () {
 exports.default = LassoButtonGroupController;
 
 /***/ }),
-/* 257 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -74959,670 +76408,13 @@ else window.simplify = simplify;
 
 
 /***/ }),
-/* 258 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = earcut;
-module.exports.default = earcut;
-
-function earcut(data, holeIndices, dim) {
-
-    dim = dim || 2;
-
-    var hasHoles = holeIndices && holeIndices.length,
-        outerLen = hasHoles ? holeIndices[0] * dim : data.length,
-        outerNode = linkedList(data, 0, outerLen, dim, true),
-        triangles = [];
-
-    if (!outerNode || outerNode.next === outerNode.prev) return triangles;
-
-    var minX, minY, maxX, maxY, x, y, invSize;
-
-    if (hasHoles) outerNode = eliminateHoles(data, holeIndices, outerNode, dim);
-
-    // if the shape is not too simple, we'll use z-order curve hash later; calculate polygon bbox
-    if (data.length > 80 * dim) {
-        minX = maxX = data[0];
-        minY = maxY = data[1];
-
-        for (var i = dim; i < outerLen; i += dim) {
-            x = data[i];
-            y = data[i + 1];
-            if (x < minX) minX = x;
-            if (y < minY) minY = y;
-            if (x > maxX) maxX = x;
-            if (y > maxY) maxY = y;
-        }
-
-        // minX, minY and invSize are later used to transform coords into integers for z-order calculation
-        invSize = Math.max(maxX - minX, maxY - minY);
-        invSize = invSize !== 0 ? 1 / invSize : 0;
-    }
-
-    earcutLinked(outerNode, triangles, dim, minX, minY, invSize);
-
-    return triangles;
-}
-
-// create a circular doubly linked list from polygon points in the specified winding order
-function linkedList(data, start, end, dim, clockwise) {
-    var i, last;
-
-    if (clockwise === (signedArea(data, start, end, dim) > 0)) {
-        for (i = start; i < end; i += dim) last = insertNode(i, data[i], data[i + 1], last);
-    } else {
-        for (i = end - dim; i >= start; i -= dim) last = insertNode(i, data[i], data[i + 1], last);
-    }
-
-    if (last && equals(last, last.next)) {
-        removeNode(last);
-        last = last.next;
-    }
-
-    return last;
-}
-
-// eliminate colinear or duplicate points
-function filterPoints(start, end) {
-    if (!start) return start;
-    if (!end) end = start;
-
-    var p = start,
-        again;
-    do {
-        again = false;
-
-        if (!p.steiner && (equals(p, p.next) || area(p.prev, p, p.next) === 0)) {
-            removeNode(p);
-            p = end = p.prev;
-            if (p === p.next) break;
-            again = true;
-
-        } else {
-            p = p.next;
-        }
-    } while (again || p !== end);
-
-    return end;
-}
-
-// main ear slicing loop which triangulates a polygon (given as a linked list)
-function earcutLinked(ear, triangles, dim, minX, minY, invSize, pass) {
-    if (!ear) return;
-
-    // interlink polygon nodes in z-order
-    if (!pass && invSize) indexCurve(ear, minX, minY, invSize);
-
-    var stop = ear,
-        prev, next;
-
-    // iterate through ears, slicing them one by one
-    while (ear.prev !== ear.next) {
-        prev = ear.prev;
-        next = ear.next;
-
-        if (invSize ? isEarHashed(ear, minX, minY, invSize) : isEar(ear)) {
-            // cut off the triangle
-            triangles.push(prev.i / dim);
-            triangles.push(ear.i / dim);
-            triangles.push(next.i / dim);
-
-            removeNode(ear);
-
-            // skipping the next vertex leads to less sliver triangles
-            ear = next.next;
-            stop = next.next;
-
-            continue;
-        }
-
-        ear = next;
-
-        // if we looped through the whole remaining polygon and can't find any more ears
-        if (ear === stop) {
-            // try filtering points and slicing again
-            if (!pass) {
-                earcutLinked(filterPoints(ear), triangles, dim, minX, minY, invSize, 1);
-
-            // if this didn't work, try curing all small self-intersections locally
-            } else if (pass === 1) {
-                ear = cureLocalIntersections(ear, triangles, dim);
-                earcutLinked(ear, triangles, dim, minX, minY, invSize, 2);
-
-            // as a last resort, try splitting the remaining polygon into two
-            } else if (pass === 2) {
-                splitEarcut(ear, triangles, dim, minX, minY, invSize);
-            }
-
-            break;
-        }
-    }
-}
-
-// check whether a polygon node forms a valid ear with adjacent nodes
-function isEar(ear) {
-    var a = ear.prev,
-        b = ear,
-        c = ear.next;
-
-    if (area(a, b, c) >= 0) return false; // reflex, can't be an ear
-
-    // now make sure we don't have other points inside the potential ear
-    var p = ear.next.next;
-
-    while (p !== ear.prev) {
-        if (pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, p.x, p.y) &&
-            area(p.prev, p, p.next) >= 0) return false;
-        p = p.next;
-    }
-
-    return true;
-}
-
-function isEarHashed(ear, minX, minY, invSize) {
-    var a = ear.prev,
-        b = ear,
-        c = ear.next;
-
-    if (area(a, b, c) >= 0) return false; // reflex, can't be an ear
-
-    // triangle bbox; min & max are calculated like this for speed
-    var minTX = a.x < b.x ? (a.x < c.x ? a.x : c.x) : (b.x < c.x ? b.x : c.x),
-        minTY = a.y < b.y ? (a.y < c.y ? a.y : c.y) : (b.y < c.y ? b.y : c.y),
-        maxTX = a.x > b.x ? (a.x > c.x ? a.x : c.x) : (b.x > c.x ? b.x : c.x),
-        maxTY = a.y > b.y ? (a.y > c.y ? a.y : c.y) : (b.y > c.y ? b.y : c.y);
-
-    // z-order range for the current triangle bbox;
-    var minZ = zOrder(minTX, minTY, minX, minY, invSize),
-        maxZ = zOrder(maxTX, maxTY, minX, minY, invSize);
-
-    var p = ear.prevZ,
-        n = ear.nextZ;
-
-    // look for points inside the triangle in both directions
-    while (p && p.z >= minZ && n && n.z <= maxZ) {
-        if (p !== ear.prev && p !== ear.next &&
-            pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, p.x, p.y) &&
-            area(p.prev, p, p.next) >= 0) return false;
-        p = p.prevZ;
-
-        if (n !== ear.prev && n !== ear.next &&
-            pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, n.x, n.y) &&
-            area(n.prev, n, n.next) >= 0) return false;
-        n = n.nextZ;
-    }
-
-    // look for remaining points in decreasing z-order
-    while (p && p.z >= minZ) {
-        if (p !== ear.prev && p !== ear.next &&
-            pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, p.x, p.y) &&
-            area(p.prev, p, p.next) >= 0) return false;
-        p = p.prevZ;
-    }
-
-    // look for remaining points in increasing z-order
-    while (n && n.z <= maxZ) {
-        if (n !== ear.prev && n !== ear.next &&
-            pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, n.x, n.y) &&
-            area(n.prev, n, n.next) >= 0) return false;
-        n = n.nextZ;
-    }
-
-    return true;
-}
-
-// go through all polygon nodes and cure small local self-intersections
-function cureLocalIntersections(start, triangles, dim) {
-    var p = start;
-    do {
-        var a = p.prev,
-            b = p.next.next;
-
-        if (!equals(a, b) && intersects(a, p, p.next, b) && locallyInside(a, b) && locallyInside(b, a)) {
-
-            triangles.push(a.i / dim);
-            triangles.push(p.i / dim);
-            triangles.push(b.i / dim);
-
-            // remove two nodes involved
-            removeNode(p);
-            removeNode(p.next);
-
-            p = start = b;
-        }
-        p = p.next;
-    } while (p !== start);
-
-    return p;
-}
-
-// try splitting polygon into two and triangulate them independently
-function splitEarcut(start, triangles, dim, minX, minY, invSize) {
-    // look for a valid diagonal that divides the polygon into two
-    var a = start;
-    do {
-        var b = a.next.next;
-        while (b !== a.prev) {
-            if (a.i !== b.i && isValidDiagonal(a, b)) {
-                // split the polygon in two by the diagonal
-                var c = splitPolygon(a, b);
-
-                // filter colinear points around the cuts
-                a = filterPoints(a, a.next);
-                c = filterPoints(c, c.next);
-
-                // run earcut on each half
-                earcutLinked(a, triangles, dim, minX, minY, invSize);
-                earcutLinked(c, triangles, dim, minX, minY, invSize);
-                return;
-            }
-            b = b.next;
-        }
-        a = a.next;
-    } while (a !== start);
-}
-
-// link every hole into the outer loop, producing a single-ring polygon without holes
-function eliminateHoles(data, holeIndices, outerNode, dim) {
-    var queue = [],
-        i, len, start, end, list;
-
-    for (i = 0, len = holeIndices.length; i < len; i++) {
-        start = holeIndices[i] * dim;
-        end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
-        list = linkedList(data, start, end, dim, false);
-        if (list === list.next) list.steiner = true;
-        queue.push(getLeftmost(list));
-    }
-
-    queue.sort(compareX);
-
-    // process holes from left to right
-    for (i = 0; i < queue.length; i++) {
-        eliminateHole(queue[i], outerNode);
-        outerNode = filterPoints(outerNode, outerNode.next);
-    }
-
-    return outerNode;
-}
-
-function compareX(a, b) {
-    return a.x - b.x;
-}
-
-// find a bridge between vertices that connects hole with an outer ring and and link it
-function eliminateHole(hole, outerNode) {
-    outerNode = findHoleBridge(hole, outerNode);
-    if (outerNode) {
-        var b = splitPolygon(outerNode, hole);
-        filterPoints(b, b.next);
-    }
-}
-
-// David Eberly's algorithm for finding a bridge between hole and outer polygon
-function findHoleBridge(hole, outerNode) {
-    var p = outerNode,
-        hx = hole.x,
-        hy = hole.y,
-        qx = -Infinity,
-        m;
-
-    // find a segment intersected by a ray from the hole's leftmost point to the left;
-    // segment's endpoint with lesser x will be potential connection point
-    do {
-        if (hy <= p.y && hy >= p.next.y && p.next.y !== p.y) {
-            var x = p.x + (hy - p.y) * (p.next.x - p.x) / (p.next.y - p.y);
-            if (x <= hx && x > qx) {
-                qx = x;
-                if (x === hx) {
-                    if (hy === p.y) return p;
-                    if (hy === p.next.y) return p.next;
-                }
-                m = p.x < p.next.x ? p : p.next;
-            }
-        }
-        p = p.next;
-    } while (p !== outerNode);
-
-    if (!m) return null;
-
-    if (hx === qx) return m.prev; // hole touches outer segment; pick lower endpoint
-
-    // look for points inside the triangle of hole point, segment intersection and endpoint;
-    // if there are no points found, we have a valid connection;
-    // otherwise choose the point of the minimum angle with the ray as connection point
-
-    var stop = m,
-        mx = m.x,
-        my = m.y,
-        tanMin = Infinity,
-        tan;
-
-    p = m.next;
-
-    while (p !== stop) {
-        if (hx >= p.x && p.x >= mx && hx !== p.x &&
-                pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.x, p.y)) {
-
-            tan = Math.abs(hy - p.y) / (hx - p.x); // tangential
-
-            if ((tan < tanMin || (tan === tanMin && p.x > m.x)) && locallyInside(p, hole)) {
-                m = p;
-                tanMin = tan;
-            }
-        }
-
-        p = p.next;
-    }
-
-    return m;
-}
-
-// interlink polygon nodes in z-order
-function indexCurve(start, minX, minY, invSize) {
-    var p = start;
-    do {
-        if (p.z === null) p.z = zOrder(p.x, p.y, minX, minY, invSize);
-        p.prevZ = p.prev;
-        p.nextZ = p.next;
-        p = p.next;
-    } while (p !== start);
-
-    p.prevZ.nextZ = null;
-    p.prevZ = null;
-
-    sortLinked(p);
-}
-
-// Simon Tatham's linked list merge sort algorithm
-// http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
-function sortLinked(list) {
-    var i, p, q, e, tail, numMerges, pSize, qSize,
-        inSize = 1;
-
-    do {
-        p = list;
-        list = null;
-        tail = null;
-        numMerges = 0;
-
-        while (p) {
-            numMerges++;
-            q = p;
-            pSize = 0;
-            for (i = 0; i < inSize; i++) {
-                pSize++;
-                q = q.nextZ;
-                if (!q) break;
-            }
-            qSize = inSize;
-
-            while (pSize > 0 || (qSize > 0 && q)) {
-
-                if (pSize !== 0 && (qSize === 0 || !q || p.z <= q.z)) {
-                    e = p;
-                    p = p.nextZ;
-                    pSize--;
-                } else {
-                    e = q;
-                    q = q.nextZ;
-                    qSize--;
-                }
-
-                if (tail) tail.nextZ = e;
-                else list = e;
-
-                e.prevZ = tail;
-                tail = e;
-            }
-
-            p = q;
-        }
-
-        tail.nextZ = null;
-        inSize *= 2;
-
-    } while (numMerges > 1);
-
-    return list;
-}
-
-// z-order of a point given coords and inverse of the longer side of data bbox
-function zOrder(x, y, minX, minY, invSize) {
-    // coords are transformed into non-negative 15-bit integer range
-    x = 32767 * (x - minX) * invSize;
-    y = 32767 * (y - minY) * invSize;
-
-    x = (x | (x << 8)) & 0x00FF00FF;
-    x = (x | (x << 4)) & 0x0F0F0F0F;
-    x = (x | (x << 2)) & 0x33333333;
-    x = (x | (x << 1)) & 0x55555555;
-
-    y = (y | (y << 8)) & 0x00FF00FF;
-    y = (y | (y << 4)) & 0x0F0F0F0F;
-    y = (y | (y << 2)) & 0x33333333;
-    y = (y | (y << 1)) & 0x55555555;
-
-    return x | (y << 1);
-}
-
-// find the leftmost node of a polygon ring
-function getLeftmost(start) {
-    var p = start,
-        leftmost = start;
-    do {
-        if (p.x < leftmost.x || (p.x === leftmost.x && p.y < leftmost.y)) leftmost = p;
-        p = p.next;
-    } while (p !== start);
-
-    return leftmost;
-}
-
-// check if a point lies within a convex triangle
-function pointInTriangle(ax, ay, bx, by, cx, cy, px, py) {
-    return (cx - px) * (ay - py) - (ax - px) * (cy - py) >= 0 &&
-           (ax - px) * (by - py) - (bx - px) * (ay - py) >= 0 &&
-           (bx - px) * (cy - py) - (cx - px) * (by - py) >= 0;
-}
-
-// check if a diagonal between two polygon nodes is valid (lies in polygon interior)
-function isValidDiagonal(a, b) {
-    return a.next.i !== b.i && a.prev.i !== b.i && !intersectsPolygon(a, b) &&
-           locallyInside(a, b) && locallyInside(b, a) && middleInside(a, b);
-}
-
-// signed area of a triangle
-function area(p, q, r) {
-    return (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-}
-
-// check if two points are equal
-function equals(p1, p2) {
-    return p1.x === p2.x && p1.y === p2.y;
-}
-
-// check if two segments intersect
-function intersects(p1, q1, p2, q2) {
-    if ((equals(p1, q1) && equals(p2, q2)) ||
-        (equals(p1, q2) && equals(p2, q1))) return true;
-    return area(p1, q1, p2) > 0 !== area(p1, q1, q2) > 0 &&
-           area(p2, q2, p1) > 0 !== area(p2, q2, q1) > 0;
-}
-
-// check if a polygon diagonal intersects any polygon segments
-function intersectsPolygon(a, b) {
-    var p = a;
-    do {
-        if (p.i !== a.i && p.next.i !== a.i && p.i !== b.i && p.next.i !== b.i &&
-                intersects(p, p.next, a, b)) return true;
-        p = p.next;
-    } while (p !== a);
-
-    return false;
-}
-
-// check if a polygon diagonal is locally inside the polygon
-function locallyInside(a, b) {
-    return area(a.prev, a, a.next) < 0 ?
-        area(a, b, a.next) >= 0 && area(a, a.prev, b) >= 0 :
-        area(a, b, a.prev) < 0 || area(a, a.next, b) < 0;
-}
-
-// check if the middle point of a polygon diagonal is inside the polygon
-function middleInside(a, b) {
-    var p = a,
-        inside = false,
-        px = (a.x + b.x) / 2,
-        py = (a.y + b.y) / 2;
-    do {
-        if (((p.y > py) !== (p.next.y > py)) && p.next.y !== p.y &&
-                (px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x))
-            inside = !inside;
-        p = p.next;
-    } while (p !== a);
-
-    return inside;
-}
-
-// link two polygon vertices with a bridge; if the vertices belong to the same ring, it splits polygon into two;
-// if one belongs to the outer ring and another to a hole, it merges it into a single ring
-function splitPolygon(a, b) {
-    var a2 = new Node(a.i, a.x, a.y),
-        b2 = new Node(b.i, b.x, b.y),
-        an = a.next,
-        bp = b.prev;
-
-    a.next = b;
-    b.prev = a;
-
-    a2.next = an;
-    an.prev = a2;
-
-    b2.next = a2;
-    a2.prev = b2;
-
-    bp.next = b2;
-    b2.prev = bp;
-
-    return b2;
-}
-
-// create a node and optionally link it with previous one (in a circular doubly linked list)
-function insertNode(i, x, y, last) {
-    var p = new Node(i, x, y);
-
-    if (!last) {
-        p.prev = p;
-        p.next = p;
-
-    } else {
-        p.next = last.next;
-        p.prev = last;
-        last.next.prev = p;
-        last.next = p;
-    }
-    return p;
-}
-
-function removeNode(p) {
-    p.next.prev = p.prev;
-    p.prev.next = p.next;
-
-    if (p.prevZ) p.prevZ.nextZ = p.nextZ;
-    if (p.nextZ) p.nextZ.prevZ = p.prevZ;
-}
-
-function Node(i, x, y) {
-    // vertex index in coordinates array
-    this.i = i;
-
-    // vertex coordinates
-    this.x = x;
-    this.y = y;
-
-    // previous and next vertex nodes in a polygon ring
-    this.prev = null;
-    this.next = null;
-
-    // z-order curve value
-    this.z = null;
-
-    // previous and next nodes in z-order
-    this.prevZ = null;
-    this.nextZ = null;
-
-    // indicates whether this is a steiner point
-    this.steiner = false;
-}
-
-// return a percentage difference between the polygon area and its triangulation area;
-// used to verify correctness of triangulation
-earcut.deviation = function (data, holeIndices, dim, triangles) {
-    var hasHoles = holeIndices && holeIndices.length;
-    var outerLen = hasHoles ? holeIndices[0] * dim : data.length;
-
-    var polygonArea = Math.abs(signedArea(data, 0, outerLen, dim));
-    if (hasHoles) {
-        for (var i = 0, len = holeIndices.length; i < len; i++) {
-            var start = holeIndices[i] * dim;
-            var end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
-            polygonArea -= Math.abs(signedArea(data, start, end, dim));
-        }
-    }
-
-    var trianglesArea = 0;
-    for (i = 0; i < triangles.length; i += 3) {
-        var a = triangles[i] * dim;
-        var b = triangles[i + 1] * dim;
-        var c = triangles[i + 2] * dim;
-        trianglesArea += Math.abs(
-            (data[a] - data[c]) * (data[b + 1] - data[a + 1]) -
-            (data[a] - data[b]) * (data[c + 1] - data[a + 1]));
-    }
-
-    return polygonArea === 0 && trianglesArea === 0 ? 0 :
-        Math.abs((trianglesArea - polygonArea) / polygonArea);
-};
-
-function signedArea(data, start, end, dim) {
-    var sum = 0;
-    for (var i = start, j = end - dim; i < end; i += dim) {
-        sum += (data[j] - data[i]) * (data[i + 1] + data[j + 1]);
-        j = i;
-    }
-    return sum;
-}
-
-// turn a polygon in a multi-dimensional array form (e.g. as in GeoJSON) into a form Earcut accepts
-earcut.flatten = function (data) {
-    var dim = data[0][0].length,
-        result = {vertices: [], holes: [], dimensions: dim},
-        holeIndex = 0;
-
-    for (var i = 0; i < data.length; i++) {
-        for (var j = 0; j < data[i].length; j++) {
-            for (var d = 0; d < dim; d++) result.vertices.push(data[i][j][d]);
-        }
-        if (i > 0) {
-            holeIndex += data[i - 1].length;
-            result.holes.push(holeIndex);
-        }
-    }
-    return result;
-};
-
-
-/***/ }),
-/* 259 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var meta_1 = __webpack_require__(260);
+var meta_1 = __webpack_require__(262);
 /**
  * Takes a set of features, calculates the bbox of all input features, and returns a bounding box.
  *
@@ -75659,7 +76451,7 @@ exports.default = bbox;
 
 
 /***/ }),
-/* 260 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75667,7 +76459,7 @@ exports.default = bbox;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var helpers = __webpack_require__(41);
+var helpers = __webpack_require__(42);
 
 /**
  * Callback for coordEach
@@ -76798,7 +77590,7 @@ exports.findPoint = findPoint;
 
 
 /***/ }),
-/* 261 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76811,9 +77603,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-var helpers_1 = __webpack_require__(41);
-var invariant_1 = __webpack_require__(262);
-var lineclip = __importStar(__webpack_require__(263));
+var helpers_1 = __webpack_require__(42);
+var invariant_1 = __webpack_require__(264);
+var lineclip = __importStar(__webpack_require__(265));
 /**
  * Takes a {@link Feature} and a bbox and clips the feature to the bbox using
  * [lineclip](https://github.com/mapbox/lineclip).
@@ -76881,13 +77673,13 @@ function clipPolygon(rings, bbox) {
 
 
 /***/ }),
-/* 262 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var helpers_1 = __webpack_require__(41);
+var helpers_1 = __webpack_require__(42);
 /**
  * Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
  *
@@ -77099,7 +77891,7 @@ exports.getType = getType;
 
 
 /***/ }),
-/* 263 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77231,7 +78023,7 @@ function bitCode(p, bbox) {
 
 
 /***/ }),
-/* 264 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77246,7 +78038,7 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(15);
+var _capMixin = __webpack_require__(16);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -77258,7 +78050,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _multipleKeyLabelMixin = __webpack_require__(183);
+var _multipleKeyLabelMixin = __webpack_require__(184);
 
 var _multipleKeyLabelMixin2 = _interopRequireDefault(_multipleKeyLabelMixin);
 
@@ -78241,7 +79033,7 @@ function pieChart(parent, chartGroup) {
  * ***************************************************************************/
 
 /***/ }),
-/* 265 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78256,7 +79048,7 @@ var _core = __webpack_require__(3);
 
 var _utils = __webpack_require__(4);
 
-var _coordinateGridMixin = __webpack_require__(13);
+var _coordinateGridMixin = __webpack_require__(14);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -78264,15 +79056,15 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _elasticDimensionMixin = __webpack_require__(185);
+var _elasticDimensionMixin = __webpack_require__(186);
 
 var _elasticDimensionMixin2 = _interopRequireDefault(_elasticDimensionMixin);
 
-var _stackMixin = __webpack_require__(38);
+var _stackMixin = __webpack_require__(39);
 
 var _stackMixin2 = _interopRequireDefault(_stackMixin);
 
-var _multiSeriesMixin = __webpack_require__(187);
+var _multiSeriesMixin = __webpack_require__(188);
 
 var _multiSeriesMixin2 = _interopRequireDefault(_multiSeriesMixin);
 
@@ -78864,7 +79656,7 @@ function lineChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 266 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78948,7 +79740,7 @@ function numberChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 267 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78966,13 +79758,13 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _stackedLegend = __webpack_require__(268);
+var _stackedLegend = __webpack_require__(270);
 
-var _coordinateGridRasterMixin = __webpack_require__(190);
+var _coordinateGridRasterMixin = __webpack_require__(193);
 
 var _coordinateGridRasterMixin2 = _interopRequireDefault(_coordinateGridRasterMixin);
 
-var _mapMixin = __webpack_require__(40);
+var _mapMixin = __webpack_require__(41);
 
 var _mapMixin2 = _interopRequireDefault(_mapMixin);
 
@@ -78980,13 +79772,13 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _scatterMixin = __webpack_require__(199);
+var _scatterMixin = __webpack_require__(202);
 
 var _scatterMixin2 = _interopRequireDefault(_scatterMixin);
 
 var _coreAsync = __webpack_require__(5);
 
-var _legendables = __webpack_require__(291);
+var _legendables = __webpack_require__(293);
 
 var _lodash = __webpack_require__(23);
 
@@ -79712,7 +80504,7 @@ function genLayeredVega(chart) {
 }
 
 /***/ }),
-/* 268 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80058,7 +80850,7 @@ function isNullLegend(domain) {
 }
 
 /***/ }),
-/* 269 */
+/* 271 */
 /***/ (function(module, exports) {
 
 /*eslint-disable no-cond-assign */
@@ -80334,7 +81126,7 @@ function stringify (gj) {
 
 
 /***/ }),
-/* 270 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80350,7 +81142,7 @@ exports.default = bindEventHandlers;
 
 var _coreAsync = __webpack_require__(5);
 
-var _mapboxPortedFunctions = __webpack_require__(271);
+var _mapboxPortedFunctions = __webpack_require__(273);
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -81437,7 +82229,7 @@ function bindEventHandlers(chart, container, dataBounds, dataScale, dataOffset, 
 }
 
 /***/ }),
-/* 271 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81449,7 +82241,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.timed = undefined;
 exports.bezier = bezier;
 
-var _unitbezier = __webpack_require__(272);
+var _unitbezier = __webpack_require__(274);
 
 var _unitbezier2 = _interopRequireDefault(_unitbezier);
 
@@ -81526,7 +82318,7 @@ var timed = exports.timed = function timed(fn, dur, ctx) {
 };
 
 /***/ }),
-/* 272 */
+/* 274 */
 /***/ (function(module, exports) {
 
 /*
@@ -81637,23 +82429,23 @@ UnitBezier.prototype.solve = function(x, epsilon) {
 
 
 /***/ }),
-/* 273 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(274);
+module.exports = __webpack_require__(276);
 
 /***/ }),
-/* 274 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(8);
-var bind = __webpack_require__(191);
-var Axios = __webpack_require__(276);
-var mergeConfig = __webpack_require__(197);
-var defaults = __webpack_require__(194);
+var bind = __webpack_require__(194);
+var Axios = __webpack_require__(278);
+var mergeConfig = __webpack_require__(200);
+var defaults = __webpack_require__(197);
 
 /**
  * Create an instance of Axios
@@ -81686,15 +82478,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(198);
-axios.CancelToken = __webpack_require__(289);
-axios.isCancel = __webpack_require__(193);
+axios.Cancel = __webpack_require__(201);
+axios.CancelToken = __webpack_require__(291);
+axios.isCancel = __webpack_require__(196);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(290);
+axios.spread = __webpack_require__(292);
 
 module.exports = axios;
 
@@ -81703,7 +82495,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 275 */
+/* 277 */
 /***/ (function(module, exports) {
 
 /*!
@@ -81720,17 +82512,17 @@ module.exports = function isBuffer (obj) {
 
 
 /***/ }),
-/* 276 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(8);
-var buildURL = __webpack_require__(192);
-var InterceptorManager = __webpack_require__(277);
-var dispatchRequest = __webpack_require__(278);
-var mergeConfig = __webpack_require__(197);
+var buildURL = __webpack_require__(195);
+var InterceptorManager = __webpack_require__(279);
+var dispatchRequest = __webpack_require__(280);
+var mergeConfig = __webpack_require__(200);
 
 /**
  * Create a new instance of Axios
@@ -81813,7 +82605,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 277 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81872,18 +82664,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 278 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(8);
-var transformData = __webpack_require__(279);
-var isCancel = __webpack_require__(193);
-var defaults = __webpack_require__(194);
-var isAbsoluteURL = __webpack_require__(287);
-var combineURLs = __webpack_require__(288);
+var transformData = __webpack_require__(281);
+var isCancel = __webpack_require__(196);
+var defaults = __webpack_require__(197);
+var isAbsoluteURL = __webpack_require__(289);
+var combineURLs = __webpack_require__(290);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -81965,7 +82757,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 279 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81992,7 +82784,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 280 */
+/* 282 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -82182,7 +82974,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 281 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82201,13 +82993,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 282 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(196);
+var createError = __webpack_require__(199);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -82233,7 +83025,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 283 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82282,7 +83074,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 284 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82342,7 +83134,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 285 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82417,7 +83209,7 @@ module.exports = (
 
 
 /***/ }),
-/* 286 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82477,7 +83269,7 @@ module.exports = (
 
 
 /***/ }),
-/* 287 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82498,7 +83290,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 288 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82519,13 +83311,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 289 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(198);
+var Cancel = __webpack_require__(201);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -82583,7 +83375,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 290 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82617,18 +83409,18 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 291 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var legend_1 = __webpack_require__(292);
+var legend_1 = __webpack_require__(294);
 exports.Legend = legend_1.default;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 292 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82642,10 +83434,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var h_1 = __webpack_require__(293);
-var vdom_1 = __webpack_require__(296);
-var d3_dispatch_1 = __webpack_require__(305);
-var d3_format_1 = __webpack_require__(307);
+var h_1 = __webpack_require__(295);
+var vdom_1 = __webpack_require__(298);
+var d3_dispatch_1 = __webpack_require__(307);
+var d3_format_1 = __webpack_require__(309);
 var commafy = function (d) { return typeof d === "number" ? d3_format_1.format(",")(parseFloat(d.toFixed(2))) : d; };
 var formatNumber = function (d) {
     if (String(d).length <= 4) {
@@ -82837,14 +83629,14 @@ exports.default = Legend;
 //# sourceMappingURL=legend.js.map
 
 /***/ }),
-/* 293 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var vnode_1 = __webpack_require__(294);
-var is = __webpack_require__(295);
+var vnode_1 = __webpack_require__(296);
+var is = __webpack_require__(297);
 function addNS(data, children, sel) {
     data.ns = 'http://www.w3.org/2000/svg';
     if (sel !== 'foreignObject' && children !== undefined) {
@@ -82902,7 +83694,7 @@ exports.default = h;
 //# sourceMappingURL=h.js.map
 
 /***/ }),
-/* 294 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82918,7 +83710,7 @@ exports.default = vnode;
 //# sourceMappingURL=vnode.js.map
 
 /***/ }),
-/* 295 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82932,18 +83724,18 @@ exports.primitive = primitive;
 //# sourceMappingURL=is.js.map
 
 /***/ }),
-/* 296 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var snabbdom_1 = __webpack_require__(297);
-var attributes_1 = __webpack_require__(300);
-var class_1 = __webpack_require__(301);
-var props_1 = __webpack_require__(302);
-var style_1 = __webpack_require__(303);
-var eventlisteners_1 = __webpack_require__(304);
+var snabbdom_1 = __webpack_require__(299);
+var attributes_1 = __webpack_require__(302);
+var class_1 = __webpack_require__(303);
+var props_1 = __webpack_require__(304);
+var style_1 = __webpack_require__(305);
+var eventlisteners_1 = __webpack_require__(306);
 exports.patch = snabbdom_1.init([
     class_1.default,
     props_1.default,
@@ -82954,18 +83746,18 @@ exports.patch = snabbdom_1.init([
 //# sourceMappingURL=vdom.js.map
 
 /***/ }),
-/* 297 */
+/* 299 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["init"] = init;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(200);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(298);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(202);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vnode__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__is__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__htmldomapi__ = __webpack_require__(300);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__h__ = __webpack_require__(205);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return __WEBPACK_IMPORTED_MODULE_3__h__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(299);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__thunk__ = __webpack_require__(301);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "thunk", function() { return __WEBPACK_IMPORTED_MODULE_4__thunk__["a"]; });
 
 
@@ -83273,7 +84065,7 @@ function init(modules, domApi) {
 //# sourceMappingURL=snabbdom.js.map
 
 /***/ }),
-/* 298 */
+/* 300 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83344,12 +84136,12 @@ var htmlDomApi = {
 //# sourceMappingURL=htmldomapi.js.map
 
 /***/ }),
-/* 299 */
+/* 301 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return thunk; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__h__ = __webpack_require__(202);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__h__ = __webpack_require__(205);
 
 function copyToThunk(vnode, thunk) {
     thunk.elm = vnode.elm;
@@ -83397,7 +84189,7 @@ var thunk = function thunk(sel, key, fn, args) {
 //# sourceMappingURL=thunk.js.map
 
 /***/ }),
-/* 300 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83458,7 +84250,7 @@ exports.default = exports.attributesModule;
 //# sourceMappingURL=attributes.js.map
 
 /***/ }),
-/* 301 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83489,7 +84281,7 @@ exports.default = exports.classModule;
 //# sourceMappingURL=class.js.map
 
 /***/ }),
-/* 302 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83521,7 +84313,7 @@ exports.default = exports.propsModule;
 //# sourceMappingURL=props.js.map
 
 /***/ }),
-/* 303 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83622,7 +84414,7 @@ exports.default = exports.styleModule;
 //# sourceMappingURL=style.js.map
 
 /***/ }),
-/* 304 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83723,18 +84515,18 @@ exports.default = exports.eventListenersModule;
 //# sourceMappingURL=eventlisteners.js.map
 
 /***/ }),
-/* 305 */
+/* 307 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(306);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__dispatch__ = __webpack_require__(308);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return __WEBPACK_IMPORTED_MODULE_0__dispatch__["a"]; });
 
 
 
 /***/ }),
-/* 306 */
+/* 308 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83825,24 +84617,24 @@ function set(type, name, callback) {
 
 
 /***/ }),
-/* 307 */
+/* 309 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(308);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defaultLocale__ = __webpack_require__(310);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatDefaultLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "format", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatPrefix", function() { return __WEBPACK_IMPORTED_MODULE_0__defaultLocale__["c"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__locale__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__locale__ = __webpack_require__(206);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatLocale", function() { return __WEBPACK_IMPORTED_MODULE_1__locale__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(204);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__ = __webpack_require__(207);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "formatSpecifier", function() { return __WEBPACK_IMPORTED_MODULE_2__formatSpecifier__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(315);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__precisionFixed__ = __webpack_require__(317);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionFixed", function() { return __WEBPACK_IMPORTED_MODULE_3__precisionFixed__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(316);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__ = __webpack_require__(318);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionPrefix", function() { return __WEBPACK_IMPORTED_MODULE_4__precisionPrefix__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(317);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__precisionRound__ = __webpack_require__(319);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "precisionRound", function() { return __WEBPACK_IMPORTED_MODULE_5__precisionRound__["a"]; });
 
 
@@ -83853,14 +84645,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 308 */
+/* 310 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return format; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return formatPrefix; });
 /* harmony export (immutable) */ __webpack_exports__["a"] = defaultLocale;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__locale__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__locale__ = __webpack_require__(206);
 
 
 var locale;
@@ -83883,7 +84675,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 309 */
+/* 311 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83908,7 +84700,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 310 */
+/* 312 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83922,7 +84714,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 311 */
+/* 313 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83940,12 +84732,12 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 312 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(205);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(313);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatPrefixAuto__ = __webpack_require__(208);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__formatRounded__ = __webpack_require__(315);
 
 
 
@@ -83967,11 +84759,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 313 */
+/* 315 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__formatDecimal__ = __webpack_require__(43);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(x, p) {
@@ -83986,7 +84778,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 314 */
+/* 316 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83996,11 +84788,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 315 */
+/* 317 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(30);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step) {
@@ -84009,11 +84801,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 316 */
+/* 318 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(30);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, value) {
@@ -84022,11 +84814,11 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 317 */
+/* 319 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exponent__ = __webpack_require__(30);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function(step, max) {
@@ -84036,7 +84828,7 @@ function defaultLocale(definition) {
 
 
 /***/ }),
-/* 318 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84051,7 +84843,7 @@ var _baseMixin = __webpack_require__(7);
 
 var _baseMixin2 = _interopRequireDefault(_baseMixin);
 
-var _capMixin = __webpack_require__(15);
+var _capMixin = __webpack_require__(16);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
@@ -84063,11 +84855,11 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _lockAxisMixin = __webpack_require__(39);
+var _lockAxisMixin = __webpack_require__(40);
 
 var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
-var _marginMixin = __webpack_require__(17);
+var _marginMixin = __webpack_require__(18);
 
 var _marginMixin2 = _interopRequireDefault(_marginMixin);
 
@@ -84705,7 +85497,7 @@ function rowChart(parent, chartGroup) {
 }
 
 /***/ }),
-/* 319 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84716,7 +85508,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = scatterPlot;
 
-var _coordinateGridMixin = __webpack_require__(13);
+var _coordinateGridMixin = __webpack_require__(14);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -84724,7 +85516,7 @@ var _d = __webpack_require__(1);
 
 var _d2 = _interopRequireDefault(_d);
 
-var _events = __webpack_require__(14);
+var _events = __webpack_require__(15);
 
 var _filters = __webpack_require__(21);
 
@@ -85007,7 +85799,7 @@ function scatterPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 320 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85556,7 +86348,7 @@ function mapdTable(parent, chartGroup) {
 }
 
 /***/ }),
-/* 321 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85569,7 +86361,7 @@ exports.default = boxPlot;
 
 var _core = __webpack_require__(3);
 
-var _coordinateGridMixin = __webpack_require__(13);
+var _coordinateGridMixin = __webpack_require__(14);
 
 var _coordinateGridMixin2 = _interopRequireDefault(_coordinateGridMixin);
 
@@ -85814,7 +86606,7 @@ function boxPlot(parent, chartGroup) {
 }
 
 /***/ }),
-/* 322 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85943,7 +86735,7 @@ function countWidget(parent, chartGroup) {
 }
 
 /***/ }),
-/* 323 */
+/* 325 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -85951,10 +86743,10 @@ function countWidget(parent, chartGroup) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = computeAllProdsFollows;
 /* unused harmony export buildBetweenProdsFollowPrefix */
 /* unused harmony export buildInProdFollowPrefix */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__first__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rest__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__first__ = __webpack_require__(217);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(215);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(218);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gast_gast_public__ = __webpack_require__(6);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -86020,7 +86812,7 @@ function buildInProdFollowPrefix(terminal) {
 //# sourceMappingURL=follow.js.map
 
 /***/ }),
-/* 324 */
+/* 326 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -86028,11 +86820,11 @@ function buildInProdFollowPrefix(terminal) {
 /* harmony export (immutable) */ __webpack_exports__["c"] = getOptimizedStartCodesIndices;
 /* unused harmony export firstCharOptimizedIndices */
 /* harmony export (immutable) */ __webpack_exports__["a"] = canMatchCharCode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_regexp_to_ast___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_regexp_to_ast__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lexer__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__reg_exp_parser__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lexer__ = __webpack_require__(215);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -86295,7 +87087,7 @@ function canMatchCharCode(charCodes, pattern) {
 //# sourceMappingURL=reg_exp.js.map
 
 /***/ }),
-/* 325 */
+/* 327 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -86362,16 +87154,16 @@ var GastRefResolverVisitor = /** @class */ (function (_super) {
 //# sourceMappingURL=resolver.js.map
 
 /***/ }),
-/* 326 */
+/* 328 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LooksAhead; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grammar_lookahead__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_keys__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_keys__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_gast_gast__ = __webpack_require__(26);
 
 
 
@@ -86480,15 +87272,15 @@ var LooksAhead = /** @class */ (function () {
 //# sourceMappingURL=looksahead.js.map
 
 /***/ }),
-/* 327 */
+/* 329 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TreeBuilder; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cst_cst__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cst_cst__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__ = __webpack_require__(328);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_keys__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cst_cst_visitor__ = __webpack_require__(330);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_keys__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parser__ = __webpack_require__(9);
 
 
@@ -86780,7 +87572,7 @@ var TreeBuilder = /** @class */ (function () {
 //# sourceMappingURL=tree_builder.js.map
 
 /***/ }),
-/* 328 */
+/* 330 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -86792,8 +87584,8 @@ var TreeBuilder = /** @class */ (function () {
 /* unused harmony export validateMissingCstMethods */
 /* unused harmony export validateRedundantMethods */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__ = __webpack_require__(218);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_checks__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lang_lang_extensions__ = __webpack_require__(221);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_checks__ = __webpack_require__(33);
 
 
 
@@ -86917,7 +87709,7 @@ function validateRedundantMethods(visitorInstance, ruleNames) {
 //# sourceMappingURL=cst_visitor.js.map
 
 /***/ }),
-/* 329 */
+/* 331 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -86999,16 +87791,16 @@ var LexerAdapter = /** @class */ (function () {
 //# sourceMappingURL=lexer_adapter.js.map
 
 /***/ }),
-/* 330 */
+/* 332 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RecognizerApi; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__exceptions_public__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__exceptions_public__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_checks__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__errors_public__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_checks__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__grammar_gast_gast_public__ = __webpack_require__(6);
 
 
@@ -87353,21 +88145,21 @@ var RecognizerApi = /** @class */ (function () {
 //# sourceMappingURL=recognizer_api.js.map
 
 /***/ }),
-/* 331 */
+/* 333 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RecognizerEngine; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_keys__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exceptions_public__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_lookahead__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_keys__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__exceptions_public__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__grammar_lookahead__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__grammar_interpreter__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__recoverable__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__scan_tokens_public__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__scan_tokens__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lang_lang_extensions__ = __webpack_require__(218);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__recoverable__ = __webpack_require__(220);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__scan_tokens_public__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__scan_tokens__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lang_lang_extensions__ = __webpack_require__(221);
 
 
 
@@ -88013,14 +88805,14 @@ var RecognizerEngine = /** @class */ (function () {
 //# sourceMappingURL=recognizer_engine.js.map
 
 /***/ }),
-/* 332 */
+/* 334 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ErrorHandler; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exceptions_public__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exceptions_public__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_lookahead__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__grammar_lookahead__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parser__ = __webpack_require__(9);
 
 
@@ -88105,12 +88897,12 @@ var ErrorHandler = /** @class */ (function () {
 //# sourceMappingURL=error_handler.js.map
 
 /***/ }),
-/* 333 */
+/* 335 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ContentAssist; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grammar_interpreter__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grammar_interpreter__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 
 
@@ -88140,18 +88932,18 @@ var ContentAssist = /** @class */ (function () {
 //# sourceMappingURL=context_assist.js.map
 
 /***/ }),
-/* 334 */
+/* 336 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GastRecorder; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__grammar_gast_gast_public__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__scan_tokens_public__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__scan_lexer_public__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__scan_tokens__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__scan_tokens_public__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__parser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__grammar_keys__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__grammar_keys__ = __webpack_require__(27);
 
 
 
@@ -88470,7 +89262,7 @@ function assertMethodIdxIsValid(idx) {
 //# sourceMappingURL=gast_recorder.js.map
 
 /***/ }),
-/* 335 */
+/* 337 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88530,12 +89322,12 @@ var PerformanceTracer = /** @class */ (function () {
 //# sourceMappingURL=perf_tracer.js.map
 
 /***/ }),
-/* 336 */
+/* 338 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createSyntaxDiagramsCode;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(214);
 
 function createSyntaxDiagramsCode(grammar, _a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.resourceBase, resourceBase = _c === void 0 ? "https://unpkg.com/chevrotain@" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* VERSION */] + "/diagrams/" : _c, _d = _b.css, css = _d === void 0 ? "https://unpkg.com/chevrotain@" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* VERSION */] + "/diagrams/diagrams.css" : _d;
@@ -88550,13 +89342,13 @@ function createSyntaxDiagramsCode(grammar, _a) {
 //# sourceMappingURL=render_public.js.map
 
 /***/ }),
-/* 337 */
+/* 339 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = generateParserFactory;
 /* harmony export (immutable) */ __webpack_exports__["b"] = generateParserModule;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generate__ = __webpack_require__(338);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generate__ = __webpack_require__(340);
 
 function generateParserFactory(options) {
     var wrapperText = Object(__WEBPACK_IMPORTED_MODULE_0__generate__["b" /* genWrapperFunction */])({
@@ -88567,7 +89359,7 @@ function generateParserFactory(options) {
     return function (config) {
         return constructorWrapper(options.tokenVocabulary, config, 
         // TODO: check how the require is transpiled/webpacked
-        __webpack_require__(210));
+        __webpack_require__(213));
     };
 }
 function generateParserModule(options) {
@@ -88576,7 +89368,7 @@ function generateParserModule(options) {
 //# sourceMappingURL=generate_public.js.map
 
 /***/ }),
-/* 338 */
+/* 340 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88724,7 +89516,7 @@ function indent(howMuch, text) {
 //# sourceMappingURL=generate.js.map
 
 /***/ }),
-/* 339 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88740,29 +89532,29 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = rasterLayer;
 
-var _capMixin = __webpack_require__(15);
+var _capMixin = __webpack_require__(16);
 
 var _capMixin2 = _interopRequireDefault(_capMixin);
 
-var _rasterLayerPointMixin = __webpack_require__(207);
+var _rasterLayerPointMixin = __webpack_require__(210);
 
 var _rasterLayerPointMixin2 = _interopRequireDefault(_rasterLayerPointMixin);
 
-var _rasterLayerPolyMixin = __webpack_require__(208);
+var _rasterLayerPolyMixin = __webpack_require__(211);
 
 var _rasterLayerPolyMixin2 = _interopRequireDefault(_rasterLayerPolyMixin);
 
-var _rasterLayerHeatmapMixin = __webpack_require__(206);
+var _rasterLayerHeatmapMixin = __webpack_require__(209);
 
 var _rasterLayerHeatmapMixin2 = _interopRequireDefault(_rasterLayerHeatmapMixin);
 
-var _rasterLayerLineMixin = __webpack_require__(340);
+var _rasterLayerLineMixin = __webpack_require__(342);
 
 var _rasterLayerLineMixin2 = _interopRequireDefault(_rasterLayerLineMixin);
 
 var _utilsVega = __webpack_require__(19);
 
-var _mapdDraw = __webpack_require__(18);
+var _mapdDraw = __webpack_require__(13);
 
 var _moment = __webpack_require__(0);
 
@@ -89355,7 +90147,7 @@ function rasterLayer(layerType) {
 }
 
 /***/ }),
-/* 340 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89848,7 +90640,7 @@ function rasterLayerLineMixin(_layer) {
 }
 
 /***/ }),
-/* 341 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90255,7 +91047,7 @@ function rasterMixin(_chart) {
 }
 
 /***/ }),
-/* 342 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90450,7 +91242,7 @@ function legendContinuous() {
 }
 
 /***/ }),
-/* 343 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90467,7 +91259,7 @@ var _d2 = _interopRequireDefault(_d);
 
 var _utils = __webpack_require__(4);
 
-var _dcLegendMixin = __webpack_require__(344);
+var _dcLegendMixin = __webpack_require__(346);
 
 var _dcLegendMixin2 = _interopRequireDefault(_dcLegendMixin);
 
@@ -90724,7 +91516,7 @@ function legend() {
 }
 
 /***/ }),
-/* 344 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90823,7 +91615,7 @@ function legendMixin(legend) {
 }
 
 /***/ }),
-/* 345 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91020,18 +91812,6 @@ function legendCont() {
 }
 
 /***/ }),
-/* 346 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 347 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 348 */
 /***/ (function(module, exports) {
 
@@ -91045,6 +91825,18 @@ function legendCont() {
 
 /***/ }),
 /* 350 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 351 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91288,7 +92080,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })();
 
 /***/ }),
-/* 351 */
+/* 353 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.9.1/LICENSE.txt */
