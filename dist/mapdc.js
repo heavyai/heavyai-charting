@@ -86210,7 +86210,7 @@ function mapdTable(parent, chartGroup) {
         }
 
         _chart._invokeSortListener(_sortColumn);
-        (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
+        _chart.redrawAsync();
       });
 
       sortButton.append("svg").attr("class", "svg-icon").classed("icon-sort", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-sort");
