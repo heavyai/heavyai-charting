@@ -50061,20 +50061,8 @@ function asyncMixin(_chart) {
     });
   };
 
-  var _chartRedrawEnabled = true;
-  var chartRedrawEnabled = function chartRedrawEnabled() {
-    return _chartRedrawEnabled;
-  };
-
-  _chart.enableChartRedraw = function () {
-    _chartRedrawEnabled = true;
-  };
-  _chart.disableChartRedraw = function () {
-    _chartRedrawEnabled = false;
-  };
-
   _chart.redrawAsync = function (queryGroupId, queryCount) {
-    if ((0, _core.refreshDisabled)() || !chartRedrawEnabled()) {
+    if ((0, _core.refreshDisabled)()) {
       return Promise.resolve();
     }
 
@@ -53681,8 +53669,6 @@ var _lockAxisMixin2 = _interopRequireDefault(_lockAxisMixin);
 
 var _errors = __webpack_require__(37);
 
-var _utils = __webpack_require__(4);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -54417,9 +54403,8 @@ function coordinateGridRasterMixin(_chart, _mapboxgl, browser) {
       }
     };
 
-    if (imgUrl && imgUrl !== _chart.lastImgUrl || !_utils.utils.deepEquals(renderBounds, _chart.lastRenderBounds)) {
-      _chart.lastImgUrl = imgUrl;
-      _chart.lastRenderBounds = renderBounds;
+    if (imgUrl) {
+      // should we check to see if the imgUrl is the same from the previous render?
       _axios2.default.get(imgUrl, {
         responseType: 'arraybuffer'
       }).then(function (_ref) {
@@ -57304,6 +57289,22 @@ function rasterLayerPolyMixin(_layer) {
 
   var _scaledPopups = {};
 
+  var _customFetchColorAggregate = function _customFetchColorAggregate(aggregate) {
+    return aggregate;
+  };
+
+  _layer.setCustomFetchColorAggregate = function (func) {
+    _customFetchColorAggregate = func;
+  };
+
+  var _customColorProjectionPostProcessor = function _customColorProjectionPostProcessor(aggregate, projections) {
+    return projections;
+  };
+
+  _layer.setCustomColorProjectionPostProcessor = function (func) {
+    _customColorProjectionPostProcessor = func;
+  };
+
   _layer.setState = function (setter) {
     if (typeof setter === "function") {
       state = setter(state);
@@ -57353,6 +57354,8 @@ function rasterLayerPolyMixin(_layer) {
         state = _ref.state,
         lastFilteredSize = _ref.lastFilteredSize,
         isDataExport = _ref.isDataExport;
+
+    /* eslint complexity: ["error", 50] */ // this function is too complex. Sorry.
     var _state$encoding = state.encoding,
         color = _state$encoding.color,
         geocol = _state$encoding.geocol,
@@ -57379,12 +57382,25 @@ function rasterLayerPolyMixin(_layer) {
         // parent SELECT.
         // eslint-disable-next-line no-extra-semi
         ;
-        var _parseFactsFromCustom = (0, _customSqlParser2.default)(state.data[0].table, withAlias, color.aggregate);
+        var _parseFactsFromCustom = (0, _customSqlParser2.default)(state.data[0].table, withAlias, _customFetchColorAggregate(color.aggregate));
 
         colorProjection = _parseFactsFromCustom.factProjections;
         colorProjectionAs = _parseFactsFromCustom.factAliases;
         colorField = _parseFactsFromCustom.expression;
       }
+
+      // eslint-disable-next-line no-extra-semi
+      ;
+      var _customColorProjectio = _customColorProjectionPostProcessor(color.aggregate, {
+        colorProjection: colorProjection,
+        colorProjectionAs: colorProjectionAs,
+        colorField: colorField
+      });
+
+      colorProjection = _customColorProjectio.colorProjection;
+      colorProjectionAs = _customColorProjectio.colorProjectionAs;
+      colorField = _customColorProjectio.colorField;
+
 
       var withClauseTransforms = [];
 
@@ -59162,6 +59178,14 @@ function applyReplacements(sql, withAlias, replacements) {
 }
 
 function parseFactsFromCustomSQL(factTable, withAlias, sql) {
+  // okay, if our sql has -any- parameters, just bomb out. We don't know how to deal with those yet
+  if (sql.includes("${")) {
+    return {
+      factProjections: [sql],
+      factAliases: [withAlias],
+      expression: sql
+    };
+  }
   var factProjections = [];
   var factAliases = [];
   var expression = sql;
@@ -86186,7 +86210,7 @@ function mapdTable(parent, chartGroup) {
         }
 
         _chart._invokeSortListener(_sortColumn);
-        (0, _coreAsync.redrawAllAsync)(_chart.chartGroup());
+        _chart.redrawAsync();
       });
 
       sortButton.append("svg").attr("class", "svg-icon").classed("icon-sort", true).attr("viewBox", "0 0 48 48").append("use").attr("xlink:href", "#icon-sort");
@@ -86199,10 +86223,34 @@ function mapdTable(parent, chartGroup) {
     });
   }
 
+  // our default retriever just takes the expr (column), sticks the column on it, then snags
+  // the type from the columns list. Being careful not to blow up if it doesn't exist.
+  var _retrieveFilterColType = function _retrieveFilterColType(_ref) {
+    var expr = _ref.expr,
+        table = _ref.table,
+        columns = _ref.columns;
+
+    var key = table + "." + expr;
+    return columns[key] ? columns[key].type : undefined;
+  };
+
+  // but we can also change the type via a custom accessor, if necesary
+  _chart.setCustomRetrieveFilterColType = function (func) {
+    _retrieveFilterColType = func;
+  };
+
   function filterCol(expr, val) {
-    var key = _crossfilter.getTable()[0] + "." + expr;
-    var columns = _crossfilter.getColumns();
-    var type = columns[key].type;
+    var type = _retrieveFilterColType({
+      expr: expr,
+      table: _crossfilter.getTable()[0],
+      columns: _crossfilter.getColumns()
+    });
+
+    // escape clause - certain values cannot be filtered upon, so if there's no type
+    // we escape. By default, we won't filter on anything that isn't a column in the table.
+    if (!type) {
+      return;
+    }
 
     if (type === "TIMESTAMP") {
       val = "TIMESTAMP(3) '" + val.toISOString().slice(0, -1) // Slice off the 'Z' at the end
