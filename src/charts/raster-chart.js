@@ -740,6 +740,14 @@ export default function rasterChart(parent, useMap, chartGroup, _mapboxgl) {
   _legend.on("input", handleLegendInput.bind(_chart))
   _legend.on("toggle", handleLegendToggle.bind(_chart))
   _legend.on("doneRender", handleLegendDoneRender.bind(_chart))
+  _legend.on("doneRender", function(state) {
+    // Sometimes the legend gets disconnected from the DOM?
+    if (this.node.elm && !this.node.elm.isConnected) {
+      const root = _chart.root()
+      root.select(".legend").remove()
+      root.node().append(this.node.elm)
+    }
+  })
 
   _chart.legend = function(l) {
     return _legend
