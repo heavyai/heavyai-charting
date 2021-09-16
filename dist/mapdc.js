@@ -56455,7 +56455,8 @@ var AGGREGATES = {
   count: "COUNT",
   min: "MIN",
   max: "MAX",
-  sum: "SUM"
+  sum: "SUM",
+  sample: "SAMPLE"
 };
 
 function validSymbol(type) {
@@ -56647,6 +56648,7 @@ function rasterLayerPointMixin(_layer) {
       if (isDataExport) {
         transforms.push({
           type: "project",
+          // FIXME:
           expr: "ST_SetSRID(ST_Point(" + AGGREGATES[x.aggregate] + "(" + x.field + "), " + AGGREGATES[y.aggregate] + "(" + y.field + ")), 4326)"
         });
       }
