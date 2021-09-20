@@ -237,16 +237,15 @@ export default function rasterLayerPointMixin(_layer) {
         groupby: transform.groupby.map((g, i) => ({
           type: "project",
           expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
-          as: `key${i}`
+          as: g
         }))
       })
       if (isDataExport) {
         transforms.push({
           type: "project",
-          // FIXME:
           expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
             AGGREGATES[y.aggregate]
-          }(${y.field})), 4326)`
+          }(${y.field})), 4326) as point`
         })
       }
     } else {
