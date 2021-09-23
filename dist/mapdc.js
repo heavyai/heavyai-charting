@@ -56648,7 +56648,7 @@ function rasterLayerPointMixin(_layer) {
       if (isDataExport) {
         transforms.push({
           type: "project",
-          expr: "ST_SetSRID(ST_Point(" + AGGREGATES[x.aggregate] + "(" + x.field + "), " + AGGREGATES[y.aggregate] + "(" + y.field + ")), 4326) as point"
+          expr: "ST_SetSRID(ST_Point(" + AGGREGATES[x.aggregate] + "(" + x.field + "), " + AGGREGATES[y.aggregate] + "(" + y.field + ")), 4326) AS location"
         });
       }
     } else {

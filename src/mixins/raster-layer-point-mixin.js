@@ -245,7 +245,7 @@ export default function rasterLayerPointMixin(_layer) {
           type: "project",
           expr: `ST_SetSRID(ST_Point(${AGGREGATES[x.aggregate]}(${x.field}), ${
             AGGREGATES[y.aggregate]
-          }(${y.field})), 4326) as point`
+          }(${y.field})), 4326) AS location`
         })
       }
     } else {
