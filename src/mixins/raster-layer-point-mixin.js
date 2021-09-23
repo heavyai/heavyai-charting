@@ -237,7 +237,7 @@ export default function rasterLayerPointMixin(_layer) {
         groupby: transform.groupby.map((g, i) => ({
           type: "project",
           expr: `${isDataExport && i === 0 ? "/*+ cpu_mode */ " : ""}${g}`,
-          as: g
+          as: isDataExport ? g : `key${i}`
         }))
       })
       if (isDataExport) {
