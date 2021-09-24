@@ -56641,7 +56641,7 @@ function rasterLayerPointMixin(_layer) {
           return {
             type: "project",
             expr: "" + (isDataExport && i === 0 ? "/*+ cpu_mode */ " : "") + g,
-            as: g
+            as: isDataExport ? g : "key" + i
           };
         })
       });
